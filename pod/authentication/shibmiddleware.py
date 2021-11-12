@@ -53,7 +53,7 @@ class ShibbMiddleware(ShibbolethRemoteUserMiddleware):
 
     def make_profile(self, user, shib_meta):
         if('affiliation' in shib_meta):
-            if self.check_user_meta(self, user, shib_meta):
+            if self.check_user_meta(user, shib_meta):
                 user.owner.affiliation = shib_meta['affiliation']
                 user.owner.save()
 

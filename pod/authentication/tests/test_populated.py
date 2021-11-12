@@ -3,6 +3,9 @@ from django.conf import settings
 from django.test import TestCase, override_settings
 from pod.authentication.models import Owner, AccessGroup
 from pod.authentication import populatedCASbackend
+from pod.authentication import shibmiddleware
+from django.test import RequestFactory
+from django.contrib import auth
 from django.contrib.auth.models import User
 from importlib import reload
 from xml.etree import ElementTree as ET
@@ -45,6 +48,35 @@ USER_LDAP_MAPPING_ATTRIBUTES = getattr(
         "groups": "memberOf",
     },
 )
+
+SHIBBOLETH_ATTRIBUTE_MAP = getattr(
+    settings,
+    "SHIBBOLETH_ATTRIBUTE_MAP", {
+        "Shibboleth-eppn": (True, "username"),
+        "Shibboleth-givenName": (True, "first_name"),
+        "Shibboleth-sn": (False, "last_name"),
+        "Shibboleth-mail": (False, "email"),
+        "Shibboleth-primary-affiliation": (False, "affiliation"),
+        "Shibboleth-unscoped-affiliation": (False, "affiliations")
+    }
+)  # Permet de préciser le mapping entre les attributs transmis par shibboleth et les attributs de la classe utilisateur
+
+SHIBBOLETH_STAFF_ALLOWED_DOMAINS = getattr(
+    settings,
+    "SHIBBOLETH_STAFF_ALLOWED_DOMAINS", ('univ.fr',)
+)
+
+REMOTE_USER_HEADER = getattr(
+    settings,
+    "REMOTE_USER_HEADER", "REMOTE_USER")  # Nom d'entête qui permet d'identifier l'utilisateur connecté par Shibboleth, vaut HTTP_REMOTE_USER si on utilise un ReverseProxy avec Apache
+
+SHIB_URL = getattr(
+    settings,
+    "SHIB_URL", "https://univ.fr/Shibboleth.sso/WAYF")
+
+SHIB_LOGOUT_URL = getattr(
+    settings,
+    "SHIB_LOGOUT_URL", "https://univ.fr/Shibboleth.sso/Logout")
 
 
 class PopulatedCASTestCase(TestCase):
@@ -275,4 +307,108 @@ class PopulatedLDAPTestCase(TestCase):
         print(
             " --->  test_populate_user_from_entry_affiliation_group"
             " of PopulatedLDAPTestCase : OK !"
+        )
+
+
+class PopulatedShibTestCase(TestCase):
+    def setUp(self):
+        """setUp PopulatedShibTestCase create user pod"""
+        self.hmap = {}
+        for a in SHIBBOLETH_ATTRIBUTE_MAP:
+            self.hmap[SHIBBOLETH_ATTRIBUTE_MAP[a][1]] = a
+
+        print(" --->  SetUp of PopulatedShibTestCase : OK !")
+
+    def _authenticate_shib_user(self, u):
+        # Simulate shibboleth header
+        fname = u['email'].split('.')[0]
+        lname = u['email'].split('.')[1].split('@')[0]
+        fake_shib_header = {
+            'REMOTE_USER': u['username'],
+            self.hmap['username']: u['username'],
+            self.hmap['email']: u['email'],
+            self.hmap['first_name']: fname,
+            self.hmap['last_name']: lname,
+        }
+        if('groups' in u.keys()):
+            fake_shib_header[self.hmap['groups']] = u['groups']
+        if('affiliations' in u.keys()):
+            fake_shib_header[self.hmap['affiliation']] = u['affiliations'].split(';')[0]
+            fake_shib_header[self.hmap['affiliations']] = u['affiliations']
+
+        # Get valid shib_meta from simulated shibboleth header
+        request = RequestFactory().get('/')
+        request.META.update(**fake_shib_header)
+        shib_meta, error = shibmiddleware.ShibbMiddleware.parse_attributes(request)
+        self.assertFalse(error, 'Generating shibboleth attribute mapping contains errors')
+
+        # Authenticate user with valid shib_meta
+        user = auth.authenticate(remote_user=u['username'], shib_meta=shib_meta)
+        self.assertTrue(user.is_authenticated())
+
+        return (user, shib_meta)
+
+    @override_settings(DEBUG=False)
+    def test_make_profile(self):
+        """ Test if user attributes are retreived """
+        user, shib_meta = self._authenticate_shib_user({
+            'username': 'jdo@univ.fr',
+            'email': 'john.do@univ.fr',
+            'affiliations': 'teacher;staff;member'
+        })
+        self.assertEqual(user.username, 'jdo@univ.fr')
+        self.assertEqual(user.email, 'john.do@univ.fr')
+        self.assertEqual(user.first_name, 'john')
+        self.assertEqual(user.last_name, 'do')
+        """ Test if user can be staff if SHIBBOLETH_STAFF_ALLOWED_DOMAINS = None """
+        settings.SHIBBOLETH_STAFF_ALLOWED_DOMAINS = None
+        reload(shibmiddleware)
+        shibmiddleware.ShibbMiddleware.make_profile(shibmiddleware.ShibbMiddleware(), user, shib_meta)
+        self.assertTrue(user.is_staff)
+
+        owner = Owner.objects.get(user__username="jdo@univ.fr")
+        self.assertEqual(owner.affiliation, 'teacher')
+
+        """ Test if user can be staff if SHIBBOLETH_STAFF_ALLOWED_DOMAINS is restrict """
+        settings.SHIBBOLETH_STAFF_ALLOWED_DOMAINS = ('univ-a.fr', 'univ-b.fr',)
+        user.is_staff = False  # Staff status is not remove
+        user.save()
+        reload(shibmiddleware)
+        shibmiddleware.ShibbMiddleware.make_profile(shibmiddleware.ShibbMiddleware(), user, shib_meta)
+        self.assertFalse(user.is_staff)
+
+        """ Test if user become staff if SHIBBOLETH_STAFF_ALLOWED_DOMAINS is restrict and contains his domain """
+        settings.SHIBBOLETH_STAFF_ALLOWED_DOMAINS = ('univ.fr',)
+        reload(shibmiddleware)
+        shibmiddleware.ShibbMiddleware.make_profile(shibmiddleware.ShibbMiddleware(), user, shib_meta)
+        self.assertTrue(user.is_staff)
+
+        """ Test if same user with new unstaffable affiliation keep his staff status """
+        unstaffable_affiliation = ['member', 'unprobable']
+        for a in unstaffable_affiliation:
+            self.assertFalse(a in settings.AFFILIATION_STAFF)
+        user, shib_meta = self._authenticate_shib_user({
+            'username': 'jdo@univ.fr',
+            'email': 'jean.do@univ.fr',
+            'affiliations': ";".join(unstaffable_affiliation)
+        })
+        shibmiddleware.ShibbMiddleware.make_profile(shibmiddleware.ShibbMiddleware(), user, shib_meta)
+        self.assertTrue(user.is_staff)  # Staff status is not remove
+
+        """ Test if the main affiliation of this same user with new unstaffable affiliation has change """
+        owner = Owner.objects.get(user__username="jdo@univ.fr")
+        self.assertEqual(owner.affiliation, 'member')
+
+        """ Test if a new user with same unstaffable affiliations has no staff status"""
+        user, shib_meta = self._authenticate_shib_user({
+            'username': 'ada@univ.fr',
+            'email': 'ada.da@univ.fr',
+            'affiliations': ";".join(unstaffable_affiliation)
+        })
+        shibmiddleware.ShibbMiddleware.make_profile(shibmiddleware.ShibbMiddleware(), user, shib_meta)
+        self.assertFalse(user.is_staff)
+
+        print(
+            " --->  test_make_profile"
+            " of PopulatedShibTestCase : OK !"
         )
