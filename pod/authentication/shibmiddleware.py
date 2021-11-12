@@ -2,16 +2,29 @@ from shibboleth.middleware import ShibbolethRemoteUserMiddleware
 from django.conf import settings
 
 REMOTE_USER_HEADER = getattr(
-    settings, 'REMOTE_USER_HEADER', "REMOTE_USER")
+    settings,
+    "REMOTE_USER_HEADER", "REMOTE_USER")
 
-AFFILIATION_STAFF = getattr(
-    settings, 'AFFILIATION_STAFF', ('employee', 'faculty', 'staff'))
+SHIBBOLETH_ATTRIBUTE_MAP = getattr(
+    settings,
+    "SHIBBOLETH_ATTRIBUTE_MAP", {
+        "REMOTE_USER": (True, "username"),
+        "Shibboleth-givenName": (True, "first_name"),
+        "Shibboleth-sn": (False, "last_name"),
+        "Shibboleth-mail": (False, "email"),
+        "Shibboleth-primary-affiliation": (False, "affiliation"),
+        "Shibboleth-unscoped-affiliation": (False, "affiliations")
+    }
+)
 
 SHIBBOLETH_STAFF_ALLOWED_DOMAINS = getattr(
-    settings, 'SHIBBOLETH_STAFF_ALLOWED_DOMAINS', None)
+    settings,
+    "SHIBBOLETH_STAFF_ALLOWED_DOMAINS", None
+)
 
 AFFILIATION = getattr(
-    settings, 'AFFILIATION', (
+    settings,
+    "AFFILIATION", (
         ('student', ''),
         ('faculty', ''),
         ('staff', ''),
@@ -25,6 +38,9 @@ AFFILIATION = getattr(
         ('emeritus', ''),
         ('teacher', ''),
         ('registered-reader', '')))
+
+AFFILIATION_STAFF = getattr(
+    settings, 'AFFILIATION_STAFF', ('employee', 'faculty', 'staff'))
 
 
 class ShibbMiddleware(ShibbolethRemoteUserMiddleware):
@@ -53,15 +69,13 @@ class ShibbMiddleware(ShibbolethRemoteUserMiddleware):
 
     def make_profile(self, user, shib_meta):
         if('affiliation' in shib_meta):
-            if self.check_user_meta(self, user, shib_meta):
+            if self.check_user_meta(user, shib_meta):
                 user.owner.affiliation = shib_meta['affiliation']
                 user.owner.save()
-
         if(self.is_staffable(user) and 'affiliations' in shib_meta):
             for affiliation in shib_meta['affiliations'].split(';'):
                 if affiliation in AFFILIATION_STAFF:
                     user.is_staff = True
                     user.save()
                     break
-
         return
