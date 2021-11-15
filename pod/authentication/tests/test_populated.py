@@ -325,14 +325,12 @@ class PopulatedShibTestCase(TestCase):
 
     def _authenticate_shib_user(self, u):
         """ Simulate shibboleth header """
-        fname = u['email'].split('.')[0]
-        lname = u['email'].split('.')[1].split('@')[0]
         fake_shib_header = {
             'REMOTE_USER': u['username'],
             self.hmap['username']: u['username'],
             self.hmap['email']: u['email'],
-            self.hmap['first_name']: fname,
-            self.hmap['last_name']: lname,
+            self.hmap['first_name']: u['first_name'],
+            self.hmap['last_name']: u['last_name'],
         }
         if('groups' in u.keys()):
             fake_shib_header[self.hmap['groups']] = u['groups']
@@ -357,15 +355,17 @@ class PopulatedShibTestCase(TestCase):
         """ Test if user attributes are retreived """
         user, shib_meta = self._authenticate_shib_user({
             'username': 'jdo@univ.fr',
+            'first_name': 'John',
+            'last_name': 'Do',
             'email': 'john.do@univ.fr',
             'affiliations': 'teacher;staff;member'
         })
         self.assertEqual(user.username, 'jdo@univ.fr')
         self.assertEqual(user.email, 'john.do@univ.fr')
-        self.assertEqual(user.first_name, 'john')
-        self.assertEqual(user.last_name, 'do')
+        self.assertEqual(user.first_name, 'John')
+        self.assertEqual(user.last_name, 'Do')
 
-        """ Test if user can be staff if SHIBBOLETH_STAFF_ALLOWED_DOMAINS = None """
+        """ Test if user can be staff if SHIBBOLETH_STAFF_ALLOWED_DOMAINS is None """
         settings.SHIBBOLETH_STAFF_ALLOWED_DOMAINS = None
         reload(shibmiddleware)
         shibmiddleware.ShibbMiddleware.make_profile(shibmiddleware.ShibbMiddleware(), user, shib_meta)
@@ -374,7 +374,7 @@ class PopulatedShibTestCase(TestCase):
         owner = Owner.objects.get(user__username="jdo@univ.fr")
         self.assertEqual(owner.affiliation, 'teacher')
 
-        """ Test if user can be staff when SHIBBOLETH_STAFF_ALLOWED_DOMAINS is restrict """
+        """ Test if user can be staff when SHIBBOLETH_STAFF_ALLOWED_DOMAINS is restricted """
         settings.SHIBBOLETH_STAFF_ALLOWED_DOMAINS = ('univ-a.fr', 'univ-b.fr',)
         user.is_staff = False  # Staff status is not remove
         user.save()
@@ -394,19 +394,23 @@ class PopulatedShibTestCase(TestCase):
             self.assertFalse(a in AFFILIATION_STAFF)
         user, shib_meta = self._authenticate_shib_user({
             'username': 'jdo@univ.fr',
+            'first_name': 'Jean',
+            'last_name': 'Do',
             'email': 'jean.do@univ.fr',
             'affiliations': ";".join(unstaffable_affiliation)
         })
         shibmiddleware.ShibbMiddleware.make_profile(shibmiddleware.ShibbMiddleware(), user, shib_meta)
         self.assertTrue(user.is_staff)  # Staff status is not remove
 
-        """ Test if the main affiliation of this same user with new unstaffable affiliation has change """
+        """ Test if the main affiliation of this same user with new unstaffable affiliation has changed """
         owner = Owner.objects.get(user__username="jdo@univ.fr")
         self.assertEqual(owner.affiliation, 'member')
 
         """ Test if a new user with same unstaffable affiliations has no staff status"""
         user, shib_meta = self._authenticate_shib_user({
             'username': 'ada@univ.fr',
+            'first_name': 'Ada',
+            'last_name': 'Da',
             'email': 'ada.da@univ.fr',
             'affiliations': ";".join(unstaffable_affiliation)
         })
