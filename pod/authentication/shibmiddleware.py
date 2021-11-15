@@ -47,6 +47,14 @@ class ShibbMiddleware(ShibbolethRemoteUserMiddleware):
     header = REMOTE_USER_HEADER
 
     def check_user_meta(self, user, shib_meta):
+        """Check shibboleth access rights with user's meta
+
+            Args:
+                user: User,
+                shib_meta dict
+            Returns:
+                bool
+        """
         return (
             user and user.owner
             and shib_meta['affiliation'] in [A[0] for A in AFFILIATION]
@@ -54,9 +62,16 @@ class ShibbMiddleware(ShibbolethRemoteUserMiddleware):
         )
 
     def is_staffable(self, user):
+        """Check that given user, his domain is in authorized domains of shibboleth staff
+
+           Args:
+               user: User
+           Returns:
+               bool
+        """
         if(
-            SHIBBOLETH_STAFF_ALLOWED_DOMAINS is None or
-            len(SHIBBOLETH_STAFF_ALLOWED_DOMAINS) == 0
+            SHIBBOLETH_STAFF_ALLOWED_DOMAINS is None
+            or len(SHIBBOLETH_STAFF_ALLOWED_DOMAINS) == 0
         ):
             return True
         for d in SHIBBOLETH_STAFF_ALLOWED_DOMAINS:
@@ -66,8 +81,8 @@ class ShibbMiddleware(ShibbolethRemoteUserMiddleware):
 
     def make_profile(self, user, shib_meta):
         if('affiliation' in shib_meta) and self.check_user_meta(user, shib_meta):
-                user.owner.affiliation = shib_meta['affiliation']
-                user.owner.save()
+            user.owner.affiliation = shib_meta['affiliation']
+            user.owner.save()
         if(self.is_staffable(user) and 'affiliations' in shib_meta):
             for affiliation in shib_meta['affiliations'].split(';'):
                 if affiliation in AFFILIATION_STAFF:
