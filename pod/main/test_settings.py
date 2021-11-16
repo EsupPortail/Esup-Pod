@@ -46,6 +46,6 @@ SHIBBOLETH_ATTRIBUTE_MAP = {
     "Shibboleth-sn": (False, "last_name"),
     "Shibboleth-mail": (False, "email"),
     "Shibboleth-primary-affiliation": (False, "affiliation"),
-    "Shibboleth-unscoped-affiliation": (False, "affiliations")
+    "Shibboleth-unscoped-affiliation": (False, "affiliations"),
 }
 REMOTE_USER_HEADER = "REMOTE_USER"
