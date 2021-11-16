@@ -170,8 +170,8 @@ $(window).ready(function () {
       );
       return;
     }
-    var slug = $(this).attr("data-slug");
-    var jqxhr = $.ajax({
+    const slug = $(this).attr("data-slug")
+        , jqxhr = $.ajax({
       method: "POST",
       url: "/playlist/edit/" + slug + "/",
       data: {

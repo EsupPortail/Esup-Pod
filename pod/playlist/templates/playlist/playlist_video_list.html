@@ -31,26 +31,13 @@
 
 <script type="text/JavaScript">
   {% if request.GET.is_iframe and request.GET.is_iframe == 'true' %}
-  $('#playlist div').first()
-                    .append('<button type="button" class="close playlist hidden" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
-  $('#playlist .close.hidden').removeClass('hidden');
-  $('#playlist h5').append(' <small><i>('+$('#playlist div.row > div:eq(1) > p').html()+')</i></small>')
-  $('#div-video-wrapper').append('<div id="overlay-footer"><p class="playlist-video-title">'
-    + '{{ video.title|safe}}'
-    + '</p>'
-    + '</div>')
-  $('#playlist .card-header div.row').remove()
   const formctn = $('body')
       , vtitleselector = '.playlist-video-title'
       , is_iframe = true
-      , on_player_cb = function(pp) {
-
-      }
   {% else %}
   const formctn = $('#mainContent')
       , vtitleselector = '.playlist-video-title'
       , is_iframe = false
-      , on_player_cb = null
   {% endif %}
   $(window).ready(function() {
     const length = parseInt({{playlist.videos|length}});
@@ -82,7 +69,6 @@
           js:'{% static 'videojs-vr/videojs-vr.js' %}?ver={{VERSION}}',
           css: '{% static 'videojs-vr/videojs-vr.css' %}?ver={{VERSION}}'},
       },
-      on_player_cb: on_player_cb,
       strings:{invalid_feedback_value:'{% trans "Please provide a valid value for this field" %}'
               ,invalid_feedback_password:'{% trans "The password is incorrect." %}'}
     })

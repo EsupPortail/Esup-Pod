@@ -7,13 +7,11 @@
   mask-size: 20px;
   -webkit-mask-size: 20px;
 }
+
 .playlist-videos .card-header { /* in pod.css */
     padding: .4rem;
 }
-div.video-card .d-flex { /* in pod.css */
-    min-height: 70%;
-    top: 0;
-}
+
 #card-playlist {
   position: absolute;
   display: block;

@@ -21,7 +21,7 @@
 }
 #collapseAside .playlist-videos .row .card-group  {
 	width: 100%;
-	margin: 0 0 0 0;
+	margin: 0;
 }
 #collapseAside .playlist-videos .card {border-radius:0;}
 
@@ -91,24 +91,18 @@
 	margin: .4em .5em -.4em -.5em;
 	border-radius: 0 .25em .25em 0;
 }
+
 .playlist-videos .row .card-group.on > .video-card .vdata {
 	padding-right: 1.075rem;
 	background-color: var(--primary);
 	background-size: 15px;
-	/* background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>'); */
 	background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 5 4 19 14 12"></polyline></svg>');
-
 }
+
 .playlist-counter {
-	/*text-align: right;
-	font-size: small;
-	display: flex;*/
 	color:white;
 }
 
-/* .playlist-control {
-	background-color: rgba(0, 0, 0, 0.1);
-} */
 .card-controls {float:right}
 .card-controls > .playlist-options {
 	margin-top:0

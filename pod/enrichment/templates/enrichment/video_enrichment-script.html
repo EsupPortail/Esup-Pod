@@ -3,10 +3,10 @@
   slide_mode = 'video off';
 {% endif %}
 player.ready(function() {
-  var tracks = player.textTracks();
-  var metadataTrack, i;
+  const tracks = player.textTracks();
+  let metadataTrack, i, track;
   for (i = 0; i < tracks.length; i++) {
-      var track = tracks[i];
+      track = tracks[i];
       if (track.kind === 'metadata' && track.label === 'enrichment') {
           metadataTrack = track;
           metadataTrack.index = i;
@@ -15,7 +15,7 @@ player.ready(function() {
   }
 
   player.on('loadedmetadata', function() {
-      var slide = [];
+      let slide = [];
       if(!metadataTrack.cues) { //Safari do not get cues
           let tracksrc = player.el().getElementsByTagName('TRACK')[metadataTrack.index].src;
           loadEnrichmentVTTfile(tracksrc, function(cues) {
@@ -45,7 +45,6 @@ player.ready(function() {
       }
   });
 
-  $('.vjs-big-play-button').css('z-index', 2)
-  $('.vjs-control-bar').css('z-index', 3);
+
 });
 </script>

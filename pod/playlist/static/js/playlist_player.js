@@ -127,6 +127,21 @@ let PlaylistPlayer = {
     });
   },
   init: function (o) {
+    /* o is a javascript object containing playlist parameters for playlist player initialisation and playing :
+    *  - version : String ('O' or 'E') corresponding to the default version of the video in wich it should be played
+    *  - current_position : Number equals to the position of the current video (can be pass has query string ex: p=1)
+    *  - length : Number of video in the playlist
+    *  - elements : List of HTML playlist video elements
+    *  - baseurl : String equals to pod site base url
+    *  - is_iframe : Boolean to define if the playlist must be show in iframe mode or not
+    *  - is_360 : Boolean to specifiy if the current video is a 360° video
+    *  - vsjLogo : Logo to add to the player (can be null)
+    *  - formctn : HTML element for a eventualy needed form
+    *  - vtitlectn : List of HTML element where the current video title is display (and should be update)
+    *  - head_files : Object containning a List of js and css that could be load or unload for any video type (enrichments, 360°, etc)
+    *  - controls : Object containing loop and auto controls HTML elements
+    *  - strings : Object containing pre-translated strings that could be needed to display (Cf info or alert messages)
+    */
     this.version = o.version;
     this.current_position = o.current_position;
     this.length = o.length;
@@ -142,6 +157,7 @@ let PlaylistPlayer = {
     this.strings = o.strings ? o.strings : this.strings;
     this.auto_on = this.loop_on = false;
     this.elements = []
+    this.hasPlayed = false
 
     const parameter = [
         /(playlist)\/([^/]+)\//,
@@ -192,7 +208,7 @@ let PlaylistPlayer = {
     player.on("ended", function () {
       _this.onPlayerEnd();
     });
-    console.log('Shoul load video '+this.current_position)
+    // console.log('Should load video '+this.current_position)
     this.loadVideo(this.current_position);
   },
   headFiles: {
@@ -384,6 +400,12 @@ let PlaylistPlayer = {
         if (typeof setOnPlayerPlayPause === "function") {
           setOnPlayerPlayPause()
         }
+        if(!_this.hasPlayed) {
+            player.on("firstplay", function () {
+              $('#card-playlist .close.hidden').removeClass('hidden');
+              _this.hasPlayed = true;
+            });
+        }
       }
 
       // Set video source
@@ -402,7 +424,7 @@ let PlaylistPlayer = {
               if (player.src() == "" || player.src().indexOf("m3u8") != -1) {
                 player.src(json.src.mp4);
                 player.controlBar.addChild("QualitySelector");
-                player.play();
+                if(_this.hasPlayed) player.play();
               }
             }
           });

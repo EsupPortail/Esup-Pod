@@ -52,6 +52,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import json
 import re
 import pandas
+from http import HTTPStatus
 from datetime import date
 from chunked_upload.models import ChunkedUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
@@ -729,18 +730,18 @@ def video_xhr(request, slug, slug_private=None):
                 request,
             )
             response = {
-                "status": 403,
+                "status": HTTPStatus.FORBIDDEN,
                 "error": "password",
                 "html_content": rendered,
             }
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
         elif request.user.is_authenticated():
-            response = {"status": 403, "error": "deny", "html_content": ""}
+            response = {"status": HTTPStatus.FORBIDDEN, "error": "deny", "html_content": ""}
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
         else:
-            response = {"status": 302, "error": "access", "url": settings.LOGIN_URL}
+            response = {"status": HTTPStatus.FOUND, "error": "access", "url": settings.LOGIN_URL}
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
 

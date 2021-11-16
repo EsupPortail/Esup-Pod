@@ -35,7 +35,9 @@
     </div>
     <div id="info-video"></div>
   </div>
-
+  <div id="overlay-footer"><p class="playlist-video-title">
+      {{ video.title|safe}}
+  </p></div>
 </div>
 
 {% block more_script %}
@@ -44,11 +46,6 @@
   <script>
     player.videoJsInfo();
     player.videoJsPlaylist();
-    // function getPPBottom() {
-    //   return $(player.el()).hasClass('vjs-has-started')
-    //          ? $('#podvideoplayer .vjs-control-bar').height()
-    //          : 0 ;
-    // }
     function setOnPlayerPlayPause() {
       player.on('play',function() {
         isPlaying = true;
@@ -63,16 +60,12 @@
       const btinfo = $('.vjs-info-button:eq(0)')[0]
           , btplaylist = $('.vjs-playlist-button:eq(0)')[0]
       $(btinfo).clone().appendTo('#overlay-footer')
-      $(btplaylist).clone().appendTo('#overlay-footer'); console.log("Should have append playlist button to overlay footer "+$(btplaylist)[0].className)
+      $(btplaylist).clone().appendTo('#overlay-footer');
       $('#overlay-footer .vjs-info-button').click(function(){$(btinfo).click()})
       $('#overlay-footer .vjs-playlist-button').click(function(){$(btplaylist).click()})
-      $('#card-playlist .close').addClass('hidden');
-      player.on("firstplay", function () {console.log('FIRST PLAY '+$('#card-playlist .close.hidden').attr('class'))
-        $('#card-playlist .close.hidden').removeClass('hidden');
-      });
     })
 
-    var show_video_playlist = function() {
+    const show_video_playlist = function() {
       const hasStarted = $(player.el()).hasClass('vjs-has-started')
           , isOverlayed = $('#div-video-wrapper').hasClass('overlay')
           , isInfoOverlayed = isOverlayed && $('#div-video-wrapper').hasClass('playlist')
@@ -89,8 +82,8 @@
         $('#div-video-wrapper').attr('class', (hasStarted ? '' : 'vjs-not-started'))
         if(wasPlaying) player.play();
       }
-    },
-    resizePlaylist = function() {
+    };
+    const resizePlaylist = function() {
       const ihead = document.querySelector('#card-playlist > .iframe-header')
           , ph = player.el().offsetHeight
           , pb = parseInt(player.el().style.top) + ph - 30
@@ -148,7 +141,7 @@ function resizeVideoJs(){
 }
 resizeVideoJs(); // Initialize the function right now
 window.onresize = resizeVideoJs; // Call the function on resize
-var show_info_video = function() { // Call by videojs-playlist-controllbar
+const show_info_video = function() { // Call by videojs-playlist-controllbar
   const hasStarted = $(player.el()).hasClass('vjs-has-started')
       , isOverlayed = $('#div-video-wrapper').hasClass('overlay')
       , isInfoOverlayed = isOverlayed && $('#div-video-wrapper').hasClass('info')

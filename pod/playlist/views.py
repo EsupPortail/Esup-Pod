@@ -98,7 +98,8 @@ def playlist_play(request, slug=None):
     video = None
     position = (
         int(request.GET.get("p", 1)) - 1
-        if int(request.GET.get("p", 1)) > 0
+        if request.GET.get("p", "1").isnumeric()
+        and int(request.GET.get("p", 1)) > 0
         and int(request.GET.get("p", 1)) <= playlist.playlistelement_set.all().count()
         else 0
     )
@@ -136,10 +137,9 @@ def get_video_adv_note_list(request, video):
     else:
         filter = Q(status="2")
     return (
-        AdvancedNotes.objects.all()
-        .filter(video=video)
-        .filter(filter)
-        .order_by("timestamp", "added_on")
+        AdvancedNotes.objects.filter(video=video)
+                             .filter(filter)
+                             .order_by("timestamp", "added_on")
     )
 
 
