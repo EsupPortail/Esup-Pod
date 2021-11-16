@@ -334,7 +334,7 @@ function videoTimeUpdateEventHandler() {
     );
 
     let divs = document.querySelectorAll(".vjs-text-track-display div");
-    divs[divs.length - 1].innerText = '';
+    divs[divs.length - 1].innerText = "";
 
     if (captionBeingDisplayed != -1) {
       $("#textCaptionEntry").val("");
@@ -518,7 +518,7 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
       }
     },
 
-    placeInOrder: function() {
+    placeInOrder: function () {
       for (let i in captionsArray) {
         let cap = captionsArray[i];
         if (cap.start > newCaption.start) {
@@ -540,7 +540,7 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
       $("#addSubtitle").before(this.div);
     },
 
-    spawnNew: function() {
+    spawnNew: function () {
       let playTime = $("#podvideoplayer").get(0).player.currentTime();
       let captionObj = {
         start: newCaption.end,
@@ -694,13 +694,13 @@ let editorShortcuts = {
 
     return false;
   },
-  "s": function(e) {
+  s: function (e) {
     if (e.ctrlKey) {
       $("#justSaveCaption").click();
       return false;
     }
   },
-  "End": function(e) {
+  End: function (e) {
     $("#saveCaptionAndPlay").click();
     return false;
   },
