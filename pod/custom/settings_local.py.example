@@ -1017,7 +1017,15 @@ SHIBBOLETH_ATTRIBUTE_MAP = {
     "shib-given-name": (True, "first_name"),
     "shib-sn": (True, "last_name"),
     "shib-mail": (False, "email"),
+    "shib-primary-affiliation": (False, "affiliation"),
+    "shib-unscoped-affiliation": (False, "affiliations"),
 }
+
+"""
+# Custom variable to allow user of somme domain to be staff
+# If empty all domains will be allowed
+"""
+SHIBBOLETH_STAFF_ALLOWED_DOMAINS = ('univ-domain.fr',)
 
 """
 # Nom de l'attribut dans les headers qui sert à identifier
@@ -1198,7 +1206,7 @@ BBB_NUMBER_MAX_LIVES = 4
 # Version de BigBlueButton utilisée.
 # Si les URLs de présentations Web contiennent /2.3/ (et non /2.0/),
 # il est nécessaire de mettre ce paramètre à True.
-# Remarque : si vous utilisez Scalelite, il est possible que les URLS générés soient 
+# Remarque : si vous utilisez Scalelite, il est possible que les URLS générées soient
 # au format 2.3 même si la version de BigBlueButton est une 2.2.X.
 """
 BBB_VERSION_IS_23 = False
