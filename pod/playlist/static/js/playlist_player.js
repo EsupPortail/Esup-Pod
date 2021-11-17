@@ -14,45 +14,22 @@ let PlaylistPlayer = {
     }
     return parameters;
   },
-  unselectCurrent: function () {
-    $(this.elements[this.current_position - 1])
-      .parent()
-      .removeClass("on");
-    $(this.elements[this.current_position - 1])
-      .parent()
-      .children(".vdata")
-      .text(this.current_position);
+
+  unselectCurrent: function() {
+    $(this.elements[this.current_position-1]).parent().removeClass("on");
   },
-  setCurrent: function (position) {
-    // console.log('Inn set current: '+$(this.elements[this.current_position-1]).parent().children(".vdata").data('info')+'\n'+this.chevron_up)
-    this.current_position = position;
-    $(this.elements[this.current_position - 1])
-      .parent()
-      .addClass("on");
-    $(this.elements[this.current_position - 1])
-      .parent()
-      .children(".vdata")
-      .html(this.chevron_up);
-    const vtitle = $(this.elements[this.current_position - 1])
-        .parent()
-        .children(".vdata")
-        .data("info"),
-      vurl =
-        this.elements[this.current_position - 1].children[1].children[0].href;
-    history.pushState({ title: vtitle }, "", vurl);
-    // this.titlectns.each(function() {
-    //   console.log('ctn: '+$(this)[0]+' ---- '+vtitle)
-    // })
-    for (let c in this.titlectns) {
-      console.log(
-        "vtitle: " + this.titlectns[c] + "\n" + this.titlectns[c].innerHTML
-      );
-      this.titlectns[c].innerHTML = vtitle;
+  setCurrent: function(position) {
+    this.current_position = position
+    $(this.elements[this.current_position-1]).parent().addClass("on");
+    const vtitle = $(this.elements[this.current_position-1]).data('title')
+        , purl = '/playlist/'+this.playlist+'/?p='+position+this.getParameters()
+    history.pushState( {title: vtitle}, "", purl );
+    for(let c in this.titlectns) {
+      this.titlectns[c].innerHTML = vtitle
     }
   },
   onPlayerEnd: function () {
     const _this = this;
-    // console.log('On player end current_position : '+this.current_position)
     if (this.current_position != this.length || this.loop_on) {
       if (this.current_position != this.length) {
         this.loadVideo(this.current_position + 1);
@@ -61,24 +38,41 @@ let PlaylistPlayer = {
       }
     }
   },
-  loadVideo: function (position) {
-    this.unselectCurrent();
-    const video_url = this.elements[position - 1].children[1].children[0].href,
-      ajax_url = video_url.replace("/video/", "/video_xhr/"),
-      parameters = this.getParameters(),
-      //, password = $(this.current_element).parent().children('.vdata').data('password') == 'unchecked'
-      _this = this;
 
+  loadVideo: function(position) {
+    this.unselectCurrent()
+    const video_url = this.elements[position - 1].children[1].children[0].href
+        , ajax_url = video_url.replace("/video/", "/video_xhr/")
+        , parameters = ajax_url.indexOf('?') > 0  ? this.getParameters()
+                                                  : this.getParameters().replace(/^&/,'?')
+        //, password = $(this.current_element).parent().children('.vdata').data('password') == 'unchecked'
+        , _this = this
     $.ajax({
       url: ajax_url + parameters,
       context: document.body,
       dataType: "json",
     }).done(function (json) {
       if (json.status == "ok") {
-        _this.setPlayer(json);
-        $("#info-video").html(json.html_video_info);
-        feather.replace({ class: "align-bottom" });
-        _this.setCurrent(position);
+        _this.setPlayer(json)
+        $("#info-video").html(json.html_video_info)
+        // Update aside (Enrichement info, Managment links, Notes)
+        if(!_this.is_iframe) {
+          // Show / Hide enrichment info block
+          if(json.version == 'E') $("#card-enrichmentinformations").removeClass('off')
+          else $("#card-enrichmentinformations").addClass('off')
+          // Update managment links
+          $("#card-managevideo .card-body a").each(function() {
+            $(this).attr('href', $(this).attr('href').replace(/(.*)\/([^/]*)\/([^/])*$/,function(str, g0, g1, g2) {
+              return g0+'/'+json.slug+'/'+(g2?g2:'')
+            }))
+          })
+          // Update note form
+          $("#card-takenote").html(json.html_video_note)
+        }
+        _this.setCurrent(position)
+        try {feather.replace();} catch(e) {
+          //console.warn('Failled to call feeather function...');
+        }
       } else if (json.error == "password") {
         //Acces restrict by password => Display video password form
         if ($("#video-form-wrapper").length == 0) {
@@ -127,20 +121,40 @@ let PlaylistPlayer = {
           });
         });
       } else if (json.error == "access") {
-        //Acces restrict by authentication => Redirect to loggin page
-        window.location.href = json.url;
+        rurl = json.url+'?'
+        if(_this.is_iframe) { rurl += 'is_iframe=true&' }
+        rurl += 'referrer=' + _this.baseurl
+              + '/playlist/' + _this.slug + '/?p='+position
+              + _this.getParameters().replace(/&/g, '%26')
+        window.location.href = rurl;
       } else if (json.error == "deny") {
         //User is authenticate but not allowed => Go next (TODO... actualy just reload page)
-        window.location.href = video_url;
+        const nposition = position < _this.elements.length ? (position + 1): 1;
+        _this.loadVideo(nposition);
       }
     });
   },
   init: function (o) {
+    /* o is a javascript object containing playlist parameters for playlist player initialisation and playing :
+    *  - version : String ('O' or 'E') corresponding to the default version of the video in wich it should be played
+    *  - current_position : Number equals to the position of the current video (can be pass has query string ex: p=1)
+    *  - length : Number of video in the playlist
+    *  - elements : List of HTML playlist video elements
+    *  - baseurl : String equals to pod site base url
+    *  - is_iframe : Boolean to define if the playlist must be show in iframe mode or not
+    *  - is_360 : Boolean to specifiy if the current video is a 360° video
+    *  - vsjLogo : Logo to add to the player (can be null)
+    *  - formctn : HTML element for a eventualy needed form
+    *  - vtitlectn : List of HTML element where the current video title is display (and should be update)
+    *  - head_files : Object containning a List of js and css that could be load or unload for any video type (enrichments, 360°, etc)
+    *  - controls : Object containing loop and auto controls HTML elements
+    *  - strings : Object containing pre-translated strings that could be needed to display (Cf info or alert messages)
+    */
     this.version = o.version;
-    // this.current_element = o.current_element;
     this.current_position = o.current_position;
     this.length = o.length;
     this.baseurl = o.baseurl;
+    this.slug = o.slug;
     this.is_iframe = o.is_iframe;
     this.is_360 = o.is_360;
     this.vjsLogo = o.vjsLogo;
@@ -149,19 +163,17 @@ let PlaylistPlayer = {
     this.headFiles.set(o.head_files);
     this.controls = o.controls;
     this.strings = o.strings ? o.strings : this.strings;
-    this.chevron_up = $(o.elements[o.current_position - 1]) //$('.playlist-videos div.row .on .card')
-      .parent()
-      .children(".vdata")
-      .html();
     this.auto_on = this.loop_on = false;
-    this.elements = [];
+    this.elements = []
+    this.hasPlayed = false
+
 
     const parameter = [
-        /(playlist)\=([^&]+)/,
+        /(playlist)\/([^/]+)\//,
         /(auto)\=([^&]+)/,
         /(loop)\=([^&]+)/,
-      ],
-      playlist = window.location.href.match(parameter[0])[2];
+      ]
+    this.playlist = window.location.href.match(parameter[0])[2];
     let _this = this;
 
     if (window.location.href.match(parameter[1])) {
@@ -190,38 +202,23 @@ let PlaylistPlayer = {
       this.controls[c].onclick = toogleOption;
     }
 
-    // let p = 1
-    // $(o.elements).each(function() {
-    //   _this.elements.push(this)
-    //   $(this).find('a').data('position', p).on('click', function(e) {
-    //     if($(this).data('position') == _this.current_position) {
-    //       e.preventDefault();//e.stopPropagation();
-    //       player.play()
-    //     } else /*if(_this.auto_on)*/{
-    //       e.preventDefault();//e.stopPropagation();
-    //       _this.loadVideo($(this).data('position'))
-    //     }
-    //   })
-    //   p++;
-    // })
-    for (let i = 0, p = 1, nbe = o.elements.length; i < nbe; i++, p++) {
-      _this.elements.push(o.elements[i]);
-      $(o.elements[i])
-        .find("a")
-        .data("position", p)
-        .on("click", function (e) {
-          if ($(this).data("position") == _this.current_position) {
-            e.preventDefault(); //e.stopPropagation();
-            player.play();
-          } /*if(_this.auto_on)*/ else {
-            e.preventDefault(); //e.stopPropagation();
-            _this.loadVideo($(this).data("position"));
-          }
-        });
+    for(let i = 0, p = 1, nbe = o.elements.length; i < nbe; i++, p++) {
+      _this.elements.push(o.elements[i])
+      $(o.elements[i]).find('a').data('position', p).on('click', function(e) {
+        if($(this).data('position') == _this.current_position) {
+          e.preventDefault();//e.stopPropagation();
+          player.play()
+        } else /*if(_this.auto_on)*/{
+          e.preventDefault();//e.stopPropagation();
+          _this.loadVideo($(this).data('position'))
+        }
+      })
     }
     player.on("ended", function () {
       _this.onPlayerEnd();
     });
+    // console.log('Should load video '+this.current_position)
+    this.loadVideo(this.current_position);
   },
   headFiles: {
     plugins: {
@@ -267,7 +264,7 @@ let PlaylistPlayer = {
     },
     unloadCSS: function (p) {
       $("#" + p + "_style_id").remove();
-    },
+    }
   },
 
   setPlayer: function (json) {
@@ -381,7 +378,7 @@ let PlaylistPlayer = {
             try {
               player.vttThumbnails({ src: _this.baseurl + json.overview });
             } catch (e) {
-              console.error("Error in retrieving overview image : " + e);
+              console.warn("Error in retrieving overview image : " + e);
             }
           });
         }
@@ -396,7 +393,7 @@ let PlaylistPlayer = {
             try {
               player.vr({ projection: "360" });
             } catch (e) {
-              console.error("Error in calling video 360° function : " + e);
+              console.warn("Error in calling video 360° function : " + e);
             }
           });
         }
@@ -411,6 +408,12 @@ let PlaylistPlayer = {
         }
         if (typeof setOnPlayerPlayPause === "function") {
           setOnPlayerPlayPause();
+        }
+        if(!_this.hasPlayed) {
+            player.on("firstplay", function () {
+              $('#card-playlist .close.hidden').removeClass('hidden');
+              _this.hasPlayed = true;
+            });
         }
       }
 
@@ -430,7 +433,7 @@ let PlaylistPlayer = {
               if (player.src() == "" || player.src().indexOf("m3u8") != -1) {
                 player.src(json.src.mp4);
                 player.controlBar.addChild("QualitySelector");
-                player.play();
+                if(_this.hasPlayed) player.play();
               }
             }
           });
@@ -453,11 +456,6 @@ let PlaylistPlayer = {
       player.on("ended", function () {
         _this.onPlayerEnd();
       });
-
-      // Add a playlisterner to stop video when
-      if (_this.is_iframe) {
-        isPlaying;
-      }
 
       // Restore registered settings
       player.volume(volume);

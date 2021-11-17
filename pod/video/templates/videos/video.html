@@ -136,39 +136,15 @@
   </p>
 {% endif %}
 
-
 {% block video-element %}
-
-{% comment %}
-{% if form %}
-  {% include 'videos/video-form.html' %}
-{% else %}
-  {% if playlist %}
-    {% include 'playlist/playlist_player.html' with playlist=playlist %}
-  {% endif %}
-
-  {% include 'videos/video-element.html' %}
-  <div id="info-video">{% include 'videos/video-all-info.html' %}</div>
-
-{%endif%}
-{% endcomment %}
-
 {% if form %}
     {% include 'videos/video-form.html' %}
 {% else %}
-  {% if playlist %}
-  {% include 'playlist/playlist_player.html' with playlist=playlist %}
-  {% if playlistVideoForm %}
-  <div id="video-form-wrapper">{% include 'videos/video-form.html' %}</div>
-  {% endif %}
-  {% endif %}
   {% include 'videos/video-element.html' %}
   <div id="info-video">{% include 'videos/video-all-info.html' %}</div>
-
 {%endif%}
-
-
 {% endblock video-element %}
+
 </div>
 {% endblock page_content %}
 
@@ -190,7 +166,7 @@
 
 
 {% block more_script %}
-  {% if not form or playlist %}
+  {% if not form %}
     <script>
     // Allow anchor links to automatically load JS tabs
     $(document).ready(() => {

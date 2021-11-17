@@ -7,50 +7,117 @@
 	background-color: rgba(0, 0, 0, 0.2);
 	margin: 10px;
 }
+
 .playlist-videos {
 	overflow-y: auto;
-}
-.playlist-videos p {
-	position: absolute;
-	right: 2.5em;
-	top: .5em;
-	display: block;
-	font-size: small;
-	text-align: right;
-}
-.playlist-videos p svg {
-	width: 70%;
-}
-.playlist-videos .card {
-	display: inline-block;
-	width: 100%;
-	margin: 1.5.em 0 0;
-}
-.playlist-videos .card .card-footer,
-.playlist-videos .card .text-muted.small {
-	display: none;
-}
-.playlist-control {
-	background-color: rgba(0, 0, 0, 0.1);
-}
-.playlist-counter {
-	/*text-align: right;
-	font-size: small;
-	display: flex;*/
-	color:white;
-}
-.playlist-options:hover {
-	color: #007bff !important;
-	cursor: pointer;
+	max-height:100%;
+	padding-top:0;
+	padding-bottom:0;
 }
 
-#playlist > .card-header .fill-color-pod{
-	fill:var(--light);
+.playlist-videos .row {
+	border-radius:0;
+	margin: 0 -20px;
 }
-#playlist > .card-header .on > .fill-color-pod {
+#collapseAside .playlist-videos .row .card-group  {
+	width: 100%;
+	margin: 0;
+}
+#collapseAside .playlist-videos .card {border-radius:0;}
+
+.playlist-videos .row .card-group .video-card .card-body {
+	padding: 0;
+	position:relative;
+}
+
+.playlist-videos .row .card-group .video-card .card-body a {
+	display:block;
+	padding: .25em .5em .25em calc(40% + .5em);
+	line-height:1.35em;
+	min-height:2em;
+}
+.playlist-videos .row .card-group .video-card .card-body a .card-thumbnail {
+	position:absolute;
+	width: 40%;
+	top: 0; bottom:0; left:0;
+	display:flex;
+	align-items: center;
+	/*background: black;*/
+	border-left: solid var(--dark-gray) 1px;
+	overflow: hidden;
+	border-radius: 0;
+ }
+ .playlist-videos .row .card-group .video-card .card-body a .card-thumbnail img {
+	 width: 100%;
+	 height: auto;
+	 border-radius: 0;
+ }
+
+ .playlist-videos .row .card-group .video-card .card-body a span.small {
+	 word-break: break-all;
+	 font-size: 85%;
+ }
+
+.playlist-videos .row .card-group a {
+	color:var(--gray-dark)
+}
+.playlist-videos .row .card-group.on a {
+	color:var(--primary)
+}
+#collapseAside .playlist-videos .row .card-group .card-header {
+	padding: .1rem .3rem .2em;
+}
+.playlist-videos .row .card-group.on .card-header {
+	/* background-color: var(--color-fuzzy-wuzzy-brown); */
+	border-bottom: 1px solid var(--primary);
+}
+#collapseAside #card-playlist h5 > small {font-size:75%;line-height:1.5em}
+#collapseAside .playlist-videos .row .card-group > .video-card {border:0 !important; border-radius:0;}
+/* .playlist-videos .row .card-group > .video-card {border:solid 1px var(--gray) !important} */
+.playlist-videos .row .card-group.on > .video-card {border:solid 1px var(--primary) !important}
+
+.playlist-videos .row .card-group.on > .video-card .card-body {background-color: var(--primary)}
+.playlist-videos .row .card-group.on > .video-card .card-body a {color: var(--white)}
+.playlist-videos .row .card-group.on > .video-card .card-header .text-muted {color: var(--primary) !important}
+.playlist-videos .row .card-group.on > .video-card .card-header .text-muted svg {stroke: var(--primary) !important}
+
+.playlist-videos .row .card-group > .video-card .vdata {
+	display: inline-block;
+	height: auto;
+	overflow: hidden;
+	background: var(--gray) right center no-repeat;
+	color: var(--white);
+	padding: 0 .5em 0 .5em;
+	margin: .4em .5em -.4em -.5em;
+	border-radius: 0 .25em .25em 0;
+}
+
+.playlist-videos .row .card-group.on > .video-card .vdata {
+	padding-right: 1.075rem;
+	background-color: var(--primary);
+	background-size: 15px;
+	background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 5 4 19 14 12"></polyline></svg>');
+}
+
+.playlist-counter {
+	color:white;
+}
+
+.card-controls {float:right}
+.card-controls > .playlist-options {
+	margin-top:0
+}
+.card-controls > .playlist-options:hover {
+	cursor: pointer;
+}
+.card-controls > .playlist-options > .fill-color-pod{
+	fill:var(--dark-gray);
+	height: 1.25em;
+	width: auto;
+}
+.card-controls > .playlist-options.on > .fill-color-pod {
 	fill:var(--primary);
 }
-.playlist-videos .card-group.on > .video-card {border:solid 2px var(--primary) !important}
 
 .hidden {display:none}
 

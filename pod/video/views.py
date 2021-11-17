@@ -52,11 +52,11 @@ from django.core.exceptions import ObjectDoesNotExist
 import json
 import re
 import pandas
+from http import HTTPStatus
 from datetime import date
 from chunked_upload.models import ChunkedUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 
-from pod.playlist.models import Playlist
 from django.db import transaction
 from django.db import IntegrityError
 
@@ -668,22 +668,6 @@ def get_video_access(request, video, slug_private):
         return True
 
 
-def get_video_source(video):
-    video_src = {}
-    if video.is_video:
-        video_src["mp4"] = video.get_video_mp4_json()
-        m3u8 = video.get_playlist_master()
-        if m3u8:
-            video_src["m3u8"] = {
-                "src": m3u8.source_file.url,
-                "type": m3u8.encoding_format,
-            }
-    else:
-        m4a = video.get_video_m4a()
-        video_src["m4a"] = {"src": m4a.source_file.url, "type": m4a.encoding_format}
-    return video_src
-
-
 def video_json_response(request, video):
     template_info = (
         "videos/video-info.html"
@@ -693,55 +677,17 @@ def video_json_response(request, video):
     template_video_element = "videos/video-element.html"
     rendered_info = render_to_string(template_info, {"video": video}, request)
     rendered_video = render_to_string(template_video_element, {"video": video}, request)
-    list_track = []
-    for track in video.track_set.all():
-        list_track.append(
-            {
-                "id": track.id,
-                "kind": track.kind,
-                "src": track.src.file.url,
-                "srclang": track.lang,
-                "label": track.get_label_lang(),
-            }
-        )
-    list_overlay = []
-    if video.overlay_set.all():
-        for o in video.overlay_set.all():
-            list_overlay.append(
-                {
-                    "start": o.time_start,
-                    "end": o.time_end,
-                    "content": o.content,
-                    "align": o.position,
-                    "showBackground": o.background,
-                }
-            )
-    list_chapter = []
-    if video.chapter_set.all():
-        for c in video.chapter_set.all():
-            list_chapter.append(
-                {"time_start": c.time_start, "id": c.id, "title": c.title}
-            )
-    overview = video.overview.url if (video.overview) else ""
-
-    response = {
-        "status": "ok",
-        "html_video_info": rendered_info,
-        "html_video_element": rendered_video,
-        "version": video.get_version,
-        "tracks": list_track,
-        "is_video": video.is_video,
-        "src": get_video_source(video),
-        "is_360": video.is_360,
-        "thumbnail": video.get_thumbnail_url(),
-        "overview": overview,
-        "overlay": list_overlay,
-        "chapter": list_chapter,
-    }
-
-    if hasattr(video, "enrichmentvtt"):
-        response["enrichtracksrc"] = video.enrichmentvtt.src.file.url
-    return response
+    listNotes = get_adv_note_list(request, video)
+    rendered_note = render_to_string(
+        "videos/video_notes.html", {"video": video, "listNotes": listNotes}, request
+    )
+    return video.get_json_to_video_view(
+        {
+            "html_video_info": rendered_info,
+            "html_video_element": rendered_video,
+            "html_video_note": rendered_note,
+        }
+    )
 
 
 @ajax_required
@@ -750,7 +696,6 @@ def video_xhr(request, slug, slug_private=None):
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     is_password_protected = video.password is not None and video.password != ""
     show_page = get_video_access(request, video, slug_private)
-
     if (
         (show_page and not is_password_protected)
         or (
@@ -765,8 +710,7 @@ def video_xhr(request, slug, slug_private=None):
         or request.user.has_perm("video.change_video")
         or (request.user in video.additional_owners.all())
     ):
-        response = video_json_response(request, video)
-        data = json.dumps(response)
+        data = video_json_response(request, video)
         return HttpResponse(data, content_type="application/json")
     else:
         is_draft = video.is_draft
@@ -786,26 +730,18 @@ def video_xhr(request, slug, slug_private=None):
                 request,
             )
             response = {
-                "status": 403,
+                "status": HTTPStatus.FORBIDDEN,
                 "error": "password",
                 "html_content": rendered,
             }
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
         elif request.user.is_authenticated():
-            response = {"status": 403, "error": "deny", "html_content": ""}
+            response = {"status": HTTPStatus.FORBIDDEN, "error": "deny", "html_content": ""}
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
         else:
-            iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
-            url = "%s?%sreferrer=%s" % (
-                settings.LOGIN_URL,
-                iframe_param,
-                request.get_full_path()
-                .replace("/video_xhr/", "/video/")
-                .replace("&", "%26"),
-            )
-            response = {"status": 302, "error": "access", "url": url}
+            response = {"status": HTTPStatus.FOUND, "error": "access", "url": settings.LOGIN_URL}
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
 
@@ -823,11 +759,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         raise SuspiciousOperation("Invalid video id")
 
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
-    if (
-        video.get_version != "O"
-        and request.GET.get("redirect") != "false"
-        and not request.GET.get("playlist")
-    ):
+    if video.get_version != "O" and request.GET.get("redirect") != "false":
         return redirect(video.get_default_version_link(slug_private))
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
@@ -860,20 +792,6 @@ def render_video(
         else None
     )
     theme = get_object_or_404(Theme, channel=channel, slug=slug_t) if slug_t else None
-    playlist = (
-        get_object_or_404(Playlist, slug=request.GET["playlist"])
-        if request.GET.get("playlist")
-        else None
-    )
-    if playlist and request.user != playlist.owner and not playlist.visible:
-        # not (request.user.is_superuser or request.user.has_perm(
-        #        "video.change_theme")
-        messages.add_message(
-            request,
-            messages.ERROR,
-            _("You don't have access to this playlist."),
-        )
-        raise PermissionDenied
 
     is_password_protected = video.password is not None and video.password != ""
 
@@ -901,7 +819,6 @@ def render_video(
                 "video": video,
                 "theme": theme,
                 "listNotes": listNotes,
-                "playlist": playlist,
                 **more_data,
             },
         )
@@ -931,7 +848,6 @@ def render_video(
                     "video": video,
                     "theme": theme,
                     "form": form,
-                    "playlist": playlist,
                     "listNotes": listNotes,
                     **more_data,
                 },

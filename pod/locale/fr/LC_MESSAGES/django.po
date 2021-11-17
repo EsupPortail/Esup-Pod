@@ -3649,10 +3649,10 @@ msgstr ""
 #: pod/playlist/templates/my_playlists.html:28
 msgid ""
 "A playlist with the eye symbol means that this playlist is visible to "
-"authenticated users when they view this page."
+"all users when they view this page."
 msgstr ""
 "Une liste de lecture avec un symbole œil signifie que cette liste est "
-"visible aux utilisateurs authentifiés qui visiteront cette page."
+"visible à tous les utilisateurs qui visiteront cette page."
 
 #: pod/playlist/templates/playlist.html:21
 #: pod/playlist/templates/playlist/playlist_list.html:18
