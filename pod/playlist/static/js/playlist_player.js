@@ -1,13 +1,20 @@
 let PlaylistPlayer = {
   invalid_feedback_value: "Please provide a valid value for this field",
   invalid_feedback_password: "The password is incorrect.",
-  getParameters: function() {
+  getParameters: function () {
     let parameters = "";
-    if (this.auto_on) { parameters += "&auto=on"; }
-    if (this.loop_on) { parameters += "&loop=on"; }
-    if (this.is_iframe) { parameters += "&is_iframe=true"; }
+    if (this.auto_on) {
+      parameters += "&auto=on";
+    }
+    if (this.loop_on) {
+      parameters += "&loop=on";
+    }
+    if (this.is_iframe) {
+      parameters += "&is_iframe=true";
+    }
     return parameters;
   },
+
   unselectCurrent: function() {
     $(this.elements[this.current_position-1]).parent().removeClass("on");
   },
@@ -22,18 +29,19 @@ let PlaylistPlayer = {
     }
   },
   onPlayerEnd: function () {
-    const _this = this
+    const _this = this;
     if (this.current_position != this.length || this.loop_on) {
       if (this.current_position != this.length) {
-        this.loadVideo(this.current_position + 1)
+        this.loadVideo(this.current_position + 1);
       } else if (this.loop_on) {
-        this.loadVideo(1)
+        this.loadVideo(1);
       }
     }
   },
+
   loadVideo: function(position) {
     this.unselectCurrent()
-    const video_url = this.elements[position-1].children[1].children[0].href
+    const video_url = this.elements[position - 1].children[1].children[0].href
         , ajax_url = video_url.replace("/video/", "/video_xhr/")
         , parameters = ajax_url.indexOf('?') > 0  ? this.getParameters()
                                                   : this.getParameters().replace(/^&/,'?')
@@ -101,10 +109,10 @@ let PlaylistPlayer = {
             dataType: "json",
           }).done(function (json) {
             if (json.status == "ok") {
-              $("#video-form-wrapper").empty().addClass("hidden")
-              _this.setPlayer(json)
-              $("#info-video").html(json.html_video_info)
-              _this.setCurrent(position)
+              $("#video-form-wrapper").empty().addClass("hidden");
+              _this.setPlayer(json);
+              $("#info-video").html(json.html_video_info);
+              _this.setCurrent(position);
             } else {
               $("#video-form-wrapper .invalid-feedback")
                 .html(this.strings.invalid_feedback_password)
@@ -158,6 +166,7 @@ let PlaylistPlayer = {
     this.auto_on = this.loop_on = false;
     this.elements = []
     this.hasPlayed = false
+
 
     const parameter = [
         /(playlist)\/([^/]+)\//,
@@ -398,7 +407,7 @@ let PlaylistPlayer = {
           resizeVideoJs();
         }
         if (typeof setOnPlayerPlayPause === "function") {
-          setOnPlayerPlayPause()
+          setOnPlayerPlayPause();
         }
         if(!_this.hasPlayed) {
             player.on("firstplay", function () {
@@ -447,11 +456,6 @@ let PlaylistPlayer = {
       player.on("ended", function () {
         _this.onPlayerEnd();
       });
-
-      // Add a playlisterner to stop video when
-      if(_this.is_iframe) {
-        isPlaying
-      }
 
       // Restore registered settings
       player.volume(volume);
