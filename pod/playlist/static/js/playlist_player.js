@@ -15,17 +15,22 @@ let PlaylistPlayer = {
     return parameters;
   },
 
-  unselectCurrent: function() {
-    $(this.elements[this.current_position-1]).parent().removeClass("on");
+  unselectCurrent: function () {
+    $(this.elements[this.current_position - 1])
+      .parent()
+      .removeClass("on");
   },
-  setCurrent: function(position) {
-    this.current_position = position
-    $(this.elements[this.current_position-1]).parent().addClass("on");
-    const vtitle = $(this.elements[this.current_position-1]).data('title')
-        , purl = '/playlist/'+this.playlist+'/?p='+position+this.getParameters()
-    history.pushState( {title: vtitle}, "", purl );
-    for(let c in this.titlectns) {
-      this.titlectns[c].innerHTML = vtitle
+  setCurrent: function (position) {
+    this.current_position = position;
+    $(this.elements[this.current_position - 1])
+      .parent()
+      .addClass("on");
+    const vtitle = $(this.elements[this.current_position - 1]).data("title"),
+      purl =
+        "/playlist/" + this.playlist + "/?p=" + position + this.getParameters();
+    history.pushState({ title: vtitle }, "", purl);
+    for (let c in this.titlectns) {
+      this.titlectns[c].innerHTML = vtitle;
     }
   },
   onPlayerEnd: function () {
@@ -39,38 +44,48 @@ let PlaylistPlayer = {
     }
   },
 
-  loadVideo: function(position) {
-    this.unselectCurrent()
-    const video_url = this.elements[position - 1].children[1].children[0].href
-        , ajax_url = video_url.replace("/video/", "/video_xhr/")
-        , parameters = ajax_url.indexOf('?') > 0  ? this.getParameters()
-                                                  : this.getParameters().replace(/^&/,'?')
-        //, password = $(this.current_element).parent().children('.vdata').data('password') == 'unchecked'
-        , _this = this
+  loadVideo: function (position) {
+    this.unselectCurrent();
+    const video_url = this.elements[position - 1].children[1].children[0].href,
+      ajax_url = video_url.replace("/video/", "/video_xhr/"),
+      parameters =
+        ajax_url.indexOf("?") > 0
+          ? this.getParameters()
+          : this.getParameters().replace(/^&/, "?"),
+      //, password = $(this.current_element).parent().children('.vdata').data('password') == 'unchecked'
+      _this = this;
     $.ajax({
       url: ajax_url + parameters,
       context: document.body,
       dataType: "json",
     }).done(function (json) {
       if (json.status == "ok") {
-        _this.setPlayer(json)
-        $("#info-video").html(json.html_video_info)
+        _this.setPlayer(json);
+        $("#info-video").html(json.html_video_info);
         // Update aside (Enrichement info, Managment links, Notes)
-        if(!_this.is_iframe) {
+        if (!_this.is_iframe) {
           // Show / Hide enrichment info block
-          if(json.version == 'E') $("#card-enrichmentinformations").removeClass('off')
-          else $("#card-enrichmentinformations").addClass('off')
+          if (json.version == "E")
+            $("#card-enrichmentinformations").removeClass("off");
+          else $("#card-enrichmentinformations").addClass("off");
           // Update managment links
-          $("#card-managevideo .card-body a").each(function() {
-            $(this).attr('href', $(this).attr('href').replace(/(.*)\/([^/]*)\/([^/])*$/,function(str, g0, g1, g2) {
-              return g0+'/'+json.slug+'/'+(g2?g2:'')
-            }))
-          })
+          $("#card-managevideo .card-body a").each(function () {
+            $(this).attr(
+              "href",
+              $(this)
+                .attr("href")
+                .replace(/(.*)\/([^/]*)\/([^/])*$/, function (str, g0, g1, g2) {
+                  return g0 + "/" + json.slug + "/" + (g2 ? g2 : "");
+                })
+            );
+          });
           // Update note form
-          $("#card-takenote").html(json.html_video_note)
+          $("#card-takenote").html(json.html_video_note);
         }
-        _this.setCurrent(position)
-        try {feather.replace();} catch(e) {
+        _this.setCurrent(position);
+        try {
+          feather.replace();
+        } catch (e) {
           //console.warn('Failled to call feeather function...');
         }
       } else if (json.error == "password") {
@@ -121,35 +136,42 @@ let PlaylistPlayer = {
           });
         });
       } else if (json.error == "access") {
-        rurl = json.url+'?'
-        if(_this.is_iframe) { rurl += 'is_iframe=true&' }
-        rurl += 'referrer=' + _this.baseurl
-              + '/playlist/' + _this.slug + '/?p='+position
-              + _this.getParameters().replace(/&/g, '%26')
+        rurl = json.url + "?";
+        if (_this.is_iframe) {
+          rurl += "is_iframe=true&";
+        }
+        rurl +=
+          "referrer=" +
+          _this.baseurl +
+          "/playlist/" +
+          _this.slug +
+          "/?p=" +
+          position +
+          _this.getParameters().replace(/&/g, "%26");
         window.location.href = rurl;
       } else if (json.error == "deny") {
         //User is authenticate but not allowed => Go next (TODO... actualy just reload page)
-        const nposition = position < _this.elements.length ? (position + 1): 1;
+        const nposition = position < _this.elements.length ? position + 1 : 1;
         _this.loadVideo(nposition);
       }
     });
   },
   init: function (o) {
     /* o is a javascript object containing playlist parameters for playlist player initialisation and playing :
-    *  - version : String ('O' or 'E') corresponding to the default version of the video in wich it should be played
-    *  - current_position : Number equals to the position of the current video (can be pass has query string ex: p=1)
-    *  - length : Number of video in the playlist
-    *  - elements : List of HTML playlist video elements
-    *  - baseurl : String equals to pod site base url
-    *  - is_iframe : Boolean to define if the playlist must be show in iframe mode or not
-    *  - is_360 : Boolean to specifiy if the current video is a 360° video
-    *  - vsjLogo : Logo to add to the player (can be null)
-    *  - formctn : HTML element for a eventualy needed form
-    *  - vtitlectn : List of HTML element where the current video title is display (and should be update)
-    *  - head_files : Object containning a List of js and css that could be load or unload for any video type (enrichments, 360°, etc)
-    *  - controls : Object containing loop and auto controls HTML elements
-    *  - strings : Object containing pre-translated strings that could be needed to display (Cf info or alert messages)
-    */
+     *  - version : String ('O' or 'E') corresponding to the default version of the video in wich it should be played
+     *  - current_position : Number equals to the position of the current video (can be pass has query string ex: p=1)
+     *  - length : Number of video in the playlist
+     *  - elements : List of HTML playlist video elements
+     *  - baseurl : String equals to pod site base url
+     *  - is_iframe : Boolean to define if the playlist must be show in iframe mode or not
+     *  - is_360 : Boolean to specifiy if the current video is a 360° video
+     *  - vsjLogo : Logo to add to the player (can be null)
+     *  - formctn : HTML element for a eventualy needed form
+     *  - vtitlectn : List of HTML element where the current video title is display (and should be update)
+     *  - head_files : Object containning a List of js and css that could be load or unload for any video type (enrichments, 360°, etc)
+     *  - controls : Object containing loop and auto controls HTML elements
+     *  - strings : Object containing pre-translated strings that could be needed to display (Cf info or alert messages)
+     */
     this.version = o.version;
     this.current_position = o.current_position;
     this.length = o.length;
@@ -164,15 +186,14 @@ let PlaylistPlayer = {
     this.controls = o.controls;
     this.strings = o.strings ? o.strings : this.strings;
     this.auto_on = this.loop_on = false;
-    this.elements = []
-    this.hasPlayed = false
-
+    this.elements = [];
+    this.hasPlayed = false;
 
     const parameter = [
-        /(playlist)\/([^/]+)\//,
-        /(auto)\=([^&]+)/,
-        /(loop)\=([^&]+)/,
-      ]
+      /(playlist)\/([^/]+)\//,
+      /(auto)\=([^&]+)/,
+      /(loop)\=([^&]+)/,
+    ];
     this.playlist = window.location.href.match(parameter[0])[2];
     let _this = this;
 
@@ -202,17 +223,20 @@ let PlaylistPlayer = {
       this.controls[c].onclick = toogleOption;
     }
 
-    for(let i = 0, p = 1, nbe = o.elements.length; i < nbe; i++, p++) {
-      _this.elements.push(o.elements[i])
-      $(o.elements[i]).find('a').data('position', p).on('click', function(e) {
-        if($(this).data('position') == _this.current_position) {
-          e.preventDefault();//e.stopPropagation();
-          player.play()
-        } else /*if(_this.auto_on)*/{
-          e.preventDefault();//e.stopPropagation();
-          _this.loadVideo($(this).data('position'))
-        }
-      })
+    for (let i = 0, p = 1, nbe = o.elements.length; i < nbe; i++, p++) {
+      _this.elements.push(o.elements[i]);
+      $(o.elements[i])
+        .find("a")
+        .data("position", p)
+        .on("click", function (e) {
+          if ($(this).data("position") == _this.current_position) {
+            e.preventDefault(); //e.stopPropagation();
+            player.play();
+          } /*if(_this.auto_on)*/ else {
+            e.preventDefault(); //e.stopPropagation();
+            _this.loadVideo($(this).data("position"));
+          }
+        });
     }
     player.on("ended", function () {
       _this.onPlayerEnd();
@@ -264,7 +288,7 @@ let PlaylistPlayer = {
     },
     unloadCSS: function (p) {
       $("#" + p + "_style_id").remove();
-    }
+    },
   },
 
   setPlayer: function (json) {
@@ -409,11 +433,11 @@ let PlaylistPlayer = {
         if (typeof setOnPlayerPlayPause === "function") {
           setOnPlayerPlayPause();
         }
-        if(!_this.hasPlayed) {
-            player.on("firstplay", function () {
-              $('#card-playlist .close.hidden').removeClass('hidden');
-              _this.hasPlayed = true;
-            });
+        if (!_this.hasPlayed) {
+          player.on("firstplay", function () {
+            $("#card-playlist .close.hidden").removeClass("hidden");
+            _this.hasPlayed = true;
+          });
         }
       }
 
@@ -433,7 +457,7 @@ let PlaylistPlayer = {
               if (player.src() == "" || player.src().indexOf("m3u8") != -1) {
                 player.src(json.src.mp4);
                 player.controlBar.addChild("QualitySelector");
-                if(_this.hasPlayed) player.play();
+                if (_this.hasPlayed) player.play();
               }
             }
           });
