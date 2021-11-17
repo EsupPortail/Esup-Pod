@@ -91,7 +91,7 @@ class PlaylistViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         print(
             "-> Check if unvisible playlist is not accessible ",
-            "by authenticate but not owner user"
+            "by authenticate but not owner user",
         )
         authenticate(username="utest", password="uhello")
         login = self.client.login(username="utest", password="uhello")

@@ -1051,7 +1051,7 @@ class video_recordTestView(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         print(
             " --->  test_video_recordTestView_get_request_restrict ",
-            "of video_recordTestView: OK!"
+            "of video_recordTestView: OK!",
         )
 
     def test_video_recordTestView_upload_recordvideo(self):
@@ -1079,7 +1079,7 @@ class video_recordTestView(TestCase):
         self.assertEqual(vid.title, "test upload")
         print(
             " --->  test_video_recordTestView_upload_recordvideo ",
-            "of video_recordTestView: OK!"
+            "of video_recordTestView: OK!",
         )
 
 
