@@ -1050,7 +1050,8 @@ class video_recordTestView(TestCase):
         response = self.client.get("/video_record/")
         self.assertEqual(response.status_code, HTTPStatus.OK)
         print(
-            " --->  test_video_recordTestView_get_request_restrict of video_recordTestView: OK!"
+            " --->  test_video_recordTestView_get_request_restrict ",
+            "of video_recordTestView: OK!"
         )
 
     def test_video_recordTestView_upload_recordvideo(self):
@@ -1077,7 +1078,8 @@ class video_recordTestView(TestCase):
         vid = Video.objects.get(id=1)
         self.assertEqual(vid.title, "test upload")
         print(
-            " --->  test_video_recordTestView_upload_recordvideo of video_recordTestView: OK!"
+            " --->  test_video_recordTestView_upload_recordvideo ",
+            "of video_recordTestView: OK!"
         )
 
 
@@ -1422,7 +1424,8 @@ class VideoTestJSONView(TestCase):
         v.password = "password"
         v.save()
         self.client.logout()
-        response = self.client.get("/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        response = self.client.get("/video_xhr/%s/" % v.slug,
+        HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.json()['status'], 'ok')
         self.assertTrue(response.context["form"])
