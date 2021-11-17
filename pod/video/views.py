@@ -756,6 +756,11 @@ def video_xhr(request, slug, slug_private=None):
 
 @csrf_protect
 def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
+    video = get_object_or_404(Video, id=id, sites=get_current_site(request))
+    
+    if video.get_version != "O" and request.GET.get("redirect") != "false":
+        return redirect(video.get_default_version_link(slug_private))
+
     template_video = "videos/video.html"
     params = {"active_video_comment": ACTIVE_VIDEO_COMMENT}
     if request.GET.get("is_iframe"):
@@ -766,9 +771,6 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     except ValueError:
         raise SuspiciousOperation("Invalid video id")
 
-    video = get_object_or_404(Video, id=id, sites=get_current_site(request))
-    if video.get_version != "O" and request.GET.get("redirect") != "false":
-        return redirect(video.get_default_version_link(slug_private))
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
 
@@ -783,7 +785,7 @@ def render_video(
 ):
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
     """
-    # Do it only for video
+    # Do it only for video --> move code in video definition
     app_name = request.resolver_match.namespace.capitalize()[0] \
         if request.resolver_match.namespace else 'O'
 
