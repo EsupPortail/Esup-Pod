@@ -756,21 +756,21 @@ def video_xhr(request, slug, slug_private=None):
 
 @csrf_protect
 def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
+    try:
+        id = int(slug[: slug.find("-")])
+    except ValueError:
+        raise SuspiciousOperation("Invalid video id")
+
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
-    
+
     if video.get_version != "O" and request.GET.get("redirect") != "false":
-        return redirect(video.get_default_version_link(slug_private))
+        return redirect(video.get_default_version_link(slug_private)+"?"+request.META['QUERY_STRING'])
 
     template_video = "videos/video.html"
     params = {"active_video_comment": ACTIVE_VIDEO_COMMENT}
     if request.GET.get("is_iframe"):
         params = {}
         template_video = "videos/video-iframe.html"
-    try:
-        id = int(slug[: slug.find("-")])
-    except ValueError:
-        raise SuspiciousOperation("Invalid video id")
-
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
 
