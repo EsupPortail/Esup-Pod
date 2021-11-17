@@ -764,7 +764,11 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
 
     if video.get_version != "O" and request.GET.get("redirect") != "false":
-        return redirect(video.get_default_version_link(slug_private)+"?"+request.META['QUERY_STRING'])
+        return redirect(
+            video.get_default_version_link(slug_private)
+            + "?"
+            + request.META["QUERY_STRING"]
+        )
 
     template_video = "videos/video.html"
     params = {"active_video_comment": ACTIVE_VIDEO_COMMENT}
