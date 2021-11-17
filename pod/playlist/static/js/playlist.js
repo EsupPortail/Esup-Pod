@@ -161,21 +161,29 @@ $(window).ready(function () {
     }
   });
 
-  $(".playlist-item").on("click", function () {
-    var slug = $(this).attr("data-slug");
-    var jqxhr = $.ajax({
-      method: "POST",
-      url: "/playlist/" + slug + "/",
-      data: {
-        action: "add",
-        video: window.location.href.split("/")[4],
-        csrfmiddlewaretoken: $(this)
-          .parents(".dropdown-menu")
-          .find("input")
-          .val(),
-      },
-      dataType: "html",
-    });
+  $("#info-video").on("click", ".playlist-item", function () {
+    const vmslug = window.location.href.match(/video\/(\d{4}\-[^/?]*)/);
+    if (!vmslug) {
+      showalert(
+        gettext("The video can not be added from this page."),
+        "alert-danger"
+      );
+      return;
+    }
+    const slug = $(this).attr("data-slug"),
+      jqxhr = $.ajax({
+        method: "POST",
+        url: "/playlist/edit/" + slug + "/",
+        data: {
+          action: "add",
+          video: vmslug[1],
+          csrfmiddlewaretoken: $(this)
+            .parents(".dropdown-menu")
+            .find("input")
+            .val(),
+        },
+        dataType: "html",
+      });
     jqxhr.done(function (data) {
       response = JSON.parse(data);
       console.log(response.success);

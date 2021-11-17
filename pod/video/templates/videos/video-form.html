@@ -17,7 +17,7 @@
             <div class="list-group-item">
             <div class="form-group {% if field.field.required %}form-group-required {%endif%}" >
                 {{ field.errors }}
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label> 
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {{ field }}
                 {% if field.help_text %}
                 <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>

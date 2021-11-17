@@ -5,7 +5,7 @@
 {% load video_filters %}
 
 <!DOCTYPE html>
-<html itemscope itemtype="http://schema.org/MediaObject">
+<html itemscope itemtype="http: //schema.org/MediaObject">
 <head>
   <meta charset="utf-8">
 
@@ -20,143 +20,114 @@
 
   <script src="{% static 'js/videojs-info-controlbar.js' %}?ver={{VERSION}}"></script>
 
-  <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
-  <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}?ver={{VERSION}}"></script>
+  <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap-default.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
+  <script src="{% static 'bootstrap-4/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
   <script src="{% url 'javascript-catalog' %}"></script>
 
-  <style>
-    body{
-      margin: 0;
-      padding: 0;
-      background-color: black;
-      height: 100%;
-    }
-    /* Add extra classes for a variable width / height*/
-    #div-video-wrapper {
-      position: absolute;
-      display: block;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
-    #podvideoplayer {
-      margin-left: auto;
-      margin-right: auto;
-      /*border-radius: 1%;
-      border: 1% #ccc solid;*/
-      /*box-shadow: 0 0 20px rgba(50, 50, 50, 0.95);*/
-    }
-    #info-video {
-      position: relative;
-      margin-left: auto;
-      margin-right: auto;
-      border-radius: 1%;
-      border: 1px #ccc solid;
-      box-shadow: 0 0 10px rgba(50, 50, 50, 0.95);
-      padding: 1.25rem;
-      /*margin:5%;*/
-      background-color: rgba(250, 250, 250, 0.90) !important;
-      overflow: auto;
-      z-index: 1000;
-    }
-    .list-group-item {
-      background-color: rgba(250, 250, 250, 0.90) !important;
-    }
-    .close {
-      margin: 10px;
-      border: 1px solid black !important;
-      color: black !important;
-    }
-
-    /* Info button with current color */
-    .video-js .vjs-info-button{
-      background-color: #FFF;
-      mask: url("{% static 'feather-icons/icons/info.svg' %}?ver={{VERSION}}") no-repeat 50% 50%;
-      -webkit-mask: url("{% static 'feather-icons/icons/info.svg' %}?ver={{VERSION}}") no-repeat 50% 50%;
-    }
-    .video-js .vjs-info-button:hover,
-    .video-js .vjs-info-button:active,
-    .video-js .vjs-info-button:focus{
-      background-color:#FFF9;
-    }
-  </style>
+  <link rel="stylesheet" href="{% static 'css/video-iframe.css' %}?ver={{VERSION}}">
 
   <meta itemprop="duration" content="{{ video.duration }}" />
   <meta itemprop="thumbnailUrl" content="{{ video.get_thumbnail_url }}" />
-  <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
-  <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" />
+  <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}: //{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
+  <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}: //{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" />
 
 </head>
 <body>
-
-<div class="player_wrapper" id="div-video-wrapper">
+{% block page_content %}
+<div class="overlay" id="div-video-wrapper">
 
   {% block video-element %}
     {% include 'videos/video-element.html' %}
   {% endblock video-element %}
 
-  <div id="info-video" style="display:none" class="jumbotron">
-    <button type="button" class="close" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
+  <div id="info-video-wrapper" class="jumbotron">
+    <div class="iframe-header bg-dark text-white">
+      <h2 class="video-title">{{ video.title }}</h2>
+      <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div id="info-video">
     {% include 'videos/video-info.html'%}
+  </div>
   </div>
 
 </div>
 {% block more_script %}
 {% if not form %}
-  {% include 'videos/video-script.html'%}
-  <script>
-    // Responsive
-    var hdres = 1920/1080;
-    function resizeVideoJs(){
-      var width = document.getElementById(player.id()).parentElement.offsetWidth;
-      var height = document.getElementById(player.id()).parentElement.offsetHeight;
-      var ratio = width/height;
-      if(ratio<hdres) {
-        player.width(width);
-        player.height(width / hdres);
-        var margintop = parseInt((height - player.height())/2);
-        document.getElementById("podvideoplayer").style.marginTop = margintop+"px";
-      } else {
-        player.height(height);
-        player.width(height*hdres);
-        document.getElementById("podvideoplayer").style.marginTop = "0";
-      }
-      player.height(player.height()-7);
-      if(document.getElementById("info-video").style.display=="block") {
-        resizeInfoVideo();
-      }
-    }
-    resizeVideoJs(); // Initialize the function right now
-    window.onresize = resizeVideoJs; // Call the function on resize
-  </script>
-  <script>
-  var show_info_video = function() {
-    if(document.getElementById("info-video").style.display=="none") {
-      document.getElementById("info-video").style.display="block";
-      resizeInfoVideo();
-      player.pause();
+{% include 'videos/video-script.html'%}
+<script>
+  player.videoJsInfo();
+
+  function setOnPlayerPlayPause() {
+    player.on('play',function() {
+      isPlaying = true;
+      $('#div-video-wrapper').attr('class','')
+    })
+    player.on('pause',function() { isPlaying = false; })
+  }
+  $('#div-video-wrapper').append('<div id="overlay-footer"></div>')
+  player.ready(function() {
+    const btinfo = $('.vjs-info-button:eq(0)')[0]
+    $(btinfo).clone().appendTo('#overlay-footer')
+    $('#overlay-footer .vjs-info-button').click(function(){$(btinfo).click()})
+  })
+  $(document).on('click', '.close', function() { show_info_video() });
+
+  // Responsive
+  const hdres = 1920/1080;
+  let isPlaying = false, wasPlaying = false
+  setOnPlayerPlayPause()
+  function resizeInfo() {
+    const ihead = document.querySelector('#info-video-wrapper > .iframe-header')
+        , ph = player.el().offsetHeight
+        , pb = parseInt(player.el().style.top) + ph - 30
+        , pw = ph*hdres//$('#podvideoplayer .vjs-poster').width()
+    $('#info-video').css('top',ihead.offsetHeight+'px')
+    // console.log('MTop: '+player.el().style.top+'\nleft: '+player.el().offsetLeft+'\nwidth: '+player.el().offsetWidth+'\nheight: '+player.el().offsetHeight+' /// '+pb)
+    $('#info-video-wrapper').css({top:player.el().style.top, height:(ph - 30)+'px', left: '50%', 'margin-left': -(pw/2)+'px', width: pw+'px'})
+    $('#overlay-footer').css({'top':pb+'px'})
+  }
+  function resizeVideoJs(){
+    const width = document.getElementById(player.id()).parentElement.offsetWidth
+        , height = document.getElementById(player.id()).parentElement.offsetHeight
+        , ratio = width/height;
+    let margintop = 0
+    if(ratio<hdres) {
+      player.width(width);
+      player.height(width / hdres);
+      margintop = parseInt((height - player.height())/2);
+      document.getElementById("podvideoplayer").style.top = margintop+"px";
     } else {
-      document.getElementById("info-video").style.display="none";
-      player.play();
+      player.height(height);
+      player.width(height*hdres);
+      document.getElementById("podvideoplayer").style.top = "0";
+    }
+    resizeInfo()
+  }
+  resizeVideoJs(); // Initialize the function right now
+  window.onresize = resizeVideoJs; // Call the function on resize
+
+  var show_info_video = function() { // Call by videojs-controllbar
+    const hasStarted = $(player.el()).hasClass('vjs-has-started')
+        , isOverlayed = $('#div-video-wrapper').hasClass('overlay')
+        , isInfoOverlayed = isOverlayed && $('#div-video-wrapper').hasClass('info')
+        , cls = 'overlay info'
+    if(!isOverlayed) { // No overlay is displayed
+      wasPlaying = isPlaying;
+      player.pause();
+      $('#div-video-wrapper').attr('class', cls)
+      resizeInfo()
+    } else if(!isInfoOverlayed) { // One overlay is displayed but not Info
+      $('#div-video-wrapper').attr('class', cls)
+      resizeInfo()
+    } else { // Info overlay is displayed => close
+      $('#div-video-wrapper').attr('class', (hasStarted ? '' : 'vjs-not-started'))
+      if(wasPlaying) player.play();
     }
   }
-  function resizeInfoVideo() {
-    var height = document.getElementById("podvideoplayer").offsetHeight-30-player.controlBar.el_.offsetHeight;
-    var width = document.getElementById("podvideoplayer").offsetWidth-30;
-    var margintop = document.getElementById("podvideoplayer").offsetHeight-10;
-    document.getElementById("info-video").style.width = width+"px";
-    document.getElementById("info-video").style.height = height+"px";
-    document.getElementById("info-video").style.marginTop = "-"+margintop+"px";
-  }
-  $(document).on('click', '.close', function(){
-    document.getElementById("info-video").style.display="none";
-    player.play();
-  });
-  </script>
-  <script>
-    $('#video-meta .tab-pane').addClass('show').show();
+
+  $('#video-meta .tab-pane').addClass('show').show();
   </script>
 {% endif %}
 {% endblock more_script %}
@@ -165,4 +136,6 @@
   feather.replace({ class: 'align-bottom'});
 </script>
 {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
+{% endblock page_content %}
+</body>
 </html>

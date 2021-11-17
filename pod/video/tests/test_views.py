@@ -1050,7 +1050,8 @@ class video_recordTestView(TestCase):
         response = self.client.get("/video_record/")
         self.assertEqual(response.status_code, HTTPStatus.OK)
         print(
-            " --->  test_video_recordTestView_get_request_restrict of video_recordTestView: OK!"
+            " --->  test_video_recordTestView_get_request_restrict ",
+            "of video_recordTestView: OK!",
         )
 
     def test_video_recordTestView_upload_recordvideo(self):
@@ -1077,7 +1078,8 @@ class video_recordTestView(TestCase):
         vid = Video.objects.get(id=1)
         self.assertEqual(vid.title, "test upload")
         print(
-            " --->  test_video_recordTestView_upload_recordvideo of video_recordTestView: OK!"
+            " --->  test_video_recordTestView_upload_recordvideo ",
+            "of video_recordTestView: OK!",
         )
 
 
@@ -1307,3 +1309,155 @@ class VideoTestFiltersViews(TestCase):
 
     def tearDown(self):
         super(VideoTestFiltersViews, self).tearDown()
+
+
+class VideoTestJSONView(TestCase):
+    fixtures = [
+        "initial_data.json",
+    ]
+
+    def setUp(self):
+        # type, discipline, owner et tag
+        site = Site.objects.get(id=1)
+        user = User.objects.create(username="pod", password="pod1234pod")
+        user2 = User.objects.create(username="pod2", password="pod1234pod")
+        user3 = User.objects.create(username="pod3", password="pod1234pod")
+        AccessGroup.objects.create(code_name="group1", display_name="Group 1")
+        AccessGroup.objects.create(code_name="group2", display_name="Group 2")
+        AccessGroup.objects.create(code_name="group3", display_name="Group 3")
+        v0 = Video.objects.create(
+            title="Video1",
+            owner=user,
+            video="test1.mp4",
+            type=Type.objects.get(id=1),
+        )
+        v = Video.objects.create(
+            title="VideoWithAdditionalOwners",
+            owner=user,
+            video="test2.mp4",
+            type=Type.objects.get(id=1),
+            id=2,
+        )
+        v0.sites.add(site)
+        v.sites.add(site)
+        v.additional_owners.add(user2)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
+
+        user3.owner.sites.add(Site.objects.get_current())
+        user3.owner.save()
+
+    def test_video_get_request(self):
+        # csrf_client = Client(enforce_csrf_checks=True)
+        v = Video.objects.get(title="Video1")
+        self.assertEqual(v.is_draft, True)
+        # test draft
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.json()["status"], 302)
+        self.assertEqual(response.json()["error"], "access")
+        self.client = Client()
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.json()["status"], "ok")
+        self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], 403)
+        self.assertEqual(response.json()["error"], "deny")
+        # test normal
+        self.client.logout()
+        v.is_draft = False
+        v.save()
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], "ok")
+        # test restricted
+        v.is_restricted = True
+        v.save()
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], 302)
+        self.assertEqual(response.json()["error"], "access")
+        self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], "ok")
+        # test restricted group
+        v.restrict_access_to_groups.add(AccessGroup.objects.get(code_name="group2"))
+        v.restrict_access_to_groups.add(AccessGroup.objects.get(code_name="group3"))
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], 403)
+        self.assertEqual(response.json()["error"], "deny")
+        self.user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="group1"))
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], 403)
+        self.assertEqual(response.json()["error"], "deny")
+        self.user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="group2"))
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], "ok")
+        # TODO test with password (actualy not used in playlist)
+        """v.is_restricted = False
+        v.restrict_access_to_groups = []
+        v.password = "password"
+        v.save()
+        self.client.logout()
+        response = self.client.get("/video_xhr/%s/" % v.slug,
+        HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.json()['status'], 'ok')
+        self.assertTrue(response.context["form"])
+        """
+        # TODO test with hashkey (actualy not used in playlist)
+        """response = self.client.get("/video_xhr/%s/%s/" % (v.slug, v.get_hashkey()))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual("form" in response.context.keys(), False)
+        v.is_draft = True
+        v.save()
+        response = self.client.get("/video_xhr/%s/%s/" % (v.slug, v.get_hashkey()))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual("form" in response.context.keys(), False)"""
+        # Tests for additional owners
+        v = Video.objects.get(title="VideoWithAdditionalOwners")
+        self.client = Client()
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], "ok")
+        self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], "ok")
+        self.user = User.objects.get(username="pod3")
+        self.client.force_login(self.user)
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], 403)
+        self.assertEqual(response.json()["error"], "deny")

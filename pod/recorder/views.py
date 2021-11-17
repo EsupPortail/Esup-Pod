@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Esup-pod recorder views."""
 from __future__ import unicode_literals
 import os
 
@@ -55,6 +56,7 @@ DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-po
 
 USE_CAS = getattr(settings, "USE_CAS", False)
 USE_SHIB = getattr(settings, "USE_SHIB", False)
+LOGIN_URL = getattr(settings, "LOGIN_URL", "/authentication_login/")
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, "TITLE_SITE", "Pod")
 
 
@@ -174,8 +176,8 @@ def reformat_url_if_use_cas_or_shib(request, link_url):
     elif USE_SHIB:
         return "".join(
             [
-                request.build_absolute_uri("/"),
-                "authentication_login/?referrer=",
+                request.build_absolute_uri(LOGIN_URL),
+                "?referrer=",
                 urllib.parse.quote_plus(link_url),
             ]
         )
@@ -264,10 +266,10 @@ def recorder_notify(request):
             return HttpResponse("ok")
         else:
             return HttpResponse(
-                "nok : address_ip not valid or " "recorder not found in this site"
+                "nok : address_ip not valid or recorder not found in this site"
             )
     else:
-        return HttpResponse("nok : recordingPlace or mediapath or key are " "missing")
+        return HttpResponse("nok : recordingPlace or mediapath or key are missing")
 
 
 @csrf_protect

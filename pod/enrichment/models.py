@@ -149,15 +149,15 @@ class Enrichment(models.Model):
         verbose_name=_("Document"),
         null=True,
         blank=True,
-        help_text=_(u"Integrate an document (PDF, text, html)"),
+        help_text=_(u"Integrate a document (PDF, text, html)"),
     )
     richtext = RichTextField(_("Richtext"), config_name="complete", blank=True)
     weblink = models.URLField(_(u"Web link"), max_length=200, null=True, blank=True)
     embed = models.TextField(
-        _("Embed"),
+        _("Embed code"),
         null=True,
         blank=True,
-        help_text=_(u"Integrate an external source."),
+        help_text=_(u"Paste here a code from an external source to embed it."),
     )
 
     class Meta:

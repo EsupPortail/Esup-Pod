@@ -21,6 +21,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
 from django.conf import settings
 from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_GET
 from django.template import loader
 from django.core.mail import EmailMultiAlternatives
 from django.utils.translation import ugettext_lazy as _
@@ -82,9 +83,11 @@ MENUBAR_SHOW_STAFF_OWNERS_ONLY = getattr(
     settings, "MENUBAR_SHOW_STAFF_OWNERS_ONLY", False
 )
 HIDE_USER_TAB = getattr(settings, "HIDE_USER_TAB", False)
+LOGIN_URL = getattr(settings, "LOGIN_URL", "/authentication_login/")
 
 
 def in_maintenance():
+    """Return true if maintenance_mode is ON."""
     return (
         True if Configuration.objects.get(key="maintenance_mode").value == "1" else False
     )
@@ -157,6 +160,7 @@ def get_dest_email(owner, video, form_subject, request):
 
 @csrf_protect
 def contact_us(request):
+    """Handle "Contact us" form."""
     owner = (
         User.objects.get(id=request.GET.get("owner"))
         if (
@@ -283,9 +287,7 @@ def contact_us(request):
             msg.attach_alternative(html_content, "text/html")
             msg.send(fail_silently=False)
 
-            messages.add_message(
-                request, messages.INFO, _("Your message have been sent.")
-            )
+            messages.add_message(request, messages.INFO, _("Your message has been sent."))
 
             return redirect(form.cleaned_data["url_referrer"])
 
@@ -300,6 +302,7 @@ def contact_us(request):
 
 
 def remove_accents(input_str):
+    """Remove diacritics(accent, cedilla...) in input string."""
     nfkd_form = unicodedata.normalize("NFKD", input_str)
     only_ascii = nfkd_form.encode("ASCII", "ignore")
     return only_ascii
@@ -343,3 +346,14 @@ def user_autocomplete(request):
 def maintenance(request):
     text = Configuration.objects.get(key="maintenance_text_disabled").value
     return render(request, "maintenance.html", {"text": text})
+
+
+# Restrict to only GET requests
+@require_GET
+def robots_txt(request):
+    """Render robots.txt file to tell robots crawlers some pages they must not parse."""
+    lines = [
+        "User-Agent: *",
+        "Disallow: %s" % LOGIN_URL,
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain")

@@ -1,4 +1,4 @@
-{% load staticfiles i18n %}{% spaceless %}
+{% load staticfiles i18n custom_tags %}{% spaceless %}
 {% get_current_language as LANGUAGE_CODE %}
 {% get_available_languages as LANGUAGES %}
 {% get_language_info_list for LANGUAGES as languages %}
@@ -9,7 +9,7 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <i data-feather="menu" aria-hidden="true"></i>
     </button>
-    <a class="navbar-brand mr-0 mr-sm-1" href="/"><img src="{% static LOGO_SITE %}" height="48" alt="" role="presentation" loading="lazy"/><strong>{{ TITLE_SITE }}</strong></a>
+    <a class="navbar-brand mr-0 mr-sm-1" href="/"><img src="{% static LOGO_SITE %}" height="48" alt="" loading="lazy"/><strong>{{ TITLE_SITE }}</strong></a>
   </h1>
 
   <div class="collapse navbar-collapse navbar-items-pod" id="navbarSupportedContent">
@@ -23,12 +23,12 @@
           <button class="nav-link" data-toggle="modal" data-target=".chaines-modal-{{add_channel_tab.id}}"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {{ add_channel_tab.name }}</button>
         </li>
       {% endfor %}
-      
+
       {% endif %}
       {% if HIDE_USER_TAB == False and user.is_authenticated %}
-      <li class="nav-item" id="nav-users">
-        <button class="nav-link" data-toggle="modal" data-target=".users-modal"><i data-feather="users" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Users"%}</button>
-      </li>
+        <li class="nav-item" id="nav-users">
+          <button class="nav-link" data-toggle="modal" data-target=".users-modal"><i data-feather="users" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Users"%}</button>
+        </li>
       {% endif %}
       {% if HIDE_TYPES_TAB == False %}
         <li class="nav-item" id="nav-types">
@@ -111,7 +111,7 @@
             <a class="dropdown-item" href="{% url 'claim_record' %}" title="{% trans 'Claim a record' %}"><i data-feather="share" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'Claim a record' %}</a>
           {% endif %}
           {% if request.user.is_staff and USE_BBB %}
-			<a class="dropdown-item" href="{% url 'bbb:list_meeting' %}"><i data-feather="square" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My BigBlueButton records' %}</a>
+            <a class="dropdown-item" href="{% url 'bbb:list_meeting' %}"><i data-feather="square" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My BigBlueButton records' %}</a>
             {% if USE_BBB_LIVE %}
               <a class="dropdown-item" href="{% url 'bbb:live_list_meeting' %}"><i data-feather="zap" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'Perform a BigBlueButton live' %}</a>
             {% endif %}
@@ -122,14 +122,18 @@
             <i data-feather="log-out" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'Log out' %}</a>
         </div>
       </li>
-      {% else %}
+    {% else %}{# user not authenticated #}
+      {% get_setting "LOGIN_URL" "/authentication_login/" as LOGIN_URL %}
+      {% if request.path != LOGIN_URL %}
         <li class="nav-item dropdown login mr-2" id="nav-authentication">
-          <a class="btn btn-primary pl-2 pr-2 d-flex justify-content-center" href="{% url 'authentication_login' %}?referrer={{request.build_absolute_uri|urlencode}}" >
+          {% get_url_referrer request as url_referrer %}
+          <a class="btn btn-primary pl-2 pr-2 d-flex justify-content-center" href="{% url 'authentication_login' %}{{ url_referrer }}" >
             {% trans 'Log in' %}
           </a>
         </li>
       {% endif %}
-      {% if HIDE_LANGUAGE_SELECTOR == False %}
+    {% endif %}
+    {% if HIDE_LANGUAGE_SELECTOR == False %}
         <li class="nav-item d-none d-lg-block" id="nav-languagechoicelg">
           <div class="btn-group"><button type="button" class="btn btn-lang btn-lang-active my-2 mr-sm-2 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {{LANGUAGE_CODE}}
@@ -156,10 +160,10 @@
             <label class="theme-switch" for="checkbox-darkmode">
               <span class="sr-only">{% trans 'Dark mode' %}</span>
               <input type="checkbox" id="checkbox-darkmode" />
-              <div class="slider">
+              <span class="slider">
                 <i data-feather="sun"></i>
                 <i data-feather="moon"></i>
-              </div>
+              </span>
             </label>
           </li>
         {% endif %}{% if DYSLEXIAMODE_ENABLED == True %}
@@ -167,10 +171,10 @@
             <label class="dyslexia-switch" for="checkbox-dyslexia">
               <span class="sr-only">{% trans 'Dyslexia mode' %}</span>
               <input type="checkbox" id="checkbox-dyslexia" />
-              <div class="slider">
+              <span class="slider">
                  <i data-feather="eye-off"></i>
                  <i data-feather="eye"></i>
-              </div>
+              </span>
             </label>
           </li>
         {% endif %}
