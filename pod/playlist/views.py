@@ -138,8 +138,8 @@ def get_video_adv_note_list(request, video):
         filter = Q(status="2")
     return (
         AdvancedNotes.objects.filter(video=video)
-                             .filter(filter)
-                             .order_by("timestamp", "added_on")
+        .filter(filter)
+        .order_by("timestamp", "added_on")
     )
 
 

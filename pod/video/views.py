@@ -737,11 +737,19 @@ def video_xhr(request, slug, slug_private=None):
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
         elif request.user.is_authenticated():
-            response = {"status": HTTPStatus.FORBIDDEN, "error": "deny", "html_content": ""}
+            response = {
+                "status": HTTPStatus.FORBIDDEN,
+                "error": "deny",
+                "html_content": "",
+            }
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
         else:
-            response = {"status": HTTPStatus.FOUND, "error": "access", "url": settings.LOGIN_URL}
+            response = {
+                "status": HTTPStatus.FOUND,
+                "error": "access",
+                "url": settings.LOGIN_URL,
+            }
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
 

@@ -63,8 +63,8 @@ class PlaylistViewsTestCase(TestCase):
 
     def test_playlist_play(self):
         playlist = Playlist.objects.create(
-            title='Playlist 1',
-            owner=User.objects.get(username='test'),
+            title="Playlist 1",
+            owner=User.objects.get(username="test"),
             visible=True,
         )
         video1 = Video.objects.get(id=1)
@@ -79,7 +79,9 @@ class PlaylistViewsTestCase(TestCase):
         self.assertTemplateUsed(response, "playlist_player-iframe.html")
         playlist.visible = False
         playlist.save()
-        print('\n-> Check if unvisible playlist is not accessible by not authenticate user')
+        print(
+            "\n-> Check if unvisible playlist is not accessible by not authenticate user"
+        )
         response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 403)
         authenticate(username="test", password="hello")
@@ -87,7 +89,9 @@ class PlaylistViewsTestCase(TestCase):
         self.assertTrue(login)
         response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 200)
-        print('-> Check if unvisible playlist is not accessible by authenticate but not owner user')
+        print(
+            "-> Check if unvisible playlist is not accessible by authenticate but not owner user"
+        )
         authenticate(username="utest", password="uhello")
         login = self.client.login(username="utest", password="uhello")
         self.assertTrue(login)
