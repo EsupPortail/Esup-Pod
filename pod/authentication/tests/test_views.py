@@ -1,9 +1,12 @@
-"""
-Unit tests for authentication views
+"""Unit tests for authentication views.
+
+*  run with 'python manage.py test pod.authentication.tests.test_views'
 """
 from django.test import TestCase
 from django.test import Client
 from django.contrib.auth.models import User
+from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
 
 class authenticationViewsTestCase(TestCase):
@@ -13,7 +16,7 @@ class authenticationViewsTestCase(TestCase):
 
     def setUp(self):
         User.objects.create(username="pod", password="podv2")
-        print(" --->  SetUp of authenticationViewsTestCase : OK !")
+        print(" --->  SetUp of authenticationViewsTestCase: OK!")
 
     def test_authentication_login_gateway(self):
         self.client = Client()
@@ -27,26 +30,28 @@ class authenticationViewsTestCase(TestCase):
 
         print(
             "   --->  test_authentication_login_gateway \
-            of authenticationViewsTestCase : OK !"
+            of authenticationViewsTestCase: OK!"
         )
 
     def test_authentication_login(self):
+        """Test authentication login page."""
         self.client = Client()
         self.user = User.objects.get(username="pod")
+        login_url = settings.LOGIN_URL
 
         # User already authenticated
         self.client.force_login(self.user)
-        response = self.client.get("/authentication_login/")
+        response = self.client.get(login_url)
         self.assertRedirects(response, "/")
 
         # User not authenticated and CAS are valued to False
         self.client.logout()
-        response = self.client.get("/authentication_login/")
+        response = self.client.get(login_url)
         self.assertRedirects(response, "/accounts/login/?next=/")
 
         print(
             "   --->  test_authentication_login \
-            of authenticationViewsTestCase : OK !"
+            of authenticationViewsTestCase: OK!"
         )
 
     def test_authentication_logout(self):
@@ -57,7 +62,7 @@ class authenticationViewsTestCase(TestCase):
 
         print(
             "   --->  test_authentication_logout \
-            of authenticationViewsTestCase : OK !"
+            of authenticationViewsTestCase: OK!"
         )
 
     def test_userpicture(self):
@@ -89,9 +94,9 @@ class authenticationViewsTestCase(TestCase):
         messages = list(response.wsgi_request._messages)
         self.assertEqual(len(messages), 1)
         self.assertEqual(
-            str(messages[0]), "One or more errors have been found in the form."
+            str(messages[0]), _("One or more errors have been found in the form.")
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "userpicture/userpicture.html")
 
-        print("   --->  test_userpicture of authenticationViewsTestCase : OK !")
+        print("   --->  test_userpicture of authenticationViewsTestCase: OK!")

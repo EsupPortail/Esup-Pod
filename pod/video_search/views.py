@@ -66,19 +66,21 @@ def get_remove_selected_facet_link(request, selected_facets):
 
 
 def get_result_aggregations(result, selected_facets):
+    """Return aggregation results, without selected_facets."""
     for facet in selected_facets:
         if ":" in facet:
             term = facet.split(":")[0]
             agg_term = term.replace(".raw", "")
+            if agg_term == "type.slug":
+                agg_term = "type_title"
+            elif agg_term == "tags.slug":
+                agg_term = "tags_name"
+            elif agg_term == "disciplines.slug":
+                agg_term = "disciplines_title"
+
             if result["aggregations"].get(agg_term):
                 del result["aggregations"][agg_term]
-            else:
-                if agg_term == "type.slug":
-                    del result["aggregations"]["type_title"]
-                if agg_term == "tags.slug" and ("tags_name" in result["aggregations"]):
-                    del result["aggregations"]["tags_name"]
-                if agg_term == "disciplines.slug":
-                    del result["aggregations"]["disciplines_title"]
+
     return result["aggregations"]
 
 

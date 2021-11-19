@@ -6,7 +6,8 @@ from .models import User
 
 
 def get_owners(search, limit, offset):
-    """Return owners filtered by GET parameters 'q'
+    """Return owners filtered by GET parameters 'q'.
+
         With limit and offset
 
     Args:

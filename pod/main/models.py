@@ -178,5 +178,5 @@ class AdditionalChannelTab(models.Model):
         return "%s" % (self.name)
 
     class Meta:
-        verbose_name = _("Additional Channels Tab")
-        verbose_name_plural = _("Additional Channel Tabs")
+        verbose_name = _("Additional channels Tab")
+        verbose_name_plural = _("Additional channel Tabs")

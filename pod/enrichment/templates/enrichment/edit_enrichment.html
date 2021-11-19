@@ -32,19 +32,9 @@
 
 {% block video-element %}
 <div id="page-video">
-  <video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
-  poster="{{video.get_thumbnail_url}}" data-setup='{}'>
-    <p class="vjs-no-js">
-      {%blocktrans%}To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>{%endblocktrans%}
-    </p>
-
-    <track kind="metadata" src="{{video.enrichmentvtt.src.file.url}}?{% now "U" %}" label="enrichment">
-
-    {% for track in video.track_set.all%}
-    <track id= "track_{{ track.id }}" kind="{{ track.kind }}" src="{{ track.src.url }}?{% now "U" %}" srclang="{{ track.lang }}" label="{{track.get_label_lang}}">
-    {%endfor%}
-  </video>
+  {% include 'enrichment/video-element-enrichment.html' %}
   <hr/>
+
   <div id="info_video">
     <div id="list_enrich">
       {% include 'enrichment/list_enrichment.html' %}
@@ -75,11 +65,11 @@
 {% endblock video-element %}
 
 {% block page_aside %}
-<div class="card card-body p-2 mt-1" id="card-enrichmenteditinformations">
-  <h5 class="card-title pl-2">
-    <i data-feather="info"></i>&nbsp;{% trans 'Informations' %}
+<div class="card mt-1" id="card-enrichmenteditinformations">
+  <h5 class="card-header card-title pl-2">
+    <i data-feather="info"></i>&nbsp;{% trans 'Editing enrichments' %}
   </h5>
-  <div class="card-text small">
+  <div class="card-body card-text small">
     {% if video.owner == request.user or request.user.is_superuser or perms.enrichment.change_enrichment or request.user in video.additional_owners.all %}
       <p><a href="{% url 'enrichment:group_enrichment' slug=video.slug %}" title="{% trans 'You can specify the group(s) of users who can access this page' %}"><i data-feather="users"></i>&nbsp;{% trans 'You can specify the group(s) of users who can access this page' %}</a></p>
     {% endif %}

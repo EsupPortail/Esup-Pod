@@ -1,6 +1,6 @@
 /* Main */
-.vjs-poster {z-index:2}
-.video-js .vjs-tech {padding:0 10px 0 10px}
+.vjs-poster {z-index: 2}
+.video-js .vjs-tech {padding: 0 10px 0 10px}
 .vjs-slides {
   display: block;
 }
@@ -10,7 +10,7 @@
   width: 100%;
   height: 100%;
   bottom: 0;
-  padding:0;
+  padding: 0;
 }
 .video-slides>li {
   background-size: contain;
@@ -24,7 +24,7 @@
   bottom: 15%;
   width: 50%;
   padding: 0;
-  border-right:8px solid transparent;/*make margin for contain background-attachment*/
+  border-right: 8px solid transparent;/*make margin for contain background-attachment*/
   /*padding-bottom: 35px;*//*Works but maybe not usable because plyer menu is hidden duriong playing */
 }
 .video-slides>li>div {
@@ -32,6 +32,9 @@
   background-color: #fff;
   color: #000;
   padding: 1em;
+}
+.video-slides>li>.slide_embed {
+  overflow: auto;
 }
 .video-slides>li>img {
   max-width: 100%;
@@ -41,20 +44,20 @@
 
 /********* Default *********/
 .vjs-tech {
-  width:50% !important;
-  height:100%;
+  width: 50% !important;
+  height: 100%;
 }
 
 /********* Pip slide -> pip-slide *********/
 .vjs-tech.pip-slide {
-  width:80% !important;
-  height:100%;
+  width: 80% !important;
+  height: 100%;
 }
 .video-slides li.pip-slide {
   left: 80% !important;
   top: 35% !important;
   bottom: 35% !important;
-  width:20%;
+  width: 20%;
 }
 /*.pip-slide img {
   height: 30% !important;
@@ -71,8 +74,8 @@
 
 /********* Pip video -> big-slides *********/
 .vjs-tech.big-slide {
-  width:20% !important;
-  height:100%;
+  width: 20% !important;
+  height: 100%;
 }
 .video-slides li.big-slide {
   position: relative !important;
@@ -175,3 +178,13 @@
   position: absolute;
   background-color: #ffe800;
 }
+
+.vjs-big-play-button {z-index: 2}
+.vjs-control-bar {z-index: 3}
+
+/* Enrich types colors */
+.enrich_image{color:var(--purple)}
+.enrich_document{color:var(--orange)}
+.enrich_richtext{color:var(--blue)}
+.enrich_weblink{color:var(--red)}
+.enrich_embed{color:var(--green)}

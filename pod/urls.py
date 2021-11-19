@@ -1,6 +1,4 @@
-"""
-pod_project URL Configuration
-"""
+"""Esup-pod URL configuration."""
 
 from django.conf import settings
 from django.conf.urls import url
@@ -29,6 +27,7 @@ from pod.video.views import my_channels
 from pod.video.views import channel_edit
 from pod.video.views import theme_edit
 from pod.video.views import video_notes
+from pod.video.views import video_xhr
 from pod.video.views import video_count, video_version
 from pod.video.views import video_oembed
 from pod.video.views import stats_view
@@ -45,6 +44,7 @@ from pod.main.views import (
     download_file,
     user_autocomplete,
     maintenance,
+    robots_txt,
 )
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
@@ -68,6 +68,7 @@ if USE_CAS:
 
 
 urlpatterns = [
+    url("robots.txt", robots_txt),
     url(r"^admin/", admin.site.urls),
     # Translation
     url(r"^i18n/", include("django.conf.urls.i18n")),
@@ -130,6 +131,12 @@ urlpatterns = [
     # url(r'^video_collaborate/(?P<slug>[\-\d\w]+)/$',
     #    video_collaborate,
     #    name='video_collaborate'),
+    url(r"^video_xhr/(?P<slug>[\-\d\w]+)/$", video_xhr, name="video_xhr"),
+    url(
+        r"^video_xhr/(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$",
+        video_xhr,
+        name="video_xhr",
+    ),
     url(
         "api/chunked_upload_complete/",
         PodChunkedUploadCompleteView.as_view(),

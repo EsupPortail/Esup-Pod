@@ -29,14 +29,14 @@
   display: none;
 }
 
-.feather-eye {
+#dyslexia-switch-wrapper .feather-eye {
   opacity: 0;
   left: 5px;
   bottom: 0;
   color: var(--white) !important;
   transform: translateX(4px);
 }
-.feather-eye-off {
+#dyslexia-switch-wrapper .feather-eye-off {
   opacity: 1;
   right: 5px;
   bottom: 0;

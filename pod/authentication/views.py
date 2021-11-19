@@ -1,3 +1,4 @@
+"""Authentication views."""
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import redirect
@@ -49,10 +50,12 @@ if CAS_GATEWAY:
 else:
 
     def authentication_login_gateway(request):
+        """Login gateway when CAS_GATEWAY is not defined."""
         return HttpResponse("You must set CAS_GATEWAY to True to use this view")
 
 
 def authentication_login(request):
+    """Handle authentication login attempt."""
     referrer = request.GET["referrer"] if request.GET.get("referrer") else "/"
     host = (
         "https://%s" % request.get_host()
@@ -66,7 +69,7 @@ def authentication_login(request):
         return redirect(referrer)
     if USE_CAS and CAS_GATEWAY:
         url = reverse("authentication_login_gateway")
-        url += "?%snext=%s" % (iframe_param, referrer)
+        url += "?%snext=%s" % (iframe_param, referrer.replace("&", "%26"))
         return redirect(url)
     elif USE_CAS or USE_SHIB or USE_OIDC:
         return render(
@@ -83,17 +86,19 @@ def authentication_login(request):
         )
     else:
         url = reverse("local-login")
-        url += "?%snext=%s" % (iframe_param, referrer)
+        url += "?%snext=%s" % (iframe_param, referrer.replace("&", "%26"))
         return redirect(url)
 
 
 def local_logout(request):
+    """Logout a user connected locally."""
     url = reverse("local-logout")
     url += "?next=/"
     return redirect(url)
 
 
 def authentication_logout(request):
+    """Logout a user."""
     if request.user.is_anonymous():
         return local_logout(request)
     if request.user.owner.auth_type == "CAS":
