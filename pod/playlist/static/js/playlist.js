@@ -162,7 +162,9 @@ $(window).ready(function () {
   });
 
   $("#info-video").on("click", ".playlist-item", function () {
-    const vmslug = window.location.href.match(/video\/(\d{4}\-[^/?]*)/);
+    const url = window.location.href;
+    const regex = new RegExp('(.*)/video/\\d+-(.*)/');
+    const vmslug = regex.test(url);
     if (!vmslug) {
       showalert(
         gettext("The video can not be added from this page."),
