@@ -17,7 +17,7 @@
 				<div class="btn-group">
 				<a href="{% url 'playlist_edit' slug=playlist.slug %}" class="btn btn-sm btn-primary">{% trans 'Edit' %}</a>
 				&nbsp;
-				{% if playlist.first.video.slug %}
+				{% if playlist.videos %}
 				<a href="{% url 'playlist' slug=playlist.slug %}" class="btn btn-sm btn-primary">{% trans 'Launch' %}</a>
 				{% endif %}
 			</div>
