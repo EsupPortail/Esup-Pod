@@ -129,6 +129,15 @@
 
 {% block page_aside %}
 
+{% if request.user.is_superuser %}
+  <div class="card mt-1" id="card-managevideo">
+    <h5 class="card-header card-title pl-2"><i data-feather="settings"></i>&nbsp;{% trans "Manage live"%}</h5>
+    <div class="card-body card-text text-center">
+      <a href="{% url 'admin:live_broadcaster_change' broadcaster.id %}" title="{% trans "Edit the live"%}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
+        <i data-feather="edit"></i></a>
+    </div>
+  </div>
+{% endif %}
 
 <div class="card card-body p-2 mt-1" id="card-livebuilding">
 <h5 class="card-title pl-2">

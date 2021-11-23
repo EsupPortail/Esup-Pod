@@ -90,11 +90,13 @@
       <ul class="list-group">
       {% for playlist in request.user.playlist_set.all %}
         {% if video in playlist.videos %}
-          <li class="dropdown-item disabled py-0" data-slug="{{playlist.slug}}">{{playlist.title}}
-            <i data-feather="check"></i>
+          <li class="dropdown-item py-0" >
+            <a href="#" data-slug="{{playlist.slug}}" class="btn disabled p-0 m-0">{{playlist.title}}<i data-feather="check"></i></a>
           </li>
         {% else %}
-          <li class="dropdown-item playlist-item py-0" data-slug="{{playlist.slug}}">{{playlist.title}}</li>
+          <li class="dropdown-item py-0" >
+            <a href="#" data-slug="{{playlist.slug}}" class="btn playlist-item p-0 m-0">{{playlist.title}}</a>
+          </li>
         {% endif %}
       {% endfor %}
       </ul>
