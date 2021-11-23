@@ -1068,7 +1068,7 @@ msgstr "sous-titres"
 
 #: pod/completion/models.py:44
 msgid "captions"
-msgstr "sous titres"
+msgstr "légendes"
 
 #: pod/completion/models.py:59
 msgid "lastname / firstname"
