@@ -82,6 +82,7 @@ class ChannelTestView(TestCase):
             "has_more_themes": False,
             "has_more_videos": False,
             "videos": [self.v],
+            "count_videos": 1,
             "count_themes": 1,
             "theme": None,
             "channel": self.c,
@@ -126,6 +127,7 @@ class ChannelTestView(TestCase):
         )
         expected.pop("next_videos", None)
         expected.pop("has_more_videos", None)
+        expected.pop("count_videos", None)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertCountEqual(expected, response.json())
 
@@ -138,6 +140,7 @@ class ChannelTestView(TestCase):
         )
         expected["next_videos"] = None
         expected["has_more_videos"] = False
+        expected["count_videos"] = 1
 
         expected.pop("next", None)
         expected.pop("previous", None)
