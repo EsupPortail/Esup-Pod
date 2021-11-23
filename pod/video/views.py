@@ -193,6 +193,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         response = {
             **response,
             "videos": list(videos),
+            "count_videos": count,
             "has_more_videos": (offset + limit) < count,
         }
 
