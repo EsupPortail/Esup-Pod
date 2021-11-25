@@ -3,29 +3,38 @@
 {% load staticfiles %}
 
 {% block page_extra_head %}
-  {% include 'videos/video-header.html' %}
-  <link id="enrichment_style_id" href="{% static 'css/videojs-slides.css' %}?ver={{VERSION}}" rel="stylesheet">
-  <script id="enrichment_script_id" src="{% static 'js/videojs-slides.js' %}?ver={{VERSION}}"></script>
+{% include 'videos/video-header.html' %}
+<style type="text/css">
+#card-enrichmentinformations.off {display:none}
+#card-playlist {max-height:35em;/* min-height:17em*/}
+</style>
+<link href="{% static 'css/videojs-playlist.css' %}?ver={{VERSION}}" rel="stylesheet">
+<script src="{% static 'js/playlist_player.js' %}?ver={{VERSION}}"></script>
 {% endblock page_extra_head %}
 
-{% block breadcrumbs %}{{ block.super }}
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+<li class="breadcrumb-item" aria-current="page"><a href="{% url "my_playlists"%}" title="{% trans 'Playlist' %}">{% trans 'Playlist' %}</a></li>
+<li class="breadcrumb-item" aria-current="page">{{playlist.title|capfirst|truncatechars:45}}</li>
+<li class="breadcrumb-item active playlist-video-title" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
 {% endblock %}
 
 {% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
 
+{% block page_content %}
 {% block video-element %}
-
 {% if form %}
     {% include 'videos/video-form.html' %}
 {% else %}
-  {% include 'enrichment/video-element-enrichment.html' %}
-  <div id="info-video">{% include 'videos/video-all-info.html' with third_app=True %}</div>
+  <video id="podvideoplayer"></video>
+  <div id="info-video"></div>
 {%endif%}
-
 {% endblock video-element %}
+{% endblock page_content %}
 
 {% block page_aside %}
-  <div class="card mt-1" id="card-enrichmentinformations">
+{% include 'playlist/playlist_video_list.html' %}
+  <div class="card mt-1{% if not video.enrichment_set.all %} off{% endif %}" id="card-enrichmentinformations">
     <h5 class="card-header card-title pl-2">
       <i data-feather="info"></i>&nbsp;{% trans 'Informations' %}
     </h5>
@@ -48,5 +57,4 @@
 
 {% block more_script %}
 {{block.super}}
-{% include 'enrichment/video_enrichment-script.html' %}
 {% endblock more_script %}

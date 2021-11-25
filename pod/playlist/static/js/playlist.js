@@ -161,21 +161,41 @@ $(window).ready(function () {
     }
   });
 
-  $(".playlist-item").on("click", function () {
-    var slug = $(this).attr("data-slug");
-    var jqxhr = $.ajax({
-      method: "POST",
-      url: "/playlist/" + slug + "/",
-      data: {
-        action: "add",
-        video: window.location.href.split("/")[4],
-        csrfmiddlewaretoken: $(this)
-          .parents(".dropdown-menu")
-          .find("input")
-          .val(),
-      },
-      dataType: "html",
-    });
+  $("#info-video").on("click", ".playlist-item", function (e) {
+    e.preventDefault();
+    const url = window.location.href;
+    const regex = new RegExp('(.*)/video/(\\d+-(.*))/');
+    const checkslug = regex.test(url);
+    const foundslug = url.match(regex);
+    if (!checkslug) {
+      showalert(
+        gettext("The video can not be added from this page."),
+        "alert-danger"
+      );
+      return;
+    }
+    if (!foundslug[2]) {
+      showalert(
+        gettext("The video slug not found."),
+        "alert-danger"
+      );
+      return;
+    }
+    const slug = $(this).attr("data-slug");
+    const link = $(this);
+    const jqxhr = $.ajax({
+        method: "POST",
+        url: "/playlist/edit/" + slug + "/",
+        data: {
+          action: "add",
+          video: foundslug[2],
+          csrfmiddlewaretoken: $(this)
+            .parents(".dropdown-menu")
+            .find("input")
+            .val(),
+        },
+        dataType: "html",
+      });
     jqxhr.done(function (data) {
       response = JSON.parse(data);
       console.log(response.success);
@@ -187,7 +207,8 @@ $(window).ready(function () {
       } else {
         if (response.success) {
           showalert(response.success, "alert-success");
-          window.location.reload();
+          //window.location.reload(); //hide link playlist
+          link.addClass("disabled").removeClass("playlist-item").append('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check align-bottom"><polyline points="20 6 9 17 4 12"></polyline></svg>')
         } else {
           showalert(response.fail, "alert-danger");
         }

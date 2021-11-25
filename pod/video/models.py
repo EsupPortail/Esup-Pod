@@ -1099,6 +1099,81 @@ class Video(models.Model):
             )
             return json.dumps({})
 
+    def get_json_to_video_view(video, other_data_to_dump):
+        try:
+            video_src = {}
+            if video.is_video:
+                video_src["mp4"] = video.get_video_mp4_json()
+                m3u8 = video.get_playlist_master()
+                if m3u8:
+                    video_src["m3u8"] = {
+                        "src": m3u8.source_file.url,
+                        "type": m3u8.encoding_format,
+                    }
+            else:
+                m4a = video.get_video_m4a()
+                video_src["m4a"] = {
+                    "src": m4a.source_file.url,
+                    "type": m4a.encoding_format,
+                }
+
+            list_track = list(
+                map(
+                    lambda t: {
+                        "id": t.id,
+                        "kind": t.kind,
+                        "src": t.src.file.url,
+                        "srclang": t.lang,
+                        "label": t.get_label_lang(),
+                    },
+                    video.track_set.all(),
+                ),
+            )
+            list_overlay = list(
+                map(
+                    lambda o: {
+                        "start": o.time_start,
+                        "end": o.time_end,
+                        "content": o.content,
+                        "align": o.position,
+                        "showBackground": o.background,
+                    },
+                    video.overlay_set.all(),
+                ),
+            )
+            list_chapter = list(
+                map(
+                    lambda c: {"time_start": c.time_start, "id": c.id, "title": c.title},
+                    video.chapter_set.all(),
+                ),
+            )
+            overview = video.overview.url if (video.overview) else ""
+            data_to_dump = {
+                "status": "ok",
+                "version": video.get_version,
+                "slug": video.slug,
+                "title": video.title,
+                "tracks": list_track,
+                "is_video": video.is_video,
+                "src": video_src,
+                "is_360": video.is_360,
+                "thumbnail": video.get_thumbnail_url(),
+                "overview": overview,
+                "overlay": list_overlay,
+                "chapter": list_chapter,
+            }
+            if hasattr(video, "enrichmentvtt"):
+                data_to_dump["enrichtracksrc"] = video.enrichmentvtt.src.file.url
+            for k in other_data_to_dump:
+                data_to_dump[k] = other_data_to_dump[k]
+            return json.dumps(data_to_dump)
+        except ObjectDoesNotExist as e:
+            logger.error(
+                "An error occured during get_json_to_video_view"
+                " for video %s: %s" % (video.id, e)
+            )
+            return json.dumps({})
+
     def get_main_lang(self):
         return "%s" % LANG_CHOICES_DICT[self.main_lang]
 

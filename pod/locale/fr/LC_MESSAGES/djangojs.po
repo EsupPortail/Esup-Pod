@@ -55,6 +55,10 @@ msgstr "Le formulaire ne peut pas être récupéré."
 msgid "You are no longer authenticated. Please log in again."
 msgstr "Vous n'êtes plus authentifié. Veuillez vous reconnectez."
 
+#: pod/playlist/static/js/playlist.js:168
+msgid "The video can not be added from this page."
+msgstr "La vidéo ne peut être ajoutée depuis cette page"
+
 #: pod/chapter/static/js/chapters.js:199
 #: pod/enrichment/static/js/enrichment.js:193 pod/main/static/js/main.js:415
 #: pod/main/static/js/main.js:501

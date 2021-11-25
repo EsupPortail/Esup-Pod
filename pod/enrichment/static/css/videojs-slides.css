@@ -179,10 +179,12 @@
   background-color: #ffe800;
 }
 
+.vjs-big-play-button {z-index: 2}
+.vjs-control-bar {z-index: 3}
+
 /* Enrich types colors */
 .enrich_image{color:var(--purple)}
 .enrich_document{color:var(--orange)}
 .enrich_richtext{color:var(--blue)}
 .enrich_weblink{color:var(--red)}
 .enrich_embed{color:var(--green)}
-

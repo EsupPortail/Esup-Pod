@@ -52,11 +52,11 @@ from django.core.exceptions import ObjectDoesNotExist
 import json
 import re
 import pandas
+from http import HTTPStatus
 from datetime import date
 from chunked_upload.models import ChunkedUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 
-from pod.playlist.models import Playlist
 from django.db import transaction
 from django.db import IntegrityError
 
@@ -193,6 +193,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         response = {
             **response,
             "videos": list(videos),
+            "count_videos": count,
             "has_more_videos": (offset + limit) < count,
         }
 
@@ -668,21 +669,113 @@ def get_video_access(request, video, slug_private):
         return True
 
 
+def video_json_response(request, video):
+    template_info = (
+        "videos/video-info.html"
+        if request.GET.get("is_iframe") and request.GET.get("is_iframe") == "true"
+        else "videos/video-all-info.html"
+    )
+    template_video_element = "videos/video-element.html"
+    rendered_info = render_to_string(template_info, {"video": video}, request)
+    rendered_video = render_to_string(template_video_element, {"video": video}, request)
+    listNotes = get_adv_note_list(request, video)
+    rendered_note = render_to_string(
+        "videos/video_notes.html", {"video": video, "listNotes": listNotes}, request
+    )
+    return video.get_json_to_video_view(
+        {
+            "html_video_info": rendered_info,
+            "html_video_element": rendered_video,
+            "html_video_note": rendered_note,
+        }
+    )
+
+
+@ajax_required
+@csrf_protect
+def video_xhr(request, slug, slug_private=None):
+    video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
+    is_password_protected = video.password is not None and video.password != ""
+    show_page = get_video_access(request, video, slug_private)
+    if (
+        (show_page and not is_password_protected)
+        or (
+            show_page
+            and is_password_protected
+            and request.POST.get("password")
+            and request.POST.get("password") == video.password
+        )
+        or (slug_private and slug_private == video.get_hashkey())
+        or request.user == video.owner
+        or request.user.is_superuser
+        or request.user.has_perm("video.change_video")
+        or (request.user in video.additional_owners.all())
+    ):
+        data = video_json_response(request, video)
+        return HttpResponse(data, content_type="application/json")
+    else:
+        is_draft = video.is_draft
+        is_restricted = video.is_restricted
+        is_restricted_to_group = video.restrict_access_to_groups.all().exists()
+        is_access_protected = is_draft or is_restricted or is_restricted_to_group
+        if is_password_protected and (
+            not is_access_protected or (is_access_protected and show_page)
+        ):  # Should not go here has video with password are not allowed in playlist
+            # (but should work if need...)
+            form = (
+                VideoPasswordForm(request.POST) if request.POST else VideoPasswordForm()
+            )
+            rendered = render_to_string(
+                "videos/video-form.html",
+                {"video": video, "form": form},
+                request,
+            )
+            response = {
+                "status": HTTPStatus.FORBIDDEN,
+                "error": "password",
+                "html_content": rendered,
+            }
+            data = json.dumps(response)
+            return HttpResponse(data, content_type="application/json")
+        elif request.user.is_authenticated():
+            response = {
+                "status": HTTPStatus.FORBIDDEN,
+                "error": "deny",
+                "html_content": "",
+            }
+            data = json.dumps(response)
+            return HttpResponse(data, content_type="application/json")
+        else:
+            response = {
+                "status": HTTPStatus.FOUND,
+                "error": "access",
+                "url": settings.LOGIN_URL,
+            }
+            data = json.dumps(response)
+            return HttpResponse(data, content_type="application/json")
+
+
 @csrf_protect
 def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
-    template_video = "videos/video.html"
-    params = {"active_video_comment": ACTIVE_VIDEO_COMMENT}
-    if request.GET.get("is_iframe"):
-        params = {}
-        template_video = "videos/video-iframe.html"
     try:
         id = int(slug[: slug.find("-")])
     except ValueError:
         raise SuspiciousOperation("Invalid video id")
 
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
+
     if video.get_version != "O" and request.GET.get("redirect") != "false":
-        return redirect(video.get_default_version_link(slug_private))
+        return redirect(
+            video.get_default_version_link(slug_private)
+            + "?"
+            + request.META["QUERY_STRING"]
+        )
+
+    template_video = "videos/video.html"
+    params = {"active_video_comment": ACTIVE_VIDEO_COMMENT}
+    if request.GET.get("is_iframe"):
+        params = {}
+        template_video = "videos/video-iframe.html"
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
 
@@ -697,7 +790,7 @@ def render_video(
 ):
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
     """
-    # Do it only for video
+    # Do it only for video --> move code in video definition
     app_name = request.resolver_match.namespace.capitalize()[0] \
         if request.resolver_match.namespace else 'O'
 
@@ -714,20 +807,6 @@ def render_video(
         else None
     )
     theme = get_object_or_404(Theme, channel=channel, slug=slug_t) if slug_t else None
-    playlist = (
-        get_object_or_404(Playlist, slug=request.GET["playlist"])
-        if request.GET.get("playlist")
-        else None
-    )
-    if playlist and request.user != playlist.owner and not playlist.visible:
-        # not (request.user.is_superuser or request.user.has_perm(
-        #        "video.change_theme")
-        messages.add_message(
-            request,
-            messages.ERROR,
-            _("You don't have access to this playlist."),
-        )
-        raise PermissionDenied
 
     is_password_protected = video.password is not None and video.password != ""
 
@@ -755,7 +834,6 @@ def render_video(
                 "video": video,
                 "theme": theme,
                 "listNotes": listNotes,
-                "playlist": playlist,
                 **more_data,
             },
         )
@@ -785,7 +863,6 @@ def render_video(
                     "video": video,
                     "theme": theme,
                     "form": form,
-                    "playlist": playlist,
                     "listNotes": listNotes,
                     **more_data,
                 },

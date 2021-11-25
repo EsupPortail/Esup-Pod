@@ -39,3 +39,13 @@ WARN_DEADLINES = [60, 30, 7]
 USE_BBB = True
 USE_VIDEO_RECORD = True
 ORGANIZE_BY_THEME = True
+SHIBBOLETH_STAFF_ALLOWED_DOMAINS = ()
+SHIBBOLETH_ATTRIBUTE_MAP = {
+    "REMOTE_USER": (True, "username"),
+    "Shibboleth-givenName": (True, "first_name"),
+    "Shibboleth-sn": (False, "last_name"),
+    "Shibboleth-mail": (False, "email"),
+    "Shibboleth-primary-affiliation": (False, "affiliation"),
+    "Shibboleth-unscoped-affiliation": (False, "affiliations"),
+}
+REMOTE_USER_HEADER = "REMOTE_USER"
