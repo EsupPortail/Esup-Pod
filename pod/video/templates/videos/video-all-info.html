@@ -1,10 +1,10 @@
 {% load i18n %}
 {% load tagging_tags %}
-<h1 class="pt-2">
+<h1 class="pt-2 h2">
   {% if video.licence %} {% include "videos/video_licencebox.html" %}{% endif %} {{video.title|capfirst}}
   {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
   <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans 'Report the video'%}" >
-    <i data-feather="alert-octagon"></i>
+    <i data-feather="alert-octagon" aria-hidden="true"></i>
   </a>
 </h1>
 
@@ -19,7 +19,7 @@
     {% if video.description or tag_list or video.is_360 %}
     <li class="nav-item">
       <a class="nav-link active show" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-selected="true" title="{% trans 'Summary' %}">
-        <i data-feather="align-justify"></i>&nbsp;<span class="sr-only">{% trans 'Summary' %}</span>
+        <i data-feather="align-justify" aria-hidden="true"></i>
       </a>
     </li>
     {% endif %}
@@ -30,26 +30,26 @@
         {% else %}
           class="nav-link" aria-selected="false"
         {% endif %}
-      ><i data-feather="info"></i><span class="sr-only">{% trans 'Infos' %}</span></a>
+      ><i data-feather="info" aria-hidden="true"></i></a>
     </li>
     {% if video.allow_downloading or video.document_set.all %}
       <li class="nav-item">
         <a class="nav-link" id="downloads-tab" data-toggle="tab" href="#downloads" role="tab" aria-controls="downloads" aria-selected="false" title="{% trans 'Downloads' %}">
-          <i data-feather="download"></i><span class="sr-only">{% trans 'Downloads' %}</span>
+          <i data-feather="download" aria-hidden="true"></i>
         </a>
       </li>
     {% endif %}
     {% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all %}
       <li class="nav-item">
         <a class="nav-link" id="share-tab" data-toggle="tab" href="#share" role="tab" aria-controls="share" aria-selected="false" title="{% trans 'Embed/Share' %}">
-          <i data-feather="share-2"></i><span class="sr-only">{% trans 'Embed/Share' %}</span>
+          <i data-feather="share-2" aria-hidden="true"></i>
         </a>
       </li>
     {%endif%}
     {% if third_app %}
     <li class="nav-item dropdown" id="list_third_apps">
       <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
-        <i data-feather="layers"></i>&nbsp;<span class="sr-only">{% trans 'Other versions' %}</span>
+        <i data-feather="layers" aria-hidden="true"></i>
       </a>
       <div class="dropdown-menu" >
       {% if video.get_hashkey in request.get_full_path %}
@@ -64,7 +64,7 @@
       {% if versions|length > 0 %}
         <li class="nav-item dropdown" id="list_third_apps">
           <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
-            <i data-feather="layers"></i>&nbsp;<span class="sr-only">{% trans 'Other versions' %}</span>
+            <i data-feather="layers" aria-hidden="true"></i>
           </a>
           <div class="dropdown-menu" >
             {% for version in versions %}
@@ -82,8 +82,8 @@
 
     {% if request.user.playlist_set.all and video.is_draft == False %}
     <li class="nav-item dropdown dropright">
-      <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans "Add the video to a playlist"%}">
-        <i data-feather="play-circle"></i>&nbsp;<span class="sr-only">{% trans 'My playlists' %}</span>
+      <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Add the video to a playlist'%}">
+        <i data-feather="play-circle" aria-hidden="true"></i>
       </a>
       <div class="dropdown-menu">
       {% csrf_token %}

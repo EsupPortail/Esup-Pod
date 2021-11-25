@@ -852,11 +852,7 @@ def render_video(
                 "video": video,
                 "theme": theme,
                 "listNotes": listNotes,
-<<<<<<< HEAD
-                "playlist": playlist,
                 "page_title": page_title,
-=======
->>>>>>> dev
                 **more_data,
             },
         )
