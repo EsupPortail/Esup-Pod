@@ -300,7 +300,9 @@ def contact_us(request):
                 _(u"One or more errors have been found in the form."),
             )
 
-    return render(request, "contact_us.html", {"form": form, "owner": owner})
+    return render(request,
+                  "contact_us.html",
+                  {"form": form, "owner": owner, "page_title": _("Contact us")})
 
 
 def remove_accents(input_str):

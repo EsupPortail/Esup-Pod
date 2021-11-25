@@ -7,9 +7,7 @@
   {% if noteToDisplay and note == noteToDisplay and note != noteToEdit %}
     <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_notes_form displayed">
       {% csrf_token %}
-      <fieldset>
-        <input type="hidden" id="action_view" name="action" value="get" autocomplete="off"/>
-      </fieldset>
+      <input type="hidden" name="action" value="get"/>
       <p class="note form"><span class="user">{{ note.user.username }}</span><span>, {% trans 'the' %} {{note.modified_on}} :<br />{{ note.note }}</span></p>
     </form>
 
@@ -17,7 +15,7 @@
   {% elif note_form and noteToEdit and note == noteToEdit %}
     <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_notes_form hidden">
       {% csrf_token %}
-      <fieldset> <input type="hidden" id="action_view" name="action" value="get" autocomplete="off"/> </fieldset>
+      <input type="hidden" name="action" value="get"/>
     </form>
     <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
     {% csrf_token %}

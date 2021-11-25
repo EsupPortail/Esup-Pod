@@ -70,7 +70,7 @@
           </a>
         {% endif %}
       {% else %}
-        <a href="{{video.get_absolute_url}}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">{{video.title|capfirst|truncatechars:43}}</a>
+        <a href="{{video.get_absolute_url}}{% if playlist %}?playlist={{playlist.slug}}{% endif %}">{{video.title|capfirst|truncatechars:43}}</a>
       {% endif %}
     </span>
   </div>

@@ -44,7 +44,7 @@ def my_playlists(request):
     return render(
         request,
         "my_playlists.html",
-        {"playlists": playlists, "full_path": full_path},
+        {"playlists": playlists, "full_path": full_path, "page_title": _("My playlists")},
     )
 
 

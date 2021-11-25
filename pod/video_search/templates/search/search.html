@@ -16,12 +16,8 @@
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Search" %}</li>{% endblock %}
 
-{% block page_title %}{% trans "Search results" %}{% endblock %}
-
-
 {% block page_content %}
 
-<h3>{% trans "Search results" %}</h3>
 <div class="row">
   {% if remove_selected_facet %}
     <div class="col-sm-9">
@@ -43,7 +39,7 @@
 {% block page_aside %}
 
 <div class="card card-body">
-  <h5 class="card-title">{% trans "Advanced search" %}</h5>
+  <h2 class="card-title h4">{% trans "Advanced search" %}</h2>
   <div class="card-text" >
     <form method="get" action="{{ request.get_full_path }}" id="video_search_form">
     {% if form.errors %}
@@ -68,7 +64,7 @@
 </div>
 
 <div class="card card-body">
-  <h5 class="card-title">{% trans 'Filter' %}</h5>
+  <h2 class="card-title h4">{% trans 'Filter' %}</h2>
   <div class="card-text" >
     <dl>
     {% if aggregations.owner_full_name and aggregations.owner_full_name.buckets %}

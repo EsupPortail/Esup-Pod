@@ -80,7 +80,7 @@
       <li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
     {% endif %}
   {% else %}
-    <li class="breadcrumb-item"><a href="{% url "videos"%}" title="{% trans 'Videos' %}">{% trans 'Videos' %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "videos"%}">{% trans 'Videos' %}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
   {% endif %}
 {% endblock %}
@@ -102,7 +102,10 @@
   <meta itemprop="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }} - {% trans 'Added by' %}: {{ video.owner.get_full_name }}" />
 
 {%if channel %}
-  <h2>{{channel.title}}{% if request.user in channel.owners.all %}<span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-primary btn-sm"><svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>&nbsp;{% trans "Edit the channel"%}</a></span>{%endif%}</h2>
+  {% if request.user in channel.owners.all %}<span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i data-feather="edit" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{%endif%}
+  {%if channel %}
+    <h2 class="channel_title"><i data-feather="youtube" aria-hidden="true"></i>&nbsp;{{channel.title}}</h2>
+  {%endif%}
   {% if channel.headband %}
     <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy"/>
   {% endif %}
@@ -110,17 +113,16 @@
     {{ channel.description|safe }}
   {% endif %}
   {% if theme %}
-    <h3>{{theme.title}}</h3>
+    {% if request.user in channel.owners.all %}<span class="float-right"><a href="{% url 'theme_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i data-feather="edit" aria-hidden="true"></i>&nbsp;{% trans "Edit the themes"%}</a></span>{%endif%}
+    <h3 class="theme_title">{{theme.title}}</h3>
     {% if theme.headband %}
       <div align="center" class="channelheader">
         <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" loading="lazy"/>
       </div>
     {% endif %}
-    {% if theme.description %}
-      {{ theme.description|safe }}
-    {% endif %}
   {%endif%}
 {%endif%}
+
 {% if video.get_encoding_step == "" %}
   <div class="alert alert-warning" role="alert">
     {% trans "The video is currently waiting for encoding." %}
@@ -151,13 +153,13 @@
 
   {% include 'videos/video-element.html' %}
 
-  <h2 class="pt-2">
+  <h1 class="pt-2 h2">
     {% if video.licence %} {% include "videos/video_licencebox.html" %}{% endif %} {{video.title|capfirst}}
     {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
     <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans 'Report the video'%}" >
       <i data-feather="alert-octagon"></i>
     </a>
-  </h2>
+  </h1>
 
   {% if video.chapter_set.all %}
     <div class="alert alert-info" role="alert">{% blocktrans %}This video is chaptered. Click the chapter button <span class="vjs-icon-chapters"></span> on the video player to view them.{% endblocktrans %}</div>
@@ -181,19 +183,19 @@
           {% else %}
             class="nav-link" aria-selected="false"
           {% endif %}
-        ><i data-feather="info"></i><span class="sr-only">{% trans 'Infos' %}</span></a>
+        ><i data-feather="info" aria-hidden="true"></i></a>
       </li>
       {% if video.allow_downloading or video.document_set.all %}
         <li class="nav-item">
           <a class="nav-link" id="downloads-tab" data-toggle="tab" href="#downloads" role="tab" aria-controls="downloads" aria-selected="false" title="{% trans 'Downloads' %}">
-            <i data-feather="download"></i><span class="sr-only">{% trans 'Downloads' %}</span>
+            <i data-feather="download" aria-hidden="true"></i>
           </a>
         </li>
       {% endif %}
       {% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all %}
         <li class="nav-item">
           <a class="nav-link" id="share-tab" data-toggle="tab" href="#share" role="tab" aria-controls="share" aria-selected="false" title="{% trans 'Embed/Share' %}">
-            <i data-feather="share-2"></i><span class="sr-only">{% trans 'Embed/Share' %}</span>
+            <i data-feather="share-2" aria-hidden="true"></i>
           </a>
         </li>
       {%endif%}
@@ -201,7 +203,7 @@
       {% if versions|length > 0 %}
         <li class="nav-item dropdown" id="list_third_apps">
           <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
-            <i data-feather="layers"></i>&nbsp;<span class="sr-only">{% trans 'Other versions' %}</span>
+            <i data-feather="layers" aria-hidden="true"></i>
           </a>
           <div class="dropdown-menu" >
             {% for version in versions %}
@@ -218,8 +220,8 @@
 
       {% if request.user.playlist_set.all and video.is_draft == False %}
       <li class="nav-item dropdown dropright">
-        <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans "Add the video to a playlist"%}">
-          <i data-feather="play-circle"></i>&nbsp;<span class="sr-only">{% trans 'My playlists' %}</span>
+        <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Add the video to a playlist'%}">
+          <i data-feather="play-circle" aria-hidden="true"></i>
         </a>
         <div class="dropdown-menu">
         {% csrf_token %}
@@ -227,7 +229,7 @@
         {% for playlist in request.user.playlist_set.all %}
           {% if video in playlist.videos %}
             <li class="dropdown-item disabled py-0" data-slug="{{playlist.slug}}">{{playlist.title}}
-              <i data-feather="check"></i>
+              <i data-feather="check" aria-hidden="true"></i>
             </li>
           {% else %}
             <li class="dropdown-item playlist-item py-0" data-slug="{{playlist.slug}}">{{playlist.title}}</li>
@@ -252,7 +254,7 @@
 {% block page_aside %}
   {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video or perms.enrichment.edit_enrichment or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay or perms.chapter.change_chapter or perms.video.delete_video %}
     <div class="card mt-1" id="card-managevideo">
-      <h5 class="card-header card-title pl-2"><i data-feather="settings"></i>&nbsp;{% trans "Manage video"%}</h5>
+      <h2 class="card-header card-title pl-2 h4"><i data-feather="settings" aria-hidden="true"></i>&nbsp;{% trans "Manage video"%}</h4>
       <div class="card-body card-text text-center">
         {% include "videos/link_video.html" %}
       </div>

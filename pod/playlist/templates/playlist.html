@@ -11,7 +11,7 @@
 {% block breadcrumbs %}
   {{block.super}}
   <li class="breadcrumb-item">
-    <a href="{% url 'my_playlists' %}" title="{% trans 'My playlists' %}">{% trans 'My playlists' %}</a>
+    <a href="{% url 'my_playlists' %}">{% trans 'My playlists' %}</a>
   </li>
   {% if form.instance.title %}
     <li class="breadcrumb-item">
@@ -32,13 +32,13 @@
 {% endblock %}
 
 {% block page_content %}
-  <h3>
+  <h1 class="page_title">
     {% if form.instance.title %}
       {% trans 'Editing the playlist' %} "{{form.instance.title}}"
     {% else %}
       {% trans 'Add a new playlist' %}
     {% endif %}
-  </h3>
+  </h1>
   <form id="playlist_form" method="POST"
     {% if form.instance.slug %}
       action="{% url 'playlist' slug=form.instance.slug %}"

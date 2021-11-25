@@ -326,7 +326,11 @@ def my_channels(request):
         .filter(sites=site)
         .annotate(video_count=Count("video", distinct=True))
     )
-    return render(request, "channel/my_channels.html", {"channels": channels})
+    return render(request,
+                  "channel/my_channels.html",
+                  {"channels": channels,
+                   "page_title": _("My channels")
+                   })
 
 
 @csrf_protect
@@ -526,6 +530,7 @@ def my_videos(request):
     data_context["use_category"] = USE_CATEGORY
     data_context["videos"] = videos
     data_context["full_path"] = full_path
+    data_context["page_title"] = _("My videos")
 
     return render(request, "videos/my_videos.html", data_context)
 
@@ -741,6 +746,11 @@ def render_video(
 
     show_page = get_video_access(request, video, slug_private)
 
+    # Set page title only if video not in channel
+    page_title = None
+    if not channel:
+        page_title = video.title
+
     if (
         (show_page and not is_password_protected)
         or (
@@ -764,6 +774,7 @@ def render_video(
                 "theme": theme,
                 "listNotes": listNotes,
                 "playlist": playlist,
+                "page_title": page_title,
                 **more_data,
             },
         )
@@ -2556,7 +2567,7 @@ def video_record(request):
                     "error": "Unexpected error: {0}".format(err),
                 }
             )
-    return render(request, "videos/video_record.html", {})
+    return render(request, "videos/video_record.html", {"page_title": _("Video record")})
 
 
 @csrf_protect

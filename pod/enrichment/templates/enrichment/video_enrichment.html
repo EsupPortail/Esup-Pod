@@ -50,7 +50,7 @@
     </ul>
   {% endif %}
 
-  <h1 class="pt-2">
+  <h1 class="page_title pt-2">
     {% if video.licence %}<a href="https://creativecommons.org/licenses/{{video.licence}}/4.0" title="{{video.get_licence}}" target="_blank"><img src="https://licensebuttons.net/l/{{video.licence}}/4.0/88x31.png"></a>{% endif %}
     {{video.title|title}}
     {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}

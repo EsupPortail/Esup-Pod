@@ -7,20 +7,19 @@
 	<script src="{% static 'js/playlist.js' %}?ver={{VERSION}}"></script>
 {% endblock page_extra_head %}
 
-{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My playlists" %}</li>{% endblock %}
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>{% endblock %}
 
 {% block page_title %}
 	{% blocktrans count counter=playlists.paginator.count %}{{ counter }} playlist found{% plural %}{{ counter }} playlists found{% endblocktrans %}
 {% endblock %}
 
 {% block page_content %}
-	<h2 class="text-center">{% trans 'My playlists' %}</h2>
 	{% if playlists.paginator.count == 0 %}
-		<h3>{% trans 'No playlist found' %}</h3>
+		<h2 class="h4">{% trans 'No playlist found' %}</h2>
 		<p class="alert alert-info">{% trans 'You have not created any playlists yet, please use the "Add a new playlist" button to add one.' %}</p>
-		<a href="{% url 'playlist' %}" class="btn btn-primary">{% trans 'Add a new playlist' %}</a>
+		<a href="{% url 'playlist' %}" class="btn btn-primary"><i data-feather="plus" aria-hidden="true"></i>{% trans 'Add a new playlist' %}</a>
 	{% else %}
-		<h3>{% blocktrans count counter=playlists.paginator.count %}{{ counter }} playlist found{% plural %}{{ counter }} playlists found{% endblocktrans %}</h3>
+		<h2 class="h4">{% blocktrans count counter=playlists.paginator.count %}{{ counter }} playlist found{% plural %}{{ counter }} playlists found{% endblocktrans %}</h2>
 		{% include 'playlist/playlist_list.html' %}
 	{% endif %}
 	<hr/>

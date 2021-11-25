@@ -100,6 +100,7 @@ def home(request, type=None):
             "form_file": CustomFileModelForm(),
             "form_image": CustomImageModelForm(),
             "type": type,
+            "page_title": _("My files")
         },
     )
 

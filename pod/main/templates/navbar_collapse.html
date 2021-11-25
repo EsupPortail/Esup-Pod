@@ -109,7 +109,7 @@
         <ul class="row list-unstyled" id="list-types">
           {% for type in TYPES %}
           <li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1 col-12 text-left text-truncate" href="{% url 'videos' %}?type={{type.slug}}" title="{{type.title}} ({{type.video_count}})">
-          {% if type.icon %}<img src="{{type.icon.file.url}}" alt="{{type.title}}" style="max-height:32px; max-width:32px;" loading="lazy"/>{% else %}<i data-feather="type"></i>{% endif %}&nbsp;{{type.title}} ({{type.video_count}})</a></li>
+          {% if type.icon %}<img src="{{type.icon.file.url}}" alt="" style="max-height:32px; max-width:32px;" loading="lazy"/>{% else %}<i data-feather="type"></i>{% endif %}&nbsp;{{type.title}} ({{type.video_count}})</a></li>
           {% endfor %}
         </ul>
       </div>

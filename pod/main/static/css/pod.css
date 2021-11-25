@@ -155,9 +155,9 @@ body {
 .jumbotron {
   padding: 1rem 2rem;
 }
-h1 {
+/*h1 {
   font-size: 2rem;
-}
+}*/
 label {
   font-variant: small-caps;
 }
@@ -443,6 +443,14 @@ div.card a:hover>img {
 .video-card .card-footer .feather,
 .video-card .card-header .feather {
   height: 1rem;
+}
+
+/* heading feather icons size */
+h1>.feather,.h1>.feather,
+h2>.feather,.h2>.feather,
+h3>.feather,.h3>.feather{
+  width: 1em;
+  height: 1em;
 }
 
 /** menu channels **/

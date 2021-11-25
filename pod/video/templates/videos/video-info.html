@@ -118,7 +118,7 @@
 
       <li class="col-6 col-md-4">
         <h3 class="meta-title">{% trans 'Type:' %}</h3>
-        <div><a href="{% url 'videos' %}?type={{ video.type.slug }}" title="{{ video.type.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ video.type.title }}</a></div>
+        <div><a href="{% url 'videos' %}?type={{ video.type.slug }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ video.type.title }}</a></div>
       </li>
 
       <li class="col-6 col-md-4">

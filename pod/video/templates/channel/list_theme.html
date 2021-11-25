@@ -1,9 +1,10 @@
-<!-- HTML for chapter list. Don't use this file alone it must be integrated into another template ! -->
+{# HTML for theme list. Don't use this file alone: it must be integrated into another template! #}
 {% load i18n %}
 <div class="container">
-  <h4 class="list-title">{% trans 'List of themes' %}&nbsp;({{list_theme|length}})</h4>
+
   <div class="table-responsive" style="max-height:400px;">
     <table class="table table-sm table-striped table-hover table-bordered" id="table_list_theme">
+      <caption class="h3" style="caption-side:top">{% trans 'List of themes' %}&nbsp;({{list_theme|length}})</caption>
       <thead>
         <tr>
           <th scope="col" class="theme_title">{% trans 'Title' %}</th>

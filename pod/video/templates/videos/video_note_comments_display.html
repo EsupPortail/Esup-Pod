@@ -4,7 +4,10 @@
 
     <div class="header">
         {% comment %} {% if com.user.userpicture %} <span class="user">{{ com.user.userpicture }}</span> {% else %} <span class="user">{{ com.user.username }}</span> {% endif %} {% endcomment %}
-        <span><span class="user"> {{ com.user.username }}</span>, {% trans 'the' %} {{com.modified_on}} {% if com.notecomments_set.all.count > 0 %}<span><i class="" data-feather="chevron-down" width="16" height="16" ></i></span>{% endif %}</span>      
+        <span><span class="user"> {{ com.user.username }}</span>,
+          {% trans 'the' %} {{com.modified_on}}
+          {% if com.notecomments_set.all.count > 0 %}<span><i data-feather="chevron-down" width="16" height="16" ></i></span>{% endif %}
+        </span>
         {% if request.user.is_authenticated and request.user == com.user %}
             <div class="mgtComment dropleft">
                 <button class="p-0 m-0 btn btn-outline-primary btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage comment' %}"> <i data-feather="more-horizontal"></i> </button>

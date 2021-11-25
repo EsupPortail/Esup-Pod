@@ -2,7 +2,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load staticfiles %}
-{% block page_title %}{% trans 'Completion video' %} "{{video.title}}"{% endblock page_title %}
+{% block page_title %}{% trans 'Complements of the video' %} "{{video.title}}"{% endblock page_title %}
 {% block page_extra_head %}
   <!-- media -->
   <link rel="stylesheet" href="{% static 'css/completion.css' %}?ver={{VERSION}}"/>
@@ -10,7 +10,7 @@
 {% endblock page_extra_head %}
 {% block breadcrumbs %}
   {{block.super}}
-  <li class="breadcrumb-item"><a href="{% url 'my_videos'%}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'my_videos'%}">{% trans 'My videos' %}</a></li>
   <li class="breadcrumb-item">
     <a href="{% url 'video' slug=video.slug %}" title="{{video.title}}">
       {{video.title|title|truncatechars:45}}
@@ -21,6 +21,7 @@
   </li>
 {% endblock %}
 {% block page_content %}
+  <h1 class="page_title">{% trans 'Video additions' %}</h1>
   <div id="accordeon" >
     <li>
       <a id="section_contributor" href="#" title="{% trans 'Display &quot;Contributor(s)&quot; section' %}" class="title">

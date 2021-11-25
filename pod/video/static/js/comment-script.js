@@ -72,7 +72,7 @@ class ConfirmModal extends HTMLElement {
     let modal = `
       <div class="confirm_delete">
         <div class="confirm_delete_container">
-          <div class="confirm_title"><h4>${title}</h4></div>
+          <div class="confirm_title"><h3>${title}</h3></div>
           <div class="content">
             ${message}
           </div>
@@ -149,7 +149,7 @@ class Comment extends HTMLElement {
     comment_content.setAttribute("class", "comment_content");
     comment_content.innerHTML = `
       <div class="comment_content_header inline_flex_space">
-    <h1 class="user_name">${owner}</h1>
+    <h3 class="user_name">${owner}</h3>
     <comment-since since=${added_since.toISOString()}></comment-since>
       </div>
       <div class="comment_content_body">
