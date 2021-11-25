@@ -71,20 +71,30 @@ const options = {
     }
   },
   plugins: {
-   seekButtons: {
-    forward: seektime,
-    back: seektime
-   }
+    seekButtons: {
+      forward: seektime,
+      back: seektime
+    },
+    // enable videojs-wavesurfer plugin
+    wavesurfer: {
+      backend: 'MediaElement',
+      displayMilliseconds: true,
+      debug: true,
+      waveColor: 'grey',
+      progressColor: 'black',
+      cursorColor: 'black',
+      hideScrollbar: true
+    }
   }
 }
 var player = videojs('podvideoplayer', options, function(){});
 
 player.on('firstplay', function(){
-    var data_form = $( "#video_count_form" ).serializeArray();
-    jqxhr = $.post(
-      $( "#video_count_form" ).attr("action"),
-      data_form
-    );
+  var data_form = $( "#video_count_form" ).serializeArray();
+  jqxhr = $.post(
+    $( "#video_count_form" ).attr("action"),
+    data_form
+  );
 });
 
 {% if video.is_video %}
@@ -144,9 +154,9 @@ player.on('firstplay', function(){
       });
     });
     if (typeof player.overlay === "function") {
-    player.overlay({
-      overlays: list_overlays
-    });
+      player.overlay({
+        overlays: list_overlays
+      });
     }
   {% endif %}
 
@@ -155,7 +165,7 @@ player.on('firstplay', function(){
   {% endif %}
   //add logo to the player
   {% if request.GET.is_iframe %}
-  player.videoJsInfo();
+    player.videoJsInfo();
   {%endif%}
 
   player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
@@ -180,9 +190,9 @@ player.on('firstplay', function(){
   {% endif %}
 {% endif %}
 {% if video.chapter_set.all %}
-    player.videoJsChapters();
-    $('.vjs-big-play-button').css('z-index', 2)
-    $('.vjs-control-bar').css('z-index', 3);
+  player.videoJsChapters();
+  $('.vjs-big-play-button').css('z-index', 2)
+  $('.vjs-control-bar').css('z-index', 3);
 {% endif %}
 
 </script>

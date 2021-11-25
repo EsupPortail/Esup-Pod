@@ -8,6 +8,15 @@
 <link href="{% static 'player/videojs-seek-buttons.css' %}?ver={{VERSION}}" rel="stylesheet" />
 <script src="{% static 'player/videojs-seek-buttons.min.js' %}?ver={{VERSION}}"></script>
 
+{#% if not video.is_video %#}
+  <!-- Audio wavesurfer -->
+  <link href="{% static 'player/videojs.wavesurfer.min.css' %}?ver={{VERSION}}" rel="stylesheet" />
+  <script src="{% static 'player/wavesurfer.js'%}?ver={{VERSION}}"></script>
+  <script src="{% static 'player/videojs.wavesurfer.js' %}?ver={{VERSION}}"></script>
+
+  <!--script src="https://cdn.jsdelivr.net/npm/videojs-wavesurfer@3.7.0/dist/videojs.wavesurfer.js"></script-->
+{#% endif %#}
+
 <!-- quality selector -->
 <link href="{% static 'player/videojs-hls-quality-selector.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'player/videojs-contrib-quality-levels.min.js' %}?ver={{VERSION}}"></script>
