@@ -162,13 +162,6 @@ player.on('firstplay', function(){
     player.vr({projection: '360'});
   {% endif %}
   //add logo to the player
-<<<<<<< HEAD
-  {% if request.GET.is_iframe %}
-    player.videoJsInfo();
-  {%endif%}
-
-=======
->>>>>>> dev
   player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
 {% else %}
   {% if video.get_video_m4a %}
