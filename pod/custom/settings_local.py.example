@@ -1020,7 +1020,15 @@ SHIBBOLETH_ATTRIBUTE_MAP = {
     "shib-given-name": (True, "first_name"),
     "shib-sn": (True, "last_name"),
     "shib-mail": (False, "email"),
+    "shib-primary-affiliation": (False, "affiliation"),
+    "shib-unscoped-affiliation": (False, "affiliations"),
 }
+
+"""
+# Custom variable to allow user of somme domain to be staff
+# If empty all domains will be allowed
+"""
+SHIBBOLETH_STAFF_ALLOWED_DOMAINS = ('univ-domain.fr',)
 
 """
 # Nom de l'attribut dans les headers qui sert à identifier

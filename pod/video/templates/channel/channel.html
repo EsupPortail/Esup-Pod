@@ -60,7 +60,7 @@
                     {% if theme %}
                         <a href="{% url 'video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
                     {% else %}
-                        <a href="{% url 'video_stats_view' slug=channel.slug %} %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+                        <a href="{% url 'video_stats_view' slug=channel.slug %}" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
                     {% endif %}
                 {% endif %}
                 {% if theme %}
@@ -109,12 +109,16 @@
                 {% endif %}
             </section>
             <section class="video-section">
-                <p class="video-count">{% blocktrans count counter=videos|length %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</p>
-                {% include "videos/video_list.html" %}
-                {% if has_more_videos %}
-                    <div class="float-right">
-                        <button class="btn btn-primary" id="load-more-videos" type="button">{% trans "Load more videos" %}</button>
-                    </div>
+                {% if videos %}
+                    <p class="video-count">
+                        {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
+                    </p>
+                    {% include "videos/video_list.html" %}
+                    {% if has_more_videos %}
+                        <div class="float-right">
+                            <button class="btn btn-primary" id="load-more-videos" type="button">{% trans "Load more videos" %}</button>
+                        </div>
+                    {% endif %}
                 {% endif %}
             </section>
         </div>

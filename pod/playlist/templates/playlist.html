@@ -41,9 +41,9 @@
   </h1>
   <form id="playlist_form" method="POST"
     {% if form.instance.slug %}
-      action="{% url 'playlist' slug=form.instance.slug %}"
+      action="{% url 'playlist_edit' slug=form.instance.slug %}"
     {% else %}
-      action="{% url 'playlist' %}"
+      action="{% url 'playlist_edit' %}"
     {% endif %}
   >
     {% csrf_token %}
