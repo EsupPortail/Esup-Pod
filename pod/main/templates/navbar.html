@@ -6,11 +6,11 @@
 
 <div class="container container-pod" id="nav-mainbar">
   <div class="pod-brand">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" title="{% trans 'Toggle navigation' %}">
       <i data-feather="menu" aria-hidden="true"></i>
     </button>
     <a class="navbar-brand mr-0 mr-sm-1" href="/">
-      <img src="{% static LOGO_SITE %}" height="48" alt="" loading="lazy"/>{{ TITLE_SITE }}
+      <img src="{% static LOGO_SITE %}" height="48" alt="" loading="lazy"/><strong>{{ TITLE_SITE }}</strong>
     </a>
   </div>
 

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block page_title %}{{ TITLE_SITE }} - {% trans 'Permission Denied' %}{% endblock %}
+{% block page_title %}{% trans 'Permission denied' %}{% endblock %}
 
 {% block breadcrumbs %}
   {{super}}
@@ -11,6 +11,6 @@
 {% endblock breadcrumbs %}
 
 {% block page_content %}
-  <h1 class="page_title">{% trans 'Permission Denied' %}</h1>
+  <h1 class="page_title">{% trans 'Permission denied' %}</h1>
   <p>{% trans "You are not allowed to access this web page." %}</p>
 {% endblock %}

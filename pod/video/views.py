@@ -825,11 +825,6 @@ def render_video(
 
     show_page = get_video_access(request, video, slug_private)
 
-    # Set page title only if video not in channel
-    page_title = None
-    if not channel:
-        page_title = video.title
-
     if (
         (show_page and not is_password_protected)
         or (
@@ -852,7 +847,6 @@ def render_video(
                 "video": video,
                 "theme": theme,
                 "listNotes": listNotes,
-                "page_title": page_title,
                 **more_data,
             },
         )

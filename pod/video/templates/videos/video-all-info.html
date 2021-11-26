@@ -1,6 +1,6 @@
 {% load i18n %}
 {% load tagging_tags %}
-<h1 class="pt-2 h2">
+<h1 class="page_title pt-2 h2">
   {% if video.licence %} {% include "videos/video_licencebox.html" %}{% endif %} {{video.title|capfirst}}
   {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
   <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans 'Report the video'%}" >

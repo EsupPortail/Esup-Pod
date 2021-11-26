@@ -4,7 +4,7 @@ const base_vote_url = base_url.replace("comment", "comment/vote");
 const base_delete_url = base_url.replace("comment", "comment/del");
 let all_comment = null;
 const lang_btn = document.querySelector(".btn-lang.btn-lang-active");
-const comment_label = document.querySelector(".comment_label");
+const comment_title = document.querySelector(".comment_title");
 // Loader Element
 const loader = document.querySelector(".comment_content > .lds-ring");
 let VOTED_COMMENTS = [];
@@ -1043,11 +1043,11 @@ function manage_vote_frontend(id, el) {
 /******* Set number comments in comment label *********
  * ****************************************************/
 function set_comments_number() {
-  let label_text = comment_label.innerText.replace(/\d+\s+/, "");
+  let title_text = comment_title.innerText.replace(/\d+\s+/, "");
   let nb_comments =
     all_comment.reduce((acc, curr) => (acc += curr.nbr_child), 0) +
     all_comment.length;
-  comment_label.innerText = `${nb_comments} ${label_text}`;
+  comment_title.innerText = `${nb_comments} ${title_text}`;
 }
 
 /************  Get vote from the server  **************

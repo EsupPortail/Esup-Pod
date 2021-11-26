@@ -6,11 +6,12 @@
   <div class="comment_container">
     <div class="comment_content">
       <div class="inline_flex_space comment_counter_container">
-        <label class="comment_label" for="comment">{% trans "Comments" %}</label>
+        <h2 class="comment_title">{% trans "Comments" %}</h2>
       </div>
       {% if is_auth %}
         <form class="add_comment add_parent_comment">
           <div class="form-wrapper form-group">
+            <label class="comment_label" for="comment">{% trans "Your comment" %}</label>
             <textarea class="form-control new_comment new_parent_comment" name="new_parent_comment" id="comment" placeholder='{% trans "Add a public comment" %}'></textarea>
           </div>
           <div class="add_comment_footer">

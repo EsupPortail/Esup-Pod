@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-25 16:44+0100\n"
-"PO-Revision-Date: 2021-11-25 16:53+0100\n"
+"POT-Creation-Date: 2021-11-26 10:16+0100\n"
+"PO-Revision-Date: 2021-11-26 10:18+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -135,10 +135,8 @@ msgid "Your browser does not support FileReader."
 msgstr "Votre navigateur ne supporte pas FileReader."
 
 #: pod/completion/static/js/caption_maker.js:885
-#, fuzzy
-#| msgid "Error during exchange"
 msgid "Error loading caption file: "
-msgstr "Erreur durant le téléversement"
+msgstr "Erreur durant le chargement du fichier de sous-titres : "
 
 #: pod/completion/static/js/completion.js:175
 #: pod/podfile/static/podfile/js/filewidget.js:277
@@ -441,10 +439,8 @@ msgid "The video can not be added from this page."
 msgstr "La vidéo ne peut être ajoutée depuis cette page."
 
 #: pod/playlist/static/js/playlist.js:179
-#, fuzzy
-#| msgid "videos found"
 msgid "The video slug not found."
-msgstr "vidéos trouvées"
+msgstr "La vidéo est introuvable."
 
 #: pod/podfile/static/podfile/js/filewidget.js:11
 msgid "Change image"
