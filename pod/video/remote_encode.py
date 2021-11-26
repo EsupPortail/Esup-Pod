@@ -20,7 +20,7 @@ from .models import Video
 from .encode import remove_old_data, remove_previous_overview
 from .encode import create_overview_image, create_and_save_thumbnails
 
-from .utils import change_encoding_step, add_encoding_log, check_file
+from .utils import change_encoding_step, add_encoding_log, check_file, add_default_thumbnail_to_video
 from .utils import create_outputdir, send_email, send_email_encoding
 from .utils import fix_video_duration, get_duration_from_mp4
 
@@ -337,8 +337,7 @@ def import_remote_thumbnail(info_encode_thumbnail, output_dir, video_to_encode):
                 save=True,
             )
             thumbnail.save()
-            video_to_encode.thumbnail = thumbnail
-            video_to_encode.save()
+            add_default_thumbnail_to_video(video_to_encode.id, thumbnail)
         else:
             thumbnail = CustomImageModel()
             thumbnail.file.save(
@@ -347,8 +346,7 @@ def import_remote_thumbnail(info_encode_thumbnail, output_dir, video_to_encode):
                 save=True,
             )
             thumbnail.save()
-            video_to_encode.thumbnail = thumbnail
-            video_to_encode.save()
+            add_default_thumbnail_to_video(video_to_encode.id, thumbnail)
         # remove tempfile
         msg += "\n- thumbnailfilename :\n%s" % (thumbnail.file.path)
         os.remove(thumbnailfilename)
