@@ -863,22 +863,6 @@ class Video(models.Model):
 
     get_encoding_step.fget.short_description = _("Encoding step")
 
-    def get_desc_for_robots(self):
-        """Get a non empty video description string (for search engines).
-
-        A description string should have at least 25 chars.
-        """
-        if self.description or self.tags:
-            desc_items = []
-            if self.description:
-                desc_items.append(self.description)
-            if self.tags:
-                desc_items.append(self.tags)
-        else:
-            desc_items = [self.title]
-        desc_items.append(_('Added by: %(owner)s') % {'owner': self.owner.get_full_name()})
-        return " - ".join(desc_items)
-
     def get_thumbnail_url(self):
         """Get a thumbnail url for the video."""
         request = None
