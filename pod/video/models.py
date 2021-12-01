@@ -910,9 +910,9 @@ class Video(models.Model):
         else:
             thumbnail_url = static(DEFAULT_THUMBNAIL)
         return (
-            '<img class="card-img-top" src="%s" alt="%s"\
+            '<img class="card-img-top" src="%s" alt=""\
             loading="lazy"/>'
-            % (thumbnail_url, self.title.replace('"', "'"))
+            % (thumbnail_url)
         )
 
     @property

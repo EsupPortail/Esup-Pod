@@ -244,7 +244,7 @@
           </div>
 	  {% if request.user == video.owner or request.user in video.additional_owners.all%}
 	  <legend><i data-feather="upload-cloud"></i>&nbsp;{% trans 'BigBlueButton/H5P Integration' %}</legend>
-          <label for="txtintegrationh5p">{% trans 'Use these links in a BigBlueButton meeting or an interactive H5P video activity:' %}</label>
+          <p>{% trans 'Use these links in a BigBlueButton meeting or an interactive H5P video activity:' %}</p>
           <div class="form-group">
                 {% for vid in video.get_video_mp4 %}
                         <li class="list-group-item">{{vid.name}} :&nbsp;<input class="form-control" style="display:table-row; width:85%;" type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly/></li>
