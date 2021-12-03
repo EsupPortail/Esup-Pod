@@ -1,0 +1,19 @@
+from pod.settings import * #Cette ligne va importer les settings déjà présents dans votre application, vous pourrez les surchager par site
+
+DEBUG = False
+
+SITE_ID=__ID_SITE__  #Ici il faut mettre l'id unique du site qui correspond à l'id présent dans votre espace d'administration sur le site en question
+
+ES_INDEX = 'pod2__NAME__' #index pour elasticsearch, il est important de le modifier pour que chaque instance ai son moteur de recherche
+# USE_THEME = 'dark'
+ALLOWED_HOSTS = ['pod.univ.fr','__DOMAIN_NAME__']
+
+DEFAULT_FROM_EMAIL = 'no-reply@__DOMAIN_NAME__' # to complete
+SERVER_EMAIL = 'no-reply@__DOMAIN_NAME__' # to complete
+HELP_MAIL = 'no-reply@__DOMAIN_NAME__' # to complete
+CONTACT_US_EMAIL = ['contact@__DOMAIN_NAME__'] # to complete
+
+CELERY_TO_ENCODE = True # Active encode
+CELERY_BROKER_URL = CELERY_BROKER_URL + "-__NAME__" # Define a broker
+
+
