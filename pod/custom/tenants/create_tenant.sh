@@ -63,10 +63,13 @@ echo "Données initiales"
 sed -i "s/__NAME__/$NAME/g" ./$NAME/initial_data.json
 sed -i "s/__ID_SITE__/$ID_SITE/g" ./$NAME/initial_data.json
 sed -i "s/__DOMAIN_NAME__/$DOMAIN_NAME/g" ./$NAME/initial_data.json
-
+echo "--"
 echo "Pour intégrer les données en base concernant ce nouveau site, il faut lancer la commande suivante:"
 echo "(django_pod) pod@pod:/usr/local/django_projects/podv2$ python manage.py loaddata pod/custom/tenants/$NAME/initial_data.json --settings=pod.custom.tenants.$NAME."$NAME"_settings"
-
+echo "--"
+echo "N'oubliez pas de créer l'index dans elasticseach via cette commande :"
+echo "(django_pod) pod@pod:/usr/local/django_projects/podv2$ python manage.py create_pod_index --settings=pod.custom.tenants.$NAME."$NAME"_settings"
+echo "--"
 echo "crontab"
 echo "clear session"
 echo "# $ID_SITE $NAME " >> $BASEDIR/clearsessions.sh 
