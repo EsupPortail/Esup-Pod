@@ -14,18 +14,20 @@ class PlaylistAdmin(admin.ModelAdmin):
     list_editable = ('visible',)
     ordering = ('title', 'id',)
     list_filter = ['visible']
+    autocomplete_fields = ['owner']
+    search_fields = ['name']
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "owner":
             kwargs["queryset"] = User.objects.filter(
-                    owner__sites=Site.objects.get_current())
+                owner__sites=Site.objects.get_current()
+            )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(owner__owner__sites=get_current_site(
-                request))
+            qs = qs.filter(owner__owner__sites=get_current_site(request))
         return qs
 
 
@@ -38,29 +40,25 @@ class PlaylistElementAdmin(admin.ModelAdmin):
     list_display_links = ('playlist',)
     list_editable = ('position',)
     ordering = ('playlist__title', 'id',)
+    autocomplete_fields = ['playlist', 'video']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(playlist__owner__owner__sites=get_current_site(
-                request))
+            qs = qs.filter(playlist__owner__owner__sites=get_current_site(request))
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "playlist":
             kwargs["queryset"] = Playlist.objects.filter(
-                    owner__owner__sites=Site.objects.get_current())
+                owner__owner__sites=Site.objects.get_current()
+            )
         if (db_field.name) == "video":
-            kwargs["queryset"] = Video.objects.filter(
-                    sites=Site.objects.get_current())
+            kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     class Media:
-        css = {
-            "all": (
-                'css/pod.css',
-            )
-        }
+        css = {"all": ("css/pod.css",)}
 
 
 admin.site.register(PlaylistElement, PlaylistElementAdmin)

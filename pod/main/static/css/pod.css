@@ -29,6 +29,14 @@
   --dark: #343a40;
   --color-formfields: #f1f1f1;
 }
+
+/* copy "alert-danger" style from Bootstrap 4 */
+.alert-error {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
 .table,
 .navbar-light .navbar-nav .nav-link,
 .navbar-light .navbar-toggler {
@@ -95,7 +103,7 @@
 
 .btn-link {
   font-weight: 400;
-  color: var(--primary);
+  color: var(--link-color);
   text-decoration: none;
 }
 
@@ -432,8 +440,8 @@ div.card a:hover>img {
   right: 2px;
   border: none;
 }
-.card-footer .feather,
-.card-header .feather {
+.video-card .card-footer .feather,
+.video-card .card-header .feather {
   height: 1rem;
 }
 
@@ -511,13 +519,17 @@ div.card a:hover>img {
   overflow-wrap: anywhere;
 }
 
-.required {
+.required_star, .form-help-inline {
   color: var(--danger);
   font-size: 1.3rem;
 }
 
-.form-group-required .errors {
+.form-group-required .errors,
+.form-group .errorlist {
   background-color: var(--color-fuzzy-wuzzy-brown);
+}
+.form-group .errorlist{
+  margin-bottom: 0;
 }
 #base-message-alert,
 #formalertdiv {

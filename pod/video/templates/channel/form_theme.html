@@ -1,6 +1,6 @@
 <!-- HTML for theme form. Don't use this file alone it must be integrated into another template ! -->
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 <h4 class="form-title">
 	{% if form_theme.instance.title %}{% trans "Editing the theme" %} {{form_theme.instance.title}}{% else %}{% trans "Add a new theme" %}{%endif%}
 </h4>

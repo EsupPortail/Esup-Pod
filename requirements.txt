@@ -1,33 +1,31 @@
-Django==1.11.29
-django-ckeditor==5.3.1
-Pillow>=7.2.0; python_version <= '3.5'
-Pillow==8.1.1; python_version > '3.5'
-django-tagging==0.4.6
-django-modeltranslation==0.12.2
+Django==3.2
+django-ckeditor==6.0.0
+Pillow==8.3.2; python_version > '3.5'
+django-tagging==0.5.0
+django-modeltranslation==0.16.0
 webvtt-py==0.4.5
 django-cas-client==1.5.2
 ldap3==2.5
-django-progressbarupload==0.1.7
-django-simple-captcha==0.5.12
-urllib3==1.26.4
+django-simple-captcha==0.5.13
+urllib3==1.26.5
 elasticsearch==6.3.1
-djangorestframework==3.11.2
-django-filter==1.1.0
-sorl-thumbnail==12.6.3
+djangorestframework==3.12.2
+django-filter==2.4.0
+sorl-thumbnail==12.7.0
 django-lti-provider==0.4.0
-django-auth-mixins==1.0.1
 celery==4.3.0
 vine==1.3.0
 pandas
 deepspeech==0.9.3
 billiard<4.0,>=3.6.0
 webrtcvad
-django-select2-forms==2.1.0
 django-shibboleth-remoteuser
 django-chunked-upload==2.0.0
+django-select2
+django-redis
 requests==2.25.1
 chardet==4.0.0
-django-cookies-samesite==0.8.0
 django-static-compress>=1.2.1
 redis==3.5.3
 mozilla_django_oidc==1.2.4
+

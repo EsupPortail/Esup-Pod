@@ -5,20 +5,27 @@ from rest_framework import serializers, viewsets
 
 
 class BuildingSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = Building
-        fields = ('id', 'url', 'name', 'headband', 'gmapurl')
+        fields = ("id", "url", "name", "headband", "gmapurl", "sites")
 
 
 class BroadcasterSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = Broadcaster
-        fields = ('id', 'url', 'name', 'slug',
-                  'building', 'description', 'poster',
-                  'url', 'status', 'is_restricted')
-        lookup_field = 'slug'
+        fields = (
+            "id",
+            "url",
+            "name",
+            "slug",
+            "building",
+            "description",
+            "poster",
+            "url",
+            "status",
+            "is_restricted",
+        )
+        lookup_field = "slug"
 
 
 #############################################################################
@@ -27,11 +34,11 @@ class BroadcasterSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class BuildingViewSet(viewsets.ModelViewSet):
-    queryset = Building.objects.all().order_by('name')
+    queryset = Building.objects.all().order_by("name")
     serializer_class = BuildingSerializer
 
 
 class BroadcasterViewSet(viewsets.ModelViewSet):
-    queryset = Broadcaster.objects.all().order_by('building', 'name')
+    queryset = Broadcaster.objects.all().order_by("building", "name")
     serializer_class = BroadcasterSerializer
-    lookup_field = 'slug'
+    lookup_field = "slug"

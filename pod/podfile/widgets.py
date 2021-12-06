@@ -7,15 +7,14 @@ from .models import CustomFileModel, CustomImageModel
 
 
 class CustomFileWidget(widgets.TextInput):
-
     class Media:
-        js = ('podfile/js/filewidget.js',)
+        js = ("podfile/js/filewidget.js",)
 
     def __init__(self, type=None, *args, **kwargs):
         self.type = type
         super(CustomFileWidget, self).__init__(*args, **kwargs)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         document = None
 
         if value:
@@ -28,20 +27,26 @@ class CustomFileWidget(widgets.TextInput):
             except ObjectDoesNotExist:
                 pass
 
-        input = ('<input type="hidden" id="%(id)s" '
-                 'name="%(name)s" value="%(value)s">') % {
-            "id": attrs['id'] if attrs.get("id") else "",
+        input = (
+            '<input type="hidden" id="%(id)s" ' 'name="%(name)s" value="%(value)s">'
+        ) % {
+            "id": attrs["id"] if attrs.get("id") else "",
             "name": name,
-            "value": value if value else ""
+            "value": value if value else "",
         }
-        template_name = 'podfile/customfilewidget.html'
+        template_name = "podfile/customfilewidget.html"
         output = super(CustomFileWidget, self).render(name, value, attrs)
-        return mark_safe(render_to_string(template_name, {
-            'name': name,
-            "id": attrs['id'] if attrs.get("id") else "",
-            'value': value,
-            'document': document,
-            'widget': output,
-            "input": input,
-            "type": self.type
-        }))
+        return mark_safe(
+            render_to_string(
+                template_name,
+                {
+                    "name": name,
+                    "id": attrs["id"] if attrs.get("id") else "",
+                    "value": value,
+                    "document": document,
+                    "widget": output,
+                    "input": input,
+                    "type": self.type,
+                },
+            )
+        )

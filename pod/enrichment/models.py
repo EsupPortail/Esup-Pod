@@ -13,23 +13,22 @@ from django.contrib.auth.models import Group
 
 from pod.video.models import Video
 from pod.main.models import get_nextautoincrement
-from select2 import fields as select2_fields
 
 import os
 import datetime
 
-if getattr(settings, 'USE_PODFILE', False):
+if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomImageModel
     from pod.podfile.models import CustomFileModel
     from pod.podfile.models import UserFolder
+
     FILEPICKER = True
 else:
     FILEPICKER = False
     from pod.main.models import CustomImageModel
     from pod.main.models import CustomFileModel
 
-FILES_DIR = getattr(
-    settings, 'FILES_DIR', 'files')
+FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
 __NAME__ = _("Enrichment")
 
@@ -37,44 +36,42 @@ __NAME__ = _("Enrichment")
 def enrichment_to_vtt(list_enrichment, video):
     webvtt = WebVTT()
     for enrich in list_enrichment:
-        start = datetime.datetime.utcfromtimestamp(
-            enrich.start).strftime('%H:%M:%S.%f')[:-3]
-        end = datetime.datetime.utcfromtimestamp(
-            enrich.end).strftime('%H:%M:%S.%f')[:-3]
+        start = datetime.datetime.utcfromtimestamp(enrich.start).strftime("%H:%M:%S.%f")[
+            :-3
+        ]
+        end = datetime.datetime.utcfromtimestamp(enrich.end).strftime("%H:%M:%S.%f")[:-3]
         url = enrichment_to_vtt_type(enrich)
         caption = Caption(
-            '{0}'.format(start),
-            '{0}'.format(end),
+            "{0}".format(start),
+            "{0}".format(end),
             [
-                '{',
+                "{",
                 '"title": "{0}",'.format(enrich.title),
                 '"type": "{0}",'.format(enrich.type),
-                '"stop_video": "{0}",'.format(
-                    "%s" % 1 if enrich.stop_video else 0),
+                '"stop_video": "{0}",'.format("%s" % 1 if enrich.stop_video else 0),
                 '"url": "{0}"'.format(url),
-                '}'
-            ]
+                "}",
+            ],
         )
         caption.identifier = enrich.slug
         webvtt.captions.append(caption)
-    temp_vtt_file = NamedTemporaryFile(suffix='.vtt')
-    with open(temp_vtt_file.name, 'w') as f:
+    temp_vtt_file = NamedTemporaryFile(suffix=".vtt")
+    with open(temp_vtt_file.name, "w") as f:
         webvtt.write(f)
     if FILEPICKER:
         videodir, created = UserFolder.objects.get_or_create(
-            name='%s' % video.slug,
-            owner=video.owner)
+            name="%s" % video.slug, owner=video.owner
+        )
         previousEnrichmentFile = CustomFileModel.objects.filter(
             name__startswith="enrichment",
             folder=videodir,
-            created_by=video.owner
+            created_by=video.owner,
         )
         for enr in previousEnrichmentFile:
             enr.delete()  # do it like this to delete file
         enrichmentFile, created = CustomFileModel.objects.get_or_create(
-            name='enrichment',
-            folder=videodir,
-            created_by=video.owner)
+            name="enrichment", folder=videodir, created_by=video.owner
+        )
 
         if enrichmentFile.file and os.path.isfile(enrichmentFile.file.path):
             os.remove(enrichmentFile.file.path)
@@ -88,79 +85,86 @@ def enrichment_to_vtt(list_enrichment, video):
 
 
 def enrichment_to_vtt_type(enrich):
-    if enrich.type == 'image':
+    if enrich.type == "image":
         return enrich.image.file.url
-    elif enrich.type == 'document':
+    elif enrich.type == "document":
         return enrich.document.file.url
-    elif enrich.type == 'richtext':
+    elif enrich.type == "richtext":
         richtext = enrich.richtext.replace('"', '\\"')
-        return ''.join(richtext.splitlines())
-    elif enrich.type == 'weblink':
+        return "".join(richtext.splitlines())
+    elif enrich.type == "weblink":
         return enrich.weblink
-    elif enrich.type == 'embed':
+    elif enrich.type == "embed":
         return enrich.embed.replace('"', '\\"')
 
 
 class Enrichment(models.Model):
 
     ENRICH_CHOICES = (
-        ('image', _("image")),
-        ('richtext', _("richtext")),
-        ('weblink', _("weblink")),
-        ('document', _("document")),
-        ('embed', _("embed")),
+        ("image", _("image")),
+        ("richtext", _("richtext")),
+        ("weblink", _("weblink")),
+        ("document", _("document")),
+        ("embed", _("embed")),
     )
 
-    video = select2_fields.ForeignKey(Video, verbose_name=_('video'))
+    video = models.ForeignKey(Video, verbose_name=_('video'),
+                              on_delete=models.CASCADE)
     title = models.CharField(_('title'), max_length=100)
     slug = models.SlugField(
-        _('slug'),
+        _("slug"),
         unique=True,
         max_length=105,
-        help_text=_('Used to access this instance, the "slug" is a short' +
-                    ' label containing only letters, numbers, underscore' +
-                    ' or dash top.'),
-        editable=False)
+        help_text=_(
+            'Used to access this instance, the "slug" is a short'
+            + " label containing only letters, numbers, underscore"
+            + " or dash top."
+        ),
+        editable=False,
+    )
     stop_video = models.BooleanField(
-        _('Stop video'),
+        _("Stop video"),
         default=False,
-        help_text=_(u'The video will pause when displaying the enrichment.'))
+        help_text=_(u"The video will pause when displaying the enrichment."),
+    )
     start = models.PositiveIntegerField(
-        _('Start'),
+        _("Start"),
         default=0,
-        help_text=_('Start of enrichment display in seconds.'))
+        help_text=_("Start of enrichment display in seconds."),
+    )
     end = models.PositiveIntegerField(
-        _('End'),
+        _("End"),
         default=1,
-        help_text=_('End of enrichment display in seconds.'))
+        help_text=_("End of enrichment display in seconds."),
+    )
     type = models.CharField(
-        _('Type'),
-        max_length=10,
-        choices=ENRICH_CHOICES,
-        null=True,
-        blank=True)
+        _("Type"), max_length=10, choices=ENRICH_CHOICES, null=True, blank=True
+    )
 
     image = models.ForeignKey(
-        CustomImageModel, verbose_name=_('Image'), null=True, blank=True)
+        CustomImageModel, verbose_name=_(
+            'Image'), null=True, on_delete=models.CASCADE, blank=True)
     document = models.ForeignKey(
         CustomFileModel,
-        verbose_name=_('Document'),
+        verbose_name=_("Document"),
         null=True,
         blank=True,
+        on_delete=models.CASCADE,
         help_text=_(u'Integrate an document (PDF, text, html)'))
     richtext = RichTextField(_('Richtext'), config_name='complete', blank=True)
     weblink = models.URLField(
         _(u'Web link'), max_length=200, null=True, blank=True)
     embed = models.TextField(
-        _('Embed'),
+        _("Embed code"),
         null=True,
         blank=True,
-        help_text=_(u'Integrate an external source.'))
+        help_text=_(u"Paste here a code from an external source to embed it."),
+    )
 
     class Meta:
-        verbose_name = _('Enrichment')
-        verbose_name_plural = _('Enrichments')
-        ordering = ['start']
+        verbose_name = _("Enrichment")
+        verbose_name_plural = _("Enrichments")
+        ordering = ["start"]
 
     @property
     def sites(self):
@@ -177,33 +181,53 @@ class Enrichment(models.Model):
 
     def verify_type(self, type):
         typelist = {
-            'image': self.image,
-            'richtext': self.richtext,
-            'weblink': self.weblink,
-            'document': self.document,
-            'embed': self.embed
+            "image": self.image,
+            "richtext": self.richtext,
+            "weblink": self.weblink,
+            "document": self.document,
+            "embed": self.embed,
         }
         if type not in typelist:
-            return _('Please enter a correct {0}.'.format(type))
+            return _("Please enter a correct {0}.".format(type))
 
     def verify_all_fields(self):
         msg = list()
-        if (not self.title or self.title == '' or len(self.title) < 2 or
-                len(self.title) > 100):
-            msg.append(_('Please enter a title from 2 to 100 characters.'))
-        if (self.start is None or self.start == '' or self.start < 0 or
-                self.start >= self.video.duration):
-            msg.append(_('Please enter a correct start field between 0 and ' +
-                         '{0}.'.format(self.video.duration - 1)))
-        if (not self.end or self.end == '' or self.end <= 0 or
-                self.end > self.video.duration):
-            msg.append(_('Please enter a correct end field between 1 and ' +
-                         '{0}.'.format(self.video.duration)))
+        if (
+            not self.title
+            or self.title == ""
+            or len(self.title) < 2
+            or len(self.title) > 100
+        ):
+            msg.append(_("Please enter a title from 2 to 100 characters."))
+        if (
+            self.start is None
+            or self.start == ""
+            or self.start < 0
+            or self.start >= self.video.duration
+        ):
+            msg.append(
+                _(
+                    "Please enter a correct start field between 0 and "
+                    + "{0}.".format(self.video.duration - 1)
+                )
+            )
+        if (
+            not self.end
+            or self.end == ""
+            or self.end <= 0
+            or self.end > self.video.duration
+        ):
+            msg.append(
+                _(
+                    "Please enter a correct end field between 1 and "
+                    + "{0}.".format(self.video.duration)
+                )
+            )
         if self.type:
             if self.verify_type(self.type):
                 msg.append(self.verify_type(self.type))
         else:
-            msg.append(_('Please enter a type.'))
+            msg.append(_("Please enter a type."))
 
         if len(msg) > 0:
             return msg
@@ -215,15 +239,17 @@ class Enrichment(models.Model):
         video = Video.objects.get(id=self.video.id)
         if self.start > self.end:
             msg.append(
-                _('The value of the start field is greater than the value ' +
-                  'of end field.'))
+                _(
+                    "The value of the start field is greater than the value "
+                    + "of end field."
+                )
+            )
         if self.end > video.duration:
             msg.append(
-                _('The value of end field is greater than ' +
-                    'the video duration.'))
+                _("The value of end field is greater than " + "the video duration.")
+            )
         if self.end and self.start == self.end:
-            msg.append(
-                _('End field and start field can\'t be equal.'))
+            msg.append(_("End field and start field can't be equal."))
 
         if len(msg) > 0:
             return msg
@@ -240,13 +266,17 @@ class Enrichment(models.Model):
             list_enrichment = list_enrichment.exclude(id=instance.id)
         if len(list_enrichment) > 0:
             for element in list_enrichment:
-                if not ((self.start < element.start and
-                         self.end <= element.start) or
-                        (self.start >= element.end and
-                         self.end > element.end)):
-                    msg.append(_("There is an overlap with the enrichment {0},"
-                                 " please change time start and/or "
-                                 "time end values.").format(element.title))
+                if not (
+                    (self.start < element.start and self.end <= element.start)
+                    or (self.start >= element.end and self.end > element.end)
+                ):
+                    msg.append(
+                        _(
+                            "There is an overlap with the enrichment {0},"
+                            " please change time start and/or "
+                            "time end values."
+                        ).format(element.title)
+                    )
             if len(msg) > 0:
                 return msg
         return list()
@@ -258,18 +288,18 @@ class Enrichment(models.Model):
                 newid = get_nextautoincrement(Enrichment)
             except Exception:
                 try:
-                    newid = Enrichment.objects.latest('id').id
+                    newid = Enrichment.objects.latest("id").id
                     newid += 1
                 except Exception:
                     newid = 1
         else:
             newid = self.id
-        newid = '{0}'.format(newid)
-        self.slug = '{0} - {1}'.format(newid, slugify(self.title))
+        newid = "{0}".format(newid)
+        self.slug = "{0} - {1}".format(newid, slugify(self.title))
         super(Enrichment, self).save(*args, **kwargs)
 
     def __str__(self):
-        return u'Media : {0} - Video: {1}'.format(self.title, self.video)
+        return u"Media : {0} - Video: {1}".format(self.title, self.video)
 
 
 @receiver(post_save, sender=Enrichment)
@@ -294,6 +324,7 @@ class EnrichmentVtt(models.Model):
     src = models.ForeignKey(CustomFileModel,
                             blank=True,
                             null=True,
+                            on_delete=models.CASCADE,
                             verbose_name=_('Subtitle file'))
 
     @property
@@ -308,30 +339,29 @@ class EnrichmentVtt(models.Model):
 
     def verify_attributs(self):
         msg = list()
-        if 'vtt' not in self.src.file_type:
+        if "vtt" not in self.src.file_type:
             msg.append(_('Only ".vtt" format is allowed.'))
         return msg
 
     class Meta:
-        ordering = ['video']
-        verbose_name = _('Enrichment Vtt')
-        verbose_name_plural = _('Enrichments Vtt')
+        ordering = ["video"]
+        verbose_name = _("Enrichment Vtt")
+        verbose_name_plural = _("Enrichments Vtt")
 
 
 class EnrichmentGroup(models.Model):
-    video = select2_fields.OneToOneField(Video, verbose_name=_('Video'),
-                                         # editable=False, null=True,
-                                         on_delete=models.CASCADE)
-    groups = select2_fields.ManyToManyField(
+    video = models.OneToOneField(Video, verbose_name=_('Video'),
+                                 on_delete=models.CASCADE)
+    groups = models.ManyToManyField(
         Group, blank=True, verbose_name=_('Groups'),
         help_text=_('Select one or more groups who'
                     ' can access to the'
                     ' enrichment of the video'))
 
     class Meta:
-        ordering = ['video']
-        verbose_name = _('Enrichment Video Group')
-        verbose_name_plural = _('Enrichment Video Groups')
+        ordering = ["video"]
+        verbose_name = _("Enrichment Video Group")
+        verbose_name_plural = _("Enrichment Video Groups")
 
     @property
     def sites(self):

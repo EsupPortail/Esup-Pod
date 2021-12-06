@@ -347,7 +347,8 @@ HIDE_LOCAL_LOGIN = False
 SHOW_ONLY_PARENT_THEMES = False
 
 """
-# Organiser l'affichage des vidéos dans des themes par sections pliables
+# Affichage uniquement des vidéos de la chaîne ou du thème actuel(le).
+# Affichage des sous-thèmes directs de la chaîne ou du thème actuel(le)
 """
 ORGANIZE_BY_THEME = False
 
@@ -925,7 +926,7 @@ CREATE_GROUP_FROM_AFFILIATION = False
 
 """
 # Si True, des groupes sont créés automatiquement
-#  à partir des groupes (attribut groups à memberOf) 
+#  à partir des groupes (attribut groups à memberOf)
 #  des individus qui se connectent sur la plateforme
 #  et l'individu qui se connecte est ajouté automatiquement à ces groupes
 """
@@ -1193,6 +1194,15 @@ USE_BBB_LIVE_DOWNLOADING = False
 BBB_NUMBER_MAX_LIVES = 4
 
 """
+# Version de BigBlueButton utilisée.
+# Si les URLs de présentations Web contiennent /2.3/ (et non /2.0/),
+# il est nécessaire de mettre ce paramètre à True.
+# Remarque : si vous utilisez Scalelite, il est possible que les URLS générés soient 
+# au format 2.3 même si la version de BigBlueButton est une 2.2.X.
+"""
+BBB_VERSION_IS_23 = False
+
+"""
 #
 # Permet d'activer le fonctionnement de categorie au niveau de ses vidéos
 # Vous pouvez créer des catégories pour pouvoir ranger vos propres vidéos
@@ -1282,7 +1292,7 @@ DARKMODE_ENABLED = False
 DYSLEXIAMODE_ENABLED = False
 
 """
-# Ce paramètre permet d'afficher un lien "En savoir plus" 
+# Ce paramètre permet d'afficher un lien "En savoir plus"
 # sur la boite de dialogue d'information sur l'usage des cookies dans Pod.
 # On peut préciser un lien vers les mentions légales ou page dpo
 """

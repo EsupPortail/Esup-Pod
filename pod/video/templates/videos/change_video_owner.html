@@ -1,0 +1,92 @@
+{% extends "base.html" %} {% load i18n %} {% load static %}
+
+{% block opengraph %}
+ {{block.super }}
+<link rel="stylesheet" href="{% static 'css/change_video_owner.css' %}" />
+<link
+	rel="stylesheet"
+	type="text/css"
+	href="{% static 'css/paginator.css' %}?ver={{VERSION}}"
+/>
+{% endblock opengraph %}
+
+{% block page_title %}
+{%trans "Edit video owner" %}
+{%endblock page_title %}
+{% block more_script %}
+<script src="{% static 'js/change_video_owner.js' %}"></script>
+{% endblock more_script %}
+{% block content %}
+<main>
+	<div class="container change_video_owner">
+		<div class="content">
+			<form class="form" autocomplete="off">
+				{% csrf_token %}
+				<h1 class="title">{% trans "Change the video owner" %}</h1>
+				<div class="form-wrapper">
+					<label for="oldlogin" class="form-wrapper__label"
+						>{% trans "Old owner" %}<i class="required">*</i></label
+					>
+					<input
+						type="text"
+						id="oldlogin"
+						class="form-wrapper__control"
+						placeholder="{% trans 'FirstName/LastName' %}"
+					/>
+					<div class="oldlogin suggestions"></div>
+				</div>
+				<div class="form-wrapper">
+					<label for="newlogin" class="form-wrapper__label"
+						>{% trans "New owner" %}<i class="required">*</i></label
+					>
+					<input
+						type="text"
+						id="newlogin"
+						class="form-wrapper__control"
+						placeholder="{% trans 'FirstName/LastName' %}"
+					/>
+					<div class="newlogin suggestions"></div>
+				</div>
+				<div class="form-wrapper select-videos">
+					<div class="form-wrapper full-width">
+						<label for="list_videos_search">{% trans "Filter" %}</label>
+						<input
+							name="all"
+							placeholder="{% trans 'Filter by title' %}"
+							type="text"
+							id="list_videos__search"
+							class="list_videos__search"
+						/>
+						<div class="newlogin suggestions semi-width"></div>
+					</div>
+					<div class="form-wrapper select_all_wrapper full-width">
+							<label class="label-control"
+								>{% trans "Click on the video(s) to edit" %}<i class="required"
+									>*</i
+								></label
+							>
+							<div class="flex">
+								<label for="select_all"
+									>{% trans "Select/Deselect all videos" %}</label
+								>
+								<input
+									name="select_all"
+									type="checkbox"
+									id="select_all"
+									class="select_all"
+								/>
+							</div>
+					</div>
+					<div class="form-wrapper__control select-videos"></div>
+					{% include "videos/paginator.html" with disable_next=True%}
+					<div class="form-wrapper full-width children-center">
+						<button id="submitChanges" class="btn btn-primary">
+							{% trans "Submit changes" %}
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</main>
+{% endblock content %}
