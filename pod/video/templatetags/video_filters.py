@@ -1,3 +1,4 @@
+"""Esup-Pod video custom filters."""
 from django import template
 from html.parser import HTMLParser
 import html
@@ -11,7 +12,8 @@ html_parser = html
 @register.filter(name="metaformat")
 def metaformat(content):
     """
-        Meta tag content text formatter
+        Meta tag content text formatter.
+
     Tries to make meta tag content more usable, by removing HTML entities and
     control chars. Works in conjunction with [striptags] and maybe [safe]
     this way:
