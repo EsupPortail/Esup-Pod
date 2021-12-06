@@ -327,11 +327,11 @@ def my_channels(request):
         .filter(sites=site)
         .annotate(video_count=Count("video", distinct=True))
     )
-    return render(request,
-                  "channel/my_channels.html",
-                  {"channels": channels,
-                   "page_title": _("My channels")
-                   })
+    return render(
+        request,
+        "channel/my_channels.html",
+        {"channels": channels, "page_title": _("My channels")},
+    )
 
 
 @csrf_protect
