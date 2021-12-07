@@ -351,3 +351,34 @@ def delete_record(request, id=None):
     return render(
         request, "recorder/record_delete.html", {"record": record, "form": form}
     )
+
+
+# OPENCAST VIEWS
+@login_required(redirect_field_name="referrer")
+def ingest_createMediaPackage(request):
+    return JsonResponse({})
+
+
+@login_required(redirect_field_name="referrer")
+def ingest_addDCCatalog(request):
+    return JsonResponse({})
+
+
+@login_required(redirect_field_name="referrer")
+def ingest_addAttachment(request):
+    return JsonResponse({})
+
+
+@login_required(redirect_field_name="referrer")
+def ingest_addTrack(request):
+    return JsonResponse({})
+
+
+@login_required(redirect_field_name="referrer")
+def ingest_addCatalog(request):
+    return JsonResponse({})
+
+
+@login_required(redirect_field_name="referrer")
+def ingest_ingest(request):
+    return JsonResponse({})
