@@ -1,6 +1,7 @@
 {% load staticfiles custom_tags %}
 {% load i18n %}
 {% get_setting "VIDEO_PLAYBACKRATES" '[0.5, 1, 1.5, 2]' as video_playbackrates %}
+{% get_setting "USE_VIDEO_EVENT_TRACKING" False as video_event_tracking %}
 <script id="id_video_script">
 window.onmessage = function(event) {
    var evt = event || window.event;
@@ -176,6 +177,41 @@ player.on('firstplay', function(){
     player.videoJsChapters();
     $('.vjs-big-play-button').css('z-index', 2)
     $('.vjs-control-bar').css('z-index', 3);
+{% endif %}
+
+{% if video_event_tracking %}
+  player.on('play', function() {
+    console.log("Video play: " + player.currentTime());
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'play', player.currentTime()]);
+  });
+  player.on('pause', function() {
+    console.log("Video pause: " + player.currentTime());
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'pause', player.currentTime()]);
+  });
+  player.on("seeked", function (e) {
+    console.log("Video seek: " + player.currentTime());
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'seeked', player.currentTime()]);
+  });
+  player.on("ended", function (e) {
+    console.log("Video ended : "+ player.currentTime());
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ended', player.currentTime()]);
+  });
+  player.on("ratechange", function (e) {
+    console.log("Video ratechange : "+ player.currentTime());
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ratechange', player.currentTime()]);
+  });
+  player.on("fullscreenchange", function (e) {
+    console.log("Video fullscreenchange : "+ player.currentTime());
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'fullscreen :'+ player.isFullscreen(), player.currentTime()]);
+  });
+  player.on("error", function (e) {
+    console.log("Video error : "+ player.error());
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'error', player.error()]);
+  });
+  player.on("loadedmetadata", function (e) {
+    console.log("Video loadedmetadata : ");
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'loadedmetadata']);
+  });
 {% endif %}
 
 </script>
