@@ -181,35 +181,27 @@ player.on('firstplay', function(){
 
 {% if video_event_tracking %}
   player.on('play', function() {
-    console.log("Video play: " + player.currentTime());
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'play', player.currentTime()]);
   });
   player.on('pause', function() {
-    console.log("Video pause: " + player.currentTime());
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'pause', player.currentTime()]);
   });
   player.on("seeked", function (e) {
-    console.log("Video seek: " + player.currentTime());
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'seeked', player.currentTime()]);
   });
   player.on("ended", function (e) {
-    console.log("Video ended : "+ player.currentTime());
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ended', player.currentTime()]);
   });
   player.on("ratechange", function (e) {
-    console.log("Video ratechange : "+ player.currentTime());
-    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ratechange', player.currentTime()]);
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ratechange', player.playbackRate()]);
   });
   player.on("fullscreenchange", function (e) {
-    console.log("Video fullscreenchange : "+ player.currentTime());
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'fullscreen :'+ player.isFullscreen(), player.currentTime()]);
   });
   player.on("error", function (e) {
-    console.log("Video error : "+ player.error());
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'error', player.error()]);
   });
   player.on("loadedmetadata", function (e) {
-    console.log("Video loadedmetadata : ");
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'loadedmetadata']);
   });
 {% endif %}
