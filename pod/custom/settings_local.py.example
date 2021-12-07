@@ -1309,3 +1309,10 @@ DYSLEXIAMODE_ENABLED = False
 # On peut préciser un lien vers les mentions légales ou page dpo
 """
 COOKIE_LEARN_MORE = ""
+
+"""
+# Ce paramètre permet d'activer l'envoi d'évènement sur le lecteur vidéo à Matomo
+# n'est utile que si le code piwik / matomo est présent dans l'instance de Esup-Pod
+# le evts envoyés sont : play, pause, seeked, ended, ratechange, fullscreen, error, loadmetadata
+"""
+USE_VIDEO_EVENT_TRACKING = False
