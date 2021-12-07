@@ -1017,7 +1017,8 @@ class video_countTestView(TestCase):
         print(" --->  test_video_countTestView_post_request of video_countTestView: OK!")
 
 
-# add test to video record : USE_VIDEO_RECORD = True
+# add test to video opencast studio : USE_OPENCAST_STUDIO = True
+"""
 class video_recordTestView(TestCase):
     fixtures = [
         "initial_data.json",
@@ -1084,7 +1085,7 @@ class video_recordTestView(TestCase):
             " --->  test_video_recordTestView_upload_recordvideo ",
             "of video_recordTestView: OK!",
         )
-
+"""
 
 class VideoTestUpdateOwner(TransactionTestCase):
     fixtures = [
