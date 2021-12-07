@@ -4,25 +4,21 @@
   <meta name="robots" content="NONE,NOARCHIVE">
 {% endblock %}
 
-{% block page_title %}{% trans 'Authentication' %}{% endblock %}
-
 {% block page_content %}
 {% get_setting "HIDE_LOCAL_LOGIN" default=False as local_login %}
 
-<h2>{% trans 'Authentication' %}</h2>
-
 <div class="text-center">
   {% if USE_CAS %}
-  <p><a class="btn btn-primary" role="button" href="{% url 'cas-login' %}?next={{ referrer|urlencode }}">{% trans "Single sign on" %} {{TITLE_ETB}}</a></p>
+    <p><a class="btn btn-primary" role="button" href="{% url 'cas-login' %}?next={{ referrer|urlencode }}">{% trans "Single sign on" %} {{TITLE_ETB}}</a></p>
   {% endif %}
   {% if USE_SHIB %}
-    <p><a class="btn btn-primary" role="button" href="{{SHIB_URL }}?target={{ referrer|urlencode }}">{{ SHIB_NAME}}</a></p>
+    <p><a class="btn btn-primary" role="button" href="{{SHIB_URL }}?target={{ referrer|urlencode }}">{{SHIB_NAME}}</a></p>
   {% endif %}
   {% if USE_OIDC %}
-  <p><a class="btn btn-primary" href="{%url 'oidc_authentication_init' %}"  title="{{ OIDC_NAME }}">{{ OIDC_NAME}}</a></p>
+    <p><a class="btn btn-primary" href="{%url 'oidc_authentication_init' %}"  title="{{ OIDC_NAME }}">{{OIDC_NAME}}</a></p>
   {% endif %}
   {% if not local_login %}
-  <p><a class="btn btn-secondary" role="button" href="{% url 'local-login'%}?{% if request.GET.is_iframe %}is_iframe=true&{%endif%}next={{ referrer|urlencode }}">{% trans "Local sign on" %}</a></p>
+    <p><a class="btn btn-secondary" role="button" href="{% url 'local-login'%}?{% if request.GET.is_iframe %}is_iframe=true&amp;{%endif%}next={{ referrer|urlencode }}">{% trans "Local sign on" %}</a></p>
   {% endif %}
 </div>
 

@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-14 19:18+0000\n"
-"PO-Revision-Date: 2021-03-26 17:58+0100\n"
+"POT-Creation-Date: 2021-11-26 10:16+0100\n"
+"PO-Revision-Date: 2021-11-26 10:18+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 3.0\n"
 
 #: pod/chapter/static/js/chapters.js:9 pod/chapter/static/js/chapters.js:14
 #: pod/enrichment/static/js/enrichment.js:9
@@ -84,7 +84,7 @@ msgstr "commencent au même moment."
 msgid "Chapters"
 msgstr "Chapitres"
 
-#: pod/completion/static/js/caption_maker.js:26
+#: pod/completion/static/js/caption_maker.js:29
 msgid ""
 "WEBVTT\n"
 "\n"
@@ -96,49 +96,47 @@ msgstr ""
 "temps début(00:00.000) --> temps fin(00:00.000)\n"
 "texte de sous-titre"
 
-#: pod/completion/static/js/caption_maker.js:42
-#: pod/completion/static/js/caption_maker.js:740
+#: pod/completion/static/js/caption_maker.js:48
+#: pod/completion/static/js/caption_maker.js:902
 msgid "Unrecognized caption file format."
-msgstr "Format de fichier de traduction non reconnu"
+msgstr "Format de fichier de traduction non reconnu."
 
-#: pod/completion/static/js/caption_maker.js:54
+#: pod/completion/static/js/caption_maker.js:59
 msgid "There is no captions to save"
 msgstr "Il n’y a aucun sous-titre à sauvegarder"
 
-#: pod/completion/static/js/caption_maker.js:85
-#: pod/completion/static/js/caption_maker.js:754
+#: pod/completion/static/js/caption_maker.js:94
+#: pod/completion/static/js/caption_maker.js:916
 msgid "Not a valid time track file."
-msgstr "Fichier de traduction invalide"
+msgstr "Fichier de traduction invalide."
 
-#: pod/completion/static/js/caption_maker.js:106
+#: pod/completion/static/js/caption_maker.js:115
 msgid "error during exchange"
 msgstr "erreur durant le téléversement"
 
-#: pod/completion/static/js/caption_maker.js:110
+#: pod/completion/static/js/caption_maker.js:119
 msgid "no data could be stored."
 msgstr "aucune donnée ne peut être stockée."
 
-#: pod/completion/static/js/caption_maker.js:162
+#: pod/completion/static/js/caption_maker.js:181
 msgid "Are you sure you want to delete all caption?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer les sous-titre ?"
 
-#: pod/completion/static/js/caption_maker.js:713
+#: pod/completion/static/js/caption_maker.js:867
 msgid "Error reading caption file. Code = "
 msgstr "Erreur durant la lecture du fichier de traduction, Code = "
 
-#: pod/completion/static/js/caption_maker.js:719
+#: pod/completion/static/js/caption_maker.js:874
 msgid "Exception thrown reading caption file. Code = "
 msgstr "Une exception a été levée durant la lecture du fichier. Code = "
 
-#: pod/completion/static/js/caption_maker.js:722
+#: pod/completion/static/js/caption_maker.js:878
 msgid "Your browser does not support FileReader."
-msgstr "Votre navigateur ne supporte pas FileReader"
+msgstr "Votre navigateur ne supporte pas FileReader."
 
-#: pod/completion/static/js/caption_maker.js:729
-#, fuzzy
-#| msgid "Error during exchange"
+#: pod/completion/static/js/caption_maker.js:885
 msgid "Error loading caption file: "
-msgstr "Erreur durant le téléversement"
+msgstr "Erreur durant le chargement du fichier de sous-titres : "
 
 #: pod/completion/static/js/completion.js:175
 #: pod/podfile/static/podfile/js/filewidget.js:277
@@ -435,6 +433,14 @@ msgid "The file extension not in the allowed extension:"
 msgstr ""
 "Cette extension de fichier n'est pas présente dans les extensions "
 "autorisées :"
+
+#: pod/playlist/static/js/playlist.js:172
+msgid "The video can not be added from this page."
+msgstr "La vidéo ne peut être ajoutée depuis cette page."
+
+#: pod/playlist/static/js/playlist.js:179
+msgid "The video slug not found."
+msgstr "La vidéo est introuvable."
 
 #: pod/podfile/static/podfile/js/filewidget.js:11
 msgid "Change image"

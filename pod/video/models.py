@@ -215,12 +215,13 @@ def select_video_owner():
 
 
 def remove_accents(input_str):
+    """Remove diacritics in input string."""
     nkfd_form = unicodedata.normalize("NFKD", input_str)
     return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
 
 
 def get_storage_path_video(instance, filename):
-    """Get the storage path.
+    """Get the video storage path.
 
     Instance needs to implement owner
     """
@@ -249,6 +250,8 @@ def get_storage_path_video(instance, filename):
 
 
 class Channel(models.Model):
+    """Class describing Channels objects."""
+
     title = models.CharField(
         _("Title"),
         max_length=100,
@@ -334,17 +337,22 @@ class Channel(models.Model):
     sites = models.ManyToManyField(Site)
 
     class Meta:
+        """Metadata subclass for Channel object."""
+
         ordering = ["title"]
         verbose_name = _("Channel")
         verbose_name_plural = _("Channels")
 
     def __str__(self):
+        """Display a channel object as string."""
         return "%s" % (self.title)
 
     def get_absolute_url(self):
+        """Return channel absolute URL."""
         return reverse("channel", args=[str(self.slug)])
 
     def get_all_theme(self):
+        """Return the list of all child themes in current channel."""
         list_theme = []
         themes = self.themes.filter(parentId=None).order_by("title")
         for theme in themes:
@@ -360,9 +368,11 @@ class Channel(models.Model):
         return list_theme
 
     def get_all_theme_json(self):
+        """Return theme list in json format."""
         return json.dumps(self.get_all_theme())
 
     def save(self, *args, **kwargs):
+        """Store the channel object in db."""
         self.slug = slugify(self.title)
         super(Channel, self).save(*args, **kwargs)
 
@@ -374,6 +384,11 @@ def default_site_channel(sender, instance, created, **kwargs):
 
 
 class Theme(models.Model):
+    """Class describing a them object.
+
+    A theme is a child of channel or another theme object.
+    """
+
     parentId = models.ForeignKey(
         "self",
         null=True,
@@ -425,19 +440,24 @@ class Theme(models.Model):
 
     @property
     def sites(self):
+        """Return sites associated to parent channel."""
         return self.channel.sites
 
     def __str__(self):
+        """Display current theme as string."""
         return "%s: %s" % (self.channel.title, self.title)
 
     def get_absolute_url(self):
+        """Get current theme absolute URL."""
         return reverse("theme", args=[str(self.channel.slug), str(self.slug)])
 
     def save(self, *args, **kwargs):
+        """Store current theme object in db."""
         self.slug = slugify(self.title)
         super(Theme, self).save(*args, **kwargs)
 
     def get_all_children_tree(self):
+        """Get a tree of all theme children."""
         children = []
         try:
             child_list = self.children.all().order_by("title")
@@ -456,6 +476,7 @@ class Theme(models.Model):
         return children
 
     def get_all_children_flat(self):
+        """Get a flat list of all theme children."""
         children = [self]
         try:
             child_list = self.children.all()
@@ -466,9 +487,11 @@ class Theme(models.Model):
         return children
 
     def get_all_children_tree_json(self):
+        """Get a json tree of all theme children."""
         return json.dumps(self.get_all_children_tree())
 
     def get_all_parents(self):
+        """Get a list of all theme parents."""
         parents = [self]
         if self.parentId is not None:
             parent = self.parentId
@@ -498,6 +521,8 @@ class Theme(models.Model):
             )
 
     class Meta:
+        """Metadata subclass of theme object."""
+
         ordering = ["channel", "title"]
         verbose_name = _("Theme")
         verbose_name_plural = _("Themes")
@@ -579,6 +604,8 @@ def default_site_discipline(sender, instance, created, **kwargs):
 
 
 class Video(models.Model):
+    """Class describing video objects."""
+
     video = models.FileField(
         _("Video"),
         upload_to=get_storage_path_video,
@@ -591,7 +618,7 @@ class Video(models.Model):
         help_text=_(
             "Please choose a title as short and accurate as "
             "possible, reflecting the main subject / context "
-            "of the content.(max length: 250 characters)"
+            "of the content. (max length: 250 characters)"
         ),
     )
     slug = models.SlugField(
@@ -742,12 +769,15 @@ class Video(models.Model):
     )
 
     class Meta:
+        """Metadata subclass for Video object."""
+
         ordering = ["-date_added", "-id"]
         get_latest_by = "date_added"
         verbose_name = _("video")
         verbose_name_plural = _("videos")
 
     def save(self, *args, **kwargs):
+        """Store a video object in db."""
         newid = -1
         if not self.id:
             try:
@@ -775,6 +805,7 @@ class Video(models.Model):
         super(Video, self).save(*args, **kwargs)
 
     def __str__(self):
+        """Display a video object as string."""
         if self.id:
             return "%s - %s" % ("%04d" % self.id, self.title)
         else:
@@ -786,12 +817,14 @@ class Video(models.Model):
 
     @property
     def viewcount(self):
+        """Get the view counter of a video."""
         return self.get_viewcount()
 
     viewcount.fget.short_description = _("Sum of view")
 
     @property
     def get_encoding_step(self):
+        """Get the current encoding step of a video."""
         try:
             es = EncodingStep.objects.get(video=self)
         except ObjectDoesNotExist:
@@ -801,6 +834,7 @@ class Video(models.Model):
     get_encoding_step.fget.short_description = _("Encoding step")
 
     def get_thumbnail_url(self):
+        """Get a thumbnail url for the video."""
         request = None
         if self.thumbnail and self.thumbnail.file_exist():
             thumbnail_url = "".join(
@@ -846,19 +880,21 @@ class Video(models.Model):
         else:
             thumbnail_url = static(DEFAULT_THUMBNAIL)
         return (
-            '<img class="card-img-top" src="%s" alt="%s"\
+            '<img class="card-img-top" src="%s" alt=""\
             loading="lazy"/>'
-            % (thumbnail_url, self.title.replace('"', "'"))
+            % (thumbnail_url)
         )
 
     @property
     def duration_in_time(self):
+        """Get the duration of a video."""
         return time.strftime("%H:%M:%S", time.gmtime(self.duration))
 
     duration_in_time.fget.short_description = _("Duration")
 
     @property
     def encoded(self):
+        """Get the encoded status of a video."""
         return (
             self.get_playlist_master() is not None
             or self.get_video_mp4() is not None
@@ -869,6 +905,7 @@ class Video(models.Model):
 
     @property
     def get_version(self):
+        """Get the version of a video."""
         try:
             return self.videoversion.version
         except VideoVersion.DoesNotExist:
@@ -911,15 +948,18 @@ class Video(models.Model):
                     return version["url"]
 
     def get_viewcount(self):
+        """Get the view counter of a video."""
         count_sum = self.viewcount_set.all().aggregate(Sum("count"))
         if count_sum["count__sum"] is None:
             return 0
         return count_sum["count__sum"]
 
     def get_absolute_url(self):
+        """Get the video absolute URL."""
         return reverse("video", args=[str(self.slug)])
 
     def get_full_url(self, request=None):
+        """Get the video full URL."""
         full_url = "".join(
             ["//", get_current_site(request).domain, self.get_absolute_url()]
         )
@@ -931,6 +971,7 @@ class Video(models.Model):
         ).hexdigest()
 
     def delete(self):
+        """Delete the current video file and db object."""
         if self.video:
             if os.path.isfile(self.video.path):
                 os.remove(self.video.path)
@@ -950,6 +991,7 @@ class Video(models.Model):
             return None
 
     def get_video_m4a(self):
+        """Get the audio (m4a) version of the video."""
         try:
             return EncodingAudio.objects.get(
                 name="audio", video=self, encoding_format="video/mp4"
@@ -958,6 +1000,7 @@ class Video(models.Model):
             return None
 
     def get_video_mp3(self):
+        """Get the audio (mp3) version of the video."""
         try:
             return EncodingAudio.objects.get(
                 name="audio", video=self, encoding_format="audio/mp3"
@@ -966,6 +1009,7 @@ class Video(models.Model):
             return None
 
     def get_video_mp4(self):
+        """Get the mp4 version of the video."""
         return EncodingVideo.objects.filter(video=self, encoding_format="video/mp4")
 
     def get_video_json(self, extensions):
@@ -1066,6 +1110,81 @@ class Video(models.Model):
             logger.error(
                 "An error occured during get_json_to_index"
                 " for video %s: %s" % (self.id, e)
+            )
+            return json.dumps({})
+
+    def get_json_to_video_view(video, other_data_to_dump):
+        try:
+            video_src = {}
+            if video.is_video:
+                video_src["mp4"] = video.get_video_mp4_json()
+                m3u8 = video.get_playlist_master()
+                if m3u8:
+                    video_src["m3u8"] = {
+                        "src": m3u8.source_file.url,
+                        "type": m3u8.encoding_format,
+                    }
+            else:
+                m4a = video.get_video_m4a()
+                video_src["m4a"] = {
+                    "src": m4a.source_file.url,
+                    "type": m4a.encoding_format,
+                }
+
+            list_track = list(
+                map(
+                    lambda t: {
+                        "id": t.id,
+                        "kind": t.kind,
+                        "src": t.src.file.url,
+                        "srclang": t.lang,
+                        "label": t.get_label_lang(),
+                    },
+                    video.track_set.all(),
+                ),
+            )
+            list_overlay = list(
+                map(
+                    lambda o: {
+                        "start": o.time_start,
+                        "end": o.time_end,
+                        "content": o.content,
+                        "align": o.position,
+                        "showBackground": o.background,
+                    },
+                    video.overlay_set.all(),
+                ),
+            )
+            list_chapter = list(
+                map(
+                    lambda c: {"time_start": c.time_start, "id": c.id, "title": c.title},
+                    video.chapter_set.all(),
+                ),
+            )
+            overview = video.overview.url if (video.overview) else ""
+            data_to_dump = {
+                "status": "ok",
+                "version": video.get_version,
+                "slug": video.slug,
+                "title": video.title,
+                "tracks": list_track,
+                "is_video": video.is_video,
+                "src": video_src,
+                "is_360": video.is_360,
+                "thumbnail": video.get_thumbnail_url(),
+                "overview": overview,
+                "overlay": list_overlay,
+                "chapter": list_chapter,
+            }
+            if hasattr(video, "enrichmentvtt"):
+                data_to_dump["enrichtracksrc"] = video.enrichmentvtt.src.file.url
+            for k in other_data_to_dump:
+                data_to_dump[k] = other_data_to_dump[k]
+            return json.dumps(data_to_dump)
+        except ObjectDoesNotExist as e:
+            logger.error(
+                "An error occured during get_json_to_video_view"
+                " for video %s: %s" % (video.id, e)
             )
             return json.dumps({})
 

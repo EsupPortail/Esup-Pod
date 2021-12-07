@@ -27,10 +27,10 @@
     {% include "videos/category_modal.html" %}
   {% endif %}
   {% if videos.paginator.count == 0 %}
-    <h3>{% trans "No video found"%}</h3>
+    <h2 class="h4">{% trans "No video found"%}</h2>
     <p class="alert alert-info">{% trans 'You have not uploaded any videos yet, please use the "Add a new video" button to add one'%}</p>
   {% else %}
-    <h3>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h3>
+    <h2 class="h4">{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
     <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the video on which you want to work with." %}</p>
     {% include "videos/video_list.html" %}
   {% endif %}

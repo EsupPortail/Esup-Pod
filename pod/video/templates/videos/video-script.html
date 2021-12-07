@@ -2,7 +2,7 @@
 {% load static custom_tags %}
 {% load i18n %}
 {% get_setting "VIDEO_PLAYBACKRATES" '[0.5, 1, 1.5, 2]' as video_playbackrates %}
-<script>
+<script id="id_video_script">
 window.onmessage = function(event) {
    var evt = event || window.event;
    {# maybe use request.get_host to protect it... #}
@@ -16,11 +16,11 @@ window.onmessage = function(event) {
     }
     if(evt.data.type == 'player:mute') {
       player.muted(true);
-      evt.source.postMessage({paused: player.muted(), data: {}}, evt.origin);
+      evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
     }
     if(evt.data.type == 'player:unmute') {
       player.muted(false);
-      evt.source.postMessage({paused: player.muted(), data: {}}, evt.origin);
+      evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
     }
 };
 const seektime = 10;
@@ -32,15 +32,13 @@ const options = {
   {% else %}
     fluid: true,
   {% endif %}
-  //playbackRates: [0.5, 1, 1.5, 2],
   playbackRates: {{video_playbackrates}},
   userActions: {
     hotkeys: function(event) {
       // `this` is the player in this context
       if (event.code === 'Space') {
         event.preventDefault();
-        var isPlaying = !this.paused();
-        if(isPlaying) this.pause();
+        if(!this.paused()) this.pause();
         else this.play();
       }
       if (event.key === 'm') {
@@ -155,10 +153,6 @@ player.on('firstplay', function(){
     player.vr({projection: '360'});
   {% endif %}
   //add logo to the player
-  {% if request.GET.is_iframe %}
-  player.videoJsInfo();
-  {%endif%}
-
   player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
 {% else %}
   {% if video.get_video_m4a %}
@@ -168,9 +162,6 @@ player.on('firstplay', function(){
     };
     //Add source to player
     player.src(srcOptions);
-    {% if request.GET.is_iframe %}
-    player.videoJsInfo();
-    {%endif%}
     //add logo to the player
     player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
     player.on('loadedmetadata', function() {
@@ -180,6 +171,8 @@ player.on('firstplay', function(){
     });
   {% endif %}
 {% endif %}
+
+
 {% if video.chapter_set.all %}
     player.videoJsChapters();
     $('.vjs-big-play-button').css('z-index', 2)

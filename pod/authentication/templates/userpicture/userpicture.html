@@ -24,32 +24,30 @@
         {% endif %}
 
         {% csrf_token %}
-        <fieldset>
-            {% if frontOwnerForm.errors %}
-              <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
-            {% endif %}
-            {% for field_hidden in frontOwnerForm.hidden_fields %}
-              {{field_hidden}}
-            {% endfor %}
-            {% for field in frontOwnerForm.visible_fields %}
-              {% spaceless %}
-              <div class="form-group" >
-                {{ field.errors }}
-                {{ field }}
-                {% if field.help_text %}
-                  <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
-                {% endif %}
-                {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
-              </div>
-              {% endspaceless %}
-            {% endfor %}
-            {% if frontOwnerForm.instance.id %}
-              <input type="hidden" id="user_id" name="user_id" value="{{frontOwnerForm.instance.id}}"/>
-            {% endif %}
-            {% if frontOwnerForm.instance.userpicture %}
-              <input type="hidden" id="userpictureurl" name="userpictureurl" value="{{frontOwnerForm.instance.userpicture.file.url}}"/>
-            {% endif %}
-        </fieldset>
+          {% if frontOwnerForm.errors %}
+            <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+          {% endif %}
+          {% for field_hidden in frontOwnerForm.hidden_fields %}
+            {{field_hidden}}
+          {% endfor %}
+          {% for field in frontOwnerForm.visible_fields %}
+            {% spaceless %}
+            <div class="form-group" >
+              {{ field.errors }}
+              {{ field }}
+              {% if field.help_text %}
+                <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+              {% endif %}
+              {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+            </div>
+            {% endspaceless %}
+          {% endfor %}
+          {% if frontOwnerForm.instance.id %}
+            <input type="hidden" id="user_id" name="user_id" value="{{frontOwnerForm.instance.id}}"/>
+          {% endif %}
+          {% if frontOwnerForm.instance.userpicture %}
+            <input type="hidden" id="userpictureurl" name="userpictureurl" value="{{frontOwnerForm.instance.userpicture.file.url}}"/>
+          {% endif %}
         {{frontOwnerForm.media}}
       </div>
       <div class="modal-footer">

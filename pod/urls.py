@@ -27,6 +27,7 @@ from pod.video.views import my_channels
 from pod.video.views import channel_edit
 from pod.video.views import theme_edit
 from pod.video.views import video_notes
+from pod.video.views import video_xhr
 from pod.video.views import video_count, video_version
 from pod.video.views import video_oembed
 from pod.video.views import stats_view
@@ -132,6 +133,12 @@ urlpatterns = [
     # url(r'^video_collaborate/(?P<slug>[\-\d\w]+)/$',
     #    video_collaborate,
     #    name='video_collaborate'),
+    url(r"^video_xhr/(?P<slug>[\-\d\w]+)/$", video_xhr, name="video_xhr"),
+    url(
+        r"^video_xhr/(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$",
+        video_xhr,
+        name="video_xhr",
+    ),
     url(
         "api/chunked_upload_complete/",
         PodChunkedUploadCompleteView.as_view(),

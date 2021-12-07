@@ -85,7 +85,7 @@
     }
   });
 
-  $('.previewBtn').on('click', function (e) {
+  $(document).on("click",".previewBtn",function(e) {  
   videojs("podvideoplayer").src($(this).data("recid"))
 })
 </script>
