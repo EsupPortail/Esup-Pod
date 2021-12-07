@@ -97,6 +97,7 @@ COOKIE_LEARN_MORE = getattr(django_settings, "COOKIE_LEARN_MORE", "")
 
 USE_OPENCAST_STUDIO = getattr(django_settings, "USE_OPENCAST_STUDIO", False)
 
+
 def context_settings(request):
     """Return all context settings."""
     maintenance_mode = False
