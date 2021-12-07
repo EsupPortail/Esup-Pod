@@ -99,6 +99,10 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "APP_DIRS": True,
+        'DIRS': [
+            # add dir to opencast studio static files i.e : pod/custom/static/opencast-studio
+            # to serve index.html pod/custom/static/opencast-studio/index.html
+        ],
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",

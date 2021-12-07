@@ -20,7 +20,8 @@ from pod.recorder.models import Recorder, RecordingFileTreatment
 from .forms import RecordingForm, RecordingFileTreatmentDeleteForm
 from django.contrib import messages
 import hashlib
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 
 # from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
@@ -354,6 +355,19 @@ def delete_record(request, id=None):
 
 
 # OPENCAST VIEWS
+@login_required(redirect_field_name="referrer")
+def studio_pod(request):
+    # POC : charger le fichier "opencast-studio/index.html" en chaine de caractère voir load_as_string
+    # recupérer la partie head et la partie body ??? --> plus besoin d'iframe !
+    # on retire le header !
+    opencast_studio_rendered = render_to_string("opencast-studio/index.html")  # le fichier d'opencast studio
+    print(opencast_studio_rendered)
+    return render(
+        request, "recorder/opencast-studio.html", {"head": "", 'body': ""}  # le fichier d'opencast studio
+    )
+
+
+# OK pour JSON
 @login_required(redirect_field_name="referrer")
 def ingest_createMediaPackage(request):
     return JsonResponse({})
