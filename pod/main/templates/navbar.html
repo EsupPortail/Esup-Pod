@@ -21,7 +21,7 @@
         <button class="nav-link" data-toggle="modal" data-target=".chaines-modal"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Channels" %}</button>
       </li>
       {% for add_channel_tab in ADD_CHANNELS_TAB %}
-        <li class="nav-item" id="nav-channels">
+        <li class="nav-item add-nav-channels" >
           <button class="nav-link" data-toggle="modal" data-target=".chaines-modal-{{add_channel_tab.id}}"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {{ add_channel_tab.name }}</button>
         </li>
       {% endfor %}
