@@ -359,6 +359,9 @@ TEMPLATE_VISIBLE_SETTINGS = {
     # Titre du site.
     'TITLE_SITE': 'Pod',
 
+    # Description du site.
+    'DESC_SITE': 'L’objectif d’Esup-Pod est de faciliter la mise à disposition de vidéos et ainsi d’encourager son utilisation dans l’enseignement et la recherche.',
+
     # Titre de l’établissement.
     'TITLE_ETB': 'University name',
 

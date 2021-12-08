@@ -43,9 +43,9 @@ if CAS_GATEWAY:
                 "USE_SHIB": USE_SHIB,
                 "SHIB_URL": SHIB_URL,
                 "referrer": next,
+                "page_title": _("Authentication"),
             },
         )
-
 
 else:
 
@@ -82,6 +82,7 @@ def authentication_login(request):
                 "USE_OIDC": USE_OIDC,
                 "OIDC_NAME": OIDC_NAME,
                 "referrer": referrer,
+                "page_title": _("Authentication"),
             },
         )
     else:

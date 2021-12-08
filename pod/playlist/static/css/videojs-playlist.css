@@ -105,10 +105,13 @@
 
 .card-controls {float:right}
 .card-controls > .playlist-options {
-	margin-top:0
-}
-.card-controls > .playlist-options:hover {
+	margin-top:0;
 	cursor: pointer;
+	border: 1px solid transparent;
+	padding: 0 0 4px 3px;
+}
+.card-controls > .playlist-options.on {
+	border-color: var(--primary);
 }
 .card-controls > .playlist-options > .fill-color-pod{
 	fill:var(--dark-gray);

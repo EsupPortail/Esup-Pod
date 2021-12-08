@@ -65,13 +65,15 @@
         </svg>
     </div>
 </div>
-<input
-    class="folder-search"
+  <label class="sr-only" for="folder-search">{% trans 'Filter files' %}</label>
+  <input
+    class="folder-search form-control"
     placeholder="{% trans 'Filter files' %}"
     type="search"
     id="folder-search"
     name="q"
->
+  >
+
 {% if user.is_superuser %}
 <span class="alert-warning">
     <span class="warning-icon">

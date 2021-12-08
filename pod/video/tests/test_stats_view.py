@@ -311,7 +311,7 @@ class TestStatsView(TestCase):
         # Test with passing a good video password
         response = self.client.post(url + "?from=video", {"password": password})
         title_expected = (
-            '<h1 class="title">Video viewing statistics for %s</h1>'
+            '<h1 class="page_title h2">Video viewing statistics for %s</h1>'
         ) % self.video3.title.capitalize()
         # Test that the response is 200 OK.
         # Test that the response content contains the expected title
