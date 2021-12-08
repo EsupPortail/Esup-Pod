@@ -3,35 +3,39 @@
 {% load staticfiles %}
 
 {% block opengraph %}{% load video_filters %}
-  <meta name="description" content="{{ DESC_SITE }} &mdash; {% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}" />
+  <meta name="description" content="{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}" />
   <!-- Open Graph data -->
   <meta property="og:title" content="{% trans 'Videos' %}" />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="{{ request.build_absolute_uri }}" />
   <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
-  <meta property="og:description" content="{{ DESC_SITE }} - {% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}" />
+  <meta property="og:description" content="{{ DESC_SITE }} - {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}" />
   <meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock %}
 
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Videos" %}</li>{% endblock %}
 
-{% block page_title %}{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}{% endblock %}
+{% block page_title %}{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}{% endblock %}
 
 
 {% block page_content %}
 
-  <h1>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
-    <span class="float-right">
-    	{% if USE_STATS_VIEW %}
-        <a href="{% url "video_stats_view" 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm"> {% trans "Statistics views" %}</a>
-      {% endif %}
-      <a href="feed://{{ request.META.HTTP_HOST }}{% url "rss-video"%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm">
-        <i data-feather="rss"></i>&nbsp;Video</a>
-      <a href="feed://{{ request.META.HTTP_HOST }}{% url "rss-audio"%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm">
-        <i data-feather="rss"></i>&nbsp;Audio</a>
-    </span>
-  </h1>
+  <div class="row">
+    <div class="col">
+      <h1 id="video_count">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h1>
+    </div>
+      <span class="float-left col">
+        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm float-right">
+          <i data-feather="rss"></i>&nbsp;Audio</a>
+        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm float-right">
+          <i data-feather="rss"></i>&nbsp;Video</a>
+        {% if USE_STATS_VIEW %}
+          <a href="{% url 'video_stats_view' 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm float-right" style="height:35.8px"> {% trans "Statistics views" %}</a>
+        {% endif %}
+      </span>
+  </div>
+
   {% comment %}
   <p>
     "types": request.GET.getlist('type'),
@@ -53,9 +57,15 @@
 {% block more_script %}
 <script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
-<script>
-  var infinite = new Waypoint.Infinite({
-    element: $('.infinite-container')[0],
+<script type="text/javascript">
+var infinite_waypoint;
+var formCheckedInputs=[];
+var regExGetOnlyChars = /([\D])/g;
+
+function getInfiniteScrollWaypoint(){
+  // Return Waypoint Infinite object to init/refresh the infinite scroll
+  return new Waypoint.Infinite({
+    element: $('#videos_list')[0],
     onBeforePageLoad: function () {
       $('.infinite-loading').show();
     },
@@ -67,14 +77,67 @@
       $('footer.static-pod').attr('style','height:80px; overflow-y:auto');
       $('footer.static-pod .hidden-pod').css('display','none');
       $(window).scroll(function () {
-        if ($(window).height() + $(window).scrollTop() == $(document).height())
+        if ($(window).height() + $(window).scrollTop() === $(document).height())
         {
-           $('footer.static-pod .hidden-pod').css('display','block');
-           $('footer.static-pod').attr('style','height:auto;');
-           $('footer.static-pod').removeClass('fixed-bottom');
+          $('footer.static-pod .hidden-pod').css('display','block');
+          $('footer.static-pod').attr('style','height:auto;');
+          $('footer.static-pod').removeClass('fixed-bottom');
         }
       });
     }
   });
+}
+
+function replaceCountVideos(newCount){
+  // Replace count videos label (h1) with translation and plural
+  var transVideoCount = newCount > 1 ? 'videos found' : 'video found';
+  $('#video_count')[0].innerHTML = newCount +" "+ gettext(transVideoCount);
+}
+
+function refreshVideosSearch(formCheckedInputs){
+  // Ajax request to refresh view with filtered video list
+  return $.ajax({
+    type : 'GET',
+    crossDomain: true,
+    url: '{% url "videos" %}',
+    data:formCheckedInputs,
+    dataType : 'html',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    },
+    success: function(html, status){
+      if(infinite_waypoint){
+        infinite_waypoint.destroy();
+      }
+      $('.infinite-loading').remove();
+      $('.infinite-more-link').remove();
+      $('#videos_list').replaceWith(html);
+      replaceCountVideos(countVideos);
+      window.history.pushState({}, "", this.url);
+    },
+    error : function(result, status, error){
+      $('#videos_list').html(gettext('An Error occurred while processing '));
+    },
+  });
+}
+
+$('.form-check-input').change(function () {
+  // Filter checkboxes change triggered event
+  formCheckedInputs=[];
+  $('.infinite-loading').show();
+  $('.form-check-input input[type=checkbox]').attr('disabled','true');
+  $('#videos_list').html("");
+  $('input[type=checkbox]:checked').each(function(){
+    formCheckedInputs.push(this);
+  });
+  refreshVideosSearch(formCheckedInputs).done(function() {
+    $('.infinite-loading').hide();
+    infinite_waypoint = getInfiniteScrollWaypoint();
+    $('.form-check-input input[type=checkbox]').removeAttr('disabled');
+  });
+});
+
+// First launch of the infinite scroll
+infinite_waypoint = getInfiniteScrollWaypoint();
 </script>
 {% endblock more_script %}

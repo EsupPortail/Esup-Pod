@@ -11,7 +11,7 @@
 <form action="{% url 'videos' %}" method="get" id="filters">
 {% if not HIDE_USER_FILTER and user.is_authenticated %}
   <fieldset>
-    <legend  class="h5"><i data-feather="users"></i> {% trans "Users" %} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
+    <legend  class="h5"><i data-feather="users"></i> {% trans "Users" %}</legend>
     <div class="form-group">
       <label for="ownerbox">{% trans "Filter by user" %}</label>
       <input placeholder="{% trans 'Search' %}" id="ownerbox" type="text" class="form-control">
@@ -33,7 +33,7 @@
 {% endif %}
 
 <fieldset class="border-right border-bottom mt-2">
-  <legend class="h5"><i data-feather="tv"></i> {% trans "Types"%} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
+  <legend class="h5"><i data-feather="tv"></i> {% trans "Types"%} </legend>
   <div id="filterType">
     <div class="form-group collapse" id="collapseFilterType">
       {% for type in TYPES %}
@@ -52,10 +52,8 @@
   </div><!-- type -->
 </fieldset>
 
-<!-- <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button> -->
-
 <fieldset class="border-right border-bottom mt-2">
-  <legend class="h5"><i data-feather="book"></i> {% trans "Disciplines"%} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
+  <legend class="h5"><i data-feather="book"></i> {% trans "Disciplines"%} </legend>
   <div id="filterDiscipline">
     <div class="form-group collapse" id="collapseFilterDiscipline">
       {% for discipline in DISCIPLINES %}
@@ -74,10 +72,8 @@
   </div><!-- filterdiscipline -->
 </fieldset>
 
-<!-- <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button> -->
-
 <fieldset class="border-right border-bottom mt-2">
-  <legend class="h5"><i data-feather="tag"></i> {% trans "Tags"%}<button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
+  <legend class="h5"><i data-feather="tag"></i> {% trans "Tags"%}</legend>
   <div id="filterTag">
     {% with tagslist=tagscloud|dictsortreversed:"count"|slice:":20" %}
     <div class="form-group collapse" id="collapseFilterTag">
@@ -101,7 +97,7 @@
 
 
 <fieldset class="border-right border-bottom mt-2">
-  <legend class="h5"><i data-feather="archive"></i> {% trans "University course"%}<button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
+  <legend class="h5"><i data-feather="archive"></i> {% trans "University course"%}</legend>
   <div id="filterCursus">
     <div class="form-group collapse" id="collapseFilterCursus">
       {% for keyCursus , transCursus in cursus_list %}
@@ -119,7 +115,6 @@
     {% endif %}
   </div>
 </fieldset>
-<!-- <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button> -->
 </form>
 
 </div>
