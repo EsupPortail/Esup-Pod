@@ -358,9 +358,10 @@ def delete_record(request, id=None):
 @login_required(redirect_field_name="referrer")
 def studio_pod(request):
     opencast_studio_rendered = render_to_string("studio/index.html")  # le fichier d'opencast studio
-    print(opencast_studio_rendered)
+    head = opencast_studio_rendered[opencast_studio_rendered.index("<head>") + len("<head>"):opencast_studio_rendered.index("</head>")]
+    body = opencast_studio_rendered[opencast_studio_rendered.index("<body>") + len("<body>"):opencast_studio_rendered.index("</body>")]
     return render(
-        request, "recorder/opencast-studio.html", {"head": "", 'body': ""}  # le fichier d'opencast studio
+        request, "recorder/opencast-studio.html", {"head": head, "body": body}  # le fichier d'opencast studio
     )
 
 

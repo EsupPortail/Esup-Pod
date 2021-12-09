@@ -6,7 +6,8 @@ Django version : 1.11.16.
 import os
 import sys
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__)) # update in pod/main/settings.py
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+# will be update in pod/main/settings.py
 
 ##
 # Version of the project
@@ -100,7 +101,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "APP_DIRS": True,
-        'DIRS': [ ],
+        'DIRS': [],
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -270,4 +271,4 @@ if "H5P_ENABLED" in globals() and eval("H5P_ENABLED") is True:
 if "USE_OPENCAST_STUDIO" in globals() and eval("USE_OPENCAST_STUDIO") is True:
     # add dir to opencast studio static files i.e : pod/custom/static/opencast-studio
     # to serve index.html pod/custom/static/opencast-studio/index.html
-   TEMPLATES[0]['DIRS'].append(os.path.join(BASE_DIR, "custom", "static", "opencast"))
+    TEMPLATES[0]['DIRS'].append(os.path.join(BASE_DIR, "custom", "static", "opencast"))

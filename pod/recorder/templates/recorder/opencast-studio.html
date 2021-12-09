@@ -3,7 +3,7 @@
 {% load staticfiles %}
 
 {% block page_extra_head %}
-
+{{head|safe}}
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
@@ -15,7 +15,7 @@
 {% endblock %}
 
 {% block page_content %}
-Coucou !
+{{body|safe}}
 {% endblock page_content %}
 
 {% block collapse_page_aside %}
