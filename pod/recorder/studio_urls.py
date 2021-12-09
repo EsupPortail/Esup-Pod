@@ -1,8 +1,13 @@
 from django.conf.urls import url
-from .views import ingest_createMediaPackage, ingest_addDCCatalog
+from .views import studio_pod, ingest_createMediaPackage, ingest_addDCCatalog
 
 
 urlpatterns = [
+    url(
+        r"^$",
+        studio_pod,
+        name="studio_pod",
+    ),
     url(
         r"^ingest/createMediaPackage$",
         ingest_createMediaPackage,

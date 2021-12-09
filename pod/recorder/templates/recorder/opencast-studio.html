@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block page_extra_head %}
+
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}{{ block.super }}
+  <li class="breadcrumb-item active" aria-current="page">{% trans "Studio" %}</li>
+{% endblock %}
+
+{% block page_title %}
+  {% trans "Studio" %}
+{% endblock %}
+
+{% block page_content %}
+Coucou !
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+{% block more_script %}
+{% endblock more_script %}
