@@ -269,6 +269,5 @@ if "H5P_ENABLED" in globals() and eval("H5P_ENABLED") is True:
 ##
 # Opencast studio
 if "USE_OPENCAST_STUDIO" in globals() and eval("USE_OPENCAST_STUDIO") is True:
-    # add dir to opencast studio static files i.e : pod/custom/static/opencast-studio
-    # to serve index.html pod/custom/static/opencast-studio/index.html
+    # add dir to opencast studio static files i.e : pod/custom/static/opencast/
     TEMPLATES[0]['DIRS'].append(os.path.join(BASE_DIR, "custom", "static", "opencast"))
