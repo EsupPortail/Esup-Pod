@@ -20,7 +20,7 @@ from pod.recorder.models import Recorder, RecordingFileTreatment
 from .forms import RecordingForm, RecordingFileTreatmentDeleteForm
 from django.contrib import messages
 import hashlib
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 
@@ -358,11 +358,27 @@ def delete_record(request, id=None):
 @login_required(redirect_field_name="referrer")
 def studio_pod(request):
     opencast_studio_rendered = render_to_string("studio/index.html")  # le fichier d'opencast studio
-    head = opencast_studio_rendered[opencast_studio_rendered.index("<head>") + len("<head>"):opencast_studio_rendered.index("</head>")]
+    # head = opencast_studio_rendered[opencast_studio_rendered.index("<head>") + len("<head>"):opencast_studio_rendered.index("</head>")]
     body = opencast_studio_rendered[opencast_studio_rendered.index("<body>") + len("<body>"):opencast_studio_rendered.index("</body>")]
     return render(
-        request, "recorder/opencast-studio.html", {"head": head, "body": body}  # le fichier d'opencast studio
+        request, "recorder/opencast-studio.html", {"body": body}  # le fichier d'opencast studio
     )
+
+
+@login_required(redirect_field_name="referrer")
+def studio_static(request, file):
+    return HttpResponseRedirect("/static/opencast/studio/static/%s" % file)
+
+
+@login_required(redirect_field_name="referrer")
+def settings_toml(request):
+    content = '[opencast]\nserverUrl = \'%s\'' % request.build_absolute_uri(reverse('recorder:studio_pod', ))
+    return HttpResponse(content, content_type='text/plain')
+
+
+@login_required(redirect_field_name="referrer")
+def info_me_json(request):
+    return JsonResponse({})
 
 
 # OK pour JSON

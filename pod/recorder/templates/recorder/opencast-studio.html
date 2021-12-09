@@ -3,7 +3,10 @@
 {% load staticfiles %}
 
 {% block page_extra_head %}
-{{head|safe}}
+<style>
+  #root header {display:none;}
+</style>
+
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
