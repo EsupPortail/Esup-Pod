@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mediapackage id="{{ idMedia }}" start="{{ start }}" xmlns="http://mediapackage.opencastproject.org">
+  <media/>
+  <metadata>
+    <catalog id="{{ idCatalog}}" type="{{ typeCatalog }}">
+      <mimetype>text/xml</mimetype>
+      <tags/>
+      <url>https://pod-test.umontpellier.fr/files/mediapackage/{{ idMedia }}/{{ idCatalog }}/dublincore.xml</url>
+    </catalog>
+  </metadata>
+  <attachments>
+    <attachment id="{{ idAttachment }}" type="{{ typeAttachment }}">
+      <mimetype>text/xml</mimetype>
+      <tags/>
+      <url>https://pod-test.umontpellier.fr/files/mediapackage/{{ idMedia }}/{{ idAttachment }}/acl.xml</url>
+    </attachment>
+  </attachments>
+  <publications/>
+</mediapackage>
