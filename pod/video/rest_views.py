@@ -187,6 +187,7 @@ class EncodingVideoSerializer(serializers.HyperlinkedModelSerializer):
             "rendition",
             "encoding_format",
             "source_file",
+            "sites",
         )
 
 
@@ -200,6 +201,7 @@ class EncodingAudioSerializer(serializers.HyperlinkedModelSerializer):
             "video",
             "encoding_format",
             "source_file",
+            "sites",
         )
 
 
@@ -261,6 +263,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         "is_draft",
         "is_restricted",
         "encoding_in_progress",
+        "sites",
     )
 
     @action(detail=False, methods=["get"])
@@ -296,7 +299,7 @@ class VideoRenditionViewSet(viewsets.ModelViewSet):
 class EncodingVideoViewSet(viewsets.ModelViewSet):
     queryset = EncodingVideo.objects.all()
     serializer_class = EncodingVideoSerializer
-    filter_fields = ("video",)
+    filter_fields = ("video","sites",)
 
     @action(detail=False, methods=["get"])
     def video_encodedfiles(self, request):
@@ -324,7 +327,7 @@ class EncodingVideoViewSet(viewsets.ModelViewSet):
 class EncodingAudioViewSet(viewsets.ModelViewSet):
     queryset = EncodingAudio.objects.all()
     serializer_class = EncodingAudioSerializer
-    filter_fields = ("video",)
+    filter_fields = ("video","sites",)
 
     @action(detail=False, methods=["get"])
     def audio_encodedfiles(self, request):
