@@ -151,6 +151,7 @@ class VideoUserSerializer(serializers.ModelSerializer):
             "is_restricted",
             "encoding_in_progress",
             "encoded",
+            "sites",
         )
         read_only_fields = (
             "encoding_in_progress",
@@ -159,6 +160,7 @@ class VideoUserSerializer(serializers.ModelSerializer):
             "get_version",
             "encoded",
             "duration_in_time",
+            "sites",
         )
 
 
@@ -187,6 +189,7 @@ class EncodingVideoSerializer(serializers.HyperlinkedModelSerializer):
             "rendition",
             "encoding_format",
             "source_file",
+            "sites",
         )
 
 
@@ -200,6 +203,7 @@ class EncodingAudioSerializer(serializers.HyperlinkedModelSerializer):
             "video",
             "encoding_format",
             "source_file",
+            "sites",
         )
 
 
@@ -261,6 +265,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         "is_draft",
         "is_restricted",
         "encoding_in_progress",
+        "sites",
     )
 
     @action(detail=False, methods=["get"])
