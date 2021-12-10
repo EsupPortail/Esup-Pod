@@ -42,13 +42,9 @@ var loadEnrichmentVTTfile = function (url, callback) {
         stop_video: 0,
         start: start,
         end: end,
-        //startTime: start,
-        //endTime: end,
       };
     },
     setCue = function (index, data) {
-      //console.log('setCue '+index)
-      //console.log('start: '+cues[index].start+', end:'+cues[index].end)
       cues[index].title = data.title;
       cues[index].url = data.url;
       cues[index].type = data.type;
@@ -83,8 +79,6 @@ var loadEnrichmentVTTfile = function (url, callback) {
         //// Read next lines, feed first, create and feed next cues
         for (let i = fisrtcueline + 1; i < nbl; i++) {
           if ((m = lines[i].match(reg))) {
-            console.log("Match " + m[0] + " " + m[1] + " " + m[2]);
-            console.log("txtdata: " + txtdata.split("}")[0]);
             setCue(c, JSON.parse(txtdata.split("}")[0] + "}"));
             txtdata = "";
             c++;
@@ -108,8 +102,8 @@ var loadEnrichmentVTTfile = function (url, callback) {
 
 var videojs = window.videojs;
 
-const defaults = {};
-const registerPlugin = videojs.registerPlugin || videojs.plugin;
+const slides_defaults = {};
+const registerSlidePlugin = videojs.registerPlugin || videojs.plugin;
 const slide_color = {
   document: "var(--orange)",
   image: "var(--purple)",
@@ -267,7 +261,6 @@ var VideoSlides = function (items) {
       }
     }
     if (!active) {
-      //console.log('In slideShow : '+active)
       player.trigger("changemode", "slide off");
     }
     return false;
@@ -463,9 +456,9 @@ const onPlayerReady = function (player, options) {
  */
 const slides = function (options) {
   this.ready(function () {
-    onPlayerReady(this, videojs.mergeOptions(defaults, options));
+    onPlayerReady(this, videojs.mergeOptions(slides_defaults, options));
   });
 };
 
 // Register the plugin with video.js.
-registerPlugin("slides", slides);
+registerSlidePlugin("slides", slides);

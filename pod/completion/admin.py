@@ -26,7 +26,7 @@ class ContributorInline(admin.TabularInline):
     )
     extra = 0
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
 
 
@@ -64,7 +64,7 @@ class DocumentInline(admin.TabularInline):
     )
     extra = 0
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
 
 
@@ -117,7 +117,7 @@ class TrackInline(admin.TabularInline):
     )
     extra = 0
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
 
 
@@ -175,7 +175,7 @@ class OverlayInline(admin.TabularInline):
     exclude = ("slug",)
     extra = 0
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
 
 

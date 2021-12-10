@@ -4,13 +4,10 @@
 
 {% block breadcrumbs %}
 {{ block.super }}
-<li class="breadcrumb-item active" aria-current="page">{% trans "Contact us" %}</li>
+<li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>
 {% endblock %}
 
-{% block page_title %}{% trans "Contact us" %}{% endblock %}
-
 {% block page_content %}
-<h3>{% trans "Contact us" %}</h3>
 
 <form method="post" action="{{ request.get_full_path }}" id="contact_us" class='needs-validation' novalidate>
   {% csrf_token %}

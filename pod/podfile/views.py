@@ -80,21 +80,24 @@ def home(request, type=None):
         users=request.user).exclude(
             owner=request.user).order_by('owner', 'id')
     current_session_folder = get_current_session_folder(request)
-    template = 'podfile/home_content.html' if (
-        request.is_ajax()) else 'podfile/home.html'
-    return render(request,
-                  template,
-                  {
-                      'user_home_folder': user_home_folder,
-                      'user_folder': [],
-                      'share_folder': share_folder,
-                      'share_folder_user': share_folder_user,
-                      'current_session_folder': current_session_folder,
-                      'form_file': CustomFileModelForm(),
-                      'form_image': CustomImageModelForm(),
-                      'type': type
-                  }
-                  )
+
+    template = "podfile/home_content.html" if (request.is_ajax()) else "podfile/home.html"
+
+    return render(
+        request,
+        template,
+        {
+            "user_home_folder": user_home_folder,
+            "user_folder": [],
+            "share_folder": share_folder,
+            "share_folder_user": share_folder_user,
+            "current_session_folder": current_session_folder,
+            "form_file": CustomFileModelForm(),
+            "form_image": CustomImageModelForm(),
+            "type": type,
+            "page_title": _("My files"),
+        },
+    )
 
 
 def get_current_session_folder(request):

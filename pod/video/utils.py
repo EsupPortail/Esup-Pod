@@ -458,8 +458,7 @@ def move_video_file(video, new_owner):  # pragma: no cover
 
 
 def get_videos(title, user_id, search=None, limit=12, offset=0):
-    """Return videos filtered by GET parameters 'title'
-        With limit and offset
+    """Return videos filtered by GET parameters 'title' with limit and offset.
 
     Args:
         request (Request): Http Request

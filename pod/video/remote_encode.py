@@ -49,6 +49,7 @@ SSH_REMOTE_USER = getattr(settings, "SSH_REMOTE_USER", "")
 SSH_REMOTE_HOST = getattr(settings, "SSH_REMOTE_HOST", "")
 SSH_REMOTE_KEY = getattr(settings, "SSH_REMOTE_KEY", "")
 SSH_REMOTE_CMD = getattr(settings, "SSH_REMOTE_CMD", "")
+SSH_REMOTE_PORT = getattr(settings, "SSH_REMOTE_PORT", "")
 ENCODING_CHOICES = getattr(
     settings,
     "ENCODING_CHOICES",
@@ -118,9 +119,10 @@ def remote_encode_video(video_id):
         )
 
         key = " -i %s " % SSH_REMOTE_KEY if SSH_REMOTE_KEY != "" else ""
+        port = " -p %s " % SSH_REMOTE_PORT if SSH_REMOTE_PORT != "" else ""
 
-        remote_cmd = 'ssh {key} {user}@{host} "{cmd}"'.format(
-            key=key, user=SSH_REMOTE_USER, host=SSH_REMOTE_HOST, cmd=cmd
+        remote_cmd = 'ssh {key} {port} {user}@{host} "{cmd}"'.format(
+            key=key, user=SSH_REMOTE_USER, host=SSH_REMOTE_HOST, port=port, cmd=cmd
         )
 
         # launch remote encode

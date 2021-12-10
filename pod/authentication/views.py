@@ -43,9 +43,9 @@ if CAS_GATEWAY:
                 "USE_SHIB": USE_SHIB,
                 "SHIB_URL": SHIB_URL,
                 "referrer": next,
+                "page_title": _("Authentication"),
             },
         )
-
 
 else:
 
@@ -69,7 +69,7 @@ def authentication_login(request):
         return redirect(referrer)
     if USE_CAS and CAS_GATEWAY:
         url = reverse("authentication_login_gateway")
-        url += "?%snext=%s" % (iframe_param, referrer)
+        url += "?%snext=%s" % (iframe_param, referrer.replace("&", "%26"))
         return redirect(url)
     elif USE_CAS or USE_SHIB or USE_OIDC:
         return render(
@@ -82,11 +82,12 @@ def authentication_login(request):
                 "USE_OIDC": USE_OIDC,
                 "OIDC_NAME": OIDC_NAME,
                 "referrer": referrer,
+                "page_title": _("Authentication"),
             },
         )
     else:
         url = reverse("local-login")
-        url += "?%snext=%s" % (iframe_param, referrer)
+        url += "?%snext=%s" % (iframe_param, referrer.replace("&", "%26"))
         return redirect(url)
 
 

@@ -1,0 +1,165 @@
+{% extends 'videos/video-iframe.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block page_extra_head %}
+{% include 'videos/video-header.html' %}
+<link href="{% static 'css/videojs-playlist.css' %}?ver={{VERSION}}" rel="stylesheet">
+<script src="{% static 'js/videojs-playlist-controlbar.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/playlist_player.js' %}?ver={{VERSION}}"></script>
+<link rel="stylesheet" href="{% static 'css/playlist-iframe.css' %}?ver={{VERSION}}">
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}{{ block.super }}{% endblock %}
+
+{% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
+
+{% block page_content %}
+<div class="overlay playlist" id="div-video-wrapper">
+{% include 'playlist/playlist_video_list.html' with is_iframe=True %}
+
+{% block video-element %}
+{% if form %}
+  {% include 'videos/video-form.html' %}
+{% else %}
+  <video id="podvideoplayer"></video>
+{%endif%}
+{% endblock video-element %}
+
+  <div id="info-video-wrapper" class="jumbotron">
+    <div class="iframe-header bg-dark text-white">
+      <h2 class="playlist-video-title">{{ video.title }}</h2>
+      <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div id="info-video"></div>
+  </div>
+  <div id="overlay-footer"><p class="playlist-video-title">
+      {{ video.title|safe}}
+  </p></div>
+</div>
+
+{% block more_script %}
+{% if not form %}
+  {% include 'videos/video-script.html'%}
+  <script>
+    player.videoJsInfo();
+    player.videoJsPlaylist();
+    function setOnPlayerPlayPause() {
+      player.on('play',function() {
+        isPlaying = true;
+        $('#div-video-wrapper').attr('class','')
+      })
+      player.on('pause',function() {isPlaying = false;})
+      player.ready(function() {
+        $('#div-video-wrapper').addClass('vjs-not-started')
+      })
+    }
+    player.ready(function() {
+      const btinfo = $('.vjs-info-button:eq(0)')[0]
+          , btplaylist = $('.vjs-playlist-button:eq(0)')[0]
+      $(btinfo).clone().appendTo('#overlay-footer')
+      $(btplaylist).clone().appendTo('#overlay-footer');
+      $('#overlay-footer .vjs-info-button').click(function(){$(btinfo).click()})
+      $('#overlay-footer .vjs-playlist-button').click(function(){$(btplaylist).click()})
+    })
+
+    const show_video_playlist = function() {
+      const hasStarted = $(player.el()).hasClass('vjs-has-started')
+          , isOverlayed = $('#div-video-wrapper').hasClass('overlay')
+          , isInfoOverlayed = isOverlayed && $('#div-video-wrapper').hasClass('playlist')
+          , cls = 'overlay playlist'
+      if(!isOverlayed) { // No overlay is displayed
+        wasPlaying = isPlaying;
+        player.pause();
+        $('#div-video-wrapper').attr('class', cls)
+        resizePlaylist()
+      } else if(!isInfoOverlayed) { // One overlay is displayed but not Info
+        $('#div-video-wrapper').attr('class', cls)
+        resizePlaylist()
+      } else { // Info overlay is displayed => close it
+        $('#div-video-wrapper').attr('class', (hasStarted ? '' : 'vjs-not-started'))
+        if(wasPlaying) player.play();
+      }
+    };
+    const resizePlaylist = function() {
+      const ihead = document.querySelector('#card-playlist > .iframe-header')
+          , ph = player.el().offsetHeight
+          , pb = parseInt(player.el().style.top) + ph - 30
+          , pw = ph*hdres//$('#podvideoplayer .vjs-poster').width()
+      $('#card-playlist > div.card-body').css('top',ihead.offsetHeight+'px')
+      //console.log('MTop: '+player.el().style.top+'\nleft: '+player.el().offsetLeft+'\nwidth: '+player.el().offsetWidth+'\nheight: '+player.el().offsetHeight+' /// '+pb)
+      $('#card-playlist').css({top:player.el().style.top, height:(ph - 30)+'px', left: '50%', 'margin-left': -(pw/2)+'px', width: pw+'px'})
+      $('#overlay-footer').css({'top':pb+'px'})
+    }
+    $('#card-playlist .link-center-pod, #card-playlist .card-body > span > a').each(function() {
+       $(this).attr('href',($(this).attr('href').indexOf('?') > 0 ? $(this).attr('href')+'&is_iframe=true'
+                                                                  : $(this).attr('href')+'?is_iframe=true'));
+    })
+    $(document).on('click', '.close', function() {
+        if($(this).hasClass('playlist')) {
+          show_video_playlist()
+        } else {
+          show_info_video()
+        }
+    });
+
+{% endif %}
+
+// Responsive
+const hdres = 1920/1080;
+let isPlaying = false, wasPlaying = false
+setOnPlayerPlayPause()
+function resizeInfo() {
+  const ihead = document.querySelector('#info-video-wrapper > .iframe-header')
+      , ph = player.el().offsetHeight
+      , pb = parseInt(player.el().style.top) + ph - 30
+      , pw = ph*hdres//$('#podvideoplayer .vjs-poster').width()
+  $('#info-video').css('top',ihead.offsetHeight+'px')
+  //console.log('MTop: '+player.el().style.top+'\nleft: '+player.el().offsetLeft+'\nwidth: '+player.el().offsetWidth+'\nheight: '+player.el().offsetHeight+' /// '+pb)
+  $('#info-video-wrapper').css({top:player.el().style.top, height:(ph - 30)+'px', left: '50%', 'margin-left': -(pw/2)+'px', width: pw+'px'})
+  $('#overlay-footer').css({'top':pb+'px'})
+}
+function resizeVideoJs(){
+  const width = document.getElementById(player.id()).parentElement.offsetWidth
+      , height = document.getElementById(player.id()).parentElement.offsetHeight
+      , ratio = width/height;
+  let margintop = 0
+  if(ratio<hdres) {
+    player.width(width);
+    player.height(width / hdres);
+    margintop = parseInt((height - player.height())/2);
+    document.getElementById("podvideoplayer").style.top = margintop+"px";
+  } else {
+    player.height(height);
+    player.width(height*hdres);
+    document.getElementById("podvideoplayer").style.top = "0";
+  }
+  resizeInfo()
+  resizePlaylist();
+}
+resizeVideoJs(); // Initialize the function right now
+window.onresize = resizeVideoJs; // Call the function on resize
+const show_info_video = function() { // Call by videojs-playlist-controllbar
+  const hasStarted = $(player.el()).hasClass('vjs-has-started')
+      , isOverlayed = $('#div-video-wrapper').hasClass('overlay')
+      , isInfoOverlayed = isOverlayed && $('#div-video-wrapper').hasClass('info')
+      , cls = 'overlay info'
+  if(!isOverlayed) { // No overlay is displayed
+    wasPlaying = isPlaying;
+    player.pause();
+    $('#div-video-wrapper').attr('class', cls)
+    resizeInfo()
+  } else if(!isInfoOverlayed) { // One overlay is displayed but not Info
+    $('#div-video-wrapper').attr('class', cls)
+    resizeInfo()
+  } else { // Info overlay is displayed => close
+    $('#div-video-wrapper').attr('class', (hasStarted ? '' : 'vjs-not-started'))
+    if(wasPlaying) player.play();
+  }
+}
+$('#video-meta .tab-pane').addClass('show').show();
+</script>
+{% endblock more_script %}
+{% endblock page_content %}
