@@ -1,0 +1,27 @@
+[
+  {
+    "model": "sites.site", 
+    "pk": __ID_SITE__, 
+    "fields": {
+        "domain": "__DOMAIN_NAME__", 
+        "name": "__NAME__"
+    }
+  },
+  {    
+    "model": "flatpages.flatpage",
+    "fields": {
+        "content_fr": "<p>Bienvenue</p>\r\n",
+        "registration_required": false,
+        "content_en": "<p>Welcome</p>\r\n",
+        "title": "Accueil __NAME__",
+        "url": "/",
+        "title_en": "Home",
+        "sites": [
+            __ID_SITE__
+        ],
+        "content": "<p>Welcome</p>\r\n",
+        "enable_comments": false,
+        "title_fr": "Accueil __NAME__"
+    }
+  }
+]
