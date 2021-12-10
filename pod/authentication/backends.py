@@ -29,7 +29,7 @@ class ShibbBackend(ShibbolethRemoteUserBackend):
 
         user = self.setup_user(request=request, username=username, defaults=shib_user_params)
         if user:
-            self.update_user_params(user=user, params=shib_user_params)
+            super(ShibbBackend, ShibbBackend).update_user_params(user=user, params=shib_user_params)
             self.update_owner_params(user=user, params=shib_meta)
             return user if self.user_can_authenticate(user) else None
 
