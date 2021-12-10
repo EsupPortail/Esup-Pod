@@ -107,7 +107,6 @@ TIME_ZONE = "UTC"
 FILE_UPLOAD_TEMP_DIR = os.path.join(os.path.sep, "var", "tmp")
 # https://github.com/ouhouhsami/django-progressbarupload
 FILE_UPLOAD_HANDLERS = (
-    "progressbarupload.uploadhandler.ProgressBarUploadHandler",
     "django.core.files.uploadhandler.MemoryFileUploadHandler",
     "django.core.files.uploadhandler.TemporaryFileUploadHandler",
 )

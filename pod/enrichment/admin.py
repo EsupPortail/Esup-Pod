@@ -16,18 +16,15 @@ class EnrichmentInline(admin.TabularInline):
     model = Enrichment
     extra = 0
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
 
 
 class EnrichmentAdmin(admin.ModelAdmin):
 
     form = EnrichmentAdminForm
-    list_display = (
-        "title",
-        "type",
-        "video",
-    )
+    list_display = ('title', 'type', 'video',)
+    autocomplete_fields = ['video']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -63,7 +60,8 @@ else:
 
 
 class EnrichmentGroupAdmin(admin.ModelAdmin):
-    list_display = ("video", "get_groups")
+    list_display = ('video', 'get_groups')
+    autocomplete_fields = ['video']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

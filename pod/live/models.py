@@ -7,7 +7,6 @@ from ckeditor.fields import RichTextField
 from django.template.defaultfilters import slugify
 from pod.video.models import Video
 from django.contrib.sites.models import Site
-from select2 import fields as select2_fields
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.urls import reverse
@@ -74,34 +73,28 @@ class Broadcaster(models.Model):
         max_length=200,
         help_text=_(
             u'Used to access this instance, the "slug" is a short label '
-            + "containing only letters, numbers, underscore or dash top."
-        ),
-        editable=False,
-        default="",
-    )  # default empty, fill it in save
-    building = models.ForeignKey("Building", verbose_name=_("Building"))
-    description = RichTextField(_("description"), config_name="complete", blank=True)
+            + 'containing only letters, numbers, underscore or dash top.'),
+        editable=False, default="")  # default empty, fill it in save
+    building = models.ForeignKey('Building', verbose_name=_(
+        'Building'), on_delete=models.CASCADE)
+    description = RichTextField(
+        _('description'), config_name='complete', blank=True)
     poster = models.ForeignKey(
         CustomImageModel,
         models.SET_NULL,
         blank=True,
         null=True,
-        verbose_name=_("Poster"),
-    )
-    url = models.URLField(_("URL"), help_text=_("Url of the stream"), unique=True)
-    video_on_hold = select2_fields.ForeignKey(
-        Video,
-        help_text=_("This video will be displayed when there is no live stream."),
+        verbose_name=_('Poster'))
+    url = models.URLField(_('URL'), help_text=_(
+        'Url of the stream'), unique=True)
+    video_on_hold = models.ForeignKey(Video, help_text=_(
+        'This video will be displayed when there is no live stream.'),
         blank=True,
         null=True,
-        verbose_name=_("Video on hold"),
-    )
-    iframe_url = models.URLField(
-        _("Embedded Site URL"),
-        help_text=_("Url of the embedded site to display"),
-        null=True,
-        blank=True,
-    )
+        verbose_name=_('Video on hold'),
+        on_delete=models.CASCADE)
+    iframe_url = models.URLField(_('Embedded Site URL'), help_text=_(
+        'Url of the embedded site to display'), null=True, blank=True)
     iframe_height = models.IntegerField(
         _("Embedded Site Height"),
         null=True,
@@ -171,12 +164,19 @@ class Broadcaster(models.Model):
 
 
 class HeartBeat(models.Model):
-    user = models.ForeignKey(User, null=True, verbose_name=_("Viewer"))
-    viewkey = models.CharField(_("Viewkey"), max_length=200, unique=True)
+    user = models.ForeignKey(
+        User,
+        null=True,
+        verbose_name=_('Viewer'),
+        on_delete=models.CASCADE)
+    viewkey = models.CharField(_('Viewkey'), max_length=200, unique=True)
     broadcaster = models.ForeignKey(
-        Broadcaster, null=False, verbose_name=_("Broadcaster")
-    )
-    last_heartbeat = models.DateTimeField(_("Last heartbeat"), default=timezone.now)
+        Broadcaster,
+        null=False,
+        verbose_name=_('Broadcaster'),
+        on_delete=models.CASCADE)
+    last_heartbeat = models.DateTimeField(
+        _('Last heartbeat'), default=timezone.now)
 
     class Meta:
         verbose_name = _("Heartbeat")

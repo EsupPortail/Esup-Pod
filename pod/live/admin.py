@@ -18,7 +18,8 @@ class HeartBeatAdmin(admin.ModelAdmin):
 
 class BuildingAdmin(admin.ModelAdmin):
     form = BuildingAdminForm
-    list_display = ("name", "gmapurl")
+    list_display = ('name', 'gmapurl')
+    search_fields = ['name']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -67,6 +68,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
         "is_restricted",
     )
     readonly_fields = ["slug"]
+    autocomplete_fields = ['building', 'video_on_hold']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

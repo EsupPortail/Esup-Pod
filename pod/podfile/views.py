@@ -69,21 +69,16 @@ FOLDER_FILE_TYPE = ["image", "file"]
 @staff_member_required(redirect_field_name="referrer")
 def home(request, type=None):
     if type is not None and type not in FOLDER_FILE_TYPE:
-        raise SuspiciousOperation("--> Invalid type")
-    user_home_folder = get_object_or_404(UserFolder, name="home", owner=request.user)
+        raise SuspiciousOperation('--> Invalid type')
+    user_home_folder = get_object_or_404(
+        UserFolder, name="home", owner=request.user)
+    share_folder = UserFolder.objects.filter(
+        access_groups=request.user.owner.accessgroup_set.all()).exclude(
+            owner=request.user).order_by('owner', 'id')
 
-    share_folder = (
-        UserFolder.objects.filter(access_groups=request.user.owner.accessgroup_set.all())
-        .exclude(owner=request.user)
-        .order_by("owner", "id")
-    )
-
-    share_folder_user = (
-        UserFolder.objects.filter(users=request.user)
-        .exclude(owner=request.user)
-        .order_by("owner", "id")
-    )
-
+    share_folder_user = UserFolder.objects.filter(
+        users=request.user).exclude(
+            owner=request.user).order_by('owner', 'id')
     current_session_folder = get_current_session_folder(request)
 
     template = "podfile/home_content.html" if (request.is_ajax()) else "podfile/home.html"
@@ -117,7 +112,7 @@ def get_current_session_folder(request):
                 name=request.session.get("current_session_folder", "home"),
             )
             | Q(
-                access_groups=request.user.owner.accessgroup_set.all(),
+                access_groups__in=request.user.owner.accessgroup_set.all(),
                 name=request.session.get("current_session_folder", "home"),
             )
         )
@@ -133,7 +128,6 @@ def get_current_session_folder(request):
         current_session_folder = UserFolder.objects.filter(
             owner=request.user, name="home"
         )
-
     return current_session_folder.first()
 
 
@@ -506,6 +500,7 @@ def changefile(request):
 
 # keep it for completion part....
 def file_edit_save(request, folder):
+    print(request.FILES)
     form_file = None
     if request.POST.get("file_id") and request.POST.get("file_id") != "None":
         customfile = get_object_or_404(CustomFileModel, id=request.POST["file_id"])

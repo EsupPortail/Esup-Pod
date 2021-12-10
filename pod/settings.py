@@ -28,36 +28,34 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.flatpages",
     # Exterior Applications
-    "ckeditor",
-    "sorl.thumbnail",
-    "tagging",
-    "cas",
-    "captcha",
-    "progressbarupload",
-    "rest_framework",
-    "rest_framework.authtoken",
-    "django_filters",
-    "lti_provider",
-    "select2",
+    'ckeditor',
+    'sorl.thumbnail',
+    'tagging',
+    'cas',
+    'captcha',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'django_filters',
+    'django_select2',
     # Pod Applications
-    "pod.main",
-    "django.contrib.admin",  # put it here for template override
-    "pod.authentication",
-    "pod.video",
-    "pod.podfile",
-    "pod.playlist",
-    "pod.completion",
-    "pod.chapter",
-    "pod.enrichment",
-    "pod.video_search",
-    "pod.live",
-    "pod.recorder",
-    "pod.lti",
-    "pod.custom",
-    "shibboleth",
-    "chunked_upload",
-    "pod.bbb",
-    "mozilla_django_oidc",
+    'pod.main',
+    'django.contrib.admin',  # put it here for template override
+    'pod.authentication',
+    'pod.video',
+    'pod.podfile',
+    'pod.playlist',
+    'pod.completion',
+    'pod.chapter',
+    'pod.enrichment',
+    'pod.video_search',
+    'pod.live',
+    'pod.recorder',
+    'pod.lti',
+    'pod.custom',
+    'pod.bbb',
+    'shibboleth',
+    'chunked_upload',
+    'mozilla_django_oidc',
 ]
 
 ##
@@ -69,8 +67,6 @@ MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    # Django 3.1 starts to support SameSite middleware
-    "django_cookies_samesite.middleware.CookiesSameSite",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -79,7 +75,10 @@ MIDDLEWARE = [
 ]
 
 
-AUTHENTICATION_BACKENDS = ("pod.main.auth_backend.SiteBackend",)
+AUTHENTICATION_BACKENDS = (
+    'pod.main.auth_backend.SiteBackend',
+
+)
 
 ##
 # Full Python import path to root URL file
@@ -132,6 +131,8 @@ AUTH_PASSWORD_VALIDATORS = [
 USE_I18N = True
 USE_L10N = True
 LOCALE_PATHS = (os.path.join(BASE_DIR, "locale"),)
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 ##
 # Time zone support is enabled (True) or not (False)
@@ -204,9 +205,25 @@ LOGGING = {
     },
 }
 
-MODELTRANSLATION_FALLBACK_LANGUAGES = ("fr", "en", "nl")
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    # … default cache config and others
+    "select2": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
 
 
+# Tell select2 which cache configuration to use:
+SELECT2_CACHE_BACKEND = "select2"
+
+MODELTRANSLATION_FALLBACK_LANGUAGES = ('fr', 'en', 'nl')
 ##
 # Applications settings (and settings locale if any)
 #

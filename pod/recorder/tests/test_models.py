@@ -52,7 +52,7 @@ class RecorderTestCase(TestCase):
 
     def test_delete_object(self):
         Recorder.objects.filter(name="recorder1").delete()
-        self.assertEquals(Recorder.objects.all().count(), 0)
+        self.assertEqual(Recorder.objects.all().count(), 0)
 
         print("   --->  test_delete_object of RecorderTestCase : OK !")
 
@@ -141,7 +141,7 @@ class RecordingTestCase(TestCase):
 
     def test_delete_object(self):
         Recording.objects.filter(title="media1").delete()
-        self.assertEquals(Recording.objects.all().count(), 0)
+        self.assertEqual(Recording.objects.all().count(), 0)
 
         print("   --->  test_delete_object of RecordingTestCase : OK !")
 
@@ -195,7 +195,7 @@ class RecordingFileTreatmentTestCase(TestCase):
     def test_delete_object(self):
         filepath = "/home/pod/files/somefile.mp4"
         RecordingFileTreatment.objects.filter(file=filepath).delete()
-        self.assertEquals(RecordingFileTreatment.objects.all().count(), 0)
+        self.assertEqual(RecordingFileTreatment.objects.all().count(), 0)
 
         print("--->  test_delete_object of RecordingFileTreatmentTestCase : OK " "!")
 
@@ -238,6 +238,6 @@ class RecordingFileTestCase(TestCase):
     def test_delete_object(self):
         filepath = "/home/pod/files/somefile.mp4"
         RecordingFile.objects.filter(file=filepath).delete()
-        self.assertEquals(RecordingFile.objects.all().count(), 0)
+        self.assertEqual(RecordingFile.objects.all().count(), 0)
 
         print("   --->  test_delete_object of RecordingFileTestCase : OK !")

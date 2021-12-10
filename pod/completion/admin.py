@@ -26,20 +26,17 @@ class ContributorInline(admin.TabularInline):
     )
     extra = 0
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
 
 
 class ContributorAdmin(admin.ModelAdmin):
 
-    list_display = (
-        "name",
-        "role",
-        "video",
-    )
-    list_display_links = ("name",)
-    list_filter = ("role",)
-    search_fields = ["id", "name", "role", "video__title"]
+    list_display = ('name', 'role', 'video',)
+    list_display_links = ('name',)
+    list_filter = ('role',)
+    search_fields = ['id', 'name', 'role', 'video__title']
+    autocomplete_fields = ['video']
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "video":
@@ -67,7 +64,7 @@ class DocumentInline(admin.TabularInline):
     )
     extra = 0
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
 
 
@@ -75,12 +72,10 @@ class DocumentAdmin(admin.ModelAdmin):
 
     if FILEPICKER:
         form = DocumentAdminForm
-    list_display = (
-        "document",
-        "video",
-    )
-    list_display_links = ("document",)
-    search_fields = ["id", "document__name", "video__title"]
+    list_display = ('document', 'video',)
+    list_display_links = ('document',)
+    search_fields = ['id', 'document__name', 'video__title']
+    autocomplete_fields = ['video']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -122,7 +117,7 @@ class TrackInline(admin.TabularInline):
     )
     extra = 0
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
 
 
@@ -130,14 +125,11 @@ class TrackAdmin(admin.ModelAdmin):
 
     if FILEPICKER:
         form = TrackAdminForm
-    list_display = (
-        "src",
-        "kind",
-        "video",
-    )
-    list_display_links = ("src",)
-    list_filter = ("kind",)
-    search_fields = ["id", "src__name", "kind", "video__title"]
+    list_display = ('src', 'kind', 'video',)
+    list_display_links = ('src',)
+    list_filter = ('kind',)
+    search_fields = ['id', 'src__name', 'kind', 'video__title']
+    autocomplete_fields = ['video']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -183,18 +175,16 @@ class OverlayInline(admin.TabularInline):
     exclude = ("slug",)
     extra = 0
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
 
 
 class OverlayAdmin(admin.ModelAdmin):
 
-    list_display = (
-        "title",
-        "video",
-    )
-    list_display_links = ("title",)
-    search_fields = ["id", "title", "video__title"]
+    list_display = ('title', 'video',)
+    list_display_links = ('title',)
+    search_fields = ['id', 'title', 'video__title']
+    autocomplete_fields = ['video']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

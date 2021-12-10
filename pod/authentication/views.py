@@ -65,7 +65,7 @@ def authentication_login(request):
     if not referrer.startswith(("/", host)):
         raise SuspiciousOperation("referrer is not internal")
     iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return redirect(referrer)
     if USE_CAS and CAS_GATEWAY:
         url = reverse("authentication_login_gateway")
@@ -100,7 +100,7 @@ def local_logout(request):
 
 def authentication_logout(request):
     """Logout a user."""
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         return local_logout(request)
     if request.user.owner.auth_type == "CAS":
         return redirect(reverse("cas-logout"))

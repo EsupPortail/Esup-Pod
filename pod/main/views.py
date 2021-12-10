@@ -139,7 +139,7 @@ def get_dest_email(owner, video, form_subject, request):
     if not v_owner:
         # Vérifier si l'utilisateur est authentifié
         # le manager de son etablissement sera le dest du mail
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return get_manager_email(request.user)
         # Autrement le destinataire du mail sera le(s) manager(s)
         # ou le support dans le cas de Grenoble

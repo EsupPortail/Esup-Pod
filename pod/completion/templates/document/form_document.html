@@ -1,6 +1,6 @@
 <!-- HTML for document form. Don't use this file alone it must be integrated into another template ! -->
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 <div class="card card-body">
 <form id="form_document" action="{% url 'video_completion_document' slug=video.slug %}" method="POST" class="completion">
 	{% csrf_token %}

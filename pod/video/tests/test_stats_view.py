@@ -75,10 +75,10 @@ class TestStatsView(TestCase):
             video="teststatsviewthird.mp4",
             type=self.t1,
         )
-        self.video.channel = [self.channel]
-        self.video.theme = [self.theme]
-        self.video2.channel = [self.channel]
-        self.video2.theme = [self.theme]
+        self.video.channel.set([self.channel])
+        self.video.theme.set([self.theme])
+        self.video2.channel.set([self.channel])
+        self.video2.theme.set([self.theme])
         self.url_stats_exists = True
 
         self.user.owner.sites.add(Site.objects.get_current())
@@ -153,6 +153,7 @@ class TestStatsView(TestCase):
 
     @skipUnless(USE_STATS_VIEW, "Require acitvate URL video_stats_view")
     def test_stats_view_GET_request_channel(self):
+        print("ABCDE " + self.stat_channel_url)
         response = self.client.get(self.stat_channel_url)
         # Check that the view function is stats_view
         self.assertEqual(response.resolver_match.func, stats_view)
