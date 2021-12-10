@@ -14,6 +14,7 @@ AFFILIATION_STAFF = getattr(
     ('faculty', 'employee', 'staff')
 )
 
+
 class ShibbBackend(ShibbolethRemoteUserBackend):
     def authenticate(self, request, remote_user, shib_meta):
         """
@@ -31,6 +32,7 @@ class ShibbBackend(ShibbolethRemoteUserBackend):
             self.update_user_params(user=user, params=shib_user_params)
             self.update_owner_params(user=user, params=shib_meta)
             return user if self.user_can_authenticate(user) else None
+
     @staticmethod
     def update_owner_params(user, params):
         user.owner.auth_type = "Shibboleth"
