@@ -53,6 +53,7 @@ class ThemeSerializer(serializers.HyperlinkedModelSerializer):
             "headband",
             "description",
             "channel",
+            "sites",
         )
 
 
@@ -215,6 +216,7 @@ class PlaylistVideoSerializer(serializers.HyperlinkedModelSerializer):
             "video",
             "encoding_format",
             "source_file",
+            "sites",
         )
 
 
