@@ -417,9 +417,9 @@ def ingest_addDCCatalog(request):
     # Id catalog. Example format: 798017b1-2c45-42b1-85b0-41ce804fa527
     idCatalog = uuid.uuid4()
     # Id media package
-    idMedia=""
+    idMedia = ""
     # Start date
-    start=""
+    start = ""
 
     # Management of the mediaPackage (XML)
     if request.POST.get("mediaPackage") and request.POST.get("mediaPackage") != "":
@@ -429,17 +429,18 @@ def ingest_addDCCatalog(request):
         # Get the good id and start date
         idMedia = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("id")
         start = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("start")
-    
+
     # Management of the dublinCore
     if request.POST.get("dublinCore") and request.POST.get("dublinCore") != "":
         dublinCore = request.POST.get("dublinCore")
+        print(dublinCore)
         # Must create an XML file with it : https://pod.univ.fr/media/opencast-files/{{ id }}/{{ idCatalog }}/dublincore.xml
         # TODO if necessary
-    
+
     # Management of the flavor (normally dublincore/episode)
     if request.POST.get("flavor") and request.POST.get("flavor") != "":
         typeCatalog = request.POST.get("flavor")
-    
+
     # Render
     return render(
         request, "studio/addDCCatalog.xml", {"idMedia": idMedia, "start": start, "typeCatalog": typeCatalog, "idCatalog": idCatalog}, content_type="application/xml"
@@ -475,7 +476,7 @@ def ingest_addAttachment(request):
         start = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("start")
         idCatalog = xmldoc.getElementsByTagName("catalog")[0].getAttribute("id")
         typeCatalog = xmldoc.getElementsByTagName("catalog")[0].getAttribute("type")
-    
+
     # Management of the flavor (normally security/xacml+episode)
     if request.POST.get("flavor") and request.POST.get("flavor") != "":
         typeAttachment = request.POST.get("flavor")
@@ -491,7 +492,7 @@ def ingest_addAttachment(request):
     with open(opencastMediaFile, 'wb+') as destination:
         for chunk in request.FILES['BODY'].chunks():
             destination.write(chunk)
-    
+
     # Render
     return render(
         request, "studio/addAttachment.xml", {"idMedia": idMedia, "start": start, "typeAttachment": typeAttachment, "idCatalog": idCatalog, "typeCatalog": typeCatalog, "idAttachment": idAttachment}, content_type="application/xml"
@@ -533,7 +534,7 @@ def ingest_addTrack(request):
         typeCatalog = xmldoc.getElementsByTagName("catalog")[0].getAttribute("type")
         idAttachment = xmldoc.getElementsByTagName("attachment")[0].getAttribute("id")
         typeAttachment = xmldoc.getElementsByTagName("attachment")[0].getAttribute("type")
-    
+
     # Management of the flavor (normally security/xacml+episode)
     if request.POST.get("flavor") and request.POST.get("flavor") != "":
         typeTrack = request.POST.get("flavor")
@@ -552,12 +553,11 @@ def ingest_addTrack(request):
     with open(opencastMediaFile, 'wb+') as destination:
         for chunk in request.FILES['BODY'].chunks():
             destination.write(chunk)
-    
+
     # Render
     return render(
         request, "studio/addTrack.xml", {"idMedia": idMedia, "start": start, "typeTrack": typeTrack, "idCatalog": idCatalog, "typeCatalog": typeCatalog, "idAttachment": idAttachment, "typeAttachment": typeAttachment, "idTrack": idTrack, "filename": filename}, content_type="application/xml"
     )
-
 
 
 @csrf_exempt
@@ -601,7 +601,7 @@ def ingest_ingest(request):
         # Get the infos
         idMedia = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("id")
         start = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("start")
-        startOtherFormat = start.replace("-","").replace(":","")
+        startOtherFormat = start.replace("-", "").replace(":", "")
         idCatalog = xmldoc.getElementsByTagName("catalog")[0].getAttribute("id")
         typeCatalog = xmldoc.getElementsByTagName("catalog")[0].getAttribute("type")
         idAttachment = xmldoc.getElementsByTagName("attachment")[0].getAttribute("id")
@@ -610,7 +610,7 @@ def ingest_ingest(request):
         typeTrack = xmldoc.getElementsByTagName("track")[0].getAttribute("type")
         # TODO This line is correct only if the first URL line concerns the file
         urlFilename = xmldoc.getElementsByTagName("url")[0].firstChild.data
-    
+
     # Render
     return render(
         request, "studio/ingest.xml", {"idMedia": idMedia, "start": start, "idCatalog": idCatalog, "typeCatalog": typeCatalog, "idAttachment": idAttachment, "typeAttachment": typeAttachment, "idTrack": idTrack, "typeTrack": typeTrack, "urlFilename": urlFilename, "startOtherFormat": startOtherFormat}, content_type="application/xml"
