@@ -89,6 +89,7 @@ RECORDER_TYPE = getattr(
     (
         ("video", _("Video")),
         ("audiovideocast", _("Audiovideocast")),
+        ("studio", _("Studio")),
     ),
 )
 DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/")

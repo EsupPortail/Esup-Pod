@@ -727,7 +727,8 @@ THEME_FORM_FIELDS_HELP_TEXT = ""
 # Le traitement se fait en fonction du type de fichier déposé.
 """
 RECORDER_TYPE = (('video', _('Video')),
-                 ('audiovideocast', _('Audiovideocast')))
+                 ('audiovideocast', _('Audiovideocast')),
+                 ('studio', _('Studio')))
 
 """
 # Chemin racine du répertoire où sont déposés les enregistrements
