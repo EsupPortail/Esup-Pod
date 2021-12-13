@@ -2,6 +2,8 @@
 """Esup-pod recorder views."""
 from __future__ import unicode_literals
 import os
+import datetime
+import uuid
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -30,6 +32,8 @@ from django.core.exceptions import ObjectDoesNotExist
 import urllib.parse
 from django.shortcuts import get_object_or_404
 from pod.main.views import in_maintenance
+from django.views.decorators.csrf import csrf_exempt
+from xml.dom import minidom
 
 ##
 # Settings exposed in templates
@@ -383,35 +387,231 @@ def settings_toml(request):
 
 @login_required(redirect_field_name="referrer")
 def info_me_json(request):
-    return JsonResponse({})
+    # Authentication for OpenCast Studio
+    return render(
+        request, "studio/me.json", {}, content_type="application/json"
+    )
 
 
-# OK pour JSON
 @login_required(redirect_field_name="referrer")
 def ingest_createMediaPackage(request):
-    return JsonResponse({})
+    # URI createMediaPackage useful for OpenCast Studio
+    # Necessary id. Example format : a3d9e9f3-66d0-403b-a775-acb3f79196d4
+    idMedia = uuid.uuid4()
+    # Necessary start date. Example format : 2021-12-08T08:52:28Z
+    start = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%dT%H:%M:%S%zZ")
+    return render(
+        request, "studio/createMediaPackage.xml", {"idMedia": idMedia, "start": start}, content_type="application/xml"
+    )
 
 
 @login_required(redirect_field_name="referrer")
+@csrf_exempt
 def ingest_addDCCatalog(request):
-    return JsonResponse({})
+    # URI addDCCatalog useful for OpenCast Studio
+    # Form management with 3 parameters : mediaPackage, dublinCore, flavor
+    mediaPackage = ""
+    dublinCore = ""
+    # Flavor = typeCatalog
+    typeCatalog = "dublincore/episode"
+    # Id catalog. Example format: 798017b1-2c45-42b1-85b0-41ce804fa527
+    idCatalog = uuid.uuid4()
+    # Id media package
+    idMedia=""
+    # Start date
+    start=""
+
+    # Management of the mediaPackage (XML)
+    if request.POST.get("mediaPackage") and request.POST.get("mediaPackage") != "":
+        mediaPackage = request.POST.get("mediaPackage")
+        # XML result to parse
+        xmldoc = minidom.parseString(mediaPackage)
+        # Get the good id and start date
+        idMedia = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("id")
+        start = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("start")
+    
+    # Management of the dublinCore
+    if request.POST.get("dublinCore") and request.POST.get("dublinCore") != "":
+        dublinCore = request.POST.get("dublinCore")
+        # Must create an XML file with it : https://pod.univ.fr/media/opencast-files/{{ id }}/{{ idCatalog }}/dublincore.xml
+        # TODO if necessary
+    
+    # Management of the flavor (normally dublincore/episode)
+    if request.POST.get("flavor") and request.POST.get("flavor") != "":
+        typeCatalog = request.POST.get("flavor")
+    
+    # Render
+    return render(
+        request, "studio/addDCCatalog.xml", {"idMedia": idMedia, "start": start, "typeCatalog": typeCatalog, "idCatalog": idCatalog}, content_type="application/xml"
+    )
 
 
+@csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_addAttachment(request):
-    return JsonResponse({})
+    # URI addAttachment useful for OpenCast Studio
+    # Form management with 3 parameters : mediaPackage, flavor, BODY (acl.xml file)
+    mediaPackage = ""
+    # Flavor (normally security/xacml+episode) = typeAttachment
+    typeAttachment = "security/xacml+episode"
+    # Id media package
+    idMedia = ""
+    # Start date
+    start = ""
+    # Id catalog
+    idCatalog = ""
+    # Type catalog (normally dublincore/episode)
+    typeCatalog = "dublincore/episode"
+    # Id attachment. Example format: 23158660-a435-4659-bc24-3b8f95c488d1
+    idAttachment = uuid.uuid4()
+
+    # Management of the mediaPackage (XML)
+    if request.POST.get("mediaPackage") and request.POST.get("mediaPackage") != "":
+        mediaPackage = request.POST.get("mediaPackage")
+        # XML result to parse
+        xmldoc = minidom.parseString(mediaPackage)
+        # Get the good id, start date, idCatalog and typeCatalog
+        idMedia = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("id")
+        start = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("start")
+        idCatalog = xmldoc.getElementsByTagName("catalog")[0].getAttribute("id")
+        typeCatalog = xmldoc.getElementsByTagName("catalog")[0].getAttribute("type")
+    
+    # Management of the flavor (normally security/xacml+episode)
+    if request.POST.get("flavor") and request.POST.get("flavor") != "":
+        typeAttachment = request.POST.get("flavor")
+
+    # Management of the uploaded file acl.xml
+    # This XML file can be accessed with https://pod.univ.fr/media/opencast-files/{{ idMedia }}/{{ idAttachment }}/acl.xml
+    # Management of the necessary directories
+    opencastMediaDir = os.path.join(settings.BASE_DIR, 'media', 'opencast-files', str(idMedia), str(idAttachment))
+    # Create directories
+    os.makedirs(opencastMediaDir)
+    # Upload the acl.xml file
+    opencastMediaFile = os.path.join(opencastMediaDir, 'acl.xml')
+    with open(opencastMediaFile, 'wb+') as destination:
+        for chunk in request.FILES['BODY'].chunks():
+            destination.write(chunk)
+    
+    # Render
+    return render(
+        request, "studio/addAttachment.xml", {"idMedia": idMedia, "start": start, "typeAttachment": typeAttachment, "idCatalog": idCatalog, "typeCatalog": typeCatalog, "idAttachment": idAttachment}, content_type="application/xml"
+    )
 
 
+@csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_addTrack(request):
-    return JsonResponse({})
+    # URI addTrack useful for OpenCast Studio
+    # Form management with 4 parameters : mediaPackage, flavor, tags, BODY (video file)
+    mediaPackage = ""
+    # Flavor (normally presenter/source OR TODO MANAGE LIST) = typeTrack
+    typeTrack = "presenter/source"
+    # Id media package
+    idMedia = ""
+    # Start date
+    start = ""
+    # Id catalog
+    idCatalog = ""
+    # Type catalog (normally dublincore/episode)
+    typeCatalog = "dublincore/episode"
+    # Id attachment
+    idAttachment = ""
+    # Type attachment
+    typeAttachment = ""
+    # Id track. Example format: 129153f4-2252-4769-83ee-a2d3fe8d5022
+    idTrack = uuid.uuid4()
+
+    # Management of the mediaPackage (XML)
+    if request.POST.get("mediaPackage") and request.POST.get("mediaPackage") != "":
+        mediaPackage = request.POST.get("mediaPackage")
+        # XML result to parse
+        xmldoc = minidom.parseString(mediaPackage)
+        # Get the good id, start date, idCatalog, typeCatalog, idAttachment and typeAttachment
+        idMedia = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("id")
+        start = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("start")
+        idCatalog = xmldoc.getElementsByTagName("catalog")[0].getAttribute("id")
+        typeCatalog = xmldoc.getElementsByTagName("catalog")[0].getAttribute("type")
+        idAttachment = xmldoc.getElementsByTagName("attachment")[0].getAttribute("id")
+        typeAttachment = xmldoc.getElementsByTagName("attachment")[0].getAttribute("type")
+    
+    # Management of the flavor (normally security/xacml+episode)
+    if request.POST.get("flavor") and request.POST.get("flavor") != "":
+        typeTrack = request.POST.get("flavor")
+
+    # TODO Management of the dublincore.xml file
+
+    # Management of the uploaded video file .webm
+    # Management of the necessary directories
+    opencastMediaDir = os.path.join(settings.BASE_DIR, 'media', 'opencast-files', str(idMedia), str(idTrack))
+    # Create directories
+    os.makedirs(opencastMediaDir)
+    # Filename
+    filename = request.FILES['BODY'].name
+    # Upload the video file
+    opencastMediaFile = os.path.join(opencastMediaDir, filename)
+    with open(opencastMediaFile, 'wb+') as destination:
+        for chunk in request.FILES['BODY'].chunks():
+            destination.write(chunk)
+    
+    # Render
+    return render(
+        request, "studio/addTrack.xml", {"idMedia": idMedia, "start": start, "typeTrack": typeTrack, "idCatalog": idCatalog, "typeCatalog": typeCatalog, "idAttachment": idAttachment, "typeAttachment": typeAttachment, "idTrack": idTrack, "filename": filename}, content_type="application/xml"
+    )
 
 
+
+@csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_addCatalog(request):
     return JsonResponse({})
 
 
+@csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_ingest(request):
-    return JsonResponse({})
+    # URI ingest useful for OpenCast Studio
+    # Form management with 1 parameter : mediaPackage
+    mediaPackage = ""
+    # Id media package
+    idMedia = ""
+    # Start date
+    start = ""
+    # Start date in other format
+    startOtherFormat = ""
+    # Id catalog
+    idCatalog = ""
+    # Type catalog (normally dublincore/episode)
+    typeCatalog = "dublincore/episode"
+    # Id attachment
+    idAttachment = ""
+    # Type attachment
+    typeAttachment = ""
+    # Id track
+    idTrack = ""
+    # Type of the track
+    typeTrack = ""
+    # URL of the video file
+    urlFilename = ""
+
+    # Management of the mediaPackage (XML)
+    if request.POST.get("mediaPackage") and request.POST.get("mediaPackage") != "":
+        mediaPackage = request.POST.get("mediaPackage")
+        # XML result to parse
+        xmldoc = minidom.parseString(mediaPackage)
+        # Get the infos
+        idMedia = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("id")
+        start = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("start")
+        startOtherFormat = start.replace("-","").replace(":","")
+        idCatalog = xmldoc.getElementsByTagName("catalog")[0].getAttribute("id")
+        typeCatalog = xmldoc.getElementsByTagName("catalog")[0].getAttribute("type")
+        idAttachment = xmldoc.getElementsByTagName("attachment")[0].getAttribute("id")
+        typeAttachment = xmldoc.getElementsByTagName("attachment")[0].getAttribute("type")
+        idTrack = xmldoc.getElementsByTagName("track")[0].getAttribute("id")
+        typeTrack = xmldoc.getElementsByTagName("track")[0].getAttribute("type")
+        # TODO This line is correct only if the first URL line concerns the file
+        urlFilename = xmldoc.getElementsByTagName("url")[0].firstChild.data
+    
+    # Render
+    return render(
+        request, "studio/ingest.xml", {"idMedia": idMedia, "start": start, "idCatalog": idCatalog, "typeCatalog": typeCatalog, "idAttachment": idAttachment, "typeAttachment": typeAttachment, "idTrack": idTrack, "typeTrack": typeTrack, "urlFilename": urlFilename, "startOtherFormat": startOtherFormat}, content_type="application/xml"
+    )

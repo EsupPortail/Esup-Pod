@@ -1,6 +1,8 @@
 from django.conf.urls import url
 from .views import studio_pod, studio_static, settings_toml, info_me_json
 from .views import ingest_createMediaPackage, ingest_addDCCatalog
+from .views import ingest_addAttachment, ingest_addTrack
+from .views import ingest_addCatalog, ingest_ingest
 
 app_name = "recorder"
 urlpatterns = [
@@ -34,4 +36,24 @@ urlpatterns = [
         ingest_addDCCatalog,
         name="ingest_addDCCatalog",
     ),
+    url(
+        r"^ingest/addAttachment$",
+        ingest_addAttachment,
+        name="ingest_addAttachment",
+    ),
+    url(
+        r"^ingest/addTrack$",
+        ingest_addTrack,
+        name="ingest_addTrack",
+    ),
+    url(
+        r"^ingest/addCatalog$",
+        ingest_addCatalog,
+        name="ingest_addCatalog",
+    ),
+    url(
+        r"^ingest/ingest$",
+        ingest_ingest,
+        name="ingest_ingest",
+    )
 ]
