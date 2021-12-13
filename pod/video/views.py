@@ -575,6 +575,7 @@ def get_owners_has_instances(owners):
 def videos(request):
     """Render the main list of videos."""
     videos_list = get_videos_list(request)
+    count_videos = len(videos_list)
 
     page = request.GET.get("page", 1)
     full_path = ""
@@ -599,7 +600,7 @@ def videos(request):
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path},
+            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
         )
 
     return render(
@@ -607,6 +608,7 @@ def videos(request):
         "videos/videos.html",
         {
             "videos": videos,
+            "count_videos": count_videos,
             "types": request.GET.getlist("type"),
             "owners": request.GET.getlist("owner"),
             "disciplines": request.GET.getlist("discipline"),
