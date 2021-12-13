@@ -4,14 +4,13 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+
 User = get_user_model()
 
-CREATE_GROUP_FROM_AFFILIATION = getattr(
-    settings, 'CREATE_GROUP_FROM_AFFILIATION', False)
+CREATE_GROUP_FROM_AFFILIATION = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION", False)
 
 AFFILIATION_STAFF = getattr(
-    settings, 'AFFILIATION_STAFF',
-    ('faculty', 'employee', 'staff')
+    settings, "AFFILIATION_STAFF", ("faculty", "employee", "staff")
 )
 
 
@@ -25,11 +24,17 @@ class ShibbBackend(ShibbolethRemoteUserBackend):
             return
         username = self.clean_username(remote_user)
         field_names = [x.name for x in User._meta.get_fields()]
-        shib_user_params = dict([(k, shib_meta[k]) for k in field_names if k in shib_meta])
+        shib_user_params = dict(
+            [(k, shib_meta[k]) for k in field_names if k in shib_meta]
+        )
 
-        user = self.setup_user(request=request, username=username, defaults=shib_user_params)
+        user = self.setup_user(
+            request=request, username=username, defaults=shib_user_params
+        )
         if user:
-            super(ShibbBackend, ShibbBackend).update_user_params(user=user, params=shib_user_params)
+            super(ShibbBackend, ShibbBackend).update_user_params(
+                user=user, params=shib_user_params
+            )
             self.update_owner_params(user=user, params=shib_meta)
             return user if self.user_can_authenticate(user) else None
 
@@ -40,12 +45,11 @@ class ShibbBackend(ShibbolethRemoteUserBackend):
             user.owner.sites.add(get_current_site(None))
         user.owner.save()
         # affiliation
-        user.owner.affiliation = params['affiliation']
-        if params['affiliation'] in AFFILIATION_STAFF:
+        user.owner.affiliation = params["affiliation"]
+        if params["affiliation"] in AFFILIATION_STAFF:
             user.is_staff = True
         if CREATE_GROUP_FROM_AFFILIATION:
-            group, group_created = Group.objects.get_or_create(
-                name=params['affiliation'])
+            group, group_created = Group.objects.get_or_create(name=params["affiliation"])
             user.groups.add(group)
         user.save()
         user.owner.save()
