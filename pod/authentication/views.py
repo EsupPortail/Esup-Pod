@@ -33,7 +33,7 @@ if CAS_GATEWAY:
         )
         if not next.startswith(("/", host)):
             raise SuspiciousOperation("next is not internal")
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return redirect(next)
         return render(
             request,
