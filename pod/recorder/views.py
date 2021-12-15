@@ -377,14 +377,14 @@ def studio_pod(request):
 
 @login_required(redirect_field_name="referrer")
 def studio_static(request, file):
-    name, extension = os.path.splitext(file)
+    extension = file.split(".")[-1]
     if extension == "js":
         path_file = os.path.join(
             settings.BASE_DIR, "custom", "static", "opencast", "studio/static/%s" % file
         )
         f = open(path_file, "r")
         return HttpResponse(
-            f.read().replace("Opencast", "Pod"), content_type='text/plain'
+            f.read().replace("Opencast", "Pod"), content_type='application/javascript'
         )
     return HttpResponseRedirect("/static/opencast/studio/static/%s" % file)
 
