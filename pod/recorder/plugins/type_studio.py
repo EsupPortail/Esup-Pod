@@ -11,10 +11,13 @@ from ..utils import add_comment
 from pod.video.models import Video, get_storage_path_video
 from pod.video import encode
 from django.template.defaultfilters import slugify
+from pod.video.studio import start_studio_encode
 
 DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
 
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
+
+STUDIO_ENCODE_VIDEOS = getattr(settings, "STUDIO_ENCODE_VIDEOS", start_studio_encode)
 
 log = logging.getLogger(__name__)
 
@@ -28,6 +31,7 @@ def process(recording):
 
 def save_one_video(recording, video_src):
     # Save & encode a video corresponding to the recording
+    # We don't generate an intermediate video
     recorder = recording.recorder
     video = Video()
     # Video title corresponds to recording title
@@ -88,8 +92,9 @@ def save_one_video(recording, video_src):
     encode_video(video.id)
 
 
-def save_two_videos(recording, video_src_1, video_src_2):
-    print("TODO in encode.py and task.py?")
+def generate_intermediate_video(recording):
+    # We must generate an intermediate video (see video/studio.py)
+    STUDIO_ENCODE_VIDEOS(recording.id)
 
 
 def encode_recording(recording):
@@ -116,37 +121,43 @@ def encode_recording(recording):
         video_presentation_src = xmldoc.getElementsByTagName("video")[1].firstChild.data
     else:
         video_presentation_src = ""
-    # clip_begin = xmldoc.getElementsByTagName("cut")[0].getAttribute("clipBegin")
-    # clip_end = xmldoc.getElementsByTagName("cut")[0].getAttribute("clipEnd")
+    # Informations for cut
+    clip_begin = xmldoc.getElementsByTagName("cut")[0].getAttribute("clipBegin")
+    clip_end = xmldoc.getElementsByTagName("cut")[0].getAttribute("clipEnd")
 
     # Management of the differents cases
-    if video_presenter_src and video_presentation_src == "":
+    if not clip_begin and not clip_end:
+        # Save & encode video : if possible, we don't  generate an intermediate video
+        manage_video_without_cut(recording, video_presenter_src, video_presentation_src)
+    else:
+        # Cut is necessary ; we must generate an intermediate video
+        add_comment(recording.id, "> Cut is necessary : generate an intermediate video")
+        generate_intermediate_video(recording)
+
+    # The SMIL file is renamed in video/studio.py, after merged the videos
+    # os.rename(recording.source_file, recording.source_file + "_treated")
+
+
+def manage_video_without_cut(recording, video_presenter_src, video_presentation_src):
+    # If there is no cut, we can create directly a Pod video (if only one managed)
+    if video_presenter_src and not video_presentation_src:
         # Save & encode presenter video
         video_src = os.path.join(
             settings.MEDIA_ROOT, 'opencast-files', video_presenter_src
         )
-        add_comment(recording.id, "> video file (presenter) %s" % video_src)
+        add_comment(recording.id, "> 1 video file (presenter) %s" % video_src)
+        # We don't generate an intermediate video
         save_one_video(recording, video_src)
-    elif video_presentation_src and video_presenter_src == "":
+    elif not video_presenter_src and video_presentation_src:
         # Save & encode presentation video
         video_src = os.path.join(
             settings.MEDIA_ROOT, 'opencast-files', video_presentation_src
         )
-        add_comment(recording.id, "> video file (presentation) %s" % video_src)
+        add_comment(recording.id, "> 1 video file (presentation) %s" % video_src)
+        # We don't generate an intermediate video
         save_one_video(recording, video_src)
     elif video_presenter_src and video_presentation_src:
         # Save & encode the 2 videos in only one
-        video_src_1 = os.path.join(
-            settings.MEDIA_ROOT, 'opencast-files', video_presenter_src
-        )
-        video_src_2 = os.path.join(
-            settings.MEDIA_ROOT, 'opencast-files', video_presentation_src
-        )
-        add_comment(recording.id, "> video files (presenter and presentation) %s %s" % video_src_1 % video_src_2)
-        save_two_videos(recording, video_src_1, video_src_2)
-    else:
-        # No video found
-        add_comment(recording.id, "Error : No video source found")
-        return -1
-    add_comment(recording.id, "End processing SMIL file")
-    os.rename(recording.source_file, recording.source_file + "_treated")
+        add_comment(recording.id, "> 2 video files to manage without cut")
+        # We must generate an intermediate video
+        generate_intermediate_video(recording)
