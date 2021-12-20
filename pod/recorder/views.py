@@ -19,7 +19,7 @@ from django.contrib.admin.views.decorators import user_passes_test
 from django.views.decorators.csrf import csrf_protect
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.shortcuts import get_current_site
-from pod.recorder.models import Recorder, RecordingFileTreatment
+from pod.recorder.models import Recorder, Recording, RecordingFileTreatment
 from .forms import RecordingForm, RecordingFileTreatmentDeleteForm
 from django.contrib import messages
 import hashlib
@@ -451,7 +451,7 @@ def ingest_addDCCatalog(request):
 
     # Management of the necessary directories
     opencastMediaDir = os.path.join(
-        settings.BASE_DIR, 'media', 'opencast-files', str(idMedia), str(idCatalog)
+        settings.MEDIA_ROOT, 'opencast-files', str(idMedia), str(idCatalog)
     )
     # Create directories
     os.makedirs(opencastMediaDir)
@@ -515,7 +515,7 @@ def ingest_addAttachment(request):
     # https://pod.univ.fr/media/opencast-files/{{idMedia}}/{{idAttachment}}/acl.xml
     # Management of the necessary directories
     opencastMediaDir = os.path.join(
-        settings.BASE_DIR, 'media', 'opencast-files', str(idMedia), str(idAttachment)
+        settings.MEDIA_ROOT, 'opencast-files', str(idMedia), str(idAttachment)
     )
     # Create directories
     os.makedirs(opencastMediaDir)
@@ -581,7 +581,7 @@ def ingest_addTrack(request):
     # Management of the uploaded video file .webm
     # Management of the necessary directories
     opencastMediaDir = os.path.join(
-        settings.BASE_DIR, 'media', 'opencast-files', str(idMedia), str(idTrack)
+        settings.MEDIA_ROOT, 'opencast-files', str(idMedia), str(idTrack)
     )
     # Create directories
     os.makedirs(opencastMediaDir)
@@ -636,7 +636,7 @@ def ingest_addCatalog(request):
     # Management of the uploaded file cutting.smil
     # Management of the necessary directories
     opencastMediaDir = os.path.join(
-        settings.BASE_DIR, 'media', 'opencast-files', str(idMedia), str(idAttachment)
+        settings.MEDIA_ROOT, 'opencast-files', str(idMedia), str(idAttachment)
     )
     # Create directories (already created for acl.xml)
     if not os.path.exists(opencastMediaDir):
@@ -652,7 +652,7 @@ def ingest_addCatalog(request):
     # Create the SMIL file for Pod
     # Normally in ingest, but when cut the video, payload for ingest is empty
     # Don't know why the payload is empty in such a case
-    create_pod_smil_file(request.user.username, idMedia, start)
+    create_pod_smil_file(request, idMedia, start)
 
     # Render
     return JsonResponse({})
@@ -705,7 +705,7 @@ def ingest_ingest(request):
         urlFilename = xmldoc.getElementsByTagName("url")[0].firstChild.data
 
         # Create the SMIL file for Pod
-        create_pod_smil_file(request.user.username, idMedia, start)
+        create_pod_smil_file(request, idMedia, start)
 
     # Render
     return render(
@@ -719,11 +719,11 @@ def ingest_ingest(request):
     )
 
 
-def create_pod_smil_file(username, idMedia, start):
+def create_pod_smil_file(request, idMedia, start):
     # Management of the SMIL file for Pod, directly into media/opencast-files
 
     # Base directory
-    opencastMediaDir = os.path.join(settings.BASE_DIR, 'media', 'opencast-files')
+    opencastMediaDir = os.path.join(settings.MEDIA_ROOT, 'opencast-files')
     # Directory that contains all the resources for the actual videos
     opencastVideoDir = os.path.join(opencastMediaDir, str(idMedia))
 
@@ -732,19 +732,22 @@ def create_pod_smil_file(username, idMedia, start):
     videoPresentation = ""
     clipBegin = ""
     clipEnd = ""
+    title = ""
 
     # Path the video tree
     for root, dirs, files in os.walk(opencastVideoDir):
-        videoPresenter, videoPresentation, clipBegin, clipEnd = process_directory(
-            videoPresenter, videoPresentation, clipBegin, clipEnd, idMedia, files, root
+        title, videoPresenter, videoPresentation, clipBegin, clipEnd = process_directory(
+            title, videoPresenter, videoPresentation, clipBegin, clipEnd,
+            idMedia, files, root
         )
 
     # Content of the SMIL file
     smilText = (
         "<smil xmlns=\"http://www.w3.org/ns/SMIL\">\n"
         "<body>\n"
+        "  <title>" + title + "</title>\n"
         "  <start>" + start + "</start>\n"
-        "  <username>" + username + "</username>\n"
+        "  <username>" + request.user.username + "</username>\n"
         "  <video type=\"presenter/source\">" + videoPresenter + "</video>\n"
         "  <video type=\"presentation/source\">" + videoPresentation + "</video>\n"
         "  <cut clipBegin=\"" + clipBegin + "\" clipEnd=\"" + clipEnd + "\" />\n"
@@ -756,8 +759,28 @@ def create_pod_smil_file(username, idMedia, start):
     with open(opencastMediaFile, "w") as f:
         f.write(smilText)
 
+    # Create the recording
+    # Search for the recorder corresponding to the Studio
+    recorder = Recorder.objects.filter(
+        recording_type="studio", sites=get_current_site(None)
+    ).first()
+    if recorder:
+        recording = Recording.objects.create(
+            user=request.user,
+            title=title,
+            type="studio",
+            # Source file corresponds to Pod SMIL file
+            source_file=opencastMediaFile,
+            recorder=recorder,
+        )
+        recording.save()
+    else:
+        messages.add_message(request, messages.ERROR, _("Recorder for Studio not found."))
+        raise PermissionDenied
+
 
 def process_directory(
+    title,
     videoPresenter,
     videoPresentation,
     clipBegin,
@@ -776,6 +799,11 @@ def process_directory(
         extension = filename.split(".")[-1]
         # Management of video files
         if(extension == "webm"):
+            # Extract title from video filename
+            # Title is between the first - and the last -
+            posBegin = filename.find("-", 17) + 2
+            posEnd = filename.rfind("-", 0) - 1
+            title = filename[posBegin:posEnd]
             if (filename.find("presenter") > 0):
                 videoPresenter = os.path.join(str(idMedia), dirname, filename)
             if (filename.find("presentation") > 0):
@@ -788,13 +816,13 @@ def process_directory(
             # Read the SMIL file
             clipBegin, clipEnd = read_cutting_smil(clipBegin, clipEnd, idMedia, dirname)
     # return relevant information
-    return videoPresenter, videoPresentation, clipBegin, clipEnd
+    return title, videoPresenter, videoPresentation, clipBegin, clipEnd
 
 
 def read_cutting_smil(clipBegin, clipEnd, idMedia, dirname):
     # Read a cutting.smil file and return the begin and the end of the cut
     opencastCuttingSmilDir = os.path.join(
-        settings.BASE_DIR, 'media', 'opencast-files', str(idMedia), dirname
+        settings.MEDIA_ROOT, 'opencast-files', str(idMedia), dirname
     )
     # Open the cutting.smil file
     opencastCuttingSmilFile = os.path.join(opencastCuttingSmilDir, 'cutting.smil')
