@@ -294,7 +294,7 @@ class Recording(models.Model):
         default=DEFAULT_RECORDER_USER_ID,
         help_text=_("User who has made the recording"),
     )
-    title = models.CharField(_("title"), max_length=200, unique=True)
+    title = models.CharField(_("title"), max_length=200)
     type = models.CharField(
         _("Recording Type"),
         max_length=50,
@@ -302,7 +302,10 @@ class Recording(models.Model):
         default=RECORDER_TYPE[0][0],
     )
     source_file = models.FilePathField(
-        path=DEFAULT_RECORDER_PATH, unique=True, recursive=True
+        max_length=200,
+        path=DEFAULT_RECORDER_PATH,
+        unique=True,
+        recursive=True
     )
     comment = models.TextField(_("Comment"), blank=True, default="")
     date_added = models.DateTimeField("date added", default=timezone.now, editable=False)
