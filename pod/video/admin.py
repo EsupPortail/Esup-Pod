@@ -273,9 +273,12 @@ class VideoAdmin(admin.ModelAdmin):
 
 
 class updateOwnerAdmin(admin.ModelAdmin):
+    """Handle an admin page to change owner of several videos."""
+
     change_list_template = "videos/change_video_owner.html"
 
     def changelist_view(self, request, extra_context=None):
+        """View for the change_video_owner admin page."""
         extra_context = extra_context or {}
         return super(updateOwnerAdmin, self).changelist_view(
             request, extra_context=extra_context
@@ -283,6 +286,7 @@ class updateOwnerAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request, obj=None):
         """Manage create new instance link from admin interface.
+
         if return False no add link
 
         Args:

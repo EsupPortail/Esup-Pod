@@ -14,18 +14,3 @@
     align-items: center;
     grid-column: 1 / -1;
 }
-
-.paginator .previous_content,
-.paginator .next_content {
-    display: inline-block;
-    width: 30px;
-    cursor: pointer;
-    margin: .4em .8em;
-    color: var(--primary);
-}
-
-.paginator .previous_content.disable,
-.paginator .next_content.disable {
-    cursor: default;
-    color: var(--gray);
-}

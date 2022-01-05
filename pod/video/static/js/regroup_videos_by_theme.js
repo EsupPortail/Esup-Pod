@@ -195,8 +195,8 @@ function run(has_more_themes, Helper) {
     }
   };
   // Disable next btn if no more themes to load
-  if (!has_more_themes && next_btn && !next_btn.classList.contains("disable"))
-    next_btn.classList.add("disable");
+  if (!has_more_themes && next_btn && !next_btn.classList.contains("disabled"))
+    next_btn.classList.add("disabled");
   // Load next list of theme
   loadNextListThemeElement();
 
@@ -209,7 +209,7 @@ function run(has_more_themes, Helper) {
     e.stopPropagation();
     let curr_page = Math.abs(current_position) / 100 + 1;
     const [_, max_pages] = current_page.split(PAGE_INFO_SEPARATOR);
-    if (this.classList.contains("disable")) return;
+    if (this.classList.contains("disabled")) return;
     const themes_contents = scroll_wrapper.querySelectorAll(
       ".list-children-theme"
     );
@@ -220,12 +220,12 @@ function run(has_more_themes, Helper) {
         (theme_content) =>
           (theme_content.style.transform = `translateX(${current_position}%)`)
       );
-      previous_btn.classList.remove("disable");
+      previous_btn.classList.remove("disabled");
       loadNextListThemeElement();
     } else if (this.isEqualNode(previous_btn) && current_position < 0) {
       current_position += 100;
-      next_btn.classList.remove("disable");
-      if (current_position == 0) previous_btn.classList.add("disable");
+      next_btn.classList.remove("disabled");
+      if (current_position == 0) previous_btn.classList.add("disabled");
       // swipe content on the left
       themes_contents.forEach(
         (theme_content) =>
@@ -235,12 +235,12 @@ function run(has_more_themes, Helper) {
     curr_page = Math.abs(current_position) / 100 + 1;
     if (
       curr_page === Number.parseInt(max_pages) &&
-      !next_btn.classList.contains("disable")
+      !next_btn.classList.contains("disabled")
     )
-      next_btn.classList.add("disable");
+      next_btn.classList.add("disabled");
 
-    if (current_position === 0 && !previous_btn.classList.contains("disable"))
-      previous_btn.classList.add("disable");
+    if (current_position === 0 && !previous_btn.classList.contains("disabled"))
+      previous_btn.classList.add("disabled");
     current_page_info.innerText = `${curr_page}${PAGE_INFO_SEPARATOR}${max_pages}`;
     current_page_info.setAttribute(
       "title",
