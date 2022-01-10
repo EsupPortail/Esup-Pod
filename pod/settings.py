@@ -279,3 +279,4 @@ if "H5P_ENABLED" in globals() and eval("H5P_ENABLED") is True:
     sys.path.append(os.path.join(BASE_DIR, "../../H5PP"))
     INSTALLED_APPS.append("h5pp")
     INSTALLED_APPS.append("pod.interactive")
+# test
