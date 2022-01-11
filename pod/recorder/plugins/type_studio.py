@@ -29,8 +29,8 @@ def process(recording):
     t.start()
 
 
-def save_one_video(recording, video_src):
-    # Save & encode a video corresponding to the recording
+def save_basic_video(recording, video_src):
+    # Save & encode one video corresponding to the recording without cut
     # We don't generate an intermediate video
     recorder = recording.recorder
     video = Video()
@@ -42,10 +42,10 @@ def save_one_video(recording, video_src):
     # Video management
     storage_path = get_storage_path_video(video, os.path.basename(video_src))
     dt = str(datetime.datetime.now()).replace(":", "-")
-    nom, ext = os.path.splitext(os.path.basename(video_src))
+    name, ext = os.path.splitext(os.path.basename(video_src))
     ext = ext.lower()
     video.video = os.path.join(
-        os.path.dirname(storage_path), slugify(nom) + "_" + dt.replace(" ", "_") + ext
+        os.path.dirname(storage_path), slugify(name) + "_" + dt.replace(" ", "_") + ext
     )
     # Move source file to destination
     os.makedirs(os.path.dirname(video.video.path), exist_ok=True)
@@ -91,6 +91,9 @@ def save_one_video(recording, video_src):
     encode_video = getattr(encode, ENCODE_VIDEO)
     encode_video(video.id)
 
+    # Rename the XML file
+    os.rename(recording.source_file, recording.source_file + "_treated")
+
 
 def generate_intermediate_video(recording):
     # We must generate an intermediate video (see video/studio.py)
@@ -103,16 +106,16 @@ def encode_recording(recording):
     add_comment(recording.id, "Start at %s\n--\n" % datetime.datetime.now())
 
     try:
-        # Read the Pod SMIL file
-        file_smil = open(recording.source_file, "r")
-        text_smil = file_smil.read()
+        # Read the Pod XML file
+        file_xml = open(recording.source_file, "r")
+        text_xml = file_xml.read()
         # XML result to parse
-        xmldoc = minidom.parseString(text_smil)
+        xmldoc = minidom.parseString(text_xml)
     except KeyError as e:
         add_comment(recording.id, "Error : %s" % e)
         return -1
 
-    # Get informations from SMIL file
+    # Get informations from XML file
     if xmldoc.getElementsByTagName("video")[0].firstChild:
         video_presenter_src = xmldoc.getElementsByTagName("video")[0].firstChild.data
     else:
@@ -131,10 +134,11 @@ def encode_recording(recording):
         manage_video_without_cut(recording, video_presenter_src, video_presentation_src)
     else:
         # Cut is necessary ; we must generate an intermediate video
-        add_comment(recording.id, "> Cut is necessary : generate an intermediate video")
+        msg = "*** Cut is necessary : generate an intermediate video ***"
+        add_comment(recording.id, msg)
         generate_intermediate_video(recording)
 
-    # The SMIL file is renamed in video/studio.py, after merged the videos
+    # The XML file is renamed in video/studio.py, after merged the videos
     # os.rename(recording.source_file, recording.source_file + "_treated")
 
 
@@ -145,19 +149,22 @@ def manage_video_without_cut(recording, video_presenter_src, video_presentation_
         video_src = os.path.join(
             settings.MEDIA_ROOT, 'opencast-files', video_presenter_src
         )
-        add_comment(recording.id, "> 1 video file (presenter) %s" % video_src)
+        msg = "*** Management of basic video file (presenter) %s ***" % video_src
+        add_comment(recording.id, msg)
         # We don't generate an intermediate video
-        save_one_video(recording, video_src)
+        save_basic_video(recording, video_src)
     elif not video_presenter_src and video_presentation_src:
         # Save & encode presentation video
         video_src = os.path.join(
             settings.MEDIA_ROOT, 'opencast-files', video_presentation_src
         )
-        add_comment(recording.id, "> 1 video file (presentation) %s" % video_src)
+        msg = "*** Management of basic video file (presentation) %s ***" % video_src
+        add_comment(recording.id, msg)
         # We don't generate an intermediate video
-        save_one_video(recording, video_src)
+        save_basic_video(recording, video_src)
     elif video_presenter_src and video_presentation_src:
         # Save & encode the 2 videos in only one
-        add_comment(recording.id, "> 2 video files to manage without cut")
+        msg = "*** Merge 2 video files is necessary : generate an intermediate video ***"
+        add_comment(recording.id, msg)
         # We must generate an intermediate video
         generate_intermediate_video(recording)
