@@ -6,7 +6,7 @@
     <tags>
       <tag></tag>
     </tags>
-    <url>{% if request.is_secure %}https://{%else%}http://{% endif %}{{ request.get_host }}/media/opencast-files/{{ idMedia }}/{{ idTrack }}/{{ filename }}</url>
+    <url>{% if request.is_secure %}https://{%else%}http://{% endif %}{{ request.get_host }}/media/opencast-files/{{ idMedia }}/{{ filename }}</url>
     <live>false</live>
   </track>
 </media>
