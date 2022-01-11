@@ -761,7 +761,7 @@ class VideoForm(forms.ModelForm):
         fields = VIDEO_FORM_FIELDS
         widgets = {
             "owner" : OwnerWidget,
-            "additional_owners" : OwnerWidget,
+            "additional_owners" : AddOwnerWidget,
             "channel" : ChannelWidget,
             "discipline" : DisciplineWidget,
             "date_evt": widgets.AdminDateWidget,

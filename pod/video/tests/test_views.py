@@ -801,7 +801,10 @@ class VideoEditTestView(TestCase):
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
+        print("response is")
+        print(response.content)
         self.assertTrue(b"The changes have been saved." in response.content)
+   
 
         v = Video.objects.get(title="VideoTest3")
         self.assertEqual(v.description, "<p>bl</p>")
