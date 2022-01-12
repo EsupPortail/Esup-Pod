@@ -1,3 +1,4 @@
+"""Admin pages for Esup-Pod Completion items."""
 from django.conf import settings
 from django.contrib import admin
 from pod.completion.models import Contributor
@@ -89,9 +90,10 @@ class DocumentAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     class Media:
+        USE_THEME = getattr(settings, "USE_THEME", "default")
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
+                "bootstrap-4/css/bootstrap-%s.min.css" % USE_THEME,
                 "bootstrap-4/css/bootstrap-grid.css",
                 "css/pod.css",
             )

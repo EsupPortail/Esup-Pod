@@ -1,3 +1,4 @@
+"""Admin pages for Esup-Pod Video items."""
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import User
@@ -245,11 +246,12 @@ class VideoAdmin(admin.ModelAdmin):
             obj.save()
 
     class Media:
+        USE_THEME = getattr(settings, "USE_THEME", "default")
         css = {
             "all": (
-                "css/pod.css",
-                "bootstrap-4/css/bootstrap.min.css",
+                "bootstrap-4/css/bootstrap-%s.min.css" % USE_THEME,
                 "bootstrap-4/css/bootstrap-grid.css",
+                "css/pod.css",
             )
         }
         js = (
@@ -272,7 +274,8 @@ class updateOwnerAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request, obj=None):
         """Manage create new instance link from admin interface.
-        if return False no add link
+
+        if return False, no add link
 
         Args:
             request (Request): Http request
