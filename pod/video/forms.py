@@ -760,7 +760,10 @@ class VideoForm(forms.ModelForm):
         model = Video
         fields = VIDEO_FORM_FIELDS
         widgets = {
-            # 'date_added': widgets.AdminSplitDateTime,
+            "owner" : OwnerWidget,
+            "additional_owners" : AddOwnerWidget,
+            "channel" : ChannelWidget,
+            "discipline" : DisciplineWidget,
             "date_evt": widgets.AdminDateWidget,
         }
         initial = {

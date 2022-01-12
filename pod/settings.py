@@ -4,7 +4,6 @@ Django global settings for pod_project.
 Django version : 1.11.16.
 """
 import os
-import sys
 from pod.main.settings import BASE_DIR
 
 ##
