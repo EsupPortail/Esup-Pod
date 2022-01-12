@@ -29,11 +29,33 @@
           <option value="{{disc.slug}}" data-value="{% url 'videos' %}?discipline={{disc.slug}}">{{disc.title}}  ({{disc.video_count}})</option>
         {% endfor %}
       </select>
-      <input value="Valider" class="sr-only" type="submit">
+      <input value="{% trans 'Submit' %}" class="sr-only" type="submit">
   </form>
   </div>
 </div>
 {% endif %}
+
+{% if HIDE_TYPES == False %}
+<div class="card card-body p-2 mt-1" id="card-types">
+  <h2 class="card-title pl-2 h4">
+    <label for="type">
+      <i data-feather="tv" aria-hidden="true"></i>&nbsp;{% trans 'Types' %}
+    </label>
+  </h2>
+  <div class="card-text">
+    <form class="form" method="get">
+      <select class="form-control" onchange="this.options[this.selectedIndex].getAttribute('data-value') &amp;&amp; (window.location = this.options[this.selectedIndex].getAttribute('data-value'));" name="type" id="type">
+        <option value="#">{% trans 'Types' %}...</option>
+        {% for type in TYPES %}
+          <option value="{{type.slug}}" data-value="{% url 'videos' %}?type={{type.slug}}">{{type.title}}  ({{type.video_count}})</option>
+        {% endfor %}
+      </select>
+      <input value="{% trans 'Submit' %}" class="sr-only" type="submit">
+  </form>
+  </div>
+</div>
+{% endif %}
+
 {% if HIDE_TAGS == False %}
 <div class="card card-body p-2 mt-1" id="card-tags">
   <h2 class="card-title pl-2 h4">
