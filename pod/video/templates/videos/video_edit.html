@@ -33,12 +33,12 @@
 {% spaceless %}
 <h3>{% if form.instance.title and form.instance.slug != '' %}{% trans "Editing the video" %} "{{form.instance.title}}"
   <span>
-  <a href="{% url 'video' slug=form.instance.slug %}" class="btn btn-primary btn-sm m-2">
-    <i data-feather="film"></i>&nbsp;{% trans "View the video"%}
-  </a>
-  <a href="{% url 'video_delete' slug=form.instance.slug %}" class="btn btn btn-danger btn-sm m-2">
-    <i data-feather="trash-2"></i>&nbsp;{% trans "Delete the video"%}
-  </a>
+    <a href="{% url 'video' slug=form.instance.slug %}" class="btn btn-primary btn-sm m-2">
+      <i data-feather="film"></i>&nbsp;{% trans "View the video"%}
+    </a>
+    <a href="{% url 'video_delete' slug=form.instance.slug %}" class="btn btn btn-danger btn-sm m-2">
+      <i data-feather="trash-2"></i>&nbsp;{% trans "Delete the video"%}
+    </a>
   </span>
 {% else %}{% trans "Add a new video" %}{%endif%}
 </h3>
@@ -48,13 +48,13 @@
   </p>
 {% else %}
   {% if form.instance.slug and form.instance.slug != '' %}
-  <form id="video_form" method="post"
-    action="{% url 'video_edit' slug=form.instance.slug %}"
-    accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate data-morecheck="videocheck">
+    <form id="video_form" method="post"
+      action="{% url 'video_edit' slug=form.instance.slug %}"
+      accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate data-morecheck="videocheck">
   {% else %}
-  <form id="video_form" method="post"
-    action="{% url 'video_edit' %}"
-    accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate data-morecheck="videocheck">
+    <form id="video_form" method="post"
+      action="{% url 'video_edit' %}"
+      accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate data-morecheck="videocheck">
   {% endif %}
   {% csrf_token %}
   <!--<div class="group-video-edit">-->
@@ -81,58 +81,47 @@
     </p>
   {% endif %}
 
-            {% for field_hidden in form.hidden_fields %}
-            {{field_hidden}}
-            {% endfor %}
-            {% for field in form.visible_fields %}
-            {% spaceless %}
-            <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}"{% if field.name == "restrict_access_to_groups" %}style="padding-left:2em;"{% endif %}>
-            <div class="form-group {% if field.field.required %}form-group-required{%endif%}" {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}style="max-width:44rem; overflow-x:hidden"{%endif%}>
-                {{ field.errors }}
-                {% if "form-check-input" in field.field.widget.attrs.class %}
-                <div class="form-check">
-                {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label" >{{ field.label }}</label>
-                </div>
-                {% else %}
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br/>{%endif%}
-                {{ field }}
-                {% endif %}
-                {% if field.help_text %}
-                <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
-                {% endif %}
-                {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
-                {% if field.name == "description" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".description" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
-                {% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
-            </div>
-            </div>
-            {% endspaceless %}
-            {% endfor %}
-        </fieldset>
-        <div class="card" id='js-process'>
-          <div class="card-body">
-            <h5 class="card-title">{% trans "Sending, please wait." %}</h5>
-            <div class="spinner-border hidespinner" role="status">
-                <span class="sr-only">{% trans "Loading" %}...</span>
-            </div>
+  {% for field_hidden in form.hidden_fields %}
+    {{field_hidden}}
+  {% endfor %}
+  {% for field in form.visible_fields %}
+    {% spaceless %}
+    <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}"{% if field.name == "restrict_access_to_groups" %}style="padding-left:2em;"{% endif %}>
+      <div class="form-group {% if field.field.required %}form-group-required{%endif%}" {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}style="max-width:44rem; overflow-x:hidden"{%endif%}>
+        {{ field.errors }}
+        {% if "form-check-input" in field.field.widget.attrs.class %}
+          <div class="form-check">
+            {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label" >{{ field.label }}</label>
           </div>
-          <div class="card-footer">
-            {% trans "The page will refresh after the upload completes." %}
-          </div>
-          <div id="progress-box" class="not-visible"></div>
-        </div>
-    <!--</div>-->
-    <div class="text-center">
-        <button type="submit" class="btn btn-primary btn-sm m-2" name="_continue" value="">{% trans 'Save and continue editing' %}</button>
-        {% if form.instance.title and form.instance.slug != '' %}<button type="submit" class="btn btn-primary btn-sm m-2" name="_saveandsee" value="{{form.instance.get_full_url}}">{% trans 'Save and see' %}</button> {%endif%}
-        <a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}" class="btn btn-secondary btn-sm m-2">{% trans 'back to my videos' %}</a>
+        {% else %}
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br/>{%endif%}
+            {{ field }}
+          {% endif %}
+          {% if field.help_text %}
+            <small id="{{field.id_for_label}}Help" class="form-text text-muted">  {{ field.help_text|safe }}</small>
+          {% endif %}
+          {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+          {% if field.name == "description" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".description" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
+          {% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
+      </div>
     </div>
-  </div>
-  <div class="card-footer">
-    {% trans "The page will refresh after the upload completes." %}
+    {% endspaceless %}
+  {% endfor %}
+
+  <div class="card" id='js-process'>
+    <div class="card-body">
+      <h5 class="card-title">{% trans "Sending, please wait." %}</h5>
+      <div class="spinner-border hidespinner" role="status">
+        <span class="sr-only">{% trans "Loading" %}...</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      {% trans "The page will refresh after the upload completes." %}
+    </div>
+    <div id="progress-box" class="not-visible"></div>
   </div>
 
-  </div>
   <!--</div>-->
   <div class="text-center">
     <button type="submit" class="btn btn-primary btn-sm m-2" name="_continue" value="">{% trans 'Save and continue editing' %}</button>
