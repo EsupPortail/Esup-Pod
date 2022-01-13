@@ -325,12 +325,6 @@ USE_VIDEO_RECORD = False
 VIEW_STATS_AUTH = False
 
 """
-# Permet d'utiliser la mise en ligne fragmentée
-#  (qui permet de reprendre la mise en ligne lors de problèmes de connexion)
-"""
-USE_CHUNKED_UPLOAD = False
-
-"""
 # Taille d'un fragment
 # (le fichier sera mis en ligne par fragment de cette taille)
 """
