@@ -316,6 +316,7 @@ def remove_accents(input_str):
 
 @login_required(redirect_field_name="referrer")
 def user_autocomplete(request):
+    """Search for users with partial names, for autocompletion."""
     if request.is_ajax():
         additional_filters = {
             "video__is_draft": False,

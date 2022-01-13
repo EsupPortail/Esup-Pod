@@ -399,7 +399,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
     # Vous pouvez créer un template dans votre application custom et
     #  indiquer son chemin dans cette variable pour que ce code html,
     # ce template soit affiché en haut de votre page, le code est ajouté
-    #  juste après la balise body.(Or iframe)
+    #  juste après la balise body.(Hors iframe)
     # Si le fichier créé est
     # '/opt/django_projects/podv2/pod/custom/templates/custom/preheader.html'
     # alors la variable doit prendre la valeur 'custom/preheader.html'
@@ -1223,10 +1223,9 @@ BBB_VERSION_IS_23 = False
 USER_VIDEO_CATEGORY = False
 
 """
-# gestion de l'oboslesence des vidéos
+# gestion de l'obsolesence des vidéos
 """
-USE_OBSOLESCENCE = True
-
+USE_OBSOLESCENCE = False
 WARN_DEADLINES = [60, 30, 7]
 
 """
@@ -1320,3 +1319,18 @@ COOKIE_LEARN_MORE = ""
 #     'TRACKING_TEMPLATE': 'custom/tracking.html',
 """
 USE_VIDEO_EVENT_TRACKING = False
+
+"""CACHE configurations."""
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    # Persistent cache setup for select2 (NOT DummyCache or LocMemCache).
+    "select2": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}

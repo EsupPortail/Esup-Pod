@@ -28,6 +28,9 @@
   --light: #f8f9fa;
   --dark: #343a40;
   --color-formfields: #f1f1f1;
+
+  /* Use system font */
+  --font-family-sans-serif : -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,Verdana,sans-serif;
 }
 
 /* copy "alert-danger" style from Bootstrap 4 */
@@ -133,17 +136,8 @@ a.btn-outline-primary svg.feather {
   height: 35px;
 }
 
-.select2-container {
-  position: static !important;
-  height:auto;
-}
-
 tr,.rowl {
   display: table-row !important;
-}
-
-body[data-admin-utc-offset] {
-  padding-top: 0;
 }
 
 body {
@@ -639,11 +633,6 @@ footer a:hover {
   font-size: 1.2em;
 }
 
-/*** Useful for additional owners ***/
-input.select2-input {
-  width: 100% !important;
-}
-
 #view-counter-icon {
   color: var(--primary);
 }
@@ -682,3 +671,46 @@ input.select2-input {
   margin: 0 !important;
 }
 
+/** Django 3 Admin pages
+ *  (must be set after Bootsrap to reset Django defaults)
+ **/
+body[data-admin-utc-offset] {
+  padding-top: 0;
+}
+
+body[data-admin-utc-offset] {
+  --primary:  #79aec8;
+  --breadcrumbs-bg: var(--primary);
+  --button-bg: var(--primary);
+}
+body[data-admin-utc-offset] caption{
+  caption-side: top;
+}
+
+body[data-admin-utc-offset] h1{ font-size: 20px;}
+body[data-admin-utc-offset] h2{ font-size: 18px;}
+body[data-admin-utc-offset] h3{ font-size: 16px;}
+
+body[data-admin-utc-offset] .hidden{
+  display: none;
+}
+body[data-admin-utc-offset] .btn-outline-primary{
+  color: var(--link-fg);
+}
+body[data-admin-utc-offset] .btn-outline-primary:hover,
+body[data-admin-utc-offset] .btn-outline-primary:focus{
+  background-color: var(--primary);
+  color: var(--light);
+}
+body[data-admin-utc-offset] .form-row.errors{
+  display: block;
+}
+/* System/browser dark mode */
+@media (prefers-color-scheme: dark) {
+  body[data-admin-utc-offset] {
+    --primary:  #264b5d;
+    --secondary: #417690;
+    --font-color: #eeeeee;
+    --bg-color:  #121212;
+  }
+}
