@@ -95,12 +95,12 @@ def save_basic_video(recording, video_src):
     os.rename(recording.source_file, recording.source_file + "_treated")
 
 
-def generate_intermediate_video(video_1, video_2):
+def generate_intermediate_video(video_1, video_2, video_output):
     # We must generate an intermediate video (see video/studio.py)
-    STUDIO_ENCODE_VIDEOS(video_1, video_2)
+    STUDIO_ENCODE_VIDEOS(video_1, video_2, video_output)
 
 
-def encode_recording(recording):
+def encode_recording(recording):  # noqa: C901
     recording.comment = ""
     recording.save()
     add_comment(recording.id, "Start at %s\n--\n" % datetime.datetime.now())
@@ -115,56 +115,52 @@ def encode_recording(recording):
         add_comment(recording.id, "Error : %s" % e)
         return -1
 
+    # Video file output : at the same directory than the XML file
+    # And with the same name .mp4
+    video_output = recording.source_file.replace(".xml", ".mp4")
+    # Rename the XML file
+    os.rename(recording.source_file, recording.source_file + "_treated")
+
+    video_presenter_src = ""
+    video_presenter_path = None
+    video_presentation_src = ""
+    video_presentation_path = None
     # Get informations from XML file
     if xmldoc.getElementsByTagName("video")[0].firstChild:
         video_presenter_src = xmldoc.getElementsByTagName("video")[0].firstChild.data
-    else:
-        video_presenter_src = ""
+        video_presenter_path = os.path.join(
+            settings.MEDIA_ROOT, 'opencast-files', video_presenter_src
+        )
+
     if xmldoc.getElementsByTagName("video")[1].firstChild:
         video_presentation_src = xmldoc.getElementsByTagName("video")[1].firstChild.data
-    else:
-        video_presentation_src = ""
+        video_presentation_path = os.path.join(
+            settings.MEDIA_ROOT, 'opencast-files', video_presentation_src
+        )
+
     # Informations for cut
     clip_begin = xmldoc.getElementsByTagName("cut")[0].getAttribute("clipBegin")
     clip_end = xmldoc.getElementsByTagName("cut")[0].getAttribute("clipEnd")
 
     # Management of the differents cases
-    if not clip_begin and not clip_end:
+    if not clip_begin and not clip_end and not (video_presenter_src and video_presentation_src):
         # Save & encode video : if possible, we don't  generate an intermediate video
-        manage_video_without_cut(recording, video_presenter_src, video_presentation_src)
+        # If there is no cut, we can create directly a Pod video (if only one managed)
+        if video_presenter_src and not video_presentation_src:
+            # Save & encode presenter vide
+            msg = "*** Management of basic video file (presenter) %s ***" % video_presenter_path
+            add_comment(recording.id, msg)
+            # We don't generate an intermediate video
+            save_basic_video(recording, video_presenter_path)
+        elif not video_presenter_src and video_presentation_src:
+            # Save & encode presentation video
+            msg = "*** Management of basic video file (presentation) %s ***" % video_presentation_path
+            add_comment(recording.id, msg)
+            # We don't generate an intermediate video
+            save_basic_video(recording, video_presentation_path)
     else:
         # Cut is necessary ; we must generate an intermediate video
-        msg = "*** Cut is necessary : generate an intermediate video ***"
+        msg = "*** Cut or merge is necessary : generate an intermediate video ***"
         add_comment(recording.id, msg)
-        generate_intermediate_video(recording)
+        generate_intermediate_video(video_presenter_path, video_presentation_path, video_output)
 
-    # The XML file is renamed in video/studio.py, after merged the videos
-    # os.rename(recording.source_file, recording.source_file + "_treated")
-
-
-def manage_video_without_cut(recording, video_presenter_src, video_presentation_src):
-    # If there is no cut, we can create directly a Pod video (if only one managed)
-    if video_presenter_src and not video_presentation_src:
-        # Save & encode presenter video
-        video_src = os.path.join(
-            settings.MEDIA_ROOT, 'opencast-files', video_presenter_src
-        )
-        msg = "*** Management of basic video file (presenter) %s ***" % video_src
-        add_comment(recording.id, msg)
-        # We don't generate an intermediate video
-        save_basic_video(recording, video_src)
-    elif not video_presenter_src and video_presentation_src:
-        # Save & encode presentation video
-        video_src = os.path.join(
-            settings.MEDIA_ROOT, 'opencast-files', video_presentation_src
-        )
-        msg = "*** Management of basic video file (presentation) %s ***" % video_src
-        add_comment(recording.id, msg)
-        # We don't generate an intermediate video
-        save_basic_video(recording, video_src)
-    elif video_presenter_src and video_presentation_src:
-        # Save & encode the 2 videos in only one
-        msg = "*** Merge 2 video files is necessary : generate an intermediate video ***"
-        add_comment(recording.id, msg)
-        # We must generate an intermediate video
-        generate_intermediate_video(recording)
