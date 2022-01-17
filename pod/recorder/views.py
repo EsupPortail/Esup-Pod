@@ -5,6 +5,7 @@ import os
 import datetime
 import uuid
 import urllib
+import time
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -509,6 +510,19 @@ def ingest_addAttachment(request):
     )
 
 
+def studio_clean_old_files():
+    folder_to_clean = os.path.join(
+        settings.MEDIA_ROOT, 'opencast-files'
+    )
+    now = time.time()
+
+    for f in os.listdir(folder_to_clean):
+            f = os.path.join(folder_to_clean, f)
+            if os.stat(f).st_mtime < now - 7 * 86400:
+                if os.path.isfile(f):
+                    os.remove(f)
+
+
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_addTrack(request):
@@ -558,18 +572,8 @@ def ingest_addTrack(request):
         settings.MEDIA_ROOT, 'opencast-files', str(idMedia)
     )
 
-    folder_to_clean = os.path.join(
-        settings.MEDIA_ROOT, 'opencast-files'
-    )
+    studio_clean_old_files()
 
-    now = time.time()
-
-    for f in os.listdir(folder_to_clean):
-        f = os.path.join(path, folder_to_clean)
-        if os.stat(f).st_mtime < now - 7 * 86400:
-            if os.path.isfile(f):
-                os.remove(f)
-    
     # Create directories
     if not os.path.exists(opencastMediaDir):
         os.makedirs(opencastMediaDir)

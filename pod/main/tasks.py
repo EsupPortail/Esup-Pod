@@ -27,7 +27,7 @@ def task_start_bbb_encode(self, meeting_id):
 
 @shared_task(bind=True)
 def task_start_video_merge(self, video_1, video_2):
-    print("CELERY START STUDIO ENCODE VIDEOS FROM RECORDING %s" % (recording_id))
+    print("CELERY START MERGE VIDEOS FROM %s and %s" % (video_1, video_2))
     from pod.video.merge_video import studio_encode_videos
 
     studio_encode_videos(video_1, video_2)

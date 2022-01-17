@@ -42,7 +42,7 @@ def studio_encode_videos(video_1, video_2): # noqa: max-complexity: 13
 
     # Get the recording
 
-    #TODO : modify after here
+    # TODO : modify after here
     recording = Recording.objects.get(id=id)
 
     try:

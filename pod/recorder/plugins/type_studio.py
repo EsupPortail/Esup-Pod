@@ -3,7 +3,7 @@
 import threading
 import logging
 import datetime
-import os, time, sys
+import os
 from xml.dom import minidom
 
 from django.conf import settings
