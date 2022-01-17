@@ -163,4 +163,3 @@ def encode_recording(recording):  # noqa: C901
         msg = "*** Cut or merge is necessary : generate an intermediate video ***"
         add_comment(recording.id, msg)
         generate_intermediate_video(video_presenter_path, video_presentation_path, video_output)
-
