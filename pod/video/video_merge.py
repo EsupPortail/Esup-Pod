@@ -6,12 +6,10 @@ import logging
 from xml.dom import minidom
 
 from django.conf import settings
-from pod.main.tasks import task_start_studio_encode
+from pod.main.tasks import task_start_video_merge
 from pod.recorder.models import Recording
 from pod.recorder.utils import add_comment
 
-# Use of OpenCast Studio
-USE_OPENCAST_STUDIO = getattr(settings, "USE_OPENCAST_STUDIO", False)
 # Tools
 FFMPEG = getattr(settings, "FFMPEG", "ffmpeg")
 FFPROBE = getattr(settings, "FFPROBE", "ffprobe")
@@ -24,25 +22,27 @@ CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 log = logging.getLogger(__name__)
 
 
-def start_studio_encode(id):
+def start_video_merge(video_1, video_2):
     if CELERY_TO_ENCODE:
-        task_start_studio_encode.delay(id)
+        task_start_video_merge.delay(id)
     else:
-        log.info("START STUDIO ENCODE VIDEOS FROM RECORDING %s" % (id))
+        log.info("START VIDEO MERGE FROM %s and %s" % (video_1, video_2))
         t = threading.Thread(
-            target=studio_encode_videos, args=[id]
+            target=studio_encode_videos, args=[video_1, video_2]
         )
         t.setDaemon(False)
         t.start()
 
 
-def studio_encode_videos(id): # noqa: max-complexity: 13
+def studio_encode_videos(video_1, video_2): # noqa: max-complexity: 13
     # Generate an intermediate video for a Studio session
     # This happens when we need to merge 2 videos or to cut at least one video
 
     msg = ""
 
     # Get the recording
+
+    #TODO : modify after here
     recording = Recording.objects.get(id=id)
 
     try:

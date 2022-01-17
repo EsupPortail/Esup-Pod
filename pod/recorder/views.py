@@ -557,6 +557,19 @@ def ingest_addTrack(request):
     opencastMediaDir = os.path.join(
         settings.MEDIA_ROOT, 'opencast-files', str(idMedia)
     )
+
+    folder_to_clean = os.path.join(
+        settings.MEDIA_ROOT, 'opencast-files'
+    )
+
+    now = time.time()
+
+    for f in os.listdir(folder_to_clean):
+        f = os.path.join(path, folder_to_clean)
+        if os.stat(f).st_mtime < now - 7 * 86400:
+            if os.path.isfile(f):
+                os.remove(f)
+    
     # Create directories
     if not os.path.exists(opencastMediaDir):
         os.makedirs(opencastMediaDir)

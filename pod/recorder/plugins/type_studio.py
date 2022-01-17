@@ -3,7 +3,7 @@
 import threading
 import logging
 import datetime
-import os
+import os, time, sys
 from xml.dom import minidom
 
 from django.conf import settings
@@ -11,13 +11,13 @@ from ..utils import add_comment
 from pod.video.models import Video, get_storage_path_video
 from pod.video import encode
 from django.template.defaultfilters import slugify
-from pod.video.studio import start_studio_encode
+from pod.video.merge_video import start_video_merge
 
 DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
 
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
 
-STUDIO_ENCODE_VIDEOS = getattr(settings, "STUDIO_ENCODE_VIDEOS", start_studio_encode)
+STUDIO_ENCODE_VIDEOS = getattr(settings, "STUDIO_ENCODE_VIDEOS", start_video_merge)
 
 log = logging.getLogger(__name__)
 
@@ -95,9 +95,9 @@ def save_basic_video(recording, video_src):
     os.rename(recording.source_file, recording.source_file + "_treated")
 
 
-def generate_intermediate_video(recording):
+def generate_intermediate_video(video_1, video_2):
     # We must generate an intermediate video (see video/studio.py)
-    STUDIO_ENCODE_VIDEOS(recording.id)
+    STUDIO_ENCODE_VIDEOS(video_1, video_2)
 
 
 def encode_recording(recording):
