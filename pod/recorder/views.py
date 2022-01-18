@@ -518,9 +518,9 @@ def studio_clean_old_files():
 
     for f in os.listdir(folder_to_clean):
         f = os.path.join(folder_to_clean, f)
-            if os.stat(f).st_mtime < now - 7 * 86400:
-                if os.path.isfile(f):
-                    os.remove(f)
+        if os.stat(f).st_mtime < now - 7 * 86400:
+            if os.path.isfile(f):
+                os.remove(f)
 
 
 @csrf_exempt
