@@ -11,7 +11,7 @@ from ..utils import add_comment
 from pod.video.models import Video, get_storage_path_video
 from pod.video import encode
 from django.template.defaultfilters import slugify
-from pod.video.merge_video import start_video_merge
+from pod.video.video_merge import start_video_merge
 
 DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
 
