@@ -25,7 +25,7 @@
   /* BOOTSTRAP COLORS */
   /* primary color is defined in bootstrap-$theme$.css */
   --primary2: var(--primary);
-  --light: #f8f9fa;
+  --light: #fff;
   --dark: #343a40;
   --color-formfields: #f1f1f1;
 }
@@ -245,6 +245,10 @@ label {
 .title-chaine {
   margin-right: .5rem;
   font-weight: 600;
+  flex-direction: row-reverse;
+}
+.title-chaine>a{
+  margin-right: .5em;
 }
 #listeChaines {
   max-height: 30rem;

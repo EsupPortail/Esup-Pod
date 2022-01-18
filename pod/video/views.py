@@ -156,7 +156,7 @@ TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
 VIEW_STATS_AUTH = getattr(settings, "VIEW_STATS_AUTH", False)
 ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
 USE_CATEGORY = getattr(settings, "USER_VIDEO_CATEGORY", False)
-
+DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
 DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
 
 # ############################################################################
@@ -2588,7 +2588,7 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
             video = Video.objects.create(
                 video=uploaded_file,
                 owner=request.user,
-                type=Type.objects.get(id=1),
+                type=Type.objects.get(id=DEFAULT_TYPE_ID),
                 title=uploaded_file.name,
                 transcript=(True if (transcript == "true") else False),
             )
