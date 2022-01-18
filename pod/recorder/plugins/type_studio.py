@@ -4,20 +4,21 @@ import threading
 import logging
 import datetime
 import os
+import time
 from xml.dom import minidom
 
 from django.conf import settings
-from ..utils import add_comment
+from ..utils import add_comment, studio_clean_old_files
 from pod.video.models import Video, get_storage_path_video
 from pod.video import encode
 from django.template.defaultfilters import slugify
-from pod.video.video_merge import start_video_merge
+
 
 DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
 
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
 
-STUDIO_ENCODE_VIDEOS = getattr(settings, "STUDIO_ENCODE_VIDEOS", start_video_merge)
+ENCODE_STUDIO = getattr(settings, "ENCODE_STUDIO", "start_encode_studio")
 
 log = logging.getLogger(__name__)
 
@@ -94,72 +95,53 @@ def save_basic_video(recording, video_src):
     # Rename the XML file
     os.rename(recording.source_file, recording.source_file + "_treated")
 
-
-def generate_intermediate_video(video_1, video_2, video_output):
-    # We must generate an intermediate video (see video/studio.py)
-    STUDIO_ENCODE_VIDEOS(video_1, video_2, video_output)
+    studio_clean_old_files()
 
 
-def encode_recording(recording):  # noqa: C901
+def generate_intermediate_video(recording, videos, clip_begin, clip_end):
+
+    # Video file output : at the same directory than the XML file
+    # And with the same name .mp4
+    video_output = recording.source_file.replace(".xml", ".mp4")
+    subtime = get_subtime(clip_begin, clip_end)
+    encode_studio = getattr(encode, ENCODE_STUDIO)
+    encode_studio(recording.id, video_output, videos, subtime)
+
+
+def get_subtime(clip_begin, clip_end):
+    subtime = ""
+    if clip_begin:
+        subtime += "-ss %s " % str(clip_begin)
+    if clip_end:
+        subtime += "-to %s " % str(clip_end)
+    return subtime
+
+
+# flake ignore complexity with noqa: C901
+def encode_recording(recording):
     recording.comment = ""
     recording.save()
     add_comment(recording.id, "Start at %s\n--\n" % datetime.datetime.now())
 
     try:
-        # Read the Pod XML file
-        file_xml = open(recording.source_file, "r")
-        text_xml = file_xml.read()
-        # XML result to parse
-        xmldoc = minidom.parseString(text_xml)
+        xmldoc = minidom.parse(recording.source_file)
     except KeyError as e:
         add_comment(recording.id, "Error : %s" % e)
         return -1
 
-    # Video file output : at the same directory than the XML file
-    # And with the same name .mp4
-    video_output = recording.source_file.replace(".xml", ".mp4")
-    # Rename the XML file
-    os.rename(recording.source_file, recording.source_file + "_treated")
-
-    video_presenter_src = ""
-    video_presenter_path = None
-    video_presentation_src = ""
-    video_presentation_path = None
-    # Get informations from XML file
-    if xmldoc.getElementsByTagName("video")[0].firstChild:
-        video_presenter_src = xmldoc.getElementsByTagName("video")[0].firstChild.data
-        video_presenter_path = os.path.join(
-            settings.MEDIA_ROOT, 'opencast-files', video_presenter_src
-        )
-
-    if xmldoc.getElementsByTagName("video")[1].firstChild:
-        video_presentation_src = xmldoc.getElementsByTagName("video")[1].firstChild.data
-        video_presentation_path = os.path.join(
-            settings.MEDIA_ROOT, 'opencast-files', video_presentation_src
-        )
+    videos = []
+    for videoElement in xmldoc.getElementsByTagName("video"):
+        videos.append({"type": videoElement.getAttribute("type"), "src": videoElement.firstChild.data})
 
     # Informations for cut
     clip_begin = xmldoc.getElementsByTagName("cut")[0].getAttribute("clipBegin")
     clip_end = xmldoc.getElementsByTagName("cut")[0].getAttribute("clipEnd")
 
-    # Management of the differents cases
-    if not clip_begin and not clip_end and not (video_presenter_src and video_presentation_src):
-        # Save & encode video : if possible, we don't  generate an intermediate video
-        # If there is no cut, we can create directly a Pod video (if only one managed)
-        if video_presenter_src and not video_presentation_src:
-            # Save & encode presenter vide
-            msg = "*** Management of basic video file (presenter) %s ***" % video_presenter_path
-            add_comment(recording.id, msg)
-            # We don't generate an intermediate video
-            save_basic_video(recording, video_presenter_path)
-        elif not video_presenter_src and video_presentation_src:
-            # Save & encode presentation video
-            msg = "*** Management of basic video file (presentation) %s ***" % video_presentation_path
-            add_comment(recording.id, msg)
-            # We don't generate an intermediate video
-            save_basic_video(recording, video_presentation_path)
+    if clip_begin or clip_end or len(videos) > 1:
+        generate_intermediate_video(recording, videos, clip_begin, clip_end)
     else:
-        # Cut is necessary ; we must generate an intermediate video
-        msg = "*** Cut or merge is necessary : generate an intermediate video ***"
+        msg = "*** Management of basic video file (%s) %s ***" % (videos[0].get('type'), videos[0].get('src'))
         add_comment(recording.id, msg)
-        generate_intermediate_video(video_presenter_path, video_presentation_path, video_output)
+        save_basic_video(recording, os.path.join(
+            settings.MEDIA_ROOT, 'opencast-files', videos[0].get('src')
+        ))

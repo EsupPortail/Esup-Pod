@@ -19,7 +19,7 @@ CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 log = logging.getLogger(__name__)
 
 
-def start_video_merge(video_1, video_2, video_output):
+def start_video_merge(video_1, video_2, video_output, clip_begin, clip_end):
     if CELERY_TO_ENCODE:
         task_start_video_merge.delay(video_1, video_2, video_output)
     else:
@@ -31,7 +31,7 @@ def start_video_merge(video_1, video_2, video_output):
         t.start()
 
 
-def studio_encode_videos(video_1, video_2, video_output): # noqa: max-complexity: 13
+def merge_videos(video_1, video_2, video_output, clip_begin, clip_end): # noqa: max-complexity: 13
     # Generate an intermediate video for a Studio session
     # This happens when we need to merge 2 videos or to cut at least one video
 
@@ -39,9 +39,9 @@ def studio_encode_videos(video_1, video_2, video_output): # noqa: max-complexity
 
     # TODO : START AND FINISH
     # Start
-    clip_begin = 0  # xmldoc.getElementsByTagName("cut")[0].getAttribute("clipBegin")
+    # clip_begin = 0  # xmldoc.getElementsByTagName("cut")[0].getAttribute("clipBegin")
     # End
-    clip_end = 0  # xmldoc.getElementsByTagName("cut")[0].getAttribute("clipEnd")
+    # clip_end = 0  # xmldoc.getElementsByTagName("cut")[0].getAttribute("clipEnd")
 
     # Error management
     if not video_1 and not video_2:

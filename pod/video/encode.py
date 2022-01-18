@@ -18,7 +18,7 @@ from .utils import get_duration_from_mp4
 from .utils import fix_video_duration
 
 # from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
-from pod.main.tasks import task_start_encode
+from pod.main.tasks import task_start_encode, task_start_encode_studio
 
 # from fractions import Fraction # use for keyframe
 from webvtt import WebVTT, Caption
@@ -179,6 +179,16 @@ def start_encode(video_id):
         t.setDaemon(True)
         t.start()
 
+
+def start_encode_studio(recording_id, video_output, videos, subtime):
+    """Start local encoding."""
+    if CELERY_TO_ENCODE:
+        task_start_encode_studio.delay(recording_id, video_output, videos, subtime)
+    else:
+        log.info("START ENCODE VIDEO ID %s" % recording_id)
+        t = threading.Thread(target=encode_video_studio, args=[recording_id, video_output, videos, subtime])
+        t.setDaemon(True)
+        t.start()
 
 # ##########################################################################
 # ENCODE VIDEO: MAIN FUNCTION
@@ -1184,3 +1194,42 @@ def remove_previous_encoding_playlist(video_to_encode):
     else:
         msg += "Playlist: Nothing to delete"
     return msg
+
+# ##########################################################################
+# ENCODE VIDEO STUDIO: MAIN ENCODE
+# ##########################################################################
+
+
+def encode_video_studio(recording_id, video_output, videos, subtime):
+    presenter_source = ""
+    presentation_source = ""
+    for video in videos:
+        if video.get("type") == "presenter/source":
+            presenter_source = os.path.join(
+                settings.MEDIA_ROOT, 'opencast-files', video.get('src')
+            )
+        if video.get("type") == "presentation/source":
+            presentation_source = os.path.join(
+                settings.MEDIA_ROOT, 'opencast-files', video.get('src')
+            )
+    input_video = ""
+    video_data = {}
+    if presenter_source and presentation_source:
+        # to put it in the right order
+        input_video = "-i \"" + presentation_source + "\" -i \"" + presenter_source + "\" "
+        video_data = get_video_data(presentation_source)
+    else:
+        if presenter_source:
+            input_video = "-i \"" + os.path.join(
+                settings.MEDIA_ROOT, 'opencast-files', presenter_source
+            ) + "\" "
+            video_data = get_video_data(presenter_source)
+        if presentation_source:
+            input_video = "-i \"" + os.path.join(
+                settings.MEDIA_ROOT, 'opencast-files', presentation_source
+            ) + "\" "
+            video_data = get_video_data(presentation_source)
+    
+    msg = encode_video_mp4(
+                video_to_encode.video.path, video_command_mp4["cmd"], output_dir
+            )
