@@ -86,7 +86,7 @@
   {% endfor %}
   {% for field in form.visible_fields %}
     {% spaceless %}
-    <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}"{% if field.name == "restrict_access_to_groups" %}style="padding-left:2em;"{% endif %}>
+    <div class="{% if 'description_' in field.name or 'title_'  in field.name %}collapse hide{% else %}{% endif %}{% if 'description_' in field.name %} description{%endif%}{% if 'title_' in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}"{% if field.name == "restrict_access_to_groups" %}style="padding-left:2em;"{% endif %}>
       <div class="form-group {% if field.field.required %}form-group-required{%endif%}" {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}style="max-width:44rem; overflow-x:hidden"{%endif%}>
         {{ field.errors }}
         {% if "form-check-input" in field.field.widget.attrs.class %}
@@ -227,6 +227,29 @@
     location.href= "/video_add?slug=" + slug
     event.preventDefault();
   });
+
+
+  (function () {
+    // display type description as field help when changed
+    const target = "id_type";
+    const helpContainer = document.getElementById(target + "Help");
+    const select = document.getElementById(target)
+    display_option_desc(select, helpContainer);
+    select.addEventListener("change", function() {
+      display_option_desc(this, helpContainer);
+    });
+
+  })();
+
+  function display_option_desc(selectBox, container){
+    // Display in $container the title of current $selectedBox option.
+    var target_title = selectBox.options[selectBox.selectedIndex].getAttribute("title");
+    if (!target_title) {
+      target_title = gettext("Select the general type of the video.");
+    }
+    container.innerHTML = target_title;
+  }
+
   </script>
 
 <script>
