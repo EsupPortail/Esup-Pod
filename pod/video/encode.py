@@ -407,6 +407,13 @@ def transcript_video(video_id):
 # ##########################################################################
 
 
+def get_video_info(command):
+    ffproberesult = subprocess.run(
+        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+    )
+    return json.loads(ffproberesult.stdout.decode("utf-8"))
+
+
 def get_video_data(video_id, output_dir):
     """Get video data from source file."""
     video_to_encode = Video.objects.get(id=video_id)
@@ -414,16 +421,8 @@ def get_video_data(video_id, output_dir):
     source = "%s" % video_to_encode.video.path
     command = GET_INFO_VIDEO % {"ffprobe": FFPROBE, "source": source}
     # ffproberesult = subprocess.getoutput(command)
-    ffproberesult = subprocess.run(
-        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-    )
     msg += "\nffprobe command: \n- %s\n" % command
-    """
-    add_encoding_log(
-        video_id,
-        "command: %s \n ffproberesult: %s" % (command, ffproberesult))
-    """
-    info = json.loads(ffproberesult.stdout.decode("utf-8"))
+    info = get_video_info(command)
     with open(output_dir + "/encoding.log", "a") as f:
         f.write(msg)
         f.write("\nffprobe command video result:\n\n")
@@ -444,31 +443,10 @@ def get_video_data(video_id, output_dir):
             is_video = True
         if info["streams"][0].get("height"):
             in_height = info["streams"][0]["height"]
-        """
-        if (info["streams"][0]['avg_frame_rate']
-        or info["streams"][0]['r_frame_rate']):
-            if info["streams"][0]['avg_frame_rate'] != "0/0":
-                # nb img / sec.
-                frame_rate = info["streams"][0]['avg_frame_rate']
-                key_frames_interval = int(round(Fraction(frame_rate)))
-            else:
-                frame_rate = info["streams"][0]['r_frame_rate']
-                key_frames_interval = int(round(Fraction(frame_rate)))
-        """
-
     # check audio
     command = GET_INFO_AUDIO % {"ffprobe": FFPROBE, "source": source}
-    # ffproberesult = subprocess.getoutput(command)
-    ffproberesult = subprocess.run(
-        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-    )
     msg += "\nffprobe command: %s" % command
-    """
-    add_encoding_log(
-        video_id,
-        "command: %s \n ffproberesult: %s" % (command, ffproberesult))
-    """
-    info = json.loads(ffproberesult.stdout.decode("utf-8"))
+    info = get_video_info(command)
     # msg += "%s" % json.dumps(
     #     info, sort_keys=True, indent=4, separators=(',', ': '))
     with open(output_dir + "/encoding.log", "a") as f:
@@ -1213,23 +1191,43 @@ def encode_video_studio(recording_id, video_output, videos, subtime):
                 settings.MEDIA_ROOT, 'opencast-files', video.get('src')
             )
     input_video = ""
-    video_data = {}
     if presenter_source and presentation_source:
         # to put it in the right order
         input_video = "-i \"" + presentation_source + "\" -i \"" + presenter_source + "\" "
-        video_data = get_video_data(presentation_source)
+        command = GET_INFO_VIDEO % {"ffprobe": FFPROBE, "source": presentation_source}
     else:
         if presenter_source:
             input_video = "-i \"" + os.path.join(
                 settings.MEDIA_ROOT, 'opencast-files', presenter_source
             ) + "\" "
-            video_data = get_video_data(presenter_source)
+            command = GET_INFO_VIDEO % {"ffprobe": FFPROBE, "source": presenter_source}
         if presentation_source:
             input_video = "-i \"" + os.path.join(
                 settings.MEDIA_ROOT, 'opencast-files', presentation_source
             ) + "\" "
-            video_data = get_video_data(presentation_source)
+            command = GET_INFO_VIDEO % {"ffprobe": FFPROBE, "source": presentation_source}
     
-    msg = encode_video_mp4(
-                video_to_encode.video.path, video_command_mp4["cmd"], output_dir
-            )
+    info = get_video_info(command)
+    subcmd = ""
+    msg = encode_video_studio(input_video, subcmd )
+
+
+def encode_video_studio(input_video, subcmd):
+    """Encode video for studio."""
+    msg = ""
+    ffmpegStudioCommand = "%s %s -i %s %s" % (
+        FFMPEG,
+        FFMPEG_MISC_PARAMS,
+        input_video,
+        subcmd,
+    )
+    msg += "- %s\n" % ffmpegStudioCommand
+    subprocess.Popen(
+        ffmpegStudioCommand,
+        shell=True,
+        executable=ENCODE_SHELL,
+        stdout=f,
+        stderr=f,
+    )
+    msg += "\n- Encoding Mp4: %s" % time.ctime()
+    return msg
