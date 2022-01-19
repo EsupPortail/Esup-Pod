@@ -150,7 +150,7 @@ class Enrichment(models.Model):
         null=True,
         blank=True,
         on_delete=models.CASCADE,
-        help_text=_(u'Integrate an document (PDF, text, html)'))
+        help_text=_(u'Integrate a document (PDF, text, html)'))
     richtext = RichTextField(_('Richtext'), config_name='complete', blank=True)
     weblink = models.URLField(
         _(u'Web link'), max_length=200, null=True, blank=True)

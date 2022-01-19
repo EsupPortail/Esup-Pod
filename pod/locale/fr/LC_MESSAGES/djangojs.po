@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-26 10:16+0100\n"
-"PO-Revision-Date: 2021-11-26 10:18+0100\n"
+"POT-Creation-Date: 2022-01-19 17:21+0100\n"
+"PO-Revision-Date: 2022-01-19 17:24+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -47,17 +47,17 @@ msgstr "Le formulaire ne peut pas être récupéré."
 #: pod/enrichment/static/js/enrichment.js:111
 #: pod/enrichment/static/js/enrichment.js:141
 #: pod/enrichment/static/js/enrichment.js:174
-#: pod/enrichment/static/js/enrichment.js:215 pod/main/static/js/main.js:468
-#: pod/main/static/js/main.js:478 pod/main/static/js/main.js:492
-#: pod/main/static/js/main.js:512
+#: pod/enrichment/static/js/enrichment.js:215 pod/main/static/js/main.js:470
+#: pod/main/static/js/main.js:480 pod/main/static/js/main.js:494
+#: pod/main/static/js/main.js:514
 #: pod/podfile/static/podfile/js/filewidget.js:365
 #: pod/podfile/static/podfile/js/filewidget.js:398
 msgid "You are no longer authenticated. Please log in again."
 msgstr "Vous n'êtes plus authentifié. Veuillez vous reconnectez."
 
 #: pod/chapter/static/js/chapters.js:199
-#: pod/enrichment/static/js/enrichment.js:193 pod/main/static/js/main.js:415
-#: pod/main/static/js/main.js:501
+#: pod/enrichment/static/js/enrichment.js:193 pod/main/static/js/main.js:417
+#: pod/main/static/js/main.js:503
 msgid "One or more errors have been found in the form."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 
@@ -155,7 +155,7 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer ce document ?"
 msgid "Are you sure you want to delete this overlay?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer cette superposition ?"
 
-#: pod/completion/static/js/completion.js:243 pod/main/static/js/main.js:419
+#: pod/completion/static/js/completion.js:243 pod/main/static/js/main.js:421
 msgid "Changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
 
@@ -273,162 +273,46 @@ msgstr "Il y a un chevauchement avec l'enrichissement "
 msgid "please change start and/or end values."
 msgstr "veuillez changer de valeur de début et/ou de fin."
 
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gView"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gBox"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "overlay"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "loading"
-msgstr "chargement"
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "states.hover"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "states.disabled"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "pager.pagerSelect"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "pager.pagerInput"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "pager.pagerButton"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "states.hoverTh"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "colHeaders"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "hTable"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "states.select"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "resizer"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gridFooter"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "rowFooter"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gridRow"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "grid"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "top"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "bottom"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "hDiv"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "pager.pager"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "titleButton"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gridTitle"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "toolbarUpper"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "toolbarBottom"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "rowNum"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gridError"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gridErrorText"
-msgstr ""
-
-#: pod/main/static/js/main.js:378
+#: pod/main/static/js/main.js:380
 msgid "Are you sure you want to delete this element?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer cet élément ?"
 
-#: pod/main/static/js/main.js:454
+#: pod/main/static/js/main.js:456
 #: pod/podfile/static/podfile/js/filewidget.js:114
 #: pod/podfile/static/podfile/js/filewidget.js:391
 msgid "Error during exchange"
 msgstr "Erreur durant le téléversement"
 
-#: pod/main/static/js/main.js:458
+#: pod/main/static/js/main.js:460
 #: pod/podfile/static/podfile/js/filewidget.js:114
 msgid "No data could be stored."
 msgstr "Aucune donnée ne peut être stockée."
 
-#: pod/main/static/js/main.js:531
+#: pod/main/static/js/main.js:533
 msgid "Change your picture"
 msgstr "Changer votre image"
 
-#: pod/main/static/js/main.js:538
+#: pod/main/static/js/main.js:540
 msgid "Add your picture"
 msgstr "Ajouter votre image"
 
-#: pod/main/static/js/main.js:666
+#: pod/main/static/js/main.js:668
 msgid "text copied"
 msgstr "texte copié"
 
-#: pod/main/static/js/main.js:718
+#: pod/main/static/js/main.js:720
 msgid "Errors appear in the form, please correct them"
 msgstr "Des erreurs sont présentes dans le formulaire, veuillez les corriger"
 
-#: pod/main/static/js/main.js:750
+#: pod/main/static/js/main.js:752
 msgid "The file size exceeds the maximum allowed value:"
 msgstr "Le fichier dépasse la taille maximum autorisée :"
 
-#: pod/main/static/js/main.js:753
+#: pod/main/static/js/main.js:755
 msgid " GB."
 msgstr " Go."
 
-#: pod/main/static/js/main.js:771
+#: pod/main/static/js/main.js:773
 msgid "The file extension not in the allowed extension:"
 msgstr ""
 "Cette extension de fichier n'est pas présente dans les extensions "
@@ -438,7 +322,7 @@ msgstr ""
 msgid "The video can not be added from this page."
 msgstr "La vidéo ne peut être ajoutée depuis cette page."
 
-#: pod/playlist/static/js/playlist.js:179
+#: pod/playlist/static/js/playlist.js:178
 msgid "The video slug not found."
 msgstr "La vidéo est introuvable."
 
@@ -672,6 +556,10 @@ msgstr "Catégorie créée avec succès"
 msgid "Create category"
 msgstr "Créer catégorie"
 
+#: pod/video/static/js/video_edit.js:20
+msgid "Select the general type of the video."
+msgstr "Sélectionnez le type général de vidéo."
+
 #: pod/video/static/js/video_stats_view.js:19
 msgid "Title"
 msgstr "Titre"
@@ -695,3 +583,41 @@ msgstr "Vue totale depuis création"
 #: pod/video/static/js/video_stats_view.js:24
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "loading"
+#~ msgstr "chargement"
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "gridFooter"
+#~ msgstr "Titre"
+
+#, fuzzy
+#~| msgid "Error.."
+#~ msgid "gridRow"
+#~ msgstr "Erreur.."
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "grid"
+#~ msgstr "Titre"
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "gridTitle"
+#~ msgstr "Titre"
+
+#, fuzzy
+#~| msgid "Error.."
+#~ msgid "gridError"
+#~ msgstr "Erreur.."
+
+#, fuzzy
+#~| msgid "Error.."
+#~ msgid "gridErrorText"
+#~ msgstr "Erreur.."
+
+#, fuzzy
+#~| msgid "Remove"
+#~ msgid "Remove all"
+#~ msgstr "Retirer"
