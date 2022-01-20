@@ -10,15 +10,13 @@
 
 {% block breadcrumbs %}{{ block.super }}
   <li class="breadcrumb-item"><a href="{% url 'my_videos' %}">{% trans 'My videos' %}</a></li>
-  <li class="breadcrumb-item active" aria-current="page">{% trans "Choose an audio or video file to upload" %}</li>
+  <li class="breadcrumb-item active" aria-current="page">{% trans "Media upload" %}</li>
 {% endblock %}
 
 {% block page_title %}{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Choose an audio or video file to upload" %}{%endif%}{% endblock %}
 
 {% block collapse_page_aside %}
-  {% if access_not_allowed == True %}
-
-  {% else %}
+  {% if access_not_allowed != True %}
     {{block.super}}
   {% endif %}
 {% endblock collapse_page_aside %}
@@ -35,6 +33,12 @@
 
 <div id="uploadblock">
   {% csrf_token %}
+  <div class="legal_notice">
+    <h2>{% trans "Legal notice" %}</h2>
+    <p>{% trans "Please note: make sure that you have the necessary authorizations signed by the speakers and that you respect the Intellectual Property Code before publishing a video." %}</p>
+  </div>
+
+  <h2>{% trans "Uploading" %}</h2>
   <div class="form-group hide-on-processing">
     <label for="chunked_upload">{% trans "Choose an audio or video file to upload" %}</label><br/>
     <input id="chunked_upload" accept="{{allow_extension}}" type="file" name="the_file" class="form-control-file">

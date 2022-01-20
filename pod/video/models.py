@@ -530,6 +530,8 @@ class Theme(models.Model):
 
 
 class Type(models.Model):
+    """Define all video types available."""
+
     title = models.CharField(_("Title"), max_length=100, unique=True)
     slug = models.SlugField(
         _("Slug"),
@@ -634,7 +636,8 @@ class Video(models.Model):
     )
     sites = models.ManyToManyField(Site)
     type = models.ForeignKey(
-        Type, verbose_name=_('Type'), on_delete=models.CASCADE)
+        Type, verbose_name=_('Type'), on_delete=models.CASCADE,
+        help_text=_("Select the general type of the video."))
     owner = models.ForeignKey(
         User,
         verbose_name=_('Owner'),

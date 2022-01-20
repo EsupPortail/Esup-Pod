@@ -441,6 +441,58 @@ class DisciplineWidget(s2forms.ModelSelect2MultipleWidget):
     ]
 
 
+class SelectWOA(forms.widgets.Select):
+    """
+    Select With Option Attributes.
+
+        subclass of Django's Select widget that allows attributes in options,
+        like disabled="disabled", title="help text", class="some classes",
+              style="background: color;"...
+
+    Pass a dict instead of a string for its label:
+        choices = [ ('value_1', 'label_1'),
+                    ...
+                    ('value_k', {'label': 'label_k', 'foo': 'bar', ...}),
+                    ... ]
+    The option k will be rendered as:
+        <option value="value_k" foo="bar" ...>label_k</option>
+    """
+
+    def create_option(self, name, value, label, selected, index,
+                      subindex=None, attrs=None):
+        """Replace the option creators from original Select."""
+        # This allows using strings labels as usual
+        if isinstance(label, dict):
+            opt_attrs = label.copy()
+            label = opt_attrs.pop('label')
+        else:
+            opt_attrs = {}
+        option_dict = super(SelectWOA, self).create_option(name, value,
+                                                           label, selected,
+                                                           index,
+                                                           subindex=subindex,
+                                                           attrs=attrs)
+        for key, val in opt_attrs.items():
+            option_dict['attrs'][key] = val
+        return option_dict
+
+
+class DescribedChoiceField(forms.ModelChoiceField):
+    """ChoiceField with description on <options> titles."""
+
+    # Use custom widget "Select With Option Attribute"
+    widget = SelectWOA
+
+    def label_from_instance(self, obj):
+        """Override parent's label_from_instance method."""
+        return {
+            # the usual label:
+            'label': super().label_from_instance(obj),
+            # the new title attribute:
+            'title': obj.description
+        }
+
+
 @deconstructible
 class FileSizeValidator(object):
     message = _(
@@ -759,6 +811,9 @@ class VideoForm(forms.ModelForm):
     class Meta(object):
         model = Video
         fields = VIDEO_FORM_FIELDS
+        field_classes = {
+            'type': DescribedChoiceField
+        }
         widgets = {
             "owner" : OwnerWidget,
             "additional_owners" : AddOwnerWidget,

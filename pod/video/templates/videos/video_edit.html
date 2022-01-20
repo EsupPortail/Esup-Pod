@@ -86,7 +86,7 @@
   {% endfor %}
   {% for field in form.visible_fields %}
     {% spaceless %}
-    <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}"{% if field.name == "restrict_access_to_groups" %}style="padding-left:2em;"{% endif %}>
+    <div class="{% if 'description_' in field.name or 'title_'  in field.name %}collapse hide{% else %}{% endif %}{% if 'description_' in field.name %} description{%endif%}{% if 'title_' in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}"{% if field.name == "restrict_access_to_groups" %}style="padding-left:2em;"{% endif %}>
       <div class="form-group {% if field.field.required %}form-group-required{%endif%}" {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}style="max-width:44rem; overflow-x:hidden"{%endif%}>
         {{ field.errors }}
         {% if "form-check-input" in field.field.widget.attrs.class %}
@@ -215,11 +215,10 @@
 <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>
+<script defer src="{% static 'js/video_edit.js' %}?ver={{VERSION}}"></script>
 
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}" />
 {{form.media}}
-
-
 
   <script>
   var slug = "{{ form.instance.slug }}";
@@ -227,9 +226,7 @@
     location.href= "/video_add?slug=" + slug
     event.preventDefault();
   });
-  </script>
 
-<script>
   /** formulaire **/
   $("#js-process").hide();
   var VIDEO_MAX_UPLOAD_SIZE = {{form.VIDEO_MAX_UPLOAD_SIZE}};
