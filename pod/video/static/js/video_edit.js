@@ -1,17 +1,18 @@
 /**
  *  Javascript for Esup-Portal video_edit form
  **/
-(function () {
+document.addEventListener('DOMContentLoaded', function () {
   // Display type description as field help when changed
   const target = "id_type";
+  // Cannot be used in django admin pages, as <div class="help"> has no id.
   const helpContainer = document.getElementById(target + "Help");
-  const select = document.getElementById(target)
-  display_option_desc(select, helpContainer);
-  select.addEventListener("change", function() {
+  const selector = document.getElementById(target);
+  display_option_desc(selector, helpContainer);
+  selector.addEventListener("change", function() {
     display_option_desc(this, helpContainer);
   });
 
-})();
+}, false);
 
 function display_option_desc(selectBox, container){
   // Display in $container the title of current $selectedBox option.
