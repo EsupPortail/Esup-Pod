@@ -108,6 +108,7 @@ def generate_intermediate_video(recording, videos, clip_begin, clip_end):
     encode_studio = getattr(encode, ENCODE_STUDIO)
     encode_studio(recording.id, video_output, videos, subtime)
 
+
 def save_studio_video(recording_id, video_src):
     save_basic_video(Recording.objects.get(id=recording_id), video_src)
 
@@ -135,7 +136,12 @@ def encode_recording(recording):
 
     videos = []
     for videoElement in xmldoc.getElementsByTagName("video"):
-        videos.append({"type": videoElement.getAttribute("type"), "src": videoElement.firstChild.data})
+        videos.append(
+            {
+                "type": videoElement.getAttribute("type"),
+                "src": videoElement.firstChild.data,
+            }
+        )
 
     # Informations for cut
     clip_begin = xmldoc.getElementsByTagName("cut")[0].getAttribute("clipBegin")
@@ -144,8 +150,12 @@ def encode_recording(recording):
     if clip_begin or clip_end or len(videos) > 1:
         generate_intermediate_video(recording, videos, clip_begin, clip_end)
     else:
-        msg = "*** Management of basic video file (%s) %s ***" % (videos[0].get('type'), videos[0].get('src'))
+        msg = "*** Management of basic video file (%s) %s ***" % (
+            videos[0].get("type"),
+            videos[0].get("src"),
+        )
         add_comment(recording.id, msg)
-        save_basic_video(recording, os.path.join(
-            settings.MEDIA_ROOT, 'opencast-files', videos[0].get('src')
-        ))
+        save_basic_video(
+            recording,
+            os.path.join(settings.MEDIA_ROOT, "opencast-files", videos[0].get("src")),
+        )

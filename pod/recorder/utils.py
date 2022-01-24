@@ -9,9 +9,7 @@ def add_comment(recording_id, comment):
 
 
 def studio_clean_old_files():
-    folder_to_clean = os.path.join(
-        settings.MEDIA_ROOT, 'opencast-files'
-    )
+    folder_to_clean = os.path.join(settings.MEDIA_ROOT, "opencast-files")
     now = time.time()
 
     for f in os.listdir(folder_to_clean):

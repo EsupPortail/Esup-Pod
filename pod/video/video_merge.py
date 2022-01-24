@@ -5,6 +5,7 @@ import logging
 
 from django.conf import settings
 from pod.main.tasks import task_start_video_merge
+
 # from pod.recorder.utils import add_comment
 
 # Tools
@@ -31,7 +32,9 @@ def start_video_merge(video_1, video_2, video_output, clip_begin, clip_end):
         t.start()
 
 
-def merge_videos(video_1, video_2, video_output, clip_begin, clip_end): # noqa: max-complexity: 13
+def merge_videos(
+    video_1, video_2, video_output, clip_begin, clip_end
+):  # noqa: max-complexity: 13
     # Generate an intermediate video for a Studio session
     # This happens when we need to merge 2 videos or to cut at least one video
 
@@ -69,9 +72,9 @@ def merge_videos(video_1, video_2, video_output, clip_begin, clip_end): # noqa: 
     # Management to merge 2 videos
     if video_1 and video_2:
         # Input : the 2 videos
-        command += "-i \"" + video_1 + "\" -i \"" + video_2 + "\" "
+        command += '-i "' + video_1 + '" -i "' + video_2 + '" '
         # Filter
-        command += "-filter_complex \""
+        command += '-filter_complex "'
         # Filter for left video (1)
         command += "[0]scale=" + video1width + ":-1"
         command += ":force_original_aspect_ratio=decrease, pad=" + width
@@ -79,18 +82,18 @@ def merge_videos(video_1, video_2, video_output, clip_begin, clip_end): # noqa: 
         # Filter for right video (2)
         command += "[1] scale=" + video2width + ":-1"
         command += ":force_original_aspect_ratio=decrease [RIGHT]; "
-        command += "[LEFT][RIGHT] overlay=" + video1width + ":(main_h/2)-(overlay_h/2)\" "
+        command += "[LEFT][RIGHT] overlay=" + video1width + ':(main_h/2)-(overlay_h/2)" '
         # Options
         command += "-r 25 -ac 1 -crf 20 -preset fast -threads 0 "
         command += "-s " + width + "x" + height + " "
     elif video_1:
         # Input : only one, the presenter
-        command += "-i \"" + video_1 + "\" "
+        command += '-i "' + video_1 + '" '
         # Transcode to mp4
         command += "-r 25 -ac 1 -crf 20 -preset fast -threads 0 "
     elif video_2:
         # Input : only one, the presentation
-        command += "-i \"" + video_2 + "\" "
+        command += '-i "' + video_2 + '" '
         # Transcode to mp4
         command += "-r 25 -ac 1 -crf 20 -preset fast -threads 0 "
 
