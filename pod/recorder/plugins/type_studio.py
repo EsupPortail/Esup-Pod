@@ -4,12 +4,10 @@ import threading
 import logging
 import datetime
 import os
-import time
 from xml.dom import minidom
 
 from django.conf import settings
 from ..utils import add_comment, studio_clean_old_files
-from ..models import Recording
 from pod.video.models import Video, get_storage_path_video
 from pod.video import encode
 from django.template.defaultfilters import slugify
@@ -90,13 +88,12 @@ def save_basic_video(recording, video_src):
     # Finally save
     video.save()
 
-    encode_video = getattr(encode, ENCODE_VIDEO)
-    encode_video(video.id)
-
     # Rename the XML file
     os.rename(recording.source_file, recording.source_file + "_treated")
 
     studio_clean_old_files()
+
+    return video
 
 
 def generate_intermediate_video(recording, videos, clip_begin, clip_end):
@@ -107,10 +104,6 @@ def generate_intermediate_video(recording, videos, clip_begin, clip_end):
     subtime = get_subtime(clip_begin, clip_end)
     encode_studio = getattr(encode, ENCODE_STUDIO)
     encode_studio(recording.id, video_output, videos, subtime)
-
-
-def save_studio_video(recording_id, video_src):
-    save_basic_video(Recording.objects.get(id=recording_id), video_src)
 
 
 def get_subtime(clip_begin, clip_end):
@@ -155,7 +148,10 @@ def encode_recording(recording):
             videos[0].get("src"),
         )
         add_comment(recording.id, msg)
-        save_basic_video(
+        video = save_basic_video(
             recording,
             os.path.join(settings.MEDIA_ROOT, "opencast-files", videos[0].get("src")),
         )
+        # encode video
+        encode_video = getattr(encode, ENCODE_VIDEO)
+        encode_video(video.id)

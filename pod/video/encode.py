@@ -1207,12 +1207,15 @@ def encode_video_studio(recording_id, video_output, videos, subtime):
         min_height = min(
             [get_height(info_presentation_video), get_height(info_presenter_video)]
         )
-        # ffmpeg -i presentation.webm -i presenter.webm -c:v libx264 -filter_complex "[0:v]scale=-2:720[left];[left][1:v]hstack" outputVideo.mp4
+        # ffmpeg -i presentation.webm -i presenter.webm \
+        # -c:v libx264 -filter_complex "[0:v]scale=-2:720[left];[left][1:v]hstack" \
+        # outputVideo.mp4
         subcmd = (
-            '-c:v libx264 -filter_complex "[0:v]scale=-2:%(min_height)s[left];[left][1:v]hstack" -y %(video_output)s'
-            % {"min_height": min_height, "video_output": video_output}
+            '-c:v libx264 -filter_complex '
+            + '"[0:v]scale=-2:%(min_height)s[left];[left][1:v]hstack" '
+            % {"min_height": min_height}
         )
-        msg = encode_video_studio(input_video, subtime + subcmd)
+        msg = launch_encode_video_studio(input_video, subtime + subcmd, video_output)
     else:
         if presenter_source:
             input_video = (
@@ -1220,19 +1223,25 @@ def encode_video_studio(recording_id, video_output, videos, subtime):
                 + os.path.join(settings.MEDIA_ROOT, "opencast-files", presenter_source)
                 + '" '
             )
-            subcmd = "-c:v libx264 -y %(video_output)s" % {"video_output": video_output}
-            msg = encode_video_studio(input_video, subtime + subcmd)
+            subcmd = "-c:v libx264 "
+            msg = launch_encode_video_studio(input_video, subtime + subcmd, video_output)
         if presentation_source:
             input_video = (
                 '-i "'
                 + os.path.join(settings.MEDIA_ROOT, "opencast-files", presentation_source)
                 + '" '
             )
-            subcmd = "-c:v libx264 -y %(video_output)s" % {"video_output": video_output}
-            msg = encode_video_studio(input_video, subtime + subcmd)
-    from pod.recorder.plugins.type_studio import save_studio_video
+            subcmd = "-c:v libx264 "
+            msg = launch_encode_video_studio(input_video, subtime + subcmd, video_output)
 
-    save_studio_video(recording_id, video_output)
+    from pod.recorder.plugins.type_studio import save_basic_video
+    from pod.recorder.models import Recording
+
+    recording = Recording.objects.get(id=recording_id)
+    recording.comment += msg
+    recording.save()
+    video = save_basic_video(recording, video_output)
+    encode_video(video.id)
 
 
 def get_height(info):
@@ -1242,16 +1251,18 @@ def get_height(info):
     return in_height
 
 
-def encode_video_studio(input_video, subcmd):
+def launch_encode_video_studio(input_video, subcmd, video_output):
     """Encode video for studio."""
     msg = ""
-    ffmpegStudioCommand = "%s %s %s %s" % (
+    ffmpegStudioCommand = "%s %s %s %s -y %s" % (
         FFMPEG,
         FFMPEG_MISC_PARAMS,
         input_video,
         subcmd,
+        video_output
     )
     msg += "- %s\n" % ffmpegStudioCommand
+    logfile = video_output.replace(".mp4", ".log")
     with open(logfile, "ab") as f:
         subprocess.Popen(
             ffmpegStudioCommand,

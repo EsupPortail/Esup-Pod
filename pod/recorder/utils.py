@@ -1,5 +1,7 @@
-import time, os
+import time
+import os
 from .models import Recording
+from django.conf import settings
 
 
 def add_comment(recording_id, comment):
