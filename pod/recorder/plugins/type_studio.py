@@ -9,6 +9,7 @@ from xml.dom import minidom
 
 from django.conf import settings
 from ..utils import add_comment, studio_clean_old_files
+from ..models import Recording
 from pod.video.models import Video, get_storage_path_video
 from pod.video import encode
 from django.template.defaultfilters import slugify
@@ -99,13 +100,16 @@ def save_basic_video(recording, video_src):
 
 
 def generate_intermediate_video(recording, videos, clip_begin, clip_end):
-
     # Video file output : at the same directory than the XML file
     # And with the same name .mp4
     video_output = recording.source_file.replace(".xml", ".mp4")
+    print("video_output : %s " % video_output)
     subtime = get_subtime(clip_begin, clip_end)
     encode_studio = getattr(encode, ENCODE_STUDIO)
     encode_studio(recording.id, video_output, videos, subtime)
+
+def save_studio_video(recording_id, video_src):
+    save_basic_video(Recording.objects.get(id=recording_id), video_src)
 
 
 def get_subtime(clip_begin, clip_end):

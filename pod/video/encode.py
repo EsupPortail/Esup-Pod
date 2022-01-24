@@ -45,7 +45,6 @@ TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
 
 if TRANSCRIPT:
     from . import transcript
-
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
 ENCODE_SHELL = getattr(settings, "ENCODE_SHELL", "/bin/sh")
@@ -1191,43 +1190,60 @@ def encode_video_studio(recording_id, video_output, videos, subtime):
                 settings.MEDIA_ROOT, 'opencast-files', video.get('src')
             )
     input_video = ""
+    info_presenter_video = {}
+    info_presentation_video = {}
     if presenter_source and presentation_source:
         # to put it in the right order
         input_video = "-i \"" + presentation_source + "\" -i \"" + presenter_source + "\" "
         command = GET_INFO_VIDEO % {"ffprobe": FFPROBE, "source": presentation_source}
+        info_presentation_video = get_video_info(command)
+        command = GET_INFO_VIDEO % {"ffprobe": FFPROBE, "source": presenter_source}
+        info_presenter_video = get_video_info(command)
+        min_height = min([get_height(info_presentation_video), get_height(info_presenter_video)])
+        # ffmpeg -i presentation.webm -i presenter.webm -c:v libx264 -filter_complex "[0:v]scale=-2:720[left];[left][1:v]hstack" outputVideo.mp4
+        subcmd = "-c:v libx264 -filter_complex \"[0:v]scale=-2:%(min_height)s[left];[left][1:v]hstack\" -y %(video_output)s" %{"min_height":min_height, "video_output":video_output}
+        msg = encode_video_studio(input_video, subtime+subcmd )
     else:
         if presenter_source:
             input_video = "-i \"" + os.path.join(
                 settings.MEDIA_ROOT, 'opencast-files', presenter_source
             ) + "\" "
-            command = GET_INFO_VIDEO % {"ffprobe": FFPROBE, "source": presenter_source}
+            subcmd = "-c:v libx264 -y %(video_output)s" %{"video_output":video_output}
+            msg = encode_video_studio(input_video, subtime+subcmd )
         if presentation_source:
             input_video = "-i \"" + os.path.join(
                 settings.MEDIA_ROOT, 'opencast-files', presentation_source
             ) + "\" "
-            command = GET_INFO_VIDEO % {"ffprobe": FFPROBE, "source": presentation_source}
+            subcmd = "-c:v libx264 -y %(video_output)s" %{"video_output":video_output}
+            msg = encode_video_studio(input_video, subtime+subcmd )
+    from pod.recorder.plugins.type_studio import save_studio_video
+    save_studio_video(recording_id, video_output)
     
-    info = get_video_info(command)
-    subcmd = ""
-    msg = encode_video_studio(input_video, subcmd )
+
+def get_height(info):
+    in_height = 0
+    if len(info["streams"]) > 0 and info["streams"][0].get("height"):
+        in_height = info["streams"][0]["height"]
+    return in_height
 
 
 def encode_video_studio(input_video, subcmd):
     """Encode video for studio."""
     msg = ""
-    ffmpegStudioCommand = "%s %s -i %s %s" % (
+    ffmpegStudioCommand = "%s %s %s %s" % (
         FFMPEG,
         FFMPEG_MISC_PARAMS,
         input_video,
         subcmd,
     )
     msg += "- %s\n" % ffmpegStudioCommand
-    subprocess.Popen(
-        ffmpegStudioCommand,
-        shell=True,
-        executable=ENCODE_SHELL,
-        stdout=f,
-        stderr=f,
-    )
+    with open(logfile, "ab") as f:
+        subprocess.Popen(
+            ffmpegStudioCommand,
+            shell=True,
+            executable=ENCODE_SHELL,
+            stdout=f,
+            stderr=f,
+        )
     msg += "\n- Encoding Mp4: %s" % time.ctime()
     return msg
