@@ -25,14 +25,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # La clé secrète d’une installation Django.
 # Elle est utilisée dans le contexte de la signature cryptographique,
 # et doit être définie à une valeur unique et non prédictible.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#secret-key
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#secret-key
 """
 SECRET_KEY = 'A_CHANGER'
 
 """
 # Une valeur booléenne qui active ou désactive le mode de débogage.
 # Ne déployez jamais de site en production avec le réglage DEBUG activé.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#debug
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#debug
 """
 DEBUG = True
 
@@ -49,20 +49,20 @@ CSRF_COOKIE_SECURE = True
 # C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP,
 #  qui sont possibles même avec bien des configurations
 #  de serveur Web apparemment sécurisées.
-#  https://docs.djangoproject.com/fr/1.11/ref/settings/#allowed-hosts
+#  https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts
 """
 ALLOWED_HOSTS = ['localhost']
 
 """
 # L’âge des cookies de sessions, en secondes.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#session-cookie-age
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age
 """
 SESSION_COOKIE_AGE = 14400
 
 """
 # Indique s’il faut que la session expire
 #  lorsque l’utilisateur ferme son navigateur.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#session-cookie-age
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age
 """
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
@@ -101,7 +101,7 @@ CONTACT_US_EMAIL = []
 # C’est un dictionnaire imbriqué dont les contenus font correspondre
 #  l’alias de base de données avec un dictionnaire contenant
 #  les options de chacune des bases de données.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#databases
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#databases
 """
 DATABASES = {
     'default': {
@@ -124,7 +124,7 @@ LANGUAGES = (
 
 """
 # Une chaîne représentant le fuseau horaire pour cette installation.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-TIME_ZONE
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-TIME_ZONE
 """
 TIME_ZONE = "UTC"
 
@@ -132,14 +132,14 @@ TIME_ZONE = "UTC"
 # Le répertoire dans lequel stocker temporairement les données
 #  (typiquement pour les fichiers plus grands que FILE_UPLOAD_MAX_MEMORY_SIZE)
 #  lors des téléversements de fichiers.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#file-upload-temp-dir
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir
 """
 FILE_UPLOAD_TEMP_DIR = "/var/tmp"
 
 """
 # Le chemin absolu vers le répertoire dans lequel collectstatic rassemble
 #  les fichiers statiques en vue du déploiement.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-STATIC_ROOT
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-STATIC_ROOT
 """
 STATIC_ROOT = "/pod/static"
 
@@ -155,7 +155,7 @@ STATICFILES_STORAGE = 'static_compress.CompressedStaticFilesStorage'
 """
 # Chemin absolu du système de fichiers pointant vers le répertoire
 #  qui contiendra les fichiers téléversés par les utilisateurs.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-MEDIA_ROOT
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-MEDIA_ROOT
 """
 MEDIA_ROOT = "/pod/media"
 
