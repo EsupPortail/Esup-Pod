@@ -852,10 +852,10 @@ def read_cutting_smil(clipBegin, clipEnd, idMedia):
         endDefault = xmldoc.getElementsByTagName("video")[0].getAttribute("clipEnd")
         # Bad format by default, conversion seems necessary
         if beginDefault:
-            clipBegin = str(round(float(beginDefault.replace("s", ""))))
+            clipBegin = str(round(float(beginDefault.replace("s", "")), 2))
         if endDefault:
             # When e appears, seems the end of file
             if "e" not in endDefault:
-                clipEnd = str(round(float(endDefault.replace("s", ""))))
+                clipEnd = str(round(float(endDefault.replace("s", "")), 2))
 
     return clipBegin, clipEnd

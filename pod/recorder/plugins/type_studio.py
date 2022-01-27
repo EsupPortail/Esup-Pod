@@ -49,6 +49,8 @@ def save_basic_video(recording, video_src):
     )
     # Move source file to destination
     os.makedirs(os.path.dirname(video.video.path), exist_ok=True)
+    print(video_src)
+    print(video.video.path)
     os.rename(video_src, video.video.path)
     video.save()
 
@@ -89,7 +91,7 @@ def save_basic_video(recording, video_src):
     video.save()
 
     # Rename the XML file
-    os.rename(recording.source_file, recording.source_file + "_treated")
+    # os.rename(recording.source_file, recording.source_file + "_treated")
 
     studio_clean_old_files()
 
@@ -100,7 +102,8 @@ def generate_intermediate_video(recording, videos, clip_begin, clip_end):
     # Video file output : at the same directory than the XML file
     # And with the same name .mp4
     video_output = recording.source_file.replace(".xml", ".mp4")
-    print("video_output : %s " % video_output)
+    # video_output :
+    # /usr/local/django_projects/podv2-dev/pod/media/opencast-files/file.mp4
     subtime = get_subtime(clip_begin, clip_end)
     encode_studio = getattr(encode, ENCODE_STUDIO)
     encode_studio(recording.id, video_output, videos, subtime)

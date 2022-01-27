@@ -93,7 +93,7 @@ FFMPEG_STATIC_PARAMS = getattr(
 # + "-deinterlace -threads %(nb_threads)s -g %(key_frames_interval)s "
 # + "-keyint_min %(key_frames_interval)s ")
 
-FFMPEG_MISC_PARAMS = getattr(settings, "FFMPEG_MISC_PARAMS", " -hide_banner -y ")
+FFMPEG_MISC_PARAMS = getattr(settings, "FFMPEG_MISC_PARAMS", " -hide_banner -y -vsync 0 ")
 # to use in GPU, specify for example
 # -y -vsync 0 -hwaccel_device {hwaccel_device} \
 # -hwaccel cuvid -c:v {codec}_cuvid
@@ -1200,9 +1200,15 @@ def encode_video_studio(recording_id, video_output, videos, subtime):
     if presenter_source and presentation_source:
         # to put it in the right order
         input_video = '-i "' + presentation_source + '" -i "' + presenter_source + '" '
-        command = GET_INFO_VIDEO % {"ffprobe": FFPROBE, "source": presentation_source}
+        command = GET_INFO_VIDEO % {
+            "ffprobe": FFPROBE,
+            "source": '"' + presentation_source + '" ',
+        }
         info_presentation_video = get_video_info(command)
-        command = GET_INFO_VIDEO % {"ffprobe": FFPROBE, "source": presenter_source}
+        command = GET_INFO_VIDEO % {
+            "ffprobe": FFPROBE,
+            "source": '"' + presenter_source + '" ',
+        }
         info_presenter_video = get_video_info(command)
         min_height = min(
             [get_height(info_presentation_video), get_height(info_presenter_video)]
@@ -1211,28 +1217,25 @@ def encode_video_studio(recording_id, video_output, videos, subtime):
         # -c:v libx264 -filter_complex "[0:v]scale=-2:720[left];[left][1:v]hstack" \
         # outputVideo.mp4
         subcmd = (
-            '-c:v libx264 -filter_complex '
-            + '"[0:v]scale=-2:%(min_height)s[left];[left][1:v]hstack" '
+            " -filter_complex "
+            + '"[0:v]scale=-2:%(min_height)s[left];[left][1:v]hstack" -vsync 0 '
             % {"min_height": min_height}
         )
-        msg = launch_encode_video_studio(input_video, subtime + subcmd, video_output)
     else:
         if presenter_source:
-            input_video = (
-                '-i "'
-                + os.path.join(settings.MEDIA_ROOT, "opencast-files", presenter_source)
-                + '" '
-            )
-            subcmd = "-c:v libx264 "
-            msg = launch_encode_video_studio(input_video, subtime + subcmd, video_output)
+            input_video = '-i "' + presenter_source + '" '
+            subcmd = " -vsync 0 "
+
         if presentation_source:
-            input_video = (
-                '-i "'
-                + os.path.join(settings.MEDIA_ROOT, "opencast-files", presentation_source)
-                + '" '
-            )
-            subcmd = "-c:v libx264 "
-            msg = launch_encode_video_studio(input_video, subtime + subcmd, video_output)
+            input_video = '-i "' + presentation_source + '" '
+            subcmd = " -vsync 0 "
+
+    static_params = FFMPEG_STATIC_PARAMS % {
+        "nb_threads": FFMPEG_NB_THREADS,
+    }
+    msg = launch_encode_video_studio(
+        input_video, subtime + static_params + subcmd, video_output
+    )
 
     from pod.recorder.plugins.type_studio import save_basic_video
     from pod.recorder.models import Recording
@@ -1253,23 +1256,24 @@ def get_height(info):
 
 def launch_encode_video_studio(input_video, subcmd, video_output):
     """Encode video for studio."""
+
     msg = ""
-    ffmpegStudioCommand = "%s %s %s %s -y %s" % (
+    ffmpegStudioCommand = "%s %s %s %s %s" % (
         FFMPEG,
         FFMPEG_MISC_PARAMS,
         input_video,
         subcmd,
-        video_output
+        video_output,
     )
     msg += "- %s\n" % ffmpegStudioCommand
     logfile = video_output.replace(".mp4", ".log")
+    ffmpegstudio = subprocess.run(
+        ffmpegStudioCommand, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+    )
     with open(logfile, "ab") as f:
-        subprocess.Popen(
-            ffmpegStudioCommand,
-            shell=True,
-            executable=ENCODE_SHELL,
-            stdout=f,
-            stderr=f,
-        )
+        f.write(b"\n\ffmpegstudio:\n\n")
+        f.write(ffmpegstudio.stdout)
     msg += "\n- Encoding Mp4: %s" % time.ctime()
+    if DEBUG:
+        print(msg)
     return msg
