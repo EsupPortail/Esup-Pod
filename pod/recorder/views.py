@@ -64,6 +64,9 @@ USE_CAS = getattr(settings, "USE_CAS", False)
 USE_SHIB = getattr(settings, "USE_SHIB", False)
 LOGIN_URL = getattr(settings, "LOGIN_URL", "/authentication_login/")
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, "TITLE_SITE", "Pod")
+RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
+    settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
+)
 
 
 def check_recorder(recorder, request):
@@ -362,6 +365,10 @@ def delete_record(request, id=None):
 # OPENCAST VIEWS
 @login_required(redirect_field_name="referrer")
 def studio_pod(request):
+    if in_maintenance():
+        return redirect(reverse("maintenance"))
+    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
+        return render(request, "recorder/opencast-studio.html", {"access_not_allowed": True})
     # Render the Opencast studio index file
     opencast_studio_rendered = render_to_string("studio/index.html")
     # head = opencast_studio_rendered[opencast_studio_rendered.index("<head>")

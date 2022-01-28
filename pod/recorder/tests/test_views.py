@@ -3,6 +3,7 @@ Unit tests for recorder views
 """
 import hashlib
 
+from django.conf import settings
 from django.test import TestCase
 from django.test import Client, override_settings
 from django.contrib.auth.models import User
@@ -15,6 +16,7 @@ from django.contrib.sites.models import Site
 from .. import views
 from importlib import reload
 from http import HTTPStatus
+import os
 
 
 class recorderViewsTestCase(TestCase):
@@ -163,6 +165,17 @@ class studio_podTestView(TestCase):
 
     def setUp(self):
         User.objects.create(username="pod", password="pod1234pod")
+        text = '''
+        <html>
+            <body>
+                <h1>Heading</h1>
+            </body>
+        </html>
+        '''
+        template_file = os.path.join(settings.BASE_DIR, "custom/static/opencast/studio/index.html")
+        file = open(template_file,"w")
+        file.write(text)
+        file.close()
         print(" --->  SetUp of studio_podTestView: OK!")
 
     def test_studio_podTestView_get_request(self):
@@ -194,6 +207,7 @@ class studio_podTestView(TestCase):
             " --->  test_studio_podTestView_get_request_restrict ",
             "of studio_podTestView: OK!",
         )
+
     """
     def test_video_recordTestView_upload_recordvideo(self):
         reload(views)
