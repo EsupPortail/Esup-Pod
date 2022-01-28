@@ -18,7 +18,7 @@ from .utils import get_duration_from_mp4
 from .utils import fix_video_duration
 
 # from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
-from pod.main.tasks import task_start_encode
+from pod.main.tasks import task_start_encode, task_start_encode_studio
 
 # from fractions import Fraction # use for keyframe
 from webvtt import WebVTT, Caption
@@ -93,7 +93,7 @@ FFMPEG_STATIC_PARAMS = getattr(
 # + "-deinterlace -threads %(nb_threads)s -g %(key_frames_interval)s "
 # + "-keyint_min %(key_frames_interval)s ")
 
-FFMPEG_MISC_PARAMS = getattr(settings, "FFMPEG_MISC_PARAMS", " -hide_banner -y ")
+FFMPEG_MISC_PARAMS = getattr(settings, "FFMPEG_MISC_PARAMS", " -hide_banner -y -vsync 0 ")
 # to use in GPU, specify for example
 # -y -vsync 0 -hwaccel_device {hwaccel_device} \
 # -hwaccel cuvid -c:v {codec}_cuvid
@@ -176,6 +176,19 @@ def start_encode(video_id):
     else:
         log.info("START ENCODE VIDEO ID %s" % video_id)
         t = threading.Thread(target=encode_video, args=[video_id])
+        t.setDaemon(True)
+        t.start()
+
+
+def start_encode_studio(recording_id, video_output, videos, subtime):
+    """Start local encoding."""
+    if CELERY_TO_ENCODE:
+        task_start_encode_studio.delay(recording_id, video_output, videos, subtime)
+    else:
+        log.info("START ENCODE VIDEO ID %s" % recording_id)
+        t = threading.Thread(
+            target=encode_video_studio, args=[recording_id, video_output, videos, subtime]
+        )
         t.setDaemon(True)
         t.start()
 
@@ -397,6 +410,13 @@ def transcript_video(video_id):
 # ##########################################################################
 
 
+def get_video_info(command):
+    ffproberesult = subprocess.run(
+        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+    )
+    return json.loads(ffproberesult.stdout.decode("utf-8"))
+
+
 def get_video_data(video_id, output_dir):
     """Get video data from source file."""
     video_to_encode = Video.objects.get(id=video_id)
@@ -404,16 +424,8 @@ def get_video_data(video_id, output_dir):
     source = "%s" % video_to_encode.video.path
     command = GET_INFO_VIDEO % {"ffprobe": FFPROBE, "source": source}
     # ffproberesult = subprocess.getoutput(command)
-    ffproberesult = subprocess.run(
-        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-    )
     msg += "\nffprobe command: \n- %s\n" % command
-    """
-    add_encoding_log(
-        video_id,
-        "command: %s \n ffproberesult: %s" % (command, ffproberesult))
-    """
-    info = json.loads(ffproberesult.stdout.decode("utf-8"))
+    info = get_video_info(command)
     with open(output_dir + "/encoding.log", "a") as f:
         f.write(msg)
         f.write("\nffprobe command video result:\n\n")
@@ -434,31 +446,10 @@ def get_video_data(video_id, output_dir):
             is_video = True
         if info["streams"][0].get("height"):
             in_height = info["streams"][0]["height"]
-        """
-        if (info["streams"][0]['avg_frame_rate']
-        or info["streams"][0]['r_frame_rate']):
-            if info["streams"][0]['avg_frame_rate'] != "0/0":
-                # nb img / sec.
-                frame_rate = info["streams"][0]['avg_frame_rate']
-                key_frames_interval = int(round(Fraction(frame_rate)))
-            else:
-                frame_rate = info["streams"][0]['r_frame_rate']
-                key_frames_interval = int(round(Fraction(frame_rate)))
-        """
-
     # check audio
     command = GET_INFO_AUDIO % {"ffprobe": FFPROBE, "source": source}
-    # ffproberesult = subprocess.getoutput(command)
-    ffproberesult = subprocess.run(
-        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-    )
     msg += "\nffprobe command: %s" % command
-    """
-    add_encoding_log(
-        video_id,
-        "command: %s \n ffproberesult: %s" % (command, ffproberesult))
-    """
-    info = json.loads(ffproberesult.stdout.decode("utf-8"))
+    info = get_video_info(command)
     # msg += "%s" % json.dumps(
     #     info, sort_keys=True, indent=4, separators=(',', ': '))
     with open(output_dir + "/encoding.log", "a") as f:
@@ -1183,4 +1174,106 @@ def remove_previous_encoding_playlist(video_to_encode):
             encoding.delete()
     else:
         msg += "Playlist: Nothing to delete"
+    return msg
+
+
+# ##########################################################################
+# ENCODE VIDEO STUDIO: MAIN ENCODE
+# ##########################################################################
+
+
+def encode_video_studio(recording_id, video_output, videos, subtime):
+    presenter_source = ""
+    presentation_source = ""
+    for video in videos:
+        if video.get("type") == "presenter/source":
+            presenter_source = os.path.join(
+                settings.MEDIA_ROOT, "opencast-files", video.get("src")
+            )
+        if video.get("type") == "presentation/source":
+            presentation_source = os.path.join(
+                settings.MEDIA_ROOT, "opencast-files", video.get("src")
+            )
+    input_video = ""
+    info_presenter_video = {}
+    info_presentation_video = {}
+    if presenter_source and presentation_source:
+        # to put it in the right order
+        input_video = '-i "' + presentation_source + '" -i "' + presenter_source + '" '
+        command = GET_INFO_VIDEO % {
+            "ffprobe": FFPROBE,
+            "source": '"' + presentation_source + '" ',
+        }
+        info_presentation_video = get_video_info(command)
+        command = GET_INFO_VIDEO % {
+            "ffprobe": FFPROBE,
+            "source": '"' + presenter_source + '" ',
+        }
+        info_presenter_video = get_video_info(command)
+        min_height = min(
+            [get_height(info_presentation_video), get_height(info_presenter_video)]
+        )
+        # ffmpeg -i presentation.webm -i presenter.webm \
+        # -c:v libx264 -filter_complex "[0:v]scale=-2:720[left];[left][1:v]hstack" \
+        # outputVideo.mp4
+        subcmd = (
+            " -filter_complex "
+            + '"[0:v]scale=-2:%(min_height)s[left];[left][1:v]hstack" -vsync 0 '
+            % {"min_height": min_height}
+        )
+    else:
+        if presenter_source:
+            input_video = '-i "' + presenter_source + '" '
+            subcmd = " -vsync 0 "
+
+        if presentation_source:
+            input_video = '-i "' + presentation_source + '" '
+            subcmd = " -vsync 0 "
+
+    static_params = FFMPEG_STATIC_PARAMS % {
+        "nb_threads": FFMPEG_NB_THREADS,
+    }
+    msg = launch_encode_video_studio(
+        input_video, subtime + static_params + subcmd, video_output
+    )
+
+    from pod.recorder.plugins.type_studio import save_basic_video
+    from pod.recorder.models import Recording
+
+    recording = Recording.objects.get(id=recording_id)
+    recording.comment += msg
+    recording.save()
+    video = save_basic_video(recording, video_output)
+    encode_video(video.id)
+
+
+def get_height(info):
+    in_height = 0
+    if len(info["streams"]) > 0 and info["streams"][0].get("height"):
+        in_height = info["streams"][0]["height"]
+    return in_height
+
+
+def launch_encode_video_studio(input_video, subcmd, video_output):
+    """Encode video for studio."""
+
+    msg = ""
+    ffmpegStudioCommand = "%s %s %s %s %s" % (
+        FFMPEG,
+        FFMPEG_MISC_PARAMS,
+        input_video,
+        subcmd,
+        video_output,
+    )
+    msg += "- %s\n" % ffmpegStudioCommand
+    logfile = video_output.replace(".mp4", ".log")
+    ffmpegstudio = subprocess.run(
+        ffmpegStudioCommand, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+    )
+    with open(logfile, "ab") as f:
+        f.write(b"\n\ffmpegstudio:\n\n")
+        f.write(ffmpegstudio.stdout)
+    msg += "\n- Encoding Mp4: %s" % time.ctime()
+    if DEBUG:
+        print(msg)
     return msg

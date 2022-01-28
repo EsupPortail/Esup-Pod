@@ -302,10 +302,7 @@ class Recording(models.Model):
         default=RECORDER_TYPE[0][0],
     )
     source_file = models.FilePathField(
-        max_length=200,
-        path=DEFAULT_RECORDER_PATH,
-        unique=True,
-        recursive=True
+        max_length=200, path=DEFAULT_RECORDER_PATH, unique=True, recursive=True
     )
     comment = models.TextField(_("Comment"), blank=True, default="")
     date_added = models.DateTimeField("date added", default=timezone.now, editable=False)

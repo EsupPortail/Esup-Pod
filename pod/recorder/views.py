@@ -368,10 +368,13 @@ def studio_pod(request):
     # + len("<head>"):opencast_studio_rendered.index("</head>")]
     body = opencast_studio_rendered[
         opencast_studio_rendered.index("<body>")
-        + len("<body>"):opencast_studio_rendered.index("</body>")]
+        + len("<body>") : opencast_studio_rendered.index("</body>")
+    ]
     return render(
         # Render the Opencast studio index file
-        request, "recorder/opencast-studio.html", {"body": body}
+        request,
+        "recorder/opencast-studio.html",
+        {"body": body},
     )
 
 
@@ -384,7 +387,7 @@ def studio_static(request, file):
         )
         f = open(path_file, "r")
         return HttpResponse(
-            f.read().replace("Opencast", "Pod"), content_type='application/javascript'
+            f.read().replace("Opencast", "Pod"), content_type="application/javascript"
         )
     return HttpResponseRedirect("/static/opencast/studio/static/%s" % file)
 
@@ -394,20 +397,20 @@ def settings_toml(request):
     # OpenCast Studio configuration
     # See https://github.com/elan-ev/opencast-studio/blob/master/CONFIGURATION.md
     # Add parameter : the pod studio URL
-    content = '[opencast]\nserverUrl = \'%s\'\n' % request.build_absolute_uri(
-        reverse('recorder:studio_pod', )
+    content = "[opencast]\nserverUrl = '%s'\n" % request.build_absolute_uri(
+        reverse(
+            "recorder:studio_pod",
+        )
     )
     # Add parameters : no presenter field is necessary
-    content += '\n\n[upload]\npresenterField = \'hidden\'\n'
-    return HttpResponse(content, content_type='text/plain')
+    content += "\n\n[upload]\npresenterField = 'hidden'\n"
+    return HttpResponse(content, content_type="text/plain")
 
 
 @login_required(redirect_field_name="referrer")
 def info_me_json(request):
     # Authentication for OpenCast Studio
-    return render(
-        request, "studio/me.json", {}, content_type="application/json"
-    )
+    return render(request, "studio/me.json", {}, content_type="application/json")
 
 
 @login_required(redirect_field_name="referrer")
@@ -418,8 +421,10 @@ def ingest_createMediaPackage(request):
     # Necessary start date. Example format : 2021-12-08T08:52:28Z
     start = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%dT%H:%M:%S%zZ")
     return render(
-        request, "studio/createMediaPackage.xml", {"idMedia": idMedia, "start": start}
-        , content_type="application/xml"
+        request,
+        "studio/createMediaPackage.xml",
+        {"idMedia": idMedia, "start": start},
+        content_type="application/xml",
     )
 
 
@@ -440,8 +445,11 @@ def ingest_addDCCatalog(request):
     start = ""
 
     # Management of the mediaPackage (XML)
-    if (request.POST.get("mediaPackage") and request.POST.get("mediaPackage") != ""
-            and request.POST.get("mediaPackage") != "{}"):
+    if (
+        request.POST.get("mediaPackage")
+        and request.POST.get("mediaPackage") != ""
+        and request.POST.get("mediaPackage") != "{}"
+    ):
         mediaPackage = request.POST.get("mediaPackage")
         # XML result to parse
         xmldoc = minidom.parseString(mediaPackage)
@@ -455,10 +463,15 @@ def ingest_addDCCatalog(request):
 
     # Render
     return render(
-        request, "studio/addDCCatalog.xml", {
-            "idMedia": idMedia, "start": start, "typeCatalog": typeCatalog,
-            "idCatalog": idCatalog
-        }, content_type="application/xml"
+        request,
+        "studio/addDCCatalog.xml",
+        {
+            "idMedia": idMedia,
+            "start": start,
+            "typeCatalog": typeCatalog,
+            "idCatalog": idCatalog,
+        },
+        content_type="application/xml",
     )
 
 
@@ -482,8 +495,11 @@ def ingest_addAttachment(request):
     idAttachment = uuid.uuid4()
 
     # Management of the mediaPackage (XML)
-    if (request.POST.get("mediaPackage") and request.POST.get("mediaPackage") != ""
-            and request.POST.get("mediaPackage") != "{}"):
+    if (
+        request.POST.get("mediaPackage")
+        and request.POST.get("mediaPackage") != ""
+        and request.POST.get("mediaPackage") != "{}"
+    ):
         mediaPackage = request.POST.get("mediaPackage")
         # XML result to parse
         xmldoc = minidom.parseString(mediaPackage)
@@ -501,11 +517,17 @@ def ingest_addAttachment(request):
 
     # Render
     return render(
-        request, "studio/addAttachment.xml", {
-            "idMedia": idMedia, "start": start, "typeAttachment": typeAttachment,
-            "idCatalog": idCatalog, "typeCatalog": typeCatalog,
-            "idAttachment": idAttachment
-        }, content_type="application/xml"
+        request,
+        "studio/addAttachment.xml",
+        {
+            "idMedia": idMedia,
+            "start": start,
+            "typeAttachment": typeAttachment,
+            "idCatalog": idCatalog,
+            "typeCatalog": typeCatalog,
+            "idAttachment": idAttachment,
+        },
+        content_type="application/xml",
     )
 
 
@@ -533,8 +555,11 @@ def ingest_addTrack(request):
     idTrack = uuid.uuid4()
 
     # Management of the mediaPackage (XML)
-    if (request.POST.get("mediaPackage") and request.POST.get("mediaPackage") != ""
-            and request.POST.get("mediaPackage") != "{}"):
+    if (
+        request.POST.get("mediaPackage")
+        and request.POST.get("mediaPackage") != ""
+        and request.POST.get("mediaPackage") != "{}"
+    ):
         mediaPackage = request.POST.get("mediaPackage")
         # XML result to parse
         xmldoc = minidom.parseString(mediaPackage)
@@ -554,28 +579,35 @@ def ingest_addTrack(request):
 
     # Management of the uploaded video file .webm (or other format, depends on browser)
     # Management of the necessary directories
-    opencastMediaDir = os.path.join(
-        settings.MEDIA_ROOT, 'opencast-files', str(idMedia)
-    )
+    opencastMediaDir = os.path.join(settings.MEDIA_ROOT, "opencast-files", str(idMedia))
+
     # Create directories
     if not os.path.exists(opencastMediaDir):
         os.makedirs(opencastMediaDir)
     # Filename
-    filename = request.FILES['BODY'].name
+    filename = request.FILES["BODY"].name
     # Upload the video file
     opencastMediaFile = os.path.join(opencastMediaDir, filename)
-    with open(opencastMediaFile, 'wb+') as destination:
-        for chunk in request.FILES['BODY'].chunks():
+    with open(opencastMediaFile, "wb+") as destination:
+        for chunk in request.FILES["BODY"].chunks():
             destination.write(chunk)
 
     # Render
     return render(
-        request, "studio/addTrack.xml", {
-            "idMedia": idMedia, "start": start, "typeTrack": typeTrack,
-            "idCatalog": idCatalog, "typeCatalog": typeCatalog,
-            "idAttachment": idAttachment, "typeAttachment": typeAttachment,
-            "idTrack": idTrack, "filename": filename
-        }, content_type="application/xml"
+        request,
+        "studio/addTrack.xml",
+        {
+            "idMedia": idMedia,
+            "start": start,
+            "typeTrack": typeTrack,
+            "idCatalog": idCatalog,
+            "typeCatalog": typeCatalog,
+            "idAttachment": idAttachment,
+            "typeAttachment": typeAttachment,
+            "idTrack": idTrack,
+            "filename": filename,
+        },
+        content_type="application/xml",
     )
 
 
@@ -593,8 +625,11 @@ def ingest_addCatalog(request):
     # idAttachment = ""
 
     # Management of the mediaPackage (XML)
-    if (request.POST.get("mediaPackage") and request.POST.get("mediaPackage") != ""
-            and request.POST.get("mediaPackage") != "{}"):
+    if (
+        request.POST.get("mediaPackage")
+        and request.POST.get("mediaPackage") != ""
+        and request.POST.get("mediaPackage") != "{}"
+    ):
         mediaPackage = request.POST.get("mediaPackage")
         # XML result to parse
         xmldoc = minidom.parseString(mediaPackage)
@@ -605,18 +640,16 @@ def ingest_addCatalog(request):
 
     # Management of the uploaded file cutting.smil
     # Management of the necessary directories
-    opencastMediaDir = os.path.join(
-        settings.MEDIA_ROOT, 'opencast-files', str(idMedia)
-    )
+    opencastMediaDir = os.path.join(settings.MEDIA_ROOT, "opencast-files", str(idMedia))
     # Create directories
     if not os.path.exists(opencastMediaDir):
         os.makedirs(opencastMediaDir)
     # Filename
-    filename = request.FILES['BODY'].name
+    filename = request.FILES["BODY"].name
     # Upload the cutting.smil file
     opencastMediaFile = os.path.join(opencastMediaDir, filename)
-    with open(opencastMediaFile, 'wb+') as destination:
-        for chunk in request.FILES['BODY'].chunks():
+    with open(opencastMediaFile, "wb+") as destination:
+        for chunk in request.FILES["BODY"].chunks():
             destination.write(chunk)
 
     # Create the XML file for Pod
@@ -656,8 +689,11 @@ def ingest_ingest(request):
     urlFilename = ""
 
     # Management of the mediaPackage (XML)
-    if (request.POST.get("mediaPackage") and request.POST.get("mediaPackage") != ""
-            and request.POST.get("mediaPackage") != "{}"):
+    if (
+        request.POST.get("mediaPackage")
+        and request.POST.get("mediaPackage") != ""
+        and request.POST.get("mediaPackage") != "{}"
+    ):
         mediaPackage = request.POST.get("mediaPackage")
         # XML result to parse
         xmldoc = minidom.parseString(mediaPackage)
@@ -679,13 +715,21 @@ def ingest_ingest(request):
 
     # Render
     return render(
-        request, "studio/ingest.xml", {
-            "idMedia": idMedia, "start": start, "idCatalog": idCatalog,
-            "typeCatalog": typeCatalog, "idAttachment": idAttachment,
-            "typeAttachment": typeAttachment, "idTrack": idTrack,
-            "typeTrack": typeTrack, "urlFilename": urlFilename,
-            "startOtherFormat": startOtherFormat
-        }, content_type="application/xml"
+        request,
+        "studio/ingest.xml",
+        {
+            "idMedia": idMedia,
+            "start": start,
+            "idCatalog": idCatalog,
+            "typeCatalog": typeCatalog,
+            "idAttachment": idAttachment,
+            "typeAttachment": typeAttachment,
+            "idTrack": idTrack,
+            "typeTrack": typeTrack,
+            "urlFilename": urlFilename,
+            "startOtherFormat": startOtherFormat,
+        },
+        content_type="application/xml",
     )
 
 
@@ -693,7 +737,7 @@ def create_pod_xml_file(request, idMedia, start):
     # Management of the XML file for Pod, directly into media/opencast-files
 
     # Base directory
-    opencastMediaDir = os.path.join(settings.MEDIA_ROOT, 'opencast-files')
+    opencastMediaDir = os.path.join(settings.MEDIA_ROOT, "opencast-files")
     # Directory that contains all the resources for the actual videos
     opencastVideoDir = os.path.join(opencastMediaDir, str(idMedia))
 
@@ -707,8 +751,14 @@ def create_pod_xml_file(request, idMedia, start):
     # Path the video tree
     for root, dirs, files in os.walk(opencastVideoDir):
         title, videoPresenter, videoPresentation, clipBegin, clipEnd = process_directory(
-            title, videoPresenter, videoPresentation, clipBegin, clipEnd,
-            idMedia, files, root
+            title,
+            videoPresenter,
+            videoPresentation,
+            clipBegin,
+            clipEnd,
+            idMedia,
+            files,
+            root,
         )
 
     # Content of the XML file
@@ -717,13 +767,14 @@ def create_pod_xml_file(request, idMedia, start):
         "  <title>" + title + "</title>\n"
         "  <start>" + start + "</start>\n"
         "  <username>" + request.user.username + "</username>\n"
-        "  <video type=\"presenter/source\">" + videoPresenter + "</video>\n"
-        "  <video type=\"presentation/source\">" + videoPresentation + "</video>\n"
-        "  <cut clipBegin=\"" + clipBegin + "\" clipEnd=\"" + clipEnd + "\" />\n"
-        "</session>")
+        '  <video type="presenter/source">' + videoPresenter + "</video>\n"
+        '  <video type="presentation/source">' + videoPresentation + "</video>\n"
+        '  <cut clipBegin="' + clipBegin + '" clipEnd="' + clipEnd + '" />\n'
+        "</session>"
+    )
 
     # Create the idMedia.xml file
-    opencastMediaFile = os.path.join(opencastMediaDir, idMedia + '.xml')
+    opencastMediaFile = os.path.join(opencastMediaDir, idMedia + ".xml")
     with open(opencastMediaFile, "w") as f:
         f.write(xmlText)
 
@@ -748,14 +799,7 @@ def create_pod_xml_file(request, idMedia, start):
 
 
 def process_directory(
-    title,
-    videoPresenter,
-    videoPresentation,
-    clipBegin,
-    clipEnd,
-    idMedia,
-    files,
-    root
+    title, videoPresenter, videoPresentation, clipBegin, clipEnd, idMedia, files, root
 ):
     # Open directory that contains resources for video
     # Some are useful for video files and cutting.smil.
@@ -771,12 +815,12 @@ def process_directory(
             posBegin = filename.find("-", 17) + 2
             posEnd = filename.rfind("-", 0) - 1
             title = filename[posBegin:posEnd]
-            if (filename.find("presenter") > 0):
+            if filename.find("presenter") > 0:
                 videoPresenter = os.path.join(str(idMedia), filename)
-            if (filename.find("presentation") > 0):
+            if filename.find("presentation") > 0:
                 videoPresentation = os.path.join(str(idMedia), filename)
         # Management of cutting.smil
-        if(filename == "cutting.smil"):
+        if filename == "cutting.smil":
             # Default values
             clipBegin = ""
             clipEnd = ""
@@ -792,10 +836,10 @@ def read_cutting_smil(clipBegin, clipEnd, idMedia):
     clipEnd = ""
     # Read a cutting.smil file and return the begin and the end of the cut
     opencastCuttingSmilDir = os.path.join(
-        settings.MEDIA_ROOT, 'opencast-files', str(idMedia)
+        settings.MEDIA_ROOT, "opencast-files", str(idMedia)
     )
     # Open the cutting.smil file
-    opencastCuttingSmilFile = os.path.join(opencastCuttingSmilDir, 'cutting.smil')
+    opencastCuttingSmilFile = os.path.join(opencastCuttingSmilDir, "cutting.smil")
     # Last check
     if os.path.exists(opencastCuttingSmilFile):
         # Read the file
@@ -808,10 +852,10 @@ def read_cutting_smil(clipBegin, clipEnd, idMedia):
         endDefault = xmldoc.getElementsByTagName("video")[0].getAttribute("clipEnd")
         # Bad format by default, conversion seems necessary
         if beginDefault:
-            clipBegin = str(round(float(beginDefault.replace("s", ""))))
+            clipBegin = str(round(float(beginDefault.replace("s", "")), 2))
         if endDefault:
             # When e appears, seems the end of file
             if "e" not in endDefault:
-                clipEnd = str(round(float(endDefault.replace("s", ""))))
+                clipEnd = str(round(float(endDefault.replace("s", "")), 2))
 
     return clipBegin, clipEnd
