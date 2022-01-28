@@ -4,13 +4,17 @@ Unit tests for recorder views
 import hashlib
 
 from django.test import TestCase
-from django.test import Client
+from django.test import Client, override_settings
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 
 from ..models import Recorder, RecordingFileTreatment
 from pod.video.models import Type
 from django.contrib.sites.models import Site
+
+from .. import views
+from importlib import reload
+from http import HTTPStatus
 
 
 class recorderViewsTestCase(TestCase):
@@ -150,3 +154,72 @@ class recorderViewsTestCase(TestCase):
         self.assertEqual(response.content, b"ok")
 
         print("   --->  test_record_notify of recorderViewsTestCase : OK !")
+
+
+class studio_podTestView(TestCase):
+    fixtures = [
+        "initial_data.json",
+    ]
+
+    def setUp(self):
+        User.objects.create(username="pod", password="pod1234pod")
+        print(" --->  SetUp of studio_podTestView: OK!")
+
+    def test_studio_podTestView_get_request(self):
+        self.client = Client()
+        response = self.client.get("/studio/")
+        self.assertEqual(response.status_code, 302)
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.get("/studio/")
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+
+        print(" --->  test_studio_podTestView_get_request of video_recordTestView: OK!")
+
+    @override_settings(DEBUG=True, RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
+    def test_studio_podTestView_get_request_restrict(self):
+        reload(views)
+        self.client = Client()
+        response = self.client.get("/studio/")
+        self.assertEqual(response.status_code, 302)
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.get("/studio/")
+        self.assertEquals(response.context["access_not_allowed"], True)
+        self.user.is_staff = True
+        self.user.save()
+        response = self.client.get("/studio/")
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        print(
+            " --->  test_studio_podTestView_get_request_restrict ",
+            "of studio_podTestView: OK!",
+        )
+    """
+    def test_video_recordTestView_upload_recordvideo(self):
+        reload(views)
+        video = SimpleUploadedFile("file.mp4", b"file_content", content_type="video/mp4")
+        self.client = Client()
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse("video_record"),
+            {"video": video, "title": "test upload"},
+            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context, None)
+        try:
+            data = json.loads(response.content)
+        except (RuntimeError, TypeError, NameError, AttributeError) as err:
+            print("Unexpected error: {0}".format(err))
+            data = json.loads(response.content.decode("utf-8"))
+        self.assertEqual(data["id"], 1)
+        self.assertEqual(data["url_edit"], "/video_edit/0001-test-upload/")
+        self.assertEqual(Video.objects.all().count(), 1)
+        vid = Video.objects.get(id=1)
+        self.assertEqual(vid.title, "test upload")
+        print(
+            " --->  test_video_recordTestView_upload_recordvideo ",
+            "of video_recordTestView: OK!",
+        )
+    """
