@@ -404,11 +404,14 @@ def settings_toml(request):
     # OpenCast Studio configuration
     # See https://github.com/elan-ev/opencast-studio/blob/master/CONFIGURATION.md
     # Add parameter : the pod studio URL
-    content = "[opencast]\nserverUrl = '%s'\n" % request.build_absolute_uri(
+    studio_url = request.build_absolute_uri(
         reverse(
             "recorder:studio_pod",
         )
     )
+    # force https for developpement server
+    studio_url = studio_url.replace("http://", "https://")
+    content = "[opencast]\nserverUrl = '%s'\n" % studio_url
     # Add parameters : no presenter field is necessary
     content += "\n\n[upload]\npresenterField = 'hidden'\n"
     return HttpResponse(content, content_type="text/plain")
