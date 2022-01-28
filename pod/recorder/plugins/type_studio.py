@@ -118,8 +118,9 @@ def get_subtime(clip_begin, clip_end):
         subtime += "-to %s " % str(clip_end)
     return subtime
 
+
 def encode_recording_id(recording_id):
-    recording = Recording.objects.get(id= recording_id)
+    recording = Recording.objects.get(id=recording_id)
     encode_recording(recording)
 
 

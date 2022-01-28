@@ -368,7 +368,9 @@ def studio_pod(request):
     if in_maintenance():
         return redirect(reverse("maintenance"))
     if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
-        return render(request, "recorder/opencast-studio.html", {"access_not_allowed": True})
+        return render(
+            request, "recorder/opencast-studio.html", {"access_not_allowed": True}
+        )
     # Render the Opencast studio index file
     opencast_studio_rendered = render_to_string("studio/index.html")
     # head = opencast_studio_rendered[opencast_studio_rendered.index("<head>")

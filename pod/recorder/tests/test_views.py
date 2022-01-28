@@ -165,15 +165,17 @@ class studio_podTestView(TestCase):
 
     def setUp(self):
         User.objects.create(username="pod", password="pod1234pod")
-        text = '''
+        text = """
         <html>
             <body>
                 <h1>Heading</h1>
             </body>
         </html>
-        '''
-        template_file = os.path.join(settings.BASE_DIR, "custom/static/opencast/studio/index.html")
-        file = open(template_file,"w")
+        """
+        template_file = os.path.join(
+            settings.BASE_DIR, "custom/static/opencast/studio/index.html"
+        )
+        file = open(template_file, "w")
         file.write(text)
         file.close()
         print(" --->  SetUp of studio_podTestView: OK!")

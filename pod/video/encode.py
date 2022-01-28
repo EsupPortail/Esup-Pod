@@ -1197,7 +1197,7 @@ def encode_video_studio(recording_id, video_output, videos, subtime):
     input_video = ""
     info_presenter_video = {}
     info_presentation_video = {}
-    if presenter_source and presentation_source :
+    if presenter_source and presentation_source:
         # to put it in the right order
         input_video = '-i "' + presentation_source + '" -i "' + presenter_source + '" '
         command = GET_INFO_VIDEO % {
@@ -1210,24 +1210,10 @@ def encode_video_studio(recording_id, video_output, videos, subtime):
             "source": '"' + presenter_source + '" ',
         }
         info_presenter_video = get_video_info(command)
-        min_height = min(
-            [get_height(info_presentation_video), get_height(info_presenter_video)]
+        subcmd = get_sub_cmd(
+            get_height(info_presentation_video), get_height(info_presenter_video)
         )
-        if get_height(info_presentation_video) > get_height(info_presenter_video):
-            # ffmpeg -i presentation.webm -i presenter.webm \
-            # -c:v libx264 -filter_complex "[0:v]scale=-2:720[left];[left][1:v]hstack" \
-            # outputVideo.mp4
-            subcmd = (
-                " -filter_complex "
-                + '"[0:v]scale=-2:%(min_height)s[left];[left][1:v]hstack" -vsync 0 '
-                % {"min_height": min_height}
-            )
-        else:
-            subcmd = (
-                " -filter_complex "
-                + '"[1:v]scale=-2:%(min_height)s[right];[0:v][right]hstack" -vsync 0 '
-                % {"min_height": min_height}
-            )
+
     else:
         subcmd = " -vsync 0 "
         if presenter_source:
@@ -1250,6 +1236,27 @@ def encode_video_studio(recording_id, video_output, videos, subtime):
     recording.save()
     video = save_basic_video(recording, video_output)
     encode_video(video.id)
+
+
+def get_sub_cmd(height_presentation_video, height_presenter_video):
+    min_height = min([height_presentation_video, height_presenter_video])
+    subcmd = ""
+    if height_presentation_video > height_presenter_video:
+        # ffmpeg -i presentation.webm -i presenter.webm \
+        # -c:v libx264 -filter_complex "[0:v]scale=-2:720[left];[left][1:v]hstack" \
+        # outputVideo.mp4
+        subcmd = (
+            " -filter_complex "
+            + '"[0:v]scale=-2:%(min_height)s[left];[left][1:v]hstack" -vsync 0 '
+            % {"min_height": min_height}
+        )
+    else:
+        subcmd = (
+            " -filter_complex "
+            + '"[1:v]scale=-2:%(min_height)s[right];[0:v][right]hstack" -vsync 0 '
+            % {"min_height": min_height}
+        )
+    return subcmd
 
 
 def get_height(info):
