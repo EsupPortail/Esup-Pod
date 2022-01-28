@@ -156,7 +156,7 @@ TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
 VIEW_STATS_AUTH = getattr(settings, "VIEW_STATS_AUTH", False)
 ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
 USE_CATEGORY = getattr(settings, "USER_VIDEO_CATEGORY", False)
-
+DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
 DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
 
 # ############################################################################
@@ -574,6 +574,7 @@ def get_owners_has_instances(owners):
 def videos(request):
     """Render the main list of videos."""
     videos_list = get_videos_list(request)
+    count_videos = len(videos_list)
 
     page = request.GET.get("page", 1)
     full_path = ""
@@ -598,7 +599,7 @@ def videos(request):
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path},
+            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
         )
 
     return render(
@@ -606,6 +607,7 @@ def videos(request):
         "videos/videos.html",
         {
             "videos": videos,
+            "count_videos": count_videos,
             "types": request.GET.getlist("type"),
             "owners": request.GET.getlist("owner"),
             "disciplines": request.GET.getlist("discipline"),
@@ -2585,7 +2587,7 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
             video = Video.objects.create(
                 video=uploaded_file,
                 owner=request.user,
-                type=Type.objects.get(id=1),
+                type=Type.objects.get(id=DEFAULT_TYPE_ID),
                 title=uploaded_file.name,
                 transcript=(True if (transcript == "true") else False),
             )

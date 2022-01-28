@@ -74,6 +74,8 @@ HIDE_SHARE = getattr(django_settings, "HIDE_SHARE", False)
 
 HIDE_DISCIPLINES = getattr(django_settings, "HIDE_DISCIPLINES", False)
 
+HIDE_TYPES = getattr(django_settings, "HIDE_TYPES", False)
+
 ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
     django_settings, "ALLOW_MANUAL_RECORDING_CLAIMING", False
 )
@@ -138,6 +140,7 @@ def context_settings(request):
     new_settings["HIDE_TAGS"] = HIDE_TAGS
     new_settings["HIDE_SHARE"] = HIDE_SHARE
     new_settings["HIDE_DISCIPLINES"] = HIDE_DISCIPLINES
+    new_settings["HIDE_TYPES"] = HIDE_TYPES
     new_settings["HIDE_USER_FILTER"] = HIDE_USER_FILTER
     new_settings["USE_STATS_VIEW"] = USE_STATS_VIEW
     new_settings["USE_RECORD_PREVIEW"] = USE_RECORD_PREVIEW

@@ -1298,3 +1298,14 @@ DYSLEXIAMODE_ENABLED = False
 # On peut préciser un lien vers les mentions légales ou page dpo
 """
 COOKIE_LEARN_MORE = ""
+
+"""
+# Ce paramètre permet d'activer l'envoi d'évènements sur le lecteur vidéo à Matomo
+# n'est utile que si le code piwik / matomo est présent dans l'instance de Esup-Pod
+# les évènements envoyés sont : play, pause, seeked, ended, ratechange, fullscreen, error, loadmetadata
+# Pour rajouter le code Piwik/Matomo dans votre instance de Pod, il suffit de créer un fichier
+# 'pod/custom/templates/custom/tracking.html' et d'y insérer le code javascript
+# puis dans votre fichier settings_local.py, de préciser dans la variable TEMPLATE_VISIBLE_SETTINGS
+#     'TRACKING_TEMPLATE': 'custom/tracking.html',
+"""
+USE_VIDEO_EVENT_TRACKING = False

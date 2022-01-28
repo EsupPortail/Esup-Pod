@@ -3,35 +3,39 @@
 {% load staticfiles %}
 
 {% block opengraph %}{% load video_filters %}
-  <meta name="description" content="{{ DESC_SITE }} &mdash; {% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}" />
+  <meta name="description" content="{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}" />
   <!-- Open Graph data -->
   <meta property="og:title" content="{% trans 'Videos' %}" />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="{{ request.build_absolute_uri }}" />
   <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
-  <meta property="og:description" content="{{ DESC_SITE }} - {% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}" />
+  <meta property="og:description" content="{{ DESC_SITE }} - {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}" />
   <meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock %}
 
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Videos" %}</li>{% endblock %}
 
-{% block page_title %}{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}{% endblock %}
+{% block page_title %}{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}{% endblock %}
 
 
 {% block page_content %}
 
-  <h1>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
-    <span class="float-right">
-    	{% if USE_STATS_VIEW %}
-        <a href="{% url "video_stats_view" 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm"> {% trans "Statistics views" %}</a>
-      {% endif %}
-      <a href="feed://{{ request.META.HTTP_HOST }}{% url "rss-video"%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm">
-        <i data-feather="rss"></i>&nbsp;Video</a>
-      <a href="feed://{{ request.META.HTTP_HOST }}{% url "rss-audio"%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm">
-        <i data-feather="rss"></i>&nbsp;Audio</a>
-    </span>
-  </h1>
+  <div class="row">
+    <div class="col">
+      <h1 id="video_count">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h1>
+    </div>
+      <span class="float-left col">
+        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm float-right">
+          <i data-feather="rss"></i>&nbsp;Audio</a>
+        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm float-right">
+          <i data-feather="rss"></i>&nbsp;Video</a>
+        {% if USE_STATS_VIEW %}
+          <a href="{% url 'video_stats_view' 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm float-right" style="height:35.8px"> {% trans "Statistics views" %}</a>
+        {% endif %}
+      </span>
+  </div>
+
   {% comment %}
   <p>
     "types": request.GET.getlist('type'),
@@ -51,30 +55,10 @@
 
 
 {% block more_script %}
+<script type="text/javascript">
+const urlVideos = "{% url 'videos' %}";
+</script>
 <script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
-<script>
-  var infinite = new Waypoint.Infinite({
-    element: $('.infinite-container')[0],
-    onBeforePageLoad: function () {
-      $('.infinite-loading').show();
-    },
-    onAfterPageLoad: function ($items) {
-      $('.infinite-loading').hide();
-      feather.replace({ class: 'align-bottom'});
-      $('footer.static-pod').addClass('small');
-      $('footer.static-pod').addClass('fixed-bottom');
-      $('footer.static-pod').attr('style','height:80px; overflow-y:auto');
-      $('footer.static-pod .hidden-pod').css('display','none');
-      $(window).scroll(function () {
-        if ($(window).height() + $(window).scrollTop() == $(document).height())
-        {
-           $('footer.static-pod .hidden-pod').css('display','block');
-           $('footer.static-pod').attr('style','height:auto;');
-           $('footer.static-pod').removeClass('fixed-bottom');
-        }
-      });
-    }
-  });
-</script>
+<script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
 {% endblock more_script %}
