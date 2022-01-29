@@ -163,8 +163,7 @@ class studio_podTestView(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
-        User.objects.create(username="pod", password="pod1234pod")
+    def create_index_file(self):
         text = """
         <html>
             <body>
@@ -181,9 +180,13 @@ class studio_podTestView(TestCase):
         file = open(template_file, "w+")
         file.write(text)
         file.close()
+
+    def setUp(self):
+        User.objects.create(username="pod", password="pod1234pod")
         print(" --->  SetUp of studio_podTestView: OK!")
 
     def test_studio_podTestView_get_request(self):
+        self.create_index_file()
         self.client = Client()
         response = self.client.get("/studio/")
         self.assertEqual(response.status_code, 302)
@@ -197,6 +200,7 @@ class studio_podTestView(TestCase):
     @override_settings(DEBUG=True, RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
     def test_studio_podTestView_get_request_restrict(self):
         reload(views)
+        self.create_index_file()
         self.client = Client()
         response = self.client.get("/studio/")
         self.assertEqual(response.status_code, 302)
