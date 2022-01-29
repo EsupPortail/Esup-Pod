@@ -175,6 +175,9 @@ class studio_podTestView(TestCase):
         template_file = os.path.join(
             settings.BASE_DIR, "custom/static/opencast/studio/index.html"
         )
+        template_dir = os.path.dirname(template_file)
+        if not os.path.exists(template_dir):
+            os.makedirs(template_dir)
         file = open(template_file, "w+")
         file.write(text)
         file.close()
