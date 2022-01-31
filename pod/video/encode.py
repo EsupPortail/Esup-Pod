@@ -1183,8 +1183,8 @@ def remove_previous_encoding_playlist(video_to_encode):
 
 
 def encode_video_studio(recording_id, video_output, videos, subtime):
-    presenter_source = ""
-    presentation_source = ""
+    presenter_source = None
+    presentation_source = None
     for video in videos:
         if video.get("type") == "presenter/source":
             presenter_source = os.path.join(
@@ -1210,25 +1210,16 @@ def encode_video_studio(recording_id, video_output, videos, subtime):
             "source": '"' + presenter_source + '" ',
         }
         info_presenter_video = get_video_info(command)
-        min_height = min(
-            [get_height(info_presentation_video), get_height(info_presenter_video)]
+        subcmd = get_sub_cmd(
+            get_height(info_presentation_video), get_height(info_presenter_video)
         )
-        # ffmpeg -i presentation.webm -i presenter.webm \
-        # -c:v libx264 -filter_complex "[0:v]scale=-2:720[left];[left][1:v]hstack" \
-        # outputVideo.mp4
-        subcmd = (
-            " -filter_complex "
-            + '"[0:v]scale=-2:%(min_height)s[left];[left][1:v]hstack" -vsync 0 '
-            % {"min_height": min_height}
-        )
+
     else:
+        subcmd = " -vsync 0 "
         if presenter_source:
             input_video = '-i "' + presenter_source + '" '
-            subcmd = " -vsync 0 "
-
         if presentation_source:
             input_video = '-i "' + presentation_source + '" '
-            subcmd = " -vsync 0 "
 
     static_params = FFMPEG_STATIC_PARAMS % {
         "nb_threads": FFMPEG_NB_THREADS,
@@ -1245,6 +1236,27 @@ def encode_video_studio(recording_id, video_output, videos, subtime):
     recording.save()
     video = save_basic_video(recording, video_output)
     encode_video(video.id)
+
+
+def get_sub_cmd(height_presentation_video, height_presenter_video):
+    min_height = min([height_presentation_video, height_presenter_video])
+    subcmd = ""
+    if height_presentation_video > height_presenter_video:
+        # ffmpeg -i presentation.webm -i presenter.webm \
+        # -c:v libx264 -filter_complex "[0:v]scale=-2:720[left];[left][1:v]hstack" \
+        # outputVideo.mp4
+        subcmd = (
+            " -filter_complex "
+            + '"[0:v]scale=-2:%(min_height)s[left];[left][1:v]hstack" -vsync 0 '
+            % {"min_height": min_height}
+        )
+    else:
+        subcmd = (
+            " -filter_complex "
+            + '"[1:v]scale=-2:%(min_height)s[right];[0:v][right]hstack" -vsync 0 '
+            % {"min_height": min_height}
+        )
+    return subcmd
 
 
 def get_height(info):
@@ -1276,4 +1288,6 @@ def launch_encode_video_studio(input_video, subcmd, video_output):
     msg += "\n- Encoding Mp4: %s" % time.ctime()
     if DEBUG:
         print(msg)
+        print(ffmpegstudio.stdout)
+        print(ffmpegstudio.stderr)
     return msg

@@ -8,6 +8,7 @@ from xml.dom import minidom
 
 from django.conf import settings
 from ..utils import add_comment, studio_clean_old_files
+from ..models import Recording
 from pod.video.models import Video, get_storage_path_video
 from pod.video import encode
 from django.template.defaultfilters import slugify
@@ -118,6 +119,11 @@ def get_subtime(clip_begin, clip_end):
     return subtime
 
 
+def encode_recording_id(recording_id):
+    recording = Recording.objects.get(id=recording_id)
+    encode_recording(recording)
+
+
 # flake ignore complexity with noqa: C901
 def encode_recording(recording):
     recording.comment = ""
@@ -132,12 +138,13 @@ def encode_recording(recording):
 
     videos = []
     for videoElement in xmldoc.getElementsByTagName("video"):
-        videos.append(
-            {
-                "type": videoElement.getAttribute("type"),
-                "src": videoElement.firstChild.data,
-            }
-        )
+        if videoElement.firstChild and videoElement.firstChild.data != "":
+            videos.append(
+                {
+                    "type": videoElement.getAttribute("type"),
+                    "src": videoElement.firstChild.data,
+                }
+            )
 
     # Informations for cut
     clip_begin = xmldoc.getElementsByTagName("cut")[0].getAttribute("clipBegin")

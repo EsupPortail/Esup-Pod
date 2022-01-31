@@ -3,6 +3,7 @@ Unit tests for recorder views
 """
 import hashlib
 
+from django.conf import settings
 from django.test import TestCase
 from django.test import Client, override_settings
 from django.contrib.auth.models import User
@@ -15,6 +16,7 @@ from django.contrib.sites.models import Site
 from .. import views
 from importlib import reload
 from http import HTTPStatus
+import os
 
 
 class recorderViewsTestCase(TestCase):
@@ -161,11 +163,30 @@ class studio_podTestView(TestCase):
         "initial_data.json",
     ]
 
+    def create_index_file(self):
+        text = """
+        <html>
+            <body>
+                <h1>Heading</h1>
+            </body>
+        </html>
+        """
+        template_file = os.path.join(
+            settings.BASE_DIR, "custom/static/opencast/studio/index.html"
+        )
+        template_dir = os.path.dirname(template_file)
+        if not os.path.exists(template_dir):
+            os.makedirs(template_dir)
+        file = open(template_file, "w+")
+        file.write(text)
+        file.close()
+
     def setUp(self):
         User.objects.create(username="pod", password="pod1234pod")
         print(" --->  SetUp of studio_podTestView: OK!")
 
     def test_studio_podTestView_get_request(self):
+        self.create_index_file()
         self.client = Client()
         response = self.client.get("/studio/")
         self.assertEqual(response.status_code, 302)
@@ -179,6 +200,7 @@ class studio_podTestView(TestCase):
     @override_settings(DEBUG=True, RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
     def test_studio_podTestView_get_request_restrict(self):
         reload(views)
+        self.create_index_file()
         self.client = Client()
         response = self.client.get("/studio/")
         self.assertEqual(response.status_code, 302)
@@ -194,6 +216,7 @@ class studio_podTestView(TestCase):
             " --->  test_studio_podTestView_get_request_restrict ",
             "of studio_podTestView: OK!",
         )
+
     """
     def test_video_recordTestView_upload_recordvideo(self):
         reload(views)

@@ -1,13 +1,20 @@
 # test_settings.py
 # from ..settings import *
 import os
+
+USE_OPENCAST_STUDIO = True
+
 from ..settings import INSTALLED_APPS, MIDDLEWARE, AUTHENTICATION_BACKENDS
 from ..settings import ROOT_URLCONF, WSGI_APPLICATION, TEMPLATES
 from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N, USE_L10N
 from ..settings import LOCALE_PATHS
 from ..settings import USE_TZ, REST_FRAMEWORK, LOG_DIRECTORY, LOGGING
+from ..settings import BASE_DIR as settings_base_dir
 
 TEST_SETTINGS = True
+TEMPLATES[0]["DIRS"].append(os.path.join(settings_base_dir, "custom", "static", "opencast"))
+
+print("TEMPLATES ---> %s" % TEMPLATES)
 
 for application in INSTALLED_APPS:
     if application.startswith("pod"):
@@ -17,6 +24,8 @@ for application in INSTALLED_APPS:
             for variable in dir(_temp.settings):
                 if variable == variable.upper():
                     locals()[variable] = getattr(_temp.settings, variable)
+
+
 
 
 DATABASES = {
@@ -37,7 +46,6 @@ USER_VIDEO_CATEGORY = True
 POD_ARCHIVE_AFFILIATION = ["faculty"]
 WARN_DEADLINES = [60, 30, 7]
 USE_BBB = True
-USE_OPENCAST_STUDIO = True
 ORGANIZE_BY_THEME = True
 SHIBBOLETH_STAFF_ALLOWED_DOMAINS = ()
 SHIBBOLETH_ATTRIBUTE_MAP = {

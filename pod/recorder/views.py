@@ -64,6 +64,9 @@ USE_CAS = getattr(settings, "USE_CAS", False)
 USE_SHIB = getattr(settings, "USE_SHIB", False)
 LOGIN_URL = getattr(settings, "LOGIN_URL", "/authentication_login/")
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, "TITLE_SITE", "Pod")
+RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
+    settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
+)
 
 
 def check_recorder(recorder, request):
@@ -362,6 +365,12 @@ def delete_record(request, id=None):
 # OPENCAST VIEWS
 @login_required(redirect_field_name="referrer")
 def studio_pod(request):
+    if in_maintenance():
+        return redirect(reverse("maintenance"))
+    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
+        return render(
+            request, "recorder/opencast-studio.html", {"access_not_allowed": True}
+        )
     # Render the Opencast studio index file
     opencast_studio_rendered = render_to_string("studio/index.html")
     # head = opencast_studio_rendered[opencast_studio_rendered.index("<head>")
@@ -397,11 +406,14 @@ def settings_toml(request):
     # OpenCast Studio configuration
     # See https://github.com/elan-ev/opencast-studio/blob/master/CONFIGURATION.md
     # Add parameter : the pod studio URL
-    content = "[opencast]\nserverUrl = '%s'\n" % request.build_absolute_uri(
+    studio_url = request.build_absolute_uri(
         reverse(
             "recorder:studio_pod",
         )
     )
+    # force https for developpement server
+    studio_url = studio_url.replace("http://", "https://")
+    content = "[opencast]\nserverUrl = '%s'\n" % studio_url
     # Add parameters : no presenter field is necessary
     content += "\n\n[upload]\npresenterField = 'hidden'\n"
     return HttpResponse(content, content_type="text/plain")
