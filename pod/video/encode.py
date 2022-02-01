@@ -549,7 +549,7 @@ def encode_video_mp4(source, cmd, output_dir):
     open(logfile, "ab").write(b"\n\nffmpegvideoMP4:\n\n")
     msg = "\nffmpegMp4Command:\n"
     for subcmd in cmd:
-        ffmpegMp4Command = "%s %s -i %s %s" % (
+        ffmpegMp4Command = "%s %s -i \"%s\" %s" % (
             FFMPEG,
             FFMPEG_MISC_PARAMS,
             source,
@@ -729,7 +729,7 @@ def get_video_command_playlist(video_id, video_data, output_dir):
     master_playlist = "#EXTM3U\n#EXT-X-VERSION:3\n"
     static_params = FFMPEG_STATIC_PARAMS % {
         "nb_threads": FFMPEG_NB_THREADS,
-        "crf": FFMPEG_STATIC_PARAMS,
+        "crf": FFMPEG_CRF,
     }
     list_file = []
     cmd = ""
@@ -776,7 +776,7 @@ def get_video_command_playlist(video_id, video_data, output_dir):
             }
             cmd += (
                 " -hls_playlist_type vod -hls_time %s \
-                -hls_flags single_file %s/%s.m3u8"
+                -hls_flags single_file \"%s/%s.m3u8\""
                 % (SEGMENT_TARGET_DURATION, output_dir, name)
             )
             list_file.append({"name": name, "rendition": rendition})
@@ -803,7 +803,7 @@ def encode_video_playlist(source, cmd, output_dir):
     open(logfile, "ab").write(b"\n\nffmpegvideoPlaylist:\n\n")
     msg = "\nffmpegPlaylistCommands:\n"
     for subcmd in cmd:
-        ffmpegPlaylistCommand = "%s %s -i %s %s" % (
+        ffmpegPlaylistCommand = "%s %s -i \"%s\" %s" % (
             FFMPEG,
             FFMPEG_MISC_PARAMS,
             source,
