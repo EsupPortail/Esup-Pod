@@ -14,8 +14,6 @@ from ..settings import BASE_DIR as settings_base_dir
 TEST_SETTINGS = True
 TEMPLATES[0]["DIRS"].append(os.path.join(settings_base_dir, "custom", "static", "opencast"))
 
-print("TEMPLATES ---> %s" % TEMPLATES)
-
 for application in INSTALLED_APPS:
     if application.startswith("pod"):
         path = application.replace(".", os.path.sep) + "/settings.py"
