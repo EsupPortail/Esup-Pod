@@ -32,4 +32,36 @@
 {% endblock page_aside %}
 
 {% block more_script %}
+<script>
+  //Create array of options to be added
+  const list_value = [["50/50", "50/50 - Ecran et caméra de même taille"],["Pip", "Pip - Caméra inscrustée dans l'écran"]];
+
+  //Create and append select list
+  var selectList = document.createElement("select");
+  selectList.id = "input_presenter";
+  selectList.name = "presenter";
+  //myParent.appendChild(selectList);
+
+  //Create and append the options
+  for (var i = 0; i < list_value.length; i++) {
+      var option = document.createElement("option");
+      option.value = list_value[i][0];
+      option.text = list_value[i][1];
+      selectList.appendChild(option);
+  }
+  const input_presenter = "input[name='presenter'][type='text']";
+ $(document).on('DOMSubtreeModified', '#root>div>main', function(){
+    if($(input_presenter).html() === "" && $(input_presenter).length){
+      //console.log("check ! : "+$("#root video").length);
+      $(input_presenter).css('display','none');
+      $(input_presenter).attr("name","presenter_old");
+      if($("#root video").length == 2) {
+        $("input[name=presenter_old][type='text']").first().parent("div").parent("label").show();
+        $("input[name=presenter_old][type='text']").first().parent("div").append(selectList);
+      } else {
+        $("input[name=presenter_old][type='text']").first().parent("div").parent("label").hide();
+      }
+    }
+  });
+</script>
 {% endblock more_script %}
