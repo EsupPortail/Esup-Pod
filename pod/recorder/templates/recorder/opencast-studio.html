@@ -39,7 +39,7 @@
   //Create and append select list
   var selectList = document.createElement("select");
   selectList.id = "input_presenter";
-  selectList.name = "presenter";
+  selectList.name = "presenter_list";
   //myParent.appendChild(selectList);
 
   //Create and append the options
@@ -54,14 +54,19 @@
     if($(input_presenter).html() === "" && $(input_presenter).length){
       //console.log("check ! : "+$("#root video").length);
       $(input_presenter).css('display','none');
-      $(input_presenter).attr("name","presenter_old");
-      if($("#root video").length == 2) {
-        $("input[name=presenter_old][type='text']").first().parent("div").parent("label").show();
-        $("input[name=presenter_old][type='text']").first().parent("div").append(selectList);
+      $(input_presenter).attr("type","hidden");
+      if($("#root video").length == 2 ) {
+        $("input[name='presenter'][type='hidden']").first().parent("div").parent("label").show();
+        $("input[name='presenter'][type='hidden']").first().parent("div").append(selectList);
+        $("input[name='presenter'][type='hidden']").first().val(list_value[0][0]);
+        //console.log($('#input_presenter').val());
       } else {
-        $("input[name=presenter_old][type='text']").first().parent("div").parent("label").hide();
+        $(input_presenter).first().parent("div").parent("label").hide();
       }
     }
+  });
+  $(document).on('change', '#input_presenter', function(){
+    $("input[name='presenter'][type='hidden']").val($('#input_presenter').val());
   });
 </script>
 {% endblock more_script %}
