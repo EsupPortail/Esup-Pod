@@ -136,6 +136,19 @@ def encode_recording(recording):
         add_comment(recording.id, "Error : %s" % e)
         return -1
     print(xmldoc.toprettyxml())
+
+    videos = getVideoElement(xmldoc)
+    catalogs = getCatalogElement(xmldoc)
+
+    for catalog in catalogs:
+        xmldoc = minidom.parse(catalog.get("src"))
+        if catalog.get("type") == "dublincore/episode":
+            print("get title and presenter")
+            print(xmldoc.toprettyxml())
+        if catalog.get("type") == "smil/cutting":
+            print("get clip begin and end !")
+            print(xmldoc.toprettyxml())
+    print(videos)
     """
     videos = []
     for videoElement in xmldoc.getElementsByTagName("video"):
@@ -166,3 +179,41 @@ def encode_recording(recording):
         encode_video = getattr(encode, ENCODE_VIDEO)
         encode_video(video.id)
     """
+
+
+def getVideoElement(xmldoc):
+    videos = []
+    for videoElement in xmldoc.getElementsByTagName("track"):
+        urlElement = videoElement.getElementsByTagName("url")[0]
+        if urlElement.firstChild and urlElement.firstChild.data != "":
+            video_path = urlElement.firstChild.data[
+                urlElement.firstChild.data.index('/media/') + 7:
+            ]
+            src = os.path.join(settings.MEDIA_ROOT, video_path)
+            if os.path.isfile(src):
+                videos.append(
+                    {
+                        "type": videoElement.getAttribute("type"),
+                        "src": src,
+                    }
+                )
+    return videos
+
+
+def getCatalogElement(xmldoc):
+    catalogs = []
+    for catalog in xmldoc.getElementsByTagName("catalog"):
+        urlElement = catalog.getElementsByTagName("url")[0]
+        if urlElement.firstChild and urlElement.firstChild.data != "":
+            video_path = urlElement.firstChild.data[
+                urlElement.firstChild.data.index('/media/') + 7:
+            ]
+            src = os.path.join(settings.MEDIA_ROOT, video_path)
+            if os.path.isfile(src):
+                catalogs.append(
+                    {
+                        "type": catalog.getAttribute("type"),
+                        "src": src,
+                    }
+                )
+    return catalogs
