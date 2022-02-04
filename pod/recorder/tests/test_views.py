@@ -8,6 +8,7 @@ from django.test import TestCase
 from django.test import Client, override_settings
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from ..models import Recorder, RecordingFileTreatment
 from pod.video.models import Type
@@ -186,7 +187,7 @@ class studio_podTestView(TestCase):
         print(" --->  SetUp of studio_podTestView: OK!")
 
     def test_studio_podTestView_get_request(self):
-        self.create_index_file()
+        # self.create_index_file()
         self.client = Client()
         response = self.client.get("/studio/")
         self.assertEqual(response.status_code, 302)
@@ -200,7 +201,7 @@ class studio_podTestView(TestCase):
     @override_settings(DEBUG=True, RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
     def test_studio_podTestView_get_request_restrict(self):
         reload(views)
-        self.create_index_file()
+        # self.create_index_file()
         self.client = Client()
         response = self.client.get("/studio/")
         self.assertEqual(response.status_code, 302)
@@ -216,6 +217,205 @@ class studio_podTestView(TestCase):
             " --->  test_studio_podTestView_get_request_restrict ",
             "of studio_podTestView: OK!",
         )
+
+    def test_studio_info_me_json(self):
+        self.client = Client()
+        response = self.client.get("/studio/info/me.json")
+        self.assertRaises(PermissionDenied)
+
+        self.user = User.objects.get(username="pod")
+        self.user.is_staff = True
+        self.user.save()
+
+        self.client.force_login(self.user)
+        response = self.client.get("/studio/info/me.json")
+        self.assertTrue(b"ROLE_ADMIN" in response.content)
+        self.assertEqual(response.status_code, 200)
+
+        print(
+            " -->  test_studio_info_me_json of studio_podTestView",
+            " : OK !")
+
+    def test_studio_ingest_step1_createMediaPackage(self):
+        self.client = Client()
+        response = self.client.get("/studio/ingest/createMediaPackage")
+        self.assertRaises(PermissionDenied)
+
+        self.user = User.objects.get(username="pod")
+        self.user.is_staff = True
+        self.user.save()
+
+        self.client.force_login(self.user)
+        response = self.client.get("/studio/ingest/createMediaPackage")
+        self.assertTrue(b"mediapackage" in response.content)
+        self.assertEqual(response.status_code, 200)
+
+        print(
+            " -->  test_studio_ingest_createMediaPackage of studio_podTestView",
+            " : OK !")
+
+    def test_studio_ingest_step2_addDCCatalog(self):
+        self.client = Client()
+        response = self.client.get("/studio/ingest/addDCCatalog")
+        self.assertRaises(PermissionDenied)
+
+        self.user = User.objects.get(username="pod")
+        self.user.is_staff = True
+        self.user.save()
+
+        self.client.force_login(self.user)
+        mediaPackage = SimpleUploadedFile(
+            name="mediaPackageStep2.xml",
+            content=open("./pod/recorder/tests/mediaPackageStep2.xml", "rb").read(),
+            content_type="application/xml",
+        )
+        response = self.client.get(
+            "/studio/ingest/addDCCatalog", {
+                "mediaPackage": mediaPackage,
+                "dublinCore": None,
+                "flavor": "dublincore/episode"
+            }
+        )
+        self.assertTrue(b"mediapackage" in response.content)
+        self.assertEqual(response.status_code, 200)
+
+        print(
+            " -->  test_studio_ingest_addDCCatalog of studio_podTestView",
+            " : OK !")
+
+    def test_studio_ingest_step3_addAttachment(self):
+        self.client = Client()
+        response = self.client.get("/studio/ingest/addAttachment")
+        self.assertRaises(PermissionDenied)
+
+        self.user = User.objects.get(username="pod")
+        self.user.is_staff = True
+        self.user.save()
+
+        self.client.force_login(self.user)
+        acl = SimpleUploadedFile(
+            name="acl.xml",
+            content=open("./pod/recorder/tests/acl.xml", "rb").read(),
+            content_type="application/xml",
+        )
+        mediaPackage = SimpleUploadedFile(
+            name="mediaPackageStep3.xml",
+            content=open("./pod/recorder/tests/mediaPackageStep3.xml", "rb").read(),
+            content_type="application/xml",
+        )
+        response = self.client.post(
+            "/studio/ingest/addAttachment", {
+                "mediaPackage": mediaPackage,
+                "flavor": "security/xacml+episode",
+                "BODY": acl
+            }
+        )
+
+        self.assertTrue(b"mediapackage" in response.content)
+        self.assertEqual(response.status_code, 200)
+
+        print(
+            " -->  test_studio_ingest_addAttachment of studio_podTestView",
+            " : OK !")
+
+    def test_studio_ingest_step4_addTrack(self):
+        self.client = Client()
+        response = self.client.get("/studio/ingest/addTrack")
+        self.assertRaises(PermissionDenied)
+
+        self.user = User.objects.get(username="pod")
+        self.user.is_staff = True
+        self.user.save()
+
+        self.client.force_login(self.user)
+        video = SimpleUploadedFile(
+            name="file.webm",
+            content=open("./pod/recorder/tests/file.webm", "rb").read(),
+            content_type="video/webm",
+        )
+        mediaPackage = SimpleUploadedFile(
+            name="mediaPackageStep4.xml",
+            content=open("./pod/recorder/tests/mediaPackageStep4.xml", "rb").read(),
+            content_type="application/xml",
+        )
+        response = self.client.post(
+            "/studio/ingest/addTrack", {
+                "mediaPackage": mediaPackage,
+                "flavor": "presenter/source",
+                "tags": None,
+                "BODY": video
+            }
+        )
+        self.assertTrue(b"mediapackage" in response.content)
+        self.assertEqual(response.status_code, 200)
+
+        print(
+            " -->  test_studio_ingest_addTrack of studio_podTestView",
+            " : OK !")
+
+    """
+    def test_studio_ingest_step5_addCatalog(self):
+        self.client = Client()
+        response = self.client.get("/studio/ingest/addCatalog")
+        self.assertRaises(PermissionDenied)
+
+        self.user = User.objects.get(username="pod")
+        self.user.is_staff = True
+        self.user.save()
+
+        self.client.force_login(self.user)
+        mediaPackage = SimpleUploadedFile(
+            name="mediaPackageStep5.xml",
+            content=open("./pod/recorder/tests/mediaPackageStep5.xml", "rb").read(),
+            content_type="application/xml",
+        )
+        cutting = SimpleUploadedFile(
+            name="cutting.smil",
+            content=open("./pod/recorder/tests/cutting.smil", "rb").read(),
+            content_type="application/xml",
+        )
+        response = self.client.post(
+            "/studio/ingest/addCatalog", {
+                "mediaPackage": mediaPackage,
+                "flavor": "smil/cutting",
+                "BODY": cutting
+                }
+        )
+        # print(response.content)
+        self.assertTrue(b"mediapackage" in response.content)
+        self.assertEqual(response.status_code, 200)
+
+        print(
+            " -->  test_studio_ingest_addCatalog of studio_podTestView",
+            " : OK !")
+    """
+
+    def test_studio_ingest_step6_ingest(self):
+        self.client = Client()
+        response = self.client.get("/studio/ingest/ingest")
+        self.assertRaises(PermissionDenied)
+
+        self.user = User.objects.get(username="pod")
+        self.user.is_staff = True
+        self.user.save()
+
+        self.client.force_login(self.user)
+        mediaPackage = SimpleUploadedFile(
+            name="mediaPackageStep6.xml",
+            content=open("./pod/recorder/tests/mediaPackageStep6.xml", "rb").read(),
+            content_type="application/xml",
+        )
+        response = self.client.post(
+            "/studio/ingest/ingest", {
+                "mediaPackage": mediaPackage,
+            }
+        )
+        self.assertTrue(b"mediapackage" in response.content)
+        self.assertEqual(response.status_code, 200)
+
+        print(
+            " -->  test_studio_ingest_ingest of studio_podTestView",
+            " : OK !")
 
     """
     def test_video_recordTestView_upload_recordvideo(self):
