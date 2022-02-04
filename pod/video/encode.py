@@ -88,7 +88,7 @@ FFMPEG_STATIC_PARAMS = getattr(
     "FFMPEG_STATIC_PARAMS",
     " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf %(crf)s "
     + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" '
-    + '-max_muxing_queue_size 4000 '
+    + "-max_muxing_queue_size 4000 "
     + "-deinterlace -threads %(nb_threads)s ",
 )
 
@@ -550,7 +550,7 @@ def encode_video_mp4(source, cmd, output_dir):
     open(logfile, "ab").write(b"\n\nffmpegvideoMP4:\n\n")
     msg = "\nffmpegMp4Command:\n"
     for subcmd in cmd:
-        ffmpegMp4Command = "%s %s -i \"%s\" %s" % (
+        ffmpegMp4Command = '%s %s -i "%s" %s' % (
             FFMPEG,
             FFMPEG_MISC_PARAMS,
             source,
@@ -776,8 +776,8 @@ def get_video_command_playlist(video_id, video_data, output_dir):
                 "audiorate": audiorate,
             }
             cmd += (
-                " -hls_playlist_type vod -hls_time %s \
-                -hls_flags single_file \"%s/%s.m3u8\""
+                ' -hls_playlist_type vod -hls_time %s \
+                -hls_flags single_file "%s/%s.m3u8"'
                 % (SEGMENT_TARGET_DURATION, output_dir, name)
             )
             list_file.append({"name": name, "rendition": rendition})
@@ -804,7 +804,7 @@ def encode_video_playlist(source, cmd, output_dir):
     open(logfile, "ab").write(b"\n\nffmpegvideoPlaylist:\n\n")
     msg = "\nffmpegPlaylistCommands:\n"
     for subcmd in cmd:
-        ffmpegPlaylistCommand = "%s %s -i \"%s\" %s" % (
+        ffmpegPlaylistCommand = '%s %s -i "%s" %s' % (
             FFMPEG,
             FFMPEG_MISC_PARAMS,
             source,
@@ -1237,7 +1237,7 @@ def encode_video_studio(recording_id, video_output, videos, subtime):
 
     static_params = FFMPEG_STATIC_PARAMS % {
         "nb_threads": FFMPEG_NB_THREADS,
-        "crf": FFMPEG_STATIC_PARAMS
+        "crf": FFMPEG_STATIC_PARAMS,
     }
     msg = launch_encode_video_studio(
         input_video, subtime + static_params + subcmd, video_output
