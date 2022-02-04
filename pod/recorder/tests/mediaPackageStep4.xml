@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mediapackage xmlns="http://mediapackage.opencastproject.org" id="a53f4c3c-88ed-494c-b916-ce7dea1a3266" start="2022-02-04T10:55:52Z">
+  <media/>
+  <metadata>
+    <catalog id="92246df7-f0c9-4635-929b-aa588c4ceb3a" type="dublincore/episode">
+      <mimetype>text/xml</mimetype>
+      <tags/>
+      <url>http://testserver/media/opencast-files//92246df7-f0c9-4635-929b-aa588c4ceb3a/dublincore.xml</url>
+    </catalog>
+  </metadata>
+  <attachments>
+    <attachment id="f702b4b0-2f66-4f42-b1ab-223906a395c7" type="security/xacml+episode">
+      <mimetype>text/xml</mimetype>
+      <tags/>
+      <url>http://testserver/media/opencast-files//f702b4b0-2f66-4f42-b1ab-223906a395c7/acl.xml</url>
+    </attachment>
+  </attachments>
+  <publications/>
+</mediapackage>
