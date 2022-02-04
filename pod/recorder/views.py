@@ -478,9 +478,7 @@ def ingest_createMediaPackage(request):
 
     with open(mediaPackage_file, "w") as f:
         f.write(mediaPackage_content.toxml())
-    return HttpResponse(
-        mediaPackage_content.toxml(), content_type="application/xml"
-    )
+    return HttpResponse(mediaPackage_content.toxml(), content_type="application/xml")
 
 
 @login_required(redirect_field_name="referrer")
@@ -555,9 +553,7 @@ def ingest_addDCCatalog(request):
         with open(mediaPackage_file, "w+") as f:
             f.write(mediaPackage_content.toxml())
 
-        return HttpResponse(
-            mediaPackage_content.toxml(), content_type="application/xml"
-        )
+        return HttpResponse(mediaPackage_content.toxml(), content_type="application/xml")
 
     return HttpResponseBadRequest()
 
@@ -614,9 +610,7 @@ def ingest_addAttachment(request):
         with open(mediaPackage_file, "w+") as f:
             f.write(mediaPackage_content.toxml())
 
-        return HttpResponse(
-            mediaPackage_content.toxml(), content_type="application/xml"
-        )
+        return HttpResponse(mediaPackage_content.toxml(), content_type="application/xml")
 
     return HttpResponseBadRequest()
 
@@ -682,7 +676,7 @@ def ingest_addTrack(request):
             "http": "https" if request.is_secure() else "http",
             "host": request.get_host(),
             "idMedia": "%s" % idMedia,
-            "fn": dest_filename
+            "fn": dest_filename,
         }
         url = mediaPackage_content.createElement("url")
         url.appendChild(mediaPackage_content.createTextNode(track_url))
@@ -697,9 +691,7 @@ def ingest_addTrack(request):
         with open(mediaPackage_file, "w+") as f:
             f.write(mediaPackage_content.toxml())
 
-        return HttpResponse(
-            mediaPackage_content.toxml(), content_type="application/xml"
-        )
+        return HttpResponse(mediaPackage_content.toxml(), content_type="application/xml")
     return HttpResponseBadRequest()
 
 
@@ -749,7 +741,7 @@ def ingest_addCatalog(request):
             "http": "https" if request.is_secure() else "http",
             "host": request.get_host(),
             "idMedia": "%s" % idMedia,
-            "fn": opencast_filename
+            "fn": opencast_filename,
         }
         catalog = mediaPackage_content.createElement("catalog")
         catalog.setAttributeNode(mediaPackage_content.createAttribute("type"))
@@ -767,9 +759,7 @@ def ingest_addCatalog(request):
         metadata.appendChild(catalog)
         with open(mediaPackage_file, "w+") as f:
             f.write(mediaPackage_content.toxml())
-        return HttpResponse(
-            mediaPackage_content.toxml(), content_type="application/xml"
-        )
+        return HttpResponse(mediaPackage_content.toxml(), content_type="application/xml")
     return HttpResponseBadRequest()
 
 
@@ -797,7 +787,7 @@ def ingest_ingest(request):
 
         if mediapackage.getAttribute("id") != idMedia:
             raise PermissionDenied
-        
+
         # Create the recording
         # Search for the recorder corresponding to the Studio
         recorder = Recorder.objects.filter(
@@ -814,14 +804,15 @@ def ingest_ingest(request):
             )
             recording.save()
         else:
-            messages.add_message(request, messages.ERROR, _("Recorder for Studio not found."))
+            messages.add_message(
+                request, messages.ERROR, _("Recorder for Studio not found.")
+            )
             raise PermissionDenied
 
-        return HttpResponse(
-            mediaPackage_content.toxml(), content_type="application/xml"
-        )
+        return HttpResponse(mediaPackage_content.toxml(), content_type="application/xml")
 
     return HttpResponseBadRequest()
+
 
 """
 def create_pod_xml_file(request, idMedia, start):

@@ -12,7 +12,9 @@ from ..settings import USE_TZ, REST_FRAMEWORK, LOG_DIRECTORY, LOGGING
 from ..settings import BASE_DIR as settings_base_dir
 
 TEST_SETTINGS = True
-TEMPLATES[0]["DIRS"].append(os.path.join(settings_base_dir, "custom", "static", "opencast"))
+TEMPLATES[0]["DIRS"].append(
+    os.path.join(settings_base_dir, "custom", "static", "opencast")
+)
 
 for application in INSTALLED_APPS:
     if application.startswith("pod"):
@@ -22,8 +24,6 @@ for application in INSTALLED_APPS:
             for variable in dir(_temp.settings):
                 if variable == variable.upper():
                     locals()[variable] = getattr(_temp.settings, variable)
-
-
 
 
 DATABASES = {

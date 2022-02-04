@@ -135,7 +135,8 @@ def encode_recording(recording):
     except KeyError as e:
         add_comment(recording.id, "Error : %s" % e)
         return -1
-
+    print(xmldoc.toprettyxml())
+    """
     videos = []
     for videoElement in xmldoc.getElementsByTagName("video"):
         if videoElement.firstChild and videoElement.firstChild.data != "":
@@ -149,7 +150,6 @@ def encode_recording(recording):
     # Informations for cut
     clip_begin = xmldoc.getElementsByTagName("cut")[0].getAttribute("clipBegin")
     clip_end = xmldoc.getElementsByTagName("cut")[0].getAttribute("clipEnd")
-
     if clip_begin or clip_end or len(videos) > 1:
         generate_intermediate_video(recording, videos, clip_begin, clip_end)
     else:
@@ -165,3 +165,4 @@ def encode_recording(recording):
         # encode video
         encode_video = getattr(encode, ENCODE_VIDEO)
         encode_video(video.id)
+    """

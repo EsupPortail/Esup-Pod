@@ -34,8 +34,9 @@
 {% block more_script %}
 <script>
   //Create array of options to be added
-  const list_value = [["50/50", "50/50 - Ecran et caméra de même taille"],["Pip", "Pip - Caméra inscrustée dans l'écran"]];
-
+  const list_value = [["50/50", "50/50 - {% trans "Same size for screen and camera" %}"],["pip", "Pip - {% trans "Camera inside the screen video" %}"]];
+  // put local storage default value
+  localStorage.setItem('ocStudioLastPresenter', "50/50");
   //Create and append select list
   var selectList = document.createElement("select");
   selectList.id = "input_presenter";
@@ -52,16 +53,14 @@
   const input_presenter = "input[name='presenter'][type='text']";
  $(document).on('DOMSubtreeModified', '#root>div>main', function(){
     if($(input_presenter).html() === "" && $(input_presenter).length){
-      //console.log("check ! : "+$("#root video").length);
-      $(input_presenter).css('display','none');
       $(input_presenter).attr("type","hidden");
       if($("#root video").length == 2 ) {
-        $("input[name='presenter'][type='hidden']").first().parent("div").parent("label").show();
-        $("input[name='presenter'][type='hidden']").first().parent("div").append(selectList);
-        $("input[name='presenter'][type='hidden']").first().val(list_value[0][0]);
-        //console.log($('#input_presenter').val());
+        let div = $("input[name='presenter'][type='hidden']").first().parent("div");
+        div.parent("label").show();
+        div.append(selectList);
+        $("input[name='presenter'][type='hidden']").val($('#input_presenter').val());        
       } else {
-        $(input_presenter).first().parent("div").parent("label").hide();
+        $("input[name='presenter'][type='hidden']").first().parent("div").parent("label").hide();
       }
     }
   });
