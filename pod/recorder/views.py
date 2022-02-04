@@ -395,8 +395,10 @@ def studio_static(request, file):
             settings.BASE_DIR, "custom", "static", "opencast", "studio/static/%s" % file
         )
         f = open(path_file, "r")
+        content_file = f.read()
+        content_file = content_file.replace("Opencast", "Pod")
         return HttpResponse(
-            f.read().replace("Opencast", "Pod"), content_type="application/javascript"
+            content_file, content_type="application/javascript"
         )
     return HttpResponseRedirect("/static/opencast/studio/static/%s" % file)
 
@@ -411,12 +413,29 @@ def settings_toml(request):
             "recorder:studio_pod",
         )
     )
+    myvideo_url = request.build_absolute_uri(
+        reverse(
+            "my_videos",
+        )
+    )
     # force https for developpement server
     studio_url = studio_url.replace("http://", "https://")
-    content = "[opencast]\nserverUrl = '%s'\n" % studio_url
-    # Add parameters : no presenter field is necessary
-    content += "\n\n[upload]\npresenterField = 'hidden'\n"
-    return HttpResponse(content, content_type="text/plain")
+    myvideo_url = myvideo_url.replace("http://", "https://")
+    content_text = """
+    [opencast]
+    serverUrl = "%(serverUrl)s"
+    [upload]
+    presenterField = 'optional'
+    [return]
+    target = "%(target)s"
+    label = "%(label)s"
+    """
+    content_text = content_text % {
+        "serverUrl": studio_url,
+        "target": myvideo_url,
+        "label": "mes videos"
+    }
+    return HttpResponse(content_text, content_type="text/plain")
 
 
 @login_required(redirect_field_name="referrer")

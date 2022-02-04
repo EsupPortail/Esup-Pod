@@ -86,10 +86,13 @@ GET_INFO_AUDIO = getattr(
 FFMPEG_STATIC_PARAMS = getattr(
     settings,
     "FFMPEG_STATIC_PARAMS",
-    " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf 20 "
+    " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf %(crf)s "
     + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" '
+    + '-max_muxing_queue_size 4000 '
     + "-deinterlace -threads %(nb_threads)s ",
 )
+
+FFMPEG_CRF = getattr(settings, "FFMPEG_CRF", 22)
 # + "-deinterlace -threads %(nb_threads)s -g %(key_frames_interval)s "
 # + "-keyint_min %(key_frames_interval)s ")
 
@@ -489,7 +492,7 @@ def get_video_command_mp4(video_id, video_data, output_dir):
     renditions = sorted(renditions, key=lambda m: m.height)
     static_params = FFMPEG_STATIC_PARAMS % {
         "nb_threads": FFMPEG_NB_THREADS,
-        "key_frames_interval": video_data["key_frames_interval"],
+        "crf": FFMPEG_CRF,
     }
     list_file = []
     cmds = []
@@ -500,12 +503,12 @@ def get_video_command_mp4(video_id, video_data, output_dir):
         bitrate = rendition.video_bitrate
         audiorate = rendition.audio_bitrate
         height = rendition.height
-        minrate = rendition.minrate
-        maxrate = rendition.maxrate
+        # minrate = rendition.minrate
+        # maxrate = rendition.maxrate
         if in_height >= int(height) or rendition == renditions[0]:
-            int_bitrate = int(re.search(r"(\d+)k", bitrate, re.I).groups()[0])
+            # int_bitrate = int(re.search(r"(\d+)k", bitrate, re.I).groups()[0])
             # maxrate = int_bitrate * MAX_BITRATE_RATIO
-            bufsize = int_bitrate * RATE_MONITOR_BUFFER_RATIO
+            # bufsize = int_bitrate * RATE_MONITOR_BUFFER_RATIO
 
             name = "%sp" % height
 
@@ -513,6 +516,7 @@ def get_video_command_mp4(video_id, video_data, output_dir):
             cmd += FFMPEG_SCALE.format(height=height)
             # cmd += " -vf \"scale=-2:%s\" " % (height)
             # cmd += "force_original_aspect_ratio=decrease"
+            """
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
                 minrate,
                 bitrate,
@@ -520,6 +524,11 @@ def get_video_command_mp4(video_id, video_data, output_dir):
                 int(bufsize),
                 audiorate,
             )
+            """
+            cmd += " -b:v %(bitrate)s -b:a %(audiorate)s" % {
+                "bitrate": bitrate,
+                "audiorate": audiorate,
+            }
 
             cmd += ' -movflags faststart -write_tmcd 0 "%s/%s.mp4"' % (
                 output_dir,
@@ -541,7 +550,7 @@ def encode_video_mp4(source, cmd, output_dir):
     open(logfile, "ab").write(b"\n\nffmpegvideoMP4:\n\n")
     msg = "\nffmpegMp4Command:\n"
     for subcmd in cmd:
-        ffmpegMp4Command = "%s %s -i %s %s" % (
+        ffmpegMp4Command = "%s %s -i \"%s\" %s" % (
             FFMPEG,
             FFMPEG_MISC_PARAMS,
             source,
@@ -721,7 +730,7 @@ def get_video_command_playlist(video_id, video_data, output_dir):
     master_playlist = "#EXTM3U\n#EXT-X-VERSION:3\n"
     static_params = FFMPEG_STATIC_PARAMS % {
         "nb_threads": FFMPEG_NB_THREADS,
-        "key_frames_interval": video_data["key_frames_interval"],
+        "crf": FFMPEG_CRF,
     }
     list_file = []
     cmd = ""
@@ -734,14 +743,14 @@ def get_video_command_playlist(video_id, video_data, output_dir):
             cmd = ""
         resolution = rendition.resolution
         bitrate = rendition.video_bitrate
-        minrate = rendition.minrate
-        maxrate = rendition.maxrate
+        # minrate = rendition.minrate
+        # maxrate = rendition.maxrate
         audiorate = rendition.audio_bitrate
         height = rendition.height
         if in_height >= int(height) or rendition == renditions[0]:
             int_bitrate = int(re.search(r"(\d+)k", bitrate, re.I).groups()[0])
             # maxrate = int_bitrate * MAX_BITRATE_RATIO
-            bufsize = int_bitrate * RATE_MONITOR_BUFFER_RATIO
+            # bufsize = int_bitrate * RATE_MONITOR_BUFFER_RATIO
             bandwidth = int_bitrate * 1000
 
             name = "%sp" % height
@@ -753,7 +762,7 @@ def get_video_command_playlist(video_id, video_data, output_dir):
             # cmd += "\"scale=-2:%s\"" % (height)
             # cmd += "scale=w=%s:h=%s:" % (width, height)
             # cmd += "force_original_aspect_ratio=decrease"
-
+            """
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
                 minrate,
                 bitrate,
@@ -761,9 +770,14 @@ def get_video_command_playlist(video_id, video_data, output_dir):
                 int(bufsize),
                 audiorate,
             )
+            """
+            cmd += " -b:v %(bitrate)s -b:a %(audiorate)s" % {
+                "bitrate": bitrate,
+                "audiorate": audiorate,
+            }
             cmd += (
                 " -hls_playlist_type vod -hls_time %s \
-                -hls_flags single_file %s/%s.m3u8"
+                -hls_flags single_file \"%s/%s.m3u8\""
                 % (SEGMENT_TARGET_DURATION, output_dir, name)
             )
             list_file.append({"name": name, "rendition": rendition})
@@ -790,7 +804,7 @@ def encode_video_playlist(source, cmd, output_dir):
     open(logfile, "ab").write(b"\n\nffmpegvideoPlaylist:\n\n")
     msg = "\nffmpegPlaylistCommands:\n"
     for subcmd in cmd:
-        ffmpegPlaylistCommand = "%s %s -i %s %s" % (
+        ffmpegPlaylistCommand = "%s %s -i \"%s\" %s" % (
             FFMPEG,
             FFMPEG_MISC_PARAMS,
             source,
@@ -1223,6 +1237,7 @@ def encode_video_studio(recording_id, video_output, videos, subtime):
 
     static_params = FFMPEG_STATIC_PARAMS % {
         "nb_threads": FFMPEG_NB_THREADS,
+        "crf": FFMPEG_STATIC_PARAMS
     }
     msg = launch_encode_video_studio(
         input_video, subtime + static_params + subcmd, video_output
