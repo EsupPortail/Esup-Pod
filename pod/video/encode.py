@@ -1242,7 +1242,7 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
 
     static_params = FFMPEG_STATIC_PARAMS % {
         "nb_threads": FFMPEG_NB_THREADS,
-        "crf": FFMPEG_STATIC_PARAMS,
+        "crf": FFMPEG_CRF,
     }
     msg = launch_encode_video_studio(
         input_video, subtime + static_params + subcmd, video_output
