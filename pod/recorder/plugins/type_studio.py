@@ -152,10 +152,16 @@ def encode_recording(recording):
         if catalog.get("type") == "smil/cutting":
             beginDefault = getAttributeByName(xmldoc, "video", "clipBegin")
             endDefault = getAttributeByName(xmldoc, "video", "clipEnd")
-            clip_begin = str(round(float(beginDefault.replace("s", "")), 2)) if (
-                beginDefault) else None
-            clip_end = str(round(float(endDefault.replace("s", "")), 2)) if (
-                endDefault) else None
+            clip_begin = (
+                str(round(float(beginDefault.replace("s", "")), 2))
+                if (beginDefault)
+                else None
+            )
+            clip_end = (
+                str(round(float(endDefault.replace("s", "")), 2))
+                if (endDefault)
+                else None
+            )
 
     recording.title = title
     recording.save()

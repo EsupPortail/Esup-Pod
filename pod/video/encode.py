@@ -183,14 +183,17 @@ def start_encode(video_id):
         t.start()
 
 
-def start_encode_studio(recording_id, video_output, videos, subtime):
+def start_encode_studio(recording_id, video_output, videos, subtime, presenter):
     """Start local encoding."""
     if CELERY_TO_ENCODE:
-        task_start_encode_studio.delay(recording_id, video_output, videos, subtime)
+        task_start_encode_studio.delay(
+            recording_id, video_output, videos, subtime, presenter
+        )
     else:
         log.info("START ENCODE VIDEO ID %s" % recording_id)
         t = threading.Thread(
-            target=encode_video_studio, args=[recording_id, video_output, videos, subtime]
+            target=encode_video_studio,
+            args=[recording_id, video_output, videos, subtime, presenter],
         )
         t.setDaemon(True)
         t.start()
@@ -1196,7 +1199,7 @@ def remove_previous_encoding_playlist(video_to_encode):
 # ##########################################################################
 
 
-def encode_video_studio(recording_id, video_output, videos, subtime):
+def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
     presenter_source = None
     presentation_source = None
     for video in videos:
@@ -1225,7 +1228,9 @@ def encode_video_studio(recording_id, video_output, videos, subtime):
         }
         info_presenter_video = get_video_info(command)
         subcmd = get_sub_cmd(
-            get_height(info_presentation_video), get_height(info_presenter_video)
+            get_height(info_presentation_video),
+            get_height(info_presenter_video),
+            presenter,
         )
 
     else:
@@ -1253,24 +1258,26 @@ def encode_video_studio(recording_id, video_output, videos, subtime):
     encode_video(video.id)
 
 
-def get_sub_cmd(height_presentation_video, height_presenter_video):
+def get_sub_cmd(height_presentation_video, height_presenter_video, presenter):
     min_height = min([height_presentation_video, height_presenter_video])
     subcmd = ""
-    if height_presentation_video > height_presenter_video:
-        # ffmpeg -i presentation.webm -i presenter.webm \
-        # -c:v libx264 -filter_complex "[0:v]scale=-2:720[left];[left][1:v]hstack" \
-        # outputVideo.mp4
-        subcmd = (
-            " -filter_complex "
-            + '"[0:v]scale=-2:%(min_height)s[left];[left][1:v]hstack" -vsync 0 '
-            % {"min_height": min_height}
-        )
-    else:
-        subcmd = (
-            " -filter_complex "
-            + '"[1:v]scale=-2:%(min_height)s[right];[0:v][right]hstack" -vsync 0 '
-            % {"min_height": min_height}
-        )
+    if presenter == "50/50":
+        if height_presentation_video > height_presenter_video:
+            # ffmpeg -i presentation.webm -i presenter.webm \
+            # -c:v libx264 -filter_complex "[0:v]scale=-2:720[left];[left][1:v]hstack" \
+            # outputVideo.mp4
+            subcmd = (
+                " -filter_complex "
+                + '"[0:v]scale=-2:%(min_height)s[left];[left][1:v]hstack" -vsync 0 '
+                % {"min_height": min_height}
+            )
+        else:
+            subcmd = (
+                " -filter_complex "
+                + '"[1:v]scale=-2:%(min_height)s[right];[0:v][right]hstack" -vsync 0 '
+                % {"min_height": min_height}
+            )
+
     return subcmd
 
 
