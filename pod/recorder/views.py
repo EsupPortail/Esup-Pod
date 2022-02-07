@@ -83,6 +83,8 @@ OPENCAST_MEDIAPACKAGE = getattr(
     """,
 )
 
+MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
+
 
 def check_recorder(recorder, request):
     if recorder is None:
@@ -530,11 +532,15 @@ def ingest_addDCCatalog(request):
         if mediapackage.getAttribute("id") != idMedia:
             raise PermissionDenied
 
-        dc_url = "%(http)s://%(host)s/media/opencast-files/%(idMedia)s/dublincore.xml" % {
-            "http": "https" if request.is_secure() else "http",
-            "host": request.get_host(),
-            "idMedia": "%s" % idMedia,
-        }
+        dc_url = str(
+            "%(http)s://%(host)s%(media)sopencast-files/%(idMedia)s/dublincore.xml"
+            % {
+                "http": "https" if request.is_secure() else "http",
+                "host": request.get_host(),
+                "media": MEDIA_URL,
+                "idMedia": "%s" % idMedia,
+            }
+        )
         catalog = mediaPackage_content.createElement("catalog")
         catalog.setAttributeNode(mediaPackage_content.createAttribute("type"))
         catalog.setAttributeNode(mediaPackage_content.createAttribute("id"))
@@ -672,9 +678,10 @@ def ingest_addTrack(request):
         mimetype = mediaPackage_content.createElement("mimetype")
         mimetype.appendChild(mediaPackage_content.createTextNode("video/webm"))
         track.appendChild(mimetype)
-        track_url = "%(http)s://%(host)s/media/opencast-files/%(idMedia)s/%(fn)s" % {
+        track_url = "%(http)s://%(host)s%(media)sopencast-files/%(idMedia)s/%(fn)s" % {
             "http": "https" if request.is_secure() else "http",
             "host": request.get_host(),
+            "media": MEDIA_URL,
             "idMedia": "%s" % idMedia,
             "fn": dest_filename,
         }
@@ -737,9 +744,10 @@ def ingest_addCatalog(request):
             for chunk in request.FILES["BODY"].chunks():
                 destination.write(chunk)
 
-        catalog_url = "%(http)s://%(host)s/media/opencast-files/%(idMedia)s/%(fn)s" % {
+        catalog_url = "%(http)s://%(host)s%(media)sopencast-files/%(idMedia)s/%(fn)s" % {
             "http": "https" if request.is_secure() else "http",
             "host": request.get_host(),
+            "media": MEDIA_URL,
             "idMedia": "%s" % idMedia,
             "fn": opencast_filename,
         }

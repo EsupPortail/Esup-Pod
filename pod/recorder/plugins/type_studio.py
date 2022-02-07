@@ -7,18 +7,17 @@ import os
 from xml.dom import minidom
 
 from django.conf import settings
+
 from ..utils import add_comment, studio_clean_old_files
 from ..models import Recording
 from pod.video.models import Video, get_storage_path_video
 from pod.video import encode
 from django.template.defaultfilters import slugify
 
-
 DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
-
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
-
 ENCODE_STUDIO = getattr(settings, "ENCODE_STUDIO", "start_encode_studio")
+MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
 
 log = logging.getLogger(__name__)
 
@@ -99,7 +98,7 @@ def save_basic_video(recording, video_src):
     return video
 
 
-def generate_intermediate_video(recording, videos, clip_begin, clip_end):
+def generate_intermediate_video(recording, videos, clip_begin, clip_end, presenter):
     # Video file output : at the same directory than the XML file
     # And with the same name .mp4
     video_output = recording.source_file.replace(".xml", ".mp4")
@@ -107,7 +106,7 @@ def generate_intermediate_video(recording, videos, clip_begin, clip_end):
     # /usr/local/django_projects/podv2-dev/pod/media/opencast-files/file.mp4
     subtime = get_subtime(clip_begin, clip_end)
     encode_studio = getattr(encode, ENCODE_STUDIO)
-    encode_studio(recording.id, video_output, videos, subtime)
+    encode_studio(recording.id, video_output, videos, subtime, presenter)
 
 
 def get_subtime(clip_begin, clip_end):
@@ -137,34 +136,37 @@ def encode_recording(recording):
         return -1
     print(xmldoc.toprettyxml())
 
-    videos = getVideoElement(xmldoc)
-    catalogs = getCatalogElement(xmldoc)
+    videos = getElementsByName(xmldoc, "track")
+    catalogs = getElementsByName(xmldoc, "catalog")
+    title = ""
+    presenter = "50/50"
+    clip_begin = None
+    clip_end = None
 
     for catalog in catalogs:
         xmldoc = minidom.parse(catalog.get("src"))
         if catalog.get("type") == "dublincore/episode":
-            print("get title and presenter")
-            print(xmldoc.toprettyxml())
+            title = getElementValueByName(xmldoc, "dcterms:title")
+            creator = getElementValueByName(xmldoc, "dcterms:creator")
+            presenter = creator if creator in ["50/50", "pip"] else "50/50"
         if catalog.get("type") == "smil/cutting":
-            print("get clip begin and end !")
-            print(xmldoc.toprettyxml())
-    print(videos)
-    """
-    videos = []
-    for videoElement in xmldoc.getElementsByTagName("video"):
-        if videoElement.firstChild and videoElement.firstChild.data != "":
-            videos.append(
-                {
-                    "type": videoElement.getAttribute("type"),
-                    "src": videoElement.firstChild.data,
-                }
-            )
+            beginDefault = getAttributeByName(xmldoc, "video", "clipBegin")
+            endDefault = getAttributeByName(xmldoc, "video", "clipEnd")
+            clip_begin = str(round(float(beginDefault.replace("s", "")), 2)) if (
+                beginDefault) else None
+            clip_end = str(round(float(endDefault.replace("s", "")), 2)) if (
+                endDefault) else None
 
-    # Informations for cut
-    clip_begin = xmldoc.getElementsByTagName("cut")[0].getAttribute("clipBegin")
-    clip_end = xmldoc.getElementsByTagName("cut")[0].getAttribute("clipEnd")
+    recording.title = title
+    recording.save()
+
     if clip_begin or clip_end or len(videos) > 1:
-        generate_intermediate_video(recording, videos, clip_begin, clip_end)
+        msg = "*** generate_intermediate_video (%s) %s ***" % (
+            videos[0].get("type"),
+            videos[0].get("src"),
+        )
+        add_comment(recording.id, msg)
+        generate_intermediate_video(recording, videos, clip_begin, clip_end, presenter)
     else:
         msg = "*** Management of basic video file (%s) %s ***" % (
             videos[0].get("type"),
@@ -178,42 +180,36 @@ def encode_recording(recording):
         # encode video
         encode_video = getattr(encode, ENCODE_VIDEO)
         encode_video(video.id)
-    """
 
 
-def getVideoElement(xmldoc):
-    videos = []
-    for videoElement in xmldoc.getElementsByTagName("track"):
-        urlElement = videoElement.getElementsByTagName("url")[0]
+def getAttributeByName(xmldoc, tagName, attribute):
+    attr = xmldoc.getElementsByTagName(tagName)[0].getAttribute(attribute)
+    if attr and "e" not in attr:
+        return attr
+    return None
+
+
+def getElementsByName(xmldoc, name):
+    elements = []
+    for element in xmldoc.getElementsByTagName(name):
+        urlElement = element.getElementsByTagName("url")[0]
         if urlElement.firstChild and urlElement.firstChild.data != "":
-            video_path = urlElement.firstChild.data[
-                urlElement.firstChild.data.index('/media/') + 7:
+            element_path = urlElement.firstChild.data[
+                urlElement.firstChild.data.index(MEDIA_URL) + len(MEDIA_URL) :
             ]
-            src = os.path.join(settings.MEDIA_ROOT, video_path)
+            src = os.path.join(settings.MEDIA_ROOT, element_path)
             if os.path.isfile(src):
-                videos.append(
+                elements.append(
                     {
-                        "type": videoElement.getAttribute("type"),
+                        "type": element.getAttribute("type"),
                         "src": src,
                     }
                 )
-    return videos
+    return elements
 
 
-def getCatalogElement(xmldoc):
-    catalogs = []
-    for catalog in xmldoc.getElementsByTagName("catalog"):
-        urlElement = catalog.getElementsByTagName("url")[0]
-        if urlElement.firstChild and urlElement.firstChild.data != "":
-            video_path = urlElement.firstChild.data[
-                urlElement.firstChild.data.index('/media/') + 7:
-            ]
-            src = os.path.join(settings.MEDIA_ROOT, video_path)
-            if os.path.isfile(src):
-                catalogs.append(
-                    {
-                        "type": catalog.getAttribute("type"),
-                        "src": src,
-                    }
-                )
-    return catalogs
+def getElementValueByName(xmldoc, name):
+    element = xmldoc.getElementsByTagName("dcterms:title")[0]
+    if element.firstChild and element.firstChild.data != "":
+        return element.firstChild.data
+    return ""
