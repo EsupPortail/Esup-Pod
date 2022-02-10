@@ -235,10 +235,10 @@ class studio_podTestView(TestCase):
         response = self.client.get("/studio/presenter_post")
         self.assertEqual(response.status_code, 400)
 
-        response = self.client.post("/studio/presenter_post", {'presenter': 'test'})
+        response = self.client.post("/studio/presenter_post", {"presenter": "test"})
         self.assertEqual(response.status_code, 400)
 
-        response = self.client.post("/studio/presenter_post", {'presenter': 'mid'})
+        response = self.client.post("/studio/presenter_post", {"presenter": "mid"})
         self.assertEqual(response.status_code, 200)
 
         print(" -->  test_studio_presenter_post of studio_podTestView", " : OK !")
@@ -259,7 +259,7 @@ class studio_podTestView(TestCase):
 
         print(" -->  test_studio_info_me_json of studio_podTestView", " : OK !")
 
-    def test_studio_createMediaPackage(self):
+    def test_studio_ingest_createMediaPackage(self):
         self.client = Client()
         response = self.client.get("/studio/ingest/createMediaPackage")
         self.assertRaises(PermissionDenied)
@@ -287,4 +287,57 @@ class studio_podTestView(TestCase):
         mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
         self.assertEqual(mediapackage.getAttribute("id"), idMedia)
 
-        print(" -->  test_studio_createMediaPackage of studio_podTestView", " : OK !")
+        print(
+            " -->  test_studio_ingest_createMediaPackage of studio_podTestView", " : OK !"
+        )
+
+    def test_studio_ingest_addDCCatalog(self):
+        self.client = Client()
+        response = self.client.get("/studio/ingest/addDCCatalog")
+        self.assertRaises(PermissionDenied)
+
+        self.user = User.objects.get(username="pod")
+        self.user.is_staff = True
+        self.user.save()
+
+        self.client.force_login(self.user)
+        response = self.client.get("/studio/ingest/addDCCatalog")
+        self.assertEqual(response.status_code, 400)
+
+        # check if response is xml
+        response_media_package = self.client.get("/studio/ingest/createMediaPackage")
+        mediaPackage_content = minidom.parseString(response_media_package.content)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        idMedia = mediapackage.getAttribute("id")
+        mediaPackage_dir = os.path.join(
+            settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
+        )
+        mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
+        mediaPackage_content = minidom.parse(mediaPackage_file)
+
+        dublinCoreContent = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <dublincore xmlns="http://www.opencastproject.org/xsd/1.0/dublincore/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <dcterms:created xsi:type="dcterms:W3CDTF">
+                    2022-02-10T09:41:15.762Z
+                </dcterms:created>
+                <dcterms:title>test dublin core</dcterms:title>
+                <dcterms:creator>mid</dcterms:creator>
+                <dcterms:extent xsi:type="dcterms:ISO8601">PT5.568S</dcterms:extent>
+                <dcterms:spatial>Pod Studio</dcterms:spatial>
+            </dublincore>
+        """
+
+        response = self.client.post(
+            "/studio/ingest/addDCCatalog",
+            {
+                "mediaPackage": mediaPackage_content.toxml(),
+                "dublinCore": dublinCoreContent,
+                "flavor": "dublincore/episode",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        print(" -->  test_studio_ingest_addDCCatalog of studio_podTestView", " : OK !")
