@@ -13,10 +13,14 @@ from ..models import Recorder, RecordingFileTreatment
 from pod.video.models import Type
 from django.contrib.sites.models import Site
 
+from xml.dom import minidom
+
 from .. import views
 from importlib import reload
 from http import HTTPStatus
 import os
+
+OPENCAST_FILES_DIR = getattr(settings, "OPENCAST_FILES_DIR", "opencast-files")
 
 
 class recorderViewsTestCase(TestCase):
@@ -217,32 +221,48 @@ class studio_podTestView(TestCase):
             "of studio_podTestView: OK!",
         )
 
-    """
-    def test_video_recordTestView_upload_recordvideo(self):
-        reload(views)
-        video = SimpleUploadedFile("file.mp4", b"file_content", content_type="video/mp4")
+    def test_studio_info_me_json(self):
         self.client = Client()
+        response = self.client.get("/studio/info/me.json")
+        self.assertRaises(PermissionDenied)
+
         self.user = User.objects.get(username="pod")
+        self.user.is_staff = True
+        self.user.save()
+
         self.client.force_login(self.user)
-        response = self.client.post(
-            reverse("video_record"),
-            {"video": video, "title": "test upload"},
-            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
+        response = self.client.get("/studio/info/me.json")
+        self.assertTrue(b"ROLE_ADMIN" in response.content)
+        self.assertEqual(response.status_code, 200)
+
+        print(" -->  test_studio_info_me_json of studio_podTestView", " : OK !")
+
+    def test_studio_createMediaPackage(self):
+        self.client = Client()
+        response = self.client.get("/studio/ingest/createMediaPackage")
+        self.assertRaises(PermissionDenied)
+
+        self.user = User.objects.get(username="pod")
+        self.user.is_staff = True
+        self.user.save()
+
+        self.client.force_login(self.user)
+        response = self.client.get("/studio/ingest/createMediaPackage")
+        self.assertEqual(response.status_code, 200)
+
+        # check if response is xml
+        mediaPackage_content = minidom.parseString(response)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        idMedia = mediapackage.getAttribute("id")
+
+        mediaPackage_dir = os.path.join(
+            settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
         )
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context, None)
-        try:
-            data = json.loads(response.content)
-        except (RuntimeError, TypeError, NameError, AttributeError) as err:
-            print("Unexpected error: {0}".format(err))
-            data = json.loads(response.content.decode("utf-8"))
-        self.assertEqual(data["id"], 1)
-        self.assertEqual(data["url_edit"], "/video_edit/0001-test-upload/")
-        self.assertEqual(Video.objects.all().count(), 1)
-        vid = Video.objects.get(id=1)
-        self.assertEqual(vid.title, "test upload")
-        print(
-            " --->  test_video_recordTestView_upload_recordvideo ",
-            "of video_recordTestView: OK!",
-        )
-    """
+        mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
+        self.assertTrue(os.path.exists(mediaPackage_file))
+
+        mediaPackage_content = minidom.parse(mediaPackage_file)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        self.assertEqual(mediapackage.getAttribute("id"), idMedia)
+
+        print(" -->  test_studio_createMediaPackage of studio_podTestView", " : OK !")

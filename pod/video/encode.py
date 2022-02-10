@@ -1247,11 +1247,13 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
         input_video, subtime + static_params + subcmd, video_output
     )
     from pod.recorder.models import Recording
+
     recording = Recording.objects.get(id=recording_id)
     recording.comment += msg
     recording.save()
     if check_file(video_output):
         from pod.recorder.plugins.type_studio import save_basic_video
+
         video = save_basic_video(recording, video_output)
         encode_video(video.id)
 
@@ -1301,14 +1303,16 @@ def get_sub_cmd(height_presentation_video, height_presenter_video, presenter):
             # outputVideo.mp4
             subcmd = (
                 " -filter_complex "
-                + '"[0:v]scale=-2:%(height)s[left];[0:v]scale=-2:%(height)s[right];[left][right]hstack" -vsync 0 '
+                + '"[0:v]scale=-2:%(height)s[left];[0:v]scale=-2:%(height)s[right];'
                 % {"height": height}
+                + '[left][right]hstack" -vsync 0 '
             )
         else:
             subcmd = (
                 " -filter_complex "
-                + '"[0:v]scale=-2:%(height)s[left];[1:v]scale=-2:%(height)s[right];[left][right]hstack" -vsync 0 '
+                + '"[0:v]scale=-2:%(height)s[left];[1:v]scale=-2:%(height)s[right];'
                 % {"height": height}
+                + '[left][right]hstack" -vsync 0 '
             )
 
     return subcmd

@@ -409,7 +409,11 @@ def studio_pod(request):
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def presenter_post(request):
-    if request.POST and request.POST.get("presenter") and request.POST.get("presenter") in ["mid", "piph", "pipb"]:
+    if (
+        request.POST
+        and request.POST.get("presenter")
+        and request.POST.get("presenter") in ["mid", "piph", "pipb"]
+    ):
         request.session["presenter"] = request.POST.get("presenter")
         return JsonResponse({"valid": True}, status=200)
 
@@ -838,133 +842,3 @@ def ingest_ingest(request):
         return HttpResponse(mediaPackage_content.toxml(), content_type="application/xml")
 
     return HttpResponseBadRequest()
-
-
-"""
-def create_pod_xml_file(request, idMedia, start):
-    # Management of the XML file for Pod, directly into media/opencast-files
-
-    # Base directory
-    opencastMediaDir = os.path.join(settings.MEDIA_ROOT, "opencast-files")
-    # Directory that contains all the resources for the actual videos
-    opencastVideoDir = os.path.join(opencastMediaDir, str(idMedia))
-
-    # Default values
-    videoPresenter = ""
-    videoPresentation = ""
-    clipBegin = ""
-    clipEnd = ""
-    title = ""
-
-    # Path the video tree
-    for root, dirs, files in os.walk(opencastVideoDir):
-        title, videoPresenter, videoPresentation, clipBegin, clipEnd = process_directory(
-            title,
-            videoPresenter,
-            videoPresentation,
-            clipBegin,
-            clipEnd,
-            idMedia,
-            files,
-            root,
-        )
-
-    # Content of the XML file
-    xmlText = (
-        "<session>\n"
-        "  <title>" + title + "</title>\n"
-        "  <start>" + start + "</start>\n"
-        "  <username>" + request.user.username + "</username>\n"
-        '  <video type="presenter/source">' + videoPresenter + "</video>\n"
-        '  <video type="presentation/source">' + videoPresentation + "</video>\n"
-        '  <cut clipBegin="' + clipBegin + '" clipEnd="' + clipEnd + '" />\n'
-        "</session>"
-    )
-
-    # Create the idMedia.xml file
-    opencastMediaFile = os.path.join(opencastMediaDir, idMedia + ".xml")
-    with open(opencastMediaFile, "w") as f:
-        f.write(xmlText)
-
-    # Create the recording
-    # Search for the recorder corresponding to the Studio
-    recorder = Recorder.objects.filter(
-        recording_type="studio", sites=get_current_site(None)
-    ).first()
-    if recorder:
-        recording = Recording.objects.create(
-            user=request.user,
-            title=title,
-            type="studio",
-            # Source file corresponds to Pod XML file
-            source_file=opencastMediaFile,
-            recorder=recorder,
-        )
-        recording.save()
-    else:
-        messages.add_message(request, messages.ERROR, _("Recorder for Studio not found."))
-        raise PermissionDenied
-
-
-def process_directory(
-    title, videoPresenter, videoPresentation, clipBegin, clipEnd, idMedia, files, root
-):
-    # Open directory that contains resources for video
-    # Some are useful for video files and cutting.smil.
-    for filename in files:
-        # Extension of the file
-        extension = filename.split(".")[-1]
-        # Management of video files
-        # Browser allowed extensions
-        valid_ext = ("mkv", "mp4", "webm")
-        if extension in valid_ext:
-            # Extract title from video filename
-            # Title is between the first - and the last -
-            posBegin = filename.find("-", 17) + 2
-            posEnd = filename.rfind("-", 0) - 1
-            title = filename[posBegin:posEnd]
-            if filename.find("presenter") > 0:
-                videoPresenter = os.path.join(str(idMedia), filename)
-            if filename.find("presentation") > 0:
-                videoPresentation = os.path.join(str(idMedia), filename)
-        # Management of cutting.smil
-        if filename == "cutting.smil":
-            # Default values
-            clipBegin = ""
-            clipEnd = ""
-            # Read the SMIL file
-            clipBegin, clipEnd = read_cutting_smil(clipBegin, clipEnd, idMedia)
-    # return relevant information
-    return title, videoPresenter, videoPresentation, clipBegin, clipEnd
-
-
-def read_cutting_smil(clipBegin, clipEnd, idMedia):
-    # Default values
-    clipBegin = ""
-    clipEnd = ""
-    # Read a cutting.smil file and return the begin and the end of the cut
-    opencastCuttingSmilDir = os.path.join(
-        settings.MEDIA_ROOT, "opencast-files", str(idMedia)
-    )
-    # Open the cutting.smil file
-    opencastCuttingSmilFile = os.path.join(opencastCuttingSmilDir, "cutting.smil")
-    # Last check
-    if os.path.exists(opencastCuttingSmilFile):
-        # Read the file
-        fileCuttingSmil = open(opencastCuttingSmilFile, "r")
-        textCuttingSmil = fileCuttingSmil.read()
-        # XML result to parse
-        xmldoc = minidom.parseString(textCuttingSmil)
-        # Get only the necessaries infos
-        beginDefault = xmldoc.getElementsByTagName("video")[0].getAttribute("clipBegin")
-        endDefault = xmldoc.getElementsByTagName("video")[0].getAttribute("clipEnd")
-        # Bad format by default, conversion seems necessary
-        if beginDefault:
-            clipBegin = str(round(float(beginDefault.replace("s", "")), 2))
-        if endDefault:
-            # When e appears, seems the end of file
-            if "e" not in endDefault:
-                clipEnd = str(round(float(endDefault.replace("s", "")), 2))
-
-    return clipBegin, clipEnd
-"""

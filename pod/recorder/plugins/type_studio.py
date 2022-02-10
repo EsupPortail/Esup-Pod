@@ -51,8 +51,6 @@ def save_basic_video(recording, video_src):
     )
     # Move source file to destination
     os.makedirs(os.path.dirname(video.video.path), exist_ok=True)
-    print(video_src)
-    print(video.video.path)
     os.rename(video_src, video.video.path)
     video.save()
 
@@ -143,8 +141,11 @@ def encode_recording(recording):
     clip_begin = None
     clip_end = None
     att_presenter = getAttributeByName(xmldoc, "mediapackage", "presenter")
-    presenter = att_presenter if (
-        att_presenter in ["mid", "piph", "pipb"]) else OPENCAST_DEFAULT_PRESENTER
+    presenter = (
+        att_presenter
+        if (att_presenter in ["mid", "piph", "pipb"])
+        else OPENCAST_DEFAULT_PRESENTER
+    )
 
     for catalog in catalogs:
         xmldoc = minidom.parse(catalog.get("src"))
