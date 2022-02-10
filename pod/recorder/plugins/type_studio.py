@@ -18,6 +18,8 @@ DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
 ENCODE_STUDIO = getattr(settings, "ENCODE_STUDIO", "start_encode_studio")
 MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
+# Possible value are "mid" or "pip"
+OPENCAST_DEFAULT_PRESENTER = getattr(settings, "OPENCAST_DEFAULT_PRESENTER", "mid")
 
 log = logging.getLogger(__name__)
 
@@ -134,21 +136,21 @@ def encode_recording(recording):
     except KeyError as e:
         add_comment(recording.id, "Error : %s" % e)
         return -1
-    print(xmldoc.toprettyxml())
 
     videos = getElementsByName(xmldoc, "track")
     catalogs = getElementsByName(xmldoc, "catalog")
     title = ""
-    presenter = "50/50"
     clip_begin = None
     clip_end = None
+    att_presenter = getAttributeByName(xmldoc, "mediapackage", "presenter")
+    presenter = att_presenter if (
+        att_presenter in ["mid", "pip"]) else OPENCAST_DEFAULT_PRESENTER
 
     for catalog in catalogs:
         xmldoc = minidom.parse(catalog.get("src"))
         if catalog.get("type") == "dublincore/episode":
             title = getElementValueByName(xmldoc, "dcterms:title")
-            creator = getElementValueByName(xmldoc, "dcterms:creator")
-            presenter = creator if creator in ["50/50", "pip"] else "50/50"
+            change_title(recording, title)
         if catalog.get("type") == "smil/cutting":
             beginDefault = getAttributeByName(xmldoc, "video", "clipBegin")
             endDefault = getAttributeByName(xmldoc, "video", "clipEnd")
@@ -162,9 +164,6 @@ def encode_recording(recording):
                 if (endDefault)
                 else None
             )
-
-    recording.title = title
-    recording.save()
 
     if clip_begin or clip_end or len(videos) > 1:
         msg = "*** generate_intermediate_video (%s) %s ***" % (
@@ -188,10 +187,18 @@ def encode_recording(recording):
         encode_video(video.id)
 
 
+def change_title(recording, title):
+    if title != "":
+        recording.title = title
+        recording.save()
+
+
 def getAttributeByName(xmldoc, tagName, attribute):
-    attr = xmldoc.getElementsByTagName(tagName)[0].getAttribute(attribute)
-    if attr and "e" not in attr:
-        return attr
+    elements = xmldoc.getElementsByTagName(tagName)
+    if elements and len(elements) > 0:
+        attr = elements[0].getAttribute(attribute)
+        if attr and "e" not in attr:
+            return attr
     return None
 
 
@@ -215,7 +222,7 @@ def getElementsByName(xmldoc, name):
 
 
 def getElementValueByName(xmldoc, name):
-    element = xmldoc.getElementsByTagName("dcterms:title")[0]
+    element = xmldoc.getElementsByTagName(name)[0]
     if element.firstChild and element.firstChild.data != "":
         return element.firstChild.data
     return ""

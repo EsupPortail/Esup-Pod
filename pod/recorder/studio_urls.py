@@ -3,6 +3,7 @@ from .views import studio_pod, studio_static, settings_toml, info_me_json
 from .views import ingest_createMediaPackage, ingest_addDCCatalog
 from .views import ingest_addAttachment, ingest_addTrack
 from .views import ingest_addCatalog, ingest_ingest
+from .views import presenter_post
 
 app_name = "recorder"
 urlpatterns = [
@@ -10,6 +11,11 @@ urlpatterns = [
         r"^$",
         studio_pod,
         name="studio_pod",
+    ),
+    url(
+        r"^presenter_post$",
+        presenter_post,
+        name="presenter_post",
     ),
     url(
         r"^settings.toml$",

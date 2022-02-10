@@ -24,7 +24,7 @@ from pod.recorder.models import Recorder, Recording, RecordingFileTreatment
 from .forms import RecordingForm, RecordingFileTreatmentDeleteForm
 from django.contrib import messages
 import hashlib
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
@@ -82,6 +82,8 @@ OPENCAST_MEDIAPACKAGE = getattr(
     </mediapackage>
     """,
 )
+# Possible value are "mid" or "pip"
+OPENCAST_DEFAULT_PRESENTER = getattr(settings, "OPENCAST_DEFAULT_PRESENTER", "mid")
 
 MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
 
@@ -400,8 +402,18 @@ def studio_pod(request):
         # Render the Opencast studio index file
         request,
         "recorder/opencast-studio.html",
-        {"body": body},
+        {"body": body, "default_presenter": OPENCAST_DEFAULT_PRESENTER},
     )
+
+
+@csrf_exempt
+@login_required(redirect_field_name="referrer")
+def presenter_post(request):
+    if request.POST:
+        request.session["presenter"] = request.POST.get("presenter")
+        return JsonResponse({"valid": True}, status=200)
+
+    return HttpResponseBadRequest()
 
 
 @login_required(redirect_field_name="referrer")
@@ -440,7 +452,7 @@ def settings_toml(request):
     [opencast]
     serverUrl = "%(serverUrl)s"
     [upload]
-    presenterField = 'optional'
+    presenterField = 'hidden'
     [return]
     target = "%(target)s"
     label = "%(label)s"
@@ -477,6 +489,12 @@ def ingest_createMediaPackage(request):
     mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
     mediapackage.setAttribute("id", "%s" % idMedia)
     mediapackage.setAttribute("start", start)
+
+    presenter = OPENCAST_DEFAULT_PRESENTER
+    if request.session.get("presenter"):
+        presenter = request.session["presenter"]
+        del request.session["presenter"]
+    mediapackage.setAttribute("presenter", presenter)
 
     with open(mediaPackage_file, "w") as f:
         f.write(mediaPackage_content.toxml())

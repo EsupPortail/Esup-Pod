@@ -1202,16 +1202,19 @@ def remove_previous_encoding_playlist(video_to_encode):
 def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
     presenter_source = None
     presentation_source = None
+    input_video = ""
     for video in videos:
         if video.get("type") == "presenter/source":
             presenter_source = os.path.join(
                 settings.MEDIA_ROOT, "opencast-files", video.get("src")
             )
+            input_video = '-i "' + presenter_source + '" '
         if video.get("type") == "presentation/source":
             presentation_source = os.path.join(
                 settings.MEDIA_ROOT, "opencast-files", video.get("src")
             )
-    input_video = ""
+            input_video = '-i "' + presentation_source + '" '
+
     info_presenter_video = {}
     info_presentation_video = {}
     if presenter_source and presentation_source:
@@ -1235,10 +1238,6 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
 
     else:
         subcmd = " -vsync 0 "
-        if presenter_source:
-            input_video = '-i "' + presenter_source + '" '
-        if presentation_source:
-            input_video = '-i "' + presentation_source + '" '
 
     static_params = FFMPEG_STATIC_PARAMS % {
         "nb_threads": FFMPEG_NB_THREADS,
@@ -1247,15 +1246,14 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
     msg = launch_encode_video_studio(
         input_video, subtime + static_params + subcmd, video_output
     )
-
-    from pod.recorder.plugins.type_studio import save_basic_video
     from pod.recorder.models import Recording
-
     recording = Recording.objects.get(id=recording_id)
     recording.comment += msg
     recording.save()
-    video = save_basic_video(recording, video_output)
-    encode_video(video.id)
+    if check_file(video_output):
+        from pod.recorder.plugins.type_studio import save_basic_video
+        video = save_basic_video(recording, video_output)
+        encode_video(video.id)
 
 
 def get_sub_cmd(height_presentation_video, height_presenter_video, presenter):
@@ -1279,22 +1277,23 @@ def get_sub_cmd(height_presentation_video, height_presenter_video, presenter):
             % {"height": height, "sh": height / 4}
             + '[pres][pip]overlay=W-w-10:H-h-10:shortest=1" -vsync 0 '
         )
-    else:
-        print("50/50")
+    if presenter == "mid":
+        print("MID")
+        height = min_height if (min_height % 2) == 0 else min_height + 1
         if height_presentation_video > height_presenter_video:
             # ffmpeg -i presentation.webm -i presenter.webm \
             # -c:v libx264 -filter_complex "[0:v]scale=-2:720[left];[left][1:v]hstack" \
             # outputVideo.mp4
             subcmd = (
                 " -filter_complex "
-                + '"[0:v]scale=-2:%(min_height)s[left];[left][1:v]hstack" -vsync 0 '
-                % {"min_height": min_height}
+                + '"[0:v]scale=-2:%(height)s[left];[left][1:v]hstack" -vsync 0 '
+                % {"height": height}
             )
         else:
             subcmd = (
                 " -filter_complex "
-                + '"[1:v]scale=-2:%(min_height)s[right];[0:v][right]hstack" -vsync 0 '
-                % {"min_height": min_height}
+                + '"[1:v]scale=-2:%(height)s[right];[0:v][right]hstack" -vsync 0 '
+                % {"height": height}
             )
 
     return subcmd
