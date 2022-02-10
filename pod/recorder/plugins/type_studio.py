@@ -144,7 +144,7 @@ def encode_recording(recording):
     clip_end = None
     att_presenter = getAttributeByName(xmldoc, "mediapackage", "presenter")
     presenter = att_presenter if (
-        att_presenter in ["mid", "pip"]) else OPENCAST_DEFAULT_PRESENTER
+        att_presenter in ["mid", "piph", "pipb"]) else OPENCAST_DEFAULT_PRESENTER
 
     for catalog in catalogs:
         xmldoc = minidom.parse(catalog.get("src"))

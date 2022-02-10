@@ -34,13 +34,15 @@
 {% block more_script %}
 <script>
   //Create array of options to be added
-  {% if default_presenter and default_presenter == "pip" %}
-  const list_value = [["pip", "Pip - {% trans "Camera inside the screen video" %}"], ["mid", "50/50 - {% trans "Same size for screen and camera" %}"]];
+  {% if default_presenter and default_presenter == "pipb" %}
+  const list_value = [["pipb", "Pip - {% trans "Camera inside the screen video to bottom right" %}"], ["piph", "Pip - {% trans "Camera inside the screen video to top right" %}"], ["mid", "50/50 - {% trans "Same size for screen and camera" %}"]];
+  {% elif  default_presenter and default_presenter == "piph" %}
+  const list_value = [["piph", "Pip - {% trans "Camera inside the screen video to top right" %}"], ["pipb", "Pip - {% trans "Camera inside the screen video to bottom right" %}"], ["mid", "50/50 - {% trans "Same size for screen and camera" %}"]];
   {% else %}
-  const list_value = [["mid", "50/50 - {% trans "Same size for screen and camera" %}"], ["pip", "Pip - {% trans "Camera inside the screen video" %}"]];
+  const list_value = [["mid", "50/50 - {% trans "Same size for screen and camera" %}"], ["piph", "Pip - {% trans "Camera inside the screen video to top right" %}"], ["pipb", "Pip - {% trans "Camera inside the screen video to bottom right" %}"]];
   {% endif %}
   // put local storage default value
-  localStorage.setItem('ocStudioLastPresenter', "mid");
+  localStorage.setItem('ocStudioLastPresenter', "{{default_presenter}}");
   //Create and append select list
   let selectList = document.createElement("select");
   selectList.id = "input_presenter";
@@ -55,7 +57,7 @@
       selectList.appendChild(option);
   }
   let label = document.createElement("label");
-  label.innerHTML = "{% trans "Please select render you want" %} :";
+  label.innerHTML = "{% trans "Please select render you want" %}";
   label.setAttribute("for", "input_presenter");
 
   let divselect = document.createElement("div");

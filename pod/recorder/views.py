@@ -82,7 +82,7 @@ OPENCAST_MEDIAPACKAGE = getattr(
     </mediapackage>
     """,
 )
-# Possible value are "mid" or "pip"
+# Possible value are "mid" or "piph" or "pipb"
 OPENCAST_DEFAULT_PRESENTER = getattr(settings, "OPENCAST_DEFAULT_PRESENTER", "mid")
 
 MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
@@ -409,7 +409,7 @@ def studio_pod(request):
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def presenter_post(request):
-    if request.POST:
+    if request.POST and request.POST.get("presenter") and request.POST.get("presenter") in ["mid", "piph", "pipb"]:
         request.session["presenter"] = request.POST.get("presenter")
         return JsonResponse({"valid": True}, status=200)
 
