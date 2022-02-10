@@ -221,6 +221,28 @@ class studio_podTestView(TestCase):
             "of studio_podTestView: OK!",
         )
 
+    def test_studio_presenter_post(self):
+        self.client = Client()
+        response = self.client.get("/studio/presenter_post")
+        self.assertRaises(PermissionDenied)
+
+        self.user = User.objects.get(username="pod")
+        self.user.is_staff = True
+        self.user.save()
+
+        self.client.force_login(self.user)
+        # test get method
+        response = self.client.get("/studio/presenter_post")
+        self.assertEqual(response.status_code, 400)
+
+        response = self.client.post("/studio/presenter_post", {'presenter': 'test'})
+        self.assertEqual(response.status_code, 400)
+
+        response = self.client.post("/studio/presenter_post", {'presenter': 'mid'})
+        self.assertEqual(response.status_code, 200)
+
+        print(" -->  test_studio_presenter_post of studio_podTestView", " : OK !")
+
     def test_studio_info_me_json(self):
         self.client = Client()
         response = self.client.get("/studio/info/me.json")
@@ -251,7 +273,7 @@ class studio_podTestView(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # check if response is xml
-        mediaPackage_content = minidom.parseString(response)
+        mediaPackage_content = minidom.parseString(response.content)
         mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
         idMedia = mediapackage.getAttribute("id")
 
