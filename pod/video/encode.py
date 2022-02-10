@@ -1261,7 +1261,26 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
 def get_sub_cmd(height_presentation_video, height_presenter_video, presenter):
     min_height = min([height_presentation_video, height_presenter_video])
     subcmd = ""
-    if presenter == "50/50":
+    if presenter == "pip":
+        print("PIP")
+        # trouver la bonne hauteur en fonction de la video de presentation
+        height = (
+            height_presentation_video
+            if (height_presentation_video % 2) == 0
+            else height_presentation_video + 1
+        )
+        # ffmpeg -y -i presentation_source.webm -i presenter_source.webm \
+        # -c:v libx264 -filter_complex "[0:v]scale=-2:720[pres];[1:v]scale=-2:180[pip];\
+        # [pres][pip]overlay=W-w-10:H-h-10:shortest=1" \
+        # -vsync 0 outputVideo.mp4
+        subcmd = (
+            " -filter_complex "
+            + '"[0:v]scale=-2:%(height)s[pres];[1:v]scale=-2:%(sh)s[pip];'
+            % {"height": height, "sh": height / 4}
+            + '[pres][pip]overlay=W-w-10:H-h-10:shortest=1" -vsync 0 '
+        )
+    else:
+        print("50/50")
         if height_presentation_video > height_presenter_video:
             # ffmpeg -i presentation.webm -i presenter.webm \
             # -c:v libx264 -filter_complex "[0:v]scale=-2:720[left];[left][1:v]hstack" \
