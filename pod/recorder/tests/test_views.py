@@ -8,6 +8,7 @@ from django.test import TestCase
 from django.test import Client, override_settings
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from ..models import Recorder, RecordingFileTreatment
 from pod.video.models import Type
@@ -308,12 +309,7 @@ class studio_podTestView(TestCase):
         response_media_package = self.client.get("/studio/ingest/createMediaPackage")
         mediaPackage_content = minidom.parseString(response_media_package.content)
         mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
-        idMedia = mediapackage.getAttribute("id")
-        mediaPackage_dir = os.path.join(
-            settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
-        )
-        mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
-        mediaPackage_content = minidom.parse(mediaPackage_file)
+        idMedia_sent = mediapackage.getAttribute("id")
 
         dublinCoreContent = """
             <?xml version="1.0" encoding="UTF-8"?>
@@ -338,6 +334,90 @@ class studio_podTestView(TestCase):
                 "flavor": "dublincore/episode",
             },
         )
+        # check response code 200
         self.assertEqual(response.status_code, 200)
+        # get media package return by request
+        mediaPackage_content = minidom.parseString(response.content)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        idMedia = mediapackage.getAttribute("id")
+        self.assertEqual(idMedia, idMedia_sent)
+
+        mediaPackage_dir = os.path.join(
+            settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
+        )
+        mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
+        # chek if mediapackage file exist
+        self.assertTrue(os.path.exists(mediaPackage_file))
+        # check if dublin core file exist
+        dublinCore_file = os.path.join(mediaPackage_dir, "dublincore.xml")
+        self.assertTrue(os.path.exists(dublinCore_file))
+        # check if media package content is good content with id media
+        mediaPackage_content = minidom.parse(mediaPackage_file)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        self.assertEqual(mediapackage.getAttribute("id"), idMedia)
+
+        # check if mediaPackage_content has catalog with good type
+        catalog = mediaPackage_content.getElementsByTagName("catalog")[0]
+        self.assertTrue(catalog)
+        self.assertEqual(catalog.getAttribute("type"), "dublincore/episode")
 
         print(" -->  test_studio_ingest_addDCCatalog of studio_podTestView", " : OK !")
+
+    def test_studio_ingest_addAttachment(self):
+        self.client = Client()
+        response = self.client.get("/studio/ingest/addAttachment")
+        self.assertRaises(PermissionDenied)
+
+        self.user = User.objects.get(username="pod")
+        self.user.is_staff = True
+        self.user.save()
+
+        self.client.force_login(self.user)
+        response = self.client.get("/studio/ingest/addAttachment")
+        self.assertEqual(response.status_code, 400)
+
+        response_media_package = self.client.get("/studio/ingest/createMediaPackage")
+        mediaPackage_content = minidom.parseString(response_media_package.content)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        idMedia_sent = mediapackage.getAttribute("id")
+
+        acl = SimpleUploadedFile(
+            name="acl.xml",
+            content="",  # not use in Pod
+            content_type="application/xml",
+        )
+
+        response = self.client.post(
+            "/studio/ingest/addAttachment",
+            {
+                "mediaPackage": mediaPackage_content.toxml(),
+                "BODY": acl,
+                "flavor": "security/xacml+episode",
+            },
+        )
+        # check response code 200
+        self.assertEqual(response.status_code, 200)
+        # get media package return by request
+        mediaPackage_content = minidom.parseString(response.content)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        idMedia = mediapackage.getAttribute("id")
+        self.assertEqual(idMedia, idMedia_sent)
+
+        mediaPackage_dir = os.path.join(
+            settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
+        )
+        mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
+        # chek if mediapackage file exist
+        self.assertTrue(os.path.exists(mediaPackage_file))
+
+        # check if media package content is good content with id media
+        mediaPackage_content = minidom.parse(mediaPackage_file)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        self.assertEqual(mediapackage.getAttribute("id"), idMedia)
+
+        # check if mediaPackage_content has catalog with good type
+        attachment = mediaPackage_content.getElementsByTagName("attachment")[0]
+        self.assertTrue(attachment)
+        self.assertEqual(attachment.getAttribute("type"), "security/xacml+episode")
+
+        print(" -->  test_studio_ingest_addAttachment of studio_podTestView", " : OK !")
