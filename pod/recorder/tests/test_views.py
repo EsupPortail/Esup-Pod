@@ -415,9 +415,79 @@ class studio_podTestView(TestCase):
         mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
         self.assertEqual(mediapackage.getAttribute("id"), idMedia)
 
-        # check if mediaPackage_content has catalog with good type
+        # check if mediaPackage_content has attachment with good type
         attachment = mediaPackage_content.getElementsByTagName("attachment")[0]
         self.assertTrue(attachment)
         self.assertEqual(attachment.getAttribute("type"), "security/xacml+episode")
 
         print(" -->  test_studio_ingest_addAttachment of studio_podTestView", " : OK !")
+
+    def test_studio_ingest_addTrack(self):
+        self.client = Client()
+        response = self.client.get("/studio/ingest/addTrack")
+        self.assertRaises(PermissionDenied)
+
+        self.user = User.objects.get(username="pod")
+        self.user.is_staff = True
+        self.user.save()
+
+        self.client.force_login(self.user)
+        response = self.client.get("/studio/ingest/addTrack")
+        self.assertEqual(response.status_code, 400)
+
+        response_media_package = self.client.get("/studio/ingest/createMediaPackage")
+        mediaPackage_content = minidom.parseString(response_media_package.content)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        idMedia_sent = mediapackage.getAttribute("id")
+
+        video = SimpleUploadedFile(
+            name="file.webm",
+            content=b'empty file',
+            content_type="video/webm",
+        )
+
+        response = self.client.post(
+            "/studio/ingest/addTrack",
+            {
+                "mediaPackage": mediaPackage_content.toxml(),
+                "BODY": video,
+                "flavor": "presenter/source",
+                "tags": None,
+            },
+        )
+
+        # check response code 200
+        self.assertEqual(response.status_code, 200)
+        # get media package return by request
+        mediaPackage_content = minidom.parseString(response.content)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        idMedia = mediapackage.getAttribute("id")
+        self.assertEqual(idMedia, idMedia_sent)
+
+        mediaPackage_dir = os.path.join(
+            settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
+        )
+        mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
+        # chek if mediapackage file exist
+        self.assertTrue(os.path.exists(mediaPackage_file))
+
+        # check if media package content is good content with id media
+        mediaPackage_content = minidom.parse(mediaPackage_file)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        self.assertEqual(mediapackage.getAttribute("id"), idMedia)
+
+        track = mediaPackage_content.getElementsByTagName("track")[0]
+        self.assertTrue(track)
+        self.assertEqual(track.getAttribute("type"), "presenter/source")
+
+        opencast_filename, ext = os.path.splitext(video.name)
+        self.assertEqual(track.getAttribute("filename"), opencast_filename)
+        dest_filename = "%s%s" % (
+            str("presenter/source").replace("/", "_").replace(" ", ""),
+            ext,
+        )
+        video_file = os.path.join(mediaPackage_dir, dest_filename)
+        # chek if mediapackage file exist
+        self.assertTrue(os.path.exists(video_file))
+
+        print(" -->  test_studio_ingest_addTrack of studio_podTestView", " : OK !")
