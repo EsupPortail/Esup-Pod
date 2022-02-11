@@ -505,4 +505,53 @@ class studio_podTestView(TestCase):
         response = self.client.get("/studio/ingest/addCatalog")
         self.assertEqual(response.status_code, 400)
 
+        response_media_package = self.client.get("/studio/ingest/createMediaPackage")
+        mediaPackage_content = minidom.parseString(response_media_package.content)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        idMedia_sent = mediapackage.getAttribute("id")
+
+        cutting = SimpleUploadedFile(
+            name="cutting.smil",
+            content=b'<smil xmlns="http://www.w3.org/ns/SMIL"><body>'
+            + b'<par><video clipBegin="0.8s" clipEnd="4.327764s" /></par></body></smil>',
+            content_type="text/xml",
+        )
+
+        response = self.client.post(
+            "/studio/ingest/addCatalog",
+            {
+                "mediaPackage": mediaPackage_content.toxml(),
+                "BODY": cutting,
+                "flavor": "smil/cutting",
+            },
+        )
+        # check response code 200
+        self.assertEqual(response.status_code, 200)
+        # get media package return by request
+        mediaPackage_content = minidom.parseString(response.content)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        idMedia = mediapackage.getAttribute("id")
+        self.assertEqual(idMedia, idMedia_sent)
+
+        mediaPackage_dir = os.path.join(
+            settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
+        )
+        mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
+        # chek if mediapackage file exist
+        self.assertTrue(os.path.exists(mediaPackage_file))
+
+        # check if media package content is good content with id media
+        mediaPackage_content = minidom.parse(mediaPackage_file)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        self.assertEqual(mediapackage.getAttribute("id"), idMedia)
+
+        # check if mediaPackage_content has catalog with good type
+        catalog = mediaPackage_content.getElementsByTagName("catalog")[0]
+        self.assertTrue(catalog)
+        self.assertEqual(catalog.getAttribute("type"), "smil/cutting")
+
+        # check if dublin core file exist
+        cutting_file = os.path.join(mediaPackage_dir, cutting.name)
+        self.assertTrue(os.path.exists(cutting_file))
+
         print(" -->  test_studio_ingest_addCatalog of studio_podTestView", " : OK !")
