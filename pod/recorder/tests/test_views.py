@@ -491,3 +491,20 @@ class studio_podTestView(TestCase):
         self.assertTrue(os.path.exists(video_file))
 
         print(" -->  test_studio_ingest_addTrack of studio_podTestView", " : OK !")
+
+
+    def  test_studio_ingest_addCatalog(self):
+        self.client = Client()
+        response = self.client.get("/studio/ingest/addCatalog")
+        self.assertRaises(PermissionDenied)
+
+        self.user = User.objects.get(username="pod")
+        self.user.is_staff = True
+        self.user.save()
+
+        self.client.force_login(self.user)
+        response = self.client.get("/studio/ingest/addCatalog")
+        self.assertEqual(response.status_code, 400)
+
+        print(" -->  test_studio_ingest_addCatalog of studio_podTestView", " : OK !")
+
