@@ -442,7 +442,7 @@ class studio_podTestView(TestCase):
 
         video = SimpleUploadedFile(
             name="file.webm",
-            content=b'empty file',
+            content=b"empty file",
             content_type="video/webm",
         )
 
@@ -492,8 +492,7 @@ class studio_podTestView(TestCase):
 
         print(" -->  test_studio_ingest_addTrack of studio_podTestView", " : OK !")
 
-
-    def  test_studio_ingest_addCatalog(self):
+    def test_studio_ingest_addCatalog(self):
         self.client = Client()
         response = self.client.get("/studio/ingest/addCatalog")
         self.assertRaises(PermissionDenied)
@@ -507,4 +506,3 @@ class studio_podTestView(TestCase):
         self.assertEqual(response.status_code, 400)
 
         print(" -->  test_studio_ingest_addCatalog of studio_podTestView", " : OK !")
-
