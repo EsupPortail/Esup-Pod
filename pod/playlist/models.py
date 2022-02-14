@@ -13,7 +13,7 @@ class Playlist(models.Model):
         _("Slug"),
         unique=True,
         max_length=100,
-        help_text=_('Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore  or dash top.'))
+        help_text=_('Used to access this instance, the "slug" is a short label containing only letters, numbers, underscore or dash top.'))
     owner = models.ForeignKey(User, verbose_name=_('Owner'),
                               on_delete=models.CASCADE)
     description = models.TextField(

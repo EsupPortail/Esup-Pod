@@ -680,12 +680,13 @@ footer a:hover {
  **/
 body[data-admin-utc-offset] {
   padding-top: 0;
-}
-
-body[data-admin-utc-offset] {
   --primary:  #79aec8;
   --breadcrumbs-bg: var(--primary);
   --button-bg: var(--primary);
+}
+
+body[data-admin-utc-offset] textarea.cke_source{
+  background-color: var(--bg-color);
 }
 body[data-admin-utc-offset] caption{
   caption-side: top;
@@ -709,6 +710,29 @@ body[data-admin-utc-offset] .btn-outline-primary:focus{
 body[data-admin-utc-offset] .form-row.errors{
   display: block;
 }
+
+/* css corrections for select2 autocompletion Multiple in dark theme.
+ * (see "additional owners", or "disciplines" for sample.)
+ */
+body[data-admin-utc-offset] .select2-selection--multiple{
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
+}
+body[data-admin-utc-offset] .select2-dropdown{
+  background-color: var(--bg-color);
+}
+body[data-admin-utc-offset] .select2-container--open .select2-selection--multiple{
+  border-color: var(--body-quiet-color);
+}
+body[data-admin-utc-offset] .select2-search--inline .select2-search__field{
+  color: var(--font-color);
+}
+body[data-admin-utc-offset] .select2-selection--multiple .select2-selection__choice,
+body[data-admin-utc-offset] .select2-selection--multiple .select2-results__option[aria-selected="true"]{
+  color: #333;
+}
+/* end select2 multiple corrections */
+
 /* System/browser dark mode */
 @media (prefers-color-scheme: dark) {
   body[data-admin-utc-offset] {
@@ -718,3 +742,4 @@ body[data-admin-utc-offset] .form-row.errors{
     --bg-color:  #121212;
   }
 }
+

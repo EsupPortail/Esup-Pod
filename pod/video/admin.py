@@ -123,7 +123,7 @@ class VideoAdmin(admin.ModelAdmin):
     list_filter = ('date_added', ('channel', admin.RelatedOnlyFieldListFilter),
                    ('type', admin.RelatedOnlyFieldListFilter), 'is_draft',
                    'encoding_in_progress', EncodedFilter, 'owner')
-    autocomplete_fields = ['type', 'owner', 'additional_owners', 'discipline',
+    autocomplete_fields = ['owner', 'additional_owners', 'discipline',
                            'channel', 'theme', 'restrict_access_to_groups']
     # Ajout de l'attribut 'date_delete'
     if USE_OBSOLESCENCE:
