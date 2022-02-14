@@ -89,17 +89,23 @@ def start_store_remote_encoding_video(video_id):
 
 def remote_encode_studio(recording_id, video_output, videos, subtime, presenter):
     print("remote encode studio")
-    from pod.recorder.models import Recording
-
-    recording = Recording.objects.get(id=recording_id)
+    presenter_source = ""
+    presentation_source = ""
+    for video in videos:
+        if video.get("type") == "presenter/source":
+            presenter_source = video.get("src")
+        if video.get("type") == "presentation/source":
+            presentation_source = video.get("src")
     # launch remote encoding
     cmd = '{remote_cmd} \
-        -n recording-{recording_id} -i "{videos}" \
-        -r {recording_id} -s "{subtime}" -p "{presenter}" \
-        -o "{output}" -d {debug}'.format(
+        -n recording-{recording_id} -v \\"{presenter_source}\\" \
+        -f \\"{presentation_source}\\" \
+        -r {recording_id} -s \\"{subtime}\\" -p \\"{presenter}\\" \
+        -o \\"{output}\\" -d {debug}'.format(
         remote_cmd=SSH_REMOTE_STUDIO_CMD,
         recording_id=recording_id,
-        videos=videos,
+        presenter_source=presenter_source,
+        presentation_source=presentation_source,
         subtime=subtime,
         presenter=presenter,
         output=video_output,
@@ -118,7 +124,10 @@ def remote_encode_studio(recording_id, video_output, videos, subtime, presenter)
     )
 
     # launch remote encode
-    recording.comment += "process remote encode : %s" % remote_cmd
+    print("process remote encode :\n %s" % remote_cmd)
+    from pod.recorder.models import Recording
+    recording = Recording.objects.get(id=recording_id)
+    recording.comment += "process remote encode :\n %s" % remote_cmd
     msg = process_cmd_studio(remote_cmd, recording_id)
     recording.comment += msg
     recording.save()

@@ -1222,16 +1222,11 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
     input_video = ""
     for video in videos:
         if video.get("type") == "presenter/source":
-            presenter_source = os.path.join(
-                settings.MEDIA_ROOT, OPENCAST_FILES_DIR, video.get("src")
-            )
+            presenter_source = video.get("src")
             input_video = '-i "' + presenter_source + '" '
         if video.get("type") == "presentation/source":
-            presentation_source = os.path.join(
-                settings.MEDIA_ROOT, OPENCAST_FILES_DIR, video.get("src")
-            )
+            presentation_source = video.get("src")
             input_video = '-i "' + presentation_source + '" '
-
     info_presenter_video = {}
     info_presentation_video = {}
     if presenter_source and presentation_source:
