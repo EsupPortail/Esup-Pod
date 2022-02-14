@@ -9,6 +9,7 @@ from django.test import Client, override_settings
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.core.files.uploadedfile import SimpleUploadedFile
+
 # from django.contrib.sites.shortcuts import get_current_site
 
 from ..models import Recorder, Recording, RecordingFileTreatment

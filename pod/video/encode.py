@@ -14,6 +14,7 @@ from .models import Video
 
 from .utils import change_encoding_step, add_encoding_log, check_file
 from .utils import create_outputdir, send_email, send_email_encoding
+from .utils import send_email_recording
 from .utils import get_duration_from_mp4
 from .utils import fix_video_duration
 
@@ -156,6 +157,8 @@ CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 
 MANAGERS = getattr(settings, "MANAGERS", {})
 
+OPENCAST_FILES_DIR = getattr(settings, "OPENCAST_FILES_DIR", "opencast-files")
+
 # ##########################################################################
 # ENCODE VIDEO: THREAD TO LAUNCH ENCODE
 # ##########################################################################
@@ -197,6 +200,20 @@ def start_encode_studio(recording_id, video_output, videos, subtime, presenter):
         )
         t.setDaemon(True)
         t.start()
+
+
+def start_studio_remote_encode(recording_id, video_output, videos, subtime, presenter):
+    """Start Remote encoding."""
+    # load module here to prevent circular import
+    from .remote_encode import remote_encode_studio
+
+    log.info("START ENCODE RECORDING ID %s" % recording_id)
+    t = threading.Thread(
+        target=remote_encode_studio,
+        args=[recording_id, video_output, videos, subtime, presenter],
+    )
+    t.setDaemon(True)
+    t.start()
 
 
 # ##########################################################################
@@ -1206,12 +1223,12 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
     for video in videos:
         if video.get("type") == "presenter/source":
             presenter_source = os.path.join(
-                settings.MEDIA_ROOT, "opencast-files", video.get("src")
+                settings.MEDIA_ROOT, OPENCAST_FILES_DIR, video.get("src")
             )
             input_video = '-i "' + presenter_source + '" '
         if video.get("type") == "presentation/source":
             presentation_source = os.path.join(
-                settings.MEDIA_ROOT, "opencast-files", video.get("src")
+                settings.MEDIA_ROOT, OPENCAST_FILES_DIR, video.get("src")
             )
             input_video = '-i "' + presentation_source + '" '
 
@@ -1256,6 +1273,9 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
 
         video = save_basic_video(recording, video_output)
         encode_video(video.id)
+    else:
+        msg = "Wrong file or path:" + "\n%s" % video_output
+        send_email_recording(msg, recording_id)
 
 
 def get_sub_cmd(height_presentation_video, height_presenter_video, presenter):

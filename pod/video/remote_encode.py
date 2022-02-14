@@ -23,6 +23,7 @@ from .encode import create_overview_image, create_and_save_thumbnails
 from .utils import change_encoding_step, add_encoding_log, check_file
 from .utils import create_outputdir, send_email, send_email_encoding
 from .utils import fix_video_duration, get_duration_from_mp4
+from .utils import send_email_recording
 
 if getattr(settings, "USE_PODFILE", False):
     FILEPICKER = True
@@ -63,6 +64,12 @@ ENCODING_CHOICES = getattr(
     ),
 )
 
+SSH_REMOTE_STUDIO_USER = getattr(settings, "SSH_REMOTE_STUDIO_USER", "")
+SSH_REMOTE_STUDIO_HOST = getattr(settings, "SSH_REMOTE_STUDIO_HOST", "")
+SSH_REMOTE_STUDIO_KEY = getattr(settings, "SSH_REMOTE_STUDIO_KEY", "")
+SSH_REMOTE_STUDIO_CMD = getattr(settings, "SSH_REMOTE_STUDIO_CMD", "")
+SSH_REMOTE_STUDIO_PORT = getattr(settings, "SSH_REMOTE_STUDIO_PORT", "")
+
 # ##########################################################################
 # REMOTE ENCODE VIDEO : THREAD TO LAUNCH ENCODE
 # ##########################################################################
@@ -73,6 +80,92 @@ def start_store_remote_encoding_video(video_id):
     t = threading.Thread(target=store_remote_encoding_video, args=[video_id])
     t.setDaemon(True)
     t.start()
+
+
+# ##########################################################################
+# REMOTE ENCODE STUDIO : MAIN FUNCTION
+# ##########################################################################
+
+
+def remote_encode_studio(recording_id, video_output, videos, subtime, presenter):
+    print("remote encode studio")
+    from pod.recorder.models import Recording
+
+    recording = Recording.objects.get(id=recording_id)
+    # launch remote encoding
+    cmd = '{remote_cmd} \
+        -n recording-{recording_id} -i "{videos}" \
+        -r {recording_id} -s "{subtime}" -p "{presenter}" \
+        -o "{output}" -d {debug}'.format(
+        remote_cmd=SSH_REMOTE_STUDIO_CMD,
+        recording_id=recording_id,
+        videos=videos,
+        subtime=subtime,
+        presenter=presenter,
+        output=video_output,
+        debug=DEBUG,
+    )
+
+    key = " -i %s " % SSH_REMOTE_STUDIO_KEY if SSH_REMOTE_STUDIO_KEY != "" else ""
+    port = " -p %s " % SSH_REMOTE_STUDIO_PORT if SSH_REMOTE_STUDIO_PORT != "" else ""
+
+    remote_cmd = 'ssh {key} {port} {user}@{host} "{cmd}"'.format(
+        key=key,
+        user=SSH_REMOTE_STUDIO_USER,
+        host=SSH_REMOTE_STUDIO_HOST,
+        port=port,
+        cmd=cmd,
+    )
+
+    # launch remote encode
+    recording.comment += "process remote encode : %s" % remote_cmd
+    msg = process_cmd_studio(remote_cmd, recording_id)
+    recording.comment += msg
+    recording.save()
+
+
+def process_cmd_studio(remote_cmd, recording_id):
+    msg = ""
+    try:
+        output = subprocess.run(
+            shlex.split(remote_cmd),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+        )
+        msg += "slurm output : %s" % output.stdout
+        if DEBUG:
+            print("slurm output : %s" % output.stdout)
+        if output.returncode != 0:
+            msg += 20 * "////" + "\n"
+            msg += "ERROR RETURN CODE: {0}\n".format(output.returncode)
+            msg += output
+            send_email_recording(msg, recording_id)
+    except subprocess.CalledProcessError as e:
+        # raise RuntimeError('ffprobe returned non-zero status: {}'.format(
+        # e.stderr))
+        msg += 20 * "////" + "\n"
+        msg += "Runtime Error: {0}\n".format(e)
+        send_email_recording(msg, recording_id)
+    except OSError as err:
+        # raise OSError(e.errno, 'ffprobe not found: {}'.format(e.strerror)
+        msg += 20 * "////" + "\n"
+        msg += "OS error: {0}\n".format(err)
+        send_email_recording(msg, recording_id)
+    return msg
+
+
+def store_remote_encoding_studio(recording_id, video_output):
+    from pod.recorder.models import Recording
+
+    recording = Recording.objects.get(id=recording_id)
+    if check_file(video_output):
+        from pod.recorder.plugins.type_studio import save_basic_video
+
+        video = save_basic_video(recording, video_output)
+        remote_encode_video(video.id)
+    else:
+        msg = "Wrong file or path:" + "\n%s" % video_output
+        send_email_recording(msg, recording_id)
 
 
 # ##########################################################################
@@ -147,7 +240,7 @@ def process_cmd(remote_cmd, video_id):
         )
         add_encoding_log(video_id, "slurm output : %s" % output.stdout)
         if DEBUG:
-            print(output.stdout)
+            print("slurm output : %s" % output.stdout)
         if output.returncode != 0:
             msg += 20 * "////" + "\n"
             msg += "ERROR RETURN CODE: {0}\n".format(output.returncode)
