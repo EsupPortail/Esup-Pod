@@ -18,6 +18,7 @@ DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
 ENCODE_STUDIO = getattr(settings, "ENCODE_STUDIO", "start_encode_studio")
 MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
+OPENCAST_FILES_DIR = getattr(settings, "OPENCAST_FILES_DIR", "opencast-files")
 # Possible value are "mid" or "pip"
 OPENCAST_DEFAULT_PRESENTER = getattr(settings, "OPENCAST_DEFAULT_PRESENTER", "mid")
 
@@ -181,7 +182,7 @@ def encode_recording(recording):
         add_comment(recording.id, msg)
         video = save_basic_video(
             recording,
-            os.path.join(settings.MEDIA_ROOT, "opencast-files", videos[0].get("src")),
+            os.path.join(settings.MEDIA_ROOT, OPENCAST_FILES_DIR, videos[0].get("src")),
         )
         # encode video
         encode_video = getattr(encode, ENCODE_VIDEO)
