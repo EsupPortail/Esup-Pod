@@ -13,8 +13,11 @@ djangorestframework==3.12.2
 django-filter==2.4.0
 sorl-thumbnail==12.7.0
 django-lti-provider==0.4.0
-celery==4.3.0
-vine==1.3.0
+django-auth-mixins==1.0.1
+celery==5.2.3; python_version >= '3.7'
+celery==4.3.0; python_version == '3.6'
+vine==5.0.0; python_version >= '3.7'
+vine==1.3.0; python_version == '3.6'
 pandas
 deepspeech==0.9.3
 billiard<4.0,>=3.6.0
