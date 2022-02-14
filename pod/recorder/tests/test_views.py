@@ -9,8 +9,9 @@ from django.test import Client, override_settings
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.core.files.uploadedfile import SimpleUploadedFile
+# from django.contrib.sites.shortcuts import get_current_site
 
-from ..models import Recorder, RecordingFileTreatment
+from ..models import Recorder, Recording, RecordingFileTreatment
 from pod.video.models import Type
 from django.contrib.sites.models import Site
 
@@ -22,6 +23,7 @@ from http import HTTPStatus
 import os
 
 OPENCAST_FILES_DIR = getattr(settings, "OPENCAST_FILES_DIR", "opencast-files")
+OPENCAST_DEFAULT_PRESENTER = getattr(settings, "OPENCAST_DEFAULT_PRESENTER", "mid")
 
 
 class recorderViewsTestCase(TestCase):
@@ -277,6 +279,8 @@ class studio_podTestView(TestCase):
         mediaPackage_content = minidom.parseString(response.content)
         mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
         idMedia = mediapackage.getAttribute("id")
+        presenter = mediapackage.getAttribute("presenter")
+        self.assertEqual(presenter, OPENCAST_DEFAULT_PRESENTER)
 
         mediaPackage_dir = os.path.join(
             settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
@@ -290,6 +294,47 @@ class studio_podTestView(TestCase):
 
         print(
             " -->  test_studio_ingest_createMediaPackage of studio_podTestView", " : OK !"
+        )
+
+    def test_studio_ingest_createMediaPackage_with_presenter(self):
+        self.client = Client()
+        self.user = User.objects.get(username="pod")
+        self.user.is_staff = True
+        self.user.save()
+
+        self.client.force_login(self.user)
+        response = self.client.post("/studio/presenter_post", {"presenter": "mid"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.client.session["presenter"], "mid")
+
+        response = self.client.get("/studio/ingest/createMediaPackage")
+        self.assertEqual(response.status_code, 200)
+
+        mediaPackage_content = minidom.parseString(response.content)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        presenter = mediapackage.getAttribute("presenter")
+
+        self.assertEqual(presenter, "mid")
+        self.assertEqual(self.client.session.get("presenter", None), None)
+
+        response = self.client.post("/studio/presenter_post", {"presenter": "piph"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.client.session["presenter"], "piph")
+
+        response = self.client.get("/studio/ingest/createMediaPackage")
+        self.assertEqual(response.status_code, 200)
+
+        mediaPackage_content = minidom.parseString(response.content)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        presenter = mediapackage.getAttribute("presenter")
+
+        self.assertEqual(presenter, "piph")
+        self.assertEqual(self.client.session.get("presenter", None), None)
+
+        print(
+            " -->  test_studio_ingest_createMediaPackage_with_presenter"
+            + " of studio_podTestView",
+            " : OK !",
         )
 
     def test_studio_ingest_addDCCatalog(self):
@@ -555,3 +600,75 @@ class studio_podTestView(TestCase):
         self.assertTrue(os.path.exists(cutting_file))
 
         print(" -->  test_studio_ingest_addCatalog of studio_podTestView", " : OK !")
+
+    def test_studio_ingest_ingest(self):
+
+        self.client = Client()
+        response = self.client.get("/studio/ingest/ingest")
+        self.assertRaises(PermissionDenied)
+
+        self.user = User.objects.get(username="pod")
+        self.user.is_staff = True
+        self.user.save()
+
+        self.client.force_login(self.user)
+        response = self.client.get("/studio/ingest/ingest")
+        self.assertEqual(response.status_code, 400)
+
+        response_media_package = self.client.get("/studio/ingest/createMediaPackage")
+        mediaPackage_content = minidom.parseString(response_media_package.content)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        idMedia_sent = mediapackage.getAttribute("id")
+
+        response = self.client.post(
+            "/studio/ingest/ingest",
+            {
+                "mediaPackage": mediaPackage_content.toxml(),
+            },
+        )
+        self.assertRaises(PermissionDenied)
+
+        videotype = Type.objects.create(title="others")
+        recorder = Recorder.objects.create(
+            name="recorder_studio",
+            address_ip="16.3.10.37",
+            type=videotype,
+            directory="dir1",
+            recording_type="studio",
+        )
+        # recorder.sites=get_current_site(None)
+        # recorder.save()
+        response = self.client.post(
+            "/studio/ingest/ingest",
+            {
+                "mediaPackage": mediaPackage_content.toxml(),
+            },
+        )
+        # check response code 200
+        self.assertEqual(response.status_code, 200)
+
+        # get media package return by request
+        mediaPackage_content = minidom.parseString(response.content)
+        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+        idMedia = mediapackage.getAttribute("id")
+        self.assertEqual(idMedia, idMedia_sent)
+
+        mediaPackage_dir = os.path.join(
+            settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
+        )
+        mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
+        # check if mediapackage file exist
+        self.assertTrue(os.path.exists(mediaPackage_file))
+
+        recording = Recording.objects.filter(
+            user=self.user,
+            title=idMedia,
+            type="studio",
+            # Source file corresponds to Pod XML file
+            source_file=mediaPackage_file,
+            recorder=recorder,
+        )
+        # check if recording object exist
+        self.assertTrue(recording.first())
+
+        print(" -->  test_studio_ingest_ingest of studio_podTestView", " : OK !")
