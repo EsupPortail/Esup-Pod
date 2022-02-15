@@ -126,6 +126,7 @@ def remote_encode_studio(recording_id, video_output, videos, subtime, presenter)
     # launch remote encode
     print("process remote encode :\n %s" % remote_cmd)
     from pod.recorder.models import Recording
+
     recording = Recording.objects.get(id=recording_id)
     recording.comment += "process remote encode :\n %s" % remote_cmd
     msg = process_cmd_studio(remote_cmd, recording_id)
