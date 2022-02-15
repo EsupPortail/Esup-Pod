@@ -927,15 +927,18 @@ def create_overview_image(
             stamp += "%"
         else:
             stamp = time.strftime("%H:%M:%S", time.gmtime(i))
-        cmd_ffmpegthumbnailer = 'ffmpegthumbnailer -t "%(stamp)s" \
+        cmd_ffmpegthumbnailer = (
+            'ffmpegthumbnailer -t "%(stamp)s" \
         -s "%(image_width)s" -i %(source)s -c png \
-        -o %(overviewimagefilename)s_strip%(num)s.png' % {
-            "stamp": stamp,
-            "source": source,
-            "num": i,
-            "overviewimagefilename": overviewimagefilename,
-            "image_width": image_width,
-        }
+        -o %(overviewimagefilename)s_strip%(num)s.png'
+            % {
+                "stamp": stamp,
+                "source": source,
+                "num": i,
+                "overviewimagefilename": overviewimagefilename,
+                "image_width": image_width,
+            }
+        )
         # subprocess.getoutput(cmd_ffmpegthumbnailer)
         subprocess.run(cmd_ffmpegthumbnailer, shell=True)
 
@@ -1056,15 +1059,18 @@ def create_and_save_thumbnails(source, image_width, video_id):
     tempimgfile = tempfile.NamedTemporaryFile(dir=FILE_UPLOAD_TEMP_DIR, suffix="")
     for i in range(0, 3):
         percent = str((i + 1) * 25) + "%"
-        cmd_ffmpegthumbnailer = 'ffmpegthumbnailer -t "%(percent)s" \
+        cmd_ffmpegthumbnailer = (
+            'ffmpegthumbnailer -t "%(percent)s" \
         -s "%(image_width)s" -i %(source)s -c png \
-        -o %(tempfile)s_%(num)s.png' % {
-            "percent": percent,
-            "source": source,
-            "num": i,
-            "image_width": image_width,
-            "tempfile": tempimgfile.name,
-        }
+        -o %(tempfile)s_%(num)s.png'
+            % {
+                "percent": percent,
+                "source": source,
+                "num": i,
+                "image_width": image_width,
+                "tempfile": tempimgfile.name,
+            }
+        )
         # subprocess.getoutput(cmd_ffmpegthumbnailer)
         subprocess.run(cmd_ffmpegthumbnailer, shell=True)
         thumbnailfilename = "%(tempfile)s_%(num)s.png" % {

@@ -218,7 +218,7 @@ def select_video_owner():
 def remove_accents(input_str):
     """Remove diacritics in input string."""
     nkfd_form = unicodedata.normalize("NFKD", input_str)
-    return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
+    return "".join([c for c in nkfd_form if not unicodedata.combining(c)])
 
 
 def get_storage_path_video(instance, filename):
@@ -268,7 +268,7 @@ class Channel(models.Model):
         unique=True,
         max_length=100,
         help_text=_(
-            u'Used to access this instance, the "slug" is a short label '
+            'Used to access this instance, the "slug" is a short label '
             + "containing only letters, numbers, underscore or dash top."
         ),
         editable=False,
@@ -329,7 +329,7 @@ class Channel(models.Model):
     visible = models.BooleanField(
         verbose_name=_("Visible"),
         help_text=_(
-            u"If checked, the channel appear in a list of available "
+            "If checked, the channel appear in a list of available "
             + "channels on the platform."
         ),
         default=False,
@@ -420,7 +420,7 @@ class Theme(models.Model):
         _("Slug"),
         max_length=100,
         help_text=_(
-            u'Used to access this instance, the "slug" is a short label '
+            'Used to access this instance, the "slug" is a short label '
             + "containing only letters, numbers, underscore or dash top."
         ),
         editable=False,
@@ -546,7 +546,7 @@ class Type(models.Model):
         unique=True,
         max_length=100,
         help_text=_(
-            u'Used to access this instance, the "slug" is a short label '
+            'Used to access this instance, the "slug" is a short label '
             + "containing only letters, numbers, underscore or dash top."
         ),
     )
@@ -580,7 +580,7 @@ class Discipline(models.Model):
         unique=True,
         max_length=100,
         help_text=_(
-            u'Used to access this instance, the "slug" is a short label '
+            'Used to access this instance, the "slug" is a short label '
             + "containing only letters, numbers, underscore or dash top."
         ),
     )
@@ -1096,18 +1096,18 @@ class Video(models.Model):
             current_site = Site.objects.get_current()
             data_to_dump = {
                 "id": self.id,
-                "title": u"%s" % self.title,
-                "owner": u"%s" % self.owner.username,
-                "owner_full_name": u"%s" % self.owner.get_full_name(),
-                "date_added": u"%s" % self.date_added.strftime("%Y-%m-%dT%H:%M:%S")
+                "title": "%s" % self.title,
+                "owner": "%s" % self.owner.username,
+                "owner_full_name": "%s" % self.owner.get_full_name(),
+                "date_added": "%s" % self.date_added.strftime("%Y-%m-%dT%H:%M:%S")
                 if self.date_added
                 else None,
-                "date_evt": u"%s" % self.date_evt.strftime("%Y-%m-%dT%H:%M:%S")
+                "date_evt": "%s" % self.date_evt.strftime("%Y-%m-%dT%H:%M:%S")
                 if self.date_evt
                 else None,
-                "description": u"%s" % self.description,
-                "thumbnail": u"%s" % self.get_thumbnail_url(),
-                "duration": u"%s" % self.duration,
+                "description": "%s" % self.description,
+                "thumbnail": "%s" % self.get_thumbnail_url(),
+                "duration": "%s" % self.duration,
                 "tags": list(
                     [
                         {"name": name[0], "slug": slugify(name)}
@@ -1312,7 +1312,7 @@ def video_files_removal(sender, instance, using, **kwargs):
 
 class ViewCount(models.Model):
     video = models.ForeignKey(Video, verbose_name=_("Video"), editable=False)
-    date = models.DateField(_(u"Date"), default=date.today, editable=False)
+    date = models.DateField(_("Date"), default=date.today, editable=False)
     count = models.IntegerField(_("Number of view"), default=0, editable=False)
 
     @property
@@ -1950,7 +1950,7 @@ class Category(models.Model):
         unique=True,
         max_length=100,
         help_text=_(
-            u'Used to access this instance, the "slug" is a short label '
+            'Used to access this instance, the "slug" is a short label '
             + "containing only letters, numbers, underscore or dash top."
         ),
         editable=False,

@@ -73,7 +73,7 @@ class Broadcaster(models.Model):
         unique=True,
         max_length=200,
         help_text=_(
-            u'Used to access this instance, the "slug" is a short label '
+            'Used to access this instance, the "slug" is a short label '
             + "containing only letters, numbers, underscore or dash top."
         ),
         editable=False,
@@ -120,16 +120,16 @@ class Broadcaster(models.Model):
     )
     enable_viewer_count = models.BooleanField(
         default=1,
-        verbose_name=_(u"Enable viewers count"),
+        verbose_name=_("Enable viewers count"),
         help_text=_("Enable viewers count on live."),
     )
     is_restricted = models.BooleanField(
-        verbose_name=_(u"Restricted access"),
+        verbose_name=_("Restricted access"),
         help_text=_("Live is accessible only to authenticated users."),
         default=False,
     )
     public = models.BooleanField(
-        verbose_name=_(u"Show in live tab"),
+        verbose_name=_("Show in live tab"),
         help_text=_("Live is accessible from the Live tab"),
         default=True,
     )

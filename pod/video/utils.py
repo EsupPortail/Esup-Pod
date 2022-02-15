@@ -183,17 +183,16 @@ def send_email_transcript(video_to_encode):
     content_url = "%s:%s" % (url_scheme, video_to_encode.get_full_url())
     subject = "[%s] %s" % (
         TITLE_SITE,
-        _(u"Transcripting #%(content_id)s completed")
-        % {"content_id": video_to_encode.id},
+        _("Transcripting #%(content_id)s completed") % {"content_id": video_to_encode.id},
     )
     message = "%s\n%s\n\n%s\n%s\n%s\n" % (
         _("Hello,"),
         _(
-            u"The content “%(content_title)s” has been automatically"
+            "The content “%(content_title)s” has been automatically"
             + " transcript, and is now available on %(site_title)s."
         )
         % {"content_title": video_to_encode.title, "site_title": TITLE_SITE},
-        _(u"You will find it here:"),
+        _("You will find it here:"),
         content_url,
         _("Regards."),
     )
@@ -208,21 +207,24 @@ def send_email_transcript(video_to_encode):
     to_email.append(video_to_encode.owner.email)
     html_message = ""
 
-    html_message = '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
-                </p><p>%s</p>' % (
-        _("Hello,"),
-        _(
-            u"The content “%(content_title)s” has been automatically"
-            + " transcript, and is now available on %(site_title)s."
+    html_message = (
+        '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
+                </p><p>%s</p>'
+        % (
+            _("Hello,"),
+            _(
+                "The content “%(content_title)s” has been automatically"
+                + " transcript, and is now available on %(site_title)s."
+            )
+            % {
+                "content_title": "<b>%s</b>" % video_to_encode.title,
+                "site_title": TITLE_SITE,
+            },
+            _("You will find it here:"),
+            content_url,
+            content_url,
+            _("Regards."),
         )
-        % {
-            "content_title": "<b>%s</b>" % video_to_encode.title,
-            "site_title": TITLE_SITE,
-        },
-        _(u"You will find it here:"),
-        content_url,
-        content_url,
-        _("Regards."),
     )
     full_html_message = html_message + "<br/>%s%s<br/>%s%s" % (
         _("Post by:"),
@@ -274,16 +276,16 @@ def send_email_encoding(video_to_encode):
     content_url = "%s:%s" % (url_scheme, video_to_encode.get_full_url())
     subject = "[%s] %s" % (
         TITLE_SITE,
-        _(u"Encoding #%(content_id)s completed") % {"content_id": video_to_encode.id},
+        _("Encoding #%(content_id)s completed") % {"content_id": video_to_encode.id},
     )
     message = "%s\n%s\n\n%s\n%s\n%s\n" % (
         _("Hello,"),
         _(
-            u"The video “%(content_title)s” has been encoded to Web "
+            "The video “%(content_title)s” has been encoded to Web "
             + "formats, and is now available on %(site_title)s."
         )
         % {"content_title": video_to_encode.title, "site_title": TITLE_SITE},
-        _(u"You will find it here:"),
+        _("You will find it here:"),
         content_url,
         _("Regards."),
     )
@@ -298,21 +300,24 @@ def send_email_encoding(video_to_encode):
     to_email.append(video_to_encode.owner.email)
     html_message = ""
 
-    html_message = '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
-                </p><p>%s</p>' % (
-        _("Hello,"),
-        _(
-            u"The video “%(content_title)s” has been encoded to Web "
-            + "formats, and is now available on %(site_title)s."
+    html_message = (
+        '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
+                </p><p>%s</p>'
+        % (
+            _("Hello,"),
+            _(
+                "The video “%(content_title)s” has been encoded to Web "
+                + "formats, and is now available on %(site_title)s."
+            )
+            % {
+                "content_title": "<b>%s</b>" % video_to_encode.title,
+                "site_title": TITLE_SITE,
+            },
+            _("You will find it here:"),
+            content_url,
+            content_url,
+            _("Regards."),
         )
-        % {
-            "content_title": "<b>%s</b>" % video_to_encode.title,
-            "site_title": TITLE_SITE,
-        },
-        _(u"You will find it here:"),
-        content_url,
-        content_url,
-        _("Regards."),
     )
     full_html_message = html_message + "<br/>%s%s<br/>%s%s" % (
         _("Post by:"),

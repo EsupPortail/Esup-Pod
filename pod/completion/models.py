@@ -59,9 +59,9 @@ class Contributor(models.Model):
     name = models.CharField(_("lastname / firstname"), max_length=200)
     email_address = models.EmailField(_("mail"), null=True, blank=True, default="")
     role = models.CharField(
-        _(u"role"), max_length=200, choices=ROLE_CHOICES, default="author"
+        _("role"), max_length=200, choices=ROLE_CHOICES, default="author"
     )
-    weblink = models.URLField(_(u"Web link"), max_length=200, null=True, blank=True)
+    weblink = models.URLField(_("Web link"), max_length=200, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Contributor")
@@ -110,7 +110,7 @@ class Contributor(models.Model):
         return list()
 
     def __str__(self):
-        return u"Video:{0} - Name:{1} - Role:{2}".format(self.video, self.name, self.role)
+        return "Video:{0} - Name:{1} - Role:{2}".format(self.video, self.name, self.role)
 
     def get_base_mail(self):
         data = base64.b64encode(self.email_address.encode())
@@ -163,7 +163,7 @@ class Document(models.Model):
         return list()
 
     def __str__(self):
-        return u"Document: {0} - Video: {1}".format(self.document.name, self.video)
+        return "Document: {0} - Video: {1}".format(self.document.name, self.video)
 
 
 class Track(models.Model):
@@ -229,22 +229,20 @@ class Track(models.Model):
         return list()
 
     def __str__(self):
-        return u"{0} - File: {1} - Video: {2}".format(
-            self.kind, self.src.name, self.video
-        )
+        return "{0} - File: {1} - Video: {2}".format(self.kind, self.src.name, self.video)
 
 
 class Overlay(models.Model):
 
     POSITION_CHOICES = (
-        ("top-left", _(u"top-left")),
-        ("top", _(u"top")),
-        ("top-right", _(u"top-right")),
-        ("right", _(u"right")),
-        ("bottom-right", _(u"bottom-right")),
-        ("bottom", _(u"bottom")),
-        ("bottom-left", _(u"bottom-left")),
-        ("left", _(u"left")),
+        ("top-left", _("top-left")),
+        ("top", _("top")),
+        ("top-right", _("top-right")),
+        ("right", _("right")),
+        ("bottom-right", _("bottom-right")),
+        ("bottom", _("bottom")),
+        ("bottom-left", _("bottom-left")),
+        ("left", _("left")),
     )
 
     video = select2_fields.ForeignKey(Video, verbose_name=_("Video"))
@@ -263,12 +261,12 @@ class Overlay(models.Model):
     time_start = models.PositiveIntegerField(
         _("Start time"),
         default=1,
-        help_text=_(u"Start time of the overlay, in seconds."),
+        help_text=_("Start time of the overlay, in seconds."),
     )
     time_end = models.PositiveIntegerField(
         _("End time"),
         default=2,
-        help_text=_(u"End time of the overlay, in seconds."),
+        help_text=_("End time of the overlay, in seconds."),
     )
     content = RichTextField(_("Content"), null=False, blank=False, config_name="complete")
     position = models.CharField(
@@ -278,12 +276,12 @@ class Overlay(models.Model):
         blank=False,
         choices=POSITION_CHOICES,
         default="bottom-right",
-        help_text=_(u"Position of the overlay."),
+        help_text=_("Position of the overlay."),
     )
     background = models.BooleanField(
         _("Show background"),
         default=True,
-        help_text=_(u"Show the background of the overlay."),
+        help_text=_("Show the background of the overlay."),
     )
 
     @property
