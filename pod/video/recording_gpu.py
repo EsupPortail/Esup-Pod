@@ -31,12 +31,6 @@ FFMPEG_STATIC_PARAMS = str(
     + "-deinterlace -threads %(nb_threads)s "
 )
 """
-"""
-time ffmpeg -hide_banner -y -vsync 0  -i "/tmp/recording-39/presentation_source.webm" -i "/tmp/recording-39/presenter_source.webm" \
-    -ss 1.2 -to 10.09  -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf 22 -sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" \
-    -max_muxing_queue_size 4000 -deinterlace -threads 0 -filter_complex "[0:v]scale=-2:1750[pres];[1:v]scale=-2:437.5[pip];[pres][pip]overlay=W-w-10:H-h-10:shortest=1" \
-    -vsync 0 -movflags +faststart -f mp4  /tmp/recording-39/output2.mp4
-"""
 
 FFMPEG_STATIC_PARAMS = (
     " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf 22 "

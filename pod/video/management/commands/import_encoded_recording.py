@@ -45,6 +45,6 @@ class Command(BaseCommand):
             self.stdout.write(
                 self.style.ERROR(
                     "******* Recording id matching query does not exist: %s *******"
-                    % video_id
+                    % recording_id
                 )
             )
