@@ -1,12 +1,13 @@
 {
   "name": "podv2",
-  "homepage": "https://github.com/JoshuaBaubry/podv2",
+  "homepage": "https://github.com/EsupPortail/Esup-Pod",
   "authors": [
-    "Joshua Baubry <joshua.baubry@gmail.com>"
+    "Joshua Baubry",
+    "Nicolas Can"
   ],
   "description": "",
   "main": "",
-  "license": "MIT",
+  "license": " LGPL-3.0",
   "ignore": [
     "**/.*",
     "node_modules",
