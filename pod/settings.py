@@ -273,3 +273,8 @@ if "LTI_ENABLED" in globals() and eval("LTI_ENABLED") is True:
     AUTHENTICATION_BACKENDS = list(AUTHENTICATION_BACKENDS)
     AUTHENTICATION_BACKENDS.append("lti_provider.auth.LTIBackend")
     AUTHENTICATION_BACKENDS = tuple(AUTHENTICATION_BACKENDS)
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'bower_components'),
+]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
