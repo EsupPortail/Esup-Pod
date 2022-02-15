@@ -1,0 +1,17 @@
+{
+  "name": "podv2",
+  "homepage": "https://github.com/JoshuaBaubry/podv2",
+  "authors": [
+    "Joshua Baubry <joshua.baubry@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
