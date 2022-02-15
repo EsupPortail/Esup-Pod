@@ -170,7 +170,6 @@ def store_remote_encoding_studio(recording_id, video_output):
     recording = Recording.objects.get(id=recording_id)
     if check_file(video_output):
         from pod.recorder.plugins.type_studio import save_basic_video
-
         video = save_basic_video(recording, video_output)
         remote_encode_video(video.id)
     else:

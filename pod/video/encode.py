@@ -1250,7 +1250,7 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
 
     else:
         subcmd = " -vsync 0 "
-
+    subcmd += " -movflags +faststart -f mp4 "
     static_params = FFMPEG_STATIC_PARAMS % {
         "nb_threads": FFMPEG_NB_THREADS,
         "crf": FFMPEG_CRF,

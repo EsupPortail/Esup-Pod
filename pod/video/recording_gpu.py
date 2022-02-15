@@ -16,20 +16,39 @@ __license__ = "LGPL v3"
 DEBUG = False
 VIDEOS_DIR = "videos"
 FFPROBE = "ffprobe"
-FFMPEG = "ffmpeg"
+FFMPEG = "time ffmpeg"
 GET_INFO_VIDEO = str(
     "%(ffprobe)s -v quiet -show_format -show_streams "
     + "-select_streams v:0 -print_format json -i %(source)s"
 )
 FFMPEG_NB_THREADS = 0
+"""
 FFMPEG_STATIC_PARAMS = str(
-    " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf %(crf)s "
+    " -c:a aac -ar 48000 -strict experimental "
+    + "-profile:v high -pix_fmt yuv420p -preset slow -qmin 20 -qmax 50 "
     + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" '
     + "-max_muxing_queue_size 4000 "
     + "-deinterlace -threads %(nb_threads)s "
 )
+"""
+"""
+time ffmpeg -hide_banner -y -vsync 0  -i "/tmp/recording-39/presentation_source.webm" -i "/tmp/recording-39/presenter_source.webm" \
+    -ss 1.2 -to 10.09  -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf 22 -sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" \
+    -max_muxing_queue_size 4000 -deinterlace -threads 0 -filter_complex "[0:v]scale=-2:1750[pres];[1:v]scale=-2:437.5[pip];[pres][pip]overlay=W-w-10:H-h-10:shortest=1" \
+    -vsync 0 -movflags +faststart -f mp4  /tmp/recording-39/output2.mp4
+"""
+
+FFMPEG_STATIC_PARAMS = (
+    " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf 22 "
+    + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" '
+    + "-max_muxing_queue_size 4000 "
+    + "-deinterlace -threads 0 "
+)
 FFMPEG_MISC_PARAMS = " -hide_banner -y -vsync 0 "
 FFMPEG_CRF = 22
+FFMPEG_MISC_PARAMS_GPU = " -hide_banner -y -vsync 0 -hwaccel_device %(hwaccel_device)s \
+    -hwaccel cuvid -c:v %(codec)s_cuvid "
+LIST_CODEC = ("h264", "hevc", "mjpeg", "mpeg1", "mpeg2", "mpeg4", "vc1", "vp8", "vp9")
 
 
 def encode_log(msg):
@@ -112,24 +131,40 @@ def get_height(info):
     return in_height
 
 
+def get_codec_name(info):
+    codec_name = ""
+    if len(info["streams"]) > 0 and info["streams"][0].get("codec_name"):
+        codec_name = info["streams"][0]["codec_name"]
+    return codec_name
+
+
 def encode_video_studio(
     presenter_source, presentation_source, subtime, presenter, video_output
 ):
-
-    if presenter_source and presentation_source:
-        # to put it in the right order
-        input_video = '-i "' + presentation_source + '" -i "' + presenter_source + '" '
-
-        command = GET_INFO_VIDEO % {
-            "ffprobe": FFPROBE,
-            "source": '"' + presentation_source + '" ',
-        }
-        info_presentation_video = get_video_info(command)
+    input_video = ""
+    codec_name = ""
+    if presenter_source:
+        input_video = '-i "' + presenter_source + '" '
         command = GET_INFO_VIDEO % {
             "ffprobe": FFPROBE,
             "source": '"' + presenter_source + '" ',
         }
         info_presenter_video = get_video_info(command)
+        codec_name = get_codec_name(info_presenter_video)
+
+    if presentation_source:
+        input_video = '-i "' + presentation_source + '" '
+        command = GET_INFO_VIDEO % {
+            "ffprobe": FFPROBE,
+            "source": '"' + presentation_source + '" ',
+        }
+        info_presentation_video = get_video_info(command)
+        codec_name = get_codec_name(info_presenter_video)
+
+    if presenter_source and presentation_source:
+        # to put it in the right order
+        input_video = '-i "' + presentation_source + '" -i "' + presenter_source + '" '
+
         subcmd = get_sub_cmd(
             get_height(info_presentation_video),
             get_height(info_presenter_video),
@@ -137,23 +172,31 @@ def encode_video_studio(
         )
     else:
         subcmd = " -vsync 0 "
-
+    subcmd += " -movflags +faststart -f mp4 "
     static_params = FFMPEG_STATIC_PARAMS % {
         "nb_threads": FFMPEG_NB_THREADS,
         "crf": FFMPEG_CRF,
     }
     msg = launch_encode_video_studio(
-        input_video, subtime + static_params + subcmd, video_output
+        input_video, subtime + static_params + subcmd, video_output, codec_name
     )
     return msg
 
 
-def launch_encode_video_studio(input_video, subcmd, video_output):
+def launch_encode_video_studio(input_video, subcmd, video_output, codec_name):
     """Encode video for studio."""
     msg = ""
+    misc_params = FFMPEG_MISC_PARAMS
+    """
+    if codec_name in LIST_CODEC:
+        misc_params = FFMPEG_MISC_PARAMS_GPU % {
+            "hwaccel_device": HWACCEL_DEVICE,
+            "codec": codec_name,
+        }
+    """
     ffmpegStudioCommand = "%s %s %s %s %s" % (
         FFMPEG,
-        FFMPEG_MISC_PARAMS,
+        misc_params,
         input_video,
         subcmd,
         video_output,
@@ -210,14 +253,11 @@ if __name__ == "__main__":
 
     video_output = os.path.join(VIDEOS_DIR, "output.mp4")
 
-    file_input_presenter = (
-        os.path.basename(format(args.input_presenter)) if args.input_presenter else None
-    )
+    file_input_presenter = format(args.input_presenter) if args.input_presenter else None
     file_input_presentation = (
-        os.path.basename(format(args.input_presentation))
-        if args.input_presentation
-        else None
+        format(args.input_presentation) if args.input_presentation else None
     )
+    print(file_input_presenter, file_input_presentation)
     presenter_source = None
     presentation_source = None
 
@@ -244,8 +284,6 @@ if __name__ == "__main__":
 
     msg += "- fin de l'encodage : %s \n" % time.ctime()
     encode_log(msg)
-    if DEBUG:
-        print(msg)
 
 """
 ffmpeg - decoders | grep cuvid

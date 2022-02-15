@@ -135,7 +135,6 @@ def encode_recording(recording):
     except KeyError as e:
         add_comment(recording.id, "Error : %s" % e)
         return -1
-
     videos = getElementsByName(xmldoc, "track")
     catalogs = getElementsByName(xmldoc, "catalog")
     title = ""
@@ -147,7 +146,6 @@ def encode_recording(recording):
         if (att_presenter in ["mid", "piph", "pipb"])
         else OPENCAST_DEFAULT_PRESENTER
     )
-
     for catalog in catalogs:
         xmldoc = minidom.parse(catalog.get("src"))
         if catalog.get("type") == "dublincore/episode":
@@ -166,7 +164,6 @@ def encode_recording(recording):
                 if (endDefault)
                 else None
             )
-
     if clip_begin or clip_end or len(videos) > 1:
         msg = "*** generate_intermediate_video (%s) %s ***" % (
             videos[0].get("type"),
