@@ -104,21 +104,21 @@ def start_transcript(video_id, threaded=True):
 
 
 def get_model(lang):
-    ds_model = Model(DS_PARAM[lang]["model"])
-    if DS_PARAM[lang].get("beam_width"):
-        ds_model.setBeamWidth(DS_PARAM[lang]["beam_width"])
-    if DS_PARAM[lang].get("scorer"):
+    ds_model = Model(STT_PARAM[lang]["model"])
+    if STT_PARAM[lang].get("beam_width"):
+        ds_model.setBeamWidth(STT_PARAM[lang]["beam_width"])
+    if STT_PARAM[lang].get("scorer"):
         print(
-            "Loading scorer from files {}".format(DS_PARAM[lang]["scorer"]),
+            "Loading scorer from files {}".format(STT_PARAM[lang]["scorer"]),
             file=sys.stderr,
         )
         scorer_load_start = timer()
-        ds_model.enableExternalScorer(DS_PARAM[lang]["scorer"])
+        ds_model.enableExternalScorer(STT_PARAM[lang]["scorer"])
         scorer_load_end = timer() - scorer_load_start
         print("Loaded scorer in {:.3}s.".format(scorer_load_end), file=sys.stderr)
-        if DS_PARAM[lang].get("lm_alpha") and DS_PARAM[lang].get("lm_beta"):
+        if STT_PARAM[lang].get("lm_alpha") and STT_PARAM[lang].get("lm_beta"):
             ds_model.setScorerAlphaBeta(
-                DS_PARAM[lang]["lm_alpha"], DS_PARAM[lang]["lm_beta"]
+                STT_PARAM[lang]["lm_alpha"], STT_PARAM[lang]["lm_beta"]
             )
     return ds_model
 
@@ -131,10 +131,10 @@ def main_threaded_transcript(video_to_encode_id):
 
     msg = ""
     lang = video_to_encode.main_lang
-    # check if DS_PARAM [lang] exist
-    if not DS_PARAM.get(lang):
+    # check if STT_PARAM [lang] exist
+    if not STT_PARAM.get(lang):
         msg += "\n no stt model found for lang:%s." % lang
-        msg += "Please add it in DS_PARAM."
+        msg += "Please add it in STT_PARAM."
         change_encoding_step(video_to_encode.id, -1, msg)
         send_email(msg, video_to_encode.id)
     else:
