@@ -14,11 +14,12 @@ from .models import Video
 
 from .utils import change_encoding_step, add_encoding_log, check_file
 from .utils import create_outputdir, send_email, send_email_encoding
+from .utils import send_email_recording
 from .utils import get_duration_from_mp4
 from .utils import fix_video_duration
 
 # from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
-from pod.main.tasks import task_start_encode
+from pod.main.tasks import task_start_encode, task_start_encode_studio
 
 # from fractions import Fraction # use for keyframe
 from webvtt import WebVTT, Caption
@@ -86,14 +87,17 @@ GET_INFO_AUDIO = getattr(
 FFMPEG_STATIC_PARAMS = getattr(
     settings,
     "FFMPEG_STATIC_PARAMS",
-    " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf 20 "
+    " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf %(crf)s "
     + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" '
+    + "-max_muxing_queue_size 4000 "
     + "-deinterlace -threads %(nb_threads)s ",
 )
+
+FFMPEG_CRF = getattr(settings, "FFMPEG_CRF", 22)
 # + "-deinterlace -threads %(nb_threads)s -g %(key_frames_interval)s "
 # + "-keyint_min %(key_frames_interval)s ")
 
-FFMPEG_MISC_PARAMS = getattr(settings, "FFMPEG_MISC_PARAMS", " -hide_banner -y ")
+FFMPEG_MISC_PARAMS = getattr(settings, "FFMPEG_MISC_PARAMS", " -hide_banner -y -vsync 0 ")
 # to use in GPU, specify for example
 # -y -vsync 0 -hwaccel_device {hwaccel_device} \
 # -hwaccel cuvid -c:v {codec}_cuvid
@@ -153,6 +157,8 @@ CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 
 MANAGERS = getattr(settings, "MANAGERS", {})
 
+OPENCAST_FILES_DIR = getattr(settings, "OPENCAST_FILES_DIR", "opencast-files")
+
 # ##########################################################################
 # ENCODE VIDEO: THREAD TO LAUNCH ENCODE
 # ##########################################################################
@@ -178,6 +184,36 @@ def start_encode(video_id):
         t = threading.Thread(target=encode_video, args=[video_id])
         t.setDaemon(True)
         t.start()
+
+
+def start_encode_studio(recording_id, video_output, videos, subtime, presenter):
+    """Start local encoding."""
+    if CELERY_TO_ENCODE:
+        task_start_encode_studio.delay(
+            recording_id, video_output, videos, subtime, presenter
+        )
+    else:
+        log.info("START ENCODE VIDEO ID %s" % recording_id)
+        t = threading.Thread(
+            target=encode_video_studio,
+            args=[recording_id, video_output, videos, subtime, presenter],
+        )
+        t.setDaemon(True)
+        t.start()
+
+
+def start_studio_remote_encode(recording_id, video_output, videos, subtime, presenter):
+    """Start Remote encoding."""
+    # load module here to prevent circular import
+    from .remote_encode import remote_encode_studio
+
+    log.info("START ENCODE RECORDING ID %s" % recording_id)
+    t = threading.Thread(
+        target=remote_encode_studio,
+        args=[recording_id, video_output, videos, subtime, presenter],
+    )
+    t.setDaemon(True)
+    t.start()
 
 
 # ##########################################################################
@@ -397,6 +433,13 @@ def transcript_video(video_id):
 # ##########################################################################
 
 
+def get_video_info(command):
+    ffproberesult = subprocess.run(
+        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+    )
+    return json.loads(ffproberesult.stdout.decode("utf-8"))
+
+
 def get_video_data(video_id, output_dir):
     """Get video data from source file."""
     video_to_encode = Video.objects.get(id=video_id)
@@ -404,16 +447,8 @@ def get_video_data(video_id, output_dir):
     source = "%s" % video_to_encode.video.path
     command = GET_INFO_VIDEO % {"ffprobe": FFPROBE, "source": source}
     # ffproberesult = subprocess.getoutput(command)
-    ffproberesult = subprocess.run(
-        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-    )
     msg += "\nffprobe command: \n- %s\n" % command
-    """
-    add_encoding_log(
-        video_id,
-        "command: %s \n ffproberesult: %s" % (command, ffproberesult))
-    """
-    info = json.loads(ffproberesult.stdout.decode("utf-8"))
+    info = get_video_info(command)
     with open(output_dir + "/encoding.log", "a") as f:
         f.write(msg)
         f.write("\nffprobe command video result:\n\n")
@@ -434,31 +469,10 @@ def get_video_data(video_id, output_dir):
             is_video = True
         if info["streams"][0].get("height"):
             in_height = info["streams"][0]["height"]
-        """
-        if (info["streams"][0]['avg_frame_rate']
-        or info["streams"][0]['r_frame_rate']):
-            if info["streams"][0]['avg_frame_rate'] != "0/0":
-                # nb img / sec.
-                frame_rate = info["streams"][0]['avg_frame_rate']
-                key_frames_interval = int(round(Fraction(frame_rate)))
-            else:
-                frame_rate = info["streams"][0]['r_frame_rate']
-                key_frames_interval = int(round(Fraction(frame_rate)))
-        """
-
     # check audio
     command = GET_INFO_AUDIO % {"ffprobe": FFPROBE, "source": source}
-    # ffproberesult = subprocess.getoutput(command)
-    ffproberesult = subprocess.run(
-        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-    )
     msg += "\nffprobe command: %s" % command
-    """
-    add_encoding_log(
-        video_id,
-        "command: %s \n ffproberesult: %s" % (command, ffproberesult))
-    """
-    info = json.loads(ffproberesult.stdout.decode("utf-8"))
+    info = get_video_info(command)
     # msg += "%s" % json.dumps(
     #     info, sort_keys=True, indent=4, separators=(',', ': '))
     with open(output_dir + "/encoding.log", "a") as f:
@@ -498,7 +512,7 @@ def get_video_command_mp4(video_id, video_data, output_dir):
     renditions = sorted(renditions, key=lambda m: m.height)
     static_params = FFMPEG_STATIC_PARAMS % {
         "nb_threads": FFMPEG_NB_THREADS,
-        "key_frames_interval": video_data["key_frames_interval"],
+        "crf": FFMPEG_CRF,
     }
     list_file = []
     cmds = []
@@ -509,12 +523,12 @@ def get_video_command_mp4(video_id, video_data, output_dir):
         bitrate = rendition.video_bitrate
         audiorate = rendition.audio_bitrate
         height = rendition.height
-        minrate = rendition.minrate
-        maxrate = rendition.maxrate
+        # minrate = rendition.minrate
+        # maxrate = rendition.maxrate
         if in_height >= int(height) or rendition == renditions[0]:
-            int_bitrate = int(re.search(r"(\d+)k", bitrate, re.I).groups()[0])
+            # int_bitrate = int(re.search(r"(\d+)k", bitrate, re.I).groups()[0])
             # maxrate = int_bitrate * MAX_BITRATE_RATIO
-            bufsize = int_bitrate * RATE_MONITOR_BUFFER_RATIO
+            # bufsize = int_bitrate * RATE_MONITOR_BUFFER_RATIO
 
             name = "%sp" % height
 
@@ -522,6 +536,7 @@ def get_video_command_mp4(video_id, video_data, output_dir):
             cmd += FFMPEG_SCALE.format(height=height)
             # cmd += " -vf \"scale=-2:%s\" " % (height)
             # cmd += "force_original_aspect_ratio=decrease"
+            """
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
                 minrate,
                 bitrate,
@@ -529,6 +544,11 @@ def get_video_command_mp4(video_id, video_data, output_dir):
                 int(bufsize),
                 audiorate,
             )
+            """
+            cmd += " -b:v %(bitrate)s -b:a %(audiorate)s" % {
+                "bitrate": bitrate,
+                "audiorate": audiorate,
+            }
 
             cmd += ' -movflags faststart -write_tmcd 0 "%s/%s.mp4"' % (
                 output_dir,
@@ -550,7 +570,7 @@ def encode_video_mp4(source, cmd, output_dir):
     open(logfile, "ab").write(b"\n\nffmpegvideoMP4:\n\n")
     msg = "\nffmpegMp4Command:\n"
     for subcmd in cmd:
-        ffmpegMp4Command = "%s %s -i %s %s" % (
+        ffmpegMp4Command = '%s %s -i "%s" %s' % (
             FFMPEG,
             FFMPEG_MISC_PARAMS,
             source,
@@ -730,7 +750,7 @@ def get_video_command_playlist(video_id, video_data, output_dir):
     master_playlist = "#EXTM3U\n#EXT-X-VERSION:3\n"
     static_params = FFMPEG_STATIC_PARAMS % {
         "nb_threads": FFMPEG_NB_THREADS,
-        "key_frames_interval": video_data["key_frames_interval"],
+        "crf": FFMPEG_CRF,
     }
     list_file = []
     cmd = ""
@@ -743,14 +763,14 @@ def get_video_command_playlist(video_id, video_data, output_dir):
             cmd = ""
         resolution = rendition.resolution
         bitrate = rendition.video_bitrate
-        minrate = rendition.minrate
-        maxrate = rendition.maxrate
+        # minrate = rendition.minrate
+        # maxrate = rendition.maxrate
         audiorate = rendition.audio_bitrate
         height = rendition.height
         if in_height >= int(height) or rendition == renditions[0]:
             int_bitrate = int(re.search(r"(\d+)k", bitrate, re.I).groups()[0])
             # maxrate = int_bitrate * MAX_BITRATE_RATIO
-            bufsize = int_bitrate * RATE_MONITOR_BUFFER_RATIO
+            # bufsize = int_bitrate * RATE_MONITOR_BUFFER_RATIO
             bandwidth = int_bitrate * 1000
 
             name = "%sp" % height
@@ -762,7 +782,7 @@ def get_video_command_playlist(video_id, video_data, output_dir):
             # cmd += "\"scale=-2:%s\"" % (height)
             # cmd += "scale=w=%s:h=%s:" % (width, height)
             # cmd += "force_original_aspect_ratio=decrease"
-
+            """
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
                 minrate,
                 bitrate,
@@ -770,9 +790,14 @@ def get_video_command_playlist(video_id, video_data, output_dir):
                 int(bufsize),
                 audiorate,
             )
+            """
+            cmd += " -b:v %(bitrate)s -b:a %(audiorate)s" % {
+                "bitrate": bitrate,
+                "audiorate": audiorate,
+            }
             cmd += (
-                " -hls_playlist_type vod -hls_time %s \
-                -hls_flags single_file %s/%s.m3u8"
+                ' -hls_playlist_type vod -hls_time %s \
+                -hls_flags single_file "%s/%s.m3u8"'
                 % (SEGMENT_TARGET_DURATION, output_dir, name)
             )
             list_file.append({"name": name, "rendition": rendition})
@@ -799,7 +824,7 @@ def encode_video_playlist(source, cmd, output_dir):
     open(logfile, "ab").write(b"\n\nffmpegvideoPlaylist:\n\n")
     msg = "\nffmpegPlaylistCommands:\n"
     for subcmd in cmd:
-        ffmpegPlaylistCommand = "%s %s -i %s %s" % (
+        ffmpegPlaylistCommand = '%s %s -i "%s" %s' % (
             FFMPEG,
             FFMPEG_MISC_PARAMS,
             source,
@@ -1189,4 +1214,160 @@ def remove_previous_encoding_playlist(video_to_encode):
             encoding.delete()
     else:
         msg += "Playlist: Nothing to delete"
+    return msg
+
+
+# ##########################################################################
+# ENCODE VIDEO STUDIO: MAIN ENCODE
+# ##########################################################################
+
+
+def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
+    presenter_source = None
+    presentation_source = None
+    input_video = ""
+    for video in videos:
+        if video.get("type") == "presenter/source":
+            presenter_source = video.get("src")
+            input_video = '-i "' + presenter_source + '" '
+        if video.get("type") == "presentation/source":
+            presentation_source = video.get("src")
+            input_video = '-i "' + presentation_source + '" '
+    info_presenter_video = {}
+    info_presentation_video = {}
+    if presenter_source and presentation_source:
+        # to put it in the right order
+        input_video = '-i "' + presentation_source + '" -i "' + presenter_source + '" '
+        command = GET_INFO_VIDEO % {
+            "ffprobe": FFPROBE,
+            "source": '"' + presentation_source + '" ',
+        }
+        info_presentation_video = get_video_info(command)
+        command = GET_INFO_VIDEO % {
+            "ffprobe": FFPROBE,
+            "source": '"' + presenter_source + '" ',
+        }
+        info_presenter_video = get_video_info(command)
+        subcmd = get_sub_cmd(
+            get_height(info_presentation_video),
+            get_height(info_presenter_video),
+            presenter,
+        )
+
+    else:
+        subcmd = " -vsync 0 "
+    subcmd += " -movflags +faststart -f mp4 "
+    static_params = FFMPEG_STATIC_PARAMS % {
+        "nb_threads": FFMPEG_NB_THREADS,
+        "crf": FFMPEG_CRF,
+    }
+    msg = launch_encode_video_studio(
+        input_video, subtime + static_params + subcmd, video_output
+    )
+    from pod.recorder.models import Recording
+
+    recording = Recording.objects.get(id=recording_id)
+    recording.comment += msg
+    recording.save()
+    if check_file(video_output):
+        from pod.recorder.plugins.type_studio import save_basic_video
+
+        video = save_basic_video(recording, video_output)
+        encode_video(video.id)
+    else:
+        msg = "Wrong file or path:" + "\n%s" % video_output
+        send_email_recording(msg, recording_id)
+
+
+def get_sub_cmd(height_presentation_video, height_presenter_video, presenter):
+    min_height = min([height_presentation_video, height_presenter_video])
+    subcmd = ""
+    if presenter == "pipb":
+        # trouver la bonne hauteur en fonction de la video de presentation
+        height = (
+            height_presentation_video
+            if (height_presentation_video % 2) == 0
+            else height_presentation_video + 1
+        )
+        # ffmpeg -y -i presentation_source.webm -i presenter_source.webm \
+        # -c:v libx264 -filter_complex "[0:v]scale=-2:720[pres];[1:v]scale=-2:180[pip];\
+        # [pres][pip]overlay=W-w-10:H-h-10:shortest=1" \
+        # -vsync 0 outputVideo.mp4
+        subcmd = (
+            " -filter_complex "
+            + '"[0:v]scale=-2:%(height)s[pres];[1:v]scale=-2:%(sh)s[pip];'
+            % {"height": height, "sh": height / 4}
+            + '[pres][pip]overlay=W-w-10:H-h-10:shortest=1" -vsync 0 '
+        )
+    if presenter == "piph":
+        # trouver la bonne hauteur en fonction de la video de presentation
+        height = (
+            height_presentation_video
+            if (height_presentation_video % 2) == 0
+            else height_presentation_video + 1
+        )
+        # ffmpeg -y -i presentation_source.webm -i presenter_source.webm \
+        # -c:v libx264 -filter_complex "[0:v]scale=-2:720[pres];[1:v]scale=-2:180[pip];\
+        # [pres][pip]overlay=W-w-10:H-h-10:shortest=1" \
+        # -vsync 0 outputVideo.mp4
+        subcmd = (
+            " -filter_complex "
+            + '"[0:v]scale=-2:%(height)s[pres];[1:v]scale=-2:%(sh)s[pip];'
+            % {"height": height, "sh": height / 4}
+            + '[pres][pip]overlay=W-w-10:10:shortest=1" -vsync 0 '
+        )
+    if presenter == "mid":
+        height = min_height if (min_height % 2) == 0 else min_height + 1
+        if height_presentation_video > height_presenter_video:
+            # ffmpeg -i presentation.webm -i presenter.webm \
+            # -c:v libx264 -filter_complex "[0:v]scale=-2:720[left];[left][1:v]hstack" \
+            # outputVideo.mp4
+            subcmd = (
+                " -filter_complex "
+                + '"[0:v]scale=-2:%(height)s[left];[0:v]scale=-2:%(height)s[right];'
+                % {"height": height}
+                + '[left][right]hstack" -vsync 0 '
+            )
+        else:
+            subcmd = (
+                " -filter_complex "
+                + '"[0:v]scale=-2:%(height)s[left];[1:v]scale=-2:%(height)s[right];'
+                % {"height": height}
+                + '[left][right]hstack" -vsync 0 '
+            )
+
+    return subcmd
+
+
+def get_height(info):
+    in_height = 0
+    if len(info["streams"]) > 0 and info["streams"][0].get("height"):
+        in_height = info["streams"][0]["height"]
+    return in_height
+
+
+def launch_encode_video_studio(input_video, subcmd, video_output):
+    """Encode video for studio."""
+
+    msg = ""
+    ffmpegStudioCommand = "%s %s %s %s %s" % (
+        FFMPEG,
+        FFMPEG_MISC_PARAMS,
+        input_video,
+        subcmd,
+        video_output,
+    )
+    msg += "- %s\n" % ffmpegStudioCommand
+    logfile = video_output.replace(".mp4", ".log")
+    ffmpegstudio = subprocess.run(
+        ffmpegStudioCommand, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+    )
+    with open(logfile, "ab") as f:
+        f.write(b"\n\ffmpegstudio:\n\n")
+        f.write(ffmpegstudio.stdout)
+    msg += "\n- Encoding Mp4: %s" % time.ctime()
+    if DEBUG:
+        print(msg)
+        print(ffmpegstudio.stdout)
+        print(ffmpegstudio.stderr)
     return msg

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mediapackage id="{{ idMedia }}" start="{{ start }}" xmlns="http://mediapackage.opencastproject.org">
+  <media>
+    <track id="{{ idTrack }}" type="{{ typeTrack }}">
+    <mimetype>video/webm</mimetype>
+    <tags>
+      <tag></tag>
+    </tags>
+    <url>{% if request.is_secure %}https://{%else%}http://{% endif %}{{ request.get_host }}/media/opencast-files/{{ idMedia }}/{{ filename }}</url>
+    <live>false</live>
+  </track>
+</media>
+<metadata>
+  <catalog id="{{ idCatalog }}" type="{{ typeCatalog }}">
+    <mimetype>text/xml</mimetype>
+    <tags/>
+    <url>{% if request.is_secure %}https://{%else%}http://{% endif %}{{ request.get_host }}/media/opencast-files/{{ idMedia }}/{{ idCatalog }}/dublincore.xml</url>
+  </catalog>
+</metadata>
+<attachments>
+  <attachment id="{{ idAttachment}}" type="{{ typeAttachment}}">
+    <mimetype>text/xml</mimetype>
+    <tags/>
+    <url>{% if request.is_secure %}https://{%else%}http://{% endif %}{{ request.get_host }}/media/opencast-files/{{ idMedia }}/{{ idAttachment}}/acl.xml</url>
+  </attachment>
+</attachments>
+<publications/>
+</mediapackage>

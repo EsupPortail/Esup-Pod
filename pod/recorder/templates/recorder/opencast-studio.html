@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block page_extra_head %}
+<style>
+  #root header {display:none;}
+  /* Studio height */
+  #root > div {
+    min-height: 600px;
+  }
+</style>
+
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}{{ block.super }}
+  <li class="breadcrumb-item active" aria-current="page">{% trans "Studio" %}</li>
+{% endblock %}
+
+{% block page_title %}
+  {% trans "Studio" %}
+{% endblock %}
+
+{% block page_content %}
+{{body|safe}}
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+{% block more_script %}
+<script>
+  //Create array of options to be added
+  {% if default_presenter and default_presenter == "pipb" %}
+  const list_value = [["pipb", "Pip - {% trans "Camera inside the screen video to bottom right" %}"], ["piph", "Pip - {% trans "Camera inside the screen video to top right" %}"], ["mid", "50/50 - {% trans "Same size for screen and camera" %}"]];
+  {% elif  default_presenter and default_presenter == "piph" %}
+  const list_value = [["piph", "Pip - {% trans "Camera inside the screen video to top right" %}"], ["pipb", "Pip - {% trans "Camera inside the screen video to bottom right" %}"], ["mid", "50/50 - {% trans "Same size for screen and camera" %}"]];
+  {% else %}
+  const list_value = [["mid", "50/50 - {% trans "Same size for screen and camera" %}"], ["piph", "Pip - {% trans "Camera inside the screen video to top right" %}"], ["pipb", "Pip - {% trans "Camera inside the screen video to bottom right" %}"]];
+  {% endif %}
+  // put local storage default value
+  localStorage.setItem('ocStudioLastPresenter', "{{default_presenter}}");
+  //Create and append select list
+  let selectList = document.createElement("select");
+  selectList.id = "input_presenter";
+  selectList.name = "presenter_list";
+  //myParent.appendChild(selectList);
+
+  //Create and append the options
+  for (var i = 0; i < list_value.length; i++) {
+      var option = document.createElement("option");
+      option.value = list_value[i][0];
+      option.text = list_value[i][1];
+      selectList.appendChild(option);
+  }
+  let label = document.createElement("label");
+  label.innerHTML = "{% trans "Please select render you want" %}";
+  label.setAttribute("for", "input_presenter");
+
+  let divselect = document.createElement("div");
+  divselect.appendChild(selectList)
+  label.appendChild(divselect)
+  
+  const input_title = "input[name='title'][type='text']";
+  let data_send = false;
+  $(document).on('DOMSubtreeModified', '#root>div>main', function(){
+    if($(input_title).html() === "" && $(input_title).length && $("#root video").length == 2 && $("#input_presenter").length == 0 && data_send == false){
+        let div = $(input_title).first().parent("div").parent("label").parent("div");
+        label.setAttribute("class", $(input_title).first().parent("div").parent("label").attr("class"));
+        div.append(label);
+        send_presenter_value($('#input_presenter').val());
+        data_send = true; 
+    }
+  });
+  $(document).on('change', '#input_presenter', function(){
+    // call ajax to send value
+    send_presenter_value($('#input_presenter').val());
+  });
+
+  function send_presenter_value(val) {
+    console.log("VAL : "+val);
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'recorder:presenter_post' %}",
+      data: {"presenter": val},
+      success: function (response) {
+        data_send = false;
+      },
+      error: function (response) {
+        // alert the error if any error occured
+        console.log(response)
+      }
+    });
+  }
+
+</script>
+{% endblock more_script %}

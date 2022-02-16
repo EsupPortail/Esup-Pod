@@ -176,6 +176,16 @@ def send_email(msg, video_id):
     mail_admins(subject, message, fail_silently=False, html_message=html_message)
 
 
+def send_email_recording(msg, recording_id):
+    subject = "[" + TITLE_SITE + "] Error Encoding Recording id:%s" % recording_id
+    message = "Error Encoding  recording id : %s\n%s" % (recording_id, msg)
+    html_message = "<p>Error Encoding recording id : %s</p><p>%s</p>" % (
+        recording_id,
+        msg.replace("\n", "<br/>"),
+    )
+    mail_admins(subject, message, fail_silently=False, html_message=html_message)
+
+
 def send_email_transcript(video_to_encode):
     if DEBUG:
         print("SEND EMAIL ON TRANSCRIPTING COMPLETION")

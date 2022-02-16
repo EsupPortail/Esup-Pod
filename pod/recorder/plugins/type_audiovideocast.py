@@ -13,7 +13,7 @@ from django.core.files.base import ContentFile
 from pod.video.models import Video
 from pod.video import encode
 from pod.enrichment.models import Enrichment
-from ..models import Recording
+from ..utils import add_comment
 
 DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
 
@@ -38,12 +38,6 @@ def process(recording):
     t = threading.Thread(target=encode_recording, args=[recording])
     t.setDaemon(True)
     t.start()
-
-
-def add_comment(recording_id, comment):
-    recording = Recording.objects.get(id=recording_id)
-    recording.comment = "%s\n%s" % (recording.comment, comment)
-    recording.save()
 
 
 def save_video(recording, video_data, video_src):

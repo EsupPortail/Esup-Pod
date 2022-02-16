@@ -315,9 +315,9 @@ USE_ESTABLISHMENT_FIELD = False
 USE_STATS_VIEW = False
 
 """
-# Permet d'activer la possibilité d'enregistrer son ecran et son micro
+# Permet d'activer le studio Opencast dans Pod
 """
-USE_VIDEO_RECORD = False
+USE_OPENCAST_STUDIO = False
 
 """
 # affichage de la statistique de vue des videos si utilisateur authentifié
@@ -732,7 +732,8 @@ THEME_FORM_FIELDS_HELP_TEXT = ""
 # Le traitement se fait en fonction du type de fichier déposé.
 """
 RECORDER_TYPE = (('video', _('Video')),
-                 ('audiovideocast', _('Audiovideocast')))
+                 ('audiovideocast', _('Audiovideocast')),
+                 ('studio', _('Studio')))
 
 """
 # Chemin racine du répertoire où sont déposés les enregistrements
@@ -1259,18 +1260,6 @@ DEFAULT_YEAR_DATE_DELETE = 2
 # voir pod/main/settings.py L.224
 """
 LTI_ENABLED = True  # False par défaut
-
-"""
-# Configuration H5P
-# les videos interactive ne sont plus maintenu dans Pod
-"""
-H5P_ENABLED = True  # False
-H5P_DEV_MODE = 0
-H5P_URL = '/h5p/'
-H5P_SAVE = 30
-H5P_EXPORT = '/exports/'
-H5P_LANGUAGE = 'fr'
-BASE_URL = 'https://pod.univ.fr/'
 
 """
 # Vous pouvez définir le drapeau Http cookie SameSite sur tous les cookies

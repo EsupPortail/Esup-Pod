@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<wf:workflow id="1180" state="INSTANTIATED" xmlns:sec="http://org.opencastproject.security" xmlns:mp="http://mediapackage.opencastproject.org" xmlns:wf="http://workflow.opencastproject.org">
+<wf:template>fast</wf:template>
+<wf:title>Fast Testing Workflow</wf:title>
+<wf:description>
+    A minimal workflow that transcodes media into distribution formats,
+    then publishes the resulting distribution files, along with their associated metadata.
+</wf:description>
+<wf:parent xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+  <sec:creator-id>admin</sec:creator-id>
+  <sec:organization-id>mh_default_org</sec:organization-id>
+  <mp:mediapackage id="{{ idMedia }}" start="{{ start }}">
+    <mp:title>test1</mp:title>
+    <mp:creators>
+      <mp:creator>test1</mp:creator>
+    </mp:creators>
+    <mp:media>
+      <mp:track id="{{ idTrack }}" type="{{ typeTrack }}">
+        <mp:mimetype>video/webm</mp:mimetype>
+      <mp:tags>
+        <mp:tag></mp:tag>
+        </mp:tags>
+        <mp:url>{{ urlFilename }}</mp:url>
+        <mp:live>false</mp:live>
+      </mp:track>
+    </mp:media>
+    <mp:metadata>
+      <mp:catalog id="{{ idCatalog}}" type="{{ typeCatalog }}">
+        <mp:mimetype>text/xml</mp:mimetype>
+        <mp:tags/>
+        <mp:url>{% if request.is_secure %}https://{%else%}http://{% endif %}{{ request.get_host }}/media/opencast-files/{{ idMedia }}/{{ idCatalog }}/dublincore.xml</mp:url>
+      </mp:catalog>
+    </mp:metadata>
+    <mp:attachments>
+      <mp:attachment id="{{ idAttachment }}" type="{{ typeAttachment }}">
+        <mp:mimetype>text/xml</mp:mimetype>
+        <mp:tags/>
+        <mp:url>{% if request.is_secure %}https://{%else%}http://{% endif %}{{ request.get_host }}/media/opencast-files/{{ idMedia }}/{{ idAttachment }}/acl.xml</mp:url>
+      </mp:attachment>
+    </mp:attachments>
+    <mp:publications/>
+  </mp:mediapackage>
+  <wf:operations>
+    <wf:operation id="defaults" state="INSTANTIATED" description="Applying default configuration values" fail-on-error="true" max-attempts="1" failed-attempts="0" retry-strategy="none">
+      <wf:configurations>
+        <wf:configuration key="straightToPublishing">true</wf:configuration>
+      </wf:configurations>
+      <wf:execution-history/>
+    </wf:operation>
+    <wf:operation id="series" state="INSTANTIATED" description="Applying access control entries from series" fail-on-error="true" exception-handler-workflow="partial-error" max-attempts="1" failed-attempts="0" retry-strategy="none">
+      <wf:configurations>
+        <wf:configuration key="apply-acl">true</wf:configuration>
+      </wf:configurations>
+      <wf:execution-history/>
+    </wf:operation>
+    <wf:operation id="inspect" state="INSTANTIATED" description="Inspecting audio and video streams" fail-on-error="true" exception-handler-workflow="partial-error" max-attempts="1" failed-attempts="0" retry-strategy="none">
+      <wf:configurations>
+        <wf:configuration key="accept-no-media">false</wf:configuration>
+        <wf:configuration key="overwrite">false</wf:configuration>
+      </wf:configurations>
+      <wf:execution-history/>
+    </wf:operation>
+    <wf:operation id="encode" state="INSTANTIATED" description="Encoding video" fail-on-error="true" exception-handler-workflow="partial-error" max-attempts="1" failed-attempts="0" retry-strategy="none">
+      <wf:configurations>
+        <wf:configuration key="target-flavor">*/preview</wf:configuration>
+        <wf:configuration key="encoding-profile">fast.http</wf:configuration>
+        <wf:configuration key="target-tags">engage-download,engage-streaming,rss,atom</wf:configuration>
+        <wf:configuration key="source-flavor">*/source</wf:configuration>
+      </wf:configurations>
+      <wf:execution-history/>
+    </wf:operation>
+    <wf:operation id="image" state="INSTANTIATED" description="Creating Engage search result thumbnails" fail-on-error="true" if="${straightToPublishing}" exception-handler-workflow="partial-error" max-attempts="1" failed-attempts="0" retry-strategy="none">
+      <wf:configurations>
+        <wf:configuration key="target-flavor">*/search+preview</wf:configuration>
+        <wf:configuration key="time">1</wf:configuration>
+        <wf:configuration key="encoding-profile">search-cover.http</wf:configuration>
+        <wf:configuration key="target-tags">engage-download</wf:configuration>
+        <wf:configuration key="source-flavor">*/source</wf:configuration>
+      </wf:configurations>
+      <wf:execution-history/>
+    </wf:operation>
+    <wf:operation id="image" state="INSTANTIATED" description="Creating Engage player preview image" fail-on-error="true" if="${straightToPublishing}" exception-handler-workflow="partial-error" max-attempts="1" failed-attempts="0" retry-strategy="none">
+      <wf:configurations><wf:configuration key="target-flavor">*/player+preview</wf:configuration>
+        <wf:configuration key="time">1</wf:configuration>
+        <wf:configuration key="encoding-profile">player-preview.http</wf:configuration>
+        <wf:configuration key="target-tags">engage-download</wf:configuration>
+        <wf:configuration key="source-flavor">*/source</wf:configuration>
+      </wf:configurations>
+      <wf:execution-history/>
+    </wf:operation>
+    <wf:operation id="segment-video" state="INSTANTIATED" description="Detecting slide transitions in presentation track" fail-on-error="false" if="${straightToPublishing}" exception-handler-workflow="partial-error" max-attempts="1" failed-attempts="0" retry-strategy="none">
+      <wf:configurations>
+        <wf:configuration key="target-tags">engage-download</wf:configuration>
+        <wf:configuration key="source-flavor">presentation/source</wf:configuration>
+      </wf:configurations>
+      <wf:execution-history/>
+    </wf:operation>
+    <wf:operation id="segmentpreviews" state="INSTANTIATED" description="Creating presentation segments preview image" fail-on-error="false" if="${straightToPublishing}" exception-handler-workflow="partial-error" max-attempts="1" failed-attempts="0" retry-strategy="none">
+      <wf:configurations>
+        <wf:configuration key="reference-tags">engage-download</wf:configuration>
+        <wf:configuration key="target-flavor">presentation/segment+preview</wf:configuration>
+        <wf:configuration key="encoding-profile">player-slides.http</wf:configuration>
+        <wf:configuration key="target-tags">engage-download</wf:configuration>
+        <wf:configuration key="source-flavor">presentation/source</wf:configuration>
+      </wf:configurations>
+      <wf:execution-history/>
+    </wf:operation>
+    <wf:operation id="publish-configure" state="INSTANTIATED" description="Publish to preview publication channel" fail-on-error="true" exception-handler-workflow="partial-error" max-attempts="1" failed-attempts="0" retry-strategy="none">
+      <wf:configurations>
+        <wf:configuration key="check-availability">false</wf:configuration>
+        <wf:configuration key="download-source-flavors">*/preview</wf:configuration>
+        <wf:configuration key="url-pattern">${org_org_opencastproject_admin_ui_url!'http://localhost:8080'}/admin-ng/index.html#/events/events/${event_id}/tools/editor</wf:configuration>
+        <wf:configuration key="channel-id">internal</wf:configuration>
+      </wf:configurations>
+      <wf:execution-history/>
+    </wf:operation>
+    <wf:operation id="publish-engage" state="INSTANTIATED" description="Publishing to Engage" fail-on-error="true" if="${straightToPublishing}" exception-handler-workflow="partial-error" max-attempts="2" failed-attempts="0" retry-strategy="none">
+      <wf:configurations>
+        <wf:configuration key="check-availability">false</wf:configuration>
+        <wf:configuration key="download-source-flavors">dublincore/*,security/*</wf:configuration>
+        <wf:configuration key="download-source-tags">engage-download</wf:configuration>
+      </wf:configurations>
+      <wf:execution-history/>
+    </wf:operation>
+    <wf:operation id="snapshot" state="INSTANTIATED" description="Archiving" fail-on-error="true" exception-handler-workflow="partial-error" max-attempts="1" failed-attempts="0" retry-strategy="none">
+      <wf:configurations>
+        <wf:configuration key="source-flavors">*/source,dublincore/*,security/*</wf:configuration>
+      </wf:configurations>
+      <wf:execution-history/>
+    </wf:operation>
+    <wf:operation id="cleanup" state="INSTANTIATED" description="Cleaning up" fail-on-error="false" max-attempts="1" failed-attempts="0" retry-strategy="none">
+      <wf:configurations>
+        <wf:configuration key="delete-external">true</wf:configuration>
+        <wf:configuration key="preserve-flavors">security/*</wf:configuration>
+      </wf:configurations>
+      <wf:execution-history/>
+    </wf:operation>
+  </wf:operations>
+  <wf:configurations>
+    <wf:configuration key="workflowDefinitionId">fast</wf:configuration>
+    <wf:configuration key="ingest_start_date">{{ startOtherFormat }}</wf:configuration>
+  </wf:configurations>
+</wf:workflow>
