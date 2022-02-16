@@ -31,7 +31,7 @@ import logging
 
 TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
 if TRANSCRIPT:
-    from deepspeech import Model
+    from stt import Model
 
 DEBUG = getattr(settings, "DEBUG", False)
 
@@ -44,7 +44,7 @@ else:
     FILEPICKER = False
     from pod.main.models import CustomFileModel
 
-DS_PARAM = getattr(settings, "DS_PARAM", dict())
+STT_PARAM = getattr(settings, "STT_PARAM", dict())
 AUDIO_SPLIT_TIME = getattr(settings, "AUDIO_SPLIT_TIME", 300)  # 5min
 # time in sec for phrase length
 SENTENCE_MAX_LENGTH = getattr(settings, "SENTENCE_MAX_LENGTH", 3)
@@ -63,11 +63,11 @@ log = logging.getLogger(__name__)
 """
 TO TEST IN THE SHELL -->
 from pod.video.transcript import *
-ds_model = get_model("fr")
+stt_model = get_model("fr")
 msg, webvtt, all_text = main_transcript(
     "/test/audio_192k_pod.mp3", # file
     177, # file duration
-    ds_model # model deepspeech loaded
+    stt_model # model stt loaded
 )
 print(webvtt)
 """
@@ -133,7 +133,7 @@ def main_threaded_transcript(video_to_encode_id):
     lang = video_to_encode.main_lang
     # check if DS_PARAM [lang] exist
     if not DS_PARAM.get(lang):
-        msg += "\n no deepspeech model found for lang:%s." % lang
+        msg += "\n no stt model found for lang:%s." % lang
         msg += "Please add it in DS_PARAM."
         change_encoding_step(video_to_encode.id, -1, msg)
         send_email(msg, video_to_encode.id)
