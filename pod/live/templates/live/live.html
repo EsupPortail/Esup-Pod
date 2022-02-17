@@ -14,6 +14,46 @@
     <script>let heartbeat_delay = {{heartbeat_delay}}</script>
     <script src="{% static 'js/viewcounter.js' %}?ver={{VERSION}}"></script>
   {%endif%}
+
+  {% if request.GET.is_iframe and not form  %}
+  <style>
+    body, body * {
+      margin:0;
+      padding:0;
+    }
+    div.headerBar {
+      display:none;
+    }
+    header {
+      display:none;
+    }
+    #livename {
+      display: none;
+    }
+    #mainContent {
+      position: absolute;
+      display: block;
+      margin:0;
+      padding:0;
+      top:0;
+      left:0;
+      height:0;
+      max-width: 98%;
+      height: calc(100vh);
+    }
+    #mainContent>.jumbotron {
+      margin:0;
+      max-height: 100%;
+    }
+    #podvideoplayer, #podvideoonholdplayer {
+      max-width: 100%;
+      height: calc(90vh);
+    }
+    .video-js.vjs-16-9 {
+      padding-top: 0;
+    }
+  </style>
+  {% endif %}
 {% endblock %}
 
 
