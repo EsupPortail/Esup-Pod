@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-17 10:15+0000\n"
+"POT-Creation-Date: 2022-02-17 15:50+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ptitloup <nicolas.can@univ-lille.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -4384,8 +4384,8 @@ msgstr "La vidéo de l'écran et de la caméra seront côte à côte"
 #: pod/recorder/templates/recorder/opencast-studio.html:60
 #, fuzzy
 #| msgid "Please enter a document."
-msgid "Please select render you want"
-msgstr "Veuillez joindre un document."
+msgid "Please select the render you want"
+msgstr "Veuillez sélectionner le rendu souhaité"
 
 #: pod/recorder/templates/recorder/record_delete.html:12
 #: pod/recorder/templates/recorder/record_delete.html:17
@@ -4480,7 +4480,7 @@ msgstr "L’enregistrement a été supprimé."
 #, fuzzy
 #| msgid "Recorder not found."
 msgid "Recorder for Studio not found."
-msgstr "Enregistreur non trouvé."
+msgstr "Enregistreur Studio non trouvé."
 
 #: pod/urls.py:387 pod/urls.py:388
 msgid "Pod Administration"
