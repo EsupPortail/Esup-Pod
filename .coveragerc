@@ -6,13 +6,13 @@
 # on each function you don't want to be covered
 [run]
 source = pod/
-omit = pod/*settings*.py # pragma: no cover
-       pod/*apps.py # pragma: no cover
-       pod/wsgi.py # pragma: no cover
-       */tests/* # pragma: no cover it's test !
-       */commands/* # pragma: no cover
-       */migrations/* # pragma: no cover
-       */plugins/* # pragma: no cover
-       */forms.py # no cover yet !
+omit = pod/*settings*.py
+       pod/*apps.py
+       pod/wsgi.py
+       */tests/*
+       */commands/*
+       */migrations/*
+       */plugins/*
+       */forms.py
        pod/video/bbb.py
        scripts/bbb-pod-live/*.*
