@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "2.8.3"
+VERSION = "2.9.0"
 
 ##
 # Installed applications list
