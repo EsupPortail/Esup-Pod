@@ -22,6 +22,8 @@ def ajax_required(_view):
 
 def admin_required(_view):
     """
+    Check if user must have admin role.
+
     Decorator for views that checks that the logged in user is a superuser, redirecting
     to the log-in page if necessary.
     """

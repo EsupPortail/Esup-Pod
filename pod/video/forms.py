@@ -620,7 +620,7 @@ class VideoForm(forms.ModelForm):
         # Manage required fields html
         self.fields = add_placeholder_and_asterisk(self.fields)
         if self.fields.get("video"):
-            self.fields["video"].label = _(u"File")
+            self.fields["video"].label = _("File")
             valid_ext = FileExtensionValidator(VIDEO_ALLOWED_EXTENSIONS)
             self.fields["video"].validators = [valid_ext, FileSizeValidator]
             self.fields["video"].widget.attrs["class"] = self.videoattrs["class"]

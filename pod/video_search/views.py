@@ -258,5 +258,6 @@ def search_videos(request):
             "aggregations": aggregations,
             "form": searchForm,
             "remove_selected_facet": remove_selected_facet,
+            "page_title": _("Search results"),
         },
     )

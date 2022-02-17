@@ -25,7 +25,7 @@
 
 
 {% block page_content %}
-<h3>{% trans "Editing the channel's themes" %} {{channel.title}}
+<h1 class="page_title">{% trans "Editing the channel's themes" %} {{channel.title}}
   <span class="float-right">
     <a href="{% url 'channel' slug_c=channel.slug %}" class="btn btn btn-outline-primary btn-sm">
       <i data-feather="youtube"></i>&nbsp;{% trans "View the channel"%}
@@ -34,7 +34,7 @@
       <i data-feather="edit"></i>&nbsp;{% trans "Edit the channel"%}
     </a>
   </span>
-</h3>
+</h1>
 <div id="list_theme" >
   {% include 'channel/list_theme.html' with list_theme=channel.themes.all %}
 </div>
