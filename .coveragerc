@@ -12,7 +12,7 @@ omit = pod/*settings*.py
        */tests/*
        */commands/*
        */migrations/*
-       */plugins/*
-       */forms.py
+       pod/recorder/plugins/type_*.py
+       pod/*/forms.py
        pod/video/bbb.py
        scripts/bbb-pod-live/*.*
