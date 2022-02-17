@@ -269,7 +269,7 @@ HIDE_USER_TAB = False
 HIDE_USER_FILTER = False
 
 """
-# Si True, l'onglet types de la barre de manu ne sera plus visible
+# Si True, l'onglet types de la barre de menu ne sera plus visible
 """
 HIDE_TYPES = False
 
@@ -346,7 +346,8 @@ OPENCAST_MEDIAPACKAGE = """<?xml version="1.0" encoding="UTF-8" standalone="yes"
     <metadata/>
     <attachments/>
     <publications/>
-    </mediapackage>
+    </mediapackage>"""
+
 """
 # affichage de la statistique de vue des videos si utilisateur authentifié
 """
