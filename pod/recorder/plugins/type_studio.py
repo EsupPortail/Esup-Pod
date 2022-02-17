@@ -19,7 +19,7 @@ ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
 ENCODE_STUDIO = getattr(settings, "ENCODE_STUDIO", "start_encode_studio")
 MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
 OPENCAST_FILES_DIR = getattr(settings, "OPENCAST_FILES_DIR", "opencast-files")
-# Possible value are "mid" or "pip"
+# Possible value are "mid", "piph" or "pipb"
 OPENCAST_DEFAULT_PRESENTER = getattr(settings, "OPENCAST_DEFAULT_PRESENTER", "mid")
 
 log = logging.getLogger(__name__)

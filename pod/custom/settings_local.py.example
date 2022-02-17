@@ -269,6 +269,11 @@ HIDE_USER_TAB = False
 HIDE_USER_FILTER = False
 
 """
+# Si True, l'onglet types de la barre de manu ne sera plus visible
+"""
+HIDE_TYPES = False
+
+"""
 # Si valeur vaut 'True', les URLs contenues dans le texte de superposition
 #  seront transformées, à la lecture de la vidéo, en lien cliquable.
 """
@@ -319,6 +324,29 @@ USE_STATS_VIEW = False
 """
 USE_OPENCAST_STUDIO = False
 
+"""
+# Permet de spécifier le dossier de stockage des enregistrements du studio avant traitement
+"""
+OPENCAST_FILES_DIR = "opencast-files"
+"""
+# Permet de spécifier la valeur par défaut du placement de la vidéo du
+# presenteur par rapport à la vidéo de présentation (écran)
+# les valeurs possibles sont "mid" (ecran et caméra ont la même taille)
+# "piph" (le presenteur, caméra, est inscruté dans la vidéo de présentation, en haut à droite)
+# "pipb" (le presenteur, caméra, est inscruté dans la vidéo de présentation, en bas à droite)
+"""
+OPENCAST_DEFAULT_PRESENTER = "mid"
+"""
+# Contenu par défaut du fichier xml pour créer le mediapackage pour le studio.
+# ce fichier va contenir toutes les spécificités de l'enregistrement (source, cutting, title, presenter etc.)
+"""
+OPENCAST_MEDIAPACKAGE = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <mediapackage xmlns="http://mediapackage.opencastproject.org" id="" start="">
+    <media/>
+    <metadata/>
+    <attachments/>
+    <publications/>
+    </mediapackage>
 """
 # affichage de la statistique de vue des videos si utilisateur authentifié
 """
@@ -667,6 +695,23 @@ ENCODE_VIDEO = "start_encode"
 # Remote command to launch, it will be call with this arguments :
 # -n encoding-<video_id> -i <video_src_file>  -v <video_id> -u <video_user_hash> -d <settings_debug>
 # SSH_REMOTE_CMD = ""
+"""
+
+"""
+# Fonction appelée pour lancer l'encodage du studio (merge and cut)
+# Pour l'encodage distant, il faut préciser "start_studio_remote_encode"
+"""
+ENCODE_STUDIO = "start_encode_studio"
+"""
+# pour l'encodage distant du studio, voici les paramètres possibles :
+# SSH_REMOTE_STUDIO_USER = "pod"
+# SSH_REMOTE_STUDIO_HOST = "xxx.univ.fr"
+# SSH_REMOTE_STUDIO_PORT = "22"
+# SSH_REMOTE_STUDIO_KEY = "/home/pod/.ssh/id_rsa"
+# remote command to launch for studio, here is the arguments needed:
+# -n recording-<recording_id> -v <presenter_source}> -f <presentation_source}>
+# -r <recording_id> -s <subtime> -p <presenter> -o <output> -d <debug>
+# SSH_REMOTE_STUDIO_CMD = ""
 """
 
 """
