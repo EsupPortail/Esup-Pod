@@ -1,6 +1,7 @@
 """Esup-Pod Video models."""
 
 import os
+import re
 import time
 import unicodedata
 import json
@@ -881,6 +882,8 @@ class Video(models.Model):
     @property
     def get_thumbnail_admin(self):
         thumbnail_url = ""
+        # fix title for xml description
+        title = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", self.title)
         if self.thumbnail and self.thumbnail.file_exist():
             im = get_thumbnail(self.thumbnail.file, "100x100", crop="center", quality=72)
             thumbnail_url = im.url
@@ -893,7 +896,7 @@ class Video(models.Model):
             'src="%s" alt="%s" loading="lazy"/>'
             % (
                 thumbnail_url,
-                self.title.replace("{", "").replace("}", "").replace('"', "'"),
+                title.replace("{", "").replace("}", "").replace('"', "'"),
             )
         )
 

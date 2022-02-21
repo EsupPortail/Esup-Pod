@@ -172,7 +172,8 @@ class RssSiteVideosFeed(Feed):
         return obj.order_by("-date_added")[:30]
 
     def item_title(self, item):
-        return "%s | %s" % (item.owner, item.title)
+        sub = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", item.title)
+        return "%s | %s" % (item.owner.get_full_name(), sub)
 
     def item_link(self, item):
         return "".join([self.author_link, item.get_absolute_url()])
