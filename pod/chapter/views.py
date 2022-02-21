@@ -30,11 +30,9 @@ def video_chapter(request, slug):
         )
         and (request.user not in video.additional_owners.all())
     ):
-        messages.add_message(
-            request, messages.ERROR, _(u"You cannot chapter this video.")
-        )
+        messages.add_message(request, messages.ERROR, _("You cannot chapter this video."))
         return HttpResponseForbidden(
-            u"Only the owner and additional owners " "can add chapter."
+            "Only the owner and additional owners " "can add chapter."
         )
 
     list_chapter = video.chapter_set.all()

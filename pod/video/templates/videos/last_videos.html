@@ -3,16 +3,15 @@
 {% get_last_videos as LAST_VIDEOS %}
 
 {% if LAST_VIDEOS %}
-<div class="jumbotron" id="last_videos">
-<h3>{% trans "Last videos" %}</h3>
-<!-- liste vignette vidéo 4 par ligne -->
+  <div class="jumbotron" id="last_videos">
+    <h1 class="page_title">{% trans "Last videos" %}</h1>
+    {# liste vignette vidéo 4 par ligne #}
+    {% include "videos/video_list.html" with videos=LAST_VIDEOS %}
 
-{% include "videos/video_list.html" with videos=LAST_VIDEOS %}
-
-<div class="hightlight">
-     <div class="d-flex justify-content-end">
-       <p><a class="btn btn-lg btn-primary btn-sm" href="{% url "videos" %}" role="button">{% trans "Show all videos" %} &raquo;</a></p>
-     </div>
-</div> <!-- fin hightlight -->
-</div>
+    <div class="highlight">
+         <div class="d-flex justify-content-end">
+           <p><a class="btn btn-lg btn-primary btn-sm" href="{% url "videos" %}" role="button">{% trans "Show all videos" %} &raquo;</a></p>
+         </div>
+    </div>
+  </div>
 {% endif %}

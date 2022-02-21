@@ -72,17 +72,17 @@ class RssFeedGenerator(Rss201rev2Feed):
         return {
             "version": self._version,
             "xmlns:atom": "http://www.w3.org/2005/Atom",
-            "xmlns:itunes": u"http://www.itunes.com/dtds/podcast-1.0.dtd",
+            "xmlns:itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd",
         }
 
     def add_root_elements(self, handler):
         """Add root elements."""
         super(RssFeedGenerator, self).add_root_elements(handler)
-        handler.startElement(u"image", {})
-        handler.addQuickElement(u"url", self.feed["image_url"])
-        handler.addQuickElement(u"title", self.feed["title"])
-        handler.addQuickElement(u"link", self.feed["link"])
-        handler.endElement(u"image")
+        handler.startElement("image", {})
+        handler.addQuickElement("url", self.feed["image_url"])
+        handler.addQuickElement("title", self.feed["title"])
+        handler.addQuickElement("link", self.feed["link"])
+        handler.endElement("image")
 
         handler.addQuickElement("itunes:subtitle", self.feed["subtitle"])
         handler.addQuickElement("itunes:author", self.feed["author_name"])
@@ -103,10 +103,10 @@ class RssFeedGenerator(Rss201rev2Feed):
 
     def add_item_elements(self, handler, item):
         super(RssFeedGenerator, self).add_item_elements(handler, item)
-        handler.addQuickElement(u"itunes:subtitle", item["title"])
-        handler.addQuickElement(u"itunes:summary", item["description"])
-        handler.addQuickElement(u"itunes:duration", item["duration"])
-        handler.addQuickElement(u"itunes:explicit", item["explicit"])
+        handler.addQuickElement("itunes:subtitle", item["title"])
+        handler.addQuickElement("itunes:summary", item["description"])
+        handler.addQuickElement("itunes:duration", item["duration"])
+        handler.addQuickElement("itunes:explicit", item["explicit"])
 
 
 class RssSiteVideosFeed(Feed):

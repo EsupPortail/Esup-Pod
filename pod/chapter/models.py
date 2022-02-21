@@ -27,7 +27,7 @@ class Chapter(models.Model):
     time_start = models.PositiveIntegerField(
         _("Start time"),
         default=0,
-        help_text=_(u"Start time of the chapter, in seconds."),
+        help_text=_("Start time of the chapter, in seconds."),
     )
 
     class Meta:
@@ -127,4 +127,4 @@ class Chapter(models.Model):
         return self.video.sites
 
     def __str__(self):
-        return u"Chapter: {0} - video: {1}".format(self.title, self.video)
+        return "Chapter: {0} - video: {1}".format(self.title, self.video)

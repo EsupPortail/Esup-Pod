@@ -48,6 +48,8 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     "TEMPLATE_VISIBLE_SETTINGS",
     {
         "TITLE_SITE": "Pod",
+        "DESC_SITE": "The purpose of Esup-Pod is to facilitate the provision of video and\
+        thereby encourage its use in teaching and research.",
         "TITLE_ETB": "University name",
         "LOGO_SITE": "img/logoPod.svg",
         "LOGO_ETB": "img/logo_etb.svg",
@@ -295,10 +297,14 @@ def contact_us(request):
             messages.add_message(
                 request,
                 messages.ERROR,
-                _(u"One or more errors have been found in the form."),
+                _("One or more errors have been found in the form."),
             )
 
-    return render(request, "contact_us.html", {"form": form, "owner": owner})
+    return render(
+        request,
+        "contact_us.html",
+        {"form": form, "owner": owner, "page_title": _("Contact us")},
+    )
 
 
 def remove_accents(input_str):
