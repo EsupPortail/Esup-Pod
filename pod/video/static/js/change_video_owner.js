@@ -238,8 +238,8 @@
    * Refresh pagination Listener
    */
   const refreshPagination = () => {
-    next_content.classList.toggle("disable", !DATA.next);
-    previous_content.classList.toggle("disable", !DATA.previous);
+    next_content.classList.toggle("disabled", !DATA.next);
+    previous_content.classList.toggle("disabled", !DATA.previous);
 
     next_content.removeEventListener("click", nextPreviousHandler);
     previous_content.removeEventListener("click", nextPreviousHandler);
