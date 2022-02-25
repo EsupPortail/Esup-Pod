@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load staticfiles %}
+{% get_current_language as LANGUAGE_CODE %}
 
 {% block page_extra_head %}
 <style>
@@ -10,7 +11,14 @@
     min-height: 600px;
   }
 </style>
-
+<script>
+  // put local storage default value for default presenter
+  {% if default_presenter %}
+  localStorage.setItem('ocStudioLastPresenter', "{{default_presenter}}");
+  {% endif %}
+  // put local storage default value for language
+  localStorage.setItem('i18nextLng', "{{LANGUAGE_CODE|lower}}");
+</script>
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
@@ -41,8 +49,7 @@
   {% else %}
   const list_value = [["mid", "50/50 - {% trans "Same size for screen and camera" %}"], ["piph", "Pip - {% trans "Camera inside the screen video to top right" %}"], ["pipb", "Pip - {% trans "Camera inside the screen video to bottom right" %}"]];
   {% endif %}
-  // put local storage default value
-  localStorage.setItem('ocStudioLastPresenter', "{{default_presenter}}");
+
   //Create and append select list
   let selectList = document.createElement("select");
   selectList.id = "input_presenter";
