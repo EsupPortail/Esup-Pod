@@ -225,7 +225,7 @@ def context_navbar(request):
         .annotate(video_count=Count("video", distinct=True))
     )
 
-    linkFooter = LinkFooter.objects.all().filter(page__sites=get_current_site(request))
+    linkFooter = LinkFooter.objects.all().filter(sites=get_current_site(request))
 
     list_videos = Video.objects.filter(
         encoding_in_progress=False,

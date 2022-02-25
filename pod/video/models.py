@@ -574,6 +574,12 @@ class Type(models.Model):
         verbose_name_plural = _("Types")
 
 
+@receiver(post_save, sender=Type)
+def default_site_type(sender, instance, created, **kwargs):
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())
+
+
 class Discipline(models.Model):
     title = models.CharField(_("title"), max_length=100, unique=True)
     slug = models.SlugField(
