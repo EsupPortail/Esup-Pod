@@ -35,6 +35,11 @@
 }
 .video-slides>li>.slide_embed {
   overflow: auto;
+  background-color: var(--light);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .video-slides>li>img {
   max-width: 100%;

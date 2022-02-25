@@ -11,12 +11,23 @@
     --theme-ui-colors-primary: var(--primary);
     --theme-ui-colors-error: var(--color-formfields);
   }
+  [data-theme="dark"] {
+    /*--theme-ui-colors-gray-0: var(--font-color);*/
+    /* secondary-button::hover */
+    --theme-ui-colors-gray-3: #797676;
+    /*--theme-ui-colors-gray-4: #737373;*/
+  }
   #root header {display:none;}
   /* Studio height */
   #root > div {
     min-height: 600px;
   }
+
   #root code {
+    color: var(--font-color);
+  }
+  
+  button>.fa-layers {
     color: var(--font-color);
   }
 </style>
