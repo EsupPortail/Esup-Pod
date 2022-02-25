@@ -6,13 +6,18 @@
 {% block page_extra_head %}
 <style>
   :root {
-    --theme-ui-colors-background : var(--background-color);
-    --theme-ui-colors-text : var(--font-color);
+    --theme-ui-colors-background: var(--background-color);
+    --theme-ui-colors-text: var(--font-color);
+    --theme-ui-colors-primary: var(--primary);
+    --theme-ui-colors-error: var(--color-formfields);
   }
   #root header {display:none;}
   /* Studio height */
   #root > div {
     min-height: 600px;
+  }
+  #root code {
+    color: var(--font-color);
   }
 </style>
 <script>
