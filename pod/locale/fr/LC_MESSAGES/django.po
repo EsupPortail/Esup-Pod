@@ -4382,8 +4382,6 @@ msgid "Same size for screen and camera"
 msgstr "La vidéo de l'écran et de la caméra seront côte à côte"
 
 #: pod/recorder/templates/recorder/opencast-studio.html:60
-#, fuzzy
-#| msgid "Please enter a document."
 msgid "Please select the render you want"
 msgstr "Veuillez sélectionner le rendu souhaité"
 
@@ -4477,8 +4475,6 @@ msgid "The record has been deleted."
 msgstr "L’enregistrement a été supprimé."
 
 #: pod/recorder/views.py:838
-#, fuzzy
-#| msgid "Recorder not found."
 msgid "Recorder for Studio not found."
 msgstr "Enregistreur Studio non trouvé."
 
