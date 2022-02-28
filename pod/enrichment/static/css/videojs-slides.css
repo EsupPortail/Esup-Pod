@@ -29,13 +29,13 @@
 }
 .video-slides>li>div {
   height: 100%;
-  background-color: #fff;
-  color: #000;
+  background-color: var(--light); /*#fff;*/
+  color: var(--font-color);
   padding: 1em;
 }
 .video-slides>li>.slide_embed {
   overflow: auto;
-  background-color: var(--light);
+  background-color: #000; /*var(--light);*/
   text-align: center;
   display: flex;
   align-items: center;
