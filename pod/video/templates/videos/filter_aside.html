@@ -75,9 +75,9 @@
 <fieldset class="border-right border-bottom mt-2">
   <legend class="h5"><i data-feather="tag"></i> {% trans "Tags"%}</legend>
   <div id="filterTag">
+    {% tags_for_model video.Video as tagscloud with counts %}
     {% with tagslist=tagscloud|dictsortreversed:"count"|slice:":20" %}
     <div class="form-group collapse" id="collapseFilterTag">
-      {% tags_for_model video.Video as tagscloud with counts %}
       {% for tag in tagslist %}
         <div class="form-check">
           <input class="form-check-input" type="checkbox" name="tag"

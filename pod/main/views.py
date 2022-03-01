@@ -297,7 +297,7 @@ def contact_us(request):
             messages.add_message(
                 request,
                 messages.ERROR,
-                _(u"One or more errors have been found in the form."),
+                _("One or more errors have been found in the form."),
             )
 
     return render(

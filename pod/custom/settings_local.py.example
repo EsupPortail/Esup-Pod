@@ -269,6 +269,11 @@ HIDE_USER_TAB = False
 HIDE_USER_FILTER = False
 
 """
+# Si True, l'onglet types de la barre de menu ne sera plus visible
+"""
+HIDE_TYPES = False
+
+"""
 # Si valeur vaut 'True', les URLs contenues dans le texte de superposition
 #  seront transformées, à la lecture de la vidéo, en lien cliquable.
 """
@@ -315,9 +320,33 @@ USE_ESTABLISHMENT_FIELD = False
 USE_STATS_VIEW = False
 
 """
-# Permet d'activer la possibilité d'enregistrer son ecran et son micro
+# Permet d'activer le studio Opencast dans Pod
 """
-USE_VIDEO_RECORD = False
+USE_OPENCAST_STUDIO = False
+
+"""
+# Permet de spécifier le dossier de stockage des enregistrements du studio avant traitement
+"""
+OPENCAST_FILES_DIR = "opencast-files"
+"""
+# Permet de spécifier la valeur par défaut du placement de la vidéo du
+# presenteur par rapport à la vidéo de présentation (écran)
+# les valeurs possibles sont "mid" (ecran et caméra ont la même taille)
+# "piph" (le presenteur, caméra, est inscruté dans la vidéo de présentation, en haut à droite)
+# "pipb" (le presenteur, caméra, est inscruté dans la vidéo de présentation, en bas à droite)
+"""
+OPENCAST_DEFAULT_PRESENTER = "mid"
+"""
+# Contenu par défaut du fichier xml pour créer le mediapackage pour le studio.
+# ce fichier va contenir toutes les spécificités de l'enregistrement (source, cutting, title, presenter etc.)
+"""
+OPENCAST_MEDIAPACKAGE = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <mediapackage xmlns="http://mediapackage.opencastproject.org" id="" start="">
+    <media/>
+    <metadata/>
+    <attachments/>
+    <publications/>
+    </mediapackage>"""
 
 """
 # affichage de la statistique de vue des videos si utilisateur authentifié
@@ -670,6 +699,23 @@ ENCODE_VIDEO = "start_encode"
 """
 
 """
+# Fonction appelée pour lancer l'encodage du studio (merge and cut)
+# Pour l'encodage distant, il faut préciser "start_studio_remote_encode"
+"""
+ENCODE_STUDIO = "start_encode_studio"
+"""
+# pour l'encodage distant du studio, voici les paramètres possibles :
+# SSH_REMOTE_STUDIO_USER = "pod"
+# SSH_REMOTE_STUDIO_HOST = "xxx.univ.fr"
+# SSH_REMOTE_STUDIO_PORT = "22"
+# SSH_REMOTE_STUDIO_KEY = "/home/pod/.ssh/id_rsa"
+# remote command to launch for studio, here is the arguments needed:
+# -n recording-<recording_id> -v <presenter_source}> -f <presentation_source}>
+# -r <recording_id> -s <subtime> -p <presenter> -o <output> -d <debug>
+# SSH_REMOTE_STUDIO_CMD = ""
+"""
+
+"""
 # Fonction appelée pour lancer la transcription des vidéos
 # Pour la transcription distant, il faut préciser "start_remote_transcript"
 """
@@ -732,7 +778,8 @@ THEME_FORM_FIELDS_HELP_TEXT = ""
 # Le traitement se fait en fonction du type de fichier déposé.
 """
 RECORDER_TYPE = (('video', _('Video')),
-                 ('audiovideocast', _('Audiovideocast')))
+                 ('audiovideocast', _('Audiovideocast')),
+                 ('studio', _('Studio')))
 
 """
 # Chemin racine du répertoire où sont déposés les enregistrements
@@ -1259,18 +1306,6 @@ DEFAULT_YEAR_DATE_DELETE = 2
 # voir pod/main/settings.py L.224
 """
 LTI_ENABLED = True  # False par défaut
-
-"""
-# Configuration H5P
-# les videos interactive ne sont plus maintenu dans Pod
-"""
-H5P_ENABLED = True  # False
-H5P_DEV_MODE = 0
-H5P_URL = '/h5p/'
-H5P_SAVE = 30
-H5P_EXPORT = '/exports/'
-H5P_LANGUAGE = 'fr'
-BASE_URL = 'https://pod.univ.fr/'
 
 """
 # Vous pouvez définir le drapeau Http cookie SameSite sur tous les cookies

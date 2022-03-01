@@ -99,8 +99,8 @@
             </button>
           {% endif %}
           <a class="dropdown-item" href="{% url 'my_videos' %}"><i data-feather="film" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My videos' %}</a>
-          {% if USE_VIDEO_RECORD %}
-          <a class="dropdown-item" href="{% url 'video_record' %}"><i data-feather="video" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans "Video Record" %}</a>
+          {% if USE_OPENCAST_STUDIO %}
+          <a class="dropdown-item" href="{% url 'recorder:studio_pod'%}"><i data-feather="video" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans "Video Record" %}</a>
           {% endif %}
           {% if request.user.owners_channels.all %}
             <a class="dropdown-item" href="{% url 'my_channels' %}"><i data-feather="youtube" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My channels' %}</a>
