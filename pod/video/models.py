@@ -1517,6 +1517,10 @@ class EncodingVideo(models.Model):
     @property
     def sites(self):
         return self.video.sites
+    
+    @property
+    def sites_all(self):
+        return self.video.sites_set.all()
 
     def clean(self):
         if self.name:
@@ -1587,6 +1591,10 @@ class EncodingAudio(models.Model):
     @property
     def sites(self):
         return self.video.sites
+    
+    @property
+    def sites_all(self):
+        return self.video.sites_set.all()
 
     class Meta:
         ordering = ["name"]
@@ -1652,6 +1660,10 @@ class PlaylistVideo(models.Model):
     @property
     def sites(self):
         return self.video.sites
+    
+    @property
+    def sites_all(self):
+        return self.video.sites_set.all()
 
     def clean(self):
         if self.name:
@@ -1690,6 +1702,10 @@ class EncodingLog(models.Model):
     @property
     def sites(self):
         return self.video.sites
+    
+    @property
+    def sites_all(self):
+        return self.video.sites_set.all()
 
     class Meta:
         ordering = ["video"]
@@ -1720,6 +1736,10 @@ class VideoVersion(models.Model):
     @property
     def sites(self):
         return self.video.sites
+    
+    @property
+    def sites_all(self):
+        return self.video.sites_set.all()
 
     def __str__(self):
         return "Choice for default video version: %s - %s" % (
@@ -1738,6 +1758,10 @@ class EncodingStep(models.Model):
     @property
     def sites(self):
         return self.video.sites
+    
+    @property
+    def sites_all(self):
+        return self.video.sites_set.all()
 
     class Meta:
         ordering = ["video"]
@@ -1756,6 +1780,10 @@ class Notes(models.Model):
     @property
     def sites(self):
         return self.video.sites
+    
+    @property
+    def sites_all(self):
+        return self.video.sites_set.all()
 
     class Meta:
         verbose_name = _("Note")
@@ -1789,6 +1817,10 @@ class AdvancedNotes(models.Model):
     @property
     def sites(self):
         return self.video.sites
+    
+    @property
+    def sites_all(self):
+        return self.video.sites_set.all()
 
     def __str__(self):
         return "%s-%s-%s" % (self.user.username, self.video, self.timestamp)

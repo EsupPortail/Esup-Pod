@@ -188,7 +188,7 @@ class EncodingVideoSerializer(serializers.HyperlinkedModelSerializer):
             "rendition",
             "encoding_format",
             "source_file",
-            "sites",
+            "sites_all"
         )
 
 
@@ -202,7 +202,7 @@ class EncodingAudioSerializer(serializers.HyperlinkedModelSerializer):
             "video",
             "encoding_format",
             "source_file",
-            "sites",
+            "sites_all",
         )
 
 
@@ -216,7 +216,7 @@ class PlaylistVideoSerializer(serializers.HyperlinkedModelSerializer):
             "video",
             "encoding_format",
             "source_file",
-            "sites",
+            "sites_all",
         )
 
 
