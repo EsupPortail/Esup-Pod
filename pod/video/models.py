@@ -1517,7 +1517,7 @@ class EncodingVideo(models.Model):
     @property
     def sites(self):
         return self.video.sites
-    
+
     @property
     def sites_all(self):
         return self.video.sites_set.all()
@@ -1591,7 +1591,7 @@ class EncodingAudio(models.Model):
     @property
     def sites(self):
         return self.video.sites
-    
+
     @property
     def sites_all(self):
         return self.video.sites_set.all()
@@ -1660,7 +1660,7 @@ class PlaylistVideo(models.Model):
     @property
     def sites(self):
         return self.video.sites
-    
+
     @property
     def sites_all(self):
         return self.video.sites_set.all()
@@ -1702,7 +1702,7 @@ class EncodingLog(models.Model):
     @property
     def sites(self):
         return self.video.sites
-    
+
     @property
     def sites_all(self):
         return self.video.sites_set.all()
@@ -1736,7 +1736,7 @@ class VideoVersion(models.Model):
     @property
     def sites(self):
         return self.video.sites
-    
+
     @property
     def sites_all(self):
         return self.video.sites_set.all()
@@ -1758,7 +1758,7 @@ class EncodingStep(models.Model):
     @property
     def sites(self):
         return self.video.sites
-    
+
     @property
     def sites_all(self):
         return self.video.sites_set.all()
@@ -1780,7 +1780,7 @@ class Notes(models.Model):
     @property
     def sites(self):
         return self.video.sites
-    
+
     @property
     def sites_all(self):
         return self.video.sites_set.all()
@@ -1817,7 +1817,7 @@ class AdvancedNotes(models.Model):
     @property
     def sites(self):
         return self.video.sites
-    
+
     @property
     def sites_all(self):
         return self.video.sites_set.all()

@@ -188,7 +188,7 @@ class EncodingVideoSerializer(serializers.HyperlinkedModelSerializer):
             "rendition",
             "encoding_format",
             "source_file",
-            "sites_all"
+            "sites_all",
         )
 
 
