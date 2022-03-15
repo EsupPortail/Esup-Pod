@@ -16,6 +16,7 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "3.3.1"
+    "jquery": "3.3.1",
+    "jquery-waypoints": "4.0.1"
   }
 }
