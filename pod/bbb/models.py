@@ -210,7 +210,7 @@ class Livestream(models.Model):
     )
     # Restricted access to the created live
     is_restricted = models.BooleanField(
-        verbose_name=_(u"Restricted access"),
+        verbose_name=_("Restricted access"),
         help_text=_("Is live only accessible to authenticated users?"),
         default=False,
     )

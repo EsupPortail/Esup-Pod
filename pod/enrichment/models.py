@@ -125,7 +125,7 @@ class Enrichment(models.Model):
     stop_video = models.BooleanField(
         _("Stop video"),
         default=False,
-        help_text=_(u"The video will pause when displaying the enrichment."),
+        help_text=_("The video will pause when displaying the enrichment."),
     )
     start = models.PositiveIntegerField(
         _("Start"),
@@ -150,15 +150,15 @@ class Enrichment(models.Model):
         null=True,
         blank=True,
         on_delete=models.CASCADE,
-        help_text=_(u'Integrate a document (PDF, text, html)'))
-    richtext = RichTextField(_('Richtext'), config_name='complete', blank=True)
-    weblink = models.URLField(
-        _(u'Web link'), max_length=200, null=True, blank=True)
+        help_text=_("Integrate a document (PDF, text, html)"),
+    )
+    richtext = RichTextField(_("Richtext"), config_name="complete", blank=True)
+    weblink = models.URLField(_("Web link"), max_length=200, null=True, blank=True)
     embed = models.TextField(
         _("Embed code"),
         null=True,
         blank=True,
-        help_text=_(u"Paste here a code from an external source to embed it."),
+        help_text=_("Paste here a code from an external source to embed it."),
     )
 
     class Meta:
@@ -299,7 +299,7 @@ class Enrichment(models.Model):
         super(Enrichment, self).save(*args, **kwargs)
 
     def __str__(self):
-        return u"Media : {0} - Video: {1}".format(self.title, self.video)
+        return "Media : {0} - Video: {1}".format(self.title, self.video)
 
 
 @receiver(post_save, sender=Enrichment)

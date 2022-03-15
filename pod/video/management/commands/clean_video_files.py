@@ -1,4 +1,4 @@
-u"""Script supprimant des fichiers vidéos devenus inutiles."""
+"""Script supprimant des fichiers vidéos devenus inutiles."""
 
 from django.core.management.base import BaseCommand
 from pod.video.models import Video

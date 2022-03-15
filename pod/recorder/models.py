@@ -88,6 +88,7 @@ RECORDER_TYPE = getattr(
     (
         ("video", _("Video")),
         ("audiovideocast", _("Audiovideocast")),
+        ("studio", _("Studio")),
     ),
 )
 DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/")
@@ -258,23 +259,27 @@ def default_site(sender, instance, created, **kwargs):
 
 
 class Recording(models.Model):
-    recorder = models.ForeignKey(Recorder,
-                                 on_delete=models.CASCADE,
-                                 verbose_name=_('Recorder'),
-                                 default=DEFAULT_RECORDER_ID,
-                                 help_text=_('Recorder that made this '
-                                             'recording.'))
+    recorder = models.ForeignKey(
+        Recorder,
+        on_delete=models.CASCADE,
+        verbose_name=_("Recorder"),
+        default=DEFAULT_RECORDER_ID,
+        help_text=_("Recorder that made this recording."),
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              limit_choices_to={'is_staff': True},
                              default=DEFAULT_RECORDER_USER_ID,
                              help_text=_(
                                  "User who has made the recording"))
-    title = models.CharField(_('title'), max_length=200, unique=True)
-    type = models.CharField(_('Recording Type'), max_length=50,
-                            choices=RECORDER_TYPE,
-                            default=RECORDER_TYPE[0][0])
+    title = models.CharField(_("title"), max_length=200)
+    type = models.CharField(
+        _("Recording Type"),
+        max_length=50,
+        choices=RECORDER_TYPE,
+        default=RECORDER_TYPE[0][0],
+    )
     source_file = models.FilePathField(
-        path=DEFAULT_RECORDER_PATH, unique=True, recursive=True
+        max_length=200, path=DEFAULT_RECORDER_PATH, unique=True, recursive=True
     )
     comment = models.TextField(_("Comment"), blank=True, default="")
     date_added = models.DateTimeField("date added", default=timezone.now, editable=False)

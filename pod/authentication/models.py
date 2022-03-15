@@ -133,7 +133,7 @@ def create_owner_profile(sender, instance, created, **kwargs):
         try:
             Owner.objects.create(user=instance)
         except Exception as e:
-            msg = u"\n Create owner profile ***** Error:%r" % e
+            msg = "\n Create owner profile ***** Error:%r" % e
             msg += "\n%s" % traceback.format_exc()
             logger.error(msg)
             print(msg)
@@ -156,7 +156,7 @@ def create_groupsite_profile(sender, instance, created, **kwargs):
         try:
             GroupSite.objects.create(group=instance)
         except Exception as e:
-            msg = u"\n Create groupsite profile ***** Error:%r" % e
+            msg = "\n Create groupsite profile ***** Error:%r" % e
             msg += "\n%s" % traceback.format_exc()
             logger.error(msg)
             print(msg)
