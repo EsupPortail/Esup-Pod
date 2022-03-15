@@ -1148,12 +1148,12 @@ USE_TRANSCRIPTION = True
 AUDIO_SPLIT_TIME = 300
 
 """
-# paramétrage de deepspeech pour le modele
+# paramétrage de stt pour le modele
 """
-DS_PARAM = {
+STT_PARAM = {
   'fr': {
-    # le modèle deepspeech
-    'model': "/usr/local/django_projects/transcription/model_tensorflow_fr/output_graph.pbmm",
+    # le modèle stt
+    'model': "/usr/local/django_projects/transcription/model_tensorflow_fr/output_graph.tflite",
     'scorer': "/usr/local/django_projects/transcription/model_tensorflow_fr/kenlm.scorer",
   }
 }
