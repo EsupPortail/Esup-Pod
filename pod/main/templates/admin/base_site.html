@@ -1,7 +1,7 @@
 {% extends "admin/base.html" %}
 {% load i18n static %}
 {% block extrastyle %}
-  <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
   <script src="{% static 'js/js.cookie.js' %}?ver={{VERSION}}"></script>
   {% if max_duration_date_delete %}
     <script> var max_duration_date_delete = {{max_duration_date_delete}};</script>
