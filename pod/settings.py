@@ -4,7 +4,6 @@ Django global settings for pod_project.
 Django version : 1.11.16.
 """
 import os
-from pod.main.settings import BASE_DIR
 import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -297,4 +296,3 @@ if "H5P_ENABLED" in globals() and eval("H5P_ENABLED") is True:
 if "USE_OPENCAST_STUDIO" in globals() and eval("USE_OPENCAST_STUDIO") is True:
     # add dir to opencast studio static files i.e : pod/custom/static/opencast/
     TEMPLATES[0]["DIRS"].append(os.path.join(BASE_DIR, "custom", "static", "opencast"))
-
