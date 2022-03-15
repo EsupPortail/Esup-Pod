@@ -277,4 +277,3 @@ if "LTI_ENABLED" in globals() and eval("LTI_ENABLED") is True:
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'bower_components'),
 ]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
