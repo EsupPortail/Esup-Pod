@@ -414,7 +414,7 @@ class Command(BaseCommand):
                     "Video title": vid.title,
                     "Video URL": "https:%s" % vid.get_full_url(),
                     "Video type": vid.type.title,
-                    "Date added": vid.date_added
+                    "Date added": "%s" % vid.date_added.strftime("%Y/%m/%d"),
                 }
             )
 
