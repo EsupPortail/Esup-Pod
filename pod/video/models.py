@@ -1246,12 +1246,12 @@ class Video(models.Model):
                 "dc.title": "%s" % self.title,
                 "dc.creator": "%s" % self.owner.get_full_name(),
                 "dc.description": "%s" % self.description,
-                "dc.subject": "%s"
-                % ", ".join(
+                "dc.subject": "%s, %s"
+                % (self.type.title, ", ".join(
                     self.discipline.all()
                     .filter(sites=current_site)
                     .values_list("title", flat=True)
-                ),
+                )),
                 "dc.publisher": TITLE_ETB,
                 "dc.contributor": ", ".join(contributors),
                 "dc.date": "%s" % self.date_added.strftime("%Y/%m/%d"),
