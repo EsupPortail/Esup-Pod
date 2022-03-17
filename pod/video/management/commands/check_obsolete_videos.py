@@ -398,7 +398,7 @@ class Command(BaseCommand):
                 "Video title",
                 "Video URL",
                 "Video type",
-                "Date added"
+                "Date added",
             ]
             writer = csv.DictWriter(csvfile, delimiter=";", fieldnames=fieldnames)
             if not exists:
