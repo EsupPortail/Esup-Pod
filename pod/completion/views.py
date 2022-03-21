@@ -29,6 +29,7 @@ import json
 from django.contrib.sites.shortcuts import get_current_site
 
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
+ACTIVE_ENRICH = getattr(settings, "ACTIVE_ENRICH", False)
 ACTION = ["new", "save", "modify", "delete"]
 CAPTION_MAKER_ACTION = ["save"]
 LANG_CHOICES = getattr(
@@ -83,6 +84,7 @@ def video_caption_maker(request, slug):
                 "video": video,
                 "languages": LANG_CHOICES,
                 "track_language": track_language,
+                "active_enrich": ACTIVE_ENRICH,
             },
         )
 
