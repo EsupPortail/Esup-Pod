@@ -1184,6 +1184,15 @@ DS_PARAM = {
 }
 
 """
+# paramétrage des chemin du model pour la compilation
+# Pour télécharger les Modeles : https://alphacephei.com/vosk/lm#update-process
+"""
+
+MODEL_COMPILE_DIR = {
+    "fr": "/path/of/project/Esup-Pod/kaldi/vosk-model-fr-compile"
+}
+
+"""
 # La liste des utilisateurs regardant le direct sera réservée au staff
 """
 VIEWERS_ONLY_FOR_STAFF = False

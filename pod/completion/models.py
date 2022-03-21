@@ -171,7 +171,25 @@ class Document(models.Model):
     def __str__(self):
         return "Document: {0} - Video: {1}".format(self.document.name, self.video)
 
-
+class EnrichModelQueue(models.Model):
+    text = models.TextField(_("Text"), null=False, blank=False)
+    model_type = models.CharField(_("Model Type"), null=False, blank=False, max_length=100, default='DEEPSPEECH')
+    lang = models.CharField(_("Language"), max_length=2, choices=LANG_CHOICES, default='fr')
+    in_treatment = models.BooleanField(_("In Treatment"), default=False)
+    
+    def verify_attributs(self):
+        msg = list()
+        if not self.text:
+            msg.append(_("Please enter a text."))
+        if not self.model_type:
+            msg.append(_("Please enter a model type."))
+        if not self.lang:
+            msg.append(_("Please enter a language."))
+        if len(msg) > 0:
+            return msg
+        else:
+            return list()
+        
 class Track(models.Model):
 
     video = models.ForeignKey(Video, verbose_name=_('Video'),
