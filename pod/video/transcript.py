@@ -10,6 +10,7 @@ from .models import Video
 import numpy as np
 import shlex
 import subprocess
+import json
 
 import sys
 import os
@@ -255,7 +256,6 @@ def main_vosk_transcript(norm_mp3_file, duration, ds_model):
                 ),
             )
         return output
-    import json
     msg = ""
     inference_start = timer()
     msg += "\nInference start %0.3fs." % inference_start
