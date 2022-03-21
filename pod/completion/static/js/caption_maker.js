@@ -73,10 +73,12 @@ $(document).on("click", "#modal-btn-new, #modal-btn-override", function () {
   $("#saveCaptionsModal").modal("hide");
   if (this.id == "modal-btn-override") {
     $("#form_save_captions").find('input[name="file_id"]').val(file_loaded_id);
+    $("#form_save_captions").find('input[name="enrich_ready"]').val()
     updateCaptionsArray($("#captionContent").val());
     send_form_save_captions();
   } else if (this.id == "modal-btn-new") {
     $("#form_save_captions").find('input[name="file_id"]').val("");
+    $("#form_save_captions").find('input[name="enrich_ready"]').val()
     send_form_save_captions();
   }
 });

@@ -185,7 +185,8 @@ class Track(models.Model):
                             null=True,
                             verbose_name=_('Subtitle file'),
                             on_delete=models.CASCADE)
-
+    enrich_ready = models.BooleanField(_("Enrich_Ready"), default=False)
+    
     @property
     def sites(self):
         return self.video.sites

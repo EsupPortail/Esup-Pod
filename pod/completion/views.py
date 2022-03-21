@@ -95,6 +95,7 @@ def video_caption_maker_save(request, video):
     )
     if request.method == "POST":
         lang = request.POST.get("lang")
+        enrich_ready = True if request.POST.get("enrich_ready") == "true" else False
         cur_folder = get_current_session_folder(request)
         response = file_edit_save(request, cur_folder)
         response_data = json.loads(response.content)
@@ -104,13 +105,14 @@ def video_caption_maker_save(request, video):
             # immediately assign the newly created captions file to the video
             desired = Track.objects.filter(video=video, src=captFile)
             if desired.exists():
-                desired.update(lang=lang, src=captFile)
+                desired.update(lang=lang, src=captFile, enrich_ready=enrich_ready)
             else:
                 Track(
                     video=video,
                     kind="captions",
                     lang=lang,
                     src=captFile,
+                    enrich_ready=enrich_ready,
                 ).save()
             messages.add_message(request, messages.INFO, _("The file has been saved."))
         else:
