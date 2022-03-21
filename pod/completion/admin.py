@@ -27,7 +27,7 @@ if getattr(settings, "USE_PODFILE", False):
 
 DEBUG = getattr(settings, "DEBUG", True)
 TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "DEEPSPEECH")
-DS_PARAM = getattr(settings, "DS_PARAM", {})
+MODEL_PARAM = getattr(settings, "MODEL_PARAM", {})
 
 class ContributorInline(admin.TabularInline):
     model = Contributor
@@ -160,19 +160,19 @@ class TrackAdmin(admin.ModelAdmin):
             
         def copy_result_into_current_model(enrichModelQueue: EnrichModelQueue):
             from_path: str = MODEL_COMPILE_DIR+"/"+enrichModelQueue.lang+'/exp/chain/tdnn/graph'
-            to_path: str = DS_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"]+'/graph'
+            to_path: str = MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"]+'/graph'
             if os.path.exists(to_path):
                 shutil.rmtree(to_path)
             shutil.copytree(from_path, to_path)
             
             from_path: str = MODEL_COMPILE_DIR+"/"+enrichModelQueue.lang+'/data/lang_test_rescore'
-            to_path: str = DS_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"]+'/rescore/'
+            to_path: str = MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"]+'/rescore/'
             if os.path.isfile(from_path+'/G.fst') and os.path.isfile(from_path+'/G.carpa'):
                 shutil.copy(from_path+'/G.fst', to_path)
                 shutil.copy(from_path+'/G.carpa', to_path)
                 
             from_path: str = MODEL_COMPILE_DIR+"/"+enrichModelQueue.lang+'/exp/rnnlm_out'
-            to_path: str = DS_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"]+'/rnnlm/'
+            to_path: str = MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"]+'/rnnlm/'
             if os.path.exists(from_path):
                 shutil.copy(from_path, to_path)
                 

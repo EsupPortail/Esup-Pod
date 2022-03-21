@@ -1145,6 +1145,7 @@ USE_TRANSCRIPTION = True
 """
 ## Transcription use
 # * DEEPSPEECH
+# * COQUI
 # * VOSK
 """
 TRANSCRIPTION_TYPE = "VOSK"
@@ -1158,9 +1159,9 @@ AUDIO_SPLIT_TIME = 300
 # paramétrage des modele
 # Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models
 """
-DS_PARAM = {
+MODEL_PARAM = {
 # le modèle stt
-    'coqui': {
+    'COQUI': {
         'fr': {
             'model': "/path/to/project/Esup-Pod/transcription/model_tensorflow_fr/output_graph.tflite",
             'scorer': "/path/to/project/Esup-Pod/transcription/model_tensorflow_fr/kenlm.scorer",

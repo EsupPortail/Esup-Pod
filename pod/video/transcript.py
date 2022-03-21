@@ -30,6 +30,7 @@ except ImportError:
 import threading
 import logging
 
+MODEL_PARAM = getattr(settings, "MODEL_PARAM", False)
 TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
 if TRANSCRIPT:
     TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "DEEPSPEECH")
@@ -37,7 +38,7 @@ if TRANSCRIPT:
         from deepspeech import Model
     elif TRANSCRIPTION_TYPE == "VOSK":
         from vosk import Model, KaldiRecognizer
-    elif TYPE_TRANSCRIPTION == "coqui":
+    elif TRANSCRIPTION_TYPE == "coqui":
         from stt import Model
     
 DEBUG = getattr(settings, "DEBUG", False)
@@ -111,22 +112,22 @@ def start_transcript(video_id, threaded=True):
 
 
 def get_model(lang):
-    ds_model = Model(DS_PARAM[TRANSCRIPTION_TYPE][lang]["model"])
-    if TRANSCRIPTION_TYPE == "DEEPSPEECH":
-        if DS_PARAM[lang].get("beam_width"):
-            ds_model.setBeamWidth(DS_PARAM[lang]["beam_width"])
-        if DS_PARAM[lang].get("scorer"):
+    ds_model = Model(MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["model"])
+    if TRANSCRIPTION_TYPE == "DEEPSPEECH" or TRANSCRIPTION_TYPE == "COQUI":
+        if MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("beam_width"):
+            ds_model.setBeamWidth(MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["beam_width"])
+        if MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("scorer"):
             print(
-                "Loading scorer from files {}".format(DS_PARAM[lang]["scorer"]),
+                "Loading scorer from files {}".format(MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["scorer"]),
                 file=sys.stderr,
             )
             scorer_load_start = timer()
-            ds_model.enableExternalScorer(DS_PARAM[lang]["scorer"])
+            ds_model.enableExternalScorer(MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["scorer"])
             scorer_load_end = timer() - scorer_load_start
             print("Loaded scorer in {:.3}s.".format(scorer_load_end), file=sys.stderr)
-            if DS_PARAM[lang].get("lm_alpha") and DS_PARAM[lang].get("lm_beta"):
+            if MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("lm_alpha") and MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("lm_beta"):
                 ds_model.setScorerAlphaBeta(
-                    DS_PARAM[lang]["lm_alpha"], DS_PARAM[lang]["lm_beta"]
+                    MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["lm_alpha"], MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["lm_beta"]
                 )
     return ds_model
 
@@ -139,10 +140,10 @@ def main_threaded_transcript(video_to_encode_id):
 
     msg = ""
     lang = video_to_encode.main_lang
-    # check if DS_PARAM [lang] exist
-    if not DS_PARAM[TRANSCRIPTION_TYPE].get(lang):
+    # check if MODEL_PARAM [lang] exist
+    if not MODEL_PARAM[TRANSCRIPTION_TYPE].get(lang):
         msg += "\n no deepspeech model found for lang:%s." % lang
-        msg += "Please add it in DS_PARAM."
+        msg += "Please add it in MODEL_PARAM."
         change_encoding_step(video_to_encode.id, -1, msg)
         send_email(msg, video_to_encode.id)
     else:
@@ -163,7 +164,7 @@ def main_threaded_transcript(video_to_encode_id):
             if NORMALIZE:
                 mp3filepath = normalize_mp3(mp3filepath)
 
-            if TRANSCRIPTION_TYPE == "DEEPSPEECH":
+            if TRANSCRIPTION_TYPE == "DEEPSPEECH" or TRANSCRIPTION_TYPE == "COQUI":
                 msg, webvtt, all_text = main_deepspeech_transcript(
                     mp3filepath, video_to_encode.duration, ds_model
                 )
