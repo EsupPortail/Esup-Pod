@@ -288,7 +288,6 @@ def main_vosk_transcript(norm_mp3_file, duration, ds_model):
 
         msg += "\ntake audio from %s to %s - %s" % (start_trim, end_trim, dur)
 
-
         audio = convert_vosk_samplerate(norm_mp3_file, desired_sample_rate, start_trim, dur)
         msg += "\nRunning inference."
         results = []
@@ -356,6 +355,7 @@ def main_vosk_transcript(norm_mp3_file, duration, ds_model):
 
     msg += "\nInference took %0.3fs." % inference_end
     return msg, webvtt, all_text
+
 
 def main_deepspeech_transcript(norm_mp3_file, duration, ds_model):
     msg = ""
