@@ -582,7 +582,7 @@
       <div class="card-header">
         <div class="d-flex justify-content-between align-items-center">
           <small class="text-muted time">${video.duration}</small>
-          <span class="text-muted small">
+          <span class="text-muted small d-flex">
             ${has_password()}
             ${is_draft()}
             ${has_chapter()}
