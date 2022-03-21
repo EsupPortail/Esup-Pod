@@ -31,8 +31,14 @@ import logging
 
 TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
 if TRANSCRIPT:
-    from stt import Model
-
+    TYPE_TRANSCRIPTION = getattr(settings, "TYPE_TRANSCRIPTION", "DEEPSPEECH")
+    if TYPE_TRANSCRIPTION == "DEEPSPEECH":
+        from deepspeech import Model
+    elif TYPE_TRANSCRIPTION == "VOSK":
+        from vosk import Model, KaldiRecognizer
+    elif TYPE_TRANSCRIPTION == "coqui":
+        from stt import Model
+    
 DEBUG = getattr(settings, "DEBUG", False)
 
 if getattr(settings, "USE_PODFILE", False):
@@ -63,8 +69,8 @@ log = logging.getLogger(__name__)
 """
 TO TEST IN THE SHELL -->
 from pod.video.transcript import *
-stt_model = get_model("fr")
-msg, webvtt, all_text = main_transcript(
+ds_model = get_model("fr")
+msg, webvtt, all_text = main_deepspeech_transcript(
     "/test/audio_192k_pod.mp3", # file
     177, # file duration
     stt_model # model stt loaded
@@ -102,24 +108,24 @@ def start_transcript(video_id, threaded=True):
     else:
         main_threaded_transcript(video_id)
 
-
 def get_model(lang):
-    ds_model = Model(STT_PARAM[lang]["model"])
-    if STT_PARAM[lang].get("beam_width"):
-        ds_model.setBeamWidth(STT_PARAM[lang]["beam_width"])
-    if STT_PARAM[lang].get("scorer"):
-        print(
-            "Loading scorer from files {}".format(STT_PARAM[lang]["scorer"]),
-            file=sys.stderr,
-        )
-        scorer_load_start = timer()
-        ds_model.enableExternalScorer(STT_PARAM[lang]["scorer"])
-        scorer_load_end = timer() - scorer_load_start
-        print("Loaded scorer in {:.3}s.".format(scorer_load_end), file=sys.stderr)
-        if STT_PARAM[lang].get("lm_alpha") and STT_PARAM[lang].get("lm_beta"):
-            ds_model.setScorerAlphaBeta(
-                STT_PARAM[lang]["lm_alpha"], STT_PARAM[lang]["lm_beta"]
+    ds_model = Model(DS_PARAM[TYPE_TRANSCRIPTION][lang]["model"])
+    if TYPE_TRANSCRIPTION == "DEEPSPEECH":
+        if DS_PARAM[lang].get("beam_width"):
+            ds_model.setBeamWidth(DS_PARAM[lang]["beam_width"])
+        if DS_PARAM[lang].get("scorer"):
+            print(
+                "Loading scorer from files {}".format(DS_PARAM[lang]["scorer"]),
+                file=sys.stderr,
             )
+            scorer_load_start = timer()
+            ds_model.enableExternalScorer(DS_PARAM[lang]["scorer"])
+            scorer_load_end = timer() - scorer_load_start
+            print("Loaded scorer in {:.3}s.".format(scorer_load_end), file=sys.stderr)
+            if DS_PARAM[lang].get("lm_alpha") and DS_PARAM[lang].get("lm_beta"):
+                ds_model.setScorerAlphaBeta(
+                    DS_PARAM[lang]["lm_alpha"], DS_PARAM[lang]["lm_beta"]
+                )
     return ds_model
 
 
@@ -131,14 +137,13 @@ def main_threaded_transcript(video_to_encode_id):
 
     msg = ""
     lang = video_to_encode.main_lang
-    # check if STT_PARAM [lang] exist
-    if not STT_PARAM.get(lang):
-        msg += "\n no stt model found for lang:%s." % lang
-        msg += "Please add it in STT_PARAM."
+    # check if DS_PARAM [lang] exist
+    if not DS_PARAM[TYPE_TRANSCRIPTION].get(lang):
+        msg += "\n no deepspeech model found for lang:%s." % lang
+        msg += "Please add it in DS_PARAM."
         change_encoding_step(video_to_encode.id, -1, msg)
         send_email(msg, video_to_encode.id)
     else:
-
         ds_model = get_model(lang)
 
         mp3file = (
@@ -155,9 +160,15 @@ def main_threaded_transcript(video_to_encode_id):
             mp3filepath = mp3file.path
             if NORMALIZE:
                 mp3filepath = normalize_mp3(mp3filepath)
-            msg, webvtt, all_text = main_transcript(
-                mp3filepath, video_to_encode.duration, ds_model
-            )
+            
+            if TYPE_TRANSCRIPTION == "DEEPSPEECH":
+                msg, webvtt, all_text = main_deepspeech_transcript(
+                    mp3filepath, video_to_encode.duration, ds_model
+                )
+            elif TYPE_TRANSCRIPTION == "VOSK":
+                msg, webvtt, all_text = main_vosk_transcript(
+                    mp3filepath, video_to_encode.duration, ds_model
+                )
             if DEBUG:
                 print(msg)
                 print(webvtt)
@@ -169,7 +180,6 @@ def main_threaded_transcript(video_to_encode_id):
                 send_email_transcript(video_to_encode)
 
     add_encoding_log(video_to_encode.id, msg)
-
 
 def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
     sox_cmd = "sox {} --type raw --bits 16 --channels 1 --rate {} ".format(
@@ -221,8 +231,131 @@ def normalize_mp3(mp3filepath):
 # TRANSCRIPT VIDEO : MAIN FUNCTION
 # #################################
 
+def main_vosk_transcript(norm_mp3_file, duration, ds_model):
+    
+    def convert_vosk_samplerate(audio_path, desired_sample_rate, trim_start, duration):
+        sox_cmd = "sox {} --type raw --bits 16 --channels 1 --rate {} ".format(
+            quote(audio_path), desired_sample_rate
+        )
+        sox_cmd += "--encoding signed-integer --endian little --compression 0.0 "
+        sox_cmd += "--no-dither - trim {} {}".format(trim_start, duration)
 
-def main_transcript(norm_mp3_file, duration, ds_model):
+        try:
+            output = subprocess.Popen(shlex.split(sox_cmd), stdout=subprocess.PIPE)
+
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError("SoX returned non-zero status: {}".format(e.stderr))
+        except OSError as e:
+            raise OSError(
+                e.errno,
+                "SoX not found, use {}hz files or install it: {}".format(
+                    desired_sample_rate, e.strerror
+                ),
+            )
+        return output
+    import json
+    
+    msg = ""
+    inference_start = timer()
+    msg += "\nInference start %0.3fs." % inference_start
+
+    desired_sample_rate = 16000
+    
+    rec = KaldiRecognizer(ds_model, desired_sample_rate)
+    rec.SetWords(True)
+    
+    webvtt = WebVTT()
+
+    last_word_added = ""
+
+    all_text = ""
+
+    for start_trim in range(0, duration, AUDIO_SPLIT_TIME):
+
+        end_trim = (
+            duration
+            if start_trim + AUDIO_SPLIT_TIME > duration
+            else (start_trim + AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH)
+        )
+
+        dur = (
+            (AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH)
+            if start_trim + AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH < duration
+            else (duration - start_trim)
+        )
+
+        msg += "\ntake audio from %s to %s - %s" % (start_trim, end_trim, dur)
+        
+
+        audio = convert_vosk_samplerate(norm_mp3_file, desired_sample_rate, start_trim, dur)
+        msg += "\nRunning inference."
+        results = []
+        while True:
+            data = audio.stdout.read(4000)
+            if len(data) == 0:
+                break
+            if rec.AcceptWaveform(data):
+                results.append(rec.Result())
+        results.append(rec.Result())
+        
+        webvtt = WebVTT()
+        for res in results:
+            words = json.loads(res).get('result')
+            if not words:
+                continue
+
+            start_caption = start_trim + words[0]["start"]
+            text_caption = []
+            is_first_caption = True
+            for word in words:
+                all_text += word["word"] + " "
+                # word : <class 'dict'> {'word': 'bonjour', 'start_time ':
+                # 0.58, 'duration': 7.34}
+                text_caption.append(word["word"])
+                if not (
+                    ((word["start"] + start_trim) - start_caption)
+                    < SENTENCE_MAX_LENGTH
+                ):
+                    # on créé le caption
+                    if is_first_caption:
+                        # A revoir, fusion de la nouvelle ligne avec
+                        # l'ancienne...
+                        is_first_caption = False
+                        text_caption = get_text_caption(text_caption, last_word_added)
+
+                    stop_caption = start_trim + word["start"] + (word["end"] - word["start"])
+
+                    # on evite le chevauchement
+                    change_previous_end_caption(webvtt, start_caption)
+
+                    caption = Caption(
+                        format_time_caption(start_caption),
+                        format_time_caption(stop_caption),
+                        " ".join(text_caption),
+                    )
+
+                    webvtt.captions.append(caption)
+                    # on remet tout à zero pour la prochaine phrase
+                    start_caption = start_trim + word["start"]
+                    text_caption = []
+                    last_word_added = word["word"]
+            if start_trim + AUDIO_SPLIT_TIME > duration:
+                # on ajoute ici la dernière phrase de la vidéo
+                stop_caption = (
+                    start_trim + words[-1]["start"] + (words[-1]["end"] - words[-1]["start"])
+                )
+                caption = Caption(
+                    format_time_caption(start_caption),
+                    format_time_caption(stop_caption),
+                    " ".join(text_caption),
+                )
+                webvtt.captions.append(caption)
+    inference_end = timer() - inference_start
+
+    msg += "\nInference took %0.3fs." % inference_end
+    return msg, webvtt, all_text
+
+def main_deepspeech_transcript(norm_mp3_file, duration, ds_model):
     msg = ""
     inference_start = timer()
     msg += "\nInference start %0.3fs." % inference_start
