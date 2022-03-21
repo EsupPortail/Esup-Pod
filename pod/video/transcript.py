@@ -31,10 +31,10 @@ import logging
 
 TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
 if TRANSCRIPT:
-    TYPE_TRANSCRIPTION = getattr(settings, "TYPE_TRANSCRIPTION", "DEEPSPEECH")
-    if TYPE_TRANSCRIPTION == "DEEPSPEECH":
+    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "DEEPSPEECH")
+    if TRANSCRIPTION_TYPE == "DEEPSPEECH":
         from deepspeech import Model
-    elif TYPE_TRANSCRIPTION == "VOSK":
+    elif TRANSCRIPTION_TYPE == "VOSK":
         from vosk import Model, KaldiRecognizer
     elif TYPE_TRANSCRIPTION == "coqui":
         from stt import Model
@@ -110,8 +110,8 @@ def start_transcript(video_id, threaded=True):
 
 
 def get_model(lang):
-    ds_model = Model(DS_PARAM[TYPE_TRANSCRIPTION][lang]["model"])
-    if TYPE_TRANSCRIPTION == "DEEPSPEECH":
+    ds_model = Model(DS_PARAM[TRANSCRIPTION_TYPE][lang]["model"])
+    if TRANSCRIPTION_TYPE == "DEEPSPEECH":
         if DS_PARAM[lang].get("beam_width"):
             ds_model.setBeamWidth(DS_PARAM[lang]["beam_width"])
         if DS_PARAM[lang].get("scorer"):
@@ -139,7 +139,7 @@ def main_threaded_transcript(video_to_encode_id):
     msg = ""
     lang = video_to_encode.main_lang
     # check if DS_PARAM [lang] exist
-    if not DS_PARAM[TYPE_TRANSCRIPTION].get(lang):
+    if not DS_PARAM[TRANSCRIPTION_TYPE].get(lang):
         msg += "\n no deepspeech model found for lang:%s." % lang
         msg += "Please add it in DS_PARAM."
         change_encoding_step(video_to_encode.id, -1, msg)
@@ -162,11 +162,11 @@ def main_threaded_transcript(video_to_encode_id):
             if NORMALIZE:
                 mp3filepath = normalize_mp3(mp3filepath)
 
-            if TYPE_TRANSCRIPTION == "DEEPSPEECH":
+            if TRANSCRIPTION_TYPE == "DEEPSPEECH":
                 msg, webvtt, all_text = main_deepspeech_transcript(
                     mp3filepath, video_to_encode.duration, ds_model
                 )
-            elif TYPE_TRANSCRIPTION == "VOSK":
+            elif TRANSCRIPTION_TYPE == "VOSK":
                 msg, webvtt, all_text = main_vosk_transcript(
                     mp3filepath, video_to_encode.duration, ds_model
                 )
@@ -256,38 +256,29 @@ def main_vosk_transcript(norm_mp3_file, duration, ds_model):
             )
         return output
     import json
-
     msg = ""
     inference_start = timer()
     msg += "\nInference start %0.3fs." % inference_start
-
     desired_sample_rate = 16000
 
     rec = KaldiRecognizer(ds_model, desired_sample_rate)
     rec.SetWords(True)
 
     webvtt = WebVTT()
-
     last_word_added = ""
-
     all_text = ""
-
     for start_trim in range(0, duration, AUDIO_SPLIT_TIME):
-
         end_trim = (
             duration
             if start_trim + AUDIO_SPLIT_TIME > duration
             else (start_trim + AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH)
         )
-
         dur = (
             (AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH)
             if start_trim + AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH < duration
             else (duration - start_trim)
         )
-
         msg += "\ntake audio from %s to %s - %s" % (start_trim, end_trim, dur)
-
         audio = convert_vosk_samplerate(norm_mp3_file, desired_sample_rate, start_trim, dur)
         msg += "\nRunning inference."
         results = []

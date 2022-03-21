@@ -1147,7 +1147,7 @@ USE_TRANSCRIPTION = True
 # * DEEPSPEECH
 # * VOSK
 """
-TYPE_TRANSCRIPTION = "VOSK"
+TRANSCRIPTION_TYPE = "VOSK"
 
 """
 # decoupage de l'audio pour la transcription
@@ -1171,14 +1171,14 @@ DS_PARAM = {
   # le modèle deepspeech
   'DEEPSPEECH':{
     'fr': {
-      'model': "/home/norphiil/Documents/Esup-Pod/transcription/model_fr/deepspeech/output_graph.pbmm",
-      'scorer': "/home/norphiil/Documents/Esup-Pod/transcription/model_fr/deepspeech/kenlm.scorer",
+      'model': "/path/of/project/Esup-Pod/transcription/model_fr/deepspeech/output_graph.pbmm",
+      'scorer': "/path/of/project/Esup-Pod/transcription/model_fr/deepspeech/kenlm.scorer",
     }
   },
   # le modèle vosk
   'VOSK':{
     'fr': {
-      'model': "/home/norphiil/Documents/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0",
+      'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0",
     }
   }
 }

@@ -49,6 +49,8 @@ pod/custom/*
 !pod/custom/settings_local.py.example
 settings_local.py
 scripts/bbb-pod-live/docker-compose.yml
+transcription/*
+
 ## Others
 pod/static/
 *.bak
