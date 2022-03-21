@@ -2,6 +2,7 @@
 from pyexpat import model
 from django.conf import settings
 from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
 from pod.completion.models import Contributor
 from pod.completion.models import Document
 from pod.completion.models import Overlay
@@ -143,7 +144,7 @@ admin.site.register(EnrichModelQueue, EnrichModelQueueAdmin)
 
 class TrackAdmin(admin.ModelAdmin):
     
-    @admin.action(description='Enrich with selected subtitles')
+    @admin.action(description=_('Enrich with selected subtitles'))
     def enrich_model(modeladmin, request, queryset):
         def debug(text):
             if(DEBUG):
@@ -166,9 +167,8 @@ class TrackAdmin(admin.ModelAdmin):
             
             from_path: str = MODEL_COMPILE_DIR+"/"+enrichModelQueue.lang+'/data/lang_test_rescore'
             to_path: str = DS_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"]+'/rescore/'
-            if os.path.isfile(from_path+'/G.fst'):
+            if os.path.isfile(from_path+'/G.fst') and os.path.isfile(from_path+'/G.carpa'):
                 shutil.copy(from_path+'/G.fst', to_path)
-            if os.path.isfile(from_path+'/G.carpa'):
                 shutil.copy(from_path+'/G.carpa', to_path)
                 
             from_path: str = MODEL_COMPILE_DIR+"/"+enrichModelQueue.lang+'/exp/rnnlm_out'

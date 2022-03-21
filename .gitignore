@@ -56,7 +56,7 @@ pod/static/
 *.bak
 .coverage
 htmlcov
-kaldi
+compile-model
 
 # IDE Files #
 #############

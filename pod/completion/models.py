@@ -178,6 +178,13 @@ class EnrichModelQueue(models.Model):
     lang = models.CharField(_("Language"), max_length=2, choices=LANG_CHOICES, default='fr')
     in_treatment = models.BooleanField(_("In Treatment"), default=False)
     
+    def get_label_lang(self):
+        return "%s" % LANG_CHOICES_DICT[self.lang]
+
+    class Meta:
+        verbose_name = _("EnrichModelQueue")
+        verbose_name_plural = _("EnrichModelQueue")
+    
     def verify_attributs(self):
         msg = list()
         if not self.text:
