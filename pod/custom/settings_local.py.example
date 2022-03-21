@@ -1158,8 +1158,6 @@ AUDIO_SPLIT_TIME = 300
 # paramétrage des modele
 # Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models
 """
-
-
 DS_PARAM = {
 # le modèle stt
     'coqui': {
@@ -1183,14 +1181,20 @@ DS_PARAM = {
   }
 }
 
+
+"""
+# Définissez à True pour activer la case à cocher dans l'édition des sous-titres.
+"""
+ACTIVE_ENRICH = False
+
 """
 # paramétrage des chemin du model pour la compilation
 # Pour télécharger les Modeles : https://alphacephei.com/vosk/lm#update-process
+# Ajouter le model dans les sous-dossier de la lang correspondants
+# Exemple pour le français: /path/of/project/Esup-Pod/compile-model/fr/
 """
 
-MODEL_COMPILE_DIR = {
-    "fr": "/path/of/project/Esup-Pod/kaldi/vosk-model-fr-compile"
-}
+MODEL_COMPILE_DIR = "/path/of/project/Esup-Pod/compile-model"
 
 """
 # La liste des utilisateurs regardant le direct sera réservée au staff

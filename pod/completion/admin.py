@@ -136,7 +136,7 @@ class TrackInline(admin.TabularInline):
         return False
 
 class EnrichModelQueueAdmin(admin.ModelAdmin):
-    list_display = ('in_treatment',)
+    list_display = ('title', 'in_treatment',)
     list_filter = ('in_treatment',)
 
 admin.site.register(EnrichModelQueue, EnrichModelQueueAdmin)
@@ -153,26 +153,25 @@ class TrackAdmin(admin.ModelAdmin):
             return EnrichModelQueue.objects.filter(in_treatment=True).exists()
     
         def write_into_kaldi_file(enrichModelQueue: EnrichModelQueue):
-            with open(MODEL_COMPILE_DIR[enrichModelQueue.lang]+'/db/extra.txt', 'w') as f:
+            with open(MODEL_COMPILE_DIR+"/"+enrichModelQueue.lang+'/db/extra.txt', 'w') as f:
                 f.write(enrichModelQueue.text)
-            os.chdir(MODEL_COMPILE_DIR[enrichModelQueue.lang]+'/')
-            subprocess.call(['./compile-graph.sh'])
+            subprocess.call(['docker', 'run', '-v', MODEL_COMPILE_DIR+':/kaldi/compile-model', '-it', 'kaldi', enrichModelQueue.lang])
             
         def copy_result_into_current_model(enrichModelQueue: EnrichModelQueue):
-            from_path: str = MODEL_COMPILE_DIR[enrichModelQueue.lang]+'/exp/chain/tdnn/graph'
+            from_path: str = MODEL_COMPILE_DIR+"/"+enrichModelQueue.lang+'/exp/chain/tdnn/graph'
             to_path: str = DS_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"]+'/graph'
             if os.path.exists(to_path):
                 shutil.rmtree(to_path)
             shutil.copytree(from_path, to_path)
             
-            from_path: str = MODEL_COMPILE_DIR[enrichModelQueue.lang]+'/data/lang_test_rescore'
+            from_path: str = MODEL_COMPILE_DIR+"/"+enrichModelQueue.lang+'/data/lang_test_rescore'
             to_path: str = DS_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"]+'/rescore/'
             if os.path.isfile(from_path+'/G.fst'):
                 shutil.copy(from_path+'/G.fst', to_path)
             if os.path.isfile(from_path+'/G.carpa'):
                 shutil.copy(from_path+'/G.carpa', to_path)
                 
-            from_path: str = MODEL_COMPILE_DIR[enrichModelQueue.lang]+'/exp/rnnlm_out'
+            from_path: str = MODEL_COMPILE_DIR+"/"+enrichModelQueue.lang+'/exp/rnnlm_out'
             to_path: str = DS_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"]+'/rnnlm/'
             if os.path.exists(from_path):
                 shutil.copy(from_path, to_path)
@@ -196,13 +195,20 @@ class TrackAdmin(admin.ModelAdmin):
                 debug("All queues have been completed !")
                 return
             
-        query_set_list = list(queryset.all())
         text = ""
+        title = ""
         for query in list(queryset.all()):
+            if(title != ""):
+                title += " /-/ "
+            title += query.video.title
             file = query.src.file
             for caption in webvtt.read(file.path):
                 text += caption.text+" \n"
+            query.enrich_ready = False
+            query.save()
+            
         EnrichModelQueue(
+            title = title,
             text = text,
             lang = query.lang,
             model_type = TRANSCRIPTION_TYPE
