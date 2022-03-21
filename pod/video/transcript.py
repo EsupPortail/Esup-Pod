@@ -234,28 +234,28 @@ def normalize_mp3(mp3filepath):
 # TRANSCRIPT VIDEO : MAIN FUNCTION
 # #################################
 
-def main_vosk_transcript(norm_mp3_file, duration, ds_model):
+def convert_vosk_samplerate(audio_path, desired_sample_rate, trim_start, duration):
+    sox_cmd = "sox {} --type raw --bits 16 --channels 1 --rate {} ".format(
+        quote(audio_path), desired_sample_rate
+    )
+    sox_cmd += "--encoding signed-integer --endian little --compression 0.0 "
+    sox_cmd += "--no-dither - trim {} {}".format(trim_start, duration)
 
-    def convert_vosk_samplerate(audio_path, desired_sample_rate, trim_start, duration):
-        sox_cmd = "sox {} --type raw --bits 16 --channels 1 --rate {} ".format(
-            quote(audio_path), desired_sample_rate
+    try:
+        output = subprocess.Popen(shlex.split(sox_cmd), stdout=subprocess.PIPE)
+
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError("SoX returned non-zero status: {}".format(e.stderr))
+    except OSError as e:
+        raise OSError(
+            e.errno,
+            "SoX not found, use {}hz files or install it: {}".format(
+                desired_sample_rate, e.strerror
+            ),
         )
-        sox_cmd += "--encoding signed-integer --endian little --compression 0.0 "
-        sox_cmd += "--no-dither - trim {} {}".format(trim_start, duration)
+    return output
 
-        try:
-            output = subprocess.Popen(shlex.split(sox_cmd), stdout=subprocess.PIPE)
-
-        except subprocess.CalledProcessError as e:
-            raise RuntimeError("SoX returned non-zero status: {}".format(e.stderr))
-        except OSError as e:
-            raise OSError(
-                e.errno,
-                "SoX not found, use {}hz files or install it: {}".format(
-                    desired_sample_rate, e.strerror
-                ),
-            )
-        return output
+def main_vosk_transcript(norm_mp3_file, duration, ds_model):
     msg = ""
     inference_start = timer()
     msg += "\nInference start %0.3fs." % inference_start
