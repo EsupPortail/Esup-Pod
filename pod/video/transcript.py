@@ -108,6 +108,7 @@ def start_transcript(video_id, threaded=True):
     else:
         main_threaded_transcript(video_id)
 
+
 def get_model(lang):
     ds_model = Model(DS_PARAM[TYPE_TRANSCRIPTION][lang]["model"])
     if TYPE_TRANSCRIPTION == "DEEPSPEECH":
@@ -160,7 +161,7 @@ def main_threaded_transcript(video_to_encode_id):
             mp3filepath = mp3file.path
             if NORMALIZE:
                 mp3filepath = normalize_mp3(mp3filepath)
-            
+
             if TYPE_TRANSCRIPTION == "DEEPSPEECH":
                 msg, webvtt, all_text = main_deepspeech_transcript(
                     mp3filepath, video_to_encode.duration, ds_model
@@ -180,6 +181,7 @@ def main_threaded_transcript(video_to_encode_id):
                 send_email_transcript(video_to_encode)
 
     add_encoding_log(video_to_encode.id, msg)
+
 
 def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
     sox_cmd = "sox {} --type raw --bits 16 --channels 1 --rate {} ".format(
@@ -232,7 +234,7 @@ def normalize_mp3(mp3filepath):
 # #################################
 
 def main_vosk_transcript(norm_mp3_file, duration, ds_model):
-    
+
     def convert_vosk_samplerate(audio_path, desired_sample_rate, trim_start, duration):
         sox_cmd = "sox {} --type raw --bits 16 --channels 1 --rate {} ".format(
             quote(audio_path), desired_sample_rate
@@ -254,16 +256,16 @@ def main_vosk_transcript(norm_mp3_file, duration, ds_model):
             )
         return output
     import json
-    
+
     msg = ""
     inference_start = timer()
     msg += "\nInference start %0.3fs." % inference_start
 
     desired_sample_rate = 16000
-    
+
     rec = KaldiRecognizer(ds_model, desired_sample_rate)
     rec.SetWords(True)
-    
+
     webvtt = WebVTT()
 
     last_word_added = ""
@@ -285,7 +287,7 @@ def main_vosk_transcript(norm_mp3_file, duration, ds_model):
         )
 
         msg += "\ntake audio from %s to %s - %s" % (start_trim, end_trim, dur)
-        
+
 
         audio = convert_vosk_samplerate(norm_mp3_file, desired_sample_rate, start_trim, dur)
         msg += "\nRunning inference."
@@ -297,7 +299,7 @@ def main_vosk_transcript(norm_mp3_file, duration, ds_model):
             if rec.AcceptWaveform(data):
                 results.append(rec.Result())
         results.append(rec.Result())
-        
+
         webvtt = WebVTT()
         for res in results:
             words = json.loads(res).get('result')
