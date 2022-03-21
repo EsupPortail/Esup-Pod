@@ -1185,7 +1185,7 @@ DS_PARAM = {
 """
 # Définissez à True pour activer la case à cocher dans l'édition des sous-titres.
 """
-ACTIVE_ENRICH = False
+ACTIVE_MODEL_ENRICH  = False
 
 """
 # paramétrage des chemin du model pour la compilation

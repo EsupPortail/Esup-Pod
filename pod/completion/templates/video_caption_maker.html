@@ -118,7 +118,7 @@
         <input type="hidden" name="file_id"/>
         <input type="submit" value="{% trans 'Save Captions' %}" id="save_captions" class="btn btn-primary btn-sm"/>
         <button id="clearAllCaptions" class="btn btn-primary btn-sm">{% trans "Clear All" %}</button>
-        {% if active_enrich %}<input type="checkbox" value="true" name="enrich_ready"/> {% trans 'Enrich Model' %} {% endif %}
+        {% if active_model_enrich %}<input type="checkbox" value="true" name="enrich_ready"/> {% trans 'Enrich Model' %} {% endif %}
         
       </form>
 
