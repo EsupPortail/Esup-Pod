@@ -104,7 +104,7 @@ class TrackForm(forms.ModelForm):
         self.fields["lang"].widget.attrs["class"] = "custom-select"
         if FILEPICKER:
             self.fields["src"].widget = CustomFileWidget(type="file")
-        
+
     class Meta(object):
         """Set form Metadata."""
 

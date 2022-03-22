@@ -40,7 +40,7 @@ if TRANSCRIPT:
         from vosk import Model, KaldiRecognizer
     elif TRANSCRIPTION_TYPE == "coqui":
         from stt import Model
-    
+
 DEBUG = getattr(settings, "DEBUG", False)
 
 if getattr(settings, "USE_PODFILE", False):
@@ -255,6 +255,7 @@ def convert_vosk_samplerate(audio_path, desired_sample_rate, trim_start, duratio
             ),
         )
     return output
+
 
 def main_vosk_transcript(norm_mp3_file, duration, ds_model):
     msg = ""

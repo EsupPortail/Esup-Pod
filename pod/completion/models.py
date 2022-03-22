@@ -171,20 +171,21 @@ class Document(models.Model):
     def __str__(self):
         return "Document: {0} - Video: {1}".format(self.document.name, self.video)
 
+
 class EnrichModelQueue(models.Model):
     title = models.TextField(_("Title"), null=True, blank=True)
     text = models.TextField(_("Text"), null=False, blank=False)
     model_type = models.CharField(_("Model Type"), null=False, blank=False, max_length=100, default='DEEPSPEECH')
     lang = models.CharField(_("Language"), max_length=2, choices=LANG_CHOICES, default='fr')
     in_treatment = models.BooleanField(_("In Treatment"), default=False)
-    
+
     def get_label_lang(self):
         return "%s" % LANG_CHOICES_DICT[self.lang]
 
     class Meta:
         verbose_name = _("EnrichModelQueue")
         verbose_name_plural = _("EnrichModelQueue")
-    
+
     def verify_attributs(self):
         msg = list()
         if not self.text:
@@ -197,7 +198,8 @@ class EnrichModelQueue(models.Model):
             return msg
         else:
             return list()
-        
+
+
 class Track(models.Model):
 
     video = models.ForeignKey(Video, verbose_name=_('Video'),
@@ -212,7 +214,7 @@ class Track(models.Model):
                             verbose_name=_('Subtitle file'),
                             on_delete=models.CASCADE)
     enrich_ready = models.BooleanField(_("Enrich Ready"), default=False)
-    
+
     @property
     def sites(self):
         return self.video.sites

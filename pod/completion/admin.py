@@ -1,5 +1,4 @@
 """Admin pages for Esup-Pod Completion items."""
-from pyexpat import model
 from django.conf import settings
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
@@ -28,6 +27,7 @@ if getattr(settings, "USE_PODFILE", False):
 DEBUG = getattr(settings, "DEBUG", True)
 TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "DEEPSPEECH")
 MODEL_PARAM = getattr(settings, "MODEL_PARAM", {})
+
 
 class ContributorInline(admin.TabularInline):
     model = Contributor
@@ -136,65 +136,68 @@ class TrackInline(admin.TabularInline):
     def has_add_permission(self, request, obj=None):
         return False
 
+
 class EnrichModelQueueAdmin(admin.ModelAdmin):
     list_display = ('title', 'in_treatment',)
     list_filter = ('in_treatment',)
 
+
 admin.site.register(EnrichModelQueue, EnrichModelQueueAdmin)
 
+
 class TrackAdmin(admin.ModelAdmin):
-    
+
+    def debug(text):
+        if(DEBUG):
+            print(text)
+
+    def check_if_treatment_in_progress() -> bool:
+        return EnrichModelQueue.objects.filter(in_treatment=True).exists()
+
+    def write_into_kaldi_file(enrichModelQueue: EnrichModelQueue):
+        with open(MODEL_COMPILE_DIR + "/" + enrichModelQueue.lang + '/db/extra.txt', 'w') as f:
+            f.write(enrichModelQueue.text)
+        subprocess.call(['docker', 'run', '-v', MODEL_COMPILE_DIR + ':/kaldi/compile-model', '-it', 'kaldi', enrichModelQueue.lang])
+
+    def copy_result_into_current_model(enrichModelQueue: EnrichModelQueue):
+        from_path: str = MODEL_COMPILE_DIR + "/" + enrichModelQueue.lang + '/exp/chain/tdnn/graph'
+        to_path: str = MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"] + '/graph'
+        if os.path.exists(to_path):
+            shutil.rmtree(to_path)
+        shutil.copytree(from_path, to_path)
+
+        from_path: str = MODEL_COMPILE_DIR + "/" + enrichModelQueue.lang + '/data/lang_test_rescore'
+        to_path: str = MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"] + '/rescore/'
+        if os.path.isfile(from_path + '/G.fst') and os.path.isfile(from_path + '/G.carpa'):
+            shutil.copy(from_path + '/G.fst', to_path)
+            shutil.copy(from_path + '/G.carpa', to_path)
+
+        from_path: str = MODEL_COMPILE_DIR + "/" + enrichModelQueue.lang + '/exp/rnnlm_out'
+        to_path: str = MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"] + '/rnnlm/'
+        if os.path.exists(from_path):
+            shutil.copy(from_path, to_path)
+
+    def enrich_kaldi_model_launch():
+        TrackAdmin.debug("enrich_kaldi_model")
+        enrichModelQueue = EnrichModelQueue.objects.filter(model_type="VOSK").first()
+        if(enrichModelQueue is not None):
+            enrichModelQueue.in_treatment = True
+            enrichModelQueue.save()
+            TrackAdmin.debug("start subprocess")
+            TrackAdmin.write_into_kaldi_file(enrichModelQueue)
+            TrackAdmin.debug("finish subprocess")
+            TrackAdmin.debug("start copy result")
+            TrackAdmin.copy_result_into_current_model(enrichModelQueue)
+            TrackAdmin.debug("finish copy result")
+            enrichModelQueue.delete()
+            TrackAdmin.enrich_kaldi_model_launch()
+            return
+        else:
+            TrackAdmin.debug("All queues have been completed !")
+            return
+
     @admin.action(description=_('Enrich with selected subtitles'))
     def enrich_model(modeladmin, request, queryset):
-        def debug(text):
-            if(DEBUG):
-                print(text)
-                
-        def check_if_treatment_in_progress() -> bool:
-            return EnrichModelQueue.objects.filter(in_treatment=True).exists()
-    
-        def write_into_kaldi_file(enrichModelQueue: EnrichModelQueue):
-            with open(MODEL_COMPILE_DIR+"/"+enrichModelQueue.lang+'/db/extra.txt', 'w') as f:
-                f.write(enrichModelQueue.text)
-            subprocess.call(['docker', 'run', '-v', MODEL_COMPILE_DIR+':/kaldi/compile-model', '-it', 'kaldi', enrichModelQueue.lang])
-            
-        def copy_result_into_current_model(enrichModelQueue: EnrichModelQueue):
-            from_path: str = MODEL_COMPILE_DIR+"/"+enrichModelQueue.lang+'/exp/chain/tdnn/graph'
-            to_path: str = MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"]+'/graph'
-            if os.path.exists(to_path):
-                shutil.rmtree(to_path)
-            shutil.copytree(from_path, to_path)
-            
-            from_path: str = MODEL_COMPILE_DIR+"/"+enrichModelQueue.lang+'/data/lang_test_rescore'
-            to_path: str = MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"]+'/rescore/'
-            if os.path.isfile(from_path+'/G.fst') and os.path.isfile(from_path+'/G.carpa'):
-                shutil.copy(from_path+'/G.fst', to_path)
-                shutil.copy(from_path+'/G.carpa', to_path)
-                
-            from_path: str = MODEL_COMPILE_DIR+"/"+enrichModelQueue.lang+'/exp/rnnlm_out'
-            to_path: str = MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"]+'/rnnlm/'
-            if os.path.exists(from_path):
-                shutil.copy(from_path, to_path)
-                
-        def enrich_kaldi_model_launch():
-            debug("enrich_kaldi_model")
-            enrichModelQueue = EnrichModelQueue.objects.filter(model_type="VOSK").first()
-            if(enrichModelQueue != None):
-                enrichModelQueue.in_treatment = True
-                enrichModelQueue.save()
-                debug("start subprocess")
-                write_into_kaldi_file(enrichModelQueue)
-                debug("finish subprocess")
-                debug("start copy result")
-                copy_result_into_current_model(enrichModelQueue)
-                debug("finish copy result")
-                enrichModelQueue.delete()
-                enrich_kaldi_model_launch()
-                return
-            else:
-                debug("All queues have been completed !")
-                return
-            
         text = ""
         title = ""
         for query in list(queryset.all()):
@@ -203,23 +206,23 @@ class TrackAdmin(admin.ModelAdmin):
             title += query.video.title
             file = query.src.file
             for caption in webvtt.read(file.path):
-                text += caption.text+" \n"
+                text += caption.text + " \n"
             query.enrich_ready = False
             query.save()
-            
+
         EnrichModelQueue(
-            title = title,
-            text = text,
-            lang = query.lang,
-            model_type = TRANSCRIPTION_TYPE
+            title=title,
+            text=text,
+            lang=query.lang,
+            model_type=TRANSCRIPTION_TYPE
         ).save()
-        
-        if(not check_if_treatment_in_progress()):
+
+        if(not TrackAdmin.check_if_treatment_in_progress()):
             if(TRANSCRIPTION_TYPE == "VOSK"):
-                t = threading.Thread(target=enrich_kaldi_model_launch, args=[])
+                t = threading.Thread(target=TrackAdmin.enrich_kaldi_model_launch, args=[])
                 t.setDaemon(True)
                 t.start()
-            
+
     if FILEPICKER:
         form = TrackAdminForm
     list_display = ('src', 'kind', 'video', 'enrich_ready',)
@@ -228,7 +231,7 @@ class TrackAdmin(admin.ModelAdmin):
     search_fields = ['id', 'src__name', 'kind', 'video__title', ]
     autocomplete_fields = ['video']
     actions = [enrich_model]
-    
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
