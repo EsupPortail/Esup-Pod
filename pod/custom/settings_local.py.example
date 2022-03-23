@@ -1150,10 +1150,12 @@ USE_TRANSCRIPTION = True
 """
 TRANSCRIPTION_TYPE = "VOSK"
 
+
 """
 # decoupage de l'audio pour la transcription
 """
 AUDIO_SPLIT_TIME = 300
+
 
 """
 # paramétrage des modele
