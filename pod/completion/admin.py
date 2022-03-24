@@ -12,7 +12,6 @@ from pod.completion.forms import TrackAdminForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.sites.models import Site
 from pod.video.models import Video
-from pod.custom.settings_local import MODEL_COMPILE_DIR
 
 import subprocess
 import webvtt
@@ -27,6 +26,7 @@ if getattr(settings, "USE_PODFILE", False):
 DEBUG = getattr(settings, "DEBUG", True)
 TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "STT")
 MODEL_PARAM = getattr(settings, "MODEL_PARAM", {})
+MODEL_COMPILE_DIR = getattr(settings, "MODEL_COMPILE_DIR", "")
 
 
 class ContributorInline(admin.TabularInline):
