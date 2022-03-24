@@ -23,7 +23,6 @@ from .models import Notes, AdvancedNotes, NoteComments
 from .models import ViewCount
 from .models import VideoToDelete
 from .models import VideoVersion
-from django.utils.html import mark_safe
 
 
 from .forms import VideoForm, VideoVersionForm
@@ -176,8 +175,7 @@ class VideoAdmin(admin.ModelAdmin):
     def get_owner_by_name(self, obj):
         owner = obj.owner
         url = url_to_edit_object(owner)
-        return mark_safe(
-            u'%s %s (%s)' % (owner.first_name, owner.last_name, url))
+        return "%s %s (%s)" % (owner.first_name, owner.last_name, url)
 
     get_owner_by_name.allow_tags = True
     get_owner_by_name.short_description = _("Owner")

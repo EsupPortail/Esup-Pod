@@ -341,7 +341,7 @@ def channel_edit(request, slug):
     if request.user not in channel.owners.all() and not (
         request.user.is_superuser or request.user.has_perm("video.change_channel")
     ):
-        messages.add_message(request, messages.ERROR, _(u"You cannot edit this channel."))
+        messages.add_message(request, messages.ERROR, _("You cannot edit this channel."))
         raise PermissionDenied
     channel_form = ChannelForm(
         instance=channel,
@@ -364,7 +364,7 @@ def channel_edit(request, slug):
             messages.add_message(
                 request,
                 messages.ERROR,
-                _(u"One or more errors have been found in the form."),
+                _("One or more errors have been found in the form."),
             )
     return render(request, "channel/channel_edit.html", {"form": channel_form})
 
@@ -381,7 +381,7 @@ def theme_edit(request, slug):
     if request.user not in channel.owners.all() and not (
         request.user.is_superuser or request.user.has_perm("video.change_theme")
     ):
-        messages.add_message(request, messages.ERROR, _(u"You cannot edit this channel."))
+        messages.add_message(request, messages.ERROR, _("You cannot edit this channel."))
         raise PermissionDenied
 
     if request.POST and request.is_ajax():
@@ -918,7 +918,7 @@ def video_edit(request, slug=None):
         )
         and (request.user not in video.additional_owners.all())
     ):
-        messages.add_message(request, messages.ERROR, _(u"You cannot edit this video."))
+        messages.add_message(request, messages.ERROR, _("You cannot edit this video."))
         raise PermissionDenied
 
     # default selected owner in select field
@@ -954,7 +954,7 @@ def video_edit(request, slug=None):
             messages.add_message(
                 request,
                 messages.ERROR,
-                _(u"One or more errors have been found in the form."),
+                _("One or more errors have been found in the form."),
             )
     return render(request, "videos/video_edit.html", {"form": form})
 
@@ -987,7 +987,7 @@ def video_delete(request, slug=None):
     if request.user != video.owner and not (
         request.user.is_superuser or request.user.has_perm("video.delete_video")
     ):
-        messages.add_message(request, messages.ERROR, _(u"You cannot delete this video."))
+        messages.add_message(request, messages.ERROR, _("You cannot delete this video."))
         raise PermissionDenied
 
     form = VideoDeleteForm()
@@ -1002,7 +1002,7 @@ def video_delete(request, slug=None):
             messages.add_message(
                 request,
                 messages.ERROR,
-                _(u"One or more errors have been found in the form."),
+                _("One or more errors have been found in the form."),
             )
 
     return render(request, "videos/video_delete.html", {"video": video, "form": form})
@@ -1122,7 +1122,7 @@ def can_edit_or_remove_note_or_com(request, nc, action):
         messages.add_message(
             request,
             messages.WARNING,
-            _(u"You cannot %s this note or comment." % action),
+            _("You cannot %s this note or comment." % action),
         )
         raise PermissionDenied
 
@@ -1151,7 +1151,7 @@ def can_see_note_or_com(request, nc):
         messages.add_message(
             request,
             messages.WARNING,
-            _(u"You cannot see this note or comment."),
+            _("You cannot see this note or comment."),
         )
         raise PermissionDenied
 
@@ -1537,7 +1537,7 @@ def video_note_form_not_valid(request, params):
     messages.add_message(
         request,
         messages.WARNING,
-        _(u"One or more errors have been found in the form."),
+        _("One or more errors have been found in the form."),
     )
     if (
         (idCom is not None and idNote is not None)
@@ -1714,7 +1714,7 @@ def video_count(request, id):
         viewCount.count = F("count") + 1
         viewCount.save(update_fields=["count"])
         return HttpResponse("ok")
-    messages.add_message(request, messages.ERROR, _(u"You cannot access to this view."))
+    messages.add_message(request, messages.ERROR, _("You cannot access to this view."))
     raise PermissionDenied
 
 
@@ -1739,7 +1739,7 @@ def video_version(request, id):
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type="application/json")
-    messages.add_message(request, messages.ERROR, _(u"You cannot access to this view."))
+    messages.add_message(request, messages.ERROR, _("You cannot access to this view."))
     raise PermissionDenied
 
 

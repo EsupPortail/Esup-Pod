@@ -56,7 +56,7 @@ def video_caption_maker(request, slug):
         and (request.user not in video.additional_owners.all())
     ):
         messages.add_message(
-            request, messages.ERROR, _(u"You cannot complement this video.")
+            request, messages.ERROR, _("You cannot complement this video.")
         )
         raise PermissionDenied
     if request.method == "POST" and request.POST.get("action"):
@@ -112,10 +112,10 @@ def video_caption_maker_save(request, video):
                     lang=lang,
                     src=captFile,
                 ).save()
-            messages.add_message(request, messages.INFO, _(u"The file has been saved."))
+            messages.add_message(request, messages.INFO, _("The file has been saved."))
         else:
             messages.add_message(
-                request, messages.WARNING, _(u"The file has not been saved.")
+                request, messages.WARNING, _("The file has not been saved.")
             )
     form_caption = TrackForm(initial={"video": video})
     return render(
@@ -147,7 +147,7 @@ def video_completion(request, slug):
         and (request.user not in video.additional_owners.all())
     ):
         messages.add_message(
-            request, messages.ERROR, _(u"You cannot complement this video.")
+            request, messages.ERROR, _("You cannot complement this video.")
         )
         raise PermissionDenied
     elif request.user.is_staff:
@@ -188,7 +188,7 @@ def video_completion_contributor(request, slug):
         or (request.user in video.additional_owners.all())
     ):
         messages.add_message(
-            request, messages.ERROR, _(u"You cannot complement this video.")
+            request, messages.ERROR, _("You cannot complement this video.")
         )
         raise PermissionDenied
     elif request.user.is_staff:
@@ -387,7 +387,7 @@ def video_completion_document(request, slug):
         or (request.user in video.additional_owners.all())
     ):
         messages.add_message(
-            request, messages.ERROR, _(u"You cannot complement this video.")
+            request, messages.ERROR, _("You cannot complement this video.")
         )
         raise PermissionDenied
 
@@ -579,7 +579,7 @@ def video_completion_track(request, slug):
         or (request.user in video.additional_owners.all())
     ):
         messages.add_message(
-            request, messages.ERROR, _(u"You cannot complement this video.")
+            request, messages.ERROR, _("You cannot complement this video.")
         )
         raise PermissionDenied
 
@@ -822,7 +822,7 @@ def video_completion_overlay(request, slug):
         or (request.user in video.additional_owners.all())
     ):
         messages.add_message(
-            request, messages.ERROR, _(u"You cannot complement this video.")
+            request, messages.ERROR, _("You cannot complement this video.")
         )
         raise PermissionDenied
 

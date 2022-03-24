@@ -164,13 +164,14 @@ var VideoSlides = function (items) {
                         slide.alt = this.slidesItems[i].title;
                         slide.width = player.currentDimensions().width / 2;
                         slide.height = player.currentDimensions().height / 2;
-                } else*/ if (type == "document") {
+                } else*/
+      if (type == "document") {
         slide = document.createElement("embed");
         slide.src = this.slidesItems[i].url;
         slide.alt = this.slidesItems[i].title;
         slides.type = "application/pdf";
-        slide.width = player.currentDimensions().width / 2;
-        slide.height = player.currentDimensions().height / 2;
+        slide.width = "100%"; //player.currentDimensions().width / 2;
+        slide.height = "100%"; //player.currentDimensions().height / 2;
       } else if (type == "richtext") {
         slide = document.createElement("div");
         slide.innerHTML = this.slidesItems[i].url;
@@ -179,8 +180,8 @@ var VideoSlides = function (items) {
         slide.src = this.slidesItems[i].url;
         slide.alt = this.slidesItems[i].title;
         slides.type = "text/html";
-        slide.width = player.currentDimensions().width / 2;
-        slide.height = player.currentDimensions().height / 2;
+        slide.width = "100%"; //player.currentDimensions().width / 2;
+        slide.height = "100%"; //player.currentDimensions().height / 2;
       } else if (type == "embed") {
         slide = document.createElement("div");
         slide.classList.add("slide_embed");

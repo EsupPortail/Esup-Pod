@@ -9,8 +9,8 @@
 {% block page_title %}{{ title }}{% endblock page_title %}
 {% block page_extra_head %}
   <link type="text/css" rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}?ver={{VERSION}}">
-  <link type="text/css" rel="stylesheet" href="{% static 'css/ui.jqgrid.min.css' %}?ver={{VERSION}}">
-  <script src="{% static 'js/jquery.jqgrid.min.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+  <link type="text/css" rel="stylesheet" href="{% static 'jqgrid/css/ui.jqgrid.css' %}?ver={{VERSION}}">
+  <script src="{% static 'jqgrid/jquery.jqGrid.js' %}?ver={{VERSION}}" charset="utf-8"></script>
   <!-- https://free-jqgrid.github.io/getting-started/index.html -->
   <script src="{% static 'js/video_stats_view.js' %}?ver={{VERSION}}" charset="utf-8"></script>
   <link rel="stylesheet" href="{% static 'css/video_stats_view.css' %}?ver={{VERSION}}">
