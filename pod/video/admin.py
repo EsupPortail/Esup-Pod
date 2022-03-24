@@ -721,17 +721,14 @@ class ViewCountAdmin(admin.ModelAdmin):
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = (
-        "title",
-        "owner",
-        "videos_count"
-    )
+    list_display = ("title", "owner", "videos_count")
     readonly_fields = ("slug",)
     # list_filter = ["owner"]
 
     def videos_count(self, obj):
         return len(obj.video.all())
-    videos_count.short_description = 'Videos'
+
+    videos_count.short_description = "Videos"
 
 
 admin.site.register(Channel, ChannelAdmin)
