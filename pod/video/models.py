@@ -1992,7 +1992,7 @@ class Category(models.Model):
     slug = models.SlugField(
         _("Slug"),
         unique=True,
-        max_length=100,
+        max_length=110,
         help_text=_(
             'Used to access this instance, the "slug" is a short label '
             + "containing only letters, numbers, underscore or dash top."
