@@ -175,7 +175,7 @@ class Document(models.Model):
 class EnrichModelQueue(models.Model):
     title = models.TextField(_("Title"), null=True, blank=True)
     text = models.TextField(_("Text"), null=False, blank=False)
-    model_type = models.CharField(_("Model Type"), null=False, blank=False, max_length=100, default='DEEPSPEECH')
+    model_type = models.CharField(_("Model Type"), null=False, blank=False, max_length=100, default='STT')
     lang = models.CharField(_("Language"), max_length=2, choices=LANG_CHOICES, default='fr')
     in_treatment = models.BooleanField(_("In Treatment"), default=False)
 

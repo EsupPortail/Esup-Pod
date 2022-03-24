@@ -25,7 +25,7 @@ if getattr(settings, "USE_PODFILE", False):
     FILEPICKER = True
 
 DEBUG = getattr(settings, "DEBUG", True)
-TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "DEEPSPEECH")
+TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "STT")
 MODEL_PARAM = getattr(settings, "MODEL_PARAM", {})
 
 

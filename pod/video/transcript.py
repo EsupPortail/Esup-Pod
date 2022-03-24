@@ -33,12 +33,10 @@ import logging
 MODEL_PARAM = getattr(settings, "MODEL_PARAM", False)
 TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
 if TRANSCRIPT:
-    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "DEEPSPEECH")
-    if TRANSCRIPTION_TYPE == "DEEPSPEECH":
-        from deepspeech import Model
-    elif TRANSCRIPTION_TYPE == "VOSK":
+    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "STT")
+    if TRANSCRIPTION_TYPE == "VOSK":
         from vosk import Model, KaldiRecognizer
-    elif TRANSCRIPTION_TYPE == "coqui":
+    elif TRANSCRIPTION_TYPE == "STT":
         from stt import Model
 
 DEBUG = getattr(settings, "DEBUG", False)
@@ -71,8 +69,8 @@ log = logging.getLogger(__name__)
 """
 TO TEST IN THE SHELL -->
 from pod.video.transcript import *
-ds_model = get_model("fr")
-msg, webvtt, all_text = main_deepspeech_transcript(
+stt_model = get_model("fr")
+msg, webvtt, all_text = main_stt_transcript(
     "/test/audio_192k_pod.mp3", # file
     177, # file duration
     stt_model # model stt loaded
@@ -112,34 +110,34 @@ def start_transcript(video_id, threaded=True):
 
 
 def get_model(lang):
-    ds_model = Model(MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["model"])
-    if TRANSCRIPTION_TYPE == "DEEPSPEECH" or TRANSCRIPTION_TYPE == "COQUI":
+    transript_model = Model(MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["model"])
+    if TRANSCRIPTION_TYPE == "STT":
         if MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("beam_width"):
-            ds_model.setBeamWidth(MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["beam_width"])
+            transript_model.setBeamWidth(MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["beam_width"])
         if MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("scorer"):
             print(
                 "Loading scorer from files {}".format(MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["scorer"]),
                 file=sys.stderr,
             )
             scorer_load_start = timer()
-            ds_model.enableExternalScorer(MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["scorer"])
+            transript_model.enableExternalScorer(MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["scorer"])
             scorer_load_end = timer() - scorer_load_start
             print("Loaded scorer in {:.3}s.".format(scorer_load_end), file=sys.stderr)
             if MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("lm_alpha") and MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("lm_beta"):
-                ds_model.setScorerAlphaBeta(
+                transript_model.setScorerAlphaBeta(
                     MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["lm_alpha"], MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["lm_beta"]
                 )
-    return ds_model
+    return transript_model
 
 
-def start_main_transcript(mp3filepath, video_to_encode, ds_model):
-    if TRANSCRIPTION_TYPE == "DEEPSPEECH" or TRANSCRIPTION_TYPE == "COQUI":
-        msg, webvtt, all_text = main_deepspeech_transcript(
-            mp3filepath, video_to_encode.duration, ds_model
+def start_main_transcript(mp3filepath, video_to_encode, transript_model):
+    if TRANSCRIPTION_TYPE == "STT":
+        msg, webvtt, all_text = main_stt_transcript(
+            mp3filepath, video_to_encode.duration, transript_model
         )
     elif TRANSCRIPTION_TYPE == "VOSK":
         msg, webvtt, all_text = main_vosk_transcript(
-            mp3filepath, video_to_encode.duration, ds_model
+            mp3filepath, video_to_encode.duration, transript_model
         )
     return msg, webvtt, all_text
 
@@ -154,12 +152,12 @@ def main_threaded_transcript(video_to_encode_id):
     lang = video_to_encode.main_lang
     # check if MODEL_PARAM [lang] exist
     if not MODEL_PARAM[TRANSCRIPTION_TYPE].get(lang):
-        msg += "\n no deepspeech model found for lang:%s." % lang
+        msg += "\n no stt model found for lang:%s." % lang
         msg += "Please add it in MODEL_PARAM."
         change_encoding_step(video_to_encode.id, -1, msg)
         send_email(msg, video_to_encode.id)
     else:
-        ds_model = get_model(lang)
+        transript_model = get_model(lang)
 
         mp3file = (
             video_to_encode.get_video_mp3().source_file
@@ -176,7 +174,7 @@ def main_threaded_transcript(video_to_encode_id):
             if NORMALIZE:
                 mp3filepath = normalize_mp3(mp3filepath)
 
-            msg, webvtt, all_text = start_main_transcript(mp3filepath, video_to_encode, ds_model)
+            msg, webvtt, all_text = start_main_transcript(mp3filepath, video_to_encode, transript_model)
             if DEBUG:
                 print(msg)
                 print(webvtt)
@@ -327,13 +325,13 @@ def words_to_vtt(words, start_trim, duration, is_first_caption, text_caption, st
     return all_text, webvtt
 
 
-def main_vosk_transcript(norm_mp3_file, duration, ds_model):
+def main_vosk_transcript(norm_mp3_file, duration, transript_model):
     msg = ""
     inference_start = timer()
     msg += "\nInference start %0.3fs." % inference_start
     desired_sample_rate = 16000
 
-    rec = KaldiRecognizer(ds_model, desired_sample_rate)
+    rec = KaldiRecognizer(transript_model, desired_sample_rate)
     rec.SetWords(True)
 
     webvtt = WebVTT()
@@ -372,12 +370,12 @@ def main_vosk_transcript(norm_mp3_file, duration, ds_model):
     return msg, webvtt, all_text
 
 
-def main_deepspeech_transcript(norm_mp3_file, duration, ds_model):
+def main_stt_transcript(norm_mp3_file, duration, transript_model):
     msg = ""
     inference_start = timer()
     msg += "\nInference start %0.3fs." % inference_start
 
-    desired_sample_rate = ds_model.sampleRate()
+    desired_sample_rate = transript_model.sampleRate()
 
     webvtt = WebVTT()
 
@@ -405,7 +403,7 @@ def main_deepspeech_transcript(norm_mp3_file, duration, ds_model):
         audio = convert_samplerate(norm_mp3_file, desired_sample_rate, start_trim, dur)
         msg += "\nRunning inference."
 
-        metadata = ds_model.sttWithMetadata(audio)
+        metadata = transript_model.sttWithMetadata(audio)
 
         for transcript in metadata.transcripts:
             msg += "\nConfidence : %s" % transcript.confidence

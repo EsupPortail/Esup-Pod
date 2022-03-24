@@ -1144,11 +1144,10 @@ USE_TRANSCRIPTION = True
 
 """
 ## Transcription use
-# * DEEPSPEECH
-# * COQUI
+# * STT
 # * VOSK
 """
-TRANSCRIPTION_TYPE = "VOSK"
+TRANSCRIPTION_TYPE = "STT"
 
 
 """
@@ -1162,26 +1161,19 @@ AUDIO_SPLIT_TIME = 300
 # Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models
 """
 MODEL_PARAM = {
-# le modèle stt
-    'COQUI': {
+    # le modèle stt
+    'STT': {
         'fr': {
             'model': "/path/to/project/Esup-Pod/transcription/model_tensorflow_fr/output_graph.tflite",
             'scorer': "/path/to/project/Esup-Pod/transcription/model_tensorflow_fr/kenlm.scorer",
         }
     },
-  # le modèle deepspeech
-  'DEEPSPEECH':{
-    'fr': {
-      'model': "/path/of/project/Esup-Pod/transcription/model_fr/deepspeech/output_graph.pbmm",
-      'scorer': "/path/of/project/Esup-Pod/transcription/model_fr/deepspeech/kenlm.scorer",
+    # le modèle vosk
+    'VOSK':{
+        'fr': {
+        'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0",
+        }
     }
-  },
-  # le modèle vosk
-  'VOSK':{
-    'fr': {
-      'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0",
-    }
-  }
 }
 
 
