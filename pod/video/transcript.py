@@ -132,6 +132,18 @@ def get_model(lang):
     return ds_model
 
 
+def start_main_transcript(mp3filepath, video_to_encode, ds_model):
+    if TRANSCRIPTION_TYPE == "DEEPSPEECH" or TRANSCRIPTION_TYPE == "COQUI":
+        msg, webvtt, all_text = main_deepspeech_transcript(
+            mp3filepath, video_to_encode.duration, ds_model
+        )
+    elif TRANSCRIPTION_TYPE == "VOSK":
+        msg, webvtt, all_text = main_vosk_transcript(
+            mp3filepath, video_to_encode.duration, ds_model
+        )
+    return msg, webvtt, all_text
+
+
 def main_threaded_transcript(video_to_encode_id):
 
     change_encoding_step(video_to_encode_id, 5, "transcripting audio")
@@ -164,14 +176,7 @@ def main_threaded_transcript(video_to_encode_id):
             if NORMALIZE:
                 mp3filepath = normalize_mp3(mp3filepath)
 
-            if TRANSCRIPTION_TYPE == "DEEPSPEECH" or TRANSCRIPTION_TYPE == "COQUI":
-                msg, webvtt, all_text = main_deepspeech_transcript(
-                    mp3filepath, video_to_encode.duration, ds_model
-                )
-            elif TRANSCRIPTION_TYPE == "VOSK":
-                msg, webvtt, all_text = main_vosk_transcript(
-                    mp3filepath, video_to_encode.duration, ds_model
-                )
+            msg, webvtt, all_text = start_main_transcript(mp3filepath, video_to_encode, ds_model)
             if DEBUG:
                 print(msg)
                 print(webvtt)
@@ -257,6 +262,71 @@ def convert_vosk_samplerate(audio_path, desired_sample_rate, trim_start, duratio
     return output
 
 
+def get_word_result_from_data(results, audio, rec):
+    while True:
+        data = audio.stdout.read(4000)
+        if len(data) == 0:
+            break
+        if rec.AcceptWaveform(data):
+            results.append(rec.Result())
+    results.append(rec.Result())
+
+
+def words_to_vtt(words, start_trim, duration, is_first_caption, text_caption, start_caption, last_word_added, all_text, webvtt):
+    for word in words:
+        start_key = "start_time"
+        word_duration = word["duration"]
+        last_word_duration = words[-1]["duration"]
+        if(TRANSCRIPTION_TYPE == "VOSK"):
+            start_key = "start"
+            word_duration = (word["end"] - word["start"])
+            last_word_duration = (words[-1]["end"] - words[-1]["start"])
+
+        all_text += word["word"] + " "
+        # word : <class 'dict'> {'word': 'bonjour', 'start ':
+        # 0.58, 'duration': 7.34}
+        text_caption.append(word["word"])
+        if not (
+            ((word[start_key] + start_trim) - start_caption)
+            < SENTENCE_MAX_LENGTH
+        ):
+            # on créé le caption
+            if is_first_caption:
+                # A revoir, fusion de la nouvelle ligne avec
+                # l'ancienne...
+                is_first_caption = False
+                text_caption = get_text_caption(text_caption, last_word_added)
+
+            stop_caption = start_trim + word[start_key] + word_duration
+
+            # on evite le chevauchement
+            change_previous_end_caption(webvtt, start_caption)
+
+            caption = Caption(
+                format_time_caption(start_caption),
+                format_time_caption(stop_caption),
+                " ".join(text_caption),
+            )
+
+            webvtt.captions.append(caption)
+            # on remet tout à zero pour la prochaine phrase
+            start_caption = start_trim + word[start_key]
+            text_caption = []
+            last_word_added = word["word"]
+    if start_trim + AUDIO_SPLIT_TIME > duration:
+        # on ajoute ici la dernière phrase de la vidéo
+        stop_caption = (
+            start_trim + words[-1][start_key] + last_word_duration
+        )
+        caption = Caption(
+            format_time_caption(start_caption),
+            format_time_caption(stop_caption),
+            " ".join(text_caption),
+        )
+        webvtt.captions.append(caption)
+    return all_text, webvtt
+
+
 def main_vosk_transcript(norm_mp3_file, duration, ds_model):
     msg = ""
     inference_start = timer()
@@ -284,13 +354,7 @@ def main_vosk_transcript(norm_mp3_file, duration, ds_model):
         audio = convert_vosk_samplerate(norm_mp3_file, desired_sample_rate, start_trim, dur)
         msg += "\nRunning inference."
         results = []
-        while True:
-            data = audio.stdout.read(4000)
-            if len(data) == 0:
-                break
-            if rec.AcceptWaveform(data):
-                results.append(rec.Result())
-        results.append(rec.Result())
+        get_word_result_from_data(results, audio, rec)
 
         webvtt = WebVTT()
         for res in results:
@@ -301,49 +365,7 @@ def main_vosk_transcript(norm_mp3_file, duration, ds_model):
             start_caption = start_trim + words[0]["start"]
             text_caption = []
             is_first_caption = True
-            for word in words:
-                all_text += word["word"] + " "
-                # word : <class 'dict'> {'word': 'bonjour', 'start_time ':
-                # 0.58, 'duration': 7.34}
-                text_caption.append(word["word"])
-                if not (
-                    ((word["start"] + start_trim) - start_caption)
-                    < SENTENCE_MAX_LENGTH
-                ):
-                    # on créé le caption
-                    if is_first_caption:
-                        # A revoir, fusion de la nouvelle ligne avec
-                        # l'ancienne...
-                        is_first_caption = False
-                        text_caption = get_text_caption(text_caption, last_word_added)
-
-                    stop_caption = start_trim + word["start"] + (word["end"] - word["start"])
-
-                    # on evite le chevauchement
-                    change_previous_end_caption(webvtt, start_caption)
-
-                    caption = Caption(
-                        format_time_caption(start_caption),
-                        format_time_caption(stop_caption),
-                        " ".join(text_caption),
-                    )
-
-                    webvtt.captions.append(caption)
-                    # on remet tout à zero pour la prochaine phrase
-                    start_caption = start_trim + word["start"]
-                    text_caption = []
-                    last_word_added = word["word"]
-            if start_trim + AUDIO_SPLIT_TIME > duration:
-                # on ajoute ici la dernière phrase de la vidéo
-                stop_caption = (
-                    start_trim + words[-1]["start"] + (words[-1]["end"] - words[-1]["start"])
-                )
-                caption = Caption(
-                    format_time_caption(start_caption),
-                    format_time_caption(stop_caption),
-                    " ".join(text_caption),
-                )
-                webvtt.captions.append(caption)
+            all_text, webvtt = words_to_vtt(words, start_trim, duration, is_first_caption, text_caption, start_caption, last_word_added, all_text, webvtt)
     inference_end = timer() - inference_start
 
     msg += "\nInference took %0.3fs." % inference_end
@@ -391,49 +413,7 @@ def main_deepspeech_transcript(norm_mp3_file, duration, ds_model):
             start_caption = start_trim + words[0]["start_time"]
             text_caption = []
             is_first_caption = True
-            for word in words:
-                all_text += word["word"] + " "
-                # word : <class 'dict'> {'word': 'bonjour', 'start_time ':
-                # 0.58, 'duration': 7.34}
-                text_caption.append(word["word"])
-                if not (
-                    ((word["start_time"] + start_trim) - start_caption)
-                    < SENTENCE_MAX_LENGTH
-                ):
-                    # on créé le caption
-                    if is_first_caption:
-                        # A revoir, fusion de la nouvelle ligne avec
-                        # l'ancienne...
-                        is_first_caption = False
-                        text_caption = get_text_caption(text_caption, last_word_added)
-
-                    stop_caption = start_trim + word["start_time"] + word["duration"]
-
-                    # on evite le chevauchement
-                    change_previous_end_caption(webvtt, start_caption)
-
-                    caption = Caption(
-                        format_time_caption(start_caption),
-                        format_time_caption(stop_caption),
-                        " ".join(text_caption),
-                    )
-
-                    webvtt.captions.append(caption)
-                    # on remet tout à zero pour la prochaine phrase
-                    start_caption = start_trim + word["start_time"]
-                    text_caption = []
-                    last_word_added = word["word"]
-            if start_trim + AUDIO_SPLIT_TIME > duration:
-                # on ajoute ici la dernière phrase de la vidéo
-                stop_caption = (
-                    start_trim + words[-1]["start_time"] + words[-1]["duration"]
-                )
-                caption = Caption(
-                    format_time_caption(start_caption),
-                    format_time_caption(stop_caption),
-                    " ".join(text_caption),
-                )
-                webvtt.captions.append(caption)
+            all_text, webvtt = words_to_vtt(words, start_trim, duration, is_first_caption, text_caption, start_caption, last_word_added, all_text, webvtt)
     inference_end = timer() - inference_start
 
     msg += "\nInference took %0.3fs." % inference_end
