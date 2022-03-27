@@ -147,7 +147,7 @@ class TrackAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-               "bootstrap/dist/css/bootstrap.min.css",
+                "bootstrap/dist/css/bootstrap.min.css",
                 "bootstrap/dist/css/bootstrap-grid.min.css",
                 "css/pod.css",
             )
