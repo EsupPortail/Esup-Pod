@@ -14,6 +14,7 @@ register = template.Library()
 
 HOMEPAGE_SHOWS_PASSWORDED = getattr(django_settings, "HOMEPAGE_SHOWS_PASSWORDED", True)
 HOMEPAGE_SHOWS_RESTRICTED = getattr(django_settings, "HOMEPAGE_SHOWS_RESTRICTED", True)
+HOMEPAGE_NB_VIDEOS = getattr(django_settings, "HOMEPAGE_NB_VIDEOS", 12)
 
 
 @register.simple_tag
@@ -67,7 +68,7 @@ def get_last_videos(context):
         if vid.encoded:
             recent_vids.append(vid)
             count = count + 1
-        if count >= 12:
+        if count >= HOMEPAGE_NB_VIDEOS:
             break
 
     return recent_vids

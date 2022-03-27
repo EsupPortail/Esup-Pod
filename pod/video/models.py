@@ -1219,11 +1219,14 @@ class Video(models.Model):
                 "dc.title": "%s" % self.title,
                 "dc.creator": "%s" % self.owner.get_full_name(),
                 "dc.description": "%s" % self.description,
-                "dc.subject": "%s"
-                % ", ".join(
-                    self.discipline.all()
-                    .filter(sites=current_site)
-                    .values_list("title", flat=True)
+                "dc.subject": "%s, %s"
+                % (
+                    self.type.title,
+                    ", ".join(
+                        self.discipline.all()
+                        .filter(sites=current_site)
+                        .values_list("title", flat=True)
+                    ),
                 ),
                 "dc.publisher": TITLE_ETB,
                 "dc.contributor": ", ".join(contributors),
@@ -1967,7 +1970,7 @@ class Category(models.Model):
     slug = models.SlugField(
         _("Slug"),
         unique=True,
-        max_length=100,
+        max_length=110,
         help_text=_(
             'Used to access this instance, the "slug" is a short label '
             + "containing only letters, numbers, underscore or dash top."

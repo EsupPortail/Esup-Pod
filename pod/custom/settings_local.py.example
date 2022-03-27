@@ -204,6 +204,12 @@ HOMEPAGE_SHOWS_PASSWORDED = False
 HOMEPAGE_SHOWS_RESTRICTED = False
 
 """
+# Nombre de vidéos à afficher sur la page d'accueil
+# par défaut, le nombre est fixé à 12
+"""
+HOMEPAGE_NB_VIDEOS = 12
+
+"""
 # Les mots clés saisis lors de l'ajout de vidéo sont convertis
 #  automatiquement en minuscule
 """

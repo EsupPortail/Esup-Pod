@@ -15,7 +15,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 #
 VERSION = "Beta 3"
 
-
 ##
 # Installed applications list
 #
