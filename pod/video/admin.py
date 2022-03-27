@@ -249,7 +249,7 @@ class VideoAdmin(admin.ModelAdmin):
         css = {
             "all": (
                 "bootstrap-4/css/bootstrap-%s.min.css" % USE_THEME,
-                "bootstrap-4/css/bootstrap-grid.css",
+                "bootstrap/dist/css/bootstrap-grid.min.css",
                 "css/pod.css",
             )
         }
@@ -258,7 +258,7 @@ class VideoAdmin(admin.ModelAdmin):
             "js/main.js",
             "js/validate-date_delete-field.js",
             "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
 
@@ -351,8 +351,8 @@ class ChannelAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
+                "bootstrap/dist/css/bootstrap.min.css",
+                "bootstrap/dist/css/bootstrap-grid.min.css",
                 "css/pod.css",
             )
         }
@@ -360,7 +360,7 @@ class ChannelAdmin(admin.ModelAdmin):
             "js/main.js",
             "podfile/js/filewidget.js",
             "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
     def get_queryset(self, request):
@@ -381,8 +381,8 @@ class ThemeAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
+                "bootstrap/dist/css/bootstrap.min.css",
+                "bootstrap/dist/css/bootstrap-grid.min.css",
                 "css/pod.css",
             )
         }
@@ -390,7 +390,7 @@ class ThemeAdmin(admin.ModelAdmin):
             "js/main.js",
             "podfile/js/filewidget.js",
             "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
     def get_queryset(self, request):
@@ -418,8 +418,8 @@ class TypeAdmin(TranslationAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
+                "bootstrap/dist/css/bootstrap.min.css",
+                "bootstrap/dist/css/bootstrap-grid.min.css",
                 "css/pod.css",
             )
         }
@@ -427,7 +427,7 @@ class TypeAdmin(TranslationAdmin):
             "js/main.js",
             "podfile/js/filewidget.js",
             "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
     def get_form(self, request, obj=None, **kwargs):
@@ -459,8 +459,8 @@ class DisciplineAdmin(TranslationAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap-grid.css",
-                "bootstrap-4/css/bootstrap.min.css",
+                "bootstrap/dist/css/bootstrap-grid.min.css",
+                "bootstrap/dist/css/bootstrap.min.css",
                 "css/pod.css",
             )
         }
@@ -468,7 +468,7 @@ class DisciplineAdmin(TranslationAdmin):
             "js/main.js",
             "podfile/js/filewidget.js",
             "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
     def get_form(self, request, obj=None, **kwargs):
