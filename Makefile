@@ -17,7 +17,7 @@ install:
 
 upgrade:
 	# Mise à jour de Pod
-	git pull
+	git pull origin master
 	python3 -m pip install -r requirements.txt
 	make updatedb
 	make migrate
