@@ -94,7 +94,7 @@ class DocumentAdmin(admin.ModelAdmin):
         css = {
             "all": (
                 "bootstrap-4/css/bootstrap-%s.min.css" % USE_THEME,
-                "bootstrap-4/css/bootstrap-grid.css",
+                "bootstrap/dist/css/bootstrap-grid.min.css",
                 "css/pod.css",
             )
         }
@@ -102,7 +102,7 @@ class DocumentAdmin(admin.ModelAdmin):
             "podfile/js/filewidget.js",
             "js/main.js",
             "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
 
@@ -147,8 +147,8 @@ class TrackAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
+                "bootstrap/dist/css/bootstrap.min.css",
+                "bootstrap/dist/css/bootstrap-grid.min.css",
                 "css/pod.css",
             )
         }
@@ -156,7 +156,7 @@ class TrackAdmin(admin.ModelAdmin):
             "js/main.js",
             "podfile/js/filewidget.js",
             "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
 
