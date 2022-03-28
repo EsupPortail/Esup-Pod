@@ -130,6 +130,7 @@ def get_manager_email(owner):
 
 
 def get_dest_email(owner, video, form_subject, request):
+    """Determine to which recipient an email should be addressed."""
     dest_email = []
     # Soit le owner a été spécifié
     # Soit on le récupere via la video
@@ -156,7 +157,7 @@ def get_dest_email(owner, video, form_subject, request):
     else:
         # Sinon aucune envie d'utiliser cette fonctionnalité
         # On utilise le fonctionnement de base
-        dest_email = [owner.email] if owner else CONTACT_US_EMAIL
+        dest_email = [v_owner.email] if v_owner else CONTACT_US_EMAIL
     return dest_email
 
 
