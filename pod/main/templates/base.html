@@ -44,7 +44,7 @@
 
     <!-- Javascript -->
     <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
-    <script src="{% static 'bootstrap-4/js/bootstrap.bundle.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.js' %}?ver={{VERSION}}"></script>
     <script src="{% static 'js-cookie/src/js.cookie.js' %}?ver={{VERSION}}"></script>
     <script src="{% url 'javascript-catalog' %}"></script>
     <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|capfirst}}{% endblock %}</title>

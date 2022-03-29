@@ -23,6 +23,7 @@ from .models import Notes, AdvancedNotes, NoteComments
 from .models import ViewCount
 from .models import VideoToDelete
 from .models import VideoVersion
+from .models import Category
 
 
 from .forms import VideoForm, VideoVersionForm
@@ -248,7 +249,7 @@ class VideoAdmin(admin.ModelAdmin):
         css = {
             "all": (
                 "bootstrap-4/css/bootstrap-%s.min.css" % USE_THEME,
-                "bootstrap-4/css/bootstrap-grid.css",
+                "bootstrap/dist/css/bootstrap-grid.min.css",
                 "css/pod.css",
             )
         }
@@ -257,7 +258,7 @@ class VideoAdmin(admin.ModelAdmin):
             "js/main.js",
             "js/validate-date_delete-field.js",
             "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
 
@@ -350,8 +351,8 @@ class ChannelAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
+                "bootstrap/dist/css/bootstrap.min.css",
+                "bootstrap/dist/css/bootstrap-grid.min.css",
                 "css/pod.css",
             )
         }
@@ -359,7 +360,7 @@ class ChannelAdmin(admin.ModelAdmin):
             "js/main.js",
             "podfile/js/filewidget.js",
             "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
     def get_queryset(self, request):
@@ -380,8 +381,8 @@ class ThemeAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
+                "bootstrap/dist/css/bootstrap.min.css",
+                "bootstrap/dist/css/bootstrap-grid.min.css",
                 "css/pod.css",
             )
         }
@@ -389,7 +390,7 @@ class ThemeAdmin(admin.ModelAdmin):
             "js/main.js",
             "podfile/js/filewidget.js",
             "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
     def get_queryset(self, request):
@@ -417,8 +418,8 @@ class TypeAdmin(TranslationAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
+                "bootstrap/dist/css/bootstrap.min.css",
+                "bootstrap/dist/css/bootstrap-grid.min.css",
                 "css/pod.css",
             )
         }
@@ -426,7 +427,7 @@ class TypeAdmin(TranslationAdmin):
             "js/main.js",
             "podfile/js/filewidget.js",
             "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
     def get_form(self, request, obj=None, **kwargs):
@@ -458,8 +459,8 @@ class DisciplineAdmin(TranslationAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap-grid.css",
-                "bootstrap-4/css/bootstrap.min.css",
+                "bootstrap/dist/css/bootstrap-grid.min.css",
+                "bootstrap/dist/css/bootstrap.min.css",
                 "css/pod.css",
             )
         }
@@ -467,7 +468,7 @@ class DisciplineAdmin(TranslationAdmin):
             "js/main.js",
             "podfile/js/filewidget.js",
             "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
     def get_form(self, request, obj=None, **kwargs):
@@ -716,6 +717,17 @@ class ViewCountAdmin(admin.ModelAdmin):
         return qs
 
 
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ("title", "owner", "videos_count")
+    readonly_fields = ("slug",)
+    # list_filter = ["owner"]
+
+    def videos_count(self, obj):
+        return len(obj.video.all())
+
+    videos_count.short_description = "Videos"
+
+
 admin.site.register(Channel, ChannelAdmin)
 admin.site.register(Type, TypeAdmin)
 admin.site.register(Discipline, DisciplineAdmin)
@@ -733,3 +745,4 @@ admin.site.register(AdvancedNotes, AdvancedNotesAdmin)
 admin.site.register(NoteComments, NoteCommentsAdmin)
 admin.site.register(VideoToDelete, VideoToDeleteAdmin)
 admin.site.register(ViewCount, ViewCountAdmin)
+admin.site.register(Category, CategoryAdmin)

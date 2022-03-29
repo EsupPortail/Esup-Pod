@@ -437,6 +437,7 @@ div.card a:hover>img {
   bottom: 57px;
   right: 2px;
   border: none;
+  display: flex;
 }
 .video-card .card-footer .feather,
 .video-card .card-header .feather {
