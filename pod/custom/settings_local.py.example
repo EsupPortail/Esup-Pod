@@ -1170,8 +1170,8 @@ MODEL_PARAM = {
     # le modèle stt
     'STT': {
         'fr': {
-            'model': "/path/to/project/Esup-Pod/transcription/model_tensorflow_fr/output_graph.tflite",
-            'scorer': "/path/to/project/Esup-Pod/transcription/model_tensorflow_fr/kenlm.scorer",
+            'model': "/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite",
+            'scorer': "/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer",
         }
     },
     # le modèle vosk
