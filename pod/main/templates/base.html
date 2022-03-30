@@ -22,11 +22,7 @@
       <link rel="icon" href="{% static FAVICON %}?ver={{VERSION}}">
     {% endif %}
     <!-- Bootstrap CSS -->
-    {% if BOOTSTRAP_CUSTOM %}
-       <link rel="stylesheet" href="{% static BOOTSTRAP_CUSTOM %}?ver={{VERSION}}" crossorigin="anonymous">
-    {% else %}
-       <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap-'%}{{ USE_THEME }}.min.css?ver={{VERSION}}" crossorigin="anonymous">
-    {% endif %}
+    <link rel="stylesheet" href="{% static '/bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
     <!-- pod.css -->
     <link rel="stylesheet" href="{% static 'css/pod.css' %}?ver={{VERSION}}" media="screen">
     {% if DARKMODE_ENABLED == True %}
