@@ -1149,20 +1149,53 @@ ACTIVE_VIDEO_COMMENT = True
 USE_TRANSCRIPTION = True
 
 """
+## Transcription use
+# * STT
+# * VOSK
+"""
+TRANSCRIPTION_TYPE = "STT"
+
+
+"""
 # decoupage de l'audio pour la transcription
 """
 AUDIO_SPLIT_TIME = 300
 
+
 """
-# paramétrage de stt pour le modele
+# paramétrage des modele
+# Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models
 """
-STT_PARAM = {
-  'fr': {
+MODEL_PARAM = {
     # le modèle stt
-    'model': "/usr/local/django_projects/transcription/model_tensorflow_fr/output_graph.tflite",
-    'scorer': "/usr/local/django_projects/transcription/model_tensorflow_fr/kenlm.scorer",
-  }
+    'STT': {
+        'fr': {
+            'model': "/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite",
+            'scorer': "/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer",
+        }
+    },
+    # le modèle vosk
+    'VOSK':{
+        'fr': {
+        'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0",
+        }
+    }
 }
+
+
+"""
+# Définissez à True pour activer la case à cocher dans l'édition des sous-titres.
+"""
+ACTIVE_MODEL_ENRICH  = False
+
+"""
+# paramétrage des chemin du model pour la compilation
+# Pour télécharger les Modeles : https://alphacephei.com/vosk/lm#update-process
+# Ajouter le model dans les sous-dossier de la lang correspondants
+# Exemple pour le français: /path/of/project/Esup-Pod/compile-model/fr/
+"""
+
+MODEL_COMPILE_DIR = "/path/of/project/Esup-Pod/compile-model"
 
 """
 # La liste des utilisateurs regardant le direct sera réservée au staff
