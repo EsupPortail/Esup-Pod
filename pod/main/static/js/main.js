@@ -202,7 +202,7 @@ var get_list = function (
     if (count > 0 && !show_only_parent_themes) {
       list += get_list(
         child,
-        (level += 1),
+        level + 1,
         tab_selected,
         tag_type,
         li_class,
