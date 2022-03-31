@@ -1246,11 +1246,14 @@ class Video(models.Model):
                 "dc.title": "%s" % self.title,
                 "dc.creator": "%s" % self.owner.get_full_name(),
                 "dc.description": "%s" % self.description,
-                "dc.subject": "%s"
-                % ", ".join(
-                    self.discipline.all()
-                    .filter(sites=current_site)
-                    .values_list("title", flat=True)
+                "dc.subject": "%s, %s"
+                % (
+                    self.type.title,
+                    ", ".join(
+                        self.discipline.all()
+                        .filter(sites=current_site)
+                        .values_list("title", flat=True)
+                    ),
                 ),
                 "dc.publisher": TITLE_ETB,
                 "dc.contributor": ", ".join(contributors),
@@ -1518,6 +1521,10 @@ class EncodingVideo(models.Model):
     def sites(self):
         return self.video.sites
 
+    @property
+    def sites_all(self):
+        return self.video.sites_set.all()
+
     def clean(self):
         if self.name:
             if self.name not in dict(ENCODING_CHOICES):
@@ -1588,6 +1595,10 @@ class EncodingAudio(models.Model):
     def sites(self):
         return self.video.sites
 
+    @property
+    def sites_all(self):
+        return self.video.sites_set.all()
+
     class Meta:
         ordering = ["name"]
         verbose_name = _("Encoding audio")
@@ -1653,6 +1664,10 @@ class PlaylistVideo(models.Model):
     def sites(self):
         return self.video.sites
 
+    @property
+    def sites_all(self):
+        return self.video.sites_set.all()
+
     def clean(self):
         if self.name:
             if self.name not in dict(ENCODING_CHOICES):
@@ -1691,6 +1706,10 @@ class EncodingLog(models.Model):
     def sites(self):
         return self.video.sites
 
+    @property
+    def sites_all(self):
+        return self.video.sites_set.all()
+
     class Meta:
         ordering = ["video"]
         verbose_name = _("Encoding log")
@@ -1721,6 +1740,10 @@ class VideoVersion(models.Model):
     def sites(self):
         return self.video.sites
 
+    @property
+    def sites_all(self):
+        return self.video.sites_set.all()
+
     def __str__(self):
         return "Choice for default video version: %s - %s" % (
             self.video.id,
@@ -1739,6 +1762,10 @@ class EncodingStep(models.Model):
     def sites(self):
         return self.video.sites
 
+    @property
+    def sites_all(self):
+        return self.video.sites_set.all()
+
     class Meta:
         ordering = ["video"]
         verbose_name = _("Encoding step")
@@ -1756,6 +1783,10 @@ class Notes(models.Model):
     @property
     def sites(self):
         return self.video.sites
+
+    @property
+    def sites_all(self):
+        return self.video.sites_set.all()
 
     class Meta:
         verbose_name = _("Note")
@@ -1789,6 +1820,10 @@ class AdvancedNotes(models.Model):
     @property
     def sites(self):
         return self.video.sites
+
+    @property
+    def sites_all(self):
+        return self.video.sites_set.all()
 
     def __str__(self):
         return "%s-%s-%s" % (self.user.username, self.video, self.timestamp)

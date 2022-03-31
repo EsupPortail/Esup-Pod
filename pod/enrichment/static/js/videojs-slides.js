@@ -164,7 +164,7 @@ var VideoSlides = function (items) {
                         slide.alt = this.slidesItems[i].title;
                         slide.width = player.currentDimensions().width / 2;
                         slide.height = player.currentDimensions().height / 2;
-                } else*/ 
+                } else*/
       if (type == "document") {
         slide = document.createElement("embed");
         slide.src = this.slidesItems[i].url;

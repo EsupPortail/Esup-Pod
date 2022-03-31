@@ -397,6 +397,8 @@ class Command(BaseCommand):
                 "Video Id",
                 "Video title",
                 "Video URL",
+                "Video type",
+                "Date added",
             ]
             writer = csv.DictWriter(csvfile, delimiter=";", fieldnames=fieldnames)
             if not exists:
@@ -410,7 +412,9 @@ class Command(BaseCommand):
                     "User Establishment": vid.owner.owner.establishment,
                     "Video Id": vid.id,
                     "Video title": vid.title,
-                    "Video URL": vid.get_full_url(),
+                    "Video URL": "https:%s" % vid.get_full_url(),
+                    "Video type": vid.type.title,
+                    "Date added": "%s" % vid.date_added.strftime("%Y/%m/%d"),
                 }
             )
 
