@@ -18,11 +18,11 @@
     <ul class="navbar-nav mx-auto">
       {% if HIDE_CHANNEL_TAB == False %}
       <li class="nav-item" id="nav-channels">
-        <button class="nav-link" data-toggle="modal" data-target=".chaines-modal"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Channels" %}</button>
+        <button class="nav-link" data-bs-toggle="modal" data-bs-target=".chaines-modal"><i class="bi bi-youtube"></i> {% trans "Channels" %}</button>
       </li>
       {% for add_channel_tab in ADD_CHANNELS_TAB %}
         <li class="nav-item add-nav-channels" >
-          <button class="nav-link" data-toggle="modal" data-target=".chaines-modal-{{add_channel_tab.id}}"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {{ add_channel_tab.name }}</button>
+          <button class="nav-link" data-bs-toggle="modal" data-bs-target=".chaines-modal-{{add_channel_tab.id}}"><i class="bi bi-youtube"></i> {{ add_channel_tab.name }}</button>
         </li>
       {% endfor %}
 
@@ -34,7 +34,7 @@
       {% endif %}
       {% if HIDE_TYPES_TAB == False %}
         <li class="nav-item" id="nav-types">
-          <button class="nav-link" data-toggle="modal" data-target=".types-modal">  <i data-feather="tv" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Types"%}</button>
+          <button class="nav-link" data-toggle="modal" data-target=".types-modal">  <i class="bi bi-tv"></i> {% trans "Types"%}</button>
         </li>
       {% endif %}
       {% if "live" in THIRD_PARTY_APPS %}

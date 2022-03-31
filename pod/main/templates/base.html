@@ -22,7 +22,8 @@
       <link rel="icon" href="{% static FAVICON %}?ver={{VERSION}}">
     {% endif %}
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{% static '/bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <!-- pod.css -->
     <link rel="stylesheet" href="{% static 'css/pod.css' %}?ver={{VERSION}}" media="screen">
     {% if DARKMODE_ENABLED == True %}
@@ -40,7 +41,6 @@
 
     <!-- Javascript -->
     <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
-    <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.js' %}?ver={{VERSION}}"></script>
     <script src="{% static 'js-cookie/src/js.cookie.js' %}?ver={{VERSION}}"></script>
     <script src="{% url 'javascript-catalog' %}"></script>
     <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|capfirst}}{% endblock %}</title>
@@ -148,6 +148,8 @@
     </div>
 
     <!-- JS -->
+    <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
+
     <script>
       /** HIDE USERNAME **/
       const HIDE_USERNAME = {% if HIDE_USERNAME %} true {% else %} false {% endif %};
@@ -162,6 +164,7 @@
     <script src="{% static 'js/main.js' %}?ver={{VERSION}}"></script>
     {% block more_script %}
     {% endblock more_script %}
+
     <script src="{% static 'feather-icons/feather.min.js' %}?ver={{VERSION}}"></script>
     <script>
       feather.replace({ class: 'align-bottom'});
