@@ -273,8 +273,9 @@ def get_word_result_from_data(results, audio, rec):
 def words_to_vtt(words, start_trim, duration, is_first_caption, text_caption, start_caption, last_word_added, all_text, webvtt):
     for word in words:
         start_key = "start_time"
-        word_duration = word["duration"]
-        last_word_duration = words[-1]["duration"]
+        word_duration = word.get("duration",0)
+        last_word = words[-1]
+        last_word_duration = last_word.get("duration",0)
         if(TRANSCRIPTION_TYPE == "VOSK"):
             start_key = "start"
             word_duration = (word["end"] - word["start"])
