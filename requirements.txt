@@ -21,6 +21,7 @@ vine==5.0.0; python_version >= '3.7'
 vine==1.3.0; python_version == '3.6'
 pandas
 stt==1.2.0
+vosk==0.3.32
 billiard<4.0,>=3.6.0
 webrtcvad
 django-shibboleth-remoteuser
