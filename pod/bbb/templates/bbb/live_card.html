@@ -17,7 +17,8 @@
               {% trans "Perform a BigBlueButton live"%}
             </a>
           {% else %}
-            <span data-feather="alert-triangle" style="color: Darkred;"></span> {% trans "Impossible to perform a BigBlueButton live for the moment (all resources are busy)"%}
+            <!--span data-feather="alert-triangle" style="color: Darkred;"></span> {% trans "Impossible to perform a BigBlueButton live for the moment (all resources are busy)"%}-->
+            <span <i class="bi bi-exclamation-triangle"></i> style="color: Darkred;"></span> {% trans "Impossible to perform a BigBlueButton live for the moment (all resources are busy)"%}>
           {% endif %}
         </span>
       {% else %}
@@ -25,10 +26,12 @@
           <span data-feather="loader" style="width: 100%; height:96px;"></span>
         {% endif %}
         {% if record.live.status == 1 %}
-          <span data-feather="play-circle" style="width: 100%; height:96px;"></span>
+          <!--span data-feather="play-circle" style="width: 100%; height:96px;"></span-->
+          <span <i class="bi bi-play-circle"></i> style="width: 100%; height:96px;"></span>
         {% endif %}
         {% if record.live.status == 2 %}
-          <span data-feather="stop-circle" style="width: 100%; height:96px;"></span>
+          <!--span data-feather="stop-circle" style="width: 100%; height:96px;"></span-->
+          <span <i class="bi bi-stop-circle"></i>  style="width: 100%; height:96px;"></span>
         {% endif %}
       {% endif %}
     </div>

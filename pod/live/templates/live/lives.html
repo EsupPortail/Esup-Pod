@@ -18,7 +18,7 @@ window.setInterval("location.reload(true)",30000);
 {% block page_title %}{% trans "Lives" %}{% endblock %}
 
 {% block page_content %}
-<h3><i data-feather="radio"></i>&nbsp;{% trans "Lives" %}</h3>
+<h3><i class="bi bi-broadcast"></i>&nbsp;{% trans "Lives" %}</h3>
 <div class="row">
 
 {% for building in buildings %}
@@ -30,9 +30,19 @@ window.setInterval("location.reload(true)",30000);
         <span class="building-name">
           {{building.name}}
         </span>
-        {% if is_supervisor %}<a href="{% url "live:building" building_id=building.id %}"><i data-feather="eye"></i></a>{% endif %}
+        <!-- {% if is_supervisor %}<a href="{% url "live:building" building_id=building.id %}"><i data-feather="eye"></i></a>{% endif %} -->
+        {% if is_supervisor %}<a href="{% url "live:building" building_id=building.id %}"><i class="bi bi-eye"></i></a>{% endif %}
       </h5>
       <div class="card-text">
+        {% for broadcaster in building.broadcaster_set.all %}
+        <p class="card-text-item">
+          {%if broadcaster.status %}<a href="{% url "live:video_live" slug=broadcaster.slug %}" class="live_on">{%if broadcaster.password%}<i class="bi bi-lock"></i>{%else%}<i class="bi bi-cast"></i>{%endif%}&nbsp;{{broadcaster.name}} </a>
+          {%else%}<span class="live_off"><i class="bi bi-cast"></i>&nbsp;{{broadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}</p>
+          {% empty %}
+        <p class="card-text-item">{% trans "Sorry, no lives found" %}.</p>
+        {% endfor %}
+      </div>
+      <!--div class="card-text">
         {% for broadcaster in building.broadcaster_set.all %}
         <p class="card-text-item">
           {%if broadcaster.status %}<a href="{% url "live:video_live" slug=broadcaster.slug %}" class="live_on">{%if broadcaster.password%}<i data-feather="lock"></i>{%else%}<i data-feather="airplay"></i>{%endif%}&nbsp;{{broadcaster.name}} </a>
@@ -40,9 +50,9 @@ window.setInterval("location.reload(true)",30000);
           {% empty %}
         <p class="card-text-item">{% trans "Sorry, no lives found" %}.</p>
         {% endfor %}
-      </div>
+      </div-->
       {% if building.gmapurl %}
-      <p class="card-text building-gmapurl"><small class="text-muted"><a href='{{building.gmapurl}}' title="{% trans "access map" %}" target="_blank"><i data-feather="map-pin"></i> <span class="ml-1 access-map">
+      <p class="card-text building-gmapurl"><small class="text-muted"><a href='{{building.gmapurl}}' title="{% trans "access map" %}" target="_blank"><i class="bi bi-geo-alt"></i> <span class="ml-1 access-map">
         {% trans "access map" %}
       </span></a></small></p>
       {% endif %}

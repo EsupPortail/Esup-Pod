@@ -25,7 +25,8 @@
     <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <!-- pod.css -->
-    <link rel="stylesheet" href="{% static 'css/pod.css' %}?ver={{VERSION}}" media="screen">
+    <!-- suppression temporaire de l'appel css pod.css-->
+    <link rel="stylesheet" href="{% static 'css/pod.css' %}?ver={{VERSION}}" media="screen"> 
     {% if DARKMODE_ENABLED == True %}
       <link rel="stylesheet" href="{% static 'css/dark.css' %}?ver={{VERSION}}" media="screen">
     {% endif %}
@@ -71,7 +72,6 @@
         {% if MAINTENANCE_SHEDULED and not request.GET.is_iframe %}
           <div class="alert alert-warning">{{MAINTENANCE_TEXT_SHEDULED|safe}}</div>
         {% endif %}
-
         <nav aria-label="{% trans 'Breadcrumb' %}" class="breadcrumb d-flex justify-content-between p-0" id="mainbreadcrumb">
           <ol class="breadcrumb p-1 pl-4 mb-0">
           {% block breadcrumbs %}
@@ -80,13 +80,13 @@
           </ol>
           <div class="p-0">
           {% block collapse_page_aside %}
-          <a class="btn btn-primary btn-sm collapseAside" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" aria-label="{% trans 'Toggle side Menu' %}">
-            <i data-feather="corner-left-up"></i><i data-feather="menu"></i>
+          <a class="btn btn-primary n-sm collapseAside" data-bs-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" aria-label="{% trans 'Toggle side Menu' %}" bt>
+            <!-- <i data-feather="corner-left-up"></i><i data-feather="menu"></i> -->
+            <i class="bi bi-arrow-down-up"></i><i class="bi bi-menu-down"></i>
           </a>
           {% endblock collapse_page_aside %}
           </div>
         </nav>
-
         <div class="row">
           <div class="col col-md-9 order-12 order-md-1" id="mainContent">
             <!-- contenu page statique -->

@@ -31,7 +31,7 @@
   {% include 'live/live-form.html' %}
 {% else %}
 
-  <h3 id="livename" data-liveid="{{broadcaster.id}}"><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}}</h3>
+  <h3 id="livename" data-liveid="{{broadcaster.id}}"><i class="bi bi-cast"></i>&nbsp;{{broadcaster.name}}</h3>
 
   {% if broadcaster.video_on_hold.is_video %}
     <div id="divvideoonhold" style="display: block;">
@@ -131,17 +131,17 @@
 
 {% if request.user.is_superuser %}
   <div class="card mt-1" id="card-managevideo">
-    <h5 class="card-header card-title pl-2"><i data-feather="settings"></i>&nbsp;{% trans "Manage live"%}</h5>
+    <h5 class="card-header card-title pl-2"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage live"%}</h5>
     <div class="card-body card-text text-center">
       <a href="{% url 'admin:live_broadcaster_change' broadcaster.id %}" title="{% trans "Edit the live"%}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
-        <i data-feather="edit"></i></a>
+        <i class="bi bi-pencil-square"></i></a>
     </div>
   </div>
 {% endif %}
 
 <div class="card card-body p-2 mt-1" id="card-livebuilding">
 <h5 class="card-title pl-2">
-  <i data-feather="radio"></i>
+  <i class="bi bi-broadcast"></i>
   <span class="ml-1 broadcaster-name">
     {{broadcaster.building.name}}
   </span>
@@ -156,8 +156,8 @@
     {% for otherbroadcaster in broadcaster.building.broadcaster_set.all%}
       {% if otherbroadcaster != broadcaster and otherbroadcaster.public %}
         <p class="card-text broadcaster-status">
-          {%if otherbroadcaster.status %}<a href="{% url 'live:video_live' slug=otherbroadcaster.slug %}" class="live_on">{%if otherbroadcaster.password%}<i data-feather="lock"></i>{%else%}<i data-feather="airplay"></i>{%endif%}</i>&nbsp;{{otherbroadcaster.name}}</a>
-          {%else%}<span class="live_off"><i data-feather="airplay"></i>&nbsp;{{otherbroadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}
+          {%if otherbroadcaster.status %}<a href="{% url 'live:video_live' slug=otherbroadcaster.slug %}" class="live_on">{%if otherbroadcaster.password%}<i class="bi bi-lock"></i>{%else%}<i class="bi bi-cast"></i>{%endif%}</i>&nbsp;{{otherbroadcaster.name}}</a>
+          {%else%}<span class="live_off"><i class="bi bi-cast"></i>&nbsp;{{otherbroadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}
         </p>
       {% endif %}
     {% empty %}
@@ -165,7 +165,7 @@
     {% endfor %}
     {% if broadcaster.building.gmapurl %}
       <p class="card-text">
-        <small class="text-muted"><a href='{{broadcaster.building.gmapurl}}' title="{% trans 'access map' %}" target="_blank"><i data-feather="map-pin"></i>
+        <small class="text-muted"><a href='{{broadcaster.building.gmapurl}}' title="{% trans 'access map' %}" target="_blank"><i class="bi bi-gear"></i>
           <span class="ml-1 access-map">{% trans "access map" %}</span>
         </a></small>
       </p>
