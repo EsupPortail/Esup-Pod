@@ -34,17 +34,17 @@
 <h3>{% if form.instance.title and form.instance.slug != '' %}{% trans "Editing the video" %} "{{form.instance.title}}"
   <span>
     <a href="{% url 'video' slug=form.instance.slug %}" class="btn btn-primary btn-sm m-2">
-      <i data-feather="film"></i>&nbsp;{% trans "View the video"%}
+      <i class="bi bi-film"></i>&nbsp;{% trans "View the video"%}
     </a>
     <a href="{% url 'video_delete' slug=form.instance.slug %}" class="btn btn btn-danger btn-sm m-2">
-      <i data-feather="trash-2"></i>&nbsp;{% trans "Delete the video"%}
+      <i class="bi bi-trash"></i>&nbsp;{% trans "Delete the video"%}
     </a>
   </span>
 {% else %}{% trans "Add a new video" %}{%endif%}
 </h3>
 {% if access_not_allowed == True %}
   <p class="text-info">
-  <i data-feather="info"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
+  <i class="bi bi-info-circle"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
   </p>
 {% else %}
   {% if form.instance.slug and form.instance.slug != '' %}
@@ -139,7 +139,7 @@
 {% else %}
   {% if form.instance.title  and form.instance.slug != '' %}
     <div class="card mt-1" id="card-managevideo">
-      <h2 class="card-header card-title pl-2 h4"><i data-feather="settings"></i>&nbsp;{% trans "Manage video"%}</h2>
+      <h2 class="card-header card-title pl-2 h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
       <div class="card-body card-text text-center">
         {% include "videos/link_video.html" with video=form.instance %}
       </div>
@@ -151,7 +151,7 @@
           <div class="card-body card-text">
             <p>{% trans 'As a staff member you can create other version of your video.' %}</p>
             <div class="input-group-button">
-              {% for app in THIRD_PARTY_APPS %}{% if app != "live" %}{% with urledit=app|add:':edit_'|add:app %}<a href="{% url urledit slug=form.instance.slug %}" title="{% blocktrans %}Edit the {{app}}{% endblocktrans %}" class="p-0 m-0 btn btn-light btn-sm pl-1"><i data-feather="file-plus"></i>&nbsp;{% trans app|capfirst %}</a> {% endwith %}{% endif %}{% endfor %}
+              {% for app in THIRD_PARTY_APPS %}{% if app != "live" %}{% with urledit=app|add:':edit_'|add:app %}<a href="{% url urledit slug=form.instance.slug %}" title="{% blocktrans %}Edit the {{app}}{% endblocktrans %}" class="p-0 m-0 btn btn-light btn-sm pl-1"><i class="bi bi-file-plus"></i>&nbsp;{% trans app|capfirst %}</a> {% endwith %}{% endif %}{% endfor %}
             </div>
           </div>
         </div>
@@ -165,7 +165,7 @@
               <input class="form-control form-control-sm form-control-plaintext" type="text" name="txtpartageprive" id="txtpartageprive" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video/{{ form.instance.slug }}/{{ form.instance.get_hashkey }}/" readonly/>
               <div class="input-group-button">
                 <clipboard-copy aria-label="Copy to clipboard" class="btn btn-sm btn-default" tabindex="0" role="button" id="btnpartageprive">
-                  <i data-feather="copy"></i>
+                  <i class="bi bi-clipboard"></i>
                 </clipboard-copy>
               </div>
             </div>

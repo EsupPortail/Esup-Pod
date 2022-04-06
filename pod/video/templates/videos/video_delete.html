@@ -18,7 +18,7 @@
   <h3>{% blocktrans with vtitle=video.title %}Deleting the video "{{vtitle}}"{% endblocktrans %}
     <span class="float-right">
       <a href="{% url 'video' slug=video.slug %}" title="{% trans 'View the video'%}" class="btn btn btn-secondary btn-sm">
-        <i data-feather="film"></i>&nbsp;{% trans "Back to the video"%}
+        <i class="bi bi-film"></i>&nbsp;{% trans "Back to the video"%}
       </a>
     </span>
   </h3>

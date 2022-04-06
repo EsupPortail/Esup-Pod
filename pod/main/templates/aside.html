@@ -5,12 +5,12 @@
 {% if HIDE_SHARE == False %}
 <div class="card card-body p-2 mt-1" id="card-share">
   <h2 class="card-title pl-2 h4">
-    <i data-feather="share-2" aria-hidden="true"></i>&nbsp;{% trans 'Share' %}
+    <i class="bi bi-share" aria-hidden="true"></i>&nbsp;{% trans 'Share' %}
   </h2>
   <p class="card-text text-center social_links">
-    <a target="_blank" href="https://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Facebook"><i data-feather="facebook" aria-hidden="true"></i></a>
-    <a target="_blank" href="https://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Twitter"><i data-feather="twitter" aria-hidden="true"></i></a>
-    <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} LinkedIn"><i data-feather="linkedin" aria-hidden="true"></i></a>
+    <a target="_blank" href="https://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Facebook"><i class="bi bi-facebook" aria-hidden="true"></i></a>
+    <a target="_blank" href="https://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Twitter"><i class="bi bi-twitter" aria-hidden="true"></i></a>
+    <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} LinkedIn"><i class="bi bi-linkedin" aria-hidden="true"></i></a>
   </p>
 </div>
 {% endif %}
@@ -59,7 +59,7 @@
 {% if HIDE_TAGS == False %}
 <div class="card card-body p-2 mt-1" id="card-tags">
   <h2 class="card-title pl-2 h4">
-    <i data-feather="tag" aria-hidden="true"></i>&nbsp;{% trans 'Tags' %}
+    <i class="bi bi-tag" aria-hidden="true"></i>&nbsp;{% trans 'Tags' %}
     <!-- <a href="#" class="float-right"><svg height="32" class="octicon octicon-arrow-right" viewBox="0 0 10 16" version="1.1" width="20" aria-hidden="true"><path fill-rule="evenodd" d="M10 8L4 3v3H0v4h4v3z"></path></svg></a>
     -->
   </h2>

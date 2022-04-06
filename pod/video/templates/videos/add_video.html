@@ -26,7 +26,7 @@
 
 {% if restricted_to_staff and not user.is_staff %}
   <p class="text-info">
-    <i data-feather="info"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
+    <i class="bi bi-broadcast"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
   </p>
 {% else %}
 <h1 class="site_title">{% trans "Media upload" %}</h1>
@@ -61,7 +61,7 @@
 </div>
 {%if slug %}
   <a href="{% url 'video_edit' slug=slug %}" class="btn btn-primary btn-sm m-2">
-    <i data-feather="edit"></i>&nbsp;{% trans "Back to video edit"%}
+    <i class="bi bi-pencil-square"></i>&nbsp;{% trans "Back to video edit"%}
   </a>
 {% endif %}
 

@@ -8,10 +8,10 @@
     <div class="modal-content">
       <div class="modal-header">
         {% if CHANNELS.count|get_type == 'int' %}
-          <h2 class="modal-title"><i data-feather="youtube"></i>&nbsp;{% blocktrans count counter=CHANNELS.count %}{{ counter }} Channel{% plural %}{{ counter }} Channels{% endblocktrans %}</h2>
+          <h2 class="modal-title"><i class="bi bi-youtube"></i>&nbsp;{% blocktrans count counter=CHANNELS.count %}{{ counter }} Channel{% plural %}{{ counter }} Channels{% endblocktrans %}</h2>
         {% endif %}
         
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -25,13 +25,13 @@
                     {% thumbnail channel.headband.file "x34" as im %}
                     <img src="{{ im.url }}" height="34" class='rounded' alt="" loading="lazy">
                     {% endthumbnail %}
-                  {% else %}<i data-feather="youtube" style="height:34px" class="mr-2"></i>{% endif %}
+                  {% else %}<i class="bi bi-youtube" style="height:34px" class="mr-2"></i>{% endif %}
                   <a href="{% url 'channel' slug_c=channel.slug%}" id="channel-title_{{channel.id}}">
                   {{channel.title}}</a></span>
                 <span class="text-nowrap">
                   {% if channel.themes.all.count > 0 %}
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThemes{{channel.id}}" aria-expanded="true" aria-controls="collapseThemes{{channel.id}}">
-                    {% blocktrans count counter=channel.themes.all.count %}{{counter}} Theme{% plural %}{{counter}} Themes{% endblocktrans %} <i data-feather="chevron-down" class="chevron-down m-0 p-0"></i>
+                    <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseThemes{{channel.id}}" aria-expanded="true" aria-controls="collapseThemes{{channel.id}}">
+                    {% blocktrans count counter=channel.themes.all.count %}{{counter}} Theme{% plural %}{{counter}} Themes{% endblocktrans %} <i class="bi bi-chevron-down" class="chevron-down m-0 p-0"></i>
                     </button>
                   {% endif %}
                   <span class="badge badge-primary badge-pill">{% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</span>
@@ -45,7 +45,7 @@
         </ul>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close'%}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close'%}</button>
       </div>
     </div>
   </div>
@@ -58,8 +58,8 @@
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title"><i data-feather="youtube"></i>&nbsp;{% blocktrans count counter=add_channel_tab.channel_set.all.count %}{{ counter }} Channel{% plural %}{{ counter }} Channels{% endblocktrans %}</h2>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h2 class="modal-title"><i class="bi bi-youtube"></i>&nbsp;{% blocktrans count counter=add_channel_tab.channel_set.all.count %}{{ counter }} Channel{% plural %}{{ counter }} Channels{% endblocktrans %}</h2>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -73,13 +73,13 @@
                     {% thumbnail channel.headband.file "x34" as im %}
                     <img src="{{ im.url }}" height="34" class='rounded' alt="" loading="lazy">
                     {% endthumbnail %}
-                  {% else %}<i data-feather="youtube" style="height:34px" class="mr-2"></i>{% endif %}
+                  {% else %}<i class="bi bi-youtube" style="height:34px" class="mr-2"></i>{% endif %}
                   <a href="{% url 'channel' slug_c=channel.slug%}" id="channel-title_{{channel.id}}">
                   {{channel.title}}</a></span>
                 <span class="text-nowrap">
                   {% if channel.themes.all.count > 0 %}
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThemes{{channel.id}}" aria-expanded="true" aria-controls="collapseThemes{{channel.id}}">
-                    {% blocktrans count counter=channel.themes.all.count %}{{counter}} Theme{% plural %}{{counter}} Themes{% endblocktrans %} <i data-feather="chevron-down" class="chevron-down m-0 p-0"></i>
+                    <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseThemes{{channel.id}}" aria-expanded="true" aria-controls="collapseThemes{{channel.id}}">
+                    {% blocktrans count counter=channel.themes.all.count %}{{counter}} Theme{% plural %}{{counter}} Themes{% endblocktrans %} <i class="bi bi-chevron-down" class="chevron-down m-0 p-0"></i>
                     </button>
                   {% endif %}
                   <span class="badge badge-primary badge-pill">{% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</span>
@@ -93,7 +93,7 @@
         </ul>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close'%}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close'%}</button>
       </div>
     </div>
   </div>
@@ -105,8 +105,8 @@
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title"><i data-feather="tv"></i>&nbsp;{% trans 'Types of videos'%}</h2>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h2 class="modal-title"><i class="bi bi-tv"></i>&nbsp;{% trans 'Types of videos'%}</h2>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -114,12 +114,12 @@
         <ul class="row list-unstyled" id="list-types">
           {% for type in TYPES %}
           <li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1 col-12 text-left text-truncate" href="{% url 'videos' %}?type={{type.slug}}">
-          {% if type.icon %}<img src="{{type.icon.file.url}}" alt="" style="max-height:32px; max-width:32px;" loading="lazy"/>{% else %}<i data-feather="type" aria-hidden="true"></i>{% endif %}&nbsp;{{type.title}} ({{type.video_count}})</a></li>
+          {% if type.icon %}<img src="{{type.icon.file.url}}" alt="" style="max-height:32px; max-width:32px;" loading="lazy"/>{% else %}<i class="bi bi-fonts" aria-hidden="true"></i>{% endif %}&nbsp;{{type.title}} ({{type.video_count}})</a></li>
           {% endfor %}
         </ul>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close'%}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close'%}</button>
       </div>
     </div>
   </div>
@@ -129,8 +129,8 @@
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title"><i data-feather="users"></i>&nbsp;{% trans "Users"%}</h2>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h2 class="modal-title"><i class="bi bi-people"></i>&nbsp;{% trans "Users"%}</h2>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -153,7 +153,7 @@
           </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close'%}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close'%}</button>
       </div>
     </div>
 </div>

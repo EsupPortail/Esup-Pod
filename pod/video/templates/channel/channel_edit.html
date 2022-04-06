@@ -26,10 +26,10 @@
 <h1 class="page_title">{% if form.instance.title %}{% trans "Editing the channel" %} "{{form.instance.title}}"{%endif%}
   <span>
     <a href="{% url 'channel' slug_c=form.instance.slug %}" class="btn btn btn-outline-primary btn-sm">
-      <i data-feather="youtube"></i>&nbsp;{% trans "View the channel"%}
+      <i class="bi bi-youtube"></i>&nbsp;{% trans "View the channel"%}
     </a>
     <a href="{% url 'theme_edit' slug=form.instance.slug %}" class="btn btn btn-outline-primary btn-sm">
-      <i data-feather="edit"></i>&nbsp;{% trans "Edit the themes"%}
+      <i class="bi bi-pencil-square"></i>&nbsp;{% trans "Edit the themes"%}
     </a>
   </span>
 </h1>

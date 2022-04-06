@@ -4,7 +4,7 @@
 {% if is_iframe %}
 <div class="card" id="card-playlist">
   <div class="iframe-header card-title bg-dark text-white">
-  <h2> <i data-feather="play-circle"></i>&nbsp;<span>{{ playlist.title }}</span> <small>(&nbsp;{{ playlist.videos|length }}&nbsp;{% trans 'Video' %}{% if playlist.videos|length > 1 %}s{% endif %}&nbsp;)</small></h2>
+  <h2> <i class="bi bi-play-circle"></i>&nbsp;<span>{{ playlist.title }}</span> <small>(&nbsp;{{ playlist.videos|length }}&nbsp;{% trans 'Video' %}{% if playlist.videos|length > 1 %}s{% endif %}&nbsp;)</small></h2>
   <button type="button" class="close playlist hidden" aria-label="Close">
         <span aria-hidden="true">×</span>
   </button>
@@ -12,7 +12,7 @@
   </div>
 {% else %}
 <div class="card mt-1" id="card-playlist">
-  <h2 class="card-header card-title pl-2 h4"><i data-feather="play-circle"></i>&nbsp;<span>{% trans 'Playlist' %}</span> <small>(&nbsp;{{ playlist.videos|length }}&nbsp;{% trans 'Video' %}{% if playlist.videos|length > 1 %}s{% endif %}&nbsp;)</small>
+  <h2 class="card-header card-title pl-2 h4"><i class="bi bi-play-circle"></i>&nbsp;<span>{% trans 'Playlist' %}</span> <small>(&nbsp;{{ playlist.videos|length }}&nbsp;{% trans 'Video' %}{% if playlist.videos|length > 1 %}s{% endif %}&nbsp;)</small>
   {% include 'playlist/player_controls.html' %}
   </h2>
 {% endif %}
