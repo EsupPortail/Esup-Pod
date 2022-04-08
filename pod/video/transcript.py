@@ -274,9 +274,9 @@ def get_word_result_from_data(results, audio, rec):
 def words_to_vtt(words, start_trim, duration, is_first_caption, text_caption, start_caption, last_word_added, all_text, webvtt):
     for index, word in enumerate(words):
         start_key = "start_time"
-        word_duration = word.get("duration",0)
+        word_duration = word.get("duration", 0)
         last_word = words[-1]
-        last_word_duration = last_word.get("duration",0)
+        last_word_duration = last_word.get("duration", 0)
         if(TRANSCRIPTION_TYPE == "VOSK"):
             start_key = "start"
             word_duration = (word["end"] - word["start"])
@@ -291,11 +291,8 @@ def words_to_vtt(words, start_trim, duration, is_first_caption, text_caption, st
         # 0.58, 'duration': 7.34}
         text_caption.append(word["word"])
         if not (
-            (((word[start_key] + start_trim) - start_caption)
-            < SENTENCE_MAX_LENGTH)
-            and
-            (next_word is not None and (blank_duration
-            < SENTENCE_BLANK_SPLIT_TIME))
+            (((word[start_key] + start_trim) - start_caption) < SENTENCE_MAX_LENGTH)
+            and (next_word is not None and (blank_duration < SENTENCE_BLANK_SPLIT_TIME))
         ):
             # on créé le caption
             if is_first_caption:
