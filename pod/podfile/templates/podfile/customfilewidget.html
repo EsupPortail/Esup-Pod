@@ -18,7 +18,7 @@
         {{document.name}}
       {%endif%}
     </span>
-    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">
+    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-bs-toggle="modal" data-bs-target="#fileModal_{{id}}">
       {% if type == "image" %}
         {% trans 'Change image' %}
       {% else %}
@@ -34,7 +34,7 @@
     </button>
   {% else %}
     <span id="fileinput_{{id}}"></span>
-    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">
+    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-bs-toggle="modal" data-bs-target="#fileModal_{{id}}">
       {% if type == "image" %}
         {% trans 'Select an image' %}
       {% else %}
@@ -58,13 +58,13 @@
       <div class="modal-header">
         <h2 class="modal-title" id="fileModalLabel_{{id}}">
             {% if type == "image" %}{% trans 'Select an image' %}{% else %}{% trans 'Select a file' %}{% endif %}</h2>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body row" id="modal-folder_{{id}}"></div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">{%trans 'Close' %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{%trans 'Close' %}</button>
       </div>
     </div>
   </div>
@@ -92,7 +92,7 @@ $(document).on('show.bs.modal', '#fileModal_{{id}}', function (event) {
 
 $(document).on("click", "#remove_file_{{id}}", function(event) {
   var html_div = '<span id="fileinput_{{id}}"></span>\
-    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">\
+    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput mx-1" data-bs-toggle="modal" data-bs-target="#fileModal_{{id}}">\
     {% if type == "image" %}\
       {% trans 'Select an image' %}\
     {% else %}\

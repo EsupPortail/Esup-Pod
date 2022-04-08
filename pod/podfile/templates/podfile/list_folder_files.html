@@ -18,15 +18,15 @@
     </span>
     <span
       class="current-folder-name"
-      data-toggle="tooltip"
-      data-placement="top"
+      data-bs-toggle="tooltip"
+      data-bs-placement="top"
     >{{folder.name}} - {{folder.get_all_files|length}} {% trans 'file' %}{{ folder.get_all_files|length|pluralize }}</span>
   </span>
   <button
     class="navbar-toggler btn btn-outline-primary active"
     type="button"
-    data-toggle="collapse"
-    data-target="#currentfolder"
+    data-bs-toggle="collapse"
+    data-bs-target="#currentfolder"
     aria-controls="currentfolder"
     aria-expanded="false"
     aria-label="Toggle navigation"
@@ -53,8 +53,8 @@
               id="currentfolderrename"
               type="button"
               class="btn btn-link btn-sm nav-link"
-              data-toggle="modal"
-              data-target="#folderModalCenter"
+              data-bs-toggle="modal"
+              data-bs-target="#folderModalCenter"
               data-oldname="{{folder.name}}"
               data-folderid="{{folder.id}}"
             >
@@ -110,9 +110,9 @@
               id="currentfoldershare"
               type="button"
               class="btn btn-link btn-sm nav-link"
-              data-toggle="modal"
+              data-bs-toggle="modal"
               data-name="{{folder.name}}"
-              data-target="#shareModalCenter"
+              data-bs-target="#shareModalCenter"
               data-folderid="{{folder.id}}"
             >
               <span class="share-folder" id="share-folder-icon">
@@ -197,8 +197,8 @@
           <button
             class="btn btn-light btn-sm p-0 m-0"
             type="button"
-            data-toggle="collapse"
-            data-target="#currentfile{{file.id}}"
+            data-bs-toggle="collapse"
+            data-bs-target="#currentfile{{file.id}}"
             aria-expanded="false"
             aria-controls="currentfile{{file.id}}"
             style="opacity:0.8;"
@@ -224,8 +224,8 @@
                 <button
                   type="button"
                   class="btn btn-link btn-sm nav-link p-0 m-0"
-                  data-toggle="modal"
-                  data-target="#folderModalCenter"
+                  data-bs-toggle="modal"
+                  data-bs-target="#folderModalCenter"
                   data-filename="{{file.name}}"
                   data-fileid="{{file.id}}"
                   data-folderid="{{file.folder.id}}"

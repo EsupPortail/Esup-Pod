@@ -45,7 +45,7 @@
 {% if video.licence %}<a href="https://creativecommons.org/licenses/{{video.licence}}/4.0" title="{{video.get_licence}}" target="_blank"><img src="https://licensebuttons.net/l/{{video.licence}}/4.0/88x31.png" loading="lazy"></a>{% endif %} {{video.title|title}}
 {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
   <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
-    <i data-feather="alert-octagon"></i>
+    <i class="bi bi-exclamation-octagon"></i>
   </a>
 </h1>
 
@@ -53,37 +53,37 @@
   <div class="navbar d-flex flex-row-reverse p-0" >
   <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item">
-      <a class="nav-link active show" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-selected="true" title="{% trans 'Summary' %}">
-        <i data-feather="align-justify"></i>&nbsp;<span class="sr-only">{% trans 'Summary' %}</span>
+      <a class="nav-link active show" id="summary-tab" data-bs-toggle="tab" href="#summary" role="tab" aria-selected="true" title="{% trans 'Summary' %}">
+        <i class="bi bi-justify"></i>&nbsp;<span class="sr-only">{% trans 'Summary' %}</span>
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false" title="{% trans 'Infos' %}">
-        <i data-feather="info"></i>&nbsp;<span class="sr-only">{% trans 'Infos' %}</span>
+      <a class="nav-link" id="info-tab" data-bs-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false" title="{% trans 'Infos' %}">
+        <i class="bi bi-info-circle"></i>&nbsp;<span class="sr-only">{% trans 'Infos' %}</span>
       </a>
     </li>
     {% if video.allow_downloading or video.document_set.all %}
     <li class="nav-item">
-      <a class="nav-link" id="downloads-tab" data-toggle="tab" href="#downloads" role="tab" aria-controls="downloads" aria-selected="false" title="{% trans 'Downloads' %}">
-        <i data-feather="download"></i>&nbsp;<span class="sr-only">{% trans 'Downloads' %}</span>
+      <a class="nav-link" id="downloads-tab" data-bs-toggle="tab" href="#downloads" role="tab" aria-controls="downloads" aria-selected="false" title="{% trans 'Downloads' %}">
+        <i class="bi bi-download"></i>&nbsp;<span class="sr-only">{% trans 'Downloads' %}</span>
       </a>
     </li>
     {% endif %}
     <li class="nav-item">
-      <a class="nav-link" id="share-tab" data-toggle="tab" href="#share" role="tab" aria-controls="share" aria-selected="false" title="{% trans 'Embed/Share' %}">
-        <i data-feather="share-2"></i><span class="sr-only">{% trans 'Embed/Share' %}</span>
+      <a class="nav-link" id="share-tab" data-bs-toggle="tab" href="#share" role="tab" aria-controls="share" aria-selected="false" title="{% trans 'Embed/Share' %}">
+        <i class="bi bi-share"></i><span class="sr-only">{% trans 'Embed/Share' %}</span>
       </a>
     </li>
 
     <li class="nav-item">
-      <a class="nav-link" id="score-tab" data-toggle="tab" href="#score" role="tab" aria-controls="score" aria-selected="false" title="{% trans 'Scoreboard' %}">
+      <a class="nav-link" id="score-tab" data-bs-toggle="tab" href="#score" role="tab" aria-controls="score" aria-selected="false" title="{% trans 'Scoreboard' %}">
         <i data-feather="star"></i><span class="sr-only">{% trans 'Scoreboard' %}</span>
       </a>
     </li>
 
     <li class="nav-item dropdown" id="list_third_apps">
-      <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
-        <i data-feather="layers"></i>&nbsp;<span class="sr-only">{% trans 'Other versions' %}</span>
+      <a  href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
+        <i class="bi bi-layers"></i>&nbsp;<span class="sr-only">{% trans 'Other versions' %}</span>
       </a>
       <div class="dropdown-menu" >
         {% if video.get_hashkey in request.get_full_path %}
@@ -97,8 +97,8 @@
     </li>
     {% if request.user.playlist_set.all and video.is_draft == False %}
     <li class="nav-item dropdown dropright">
-      <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans "Add the video to a playlist"%}">
-        <i data-feather="play-circle"></i>&nbsp;<span class="sr-only">{% trans 'My playlists' %}</span>
+      <a  href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans "Add the video to a playlist"%}">
+        <i lass="bi bi-play-circle"></i>&nbsp;<span class="sr-only">{% trans 'My playlists' %}</span>
       </a>
       <div class="dropdown-menu">
       {% csrf_token %}
@@ -106,7 +106,7 @@
       {% for playlist in request.user.playlist_set.all %}
         {% if video in playlist.videos %}
           <li class="dropdown-item disabled py-0" data-slug="{{playlist.slug}}">{{playlist.title}}
-            <i data-feather="check"></i>
+            <i class="bi bi-check2"></i>
           </li>
         {% else %}
           <li class="dropdown-item playlist-item py-0" data-slug="{{playlist.slug}}">{{playlist.title}}</li>
@@ -123,9 +123,9 @@
   {% include 'videos/video-info.html' with interactive=True %}
 
   <div class="tab-pane fade" id="score" role="tabpanel" aria-labelledby="score-tab">
-    <h5><i data-feather="star"></i>&nbsp;{% trans 'Scoreboard' %}</h5>
+    <h5><i class="bi bi-star"></i>&nbsp;{% trans 'Scoreboard' %}</h5>
     <i>{% trans 'Click below to refresh the information.' %}</i>
-    <button type="submit" class="btn btn-primary btn-sm" id="refresh-score" ><i data-feather="refresh-cw"></i></button>
+    <button type="submit" class="btn btn-primary btn-sm" id="refresh-score" ><i class="bi bi-arrow-repeat"></i></button>
     <br>
     {% if more_data.score and request.user == video.owner or request.user.is_superuser or request.user in video.additional_owners.all %}
     <i>{% trans 'The scoreboard displays the users who viewed your interactive video and their results.' %}</i>

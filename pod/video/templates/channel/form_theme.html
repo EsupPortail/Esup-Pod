@@ -36,8 +36,8 @@
                     <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
                   {% endif %}
                 </div>
-                {% if field.name == "description" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".description" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
-                {% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
+                {% if field.name == "description" %}<button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target=".description" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
+                {% if field.name == "title" %}<button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target=".title" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
               </div>
             </div>
           </div>
