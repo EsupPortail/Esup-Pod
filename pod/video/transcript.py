@@ -54,6 +54,7 @@ STT_PARAM = getattr(settings, "STT_PARAM", dict())
 AUDIO_SPLIT_TIME = getattr(settings, "AUDIO_SPLIT_TIME", 300)  # 5min
 # time in sec for phrase length
 SENTENCE_MAX_LENGTH = getattr(settings, "SENTENCE_MAX_LENGTH", 3)
+SENTENCE_BLANK_SPLIT_TIME = getattr(settings, "SENTENCE_BLANK_SPLIT_TIME", 0.5)
 
 NORMALIZE = getattr(settings, "NORMALIZE", False)
 NORMALIZE_TARGET_LEVEL = getattr(settings, "NORMALIZE_TARGET_LEVEL", -16.0)
@@ -271,7 +272,7 @@ def get_word_result_from_data(results, audio, rec):
 
 
 def words_to_vtt(words, start_trim, duration, is_first_caption, text_caption, start_caption, last_word_added, all_text, webvtt):
-    for word in words:
+    for index, word in enumerate(words):
         start_key = "start_time"
         word_duration = word.get("duration",0)
         last_word = words[-1]
@@ -280,14 +281,21 @@ def words_to_vtt(words, start_trim, duration, is_first_caption, text_caption, st
             start_key = "start"
             word_duration = (word["end"] - word["start"])
             last_word_duration = (words[-1]["end"] - words[-1]["start"])
-
+        next_word = None
+        blank_duration = 0
+        if word != words[-1]:
+            next_word = words[index + 1]
+            blank_duration = ((next_word[start_key] + start_trim) - start_caption) - (((word[start_key] + start_trim) - start_caption) + word_duration)
         all_text += word["word"] + " "
         # word : <class 'dict'> {'word': 'bonjour', 'start ':
         # 0.58, 'duration': 7.34}
         text_caption.append(word["word"])
         if not (
-            ((word[start_key] + start_trim) - start_caption)
-            < SENTENCE_MAX_LENGTH
+            (((word[start_key] + start_trim) - start_caption)
+            < SENTENCE_MAX_LENGTH)
+            and
+            (next_word is not None and (blank_duration
+            < SENTENCE_BLANK_SPLIT_TIME))
         ):
             # on créé le caption
             if is_first_caption:
