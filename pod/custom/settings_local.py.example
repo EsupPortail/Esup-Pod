@@ -1157,6 +1157,11 @@ TRANSCRIPTION_TYPE = "STT"
 
 
 """
+# Temps maximum en secondes des blanc entre chaque mot pour le decoupage des sous-titres
+"""
+SENTENCE_BLANK_SPLIT_TIME = 0.5
+
+"""
 # decoupage de l'audio pour la transcription
 """
 AUDIO_SPLIT_TIME = 300
