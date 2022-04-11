@@ -47,7 +47,7 @@
                 </svg>
             </span>
             {% trans "Add new folder" %}
-            <span class="sr-only">{% trans "Add new folder"%}</span>
+            <span class="visually-hidden">{% trans "Add new folder"%}</span>
         </button>
     </div>
     <div class="close-folder" id="close-folder-icon">
@@ -65,7 +65,7 @@
         </svg>
     </div>
 </div>
-  <label class="sr-only" for="folder-search">{% trans 'Filter files' %}</label>
+  <label class="visually-hidden" for="folder-search">{% trans 'Filter files' %}</label>
   <input
     class="folder-search form-control"
     placeholder="{% trans 'Filter files' %}"
@@ -124,7 +124,7 @@
                     class="{% if folder == current_session_folder%}font-weight-bold{%endif%} folder"
                     data-foldname="{{ folder.name }}"
                     data-id="{{folder.id}}"
-                    data-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}"
+                    data-bs-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}"
                 >
                     {% if folder == current_session_folder%}
                     <span class="folder-open" id="folder-open-icon">
@@ -172,7 +172,7 @@
                     class="{% if folder == current_session_folder%}font-weight-bold{%endif%} folder"
                     data-foldname="{{ folder.name }}"
                     data-id="{{folder.id}}"
-                    data-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}"
+                    data-bs-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}"
                 >
                     {% if folder == current_session_folder%}
                     <span class="folder-open" id="folder-open-icon">

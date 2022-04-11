@@ -37,7 +37,7 @@
                   <span class="badge badge-primary badge-pill">{% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</span>
                 </span>
               </div>
-              <div id="collapseThemes{{channel.id}}" class="collapse collapsibleThemes" aria-labelledby="channel-title_{{channel.id}}" data-parent="#list-channels" data-id="{{channel.id}}"></div>
+              <div id="collapseThemes{{channel.id}}" class="collapse collapsibleThemes" aria-labelledby="channel-title_{{channel.id}}" data-bs-parent="#list-channels" data-id="{{channel.id}}"></div>
             </li>
           {% empty %}
             <li class="list-group-item"> {% trans "No channels found" %} </li>
@@ -85,7 +85,7 @@
                   <span class="badge badge-primary badge-pill">{% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</span>
                 </span>
               </div>
-              <div id="collapseThemes{{channel.id}}" class="collapse collapsibleThemes" aria-labelledby="channel-title_{{channel.id}}" data-parent="#list-channels" data-id="{{channel.id}}"></div>
+              <div id="collapseThemes{{channel.id}}" class="collapse collapsibleThemes" aria-labelledby="channel-title_{{channel.id}}" data-bs-parent="#list-channels" data-id="{{channel.id}}"></div>
             </li>
           {% empty %}
             <li class="list-group-item"> {% trans "No channels found" %} </li>

@@ -29,7 +29,7 @@
           <option value="{{disc.slug}}" data-value="{% url 'videos' %}?discipline={{disc.slug}}">{{disc.title}}  ({{disc.video_count}})</option>
         {% endfor %}
       </select>
-      <input value="{% trans 'Submit' %}" class="sr-only" type="submit">
+      <input value="{% trans 'Submit' %}" class="visually-hidden" type="submit">
   </form>
   </div>
 </div>
@@ -50,7 +50,7 @@
           <option value="{{type.slug}}" data-value="{% url 'videos' %}?type={{type.slug}}">{{type.title}}  ({{type.video_count}})</option>
         {% endfor %}
       </select>
-      <input value="{% trans 'Submit' %}" class="sr-only" type="submit">
+      <input value="{% trans 'Submit' %}" class="visually-hidden" type="submit">
   </form>
   </div>
 </div>

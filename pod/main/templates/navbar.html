@@ -61,7 +61,7 @@
   </div>
   <form class="form-inline my-2 my-lg-0 flex-2" action="{% url "search_videos" %}" id="nav-search">
     <label for="s" class="d-lg-none">
-      <i class="bi bi-search"></i> <span class="sr-only">{% trans "Search" %}</span>
+      <i class="bi bi-search"></i> <span class="visually-hidden">{% trans "Search" %}</span>
     </label>
     <input class="form-control mr-sm-2" id="s" placeholder="{% trans 'Search' %}" aria-label="{% trans 'Search' %}" type="search" name="q" >
   </form>
@@ -157,7 +157,7 @@
         {% if DARKMODE_ENABLED == True %}
           <li class="nav-item mx-1" id="theme-switch-wrapper" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Dark mode' %}">
             <label class="theme-switch" for="checkbox-darkmode">
-              <span class="sr-only">{% trans 'Dark mode' %}</span>
+              <span class="visually-hidden">{% trans 'Dark mode' %}</span>
               <input type="checkbox" id="checkbox-darkmode" />
               <span class="slider">
                 <i class="bi bi-sun"></i>
@@ -168,7 +168,7 @@
         {% endif %}{% if DYSLEXIAMODE_ENABLED == True %}
           <li class="nav-item mx-1" id="dyslexia-switch-wrapper" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Dyslexia mode' %}">
             <label class="dyslexia-switch" for="checkbox-dyslexia">
-              <span class="sr-only">{% trans 'Dyslexia mode' %}</span>
+              <span class="visually-hidden">{% trans 'Dyslexia mode' %}</span>
               <input type="checkbox" id="checkbox-dyslexia" />
               <span class="slider">
                  <i class="bi bi-eye-slash"></i>
