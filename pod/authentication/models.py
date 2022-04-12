@@ -170,7 +170,7 @@ def create_groupsite_profile(sender, instance, created, **kwargs):
 
 class AccessGroup(models.Model):
     display_name = models.CharField(max_length=128, blank=True, default="")
-    code_name = models.CharField(max_length=128, unique=True)
+    code_name = models.CharField(max_length=250, unique=True)
     sites = models.ManyToManyField(Site)
     users = select2_fields.ManyToManyField(
         Owner,
