@@ -2645,8 +2645,14 @@ def video_record(request):
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-@admin_required
+# @admin_required
 def update_video_owner(request, user_id):
+    if not (
+        request.user.is_superuser
+        or request.user.has_perm("video.change_updateowner")
+    ):
+        messages.add_message(request, messages.ERROR, _("You cannot view this page."))
+        raise PermissionDenied
     if request.method == "POST":
         post_data = json.loads(request.body.decode("utf-8"))
 
@@ -2692,8 +2698,14 @@ def update_video_owner(request, user_id):
 
 
 @login_required(redirect_field_name="referrer")
-@admin_required
+# @admin_required
 def filter_owners(request):
+    if not (
+        request.user.is_superuser
+        or request.user.has_perm("video.change_updateowner")
+    ):
+        messages.add_message(request, messages.ERROR, _("You cannot view this page."))
+        raise PermissionDenied
     try:
         limit = int(request.GET.get("limit", 12))
         offset = int(request.GET.get("offset", 0))
@@ -2705,8 +2717,14 @@ def filter_owners(request):
 
 
 @login_required(redirect_field_name="referrer")
-@admin_required
+# @admin_required
 def filter_videos(request, user_id):
+    if not (
+        request.user.is_superuser
+        or request.user.has_perm("video.change_updateowner")
+    ):
+        messages.add_message(request, messages.ERROR, _("You cannot view this page."))
+        raise PermissionDenied
     try:
         limit = int(request.GET.get("limit", 12))
         offset = int(request.GET.get("offset", 0))
