@@ -2,27 +2,27 @@
 
 {% spaceless %}
 {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video %}
-  <a href="{% url 'video_edit' slug=video.slug %}" title="{% trans 'Edit the video'%}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
+  <a href="{% url 'video_edit' slug=video.slug %}" title="{% trans 'Edit the video'%}" class="btn btn-light btn-sm p-0 pb-1 m-0 ms-1">
     <i class="bi bi-pencil-square" aria-hidden="true"></i></a>
 {%endif%}
 {% if request.resolver_match.namespace %}
   {% with request.resolver_match.namespace as app %}
     {% with ""|add:app|add:":edit_"|add:app as urleditapp %}
-      <a href="{% url urleditapp slug=video.slug %}" title="{% blocktrans %}Edit the {{app}}{% endblocktrans %}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
+      <a href="{% url urleditapp slug=video.slug %}" title="{% blocktrans %}Edit the {{app}}{% endblocktrans %}" class="btn btn-light btn-sm p-0 pb-1 m-0 ms-1">
         <i class="bi bi-pencil" aria-hidden="true"></i></a>
     {% endwith %}
   {% endwith %}
 {%endif%}
 {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay %}
-  <a href="{% url 'video_completion' slug=video.slug %}" title="{% trans 'Complete the video'%}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
+  <a href="{% url 'video_completion' slug=video.slug %}" title="{% trans 'Complete the video'%}" class="btn btn-light btn-sm p-0 pb-1 m-0 ms-1">
     <i class="bi bi-file-text" aria-hidden="true"></i></a>
 {%endif%}
 {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.chapter.change_chapter %}
-  <a href="{% url 'video_chapter' slug=video.slug %}" title="{% trans 'Chapter the video'%}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
+  <a href="{% url 'video_chapter' slug=video.slug %}" title="{% trans 'Chapter the video'%}" class="btn btn-light btn-sm p-0 pb-1 m-0 ms-1">
     <i class="bi bi-card-list" aria-hidden="true"></i></a>
 {%endif%}
 {% if video.owner == request.user or request.user.is_superuser or perms.video.delete_video %}
-  <a href="{% url 'video_delete' slug=video.slug %}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1" title="{% trans 'Delete the video'%}">
+  <a href="{% url 'video_delete' slug=video.slug %}" class="btn btn-light btn-sm p-0 pb-1 m-0 ms-1" title="{% trans 'Delete the video'%}">
     <i class="bi bi-trash" aria-hidden="true"></i></a>
 {% endif %}
 

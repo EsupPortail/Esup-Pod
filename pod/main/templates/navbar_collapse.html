@@ -10,10 +10,7 @@
         {% if CHANNELS.count|get_type == 'int' %}
           <h2 class="modal-title"><i class="bi bi-youtube"></i>&nbsp;{% blocktrans count counter=CHANNELS.count %}{{ counter }} Channel{% plural %}{{ counter }} Channels{% endblocktrans %}</h2>
         {% endif %}
-        
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body row">
         <ul class="col-12 list-group list-group-flush" id="list-channels">
@@ -59,9 +56,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title"><i class="bi bi-youtube"></i>&nbsp;{% blocktrans count counter=add_channel_tab.channel_set.all.count %}{{ counter }} Channel{% plural %}{{ counter }} Channels{% endblocktrans %}</h2>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body row">
         <ul class="col-12 list-group list-group-flush" id="list-channels">
@@ -106,9 +101,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title"><i class="bi bi-tv"></i>&nbsp;{% trans 'Types of videos'%}</h2>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <ul class="row list-unstyled" id="list-types">
@@ -130,9 +123,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title"><i class="bi bi-people"></i>&nbsp;{% trans "Users"%}</h2>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="row">

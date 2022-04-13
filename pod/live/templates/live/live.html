@@ -119,10 +119,8 @@
 
 {%endif%}
 
-<div id="info-video" style="display:none" class="jumbotron">
-  <button type="button" class="close" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
+<div id="info-video" style="display:none" class="_jumbotron pod-inner">
+  <button type="button" class="btn-close" aria-label="Close"></button>
 </div>
 
 {% endblock page_content %}
@@ -133,7 +131,7 @@
   <div class="card mt-1" id="card-managevideo">
     <h5 class="card-header card-title pl-2"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage live"%}</h5>
     <div class="card-body card-text text-center">
-      <a href="{% url 'admin:live_broadcaster_change' broadcaster.id %}" title="{% trans "Edit the live"%}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
+      <a href="{% url 'admin:live_broadcaster_change' broadcaster.id %}" title="{% trans "Edit the live"%}" class="btn btn-light btn-sm p-0 pb-1 m-0 ms-1">
         <i class="bi bi-pencil-square"></i></a>
     </div>
   </div>
@@ -142,7 +140,7 @@
 <div class="card card-body p-2 mt-1" id="card-livebuilding">
 <h5 class="card-title pl-2">
   <i class="bi bi-broadcast"></i>
-  <span class="ml-1 broadcaster-name">
+  <span class="ms-1 broadcaster-name">
     {{broadcaster.building.name}}
   </span>
 </h5>
@@ -166,7 +164,7 @@
     {% if broadcaster.building.gmapurl %}
       <p class="card-text">
         <small class="text-muted"><a href='{{broadcaster.building.gmapurl}}' title="{% trans 'access map' %}" target="_blank"><i class="bi bi-gear"></i>
-          <span class="ml-1 access-map">{% trans "access map" %}</span>
+          <span class="ms-1 access-map">{% trans "access map" %}</span>
         </a></small>
       </p>
     {% endif %}

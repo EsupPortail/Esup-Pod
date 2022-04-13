@@ -6,7 +6,7 @@
 
 {% block page_extra_head %}
 <style>
-  div.jumbotron {
+  div.pod-inner {
     min-height: 56rem;
     height:100%;
   }
@@ -53,19 +53,19 @@
           {% csrf_token %}
           <button type="submit" class="btn btn-secondary btn-sm" title="{% trans 'Back' %}">
             <i class="bi bi-x-circle"></i>
-            <span class="sr-only">{% trans 'Back' %}</span>
+            <span class="visually-hidden">{% trans 'Back' %}</span>
           </button>
         </form>
         <button type="submit" class="btn btn-primary btn-sm" id="button_manage" title="{% trans 'Manage scores' %}">
           <i class="bi bi-card-list"></i>
-          <span class="sr-only">{% trans 'Manage scores' %}</span>
+          <span class="visually-hidden">{% trans 'Manage scores' %}</span>
         </button>
         {% endif %}
       {% endif %}
         <form action="{% url 'video' slug=video.slug %}" id="video_back" style="display:inline-block;">
           <button type="submit" class="btn btn-secondary btn-sm" id="button_video_back" title="{% trans 'Back' %}">
             <i class="bi bi-arrow-left-circle"></i>
-            <span class="sr-only">{% trans 'Back' %}</span>
+            <span class="visually-hidden">{% trans 'Back' %}</span>
           </button>
         </form>
       </small>
@@ -110,7 +110,7 @@
 {% block page_aside %}
   <div class="card card-body p-2 mt-1" id="card-interactiveeditinformations">
     <h5 class="card-title pl-2">
-      <i data-feather="info"></i>&nbsp;{% trans 'Informations' %}
+      <i class="bi bi-info-circle"></i>&nbsp;{% trans 'Informations' %}
     </h5>
     <div class="card-text small">
       {% if video.owner == request.user or request.user.is_superuser %}

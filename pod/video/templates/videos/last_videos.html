@@ -3,7 +3,7 @@
 {% get_last_videos as LAST_VIDEOS %}
 
 {% if LAST_VIDEOS %}
-  <div class="jumbotron" id="last_videos">
+  <div class="pod-inner _jumbotron" id="last_videos">
     <h1 class="page_title">{% trans "Last videos" %}</h1>
     {# liste vignette vidéo 4 par ligne #}
     {% include "videos/video_list.html" with videos=LAST_VIDEOS %}

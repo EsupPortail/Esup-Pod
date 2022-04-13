@@ -55,24 +55,24 @@
     {% if organize_theme %}
         <h1 class="page_title">
             {% if parent_title %} {{parent_title}} {% else %} {{title}} {% endif %}
-            <span class="float-right">
+            <span class="float-end">
                 {% if USE_STATS_VIEW %}
                     {% if theme %}
                         <a href="{% url 'video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
                     {% else %}
-                        <a href="{% url 'video_stats_view' slug=channel.slug %}" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+                        <a href="{% url 'video_stats_view' slug=channel.slug %}" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-graph-up">&nbsp;</i>{% trans 'Statistics views' %}</a>
                     {% endif %}
                 {% endif %}
                 {% if theme %}
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video' slug_c=channel.slug slug_t=theme.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss" class="mr-1"></i>Video</a>
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio' slug_c=channel.slug slug_t=theme.slug%}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss" class="mr-1"></i>Audio</a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video' slug_c=channel.slug slug_t=theme.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-rss"  ></i>&nbsp;Video</a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio' slug_c=channel.slug slug_t=theme.slug%}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-rss"  ></i>&nbsp;Audio</a>
                 {% else %}
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video' slug_c=channel.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss" class="mr-1"></i>Video</a>
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio' slug_c=channel.slug %}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss" class="mr-1"></i>Audio</a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video' slug_c=channel.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-rss"  ></i>&nbsp;Video</a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio' slug_c=channel.slug %}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-rss"  ></i>&nbsp;Audio</a>
                 {% endif %}
                 {% if request.user in channel.owners.all %}
                     <a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans 'Edit the themes'%}" class="btn btn btn-outline-primary btn-sm">
-                        <i class="bi bi-pencil-square" class="mr-1"></i>{% trans "Edit the channel"%}</a>
+                        <i class="bi bi-pencil-square mr-1"></i>&nbsp;{% trans "Edit the channel"%}</a>
                 {% endif %}
             </span>
         </h1>
@@ -81,13 +81,16 @@
                 <h2 class="parent_title">{{title}}</h2>
             {% endif %}
             {% if headband %}
-                <div align="center" class="channelheader">
+                <div class="channelheader">
                     <img src="{{ headband }}" alt="{% trans 'Headband' %} {{ title }}" class="img-responsive" loading="lazy" />
                 </div>
             {% endif %}
             {% if description %}
+            <div class="lead pod-lead">
                 {{ description|safe }}
+            </div>
             {% endif %}
+            
         </div>
         <div class="themes-videos">
             <!-- THEME SECTION -->
@@ -115,7 +118,7 @@
                     </p>
                     {% include "videos/video_list.html" %}
                     {% if has_more_videos %}
-                        <div class="float-right">
+                        <div class="float-end">
                             <button class="btn btn-primary" id="load-more-videos" type="button">{% trans "Load more videos" %}</button>
                         </div>
                     {% endif %}
@@ -129,24 +132,24 @@
             <h1 class="page_title channel_title">
         {% endif %}
         <i class="bi bi-youtube" aria-hidden="true"></i>&nbsp;{{channel.title}}
-            <span class="float-right">
+            <span class="float-end">
                 {% if theme %}
                     {% if USE_STATS_VIEW %}
                         <a href="{% url 'video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
                     {% endif %}
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video' slug_c=channel.slug slug_t=theme.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss" class="mr-1"></i>Video</a>
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio' slug_c=channel.slug slug_t=theme.slug%}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss" class="mr-1"></i>Audio</a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video' slug_c=channel.slug slug_t=theme.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss"  ></i>&nbsp;Video</a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio' slug_c=channel.slug slug_t=theme.slug%}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss"  ></i>&nbsp;Audio</a>
                 {% else %}
                     {% if USE_STATS_VIEW %}
                         <a href="{% url 'video_stats_view' slug=channel.slug %}?from=channel" title="{% trans 'Show view statistics for all videos in this channel' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
                     {% endif %}
-                    <a href="{% url 'rss-video' slug_c=channel.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss" class="mr-1"></i>Video</a>
-                    <a href="{% url 'rss-audio' slug_c=channel.slug%}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss" class="mr-1"></i>Audio</a>
+                    <a href="{% url 'rss-video' slug_c=channel.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss"  ></i>&nbsp;Video</a>
+                    <a href="{% url 'rss-audio' slug_c=channel.slug%}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss"  ></i>&nbsp;Audio</a>
                 {% endif %}
             </span>
             {% if request.user in channel.owners.all %}
-                <span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans 'Edit the themes'%}" class="btn btn btn-outline-primary btn-sm mr-1">
-                    <i class="bi bi-pencil-square" class="mr-1"></i>{% trans "Edit the channel"%}</a>
+                <span class="float-end"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans 'Edit the themes'%}" class="btn btn btn-outline-primary btn-sm mr-1">
+                    <i class="bi bi-pencil-square"  ></i>&nbsp;{% trans "Edit the channel"%}</a>
                 </span>
             {%endif%}
         {% if theme %}
@@ -161,10 +164,10 @@
             {{ channel.description|safe }}
         {% endif %}
         {% if theme %}
-            {% if request.user in channel.owners.all %}<span class="float-right"><a href="{% url 'theme_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the themes"%}</a></span>{%endif%}
+            {% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'theme_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the themes"%}</a></span>{%endif%}
             <h1 class="theme_title h2">{{theme.title}}</h1>
             {% if theme.headband %}
-                <div align="center" class="channelheader">
+                <div class="channelheader">
                     <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" loading="lazy" />
                 </div>
             {% endif %}
@@ -181,7 +184,7 @@
 {% block page_aside %}
     <div class="card card-body p-2 mt-1" id="card-channelthemes">
         <h2 class="card-title pl-2 h4">
-            <i class="bi bi-card-list" class="mr-1" aria-hidden="true"></i> {% trans 'Themes of ' %}&nbsp;{{ channel.title }}
+            <i class="bi bi-card-list"   aria-hidden="true"></i>&nbsp; {% trans 'Themes of ' %}&nbsp;{{ channel.title }}
         </h2>
         <div class="card-text" id="treeview">
             <ul class="list-group list-group-flush {% if channel.themes.count > 5 %}small{%endif%}" id="ultreeview" style="max-height:300px; overflow:auto;">
@@ -202,9 +205,6 @@
             },
             onAfterPageLoad: function($items) {
                 $('.infinite-loading').hide();
-                feather.replace({
-                    class: 'align-bottom'
-                });
                 $('footer.static-pod').addClass('small');
                 $('footer.static-pod').addClass('fixed-bottom');
                 $('footer.static-pod').attr('style', 'height:80px; overflow-y:auto');

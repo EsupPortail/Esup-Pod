@@ -6,11 +6,11 @@
         {% comment %} {% if com.user.userpicture %} <span class="user">{{ com.user.userpicture }}</span> {% else %} <span class="user">{{ com.user.username }}</span> {% endif %} {% endcomment %}
         <span><span class="user"> {{ com.user.username }}</span>,
           {% trans 'the' %} {{com.modified_on}}
-          {% if com.notecomments_set.all.count > 0 %}<span><i data-feather="chevron-down" width="16" height="16" ></i></span>{% endif %}
+          {% if com.notecomments_set.all.count > 0 %}<span><i class="bi bi-chevron-down" width="16" height="16" ></i></span>{% endif %}
         </span>
         {% if request.user.is_authenticated and request.user == com.user %}
             <div class="mgtComment dropleft">
-                <button class="p-0 m-0 btn btn-outline-primary btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage comment' %}"> <i data-feather="more-horizontal"></i> </button>
+                <button class="p-0 m-0 btn btn-outline-primary btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage comment' %}"> <i class="bi bi-three-dots"></i> </button>
                 <div class="dropdown-menu">
 
                     {% comment %} Button to edit the comment in three dots menu {% endcomment %}
@@ -19,7 +19,7 @@
                         <input type="hidden" name="idNote" value="{{ note.id }}"/>
                         <input type="hidden" name="idCom" value="{{ com.id }}"/>
                         <input type="hidden" name="action" value="form_com_edit"/>
-                        <button class="p-0 m-0 btn btn-outline-primary btn-sm edit" type="submit" action="edit" title="{% trans 'Edit the comment' %}"> <i data-feather="edit-2"></i></button>
+                        <button class="p-0 m-0 btn btn-outline-primary btn-sm edit" type="submit" action="edit" title="{% trans 'Edit the comment' %}"> <i class="bi bi-pencil"></i></button>
                     </form>
 
                     {% comment %} Button to comment the comment in three dots menu {% endcomment %}
@@ -28,7 +28,7 @@
                         <input type="hidden" name="idNote" value="{{ note.id }}"/>
                         <input type="hidden" name="idCom" value="{{ com.id }}"/>
                         <input type="hidden" name="action" value="form_com_new"/>
-                        <button class="p-0 m-0 btn btn-outline-primary btn-sm comment" type="submit" title="{% trans 'Comment the note' %}"> <i data-feather="message-circle"></i></button>
+                        <button class="p-0 m-0 btn btn-outline-primary btn-sm comment" type="submit" title="{% trans 'Comment the note' %}"> <i class="bi bi-chat"></i></button>
                     </form>
 
                     {% comment %} Button to remove the comment in three dots menu {% endcomment %}
@@ -37,7 +37,7 @@
                         <input type="hidden" name="idNote" value="{{ note.id }}"/>
                         <input type="hidden" name="idCom" value="{{ com.id }}"/>
                         <input type="hidden" name="action" value="remove_com"/>
-                        <button class="p-0 m-0 btn btn-outline-danger btn-sm remove" type="submit" action="remove" title="{% trans 'Remove the comment' %}"> <i data-feather="trash-2"></i></button>
+                        <button class="p-0 m-0 btn btn-outline-danger btn-sm remove" type="submit" action="remove" title="{% trans 'Remove the comment' %}"> <i class="bi bi-trash"></i></button>
                     </form>
                 </div>
             </div>

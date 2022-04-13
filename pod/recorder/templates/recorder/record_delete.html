@@ -15,7 +15,7 @@
 
 {% block page_content %}
   <h3>{% trans "Deleting the record" %}  {{record.filename|truncatechars:43}}
-    <span class="float-right">
+    <span class="float-end">
       <a href="{% url 'claim_record' %}" title="{% trans "Claim a record"%}" class="btn btn btn-secondary btn-sm">
         <i class="bi bi-share"></i>&nbsp;{% trans "Back to record claiming"%}
       </a>

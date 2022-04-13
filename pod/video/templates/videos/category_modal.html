@@ -5,7 +5,7 @@
         <div class="modal-content">
 	    <div class="modal-header">
 		<h5 class="modal_title" id="modal_title">{% trans "Category" %}</h5>
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 		    <span aria-hidden="true">×</span>
 		</button>
 	    </div>
@@ -42,7 +42,7 @@
 	    </div>
 	    <div class="modal-footer">
 		<button type="button" id="saveCategory" class="btn btn-primary">{% trans "Save category" %} </button>
-                <button type="button" id="cancelDialog" class="btn btn-danger" data-dismiss="modal">{% trans "Cancel" %}</button>
+                <button type="button" id="cancelDialog" class="btn btn-danger" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
 	    </div>
 	</div>
     </div>
@@ -53,7 +53,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">{% trans "Delete the category" %}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -62,7 +62,7 @@
         	{% trans "Permanently delete your category?" %}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary close_modal" id="close_modal"  data-dismiss="modal">{% trans "Cancel" %}</button>
+                <button type="button" class="btn btn-secondary close_modal" id="close_modal"  data-bs-dismiss="modal">{% trans "Cancel" %}</button>
                 <button type="button" class="btn btn-danger" id="confirm_remove_category_btn">{% trans "Delete" %}</button>
             </div>
         </div>

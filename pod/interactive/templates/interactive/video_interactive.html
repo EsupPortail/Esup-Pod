@@ -54,36 +54,36 @@
   <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item">
       <a class="nav-link active show" id="summary-tab" data-bs-toggle="tab" href="#summary" role="tab" aria-selected="true" title="{% trans 'Summary' %}">
-        <i class="bi bi-justify"></i>&nbsp;<span class="sr-only">{% trans 'Summary' %}</span>
+        <i class="bi bi-justify"></i>&nbsp;<span class="visually-hidden">{% trans 'Summary' %}</span>
       </a>
     </li>
     <li class="nav-item">
       <a class="nav-link" id="info-tab" data-bs-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false" title="{% trans 'Infos' %}">
-        <i class="bi bi-info-circle"></i>&nbsp;<span class="sr-only">{% trans 'Infos' %}</span>
+        <i class="bi bi-info-circle"></i>&nbsp;<span class="visually-hidden">{% trans 'Infos' %}</span>
       </a>
     </li>
     {% if video.allow_downloading or video.document_set.all %}
     <li class="nav-item">
       <a class="nav-link" id="downloads-tab" data-bs-toggle="tab" href="#downloads" role="tab" aria-controls="downloads" aria-selected="false" title="{% trans 'Downloads' %}">
-        <i class="bi bi-download"></i>&nbsp;<span class="sr-only">{% trans 'Downloads' %}</span>
+        <i class="bi bi-download"></i>&nbsp;<span class="visually-hidden">{% trans 'Downloads' %}</span>
       </a>
     </li>
     {% endif %}
     <li class="nav-item">
       <a class="nav-link" id="share-tab" data-bs-toggle="tab" href="#share" role="tab" aria-controls="share" aria-selected="false" title="{% trans 'Embed/Share' %}">
-        <i class="bi bi-share"></i><span class="sr-only">{% trans 'Embed/Share' %}</span>
+        <i class="bi bi-share"></i><span class="visually-hidden">{% trans 'Embed/Share' %}</span>
       </a>
     </li>
 
     <li class="nav-item">
       <a class="nav-link" id="score-tab" data-bs-toggle="tab" href="#score" role="tab" aria-controls="score" aria-selected="false" title="{% trans 'Scoreboard' %}">
-        <i data-feather="star"></i><span class="sr-only">{% trans 'Scoreboard' %}</span>
+        <i class="bi bi-star"></i><span class="visually-hidden">{% trans 'Scoreboard' %}</span>
       </a>
     </li>
 
     <li class="nav-item dropdown" id="list_third_apps">
       <a  href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
-        <i class="bi bi-layers"></i>&nbsp;<span class="sr-only">{% trans 'Other versions' %}</span>
+        <i class="bi bi-layers"></i>&nbsp;<span class="visually-hidden">{% trans 'Other versions' %}</span>
       </a>
       <div class="dropdown-menu" >
         {% if video.get_hashkey in request.get_full_path %}
@@ -98,7 +98,7 @@
     {% if request.user.playlist_set.all and video.is_draft == False %}
     <li class="nav-item dropdown dropright">
       <a  href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans "Add the video to a playlist"%}">
-        <i lass="bi bi-play-circle"></i>&nbsp;<span class="sr-only">{% trans 'My playlists' %}</span>
+        <i lass="bi bi-play-circle"></i>&nbsp;<span class="visually-hidden">{% trans 'My playlists' %}</span>
       </a>
       <div class="dropdown-menu">
       {% csrf_token %}

@@ -40,7 +40,7 @@
     {% include 'videos/video-element.html' %}
   {% endblock video-element %}
 
-  <div id="info-video-wrapper" class="jumbotron">
+  <div id="info-video-wrapper" class="_jumbotron pod-inner">
     <div class="iframe-header bg-dark text-white">
       <h2 class="video-title">{{ video.title }}</h2>
       <button type="button" class="close" aria-label="Close">
@@ -131,10 +131,6 @@
   </script>
 {% endif %}
 {% endblock more_script %}
-<script src="{% static 'feather-icons/feather.min.js' %}?ver={{VERSION}}"></script>
-<script>
-  feather.replace({ class: 'align-bottom'});
-</script>
 {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
 {% endblock page_content %}
 </body>

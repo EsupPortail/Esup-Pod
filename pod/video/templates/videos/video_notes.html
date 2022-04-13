@@ -5,9 +5,7 @@
     {% for message in messages %}
         <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
             {{ message }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
     {% endfor %}
     </div>
@@ -18,25 +16,25 @@
     </script>
 {% endif %}
 
-<h2 class="card-header card-title pl-2 h4"> <i data-feather="edit"></i>&nbsp;{% trans "Take Note"%}</h2>
+<h2 class="card-header card-title pl-2 h4"> <i class="bi bi-pencil-square"></i>&nbsp;{% trans "Take Note"%}</h2>
 <div class="card-body">
     {% if request.user.is_authenticated or listNotes %}
         <div class="mgtNotes mb-2 text-center">
             {% if request.user.is_authenticated %}
                 {% comment %}
-                <a class="p-0 m-0 btn btn-outline-primary btn-sm open" href="{% url 'video_collaborate' slug=video.slug %}" title="{% trans 'Large columns interface' %}"><i data-feather="maximize-2"></i></a>
+                <a class="p-0 m-0 btn btn-outline-primary btn-sm open" href="{% url 'video_collaborate' slug=video.slug %}" title="{% trans 'Large columns interface' %}"><i class="bi bi-arrows-angle-expand"></i></a>
                 {% endcomment %}
                 <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="add_video_notes_form  mt-1" role="menuitem">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="form_note"/>
-                    <button class="p-0 m-0 btn btn-outline-primary btn-sm create" type="submit" action="create" title="{% trans 'Create a note' %}"> <i data-feather="plus"></i> </button>
+                    <button class="p-0 m-0 btn btn-outline-primary btn-sm create" type="submit" action="create" title="{% trans 'Create a note' %}"> <i class="bi bi-plus"></i> </button>
                 </form>
             {% endif %}
             {% if listNotes %}
                 <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="download_video_notes_form  mt-1" role="menuitem">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="download"/>
-                    <button class="p-0 m-0 btn btn-outline-primary btn-sm download" type="submit" action="download" title="{% trans 'Download the notes' %}"> <i data-feather="download"></i></button>
+                    <button class="p-0 m-0 btn btn-outline-primary btn-sm download" type="submit" action="download" title="{% trans 'Download the notes' %}"> <i class="bi bi-download"></i></button>
                 </form>
             {% endif %}
         </div>

@@ -4,7 +4,7 @@
 {% get_language_info_list for LANGUAGES as languages %}
 {% load thumbnail %}
 
-<div class="container container-pod" id="nav-mainbar">
+<div class="container pod-container" id="nav-mainbar">
   <div class="pod-brand">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" title="{% trans 'Toggle navigation' %}">
       <i class="bi bi-list" aria-hidden="true"></i>
@@ -30,7 +30,7 @@
       {% endif %}
       {% if HIDE_USER_TAB == False and user.is_authenticated %}
         <li class="nav-item" id="nav-users">
-          <button class="nav-link" data-bs-toggle="modal" data-bs-target=".users-modal"><i class="bi bi-people" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Users"%}</button>
+          <button class="nav-link" data-bs-toggle="modal" data-bs-target=".users-modal"><i class="bi bi-people" aria-hidden="true" class="pod-nav-link-icon d-lg-none d-xl-inline"></i> {% trans "Users"%}</button>
         </li>
       {% endif %}
       {% if HIDE_TYPES_TAB == False %}
@@ -71,7 +71,7 @@
       {%if MAINTENANCE_MODE%}
         <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br/><i width=16 height=16 class="bi bi-exclamation-triangle"></i> {%trans "Some features are unavailable" %}</span>
       {%else%}
-          <a class="nav-link pl-2 pr-2" href="{% url 'video_add' %}"><i class="bi bi-plus-square"></i>  <span class="d-none d-md-inline-block">{% trans "Add a video" %}</span></a>
+          <a class="nav-link pl-2 pr-2" href="{% url 'video_add' %}"><i class="bi bi-plus-square"></i>&nbsp;<span class="d-none d-md-inline-block">{% trans "Add a video" %}</span></a>
       {%endif%}
     </li>
     {% if user.is_authenticated %}
@@ -88,37 +88,37 @@
           <h6 class="dropdown-header">{% if user.get_full_name != '' %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</h6>
           <div class="dropdown-divider"></div>
           {% if request.user.is_superuser or user.owner.is_manager %}
-            <a class="dropdown-item" href="{% url 'admin:index' %}"><i class="bi bi-cpu" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>Administration</a>
+            <a class="dropdown-item pod-dropdown-item" href="{% url 'admin:index' %}"><i class="bi bi-cpu pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>Administration</a>
           {% endif %}
           {% if request.user.is_staff or request.user.is_superuser %}
-            <button class="dropdown-item get_form_userpicture" data-url="{% url "userpicture" %}">
-              <i class="bi bi-card-image" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% if request.user.owner.userpicture  %}{% trans 'Change your picture' %}{% else %}{% trans 'Add your picture' %}{% endif %}
+            <button class="dropdown-item pod-dropdown-item get_form_userpicture" data-url="{% url "userpicture" %}">
+              <i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>{% if request.user.owner.userpicture  %}{% trans 'Change your picture' %}{% else %}{% trans 'Add your picture' %}{% endif %}
             </button>
           {% endif %}
-          <a class="dropdown-item" href="{% url 'my_videos' %}"><i class="bi bi-film" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My videos' %}</a>
+          <a class="dropdown-item pod-dropdown-item" href="{% url 'my_videos' %}"><i class="bi bi-film pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My videos' %}</a>
           {% if USE_OPENCAST_STUDIO %}
-          <a class="dropdown-item" href="{% url 'recorder:studio_pod'%}"><i class="bi bi-camera-video" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans "Video Record" %}</a>
+          <a class="dropdown-item pod-dropdown-item" href="{% url 'recorder:studio_pod'%}"><i class="bi bi-camera-video pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans "Video Record" %}</a>
           {% endif %}
           {% if request.user.owners_channels.all %}
-            <a class="dropdown-item" href="{% url 'my_channels' %}"><i class="bi bi-youtube" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My channels' %}</a>
+            <a class="dropdown-item pod-dropdown-item" href="{% url 'my_channels' %}"><i class="bi bi-youtube pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My channels' %}</a>
           {% endif %}
-          <a class="dropdown-item" href="{% url 'my_playlists' %}"><i class="bi bi-cast" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
+          <a class="dropdown-item pod-dropdown-item" href="{% url 'my_playlists' %}"><i class="bi bi-cast pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
           {% if request.user.is_staff and USE_PODFILE %}
-            <a class="dropdown-item" href="{% url 'podfile:home' %}"><i class="bi bi-folder" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My files' %}</a>
+            <a class="dropdown-item pod-dropdown-item" href="{% url 'podfile:home' %}"><i class="bi bi-folder pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My files' %}</a>
           {% endif %}
           {% if request.user.is_staff and ALLOW_MANUAL_RECORDING_CLAIMING %}
-            <a class="dropdown-item" href="{% url 'claim_record' %}"><i class="bi bi-share" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Claim a record' %}</a>
+            <a class="dropdown-item pod-dropdown-item" href="{% url 'claim_record' %}"><i class="bi bi-share pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Claim a record' %}</a>
           {% endif %}
           {% if request.user.is_staff and USE_BBB %}
-            <a class="dropdown-item" href="{% url 'bbb:list_meeting' %}"><i class="bi bi-square" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My BigBlueButton records' %}</a>
+            <a class="dropdown-item pod-dropdown-item" href="{% url 'bbb:list_meeting' %}"><i class="bi bi-square pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My BigBlueButton records' %}</a>
             {% if USE_BBB_LIVE %}
-              <a class="dropdown-item" href="{% url 'bbb:live_list_meeting' %}"><i class="bi bi-lightning-charge" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Perform a BigBlueButton live' %}</a>
+              <a class="dropdown-item pod-dropdown-item" href="{% url 'bbb:live_list_meeting' %}"><i class="bi bi-lightning-charge pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Perform a BigBlueButton live' %}</a>
             {% endif %}
           {% endif %}
-          <!-- <a class="dropdown-item" href="#">Gestion de mon compte</a> -->
+          <!-- <a class="dropdown-item pod-dropdown-item" href="#">Gestion de mon compte</a> -->
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="{% url 'authentication_logout' %}">
-            <i class="bi bi-box-arrow-right" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Log out' %}</a>
+          <a class="dropdown-item pod-dropdown-item" href="{% url 'authentication_logout' %}">
+            <i class="bi bi-box-arrow-right pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Log out' %}</a>
         </div>
       </li>
     {% else %}{# user not authenticated #}
@@ -143,7 +143,7 @@
                   <form action="/i18n/setlang/" method="post">
                     {% csrf_token %}
                     <input name="language" value="{{ language.code }}" type="hidden">
-                    <input value="{{ language.name_local }} ({{ language.code }})" class="dropdown-item" type="submit">
+                    <input value="{{ language.name_local }} ({{ language.code }})" class="dropdown-item pod-dropdown-item" type="submit">
                   </form>
                 {% endif %}
               {% endfor %}

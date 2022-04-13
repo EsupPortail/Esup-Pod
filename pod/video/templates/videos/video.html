@@ -99,7 +99,7 @@
   <meta itemprop="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }} - {% trans 'Added by' %}: {{ video.owner.get_full_name }}" />
 
 {%if channel %}
-  <h2 class="channel_title">{{channel.title}}{% if request.user in channel.owners.all %}<span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-primary btn-sm"><i data-feather="edit" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{%endif%}</h2>
+  <h2 class="channel_title">{{channel.title}}{% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes" %} " class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{%endif%}</h2>
   {% if channel.headband %}
     <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy"/>
   {% endif %}
@@ -109,7 +109,7 @@
   {% if theme %}
     <h3 class="theme_title">{{theme.title}}</h3>
     {% if theme.headband %}
-      <div align="center" class="channelheader">
+      <div class="channelheader">
         <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" loading="lazy"/>
       </div>
     {% endif %}
@@ -151,7 +151,7 @@
 {% block page_aside %}
   {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video or perms.enrichment.edit_enrichment or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay or perms.chapter.change_chapter or perms.video.delete_video %}
     <div class="card mt-1" id="card-managevideo">
-      <h2 class="card-header card-title pl-2 h4"><i data-feather="settings"></i>&nbsp;{% trans "Manage video"%}</h2>
+      <h2 class="card-header card-title pl-2 h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
       <div class="card-body card-text text-center">
         {% include "videos/link_video.html" %}
       </div>

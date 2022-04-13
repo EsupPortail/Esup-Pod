@@ -47,7 +47,7 @@
       {%endfor%}
     </div>
     {% if TYPES.count > 5 %}
-      <span class="badge badge-light float-right"><a class="collapsed" data-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType"></a></span>
+      <span class="badge badge-light float-end"><a class="collapsed" data-bs-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType"></a></span>
     {% endif %}
   </div><!-- type -->
 </fieldset>
@@ -67,7 +67,7 @@
       {%endfor%}
     </div>
     {% if DISCIPLINES.count > 5 %}
-      <span class="badge badge-light float-right"><a class="collapsed" data-toggle="collapse" href="#collapseFilterDiscipline" aria-expanded="false" aria-controls="collapseFilterDiscipline"></a></span>
+      <span class="badge badge-light float-end"><a class="collapsed" data-bs-toggle="collapse" href="#collapseFilterDiscipline" aria-expanded="false" aria-controls="collapseFilterDiscipline"></a></span>
     {% endif %}
   </div><!-- filterdiscipline -->
 </fieldset>
@@ -89,7 +89,7 @@
       {% endfor %}
     </div>
     {% if tagslist|length > 5 %}
-      <span class="badge badge-light float-right"><a class="collapsed" data-toggle="collapse" href="#collapseFilterTag" aria-expanded="false" aria-controls="collapseFilterTag"></a></span>
+      <span class="badge badge-light float-end"><a class="collapsed" data-bs-toggle="collapse" href="#collapseFilterTag" aria-expanded="false" aria-controls="collapseFilterTag"></a></span>
     {% endif %}
     {% endwith %}
   </div>
@@ -111,7 +111,7 @@
       {% endfor %}
     </div>
     {% if cursus_list|length > 5 %}
-      <span class="badge badge-light float-right"><a class="collapsed" data-toggle="collapse" href="#collapseFilterCursus" aria-expanded="false" aria-controls="collapseFilterCursus"></a></span>
+      <span class="badge badge-light float-end"><a class="collapsed" data-bs-toggle="collapse" href="#collapseFilterCursus" aria-expanded="false" aria-controls="collapseFilterCursus"></a></span>
     {% endif %}
   </div>
 </fieldset>

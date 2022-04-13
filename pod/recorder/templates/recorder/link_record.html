@@ -3,7 +3,7 @@
         {% if request.user.is_superuser or perms.recording.delete_recording  %}
 
          <a href="{% url 'delete_record' id=record.id %}" class="p-0 m-1 btn btn-primary btn-sm pl-0 pb-1" title="{% trans "Delete this record." %}">
-        <i data-feather="trash-2"></i></a>
+        <i class="bi bi-trash"></i></a>
     {% endif %}
 {% if USE_RECORD_PREVIEW%}
 <button type="button" class="previewBtn p-0 m-1 btn btn-primary btn-sm pl-0 pb-1" data-bs-toggle="modal" data-recid="{{ record.publicfileurl }}" data-bs-target="#previewModal">

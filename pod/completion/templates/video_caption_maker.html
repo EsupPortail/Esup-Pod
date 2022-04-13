@@ -50,9 +50,7 @@
   {% for message in messages %}
     <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
       {{ message }}
-      <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-      </button>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
   {% endfor %}
   <script>
@@ -92,7 +90,7 @@
     </div>
     <div>
       <!--<p>{% trans "You can load and existing caption file below :" %}-->
-      <form method="post" class="float-left" action="{% url 'video_caption_maker' slug=video.slug %}" id="captionmaker_form">
+      <form method="post" class="float-sart" action="{% url 'video_caption_maker' slug=video.slug %}" id="captionmaker_form">
         {% csrf_token %}
         <fieldset>
           {% if form_make_caption.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
@@ -112,7 +110,7 @@
         </fieldset>
         {{form_make_caption.media}}
       </form>
-      <form class="form_save completion float-left" id="form_save_captions" action="{% url 'video_caption_maker' slug=video.slug %}" method="post" enctype="multipart/form-data">
+      <form class="form_save completion float-start" id="form_save_captions" action="{% url 'video_caption_maker' slug=video.slug %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="hidden" name="action" value="save"/>
         <input type="hidden" name="file_id"/>
@@ -124,7 +122,7 @@
   </div>
   <div id="editorTipsAndGoBack">
     <div style="padding-top: 6px;">
-      <span class="float-left">
+      <span class="float-start">
         <button id="showShortcutTips" class="btn btn-primary btn-sm">{% trans "Key Schortcuts" %}</button>
         <div id="shortcutsBlock" style="display:none" class="shadow p-3 mb-5 bg-white rounded">
           <h5>{% trans "Video Player" %}</h5>
@@ -144,7 +142,7 @@
           <p><div class="shortcutKey">?</div> {% trans "Show/hide this window" %} </p>
         </div>
       </span>
-      <span class="float-right">
+      <span class="float-end">
         <a href="{% url 'video_completion' slug=video.slug %}" title="{% trans 'View the video' %}" class="btn btn btn-secondary btn-sm">
           <i class="bi bi-arrow-left"></i>&nbsp;{% trans "Back to the completion"%}
         </a>
