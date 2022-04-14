@@ -2645,7 +2645,7 @@ def video_record(request):
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-# @admin_required
+@ajax_required
 def update_video_owner(request, user_id):
     if not (
         request.user.is_superuser
@@ -2698,7 +2698,7 @@ def update_video_owner(request, user_id):
 
 
 @login_required(redirect_field_name="referrer")
-# @admin_required
+@ajax_required
 def filter_owners(request):
     if not (
         request.user.is_superuser
@@ -2717,7 +2717,7 @@ def filter_owners(request):
 
 
 @login_required(redirect_field_name="referrer")
-# @admin_required
+@ajax_required
 def filter_videos(request, user_id):
     if not (
         request.user.is_superuser
