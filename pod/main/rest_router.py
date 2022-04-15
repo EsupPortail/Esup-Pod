@@ -107,6 +107,12 @@ urlpatterns = [
     ),
 ]
 
+if getattr(settings, "USE_SMP_STUDIO", False):
+    from pod.recorder.studio_urls import url_rest_patterns
+    urlpatterns += [
+        url(r"^studio/", include(url_rest_patterns)),
+    ]
+
 for apps in settings.THIRD_PARTY_APPS:
     mod = importlib.import_module("pod.%s.rest_urls" % apps)
     mod.add_register(router)

@@ -5,6 +5,8 @@ from .views import ingest_addAttachment, ingest_addTrack
 from .views import ingest_addCatalog, ingest_ingest
 from .views import presenter_post
 
+from .rest_views import studio_series, studio_services
+
 app_name = "recorder"
 urlpatterns = [
     url(
@@ -61,5 +63,18 @@ urlpatterns = [
         r"^ingest/ingest$",
         ingest_ingest,
         name="ingest_ingest",
+    ),
+]
+
+url_rest_patterns = [
+    url(
+        r"^services/(?P<file>.*)$",
+        studio_services,
+        name="studio_services",
+    ),
+    url(
+        r"^admin-ng/series/(?P<file>.*)$",
+        studio_series,
+        name="studio_series",
     ),
 ]
