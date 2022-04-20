@@ -1,7 +1,7 @@
 """Esup-Pod completion views."""
 from django.conf import settings
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
@@ -73,6 +73,7 @@ def video_caption_maker(request, slug):
                 track = Track.objects.filter(video=video, src=captionFile).first()
                 if track:
                     track_language = track.lang
+                    track_kind = track.kind
 
         form_caption = TrackForm(initial={"video": video})
         return render(
@@ -84,6 +85,7 @@ def video_caption_maker(request, slug):
                 "video": video,
                 "languages": LANG_CHOICES,
                 "track_language": track_language,
+                "track_kind": track_kind,
                 "active_model_enrich": ACTIVE_MODEL_ENRICH,
             },
         )
@@ -120,6 +122,7 @@ def video_caption_maker_save(request, video):
                         enrich_ready=enrich_ready,
                     )
                     track.save()
+                    return JsonResponse({'track_id': track.src_id})
                 else:
                     error = True
                     messages.add_message(
