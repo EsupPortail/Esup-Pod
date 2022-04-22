@@ -66,6 +66,7 @@ def video_caption_maker(request, slug):
         return eval("video_caption_maker_{0}".format(action))(request, video)
     else:
         track_language = LANGUAGE_CODE
+        track_kind = "captions"
         captionFileId = request.GET.get("src")
         if captionFileId:
             captionFile = CustomFileModel.objects.filter(id=captionFileId).first()
