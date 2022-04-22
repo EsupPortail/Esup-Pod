@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-22 08:56+0000\n"
+"POT-Creation-Date: 2022-04-22 09:07+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ptitloup <nicolas.can@univ-lille.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -1069,10 +1069,12 @@ msgid "voice-over"
 msgstr "voix-off"
 
 #: pod/completion/models.py:42
+#: pod/completion/templates/video_caption_maker.html:35
 msgid "subtitles"
 msgstr "sous-titres"
 
 #: pod/completion/models.py:43
+#: pod/completion/templates/video_caption_maker.html:36
 msgid "captions"
 msgstr "légendes"
 
@@ -1491,18 +1493,6 @@ msgstr "menu"
 #: pod/completion/templates/video_completion.html:151
 msgid "Video Caption Maker"
 msgstr "Outil de création de fichier de sous-titres"
-
-#: pod/completion/templates/video_caption_maker.html:35
-#, fuzzy
-#| msgid "subtitles"
-msgid "Subtitles"
-msgstr "sous-titres"
-
-#: pod/completion/templates/video_caption_maker.html:36
-#, fuzzy
-#| msgid "captions"
-msgid "Captions"
-msgstr "légendes"
 
 #: pod/completion/templates/video_caption_maker.html:46
 msgid "Change mode"
@@ -6366,6 +6356,16 @@ msgstr "Désolé, la recherche de vidéos est limitée à 500 pages maximum."
 #: pod/video_search/views.py:261
 msgid "Search results"
 msgstr "Résultats de la recherche"
+
+#, fuzzy
+#~| msgid "subtitles"
+#~ msgid "Subtitles"
+#~ msgstr "sous-titres"
+
+#, fuzzy
+#~| msgid "captions"
+#~ msgid "Captions"
+#~ msgstr "légendes"
 
 #, fuzzy
 #~| msgid ""

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-22 08:56+0000\n"
+"POT-Creation-Date: 2022-04-22 09:07+0000\n"
 "PO-Revision-Date: 2021-11-25 16:53+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1008,10 +1008,12 @@ msgid "voice-over"
 msgstr ""
 
 #: pod/completion/models.py:42
+#: pod/completion/templates/video_caption_maker.html:35
 msgid "subtitles"
 msgstr ""
 
 #: pod/completion/models.py:43
+#: pod/completion/templates/video_caption_maker.html:36
 msgid "captions"
 msgstr ""
 
@@ -1419,16 +1421,6 @@ msgstr ""
 #: pod/completion/templates/video_completion.html:61
 #: pod/completion/templates/video_completion.html:151
 msgid "Video Caption Maker"
-msgstr ""
-
-#: pod/completion/templates/video_caption_maker.html:35
-#, fuzzy
-#| msgid "title"
-msgid "Subtitles"
-msgstr "titel"
-
-#: pod/completion/templates/video_caption_maker.html:36
-msgid "Captions"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html:46
@@ -6021,6 +6013,11 @@ msgstr ""
 #: pod/video_search/views.py:261
 msgid "Search results"
 msgstr ""
+
+#, fuzzy
+#~| msgid "title"
+#~ msgid "Subtitles"
+#~ msgstr "titel"
 
 #, fuzzy
 #~| msgid "Email"

@@ -32,8 +32,8 @@
   <input id="captionFilename" name="file_name" type="text" form="form_save_captions"/>
   <div class="d-inline-block makerNavbarRight">
     <select id="captionKindSelect" name="kind" form="form_save_captions">
-        <option value="subtitles" {% if track_kind == "subtitles" %} selected {% endif %} > {% trans "Subtitles" %} </option>
-        <option value="captions" {% if track_kind == "captions" %} selected {% endif %} > {% trans "Captions" %} </option>
+        <option value="subtitles" {% if track_kind == "subtitles" %} selected {% endif %} > {% trans "subtitles" %} </option>
+        <option value="captions" {% if track_kind == "captions" %} selected {% endif %} > {% trans "captions" %} </option>
     </select>
     <select id="captionLanguageSelect" name="lang" form="form_save_captions">
       {% for lang_group in languages %}
