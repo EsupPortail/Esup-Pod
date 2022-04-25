@@ -19,7 +19,7 @@
     {% if LINK_FOOTER %}
       <ul class="footer_links">
       {% for link in LINK_FOOTER %}
-        <li><a href="{{link.get_url}}" title="{{link.title}}">{{link.title}}</a></li>
+        <li><a href="{{link.get_url}}">{{link.title}}</a></li>
       {% endfor %}
       </ul>
     {% endif %}

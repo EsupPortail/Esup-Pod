@@ -100,6 +100,7 @@ def home(request, type=None):
             "form_file": CustomFileModelForm(),
             "form_image": CustomImageModelForm(),
             "type": type,
+            "page_title": _("My files"),
         },
     )
 
@@ -161,7 +162,7 @@ def get_folder_files(request, id, type=None):
         )
         and not (request.user in folder.users.all())
     ):
-        messages.add_message(request, messages.ERROR, _(u"You cannot see this folder."))
+        messages.add_message(request, messages.ERROR, _("You cannot see this folder."))
         raise PermissionDenied
 
     request.session["current_session_folder"] = folder.name
@@ -241,7 +242,7 @@ def editfolder(request):
             )
         ):
             messages.add_message(
-                request, messages.ERROR, _(u"You cannot edit this folder.")
+                request, messages.ERROR, _("You cannot edit this folder.")
             )
             raise PermissionDenied
         form = UserFolderForm(request.POST, instance=folder)
@@ -258,7 +259,7 @@ def editfolder(request):
             messages.add_message(
                 request,
                 messages.ERROR,
-                _(u"Two folders cannot have the same name."),
+                _("Two folders cannot have the same name."),
             )
             raise PermissionDenied
 
@@ -290,7 +291,7 @@ def deletefolder(request):
             )
         ):
             messages.add_message(
-                request, messages.ERROR, _(u"You cannot delete home folder.")
+                request, messages.ERROR, _("You cannot delete home folder.")
             )
             raise PermissionDenied
         else:
@@ -321,7 +322,7 @@ def deletefile(request):
             or (request.user in folder.users.all())
         ):
             messages.add_message(
-                request, messages.ERROR, _(u"You cannot delete this file.")
+                request, messages.ERROR, _("You cannot delete this file.")
             )
             raise PermissionDenied
         else:
@@ -357,7 +358,7 @@ def uploadfiles(request):
             messages.add_message(
                 request,
                 messages.ERROR,
-                _(u"You cannot edit file on this folder."),
+                _("You cannot edit file on this folder."),
             )
             raise PermissionDenied
         else:
@@ -443,7 +444,7 @@ def changefile(request):
             or (request.user in folder.users.all())
         ):
             messages.add_message(
-                request, messages.ERROR, _(u"You cannot access this folder.")
+                request, messages.ERROR, _("You cannot access this folder.")
             )
             raise PermissionDenied
 
@@ -456,9 +457,7 @@ def changefile(request):
             or request.user.has_perm("podfile.change_customimagemodel")
             or (request.user in folder.users.all())
         ):
-            messages.add_message(
-                request, messages.ERROR, _(u"You cannot edit this file.")
-            )
+            messages.add_message(request, messages.ERROR, _("You cannot edit this file."))
             raise PermissionDenied
 
         form_file = eval("%sForm" % request.POST["file_type"])(
@@ -571,7 +570,7 @@ def get_file(request, type):
             or (request.user in reqfile.folder.users.all())
         )
     ):
-        messages.add_message(request, messages.ERROR, _(u"You cannot see this folder."))
+        messages.add_message(request, messages.ERROR, _("You cannot see this folder."))
         raise PermissionDenied
 
     request.session["current_session_folder"] = reqfile.folder.name

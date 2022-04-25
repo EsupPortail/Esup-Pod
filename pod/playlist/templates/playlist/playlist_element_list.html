@@ -1,19 +1,16 @@
 <!-- HTML for playlist element list. Don't use this file alone it must be integrated into another template ! -->
 {% load i18n %}
 <div overflow: auto>
-	<div class="panel-heading">
-		<h4 class="card-title">{% trans 'List of videos' %}&nbsp;({{list_videos|length}})</h3>
-	</div>
 	<table class="table table-sm scroll" id="table_list_videos">
+		<caption class="h3" style="caption-side:top">{% trans 'List of videos' %}&nbsp;({{list_videos|length}})</caption>
 		<thead>
 			<tr>
-				<th>{% trans 'Thumbnail' %}</th>
-				<th>{% trans 'Title' %}</th>
-				<th>{% trans 'Owner' %}</th>
-				<th>{% trans 'Duration' %}</th>
-				<th>{% trans 'Position' %}</th>
-				<th></th>
-				<th></th>
+				<th scope="col">{% trans 'Thumbnail' %}</th>
+				<th scope="col">{% trans 'Title' %}</th>
+				<th scope="col">{% trans 'Owner' %}</th>
+				<th scope="col">{% trans 'Duration' %}</th>
+				<th scope="col">{% trans 'Position' %}</th>
+				<th scope="col">{% trans 'Actions' %}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -29,14 +26,12 @@
 					<td class="video-duration">{{element.video.duration_in_time}}</td>
 					<td class="video-position">{{element.position}}</td>
 					<td>
-						<button class="btn btn-sm position-up">
-							<svg height="32" class="octicon octicon-arrow-small-up" viewBox="0 0 6 16" version="1.1" width="12" aria-hidden="true"><path fill-rule="evenodd" d="M3 5L0 9h2v2h2V9h2L3 5z"></path></svg>
+						<button class="btn btn-sm btn-link position-up" title="{%trans 'Move up'%}">
+							<i data-feather="arrow-up-circle"></i>
 						</button>
-						<button class="btn btn-sm position-down">
-							<svg height="32" class="octicon octicon-arrow-small-down" viewBox="0 0 6 16" version="1.1" width="12" aria-hidden="true"><path fill-rule="evenodd" d="M4 7V5H2v2H0l3 4 3-4H4z"></path></svg>
+						<button class="btn btn-sm btn-link position-down" title="{%trans 'Move down'%}">
+							<i data-feather="arrow-down-circle"></i>
 						</button>
-					</td>
-					<td>
 						<button class="btn btn-sm btn-danger position-delete">{% trans 'Remove' %}</button>
 					</td>
 				</tr>

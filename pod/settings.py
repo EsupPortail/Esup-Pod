@@ -5,12 +5,14 @@ Django version : 1.11.16.
 """
 import os
 import sys
-from pod.main.settings import BASE_DIR
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+# will be update in pod/main/settings.py
 
 ##
 # Version of the project
 #
-VERSION = "2.8.3"
+VERSION = "2.9.2"
 
 ##
 # Installed applications list
@@ -99,6 +101,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "APP_DIRS": True,
+        "DIRS": [],
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -131,7 +134,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 USE_I18N = True
 USE_L10N = True
-LOCALE_PATHS = (os.path.join(BASE_DIR, "locale"),)
+LOCALE_PATHS = (os.path.join(BASE_DIR, "pod", "locale"),)
 
 ##
 # Time zone support is enabled (True) or not (False)
@@ -158,7 +161,7 @@ REST_FRAMEWORK = {
 ##
 # Logging configuration https://docs.djangoproject.com/fr/1.11/topics/logging/
 #
-LOG_DIRECTORY = os.path.join(BASE_DIR, "log")
+LOG_DIRECTORY = os.path.join(BASE_DIR, "pod", "log")
 if not os.path.exists(LOG_DIRECTORY):
     os.mkdir(LOG_DIRECTORY)
 
@@ -262,3 +265,9 @@ if "H5P_ENABLED" in globals() and eval("H5P_ENABLED") is True:
     sys.path.append(os.path.join(BASE_DIR, "../../H5PP"))
     INSTALLED_APPS.append("h5pp")
     INSTALLED_APPS.append("pod.interactive")
+
+##
+# Opencast studio
+if "USE_OPENCAST_STUDIO" in globals() and eval("USE_OPENCAST_STUDIO") is True:
+    # add dir to opencast studio static files i.e : pod/custom/static/opencast/
+    TEMPLATES[0]["DIRS"].append(os.path.join(BASE_DIR, "custom", "static", "opencast"))

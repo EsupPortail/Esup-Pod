@@ -20,10 +20,7 @@
       class="current-folder-name"
       data-toggle="tooltip"
       data-placement="top"
-      title="{{folder.name}} - {{folder.get_all_file.count}} {% trans "
-      file
-      "%}{{ folder.get_all_file.count|pluralize }}"
-    >{{folder.name}}</span>
+    >{{folder.name}} - {{folder.get_all_files|length}} {% trans 'file' %}{{ folder.get_all_files|length|pluralize }}</span>
   </span>
   <button
     class="navbar-toggler btn btn-outline-primary active"
@@ -330,10 +327,10 @@
               data-fileid="{{file.id}}"
               data-filetype="{{file.class_name}}"
             >
-              <img class="card-img-top p-1" src="{% static 'podfile/images/icons/'|add:icon|add:'.png' %}" alt="Card image" loading="lazy">
+              <img class="card-img-top p-1" src="{% static 'podfile/images/icons/'|add:icon|add:'.png' %}" alt="" loading="lazy">
             </a>
           {% else %}
-            <img class="card-img-top p-1" src="{% static 'podfile/images/icons/'|add:icon|add:'.png' %}" alt="Card image" loading="lazy">
+            <img class="card-img-top p-1" src="{% static 'podfile/images/icons/'|add:icon|add:'.png' %}" alt="" loading="lazy">
           {% endif%}
         {%endwith%}
       {% endif %}

@@ -53,6 +53,7 @@ class ThemeSerializer(serializers.HyperlinkedModelSerializer):
             "headband",
             "description",
             "channel",
+            "sites",
         )
 
 
@@ -187,6 +188,7 @@ class EncodingVideoSerializer(serializers.HyperlinkedModelSerializer):
             "rendition",
             "encoding_format",
             "source_file",
+            "sites_all",
         )
 
 
@@ -200,6 +202,7 @@ class EncodingAudioSerializer(serializers.HyperlinkedModelSerializer):
             "video",
             "encoding_format",
             "source_file",
+            "sites_all",
         )
 
 
@@ -213,6 +216,7 @@ class PlaylistVideoSerializer(serializers.HyperlinkedModelSerializer):
             "video",
             "encoding_format",
             "source_file",
+            "sites_all",
         )
 
 
@@ -261,6 +265,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         "is_draft",
         "is_restricted",
         "encoding_in_progress",
+        "sites",
     )
 
     @action(detail=False, methods=["get"])

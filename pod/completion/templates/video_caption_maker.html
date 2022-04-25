@@ -9,10 +9,10 @@
 
 {% block breadcrumbs %}
   {{block.super}}
-  <li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'my_videos' %}">{% trans 'My videos' %}</a></li>
 
   <li class="breadcrumb-item">
-    <a href="{% url 'video' slug=video.slug %}" title="{{video.title}}">
+    <a href="{% url 'video' slug=video.slug %}">
       {{video.title|title|truncatechars:45}}
     </a>
   </li>
@@ -125,7 +125,7 @@
   <div id="editorTipsAndGoBack">
     <div style="padding-top: 6px;">
       <span class="float-left">
-        <button id="showShortcutTips" class="btn btn-primary btn-sm">{% trans "Key Schortcuts" %}</button> 
+        <button id="showShortcutTips" class="btn btn-primary btn-sm">{% trans "Key Schortcuts" %}</button>
         <div id="shortcutsBlock" style="display:none" class="shadow p-3 mb-5 bg-white rounded">
           <h5>{% trans "Video Player" %}</h5>
           <p><div class="shortcutKey">{% trans "Space" %}</div> {% trans "Pause / unpause" %}</p>

@@ -5,12 +5,14 @@
 {% load thumbnail %}
 
 <div class="container container-pod" id="nav-mainbar">
-  <h1 class="pod-brand">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+  <div class="pod-brand">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" title="{% trans 'Toggle navigation' %}">
       <i data-feather="menu" aria-hidden="true"></i>
     </button>
-    <a class="navbar-brand mr-0 mr-sm-1" href="/"><img src="{% static LOGO_SITE %}" height="48" alt="" loading="lazy"/><strong>{{ TITLE_SITE }}</strong></a>
-  </h1>
+    <a class="navbar-brand mr-0 mr-sm-1" href="/">
+      <img src="{% static LOGO_SITE %}" height="48" alt="" loading="lazy"/><strong>{{ TITLE_SITE }}</strong>
+    </a>
+  </div>
 
   <div class="collapse navbar-collapse navbar-items-pod" id="navbarSupportedContent">
     <ul class="navbar-nav mx-auto">
@@ -19,7 +21,7 @@
         <button class="nav-link" data-toggle="modal" data-target=".chaines-modal"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Channels" %}</button>
       </li>
       {% for add_channel_tab in ADD_CHANNELS_TAB %}
-        <li class="nav-item" id="nav-channels">
+        <li class="nav-item add-nav-channels" >
           <button class="nav-link" data-toggle="modal" data-target=".chaines-modal-{{add_channel_tab.id}}"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {{ add_channel_tab.name }}</button>
         </li>
       {% endfor %}
@@ -96,30 +98,30 @@
               <i data-feather="image" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% if request.user.owner.userpicture  %}{% trans 'Change your picture' %}{% else %}{% trans 'Add your picture' %}{% endif %}
             </button>
           {% endif %}
-          <a class="dropdown-item" href="{% url 'my_videos' %}" title="{% trans 'My videos' %}"><i data-feather="film" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My videos' %}</a>
-          {% if USE_VIDEO_RECORD %}
-          <a class="dropdown-item" href="{% url 'video_record' %}" title="{% trans 'Video Record' %}"><i data-feather="video" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans "Video Record" %}</a>
+          <a class="dropdown-item" href="{% url 'my_videos' %}"><i data-feather="film" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My videos' %}</a>
+          {% if USE_OPENCAST_STUDIO %}
+          <a class="dropdown-item" href="{% url 'recorder:studio_pod'%}"><i data-feather="video" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans "Video Record" %}</a>
           {% endif %}
           {% if request.user.owners_channels.all %}
-            <a class="dropdown-item" href="{% url 'my_channels' %}" title="{% trans 'My channels' %}"><i data-feather="youtube" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My channels' %}</a>
+            <a class="dropdown-item" href="{% url 'my_channels' %}"><i data-feather="youtube" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My channels' %}</a>
           {% endif %}
-          <a class="dropdown-item" href="{% url 'my_playlists' %}" title="{% trans 'My playlists' %}"><i data-feather="airplay" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My playlists' %}</a>
+          <a class="dropdown-item" href="{% url 'my_playlists' %}"><i data-feather="airplay" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
           {% if request.user.is_staff and USE_PODFILE %}
-            <a class="dropdown-item" href="{% url 'podfile:home' %}" title="{% trans 'My files' %}"><i data-feather="folder" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My files' %}</a>
+            <a class="dropdown-item" href="{% url 'podfile:home' %}"><i data-feather="folder" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My files' %}</a>
           {% endif %}
           {% if request.user.is_staff and ALLOW_MANUAL_RECORDING_CLAIMING %}
-            <a class="dropdown-item" href="{% url 'claim_record' %}" title="{% trans 'Claim a record' %}"><i data-feather="share" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'Claim a record' %}</a>
+            <a class="dropdown-item" href="{% url 'claim_record' %}"><i data-feather="share" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Claim a record' %}</a>
           {% endif %}
           {% if request.user.is_staff and USE_BBB %}
-            <a class="dropdown-item" href="{% url 'bbb:list_meeting' %}"><i data-feather="square" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My BigBlueButton records' %}</a>
+            <a class="dropdown-item" href="{% url 'bbb:list_meeting' %}"><i data-feather="square" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My BigBlueButton records' %}</a>
             {% if USE_BBB_LIVE %}
-              <a class="dropdown-item" href="{% url 'bbb:live_list_meeting' %}"><i data-feather="zap" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'Perform a BigBlueButton live' %}</a>
+              <a class="dropdown-item" href="{% url 'bbb:live_list_meeting' %}"><i data-feather="zap" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Perform a BigBlueButton live' %}</a>
             {% endif %}
           {% endif %}
           <!-- <a class="dropdown-item" href="#">Gestion de mon compte</a> -->
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="{% url 'authentication_logout' %}" title="{% trans 'Log out' %}">
-            <i data-feather="log-out" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'Log out' %}</a>
+          <a class="dropdown-item" href="{% url 'authentication_logout' %}">
+            <i data-feather="log-out" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Log out' %}</a>
         </div>
       </li>
     {% else %}{# user not authenticated #}
@@ -183,4 +185,3 @@
 
 </div> <!-- FIN Container -->
 {% endspaceless %}
-

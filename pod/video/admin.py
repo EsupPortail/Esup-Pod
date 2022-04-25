@@ -22,6 +22,7 @@ from .models import Notes, AdvancedNotes, NoteComments
 from .models import ViewCount
 from .models import VideoToDelete
 from .models import VideoVersion
+from .models import Category
 
 from .forms import VideoForm, VideoVersionForm
 from .forms import ChannelForm
@@ -187,7 +188,7 @@ class VideoAdmin(admin.ModelAdmin):
     def get_owner_by_name(self, obj):
         owner = obj.owner
         url = url_to_edit_object(owner)
-        return u"%s %s (%s)" % (owner.first_name, owner.last_name, url)
+        return "%s %s (%s)" % (owner.first_name, owner.last_name, url)
 
     get_owner_by_name.allow_tags = True
     get_owner_by_name.short_description = _("Owner")
@@ -273,9 +274,12 @@ class VideoAdmin(admin.ModelAdmin):
 
 
 class updateOwnerAdmin(admin.ModelAdmin):
+    """Handle an admin page to change owner of several videos."""
+
     change_list_template = "videos/change_video_owner.html"
 
     def changelist_view(self, request, extra_context=None):
+        """View for the change_video_owner admin page."""
         extra_context = extra_context or {}
         return super(updateOwnerAdmin, self).changelist_view(
             request, extra_context=extra_context
@@ -283,6 +287,7 @@ class updateOwnerAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request, obj=None):
         """Manage create new instance link from admin interface.
+
         if return False no add link
 
         Args:
@@ -715,6 +720,17 @@ class ViewCountAdmin(admin.ModelAdmin):
         return qs
 
 
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ("title", "owner", "videos_count")
+    readonly_fields = ("slug",)
+    # list_filter = ["owner"]
+
+    def videos_count(self, obj):
+        return len(obj.video.all())
+
+    videos_count.short_description = "Videos"
+
+
 admin.site.register(Channel, ChannelAdmin)
 admin.site.register(Type, TypeAdmin)
 admin.site.register(Discipline, DisciplineAdmin)
@@ -732,3 +748,4 @@ admin.site.register(AdvancedNotes, AdvancedNotesAdmin)
 admin.site.register(NoteComments, NoteCommentsAdmin)
 admin.site.register(VideoToDelete, VideoToDeleteAdmin)
 admin.site.register(ViewCount, ViewCountAdmin)
+admin.site.register(Category, CategoryAdmin)

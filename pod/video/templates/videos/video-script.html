@@ -1,6 +1,7 @@
 {% load staticfiles custom_tags %}
 {% load i18n %}
 {% get_setting "VIDEO_PLAYBACKRATES" '[0.5, 1, 1.5, 2]' as video_playbackrates %}
+{% get_setting "USE_VIDEO_EVENT_TRACKING" False as video_event_tracking %}
 <script id="id_video_script">
 window.onmessage = function(event) {
    var evt = event || window.event;
@@ -176,6 +177,33 @@ player.on('firstplay', function(){
     player.videoJsChapters();
     $('.vjs-big-play-button').css('z-index', 2)
     $('.vjs-control-bar').css('z-index', 3);
+{% endif %}
+
+{% if video_event_tracking %}
+  player.on('play', function() {
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'play', player.currentTime()]);
+  });
+  player.on('pause', function() {
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'pause', player.currentTime()]);
+  });
+  player.on("seeked", function (e) {
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'seeked', player.currentTime()]);
+  });
+  player.on("ended", function (e) {
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ended', player.currentTime()]);
+  });
+  player.on("ratechange", function (e) {
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ratechange', player.playbackRate()]);
+  });
+  player.on("fullscreenchange", function (e) {
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'fullscreen :'+ player.isFullscreen(), player.currentTime()]);
+  });
+  player.on("error", function (e) {
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'error', player.error()]);
+  });
+  player.on("loadedmetadata", function (e) {
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'loadedmetadata']);
+  });
 {% endif %}
 
 </script>
