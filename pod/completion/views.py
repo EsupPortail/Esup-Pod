@@ -1,7 +1,7 @@
 """Esup-Pod completion views."""
 from django.conf import settings
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
@@ -66,6 +66,7 @@ def video_caption_maker(request, slug):
         return eval("video_caption_maker_{0}".format(action))(request, video)
     else:
         track_language = LANGUAGE_CODE
+        track_kind = "captions"
         captionFileId = request.GET.get("src")
         if captionFileId:
             captionFile = CustomFileModel.objects.filter(id=captionFileId).first()
@@ -73,6 +74,7 @@ def video_caption_maker(request, slug):
                 track = Track.objects.filter(video=video, src=captionFile).first()
                 if track:
                     track_language = track.lang
+                    track_kind = track.kind
 
         form_caption = TrackForm(initial={"video": video})
         return render(
@@ -84,6 +86,7 @@ def video_caption_maker(request, slug):
                 "video": video,
                 "languages": LANG_CHOICES,
                 "track_language": track_language,
+                "track_kind": track_kind,
                 "active_model_enrich": ACTIVE_MODEL_ENRICH,
             },
         )
@@ -96,32 +99,44 @@ def video_caption_maker_save(request, video):
         name=video.slug, owner=request.user
     )
     if request.method == "POST":
+        error = False
         lang = request.POST.get("lang")
+        kind = request.POST.get("kind")
         enrich_ready = True if request.POST.get("enrich_ready") == "true" else False
         cur_folder = get_current_session_folder(request)
         response = file_edit_save(request, cur_folder)
         response_data = json.loads(response.content)
         if ("list_element" in response_data) and (lang in LANG_CHOICES_DICT):
             captFile = get_object_or_404(CustomFileModel, id=response_data["file_id"])
-
             # immediately assign the newly created captions file to the video
             desired = Track.objects.filter(video=video, src=captFile)
             if desired.exists():
-                desired.update(lang=lang, src=captFile, enrich_ready=enrich_ready)
+                desired.update(lang=lang, kind=kind, src=captFile, enrich_ready=enrich_ready)
             else:
-                Track(
-                    video=video,
-                    kind="captions",
-                    lang=lang,
-                    src=captFile,
-                    enrich_ready=enrich_ready,
-                ).save()
-            messages.add_message(request, messages.INFO, _("The file has been saved."))
+                # check if the same combination of lang and kind exists
+                if not Track.objects.filter(video=video, kind=kind, lang=lang).exists():
+                    track = Track(
+                        video=video,
+                        kind=kind,
+                        lang=lang,
+                        src=captFile,
+                        enrich_ready=enrich_ready,
+                    )
+                    track.save()
+                    return JsonResponse({'track_id': track.src_id})
+                else:
+                    error = True
+                    messages.add_message(
+                        request, messages.WARNING, _("There is already a file with the same kind and language.")
+                    )
+            if not error:
+                messages.add_message(request, messages.INFO, _("The file has been saved."))
         else:
             messages.add_message(
                 request, messages.WARNING, _("The file has not been saved.")
             )
     form_caption = TrackForm(initial={"video": video})
+
     return render(
         request,
         "video_caption_maker.html",

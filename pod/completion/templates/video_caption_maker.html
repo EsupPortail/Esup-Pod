@@ -31,6 +31,10 @@
   <h3 class="d-inline">{% trans "Video Caption Maker" %}</h3>
   <input id="captionFilename" name="file_name" type="text" form="form_save_captions"/>
   <div class="d-inline-block makerNavbarRight">
+    <select id="captionKindSelect" name="kind" form="form_save_captions">
+        <option value="subtitles" {% if track_kind == "subtitles" %} selected {% endif %} > {% trans "subtitles" %} </option>
+        <option value="captions" {% if track_kind == "captions" %} selected {% endif %} > {% trans "captions" %} </option>
+    </select>
     <select id="captionLanguageSelect" name="lang" form="form_save_captions">
       {% for lang_group in languages %}
         <optgroup label="{{ lang_group.0 }}">
@@ -112,7 +116,7 @@
         </fieldset>
         {{form_make_caption.media}}
       </form>
-      <form class="form_save completion float-left" id="form_save_captions" action="{% url 'video_caption_maker' slug=video.slug %}" method="post" enctype="multipart/form-data">
+      <form class="form_save completion float-left" id="form_save_captions" action="{% url 'video_caption_maker' slug=video.slug %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="hidden" name="action" value="save"/>
         <input type="hidden" name="file_id"/>
