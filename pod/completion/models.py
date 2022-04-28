@@ -9,7 +9,6 @@ from ckeditor.fields import RichTextField
 from pod.video.models import Video
 from pod.main.models import get_nextautoincrement
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
-from select2 import fields as select2_fields
 
 if getattr(settings, "USE_PODFILE", False):
     FILEPICKER = True
@@ -55,13 +54,15 @@ LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOI
 
 class Contributor(models.Model):
 
-    video = select2_fields.ForeignKey(Video, verbose_name=_("video"))
-    name = models.CharField(_("lastname / firstname"), max_length=200)
-    email_address = models.EmailField(_("mail"), null=True, blank=True, default="")
+    video = models.ForeignKey(Video, verbose_name=_('video'),
+                              on_delete=models.CASCADE)
+    name = models.CharField(_('lastname / firstname'), max_length=200)
+    email_address = models.EmailField(
+        _('mail'), null=True, blank=True, default='')
     role = models.CharField(
-        _(u"role"), max_length=200, choices=ROLE_CHOICES, default="author"
+        _("role"), max_length=200, choices=ROLE_CHOICES, default="author"
     )
-    weblink = models.URLField(_(u"Web link"), max_length=200, null=True, blank=True)
+    weblink = models.URLField(_("Web link"), max_length=200, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Contributor")
@@ -110,7 +111,7 @@ class Contributor(models.Model):
         return list()
 
     def __str__(self):
-        return u"Video:{0} - Name:{1} - Role:{2}".format(self.video, self.name, self.role)
+        return "Video:{0} - Name:{1} - Role:{2}".format(self.video, self.name, self.role)
 
     def get_base_mail(self):
         data = base64.b64encode(self.email_address.encode())
@@ -121,9 +122,14 @@ class Contributor(models.Model):
 
 
 class Document(models.Model):
-    video = select2_fields.ForeignKey(Video, verbose_name=_("Video"))
+    video = models.ForeignKey(Video, verbose_name=_('Video'),
+                              on_delete=models.CASCADE)
     document = models.ForeignKey(
-        CustomFileModel, null=True, blank=True, verbose_name=_("Document")
+        CustomFileModel,
+        null=True,
+        blank=True,
+        verbose_name=_('Document'),
+        on_delete=models.CASCADE
     )
 
     class Meta:
@@ -163,19 +169,51 @@ class Document(models.Model):
         return list()
 
     def __str__(self):
-        return u"Document: {0} - Video: {1}".format(self.document.name, self.video)
+        return "Document: {0} - Video: {1}".format(self.document.name, self.video)
+
+
+class EnrichModelQueue(models.Model):
+    title = models.TextField(_("Title"), null=True, blank=True)
+    text = models.TextField(_("Text"), null=False, blank=False)
+    model_type = models.CharField(_("Model Type"), null=False, blank=False, max_length=100, default='STT')
+    lang = models.CharField(_("Language"), max_length=2, choices=LANG_CHOICES, default='fr')
+    in_treatment = models.BooleanField(_("In Treatment"), default=False)
+
+    def get_label_lang(self):
+        return "%s" % LANG_CHOICES_DICT[self.lang]
+
+    class Meta:
+        verbose_name = _("EnrichModelQueue")
+        verbose_name_plural = _("EnrichModelQueue")
+
+    def verify_attributs(self):
+        msg = list()
+        if not self.text:
+            msg.append(_("Please enter a text."))
+        if not self.model_type:
+            msg.append(_("Please enter a model type."))
+        if not self.lang:
+            msg.append(_("Please enter a language."))
+        if len(msg) > 0:
+            return msg
+        else:
+            return list()
 
 
 class Track(models.Model):
 
-    video = select2_fields.ForeignKey(Video, verbose_name=_("Video"))
+    video = models.ForeignKey(Video, verbose_name=_('Video'),
+                              on_delete=models.CASCADE)
     kind = models.CharField(
         _("Kind"), max_length=10, choices=KIND_CHOICES, default="subtitles"
     )
     lang = models.CharField(_("Language"), max_length=2, choices=LANG_CHOICES)
-    src = models.ForeignKey(
-        CustomFileModel, blank=True, null=True, verbose_name=_("Subtitle file")
-    )
+    src = models.ForeignKey(CustomFileModel,
+                            blank=True,
+                            null=True,
+                            verbose_name=_('Subtitle file'),
+                            on_delete=models.CASCADE)
+    enrich_ready = models.BooleanField(_("Enrich Ready"), default=False)
 
     @property
     def sites(self):
@@ -229,26 +267,25 @@ class Track(models.Model):
         return list()
 
     def __str__(self):
-        return u"{0} - File: {1} - Video: {2}".format(
-            self.kind, self.src.name, self.video
-        )
+        return "{0} - File: {1} - Video: {2}".format(self.kind, self.src.name, self.video)
 
 
 class Overlay(models.Model):
 
     POSITION_CHOICES = (
-        ("top-left", _(u"top-left")),
-        ("top", _(u"top")),
-        ("top-right", _(u"top-right")),
-        ("right", _(u"right")),
-        ("bottom-right", _(u"bottom-right")),
-        ("bottom", _(u"bottom")),
-        ("bottom-left", _(u"bottom-left")),
-        ("left", _(u"left")),
+        ("top-left", _("top-left")),
+        ("top", _("top")),
+        ("top-right", _("top-right")),
+        ("right", _("right")),
+        ("bottom-right", _("bottom-right")),
+        ("bottom", _("bottom")),
+        ("bottom-left", _("bottom-left")),
+        ("left", _("left")),
     )
 
-    video = select2_fields.ForeignKey(Video, verbose_name=_("Video"))
-    title = models.CharField(_("Title"), max_length=100)
+    video = models.ForeignKey(Video, verbose_name=_('Video'),
+                              on_delete=models.CASCADE)
+    title = models.CharField(_('Title'), max_length=100)
     slug = models.SlugField(
         _("Slug"),
         unique=True,
@@ -263,12 +300,12 @@ class Overlay(models.Model):
     time_start = models.PositiveIntegerField(
         _("Start time"),
         default=1,
-        help_text=_(u"Start time of the overlay, in seconds."),
+        help_text=_("Start time of the overlay, in seconds."),
     )
     time_end = models.PositiveIntegerField(
         _("End time"),
         default=2,
-        help_text=_(u"End time of the overlay, in seconds."),
+        help_text=_("End time of the overlay, in seconds."),
     )
     content = RichTextField(_("Content"), null=False, blank=False, config_name="complete")
     position = models.CharField(
@@ -278,12 +315,12 @@ class Overlay(models.Model):
         blank=False,
         choices=POSITION_CHOICES,
         default="bottom-right",
-        help_text=_(u"Position of the overlay."),
+        help_text=_("Position of the overlay."),
     )
     background = models.BooleanField(
         _("Show background"),
         default=True,
-        help_text=_(u"Show the background of the overlay."),
+        help_text=_("Show the background of the overlay."),
     )
 
     @property

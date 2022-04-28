@@ -1,15 +1,15 @@
-<!-- HTML for document list. Don't use this file alone it must be integrated into another template ! -->
+{# HTML for track list. Don't use this file alone it must be integrated into another template! #}
 {% load i18n %}
 <div class="card card-body" overflow: auto>
     <div class="panel-heading">
-	<h4 class="card-title">{% trans 'List of subtitle or caption files' %}&nbsp;({{list_track|length}})</h3>
+	<h2 class="card-title">{% trans 'List of subtitle or caption files' %}&nbsp;({{list_track|length}})</h2>
     </div>
     <div class="grid-list-track">
 	<span class="thead_title kind">{% trans 'Kind' %}</span>
 	<span class="thead_title lang">{% trans 'Language' %}</span>
 	<span class="thead_title file">{% trans 'Video track file' %}</span>
 	<span class="thead_title"><i class="options">{% trans 'options' %}</i></span>
-	{% for track in list_track %}    
+	{% for track in list_track %}
 	    <p id="track_{{track.id}}" class="track_kind kind">{% trans track.kind %}</p>
 	    <p id="track_{{track.id}}" class="track_kind lang">{{track.lang}} </p>
 	    <p id="track_{{track.id}}" class="track_kind file">{{track.src.name}} ({{track.src.file_type}})</p>
@@ -19,7 +19,7 @@
 		    <input type="hidden" name="action" value="modify"/>
 		    <input type="hidden" name="id" value="{{track.id}}"/>
 		    <input type="submit" title="{% trans 'Replace the subtitle or caption files' %}" value="{% trans 'Replace' %}" class="edt_track btn btn-primary btn-sm"/>
-		</form> 
+		</form>
 		<a href="{% url 'video_caption_maker' slug=video.slug %}?src={{track.src_id}}" id="modifCapSubFile" class="edt_track btn btn-secondary" title="{% trans 'Edit the subtitle or caption files' %}">{% trans 'Modify' %}</a>
 		<form class="form_delete completion" action="{% url 'video_completion_track' slug=video.slug %}" method="POST">
 		    {% csrf_token %}
@@ -37,7 +37,7 @@
 		    	    <input type="hidden" name="action" value="modify"/>
 		            <input type="hidden" name="id" value="{{track.id}}"/>
 		    	    <input type="submit" title="{% trans 'Replace the subtitle or caption files' %}" value="{% trans 'Replace' %}" class="edt_track btn btn-primary btn-sm"/>
-			</form> 
+			</form>
 			<form class="dropdown-item form_modif completion" action="{% url 'video_caption_maker' slug=video.slug %}?src={{track.src_id}}">
 		    	    <input type="submit" id="modifCapSubFile" class="edt_track btn btn-secondary" title="{% trans 'Edit the subtitle or caption files' %}" value="{% trans 'Modify' %}">
 			</form>

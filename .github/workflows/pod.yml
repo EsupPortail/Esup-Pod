@@ -12,7 +12,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: [3.7, 3.8, 3.9]
 
     steps:
       - uses: actions/checkout@v2
@@ -48,7 +48,7 @@ jobs:
 
       - name: Flake8 compliance
         run: |
-          flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,test_settings.py
+          flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,*_settings.py
 
       - name: Runs Elasticsearch
         uses: elastic/elastic-github-actions/elasticsearch@master
@@ -58,8 +58,8 @@ jobs:
       - name: Setup Pod
         run: |
           python manage.py create_pod_index
-          python manage.py makemigrations
-          python manage.py migrate
+          python manage.py makemigrations --settings=pod.main.test_settings
+          python manage.py migrate --settings=pod.main.test_settings
 
       - name: Run Tests and coveralls
         env:

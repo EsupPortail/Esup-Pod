@@ -74,6 +74,8 @@ HIDE_SHARE = getattr(django_settings, "HIDE_SHARE", False)
 
 HIDE_DISCIPLINES = getattr(django_settings, "HIDE_DISCIPLINES", False)
 
+HIDE_TYPES = getattr(django_settings, "HIDE_TYPES", False)
+
 ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
     django_settings, "ALLOW_MANUAL_RECORDING_CLAIMING", False
 )
@@ -85,17 +87,15 @@ USE_THEME = getattr(django_settings, "USE_THEME", "default")
 
 BOOTSTRAP_CUSTOM = getattr(django_settings, "BOOTSTRAP_CUSTOM", None)
 
-USE_CHUNKED_UPLOAD = getattr(django_settings, "USE_CHUNKED_UPLOAD", None)
-
 CHUNK_SIZE = getattr(django_settings, "CHUNK_SIZE", 100000)
 
 USE_BBB = getattr(django_settings, "USE_BBB", False)
 
 USE_BBB_LIVE = getattr(django_settings, "USE_BBB_LIVE", False)
 
-USE_VIDEO_RECORD = getattr(django_settings, "USE_VIDEO_RECORD", False)
-
 COOKIE_LEARN_MORE = getattr(django_settings, "COOKIE_LEARN_MORE", "")
+
+USE_OPENCAST_STUDIO = getattr(django_settings, "USE_OPENCAST_STUDIO", False)
 
 
 def context_settings(request):
@@ -138,6 +138,7 @@ def context_settings(request):
     new_settings["HIDE_TAGS"] = HIDE_TAGS
     new_settings["HIDE_SHARE"] = HIDE_SHARE
     new_settings["HIDE_DISCIPLINES"] = HIDE_DISCIPLINES
+    new_settings["HIDE_TYPES"] = HIDE_TYPES
     new_settings["HIDE_USER_FILTER"] = HIDE_USER_FILTER
     new_settings["USE_STATS_VIEW"] = USE_STATS_VIEW
     new_settings["USE_RECORD_PREVIEW"] = USE_RECORD_PREVIEW
@@ -145,7 +146,6 @@ def context_settings(request):
     new_settings["ALLOW_MANUAL_RECORDING_CLAIMING"] = ALLOW_MANUAL_RECORDING_CLAIMING
     new_settings["USE_THEME"] = USE_THEME
     new_settings["BOOTSTRAP_CUSTOM"] = BOOTSTRAP_CUSTOM
-    new_settings["USE_CHUNKED_UPLOAD"] = USE_CHUNKED_UPLOAD
     new_settings["CHUNK_SIZE"] = CHUNK_SIZE
     new_settings["MAINTENANCE_REASON"] = maintenance_text_short
     new_settings["MAINTENANCE_MODE"] = maintenance_mode
@@ -155,7 +155,7 @@ def context_settings(request):
     new_settings["USE_BBB_LIVE"] = USE_BBB_LIVE
     new_settings["DARKMODE_ENABLED"] = DARKMODE_ENABLED
     new_settings["DYSLEXIAMODE_ENABLED"] = DYSLEXIAMODE_ENABLED
-    new_settings["USE_VIDEO_RECORD"] = USE_VIDEO_RECORD
+    new_settings["USE_OPENCAST_STUDIO"] = USE_OPENCAST_STUDIO
     new_settings["COOKIE_LEARN_MORE"] = COOKIE_LEARN_MORE
 
     return new_settings
@@ -222,7 +222,7 @@ def context_navbar(request):
         .annotate(video_count=Count("video", distinct=True))
     )
 
-    linkFooter = LinkFooter.objects.all().filter(page__sites=get_current_site(request))
+    linkFooter = LinkFooter.objects.all().filter(sites=get_current_site(request))
 
     list_videos = Video.objects.filter(
         encoding_in_progress=False,

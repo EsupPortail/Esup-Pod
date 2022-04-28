@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 {% load tagging_tags %}
 
 
@@ -9,16 +9,14 @@
 
 
 {% block breadcrumbs %}{{ block.super }}
-  <li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
-  <li class="breadcrumb-item active" aria-current="page">{% trans "Choose an audio or video file to upload" %}</li>
+  <li class="breadcrumb-item"><a href="{% url 'my_videos' %}">{% trans 'My videos' %}</a></li>
+  <li class="breadcrumb-item active" aria-current="page">{% trans "Media upload" %}</li>
 {% endblock %}
 
 {% block page_title %}{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Choose an audio or video file to upload" %}{%endif%}{% endblock %}
 
 {% block collapse_page_aside %}
-  {% if access_not_allowed == True %}
-
-  {% else %}
+  {% if access_not_allowed != True %}
     {{block.super}}
   {% endif %}
 {% endblock collapse_page_aside %}
@@ -28,13 +26,19 @@
 
 {% if restricted_to_staff and not user.is_staff %}
   <p class="text-info">
-    <i data-feather="info"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}" title="{% trans 'contact us' %}">{% trans 'contact us' %}</a>
+    <i data-feather="info"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
   </p>
 {% else %}
-<h3>{% trans "Media upload" %}</h3>
+<h1 class="site_title">{% trans "Media upload" %}</h1>
 
 <div id="uploadblock">
   {% csrf_token %}
+  <div class="legal_notice">
+    <h2>{% trans "Legal notice" %}</h2>
+    <p>{% trans "Please note: make sure that you have the necessary authorizations signed by the speakers and that you respect the Intellectual Property Code before publishing a video." %}</p>
+  </div>
+
+  <h2>{% trans "Uploading" %}</h2>
   <div class="form-group hide-on-processing">
     <label for="chunked_upload">{% trans "Choose an audio or video file to upload" %}</label><br/>
     <input id="chunked_upload" accept="{{allow_extension}}" type="file" name="the_file" class="form-control-file">
@@ -56,7 +60,7 @@
 
 </div>
 {%if slug %}
-  <a href="{% url 'video_edit' slug=slug %}" title="{% trans "Back to video edit"%}" class="btn btn-primary btn-sm m-2">
+  <a href="{% url 'video_edit' slug=slug %}" class="btn btn-primary btn-sm m-2">
     <i data-feather="edit"></i>&nbsp;{% trans "Back to video edit"%}
   </a>
 {% endif %}
@@ -66,7 +70,7 @@
 
 {% block page_aside %}
 <div class="card" id="card-sharedraftversion">
-  <h5 class="card-header card-title pl-2">{% trans "Uploading" %}</h5>
+  <h2 class="card-header card-title pl-2 h4">{% trans "Uploading" %}</h2>
   <div class="card-body card-text" >
     <p>{% blocktrans with max_size as video_max_upload_size %}The file size must be lower than {{video_max_upload_size}} Go.{% endblocktrans %}</p>
     <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
@@ -76,7 +80,7 @@
 </div>
 
 <div class="card mt-1" id="card-helpfields">
-  <h5 class="card-header card-title pl-2">{% trans "Help for form fields"%}</h5>
+  <h2 class="card-header card-title pl-2 h4">{% trans "Help for form fields"%}</h2>
   <div class="card-body" id="formfields">
     <div class="card">
       <button class="btn btn-light rounded-0" id="heading-1" data-toggle="collapse" data-target="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
@@ -109,7 +113,7 @@
   <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>
-  <script src="{% static 'js/jquery-ui.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'jquery-ui/jquery-ui.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/jquery-iframe-transport.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/jquery-fileupload.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/jquery.fileupload-process.js' %}?ver={{VERSION}}"></script>

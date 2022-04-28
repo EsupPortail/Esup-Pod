@@ -30,11 +30,9 @@ def video_chapter(request, slug):
         )
         and (request.user not in video.additional_owners.all())
     ):
-        messages.add_message(
-            request, messages.ERROR, _(u"You cannot chapter this video.")
-        )
+        messages.add_message(request, messages.ERROR, _("You cannot chapter this video."))
         return HttpResponseForbidden(
-            u"Only the owner and additional owners " "can add chapter."
+            "Only the owner and additional owners " "can add chapter."
         )
 
     list_chapter = video.chapter_set.all()
@@ -84,8 +82,10 @@ def video_chapter_save(request, video):
     list_chapter = video.chapter_set.all()
 
     form_chapter = None
-    if request.POST.get("chapter_id") != "None":
-        chapter = get_object_or_404(Chapter, id=request.POST["chapter_id"])
+    chapter_id = request.POST.get('chapter_id')
+    if chapter_id != 'None' and chapter_id is not None:
+        chapter = get_object_or_404(
+            Chapter, id=request.POST['chapter_id'])
         form_chapter = ChapterForm(request.POST, instance=chapter)
     else:
         form_chapter = ChapterForm(request.POST)

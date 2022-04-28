@@ -25,14 +25,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # La clé secrète d’une installation Django.
 # Elle est utilisée dans le contexte de la signature cryptographique,
 # et doit être définie à une valeur unique et non prédictible.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#secret-key
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#secret-key
 """
 SECRET_KEY = 'A_CHANGER'
 
 """
 # Une valeur booléenne qui active ou désactive le mode de débogage.
 # Ne déployez jamais de site en production avec le réglage DEBUG activé.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#debug
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#debug
 """
 DEBUG = True
 
@@ -49,20 +49,20 @@ CSRF_COOKIE_SECURE = True
 # C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP,
 #  qui sont possibles même avec bien des configurations
 #  de serveur Web apparemment sécurisées.
-#  https://docs.djangoproject.com/fr/1.11/ref/settings/#allowed-hosts
+#  https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts
 """
 ALLOWED_HOSTS = ['localhost']
 
 """
 # L’âge des cookies de sessions, en secondes.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#session-cookie-age
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age
 """
 SESSION_COOKIE_AGE = 14400
 
 """
 # Indique s’il faut que la session expire
 #  lorsque l’utilisateur ferme son navigateur.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#session-cookie-age
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age
 """
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
@@ -101,7 +101,7 @@ CONTACT_US_EMAIL = []
 # C’est un dictionnaire imbriqué dont les contenus font correspondre
 #  l’alias de base de données avec un dictionnaire contenant
 #  les options de chacune des bases de données.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#databases
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#databases
 """
 DATABASES = {
     'default': {
@@ -124,7 +124,7 @@ LANGUAGES = (
 
 """
 # Une chaîne représentant le fuseau horaire pour cette installation.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-TIME_ZONE
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-TIME_ZONE
 """
 TIME_ZONE = "UTC"
 
@@ -132,14 +132,14 @@ TIME_ZONE = "UTC"
 # Le répertoire dans lequel stocker temporairement les données
 #  (typiquement pour les fichiers plus grands que FILE_UPLOAD_MAX_MEMORY_SIZE)
 #  lors des téléversements de fichiers.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#file-upload-temp-dir
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir
 """
 FILE_UPLOAD_TEMP_DIR = "/var/tmp"
 
 """
 # Le chemin absolu vers le répertoire dans lequel collectstatic rassemble
 #  les fichiers statiques en vue du déploiement.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-STATIC_ROOT
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-STATIC_ROOT
 """
 STATIC_ROOT = "/pod/static"
 
@@ -155,7 +155,7 @@ STATICFILES_STORAGE = 'static_compress.CompressedStaticFilesStorage'
 """
 # Chemin absolu du système de fichiers pointant vers le répertoire
 #  qui contiendra les fichiers téléversés par les utilisateurs.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-MEDIA_ROOT
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-MEDIA_ROOT
 """
 MEDIA_ROOT = "/pod/media"
 
@@ -202,6 +202,12 @@ HOMEPAGE_SHOWS_PASSWORDED = False
 #  sur la page d'accueil
 """
 HOMEPAGE_SHOWS_RESTRICTED = False
+
+"""
+# Nombre de vidéos à afficher sur la page d'accueil
+# par défaut, le nombre est fixé à 12
+"""
+HOMEPAGE_NB_VIDEOS = 12
 
 """
 # Les mots clés saisis lors de l'ajout de vidéo sont convertis
@@ -269,6 +275,11 @@ HIDE_USER_TAB = False
 HIDE_USER_FILTER = False
 
 """
+# Si True, l'onglet types de la barre de menu ne sera plus visible
+"""
+HIDE_TYPES = False
+
+"""
 # Si valeur vaut 'True', les URLs contenues dans le texte de superposition
 #  seront transformées, à la lecture de la vidéo, en lien cliquable.
 """
@@ -315,20 +326,38 @@ USE_ESTABLISHMENT_FIELD = False
 USE_STATS_VIEW = False
 
 """
-# Permet d'activer la possibilité d'enregistrer son ecran et son micro
+# Permet d'activer le studio Opencast dans Pod
 """
-USE_VIDEO_RECORD = False
+USE_OPENCAST_STUDIO = False
+
+"""
+# Permet de spécifier le dossier de stockage des enregistrements du studio avant traitement
+"""
+OPENCAST_FILES_DIR = "opencast-files"
+"""
+# Permet de spécifier la valeur par défaut du placement de la vidéo du
+# presenteur par rapport à la vidéo de présentation (écran)
+# les valeurs possibles sont "mid" (ecran et caméra ont la même taille)
+# "piph" (le presenteur, caméra, est inscruté dans la vidéo de présentation, en haut à droite)
+# "pipb" (le presenteur, caméra, est inscruté dans la vidéo de présentation, en bas à droite)
+"""
+OPENCAST_DEFAULT_PRESENTER = "mid"
+"""
+# Contenu par défaut du fichier xml pour créer le mediapackage pour le studio.
+# ce fichier va contenir toutes les spécificités de l'enregistrement (source, cutting, title, presenter etc.)
+"""
+OPENCAST_MEDIAPACKAGE = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <mediapackage xmlns="http://mediapackage.opencastproject.org" id="" start="">
+    <media/>
+    <metadata/>
+    <attachments/>
+    <publications/>
+    </mediapackage>"""
 
 """
 # affichage de la statistique de vue des videos si utilisateur authentifié
 """
 VIEW_STATS_AUTH = False
-
-"""
-# Permet d'utiliser la mise en ligne fragmentée
-#  (qui permet de reprendre la mise en ligne lors de problèmes de connexion)
-"""
-USE_CHUNKED_UPLOAD = False
 
 """
 # Taille d'un fragment
@@ -358,6 +387,9 @@ ORGANIZE_BY_THEME = False
 TEMPLATE_VISIBLE_SETTINGS = {
     # Titre du site.
     'TITLE_SITE': 'Pod',
+
+    # Description du site.
+    'DESC_SITE': 'L’objectif d’Esup-Pod est de faciliter la mise à disposition de vidéos et ainsi d’encourager son utilisation dans l’enseignement et la recherche.',
 
     # Titre de l’établissement.
     'TITLE_ETB': 'University name',
@@ -396,7 +428,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
     # Vous pouvez créer un template dans votre application custom et
     #  indiquer son chemin dans cette variable pour que ce code html,
     # ce template soit affiché en haut de votre page, le code est ajouté
-    #  juste après la balise body.(Or iframe)
+    #  juste après la balise body.(Hors iframe)
     # Si le fichier créé est
     # '/opt/django_projects/podv2/pod/custom/templates/custom/preheader.html'
     # alors la variable doit prendre la valeur 'custom/preheader.html'
@@ -667,6 +699,23 @@ ENCODE_VIDEO = "start_encode"
 """
 
 """
+# Fonction appelée pour lancer l'encodage du studio (merge and cut)
+# Pour l'encodage distant, il faut préciser "start_studio_remote_encode"
+"""
+ENCODE_STUDIO = "start_encode_studio"
+"""
+# pour l'encodage distant du studio, voici les paramètres possibles :
+# SSH_REMOTE_STUDIO_USER = "pod"
+# SSH_REMOTE_STUDIO_HOST = "xxx.univ.fr"
+# SSH_REMOTE_STUDIO_PORT = "22"
+# SSH_REMOTE_STUDIO_KEY = "/home/pod/.ssh/id_rsa"
+# remote command to launch for studio, here is the arguments needed:
+# -n recording-<recording_id> -v <presenter_source}> -f <presentation_source}>
+# -r <recording_id> -s <subtime> -p <presenter> -o <output> -d <debug>
+# SSH_REMOTE_STUDIO_CMD = ""
+"""
+
+"""
 # Fonction appelée pour lancer la transcription des vidéos
 # Pour la transcription distant, il faut préciser "start_remote_transcript"
 """
@@ -729,7 +778,8 @@ THEME_FORM_FIELDS_HELP_TEXT = ""
 # Le traitement se fait en fonction du type de fichier déposé.
 """
 RECORDER_TYPE = (('video', _('Video')),
-                 ('audiovideocast', _('Audiovideocast')))
+                 ('audiovideocast', _('Audiovideocast')),
+                 ('studio', _('Studio')))
 
 """
 # Chemin racine du répertoire où sont déposés les enregistrements
@@ -1099,20 +1149,58 @@ ACTIVE_VIDEO_COMMENT = True
 USE_TRANSCRIPTION = True
 
 """
+## Transcription use
+# * STT
+# * VOSK
+"""
+TRANSCRIPTION_TYPE = "STT"
+
+
+"""
+# Temps maximum en secondes des blanc entre chaque mot pour le decoupage des sous-titres
+"""
+SENTENCE_BLANK_SPLIT_TIME = 0.5
+
+"""
 # decoupage de l'audio pour la transcription
 """
 AUDIO_SPLIT_TIME = 300
 
+
 """
-# paramétrage de deepspeech pour le modele
+# paramétrage des modele
+# Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models
 """
-DS_PARAM = {
-  'fr': {
-    # le modèle deepspeech
-    'model': "/usr/local/django_projects/transcription/model_tensorflow_fr/output_graph.pbmm",
-    'scorer': "/usr/local/django_projects/transcription/model_tensorflow_fr/kenlm.scorer",
-  }
+MODEL_PARAM = {
+    # le modèle stt
+    'STT': {
+        'fr': {
+            'model': "/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite",
+            'scorer': "/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer",
+        }
+    },
+    # le modèle vosk
+    'VOSK':{
+        'fr': {
+        'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0",
+        }
+    }
 }
+
+
+"""
+# Définissez à True pour activer la case à cocher dans l'édition des sous-titres.
+"""
+ACTIVE_MODEL_ENRICH  = False
+
+"""
+# paramétrage des chemin du model pour la compilation
+# Pour télécharger les Modeles : https://alphacephei.com/vosk/lm#update-process
+# Ajouter le model dans les sous-dossier de la lang correspondants
+# Exemple pour le français: /path/of/project/Esup-Pod/compile-model/fr/
+"""
+
+MODEL_COMPILE_DIR = "/path/of/project/Esup-Pod/compile-model"
 
 """
 # La liste des utilisateurs regardant le direct sera réservée au staff
@@ -1220,10 +1308,9 @@ BBB_VERSION_IS_23 = False
 USER_VIDEO_CATEGORY = False
 
 """
-# gestion de l'oboslesence des vidéos
+# gestion de l'obsolesence des vidéos
 """
-USE_OBSOLESCENCE = True
-
+USE_OBSOLESCENCE = False
 WARN_DEADLINES = [60, 30, 7]
 
 """
@@ -1256,18 +1343,6 @@ DEFAULT_YEAR_DATE_DELETE = 2
 # voir pod/main/settings.py L.224
 """
 LTI_ENABLED = True  # False par défaut
-
-"""
-# Configuration H5P
-# les videos interactive ne sont plus maintenu dans Pod
-"""
-H5P_ENABLED = True  # False
-H5P_DEV_MODE = 0
-H5P_URL = '/h5p/'
-H5P_SAVE = 30
-H5P_EXPORT = '/exports/'
-H5P_LANGUAGE = 'fr'
-BASE_URL = 'https://pod.univ.fr/'
 
 """
 # Vous pouvez définir le drapeau Http cookie SameSite sur tous les cookies
@@ -1306,3 +1381,29 @@ DYSLEXIAMODE_ENABLED = False
 # On peut préciser un lien vers les mentions légales ou page dpo
 """
 COOKIE_LEARN_MORE = ""
+
+"""
+# Ce paramètre permet d'activer l'envoi d'évènements sur le lecteur vidéo à Matomo
+# n'est utile que si le code piwik / matomo est présent dans l'instance de Esup-Pod
+# les évènements envoyés sont : play, pause, seeked, ended, ratechange, fullscreen, error, loadmetadata
+# Pour rajouter le code Piwik/Matomo dans votre instance de Pod, il suffit de créer un fichier
+# 'pod/custom/templates/custom/tracking.html' et d'y insérer le code javascript
+# puis dans votre fichier settings_local.py, de préciser dans la variable TEMPLATE_VISIBLE_SETTINGS
+#     'TRACKING_TEMPLATE': 'custom/tracking.html',
+"""
+USE_VIDEO_EVENT_TRACKING = False
+
+"""CACHE configurations."""
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    # Persistent cache setup for select2 (NOT DummyCache or LocMemCache).
+    "select2": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}

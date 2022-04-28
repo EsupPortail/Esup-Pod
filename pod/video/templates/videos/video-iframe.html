@@ -1,18 +1,18 @@
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 {% load tagging_tags %}
 {% load thumbnail %}
 {% load video_filters %}
 
 <!DOCTYPE html>
-<html itemscope itemtype="http: //schema.org/MediaObject">
+<html itemscope itemtype="http://schema.org/MediaObject">
 <head>
   <meta charset="utf-8">
 
   <title>{{ TITLE_SITE }} - {% block page_title %}{{video.title}}{% endblock page_title %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
 
   {% block page_extra_head %}
     {% include 'videos/video-header.html' %}
@@ -21,7 +21,7 @@
   <script src="{% static 'js/videojs-info-controlbar.js' %}?ver={{VERSION}}"></script>
 
   <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap-default.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
-  <script src="{% static 'bootstrap-4/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
   <script src="{% url 'javascript-catalog' %}"></script>
 
   <link rel="stylesheet" href="{% static 'css/video-iframe.css' %}?ver={{VERSION}}">

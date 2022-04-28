@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 {% load thumbnail %}
 {% block page_extra_head %}
 <style>
@@ -22,9 +22,8 @@
 {% if form.instance.title %}{% trans "Editing the channel" %} "{{form.instance.title}}"{%endif%}
 {% endblock %}
 
-
 {% block page_content %}
-<h3>{% if form.instance.title %}{% trans "Editing the channel" %} {{form.instance.title}}{%endif%}
+<h1 class="page_title">{% if form.instance.title %}{% trans "Editing the channel" %} "{{form.instance.title}}"{%endif%}
   <span>
     <a href="{% url 'channel' slug_c=form.instance.slug %}" class="btn btn btn-outline-primary btn-sm">
       <i data-feather="youtube"></i>&nbsp;{% trans "View the channel"%}
@@ -33,7 +32,7 @@
       <i data-feather="edit"></i>&nbsp;{% trans "Edit the themes"%}
     </a>
   </span>
-</h3>
+</h1>
 {% if form.instance.headband %}
   <img src="{{ form.instance.headband.file.url }}" alt="{% trans 'Headband' %} {{ form.instance.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy"/>
 {% endif %}

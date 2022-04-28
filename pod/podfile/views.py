@@ -69,21 +69,16 @@ FOLDER_FILE_TYPE = ["image", "file"]
 @staff_member_required(redirect_field_name="referrer")
 def home(request, type=None):
     if type is not None and type not in FOLDER_FILE_TYPE:
-        raise SuspiciousOperation("--> Invalid type")
-    user_home_folder = get_object_or_404(UserFolder, name="home", owner=request.user)
+        raise SuspiciousOperation('--> Invalid type')
+    user_home_folder = get_object_or_404(
+        UserFolder, name="home", owner=request.user)
+    share_folder = UserFolder.objects.filter(
+        access_groups=request.user.owner.accessgroup_set.all()).exclude(
+            owner=request.user).order_by('owner', 'id')
 
-    share_folder = (
-        UserFolder.objects.filter(access_groups=request.user.owner.accessgroup_set.all())
-        .exclude(owner=request.user)
-        .order_by("owner", "id")
-    )
-
-    share_folder_user = (
-        UserFolder.objects.filter(users=request.user)
-        .exclude(owner=request.user)
-        .order_by("owner", "id")
-    )
-
+    share_folder_user = UserFolder.objects.filter(
+        users=request.user).exclude(
+            owner=request.user).order_by('owner', 'id')
     current_session_folder = get_current_session_folder(request)
 
     template = "podfile/home_content.html" if (request.is_ajax()) else "podfile/home.html"
@@ -100,6 +95,7 @@ def home(request, type=None):
             "form_file": CustomFileModelForm(),
             "form_image": CustomImageModelForm(),
             "type": type,
+            "page_title": _("My files"),
         },
     )
 
@@ -116,7 +112,7 @@ def get_current_session_folder(request):
                 name=request.session.get("current_session_folder", "home"),
             )
             | Q(
-                access_groups=request.user.owner.accessgroup_set.all(),
+                access_groups__in=request.user.owner.accessgroup_set.all(),
                 name=request.session.get("current_session_folder", "home"),
             )
         )
@@ -132,7 +128,6 @@ def get_current_session_folder(request):
         current_session_folder = UserFolder.objects.filter(
             owner=request.user, name="home"
         )
-
     return current_session_folder.first()
 
 
@@ -161,7 +156,7 @@ def get_folder_files(request, id, type=None):
         )
         and not (request.user in folder.users.all())
     ):
-        messages.add_message(request, messages.ERROR, _(u"You cannot see this folder."))
+        messages.add_message(request, messages.ERROR, _("You cannot see this folder."))
         raise PermissionDenied
 
     request.session["current_session_folder"] = folder.name
@@ -241,7 +236,7 @@ def editfolder(request):
             )
         ):
             messages.add_message(
-                request, messages.ERROR, _(u"You cannot edit this folder.")
+                request, messages.ERROR, _("You cannot edit this folder.")
             )
             raise PermissionDenied
         form = UserFolderForm(request.POST, instance=folder)
@@ -258,7 +253,7 @@ def editfolder(request):
             messages.add_message(
                 request,
                 messages.ERROR,
-                _(u"Two folders cannot have the same name."),
+                _("Two folders cannot have the same name."),
             )
             raise PermissionDenied
 
@@ -290,7 +285,7 @@ def deletefolder(request):
             )
         ):
             messages.add_message(
-                request, messages.ERROR, _(u"You cannot delete home folder.")
+                request, messages.ERROR, _("You cannot delete home folder.")
             )
             raise PermissionDenied
         else:
@@ -321,7 +316,7 @@ def deletefile(request):
             or (request.user in folder.users.all())
         ):
             messages.add_message(
-                request, messages.ERROR, _(u"You cannot delete this file.")
+                request, messages.ERROR, _("You cannot delete this file.")
             )
             raise PermissionDenied
         else:
@@ -357,7 +352,7 @@ def uploadfiles(request):
             messages.add_message(
                 request,
                 messages.ERROR,
-                _(u"You cannot edit file on this folder."),
+                _("You cannot edit file on this folder."),
             )
             raise PermissionDenied
         else:
@@ -443,7 +438,7 @@ def changefile(request):
             or (request.user in folder.users.all())
         ):
             messages.add_message(
-                request, messages.ERROR, _(u"You cannot access this folder.")
+                request, messages.ERROR, _("You cannot access this folder.")
             )
             raise PermissionDenied
 
@@ -456,9 +451,7 @@ def changefile(request):
             or request.user.has_perm("podfile.change_customimagemodel")
             or (request.user in folder.users.all())
         ):
-            messages.add_message(
-                request, messages.ERROR, _(u"You cannot edit this file.")
-            )
+            messages.add_message(request, messages.ERROR, _("You cannot edit this file."))
             raise PermissionDenied
 
         form_file = eval("%sForm" % request.POST["file_type"])(
@@ -505,6 +498,7 @@ def changefile(request):
 
 # keep it for completion part....
 def file_edit_save(request, folder):
+    print(request.FILES)
     form_file = None
     if request.POST.get("file_id") and request.POST.get("file_id") != "None":
         customfile = get_object_or_404(CustomFileModel, id=request.POST["file_id"])
@@ -571,7 +565,7 @@ def get_file(request, type):
             or (request.user in reqfile.folder.users.all())
         )
     ):
-        messages.add_message(request, messages.ERROR, _(u"You cannot see this folder."))
+        messages.add_message(request, messages.ERROR, _("You cannot see this folder."))
         raise PermissionDenied
 
     request.session["current_session_folder"] = reqfile.folder.name

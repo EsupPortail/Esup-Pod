@@ -23,3 +23,13 @@ def task_start_bbb_encode(self, meeting_id):
     from pod.video.bbb import bbb_encode_meeting
 
     bbb_encode_meeting(meeting_id)
+
+
+@shared_task(bind=True)
+def task_start_encode_studio(
+    self, recording_id, video_output, videos, subtime, presenter
+):
+    print("CELERY START ENCODE VIDEOS FROM STUDIO RECORDING ID %s" % recording_id)
+    from pod.video.encode import encode_video_studio
+
+    encode_video_studio(recording_id, video_output, videos, subtime, presenter)

@@ -29,12 +29,17 @@
 }
 .video-slides>li>div {
   height: 100%;
-  background-color: #fff;
-  color: #000;
+  background-color: var(--light); /*#fff;*/
+  color: var(--font-color);
   padding: 1em;
 }
 .video-slides>li>.slide_embed {
   overflow: auto;
+  background-color: #000; /*var(--light);*/
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .video-slides>li>img {
   max-width: 100%;
@@ -126,6 +131,10 @@
 }
 .video-slides li.no-slide {
   z-index:-1;
+}
+
+.vjs-text-track-display {
+  z-index:1;
 }
 
 /* Fullscreen */

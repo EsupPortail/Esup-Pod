@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-14 19:18+0000\n"
-"PO-Revision-Date: 2021-01-22 12:27+0100\n"
+"POT-Creation-Date: 2022-01-20 09:52+0100\n"
+"PO-Revision-Date: 2021-11-25 16:53+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 3.0\n"
 
 #: pod/chapter/static/js/chapters.js:9 pod/chapter/static/js/chapters.js:14
 #: pod/enrichment/static/js/enrichment.js:9
@@ -47,17 +47,17 @@ msgstr ""
 #: pod/enrichment/static/js/enrichment.js:111
 #: pod/enrichment/static/js/enrichment.js:141
 #: pod/enrichment/static/js/enrichment.js:174
-#: pod/enrichment/static/js/enrichment.js:215 pod/main/static/js/main.js:468
-#: pod/main/static/js/main.js:478 pod/main/static/js/main.js:492
-#: pod/main/static/js/main.js:512
+#: pod/enrichment/static/js/enrichment.js:215 pod/main/static/js/main.js:470
+#: pod/main/static/js/main.js:480 pod/main/static/js/main.js:494
+#: pod/main/static/js/main.js:514
 #: pod/podfile/static/podfile/js/filewidget.js:365
 #: pod/podfile/static/podfile/js/filewidget.js:398
 msgid "You are no longer authenticated. Please log in again."
 msgstr ""
 
 #: pod/chapter/static/js/chapters.js:199
-#: pod/enrichment/static/js/enrichment.js:193 pod/main/static/js/main.js:415
-#: pod/main/static/js/main.js:501
+#: pod/enrichment/static/js/enrichment.js:193 pod/main/static/js/main.js:417
+#: pod/main/static/js/main.js:503
 msgid "One or more errors have been found in the form."
 msgstr ""
 
@@ -84,7 +84,7 @@ msgstr ""
 msgid "Chapters"
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:26
+#: pod/completion/static/js/caption_maker.js:29
 msgid ""
 "WEBVTT\n"
 "\n"
@@ -92,45 +92,45 @@ msgid ""
 "caption text"
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:42
-#: pod/completion/static/js/caption_maker.js:740
+#: pod/completion/static/js/caption_maker.js:48
+#: pod/completion/static/js/caption_maker.js:902
 msgid "Unrecognized caption file format."
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:54
+#: pod/completion/static/js/caption_maker.js:59
 msgid "There is no captions to save"
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:85
-#: pod/completion/static/js/caption_maker.js:754
+#: pod/completion/static/js/caption_maker.js:94
+#: pod/completion/static/js/caption_maker.js:916
 msgid "Not a valid time track file."
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:106
+#: pod/completion/static/js/caption_maker.js:115
 msgid "error during exchange"
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:110
+#: pod/completion/static/js/caption_maker.js:119
 msgid "no data could be stored."
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:162
+#: pod/completion/static/js/caption_maker.js:181
 msgid "Are you sure you want to delete all caption?"
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:713
+#: pod/completion/static/js/caption_maker.js:867
 msgid "Error reading caption file. Code = "
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:719
+#: pod/completion/static/js/caption_maker.js:874
 msgid "Exception thrown reading caption file. Code = "
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:722
+#: pod/completion/static/js/caption_maker.js:878
 msgid "Your browser does not support FileReader."
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:729
+#: pod/completion/static/js/caption_maker.js:885
 msgid "Error loading caption file: "
 msgstr ""
 
@@ -151,7 +151,7 @@ msgstr ""
 msgid "Are you sure you want to delete this overlay?"
 msgstr ""
 
-#: pod/completion/static/js/completion.js:243 pod/main/static/js/main.js:419
+#: pod/completion/static/js/completion.js:243 pod/main/static/js/main.js:421
 msgid "Changes have been saved."
 msgstr ""
 
@@ -265,163 +265,55 @@ msgstr ""
 msgid "please change start and/or end values."
 msgstr ""
 
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gView"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gBox"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "overlay"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "loading"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "states.hover"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "states.disabled"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "pager.pagerSelect"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "pager.pagerInput"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "pager.pagerButton"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "states.hoverTh"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "colHeaders"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "hTable"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "states.select"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "resizer"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gridFooter"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "rowFooter"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gridRow"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "grid"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "top"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "bottom"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "hDiv"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "pager.pager"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "titleButton"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gridTitle"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "toolbarUpper"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "toolbarBottom"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "rowNum"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gridError"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gridErrorText"
-msgstr ""
-
-#: pod/main/static/js/main.js:378
+#: pod/main/static/js/main.js:380
 msgid "Are you sure you want to delete this element?"
 msgstr ""
 
-#: pod/main/static/js/main.js:454
+#: pod/main/static/js/main.js:456
 #: pod/podfile/static/podfile/js/filewidget.js:114
 #: pod/podfile/static/podfile/js/filewidget.js:391
 msgid "Error during exchange"
 msgstr ""
 
-#: pod/main/static/js/main.js:458
+#: pod/main/static/js/main.js:460
 #: pod/podfile/static/podfile/js/filewidget.js:114
 msgid "No data could be stored."
 msgstr ""
 
-#: pod/main/static/js/main.js:531
+#: pod/main/static/js/main.js:533
 msgid "Change your picture"
 msgstr ""
 
-#: pod/main/static/js/main.js:538
+#: pod/main/static/js/main.js:540
 msgid "Add your picture"
 msgstr ""
 
-#: pod/main/static/js/main.js:666
+#: pod/main/static/js/main.js:668
 msgid "text copied"
 msgstr ""
 
-#: pod/main/static/js/main.js:718
+#: pod/main/static/js/main.js:720
 msgid "Errors appear in the form, please correct them"
 msgstr ""
 
-#: pod/main/static/js/main.js:750
+#: pod/main/static/js/main.js:752
 msgid "The file size exceeds the maximum allowed value:"
 msgstr ""
 
-#: pod/main/static/js/main.js:753
+#: pod/main/static/js/main.js:755
 msgid " GB."
 msgstr ""
 
-#: pod/main/static/js/main.js:771
+#: pod/main/static/js/main.js:773
 msgid "The file extension not in the allowed extension:"
+msgstr ""
+
+#: pod/playlist/static/js/playlist.js:172
+msgid "The video can not be added from this page."
+msgstr ""
+
+#: pod/playlist/static/js/playlist.js:178
+msgid "The video slug not found."
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js:11
@@ -651,6 +543,10 @@ msgstr ""
 
 #: pod/video/static/js/video_category.js:927
 msgid "Create category"
+msgstr ""
+
+#: pod/video/static/js/video_edit.js:22
+msgid "Select the general type of the video."
 msgstr ""
 
 #: pod/video/static/js/video_stats_view.js:19

@@ -1,4 +1,4 @@
-{% load staticfiles i18n %}
+{% load static i18n %}
 
 {% if messages %}
     <div id="base-message-alert">
@@ -18,32 +18,31 @@
     </script>
 {% endif %}
 
-<h5 class="card-title pl-2"> <i data-feather="edit"></i>&nbsp;{% trans "Take Note"%}</h5>
-
+<h2 class="card-header card-title pl-2 h4"> <i data-feather="edit"></i>&nbsp;{% trans "Take Note"%}</h2>
+<div class="card-body">
     {% if request.user.is_authenticated or listNotes %}
-    <div class="mgtNotes mb-2">
+        <div class="mgtNotes mb-2 text-center">
             {% if request.user.is_authenticated %}
                 {% comment %}
                 <a class="p-0 m-0 btn btn-outline-primary btn-sm open" href="{% url 'video_collaborate' slug=video.slug %}" title="{% trans 'Large columns interface' %}"><i data-feather="maximize-2"></i></a>
                 {% endcomment %}
                 <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="add_video_notes_form  mt-1" role="menuitem">
                     {% csrf_token %}
-                    <fieldset> <input type="hidden" id="action_add" name="action" value="form_note" autocomplete="off"/> </fieldset>
+                    <input type="hidden" name="action" value="form_note"/>
                     <button class="p-0 m-0 btn btn-outline-primary btn-sm create" type="submit" action="create" title="{% trans 'Create a note' %}"> <i data-feather="plus"></i> </button>
                 </form>
             {% endif %}
             {% if listNotes %}
                 <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="download_video_notes_form  mt-1" role="menuitem">
                     {% csrf_token %}
-                    <fieldset> <input type="hidden" id="action_dwl" name="action" value="download" autocomplete="off"/> </fieldset>
-                    <button class="p-0 m-0 btn btn-outline-primary btn-sm download" type="submit" action="download" title="{% trans 'Download the notes' %}"> <i data-feather="download"></i> </button>
+                    <input type="hidden" name="action" value="download"/>
+                    <button class="p-0 m-0 btn btn-outline-primary btn-sm download" type="submit" action="download" title="{% trans 'Download the notes' %}"> <i data-feather="download"></i></button>
                 </form>
             {% endif %}
-    </div>
+        </div>
     {% endif %}
-<div class="card-text">
 
-    <div id="id_notes">
+    <div id="id_notes" class="card-text">
         {% if not listNotes %}
             <p class="noNotes"> {% trans "There is no note available for you for this video." %} </p>
             {% if request.user.is_authenticated %}
@@ -67,37 +66,34 @@
                         {% if note_form and noteToDisplay and not comToDisplay and not noteToEdit and not comToEdit %}
                             <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_note_coms_form hidden">
                                 {% csrf_token %}
-                                <fieldset>
-                                    <input type="hidden" id="action_view_{{ note.id }}" name="action" value="get" autocomplete="off"/>
-                                    <input type="hidden" id="id_note_view" name="idNote" value="{{ note.id }}" autocomplete="off"/>
-                                </fieldset>
+                                <input type="hidden" name="action" value="get"/>
+                                <input type="hidden" name="idNote" value="{{ note.id }}"/>
                             </form>
                             <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
                             {% csrf_token %}
-                                <fieldset>
-                                    {% if note_form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
-                                    {% for field_hidden in note_form.hidden_fields %} {{field_hidden}} {% endfor %}
-                                    {% for field in note_form.visible_fields %}
-                                        {% spaceless %}
-                                        <div class="form-group" >
-                                            {{ field.errors }}
-                                            {{ field }}
-                                            {% if field.help_text %} <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small> {% endif %}
-                                            {% if field.field.required %} <div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div> {% endif %}
-                                        </div>
-                                        {% endspaceless %}
-                                    {% endfor %}
-                                    <input type="hidden" id="id_save" name="idNote" value="{{ note.id }}" autocomplete="off"/>
-                                    <input type="hidden" id="action" name="action" value="save_com" autocomplete="off"/>
-                                    <input type="submit" name="submit" value="{% trans "Save" %}" class="btn btn-sm btn-primary">
-                                    <input type="button" name="cancel" id="cancel_save_com" value="{% trans "Cancel" %}" class="btn btn-sm btn-secondary">
-                                </fieldset>
+                                {% if note_form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
+                                {% for field_hidden in note_form.hidden_fields %} {{field_hidden}} {% endfor %}
+                                {% for field in note_form.visible_fields %}
+                                    {% spaceless %}
+                                    <div class="form-group" >
+                                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                        {{ field.errors }}
+                                        {{ field }}
+                                        {% if field.help_text %} <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small> {% endif %}
+                                        {% if field.field.required %} <div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div> {% endif %}
+                                    </div>
+                                    {% endspaceless %}
+                                {% endfor %}
+                                <input type="hidden" name="idNote" value="{{ note.id }}"/>
+                                <input type="hidden" name="action" value="save_com"/>
+
+                                <input type="submit" name="submit" value="{% trans 'Save' %}" class="btn btn-sm btn-primary">
+                                <input type="button" name="cancel" id="cancel_save_com" value="{% trans 'Cancel' %}" class="btn btn-sm btn-secondary">
                             </form>
                         {% endif %}
 
                     </div>
                 {% endif %}
-
         </div>
         {% endfor %}
 
@@ -105,27 +101,26 @@
         {% if request.user.is_authenticated and note_form and not noteToDisplay and not noteToEdit and not comToEdit %}
             <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_notes_form hidden">
                 {% csrf_token %}
-                <fieldset> <input type="hidden" id="action_view" name="action" value="get" autocomplete="off"/> </fieldset>
+                <input type="hidden" name="action" value="get"/>
             </form>
             <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
             {% csrf_token %}
-                <fieldset>
-                    {% if note_form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
-                    {% for field_hidden in note_form.hidden_fields %} {{field_hidden}} {% endfor %}
-                    {% for field in note_form.visible_fields %}
-                        {% spaceless %}
-                        <div class="form-group" >
-                            {{ field.errors }}
-                            {{ field }}
-                            {% if field.help_text %} <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small> {% endif %}
-                            {% if field.field.required %} <div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div> {% endif %}
-                        </div>
-                        {% endspaceless %}
-                    {% endfor %}
-                    <input type="hidden" id="action" name="action" value="save_note" autocomplete="off"/>
-                    <input type="button" name="submit" value="{% trans "Save" %}" class="btn btn-sm btn-primary" id="video_notes_form_save">
-                    <input type="button" name="cancel" id="cancel_save" value="{% trans "Cancel" %}" class="btn btn-sm btn-secondary">
-                </fieldset>
+                {% if note_form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
+                {% for field_hidden in note_form.hidden_fields %} {{field_hidden}} {% endfor %}
+                {% for field in note_form.visible_fields %}
+                    {% spaceless %}
+                    <div class="form-group" >
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field.errors }}
+                        {{ field }}
+                        {% if field.help_text %} <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small> {% endif %}
+                        {% if field.field.required %} <div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div> {% endif %}
+                    </div>
+                    {% endspaceless %}
+                {% endfor %}
+                <input type="hidden" name="action" value="save_note"/>
+                <input type="button" name="submit" value="{% trans 'Save' %}" class="btn btn-sm btn-primary" id="video_notes_form_save">
+                <input type="button" name="cancel" id="cancel_save" value="{% trans 'Cancel' %}" class="btn btn-sm btn-secondary">
             </form>
         {% endif %}
 

@@ -255,6 +255,28 @@ textarea {
     font-size: 16px;
 }
 
+
+#captionKindSelect {
+    margin-right: 10px;
+    height: 31px;
+    width: 120px;
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 20px;
+}
+
+#captionKindSelect:hover {
+    cursor: pointer;
+}
+
+#captionKindSelect option {
+    color: black;
+    text-align: left;
+    font-size: 16px;
+}
+
 #captionmakerModal.save > .modal-dialog {
     max-width: 1000px;
 }

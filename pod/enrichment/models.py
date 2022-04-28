@@ -13,7 +13,6 @@ from django.contrib.auth.models import Group
 
 from pod.video.models import Video
 from pod.main.models import get_nextautoincrement
-from select2 import fields as select2_fields
 
 import os
 import datetime
@@ -109,8 +108,9 @@ class Enrichment(models.Model):
         ("embed", _("embed")),
     )
 
-    video = select2_fields.ForeignKey(Video, verbose_name=_("video"))
-    title = models.CharField(_("title"), max_length=100)
+    video = models.ForeignKey(Video, verbose_name=_('video'),
+                              on_delete=models.CASCADE)
+    title = models.CharField(_('title'), max_length=100)
     slug = models.SlugField(
         _("slug"),
         unique=True,
@@ -125,7 +125,7 @@ class Enrichment(models.Model):
     stop_video = models.BooleanField(
         _("Stop video"),
         default=False,
-        help_text=_(u"The video will pause when displaying the enrichment."),
+        help_text=_("The video will pause when displaying the enrichment."),
     )
     start = models.PositiveIntegerField(
         _("Start"),
@@ -142,22 +142,23 @@ class Enrichment(models.Model):
     )
 
     image = models.ForeignKey(
-        CustomImageModel, verbose_name=_("Image"), null=True, blank=True
-    )
+        CustomImageModel, verbose_name=_(
+            'Image'), null=True, on_delete=models.CASCADE, blank=True)
     document = models.ForeignKey(
         CustomFileModel,
         verbose_name=_("Document"),
         null=True,
         blank=True,
-        help_text=_(u"Integrate a document (PDF, text, html)"),
+        on_delete=models.CASCADE,
+        help_text=_("Integrate a document (PDF, text, html)"),
     )
     richtext = RichTextField(_("Richtext"), config_name="complete", blank=True)
-    weblink = models.URLField(_(u"Web link"), max_length=200, null=True, blank=True)
+    weblink = models.URLField(_("Web link"), max_length=200, null=True, blank=True)
     embed = models.TextField(
         _("Embed code"),
         null=True,
         blank=True,
-        help_text=_(u"Paste here a code from an external source to embed it."),
+        help_text=_("Paste here a code from an external source to embed it."),
     )
 
     class Meta:
@@ -298,7 +299,7 @@ class Enrichment(models.Model):
         super(Enrichment, self).save(*args, **kwargs)
 
     def __str__(self):
-        return u"Media : {0} - Video: {1}".format(self.title, self.video)
+        return "Media : {0} - Video: {1}".format(self.title, self.video)
 
 
 @receiver(post_save, sender=Enrichment)
@@ -317,16 +318,14 @@ def delete_vtt(sender, instance=None, created=False, **kwargs):
 
 
 class EnrichmentVtt(models.Model):
-    video = models.OneToOneField(
-        Video,
-        verbose_name=_("Video"),
-        editable=False,
-        null=True,
-        on_delete=models.CASCADE,
-    )
-    src = models.ForeignKey(
-        CustomFileModel, blank=True, null=True, verbose_name=_("Subtitle file")
-    )
+    video = models.OneToOneField(Video, verbose_name=_('Video'),
+                                 editable=False, null=True,
+                                 on_delete=models.CASCADE)
+    src = models.ForeignKey(CustomFileModel,
+                            blank=True,
+                            null=True,
+                            on_delete=models.CASCADE,
+                            verbose_name=_('Subtitle file'))
 
     @property
     def sites(self):
@@ -351,22 +350,13 @@ class EnrichmentVtt(models.Model):
 
 
 class EnrichmentGroup(models.Model):
-    video = select2_fields.OneToOneField(
-        Video,
-        verbose_name=_("Video"),
-        # editable=False, null=True,
-        on_delete=models.CASCADE,
-    )
-    groups = select2_fields.ManyToManyField(
-        Group,
-        blank=True,
-        verbose_name=_("Groups"),
-        help_text=_(
-            "Select one or more groups who"
-            " can access to the"
-            " enrichment of the video"
-        ),
-    )
+    video = models.OneToOneField(Video, verbose_name=_('Video'),
+                                 on_delete=models.CASCADE)
+    groups = models.ManyToManyField(
+        Group, blank=True, verbose_name=_('Groups'),
+        help_text=_('Select one or more groups who'
+                    ' can access to the'
+                    ' enrichment of the video'))
 
     class Meta:
         ordering = ["video"]

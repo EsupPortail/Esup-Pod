@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 
 {% block page_extra_head %}
   <link rel="stylesheet" href="{% static 'css/bbb.css' %}?ver={{VERSION}}"/>
@@ -70,7 +70,7 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-<script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'jquery-waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script>
   var infinite = new Waypoint.Infinite({

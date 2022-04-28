@@ -1,6 +1,6 @@
-{% load staticfiles i18n custom_tags %}
+{% load static i18n custom_tags %}
 {% get_current_language as LANGUAGE_CODE %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
   <head>{% spaceless %}
 
@@ -9,13 +9,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     {% block opengraph %}
-      <meta name="description" content="">
+      <meta name="description" content="{{ DESC_SITE }}">
       <!-- Open Graph data -->
       <meta property="og:title" content="{{ TITLE_SITE }}" />
       <meta property="og:type" content="website" />
       <meta property="og:url" content="{{ request.build_absolute_uri }}" />
       <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
-      <meta property="og:description" content="" />
+      <meta property="og:description" content="{{ DESC_SITE }}" />
       <meta property="og:site_name" content="{{ TITLE_SITE }}" />
     {% endblock %}
     {% if FAVICON %}
@@ -43,11 +43,11 @@
     {% block more_style %}{% endblock more_style %}
 
     <!-- Javascript -->
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'bootstrap-4/js/bootstrap.bundle.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'js/js.cookie.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'js-cookie/src/js.cookie.js' %}?ver={{VERSION}}"></script>
     <script src="{% url 'javascript-catalog' %}"></script>
-    <title>{{ TITLE_SITE }} - {% block page_title %}{% endblock %}</title>
+    <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|capfirst}}{% endblock %}</title>
 
     {% block page_extra_head %}{% endblock %}
     {% if request.GET.is_iframe %}
@@ -95,13 +95,16 @@
           <div class="col col-md-9 order-12 order-md-1" id="mainContent">
             <!-- contenu page statique -->
             <div class="jumbotron">
+              {%if page_title%}
+                <h1 class="page_title">{{page_title|capfirst}}</h1>
+              {%endif%}
               {% block page_content %}
                 <p> Contenu block page_content </p>
               {% endblock page_content %}
             </div>
             <!-- fin contenu page statique -->
             {% if request.path == "/" %}
-            {% include "videos/last_videos.html" %}
+              {% include "videos/last_videos.html" %}
             {% endif %}
           </div>
           <aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">

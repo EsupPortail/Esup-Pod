@@ -73,10 +73,12 @@ $(document).on("click", "#modal-btn-new, #modal-btn-override", function () {
   $("#saveCaptionsModal").modal("hide");
   if (this.id == "modal-btn-override") {
     $("#form_save_captions").find('input[name="file_id"]').val(file_loaded_id);
+    $("#form_save_captions").find('input[name="enrich_ready"]').val()
     updateCaptionsArray($("#captionContent").val());
     send_form_save_captions();
   } else if (this.id == "modal-btn-new") {
     $("#form_save_captions").find('input[name="file_id"]').val("");
+    $("#form_save_captions").find('input[name="enrich_ready"]').val()
     send_form_save_captions();
   }
 });
@@ -108,6 +110,14 @@ const send_form_save_captions = function () {
   })
     .done(function (data) {
       $(data).find("#base-message-alert").appendTo(document.body);
+      if(data.track_id != undefined) {
+        var url = new URL(window.location)
+        var url_params = url.searchParams
+        url_params.set('src', data.track_id)
+        url.search = url_params
+        location.href = url.toString()
+        // window.location.replace(url.toString())
+      }
     })
     .fail(function ($xhr) {
       var data = $xhr.status + " : " + $xhr.statustext;

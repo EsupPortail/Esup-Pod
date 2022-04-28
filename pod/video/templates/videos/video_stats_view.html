@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
-{% load staticfiles i18n %}
+{% load static i18n %}
 {% block opengraph %}
   {{ block.super }}
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1">
 {% endblock opengraph %}
-{% block page_title %}{% trans "Video - Statistics views" %}{% endblock page_title %}
+{% block page_title %}{{ title }}{% endblock page_title %}
 {% block page_extra_head %}
-  <link type="text/css" rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}?ver={{VERSION}}">
-  <link type="text/css" rel="stylesheet" href="{% static 'css/ui.jqgrid.min.css' %}?ver={{VERSION}}">
-  <script src="{% static 'js/jquery.jqgrid.min.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+  <link type="text/css" rel="stylesheet" href="{% static 'jquery/themes/base/jquery-ui.min.css' %}?ver={{VERSION}}">
+  <link type="text/css" rel="stylesheet" href="{% static 'jqgrid/css/ui.jqgrid.css' %}?ver={{VERSION}}">
+  <script src="{% static 'jqgrid/jquery.jqGrid.js' %}?ver={{VERSION}}" charset="utf-8"></script>
   <!-- https://free-jqgrid.github.io/getting-started/index.html -->
   <script src="{% static 'js/video_stats_view.js' %}?ver={{VERSION}}" charset="utf-8"></script>
   <link rel="stylesheet" href="{% static 'css/video_stats_view.css' %}?ver={{VERSION}}">
@@ -20,7 +20,7 @@
   {% if form %}
     {% include "videos/video-form.html" %}
   {% else %}
-    <h1 class="title">{{ title }}</h1>
+    <h1 class="page_title h2">{{ title }}</h1>
     <div class="form-group row stat-form-group">
       <label for="jsperiode" class="col-2 col-form-label">{% trans "Change the date" %}</label>
       <div class="col-10 col-date">

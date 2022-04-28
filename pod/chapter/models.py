@@ -7,12 +7,12 @@ from django.utils.translation import ugettext as _
 
 from pod.video.models import Video
 from pod.main.models import get_nextautoincrement
-from select2 import fields as select2_fields
 
 
 class Chapter(models.Model):
-    video = select2_fields.ForeignKey(Video, verbose_name=_("video"))
-    title = models.CharField(_("title"), max_length=100)
+    video = models.ForeignKey(Video, verbose_name=_('video'),
+                              on_delete=models.CASCADE)
+    title = models.CharField(_('title'), max_length=100)
     slug = models.SlugField(
         _("slug"),
         unique=True,
@@ -27,7 +27,7 @@ class Chapter(models.Model):
     time_start = models.PositiveIntegerField(
         _("Start time"),
         default=0,
-        help_text=_(u"Start time of the chapter, in seconds."),
+        help_text=_("Start time of the chapter, in seconds."),
     )
 
     class Meta:
@@ -127,4 +127,4 @@ class Chapter(models.Model):
         return self.video.sites
 
     def __str__(self):
-        return u"Chapter: {0} - video: {1}".format(self.title, self.video)
+        return "Chapter: {0} - video: {1}".format(self.title, self.video)

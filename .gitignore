@@ -49,11 +49,14 @@ pod/custom/*
 !pod/custom/settings_local.py.example
 settings_local.py
 scripts/bbb-pod-live/docker-compose.yml
+transcription/*
+
 ## Others
 pod/static/
 *.bak
 .coverage
 htmlcov
+compile-model
 
 # IDE Files #
 #############
@@ -64,3 +67,7 @@ htmlcov
 ################
 *.crt
 *.key
+
+# Bower stuffs #
+################
+bower_components

@@ -1,6 +1,6 @@
 {% extends 'videos/video.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 
 {% block page_extra_head %}
 {% include 'videos/video-header.html' %}
@@ -14,8 +14,8 @@
 
 {% block breadcrumbs %}
 <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
-<li class="breadcrumb-item" aria-current="page"><a href="{% url "my_playlists"%}" title="{% trans 'Playlist' %}">{% trans 'Playlist' %}</a></li>
-<li class="breadcrumb-item" aria-current="page">{{playlist.title|capfirst|truncatechars:45}}</li>
+<li class="breadcrumb-item"><a href="{% url 'my_playlists' %}">{% trans 'Playlist' %}</a></li>
+<li class="breadcrumb-item">{{playlist.title|capfirst|truncatechars:45}}</li>
 <li class="breadcrumb-item active playlist-video-title" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
 {% endblock %}
 
@@ -35,9 +35,9 @@
 {% block page_aside %}
 {% include 'playlist/playlist_video_list.html' %}
   <div class="card mt-1{% if not video.enrichment_set.all %} off{% endif %}" id="card-enrichmentinformations">
-    <h5 class="card-header card-title pl-2">
+    <h2 class="card-header card-title pl-2 h4">
       <i data-feather="info"></i>&nbsp;{% trans 'Informations' %}
-    </h5>
+    </h2>
     <div class="card-body card-text">
       <p>{% trans 'To help you, the different types of enrichments have specific colors:' %}</p>
       <p>

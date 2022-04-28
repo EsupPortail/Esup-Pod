@@ -36,7 +36,7 @@ def group_enrichment(request, slug):
         )
         and (request.user not in video.additional_owners.all())
     ):
-        messages.add_message(request, messages.ERROR, _(u"You cannot enrich this video."))
+        messages.add_message(request, messages.ERROR, _("You cannot enrich this video."))
         raise PermissionDenied
 
     form = EnrichmentGroupForm(instance=enrichmentGroup)
@@ -77,7 +77,7 @@ def edit_enrichment(request, slug):
     ):
         if not check_enrichment_group(request, video):
             messages.add_message(
-                request, messages.ERROR, _(u"You cannot enrich this video.")
+                request, messages.ERROR, _("You cannot enrich this video.")
             )
             raise PermissionDenied
 
@@ -121,8 +121,10 @@ def edit_enrichment_save(request, video):
     list_enrichment = video.enrichment_set.all()
 
     form_enrichment = None
-    if request.POST.get("enrich_id") != "None":
-        enrich = get_object_or_404(Enrichment, id=request.POST["enrich_id"])
+    if request.POST.get('enrich_id') != 'None' and \
+       request.POST.get('enrich_id') is not None:
+        enrich = get_object_or_404(
+            Enrichment, id=request.POST['enrich_id'])
         form_enrichment = EnrichmentForm(request.POST, instance=enrich)
     else:
         form_enrichment = EnrichmentForm(request.POST)

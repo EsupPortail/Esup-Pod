@@ -2,8 +2,11 @@ from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.flatpages.models import FlatPage
+from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 from django.db import connection
 import os
 import mimetypes
@@ -131,8 +134,10 @@ class LinkFooter(models.Model):
         FlatPage,
         blank=True,
         null=True,
+        on_delete=models.CASCADE,
         help_text=_("Select the page of Pod you want to link with."),
     )
+    sites = models.ManyToManyField(Site)
 
     class Meta:
         ordering = ["order", "title"]
@@ -150,6 +155,12 @@ class LinkFooter(models.Model):
     def clean(self):
         if self.url is None and self.page is None:
             raise ValidationError(_("You must give an URL or a page to link the link"))
+
+
+@receiver(post_save, sender=LinkFooter)
+def default_site_link_footer(sender, instance, created, **kwargs):
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())
 
 
 class Configuration(models.Model):

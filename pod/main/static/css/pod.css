@@ -25,9 +25,12 @@
   /* BOOTSTRAP COLORS */
   /* primary color is defined in bootstrap-$theme$.css */
   --primary2: var(--primary);
-  --light: #f8f9fa;
+  --light: #fff;
   --dark: #343a40;
   --color-formfields: #f1f1f1;
+
+  /* Use system font */
+  --font-family-sans-serif : -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,Verdana,sans-serif;
 }
 
 /* copy "alert-danger" style from Bootstrap 4 */
@@ -133,17 +136,8 @@ a.btn-outline-primary svg.feather {
   height: 35px;
 }
 
-.select2-container {
-  position: static !important;
-  height:auto;
-}
-
 tr,.rowl {
   display: table-row !important;
-}
-
-body[data-admin-utc-offset] {
-  padding-top: 0;
 }
 
 body {
@@ -155,9 +149,9 @@ body {
 .jumbotron {
   padding: 1rem 2rem;
 }
-h1 {
+/*h1 {
   font-size: 2rem;
-}
+}*/
 label {
   font-variant: small-caps;
 }
@@ -245,6 +239,10 @@ label {
 .title-chaine {
   margin-right: .5rem;
   font-weight: 600;
+  flex-direction: row-reverse;
+}
+.title-chaine>a{
+  margin-right: .5em;
 }
 #listeChaines {
   max-height: 30rem;
@@ -439,10 +437,19 @@ div.card a:hover>img {
   bottom: 57px;
   right: 2px;
   border: none;
+  display: flex;
 }
 .video-card .card-footer .feather,
 .video-card .card-header .feather {
   height: 1rem;
+}
+
+/* heading feather icons size */
+h1>.feather,.h1>.feather,
+h2>.feather,.h2>.feather,
+h3>.feather,.h3>.feather{
+  width: 1em;
+  height: 1em;
 }
 
 /** menu channels **/
@@ -631,11 +638,6 @@ footer a:hover {
   font-size: 1.2em;
 }
 
-/*** Useful for additional owners ***/
-input.select2-input {
-  width: 100% !important;
-}
-
 #view-counter-icon {
   color: var(--primary);
 }
@@ -672,5 +674,73 @@ input.select2-input {
   height: 1px !important;
   padding: 0 !important;
   margin: 0 !important;
+}
+
+/** Django 3 Admin pages
+ *  (must be set after Bootsrap to reset Django defaults)
+ **/
+body[data-admin-utc-offset] {
+  padding-top: 0;
+  --primary:  #79aec8;
+  --breadcrumbs-bg: var(--primary);
+  --button-bg: var(--primary);
+}
+
+body[data-admin-utc-offset] textarea.cke_source{
+  background-color: var(--bg-color);
+}
+body[data-admin-utc-offset] caption{
+  caption-side: top;
+}
+
+body[data-admin-utc-offset] h1{ font-size: 20px;}
+body[data-admin-utc-offset] h2{ font-size: 18px;}
+body[data-admin-utc-offset] h3{ font-size: 16px;}
+
+body[data-admin-utc-offset] .hidden{
+  display: none;
+}
+body[data-admin-utc-offset] .btn-outline-primary{
+  color: var(--link-fg);
+}
+body[data-admin-utc-offset] .btn-outline-primary:hover,
+body[data-admin-utc-offset] .btn-outline-primary:focus{
+  background-color: var(--primary);
+  color: var(--light);
+}
+body[data-admin-utc-offset] .form-row.errors{
+  display: block;
+}
+
+/* css corrections for select2 autocompletion Multiple in dark theme.
+ * (see "additional owners", or "disciplines" for sample.)
+ */
+body[data-admin-utc-offset] .select2-selection--multiple{
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
+}
+body[data-admin-utc-offset] .select2-dropdown{
+  background-color: var(--bg-color);
+}
+body[data-admin-utc-offset] .select2-container--open .select2-selection--multiple{
+  border-color: var(--body-quiet-color);
+}
+body[data-admin-utc-offset] .select2-search--inline .select2-search__field{
+  color: var(--font-color);
+}
+body[data-admin-utc-offset] .select2-selection--multiple .select2-selection__choice,
+body[data-admin-utc-offset] .select2-selection--multiple .select2-results__option[aria-selected="true"]{
+  color: #333;
+}
+/* end select2 multiple corrections */
+
+/* System/browser dark mode */
+@media (prefers-color-scheme: dark) {
+  body[data-admin-utc-offset] {
+    --primary:  #264b5d;
+    --secondary: #417690;
+    --font-color: #eeeeee;
+    --bg-color:  #121212;
+  }
 }
 

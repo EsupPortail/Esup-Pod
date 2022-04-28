@@ -26,6 +26,7 @@ from pod.main.forms import add_placeholder_and_asterisk
 
 from ckeditor.widgets import CKEditorWidget
 from collections import OrderedDict
+from django_select2 import forms as s2forms
 
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -414,6 +415,84 @@ THEME_FORM_FIELDS_HELP_TEXT = getattr(
 )
 
 
+class OwnerWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "username__icontains",
+        "email__icontains",
+    ]
+
+
+class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
+    search_fields = [
+        "username__icontains",
+        "email__icontains",
+    ]
+
+
+class ChannelWidget(s2forms.ModelSelect2MultipleWidget):
+    search_fields = [
+        "title__icontains",
+    ]
+
+
+class DisciplineWidget(s2forms.ModelSelect2MultipleWidget):
+    search_fields = [
+        "title__icontains",
+    ]
+
+
+class SelectWOA(forms.widgets.Select):
+    """
+    Select With Option Attributes.
+
+        subclass of Django's Select widget that allows attributes in options,
+        like disabled="disabled", title="help text", class="some classes",
+              style="background: color;"...
+
+    Pass a dict instead of a string for its label:
+        choices = [ ('value_1', 'label_1'),
+                    ...
+                    ('value_k', {'label': 'label_k', 'foo': 'bar', ...}),
+                    ... ]
+    The option k will be rendered as:
+        <option value="value_k" foo="bar" ...>label_k</option>
+    """
+
+    def create_option(self, name, value, label, selected, index,
+                      subindex=None, attrs=None):
+        """Replace the option creators from original Select."""
+        # This allows using strings labels as usual
+        if isinstance(label, dict):
+            opt_attrs = label.copy()
+            label = opt_attrs.pop('label')
+        else:
+            opt_attrs = {}
+        option_dict = super(SelectWOA, self).create_option(name, value,
+                                                           label, selected,
+                                                           index,
+                                                           subindex=subindex,
+                                                           attrs=attrs)
+        for key, val in opt_attrs.items():
+            option_dict['attrs'][key] = val
+        return option_dict
+
+
+class DescribedChoiceField(forms.ModelChoiceField):
+    """ChoiceField with description on <options> titles."""
+
+    # Use custom widget "Select With Option Attribute"
+    widget = SelectWOA
+
+    def label_from_instance(self, obj):
+        """Override parent's label_from_instance method."""
+        return {
+            # the usual label:
+            'label': super().label_from_instance(obj),
+            # the new title attribute:
+            'title': obj.description
+        }
+
+
 @deconstructible
 class FileSizeValidator(object):
     message = _(
@@ -620,7 +699,7 @@ class VideoForm(forms.ModelForm):
         # Manage required fields html
         self.fields = add_placeholder_and_asterisk(self.fields)
         if self.fields.get("video"):
-            self.fields["video"].label = _(u"File")
+            self.fields["video"].label = _("File")
             valid_ext = FileExtensionValidator(VIDEO_ALLOWED_EXTENSIONS)
             self.fields["video"].validators = [valid_ext, FileSizeValidator]
             self.fields["video"].widget.attrs["class"] = self.videoattrs["class"]
@@ -732,8 +811,14 @@ class VideoForm(forms.ModelForm):
     class Meta(object):
         model = Video
         fields = VIDEO_FORM_FIELDS
+        field_classes = {
+            'type': DescribedChoiceField
+        }
         widgets = {
-            # 'date_added': widgets.AdminSplitDateTime,
+            "owner" : OwnerWidget,
+            "additional_owners" : AddOwnerWidget,
+            "channel" : ChannelWidget,
+            "discipline" : DisciplineWidget,
             "date_evt": widgets.AdminDateWidget,
         }
         initial = {

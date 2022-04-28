@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 {% block page_extra_head %}
   <link href="{% static 'player/videojs/video-js.min.css' %}?ver={{VERSION}}" rel="stylesheet">
   <script src="{% static 'player/videojs/video.min.js' %}?ver={{VERSION}}"></script>
@@ -59,7 +59,7 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-<script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'jquery-waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script>
   var infinite = new Waypoint.Infinite({
@@ -85,7 +85,7 @@
     }
   });
 
-  $('.previewBtn').on('click', function (e) {
+  $(document).on("click",".previewBtn",function(e) {  
   videojs("podvideoplayer").src($(this).data("recid"))
 })
 </script>

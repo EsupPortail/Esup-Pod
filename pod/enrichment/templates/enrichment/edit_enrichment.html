@@ -1,6 +1,6 @@
 {% extends 'enrichment/video_enrichment.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 
 {% block page_title %}{% trans 'Enrichment of the video' %} "{{video.title}}" {% endblock page_title %}
 
@@ -22,8 +22,8 @@
   /*** For the Cancel button ***/
   $(document).on("reset", "#page-video form", function (e) {
     $("span#form_enrich").html("");
-    $('form#form_new').show();
-    $('form').show();
+    $("form#form_new").show();
+    $("form").show();
     $("table tr").removeClass("info");
     manageResize();
   });

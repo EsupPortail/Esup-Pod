@@ -3,21 +3,19 @@ from django.test import TestCase, override_settings, TransactionTestCase
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
+from pod.authentication.models import AccessGroup
 from django.contrib.sites.models import Site
 
-from .. import views
 from ..models import Type
 from ..models import Theme
 from ..models import Video
 from ..models import Channel
 from ..models import Discipline
 from ..models import AdvancedNotes
-from pod.authentication.models import AccessGroup
 
 import re
 import json
 from http import HTTPStatus
-from importlib import reload
 
 
 class ChannelTestView(TestCase):
@@ -618,7 +616,7 @@ class VideoTestView(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         # TODO test with password
         v.is_restricted = False
-        v.restrict_access_to_groups = []
+        v.restrict_access_to_groups.set([])
         v.password = "password"
         v.save()
         self.client.logout()
@@ -802,6 +800,7 @@ class VideoEditTestView(TestCase):
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(b"The changes have been saved." in response.content)
+
         v = Video.objects.get(title="VideoTest3")
         self.assertEqual(v.description, "<p>bl</p>")
         videofile = SimpleUploadedFile(
@@ -1015,75 +1014,6 @@ class video_countTestView(TestCase):
         self.assertTrue(b"ok" in response.content)
         self.assertEqual(video.get_viewcount(), 1)
         print(" --->  test_video_countTestView_post_request of video_countTestView: OK!")
-
-
-# add test to video record : USE_VIDEO_RECORD = True
-class video_recordTestView(TestCase):
-    fixtures = [
-        "initial_data.json",
-    ]
-
-    def setUp(self):
-        User.objects.create(username="pod", password="pod1234pod")
-        print(" --->  SetUp of video_recordTestView: OK!")
-
-    def test_video_recordTestView_get_request(self):
-        self.client = Client()
-        response = self.client.get("/video_record/")
-        self.assertEqual(response.status_code, 302)
-        self.user = User.objects.get(username="pod")
-        self.client.force_login(self.user)
-        response = self.client.get("/video_record/")
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-
-        print(" --->  test_video_recordTestView_get_request of video_recordTestView: OK!")
-
-    @override_settings(DEBUG=True, RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
-    def test_video_recordTestView_get_request_restrict(self):
-        reload(views)
-        self.client = Client()
-        response = self.client.get("/video_record/")
-        self.assertEqual(response.status_code, 302)
-        self.user = User.objects.get(username="pod")
-        self.client.force_login(self.user)
-        response = self.client.get("/video_record/")
-        self.assertEquals(response.context["access_not_allowed"], True)
-        self.user.is_staff = True
-        self.user.save()
-        response = self.client.get("/video_record/")
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        print(
-            " --->  test_video_recordTestView_get_request_restrict ",
-            "of video_recordTestView: OK!",
-        )
-
-    def test_video_recordTestView_upload_recordvideo(self):
-        reload(views)
-        video = SimpleUploadedFile("file.mp4", b"file_content", content_type="video/mp4")
-        self.client = Client()
-        self.user = User.objects.get(username="pod")
-        self.client.force_login(self.user)
-        response = self.client.post(
-            reverse("video_record"),
-            {"video": video, "title": "test upload"},
-            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
-        )
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context, None)
-        try:
-            data = json.loads(response.content)
-        except (RuntimeError, TypeError, NameError, AttributeError) as err:
-            print("Unexpected error: {0}".format(err))
-            data = json.loads(response.content.decode("utf-8"))
-        self.assertEqual(data["id"], 1)
-        self.assertEqual(data["url_edit"], "/video_edit/0001-test-upload/")
-        self.assertEqual(Video.objects.all().count(), 1)
-        vid = Video.objects.get(id=1)
-        self.assertEqual(vid.title, "test upload")
-        print(
-            " --->  test_video_recordTestView_upload_recordvideo ",
-            "of video_recordTestView: OK!",
-        )
 
 
 class VideoTestUpdateOwner(TransactionTestCase):

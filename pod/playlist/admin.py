@@ -9,18 +9,13 @@ from pod.video.models import Video
 
 class PlaylistAdmin(admin.ModelAdmin):
 
-    list_display = (
-        "title",
-        "owner",
-        "visible",
-    )
-    list_display_links = ("title",)
-    list_editable = ("visible",)
-    ordering = (
-        "title",
-        "id",
-    )
-    list_filter = ["visible"]
+    list_display = ('title', 'owner', 'visible',)
+    list_display_links = ('title',)
+    list_editable = ('visible',)
+    ordering = ('title', 'id',)
+    list_filter = ['visible']
+    autocomplete_fields = ['owner']
+    search_fields = ['name']
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "owner":
@@ -41,17 +36,11 @@ admin.site.register(Playlist, PlaylistAdmin)
 
 class PlaylistElementAdmin(admin.ModelAdmin):
 
-    list_display = (
-        "playlist",
-        "video",
-        "position",
-    )
-    list_display_links = ("playlist",)
-    list_editable = ("position",)
-    ordering = (
-        "playlist__title",
-        "id",
-    )
+    list_display = ('playlist', 'video', 'position',)
+    list_display_links = ('playlist',)
+    list_editable = ('position',)
+    ordering = ('playlist__title', 'id',)
+    autocomplete_fields = ['playlist', 'video']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
