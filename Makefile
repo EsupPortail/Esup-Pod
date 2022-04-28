@@ -11,7 +11,7 @@ start:
 	# --insecure let serve static files even when DEBUG=False
 
 install:
-	# Première installation de pod
+	# Première installation de pod (BDD SQLite intégrée)
 	make upgrade
 	make createDB
 
@@ -23,7 +23,7 @@ upgrade:
 	make migrate
 
 createDB:
-	# Création des données initiales dans la BDD
+	# Création des données initiales dans la BDD SQLite intégrée
 	find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
 	find . -path "*/migrations/*.pyc"  -delete
 	make updatedb
@@ -36,7 +36,7 @@ lang:
 	echo "Processing python files..."
 	python3 manage.py makemessages --all
 	echo "Processing javascript files..."
-	django-admin makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*"
+	django-admin makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*"
 
 updatedb:
 	# Look for changes to apply in DB

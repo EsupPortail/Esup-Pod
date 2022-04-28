@@ -429,6 +429,7 @@ def theme_edit_delete(request, channel):
 
 
 def theme_edit_save(request, channel):
+    """Save theme edition."""
     form_theme = None
 
     if request.POST.get("theme_id") and request.POST.get("theme_id") != "None":
@@ -1009,10 +1010,7 @@ def video_delete(request, slug=None):
 
 
 def get_adv_note_list(request, video):
-    """
-    Return the list of AdvancedNotes of video
-      that can be seen by the current user
-    """
+    """Return the list of AdvancedNotes of video that can be seen by the current user."""
     if request.user.is_authenticated:
         filter = (
             Q(user=request.user)
@@ -1092,7 +1090,8 @@ def get_com_coms_dict(request, listComs):
 
 def get_com_tree(com):
     """
-    Return the list of the successive parents of com
+    Return the list of the successive parents of com.
+
       including com from bottom to top
     """
     tree, c = [], com
@@ -1129,7 +1128,8 @@ def can_edit_or_remove_note_or_com(request, nc, action):
 
 def can_see_note_or_com(request, nc):
     """
-    Check if the current user can view the note or comment nc
+    Check if the current user can view the note or comment nc.
+
     If not raise PermissionDenied
     """
     if isinstance(nc, AdvancedNotes):
@@ -1158,6 +1158,7 @@ def can_see_note_or_com(request, nc):
 
 @csrf_protect
 def video_notes(request, slug):
+    """Render video notes."""
     action = None
     if request.method == "POST" and request.POST.get("action"):
         action = request.POST.get("action").split("_")[0]
@@ -1176,6 +1177,7 @@ def video_notes(request, slug):
 
 @csrf_protect
 def video_note_get(request, slug):
+    """Get video notes."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     idCom = idNote = None
     if request.method == "POST" and request.POST.get("idCom"):
@@ -1224,6 +1226,7 @@ def video_note_get(request, slug):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_note_form(request, slug):
+    """Render video note form."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     idNote, idCom = None, None
     note, com = None, None
@@ -1274,6 +1277,7 @@ def video_note_form(request, slug):
 
 
 def video_note_form_case(request, params):
+    """Editing/creating a note."""
     (idNote, idCom, note, com) = params
     # Editing a note comment
     if (
@@ -1290,7 +1294,7 @@ def video_note_form_case(request, params):
         listNotesCom = get_adv_note_com_list(request, idNote)
         dictComments = get_com_coms_dict(request, listNotesCom)
         comToEdit, noteToEdit = com, None
-        # Creting a comment answer
+        # Creating a comment answer
     elif (
         idCom is not None
         and idNote is not None
@@ -1361,6 +1365,7 @@ def video_note_form_case(request, params):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_note_save(request, slug):
+    """Save a Video note."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     idNote, idCom = None, None
     note, com = None, None

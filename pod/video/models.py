@@ -557,6 +557,7 @@ class Type(models.Model):
         return "%s" % (self.title)
 
     def save(self, *args, **kwargs):
+        """Store current Type in DB."""
         self.slug = slugify(self.title)
         super(Type, self).save(*args, **kwargs)
 
@@ -597,6 +598,7 @@ class Discipline(models.Model):
         return "%s" % (self.title)
 
     def save(self, *args, **kwargs):
+        """Store current Discipline in DB."""
         self.slug = slugify(self.title)
         super(Discipline, self).save(*args, **kwargs)
 
