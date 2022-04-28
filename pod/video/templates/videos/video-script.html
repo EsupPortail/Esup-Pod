@@ -74,9 +74,10 @@ const options = {
     seekButtons: {
       forward: seektime,
       back: seektime
-    },
+    }
+{% if not video.is_video %}
     // enable videojs-wavesurfer plugin
-    wavesurfer: {
+    ,wavesurfer: {
       backend: 'MediaElement',
       displayMilliseconds: true,
       debug: true,
@@ -85,8 +86,10 @@ const options = {
       cursorColor: 'black',
       hideScrollbar: true
     }
+{% endif %}
   }
 }
+
 var player = videojs('podvideoplayer', options, function(){});
 
 player.on('firstplay', function(){

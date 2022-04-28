@@ -1,20 +1,20 @@
 /*!
- * wavesurfer.js 5.2.0 (2021-08-16)
+ * wavesurfer.js 6.1.0 (2022-03-31)
  * https://wavesurfer-js.org
  * @license BSD-3-Clause
  */
 (function webpackUniversalModuleDefinition(root, factory) {
-    if(typeof exports === 'object' && typeof module === 'object')
-        module.exports = factory();
-    else if(typeof define === 'function' && define.amd)
-        define("WaveSurfer", [], factory);
-    else if(typeof exports === 'object')
-        exports["WaveSurfer"] = factory();
-    else
-        root["WaveSurfer"] = factory();
+  if(typeof exports === 'object' && typeof module === 'object')
+    module.exports = factory();
+  else if(typeof define === 'function' && define.amd)
+    define("WaveSurfer", [], factory);
+  else if(typeof exports === 'object')
+    exports["WaveSurfer"] = factory();
+  else
+    root["WaveSurfer"] = factory();
 })(self, function() {
 return /******/ (() => { // webpackBootstrap
-/******/     var __webpack_modules__ = ({
+/******/   var __webpack_modules__ = ({
 
 /***/ "./src/drawer.canvasentry.js":
 /*!***********************************!*\
@@ -28,7 +28,7 @@ return /******/ (() => { // webpackBootstrap
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _style = _interopRequireDefault(__webpack_require__(/*! ./util/style */ "./src/util/style.js"));
 
@@ -40,7 +40,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
 /**
  * The `CanvasEntry` class represents an element consisting of a wave `canvas`
@@ -182,19 +182,49 @@ var CanvasEntry = /*#__PURE__*/function () {
     }
     /**
      * Set the fill styles for wave and progress
-     *
-     * @param {string} waveColor Fill color for the wave canvas
-     * @param {?string} progressColor Fill color for the progress canvas
+     * @param {string|string[]} waveColor Fill color for the wave canvas,
+     * or an array of colors to apply as a gradient
+     * @param {?string|string[]} progressColor Fill color for the progress canvas,
+     * or an array of colors to apply as a gradient
      */
 
   }, {
     key: "setFillStyles",
     value: function setFillStyles(waveColor, progressColor) {
-      this.waveCtx.fillStyle = waveColor;
+      this.waveCtx.fillStyle = this.getFillStyle(this.waveCtx, waveColor);
 
       if (this.hasProgressCanvas) {
-        this.progressCtx.fillStyle = progressColor;
+        this.progressCtx.fillStyle = this.getFillStyle(this.progressCtx, progressColor);
       }
+    }
+    /**
+     * Utility function to handle wave color arguments
+     *
+     * When the color argument type is a string or CanvasGradient instance,
+     * it will be returned as is. Otherwise, it will be treated as an array,
+     * and a new CanvasGradient will be returned
+     *
+     * @since 6.0.0
+     * @param {CanvasRenderingContext2D} ctx Rendering context of target canvas
+     * @param {string|string[]|CanvasGradient} color Either a single fill color
+     *     for the wave canvas, an existing CanvasGradient instance, or an array
+     *     of colors to apply as a gradient
+     * @returns {string|CanvasGradient} Returns a string fillstyle value, or a
+     *     canvas gradient
+     */
+
+  }, {
+    key: "getFillStyle",
+    value: function getFillStyle(ctx, color) {
+      if (typeof color == 'string' || color instanceof CanvasGradient) {
+        return color;
+      }
+
+      var waveGradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+      color.forEach(function (value, index) {
+        return waveGradient.addColorStop(index / color.length, value);
+      });
+      return waveGradient;
     }
     /**
      * Set the canvas transforms for wave and progress
@@ -421,7 +451,7 @@ var CanvasEntry = /*#__PURE__*/function () {
   return CanvasEntry;
 }();
 
-exports.default = CanvasEntry;
+exports["default"] = CanvasEntry;
 module.exports = exports.default;
 
 /***/ }),
@@ -435,12 +465,12 @@ module.exports = exports.default;
 "use strict";
 
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = void 0;
+exports["default"] = void 0;
 
 var util = _interopRequireWildcard(__webpack_require__(/*! ./util */ "./src/util/index.js"));
 
@@ -452,9 +482,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
@@ -549,6 +579,7 @@ var Drawer = /*#__PURE__*/function (_util$Observer) {
       if (this.params.fillParent || this.params.scrollParent) {
         this.style(this.wrapper, {
           width: '100%',
+          cursor: this.params.hideCursor ? 'none' : 'auto',
           overflowX: this.params.hideScrollbar ? 'hidden' : 'auto',
           overflowY: 'hidden'
         });
@@ -915,7 +946,7 @@ var Drawer = /*#__PURE__*/function (_util$Observer) {
   return Drawer;
 }(util.Observer);
 
-exports.default = Drawer;
+exports["default"] = Drawer;
 module.exports = exports.default;
 
 /***/ }),
@@ -929,12 +960,12 @@ module.exports = exports.default;
 "use strict";
 
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _drawer = _interopRequireDefault(__webpack_require__(/*! ./drawer */ "./src/drawer.js"));
 
@@ -952,9 +983,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
@@ -1286,19 +1317,35 @@ var MultiCanvas = /*#__PURE__*/function (_Drawer) {
         var scale = length / _this4.width;
         var first = start;
         var last = end;
-        var i = first;
+        var peakIndex = first;
 
-        for (i; i < last; i += step) {
-          var peak = peaks[Math.floor(i * scale * peakIndexScale)] || 0;
-          var h = Math.round(peak / absmax * halfH);
-          /* in case of silences, allow the user to specify that we
-           * always draw *something* (normally a 1px high bar) */
+        for (peakIndex; peakIndex < last; peakIndex += step) {
+          // search for the highest peak in the range this bar falls into
+          var peak = 0;
+          var peakIndexRange = Math.floor(peakIndex * scale) * peakIndexScale; // start index
+
+          var peakIndexEnd = Math.floor((peakIndex + step) * scale) * peakIndexScale;
+
+          do {
+            // do..while makes sure at least one peak is always evaluated
+            var newPeak = Math.abs(peaks[peakIndexRange]); // for arrays starting with negative values
+
+            if (newPeak > peak) {
+              peak = newPeak; // higher
+            }
+
+            peakIndexRange += peakIndexScale; // skip every other value for negatives
+          } while (peakIndexRange < peakIndexEnd); // calculate the height of this bar according to the highest peak found
+
+
+          var h = Math.round(peak / absmax * halfH); // in case of silences, allow the user to specify that we
+          // always draw *something* (normally a 1px high bar)
 
           if (h == 0 && _this4.params.barMinHeight) {
             h = _this4.params.barMinHeight;
           }
 
-          _this4.fillRect(i + _this4.halfPixel, halfH - h + offsetY, bar + _this4.halfPixel, h * 2, _this4.barRadius, ch);
+          _this4.fillRect(peakIndex + _this4.halfPixel, halfH - h + offsetY, bar + _this4.halfPixel, h * 2, _this4.barRadius, ch);
         }
       });
     }
@@ -1602,7 +1649,7 @@ var MultiCanvas = /*#__PURE__*/function (_Drawer) {
   return MultiCanvas;
 }(_drawer.default);
 
-exports.default = MultiCanvas;
+exports["default"] = MultiCanvas;
 module.exports = exports.default;
 
 /***/ }),
@@ -1616,12 +1663,12 @@ module.exports = exports.default;
 "use strict";
 
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _mediaelement = _interopRequireDefault(__webpack_require__(/*! ./mediaelement */ "./src/mediaelement.js"));
 
@@ -1631,13 +1678,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
 
 function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
@@ -1751,7 +1798,7 @@ var MediaElementWebAudio = /*#__PURE__*/function (_MediaElement) {
   return MediaElementWebAudio;
 }(_mediaelement.default);
 
-exports.default = MediaElementWebAudio;
+exports["default"] = MediaElementWebAudio;
 module.exports = exports.default;
 
 /***/ }),
@@ -1765,12 +1812,12 @@ module.exports = exports.default;
 "use strict";
 
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _webaudio = _interopRequireDefault(__webpack_require__(/*! ./webaudio */ "./src/webaudio.js"));
 
@@ -1786,13 +1833,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
 
 function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
@@ -2141,7 +2188,7 @@ var MediaElement = /*#__PURE__*/function (_WebAudio) {
   }, {
     key: "seekTo",
     value: function seekTo(start) {
-      if (start != null) {
+      if (start != null && !isNaN(start)) {
         this.media.currentTime = start;
       }
 
@@ -2329,7 +2376,7 @@ var MediaElement = /*#__PURE__*/function (_WebAudio) {
   return MediaElement;
 }(_webaudio.default);
 
-exports.default = MediaElement;
+exports["default"] = MediaElement;
 module.exports = exports.default;
 
 /***/ }),
@@ -2346,13 +2393,13 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = void 0;
+exports["default"] = void 0;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
 /**
  * Caches the decoded peaks data to improve rendering speed for large audio
@@ -2492,7 +2539,7 @@ var PeakCache = /*#__PURE__*/function () {
   return PeakCache;
 }();
 
-exports.default = PeakCache;
+exports["default"] = PeakCache;
 module.exports = exports.default;
 
 /***/ }),
@@ -2509,7 +2556,7 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = absMax;
+exports["default"] = absMax;
 
 var _max = _interopRequireDefault(__webpack_require__(/*! ./max */ "./src/util/max.js"));
 
@@ -2547,7 +2594,7 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = clamp;
+exports["default"] = clamp;
 
 /**
  * Returns a number limited to the given range.
@@ -2577,7 +2624,7 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = fetchFile;
+exports["default"] = fetchFile;
 
 var _observer = _interopRequireDefault(__webpack_require__(/*! ./observer */ "./src/util/observer.js"));
 
@@ -2587,7 +2634,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
 var ProgressHandler = /*#__PURE__*/function () {
   /**
@@ -2827,7 +2874,7 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = frame;
+exports["default"] = frame;
 
 var _requestAnimationFrame = _interopRequireDefault(__webpack_require__(/*! ./request-animation-frame */ "./src/util/request-animation-frame.js"));
 
@@ -2869,7 +2916,7 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = getId;
+exports["default"] = getId;
 
 /**
  * Get a random prefixed ID
@@ -2906,10 +2953,52 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
+Object.defineProperty(exports, "Observer", ({
+  enumerable: true,
+  get: function get() {
+    return _observer.default;
+  }
+}));
+Object.defineProperty(exports, "absMax", ({
+  enumerable: true,
+  get: function get() {
+    return _absMax.default;
+  }
+}));
+Object.defineProperty(exports, "clamp", ({
+  enumerable: true,
+  get: function get() {
+    return _clamp.default;
+  }
+}));
+Object.defineProperty(exports, "debounce", ({
+  enumerable: true,
+  get: function get() {
+    return _debounce.default;
+  }
+}));
+Object.defineProperty(exports, "fetchFile", ({
+  enumerable: true,
+  get: function get() {
+    return _fetch.default;
+  }
+}));
+Object.defineProperty(exports, "frame", ({
+  enumerable: true,
+  get: function get() {
+    return _frame.default;
+  }
+}));
 Object.defineProperty(exports, "getId", ({
   enumerable: true,
   get: function get() {
     return _getId.default;
+  }
+}));
+Object.defineProperty(exports, "ignoreSilenceMode", ({
+  enumerable: true,
+  get: function get() {
+    return _silenceMode.default;
   }
 }));
 Object.defineProperty(exports, "max", ({
@@ -2924,22 +3013,10 @@ Object.defineProperty(exports, "min", ({
     return _min.default;
   }
 }));
-Object.defineProperty(exports, "absMax", ({
+Object.defineProperty(exports, "preventClick", ({
   enumerable: true,
   get: function get() {
-    return _absMax.default;
-  }
-}));
-Object.defineProperty(exports, "Observer", ({
-  enumerable: true,
-  get: function get() {
-    return _observer.default;
-  }
-}));
-Object.defineProperty(exports, "style", ({
-  enumerable: true,
-  get: function get() {
-    return _style.default;
+    return _preventClick.default;
   }
 }));
 Object.defineProperty(exports, "requestAnimationFrame", ({
@@ -2948,46 +3025,16 @@ Object.defineProperty(exports, "requestAnimationFrame", ({
     return _requestAnimationFrame.default;
   }
 }));
-Object.defineProperty(exports, "frame", ({
+Object.defineProperty(exports, "style", ({
   enumerable: true,
   get: function get() {
-    return _frame.default;
-  }
-}));
-Object.defineProperty(exports, "debounce", ({
-  enumerable: true,
-  get: function get() {
-    return _debounce.default;
-  }
-}));
-Object.defineProperty(exports, "preventClick", ({
-  enumerable: true,
-  get: function get() {
-    return _preventClick.default;
-  }
-}));
-Object.defineProperty(exports, "fetchFile", ({
-  enumerable: true,
-  get: function get() {
-    return _fetch.default;
-  }
-}));
-Object.defineProperty(exports, "clamp", ({
-  enumerable: true,
-  get: function get() {
-    return _clamp.default;
+    return _style.default;
   }
 }));
 Object.defineProperty(exports, "withOrientation", ({
   enumerable: true,
   get: function get() {
     return _orientation.default;
-  }
-}));
-Object.defineProperty(exports, "ignoreSilenceMode", ({
-  enumerable: true,
-  get: function get() {
-    return _silenceMode.default;
   }
 }));
 
@@ -3035,7 +3082,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = max;
+exports["default"] = max;
 
 /**
  * Get the largest value
@@ -3070,7 +3117,7 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = min;
+exports["default"] = min;
 
 /**
  * Get the smallest value
@@ -3105,13 +3152,13 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = void 0;
+exports["default"] = void 0;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
 /**
  * @typedef {Object} ListenerDescriptor
@@ -3295,7 +3342,7 @@ var Observer = /*#__PURE__*/function () {
   return Observer;
 }();
 
-exports.default = Observer;
+exports["default"] = Observer;
 module.exports = exports.default;
 
 /***/ }),
@@ -3312,7 +3359,7 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = withOrientation;
+exports["default"] = withOrientation;
 var verticalPropMap = {
   width: 'height',
   height: 'width',
@@ -3419,7 +3466,7 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = preventClick;
+exports["default"] = preventClick;
 
 /**
  * Stops propagation of click event and removes event listener
@@ -3458,7 +3505,7 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = void 0;
+exports["default"] = void 0;
 
 /* eslint-disable valid-jsdoc */
 
@@ -3472,7 +3519,7 @@ var _default = (window.requestAnimationFrame || window.webkitRequestAnimationFra
   return setTimeout(callback, 1000 / 60);
 }).bind(window);
 
-exports.default = _default;
+exports["default"] = _default;
 module.exports = exports.default;
 
 /***/ }),
@@ -3489,7 +3536,7 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = ignoreSilenceMode;
+exports["default"] = ignoreSilenceMode;
 
 /**
  * Ignores device silence mode when using the `WebAudio` backend.
@@ -3539,7 +3586,7 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = style;
+exports["default"] = style;
 
 /**
  * Apply a map of styles to an element
@@ -3571,12 +3618,12 @@ module.exports = exports.default;
 "use strict";
 
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = void 0;
+exports["default"] = void 0;
 
 var util = _interopRequireWildcard(__webpack_require__(/*! ./util */ "./src/util/index.js"));
 
@@ -3596,7 +3643,7 @@ function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "functio
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
@@ -3610,11 +3657,13 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
 /*
  * This work is licensed under a BSD-3-Clause License.
@@ -3686,6 +3735,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * pixels.
  * @property {boolean} hideScrollbar=false Whether to hide the horizontal
  * scrollbar when one would normally be shown.
+ * @property {boolean} hideCursor=false Whether to hide the mouse cursor
+ * when one would normally be shown by default.
  * @property {boolean} ignoreSilenceMode=false If true, ignores device silence mode
  * when using the `WebAudio` backend.
  * @property {boolean} interact=true Whether the mouse interaction will be
@@ -3897,7 +3948,7 @@ var WaveSurfer = /*#__PURE__*/function (_util$Observer) {
      * @private
      */
 
-    _this.defaultParams = {
+    _defineProperty(_assertThisInitialized(_this), "defaultParams", {
       audioContext: null,
       audioScriptProcessor: null,
       audioRate: 1,
@@ -3925,6 +3976,7 @@ var WaveSurfer = /*#__PURE__*/function (_util$Observer) {
       forceDecode: false,
       height: 128,
       hideScrollbar: false,
+      hideCursor: false,
       ignoreSilenceMode: false,
       interact: true,
       loopSelection: true,
@@ -3954,13 +4006,16 @@ var WaveSurfer = /*#__PURE__*/function (_util$Observer) {
       vertical: false,
       waveColor: '#999',
       xhr: {}
-    };
-    _this.backends = {
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "backends", {
       MediaElement: _mediaelement.default,
       WebAudio: _webaudio.default,
       MediaElementWebAudio: _mediaelementWebaudio.default
-    };
-    _this.util = util;
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "util", util);
+
     _this.params = Object.assign({}, _this.defaultParams, params);
     _this.params.splitChannelsOptions = Object.assign({}, _this.defaultParams.splitChannelsOptions, params.splitChannelsOptions);
     /** @private */
@@ -4094,7 +4149,10 @@ var WaveSurfer = /*#__PURE__*/function (_util$Observer) {
       if (prevWidth != _this.drawer.wrapper.clientWidth && !_this.params.scrollParent) {
         prevWidth = _this.drawer.wrapper.clientWidth;
 
-        _this.drawer.fireEvent('redraw');
+        if (prevWidth) {
+          // redraw only if waveform container is rendered and has a width
+          _this.drawer.fireEvent('redraw');
+        }
       }
     }, typeof _this.params.responsive === 'number' ? _this.params.responsive : 100);
     return _possibleConstructorReturn(_this, _assertThisInitialized(_this));
@@ -4794,49 +4852,77 @@ var WaveSurfer = /*#__PURE__*/function (_util$Observer) {
     /**
      * Get the fill color of the waveform after the cursor.
      *
-     * @return {string} A CSS color string.
+     * @param {?number} channelIdx Optional index of the channel to get its wave color if splitChannels is true
+     * @return {string|object} A CSS color string, or an array of CSS color strings.
      */
 
   }, {
     key: "getWaveColor",
     value: function getWaveColor() {
+      var channelIdx = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+      if (this.params.splitChannelsOptions.channelColors[channelIdx]) {
+        return this.params.splitChannelsOptions.channelColors[channelIdx].waveColor;
+      }
+
       return this.params.waveColor;
     }
     /**
      * Set the fill color of the waveform after the cursor.
      *
-     * @param {string} color A CSS color string.
+     * @param {string|object} color A CSS color string, or an array of CSS color strings.
+     * @param {?number} channelIdx Optional index of the channel to set its wave color if splitChannels is true
      * @example wavesurfer.setWaveColor('#ddd');
      */
 
   }, {
     key: "setWaveColor",
     value: function setWaveColor(color) {
-      this.params.waveColor = color;
+      var channelIdx = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+      if (this.params.splitChannelsOptions.channelColors[channelIdx]) {
+        this.params.splitChannelsOptions.channelColors[channelIdx].waveColor = color;
+      } else {
+        this.params.waveColor = color;
+      }
+
       this.drawBuffer();
     }
     /**
      * Get the fill color of the waveform behind the cursor.
      *
-     * @return {string} A CSS color string.
+     * @param {?number} channelIdx Optional index of the channel to get its progress color if splitChannels is true
+     * @return {string|object} A CSS color string, or an array of CSS color strings.
      */
 
   }, {
     key: "getProgressColor",
     value: function getProgressColor() {
+      var channelIdx = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+      if (this.params.splitChannelsOptions.channelColors[channelIdx]) {
+        return this.params.splitChannelsOptions.channelColors[channelIdx].progressColor;
+      }
+
       return this.params.progressColor;
     }
     /**
      * Set the fill color of the waveform behind the cursor.
      *
-     * @param {string} color A CSS color string.
+     * @param {string|object} color A CSS color string, or an array of CSS color strings.
+     * @param {?number} channelIdx Optional index of the channel to set its progress color if splitChannels is true
      * @example wavesurfer.setProgressColor('#400');
      */
 
   }, {
     key: "setProgressColor",
-    value: function setProgressColor(color) {
-      this.params.progressColor = color;
+    value: function setProgressColor(color, channelIdx) {
+      if (this.params.splitChannelsOptions.channelColors[channelIdx]) {
+        this.params.splitChannelsOptions.channelColors[channelIdx].progressColor = color;
+      } else {
+        this.params.progressColor = color;
+      }
+
       this.drawBuffer();
     }
     /**
@@ -5512,9 +5598,12 @@ var WaveSurfer = /*#__PURE__*/function (_util$Observer) {
   return WaveSurfer;
 }(util.Observer);
 
-exports.default = WaveSurfer;
-WaveSurfer.VERSION = "5.2.0";
-WaveSurfer.util = util;
+exports["default"] = WaveSurfer;
+
+_defineProperty(WaveSurfer, "VERSION", "6.1.0");
+
+_defineProperty(WaveSurfer, "util", util);
+
 module.exports = exports.default;
 
 /***/ }),
@@ -5528,12 +5617,12 @@ module.exports = exports.default;
 "use strict";
 
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = void 0;
+exports["default"] = void 0;
 
 var util = _interopRequireWildcard(__webpack_require__(/*! ./util */ "./src/util/index.js"));
 
@@ -5541,15 +5630,13 @@ function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "functio
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
@@ -5562,6 +5649,8 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 // using constants to prevent someone writing the string wrong
 var PLAYING = 'playing';
@@ -5584,7 +5673,7 @@ var WebAudio = /*#__PURE__*/function (_util$Observer) {
    * @param {WavesurferParams} params Wavesurfer parameters
    */
   function WebAudio(params) {
-    var _this$stateBehaviors, _this$states;
+    var _defineProperty2, _this$states;
 
     var _this;
 
@@ -5593,9 +5682,11 @@ var WebAudio = /*#__PURE__*/function (_util$Observer) {
     _this = _super.call(this);
     /** @private */
 
-    _this.audioContext = null;
-    _this.offlineAudioContext = null;
-    _this.stateBehaviors = (_this$stateBehaviors = {}, _defineProperty(_this$stateBehaviors, PLAYING, {
+    _defineProperty(_assertThisInitialized(_this), "audioContext", null);
+
+    _defineProperty(_assertThisInitialized(_this), "offlineAudioContext", null);
+
+    _defineProperty(_assertThisInitialized(_this), "stateBehaviors", (_defineProperty2 = {}, _defineProperty(_defineProperty2, PLAYING, {
       init: function init() {
         this.addOnAudioProcess();
       },
@@ -5606,7 +5697,7 @@ var WebAudio = /*#__PURE__*/function (_util$Observer) {
       getCurrentTime: function getCurrentTime() {
         return this.startPosition + this.getPlayedTime();
       }
-    }), _defineProperty(_this$stateBehaviors, PAUSED, {
+    }), _defineProperty(_defineProperty2, PAUSED, {
       init: function init() {
         this.removeOnAudioProcess();
       },
@@ -5617,7 +5708,7 @@ var WebAudio = /*#__PURE__*/function (_util$Observer) {
       getCurrentTime: function getCurrentTime() {
         return this.startPosition;
       }
-    }), _defineProperty(_this$stateBehaviors, FINISHED, {
+    }), _defineProperty(_defineProperty2, FINISHED, {
       init: function init() {
         this.removeOnAudioProcess();
         this.fireEvent('finish');
@@ -5628,7 +5719,8 @@ var WebAudio = /*#__PURE__*/function (_util$Observer) {
       getCurrentTime: function getCurrentTime() {
         return this.getDuration();
       }
-    }), _this$stateBehaviors);
+    }), _defineProperty2));
+
     _this.params = params;
     /** ac: Audio Context instance */
 
@@ -5684,6 +5776,12 @@ var WebAudio = /*#__PURE__*/function (_util$Observer) {
     /** @private */
 
     _this.explicitDuration = params.duration;
+    /** @private */
+
+    _this.sinkStreamDestination = null;
+    /** @private */
+
+    _this.sinkAudioElement = null;
     /**
      * Boolean indicating if the backend was destroyed.
      */
@@ -5914,18 +6012,24 @@ var WebAudio = /*#__PURE__*/function (_util$Observer) {
          * output. Here we create an HTMLAudioElement, connect the
          * webaudio stream to that element and setSinkId there.
          */
-        var audio = new window.Audio();
+        if (!this.sinkAudioElement) {
+          this.sinkAudioElement = new window.Audio(); // autoplay is necessary since we're not invoking .play()
 
-        if (!audio.setSinkId) {
+          this.sinkAudioElement.autoplay = true;
+        }
+
+        if (!this.sinkAudioElement.setSinkId) {
           return Promise.reject(new Error('setSinkId is not supported in your browser'));
         }
 
-        audio.autoplay = true;
-        var dest = this.ac.createMediaStreamDestination();
+        if (!this.sinkStreamDestination) {
+          this.sinkStreamDestination = this.ac.createMediaStreamDestination();
+        }
+
         this.gainNode.disconnect();
-        this.gainNode.connect(dest);
-        audio.srcObject = dest.stream;
-        return audio.setSinkId(deviceId);
+        this.gainNode.connect(this.sinkStreamDestination);
+        this.sinkAudioElement.srcObject = this.sinkStreamDestination.stream;
+        return this.sinkAudioElement.setSinkId(deviceId);
       } else {
         return Promise.reject(new Error('Invalid deviceId: ' + deviceId));
       }
@@ -6172,6 +6276,14 @@ var WebAudio = /*#__PURE__*/function (_util$Observer) {
 
 
         window.WaveSurferOfflineAudioContext = null;
+      } // disconnect resources used by setSinkId
+
+
+      if (this.sinkStreamDestination) {
+        this.sinkAudioElement.pause();
+        this.sinkAudioElement.srcObject = null;
+        this.sinkStreamDestination.disconnect();
+        this.sinkStreamDestination = null;
       }
     }
     /**
@@ -6415,8 +6527,10 @@ var WebAudio = /*#__PURE__*/function (_util$Observer) {
   return WebAudio;
 }(util.Observer);
 
-exports.default = WebAudio;
-WebAudio.scriptBufferSize = 256;
+exports["default"] = WebAudio;
+
+_defineProperty(WebAudio, "scriptBufferSize", 256);
+
 module.exports = exports.default;
 
 /***/ }),
@@ -6501,40 +6615,40 @@ module.exports = debounce;
 
 /***/ })
 
-/******/     });
+/******/   });
 /************************************************************************/
-/******/     // The module cache
-/******/     var __webpack_module_cache__ = {};
+/******/   // The module cache
+/******/   var __webpack_module_cache__ = {};
 /******/
-/******/     // The require function
-/******/     function __webpack_require__(moduleId) {
-/******/         // Check if module is in cache
-/******/         var cachedModule = __webpack_module_cache__[moduleId];
-/******/         if (cachedModule !== undefined) {
-/******/             return cachedModule.exports;
-/******/         }
-/******/         // Create a new module (and put it into the cache)
-/******/         var module = __webpack_module_cache__[moduleId] = {
-/******/             // no module.id needed
-/******/             // no module.loaded needed
-/******/             exports: {}
-/******/         };
-/******/
-/******/         // Execute the module function
-/******/         __webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/
-/******/         // Return the exports of the module
-/******/         return module.exports;
+/******/   // The require function
+/******/   function __webpack_require__(moduleId) {
+/******/     // Check if module is in cache
+/******/     var cachedModule = __webpack_module_cache__[moduleId];
+/******/     if (cachedModule !== undefined) {
+/******/       return cachedModule.exports;
 /******/     }
+/******/     // Create a new module (and put it into the cache)
+/******/     var module = __webpack_module_cache__[moduleId] = {
+/******/       // no module.id needed
+/******/       // no module.loaded needed
+/******/       exports: {}
+/******/     };
+/******/
+/******/     // Execute the module function
+/******/     __webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/
+/******/     // Return the exports of the module
+/******/     return module.exports;
+/******/   }
 /******/
 /************************************************************************/
 /******/
-/******/     // startup
-/******/     // Load entry module and return exports
-/******/     // This entry module is referenced by other modules so it can't be inlined
-/******/     var __webpack_exports__ = __webpack_require__("./src/wavesurfer.js");
+/******/   // startup
+/******/   // Load entry module and return exports
+/******/   // This entry module is referenced by other modules so it can't be inlined
+/******/   var __webpack_exports__ = __webpack_require__("./src/wavesurfer.js");
 /******/
-/******/     return __webpack_exports__;
+/******/   return __webpack_exports__;
 /******/ })()
 ;
 });
