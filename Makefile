@@ -12,6 +12,7 @@ start:
 
 install:
 	# Première installation de pod (BDD SQLite intégrée)
+	npm install -g bower
 	make upgrade
 	make createDB
 
@@ -21,6 +22,7 @@ upgrade:
 	python3 -m pip install -r requirements.txt
 	make updatedb
 	make migrate
+	make collectstatic
 
 createDB:
 	# Création des données initiales dans la BDD SQLite intégrée
@@ -54,3 +56,7 @@ tests:
 pystyle:
 	# Ensure coherence of all code style
 	flake8
+
+collectstatic:
+	cd pod; bower update
+	python3 manage.py collectstatic
