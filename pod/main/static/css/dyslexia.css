@@ -14,17 +14,19 @@
   display: flex;
   align-items: center;
 }
+
 .dyslexia-switch-wrapper em {
   margin-left: 10px;
   font-size: 1rem;
 }
+
 .dyslexia-switch {
   display: inline-block;
   height: 24px;
   position: relative;
   width: 50px;
-  top: 7px;
 }
+
 .dyslexia-switch input {
   display: none;
 }
@@ -36,17 +38,20 @@
   color: var(--white) !important;
   transform: translateX(4px);
 }
+
 #dyslexia-switch-wrapper .feather-eye-off {
   opacity: 1;
   right: 5px;
   bottom: 0;
   transform: translateX(0);
 }
-input:checked + .slider .feather-eye {
+
+input:checked+.slider .feather-eye {
   opacity: 1;
   transform: translateX(0);
 }
-input:checked + .slider .feather-eye-off {
+
+input:checked+.slider .feather-eye-off {
   opacity: 0;
   transform: translateX(-4px);
 }

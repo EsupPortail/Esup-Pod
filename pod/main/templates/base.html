@@ -42,10 +42,6 @@
   <!-- more styles for each App -->
   {% block more_style %}{% endblock more_style %}
 
-  <!-- Javascript -->
-  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
-  <script src="{% static 'js-cookie/src/js.cookie.js' %}?ver={{VERSION}}"></script>
-  <script src="{% url 'javascript-catalog' %}"></script>
   <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|capfirst}}{% endblock %}</title>
 
   {% block page_extra_head %}{% endblock %}
@@ -59,7 +55,7 @@
   {% if PRE_HEADER_TEMPLATE %}{% include PRE_HEADER_TEMPLATE %}{% endif %}
   <header>
     <!-- barre nav-->
-    <nav class="pod-navbar navbar navbar-expand-lg fixed-top navbar-dark bg-dark m-0 p-0">
+    <nav class="pod-navbar navbar navbar-expand-lg fixed-top navbar-light bg-light m-0 p-0">
       {% include 'navbar.html' %}
     </nav><!-- fin barre nav-->
     {% include 'navbar_collapse.html' %}
@@ -107,7 +103,7 @@
           {% include "videos/last_videos.html" %}
           {% endif %}
         </div>
-        <aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
+        <aside class="pod-aside collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
           {% block page_aside %}
           {% include 'aside.html'%}
           {% endblock page_aside %}
@@ -143,7 +139,7 @@
               site traffic.' %}</span>
             {% if COOKIE_LEARN_MORE != "" %}
             <a class="d-flex align-items-center" href="{{COOKIE_LEARN_MORE}}">{% trans 'Learn more' %}<i
-                class="fa fa-angle-right ml-2"></i></a>
+                class="fa fa-angle-right ms-2"></i></a>
             {% endif %}
             <button class="btn btn-dark mt-3 px-4" type="button" id='okcookie'>{% trans 'I understand' %}</button>
           </div>
@@ -151,7 +147,10 @@
       </div>
     </div>
   </div>
-
+  <!-- Javascript migration from header to footer-->
+  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+  <script src="{% static 'js-cookie/src/js.cookie.js' %}?ver={{VERSION}}"></script>
+  <script src="{% url 'javascript-catalog' %}"></script>
   <!-- JS -->
   <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
 

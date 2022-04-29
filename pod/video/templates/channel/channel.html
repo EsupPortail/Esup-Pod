@@ -72,7 +72,7 @@
                 {% endif %}
                 {% if request.user in channel.owners.all %}
                     <a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans 'Edit the themes'%}" class="btn btn btn-outline-primary btn-sm">
-                        <i class="bi bi-pencil-square mr-1"></i>&nbsp;{% trans "Edit the channel"%}</a>
+                        <i class="bi bi-pencil-square me-1"></i>&nbsp;{% trans "Edit the channel"%}</a>
                 {% endif %}
             </span>
         </h1>
@@ -148,7 +148,7 @@
                 {% endif %}
             </span>
             {% if request.user in channel.owners.all %}
-                <span class="float-end"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans 'Edit the themes'%}" class="btn btn btn-outline-primary btn-sm mr-1">
+                <span class="float-end"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans 'Edit the themes'%}" class="btn btn btn-outline-primary btn-sm me-1">
                     <i class="bi bi-pencil-square"  ></i>&nbsp;{% trans "Edit the channel"%}</a>
                 </span>
             {%endif%}
@@ -182,8 +182,8 @@
 {% endblock page_content %}
 
 {% block page_aside %}
-    <div class="card card-body p-2 mt-1" id="card-channelthemes">
-        <h2 class="card-title pl-2 h4">
+    <div class="card card-body p-2 p-md-3" id="card-channelthemes">
+        <h2 class="card-title ps-2 h4">
             <i class="bi bi-card-list"   aria-hidden="true"></i>&nbsp; {% trans 'Themes of ' %}&nbsp;{{ channel.title }}
         </h2>
         <div class="card-text" id="treeview">

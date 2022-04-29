@@ -13,7 +13,7 @@
         <span style="width: 100%; height:96px;">
           <br/>
           {% if not max_limit_reached %}
-            <a href="{% url 'bbb:live_publish_meeting' id=record.id %}" title="{% trans "Perform a BigBlueButton live"%}" class="p-0 m-0 btn btn-primary btn-sm pl-1">
+            <a href="{% url 'bbb:live_publish_meeting' id=record.id %}" title="{% trans "Perform a BigBlueButton live"%}" class="p-0 m-0 btn btn-primary btn-sm ps-1">
               {% trans "Perform a BigBlueButton live"%}
             </a>
           {% else %}

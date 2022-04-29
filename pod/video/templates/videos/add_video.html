@@ -70,7 +70,7 @@
 
 {% block page_aside %}
 <div class="card" id="card-sharedraftversion">
-  <h2 class="card-header card-title pl-2 h4">{% trans "Uploading" %}</h2>
+  <h2 class="card-header card-title ps-2 h4">{% trans "Uploading" %}</h2>
   <div class="card-body card-text" >
     <p>{% blocktrans with max_size as video_max_upload_size %}The file size must be lower than {{video_max_upload_size}} Go.{% endblocktrans %}</p>
     <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
@@ -79,8 +79,8 @@
   </div>
 </div>
 
-<div class="card mt-1" id="card-helpfields">
-  <h2 class="card-header card-title pl-2 h4">{% trans "Help for form fields"%}</h2>
+<div class="card" id="card-helpfields">
+  <h2 class="card-header card-title ps-2 h4">{% trans "Help for form fields"%}</h2>
   <div class="card-body" id="formfields">
     <div class="card">
       <button class="btn btn-light rounded-0" id="heading-1" data-bs-toggle="collapse" data-bs-target="#collapse-1" aria-expanded="true" aria-controls="collapse-1">

@@ -22,7 +22,7 @@
                     {% thumbnail channel.headband.file "x34" as im %}
                     <img src="{{ im.url }}" height="34" class='rounded' alt="" loading="lazy">
                     {% endthumbnail %}
-                  {% else %}<i class="bi bi-youtube" style="height:34px" class="mr-2"></i>{% endif %}
+                  {% else %}<i class="bi bi-youtube" style="height:34px" class="me-2"></i>{% endif %}
                   <a href="{% url 'channel' slug_c=channel.slug%}" id="channel-title_{{channel.id}}">
                   {{channel.title}}</a></span>
                 <span class="text-nowrap">
@@ -68,7 +68,7 @@
                     {% thumbnail channel.headband.file "x34" as im %}
                     <img src="{{ im.url }}" height="34" class='rounded' alt="" loading="lazy">
                     {% endthumbnail %}
-                  {% else %}<i class="bi bi-youtube" style="height:34px" class="mr-2"></i>{% endif %}
+                  {% else %}<i class="bi bi-youtube" style="height:34px" class="me-2"></i>{% endif %}
                   <a href="{% url 'channel' slug_c=channel.slug%}" id="channel-title_{{channel.id}}">
                   {{channel.title}}</a></span>
                 <span class="text-nowrap">

@@ -22,12 +22,16 @@
   --background-color: var(--bg-color);
   --font-color: var(--color-mine-shaft);
 
+  --pod-primary: #0d6efd;
+  --pod-secondary: #0d6efd;
+
+
   /* BOOTSTRAP COLORS */
   /* primary color is defined in bootstrap-$theme$.css */
-  --primary2: var(--primary);
-  --light: #fff;
+  --primary2: var(--pod-primary);
+  --light: #f8f9fa;
   --dark: #343a40;
-  --white : #ffffff;
+  --white: #ffffff;
   --color-formfields: #f1f1f1;
 
   /* Use system font */
@@ -43,7 +47,9 @@
     --bg-color: #121212;
   }
 }
-
+a {
+  color:var(--pod-primary);
+}
 /* copy "alert-danger" style from Bootstrap 4 */
 .alert-error {
   color: #721c24;
@@ -89,7 +95,7 @@
 
 .pod-nav-link-icon {
   color: var(--link-color);
-  font-size: 120% ;
+  font-size: 120%;
 }
 
 .nav-link:focus .pod-nav-link-icon,
@@ -153,7 +159,7 @@ a.btn-outline-primary svg.feather {
   white-space: normal !important;
   word-wrap: break-word;
   word-break: normal;
-  padding: 1rem;
+  padding: 0.5rem;
 }
 
 .submit-row a.deletelink {
@@ -395,8 +401,8 @@ label {
     padding-left: 1px;
     display: inline-block;
     /*margin-top: .3em;*/
-    color: var(--color-sisal);
-    text-shadow: 0 0 .1em var(--color-mine-shaft);
+    /* color: var(--color-sisal); */
+    /* text-shadow: 0 0 .1em var(--color-mine-shaft); */
     position: relative;
     left: .1em;
     cursor: pointer;
@@ -407,10 +413,7 @@ label {
 /*** end MQueries **/
 
 .login>.initials {
-  border-radius: 50%;
   font-weight: 600;
-  height: 3rem;
-  width: 3rem;
 }
 
 .nav-link {
@@ -840,40 +843,101 @@ body {
   justify-content: flex-start;
   min-height: 100vh;
 }
+
 /*** footer **/
 .pod-footer {
-  margin-top:auto;
+  margin-top: auto;
   font-size: 90%;
   line-height: 1.4;
   color: var(--color-silver-chalice);
 }
+
 .pod-footer a {
   text-decoration: none;
 }
+
 .pod-footer a,
 .pod-footer a:hover {
   color: var(--white);
 }
-.pod-footer a:hover, .pod-footer a:focus {
+
+.pod-footer a:hover,
+.pod-footer a:focus {
   text-decoration: underline;
 }
-.pod-lead {
-  
+.pod-brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-.pod-container {
- 
-}
+.pod-lead {}
+
+.pod-container {}
 
 .pod-navbar {}
 
 .pod-inner {
   padding: 1rem 2rem;
 }
-/**** static content homepage ***/
-.pod-content-static {
-
+.pod-navbar__theme-switch__item{
+  display: flex;
+  align-items: center;
 }
+.pod-navbar .pod-navbar-nav .pod-navbar__nav-item__nav-link {
+  /* color:rgba(255,255,255,1); */
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.pod-navbar .pod-navbar-nav .pod-navbar__nav-item__nav-link i, .form-inline i{
+  font-size: 1.3rem;
+}
+.pod-navbar .pod-navbar-nav .pod-navbar__nav-item__nav-link:hover, .pod-navbar .pod-navbar-nav .pod-navbar__nav-item__nav-link:focus  {
+  text-decoration: underline;
+}
+.pod-navbar-nav{
+  justify-content: space-around;
+}
+
+/**** static content homepage ***/
+.pod-content-static {}
+
 .pod-dropdown-item {
   display: flex;
   align-items: center;
+}
+.pod-aside {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
+  grid-template-rows: min-content;
+  grid-auto-flow: row;
+  grid-auto-rows: min-content;
+}
+.pod-aside .card {
+  background: var(--light);
+  border-radius: 0;;
+}
+.pod-navbar__button-toogler{
+    color: var(--font-color);
+    padding: 0;
+    font-size: 1.8rem;
+    margin: 0;
+    border: 0;
+    margin-right: 1.5rem;
+}
+.pod-navbar__nav-item__nav-link--add-video {
+  position: relative;
+}
+.pod-camera-video {
+  font-size: 2rem !important;
+  z-index: 0;
+}
+.pod-add {
+  position: absolute;
+  z-index: 1;
+}
+#card-helpfields .card {
+  border-bottom: 1px solid silver;
 }

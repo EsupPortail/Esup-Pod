@@ -108,8 +108,8 @@
 
 
 {% block page_aside %}
-  <div class="card card-body p-2 mt-1" id="card-interactiveeditinformations">
-    <h5 class="card-title pl-2">
+  <div class="card card-body p-2 p-md-3" id="card-interactiveeditinformations">
+    <h5 class="card-title ps-2">
       <i class="bi bi-info-circle"></i>&nbsp;{% trans 'Informations' %}
     </h5>
     <div class="card-text small">
@@ -124,8 +124,8 @@
     </div>
   </div>
   {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all %}
-  <div class="card mt-1" id="card-managevideo">
-  <h2 class="card-header card-title pl-2 h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
+  <div class="card" id="card-managevideo">
+  <h2 class="card-header card-title ps-2 h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
       <div class="card-body card-text text-center">
       {% include "videos/link_video.html" %}
       </div>

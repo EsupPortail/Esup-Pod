@@ -34,8 +34,8 @@
 
 {% block page_aside %}
 {% include 'playlist/playlist_video_list.html' %}
-  <div class="card mt-1{% if not video.enrichment_set.all %} off{% endif %}" id="card-enrichmentinformations">
-    <h2 class="card-header card-title pl-2 h4">
+  <div class="card {% if not video.enrichment_set.all %} off{% endif %}" id="card-enrichmentinformations">
+    <h2 class="card-header card-title ps-2 h4">
       <i class="bi bi-info-circle"></i>&nbsp;{% trans 'Informations' %}
     </h2>
     <div class="card-body card-text">

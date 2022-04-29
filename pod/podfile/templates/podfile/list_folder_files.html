@@ -45,7 +45,7 @@
     </svg>
   </button>
   <div class="collapse navbar-collapse" id="currentfolder">
-    <ul class="navbar-nav mr-auto">
+    <ul class="navbar-nav me-auto">
       {% if request.user == folder.owner or request.user.is_superuser or perms.podfile.change_userfolder or request.user in folder.users.all %}
         {% if folder.name != "home" %}
           <li class="nav-item">
@@ -184,7 +184,7 @@
 <div class="row loadingformfiles" style="display: none">
   <div class="d-flex align-items-center col">
     <strong>{% trans "Loading"%}...</strong>
-    <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+    <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
   </div>
 </div>
 <div class="row" id="listfiles">
@@ -219,7 +219,7 @@
             </span>
           </button>
           <div class="file collapse" id="currentfile{{file.id}}">
-            <ul class="file-navbar navbar-nav mr-auto p-0 m-0">
+            <ul class="file-navbar navbar-nav me-auto p-0 m-0">
               <li class="nav-item p-0 m-0">
                 <button
                   type="button"

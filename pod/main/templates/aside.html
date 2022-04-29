@@ -3,8 +3,8 @@
 {% spaceless %}
 <!-- Load Facebook SDK for JavaScript -->
 {% if HIDE_SHARE == False %}
-<div class="card card-body p-2 mt-1" id="card-share">
-  <h2 class="card-title pl-2 h4">
+<div class="card card-body p-2" id="card-share">
+  <h2 class="card-title ps-2 h4">
     <i class="bi bi-share" aria-hidden="true"></i>&nbsp;{% trans 'Share' %}
   </h2>
   <p class="card-text text-center social_links">
@@ -15,8 +15,8 @@
 </div>
 {% endif %}
 {% if HIDE_DISCIPLINES == False %}
-<div class="card card-body p-2 mt-1" id="card-disciplines">
-  <h2 class="card-title pl-2 h4">
+<div class="card card-body p-2 p-3" id="card-disciplines">
+  <h2 class="card-title ps-2 h4">
     <label for="discipline">
       <i class="bi bi-book"></i>&nbsp;{% trans 'Disciplines' %}
     </label>
@@ -36,8 +36,8 @@
 {% endif %}
 
 {% if HIDE_TYPES == False %}
-<div class="card card-body p-2 mt-1" id="card-types">
-  <h2 class="card-title pl-2 h4">
+<div class="card card-body p-2 p-3" id="card-types">
+  <h2 class="card-title ps-2 h4">
     <label for="type">
       <i class="bi bi-tv"></i>&nbsp;{% trans 'Types' %}
     </label>
@@ -57,8 +57,8 @@
 {% endif %}
 
 {% if HIDE_TAGS == False %}
-<div class="card card-body p-2 mt-1" id="card-tags">
-  <h2 class="card-title pl-2 h4">
+<div class="card card-body p-2 p-3" id="card-tags">
+  <h2 class="card-title ps-2 h4">
     <i class="bi bi-tag" aria-hidden="true"></i>&nbsp;{% trans 'Tags' %}
     <!-- <a href="#" class="float-right"><svg height="32" class="octicon octicon-arrow-right" viewBox="0 0 10 16" version="1.1" width="20" aria-hidden="true"><path fill-rule="evenodd" d="M10 8L4 3v3H0v4h4v3z"></path></svg></a>
     -->

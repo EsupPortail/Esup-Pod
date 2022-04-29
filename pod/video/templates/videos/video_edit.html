@@ -138,26 +138,26 @@
 {% if access_not_allowed == True %}
 {% else %}
   {% if form.instance.title  and form.instance.slug != '' %}
-    <div class="card mt-1" id="card-managevideo">
-      <h2 class="card-header card-title pl-2 h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
+    <div class="card" id="card-managevideo">
+      <h2 class="card-header card-title ps-2 h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
       <div class="card-body card-text text-center">
         {% include "videos/link_video.html" with video=form.instance %}
       </div>
     </div>
     {% if form.instance.slug != '' and request.user.is_staff or request.user.is_superuser or perms.video.change_video %}
       {% if THIRD_PARTY_APPS|length > 0 %}
-        <div class="card mt-1" id="card-alternativeversion">
-          <h5 class="card-header card-title pl-2">{% trans "Staff" %} - {% trans "Alternative version" %}</h5>
+        <div class="card" id="card-alternativeversion">
+          <h5 class="card-header card-title ps-2">{% trans "Staff" %} - {% trans "Alternative version" %}</h5>
           <div class="card-body card-text">
             <p>{% trans 'As a staff member you can create other version of your video.' %}</p>
             <div class="input-group-button">
-              {% for app in THIRD_PARTY_APPS %}{% if app != "live" %}{% with urledit=app|add:':edit_'|add:app %}<a href="{% url urledit slug=form.instance.slug %}" title="{% blocktrans %}Edit the {{app}}{% endblocktrans %}" class="p-0 m-0 btn btn-light btn-sm pl-1"><i class="bi bi-file-plus"></i>&nbsp;{% trans app|capfirst %}</a> {% endwith %}{% endif %}{% endfor %}
+              {% for app in THIRD_PARTY_APPS %}{% if app != "live" %}{% with urledit=app|add:':edit_'|add:app %}<a href="{% url urledit slug=form.instance.slug %}" title="{% blocktrans %}Edit the {{app}}{% endblocktrans %}" class="p-0 m-0 btn btn-light btn-sm ps-1"><i class="bi bi-file-plus"></i>&nbsp;{% trans app|capfirst %}</a> {% endwith %}{% endif %}{% endfor %}
             </div>
           </div>
         </div>
       {% endif %}
-      <div class="card mt-1" id="card-sharedraftversion">
-        <h5 class="card-header card-title pl-2">{% trans 'Embed/Share (Draft Mode)' %}</h5>
+      <div class="card" id="card-sharedraftversion">
+        <h5 class="card-header card-title ps-2">{% trans 'Embed/Share (Draft Mode)' %}</h5>
         <div class="card-body card-text" >
           <p>{% trans 'Use this link to share the video in draft mode' %}</p>
           <div>
@@ -174,8 +174,8 @@
       </div>
     {% endif %}
   {% endif %}
-  <div class="card mt-1" id="card-sharedraftversion">
-    <h5 class="card-header card-title pl-2">{% trans "Uploading" %}</h5>
+  <div class="card" id="card-sharedraftversion">
+    <h5 class="card-header card-title ps-2">{% trans "Uploading" %}</h5>
     <div class="card-body card-text">
       <p>{% blocktrans with form.VIDEO_MAX_UPLOAD_SIZE as video_max_upload_size %}The file size must be lower than {{video_max_upload_size}} Go.{% endblocktrans %}</p>
       <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
@@ -183,14 +183,14 @@
       <p>{% trans "An email will be sent to you when all encoding tasks are completed." %}<p>
     </div>
   </div>
-  <div class="card mt-1" id="card-mandatoryfields">
-    <h5 class="card-header card-title pl-2">{% trans "Mandatory fields" %}</h5>
+  <div class="card" id="card-mandatoryfields">
+    <h5 class="card-header card-title ps-2">{% trans "Mandatory fields" %}</h5>
     <div class="card-body card-text">
       <p>{% trans "Fields marked with an asterisk are mandatory."%}</p>
     </div>
   </div>
-  <div class="card mt-1" id="card-helpfields">
-    <h5 class="card-header card-title pl-2">{% trans "Help for form fields"%}</h5>
+  <div class="card" id="card-helpfields">
+    <h5 class="card-header card-title ps-2">{% trans "Help for form fields"%}</h5>
     <div class="card-body" id="formfields">
       {% for title, values in form.VIDEO_FORM_FIELDS_HELP_TEXT.items %}
         <div class="card">

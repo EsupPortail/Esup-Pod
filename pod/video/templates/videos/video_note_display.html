@@ -1,7 +1,7 @@
 {% load static i18n %}
 
 <div class="header">
-  <span class="timestamp mr-1" start="{{ note.timestamp }}">{{ note.timestampstr }}</span>
+  <span class="timestamp me-1" start="{{ note.timestamp }}">{{ note.timestampstr }}</span>
 
   {% comment %} Display the full note {% endcomment %}
   {% if noteToDisplay and note == noteToDisplay and note != noteToEdit %}
