@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block more_style %}
+    {% if use_category %}
+        <link rel="stylesheet" href="{% static 'css/video_category.css' %}?ver={{ VERSION }}">
+    {% endif %}
+    <link href="{% static 'css/event.css' %}?ver={{ VERSION }}" rel="stylesheet"/>
+{% endblock more_style %}
+
+{% block breadcrumbs %}{{ block.super }}
+    <li class="breadcrumb-item active" aria-current="page">{% trans "My events" %}</li>{% endblock %}
+
+{% block page_title %}
+    {% blocktrans count counter=events_number %}{{ counter }} event found{% plural %}{{ counter }} events found{% endblocktrans %}
+{% endblock %}
+
+
+
+{% block page_content %}
+
+    {% if use_category %}
+        <!-- Loader -->
+        <div class="loader_wrapper">
+            <div id="my_events" class="lds-roller">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+        <!-- End Loader -->
+
+        {#    {% include "events/category_modal.html" %}#}
+
+    {% endif %}
+
+    <div class="d-flex infinite-container mb-2" id="event_add">
+        {% if events.count == 0 %}
+            <h3>{% trans "No event found" %}</h3>
+        {% else %}
+            <h3>{% blocktrans count counter=events_number %}{{ counter }} event found{% plural %}{{ counter }} events found{% endblocktrans %}</h3>
+        {% endif %}
+        {% if display_direct_button %}
+            <a class="ml-auto" href="{% url 'live:lives' %}" title="{% trans "Supervise broadcasters" %}">
+               <button type="button" class="btn btn-primary">
+                   <i data-feather="activity" aria-hidden="true" class="d-lg-none d-xl-inline"></i>
+                   {% trans "Supervise broadcasters" %}
+                </button>
+            </a>
+        {% endif %}
+        <a class="ml-auto" href="{% url 'live:event_edit' %}" title="{% trans "Plan an event" %}">
+            <button type="button" class="btn btn-primary">
+                <i data-feather="plus" aria-hidden="true" class="d-lg-none d-xl-inline"></i>
+                {% trans "Plan an event" %}
+            </button>
+        </a>
+    </div>
+    {% if events.count == 0 %}
+        <p class="alert alert-info">{% trans 'You have not planned any event yet, please use the "Plan an event" button to add one' %}</p>
+    {% else %}
+        <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the event on which you want to work with." %}</p>
+
+        <h4>{% trans "Coming events" %}</h4>
+        {% include "live/events_list.html" with events=coming_events urlpage=coming_events_url urland=past_events_url_page %}
+
+        <h4>{% trans "Past events" %}</h4>
+        {% include "live/events_list.html" with events=past_events urlpage=past_events_url urland=coming_events_url_page %}
+
+    {% endif %}
+
+{% endblock page_content %}
+
+{% block page_aside %}
+    {# masque la barre laterale aside.html #}
+{% endblock page_aside %}

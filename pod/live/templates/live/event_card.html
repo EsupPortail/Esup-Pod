@@ -1,0 +1,64 @@
+{% load l10n %}
+{% load i18n %}
+{% spaceless %}
+    <div class="card mb-4 box-shadow border-secondary video-card">
+        <!-- card.html -->
+        <div class="card-header">
+            <div class="d-flex justify-content-end align-items-center">
+{#            between<small class="text-muted time">{% blocktrans with start_date=event.start_date|date:"d/m/Y" start_time=event.start_time end_time=event.end_time %}The {{start_date}} from {{start_time}} to {{end_time}}{% endblocktrans %}</small>#}
+            <span class="text-muted small">
+                    <span>
+                    {% if event.is_current %}
+                        <i class="current_event_feather" data-feather="radio"></i>
+                    {%  else %}
+                        <i data-feather="radio"></i>
+                    {%  endif %}
+                    </span>
+                    <span data-toggle="tooltip" title="{{event.broadcaster.name}}">
+                        <i data-feather="info"></i>
+                    </span>
+                    {% if event.is_draft %}
+                        <span title="{% trans 'This content is in draft.' %}">
+                            <i data-feather="x-circle"></i>
+                        </span>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        <div class="card-thumbnail">
+            <a class="link-center-pod" href="{{ event.get_absolute_url }}" title="{{ event.title }}">
+                {{ event.get_thumbnail_card|safe }}
+            </a>
+        </div>
+        <div class="card-body px-3 py-2">
+            {% if event.owner == request.user or request.user.is_superuser or perms.event.change_video or request.user in event.additional_owners.all %}
+
+                <footer class="card-footer card-footer-pod p-0 m-0">
+{#                {% include "videos/link_video.html" %}#}
+                    {# Remove following icons #}
+                    {% spaceless %}
+                    <a href="{% url 'live:event_edit' slug=event.slug %}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
+                        <i data-feather="edit"></i>
+                    </a>
+                    <a href="{% url 'live:event_delete' slug=event.slug %}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
+                        <i data-feather="trash-2"></i>
+                    </a>
+                    {% endspaceless %}
+                </footer>
+            {% endif %}
+             <span class="small video-title">
+                <a href="{{event.get_absolute_url}}
+                    {% if playlist %}?playlist={{playlist.slug}}{% endif %}"
+                   title="{{event.title}}">
+                    {{event.title|capfirst|truncatechars:43}}
+                </a>
+                </br>
+                    {% blocktrans with start_date=event.start_date|date:"d/m/Y" start_time=event.start_time end_time=event.end_time %}The {{start_date}} from {{start_time}} to {{end_time}}{% endblocktrans %}
+                    {% if display_broadcaster_name %}
+                        {{event.broadcaster.name|capfirst|truncatechars:20}}
+                    {% endif %}
+             </span>
+        </div>
+
+    </div>
+{% endspaceless %}

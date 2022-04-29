@@ -1,0 +1,8 @@
+<div class="row infinite-container" id="videos_list">
+    {% for video in event.videos.all %}
+        <div class="infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group"
+             style="min-width: 12rem; min-height: 11rem;">
+            {% include "videos/card.html" %}
+        </div>
+    {% endfor %}
+</div>

@@ -38,6 +38,9 @@
     {% if CSS_OVERRIDE %}
       <link rel="stylesheet" href="{% static CSS_OVERRIDE %}?ver={{VERSION}}" media="screen">
     {% endif %}
+    {% if USE_EVENT and "live" in THIRD_PARTY_APPS %}
+        <link href="{% static 'css/event.css' %}?ver={{ VERSION }}" rel="stylesheet"/>
+    {% endif %}
 
     <!-- more styles for each App -->
     {% block more_style %}{% endblock more_style %}
@@ -104,7 +107,10 @@
             </div>
             <!-- fin contenu page statique -->
             {% if request.path == "/" %}
-              {% include "videos/last_videos.html" %}
+                {% if USE_EVENT and "live" in THIRD_PARTY_APPS %}
+                    {% include "live/events_next.html" %}
+                {% endif %}
+            {% include "videos/last_videos.html" %}
             {% endif %}
           </div>
           <aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">

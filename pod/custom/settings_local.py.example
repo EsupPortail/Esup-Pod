@@ -1361,3 +1361,55 @@ COOKIE_LEARN_MORE = ""
 #     'TRACKING_TEMPLATE': 'custom/tracking.html',
 """
 USE_VIDEO_EVENT_TRACKING = False
+
+"""
+# Utiliser la gestion des évènements sur les directs
+# Ce paramètre positionné à True désactivera l'accès aux directs
+# et activera la possibilité d'accéder à des évènements sur les directs
+"""
+USE_EVENT = False
+
+"""
+# Si True, seule les personnes "Staff" peuvent programmer des évènements
+"""
+RESTRICT_EDIT_EVENT_ACCESS_TO_STAFF_ONLY = True
+
+"""
+# Chemin racine du répertoire où sont déposés temporairement les
+# enregistrements des évènements éffectués depuis POD pour
+# converstion en ressource vidéo (VOD)
+"""
+DEFAULT_EVENT_PATH = ""
+
+"""
+# Types de logiciel de serveur de streaming utilisés.
+# Actuellement disponible Wowza.
+# Si vous utilisez une autre logiciel, il faut développer une interface dans pod/live/pilotingInterface.py
+"""
+BROADCASTER_PILOTING_SOFTWARE = ['Wowza',]
+
+"""
+# Image par défaut affichée comme poster ou vignette,
+#  utilisée pour présenter l'évènement'.
+# Cette image doit se situer dans le répertoire static.
+"""
+DEFAULT_EVENT_THUMBNAIL = "/img/default-event.svg"
+
+"""
+# Type par défaut affecté à un évènement direct
+#  (en général, le type ayant pour identifiant '1' est 'Other')
+"""
+DEFAULT_EVENT_TYPE_ID = 1
+
+
+"""
+# Si True, un courriel est envoyé aux managers
+#  et à l'auteur (si DEBUG est à False) à la création/modification d'un event
+"""
+EMAIL_ON_EVENT_SCHEDULING = True
+
+"""
+# Si True, un courriel est également envoyé à l'admin (si DEBUG est à False)
+#  à la création/modification d'un event
+"""
+EMAIL_ADMIN_ON_EVENT_SCHEDULING = True

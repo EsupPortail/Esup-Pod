@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block more_style %}
+    <link href="{% static 'css/event.css' %}?ver={{ VERSION }}" rel="stylesheet"/>
+{% endblock more_style %}
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Events" %}</li>{% endblock %}
+
+{% block page_title %}
+  {% blocktrans count counter=events.paginator.count %}{{ counter }} event found{% plural %}{{ counter }} events found{% endblocktrans %}
+  {{ events.paginator.count }}
+{% endblock %}
+
+
+
+{% block page_content %}
+
+  {% if use_category %}
+    <!-- Loader -->
+    <div class="loader_wrapper">
+      <div id="my_events" class="lds-roller">
+        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+      </div>
+    </div>
+    <!-- End Loader -->
+
+  {% endif %}
+
+  {% if events.count == 0 %}
+    <h3>{% trans "No event found"%}</h3>
+  {% else %}
+    <h3>{% blocktrans count counter=events.paginator.count %}{{ counter }} event found{% plural %}{{ counter }} events found{% endblocktrans %}</h3>
+    <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the event on which you want to work with." %}</p>
+
+    {% include "live/events_list.html" %}
+
+  {% endif %}
+{% endblock page_content %}
+
+{% block page_aside %}
+  {% include 'live/filter_aside.html' %}
+{% endblock page_aside %}

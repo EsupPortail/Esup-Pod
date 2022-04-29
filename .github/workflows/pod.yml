@@ -45,6 +45,7 @@ jobs:
           pip install -r requirements.txt
           pip install flake8
           pip install coveralls
+          pip install httmock
 
       - name: Flake8 compliance
         run: |

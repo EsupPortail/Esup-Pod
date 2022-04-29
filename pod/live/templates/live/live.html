@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n event_tags%}
 {% load staticfiles %}
 
 {% block page_extra_head %}
@@ -32,6 +32,15 @@
 {% else %}
 
   <h3 id="livename" data-liveid="{{broadcaster.id}}"><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}}</h3>
+  {% if use_event %}
+      <div class="d-flex infinite-container mb-2" id="event_add">
+    <a class="ml-auto" href="{% url 'live:event_edit' %}?broadcaster_id={{broadcaster.id}}&building_id={{broadcaster.building.id}}" title="{% trans "Plan an event" %}">
+    <button type="button" class="btn btn-primary">
+      <i data-feather="plus" aria-hidden="true" class="d-lg-none d-xl-inline"></i>
+                {% trans "Plan an event" %}
+    </button>
+    </a></div>
+  {% endif %}
 
   {% if broadcaster.video_on_hold.is_video %}
     <div id="divvideoonhold" style="display: block;">
@@ -124,6 +133,31 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
+    {% if broadcaster.is_recording%}
+      <div class="card text-white bg-danger mb-3">
+          <div class="card-body">
+        <i data-feather="alert-octagon"> </i> {% blocktrans %}Recording in progress{% endblocktrans %}
+          </div>
+      </div>
+    {% else %}
+        <div class="card  mb-3">
+          <div class="card-body">
+        {% blocktrans %}No recording in progress{% endblocktrans %}
+        </div>
+      </div>
+    {% endif %}
+ {% if use_event %}
+    {% get_next_events broadcaster.id 8 as NEXT_EVENTS %}
+
+    {% if NEXT_EVENTS %}
+    <div class="jumbotron" id="last_videos">
+        <h3>8 {% trans "Next events" %}</h3>
+
+        {% include "live/events_list.html" with events=NEXT_EVENTS %}
+
+    </div>
+    {% endif %}
+{% endif %}
 
 {% endblock page_content %}
 

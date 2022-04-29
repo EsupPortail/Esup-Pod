@@ -97,6 +97,12 @@ USE_BBB_LIVE = getattr(django_settings, "USE_BBB_LIVE", False)
 
 COOKIE_LEARN_MORE = getattr(django_settings, "COOKIE_LEARN_MORE", "")
 
+USE_EVENT = getattr(django_settings, "USE_EVENT", False)
+
+DEFAULT_EVENT_THUMBNAIL = getattr(
+    django_settings, "DEFAULT_EVENT_THUMBNAIL", "/img/default-event.svg"
+)
+
 USE_OPENCAST_STUDIO = getattr(django_settings, "USE_OPENCAST_STUDIO", False)
 
 
@@ -160,7 +166,8 @@ def context_settings(request):
     new_settings["DYSLEXIAMODE_ENABLED"] = DYSLEXIAMODE_ENABLED
     new_settings["USE_OPENCAST_STUDIO"] = USE_OPENCAST_STUDIO
     new_settings["COOKIE_LEARN_MORE"] = COOKIE_LEARN_MORE
-
+    new_settings["USE_EVENT"] = USE_EVENT
+    new_settings["DEFAULT_EVENT_THUMBNAIL"] = DEFAULT_EVENT_THUMBNAIL
     return new_settings
 
 
