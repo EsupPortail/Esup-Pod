@@ -298,18 +298,18 @@ $(document).ready(function () {
   $("#collapseAside").on("shown.bs.collapse", function () {
     Cookies.set("activeCollapseAside", "open");
     $(".collapseAside").html(
-      '<i data-feather="corner-left-up"></i><i data-feather="menu"></i>'
+      '<i class="bi bi-arrow-90deg-up"></i><i class="bi bi-list"></i>'
     );
-    feather.replace({ class: "align-bottom" });
+    // feather.replace({ class: "align-bottom" });
     $("#mainContent").addClass("col-md-9");
   });
   // Fired when #collapseAside has been hidden
   $("#collapseAside").on("hidden.bs.collapse", function () {
     Cookies.set("activeCollapseAside", "close");
     $(".collapseAside").html(
-      '<i data-feather="corner-left-down"></i><i data-feather="menu"></i>'
+      '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
     );
-    feather.replace({ class: "align-bottom" });
+    // feather.replace({ class: "align-bottom" });
     $("#mainContent").removeClass("col-md-9");
   });
 
@@ -326,9 +326,9 @@ $(document).ready(function () {
     if (last != null && last == "close") {
       $("#collapseAside").collapse("hide");
       $(".collapseAside").html(
-        '<i data-feather="corner-left-down"></i><i data-feather="menu"></i>'
+        '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
       );
-      feather.replace({ class: "align-bottom" });
+      // feather.replace({ class: "align-bottom" });
       $("#mainContent").removeClass("col-md-9");
     } else {
       $("#collapseAside").collapse("show");
