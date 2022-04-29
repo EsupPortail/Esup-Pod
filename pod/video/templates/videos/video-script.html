@@ -221,4 +221,13 @@ player.on('firstplay', function(){
   });
 {% endif %}
 
+
+{% if not video.is_video %}
+  window.addEventListener('resize', function(){
+    // Auto resize Waves on window resize.
+    player.wavesurfer().surfer && player.wavesurfer().surfer._onResize();
+  });
+{% endif %}
+
+
 </script>
