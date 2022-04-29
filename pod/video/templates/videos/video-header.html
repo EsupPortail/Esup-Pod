@@ -15,10 +15,27 @@
   <script src="{% static 'player/wavesurfer.js'%}?ver={{VERSION}}"></script>
   <script src="{% static 'player/videojs.wavesurfer.js' %}?ver={{VERSION}}"></script>
 
-  <!--script src="https://cdn.jsdelivr.net/npm/videojs-wavesurfer@3.7.0/dist/videojs.wavesurfer.js"></script-->
   <style>
-    /* Change background-color of previsualised wave */
-    .vjs-wavedisplay>wave{background-color: #FFF8;}
+    .vjs-wavesurfer>wave>wave {
+      /* background-color of previsualised wave */
+      background-color: #FFF8;
+      /* cursor color */
+      border-right-color: var(--primary);
+    }
+    /* responsive layout when vjs-fluid not present */
+    .vjs-wavesurfer>wave {
+      top: 0;
+      position: absolute !important;
+      width: 100%;
+      min-width: 100%;
+      max-width: 100%;
+      /* 3em is for height of controlbar*/
+      height: calc(100% - 3em) !important;
+    }
+    .vjs-wavesurfer>wave>canvas {
+      width: 100% !important;
+    }
+
   </style>
 {% endif %}
 

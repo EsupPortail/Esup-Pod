@@ -25,6 +25,7 @@ window.onmessage = function(event) {
     }
 };
 const seektime = 10;
+
 const options = {
   notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
   //language: "fr", //en or nl
@@ -80,11 +81,11 @@ const options = {
     ,wavesurfer: {
       backend: 'MediaElement',
       displayMilliseconds: true,
-      debug: true,
+      debug: false,
       waveColor: 'grey',
       progressColor: 'black',
-      cursorColor: 'black',
-      hideScrollbar: true
+      cursorColor: 'var(--primary)',
+      hideScrollbar: false
     }
 {% endif %}
   }
