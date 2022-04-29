@@ -845,6 +845,18 @@ class Video(models.Model):
 
     get_encoding_step.fget.short_description = _("Encoding step")
 
+    def get_player_height(self):
+        """
+        Get the default player height (half size for audio files).
+
+        This height is mostly valid when in iframe mode,
+         as in main mode height is set by % of window.
+        """
+        if self.is_video:
+            return 360
+        else:
+            return 180
+
     def get_thumbnail_url(self):
         """Get a thumbnail url for the video."""
         request = None

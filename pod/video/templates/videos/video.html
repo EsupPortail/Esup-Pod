@@ -28,7 +28,7 @@
 <meta property="og:video" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true">
 <meta property="og:video:type" content="text/html">
 <meta property="og:video:width" content="640">
-<meta property="og:video:height" content="360">
+<meta property="og:video:height" content="{{video.get_player_height}}">
 
 <meta name="twitter:card" content="player">
 <meta name="twitter:site" content="{{ TITLE_SITE }}">
@@ -39,7 +39,7 @@
 
 <meta name="twitter:player" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true">
 <meta name="twitter:player:width" content="640">
-<meta name="twitter:player:height" content="360">
+<meta name="twitter:player:height" content="{{video.get_player_height}}">
 
 {% if video.is_draft == True %}
   <meta name="robots" content="NONE,NOARCHIVE">

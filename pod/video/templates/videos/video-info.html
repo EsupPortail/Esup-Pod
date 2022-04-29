@@ -260,7 +260,7 @@
             <legend><i data-feather="code"></i>&nbsp;{% trans 'Embed in a web page' %}</legend>
             <div class="form-group ">
               <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page:' %}</label>
-              <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+              <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
             </div>
           </fieldset>
           <fieldset>
@@ -272,7 +272,7 @@
             <div class="form-group">
               <label>{% trans 'QR code for this link:' %}&nbsp;
               <a class="btn btn-outline-primary btn-sm m-1" title="{% trans 'Warning, it use google API' %}" type="button" data-toggle="collapse" data-target="#qrcode" aria-expanded="false" aria-controls="qrcode">
-                <i data-feather="eye"></i> 
+                <i data-feather="eye"></i>
               </a>
               </label>
               <img src="" data-src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" alt="qrcode" id="qrcode" loading="lazy" class="collapse" />

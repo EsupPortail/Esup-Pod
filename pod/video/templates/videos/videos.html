@@ -55,10 +55,10 @@
 
 
 {% block more_script %}
-<script type="text/javascript">
-const urlVideos = "{% url 'videos' %}";
-</script>
-<script src="{% static 'jquery-waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
+  <script>
+    const urlVideos = "{% url 'videos' %}";
+  </script>
+  <script src="{% static 'jquery-waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
 {% endblock more_script %}

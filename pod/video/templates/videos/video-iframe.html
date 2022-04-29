@@ -68,7 +68,6 @@
   }
   {% if video.is_video %}
     $('#div-video-wrapper').append('<div id="overlay-footer"></div>');
-    alert("is video");
     player.ready(function() {
       const btinfo = $('.vjs-info-button:eq(0)')[0]
       $(btinfo).clone().appendTo('#overlay-footer')
