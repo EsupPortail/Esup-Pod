@@ -47,16 +47,12 @@
   </div>
 </div>
 
-<!-- extract from https://webcache.googleusercontent.com/search?q=cache:-ebduGPpZGYJ:https://testdrive-archive.azurewebsites.net/Graphics/CaptionMaker/Default.html+&cd=1&hl=fr&ct=clnk&gl=fr -->
-
 {% if messages %}
   <div id="base-message-alert">
   {% for message in messages %}
     <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
       {{ message }}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-      </button>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
   {% endfor %}
   <script>
@@ -90,13 +86,13 @@
     <div class="captions_editor text-center" id="newCaptionsEditor">
       <h5 id="noCaptionsText">{% trans "No captions" %} </h5>
       <button id="addSubtitle" type="button" class="btn btn-link btn-lg">
-        <i data-feather="plus" width='28px' height='28px'></i>
+        <i class="bi bi-plus" width='28px' height='28px'></i>
         {% trans "Add subtitle" %}
       </button>
     </div>
     <div>
       <!--<p>{% trans "You can load and existing caption file below :" %}-->
-      <form method="post" class="float-left" action="{% url 'video_caption_maker' slug=video.slug %}" id="captionmaker_form">
+      <form method="post" class="float-sart" action="{% url 'video_caption_maker' slug=video.slug %}" id="captionmaker_form">
         {% csrf_token %}
         <fieldset>
           {% if form_make_caption.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
@@ -116,7 +112,8 @@
         </fieldset>
         {{form_make_caption.media}}
       </form>
-      <form class="form_save completion float-left" id="form_save_captions" action="{% url 'video_caption_maker' slug=video.slug %}" method="POST" enctype="multipart/form-data">
+
+      <form class="form_save completion float-start" id="form_save_captions" action="{% url 'video_caption_maker' slug=video.slug %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="hidden" name="action" value="save"/>
         <input type="hidden" name="file_id"/>
@@ -130,13 +127,13 @@
   </div>
   <div id="editorTipsAndGoBack">
     <div style="padding-top: 6px;">
-      <span class="float-left">
+      <span class="float-start">
         <button id="showShortcutTips" class="btn btn-primary btn-sm">{% trans "Key Schortcuts" %}</button>
         <div id="shortcutsBlock" style="display:none" class="shadow p-3 mb-5 bg-white rounded">
           <h5>{% trans "Video Player" %}</h5>
           <p><div class="shortcutKey">{% trans "Space" %}</div> {% trans "Pause / unpause" %}</p>
-          <p><div class="shortcutKey"><i data-feather="arrow-left" width="18px" height="18px"></i></div> {% trans "Rewind the video 10 seconds back" %}</p>
-          <p><div class="shortcutKey"><i data-feather="arrow-right" width="18px" height="18px"></i></div> {% trans "Skip 10 seconds" %}</p>
+          <p><div class="shortcutKey"><i class="bi bi-arrow-left" width="18px" height="18px"></i></div> {% trans "Rewind the video 10 seconds back" %}</p>
+          <p><div class="shortcutKey"><i class="bi bi-arrow-right" width="18px" height="18px"></i></div> {% trans "Skip 10 seconds" %}</p>
           <p><div class="shortcutKey">M</div> {% trans "Mute/unmute video" %}</p>
           <br>
           <h5>{% trans "Captions Editor" %}</h5>
@@ -150,9 +147,9 @@
           <p><div class="shortcutKey">?</div> {% trans "Show/hide this window" %} </p>
         </div>
       </span>
-      <span class="float-right">
+      <span class="float-end">
         <a href="{% url 'video_completion' slug=video.slug %}" title="{% trans 'View the video' %}" class="btn btn btn-secondary btn-sm">
-          <i data-feather="arrow-left"></i>&nbsp;{% trans "Back to the completion"%}
+          <i class="bi bi-arrow-left"></i>&nbsp;{% trans "Back to the completion"%}
         </a>
       </span>
     </div>
@@ -164,7 +161,7 @@
     <div class="modal-content" style="min-height: auto; width: auto;">
       <div class="modal-header">
         <h2 class="modal-title">{% trans "Save captions file."%}</h2>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <p>{% trans "You have loaded a file. Do you want to override it?"%}</p>

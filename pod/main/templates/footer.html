@@ -1,23 +1,25 @@
 {% load static %}
 {% load i18n %}
 {% spaceless %}
-<div class="container container-pod">
-<p class="float-right">
+<div class="container pod-container">
+<p class="float-end">
   <a class="top_link" href="#">Haut de page</a>
 </p>
 <div class="row">
   <div class="col-md-4">
-    <img src="{% static LOGO_ETB %}" alt="" height="70" loading="lazy">
-    <p class="footer-contact mt-3 hidden-pod">
+    <img src="{% static LOGO_ETB %}" alt="" height="40" loading="lazy" class="pod-footer-logo">
+    <address>
+    <p class="footer-contact mt-3 hidden-pod pod-hidden">
       <span class="footer-contact-title">{{TITLE_ETB}}</span><br>
       {% for text in FOOTER_TEXT %}
       {{text|safe}}<br>
       {% endfor %}
     </p>
+  </address>
   </div>
   <div class="col-md-4">
     {% if LINK_FOOTER %}
-      <ul class="footer_links">
+      <ul class="footer_links list-unstyled">
       {% for link in LINK_FOOTER %}
         <li><a href="{{link.get_url}}">{{link.title}}</a></li>
       {% endfor %}
@@ -25,7 +27,8 @@
     {% endif %}
   </div>
   <div class="col-md-4">
-    <ul class="footer_links">
+    <ul class="footer_links list-unstyled">
+      
       <li><a href="https://www.esup-portail.org/" title="{% trans 'Esup Portal: Community of French higher education establishments for digital innovation' %}" target="_blank">{% trans "Esup Portal" %}</a></li>
       <li><a href="https://github.com/EsupPortail/Esup-Pod" target="_blank">{% trans "Pod Project" %}</a></li>
     </ul>

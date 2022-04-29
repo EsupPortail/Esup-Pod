@@ -6,7 +6,7 @@
 
 {% block page_extra_head %}
 <style>
-  div.jumbotron {
+  div.pod-inner {
     min-height: 56rem;
     height:100%;
   }
@@ -52,20 +52,20 @@
         <form action="{% url 'h5pp:h5plistContents' %}?contentId={{interactive.h5p.content_id}}" id="button_delete_video" style="display:inline-block;">
           {% csrf_token %}
           <button type="submit" class="btn btn-secondary btn-sm" title="{% trans 'Back' %}">
-            <i data-feather="x-circle"></i>
-            <span class="sr-only">{% trans 'Back' %}</span>
+            <i class="bi bi-x-circle"></i>
+            <span class="visually-hidden">{% trans 'Back' %}</span>
           </button>
         </form>
         <button type="submit" class="btn btn-primary btn-sm" id="button_manage" title="{% trans 'Manage scores' %}">
-          <i data-feather="list"></i>
-          <span class="sr-only">{% trans 'Manage scores' %}</span>
+          <i class="bi bi-card-list"></i>
+          <span class="visually-hidden">{% trans 'Manage scores' %}</span>
         </button>
         {% endif %}
       {% endif %}
         <form action="{% url 'video' slug=video.slug %}" id="video_back" style="display:inline-block;">
           <button type="submit" class="btn btn-secondary btn-sm" id="button_video_back" title="{% trans 'Back' %}">
-            <i data-feather="arrow-left-circle"></i>
-            <span class="sr-only">{% trans 'Back' %}</span>
+            <i class="bi bi-arrow-left-circle"></i>
+            <span class="visually-hidden">{% trans 'Back' %}</span>
           </button>
         </form>
       </small>
@@ -108,13 +108,13 @@
 
 
 {% block page_aside %}
-  <div class="card card-body p-2 mt-1" id="card-interactiveeditinformations">
-    <h5 class="card-title pl-2">
-      <i data-feather="info"></i>&nbsp;{% trans 'Informations' %}
+  <div class="card card-body p-2 p-md-3" id="card-interactiveeditinformations">
+    <h5 class="card-title ps-2">
+      <i class="bi bi-info-circle"></i>&nbsp;{% trans 'Informations' %}
     </h5>
     <div class="card-text small">
       {% if video.owner == request.user or request.user.is_superuser %}
-      <p><a href="{% url 'interactive:group_interactive' slug=video.slug %}" title="{% trans 'You can specify the group(s) of users who can access this page' %}"><i data-feather="users"></i>&nbsp;{% trans 'You can specify the group(s) of users who can access this page' %}</a></p>
+      <p><a href="{% url 'interactive:group_interactive' slug=video.slug %}" title="{% trans 'You can specify the group(s) of users who can access this page' %}"><i class="bi bi-people"></i>&nbsp;{% trans 'You can specify the group(s) of users who can access this page' %}</a></p>
       {% endif %}
       <p class="text-info">
         {% trans 'Do not forget to save your work regularly. Especially if you add an interaction.' %}
@@ -124,8 +124,8 @@
     </div>
   </div>
   {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all %}
-  <div class="card mt-1" id="card-managevideo">
-  <h2 class="card-header card-title pl-2 h4"><i data-feather="settings"></i>&nbsp;{% trans "Manage video"%}</h2>
+  <div class="card" id="card-managevideo">
+  <h2 class="card-header card-title ps-2 h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
       <div class="card-body card-text text-center">
       {% include "videos/link_video.html" %}
       </div>
