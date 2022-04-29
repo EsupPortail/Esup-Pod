@@ -16,7 +16,7 @@
     {% for channel in channels %}
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <span>
-          <a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans 'Edit the channel'%}" class="btn btn-light btn-sm"><i data-feather="edit" aria-hidden="true"></i>&nbsp;</a>
+          <a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans 'Edit the channel'%}" class="btn btn-light btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;</a>
           <a href="{% url 'channel' slug_c=channel.slug %}" title="{{channel.title}}">
             {% if channel.headband %}<!-- <img src="{{channel.headband.file.url}}" class="rounded img-thumbnail" alt="{{channel.title}}" loading="lazy"> -->
               {% thumbnail channel.headband.file "x34" as im %}

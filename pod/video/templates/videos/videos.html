@@ -21,20 +21,17 @@
 
 {% block page_content %}
 
-  <div class="row">
-    <div class="col">
-      <h1 id="video_count">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h1>
-    </div>
-      <span class="float-left col">
-        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm float-right">
-          <i data-feather="rss"></i>&nbsp;Audio</a>
-        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm float-right">
-          <i data-feather="rss"></i>&nbsp;Video</a>
+      <h1 id="video_count">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
+      <span class="float-end">
+        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-rss"></i>&nbsp;Audio</a> 
+        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-rss"></i>&nbsp;Video</a> 
         {% if USE_STATS_VIEW %}
-          <a href="{% url 'video_stats_view' 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm float-right" style="height:35.8px"> {% trans "Statistics views" %}</a>
+          <a href="{% url 'video_stats_view' 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm"><i class="bi bi-graph-up"></i> {% trans "Statistics views" %}</a> 
         {% endif %}
       </span>
-  </div>
+    </h1>
 
   {% comment %}
   <p>
