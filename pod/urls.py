@@ -56,7 +56,6 @@ from pod.recorder.views import (
 # from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
 from pod.video.views import PodChunkedUploadView, PodChunkedUploadCompleteView
 
-
 USE_CAS = getattr(settings, "USE_CAS", False)
 USE_SHIB = getattr(settings, "USE_SHIB", False)
 USE_OIDC = getattr(settings, "USE_OIDC", False)
@@ -65,7 +64,6 @@ USE_BBB = getattr(settings, "USE_BBB", False)
 
 if USE_CAS:
     from cas import views as cas_views
-
 
 urlpatterns = [
     url("select2/", include("django_select2.urls")),
@@ -209,6 +207,9 @@ urlpatterns = [
 
     # custom
     url(r"^custom/", include("pod.custom.urls")),
+
+    # meetings
+    url(r"^", include("pod.meetings.urls")),
 ]
 urlpatterns += (url(r"^maintenance/$", maintenance, name="maintenance"),)
 

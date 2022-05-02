@@ -6,6 +6,8 @@ Django version: 3.2.
 import os
 import sys
 
+from django.conf import settings
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # will be update in pod/main/settings.py
 
@@ -56,10 +58,33 @@ INSTALLED_APPS = [
     'pod.lti',
     'pod.custom',
     'pod.bbb',
+    'pod.meetings',
     'shibboleth',
     'chunked_upload',
     'mozilla_django_oidc',
 ]
+
+BBB_API_URL = getattr(settings, 'BBB_API_URL', None)
+BBB_SECRET_KEY = getattr(settings, 'BBB_SECRET_KEY', None)
+
+BBB_CALLBACK_URL = getattr(settings, 'BBB_CALLBACK_URL', None)
+
+BBB_MAX_PARTICIPANTS = getattr(settings, 'BBB_MAX_PARTICIPANTS', 10)
+BBB_WELCOME_TEXT = getattr(settings, 'BBB_WELCOME_TEXT', 'Welcome to meeting')
+BBB_LOGOUT_URL = getattr(settings, 'BBB_LOGOUT_URL', BBB_API_URL)
+BBB_RECORD = getattr(settings, 'BBB_RECORD', True)
+BBB_AUTO_RECORDING = getattr(settings, 'BBB_AUTO_RECORDING', False)
+BBB_ALLOW_START_STOP_RECORDING = getattr(settings, 'BBB_ALLOW_START_STOP_RECORDING', True)
+BBB_WEBCAM_ONLY_FOR_MODS = getattr(settings, 'BBB_WEBCAM_ONLY_FOR_MODS', False)
+BBB_LOCK_SETTINGS_DISABLE_CAM = getattr(settings, 'BBB_LOCK_SETTINGS_DISABLE_CAM', False)
+BBB_LOCK_SETTINGS_DISABLE_MIC = getattr(settings, 'BBB_LOCK_SETTINGS_DISABLE_MIC', False)
+BBB_LOCK_SETTINGS_DISABLE_PRIVATE_CHAT = getattr(settings, 'BBB_LOCK_SETTINGS_DISABLE_PRIVATE_CHAT', False)
+BBB_LOCK_SETTINGS_DISABLE_PUBLIC_CHAT = getattr(settings, 'BBB_LOCK_SETTINGS_DISABLE_PUBLIC_CHAT', False)
+BBB_LOCK_SETTINGS_DISABLE_NOTE = getattr(settings, 'BBB_LOCK_SETTINGS_DISABLE_NOTE', False)
+BBB_LOCK_SETTINGS_LOCKED_LAYOUT = getattr(settings, 'BBB_LOCK_SETTINGS_LOCKED_LAYOUT', False)
+BBB_COPYRIGHT_TEXT = getattr(settings, 'BBB_COPYRIGHT_TEXT', 'Copyright to Execut3 (CPOL Co)')
+
+UPDATE_RUNNING_ON_EACH_CALL = getattr(settings, 'UPDATE_RUNNING_ON_EACH_CALL', True)
 
 ##
 # Activated middleware components

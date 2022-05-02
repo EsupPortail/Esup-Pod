@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{%load static%}
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Titre de la page</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <h1>Création d'une réunion</h1>
+
+    <form action="mailto:antoine_leva@ens.univ-artois.fr" method="post">
+      <fieldset>
+        <legend>Titre</legend>
+        <input type="text" value="" name="titre" maxlength="100" size="30"/>
+        <legend>Mot de passe participants</legend>
+        <input type="text" value="" name="mot de passe participants" maxlength="30" size="30"/>
+        <legend>Numéro de téléphone</legend>
+        <input type="text" value="" name="numero" maxlength="10" size="10"/>
+        <legend>Adresse mail</legend>
+        <input type="text" value="" name="adresse" maxlength="20" size="20"/>
+      </fieldset>
+
+      <fieldset>
+        <legend>Diplôme le plus élevé obtenu</legend>
+        <input type="radio" name="plat" value="BTS"/>BTS <br></br>
+        <input type="radio" name="plat" value="DUT"/>DUT <br></br>
+        <input type="radio" name="plat" value="Licence Pro"/>Licence Pro <br></br>
+        <input type="radio" name="plat" value="Licence"/>Licence <br></br>
+        <input type="radio" name="plat" value="Master"/>Master <br></br>
+        <input type="radio" name="plat" value="Doctorat"/>Doctorat <br></br>
+      </fieldset>
+
+      <fieldset>
+        <legend>La Zone Géographique</legend>
+        <input type="radio" name="Zone" value="Nord"/>Nord <br></br>
+        <input type="radio" name="Zone" value="Est"/>Est <br></br>
+        <input type="radio" name="Zone" value="Ouest"/>Ouest <br></br>
+        <input type="radio" name="Zone" value="Sud-Ouest"/>Sud-Ouest <br></br>
+        <input type="radio" name="Zone" value="Ile de France"/>Ile de France <br></br>
+        <input type="radio" name="Zone" value="Centre"/>Centre <br></br>
+      </fieldset>
+
+      <fieldset>
+        <legend>Langue parlé</legend>
+        <input type="checkbox" name="langue" value="Français"/>Français <br></br>
+        <input type="checkbox" name="langue" value="Anglais"/>Anglais <br></br>
+        <input type="checkbox" name="langue" value="Espagnol"/>Espagnol <br></br>
+        <input type="checkbox" name="langue" value="Allemand"/>Allemand <br></br>
+      </fieldset>
+
+      <fieldset>
+        <legend>Language informatique maitrisé</legend>
+        <input type="checkbox" name="language" value="HTML"/>HTML <br></br>
+        <input type="checkbox" name="language" value="CSS"/>CSS <br></br>
+        <input type="checkbox" name="language" value="Python"/>Python <br></br>
+        <input type="checkbox" name="language" value="Javascript"/>Javascript <br></br>
+      </fieldset>
+
+      <fieldset>
+        <legend>Poste désiré</legend>
+        <select name="option">
+          <option>webmaster</option>
+          <option>développeur web</option>
+          <option>administrateur réseau</option>
+        </select>
+      </fieldset>
+
+      <fieldset>
+        <input type="submit" value="ok"/>
+        <input type="reset" value="init"/>
+      </fieldset>
+    </form>
+</body>
+</html>
