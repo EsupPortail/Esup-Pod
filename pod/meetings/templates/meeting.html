@@ -1,16 +1,18 @@
-{%load static%}
 <!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8">
   <title>Titre de la page</title>
+  {%load static%}
   <link rel="stylesheet" href="{% static 'style.css' %}">
   <script src="https://kit.fontawesome.com/1481fe7b2b.js" crossorigin="=anonymous"></script>
 </head>
 <body>
-    <div class="container">
-        <button id="button"> Ajouter une réunion </button>
-    </div>
+    <section>
+        <div class="container">
+            <button id="button"><a href="add/">Ajouter une réunion</a></button>
+        </div>
+    </section>
 
     <h1>Salles de réunion :</h1>
 
@@ -28,9 +30,9 @@
             <td>Date de fin</td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Test</td>
+            <td>5 mai 2022 à 17h30</td>
+            <td>5 mai 2022 à 19h00</td>
         </tr>
     </table>
 

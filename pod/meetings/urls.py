@@ -1,4 +1,7 @@
 from django.conf.urls import *
+from django.urls import path
+
+from pod.meetings.models import Meetings
 
 from .views import index, add
 
@@ -9,6 +12,6 @@ from .views import index, add
 app_name = "meetings"
 
 urlpatterns = [
-    url(r"^meeting/", index, name="index"),
-    url(r"^meeting/add/$", add, name="add"),
+    path('meeting/', index, name='index'),
+    path('meeting/add/', add, name='add'),
 ]
