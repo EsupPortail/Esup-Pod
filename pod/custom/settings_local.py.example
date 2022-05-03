@@ -1364,8 +1364,8 @@ USE_VIDEO_EVENT_TRACKING = False
 
 """
 # Utiliser la gestion des évènements sur les directs
-# Ce paramètre positionné à True désactivera l'accès aux directs
-# et activera la possibilité d'accéder à des évènements sur les directs
+# Ce paramètre positionné à True désactivera le menu d'accès aux directs
+# et activera la possibilité de programmer des évènements sur les directs
 """
 USE_EVENT = False
 
