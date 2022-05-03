@@ -5,15 +5,15 @@ from pod.meetings.models import Meetings #,Attendee, #Stream
 class MeetingsAdmin(admin.ModelAdmin):
     list_display = (
         "id",
-        "meeting_name",
+        "titre",
         "attendee_password",
         "moderator_password",
     )
-    list_display_links = ("id", "meeting_name")
+    list_display_links = ("id", "titre")
     readonly_fields = []
     search_fields = [
         "id",
-        "meeting_name",
+        "titre",
     ]
 
 '''

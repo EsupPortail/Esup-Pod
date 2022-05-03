@@ -8,9 +8,9 @@ from django.utils.translation import ugettext_lazy as _
 User = get_user_model()
 
 class Meetings(models.Model):
-    meeting_name = models.CharField(
+    titre = models.CharField(
         max_length=100,
-        verbose_name=_('Meeting Name')
+        verbose_name=_('Titre')
     )
 
     meeting_id = models.CharField(
@@ -38,6 +38,7 @@ class Meetings(models.Model):
     
     end_date = models.DateTimeField(
         _("End date"),
+        default=timezone.now,
         null=True,
         blank=True,
         help_text=_("End date of the live."),
@@ -45,12 +46,12 @@ class Meetings(models.Model):
 
     attendee_password = models.CharField(
         max_length=50,
-        verbose_name=_('Vieweur Password')
+        verbose_name=_('Mot de passe participants')
     )
 
     moderator_password = models.CharField(
         max_length=50,
-        verbose_name=_('Moderator Password')
+        verbose_name=_('Mot de passe modérateurs')
     )
 
     is_running = models.BooleanField(
@@ -135,7 +136,7 @@ class Meetings(models.Model):
     )
 
     def __str__(self):
-        return (self.meetings_name, self.meetings_id)
+        return "%s - %s" % (self.titre, self.meeting_id)
 
     class Meta:
         db_table = 'meetings'
@@ -144,9 +145,8 @@ class Meetings(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        if not self.name:
-            self.name = self.meeting_id
-        super(Meetings, self).save()
+        if not self.titre:
+            self.titre = self.meeting_id
 
 '''
 class Attendee(models.Model):
