@@ -1,42 +1,49 @@
-<!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <title>Titre de la page</title>
-  {%load static%}
-  <link rel="stylesheet" href="{% static 'style.css' %}">
-  <script src="https://kit.fontawesome.com/1481fe7b2b.js" crossorigin="=anonymous"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-</head>
-<body>
-    <section>
-        <div class="container">
-            <button id="button"><a href="add/">Ajouter une réunion</a></button>
-        </div>
-    </section>
+{%load static%}
 
-    <h1>Salles de réunion :</h1>
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
-    <div class="topnav">
-        <div class="search-container">
-            <input type="text" placeholder="Search.." name="search">
-            <button type="submit"><i class="fa fa-search"></i></button>
-        </div>
+<section>
+    <div class="container">
+        <a id="button" class="btn btn-sm btn-primary" href="{% url 'meetings:add' %}">Ajouter une réunion</a>
     </div>
-    <section>
-        <table class="table table-bordered">
+</section>
+
+<h1>Salles de réunion :</h1>
+
+<br>
+
+<div class="container">
+    <input class="form-control" id="myInput" type="text" placeholder="Search..">
+    <table with="600" class="table table-bordered table-striped" style="border-collapse: collapse;">
+        <thead>
             <tr>
-                <td>Titre</td>
-                <td>Date de début</td>
-                <td>Date de fin</td>
+                <td>Titre</td><td>Date de début</td><td>Date de fin</td>
             </tr>
+        </thead>
+        <tbody>
+            {% for element in dataMeetings %}
             <tr>
-                <td>Test</td>
-                <td>5 mai 2022 à 17h30</td>
-                <td>5 mai 2022 à 19h00</td>
+                <td> {{ element.titre }} </td>
+                <td> {{ element.start_date }} </td>
+                <td> {{ element.end_date }} </td>
+                <td><a class="btn btn-sm btn-success" href="modify/{{ element.titre }}, {{ element.start_date }}, {{ element.end_date }}">modify</a>
+                <a class="btn btn-sm btn-danger" href="delete/{{ element.titre }}">delete</a>
+                </td>
             </tr>
-        </table>
-    </section>
-</body>
-</html>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function(){
+      $("#myInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#myTable tr").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+</script>

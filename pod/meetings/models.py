@@ -14,13 +14,12 @@ class Meetings(models.Model):
     )
 
     meeting_id = models.CharField(
-        max_length=100, unique=True,
+        max_length=100,
         verbose_name=_('Meeting ID')
     )
 
     slug = models.SlugField(
         _("Slug"),
-        unique=True,
         max_length=100,
         help_text=_(
             'Used to access this instance, the "slug" is '
@@ -143,10 +142,11 @@ class Meetings(models.Model):
         verbose_name = 'Meetings'
         verbose_name_plural = _('Meetings')
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(self, *args, **kwargs):
         if not self.titre:
             self.titre = self.meeting_id
+        super(Meetings, self).save(*args, **kwargs)
+        
 
 '''
 class Attendee(models.Model):
