@@ -231,9 +231,11 @@ for application in INSTALLED_APPS:
             for variable in dir(_temp.settings_local):
                 if variable == variable.upper():
                     locals()[variable] = getattr(_temp.settings_local, variable)
+
+
 # add tenant settings
 def update_tenant_settings(tenant):
-    path = "pod/custom/tenants/%(tenant)s/%(tenant)s_settings.py" %{"tenant": tenant}
+    path = "pod/custom/tenants/%(tenant)s/%(tenant)s_settings.py" % {"tenant": tenant}
     application = path.replace(os.path.sep, ".").replace(".py", "")
     settings = "%s_settings" % tenant
     if os.path.exists(path):
@@ -243,8 +245,9 @@ def update_tenant_settings(tenant):
                 globals()[variable] = getattr(_temp, variable)
     update_settings()
 
+
 def update_settings():
-    global AUTHENTICATION_BACKENDS, TEMPLATES, CAS_RESPONSE_CALLBACKS, MIDDLEWARE
+    global AUTHENTICATION_BACKENDS, TEMPLATES, CAS_RESPONSE_CALLBACKS, MIDDLEWARE, LOGIN_REDIRECT_URL
     ##
     # AUTH
     #
@@ -282,7 +285,8 @@ def update_settings():
     if "USE_OPENCAST_STUDIO" in globals() and eval("USE_OPENCAST_STUDIO") is True:
         # add dir to opencast studio static files i.e : pod/custom/static/opencast/
         TEMPLATES[0]["DIRS"].append(os.path.join(BASE_DIR, "custom", "static", "opencast"))
-    
+
     AUTHENTICATION_BACKENDS = list(dict.fromkeys(AUTHENTICATION_BACKENDS))
+
 
 update_settings()
