@@ -73,18 +73,22 @@ echo "(django_pod) pod@pod:/usr/local/django_projects/podv2$ python manage.py cr
 echo "--"
 echo "crontab"
 echo "clear session"
+echo "" >> $BASEDIR/clearsessions.sh
 echo "# $ID_SITE $NAME " >> $BASEDIR/clearsessions.sh 
 echo "cd /usr/local/django_projects/podv2 && /home/pod/.virtualenvs/django_pod/bin/python manage.py clearsessions --settings=pod.custom.tenants.$NAME."$NAME"_settings &>> /usr/local/django_projects/podv2/pod/log/cron_clearsessions_$NAME.log 2>&1" >> $BASEDIR/clearsessions.sh 
 
 echo "index videos"
+echo "" >> $BASEDIR/index_videos.sh
 echo "# $ID_SITE $NAME " >> $BASEDIR/index_videos.sh
 echo "cd /usr/local/django_projects/podv2 && /home/pod/.virtualenvs/django_pod/bin/python manage.py index_videos --all  --settings=pod.custom.tenants.$NAME."$NAME"_settings  &>> /usr/local/django_projects/podv2/pod/log/cron_index_$NAME.log 2>&1"  >> $BASEDIR/index_videos.sh
 
 echo "check_obsolete_videos"
+echo "" >> $BASEDIR/check_obsolete_videos.sh
 echo "# $ID_SITE $NAME " >> $BASEDIR/check_obsolete_videos.sh
 echo "cd /usr/local/django_projects/podv2 && /home/pod/.virtualenvs/django_pod/bin/python manage.py check_obsolete_videos --settings=pod.custom.tenants.$NAME."$NAME"_settings  &>> /usr/local/django_projects/podv2/pod/log/cron_obsolete_$NAME.log 2>&1"  >> $BASEDIR/check_obsolete_videos.sh
 
 echo "live_viewcounter"
+echo "" >> $BASEDIR/live_viewcounter.sh
 echo "# $ID_SITE $NAME " >> $BASEDIR/live_viewcounter.sh
 echo "cd /usr/local/django_projects/podv2 && /home/pod/.virtualenvs/django_pod/bin/python manage.py live_viewcounter --settings=pod.custom.tenants.$NAME."$NAME"_settings  &>> /usr/local/django_projects/podv2/pod/log/cron_viewcounter_$NAME.log 2>&1"  >> $BASEDIR/live_viewcounter.sh
 

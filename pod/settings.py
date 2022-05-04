@@ -231,43 +231,58 @@ for application in INSTALLED_APPS:
             for variable in dir(_temp.settings_local):
                 if variable == variable.upper():
                     locals()[variable] = getattr(_temp.settings_local, variable)
-##
-# AUTH CAS
-#
-if "USE_CAS" in globals() and eval("USE_CAS") is True:
-    AUTHENTICATION_BACKENDS = (
-        "pod.main.auth_backend.SiteBackend",
-        "cas.backends.CASBackend",
-    )
-    CAS_RESPONSE_CALLBACKS = (
-        "pod.authentication.populatedCASbackend.populateUser",
-        # function call to add some information to user login by CAS
-    )
-    MIDDLEWARE.append("cas.middleware.CASMiddleware")
+# add tenant settings
+def update_tenant_settings(tenant):
+    path = "pod/custom/tenants/%(tenant)s/%(tenant)s_settings.py" %{"tenant": tenant}
+    application = path.replace(os.path.sep, ".").replace(".py", "")
+    settings = "%s_settings" % tenant
+    if os.path.exists(path):
+        _temp = __import__(application, globals(), locals(), [settings])
+        for variable in dir(_temp):
+            if variable == variable.upper():
+                globals()[variable] = getattr(_temp, variable)
+    update_settings()
 
-if "USE_SHIB" in globals() and eval("USE_SHIB") is True:
-    AUTHENTICATION_BACKENDS += ("pod.authentication.backends.ShibbBackend",)
-    MIDDLEWARE.append("pod.authentication.shibmiddleware.ShibbMiddleware")
+def update_settings():
+    global AUTHENTICATION_BACKENDS, TEMPLATES, CAS_RESPONSE_CALLBACKS, MIDDLEWARE
+    ##
+    # AUTH
+    #
+    if "USE_CAS" in globals() and eval("USE_CAS") is True:
+        AUTHENTICATION_BACKENDS += (
+            "cas.backends.CASBackend",
+        )
+        CAS_RESPONSE_CALLBACKS = (
+            "pod.authentication.populatedCASbackend.populateUser",
+            # function call to add some information to user login by CAS
+        )
+        MIDDLEWARE.append("cas.middleware.CASMiddleware")
 
-if "USE_OIDC" in globals() and eval("USE_OIDC") is True:
-    AUTHENTICATION_BACKENDS += ("pod.authentication.backends.OIDCBackend",)
-    LOGIN_REDIRECT_URL = "/"
+    if "USE_SHIB" in globals() and eval("USE_SHIB") is True:
+        AUTHENTICATION_BACKENDS += ("pod.authentication.backends.ShibbBackend",)
+        MIDDLEWARE.append("pod.authentication.shibmiddleware.ShibbMiddleware")
 
-##
-# Authentication backend : add lti backend if use
-#
-if "LTI_ENABLED" in globals() and eval("LTI_ENABLED") is True:
-    AUTHENTICATION_BACKENDS = list(AUTHENTICATION_BACKENDS)
-    AUTHENTICATION_BACKENDS.append("lti_provider.auth.LTIBackend")
-    AUTHENTICATION_BACKENDS = tuple(AUTHENTICATION_BACKENDS)
+    if "USE_OIDC" in globals() and eval("USE_OIDC") is True:
+        AUTHENTICATION_BACKENDS += ("pod.authentication.backends.OIDCBackend",)
+        LOGIN_REDIRECT_URL = "/"
 
-if "H5P_ENABLED" in globals() and eval("H5P_ENABLED") is True:
-    sys.path.append(os.path.join(BASE_DIR, "../../H5PP"))
-    INSTALLED_APPS.append("h5pp")
-    INSTALLED_APPS.append("pod.interactive")
+    ##
+    # Authentication backend : add lti backend if use
+    #
+    if "LTI_ENABLED" in globals() and eval("LTI_ENABLED") is True:
+        AUTHENTICATION_BACKENDS += ("lti_provider.auth.LTIBackend",)
 
-##
-# Opencast studio
-if "USE_OPENCAST_STUDIO" in globals() and eval("USE_OPENCAST_STUDIO") is True:
-    # add dir to opencast studio static files i.e : pod/custom/static/opencast/
-    TEMPLATES[0]["DIRS"].append(os.path.join(BASE_DIR, "custom", "static", "opencast"))
+    if "H5P_ENABLED" in globals() and eval("H5P_ENABLED") is True:
+        sys.path.append(os.path.join(BASE_DIR, "../../H5PP"))
+        INSTALLED_APPS.append("h5pp")
+        INSTALLED_APPS.append("pod.interactive")
+
+    ##
+    # Opencast studio
+    if "USE_OPENCAST_STUDIO" in globals() and eval("USE_OPENCAST_STUDIO") is True:
+        # add dir to opencast studio static files i.e : pod/custom/static/opencast/
+        TEMPLATES[0]["DIRS"].append(os.path.join(BASE_DIR, "custom", "static", "opencast"))
+    
+    AUTHENTICATION_BACKENDS = list(dict.fromkeys(AUTHENTICATION_BACKENDS))
+
+update_settings()
