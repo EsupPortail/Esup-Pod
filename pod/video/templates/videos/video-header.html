@@ -9,6 +9,41 @@
 <link href="{% static 'player/videojs-seek-buttons.css' %}?ver={{VERSION}}" rel="stylesheet" />
 <script src="{% static 'player/videojs-seek-buttons.min.js' %}?ver={{VERSION}}"></script>
 
+{% if not video.is_video %}
+  <!-- Audio wavesurfer -->
+  <link href="{% static 'player/videojs.wavesurfer.min.css' %}?ver={{VERSION}}" rel="stylesheet" />
+  <script src="{% static 'player/wavesurfer.js'%}?ver={{VERSION}}"></script>
+  <script src="{% static 'player/videojs.wavesurfer.js' %}?ver={{VERSION}}"></script>
+
+  <style>
+    .vjs-wavesurfer>wave>wave {
+      /* background-color of previsualised wave */
+      background-color: #FFF8;
+      /* cursor color */
+      border-right-color: var(--primary);
+    }
+    /* responsive layout when vjs-fluid not present */
+    .vjs-wavesurfer>wave {
+      top: 0;
+      position: absolute !important;
+      width: 100%;
+      min-width: 100%;
+      max-width: 100%;
+      /* 3em is for height of controlbar*/
+      height: calc(100% - 3em) !important;
+    }
+    .vjs-wavesurfer>wave>canvas {
+      width: 100% !important;
+    }
+    /* Reduce player height for audio files */
+    #podvideoplayer{
+      /* nb: video files are set to 56% */
+      padding-top: 38%;
+    }
+
+  </style>
+{% endif %}
+
 <!-- quality selector -->
 <link href="{% static 'player/videojs-hls-quality-selector.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'player/videojs-contrib-quality-levels.min.js' %}?ver={{VERSION}}"></script>
