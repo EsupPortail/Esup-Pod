@@ -1,9 +1,11 @@
-import datetime
 from django.utils import timezone
 
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
+
+from pod.meetings.utils import BBB_ALLOW_START_STOP_RECORDING, BBB_AUTO_RECORDING, BBB_LOGOUT_URL, BBB_RECORD, BBB_WELCOME_TEXT, BigBlueButton, xml_to_json
+#from select2 import fields as select2_fields
 
 User = get_user_model()
 
@@ -28,6 +30,29 @@ class Meetings(models.Model):
         ),
         editable=False,
     )
+    '''
+    sites = models.ManyToManyField(site)
+    type = models.ForeignKey(types, verbose_name=_("Type"))
+    owner = select2_fields.ForeignKey(
+        User,
+        ajax=True,
+        verbose_name=_("Owner"),
+        on_delete=models.CASCADE,
+    )
+    additional_owners = select2_fields.ManyToManyField(
+        User,
+        blank=True,
+        ajax=True,
+        js_options={"width": "off"},
+        verbose_name=_("Additional owners"),
+        related_name="owners_videos",
+        help_text=_(
+            "You can add additional owners to the video. They "
+            "will have the same rights as you except that they "
+            "can't delete this video."
+        ),
+    )
+    '''
 
     start_date = models.DateTimeField(
         _("Start date"),
@@ -146,94 +171,87 @@ class Meetings(models.Model):
         if not self.titre:
             self.titre = self.meeting_id
         super(Meetings, self).save(*args, **kwargs)
-        
 
-'''
-class Attendee(models.Model):
-    meetings = models.ForeignKey(
-        null=True,
-        blank=True,
-        to=Meetings,
-        db_index=True,
-        related_name='attendee',
-        verbose_name=_('Meetings'),
-        on_delete=models.SET_NULL
-    )
+    def info(self):
+        # Will return result of bbb.get_meeting_info
+        return BigBlueButton().meeting_info(
+            self.meeting_id,
+            self.moderator_password
+        )
 
-    fullname = models.CharField(
-        null=True,
-        blank=True,
-        default='',
-        max_length=50,
-        verbose_name=_('User fullname')
-    )
+    def check_is_running(self, commit=True):
+        """ Call bbb is_running method, and see if this meeting_id is running! """
+        is_running = BigBlueButton().is_running(self.meeting_id)
+        self.is_running = True if is_running in ['true', True, 'True'] else False
+        if commit:
+            self.save()
+        return self.is_running
 
-    role = models.CharField(
-        max_length=200,
-        verbose_name=_('Role')
-    )
+    def start(self):
+        """ Will start already created meeting again. """
+        result = BigBlueButton().start(
+            name=self.name,
+            meeting_id=self.meeting_id,
+            attendee_password=self.attendee_password,
+            moderator_password=self.moderator_password
+        )
 
-    username = models.CharField(
-        max_length=150,
-        verbose_name=_('User nameWelcome!')
-    )
+        if result:
+            # It's better to create hook again,
+            # So if by any reason is removed from bbb, again be created
+            # If already exist will just give warning and will be ignored
+            self.create_hook()
 
-    user = models.ForeignKey(
-        to=User,
-        null=True,
-        blank=True,
-        db_index=True,
-        verbose_name=_('User'),
-        on_delete=models.SET_NULL,
-        related_name='meetings_attendee'
-    )
+        return result
 
-    def __str__(self):
-        return (self.fullname, self.role)
+    def end(self):
+        # If successfully ended, will return True
+        ended = BigBlueButton().end_meeting(
+            meeting_id=self.meeting_id,
+            password=self.moderator_password
+        )
+        ended = True if ended == True else False
+        if ended:
+            self.is_running = False
+            self.save()
 
-    class Meta:
-        db_table = 'meetings_attendee'
-        verbose_name = 'Attendee'
-        verbose_name_plural = _('Attendees')
+        return ended
 
-class Stream(models.Model):
-    user = models.ForeignKey(
-        to=User,
-        null=True,
-        blank=True,
-        db_index=True,
-        verbose_name=_('User'),
-        on_delete=models.SET_NULL,
-        related_name='meetings_room'
-    )
+    def create_join_link(self, fullname, role='moderator', **kwargs):
+        pw = self.moderator_password if role == 'moderator' else self.attendee_password
+        link = BigBlueButton().join_url(self.meeting_id, fullname, pw, **kwargs)
+        return link
 
-    meetings = models.ForeignKey(
-        null=True,
-        blank=True,
-        to=Meetings,
-        related_name='logs',
-        verbose_name=_('Meetings'),
-        on_delete=models.SET_NULL
-    )
+    def create(cls, titre, meeting_id, **kwargs):
+        kwargs.update({
+            'record': kwargs.get('record', BBB_RECORD),
+            'logout_url': kwargs.get('logout_url', BBB_LOGOUT_URL),
+            'welcome_text': kwargs.get('welcome_text', BBB_WELCOME_TEXT),
+            'auto_start_recording': kwargs.get('auto_start_recording', BBB_AUTO_RECORDING),
+            'allow_start_stop_recording': kwargs.get('allow_start_stop_recording', BBB_ALLOW_START_STOP_RECORDING),
+        })
 
-    start_date = models.DateTimeField(
-        _("Start date"),
-        default=timezone.now,
-        help_text=_("Start date of the live."),
-    )
-    
-    end_date = models.DateTimeField(
-        _("End date"),
-        null=True,
-        blank=True,
-        help_text=_("End date of the live."),
-    )
+        m_xml = BigBlueButton().start(titre=titre, meeting_id=meeting_id, **kwargs)
+        print(m_xml)
+        meeting_json = xml_to_json(m_xml)
+        if meeting_json['returncode'] != 'SUCCESS':
+            raise ValueError('Unable to create meeting!')
 
-    def __str__(self):
-        return (self.meetings)
+        # Now create a model for it.
+        meeting, _ = Meetings.objects.get_or_create(meeting_id=meeting_id)
 
-    class Meta:
-        verbose_name = 'Stream'
-        verbose_name_plural = _('Streams')
-        ordering = ["start_date"]
-'''
+        meeting.titre = titre
+        meeting.is_running = True
+        meeting.record = kwargs.get('record', True)
+        meeting.logout_url = kwargs.get('logout_url', '')
+        meeting.voice_bridge = meeting_json['voiceBridge']
+        meeting.attendee_password = meeting_json['attendeePW']
+        meeting.moderator_password = meeting_json['moderatorPW']
+        meeting.parent_meeting_id = meeting_json['parentMeetingID']
+        meeting.internal_meeting_id = meeting_json['internalMeetingID']
+        meeting.welcome_text = kwargs.get('welcome_text', BBB_WELCOME_TEXT)
+        meeting.auto_start_recording = kwargs.get('auto_start_recording', True)
+        meeting.allow_start_stop_recording = kwargs.get('allow_start_stop_recording', True)
+        meeting.save()
+
+        return meeting

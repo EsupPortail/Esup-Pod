@@ -2,14 +2,9 @@ h1{
     font-size: 30px;
 }
 
-section{
-    margin-left: 1500px;
-    margin-top: 10px;
-}
-
 table
 {
     border-collapse: collapse; /* Les bordures du tableau seront collées (plus joli) */
     margin-top: 50px;
-    border: 5px solid black;
+    border: 1px solid black;
 }
