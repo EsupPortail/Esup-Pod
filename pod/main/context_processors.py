@@ -1,6 +1,6 @@
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
-from django.db.models import Count, Sum, Q
+from django.db.models import Count, Sum
 from django.db.models import Prefetch
 from datetime import timedelta
 
