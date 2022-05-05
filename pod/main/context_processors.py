@@ -1,6 +1,6 @@
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Q
 from django.db.models import Prefetch
 from datetime import timedelta
 
@@ -214,13 +214,18 @@ def context_navbar(request):
         Type.objects.filter(
             sites=get_current_site(request),
             video__is_draft=False,
+            video__sites=get_current_site(request)
         )
         .distinct()
         .annotate(video_count=Count("video", distinct=True))
     )
 
     disciplines = (
-        Discipline.objects.filter(video__is_draft=False, sites=get_current_site(request))
+        Discipline.objects.filter(
+            sites=get_current_site(request),
+            video__is_draft=False,
+            video__sites=get_current_site(request)
+        )
         .distinct()
         .annotate(video_count=Count("video", distinct=True))
     )
