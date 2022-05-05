@@ -21,3 +21,5 @@ CONTACT_US_EMAIL = ['contact@__DOMAIN_NAME__']  # to complete
 
 CELERY_TO_ENCODE = True  # Active encode
 CELERY_BROKER_URL = CELERY_BROKER_URL + "-__NAME__"  # Define a broker
+
+update_tenant_settings("__NAME__")

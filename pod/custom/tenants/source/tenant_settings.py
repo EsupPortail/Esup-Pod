@@ -44,3 +44,5 @@ DEFAULT_DC_COVERAGE = TEMPLATE_VISIBLE_SETTINGS["TITLE_ETB"] + " - Paris - Franc
 DEFAULT_DC_RIGHTS = "BY-NC-SA"
 
 CELERY_BROKER_URL = CELERY_BROKER_URL + "-__NAME__"  # Define a broker
+
+update_tenant_settings("__NAME__")
