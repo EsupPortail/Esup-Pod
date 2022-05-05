@@ -1,11 +1,12 @@
 {
   "dependencies": {
-    "@bower_components/bootstrap": "twbs/bootstrap#5.0.2",
-    "@bower_components/jqgrid": "tonytomov/jqGrid#4.1.1",
     "@bower_components/jquery": "jquery/jquery-dist#3.3.1",
     "@bower_components/jquery-ui": "components/jqueryui#1.12.1",
     "@bower_components/jquery-waypoints": "imakewebthings/waypoints#4.0.1",
-    "@bower_components/js-cookie": "js-cookie/js-cookie#2.2.0"
+    "@bower_components/js-cookie": "js-cookie/js-cookie#2.2.0",
+    "bootstrap": "^5.1.3",
+    "jqGrid": "^5.7.0",
+    "waypoints": "^4.0.1"
   },
   "engines": {
     "yarn": ">= 1.0.0"
