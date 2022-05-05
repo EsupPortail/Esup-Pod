@@ -73,19 +73,23 @@ echo "(django_pod) pod@pod:/usr/local/django_projects/podv2$ python manage.py cr
 echo "--"
 echo "crontab"
 echo "clear session"
-echo "# $ID_SITE $NAME " >> $BASEDIR/clearsessions.sh 
+echo "" >> $BASEDIR/sh_tenants/clearsessions.sh
+echo "# $ID_SITE $NAME " >> $BASEDIR/sh_tenants/clearsessions.sh 
 echo "cd /usr/local/django_projects/podv2 && /home/pod/.virtualenvs/django_pod/bin/python manage.py clearsessions --settings=pod.custom.tenants.$NAME."$NAME"_settings &>> /usr/local/django_projects/podv2/pod/log/cron_clearsessions_$NAME.log 2>&1" >> $BASEDIR/clearsessions.sh 
 
 echo "index videos"
-echo "# $ID_SITE $NAME " >> $BASEDIR/index_videos.sh
+echo "" >> $BASEDIR/sh_tenants/index_videos.sh
+echo "# $ID_SITE $NAME " >> $BASEDIR/sh_tenants/index_videos.sh
 echo "cd /usr/local/django_projects/podv2 && /home/pod/.virtualenvs/django_pod/bin/python manage.py index_videos --all  --settings=pod.custom.tenants.$NAME."$NAME"_settings  &>> /usr/local/django_projects/podv2/pod/log/cron_index_$NAME.log 2>&1"  >> $BASEDIR/index_videos.sh
 
 echo "check_obsolete_videos"
-echo "# $ID_SITE $NAME " >> $BASEDIR/check_obsolete_videos.sh
+echo "" >> $BASEDIR/sh_tenants/check_obsolete_videos.sh
+echo "# $ID_SITE $NAME " >> $BASEDIR/sh_tenants/check_obsolete_videos.sh
 echo "cd /usr/local/django_projects/podv2 && /home/pod/.virtualenvs/django_pod/bin/python manage.py check_obsolete_videos --settings=pod.custom.tenants.$NAME."$NAME"_settings  &>> /usr/local/django_projects/podv2/pod/log/cron_obsolete_$NAME.log 2>&1"  >> $BASEDIR/check_obsolete_videos.sh
 
 echo "live_viewcounter"
-echo "# $ID_SITE $NAME " >> $BASEDIR/live_viewcounter.sh
+echo "" >> $BASEDIR/sh_tenants/live_viewcounter.sh
+echo "# $ID_SITE $NAME " >> $BASEDIR/sh_tenants/live_viewcounter.sh
 echo "cd /usr/local/django_projects/podv2 && /home/pod/.virtualenvs/django_pod/bin/python manage.py live_viewcounter --settings=pod.custom.tenants.$NAME."$NAME"_settings  &>> /usr/local/django_projects/podv2/pod/log/cron_viewcounter_$NAME.log 2>&1"  >> $BASEDIR/live_viewcounter.sh
 
 echo "FIN" 
