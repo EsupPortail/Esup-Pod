@@ -252,9 +252,7 @@ def update_settings():
     # AUTH
     #
     if "USE_CAS" in globals() and eval("USE_CAS") is True:
-        AUTHENTICATION_BACKENDS += (
-            "cas.backends.CASBackend",
-        )
+        AUTHENTICATION_BACKENDS += ("cas.backends.CASBackend",)
         CAS_RESPONSE_CALLBACKS = (
             "pod.authentication.populatedCASbackend.populateUser",
             # function call to add some information to user login by CAS
@@ -284,7 +282,9 @@ def update_settings():
     # Opencast studio
     if "USE_OPENCAST_STUDIO" in globals() and eval("USE_OPENCAST_STUDIO") is True:
         # add dir to opencast studio static files i.e : pod/custom/static/opencast/
-        TEMPLATES[0]["DIRS"].append(os.path.join(BASE_DIR, "custom", "static", "opencast"))
+        TEMPLATES[0]["DIRS"].append(
+            os.path.join(BASE_DIR, "custom", "static", "opencast")
+        )
 
     AUTHENTICATION_BACKENDS = list(dict.fromkeys(AUTHENTICATION_BACKENDS))
 
