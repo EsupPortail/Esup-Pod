@@ -70,8 +70,8 @@
 {% endif %}
 
 {% if video.overlay_set.all and not enrichment%}
-  <link id="overlay_style_id" href="{% static 'css/videojs-overlay.css' %}?ver={{VERSION}}" rel="stylesheet">
-  <script id="overlay_script_id" src="{% static 'js/videojs-overlay.js' %}?ver={{VERSION}}"></script>
+  <link id="overlay_style_id" href="{% static 'videojs-overlay/dist/videojs-overlay.css' %}?ver={{VERSION}}" rel="stylesheet">
+  <script id="overlay_script_id" src="{% static 'videojs-overlay/dist/videojs-overlay.min.js' %}?ver={{VERSION}}"></script>
 {% endif %}
 
 {% if request.user.playlist_set.all %}
