@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "@bower_components/jquery-ui": "components/jqueryui#1.12.1",
     "bootstrap": "^5.1.3",
     "jqGrid": "^5.7.0",
     "jquery": "^3.6.0",
