@@ -13,7 +13,7 @@
 {% if not video.is_video %}
   <!-- Audio wavesurfer -->
   <link href="{% static 'videojs-wavesurfer/dist/css/videojs.wavesurfer.min.css' %}?ver={{VERSION}}" rel="stylesheet" />
-  <script src="{% static 'player/wavesurfer.js'%}?ver={{VERSION}}"></script>
+  <script src="{% static 'wavesurfer.js/dist/wavesurfer.min.js'%}?ver={{VERSION}}"></script>
   <script src="{% static 'videojs-wavesurfer/dist/videojs.wavesurfer.min.js' %}?ver={{VERSION}}"></script>
 
   <style>

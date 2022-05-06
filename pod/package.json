@@ -17,6 +17,7 @@
     "videojs-vr": "^1.8.0",
     "videojs-vtt-thumbnails": "^0.0.13",
     "videojs-wavesurfer": "^3.8.0",
+    "wavesurfer.js": "^6.1.0",
     "waypoints": "^4.0.1"
   },
   "engines": {
