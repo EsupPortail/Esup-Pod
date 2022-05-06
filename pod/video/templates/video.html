@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load tagging_tags %}
+{% load thumbnail %}
+{% load video_filters %}
+{% load video_tags %}
+
+{% block opengraph %}
+
+{% if OEMBED %}
+<link rel="alternate" type="application/json+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/oembed/?url={{request.build_absolute_uri|urlencode}}&format=json" />
+<link rel="alternate" type="text/xml+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/oembed/?url={{request.build_absolute_uri|urlencode}}&format=xml" />
+{% endif %}
+
+<meta property="og:site_name" content="{{ TITLE_SITE }}">
+<meta property="og:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}">
+<meta property="og:title" content="{{ video.title }}">
+<meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
+<meta property="og:image:alt" content="{{ video.title }}">
+<meta property="og:image:width" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.width}}{% else %}640{%endif%}" />
+<meta property="og:image:height" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.height}}{% else %}360{%endif%}" />
+
+<meta property="og:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% endif %} {% trans 'Added by' %}: {{ video.owner.get_full_name }}">
+
+<meta property="og:type" content="video">
+
+<meta property="og:video" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true">
+<meta property="og:video:type" content="text/html">
+<meta property="og:video:width" content="640">
+<meta property="og:video:height" content="{{video.get_player_height}}">
+
+<meta name="twitter:card" content="player">
+<meta name="twitter:site" content="{{ TITLE_SITE }}">
+<meta name="twitter:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}">
+<meta name="twitter:title" content="{{ video.title }}">
+<meta name="twitter:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% endif %} {% trans 'Added by' %}: {{ video.owner.get_full_name }}">
+<meta name="twitter:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
+
+<meta name="twitter:player" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true">
+<meta name="twitter:player:width" content="640">
+<meta name="twitter:player:height" content="{{video.get_player_height}}">
+
+{% if video.is_draft == True %}
+  <meta name="robots" content="NONE,NOARCHIVE">
+{%endif%}
+
+{% endblock %}
+
+{% block page_extra_head %}
+
+{% include 'videos/video-header.html' %}
+<link rel="stylesheet" href="{% static 'css/comment-style.css' %}?ver={{VERSION}}">
+<style>
+  {{channel.style}}
+  {% if channel.color %}
+    body {
+      background-color: {{channel.color}};
+    }
+  {%endif%}
+</style>
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}{{ block.super }}
+  {%if channel %}
+    {% if theme %}
+      <li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+      {% for t in theme.get_all_parents reversed %}
+        {% if t is not theme %}
+          <li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
+        {% endif %}
+      {% endfor %}
+      <li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=theme.slug%}">{{theme.title}}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
+    {% else %}
+      <li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
+    {% endif %}
+  {% else %}
+    <li class="breadcrumb-item"><a href="{% url "videos"%}">{% trans 'Videos' %}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
+  {% endif %}
+{% endblock %}
+
+{% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}{{video.title|title|truncatechars:45}}{% endblock %}
+
+{% block page_content %}
+
+<div itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+
+  <meta itemprop="duration" content="P{{ video.duration }}S" />
+  {# uploadDate doit être au format 'c' - ISO 8601 (yyyy-mm-dd) #}
+  <meta itemprop="uploadDate" content="{{ video.date_added|date:'c' }}" />
+  <meta itemprop="thumbnailUrl" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}" />
+  <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
+  <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" />
+  <meta itemprop="image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}" />
+  <meta itemprop="name" content="{{ video.title }}" />
+  <meta itemprop="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }} - {% trans 'Added by' %}: {{ video.owner.get_full_name }}" />
+
+{%if channel %}
+  <h2 class="channel_title">{{channel.title}}{% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes" %} " class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{%endif%}</h2>
+  {% if channel.headband %}
+    <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy"/>
+  {% endif %}
+  {% if channel.description %}
+    {{ channel.description|safe }}
+  {% endif %}
+  {% if theme %}
+    <h3 class="theme_title">{{theme.title}}</h3>
+    {% if theme.headband %}
+      <div class="channelheader">
+        <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" loading="lazy"/>
+      </div>
+    {% endif %}
+    {% if theme.description %}
+      {{ theme.description|safe }}
+    {% endif %}
+  {%endif%}
+{%endif%}
+{% if video.get_encoding_step == "" %}
+  <div class="alert alert-warning" role="alert">
+    {% trans "The video is currently waiting for encoding." %}
+  </div>
+{% endif %}
+
+{% if video.encoding_in_progress %}
+  <div class="alert alert-warning" role="alert">
+    {% trans "The video is currently being encoded." %}
+  </div>
+{% endif %}
+
+{% if video.get_encoding_step == "5 : transcripting audio" %}
+  <p class="text-info">
+    {% trans "The video is currently being transcripted." %}
+  </p>
+{% endif %}
+
+{% block video-element %}
+{% if form %}
+    {% include 'videos/video-form.html' %}
+{% else %}
+  {% include 'videos/video-element.html' %}
+  <div id="info-video">{% include 'videos/video-all-info.html' %}</div>
+{%endif%}
+{% endblock video-element %}
+
+</div>
+{% endblock page_content %}
+
+{% block page_aside %}
+  {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video or perms.enrichment.edit_enrichment or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay or perms.chapter.change_chapter or perms.video.delete_video %}
+    <div class="card" id="card-managevideo">
+      <h2 class="card-header card-title ps-2 h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
+      <div class="card-body card-text text-center">
+        {% include "videos/link_video.html" %}
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="card" id="card-takenote">
+    {% include 'videos/video_notes.html' %}
+  </div>
+  {% include 'aside.html' %}
+{% endblock page_aside %}
+
+
+{% block more_script %}
+  {% if not form %}
+    <script>
+    // Allow anchor links to automatically load JS tabs
+    $(document).ready(() => {
+      var url = window.location.href;
+        if (url.indexOf("#") > 0){
+        var activeTab = url.substring(url.indexOf("#") + 1);
+        $('.nav[role="tablist"] a[href="#'+activeTab+'"]').tab('show');
+        var position = $("#myTab").offset().top -57;
+        $("html, body").animate({
+          scrollTop: position
+        }, 1000);
+      }
+    });
+    </script>
+    {% include 'videos/video-script.html'%}
+  {% endif %}
+
+  {% if active_video_comment and not video.disable_comment %}
+    <script>
+      const video_slug = `{{video.slug}}`;
+      {% if request.user == video.owner %}
+        var is_video_owner = true;
+      {% else %}
+        var is_video_owner = false;
+      {% endif %}
+      var user_fullName = `{{request.user.first_name}} {{request.user.last_name}}`;
+      var user_id = `{{ request.user.id }}` === "None"? false: `{{ request.user.id }}`;
+      var is_authenticated = JSON.parse(`{{request.user.is_authenticated|yesno:"true,false"}}`);
+      var is_superuser = JSON.parse(`{{request.user.is_superuser|yesno:"true,false"}}`);
+    </script>
+    <script src="{% static 'plugin/relativeTime.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'dayjs.min.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'locale/en.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'locale/fr.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'locale/nl.js' %}?ver={{VERSION}}"></script>
+    <script type="module" defer src="{% static 'js/comment-script.js' %}?ver={{VERSION}}"></script>
+  {% endif %}
+{% endblock more_script %}
