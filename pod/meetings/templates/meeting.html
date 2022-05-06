@@ -31,21 +31,11 @@
                 <td> {{ element.end_date }} </td>
                 <td><a class="btn btn-sm btn-success" href="modify/{{ element.titre }}, {{ element.start_date }}, {{ element.end_date }}">modify</a>
                 <a class="btn btn-sm btn-danger" href="delete/{{ element.titre }}">delete</a>
+                
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
-
-<script>
-    $(document).ready(function(){
-      $("#myInput").on("keyup", function() {
-        var value = $(this).val().toLowerCase();
-        $("#myTable tr").filter(function() {
-          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-      });
-    });
-</script>
 {% endblock page_content %}

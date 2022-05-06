@@ -1,10 +1,14 @@
+from django.conf import settings
 from django.utils import timezone
+from django import forms
 
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
+import requests
+import urllib3
 
-from pod.meetings.utils import BBB_ALLOW_START_STOP_RECORDING, BBB_AUTO_RECORDING, BBB_LOGOUT_URL, BBB_RECORD, BBB_WELCOME_TEXT, BigBlueButton, xml_to_json
+from pod.meetings.utils import BBB_ALLOW_START_STOP_RECORDING, BBB_AUTO_RECORDING, BBB_LOGOUT_URL, BBB_RECORD, BBB_WELCOME_TEXT, BigBlueButton, parse_xml, xml_to_json
 #from select2 import fields as select2_fields
 
 User = get_user_model()
@@ -255,3 +259,32 @@ class Meetings(models.Model):
         meeting.save()
 
         return meeting
+
+    def get_meetings(self):
+        """ Will return list of running meetings. """
+        call = 'getMeetings'
+        query = urllib3.parse.urlencode((
+            ('random', 'random'),
+        ))
+        hashed = self.api_call(query, call)
+        url = self.api_url + call + '?' + hashed
+        result = parse_xml(requests.get(url).content)
+        # Create dict of values for easy use in template
+        d = []
+        if result:
+            r = result[1].findall('meeting')
+            for m in r:
+                meeting_id = m.find('meetingID').text
+                password = m.find('moderatorPW').text
+                d.append({
+                    'meeting_id': meeting_id,
+                    'running': m.find('running').text,
+                    'moderator_pw': password,
+                    'attendee_pw': m.find('attendeePW').text,
+                    'info': self.meeting_info(
+                        meeting_id,
+                        password
+                    )
+                })
+        return d
+

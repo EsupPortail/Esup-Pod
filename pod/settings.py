@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     'django_select2',
+    'django_bigbluebutton',
     # Pod Applications
     'pod.main',
     'django.contrib.admin',  # put it here for template override
