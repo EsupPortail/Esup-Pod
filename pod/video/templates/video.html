@@ -197,11 +197,11 @@
       var is_authenticated = JSON.parse(`{{request.user.is_authenticated|yesno:"true,false"}}`);
       var is_superuser = JSON.parse(`{{request.user.is_superuser|yesno:"true,false"}}`);
     </script>
-    <script src="{% static 'plugin/relativeTime.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'dayjs.min.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'locale/en.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'locale/fr.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'locale/nl.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'dayjs/plugin/relativeTime.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'dayjs/dayjs.min.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'dayjs/locale/en.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'dayjs/locale/fr.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'dayjs/locale/nl.js' %}?ver={{VERSION}}"></script>
     <script type="module" defer src="{% static 'js/comment-script.js' %}?ver={{VERSION}}"></script>
   {% endif %}
 {% endblock more_script %}
