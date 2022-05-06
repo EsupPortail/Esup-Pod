@@ -11,6 +11,7 @@
     "js-cookie": "^3.0.1",
     "spark-md5": "^3.0.2",
     "video.js": "^7.18.1",
+    "videojs-contrib-quality-levels": "^2.1.0",
     "videojs-vr": "^1.8.0",
     "videojs-vtt-thumbnails": "^0.0.13",
     "waypoints": "^4.0.1"
