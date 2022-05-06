@@ -10,6 +10,7 @@
     "jquery-ui-dist": "^1.13.1",
     "js-cookie": "^3.0.1",
     "spark-md5": "^3.0.2",
+    "video.js": "^7.18.1",
     "videojs-vr": "^1.8.0",
     "videojs-vtt-thumbnails": "^0.0.13",
     "waypoints": "^4.0.1"
