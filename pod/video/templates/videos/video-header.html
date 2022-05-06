@@ -79,6 +79,6 @@
 {% endif %}
 
 {% if video.is_360 %}
-  <link id="vr360_style_id" href="{% static 'videojs-vr/videojs-vr.css' %}?ver={{VERSION}}" rel="stylesheet">
-  <script id="vr360_script_id" src="{% static 'videojs-vr/videojs-vr.min.js' %}?ver={{VERSION}}"></script>
+  <link id="vr360_style_id" href="{% static 'videojs-vr/dist/videojs-vr.css' %}?ver={{VERSION}}" rel="stylesheet">
+  <script id="vr360_script_id" src="{% static 'videojs-vr/dist/videojs-vr.min.js' %}?ver={{VERSION}}"></script>
 {% endif %}
