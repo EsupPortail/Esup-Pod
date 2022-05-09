@@ -71,3 +71,4 @@ compile-model
 # Bower stuffs #
 ################
 bower_components
+node_modules

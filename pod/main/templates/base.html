@@ -38,14 +38,12 @@
   {% if CSS_OVERRIDE %}
   <link rel="stylesheet" href="{% static CSS_OVERRIDE %}?ver={{VERSION}}" media="screen">
   {% endif %}
-  <!--jquery-->
-  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
   <!-- more styles for each App -->
-  {% block more_style %}{% endblock more_style %}
-
+  {% block more_style %}
+  {% endblock more_style %}
   <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|capfirst}}{% endblock %}</title>
-
-  {% block page_extra_head %}{% endblock %}
+  {% block page_extra_head %}
+  {% endblock %}
   {% if request.GET.is_iframe %}
   <link rel="stylesheet" href="{% static 'css/iframe.css' %}?ver={{VERSION}}" media="screen" title="no title">
   {% endif %}
@@ -151,7 +149,8 @@
     </div>
   </div>
   <!-- Javascript migration from header to footer-->
-  <script src="{% static 'js-cookie/src/js.cookie.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+  <script src="{% static 'js-cookie/dist/js.cookie.min.js' %}?ver={{VERSION}}"></script>
   <script src="{% url 'javascript-catalog' %}"></script>
   <!-- JS -->
   <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
