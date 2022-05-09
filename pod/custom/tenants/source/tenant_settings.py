@@ -45,4 +45,8 @@ DEFAULT_DC_RIGHTS = "BY-NC-SA"
 
 CELERY_BROKER_URL = CELERY_BROKER_URL + "-__NAME__"  # Define a broker
 
-update_tenant_settings("__NAME__")
+
+########################################################## A LAISSER EN DERNIER !!!!!!!!!!!!!
+the_update_settings = update_settings(locals())
+for variable in the_update_settings:
+    locals()[variable] = the_update_settings[variable]

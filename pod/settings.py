@@ -233,60 +233,50 @@ for application in INSTALLED_APPS:
                     locals()[variable] = getattr(_temp.settings_local, variable)
 
 
-# add tenant settings
-def update_tenant_settings(tenant):
-    path = "pod/custom/tenants/%(tenant)s/%(tenant)s_settings.py" % {"tenant": tenant}
-    application = path.replace(os.path.sep, ".").replace(".py", "")
-    settings = "%s_settings" % tenant
-    if os.path.exists(path):
-        _temp = __import__(application, globals(), locals(), [settings])
-        for variable in dir(_temp):
-            if variable == variable.upper():
-                globals()[variable] = getattr(_temp, variable)
-    update_settings()
-
-
-def update_settings():
-    global AUTHENTICATION_BACKENDS, TEMPLATES, CAS_RESPONSE_CALLBACKS, MIDDLEWARE, LOGIN_REDIRECT_URL
+def update_settings(local_settings):
     ##
     # AUTH
     #
-    if "USE_CAS" in globals() and eval("USE_CAS") is True:
-        AUTHENTICATION_BACKENDS += (
+    if local_settings.get("USE_CAS", False):
+        local_settings["AUTHENTICATION_BACKENDS"] += (
             "cas.backends.CASBackend",
         )
-        CAS_RESPONSE_CALLBACKS = (
+        local_settings["CAS_RESPONSE_CALLBACKS"] = (
             "pod.authentication.populatedCASbackend.populateUser",
             # function call to add some information to user login by CAS
         )
-        MIDDLEWARE.append("cas.middleware.CASMiddleware")
+        local_settings["MIDDLEWARE"].append("cas.middleware.CASMiddleware")
 
-    if "USE_SHIB" in globals() and eval("USE_SHIB") is True:
-        AUTHENTICATION_BACKENDS += ("pod.authentication.backends.ShibbBackend",)
-        MIDDLEWARE.append("pod.authentication.shibmiddleware.ShibbMiddleware")
-
-    if "USE_OIDC" in globals() and eval("USE_OIDC") is True:
-        AUTHENTICATION_BACKENDS += ("pod.authentication.backends.OIDCBackend",)
-        LOGIN_REDIRECT_URL = "/"
-
+    if local_settings.get("USE_SHIB", False):
+        local_settings["AUTHENTICATION_BACKENDS"] += ("pod.authentication.backends.ShibbBackend",)
+        local_settings["MIDDLEWARE"].append("pod.authentication.shibmiddleware.ShibbMiddleware")
+    if local_settings.get("USE_OIDC", False):
+        local_settings["AUTHENTICATION_BACKENDS"] += ("pod.authentication.backends.OIDCBackend",)
+        local_settings['LOGIN_REDIRECT_URL'] = "/"
     ##
     # Authentication backend : add lti backend if use
     #
-    if "LTI_ENABLED" in globals() and eval("LTI_ENABLED") is True:
-        AUTHENTICATION_BACKENDS += ("lti_provider.auth.LTIBackend",)
+    if local_settings.get("LTI_ENABLED", False):
+        local_settings["AUTHENTICATION_BACKENDS"] += ("lti_provider.auth.LTIBackend",)
 
-    if "H5P_ENABLED" in globals() and eval("H5P_ENABLED") is True:
+    if local_settings.get("H5P_ENABLED", False):
         sys.path.append(os.path.join(BASE_DIR, "../../H5PP"))
-        INSTALLED_APPS.append("h5pp")
-        INSTALLED_APPS.append("pod.interactive")
+        local_settings["INSTALLED_APPS"].append("h5pp")
+        local_settings["INSTALLED_APPS"].append("pod.interactive")
 
     ##
     # Opencast studio
-    if "USE_OPENCAST_STUDIO" in globals() and eval("USE_OPENCAST_STUDIO") is True:
+    if local_settings.get("USE_OPENCAST_STUDIO", False):
         # add dir to opencast studio static files i.e : pod/custom/static/opencast/
-        TEMPLATES[0]["DIRS"].append(os.path.join(BASE_DIR, "custom", "static", "opencast"))
+        local_settings["TEMPLATES"][0]["DIRS"].append(os.path.join(BASE_DIR, "custom", "static", "opencast"))
 
-    AUTHENTICATION_BACKENDS = list(dict.fromkeys(AUTHENTICATION_BACKENDS))
+    local_settings["AUTHENTICATION_BACKENDS"] = list(dict.fromkeys(local_settings["AUTHENTICATION_BACKENDS"]))
+
+    return local_settings
 
 
-update_settings()
+the_update_settings = update_settings(
+    locals()
+)
+for variable in the_update_settings:
+    locals()[variable] = the_update_settings[variable]
