@@ -83,9 +83,8 @@ function writeInFrame() {
 
   var img = document.getElementById("qrcode");
   var imgsrc = "//chart.apis.google.com/chart?cht=qr&chs=200x200&chl=" + link;
-  if(img.getAttribute('src') === "") img.setAttribute("data-src", imgsrc)
+  if (img.getAttribute("src") === "") img.setAttribute("data-src", imgsrc);
   else img.src = imgsrc;
-
 }
 $(document).on("change", "#autoplay", function () {
   writeInFrame();
@@ -94,13 +93,13 @@ $(document).on("change", "#loop", function () {
   writeInFrame();
 });
 
-$(document).on('shown.bs.collapse', '#qrcode', function () {
-  $('#qrcode').attr("src", $('#qrcode').attr("data-src"));
-})
+$(document).on("shown.bs.collapse", "#qrcode", function () {
+  $("#qrcode").attr("src", $("#qrcode").attr("data-src"));
+});
 
-$(document).on('hidden.bs.collapse', '#qrcode', function () {
-  $('#qrcode').attr("src", "");
-})
+$(document).on("hidden.bs.collapse", "#qrcode", function () {
+  $("#qrcode").attr("src", "");
+});
 
 $(document).on("change", "#displaytime", function (e) {
   if ($("#displaytime").is(":checked")) {
@@ -203,7 +202,7 @@ var get_list = function (
     if (count > 0 && !show_only_parent_themes) {
       list += get_list(
         child,
-        (level += 1),
+        level + 1,
         tab_selected,
         tag_type,
         li_class,
