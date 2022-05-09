@@ -65,8 +65,9 @@ INSTALLED_APPS = [
     'mozilla_django_oidc',
 ]
 
-BBB_API_URL = getattr(settings, 'BBB_API_URL', None)
-BBB_SECRET_KEY = getattr(settings, 'BBB_SECRET_KEY', None)
+SALT = ""
+BBB_API_URL = 'https://bbb-21-e.uphf.fr/bigbluebutton/api/'
+BBB_SECRET_KEY = 'GOI6t9lAHdO996UiKWqIvjGNvHHVfA00hTRX2GBM' 
 
 ##
 # Activated middleware components

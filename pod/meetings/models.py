@@ -1,4 +1,9 @@
+from hashlib import sha1
+import random
+from urllib.parse import urlencode
+from urllib.request import urlopen
 from django.conf import settings
+from django.urls import reverse
 from django.utils import timezone
 from django import forms
 
@@ -6,15 +11,13 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 import requests
-import urllib3
 
-from pod.meetings.utils import BBB_ALLOW_START_STOP_RECORDING, BBB_AUTO_RECORDING, BBB_LOGOUT_URL, BBB_RECORD, BBB_WELCOME_TEXT, BigBlueButton, parse_xml, xml_to_json
-#from select2 import fields as select2_fields
+from pod.meetings.utils import parse_xml
 
 User = get_user_model()
 
 class Meetings(models.Model):
-    titre = models.CharField(
+    name = models.CharField(
         max_length=100,
         verbose_name=_('Titre')
     )
@@ -163,8 +166,26 @@ class Meetings(models.Model):
         help_text=_('will lock the layout in the meeting. ')
     )
 
+    parent_meeting_id = models.CharField(
+        null=True,
+        blank=True,
+        max_length=100,
+        verbose_name=_('Parent Meeting ID')
+    )
+    internal_meeting_id = models.CharField(
+        null=True,
+        blank=True,
+        max_length=100,
+        verbose_name=_('Internal Meeting ID')
+    )
+    voice_bridge = models.CharField(
+        max_length=50,
+        null=True, blank=True,
+        verbose_name=_('Voice Bridge')
+    )
+
     def __str__(self):
-        return "%s - %s" % (self.titre, self.meeting_id)
+        return "%s - %s" % (self.name, self.meeting_id)
 
     class Meta:
         db_table = 'meetings'
@@ -172,102 +193,62 @@ class Meetings(models.Model):
         verbose_name_plural = _('Meetings')
 
     def save(self, *args, **kwargs):
-        if not self.titre:
-            self.titre = self.meeting_id
+        if not self.name:
+            self.name = self.meeting_id
         super(Meetings, self).save(*args, **kwargs)
 
-    def info(self):
-        # Will return result of bbb.get_meeting_info
-        return BigBlueButton().meeting_info(
-            self.meeting_id,
-            self.moderator_password
-        )
-
-    def check_is_running(self, commit=True):
-        """ Call bbb is_running method, and see if this meeting_id is running! """
-        is_running = BigBlueButton().is_running(self.meeting_id)
-        self.is_running = True if is_running in ['true', True, 'True'] else False
-        if commit:
-            self.save()
-        return self.is_running
-
-    def start(self):
-        """ Will start already created meeting again. """
-        result = BigBlueButton().start(
-            name=self.name,
-            meeting_id=self.meeting_id,
-            attendee_password=self.attendee_password,
-            moderator_password=self.moderator_password
-        )
-
-        if result:
-            # It's better to create hook again,
-            # So if by any reason is removed from bbb, again be created
-            # If already exist will just give warning and will be ignored
-            self.create_hook()
-
+    def api_call(self, query, call):
+        prepared = "%s%s%s" % (call, query, settings.SALT)
+        print(prepared)
+        checksum = sha1(str(prepared).encode("utf-8")).hexdigest()
+        result = "%s&checksum=%s" % (query, checksum)
         return result
 
-    def end(self):
-        # If successfully ended, will return True
-        ended = BigBlueButton().end_meeting(
-            meeting_id=self.meeting_id,
-            password=self.moderator_password
-        )
-        ended = True if ended == True else False
-        if ended:
-            self.is_running = False
-            self.save()
+    def is_running(self):
+        call = 'isMeetingRunning'
+        query = urlencode((
+            ('meetingID', self.meeting_id),
+        ))
+        hashed = self.api_call(query, call)
+        url = settings.BBB_API_URL + call + '?' + hashed
+        result = parse_xml(urlopen(url).read())
+        if result:
+            return result.find('running').text
+        else:
+            return 'error'
 
-        return ended
-
-    def create_join_link(self, fullname, role='moderator', **kwargs):
-        pw = self.moderator_password if role == 'moderator' else self.attendee_password
-        link = BigBlueButton().join_url(self.meeting_id, fullname, pw, **kwargs)
-        return link
-
-    def create(cls, titre, meeting_id, **kwargs):
-        kwargs.update({
-            'record': kwargs.get('record', BBB_RECORD),
-            'logout_url': kwargs.get('logout_url', BBB_LOGOUT_URL),
-            'welcome_text': kwargs.get('welcome_text', BBB_WELCOME_TEXT),
-            'auto_start_recording': kwargs.get('auto_start_recording', BBB_AUTO_RECORDING),
-            'allow_start_stop_recording': kwargs.get('allow_start_stop_recording', BBB_ALLOW_START_STOP_RECORDING),
-        })
-
-        m_xml = BigBlueButton().start(titre=titre, meeting_id=meeting_id, **kwargs)
-        print(m_xml)
-        meeting_json = xml_to_json(m_xml)
-        if meeting_json['returncode'] != 'SUCCESS':
-            raise ValueError('Unable to create meeting!')
-
-        # Now create a model for it.
-        meeting, _ = Meetings.objects.get_or_create(meeting_id=meeting_id)
-
-        meeting.titre = titre
-        meeting.is_running = True
-        meeting.record = kwargs.get('record', True)
-        meeting.logout_url = kwargs.get('logout_url', '')
-        meeting.voice_bridge = meeting_json['voiceBridge']
-        meeting.attendee_password = meeting_json['attendeePW']
-        meeting.moderator_password = meeting_json['moderatorPW']
-        meeting.parent_meeting_id = meeting_json['parentMeetingID']
-        meeting.internal_meeting_id = meeting_json['internalMeetingID']
-        meeting.welcome_text = kwargs.get('welcome_text', BBB_WELCOME_TEXT)
-        meeting.auto_start_recording = kwargs.get('auto_start_recording', True)
-        meeting.allow_start_stop_recording = kwargs.get('allow_start_stop_recording', True)
-        meeting.save()
-
-        return meeting
+    def meeting_info(self, meeting_id, password):
+        call = 'getMeetingInfo'
+        query = urlencode((
+            ('meetingID', meeting_id),
+            ('password', password),
+        ))
+        hashed = self.api_call(query, call)
+        url = settings.BBB_API_URL + call + '?' + hashed
+        r = parse_xml(urlopen(url).read())
+        if r:
+            # Create dict of values for easy use in template
+            d = {
+                'start_time': r.find('startTime').text,
+                'end_time': r.find('endTime').text,
+                'participant_count': r.find('participantCount').text,
+                'moderator_count': r.find('moderatorCount').text,
+                'moderator_password': r.find('moderatorPassword').text,
+                'attendee_password': r.find('attendeePassword').text,
+                'invite_url': reverse('join', args=[meeting_id]),
+            }
+            return d
+        else:
+            return None
 
     def get_meetings(self):
         """ Will return list of running meetings. """
         call = 'getMeetings'
-        query = urllib3.parse.urlencode((
+        query = urlencode((
             ('random', 'random'),
         ))
         hashed = self.api_call(query, call)
-        url = self.api_url + call + '?' + hashed
+        url = settings.BBB_API_URL + call + '?' + hashed
         result = parse_xml(requests.get(url).content)
         # Create dict of values for easy use in template
         d = []
@@ -275,12 +256,12 @@ class Meetings(models.Model):
             r = result[1].findall('meeting')
             for m in r:
                 meeting_id = m.find('meetingID').text
-                password = m.find('moderatorPW').text
+                password = m.find('moderatorPassword').text
                 d.append({
                     'meeting_id': meeting_id,
                     'running': m.find('running').text,
-                    'moderator_pw': password,
-                    'attendee_pw': m.find('attendeePW').text,
+                    'moderator_password': password,
+                    'attendee_password': m.find('attendeePassword').text,
                     'info': self.meeting_info(
                         meeting_id,
                         password
@@ -288,3 +269,50 @@ class Meetings(models.Model):
                 })
         return d
 
+    def join_url(self, meeting_id, name, password):
+        call = 'join'
+        query = urlencode((
+            ('fullName', name),
+            ('meetingID', meeting_id),
+            ('password', password),
+        ))
+        hashed = self.api_call(query, call)
+        url = settings.BBB_API_URL + call + '?' + hashed
+        return url
+
+    def end_meeting(self, meeting_id, password):
+        call = 'end'
+        query = urlencode((
+            ('meetingID', meeting_id),
+            ('password', password),
+        ))
+        hashed = self.api_call(query, call)
+        url = settings.BBB_API_URL + call + '?' + hashed
+        result = parse_xml(urlopen(url).read())
+        if result:
+            pass
+        else:
+            return 'error'
+
+    def start(self):
+        call = 'create' 
+        voicebridge = 70000 + random.randint(0,9999)
+        query = urlencode((
+            ('name', self.name),
+            ('meetingID', self.meeting_id),
+            ('attendeePW', self.attendee_password),
+            ('moderatorPW', self.moderator_password),
+            ('voiceBridge', voicebridge),
+            ('welcome', "Welcome!"),
+        ))
+        print(query)
+        hashed = self.api_call(query, call)
+        print(hashed)
+        url = settings.BBB_API_URL + call + '?' + hashed
+        print(url)
+        result = parse_xml(urlopen(url).read())
+        print(result)
+        if result:
+            return result
+        else:
+            return "error"

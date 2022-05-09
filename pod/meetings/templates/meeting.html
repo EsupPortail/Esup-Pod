@@ -26,12 +26,12 @@
         <tbody>
             {% for element in dataMeetings %}
             <tr>
-                <td> {{ element.titre }} </td>
+                <td> {{ element.name }} </td>
                 <td> {{ element.start_date }} </td>
                 <td> {{ element.end_date }} </td>
-                <td><a class="btn btn-sm btn-success" href="modify/{{ element.titre }}, {{ element.start_date }}, {{ element.end_date }}">modify</a>
-                <a class="btn btn-sm btn-danger" href="delete/{{ element.titre }}">delete</a>
-                
+                <td><a class="btn btn-sm btn-success" href="modify/{{ element.name }}, {{ element.start_date }}, {{ element.end_date }}">modify</a>
+                <a class="btn btn-sm btn-danger" href="delete/{{ element.name }}">delete</a>
+                <p>Voici le lien :<a href="/meeting/{{ element.meeting_id }}/join">#</a></p>
                 </td>
             </tr>
             {% endfor %}

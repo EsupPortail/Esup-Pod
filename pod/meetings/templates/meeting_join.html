@@ -1,0 +1,16 @@
+{% block content %}
+<form action="" method="POST">
+{% csrf_token %}
+<h2>Join meeting '{{ element.titre }}'</h2>
+<p>Invite others to this meeting with <a href="/meeting/{{ meeting_name }}/join">this URL</a></p>
+<table>
+    {{form}}
+    <tr>
+        <th></th>
+        <td>
+            <input type="submit" value="Join">
+        </td>
+    </tr>
+</table>
+</form>
+{% endblock %}

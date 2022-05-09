@@ -1,10 +1,8 @@
 from django.http import (HttpResponse, HttpResponseRedirect)
 from django.shortcuts import redirect, render, get_object_or_404
-from django.template import RequestContext, loader
 from django.urls import reverse
 from django.contrib import messages
-#from pod.meetings.filters import MeetingsFilter
-from pod.meetings.forms import JoinForm, MeetingsForm
+from pod.meetings.forms import MeetingsForm, JoinForm
 from pod.meetings.models import Meetings
 
 def index(request):
@@ -45,3 +43,15 @@ def delete_meeting(request, meeting_id, password):
         msg = 'Unable to end meeting %s' % meeting_id
         messages.error(request, msg)
         return redirect('/meeting')
+
+def join_meeting(request):
+
+    if request.method == "POST":
+        form = JoinForm(request.POST)
+        if form.is_valid():
+
+          return redirect('/meeting/')
+    else:
+        form = JoinForm()
+
+    return render(request, 'meeting_join.html', {'form': form})
