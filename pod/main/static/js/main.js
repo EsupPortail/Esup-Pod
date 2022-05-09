@@ -298,7 +298,7 @@ $(document).ready(function () {
   $("#collapseAside").on("shown.bs.collapse", function () {
     Cookies.set("activeCollapseAside", "open");
     $(".collapseAside").html(
-      '<i class="bi bi-arrow-90deg-up"></i><i class="bi bi-list"></i>'
+     // '<i class="bi bi-arrow-90deg-up"></i><i class="bi bi-list"></i>'
     );
     // feather.replace({ class: "align-bottom" });
     $("#mainContent").addClass("col-md-9");
@@ -307,7 +307,7 @@ $(document).ready(function () {
   $("#collapseAside").on("hidden.bs.collapse", function () {
     Cookies.set("activeCollapseAside", "close");
     $(".collapseAside").html(
-      '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
+      // '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
     );
     // feather.replace({ class: "align-bottom" });
     $("#mainContent").removeClass("col-md-9");
@@ -322,16 +322,19 @@ $(document).ready(function () {
     $("#mainContent").removeClass("col-md-9");
   } else {
     // Use the last aside state, stored in Cookies
+    // only for > 992, we show collapseAside
     var last = Cookies.get("activeCollapseAside");
     if (last != null && last == "close") {
       $("#collapseAside").collapse("hide");
       $(".collapseAside").html(
-        '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
+       // '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
       );
       // feather.replace({ class: "align-bottom" });
-      $("#mainContent").removeClass("col-md-9");
+      // $("#mainContent").removeClass("col-md-9");
     } else {
-      $("#collapseAside").collapse("show");
+      if (window.innerWidth > 992) {
+        $("#collapseAside").collapse("show");
+      }
     }
   }
   TriggerAlertClose();

@@ -22,8 +22,8 @@ window.setInterval("location.reload(true)",30000);
 <div class="row">
 
 {% for building in buildings %}
-  <div class="card-group col-12 col-md-6 col-lg-3 mb-2 ">
-    <div class="card  mb-4 box-shadow border-secondary ">
+  <div class="card-group col-12 col-md-6 col-lg-3 mb-2 pod-card-group ">
+    <div class="card  mb-4 box-shadow pod-card ">
     <img class="card-img-top" src="{{building.get_headband_url}}" alt="{{building.name}}" loading="lazy">
     <div class="card-body">
       <h5 class="card-title">

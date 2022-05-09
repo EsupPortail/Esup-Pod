@@ -55,7 +55,7 @@
     {% if organize_theme %}
         <h1 class="page_title">
             {% if parent_title %} {{parent_title}} {% else %} {{title}} {% endif %}
-            <span class="float-end">
+            <span class="pod-float-end">
                 {% if USE_STATS_VIEW %}
                     {% if theme %}
                         <a href="{% url 'video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
@@ -132,7 +132,7 @@
             <h1 class="page_title channel_title">
         {% endif %}
         <i class="bi bi-youtube" aria-hidden="true"></i>&nbsp;{{channel.title}}
-            <span class="float-end">
+            <span class="pod-float-end">
                 {% if theme %}
                     {% if USE_STATS_VIEW %}
                         <a href="{% url 'video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>

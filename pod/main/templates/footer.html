@@ -1,9 +1,9 @@
 {% load static %}
 {% load i18n %}
 {% spaceless %}
-<div class="container pod-container">
+<div class="container-fluid pod-container">
 <p class="float-end">
-  <a class="top_link" href="#">Haut de page</a>
+  <a class="bi bi-arrow-up-circle pod-gotoup" href="#"></a>
 </p>
 <div class="row">
   <div class="col-md-4">
@@ -34,6 +34,6 @@
     </ul>
   </div>
 </div>
-<p class="hidden-pod" style="text-align:center">{{TITLE_SITE}} {% trans "video platform of" %} {{TITLE_ETB}} - <a href="https://github.com/EsupPortail/Esup-Pod/releases/tag/{{VERSION}}" target="_blank" title="GitHub">{% trans "Release" %} {{VERSION}}</a>  - {{VIDEOS_COUNT}} {% trans "videos availables" %} [ {{VIDEOS_DURATION}} ]</p>
+<p class="hidden-pod pod-footer__credits" style="text-align:center">{{TITLE_SITE}} {% trans "video platform of" %} {{TITLE_ETB}} - <a href="https://github.com/EsupPortail/Esup-Pod/releases/tag/{{VERSION}}" target="_blank" title="GitHub">{% trans "Release" %} {{VERSION}}</a>  - {{VIDEOS_COUNT}} {% trans "videos availables" %} [ {{VIDEOS_DURATION}} ]</p>
 </div>
 {% endspaceless %}
