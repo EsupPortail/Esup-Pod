@@ -22,10 +22,11 @@
 {% block page_content %}
 
   <div class="row">
-    <div class="col">
+    <div class="col-4">
       <h1 id="video_count">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h1>
     </div>
-      <span class="float-left col">
+
+    <span class="float-left col-5">
         <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm float-right">
           <i data-feather="rss"></i>&nbsp;Audio</a>
         <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm float-right">
@@ -33,7 +34,18 @@
         {% if USE_STATS_VIEW %}
           <a href="{% url 'video_stats_view' 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm float-right" style="height:35.8px"> {% trans "Statistics views" %}</a>
         {% endif %}
-      </span>
+    </span>
+    <div class="input-group mb-3 float-left col-3 pl-0 pt-1" style="height:35.8px">
+      <div class="input-group-prepend">
+        <label class="input-group-text custom_input_group_text" for="sort">Tri</label>
+      </div>
+      <select id="sort" name="sort" type="select" class="form-control sort-select">
+        <option selected value="">---</option>
+        <option value="title">Titre</option>
+        <option value="date_added">Date d'ajout</option>
+        <option value="duration">Durée</option>
+      </select>
+    </div>
   </div>
 
   {% comment %}
