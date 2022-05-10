@@ -1,3 +1,4 @@
+from datetime import datetime
 from hashlib import sha1
 import random
 from urllib.parse import urlencode
@@ -5,14 +6,16 @@ from urllib.request import urlopen
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
-from django import forms
 
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 import requests
+from pod.main.models import get_nextautoincrement
+from django.template.defaultfilters import slugify
 
 from pod.meetings.utils import parse_xml
+from pod.settings import BBB_SECRET_KEY
 
 User = get_user_model()
 
@@ -21,15 +24,16 @@ class Meetings(models.Model):
         max_length=100,
         verbose_name=_('Titre')
     )
-
+    '''
     meeting_id = models.CharField(
-        max_length=100,
+        max_length=110,
         verbose_name=_('Meeting ID')
     )
-
+    '''
     slug = models.SlugField(
         _("Slug"),
-        max_length=100,
+        unique=True,
+        max_length=110,
         help_text=_(
             'Used to access this instance, the "slug" is '
             "a short label containing only letters, "
@@ -185,7 +189,7 @@ class Meetings(models.Model):
     )
 
     def __str__(self):
-        return "%s - %s" % (self.name, self.meeting_id)
+        return "%s - %s" % (self.name, self.slug)
 
     class Meta:
         db_table = 'meetings'
@@ -193,15 +197,25 @@ class Meetings(models.Model):
         verbose_name_plural = _('Meetings')
 
     def save(self, *args, **kwargs):
-        if not self.name:
-            self.name = self.meeting_id
+        newid = -1
+        if not self.id:
+            try:
+                newid = get_nextautoincrement(Meetings)
+            except Exception:
+                try:
+                    newid = Meetings.objects.latest("id").id
+                    newid += 1
+                except Exception:
+                    newid = 1
+        else:
+            newid = self.id
+        newid = "%04d" % newid
+        self.slug = "%s-%s" % (newid, slugify(self.name))
         super(Meetings, self).save(*args, **kwargs)
 
     def api_call(self, query, call):
-        prepared = "%s%s%s" % (call, query, settings.SALT)
-        print(prepared)
-        checksum = sha1(str(prepared).encode("utf-8")).hexdigest()
-        result = "%s&checksum=%s" % (query, checksum)
+        checksum_val = sha1(str(call + query + BBB_SECRET_KEY).encode('utf-8')).hexdigest()
+        result = "%s&checksum=%s" % (query, checksum_val)
         return result
 
     def is_running(self):
@@ -211,12 +225,26 @@ class Meetings(models.Model):
         ))
         hashed = self.api_call(query, call)
         url = settings.BBB_API_URL + call + '?' + hashed
-        result = parse_xml(urlopen(url).read())
+        result = parse_xml(requests.get(url).content)
         if result:
             return result.find('running').text
         else:
             return 'error'
 
+    def end_meeting(self, meeting_id, password):
+        call = 'end'
+        query = urlencode((
+            ('meetingID', meeting_id),
+            ('password', password),
+        ))
+        hashed = self.api_call(query, call)
+        url = settings.BBB_API_URL + call + '?' + hashed
+        req = requests.get(url)
+        result = parse_xml(req.content)
+        if result:
+            return True
+        return False
+        
     def meeting_info(self, meeting_id, password):
         call = 'getMeetingInfo'
         query = urlencode((
@@ -225,9 +253,8 @@ class Meetings(models.Model):
         ))
         hashed = self.api_call(query, call)
         url = settings.BBB_API_URL + call + '?' + hashed
-        r = parse_xml(urlopen(url).read())
+        r = parse_xml(requests.get(url).content)
         if r:
-            # Create dict of values for easy use in template
             d = {
                 'start_time': r.find('startTime').text,
                 'end_time': r.find('endTime').text,
@@ -242,7 +269,6 @@ class Meetings(models.Model):
             return None
 
     def get_meetings(self):
-        """ Will return list of running meetings. """
         call = 'getMeetings'
         query = urlencode((
             ('random', 'random'),
@@ -250,7 +276,6 @@ class Meetings(models.Model):
         hashed = self.api_call(query, call)
         url = settings.BBB_API_URL + call + '?' + hashed
         result = parse_xml(requests.get(url).content)
-        # Create dict of values for easy use in template
         d = []
         if result:
             r = result[1].findall('meeting')
@@ -269,48 +294,54 @@ class Meetings(models.Model):
                 })
         return d
 
-    def join_url(self, meeting_id, name, password):
+    def join_url(self, name, password, meeting):
         call = 'join'
-        query = urlencode((
-            ('fullName', name),
-            ('meetingID', meeting_id),
-            ('password', password),
-        ))
+        parameters={}
+        for meetings in meeting._meta.get_meetings():
+            if meetings.slug != 'id' and meetings.name != 'running':
+                parameters.update({
+                    ('fullName', name),
+                    ('meetingID', self.slug),
+                    ('password', password),
+                })
+        query = urlencode(parameters)
         hashed = self.api_call(query, call)
         url = settings.BBB_API_URL + call + '?' + hashed
         return url
 
-    def end_meeting(self, meeting_id, password):
-        call = 'end'
-        query = urlencode((
-            ('meetingID', meeting_id),
-            ('password', password),
-        ))
-        hashed = self.api_call(query, call)
-        url = settings.BBB_API_URL + call + '?' + hashed
-        result = parse_xml(urlopen(url).read())
-        if result:
-            pass
-        else:
-            return 'error'
-
-    def start(self):
-        call = 'create' 
+    def create(self):
+        call_api="create"
         voicebridge = 70000 + random.randint(0,9999)
-        query = urlencode((
-            ('name', self.name),
-            ('meetingID', self.meeting_id),
-            ('attendeePW', self.attendee_password),
-            ('moderatorPW', self.moderator_password),
-            ('voiceBridge', voicebridge),
-            ('welcome', "Welcome!"),
-        ))
+        parameters={}
+        parameters.update({"name":"Information"}),
+        parameters.update({"meetingID":"0002-Information"}),
+        parameters.update({"start_date":datetime}),
+        parameters.update({"end_date":datetime}),
+        parameters.update({"attendeePW":"ap"}),
+        parameters.update({"moderatorPW":"mp"})
+        parameters.update({"record":False}),
+        parameters.update({"autoStartRecording":False}),
+        parameters.update({"allowStartStopRecording":True}),
+        parameters.update({"lock_settings_disable_cam":False}),
+        parameters.update({"lock_settings_disable_mic":False}),
+        parameters.update({"lock_settings_disable_private_chat":False}),
+        parameters.update({"lock_settings_disable_public_chat":False}),
+        parameters.update({"lock_settings_disable_note":False}),
+        parameters.update({"lock_settings_locked_layout":False}),
+        query = urlencode(parameters)
+
+        '''
+        ('attendeePW', self.attendee_password),
+        ('moderatorPW', self.moderator_password),
+        ('voiceBridge', voicebridge),
+        ('welcome', "Welcome!"),
+        '''
         print(query)
-        hashed = self.api_call(query, call)
+        hashed = self.api_call(query, call_api)
         print(hashed)
-        url = settings.BBB_API_URL + call + '?' + hashed
+        url = settings.BBB_API_URL + call_api + '?' + hashed
         print(url)
-        result = parse_xml(urlopen(url).read())
+        result = parse_xml(requests.get(url).content.decode('utf-8'))
         print(result)
         if result:
             return result

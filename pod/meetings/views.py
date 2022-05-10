@@ -16,7 +16,7 @@ def add(request):
     form = MeetingsForm(request.POST)
     if form.is_valid():
       meeting = form.save()
-      print(meeting, meeting.id)
+      print(meeting, meeting.slug)
       
       return redirect('/meeting')
   else:
