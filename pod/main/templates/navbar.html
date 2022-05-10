@@ -5,17 +5,17 @@
 {% load thumbnail %}
 
 <div class="container-fluid pod-container pod-navbar__container" id="nav-mainbar">
- 
-    <!--
+
+  <!--
     <button class="navbar-toggler pod-navbar__button-toogler" type="button" data-bs-toggle="collapse" data-bs-target="#pod-navbar__menu" aria-controls="pod-navbar__menu" aria-expanded="false" title="{% trans 'Toggle navigation' %}">
       <i class="bi bi-list" aria-hidden="true"></i>
     </button> -->
-    <button class="pod-navbar__button-toogler" type="button" data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menu" aria-controls="pod-navbar__menu">
-      <i class="bi bi-list" aria-hidden="true"></i>
-    </button>
-    <a class="navbar-brand pod-navbar__brand me-0 me-sm-1" href="/">
-      <img src="{% static LOGO_SITE %}" height="25" alt="" loading="lazy"/><strong>{{ TITLE_SITE }}</strong>
-    </a>
+  <button class="pod-navbar__button-toogler" type="button" data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menu" aria-controls="pod-navbar__menu">
+    <i class="bi bi-list" aria-hidden="true"></i>
+  </button>
+  <a class="navbar-brand pod-navbar__brand me-0 me-sm-1" href="/">
+    <img src="{% static LOGO_SITE %}" height="25" alt="" loading="lazy" /><strong>{{ TITLE_SITE }}</strong>
+  </a>
   <!-- off canvas -->
   <div class="offcanvas offcanvas-start pod-offcanvas" tabindex="-1" id="pod-navbar__menu" aria-labelledby="pod-navbar__menuLabel">
     <div class="offcanvas-header">
@@ -23,49 +23,49 @@
       <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-        <ul class="pod-navbar-nav list-unstyled">
-          {% if HIDE_CHANNEL_TAB == False %}
-          <li class="nav-item pod-navbar__nav-item" id="nav-channels">
-            <button class="nav-link pod-navbar__nav-item__nav-link" data-bs-toggle="modal" data-bs-target=".chaines-modal">
-              <i class="bi bi-youtube"></i> {% trans "Channels" %}</button>
-          </li>
-          {% for add_channel_tab in ADD_CHANNELS_TAB %}
-            <li class="nav-item add-nav-channels" >
-              <button class="nav-link pod-navbar__nav-item__nav-link" data-bs-toggle="modal" data-bs-target=".chaines-modal-{{add_channel_tab.id}}"><i class="bi bi-youtube"></i> {{ add_channel_tab.name }}</button>
-            </li>
+      <ul class="pod-navbar-nav list-unstyled">
+        {% if HIDE_CHANNEL_TAB == False %}
+        <li class="nav-item pod-navbar__nav-item" id="nav-channels">
+          <button class="nav-link pod-dropdown-item" data-bs-toggle="modal" data-bs-target=".chaines-modal">
+            <i class="bi bi-youtube pod-nav-link-icon"></i> {% trans "Channels" %}</button>
+        </li>
+        {% for add_channel_tab in ADD_CHANNELS_TAB %}
+        <li class="nav-item add-nav-channels">
+          <button class="nav-link  pod-dropdown-item " data-bs-toggle="modal" data-bs-target=".chaines-modal-{{add_channel_tab.id}}"><i class="bi bi-youtube pod-nav-link-icon"></i> {{ add_channel_tab.name }}</button>
+        </li>
+        {% endfor %}
+
+        {% endif %}
+        {% if HIDE_USER_TAB == False and user.is_authenticated %}
+        <li class="nav-item pod-navbar__nav-item" id="nav-users">
+          <button class="nav-link   pod-dropdown-item" data-bs-toggle="modal" data-bs-target=".users-modal"><i class="bi bi-people pod-nav-link-icon" aria-hidden="true"></i> {% trans "Users"%}</button>
+        </li>
+        {% endif %}
+        {% if HIDE_TYPES_TAB == False %}
+        <li class="nav-item pod-navbar__nav-item" id="nav-types">
+          <button class="nav-link  pod-dropdown-item" data-bs-toggle="modal" data-bs-target=".types-modal"> <i class="bi bi-tv pod-nav-link-icon"></i> {% trans "Types"%}</button>
+        </li>
+        {% endif %}
+        {% if "live" in THIRD_PARTY_APPS %}
+        <li class="nav-item pod-navbar__nav-item" id="nav-live">
+          <a class="nav-link   pod-dropdown-item" href="{% url 'live:lives'%}"><i class="bi bi-broadcast pod-nav-link-icon"></i> {% trans "Lives"%}</a>
+        </li>
+        {% endif %}
+        {% if HIDE_LANGUAGE_SELECTOR == False %}
+        <li class="nav-item pod-navbar__nav-item d-flex d-block d-lg-none langs pt-2 mt-2 justify-content-around" id="nav-languagechoice">
+          <div class="active alert m-0">{{LANGUAGE_CODE}}</div>
+          {% for language in languages %}
+          {% if language.code != LANGUAGE_CODE %}
+          <form class="form form-inline p-0 m-0" action="/i18n/setlang/" method="post">
+            {% csrf_token %}
+            <input name="language" value="{{ language.code }}" type="hidden">
+            <input value="{{ language.name_local }} ({{ language.code }})" class="btn btn-light my-2 me-sm-2" type="submit">
+          </form>
+          {% endif %}
           {% endfor %}
-    
-          {% endif %}
-          {% if HIDE_USER_TAB == False and user.is_authenticated %}
-            <li class="nav-item pod-navbar__nav-item" id="nav-users">
-              <button class="nav-link pod-navbar__nav-item__nav-link" data-bs-toggle="modal" data-bs-target=".users-modal"><i class="bi bi-people" aria-hidden="true" class="pod-nav-link-icon d-lg-none d-xl-inline"></i> {% trans "Users"%}</button>
-            </li>
-          {% endif %}
-          {% if HIDE_TYPES_TAB == False %}
-            <li class="nav-item pod-navbar__nav-item" id="nav-types">
-              <button class="nav-link pod-navbar__nav-item__nav-link" data-bs-toggle="modal" data-bs-target=".types-modal">  <i class="bi bi-tv"></i> {% trans "Types"%}</button>
-            </li>
-          {% endif %}
-          {% if "live" in THIRD_PARTY_APPS %}
-            <li class="nav-item pod-navbar__nav-item" id="nav-live">
-              <a class="nav-link pod-navbar__nav-item__nav-link" href="{% url 'live:lives'%}"><i class="bi bi-broadcast"></i> {% trans "Lives"%}</a>
-            </li>
-          {% endif %}
-          {% if HIDE_LANGUAGE_SELECTOR == False %}
-            <li class="nav-item pod-navbar__nav-item d-flex d-block d-lg-none langs pt-2 mt-2 justify-content-around" id="nav-languagechoice">
-              <div class="active alert m-0">{{LANGUAGE_CODE}}</div>
-              {% for language in languages %}
-                {% if language.code != LANGUAGE_CODE %}
-                  <form class="form form-inline p-0 m-0" action="/i18n/setlang/" method="post">
-                    {% csrf_token %}
-                    <input name="language" value="{{ language.code }}" type="hidden">
-                    <input value="{{ language.name_local }} ({{ language.code }})" class="btn btn-light my-2 me-sm-2" type="submit">
-                  </form>
-                {% endif %}
-              {% endfor %}
-            </li>
-          {% endif %}
-        </ul>
+        </li>
+        {% endif %}
+      </ul>
     </div>
   </div>
   <!--
@@ -115,97 +115,102 @@
     </ul>
   </div>
 -->
-  <form class="pod-navbar__form form-inline my-2 my-lg-0" action="{% url "search_videos" %}" id="nav-search">
+  <form class="pod-navbar__form form-inline my-2 my-lg-0" action='{% url "search_videos" %}' id="nav-search">
     <label for="s" class="d-lg-none">
       <i class="bi bi-search"></i> <span class="visually-hidden">{% trans "Search" %}</span>
     </label>
-    <input class="form-control form-control-sm me-sm-2" id="s" placeholder="{% trans 'Search' %}" aria-label="{% trans 'Search' %}" type="search" name="q" >
+    <input class="form-control form-control-sm me-sm-2" id="s" placeholder="{% trans 'Search' %}" aria-label="{% trans 'Search' %}" type="search" name="q">
   </form>
 
   <ul class="navbar-nav pod-navbar-nav flex-row align-items-center" id="nav-useraction">
     {% if user.is_authenticated %}
     <li class="d-none d-md-block nav-item nav-item pod-navbar__nav-item" id="nav-addvideo">
       {%if MAINTENANCE_MODE%}
-        <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br/><i width=16 height=16 class="bi bi-exclamation-triangle"></i> {%trans "Some features are unavailable" %}</span>
+      <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br /><i width=16 height=16 class="bi bi-exclamation-triangle"></i> {%trans "Some features are unavailable" %}</span>
       {%else%}
-          <a class="nav-item pod-navbar__nav-item__nav-link initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="{% trans "Add a video" %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
+      <a class="nav-item pod-navbar__nav-item__nav-link initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="{% trans " Add a video" %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
       {%endif%}
     </li>
     {%endif%}
-    <!--  Ajout Params Buttons --->
+    <!--  Ajout Params Buttons -->
     <li class="nav-item pod-params " id="pod-param-buttons">
-            <button class="btn bi bi-gear pod-params-button " type="button" id="pod-param-buttons__button"  data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menusettings" >   
-            </button>
-            <div class="offcanvas offcanvas-end pod-offcanvas" tabindex="-1" id="pod-navbar__menusettings" aria-labelledby="pod-navbar__menusettingsLabel">
-              <div class="offcanvas-header">
-                <h5 id="pod-navbar__menuuserLabel">Configuration</h5>
-                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      <button class="btn bi bi-gear-fill pod-params-button " type="button" id="pod-param-buttons__button" data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menusettings">
+      </button>
+      <div class="offcanvas offcanvas-end pod-offcanvas" tabindex="-1" id="pod-navbar__menusettings" aria-labelledby="pod-navbar__menusettingsLabel">
+        <div class="offcanvas-header">
+          <h5 id="pod-navbar__menusettingsLabel">Configuration</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ul class="list-unstyled" aria-labelledby="pod-param-buttons__button">
+            {% if HIDE_LANGUAGE_SELECTOR == False %}
+            <li class="pod-navbar__theme-switch__item" id="nav-languagechoicelg">
+              <span class="">Language</span>
+              <div class="btn-group"><button type="button" class="btn btn-lang btn-lang-active my-2 me-sm-2 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{LANGUAGE_CODE}}
+                </button>
+                <div class="dropdown-menu dropdown-menu-end p-0 m-0">
+                  {% for language in languages %}
+                  {% if language.code != LANGUAGE_CODE %}
+                  <form action="/i18n/setlang/" method="post">
+                    {% csrf_token %}
+                    <input name="language" value="{{ language.code }}" type="hidden">
+                    <input value="{{ language.name_local }} ({{ language.code }})" class="dropdown-item pod-dropdown-item" type="submit">
+                  </form>
+                  {% endif %}
+                  {% endfor %}
+                </div>
               </div>
-              <div class="offcanvas-body">
-                <ul class="list-unstyled" aria-labelledby="pod-param-buttons__button">
-                  {% if HIDE_LANGUAGE_SELECTOR == False %}
-                  <li class="nav-item" id="nav-languagechoicelg">
-                    <div class="btn-group"><button type="button" class="btn btn-lang btn-lang-active my-2 me-sm-2 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{LANGUAGE_CODE}}
-                      </button>
-                      <div class="dropdown-menu dropdown-menu-end p-0 m-0">
-                        {% for language in languages %}
-                          {% if language.code != LANGUAGE_CODE %}
-                            <form action="/i18n/setlang/" method="post">
-                              {% csrf_token %}
-                              <input name="language" value="{{ language.code }}" type="hidden">
-                              <input value="{{ language.name_local }} ({{ language.code }})" class="dropdown-item pod-dropdown-item" type="submit">
-                            </form>
-                          {% endif %}
-                        {% endfor %}
-                      </div>
-                    </div>
-                  </li>
-                {% endif %}  
-                  {% if DARKMODE_ENABLED == True or DYSLEXIAMODE_ENABLED == True %}
-                  <ul class="navbar-nav pod-navbar-nav pod-navbar__theme-switch flex-row" id="nav-theme-switch">
-                    {% if DARKMODE_ENABLED == True %}
-                      <li class="nav-item mx-1 pod-navbar__theme-switch__item" id="theme-switch-wrapper" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Dark mode' %}">
-                        <label class="theme-switch" for="checkbox-darkmode">
-                          <span class="visually-hidden">{% trans 'Dark mode' %}</span>
-                          <input type="checkbox" id="checkbox-darkmode" />
-                          <span class="slider">
-                            <i class="bi bi-sun"></i>
-                            <i class="bi bi-moon"></i>
-                          </span>
-                        </label>
-                      </li>
-                    {% endif %}{% if DYSLEXIAMODE_ENABLED == True %}
-                      <li class="nav-item mx-1 pod-navbar__theme-switch__item" id="dyslexia-switch-wrapper" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Dyslexia mode' %}">
-                        <label class="dyslexia-switch" for="checkbox-dyslexia">
-                          <span class="visually-hidden">{% trans 'Dyslexia mode' %}</span>
-                          <input type="checkbox" id="checkbox-dyslexia" />
-                          <span class="slider">
-                             <i class="bi bi-eye-slash"></i>
-                             <i class="bi bi-eye"></i>
-                          </span>
-                        </label>
-                      </li>
-                    {% endif %}
-                  </ul>
+            </li>
+            {% endif %}
+            {% if DARKMODE_ENABLED == True or DYSLEXIAMODE_ENABLED == True %}
+            <li>
+              <ul class="list-unstyled pod-navbar-nav pod-navbar__theme-switch" id="nav-theme-switch">
+                {% if DARKMODE_ENABLED == True %}
+                <li class="nav-item pod-navbar__theme-switch__item" id="theme-switch-wrapper" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Dark mode' %}">
+                  <span class="" for="checkbox-darkmode">{% trans 'Dark mode' %}</span>
+                  <label class="theme-switch" for="checkbox-darkmode">
+
+                    <input type="checkbox" id="checkbox-darkmode" />
+                    <span class="slider">
+                      <i class="bi bi-sun"></i>
+                      <i class="bi bi-moon"></i>
+                    </span>
+                  </label>
+                </li>
+                {% endif %}{% if DYSLEXIAMODE_ENABLED == True %}
+                <li class="nav-item pod-navbar__theme-switch__item" id="dyslexia-switch-wrapper" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Dyslexia mode' %}">
+                  <span for="checkbox-dyslexia" class="">{% trans 'Dyslexia mode' %}</span>
+                  <label class="dyslexia-switch" for="checkbox-dyslexia">
+
+                    <input type="checkbox" id="checkbox-dyslexia" />
+                    <span class="slider">
+                      <i class="bi bi-eye-slash"></i>
+                      <i class="bi bi-eye"></i>
+                    </span>
+                  </label>
+                </li>
                 {% endif %}
-                </ul>
-              </div>
-            </div>
-            
-       
+              </ul>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+
+
     </li>
     {% if user.is_authenticated %}
-      <li class="nav-item nav-item pod-navbar__nav-item dropdown login" id="nav-usermenu">
-        <button class="nav-item btn-sm pod-navbar__nav-item__nav-link {% if not request.user.owner.userpicture  %}initials btn pod-btn-primary {% else %} nav-link{% endif %} ps-2 pe-2 d-flex justify-content-center align-items-center"  type="button" data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menuuser" aria-controls="pod-navbar__menuuser">
-          {% if request.user.owner.userpicture  %}
-            <img src="{{user.owner.userpicture.file.url}}" class="userpicture rounded" alt="{{user.get_full_name}}" loading="lazy">
-          {% endif %}
-          <span class="userinitial" {% if request.user.owner.userpicture  %}style="display:none"{% endif %}>
-            {% if user.first_name != '' and user.last_name != '' %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.username|slice:":2"|upper}}{% endif %}
-          </span>
-        </button>
-        <!--
+    <li class="nav-item nav-item pod-navbar__nav-item dropdown login" id="nav-usermenu">
+      <button class="nav-item btn-sm pod-navbar__nav-item__nav-link {% if not request.user.owner.userpicture  %}initials btn pod-btn-primary {% else %} nav-link{% endif %} ps-2 pe-2 d-flex justify-content-center align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menuuser" aria-controls="pod-navbar__menuuser">
+        {% if request.user.owner.userpicture %}
+        <img src="{{user.owner.userpicture.file.url}}" class="userpicture rounded" alt="{{user.get_full_name}}" loading="lazy">
+        {% endif %}
+        <span class="userinitial" {% if request.user.owner.userpicture %}style="display:none" {% endif %}>
+          {% if user.first_name != '' and user.last_name != '' %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.username|slice:":2"|upper}}{% endif %}
+        </span>
+      </button>
+      <!--
         <div class="dropdown-menu dropdown-menu-end" >
           <h6 class="dropdown-header">{% if user.get_full_name != '' %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</h6>
           <div class="dropdown-divider"></div>
@@ -242,75 +247,75 @@
               <a class="dropdown-item pod-dropdown-item" href="{% url 'bbb:live_list_meeting' %}"><i class="bi bi-lightning-charge pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Perform a BigBlueButton live' %}</a>
             {% endif %}
           {% endif %}
-          <!-- <a class="dropdown-item pod-dropdown-item" href="#">Gestion de mon compte</a>
+           <a class="dropdown-item pod-dropdown-item" href="#">Gestion de mon compte</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item pod-dropdown-item" href="{% url 'authentication_logout' %}">
             <i class="bi bi-box-arrow-right pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Log out' %}</a>
         </div> -->
-        <!-- offcanvas right -->
+      <!-- offcanvas right -->
 
-<div class="offcanvas offcanvas-end pod-offcanvas" tabindex="-1" id="pod-navbar__menuuser" aria-labelledby="pod-navbar__menuuserLabel">
-  <div class="offcanvas-header">
-    <h5 id="pod-navbar__menuuserLabel">{% if user.get_full_name != '' %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</h5>
-    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div class="offcanvas-body">
+      <div class="offcanvas offcanvas-end pod-offcanvas" tabindex="-1" id="pod-navbar__menuuser" aria-labelledby="pod-navbar__menuuserLabel">
+        <div class="offcanvas-header">
+          <h5 id="pod-navbar__menuuserLabel">{% if user.get_full_name != '' %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
           {%if MAINTENANCE_MODE%}
-          <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br/><i width=16 height=16 class="bi bi-exclamation-triangle"></i> {%trans "Some features are unavailable" %}</span>
-        {%else%}
-            <a class="mx-3 mb-2 pod-dropdown-item pod-navbar__nav-item__nav-link initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="{% trans "Add a video" %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
-        {%endif%}
+          <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br /><i width=16 height=16 class="bi bi-exclamation-triangle "></i> {%trans "Some features are unavailable" %}</span>
+          {%else%}
+          <a class="mx-3 mb-2 pod-dropdown-item pod-navbar__nav-item__nav-link initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="{% trans " Add a video" %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
+          {%endif%}
           {% if request.user.is_superuser or user.owner.is_manager %}
-            <a class="dropdown-item pod-dropdown-item" href="{% url 'admin:index' %}"><i class="bi bi-cpu pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>Administration</a>
+          <a class="dropdown-item pod-dropdown-item" href="{% url 'admin:index' %}"><i class="bi bi-cpu pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>Administration</a>
           {% endif %}
           {% if request.user.is_staff or request.user.is_superuser %}
-            <button class="dropdown-item pod-dropdown-item get_form_userpicture" data-url="{% url "userpicture" %}">
-              <i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>{% if request.user.owner.userpicture  %}{% trans 'Change your picture' %}{% else %}{% trans 'Add your picture' %}{% endif %}
-            </button>
+          <button class="dropdown-item pod-dropdown-item get_form_userpicture" data-url='{% url "userpicture" %}'>
+            <i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>{% if request.user.owner.userpicture %}{% trans 'Change your picture' %}{% else %}{% trans 'Add your picture' %}{% endif %}
+          </button>
           {% endif %}
           <a class="dropdown-item pod-dropdown-item" href="{% url 'my_videos' %}"><i class="bi bi-film pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My videos' %}</a>
           {% if USE_OPENCAST_STUDIO %}
           <a class="dropdown-item pod-dropdown-item" href="{% url 'recorder:studio_pod'%}"><i class="bi bi-camera-video pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans "Video Record" %}</a>
           {% endif %}
           {% if request.user.owners_channels.all %}
-            <a class="dropdown-item pod-dropdown-item" href="{% url 'my_channels' %}"><i class="bi bi-youtube pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My channels' %}</a>
+          <a class="dropdown-item pod-dropdown-item" href="{% url 'my_channels' %}"><i class="bi bi-youtube pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My channels' %}</a>
           {% endif %}
           <a class="dropdown-item pod-dropdown-item" href="{% url 'my_playlists' %}"><i class="bi bi-cast pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
           {% if request.user.is_staff and USE_PODFILE %}
-            <a class="dropdown-item pod-dropdown-item" href="{% url 'podfile:home' %}"><i class="bi bi-folder pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My files' %}</a>
+          <a class="dropdown-item pod-dropdown-item" href="{% url 'podfile:home' %}"><i class="bi bi-folder pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My files' %}</a>
           {% endif %}
           {% if request.user.is_staff and ALLOW_MANUAL_RECORDING_CLAIMING %}
-            <a class="dropdown-item pod-dropdown-item" href="{% url 'claim_record' %}"><i class="bi bi-share pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Claim a record' %}</a>
+          <a class="dropdown-item pod-dropdown-item" href="{% url 'claim_record' %}"><i class="bi bi-share pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Claim a record' %}</a>
           {% endif %}
           {% if request.user.is_staff and USE_BBB %}
-            <a class="dropdown-item pod-dropdown-item" href="{% url 'bbb:list_meeting' %}"><i class="bi bi-square pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My BigBlueButton records' %}</a>
-            {% if USE_BBB_LIVE %}
-              <a class="dropdown-item pod-dropdown-item" href="{% url 'bbb:live_list_meeting' %}"><i class="bi bi-lightning-charge pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Perform a BigBlueButton live' %}</a>
-            {% endif %}
+          <a class="dropdown-item pod-dropdown-item" href="{% url 'bbb:list_meeting' %}"><i class="bi bi-square pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My BigBlueButton records' %}</a>
+          {% if USE_BBB_LIVE %}
+          <a class="dropdown-item pod-dropdown-item" href="{% url 'bbb:live_list_meeting' %}"><i class="bi bi-lightning-charge pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Perform a BigBlueButton live' %}</a>
           {% endif %}
-          <!-- <a class="dropdown-item pod-dropdown-item" href="#">Gestion de mon compte</a> -->
+          {% endif %}
+          <!-- comment
+            <a class="dropdown-item pod-dropdown-item" href="#">Gestion de mon compte</a> -->
           <div class="dropdown-divider"></div>
           <a class="dropdown-item pod-dropdown-item" href="{% url 'authentication_logout' %}">
             <i class="bi bi-box-arrow-right pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Log out' %}</a>
         </div>
       </div>
-    </div>
-        <!-- end offcanvas -->
-      </li>
-    {% else %}{# user not authenticated #}
-      {% get_setting "LOGIN_URL" "/authentication_login/" as LOGIN_URL %}
-      {% if request.path != LOGIN_URL %}
-        <li class="nav-item dropdown login me-2" id="nav-authentication">
-          {% get_url_referrer request as url_referrer %}
-          <a class="btn pod-btn-primary btn-sm ps-2 pe-2 d-flex justify-content-center" href="{% url 'authentication_login' %}{{ url_referrer }}" aria-label="{% trans 'Log in' %}">
-            <i class="bi bi-person-circle"></i> <span class="ms-1 d-none d-lg-block">{% trans 'Log in' %}</span>
-          </a>
-        </li>
-      {% endif %}
-    {% endif %}
-    
-    </ul>
-  
+<!-- end offcanvas -->
+</li>
+{% else %}{# user not authenticated #}
+{% get_setting "LOGIN_URL" "/authentication_login/" as LOGIN_URL %}
+{% if request.path != LOGIN_URL %}
+<li class="nav-item dropdown login me-2" id="nav-authentication">
+  {% get_url_referrer request as url_referrer %}
+  <a class="btn pod-btn-primary btn-sm ps-2 pe-2 d-flex justify-content-center" href="{% url 'authentication_login' %}{{ url_referrer }}" aria-label="{% trans 'Log in' %}">
+    <i class="bi bi-person-circle"></i> <span class="ms-1 d-none d-lg-block">{% trans 'Log in' %}</span>
+  </a>
+</li>
+{% endif %}
+{% endif %}
+
+</ul>
+
 
 </div> <!-- FIN Container -->
 {% endspaceless %}

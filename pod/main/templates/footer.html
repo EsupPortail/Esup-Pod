@@ -1,12 +1,12 @@
 {% load static %}
 {% load i18n %}
 {% spaceless %}
-<div class="container-fluid pod-container">
+<div class="">
 <p class="float-end">
   <a class="bi bi-arrow-up-circle pod-gotoup" href="#"></a>
 </p>
-<div class="row">
-  <div class="col-md-4">
+<div class="pod-footer-content">
+  <div class="">
     <img src="{% static LOGO_ETB %}" alt="" height="40" loading="lazy" class="pod-footer-logo">
     <address>
     <p class="footer-contact mt-3 hidden-pod pod-hidden">
@@ -17,17 +17,13 @@
     </p>
   </address>
   </div>
-  <div class="col-md-4">
+  <div class=""> 
+    <ul class="footer_links pod-footer__links list-unstyled">
     {% if LINK_FOOTER %}
-      <ul class="footer_links list-unstyled">
       {% for link in LINK_FOOTER %}
         <li><a href="{{link.get_url}}">{{link.title}}</a></li>
       {% endfor %}
-      </ul>
     {% endif %}
-  </div>
-  <div class="col-md-4">
-    <ul class="footer_links list-unstyled">
       
       <li><a href="https://www.esup-portail.org/" title="{% trans 'Esup Portal: Community of French higher education establishments for digital innovation' %}" target="_blank">{% trans "Esup Portal" %}</a></li>
       <li><a href="https://github.com/EsupPortail/Esup-Pod" target="_blank">{% trans "Pod Project" %}</a></li>

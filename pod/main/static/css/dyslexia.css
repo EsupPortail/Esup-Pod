@@ -5,10 +5,7 @@
   font-family: "Open Dyslexic";
   src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Regular.woff") format("woff");
 }
-/**
-[data-dyslexia="on"] {
-  --font-family-sans-serif: "Open Dyslexic";
-} ***/
+
 
 .dyslexia-switch-wrapper {
   display: flex;

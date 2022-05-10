@@ -340,7 +340,7 @@
             {% if type == "image" and file.class_name == "CustomImageModel" %}
               <a
                 href="{{file.file.url}}"
-                class="card-title {% if request.is_ajax %}file-name{% endif%}"
+                class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif%}"
                 title="{{file.name}}"
                 target="_blank"
                 data-fileid="{{file.id}}"
@@ -351,7 +351,7 @@
             {% elif type == "file" and file.class_name == "CustomFileModel"%}
               <a
                 href="{{file.file.url}}"
-                class="card-title {% if request.is_ajax %}file-name{% endif%}"
+                class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif%}"
                 title="{{file.name}}"
                 target="_blank"
                 data-fileid="{{file.id}}"
@@ -365,7 +365,7 @@
           {% else %}
             <a
               href="{{file.file.url}}"
-              class="card-title {% if request.is_ajax %}file-name{% endif%}"
+              class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif%}"
               title="{{file.name}}"
               target="_blank"
               data-fileid="{{file.id}}"
