@@ -62,7 +62,7 @@ function refreshVideosSearch(formCheckedInputs) {
   });
 }
 
-$(".form-check-input").change(function () {
+$(".form-check-input, .sort-select").change(function () {
   // Filter checkboxes change triggered event
   formCheckedInputs = [];
   $(".infinite-loading").show();
@@ -71,6 +71,9 @@ $(".form-check-input").change(function () {
   $("input[type=checkbox]:checked").each(function () {
     formCheckedInputs.push(this);
   });
+  if($("#sort").val()){
+    formCheckedInputs.push($("#sort")[0]);
+  }
   refreshVideosSearch(formCheckedInputs).done(function () {
     $(".infinite-loading").hide();
     infinite_waypoint = getInfiniteScrollWaypoint();

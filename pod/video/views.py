@@ -557,6 +557,9 @@ def get_videos_list(request):
         )
     if request.GET.getlist("cursus"):
         videos_list = videos_list.filter(cursus__in=request.GET.getlist("cursus"))
+    if request.GET.get("sort"):
+        videos_list = videos_list.order_by(request.GET.get("sort"))
+
     return videos_list.distinct()
 
 
