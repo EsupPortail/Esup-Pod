@@ -15,6 +15,15 @@
 {% endblock more_style %}
 
 {% block page_extra_head %}
+{% endblock %}
+
+{% block page_content %}
+  {% include 'podfile/home_content.html' %}
+{% endblock %}
+{% block collapse_page_aside %}{% endblock collapse_page_aside %}
+{% block page_aside %}{% endblock page_aside %}
+
+{% block more_script %}
   <script>
     var id_input="";
     var static_url = "{% get_static_prefix %}";
@@ -23,10 +32,4 @@
     var myFilesView = true;
   </script>
   <script src="{% static 'podfile/js/filewidget.js' %}?ver={{VERSION}}"></script>
-{% endblock %}
-
-{% block page_content %}
-  {% include 'podfile/home_content.html' %}
-{% endblock %}
-{% block collapse_page_aside %}{% endblock collapse_page_aside %}
-{% block page_aside %}{% endblock page_aside %}
+{% endblock more_script %}

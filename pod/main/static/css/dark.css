@@ -6,7 +6,6 @@
   --color-shark: #212529;
   --bg-color: #303238;
   --background-color: #1e1e2c;
-  --font-color: #f8f9fa;
 
   /* BOOTSTRAP COLORS */
   --dark: #202025;
@@ -27,6 +26,7 @@
 [data-theme="dark"] .form-control::placeholder {
   color: #BEC1C6;
 }
+
 [data-theme="dark"] .text-muted {
   color: #eee !important;
 }
@@ -121,10 +121,11 @@
   color: var(--white);
 }
 
+/*
 [data-theme="dark"] .card {
   background-color: var(--dark);
   border-color: var(--dark);
-}
+} */
 
 [data-theme="dark"] .card-header {
   border-bottom-color: var(--color-formfields);
@@ -202,9 +203,9 @@ body.dark {
 [data-theme="dark"] .select2-dropdown-open .select2-choice,
 [data-theme="dark"] .select2-results .select2-no-results,
 [data-theme="dark"] .select2-results .select2-searching {
-  background: var(--background-color);
-  border-color: var(--bg-color);
-  color: var(--font-color);
+  background: var(--pod-background-neutre1-bloc);
+  border-color: var(--pod-font-color);
+  color: var(--pod-font-color);
   box-shadow: none;
 }
 

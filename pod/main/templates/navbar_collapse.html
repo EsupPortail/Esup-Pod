@@ -7,13 +7,14 @@
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
       <div class="modal-header">
-        {% if CHANNELS.count|get_type == 'int' %}
+        <!-- suppression temp du |get_type == 'int' dans le if-->
+        {% if CHANNELS.count %}
           <h2 class="modal-title"><i class="bi bi-youtube"></i>&nbsp;{% blocktrans count counter=CHANNELS.count %}{{ counter }} Channel{% plural %}{{ counter }} Channels{% endblocktrans %}</h2>
         {% endif %}
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body row">
-        <ul class="col-12 list-group list-group-flush" id="list-channels">
+      <div class="modal-body">
+        <ul class="clist-group list-group-flush p-0" id="list-channels">
           {% for channel in CHANNELS %}
             <li class="list-group-item list-group-item-action" data-id="{{channel.id}}">
               <div class="d-flex justify-content-between align-items-center">
@@ -22,7 +23,7 @@
                     {% thumbnail channel.headband.file "x34" as im %}
                     <img src="{{ im.url }}" height="34" class='rounded' alt="" loading="lazy">
                     {% endthumbnail %}
-                  {% else %}<i class="bi bi-youtube" style="height:34px" class="me-2"></i>{% endif %}
+                  {% else %}<i class="bi bi-youtube pod-channel__item" style=""></i>{% endif %}
                   <a href="{% url 'channel' slug_c=channel.slug%}" id="channel-title_{{channel.id}}">
                   {{channel.title}}</a></span>
                 <span class="text-nowrap">
@@ -47,9 +48,6 @@
     </div>
   </div>
 </div>
-
-
-
 {% for add_channel_tab in ADD_CHANNELS_TAB %}
 <div class="modal fade chaines-modal-{{add_channel_tab.id}}" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-pod-full">
@@ -68,7 +66,7 @@
                     {% thumbnail channel.headband.file "x34" as im %}
                     <img src="{{ im.url }}" height="34" class='rounded' alt="" loading="lazy">
                     {% endthumbnail %}
-                  {% else %}<i class="bi bi-youtube" style="height:34px" class="me-2"></i>{% endif %}
+                  {% else %}<i class="bi bi-youtube" style="height:34px"></i>{% endif %}
                   <a href="{% url 'channel' slug_c=channel.slug%}" id="channel-title_{{channel.id}}">
                   {{channel.title}}</a></span>
                 <span class="text-nowrap">

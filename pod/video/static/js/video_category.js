@@ -571,7 +571,7 @@
       "class",
       "infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group"
     );
-    infinite_item.setAttribute("style", "min-width: 12rem; min-height: 11rem;");
+    // infinite_item.setAttribute("style", "min-width: 12rem; min-height: 11rem;");
     infinite_item.setAttribute("data-slug", video.slug);
     let card = document.createElement("div");
     card.setAttribute(

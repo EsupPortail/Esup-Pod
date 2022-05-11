@@ -55,7 +55,7 @@
     {% if organize_theme %}
         <h1 class="page_title">
             {% if parent_title %} {{parent_title}} {% else %} {{title}} {% endif %}
-            <span class="float-end">
+            <span class="pod-float-end">
                 {% if USE_STATS_VIEW %}
                     {% if theme %}
                         <a href="{% url 'video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
@@ -71,7 +71,7 @@
                     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio' slug_c=channel.slug %}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-rss"  ></i>&nbsp;Audio</a>
                 {% endif %}
                 {% if request.user in channel.owners.all %}
-                    <a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans 'Edit the themes'%}" class="btn btn btn-outline-primary btn-sm">
+                    <a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans 'Edit the themes'%}" class="btn btn pod-btn-social btn-sm">
                         <i class="bi bi-pencil-square me-1"></i>&nbsp;{% trans "Edit the channel"%}</a>
                 {% endif %}
             </span>
@@ -132,7 +132,7 @@
             <h1 class="page_title channel_title">
         {% endif %}
         <i class="bi bi-youtube" aria-hidden="true"></i>&nbsp;{{channel.title}}
-            <span class="float-end">
+            <span class="pod-float-end">
                 {% if theme %}
                     {% if USE_STATS_VIEW %}
                         <a href="{% url 'video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
@@ -183,7 +183,7 @@
 
 {% block page_aside %}
     <div class="card card-body p-2 p-md-3" id="card-channelthemes">
-        <h2 class="card-title ps-2 h4">
+        <h2 class="card-title pod-card__title h4">
             <i class="bi bi-card-list"   aria-hidden="true"></i>&nbsp; {% trans 'Themes of ' %}&nbsp;{{ channel.title }}
         </h2>
         <div class="card-text" id="treeview">

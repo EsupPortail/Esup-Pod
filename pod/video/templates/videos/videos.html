@@ -22,7 +22,7 @@
 {% block page_content %}
 
       <h1 id="video_count">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
-      <span class="float-end">
+      <span class="pod-float-end">
         <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
           <i class="bi bi-rss"></i>&nbsp;Audio</a> 
         <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
