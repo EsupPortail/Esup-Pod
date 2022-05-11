@@ -3,7 +3,7 @@ from django.urls import path
 
 from pod.meetings.models import Meetings
 
-from .views import index, add, begin_meeting, delete_meeting, join_meeting
+from .views import index, create, begin_meeting, delete_meeting, join_meeting
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -13,7 +13,7 @@ app_name = "meetings"
 
 urlpatterns = [
     path('meeting/', index, name='index'),
-    path('meeting/add/', add, name='add'),
+    path('meeting/add/', create, name='create'),
     url('^meeting/begin/$', begin_meeting, name='begin'),
     url(r'^meeting/(?P<meeting_id>[a-zA-Z0-9 _-]+)/join$', join_meeting,
         name='join'),

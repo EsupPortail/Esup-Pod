@@ -9,7 +9,7 @@ def index(request):
 
   return render(request, 'meeting.html', {'dataMeetings':Meetings.objects.all()})
 
-def add(request):
+def create(request):
   print("add")
   if request.method == "POST":
     print('POST')

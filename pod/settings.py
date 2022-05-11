@@ -3,6 +3,7 @@ Django global settings for pod_project.
 
 Django version: 3.2.
 """
+from distutils.debug import DEBUG
 import os
 import sys
 
@@ -64,6 +65,8 @@ INSTALLED_APPS = [
     'chunked_upload',
     'mozilla_django_oidc',
 ]
+
+DEBUG = True
 
 SALT = ""
 BBB_API_URL= 'https://bbb-21-e.uphf.fr/bigbluebutton/api/'
