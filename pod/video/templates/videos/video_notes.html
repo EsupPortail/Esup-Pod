@@ -125,7 +125,7 @@
     </div>
 
     <script>
-        $(document).ready(function () {
+        document.addEventListener("DOMContentLoaded", function() {
             let divComments = $('#id_notes').find('div.comments');
             for (var i=0; i < Math.min(divComments.length, 3); i++ ) {
                 $(divComments[i]).addClass('offset');
