@@ -1,12 +1,12 @@
 {% load static %}
 {% load i18n %}
 {% spaceless %}
-<div class="container pod-container">
+<div class="">
 <p class="float-end">
-  <a class="top_link" href="#">Haut de page</a>
+  <a class="bi bi-arrow-up-circle pod-gotoup" href="#"></a>
 </p>
-<div class="row">
-  <div class="col-md-4">
+<div class="pod-footer-content">
+  <div class="">
     <img src="{% static LOGO_ETB %}" alt="" height="40" loading="lazy" class="pod-footer-logo">
     <address>
     <p class="footer-contact mt-3 hidden-pod pod-hidden">
@@ -17,23 +17,19 @@
     </p>
   </address>
   </div>
-  <div class="col-md-4">
+  <div class=""> 
+    <ul class="footer_links pod-footer__links list-unstyled">
     {% if LINK_FOOTER %}
-      <ul class="footer_links list-unstyled">
       {% for link in LINK_FOOTER %}
         <li><a href="{{link.get_url}}">{{link.title}}</a></li>
       {% endfor %}
-      </ul>
     {% endif %}
-  </div>
-  <div class="col-md-4">
-    <ul class="footer_links list-unstyled">
       
       <li><a href="https://www.esup-portail.org/" title="{% trans 'Esup Portal: Community of French higher education establishments for digital innovation' %}" target="_blank">{% trans "Esup Portal" %}</a></li>
       <li><a href="https://github.com/EsupPortail/Esup-Pod" target="_blank">{% trans "Pod Project" %}</a></li>
     </ul>
   </div>
 </div>
-<p class="hidden-pod" style="text-align:center">{{TITLE_SITE}} {% trans "video platform of" %} {{TITLE_ETB}} - <a href="https://github.com/EsupPortail/Esup-Pod/releases/tag/{{VERSION}}" target="_blank" title="GitHub">{% trans "Release" %} {{VERSION}}</a>  - {{VIDEOS_COUNT}} {% trans "videos availables" %} [ {{VIDEOS_DURATION}} ]</p>
+<p class="hidden-pod pod-footer__credits" style="text-align:center">{{TITLE_SITE}} {% trans "video platform of" %} {{TITLE_ETB}} - <a href="https://github.com/EsupPortail/Esup-Pod/releases/tag/{{VERSION}}" target="_blank" title="GitHub">{% trans "Release" %} {{VERSION}}</a>  - {{VIDEOS_COUNT}} {% trans "videos availables" %} [ {{VIDEOS_DURATION}} ]</p>
 </div>
 {% endspaceless %}
