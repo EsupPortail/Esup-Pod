@@ -36,7 +36,7 @@ lang:
 	echo "Processing python files..."
 	python3 manage.py makemessages --all -i "opencast-studio/*"
 	echo "Processing javascript files..."
-	django-admin makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/bower_components/*"
+	django-admin makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/node_modules/*"
 
 updatedb:
 	# Look for changes to apply in DB
@@ -56,5 +56,5 @@ pystyle:
 	flake8
 
 statics:
-	cd pod; bower update
+	cd pod; yarn
 	python manage.py collectstatic
