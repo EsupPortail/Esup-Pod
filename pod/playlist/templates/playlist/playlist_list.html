@@ -3,7 +3,7 @@
 {% spaceless %}
 <div class="pod-infinite-container infinite-container">
 	{% for playlist in playlists %}
-		<div class="">
+		<div>
 			<div class="card h-100" data-id="{{playlist.id}}">
 				<img class="card-img" src="{{playlist.first.video.get_thumbnail_url}}" alt='' width="100" height="auto" loading="lazy">
 				{% if playlist.visible %}
@@ -24,7 +24,7 @@
 			</div>
 		</div>
 		{% empty %}
-		<div class="">
+		<div>
 			<p>{% trans "Sorry, no playlist found" %}</p>
 		</div>
 	{% endfor %}

@@ -141,7 +141,6 @@
           method="POST"
           id="formuploadfile"
           enctype="multipart/form-data"
-          style=""
           action="{% url "podfile:uploadfiles" %}"
         >
           {% csrf_token %}
@@ -158,7 +157,7 @@
               multiple
               style="position:fixed;top:-100px"
             >
-            <label class="" for="ufile" style="cursor:pointer;">
+            <label for="ufile" style="cursor:pointer;">
               <span class="upload-file" id="upload-file-icon">
                 <svg
                   aria-hidden="true"

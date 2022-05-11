@@ -145,7 +145,7 @@
           <ul class="list-unstyled" aria-labelledby="pod-param-buttons__button">
             {% if HIDE_LANGUAGE_SELECTOR == False %}
             <li class="pod-navbar__theme-switch__item" id="nav-languagechoicelg">
-              <span class="">Language</span>
+              <span>Language</span>
               <div class="btn-group"><button type="button" class="btn btn-lang btn-lang-active my-2 me-sm-2 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   {{LANGUAGE_CODE}}
                 </button>
@@ -168,7 +168,7 @@
               <ul class="list-unstyled pod-navbar-nav pod-navbar__theme-switch" id="nav-theme-switch">
                 {% if DARKMODE_ENABLED == True %}
                 <li class="nav-item pod-navbar__theme-switch__item" id="theme-switch-wrapper" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Dark mode' %}">
-                  <span class="" for="checkbox-darkmode">{% trans 'Dark mode' %}</span>
+                  <span for="checkbox-darkmode">{% trans 'Dark mode' %}</span>
                   <label class="theme-switch" for="checkbox-darkmode">
 
                     <input type="checkbox" id="checkbox-darkmode" />
@@ -180,7 +180,7 @@
                 </li>
                 {% endif %}{% if DYSLEXIAMODE_ENABLED == True %}
                 <li class="nav-item pod-navbar__theme-switch__item" id="dyslexia-switch-wrapper" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Dyslexia mode' %}">
-                  <span for="checkbox-dyslexia" class="">{% trans 'Dyslexia mode' %}</span>
+                  <span for="checkbox-dyslexia">{% trans 'Dyslexia mode' %}</span>
                   <label class="dyslexia-switch" for="checkbox-dyslexia">
 
                     <input type="checkbox" id="checkbox-dyslexia" />
