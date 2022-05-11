@@ -817,14 +817,6 @@ h3>.feather,
 }
 */
 
-.top_link:before {
-  content: "\21E7";
-  padding-right: 4px;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 1.2em;
-}
-
 #view-counter-icon {
   color: var(--primary);
 }

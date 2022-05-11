@@ -188,8 +188,8 @@
 </div>
 <div class="row" id="listfiles">
   {% for file in folder.get_all_files %}
-  <div class="col-sm-2 p-0">
-    <div class="card bg-light mb-3 m-1 text-truncate">
+  <div class="p-0">
+    <div class="card bg-light mb-3 m-1">
       <div class="card-header p-0 m-0" style="background: none">
         {% if request.user == file.created_by or request.user.is_superuser or perms.podfile.change_customfilemodel or perms.podfile.change_customimagemodel or request.user in folder.users.all %}
         <nav class="navbar navbar-expand-lg navbar-light p-0 m-0">
@@ -310,10 +310,10 @@
             data-fileid="{{file.id}}"
             data-filetype="{{file.class_name}}"
           >
-            <img class="card-img-top p-1" src="{{file.file.url}}" alt="Card image" loading="lazy">
+            <img class="card-img-top p-1" src="{{file.file.url}}" alt="" loading="lazy">
           </a>
         {% else %}
-          <img class="card-img-top p-1" src="{{file.file.url}}" alt="Card image" loading="lazy">
+          <img class="card-img-top p-1" src="{{file.file.url}}" alt="" loading="lazy">
         {% endif %}
       {% else %}
         {% with file.file.name|icon_exists as icon %}
@@ -345,7 +345,7 @@
                 data-fileid="{{file.id}}"
                 data-filetype="{{file.class_name}}"
               >
-                <small class="text-muted">{{file.name}}</small>
+                <small class="text-muted text-truncate">{{file.name}}</small>
               </a>
             {% elif type == "file" and file.class_name == "CustomFileModel"%}
               <a
@@ -356,10 +356,10 @@
                 data-fileid="{{file.id}}"
                 data-filetype="{{file.class_name}}"
               >
-                <small class="text-muted">{{file.name}}</small>
+                <small class="text-muted text-truncate">{{file.name}}</small>
               </a>
             {% else %}
-              <small class="text-muted">{{file.name}}</small>
+              <small class="text-muted text-truncate">{{file.name}}</small>
             {% endif %}
           {% else %}
             <a
@@ -370,7 +370,7 @@
               data-fileid="{{file.id}}"
               data-filetype="{{file.class_name}}"
             >
-              <small class="text-muted">{{file.name}}</small>
+              <small class="text-muted text-truncate">{{file.name}}</small>
             </a>
           {% endif %}
         </p>
