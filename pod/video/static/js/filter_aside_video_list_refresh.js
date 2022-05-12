@@ -53,7 +53,9 @@ function refreshVideosSearch(formCheckedInputs) {
       $(".infinite-loading").remove();
       $(".infinite-more-link").remove();
       $("#videos_list").replaceWith(html);
-      replaceCountVideos(countVideos);
+      if(urlVideos == 'videos'){
+        replaceCountVideos(countVideos);
+      }
       window.history.pushState({}, "", this.url);
     },
     error: function (result, status, error) {
