@@ -2616,40 +2616,6 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
 
 
 @csrf_protect
-@ensure_csrf_cookie
-@login_required(redirect_field_name="referrer")
-def video_record(request):
-    if in_maintenance():
-        return redirect(reverse("maintenance"))
-    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
-        return render(request, "videos/video_edit.html", {"access_not_allowed": True})
-    if request.method == "POST" and request.is_ajax():
-        try:
-            vid = Video()
-            vid.video = request.FILES["video"]
-            vid.title = request.POST["title"]
-            vid.owner = request.user
-            vid.type = Type.objects.get(id=DEFAULT_RECORDER_TYPE_ID)
-            vid.save()
-            vid.sites.add(get_current_site(request))
-            vid.launch_encode = True
-            vid.save()
-            return JsonResponse(
-                {
-                    "id": vid.id,
-                    "url_edit": reverse("video_edit", args=(vid.slug,)),
-                }
-            )
-        except (RuntimeError, TypeError, NameError, AttributeError) as err:
-            return JsonResponse(
-                {
-                    "error": "Unexpected error: {0}".format(err),
-                }
-            )
-    return render(request, "videos/video_record.html", {"page_title": _("Video record")})
-
-
-@csrf_protect
 @login_required(redirect_field_name="referrer")
 @admin_required
 def update_video_owner(request, user_id):

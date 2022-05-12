@@ -43,9 +43,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title" id="exampleModalLabel">{% trans "BigBlueButton presentation preview" %}</h2>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <center>
@@ -53,7 +51,7 @@
           </center>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
         </div>
       </div>
     </div>
@@ -70,8 +68,8 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-<script src="{% static 'jquery-waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'waypoints/lib/shortcuts/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script>
   var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],
@@ -80,7 +78,6 @@
     },
     onAfterPageLoad: function ($items) {
       $('.loading').hide();
-      feather.replace({ class: 'align-bottom'});
       $('footer.static-pod').addClass('small');
       $('footer.static-pod').addClass('fixed-bottom');
       $('footer.static-pod').attr('style','height:80px; overflow-y:auto');

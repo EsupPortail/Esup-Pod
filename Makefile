@@ -36,9 +36,9 @@ createDB:
 lang:
 	# Mise à jour des fichiers de langue
 	echo "Processing python files..."
-	python3 manage.py makemessages --all
+	python3 manage.py makemessages --all -i "opencast-studio/*"
 	echo "Processing javascript files..."
-	django-admin makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*"
+	django-admin makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/node_modules/*"
 
 updatedb:
 	# Look for changes to apply in DB
@@ -57,6 +57,6 @@ pystyle:
 	# Ensure coherence of all code style
 	flake8
 
-collectstatic:
-	cd pod; bower update
+statics:
+	cd pod; yarn
 	python3 manage.py collectstatic

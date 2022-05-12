@@ -202,7 +202,7 @@ var get_list = function (
     if (count > 0 && !show_only_parent_themes) {
       list += get_list(
         child,
-        (level += 1),
+        level + 1,
         tab_selected,
         tag_type,
         li_class,
@@ -296,20 +296,20 @@ $(document).ready(function () {
 
   // Fired when #collapseAside has been made visible
   $("#collapseAside").on("shown.bs.collapse", function () {
-    Cookies.set("activeCollapseAside", "open");
+    Cookies.set("activeCollapseAside", "open", {sameSite: 'Lax'});
     $(".collapseAside").html(
-      '<i data-feather="corner-left-up"></i><i data-feather="menu"></i>'
+     // '<i class="bi bi-arrow-90deg-up"></i><i class="bi bi-list"></i>'
     );
-    feather.replace({ class: "align-bottom" });
+    // feather.replace({ class: "align-bottom" });
     $("#mainContent").addClass("col-md-9");
   });
   // Fired when #collapseAside has been hidden
   $("#collapseAside").on("hidden.bs.collapse", function () {
-    Cookies.set("activeCollapseAside", "close");
+    Cookies.set("activeCollapseAside", "close", {sameSite: 'Lax'});
     $(".collapseAside").html(
-      '<i data-feather="corner-left-down"></i><i data-feather="menu"></i>'
+      // '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
     );
-    feather.replace({ class: "align-bottom" });
+    // feather.replace({ class: "align-bottom" });
     $("#mainContent").removeClass("col-md-9");
   });
 
@@ -322,16 +322,19 @@ $(document).ready(function () {
     $("#mainContent").removeClass("col-md-9");
   } else {
     // Use the last aside state, stored in Cookies
+    // only for > 992, we show collapseAside
     var last = Cookies.get("activeCollapseAside");
     if (last != null && last == "close") {
       $("#collapseAside").collapse("hide");
       $(".collapseAside").html(
-        '<i data-feather="corner-left-down"></i><i data-feather="menu"></i>'
+       // '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
       );
-      feather.replace({ class: "align-bottom" });
-      $("#mainContent").removeClass("col-md-9");
+      // feather.replace({ class: "align-bottom" });
+      // $("#mainContent").removeClass("col-md-9");
     } else {
-      $("#collapseAside").collapse("show");
+      if (window.innerWidth > 992) {
+        $("#collapseAside").collapse("show");
+      }
     }
   }
   TriggerAlertClose();

@@ -2,7 +2,7 @@
 {% load i18n %}
 <div class="card card-body" overflow: auto>
     <div class="panel-heading">
-	<h2 class="card-title">{% trans 'List of subtitle or caption files' %}&nbsp;({{list_track|length}})</h2>
+	<h2 class="card-title pod-card__title">{% trans 'List of subtitle or caption files' %}&nbsp;({{list_track|length}})</h2>
     </div>
     <div class="grid-list-track">
 	<span class="thead_title kind">{% trans 'Kind' %}</span>
@@ -28,7 +28,7 @@
 		    <input type="submit" title="{% trans 'Remove the subtitle or caption files' %}" value="{% trans 'Remove' %}" class="edt_track btn btn-danger btn-sm"/>
 		</form>
 		<div class="dropdown">
-		    <button class="dot-btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    <button class="dot-btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			{% trans "menu" %}
 		    </button>
 		    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
