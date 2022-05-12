@@ -70,7 +70,10 @@
   --primary: var(--pod-primary);
   --font-color: var(--pod-font-color);
   --bg-color: var(--pod-background);
-  --activelink-color: #cc4b51 !important;
+  /** reinit before cleaning all old css vars ***/
+  --activelink-color: var(--pod-primary) !important;
+  --primary-background-color: var(--pod-background-neutre1-bloc) !important;
+  --third-background-color: var(--pod-background-neutre1-bloc) !important;
 }
 
 :root[data-theme="dark"] {
@@ -261,6 +264,10 @@ label {
 :not(footer)>.pod-btn-social {
   font-size: 2rem;
 
+}
+
+.pod-btn-social {
+  color: var(--pod-font-color);
 }
 
 .pod-btn-social i {
@@ -1187,7 +1194,7 @@ body {
 .pod-info-video__signal:focus i,
 .pod-info-video__signal:hover i {
   transform: rotate(15deg);
-  color: red;
+  color: var(--pod-primary);
   display: inline-block;
 }
 
@@ -1228,10 +1235,6 @@ body {
   background: var(--pod-background-neutre2-bloc);
 }
 
-.pod-inner {
-  /* padding: 0 2rem; */
-}
-
 .page_title {
   margin-bottom: 1.5rem;
 }
@@ -1250,6 +1253,10 @@ body {
   margin-left: auto;
 }
 
+.pod-navbar-nav .dropdown-menu {
+  position: absolute;
+}
+
 .pod-navbar__form {
   margin-left: auto;
 }
@@ -1261,7 +1268,6 @@ body {
 }
 
 .pod-navbar .pod-navbar-nav .pod-navbar__nav-item__nav-link {
-  /* color:rgba(255,255,255,1); */
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -1287,13 +1293,6 @@ body {
     grid-template-columns: minmax(0%, 100%) repeat(auto-fit, 25%);
   }
 }
-
-.pod-navbar__nav-item__nav-link--add-video {}
-
-/* .pod-navbar .pod-navbar-nav .pod-navbar__nav-item__nav-link i,
-.form-inline i {
-  font-size: 1.3rem;
-} */
 
 .pod-navbar .pod-navbar-nav .pod-navbar__nav-item__nav-link:hover,
 .pod-navbar .pod-navbar-nav .pod-navbar__nav-item__nav-link:focus {
@@ -1414,18 +1413,10 @@ body {
   border-bottom: 1px solid silver;
 }
 
-/***temp***/
-.custom-blocks-row {
-  display: none !important;
-}
-
 .pod-infinite-container {
   display: grid;
-  /* grid-auto-columns: 300px; */
-  /* grid-template-columns: auto; */
   grid-auto-flow: row;
   gap: 2rem;
-  /* width: 100vw; */
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   margin: 1rem 0;
 }
