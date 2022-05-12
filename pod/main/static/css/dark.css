@@ -18,9 +18,11 @@
   --color-black-alpha: #FFFA;
 
   /* Video Comment variable */
+  /*
   --primary-background-color: var(--bg-color) !important;
   --third-background-color: var(--bg-color) !important;
   --content-primary-color: var(--font-color) !important;
+  */
 }
 
 [data-theme="dark"] .form-control::placeholder {
