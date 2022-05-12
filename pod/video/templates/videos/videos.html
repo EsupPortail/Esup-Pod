@@ -36,15 +36,7 @@
         {% endif %}
     </span>
     <div class="input-group mb-3 float-left col-3 pl-0 pt-1" style="height:35.8px">
-      <div class="input-group-prepend">
-        <label class="input-group-text custom_input_group_text" for="sort">Tri</label>
-      </div>
-      <select id="sort" name="sort" type="select" class="form-control sort-select">
-        <option selected value="">---</option>
-        <option value="title">Titre</option>
-        <option value="date_added">Date d'ajout</option>
-        <option value="duration">Durée</option>
-      </select>
+      {% include "videos/video_sort_select.html" %}
     </div>
   </div>
 
