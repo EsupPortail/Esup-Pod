@@ -57,6 +57,7 @@
 <script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
 <script>
+const urlVideos = "{% url 'my_videos' %}";
 {% if use_category %}
   const CATEGORIES_DATA = {{ categories | safe }};
   </script>
