@@ -87,15 +87,18 @@ class getTagsForModelNode(TagsForModelNode):
         super(getTagsForModelNode, self).__init__(model, context_var, counts)
 
     def render(self, context):
-        model = apps.get_model(*self.model.split('.'))
+        model = apps.get_model(*self.model.split("."))
         if model is None:
             raise TemplateSyntaxError(
-                _('tags_for_model tag was given an invalid model: %s') %
-                self.model)
+                _("tags_for_model tag was given an invalid model: %s") % self.model
+            )
         request = context["request"]
         context[self.context_var] = Tag.objects.usage_for_model(
-            model, counts=self.counts, filters=dict(is_draft=False, sites=get_current_site(request)))
-        return ''
+            model,
+            counts=self.counts,
+            filters=dict(is_draft=False, sites=get_current_site(request)),
+        )
+        return ""
 
 
 def do_tags_for_model(parser, token):
@@ -127,19 +130,19 @@ def do_tags_for_model(parser, token):
     len_bits = len(bits)
     if len_bits not in (4, 6):
         raise TemplateSyntaxError(
-            _('%s tag requires either three or five arguments') % bits[0])
-    if bits[2] != 'as':
-        raise TemplateSyntaxError(
-            _("second argument to %s tag must be 'as'") % bits[0])
+            _("%s tag requires either three or five arguments") % bits[0]
+        )
+    if bits[2] != "as":
+        raise TemplateSyntaxError(_("second argument to %s tag must be 'as'") % bits[0])
     if len_bits == 6:
-        if bits[4] != 'with':
+        if bits[4] != "with":
             raise TemplateSyntaxError(
-                _("if given, fourth argument to %s tag must be 'with'") %
-                bits[0])
-        if bits[5] != 'counts':
+                _("if given, fourth argument to %s tag must be 'with'") % bits[0]
+            )
+        if bits[5] != "counts":
             raise TemplateSyntaxError(
-                _("if given, fifth argument to %s tag must be 'counts'") %
-                bits[0])
+                _("if given, fifth argument to %s tag must be 'counts'") % bits[0]
+            )
     if len_bits == 4:
         return getTagsForModelNode(bits[1], bits[3], counts=False)
     else:
@@ -187,17 +190,17 @@ def do_tag_cloud_for_model(parser, token):
     len_bits = len(bits)
     if len_bits != 4 and len_bits not in range(6, 9):
         raise TemplateSyntaxError(
-            _('%s tag requires either three or between five '
-              'and seven arguments') % bits[0])
-    if bits[2] != 'as':
-        raise TemplateSyntaxError(
-            _("second argument to %s tag must be 'as'") % bits[0])
+            _("%s tag requires either three or between five " "and seven arguments")
+            % bits[0]
+        )
+    if bits[2] != "as":
+        raise TemplateSyntaxError(_("second argument to %s tag must be 'as'") % bits[0])
     kwargs = {}
     if len_bits > 5:
-        if bits[4] != 'with':
+        if bits[4] != "with":
             raise TemplateSyntaxError(
-                _("if given, fourth argument to %s tag must be 'with'") %
-                bits[0])
+                _("if given, fourth argument to %s tag must be 'with'") % bits[0]
+            )
         kwargs = get_kwargs_for_cloud(len_bits, bits)
     return TagCloudForModelNode(bits[1], bits[3], **kwargs)
 
@@ -206,55 +209,63 @@ def get_kwargs_for_cloud(len_bits, bits):
     kwargs = {}
     for i in range(5, len_bits):
         try:
-            name, value = bits[i].split('=')
-            if name in ['steps', 'min_count', 'distribution']:
+            name, value = bits[i].split("=")
+            if name in ["steps", "min_count", "distribution"]:
                 kwargs = update_kwargs_from_bits(kwargs, name, value, bits)
             else:
                 raise TemplateSyntaxError(
-                    _("%(tag)s tag was given an "
-                        "invalid option: '%(option)s'") % {
-                        'tag': bits[0],
-                        'option': name,
-                    })
+                    _("%(tag)s tag was given an " "invalid option: '%(option)s'")
+                    % {
+                        "tag": bits[0],
+                        "option": name,
+                    }
+                )
         except ValueError:
             raise TemplateSyntaxError(
-                _("%(tag)s tag was given a badly "
-                    "formatted option: '%(option)s'") % {
-                    'tag': bits[0],
-                    'option': bits[i],
-                })
+                _("%(tag)s tag was given a badly " "formatted option: '%(option)s'")
+                % {
+                    "tag": bits[0],
+                    "option": bits[i],
+                }
+            )
     filters = dict(is_draft=False, sites=get_current_site(None))
     kwargs["filters"] = filters
     return kwargs
 
 
 def update_kwargs_from_bits(kwargs, name, value, bits):
-    if name == 'steps' or name == 'min_count':
+    if name == "steps" or name == "min_count":
         try:
             kwargs[str(name)] = int(value)
         except ValueError:
             raise TemplateSyntaxError(
-                _("%(tag)s tag's '%(option)s' option was not "
-                    "a valid integer: '%(value)s'") % {
-                    'tag': bits[0],
-                    'option': name,
-                    'value': value,
-                })
-    if name == 'distribution':
-        if value in ['linear', 'log']:
-            kwargs[str(name)] = {
-                'linear': LINEAR,
-                'log': LOGARITHMIC}[value]
+                _(
+                    "%(tag)s tag's '%(option)s' option was not "
+                    "a valid integer: '%(value)s'"
+                )
+                % {
+                    "tag": bits[0],
+                    "option": name,
+                    "value": value,
+                }
+            )
+    if name == "distribution":
+        if value in ["linear", "log"]:
+            kwargs[str(name)] = {"linear": LINEAR, "log": LOGARITHMIC}[value]
         else:
             raise TemplateSyntaxError(
-                _("%(tag)s tag's '%(option)s' option was not "
-                    "a valid choice: '%(value)s'") % {
-                    'tag': bits[0],
-                    'option': name,
-                    'value': value,
-                })
+                _(
+                    "%(tag)s tag's '%(option)s' option was not "
+                    "a valid choice: '%(value)s'"
+                )
+                % {
+                    "tag": bits[0],
+                    "option": name,
+                    "value": value,
+                }
+            )
     return kwargs
 
 
-register.tag('tags_for_model', do_tags_for_model)
-register.tag('tag_cloud_for_model', do_tag_cloud_for_model)
+register.tag("tags_for_model", do_tags_for_model)
+register.tag("tag_cloud_for_model", do_tag_cloud_for_model)

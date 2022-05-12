@@ -238,9 +238,7 @@ def update_settings(local_settings):
     # AUTH
     #
     if local_settings.get("USE_CAS", False):
-        local_settings["AUTHENTICATION_BACKENDS"] += (
-            "cas.backends.CASBackend",
-        )
+        local_settings["AUTHENTICATION_BACKENDS"] += ("cas.backends.CASBackend",)
         local_settings["CAS_RESPONSE_CALLBACKS"] = (
             "pod.authentication.populatedCASbackend.populateUser",
             # function call to add some information to user login by CAS
@@ -248,11 +246,17 @@ def update_settings(local_settings):
         local_settings["MIDDLEWARE"].append("cas.middleware.CASMiddleware")
 
     if local_settings.get("USE_SHIB", False):
-        local_settings["AUTHENTICATION_BACKENDS"] += ("pod.authentication.backends.ShibbBackend",)
-        local_settings["MIDDLEWARE"].append("pod.authentication.shibmiddleware.ShibbMiddleware")
+        local_settings["AUTHENTICATION_BACKENDS"] += (
+            "pod.authentication.backends.ShibbBackend",
+        )
+        local_settings["MIDDLEWARE"].append(
+            "pod.authentication.shibmiddleware.ShibbMiddleware"
+        )
     if local_settings.get("USE_OIDC", False):
-        local_settings["AUTHENTICATION_BACKENDS"] += ("pod.authentication.backends.OIDCBackend",)
-        local_settings['LOGIN_REDIRECT_URL'] = "/"
+        local_settings["AUTHENTICATION_BACKENDS"] += (
+            "pod.authentication.backends.OIDCBackend",
+        )
+        local_settings["LOGIN_REDIRECT_URL"] = "/"
     ##
     # Authentication backend : add lti backend if use
     #
@@ -268,15 +272,17 @@ def update_settings(local_settings):
     # Opencast studio
     if local_settings.get("USE_OPENCAST_STUDIO", False):
         # add dir to opencast studio static files i.e : pod/custom/static/opencast/
-        local_settings["TEMPLATES"][0]["DIRS"].append(os.path.join(BASE_DIR, "custom", "static", "opencast"))
+        local_settings["TEMPLATES"][0]["DIRS"].append(
+            os.path.join(BASE_DIR, "custom", "static", "opencast")
+        )
 
-    local_settings["AUTHENTICATION_BACKENDS"] = list(dict.fromkeys(local_settings["AUTHENTICATION_BACKENDS"]))
+    local_settings["AUTHENTICATION_BACKENDS"] = list(
+        dict.fromkeys(local_settings["AUTHENTICATION_BACKENDS"])
+    )
 
     return local_settings
 
 
-the_update_settings = update_settings(
-    locals()
-)
+the_update_settings = update_settings(locals())
 for variable in the_update_settings:
     locals()[variable] = the_update_settings[variable]

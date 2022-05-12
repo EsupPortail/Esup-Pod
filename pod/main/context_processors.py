@@ -214,7 +214,7 @@ def context_navbar(request):
         Type.objects.filter(
             sites=get_current_site(request),
             video__is_draft=False,
-            video__sites=get_current_site(request)
+            video__sites=get_current_site(request),
         )
         .distinct()
         .annotate(video_count=Count("video", distinct=True))
@@ -224,7 +224,7 @@ def context_navbar(request):
         Discipline.objects.filter(
             sites=get_current_site(request),
             video__is_draft=False,
-            video__sites=get_current_site(request)
+            video__sites=get_current_site(request),
         )
         .distinct()
         .annotate(video_count=Count("video", distinct=True))
