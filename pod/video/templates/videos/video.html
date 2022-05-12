@@ -141,7 +141,7 @@
     {% include 'videos/video-form.html' %}
 {% else %}
   {% include 'videos/video-element.html' %}
-  <div id="info-video">{% include 'videos/video-all-info.html' %}</div>
+  <div id="info-video" class="pod-info-video">{% include 'videos/video-all-info.html' %}</div>
 {%endif%}
 {% endblock video-element %}
 
@@ -151,7 +151,7 @@
 {% block page_aside %}
   {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video or perms.enrichment.edit_enrichment or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay or perms.chapter.change_chapter or perms.video.delete_video %}
     <div class="card" id="card-managevideo">
-      <h2 class="card-header card-title ps-2 h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
+      <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
       <div class="card-body card-text text-center">
         {% include "videos/link_video.html" %}
       </div>
@@ -197,11 +197,11 @@
       var is_authenticated = JSON.parse(`{{request.user.is_authenticated|yesno:"true,false"}}`);
       var is_superuser = JSON.parse(`{{request.user.is_superuser|yesno:"true,false"}}`);
     </script>
-    <script src="{% static 'js/dayjs_relativeTime.min.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'js/dayjs.min.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'js/dayjs_en.min.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'js/dayjs_fr.min.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'js/dayjs_nl.min.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'dayjs/plugin/relativeTime.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'dayjs/dayjs.min.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'dayjs/locale/en.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'dayjs/locale/fr.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'dayjs/locale/nl.js' %}?ver={{VERSION}}"></script>
     <script type="module" defer src="{% static 'js/comment-script.js' %}?ver={{VERSION}}"></script>
   {% endif %}
 {% endblock more_script %}

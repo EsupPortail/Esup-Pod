@@ -3,7 +3,7 @@
 
 {% if is_iframe %}
 <div class="card" id="card-playlist">
-  <div class="iframe-header card-title bg-dark text-white">
+  <div class="iframe-header card-title pod-card__title bg-dark text-white">
   <h2> <i class="bi bi-play-circle"></i>&nbsp;<span>{{ playlist.title }}</span> <small>(&nbsp;{{ playlist.videos|length }}&nbsp;{% trans 'Video' %}{% if playlist.videos|length > 1 %}s{% endif %}&nbsp;)</small></h2>
   <button type="button" class="close playlist hidden" aria-label="Close">
         <span aria-hidden="true">×</span>
@@ -12,7 +12,7 @@
   </div>
 {% else %}
 <div class="card" id="card-playlist">
-  <h2 class="card-header card-title ps-2 h4"><i class="bi bi-play-circle"></i>&nbsp;<span>{% trans 'Playlist' %}</span> <small>(&nbsp;{{ playlist.videos|length }}&nbsp;{% trans 'Video' %}{% if playlist.videos|length > 1 %}s{% endif %}&nbsp;)</small>
+  <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-play-circle"></i>&nbsp;<span>{% trans 'Playlist' %}</span> <small>(&nbsp;{{ playlist.videos|length }}&nbsp;{% trans 'Video' %}{% if playlist.videos|length > 1 %}s{% endif %}&nbsp;)</small>
   {% include 'playlist/player_controls.html' %}
   </h2>
 {% endif %}
@@ -60,8 +60,8 @@
           js: '{% static 'js/videojs-slides.js' %}?ver={{VERSION}}',
           css: '{% static 'css/videojs-slides.css' %}?ver={{VERSION}}'},
         overview: {
-          js: '{% static 'js/videojs-vtt-thumbnails.min.js' %}?ver={{VERSION}}',
-          css: '{% static 'css/videojs-vtt-thumbnails.css' %}?ver={{VERSION}}'},
+          js: '{% static 'videojs-vtt-thumbnails/dist/videojs-vtt-thumbnails.min.js' %}?ver={{VERSION}}',
+          css: '{% static 'videojs-vtt-thumbnails/dist/videojs-vtt-thumbnails.css' %}?ver={{VERSION}}'},
         chapter: {
           js:'{% static 'js/videojs-chapters.js' %}?ver={{VERSION}}',
           css: '{% static 'css/videojs-chapters.css' %}?ver={{VERSION}}'},

@@ -601,7 +601,7 @@ button.close {
   color: var(--primary);
 }
 #podfile #files{
-  max-width: calc(100% - 30px);
+  width: calc(100% - 30px);
   z-index: 1;
   -webkit-box-flex: 0;
     -ms-flex: none;

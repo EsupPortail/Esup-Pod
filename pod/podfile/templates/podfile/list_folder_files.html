@@ -1,6 +1,6 @@
 {% load i18n static podfile_filters %}
 <!-- Image and text -->
-<nav class="navbar navbar-expand-lg navbar-link">
+<nav class="px-3 navbar navbar-expand-lg navbar-link">
   <span class="navbar-brand text-truncate">
     <span class="current-folder-icon">
       <svg
@@ -340,7 +340,7 @@
             {% if type == "image" and file.class_name == "CustomImageModel" %}
               <a
                 href="{{file.file.url}}"
-                class="card-title {% if request.is_ajax %}file-name{% endif%}"
+                class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif%}"
                 title="{{file.name}}"
                 target="_blank"
                 data-fileid="{{file.id}}"
@@ -351,7 +351,7 @@
             {% elif type == "file" and file.class_name == "CustomFileModel"%}
               <a
                 href="{{file.file.url}}"
-                class="card-title {% if request.is_ajax %}file-name{% endif%}"
+                class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif%}"
                 title="{{file.name}}"
                 target="_blank"
                 data-fileid="{{file.id}}"
@@ -365,7 +365,7 @@
           {% else %}
             <a
               href="{{file.file.url}}"
-              class="card-title {% if request.is_ajax %}file-name{% endif%}"
+              class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif%}"
               title="{{file.name}}"
               target="_blank"
               data-fileid="{{file.id}}"

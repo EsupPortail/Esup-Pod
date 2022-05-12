@@ -27,7 +27,7 @@
     {% include 'videos/video-form.html' %}
 {% else %}
   <video id="podvideoplayer"></video>
-  <div id="info-video"></div>
+  <div id="info-video" class="pod-info-video"></div>
 {%endif%}
 {% endblock video-element %}
 {% endblock page_content %}
@@ -35,7 +35,7 @@
 {% block page_aside %}
 {% include 'playlist/playlist_video_list.html' %}
   <div class="card {% if not video.enrichment_set.all %} off{% endif %}" id="card-enrichmentinformations">
-    <h2 class="card-header card-title ps-2 h4">
+    <h2 class="card-header card-title pod-card__title h4">
       <i class="bi bi-info-circle"></i>&nbsp;{% trans 'Informations' %}
     </h2>
     <div class="card-body card-text">

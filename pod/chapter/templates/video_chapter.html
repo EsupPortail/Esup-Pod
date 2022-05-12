@@ -5,65 +5,65 @@
 {% block page_title %}{% trans 'Chapter video' %} "{{video.title}}" {% endblock page_title %}
 {% block page_extra_head %}
 
-  {% include 'videos/video-header.html' %}
-  <script src="{% static 'js/chapters.js' %}?ver={{VERSION}}"></script>
-  <script>
-    const video_duration = {{video.duration}};
-  </script>
+{% include 'videos/video-header.html' %}
+<script src="{% static 'js/chapters.js' %}?ver={{VERSION}}"></script>
+<script>
+  const video_duration = {{ video.duration }};
+</script>
 {% endblock page_extra_head %}
 {% block breadcrumbs %}
-  {{block.super}}
-  <li class="breadcrumb-item"><a href="{% url 'my_videos'%}">{% trans 'My videos' %}</a></li>
-  <li class="breadcrumb-item">
-    <a href="{% url 'video' slug=video.slug %}" title="{{video.title}}">
-      {{video.title|title|truncatechars:45}}
-    </a>
-  </li>
-  <li class="breadcrumb-item active" aria-current="page">
-    {% trans 'Chapter video' %}
-  </li>
+{{block.super}}
+<li class="breadcrumb-item"><a href="{% url 'my_videos'%}">{% trans 'My videos' %}</a></li>
+<li class="breadcrumb-item">
+  <a href="{% url 'video' slug=video.slug %}" title="{{video.title}}">
+    {{video.title|title|truncatechars:45}}
+  </a>
+</li>
+<li class="breadcrumb-item active" aria-current="page">
+  {% trans 'Chapter video' %}
+</li>
 {% endblock %}
 {% block page_content %}
-  <span id="chapter_player">
-    {% include 'videos/video-element.html' %}
-  </span>
-  <hr/>
-  <div id="info_video">
-    <div>
-      <div id="list_chapter">
-        {% include 'chapter/list_chapter.html' %}
-      </div>
-      <div id="form_chapter">
-        {% if form_chapter %}
-          {% include 'chapter/form_chapter.html' with form_chapter=form_chapter %}
-        {% endif %}
-      </div>
-      <span class="float-end">
-        <a href="{% url 'video' slug=video.slug %}" title="{% trans "View the video"%}" class="btn btn btn-secondary btn-sm">
-          <i class="bi bi-film"></i>&nbsp;{% trans "Back to the video"%}
-        </a>
-      </span>
-      {% if not form_chapter %}
-        <form id="form_new" class="get_form" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
-          {% csrf_token %}
-          <input type="hidden" name="action" value="new"/>
-          <input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-primary btn-sm"/>
-        </form>
+<span id="chapter_player">
+  {% include 'videos/video-element.html' %}
+</span>
+<hr />
+<div id="info_video">
+  <div>
+    <div id="list_chapter">
+      {% include 'chapter/list_chapter.html' %}
+    </div>
+    <div id="form_chapter">
+      {% if form_chapter %}
+      {% include 'chapter/form_chapter.html' with form_chapter=form_chapter %}
       {% endif %}
     </div>
+    <span class="float-end">
+      <a href="{% url 'video' slug=video.slug %}" title="{% trans " View the video"%}" class="btn btn btn-secondary btn-sm">
+        <i class="bi bi-film"></i>&nbsp;{% trans "Back to the video"%}
+      </a>
+    </span>
+    {% if not form_chapter %}
+    <form id="form_new" class="get_form" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="new" />
+      <input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-primary btn-sm" />
+    </form>
+    {% endif %}
   </div>
+</div>
 {% endblock page_content %}
 {% block page_aside %}
 {% if video.owner == request.user or request.user.is_superuser or perms.chapter.add_chapter or request.user in video.additional_owners.all %}
-  <div class="card " id="card-managevideo">
-    <h2 class="card-header card-title ps-2 h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
-    <div class="card-body card-text text-center">
-      {% include "videos/link_video.html" %}
-    </div>
+<div class="card " id="card-managevideo">
+  <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
+  <div class="card-body card-text text-center">
+    {% include "videos/link_video.html" %}
   </div>
+</div>
 {% endif %}
 <div id="chapter-info" class="card">
-  <button class="btn btn-light rounded-0" id="heading-0" data-bs-toggle="collapse" data-bs-target="#collapse-0" aria-expanded="true" aria-controls="collapse-0">
+  <button class="btn  rounded-0 pod-btn pod-btn" id="heading-0" data-bs-toggle="collapse" data-bs-target="#collapse-0" aria-expanded="true" aria-controls="collapse-0">
     {% trans 'Chapters' %}
   </button>
   <div id="collapse-0" class="card-body collapse hide card-text small">

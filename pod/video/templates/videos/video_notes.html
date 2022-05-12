@@ -16,7 +16,7 @@
     </script>
 {% endif %}
 
-<h2 class="card-header card-title ps-2 h4"> <i class="bi bi-pencil-square"></i>&nbsp;{% trans "Take Note"%}</h2>
+<h2 class="card-header card-title pod-card__title h4"> <i class="bi bi-pencil-square"></i>&nbsp;{% trans "Take Note"%}</h2>
 <div class="card-body">
     {% if request.user.is_authenticated or listNotes %}
         <div class="mgtNotes mb-2 text-center">
@@ -27,7 +27,7 @@
                 <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="add_video_notes_form  mt-1" role="menuitem">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="form_note"/>
-                    <button class="p-0 m-0 btn btn-outline-primary btn-sm create" type="submit" action="create" title="{% trans 'Create a note' %}"> <i class="bi bi-plus"></i> </button>
+                    <button class="p-0 m-0 btn pod-btn-social  btn-sm create" type="submit" action="create" title="{% trans 'Create a note' %}"> <i class="bi bi-plus"></i> </button>
                 </form>
             {% endif %}
             {% if listNotes %}
@@ -125,7 +125,7 @@
     </div>
 
     <script>
-        $(document).ready(function () {
+        document.addEventListener("DOMContentLoaded", function() {
             let divComments = $('#id_notes').find('div.comments');
             for (var i=0; i < Math.min(divComments.length, 3); i++ ) {
                 $(divComments[i]).addClass('offset');
