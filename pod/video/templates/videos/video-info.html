@@ -53,7 +53,7 @@
 </div>
 {% endif %}
 
-<div class="" id="video-meta">
+<div id="video-meta">
 
   <div id="info" class="pod-info-video__info">
     <h2 class="tab-title visually-hidden"><i class=" bi bi-info-circle"></i>&nbsp;{% trans 'Infos' %}</h2>
@@ -250,7 +250,7 @@
       </div>
       <div class="modal-body">
 
-        <div class="" {% if video.is_draft %}style="border:1px solid red" {% endif %}>
+        <div {% if video.is_draft %}style="border:1px solid red" {% endif %}>
 
           {% if not video.is_draft and not video.is_restricted and video.password != '' %}
           <dl class="row">
@@ -274,7 +274,7 @@
           </div>
           {% endif %}
 
-          <div class="">
+          <div>
             <fieldset class="pod-share-fieldset">
               <legend><i class="bi bi-gear"></i>&nbsp;{% trans 'Options' %}</legend>
               <div class="form-group">
@@ -312,7 +312,7 @@
               </div>
               {% endif %}
             </fieldset>
-            <div class="">
+            <div>
               <fieldset class="pod-share-fieldset">
                 <legend><i class="bi bi-code"></i>&nbsp;{% trans 'Embed in a web page' %}</legend>
                 <div class="form-group ">

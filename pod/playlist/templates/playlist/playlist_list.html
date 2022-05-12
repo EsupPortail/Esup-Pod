@@ -3,7 +3,7 @@
 {% spaceless %}
 <div class="pod-infinite-container infinite-container">
 	{% for playlist in playlists %}
-		<div class="">
+		<div>
 			<div class="card h-100" data-id="{{playlist.id}}">
 				<img class="card-img" src="{{playlist.first.video.get_thumbnail_url}}" alt='' width="100" height="auto" loading="lazy">
 				{% if playlist.visible %}
@@ -16,15 +16,14 @@
 				</div>
 				<div class="btn-group">
 					<a href="{% url 'playlist_edit' slug=playlist.slug %}" class="btn btn-sm btn-primary"><i class="bi bi-pencil-square" aria-hidden="true"></i> {% trans 'Edit' %}</a>
-					&nbsp;
 					{% if playlist.videos %}
-					<a href="{% url 'playlist' slug=playlist.slug %}" class="btn btn-sm btn-primary"><i class="bi bi-play" aria-hidden="true"></i> {% trans 'Launch' %}</a>
-				{% endif %}
-			</div>
+						&nbsp;<a href="{% url 'playlist' slug=playlist.slug %}" class="btn btn-sm btn-primary"><i class="bi bi-play" aria-hidden="true"></i> {% trans 'Launch' %}</a>
+					{% endif %}
+				</div>
 			</div>
 		</div>
 		{% empty %}
-		<div class="">
+		<div>
 			<p>{% trans "Sorry, no playlist found" %}</p>
 		</div>
 	{% endfor %}

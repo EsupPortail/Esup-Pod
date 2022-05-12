@@ -23,7 +23,7 @@
                     {% thumbnail channel.headband.file "x34" as im %}
                     <img src="{{ im.url }}" height="34" class='rounded' alt="" loading="lazy">
                     {% endthumbnail %}
-                  {% else %}<i class="bi bi-youtube pod-channel__item" style=""></i>{% endif %}
+                  {% else %}<i class="bi bi-youtube pod-channel__item"></i>{% endif %}
                   <a href="{% url 'channel' slug_c=channel.slug%}" id="channel-title_{{channel.id}}">
                   {{channel.title}}</a></span>
                 <span class="text-nowrap">
@@ -145,7 +145,7 @@
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close'%}</button>
       </div>
     </div>
-</div>
+  </div>
 </div>
 {% endif %}
 {% endspaceless %}

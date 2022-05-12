@@ -39,7 +39,7 @@
   --pod-font-family-dyslexie: "Open Dyslexic";
   /*** variable font ***/
 
-  /** 
+  /**
   --pod-background:white;
   --pod-background-dark:black;
 ***/
@@ -823,14 +823,6 @@ h3>.feather,
   font-weight: bold;
 }
 */
-
-.top_link:before {
-  content: "\21E7";
-  padding-right: 4px;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 1.2em;
-}
 
 #view-counter-icon {
   color: var(--primary);
