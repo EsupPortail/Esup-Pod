@@ -476,6 +476,8 @@ def my_videos(request):
         sites=site
     ) | request.user.owners_videos.all().filter(sites=site)
     videos_list = videos_list.distinct()
+    if request.GET.get("sort"):
+        videos_list = videos_list.order_by(request.GET.get("sort"))
     page = request.GET.get("page", 1)
 
     full_path = ""
