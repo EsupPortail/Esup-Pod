@@ -44,3 +44,9 @@ DEFAULT_DC_COVERAGE = TEMPLATE_VISIBLE_SETTINGS["TITLE_ETB"] + " - Paris - Franc
 DEFAULT_DC_RIGHTS = "BY-NC-SA"
 
 CELERY_BROKER_URL = CELERY_BROKER_URL + "-__NAME__"  # Define a broker
+
+
+########################################################## A LAISSER EN DERNIER !!!!!!!!!!!!!
+the_update_settings = update_settings(locals())
+for variable in the_update_settings:
+    locals()[variable] = the_update_settings[variable]
