@@ -10,7 +10,6 @@ from django.http import QueryDict, Http404
 from django.core.exceptions import SuspiciousOperation
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.clickjacking import xframe_options_exempt
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
@@ -773,7 +772,6 @@ def video_xhr(request, slug, slug_private=None):
 
 
 @csrf_protect
-@xframe_options_exempt
 def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     try:
         id = int(slug[: slug.find("-")])

@@ -1392,3 +1392,7 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   margin: 1rem 0;
 }
+
+#login-form label{
+  min-width: 9rem;
+}

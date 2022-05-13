@@ -235,7 +235,7 @@ THIRD_PARTY_APPS = []
 # https://docs.djangoproject.com/en/3.2/ref/clickjacking/
 # Add @xframe_options_exempt on a view you want to authorize in frame
 #
-X_FRAME_OPTIONS = "SAMEORIGIN"  # SAMEORIGIN OR DENY
+X_FRAME_OPTIONS = "EXEMPT"  # SAMEORIGIN OR DENY
 
 ###
 # Enable LTI Provider
