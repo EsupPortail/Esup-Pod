@@ -16,14 +16,16 @@ from pod.main.models import get_nextautoincrement
 from django.template.defaultfilters import slugify
 
 from django.contrib.sites.models import Site
+from pod.authentication.models import AccessGroup
+
 
 
 from pod.meetings.utils import parse_xml
 BBB_SECRET_KEY = getattr(
-    settings, "BBB_SECRET_KEY", ""
+    settings, "BBB_SECRET_KEY", "GOI6t9lAHdO996UiKWqIvjGNvHHVfA00hTRX2GBM"
 )
 BBB_API_URL = getattr(
-    settings, "BBB_API_URL", ""
+    settings, "BBB_API_URL", "https://bbb-21-e.uphf.fr/bigbluebutton/api/"
 )
 
 User = get_user_model()
@@ -90,6 +92,23 @@ class Meetings(models.Model):
         max_length=50,
         verbose_name=_('Mot de passe modérateurs')
     )
+
+    is_restricted = models.BooleanField(
+        verbose_name=_("Restricted access"),
+        help_text=_(
+            'If this box is checked, '
+            'the meeting will only be accessible to authenticated users.'),
+        default=False)
+    restrict_access_to_groups = models.ManyToManyField(
+        AccessGroup, blank=True, verbose_name=_('Groups'),
+        help_text=_('Select one or more groups who can access to this meeting'))
+    
+    ask_password = models.BooleanField(
+        verbose_name=_("Ask password"),
+        help_text=_(
+            'If this box is checked, '
+            'the meeting will only be accessible after giving the attendee password. Except for owner and additionnal owner.'),
+        default=True)
 
     running = models.BooleanField(
         default=False,
@@ -289,21 +308,24 @@ class Meetings(models.Model):
                     'running': m.find('running').text,
                     'moderator_pw': password,
                     'attendee_pw': m.find('attendeePW').text,
-                    'info': self.meeting_info(
-                        meetingID,
-                        password)
                 })
             return d
         else:
             return 'error'
 
-    def join_url(self):
+        '''
+        'info': self.meeting_info(
+            meetingID,
+            password)
+        '''
+
+    def join_url(self, name, password):
         call = 'join'
         parameters={}
         parameters.update({
-            'fullName': "name",
+            'fullName': name,
             'meetingID': self.meetingID,
-            'password': "password",
+            'password': password,
         })
         query = urlencode(parameters)
         hashed = self.api_call(query, call)
