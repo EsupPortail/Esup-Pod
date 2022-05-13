@@ -12,7 +12,7 @@ start:
 
 install:
 	# Première installation de pod (BDD SQLite intégrée)
-	npm install -g bower
+	npm install -g yarn
 	make upgrade
 	make createDB
 
@@ -22,7 +22,7 @@ upgrade:
 	python3 -m pip install -r requirements.txt
 	make updatedb
 	make migrate
-	make collectstatic
+	make statics
 
 createDB:
 	# Création des données initiales dans la BDD SQLite intégrée

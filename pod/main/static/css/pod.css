@@ -987,6 +987,11 @@ body {
   text-decoration: underline;
   background: var(--pod-primary);
 }
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background-color: var(--pod-primary);
+  border-color: var(--pod-primary);;
+}
 
 .btn-close {
   color: var(--pod-font-color);
@@ -1156,13 +1161,13 @@ body {
 }
 
 .pod-btn {
-  color: var(--pod-font-color);
+  color: var(--pod-primary);
   text-decoration: none;
 }
 
 .pod-btn:hover,
 .pod-btn:focus {
-  color: var(--pod-font-color);
+  color: var(--pod-primary-dark);
   text-decoration: underline;
 }
 
@@ -1231,13 +1236,13 @@ body {
   margin-bottom: 1.5rem;
 }
 
-.pod-navbar__theme-switch__item {
+.pod-navbar__theme-switch__item>label {
   display: flex;
   align-items: center;
   margin: 1rem 2rem;
 }
 
-.pod-navbar__theme-switch__item>span {
+.pod-navbar__theme-switch__item .form-label {
   flex-grow: 1;
 }
 

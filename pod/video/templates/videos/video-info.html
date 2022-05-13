@@ -64,7 +64,7 @@
         <a href="{% url 'videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
           {% if video.owner.owner.userpicture.file %}
           {% thumbnail video.owner.owner.userpicture.file "x50" as im %}
-          <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{ video.owner.get_full_name }}" loading="lazy">
+          <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="" loading="lazy">
           {% endthumbnail %}
           {% endif %}
           {{ video.owner.get_full_name }}</a>
@@ -291,7 +291,7 @@
               </div>
               <div class="form-group">
                 <div class="form-check">
-                  <input name="displaytime" class="form-check-input " id="displaytime" type="checkbox">
+                  <input name="displaytime" class="form-check-input" id="displaytime" type="checkbox">
                   <label for="displaytime" class="form-check-label">{% trans 'Start video' %}</label>
                   <label for="txtposition" class="visually-hidden">{% trans 'Start at' %}</label>
                   <input type="text" class="start-at input-sm" name="txtposition" id="txtposition" readonly />
@@ -299,43 +299,52 @@
                 </div>
 
               </div>
-              {% if request.user == video.owner or request.user in video.additional_owners.all%}
-              <legend><i class="bi bi-cloud-upload"></i>&nbsp;{% trans 'BigBlueButton/H5P Integration' %}</legend>
-              <p>{% trans 'Use these links in a BigBlueButton meeting or an interactive H5P video activity:' %}</p>
-              <div class="form-group">
-                {% for vid in video.get_video_mp4 %}
-                <li class="list-group-item">{{vid.name}} :&nbsp;<input class="form-control" style="display:table-row; width:85%;" type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly /></li>
-                {% endfor %}
-                {% if video.is_video == False and video.get_video_mp3 %}
-                <li class="list-group-item">{{video.get_video_mp3.name}} :&nbsp;<input class="form-control" style="display:table-row; width:85%;" type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly /></li>
-                {% endif %}
-              </div>
-              {% endif %}
             </fieldset>
-            <div>
+
+            <fieldset class="pod-share-fieldset">
+              <legend><i class="bi bi-code"></i>&nbsp;{% trans 'Embed in a web page' %}</legend>
+              <div class="form-group ">
+                <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page:'%}</label>
+                <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+              </div>
+            </fieldset>
+
+            {% if request.user == video.owner or request.user in video.additional_owners.all%}
               <fieldset class="pod-share-fieldset">
-                <legend><i class="bi bi-code"></i>&nbsp;{% trans 'Embed in a web page' %}</legend>
-                <div class="form-group ">
-                  <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page:'%}</label>
-                  <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+                <legend><i class="bi bi-cloud-upload"></i>&nbsp;{% trans 'BigBlueButton/H5P Integration' %}</legend>
+                <p>{% trans 'Use these links in a BigBlueButton meeting or an interactive H5P video activity:' %}</p>
+                <div class="form-group">
+                  {% for vid in video.get_video_mp4 %}
+                    <div class="input-group mb-1">
+                      <label class="input-group-text" for="vid_url_{{vid.name}}">{{vid.name}}&nbsp;:</label><input id="vid_url_{{vid.name}}" class="form-control" type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly />
+                    </div>
+                  {% endfor %}
+                  {% if video.is_video == False and video.get_video_mp3 %}
+                    <div class="input-group mb-1">
+                      <label class="input-group-text" for="vid_url_{{vid.name}}">{{video.get_video_mp3.name}}&nbsp;:</label>
+                      <input class="form-control" style="display:table-row; width:85%;" type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly />
+                    </div>
+                  {% endif %}
                 </div>
               </fieldset>
-              <fieldset class="pod-share-fieldset">
-                <legend><i class="bi bi-link-45deg"></i>&nbsp;{% trans 'Share the link' %}</legend>
-                <div class="form-group">
-                  <label for="txtpartage">{% trans 'Use this link to share the video:' %}</label>
-                  <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" />
-                </div>
-                <div class="form-group">
-                  <label>{% trans 'QR code for this link:' %}&nbsp;
-                    <a href="#" class="btn pod-btn pod-btn-social m-1" title="{% trans 'Warning, it use google API' %}" role="button" data-bs-toggle="collapse" data-bs-target="#qrcode" aria-expanded="false" aria-controls="qrcode">
-                      <i class="bi bi-eye"></i>
-                    </a>
-                  </label>
-                  <img src="" data-src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" alt="qrcode" id="qrcode" loading="lazy" class="collapse" />
-                </div>
-              </fieldset>
-            </div>
+            {% endif %}
+
+            <fieldset class="pod-share-fieldset">
+              <legend><i class="bi bi-link-45deg"></i>&nbsp;{% trans 'Share the link' %}</legend>
+              <div class="form-group">
+                <label for="txtpartage">{% trans 'Use this link to share the video:' %}</label>
+                <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" />
+              </div>
+              <div class="form-group">
+                <label>{% trans 'QR code for this link:' %}&nbsp;
+                  <a href="#" class="btn pod-btn pod-btn-social m-1" title="{% trans 'Warning, it use google API' %}" role="button" data-bs-toggle="collapse" data-bs-target="#qrcode" aria-expanded="false" aria-controls="qrcode">
+                    <i class="bi bi-eye"></i>
+                  </a>
+                </label>
+                <img src="" data-src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" alt="qrcode" id="qrcode" loading="lazy" class="collapse" />
+              </div>
+            </fieldset>
+
           </div>
         </div>
       </div>

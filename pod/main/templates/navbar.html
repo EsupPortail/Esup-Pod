@@ -10,7 +10,9 @@
     <button class="navbar-toggler pod-navbar__button-toogler" type="button" data-bs-toggle="collapse" data-bs-target="#pod-navbar__menu" aria-controls="pod-navbar__menu" aria-expanded="false" title="{% trans 'Toggle navigation' %}">
       <i class="bi bi-list" aria-hidden="true"></i>
     </button> -->
-  <button class="pod-navbar__button-toogler" type="button" data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menu" aria-controls="pod-navbar__menu">
+  <button class="pod-navbar__button-toogler" type="button"
+    data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menu"
+    aria-controls="pod-navbar__menu" title="{% trans 'Toggle navigation' %}">
     <i class="bi bi-list" aria-hidden="true"></i>
   </button>
   <a class="navbar-brand pod-navbar__brand me-0 me-sm-1" href="/">
@@ -73,12 +75,14 @@
     </li>
     {%endif%}
     <!--  Ajout Params Buttons -->
-    <li class="nav-item pod-params " id="pod-param-buttons">
-      <button class="btn bi bi-gear-fill pod-params-button " type="button" id="pod-param-buttons__button" data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menusettings">
+    <li class="nav-item pod-params" id="pod-param-buttons">
+      <button class="btn bi bi-gear-fill pod-params-button" type="button"
+        id="pod-param-buttons__button" title="{% trans 'Toggle configuration panel'%}"
+        data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menusettings">
       </button>
       <div class="offcanvas offcanvas-end pod-offcanvas" tabindex="-1" id="pod-navbar__menusettings" aria-labelledby="pod-navbar__menusettingsLabel">
         <div class="offcanvas-header">
-          <h5 id="pod-navbar__menusettingsLabel">Configuration</h5>
+          <h5 id="pod-navbar__menusettingsLabel">{% trans 'Configuration'%}</h5>
           <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
@@ -108,25 +112,27 @@
               <ul class="list-unstyled pod-navbar-nav pod-navbar__theme-switch" id="nav-theme-switch">
                 {% if DARKMODE_ENABLED == True %}
                 <li class="nav-item pod-navbar__theme-switch__item" id="theme-switch-wrapper" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Dark mode' %}">
-                  <span for="checkbox-darkmode">{% trans 'Dark mode' %}</span>
-                  <label class="theme-switch" for="checkbox-darkmode">
-
-                    <input type="checkbox" id="checkbox-darkmode" />
-                    <span class="slider">
-                      <i class="bi bi-sun"></i>
-                      <i class="bi bi-moon"></i>
+                  <label for="checkbox-darkmode">
+                    <span class="form-label">{% trans 'Dark mode' %}</span>
+                    <span class="theme-switch">
+                      <input type="checkbox" id="checkbox-darkmode" />
+                      <span class="slider">
+                        <i class="bi bi-sun"></i>
+                        <i class="bi bi-moon"></i>
+                      </span>
                     </span>
                   </label>
                 </li>
                 {% endif %}{% if DYSLEXIAMODE_ENABLED == True %}
                 <li class="nav-item pod-navbar__theme-switch__item" id="dyslexia-switch-wrapper" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Dyslexia mode' %}">
-                  <span for="checkbox-dyslexia">{% trans 'Dyslexia mode' %}</span>
-                  <label class="dyslexia-switch" for="checkbox-dyslexia">
-
-                    <input type="checkbox" id="checkbox-dyslexia" />
-                    <span class="slider">
-                      <i class="bi bi-eye-slash"></i>
-                      <i class="bi bi-eye"></i>
+                  <label for="checkbox-dyslexia">
+                    <span class="form-label">{% trans 'Dyslexia mode' %}</span>
+                    <span class="dyslexia-switch">
+                      <input type="checkbox" id="checkbox-dyslexia" />
+                      <span class="slider">
+                        <i class="bi bi-eye-slash"></i>
+                        <i class="bi bi-eye"></i>
+                      </span>
                     </span>
                   </label>
                 </li>
