@@ -982,7 +982,7 @@ body {
 .btn-outline-primary:hover,
 .btn-outline-primary:focus {
   background-color: var(--pod-primary);
-  border-color: var(--pod-primary);;
+  border-color: var(--pod-primary);
 }
 
 .btn-close {
@@ -997,6 +997,11 @@ body {
   color: var(--pod-font-color);
   font-size: 1.4rem;
   display: flex;
+}
+.pod-params-button:focus,
+.pod-params-button:hover {
+  color: var(--pod-primary);
+  transform:  rotate(10deg);
 }
 
 .pod-gotoup {
@@ -1150,6 +1155,17 @@ body {
 
 .pod-info-video__buttons {
   margin-left: auto;
+}
+
+.pod-btn {
+  color: var(--pod-font-color);
+  text-decoration: none;
+}
+
+.pod-btn:hover,
+.pod-btn:focus {
+  color: var(--pod-primary);
+  text-decoration: underline;
 }
 
 .pod-btn-share {
@@ -1360,7 +1376,7 @@ body {
   ;
 }
 
-.pod-navbar__button-toogler {
+.pod-navbar__button-toggler {
   color: var(--font-color);
   padding: 0;
   font-size: 1.8rem;

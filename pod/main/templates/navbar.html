@@ -7,10 +7,10 @@
 <div class="container-fluid pod-container pod-navbar__container" id="nav-mainbar">
 
   <!--
-    <button class="navbar-toggler pod-navbar__button-toogler" type="button" data-bs-toggle="collapse" data-bs-target="#pod-navbar__menu" aria-controls="pod-navbar__menu" aria-expanded="false" title="{% trans 'Toggle navigation' %}">
+    <button class="navbar-toggler pod-navbar__button-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#pod-navbar__menu" aria-controls="pod-navbar__menu" aria-expanded="false" title="{% trans 'Toggle navigation' %}">
       <i class="bi bi-list" aria-hidden="true"></i>
     </button> -->
-  <button class="pod-navbar__button-toogler" type="button"
+  <button class="pod-navbar__button-toggler" type="button"
     data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menu"
     aria-controls="pod-navbar__menu" title="{% trans 'Toggle navigation' %}">
     <i class="bi bi-list" aria-hidden="true"></i>
@@ -69,7 +69,7 @@
         {%if MAINTENANCE_MODE%}
           <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br /><i width=16 height=16 class="bi bi-exclamation-triangle"></i> {%trans "Some features are unavailable" %}</span>
         {%else%}
-          <a class="nav-item pod-navbar__nav-item__nav-link initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="{% trans " Add a video" %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
+          <a class="nav-item pod-navbar__nav-item__nav-link initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans "Add a video" %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
         {%endif%}
       </li>
     {%endif%}
@@ -165,7 +165,7 @@
           {%if MAINTENANCE_MODE%}
           <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br/><i width=16 height=16 class="bi bi-exclamation-triangle"></i> {%trans "Some features are unavailable" %}</span>
         {%else%}
-            <a class="mx-3 mb-2 pod-dropdown-item pod-navbar__nav-item__nav-link initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="{% trans "Add a video" %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
+            <a class="mx-3 mb-2 pod-dropdown-item pod-navbar__nav-item__nav-link initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans "Add a video" %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
         {%endif%}
           {% if request.user.is_superuser or user.owner.is_manager %}
             <a class="dropdown-item pod-dropdown-item" href="{% url 'admin:index' %}"><i class="bi bi-cpu pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>Administration</a>
@@ -211,7 +211,7 @@
           {%if MAINTENANCE_MODE%}
           <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br /><i width=16 height=16 class="bi bi-exclamation-triangle "></i> {%trans "Some features are unavailable" %}</span>
           {%else%}
-          <a class="mx-3 mb-2 pod-dropdown-item pod-navbar__nav-item__nav-link initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="{% trans " Add a video" %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
+          <a class="mx-3 mb-2 pod-dropdown-item pod-navbar__nav-item__nav-link initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a video' %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
           {%endif%}
           {% if request.user.is_superuser or user.owner.is_manager %}
           <a class="dropdown-item pod-dropdown-item" href="{% url 'admin:index' %}"><i class="bi bi-cpu pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>Administration</a>
