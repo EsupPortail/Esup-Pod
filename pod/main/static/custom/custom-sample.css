@@ -1,0 +1,28 @@
+/***
+ * This is a sample file to show some color themes to apply to Pod
+ *
+ * To customize Pod colors, symply duplicate this file
+ *  and rename it 'pod-custom.css'
+ *  then add a line `'CSS_OVERRIDE': 'custom/pod-custom.css',`in the `TEMPLATE_VISIBLE_SETTINGS`
+ *  of custom/settings_local.py
+ */
+
+/*
+ * Here is some color themes you can use:
+
+  * Sample blue theme
+  --pod-primary: #15819E;
+  --pod-primary-lighten: #1db1d8;
+  --pod-primary-darken:  #11677e;
+
+  * Sample green "univ-lille.fr 2022" theme
+  --pod-primary: #1F8389;
+  --pod-primary-lighten: #2cb8c1;
+  --pod-primary-darken:  #19696e;
+
+  * Sample pink "pod v2" theme
+  --pod-primary: #ae2573;
+  --pod-primary-lighten: #d53a92;
+  --pod-primary-darken:  #8b1e5c;
+
+****/

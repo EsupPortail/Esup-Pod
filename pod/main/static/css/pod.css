@@ -3,7 +3,6 @@
 :root {
   /* COMMON COLORS */
   --color-transparent: transparent;
-  --color-white: white;
   --color-black: black;
   --color-alto: #ddd;
   --color-sisal: rgba(218, 208, 190, 1);
@@ -15,50 +14,51 @@
   --color-red: #FF0000;
   --color-mine-shaft: #222;
 
-  /*** couleur primaire ***/
-  --pod-primary: #17a2b8;
-  --pod-primary-dark: #17a2b8;
+  /* les valeurs '-dark' ci-dessous sont pour le mode sombre.*/
 
-  /*** couleur de fond de site ***/
+  /*** couleur principale du thème + variantes clair/sombre ***/
+
+  /* exemple vert univ-lille.fr 2022 */
+  --pod-primary: #1F8389;
+  --pod-primary-lighten: #2cb8c1;
+  --pod-primary-darken:  #19696e;
+
+  --pod-primary-dark: var(--pod-primary-lighten);
+
+  /*** couleur de fond du site ***/
   --pod-background: #fff;
   --pod-background-dark: #222831;
+
+  /*** couleur du texte des boutons principaux ***/
+  --pod-btn-text: #fff;
+  --pod-btn-text-dark: #000;
+
   /**** couleur de police ****/
   --pod-font-color: #000;
   --pod-font-color-dark: #f8f9fa;
+
   /**** couleur neutre pour fond de bloc (ex jumbotron) ***/
   --pod-background-neutre1-bloc: #ddd;
   --pod-background-neutre1-bloc-dark: #393e46;
-  /**** couleur neutre 2 pour fond de bloc***/
+
+  /**** couleur neutre 2 pour fond de bloc ***/
   --pod-background-neutre2-bloc: #f5f5f5;
   --pod-background-neutre2-bloc-dark: #161c26;
+
   /**** couleur des liens *****/
   --pod-links-color: var(--pod-primary);
   --pod-links-color-dark: var(--pod-primary-dark);
+
+  /* couleur d'un élément actif (ex. : survol de bouton) */
+  --pod-primary-focus: var(--pod-primary-darken);
+
   /**** font family ****/
   --pod-font-family: "Gill Sans", sans-serif;
   --pod-font-family-dyslexie: "Open Dyslexic";
-  /*** variable font ***/
-
-  /**
-  --pod-background:white;
-  --pod-background-dark:black;
-***/
-  /*
---pod-primary: #0d6efd;
---pod-secondary: #0d6efd;
-*/
-  /*****************
-   * CUSTOM COLORS *
-   *****************/
-  --bg-color: var(--color-white);
-  --background-color: var(--bg-color);
-  --font-color: var(--color-mine-shaft);
-
 
 
   /* BOOTSTRAP COLORS */
   /* primary color is defined in bootstrap-$theme$.css */
-  --primary2: var(--pod-primary);
   --light: #f8f9fa;
   --dark: #343a40;
   --white: #ffffff;
@@ -83,7 +83,8 @@
   --pod-background-neutre1-bloc: var(--pod-background-neutre1-bloc-dark);
   --pod-background-neutre2-bloc: var(--pod-background-neutre2-bloc-dark);
   --pod-links-color: var(--pod-links-color-dark);
-
+  --pod-primary-focus: var(--pod-primary-darken);
+  --pod-btn-text:  var(--pod-btn-text-dark);
 }
 
 
@@ -138,9 +139,6 @@ a {
   border-color: var(--primary);
 }
 
-.navbar-light .navbar-brand {
-  /*  color: var(--color-black-alpha) */
-}
 
 .navbar-light .navbar-brand:focus,
 .navbar-light .navbar-brand:hover {
@@ -163,12 +161,6 @@ a {
   color: var(--activelink-color);
 }
 
-/*.btn-primary {
-  color: var(--font-color);
-  background-color: var(--primary);
-  border-color: var(--primary);
-}*/
-
 .modal-title svg {
   color: var(--primary) !important;
 }
@@ -176,12 +168,6 @@ a {
 .bg-light {
   background-color: var(--light) !important;
 }
-
-/*
-.bg-dark {
-  background-color: var(--gray-dark)!important;
-}
-*/
 
 .tab-title {
   font-size: 1.5rem;
@@ -977,16 +963,22 @@ body {
   margin-top: 1.5rem !important;
 }
 
-.btn-primary {
+.btn-primary, .pod-btn-primary {
   background: var(--pod-primary);
   border-color: var(--pod-primary);
+  color: var(--pod-btn-text);
 }
 
 .btn-primary:hover,
-.btn-primary:focus {
+.btn-primary:focus,
+.pod-btn-primary:hover,
+.pod-btn-primary:focus {
   text-decoration: underline;
-  background: var(--pod-primary);
+  background: var(--pod-primary-focus);
+  border-color: var(--pod-primary-lighten);
+  color: var(--pod-btn-text);
 }
+
 .btn-outline-primary:hover,
 .btn-outline-primary:focus {
   background-color: var(--pod-primary);
@@ -1160,17 +1152,6 @@ body {
   margin-left: auto;
 }
 
-.pod-btn {
-  color: var(--pod-primary);
-  text-decoration: none;
-}
-
-.pod-btn:hover,
-.pod-btn:focus {
-  color: var(--pod-primary-dark);
-  text-decoration: underline;
-}
-
 .pod-btn-share {
   border: 1px solid silver;
   transition: all 0.2s ease-in;
@@ -1217,17 +1198,6 @@ body {
   filter: invert(100%) sepia(0%) saturate(2908%) hue-rotate(27deg) brightness(121%) contrast(99%);
 }
 
-.pod-btn-primary {
-  background: var(--pod-primary);
-  color: white;
-}
-
-.pod-btn-primary:hover {
-  text-decoration: underline;
-  background: var(--pod-primary);
-  color: white;
-}
-
 .pod-offcanvas {
   background: var(--pod-background-neutre2-bloc);
 }
@@ -1262,6 +1232,11 @@ body {
   .pod-navbar__form {
     flex-basis: 350px;
   }
+}
+
+.pod-navbar__nav-item {
+  margin-right: .25rem;
+  margin-left: .25rem;
 }
 
 .pod-navbar .pod-navbar-nav .pod-navbar__nav-item__nav-link {
