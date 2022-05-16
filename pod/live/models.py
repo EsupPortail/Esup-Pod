@@ -79,26 +79,27 @@ class Broadcaster(models.Model):
         default="",
     )  # default empty, fill it in save
     building = models.ForeignKey(
-        "Building",
-        verbose_name=_("Building"),
-        on_delete=models.CASCADE)
+        "Building", verbose_name=_("Building"), on_delete=models.CASCADE
+    )
     description = RichTextField(_("description"), config_name="complete", blank=True)
     poster = models.ForeignKey(
-        CustomImageModel,
-        models.SET_NULL,
+        CustomImageModel, models.SET_NULL, blank=True, null=True, verbose_name=_("Poster")
+    )
+    url = models.URLField(_("URL"), help_text=_("Url of the stream"), unique=True)
+    video_on_hold = models.ForeignKey(
+        Video,
+        help_text=_("This video will be displayed when there is no live stream."),
         blank=True,
         null=True,
-        verbose_name=_('Poster'))
-    url = models.URLField(_('URL'), help_text=_(
-        'Url of the stream'), unique=True)
-    video_on_hold = models.ForeignKey(Video, help_text=_(
-        'This video will be displayed when there is no live stream.'),
-        blank=True,
+        verbose_name=_("Video on hold"),
+        on_delete=models.CASCADE,
+    )
+    iframe_url = models.URLField(
+        _("Embedded Site URL"),
+        help_text=_("Url of the embedded site to display"),
         null=True,
-        verbose_name=_('Video on hold'),
-        on_delete=models.CASCADE)
-    iframe_url = models.URLField(_('Embedded Site URL'), help_text=_(
-        'Url of the embedded site to display'), null=True, blank=True)
+        blank=True,
+    )
     iframe_height = models.IntegerField(
         _("Embedded Site Height"),
         null=True,
@@ -169,18 +170,13 @@ class Broadcaster(models.Model):
 
 class HeartBeat(models.Model):
     user = models.ForeignKey(
-        User,
-        null=True,
-        verbose_name=_('Viewer'),
-        on_delete=models.CASCADE)
-    viewkey = models.CharField(_('Viewkey'), max_length=200, unique=True)
+        User, null=True, verbose_name=_("Viewer"), on_delete=models.CASCADE
+    )
+    viewkey = models.CharField(_("Viewkey"), max_length=200, unique=True)
     broadcaster = models.ForeignKey(
-        Broadcaster,
-        null=False,
-        verbose_name=_('Broadcaster'),
-        on_delete=models.CASCADE)
-    last_heartbeat = models.DateTimeField(
-        _('Last heartbeat'), default=timezone.now)
+        Broadcaster, null=False, verbose_name=_("Broadcaster"), on_delete=models.CASCADE
+    )
+    last_heartbeat = models.DateTimeField(_("Last heartbeat"), default=timezone.now)
 
     class Meta:
         verbose_name = _("Heartbeat")

@@ -458,22 +458,21 @@ class SelectWOA(forms.widgets.Select):
         <option value="value_k" foo="bar" ...>label_k</option>
     """
 
-    def create_option(self, name, value, label, selected, index,
-                      subindex=None, attrs=None):
+    def create_option(
+        self, name, value, label, selected, index, subindex=None, attrs=None
+    ):
         """Replace the option creators from original Select."""
         # This allows using strings labels as usual
         if isinstance(label, dict):
             opt_attrs = label.copy()
-            label = opt_attrs.pop('label')
+            label = opt_attrs.pop("label")
         else:
             opt_attrs = {}
-        option_dict = super(SelectWOA, self).create_option(name, value,
-                                                           label, selected,
-                                                           index,
-                                                           subindex=subindex,
-                                                           attrs=attrs)
+        option_dict = super(SelectWOA, self).create_option(
+            name, value, label, selected, index, subindex=subindex, attrs=attrs
+        )
         for key, val in opt_attrs.items():
-            option_dict['attrs'][key] = val
+            option_dict["attrs"][key] = val
         return option_dict
 
 
@@ -487,9 +486,9 @@ class DescribedChoiceField(forms.ModelChoiceField):
         """Override parent's label_from_instance method."""
         return {
             # the usual label:
-            'label': super().label_from_instance(obj),
+            "label": super().label_from_instance(obj),
             # the new title attribute:
-            'title': obj.description
+            "title": obj.description,
         }
 
 
@@ -811,14 +810,12 @@ class VideoForm(forms.ModelForm):
     class Meta(object):
         model = Video
         fields = VIDEO_FORM_FIELDS
-        field_classes = {
-            'type': DescribedChoiceField
-        }
+        field_classes = {"type": DescribedChoiceField}
         widgets = {
-            "owner" : OwnerWidget,
-            "additional_owners" : AddOwnerWidget,
-            "channel" : ChannelWidget,
-            "discipline" : DisciplineWidget,
+            "owner": OwnerWidget,
+            "additional_owners": AddOwnerWidget,
+            "channel": ChannelWidget,
+            "discipline": DisciplineWidget,
             "date_evt": widgets.AdminDateWidget,
         }
         initial = {

@@ -24,15 +24,20 @@ class UserFolder(models.Model):
     name = models.CharField(_("Name"), max_length=255)
     # parent = models.ForeignKey(
     #    'self', blank=True, null=True, related_name='children')
-    owner = models.ForeignKey(User, verbose_name=_('Owner'),
-                              on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, verbose_name=_("Owner"), on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     access_groups = models.ManyToManyField(
-        'authentication.AccessGroup', blank=True, verbose_name=_('Groups'),
-        help_text=_('Select one or more groups who'
-                    ' can access in read only to this folder'))
+        "authentication.AccessGroup",
+        blank=True,
+        verbose_name=_("Groups"),
+        help_text=_(
+            "Select one or more groups who" " can access in read only to this folder"
+        ),
+    )
     users = models.ManyToManyField(
-        User, blank=True, verbose_name=_('Users'),
+        User,
+        blank=True,
+        verbose_name=_("Users"),
         related_name="shared_files",
         help_text=_(
             "Select one or more users who" " can access in read only to this folder"
