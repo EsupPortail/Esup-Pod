@@ -275,15 +275,6 @@ for apps in settings.THIRD_PARTY_APPS:
 #        url(r'^assignment/getvideo/',
 #            LTIAssignmentGetVideoView.as_view()),
 #    ]
-##
-# H5P feature patterns
-#
-if getattr(settings, "H5P_ENABLED", False):
-    urlpatterns += [
-        url(r"^h5p/login/", authentication_login, name="h5p_login"),
-        url(r"^h5p/logout/", authentication_logout, name="h5p_logout"),
-        url(r"^h5p/", include("h5pp.urls")),
-    ]
 
 if getattr(settings, "USE_STATS_VIEW", False):
     urlpatterns += [

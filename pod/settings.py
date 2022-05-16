@@ -281,11 +281,6 @@ def update_settings(local_settings):
     if local_settings.get("LTI_ENABLED", False):
         local_settings["AUTHENTICATION_BACKENDS"] += ("lti_provider.auth.LTIBackend",)
 
-    if local_settings.get("H5P_ENABLED", False):
-        sys.path.append(os.path.join(BASE_DIR, "../../H5PP"))
-        local_settings["INSTALLED_APPS"].append("h5pp")
-        local_settings["INSTALLED_APPS"].append("pod.interactive")
-
     ##
     # Opencast studio
     if local_settings.get("USE_OPENCAST_STUDIO", False):
