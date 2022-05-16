@@ -99,6 +99,7 @@ class Meetings(models.Model):
             'If this box is checked, '
             'the meeting will only be accessible to authenticated users.'),
         default=False)
+        
     restrict_access_to_groups = models.ManyToManyField(
         AccessGroup, blank=True, verbose_name=_('Groups'),
         help_text=_('Select one or more groups who can access to this meeting'))

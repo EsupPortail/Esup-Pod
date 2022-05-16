@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block page_content %}
+
+<br>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-body">
+
+            <p>Are you sure you want to delete "{{item}}" ?</p>
+
+            <form action="{% url 'delete_meeting' element.meetingID %}">
+
+                {% csrf_token %}
+                <a href="{% url 'meeting' %}">Cancel</a>
+
+                <input class="btn btn-danger" type="submit" name="Confirm">
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock page_content %}

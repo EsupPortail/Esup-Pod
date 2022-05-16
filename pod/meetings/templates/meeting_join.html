@@ -2,7 +2,7 @@
 <form action="" method="POST">
 {% csrf_token %}
 <h2>Join meeting {{ element.meetingID }}</h2>
-<p>Invite others to this meeting with <a href="/meeting/{{ element.meetingID }}/join">this URL</a></p>
+<p>Invite others to this meeting with <a href="/meeting/{{element.meetingID}}">this URL</a></p>
 <table>
     {{form}}
     <tr>

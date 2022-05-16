@@ -29,9 +29,19 @@
                 <td> {{ element.name }} </td>
                 <td> {{ element.start_date }} </td>
                 <td> {{ element.end_date }} </td>
-                <td><a class="btn btn-sm btn-success" href="modify/{{ element.meetingID }}">modify</a>
-                <a class="btn btn-sm btn-danger" href="/meeting/{{element.meetingID}}/delete">delete</a>
-                <p>Voici le lien :<a href="/meeting/{{ element.meetingID }}/join">#</a></p>
+                <td><a class="btn btn-sm btn-success" href="{% url 'meetings:edit' element.meetingID %}">modify</a>
+                <a class="btn btn-sm btn-danger" href="{% url 'meetings:delete' element.meetingID %}">delete</a>
+                <p>Voici le lien :<a href="{% url 'meetings:join' element.meetingID %}">#</a></p>
+                {% if element.info.end_time == "null" %}
+                {% if element.running == 'true'  %}
+                    <span class="status running">Running</span>
+                {% else %}
+                    <span class="status notrunning">Not running</span>
+                {% endif %}
+                <form method="GET" action="{% url 'meetings:join' element.meetingID %}"></form>
+                {% else %}
+                <span class="status notrunning">Ended</span>
+                {% endif %}
                 </td>
             </tr>
             {% endfor %}
