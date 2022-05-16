@@ -233,7 +233,7 @@ body.dark {
 }
 
 .slider {
-  background-color: var(--color-silver-chalice);
+  background-color: var(--pod-background-neutre1-bloc);
   bottom: 0;
   cursor: pointer;
   left: 0;
@@ -263,12 +263,8 @@ body.dark {
   border-radius: 50%;
 }
 
-[data-theme="dark"] .slider {
-  background-color: var(--gray);
-}
-
 input:checked+.slider {
-  background-color: var(--primary2);
+  background-color: var(--primary);
 }
 
 input:checked+.slider:before {

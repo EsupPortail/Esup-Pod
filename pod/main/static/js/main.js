@@ -258,7 +258,7 @@ $("#ownerboxnavbar").keyup(function () {
               urlvideos +
               "?owner=" +
               elt.username +
-              '" title="">' +
+              '">' +
               elt.first_name +
               " " +
               elt.last_name +
