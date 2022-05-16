@@ -1,36 +1,35 @@
-{% load staticfiles %}
+{% load static %}
 {% load i18n %}
 {% spaceless %}
-<div class="container container-pod">
-<p class="float-right">
-  <a class="top_link" href="#">Haut de page</a>
-</p>
-<div class="row">
-  <div class="col-md-4">
-    <img src="{% static LOGO_ETB %}" alt="" height="70" loading="lazy">
-    <p class="footer-contact mt-3 hidden-pod">
-      <span class="footer-contact-title">{{TITLE_ETB}}</span><br>
-      {% for text in FOOTER_TEXT %}
-      {{text|safe}}<br>
-      {% endfor %}
-    </p>
-  </div>
-  <div class="col-md-4">
-    {% if LINK_FOOTER %}
-      <ul class="footer_links">
-      {% for link in LINK_FOOTER %}
-        <li><a href="{{link.get_url}}">{{link.title}}</a></li>
-      {% endfor %}
+<div>
+  <p class="float-end">
+    <a class="bi bi-arrow-up-circle pod-gotoup" href="#" title="{% trans 'Go to top'%}"></a>
+  </p>
+  <div class="pod-footer-content">
+    <div>
+      <img src="{% static LOGO_ETB %}" alt="" height="40" loading="lazy" class="pod-footer-logo">
+      <address>
+        <p class="footer-contact mt-3 hidden-pod pod-hidden">
+          <span class="footer-contact-title">{{TITLE_ETB}}</span><br>
+          {% for text in FOOTER_TEXT %}
+          {{text|safe}}<br>
+          {% endfor %}
+        </p>
+      </address>
+    </div>
+    <div>
+      <ul class="footer_links pod-footer__links list-unstyled">
+        {% if LINK_FOOTER %}
+          {% for link in LINK_FOOTER %}
+            <li><a href="{{link.get_url}}">{{link.title}}</a></li>
+          {% endfor %}
+        {% endif %}
+
+        <li><a href="https://www.esup-portail.org/" title="{% trans 'Esup Portal: Community of French higher education establishments for digital innovation' %}" target="_blank">{% trans "Esup Portal" %}</a></li>
+        <li><a href="https://github.com/EsupPortail/Esup-Pod" target="_blank">{% trans "Pod Project" %}</a></li>
       </ul>
-    {% endif %}
+    </div>
   </div>
-  <div class="col-md-4">
-    <ul class="footer_links">
-      <li><a href="https://www.esup-portail.org/" title="{% trans 'Esup Portal: Community of French higher education establishments for digital innovation' %}" target="_blank">{% trans "Esup Portal" %}</a></li>
-      <li><a href="https://github.com/EsupPortail/Esup-Pod" target="_blank">{% trans "Pod Project" %}</a></li>
-    </ul>
-  </div>
-</div>
-<p class="hidden-pod" style="text-align:center">{{TITLE_SITE}} {% trans "video platform of" %} {{TITLE_ETB}} - <a href="https://github.com/EsupPortail/Esup-Pod/releases/tag/{{VERSION}}" target="_blank" title="GitHub">{% trans "Release" %} {{VERSION}}</a>  - {{VIDEOS_COUNT}} {% trans "videos availables" %} [ {{VIDEOS_DURATION}} ]</p>
+  <p class="hidden-pod pod-footer__credits" style="text-align:center">{{TITLE_SITE}} {% trans "video platform of" %} {{TITLE_ETB}} - <a href="https://github.com/EsupPortail/Esup-Pod/releases/tag/{{VERSION}}" target="_blank" title="GitHub">{% trans "Release" %} {{VERSION}}</a>  - {{VIDEOS_COUNT}} {% trans "videos availables" %} [ {{VIDEOS_DURATION}} ]</p>
 </div>
 {% endspaceless %}

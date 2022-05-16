@@ -348,7 +348,7 @@ class PopulatedShibTestCase(TestCase):
             remote_user=u["username"],
             shib_meta=shib_meta,
         )
-        self.assertTrue(user.is_authenticated())
+        self.assertTrue(user.is_authenticated)
 
         return (user, shib_meta)
 

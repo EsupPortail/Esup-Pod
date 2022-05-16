@@ -57,7 +57,7 @@ function refreshVideosSearch(formCheckedInputs) {
       window.history.pushState({}, "", this.url);
     },
     error: function (result, status, error) {
-      $("#videos_list").html(gettext("An Error occurred while processing "));
+      $("#videos_list").html(gettext("An Error occurred while processing."));
     },
   });
 }

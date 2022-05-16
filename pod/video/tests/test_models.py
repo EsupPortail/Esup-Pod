@@ -370,13 +370,11 @@ class VideoTestCase(TestCase):
         self.assertEqual(video.description, "")
         self.assertEqual(video.slug, "%04d-%s" % (video.id, slugify(video.title)))
         date = datetime.today()
-
         self.assertEqual(video.owner, User.objects.get(username="pod"))
         self.assertEqual(video.date_added.year, date.year)
         self.assertEqual(video.date_added.month, date.month)
         self.assertEqual(video.date_added.day, date.day)
         # self.assertEqual(video.date_evt, video.date_added)
-
         self.assertEqual(video.get_viewcount(), 0)
 
         self.assertEqual(video.is_draft, True)

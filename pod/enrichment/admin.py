@@ -16,18 +16,15 @@ class EnrichmentInline(admin.TabularInline):
     model = Enrichment
     extra = 0
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
 
 
 class EnrichmentAdmin(admin.ModelAdmin):
 
     form = EnrichmentAdminForm
-    list_display = (
-        "title",
-        "type",
-        "video",
-    )
+    list_display = ('title', 'type', 'video',)
+    autocomplete_fields = ['video']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -43,8 +40,8 @@ class EnrichmentAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
+                "bootstrap/dist/css/bootstrap.min.css",
+                "bootstrap/dist/css/bootstrap-grid.min.css",
                 "css/pod.css",
             )
         }
@@ -52,7 +49,7 @@ class EnrichmentAdmin(admin.ModelAdmin):
             "js/main.js",
             "podfile/js/filewidget.js",
             "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
 
@@ -63,7 +60,8 @@ else:
 
 
 class EnrichmentGroupAdmin(admin.ModelAdmin):
-    list_display = ("video", "get_groups")
+    list_display = ('video', 'get_groups')
+    autocomplete_fields = ['video']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -108,8 +106,8 @@ class EnrichmentVttAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
+                "bootstrap/dist/css/bootstrap.min.css",
+                "bootstrap/dist/css/bootstrap-grid.min.css",
                 "css/pod.css",
             )
         }
@@ -117,7 +115,7 @@ class EnrichmentVttAdmin(admin.ModelAdmin):
             "js/main.js",
             "podfile/js/filewidget.js",
             "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
 

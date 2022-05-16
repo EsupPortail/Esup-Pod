@@ -6,7 +6,6 @@ from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from select2 import fields as select2_fields
 from sorl.thumbnail import delete
 from itertools import chain
 from operator import attrgetter
@@ -25,20 +24,15 @@ class UserFolder(models.Model):
     name = models.CharField(_("Name"), max_length=255)
     # parent = models.ForeignKey(
     #    'self', blank=True, null=True, related_name='children')
-    owner = select2_fields.ForeignKey(User, verbose_name=_("Owner"))
+    owner = models.ForeignKey(User, verbose_name=_('Owner'),
+                              on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    access_groups = select2_fields.ManyToManyField(
-        "authentication.AccessGroup",
-        blank=True,
-        verbose_name=_("Groups"),
-        help_text=_(
-            "Select one or more groups who" " can access in read only to this folder"
-        ),
-    )
-    users = select2_fields.ManyToManyField(
-        User,
-        blank=True,
-        verbose_name=_("Users"),
+    access_groups = models.ManyToManyField(
+        'authentication.AccessGroup', blank=True, verbose_name=_('Groups'),
+        help_text=_('Select one or more groups who'
+                    ' can access in read only to this folder'))
+    users = models.ManyToManyField(
+        User, blank=True, verbose_name=_('Users'),
         related_name="shared_files",
         help_text=_(
             "Select one or more users who" " can access in read only to this folder"
@@ -116,9 +110,9 @@ def get_upload_path_files(instance, filename):
 class BaseFileModel(models.Model):
     name = models.CharField(_("Name"), max_length=255)
     description = models.CharField(max_length=255, blank=True)
-    folder = select2_fields.ForeignKey(UserFolder)
+    folder = models.ForeignKey(UserFolder, on_delete=models.CASCADE)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    created_by = select2_fields.ForeignKey(
+    created_by = models.ForeignKey(
         User,
         related_name="%(app_label)s_%(class)s_created",
         on_delete=models.CASCADE,

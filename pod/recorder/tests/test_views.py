@@ -203,7 +203,7 @@ class studio_podTestView(TestCase):
         response = self.client.get("/studio/")
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
-        print(" --->  test_studio_podTestView_get_request of video_recordTestView: OK!")
+        print(" --->  test_studio_podTestView_get_request of openCastTestView: OK!")
 
     @override_settings(DEBUG=True, RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
     def test_studio_podTestView_get_request_restrict(self):
@@ -497,8 +497,7 @@ class studio_podTestView(TestCase):
             {
                 "mediaPackage": mediaPackage_content.toxml(),
                 "BODY": video,
-                "flavor": "presenter/source",
-                "tags": None,
+                "flavor": "presenter/source"
             },
         )
 

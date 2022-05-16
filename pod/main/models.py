@@ -134,6 +134,7 @@ class LinkFooter(models.Model):
         FlatPage,
         blank=True,
         null=True,
+        on_delete=models.CASCADE,
         help_text=_("Select the page of Pod you want to link with."),
     )
     sites = models.ManyToManyField(Site)

@@ -76,8 +76,9 @@ def get_broadcaster_by_slug(slug, site):
 def video_live(request, slug):  # affichage des directs
     site = get_current_site(request)
     broadcaster = get_broadcaster_by_slug(slug, site)
-    if broadcaster.is_restricted and not request.user.is_authenticated():
-        iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
+    if broadcaster.is_restricted and not request.user.is_authenticated:
+        iframe_param = 'is_iframe=true&' if (
+            request.GET.get('is_iframe')) else ''
         return redirect(
             "%s?%sreferrer=%s"
             % (settings.LOGIN_URL, iframe_param, request.get_full_path())

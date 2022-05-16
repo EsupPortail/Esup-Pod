@@ -1,9 +1,9 @@
-<!-- HTML for chapter form. Don't use this file alone it must be integrated into another template ! -->
+{# HTML for chapter form. Don't use this file alone it must be integrated into another template! #}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 <div class="card card-body m-2" overflow: auto>
 <div class="panel-heading mb-3 p-1">
-	<h4 class="card-title">{% trans 'Create / Edit chapters' %}</h4>
+	<h4 class="card-title pod-card__title">{% trans 'Create / Edit chapters' %}</h4>
 </div>
 <form id="form_chapter" class="form_save" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
 	{% csrf_token %}
@@ -34,7 +34,7 @@
 &nbsp;
 {% if request.user.is_staff %}
 <div class="panel-heading mt-3 mb-3 p-1">
-	<h4 class="card-title">{% trans 'Import chapters' %}</h4>
+	<h4 class="card-title pod-card__title">{% trans 'Import chapters' %}</h4>
 </div>
 <form id="form_chapter_import" class="form_save" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
 	{% csrf_token %}

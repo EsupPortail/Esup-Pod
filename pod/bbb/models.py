@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.utils import timezone
-from select2 import fields as select2_fields
 
 
 USE_BBB = getattr(settings, "USE_BBB", False)
@@ -70,7 +69,7 @@ class Meeting(models.Model):
         max_length=200,
     )
     # User who converted the BigBlueButton presentation to video file
-    encoded_by = select2_fields.ForeignKey(
+    encoded_by = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         limit_choices_to={"is_staff": True},
@@ -139,7 +138,7 @@ class Attendee(models.Model):
     )
 
     # Pod user, if the BBB user was translated with a Pod user
-    user = select2_fields.ForeignKey(
+    user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         limit_choices_to={"is_staff": True},
@@ -200,7 +199,7 @@ class Livestream(models.Model):
         help_text=_("Server/process performing the live."),
     )
     # User that want to perform the live
-    user = select2_fields.ForeignKey(
+    user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         limit_choices_to={"is_staff": True},

@@ -12,7 +12,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: [3.7, 3.8, 3.9]
 
     steps:
       - uses: actions/checkout@v2
@@ -41,11 +41,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install ffmpeg
           sudo apt-get install -y ffmpegthumbnailer
+          sudo apt-get install -y npm
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install flake8
           pip install coveralls
-
+          sudo npm install -g yarn
+          
       - name: Flake8 compliance
         run: |
           flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,*_settings.py
@@ -58,8 +60,10 @@ jobs:
       - name: Setup Pod
         run: |
           python manage.py create_pod_index
-          python manage.py makemigrations
-          python manage.py migrate
+          python manage.py makemigrations --settings=pod.main.test_settings
+          python manage.py migrate --settings=pod.main.test_settings
+          cd pod
+          yarn
 
       - name: Run Tests and coveralls
         env:

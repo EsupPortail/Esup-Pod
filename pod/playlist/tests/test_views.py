@@ -117,7 +117,6 @@ class PlaylistViewsTestCase(TestCase):
             "/playlist/edit/",
             data={
                 "action": "edit",
-                "playlist_id": None,
                 "title": "playlist1",
                 "owner": owner.id,
                 "description": "test",

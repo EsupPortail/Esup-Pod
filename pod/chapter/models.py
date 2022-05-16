@@ -7,12 +7,12 @@ from django.utils.translation import ugettext as _
 
 from pod.video.models import Video
 from pod.main.models import get_nextautoincrement
-from select2 import fields as select2_fields
 
 
 class Chapter(models.Model):
-    video = select2_fields.ForeignKey(Video, verbose_name=_("video"))
-    title = models.CharField(_("title"), max_length=100)
+    video = models.ForeignKey(Video, verbose_name=_('video'),
+                              on_delete=models.CASCADE)
+    title = models.CharField(_('title'), max_length=100)
     slug = models.SlugField(
         _("slug"),
         unique=True,

@@ -3,6 +3,7 @@ from django.test import TestCase, override_settings, TransactionTestCase
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
+from pod.authentication.models import AccessGroup
 from django.contrib.sites.models import Site
 
 from ..models import Type
@@ -11,7 +12,6 @@ from ..models import Video
 from ..models import Channel
 from ..models import Discipline
 from ..models import AdvancedNotes
-from pod.authentication.models import AccessGroup
 
 import re
 import json
@@ -616,7 +616,7 @@ class VideoTestView(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         # TODO test with password
         v.is_restricted = False
-        v.restrict_access_to_groups = []
+        v.restrict_access_to_groups.set([])
         v.password = "password"
         v.save()
         self.client.logout()
@@ -800,6 +800,7 @@ class VideoEditTestView(TestCase):
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(b"The changes have been saved." in response.content)
+
         v = Video.objects.get(title="VideoTest3")
         self.assertEqual(v.description, "<p>bl</p>")
         videofile = SimpleUploadedFile(

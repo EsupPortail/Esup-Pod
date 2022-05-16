@@ -1,9 +1,9 @@
-<!-- HTML for enrichment form. Don't use this file alone it must be integrated into another template ! -->
+{# HTML for enrichment form. Don't use this file alone it must be integrated into another template! #}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 {{form_enrichment.media}}
 <div class="panel-heading">
-    <h4 class="card-title">{% trans 'Create / Edit enrichment' %}</h4>
+    <h4 class="card-title pod-card__title">{% trans 'Create / Edit enrichment' %}</h4>
 </div>
 <form id="form_enrich" class="form_save" action="{% url 'enrichment:edit_enrichment' slug=video.slug %}" method="POST">
     {% csrf_token %}

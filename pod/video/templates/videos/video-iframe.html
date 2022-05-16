@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 {% load tagging_tags %}
 {% load thumbnail %}
 {% load video_filters %}
@@ -12,7 +12,7 @@
   <title>{{ TITLE_SITE }} - {% block page_title %}{{video.title}}{% endblock page_title %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
 
   {% block page_extra_head %}
     {% include 'videos/video-header.html' %}
@@ -20,8 +20,8 @@
 
   <script src="{% static 'js/videojs-info-controlbar.js' %}?ver={{VERSION}}"></script>
 
-  <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap-default.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
-  <script src="{% static 'bootstrap-4/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
+  <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
+  <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
   <script src="{% url 'javascript-catalog' %}"></script>
 
   <link rel="stylesheet" href="{% static 'css/video-iframe.css' %}?ver={{VERSION}}">
@@ -40,14 +40,14 @@
     {% include 'videos/video-element.html' %}
   {% endblock video-element %}
 
-  <div id="info-video-wrapper" class="jumbotron">
+  <div id="info-video-wrapper" class="_jumbotron pod-inner">
     <div class="iframe-header bg-dark text-white">
       <h2 class="video-title">{{ video.title }}</h2>
       <button type="button" class="close" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <div id="info-video">
+    <div id="info-video" class="pod-info-video">
     {% include 'videos/video-info.html'%}
   </div>
   </div>
@@ -66,12 +66,14 @@
     })
     player.on('pause',function() { isPlaying = false; })
   }
-  $('#div-video-wrapper').append('<div id="overlay-footer"></div>')
-  player.ready(function() {
-    const btinfo = $('.vjs-info-button:eq(0)')[0]
-    $(btinfo).clone().appendTo('#overlay-footer')
-    $('#overlay-footer .vjs-info-button').click(function(){$(btinfo).click()})
-  })
+  {% if video.is_video %}
+    $('#div-video-wrapper').append('<div id="overlay-footer"></div>');
+    player.ready(function() {
+      const btinfo = $('.vjs-info-button:eq(0)')[0]
+      $(btinfo).clone().appendTo('#overlay-footer')
+      $('#overlay-footer .vjs-info-button').click(function(){$(btinfo).click()})
+    })
+  {% endif %}
   $(document).on('click', '.close', function() { show_info_video() });
 
   // Responsive
@@ -131,10 +133,6 @@
   </script>
 {% endif %}
 {% endblock more_script %}
-<script src="{% static 'feather-icons/feather.min.js' %}?ver={{VERSION}}"></script>
-<script>
-  feather.replace({ class: 'align-bottom'});
-</script>
 {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
 {% endblock page_content %}
 </body>
