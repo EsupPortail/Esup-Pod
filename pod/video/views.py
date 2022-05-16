@@ -513,8 +513,9 @@ def my_videos(request):
         cats = json.dumps(cats, ensure_ascii=False)
         data_context["categories"] = cats
         data_context["videos_without_cat"] = videos_without_cat
-
+    print("dehors")
     if request.GET.get("sort"):
+        print("dedans")
         videos_list = videos_list.order_by(request.GET.get("sort"))
 
     paginator = Paginator(videos_list, 12)
