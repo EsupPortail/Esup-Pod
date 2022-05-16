@@ -4,11 +4,9 @@ Django global settings for pod_project.
 Django version: 3.2.
 """
 import os
-import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # will be update in pod/main/settings.py
-
 
 ##
 # Version of the project
@@ -224,7 +222,7 @@ CACHES = {
 # Tell select2 which cache configuration to use:
 SELECT2_CACHE_BACKEND = "select2"
 
-MODELTRANSLATION_FALLBACK_LANGUAGES = ("fr", "en", "nl")
+MODELTRANSLATION_FALLBACK_LANGUAGES = ("fr", "en")
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "node_modules")]
 
@@ -280,11 +278,6 @@ def update_settings(local_settings):
     #
     if local_settings.get("LTI_ENABLED", False):
         local_settings["AUTHENTICATION_BACKENDS"] += ("lti_provider.auth.LTIBackend",)
-
-    if local_settings.get("H5P_ENABLED", False):
-        sys.path.append(os.path.join(BASE_DIR, "../../H5PP"))
-        local_settings["INSTALLED_APPS"].append("h5pp")
-        local_settings["INSTALLED_APPS"].append("pod.interactive")
 
     ##
     # Opencast studio
