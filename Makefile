@@ -57,4 +57,4 @@ pystyle:
 
 statics:
 	cd pod; yarn
-	python manage.py collectstatic
+	python3 manage.py collectstatic
