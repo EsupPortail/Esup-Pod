@@ -166,8 +166,8 @@ class GroupAdmin(admin.ModelAdmin):
     # Use our custom form.
     form = GroupAdminForm
     # Filter permissions horizontal as well.
-    filter_horizontal = ['permissions']
-    search_fields = ['name']
+    filter_horizontal = ["permissions"]
+    search_fields = ["name"]
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
