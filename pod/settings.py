@@ -224,8 +224,6 @@ SELECT2_CACHE_BACKEND = "select2"
 
 MODELTRANSLATION_FALLBACK_LANGUAGES = ("fr", "en")
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "node_modules")]
-
 ##
 # Applications settings (and settings locale if any)
 #
@@ -247,6 +245,8 @@ for application in INSTALLED_APPS:
             for variable in dir(_temp.settings_local):
                 if variable == variable.upper():
                     locals()[variable] = getattr(_temp.settings_local, variable)
+
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "node_modules")]
 
 
 def update_settings(local_settings):
