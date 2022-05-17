@@ -29,9 +29,9 @@
                 <td> {{ element.name }} </td>
                 <td> {{ element.start_date }} </td>
                 <td> {{ element.end_date }} </td>
-                <td><a class="btn btn-sm btn-success" href="{% url 'meetings:edit' element.meetingID %}">modify</a>
-                <a class="btn btn-sm btn-danger" href="{% url 'meetings:delete' element.meetingID %}">delete</a>
-                <p>Voici le lien :<a href="{% url 'meetings:join' element.meetingID %}">#</a></p>
+                <td><a class="btn btn-sm btn-success" href="{% url 'meetings:edit' element.id %}">modify</a>
+                <a class="btn btn-sm btn-danger" href="{% url 'meetings:delete' element.id %}">delete</a>
+                <p>Voici le lien :<a href="{% url 'meetings:join' element.id %}">#</a></p>
                 {% if element.info.end_time == "null" %}
                 {% if element.running == 'true'  %}
                     <span class="status running">Running</span>

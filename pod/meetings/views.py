@@ -1,6 +1,7 @@
 import datetime
 from genericpath import exists
 import logging
+from multiprocessing import context
 from django.http import (HttpResponse, HttpResponseRedirect)
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
@@ -41,24 +42,27 @@ def create(request):
   else:
     form = MeetingsForm()
 
-  return render(request, 'meeting_add.html', {'form': form})
+  context={'form': form}
+
+  return render(request, 'meeting_add.html', context)
 
 def delete_meeting(request, meetingID):
     meeting = Meetings.objects.get(id=meetingID)
     if request.method == "POST":
         meeting.delete()
         return redirect('/meeting')
+
+    context={'item':meeting}
               
-    return render(request, "meeting_delete.html")
+    return render(request, 'meeting_delete.html', context)
 
 def join_meeting(request, meetingID, slug_private=None):
+  '''
   try:
       id = int(meetingID[: meetingID.find("-")])
   except ValueError:
       raise SuspiciousOperation("Invalid meeting id")
   meeting = get_object_or_404(Meetings, id=id, sites=get_current_site(request))
-    
-  '''
 
   is_draft = meeting.is_draft
   is_restricted = meeting.is_restricted
@@ -119,7 +123,7 @@ def join_meeting(request, meetingID, slug_private=None):
   # si elle est pas démarrer, page attente
 
 
-    
+  '''
   if request.user.is_authenticated and (request.user == meeting.owner or request.user in meeting.additional_owners):
     name = request.user.get_full_name()
     url = meeting.join_url(request.user.get_full_name(), meeting.moderator_password)
@@ -128,6 +132,7 @@ def join_meeting(request, meetingID, slug_private=None):
     form = JoinForm()
     url = meeting.join_url(request.user.get_full_name(), meeting.moderator_password)
     #return url
+  '''
 
   current_datetime = datetime.datetime.now()
   if meetingID == 'meeting-ended':
@@ -176,6 +181,7 @@ def join_meeting(request, meetingID, slug_private=None):
           raise PermissionDenied
   '''
 
+  meeting = Meetings.objects.get(id=meetingID)
   if request.method == "POST":
       form = JoinForm(request.POST)
       if form.is_valid():
@@ -184,27 +190,33 @@ def join_meeting(request, meetingID, slug_private=None):
   else:
       form = JoinForm()
 
-  return render(request, 'meeting_join.html', {'form': form})
+  context={'item':meeting}
+
+  return render(request, 'meeting_join.html', context)
 
 def edit_meeting(request, meetingID):
-  obj = Meetings.objects.get(meetingID=meetingID)
+  obj = Meetings.objects.get(id=meetingID)
   form = MeetingsForm(request.POST, instance=obj)
   if request.method == "POST":
-        if form.is_valid():
-            meeting = form.save(request, form)
-            meeting.owner = request.user
-            meeting.save()
-            messages.add_message(
-                request, messages.INFO, ("The changes have been saved.")
-            )
-            if request.POST.get("_saveandsee"):
-                return redirect(reverse("Meeting", args=(meeting.meetingID,)))
-            else:
-                return redirect(reverse("edit_meeting", args=(meeting.meetingID,)))
+    form = MeetingsForm(request.POST, instance=obj)
+    if form.is_valid():
+        meeting = form.save(request, form)
+        meeting.owner = request.user
+        meeting.save()
+        messages.add_message(
+            request, messages.INFO, ("The changes have been saved.")
+        )
+        if request.POST.get("_saveandsee"):
+            return redirect(reverse("Meeting", args=(meeting.meetingID,)))
         else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                ("One or more errors have been found in the form."),
-            )
-  return render(request, "meeting_edit.html", {'form': form})
+            return redirect(reverse("edit_meeting", args=(meeting.meetingID,)))
+    else:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            ("One or more errors have been found in the form."),
+        )
+        
+  context={'form': form}
+
+  return render(request, "meeting_edit.html", context)

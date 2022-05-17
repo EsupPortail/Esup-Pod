@@ -14,12 +14,12 @@ app_name = "meetings"
 urlpatterns = [
     path('meeting/', meeting, name='meeting'),
     path('meeting/add/', create, name='create'),
-    url(r'^meeting/edit/(?P<meetingID>[a-zA-Z0-9 _-]+)$', edit_meeting,
+    path('meeting/edit/<str:meetingID>', edit_meeting,
         name='edit'),
-    url(r'^meeting/delete/(?P<meetingID>[a-zA-Z0-9 _-]+)$', delete_meeting,
+    path('meeting/delete/<str:meetingID>', delete_meeting,
         name='delete'),
-    url(r'^meeting/(?P<meetingID>[a-zA-Z0-9 _-]+)$', join_meeting,
+    path('meeting/<str:meetingID>', join_meeting,
         name='join'),
-    url(r'^meeting/(?P<meetingID>[a-zA-Z0-9 _-]+)/(?P<slug_private>[\-\d\w]+)/$', join_meeting,
+    path('meeting/<str:meetingID>/<str:slug_private>', join_meeting,
         name='join'),
 ]
