@@ -11,7 +11,8 @@ start:
 	# --insecure let serve static files even when DEBUG=False
 
 install:
-	# Première installation de pod
+	# Première installation de pod (BDD SQLite intégrée)
+	npm install -g yarn
 	make upgrade
 	make createDB
 
@@ -21,9 +22,10 @@ upgrade:
 	python3 -m pip install -r requirements.txt
 	make updatedb
 	make migrate
+	make statics
 
 createDB:
-	# Création des données initiales dans la BDD
+	# Création des données initiales dans la BDD SQLite intégrée
 	find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
 	find . -path "*/migrations/*.pyc"  -delete
 	make updatedb
@@ -34,9 +36,9 @@ createDB:
 lang:
 	# Mise à jour des fichiers de langue
 	echo "Processing python files..."
-	python3 manage.py makemessages --all
+	python3 manage.py makemessages --all -i "opencast-studio/*"
 	echo "Processing javascript files..."
-	django-admin makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*"
+	django-admin makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/node_modules/*"
 
 updatedb:
 	# Look for changes to apply in DB
@@ -54,3 +56,7 @@ tests:
 pystyle:
 	# Ensure coherence of all code style
 	flake8
+
+statics:
+	cd pod; yarn
+	python3 manage.py collectstatic

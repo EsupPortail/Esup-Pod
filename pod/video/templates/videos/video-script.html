@@ -25,6 +25,7 @@ window.onmessage = function(event) {
     }
 };
 const seektime = 10;
+
 const options = {
   notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
   //language: "fr", //en or nl
@@ -71,20 +72,33 @@ const options = {
     }
   },
   plugins: {
-   seekButtons: {
-    forward: seektime,
-    back: seektime
-   }
+    seekButtons: {
+      forward: seektime,
+      back: seektime
+    }
+{% if not video.is_video %}
+    // enable videojs-wavesurfer plugin
+    ,wavesurfer: {
+      backend: 'MediaElement',
+      displayMilliseconds: true,
+      debug: false,
+      waveColor: 'grey',
+      progressColor: 'black',
+      cursorColor: 'var(--primary)',
+      hideScrollbar: false
+    }
+{% endif %}
   }
 }
+
 var player = videojs('podvideoplayer', options, function(){});
 
 player.on('firstplay', function(){
-    var data_form = $( "#video_count_form" ).serializeArray();
-    jqxhr = $.post(
-      $( "#video_count_form" ).attr("action"),
-      data_form
-    );
+  var data_form = $( "#video_count_form" ).serializeArray();
+  jqxhr = $.post(
+    $( "#video_count_form" ).attr("action"),
+    data_form
+  );
 });
 
 {% if video.is_video %}
@@ -144,9 +158,9 @@ player.on('firstplay', function(){
       });
     });
     if (typeof player.overlay === "function") {
-    player.overlay({
-      overlays: list_overlays
-    });
+      player.overlay({
+        overlays: list_overlays
+      });
     }
   {% endif %}
 
@@ -175,9 +189,9 @@ player.on('firstplay', function(){
 
 
 {% if video.chapter_set.all %}
-    player.videoJsChapters();
-    $('.vjs-big-play-button').css('z-index', 2)
-    $('.vjs-control-bar').css('z-index', 3);
+  player.videoJsChapters();
+  $('.vjs-big-play-button').css('z-index', 2)
+  $('.vjs-control-bar').css('z-index', 3);
 {% endif %}
 
 {% if video_event_tracking %}
@@ -206,5 +220,14 @@ player.on('firstplay', function(){
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'loadedmetadata']);
   });
 {% endif %}
+
+
+{% if not video.is_video %}
+  window.addEventListener('resize', function(){
+    // Auto resize Waves on window resize.
+    player.wavesurfer().surfer && player.wavesurfer().surfer._onResize();
+  });
+{% endif %}
+
 
 </script>

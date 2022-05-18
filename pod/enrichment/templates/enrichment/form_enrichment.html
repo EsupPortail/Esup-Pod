@@ -3,7 +3,7 @@
 {% load static %}
 {{form_enrichment.media}}
 <div class="panel-heading">
-    <h4 class="card-title">{% trans 'Create / Edit enrichment' %}</h4>
+    <h4 class="card-title pod-card__title">{% trans 'Create / Edit enrichment' %}</h4>
 </div>
 <form id="form_enrich" class="form_save" action="{% url 'enrichment:edit_enrichment' slug=video.slug %}" method="POST">
     {% csrf_token %}

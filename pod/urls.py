@@ -53,6 +53,7 @@ from pod.recorder.views import (
     claim_record,
     delete_record,
 )
+
 # from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
 from pod.video.views import PodChunkedUploadView, PodChunkedUploadCompleteView
 
@@ -70,12 +71,10 @@ if USE_CAS:
 urlpatterns = [
     url("select2/", include("django_select2.urls")),
     url("robots.txt", robots_txt),
-    url(r'^admin/', admin.site.urls),
-
+    url(r"^admin/", admin.site.urls),
     # Translation
-    url(r'^i18n/', include('django.conf.urls.i18n')),
-    url(r'^jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-
+    url(r"^i18n/", include("django.conf.urls.i18n")),
+    url(r"^jsi18n/$", JavaScriptCatalog.as_view(), name="javascript-catalog"),
     # App video
     url(r"^videos/$", videos, name="videos"),
     url(r"^rss-video/$", RssSiteVideosFeed(), name="rss-video"),
@@ -202,11 +201,9 @@ urlpatterns = [
     url(r"^api-auth/", include("rest_framework.urls")),
     url(r"^rest/", include(rest_urlpatterns)),
     # contact_us
-    url(r'^contact_us/$', contact_us, name='contact_us'),
-    url(r'^captcha/', include('captcha.urls')),
-    url(r'^download/$', download_file, name='download_file'),
-
-
+    url(r"^contact_us/$", contact_us, name="contact_us"),
+    url(r"^captcha/", include("captcha.urls")),
+    url(r"^download/$", download_file, name="download_file"),
     # custom
     url(r"^custom/", include("pod.custom.urls")),
 ]
@@ -278,15 +275,6 @@ for apps in settings.THIRD_PARTY_APPS:
 #        url(r'^assignment/getvideo/',
 #            LTIAssignmentGetVideoView.as_view()),
 #    ]
-##
-# H5P feature patterns
-#
-if getattr(settings, "H5P_ENABLED", False):
-    urlpatterns += [
-        url(r"^h5p/login/", authentication_login, name="h5p_login"),
-        url(r"^h5p/logout/", authentication_logout, name="h5p_logout"),
-        url(r"^h5p/", include("h5pp.urls")),
-    ]
 
 if getattr(settings, "USE_STATS_VIEW", False):
     urlpatterns += [

@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class LtiConfig(AppConfig):
-    name = 'pod.lti'
+    name = "pod.lti"

@@ -49,8 +49,8 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-<script src="{% static 'jquery-waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'waypoints/lib/shortcuts/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script>
   var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],
@@ -59,7 +59,6 @@
     },
     onAfterPageLoad: function ($items) {
       $('.infinite-loading').hide();
-      feather.replace({ class: 'align-bottom'});
       $('footer.static-pod').addClass('small');
       $('footer.static-pod').addClass('fixed-bottom');
       $('footer.static-pod').attr('style','height:80px; overflow-y:auto');

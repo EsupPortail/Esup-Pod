@@ -25,7 +25,7 @@ class UserWidget(s2forms.ModelSelect2Widget):
         "username__icontains",
         "email__icontains",
         "first_name___icontains",
-        "last_name__icontains"
+        "last_name__icontains",
     ]
 
 
@@ -76,11 +76,8 @@ class RecordingForm(forms.ModelForm):
 
     class Meta:
         model = Recording
-        exclude = ('comment', 'date_added')
-        widgets = {
-            'recorder': RecorderWidget,
-            'user': UserWidget
-        }
+        exclude = ("comment", "date_added")
+        widgets = {"recorder": RecorderWidget, "user": UserWidget}
 
     delete = forms.BooleanField(
         required=False,

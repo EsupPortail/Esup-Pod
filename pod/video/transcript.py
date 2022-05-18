@@ -54,6 +54,7 @@ STT_PARAM = getattr(settings, "STT_PARAM", dict())
 AUDIO_SPLIT_TIME = getattr(settings, "AUDIO_SPLIT_TIME", 300)  # 5min
 # time in sec for phrase length
 SENTENCE_MAX_LENGTH = getattr(settings, "SENTENCE_MAX_LENGTH", 3)
+SENTENCE_BLANK_SPLIT_TIME = getattr(settings, "SENTENCE_BLANK_SPLIT_TIME", 0.5)
 
 NORMALIZE = getattr(settings, "NORMALIZE", False)
 NORMALIZE_TARGET_LEVEL = getattr(settings, "NORMALIZE_TARGET_LEVEL", -16.0)
@@ -113,19 +114,28 @@ def get_model(lang):
     transript_model = Model(MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["model"])
     if TRANSCRIPTION_TYPE == "STT":
         if MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("beam_width"):
-            transript_model.setBeamWidth(MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["beam_width"])
+            transript_model.setBeamWidth(
+                MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["beam_width"]
+            )
         if MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("scorer"):
             print(
-                "Loading scorer from files {}".format(MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["scorer"]),
+                "Loading scorer from files {}".format(
+                    MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["scorer"]
+                ),
                 file=sys.stderr,
             )
             scorer_load_start = timer()
-            transript_model.enableExternalScorer(MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["scorer"])
+            transript_model.enableExternalScorer(
+                MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["scorer"]
+            )
             scorer_load_end = timer() - scorer_load_start
             print("Loaded scorer in {:.3}s.".format(scorer_load_end), file=sys.stderr)
-            if MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("lm_alpha") and MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("lm_beta"):
+            if MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("lm_alpha") and MODEL_PARAM[
+                TRANSCRIPTION_TYPE
+            ][lang].get("lm_beta"):
                 transript_model.setScorerAlphaBeta(
-                    MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["lm_alpha"], MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["lm_beta"]
+                    MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["lm_alpha"],
+                    MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["lm_beta"],
                 )
     return transript_model
 
@@ -174,7 +184,9 @@ def main_threaded_transcript(video_to_encode_id):
             if NORMALIZE:
                 mp3filepath = normalize_mp3(mp3filepath)
 
-            msg, webvtt, all_text = start_main_transcript(mp3filepath, video_to_encode, transript_model)
+            msg, webvtt, all_text = start_main_transcript(
+                mp3filepath, video_to_encode, transript_model
+            )
             if DEBUG:
                 print(msg)
                 print(webvtt)
@@ -238,6 +250,7 @@ def normalize_mp3(mp3filepath):
 # TRANSCRIPT VIDEO : MAIN FUNCTION
 # #################################
 
+
 def convert_vosk_samplerate(audio_path, desired_sample_rate, trim_start, duration):
     sox_cmd = "sox {} --type raw --bits 16 --channels 1 --rate {} ".format(
         quote(audio_path), desired_sample_rate
@@ -270,23 +283,40 @@ def get_word_result_from_data(results, audio, rec):
     results.append(rec.Result())
 
 
-def words_to_vtt(words, start_trim, duration, is_first_caption, text_caption, start_caption, last_word_added, all_text, webvtt):
-    for word in words:
+def words_to_vtt(
+    words,
+    start_trim,
+    duration,
+    is_first_caption,
+    text_caption,
+    start_caption,
+    last_word_added,
+    all_text,
+    webvtt,
+):
+    for index, word in enumerate(words):
         start_key = "start_time"
-        word_duration = word["duration"]
-        last_word_duration = words[-1]["duration"]
-        if(TRANSCRIPTION_TYPE == "VOSK"):
+        word_duration = word.get("duration", 0)
+        last_word = words[-1]
+        last_word_duration = last_word.get("duration", 0)
+        if TRANSCRIPTION_TYPE == "VOSK":
             start_key = "start"
-            word_duration = (word["end"] - word["start"])
-            last_word_duration = (words[-1]["end"] - words[-1]["start"])
-
+            word_duration = word["end"] - word["start"]
+            last_word_duration = words[-1]["end"] - words[-1]["start"]
+        next_word = None
+        blank_duration = 0
+        if word != words[-1]:
+            next_word = words[index + 1]
+            blank_duration = ((next_word[start_key] + start_trim) - start_caption) - (
+                ((word[start_key] + start_trim) - start_caption) + word_duration
+            )
         all_text += word["word"] + " "
         # word : <class 'dict'> {'word': 'bonjour', 'start ':
         # 0.58, 'duration': 7.34}
         text_caption.append(word["word"])
         if not (
-            ((word[start_key] + start_trim) - start_caption)
-            < SENTENCE_MAX_LENGTH
+            (((word[start_key] + start_trim) - start_caption) < SENTENCE_MAX_LENGTH)
+            and (next_word is not None and (blank_duration < SENTENCE_BLANK_SPLIT_TIME))
         ):
             # on créé le caption
             if is_first_caption:
@@ -313,9 +343,7 @@ def words_to_vtt(words, start_trim, duration, is_first_caption, text_caption, st
             last_word_added = word["word"]
     if start_trim + AUDIO_SPLIT_TIME > duration:
         # on ajoute ici la dernière phrase de la vidéo
-        stop_caption = (
-            start_trim + words[-1][start_key] + last_word_duration
-        )
+        stop_caption = start_trim + words[-1][start_key] + last_word_duration
         caption = Caption(
             format_time_caption(start_caption),
             format_time_caption(stop_caption),
@@ -349,21 +377,33 @@ def main_vosk_transcript(norm_mp3_file, duration, transript_model):
             else (duration - start_trim)
         )
         msg += "\ntake audio from %s to %s - %s" % (start_trim, end_trim, dur)
-        audio = convert_vosk_samplerate(norm_mp3_file, desired_sample_rate, start_trim, dur)
+        audio = convert_vosk_samplerate(
+            norm_mp3_file, desired_sample_rate, start_trim, dur
+        )
         msg += "\nRunning inference."
         results = []
         get_word_result_from_data(results, audio, rec)
 
         webvtt = WebVTT()
         for res in results:
-            words = json.loads(res).get('result')
+            words = json.loads(res).get("result")
             if not words:
                 continue
 
             start_caption = start_trim + words[0]["start"]
             text_caption = []
             is_first_caption = True
-            all_text, webvtt = words_to_vtt(words, start_trim, duration, is_first_caption, text_caption, start_caption, last_word_added, all_text, webvtt)
+            all_text, webvtt = words_to_vtt(
+                words,
+                start_trim,
+                duration,
+                is_first_caption,
+                text_caption,
+                start_caption,
+                last_word_added,
+                all_text,
+                webvtt,
+            )
     inference_end = timer() - inference_start
 
     msg += "\nInference took %0.3fs." % inference_end
@@ -411,7 +451,17 @@ def main_stt_transcript(norm_mp3_file, duration, transript_model):
             start_caption = start_trim + words[0]["start_time"]
             text_caption = []
             is_first_caption = True
-            all_text, webvtt = words_to_vtt(words, start_trim, duration, is_first_caption, text_caption, start_caption, last_word_added, all_text, webvtt)
+            all_text, webvtt = words_to_vtt(
+                words,
+                start_trim,
+                duration,
+                is_first_caption,
+                text_caption,
+                start_caption,
+                last_word_added,
+                all_text,
+                webvtt,
+            )
     inference_end = timer() - inference_start
 
     msg += "\nInference took %0.3fs." % inference_end

@@ -108,9 +108,8 @@ class Enrichment(models.Model):
         ("embed", _("embed")),
     )
 
-    video = models.ForeignKey(Video, verbose_name=_('video'),
-                              on_delete=models.CASCADE)
-    title = models.CharField(_('title'), max_length=100)
+    video = models.ForeignKey(Video, verbose_name=_("video"), on_delete=models.CASCADE)
+    title = models.CharField(_("title"), max_length=100)
     slug = models.SlugField(
         _("slug"),
         unique=True,
@@ -142,8 +141,12 @@ class Enrichment(models.Model):
     )
 
     image = models.ForeignKey(
-        CustomImageModel, verbose_name=_(
-            'Image'), null=True, on_delete=models.CASCADE, blank=True)
+        CustomImageModel,
+        verbose_name=_("Image"),
+        null=True,
+        on_delete=models.CASCADE,
+        blank=True,
+    )
     document = models.ForeignKey(
         CustomFileModel,
         verbose_name=_("Document"),
@@ -318,14 +321,20 @@ def delete_vtt(sender, instance=None, created=False, **kwargs):
 
 
 class EnrichmentVtt(models.Model):
-    video = models.OneToOneField(Video, verbose_name=_('Video'),
-                                 editable=False, null=True,
-                                 on_delete=models.CASCADE)
-    src = models.ForeignKey(CustomFileModel,
-                            blank=True,
-                            null=True,
-                            on_delete=models.CASCADE,
-                            verbose_name=_('Subtitle file'))
+    video = models.OneToOneField(
+        Video,
+        verbose_name=_("Video"),
+        editable=False,
+        null=True,
+        on_delete=models.CASCADE,
+    )
+    src = models.ForeignKey(
+        CustomFileModel,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        verbose_name=_("Subtitle file"),
+    )
 
     @property
     def sites(self):
@@ -350,13 +359,17 @@ class EnrichmentVtt(models.Model):
 
 
 class EnrichmentGroup(models.Model):
-    video = models.OneToOneField(Video, verbose_name=_('Video'),
-                                 on_delete=models.CASCADE)
+    video = models.OneToOneField(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
     groups = models.ManyToManyField(
-        Group, blank=True, verbose_name=_('Groups'),
-        help_text=_('Select one or more groups who'
-                    ' can access to the'
-                    ' enrichment of the video'))
+        Group,
+        blank=True,
+        verbose_name=_("Groups"),
+        help_text=_(
+            "Select one or more groups who"
+            " can access to the"
+            " enrichment of the video"
+        ),
+    )
 
     class Meta:
         ordering = ["video"]

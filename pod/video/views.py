@@ -429,6 +429,7 @@ def theme_edit_delete(request, channel):
 
 
 def theme_edit_save(request, channel):
+    """Save theme edition."""
     form_theme = None
 
     if request.POST.get("theme_id") and request.POST.get("theme_id") != "None":
@@ -1009,10 +1010,7 @@ def video_delete(request, slug=None):
 
 
 def get_adv_note_list(request, video):
-    """
-    Return the list of AdvancedNotes of video
-      that can be seen by the current user
-    """
+    """Return the list of AdvancedNotes of video that can be seen by the current user."""
     if request.user.is_authenticated:
         filter = (
             Q(user=request.user)
@@ -1031,8 +1029,9 @@ def get_adv_note_list(request, video):
 
 def get_adv_note_com_list(request, id):
     """
-    Return the list of coms wich are the direct sons of the
-      AdvancedNote of id id , that can be seen by the current user
+    Return the list of coms which are direct sons of the AdvancedNote id.
+
+        ...that can be seen by the current user
     """
     if id:
         note = get_object_or_404(AdvancedNotes, id=id)
@@ -1056,8 +1055,8 @@ def get_adv_note_com_list(request, id):
 
 def get_com_coms_dict(request, listComs):
     """
-    Return a dictionnary build recursively containing
-      the list of the direct sons of a com
+    Return the list of the direct sons of a com.
+
       for each encountered com
     Starting from the coms present in listComs
     Example, having the next tree of coms :
@@ -1092,7 +1091,8 @@ def get_com_coms_dict(request, listComs):
 
 def get_com_tree(com):
     """
-    Return the list of the successive parents of com
+    Return the list of the successive parents of com.
+
       including com from bottom to top
     """
     tree, c = [], com
@@ -1105,8 +1105,8 @@ def get_com_tree(com):
 
 def can_edit_or_remove_note_or_com(request, nc, action):
     """
-    Check if the current user can apply action to
-      the note or comment nc
+    Check if the current user can apply action to the note or comment nc.
+
     Typically action is in ['edit', 'delete']
     If not raise PermissionDenied
     """
@@ -1129,7 +1129,8 @@ def can_edit_or_remove_note_or_com(request, nc, action):
 
 def can_see_note_or_com(request, nc):
     """
-    Check if the current user can view the note or comment nc
+    Check if the current user can view the note or comment nc.
+
     If not raise PermissionDenied
     """
     if isinstance(nc, AdvancedNotes):
@@ -1158,6 +1159,7 @@ def can_see_note_or_com(request, nc):
 
 @csrf_protect
 def video_notes(request, slug):
+    """Render video notes."""
     action = None
     if request.method == "POST" and request.POST.get("action"):
         action = request.POST.get("action").split("_")[0]
@@ -1176,6 +1178,7 @@ def video_notes(request, slug):
 
 @csrf_protect
 def video_note_get(request, slug):
+    """Get video notes."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     idCom = idNote = None
     if request.method == "POST" and request.POST.get("idCom"):
@@ -1224,6 +1227,7 @@ def video_note_get(request, slug):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_note_form(request, slug):
+    """Render video note form."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     idNote, idCom = None, None
     note, com = None, None
@@ -1274,6 +1278,7 @@ def video_note_form(request, slug):
 
 
 def video_note_form_case(request, params):
+    """Editing/creating a note."""
     (idNote, idCom, note, com) = params
     # Editing a note comment
     if (
@@ -1290,7 +1295,7 @@ def video_note_form_case(request, params):
         listNotesCom = get_adv_note_com_list(request, idNote)
         dictComments = get_com_coms_dict(request, listNotesCom)
         comToEdit, noteToEdit = com, None
-        # Creting a comment answer
+        # Creating a comment answer
     elif (
         idCom is not None
         and idNote is not None
@@ -1361,6 +1366,7 @@ def video_note_form_case(request, params):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_note_save(request, slug):
+    """Save a Video note."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     idNote, idCom = None, None
     note, com = None, None
@@ -1966,7 +1972,7 @@ def stats_view(request, slug=None, slug_t=None):
         return render(request, "videos/video_stats_view.html", {"title": title})
     else:
         date_filter = request.POST.get("periode", date.today())
-        if type(date_filter) == str:
+        if isinstance(date_filter, str):
             date_filter = parse(date_filter).date()
 
         data = list(
@@ -2160,9 +2166,7 @@ def get_parent_comments(request, video):
 
 
 def get_children_comment(request, comment_id, video_slug):
-    """
-    return one comment with all children
-    """
+    """Return one comment with all children."""
     try:
         v = get_object_or_404(Video, slug=video_slug)
         parent_comment = (
@@ -2607,40 +2611,6 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
                 % (chunked_upload.filename, chunked_upload.offset)
             ),
         }
-
-
-@csrf_protect
-@ensure_csrf_cookie
-@login_required(redirect_field_name="referrer")
-def video_record(request):
-    if in_maintenance():
-        return redirect(reverse("maintenance"))
-    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
-        return render(request, "videos/video_edit.html", {"access_not_allowed": True})
-    if request.method == "POST" and request.is_ajax():
-        try:
-            vid = Video()
-            vid.video = request.FILES["video"]
-            vid.title = request.POST["title"]
-            vid.owner = request.user
-            vid.type = Type.objects.get(id=DEFAULT_RECORDER_TYPE_ID)
-            vid.save()
-            vid.sites.add(get_current_site(request))
-            vid.launch_encode = True
-            vid.save()
-            return JsonResponse(
-                {
-                    "id": vid.id,
-                    "url_edit": reverse("video_edit", args=(vid.slug,)),
-                }
-            )
-        except (RuntimeError, TypeError, NameError, AttributeError) as err:
-            return JsonResponse(
-                {
-                    "error": "Unexpected error: {0}".format(err),
-                }
-            )
-    return render(request, "videos/video_record.html", {"page_title": _("Video record")})
 
 
 @csrf_protect
