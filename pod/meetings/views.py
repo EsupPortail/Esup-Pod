@@ -7,7 +7,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
 from platformdirs import user_data_path
-from pod.meetings.forms import MeetingsForm, JoinForm
+from pod.meetings.forms import MeetingsDeleteForm, MeetingsForm, JoinForm
 from pod.meetings.models import Meetings, User
 
 from django.views.decorators.csrf import csrf_protect
@@ -48,13 +48,21 @@ def create(request):
 
 def delete_meeting(request, meetingID):
     meeting = Meetings.objects.get(id=meetingID)
-    if request.method == "POST":
-        meeting.delete()
-        return redirect('/meeting')
+    form = MeetingsDeleteForm(request.POST)
 
-    context={'item':meeting}
-              
-    return render(request, 'meeting_delete.html', context)
+    if request.method == "POST":
+        if form.is_valid():
+            meeting.delete()
+            messages.add_message(request, messages.INFO, ("The meeting has been deleted."))
+            return redirect('/meeting')
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                ("One or more errors have been found in the form."),
+            )
+
+    return render(request, "meeting_delete.html", {"item": meeting, "form": form})
 
 def join_meeting(request, meetingID, slug_private=None):
   '''
@@ -195,28 +203,29 @@ def join_meeting(request, meetingID, slug_private=None):
   return render(request, 'meeting_join.html', context)
 
 def edit_meeting(request, meetingID):
-  obj = Meetings.objects.get(id=meetingID)
-  form = MeetingsForm(request.POST, instance=obj)
-  if request.method == "POST":
-    form = MeetingsForm(request.POST, instance=obj)
-    if form.is_valid():
-        meeting = form.save(request, form)
-        meeting.owner = request.user
-        meeting.save()
-        messages.add_message(
-            request, messages.INFO, ("The changes have been saved.")
-        )
-        if request.POST.get("_saveandsee"):
-            return redirect(reverse("Meeting", args=(meeting.meetingID,)))
-        else:
-            return redirect(reverse("edit_meeting", args=(meeting.meetingID,)))
-    else:
-        messages.add_message(
-            request,
-            messages.ERROR,
-            ("One or more errors have been found in the form."),
-        )
-        
-  context={'form': form}
+  meeting = Meetings.objects.get(id=meetingID)
+  default_owner = meeting.owner.pk if meeting else request.user.pk
+  form = MeetingsForm(
+      instance=meeting,
+      initial={"owner": default_owner},
+    )
 
-  return render(request, "meeting_edit.html", context)
+  if request.method == "POST":
+      if form.is_valid():
+          meeting = form.save(commit=False)
+          meeting.owner = request.user
+          meeting.save()
+          messages.add_message(
+              request, messages.INFO, ("The changes have been saved.")
+          )
+          if request.POST.get("_saveandsee"):
+              return redirect(reverse("meeting", args=(meeting.meetingID,)))
+          else:
+              return redirect(reverse("meeting_edit", args=(meeting.meetingID,)))
+      else:
+          messages.add_message(
+              request,
+              messages.ERROR,
+              ("One or more errors have been found in the form."),
+          )
+  return render(request, "meeting_edit.html", {"form": form})
