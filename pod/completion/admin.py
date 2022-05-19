@@ -121,7 +121,6 @@ class DocumentAdmin(admin.ModelAdmin):
         js = (
             "podfile/js/filewidget.js",
             "js/main.js",
-            "feather-icons/feather.min.js",
             "bootstrap/dist/js/bootstrap.min.js",
         )
 
@@ -301,8 +300,7 @@ class TrackAdmin(admin.ModelAdmin):
         }
         js = (
             "js/main.js",
-            "podfile/js/filewidget.js",
-            "feather-icons/feather.min.js",
+
             "bootstrap/dist/js/bootstrap.min.js",
         )
 
