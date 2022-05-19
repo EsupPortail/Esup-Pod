@@ -105,7 +105,7 @@ class Meetings(models.Model):
         help_text=_('Select one or more groups who can access to this meeting'))
     
     ask_password = models.BooleanField(
-        verbose_name=_("Ask password"),
+        verbose_name=_("Utilisation d'un mot de passe"),
         help_text=_(
             'If this box is checked, '
             'the meeting will only be accessible after giving the attendee password. Except for owner and additionnal owner.'),
@@ -140,12 +140,12 @@ class Meetings(models.Model):
 
     auto_start_recording = models.BooleanField(
         default=False,
-        verbose_name=_('Auto Start Recording')
+        verbose_name=_('Enregistrement Automatique')
     )
 
     allow_start_stop_recording = models.BooleanField(
         default=True,
-        verbose_name=_('Allow Stop/Start Recording'),
+        verbose_name=_('Bouton Start/Stop pour enregistrement de la réunion'),
         help_text=_('Allow the user to start/stop recording. (default true)')
     )
 
@@ -158,37 +158,37 @@ class Meetings(models.Model):
 
     lock_settings_disable_cam = models.BooleanField(
         default=False,
-        verbose_name=_('Disable Camera'),
+        verbose_name=_('Désactiver la caméra'),
         help_text=_('will prevent users from sharing their camera in the meeting')
     )
 
     lock_settings_disable_mic = models.BooleanField(
         default=False,
-        verbose_name=_('Disable Mic'),
+        verbose_name=_('Désactiver le micro'),
         help_text=_('will only allow user to join listen only')
     )
 
     lock_settings_disable_private_chat = models.BooleanField(
         default=False,
-        verbose_name=_('Disable Private chat'),
+        verbose_name=_('Désactiver le chat privé'),
         help_text=_('if True will disable private chats in the meeting')
     )
 
     lock_settings_disable_public_chat = models.BooleanField(
         default=False,
-        verbose_name=_('Disable public chat'),
+        verbose_name=_('Désactiver le chat publique'),
         help_text=_('if True will disable public chat in the meeting')
     )
 
     lock_settings_disable_note = models.BooleanField(
         default=False,
-        verbose_name=_('Disable Note'),
+        verbose_name=_('Désactiver les notes'),
         help_text=_('if True will disable notes in the meeting.')
     )
 
     lock_settings_locked_layout = models.BooleanField(
         default=False,
-        verbose_name=_('Locked Layout'),
+        verbose_name=_('Blocage disposition réunion'),
         help_text=_('will lock the layout in the meeting. ')
     )
 

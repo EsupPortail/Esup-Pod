@@ -10,11 +10,11 @@
 
             <p>Are you sure you want to delete "{{item}}" ?</p>
 
-            <form action="{% url 'meetings:delete' item.id %}">
+            <form method="POST" action="">
 
                 {% csrf_token %}
                 <a class="btn btn-warning" href="{% url 'meetings:meeting' %}">Cancel</a>
-                <input class="btn btn-danger" type="submit" name="Confirm">
+                <input class="btn btn-danger" type="submit" value="Yes">
             </form>
         </div>
     </div>
