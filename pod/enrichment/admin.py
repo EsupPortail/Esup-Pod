@@ -52,7 +52,7 @@ class EnrichmentAdmin(admin.ModelAdmin):
         js = (
             "js/main.js",
             "podfile/js/filewidget.js",
-            "feather-icons/feather.min.js",
+
             "bootstrap/dist/js/bootstrap.min.js",
         )
 
@@ -118,7 +118,6 @@ class EnrichmentVttAdmin(admin.ModelAdmin):
         js = (
             "js/main.js",
             "podfile/js/filewidget.js",
-            "feather-icons/feather.min.js",
             "bootstrap/dist/js/bootstrap.min.js",
         )
 
