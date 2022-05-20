@@ -1,0 +1,36 @@
+.table-bordered
+{
+    border-collapse: collapse; 
+    margin-top: 50px;
+    border: 1px solid black;
+}
+
+.btn-primary{
+    margin-left: 1150px;
+}
+
+div.card-body{
+    border: 4px solid gray;
+}
+
+div.col-md-6{
+    margin-top: 50px;
+    margin-left: 375px;
+}
+
+div.col-md-6 p{
+    text-align: center;
+    font-weight: bold;
+    font-size: large;
+}
+
+div.col-md-6 h2{
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.btn-warning{
+    margin-left: 280px; 
+}
+

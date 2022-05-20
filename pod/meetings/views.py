@@ -190,7 +190,8 @@ def join_meeting(request, meetingID, slug_private=None):
   else:
       form = JoinForm()
 
-  context={'item':meeting}
+  context={'item':meeting,
+           'form':form}
 
   return render(request, 'meeting_join.html', context)
 

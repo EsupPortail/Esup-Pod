@@ -10,57 +10,58 @@
 <h1>Création salle de réunion</h1>
 
 <form method="POST" class="post-form">
-{% csrf_token %}
-{{ form.as_p }}
-<div class="accordion" id="accordionExample">
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="headingTwo">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-        Paramètres avancés
-      </button>
-    </h2>
-    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        Enregistrement automatique :
-        <input type="checkbox" name="enregistrement auto" value="enregistrement automatique"></imput>
-        <br></br>
-
-        Bouton Start/Stop pour l'enregistrement de la réunion :
-        <input type="checkbox" name="bouton start/stop pour l'enregistrement de la réunion" value="bouton start/stop pour l'enregistrement de la réunion"></imput>
-        <br></br>
-
-        Désactiver la caméra :
-        <input type="checkbox" name="désactiver la caméra" value="désactiver la caméra"></imput>
-        <br></br>
-
-        Désactiver le micro :
-        <input type="checkbox" name="désactiver le micro" value="désactiver le micro"></imput>
-        <br></br>
-
-        Désactiver le chat privé :
-        <input type="checkbox" name="désactiver le chat privé" value="désactiver le chat privé"></imput>
-        <br></br>
-
-        Désactiver le chat publique :
-        <input type="checkbox" name="désactiver le chat publique" value="désactiver le chat publique"></imput>
-        <br></br>
-
-        Désactiver les notes :
-        <input type="checkbox" name="désactiver les notes" value="désactiver les notes"></imput>
-        <br></br>
-
-        Blocage disposition réunion :
-        <input type="checkbox" name="blocage disposition réunion" value="blocage disposition réunion"></imput>
-        <br></br>
-
-        Utilisation d'un mot de passe :
-        <input type="checkbox" name="Utilisation d'un mot de passe" value="Utilisation d'un mot de passe"></imput>
-        <br></br>
+  {% csrf_token %}
+  {{ form.as_p }}
+  <div class="accordion" id="accordionExample">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingTwo">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          Paramètres avancés
+        </button>
+      </h2>
+      <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+        <div class="accordion-body">
+          Enregistrement automatique :
+          <input type="checkbox" name="enregistrement auto" value="enregistrement automatique"></imput>
+          <br></br>
+  
+          Bouton Start/Stop pour l'enregistrement de la réunion :
+          <input type="checkbox" name="bouton start/stop pour l'enregistrement de la réunion" value="bouton start/stop pour l'enregistrement de la réunion"></imput>
+          <br></br>
+  
+          Désactiver la caméra :
+          <input type="checkbox" name="désactiver la caméra" value="désactiver la caméra"></imput>
+          <br></br>
+  
+          Désactiver le micro :
+          <input type="checkbox" name="désactiver le micro" value="désactiver le micro"></imput>
+          <br></br>
+  
+          Désactiver le chat privé :
+          <input type="checkbox" name="désactiver le chat privé" value="désactiver le chat privé"></imput>
+          <br></br>
+  
+          Désactiver le chat publique :
+          <input type="checkbox" name="désactiver le chat publique" value="désactiver le chat publique"></imput>
+          <br></br>
+  
+          Désactiver les notes :
+          <input type="checkbox" name="désactiver les notes" value="désactiver les notes"></imput>
+          <br></br>
+  
+          Blocage disposition réunion :
+          <input type="checkbox" name="blocage disposition réunion" value="blocage disposition réunion"></imput>
+          <br></br>
+  
+          Utilisation d'un mot de passe :
+          <input type="checkbox" name="Utilisation d'un mot de passe" value="Utilisation d'un mot de passe"></imput>
+          <br></br>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<br></br>
-<button type="submit" class="btn btn-secondary">Enregistrer</button>
+  <br></br>
+  <a id="button" class="btn btn-sm btn-secondary" href="{% url 'meetings:meeting' %}">Annuler</a>
+  <button type="submit" class="btn btn-info">Enregistrer</button>
 </form>
 {% endblock page_content %}
