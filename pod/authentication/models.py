@@ -75,19 +75,25 @@ class Owner(models.Model):
         max_length=20, choices=AUTH_TYPE, default=AUTH_TYPE[0][0]
     )
     affiliation = models.CharField(
-        max_length=50, choices=AFFILIATION, default=AFFILIATION[0][0])
-    commentaire = models.TextField(_('Comment'), blank=True, default="")
-    hashkey = models.CharField(
-        max_length=64, unique=True, blank=True, default="")
-    userpicture = models.ForeignKey(CustomImageModel,
-                                    blank=True, null=True,
-                                    on_delete=models.CASCADE,
-                                    verbose_name=_('Picture'))
+        max_length=50, choices=AFFILIATION, default=AFFILIATION[0][0]
+    )
+    commentaire = models.TextField(_("Comment"), blank=True, default="")
+    hashkey = models.CharField(max_length=64, unique=True, blank=True, default="")
+    userpicture = models.ForeignKey(
+        CustomImageModel,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        verbose_name=_("Picture"),
+    )
     establishment = models.CharField(
-        _('Establishment'), max_length=10, blank=True, choices=ESTABLISHMENTS,
-        default=ESTABLISHMENTS[0][0])
-    accessgroups = models.ManyToManyField(
-        'authentication.AccessGroup', blank=True)
+        _("Establishment"),
+        max_length=10,
+        blank=True,
+        choices=ESTABLISHMENTS,
+        default=ESTABLISHMENTS[0][0],
+    )
+    accessgroups = models.ManyToManyField("authentication.AccessGroup", blank=True)
     sites = models.ManyToManyField(Site)
 
     def __str__(self):

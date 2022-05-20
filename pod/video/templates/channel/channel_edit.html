@@ -4,29 +4,13 @@
 {% load thumbnail %}
 {% block page_extra_head %}
 <style>
-  {
-      {
-      form.instance.style
+  {{ form.instance.style }}
+
+  {% if form.instance.color %}
+    body {
+      background-color: {{form.instance.color}};
     }
-  }
-
-    {
-    % if form.instance.color %
-  }
-
-  body {
-    background-color: {
-        {
-        form.instance.color
-      }
-    }
-
-    ;
-  }
-
-    {
-    %endif%
-  }
+  {%endif%}
 </style>
 {% endblock page_extra_head %}
 
@@ -58,10 +42,10 @@
   {% csrf_token %}
   <div class="list-group">
     {% if form.errors %}
-    <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+      <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
     {% endif %}
     {% for field_hidden in form.hidden_fields %}
-    {{field_hidden}}
+      {{field_hidden}}
     {% endfor %}
     {% for field in form.visible_fields %}
     {% spaceless %}
@@ -70,15 +54,15 @@
         <div class="{% if field.name == "owners" or field.name == "users" %}form-row {%endif%}form-group {% if field.field.required %}form-group-required {%endif%}">
           {{ field.errors }}
           {% if "form-check-input" in field.field.widget.attrs.class %}
-          <div class="form-check">
-            {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
-          </div>
+            <div class="form-check">
+              {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+            </div>
           {% else %}
-          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-          {{ field }}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
           {% endif %}
           {% if field.help_text %}
-          <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+            <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
           {% endif %}
           {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
 
@@ -112,7 +96,7 @@
   <div class="card-body" id="formfields">
     {% for title, values in form.CHANNEL_FORM_FIELDS_HELP_TEXT.items %}
     <div class="card">
-      <button class="btn  rounded-0 pod-btn" id="heading-{{forloop.counter}}" data-bs-toggle="collapse" data-bs-target="#collapse-{{forloop.counter}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter}}">
+      <button class="btn rounded-0 pod-btn" id="heading-{{forloop.counter}}" data-bs-toggle="collapse" data-bs-target="#collapse-{{forloop.counter}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter}}">
         {{title}}
       </button>
       <div id="collapse-{{forloop.counter}}" class="card-body collapse hide card-text small" aria-labelledby="heading-{{forloop.counter}}" data-bs-parent="#formfields">

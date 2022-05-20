@@ -133,13 +133,16 @@ class EnrichmentViewsTestCase(TestCase):
         url = reverse("enrichment:edit_enrichment", kwargs={"slug": video.slug})
         response = self.client.post(
             url,
-            data={'action': 'save',
-                  'video': 1,
-                  'title': 'testenrich',
-                  'start': 1,
-                  'end': 2,
-                  'type': 'weblink',
-                  'weblink': 'http://test.com'})
+            data={
+                "action": "save",
+                "video": 1,
+                "title": "testenrich",
+                "start": 1,
+                "end": 2,
+                "type": "weblink",
+                "weblink": "http://test.com",
+            },
+        )
         self.assertEqual(response.status_code, 200)
         result = Enrichment.objects.all()
         self.assertTrue(result)

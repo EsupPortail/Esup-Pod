@@ -111,7 +111,9 @@ def video_caption_maker_save(request, video):
             # immediately assign the newly created captions file to the video
             desired = Track.objects.filter(video=video, src=captFile)
             if desired.exists():
-                desired.update(lang=lang, kind=kind, src=captFile, enrich_ready=enrich_ready)
+                desired.update(
+                    lang=lang, kind=kind, src=captFile, enrich_ready=enrich_ready
+                )
             else:
                 # check if the same combination of lang and kind exists
                 if not Track.objects.filter(video=video, kind=kind, lang=lang).exists():
@@ -123,14 +125,18 @@ def video_caption_maker_save(request, video):
                         enrich_ready=enrich_ready,
                     )
                     track.save()
-                    return JsonResponse({'track_id': track.src_id})
+                    return JsonResponse({"track_id": track.src_id})
                 else:
                     error = True
                     messages.add_message(
-                        request, messages.WARNING, _("There is already a file with the same kind and language.")
+                        request,
+                        messages.WARNING,
+                        _("There is already a file with the same kind and language."),
                     )
             if not error:
-                messages.add_message(request, messages.INFO, _("The file has been saved."))
+                messages.add_message(
+                    request, messages.INFO, _("The file has been saved.")
+                )
         else:
             messages.add_message(
                 request, messages.WARNING, _("The file has not been saved.")

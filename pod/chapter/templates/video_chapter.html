@@ -39,7 +39,7 @@
       {% endif %}
     </div>
     <span class="float-end">
-      <a href="{% url 'video' slug=video.slug %}" title="{% trans " View the video"%}" class="btn btn btn-secondary btn-sm">
+      <a href="{% url 'video' slug=video.slug %}" title="{% trans 'View the video'%}" class="btn btn btn-secondary btn-sm">
         <i class="bi bi-film"></i>&nbsp;{% trans "Back to the video"%}
       </a>
     </span>
@@ -55,7 +55,7 @@
 {% endblock page_content %}
 {% block page_aside %}
 {% if video.owner == request.user or request.user.is_superuser or perms.chapter.add_chapter or request.user in video.additional_owners.all %}
-<div class="card " id="card-managevideo">
+<div class="card" id="card-managevideo">
   <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
   <div class="card-body card-text text-center">
     {% include "videos/link_video.html" %}
@@ -63,7 +63,7 @@
 </div>
 {% endif %}
 <div id="chapter-info" class="card">
-  <button class="btn  rounded-0 pod-btn pod-btn" id="heading-0" data-bs-toggle="collapse" data-bs-target="#collapse-0" aria-expanded="true" aria-controls="collapse-0">
+  <button class="btn rounded-0 pod-btn" id="heading-0" data-bs-toggle="collapse" data-bs-target="#collapse-0" aria-expanded="true" aria-controls="collapse-0">
     {% trans 'Chapters' %}
   </button>
   <div id="collapse-0" class="card-body collapse hide card-text small">

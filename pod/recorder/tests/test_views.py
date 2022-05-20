@@ -497,7 +497,7 @@ class studio_podTestView(TestCase):
             {
                 "mediaPackage": mediaPackage_content.toxml(),
                 "BODY": video,
-                "flavor": "presenter/source"
+                "flavor": "presenter/source",
             },
         )
 

@@ -1029,8 +1029,9 @@ def get_adv_note_list(request, video):
 
 def get_adv_note_com_list(request, id):
     """
-    Return the list of coms wich are the direct sons of the
-      AdvancedNote of id id , that can be seen by the current user
+    Return the list of coms which are direct sons of the AdvancedNote id.
+
+        ...that can be seen by the current user
     """
     if id:
         note = get_object_or_404(AdvancedNotes, id=id)
@@ -1054,8 +1055,8 @@ def get_adv_note_com_list(request, id):
 
 def get_com_coms_dict(request, listComs):
     """
-    Return a dictionnary build recursively containing
-      the list of the direct sons of a com
+    Return the list of the direct sons of a com.
+
       for each encountered com
     Starting from the coms present in listComs
     Example, having the next tree of coms :
@@ -1104,8 +1105,8 @@ def get_com_tree(com):
 
 def can_edit_or_remove_note_or_com(request, nc, action):
     """
-    Check if the current user can apply action to
-      the note or comment nc
+    Check if the current user can apply action to the note or comment nc.
+
     Typically action is in ['edit', 'delete']
     If not raise PermissionDenied
     """
@@ -1971,7 +1972,7 @@ def stats_view(request, slug=None, slug_t=None):
         return render(request, "videos/video_stats_view.html", {"title": title})
     else:
         date_filter = request.POST.get("periode", date.today())
-        if type(date_filter) == str:
+        if isinstance(date_filter, str):
             date_filter = parse(date_filter).date()
 
         data = list(
@@ -2165,9 +2166,7 @@ def get_parent_comments(request, video):
 
 
 def get_children_comment(request, comment_id, video_slug):
-    """
-    return one comment with all children
-    """
+    """Return one comment with all children."""
     try:
         v = get_object_or_404(Video, slug=video_slug)
         parent_comment = (

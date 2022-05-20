@@ -56,7 +56,7 @@ USE_OBSOLESCENCE = getattr(settings, "USE_OBSOLESCENCE", False)
 
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 
-ACTIVE_VIDEO_COMMENT = getattr(settings, 'ACTIVE_VIDEO_COMMENT', False)
+ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
 
 
 def url_to_edit_object(obj):
@@ -115,16 +115,39 @@ class VideoVersionInline(admin.StackedInline):
 
 class VideoAdmin(admin.ModelAdmin):
 
-    list_display = ('id', 'title', 'get_owner_by_name', 'type', 'date_added',
-                    'viewcount', 'is_draft', 'is_restricted',
-                    'password', 'duration_in_time', 'encoding_in_progress',
-                    'get_encoding_step', 'get_thumbnail_admin')
-    list_display_links = ('id', 'title')
-    list_filter = ('date_added', ('channel', admin.RelatedOnlyFieldListFilter),
-                   ('type', admin.RelatedOnlyFieldListFilter), 'is_draft',
-                   'encoding_in_progress', EncodedFilter, 'owner')
-    autocomplete_fields = ['owner', 'additional_owners', 'discipline',
-                           'channel', 'theme', 'restrict_access_to_groups']
+    list_display = (
+        "id",
+        "title",
+        "get_owner_by_name",
+        "type",
+        "date_added",
+        "viewcount",
+        "is_draft",
+        "is_restricted",
+        "password",
+        "duration_in_time",
+        "encoding_in_progress",
+        "get_encoding_step",
+        "get_thumbnail_admin",
+    )
+    list_display_links = ("id", "title")
+    list_filter = (
+        "date_added",
+        ("channel", admin.RelatedOnlyFieldListFilter),
+        ("type", admin.RelatedOnlyFieldListFilter),
+        "is_draft",
+        "encoding_in_progress",
+        EncodedFilter,
+        "owner",
+    )
+    autocomplete_fields = [
+        "owner",
+        "additional_owners",
+        "discipline",
+        "channel",
+        "theme",
+        "restrict_access_to_groups",
+    ]
     # Ajout de l'attribut 'date_delete'
     if USE_OBSOLESCENCE:
         list_filter = list_filter + ("date_delete",)
@@ -302,7 +325,7 @@ class ChannelAdminForm(ChannelForm):
 
 
 class ChannelAdmin(admin.ModelAdmin):
-    search_fields = ['name']
+    search_fields = ["name"]
 
     def get_owners(self, obj):
         owners = []
@@ -372,11 +395,11 @@ class ChannelAdmin(admin.ModelAdmin):
 
 class ThemeAdmin(admin.ModelAdmin):
     form = ThemeForm
-    list_display = ('title', 'channel')
-    list_filter = (('channel', admin.RelatedOnlyFieldListFilter),)
-    ordering = ('channel', 'title')
-    search_fields = ['name']
-    autocomplete_fields = ['parentId', 'channel']
+    list_display = ("title", "channel")
+    list_filter = (("channel", admin.RelatedOnlyFieldListFilter),)
+    ordering = ("channel", "title")
+    search_fields = ["name"]
+    autocomplete_fields = ["parentId", "channel"]
 
     class Media:
         css = {
@@ -412,8 +435,8 @@ class ThemeAdmin(admin.ModelAdmin):
 
 class TypeAdmin(TranslationAdmin):
     form = TypeForm
-    prepopulated_fields = {'slug': ('title',)}
-    search_fields = ['name']
+    prepopulated_fields = {"slug": ("title",)}
+    search_fields = ["name"]
 
     class Media:
         css = {
@@ -453,8 +476,8 @@ class TypeAdmin(TranslationAdmin):
 
 class DisciplineAdmin(TranslationAdmin):
     form = DisciplineForm
-    prepopulated_fields = {'slug': ('title',)}
-    search_fields = ['name']
+    prepopulated_fields = {"slug": ("title",)}
+    search_fields = ["name"]
 
     class Media:
         css = {
@@ -537,7 +560,7 @@ class EncodingAudioAdmin(admin.ModelAdmin):
 
 class PlaylistVideoAdmin(admin.ModelAdmin):
 
-    autocomplete_fields = ['video']
+    autocomplete_fields = ["video"]
     list_display = ("name", "video", "encoding_format")
     search_fields = ["id", "video__id", "video__title"]
     list_filter = ["encoding_format"]
@@ -616,8 +639,8 @@ class EncodingStepAdmin(admin.ModelAdmin):
 
 
 class NotesAdmin(admin.ModelAdmin):
-    list_display = ('video', 'user')
-    autocomplete_fields = ['video', 'user']
+    list_display = ("video", "user")
+    autocomplete_fields = ["video", "user"]
 
     class Media:
         css = {"all": ("css/pod.css",)}
@@ -640,10 +663,9 @@ class NotesAdmin(admin.ModelAdmin):
 
 
 class AdvancedNotesAdmin(admin.ModelAdmin):
-    list_display = ('video', 'user', 'timestamp',
-                    'status', 'added_on', 'modified_on')
-    search_fields = ['note']
-    autocomplete_fields = ['user', 'video']
+    list_display = ("video", "user", "timestamp", "status", "added_on", "modified_on")
+    search_fields = ["note"]
+    autocomplete_fields = ["user", "video"]
 
     class Media:
         css = {"all": ("css/pod.css",)}
@@ -666,9 +688,9 @@ class AdvancedNotesAdmin(admin.ModelAdmin):
 
 
 class NoteCommentsAdmin(admin.ModelAdmin):
-    autocomplete_fields = ['user', 'parentNote', 'parentCom']
+    autocomplete_fields = ["user", "parentNote", "parentCom"]
     search_fields = ["comment"]
-    list_display = ('parentNote', 'user', 'added_on', 'modified_on')
+    list_display = ("parentNote", "user", "added_on", "modified_on")
 
     class Media:
         css = {"all": ("css/pod.css",)}
@@ -696,9 +718,9 @@ class NoteCommentsAdmin(admin.ModelAdmin):
 
 
 class VideoToDeleteAdmin(admin.ModelAdmin):
-    list_display = ('date_deletion', 'get_videos')
-    list_filter = ['date_deletion']
-    autocomplete_fields = ['video']
+    list_display = ("date_deletion", "get_videos")
+    list_filter = ["date_deletion"]
+    autocomplete_fields = ["video"]
 
     def get_videos(self, obj):
         return obj.video.count()

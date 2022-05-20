@@ -258,7 +258,7 @@ $("#ownerboxnavbar").keyup(function () {
               urlvideos +
               "?owner=" +
               elt.username +
-              '" title="">' +
+              '">' +
               elt.first_name +
               " " +
               elt.last_name +
@@ -296,19 +296,21 @@ $(document).ready(function () {
 
   // Fired when #collapseAside has been made visible
   $("#collapseAside").on("shown.bs.collapse", function () {
-    Cookies.set("activeCollapseAside", "open", {sameSite: 'Lax'});
-    $(".collapseAside").html(
-     // '<i class="bi bi-arrow-90deg-up"></i><i class="bi bi-list"></i>'
-    );
+    Cookies.set("activeCollapseAside", "open", { sameSite: "Lax" });
+    $(".collapseAside")
+      .html
+      // '<i class="bi bi-arrow-90deg-up"></i><i class="bi bi-list"></i>'
+      ();
     // feather.replace({ class: "align-bottom" });
     $("#mainContent").addClass("col-md-9");
   });
   // Fired when #collapseAside has been hidden
   $("#collapseAside").on("hidden.bs.collapse", function () {
-    Cookies.set("activeCollapseAside", "close", {sameSite: 'Lax'});
-    $(".collapseAside").html(
+    Cookies.set("activeCollapseAside", "close", { sameSite: "Lax" });
+    $(".collapseAside")
+      .html
       // '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
-    );
+      ();
     // feather.replace({ class: "align-bottom" });
     $("#mainContent").removeClass("col-md-9");
   });
@@ -326,9 +328,10 @@ $(document).ready(function () {
     var last = Cookies.get("activeCollapseAside");
     if (last != null && last == "close") {
       $("#collapseAside").collapse("hide");
-      $(".collapseAside").html(
-       // '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
-      );
+      $(".collapseAside")
+        .html
+        // '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
+        ();
       // feather.replace({ class: "align-bottom" });
       // $("#mainContent").removeClass("col-md-9");
     } else {

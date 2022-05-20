@@ -4,10 +4,8 @@ from django.contrib.auth.models import User
 
 
 class SiteBackend(ModelBackend):
-
     def authenticate(self, request, username=None, password=None):
-        user_or_none = super(SiteBackend, self).authenticate(
-            request, username, password)
+        user_or_none = super(SiteBackend, self).authenticate(request, username, password)
         print(user_or_none)
         site = Site.objects.get_current()
         if (
