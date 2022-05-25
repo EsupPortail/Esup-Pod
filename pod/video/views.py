@@ -514,13 +514,8 @@ def my_videos(request):
         cats = json.dumps(cats, ensure_ascii=False)
         data_context["categories"] = cats
         data_context["videos_without_cat"] = videos_without_cat
-    # Sort videos list on column with ascending or descending direction
-    if request.GET.get("sort"):
-        if request.GET.get("sort_direction") is None:
-            sort = '-'+str(request.GET.get("sort"))
-        else:
-            sort = str(request.GET.get("sort"))
-        videos_list = videos_list.order_by(sort)
+
+    videos_list = sort_list_videos(request, videos_list)
 
     paginator = Paginator(videos_list, 12)
     try:
@@ -565,13 +560,8 @@ def get_videos_list(request):
         )
     if request.GET.getlist("cursus"):
         videos_list = videos_list.filter(cursus__in=request.GET.getlist("cursus"))
-    # Sort videos list on column with ascending or descending direction
-    if request.GET.get("sort"):
-        if request.GET.get("sort_direction") is None:
-            sort = '-'+str(request.GET.get("sort"))
-        else:
-            sort = str(request.GET.get("sort"))
-        videos_list = videos_list.order_by(sort)
+
+    videos_list = sort_list_videos(request, videos_list)
 
     return videos_list.distinct()
 
@@ -585,6 +575,16 @@ def get_owners_has_instances(owners):
         except ObjectDoesNotExist:
             pass
     return ownersInstances
+
+
+def sort_list_videos(request, videos_list):
+    if request.GET.get("sort"):
+        if request.GET.get("sort_direction") is None:
+            sort = '-' + str(request.GET.get("sort"))
+        else:
+            sort = str(request.GET.get("sort"))
+        videos_list = videos_list.order_by(sort)
+    return videos_list
 
 
 def videos(request):
