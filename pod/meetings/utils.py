@@ -10,3 +10,10 @@ def parse_xml(response):
             raise
     except:
         return None
+
+
+def xml_to_json(xml):
+    result = {}
+    for x in xml:
+        result[x.tag] = x.text
+    return result

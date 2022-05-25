@@ -1,5 +1,6 @@
 from datetime import datetime
 from hashlib import sha1
+import hashlib
 import random
 import re
 from urllib.parse import urlencode
@@ -325,8 +326,7 @@ class Meetings(models.Model):
         parameters={}
         parameters.update({
             'fullName': name,
-            'meetingID': self.meetingID,
-            'password': password,
+            'password': password,   
         })
         query = urlencode(parameters)
         hashed = self.api_call(query, call)

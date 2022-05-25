@@ -47,7 +47,7 @@ def create(request):
   return render(request, 'meeting_add.html', context)
 
 def delete_meeting(request, meetingID):
-    meeting = Meetings.objects.get(id=meetingID)
+    meeting = Meetings.objects.get(meetingID=meetingID)
     if request.method == "POST":
       meeting.delete()
       return redirect('/meeting')
@@ -181,12 +181,15 @@ def join_meeting(request, meetingID, slug_private=None):
           raise PermissionDenied
   '''
 
-  meeting = Meetings.objects.get(id=meetingID)
+  meeting = Meetings.objects.get(meetingID=meetingID)
   if request.method == "POST":
       form = JoinForm(request.POST)
       if form.is_valid():
+        data = form.cleaned_data
+        name = data.get('name')
+        password = data.get('password')
 
-        return redirect('/meeting/')
+        return HttpResponseRedirect(Meetings.join_url(name, password))
   else:
       form = JoinForm()
 
@@ -196,7 +199,7 @@ def join_meeting(request, meetingID, slug_private=None):
   return render(request, 'meeting_join.html', context)
 
 def edit_meeting(request, meetingID):
-  meeting = Meetings.objects.get(id=meetingID)
+  meeting = Meetings.objects.get(meetingID=meetingID)
   default_owner = meeting.owner.pk if meeting else request.user.pk
   form = MeetingsForm(
       instance=meeting,

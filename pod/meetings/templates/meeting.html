@@ -29,27 +29,37 @@
                 <td> {{ element.name }} </td>
                 <td> {{ element.start_date }} </td>
                 <td> {{ element.end_date }} </td>
-                <td><a class="btn btn-sm btn-success" href="{% url 'meetings:edit' element.id %}">modify</a>
-                <a class="btn btn-sm btn-danger" href="{% url 'meetings:delete' element.id %}">delete</a>
-                <p>Voici le lien : <input type="text" value="#" id="myInput">
-                    <button onclick="myFunction()">Copier le lien</button>
+                <td><a class="btn btn-sm btn-success" href="{% url 'meetings:edit' element.meetingID %}">modify</a>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        delete
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to delete ?</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" action="{% url 'meetings:delete' element.meetingID%}">
+
+                                    {% csrf_token %}
+                                    <a class="btn btn-warning" href="{% url 'meetings:meeting' %}">Cancel</a>
+                                    <input class="btn btn-danger" type="submit" value="Yes">
+                                </form>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
                     
-                    <script>
-                    function myFunction() {
-                      /* Get the text field */
-                      var copyText = document.getElementById("myInput");
-                    
-                      /* Select the text field */
-                      copyText.select();
-                      copyText.setSelectionRange(0, 99999); /* For mobile devices */
-                    
-                      /* Copy the text inside the text field */
-                      navigator.clipboard.writeText(copyText.value);
-                      
-                      /* Alert the copied text */
-                      alert("Copied the text: " + copyText.value);
-                    }
-                    </script>
+                <br></br>
+                <p>Voici le lien : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'meetings:join' element.meetingID %}" id="Input">
+                    <button onclick="myFunction()">Copy text</button>
+                    <form method="GET" action="{% url 'meetings:join' element.meetingID %}"><input type="submit" value="Join"></form>
+                </p>
                 {% if element.info.end_time == "null" %}
                 {% if element.running == 'true'  %}
                     <span class="status running">Running</span>
@@ -66,4 +76,5 @@
         </tbody>
     </table>
 </div>
+<script src="{% static 'js/app.js' %}"></script>
 {% endblock page_content %}
