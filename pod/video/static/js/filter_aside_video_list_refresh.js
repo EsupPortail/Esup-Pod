@@ -1,6 +1,8 @@
 var infinite_waypoint;
 var formCheckedInputs = [];
 var regExGetOnlyChars = /([\D])/g;
+var sort_direction_asc = true;
+var sort_direction_chars = ["8600","8599"];
 
 function getInfiniteScrollWaypoint() {
   // Return Waypoint Infinite object to init/refresh the infinite scroll
@@ -36,7 +38,7 @@ function replaceCountVideos(newCount) {
   $("#video_count")[0].innerHTML = newCount + " " + gettext(transVideoCount);
 }
 
-function refreshVideosSearch(formCheckedInputs) {
+function callAsyncListVideos(formCheckedInputs) {
   // Ajax request to refresh view with filtered video list
   return $.ajax({
     type: "GET",
@@ -64,7 +66,7 @@ function refreshVideosSearch(formCheckedInputs) {
   });
 }
 
-$(".form-check-input, .sort-select").change(function () {
+function refreshVideosSearch(){
   // Filter checkboxes change triggered event
   formCheckedInputs = [];
   $(".infinite-loading").show();
@@ -76,11 +78,23 @@ $(".form-check-input, .sort-select").change(function () {
   if($("#sort").val()){
     formCheckedInputs.push($("#sort")[0]);
   }
-  refreshVideosSearch(formCheckedInputs).done(function () {
+  callAsyncListVideos(formCheckedInputs).done(function () {
     $(".infinite-loading").hide();
     infinite_waypoint = getInfiniteScrollWaypoint();
     $(".form-check-input input[type=checkbox]").removeAttr("disabled");
   });
+}
+$(".form-check-input, .sort-select").change(function (event) {
+  event.preventDefault();
+  refreshVideosSearch(formCheckedInputs);
+});
+
+$("#sort_direction_label").click(function(event) {
+  event.preventDefault();
+  sort_direction_asc = !sort_direction_asc;
+  $("#sort_direction").prop("checked", !$("#sort_direction").prop("checked"));
+  $("#sort_direction_label").html("&#"+(sort_direction_chars[+ sort_direction_asc]).toString());
+  refreshVideosSearch(formCheckedInputs);
 });
 
 // First launch of the infinite scroll
