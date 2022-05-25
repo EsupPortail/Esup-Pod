@@ -43,7 +43,6 @@ class GroupSiteInline(admin.StackedInline):
         js = (
             "podfile/js/filewidget.js",
             "js/main.js",
-            "feather-icons/feather.min.js",
             "bootstrap/dist/js/bootstrap.min.js",
         )
 
@@ -79,7 +78,6 @@ class OwnerInline(admin.StackedInline):
         js = (
             "podfile/js/filewidget.js",
             "js/main.js",
-            "feather-icons/feather.min.js",
             "bootstrap/dist/js/bootstrap.min.js",
         )
 
