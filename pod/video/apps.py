@@ -7,10 +7,12 @@ def apply_default_site(obj, site):
         obj.sites.add(site)
         obj.save()
 
+
 def apply_default_site_fk(obj, site):
-    if obj.site == None:
+    if obj.site is None:
         obj.site = site
         obj.save()
+
 
 def set_default_site(sender, **kwargs):
     from pod.video.models import Video

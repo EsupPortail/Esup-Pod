@@ -348,7 +348,7 @@ class Channel(models.Model):
         verbose_name = _("Channel")
         verbose_name_plural = _("Channels")
         constraints = [
-            models.UniqueConstraint(fields=['slug','site'], name='channel_unique_slug_site' )
+            models.UniqueConstraint(fields=['slug', 'site'], name='channel_unique_slug_site')
         ]
 
     def __str__(self):
