@@ -7,6 +7,10 @@ def apply_default_site(obj, site):
         obj.sites.add(site)
         obj.save()
 
+def apply_default_site_fk(obj, site):
+    if obj.site == None:
+        obj.site = site
+        obj.save()
 
 def set_default_site(sender, **kwargs):
     from pod.video.models import Video
@@ -20,7 +24,7 @@ def set_default_site(sender, **kwargs):
     for vid in Video.objects.all():
         apply_default_site(vid, site)
     for chan in Channel.objects.all():
-        apply_default_site(chan, site)
+        apply_default_site_fk(chan, site)
     for dis in Discipline.objects.all():
         apply_default_site(dis, site)
     for typ in Type.objects.all():

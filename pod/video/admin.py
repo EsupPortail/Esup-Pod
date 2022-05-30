@@ -358,7 +358,7 @@ class ChannelAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
         if not change:
-            obj.sites.add(get_current_site(request))
+            obj.site = get_current_site(request)
             obj.save()
 
     def get_form(self, request, obj=None, **kwargs):
