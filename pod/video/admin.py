@@ -280,7 +280,6 @@ class VideoAdmin(admin.ModelAdmin):
             "podfile/js/filewidget.js",
             "js/main.js",
             "js/validate-date_delete-field.js",
-            "feather-icons/feather.min.js",
             "bootstrap/dist/js/bootstrap.min.js",
         )
 
@@ -359,7 +358,7 @@ class ChannelAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
         if not change:
-            obj.sites.add(get_current_site(request))
+            obj.site = get_current_site(request)
             obj.save()
 
     def get_form(self, request, obj=None, **kwargs):
@@ -382,7 +381,6 @@ class ChannelAdmin(admin.ModelAdmin):
         js = (
             "js/main.js",
             "podfile/js/filewidget.js",
-            "feather-icons/feather.min.js",
             "bootstrap/dist/js/bootstrap.min.js",
         )
 
@@ -412,7 +410,6 @@ class ThemeAdmin(admin.ModelAdmin):
         js = (
             "js/main.js",
             "podfile/js/filewidget.js",
-            "feather-icons/feather.min.js",
             "bootstrap/dist/js/bootstrap.min.js",
         )
 
@@ -449,7 +446,6 @@ class TypeAdmin(TranslationAdmin):
         js = (
             "js/main.js",
             "podfile/js/filewidget.js",
-            "feather-icons/feather.min.js",
             "bootstrap/dist/js/bootstrap.min.js",
         )
 
@@ -490,7 +486,6 @@ class DisciplineAdmin(TranslationAdmin):
         js = (
             "js/main.js",
             "podfile/js/filewidget.js",
-            "feather-icons/feather.min.js",
             "bootstrap/dist/js/bootstrap.min.js",
         )
 
