@@ -301,6 +301,7 @@ $(document).ready(function () {
       .html
       // '<i class="bi bi-arrow-90deg-up"></i><i class="bi bi-list"></i>'
       ();
+    // feather.replace({ class: "align-bottom" });
     $("#mainContent").addClass("col-md-9");
   });
   // Fired when #collapseAside has been hidden
@@ -310,6 +311,7 @@ $(document).ready(function () {
       .html
       // '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
       ();
+    // feather.replace({ class: "align-bottom" });
     $("#mainContent").removeClass("col-md-9");
   });
 
@@ -330,6 +332,7 @@ $(document).ready(function () {
         .html
         // '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
         ();
+      // feather.replace({ class: "align-bottom" });
       // $("#mainContent").removeClass("col-md-9");
     } else {
       if (window.innerWidth > 992) {

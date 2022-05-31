@@ -52,6 +52,7 @@ class BuildingAdmin(admin.ModelAdmin):
         js = (
             "js/main.js",
             "podfile/js/filewidget.js",
+            "feather-icons/feather.min.js",
             "bootstrap/dist/js/bootstrap.min.js",
         )
 
@@ -93,6 +94,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
         js = (
             "js/main.js",
             "podfile/js/filewidget.js",
+            "feather-icons/feather.min.js",
             "bootstrap/dist/js/bootstrap.min.js",
         )
 

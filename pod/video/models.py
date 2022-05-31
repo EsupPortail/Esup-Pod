@@ -335,11 +335,7 @@ class Channel(models.Model):
     add_channels_tab = models.ManyToManyField(
         AdditionalChannelTab, verbose_name=_("Additionals channels tab"), blank=True
     )
-    site = models.ForeignKey(
-        Site,
-        verbose_name=_("Site"),
-        on_delete=models.CASCADE
-    )
+    sites = models.ManyToManyField(Site)
 
     class Meta:
         """Metadata subclass for Channel object."""
@@ -347,9 +343,6 @@ class Channel(models.Model):
         ordering = ["title"]
         verbose_name = _("Channel")
         verbose_name_plural = _("Channels")
-        constraints = [
-            models.UniqueConstraint(fields=['slug', 'site'], name='channel_unique_slug_site')
-        ]
 
     def __str__(self):
         """Display a channel object as string."""
@@ -388,7 +381,7 @@ class Channel(models.Model):
 @receiver(post_save, sender=Channel)
 def default_site_channel(sender, instance, created, **kwargs):
     if len(instance.sites.all()) == 0:
-        instance.site = Site.objects.get_current()
+        instance.sites.add(Site.objects.get_current())
 
 
 class Theme(models.Model):
