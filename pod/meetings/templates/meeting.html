@@ -4,18 +4,22 @@
 
 {% block page_content %}
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
+<style>.pod-add-meeting{
+    margin-left: auto;
+    display: block;
+}</style>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> 
 
-<div class="container">
-    <a id="button" class="btn btn-sm btn-primary" href="{% url 'meetings:create' %}">Ajouter une réunion</a>
+<div class="#">
+    <a id="button" class="btn btn-sm pod-add-meeting btn-primary" href="{% url 'meetings:create' %}">Ajouter une réunion</a>
 </div>
 
 <h1>Salles de réunion :</h1>
 
 <br>
 
-<div class="container">
+<div class="#">
     <input class="form-control" id="myInput" type="text" placeholder="Search..">
     <table with="600" class="table table-bordered table-striped" style="border-collapse: collapse;">
         <thead>
@@ -29,25 +33,25 @@
                 <td> {{ element.name }} </td>
                 <td> {{ element.start_date }} </td>
                 <td> {{ element.end_date }} </td>
-                <td><a class="btn btn-sm btn-success" href="{% url 'meetings:edit' element.meetingID %}">modify</a>
+                <td><a class="btn btn-success" href="{% url 'meetings:edit' element.meetingID %}">modify</a>
                     <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-item-modal" id="delete-item">
                         delete
                     </button>
 
                     <!-- Modal -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="delete-item-modal" tabindex="-1" aria-labelledby="deleteItemLabel" aria-hidden="true">
                         <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to delete ?</h5>
+                            <h5 class="modal-title" id="deleteItemLabel">Are you sure you want to delete ?</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form method="POST" action="{% url 'meetings:delete' element.meetingID%}">
+                                <form method="POST" action="{% url 'meetings:delete' element.meetingID%}" id="delete-item">
 
                                     {% csrf_token %}
-                                    <a class="btn btn-warning" href="{% url 'meetings:meeting' %}">Cancel</a>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                     <input class="btn btn-danger" type="submit" value="Yes">
                                 </form>
                             </div>
@@ -77,4 +81,9 @@
     </table>
 </div>
 <script src="{% static 'js/app.js' %}"></script>
+<script>
+    $(document).on('click', '#delete-item', () => {
+        document.getElementById("delete-item").action = document.querySelector('#delete-item').href
+    });
+</script>
 {% endblock page_content %}

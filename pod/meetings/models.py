@@ -236,6 +236,7 @@ class Meetings(models.Model):
         self.meetingID = "%s-%s" % (newid, slugify(self.name))
         super(Meetings, self).save(*args, **kwargs)
 
+    @classmethod
     def api_call(self, query, call):
         checksum_val = sha1(str(call + query + BBB_SECRET_KEY).encode('utf-8')).hexdigest()
         result = "%s&checksum=%s" % (query, checksum_val)
@@ -267,7 +268,8 @@ class Meetings(models.Model):
         if result:
             return True
         return False
-        
+
+    @classmethod    
     def meeting_info(self):
         call = 'getMeetingInfo'
         query = urlencode((
@@ -291,6 +293,7 @@ class Meetings(models.Model):
         else:
             return None
 
+    @classmethod
     def get_meetings(self):
         call = 'getMeetings'
         query = urlencode((
@@ -321,6 +324,7 @@ class Meetings(models.Model):
             password)
         '''
 
+    @classmethod
     def join_url(self, name, password):
         call = 'join'
         parameters={}

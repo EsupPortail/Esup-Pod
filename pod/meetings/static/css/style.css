@@ -5,8 +5,9 @@
     border: 1px solid black;
 }
 
-.btn-primary{
-    margin-left: 1150px;
+.pod-add-meeting{
+    margin-left: auto;
+    display: block;
 }
 
 div.card-body{

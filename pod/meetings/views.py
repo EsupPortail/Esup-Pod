@@ -132,7 +132,6 @@ def join_meeting(request, meetingID, slug_private=None):
     form = JoinForm()
     url = meeting.join_url(request.user.get_full_name(), meeting.moderator_password)
     #return url
-  '''
 
   current_datetime = datetime.datetime.now()
   if meetingID == 'meeting-ended':
@@ -165,7 +164,6 @@ def join_meeting(request, meetingID, slug_private=None):
     url = Meetings.join_url(request.user.get_full_name(), meeting.moderator_password)
     return url
 
-  '''
   if (
     request.POST.get("password")
     and request.POST.get("password") != meeting.password
