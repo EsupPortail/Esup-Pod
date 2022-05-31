@@ -220,12 +220,19 @@ def populate_user_from_entry(user, owner, entry):
         else ""
     )
     user.last_name = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES["last_name"]].value
-        if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get("last_name")
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES["last_name"]]
-        )
-        else ""
+        entry[USER_LDAP_MAPPING_ATTRIBUTES['last_name']].value 
+		if (
+            USER_LDAP_MAPPING_ATTRIBUTES.get('last_name')
+            and entry[USER_LDAP_MAPPING_ATTRIBUTES['last_name']]
+            and isinstance(entry[USER_LDAP_MAPPING_ATTRIBUTES['last_name']].value, str)
+        ) 
+		else entry[USER_LDAP_MAPPING_ATTRIBUTES['last_name']].value[0] 
+			if (
+            	USER_LDAP_MAPPING_ATTRIBUTES.get('last_name')
+            	and entry[USER_LDAP_MAPPING_ATTRIBUTES['last_name']]
+            	and isinstance(entry[USER_LDAP_MAPPING_ATTRIBUTES['last_name']].value, list)
+            ) 
+			else ""
     )
     user.save()
     owner.affiliation = (
