@@ -175,7 +175,7 @@ def context_navbar(request):
             Prefetch(
                 "themes",
                 queryset=Theme.objects.filter(
-                    parentId=None, channel__sites=get_current_site(request)
+                    parentId=None, channel__site=get_current_site(request)
                 )
                 .distinct()
                 .annotate(video_count=Count("video", distinct=True)),
