@@ -387,7 +387,7 @@ class Channel(models.Model):
 
 @receiver(post_save, sender=Channel)
 def default_site_channel(sender, instance, created, **kwargs):
-    if (instance.site == None):
+    if (instance.site is None):
         instance.site = Site.objects.get_current()
 
 
