@@ -1,4 +1,4 @@
-function copyText(elt) {
+function copyText() {
     /* Get the text field */
     var copyText = document.getElementById("Input");
   

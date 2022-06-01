@@ -20,12 +20,12 @@
 
 {% block page_content %}
 
+<h2 class="h4">{% trans "Meetings"%}</h2>
+
 <div >
     <!-- a déplacer dans la barre de menu ?-->
-    <a id="button" class="btn btn-sm pod-add-meeting btn-primary" href="{% url 'meetings:create' %}">Ajouter une réunion</a>
+    <a id="button" class="btn btn-sm pod-add-meeting btn-primary" href="{% url 'meetings:create' %}">{% trans "Add"%}</a>
 </div>
-
-<h2 class="h4">{% trans "Meetings"%}</h2>
 
 <br>
 
@@ -35,7 +35,7 @@
         <thead>
             <tr>
                 <!-- a traduire -->
-                <td>Titre</td><td>Date de début</td><td>Date de fin</td>
+                <td>{% trans "Title"%}</td><td>{% trans "Start"%}</td><td>{% trans "End"%}</td>
             </tr>
         </thead>
         <tbody>
@@ -44,26 +44,26 @@
                 <td> {{ element.name }} </td>
                 <td> {{ element.start_date }} </td>
                 <td> {{ element.end_date }} </td>
-                <td><a class="btn btn-success" href="{% url 'meetings:edit' element.meetingID %}">modify</a>
+                <td><a class="btn btn-success" href="{% url 'meetings:edit' element.meetingID %}">{% trans "Modify"%}</a>
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-meeting-modal" data-meeting-id="meeting-{{element.id}}" data-action="{% url 'meetings:delete' element.meetingID%}">
                         {% trans "Delete"%}
                     </button>
                 <br></br>
-                <p>Voici le lien : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'meetings:join' element.meetingID %}" id="Input">
+                <p>{% trans "Link"%} <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'meetings:join' element.meetingID %}" id="Input">
                     <!-- ne pas utiliser le "on click" -->
-                    <button onclick="myFunction()">Copy text</button>
+                    <button onclick="copyText()" id="Input">{% trans "Copy"%}</button>
                     <!-- à remplacer par un simple lien -->
-                    <form method="GET" action="{% url 'meetings:join' element.meetingID %}"><input type="submit" value="Join"></form>
+                    <a class="btn btn-info" href="{% url 'meetings:join' element.meetingID %}">{% trans "Join"%}</a>
                 </p>
                 {% if element.info.end_time == "null" %}
                     {% if element.running == 'true'  %}
-                        <span class="status running">Running</span>
+                        <span class="status running">{% trans "Running"%}</span>
                     {% else %}
-                        <span class="status notrunning">Not running</span>
+                        <span class="status notrunning">{% trans "Not Running"%}</span>
                     {% endif %}
                 {% else %}
-                    <span class="status notrunning">Ended</span>
+                    <span class="status notrunning">{% trans "Ended"%}</span>
                 {% endif %}
                 </td>
             </tr>
@@ -82,8 +82,8 @@
         <div class="modal-body">
             <form method="POST" action="" id="delete-item">
                 {% csrf_token %}
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <input class="btn btn-danger" type="submit" value="Yes">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                <input class="btn btn-danger" type="submit" value="{% trans "Delete" %}">
             </form>
         </div>
     </div>

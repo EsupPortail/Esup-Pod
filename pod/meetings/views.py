@@ -2,6 +2,7 @@ import datetime
 from genericpath import exists
 import logging
 from multiprocessing import context
+from django.conf import settings
 from django.http import (HttpResponse, HttpResponseRedirect)
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
@@ -16,7 +17,9 @@ from django.core.exceptions import SuspiciousOperation
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
 
-from pod.video.views import is_in_video_groups
+RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
+    settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
+)
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
@@ -53,7 +56,14 @@ def create(request):
 @login_required(redirect_field_name="referrer")
 def delete_meeting(request, meetingID):
   # utiliser le get object or 404 sites=get_current_site(request)
-    meeting = Meetings.objects.get(meetingID=meetingID)
+    meeting = get_object_or_404(Meetings, meetingID=meetingID, sites=get_current_site(request))
+
+    if request.user != meeting.owner and not (
+        request.user.is_superuser or request.user.has_perm("meeting.delete_meeting")
+    ):
+        messages.add_message(request, messages.ERROR, ("You cannot delete this meeting."))
+        raise PermissionDenied
+
     if request.method == "POST": # verifier que le user connecté est bien le prop de la reunion !
       meeting.delete()
       return redirect('/meeting')
@@ -205,6 +215,8 @@ def join_meeting(request, meetingID, slug_private=None):
 
 def edit_meeting(request, meetingID):
   # get object or 404 ! sites=get_current_site(request)
+
+  '''
   meeting = Meetings.objects.get(meetingID=meetingID)
   default_owner = meeting.owner.pk if meeting else request.user.pk
   form = MeetingsForm(
@@ -227,6 +239,66 @@ def edit_meeting(request, meetingID):
         messages.ERROR,
         ("One or more errors have been found in the form."),
       )
+
+    return redirect('/meeting')
+
+  context={"form": form}
+
+  return render(request, "meeting_edit.html", context)
+  '''
+
+  meeting = (
+    get_object_or_404(Meetings, meetingID=meetingID, sites=get_current_site(request))
+    if meetingID
+    else None
+  )
+
+  if RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
+    return render(request, "meeting_edit.html", {"access_not_allowed": True})
+
+  if (
+    meeting
+    and request.user != meeting.owner
+    and (
+        not (request.user.is_superuser or request.user.has_perm("meeting.change_meeting"))
+    )
+    and (request.user not in meeting.additional_owners.all())
+  ):
+    messages.add_message(request, messages.ERROR, ("You cannot edit this meeting."))
+    raise PermissionDenied
+
+  default_owner = meeting.owner.pk if meeting else request.user.pk
+  form = MeetingsForm(
+    instance=meeting,
+    is_staff=request.user.is_staff,
+    is_superuser=request.user.is_superuser,
+    current_user=request.user,
+    initial={"owner": default_owner},
+  )
+
+  if request.method == "POST":
+    form = MeetingsForm(
+      request.POST,
+      request.FILES,
+      instance=meeting,
+      is_staff=request.user.is_staff,
+      is_superuser=request.user.is_superuser,
+      current_user=request.user,
+      current_lang=request.LANGUAGE_CODE,
+    )
+    if form.is_valid():
+      meeting = form.save(commit=False)
+      meeting.owner = request.user
+      meeting.save()
+      messages.add_message(
+        request, messages.INFO, ("The changes have been saved.")
+      )
+  else:
+    messages.add_message(
+      request,
+      messages.ERROR,
+      ("One or more errors have been found in the form."),
+    )
 
     return redirect('/meeting')
 

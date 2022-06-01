@@ -2,23 +2,34 @@
 {% load i18n %}
 {% load static %}
 
-{% block page_content %}
-
+{% block more_style %}
+<!-- a retirer -->
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
+<!-- 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> 
+-->
+{% endblock more_style %}
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My meetings" %}</li>{% endblock %}
+
+{% block page_title %}
+    {% trans "My meetings" %}   
+{% endblock %}
+
+{% block page_content %}
 
 <br>
 <div class="row">
     <div class="col-md-6">
         <div class="card card-body">
 
-            <p>Are you sure you want to delete "{{item}}" ?</p>
+            <p>{% trans "Are you sure you want to delete" %} "{{item}}" ?</p>
 
             <form method="POST" action="">
 
                 {% csrf_token %}
-                <a class="btn btn-warning" href="{% url 'meetings:meeting' %}">Cancel</a>
+                <a class="btn btn-warning" href="{% url 'meetings:meeting' %}">{% trans "Cancel" %}</a>
                 <input class="btn btn-danger" type="submit" value="Yes">
             </form>
         </div>
