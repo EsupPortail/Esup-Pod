@@ -38,7 +38,7 @@ class ChannelSerializer(serializers.HyperlinkedModelSerializer):
             "users",
             "visible",
             "themes",
-            "sites",
+            "site",
         )
 
 

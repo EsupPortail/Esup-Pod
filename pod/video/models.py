@@ -387,7 +387,7 @@ class Channel(models.Model):
 
 @receiver(post_save, sender=Channel)
 def default_site_channel(sender, instance, created, **kwargs):
-    if len(instance.sites.all()) == 0:
+    if (instance.site == None):
         instance.site = Site.objects.get_current()
 
 
@@ -452,7 +452,7 @@ class Theme(models.Model):
     @property
     def sites(self):
         """Return sites associated to parent channel."""
-        return self.channel.sites
+        return self.channel.site
 
     def __str__(self):
         """Display current theme as string."""
@@ -1131,7 +1131,7 @@ class Video(models.Model):
                     .values("title", "slug")
                 ),
                 "channels": list(
-                    self.channel.all().filter(sites=current_site).values("title", "slug")
+                    self.channel.all().filter(site=current_site).values("title", "slug")
                 ),
                 "themes": list(self.theme.all().values("title", "slug")),
                 "contributors": list(self.contributor_set.values("name", "role")),

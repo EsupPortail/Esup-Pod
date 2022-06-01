@@ -276,7 +276,7 @@ def paginator(videos_list, page):
 
 
 def channel(request, slug_c, slug_t=None):
-    channel = get_object_or_404(Channel, slug=slug_c, sites=get_current_site(request))
+    channel = get_object_or_404(Channel, slug=slug_c, site=get_current_site(request))
 
     videos_list = VIDEOS.filter(channel=channel)
 
@@ -324,7 +324,7 @@ def my_channels(request):
     site = get_current_site(request)
     channels = (
         request.user.owners_channels.all()
-        .filter(sites=site)
+        .filter(site=site)
         .annotate(video_count=Count("video", distinct=True))
     )
     return render(
@@ -337,7 +337,7 @@ def my_channels(request):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def channel_edit(request, slug):
-    channel = get_object_or_404(Channel, slug=slug, sites=get_current_site(request))
+    channel = get_object_or_404(Channel, slug=slug, site=get_current_site(request))
     if request.user not in channel.owners.all() and not (
         request.user.is_superuser or request.user.has_perm("video.change_channel")
     ):
@@ -377,7 +377,7 @@ def channel_edit(request, slug):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def theme_edit(request, slug):
-    channel = get_object_or_404(Channel, slug=slug, sites=get_current_site(request))
+    channel = get_object_or_404(Channel, slug=slug, site=get_current_site(request))
     if request.user not in channel.owners.all() and not (
         request.user.is_superuser or request.user.has_perm("video.change_theme")
     ):
@@ -818,7 +818,7 @@ def render_video(
     """
     listNotes = get_adv_note_list(request, video)
     channel = (
-        get_object_or_404(Channel, slug=slug_c, sites=get_current_site(request))
+        get_object_or_404(Channel, slug=slug_c, site=get_current_site(request))
         if slug_c
         else None
     )
