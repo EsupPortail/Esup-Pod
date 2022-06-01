@@ -186,7 +186,7 @@ def context_navbar(request):
     add_channels_tab = AdditionalChannelTab.objects.all().prefetch_related(
         Prefetch(
             "channel_set",
-            queryset=Channel.objects.filter(sites=get_current_site(request))
+            queryset=Channel.objects.filter(site=get_current_site(request))
             .distinct()
             .annotate(video_count=Count("video", distinct=True)),
         )
@@ -194,13 +194,13 @@ def context_navbar(request):
 
     all_channels = (
         Channel.objects.all()
-        .filter(sites=get_current_site(request))
+        .filter(site=get_current_site(request))
         .distinct()
         .annotate(video_count=Count("video", distinct=True))
         .prefetch_related(
             Prefetch(
                 "themes",
-                queryset=Theme.objects.filter(channel__sites=get_current_site(request))
+                queryset=Theme.objects.filter(channel__site=get_current_site(request))
                 .distinct()
                 .annotate(video_count=Count("video", distinct=True)),
             )

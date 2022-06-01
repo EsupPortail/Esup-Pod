@@ -778,7 +778,7 @@ class VideoForm(forms.ModelForm):
                     | Channel.objects.filter(allow_to_groups__in=users_groups)
                 ).distinct()
             )
-            user_channels.filter(sites=get_current_site(None))
+            user_channels.filter(site=get_current_site(None))
             if user_channels:
                 self.fields["channel"].queryset = user_channels
                 list_theme = Theme.objects.filter(channel__in=user_channels).order_by(
