@@ -799,12 +799,12 @@ class VideoForm(forms.ModelForm):
         )
         if "channel" in self.fields:
             self.fields["channel"].queryset = self.fields["channel"].queryset.filter(
-                sites=Site.objects.get_current()
+                site=Site.objects.get_current()
             )
 
         if "theme" in self.fields:
             self.fields["theme"].queryset = self.fields["theme"].queryset.filter(
-                channel__sites=Site.objects.get_current()
+                channel__site=Site.objects.get_current()
             )
 
     class Meta(object):
@@ -825,7 +825,7 @@ class VideoForm(forms.ModelForm):
 
 
 class ChannelForm(forms.ModelForm):
-    sites = forms.ModelMultipleChoiceField(Site.objects.all(), required=False)
+    site = forms.ModelChoiceField(Site.objects.all(), required=False)
 
     def clean(self):
         cleaned_data = super(ChannelForm, self).clean()
@@ -854,8 +854,8 @@ class ChannelForm(forms.ModelForm):
 
         if not hasattr(self, "admin_form"):
             del self.fields["visible"]
-            if self.fields.get("sites"):
-                del self.fields["sites"]
+            if self.fields.get("site"):
+                del self.fields["site"]
         if not self.is_superuser or not hasattr(self, "admin_form"):
             self.fields["owners"].queryset = self.fields["owners"].queryset.filter(
                 owner__sites=Site.objects.get_current()
