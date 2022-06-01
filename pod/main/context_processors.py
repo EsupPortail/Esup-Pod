@@ -167,7 +167,7 @@ def context_navbar(request):
             visible=True,
             video__is_draft=False,
             add_channels_tab=None,
-            sites=get_current_site(request),
+            site=get_current_site(request),
         )
         .distinct()
         .annotate(video_count=Count("video", distinct=True))
