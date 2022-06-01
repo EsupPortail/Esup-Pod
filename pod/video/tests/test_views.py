@@ -42,8 +42,8 @@ class ChannelTestView(TestCase):
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
 
-        self.c.sites.add(site)
-        self.c2.sites.add(site)
+        self.c.site = site
+        self.c2.site = site
 
     @override_settings(ORGANIZE_BY_THEME=False)
     def test_get_channel_view(self):
@@ -165,7 +165,7 @@ class MyChannelsTestView(TestCase):
         c2 = Channel.objects.create(title="ChannelTest2")
         c2.owners.add(user)
         for c in Channel.objects.all():
-            c.sites.add(site)
+            c.sites = site
 
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
@@ -200,7 +200,7 @@ class ChannelEditTestView(TestCase):
         user2 = User.objects.create(username="pod2", password="pod1234pod")
         c1 = Channel.objects.create(title="ChannelTest1")
         c1.owners.add(user)
-        c1.sites.add(site)
+        c1.site = site
 
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
@@ -268,7 +268,7 @@ class ThemeEditTestView(TestCase):
             slug="theme3",
             channel=Channel.objects.get(title="ChannelTest1"),
         )
-        c1.sites.add(site)
+        c1.site = site
 
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()

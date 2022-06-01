@@ -31,6 +31,7 @@ from tagging.fields import TagField
 from django.utils.text import capfirst
 from django.contrib.sites.models import Site
 from django.db.models.signals import post_save
+from django.db.models.signals import pre_save
 from pod.main.models import AdditionalChannelTab
 import importlib
 
@@ -338,7 +339,7 @@ class Channel(models.Model):
     site = models.ForeignKey(
         Site,
         verbose_name=_("Site"),
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
 
     class Meta:
@@ -385,9 +386,9 @@ class Channel(models.Model):
         super(Channel, self).save(*args, **kwargs)
 
 
-@receiver(post_save, sender=Channel)
-def default_site_channel(sender, instance, created, **kwargs):
-    if (instance.site is None):
+@receiver(pre_save, sender=Channel)
+def default_site_channel(sender, instance, **kwargs):
+    if not hasattr(instance, 'site'):
         instance.site = Site.objects.get_current()
 
 
