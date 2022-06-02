@@ -34,7 +34,7 @@
     <h2 class="h4">{% trans "No video found"%}</h2>
     <p class="alert alert-info">{% trans 'You have not uploaded any videos yet, please use the "Add a new video" button to add one'%}</p>
   {% else %}
-    <h2 class="h4">{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
+    <h2 id="video_count" class="h4">{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
     <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the video on which you want to work with." %}</p>
     {% include "videos/video_list.html" %}
   {% endif %}
@@ -50,6 +50,7 @@
   {% if use_category %}
     {% include 'videos/filter_aside_category.html' %}
   {% endif %}
+  {% include 'videos/filter_aside.html' %}
 {% endblock page_aside %}
 
 {% block more_script %}
@@ -59,10 +60,12 @@
 <script>
 const urlVideos = "{% url 'my_videos' %}";
 {% if use_category %}
+  const USE_CATEGORY = true;
   const CATEGORIES_DATA = {{ categories | safe }};
   </script>
   <script defer src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
 {% else %}
+  const USE_CATEGORY = false;
   </script>
 {% endif %}
 

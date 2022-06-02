@@ -8,7 +8,7 @@
     <i data-feather="sliders"></i>&nbsp;{% trans "Filters"%}
   </h2>
 
-<form action="{% url 'videos' %}" method="get" id="filters">
+<form action="{% url 'videos' %}" method="post" id="filters">
 {% if not HIDE_USER_FILTER and user.is_authenticated %}
   <fieldset>
     <legend  class="h5"><i data-feather="users"></i> {% trans "Users" %}</legend>
