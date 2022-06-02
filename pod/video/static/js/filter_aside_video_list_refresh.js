@@ -1,6 +1,8 @@
 var infinite_waypoint;
-var formCheckedInputs = [];
+var filterCheckedInputs = {};
+var categoryChecked = null;
 var regExGetOnlyChars = /([\D])/g;
+var sort_column;
 var sort_direction_asc = true;
 var sort_direction_chars = ["8600","8599"];
 
@@ -38,15 +40,27 @@ function replaceCountVideos(newCount) {
   $("#video_count")[0].innerHTML = newCount + " " + gettext(transVideoCount);
 }
 
-function callAsyncListVideos(formCheckedInputs) {
+function callAsyncListVideos(filterCheckedInputs) {
   // Ajax request to refresh view with filtered video list
+  data = new FormData();
+  sortInputsObject = {};
+  sortInputsObject["sort_column"] = sortColumn;
+  sortInputsObject["sort_direction_asc"]= sort_direction_asc;
+  data.append("filterCheckedInputs",JSON.stringify(filterCheckedInputs));
+  data.append("sortInputs",JSON.stringify(sortInputsObject));
+  if(categoryChecked){
+    data.append("categoryChecked",categoryChecked);
+  }
   return $.ajax({
-    type: "GET",
+    type: "POST",
     url: urlVideos,
-    data: formCheckedInputs,
+    data: data,
+    processData: false,
+    contentType: false,
     dataType: "html",
     headers: {
       "X-Requested-With": "XMLHttpRequest",
+      "X-CSRFToken": Cookies.get("csrftoken"),
     },
     success: function (html, status) {
       if (infinite_waypoint) {
@@ -55,10 +69,7 @@ function callAsyncListVideos(formCheckedInputs) {
       $(".infinite-loading").remove();
       $(".infinite-more-link").remove();
       $("#videos_list").replaceWith(html);
-      if(urlVideos == 'videos'){
-        replaceCountVideos(countVideos);
-      }
-      window.history.pushState({}, "", this.url);
+      replaceCountVideos(countVideos);
     },
     error: function (result, status, error) {
       $("#videos_list").html(gettext("An Error occurred while processing "));
@@ -68,33 +79,47 @@ function callAsyncListVideos(formCheckedInputs) {
 
 function refreshVideosSearch(){
   // Filter checkboxes change triggered event
-  formCheckedInputs = [];
+  filterCheckedInputs = {};
+  categoryChecked = null;
   $(".infinite-loading").show();
   $(".form-check-input input[type=checkbox]").attr("disabled", "true");
   $("#videos_list").html("");
-  $("input[type=checkbox]:checked").each(function () {
-    formCheckedInputs.push(this);
+  // Get all filter checkboxes
+  $("input[type=checkbox]:checked.form-check-input").each(function(checkBox) {
+    let checkBoxName = $(this).attr('name');
+    let checkBoxValue = $(this).val();
+    if(!filterCheckedInputs.hasOwnProperty(checkBoxName)){
+        filterCheckedInputs[checkBoxName] = [];
+    }
+    filterCheckedInputs[checkBoxName].push(checkBoxValue);
   });
-  if($("#sort").val()){
-    formCheckedInputs.push($("#sort")[0]);
+  // Get sort column
+  sortColumn = $("#sort").val();
+  // if USE_CATEGORY active filter with categories
+  if(urlVideos == 'videos' && USE_CATEGORY && $(".categories_list_item.active")[0]){
+    categoryChecked = $(".categories_list_item.active")[0].firstChild["dataset"]["slug"].split("-")[1];
   }
-  callAsyncListVideos(formCheckedInputs).done(function () {
+  // Ajax async call to get filtered videos
+  callAsyncListVideos(filterCheckedInputs).done(function () {
     $(".infinite-loading").hide();
     infinite_waypoint = getInfiniteScrollWaypoint();
     $(".form-check-input input[type=checkbox]").removeAttr("disabled");
   });
 }
-$(".form-check-input, .sort-select").change(function (event) {
-  event.preventDefault();
-  refreshVideosSearch(formCheckedInputs);
+
+// Add change trigger on filter inputs and column sort select
+$(".form-check-input, .sort-select").change(function(e) {
+  e.preventDefault();
+  refreshVideosSearch();
 });
 
-$("#sort_direction_label").click(function(event) {
-  event.preventDefault();
+// Add click trigger on adcending / descending sort button
+$("#sort_direction_label").click(function(e) {
+  e.preventDefault();
   sort_direction_asc = !sort_direction_asc;
   $("#sort_direction").prop("checked", !$("#sort_direction").prop("checked"));
   $("#sort_direction_label").html("&#"+(sort_direction_chars[+ sort_direction_asc]).toString());
-  refreshVideosSearch(formCheckedInputs);
+  refreshVideosSearch();
 });
 
 // First launch of the infinite scroll

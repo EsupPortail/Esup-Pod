@@ -217,10 +217,10 @@
       getVideosFilteredContainer().classList.add("hidden");
       if (videos_list) {
         videos_list.setAttribute("class", "row infinite-container");
-        let more_btn = videos_list.parentNode.querySelector(
-          ".infinite-more-link"
-        );
-        if (more_btn) more_btn.setAttribute("class", "infinite-more-link");
+        let more_btn = $(".infinite-more-link")[0];
+        if ($(".infinite-more-link").length){
+            more_btn.setAttribute("class", "infinite-more-link");
+        }
       }
     } // filter
     else {
@@ -233,11 +233,11 @@
 
       if (videos_list) {
         videos_list.setAttribute("class", "row infinite-container hidden");
-        let more_btn = videos_list.parentNode.querySelector(
-          ".infinite-more-link"
-        );
-        if (more_btn)
-          more_btn.setAttribute("class", "infinite-more-link hidden");
+        let more_btn = $(".infinite-more-link")[0];
+
+        if($(".infinite-more-link").length){
+            more_btn.setAttribute("class", "infinite-more-link hidden");
+        }
       }
     }
   };
@@ -326,15 +326,16 @@
         jsonData = fetchCategoryData(cat_filter_slug);
         jsonData.then((data) => {
           manageNumberVideoFoundText(data.videos.length); // update text 'video found'
-          if (CURR_FILTER.slug && CURR_FILTER.id)
+          /*if (CURR_FILTER.slug && CURR_FILTER.id)
             data.videos.forEach((v) => {
               videos_list_filtered.appendChild(getVideoElement(v));
-            });
+            });*/
           // save data
           saveCategoryData(data);
           loader.classList.remove("show");
         });
       }
+      refreshVideosSearch();
     });
   };
 
