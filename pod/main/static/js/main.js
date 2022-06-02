@@ -606,6 +606,9 @@ $("#ownerbox").keyup(function () {
               username +
               "</label></div>";
             $("#collapseFilterOwner").append(chekboxhtml);
+            $(".form-check-input")[0].addEventListener('change', function() {
+                refreshVideosSearch();
+            });
           }
         });
       },
