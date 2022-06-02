@@ -96,7 +96,7 @@ function refreshVideosSearch(){
   // Get sort column
   sortColumn = $("#sort").val();
   // if USE_CATEGORY active filter with categories
-  if(urlVideos == 'videos' && USE_CATEGORY && $(".categories_list_item.active")[0]){
+  if(urlVideos !== 'videos' && USE_CATEGORY && $(".categories_list_item.active")[0]){
     categoryChecked = $(".categories_list_item.active")[0].firstChild["dataset"]["slug"].split("-")[1];
   }
   // Ajax async call to get filtered videos
