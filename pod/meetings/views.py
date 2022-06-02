@@ -3,12 +3,12 @@ from genericpath import exists
 import logging
 from multiprocessing import context
 from django.conf import settings
-from django.http import (HttpResponse, HttpResponseRedirect)
+from django.http import (HttpResponse, HttpResponseNotFound, HttpResponseRedirect)
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
 from platformdirs import user_data_path
-from pod.meetings.forms import MeetingsForm, JoinForm
+from pod.meetings.forms import MeetingsForm, JoinForm, EditForm
 from pod.meetings.models import Meetings, User
 
 from django.views.decorators.csrf import csrf_protect
@@ -33,6 +33,31 @@ def meeting(request):
 @login_required(redirect_field_name="referrer")
 def create(request):
     print("add")
+    meetingID = request.GET.get("meetingID", "")
+    if meetingID != "":
+        try:
+            meeting = get_object_or_404(Meetings ,meetingID=meetingID, sites=get_current_site(request))
+            if (
+                RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY
+                and request.user.is_staff is False
+            ):
+                return HttpResponseNotFound("<h1>Permission Denied</h1>")
+
+            if (
+                meeting
+                and request.user != meeting.owner
+                and (
+                    not (
+                        request.user.is_superuser
+                        or request.user.has_perm("meeting.change_meeting")
+                    )
+                )
+                and (request.user not in meeting.additional_owners.all())
+            ):
+                return HttpResponseNotFound("<h1>Permission Denied</h1>")
+        except Meetings.DoesNotExist:
+            pass
+
     if request.method == "POST":
       print('POST')
       form = MeetingsForm(request.POST)
@@ -247,11 +272,7 @@ def edit_meeting(request, meetingID):
   return render(request, "meeting_edit.html", context)
   '''
 
-  meeting = (
-    get_object_or_404(Meetings, meetingID=meetingID, sites=get_current_site(request))
-    if meetingID
-    else None
-  )
+  meeting = get_object_or_404(Meetings, meetingID=meetingID, sites=get_current_site(request))
 
   if RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
     return render(request, "meeting_edit.html", {"access_not_allowed": True})
@@ -268,7 +289,7 @@ def edit_meeting(request, meetingID):
     raise PermissionDenied
 
   default_owner = meeting.owner.pk if meeting else request.user.pk
-  form = MeetingsForm(
+  form = EditForm(
     instance=meeting,
     is_staff=request.user.is_staff,
     is_superuser=request.user.is_superuser,
@@ -277,7 +298,7 @@ def edit_meeting(request, meetingID):
   )
 
   if request.method == "POST":
-    form = MeetingsForm(
+    form = EditForm(
       request.POST,
       request.FILES,
       instance=meeting,
@@ -288,11 +309,24 @@ def edit_meeting(request, meetingID):
     )
     if form.is_valid():
       meeting = form.save(commit=False)
-      meeting.owner = request.user
-      meeting.save()
-      messages.add_message(
-        request, messages.INFO, ("The changes have been saved.")
-      )
+      if (
+        (request.user.is_superuser or request.user.has_perm("meeting.add_meeting"))
+        and request.POST.get("owner")
+        and request.POST.get("owner") != ""
+      ):
+        meeting.owner = form.cleaned_data["owner"]
+
+    elif getattr(meeting, "owner", None) is None:
+        meeting.owner = request.user
+        
+    meeting.save()
+    form.save_m2m()
+    meeting.sites.add(get_current_site(request))
+    meeting.save()
+    form.save_m2m()
+    messages.add_message(
+      request, messages.INFO, ("The changes have been saved.")
+    )
   else:
     messages.add_message(
       request,

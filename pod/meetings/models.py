@@ -18,8 +18,7 @@ from django.template.defaultfilters import slugify
 
 from django.contrib.sites.models import Site
 from pod.authentication.models import AccessGroup
-
-
+from django.db.models import Q
 
 from pod.meetings.utils import parse_xml
 BBB_SECRET_KEY = getattr(
@@ -30,6 +29,20 @@ BBB_API_URL = getattr(
 )
 
 User = get_user_model()
+
+RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
+    settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
+)
+
+def select_video_owner():
+    if RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY:
+        return lambda q: (
+            Q(is_staff=True) & (Q(first_name__icontains=q) | Q(last_name__icontains=q))
+        ) & Q(owner__sites=Site.objects.get_current())
+    else:
+        return lambda q: (Q(first_name__icontains=q) | Q(last_name__icontains=q)) & Q(
+            owner__sites=Site.objects.get_current()
+        )
 
 class Meetings(models.Model):
     name = models.CharField(
