@@ -351,7 +351,7 @@ class ChannelAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:
-            return ("sites",)
+            return ("site",)
         else:
             return ()
 
@@ -416,13 +416,13 @@ class ThemeAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(channel__sites=get_current_site(request))
+            qs = qs.filter(channel__site=get_current_site(request))
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "parentId":
             kwargs["queryset"] = Theme.objects.filter(
-                channel__sites=Site.objects.get_current()
+                channel__site=Site.objects.get_current()
             )
         if (db_field.name) == "channel":
             kwargs["queryset"] = Channel.objects.filter(sites=Site.objects.get_current())

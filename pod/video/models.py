@@ -451,7 +451,7 @@ class Theme(models.Model):
     )
 
     @property
-    def sites(self):
+    def site(self):
         """Return sites associated to parent channel."""
         return self.channel.site
 

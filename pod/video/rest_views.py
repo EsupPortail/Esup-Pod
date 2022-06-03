@@ -53,7 +53,7 @@ class ThemeSerializer(serializers.HyperlinkedModelSerializer):
             "headband",
             "description",
             "channel",
-            "sites",
+            "site",
         )
 
 
