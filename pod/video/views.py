@@ -536,6 +536,8 @@ def my_videos(request):
     except EmptyPage:
         videos = paginator.page(paginator.num_pages)
 
+    ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
+
     if request.is_ajax():
         return render(
             request,
@@ -546,7 +548,9 @@ def my_videos(request):
     data_context["videos"] = videos
     data_context["count_videos"] = count_videos
     data_context["full_path"] = full_path
+    data_context["owners"] = request.GET.getlist("owner")
     data_context["page_title"] = _("My videos")
+    data_context["ownersInstances"] = ownersInstances
 
     return render(request, "videos/my_videos.html", data_context)
 
