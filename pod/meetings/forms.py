@@ -1,17 +1,12 @@
 from dataclasses import fields
-from django.forms import ModelForm
+from django.forms import ModelForm, ValidationError
 from django import forms
 from django.conf import settings
 from django.contrib.sites.models import Site
 
 from pod.meetings.models import Meetings
 
-class MeetingsForm(ModelForm):
-    class Meta:
-        model = Meetings
-        fields = ['name', 'attendee_password', 'start_date', 'end_date', 'max_participants', 'auto_start_recording', 'allow_start_stop_recording', 'lock_settings_disable_cam', 'lock_settings_disable_mic', 'lock_settings_disable_private_chat', 'lock_settings_disable_public_chat', 'lock_settings_disable_note', 'lock_settings_locked_layout', 'ask_password']  
-
-class EditForm(forms.ModelForm):
+class MeetingsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.is_staff = (
             kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
@@ -21,10 +16,8 @@ class EditForm(forms.ModelForm):
             if ("is_superuser" in kwargs.keys())
             else self.is_superuser
         )
-        self.current_lang = kwargs.pop("current_lang", settings.LANGUAGE_CODE)
-        self.current_user = kwargs.pop("current_user", None)
 
-        super(EditForm, self).__init__(*args, **kwargs)
+        super(MeetingsForm, self).__init__(*args, **kwargs)
 
         if self.fields.get("meeting"):
             self.fields["meeting"].label = ("File")
@@ -35,7 +28,7 @@ class EditForm(forms.ModelForm):
 
     class Meta:
         model = Meetings
-        fields = ['name', 'attendee_password', 'start_date', 'end_date', 'max_participants', 'auto_start_recording', 'allow_start_stop_recording', 'lock_settings_disable_cam', 'lock_settings_disable_mic', 'lock_settings_disable_private_chat', 'lock_settings_disable_public_chat', 'lock_settings_disable_note', 'lock_settings_locked_layout', 'ask_password']   
+        fields = fields = ['name', 'attendee_password', 'start_date', 'end_date', 'max_participants', 'auto_start_recording', 'allow_start_stop_recording', 'lock_settings_disable_cam', 'lock_settings_disable_mic', 'lock_settings_disable_private_chat', 'lock_settings_disable_public_chat', 'lock_settings_disable_note', 'lock_settings_locked_layout', 'ask_password']  
 
 class JoinForm(forms.Form):
     name = forms.CharField(label="Your name")
