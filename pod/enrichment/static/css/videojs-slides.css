@@ -133,6 +133,10 @@
   z-index:-1;
 }
 
+.vjs-text-track-display {
+  z-index:1;
+}
+
 /* Fullscreen */
 /*.vjs-fullscreen .video-slides img,
 .vjs-fullscreen .video-slides embed {

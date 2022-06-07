@@ -113,6 +113,13 @@ class UserAdmin(BaseUserAdmin):
     if USE_ESTABLISHMENT_FIELD:
         list_display = list_display + ("owner_establishment",)
 
+    # readonly_fields=('is_superuser',)
+    def get_readonly_fields(self, request, obj=None):
+        if request.user.is_superuser:
+            return []
+        self.readonly_fields += ("is_superuser",)
+        return self.readonly_fields
+
     def owner_hashkey(self, obj):
         return "%s" % Owner.objects.get(user=obj).hashkey
 

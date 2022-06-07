@@ -100,20 +100,12 @@ def get_sub_cmd(height_presentation_video, height_presenter_video, presenter):
         )
     if presenter == "mid":
         height = min_height if (min_height % 2) == 0 else min_height + 1
-        if height_presentation_video > height_presenter_video:
-            subcmd = (
-                " -filter_complex "
-                + '"[0:v]scale=-2:%(height)s[left];[0:v]scale=-2:%(height)s[right];'
-                % {"height": height}
-                + '[left][right]hstack" -vsync 0 '
-            )
-        else:
-            subcmd = (
-                " -filter_complex "
-                + '"[0:v]scale=-2:%(height)s[left];[1:v]scale=-2:%(height)s[right];'
-                % {"height": height}
-                + '[left][right]hstack" -vsync 0 '
-            )
+        subcmd = (
+            " -filter_complex "
+            + '"[0:v]scale=-2:%(height)s[left];[1:v]scale=-2:%(height)s[right];'
+            % {"height": height}
+            + '[left][right]hstack" -vsync 0 '
+        )
 
     return subcmd
 
