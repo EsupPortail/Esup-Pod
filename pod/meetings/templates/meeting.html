@@ -46,7 +46,7 @@
                 <td> {{ element.end_date }} </td>
                 <td><a class="btn btn-success" href="{% url 'meetings:edit' element.meetingID %}">{% trans "Modify"%}</a>
                     <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-meeting-modal" data-meeting-id="meeting-{{element.id}}" data-action="{% url 'meetings:delete' element.meetingID%}">
+                    <button type="button" class="btn btn-danger btn-delete-meeting" data-bs-toggle="modal" data-bs-target="#delete-meeting-modal" data-meeting-id="meeting-{{element.id}}" data-action="{% url 'meetings:delete' element.meetingID%}">
                         {% trans "Delete"%}
                     </button>
                 <br></br>
@@ -89,11 +89,25 @@
     </div>
     </div>
 </div>
+{% endblock page_content %}
+
+{% block more_script %}
 <script src="{% static 'js/app.js' %}"></script>
 <script>
     $(document).on('click', '#delete-item', () => {
         document.getElementById("delete-item").action = document.querySelector('#delete-item').href
     });
     // au chargement de la modal, renseigner le champ action du formulaire de la modal avec la valeur du champ data-action du bouton ayant été cliqué.
+    $(".btn-delete-meeting").on("click", function() {
+        $("#delete-item").attr("action", $(this).attr("data-action"));
+    });
+    /*
+    var myModal = document.getElementById('delete-meeting-modal')
+    var myInput = document.getElementById('myInput')
+
+    myModal.addEventListener('shown.bs.modal', function () {
+        alert('coucou');
+    })
+    */
 </script>
-{% endblock page_content %}
+{% endblock more_script %}
