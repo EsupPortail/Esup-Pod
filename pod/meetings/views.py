@@ -66,7 +66,7 @@ def create(request):
       messages.add_message(
         request, messages.INFO, ("The changes have been saved.")
       )
-      return redirect('/meeting')
+      return redirect(reverse("meetings:meeting"))
     else:
       messages.add_message(
         request,
@@ -80,7 +80,7 @@ def create(request):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def delete_meeting(request, meetingID):
-  # utiliser le get object or 404 sites=get_current_site(request)
+    # utiliser le get object or 404 sites=get_current_site(request)
     meeting = get_object_or_404(Meetings, meetingID=meetingID, sites=get_current_site(request))
 
     if request.user != meeting.owner and not (
@@ -91,7 +91,7 @@ def delete_meeting(request, meetingID):
 
     if request.method == "POST": # verifier que le user connecté est bien le prop de la reunion !
       meeting.delete()
-      return redirect('/meeting')
+      return redirect(reverse("meetings:meeting"))
 
     context={'item':meeting}
 

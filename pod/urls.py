@@ -206,7 +206,7 @@ urlpatterns = [
     url(r"^custom/", include("pod.custom.urls")),
 
     # meetings
-    url(r"^", include("pod.meetings.urls")),
+    # url(r"^", include("pod.meetings.urls")),
 ]
 urlpatterns += (url(r"^maintenance/$", maintenance, name="maintenance"),)
 

@@ -1,5 +1,6 @@
 from django.conf.urls import *
 from django.urls import path
+from django.urls import re_path
 
 from pod.meetings.models import Meetings
 
@@ -12,14 +13,14 @@ from .views import edit_meeting, meeting, create, delete_meeting, join_meeting
 app_name = "meetings"
 
 urlpatterns = [
-    path('meeting/', meeting, name='meeting'),
-    path('meeting/add/', create, name='create'),
-    path('meeting/edit/<str:meetingID>', edit_meeting,
+    re_path(r'^$', meeting, name='meeting'),
+    path('add/', create, name='create'),
+    path('edit/<str:meetingID>/', edit_meeting,
         name='edit'),
-    path('meeting/delete/<str:meetingID>', delete_meeting,
+    path('delete/<str:meetingID>/', delete_meeting,
         name='delete'),
-    path('meeting/<str:meetingID>', join_meeting,
+    path('<str:meetingID>/', join_meeting,
         name='join'),
-    path('meeting/<str:meetingID>/<str:slug_private>', join_meeting,
+    path('<str:meetingID>/<str:slug_private>/', join_meeting,
         name='join'),
 ]

@@ -46,7 +46,7 @@
                 <td> {{ element.end_date }} </td>
                 <td><a class="btn btn-success" href="{% url 'meetings:edit' element.meetingID %}">{% trans "Modify"%}</a>
                     <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-danger btn-delete-meeting" data-bs-toggle="modal" data-bs-target="#delete-meeting-modal" data-meeting-id="meeting-{{element.id}}" data-action="{% url 'meetings:delete' element.meetingID%}">
+                    <button type="button" class="btn btn-danger btn-delete-meeting" data-bs-toggle="modal" data-bs-target="#delete-meeting-modal" data-meeting-id="meeting-{{element.id}}" data-action="{% url 'meetings:delete' element.meetingID %}">
                         {% trans "Delete"%}
                     </button>
                 <br></br>
@@ -80,7 +80,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form method="POST" action="" id="delete-item">
+            <form method="POST" id="delete-item">
                 {% csrf_token %}
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
                 <input class="btn btn-danger" type="submit" value="{% trans "Delete" %}">
@@ -94,9 +94,9 @@
 {% block more_script %}
 <script src="{% static 'js/app.js' %}"></script>
 <script>
-    $(document).on('click', '#delete-item', () => {
+    /*$(document).on('click', '#delete-item', () => {
         document.getElementById("delete-item").action = document.querySelector('#delete-item').href
-    });
+    });*/
     // au chargement de la modal, renseigner le champ action du formulaire de la modal avec la valeur du champ data-action du bouton ayant été cliqué.
     $(".btn-delete-meeting").on("click", function() {
         $("#delete-item").attr("action", $(this).attr("data-action"));
