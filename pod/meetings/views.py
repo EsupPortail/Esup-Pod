@@ -32,28 +32,13 @@ def meeting(request):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def create(request):
-  # meeting = get_object_or_404(Meetings, sites=get_current_site(request))
 
   if RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
     return render(request, "meeting_edit.html", {"access_not_allowed": True})
-  """
-  if (
-    meeting
-    and request.user != meeting.owner
-    and (
-        not (request.user.is_superuser or request.user.has_perm("meeting.change_meeting"))
-    )
-    and (request.user not in meeting.additional_owners.all())
-  ):
-    messages.add_message(request, messages.ERROR, ("You cannot edit this meeting."))
-    raise PermissionDenied
-  """
-  # default_owner = meeting.owner.pk if meeting else request.user.pk
+
   form = MeetingsForm(
-    # instance=meeting,
     is_staff=request.user.is_staff,
     is_superuser=request.user.is_superuser,
-    # initial={"owner": default_owner},
   )
 
   if request.method == "POST":
@@ -72,7 +57,6 @@ def create(request):
         meeting.owner = form.cleaned_data["owner"]
       elif getattr(meeting, "owner", None) is None:
         meeting.owner = request.user
-
       meeting.save()
       form.save_m2m()
       meeting.sites.add(get_current_site(request))
@@ -237,7 +221,7 @@ def join_meeting(request, meetingID, slug_private=None):
             raise PermissionDenied
     ''' 
     # recup l'id numérique dans le meetingID puis chercher si elle existe sinon 404 sites=get_current_site(request)
-    meeting = Meetings.objects.get(meetingID=meetingID)
+    meeting = get_object_or_404(Meetings, meetingID=meetingID, sites=get_current_site(request))
     if request.method == "POST":
         form = JoinForm(request.POST)
         if form.is_valid():
@@ -329,23 +313,25 @@ def edit_meeting(request, meetingID):
       ):
         meeting.owner = form.cleaned_data["owner"]
 
-    elif getattr(meeting, "owner", None) is None:
+      elif getattr(meeting, "owner", None) is None:
         meeting.owner = request.user
         
-    meeting.sites.add(get_current_site(request))
-    meeting.save()
-    form.save_m2m()
-    messages.add_message(
-      request, messages.INFO, ("The changes have been saved.")
-    )
-  else:
-    messages.add_message(
-      request,
-      messages.ERROR,
-      ("One or more errors have been found in the form."),
-    )
+      meeting.save()
+      form.save_m2m()
+      meeting.sites.add(get_current_site(request))
+      meeting.save()
+      form.save_m2m()
 
-    return redirect('/meeting')
+      messages.add_message(
+        request, messages.INFO, ("The changes have been saved.")
+      )
+      return redirect('/meeting')
+    else:
+      messages.add_message(
+        request,
+        messages.ERROR,
+        ("One or more errors have been found in the form."),
+      )
 
   context={"form": form}
 
