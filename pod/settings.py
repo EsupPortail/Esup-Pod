@@ -307,3 +307,5 @@ def update_settings(local_settings):
 the_update_settings = update_settings(locals())
 for variable in the_update_settings:
     locals()[variable] = the_update_settings[variable]
+
+THIRD_PARTY_APPS = ["enrichment", "live", "meetings"]

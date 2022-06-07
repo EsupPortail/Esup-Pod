@@ -325,7 +325,7 @@ def edit_meeting(request, meetingID):
       messages.add_message(
         request, messages.INFO, ("The changes have been saved.")
       )
-      return redirect('/meeting')
+      return redirect(reverse("meetings:meeting"))
     else:
       messages.add_message(
         request,
