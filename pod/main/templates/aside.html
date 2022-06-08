@@ -26,7 +26,7 @@
       <select class="form-control" onchange="this.options[this.selectedIndex].getAttribute('data-value') &amp;&amp; (window.location = this.options[this.selectedIndex].getAttribute('data-value'));" name="discipline" id="discipline">
         <option value="#">{% trans 'Disciplines' %}...</option>
         {% for disc in DISCIPLINES %}
-          <option value="{{disc.slug}}" data-value="{% url 'videos' %}?discipline={{disc.slug}}">{{disc.title}}  ({{disc.video_count}})</option>
+          <option value="{{disc.slug}}" data-value="{% url 'videos:videos' %}?discipline={{disc.slug}}">{{disc.title}}  ({{disc.video_count}})</option>
         {% endfor %}
       </select>
       <input value="{% trans 'Submit' %}" class="visually-hidden" type="submit">
@@ -47,7 +47,7 @@
       <select class="form-control" onchange="this.options[this.selectedIndex].getAttribute('data-value') &amp;&amp; (window.location = this.options[this.selectedIndex].getAttribute('data-value'));" name="type" id="type">
         <option value="#">{% trans 'Types' %}...</option>
         {% for type in TYPES %}
-          <option value="{{type.slug}}" data-value="{% url 'videos' %}?type={{type.slug}}">{{type.title}}  ({{type.video_count}})</option>
+          <option value="{{type.slug}}" data-value="{% url 'videos:videos' %}?type={{type.slug}}">{{type.title}}  ({{type.video_count}})</option>
         {% endfor %}
       </select>
       <input value="{% trans 'Submit' %}" class="visually-hidden" type="submit">
@@ -69,7 +69,7 @@
     {% tag_cloud_for_model video.Video as tagscloud with distribution=log steps=16 min_count=4 %}
     {% with tagslist=tagscloud|dictsortreversed:"count"|slice:":20" %}
     {% for tag in tagslist %}
-      <a href="{% url 'videos' %}?tag={{ tag.name|urlencode }}" style="font-size:{{ tag.font_size }}px" title="{{tag.name}}" class="badge">
+      <a href="{% url 'videos:videos' %}?tag={{ tag.name|urlencode }}" style="font-size:{{ tag.font_size }}px" title="{{tag.name}}" class="badge">
           {{tag.name}}&nbsp;<span class="badge badge-pill badge-info align-top small">{{tag.count}}</span>
       </a>
     {% endfor %}

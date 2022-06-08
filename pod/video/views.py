@@ -948,9 +948,9 @@ def video_edit(request, slug=None):
                 request, messages.INFO, _("The changes have been saved.")
             )
             if request.POST.get("_saveandsee"):
-                return redirect(reverse("video", args=(video.slug,)))
+                return redirect(reverse("video:video", args=(video.slug,)))
             else:
-                return redirect(reverse("video_edit", args=(video.slug,)))
+                return redirect(reverse("video:video_edit", args=(video.slug,)))
         else:
             messages.add_message(
                 request,
@@ -998,7 +998,7 @@ def video_delete(request, slug=None):
         if form.is_valid():
             video.delete()
             messages.add_message(request, messages.INFO, _("The video has been deleted."))
-            return redirect(reverse("my_videos"))
+            return redirect(reverse("video:my_videos"))
         else:
             messages.add_message(
                 request,
@@ -1787,7 +1787,7 @@ def video_oembed(request):
         data["author_name"] = video.owner.get_full_name()
         data["author_url"] = "%s%s?owner=%s" % (
             data["provider_url"],
-            reverse("videos"),
+            reverse("videos:videos"),
             video.owner.username,
         )
         data["html"] = (
@@ -1797,7 +1797,7 @@ def video_oembed(request):
             + "allowfullscreen loading='lazy'></iframe>"
         ) % {
             "provider": data["provider_url"],
-            "video_url": reverse("video", kwargs={"slug": video.slug}),
+            "video_url": reverse("video:video", kwargs={"slug": video.slug}),
             "slug_private": "%s/" % slug_private if slug_private else "",
         }
     else:
@@ -2605,7 +2605,7 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
 
     def get_response_data(self, chunked_upload, request):
         return {
-            "redirlink": reverse("video_edit", args=(self.slug,)),
+            "redirlink": reverse("video:video_edit", args=(self.slug,)),
             "message": (
                 "You successfully uploaded '%s' (%s bytes)!"
                 % (chunked_upload.filename, chunked_upload.offset)

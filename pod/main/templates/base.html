@@ -158,7 +158,7 @@
     var show_only_parent_themes = {% if only_parent_theme %} true {% else %} false {% endif %};
     {% for channel in ALL_CHANNELS %} {% if channel.themes.count > 0 %} listTheme["channel_{{channel.id}}"] = {{ channel.get_all_theme_json | safe }}; {% endif %} {% endfor %}
     /** USERS **/
-    var urlvideos = "{% url 'videos' %}";
+    var urlvideos = "{% url 'videos:videos' %}";
   </script>
   <script src="{% static 'js/main.js' %}?ver={{VERSION}}"></script>
   {% block more_script %}

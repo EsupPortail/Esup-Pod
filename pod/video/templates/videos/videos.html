@@ -23,9 +23,9 @@
 
   <h1 id="video_count">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
     <span class="pod-float-end">
-      <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
+      <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
         <i class="bi bi-rss"></i>&nbsp;Audio</a>
-      <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
+      <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
         <i class="bi bi-rss"></i>&nbsp;Video</a>
       {% if USE_STATS_VIEW %}
         <a href="{% url 'video_stats_view' 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm"><i class="bi bi-graph-up"></i> {% trans "Statistics views" %}</a>
@@ -53,7 +53,7 @@
 
 {% block more_script %}
   <script>
-    const urlVideos = "{% url 'videos' %}";
+    const urlVideos = "{% url 'videos:videos' %}";
   </script>
   <script src="{% static 'waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'waypoints/lib/shortcuts/infinite.min.js' %}?ver={{VERSION}}"></script>

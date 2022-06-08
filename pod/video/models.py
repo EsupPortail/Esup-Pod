@@ -997,7 +997,7 @@ class Video(models.Model):
 
     def get_absolute_url(self):
         """Get the video absolute URL."""
-        return reverse("video", args=[str(self.slug)])
+        return reverse("video:video", args=[str(self.slug)])
 
     def get_full_url(self, request=None):
         """Get the video full URL."""

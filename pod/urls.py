@@ -13,31 +13,34 @@ from pod.authentication.views import authentication_login
 from pod.authentication.views import authentication_logout
 from pod.authentication.views import authentication_login_gateway
 from pod.authentication.views import userpicture
+"""
 
-from pod.video.views import video
 from pod.video.views import video_edit
 from pod.video.views import video_add
 from pod.video.views import video_delete
 
 # from pod.video.views import video_collaborate
-from pod.video.views import channel
+
 from pod.video.views import videos
 from pod.video.views import my_videos
-from pod.video.views import my_channels
-from pod.video.views import channel_edit
-from pod.video.views import theme_edit
+
 from pod.video.views import video_notes
 from pod.video.views import video_xhr
 from pod.video.views import video_count, video_version
-from pod.video.views import video_oembed
-from pod.video.views import stats_view
+"""
+
 from pod.video.views import get_comments, get_children_comment
 from pod.video.views import add_comment, delete_comment
 from pod.video.views import vote_get, vote_post
-from pod.video.views import get_categories, add_category
-from pod.video.views import edit_category, delete_category
-from pod.video.views import update_video_owner, filter_owners, filter_videos
-from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
+
+from pod.video.views import video_oembed
+from pod.video.views import my_channels
+from pod.video.views import channel
+from pod.video.views import video
+from pod.video.views import channel_edit
+from pod.video.views import theme_edit
+from pod.video.views import stats_view
+
 from pod.main.views import (
     contact_us,
     download_file,
@@ -54,14 +57,9 @@ from pod.recorder.views import (
     delete_record,
 )
 
-# from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
-from pod.video.views import PodChunkedUploadView, PodChunkedUploadCompleteView
-
-
 USE_CAS = getattr(settings, "USE_CAS", False)
 USE_SHIB = getattr(settings, "USE_SHIB", False)
 USE_OIDC = getattr(settings, "USE_OIDC", False)
-OEMBED = getattr(settings, "OEMBED", False)
 USE_BBB = getattr(settings, "USE_BBB", False)
 
 if USE_CAS:
@@ -76,77 +74,14 @@ urlpatterns = [
     url(r"^i18n/", include("django.conf.urls.i18n")),
     url(r"^jsi18n/$", JavaScriptCatalog.as_view(), name="javascript-catalog"),
     # App video
-    url(r"^videos/$", videos, name="videos"),
-    url(r"^rss-video/$", RssSiteVideosFeed(), name="rss-video"),
-    url(r"^rss-audio/$", RssSiteAudiosFeed(), name="rss-audio"),
-    url(
-        r"^rss-video/(?P<slug_c>[\-\d\w]+)/$",
-        RssSiteVideosFeed(),
-        name="rss-video",
-    ),
-    url(
-        r"^rss-audio/(?P<slug_c>[\-\d\w]+)/$",
-        RssSiteAudiosFeed(),
-        name="rss-audio",
-    ),
-    url(
-        r"^rss-video/(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$",
-        RssSiteVideosFeed(),
-        name="rss-video",
-    ),
-    url(
-        r"^rss-audio/(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$",
-        RssSiteAudiosFeed(),
-        name="rss-audio",
-    ),
-    # Manage video owner
-    url(
-        r"^video/updateowner/put/(?P<user_id>[\d]+)/$",
-        update_video_owner,
-        name="update_video_owner",
-    ),
-    url(r"^video/updateowner/owners/$", filter_owners, name="filter_owners"),
-    url(
-        r"^video/updateowner/videos/(?P<user_id>[\d]+)/$",
-        filter_videos,
-        name="filter_videos",
-    ),
-    url(r"^video/(?P<slug>[\-\d\w]+)/$", video, name="video"),
-    url(
-        r"^video/(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$",
-        video,
-        name="video_private",
-    ),
-    url(r"^video_add/$", video_add, name="video_add"),
-    url(r"^video_edit/$", video_edit, name="video_edit"),
-    url(r"^video_edit/(?P<slug>[\-\d\w]+)/$", video_edit, name="video_edit"),
-    url(
-        r"^video_delete/(?P<slug>[\-\d\w]+)/$",
-        video_delete,
-        name="video_delete",
-    ),
-    url(r"^video_notes/(?P<slug>[\-\d\w]+)/$", video_notes, name="video_notes"),
-    url(r"^video_count/(?P<id>[\d]+)/$", video_count, name="video_count"),
-    url(r"^video_version/(?P<id>[\d]+)/$", video_version, name="video_version"),
-    # url(r'^video_collaborate/(?P<slug>[\-\d\w]+)/$',
-    #    video_collaborate,
-    #    name='video_collaborate'),
-    url(r"^video_xhr/(?P<slug>[\-\d\w]+)/$", video_xhr, name="video_xhr"),
-    url(
-        r"^video_xhr/(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$",
-        video_xhr,
-        name="video_xhr",
-    ),
-    url(
-        "api/chunked_upload_complete/",
-        PodChunkedUploadCompleteView.as_view(),
-        name="api_chunked_upload_complete",
-    ),
-    url(
-        "api/chunked_upload/",
-        PodChunkedUploadView.as_view(),
-        name="api_chunked_upload",
-    ),
+   
+    
+
+    # videos
+    url(r"^videos/", include("pod.video.videos-urls")),
+    url(r"^rss", include("pod.video.rss-urls")),
+    url(r"^video/", include("pod.video.urls")),
+    
     url(r"^ajax_calls/search_user/", user_autocomplete),
     # my channels
     url(r"^my_channels/$", my_channels, name="my_channels"),
@@ -156,8 +91,7 @@ urlpatterns = [
         name="channel_edit",
     ),
     url(r"^theme_edit/(?P<slug>[\-\d\w]+)/$", theme_edit, name="theme_edit"),
-    # my videos
-    url(r"^my_videos/$", my_videos, name="my_videos"),
+   
     # recording
     url(r"^add_recording/$", add_recording, name="add_recording"),
     url(r"^recorder_notify/$", recorder_notify, name="recorder_notify"),
@@ -224,7 +158,7 @@ if USE_OIDC:
     ]
 
 # BBB
-if USE_BBB:
+if getattr(settings, "USE_BBB", False):
     urlpatterns += [
         url(r"^bbb/", include("pod.bbb.urls")),
     ]
@@ -232,7 +166,7 @@ if USE_BBB:
 ##
 # OEMBED feature patterns
 #
-if OEMBED:
+if getattr(settings, "OEMBED", False):
     urlpatterns += [
         url(r"^oembed/", video_oembed, name="video_oembed"),
     ]
@@ -262,19 +196,6 @@ for apps in settings.THIRD_PARTY_APPS:
     urlpatterns += [
         url(r"^" + apps + "/", include("pod.%s.urls" % apps)),
     ]
-
-##
-# LTI feature patterns
-#
-# if getattr(settings, 'LTI_ENABLED', False):
-#    # LTI href
-#    urlpatterns += [
-#        url(r'^lti/', include('lti_provider.urls')),
-#        url(r'^assignment/addvideo/',
-#            LTIAssignmentAddVideoView.as_view()),
-#        url(r'^assignment/getvideo/',
-#            LTIAssignmentGetVideoView.as_view()),
-#    ]
 
 if getattr(settings, "USE_STATS_VIEW", False):
     urlpatterns += [
@@ -331,27 +252,7 @@ if getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
         ),
     ]
 
-# VIDEO CATEGORY
-if getattr(settings, "USER_VIDEO_CATEGORY", False):
-    urlpatterns += [
-        url(r"^my_videos/categories/add/$", add_category, name="add_category"),
-        url(
-            r"^my_videos/categories/edit/(?P<c_slug>[\-\d\w]+)/$",
-            edit_category,
-            name="edit_category",
-        ),
-        url(
-            r"^my_videos/categories/delete/(?P<c_id>[\d]+)/$",
-            delete_category,
-            name="delete_category",
-        ),
-        url(
-            r"^my_videos/categories/(?P<c_slug>[\-\d\w]+)/$",
-            get_categories,
-            name="get_category",
-        ),
-        url(r"^my_videos/categories/$", get_categories, name="get_categories"),
-    ]
+
 
 
 # CHANNELS
