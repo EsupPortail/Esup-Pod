@@ -159,7 +159,7 @@
 
   // Search categery
   let searchCatInput = document.querySelector(
-    "#my_videos_filter #searchcategories"
+    "#filters #searchcategories"
   );
   let searchCatHandler = (s) => {
     let cats = document.querySelectorAll(
@@ -182,7 +182,7 @@
     searchCatHandler(searchCatInput.value.trim());
   });
 
-  // Update text 'Number video found' on filtering
+  /*// Update text 'Number video found' on filtering
   let manageNumberVideoFoundText = (v_len) => {
     let text = v_len > 1 ? gettext("videos found") : gettext("video found");
     let h2 = document.querySelector(".jumbotron h2");
@@ -197,7 +197,7 @@
       );
       if (warning) warning.parentNode.removeChild(warning);
     }
-  };
+  };*/
 
   // Add/Remove active class on category, html_el = <li></li>
   let manageCssActiveClass = (html_el) => {
@@ -209,12 +209,12 @@
     let curr_slug = html_el.querySelector(".cat_title").dataset.slug;
     let curr_id = html_el.querySelector("#remove_category_icon").dataset.del;
     html_el.classList.toggle("active");
-    getVideosFilteredContainer().innerHTML = "";
+    //getVideosFilteredContainer().innerHTML = "";
     if (CURR_FILTER.slug === curr_slug && CURR_FILTER.id == curr_id) {
       html_el.classList.remove("active"); // unfilter
       CURR_FILTER.slug = null;
       CURR_FILTER.id = null;
-      getVideosFilteredContainer().classList.add("hidden");
+      //getVideosFilteredContainer().classList.add("hidden");
       if (videos_list) {
         videos_list.setAttribute("class", "row infinite-container");
         let more_btn = $(".infinite-more-link")[0];
@@ -229,20 +229,20 @@
       CURR_FILTER.id = id;
       CURR_FILTER.slug = slug;
 
-      getVideosFilteredContainer().classList.remove("hidden");
+      //getVideosFilteredContainer().classList.remove("hidden");
 
-      if (videos_list) {
+      /*if (videos_list) {
         videos_list.setAttribute("class", "row infinite-container hidden");
         let more_btn = $(".infinite-more-link")[0];
 
         if($(".infinite-more-link").length){
             more_btn.setAttribute("class", "infinite-more-link hidden");
         }
-      }
+      }*/
     }
   };
 
-  // Create filtered videos container (HtmlELement)
+  /*// Create filtered videos container (HtmlELement)
   let getVideosFilteredContainer = () => {
     let videos_list_filtered = document.querySelector(
       ".jumbotron .filtered.infinite-container"
@@ -258,7 +258,7 @@
     videos_list_filtered.setAttribute("id", "videos_list");
     document.querySelector(".jumbotron").appendChild(videos_list_filtered);
     return videos_list_filtered;
-  };
+  };*/
   // Update videos Filtered in filtered container after editing category
   let updateFilteredVideosContainer = (category_data) => {
     if (
@@ -273,10 +273,10 @@
       let old_videos = getSavedData(CURR_FILTER.id).videos.map((v) => v.slug);
       let rm = old_videos.filter((v) => !actual_videos.includes(v));
       let added = actual_videos.filter((v) => !old_videos.includes(v));
-      let container_filtered = getVideosFilteredContainer();
+      //let container_filtered = getVideosFilteredContainer();
 
       let maxLen = rm.length > added.length ? rm.length : added.length;
-      for (let i = 0; i < maxLen; i++) {
+      /*for (let i = 0; i < maxLen; i++) {
         // remove video that was deselected when editing category
         if (rm[i]) {
           container_filtered.removeChild(
@@ -294,8 +294,8 @@
             )
           );
         }
-      }
-      manageNumberVideoFoundText(actual_videos.length);
+      }*/
+      //manageNumberVideoFoundText(actual_videos.length);
     }
   };
 
@@ -308,7 +308,7 @@
       let cat_filter_id = c.parentNode
         .querySelector(".category_actions #remove_category_icon")
         .dataset.del.trim();
-      videos_list_filtered = getVideosFilteredContainer();
+      //videos_list_filtered = getVideosFilteredContainer();
       manageCssActiveClass(c.parentNode); // manage active css class
       let jsonData = getSavedData(cat_filter_id);
       if (Object.keys(jsonData).length) {
@@ -316,16 +316,16 @@
           !CURR_FILTER.slug && !CURR_FILTER.id
             ? CATEGORIES_DATA[0]
             : jsonData.videos.length;
-        manageNumberVideoFoundText(videos_nb); // update text 'video found'
+        //manageNumberVideoFoundText(videos_nb); // update text 'video found'
         loader.classList.remove("show");
         if (CURR_FILTER.slug && CURR_FILTER.id)
           jsonData.videos.forEach((v) => {
-            videos_list_filtered.appendChild(getVideoElement(v));
+            //videos_list_filtered.appendChild(getVideoElement(v));
           });
       } else {
         jsonData = fetchCategoryData(cat_filter_slug);
         jsonData.then((data) => {
-          manageNumberVideoFoundText(data.videos.length); // update text 'video found'
+          //manageNumberVideoFoundText(data.videos.length); // update text 'video found'
           /*if (CURR_FILTER.slug && CURR_FILTER.id)
             data.videos.forEach((v) => {
               videos_list_filtered.appendChild(getVideoElement(v));
@@ -410,7 +410,9 @@
   // Make requets => get category data
   let fetchCategoryData = async (cat_slug) => {
     try {
+      console.log("kikou");
       let resp = await fetch(`${BASE_URL}${cat_slug}/`, { headers: HEADERS });
+
       return await resp.json();
     } catch (e) {
       loader.classList.remove("show");
@@ -720,7 +722,7 @@
 
   // Add onclick event to edit a category
   let cats_edit = document.querySelectorAll(
-    "#my_videos_filter .categories_list_item #edit_category"
+    "#filters .categories_list_item #edit_category"
   );
   cats_edit.forEach((c_e) => {
     editHandler(c_e);
@@ -769,7 +771,7 @@
 
   // Add onclick event to delete a category
   let cats_del = document.querySelectorAll(
-    "#my_videos_filter .categories_list_item #remove_category_icon"
+    "#filters .categories_list_item #remove_category_icon"
   );
   cats_del.forEach((c_d) => {
     deleteHandler(c_d);
@@ -801,21 +803,21 @@
               ];
             });
             document
-              .querySelector("#my_videos_filter .categories_list")
+              .querySelector("#filters .categories_list")
               .removeChild(CAT_TO_DELETE.html);
-            let filtered_container = getVideosFilteredContainer();
+            //let filtered_container = getVideosFilteredContainer();
             if (
               filtered_container &&
               CAT_TO_DELETE.id == CURR_FILTER.id &&
               CAT_TO_DELETE.slug === CURR_FILTER.slug
             ) {
-              filtered_container.parentNode.removeChild(filtered_container);
+              //filtered_container.parentNode.removeChild(filtered_container);
               let my_videos_container = document.querySelector(
                 ".infinite-container.hidden"
               );
               if (my_videos_container)
                 my_videos_container.classList.remove("hidden");
-              manageNumberVideoFoundText(CATEGORIES_DATA[0]);
+              //manageNumberVideoFoundText(CATEGORIES_DATA[0]);
               CURR_FILTER.slug = null;
               CURR_FILTER.id = null;
               document
@@ -903,7 +905,7 @@
             data.category.id
           );
           document
-            .querySelector("#my_videos_filter .categories_list")
+            .querySelector("#filters .categories_list")
             .appendChild(li);
           let msg_create = gettext("Category created successfully");
           showAlertMessage(msg_create);
@@ -919,7 +921,7 @@
   });
 
   // Add onclick event to add a new category
-  let add_cat = document.querySelector("#my_videos_filter #add_category_btn");
+  let add_cat = document.querySelector("#filters #add_category_btn");
   add_cat.addEventListener("click", (e) => {
     paginate([]);
     modal_title.innerText = add_cat.getAttribute("title").trim();
@@ -935,7 +937,7 @@
 
   // Add click event on category in filter bar to filter videos in my_videos vue
   let cats = document.querySelectorAll(
-    "#my_videos_filter .categories_list_item .cat_title"
+    "#filters .categories_list_item .cat_title"
   );
   cats.forEach((c) => {
     manageFilterVideos(c);

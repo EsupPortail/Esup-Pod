@@ -1,14 +1,19 @@
 {% load i18n %}
 {% load video_tags %}
 {% load thumbnail %}
+{% load custom_tags %}
 
 {% spaceless %}
-<div class="card card-body">
+<div class="card card-body" id="filters">
   <h2 class="card-title h4">
     <i data-feather="sliders"></i>&nbsp;{% trans "Filters"%}
   </h2>
 
-<form action="{% url 'videos' %}" method="post" id="filters">
+<form action="{% url 'videos' %}" method="post">
+{% if use_category %}
+  {% include "videos/filter_aside_category.html" %}
+{% endif %}
+
 {% if not HIDE_USER_FILTER and user.is_authenticated %}
   <fieldset>
     <legend  class="h5"><i data-feather="users"></i> {% trans "Users" %}</legend>

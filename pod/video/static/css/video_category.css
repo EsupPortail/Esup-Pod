@@ -246,9 +246,9 @@
  * Override filter aside category css
  * **********************************/
 
-#my_videos_filter{ padding: 1em .8em; }	
-#my_videos_filter h5.h5{ margin: 0; }
-#my_videos_filter .h5{
+#filters{ padding: 1em .8em; }	
+#filters h5.h5{ margin: 0; }
+#filters .category_fieldset .h5{
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -258,7 +258,7 @@
         -ms-flex-direction: column;
             flex-direction: column;
 }
-#my_videos_filter .h5 .align_flex{
+#filters .h5 .align_flex{
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -268,7 +268,7 @@
     font-size: 14px;
     margin-bottom: .8em;
 }
-#my_videos_filter .h5 .align_flex:last-child{
+#filters .h5 .align_flex:last-child{
     -ms-flex-item-align: end;
         align-self: flex-end;
     -webkit-box-align: center;
@@ -286,12 +286,12 @@
     -o-transition: .1s transform;
     transition: .1s transform;
 }
-#my_videos_filter .h5 .align_flex:last-child:hover{
+#filters .h5 .align_flex:last-child:hover{
     -webkit-transform: scale(1.04);
         -ms-transform: scale(1.04);
             transform: scale(1.04);
 }
-#my_videos_filter .h5 .align_flex .add_category{
+#filters .h5 .align_flex .add_category{
     width: 14px;
     display: block;
     color: inherit;
@@ -303,7 +303,7 @@
         -ms-transform: translateY(-2px);
             transform: translateY(-2px);
 }
-#my_videos_filter .category_icon{
+#filters .category_icon{
     display: inline-block;
     width: 22px;
     height: 22px;
@@ -313,11 +313,11 @@
         -ms-flex: none;
             flex: none;
 }
-#my_videos_filter .card-title{
+#filters .card-title{
     position: relative;
     padding-bottom: .8em;
 }
-#my_videos_filter .card-title::after{
+#filters .card-title::after{
     content: "";
     border-top: 1px solid #ccc !important;
     display: block;
@@ -326,11 +326,11 @@
     right: 0;
     bottom: 0;
 }
-#my_videos_filter .categories_list{
+#filters .categories_list{
     padding: 0;
     padding-left: .4em;
 }
-#my_videos_filter .categories_list_item{
+#filters .categories_list_item{
     list-style: square;
     padding: .4em;
     line-height: 1;
@@ -350,19 +350,19 @@
     -o-transition: .3s all;
     transition: .3s all;
 }
-#my_videos_filter .categories_list_item.active{
+#filters .categories_list_item.active{
     color: #fff;
     background-color: var(--primary);
 }
-#my_videos_filter .categories_list_item:not(.active):hover{
+#filters .categories_list_item:not(.active):hover{
     background-color: rgba(149, 149, 149, 0.09);
     border-color: rgba(149, 149, 149, 0.09);
 }
-#my_videos_filter .categories_list_item:not(.active):hover .cat_title{ color: var(--secondary);}
-#my_videos_filter .categories_list_item.active .cat_title{color: inherit;}
+#filters .categories_list_item:not(.active):hover .cat_title{ color: var(--secondary);}
+#filters .categories_list_item.active .cat_title{color: inherit;}
 
-#my_videos_filter .categories_list_item:last-child{ border: none;}
-#my_videos_filter .categories_list_item .cat_title{
+#filters .categories_list_item:last-child{ border: none;}
+#filters .categories_list_item .cat_title{
     -webkit-box-flex: 1;
         -ms-flex-positive: 1;
             flex-grow: 1;
@@ -376,7 +376,7 @@
     border-right: 1px solid #eee8e8;
     color: var(--gray-dark)
 }
-#my_videos_filter .categories_list_item .category_actions{
+#filters .categories_list_item .category_actions{
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -389,8 +389,8 @@
     width: 50px;
     line-height: 1.8;
 }
-#my_videos_filter .categories_list_item .remove_category,
-#my_videos_filter .categories_list_item .edit_category{
+#filters .categories_list_item .remove_category,
+#filters .categories_list_item .edit_category{
     display: block;
     width: 20px;
     color: inherit;
@@ -399,8 +399,8 @@
         -ms-flex: none;
             flex: none;
 }
-#my_videos_filter .categories_list_item .remove_category{width: 14px; color: var(--danger);}
-#my_videos_filter .categories_list_item.active .remove_category{color: #ff4759;}
+#filters .categories_list_item .remove_category{width: 14px; color: var(--danger);}
+#filters .categories_list_item.active .remove_category{color: #ff4759;}
 
 /************************************
  * Override Paginator css
