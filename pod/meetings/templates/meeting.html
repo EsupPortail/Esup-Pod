@@ -50,12 +50,14 @@
                         {% trans "Delete"%}
                     </button>
                 <br></br>
-                <p>{% trans "Link"%} <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'meetings:join' element.meetingID %}" id="Input">
-                    <!-- ne pas utiliser le "on click" -->
-                    <button onclick="copyText()" id="Input">{% trans "Copy"%}</button>
-                    <!-- à remplacer par un simple lien -->
+                <p>{% trans "Link"%} 
+                    <span>
+                    <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'meetings:join' element.meetingID %}" />
+                    <button type="button" class="btn btn-secondary btn-join-meeting">{% trans "Copy"%}</button>
+                    </span>
                     <a class="btn btn-info" href="{% url 'meetings:join' element.meetingID %}">{% trans "Join"%}</a>
                 </p>
+                
                 {% if element.info.end_time == "null" %}
                     {% if element.running == 'true'  %}
                         <span class="status running">{% trans "Running"%}</span>
@@ -92,22 +94,25 @@
 {% endblock page_content %}
 
 {% block more_script %}
-<script src="{% static 'js/app.js' %}"></script>
+
 <script>
-    /*$(document).on('click', '#delete-item', () => {
-        document.getElementById("delete-item").action = document.querySelector('#delete-item').href
-    });*/
+    $(".btn-join-meeting").click(function ()  {
+        /* Get the text field */
+        //var copyText = document.getElementById("copy");
+        let copyText = $(this).prev()[0];
+        /* Select the text field */
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); /* For mobile devices */
+        /* Copy the text inside the text field */
+        navigator.clipboard.writeText(copyText.value);
+        /* Alert the copied text */
+        alert("Copied the text: " + copyText.value);
+    });
     // au chargement de la modal, renseigner le champ action du formulaire de la modal avec la valeur du champ data-action du bouton ayant été cliqué.
     $(".btn-delete-meeting").on("click", function() {
         $("#delete-item").attr("action", $(this).attr("data-action"));
     });
-    /*
-    var myModal = document.getElementById('delete-meeting-modal')
-    var myInput = document.getElementById('myInput')
-    myModal.addEventListener('shown.bs.modal', function () {
-        alert('coucou');
-    })
-    */
+
 </script>
 {% endblock more_script %}
 

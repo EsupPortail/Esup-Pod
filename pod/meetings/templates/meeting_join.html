@@ -24,7 +24,7 @@
         <div class="card card-body">
             <form action="" method="POST">
                 {% csrf_token %}
-                <h2>{% trans "Join meeting"%} "{{ item }}"</h2>
+                <h2>{% trans "Join meeting"%} "{{ meeting }}"</h2>
                 <table>
                     {{form}}
                     <tr>

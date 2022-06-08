@@ -86,7 +86,7 @@ class Meetings(models.Model):
     start_date = models.DateTimeField(
         _("Start date"),
         default=timezone.now,
-        help_text=_("Start date of the live."),
+        help_text=_("Start date of the meeting."),
     )
     
     end_date = models.DateTimeField(
@@ -94,7 +94,7 @@ class Meetings(models.Model):
         default=timezone.now,
         null=True,
         blank=True,
-        help_text=_("End date of the live."),
+        help_text=_("End date of the meeting."),
     )
 
     attendee_password = models.CharField(
