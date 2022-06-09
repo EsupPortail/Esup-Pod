@@ -998,7 +998,6 @@ class Video(models.Model):
 
     def get_viewcount(self, from_nb_day=0):
         """Get the view counter of a video."""
-        """https://stackoverflow.com/questions/42080864/set-in-django-for-a-queryset"""
         set = self.viewcount_set.all();
         if from_nb_day != 0 :
             d = datetime.date.today() - timezone.timedelta(days=from_nb_day);
