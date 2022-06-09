@@ -68,6 +68,7 @@
   </div>
 </div>
 <!-- End Select File Modal -->
+{% block more_script %}
 <script>
 var id_input="";
 
@@ -109,3 +110,4 @@ $(document).on("click", "#remove_file_{{id}}", function(event) {
 });
 
 </script>
+{% endblock more_script %}
