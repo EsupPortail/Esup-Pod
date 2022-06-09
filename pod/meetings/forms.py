@@ -31,7 +31,26 @@ class MeetingsForm(forms.ModelForm):
         model = Meetings
         fields = fields = ['name', 'attendee_password', 'start_date', 'end_date', 'max_participants', 'auto_start_recording', 'allow_start_stop_recording', 'lock_settings_disable_cam', 'lock_settings_disable_mic', 'lock_settings_disable_private_chat', 'lock_settings_disable_public_chat', 'lock_settings_disable_note', 'lock_settings_locked_layout', 'ask_password']
 
-class JoinForm(forms.Form):
+class MeetingsNameForm(forms.Form):
     name = forms.CharField(label="Your name")
-    password = forms.CharField(
-        widget=forms.PasswordInput(render_value=False))
+    password = forms.CharField(label= ("Password"), widget=forms.PasswordInput())
+
+    def __init__(self, *args, **kwargs):
+        self.is_staff = (
+            kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
+        )
+        self.is_superuser = (
+            kwargs.pop("is_superuser")
+            if ("is_superuser" in kwargs.keys())
+            else self.is_superuser
+        )
+
+        super(MeetingsNameForm, self).__init__(*args, **kwargs)
+
+        self.is_authenticated = (
+            self.remove_field("name")
+        )
+
+    def remove_field(self, field):
+        if self.fields.get(field):
+            del self.fields[field]

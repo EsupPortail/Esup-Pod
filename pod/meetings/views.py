@@ -2,13 +2,15 @@ import datetime
 from genericpath import exists
 import logging
 from multiprocessing import context
+from re import template
 from django.conf import settings
 from django.http import (HttpResponse, HttpResponseNotFound, HttpResponseRedirect)
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
 from platformdirs import user_data_path
-from pod.meetings.forms import MeetingsForm, JoinForm
+from django.utils.translation import ugettext_lazy as _
+from pod.meetings.forms import MeetingsForm, MeetingsNameForm
 from pod.meetings.models import Meetings, User
 
 from django.views.decorators.csrf import csrf_protect
@@ -111,7 +113,7 @@ def join_meeting(request, meetingID, slug_private=None):
       print("is moderator : %s" % url)
 
     if request.method == "POST":
-        form = JoinForm(request.POST)
+        form = MeetingsNameForm(request.POST, is_staff=request.user.is_staff, is_superuser=request.user.is_superuser)
         if form.is_valid():
           data = form.cleaned_data
           name = data.get('name')
@@ -119,12 +121,12 @@ def join_meeting(request, meetingID, slug_private=None):
 
           return HttpResponseRedirect(Meetings.join_url(name, password))
     else:
-        form = JoinForm()
+        form = MeetingsNameForm(is_staff=request.user.is_staff, is_superuser=request.user.is_superuser)
 
     context={'meeting':meeting,
             'form':form}
 
-    return render(request, 'meeting_join.html', context)
+    return render(request, "meeting_join.html", context)
 
 def is_in_meeting_groups(user, meeting):
   return user.owner.accessgroup_set.filter(
@@ -188,6 +190,67 @@ def get_meeting_access(request, meeting, slug_private):
   else:
     return True
 
+def render_meeting(request, meetingID, template_meeting="meeting_join.html", slug_private=None):
+  meeting = get_object_or_404(Meetings, meetingID=meetingID, sites=get_current_site(request))
+
+  is_password_protected = meeting.attendee_password is not None and meeting.attendee_password != ""
+
+  show_page = get_meeting_access(request, meeting, slug_private)
+
+  if (
+    (show_page and not is_password_protected)
+    or (
+      show_page
+      and is_password_protected
+      and request.POST.get("password")
+      and request.POST.get("password") == meeting.attendee_password
+    )
+    or (slug_private and slug_private == meeting.get_hashkey())
+    or request.user == meeting.owner
+    or request.user.is_superuser
+    or request.user.has_perm("meeting.change_meeting")
+    or (request.user in meeting.additional_owners.all())
+  ):
+    return render(
+      request,
+      template_meeting,
+      {
+        "meeting": meeting,
+      },
+    )
+  else:
+    is_draft = meeting.is_draft
+    is_restricted = meeting.is_restricted
+    is_restricted_to_group = meeting.restrict_access_to_groups.all().exists()
+    is_access_protected = is_draft or is_restricted or is_restricted_to_group
+    if is_password_protected and (
+      not is_access_protected or (is_access_protected and show_page)
+    ):
+      form = (
+        MeetingsNameForm(request.POST) if request.POST else MeetingsNameForm()
+      )
+      if (
+        request.POST.get("password")
+        and request.POST.get("password") != meeting.attendee_password
+      ):
+        messages.add_message(
+          request, messages.ERROR, _("The password is incorrect.")
+        )
+      return render(
+        request,
+        "meeting.html",
+        {
+          "meeting": meeting,
+          "form": form,
+        },
+      )
+    else:
+      iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
+      return redirect(
+        "%s?%sreferrer=%s"
+        % (settings.LOGIN_URL, iframe_param, request.get_full_path())
+      )
+
 def edit_meeting(request, meetingID):
   meeting = get_object_or_404(Meetings, meetingID=meetingID, sites=get_current_site(request))
 
@@ -216,7 +279,6 @@ def edit_meeting(request, meetingID):
   if request.method == "POST":
     form = MeetingsForm(
       request.POST,
-      request.FILES,
       instance=meeting,
       is_staff=request.user.is_staff,
       is_superuser=request.user.is_superuser,
