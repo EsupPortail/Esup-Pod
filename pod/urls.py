@@ -19,11 +19,8 @@ from pod.video.views import add_comment, delete_comment
 from pod.video.views import vote_get, vote_post
 
 from pod.video.views import video_oembed
-from pod.video.views import my_channels
 from pod.video.views import channel
 from pod.video.views import video
-from pod.video.views import channel_edit
-from pod.video.views import theme_edit
 from pod.video.views import stats_view
 
 from pod.main.views import (
@@ -60,20 +57,14 @@ urlpatterns = [
     url(r"^jsi18n/$", JavaScriptCatalog.as_view(), name="javascript-catalog"),
 
     # videos
-    url(r"^videos/", include("pod.video.videos-urls")),
-    url(r"^rss", include("pod.video.rss-urls")),
+    url(r"^videos/", include("pod.video.urls-videos")),
+    url(r"^rss", include("pod.video.urls-rss")),
     url(r"^video/", include("pod.video.urls")),
 
     url(r"^ajax_calls/search_user/", user_autocomplete),
 
     # my channels
-    url(r"^my_channels/$", my_channels, name="my_channels"),
-    url(
-        r"^channel_edit/(?P<slug>[\-\d\w]+)/$",
-        channel_edit,
-        name="channel_edit",
-    ),
-    url(r"^theme_edit/(?P<slug>[\-\d\w]+)/$", theme_edit, name="theme_edit"),
+    url(r"^channels/", include("pod.video.urls-channels")),
 
     # recording
     url(r"^add_recording/$", add_recording, name="add_recording"),

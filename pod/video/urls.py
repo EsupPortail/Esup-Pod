@@ -31,12 +31,7 @@ urlpatterns = [
         filter_videos,
         name="filter_videos",
     ),
-    url(r"^(?P<slug>[\-\d\w]+)/$", video, name="video"),
-    url(
-        r"^(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$",
-        video,
-        name="video_private",
-    ),
+    
     url(r"^add/$", video_add, name="video_add"),
     url(r"^edit/$", video_edit, name="video_edit"),
     url(r"^edit/(?P<slug>[\-\d\w]+)/$", video_edit, name="video_edit"),
@@ -65,7 +60,13 @@ urlpatterns = [
         PodChunkedUploadView.as_view(),
         name="api_chunked_upload",
     ),
-    url(r"^my/$", my_videos, name="my_videos")
+    url(r"^my/$", my_videos, name="my_videos"),
+    url(r"^(?P<slug>[\-\d\w]+)/$", video, name="video"),
+    url(
+        r"^(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$",
+        video,
+        name="video_private",
+    )
 ]
 
 # VIDEO CATEGORY

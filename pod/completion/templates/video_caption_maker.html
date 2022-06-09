@@ -9,10 +9,10 @@
 
 {% block breadcrumbs %}
   {{block.super}}
-  <li class="breadcrumb-item"><a href="{% url 'my_videos' %}">{% trans 'My videos' %}</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'video:my_videos' %}">{% trans 'My videos' %}</a></li>
 
   <li class="breadcrumb-item">
-    <a href="{% url 'video' slug=video.slug %}">
+    <a href="{% url 'video:video' slug=video.slug %}">
       {{video.title|title|truncatechars:45}}
     </a>
   </li>

@@ -38,7 +38,7 @@
 <img src="{{ form.instance.headband.file.url }}" alt="{% trans 'Headband' %} {{ form.instance.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy" />
 {% endif %}
 
-<form id="channel_form" method="post" action="{% url 'channel_edit' slug=form.instance.slug %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
+<form id="channel_form" method="post" action="{% url 'channels:channel_edit' slug=form.instance.slug %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
   {% csrf_token %}
   <div class="list-group">
     {% if form.errors %}
