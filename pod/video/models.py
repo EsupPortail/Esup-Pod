@@ -7,6 +7,9 @@ import unicodedata
 import json
 import logging
 import hashlib
+import datetime
+
+from django.utils import timezone
 
 from django.db import models
 from django.conf import settings
@@ -860,6 +863,13 @@ class Video(models.Model):
     viewcount.fget.short_description = _("Sum of view")
 
     @property
+    def recentViewcount(self):
+        """Get the view counter of a video."""
+        return self.get_viewcount(180)
+
+    recentViewcount.fget.short_description = _("Sum of view of last 6 months (180 days)")
+
+    @property
     def get_encoding_step(self):
         """Get the current encoding step of a video."""
         try:
@@ -986,9 +996,16 @@ class Video(models.Model):
                 else:
                     return version["url"]
 
-    def get_viewcount(self):
+    def get_viewcount(self, from_nb_day=0):
         """Get the view counter of a video."""
-        count_sum = self.viewcount_set.all().aggregate(Sum("count"))
+        """https://stackoverflow.com/questions/42080864/set-in-django-for-a-queryset"""
+        set = self.viewcount_set.all();
+        if from_nb_day != 0 :
+            d = datetime.date.today() - timezone.timedelta(days=from_nb_day);
+            set = self.viewcount_set.filter(date__gte=d);
+
+        count_sum = set.aggregate(Sum("count"))
+
         if count_sum["count__sum"] is None:
             return 0
         return count_sum["count__sum"]
