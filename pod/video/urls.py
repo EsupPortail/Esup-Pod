@@ -31,7 +31,6 @@ urlpatterns = [
         filter_videos,
         name="filter_videos",
     ),
-
     url(r"^add/$", video_add, name="video_add"),
     url(r"^edit/$", video_edit, name="video_edit"),
     url(r"^edit/(?P<slug>[\-\d\w]+)/$", video_edit, name="video_edit"),

@@ -29,7 +29,7 @@ for application in INSTALLED_APPS:
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "db.sqlite",
+        "NAME": "db-test.sqlite",
     }
 }
 LANGUAGES = (("fr", "Français"), ("en", "English"), ("nl", "Netherlands"))
