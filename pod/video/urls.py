@@ -60,12 +60,6 @@ urlpatterns = [
         name="api_chunked_upload",
     ),
     url(r"^my/$", my_videos, name="my_videos"),
-    url(r"^(?P<slug>[\-\d\w]+)/$", video, name="video"),
-    url(
-        r"^(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$",
-        video,
-        name="video_private",
-    )
 ]
 
 # VIDEO CATEGORY
@@ -89,3 +83,12 @@ if getattr(settings, "USER_VIDEO_CATEGORY", False):
         ),
         url(r"^my/categories/$", get_categories, name="get_categories"),
     ]
+
+urlpatterns += [
+    url(r"^(?P<slug>[\-\d\w]+)/$", video, name="video"),
+    url(
+        r"^(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$",
+        video,
+        name="video_private",
+    )
+]
