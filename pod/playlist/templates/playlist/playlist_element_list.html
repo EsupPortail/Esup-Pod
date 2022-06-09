@@ -17,7 +17,7 @@
 			{% for element in list_videos %}
 				<tr class="video">
 					<td class="video_thumbnail">
-						<a href="{% url 'video' slug=element.video.slug %}">
+						<a href="{% url 'video:video' slug=element.video.slug %}">
 							<img class="img-thumbnail" src="{{element.video.get_thumbnail_url}}" alt="{% trans 'Video thumbnail' %}" width="100" height="50" loading="lazy">
 						</a>
 					</td>

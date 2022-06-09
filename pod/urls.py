@@ -228,18 +228,7 @@ if getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
 
 # CHANNELS
 urlpatterns += [
-    url(r"^(?P<slug_c>[\-\d\w]+)/$", channel, name="channel"),
-    url(r"^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$", channel, name="theme"),
-    url(
-        r"^(?P<slug_c>[\-\d\w]+)/video/(?P<slug>[\-\d\w]+)/$",
-        video,
-        name="video",
-    ),
-    url(
-        r"^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)" r"/video/(?P<slug>[\-\d\w]+)/$",
-        video,
-        name="video",
-    ),
+    url(r"^", include("pod.video.urls-channels-video")),
 ]
 
 if settings.DEBUG:

@@ -33,10 +33,10 @@
 {% block breadcrumbs %}
     {{ block.super }}
     {% if theme %}
-        <li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'channel-video:channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
         {% for t in theme.get_all_parents reversed %}
             {% if t is not theme %}
-                <li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'channel-video:theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
             {% endif %}
         {% endfor %}
         <li class="breadcrumb-item active" aria-current="page">{{theme.title}}</li>
