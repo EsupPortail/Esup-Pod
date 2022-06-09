@@ -56,6 +56,7 @@ router.register(r"chapters", chapter_views.ChapterViewSet)
 
 router.register(r"recording", recorder_views.RecordingModelViewSet)
 router.register(r"recordingfile", recorder_views.RecordingFileModelViewSet)
+router.register(r"recordingfiletreatment", recorder_views.RecordingFileTreatmentModelViewSet)
 router.register(r"recorder", recorder_views.RecorderModelViewSet)
 
 if getattr(settings, "USE_PODFILE", False):
