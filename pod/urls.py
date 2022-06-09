@@ -13,21 +13,6 @@ from pod.authentication.views import authentication_login
 from pod.authentication.views import authentication_logout
 from pod.authentication.views import authentication_login_gateway
 from pod.authentication.views import userpicture
-"""
-
-from pod.video.views import video_edit
-from pod.video.views import video_add
-from pod.video.views import video_delete
-
-# from pod.video.views import video_collaborate
-
-from pod.video.views import videos
-from pod.video.views import my_videos
-
-from pod.video.views import video_notes
-from pod.video.views import video_xhr
-from pod.video.views import video_count, video_version
-"""
 
 from pod.video.views import get_comments, get_children_comment
 from pod.video.views import add_comment, delete_comment
@@ -73,16 +58,14 @@ urlpatterns = [
     # Translation
     url(r"^i18n/", include("django.conf.urls.i18n")),
     url(r"^jsi18n/$", JavaScriptCatalog.as_view(), name="javascript-catalog"),
-    # App video
-   
-    
 
     # videos
     url(r"^videos/", include("pod.video.videos-urls")),
     url(r"^rss", include("pod.video.rss-urls")),
     url(r"^video/", include("pod.video.urls")),
-    
+
     url(r"^ajax_calls/search_user/", user_autocomplete),
+
     # my channels
     url(r"^my_channels/$", my_channels, name="my_channels"),
     url(
@@ -91,7 +74,7 @@ urlpatterns = [
         name="channel_edit",
     ),
     url(r"^theme_edit/(?P<slug>[\-\d\w]+)/$", theme_edit, name="theme_edit"),
-   
+
     # recording
     url(r"^add_recording/$", add_recording, name="add_recording"),
     url(r"^recorder_notify/$", recorder_notify, name="recorder_notify"),
@@ -252,9 +235,6 @@ if getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
         ),
     ]
 
-
-
-
 # CHANNELS
 urlpatterns += [
     url(r"^(?P<slug_c>[\-\d\w]+)/$", channel, name="channel"),
@@ -271,10 +251,8 @@ urlpatterns += [
     ),
 ]
 
-
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
 
 # Change admin site title
 admin.site.site_header = _("Pod Administration")

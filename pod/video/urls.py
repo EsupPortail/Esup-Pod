@@ -1,31 +1,19 @@
 from django.conf import settings
 from django.conf.urls import url
-from django.urls import include, path
+# from django.urls import include, path
 
 from .views import video
 from .views import video_edit
 from .views import video_add
 from .views import video_delete
 
-# from .views import video_collaborate
-from .views import channel
-
 from .views import my_videos
-from .views import my_channels
-from .views import channel_edit
-from .views import theme_edit
 from .views import video_notes
 from .views import video_xhr
 from .views import video_count, video_version
-from .views import video_oembed
-from .views import stats_view
-from .views import get_comments, get_children_comment
-from .views import add_comment, delete_comment
-from .views import vote_get, vote_post
 from .views import get_categories, add_category
 from .views import edit_category, delete_category
 from .views import update_video_owner, filter_owners, filter_videos
-from .feeds import RssSiteVideosFeed, RssSiteAudiosFeed
 from .views import PodChunkedUploadView, PodChunkedUploadCompleteView
 
 app_name = "video"
@@ -60,9 +48,7 @@ urlpatterns = [
     url(r"^notes/(?P<slug>[\-\d\w]+)/$", video_notes, name="video_notes"),
     url(r"^count/(?P<id>[\d]+)/$", video_count, name="video_count"),
     url(r"^version/(?P<id>[\d]+)/$", video_version, name="video_version"),
-    # url(r'^video_collaborate/(?P<slug>[\-\d\w]+)/$',
-    #    video_collaborate,
-    #    name='video_collaborate'),
+
     url(r"^xhr/(?P<slug>[\-\d\w]+)/$", video_xhr, name="video_xhr"),
     url(
         r"^xhr/(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$",
@@ -79,9 +65,7 @@ urlpatterns = [
         PodChunkedUploadView.as_view(),
         name="api_chunked_upload",
     ),
-     # my videos
-    url(r"^my/$", my_videos, name="my_videos"),
-    
+    url(r"^my/$", my_videos, name="my_videos")
 ]
 
 # VIDEO CATEGORY
@@ -105,5 +89,3 @@ if getattr(settings, "USER_VIDEO_CATEGORY", False):
         ),
         url(r"^my/categories/$", get_categories, name="get_categories"),
     ]
-
-
