@@ -19,8 +19,6 @@ from pod.video.views import add_comment, delete_comment
 from pod.video.views import vote_get, vote_post
 
 from pod.video.views import video_oembed
-from pod.video.views import channel
-from pod.video.views import video
 from pod.video.views import stats_view
 
 from pod.main.views import (
