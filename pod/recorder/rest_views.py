@@ -1,6 +1,7 @@
 from rest_framework import serializers, viewsets
 from .models import RecordingFile, Recording, Recorder, RecordingFileTreatment
 
+
 class RecordingFileTreatmentModelSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = RecordingFileTreatment
