@@ -32,6 +32,6 @@ def set_default_site(sender, **kwargs):
 
 class AuthConfig(AppConfig):
     name = "pod.authentication"
-
+    default_auto_field = 'django.db.models.BigAutoField'
     def ready(self):
         post_migrate.connect(set_default_site, sender=self)

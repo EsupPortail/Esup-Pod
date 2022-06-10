@@ -14,6 +14,6 @@ def set_default_site(sender, **kwargs):
 
 class LiveConfig(AppConfig):
     name = "pod.live"
-
+    default_auto_field = 'django.db.models.BigAutoField'
     def ready(self):
         post_migrate.connect(set_default_site, sender=self)
