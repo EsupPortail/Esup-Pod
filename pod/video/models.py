@@ -999,10 +999,10 @@ class Video(models.Model):
     def get_viewcount(self, from_nb_day=0):
         """Get the view counter of a video."""
         if from_nb_day > 0 :
-            d = datetime.date.today() - timezone.timedelta(days=from_nb_day);
-            set = self.viewcount_set.filter(date__gte=d);
+            d = datetime.date.today() - timezone.timedelta(days=from_nb_day)
+            set = self.viewcount_set.filter(date__gte=d)
         else :
-            set = self.viewcount_set.all();
+            set = self.viewcount_set.all()
 
         count_sum = set.aggregate(Sum("count"))
 
