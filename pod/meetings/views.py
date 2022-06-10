@@ -109,7 +109,7 @@ def join_meeting(request, meetingID, slug_private=None):
 
     if request.user.is_authenticated and (request.user == meeting.owner or request.user in meeting.additional_owners):
       name = request.user.get_full_name()
-      url = meeting.join_url(request.user.get_full_name(), meeting.moderator_password)
+      url = meeting.join_url(request.user.get_full_name(), meeting.attendee_password)
       print("is moderator : %s" % url)
 
     if request.method == "POST":
@@ -117,9 +117,9 @@ def join_meeting(request, meetingID, slug_private=None):
         if form.is_valid():
           data = form.cleaned_data
           name = data.get('name')
-          password = data.get('password')
+          attendee_password = data.get('password')
 
-          return HttpResponseRedirect(Meetings.join_url(name, password))
+          return HttpResponseRedirect(Meetings.join_url(name, attendee_password))
     else:
         form = MeetingsNameForm(is_staff=request.user.is_staff, is_superuser=request.user.is_superuser)
 

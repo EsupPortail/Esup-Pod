@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.sites.models import Site
 from django.db.models.query import QuerySet
 
-from pod.meetings.models import Meetings
+from pod.meetings.models import Meetings, User
 
 class MeetingsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -47,9 +47,16 @@ class MeetingsNameForm(forms.Form):
 
         super(MeetingsNameForm, self).__init__(*args, **kwargs)
 
-        self.is_authenticated = (
-            self.remove_field("name")
-        )
+        instance = getattr(self, 'instance', None)
+        if instance and instance.additional_owners:
+            self.fields['name'].required = False
+            self.fields['name'].widget.attrs['disabled'] = 'disabled'
+
+        if instance and instance.owner:
+            self.fields['name'].required = False
+            self.fields['password'].required = False
+            self.fields['name'].widget.attrs['disabled'] = 'disabled'
+            self.fields['password'].widget.attrs['disabled'] = 'disabled'
 
     def remove_field(self, field):
         if self.fields.get(field):

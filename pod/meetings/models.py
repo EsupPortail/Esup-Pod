@@ -291,8 +291,7 @@ class Meetings(models.Model):
         if result:
             return True
         return False
-
-    @classmethod    
+   
     def meeting_info(self):
         call = 'getMeetingInfo'
         query = urlencode((
@@ -316,7 +315,6 @@ class Meetings(models.Model):
         else:
             return None
 
-    @classmethod
     def get_meetings(self):
         call = 'getMeetings'
         query = urlencode((
@@ -348,12 +346,12 @@ class Meetings(models.Model):
         '''
 
     @classmethod
-    def join_url(self, name, password):
+    def join_url(self, name, attendee_password):
         call = 'join'
         parameters={}
         parameters.update({
-            'fullName': name,
-            'password': password,   
+            'fullName': self.name,
+            'password': attendee_password,   
         })
         query = urlencode(parameters)
         hashed = self.api_call(query, call)
@@ -361,9 +359,9 @@ class Meetings(models.Model):
         return url
 
     def create(self):
-        call_api="create"
+        call="create"
         voicebridge = 70000 + random.randint(0,9999)
-        field_to_exclude = ["id", "running", "parent_meeting_id", "internal_meeting_id", "voice_bridge", "welcome_text", "owner", "additional_owners", "sites", "logout_url", "auto_start_recording", "allow_start_stop_recording", "webcam_only_for_moderators", "lock_settings_disable_cam", "lock_settings_disable_mic", "lock_settings_disable_private_chat", "lock_settings_disable_public_chat", "lock_settings_disable_note", "lock_settings_locked_layout"] 
+        field_to_exclude = ["id", "running", "parent_meeting_id", "internal_meeting_id", "voice_bridge", "welcome_text", "owner", "additional_owners", "sites", "logout_url", "auto_start_recording", "allow_start_stop_recording", "webcam_only_for_moderators", "lock_settings_disable_cam", "lock_settings_disable_mic", "lock_settings_disable_private_chat", "lock_settings_disable_public_chat", "lock_settings_disable_note", "lock_settings_locked_layout", "ask_password", "restrict_access_to_groups", "is_restricted", "is_draft"] 
         parameters={}
         for field in self._meta.get_fields():
             print(field.name)
@@ -374,9 +372,9 @@ class Meetings(models.Model):
         print(parameters)
         query = urlencode(parameters)
         print(query)
-        hashed = self.api_call(query, call_api)
+        hashed = self.api_call(query, call)
         print(hashed)
-        url = BBB_API_URL + call_api + '?' + hashed
+        url = BBB_API_URL + call + '?' + hashed
         print(url)
         result = parse_xml(requests.get(url).content.decode('utf-8'))
         print(result)
