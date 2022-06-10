@@ -9,8 +9,6 @@ import logging
 import hashlib
 import datetime
 
-from django.utils import timezone
-
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -59,7 +57,9 @@ logger = logging.getLogger(__name__)
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
 )
-
+VIDEO_RECENT_VIEWCOUNT = getattr(
+    settings, "VIDEO_RECENT_VIEWCOUNT", 180
+)
 VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
 
 LANG_CHOICES = getattr(
@@ -865,7 +865,7 @@ class Video(models.Model):
     @property
     def recentViewcount(self):
         """Get the view counter of a video."""
-        return self.get_viewcount(180)
+        return self.get_viewcount(VIDEO_RECENT_VIEWCOUNT)
 
     recentViewcount.fget.short_description = _("Sum of view of last 6 months (180 days)")
 
@@ -998,10 +998,11 @@ class Video(models.Model):
 
     def get_viewcount(self, from_nb_day=0):
         """Get the view counter of a video."""
-        set = self.viewcount_set.all();
-        if from_nb_day != 0 :
+        if from_nb_day > 0 :
             d = datetime.date.today() - timezone.timedelta(days=from_nb_day);
             set = self.viewcount_set.filter(date__gte=d);
+        else :
+            set = self.viewcount_set.all();
 
         count_sum = set.aggregate(Sum("count"))
 
