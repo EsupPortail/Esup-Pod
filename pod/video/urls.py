@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.conf.urls import url
-# from django.urls import include, path
+from django.urls import include, path
 
 from .views import video
 from .views import video_edit
@@ -61,6 +61,14 @@ urlpatterns = [
     ),
     url(r"^my/$", my_videos, name="my_videos"),
 ]
+# COMPLETION
+urlpatterns += [
+    path("completion/", include("pod.completion.urls", namespace='completion')),
+]
+# CHAPTER
+urlpatterns += [
+    path("chapter/", include("pod.chapter.urls", namespace='chapter')),
+]
 
 # VIDEO CATEGORY
 if getattr(settings, "USER_VIDEO_CATEGORY", False):
@@ -83,7 +91,7 @@ if getattr(settings, "USER_VIDEO_CATEGORY", False):
         ),
         url(r"^my/categories/$", get_categories, name="get_categories"),
     ]
-
+# DIRECT ACCESS TO A VIDEO
 urlpatterns += [
     url(r"^(?P<slug>[\-\d\w]+)/$", video, name="video"),
     url(

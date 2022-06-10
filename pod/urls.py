@@ -3,6 +3,7 @@
 from django.conf import settings
 from django.conf.urls import url
 from django.conf.urls import include
+from django.urls import path
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
@@ -113,6 +114,10 @@ urlpatterns = [
     # custom
     url(r"^custom/", include("pod.custom.urls")),
 ]
+# PLAYLIST
+urlpatterns += [
+    path("playlist/", include("pod.playlist.urls", namespace='playlist')),
+]
 urlpatterns += (url(r"^maintenance/$", maintenance, name="maintenance"),)
 
 # CAS
@@ -147,17 +152,6 @@ if getattr(settings, "USE_OPENCAST_STUDIO", False):
     urlpatterns += [
         url(r"^studio/", include("pod.recorder.studio_urls")),
     ]
-
-# APPS -> to change !
-urlpatterns += [
-    url(r"^", include("pod.completion.urls")),
-]
-urlpatterns += [
-    url(r"^", include("pod.chapter.urls")),
-]
-urlpatterns += [
-    url(r"^", include("pod.playlist.urls")),
-]
 
 if getattr(settings, "USE_PODFILE", False):
     urlpatterns += [
