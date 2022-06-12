@@ -624,9 +624,10 @@ class Discipline(models.Model):
 
 
 @receiver(pre_save, sender=Discipline)
-def default_site_channel(sender, instance, **kwargs):
+def default_site_discipline(sender, instance, **kwargs):
     if not hasattr(instance, 'site'):
         instance.site = Site.objects.get_current()
+
 
 class Video(models.Model):
     """Class describing video objects."""
