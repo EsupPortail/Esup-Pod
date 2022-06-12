@@ -28,7 +28,7 @@ def set_default_site(sender, **kwargs):
     for chan in Channel.objects.all():
         apply_default_site_fk(chan, site)
     for dis in Discipline.objects.all():
-        apply_default_site(dis, site)
+        apply_default_site_fk(chan, site)
     for typ in Type.objects.all():
         apply_default_site(typ, site)
     for vr in VideoRendition.objects.all():

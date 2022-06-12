@@ -425,7 +425,7 @@ class ThemeAdmin(admin.ModelAdmin):
                 channel__site=Site.objects.get_current()
             )
         if (db_field.name) == "channel":
-            kwargs["queryset"] = Channel.objects.filter(sites=Site.objects.get_current())
+            kwargs["queryset"] = Channel.objects.filter(site=Site.objects.get_current())
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
@@ -492,7 +492,7 @@ class DisciplineAdmin(TranslationAdmin):
     def get_form(self, request, obj=None, **kwargs):
         if not request.user.is_superuser:
             exclude = ()
-            exclude += ("sites",)
+            exclude += ("site",)
             self.exclude = exclude
         form = super(DisciplineAdmin, self).get_form(request, obj, **kwargs)
         return form
@@ -500,13 +500,13 @@ class DisciplineAdmin(TranslationAdmin):
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
         if not change:
-            obj.sites.add(get_current_site(request))
+            obj.site = get_current_site(request)
             obj.save()
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(sites=get_current_site(request))
+            qs = qs.filter(site=get_current_site(request))
         return qs
 
 

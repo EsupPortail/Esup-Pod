@@ -603,7 +603,11 @@ class Discipline(models.Model):
         null=True,
         verbose_name=_("Icon"),
     )
-    sites = models.ManyToManyField(Site)
+    site = models.ForeignKey(
+        Site,
+        verbose_name=_("Site"),
+        on_delete=models.CASCADE,
+    )
 
     def __str__(self):
         return "%s" % (self.title)
@@ -619,11 +623,10 @@ class Discipline(models.Model):
         verbose_name_plural = _("Disciplines")
 
 
-@receiver(post_save, sender=Discipline)
-def default_site_discipline(sender, instance, created, **kwargs):
-    if len(instance.sites.all()) == 0:
-        instance.sites.add(Site.objects.get_current())
-
+@receiver(pre_save, sender=Discipline)
+def default_site_channel(sender, instance, **kwargs):
+    if not hasattr(instance, 'site'):
+        instance.site = Site.objects.get_current()
 
 class Video(models.Model):
     """Class describing video objects."""

@@ -219,7 +219,7 @@ def context_navbar(request):
 
     disciplines = (
         Discipline.objects.filter(
-            sites=get_current_site(request),
+            site=get_current_site(request),
             video__is_draft=False,
             video__sites=get_current_site(request),
         )

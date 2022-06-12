@@ -795,7 +795,7 @@ class VideoForm(forms.ModelForm):
             "restrict_access_to_groups"
         ].queryset.filter(sites=Site.objects.get_current())
         self.fields["discipline"].queryset = Discipline.objects.all().filter(
-            sites=Site.objects.get_current()
+            site=Site.objects.get_current()
         )
         if "channel" in self.fields:
             self.fields["channel"].queryset = self.fields["channel"].queryset.filter(

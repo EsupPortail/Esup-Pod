@@ -165,7 +165,7 @@ class MyChannelsTestView(TestCase):
         c2 = Channel.objects.create(title="ChannelTest2")
         c2.owners.add(user)
         for c in Channel.objects.all():
-            c.sites = site
+            c.site = site
 
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
