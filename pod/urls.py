@@ -20,7 +20,6 @@ from pod.video.views import add_comment, delete_comment
 from pod.video.views import vote_get, vote_post
 
 from pod.video.views import video_oembed
-from pod.video.views import stats_view
 
 from pod.main.views import (
     contact_us,
@@ -154,21 +153,6 @@ if getattr(settings, "USE_PODFILE", False):
 for apps in settings.THIRD_PARTY_APPS:
     urlpatterns += [
         url(r"^" + apps + "/", include("pod.%s.urls" % apps)),
-    ]
-
-if getattr(settings, "USE_STATS_VIEW", False):
-    urlpatterns += [
-        url(r"^video_stats_view/$", stats_view, name="video_stats_view"),
-        url(
-            r"^video_stats_view/(?P<slug>[-\w]+)/$",
-            stats_view,
-            name="video_stats_view",
-        ),
-        url(
-            r"^video_stats_view/(?P<slug>[-\w]+)/(?P<slug_t>[-\w]+)/$",
-            stats_view,
-            name="video_stats_view",
-        ),
     ]
 
 # COMMENT and VOTE
