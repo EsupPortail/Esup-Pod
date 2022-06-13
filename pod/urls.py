@@ -48,6 +48,8 @@ urlpatterns = [
     # Translation
     url(r"^i18n/", include("django.conf.urls.i18n")),
     url(r"^jsi18n/$", JavaScriptCatalog.as_view(), name="javascript-catalog"),
+    # Maintenance mode
+    url(r"^maintenance/$", maintenance, name="maintenance"),
 
     # videos
     url(r"^videos/", include("pod.video.urls-videos")),
@@ -61,7 +63,6 @@ urlpatterns = [
 
     # recording
     url(r"^record/", include("pod.recorder.urls")),
-    
     # search
     url(r"^search/$", search_videos, name="search_videos"),
     # auth cas
@@ -111,7 +112,6 @@ urlpatterns = [
 urlpatterns += [
     path("playlist/", include("pod.playlist.urls", namespace='playlist')),
 ]
-urlpatterns += (url(r"^maintenance/$", maintenance, name="maintenance"),)
 
 # CAS
 if USE_CAS:
