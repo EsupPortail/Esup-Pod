@@ -1361,3 +1361,8 @@ COOKIE_LEARN_MORE = ""
 #     'TRACKING_TEMPLATE': 'custom/tracking.html',
 """
 USE_VIDEO_EVENT_TRACKING = False
+
+"""
+# Durée (en nombre de jours) sur laquelle on souhaite compter le nombre de vues récentes
+"""
+VIDEO_RECENT_VIEWCOUNT = 180
