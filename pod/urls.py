@@ -31,12 +31,6 @@ from pod.main.views import (
 )
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
-from pod.recorder.views import (
-    add_recording,
-    recorder_notify,
-    claim_record,
-    delete_record,
-)
 
 USE_CAS = getattr(settings, "USE_CAS", False)
 USE_SHIB = getattr(settings, "USE_SHIB", False)
@@ -66,10 +60,9 @@ urlpatterns = [
     url(r"^channels/", include("pod.video.urls-channels")),
 
     # recording
-    url(r"^add_recording/$", add_recording, name="add_recording"),
-    url(r"^recorder_notify/$", recorder_notify, name="recorder_notify"),
-    url(r"^claim_record/$", claim_record, name="claim_record"),
-    url(r"^delete_record/(?P<id>[\d]+)/$", delete_record, name="delete_record"),
+    url(r"^record/", include("pod.recorder.urls")),
+    
+    # search
     url(r"^search/$", search_videos, name="search_videos"),
     # auth cas
     url(

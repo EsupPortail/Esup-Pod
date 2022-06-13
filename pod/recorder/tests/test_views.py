@@ -4,6 +4,7 @@ Unit tests for recorder views
 import hashlib
 
 from django.conf import settings
+from django.urls import reverse
 from django.test import TestCase
 from django.test import Client, override_settings
 from django.contrib.auth.models import User
@@ -59,13 +60,14 @@ class recorderViewsTestCase(TestCase):
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        response = self.client.get("/add_recording/")
+        url = reverse("record:add_recording")
+        response = self.client.get(url)
         self.assertRaises(PermissionDenied)  # No mediapath and user is not SU
 
         self.user.is_superuser = True
         self.user.save()
         response = self.client.get(
-            "/add_recording/", {"mediapath": "video.mp4", "recorder": 1}
+            url, {"mediapath": "video.mp4", "recorder": 1}
         )
         self.assertEqual(response.status_code, 302)  # User is not staff
 
@@ -74,12 +76,12 @@ class recorderViewsTestCase(TestCase):
 
         # recorder not exist
         response = self.client.get(
-            "/add_recording/", {"mediapath": "video.mp4", "recorder": 100}
+            url, {"mediapath": "video.mp4", "recorder": 100}
         )
         self.assertEqual(response.status_code, 403)
 
         response = self.client.get(
-            "/add_recording/", {"mediapath": "video.mp4", "recorder": 1}
+            url, {"mediapath": "video.mp4", "recorder": 1}
         )
         self.assertEqual(response.status_code, 200)
 
@@ -91,17 +93,18 @@ class recorderViewsTestCase(TestCase):
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        response = self.client.get("/claim_record/")
+        url = reverse("record:claim_record")
+        response = self.client.get(url)
         self.assertRaises(PermissionDenied)  # No mediapath and user is not SU
 
         self.user.is_superuser = True
         self.user.save()
-        response = self.client.get("/claim_record/")
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)  # User is not staff
 
         self.user.is_staff = True
         self.user.save()
-        response = self.client.get("/claim_record/")
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
         self.assertTemplateUsed(response, "recorder/claim_record.html")
@@ -112,21 +115,22 @@ class recorderViewsTestCase(TestCase):
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        response = self.client.get("/delete_record/1/")
+        url = reverse("record:delete_record", kwargs={'id': 1})
+        response = self.client.get(url)
         self.assertRaises(PermissionDenied)
 
         self.user.is_staff = True
         self.user.save()
-        response = self.client.get("/delete_record/1/")
+        response = self.client.get(url)
         self.assertRaises(PermissionDenied)
 
         self.user.is_superuser = True
         self.user.save()
-
-        response = self.client.get("/delete_record/2/")
+        url = reverse("record:delete_record", kwargs={'id': 2})
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
-
-        response = self.client.get("/delete_record/1/")
+        url = reverse("record:delete_record", kwargs={'id': 1})
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
         self.assertTemplateUsed(response, "recorder/record_delete.html")
@@ -137,7 +141,8 @@ class recorderViewsTestCase(TestCase):
         self.client = Client()
 
         record = Recorder.objects.get(id=1)
-        response = self.client.get("/recorder_notify/")
+        url = reverse("record:recorder_notify", kwargs={})
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.content,
@@ -145,7 +150,7 @@ class recorderViewsTestCase(TestCase):
         )
 
         response = self.client.get(
-            "/recorder_notify/?key=abc&mediapath"
+            url + "?key=abc&mediapath"
             "=/some/path&recordingPlace=16_3_10_37"
             "&course_title=title"
         )
@@ -155,7 +160,7 @@ class recorderViewsTestCase(TestCase):
         m = hashlib.md5()
         m.update(record.ipunder().encode("utf-8") + record.salt.encode("utf-8"))
         response = self.client.get(
-            "/recorder_notify/?key="
+            url + "?key="
             + m.hexdigest()
             + "&mediapath=/some/path&recordingPlace"
             "=16_3_10_37&course_title=title"
@@ -196,11 +201,12 @@ class studio_podTestView(TestCase):
     def test_studio_podTestView_get_request(self):
         self.create_index_file()
         self.client = Client()
-        response = self.client.get("/studio/")
+        url = reverse("recorder:studio_pod", kwargs={})
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        response = self.client.get("/studio/")
+        response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
         print(" --->  test_studio_podTestView_get_request of openCastTestView: OK!")
@@ -210,15 +216,16 @@ class studio_podTestView(TestCase):
         reload(views)
         self.create_index_file()
         self.client = Client()
-        response = self.client.get("/studio/")
+        url = reverse("recorder:studio_pod", kwargs={})
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        response = self.client.get("/studio/")
+        response = self.client.get(url)
         self.assertEquals(response.context["access_not_allowed"], True)
         self.user.is_staff = True
         self.user.save()
-        response = self.client.get("/studio/")
+        response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         print(
             " --->  test_studio_podTestView_get_request_restrict ",
@@ -227,7 +234,8 @@ class studio_podTestView(TestCase):
 
     def test_studio_presenter_post(self):
         self.client = Client()
-        response = self.client.get("/studio/presenter_post")
+        url = reverse("recorder:presenter_post", kwargs={})
+        response = self.client.get(url)
         self.assertRaises(PermissionDenied)
 
         self.user = User.objects.get(username="pod")
@@ -236,20 +244,21 @@ class studio_podTestView(TestCase):
 
         self.client.force_login(self.user)
         # test get method
-        response = self.client.get("/studio/presenter_post")
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 400)
 
-        response = self.client.post("/studio/presenter_post", {"presenter": "test"})
+        response = self.client.post(url, {"presenter": "test"})
         self.assertEqual(response.status_code, 400)
 
-        response = self.client.post("/studio/presenter_post", {"presenter": "mid"})
+        response = self.client.post(url, {"presenter": "mid"})
         self.assertEqual(response.status_code, 200)
 
         print(" -->  test_studio_presenter_post of studio_podTestView", " : OK !")
 
     def test_studio_info_me_json(self):
         self.client = Client()
-        response = self.client.get("/studio/info/me.json")
+        url = reverse("recorder:info_me_json", kwargs={})
+        response = self.client.get(url)
         self.assertRaises(PermissionDenied)
 
         self.user = User.objects.get(username="pod")
@@ -257,7 +266,7 @@ class studio_podTestView(TestCase):
         self.user.save()
 
         self.client.force_login(self.user)
-        response = self.client.get("/studio/info/me.json")
+        response = self.client.get(url)
         self.assertTrue(b"ROLE_ADMIN" in response.content)
         self.assertEqual(response.status_code, 200)
 
@@ -265,7 +274,8 @@ class studio_podTestView(TestCase):
 
     def test_studio_ingest_createMediaPackage(self):
         self.client = Client()
-        response = self.client.get("/studio/ingest/createMediaPackage")
+        url = reverse("recorder:ingest_createMediaPackage", kwargs={})
+        response = self.client.get(url)
         self.assertRaises(PermissionDenied)
 
         self.user = User.objects.get(username="pod")
@@ -273,7 +283,7 @@ class studio_podTestView(TestCase):
         self.user.save()
 
         self.client.force_login(self.user)
-        response = self.client.get("/studio/ingest/createMediaPackage")
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
         # check if response is xml
@@ -304,11 +314,13 @@ class studio_podTestView(TestCase):
         self.user.save()
 
         self.client.force_login(self.user)
-        response = self.client.post("/studio/presenter_post", {"presenter": "mid"})
+        url_presenter_post = reverse("recorder:presenter_post", kwargs={})
+        response = self.client.post(url_presenter_post, {"presenter": "mid"})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.client.session["presenter"], "mid")
 
-        response = self.client.get("/studio/ingest/createMediaPackage")
+        url_createMediaPackage = reverse("recorder:ingest_createMediaPackage", kwargs={})
+        response = self.client.get(url_createMediaPackage)
         self.assertEqual(response.status_code, 200)
 
         mediaPackage_content = minidom.parseString(response.content)
@@ -318,11 +330,11 @@ class studio_podTestView(TestCase):
         self.assertEqual(presenter, "mid")
         self.assertEqual(self.client.session.get("presenter", None), None)
 
-        response = self.client.post("/studio/presenter_post", {"presenter": "piph"})
+        response = self.client.post(url_presenter_post, {"presenter": "piph"})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.client.session["presenter"], "piph")
 
-        response = self.client.get("/studio/ingest/createMediaPackage")
+        response = self.client.get(url_createMediaPackage)
         self.assertEqual(response.status_code, 200)
 
         mediaPackage_content = minidom.parseString(response.content)
@@ -340,7 +352,8 @@ class studio_podTestView(TestCase):
 
     def test_studio_ingest_addDCCatalog(self):
         self.client = Client()
-        response = self.client.get("/studio/ingest/addDCCatalog")
+        url_addDCCatalog = reverse("recorder:ingest_addDCCatalog", kwargs={})
+        response = self.client.get(url_addDCCatalog)
         self.assertRaises(PermissionDenied)
 
         self.user = User.objects.get(username="pod")
@@ -348,11 +361,12 @@ class studio_podTestView(TestCase):
         self.user.save()
 
         self.client.force_login(self.user)
-        response = self.client.get("/studio/ingest/addDCCatalog")
+        response = self.client.get(url_addDCCatalog)
         self.assertEqual(response.status_code, 400)
 
         # check if response is xml
-        response_media_package = self.client.get("/studio/ingest/createMediaPackage")
+        url_createMediaPackage = reverse("recorder:ingest_createMediaPackage", kwargs={})
+        response_media_package = self.client.get(url_createMediaPackage)
         mediaPackage_content = minidom.parseString(response_media_package.content)
         mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
         idMedia_sent = mediapackage.getAttribute("id")
@@ -373,7 +387,7 @@ class studio_podTestView(TestCase):
         """
 
         response = self.client.post(
-            "/studio/ingest/addDCCatalog",
+            url_addDCCatalog,
             {
                 "mediaPackage": mediaPackage_content.toxml(),
                 "dublinCore": dublinCoreContent,
@@ -411,7 +425,8 @@ class studio_podTestView(TestCase):
 
     def test_studio_ingest_addAttachment(self):
         self.client = Client()
-        response = self.client.get("/studio/ingest/addAttachment")
+        url_addAttachment = reverse("recorder:ingest_addAttachment", kwargs={})
+        response = self.client.get(url_addAttachment)
         self.assertRaises(PermissionDenied)
 
         self.user = User.objects.get(username="pod")
@@ -419,10 +434,11 @@ class studio_podTestView(TestCase):
         self.user.save()
 
         self.client.force_login(self.user)
-        response = self.client.get("/studio/ingest/addAttachment")
+        response = self.client.get(url_addAttachment)
         self.assertEqual(response.status_code, 400)
 
-        response_media_package = self.client.get("/studio/ingest/createMediaPackage")
+        url_createMediaPackage = reverse("recorder:ingest_createMediaPackage", kwargs={})
+        response_media_package = self.client.get(url_createMediaPackage)
         mediaPackage_content = minidom.parseString(response_media_package.content)
         mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
         idMedia_sent = mediapackage.getAttribute("id")
@@ -434,7 +450,7 @@ class studio_podTestView(TestCase):
         )
 
         response = self.client.post(
-            "/studio/ingest/addAttachment",
+            url_addAttachment,
             {
                 "mediaPackage": mediaPackage_content.toxml(),
                 "BODY": acl,
@@ -470,7 +486,8 @@ class studio_podTestView(TestCase):
 
     def test_studio_ingest_addTrack(self):
         self.client = Client()
-        response = self.client.get("/studio/ingest/addTrack")
+        url_addTrack = reverse("recorder:ingest_addTrack", kwargs={})
+        response = self.client.get(url_addTrack)
         self.assertRaises(PermissionDenied)
 
         self.user = User.objects.get(username="pod")
@@ -478,10 +495,11 @@ class studio_podTestView(TestCase):
         self.user.save()
 
         self.client.force_login(self.user)
-        response = self.client.get("/studio/ingest/addTrack")
+        response = self.client.get(url_addTrack)
         self.assertEqual(response.status_code, 400)
 
-        response_media_package = self.client.get("/studio/ingest/createMediaPackage")
+        url_createMediaPackage = reverse("recorder:ingest_createMediaPackage", kwargs={})
+        response_media_package = self.client.get(url_createMediaPackage)
         mediaPackage_content = minidom.parseString(response_media_package.content)
         mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
         idMedia_sent = mediapackage.getAttribute("id")
@@ -493,7 +511,7 @@ class studio_podTestView(TestCase):
         )
 
         response = self.client.post(
-            "/studio/ingest/addTrack",
+            url_addTrack,
             {
                 "mediaPackage": mediaPackage_content.toxml(),
                 "BODY": video,
@@ -539,7 +557,8 @@ class studio_podTestView(TestCase):
 
     def test_studio_ingest_addCatalog(self):
         self.client = Client()
-        response = self.client.get("/studio/ingest/addCatalog")
+        url_addCatalog = reverse("recorder:ingest_addCatalog", kwargs={})
+        response = self.client.get(url_addCatalog)
         self.assertRaises(PermissionDenied)
 
         self.user = User.objects.get(username="pod")
@@ -547,10 +566,11 @@ class studio_podTestView(TestCase):
         self.user.save()
 
         self.client.force_login(self.user)
-        response = self.client.get("/studio/ingest/addCatalog")
+        response = self.client.get(url_addCatalog)
         self.assertEqual(response.status_code, 400)
 
-        response_media_package = self.client.get("/studio/ingest/createMediaPackage")
+        url_createMediaPackage = reverse("recorder:ingest_createMediaPackage", kwargs={})
+        response_media_package = self.client.get(url_createMediaPackage)
         mediaPackage_content = minidom.parseString(response_media_package.content)
         mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
         idMedia_sent = mediapackage.getAttribute("id")
@@ -563,7 +583,7 @@ class studio_podTestView(TestCase):
         )
 
         response = self.client.post(
-            "/studio/ingest/addCatalog",
+            url_addCatalog,
             {
                 "mediaPackage": mediaPackage_content.toxml(),
                 "BODY": cutting,
@@ -602,9 +622,9 @@ class studio_podTestView(TestCase):
         print(" -->  test_studio_ingest_addCatalog of studio_podTestView", " : OK !")
 
     def test_studio_ingest_ingest(self):
-
         self.client = Client()
-        response = self.client.get("/studio/ingest/ingest")
+        url_ingest = reverse("recorder:ingest_ingest", kwargs={})
+        response = self.client.get(url_ingest)
         self.assertRaises(PermissionDenied)
 
         self.user = User.objects.get(username="pod")
@@ -612,16 +632,17 @@ class studio_podTestView(TestCase):
         self.user.save()
 
         self.client.force_login(self.user)
-        response = self.client.get("/studio/ingest/ingest")
+        response = self.client.get(url_ingest)
         self.assertEqual(response.status_code, 400)
 
-        response_media_package = self.client.get("/studio/ingest/createMediaPackage")
+        url_createMediaPackage = reverse("recorder:ingest_createMediaPackage", kwargs={})
+        response_media_package = self.client.get(url_createMediaPackage)
         mediaPackage_content = minidom.parseString(response_media_package.content)
         mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
         idMedia_sent = mediapackage.getAttribute("id")
 
         response = self.client.post(
-            "/studio/ingest/ingest",
+            url_ingest,
             {
                 "mediaPackage": mediaPackage_content.toxml(),
             },
@@ -639,7 +660,7 @@ class studio_podTestView(TestCase):
         # recorder.sites=get_current_site(None)
         # recorder.save()
         response = self.client.post(
-            "/studio/ingest/ingest",
+            url_ingest,
             {
                 "mediaPackage": mediaPackage_content.toxml(),
             },

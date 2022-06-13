@@ -192,7 +192,7 @@
           <a class="dropdown-item pod-dropdown-item" href="{% url 'podfile:home' %}"><i class="bi bi-folder pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My files' %}</a>
           {% endif %}
           {% if request.user.is_staff and ALLOW_MANUAL_RECORDING_CLAIMING %}
-          <a class="dropdown-item pod-dropdown-item" href="{% url 'claim_record' %}"><i class="bi bi-share pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Claim a record' %}</a>
+          <a class="dropdown-item pod-dropdown-item" href="{% url 'record:claim_record' %}"><i class="bi bi-share pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'Claim a record' %}</a>
           {% endif %}
           {% if request.user.is_staff and USE_BBB %}
           <a class="dropdown-item pod-dropdown-item" href="{% url 'bbb:list_meeting' %}"><i class="bi bi-square pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My BigBlueButton records' %}</a>
