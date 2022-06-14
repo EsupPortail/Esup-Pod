@@ -9,6 +9,23 @@ nav {
 #mainbreadcrumb {
     display:none !important;
 }
+#livename {
+    display:none !important;
+}
+.container-pod {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.mt-3 {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.back-to-top {
+     display:none !important;
+}
+#event_add {
+     display:none !important;
+}
 #navbar_collapse {
     display:none !important;
 }

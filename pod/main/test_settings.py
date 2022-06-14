@@ -32,13 +32,15 @@ DATABASES = {
         "NAME": "db.sqlite",
     }
 }
-LANGUAGES = (("fr", "Français"), ("en", "English"), ("nl", "Netherlands"))
+LANGUAGES = (("fr", "Français"), ("en", "English"))
 LANGUAGE_CODE = "en"
 THIRD_PARTY_APPS = ["enrichment", "live"]
 USE_PODFILE = True
 USE_STATS_VIEW = True
 ACCOMMODATION_YEARS = {"faculty": 1}
+DEBUG = False
 USE_OBSOLESCENCE = True
+SHOW_EVENTS_ON_HOMEPAGE = True
 ACTIVE_VIDEO_COMMENT = True
 USER_VIDEO_CATEGORY = True
 POD_ARCHIVE_AFFILIATION = ["faculty"]
@@ -55,3 +57,5 @@ SHIBBOLETH_ATTRIBUTE_MAP = {
     "Shibboleth-unscoped-affiliation": (False, "affiliations"),
 }
 REMOTE_USER_HEADER = "REMOTE_USER"
+EXISTING_BROADCASTER_IMPLEMENTATIONS = ["Wowza", "Test"]
+AFFILIATION_EVENT = ["employee"]

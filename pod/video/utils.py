@@ -490,7 +490,7 @@ def get_videos(title, user_id, search=None, limit=12, offset=0):
             Q(title__icontains=title)
             | Q(title_fr__icontains=title)
             | Q(title_en__icontains=title)
-            | Q(title_nl__icontains=title)
+            # | Q(title_nl__icontains=title)
         )
 
     count = videos.count()
