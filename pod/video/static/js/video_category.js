@@ -182,23 +182,6 @@
     searchCatHandler(searchCatInput.value.trim());
   });
 
-  /*// Update text 'Number video found' on filtering
-  let manageNumberVideoFoundText = (v_len) => {
-    let text = v_len > 1 ? gettext("videos found") : gettext("video found");
-    let h2 = document.querySelector(".jumbotron h2");
-    h2.textContent = `${v_len} ${text}`;
-    if (!v_len) {
-      text = gettext("Sorry, no video found");
-      getVideosFilteredContainer().innerHTML = `<p class="alert-warning">${text}</p>`;
-    } else {
-      // delete warning text videos found
-      let warning = document.querySelector(
-        "#videos_list.filtered .alert-warning"
-      );
-      if (warning) warning.parentNode.removeChild(warning);
-    }
-  };*/
-
   // Add/Remove active class on category, html_el = <li></li>
   let manageCssActiveClass = (html_el) => {
     html_el.parentNode
@@ -209,12 +192,10 @@
     let curr_slug = html_el.querySelector(".cat_title").dataset.slug;
     let curr_id = html_el.querySelector("#remove_category_icon").dataset.del;
     html_el.classList.toggle("active");
-    //getVideosFilteredContainer().innerHTML = "";
     if (CURR_FILTER.slug === curr_slug && CURR_FILTER.id == curr_id) {
       html_el.classList.remove("active"); // unfilter
       CURR_FILTER.slug = null;
       CURR_FILTER.id = null;
-      //getVideosFilteredContainer().classList.add("hidden");
       if (videos_list) {
         videos_list.setAttribute("class", "row infinite-container");
         let more_btn = $(".infinite-more-link")[0];
@@ -228,37 +209,9 @@
       let { id, slug } = findCategory(curr_slug, curr_id);
       CURR_FILTER.id = id;
       CURR_FILTER.slug = slug;
-
-      //getVideosFilteredContainer().classList.remove("hidden");
-
-      /*if (videos_list) {
-        videos_list.setAttribute("class", "row infinite-container hidden");
-        let more_btn = $(".infinite-more-link")[0];
-
-        if($(".infinite-more-link").length){
-            more_btn.setAttribute("class", "infinite-more-link hidden");
-        }
-      }*/
     }
   };
 
-  /*// Create filtered videos container (HtmlELement)
-  let getVideosFilteredContainer = () => {
-    let videos_list_filtered = document.querySelector(
-      ".jumbotron .filtered.infinite-container"
-    );
-    if (videos_list_filtered) {
-      return videos_list_filtered;
-    }
-    videos_list_filtered = document.createElement("div");
-    videos_list_filtered.setAttribute(
-      "class",
-      "filtered infinite-container row"
-    );
-    videos_list_filtered.setAttribute("id", "videos_list");
-    document.querySelector(".jumbotron").appendChild(videos_list_filtered);
-    return videos_list_filtered;
-  };*/
   // Update videos Filtered in filtered container after editing category
   let updateFilteredVideosContainer = (category_data) => {
     if (
@@ -273,29 +226,16 @@
       let old_videos = getSavedData(CURR_FILTER.id).videos.map((v) => v.slug);
       let rm = old_videos.filter((v) => !actual_videos.includes(v));
       let added = actual_videos.filter((v) => !old_videos.includes(v));
-      //let container_filtered = getVideosFilteredContainer();
-
       let maxLen = rm.length > added.length ? rm.length : added.length;
-      /*for (let i = 0; i < maxLen; i++) {
-        // remove video that was deselected when editing category
-        if (rm[i]) {
-          container_filtered.removeChild(
-            container_filtered.querySelector(
-              `.infinite-item[data-slug="${rm[i]}"`
-            )
-          );
-        }
 
-        // Add video that was selected when editing category
-        if (added[i]) {
-          container_filtered.appendChild(
-            getVideoElement(
-              category_data.videos.find((v) => v.slug === added[i])
-            )
-          );
-        }
-      }*/
-      //manageNumberVideoFoundText(actual_videos.length);
+      // Add video that was selected when editing category
+      if (added[i]) {
+        container_filtered.appendChild(
+          getVideoElement(
+            category_data.videos.find((v) => v.slug === added[i])
+          )
+        );
+      }
     }
   };
 
@@ -308,7 +248,6 @@
       let cat_filter_id = c.parentNode
         .querySelector(".category_actions #remove_category_icon")
         .dataset.del.trim();
-      //videos_list_filtered = getVideosFilteredContainer();
       manageCssActiveClass(c.parentNode); // manage active css class
       let jsonData = getSavedData(cat_filter_id);
       if (Object.keys(jsonData).length) {
@@ -316,23 +255,12 @@
           !CURR_FILTER.slug && !CURR_FILTER.id
             ? CATEGORIES_DATA[0]
             : jsonData.videos.length;
-        //manageNumberVideoFoundText(videos_nb); // update text 'video found'
         loader.classList.remove("show");
-        if (CURR_FILTER.slug && CURR_FILTER.id)
-          jsonData.videos.forEach((v) => {
-            //videos_list_filtered.appendChild(getVideoElement(v));
-          });
       } else {
         jsonData = fetchCategoryData(cat_filter_slug);
         jsonData.then((data) => {
-          //manageNumberVideoFoundText(data.videos.length); // update text 'video found'
-          /*if (CURR_FILTER.slug && CURR_FILTER.id)
-            data.videos.forEach((v) => {
-              videos_list_filtered.appendChild(getVideoElement(v));
-            });*/
-          // save data
-          saveCategoryData(data);
-          loader.classList.remove("show");
+            saveCategoryData(data);
+            loader.classList.remove("show");
         });
       }
       refreshVideosSearch();
@@ -410,9 +338,7 @@
   // Make requets => get category data
   let fetchCategoryData = async (cat_slug) => {
     try {
-      console.log("kikou");
       let resp = await fetch(`${BASE_URL}${cat_slug}/`, { headers: HEADERS });
-
       return await resp.json();
     } catch (e) {
       loader.classList.remove("show");
@@ -678,6 +604,7 @@
       let jsonData = getSavedData(cat_edit_id);
       CURR_CATEGORY = jsonData;
       DOMCurrentEditCat = c_e.parentNode.parentNode;
+      loader.classList.remove("show");
       if (Object.keys(jsonData).length) {
         paginate(jsonData.videos);
         loader.classList.remove("show");
@@ -805,19 +732,15 @@
             document
               .querySelector("#filters .categories_list")
               .removeChild(CAT_TO_DELETE.html);
-            //let filtered_container = getVideosFilteredContainer();
             if (
-              filtered_container &&
               CAT_TO_DELETE.id == CURR_FILTER.id &&
               CAT_TO_DELETE.slug === CURR_FILTER.slug
             ) {
-              //filtered_container.parentNode.removeChild(filtered_container);
               let my_videos_container = document.querySelector(
                 ".infinite-container.hidden"
               );
               if (my_videos_container)
                 my_videos_container.classList.remove("hidden");
-              //manageNumberVideoFoundText(CATEGORIES_DATA[0]);
               CURR_FILTER.slug = null;
               CURR_FILTER.id = null;
               document
@@ -848,10 +771,7 @@
   saveCatBtn.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
-
     loader.classList.add("show");
-
-    //let videos = Array.from(document.querySelectorAll(".category_modal_videos_list .selected")).map(v_el => v_el.dataset.slug.trim());
     const videos = VIDEOS_LIST_CHUNK.videos.selected.map(
       (html_v) => html_v.dataset.slug
     );

@@ -31,9 +31,6 @@
   {% endif %}
   <div class="col-sm-3 text-right">{% blocktrans count counter=num_result %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</div>
 </div>
-<div class="input-group mb-3 float-left col-4 pr-5 pt-3" style="position:absolute;top:0;right:0;height:35.8px;">
-  {% include "videos/video_sort_select.html" %}
-</div>
 {% include "videos/video_list.html" %}
 
 {% endblock page_content %}

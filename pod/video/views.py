@@ -477,9 +477,6 @@ def my_videos(request):
     ) | request.user.owners_videos.all().filter(sites=site)
     videos_list = videos_list.distinct()
 
-    if request.POST.get("filterCheckedInputs"):
-        videos_list = get_filtered_videos_list(videos_list, request)
-
     page = request.GET.get("page", 1)
 
     full_path = ""
@@ -525,6 +522,8 @@ def my_videos(request):
         data_context["categories"] = cats
         data_context["videos_without_cat"] = videos_without_cat
 
+    if request.POST.get("filterCheckedInputs"):
+        videos_list = get_filtered_videos_list(videos_list, request)
     count_videos = len(videos_list)
 
     paginator = Paginator(videos_list, 12)
@@ -618,12 +617,13 @@ def get_owners_has_instances(owners):
 
 def sort_list_videos(request, videos_list):
     # sort Videos by specific column (select html) and ascending or descending direction (boolean)
-    data = json.loads(request.POST.get("sortInputs"))
-    if 'sort_column' in data and data['sort_direction_asc'] is False:
-        sort = '-' + data['sort_column']
-    else:
-        sort = data['sort_column']
-    videos_list = videos_list.order_by(sort)
+    if request.POST.get("sortInputs"):
+        data = json.loads(request.POST.get("sortInputs"))
+        if 'sort_column' in data and data['sort_direction_asc'] is False:
+            sort = '-' + data['sort_column']
+        else:
+            sort = data['sort_column']
+        videos_list = videos_list.order_by(sort)
 
     return videos_list
 
