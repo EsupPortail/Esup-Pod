@@ -16,6 +16,7 @@ import requests
 from pod.main.models import get_nextautoincrement
 from django.template.defaultfilters import slugify
 
+from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from pod.authentication.models import AccessGroup
 from django.db.models import Q
@@ -27,8 +28,6 @@ BBB_SECRET_KEY = getattr(
 BBB_API_URL = getattr(
     settings, "BBB_API_URL", "https://bbb-21-e.uphf.fr/bigbluebutton/api/"
 )
-
-User = get_user_model()
 
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
@@ -71,7 +70,8 @@ class Meetings(models.Model):
     owner = models.ForeignKey(
         User,
         verbose_name=_('Owner'),
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE
+    )
         
     additional_owners = models.ManyToManyField(
         User,
@@ -346,12 +346,13 @@ class Meetings(models.Model):
         '''
 
     @classmethod
-    def join_url(self, name, attendee_password):
+    def join_url(self, meetingID, name, password):
         call = 'join'
         parameters={}
         parameters.update({
-            'fullName': self.name,
-            'password': attendee_password,   
+            'meetingID': meetingID,
+            'fullName': name,
+            'password': password,   
         })
         query = urlencode(parameters)
         hashed = self.api_call(query, call)
@@ -361,7 +362,7 @@ class Meetings(models.Model):
     def create(self):
         call="create"
         voicebridge = 70000 + random.randint(0,9999)
-        field_to_exclude = ["id", "running", "parent_meeting_id", "internal_meeting_id", "voice_bridge", "welcome_text", "owner", "additional_owners", "sites", "logout_url", "auto_start_recording", "allow_start_stop_recording", "webcam_only_for_moderators", "lock_settings_disable_cam", "lock_settings_disable_mic", "lock_settings_disable_private_chat", "lock_settings_disable_public_chat", "lock_settings_disable_note", "lock_settings_locked_layout", "ask_password", "restrict_access_to_groups", "is_restricted", "is_draft"] 
+        field_to_exclude = ["id", "running", "start_date", "end_date", "max_participants", "record", "parent_meeting_id", "internal_meeting_id", "voice_bridge", "welcome_text", "owner", "additional_owners", "sites", "logout_url", "auto_start_recording", "allow_start_stop_recording", "webcam_only_for_moderators", "lock_settings_disable_cam", "lock_settings_disable_mic", "lock_settings_disable_private_chat", "lock_settings_disable_public_chat", "lock_settings_disable_note", "lock_settings_locked_layout", "ask_password", "restrict_access_to_groups", "is_restricted", "is_draft"] 
         parameters={}
         for field in self._meta.get_fields():
             print(field.name)

@@ -29,7 +29,7 @@ class MeetingsForm(forms.ModelForm):
 
     class Meta:
         model = Meetings
-        fields = fields = ['name', 'attendee_password', 'start_date', 'end_date', 'max_participants', 'auto_start_recording', 'allow_start_stop_recording', 'lock_settings_disable_cam', 'lock_settings_disable_mic', 'lock_settings_disable_private_chat', 'lock_settings_disable_public_chat', 'lock_settings_disable_note', 'lock_settings_locked_layout', 'ask_password']
+        fields = ['name', 'attendee_password', 'start_date', 'end_date', 'max_participants', 'auto_start_recording', 'allow_start_stop_recording', 'lock_settings_disable_cam', 'lock_settings_disable_mic', 'lock_settings_disable_private_chat', 'lock_settings_disable_public_chat', 'lock_settings_disable_note', 'lock_settings_locked_layout', 'ask_password']
 
 class MeetingsNameForm(forms.Form):
     name = forms.CharField(label="Your name")

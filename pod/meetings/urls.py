@@ -4,7 +4,7 @@ from django.urls import re_path
 
 from pod.meetings.models import Meetings
 
-from .views import edit_meeting, meeting, create, delete_meeting, join_meeting
+from .views import create_meeting, edit_meeting, meeting, delete_meeting, join_meeting
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -14,7 +14,7 @@ app_name = "meetings"
 
 urlpatterns = [
     re_path(r'^$', meeting, name='meeting'),
-    path('add/', create, name='create'),
+    path('add/', create_meeting, name='create'),
     path('edit/<str:meetingID>/', edit_meeting,
         name='edit'),
     path('delete/<str:meetingID>/', delete_meeting,

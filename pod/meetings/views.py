@@ -30,10 +30,9 @@ def meeting(request):
     # a faire ! --> 'dataMeetings':Meetings.objects.filter(owner==request.user, sites=get_current_site(request), additional_owner)
     return render(request, 'meeting.html', {'dataMeetings':Meetings.objects.all()})
 
-
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-def create(request):
+def create_meeting(request):
 
   if RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
     return render(request, "meeting_edit.html", {"access_not_allowed": True})
@@ -109,17 +108,18 @@ def join_meeting(request, meetingID, slug_private=None):
 
     if request.user.is_authenticated and (request.user == meeting.owner or request.user in meeting.additional_owners):
       name = request.user.get_full_name()
-      url = meeting.join_url(request.user.get_full_name(), meeting.attendee_password)
+      url = Meetings.join_url(meetingID, name, password=meeting.attendee_password)
       print("is moderator : %s" % url)
 
     if request.method == "POST":
         form = MeetingsNameForm(request.POST, is_staff=request.user.is_staff, is_superuser=request.user.is_superuser)
         if form.is_valid():
           data = form.cleaned_data
+          meetingID = data.get('meetingID')
           name = data.get('name')
-          attendee_password = data.get('password')
+          password = data.get('password')
 
-          return HttpResponseRedirect(Meetings.join_url(name, attendee_password))
+          return HttpResponseRedirect(Meetings.join_url(meetingID, name, password))
     else:
         form = MeetingsNameForm(is_staff=request.user.is_staff, is_superuser=request.user.is_superuser)
 
