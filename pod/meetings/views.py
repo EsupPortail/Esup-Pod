@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.contrib import messages
 from platformdirs import user_data_path
 from django.utils.translation import ugettext_lazy as _
-from pod.meetings.forms import MeetingsForm, MeetingsNameForm
+from pod.meetings.forms import MeetingsForm, MeetingsJoinForm
 from pod.meetings.models import Meetings, User
 
 from django.views.decorators.csrf import csrf_protect
@@ -108,24 +108,35 @@ def join_meeting(request, meetingID, slug_private=None):
 
     if request.user.is_authenticated and (request.user == meeting.owner or request.user in meeting.additional_owners):
       name = request.user.get_full_name()
+      password = meeting.moderatorPW
+      if not meeting.meeting_info():
+        meeting.create()
+      
+      url = meeting.join_url(name, password)
       # verifier si elle est créée, sinon la créer
-      url = Meetings.join_url(meetingID, name, password=meeting.attendeePW)
       print("is moderator : %s" % url)
       # puis faire un redirect.
     
-    # si la conf est créée et lacnée (is_running à True) il faut vérifier son mode d'accès et permettre à l'utilisateur de la rejoindre
+    # si la conf est créée et lancée (is_running à True) il faut vérifier son mode d'accès et permettre à l'utilisateur de la rejoindre
+
+    '''
+    if meeting.meeting_info() and meeting.is_running()==True:
+      if request.user.is_authenticated and (request.user == meeting.owner or request.user in meeting.additional_owners):
+        url = meeting.join_url(name, password)
+      elif request.user.is_authenticated and not (request.user == meeting.owner or request.user in meeting.additional_owners):
+    '''
 
     if request.method == "POST":
-        form = MeetingsNameForm(request.POST, is_staff=request.user.is_staff, is_superuser=request.user.is_superuser)
+        form = MeetingsJoinForm(request.POST, is_staff=request.user.is_staff, is_superuser=request.user.is_superuser)
         if form.is_valid():
           data = form.cleaned_data
           meetingID = data.get('meetingID')
           name = data.get('name')
           password = data.get('password')
 
-          return HttpResponseRedirect(Meetings.join_url(meetingID, name, password))
+          return HttpResponseRedirect(meeting.join_url(name, password))
     else:
-        form = MeetingsNameForm(is_staff=request.user.is_staff, is_superuser=request.user.is_superuser)
+        form = MeetingsJoinForm(is_staff=request.user.is_staff, is_superuser=request.user.is_superuser)
 
     context={'meeting':meeting,
             'form':form}
@@ -197,7 +208,7 @@ def get_meeting_access(request, meeting, slug_private):
 def render_meeting(request, meetingID, template_meeting="meeting_join.html", slug_private=None):
   meeting = get_object_or_404(Meetings, meetingID=meetingID, sites=get_current_site(request))
 
-  is_password_protected = meeting.attendee_password is not None and meeting.attendee_password != ""
+  is_password_protected = meeting.attendeePW is not None and meeting.attendeePW != ""
 
   show_page = get_meeting_access(request, meeting, slug_private)
 
@@ -207,7 +218,7 @@ def render_meeting(request, meetingID, template_meeting="meeting_join.html", slu
       show_page
       and is_password_protected
       and request.POST.get("password")
-      and request.POST.get("password") == meeting.attendee_password
+      and request.POST.get("password") == meeting.attendeePW
     )
     or (slug_private and slug_private == meeting.get_hashkey())
     or request.user == meeting.owner
@@ -231,11 +242,11 @@ def render_meeting(request, meetingID, template_meeting="meeting_join.html", slu
       not is_access_protected or (is_access_protected and show_page)
     ):
       form = (
-        MeetingsNameForm(request.POST) if request.POST else MeetingsNameForm()
+        MeetingsJoinForm(request.POST) if request.POST else MeetingsJoinForm()
       )
       if (
         request.POST.get("password")
-        and request.POST.get("password") != meeting.attendee_password
+        and request.POST.get("password") != meeting.attendeePW
       ):
         messages.add_message(
           request, messages.ERROR, _("The password is incorrect.")

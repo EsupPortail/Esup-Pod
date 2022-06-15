@@ -341,7 +341,6 @@ class Meetings(models.Model):
             password)
         '''
 
-    # @classmethod
     def join_url(self, name, password):
         call = 'join'
         parameters = {

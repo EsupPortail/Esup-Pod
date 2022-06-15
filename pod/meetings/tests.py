@@ -24,7 +24,7 @@ class MeetingsTests(TestCase):
         # First step is to request BBB and create a meeting
         m_xml = Meetings.objects.create(
             name="pod",
-            meetingID="0007 - pod",
+            meetingID="0026-pod",
         )
         meeting_json = xml_to_json(m_xml)
         self.assertTrue(meeting_json['returncode'] == 'SUCCESS')
@@ -36,8 +36,8 @@ class MeetingsTests(TestCase):
         meeting.meetingID = meeting_json['meetingID']
         meeting.name = name
         meeting.welcome_text = meeting_json['meetingID']
-        meeting.attendee_password = meeting_json['attendeePW']
-        meeting.moderator_password = meeting_json['moderatorPW']
+        meeting.attendeePW = meeting_json['attendeePW']
+        meeting.moderatorPW = meeting_json['moderatorPW']
         meeting.internal_meeting_id = meeting_json['internalMeetingID']
         meeting.parent_meeting_id = meeting_json['parentMeetingID']
         meeting.voice_bridge = meeting_json['voiceBridge']

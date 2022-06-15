@@ -29,9 +29,9 @@ class MeetingsForm(forms.ModelForm):
 
     class Meta:
         model = Meetings
-        fields = ['name', 'attendeePW', 'start_date', 'end_date', 'max_participants', 'auto_start_recording', 'allow_start_stop_recording', 'lock_settings_disable_cam', 'lock_settings_disable_mic', 'lock_settings_disable_private_chat', 'lock_settings_disable_public_chat', 'lock_settings_disable_note', 'lock_settings_locked_layout', 'ask_password']
+        fields = ['name', 'attendeePW', 'moderatorPW', 'start_date', 'end_date', 'max_participants', 'auto_start_recording', 'allow_start_stop_recording', 'lock_settings_disable_cam', 'lock_settings_disable_mic', 'lock_settings_disable_private_chat', 'lock_settings_disable_public_chat', 'lock_settings_disable_note', 'lock_settings_locked_layout', 'ask_password']
 
-class MeetingsNameForm(forms.Form):
+class MeetingsJoinForm(forms.Form):
     name = forms.CharField(label="Your name")
     password = forms.CharField(label= ("Password"), widget=forms.PasswordInput())
 
@@ -45,19 +45,4 @@ class MeetingsNameForm(forms.Form):
             else self.is_superuser
         )
 
-        super(MeetingsNameForm, self).__init__(*args, **kwargs)
-
-        instance = getattr(self, 'instance', None)
-        if instance and instance.additional_owners:
-            self.fields['name'].required = False
-            self.fields['name'].widget.attrs['disabled'] = 'disabled'
-
-        if instance and instance.owner:
-            self.fields['name'].required = False
-            self.fields['password'].required = False
-            self.fields['name'].widget.attrs['disabled'] = 'disabled'
-            self.fields['password'].widget.attrs['disabled'] = 'disabled'
-
-    def remove_field(self, field):
-        if self.fields.get(field):
-            del self.fields[field]
+        super(MeetingsJoinForm, self).__init__(*args, **kwargs)
