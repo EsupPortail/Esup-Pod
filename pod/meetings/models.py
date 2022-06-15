@@ -56,7 +56,7 @@ class Meetings(models.Model):
     '''
     meetingID = models.SlugField(
         _("meetingID"),
-        unique=True,
+        unique=True, #le unique doit se faire sur la pair slug/site
         max_length=110,
         help_text=_(
             'Used to access this instance, the "meetingID" is '
@@ -65,6 +65,7 @@ class Meetings(models.Model):
         ),
         editable=False,
     )
+    # sites doit etre en foreign key, pas en many to many, il n'y a pas d'interet à ce qu'une reunion soit sur pls sites. du coup, sans "s"
     sites = models.ManyToManyField(Site)
     
     owner = models.ForeignKey(
@@ -97,12 +98,12 @@ class Meetings(models.Model):
         help_text=_("End date of the meeting."),
     )
 
-    attendee_password = models.CharField(
+    attendeePW = models.CharField(
         max_length=50,
         verbose_name=_('Mot de passe participants')
     )
 
-    moderator_password = models.CharField(
+    moderatorPW = models.CharField(
         max_length=50,
         verbose_name=_('Mot de passe modérateurs')
     )
@@ -268,7 +269,7 @@ class Meetings(models.Model):
     def is_running(self):
         call = 'isMeetingRunning'
         query = urlencode((
-            ('meetingID', self.meetingID),
+            ('meetingID', "%s" % self.meetingID),
         ))
         hashed = self.api_call(query, call)
         url = BBB_API_URL + call + '?' + hashed
@@ -281,8 +282,8 @@ class Meetings(models.Model):
     def end_meeting(self):
         call = 'end'
         query = urlencode((
-            ('meetingID', self.meetingID),
-            ('password', self.moderator_password),
+            ('meetingID', "%s" % self.meetingID),
+            ('password', "%s" % self.moderatorPW),
         ))
         hashed = self.api_call(query, call)
         url = BBB_API_URL + call + '?' + hashed
@@ -295,8 +296,8 @@ class Meetings(models.Model):
     def meeting_info(self):
         call = 'getMeetingInfo'
         query = urlencode((
-            ('meetingID', self.meetingID),
-            ('password', self.moderator_password),
+            ('meetingID', "%s" % self.meetingID),
+            ('password', "%s" % self.moderatorPW),
         ))
         hashed = self.api_call(query, call)
         url = BBB_API_URL + call + '?' + hashed
@@ -307,8 +308,8 @@ class Meetings(models.Model):
                 'end_time': result.find('endTime').text,
                 'participant_count': result.find('participantCount').text,
                 'moderator_count': result.find('moderatorCount').text,
-                'moderator_password': result.find('moderatorPW').text,
-                'attendee_password': result.find('attendeePW').text,
+                'moderatorPW': result.find('moderatorPW').text,
+                'attendeePW': result.find('attendeePW').text,
                 #'invite_url': reverse('join', args=[self.meetingID]),
             }
             return d
@@ -332,8 +333,8 @@ class Meetings(models.Model):
                 d.append({
                     'name': meetingID,
                     'running': m.find('running').text,
-                    'moderator_pw': password,
-                    'attendee_pw': m.find('attendeePW').text,
+                    'moderatorPW': password,
+                    'attendeePW': m.find('attendeePW').text,
                 })
             return d
         else:
@@ -345,21 +346,21 @@ class Meetings(models.Model):
             password)
         '''
 
-    @classmethod
-    def join_url(self, meetingID, name, password):
+    # @classmethod
+    def join_url(self, name, password):
         call = 'join'
-        parameters={}
-        parameters.update({
-            'meetingID': meetingID,
+        parameters = {
+            'meetingID': "%s" % self.meetingID,
             'fullName': name,
-            'password': password,   
-        })
+            'password': password,
+        }
         query = urlencode(parameters)
         hashed = self.api_call(query, call)
         url = BBB_API_URL + call + '?' + hashed
         return url
 
     def create(self):
+        # http://test-install.blindsidenetworks.com/bigbluebutton/api/create?allowStartStopRecording=true&attendeePW=ap&autoStartRecording=false&meetingID=random-9046073&moderatorPW=mp&name=random-9046073&record=false&voiceBridge=70809&welcome=%3Cbr%3EWelcome+to+%3Cb%3E%25%25CONFNAME%25%25%3C%2Fb%3E%21&checksum=7ab9312324878b2194f7af9db64ee16ca73fe045
         call="create"
         voicebridge = 70000 + random.randint(0,9999)
         field_to_exclude = ["id", "running", "start_date", "end_date", "max_participants", "record", "parent_meeting_id", "internal_meeting_id", "voice_bridge", "welcome_text", "owner", "additional_owners", "sites", "logout_url", "auto_start_recording", "allow_start_stop_recording", "webcam_only_for_moderators", "lock_settings_disable_cam", "lock_settings_disable_mic", "lock_settings_disable_private_chat", "lock_settings_disable_public_chat", "lock_settings_disable_note", "lock_settings_locked_layout", "ask_password", "restrict_access_to_groups", "is_restricted", "is_draft"] 
@@ -370,6 +371,7 @@ class Meetings(models.Model):
                 parameters.update({
                     field.name: getattr(self, field.name),
                 })
+        print("CREATE ----------------------------")
         print(parameters)
         query = urlencode(parameters)
         print(query)
@@ -378,6 +380,8 @@ class Meetings(models.Model):
         url = BBB_API_URL + call + '?' + hashed
         print(url)
         result = parse_xml(requests.get(url).content.decode('utf-8'))
+        # recuperer les mots de passes pour mettre à jour la conf
+        # attendeePW et moderatorPW
         print(result)
         if result:
             return result

@@ -6,8 +6,8 @@ class MeetingsAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "name",
-        "attendee_password",
-        "moderator_password",
+        "attendeePW",
+        "moderatorPW",
     )
     list_display_links = ("id", "name")
     readonly_fields = []

@@ -108,8 +108,12 @@ def join_meeting(request, meetingID, slug_private=None):
 
     if request.user.is_authenticated and (request.user == meeting.owner or request.user in meeting.additional_owners):
       name = request.user.get_full_name()
-      url = Meetings.join_url(meetingID, name, password=meeting.attendee_password)
+      # verifier si elle est créée, sinon la créer
+      url = Meetings.join_url(meetingID, name, password=meeting.attendeePW)
       print("is moderator : %s" % url)
+      # puis faire un redirect.
+    
+    # si la conf est créée et lacnée (is_running à True) il faut vérifier son mode d'accès et permettre à l'utilisateur de la rejoindre
 
     if request.method == "POST":
         form = MeetingsNameForm(request.POST, is_staff=request.user.is_staff, is_superuser=request.user.is_superuser)
