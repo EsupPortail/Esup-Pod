@@ -28,15 +28,15 @@ RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
 def meeting(request):
     # attention, pas toutes les meetings mais seulement celles de l'utilsiateur connecté
     # a faire ! --> 'dataMeetings':Meetings.objects.filter(owner==request.user, sites=get_current_site(request), additional_owner)
+    '''
+    meeting = Meetings.get_meetings()
+    context={"meetings": meeting}
+    '''
     return render(request, 'meeting.html', {'dataMeetings':Meetings.objects.all()})
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def create_meeting(request):
-
-  if RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
-    return render(request, "meeting_edit.html", {"access_not_allowed": True})
-
   form = MeetingsForm(
     is_staff=request.user.is_staff,
     is_superuser=request.user.is_superuser,
@@ -80,7 +80,6 @@ def create_meeting(request):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def delete_meeting(request, meetingID):
-    # utiliser le get object or 404 sites=get_current_site(request)
     meeting = get_object_or_404(Meetings, meetingID=meetingID, sites=get_current_site(request))
 
     if request.user != meeting.owner and not (
@@ -109,12 +108,12 @@ def join_meeting(request, meetingID, slug_private=None):
     if request.user.is_authenticated and (request.user == meeting.owner or request.user in meeting.additional_owners):
       name = request.user.get_full_name()
       password = meeting.moderatorPW
-      if not meeting.meeting_info():
+      if not meeting.meeting_info(meetingID, password):
         meeting.create()
       
       url = meeting.join_url(name, password)
-      # verifier si elle est créée, sinon la créer
       print("is moderator : %s" % url)
+      # return redirect(url)
       # puis faire un redirect.
     
     # si la conf est créée et lancée (is_running à True) il faut vérifier son mode d'accès et permettre à l'utilisateur de la rejoindre

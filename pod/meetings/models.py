@@ -22,7 +22,12 @@ from pod.authentication.models import AccessGroup
 from django.db.models import Q
 
 from pod.meetings.utils import parse_xml
-
+BBB_SECRET_KEY = getattr(
+    settings, "BBB_SECRET_KEY", "GOI6t9lAHdO996UiKWqIvjGNvHHVfA00hTRX2GBM"
+)
+BBB_API_URL = getattr(
+    settings, "BBB_API_URL", "https://bbb-21-e.uphf.fr/bigbluebutton/api/"
+)
 
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
@@ -131,7 +136,7 @@ class Meetings(models.Model):
             'the meeting will only be accessible after giving the attendee password. Except for owner and additionnal owner.'),
         default=True)
 
-    running = models.BooleanField(
+    is_running = models.BooleanField(
         default=False,
         verbose_name=_('Is running'),
         help_text=_('Indicates whether this meeting is running in BigBlueButton or not!')
@@ -288,11 +293,11 @@ class Meetings(models.Model):
             return True
         return False
    
-    def meeting_info(self):
+    def meeting_info(self, meetingID, password):
         call = 'getMeetingInfo'
         query = urlencode((
-            ('meetingID', "%s" % self.meetingID),
-            ('password', "%s" % self.moderatorPW),
+            ('meetingID', "%s" % meetingID),
+            ('password', "%s" % password),
         ))
         hashed = self.api_call(query, call)
         url = BBB_API_URL + call + '?' + hashed
@@ -330,16 +335,16 @@ class Meetings(models.Model):
                     'running': m.find('running').text,
                     'moderatorPW': password,
                     'attendeePW': m.find('attendeePW').text,
+                    'info': self.meeting_info(
+                        meetingID,
+                        password
+                    )
                 })
             return d
         else:
             return 'error'
 
-        '''
-        'info': self.meeting_info(
-            meetingID,
-            password)
-        '''
+        
 
     def join_url(self, name, password):
         call = 'join'
