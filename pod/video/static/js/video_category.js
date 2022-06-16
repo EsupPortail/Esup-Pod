@@ -227,15 +227,6 @@
       let rm = old_videos.filter((v) => !actual_videos.includes(v));
       let added = actual_videos.filter((v) => !old_videos.includes(v));
       let maxLen = rm.length > added.length ? rm.length : added.length;
-
-      // Add video that was selected when editing category
-      if (added[i]) {
-        container_filtered.appendChild(
-          getVideoElement(
-            category_data.videos.find((v) => v.slug === added[i])
-          )
-        );
-      }
     }
   };
 
@@ -790,7 +781,6 @@
       postCategoryData(`${BASE_URL}edit/${CURR_CATEGORY.slug}/`, postData)
         .then((data) => {
           // Update new data, client side
-          updateFilteredVideosContainer(data); // update filered videos in filtered container
           deleteFromSavedData(CURR_CATEGORY.slug);
           saveCategoryData(data);
           DOMCurrentEditCat.querySelector(".cat_title").textContent =
@@ -809,6 +799,7 @@
           document.querySelector("#manageCategoryModal #cancelDialog").click();
           refreshDialog();
           showAlertMessage(msg_saved);
+          refreshVideosSearch();
           loader.classList.remove("show"); // hide loader
         })
         .catch((err) => {
