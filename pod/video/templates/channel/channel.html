@@ -114,9 +114,6 @@
                         <p class="video-count col-5">
                             {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
                         </p>
-                        <div class="input-group col-5 offset-2 mb-3" style="position:relative;top:0;width:200px;">
-                            {% include "videos/video_sort_select.html" %}
-                        </div>
                     </div>
                     {% include "videos/video_list.html" %}
                     {% if has_more_videos %}
