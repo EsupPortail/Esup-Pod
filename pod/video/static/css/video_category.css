@@ -78,6 +78,14 @@
     -o-transition: .3s all;
     transition: .3s all;
 }
+
+#sort-container{
+    position:absolute;
+    top:0;
+    right:0;
+    height:35.8px;
+}
+
 /************************************
  * Override modal category css
  * **********************************/

@@ -27,7 +27,7 @@
     {% include "videos/category_modal.html" %}
   {% endif %}
 
-  <div class="input-group mb-3 float-left col-4 pr-5 pt-3" style="position:absolute;top:0;right:0;height:35.8px;">
+  <div id="sort-container" class="input-group mb-3 float-left col-4 pr-5 pt-3">
     {% include "videos/video_sort_select.html" %}
   </div>
   {% if videos.paginator.count == 0 %}
