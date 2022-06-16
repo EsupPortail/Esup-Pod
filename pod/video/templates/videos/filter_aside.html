@@ -64,8 +64,8 @@
       {% for discipline in DISCIPLINES %}
         <div class="form-check">
           <input class="form-check-input" type="checkbox" name="discipline"
-            value="{{discipline.slug}}" id="id{{discipline.slug.split|join:'-'}}_disc" {% if discipline.slug in disciplines %}checked{% endif %}>
-          <label class="form-check-label" for="id{{discipline.slug.split|join:'-'}}_disc">
+            value="{{discipline.slug}}" id="id{{discipline.slug.split|join:'-'}}_discipline" {% if discipline.slug in disciplines %}checked{% endif %}>
+          <label class="form-check-label" for="id{{discipline.slug.split|join:'-'}}_discipline">
             {% if discipline.icon %}<img src="{{discipline.icon.file.url}}" alt="{{discipline.title}}" style="max-height:32px; max-width:32px;" loading="lazy"/>{% endif %}&nbsp;{{discipline}}
           </label>
         </div>

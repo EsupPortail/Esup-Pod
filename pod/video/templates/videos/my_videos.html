@@ -51,9 +51,6 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-<script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
 <script>
 const urlVideos = "{% url 'my_videos' %}";
 {% if use_category %}
@@ -63,7 +60,9 @@ const urlVideos = "{% url 'my_videos' %}";
   <script defer src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
 {% else %}
   const USE_CATEGORY = false;
-  </script>
+</script>
 {% endif %}
-
+<script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
 {% endblock more_script %}

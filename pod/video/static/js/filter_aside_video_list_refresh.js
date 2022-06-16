@@ -3,8 +3,9 @@ var filterCheckedInputs = {};
 var categoryChecked = null;
 var regExGetOnlyChars = /([\D])/g;
 var sort_column;
-var sort_direction_asc = true;
+var sort_direction_asc = false;
 var sort_direction_chars = ["8600","8599"];
+var urlVideosStr = urlVideos.toString().replaceAll("/","");
 
 function getInfiniteScrollWaypoint() {
   // Return Waypoint Infinite object to init/refresh the infinite scroll
@@ -48,6 +49,8 @@ function callAsyncListVideos(filterCheckedInputs) {
   sortInputsObject["sort_direction_asc"]= sort_direction_asc;
   data.append("filterCheckedInputs",JSON.stringify(filterCheckedInputs));
   data.append("sortInputs",JSON.stringify(sortInputsObject));
+  localStorage.setItem("filterLocalStorage"+urlVideosStr,JSON.stringify(filterCheckedInputs));
+  localStorage.setItem("sortLocalStorage"+urlVideosStr,JSON.stringify(sortInputsObject));
   if(categoryChecked){
     data.append("categoryChecked",categoryChecked);
   }
@@ -107,20 +110,65 @@ function refreshVideosSearch(){
   });
 }
 
+function manageLocalStorage(){
+    // Manage Local Storage for filters
+    let filterLocalStorage = localStorage.getItem("filterLocalStorage"+urlVideosStr);
+    if(filterLocalStorage !== null){
+        filterLocalStorage = JSON.parse(filterLocalStorage);
+        let filterLocalStorageKeys = Object.keys(filterLocalStorage);
+        // Loop on filter keys saved on local storage
+        for (let i = 0; i < filterLocalStorageKeys.length; i++) {
+            let key = filterLocalStorageKeys[i];
+            let inputNames = filterLocalStorage[key];
+            // Loop for each key filter values checked saved on local storage
+            for (let j = 0; j < inputNames.length; j++) {
+               let idSelector = "id"+inputNames[j]+"_"+key;
+               // Manually check the checkbox found with id
+               document.getElementById(idSelector).checked = true;
+            }
+        }
+    }
+    // Manage Local Storage for sort
+    let sortLocalStorage = localStorage.getItem("sortLocalStorage"+urlVideosStr);
+    if(sortLocalStorage !== null){
+        sortLocalStorage = JSON.parse(sortLocalStorage);
+        $("#sort").value=sortLocalStorage["sort_column"];
+        sort_direction_asc = sortLocalStorage["sort_direction_asc"];
+        refreshSortDirectionChar();
+    }
+}
+
 // Add change trigger on filter inputs and column sort select
 $(".form-check-input, .sort-select").change(function(e) {
   e.preventDefault();
   refreshVideosSearch();
 });
 
+function toggleSortDirection(){
+  sort_direction_asc = !sort_direction_asc;
+  $("#sort_direction").prop("checked", !$("#sort_direction").prop("checked"));
+  refreshSortDirectionChar();
+}
+
+function refreshSortDirectionChar(){
+    $("#sort_direction_label").html("&#"+(sort_direction_chars[+ sort_direction_asc]).toString());
+}
+
 // Add click trigger on adcending / descending sort button
 $("#sort_direction_label").click(function(e) {
   e.preventDefault();
-  sort_direction_asc = !sort_direction_asc;
-  $("#sort_direction").prop("checked", !$("#sort_direction").prop("checked"));
-  $("#sort_direction_label").html("&#"+(sort_direction_chars[+ sort_direction_asc]).toString());
+  toggleSortDirection();
   refreshVideosSearch();
 });
 
 // First launch of the infinite scroll
 infinite_waypoint = getInfiniteScrollWaypoint();
+
+// Get local storage and fill the form
+manageLocalStorage();
+
+// First launch of videos list refresh
+$(document).ready(function() {
+    refreshVideosSearch();
+});
+
