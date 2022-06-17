@@ -239,7 +239,9 @@ class EventForm(forms.ModelForm):
             self.remove_field("start_time")
             self.remove_field("is_draft")
             self.remove_field("is_auto_start")
+            self.remove_field("password")
             self.remove_field("is_restricted")
+            self.remove_field("restrict_access_to_groups")
             self.remove_field("type")
             self.remove_field("description")
             self.remove_field("building")
@@ -255,7 +257,7 @@ class EventForm(forms.ModelForm):
         check_event_date_and_hour(self)
         cleaned_data = super(EventForm, self).clean()
 
-        if cleaned_data["is_draft"]:
+        if cleaned_data.get("is_draft", False):
             cleaned_data["password"] = None
             cleaned_data["is_restricted"] = False
             cleaned_data["restrict_access_to_groups"] = []
