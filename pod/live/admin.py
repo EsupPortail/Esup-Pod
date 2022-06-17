@@ -6,6 +6,7 @@ from django.forms import Textarea
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from js_asset import static
+from sorl.thumbnail import get_thumbnail
 
 from pod.live.forms import BuildingAdminForm, EventAdminForm, BroadcasterAdminForm
 from pod.live.models import Building, Event, Broadcaster, HeartBeat, Video
@@ -165,7 +166,7 @@ class EventAdmin(admin.ModelAdmin):
 
     def get_thumbnail_admin(self, instance):
         if instance.thumbnail and instance.thumbnail.file_exist():
-            im = instance.get_thumbnail(
+            im = get_thumbnail(
                 instance.thumbnail.file, "100x100", crop="center", quality=72
             )
             thumbnail_url = im.url
