@@ -79,8 +79,8 @@ class BroadcasterTestCase(TestCase):
 
     def setUp(self):
         building = Building.objects.create(name="building1")
+        user = User.objects.create(username="pod")
         if FILEPICKER:
-            user = User.objects.create(username="pod")
             homedir, created = UserFolder.objects.get_or_create(name="Home", owner=user)
             poster = CustomImageModel.objects.create(
                 folder=homedir, created_by=user, file="blabla.jpg"

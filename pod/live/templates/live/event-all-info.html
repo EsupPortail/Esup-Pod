@@ -11,7 +11,7 @@
 <div class="pl-0 pr-0">
   <div class="navbar d-flex flex-row-reverse p-0" >
   <ul class="nav nav-tabs" id="myTab" role="tablist">
-    {% if event.description%}
+    {% if event.description %}
     <li class="nav-item">
       <a class="nav-link active show" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-selected="true" title="{% trans 'Summary' %}">
         <i data-feather="align-justify" aria-hidden="true"></i>
@@ -20,7 +20,7 @@
     {% endif %}
     <li class="nav-item">
       <a id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" title="{% trans 'Infos' %}"
-        {% if not event.description%}
+        {% if not event.description %}
           class="nav-link active show" aria-selected="true"
         {% else %}
           class="nav-link" aria-selected="false"

@@ -137,7 +137,7 @@ def get_broadcaster_by_slug(slug, site):
             broadcaster = Broadcaster.objects.get(id=slug, building__sites=site)
         except ObjectDoesNotExist:
             pass
-    if broadcaster is None:
+    else:
         broadcaster = get_object_or_404(Broadcaster, slug=slug, building__sites=site)
     return broadcaster
 
@@ -364,25 +364,13 @@ def events(request):  # affichage des events
 def my_events(request):
     queryset = request.user.event_set.all() | request.user.owners_events.all()
 
-    past_events = (
-        queryset.filter(
-            Q(start_date__lt=date.today())
-            | (Q(start_date=date.today()) & Q(end_time__lte=datetime.now()))
-        )
-        .all()
-        .order_by("-start_date", "-start_time", "-end_time")
-    )
+    past_events = [evt for evt in queryset if evt.is_past]
+    past_events = sorted(past_events, key=lambda evt: (evt.start_date, evt.start_time), reverse=True)
 
-    coming_events = (
-        queryset.filter(
-            Q(start_date__gt=date.today())
-            | (Q(start_date=date.today()) & Q(end_time__gte=datetime.now()))
-        )
-        .all()
-        .order_by("start_date", "start_time", "end_time")
-    )
+    coming_events = [evt for evt in queryset if not evt.is_past]
+    coming_events = sorted(coming_events, key=lambda evt: (evt.start_date, evt.start_time, evt.end_time))
 
-    events_number = queryset.all().distinct().count()
+    events_number = len(past_events) + len(coming_events)
 
     PREVIOUS_EVENT_URL_NAME = "ppage"
     NEXT_EVENT_URL_NAME = "npage"

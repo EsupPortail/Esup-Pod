@@ -105,7 +105,7 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-    {% if broadcaster.is_recording%}
+    {% if broadcaster.is_recording %}
       <div class="card text-white bg-danger mb-3">
           <div class="card-body">
         <i data-feather="alert-octagon"> </i> {% blocktrans %}Recording in progress{% endblocktrans %}
@@ -123,7 +123,7 @@
 
     {% if NEXT_EVENTS %}
     <div class="jumbotron" id="last_videos">
-        <h3>8 {% trans "Next events" %}</h3>
+        <h3>{% trans "Next events" %}</h3>
 
         {% include "live/events_list.html" with events=NEXT_EVENTS %}
 

@@ -20,26 +20,6 @@
 
 {% block page_content %}
 
-    {% if use_category %}
-        <!-- Loader -->
-        <div class="loader_wrapper">
-            <div id="my_events" class="lds-roller">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-        </div>
-        <!-- End Loader -->
-
-        {#    {% include "events/category_modal.html" %}#}
-
-    {% endif %}
-
     <div class="d-flex infinite-container mb-2" id="event_add">
         {% if events.count == 0 %}
             <h3>{% trans "No event found" %}</h3>
