@@ -1,9 +1,11 @@
 from dataclasses import fields
+import datetime
 from django.forms import ModelForm, ValidationError
 from django import forms
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.db.models.query import QuerySet
+from django.contrib.admin import widgets
 
 from pod.meetings.models import Meetings, User
 
@@ -29,7 +31,7 @@ class MeetingsForm(forms.ModelForm):
 
     class Meta:
         model = Meetings
-        fields = ['name', 'attendeePW', 'moderatorPW', 'start_date', 'end_date', 'max_participants', 'auto_start_recording', 'allow_start_stop_recording', 'lock_settings_disable_cam', 'lock_settings_disable_mic', 'lock_settings_disable_private_chat', 'lock_settings_disable_public_chat', 'lock_settings_disable_note', 'lock_settings_locked_layout', 'ask_password']
+        fields = ['name', 'attendeePW', 'start_date', 'end_date', 'max_participants', 'auto_start_recording', 'allow_start_stop_recording', 'lock_settings_disable_cam', 'lock_settings_disable_mic', 'lock_settings_disable_private_chat', 'lock_settings_disable_public_chat', 'lock_settings_disable_note', 'lock_settings_locked_layout', 'ask_password']
 
 class MeetingsJoinForm(forms.Form):
     name = forms.CharField(label="Your name")

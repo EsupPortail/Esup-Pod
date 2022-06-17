@@ -23,8 +23,8 @@ class MeetingsTests(TestCase):
 
         # First step is to request BBB and create a meeting
         m_xml = Meetings.objects.create(
-            name="pod",
-            meetingID="0026-pod",
+            name="Info",
+            meetingID="0033-info",
         )
         meeting_json = xml_to_json(m_xml)
         self.assertTrue(meeting_json['returncode'] == 'SUCCESS')

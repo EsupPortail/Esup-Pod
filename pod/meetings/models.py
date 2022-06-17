@@ -23,6 +23,7 @@ from django.db.models import Q
 
 from pod.meetings.utils import parse_xml
 
+
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
 )
@@ -112,16 +113,6 @@ class Meetings(models.Model):
     restrict_access_to_groups = models.ManyToManyField(
         AccessGroup, blank=True, verbose_name=_('Groups'),
         help_text=_('Select one or more groups who can access to this meeting'))
-
-    is_draft = models.BooleanField(
-        verbose_name=_("Draft"),
-        help_text=_(
-            "If this box is checked, "
-            "the video will be visible and accessible only by you "
-            "and the additional owners."
-        ),
-        default=True,
-    )
     
     ask_password = models.BooleanField(
         verbose_name=_("Utilisation d'un mot de passe"),

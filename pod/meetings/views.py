@@ -28,10 +28,6 @@ RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
 def meeting(request):
     # attention, pas toutes les meetings mais seulement celles de l'utilsiateur connecté
     # a faire ! --> 'dataMeetings':Meetings.objects.filter(owner==request.user, sites=get_current_site(request), additional_owner)
-    '''
-    meeting = Meetings.get_meetings()
-    context={"meetings": meeting}
-    '''
     return render(request, 'meeting.html', {'dataMeetings':Meetings.objects.all()})
 
 @csrf_protect
@@ -106,24 +102,19 @@ def join_meeting(request, meetingID, slug_private=None):
     meeting = get_object_or_404(Meetings, id=id, sites=get_current_site(request))
 
     if request.user.is_authenticated and (request.user == meeting.owner or request.user in meeting.additional_owners):
-      name = request.user.get_full_name()
+      name = request.user.get_full_name() if request.user.get_full_name() != "" else request.user.username
       password = meeting.moderatorPW
       if not meeting.meeting_info(meetingID, password):
         meeting.create()
       
       url = meeting.join_url(name, password)
       print("is moderator : %s" % url)
-      # return redirect(url)
-      # puis faire un redirect.
+      return redirect(url)
     
     # si la conf est créée et lancée (is_running à True) il faut vérifier son mode d'accès et permettre à l'utilisateur de la rejoindre
 
-    '''
-    if meeting.meeting_info() and meeting.is_running()==True:
-      if request.user.is_authenticated and (request.user == meeting.owner or request.user in meeting.additional_owners):
-        url = meeting.join_url(name, password)
-      elif request.user.is_authenticated and not (request.user == meeting.owner or request.user in meeting.additional_owners):
-    '''
+    if not meeting.is_running():
+      return redirect("meetings:meeting_waiting_room")
 
     if request.method == "POST":
         form = MeetingsJoinForm(request.POST, is_staff=request.user.is_staff, is_superuser=request.user.is_superuser)
@@ -151,27 +142,14 @@ def is_in_meeting_groups(user, meeting):
 
 def get_meeting_access(request, meeting, slug_private):
   """Return True if access is granted to current user."""
-  is_draft = meeting.is_draft
   is_restricted = meeting.is_restricted
   is_restricted_to_group = meeting.restrict_access_to_groups.all().exists()
-  """
-  is_password_protected = (video.password is not None
-                          and video.password != '')
-  """
   is_access_protected = (
-    is_draft
-    or is_restricted
+    is_restricted
     or is_restricted_to_group
-    # or is_password_protected
   )
   if is_access_protected:
     access_granted_for_private = slug_private and slug_private == meeting.get_hashkey()
-    access_granted_for_draft = request.user.is_authenticated and (
-      request.user == meeting.owner
-      or request.user.is_superuser
-      or request.user.has_perm("meeting.change_meeting")
-      or (request.user in meeting.additional_owners.all())
-    )
     access_granted_for_restricted = (
       request.user.is_authenticated and not is_restricted_to_group
     )
@@ -185,20 +163,8 @@ def get_meeting_access(request, meeting, slug_private):
 
     return (
       access_granted_for_private
-      or (is_draft and access_granted_for_draft)
       or (is_restricted and access_granted_for_restricted)
-      # and is_password_protected is False)
       or (is_restricted_to_group and access_granted_for_group)
-      # and is_password_protected is False)
-      # or (
-      #     is_password_protected
-      #     and access_granted_for_draft
-      # )
-      # or (
-      #     is_password_protected
-      #     and request.POST.get('password')
-      #     and request.POST.get('password') == video.password
-      # )
     )
 
   else:
@@ -233,10 +199,9 @@ def render_meeting(request, meetingID, template_meeting="meeting_join.html", slu
       },
     )
   else:
-    is_draft = meeting.is_draft
     is_restricted = meeting.is_restricted
     is_restricted_to_group = meeting.restrict_access_to_groups.all().exists()
-    is_access_protected = is_draft or is_restricted or is_restricted_to_group
+    is_access_protected = is_restricted or is_restricted_to_group
     if is_password_protected and (
       not is_access_protected or (is_access_protected and show_page)
     ):
