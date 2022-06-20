@@ -58,8 +58,8 @@
                     <a class="btn btn-info" href="{% url 'meetings:join' element.meetingID %}">{% trans "Join"%}</a>
                 </p>
                 
-                {% if element.info.end_time == "null" %}
-                    {% if element.running == 'true'  %}
+                {% if element.meeting_info.end_time == "null" %}
+                    {% if element.is_running == 'true'  %}
                         <span class="status running">{% trans "Running"%}</span>
                     {% else %}
                         <span class="status notrunning">{% trans "Not Running"%}</span>

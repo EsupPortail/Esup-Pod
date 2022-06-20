@@ -110,11 +110,15 @@ def join_meeting(request, meetingID, slug_private=None):
       url = meeting.join_url(name, password)
       print("is moderator : %s" % url)
       return redirect(url)
-    
-    # si la conf est créée et lancée (is_running à True) il faut vérifier son mode d'accès et permettre à l'utilisateur de la rejoindre
 
-    if not meeting.is_running():
-      return redirect("meetings:meeting_waiting_room")
+    if not request.user == meeting.owner and request.user == meeting.additional_owners:
+      if not meeting.is_running():
+        return redirect("meetings:meeting_waiting_room")
+
+      url = meeting.join_url(name, password)
+      return redirect(url)
+
+    # si la conf est créée et lancée (is_running à True) il faut vérifier son mode d'accès et permettre à l'utilisateur de la rejoindre
 
     if request.method == "POST":
         form = MeetingsJoinForm(request.POST, is_staff=request.user.is_staff, is_superuser=request.user.is_superuser)
@@ -169,66 +173,6 @@ def get_meeting_access(request, meeting, slug_private):
 
   else:
     return True
-
-def render_meeting(request, meetingID, template_meeting="meeting_join.html", slug_private=None):
-  meeting = get_object_or_404(Meetings, meetingID=meetingID, sites=get_current_site(request))
-
-  is_password_protected = meeting.attendeePW is not None and meeting.attendeePW != ""
-
-  show_page = get_meeting_access(request, meeting, slug_private)
-
-  if (
-    (show_page and not is_password_protected)
-    or (
-      show_page
-      and is_password_protected
-      and request.POST.get("password")
-      and request.POST.get("password") == meeting.attendeePW
-    )
-    or (slug_private and slug_private == meeting.get_hashkey())
-    or request.user == meeting.owner
-    or request.user.is_superuser
-    or request.user.has_perm("meeting.change_meeting")
-    or (request.user in meeting.additional_owners.all())
-  ):
-    return render(
-      request,
-      template_meeting,
-      {
-        "meeting": meeting,
-      },
-    )
-  else:
-    is_restricted = meeting.is_restricted
-    is_restricted_to_group = meeting.restrict_access_to_groups.all().exists()
-    is_access_protected = is_restricted or is_restricted_to_group
-    if is_password_protected and (
-      not is_access_protected or (is_access_protected and show_page)
-    ):
-      form = (
-        MeetingsJoinForm(request.POST) if request.POST else MeetingsJoinForm()
-      )
-      if (
-        request.POST.get("password")
-        and request.POST.get("password") != meeting.attendeePW
-      ):
-        messages.add_message(
-          request, messages.ERROR, _("The password is incorrect.")
-        )
-      return render(
-        request,
-        "meeting.html",
-        {
-          "meeting": meeting,
-          "form": form,
-        },
-      )
-    else:
-      iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
-      return redirect(
-        "%s?%sreferrer=%s"
-        % (settings.LOGIN_URL, iframe_param, request.get_full_path())
-      )
 
 def edit_meeting(request, meetingID):
   meeting = get_object_or_404(Meetings, meetingID=meetingID, sites=get_current_site(request))
