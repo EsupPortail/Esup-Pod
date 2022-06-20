@@ -35,7 +35,7 @@ urlpatterns = [
         name="video_completion_overlay",
     ),
     url(
-        r"^/(?P<slug>[\-\d\w]+)/$",
+        r"^(?P<slug>[\-\d\w]+)/$",
         video_completion,
         name="video_completion",
     ),
