@@ -44,9 +44,11 @@ function replaceCountVideos(newCount) {
 function callAsyncListVideos(filterCheckedInputs) {
   // Ajax request to refresh view with filtered video list
   data = new FormData();
+  // Sort object for ajax request
   sortInputsObject = {};
   sortInputsObject["sort_column"] = sortColumn;
   sortInputsObject["sort_direction_asc"]= sort_direction_asc;
+  // Fill FormData object for ajax request
   data.append("filterCheckedInputs",JSON.stringify(filterCheckedInputs));
   data.append("sortInputs",JSON.stringify(sortInputsObject));
   localStorage.setItem("filterLocalStorage"+urlVideosStr,JSON.stringify(filterCheckedInputs));
@@ -72,6 +74,7 @@ function callAsyncListVideos(filterCheckedInputs) {
       $(".infinite-loading").remove();
       $(".infinite-more-link").remove();
       $("#videos_list").replaceWith(html);
+      window.location.href.replace(window.location.search,'');
       replaceCountVideos(countVideos);
     },
     error: function (result, status, error) {

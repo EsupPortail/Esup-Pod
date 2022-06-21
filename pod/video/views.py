@@ -652,13 +652,21 @@ def videos(request):
     except EmptyPage:
         videos = paginator.page(paginator.num_pages)
 
+    videos_next_page_number = videos.next_page_number() if videos.has_next() else None
+
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
 
     if request.is_ajax():
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
+            {
+            "videos": videos.object_list,
+            "full_path": full_path,
+            "count_videos": count_videos,
+            "videos_has_next": videos.has_next(),
+            "videos_next_page_number": videos_next_page_number
+            },
         )
 
     return render(
@@ -675,6 +683,8 @@ def videos(request):
             "full_path": full_path,
             "ownersInstances": ownersInstances,
             "cursus_list": CURSUS_CODES,
+            "videos_has_next": videos.has_next(),
+            "videos_next_page_number": videos_next_page_number
         },
     )
 
