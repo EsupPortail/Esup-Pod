@@ -28,7 +28,7 @@ RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
 )
 
-def select_video_owner():
+def select_meeting_owner():
     if RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY:
         return lambda q: (
             Q(is_staff=True) & (Q(first_name__icontains=q) | Q(last_name__icontains=q))

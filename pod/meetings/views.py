@@ -84,7 +84,7 @@ def delete_meeting(request, meetingID):
         messages.add_message(request, messages.ERROR, ("You cannot delete this meeting."))
         raise PermissionDenied
 
-    if request.method == "POST": # verifier que le user connecté est bien le prop de la reunion !
+    if request.method == "POST": 
       meeting.delete()
       return redirect(reverse("meetings:meeting"))
 

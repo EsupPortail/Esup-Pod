@@ -18,32 +18,23 @@ class MeetingsTests(TestCase):
         self.assertTrue(type(meeting) == list)
 
     def test_create_meeting(self):
-        """ Will try to create a meeting with bbb.
-        Example output as json from bbb 'create' command:
-        {'returncode': 'SUCCESS', 'meetingID': 'test',
-        'internalMeetingID': 'a94a8fe5ccb19ba61c4c0873d391e987982fbbd3-1598891360456',
-        'parentMeetingID': 'bbb-none', 'attendeePW': 'ap', 'moderatorPW': 'mp',
-        'createTime': '1598891360456', 'voiceBridge': '73362', 'dialNumber': '613-555-1234',
-        'createDate': 'Mon Aug 31 12:29:20 EDT 2020', 'hasUserJoined': 'false',
-        'duration': '0', 'hasBeenForciblyEnded': 'false', 'messageKey': None, 'message': None}
-        """
-        meeting_name = 'test'
-        meeting_id = 'test'
+        name = 'test'
+        meetingID = 'test'
 
         # First step is to request BBB and create a meeting
-        m_xml = Meetings().create(
-            name=meeting_name,
-            meeting_id=meeting_id,
+        m_xml = Meetings().objects.create(
+            name=name,
+            meetingID=meetingID,
         )
         meeting_json = xml_to_json(m_xml)
         self.assertTrue(meeting_json['returncode'] == 'SUCCESS')
-        self.assertTrue(meeting_json['meetingID'] == meeting_id)
+        self.assertTrue(meeting_json['meetingID'] == meetingID)
 
         # Now create a model for it.
         current_meetings = Meetings.objects.count()
         meeting, _ = Meetings.objects.get_or_create(meeting_id=meeting_json['meetingID'])
-        meeting.meeting_id = meeting_json['meetingID']
-        meeting.name = meeting_name
+        meeting.meetingID = meeting_json['meetingID']
+        meeting.name = name
         meeting.welcome_text = meeting_json['meetingID']
         meeting.attendee_password = meeting_json['attendeePW']
         meeting.moderator_password = meeting_json['moderatorPW']
@@ -55,15 +46,13 @@ class MeetingsTests(TestCase):
         self.assertFalse(Meetings.objects.count() == current_meetings)
 
     def test_end_meeting(self):
-        name = 'pod'
-        meeting = Meetings.create(name)
+        meetingID = '0026-pod'
+        meeting = Meetings.create(meetingID)
 
-        status = Meetings().end_meeting(meeting.name)
+        status = Meetings().end_meeting(meeting.meetingID)
         print(status)
 
     def test_join_existing_meeting(self):
-        name = 'Antoine Leva'
         meetingID = '0026-pod'
-        password = 'pod'
-        b = Meetings().join_url(name, meetingID, password)
+        b = Meetings().join_url(meetingID, 'Antoine Leva', 'pod')
         print(b)

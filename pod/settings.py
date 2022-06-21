@@ -66,7 +66,6 @@ INSTALLED_APPS = [
 DEBUG = True
 
 
-
 ##
 # Activated middleware components
 #
