@@ -19,8 +19,6 @@ from pod.video.views import get_comments, get_children_comment
 from pod.video.views import add_comment, delete_comment
 from pod.video.views import vote_get, vote_post
 
-from pod.video.views import video_oembed
-
 from pod.main.views import (
     contact_us,
     download_file,
@@ -130,14 +128,6 @@ if USE_OIDC:
 if getattr(settings, "USE_BBB", False):
     urlpatterns += [
         url(r"^bbb/", include("pod.bbb.urls")),
-    ]
-
-##
-# OEMBED feature patterns
-#
-if getattr(settings, "OEMBED", False):
-    urlpatterns += [
-        url(r"^oembed/", video_oembed, name="video_oembed"),
     ]
 
 if getattr(settings, "USE_OPENCAST_STUDIO", False):

@@ -16,6 +16,7 @@ from .views import edit_category, delete_category
 from .views import update_video_owner, filter_owners, filter_videos
 from .views import PodChunkedUploadView, PodChunkedUploadCompleteView
 from .views import stats_view
+from .views import video_oembed
 
 app_name = "video"
 
@@ -70,6 +71,14 @@ urlpatterns += [
 urlpatterns += [
     path("chapter/", include("pod.chapter.urls", namespace='chapter')),
 ]
+
+##
+# OEMBED feature patterns
+#
+if getattr(settings, "OEMBED", False):
+    urlpatterns += [
+        url(r"^oembed/", video_oembed, name="video_oembed"),
+    ]
 
 # VIDEO CATEGORY
 if getattr(settings, "USER_VIDEO_CATEGORY", False):
