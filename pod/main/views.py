@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Esup-Pod. If not, see <https://www.gnu.org/licenses/>.
 
-from pod.main.forms import ContactUsForm, SUBJECT_CHOICES
+from .forms import ContactUsForm, SUBJECT_CHOICES
 from django.shortcuts import render
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
@@ -33,7 +33,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from wsgiref.util import FileWrapper
 from django.db.models import Q
 from pod.video.models import Video
-from .forms import FrontOwnerForm
+from pod.authentication.forms import FrontOwnerForm
 import os
 import mimetypes
 import json
