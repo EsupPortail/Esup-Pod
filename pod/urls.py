@@ -15,10 +15,6 @@ from pod.authentication.views import authentication_logout
 from pod.authentication.views import authentication_login_gateway
 from pod.authentication.views import userpicture
 
-from pod.video.views import get_comments, get_children_comment
-from pod.video.views import add_comment, delete_comment
-from pod.video.views import vote_get, vote_post
-
 from pod.main.views import (
     contact_us,
     download_file,
@@ -143,46 +139,6 @@ if getattr(settings, "USE_PODFILE", False):
 for apps in settings.THIRD_PARTY_APPS:
     urlpatterns += [
         url(r"^" + apps + "/", include("pod.%s.urls" % apps)),
-    ]
-
-# COMMENT and VOTE
-if getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
-    urlpatterns += [
-        url(
-            r"^comment/(?P<video_slug>[\-\d\w]+)/$",
-            get_comments,
-            name="get_comments",
-        ),
-        url(
-            r"^comment/(?P<comment_id>[\d]+)/(?P<video_slug>[\-\d\w]+)/$",
-            get_children_comment,
-            name="get_comment",
-        ),
-        url(
-            r"^comment/add/(?P<video_slug>[\-\d\w]+)/$",
-            add_comment,
-            name="add_comment",
-        ),
-        url(
-            r"^comment/add/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$",
-            add_comment,
-            name="add_child_comment",
-        ),
-        url(
-            r"^comment/del/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$",
-            delete_comment,
-            name="delete_comment",
-        ),
-        url(
-            r"^comment/vote/(?P<video_slug>[\-\d\w]+)/$",
-            vote_get,
-            name="get_votes",
-        ),
-        url(
-            r"^comment/vote/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$",
-            vote_post,
-            name="add_vote",
-        ),
     ]
 
 # CHANNELS

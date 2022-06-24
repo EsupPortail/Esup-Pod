@@ -1,5 +1,3 @@
-const base_url = window.location.origin + `/comment/${video_slug}/`;
-
 const base_vote_url = base_url.replace("comment", "comment/vote");
 const base_delete_url = base_url.replace("comment", "comment/del");
 let all_comment = null;
