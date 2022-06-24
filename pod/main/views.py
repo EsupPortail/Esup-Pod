@@ -33,6 +33,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from wsgiref.util import FileWrapper
 from django.db.models import Q
 from pod.video.models import Video
+from .forms import FrontOwnerForm
 import os
 import mimetypes
 import json
@@ -365,3 +366,29 @@ def robots_txt(request):
         "Disallow: %s" % LOGIN_URL,
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def userpicture(request):
+
+    frontOwnerForm = FrontOwnerForm(instance=request.user.owner)
+
+    if request.method == "POST":
+        frontOwnerForm = FrontOwnerForm(request.POST, instance=request.user.owner)
+        if frontOwnerForm.is_valid():
+            frontOwnerForm.save()
+            # messages.add_message(
+            #    request, messages.INFO, _('Your picture has been saved.'))
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                _("One or more errors have been found in the form."),
+            )
+
+    return render(
+        request,
+        "userpicture/userpicture.html",
+        {"frontOwnerForm": frontOwnerForm},
+    )

@@ -10,20 +10,15 @@ from django.contrib.auth import views as auth_views
 from django.views.i18n import JavaScriptCatalog
 from django.utils.translation import ugettext_lazy as _
 
-from pod.authentication.views import authentication_login
-from pod.authentication.views import authentication_logout
-from pod.authentication.views import authentication_login_gateway
-from pod.authentication.views import userpicture
-
 from pod.main.views import (
     contact_us,
     download_file,
     user_autocomplete,
     maintenance,
     robots_txt,
+    userpicture
 )
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
-from pod.video_search.views import search_videos
 
 USE_CAS = getattr(settings, "USE_CAS", False)
 USE_SHIB = getattr(settings, "USE_SHIB", False)
@@ -58,24 +53,7 @@ urlpatterns = [
     url(r"^record/", include("pod.recorder.urls")),
     # search
     url(r"^search/", include("pod.video_search.urls")),
-    # auth cas
-    url(
-        r"^authentication_login/$",
-        authentication_login,
-        name="authentication_login",
-    ),
-    url(
-        r"^authentication_logout/$",
-        authentication_logout,
-        name="authentication_logout",
-    ),
-    url(r"^authentication_login/$", authentication_login, name="login"),
-    url(r"^authentication_logout/$", authentication_logout, name="logout"),
-    url(
-        r"^authentication_login_gateway/$",
-        authentication_login_gateway,
-        name="authentication_login_gateway",
-    ),
+    url(r"^authentication_", include("pod.authentication.urls")),
     url(
         r"^accounts/login/$",
         auth_views.LoginView.as_view(),
