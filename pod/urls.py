@@ -57,7 +57,7 @@ urlpatterns = [
     # recording
     url(r"^record/", include("pod.recorder.urls")),
     # search
-    url(r"^search/$", search_videos, name="search_videos"),
+    url(r"^search/", include("pod.video_search.urls")),
     # auth cas
     url(
         r"^authentication_login/$",
