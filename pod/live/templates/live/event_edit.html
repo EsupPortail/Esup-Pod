@@ -21,9 +21,7 @@
     {% trans "Plan an event" %}{% endif %}{% endblock %}
 
 {% block collapse_page_aside %}
-  {% if access_not_allowed == True %}
-
-  {% else %}
+  {% if access_not_allowed != True %}
     {{block.super}}
   {% endif %}
 {% endblock collapse_page_aside %}
@@ -98,8 +96,7 @@
 {% endblock %}
 
 {% block page_aside %}
-    {% if access_not_allowed == True %}
-    {% else %}
+    {% if access_not_allowed != True %}
         {% if form.instance.title  and form.instance.slug != '' %}
             <div class="card mt-1" id="card-managevideo">
                 <h5 class="card-header card-title pl-2"><i data-feather="settings"></i>&nbsp;{% trans "Manage event" %}
@@ -136,7 +133,6 @@
         </div>
     {% endif %}
 {% endblock page_aside %}
-
 
 {% block more_script %}
     <script src="/admin/jsi18n/"></script>

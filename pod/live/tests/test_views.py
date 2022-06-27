@@ -574,10 +574,18 @@ class LiveViewsTestCase(TestCase):
 
         broad = get_broadcaster_by_slug(1, site)
         self.assertEqual(broad, broadcaster)
+        print("   --->  test get_broadcaster_by_slug (int) : OK !")
+
+        broad = get_broadcaster_by_slug(broad.slug, site)
+        self.assertEqual(broad, broadcaster)
         print("   --->  test get_broadcaster_by_slug : OK !")
 
         with self.assertRaises(Http404):
             get_broadcaster_by_slug(1, None)
+        print("   --->  test get_broadcaster_by_slug (int) No Site : OK !")
+
+        with self.assertRaises(Http404):
+            get_broadcaster_by_slug(broad.slug, None)
         print("   --->  test get_broadcaster_by_slug No Site : OK !")
 
         with self.assertRaises(Http404):

@@ -9,7 +9,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.exceptions import ObjectDoesNotExist, SuspiciousOperation
+from django.core.exceptions import SuspiciousOperation
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Prefetch
@@ -131,15 +131,10 @@ def direct(request, slug):  # affichage du flux d'un diffuseur
 
 
 def get_broadcaster_by_slug(slug, site):
-    broadcaster = None
     if type(slug) == int:
-        try:
-            broadcaster = Broadcaster.objects.get(id=slug, building__sites=site)
-        except ObjectDoesNotExist:
-            pass
+        return get_object_or_404(Broadcaster, id=slug, building__sites=site)
     else:
-        broadcaster = get_object_or_404(Broadcaster, slug=slug, building__sites=site)
-    return broadcaster
+        return get_object_or_404(Broadcaster, slug=slug, building__sites=site)
 
 
 """ use rest api to change status
@@ -197,13 +192,12 @@ def heartbeat(request):
 
 
 def can_manage_event(user):
-    if not user.is_authenticated:
-        return False
-    if user.is_superuser:
-        return True
-    return user.owner.accessgroup_set.filter(
-        code_name__in=settings.AFFILIATION_EVENT
-    ).exists()
+    return user.is_authenticated and (
+        user.is_superuser
+        or user.owner.accessgroup_set.filter(
+            code_name__in=settings.AFFILIATION_EVENT
+        ).exists()
+    )
 
 
 def is_in_event_groups(user, event):
@@ -318,11 +312,7 @@ def events(request):  # affichage des events
     queryset = queryset.filter(is_draft=False)
     if not request.user.is_authenticated():
         queryset = queryset.filter(is_restricted=False)
-        # queryset = queryset.filter(broadcaster__restrict_access_to_groups__isnull=True)
-    # elif not request.user.is_superuser:
-    #     queryset = queryset.filter(Q(is_draft=False) | Q(owner=request.user))
-    #     queryset = queryset.filter(Q(broadcaster__restrict_access_to_groups__isnull=True) |
-    #              Q(broadcaster__restrict_access_to_groups__in=request.user.groups.all()))
+        queryset = queryset.filter(restrict_access_to_groups__isnull=False)
 
     events_list = queryset.all().order_by("start_date", "start_time", "end_time")
 
@@ -365,10 +355,14 @@ def my_events(request):
     queryset = request.user.event_set.all() | request.user.owners_events.all()
 
     past_events = [evt for evt in queryset if evt.is_past]
-    past_events = sorted(past_events, key=lambda evt: (evt.start_date, evt.start_time), reverse=True)
+    past_events = sorted(
+        past_events, key=lambda evt: (evt.start_date, evt.start_time), reverse=True
+    )
 
     coming_events = [evt for evt in queryset if not evt.is_past]
-    coming_events = sorted(coming_events, key=lambda evt: (evt.start_date, evt.start_time, evt.end_time))
+    coming_events = sorted(
+        coming_events, key=lambda evt: (evt.start_date, evt.start_time, evt.end_time)
+    )
 
     events_number = len(past_events) + len(coming_events)
 
@@ -424,14 +418,11 @@ def get_event_edition_access(request, event):
     if event is None:
         return can_manage_event(request.user)
     # edition
-    if (
+    return (
         request.user == event.owner
         or request.user in event.additional_owners.all()
         or request.user.is_superuser
-    ):
-        return True
-
-    return False
+    )
 
 
 @csrf_protect
@@ -529,8 +520,6 @@ def broadcasters_from_building(request):
 
 def broadcaster_restriction(request):
     if request.method == "GET":
-        # and request.is_ajax():
-
         broadcaster_id = request.GET.get("idbroadcaster")
         if not broadcaster_id:
             return HttpResponseBadRequest()
@@ -812,7 +801,6 @@ def checkFileSize(full_file_name, max_attempt=6):
 
     attempt_number = 1
     while not size_match and attempt_number <= max_attempt:
-        # if attempt_number > 1:
         sleep(2)
         new_size = os.path.getsize(full_file_name)
         if file_size != new_size:

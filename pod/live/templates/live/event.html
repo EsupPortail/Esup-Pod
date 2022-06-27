@@ -169,28 +169,21 @@
 {% block more_script %}
     <script>
         // Debug if necessary, depends on the settings_local
-        var debug = false;
-        {% if debug %}
-            debug = true;
-        {% endif %}
+        let debug = {{ debug }};
 
         // Live started
-        var started = false;
+        let started = false;
         // Number of loop until we are sure the live is stopped
         // See video state (cf. https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/readyState)
-        var nbLoop = 0;
+        let nbLoop = 0;
         // Live seems stopped
-        var stopped = false;
+        let stopped = false;
 
         //videojs.options.flash.swf = "video-js.swf"
-        var options = {
+        let options = {
             notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
             language: "fr", //en or nl
-            {% if request.GET.is_iframe %}
-                fluid: false,
-            {% else %}
-                fluid: true,
-            {% endif %}
+            fluid: {{ request.GET.is_iframe }},
             playbackRates: [0.5, 1, 1.5, 2],
             errorDisplay: false,
             loop: false
@@ -240,7 +233,7 @@
         {% if event.broadcaster.video_on_hold.is_video %}
             // In this case, loop is necessary
             options["loop"] = true;
-            var playerOnHold = videojs('podvideoonholdplayer', options, function () {
+            let playerOnHold = videojs('podvideoonholdplayer', options, function () {
             });
 
             playerOnHold.videoJsLogo({
@@ -248,7 +241,7 @@
                 linktitle: '{{TITLE_ETB}} - {{TITLE_SITE}}',
                 link: '{{LINK_PLAYER}}'
             });
-            var mp4_sources = {{event.broadcaster.video_on_hold.get_video_mp4_json|safe}};
+            let mp4_sources = {{event.broadcaster.video_on_hold.get_video_mp4_json|safe}};
             playerOnHold.src(mp4_sources);
             let modalOnHold = playerOnHold.createModal('{% trans "Live not found, displaying the video on hold, retry every 10 seconds" %}');
             setTimeout(function () {
@@ -257,7 +250,7 @@
         {% endif %}
 
         // Management of the streaming live
-        var player = videojs('podvideoplayer', options, function () {
+        let player = videojs('podvideoplayer', options, function () {
         })
 
         {% if event.broadcaster.enable_viewer_count%}
@@ -272,7 +265,7 @@
         player.on('error', function () {
             // Handle successives errors to avoid multiple reload
             if (typeof (errored) == 'undefined' || !errored) {
-                var errored = true;
+                let errored = true;
                 let modal = player.createModal('{% trans "Live not found, retry in 10 seconds" %}');
                 setTimeout(function () {
                     errored = false;
