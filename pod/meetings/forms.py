@@ -31,20 +31,8 @@ class MeetingsForm(forms.ModelForm):
 
     class Meta:
         model = Meetings
-        fields = ['name', 'attendeePW', 'start_date', 'end_date', 'max_participants', 'auto_start_recording', 'allow_start_stop_recording', 'lock_settings_disable_cam', 'lock_settings_disable_mic', 'lock_settings_disable_private_chat', 'lock_settings_disable_public_chat', 'lock_settings_disable_note', 'lock_settings_locked_layout', 'ask_password']
+        fields = ['name', 'attendeePW', 'moderatorPW', 'start_date', 'end_date', 'max_participants', 'auto_start_recording', 'allow_start_stop_recording', 'lock_settings_disable_cam', 'lock_settings_disable_mic', 'lock_settings_disable_private_chat', 'lock_settings_disable_public_chat', 'lock_settings_disable_note', 'lock_settings_locked_layout', 'ask_password']
 
 class MeetingsJoinForm(forms.Form):
-    name = forms.CharField(label="Your name")
+    fullName = forms.CharField(label="Your name")
     password = forms.CharField(label= ("Password"), widget=forms.PasswordInput())
-
-    def __init__(self, *args, **kwargs):
-        self.is_staff = (
-            kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
-        )
-        self.is_superuser = (
-            kwargs.pop("is_superuser")
-            if ("is_superuser" in kwargs.keys())
-            else self.is_superuser
-        )
-
-        super(MeetingsJoinForm, self).__init__(*args, **kwargs)

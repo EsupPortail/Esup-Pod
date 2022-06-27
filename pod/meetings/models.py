@@ -22,7 +22,12 @@ from pod.authentication.models import AccessGroup
 from django.db.models import Q
 
 from pod.meetings.utils import parse_xml
-
+BBB_SECRET_KEY = getattr(
+    settings, "BBB_SECRET_KEY", "GOI6t9lAHdO996UiKWqIvjGNvHHVfA00hTRX2GBM"
+)
+BBB_API_URL = getattr(
+    settings, "BBB_API_URL", "https://bbb-21-e.uphf.fr/bigbluebutton/api/"
+)
 
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False

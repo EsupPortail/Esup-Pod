@@ -65,6 +65,8 @@ INSTALLED_APPS = [
 
 DEBUG = True
 
+BBB_API_URL= 'https://bbb-21-e.uphf.fr/bigbluebutton/api/'
+BBB_SECRET_KEY= 'GOI6t9lAHdO996UiKWqIvjGNvHHVfA00hTRX2GBM' 
 
 ##
 # Activated middleware components
