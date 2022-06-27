@@ -46,6 +46,7 @@
   <link rel="stylesheet" href="{% static 'css/iframe.css' %}?ver={{VERSION}}" media="screen" title="no title">
   {% endif %}
   {% endspaceless %}
+  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
 </head>
 
 <body>
@@ -143,7 +144,7 @@
     </div>
   </div>
   <!-- Javascript migration from header to footer-->
-  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+  <!-- except for jquery, to do later ! -->
   <script src="{% static 'js-cookie/dist/js.cookie.min.js' %}?ver={{VERSION}}"></script>
   <script src="{% url 'javascript-catalog' %}"></script>
   <!-- JS -->
@@ -158,9 +159,10 @@
     var show_only_parent_themes = {% if only_parent_theme %} true {% else %} false {% endif %};
     {% for channel in ALL_CHANNELS %} {% if channel.themes.count > 0 %} listTheme["channel_{{channel.id}}"] = {{ channel.get_all_theme_json | safe }}; {% endif %} {% endfor %}
     /** USERS **/
-    var urlvideos = "{% url 'videos' %}";
+    var urlvideos = "{% url 'videos:videos' %}";
   </script>
   <script src="{% static 'js/main.js' %}?ver={{VERSION}}"></script>
+
   {% block more_script %}
   {% endblock more_script %}
 

@@ -14,7 +14,7 @@
                 <div class="dropdown-menu">
 
                     {% comment %} Button to edit the comment in three dots menu {% endcomment %}
-                    <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="edit_video_notes_com_form" role="menuitem">
+                    <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="edit_video_notes_com_form" role="menuitem">
                         {% csrf_token %}
                         <input type="hidden" name="idNote" value="{{ note.id }}"/>
                         <input type="hidden" name="idCom" value="{{ com.id }}"/>
@@ -23,7 +23,7 @@
                     </form>
 
                     {% comment %} Button to comment the comment in three dots menu {% endcomment %}
-                    <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="comment_video_notes_form" role="menuitem">
+                    <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="comment_video_notes_form" role="menuitem">
                         {% csrf_token %}
                         <input type="hidden" name="idNote" value="{{ note.id }}"/>
                         <input type="hidden" name="idCom" value="{{ com.id }}"/>
@@ -32,7 +32,7 @@
                     </form>
 
                     {% comment %} Button to remove the comment in three dots menu {% endcomment %}
-                    <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="remove_video_notes_com_form" role="menuitem">
+                    <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="remove_video_notes_com_form" role="menuitem">
                         {% csrf_token %}
                         <input type="hidden" name="idNote" value="{{ note.id }}"/>
                         <input type="hidden" name="idCom" value="{{ com.id }}"/>
@@ -46,7 +46,7 @@
 
     {% comment %} Display the full comment {% endcomment %}
     {% if comToDisplay and com in comToDisplay and com != comToEdit %}
-        <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_note_coms_form displayed">
+        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_note_coms_form displayed">
             {% csrf_token %}
             <input type="hidden" name="idNote" value="{{ note.id }}"/>
             <input type="hidden" name="idCom" value="{{ com.parentCom.id }}"/>
@@ -56,13 +56,13 @@
 
     {% comment %} Display a form to edit the comment {% endcomment %}
     {% elif note_form and comToEdit and com == comToEdit %}
-        <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_note_coms_form hidden">
+        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_note_coms_form hidden">
             {% csrf_token %}
             <input type="hidden" name="idNote" value="{{ note.id }}"/>
             <input type="hidden" name="idCom" value="{{ com.id }}"/>
             <input type="hidden" name="action" value="get"/>
         </form>
-        <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
+        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" id="video_notes_form">
             {% csrf_token %}
             {% if note_form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
             {% for field_hidden in note_form.hidden_fields %} {{field_hidden}} {% endfor %}
@@ -87,7 +87,7 @@
 
     {% comment %} Display the comment reduced {% endcomment %}
     {% else %}
-        <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_note_coms_form notdisplayed">
+        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_note_coms_form notdisplayed">
             {% csrf_token %}
             <input type="hidden" name="idCom" value="{{ com.id }}"/>
             <input type="hidden" name="idNote" value="{{ note.id }}"/>
@@ -115,13 +115,13 @@
 
 {% comment %} Form used to comment a comment {% endcomment %}
 {% if note_form and noteToDisplay and com == comToDisplay.0 and not noteToEdit and not comToEdit %}
-    <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_note_coms_form hidden">
+    <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_note_coms_form hidden">
         {% csrf_token %}
         <input type="hidden" name="action" value="get"/>
         <input type="hidden" name="idNote" value="{{ note.id }}"/>
         <input type="hidden" name="idCom" value="{{ com.id }}"/>
     </form>
-    <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
+    <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" id="video_notes_form">
     {% csrf_token %}
         {% if note_form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
         {% for field_hidden in note_form.hidden_fields %} {{field_hidden}} {% endfor %}

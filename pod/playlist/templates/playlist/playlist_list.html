@@ -15,9 +15,9 @@
 					<p class="card-text">{{playlist.description}}</p>
 				</div>
 				<div class="btn-group">
-					<a href="{% url 'playlist_edit' slug=playlist.slug %}" class="btn btn-sm btn-primary"><i class="bi bi-pencil-square" aria-hidden="true"></i> {% trans 'Edit' %}</a>
+					<a href="{% url 'playlist:playlist_edit' slug=playlist.slug %}" class="btn btn-sm btn-primary"><i class="bi bi-pencil-square" aria-hidden="true"></i> {% trans 'Edit' %}</a>
 					{% if playlist.videos %}
-						&nbsp;<a href="{% url 'playlist' slug=playlist.slug %}" class="btn btn-sm btn-primary"><i class="bi bi-play" aria-hidden="true"></i> {% trans 'Launch' %}</a>
+						&nbsp;<a href="{% url 'playlist:playlist' slug=playlist.slug %}" class="btn btn-sm btn-primary"><i class="bi bi-play" aria-hidden="true"></i> {% trans 'Launch' %}</a>
 					{% endif %}
 				</div>
 			</div>
@@ -28,7 +28,7 @@
 		</div>
 	{% endfor %}
 	<div class="col-1">
-			<a class="btn btn-primary" href="{% url 'playlist_edit' %}" title="{% trans 'Add a new playlist' %}">
+			<a class="btn btn-primary" href="{% url 'playlist:playlist_edit' %}" title="{% trans 'Add a new playlist' %}">
 				<i class="bi bi-plus" aria-hidden="true"></i>
 			</a>
 	</div>

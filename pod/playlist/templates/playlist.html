@@ -11,7 +11,7 @@
 {% block breadcrumbs %}
   {{block.super}}
   <li class="breadcrumb-item">
-    <a href="{% url 'my_playlists' %}">{% trans 'My playlists' %}</a>
+    <a href="{% url 'playlist:my_playlists' %}">{% trans 'My playlists' %}</a>
   </li>
   {% if form.instance.title %}
     <li class="breadcrumb-item">
@@ -41,9 +41,9 @@
   </h1>
   <form id="playlist_form" method="POST"
     {% if form.instance.slug %}
-      action="{% url 'playlist_edit' slug=form.instance.slug %}"
+      action="{% url 'playlist:playlist_edit' slug=form.instance.slug %}"
     {% else %}
-      action="{% url 'playlist_edit' %}"
+      action="{% url 'playlist:playlist_edit' %}"
     {% endif %}
   >
     {% csrf_token %}
@@ -77,5 +77,5 @@
     <p>{% trans 'This playlist has no videos yet.' %}</p>
   {% endif %}
   <hr/>
-  <a href="{% url 'my_playlists' %}" class="btn btn-secondary">{% trans 'Back to my playlists' %}</a>
+  <a href="{% url 'playlist:my_playlists' %}" class="btn btn-secondary">{% trans 'Back to my playlists' %}</a>
 {% endblock page_content %}

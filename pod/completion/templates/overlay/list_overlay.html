@@ -22,13 +22,13 @@
 					<td class="overlay_end">{{overlay.time_end}}</td>
 					<td class="overlay_position">{{overlay.position}}</td>
 					<td>
-						<form class="form_modif completion" action="{% url 'video_completion_overlay' slug=video.slug %}" method="POST">
+						<form class="form_modif completion" action="{% url 'video:completion:video_completion_overlay' slug=video.slug %}" method="POST">
 							{% csrf_token %}
 							<input type="hidden" name="action" value="modify"/>
 							<input type="hidden" name="id" value="{{overlay.id}}"/>
 							<input type="submit" title="{% trans 'Edit the overlay' %}" value="{% trans 'modify' %}" class="edt_overlay btn btn-primary btn-sm"/>
 						</form>
-						<form class="form_delete completion" action="{% url 'video_completion_overlay' slug=video.slug %}" method="POST">
+						<form class="form_delete completion" action="{% url 'video:completion:video_completion_overlay' slug=video.slug %}" method="POST">
 							{% csrf_token %}
 							<input type="hidden" name="action" value="delete"/>
 							<input type="hidden" name="id" value="{{overlay.id}}"/>

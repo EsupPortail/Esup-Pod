@@ -9,6 +9,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from pod.video.models import Video, Type
 from ..models import Chapter
 from django.contrib.sites.models import Site
+from django.urls import reverse
 
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomFileModel
@@ -51,18 +52,19 @@ class ChapterViewsTestCase(TestCase):
 
     def test_video_chapter_owner(self):
         video = Video.objects.get(id=1)
-        response = self.client.get("/video_chapter/{0}/".format(video.slug))
+        url = reverse("video:chapter:video_chapter", kwargs={"slug": video.slug})
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
 
         self.user = User.objects.get(username="test")
         self.client.force_login(self.user)
-        response = self.client.get("/video_chapter/{0}/".format(video.slug))
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
         authenticate(username="test2", password="hello")
         login = self.client.login(username="test2", password="hello")
         self.assertTrue(login)
-        response = self.client.get("/video_chapter/{0}/".format(video.slug))
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 403)  # forbidden
 
         print(" ---> test_video_chapter_owner : OK!")
@@ -70,12 +72,13 @@ class ChapterViewsTestCase(TestCase):
 
     def test_video_chapter(self):
         video = Video.objects.get(id=1)
-        response = self.client.get("/video_chapter/{0}/".format(video.slug))
+        url = reverse("video:chapter:video_chapter", kwargs={"slug": video.slug})
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
-        response = self.client.get("/video_chapter/{0}/".format(video.slug))
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_chapter.html")
         self.assertContains(response, "videotest")
@@ -89,8 +92,9 @@ class ChapterViewsTestCase(TestCase):
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
+        url = reverse("video:chapter:video_chapter", kwargs={"slug": video.slug})
         response = self.client.post(
-            "/video_chapter/{0}/".format(video.slug), data={"action": "new"}
+            url, data={"action": "new"}
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_chapter.html")
@@ -98,7 +102,7 @@ class ChapterViewsTestCase(TestCase):
         self.assertContains(response, "list_chapter")
         self.assertContains(response, "form_chapter")
         response = self.client.post(
-            "/video_chapter/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "video": 1,
@@ -119,11 +123,12 @@ class ChapterViewsTestCase(TestCase):
 
     def test_video_chapter_edit(self):
         video = Video.objects.get(id=1)
+        url = reverse("video:chapter:video_chapter", kwargs={"slug": video.slug})
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
         response = self.client.post(
-            "/video_chapter/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "video": 1,
@@ -137,7 +142,7 @@ class ChapterViewsTestCase(TestCase):
         self.assertTrue(result)
         result = Chapter.objects.get(id=1)
         response = self.client.post(
-            "/video_chapter/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "chapter_id": result.id,
@@ -160,8 +165,9 @@ class ChapterViewsTestCase(TestCase):
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
+        url = reverse("video:chapter:video_chapter", kwargs={"slug": video.slug})
         response = self.client.post(
-            "/video_chapter/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "video": 1,
@@ -175,7 +181,7 @@ class ChapterViewsTestCase(TestCase):
         self.assertTrue(result)
         result = Chapter.objects.get(id=1)
         response = self.client.post(
-            "/video_chapter/{0}/".format(video.slug),
+            url,
             data={"action": "delete", "id": result.id},
         )
         self.assertEqual(response.status_code, 200)
@@ -202,8 +208,9 @@ class ChapterViewsTestCase(TestCase):
             )
         else:
             filevttchapter = CustomFileModel.objects.create(file=fileChapter)
+        url = reverse("video:chapter:video_chapter", kwargs={"slug": video.slug})
         response = self.client.post(
-            "/video_chapter/{0}/".format(video.slug),
+            url,
             data={"action": "import", "file": filevttchapter.id},
         )
         self.assertEqual(response.status_code, 200)

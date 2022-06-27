@@ -5,34 +5,17 @@
 
 {% block page_extra_head %}
 <style>
-  {
-      {
-      channel.style
-    }
-  }
-
-    {
-    % if channel.color %
-  }
-
+  {{channel.style}}
+  {% if channel.color %}
   body {
-    background-color: {
-        {
-        form.instance.color
-      }
-    }
-
-    ;
+    background-color: {{form.instance.color}};
   }
-
-    {
-    %endif%
-  }
+  {% endif %}
 </style>
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
-<li class="breadcrumb-item"><a href="{% url 'my_channels' %}" title="{% trans 'My channels' %}">{% trans 'My channels' %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'channels:my_channels' %}" title="{% trans 'My channels' %}">{% trans 'My channels' %}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{{channel.title}}</li>
 {% endblock breadcrumbs %}
 
@@ -44,10 +27,10 @@
 {% block page_content %}
 <h1 class="page_title">{% trans "Editing the channel's themes" %} {{channel.title}}
   <span class="float-end">
-    <a href="{% url 'channel' slug_c=channel.slug %}" class="btn btn pod-btn-social btn-sm">
+    <a href="{% url 'channel-video:channel' slug_c=channel.slug %}" class="btn btn pod-btn-social btn-sm">
       <i class="bi bi-youtube"></i>&nbsp;{% trans "View the channel"%}
     </a>
-    <a href="{% url 'channel_edit' slug=channel.slug %}" class="btn btn pod-btn-social btn-sm">
+    <a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn pod-btn-social btn-sm">
       <i class="bi bi-pencil-square"></i>&nbsp;{% trans "Edit the channel"%}
     </a>
   </span>
@@ -62,14 +45,14 @@
   {% if form_theme %}
   {% include 'channel/form_theme.html' %}
   {% else %}
-  <form id="theme_form_new" class="get_form_theme" action="{% url 'theme_edit' slug=channel.slug %}" method="POST">
+  <form id="theme_form_new" class="get_form_theme" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="POST">
     {% csrf_token %}
     <input type="hidden" name="action" value="new" />
     <input type="submit" value="{% trans 'Add a new theme' %}" class="btn btn-primary" />
   </form>
   {% endif %}
 </div>
-<form id="theme_form_new" class="get_form_theme" action="{% url 'theme_edit' slug=channel.slug %}" method="POST" {% if form_theme %}style="display:none;" {%endif%}>
+<form id="theme_form_new" class="get_form_theme" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="POST" {% if form_theme %}style="display:none;" {%endif%}>
   {% csrf_token %}
   <input type="hidden" name="action" value="new" />
   <input type="submit" value="{% trans 'Add a new theme' %}" class="btn btn-primary" />

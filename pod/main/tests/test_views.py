@@ -5,6 +5,7 @@
 from django.test import override_settings
 from django.test import TestCase
 from django.test import Client
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
@@ -117,14 +118,15 @@ class MaintenanceViewsTestCase(TestCase):
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         # GET method is used
-        response = self.client.get("/video_edit/")
+        url = reverse("video:video_edit", kwargs={})
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
         conf = Configuration.objects.get(key="maintenance_mode")
         conf.value = "1"
         conf.save()
 
-        response = self.client.get("/video_edit/")
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, "/maintenance/")
         print("   --->  test_maintenance of MaintenanceViewsTestCase: OK!")

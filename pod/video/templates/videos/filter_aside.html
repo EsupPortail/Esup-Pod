@@ -8,7 +8,7 @@
     <i class="bi bi-sliders2-vertical"></i>&nbsp;{% trans "Filters"%}
   </h2>
 
-<form action="{% url 'videos' %}" method="get" id="filters">
+<form action="{% url 'videos:videos' %}" method="get" id="filters">
 {% if not HIDE_USER_FILTER and user.is_authenticated %}
   <fieldset>
     <legend  class="h5"><i class="bi bi-people"></i> {% trans "Users" %}</legend>
