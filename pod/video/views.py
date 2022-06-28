@@ -477,16 +477,6 @@ def my_videos(request):
     ) | request.user.owners_videos.all().filter(sites=site)
     videos_list = videos_list.distinct()
 
-    page = request.GET.get("page", 1)
-
-    full_path = ""
-    if page:
-        full_path = (
-            request.get_full_path()
-            .replace("?page=%s" % page, "")
-            .replace("&page=%s" % page, "")
-        )
-
     cats = []
     videos_without_cat = []
     if USE_CATEGORY:
@@ -522,9 +512,35 @@ def my_videos(request):
         data_context["categories"] = cats
         data_context["videos_without_cat"] = videos_without_cat
 
-    if request.POST.get("filterCheckedInputs"):
-        videos_list = get_filtered_videos_list(videos_list, request)
+    if request.method == 'GET':
+        print("GET")
+        filters = request.session["filterCheckedInputsMyVideos"] if "filterCheckedInputsMyVideos" in request.session else None
+        sort_inputs = request.session["sortInputsMyVideos"] if "sortInputsMyVideos" in request.session else None
+    else:
+        print("POST")
+        if request.POST.get("filterCheckedInputs"):
+            filters = request.POST.get("filterCheckedInputs")
+
+        if request.POST.get("sortInputs"):
+            sort_inputs = request.POST.get("sortInputs")
+        # set filters and sort in session
+        request.session["filterCheckedInputsMyVideos"] = request.POST.get("filterCheckedInputs")
+        request.session["sortInputsMyVideos"] = request.POST.get("sortInputs")
+        request.session.modified = True
+
+    videos_list = get_filtered_videos_list(filters, videos_list) if filters is not None else videos_list
+    videos_list = sort_list_videos(sort_inputs, videos_list) if sort_inputs is not None else videos_list
+
     count_videos = len(videos_list)
+
+    page = request.GET.get("page", 1)
+    full_path = ""
+    if page:
+        full_path = (
+            request.get_full_path()
+            .replace("?page=%s" % page, "")
+            .replace("&page=%s" % page, "")
+        )
 
     paginator = Paginator(videos_list, 12)
     try:
@@ -578,9 +594,9 @@ def get_videos_list(request):
     return videos_list.distinct()
 
 
-def get_filtered_videos_list(videos_list, request):
+def get_filtered_videos_list(filters, videos_list):
 
-    filters = json.loads(request.POST.get("filterCheckedInputs"))
+    filters = json.loads(filters)
 
     if 'type' in filters:
         videos_list = videos_list.filter(type__slug__in=filters['type'])
@@ -599,8 +615,6 @@ def get_filtered_videos_list(videos_list, request):
     if 'cursus' in filters:
         videos_list = videos_list.filter(cursus__in=filters['cursus'])
 
-    videos_list = sort_list_videos(request, videos_list)
-
     return videos_list.distinct()
 
 
@@ -615,15 +629,15 @@ def get_owners_has_instances(owners):
     return ownersInstances
 
 
-def sort_list_videos(request, videos_list):
+def sort_list_videos(sort_inputs, videos_list):
     # sort Videos by specific column (select html) and ascending or descending direction (boolean)
-    if request.POST.get("sortInputs"):
-        data = json.loads(request.POST.get("sortInputs"))
-        if 'sort_column' in data and data['sort_direction_asc'] is False:
-            sort = '-' + data['sort_column']
-        else:
-            sort = data['sort_column']
-        videos_list = videos_list.order_by(sort)
+    sort_inputs = json.loads(sort_inputs)
+
+    if 'sort_column' in sort_inputs and sort_inputs['sort_direction_asc'] is False:
+        sort = '-' + sort_inputs['sort_column']
+    else:
+        sort = sort_inputs['sort_column']
+    videos_list = videos_list.order_by(sort)
 
     return videos_list
 
@@ -631,8 +645,25 @@ def sort_list_videos(request, videos_list):
 def videos(request):
     """Render the main list of videos."""
     videos_list = VIDEOS
-    if request.POST.get("filterCheckedInputs"):
-        videos_list = get_filtered_videos_list(videos_list, request)
+
+    if request.method == 'GET':
+        filters = request.session["filterCheckedInputsVideos"] if "filterCheckedInputsVideos" in request.session else None
+        sort_inputs = request.session["sortInputsVideos"] if "sortInputsVideos" in request.session else None
+    else:
+        if request.POST.get("filterCheckedInputs"):
+            filters = request.POST.get("filterCheckedInputs")
+
+        if request.POST.get("sortInputs"):
+            sort_inputs = request.POST.get("sortInputs")
+
+        # set filters and sort in session
+        request.session["filterCheckedInputsVideos"] = request.POST.get("filterCheckedInputs")
+        request.session["sortInputsVideos"] = request.POST.get("sortInputs")
+        request.session.modified = True
+
+    videos_list = get_filtered_videos_list(filters, videos_list) if filters is not None else videos_list
+    videos_list = sort_list_videos(sort_inputs, videos_list) if sort_inputs is not None else videos_list
+
     count_videos = len(videos_list)
 
     page = request.GET.get("page", 1)
@@ -653,7 +684,6 @@ def videos(request):
         videos = paginator.page(paginator.num_pages)
 
     videos_next_page_number = videos.next_page_number() if videos.has_next() else None
-
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
 
     if request.is_ajax():
@@ -661,7 +691,7 @@ def videos(request):
             request,
             "videos/video_list.html",
             {
-            "videos": videos.object_list,
+            "videos": videos,
             "full_path": full_path,
             "count_videos": count_videos,
             "videos_has_next": videos.has_next(),

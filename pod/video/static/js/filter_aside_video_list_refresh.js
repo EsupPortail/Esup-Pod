@@ -74,8 +74,8 @@ function callAsyncListVideos(filterCheckedInputs) {
       $(".infinite-loading").remove();
       $(".infinite-more-link").remove();
       $("#videos_list").replaceWith(html);
-      window.location.href.replace(window.location.search,'');
       replaceCountVideos(countVideos);
+      window.location.href.replace(window.location.search,'');
     },
     error: function (result, status, error) {
       $("#videos_list").html(gettext("An Error occurred while processing "));
@@ -88,8 +88,8 @@ function refreshVideosSearch(){
   filterCheckedInputs = {};
   categoryChecked = null;
   $(".infinite-loading").show();
-  $(".form-check-input input[type=checkbox]").attr("disabled", "true");
   $("#videos_list").html("");
+  $(".form-check-input input[type=checkbox]").attr("disabled", "true");
   // Get all filter checkboxes
   $("input[type=checkbox]:checked.form-check-input").each(function(checkBox) {
     let checkBoxName = $(this).attr('name');
@@ -171,7 +171,5 @@ infinite_waypoint = getInfiniteScrollWaypoint();
 manageLocalStorage();
 
 // First launch of videos list refresh
-$(document).ready(function() {
-    refreshVideosSearch();
-});
+refreshVideosSearch();
 
