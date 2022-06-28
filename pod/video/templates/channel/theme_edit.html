@@ -15,11 +15,7 @@
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
-<<<<<<< HEAD
-<li class="breadcrumb-item"><a href="{% url 'my_channels' %}">{% trans 'My channels' %}</a></li>
-=======
-<li class="breadcrumb-item"><a href="{% url 'channels:my_channels' %}" title="{% trans 'My channels' %}">{% trans 'My channels' %}</a></li>
->>>>>>> 7a8a41754bbe51be062b23992e2c7d9a85a2b01e
+<li class="breadcrumb-item"><a href="{% url 'channels:my_channels' %}">{% trans 'My channels' %}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{{channel.title}}</li>
 {% endblock breadcrumbs %}
 

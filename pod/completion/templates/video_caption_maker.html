@@ -148,11 +148,7 @@
         </div>
       </span>
       <span class="float-end">
-<<<<<<< HEAD
-        <a href="{% url 'video_completion' slug=video.slug %}" class="btn btn btn-secondary btn-sm">
-=======
-        <a href="{% url 'video:completion:video_completion' slug=video.slug %}" title="{% trans 'View the video' %}" class="btn btn btn-secondary btn-sm">
->>>>>>> 7a8a41754bbe51be062b23992e2c7d9a85a2b01e
+        <a href="{% url 'video:completion:video_completion' slug=video.slug %}" class="btn btn btn-secondary btn-sm">
           <i class="bi bi-arrow-left"></i>&nbsp;{% trans "Back to the completion"%}
         </a>
       </span>
