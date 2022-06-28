@@ -8,9 +8,9 @@
 
 
 {% block breadcrumbs %}{{ block.super }}
-<li class="breadcrumb-item"><a href="{% url 'my_videos' %}">{% trans 'My videos' %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'video:my_videos' %}">{% trans 'My videos' %}</a></li>
 {% if form.instance.title and form.instance.slug != '' %}
-<li class="breadcrumb-item"><a href="{% url 'video' slug=form.instance.slug %}" title="{{form.instance.title}}">{{form.instance.title|title|truncatechars:45}}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'video:video' slug=form.instance.slug %}" title="{{form.instance.title}}">{{form.instance.title|title|truncatechars:45}}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
 {%else%}
 <li class="breadcrumb-item active" aria-current="page">{% trans "Add a new video" %}</li>
@@ -33,10 +33,10 @@
 {% spaceless %}
 <h3>{% if form.instance.title and form.instance.slug != '' %}{% trans "Editing the video" %} "{{form.instance.title}}"
   <span>
-    <a href="{% url 'video' slug=form.instance.slug %}" class="btn btn-primary btn-sm m-2">
+    <a href="{% url 'video:video' slug=form.instance.slug %}" class="btn btn-primary btn-sm m-2">
       <i class="bi bi-film"></i>&nbsp;{% trans "View the video"%}
     </a>
-    <a href="{% url 'video_delete' slug=form.instance.slug %}" class="btn btn btn-danger btn-sm m-2">
+    <a href="{% url 'video:video_delete' slug=form.instance.slug %}" class="btn btn btn-danger btn-sm m-2">
       <i class="bi bi-trash"></i>&nbsp;{% trans "Delete the video"%}
     </a>
   </span>
@@ -48,9 +48,9 @@
 </p>
 {% else %}
 {% if form.instance.slug and form.instance.slug != '' %}
-<form id="video_form" method="post" action="{% url 'video_edit' slug=form.instance.slug %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate data-morecheck="videocheck">
+<form id="video_form" method="post" action="{% url 'video:video_edit' slug=form.instance.slug %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate data-morecheck="videocheck">
   {% else %}
-  <form id="video_form" method="post" action="{% url 'video_edit' %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate data-morecheck="videocheck">
+  <form id="video_form" method="post" action="{% url 'video:video_edit' %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate data-morecheck="videocheck">
     {% endif %}
     {% csrf_token %}
     <!--<div class="group-video-edit">-->
@@ -123,7 +123,7 @@
     <div class="text-center">
       <button type="submit" class="btn btn-primary btn-sm m-2" name="_continue" value="">{% trans 'Save and continue editing' %}</button>
       {% if form.instance.title and form.instance.slug != '' %}<button type="submit" class="btn btn-primary btn-sm m-2" name="_saveandsee" value="{{form.instance.get_full_url}}">{% trans 'Save and see' %}</button> {%endif%}
-      <a href="{% url 'my_videos' %}" class="btn btn-secondary btn-sm m-2">{% trans 'back to my videos' %}</a>
+      <a href="{% url 'video:my_videos' %}" class="btn btn-secondary btn-sm m-2">{% trans 'back to my videos' %}</a>
     </div>
   </form>
   {% endif %}

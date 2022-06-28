@@ -28,9 +28,15 @@
         </a>
         <div class="dropdown-menu">
           {% if video.get_hashkey in request.get_full_path %}
+<<<<<<< HEAD
             <a href="{% url 'video' slug=video.slug %}{{ video.get_hashkey }}/?redirect=false" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
           {% else %}
           <a href="{% url 'video' slug=video.slug %}?redirect=false" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
+=======
+          <a href="{% url 'video:video_private' slug=video.slug slug_private=video.get_hashkey %}?redirect=false" title="{% trans 'Original version' %}" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
+          {% else %}
+          <a href="{% url 'video:video' slug=video.slug %}?redirect=false" title="{% trans 'Original version' %}" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
+>>>>>>> 7a8a41754bbe51be062b23992e2c7d9a85a2b01e
           {% endif %}
         </div>
       </li>

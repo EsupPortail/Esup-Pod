@@ -2,34 +2,53 @@
 
 {% spaceless %}
 {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video %}
+<<<<<<< HEAD
   <a href="{% url 'video_edit' slug=video.slug %}" title="{% trans 'Edit the video'%}" class="btn pod-btn-social p-1 m-0 ms-1">
+=======
+  <a href="{% url 'video:video_edit' slug=video.slug %}" title="{% trans 'Edit the video'%}" class="btn pod-btn-social  p-1 m-0 ms-1">
+>>>>>>> 7a8a41754bbe51be062b23992e2c7d9a85a2b01e
     <i class="bi bi-pencil-square" aria-hidden="true"></i></a>
 {%endif%}
+{% comment %}
 {% if request.resolver_match.namespace %}
   {% with request.resolver_match.namespace as app %}
     {% with ""|add:app|add:":edit_"|add:app as urleditapp %}
+<<<<<<< HEAD
       <a href="{% url urleditapp slug=video.slug %}" title="{% blocktrans %}Edit the {{app}}{% endblocktrans %}" class="btn pod-btn-social p-1 m-0 ms-1">
+=======
+      {{urleditapp}} - {{request.resolver_match.namespace}}
+      <a href=" url urleditapp slug=video.slug %}" title="{% blocktrans %}Edit the {{app}}{% endblocktrans %}" class="btn pod-btn-social  p-1 m-0 ms-1">
+>>>>>>> 7a8a41754bbe51be062b23992e2c7d9a85a2b01e
         <i class="bi bi-pencil" aria-hidden="true"></i></a>
     {% endwith %}
   {% endwith %}
 {%endif%}
+{% endcomment %}
 {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay %}
+<<<<<<< HEAD
   <a href="{% url 'video_completion' slug=video.slug %}" title="{% trans 'Complete the video'%}" class="btn pod-btn-social p-1 m-0 ms-1">
+=======
+  <a href="{% url 'video:completion:video_completion' slug=video.slug %}" title="{% trans 'Complete the video'%}" class="btn pod-btn-social   p-1 m-0 ms-1">
+>>>>>>> 7a8a41754bbe51be062b23992e2c7d9a85a2b01e
     <i class="bi bi-file-text" aria-hidden="true"></i></a>
 {%endif%}
 {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.chapter.change_chapter %}
-  <a href="{% url 'video_chapter' slug=video.slug %}" title="{% trans 'Chapter the video'%}" class="btn pod-btn-social p-1 m-0 ms-1">
+  <a href="{% url 'video:chapter:video_chapter' slug=video.slug %}" title="{% trans 'Chapter the video'%}" class="btn pod-btn-social p-1 m-0 ms-1">
     <i class="bi bi-card-list" aria-hidden="true"></i></a>
 {%endif%}
 {% if video.owner == request.user or request.user.is_superuser or perms.video.delete_video %}
+<<<<<<< HEAD
   <a href="{% url 'video_delete' slug=video.slug %}" class="btn pod-btn-social p-1 m-0 ms-1" title="{% trans 'Delete the video'%}">
+=======
+  <a href="{% url 'video:video_delete' slug=video.slug %}" class="btn pod-btn-social   p-1 m-0 ms-1" title="{% trans 'Delete the video'%}">
+>>>>>>> 7a8a41754bbe51be062b23992e2c7d9a85a2b01e
     <i class="bi bi-trash" aria-hidden="true"></i></a>
 {% endif %}
 
 {% if "edit" in request.resolver_match.url_name %}
   {% with video.get_other_version as versions %}
     {% if versions|length > 0 %}
-      <form action="{% url 'video_version' id=video.id %}" method="post" id="video_version_form">
+      <form action="{% url 'video:video_version' id=video.id %}" method="post" id="video_version_form">
         {% csrf_token %}
         <fieldset class="form-group border mt-2 p-2">
           <legend class="col-form-label text-left p-1 col-md-auto">{% trans "Video default version"%}</legend>

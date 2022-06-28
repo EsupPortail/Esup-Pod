@@ -14,7 +14,7 @@
 
 {% block breadcrumbs %}
 <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
-<li class="breadcrumb-item"><a href="{% url 'my_playlists' %}">{% trans 'Playlist' %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'playlist:my_playlists' %}">{% trans 'Playlist' %}</a></li>
 <li class="breadcrumb-item">{{playlist.title|capfirst|truncatechars:45}}</li>
 <li class="breadcrumb-item active playlist-video-title" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
 {% endblock %}

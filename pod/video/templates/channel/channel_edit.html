@@ -15,7 +15,7 @@
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
-<li class="breadcrumb-item"><a href="{% url 'my_channels' %}">{% trans 'My channels' %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'channels:my_channels' %}">{% trans 'My channels' %}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{% if form.instance.title %}{{form.instance.title}}{%endif%}</li>
 {% endblock %}
 
@@ -26,10 +26,10 @@
 {% block page_content %}
 <h1 class="page_title">{% if form.instance.title %}{% trans "Editing the channel" %} "{{form.instance.title}}"{%endif%}
   <span>
-    <a href="{% url 'channel' slug_c=form.instance.slug %}" class="btn btn pod-btn-social btn-sm">
+    <a href="{% url 'channel-video:channel' slug_c=form.instance.slug %}" class="btn btn pod-btn-social btn-sm">
       <i class="bi bi-youtube"></i>&nbsp;{% trans "View the channel"%}
     </a>
-    <a href="{% url 'theme_edit' slug=form.instance.slug %}" class="btn btn pod-btn-social btn-sm">
+    <a href="{% url 'channels:theme_edit' slug=form.instance.slug %}" class="btn btn pod-btn-social btn-sm">
       <i class="bi bi-pencil-square"></i>&nbsp;{% trans "Edit the themes"%}
     </a>
   </span>
@@ -38,7 +38,7 @@
 <img src="{{ form.instance.headband.file.url }}" alt="{% trans 'Headband' %} {{ form.instance.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy" />
 {% endif %}
 
-<form id="channel_form" method="post" action="{% url 'channel_edit' slug=form.instance.slug %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
+<form id="channel_form" method="post" action="{% url 'channels:channel_edit' slug=form.instance.slug %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
   {% csrf_token %}
   <div class="list-group">
     {% if form.errors %}

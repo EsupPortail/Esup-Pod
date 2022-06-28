@@ -13,9 +13,9 @@
 {% endblock page_extra_head %}
 {% block breadcrumbs %}
 {{block.super}}
-<li class="breadcrumb-item"><a href="{% url 'my_videos'%}">{% trans 'My videos' %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'video:my_videos'%}">{% trans 'My videos' %}</a></li>
 <li class="breadcrumb-item">
-  <a href="{% url 'video' slug=video.slug %}" title="{{video.title}}">
+  <a href="{% url 'video:video' slug=video.slug %}" title="{{video.title}}">
     {{video.title|title|truncatechars:45}}
   </a>
 </li>
@@ -39,12 +39,12 @@
       {% endif %}
     </div>
     <span class="float-end">
-      <a href="{% url 'video' slug=video.slug %}" title="{% trans 'View the video'%}" class="btn btn btn-secondary btn-sm">
+      <a href="{% url 'video:video' slug=video.slug %}" title="{% trans 'View the video'%}" class="btn btn btn-secondary btn-sm">
         <i class="bi bi-film"></i>&nbsp;{% trans "Back to the video"%}
       </a>
     </span>
     {% if not form_chapter %}
-    <form id="form_new" class="get_form" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
+    <form id="form_new" class="get_form" action="{% url 'video:chapter:video_chapter' slug=video.slug %}" method="POST">
       {% csrf_token %}
       <input type="hidden" name="action" value="new" />
       <input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-primary btn-sm" />

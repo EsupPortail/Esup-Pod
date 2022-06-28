@@ -8,3 +8,4 @@ class EnrichmentConfig(AppConfig):
     trans_name = _("Enrichment")
     trans_original_name = _("enrichment")
     trans_edit = _("Edit the enrichment")
+    default_auto_field = 'django.db.models.BigAutoField'

@@ -10,7 +10,7 @@
   </div>
   <div class="pod-info-video__view">
     <i class="bi bi-eye"></i>
-    {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video_stats_view' video.slug %}?from=video">
+    {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.slug %}?from=video">
       {{ video.get_viewcount }}</a>
     {% else %}
       {{ video.get_viewcount }}
@@ -32,6 +32,7 @@
 </div>
 
 {% if video.description or tag_list or video.is_360 %}
+<<<<<<< HEAD
   <div class="pod-info-video__summary" id="summary">
     {% if video.is_360 %}<p>{% trans "This is a 360 degree video. To look around click and drag your mouse on the
       video."%}</p>{% endif %}
@@ -51,6 +52,27 @@
       <p>[... {% trans "No information available" %} ...]</p>
     {% endif %}
   </div>
+=======
+<div class="pod-info-video__summary" id="summary">
+  {% if video.is_360 %}<p>{% trans "This is a 360 degree video. To look around click and drag your mouse on the
+    video."%}</p>{% endif %}
+  {% tags_for_object video as tag_list %}
+  {% if video.description or tag_list %}
+  <p>{{ video.description|safe }}</p>
+  {% if tag_list %}
+  <p>{% trans 'Tags:' %}
+    {% for tag in tag_list %}
+    <a href="{% url 'videos:videos' %}?tag={{ tag }}" title="{{ tag }}" {% if request.GET.is_iframe %} target="_blank" {% endif %}>
+      <span class="label label-default">{{ tag }}</span>
+    </a>
+    {% endfor %}
+  </p>
+  {% endif %}
+  {% elif not video.is_360 %}
+  <p>[... {% trans "No information available" %} ...]</p>
+  {% endif %}
+</div>
+>>>>>>> 7a8a41754bbe51be062b23992e2c7d9a85a2b01e
 {% endif %}
 
 <div id="video-meta">
@@ -61,7 +83,11 @@
       <li class="col-6 col-md-4">
         <span class="meta-title pod-meta-title">{% trans 'Added by:' %}</span>
 
+<<<<<<< HEAD
         <a href="{% url 'videos' %}?owner={{ video.owner.username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
+=======
+        <a href="{% url 'videos:videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
+>>>>>>> 7a8a41754bbe51be062b23992e2c7d9a85a2b01e
           {% if video.owner.owner.userpicture.file %}
             {% thumbnail video.owner.owner.userpicture.file "x50" as im %}
               <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="" loading="lazy">
@@ -75,7 +101,11 @@
 
         <ul class="list-unstyled">
           {% for additionalOwner in video.additional_owners.all %}
+<<<<<<< HEAD
           <li><a href="{% url 'videos' %}?owner={{ additionalOwner.username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
+=======
+          <li><a href="{% url 'videos:videos' %}?owner={{ additionalOwner.username }}" title="{{ additionalOwner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
+>>>>>>> 7a8a41754bbe51be062b23992e2c7d9a85a2b01e
               {% if additionalOwner.owner.userpicture.file %}
                 {% thumbnail additionalOwner.owner.userpicture.file "x50" as im %}
                   <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}" loading="lazy">
@@ -130,25 +160,20 @@
         <span class="meta-title pod-meta-title">{% blocktrans count counter=video.channel.all|length %}Channel:{% plural %} Channels:{% endblocktrans %}</span>
 
         <ul class="list-unstyled">{% for channel in video.channel.all %}
+<<<<<<< HEAD
           <li><a href="{% url 'channel' slug_c=channel.slug%}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>{{ channel.title }}</a></li>
+=======
+          <li><a href="{% url 'channel-video:channel' slug_c=channel.slug%}" title="{{ channel.title }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>{{ channel.title }}</a></li>
+>>>>>>> 7a8a41754bbe51be062b23992e2c7d9a85a2b01e
           {% endfor %}
         </ul>
 
       </li>
       {%endif%}
-      <!--
-      <li class="col-6 col-md-4">
-        <h3 class="meta-title pod-meta-title">{% trans 'Number of views:' %}</h3>
-        <div>
-          {{ video.get_viewcount }}
-
-          {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video_stats_view' video.slug %}?from=video">({% trans 'Show details views' %})</a>{% endif %}
-        </div>
-      </li>-->
 
       <li class="col-6 col-md-4">
         <span class="meta-title pod-meta-title">{% trans 'Type:' %}</span>
-        <a href="{% url 'videos' %}?type={{ video.type.slug }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>{{ video.type.title }}</a>
+        <a href="{% url 'videos:videos' %}?type={{ video.type.slug }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>{{ video.type.title }}</a>
       </li>
 
       <li class="col-6 col-md-4">
@@ -168,7 +193,11 @@
         <span class="meta-title pod-meta-title">{% trans 'Discipline(s):' %}</span>
         <ul>
           {% for disc in video.discipline.all %}
+<<<<<<< HEAD
           <li><a href="{% url 'videos' %}?discipline={{ disc.slug }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>{{ disc.title }}</a></li>
+=======
+          <li><a href="{% url 'videos:videos' %}?discipline={{ disc.slug }}" title="{{ disc.title }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>{{ disc.title }}</a></li>
+>>>>>>> 7a8a41754bbe51be062b23992e2c7d9a85a2b01e
           {% endfor %}
         </ul>
       </li>
@@ -305,7 +334,7 @@ Anyone with this links can access it.{% endblocktrans %}
               <legend><i class="bi bi-code"></i>&nbsp;{% trans 'Embed in a web page' %}</legend>
               <div class="form-group ">
                 <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page:'%}</label>
-                <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+                <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video:video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
               </div>
             </fieldset>
 
@@ -333,7 +362,7 @@ Anyone with this links can access it.{% endblocktrans %}
               <legend><i class="bi bi-link-45deg"></i>&nbsp;{% trans 'Share the link' %}</legend>
               <div class="form-group">
                 <label for="txtpartage">{% trans 'Use this link to share the video:' %}</label>
-                <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" />
+                <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video:video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" />
               </div>
               <div class="form-group">
                 <label>{% trans 'QR code for this link:' %}&nbsp;
@@ -341,7 +370,7 @@ Anyone with this links can access it.{% endblocktrans %}
                     <i class="bi bi-eye"></i>
                   </a>
                 </label>
-                <img src="" data-src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" alt="qrcode" id="qrcode" loading="lazy" class="collapse" />
+                <img src="" data-src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video:video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" alt="qrcode" id="qrcode" loading="lazy" class="collapse" />
               </div>
             </fieldset>
 

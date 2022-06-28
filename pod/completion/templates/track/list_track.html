@@ -14,14 +14,14 @@
 	    <p id="track_{{track.id}}" class="track_kind lang">{{track.lang}} </p>
 	    <p id="track_{{track.id}}" class="track_kind file">{{track.src.name}} ({{track.src.file_type}})</p>
 	    <div id="track_{{track.id}}" class="track_kind options">
-		<form class="form_change completion" action="{% url 'video_completion_track' slug=video.slug %}" method="POST">
+		<form class="form_change completion" action="{% url 'video:completion:video_completion_track' slug=video.slug %}" method="POST">
 		    {% csrf_token %}
 		    <input type="hidden" name="action" value="modify"/>
 		    <input type="hidden" name="id" value="{{track.id}}"/>
 		    <input type="submit" title="{% trans 'Replace the subtitle or caption files' %}" value="{% trans 'Replace' %}" class="edt_track btn btn-primary btn-sm"/>
 		</form>
-		<a href="{% url 'video_caption_maker' slug=video.slug %}?src={{track.src_id}}" id="modifCapSubFile" class="edt_track btn btn-secondary" title="{% trans 'Edit the subtitle or caption files' %}">{% trans 'Modify' %}</a>
-		<form class="form_delete completion" action="{% url 'video_completion_track' slug=video.slug %}" method="POST">
+		<a href="{% url 'video:completion:video_caption_maker' slug=video.slug %}?src={{track.src_id}}" id="modifCapSubFile" class="edt_track btn btn-secondary" title="{% trans 'Edit the subtitle or caption files' %}">{% trans 'Modify' %}</a>
+		<form class="form_delete completion" action="{% url 'video:completion:video_completion_track' slug=video.slug %}" method="POST">
 		    {% csrf_token %}
 		    <input type="hidden" name="action" value="delete"/>
 		    <input type="hidden" name="id" value="{{track.id}}"/>
@@ -32,16 +32,16 @@
 			{% trans "menu" %}
 		    </button>
 		    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-			<form class=" dropdown-item form_change completion" action="{% url 'video_completion_track' slug=video.slug %}" method="POST">
+			<form class=" dropdown-item form_change completion" action="{% url 'video:completion:video_completion_track' slug=video.slug %}" method="POST">
 		    	    {% csrf_token %}
 		    	    <input type="hidden" name="action" value="modify"/>
 		            <input type="hidden" name="id" value="{{track.id}}"/>
 		    	    <input type="submit" title="{% trans 'Replace the subtitle or caption files' %}" value="{% trans 'Replace' %}" class="edt_track btn btn-primary btn-sm"/>
 			</form>
-			<form class="dropdown-item form_modif completion" action="{% url 'video_caption_maker' slug=video.slug %}?src={{track.src_id}}">
+			<form class="dropdown-item form_modif completion" action="{% url 'video:completion:video_caption_maker' slug=video.slug %}?src={{track.src_id}}">
 		    	    <input type="submit" id="modifCapSubFile" class="edt_track btn btn-secondary" title="{% trans 'Edit the subtitle or caption files' %}" value="{% trans 'Modify' %}">
 			</form>
-			<form class="dropdown-item form_delete completion" action="{% url 'video_completion_track' slug=video.slug %}" method="POST">
+			<form class="dropdown-item form_delete completion" action="{% url 'video:completion:video_completion_track' slug=video.slug %}" method="POST">
 		            {% csrf_token %}
 		            <input type="hidden" name="action" value="delete"/>
 		    	    <input type="hidden" name="id" value="{{track.id}}"/>

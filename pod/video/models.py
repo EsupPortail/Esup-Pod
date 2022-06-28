@@ -358,7 +358,7 @@ class Channel(models.Model):
 
     def get_absolute_url(self):
         """Return channel absolute URL."""
-        return reverse("channel", args=[str(self.slug)])
+        return reverse("channel-video:channel", args=[str(self.slug)])
 
     def get_all_theme(self):
         """Return the list of all child themes in current channel."""
@@ -461,7 +461,7 @@ class Theme(models.Model):
 
     def get_absolute_url(self):
         """Get current theme absolute URL."""
-        return reverse("theme", args=[str(self.channel.slug), str(self.slug)])
+        return reverse("channel-video:theme", args=[str(self.channel.slug), str(self.slug)])
 
     def save(self, *args, **kwargs):
         """Store current theme object in db."""
@@ -1001,7 +1001,7 @@ class Video(models.Model):
 
     def get_absolute_url(self):
         """Get the video absolute URL."""
-        return reverse("video", args=[str(self.slug)])
+        return reverse("video:video", args=[str(self.slug)])
 
     def get_full_url(self, request=None):
         """Get the video full URL."""

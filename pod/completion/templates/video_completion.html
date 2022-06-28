@@ -11,9 +11,9 @@
 {% endblock page_extra_head %}
 {% block breadcrumbs %}
 {{block.super}}
-<li class="breadcrumb-item"><a href="{% url 'my_videos'%}">{% trans 'My videos' %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'video:my_videos'%}">{% trans 'My videos' %}</a></li>
 <li class="breadcrumb-item">
-  <a href="{% url 'video' slug=video.slug %}" title="{{video.title}}">
+  <a href="{% url 'video:video' slug=video.slug %}" title="{{video.title}}">
     {{video.title|title|truncatechars:45}}
   </a>
 </li>
@@ -39,7 +39,7 @@
       {% include 'contributor/form_contributor.html' with form_contributor=form_contributor %}
       {% endif %}
     </span>
-    <form class="form_new completion" id="form_new_contributor" action="{% url 'video_completion_contributor' slug=video.slug %}" method="POST">
+    <form class="form_new completion" id="form_new_contributor" action="{% url 'video:completion:video_completion_contributor' slug=video.slug %}" method="POST">
       {% csrf_token %}
       <input type="hidden" name="action" value="new" />
       <input type="submit" value="{% trans 'Add a new contributor' %}" class="new_contributor btn btn-primary" />
@@ -58,13 +58,13 @@
     </span>
     &nbsp;
     <div class="breadcrumb">
-      <p><a class="btn btn-secondary" href="{% url 'video_caption_maker' slug=video.slug %}" title="{% trans 'to create your subtitles and/or caption(s) files' %}">{% trans 'Video Caption Maker' %}</a></p>
+      <p><a class="btn btn-secondary" href="{% url 'video:completion:video_caption_maker' slug=video.slug %}" title="{% trans 'to create your subtitles and/or caption(s) files' %}">{% trans 'Video Caption Maker' %}</a></p>
       <span id="form_track">
         {% if form_track %}
         {% include 'track/form_track.html' with form_track=form_track %}
         {% endif %}
       </span>
-      <form class="form_new completion" id="form_new_track" action="{% url 'video_completion_track' slug=video.slug %}" method="POST">
+      <form class="form_new completion" id="form_new_track" action="{% url 'video:completion:video_completion_track' slug=video.slug %}" method="POST">
         {% csrf_token %}
         <input type="hidden" name="action" value="new" />
         <input type="submit" value="{% trans 'Add a new subtitle or caption file' %}" class="new_track btn btn-primary" />
@@ -87,7 +87,7 @@
       {% include 'document/form_document.html' with form_document=form_document %}
       {% endif %}
     </span>
-    <form class="form_new completion" id="form_new_document" action="{% url 'video_completion_document' slug=video.slug %}" method="POST">
+    <form class="form_new completion" id="form_new_document" action="{% url 'video:completion:video_completion_document' slug=video.slug %}" method="POST">
       {% csrf_token %}
       <input type="hidden" name="action" value="new" />
       <input type="submit" value="{% trans 'Add a new additional resource' %}" class="new_document btn btn-primary" />
@@ -109,7 +109,7 @@
       {% include 'overlay/form_overlay.html' with form_overlay=form_overlay %}
       {% endif %}
     </span>
-    <form class="form_new completion" id="form_new_overlay" action="{% url 'video_completion_overlay' slug=video.slug %}" method="POST">
+    <form class="form_new completion" id="form_new_overlay" action="{% url 'video:completion:video_completion_overlay' slug=video.slug %}" method="POST">
       {% csrf_token %}
       <input type="hidden" name="action" value="new" />
       <input type="submit" value="{% trans 'Add a new overlay' %}" class="new_overlay btn btn-primary" />
@@ -148,7 +148,11 @@
     <!-- <p>{% trans 'Several web sites allows you to subtitle or caption videos (for example: Amara)' %}</p> -->
     <p>{% trans 'You can add several subtitle or caption files to a signle video (for example, in order to subtitle or caption this video in several languages' %}</p>
     <p>{% trans 'Subtitles and/or caption(s) files must be in ".vtt" format.' %}</p>
+<<<<<<< HEAD
     <p>{% trans 'You can use' %} <a href="{% url 'video_caption_maker' slug=video.slug %}">{% trans 'Video Caption Maker' %}</a> {% trans 'to create your subtitles and/or caption(s) files' %}.</p>
+=======
+    <p>{% trans 'You can use' %} <a href="{% url 'video:completion:video_caption_maker' slug=video.slug %}" title="{% trans 'Video Caption Maker' %}">{% trans 'Video Caption Maker' %}</a> {% trans 'to create your subtitles and/or caption(s) files' %}.</p>
+>>>>>>> 7a8a41754bbe51be062b23992e2c7d9a85a2b01e
     <p>{% trans 'You will need the URL of this video to make subtitles and/or captions. This URL is a direct access to this video. Please do not communicate it outside of this site to avoid any misuse.' %}</p>
     <ul class="list-group">
       {% for vid in video.get_video_mp4 %}
