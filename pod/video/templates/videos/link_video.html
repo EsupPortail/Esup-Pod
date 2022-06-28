@@ -16,7 +16,7 @@
 {%endif%}
 {% endcomment %}
 {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay %}
-  <a href="{% url 'video:video_completion' slug=video.slug %}" title="{% trans 'Complete the video'%}" class="btn pod-btn-social p-1 m-0 ms-1">
+  <a href="{% url 'video:completion:video_completion' slug=video.slug %}" title="{% trans 'Complete the video'%}" class="btn pod-btn-social p-1 m-0 ms-1">
     <i class="bi bi-file-text" aria-hidden="true"></i></a>
 {%endif%}
 {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.chapter.change_chapter %}

@@ -53,7 +53,7 @@
     {% endif %}
     <hr/>
     <div class="d-flex justify-content-between">
-    <a href="{% url 'enrichment:video_edit' slug=video.slug %}" class="btn btn-secondary btn-sm">
+    <a href="{% url 'video:video_edit' slug=video.slug %}" class="btn btn-secondary btn-sm">
       {% trans 'Back to video edit' %}
     </a>
     <a href="{% url 'enrichment:video_enrichment' slug=video.slug %}" class="btn btn-primary btn-sm">

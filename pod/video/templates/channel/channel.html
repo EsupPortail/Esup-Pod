@@ -71,7 +71,7 @@
                     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug %}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-rss"></i>&nbsp;Audio</a>
                 {% endif %}
                 {% if request.user in channel.owners.all %}
-                    <a href="{% url 'channel-video:channel_edit' slug=channel.slug %}" class="btn btn pod-btn-social btn-sm">
+                    <a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn pod-btn-social btn-sm">
                         <i class="bi bi-pencil-square me-1"></i>&nbsp;{% trans "Edit the channel"%}</a>
                 {% endif %}
             </span>
@@ -148,7 +148,7 @@
                 {% endif %}
             </span>
             {% if request.user in channel.owners.all %}
-                <span class="float-end"><a href="{% url 'channel-video:channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm me-1">
+                <span class="float-end"><a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm me-1">
                     <i class="bi bi-pencil-square"></i>&nbsp;{% trans "Edit the channel"%}</a>
                 </span>
             {%endif%}

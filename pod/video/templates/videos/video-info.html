@@ -130,7 +130,7 @@
         <span class="meta-title pod-meta-title">{% blocktrans count counter=video.channel.all|length %}Channel:{% plural %} Channels:{% endblocktrans %}</span>
 
         <ul class="list-unstyled">{% for channel in video.channel.all %}
-          <li><a href="{% url 'channel-videos:channel' slug_c=channel.slug%}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>{{ channel.title }}</a></li>
+          <li><a href="{% url 'channel-video:channel' slug_c=channel.slug%}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>{{ channel.title }}</a></li>
           {% endfor %}
         </ul>
 
