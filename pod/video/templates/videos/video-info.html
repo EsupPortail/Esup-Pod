@@ -13,7 +13,7 @@
     {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video_stats_view' video.slug %}?from=video">
       {{ video.get_viewcount }}</a>
     {% else %}
-    {{ video.get_viewcount }}
+      {{ video.get_viewcount }}
     {% endif %}
     {% trans 'Number of views' %}
   </div>
@@ -32,25 +32,25 @@
 </div>
 
 {% if video.description or tag_list or video.is_360 %}
-<div class="pod-info-video__summary" id="summary">
-  {% if video.is_360 %}<p>{% trans "This is a 360 degree video. To look around click and drag your mouse on the
-    video."%}</p>{% endif %}
-  {% tags_for_object video as tag_list %}
-  {% if video.description or tag_list %}
-  <p>{{ video.description|safe }}</p>
-  {% if tag_list %}
-  <p>{% trans 'Tags:' %}
-    {% for tag in tag_list %}
-    <a href="{% url 'videos' %}?tag={{ tag }}" title="{{ tag }}" {% if request.GET.is_iframe %} target="_blank" {% endif %}>
-      <span class="label label-default">{{ tag }}</span>
-    </a>
-    {% endfor %}
-  </p>
-  {% endif %}
-  {% elif not video.is_360 %}
-  <p>[... {% trans "No information available" %} ...]</p>
-  {% endif %}
-</div>
+  <div class="pod-info-video__summary" id="summary">
+    {% if video.is_360 %}<p>{% trans "This is a 360 degree video. To look around click and drag your mouse on the
+      video."%}</p>{% endif %}
+    {% tags_for_object video as tag_list %}
+    {% if video.description or tag_list %}
+      <p>{{ video.description|safe }}</p>
+    {% if tag_list %}
+      <p>{% trans 'Tags:' %}
+        {% for tag in tag_list %}
+        <a href="{% url 'videos' %}?tag={{ tag }}" {% if request.GET.is_iframe %} target="_blank" {% endif %}>
+          <span class="label label-default">{{ tag }}</span>
+        </a>
+        {% endfor %}
+      </p>
+    {% endif %}
+    {% elif not video.is_360 %}
+      <p>[... {% trans "No information available" %} ...]</p>
+    {% endif %}
+  </div>
 {% endif %}
 
 <div id="video-meta">
@@ -61,14 +61,13 @@
       <li class="col-6 col-md-4">
         <span class="meta-title pod-meta-title">{% trans 'Added by:' %}</span>
 
-        <a href="{% url 'videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
+        <a href="{% url 'videos' %}?owner={{ video.owner.username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
           {% if video.owner.owner.userpicture.file %}
-          {% thumbnail video.owner.owner.userpicture.file "x50" as im %}
-          <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="" loading="lazy">
-          {% endthumbnail %}
+            {% thumbnail video.owner.owner.userpicture.file "x50" as im %}
+              <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="" loading="lazy">
+            {% endthumbnail %}
           {% endif %}
           {{ video.owner.get_full_name }}</a>
-
       </li>
       {% if video.additional_owners.all %}
       <li class="col-6 col-md-4">
@@ -76,11 +75,11 @@
 
         <ul class="list-unstyled">
           {% for additionalOwner in video.additional_owners.all %}
-          <li><a href="{% url 'videos' %}?owner={{ additionalOwner.username }}" title="{{ additionalOwner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
+          <li><a href="{% url 'videos' %}?owner={{ additionalOwner.username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
               {% if additionalOwner.owner.userpicture.file %}
-              {% thumbnail additionalOwner.owner.userpicture.file "x50" as im %}
-              <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}" loading="lazy">
-              {% endthumbnail %}
+                {% thumbnail additionalOwner.owner.userpicture.file "x50" as im %}
+                  <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}" loading="lazy">
+                {% endthumbnail %}
               {% endif %}
               {{ additionalOwner.get_full_name }}
             </a></li>
@@ -131,7 +130,7 @@
         <span class="meta-title pod-meta-title">{% blocktrans count counter=video.channel.all|length %}Channel:{% plural %} Channels:{% endblocktrans %}</span>
 
         <ul class="list-unstyled">{% for channel in video.channel.all %}
-          <li><a href="{% url 'channel' slug_c=channel.slug%}" title="{{ channel.title }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>{{ channel.title }}</a></li>
+          <li><a href="{% url 'channel' slug_c=channel.slug%}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>{{ channel.title }}</a></li>
           {% endfor %}
         </ul>
 
@@ -169,7 +168,7 @@
         <span class="meta-title pod-meta-title">{% trans 'Discipline(s):' %}</span>
         <ul>
           {% for disc in video.discipline.all %}
-          <li><a href="{% url 'videos' %}?discipline={{ disc.slug }}" title="{{ disc.title }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>{{ disc.title }}</a></li>
+          <li><a href="{% url 'videos' %}?discipline={{ disc.slug }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>{{ disc.title }}</a></li>
           {% endfor %}
         </ul>
       </li>

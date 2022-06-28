@@ -43,7 +43,7 @@
   {% block page_extra_head %}
   {% endblock %}
   {% if request.GET.is_iframe %}
-  <link rel="stylesheet" href="{% static 'css/iframe.css' %}?ver={{VERSION}}" media="screen" title="no title">
+  <link rel="stylesheet" href="{% static 'css/iframe.css' %}?ver={{VERSION}}" media="screen">
   {% endif %}
   {% endspaceless %}
 </head>
