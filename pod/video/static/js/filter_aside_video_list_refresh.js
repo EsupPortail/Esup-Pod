@@ -110,6 +110,7 @@ function refreshVideosSearch(){
     $(".infinite-loading").hide();
     infinite_waypoint = getInfiniteScrollWaypoint();
     $(".form-check-input input[type=checkbox]").removeAttr("disabled");
+    feather.replace();
   });
 }
 
