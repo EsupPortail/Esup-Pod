@@ -172,7 +172,5 @@ infinite_waypoint = getInfiniteScrollWaypoint();
 manageLocalStorage();
 
 // First launch of videos list refresh
-$(document).ready(function() {
-    refreshVideosSearch();
-});
+refreshVideosSearch();
 
