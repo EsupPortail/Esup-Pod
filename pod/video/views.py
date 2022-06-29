@@ -2409,6 +2409,7 @@ def get_categories(request, c_slug=None):
                         "is_restricted": v.is_restricted,
                         "has_chapter": v.chapter_set.all().count() > 0,
                         "is_draft": v.is_draft,
+                        "date_added": v.date_added,
                     }
                 )
             else:
@@ -2416,7 +2417,9 @@ def get_categories(request, c_slug=None):
                 # or additional owner of the video
                 cat.video.remove(v)
 
-        response["videos"] = sort_list_videos(request,response["videos"])
+        if request.session["sortInputsMyVideos"]:
+            sort_inputs = json.loads(request.session["sortInputsMyVideos"])
+            response["videos"].sort(key=lambda x: x[sort_inputs["sort_column"]], reverse=not sort_inputs["sort_direction_asc"])
 
         return HttpResponse(
             json.dumps(response, cls=DjangoJSONEncoder),
