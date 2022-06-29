@@ -74,7 +74,6 @@ function callAsyncListVideos(filterCheckedInputs) {
       $(".infinite-loading").remove();
       $(".infinite-more-link").remove();
       $("#videos_list").replaceWith(html);
-      replaceCountVideos(countVideos);
       window.location.href.replace(window.location.search,'');
     },
     error: function (result, status, error) {
@@ -107,6 +106,7 @@ function refreshVideosSearch(){
   }
   // Ajax async call to get filtered videos
   callAsyncListVideos(filterCheckedInputs).done(function () {
+    replaceCountVideos(countVideos);
     $(".infinite-loading").hide();
     infinite_waypoint = getInfiniteScrollWaypoint();
     $(".form-check-input input[type=checkbox]").removeAttr("disabled");

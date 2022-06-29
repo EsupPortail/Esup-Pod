@@ -513,11 +513,9 @@ def my_videos(request):
         data_context["videos_without_cat"] = videos_without_cat
 
     if request.method == 'GET':
-        print("GET")
         filters = request.session["filterCheckedInputsMyVideos"] if "filterCheckedInputsMyVideos" in request.session else None
         sort_inputs = request.session["sortInputsMyVideos"] if "sortInputsMyVideos" in request.session else None
     else:
-        print("POST")
         if request.POST.get("filterCheckedInputs"):
             filters = request.POST.get("filterCheckedInputs")
 
