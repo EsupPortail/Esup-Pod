@@ -159,6 +159,7 @@ USE_CATEGORY = getattr(settings, "USER_VIDEO_CATEGORY", False)
 DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
 DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
 
+
 # ############################################################################
 # CHANNEL
 # ############################################################################
@@ -198,7 +199,8 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
             request.path, offset, limit, videos.count()
         )
         count = videos.count()
-        videos = videos[offset : limit + offset]
+        response["count_videos"] = videos.count()
+        videos = videos[offset: limit + offset]
         response = {
             **response,
             "videos": list(videos),
@@ -209,7 +211,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
     if theme_children is not None:
         count_themes = theme_children.count()
         has_more_themes = (offset + limit) < count_themes
-        theme_children = theme_children.values("slug", "title")[offset : limit + offset]
+        theme_children = theme_children.values("slug", "title")[offset: limit + offset]
         next_url, previous_url, theme_pages_info = pagination_data(
             request.path, offset, limit, count_themes
         )
@@ -468,7 +470,6 @@ def theme_edit_save(request, channel):
 
 @login_required(redirect_field_name="referrer")
 def my_videos(request):
-
     data_context = {}
     site = get_current_site(request)
     # Videos list which user is the owner + which user is an additional owner
@@ -477,8 +478,6 @@ def my_videos(request):
     ) | request.user.owners_videos.all().filter(sites=site)
     videos_list = videos_list.distinct()
 
-    cats = []
-    videos_without_cat = []
     if USE_CATEGORY:
         cats = Category.objects.prefetch_related("video").filter(owner=request.user)
         """
@@ -489,11 +488,8 @@ def my_videos(request):
         " 'videos': [v_slug, v_slug...] },]
         """
         if request.POST.get("categoryChecked") is not None:
-            try:
-                category_checked = request.POST.get("categoryChecked")
-                videos_list = Category.objects.get(title=category_checked).video.all()
-            except:
-                raise Http404
+            category_checked = request.POST.get("categoryChecked")
+            videos_list = Category.objects.get(title=category_checked).video.all()
 
         videos_without_cat = videos_list.exclude(category__in=cats)
         cats = list(
@@ -513,18 +509,23 @@ def my_videos(request):
         data_context["videos_without_cat"] = videos_without_cat
 
     if request.method == 'GET':
-        filters = request.session["filterCheckedInputsMyVideos"] if "filterCheckedInputsMyVideos" in request.session else None
-        sort_inputs = request.session["sortInputsMyVideos"] if "sortInputsMyVideos" in request.session else None
-    else:
+        filters = request.session["filterCheckedInputsMyVideos"] \
+            if "filterCheckedInputsMyVideos" in request.session else None
+        sort_inputs = request.session["sortInputsMyVideos"] \
+            if "sortInputsMyVideos" in request.session else None
+
+    elif request.method == 'POST':
         if request.POST.get("filterCheckedInputs"):
             filters = request.POST.get("filterCheckedInputs")
-
         if request.POST.get("sortInputs"):
             sort_inputs = request.POST.get("sortInputs")
         # set filters and sort in session
         request.session["filterCheckedInputsMyVideos"] = request.POST.get("filterCheckedInputs")
         request.session["sortInputsMyVideos"] = request.POST.get("sortInputs")
         request.session.modified = True
+
+    else:
+        pass
 
     videos_list = get_filtered_videos_list(filters, videos_list) if filters is not None else videos_list
     videos_list = sort_list_videos(sort_inputs, videos_list) if sort_inputs is not None else videos_list
@@ -548,7 +549,7 @@ def my_videos(request):
     except EmptyPage:
         videos = paginator.page(paginator.num_pages)
 
-    ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
+    owners_instances = get_owners_has_instances(request.GET.getlist("owner"))
 
     if request.is_ajax():
         return render(
@@ -562,7 +563,7 @@ def my_videos(request):
     data_context["full_path"] = full_path
     data_context["owners"] = request.GET.getlist("owner")
     data_context["page_title"] = _("My videos")
-    data_context["ownersInstances"] = ownersInstances
+    data_context["ownersInstances"] = owners_instances
 
     return render(request, "videos/my_videos.html", data_context)
 
@@ -593,7 +594,6 @@ def get_videos_list(request):
 
 
 def get_filtered_videos_list(filters, videos_list):
-
     filters = json.loads(filters)
 
     if 'type' in filters:
@@ -645,12 +645,14 @@ def videos(request):
     videos_list = VIDEOS
 
     if request.method == 'GET':
-        filters = request.session["filterCheckedInputsVideos"] if "filterCheckedInputsVideos" in request.session else None
-        sort_inputs = request.session["sortInputsVideos"] if "sortInputsVideos" in request.session else None
-    else:
+        filters = request.session["filterCheckedInputsVideos"] \
+            if "filterCheckedInputsVideos" in request.session else None
+        sort_inputs = request.session["sortInputsVideos"] \
+            if "sortInputsVideos" in request.session else None
+
+    elif request.method == 'POST':
         if request.POST.get("filterCheckedInputs"):
             filters = request.POST.get("filterCheckedInputs")
-
         if request.POST.get("sortInputs"):
             sort_inputs = request.POST.get("sortInputs")
 
@@ -658,6 +660,9 @@ def videos(request):
         request.session["filterCheckedInputsVideos"] = request.POST.get("filterCheckedInputs")
         request.session["sortInputsVideos"] = request.POST.get("sortInputs")
         request.session.modified = True
+
+    else:
+        pass
 
     videos_list = get_filtered_videos_list(filters, videos_list) if filters is not None else videos_list
     videos_list = sort_list_videos(sort_inputs, videos_list) if sort_inputs is not None else videos_list
@@ -682,18 +687,18 @@ def videos(request):
         videos = paginator.page(paginator.num_pages)
 
     videos_next_page_number = videos.next_page_number() if videos.has_next() else None
-    ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
+    owners_instances = get_owners_has_instances(request.GET.getlist("owner"))
 
     if request.is_ajax():
         return render(
             request,
             "videos/video_list.html",
             {
-            "videos": videos,
-            "full_path": full_path,
-            "count_videos": count_videos,
-            "videos_has_next": videos.has_next(),
-            "videos_next_page_number": videos_next_page_number
+                "videos": videos,
+                "full_path": full_path,
+                "count_videos": count_videos,
+                "videos_has_next": videos.has_next(),
+                "videos_next_page_number": videos_next_page_number
             },
         )
 
@@ -709,7 +714,7 @@ def videos(request):
             "tags_slug": request.GET.getlist("tag"),
             "cursus_selected": request.GET.getlist("cursus"),
             "full_path": full_path,
-            "ownersInstances": ownersInstances,
+            "ownersInstances": owners_instances,
             "cursus_list": CURSUS_CODES,
             "videos_has_next": videos.has_next(),
             "videos_next_page_number": videos_next_page_number
@@ -1078,7 +1083,6 @@ def save_video_form(request, form):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_delete(request, slug=None):
-
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
 
     if request.user != video.owner and not (
@@ -2354,7 +2358,6 @@ def get_comments(request, video_slug):
 
 @login_required(redirect_field_name="referrer")
 def delete_comment(request, video_slug, comment_id):
-
     v = get_object_or_404(Video, slug=video_slug)
     c_user = request.user
     c = get_object_or_404(Comment, video=v, id=comment_id)
@@ -2380,7 +2383,6 @@ def delete_comment(request, video_slug, comment_id):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def get_categories(request, c_slug=None):
-
     response = {"success": False}
     c_user = request.user  # connected user
 
@@ -2417,7 +2419,9 @@ def get_categories(request, c_slug=None):
 
         if request.session["sortInputsMyVideos"]:
             sort_inputs = json.loads(request.session["sortInputsMyVideos"])
-            response["videos"].sort(key=lambda x: x[sort_inputs["sort_column"]], reverse=not sort_inputs["sort_direction_asc"])
+            response["videos"].sort(
+                key=lambda x: x[sort_inputs["sort_column"]], reverse=not sort_inputs["sort_direction_asc"]
+            )
 
         return HttpResponse(
             json.dumps(response, cls=DjangoJSONEncoder),
@@ -2464,7 +2468,6 @@ def get_categories(request, c_slug=None):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def add_category(request):
-
     response = {"success": False}
     c_user = request.user  # connected user
 
@@ -2533,7 +2536,6 @@ def add_category(request):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def edit_category(request, c_slug):
-
     response = {"success": False}
     c_user = request.user  # connected user
 
@@ -2560,7 +2562,6 @@ def edit_category(request, c_slug):
         if "title" in data and data["title"].strip() != "":
 
             if c_user == cat.owner or c_user.is_superuser:
-
                 cat.title = data["title"]
                 cat.video.set(list(new_videos))
                 cat.save()
@@ -2613,7 +2614,6 @@ def edit_category(request, c_slug):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def delete_category(request, c_id):
-
     response = {"success": False}
     c_user = request.user  # connected user
 
@@ -2622,7 +2622,6 @@ def delete_category(request, c_id):
         cat = get_object_or_404(Category, id=c_id)
 
         if cat.owner == c_user:
-
             response["id"] = cat.id
             response["videos"] = list(
                 map(
@@ -2656,7 +2655,6 @@ def delete_category(request, c_id):
 
 
 class PodChunkedUploadView(ChunkedUploadView):
-
     model = ChunkedUpload
     field_name = "the_file"
 
@@ -2669,7 +2667,6 @@ class PodChunkedUploadView(ChunkedUploadView):
 
 
 class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
-
     model = ChunkedUpload
     slug = ""
 
