@@ -57,7 +57,7 @@ def create_meeting(request):
 
       meeting.save()
       form.save_m2m()
-      meeting.sites.add(get_current_site(request))
+      meeting.site = get_current_site(request)
       meeting.save()
       form.save_m2m()
       msg = 'Successfully created meeting'
@@ -76,7 +76,7 @@ def create_meeting(request):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def delete_meeting(request, meetingID):
-    meeting = get_object_or_404(Meetings, meetingID=meetingID, sites=get_current_site(request))
+    meeting = get_object_or_404(Meetings, meetingID=meetingID, site=get_current_site(request))
 
     if request.user != meeting.owner and not (
         request.user.is_superuser or request.user.has_perm("meeting.delete_meeting")
@@ -98,7 +98,7 @@ def join_meeting(request, meetingID, slug_private=None):
         id = int(meetingID[: meetingID.find("-")])
     except ValueError:
         raise SuspiciousOperation("Invalid meeting id")
-    meeting = get_object_or_404(Meetings, id=id, sites=get_current_site(request))
+    meeting = get_object_or_404(Meetings, id=id, site=get_current_site(request))
 
     if request.user.is_authenticated and (request.user == meeting.owner or request.user in meeting.additional_owners):
       name = request.user.get_full_name() if request.user.get_full_name() != "" else request.user.username
@@ -110,8 +110,8 @@ def join_meeting(request, meetingID, slug_private=None):
       print("is moderator : %s" % url)
       return redirect(url)
 
-    if request.user.is_authenticated:
-      if meeting.create() and meeting.is_running():
+    if request.user.is_authenticated and not (request.user == meeting.owner or request.user in meeting.additional_owners) :
+      if not meeting.create():
         return redirect("meetings:meeting_waiting_room")
 
       url = meeting.join_url(name, password)
@@ -224,7 +224,7 @@ def get_meeting_access(request, meeting, slug_private):
     return True
 
 def edit_meeting(request, meetingID):
-  meeting = get_object_or_404(Meetings, meetingID=meetingID, sites=get_current_site(request))
+  meeting = get_object_or_404(Meetings, meetingID=meetingID, site=get_current_site(request))
 
   if RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
     return render(request, "meeting_edit.html", {"access_not_allowed": True})
@@ -269,7 +269,7 @@ def edit_meeting(request, meetingID):
         
       meeting.save()
       form.save_m2m()
-      meeting.sites.add(get_current_site(request))
+      meeting.site = get_current_site(request)
       meeting.save()
       form.save_m2m()
 
