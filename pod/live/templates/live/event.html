@@ -42,24 +42,41 @@
     {% if form %}
       {% include 'live/event-form.html' %}
     {% else %}
-        {% if event.is_current %}
+        {% if event.is_past %}
+            <div class="p-3 mb-2 bg-warning text-dark">
+                {% trans "Event is finished at : " %} {{ event.start_date }} {{ event.end_time }}
+                <br>
+            </div>
+        {% elif event.is_coming %}
+            <div class="p-3 mb-2 bg-warning text-dark">
+                {% trans "The event is scheduled on the : " %} {{ event.start_date }}
+                {% trans 'from' %} {{ event.start_time }} {% trans 'to' %} {{ event.end_time }}
+            </div>
+        {% endif %}
+
+        {# video d'attente #}
+        {% if event.broadcaster.video_on_hold.is_video and not event.is_past %}
             <div id="divvideoonhold" style="display: none;">
                 <video id="podvideoonholdplayer"
-                       class="video-js vjs-default-skin vjs-big-play-centered"
+                       class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered"
                        controls height="360" muted autoplay>
                 </video>
             </div>
-            <div id="divvideoplayer" style="display: block;">
+        {% else %}
+            <div id="divvideoonhold" style="display: none;">
+                <video id="podvideoonholdplayer"></video>
+            </div>
+        {% endif %}
+
+        {% if event.is_current %}
+            <div id="divvideoplayer" style="display: none;">
                 <div class="row">
                     <div class="col">
                         <video id="podvideoplayer"
                                class="video-js vjs-default-skin vjs-big-play-centered"
                                controls height="360" muted autoplay>
-                            <source
-                                    src="{{ event.broadcaster.url }}"
-                                    type="application/x-mpegURL">
+                            <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
                         </video>
-
                     </div>
                     {% if event.aside_iframe_url %}
                         <div class="col">
@@ -71,7 +88,6 @@
                         </div>
                     {% endif %}
                 </div>
-
             </div>
 
             {% if event.iframe_url != "" and event.iframe_url != None %}
@@ -94,6 +110,7 @@
                                 id="splitrecord">{% trans "Split record" %}</button>
                     </div>
                 {% endif %}
+
                 <div id="info-video" style="display:none" class="jumbotron">
                     <button type="button" class="close" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -103,24 +120,11 @@
                 <div id="viewers-list"><ul id="viewers-ul"></ul></div>
 
             {% endif %}
+
         {% else %}
-            <div id="divvideoonhold" style="display: none;">
-                <video id="podvideoonholdplayer"></video>
-            </div>
             <div id="divvideoplayer" style="display: none;">
                 <video id="podvideoplayer"></video>
             </div>
-            {% if event.is_past %}
-                <div class="p-3 mb-2 bg-warning text-dark">
-                    {% trans "Event is finished at : " %} {{ event.start_date }} {{ event.end_time }}
-                    <br>
-                </div>
-            {% else %}
-                <div class="p-3 mb-2 bg-warning text-dark">
-                    {% trans "The event is scheduled on the : " %} {{ event.start_date }}
-                    {% trans 'from' %} {{ event.start_time }} {% trans 'to' %} {{ event.end_time }}
-                </div>
-            {% endif %}
         {% endif %}
 
         {% if not request.GET.is_iframe %}
@@ -132,8 +136,8 @@
             </div>
 
             <div id="info-video">{% include 'live/event-all-info.html' %}</div>
-
         {% endif %}
+
     {% endif %}
 
 {% endblock %}
@@ -148,10 +152,10 @@
                 <h5 class="card-header card-title pl-2"><i data-feather="settings"></i>&nbsp;{% trans "Manage event" %}
                 </h5>
                 <div class="card-body card-text text-center">
-                       <a href="{% url 'live:event_edit' slug=event.slug %}" title="{% trans "Edit the event" %}"
-                           class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
-                            <i data-feather="edit"></i>
-                        </a>
+                    <a href="{% url 'live:event_edit' slug=event.slug %}" title="{% trans "Edit the event" %}"
+                       class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
+                        <i data-feather="edit"></i>
+                    </a>
 
                     <a href="{% url 'live:event_delete' slug=event.slug %}"
                        class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1"
@@ -169,7 +173,7 @@
 {% block more_script %}
     <script>
         // Debug if necessary, depends on the settings_local
-        let debug = {{ debug }};
+        let debug = {{ event.past|yesno:"true,false" }};
 
         // Live started
         let started = false;
@@ -183,7 +187,7 @@
         let options = {
             notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
             language: "fr", //en or nl
-            fluid: {{ request.GET.is_iframe }},
+            fluid: {{ request.GET.is_iframe|yesno:"true,false" }},
             playbackRates: [0.5, 1, 1.5, 2],
             errorDisplay: false,
             loop: false
@@ -191,38 +195,42 @@
 
         // Management of the end of the stream (for Firefox, Chrome... not working for Edge, Safari)
         videojs.Hls.xhr.beforeRequest = function (options) {
-            // Reset counter if video state is ok
-            if (started && player.readyState() > 2) {
-                nbLoop = 0;
-            }
-            if (started && player.readyState() <= 2) {
-                // Check if .m3u8 exists, to be sure that live is stopped
-                $.ajax({
-                    url: '{{event.broadcaster.url}}',
-                    type: 'GET',
-                    crossDomain: true,
-                    dataType: 'html',
-                    success: function (html, status) {
-                        stopped = false;
-                    },
-                    error: function (result, status, error) {
-                        stopped = true;
-                    },
-                    complete: function (result, status) {
-                    }
-                });
-                if (stopped) {
-                    nbLoop = nbLoop + 1;
-                    // We're waiting a bit to make sure it's not a network / data flow issue...
-                    if (debug) {
-                        console.info("The streaming live stopped? Video state: " + player.readyState() + ". It's been " + nbLoop + " times that there is no more video stream. After 4 times, we stop.");
-                    }
-                    if (nbLoop > 3) {
-                        // Display of a message of end of live and reload of the page in 9 seconds
-                        let modal = player.createModal('{% trans "Thank you for watching this streaming live with us. The page will reload automatically within a few seconds to display the video on hold." %}');
-                        setTimeout(function () {
-                            location.reload();
-                        }, 9000);
+
+            if ('{{event.is_past }}' === 'False') {
+
+                // Reset counter if video state is ok
+                if (started && player.readyState() > 2) {
+                    nbLoop = 0;
+                }
+                if (started && player.readyState() <= 2) {
+                    // Check if .m3u8 exists, to be sure that live is stopped
+                    $.ajax({
+                        url: '{{event.broadcaster.url}}',
+                        type: 'GET',
+                        crossDomain: true,
+                        dataType: 'html',
+                        success: function (html, status) {
+                            stopped = false;
+                        },
+                        error: function (result, status, error) {
+                            stopped = true;
+                        },
+                        complete: function (result, status) {
+                        }
+                    });
+                    if (stopped) {
+                        nbLoop = nbLoop + 1;
+                        // We're waiting a bit to make sure it's not a network / data flow issue...
+                        if (debug) {
+                            console.info("The streaming live stopped? Video state: " + player.readyState() + ". It's been " + nbLoop + " times that there is no more video stream. After 4 times, we stop.");
+                        }
+                        if (nbLoop > 3) {
+                            // Display of a message of end of live and reload of the page in 9 seconds
+                            let modal = player.createModal('{% trans "Thank you for watching this streaming live with us. The page will reload automatically within a few seconds to display the video on hold." %}');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 9000);
+                        }
                     }
                 }
             }
@@ -230,7 +238,7 @@
         }
 
         // Management of the video on hold
-        {% if event.broadcaster.video_on_hold.is_video %}
+        {% if event.broadcaster.video_on_hold.is_video and not event.is_past %}
             // In this case, loop is necessary
             options["loop"] = true;
             let playerOnHold = videojs('podvideoonholdplayer', options, function () {
@@ -247,6 +255,8 @@
             setTimeout(function () {
                 modalOnHold.close();
             }, 10000);
+
+            $("#divvideoonhold").css("display", "block");
         {% endif %}
 
         // Management of the streaming live
@@ -286,13 +296,9 @@
             }
             // Display the streaming live
             started = true;
-            if ($("#divvideoonhold")) {
-                $("#divvideoonhold").html("");
-            }
-            if ($("#divvideoplayer")) {
-                $("#divvideoplayer").css("display", "block");
-            }
-        })
+            $("#divvideoonhold").css("display", "none");
+            $("#divvideoplayer").css("display", "block");
+         })
 
         // Recording actions on the stream
         $(document).on('click', '#startrecord', function () {
@@ -383,7 +389,7 @@
                     console.error('Error calling splitrecord : ' + err.error)
                     $("#recordingduration").addClass("d-none")
                 },
-                complete: function (){
+                complete: function () {
                     $("#stoprecord").prop('disabled', false)
                     $("#splitrecord").prop('disabled', false)
                 }
@@ -455,8 +461,8 @@
         let recordingduration = 0;
 
         function displayRecordingDuration() {
-            let minutes = parseInt(recordingduration/60,10)
-            let seconds = recordingduration  - minutes * 60
+            let minutes = parseInt(recordingduration/60, 10)
+            let seconds = recordingduration - minutes * 60
             minutes = minutes<10 ? "0"+minutes : minutes
             seconds = seconds<10 ? "0"+seconds : seconds
             $("#recordingduration").html('{% trans "Recording duration" %} : ' + minutes + ':' + seconds)
