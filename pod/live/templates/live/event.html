@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load staticfiles %}
+{% load custom_tags %}
 
 {% block page_extra_head %}
     <link href="{% static 'player/videojs/video-js.min.css' %}?ver={{ VERSION }}" rel="stylesheet"/>
@@ -111,6 +112,10 @@
                     </div>
                 {% endif %}
 
+                {% if USE_BBB and USE_BBB_LIVE and display_chat %}
+                    {% include "bbb/bbb_form.html" %}
+                {% endif %}
+
                 <div id="info-video" style="display:none" class="jumbotron">
                     <button type="button" class="close" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -118,7 +123,6 @@
                 </div>
 
                 <div id="viewers-list"><ul id="viewers-ul"></ul></div>
-
             {% endif %}
 
         {% else %}
@@ -173,7 +177,7 @@
 {% block more_script %}
     <script>
         // Debug if necessary, depends on the settings_local
-        let debug = {{ event.past|yesno:"true,false" }};
+        const debug = "{% get_setting "DEBUG" False %}" === "True";
 
         // Live started
         let started = false;
@@ -183,7 +187,6 @@
         // Live seems stopped
         let stopped = false;
 
-        //videojs.options.flash.swf = "video-js.swf"
         let options = {
             notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
             language: "fr", //en or nl
@@ -263,7 +266,7 @@
         let player = videojs('podvideoplayer', options, function () {
         })
 
-        {% if event.broadcaster.enable_viewer_count%}
+        {% if event.broadcaster.enable_viewer_count %}
             player.videoJsViewerCount();
         {% endif %}
 
@@ -421,7 +424,7 @@
             })
         }
 
-        // Status of the stream
+        // Status of the stream + display action buttons
         function updateStreamStatus() {
             $.ajax({
                 url: "{% url 'live:event_isstreamavailabletorecord' %}",
@@ -517,6 +520,53 @@
             {% endif %}
         }
 
+        // BBB message sending
+        {% if USE_BBB and USE_BBB_LIVE and display_chat %}
+            function displayReturnMessage(level, returnCode) {
+                let toReturn = "";
+                let returnElement = $("#message_return");
+                if (level === "info") {
+                    returnElement.attr('class', 'alert alert-info');
+                } else {
+                    returnElement.attr('class', 'alert alert-warning');
+                }
+                if (returnCode === "message_sent") {
+                    toReturn = "{% trans 'Message sent' %}";
+                }
+                if (returnCode === "error_no_broadcaster_found") {
+                    toReturn = "{% trans 'Message not sent: no broadcaster found' %}";
+                }
+                if (returnCode === "error_no_connection") {
+                    toReturn = "{% trans 'Message not sent: connection problem (REDIS)' %}";
+                }
+                returnElement.html(toReturn).show("slow").delay(3000).hide("slow");
+            }
+
+            function sendBBBMessage(e) {
+                e.preventDefault();
+                let message = $('#message').val();
+                $.ajax
+                ({
+                    type: "GET",
+                    url: "{% url 'bbb:live_publish_chat' id=event.broadcaster.id %}",
+                    data: {"message": message},
+                    success: function (data) {
+                        $('#live_bbb_chat_form')[0].reset();
+                        if (data.is_sent) {
+                            // message_sent
+                            displayReturnMessage("info", data.message_return);
+                        } else {
+                            // error_no_broadcaster_found : Message not sent : no broadcaster found
+                            // error_no_connection : Message not sent : no connection to REDIS
+                            displayReturnMessage("error", data.message_return);
+                        }
+                    }
+                });
+            }
+
+            $(document).on('click', '.send-message', sendBBBMessage);
+        {% endif %}
+
         // On load
         $(function () {
             getEventVideos()
@@ -533,6 +583,5 @@
         })
 
     </script>
-
 
 {% endblock more_script %}

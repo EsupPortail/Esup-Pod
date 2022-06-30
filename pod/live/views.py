@@ -292,11 +292,20 @@ def render_event_template(request, evemnt, user_owns_event):
     if request.GET.get("is_iframe"):
         template_event = "live/event-iframe.html"
 
+    # Search if broadcaster is used to display a BBB streaming live
+    # for which students can send message from this live page
+    display_chat = False
+    if USE_BBB and USE_BBB_LIVE:
+        livestreams_list = Livestream.objects.filter(broadcaster_id=evemnt.broadcaster_id)
+        for livestream in livestreams_list:
+            display_chat = livestream.enable_chat
+
     return render(
         request,
         template_event,
         {
             "event": evemnt,
+            "display_chat": display_chat,
             "need_piloting_buttons": user_owns_event,
             "heartbeat_delay": HEARTBEAT_DELAY,
         },
