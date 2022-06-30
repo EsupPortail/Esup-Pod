@@ -186,7 +186,19 @@ if __name__ == "__main__":
     # print(encoding_video.list_subtitle_track)
     # print(encoding_video.list_image_track)
     # print(encoding_video.encoding_log)
-    mp4_command = encoding_video.get_mp4_command()
-    print(mp4_command)
-    return_value, return_msg = launch_cmd(mp4_command)
-    encoding_video.encoding_log += return_msg
+    if encoding_video.is_video():
+        mp4_command = encoding_video.get_mp4_command()
+        print(mp4_command)
+        return_value, return_msg = launch_cmd(mp4_command)
+        encoding_video.encoding_log += return_msg
+        print("TODO encode HLS")
+        if len(encoding_video.list_image_track) == 0 :
+            print("create and save thumbnails")
+    if len(encoding_video.list_audio_track) > 0 :
+        if not encoding_video.is_video():
+            print("TODO encode M4V")
+        print("TODO encode MP3")
+    if len(encoding_video.list_image_track) > 0 :
+        print("save image track")
+    if len(encoding_video.list_subtitle_track) > 0 :
+        print("save subrip files")
