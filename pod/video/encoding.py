@@ -27,6 +27,7 @@ def encode_video(video_id):
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)
         send_email(msg, video_id)
+        return
 
     change_encoding_step(video_id, 0, "start")
 
