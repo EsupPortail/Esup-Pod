@@ -23,6 +23,7 @@ from django.db.models import Q
 
 from pod.meetings.utils import parse_xml
 
+
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
 )
