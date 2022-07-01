@@ -3,15 +3,13 @@ import json
 import os
 import argparse
 import time
-from collections import OrderedDict
+from encoding_utils import get_info_from_video, get_list_rendition  # launch_cmd
 
 # from unidecode import unidecode # third party package to remove accent
 # import unicodedata
 
 __author__ = "Nicolas CAN <nicolas.can@univ-lille.fr>"
 __license__ = "LGPL v3"
-
-from encoding_utils import get_info_from_video, launch_cmd
 
 image_codec = ["jpeg", "gif", "png", "bmp", "jpg"]
 
@@ -27,22 +25,25 @@ FFMPEG_CRF = 20  # -crf 20 -maxrate 3M -bufsize 6M
 FFMPEG_PRESET = "slow"
 FFMPEG_PROFILE = "high"
 FFMPEG_LEVEL = 3
-
-# from django.core import serializers
-# serializers.serialize("json", VideoRendition.objects.all())
-video_rendition = [
-    {"resolution": "640x360", "minrate": "500k", "video_bitrate": "750k", "maxrate": "1000k", "audio_bitrate": "96k", "encode_mp4": True, "sites": [1]},
-    {"resolution": "1280x720", "minrate": "1000k", "video_bitrate": "2000k", "maxrate": "3000k", "audio_bitrate": "128k", "encode_mp4": True, "sites": [1]},
-    {"resolution": "1920x1080", "minrate": "2000k", "video_bitrate": "3000k", "maxrate": "4500k", "audio_bitrate": "192k", "encode_mp4": False, "sites": [1]},
-]
-
+FFMPEG_HLS_TIME = 2
 # ffmpeg -hide_banner -i test5.mkv \
 # -c:v libx264  -vf "scale=-2:360" -preset slow -profile:v high -pix_fmt yuv420p -level 3 -crf 20 -maxrate 1M -bufsize 2M -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 -c:a aac -ar 48000 -b:a 96k -movflags faststart  -y -vsync 0 360p.mp4 \
 # -c:v libx264  -vf "scale=-2:720" -preset slow -profile:v high -pix_fmt yuv420p -level 3 -crf 20 -maxrate 3M -bufsize 6M -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 -c:a aac -ar 48000 -b:a 128k -movflags faststart  -y -vsync 0 720p.mp4 \
 # -c:v libx264  -vf "scale=-2:1080" -preset slow -profile:v high -pix_fmt yuv420p -level 3 -crf 20 -maxrate 4M -bufsize 8M -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 -c:a aac -ar 48000 -b:a 192k -movflags faststart  -y -vsync 0 1080p.mp4
 
+
 FFMPEG_INPUT = "-hide_banner -i %(input)s "
-FFMPEG_MP4_ENCODE = "-c:v libx264  -vf \"scale=-2:%(height)s\" -preset %(preset)s -profile:v %(profile)s -pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s -force_key_frames \"expr:gte(t,n_forced*1)\" -max_muxing_queue_size 4000 -c:a aac -ar 48000 -b:a %(ba)s -movflags faststart  -y -vsync 0 %(height)sp.mp4 "
+FFMPEG_MP4_ENCODE = (
+    "-c:v libx264  -vf \"scale=-2:%(height)s\" -preset %(preset)s -profile:v %(profile)s "
+    + "-pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s "
+    + "-sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -max_muxing_queue_size 4000 "
+    + "-c:a aac -ar 48000 -b:a %(ba)s -movflags faststart  -y -vsync 0 %(height)sp.mp4 ")
+FFMPEG_HLS_ENCODE = (
+    "-c:v libx264  -vf \"scale=-2:%(height)s\" -preset %(preset)s -profile:v %(profile)s "
+    + "-pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s "
+    + "-sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -max_muxing_queue_size 4000 "
+    + "-c:a aac -ar 48000 -b:a %(ba)s -hls_playlist_type vod -hls_time %(hls_time)s -hls_flags single_file "
+    + "-master_pl_name \"livestream.m3u8\" -y -vsync 0 %(height)sp.m3u8 ")
 
 
 class Encoding_video():
@@ -129,10 +130,7 @@ class Encoding_video():
 
     def get_mp4_command(self):
         mp4_command = "%s " % FFMPEG_CMD
-        list_rendition = {}
-        for rend in video_rendition:
-            list_rendition[int(rend["resolution"].split("x")[1])] = rend
-        list_rendition = OrderedDict(sorted(list_rendition.items(), key=lambda t: t[0]))
+        list_rendition = get_list_rendition()
         first_item = list_rendition.popitem(last=False)
         mp4_command += FFMPEG_INPUT % {"input" : self.video_file}
         mp4_command += FFMPEG_MP4_ENCODE % {
@@ -167,9 +165,42 @@ class Encoding_video():
                 }
         return mp4_command
 
+    def get_hls_command(self):
+        hls_command = "%s " % FFMPEG_CMD
+        list_rendition = get_list_rendition()
+        first_item = list_rendition.popitem(last=False)
+        print("attention, il faut préciser dans la commande le fait qu'on ne prend que le flux audio et video !!!")
+        hls_command += FFMPEG_INPUT % {"input" : self.video_file}
+        hls_command += FFMPEG_HLS_ENCODE % {
+            "height" : first_item[0],
+            "preset": FFMPEG_PRESET,
+            "profile": FFMPEG_PROFILE,
+            "level": FFMPEG_LEVEL,
+            "crf": FFMPEG_CRF,
+            "maxrate": first_item[1]["maxrate"],
+            "bufsize": first_item[1]["maxrate"],
+            "ba": first_item[1]["audio_bitrate"],
+            "hls_time": FFMPEG_HLS_TIME
+        }
+        in_height = list(self.list_video_track.items())[0][1]["height"]
+        for rend in list_rendition:
+            if in_height >= rend:
+                hls_command += FFMPEG_HLS_ENCODE % {
+                    "height" : rend,
+                    "preset": FFMPEG_PRESET,
+                    "profile": FFMPEG_PROFILE,
+                    "level": FFMPEG_LEVEL,
+                    "crf": FFMPEG_CRF,
+                    "maxrate": list_rendition[rend]["maxrate"],
+                    "bufsize": list_rendition[rend]["maxrate"],
+                    "ba": list_rendition[rend]["audio_bitrate"],
+                    "hls_time": FFMPEG_HLS_TIME
+                }
+        return hls_command
+
 
 """
-remote encode ???
+  remote encode ???
 """
 if __name__ == "__main__":
     start = "Start at: %s" % time.ctime()
@@ -189,11 +220,13 @@ if __name__ == "__main__":
     if encoding_video.is_video():
         mp4_command = encoding_video.get_mp4_command()
         print(mp4_command)
-        return_value, return_msg = launch_cmd(mp4_command)
-        encoding_video.encoding_log += return_msg
+        # return_value, return_msg = launch_cmd(mp4_command)
+        # encoding_video.encoding_log += return_msg
         print("TODO encode HLS")
-        if len(encoding_video.list_image_track) == 0 :
-            print("create and save thumbnails")
+        hls_command = encoding_video.get_hls_command()
+        print('hls_command : %s' % hls_command)
+        # if len(encoding_video.list_image_track) == 0 :
+        #     print("create and save thumbnails")
     if len(encoding_video.list_audio_track) > 0 :
         if not encoding_video.is_video():
             print("TODO encode M4V")
