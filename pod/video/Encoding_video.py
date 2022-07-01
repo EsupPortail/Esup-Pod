@@ -3,7 +3,10 @@ import json
 import os
 import argparse
 import time
-from encoding_utils import get_info_from_video, get_list_rendition  # launch_cmd
+from encoding_utils import (
+    get_info_from_video,
+    get_list_rendition,
+)  # launch_cmd
 
 # from unidecode import unidecode # third party package to remove accent
 # import unicodedata
@@ -34,19 +37,22 @@ FFMPEG_HLS_TIME = 2
 
 FFMPEG_INPUT = "-hide_banner -i %(input)s "
 FFMPEG_MP4_ENCODE = (
-    "-c:v libx264  -vf \"scale=-2:%(height)s\" -preset %(preset)s -profile:v %(profile)s "
+    '-c:v libx264  -vf "scale=-2:%(height)s" -preset %(preset)s -profile:v %(profile)s '
     + "-pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s "
-    + "-sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -max_muxing_queue_size 4000 "
-    + "-c:a aac -ar 48000 -b:a %(ba)s -movflags faststart  -y -vsync 0 %(height)sp.mp4 ")
+    + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 '
+    + "-c:a aac -ar 48000 -b:a %(ba)s -movflags faststart  -y -vsync 0 %(height)sp.mp4 "
+)
 FFMPEG_HLS_ENCODE = (
-    "-c:v libx264  -vf \"scale=-2:%(height)s\" -preset %(preset)s -profile:v %(profile)s "
+    "-map 0:v:0 -map 0:a:0 -c:v libx264  "
+    + '-vf "scale=-2:%(height)s" -preset %(preset)s -profile:v %(profile)s '
     + "-pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s "
-    + "-sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -max_muxing_queue_size 4000 "
+    + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 '
     + "-c:a aac -ar 48000 -b:a %(ba)s -hls_playlist_type vod -hls_time %(hls_time)s -hls_flags single_file "
-    + "-master_pl_name \"livestream.m3u8\" -y -vsync 0 %(height)sp.m3u8 ")
+    + '-master_pl_name "livestream.m3u8" -y -vsync 0 %(height)sp.m3u8 '
+)
 
 
-class Encoding_video():
+class Encoding_video:
     id = 0
     video_file = ""
     duration = 0
@@ -73,7 +79,9 @@ class Encoding_video():
         """
         msg = "--> get_info_video" + "\n"
         probe_cmd = "ffprobe -v quiet -show_format -show_streams \
-                    -print_format json -i {}".format(self.video_file)
+                    -print_format json -i {}".format(
+            self.video_file
+        )
         msg += probe_cmd + "\n"
         duration = 0
         info, return_msg = get_info_from_video(probe_cmd)
@@ -106,12 +114,12 @@ class Encoding_video():
             if any(ext in codec.lower() for ext in image_codec):
                 self.list_image_track["%s" % stream.get("index")] = {
                     "width": stream.get("width", 0),
-                    "height": stream.get("height", 0)
+                    "height": stream.get("height", 0),
                 }
             else:
                 self.list_video_track["%s" % stream.get("index")] = {
                     "width": stream.get("width", 0),
-                    "height": stream.get("height", 0)
+                    "height": stream.get("height", 0),
                 }
         if codec_type == "subtitle":
             codec = stream.get("codec_name", "unknown")
@@ -132,16 +140,16 @@ class Encoding_video():
         mp4_command = "%s " % FFMPEG_CMD
         list_rendition = get_list_rendition()
         first_item = list_rendition.popitem(last=False)
-        mp4_command += FFMPEG_INPUT % {"input" : self.video_file}
+        mp4_command += FFMPEG_INPUT % {"input": self.video_file}
         mp4_command += FFMPEG_MP4_ENCODE % {
-            "height" : first_item[0],
+            "height": first_item[0],
             "preset": FFMPEG_PRESET,
             "profile": FFMPEG_PROFILE,
             "level": FFMPEG_LEVEL,
             "crf": FFMPEG_CRF,
             "maxrate": first_item[1]["maxrate"],
             "bufsize": first_item[1]["maxrate"],
-            "ba": first_item[1]["audio_bitrate"]
+            "ba": first_item[1]["audio_bitrate"],
         }
         """
         il est possible de faire ainsi :
@@ -154,39 +162,7 @@ class Encoding_video():
         for rend in list_rendition:
             if in_height >= rend:
                 mp4_command += FFMPEG_MP4_ENCODE % {
-                    "height" : rend,
-                    "preset": FFMPEG_PRESET,
-                    "profile": FFMPEG_PROFILE,
-                    "level": FFMPEG_LEVEL,
-                    "crf": FFMPEG_CRF,
-                    "maxrate": list_rendition[rend]["maxrate"],
-                    "bufsize": list_rendition[rend]["maxrate"],
-                    "ba": list_rendition[rend]["audio_bitrate"]
-                }
-        return mp4_command
-
-    def get_hls_command(self):
-        hls_command = "%s " % FFMPEG_CMD
-        list_rendition = get_list_rendition()
-        first_item = list_rendition.popitem(last=False)
-        print("attention, il faut préciser dans la commande le fait qu'on ne prend que le flux audio et video !!!")
-        hls_command += FFMPEG_INPUT % {"input" : self.video_file}
-        hls_command += FFMPEG_HLS_ENCODE % {
-            "height" : first_item[0],
-            "preset": FFMPEG_PRESET,
-            "profile": FFMPEG_PROFILE,
-            "level": FFMPEG_LEVEL,
-            "crf": FFMPEG_CRF,
-            "maxrate": first_item[1]["maxrate"],
-            "bufsize": first_item[1]["maxrate"],
-            "ba": first_item[1]["audio_bitrate"],
-            "hls_time": FFMPEG_HLS_TIME
-        }
-        in_height = list(self.list_video_track.items())[0][1]["height"]
-        for rend in list_rendition:
-            if in_height >= rend:
-                hls_command += FFMPEG_HLS_ENCODE % {
-                    "height" : rend,
+                    "height": rend,
                     "preset": FFMPEG_PRESET,
                     "profile": FFMPEG_PROFILE,
                     "level": FFMPEG_LEVEL,
@@ -194,7 +170,41 @@ class Encoding_video():
                     "maxrate": list_rendition[rend]["maxrate"],
                     "bufsize": list_rendition[rend]["maxrate"],
                     "ba": list_rendition[rend]["audio_bitrate"],
-                    "hls_time": FFMPEG_HLS_TIME
+                }
+        return mp4_command
+
+    def get_hls_command(self):
+        hls_command = "%s " % FFMPEG_CMD
+        list_rendition = get_list_rendition()
+        first_item = list_rendition.popitem(last=False)
+        print(
+            "attention, il faut préciser dans la commande le fait qu'on ne prend que le flux audio et video !!!"
+        )
+        hls_command += FFMPEG_INPUT % {"input": self.video_file}
+        hls_command += FFMPEG_HLS_ENCODE % {
+            "height": first_item[0],
+            "preset": FFMPEG_PRESET,
+            "profile": FFMPEG_PROFILE,
+            "level": FFMPEG_LEVEL,
+            "crf": FFMPEG_CRF,
+            "maxrate": first_item[1]["maxrate"],
+            "bufsize": first_item[1]["maxrate"],
+            "ba": first_item[1]["audio_bitrate"],
+            "hls_time": FFMPEG_HLS_TIME,
+        }
+        in_height = list(self.list_video_track.items())[0][1]["height"]
+        for rend in list_rendition:
+            if in_height >= rend:
+                hls_command += FFMPEG_HLS_ENCODE % {
+                    "height": rend,
+                    "preset": FFMPEG_PRESET,
+                    "profile": FFMPEG_PROFILE,
+                    "level": FFMPEG_LEVEL,
+                    "crf": FFMPEG_CRF,
+                    "maxrate": list_rendition[rend]["maxrate"],
+                    "bufsize": list_rendition[rend]["maxrate"],
+                    "ba": list_rendition[rend]["audio_bitrate"],
+                    "hls_time": FFMPEG_HLS_TIME,
                 }
         return hls_command
 
@@ -206,12 +216,16 @@ if __name__ == "__main__":
     start = "Start at: %s" % time.ctime()
     parser = argparse.ArgumentParser(description="Running encoding video.")
     parser.add_argument("--id", required=True, help="the ID of the video")
-    parser.add_argument("--input", required=True, help="name of input file to encode")
+    parser.add_argument(
+        "--input", required=True, help="name of input file to encode"
+    )
     args = parser.parse_args()
     encoding_video = Encoding_video(args.id, args.input)
     encoding_video.encoding_log += start
     encoding_video.get_video_data()
-    print(encoding_video.id, encoding_video.video_file, encoding_video.duration)
+    print(
+        encoding_video.id, encoding_video.video_file, encoding_video.duration
+    )
     # print(encoding_video.list_video_track)
     # print(encoding_video.list_audio_track)
     # print(encoding_video.list_subtitle_track)
@@ -224,14 +238,14 @@ if __name__ == "__main__":
         # encoding_video.encoding_log += return_msg
         print("TODO encode HLS")
         hls_command = encoding_video.get_hls_command()
-        print('hls_command : %s' % hls_command)
+        print("hls_command : %s" % hls_command)
         # if len(encoding_video.list_image_track) == 0 :
         #     print("create and save thumbnails")
-    if len(encoding_video.list_audio_track) > 0 :
+    if len(encoding_video.list_audio_track) > 0:
         if not encoding_video.is_video():
             print("TODO encode M4V")
         print("TODO encode MP3")
-    if len(encoding_video.list_image_track) > 0 :
+    if len(encoding_video.list_image_track) > 0:
         print("save image track")
-    if len(encoding_video.list_subtitle_track) > 0 :
+    if len(encoding_video.list_subtitle_track) > 0:
         print("save subrip files")
