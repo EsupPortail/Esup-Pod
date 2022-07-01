@@ -2,7 +2,6 @@ import json
 import logging
 import os.path
 import re
-from builtins import print
 from datetime import date, datetime, timedelta
 from time import sleep
 
@@ -272,7 +271,9 @@ def render_event_template(request, evemnt, user_owns_event):
     is_password_protected = evemnt.password is not None and evemnt.password != ""
     password_provided = request.POST.get("password") is not None
     password_correct = request.POST.get("password") == evemnt.password
-    template_event = "live/event-iframe.html" if request.GET.get("is_iframe") else "live/event.html"
+    template_event = (
+        "live/event-iframe.html" if request.GET.get("is_iframe") else "live/event.html"
+    )
 
     # password protection
     if is_password_protected and not user_owns_event and not password_correct:
