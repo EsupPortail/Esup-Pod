@@ -28,150 +28,196 @@
 </head>
 
 {% block page_content %}
-    <div class="overlay" id="div-video-wrapper">
+    {% if form %}
+      {% include 'live/event-form.html' %}
+    {% else %}
+        <div class="overlay" id="div-video-wrapper">
+            {% if event.is_past %}
+                <div class="p-3 mb-2 bg-warning text-dark">
+                    {% trans "Event is finished at : " %} {{ event.start_date }} {{ event.end_time }}
+                    <br>
+                </div>
+            {% elif event.is_coming %}
+                <div class="p-3 mb-2 bg-warning text-dark">
+                    {% trans "The event is scheduled on the : " %} {{ event.start_date }}
+                    {% trans 'from' %} {{ event.start_time }} {% trans 'to' %} {{ event.end_time }}
+                </div>
+            {% endif %}
 
-        {% if event.is_current %}
-            <div id="divvideoonhold" style="display: none;">
-                <video id="podvideoonholdplayer"
-                       class="video-js vjs-default-skin vjs-big-play-centered"
-                       controls height="360" muted autoplay>
-                </video>
-            </div>
-            <div id="divvideoplayer" style="display: block;">
-                <div class="row">
-                    <div class="col">
-                        <video id="podvideoplayer"
-                               class="video-js vjs-default-skin vjs-big-play-centered"
-                               controls height="360" muted autoplay>
-                            <source
-                                    src="{{ event.broadcaster.url }}"
-                                    type="application/x-mpegURL">
-                        </video>
+            {# video d'attente #}
+            {% if event.broadcaster.video_on_hold.is_video and not event.is_past %}
+                <div id="divvideoonhold" style="display: none;">
+                    <video id="podvideoonholdplayer"
+                           class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
+                           controls height="360" muted autoplay>
+                    </video>
+                </div>
+            {% else %}
+                <div id="divvideoonhold" style="display: none;">
+                    <video id="podvideoonholdplayer"></video>
+                </div>
+            {% endif %}
+
+            {% if event.is_current %}
+                <div id="divvideoplayer" style="display: block;">
+                    <div class="row">
+                        <div class="col">
+                            <video id="podvideoplayer"
+                                   class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
+                                   controls height="360" muted autoplay>
+                                <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
+                            </video>
+                        </div>
+                        {# ajouter ici l' event.aside_iframe_url si nécessaire #}
                     </div>
                 </div>
-            </div>
-            <div id="info-video-wrapper" class="jumbotron">
-                <div class="iframe-header bg-dark text-white">
-                    <h2 class="video-title">{{ video.title }}</h2>
-                    <button type="button" class="close" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                {# ajouter ici l' event.iframe_url si nécessaire#}
+                <div id="info-video-wrapper" class="jumbotron">
+                    <div class="iframe-header bg-dark text-white">
+                        <h2 class="video-title">{{ video.title }}</h2>
+                        <button type="button" class="close" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="info-video">
+                        {% include 'live/event-info.html' %}
+                    </div>
                 </div>
-                <div id="info-video">
-                    {% include 'live/event-info.html' %}
-                </div>
-            </div>
-        {% elif event.is_past %}
-            <div class="p-3 mb-2 bg-warning text-dark">
-                {% trans "Event is finished at : " %} {{ event.start_date }} {{ event.end_time }}
-                <br>
-            </div>
-        {% else %}
-            <div class="p-3 mb-2 bg-warning text-dark">
-                {% trans "The event is scheduled on the : " %} {{ event.start_date }}
-                {% trans 'from' %} {{ event.start_time }} {% trans 'to' %} {{ event.end_time }}
-            </div>
-        {% endif %}
-    </div>
+            {% endif %}
+        </div>
+    {% endif %}
 
     {% block more_script %}
 
-        {% if event.is_current %}
-            {% include 'videos/video-script.html' %}
-            <script>
-                player.videoJsInfo();
+        {% include 'videos/video-script.html' %}
+        <script>
+            player.videoJsInfo();
 
-                function setOnPlayerPlayPause() {
-                    player.on('play', function () {
-                        isPlaying = true;
-                        $('#div-video-wrapper').attr('class', '')
-                    })
-                    player.on('pause', function () {
-                        isPlaying = false;
-                    })
-                }
-
-                $('#div-video-wrapper').append('<div id="overlay-footer"></div>')
-                player.ready(function () {
-                    const btinfo = $('.vjs-info-button:eq(0)')[0]
-                    $(btinfo).clone().appendTo('#overlay-footer')
-                    $('#overlay-footer .vjs-info-button').click(function () {
-                        $(btinfo).click()
-                    })
+            function setOnPlayerPlayPause() {
+                player.on('play', function () {
+                    isPlaying = true;
+                    $('#div-video-wrapper').attr('class', '')
                 })
-                $(document).on('click', '.close', function () {
-                    show_info_video()
-                });
+                player.on('pause', function () {
+                    isPlaying = false;
+                })
+            }
 
-                // Responsive
-                const hdres = 1920 / 1080;
-                let isPlaying = false, wasPlaying = false
-                setOnPlayerPlayPause()
+            $('#div-video-wrapper').append('<div id="overlay-footer"></div>')
+            player.ready(function () {
+                const btinfo = $('.vjs-info-button:eq(0)')[0]
+                $(btinfo).clone().appendTo('#overlay-footer')
+                $('#overlay-footer .vjs-info-button').click(function () {
+                    $(btinfo).click()
+                })
+            })
+            $(document).on('click', '.close', function () {
+                show_info_video()
+            });
 
-                function resizeInfo() {
-                    const ihead = document.querySelector('#info-video-wrapper > .iframe-header')
-                        , ph = player.el().offsetHeight
-                        , pb = parseInt(player.el().style.top) + ph - 30
-                        , pw = ph * hdres//$('#podvideoplayer .vjs-poster').width()
-                    $('#info-video').css('top', ihead.offsetHeight + 'px')
-                    $('#info-video-wrapper').css({
-                        top: player.el().style.top,
-                        height: (ph - 30) + 'px',
-                        left: '50%',
-                        'margin-left': -(pw / 2) + 'px',
-                        width: pw + 'px'
-                    })
-                    $('#overlay-footer').css({'top': pb + 'px'})
+            // Responsive
+            const hdres = 1920 / 1080;
+            let isPlaying = false, wasPlaying = false
+            setOnPlayerPlayPause()
+
+            function resizeInfo() {
+                const ihead = document.querySelector('#info-video-wrapper > .iframe-header')
+                    , ph = player.el().offsetHeight
+                    , pb = parseInt(player.el().style.top) + ph - 30
+                    , pw = ph * hdres//$('#podvideoplayer .vjs-poster').width()
+                $('#info-video').css('top', ihead.offsetHeight + 'px')
+                $('#info-video-wrapper').css({
+                    top: player.el().style.top,
+                    height: (ph - 30) + 'px',
+                    left: '50%',
+                    'margin-left': -(pw / 2) + 'px',
+                    width: pw + 'px'
+                })
+                $('#overlay-footer').css({'top': pb + 'px'})
+            }
+
+            function resizeVideoJs() {
+                const width = document.getElementById(player.id()).parentElement.offsetWidth
+                    , height = document.getElementById(player.id()).parentElement.offsetHeight
+                    , ratio = width / height;
+                let margintop = 0
+                if (ratio < hdres) {
+                    player.width(width);
+                    player.height(width / hdres);
+                    margintop = parseInt((height - player.height()) / 2);
+                    document.getElementById("podvideoplayer").style.top = margintop + "px";
+                } else {
+                    player.height(height);
+                    player.width(height * hdres);
+                    document.getElementById("podvideoplayer").style.top = "0";
                 }
+                resizeInfo()
+            }
 
-                function resizeVideoJs() {
-                    const width = document.getElementById(player.id()).parentElement.offsetWidth
-                        , height = document.getElementById(player.id()).parentElement.offsetHeight
-                        , ratio = width / height;
-                    let margintop = 0
-                    if (ratio < hdres) {
-                        player.width(width);
-                        player.height(width / hdres);
-                        margintop = parseInt((height - player.height()) / 2);
-                        document.getElementById("podvideoplayer").style.top = margintop + "px";
-                    } else {
-                        player.height(height);
-                        player.width(height * hdres);
-                        document.getElementById("podvideoplayer").style.top = "0";
-                    }
+            resizeVideoJs(); // Initialize the function right now
+            window.onresize = resizeVideoJs; // Call the function on resize
+
+            var show_info_video = function () { // Call by videojs-controllbar
+                const hasStarted = $(player.el()).hasClass('vjs-has-started')
+                    , isOverlayed = $('#div-video-wrapper').hasClass('overlay')
+                    , isInfoOverlayed = isOverlayed && $('#div-video-wrapper').hasClass('info')
+                    , cls = 'overlay info'
+                if (!isOverlayed) { // No overlay is displayed
+                    wasPlaying = isPlaying;
+                    player.pause();
+                    $('#div-video-wrapper').attr('class', cls)
                     resizeInfo()
+                } else if (!isInfoOverlayed) { // One overlay is displayed but not Info
+                    $('#div-video-wrapper').attr('class', cls)
+                    resizeInfo()
+                } else { // Info overlay is displayed => close
+                    $('#div-video-wrapper').attr('class', (hasStarted ? '' : 'vjs-not-started'))
+                    if (wasPlaying) player.play();
                 }
+            }
 
-                resizeVideoJs(); // Initialize the function right now
-                window.onresize = resizeVideoJs; // Call the function on resize
+            $('#video-meta .tab-pane').addClass('show').show();
 
-                var show_info_video = function () { // Call by videojs-controllbar
-                    const hasStarted = $(player.el()).hasClass('vjs-has-started')
-                        , isOverlayed = $('#div-video-wrapper').hasClass('overlay')
-                        , isInfoOverlayed = isOverlayed && $('#div-video-wrapper').hasClass('info')
-                        , cls = 'overlay info'
-                    if (!isOverlayed) { // No overlay is displayed
-                        wasPlaying = isPlaying;
-                        player.pause();
-                        $('#div-video-wrapper').attr('class', cls)
-                        resizeInfo()
-                    } else if (!isInfoOverlayed) { // One overlay is displayed but not Info
-                        $('#div-video-wrapper').attr('class', cls)
-                        resizeInfo()
-                    } else { // Info overlay is displayed => close
-                        $('#div-video-wrapper').attr('class', (hasStarted ? '' : 'vjs-not-started'))
-                        if (wasPlaying) player.play();
-                    }
-                }
-
-                $('#video-meta .tab-pane').addClass('show').show();
-
-            </script>
-        {% endif %}
+        </script>
 
         {% if not event.is_past %}
             <script>
+
+                // Management of the video on hold
+                {% if event.broadcaster.video_on_hold.is_video %}
+                    // In this case, loop is necessary
+                    options["loop"] = true;
+                    let playerOnHold = videojs('podvideoonholdplayer', options, function () {
+                    });
+
+                    playerOnHold.videoJsLogo({
+                        imgsrc: '{% static LOGO_PLAYER %}',
+                        linktitle: '{{TITLE_ETB}} - {{TITLE_SITE}}',
+                        link: '{{LINK_PLAYER}}'
+                    });
+                    let mp4_sources = {{event.broadcaster.video_on_hold.get_video_mp4_json|safe}};
+                    playerOnHold.src(mp4_sources);
+                    let modalOnHold = playerOnHold.createModal('{% trans "Live not found, displaying the video on hold, retry every 10 seconds" %}');
+                    setTimeout(function () {
+                        modalOnHold.close();
+                    }, 10000);
+
+                    $("#divvideoonhold").css("display", "block");
+                {% endif %}
+
+                // Fire this event when live started
+                player.on('loadedmetadata', function () {
+                    if (debug) {
+                        console.info("Streaming live starts.");
+                    }
+                    // Display the streaming live
+                    started = true;
+                    $("#divvideoonhold").css("display", "none");
+                    $("#divvideoplayer").css("display", "block");
+                 })
+
                 function reloadIfNeeded() {
+                    console.log('reloading ' + new Date())
                     const start = new Date("{{ event.get_start.isoformat }}")
                     const end = new Date("{{ event.get_end.isoformat }}")
 

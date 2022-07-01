@@ -17,24 +17,22 @@
     {% endif %}
 {% endblock %}
 
-{% if not request.GET.is_iframe %}
-    {% block breadcrumbs %}{{ block.super }}
+{% block breadcrumbs %}{{ block.super }}
 
-        <li class="breadcrumb-item">
-        {% if event.owner == request.user or request.user in event.additional_owners.all  %}
-            <a href="{% url 'live:my_events' %}">{% trans 'My events' %}</a>
-        {% else %}
-            <a href="{% url 'live:events' %}">{% trans 'Events' %}</a>
-        {% endif %}
-        </li>
-        <li class="breadcrumb-item">
-            <a href="{% url 'live:event' slug=event.slug %}" title="{{ event.title }}">{{ event.title|title|truncatechars:45 }}</a>
-        </li>
+    <li class="breadcrumb-item">
+    {% if event.owner == request.user or request.user in event.additional_owners.all  %}
+        <a href="{% url 'live:my_events' %}">{% trans 'My events' %}</a>
+    {% else %}
+        <a href="{% url 'live:events' %}">{% trans 'Events' %}</a>
+    {% endif %}
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'live:event' slug=event.slug %}" title="{{ event.title }}">{{ event.title|title|truncatechars:45 }}</a>
+    </li>
 
-    {% endblock %}
+{% endblock %}
 
-    {% block page_title %}{{ event.title|title|truncatechars:45 }}{% endblock %}
-{% endif %}
+{% block page_title %}{{ event.title|title|truncatechars:45 }}{% endblock %}
 
 {% block page_content %}
     {% csrf_token %}
@@ -59,7 +57,7 @@
         {% if event.broadcaster.video_on_hold.is_video and not event.is_past %}
             <div id="divvideoonhold" style="display: none;">
                 <video id="podvideoonholdplayer"
-                       class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered"
+                       class="video-js vjs-default-skin vjs-big-play-centered"
                        controls height="360" muted autoplay>
                 </video>
             </div>
@@ -99,31 +97,29 @@
                 </iframe>
             {% endif %}
 
-            {% if not request.GET.is_iframe %}
-                <div id="recordingduration"></div>
-                {% if need_piloting_buttons %}
-                    <div id="control">
-                        <button type="button" class="btn btn-primary btn-sm m-1 d-none"
-                                id="startrecord">{% trans "Start record" %}</button>
-                        <button type="button" class="btn btn-primary btn-sm m-1 d-none"
-                                id="stoprecord">{% trans "Stop record" %}</button>
-                        <button type="button" class="btn btn-primary btn-sm m-1 d-none"
-                                id="splitrecord">{% trans "Split record" %}</button>
-                    </div>
-                {% endif %}
-
-                {% if USE_BBB and USE_BBB_LIVE and display_chat %}
-                    {% include "bbb/bbb_form.html" %}
-                {% endif %}
-
-                <div id="info-video" style="display:none" class="jumbotron">
-                    <button type="button" class="close" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+            <div id="recordingduration"></div>
+            {% if need_piloting_buttons %}
+                <div id="control">
+                    <button type="button" class="btn btn-primary btn-sm m-1 d-none"
+                            id="startrecord">{% trans "Start record" %}</button>
+                    <button type="button" class="btn btn-primary btn-sm m-1 d-none"
+                            id="stoprecord">{% trans "Stop record" %}</button>
+                    <button type="button" class="btn btn-primary btn-sm m-1 d-none"
+                            id="splitrecord">{% trans "Split record" %}</button>
                 </div>
-
-                <div id="viewers-list"><ul id="viewers-ul"></ul></div>
             {% endif %}
+
+            {% if USE_BBB and USE_BBB_LIVE and display_chat %}
+                {% include "bbb/bbb_form.html" %}
+            {% endif %}
+
+            <div id="info-video" style="display:none" class="jumbotron">
+                <button type="button" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div id="viewers-list"><ul id="viewers-ul"></ul></div>
 
         {% else %}
             <div id="divvideoplayer" style="display: none;">
@@ -187,10 +183,11 @@
         // Live seems stopped
         let stopped = false;
 
+
         let options = {
             notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
             language: "fr", //en or nl
-            fluid: {{ request.GET.is_iframe|yesno:"true,false" }},
+            fluid: !{{ request.GET.is_iframe|yesno:"true,false" }},
             playbackRates: [0.5, 1, 1.5, 2],
             errorDisplay: false,
             loop: false
