@@ -3,6 +3,7 @@ import json
 import os
 import argparse
 import time
+import unicodedata
 from encoding_utils import (
     get_info_from_video,
     get_list_rendition,
@@ -39,10 +40,10 @@ FFMPEG_HLS_TIME = 2
 FFMPEG_INPUT = "-hide_banner -threads %(nb_threads)s -i %(input)s "
 FFMPEG_LIBX = "libx264"
 FFMPEG_MP4_ENCODE = (
-    '-c:v %(libx)s  -vf "scale=-2:%(height)s" -preset %(preset)s -profile:v %(profile)s '
+    '-map 0:v:0 -map 0:a:0 -c:v %(libx)s  -vf "scale=-2:%(height)s" -preset %(preset)s -profile:v %(profile)s '
     + '-pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s '
     + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 '
-    + '-c:a aac -ar 48000 -b:a %(ba)s -movflags faststart  -y -vsync 0 "%(output)s" '
+    + '-c:a aac -ar 48000 -b:a %(ba)s -movflags faststart -y -vsync 0 "%(output)s" '
 )
 # https://gist.github.com/Andrey2G/78d42b5c87850f8fbadd0b670b0e6924
 FFMPEG_HLS_ENCODE = (
@@ -50,7 +51,7 @@ FFMPEG_HLS_ENCODE = (
     + '-vf "scale=-2:%(height)s" -preset %(preset)s -profile:v %(profile)s '
     + '-pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s '
     + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 '
-    + '-c:a aac -ar 48000 -b:a %(ba)s -hls_playlist_type vod -hls_time %(hls_time)s -hls_flags single_file '
+    + '-c:a aac -ar 48000 -b:a %(ba)s -hls_playlist_type vod -hls_time %(hls_time)s -hls_flags single_file '  # -hls_segment_type fmp4
     + '-master_pl_name "livestream.m3u8" -y -vsync 0 "%(output)s" '
 )
 FFMPEG_MP3_ENCODE = (
@@ -61,6 +62,9 @@ FFMPEG_M4A_ENCODE = (
 )
 FFMPEG_NB_THREADS = 0
 AUDIO_BITRATE = "192k"
+
+EXTRACT_THUMBNAIL = "time ffmpeg -i {input} -hide_banner \
+    -y {output_dir}/thumbnail.jpg"
 
 
 class Encoding_video:
@@ -94,10 +98,11 @@ class Encoding_video:
         get alls tracks from video source and put it in object passed in parameter
         """
         msg = "--> get_info_video" + "\n"
-        probe_cmd = "ffprobe -v quiet -show_format -show_streams \
-                    -print_format json -i {}".format(
+        probe_cmd = 'ffprobe -v quiet -show_format -show_streams \
+                    -print_format json -i "{}"'.format(
             self.video_file
         )
+        print(probe_cmd)
         msg += probe_cmd + "\n"
         duration = 0
         info, return_msg = get_info_from_video(probe_cmd)
@@ -106,7 +111,7 @@ class Encoding_video:
         msg += return_msg + "\n"
         try:
             duration = int(float("%s" % info["format"]["duration"]))
-        except (RuntimeError, KeyError, AttributeError, ValueError) as err:
+        except (RuntimeError, KeyError, AttributeError, ValueError, TypeError) as err:
             msg += "\nUnexpected error: {0}".format(err)
         self.duration = duration
         streams = info.get("streams", [])
@@ -147,7 +152,7 @@ class Encoding_video:
 
     def create_output_dir(self):
         dirname = os.path.dirname(self.video_file)
-        output_dir = os.path.join(dirname, "%04d" % self.id)
+        output_dir = os.path.join(dirname, "%04d" % int(self.id))
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         self.output_dir = output_dir
@@ -288,7 +293,6 @@ class Encoding_video:
         print("mp3_command : %s" % mp3_command)
         return_value, return_msg = launch_cmd(mp3_command)
         self.encoding_log += return_msg
-        print("To improve...")
         if not return_value:
             self.error_encoding = True
         if not encoding_video.is_video():
@@ -309,19 +313,41 @@ if __name__ == "__main__":
         "--input", required=True, help="name of input file to encode"
     )
     args = parser.parse_args()
-    encoding_video = Encoding_video(args.id, args.input)
+    if args.input.startswith('/'):
+        path_file = args.input
+    else:
+        path_file = os.path.join(os.getcwd(), args.input)
+    if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
+        # remove accent and space
+        filename = "".join(
+            (
+                c
+                for c in unicodedata.normalize("NFD", path_file)
+                if unicodedata.category(c) != "Mn"
+            )
+        )
+        filename = filename.replace(" ", "_")
+        os.rename(
+            path_file,
+            filename,
+        )
+        print("Encoding file {} \n".format(filename))
+    encoding_video = Encoding_video(args.id, filename)
     encoding_video.encoding_log += start
+    encoding_video.create_output_dir()
     encoding_video.get_video_data()
     print(
         encoding_video.id, encoding_video.video_file, encoding_video.duration
     )
+    print(encoding_video.encoding_log)
+
+    """
     if encoding_video.is_video():
         encoding_video.encode_video_part()
-
     if len(encoding_video.list_audio_track) > 0:
         encoding_video.encode_audio_part()
-
     if len(encoding_video.list_image_track) > 0:
         print("save image track")
     if len(encoding_video.list_subtitle_track) > 0:
         print("save subrip files")
+    """

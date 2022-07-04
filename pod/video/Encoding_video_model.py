@@ -1,11 +1,13 @@
 import os
-
+from django.conf import settings
 from .models import EncodingVideo
 from .models import EncodingAudio
 from .models import PlaylistVideo
 from .models import Video
 
-from .Encoding_video import Encoding_video
+from .Encoding_video import Encoding_video, FFMPEG_MP4_ENCODE
+
+FFMPEG_MP4_ENCODE = getattr(settings, "FFMPEG_MP4_ENCODE", FFMPEG_MP4_ENCODE)
 
 
 class Encoding_video_model(Encoding_video):
