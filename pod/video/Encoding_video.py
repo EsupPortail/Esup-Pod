@@ -340,8 +340,6 @@ if __name__ == "__main__":
         encoding_video.id, encoding_video.video_file, encoding_video.duration
     )
     print(encoding_video.encoding_log)
-
-    """
     if encoding_video.is_video():
         encoding_video.encode_video_part()
     if len(encoding_video.list_audio_track) > 0:
@@ -350,4 +348,3 @@ if __name__ == "__main__":
         print("save image track")
     if len(encoding_video.list_subtitle_track) > 0:
         print("save subrip files")
-    """
