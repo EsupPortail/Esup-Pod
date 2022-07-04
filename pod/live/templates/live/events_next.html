@@ -1,0 +1,18 @@
+{% load i18n event_tags %}
+
+{% get_next_events as NEXT_EVENTS %}
+
+{% if NEXT_EVENTS %}
+    <div class="jumbotron" id="last_videos">
+        <h3>{% trans "Next events" %}</h3>
+
+        {% include "live/events_list.html" with events=NEXT_EVENTS %}
+
+        <div class="hightlight">
+            <div class="d-flex justify-content-end">
+                <p><a class="btn btn-lg btn-primary btn-sm" href="{% url "live:events" %}"
+                      role="button">{% trans "Show all events" %} &raquo;</a></p>
+            </div>
+        </div> <!-- fin highlight -->
+    </div>
+{% endif %}

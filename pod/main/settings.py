@@ -284,6 +284,13 @@ THUMBNAIL_PRESERVE_FORMAT = True
 
 # ie : USE_THEME = 'green'
 
+SHOW_EVENTS_ON_HOMEPAGE = False
+BROADCASTER_PILOTING_SOFTWARE = [
+    "Wowza",
+]
+DEFAULT_EVENT_PATH = ""
+DEFAULT_EVENT_THUMBNAIL = "/img/default-event.svg"
+DEFAULT_EVENT_TYPE_ID = 1
 """
 ##
 # Main menu settings:

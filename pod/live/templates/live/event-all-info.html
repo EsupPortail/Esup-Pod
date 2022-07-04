@@ -1,0 +1,41 @@
+{% load i18n %}
+{% load tagging_tags %}
+<h1 class="page_title pt-2 h2">
+  {{event.title|capfirst}}
+  {% if event.start_date %}<small>[{{ event.start_date }}]</small>{% endif %}
+  <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans 'Report the video'%}" >
+    <i data-feather="alert-octagon" aria-hidden="true"></i>
+  </a>
+</h1>
+
+<div class="pl-0 pr-0">
+  <div class="navbar d-flex flex-row-reverse p-0" >
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    {% if event.description %}
+    <li class="nav-item">
+      <a class="nav-link active show" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-selected="true" title="{% trans 'Summary' %}">
+        <i data-feather="align-justify" aria-hidden="true"></i>
+      </a>
+    </li>
+    {% endif %}
+    <li class="nav-item">
+      <a id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" title="{% trans 'Infos' %}"
+        {% if not event.description %}
+          class="nav-link active show" aria-selected="true"
+        {% else %}
+          class="nav-link" aria-selected="false"
+        {% endif %}
+      ><i data-feather="info" aria-hidden="true"></i></a>
+    </li>
+
+    {% if event.is_draft == False or event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser %}
+      <li class="nav-item">
+        <a class="nav-link" id="share-tab" data-toggle="tab" href="#share" role="tab" aria-controls="share" aria-selected="false" title="{% trans 'Embed/Share' %}">
+          <i data-feather="share-2" aria-hidden="true"></i>
+        </a>
+      </li>
+    {%endif%}
+  </ul>
+  </div>
+  {% include 'live/event-info.html' %}
+</div>

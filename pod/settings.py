@@ -5,6 +5,7 @@ Django version : 1.11.16.
 """
 import os
 import sys
+import django.conf.global_settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # will be update in pod/main/settings.py
@@ -286,3 +287,5 @@ def update_settings(local_settings):
 the_update_settings = update_settings(locals())
 for variable in the_update_settings:
     locals()[variable] = the_update_settings[variable]
+
+TIME_INPUT_FORMATS = ["%H:%M", *django.conf.global_settings.TIME_INPUT_FORMATS]

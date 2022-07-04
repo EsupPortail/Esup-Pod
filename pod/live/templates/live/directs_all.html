@@ -30,12 +30,12 @@ window.setInterval("location.reload(true)",30000);
         <span class="building-name">
           {{building.name}}
         </span>
-        {% if is_supervisor %}<a href="{% url "live:building" building_id=building.id %}"><i data-feather="eye"></i></a>{% endif %}
+        <a href="{% url "live:directs" building_id=building.id %}"><i data-feather="eye"></i></a>
       </h5>
       <div class="card-text">
         {% for broadcaster in building.broadcaster_set.all %}
         <p class="card-text-item">
-          {%if broadcaster.status %}<a href="{% url "live:video_live" slug=broadcaster.slug %}" class="live_on">{%if broadcaster.password%}<i data-feather="lock"></i>{%else%}<i data-feather="airplay"></i>{%endif%}&nbsp;{{broadcaster.name}} </a>
+          {%if broadcaster.status %}<a href="{% url "live:direct" slug=broadcaster.slug %}" class="live_on"><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}} </a>
           {%else%}<span class="live_off"><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}</p>
           {% empty %}
         <p class="card-text-item">{% trans "Sorry, no lives found" %}.</p>
