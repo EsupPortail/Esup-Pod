@@ -6,7 +6,8 @@ import time
 from encoding_utils import (
     get_info_from_video,
     get_list_rendition,
-)  # launch_cmd
+    launch_cmd,
+)
 
 # from unidecode import unidecode # third party package to remove accent
 # import unicodedata
@@ -35,21 +36,31 @@ FFMPEG_HLS_TIME = 2
 # -c:v libx264  -vf "scale=-2:1080" -preset slow -profile:v high -pix_fmt yuv420p -level 3 -crf 20 -maxrate 4M -bufsize 8M -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 -c:a aac -ar 48000 -b:a 192k -movflags faststart  -y -vsync 0 1080p.mp4
 
 
-FFMPEG_INPUT = "-hide_banner -i %(input)s "
+FFMPEG_INPUT = "-hide_banner -threads %(nb_threads)s -i %(input)s "
+FFMPEG_LIBX = "libx264"
 FFMPEG_MP4_ENCODE = (
-    '-c:v libx264  -vf "scale=-2:%(height)s" -preset %(preset)s -profile:v %(profile)s '
-    + "-pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s "
+    '-c:v %(libx)s  -vf "scale=-2:%(height)s" -preset %(preset)s -profile:v %(profile)s '
+    + '-pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s '
     + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 '
-    + "-c:a aac -ar 48000 -b:a %(ba)s -movflags faststart  -y -vsync 0 %(height)sp.mp4 "
+    + '-c:a aac -ar 48000 -b:a %(ba)s -movflags faststart  -y -vsync 0 "%(output)s" '
 )
+# https://gist.github.com/Andrey2G/78d42b5c87850f8fbadd0b670b0e6924
 FFMPEG_HLS_ENCODE = (
-    "-map 0:v:0 -map 0:a:0 -c:v libx264  "
+    "-map 0:v:0 -map 0:a:0 -c:v %(libx)s  "
     + '-vf "scale=-2:%(height)s" -preset %(preset)s -profile:v %(profile)s '
-    + "-pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s "
+    + '-pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s '
     + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 '
-    + "-c:a aac -ar 48000 -b:a %(ba)s -hls_playlist_type vod -hls_time %(hls_time)s -hls_flags single_file "
-    + '-master_pl_name "livestream.m3u8" -y -vsync 0 %(height)sp.m3u8 '
+    + '-c:a aac -ar 48000 -b:a %(ba)s -hls_playlist_type vod -hls_time %(hls_time)s -hls_flags single_file '
+    + '-master_pl_name "livestream.m3u8" -y -vsync 0 "%(output)s" '
 )
+FFMPEG_MP3_ENCODE = (
+    '-vn -b:a %(audio_bitrate)s -vn -f mp3 "%(output)s" '
+)
+FFMPEG_M4A_ENCODE = (
+    '-vn -c:a aac -b:a %(audio_bitrate)s "%(output)s" '
+)
+FFMPEG_NB_THREADS = 0
+AUDIO_BITRATE = "192k"
 
 
 class Encoding_video:
@@ -60,10 +71,15 @@ class Encoding_video:
     list_audio_track = {}
     list_subtitle_track = {}
     list_image_track = {}
+    list_mp4_files = {}
+    list_hls_files = {}
+    list_mp3_files = {}
+    list_m4a_files = {}
     encoding_log = ""
     output_dir = ""
     start = 0
     stop = 0
+    error_encoding = False
 
     def __init__(self, id, video_file):
         self.id = id
@@ -140,8 +156,13 @@ class Encoding_video:
         mp4_command = "%s " % FFMPEG_CMD
         list_rendition = get_list_rendition()
         first_item = list_rendition.popitem(last=False)
-        mp4_command += FFMPEG_INPUT % {"input": self.video_file}
+        mp4_command += FFMPEG_INPUT % {
+            "input": self.video_file,
+            "nb_threads": FFMPEG_NB_THREADS
+        }
+        output_file = os.path.join(self.output_dir, "%sp.mp4" % first_item[0])
         mp4_command += FFMPEG_MP4_ENCODE % {
+            "libx": FFMPEG_LIBX,
             "height": first_item[0],
             "preset": FFMPEG_PRESET,
             "profile": FFMPEG_PROFILE,
@@ -150,7 +171,9 @@ class Encoding_video:
             "maxrate": first_item[1]["maxrate"],
             "bufsize": first_item[1]["maxrate"],
             "ba": first_item[1]["audio_bitrate"],
+            "output": output_file
         }
+        self.list_mp4_files[first_item[0]] = output_file
         """
         il est possible de faire ainsi :
         mp4_command += FFMPEG_MP4_ENCODE.format(
@@ -161,7 +184,9 @@ class Encoding_video:
         in_height = list(self.list_video_track.items())[0][1]["height"]
         for rend in list_rendition:
             if in_height >= rend:
+                output_file = os.path.join(self.output_dir, "%sp.mp4" % rend)
                 mp4_command += FFMPEG_MP4_ENCODE % {
+                    "libx": FFMPEG_LIBX,
                     "height": rend,
                     "preset": FFMPEG_PRESET,
                     "profile": FFMPEG_PROFILE,
@@ -170,18 +195,22 @@ class Encoding_video:
                     "maxrate": list_rendition[rend]["maxrate"],
                     "bufsize": list_rendition[rend]["maxrate"],
                     "ba": list_rendition[rend]["audio_bitrate"],
+                    "output": output_file
                 }
+                self.list_mp4_files[first_item[0]] = output_file
         return mp4_command
 
     def get_hls_command(self):
         hls_command = "%s " % FFMPEG_CMD
         list_rendition = get_list_rendition()
         first_item = list_rendition.popitem(last=False)
-        print(
-            "attention, il faut préciser dans la commande le fait qu'on ne prend que le flux audio et video !!!"
-        )
-        hls_command += FFMPEG_INPUT % {"input": self.video_file}
+        hls_command += FFMPEG_INPUT % {
+            "input": self.video_file,
+            "nb_threads": FFMPEG_NB_THREADS
+        }
+        output_file = os.path.join(self.output_dir, "%sp.m3u8" % first_item[0])
         hls_command += FFMPEG_HLS_ENCODE % {
+            "libx": FFMPEG_LIBX,
             "height": first_item[0],
             "preset": FFMPEG_PRESET,
             "profile": FFMPEG_PROFILE,
@@ -191,11 +220,15 @@ class Encoding_video:
             "bufsize": first_item[1]["maxrate"],
             "ba": first_item[1]["audio_bitrate"],
             "hls_time": FFMPEG_HLS_TIME,
+            "output": output_file
         }
+        self.list_hls_files[first_item[0]] = output_file
         in_height = list(self.list_video_track.items())[0][1]["height"]
         for rend in list_rendition:
             if in_height >= rend:
+                output_file = os.path.join(self.output_dir, "%sp.m3u8" % rend)
                 hls_command += FFMPEG_HLS_ENCODE % {
+                    "libx": FFMPEG_LIBX,
                     "height": rend,
                     "preset": FFMPEG_PRESET,
                     "profile": FFMPEG_PROFILE,
@@ -205,8 +238,64 @@ class Encoding_video:
                     "bufsize": list_rendition[rend]["maxrate"],
                     "ba": list_rendition[rend]["audio_bitrate"],
                     "hls_time": FFMPEG_HLS_TIME,
+                    "output": output_file
                 }
+                self.list_hls_files[first_item[0]] = output_file
         return hls_command
+
+    def encode_video_part(self):
+        mp4_command = self.get_mp4_command()
+        print("mp4_command : %s" % mp4_command)
+        return_value, return_msg = launch_cmd(mp4_command)
+        self.encoding_log += return_msg
+        if not return_value:
+            self.error_encoding = True
+        hls_command = self.get_hls_command()
+        print("hls_command : %s" % hls_command)
+        return_value, return_msg = launch_cmd(hls_command)
+        self.encoding_log += return_msg
+        if not return_value:
+            self.error_encoding = True
+
+    def get_mp3_command(self):
+        mp3_command = "%s " % FFMPEG_CMD
+        mp3_command += FFMPEG_INPUT % {
+            "input": self.video_file,
+            "nb_threads": FFMPEG_NB_THREADS
+        }
+        output_file = os.path.join(self.output_dir, "audio_%s.mp3" % AUDIO_BITRATE)
+        mp3_command += FFMPEG_MP3_ENCODE % {
+            "output": output_file,
+        }
+        self.list_mp3_files[AUDIO_BITRATE] = output_file
+        return mp3_command
+
+    def get_m4a_command(self):
+        m4a_command = "%s " % FFMPEG_CMD
+        m4a_command += FFMPEG_INPUT % {
+            "input": self.video_file,
+            "nb_threads": FFMPEG_NB_THREADS
+        }
+        output_file = os.path.join(self.output_dir, "audio_%s.m4a" % AUDIO_BITRATE)
+        m4a_command += FFMPEG_MP3_ENCODE % {
+            "output": output_file,
+        }
+        self.list_m4a_files[AUDIO_BITRATE] = output_file
+        return m4a_command
+
+    def encode_audio_part(self):
+        mp3_command = self.get_mp3_command()
+        print("mp3_command : %s" % mp3_command)
+        return_value, return_msg = launch_cmd(mp3_command)
+        self.encoding_log += return_msg
+        print("To improve...")
+        if not return_value:
+            self.error_encoding = True
+        if not encoding_video.is_video():
+            m4a_command = self.get_m4a_command()
+            print("m4a_command : %s" % m4a_command)
+            return_value, return_msg = launch_cmd(m4a_command)
+            self.encoding_log += return_msg
 
 
 """
@@ -226,25 +315,12 @@ if __name__ == "__main__":
     print(
         encoding_video.id, encoding_video.video_file, encoding_video.duration
     )
-    # print(encoding_video.list_video_track)
-    # print(encoding_video.list_audio_track)
-    # print(encoding_video.list_subtitle_track)
-    # print(encoding_video.list_image_track)
-    # print(encoding_video.encoding_log)
     if encoding_video.is_video():
-        mp4_command = encoding_video.get_mp4_command()
-        print(mp4_command)
-        # return_value, return_msg = launch_cmd(mp4_command)
-        # encoding_video.encoding_log += return_msg
-        print("TODO encode HLS")
-        hls_command = encoding_video.get_hls_command()
-        print("hls_command : %s" % hls_command)
-        # if len(encoding_video.list_image_track) == 0 :
-        #     print("create and save thumbnails")
+        encoding_video.encode_video_part()
+
     if len(encoding_video.list_audio_track) > 0:
-        if not encoding_video.is_video():
-            print("TODO encode M4V")
-        print("TODO encode MP3")
+        encoding_video.encode_audio_part()
+
     if len(encoding_video.list_image_track) > 0:
         print("save image track")
     if len(encoding_video.list_subtitle_track) > 0:
