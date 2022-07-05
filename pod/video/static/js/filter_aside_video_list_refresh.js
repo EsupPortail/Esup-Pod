@@ -1,14 +1,12 @@
 var infinite_waypoint;
-var filterCheckedInputs = {};
 var categoryChecked = null;
-var regExGetOnlyChars = /([\D])/g;
-var sort_column;
-var sort_direction_asc = false;
-var sort_direction_chars = ["8600","8599"];
+var sortDirectionAsc = false;
+var sortDirectionChars = ["8600","8599"];
 var urlVideosStr = urlVideos.toString().replaceAll("/","");
+var filterSortForms = $(".filterSortForms");
 
 function getInfiniteScrollWaypoint() {
-  // Return Waypoint Infinite object to init/refresh the infinite scroll
+  // Return Waypoint Infinite object to init/refresh the infinite scroll and pagination
   return new Waypoint.Infinite({
     element: $("#videos_list")[0],
     onBeforePageLoad: function () {
@@ -35,33 +33,15 @@ function getInfiniteScrollWaypoint() {
   });
 }
 
-function replaceCountVideos(newCount) {
-  // Replace count videos label (h1) with translation and plural
-  var transVideoCount = newCount > 1 ? "videos found" : "video found";
-  $("#video_count")[0].innerHTML = newCount + " " + gettext(transVideoCount);
-}
-
-function callAsyncListVideos(filterCheckedInputs) {
+function callAsyncListVideos() {
   // Ajax request to refresh view with filtered video list
-  data = new FormData();
-  // Sort object for ajax request
-  sortInputsObject = {};
-  sortInputsObject["sort_column"] = sortColumn;
-  sortInputsObject["sort_direction_asc"]= sort_direction_asc;
-  // Fill FormData object for ajax request
-  data.append("filterCheckedInputs",JSON.stringify(filterCheckedInputs));
-  data.append("sortInputs",JSON.stringify(sortInputsObject));
-  localStorage.setItem("filterLocalStorage"+urlVideosStr,JSON.stringify(filterCheckedInputs));
-  localStorage.setItem("sortLocalStorage"+urlVideosStr,JSON.stringify(sortInputsObject));
-  if(categoryChecked){
-    data.append("categoryChecked",categoryChecked);
+  if(categoryChecked != null){
+    urlVideos+="?category="+categoryChecked;
   }
-  return $.ajax({
-    type: "POST",
+  return $.get({
     url: urlVideos,
-    data: data,
+    data: filterSortForms.serialize(),
     processData: false,
-    contentType: false,
     dataType: "html",
     headers: {
       "X-Requested-With": "XMLHttpRequest",
@@ -74,7 +54,7 @@ function callAsyncListVideos(filterCheckedInputs) {
       $(".infinite-loading").remove();
       $(".infinite-more-link").remove();
       $("#videos_list").replaceWith(html);
-      window.location.href.replace(window.location.search,'');
+      urlVideos = urlVideos.split("?")[0];
     },
     error: function (result, status, error) {
       $("#videos_list").html(gettext("An Error occurred while processing "));
@@ -84,29 +64,18 @@ function callAsyncListVideos(filterCheckedInputs) {
 
 function refreshVideosSearch(){
   // Filter checkboxes change triggered event
-  filterCheckedInputs = {};
   categoryChecked = null;
   $(".infinite-loading").show();
   $("#videos_list").html("");
   $(".form-check-input input[type=checkbox]").attr("disabled", "true");
-  // Get all filter checkboxes
-  $("input[type=checkbox]:checked.form-check-input").each(function(checkBox) {
-    let checkBoxName = $(this).attr('name');
-    let checkBoxValue = $(this).val();
-    if(!filterCheckedInputs.hasOwnProperty(checkBoxName)){
-        filterCheckedInputs[checkBoxName] = [];
-    }
-    filterCheckedInputs[checkBoxName].push(checkBoxValue);
-  });
-  // Get sort column
-  sortColumn = $("#sort").val();
   // if USE_CATEGORY active filter with categories
   if(urlVideos !== 'videos' && USE_CATEGORY && $(".categories_list_item.active")[0]){
     categoryChecked = $(".categories_list_item.active")[0].firstChild["dataset"]["slug"].split("-")[1];
   }
   // Ajax async call to get filtered videos
-  callAsyncListVideos(filterCheckedInputs).done(function () {
+  callAsyncListVideos().done(function () {
     replaceCountVideos(countVideos);
+    localStorage.setItem(urlVideosStr+"LocalStorage",filterSortForms.serialize());
     $(".infinite-loading").hide();
     infinite_waypoint = getInfiniteScrollWaypoint();
     $(".form-check-input input[type=checkbox]").removeAttr("disabled");
@@ -114,11 +83,17 @@ function refreshVideosSearch(){
   });
 }
 
+function replaceCountVideos(newCount) {
+  // Replace count videos label (h1) with translation and plural
+  var transVideoCount = newCount > 1 ? "videos found" : "video found";
+  $("#video_count")[0].innerHTML = newCount + " " + gettext(transVideoCount);
+}
+
 function manageLocalStorage(){
     // Manage Local Storage for filters
-    let filterLocalStorage = localStorage.getItem("filterLocalStorage"+urlVideosStr);
+    let filterLocalStorage = localStorage.getItem(urlVideosStr+"LocalStorage");
     if(filterLocalStorage !== null){
-        filterLocalStorage = JSON.parse(filterLocalStorage);
+        filterLocalStorage = filterLocalStorage;
         let filterLocalStorageKeys = Object.keys(filterLocalStorage);
         // Loop on filter keys saved on local storage
         for (let i = 0; i < filterLocalStorageKeys.length; i++) {
@@ -136,8 +111,8 @@ function manageLocalStorage(){
     let sortLocalStorage = localStorage.getItem("sortLocalStorage"+urlVideosStr);
     if(sortLocalStorage !== null){
         sortLocalStorage = JSON.parse(sortLocalStorage);
-        $("#sort").value=sortLocalStorage["sort_column"];
-        sort_direction_asc = sortLocalStorage["sort_direction_asc"];
+        $("#sort").val(sortLocalStorage["sort_column"]);
+        sortDirectionAsc = sortLocalStorage["sortDirectionAsc"];
         refreshSortDirectionChar();
     }
 }
@@ -149,16 +124,16 @@ $(".form-check-input, .sort-select").change(function(e) {
 });
 
 function toggleSortDirection(){
-  sort_direction_asc = !sort_direction_asc;
+  sortDirectionAsc = !sortDirectionAsc;
   $("#sort_direction").prop("checked", !$("#sort_direction").prop("checked"));
   refreshSortDirectionChar();
 }
 
 function refreshSortDirectionChar(){
-    $("#sort_direction_label").html("&#"+(sort_direction_chars[+ sort_direction_asc]).toString());
+    $("#sort_direction_label").html("&#"+(sortDirectionChars[+ sortDirectionAsc]).toString());
 }
 
-// Add click trigger on adcending / descending sort button
+// Add click trigger on ascending / descending sort button
 $("#sort_direction_label").click(function(e) {
   e.preventDefault();
   toggleSortDirection();

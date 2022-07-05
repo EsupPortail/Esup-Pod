@@ -487,8 +487,8 @@ def my_videos(request):
         " 'slug': cat_slug,
         " 'videos': [v_slug, v_slug...] },]
         """
-        if request.POST.get("categoryChecked") is not None:
-            category_checked = request.POST.get("categoryChecked")
+        if request.GET.get("category") is not None:
+            category_checked = request.GET.get("category")
             videos_list = Category.objects.get(title=category_checked).video.all()
 
         videos_without_cat = videos_list.exclude(category__in=cats)
@@ -508,27 +508,8 @@ def my_videos(request):
         data_context["categories"] = cats
         data_context["videos_without_cat"] = videos_without_cat
 
-    if request.method == 'GET':
-        filters = request.session["filterCheckedInputsMyVideos"] \
-            if "filterCheckedInputsMyVideos" in request.session else None
-        sort_inputs = request.session["sortInputsMyVideos"] \
-            if "sortInputsMyVideos" in request.session else None
-
-    elif request.method == 'POST':
-        if request.POST.get("filterCheckedInputs"):
-            filters = request.POST.get("filterCheckedInputs")
-        if request.POST.get("sortInputs"):
-            sort_inputs = request.POST.get("sortInputs")
-        # set filters and sort in session
-        request.session["filterCheckedInputsMyVideos"] = request.POST.get("filterCheckedInputs")
-        request.session["sortInputsMyVideos"] = request.POST.get("sortInputs")
-        request.session.modified = True
-
-    else:
-        pass
-
-    videos_list = get_filtered_videos_list(filters, videos_list) if filters is not None else videos_list
-    videos_list = sort_list_videos(sort_inputs, videos_list) if sort_inputs is not None else videos_list
+    videos_list = get_filtered_videos_list(request, videos_list)
+    videos_list = sort_videos_list(request, videos_list)
 
     count_videos = len(videos_list)
 
@@ -568,8 +549,11 @@ def my_videos(request):
     return render(request, "videos/my_videos.html", data_context)
 
 
-def get_videos_list(request):
-    videos_list = VIDEOS
+def get_videos_list():
+    return VIDEOS
+
+
+def get_filtered_videos_list(request, videos_list):
 
     if request.GET.getlist("type"):
         videos_list = videos_list.filter(type__slug__in=request.GET.getlist("type"))
@@ -593,29 +577,6 @@ def get_videos_list(request):
     return videos_list.distinct()
 
 
-def get_filtered_videos_list(filters, videos_list):
-    filters = json.loads(filters)
-
-    if 'type' in filters:
-        videos_list = videos_list.filter(type__slug__in=filters['type'])
-    if 'discipline' in filters:
-        videos_list = videos_list.filter(discipline__slug__in=filters['discipline'])
-    if 'owner' in filters:
-        # Add filter on additional owners
-        videos_list = videos_list.filter(
-            Q(owner__username__in=filters['owner'])
-            | Q(additional_owners__username__in=filters['owner'])
-        )
-    if 'tag' in filters:
-        videos_list = TaggedItem.objects.get_union_by_model(
-            videos_list, filters['tag']
-        )
-    if 'cursus' in filters:
-        videos_list = videos_list.filter(cursus__in=filters['cursus'])
-
-    return videos_list.distinct()
-
-
 def get_owners_has_instances(owners):
     ownersInstances = []
     for owner in owners:
@@ -627,46 +588,26 @@ def get_owners_has_instances(owners):
     return ownersInstances
 
 
-def sort_list_videos(sort_inputs, videos_list):
+def sort_videos_list(request, videos_list):
     # sort Videos by specific column (select html) and ascending or descending direction (boolean)
-    sort_inputs = json.loads(sort_inputs)
-
-    if 'sort_column' in sort_inputs and sort_inputs['sort_direction_asc'] is False:
-        sort = '-' + sort_inputs['sort_column']
+    if request.GET.get('sort'):
+        sort = request.GET.get('sort')
     else:
-        sort = sort_inputs['sort_column']
+        sort = "date_added"
+    if not request.GET.get('sort_direction'):
+        sort = '-' + sort
+
     videos_list = videos_list.order_by(sort)
 
-    return videos_list
+    return videos_list.distinct()
 
 
 def videos(request):
     """Render the main list of videos."""
     videos_list = VIDEOS
 
-    if request.method == 'GET':
-        filters = request.session["filterCheckedInputsVideos"] \
-            if "filterCheckedInputsVideos" in request.session else None
-        sort_inputs = request.session["sortInputsVideos"] \
-            if "sortInputsVideos" in request.session else None
-
-    elif request.method == 'POST':
-        if request.POST.get("filterCheckedInputs"):
-            filters = request.POST.get("filterCheckedInputs")
-        if request.POST.get("sortInputs"):
-            sort_inputs = request.POST.get("sortInputs")
-
-        # set filters and sort in session
-        request.session["filterCheckedInputsVideos"] = request.POST.get("filterCheckedInputs")
-        request.session["sortInputsVideos"] = request.POST.get("sortInputs")
-        request.session.modified = True
-
-    else:
-        pass
-
-    videos_list = get_filtered_videos_list(filters, videos_list) if filters is not None else videos_list
-    videos_list = sort_list_videos(sort_inputs, videos_list) if sort_inputs is not None else videos_list
-
+    videos_list = get_filtered_videos_list(request, videos_list)
+    videos_list = sort_videos_list(request, videos_list)
     count_videos = len(videos_list)
 
     page = request.GET.get("page", 1)
@@ -2416,12 +2357,6 @@ def get_categories(request, c_slug=None):
                 # delete if user is no longer owner
                 # or additional owner of the video
                 cat.video.remove(v)
-
-        if request.session["sortInputsMyVideos"]:
-            sort_inputs = json.loads(request.session["sortInputsMyVideos"])
-            response["videos"].sort(
-                key=lambda x: x[sort_inputs["sort_column"]], reverse=not sort_inputs["sort_direction_asc"]
-            )
 
         return HttpResponse(
             json.dumps(response, cls=DjangoJSONEncoder),

@@ -249,10 +249,11 @@
         loader.classList.remove("show");
       } else {
         jsonData = fetchCategoryData(cat_filter_slug);
-        jsonData.then((data) => {
+        /*jsonData.then((data) => {
             saveCategoryData(data);
             loader.classList.remove("show");
-        });
+        });*/
+        loader.classList.remove("show");
       }
       refreshVideosSearch();
     });
@@ -328,13 +329,17 @@
 
   // Make requets => get category data
   let fetchCategoryData = async (cat_slug) => {
-    try {
-      let resp = await fetch(`${BASE_URL}${cat_slug}/`, { headers: HEADERS });
+  categoryChecked = cat_slug;
+    /*try {
+      console.log(cat_slug);
+      categoryCheckedId = $(".categories_list_item.active")[0].firstChild["dataset"]["slug"].split("-")[0];
+      console.log(categoryCheckedId);
+      let resp = await fetch(`${BASE_URL}?category=categoryCheckedId/`, { headers: HEADERS });
       return await resp.json();
     } catch (e) {
       loader.classList.remove("show");
       showAlertMessage(msg_error, false, (delay = 30000));
-    }
+    }*/
   };
 
   // Make post request. for edit or add category, postData(object)

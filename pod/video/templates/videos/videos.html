@@ -35,9 +35,9 @@
           <a href="{% url 'video_stats_view' 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm float-right" style="height:35.8px"> {% trans "Statistics views" %}</a>
         {% endif %}
     </span>
-    <div class="input-group mb-3 float-left col-3 pl-0 pt-1" style="height:35.8px">
+    <form action="{% url 'videos' %}" method="get" class="filterSortForms input-group mb-3 float-left col-3 pl-0 pt-1" style="height:35.8px">
       {% include "videos/video_sort_select.html" %}
-    </div>
+    </form>
   </div>
 
   {% comment %}
@@ -60,7 +60,7 @@
 
 {% block more_script %}
 <script type="text/javascript">
-const urlVideos = "{% url 'videos' %}";
+var urlVideos = "{% url 'videos' %}";
 const USE_CATEGORY = false;
 </script>
 <script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>

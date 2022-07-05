@@ -9,7 +9,7 @@
     <i data-feather="sliders"></i>&nbsp;{% trans "Filters"%}
   </h2>
 
-<form action="{% url 'videos' %}" method="post">
+<form action="{% url 'videos' %}" method="get" class="filterSortForms">
 {% if use_category %}
   {% include "videos/filter_aside_category.html" %}
 {% endif %}

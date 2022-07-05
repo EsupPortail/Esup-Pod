@@ -52,7 +52,7 @@
 
 {% block more_script %}
 <script>
-const urlVideos = "{% url 'my_videos' %}";
+var urlVideos = "{% url 'my_videos' %}";
 {% if use_category %}
   const USE_CATEGORY = true;
   const CATEGORIES_DATA = {{ categories | safe }};
