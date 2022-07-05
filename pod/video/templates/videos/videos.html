@@ -21,6 +21,12 @@
 
 {% block page_content %}
 
+  <div class="loader_wrapper">
+    <div class="lds-roller">
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </div>
+  </div>
+
   <div class="row">
     <div class="col-4">
       <h1 id="video_count">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h1>

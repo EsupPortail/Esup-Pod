@@ -42,8 +42,6 @@
   let cat_input = document.querySelector("#manageCategoryModal #catTitle");
   let CURR_CATEGORY = {}; // current editing category (js object)
   let DOMCurrentEditCat = null; // current editing category (html DOM)
-  // show loader
-  let loader = document.querySelector(".loader_wrapper");
 
   const SAVED_DATA = {}; // To prevent too many requests to the server
   const CURR_FILTER = { slug: null, id: null }; // the category currently filtering
@@ -340,6 +338,7 @@
       loader.classList.remove("show");
       showAlertMessage(msg_error, false, (delay = 30000));
     }*/
+    loader.classList.remove("show");
   };
 
   // Make post request. for edit or add category, postData(object)

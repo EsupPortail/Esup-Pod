@@ -4,6 +4,7 @@ var sortDirectionAsc = false;
 var sortDirectionChars = ["8600","8599"];
 var urlVideosStr = urlVideos.toString().replaceAll("/","");
 var filterSortForms = $(".filterSortForms");
+var loader = document.querySelector(".loader_wrapper");
 
 function getInfiniteScrollWaypoint() {
   // Return Waypoint Infinite object to init/refresh the infinite scroll and pagination
@@ -64,8 +65,8 @@ function callAsyncListVideos() {
 
 function refreshVideosSearch(){
   // Filter checkboxes change triggered event
-  categoryChecked = null;
   $(".infinite-loading").show();
+  categoryChecked = null;
   $("#videos_list").html("");
   $(".form-check-input input[type=checkbox]").attr("disabled", "true");
   // if USE_CATEGORY active filter with categories
@@ -74,11 +75,12 @@ function refreshVideosSearch(){
   }
   // Ajax async call to get filtered videos
   callAsyncListVideos().done(function () {
-    replaceCountVideos(countVideos);
     localStorage.setItem(urlVideosStr+"LocalStorage",filterSortForms.serialize());
-    $(".infinite-loading").hide();
+    replaceCountVideos(countVideos);
     infinite_waypoint = getInfiniteScrollWaypoint();
     $(".form-check-input input[type=checkbox]").removeAttr("disabled");
+    $(".infinite-loading").hide();
+    loader.classList.remove("show");
     feather.replace();
   });
 }

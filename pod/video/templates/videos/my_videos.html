@@ -2,12 +2,6 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block more_style %}
-  {% if use_category %}
-    <link rel="stylesheet" href="{% static 'css/video_category.css' %}?ver={{VERSION}}">
-  {% endif %}
-{% endblock more_style %}
-
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My videos" %}</li>{% endblock %}
 
 {% block page_title %}
@@ -16,14 +10,14 @@
 
 
 {% block page_content %}
-  {% if use_category %}
-    <!-- Loader -->
-    <div class="loader_wrapper">
-      <div id="my_videos" class="lds-roller">
-        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-      </div>
+  <!-- Loader -->
+  <div class="loader_wrapper">
+    <div class="lds-roller">
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
     </div>
-    <!-- End Loader -->
+  </div>
+  <!-- End Loader -->
+  {% if use_category %}
     {% include "videos/category_modal.html" %}
   {% endif %}
 
