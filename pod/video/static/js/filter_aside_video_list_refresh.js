@@ -44,6 +44,7 @@ function callAsyncListVideos() {
     data: filterSortForms.serialize(),
     processData: false,
     dataType: "html",
+    cache: false,
     headers: {
       "X-Requested-With": "XMLHttpRequest",
       "X-CSRFToken": Cookies.get("csrftoken"),
@@ -95,27 +96,17 @@ function manageLocalStorage(){
     // Manage Local Storage for filters
     let filterLocalStorage = localStorage.getItem(urlVideosStr+"LocalStorage");
     if(filterLocalStorage !== null){
-        filterLocalStorage = filterLocalStorage;
-        let filterLocalStorageKeys = Object.keys(filterLocalStorage);
-        // Loop on filter keys saved on local storage
-        for (let i = 0; i < filterLocalStorageKeys.length; i++) {
-            let key = filterLocalStorageKeys[i];
-            let inputNames = filterLocalStorage[key];
-            // Loop for each key filter values checked saved on local storage
-            for (let j = 0; j < inputNames.length; j++) {
-               let idSelector = "id"+inputNames[j]+"_"+key;
+        let paramsLocalStorage = filterLocalStorage.split('&');
+        for (let i = 0; i < paramsLocalStorage.length; i++) {
+           let param = paramsLocalStorage[i].split('=');
+           if(param[0] == "sort"){
+                $("#sort").val(param[1]);
+           }else{
+               let idSelector = "id"+param[1]+"_"+param[0];
                // Manually check the checkbox found with id
                document.getElementById(idSelector).checked = true;
-            }
+           }
         }
-    }
-    // Manage Local Storage for sort
-    let sortLocalStorage = localStorage.getItem("sortLocalStorage"+urlVideosStr);
-    if(sortLocalStorage !== null){
-        sortLocalStorage = JSON.parse(sortLocalStorage);
-        $("#sort").val(sortLocalStorage["sort_column"]);
-        sortDirectionAsc = sortLocalStorage["sortDirectionAsc"];
-        refreshSortDirectionChar();
     }
 }
 

@@ -21,9 +21,9 @@
     {% include "videos/category_modal.html" %}
   {% endif %}
 
-  <div id="sort-container" class="input-group mb-3 float-left col-4 pr-5 pt-3">
+  <form id="sort-container" action="{% url 'my_videos' %}" method="get" class="filterSortForms input-group mb-3 float-left col-4 pr-5 pt-3">
     {% include "videos/video_sort_select.html" %}
-  </div>
+  </form>
   {% if videos.paginator.count == 0 %}
     <h2 class="h4">{% trans "No video found"%}</h2>
     <p class="alert alert-info">{% trans 'You have not uploaded any videos yet, please use the "Add a new video" button to add one'%}</p>
