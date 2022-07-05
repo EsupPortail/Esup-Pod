@@ -4,10 +4,12 @@ import os
 import argparse
 import time
 import unicodedata
+from webvtt import WebVTT, Caption
 from encoding_utils import (
     get_info_from_video,
     get_list_rendition,
     launch_cmd,
+    check_file
 )
 
 # from unidecode import unidecode # third party package to remove accent
@@ -80,6 +82,7 @@ class Encoding_video:
     list_mp3_files = {}
     list_m4a_files = {}
     list_thumbnail_files = {}
+    list_overview_files = {}
     encoding_log = ""
     output_dir = ""
     start = 0
@@ -292,6 +295,7 @@ class Encoding_video:
         }
         output_file = os.path.join(self.output_dir, "audio_%s.mp3" % AUDIO_BITRATE)
         mp3_command += FFMPEG_MP3_ENCODE % {
+            "audio_bitrate": AUDIO_BITRATE,
             "output": output_file,
         }
         self.list_mp3_files[AUDIO_BITRATE] = output_file
@@ -304,7 +308,8 @@ class Encoding_video:
             "nb_threads": FFMPEG_NB_THREADS
         }
         output_file = os.path.join(self.output_dir, "audio_%s.m4a" % AUDIO_BITRATE)
-        m4a_command += FFMPEG_MP3_ENCODE % {
+        m4a_command += FFMPEG_M4A_ENCODE % {
+            "audio_bitrate": AUDIO_BITRATE,
             "output": output_file,
         }
         self.list_m4a_files[AUDIO_BITRATE] = output_file
@@ -356,17 +361,20 @@ class Encoding_video:
                 "time": int(self.duration / 2),
                 "output": output_file
             }
+            self.list_thumbnail_files["1"] = output_file
         elif 10 <= self.duration < 60:
             output_file = os.path.join(self.output_dir, "thumbnail_1.png")
             thumbnail_command += CREATE_THUMBNAIL % {
                 "time": int(self.duration / 3),
                 "output": output_file
             }
+            self.list_thumbnail_files["1"] = output_file
             output_file = os.path.join(self.output_dir, "thumbnail_2.png")
             thumbnail_command += CREATE_THUMBNAIL % {
                 "time": int((self.duration / 3) * 2),
                 "output": output_file
             }
+            self.list_thumbnail_files["2"] = output_file
         else:
             for dur in range(1, 4):
                 output_file = os.path.join(self.output_dir, "thumbnail_%s.png" % dur)
@@ -374,7 +382,65 @@ class Encoding_video:
                     "time": int((self.duration / 4) * dur),
                     "output": output_file
                 }
+                self.list_thumbnail_files["%s" % dur] = output_file
         return thumbnail_command
+
+    def create_overview(self):
+        list_rendition = get_list_rendition()
+        first_item = list_rendition.popitem(last=False)
+        image_width = int(int(first_item[1]["resolution"].split("x")[0]) / 4)  # width of generate image file
+        image_height = int(int(first_item[1]["resolution"].split("x")[1]) / 4)  # width of generate image file
+        input_file = self.list_mp4_files[first_item[0]]
+        nb_img = 100
+        step = 1
+        if self.duration < 100:
+            # nb_img = int(self.duration * 10 / 100)
+            step = 10  # on ne fait que 10 images si la video dure moins de 100 sec.
+        print(nb_img)
+        overviewimagefilename = os.path.join(self.output_dir, "overview.png")
+        image_url = os.path.basename(overviewimagefilename)
+        overviewfilename = os.path.join(self.output_dir, "overview.vtt")
+        webvtt = WebVTT()
+        for i in range(1, nb_img, step):
+            output_file = os.path.join(self.output_dir, "thumbnail_%s.png" % i)
+            cmd_ffmpegthumbnailer = (
+                'ffmpegthumbnailer -t "%(stamp)s" '
+                + '-s "%(image_width)s" -i %(source)s -c png '
+                + '-o %(output_file)s ') % {
+                    "stamp": str(i) + "%",
+                    "source": input_file,
+                    "output_file": output_file,
+                    "image_width": image_width
+            }
+            return_value, return_msg = launch_cmd(cmd_ffmpegthumbnailer)
+            self.encoding_log += "\n overview : %s" % cmd_ffmpegthumbnailer
+            if return_value and check_file(output_file):
+                cmd_montage = (
+                    "montage -geometry +0+0 %(overviewimagefilename)s \
+                    %(output_file)s  %(overviewimagefilename)s"
+                    % {"overviewimagefilename": overviewimagefilename, "output_file": output_file}
+                )
+                return_value, return_msg = launch_cmd(cmd_montage)
+                os.remove(output_file)
+                start = format(float(self.duration * i / 100), ".3f")
+                end = format(float(self.duration * (i + 1) / 100), ".3f")
+                start_time = time.strftime("%H:%M:%S", time.gmtime(int(str(start).split(".")[0])))
+                start_time += ".%s" % (str(start).split(".")[1])
+                end_time = time.strftime(
+                    "%H:%M:%S", time.gmtime(int(str(end).split(".")[0]))
+                ) + ".%s" % (str(end).split(".")[1])
+                caption = Caption(
+                    "%s" % start_time,
+                    "%s" % end_time,
+                    "%s#xywh=%d,%d,%d,%d"
+                    % (image_url, image_width * i, 0, image_width, image_height),
+                )
+                webvtt.captions.append(caption)
+        webvtt.save(overviewfilename)
+        if check_file(overviewfilename) and check_file(overviewimagefilename):
+            self.list_overview_files["0"] = overviewimagefilename
+            self.list_overview_files["1"] = overviewfilename
+            self.encoding_log += "\n- overviewfilename:\n%s" % overviewfilename
 
     def encode_image_part(self):
         if len(self.list_image_track) > 0:
@@ -387,7 +453,9 @@ class Encoding_video:
             self.encoding_log += "\n create thumbnail_command : %s" % thumbnail_command
             return_value, return_msg = launch_cmd(thumbnail_command)
             self.encoding_log += return_msg
-            print('creat eoverview from video')
+            # on ne fait pas d'overview pour les videos de moins de 10 secondes
+            if self.duration > 10 :
+                self.create_overview()
 
 
 def fix_input(input):

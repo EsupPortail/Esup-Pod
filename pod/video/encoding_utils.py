@@ -3,6 +3,7 @@ import shlex
 import json
 from collections import OrderedDict
 from timeit import default_timer as timer
+import os
 
 # from django.core import serializers
 # serializers.serialize("json", VideoRendition.objects.all())
@@ -11,6 +12,11 @@ video_rendition = [
     {"resolution": "1280x720", "minrate": "1000k", "video_bitrate": "2000k", "maxrate": "3000k", "audio_bitrate": "128k", "encode_mp4": True, "sites": [1]},
     {"resolution": "1920x1080", "minrate": "2000k", "video_bitrate": "3000k", "maxrate": "4500k", "audio_bitrate": "192k", "encode_mp4": False, "sites": [1]},
 ]
+
+def check_file(path_file):
+    if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
+        return True
+    return False
 
 
 def get_list_rendition():
