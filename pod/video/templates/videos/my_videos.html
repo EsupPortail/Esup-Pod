@@ -11,7 +11,7 @@
 
 {% block page_content %}
   <!-- Loader -->
-  <div class="loader_wrapper">
+  <div id="loader_wrapper">
     <div class="lds-roller">
       <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
     </div>
@@ -30,7 +30,10 @@
   {% else %}
     <h2 id="video_count" class="h4">{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
     <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the video on which you want to work with." %}</p>
+
+    <div id="video_list_content">
     {% include "videos/video_list.html" %}
+    </div>
   {% endif %}
 {% endblock page_content %}
 

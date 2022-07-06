@@ -1106,7 +1106,7 @@ input.select2-input {
  * **********************************/
 .category_modal_videos_list.show{ height: 385px !important; }
 .category_modal_videos_list.show .paginator,
-.loader_wrapper.show{ display: -webkit-box; display: -ms-flexbox; display: flex; }
+#loader_wrapper.show{ display: -webkit-box; display: -ms-flexbox; display: flex; }
 
 .paginator{
     display:none;
@@ -1135,7 +1135,7 @@ input.select2-input {
 /************************************
  * Override loader css
  * **********************************/
-.loader_wrapper{
+#loader_wrapper{
     position: fixed;
     top: 0;
     bottom: 0;

@@ -21,7 +21,7 @@
 
 {% block page_content %}
 
-  <div class="loader_wrapper">
+  <div id="loader_wrapper">
     <div class="lds-roller">
       <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
     </div>
@@ -55,7 +55,9 @@
   </p>
   {% endcomment %}
 
+  <div id="video_list_content">
   {% include "videos/video_list.html" %}
+  </div>
 
 {% endblock page_content %}
 

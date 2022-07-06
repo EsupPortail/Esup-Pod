@@ -4,7 +4,7 @@ var sortDirectionAsc = false;
 var sortDirectionChars = ["8600","8599"];
 var urlVideosStr = urlVideos.toString().replaceAll("/","");
 var filterSortForms = $(".filterSortForms");
-var loader = document.querySelector(".loader_wrapper");
+var loader = $("#loader_wrapper");
 
 function getInfiniteScrollWaypoint() {
   // Return Waypoint Infinite object to init/refresh the infinite scroll and pagination
@@ -55,7 +55,7 @@ function callAsyncListVideos() {
       }
       $(".infinite-loading").remove();
       $(".infinite-more-link").remove();
-      $("#videos_list").replaceWith(html);
+      $("#video_list_content").html(html);
       urlVideos = urlVideos.split("?")[0];
     },
     error: function (result, status, error) {
@@ -67,8 +67,8 @@ function callAsyncListVideos() {
 function refreshVideosSearch(){
   // Filter checkboxes change triggered event
   $(".infinite-loading").show();
+  loader.addClass("show");
   categoryChecked = null;
-  $("#videos_list").html("");
   $(".form-check-input input[type=checkbox]").attr("disabled", "true");
   // if USE_CATEGORY active filter with categories
   if(urlVideos !== 'videos' && USE_CATEGORY && $(".categories_list_item.active")[0]){
@@ -81,7 +81,7 @@ function refreshVideosSearch(){
     infinite_waypoint = getInfiniteScrollWaypoint();
     $(".form-check-input input[type=checkbox]").removeAttr("disabled");
     $(".infinite-loading").hide();
-    loader.classList.remove("show");
+    loader.removeClass("show");
     feather.replace();
   });
 }
@@ -101,6 +101,8 @@ function manageLocalStorage(){
            let param = paramsLocalStorage[i].split('=');
            if(param[0] == "sort"){
                 $("#sort").val(param[1]);
+           }else if(param[0] == "cursus"){
+               document.getElementById("cursus-"+param[1]).checked = true;
            }else{
                let idSelector = "id"+param[1]+"_"+param[0];
                // Manually check the checkbox found with id

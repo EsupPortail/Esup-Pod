@@ -105,7 +105,7 @@
   <legend class="h5"><i data-feather="archive"></i> {% trans "University course"%}</legend>
   <div id="filterCursus">
     <div class="form-group collapse" id="collapseFilterCursus">
-      {% for keyCursus , transCursus in cursus_list %}
+      {% for keyCursus , transCursus in cursus_codes %}
         <div class="form-check">
           <input class="form-check-input" type="checkbox" name="cursus"
             value="{{keyCursus}}" id="cursus-{{keyCursus}}" {% if keyCursus in cursus_selected %}checked{% endif %}>
@@ -125,6 +125,6 @@
 </div>
 <script>
 var listUserChecked = {{owners|safe}};
-
+var cursusCodes = {{cursus_codes|safe}};
 </script>
 {% endspaceless %}

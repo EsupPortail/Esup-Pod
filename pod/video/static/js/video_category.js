@@ -232,7 +232,7 @@
   let manageFilterVideos = (c) => {
     c.addEventListener("click", (e) => {
       e.stopPropagation();
-      loader.classList.add("show");
+      loader.addClass("show");
       let cat_filter_slug = c.dataset.slug.trim();
       let cat_filter_id = c.parentNode
         .querySelector(".category_actions #remove_category_icon")
@@ -244,14 +244,14 @@
           !CURR_FILTER.slug && !CURR_FILTER.id
             ? CATEGORIES_DATA[0]
             : jsonData.videos.length;
-        loader.classList.remove("show");
+        loader.addClass("show");
       } else {
         jsonData = fetchCategoryData(cat_filter_slug);
         /*jsonData.then((data) => {
             saveCategoryData(data);
             loader.classList.remove("show");
         });*/
-        loader.classList.remove("show");
+        loader.removeClass("show");
       }
       refreshVideosSearch();
     });
@@ -338,7 +338,7 @@
       loader.classList.remove("show");
       showAlertMessage(msg_error, false, (delay = 30000));
     }*/
-    loader.classList.remove("show");
+    loader.removeClass("show");
   };
 
   // Make post request. for edit or add category, postData(object)
@@ -351,7 +351,7 @@
       });
       return await resp.json();
     } catch (e) {
-      loader.classList.remove("show");
+      loader.removeClass("show");
       showAlertMessage(msg_error_duplicate, false, (delay = 30000));
     }
   };
@@ -581,7 +581,7 @@
   // Handler to edit category, c_e=current category to edit
   let editHandler = (c_e) => {
     c_e.addEventListener("click", (e) => {
-      loader.classList.add("show");
+      loader.addClass("show");
       cat_edit_title = c_e.dataset.title.trim();
       cat_edit_slug = c_e.dataset.slug.trim();
       cat_edit_id = c_e.parentNode
@@ -599,10 +599,10 @@
       let jsonData = getSavedData(cat_edit_id);
       CURR_CATEGORY = jsonData;
       DOMCurrentEditCat = c_e.parentNode.parentNode;
-      loader.classList.remove("show");
+      loader.removeClass("show");
       if (Object.keys(jsonData).length) {
         paginate(jsonData.videos);
-        loader.classList.remove("show");
+        loader.removeClass("show");
       } else {
         jsonData = fetchCategoryData(cat_edit_slug);
         jsonData
@@ -611,10 +611,10 @@
             // save data
             saveCategoryData(data);
             CURR_CATEGORY = data;
-            loader.classList.remove("show");
+            loader.removeClass("show");
           })
           .catch((e) => {
-            loader.classList.remove("show");
+            loader.removeClass("show");
             showAlertMessage(msg_error, false, (delay = 30000));
           });
       }
@@ -702,7 +702,7 @@
   // Add onclick event to delete a category
   let del_cat = document.querySelector("#confirm_remove_category_btn");
   del_cat.addEventListener("click", (e) => {
-    loader.classList.add("show");
+    loader.addClass("show");
     if (CAT_TO_DELETE.slug && CAT_TO_DELETE.id && CAT_TO_DELETE.html) {
       // Delete category
       let cat = findCategory(
@@ -745,7 +745,7 @@
             delete CAT_TO_DELETE.html;
             delete CAT_TO_DELETE.id;
             delete CAT_TO_DELETE.slug;
-            loader.classList.remove("show");
+            loader.removeClass("show");
             // close modal
             document
               .querySelector("#deleteCategoryModal .modal-footer .close_modal")
@@ -754,11 +754,11 @@
         });
       } else {
         //TODO display msg error cat
-        loader.classList.remove("show");
+        loader.removeClass("show");
       }
     } else {
       // display msg error like 'no category to delete'
-      loader.classList.remove("show");
+      loader.removeClass("show");
     }
   });
 
@@ -766,7 +766,7 @@
   saveCatBtn.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
-    loader.classList.add("show");
+    loader.addClass("show");
     const videos = VIDEOS_LIST_CHUNK.videos.selected.map(
       (html_v) => html_v.dataset.slug
     );
@@ -776,7 +776,7 @@
     };
     if (cat_input.value.trim() === "") {
       showAlertMessage(msg_title_empty, false, (delay = 30000));
-      loader.classList.remove("show");
+      loader.removeClass("show");
       return;
     }
     if (Object.keys(CURR_CATEGORY).length > 0 && DOMCurrentEditCat) {
@@ -804,10 +804,10 @@
           refreshDialog();
           showAlertMessage(msg_saved);
           refreshVideosSearch();
-          loader.classList.remove("show"); // hide loader
+          loader.removeClass("show"); // hide loader
         })
         .catch((err) => {
-          loader.classList.remove("show");
+          loader.removeClass("show");
           showAlertMessage(msg_error, false, (delay = 30000));
         });
     } // Adding mode
@@ -825,7 +825,7 @@
           let msg_create = gettext("Category created successfully");
           showAlertMessage(msg_create);
           saveCategoryData(data.category); // saving cat localy to prevent more request to the server
-          loader.classList.remove("show"); // hide loader
+          loader.removeClass("show"); // hide loader
         })
         .catch((err) => {
           showAlertMessage(msg_error_duplicate, false, (delay = 30000));

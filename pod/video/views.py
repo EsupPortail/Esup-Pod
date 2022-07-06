@@ -536,13 +536,19 @@ def my_videos(request):
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
+            {
+                "videos": videos,
+                "full_path": full_path,
+                "count_videos": count_videos,
+                "cursus_codes": CURSUS_CODES
+            },
         )
     data_context["use_category"] = USE_CATEGORY
     data_context["videos"] = videos
     data_context["count_videos"] = count_videos
+    data_context["cursus_codes"] = CURSUS_CODES
     data_context["full_path"] = full_path
-    data_context["owners"] = request.GET.getlist("owner")
+    data_context["owners"] = CURSUS_CODES
     data_context["page_title"] = _("My videos")
     data_context["ownersInstances"] = owners_instances
 
@@ -638,8 +644,9 @@ def videos(request):
                 "videos": videos,
                 "full_path": full_path,
                 "count_videos": count_videos,
+                "cursus_codes": CURSUS_CODES,
                 "videos_has_next": videos.has_next(),
-                "videos_next_page_number": videos_next_page_number
+                "videos_next_page_number": videos_next_page_number,
             },
         )
 
@@ -656,7 +663,7 @@ def videos(request):
             "cursus_selected": request.GET.getlist("cursus"),
             "full_path": full_path,
             "ownersInstances": owners_instances,
-            "cursus_list": CURSUS_CODES,
+            "cursus_codes": CURSUS_CODES,
             "videos_has_next": videos.has_next(),
             "videos_next_page_number": videos_next_page_number
         },
