@@ -530,6 +530,7 @@ def my_videos(request):
     except EmptyPage:
         videos = paginator.page(paginator.num_pages)
 
+    videos_next_page_number = videos.next_page_number() if videos.has_next() else None
     owners_instances = get_owners_has_instances(request.GET.getlist("owner"))
 
     if request.is_ajax():
@@ -540,7 +541,9 @@ def my_videos(request):
                 "videos": videos,
                 "full_path": full_path,
                 "count_videos": count_videos,
-                "cursus_codes": CURSUS_CODES
+                "cursus_codes": CURSUS_CODES,
+                "videos_has_next": videos.has_next(),
+                "videos_next_page_number": videos_next_page_number,
             },
         )
     data_context["use_category"] = USE_CATEGORY
@@ -551,6 +554,8 @@ def my_videos(request):
     data_context["owners"] = CURSUS_CODES
     data_context["page_title"] = _("My videos")
     data_context["ownersInstances"] = owners_instances
+    data_context["videos_has_next"] = videos.has_next()
+    data_context["videos_next_page_number"] = videos_next_page_number
 
     return render(request, "videos/my_videos.html", data_context)
 
