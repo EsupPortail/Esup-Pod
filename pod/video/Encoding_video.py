@@ -5,12 +5,20 @@ import argparse
 import time
 import unicodedata
 from webvtt import WebVTT, Caption
-from .encoding_utils import (
-    get_info_from_video,
-    get_list_rendition,
-    launch_cmd,
-    check_file
-)
+if __name__ == "__main__":
+    from encoding_utils import (
+        get_info_from_video,
+        get_list_rendition,
+        launch_cmd,
+        check_file
+    )
+else:
+    from .encoding_utils import (
+        get_info_from_video,
+        get_list_rendition,
+        launch_cmd,
+        check_file
+    )
 
 # from unidecode import unidecode # third party package to remove accent
 # import unicodedata
@@ -67,6 +75,7 @@ AUDIO_BITRATE = "192k"
 
 EXTRACT_THUMBNAIL = '-map 0:%(index)s -an -c:v copy -y  "%(output)s" '
 CREATE_THUMBNAIL = '-vframes 1 -an -ss %(time)s -y  "%(output)s" '
+EXTRACT_SUBTITLE = '-map 0:%(index)s -f webvtt -y  "%(output)s" '
 
 
 class Encoding_video:
@@ -83,6 +92,7 @@ class Encoding_video:
     list_m4a_files = {}
     list_thumbnail_files = {}
     list_overview_files = {}
+    list_subtitle_files = {}
     encoding_log = ""
     output_dir = ""
     start = 0
@@ -181,7 +191,9 @@ class Encoding_video:
                 }
         if codec_type == "subtitle":
             codec = stream.get("codec_name", "unknown")
-            language = stream.get("language", stream.get("language", ""))
+            language = ""
+            if stream.get("tags"):
+                language = stream.get("tags").get("language", "")
             self.list_subtitle_track["%s" % stream.get("index")] = {
                 "language": language
             }
@@ -340,7 +352,7 @@ class Encoding_video:
             self.fix_duration(self.list_mp3_files[new_k])
         if not return_value:
             self.error_encoding = True
-        if not encoding_video.is_video():
+        if not self.is_video():
             m4a_command = self.get_m4a_command()
             self.encoding_log += "\n m4a_command : %s" % m4a_command
             return_value, return_msg = launch_cmd(m4a_command)
@@ -472,6 +484,29 @@ class Encoding_video:
             if self.duration > 10 :
                 self.create_overview()
 
+    def get_extract_subtitle_command(self):
+        subtitle_command = "%s " % FFMPEG_CMD
+        subtitle_command += FFMPEG_INPUT % {
+            "input": self.video_file,
+            "nb_threads": FFMPEG_NB_THREADS
+        }
+        for img in self.list_subtitle_track:
+            lang = self.list_subtitle_track[img]
+            output_file = os.path.join(self.output_dir, "subtitle_%s.vtt" % lang)
+            subtitle_command += EXTRACT_SUBTITLE % {
+                "index": img,
+                "output": output_file
+            }
+            self.list_subtitle_files[img] = [lang, output_file]
+        return subtitle_command
+
+    def get_subtitle_part(self):
+        if len(self.list_subtitle_track) > 0:
+            subtitle_command = self.get_extract_subtitle_command()
+            self.encoding_log += "\n extract subtitle_command : %s" % subtitle_command
+            return_value, return_msg = launch_cmd(subtitle_command)
+            self.encoding_log += return_msg
+
     def export_to_json(self):
         data_to_dump = {}
         for attribute, value in self.__dict__.items():
@@ -530,5 +565,5 @@ if __name__ == "__main__":
         encoding_video.encode_audio_part()
     encoding_video.encode_image_part()
     if len(encoding_video.list_subtitle_track) > 0:
-        print("save subrip files")
+        encoding_video.get_subtitle_part()
     print(encoding_video.encoding_log)
