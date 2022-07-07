@@ -5,7 +5,7 @@ import argparse
 import time
 import unicodedata
 from webvtt import WebVTT, Caption
-from encoding_utils import (
+from .encoding_utils import (
     get_info_from_video,
     get_list_rendition,
     launch_cmd,
@@ -89,10 +89,25 @@ class Encoding_video:
     stop = 0
     error_encoding = False
 
-    def __init__(self, id, video_file):
+    def __init__(self, id=0, video_file=""):
         self.id = id
         self.video_file = video_file
+        self.duration = 0
+        self.list_video_track = {}
+        self.list_audio_track = {}
+        self.list_subtitle_track = {}
+        self.list_image_track = {}
+        self.list_mp4_files = {}
+        self.list_hls_files = {}
+        self.list_mp3_files = {}
+        self.list_m4a_files = {}
+        self.list_thumbnail_files = {}
+        self.list_overview_files = {}
         self.encoding_log = ""
+        self.output_dir = ""
+        self.start = 0
+        self.stop = 0
+        self.error_encoding = False
 
     def is_video(self):
         return len(self.list_video_track) > 0
@@ -456,6 +471,13 @@ class Encoding_video:
             # on ne fait pas d'overview pour les videos de moins de 10 secondes
             if self.duration > 10 :
                 self.create_overview()
+
+    def export_to_json(self):
+        data_to_dump = {}
+        for attribute, value in self.__dict__.items():
+            data_to_dump[attribute] = value
+        with open(self.output_dir + "/info_video.json", "w") as outfile:
+            json.dump(data_to_dump, outfile, indent=2)
 
 
 def fix_input(input):

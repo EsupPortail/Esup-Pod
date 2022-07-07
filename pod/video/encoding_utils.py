@@ -13,6 +13,7 @@ video_rendition = [
     {"resolution": "1920x1080", "minrate": "2000k", "video_bitrate": "3000k", "maxrate": "4500k", "audio_bitrate": "192k", "encode_mp4": False, "sites": [1]},
 ]
 
+
 def check_file(path_file):
     if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
         return True
