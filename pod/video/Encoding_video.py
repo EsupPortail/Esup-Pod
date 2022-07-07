@@ -147,7 +147,6 @@ class Encoding_video:
         streams = info.get("streams", [])
         for stream in streams:
             self.add_stream(stream)
-        
 
     def fix_duration(self, input_file):
         msg = "--> get_info_video" + "\n"
@@ -500,16 +499,16 @@ class Encoding_video:
             data_to_dump[attribute] = value
         with open(self.output_dir + "/info_video.json", "w") as outfile:
             json.dump(data_to_dump, outfile, indent=2)
-    
+
     def add_encoding_log(self, title, command, result, msg):
         self.encoding_log[title] = {
             "command": command,
             "result": result,
             "msg": msg
         }
-        if result == False and self.error_encoding == False:
-            self.error_encoding == True
-    
+        if result is False and self.error_encoding is False:
+            self.error_encoding = True
+
     def start_encode(self):
         self.create_output_dir()
         self.get_video_data()
