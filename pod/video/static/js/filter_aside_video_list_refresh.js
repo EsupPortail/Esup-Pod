@@ -113,6 +113,14 @@ function manageLocalStorage(){
     }
 }
 
+// Reset filters on click btn
+$("#resetFilters").click(function() {
+  $(".form-check-input:checkbox:checked").each(function(){
+    this.checked = false;
+  });
+  refreshVideosSearch();
+});
+
 // Add change trigger on filter inputs and column sort select
 $(".form-check-input, .sort-select").change(function(e) {
   e.preventDefault();

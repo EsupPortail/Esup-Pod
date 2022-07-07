@@ -8,6 +8,7 @@
   <h2 class="card-title h4">
     <i data-feather="sliders"></i>&nbsp;{% trans "Filters"%}
   </h2>
+  <button id="resetFilters" class="btn btn-outline-primary">{% trans 'Reset' %}</button>
 
 <form action="{% url 'videos' %}" method="get" class="filterSortForms">
 {% if use_category %}

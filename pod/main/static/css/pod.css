@@ -946,6 +946,12 @@ input.select2-input {
  * **********************************/
 
 #filters{ padding: 1em .8em; }
+#filters #resetFilters{
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    max-height: 35px;
+}
 #filters h5.h5{ margin: 0; }
 #filters .category_fieldset .h5{
     display: -webkit-box;
