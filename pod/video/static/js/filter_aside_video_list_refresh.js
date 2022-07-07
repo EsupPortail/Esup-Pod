@@ -65,10 +65,11 @@ function callAsyncListVideos() {
 }
 
 function refreshVideosSearch(){
-  // Filter checkboxes change triggered event
+  categoryChecked = null;
+  // Start treatment -> show loader and Loading text
   $(".infinite-loading").show();
   loader.addClass("show");
-  categoryChecked = null;
+  // Disable checkboxes during refresh
   $(".form-check-input input[type=checkbox]").attr("disabled", "true");
   // if USE_CATEGORY active filter with categories
   if(urlVideos !== 'videos' && USE_CATEGORY && $(".categories_list_item.active")[0]){
