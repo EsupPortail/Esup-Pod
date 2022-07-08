@@ -5,8 +5,10 @@ from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.template.defaultfilters import slugify
 
 from pod.authentication.models import AccessGroup
+from pod.main.models import get_nextautoincrement
 
 
 class Meeting(models.Model):
@@ -22,12 +24,16 @@ class Meeting(models.Model):
         max_length=200,
         verbose_name=_('Meeting ID')
     )
-    owner = models.ForeignKey(User, verbose_name=_("Owner"), on_delete=models.CASCADE)
+    owner = models.ForeignKey(
+        User,
+        verbose_name=_("Owner"),
+        related_name="owner_meeting",
+        on_delete=models.CASCADE)
     additional_owners = models.ManyToManyField(
         User,
         blank=True,
         verbose_name=_("Additional owners"),
-        related_name="owners_videos",
+        related_name="owners_meetings",
         help_text=_(
             "You can add additional owners to the video. They will have the same rights as you except that they can't delete this video."
         ),
@@ -169,6 +175,24 @@ class Meeting(models.Model):
 
     def __str__(self):
         return '{}-{}'.format(self.id, self.name)
+
+    def save(self, *args, **kwargs):
+        """Store a video object in db."""
+        newid = -1
+        if not self.id:
+            try:
+                newid = get_nextautoincrement(Meeting)
+            except Exception:
+                try:
+                    newid = Meeting.objects.latest("id").id
+                    newid += 1
+                except Exception:
+                    newid = 1
+        else:
+            newid = self.id
+        newid = "%04d" % newid
+        self.slug = "%s-%s" % (newid, slugify(self.title))
+        super(Meeting, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'meeting'
