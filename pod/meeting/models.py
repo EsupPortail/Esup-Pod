@@ -174,7 +174,7 @@ class Meeting(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '{}-{}'.format(self.id, self.name)
+        return '{}-{}'.format("%04d" % self.id, self.name)
 
     def save(self, *args, **kwargs):
         """Store a video object in db."""
@@ -191,7 +191,7 @@ class Meeting(models.Model):
         else:
             newid = self.id
         newid = "%04d" % newid
-        self.slug = "%s-%s" % (newid, slugify(self.title))
+        self.meeting_id = "%s-%s" % (newid, slugify(self.name))
         super(Meeting, self).save(*args, **kwargs)
 
     class Meta:
