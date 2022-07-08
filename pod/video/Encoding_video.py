@@ -522,7 +522,7 @@ class Encoding_video:
         self.encode_image_part()
         if len(self.list_subtitle_track) > 0:
             self.get_subtitle_part()
-        print(self.encoding_log)
+        self.export_to_json()
 
 
 def fix_input(input):
