@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "django_filters",
     "django_select2",
+    "shibboleth",
+    "chunked_upload",
+    "mozilla_django_oidc",
     # Pod Applications
     "pod.main",
     "django.contrib.admin",  # put it here for template override
@@ -52,11 +55,9 @@ INSTALLED_APPS = [
     "pod.live",
     "pod.recorder",
     "pod.lti",
-    "pod.custom",
     "pod.bbb",
-    "shibboleth",
-    "chunked_upload",
-    "mozilla_django_oidc",
+    "pod.meeting.apps.MeetingConfig"
+    "pod.custom",
 ]
 
 ##
