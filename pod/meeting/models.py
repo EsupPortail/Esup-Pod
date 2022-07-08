@@ -1,5 +1,6 @@
 from django.db import models
 # from django.conf import settings
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
@@ -9,6 +10,10 @@ from django.template.defaultfilters import slugify
 
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
+
+
+def two_hours_hence():
+    return timezone.now() + timezone.timedelta(hours=2)
 
 
 class Meeting(models.Model):
@@ -35,7 +40,7 @@ class Meeting(models.Model):
         verbose_name=_("Additional owners"),
         related_name="owners_meetings",
         help_text=_(
-            "You can add additional owners to the video. They will have the same rights as you except that they can't delete this video."
+            "You can add additional owners to the meeting."
         ),
     )
     attendee_password = models.CharField(
@@ -46,6 +51,8 @@ class Meeting(models.Model):
         max_length=50,
         verbose_name=_('Moderator Password')
     )
+    start_at = models.DateTimeField(_("Start date"), default=timezone.now)
+    end_at = models.DateTimeField(_("End date"), default=two_hours_hence())
     is_restricted = models.BooleanField(
         verbose_name=_("Restricted access"),
         help_text=_(
@@ -201,7 +208,10 @@ class Meeting(models.Model):
         ordering = ["-created_at", "-id"]
         get_latest_by = "created_at"
         constraints = [
-            models.UniqueConstraint(fields=['meeting_id', 'site'], name='meeting_unique_slug_site')
+            models.UniqueConstraint(
+                fields=['meeting_id', 'site'],
+                name='meeting_unique_slug_site'
+            )
         ]
 
 
