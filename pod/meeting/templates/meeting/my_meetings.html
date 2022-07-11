@@ -11,6 +11,7 @@
 
 
 {% block page_content %}
+<a class="initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center" href="{% url 'meeting:add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans "Add a meeting" %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a meeting" %}</span></a>
 <table class="table">
   <tbody>
     {% for meeting in meetings %}
