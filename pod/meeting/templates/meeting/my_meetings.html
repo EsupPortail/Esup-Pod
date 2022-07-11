@@ -19,7 +19,7 @@
       <th scope="row">{{meeting.name}}</th>
       <td>{{meeting.start_at}}</td>
       <td>{{meeting.end_at}}</td>
-      <td><a href="" title="{% trans 'Join the meeting'%}" class="btn pod-btn-social"><i class="bi bi-link" aria-hidden="true"></i>&nbsp;</a></td>
+      <td><a href="{% url 'meeting:join' meeting.meeting_id %}" title="{% trans 'Join the meeting'%}" class="btn pod-btn-social"><i class="bi bi-link" aria-hidden="true"></i>&nbsp;</a></td>
       <td><a href="" title="{% trans 'Edit the meeting'%}" class="btn pod-btn-social"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;</a></td>
     </tr>
     {% endfor %}
