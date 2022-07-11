@@ -360,12 +360,12 @@ def events(request):  # affichage des events
 def my_events(request):
     queryset = request.user.event_set.all() | request.user.owners_events.all()
 
-    past_events = [evt for evt in queryset if evt.is_past]
+    past_events = [evt for evt in queryset if evt.is_past()]
     past_events = sorted(
         past_events, key=lambda evt: (evt.start_date, evt.start_time), reverse=True
     )
 
-    coming_events = [evt for evt in queryset if not evt.is_past]
+    coming_events = [evt for evt in queryset if not evt.is_past()]
     coming_events = sorted(
         coming_events, key=lambda evt: (evt.start_date, evt.start_time, evt.end_time)
     )
