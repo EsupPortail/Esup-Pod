@@ -7,6 +7,7 @@ import unicodedata
 import json
 import logging
 import hashlib
+import datetime
 
 from django.db import models
 from django.conf import settings
@@ -56,7 +57,7 @@ logger = logging.getLogger(__name__)
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
 )
-
+VIDEO_RECENT_VIEWCOUNT = getattr(settings, "VIDEO_RECENT_VIEWCOUNT", 180)
 VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
 
 LANG_CHOICES = getattr(
@@ -860,6 +861,13 @@ class Video(models.Model):
     viewcount.fget.short_description = _("Sum of view")
 
     @property
+    def recentViewcount(self):
+        """Get the view counter of a video."""
+        return self.get_viewcount(VIDEO_RECENT_VIEWCOUNT)
+
+    recentViewcount.fget.short_description = _("Sum of view of last 6 months (180 days)")
+
+    @property
     def get_encoding_step(self):
         """Get the current encoding step of a video."""
         try:
@@ -986,9 +994,16 @@ class Video(models.Model):
                 else:
                     return version["url"]
 
-    def get_viewcount(self):
+    def get_viewcount(self, from_nb_day=0):
         """Get the view counter of a video."""
-        count_sum = self.viewcount_set.all().aggregate(Sum("count"))
+        if from_nb_day > 0:
+            d = datetime.date.today() - timezone.timedelta(days=from_nb_day)
+            set = self.viewcount_set.filter(date__gte=d)
+        else:
+            set = self.viewcount_set.all()
+
+        count_sum = set.aggregate(Sum("count"))
+
         if count_sum["count__sum"] is None:
             return 0
         return count_sum["count__sum"]
@@ -1992,7 +2007,7 @@ class Category(models.Model):
     slug = models.SlugField(
         _("Slug"),
         unique=True,
-        max_length=100,
+        max_length=110,
         help_text=_(
             'Used to access this instance, the "slug" is a short label '
             + "containing only letters, numbers, underscore or dash top."

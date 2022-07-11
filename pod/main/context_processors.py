@@ -97,6 +97,12 @@ USE_BBB_LIVE = getattr(django_settings, "USE_BBB_LIVE", False)
 
 COOKIE_LEARN_MORE = getattr(django_settings, "COOKIE_LEARN_MORE", "")
 
+SHOW_EVENTS_ON_HOMEPAGE = getattr(django_settings, "SHOW_EVENTS_ON_HOMEPAGE", False)
+
+DEFAULT_EVENT_THUMBNAIL = getattr(
+    django_settings, "DEFAULT_EVENT_THUMBNAIL", "/img/default-event.svg"
+)
+
 USE_OPENCAST_STUDIO = getattr(django_settings, "USE_OPENCAST_STUDIO", False)
 
 
@@ -160,7 +166,8 @@ def context_settings(request):
     new_settings["DYSLEXIAMODE_ENABLED"] = DYSLEXIAMODE_ENABLED
     new_settings["USE_OPENCAST_STUDIO"] = USE_OPENCAST_STUDIO
     new_settings["COOKIE_LEARN_MORE"] = COOKIE_LEARN_MORE
-
+    new_settings["SHOW_EVENTS_ON_HOMEPAGE"] = SHOW_EVENTS_ON_HOMEPAGE
+    new_settings["DEFAULT_EVENT_THUMBNAIL"] = DEFAULT_EVENT_THUMBNAIL
     return new_settings
 
 
@@ -214,13 +221,18 @@ def context_navbar(request):
         Type.objects.filter(
             sites=get_current_site(request),
             video__is_draft=False,
+            video__sites=get_current_site(request),
         )
         .distinct()
         .annotate(video_count=Count("video", distinct=True))
     )
 
     disciplines = (
-        Discipline.objects.filter(video__is_draft=False, sites=get_current_site(request))
+        Discipline.objects.filter(
+            sites=get_current_site(request),
+            video__is_draft=False,
+            video__sites=get_current_site(request),
+        )
         .distinct()
         .annotate(video_count=Count("video", distinct=True))
     )

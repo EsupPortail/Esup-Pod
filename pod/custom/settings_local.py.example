@@ -997,6 +997,11 @@ CREATE_GROUP_FROM_GROUPS = False
 AFFILIATION_STAFF = ('faculty', 'employee', 'staff')
 
 """
+# Groupes ou affiliations des personnes autorisées à créer un évènement
+"""
+AFFILIATION_EVENT = ['faculty', 'employee', 'staff']
+
+"""
 # Valeurs possibles pour l'Affiliation du compte
 """
 AFFILIATION = (
@@ -1169,11 +1174,6 @@ DS_PARAM = {
     'scorer': "/usr/local/django_projects/transcription/model_tensorflow_fr/kenlm.scorer",
   }
 }
-
-"""
-# La liste des utilisateurs regardant le direct sera réservée au staff
-"""
-VIEWERS_ONLY_FOR_STAFF = False
 
 """
 # Temps (en seconde) entre deux envois d'un signal au serveur,
@@ -1361,3 +1361,52 @@ COOKIE_LEARN_MORE = ""
 #     'TRACKING_TEMPLATE': 'custom/tracking.html',
 """
 USE_VIDEO_EVENT_TRACKING = False
+
+"""
+# Affiche ou non les prochains évènements sur la page d'accueil
+"""
+SHOW_EVENTS_ON_HOMEPAGE = False
+
+"""
+# Chemin racine du répertoire où sont déposés temporairement les
+# enregistrements des évènements éffectués depuis POD pour
+# converstion en ressource vidéo (VOD)
+"""
+DEFAULT_EVENT_PATH = ""
+
+"""
+# Types de logiciel de serveur de streaming utilisés.
+# Actuellement disponible Wowza.
+# Si vous utilisez une autre logiciel, il faut développer une interface dans pod/live/pilotingInterface.py
+"""
+BROADCASTER_PILOTING_SOFTWARE = ['Wowza',]
+
+"""
+# Image par défaut affichée comme poster ou vignette,
+#  utilisée pour présenter l'évènement'.
+# Cette image doit se situer dans le répertoire static.
+"""
+DEFAULT_EVENT_THUMBNAIL = "/img/default-event.svg"
+
+"""
+# Type par défaut affecté à un évènement direct
+#  (en général, le type ayant pour identifiant '1' est 'Other')
+"""
+DEFAULT_EVENT_TYPE_ID = 1
+
+
+"""
+# Si True, un courriel est envoyé aux managers
+#  et à l'auteur (si DEBUG est à False) à la création/modification d'un event
+"""
+EMAIL_ON_EVENT_SCHEDULING = True
+
+"""
+# Si True, un courriel est également envoyé à l'admin (si DEBUG est à False)
+#  à la création/modification d'un event
+"""
+EMAIL_ADMIN_ON_EVENT_SCHEDULING = True
+"""
+# Durée (en nombre de jours) sur laquelle on souhaite compter le nombre de vues récentes
+"""
+VIDEO_RECENT_VIEWCOUNT = 180
