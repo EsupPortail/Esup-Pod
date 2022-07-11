@@ -58,6 +58,7 @@ RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
 )
 
 VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
+SITE_ID = getattr(settings, "SITE_ID", 1)
 
 LANG_CHOICES = getattr(
     settings,
@@ -340,6 +341,7 @@ class Channel(models.Model):
         Site,
         verbose_name=_("Site"),
         on_delete=models.CASCADE,
+        default=SITE_ID
     )
 
     class Meta:
@@ -607,6 +609,7 @@ class Discipline(models.Model):
         Site,
         verbose_name=_("Site"),
         on_delete=models.CASCADE,
+        default=SITE_ID
     )
 
     def __str__(self):
