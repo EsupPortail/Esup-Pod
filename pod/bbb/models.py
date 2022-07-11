@@ -12,7 +12,7 @@ from django.utils import timezone
 USE_BBB = getattr(settings, "USE_BBB", False)
 
 
-class Meeting(models.Model):
+class BBB_Meeting(models.Model):
     # Meeting id for the BBB session
     meeting_id = models.CharField(
         _("Meeting id"), max_length=200, help_text=_("Id of the BBB meeting.")
@@ -100,7 +100,7 @@ class Meeting(models.Model):
         ordering = ["session_date"]
 
 
-@receiver(post_save, sender=Meeting)
+@receiver(post_save, sender=BBB_Meeting)
 def process_recording(sender, instance, created, **kwargs):
     # Convert the BBB presentation only one time
     # Be careful : this is the condition to create a video of the
@@ -115,7 +115,7 @@ def process_recording(sender, instance, created, **kwargs):
 class Attendee(models.Model):
     # Meeting for which this user was a moderator
     meeting = models.ForeignKey(
-        Meeting, on_delete=models.CASCADE, verbose_name=_("Meeting")
+        BBB_Meeting, on_delete=models.CASCADE, verbose_name=_("Meeting")
     )
     # Full name (First_name Last_name) of the user from BigBlueButton
     full_name = models.CharField(
@@ -168,7 +168,7 @@ class Attendee(models.Model):
 class Livestream(models.Model):
     # Meeting
     meeting = models.ForeignKey(
-        Meeting, on_delete=models.CASCADE, verbose_name=_("Meeting")
+        BBB_Meeting, on_delete=models.CASCADE, verbose_name=_("Meeting")
     )
     # Start date of the live
     start_date = models.DateTimeField(

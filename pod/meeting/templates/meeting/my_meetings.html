@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load thumbnail %}
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My meetings" %}</li>{% endblock %}
+
+{% block page_title %}
+{% trans "My meetings" %}
+{% endblock %}
+
+
+{% block page_content %}
+<table class="table">
+  <tbody>
+    {% for meeting in meetings %}
+    <tr>
+      <th scope="row">{{meeting.name}}</th>
+      <td>{{meeting.start_at}}</td>
+      <td>{{meeting.end_at}}</td>
+      <td><a href="" title="{% trans 'Join the meeting'%}" class="btn pod-btn-social"><i class="bi bi-link" aria-hidden="true"></i>&nbsp;</a></td>
+      <td><a href="" title="{% trans 'Edit the meeting'%}" class="btn pod-btn-social"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+{% block more_script %}
+{% endblock more_script %}
