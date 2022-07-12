@@ -167,3 +167,22 @@ class MeetingDeleteForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(MeetingDeleteForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
+
+
+class MeetingPasswordForm(forms.Form):
+    name = forms.CharField(label=_("Name"))
+    password = forms.CharField(label=_("Password"), widget=forms.PasswordInput())
+
+    def __init__(self, *args, **kwargs):
+        self.current_user = kwargs.pop("current_user", None)
+        self.remove_password = kwargs.pop("remove_password", None)
+        super(MeetingPasswordForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)
+        if self.current_user:
+            self.remove_field("name")
+        if self.remove_password:
+            self.remove_field("password")
+
+    def remove_field(self, field):
+        if self.fields.get(field):
+            del self.fields[field]

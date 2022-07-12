@@ -1,5 +1,8 @@
+
+import hashlib
+
 from django.db import models
-# from django.conf import settings
+from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.models import Site
@@ -10,6 +13,9 @@ from django.template.defaultfilters import slugify
 
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
+
+
+SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 
 
 def two_hours_hence():
@@ -203,6 +209,11 @@ class Meeting(models.Model):
         newid = "%04d" % newid
         self.meeting_id = "%s-%s" % (newid, slugify(self.name))
         super(Meeting, self).save(*args, **kwargs)
+
+    def get_hashkey(self):
+        return hashlib.sha256(
+            ("%s-%s" % (SECRET_KEY, self.attendee_password)).encode("utf-8")
+        ).hexdigest()
 
     class Meta:
         db_table = 'meeting'

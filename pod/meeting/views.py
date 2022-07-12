@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+# from django.http import HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
@@ -11,9 +11,10 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.conf import settings
 
 from .models import Meeting
-from .forms import MeetingForm, MeetingDeleteForm
+from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm
 from pod.main.views import in_maintenance
 
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = False
@@ -143,15 +144,119 @@ def delete(request, meeting_id):
 
 @csrf_protect
 @ensure_csrf_cookie
-def join(request, meeting_id):
+def join(request, meeting_id, direct_access=None):
     try:
         id = int(meeting_id[: meeting_id.find("-")])
     except ValueError:
         raise SuspiciousOperation("Invalid video id")
     meeting = get_object_or_404(Meeting, id=id, site=get_current_site(request))
 
+    if request.user.is_authenticated and (request.user == meeting.owner or request.user in meeting.additional_owners.all()):
+        messages.add_message(request, messages.INFO, _("Join as moderator !"))
+
+    if direct_access and direct_access != meeting.get_hashkey():
+        raise SuspiciousOperation("Invalid access")
+
+    show_page = get_meeting_access(request, meeting)
+
+    form = None
+
+    if show_page and direct_access == meeting.get_hashkey():
+        if request.user.is_authenticated:
+            messages.add_message(
+                request, messages.INFO, _("Join as attendee !")
+            )
+        else:
+            form = MeetingPasswordForm(
+                current_user=request.user,
+                remove_password=direct_access == meeting.get_hashkey()
+            )
+            if request.method == "POST":
+                form = MeetingPasswordForm(
+                    request.POST,
+                    current_user=request.user,
+                    remove_password=direct_access == meeting.get_hashkey()
+                )
+                if form.is_valid() and (form.cleaned_data["password"] == meeting.attendee_password or direct_access == meeting.get_hashkey()):
+                    messages.add_message(
+                        request, messages.INFO, _("Join as attendee !")
+                    )
+                else:
+                    messages.add_message(
+                        request,
+                        messages.ERROR,
+                        _("One or more errors have been found in the form."),
+                    )
+
+    if show_page :
+        form = MeetingPasswordForm(
+            current_user=request.user,
+            remove_password=direct_access == meeting.get_hashkey()
+        )
+        if request.method == "POST":
+            form = MeetingPasswordForm(
+                request.POST,
+                current_user=request.user,
+                remove_password=direct_access == meeting.get_hashkey()
+            )
+            if form.is_valid() and (form.cleaned_data["password"] == meeting.attendee_password or direct_access == meeting.get_hashkey()):
+                messages.add_message(
+                    request, messages.INFO, _("Join as attendee !")
+                )
+            else:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    _("One or more errors have been found in the form."),
+                )
+    elif request.user.is_authenticated:
+        messages.add_message(
+            request, messages.ERROR, _("You cannot access to this meeting.")
+        )
+        raise PermissionDenied
+    else:
+        return redirect(
+            "%s?referrer=%s"
+            % (settings.LOGIN_URL, request.get_full_path())
+        )
+
     return render(
         request,
         "meeting/join.html",
-        {"meeting": meeting, },
+        {"meeting": meeting, "form": form},
     )
+
+
+def is_in_meeting_groups(user, meeting):
+    return user.owner.accessgroup_set.filter(
+        code_name__in=[
+            name[0] for name in meeting.restrict_access_to_groups.values_list("code_name")
+        ]
+    ).exists()
+
+
+def get_meeting_access(request, meeting):
+    """Return True if access is granted to current user."""
+    is_restricted = meeting.is_restricted
+    is_restricted_to_group = meeting.restrict_access_to_groups.all().exists()
+    """
+    is_password_protected = (video.password is not None
+                             and video.password != '')
+    """
+    is_access_protected = (
+        is_restricted
+        or is_restricted_to_group
+    )
+    if is_access_protected:
+        access_granted_for_restricted = (
+            request.user.is_authenticated and not is_restricted_to_group
+        )
+        access_granted_for_group = (
+            (request.user.is_authenticated and is_in_meeting_groups(request.user, meeting))
+        )
+        return (
+            (is_restricted and access_granted_for_restricted)
+            or (is_restricted_to_group and access_granted_for_group)
+        )
+    else:
+        return True
