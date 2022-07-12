@@ -33,13 +33,6 @@ def my_meetings(request):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def add(request):
-    """
-    if request.user not in channel.owners.all() and not (
-        request.user.is_superuser or request.user.has_perm("video.change_channel")
-    ):
-        messages.add_message(request, messages.ERROR, _("You cannot edit this channel."))
-        raise PermissionDenied
-    """
     if RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
         return render(request, "meeting/add.html", {"access_not_allowed": True})
     form = MeetingForm(
