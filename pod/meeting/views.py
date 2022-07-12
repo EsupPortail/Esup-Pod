@@ -19,10 +19,6 @@ from pod.main.views import in_maintenance
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = False
 
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the meeting index.")
-
-
 @login_required(redirect_field_name="referrer")
 def my_meetings(request):
     site = get_current_site(request)
@@ -146,12 +142,14 @@ def delete(request, meeting_id):
 
 
 @csrf_protect
+@ensure_csrf_cookie
 def join(request, meeting_id):
     try:
         id = int(meeting_id[: meeting_id.find("-")])
     except ValueError:
         raise SuspiciousOperation("Invalid video id")
     meeting = get_object_or_404(Meeting, id=id, site=get_current_site(request))
+
     return render(
         request,
         "meeting/join.html",
