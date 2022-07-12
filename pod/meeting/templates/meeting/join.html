@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load thumbnail %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+<li class="breadcrumb-item"><a href="{% url 'meeting:my_meetings' %}">{% trans 'My meetings' %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{meeting.name}}</li>{% endblock %}
+{% block page_title %}
+{{meeting.name}}
+{% endblock %}
+
+
+{% block page_content %}
+
+Join {{meeting.name}}
+
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+{% block more_script %}
+{% endblock more_script %}

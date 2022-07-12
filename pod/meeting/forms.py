@@ -1,0 +1,169 @@
+from django import forms
+from django.contrib.admin import widgets
+from django.conf import settings
+from django.contrib.sites.models import Site
+from django.db.models.query import QuerySet
+from django.utils.translation import ugettext_lazy as _
+from django.core.exceptions import ValidationError
+from django_select2 import forms as s2forms
+from django.forms.utils import to_current_timezone
+
+from pod.main.forms import add_placeholder_and_asterisk
+from .models import Meeting
+
+
+class OwnerWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "username__icontains",
+        "email__icontains",
+    ]
+
+
+class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
+    search_fields = [
+        "username__icontains",
+        "email__icontains",
+    ]
+
+
+class MyAdminSplitDateTime(forms.MultiWidget):
+    """
+    A SplitDateTime Widget that has some admin-specific styling.
+    """
+    template_name = 'admin/widgets/split_datetime.html'
+    date_attrs = None
+    time_attrs = None
+
+    def __init__(self, attrs=None):
+        adw = widgets.AdminDateWidget()
+        atw = widgets.AdminTimeWidget()
+        widg = [adw, atw]
+        self.date_attrs = adw.attrs
+        self.time_attrs = atw.attrs
+        # Note that we're calling MultiWidget, not SplitDateTimeWidget, because
+        # we want to define widgets.
+        forms.MultiWidget.__init__(self, widg, attrs)
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        unique_value = ["size", "id"]
+        for att in self.date_attrs:
+            dattrs = context['widget']['subwidgets'][0]['attrs']
+            val = self.date_attrs.get(att, None)
+            if val and dattrs.get(att) and att not in unique_value:
+                context['widget']['subwidgets'][0]['attrs'][att] += val
+            else:
+                context['widget']['subwidgets'][0]['attrs'][att] = val
+        for att in self.time_attrs:
+            dattrs = context['widget']['subwidgets'][1]['attrs']
+            val = self.time_attrs.get(att, None)
+            if val and dattrs.get(att) and att not in unique_value:
+                context['widget']['subwidgets'][1]['attrs'][att] += val
+            else:
+                context['widget']['subwidgets'][1]['attrs'][att] = val
+        context['date_label'] = _('Date:')
+        context['time_label'] = _('Time:')
+        return context
+
+    def decompress(self, value):
+        if value:
+            value = to_current_timezone(value)
+            return [value.date(), value.time()]
+        return [None, None]
+
+
+class MeetingForm(forms.ModelForm):
+    site = forms.ModelChoiceField(Site.objects.all(), required=False)
+    required_css_class = "required"
+    is_admin = False
+    start_at = forms.SplitDateTimeField(widget=MyAdminSplitDateTime)
+    end_at = forms.SplitDateTimeField(widget=MyAdminSplitDateTime)
+    # user = User.objects.all()
+
+    def filter_fields_admin(form):
+        if form.is_superuser is False and form.is_admin is False:
+            form.remove_field("owner")
+
+        if not hasattr(form, "admin_form"):
+            form.remove_field("site")
+
+    def clean(self):
+        cleaned_data = super(MeetingForm, self).clean()
+
+        if cleaned_data["start_at"] > cleaned_data["end_at"]:
+            raise ValidationError(_('Start date must be less than end date'))
+
+        if "additional_owners" in cleaned_data.keys() and isinstance(
+            self.cleaned_data["additional_owners"], QuerySet
+        ):
+            meetingowner = (
+                self.instance.owner
+                if hasattr(self.instance, "owner")
+                else cleaned_data["owner"]
+                if "owner" in cleaned_data.keys()
+                else self.current_user
+            )
+            if (
+                meetingowner
+                and meetingowner in self.cleaned_data["additional_owners"].all()
+            ):
+                raise ValidationError(
+                    _("Owner of the video cannot be an additional owner too")
+                )
+        if (
+            "restrict_access_to_groups" in cleaned_data.keys()
+            and len(cleaned_data["restrict_access_to_groups"]) > 0
+        ):
+            cleaned_data["is_restricted"] = True
+
+    def __init__(self, *args, **kwargs):
+        self.is_staff = (
+            kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
+        )
+        self.is_superuser = (
+            kwargs.pop("is_superuser")
+            if ("is_superuser" in kwargs.keys())
+            else self.is_superuser
+        )
+        self.current_lang = kwargs.pop("current_lang", settings.LANGUAGE_CODE)
+        self.current_user = kwargs.pop("current_user", None)
+        super(MeetingForm, self).__init__(*args, **kwargs)
+        self.set_queryset()
+        self.filter_fields_admin()
+        # Manage required fields html
+        self.fields = add_placeholder_and_asterisk(self.fields)
+        if self.fields.get("owner"):
+            self.fields["owner"].queryset = self.fields["owner"].queryset.filter(
+                owner__sites=Site.objects.get_current()
+            )
+
+    def remove_field(self, field):
+        if self.fields.get(field):
+            del self.fields[field]
+
+    def set_queryset(self):
+        # if self.current_user is not None:
+        #    users_groups = self.current_user.owner.accessgroup_set.all()
+        self.fields["restrict_access_to_groups"].queryset = self.fields[
+            "restrict_access_to_groups"
+        ].queryset.filter(sites=Site.objects.get_current())
+
+    class Meta(object):
+        model = Meeting
+        fields = "__all__"
+        widgets = {
+            "owner": OwnerWidget,
+            "additional_owners": AddOwnerWidget,
+        }
+
+
+class MeetingDeleteForm(forms.Form):
+    agree = forms.BooleanField(
+        label=_("I agree"),
+        help_text=_("Delete meeting cannot be undo"),
+        widget=forms.CheckboxInput(),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(MeetingDeleteForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)

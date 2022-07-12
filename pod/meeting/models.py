@@ -27,7 +27,8 @@ class Meeting(models.Model):
     )
     meeting_id = models.SlugField(
         max_length=200,
-        verbose_name=_('Meeting ID')
+        verbose_name=_('Meeting ID'),
+        editable=False,
     )
     owner = models.ForeignKey(
         User,
@@ -49,7 +50,8 @@ class Meeting(models.Model):
     )
     moderator_password = models.CharField(
         max_length=50,
-        verbose_name=_('Moderator Password')
+        verbose_name=_('Moderator Password'),
+        editable=False
     )
     start_at = models.DateTimeField(_("Start date"), default=timezone.now)
     end_at = models.DateTimeField(_("End date"), default=two_hours_hence())
@@ -70,12 +72,13 @@ class Meeting(models.Model):
     is_running = models.BooleanField(
         default=False,
         verbose_name=_('Is running'),
-        help_text=_('Indicates whether this meeting is running in BigBlueButton or not!')
+        help_text=_('Indicates whether this meeting is running in BigBlueButton or not!'),
+        editable=False
     )
     site = models.ForeignKey(
         Site,
         verbose_name=_("Site"),
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE
     )
 
     # Configs
@@ -219,3 +222,5 @@ class Meeting(models.Model):
 def default_site_meeting(sender, instance, **kwargs):
     if not hasattr(instance, 'site'):
         instance.site = Site.objects.get_current()
+    if instance.start_at > instance.end_at:
+        raise ValueError(_('Start date must be less than end date'))
