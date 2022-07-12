@@ -97,6 +97,8 @@ COOKIE_LEARN_MORE = getattr(django_settings, "COOKIE_LEARN_MORE", "")
 
 USE_OPENCAST_STUDIO = getattr(django_settings, "USE_OPENCAST_STUDIO", False)
 
+USE_MEETING = getattr(django_settings, "USE_MEETING", False)
+
 
 def context_settings(request):
     """Return all context settings."""
@@ -157,6 +159,7 @@ def context_settings(request):
     new_settings["DYSLEXIAMODE_ENABLED"] = DYSLEXIAMODE_ENABLED
     new_settings["USE_OPENCAST_STUDIO"] = USE_OPENCAST_STUDIO
     new_settings["COOKIE_LEARN_MORE"] = COOKIE_LEARN_MORE
+    new_settings["USE_MEETING"] = USE_MEETING
 
     return new_settings
 
