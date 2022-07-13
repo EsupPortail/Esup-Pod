@@ -6,8 +6,8 @@ var urlVideosStr = urlVideos.toString().replaceAll("/","");
 var filterSortForms = $(".filterSortForms");
 var loader = $("#loader_wrapper");
 
+// Return Waypoint Infinite object to init/refresh the infinite scroll and pagination gesture
 function getInfiniteScrollWaypoint() {
-  // Return Waypoint Infinite object to init/refresh the infinite scroll and pagination
   return new Waypoint.Infinite({
     element: $("#videos_list")[0],
     onBeforePageLoad: function () {
@@ -34,9 +34,32 @@ function getInfiniteScrollWaypoint() {
   });
 }
 
+// Prepare front for refresh videos list
+function refreshVideosSearch(){
+  categoryChecked = null;
+  // Start treatment -> show loader and Loading text
+  $(".infinite-loading").show();
+  loader.addClass("show");
+  // Disable checkboxes during refresh
+  $(".form-check-input input[type=checkbox]").attr("disabled", "true");
+  // Ajax call to get filtered videos
+  callAsyncListVideos().done(function () {
+    localStorage.setItem(urlVideosStr+"LocalStorage",filterSortForms.serialize());
+    replaceCountVideos(countVideos);
+    infinite_waypoint = getInfiniteScrollWaypoint();
+    $(".form-check-input input[type=checkbox]").removeAttr("disabled");
+    $(".infinite-loading").hide();
+    loader.removeClass("show");
+    // reload feather icons generation
+    feather.replace();
+  });
+}
+
+// Ajax request to refresh view with filtered video list
 function callAsyncListVideos() {
-  // Ajax request to refresh view with filtered video list
-  if(urlVideos !== 'videos' && USE_CATEGORY && categoryChecked != null){
+  // if category is checked add param to url
+  if(urlVideos !== 'videos' && USE_CATEGORY && $(".categories_list_item.active").length){
+    categoryChecked = document.querySelector(".categories_list_item.active").firstChild["dataset"]["slug"].split("-")[1];
     urlVideos+="?category="+categoryChecked;
   }
   return $.get({
@@ -64,48 +87,64 @@ function callAsyncListVideos() {
   });
 }
 
-function refreshVideosSearch(){
-  categoryChecked = null;
-  // Start treatment -> show loader and Loading text
-  $(".infinite-loading").show();
-  loader.addClass("show");
-  // Disable checkboxes during refresh
-  $(".form-check-input input[type=checkbox]").attr("disabled", "true");
-  // if USE_CATEGORY active filter with categories
-  if(urlVideos !== 'videos' && USE_CATEGORY && $(".categories_list_item.active")[0]){
-    categoryChecked = $(".categories_list_item.active")[0].firstChild["dataset"]["slug"].split("-")[1];
-  }
-  // Ajax async call to get filtered videos
-  callAsyncListVideos().done(function () {
-    localStorage.setItem(urlVideosStr+"LocalStorage",filterSortForms.serialize());
-    replaceCountVideos(countVideos);
-    infinite_waypoint = getInfiniteScrollWaypoint();
-    $(".form-check-input input[type=checkbox]").removeAttr("disabled");
-    $(".infinite-loading").hide();
-    loader.removeClass("show");
-    feather.replace();
-  });
-}
-
+// Replace count videos label (h1) with translation and plural
 function replaceCountVideos(newCount) {
-  // Replace count videos label (h1) with translation and plural
   var transVideoCount = newCount > 1 ? "videos found" : "video found";
-  $("#video_count")[0].innerHTML = newCount + " " + gettext(transVideoCount);
+  document.getElementById("video_count").innerHTML = newCount + " " + gettext(transVideoCount);
 }
 
+// Add click listener for filters reset
+$("#resetFilters").click(function() {
+  $(".form-check-input:checkbox:checked:not(#sort_direction)").each(function(){
+    this.checked = false;
+  });
+  document.querySelectorAll("#filters .categories_list_item").forEach((c_p) => {
+    c_p.classList.remove("active");
+  });
+  categoryChecked = null;
+  refreshVideosSearch();
+});
+
+// Add change listener on filter and sort inputs to launch refresh
+$(".form-check-input, .sort-select").change(function(e) {
+  e.preventDefault();
+  refreshVideosSearch();
+});
+
+// Add click listener on ascending/descending sort button to launch refresh
+$("#sort_direction_label").click(function(e) {
+  e.preventDefault();
+  toggleSortDirection();
+  refreshVideosSearch();
+});
+
+// Toggle direction of sort and refresh videos list
+function toggleSortDirection(){
+  sortDirectionAsc = !sortDirectionAsc;
+  $("#sort_direction").prop("checked", !$("#sort_direction").prop("checked"));
+  updateSortDirectionChar();
+}
+
+// Update arrow char of ascending or descending sort order
+function updateSortDirectionChar(){
+  $("#sort_direction_label").html("&#"+(sortDirectionChars[+ sortDirectionAsc]).toString());
+}
+
+// Manage Local Storage for filters
 function manageLocalStorage(){
-    // Manage Local Storage for filters
     let urlBase = window.location.href.split(window.location.origin)[1];
     let filterLocalStorage = localStorage.getItem(urlVideosStr+"LocalStorage");
+    // Apply local storage only if url is base (without parameters)
     if(urlBase == urlVideos && filterLocalStorage !== null){
         let paramsLocalStorage = filterLocalStorage.split('&');
+        // Get all parameters by key/value pairs
         for (let i = 0; i < paramsLocalStorage.length; i++) {
            let param = paramsLocalStorage[i].split('=');
            if(param[0] == "sort"){
                 $("#sort").val(param[1]);
            }else if(param[0] == "sort_direction"){
                sortDirectionAsc = true;
-               refreshSortDirectionChar();
+               updateSortDirectionChar();
            }else if(param[0] == "cursus"){
                document.getElementById("cursus-"+param[1]).checked = true;
            }else{
@@ -118,40 +157,6 @@ function manageLocalStorage(){
         }
     }
 }
-
-// Reset filters on click btn
-$("#resetFilters").click(function() {
-  $(".form-check-input:checkbox:checked:not(#sort_direction)").each(function(){
-    this.checked = false;
-  });
-  categoryChecked = null;
-  document.querySelectorAll("#filters .categories_list_item")
-    .forEach((c_p) => {c_p.classList.remove("active");});
-  refreshVideosSearch();
-});
-
-// Add change trigger on filter inputs and column sort select
-$(".form-check-input, .sort-select").change(function(e) {
-  e.preventDefault();
-  refreshVideosSearch();
-});
-
-function toggleSortDirection(){
-  sortDirectionAsc = !sortDirectionAsc;
-  $("#sort_direction").prop("checked", !$("#sort_direction").prop("checked"));
-  refreshSortDirectionChar();
-}
-
-function refreshSortDirectionChar(){
-    $("#sort_direction_label").html("&#"+(sortDirectionChars[+ sortDirectionAsc]).toString());
-}
-
-// Add click trigger on ascending / descending sort button
-$("#sort_direction_label").click(function(e) {
-  e.preventDefault();
-  toggleSortDirection();
-  refreshVideosSearch();
-});
 
 // First launch of the infinite scroll
 infinite_waypoint = getInfiniteScrollWaypoint();

@@ -606,7 +606,7 @@ $("#ownerbox").keyup(function () {
               username +
               "</label></div>";
             $("#collapseFilterOwner").append(chekboxhtml);
-            $("#id"+elt.username)[0].addEventListener('change', function() {
+            $(document).on("change", "#id"+elt.username, function (e) {
                 refreshVideosSearch();
             });
           }

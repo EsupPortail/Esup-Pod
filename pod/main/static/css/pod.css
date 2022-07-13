@@ -1079,7 +1079,7 @@ input.select2-input {
     cursor: pointer;
     line-height: 1.8;
     border-right: 1px solid #eee8e8;
-    color: var(--gray-dark)
+    color: var(--secondary)
 }
 #filters .categories_list_item .category_actions{
     display: -webkit-box;
