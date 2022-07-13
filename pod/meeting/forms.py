@@ -1,3 +1,6 @@
+import random
+import string
+
 from django import forms
 from django.contrib.admin import widgets
 from django.conf import settings
@@ -7,9 +10,16 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django_select2 import forms as s2forms
 from django.forms.utils import to_current_timezone
+from django.utils import timezone
 
 from pod.main.forms import add_placeholder_and_asterisk
-from .models import Meeting
+from .models import Meeting, two_hours_hence
+
+def get_random_string(length):
+    # choose from all lowercase letter
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str
 
 
 class OwnerWidget(s2forms.ModelSelect2Widget):
@@ -76,8 +86,8 @@ class MeetingForm(forms.ModelForm):
     site = forms.ModelChoiceField(Site.objects.all(), required=False)
     required_css_class = "required"
     is_admin = False
-    start_at = forms.SplitDateTimeField(widget=MyAdminSplitDateTime)
-    end_at = forms.SplitDateTimeField(widget=MyAdminSplitDateTime)
+    start_at = forms.SplitDateTimeField(label=_("Start date"), initial=timezone.now, widget=MyAdminSplitDateTime)
+    end_at = forms.SplitDateTimeField(label=_("End date"), initial=two_hours_hence(), widget=MyAdminSplitDateTime)
     # user = User.objects.all()
 
     def filter_fields_admin(form):
@@ -136,6 +146,9 @@ class MeetingForm(forms.ModelForm):
             self.fields["owner"].queryset = self.fields["owner"].queryset.filter(
                 owner__sites=Site.objects.get_current()
             )
+        # self.fields.get("attendee_password"):
+        if not self.initial.get("attendee_password"):
+            self.initial["attendee_password"] = get_random_string(8)            
 
     def remove_field(self, field):
         if self.fields.get(field):
