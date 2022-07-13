@@ -247,11 +247,10 @@
         loader.addClass("show");
       } else {
         jsonData = fetchCategoryData(cat_filter_slug);
-        /*jsonData.then((data) => {
+        jsonData.then((data) => {
             saveCategoryData(data);
-            loader.classList.remove("show");
-        });*/
-        loader.removeClass("show");
+            loader.removeClass("show");
+        });
       }
       refreshVideosSearch();
     });
@@ -327,18 +326,13 @@
 
   // Make requets => get category data
   let fetchCategoryData = async (cat_slug) => {
-  categoryChecked = cat_slug;
-    /*try {
-      console.log(cat_slug);
-      categoryCheckedId = $(".categories_list_item.active")[0].firstChild["dataset"]["slug"].split("-")[0];
-      console.log(categoryCheckedId);
-      let resp = await fetch(`${BASE_URL}?category=categoryCheckedId/`, { headers: HEADERS });
+    try {
+      let resp = await fetch(`${BASE_URL}${cat_slug}/`, { headers: HEADERS });
       return await resp.json();
     } catch (e) {
       loader.classList.remove("show");
       showAlertMessage(msg_error, false, (delay = 30000));
-    }*/
-    loader.removeClass("show");
+    }
   };
 
   // Make post request. for edit or add category, postData(object)
@@ -785,6 +779,7 @@
       postCategoryData(`${BASE_URL}edit/${CURR_CATEGORY.slug}/`, postData)
         .then((data) => {
           // Update new data, client side
+          updateFilteredVideosContainer(data);
           deleteFromSavedData(CURR_CATEGORY.slug);
           saveCategoryData(data);
           DOMCurrentEditCat.querySelector(".cat_title").textContent =

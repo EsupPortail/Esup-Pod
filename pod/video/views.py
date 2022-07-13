@@ -489,7 +489,7 @@ def my_videos(request):
         """
         if request.GET.get("category") is not None:
             category_checked = request.GET.get("category")
-            videos_list = Category.objects.get(title=category_checked).video.all()
+            videos_list = get_object_or_404(Category, title=category_checked).video.all()
 
         videos_without_cat = videos_list.exclude(category__in=cats)
         cats = list(
@@ -2341,7 +2341,6 @@ def get_categories(request, c_slug=None):
 
     # GET method
     if c_slug:  # get category with slug
-
         cat = get_object_or_404(Category, slug=c_slug)
         response["success"] = True
         response["id"] = cat.id
@@ -2369,7 +2368,6 @@ def get_categories(request, c_slug=None):
                 # delete if user is no longer owner
                 # or additional owner of the video
                 cat.video.remove(v)
-
         return HttpResponse(
             json.dumps(response, cls=DjangoJSONEncoder),
             content_type="application/json",

@@ -36,7 +36,7 @@ function getInfiniteScrollWaypoint() {
 
 function callAsyncListVideos() {
   // Ajax request to refresh view with filtered video list
-  if(categoryChecked != null){
+  if(urlVideos !== 'videos' && USE_CATEGORY && categoryChecked != null){
     urlVideos+="?category="+categoryChecked;
   }
   return $.get({
@@ -44,7 +44,6 @@ function callAsyncListVideos() {
     data: filterSortForms.serialize(),
     processData: false,
     dataType: "html",
-    cache: false,
     headers: {
       "X-Requested-With": "XMLHttpRequest",
       "X-CSRFToken": Cookies.get("csrftoken"),
@@ -57,6 +56,7 @@ function callAsyncListVideos() {
       $(".infinite-more-link").remove();
       $("#video_list_content").html(html);
       urlVideos = urlVideos.split("?")[0];
+      window.history.pushState({},"Title",window.location.origin+fullPath);
     },
     error: function (result, status, error) {
       $("#videos_list").html(gettext("An Error occurred while processing "));
@@ -95,19 +95,25 @@ function replaceCountVideos(newCount) {
 
 function manageLocalStorage(){
     // Manage Local Storage for filters
+    let urlBase = window.location.href.split(window.location.origin)[1];
     let filterLocalStorage = localStorage.getItem(urlVideosStr+"LocalStorage");
-    if(filterLocalStorage !== null){
+    if(urlBase == urlVideos && filterLocalStorage !== null){
         let paramsLocalStorage = filterLocalStorage.split('&');
         for (let i = 0; i < paramsLocalStorage.length; i++) {
            let param = paramsLocalStorage[i].split('=');
            if(param[0] == "sort"){
                 $("#sort").val(param[1]);
+           }else if(param[0] == "sort_direction"){
+               sortDirectionAsc = true;
+               refreshSortDirectionChar();
            }else if(param[0] == "cursus"){
                document.getElementById("cursus-"+param[1]).checked = true;
            }else{
                let idSelector = "id"+param[1]+"_"+param[0];
                // Manually check the checkbox found with id
-               document.getElementById(idSelector).checked = true;
+               if(document.getElementById(idSelector)!== null){
+                    document.getElementById(idSelector).checked = true;
+               }
            }
         }
     }
@@ -115,9 +121,12 @@ function manageLocalStorage(){
 
 // Reset filters on click btn
 $("#resetFilters").click(function() {
-  $(".form-check-input:checkbox:checked").each(function(){
+  $(".form-check-input:checkbox:checked:not(#sort_direction)").each(function(){
     this.checked = false;
   });
+  categoryChecked = null;
+  document.querySelectorAll("#filters .categories_list_item")
+    .forEach((c_p) => {c_p.classList.remove("active");});
   refreshVideosSearch();
 });
 
