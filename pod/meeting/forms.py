@@ -15,6 +15,20 @@ from django.utils import timezone
 from pod.main.forms import add_placeholder_and_asterisk
 from .models import Meeting, two_hours_hence
 
+MEETING_MAIN_FIELDS = getattr(
+    settings,
+    "MEETING_MAIN_FIELDS",
+    ("name", "owner", "additional_owners", "attendee_password", "start_at", "end_at", "is_restricted", "restrict_access_to_groups")
+)
+
+MEETING_EXCLUDE_FIELDS = MEETING_MAIN_FIELDS + ("id",)
+    
+for field in Meeting._meta.fields:
+    print(field.name, field.editable)
+    if field.editable == False :
+        MEETING_EXCLUDE_FIELDS = MEETING_EXCLUDE_FIELDS + (field.name, )
+
+
 def get_random_string(length):
     # choose from all lowercase letter
     letters = string.ascii_lowercase
@@ -86,6 +100,7 @@ class MeetingForm(forms.ModelForm):
     site = forms.ModelChoiceField(Site.objects.all(), required=False)
     required_css_class = "required"
     is_admin = False
+    is_superuser = False
     start_at = forms.SplitDateTimeField(label=_("Start date"), initial=timezone.now, widget=MyAdminSplitDateTime)
     end_at = forms.SplitDateTimeField(label=_("End date"), initial=two_hours_hence(), widget=MyAdminSplitDateTime)
     # user = User.objects.all()
@@ -127,9 +142,11 @@ class MeetingForm(forms.ModelForm):
             cleaned_data["is_restricted"] = True
 
     def __init__(self, *args, **kwargs):
+        
         self.is_staff = (
             kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
         )
+        
         self.is_superuser = (
             kwargs.pop("is_superuser")
             if ("is_superuser" in kwargs.keys())
