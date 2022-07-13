@@ -523,12 +523,7 @@ def my_videos(request):
         )
 
     paginator = Paginator(videos_list, 12)
-    try:
-        videos = paginator.page(page)
-    except PageNotAnInteger:
-        videos = paginator.page(1)
-    except EmptyPage:
-        videos = paginator.page(paginator.num_pages)
+    videos = get_paginated_videos(paginator, page)
 
     videos_next_page_number = videos.next_page_number() if videos.has_next() else None
     owners_instances = get_owners_has_instances(request.GET.getlist("owner"))
@@ -562,6 +557,15 @@ def my_videos(request):
 
 def get_videos_list():
     return VIDEOS
+
+
+def get_paginated_videos(paginator, page):
+    try:
+        return paginator.page(page)
+    except PageNotAnInteger:
+        return paginator.page(1)
+    except EmptyPage:
+        return paginator.page(paginator.num_pages)
 
 
 def get_filtered_videos_list(request, videos_list):
@@ -631,12 +635,7 @@ def videos(request):
         )
 
     paginator = Paginator(videos_list, 12)
-    try:
-        videos = paginator.page(page)
-    except PageNotAnInteger:
-        videos = paginator.page(1)
-    except EmptyPage:
-        videos = paginator.page(paginator.num_pages)
+    videos = get_paginated_videos(paginator, page)
 
     videos_next_page_number = videos.next_page_number() if videos.has_next() else None
     owners_instances = get_owners_has_instances(request.GET.getlist("owner"))
