@@ -69,7 +69,7 @@ def create_meeting(request):
         messages.ERROR,
         ("One or more errors have been found in the form."),
       )
-  context={"form": form}
+  context={"form": form, 'meetings':Meetings.objects.all()}
 
   return render(request, "meeting_add.html", context)
 
@@ -84,8 +84,11 @@ def delete_meeting(request, meetingID):
         messages.add_message(request, messages.ERROR, ("You cannot delete this meeting."))
         raise PermissionDenied
 
-    if request.method == "POST": # verifier que le user connecté est bien le prop de la reunion !
+    if request.method == "POST": 
       meeting.delete()
+      messages.add_message(
+        request, messages.INFO, ("The meeting has been deleted.")
+      )
       return redirect(reverse("meetings:meeting"))
 
     context={'item':meeting}
@@ -284,6 +287,6 @@ def edit_meeting(request, meetingID):
         ("One or more errors have been found in the form."),
       )
 
-  context={"form": form}
+  context={"form": form, 'meetings':Meetings.objects.all()}
 
   return render(request, "meeting_edit.html", context)

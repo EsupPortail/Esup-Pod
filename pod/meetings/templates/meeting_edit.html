@@ -21,9 +21,10 @@
 
 <h1>{% trans "Changing Meeting Room Settings" %}</h1>
 
-<form method="POST" class="post-form" action="">
+<form method="POST" class="post-form">
   {% csrf_token %}
   {{ form.as_p }}
+  {% for meeting in meetings %}
   <div class="accordion" id="accordionExample">
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingTwo">
@@ -33,45 +34,46 @@
       </h2>
       <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
         <div class="accordion-body">
-          <label class="form-check-label" for="settings">{% trans "Auto Save" %} :</label>
-          <input class="form-check-input" type="checkbox" name="enregistrement auto" id="settings">
+          <label class="form-check-label">{% trans "Auto Save" %} :</label>
+          <input class="form-check-input" type="checkbox" name="enregistrement auto" value="{{meeting.auto_start_recording}}">
           <br></br>
           
-          <label class="form-check-label" for="settings">{% trans "Start/Stop button for recording the meeting" %} :</label>
-          <input class="form-check-input" type="checkbox" name="bouton start/stop pour l'enregistrement de la réunion" id="settings">
+          <label class="form-check-label">{% trans "Start/Stop button for recording the meeting" %} :</label>
+          <input class="form-check-input" type="checkbox" name="bouton start/stop pour l'enregistrement de la réunion" value="{{meeting.allow_start_stop_recording}}">
           <br></br>
           
-          <label class="form-check-label" for="settings">{% trans "Disable the camera" %} :</label>
-          <input class="form-check-input" type="checkbox" name="désactiver la caméra" id="settings">
+          <label class="form-check-label">{% trans "Disable the camera" %} :</label>
+          <input class="form-check-input" type="checkbox" name="désactiver la caméra" value="{{meeting.lock_settings_disable_cam}}">
           <br></br>
           
-          <label class="form-check-label" for="settings">{% trans "Disable the mic" %} :</label>
-          <input class="form-check-input" type="checkbox" name="désactiver le micro" id="settings">
+          <label class="form-check-label">{% trans "Disable the mic" %} :</label>
+          <input class="form-check-input" type="checkbox" name="désactiver le micro" value="{{meeting.lock_settings_disable_mic}}">
           <br></br>
           
-          <label class="form-check-label" for="settings">{% trans "Disable Private Chat" %} :</label>
-          <input class="form-check-input" type="checkbox" name="désactiver le chat privé" id="settings">
+          <label class="form-check-label">{% trans "Disable Private Chat" %} :</label>
+          <input class="form-check-input" type="checkbox" name="désactiver le chat privé" value="{{meeting.lock_settings_disable_private_chat}}">
           <br></br>
           
-          <label class="form-check-label" for="settings">{% trans "Disable Public Chat" %} :</label>
-          <input class="form-check-input" type="checkbox" name="désactiver le chat publique" id="settings">
+          <label class="form-check-label">{% trans "Disable Public Chat" %} :</label>
+          <input class="form-check-input" type="checkbox" name="désactiver le chat publique" value="{{meeting.lock_settings_disable_public_chat}}">
           <br></br>
           
-          <label class="form-check-label" for="settings">{% trans "Disable Notes" %} :</label>
-          <input class="form-check-input" type="checkbox" name="désactiver les notes" id="settings">
+          <label class="form-check-label">{% trans "Disable Notes" %} :</label>
+          <input class="form-check-input" type="checkbox" name="désactiver les notes" value="{{meeting.lock_settings_disable_note}}">
           <br></br>
           
-          <label class="form-check-label" for="settings">{% trans "Blocking meeting layout" %} :</label>
-          <input class="form-check-input" type="checkbox" name="blocage disposition réunion" id="settings">
+          <label class="form-check-label">{% trans "Blocking meeting layout" %} :</label>
+          <input class="form-check-input" type="checkbox" name="blocage disposition réunion" value="{{meeting.lock_settings_locked_layout}}">
           <br></br>
   
-          <label class="form-check-label" for="settings">{% trans "Using a password" %} :</label>
-          <input class="form-check-input" type="checkbox" name="Utilisation d'un mot de passe" id="settings">
+          <label class="form-check-label">{% trans "Using a password" %} :</label>
+          <input class="form-check-input" type="checkbox" name="Utilisation d'un mot de passe" value="{{meeting.ask_password}}">
           <br></br>
         </div>
       </div>
     </div>
   </div>
+  {% endfor %}
   <br></br>
   <a id="button" class="btn btn-secondary" href="{% url 'meetings:meeting' %}">{% trans "Cancel" %}</a>
   <button type="submit" class="btn btn-info">{% trans "Record" %}</button>
