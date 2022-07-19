@@ -434,6 +434,7 @@ def transcript_video(video_id):
 
 
 def get_video_info(command):
+    """Get ffprobe video info."""
     ffproberesult = subprocess.run(
         command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
     )
@@ -1104,6 +1105,7 @@ def create_and_save_thumbnails(source, image_width, video_id):
         }
         if check_file(thumbnailfilename):
             if FILEPICKER:
+                # FILEPICKER == True when USE_PODFILE == False
                 video_to_encode = Video.objects.get(id=video_id)
                 homedir, created = UserFolder.objects.get_or_create(
                     name="home", owner=video_to_encode.owner
@@ -1223,6 +1225,7 @@ def remove_previous_encoding_playlist(video_to_encode):
 
 
 def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
+    """Encode video from studio."""
     presenter_source = None
     presentation_source = None
     input_video = ""
@@ -1340,7 +1343,6 @@ def get_height(info):
 
 def launch_encode_video_studio(input_video, subcmd, video_output):
     """Encode video for studio."""
-
     msg = ""
     ffmpegStudioCommand = "%s %s %s %s %s" % (
         FFMPEG,
