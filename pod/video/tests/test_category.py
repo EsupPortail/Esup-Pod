@@ -112,7 +112,6 @@ class TestCategory(TestCase):
                             "is_restricted": self.video.is_restricted,
                             "has_chapter": self.video.chapter_set.all().count() > 0,
                             "has_password": bool(self.video.password),
-                            "date_added": self.video.date_added,
                         }
                     ],
                 },
