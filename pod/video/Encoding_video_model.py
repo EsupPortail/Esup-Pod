@@ -78,6 +78,3 @@ class Encoding_video_model(Encoding_video):
         # with open(output_dir + "/info_video.json") as json_file:
         #     info_video = json.load(json_file)
 
-    def testmoi(self):
-        print("kkkk")
-
