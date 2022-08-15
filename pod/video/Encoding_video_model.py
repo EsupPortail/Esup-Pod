@@ -70,3 +70,14 @@ class Encoding_video_model(Encoding_video):
         else:
             msg += "Playlist: Nothing to delete"
         return msg
+
+    def store_json_info(self, video_to_encode):
+        video_to_encode = Video.objects.get(id=video_id)
+        print(video_to_encode.video.path)
+
+        # with open(output_dir + "/info_video.json") as json_file:
+        #     info_video = json.load(json_file)
+
+    def testmoi(self):
+        print("kkkk")
+

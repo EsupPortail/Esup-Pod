@@ -40,7 +40,12 @@ def encode_video(video_id):
     # create video dir
     change_encoding_step(video_id, 3, "create output dir")
     encoding_video.create_output_dir()
+
+    encoding_video.start_encode()
+    
     # encode HLS
     # encode MP4
     # encode MP3
     # encode M4A
+
+

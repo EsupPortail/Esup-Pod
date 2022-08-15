@@ -5,6 +5,7 @@ import argparse
 import time
 import unicodedata
 from webvtt import WebVTT, Caption
+
 if __name__ == "__main__":
     from encoding_utils import (
         get_info_from_video,
@@ -549,19 +550,3 @@ def fix_input(input):
         print("Encoding file {} \n".format(filename))
     return filename
 
-
-"""
-  remote encode ???
-"""
-if __name__ == "__main__":
-    start = "Start at: %s" % time.ctime()
-    parser = argparse.ArgumentParser(description="Running encoding video.")
-    parser.add_argument("--id", required=True, help="the ID of the video")
-    parser.add_argument(
-        "--input", required=True, help="name of input file to encode"
-    )
-    args = parser.parse_args()
-    filename = fix_input(args.input)
-    encoding_video = Encoding_video(args.id, filename)
-    encoding_video.encoding_log += start
-    encoding_video.start_encode()
