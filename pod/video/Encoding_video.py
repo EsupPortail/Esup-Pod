@@ -194,9 +194,12 @@ class Encoding_video:
                 "language": language
             }
 
-    def create_output_dir(self):
+    def get_output_dir(self):
         dirname = os.path.dirname(self.video_file)
-        output_dir = os.path.join(dirname, "%04d" % int(self.id))
+        return os.path.join(dirname, "%04d" % int(self.id))
+        
+    def create_output_dir(self):
+        output_dir = self.get_output_dir()
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         self.output_dir = output_dir

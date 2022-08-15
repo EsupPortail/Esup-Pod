@@ -6,6 +6,7 @@ from .models import PlaylistVideo
 from .models import Video
 
 from .Encoding_video import Encoding_video, FFMPEG_MP4_ENCODE
+import json
 
 FFMPEG_MP4_ENCODE = getattr(settings, "FFMPEG_MP4_ENCODE", FFMPEG_MP4_ENCODE)
 
@@ -71,10 +72,20 @@ class Encoding_video_model(Encoding_video):
             msg += "Playlist: Nothing to delete"
         return msg
 
-    def store_json_info(self, video_to_encode):
-        video_to_encode = Video.objects.get(id=video_id)
-        print(video_to_encode.video.path)
+    def store_json_info(self):
+        print(self.get_output_dir())
+        video_to_encode = Video.objects.get(id=self.id)
 
-        # with open(output_dir + "/info_video.json") as json_file:
-        #     info_video = json.load(json_file)
+        with open(self.get_output_dir() + "/info_video.json") as json_file:
+            info_video = json.load(json_file)
+            video_to_encode.duration = info_video["duration"]
+            video_to_encode.save()
+            print(video_to_encode.duration)
+            
+
+    def encode_video(self):
+        self.start_encode()
+
+
+
 
