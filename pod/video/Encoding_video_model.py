@@ -125,11 +125,13 @@ class Encoding_video_model(Encoding_video):
             
             log_to_text = ""
             logs = info_video['encoding_log']
+            log_to_text = log_to_text + "Start : " + info_video['start']
             for log in logs:
                 log_to_text = log_to_text + "["+log + "]\n\n"
                 logdetails = logs[log]
                 for logcate in logdetails:
                     log_to_text = log_to_text +"- "+ logcate + " : \n" + str(logdetails[logcate]) + "\n"
+            log_to_text = log_to_text + "End : " + info_video['stop']
         
             encoding_log, created = EncodingLog.objects.get_or_create(
                 video=video_to_encode,
