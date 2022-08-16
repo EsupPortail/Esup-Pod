@@ -108,17 +108,19 @@ class Encoding_video_model(Encoding_video):
                     source_file = os.path.join(settings.MEDIA_ROOT, mp3_files[audio_file])
                 )
 
-            mp4_files = info_video["list_mp4_files"]
-            for video_file in mp4_files:
-                rendition = VideoRendition.objects.get(resolution__contains="x" + video_file)
-                encod_name = self.get_encoding_choice_from_filename(mp4_files[video_file])
-                encoding, created = EncodingVideo.objects.get_or_create(
-                    name= encod_name,
-                    video=video_to_encode,
-                    rendition=rendition,
-                    encoding_format="video/mp4",
-                    source_file =  os.path.join(settings.MEDIA_ROOT, mp4_files[video_file])
-                )
+            for list_video in ['list_hls_files', "list_mp4_files"]:
+                mp4_files = info_video[list_video]
+                for video_file in mp4_files:
+                    print(video_file)
+                    rendition = VideoRendition.objects.get(resolution__contains="x" + video_file)
+                    encod_name = self.get_encoding_choice_from_filename(mp4_files[video_file])
+                    encoding, created = EncodingVideo.objects.get_or_create(
+                        name= encod_name,
+                        video=video_to_encode,
+                        rendition=rendition,
+                        encoding_format="video/mp4",
+                        source_file =  os.path.join(settings.MEDIA_ROOT, mp4_files[video_file])
+                    )
             
    
             
