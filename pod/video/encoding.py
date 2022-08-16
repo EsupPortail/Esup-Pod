@@ -42,7 +42,8 @@ def encode_video(video_id):
     encoding_video.create_output_dir()
 
     encoding_video.start_encode()
-    
+
+
     # encode HLS
     # encode MP4
     # encode MP3

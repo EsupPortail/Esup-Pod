@@ -2,6 +2,7 @@ import os
 from django.conf import settings
 from .models import EncodingVideo
 from .models import EncodingAudio
+from .models import VideoRendition
 from .models import PlaylistVideo
 from .models import Video
 
@@ -9,7 +10,18 @@ from .Encoding_video import Encoding_video, FFMPEG_MP4_ENCODE
 import json
 
 FFMPEG_MP4_ENCODE = getattr(settings, "FFMPEG_MP4_ENCODE", FFMPEG_MP4_ENCODE)
-
+ENCODING_CHOICES = getattr(
+    settings,
+    "ENCODING_CHOICES",
+    (
+        ("audio", "audio"),
+        ("360p", "360p"),
+        ("480p", "480p"),
+        ("720p", "720p"),
+        ("1080p", "1080p"),
+        ("playlist", "playlist"),
+    ),
+)
 
 class Encoding_video_model(Encoding_video):
 
@@ -72,15 +84,43 @@ class Encoding_video_model(Encoding_video):
             msg += "Playlist: Nothing to delete"
         return msg
 
+    def get_encoding_choice_from_filename(self, filename):
+        choices = {}
+        for choice in ENCODING_CHOICES:
+            choices[choice[0][:3]] = choice[0]
+        return choices.get(filename[:3], "360p")
+
     def store_json_info(self):
-        print(self.get_output_dir())
         video_to_encode = Video.objects.get(id=self.id)
 
         with open(self.get_output_dir() + "/info_video.json") as json_file:
             info_video = json.load(json_file)
             video_to_encode.duration = info_video["duration"]
             video_to_encode.save()
-            print(video_to_encode.duration)
+
+            mp3_files = info_video["list_mp3_files"]
+            for audio_file in mp3_files:
+                encoding, created = EncodingAudio.objects.get_or_create(
+                    name="audio",
+                    video=video_to_encode,
+                    encoding_format="audio/mp3",
+                    # need to double check path
+                    source_file = os.path.join(settings.MEDIA_ROOT, mp3_files[audio_file])
+                )
+
+            mp4_files = info_video["list_mp4_files"]
+            for video_file in mp4_files:
+                rendition = VideoRendition.objects.get(resolution__contains="x" + video_file)
+                encod_name = self.get_encoding_choice_from_filename(mp4_files[video_file])
+                encoding, created = EncodingVideo.objects.get_or_create(
+                    name= encod_name,
+                    video=video_to_encode,
+                    rendition=rendition,
+                    encoding_format="video/mp4",
+                    source_file =  os.path.join(settings.MEDIA_ROOT, mp4_files[video_file])
+                )
+            
+   
             
 
     def encode_video(self):
