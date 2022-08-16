@@ -4,6 +4,7 @@ from .models import EncodingVideo
 from .models import EncodingAudio
 from .models import VideoRendition
 from .models import PlaylistVideo
+from .models import EncodingLog
 from .models import Video
 
 from .Encoding_video import Encoding_video, FFMPEG_MP4_ENCODE
@@ -111,7 +112,6 @@ class Encoding_video_model(Encoding_video):
             for list_video in ['list_hls_files', "list_mp4_files"]:
                 mp4_files = info_video[list_video]
                 for video_file in mp4_files:
-                    print(video_file)
                     rendition = VideoRendition.objects.get(resolution__contains="x" + video_file)
                     encod_name = self.get_encoding_choice_from_filename(mp4_files[video_file])
                     encoding, created = EncodingVideo.objects.get_or_create(
@@ -119,10 +119,23 @@ class Encoding_video_model(Encoding_video):
                         video=video_to_encode,
                         rendition=rendition,
                         encoding_format="video/mp4",
+                        # need to double check path
                         source_file =  os.path.join(settings.MEDIA_ROOT, mp4_files[video_file])
                     )
             
-   
+            log_to_text = ""
+            logs = info_video['encoding_log']
+            for log in logs:
+                log_to_text = log_to_text + "["+log + "]\n\n"
+                logdetails = logs[log]
+                for logcate in logdetails:
+                    log_to_text = log_to_text +"- "+ logcate + " : \n" + str(logdetails[logcate]) + "\n"
+        
+            encoding_log, created = EncodingLog.objects.get_or_create(
+                video=video_to_encode,
+                log = log_to_text
+                )
+
             
 
     def encode_video(self):
