@@ -1,9 +1,7 @@
 from __future__ import absolute_import, division, print_function
 import json
 import os
-import argparse
 import time
-import unicodedata
 from webvtt import WebVTT, Caption
 
 if __name__ == "__main__":
@@ -21,8 +19,6 @@ else:
         check_file
     )
 
-# from unidecode import unidecode # third party package to remove accent
-# import unicodedata
 
 __author__ = "Nicolas CAN <nicolas.can@univ-lille.fr>"
 __license__ = "LGPL v3"
@@ -197,7 +193,7 @@ class Encoding_video:
     def get_output_dir(self):
         dirname = os.path.dirname(self.video_file)
         return os.path.join(dirname, "%04d" % int(self.id))
-        
+
     def create_output_dir(self):
         output_dir = self.get_output_dir()
         if not os.path.exists(output_dir):
@@ -527,4 +523,3 @@ class Encoding_video:
         if len(self.list_subtitle_track) > 0:
             self.get_subtitle_part()
         self.export_to_json()
-

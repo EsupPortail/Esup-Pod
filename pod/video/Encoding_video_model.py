@@ -107,7 +107,7 @@ class Encoding_video_model(Encoding_video):
                     video=video_to_encode,
                     encoding_format="audio/mp3",
                     # need to double check path
-                    source_file = os.path.join(settings.MEDIA_ROOT, mp3_files[audio_file])
+                    source_file=os.path.join(settings.MEDIA_ROOT, mp3_files[audio_file])
                 )
 
             for list_video in ['list_hls_files', "list_mp4_files"]:
@@ -116,34 +116,27 @@ class Encoding_video_model(Encoding_video):
                     rendition = VideoRendition.objects.get(resolution__contains="x" + video_file)
                     encod_name = self.get_encoding_choice_from_filename(mp4_files[video_file])
                     encoding, created = EncodingVideo.objects.get_or_create(
-                        name= encod_name,
+                        name=encod_name,
                         video=video_to_encode,
                         rendition=rendition,
                         encoding_format="video/mp4",
                         # need to double check path
-                        source_file = os.path.join(settings.MEDIA_ROOT, mp4_files[video_file])
+                        source_file=os.path.join(settings.MEDIA_ROOT, mp4_files[video_file])
                     )
-            
+
             log_to_text = ""
             logs = info_video['encoding_log']
             log_to_text = log_to_text + "Start : " + info_video['start']
             for log in logs:
-                log_to_text = log_to_text + "["+log + "]\n\n"
+                log_to_text = log_to_text + "[" + log + "]\n\n"
                 logdetails = logs[log]
                 for logcate in logdetails:
-                    log_to_text = log_to_text +"- "+ logcate + " : \n" + str(logdetails[logcate]) + "\n"
+                    log_to_text = log_to_text + "- " + logcate + " : \n" + str(logdetails[logcate]) + "\n"
             log_to_text = log_to_text + "End : " + info_video['stop']
-        
+
             encoding_log, created = EncodingLog.objects.get_or_create(
                 video=video_to_encode,
-                log = log_to_text
-                )
-
-            
+                log=log_to_text)
 
     def encode_video(self):
         self.start_encode()
-
-
-
-
