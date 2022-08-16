@@ -24,6 +24,7 @@ ENCODING_CHOICES = getattr(
     ),
 )
 
+
 class Encoding_video_model(Encoding_video):
 
     def remove_old_data(self):
@@ -120,7 +121,7 @@ class Encoding_video_model(Encoding_video):
                         rendition=rendition,
                         encoding_format="video/mp4",
                         # need to double check path
-                        source_file =  os.path.join(settings.MEDIA_ROOT, mp4_files[video_file])
+                        source_file = os.path.join(settings.MEDIA_ROOT, mp4_files[video_file])
                     )
             
             log_to_text = ""

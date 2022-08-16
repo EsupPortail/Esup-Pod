@@ -43,10 +43,8 @@ def encode_video(video_id):
 
     encoding_video.start_encode()
 
-
     # encode HLS
     # encode MP4
     # encode MP3
     # encode M4A
-
 

@@ -528,28 +528,3 @@ class Encoding_video:
             self.get_subtitle_part()
         self.export_to_json()
 
-
-def fix_input(input):
-    filename = ""
-    if args.input.startswith('/'):
-        path_file = args.input
-    else:
-        path_file = os.path.join(os.getcwd(), args.input)
-    print(path_file)
-    if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
-        # remove accent and space
-        filename = "".join(
-            (
-                c
-                for c in unicodedata.normalize("NFD", path_file)
-                if unicodedata.category(c) != "Mn"
-            )
-        )
-        filename = filename.replace(" ", "_")
-        os.rename(
-            path_file,
-            filename,
-        )
-        print("Encoding file {} \n".format(filename))
-    return filename
-
