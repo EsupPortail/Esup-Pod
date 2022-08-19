@@ -126,13 +126,36 @@ class Encoding_video_model(Encoding_video):
 
             log_to_text = ""
             logs = info_video['encoding_log']
-            log_to_text = log_to_text + "Start : " + info_video['start']
+            log_to_text = log_to_text + "Start : " + str(info_video['start'])
             for log in logs:
                 log_to_text = log_to_text + "[" + log + "]\n\n"
                 logdetails = logs[log]
                 for logcate in logdetails:
                     log_to_text = log_to_text + "- " + logcate + " : \n" + str(logdetails[logcate]) + "\n"
-            log_to_text = log_to_text + "End : " + info_video['stop']
+            log_to_text = log_to_text + "End : " + str(info_video['stop'])
+
+
+            list_videos_track = info_video["list_video_track"]
+            for track in list_videos_track:
+                #I don't know what to do with these values
+                width = list_videos_track[track]['width']
+                height = list_videos_track[track]['height']
+
+            list_audio_track = info_video["list_audio_track"]
+            for track in list_audio_track:
+                #I don't know what to do with these values
+                sample_rate = list_audio_track[track]['sample_rate']
+                channels = list_audio_track[track]['channels']
+
+            list_subtitle_track = info_video["list_subtitle_track"]
+            for track in list_subtitle_track:
+                #I don't know what to do with these values
+                language = list_subtitle_track[track]['language']
+
+            list_image_track = info_video["list_image_track"]
+            for track in list_subtitle_track:
+                print("nothing")
+                #I don't know what to do with these values
 
             encoding_log, created = EncodingLog.objects.get_or_create(
                 video=video_to_encode,
