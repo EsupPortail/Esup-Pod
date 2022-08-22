@@ -111,6 +111,7 @@ class Encoding_video:
         self.list_thumbnail_files = {}
         self.list_overview_files = {}
         self.encoding_log = {}
+        self.list_subtitle_files = {}
         self.output_dir = ""
         self.start = 0
         self.stop = 0
@@ -477,14 +478,14 @@ class Encoding_video:
             "input": self.video_file,
             "nb_threads": FFMPEG_NB_THREADS
         }
-        for img in self.list_subtitle_track:
-            lang = self.list_subtitle_track[img]
+        for sub in self.list_subtitle_track:
+            lang = self.list_subtitle_track[sub]['language']
             output_file = os.path.join(self.output_dir, "subtitle_%s.vtt" % lang)
             subtitle_command += EXTRACT_SUBTITLE % {
-                "index": img,
+                "index": sub,
                 "output": output_file
             }
-            self.list_subtitle_files[img] = [lang, output_file]
+            self.list_subtitle_files[sub] = [lang, output_file]
         return subtitle_command
 
     def get_subtitle_part(self):

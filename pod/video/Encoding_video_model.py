@@ -124,6 +124,7 @@ class Encoding_video_model(Encoding_video):
                         source_file=os.path.join(settings.MEDIA_ROOT, mp4_files[video_file])
                     )
 
+            #Need to modify start and stop
             log_to_text = ""
             logs = info_video['encoding_log']
             log_to_text = log_to_text + "Start : " + str(info_video['start'])
@@ -134,22 +135,11 @@ class Encoding_video_model(Encoding_video):
                     log_to_text = log_to_text + "- " + logcate + " : \n" + str(logdetails[logcate]) + "\n"
             log_to_text = log_to_text + "End : " + str(info_video['stop'])
 
-
-            list_videos_track = info_video["list_video_track"]
-            for track in list_videos_track:
-                #I don't know what to do with these values
-                width = list_videos_track[track]['width']
-                height = list_videos_track[track]['height']
-
-            list_audio_track = info_video["list_audio_track"]
-            for track in list_audio_track:
-                #I don't know what to do with these values
-                sample_rate = list_audio_track[track]['sample_rate']
-                channels = list_audio_track[track]['channels']
-
             list_subtitle_track = info_video["list_subtitle_track"]
             for track in list_subtitle_track:
-                #I don't know what to do with these values
+                # I don't know what to do with these values
+                # Verify main script 
+                # + verify when empty
                 language = list_subtitle_track[track]['language']
 
             list_image_track = info_video["list_image_track"]
@@ -157,6 +147,9 @@ class Encoding_video_model(Encoding_video):
                 print("nothing")
                 #I don't know what to do with these values
 
+
+            #Missing list overview file
+            #Missing thumbnail 
             encoding_log, created = EncodingLog.objects.get_or_create(
                 video=video_to_encode,
                 log=log_to_text)
