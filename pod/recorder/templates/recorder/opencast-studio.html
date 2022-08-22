@@ -9,7 +9,7 @@
     --theme-ui-colors-background: var(--background-color);
     --theme-ui-colors-text: var(--font-color);
     --theme-ui-colors-primary: var(--primary);
-    --theme-ui-colors-error: var(--color-formfields);
+    --theme-ui-colors-error: var(--danger);
   }
   [data-theme="dark"] {
     /*--theme-ui-colors-gray-0: var(--font-color);*/
@@ -26,7 +26,7 @@
   #root code {
     color: var(--font-color);
   }
-  
+
   button>.fa-layers {
     color: var(--font-color);
   }
@@ -63,11 +63,11 @@
 <script>
   //Create array of options to be added
   {% if default_presenter and default_presenter == "pipb" %}
-  const list_value = [["pipb", "Pip - {% trans "Camera inside the screen video to bottom right" %}"], ["piph", "Pip - {% trans "Camera inside the screen video to top right" %}"], ["mid", "50/50 - {% trans "Same size for screen and camera" %}"]];
+  const list_value = [["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"], ["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"], ["mid", "50/50 - {% trans 'Same size for screen and camera' %}"]];
   {% elif  default_presenter and default_presenter == "piph" %}
-  const list_value = [["piph", "Pip - {% trans "Camera inside the screen video to top right" %}"], ["pipb", "Pip - {% trans "Camera inside the screen video to bottom right" %}"], ["mid", "50/50 - {% trans "Same size for screen and camera" %}"]];
+  const list_value = [["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"], ["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"], ["mid", "50/50 - {% trans 'Same size for screen and camera' %}"]];
   {% else %}
-  const list_value = [["mid", "50/50 - {% trans "Same size for screen and camera" %}"], ["piph", "Pip - {% trans "Camera inside the screen video to top right" %}"], ["pipb", "Pip - {% trans "Camera inside the screen video to bottom right" %}"]];
+  const list_value = [["mid", "50/50 - {% trans 'Same size for screen and camera' %}"], ["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"], ["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"]];
   {% endif %}
 
   //Create and append select list
@@ -90,7 +90,7 @@
   let divselect = document.createElement("div");
   divselect.appendChild(selectList)
   label.appendChild(divselect)
-  
+
   const input_title = "input[name='title'][type='text']";
   let data_send = false;
   $(document).on('DOMSubtreeModified', '#root>div>main', function(){
@@ -99,7 +99,7 @@
         label.setAttribute("class", $(input_title).first().parent("div").parent("label").attr("class"));
         div.append(label);
         send_presenter_value($('#input_presenter').val());
-        data_send = true; 
+        data_send = true;
     }
   });
   $(document).on('change', '#input_presenter', function(){
