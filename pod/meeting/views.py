@@ -196,11 +196,7 @@ def join(request, meeting_id, direct_access=None):
     form = None
     if show_page :
         remove_password_in_form = direct_access is not None
-        form = MeetingPasswordForm(
-            current_user=request.user,
-            remove_password=remove_password_in_form,
-        )
-        return check_form(request, meeting, form, remove_password_in_form)
+        return check_form(request, meeting, remove_password_in_form)
     else:
         return check_user(request)
 
@@ -223,7 +219,11 @@ def check_user(request):
         )
 
 
-def check_form(request, meeting, form, remove_password_in_form):
+def check_form(request, meeting, remove_password_in_form):
+    form = MeetingPasswordForm(
+        current_user=request.user,
+        remove_password=remove_password_in_form,
+    )
     if request.method == "POST":
         form = MeetingPasswordForm(
             request.POST,

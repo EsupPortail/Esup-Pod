@@ -178,6 +178,14 @@ class MeetingForm(forms.ModelForm):
             and len(cleaned_data["restrict_access_to_groups"]) > 0
         ):
             cleaned_data["is_restricted"] = True
+        
+        if (
+            "voice_bridge" in cleaned_data.keys()
+            and cleaned_data["voice_bridge"] not in range(10000, 99999)
+        ):
+            raise ValidationError(
+                    _("Voice bridge must be a 5-digit number in the range 10000 to 99999")
+                )
 
     def __init__(self, *args, **kwargs):
 

@@ -1,4 +1,8 @@
 import hashlib
+import random
+
+from urllib.parse import urlencode
+from urllib.parse import urljoin
 
 from django.db import models
 from django.conf import settings
@@ -13,8 +17,68 @@ from django.template.defaultfilters import slugify
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 
+from .utils import api_call
 
 SECRET_KEY = getattr(settings, "SECRET_KEY", "")
+BBB_API_URL = getattr(settings, "BBB_API_URL", "")
+BBB_SECRET_KEY = getattr(settings, "BBB_SECRET_KEY", "")
+
+
+meeting_to_bbb = {
+    'name': 'name',
+    'meetingID': 'meeting_id',
+    'attendeePW': 'attendee_password',
+    'moderatorPW': 'moderator_password',
+    "welcome": "welcome_text",
+    # "dialNumber",
+    "voiceBridge": "voice_bridge",
+    "maxParticipants": "max_participants",
+    "logoutURL": "logout_url",
+    "record": "record",
+    # "duration": "-",
+    # "isBreakout",
+    "parentMeetingID" : "parent_meeting_id",
+    # "sequence",
+    # "freeJoin",
+    # "breakoutRoomsEnabled",
+    # "breakoutRoomsPrivateChatEnabled",
+    # "breakoutRoomsRecord",
+    # "meta",
+    # "moderatorOnlyMessage",
+    "autoStartRecording": "auto_start_recording",
+    "allowStartStopRecording": "allow_start_stop_recording", 
+    "webcamsOnlyForModerator": "webcam_only_for_moderators",
+    # "bannerText",
+    # "bannerColor",
+    # "muteOnStart",
+    # "allowModsToUnmuteUsers",
+    "lockSettingsDisableCam": "lock_settings_disable_cam",
+    "lockSettingsDisableMic": "lock_settings_disable_mic",
+    "lockSettingsDisablePrivateChat" : "lock_settings_disable_private_chat",
+    "lockSettingsDisablePublicChat": "lock_settings_disable_public_chat",
+    "lockSettingsDisableNote": "lock_settings_disable_note",
+    "lockSettingsLockedLayout": "lock_settings_locked_layout",
+    # "lockSettingsLockOnJoin",
+    # "lockSettingsLockOnJoinConfigurable",
+    # "lockSettingsHideViewersCursor",
+    # "guestPolicy",
+    # "meetingKeepEvents",
+    # "endWhenNoModerator",
+    # "endWhenNoModeratorDelayInMinutes",
+    # "meetingLayout",
+    # "learningDashboardEnabled",
+    # "learningDashboardCleanupDelayInMinutes",
+    # "allowModsToEjectCameras",
+    # "allowRequestsWithoutSession",
+    # "userCameraCap",
+    # "meetingCameraCap",
+    # "meetingExpireIfNoUserJoinedInMinutes",
+    # "meetingExpireWhenLastUserLeftInMinutes",
+    # "groups",
+    # "logo",
+    # "disabledFeatures",
+    # "preUploadedPresentationOverrideDefault"
+}
 
 
 def two_hours_hence():
@@ -96,7 +160,7 @@ class Meeting(models.Model):
         blank=True,
         verbose_name=_("URL to visit after user logged out"),
     )
-    record = models.BooleanField(default=True, verbose_name=_("Record"))
+    record = models.BooleanField(default=False, verbose_name=_("Record"))
     auto_start_recording = models.BooleanField(
         default=False, verbose_name=_("Auto Start Recording")
     )
@@ -161,8 +225,8 @@ class Meeting(models.Model):
         max_length=100,
         verbose_name=_("Internal Meeting ID"),
     )
-    voice_bridge = models.CharField(
-        max_length=50, null=True, blank=True, verbose_name=_("Voice Bridge")
+    voice_bridge = models.IntegerField(
+        max_length=50, null=True, blank=True, verbose_name=_("Voice Bridge"), default=70000 + random.randint(0,9999)
     )
 
     # Hook related info
@@ -208,8 +272,30 @@ class Meeting(models.Model):
 
     def get_hashkey(self):
         return hashlib.sha256(
-            ("%s-%s" % (SECRET_KEY, self.attendee_password)).encode("utf-8")
+            ("%s-%s-%s" % (SECRET_KEY, self.id, self.attendee_password)).encode("utf-8")
         ).hexdigest()
+    
+
+    # BBB API
+    def create(self):
+        # i.e: http://yourserver.com/bigbluebutton/api/create?name=Test&meetingID=test01&checksum=1234
+        action = "create"
+        parameters = {}
+        for param in meeting_to_bbb:
+            if getattr(self, meeting_to_bbb[param], "") not in ["", None]:
+                parameters.update({
+                    param: getattr(self, meeting_to_bbb[param], ""),
+                })
+        # duration et voiceBridge
+
+        query = urlencode(parameters)
+        print(query)
+        hashed = api_call(query, action)
+        print(hashed)
+        url = urljoin(BBB_API_URL, action)
+        url = url+"?%s" %hashed
+        print(url)
+
 
     class Meta:
         db_table = "meeting"
