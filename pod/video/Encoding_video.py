@@ -524,3 +524,20 @@ class Encoding_video:
         if len(self.list_subtitle_track) > 0:
             self.get_subtitle_part()
         self.export_to_json()
+
+
+"""
+  remote encode ???
+"""
+if __name__ == "__main__":
+    start = "Start at: %s" % time.ctime()
+    parser = argparse.ArgumentParser(description="Running encoding video.")
+    parser.add_argument("--id", required=True, help="the ID of the video")
+    parser.add_argument(
+        "--input", required=True, help="name of input file to encode"
+    )
+    args = parser.parse_args()
+    filename = fix_input(args.input)
+    encoding_video = Encoding_video(args.id, filename)
+    encoding_video.encoding_log += start
+    encoding_video.start_encode()
