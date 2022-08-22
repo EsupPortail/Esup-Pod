@@ -6,6 +6,8 @@ from .models import VideoRendition
 from .models import PlaylistVideo
 from .models import EncodingLog
 from .models import Video
+from pod.completion.models import Track
+from pod.podfile.models import UserFolder, CustomFileModel
 
 from .Encoding_video import Encoding_video, FFMPEG_MP4_ENCODE
 import json
@@ -148,6 +150,27 @@ class Encoding_video_model(Encoding_video):
                 #I don't know what to do with these values
 
 
+            list_subtitle_files = info_video["list_subtitle_files"]
+
+            for sub in list_subtitle_files:
+                home = UserFolder.objects.get(name="Home", owner=video_to_encode.owner)
+                podfile, created = CustomFileModel.objects.get_or_create(
+                    file=os.path.join(settings.MEDIA_ROOT, list_subtitle_files[sub][1]),
+                    name=list_subtitle_files[sub][1],
+                    description="A subtitle file",
+                    created_by=video_to_encode.owner,
+                    folder=home
+                )
+
+                Track.objects.get_or_create(
+                    video=video_to_encode,
+                    kind="subtitles",
+                    lang=list_subtitle_files[sub][0],
+                    src=podfile,
+                    enrich_ready=True
+                )
+
+               
             #Missing list overview file
             #Missing thumbnail 
             encoding_log, created = EncodingLog.objects.get_or_create(
