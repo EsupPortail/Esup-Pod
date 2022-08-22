@@ -18,15 +18,25 @@ from .models import Meeting, two_hours_hence
 MEETING_MAIN_FIELDS = getattr(
     settings,
     "MEETING_MAIN_FIELDS",
-    ("name", "owner", "additional_owners", "attendee_password", "start_at", "end_at", "is_restricted", "restrict_access_to_groups")
+    (
+        "name",
+        "owner",
+        "additional_owners",
+        "attendee_password",
+        "start_at",
+        "end_at",
+        "is_restricted",
+        "restrict_access_to_groups",
+    ),
 )
 
 MEETING_EXCLUDE_FIELDS = MEETING_MAIN_FIELDS + ("id",)
-    
+
 for field in Meeting._meta.fields:
     # print(field.name, field.editable)
-    if field.editable == False :
-        MEETING_EXCLUDE_FIELDS = MEETING_EXCLUDE_FIELDS + (field.name, )
+    if field.editable is False:
+        MEETING_EXCLUDE_FIELDS = MEETING_EXCLUDE_FIELDS + (field.name,)
+
 
 def get_meeting_fields():
     fields = []
@@ -39,7 +49,7 @@ def get_meeting_fields():
 def get_random_string(length):
     # choose from all lowercase letter
     letters = string.ascii_lowercase
-    result_str = ''.join(random.choice(letters) for i in range(length))
+    result_str = "".join(random.choice(letters) for i in range(length))
     return result_str
 
 
@@ -61,7 +71,8 @@ class MyAdminSplitDateTime(forms.MultiWidget):
     """
     A SplitDateTime Widget that has some admin-specific styling.
     """
-    template_name = 'admin/widgets/split_datetime.html'
+
+    template_name = "admin/widgets/split_datetime.html"
     date_attrs = None
     time_attrs = None
 
@@ -79,21 +90,21 @@ class MyAdminSplitDateTime(forms.MultiWidget):
         context = super().get_context(name, value, attrs)
         unique_value = ["size", "id"]
         for att in self.date_attrs:
-            dattrs = context['widget']['subwidgets'][0]['attrs']
+            dattrs = context["widget"]["subwidgets"][0]["attrs"]
             val = self.date_attrs.get(att, None)
             if val and dattrs.get(att) and att not in unique_value:
-                context['widget']['subwidgets'][0]['attrs'][att] += val
+                context["widget"]["subwidgets"][0]["attrs"][att] += val
             else:
-                context['widget']['subwidgets'][0]['attrs'][att] = val
+                context["widget"]["subwidgets"][0]["attrs"][att] = val
         for att in self.time_attrs:
-            dattrs = context['widget']['subwidgets'][1]['attrs']
+            dattrs = context["widget"]["subwidgets"][1]["attrs"]
             val = self.time_attrs.get(att, None)
             if val and dattrs.get(att) and att not in unique_value:
-                context['widget']['subwidgets'][1]['attrs'][att] += val
+                context["widget"]["subwidgets"][1]["attrs"][att] += val
             else:
-                context['widget']['subwidgets'][1]['attrs'][att] = val
-        context['date_label'] = _('Date:')
-        context['time_label'] = _('Time:')
+                context["widget"]["subwidgets"][1]["attrs"][att] = val
+        context["date_label"] = _("Date:")
+        context["time_label"] = _("Time:")
         return context
 
     def decompress(self, value):
@@ -108,18 +119,27 @@ class MeetingForm(forms.ModelForm):
     required_css_class = "required"
     is_admin = False
     is_superuser = False
-    start_at = forms.SplitDateTimeField(label=_("Start date"), initial=timezone.now, widget=MyAdminSplitDateTime)
-    end_at = forms.SplitDateTimeField(label=_("End date"), initial=two_hours_hence(), widget=MyAdminSplitDateTime)
+    start_at = forms.SplitDateTimeField(
+        label=_("Start date"),
+        initial=timezone.now,
+        widget=MyAdminSplitDateTime,
+    )
+    end_at = forms.SplitDateTimeField(
+        label=_("End date"),
+        initial=two_hours_hence(),
+        widget=MyAdminSplitDateTime,
+    )
     # user = User.objects.all()
     fieldsets = (
-        (None, {
-            'fields': MEETING_MAIN_FIELDS
-        }),
-        ('advanced_options', {
-            'legend': _("Advanced options"),
-            'classes': 'collapse',
-            'fields': get_meeting_fields(),
-        }),
+        (None, {"fields": MEETING_MAIN_FIELDS}),
+        (
+            "advanced_options",
+            {
+                "legend": _("Advanced options"),
+                "classes": "collapse",
+                "fields": get_meeting_fields(),
+            },
+        ),
     )
 
     def filter_fields_admin(form):
@@ -133,7 +153,7 @@ class MeetingForm(forms.ModelForm):
         cleaned_data = super(MeetingForm, self).clean()
 
         if cleaned_data["start_at"] > cleaned_data["end_at"]:
-            raise ValidationError(_('Start date must be less than end date'))
+            raise ValidationError(_("Start date must be less than end date"))
 
         if "additional_owners" in cleaned_data.keys() and isinstance(
             self.cleaned_data["additional_owners"], QuerySet
@@ -147,7 +167,8 @@ class MeetingForm(forms.ModelForm):
             )
             if (
                 meetingowner
-                and meetingowner in self.cleaned_data["additional_owners"].all()
+                and meetingowner
+                in self.cleaned_data["additional_owners"].all()
             ):
                 raise ValidationError(
                     _("Owner of the video cannot be an additional owner too")
@@ -159,11 +180,13 @@ class MeetingForm(forms.ModelForm):
             cleaned_data["is_restricted"] = True
 
     def __init__(self, *args, **kwargs):
-        
+
         self.is_staff = (
-            kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
+            kwargs.pop("is_staff")
+            if "is_staff" in kwargs.keys()
+            else self.is_staff
         )
-        
+
         self.is_superuser = (
             kwargs.pop("is_superuser")
             if ("is_superuser" in kwargs.keys())
@@ -177,9 +200,9 @@ class MeetingForm(forms.ModelForm):
         # Manage required fields html
         self.fields = add_placeholder_and_asterisk(self.fields)
         if self.fields.get("owner"):
-            self.fields["owner"].queryset = self.fields["owner"].queryset.filter(
-                owner__sites=Site.objects.get_current()
-            )
+            self.fields["owner"].queryset = self.fields[
+                "owner"
+            ].queryset.filter(owner__sites=Site.objects.get_current())
         # self.fields.get("attendee_password"):
         if not self.initial.get("attendee_password"):
             self.initial["attendee_password"] = get_random_string(8)
@@ -218,7 +241,9 @@ class MeetingDeleteForm(forms.Form):
 
 class MeetingPasswordForm(forms.Form):
     name = forms.CharField(label=_("Name"))
-    password = forms.CharField(label=_("Password"), widget=forms.PasswordInput())
+    password = forms.CharField(
+        label=_("Password"), widget=forms.PasswordInput()
+    )
 
     def __init__(self, *args, **kwargs):
         self.current_user = kwargs.pop("current_user", None)
