@@ -68,7 +68,7 @@
       {% for field in form.visible_fields %}
       {% if field.name in last.fields %}
       {% spaceless %}
-      <div class="mb-3">
+      <div class="mb-3 {% if "restrict_access_to_groups" in field.name %}collapse restricted_access{% endif %}">
         <div class="list-group-item">
           <div class="{% if field.name == "owners" or field.name == "users" %}form-row {%endif%}form-group {% if field.field.required %}form-group-required {%endif%}">
             {{ field.errors }}
@@ -115,4 +115,20 @@
 <script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}" />
 {{form.media}}
+<script>
+  /** Restrict access **/
+/** restrict access to group */
+$("#id_is_restricted").change(function () {
+  restrict_access_to_groups();
+});
+var restrict_access_to_groups = function () {
+  if ($("#id_is_restricted").prop("checked")) {
+    $("#id_restrict_access_to_groups").parents(".restricted_access").show();
+  } else {
+    $("#id_restrict_access_to_groups option:selected").prop("selected", false);
+    $("#id_restrict_access_to_groups").parents(".restricted_access").hide();
+  }
+};
+restrict_access_to_groups();
+</script>
 {% endblock more_script %}
