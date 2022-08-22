@@ -49,9 +49,26 @@
       {% for field_hidden in form.hidden_fields %}
         {{field_hidden}}
       {% endfor %}
+
+      {% for fieldset in form.fieldsets %}
+      {% with last=fieldset|last %}
+      {% if "collapse" in last.classes %}
+      <div class="mb-3">
+        <div class="list-group-item">
+          <a class="btn btn-primary" data-bs-toggle="collapse" href="#meeting_form_{{fieldset|first}}{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
+            {{ last.legend }}
+          </a>
+        </div>
+      </div>
+      {% endif %}
+      <fieldset class="{{ last.classes }}" id="meeting_form_{{fieldset|first}}{{forloop.counter}}" >
+      {% if last.legend %}
+          <legend>{{ last.legend }}</legend>
+      {% endif %}
       {% for field in form.visible_fields %}
+      {% if field.name in last.fields %}
       {% spaceless %}
-      <div class="">
+      <div class="mb-3">
         <div class="list-group-item">
           <div class="{% if field.name == "owners" or field.name == "users" %}form-row {%endif%}form-group {% if field.field.required %}form-group-required {%endif%}">
             {{ field.errors }}
@@ -71,9 +88,14 @@
         </div>
       </div>
       {% endspaceless %}
+      {% endif %}
       {% endfor %}
+      {% endwith %}
+      </fieldset>
+      {% endfor %}
+      
     </div>
-    <div class="text-center">
+    <div class="text-center mb-3">
       <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
     </div>
   </form>

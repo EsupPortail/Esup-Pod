@@ -1,14 +1,7 @@
 from django.contrib import admin
 from django.contrib.sites.shortcuts import get_current_site
 from .models import Meeting
-from .forms import MeetingForm, MEETING_MAIN_FIELDS, MEETING_EXCLUDE_FIELDS
-
-def get_meeting_fields():
-    fields = []
-    for field in Meeting._meta.fields:
-        if field.name not in MEETING_EXCLUDE_FIELDS:
-            fields.append(field.name)
-    return fields
+from .forms import MeetingForm, MEETING_MAIN_FIELDS, get_meeting_fields
 
 
 class MeetingSuperAdminForm(MeetingForm):

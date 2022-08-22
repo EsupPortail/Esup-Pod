@@ -24,9 +24,16 @@ MEETING_MAIN_FIELDS = getattr(
 MEETING_EXCLUDE_FIELDS = MEETING_MAIN_FIELDS + ("id",)
     
 for field in Meeting._meta.fields:
-    print(field.name, field.editable)
+    # print(field.name, field.editable)
     if field.editable == False :
         MEETING_EXCLUDE_FIELDS = MEETING_EXCLUDE_FIELDS + (field.name, )
+
+def get_meeting_fields():
+    fields = []
+    for field in Meeting._meta.fields:
+        if field.name not in MEETING_EXCLUDE_FIELDS:
+            fields.append(field.name)
+    return fields
 
 
 def get_random_string(length):
@@ -104,6 +111,16 @@ class MeetingForm(forms.ModelForm):
     start_at = forms.SplitDateTimeField(label=_("Start date"), initial=timezone.now, widget=MyAdminSplitDateTime)
     end_at = forms.SplitDateTimeField(label=_("End date"), initial=two_hours_hence(), widget=MyAdminSplitDateTime)
     # user = User.objects.all()
+    fieldsets = (
+        (None, {
+            'fields': MEETING_MAIN_FIELDS
+        }),
+        ('advanced_options', {
+            'legend': _("Advanced options"),
+            'classes': 'collapse',
+            'fields': get_meeting_fields(),
+        }),
+    )
 
     def filter_fields_admin(form):
         if form.is_superuser is False and form.is_admin is False:
@@ -165,7 +182,7 @@ class MeetingForm(forms.ModelForm):
             )
         # self.fields.get("attendee_password"):
         if not self.initial.get("attendee_password"):
-            self.initial["attendee_password"] = get_random_string(8)            
+            self.initial["attendee_password"] = get_random_string(8)
 
     def remove_field(self, field):
         if self.fields.get(field):
