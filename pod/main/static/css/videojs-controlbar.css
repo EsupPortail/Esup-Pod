@@ -12,3 +12,11 @@
 .vjs-button{cursor:pointer;}
 .video-js .vjs-volume-horizontal{margin-right:0}
 .video-js .vjs-volume-bar{margin-right:1em;}
+
+
+/* Hide seek buttons & volume pannel on x-small screens */
+.video-js.vjs-layout-small .vjs-seek-button,
+.video-js.vjs-layout-x-small .vjs-seek-button,
+.video-js.vjs-layout-x-small .vjs-volume-panel{
+    display: none;
+}
