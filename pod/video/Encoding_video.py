@@ -125,6 +125,14 @@ class Encoding_video:
     def is_video(self):
         return len(self.list_video_track) > 0
 
+    def get_subtime(self, clip_begin, clip_end):
+        subtime = ""
+        if clip_begin:
+            subtime += "-ss %s " % str(clip_begin)
+        if clip_end:
+            subtime += "-to %s " % str(clip_end)
+        return subtime
+
     def get_video_data(self):
         """
         get alls tracks from video source and put it in object passed in parameter
@@ -252,6 +260,8 @@ class Encoding_video:
                     "output": output_file
                 }
                 self.list_mp4_files[first_item[0]] = output_file
+        if self.cutting_start and self.cutting_stop:
+            mp4_command = mp4_command + self.get_subtime(self.cutting_start, self.cutting_stop)
         return mp4_command
 
     def get_hls_command(self):

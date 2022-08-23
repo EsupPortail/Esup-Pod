@@ -18,6 +18,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        encoding_video = Encoding_video_model(options["id"], options["input_file"])
-        # encoding_video.encode_video()
+        encoding_video = Encoding_video_model(options["id"], options["input_file"],1,2)
+        encoding_video.encode_video()
         encoding_video.store_json_info()
