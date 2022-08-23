@@ -1,8 +1,10 @@
 import hashlib
 import random
+import requests
 
 from urllib.parse import urlencode
 from urllib.parse import urljoin
+import xml.etree.ElementTree as et
 
 from django.db import models
 from django.conf import settings
@@ -46,7 +48,7 @@ meeting_to_bbb = {
     # "meta",
     # "moderatorOnlyMessage",
     "autoStartRecording": "auto_start_recording",
-    "allowStartStopRecording": "allow_start_stop_recording", 
+    "allowStartStopRecording": "allow_start_stop_recording",
     "webcamsOnlyForModerator": "webcam_only_for_moderators",
     # "bannerText",
     # "bannerColor",
@@ -226,7 +228,8 @@ class Meeting(models.Model):
         verbose_name=_("Internal Meeting ID"),
     )
     voice_bridge = models.IntegerField(
-        max_length=50, null=True, blank=True, verbose_name=_("Voice Bridge"), default=70000 + random.randint(0,9999)
+        max_length=50, null=True, blank=True, verbose_name=_("Voice Bridge"),
+        default=70000 + random.randint(0, 9999)
     )
 
     # Hook related info
@@ -274,11 +277,9 @@ class Meeting(models.Model):
         return hashlib.sha256(
             ("%s-%s-%s" % (SECRET_KEY, self.id, self.attendee_password)).encode("utf-8")
         ).hexdigest()
-    
 
     # BBB API
     def create(self):
-        # i.e: http://yourserver.com/bigbluebutton/api/create?name=Test&meetingID=test01&checksum=1234
         action = "create"
         parameters = {}
         for param in meeting_to_bbb:
@@ -286,16 +287,50 @@ class Meeting(models.Model):
                 parameters.update({
                     param: getattr(self, meeting_to_bbb[param], ""),
                 })
-        # duration et voiceBridge
-
+        # let duration and voiceBridge to default value
         query = urlencode(parameters)
-        print(query)
         hashed = api_call(query, action)
-        print(hashed)
         url = urljoin(BBB_API_URL, action)
-        url = url+"?%s" %hashed
-        print(url)
+        url = url + "?%s" % hashed[:-2]
+        print("URL : %s" % url)
+        response = requests.get(url)
+        if response.status_code != 200:
+            msg = {}
+            msg["error"] = 'Unable to call BBB server.'
+            msg["returncode"] = response.status_code
+            msg["message"] = response.content.decode('utf-8')
+            raise ValueError(msg)
+        result = response.content.decode('utf-8')
+        print("RESULT : %s" % result)
+        xmldoc = et.fromstring(result)
+        meeting_json = {}
+        for elt in xmldoc:
+            meeting_json[elt.tag] = elt.text
+        if meeting_json.get('returncode', "") != 'SUCCESS':
+            msg = {}
+            msg["error"] = 'Unable to create meeting ! '
+            msg["returncode"] = meeting_json.get('returncode', "")
+            msg["messageKey"] = meeting_json.get('messageKey', "")
+            msg["message"] = meeting_json.get('message', "")
+            raise ValueError(msg)
+        else:
+            self.update_data_from_bbb(meeting_json)
+            return True
 
+    def update_data_from_bbb(self, meeting_json):
+        change = False
+        for key in meeting_json:
+            if (
+                key in meeting_to_bbb.keys()
+                and getattr(self, meeting_to_bbb[key], "") != meeting_json[key]
+            ):
+                setattr(self, meeting_to_bbb[key], meeting_json[key])
+                change = True
+        if meeting_json.get("internalMeetingID"):
+            self.internal_meeting_id = meeting_json["internalMeetingID"]
+            change = True
+        if change:
+            self.save()
 
     class Meta:
         db_table = "meeting"
