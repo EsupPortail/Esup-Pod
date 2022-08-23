@@ -7,7 +7,7 @@ from .models import PlaylistVideo
 from .models import EncodingLog
 from .models import Video
 from pod.completion.models import Track
-from pod.podfile.models import UserFolder, CustomFileModel
+from pod.podfile.models import UserFolder, CustomFileModel, CustomImageModel
 from pod.video.models import get_storage_path_video
 
 from .Encoding_video import Encoding_video, FFMPEG_MP4_ENCODE
@@ -165,8 +165,6 @@ class Encoding_video_model(Encoding_video):
                     folder=home
                 )
 
-                
-
                 Track.objects.get_or_create(
                     video=video_to_encode,
                     kind="subtitles",
@@ -175,7 +173,31 @@ class Encoding_video_model(Encoding_video):
                     enrich_ready=True
                 )
 
-               
+
+
+
+            
+            list_thumbnail_files = info_video["list_thumbnail_files"]
+            first = True
+
+            videodir, created = UserFolder.objects.get_or_create(
+                name="%s" % video_to_encode.slug,
+                owner=video_to_encode.owner,
+            )
+
+            for thumbnail_path in list_thumbnail_files:
+                thumbnail, created = CustomImageModel.objects.get_or_create(
+                    folder=videodir, 
+                    created_by=video_to_encode.owner,
+                    file=os.path.join(get_storage_path_video(video_to_encode, list_thumbnail_files[thumbnail_path])),
+                )
+                thumbnail.save()
+                if first:
+                    video_to_encode.thumbnail = thumbnail
+                    video_to_encode.save()
+                    first = False
+
+
             #Missing list overview file
             #Missing thumbnail 
             encoding_log, created = EncodingLog.objects.get_or_create(
