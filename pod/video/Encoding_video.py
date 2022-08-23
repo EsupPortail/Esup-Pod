@@ -3,6 +3,7 @@ import json
 import os
 import time
 from webvtt import WebVTT, Caption
+import argparse
 
 if __name__ == "__main__":
     from encoding_utils import (
@@ -95,8 +96,10 @@ class Encoding_video:
     start = 0
     stop = 0
     error_encoding = False
+    cutting_start = 0
+    cutting_stop = 0
 
-    def __init__(self, id=0, video_file=""):
+    def __init__(self, id=0, video_file="", start=0, stop=0):
         self.id = id
         self.video_file = video_file
         self.duration = 0
@@ -116,6 +119,8 @@ class Encoding_video:
         self.start = 0
         self.stop = 0
         self.error_encoding = False
+        self.cutting_start = (start or 0)
+        self.cutting_stop = (stop or 0)
 
     def is_video(self):
         return len(self.list_video_track) > 0
@@ -526,6 +531,30 @@ class Encoding_video:
         self.export_to_json()
 
 
+def fix_input(input):
+    filename = ""
+    if args.input.startswith('/'):
+        path_file = args.input
+    else:
+        path_file = os.path.join(os.getcwd(), args.input)
+    print(path_file)
+    if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
+        # remove accent and space
+        filename = "".join(
+            (
+                c
+                for c in unicodedata.normalize("NFD", path_file)
+                if unicodedata.category(c) != "Mn"
+            )
+        )
+        filename = filename.replace(" ", "_")
+        os.rename(
+            path_file,
+            filename,
+        )
+        print("Encoding file {} \n".format(filename))
+    return filename
+
 """
   remote encode ???
 """
@@ -533,11 +562,18 @@ if __name__ == "__main__":
     start = "Start at: %s" % time.ctime()
     parser = argparse.ArgumentParser(description="Running encoding video.")
     parser.add_argument("--id", required=True, help="the ID of the video")
+    parser.add_argument("--start", required=False, help="Start cut")
+    parser.add_argument("--stop", required=False, help="Stop cut")
     parser.add_argument(
         "--input", required=True, help="name of input file to encode"
     )
+
+
     args = parser.parse_args()
+    print(args.start)
     filename = fix_input(args.input)
     encoding_video = Encoding_video(args.id, filename)
-    encoding_video.encoding_log += start
+    # error if uncommented
+    #encoding_video.encoding_log += start
+    # AttributeError: 'NoneType' object has no attribute 'get'
     encoding_video.start_encode()
