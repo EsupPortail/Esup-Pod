@@ -8,6 +8,7 @@ from .models import EncodingLog
 from .models import Video
 from pod.completion.models import Track
 from pod.podfile.models import UserFolder, CustomFileModel
+from pod.video.models import get_storage_path_video
 
 from .Encoding_video import Encoding_video, FFMPEG_MP4_ENCODE
 import json
@@ -102,6 +103,7 @@ class Encoding_video_model(Encoding_video):
             video_to_encode.duration = info_video["duration"]
             video_to_encode.save()
 
+
             mp3_files = info_video["list_mp3_files"]
             for audio_file in mp3_files:
                 encoding, created = EncodingAudio.objects.get_or_create(
@@ -109,7 +111,7 @@ class Encoding_video_model(Encoding_video):
                     video=video_to_encode,
                     encoding_format="audio/mp3",
                     # need to double check path
-                    source_file=os.path.join(settings.MEDIA_ROOT, mp3_files[audio_file])
+                    source_file=os.path.join(get_storage_path_video(video_to_encode,  mp3_files[audio_file]))
                 )
 
             for list_video in ['list_hls_files', "list_mp4_files"]:
@@ -123,7 +125,8 @@ class Encoding_video_model(Encoding_video):
                         rendition=rendition,
                         encoding_format="video/mp4",
                         # need to double check path
-                        source_file=os.path.join(settings.MEDIA_ROOT, mp4_files[video_file])
+                        
+                        source_file=os.path.join(get_storage_path_video(video_to_encode,  mp4_files[video_file]))
                     )
 
             #Need to modify start and stop
@@ -155,12 +158,14 @@ class Encoding_video_model(Encoding_video):
             for sub in list_subtitle_files:
                 home = UserFolder.objects.get(name="Home", owner=video_to_encode.owner)
                 podfile, created = CustomFileModel.objects.get_or_create(
-                    file=os.path.join(settings.MEDIA_ROOT, list_subtitle_files[sub][1]),
+                    file=os.path.join(get_storage_path_video(video_to_encode,  list_subtitle_files[sub][1])),
                     name=list_subtitle_files[sub][1],
                     description="A subtitle file",
                     created_by=video_to_encode.owner,
                     folder=home
                 )
+
+                
 
                 Track.objects.get_or_create(
                     video=video_to_encode,
