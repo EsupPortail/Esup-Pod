@@ -16,6 +16,7 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
 
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
@@ -25,9 +26,11 @@ from .utils import api_call
 SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 BBB_API_URL = getattr(settings, "BBB_API_URL", "")
 BBB_SECRET_KEY = getattr(settings, "BBB_SECRET_KEY", "")
-BBB_LOGOUT_URL = getattr(settings, "BBB_LOGOUT_URL", "".join(
-            ["//", get_current_site(None).domain]
-        ))
+BBB_LOGOUT_URL = getattr(
+    settings,
+    "BBB_LOGOUT_URL",
+    "".join(["https://", get_current_site(None).domain])
+)
 
 
 meeting_to_bbb = {
@@ -230,6 +233,7 @@ class Meeting(models.Model):
         blank=True,
         max_length=100,
         verbose_name=_("Internal Meeting ID"),
+        editable=False
     )
     voice_bridge = models.IntegerField(
         null=True, blank=True, verbose_name=_("Voice Bridge"),
@@ -240,22 +244,6 @@ class Meeting(models.Model):
         blank=True,
         max_length=100,
         verbose_name=_("BBB Create Time"),
-    )
-
-    # Hook related info
-    hook_id = models.CharField(
-        null=True,
-        blank=True,
-        max_length=50,
-        default="",
-        verbose_name=_("Hook ID received from BBB"),
-    )
-    hook_url = models.CharField(
-        default="",
-        max_length=500,
-        null=True,
-        blank=True,
-        verbose_name=_("Hook URL"),
     )
 
     # Time related Info
@@ -289,7 +277,7 @@ class Meeting(models.Model):
         ).hexdigest()
 
     # BBB API
-    def create(self):
+    def create(self, request=None):
         action = "create"
         parameters = {}
         for param in meeting_to_bbb:
@@ -299,6 +287,11 @@ class Meeting(models.Model):
                 })
         # let duration and voiceBridge to default value
         parameters["logoutURL"] = BBB_LOGOUT_URL
+        endCallbackUrl = "".join([
+            "https://",
+            get_current_site(None).domain,
+            reverse("meeting:end_callback", kwargs={'meeting_id' : self.meeting_id})])
+        parameters["meta_endCallbackUrl"] = endCallbackUrl
         query = urlencode(parameters)
         hashed = api_call(query, action)
         url = urljoin(BBB_API_URL, action)
@@ -366,22 +359,18 @@ class Meeting(models.Model):
         return url
 
     def update_data_from_bbb(self, meeting_json):
-        change = False
         for key in meeting_json:
             if (
                 key in meeting_to_bbb.keys()
                 and getattr(self, meeting_to_bbb[key], "") != meeting_json[key]
             ):
                 setattr(self, meeting_to_bbb[key], meeting_json[key])
-                change = True
         if meeting_json.get("internalMeetingID"):
             self.internal_meeting_id = meeting_json["internalMeetingID"]
-            change = True
         if meeting_json.get("createTime"):
             self.bbb_create_time = meeting_json["createTime"]
-            change = True
-        if change:
-            self.save()
+        self.is_running = True
+        self.save()
 
     def get_is_meeting_running(self):
         action = "isMeetingRunning"
@@ -414,6 +403,8 @@ class Meeting(models.Model):
             raise ValueError(msg)
         else:
             status = True if meeting_json.get('running', False) == "true" else False
+            self.is_running = status
+            self.save()
             return status
 
     def end(self):

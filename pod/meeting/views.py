@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
@@ -215,7 +215,7 @@ def join(request, meeting_id, direct_access=None):
 def join_as_moderator(request, meeting):
     messages.add_message(request, messages.INFO, _("Join as moderator !"))
     try:
-        created = meeting.create()
+        created = meeting.create(request)
         if created:
             # get user name and redirect to BBB with moderator rights
             fullname = request.user.get_full_name() if (
@@ -333,6 +333,7 @@ def get_meeting_access(request, meeting):
     else:
         return True
 
+
 @csrf_protect
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
@@ -349,8 +350,8 @@ def status(request, meeting_id):
             request, messages.ERROR, _("You cannot delete this meeting.")
         )
         raise PermissionDenied
-    
     return JsonResponse({"status": meeting.get_is_meeting_running()}, safe=False)
+
 
 @csrf_protect
 @ensure_csrf_cookie
@@ -369,7 +370,6 @@ def end(request, meeting_id):
         )
         raise PermissionDenied
     try:
-        ended = meeting.end()
         return JsonResponse({"end": meeting.end()}, safe=False)
     except ValueError as ve:
         args = ve.args[0]
@@ -377,3 +377,12 @@ def end(request, meeting_id):
         for key in args:
             msg += ("<b>%s:</b> %s<br/>" % (key, args[key]))
         return JsonResponse({"end": True, "msg": mark_safe(msg)}, safe=False)
+
+
+def end_callback(request, meeting_id):
+    meeting = get_object_or_404(
+        Meeting, meeting_id=meeting_id, site=get_current_site(request)
+    )
+    meeting.is_running = False
+    meeting.save()
+    return HttpResponse()
