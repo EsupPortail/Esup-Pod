@@ -140,13 +140,6 @@ class Encoding_video_model(Encoding_video):
                     log_to_text = log_to_text + "- " + logcate + " : \n" + str(logdetails[logcate]) + "\n"
             log_to_text = log_to_text + "End : " + str(info_video['stop'])
 
-            list_subtitle_track = info_video["list_subtitle_track"]
-            for track in list_subtitle_track:
-                # I don't know what to do with these values
-                # Verify main script 
-                # + verify when empty
-                language = list_subtitle_track[track]['language']
-
             list_image_track = info_video["list_image_track"]
             for track in list_subtitle_track:
                 print("nothing")
@@ -174,9 +167,6 @@ class Encoding_video_model(Encoding_video):
                 )
 
 
-
-
-            
             list_thumbnail_files = info_video["list_thumbnail_files"]
             first = True
 
@@ -197,9 +187,11 @@ class Encoding_video_model(Encoding_video):
                     video_to_encode.save()
                     first = False
 
+            list_overview_files = info_video['list_overview_files']
+            png_overview = list_overview_files["0"]
+            vtt_overview = list_overview_files["1"]
+            # Ask what to save vtt or png ? 
 
-            #Missing list overview file
-            #Missing thumbnail 
             encoding_log, created = EncodingLog.objects.get_or_create(
                 video=video_to_encode,
                 log=log_to_text)
