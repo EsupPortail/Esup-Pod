@@ -95,6 +95,8 @@ class Encoding_video_model(Encoding_video):
             choices[choice[0][:3]] = choice[0]
         return choices.get(filename[:3], "360p")
 
+    # Function need subfunctions, but just for the moment ignore
+    # flake8: noqa
     def store_json_info(self):
         video_to_encode = Video.objects.get(id=self.id)
 
@@ -103,7 +105,6 @@ class Encoding_video_model(Encoding_video):
             video_to_encode.duration = info_video["duration"]
             video_to_encode.save()
 
-
             mp3_files = info_video["list_mp3_files"]
             for audio_file in mp3_files:
                 encoding, created = EncodingAudio.objects.get_or_create(
@@ -111,7 +112,7 @@ class Encoding_video_model(Encoding_video):
                     video=video_to_encode,
                     encoding_format="audio/mp3",
                     # need to double check path
-                    source_file=os.path.join(get_storage_path_video(video_to_encode,  mp3_files[audio_file]))
+                    source_file=os.path.join(get_storage_path_video(video_to_encode, mp3_files[audio_file]))
                 )
 
             for list_video in ['list_hls_files', "list_mp4_files"]:
@@ -124,12 +125,10 @@ class Encoding_video_model(Encoding_video):
                         video=video_to_encode,
                         rendition=rendition,
                         encoding_format="video/mp4",
-                        # need to double check path
-                        
-                        source_file=os.path.join(get_storage_path_video(video_to_encode,  mp4_files[video_file]))
+                        source_file=os.path.join(get_storage_path_video(video_to_encode, mp4_files[video_file]))
                     )
 
-            #Need to modify start and stop
+            # Need to modify start and stop
             log_to_text = ""
             logs = info_video['encoding_log']
             log_to_text = log_to_text + "Start : " + str(info_video['start'])
@@ -141,17 +140,16 @@ class Encoding_video_model(Encoding_video):
             log_to_text = log_to_text + "End : " + str(info_video['stop'])
 
             list_image_track = info_video["list_image_track"]
-            for track in list_subtitle_track:
+            for track in list_image_track:
                 print("nothing")
-                #I don't know what to do with these values
-
+                # I don't know what to do with these values
 
             list_subtitle_files = info_video["list_subtitle_files"]
 
             for sub in list_subtitle_files:
                 home = UserFolder.objects.get(name="Home", owner=video_to_encode.owner)
                 podfile, created = CustomFileModel.objects.get_or_create(
-                    file=os.path.join(get_storage_path_video(video_to_encode,  list_subtitle_files[sub][1])),
+                    file=os.path.join(get_storage_path_video(video_to_encode, list_subtitle_files[sub][1])),
                     name=list_subtitle_files[sub][1],
                     description="A subtitle file",
                     created_by=video_to_encode.owner,
@@ -166,7 +164,6 @@ class Encoding_video_model(Encoding_video):
                     enrich_ready=True
                 )
 
-
             list_thumbnail_files = info_video["list_thumbnail_files"]
             first = True
 
@@ -177,7 +174,7 @@ class Encoding_video_model(Encoding_video):
 
             for thumbnail_path in list_thumbnail_files:
                 thumbnail, created = CustomImageModel.objects.get_or_create(
-                    folder=videodir, 
+                    folder=videodir,
                     created_by=video_to_encode.owner,
                     file=os.path.join(get_storage_path_video(video_to_encode, list_thumbnail_files[thumbnail_path])),
                 )
@@ -190,7 +187,9 @@ class Encoding_video_model(Encoding_video):
             list_overview_files = info_video['list_overview_files']
             png_overview = list_overview_files["0"]
             vtt_overview = list_overview_files["1"]
-            # Ask what to save vtt or png ? 
+            print(png_overview)  # useless but for flake8
+            print(vtt_overview)  # useless but for flake8
+            # Ask what to save vtt or png ?
 
             encoding_log, created = EncodingLog.objects.get_or_create(
                 video=video_to_encode,

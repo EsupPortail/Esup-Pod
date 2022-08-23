@@ -4,6 +4,7 @@ import os
 import time
 from webvtt import WebVTT, Caption
 import argparse
+import unicodedata
 
 if __name__ == "__main__":
     from encoding_utils import (
@@ -565,6 +566,7 @@ def fix_input(input):
         print("Encoding file {} \n".format(filename))
     return filename
 
+
 """
   remote encode ???
 """
@@ -578,12 +580,11 @@ if __name__ == "__main__":
         "--input", required=True, help="name of input file to encode"
     )
 
-
     args = parser.parse_args()
     print(args.start)
     filename = fix_input(args.input)
     encoding_video = Encoding_video(args.id, filename)
     # error if uncommented
-    #encoding_video.encoding_log += start
+    # encoding_video.encoding_log += start
     # AttributeError: 'NoneType' object has no attribute 'get'
     encoding_video.start_encode()
