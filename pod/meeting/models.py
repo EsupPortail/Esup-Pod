@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
+from django.contrib.sites.shortcuts import get_current_site
 
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
@@ -24,6 +25,9 @@ from .utils import api_call
 SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 BBB_API_URL = getattr(settings, "BBB_API_URL", "")
 BBB_SECRET_KEY = getattr(settings, "BBB_SECRET_KEY", "")
+BBB_LOGOUT_URL = getattr(settings, "BBB_LOGOUT_URL", "".join(
+            ["//", get_current_site(None).domain]
+        ))
 
 
 meeting_to_bbb = {
@@ -150,7 +154,7 @@ class Meeting(models.Model):
 
     # Configs
     max_participants = models.IntegerField(
-        default=10, verbose_name=_("Max Participants")
+        default=100, verbose_name=_("Max Participants")
     )
     welcome_text = models.TextField(
         default=_("Welcome!"), verbose_name=_("Meeting Text in Bigbluebutton")
@@ -228,8 +232,14 @@ class Meeting(models.Model):
         verbose_name=_("Internal Meeting ID"),
     )
     voice_bridge = models.IntegerField(
-        max_length=50, null=True, blank=True, verbose_name=_("Voice Bridge"),
+        null=True, blank=True, verbose_name=_("Voice Bridge"),
         default=70000 + random.randint(0, 9999)
+    )
+    bbb_create_time = models.CharField(
+        null=True,
+        blank=True,
+        max_length=100,
+        verbose_name=_("BBB Create Time"),
     )
 
     # Hook related info
@@ -288,10 +298,11 @@ class Meeting(models.Model):
                     param: getattr(self, meeting_to_bbb[param], ""),
                 })
         # let duration and voiceBridge to default value
+        parameters["logoutURL"] = BBB_LOGOUT_URL
         query = urlencode(parameters)
         hashed = api_call(query, action)
         url = urljoin(BBB_API_URL, action)
-        url = url + "?%s" % hashed[:-2]
+        url = url + "?%s" % hashed
         print("URL : %s" % url)
         response = requests.get(url)
         if response.status_code != 200:
@@ -317,6 +328,43 @@ class Meeting(models.Model):
             self.update_data_from_bbb(meeting_json)
             return True
 
+    def get_join_url(self, fullname, role, userID=""):
+        """
+        fullName  (required)
+        meetingID  (required)
+        password  (required)
+        role  (required) : MODERATOR or VIEWER
+        createTime
+        userID
+        """
+        if role not in ["MODERATOR", "VIEWER"]:
+            msg = {}
+            msg["error"] = '''
+                Define user role for the meeting. Valid values are MODERATOR or VIEWER
+            '''
+            msg["returncode"] = ""
+            msg["messageKey"] = ""
+            msg["message"] = ""
+            raise ValueError(msg)
+        action = 'join'
+        parameters = {}
+        parameters["fullName"] = fullname
+        parameters["meetingID"] = self.meeting_id
+        parameters["role"] = role
+        if role == "MODERATOR":
+            parameters["password"] = self.moderator_password
+        if role == "VIEWER":
+            parameters["password"] = self.attendee_password
+        if userID != "":
+            parameters["userID"] = userID
+        if self.bbb_create_time:
+            parameters["createTime"] = self.bbb_create_time
+        query = urlencode(parameters)
+        hashed = api_call(query, action)
+        url = urljoin(BBB_API_URL, action)
+        url = url + "?%s" % hashed
+        return url
+
     def update_data_from_bbb(self, meeting_json):
         change = False
         for key in meeting_json:
@@ -329,8 +377,77 @@ class Meeting(models.Model):
         if meeting_json.get("internalMeetingID"):
             self.internal_meeting_id = meeting_json["internalMeetingID"]
             change = True
+        if meeting_json.get("createTime"):
+            self.bbb_create_time = meeting_json["createTime"]
+            change = True
         if change:
             self.save()
+
+    def get_is_meeting_running(self):
+        action = "isMeetingRunning"
+        parameters = {}
+        parameters["meetingID"] = self.meeting_id
+        query = urlencode(parameters)
+        hashed = api_call(query, action)
+        url = urljoin(BBB_API_URL, action)
+        url = url + "?%s" % hashed
+        print("URL : %s" % url)
+        response = requests.get(url)
+        if response.status_code != 200:
+            msg = {}
+            msg["error"] = 'Unable to call BBB server.'
+            msg["returncode"] = response.status_code
+            msg["message"] = response.content.decode('utf-8')
+            raise ValueError(msg)
+        result = response.content.decode('utf-8')
+        print("RESULT : %s" % result)
+        xmldoc = et.fromstring(result)
+        meeting_json = {}
+        for elt in xmldoc:
+            meeting_json[elt.tag] = elt.text
+        if meeting_json.get('returncode', "") != 'SUCCESS':
+            msg = {}
+            msg["error"] = 'Unable to create meeting ! '
+            msg["returncode"] = meeting_json.get('returncode', "")
+            msg["messageKey"] = meeting_json.get('messageKey', "")
+            msg["message"] = meeting_json.get('message', "")
+            raise ValueError(msg)
+        else:
+            status = True if meeting_json.get('running', False) == "true" else False
+            return status
+
+    def end(self):
+        action = "end"
+        parameters = {}
+        parameters["meetingID"] = self.meeting_id
+        parameters["password"] = self.moderator_password
+        query = urlencode(parameters)
+        hashed = api_call(query, action)
+        url = urljoin(BBB_API_URL, action)
+        url = url + "?%s" % hashed
+        print("URL : %s" % url)
+        response = requests.get(url)
+        if response.status_code != 200:
+            msg = {}
+            msg["error"] = 'Unable to call BBB server.'
+            msg["returncode"] = response.status_code
+            msg["message"] = response.content.decode('utf-8')
+            raise ValueError(msg)
+        result = response.content.decode('utf-8')
+        print("RESULT : %s" % result)
+        xmldoc = et.fromstring(result)
+        meeting_json = {}
+        for elt in xmldoc:
+            meeting_json[elt.tag] = elt.text
+        if meeting_json.get('returncode', "") != 'SUCCESS':
+            msg = {}
+            msg["error"] = 'Unable to end meeting ! '
+            msg["returncode"] = meeting_json.get('returncode', "")
+            msg["messageKey"] = meeting_json.get('messageKey', "")
+            msg["message"] = meeting_json.get('message', "")
+            raise ValueError(msg)
+        else:
+            return True
 
     class Meta:
         db_table = "meeting"

@@ -47,7 +47,8 @@
   </div>
 </form>
 {% else %}
-<p>Get meeting status !</p>
+<p>{% trans "Unable to access to this meeting" %}</p>
+<p><a href="/">{% trans "Back to home" %}</a></p>
 {% endif %}
 {% endblock page_content %}
 

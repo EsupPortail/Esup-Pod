@@ -1,9 +1,10 @@
 from django.shortcuts import render
 
-# from django.http import HttpResponse
+from django.http import JsonResponse
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
+from django.utils.html import mark_safe
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import SuspiciousOperation
 from django.views.decorators.csrf import csrf_protect
@@ -180,8 +181,7 @@ def join(request, meeting_id, direct_access=None):
         request.user == meeting.owner
         or request.user in meeting.additional_owners.all()
     ):
-        messages.add_message(request, messages.INFO, _("Join as moderator !"))
-        # get user name and redirect to BBB with moderator rights
+        return join_as_moderator(request, meeting)
 
     if direct_access and direct_access != meeting.get_hashkey():
         raise SuspiciousOperation("Invalid access")
@@ -193,6 +193,11 @@ def join(request, meeting_id, direct_access=None):
             request, messages.INFO, _("Join as attendee !")
         )
         # get user name and redirect to BBB
+        fullname = request.user.get_full_name() if (
+            request.user.get_full_name() != ""
+        ) else request.user.get_username()
+        join_url = meeting.get_join_url(fullname, "VIEWER", request.user.get_username())
+        return redirect(join_url)
     form = None
     if show_page :
         remove_password_in_form = direct_access is not None
@@ -205,6 +210,42 @@ def join(request, meeting_id, direct_access=None):
         "meeting/join.html",
         {"meeting": meeting, "form": form},
     )
+
+
+def join_as_moderator(request, meeting):
+    messages.add_message(request, messages.INFO, _("Join as moderator !"))
+    try:
+        created = meeting.create()
+        if created:
+            # get user name and redirect to BBB with moderator rights
+            fullname = request.user.get_full_name() if (
+                request.user.get_full_name() != ""
+            ) else request.user.get_username()
+            join_url = meeting.get_join_url(
+                fullname,
+                "MODERATOR",
+                request.user.get_username()
+            )
+            return redirect(join_url)
+        else:
+            msg = 'Unable to create meeting ! '
+            messages.add_message(request, messages.ERROR, msg)
+            return render(
+                request,
+                "meeting/join.html",
+                {"meeting": meeting, "form": None},
+            )
+    except ValueError as ve:
+        args = ve.args[0]
+        msg = ""
+        for key in args:
+            msg += ("<b>%s:</b> %s<br/>" % (key, args[key]))
+        messages.add_message(request, messages.ERROR, mark_safe(msg))
+        return render(
+            request,
+            "meeting/join.html",
+            {"meeting": meeting, "form": None},
+        )
 
 
 def check_user(request):
@@ -236,6 +277,9 @@ def check_form(request, meeting, remove_password_in_form):
                     request, messages.INFO, _("Join as attendee !")
                 )
                 # get user name from form and redirect to BBB
+                fullname = form.cleaned_data["name"]
+                join_url = meeting.get_join_url(fullname, "VIEWER")
+                return redirect(join_url)
             else:
                 messages.add_message(
                     request,
@@ -288,3 +332,48 @@ def get_meeting_access(request, meeting):
         )
     else:
         return True
+
+@csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
+def status(request, meeting_id):
+    meeting = get_object_or_404(
+        Meeting, meeting_id=meeting_id, site=get_current_site(request)
+    )
+
+    if request.user != meeting.owner and not (
+        request.user.is_superuser
+        or request.user.has_perm("meeting.delete_meeting")
+    ):
+        messages.add_message(
+            request, messages.ERROR, _("You cannot delete this meeting.")
+        )
+        raise PermissionDenied
+    
+    return JsonResponse({"status": meeting.get_is_meeting_running()}, safe=False)
+
+@csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
+def end(request, meeting_id):
+    meeting = get_object_or_404(
+        Meeting, meeting_id=meeting_id, site=get_current_site(request)
+    )
+
+    if request.user != meeting.owner and not (
+        request.user.is_superuser
+        or request.user.has_perm("meeting.delete_meeting")
+    ):
+        messages.add_message(
+            request, messages.ERROR, _("You cannot delete this meeting.")
+        )
+        raise PermissionDenied
+    try:
+        ended = meeting.end()
+        return JsonResponse({"end": meeting.end()}, safe=False)
+    except ValueError as ve:
+        args = ve.args[0]
+        msg = ""
+        for key in args:
+            msg += ("<b>%s:</b> %s<br/>" % (key, args[key]))
+        return JsonResponse({"end": True, "msg": mark_safe(msg)}, safe=False)
