@@ -41,11 +41,44 @@
         &nbsp;
         <a href="{% url 'meeting:delete' meeting.meeting_id %}" title="{% trans 'Edit the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
       </td>
-      <td>{{meeting.get_is_meeting_running}} - {% if meeting.get_is_meeting_running %} <span class="alert alert-primary" role="alert" ><i class="bi bi-person-video2"></i></span>{% else %}<span class="alert alert-danger" role="alert"><i class="bi bi-person-x-fill"></i></span>{% endif %}</td>
+      <td>
+        {% if meeting.get_is_meeting_running %}
+        <button type="button" class="alert alert-primary" data-bs-toggle="modal" data-bs-target="#meetingModal" 
+          data-bs-meeting-id="{{meeting.meeting_id}}" data-bs-meeting-title="{{meeting.name}}" 
+          data-bs-meeting-end-url="{% url 'meeting:end' meeting.meeting_id %}" data-bs-meeting-info-url="{% url 'meeting:get_meeting_info' meeting.meeting_id %}">
+          <span class="alert alert-primary" role="alert" ><i class="bi bi-person-video2"></i></span>
+        </button>
+        {% else %}
+        <span class="alert alert-danger" role="alert"><i class="bi bi-person-x-fill"></i></span>
+        {% endif %}
+      </td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
+
+<!-- Modal -->
+<div class="modal fade" id="meetingModal" tabindex="-1" aria-labelledby="meetingModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i></button>
+        <a href="#" title="{% trans 'End the meeting'%}" class="btn btn-primary endlink" >
+          <i class="bi bi-stop-btn-fill"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 {% endblock page_content %}
 
 {% block collapse_page_aside %}
@@ -55,4 +88,60 @@
 {% endblock page_aside %}
 
 {% block more_script %}
+<script>
+var meetingModal = document.getElementById('meetingModal')
+meetingModal.addEventListener('show.bs.modal', function (event) {
+  // Button that triggered the modal
+  const button = event.relatedTarget
+  // Extract info from data-bs-* attributes
+  const meeting_id = button.getAttribute('data-bs-meeting-id')
+  const title = button.getAttribute('data-bs-meeting-title')
+  const endurl = button.getAttribute('data-bs-meeting-end-url')
+  const modalHref = button.getAttribute('data-bs-meeting-info-url');
+
+  fetch(modalHref, {
+      method: 'GET',
+  }).then((response) => {
+      if (!response.ok) throw Error(response.statusText);
+      return response.json();
+  }).then(function(data){
+      if(data.msg != "") {
+        modalBody.innerHTML = "{% trans "Unable to find information about the meeting" %}"
+        console.log(msg)
+      } else {
+        modalBody.innerHTML = generateHtml(data.info)
+      }
+  }).catch((error) => {
+      console.error(error);
+  });
+
+  //
+  // Update the modal's content.
+  const modalTitle = meetingModal.querySelector('.modal-title')
+  const modalBody = meetingModal.querySelector('.modal-body')
+  const modalFooterEndLink = meetingModal.querySelector('.modal-footer a.endlink')
+
+  modalTitle.textContent = title
+  modalBody.textContent = meeting_id
+  modalFooterEndLink.setAttribute("href", endurl)
+
+})
+
+function generateHtml(data, level=0) {
+  html = "<ul>"
+  for (let k in data) {
+    if (typeof data[k] === "object") {
+      html += generateHtml(data[k], level++)
+    } else {
+      html += "<li><b>" + k + " :</b> " + data[k] + "</li>";
+    }
+  }
+  html += "<ul>"
+  return html
+}
+
+
+</script>
+
+
 {% endblock more_script %}

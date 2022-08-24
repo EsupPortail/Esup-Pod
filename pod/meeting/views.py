@@ -58,7 +58,7 @@ def add_or_edit(request, meeting_id=None):
         and (request.user not in meeting.additional_owners.all())
     ):
         messages.add_message(
-            request, messages.ERROR, _("You cannot edit this video.")
+            request, messages.ERROR, _("You cannot edit this meeting.")
         )
         raise PermissionDenied
 
@@ -170,11 +170,12 @@ def delete(request, meeting_id):
 
 @csrf_protect
 @ensure_csrf_cookie
+# flake8: noqa: C901
 def join(request, meeting_id, direct_access=None):
     try:
         id = int(meeting_id[: meeting_id.find("-")])
     except ValueError:
-        raise SuspiciousOperation("Invalid video id")
+        raise SuspiciousOperation("Invalid meeting id")
     meeting = get_object_or_404(Meeting, id=id, site=get_current_site(request))
 
     if request.user.is_authenticated and (
@@ -186,12 +187,17 @@ def join(request, meeting_id, direct_access=None):
     if direct_access and direct_access != meeting.get_hashkey():
         raise SuspiciousOperation("Invalid access")
 
+    if meeting.get_is_meeting_running() is not True:
+        return render(
+            request,
+            "meeting/join.html",
+            {"meeting": meeting, "form": None},
+        )
+
     show_page = get_meeting_access(request, meeting)
 
     if show_page and direct_access and request.user.is_authenticated:
-        messages.add_message(
-            request, messages.INFO, _("Join as attendee !")
-        )
+        # join as attendee
         # get user name and redirect to BBB
         fullname = request.user.get_full_name() if (
             request.user.get_full_name() != ""
@@ -213,7 +219,7 @@ def join(request, meeting_id, direct_access=None):
 
 
 def join_as_moderator(request, meeting):
-    messages.add_message(request, messages.INFO, _("Join as moderator !"))
+    # messages.add_message(request, messages.INFO, _("Join as moderator !"))
     try:
         created = meeting.create(request)
         if created:
@@ -261,21 +267,29 @@ def check_user(request):
 
 
 def check_form(request, meeting, remove_password_in_form):
+    current_user = request.user if request.user.is_authenticated else None
     form = MeetingPasswordForm(
-        current_user=request.user,
+        current_user=current_user,
         remove_password=remove_password_in_form,
     )
     if request.method == "POST":
         form = MeetingPasswordForm(
             request.POST,
-            current_user=request.user,
+            current_user=current_user,
             remove_password=remove_password_in_form,
         )
         if form.is_valid():
-            if form.cleaned_data["password"] == meeting.attendee_password :
-                messages.add_message(
-                    request, messages.INFO, _("Join as attendee !")
+            access_granted = (
+                remove_password_in_form
+                or (
+                    not remove_password_in_form
+                    and form.cleaned_data["password"] == meeting.attendee_password
                 )
+            )
+            if access_granted :
+                # messages.add_message(
+                #     request, messages.INFO, _("Join as attendee !")
+                # )
                 # get user name from form and redirect to BBB
                 fullname = form.cleaned_data["name"]
                 join_url = meeting.get_join_url(fullname, "VIEWER")
@@ -314,10 +328,6 @@ def get_meeting_access(request, meeting):
     """Return True if access is granted to current user."""
     is_restricted = meeting.is_restricted
     is_restricted_to_group = meeting.restrict_access_to_groups.all().exists()
-    """
-    is_password_protected = (video.password is not None
-                             and video.password != '')
-    """
     is_access_protected = is_restricted or is_restricted_to_group
     if is_access_protected:
         access_granted_for_restricted = (
@@ -336,12 +346,12 @@ def get_meeting_access(request, meeting):
 
 @csrf_protect
 @ensure_csrf_cookie
-@login_required(redirect_field_name="referrer")
+# @login_required(redirect_field_name="referrer")
 def status(request, meeting_id):
     meeting = get_object_or_404(
         Meeting, meeting_id=meeting_id, site=get_current_site(request)
     )
-
+    """
     if request.user != meeting.owner and not (
         request.user.is_superuser
         or request.user.has_perm("meeting.delete_meeting")
@@ -350,6 +360,7 @@ def status(request, meeting_id):
             request, messages.ERROR, _("You cannot delete this meeting.")
         )
         raise PermissionDenied
+    """
     return JsonResponse({"status": meeting.get_is_meeting_running()}, safe=False)
 
 
@@ -369,14 +380,59 @@ def end(request, meeting_id):
             request, messages.ERROR, _("You cannot delete this meeting.")
         )
         raise PermissionDenied
+    msg = ""
     try:
-        return JsonResponse({"end": meeting.end()}, safe=False)
+        meeting.end()
     except ValueError as ve:
         args = ve.args[0]
         msg = ""
         for key in args:
             msg += ("<b>%s:</b> %s<br/>" % (key, args[key]))
-        return JsonResponse({"end": True, "msg": mark_safe(msg)}, safe=False)
+        msg = mark_safe(msg)
+    if request.is_ajax():
+        return JsonResponse({"end": meeting.end(), "msg": msg}, safe=False)
+    else:
+        if msg != "":
+            messages.add_message(
+                request, messages.ERROR, msg
+            )
+        return redirect(reverse("meeting:my_meetings"))
+
+
+@csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
+def get_meeting_info(request, meeting_id):
+    meeting = get_object_or_404(
+        Meeting, meeting_id=meeting_id, site=get_current_site(request)
+    )
+
+    if request.user != meeting.owner and not (
+        request.user.is_superuser
+        or request.user.has_perm("meeting.delete_meeting")
+    ):
+        messages.add_message(
+            request, messages.ERROR, _("You cannot delete this meeting.")
+        )
+        raise PermissionDenied
+    msg = ""
+    info = {}
+    try:
+        info = meeting.get_meeting_info()
+    except ValueError as ve:
+        args = ve.args[0]
+        msg = ""
+        for key in args:
+            msg += ("<b>%s:</b> %s<br/>" % (key, args[key]))
+        msg = mark_safe(msg)
+    if request.is_ajax():
+        return JsonResponse({"info": info, "msg": msg}, safe=False)
+    else:
+        if msg != "":
+            messages.add_message(
+                request, messages.ERROR, msg
+            )
+        return JsonResponse({"info": info, "msg": msg}, safe=False)
 
 
 def end_callback(request, meeting_id):

@@ -18,7 +18,7 @@
   {% csrf_token %}
   <div class="list-group">
     <fieldset>
-      <legend>{% trans 'Password required' %}</legend>
+      <legend>{% trans 'Please fill the form below' %}</legend>
       {% if form.errors %}
         <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
       {% endif %}
@@ -47,8 +47,15 @@
   </div>
 </form>
 {% else %}
-<p>{% trans "Unable to access to this meeting" %}</p>
-<p><a href="/">{% trans "Back to home" %}</a></p>
+  {% if meeting.get_is_meeting_running %}
+    <p>{% trans "Unable to access to this meeting" %}</p>
+    <p><a href="/">{% trans "Back to home" %}</a></p>
+  {% else %}
+    <p>{% trans "The meeting has not started yet" %}</p>
+    <p>{% trans "You will be redirected right after the meeting starts" %}</p>
+    <p>{% trans "if not, click on the button below" %}</p>
+    <p><a href="{{ request.get_full_path }}" class="btn btn-primary">{% trans "reload"%}</a></p>
+  {%endif%}
 {% endif %}
 {% endblock page_content %}
 
@@ -59,4 +66,20 @@
 {% endblock page_aside %}
 
 {% block more_script %}
+{% if not meeting.get_is_meeting_running %}
+<script>
+  const interval = setInterval(function() {
+    fetch("{% url 'meeting:status' meeting.meeting_id %}", {
+        method: 'GET',
+    }).then((response) => {
+        if (!response.ok) throw Error(response.statusText);
+        return response.json();
+    }).then(function(data){
+        if(data.status === true) location.reload();
+    }).catch((error) => {
+        console.error(error);
+    });
+  }, 10000);
+</script>
+{% endif %}
 {% endblock more_script %}

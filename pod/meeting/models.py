@@ -21,7 +21,7 @@ from django.urls import reverse
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 
-from .utils import api_call
+from .utils import api_call, parseXmlToJson
 
 SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 BBB_API_URL = getattr(settings, "BBB_API_URL", "")
@@ -296,7 +296,6 @@ class Meeting(models.Model):
         hashed = api_call(query, action)
         url = urljoin(BBB_API_URL, action)
         url = url + "?%s" % hashed
-        print("URL : %s" % url)
         response = requests.get(url)
         if response.status_code != 200:
             msg = {}
@@ -305,7 +304,6 @@ class Meeting(models.Model):
             msg["message"] = response.content.decode('utf-8')
             raise ValueError(msg)
         result = response.content.decode('utf-8')
-        print("RESULT : %s" % result)
         xmldoc = et.fromstring(result)
         meeting_json = {}
         for elt in xmldoc:
@@ -380,7 +378,6 @@ class Meeting(models.Model):
         hashed = api_call(query, action)
         url = urljoin(BBB_API_URL, action)
         url = url + "?%s" % hashed
-        print("URL : %s" % url)
         response = requests.get(url)
         if response.status_code != 200:
             msg = {}
@@ -389,7 +386,6 @@ class Meeting(models.Model):
             msg["message"] = response.content.decode('utf-8')
             raise ValueError(msg)
         result = response.content.decode('utf-8')
-        print("RESULT : %s" % result)
         xmldoc = et.fromstring(result)
         meeting_json = {}
         for elt in xmldoc:
@@ -407,6 +403,34 @@ class Meeting(models.Model):
             self.save()
             return status
 
+    def get_meeting_info(self):
+        action = "getMeetingInfo"
+        parameters = {}
+        parameters["meetingID"] = self.meeting_id
+        query = urlencode(parameters)
+        hashed = api_call(query, action)
+        url = urljoin(BBB_API_URL, action)
+        url = url + "?%s" % hashed
+        response = requests.get(url)
+        if response.status_code != 200:
+            msg = {}
+            msg["error"] = 'Unable to call BBB server.'
+            msg["returncode"] = response.status_code
+            msg["message"] = response.content.decode('utf-8')
+            raise ValueError(msg)
+        result = response.content.decode('utf-8')
+        xmldoc = et.fromstring(result)
+        meeting_json = parseXmlToJson(xmldoc)
+        if meeting_json.get('returncode', "") != 'SUCCESS':
+            msg = {}
+            msg["error"] = 'Unable to get meeting info ! '
+            msg["returncode"] = meeting_json.get('returncode', "")
+            msg["messageKey"] = meeting_json.get('messageKey', "")
+            msg["message"] = meeting_json.get('message', "")
+            raise ValueError(msg)
+        else:
+            return meeting_json
+
     def end(self):
         action = "end"
         parameters = {}
@@ -416,7 +440,6 @@ class Meeting(models.Model):
         hashed = api_call(query, action)
         url = urljoin(BBB_API_URL, action)
         url = url + "?%s" % hashed
-        print("URL : %s" % url)
         response = requests.get(url)
         if response.status_code != 200:
             msg = {}
@@ -425,7 +448,6 @@ class Meeting(models.Model):
             msg["message"] = response.content.decode('utf-8')
             raise ValueError(msg)
         result = response.content.decode('utf-8')
-        print("RESULT : %s" % result)
         xmldoc = et.fromstring(result)
         meeting_json = {}
         for elt in xmldoc:
