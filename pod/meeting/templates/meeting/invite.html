@@ -14,14 +14,14 @@
 {% endblock %}
 
 {% block page_content %}
-<h3 class="page_title">{% trans 'Send invitations to the meeting' %} <b>{{meeting.name}}</b></h3>
+<h1 class="page_title">{% trans 'Send invitations to the meeting' %} <b>{{meeting.name}}</b></h1>
 
 
 <form method="post" action="{{ request.get_full_path }}" id="meeting_invite_form" class='needs-validation' novalidate>
   {% csrf_token %}
   <div class="list-group">
     <fieldset>
-      <legend>{% trans 'Add emails adresses in the form below and click send to invite to your meeting' %}</legend>
+      <legend>{% trans 'Add emails addresses in the form below and click send to invite to your meeting' %}</legend>
       {% if form.errors %}
         <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
       {% endif %}

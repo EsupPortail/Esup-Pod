@@ -13,7 +13,7 @@
 
 
 {% block page_content %}
-<h3 class="page_title">{% trans 'Join the meeting' %} <b>{{meeting.name}}</b></h3>
+<h1 class="page_title">{% trans 'Join the meeting' %} <b>{{meeting.name}}</b></h1>
 {% if form %}
 <form method="post" action="{{ request.get_full_path }}" id="meeting_password_form" class='needs-validation' novalidate>
   {% csrf_token %}

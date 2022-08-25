@@ -5,14 +5,14 @@
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My meetings" %}</li>{% endblock %}
 
-{% block page_title %}
-{% trans "My meetings" %}
-{% endblock %}
+
 
 
 {% block page_content %}
-<div class="container">
-  <a class="initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center" href="{% url 'meeting:add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans "Add a meeting" %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a meeting" %}</span></a>
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+  <a class="initials btn pod-btn-primary btn-sm" href="{% url 'meeting:add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans "Add a meeting" %}">
+    <i class="bi bi-plus pod-add"></i><span>{% trans "Add a meeting" %}</span>
+  </a>
 </div>
 <table class="table table-striped table-hover align-middle">
   <thead>
@@ -30,12 +30,30 @@
   <tbody>
     {% for meeting in meetings %}
     <tr>
-      <th scope="row">{{meeting.name}} {% if meeting.is_restricted %} <span class="btn pod-btn-social btn-sm p-1 m-0 ms-1"><i class="bi bi-lock"></i></span>{% endif %}</th>
+      <th scope="row">{{meeting.name}} {% if meeting.is_restricted %} <span class="btn pod-btn-social btn-sm p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans "Acces to this meeting is restricted" %}"><i class="bi bi-lock"></i></span>{% endif %}</th>
       <td>{{meeting.start_at}}</td>
       <td>{{meeting.end_at}}</td>
-      <td><a href="{% url 'meeting:join' meeting.meeting_id %}" title="{% trans 'Join the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-link" aria-hidden="true"></i></a></td>
+      <td>
+        <div class="d-grid gap-2 d-md-flex">
+          <input class="form-control form-control-sm" id="join-link-{{meeting.meeting_id}}" type="text" value="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id %}">
+          <button type="button" class="btn pod-btn-social p-1 m-0 ms-1 pod-btn-copy" data-bs-target="join-link-{{meeting.meeting_id}}" role="alert" 
+          data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans "Copy the join link" %}">
+            <i class="bi bi-clipboard-check"></i>
+          </button>
+          <a href="{% url 'meeting:join' meeting.meeting_id %}" title="{% trans 'Join the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-link" aria-hidden="true"></i></a>
+        </div>
+      </td>
       <td>{{meeting.attendee_password}}</td>
-      <td><a href="{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}" title="{% trans 'Join the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-link" aria-hidden="true"></i></a></td>
+      <td>
+        <div class="d-grid gap-2 d-md-flex">
+          <input class="form-control form-control-sm" id="join-direct-link-{{meeting.meeting_id}}" type="text" value="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}">
+          <button type="button" class="btn pod-btn-social p-1 m-0 ms-1 pod-btn-copy" data-bs-target="join-direct-link-{{meeting.meeting_id}}" role="alert" 
+          data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans "Copy the direct join link" %}">
+            <i class="bi bi-clipboard-check"></i>
+          </button>
+          <a href="{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}" title="{% trans 'Join the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-link" aria-hidden="true"></i></a>
+        </div>
+      </td>
       <td>
         <a href="{% url 'meeting:edit' meeting.meeting_id %}" title="{% trans 'Edit the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-pencil-square" aria-hidden="true"></i></a>
         &nbsp;
@@ -45,14 +63,15 @@
       </td>
       <td>
         {% if meeting.get_is_meeting_running %}
-        <button type="button" class="alert alert-primary" data-bs-toggle="modal" data-bs-target="#meetingModal" 
+        <button type="button" class="alert alert-primary btn pod-btn-social p-1 m-0 ms-1" data-bs-toggle="modal" data-bs-toggle="tooltip" data-bs-target="#meetingModal" 
           data-bs-meeting-id="{{meeting.meeting_id}}" data-bs-meeting-title="{{meeting.name}}" 
           data-bs-meeting-end-url="{% url 'meeting:end' meeting.meeting_id %}" data-bs-meeting-info-url="{% url 'meeting:get_meeting_info' meeting.meeting_id %}"
+          data-bs-placement="top" title="{% trans "Show meeting informations" %}"
           role="alert" >
           <i class="bi bi-person-video2"></i>
         </button>
         {% else %}
-        <span class="alert alert-danger" role="alert"><i class="bi bi-person-x-fill"></i></span>
+        <span class="alert alert-danger btn pod-btn-social p-1 m-0 ms-1" role="alert"><i class="bi bi-person-x-fill"></i></span>
         {% endif %}
       </td>
     </tr>
@@ -138,7 +157,45 @@ function generateHtml(data, level=0) {
   return html
 }
 
+var copyButtons = document.querySelectorAll('.pod-btn-copy')
+copyButtons.forEach(function (elt) {
+  elt.addEventListener('click', function (event) {
+    // Extract info from data-bs-* attributes
+    const input_id = this.getAttribute('data-bs-target')
+    copyInputValue(input_id)
+  });
+});
 
+function copyInputValue(id) {
+  /* Get the text field */
+  var copyText = document.getElementById(id);
+  /* Select the text field */
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /* For mobile devices */
+   /* Copy the text inside the text field */
+  navigator.clipboard
+      .writeText(copyText.value)
+      .then(() => {
+        //alert("successfully copied");
+        document.body.append(`
+          <div class="alert alert-primary d-flex align-items-center" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+            <div>
+              {% trans "Text copied" %}
+            </div>
+          </div>
+        `);
+        setInterval(function() {
+          var elems = document.querySelectorAll(".alert");
+          elems.forEach(function(el) {
+            el.remove();
+          });
+        }, 10000)
+      })
+      .catch(() => {
+        //alert("something went wrong");
+      });
+} 
 </script>
 
 
