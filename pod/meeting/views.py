@@ -20,7 +20,22 @@ from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm
 from pod.main.views import in_maintenance
 
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = False
-
+BBB_MEETING_INFO = getattr(
+    settings,
+    "BBB_MEETING_INFO",
+    {
+        "meetingName" : _("meeting name"),
+        "hasUserJoined": _("has user joined"),
+        "recording": _("recording"),
+        "participantCount": _("participant count"),
+        "listenerCount": _("listener count"),
+        "moderatorCount": _("moderator count"),
+        "attendees": _("attendees"),
+        "attendee": _("attendee"),
+        "fullName": _("full name"),
+        "role": _("role"),
+    }
+)
 
 @login_required(redirect_field_name="referrer")
 def my_meetings(request):
@@ -421,7 +436,8 @@ def get_meeting_info(request, meeting_id):
     msg = ""
     info = {}
     try:
-        info = meeting.get_meeting_info()
+        meeting_info = meeting.get_meeting_info()
+        info = get_meeting_info_json(meeting_info)
     except ValueError as ve:
         args = ve.args[0]
         msg = ""
@@ -437,6 +453,16 @@ def get_meeting_info(request, meeting_id):
             )
         return JsonResponse({"info": info, "msg": msg}, safe=False)
 
+
+def get_meeting_info_json(info):
+    response = {}
+    for key in info:
+        if BBB_MEETING_INFO.get(key) :
+            if type(info[key]) is str:
+                response["%s" % BBB_MEETING_INFO.get(key)] = info[key]
+            if type(info[key]) is dict:
+                response["%s" % BBB_MEETING_INFO.get(key)] = get_meeting_info_json(info[key])
+    return response
 
 def end_callback(request, meeting_id):
     meeting = get_object_or_404(

@@ -68,12 +68,6 @@
       <div class="modal-body">
         
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i></button>
-        <a href="#" title="{% trans 'End the meeting'%}" class="btn btn-primary endlink" >
-          <i class="bi bi-stop-btn-fill"></i>
-        </a>
-      </div>
     </div>
   </div>
 </div>
@@ -109,7 +103,8 @@ meetingModal.addEventListener('show.bs.modal', function (event) {
         modalBody.innerHTML = "{% trans "Unable to find information about the meeting" %}"
         console.log(msg)
       } else {
-        modalBody.innerHTML = generateHtml(data.info)
+        const modalendlink = '<p><b>{% trans 'End the meeting'%} : </b><a href="'+ endurl +'" title="{% trans 'End the meeting'%}" class="btn btn-primary endlink" ><i class="bi bi-stop-btn-fill"></i></a></p>';
+        modalBody.innerHTML = generateHtml(data.info) + modalendlink
       }
   }).catch((error) => {
       console.error(error);
@@ -119,11 +114,11 @@ meetingModal.addEventListener('show.bs.modal', function (event) {
   // Update the modal's content.
   const modalTitle = meetingModal.querySelector('.modal-title')
   const modalBody = meetingModal.querySelector('.modal-body')
-  const modalFooterEndLink = meetingModal.querySelector('.modal-footer a.endlink')
+  //const modalFooterEndLink = meetingModal.querySelector('.modal-footer a.endlink')
 
   modalTitle.textContent = title
   modalBody.textContent = meeting_id
-  modalFooterEndLink.setAttribute("href", endurl)
+  //modalFooterEndLink.setAttribute("href", endurl)
 
 })
 
@@ -131,12 +126,12 @@ function generateHtml(data, level=0) {
   html = "<ul>"
   for (let k in data) {
     if (typeof data[k] === "object") {
-      html += generateHtml(data[k], level++)
+      html += "<li><b>" + k + " :</b> " + generateHtml(data[k], level++) + "</li>";
     } else {
       html += "<li><b>" + k + " :</b> " + data[k] + "</li>";
     }
   }
-  html += "<ul>"
+  html += "</ul>"
   return html
 }
 
