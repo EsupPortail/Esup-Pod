@@ -1,5 +1,6 @@
 import random
 import string
+import re
 
 from django import forms
 from django.contrib.admin import widgets
@@ -11,6 +12,9 @@ from django.core.exceptions import ValidationError
 from django_select2 import forms as s2forms
 from django.forms.utils import to_current_timezone
 from django.utils import timezone
+
+from django.forms import CharField, Textarea
+from django.core.validators import validate_email
 
 from pod.main.forms import add_placeholder_and_asterisk
 from .models import Meeting, two_hours_hence
@@ -237,7 +241,7 @@ class MeetingForm(forms.ModelForm):
 class MeetingDeleteForm(forms.Form):
     agree = forms.BooleanField(
         label=_("I agree"),
-        help_text=_("Delete meeting cannot be undo"),
+        help_text=_("Delete meeting cannot be undone"),
         widget=forms.CheckboxInput(),
     )
 
@@ -267,3 +271,31 @@ class MeetingPasswordForm(forms.Form):
     def remove_field(self, field):
         if self.fields.get(field):
             del self.fields[field]
+
+
+class EmailsListField(CharField):
+    widget = Textarea
+
+    def clean(self, value):
+        super(EmailsListField, self).clean(value)
+
+        emails = re.compile(r'[^\w\.\-\+@_]+').split(value)
+
+        if not emails:
+            raise ValidationError(_(u'Enter at least one e-mail address.'))
+
+        for email in emails:
+            validate_email(email)
+
+        return emails
+
+
+class MeetingInviteForm(forms.Form):
+    emails = EmailsListField(
+        label=_("Emails"),
+        help_text=_("You can fill one email adress per line"),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(MeetingInviteForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)

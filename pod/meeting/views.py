@@ -14,12 +14,14 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
 
 from .models import Meeting
-from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm
+from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm, MeetingInviteForm
 from pod.main.views import in_maintenance
 
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = False
+DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
 BBB_MEETING_INFO = getattr(
     settings,
     "BBB_MEETING_INFO",
@@ -36,6 +38,7 @@ BBB_MEETING_INFO = getattr(
         "role": _("role"),
     }
 )
+
 
 @login_required(redirect_field_name="referrer")
 def my_meetings(request):
@@ -458,11 +461,13 @@ def get_meeting_info_json(info):
     response = {}
     for key in info:
         if BBB_MEETING_INFO.get(key) :
+            response_key = "%s" % BBB_MEETING_INFO.get(key)
             if type(info[key]) is str:
-                response["%s" % BBB_MEETING_INFO.get(key)] = info[key]
+                response[response_key] = info[key]
             if type(info[key]) is dict:
-                response["%s" % BBB_MEETING_INFO.get(key)] = get_meeting_info_json(info[key])
+                response[response_key] = get_meeting_info_json(info[key])
     return response
+
 
 def end_callback(request, meeting_id):
     meeting = get_object_or_404(
@@ -471,3 +476,86 @@ def end_callback(request, meeting_id):
     meeting.is_running = False
     meeting.save()
     return HttpResponse()
+
+
+@csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
+def invite(request, meeting_id):
+    meeting = get_object_or_404(
+        Meeting, meeting_id=meeting_id, site=get_current_site(request)
+    )
+
+    if request.user != meeting.owner and not (
+        request.user.is_superuser
+        or request.user.has_perm("meeting.delete_meeting")
+    ):
+        messages.add_message(
+            request, messages.ERROR, _("You cannot invite for this meeting.")
+        )
+        raise PermissionDenied
+    form = MeetingInviteForm()
+    if request.method == "POST":
+        form = MeetingInviteForm(request.POST)
+
+        if form.is_valid():
+            emails = form.cleaned_data["emails"]
+            send_invite(request, meeting, emails)
+            messages.add_message(
+                request, messages.INFO, _("Invitations send to recipients.")
+            )
+            return redirect(reverse("meeting:my_meetings"))
+    return render(
+        request,
+        "meeting/invite.html",
+        {"meeting": meeting, "form": form},
+    )
+
+
+def send_invite(request, meeting, emails):
+    subject = _('%(owner)s invites you to the meeting %(meeting_title)s') % {
+        'owner': meeting.owner, 'meeting_title': meeting.name
+    }
+    from_email = DEFAULT_FROM_EMAIL
+    join_link = request.build_absolute_uri(
+        reverse(
+            "meeting:join",
+            args=(meeting.meeting_id,)
+        )
+    )
+    text_content = _('''
+        Hello,
+        %(owner)s invites you to the meeting %(meeting_title)s.
+        Start date : %(start_date)s
+        End date : %(end_date)s
+        Here the link to join the meeting : %(join_link)s
+        You need this password to enter : %(password)s
+        Regards
+    ''') % {
+        'owner': meeting.owner,
+        'meeting_title': meeting.name,
+        'start_date': meeting.start_at,
+        'end_date': meeting.end_at,
+        'join_link': join_link,
+        'password': meeting.attendee_password
+    }
+    html_content = _('''
+        <p>Hello,
+        <p>%(owner)s invites you to the meeting <b>%(meeting_title)s</b>.</p>
+        <p>Start date : %(start_date)s </p>
+        <p>End date : %(end_date)s </p>
+        <p>here the link to join the meeting :
+        <a href="%(join_link)s">%(join_link)s</a></p>
+        <p>You need this password to enter : <b>%(password)s</b> </p>
+        <p>Regards</p>
+    ''') % {
+        'owner': meeting.owner,
+        'meeting_title': meeting.name,
+        'start_date': meeting.start_at,
+        'end_date': meeting.end_at,
+        'join_link': join_link,
+        'password': meeting.attendee_password
+    }
+    msg = EmailMultiAlternatives(subject, text_content, from_email, emails)
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()

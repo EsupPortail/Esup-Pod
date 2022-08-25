@@ -34,10 +34,13 @@ class MeetingAdmin(admin.ModelAdmin):
         "join_url",
         "is_running",  # , 'meeting_actions'
     )
+
     @admin.display(empty_value='')
     def join_url(self, obj):
-        # <a href="{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}" title="{% trans 'Join the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-link" aria-hidden="true"></i></a>
-        direct_join_url = reverse('meeting:join', args=(obj.meeting_id, obj.get_hashkey()))
+        direct_join_url = reverse(
+            'meeting:join',
+            args=(obj.meeting_id, obj.get_hashkey())
+        )
         link = '<a href="%s" target="_blank">%s</a>' % (direct_join_url, _("join"))
         return mark_safe(link)
 

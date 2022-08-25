@@ -17,9 +17,9 @@
 <table class="table table-striped table-hover align-middle">
   <thead>
     <tr>
-      <th scope="col">{% trans "name" %}</th>
-      <th scope="col">{% trans "start" %}</th>
-      <th scope="col">{% trans "end" %}</th>
+      <th scope="col">{% trans "Name" %}</th>
+      <th scope="col">{% trans "Start" %}</th>
+      <th scope="col">{% trans "End" %}</th>
       <th scope="col">{% trans "Join link" %}</th>
       <th scope="col">{% trans "Attendee password" %}</th>
       <th scope="col">{% trans "Direct Join link" %}</th>
@@ -39,14 +39,17 @@
       <td>
         <a href="{% url 'meeting:edit' meeting.meeting_id %}" title="{% trans 'Edit the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-pencil-square" aria-hidden="true"></i></a>
         &nbsp;
-        <a href="{% url 'meeting:delete' meeting.meeting_id %}" title="{% trans 'Edit the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
+        <a href="{% url 'meeting:invite' meeting.meeting_id %}" title="{% trans 'Invite to the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-envelope-fill" aria-hidden="true"></i></a>
+        &nbsp;
+        <a href="{% url 'meeting:delete' meeting.meeting_id %}" title="{% trans 'Delete the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-trash" aria-hidden="true"></i></a>
       </td>
       <td>
         {% if meeting.get_is_meeting_running %}
         <button type="button" class="alert alert-primary" data-bs-toggle="modal" data-bs-target="#meetingModal" 
           data-bs-meeting-id="{{meeting.meeting_id}}" data-bs-meeting-title="{{meeting.name}}" 
-          data-bs-meeting-end-url="{% url 'meeting:end' meeting.meeting_id %}" data-bs-meeting-info-url="{% url 'meeting:get_meeting_info' meeting.meeting_id %}">
-          <span class="alert alert-primary" role="alert" ><i class="bi bi-person-video2"></i></span>
+          data-bs-meeting-end-url="{% url 'meeting:end' meeting.meeting_id %}" data-bs-meeting-info-url="{% url 'meeting:get_meeting_info' meeting.meeting_id %}"
+          role="alert" >
+          <i class="bi bi-person-video2"></i>
         </button>
         {% else %}
         <span class="alert alert-danger" role="alert"><i class="bi bi-person-x-fill"></i></span>
@@ -103,7 +106,7 @@ meetingModal.addEventListener('show.bs.modal', function (event) {
         modalBody.innerHTML = "{% trans "Unable to find information about the meeting" %}"
         console.log(msg)
       } else {
-        const modalendlink = '<p><b>{% trans 'End the meeting'%} : </b><a href="'+ endurl +'" title="{% trans 'End the meeting'%}" class="btn btn-primary endlink" ><i class="bi bi-stop-btn-fill"></i></a></p>';
+        const modalendlink = '<p><a href="'+ endurl +'" title="{% trans 'End the meeting'%}" class="btn btn-primary endlink" >{% trans 'End the meeting'%}</a></p>';
         modalBody.innerHTML = generateHtml(data.info) + modalendlink
       }
   }).catch((error) => {

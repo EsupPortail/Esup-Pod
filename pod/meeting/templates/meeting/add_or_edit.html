@@ -14,7 +14,7 @@
 
 {% block page_title %}
 {% if form.instance.meeting_id and form.instance.meeting_id != '' %}
-{% trans "Edit the meeting" %} "{{form.instance.name}}"
+{% trans "Edit the meeting" %} <b>{{form.instance.name}}</b>
 {% else %}
 {% trans "Add a new meeting" %}
 {% endif %}
@@ -28,7 +28,7 @@
 </p>
 {% else %}
 <h3 class="page_title">{% if form.instance.meeting_id and form.instance.meeting_id != '' %}
-  {% trans "Edit the meeting" %} "{{form.instance.name}}"
+  {% trans "Edit the meeting" %} <b>{{form.instance.name}}</b>
   {% else %}
   {% trans "Add a new meeting" %}
   {% endif %}</h3>
