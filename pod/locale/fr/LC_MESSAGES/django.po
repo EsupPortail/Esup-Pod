@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.1\n"
 
 #: pod/authentication/admin.py:91 pod/main/forms.py:51
 msgid "Email"
@@ -3161,7 +3161,16 @@ msgstr "Accueil"
 msgid "Toggle side Menu"
 msgstr "Afficher/masquer le menu latéral"
 
-#: pod/main/templates/base.html:138
+#: pod/main/templates/base.html:135
+msgid ""
+"We use third party cookies to personalize content, manage session and "
+"analyze site traffic."
+msgstr ""
+"Nous utilisons des cookies pour personnaliser l’affichage (barre de menu de "
+"droite, mode sombre ou dyslexie etc.), gérer la session (authentification) "
+"et analyser le trafic du site (pour certaines instances)."
+
+#: pod/main/templates/base.html:137
 msgid "Learn more"
 msgstr "En savoir plus"
 
@@ -3336,6 +3345,7 @@ msgstr "Enregistreur"
 msgid "My channels"
 msgstr "Mes chaînes"
 
+
 #: pod/main/templates/navbar.html:199
 #: pod/playlist/templates/my_playlists.html:10
 #: pod/playlist/templates/playlist.html:14 pod/playlist/views.py:48
@@ -3434,10 +3444,6 @@ msgstr ""
 msgid "Voice bridge must be a 5-digit number in the range 10000 to 99999"
 msgstr ""
 "Le pont vocal doit être un nombre à 5 chiffres compris entre 10 000 et 99 999"
-
-#: pod/meeting/forms.py:243 pod/recorder/forms.py:92 pod/video/forms.py:946
-msgid "I agree"
-msgstr "J'accepte"
 
 #: pod/meeting/forms.py:244
 msgid "Delete meeting cannot be undone"
@@ -4335,6 +4341,10 @@ msgstr "Supprimer cet enregistrement"
 msgid "If checked, record will be deleted instead of saving it"
 msgstr "Si coché, l'enregistrement sera supprimé et non ajouté"
 
+#: pod/recorder/forms.py:92 pod/video/forms.py:946
+msgid "I agree"
+msgstr "J'accepte"
+
 #: pod/recorder/forms.py:93
 msgid "Delete this record cannot be undo"
 msgstr "La suppression d'un enregistrement est définitive"
@@ -4373,6 +4383,7 @@ msgid ""
 msgstr ""
 "Attribution - Pas d'Utilisation Commerciale - Pas de Modification 4.0 "
 "International (CC BY-NC-ND 4.0)"
+
 
 #: pod/recorder/models.py:56 pod/video/forms.py:229 pod/video/models.py:102
 msgid "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
@@ -4483,6 +4494,7 @@ msgstr "Voir cette vidéo n'est pas possible sans mot de passe."
 #: pod/video_search/templates/search/search.html:146
 msgid "University course"
 msgstr "Cursus universitaire"
+
 
 #: pod/recorder/models.py:187 pod/video/forms.py:158 pod/video/models.py:695
 msgid "Select an university course as audience target of the content."

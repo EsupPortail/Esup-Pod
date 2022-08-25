@@ -132,10 +132,9 @@
         <div class="modal-body">
           <div class="d-flex align-items-center align-self-center card p-3 text-center cookies">
             <img src="{% static 'img/cookie.svg' %}" alt="" width="50" />
-            <span class="mt-2">{% trans 'We use third party cookies to personalize content, manage session and analyze
-              site traffic.' %}</span>
+            <span class="mt-2">{% trans 'We use third party cookies to personalize content, manage session and analyze site traffic.' %}</span>
             {% if COOKIE_LEARN_MORE != "" %}
-            <a class="d-flex align-items-center" href="{{COOKIE_LEARN_MORE}}">{% trans 'Learn more' %}<i class="fa fa-angle-right ms-2"></i></a>
+              <a class="d-flex align-items-center" href="{{COOKIE_LEARN_MORE}}">{% trans 'Learn more' %}<i class="bi bi-caret-right ms-2"></i></a>
             {% endif %}
             <button class="btn btn-dark mt-3 px-4" type="button" id='okcookie'>{% trans 'I understand' %}</button>
           </div>
