@@ -159,7 +159,7 @@ class TestCategory(TestCase):
                         "is_restricted": v.is_restricted,
                         "has_chapter": v.chapter_set.all().count() > 0,
                         "has_password": bool(v.password),
-                        "date_added": v.date_added,
+                        "date_added": v.date_added.isoformat(timespec='milliseconds').replace("+00:00", "Z"),
                     },
                     self.cat_1.video.all(),
                 )
