@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-25 14:34+0200\n"
+"POT-Creation-Date: 2022-08-25 14:57+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ncan <nicolas.can@univ-lille.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -155,8 +155,8 @@ msgstr "Changer votre image de profil"
 #: pod/meeting/templates/meeting/add_or_edit.html:34
 #: pod/meeting/templates/meeting/delete.html:32
 #: pod/meeting/templates/meeting/invite.html:26
-#: pod/meeting/templates/meeting/join.html:24 pod/meeting/views.py:119
-#: pod/meeting/views.py:181 pod/meeting/views.py:333 pod/playlist/views.py:217
+#: pod/meeting/templates/meeting/join.html:24 pod/meeting/views.py:122
+#: pod/meeting/views.py:184 pod/meeting/views.py:336 pod/playlist/views.py:217
 #: pod/recorder/templates/recorder/add_recording.html:34
 #: pod/recorder/templates/recorder/record_delete.html:31
 #: pod/recorder/views.py:176 pod/recorder/views.py:376
@@ -1091,7 +1091,7 @@ msgstr "nom / prénom"
 msgid "mail"
 msgstr "courriel"
 
-#: pod/completion/models.py:61 pod/meeting/views.py:38
+#: pod/completion/models.py:61 pod/meeting/views.py:41
 msgid "role"
 msgstr "rôle"
 
@@ -3300,7 +3300,7 @@ msgstr "Ajouter une vidéo"
 #: pod/meeting/templates/meeting/delete.html:8
 #: pod/meeting/templates/meeting/invite.html:8
 #: pod/meeting/templates/meeting/join.html:8
-#: pod/meeting/templates/meeting/my_meetings.html:6 pod/meeting/views.py:50
+#: pod/meeting/templates/meeting/my_meetings.html:6 pod/meeting/views.py:53
 msgid "My meetings"
 msgstr "Mes réunions"
 
@@ -3776,80 +3776,80 @@ msgstr "Terminer la réunion"
 msgid "Text copied"
 msgstr "Texte copié"
 
-#: pod/meeting/views.py:29
+#: pod/meeting/views.py:32
 msgid "meeting name"
 msgstr "Nom de la réunion"
 
-#: pod/meeting/views.py:30
+#: pod/meeting/views.py:33
 msgid "has user joined"
 msgstr "Utilisateurs connectés ?"
 
-#: pod/meeting/views.py:31
+#: pod/meeting/views.py:34
 msgid "recording"
 msgstr "Enregistrement"
 
-#: pod/meeting/views.py:32
+#: pod/meeting/views.py:35
 msgid "participant count"
 msgstr "Nombre de participant"
 
-#: pod/meeting/views.py:33
+#: pod/meeting/views.py:36
 msgid "listener count"
 msgstr "Nombre d'auditeurs"
 
-#: pod/meeting/views.py:34
+#: pod/meeting/views.py:37
 msgid "moderator count"
 msgstr "Nombre de modérateurs"
 
-#: pod/meeting/views.py:35
+#: pod/meeting/views.py:38
 msgid "attendees"
 msgstr "participants"
 
-#: pod/meeting/views.py:36
+#: pod/meeting/views.py:39
 msgid "attendee"
 msgstr "participant"
 
-#: pod/meeting/views.py:37
+#: pod/meeting/views.py:40
 msgid "full name"
 msgstr "Nom complet"
 
-#: pod/meeting/views.py:79
+#: pod/meeting/views.py:82
 msgid "You cannot edit this meeting."
 msgstr "Vous ne pouvez pas éditer cette réunion."
 
-#: pod/meeting/views.py:112 pod/video/views.py:361 pod/video/views.py:948
+#: pod/meeting/views.py:115 pod/video/views.py:361 pod/video/views.py:948
 msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
 
-#: pod/meeting/views.py:163 pod/meeting/views.py:406 pod/meeting/views.py:441
+#: pod/meeting/views.py:166 pod/meeting/views.py:409 pod/meeting/views.py:444
 msgid "You cannot delete this meeting."
 msgstr "Vous ne pouvez pas supprimer cette réunion."
 
-#: pod/meeting/views.py:174
+#: pod/meeting/views.py:177
 msgid "The meeting has been deleted."
 msgstr "La réunion a été supprimée."
 
-#: pod/meeting/views.py:281
+#: pod/meeting/views.py:284
 msgid "You cannot access to this meeting."
 msgstr "Vous ne pouvez pas accéder à cette réunion."
 
-#: pod/meeting/views.py:327
+#: pod/meeting/views.py:330
 msgid "Password given is not correct."
 msgstr "Le mot de passe est incorrect."
 
-#: pod/meeting/views.py:499
+#: pod/meeting/views.py:502
 msgid "You cannot invite for this meeting."
 msgstr "Vous ne pouvez pas inviter à cette réunion."
 
-#: pod/meeting/views.py:510
+#: pod/meeting/views.py:513
 msgid "Invitations send to recipients."
 msgstr "Invitations envoyées aux destinataires."
 
-#: pod/meeting/views.py:521
+#: pod/meeting/views.py:524 pod/meeting/views.py:572
 #, python-format
 msgid "%(owner)s invites you to the meeting %(meeting_title)s"
 msgstr "%(owner)s vous invite à la réunion %(meeting_title)s"
 
-#: pod/meeting/views.py:531
+#: pod/meeting/views.py:534
 #, python-format
 msgid ""
 "\n"
@@ -3872,7 +3872,7 @@ msgstr ""
 "        Cordialement\n"
 "    "
 
-#: pod/meeting/views.py:547
+#: pod/meeting/views.py:550
 #, python-format
 msgid ""
 "\n"
@@ -3897,6 +3897,19 @@ msgstr ""
 "        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
 "%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
+"    "
+
+#: pod/meeting/views.py:576
+#, python-format
+msgid ""
+"\n"
+"        Here the link to join the meeting : %(join_link)s\n"
+"        You need this password to enter : %(password)s\n"
+"    "
+msgstr ""
+"\n"
+"        Voici le lien pour rejoindre la réunion : %(join_link)s\n"
+"        Vous avez besoin de ce mot de passe pour entrer : %(password)s\n"
 "    "
 
 #: pod/playlist/models.py:26

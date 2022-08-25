@@ -1,3 +1,5 @@
+import os
+
 from django.shortcuts import render
 
 from django.http import JsonResponse, HttpResponse
@@ -16,6 +18,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 
+from ics import Calendar, Event  # At the top of your .py file
 from .models import Meeting
 from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm, MeetingInviteForm
 from pod.main.views import in_maintenance
@@ -519,7 +522,7 @@ def invite(request, meeting_id):
 
 def send_invite(request, meeting, emails):
     subject = _('%(owner)s invites you to the meeting %(meeting_title)s') % {
-        'owner': meeting.owner, 'meeting_title': meeting.name
+        'owner': meeting.owner.get_full_name(), 'meeting_title': meeting.name
     }
     from_email = DEFAULT_FROM_EMAIL
     join_link = request.build_absolute_uri(
@@ -537,7 +540,7 @@ def send_invite(request, meeting, emails):
         You need this password to enter : %(password)s
         Regards
     ''') % {
-        'owner': meeting.owner,
+        'owner': meeting.owner.get_full_name(),
         'meeting_title': meeting.name,
         'start_date': meeting.start_at,
         'end_date': meeting.end_at,
@@ -554,7 +557,7 @@ def send_invite(request, meeting, emails):
         <p>You need this password to enter : <b>%(password)s</b> </p>
         <p>Regards</p>
     ''') % {
-        'owner': meeting.owner,
+        'owner': meeting.owner.get_full_name(),
         'meeting_title': meeting.name,
         'start_date': meeting.start_at,
         'end_date': meeting.end_at,
@@ -563,4 +566,27 @@ def send_invite(request, meeting, emails):
     }
     msg = EmailMultiAlternatives(subject, text_content, from_email, emails)
     msg.attach_alternative(html_content, "text/html")
+    # ics calendar
+    calendar = Calendar()
+    event = Event()
+    event.name = _("%(owner)s invites you to the meeting %(meeting_title)s") % {
+        'owner': meeting.owner.get_full_name(),
+        'meeting_title': meeting.name,
+    }
+    event.description = _("""
+        Here the link to join the meeting : %(join_link)s
+        You need this password to enter : %(password)s
+    """) % {
+        'join_link': join_link,
+        'password': meeting.attendee_password
+    }
+    event.begin = meeting.start_at
+    event.end = meeting.end_at
+    event.organizer = meeting.owner.email
+    calendar.events.add(event)
+    filename_event = '/tmp/invite-%d.ics' % meeting.id
+    with open(filename_event, 'w') as ics_file:
+        ics_file.writelines(calendar)
+    msg.attach_file(filename_event, 'text/calendar')
     msg.send()
+    os.remove(filename_event)
