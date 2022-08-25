@@ -170,7 +170,6 @@ def delete(request, meeting_id):
 
 @csrf_protect
 @ensure_csrf_cookie
-# flake8: noqa: C901
 def join(request, meeting_id, direct_access=None):
     try:
         id = int(meeting_id[: meeting_id.find("-")])
@@ -196,6 +195,10 @@ def join(request, meeting_id, direct_access=None):
 
     show_page = get_meeting_access(request, meeting)
 
+    return render_show_page(request, meeting, show_page, direct_access)
+
+
+def render_show_page(request, meeting, show_page, direct_access):
     if show_page and direct_access and request.user.is_authenticated:
         # join as attendee
         # get user name and redirect to BBB
@@ -204,18 +207,18 @@ def join(request, meeting_id, direct_access=None):
         ) else request.user.get_username()
         join_url = meeting.get_join_url(fullname, "VIEWER", request.user.get_username())
         return redirect(join_url)
-    form = None
     if show_page :
         remove_password_in_form = direct_access is not None
         return check_form(request, meeting, remove_password_in_form)
     else:
         return check_user(request)
-
+    '''
     return render(
         request,
         "meeting/join.html",
         {"meeting": meeting, "form": form},
     )
+    '''
 
 
 def join_as_moderator(request, meeting):
