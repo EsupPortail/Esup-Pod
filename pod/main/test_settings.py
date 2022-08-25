@@ -55,3 +55,9 @@ SHIBBOLETH_ATTRIBUTE_MAP = {
     "Shibboleth-unscoped-affiliation": (False, "affiliations"),
 }
 REMOTE_USER_HEADER = "REMOTE_USER"
+
+
+USE_MEETING = True
+# found on https://bigbluebutton.org/api-mate/
+BBB_API_URL = 'http://test-install.blindsidenetworks.com/bigbluebutton/api'
+BBB_SECRET_KEY = '8cd8ef52e8e101574e400365b55e11a6'
