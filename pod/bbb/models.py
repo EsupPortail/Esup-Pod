@@ -92,7 +92,7 @@ class BBB_Meeting(models.Model):
         return "%s - %s" % (self.meeting_name, self.meeting_id)
 
     def save(self, *args, **kwargs):
-        super(Meeting, self).save(*args, **kwargs)
+        super(BBB_Meeting, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = _("Meeting")
