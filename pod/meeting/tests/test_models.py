@@ -19,7 +19,7 @@ class MeetingTestCase(TestCase):
             attendee_password="1234",
             moderator_password="1234",
             is_restricted=True
-            )
+        )
         meeting2.additional_owners.add(user1)
         meeting2.additional_owners.add(user2)
 
@@ -36,8 +36,7 @@ class MeetingTestCase(TestCase):
         self.assertEqual(meeting1.is_restricted, False)
         self.assertEqual(meeting1.is_running, False)
         print("   --->  test_default_attributs of MeetingTestCase: OK !")
-        
-    
+
     def test_with_attributs(self):
         meeting2 = Meeting.objects.get(id=2)
         self.assertEqual(meeting2.name, "test2")
@@ -50,7 +49,7 @@ class MeetingTestCase(TestCase):
         self.assertEqual(meeting2.moderator_password, "1234")
         self.assertEqual(meeting2.is_restricted, True)
         print("   --->  test_with_attributs of MeetingTestCase: OK !")
-    
+
     def test_change_attributs(self):
         meeting1 = Meeting.objects.get(id=1)
         self.assertEqual(meeting1.name, "test")
@@ -73,4 +72,3 @@ class MeetingTestCase(TestCase):
         Meeting.objects.filter(name="test").delete()
         self.assertEqual(Meeting.objects.all().count(), 1)
         print("   --->  test_delete_object of MeetingTestCase: OK !")
-    
