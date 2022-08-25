@@ -1,10 +1,10 @@
 from rest_framework import serializers, viewsets
-from .models import Meeting, Attendee, Livestream
+from .models import BBB_Meeting, Attendee, Livestream
 
 
 class MeetingModelSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Meeting
+        model = BBB_Meeting
         fields = (
             "id",
             "meeting_id",
@@ -22,7 +22,7 @@ class MeetingModelSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class MeetingModelViewSet(viewsets.ModelViewSet):
-    queryset = Meeting.objects.all()
+    queryset = BBB_Meeting.objects.all()
     serializer_class = MeetingModelSerializer
 
 

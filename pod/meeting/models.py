@@ -29,7 +29,7 @@ BBB_SECRET_KEY = getattr(settings, "BBB_SECRET_KEY", "")
 BBB_LOGOUT_URL = getattr(
     settings,
     "BBB_LOGOUT_URL",
-    "".join(["https://", get_current_site(None).domain])
+    ""
 )
 
 
@@ -286,7 +286,10 @@ class Meeting(models.Model):
                     param: getattr(self, meeting_to_bbb[param], ""),
                 })
         # let duration and voiceBridge to default value
-        parameters["logoutURL"] = BBB_LOGOUT_URL
+        if BBB_LOGOUT_URL == "":
+            parameters["logoutURL"] = "".join(["https://", get_current_site(None).domain])
+        else:
+            parameters["logoutURL"] = BBB_LOGOUT_URL
         endCallbackUrl = "".join([
             "https://",
             get_current_site(None).domain,
