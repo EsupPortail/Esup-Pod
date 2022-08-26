@@ -1,7 +1,7 @@
 import os
 from django.conf import settings
 from pod.main.tasks import task_start_bbb_encode
-from pod.bbb.models import Meeting
+from pod.bbb.models import BBB_Meeting as Meeting
 
 import subprocess
 import time
