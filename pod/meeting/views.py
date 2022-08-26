@@ -46,6 +46,13 @@ BBB_MEETING_INFO = getattr(
 @login_required(redirect_field_name="referrer")
 def my_meetings(request):
     site = get_current_site(request)
+    if (
+        RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY
+        and request.user.is_staff is False
+    ):
+        return render(
+            request, "meeting/my_meetings.html", {"access_not_allowed": True}
+        )
     meetings = request.user.owner_meeting.all().filter(site=site)
     return render(
         request,

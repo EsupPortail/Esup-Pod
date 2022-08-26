@@ -5,10 +5,12 @@
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My meetings" %}</li>{% endblock %}
 
-
-
-
 {% block page_content %}
+{% if access_not_allowed == True %}
+<p class="text-info">
+  <i class="bi bi-info-circle"></i>&nbsp;{% trans "Access to adding meeting has been restricted. If you want to add meetings on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
+</p>
+{% else %}
 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
   <a class="initials btn pod-btn-primary btn-sm" href="{% url 'meeting:add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans "Add a meeting" %}">
     <i class="bi bi-plus pod-add"></i><span>{% trans "Add a meeting" %}</span>
@@ -93,7 +95,7 @@
     </div>
   </div>
 </div>
-
+{%endif%}
 
 {% endblock page_content %}
 
