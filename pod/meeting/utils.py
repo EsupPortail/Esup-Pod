@@ -20,3 +20,7 @@ def parseXmlToJson(xml):
         else:
             response[child.tag] = child.text or ''
     return response
+
+
+def slash_join(*args):
+    return "/".join(arg.strip("/") for arg in args)

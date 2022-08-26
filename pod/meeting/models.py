@@ -3,7 +3,6 @@ import random
 import requests
 
 from urllib.parse import urlencode
-from urllib.parse import urljoin
 import xml.etree.ElementTree as et
 
 from django.db import models
@@ -21,7 +20,7 @@ from django.urls import reverse
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 
-from .utils import api_call, parseXmlToJson
+from .utils import api_call, parseXmlToJson, slash_join
 
 SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 BBB_API_URL = getattr(settings, "BBB_API_URL", "")
@@ -244,6 +243,7 @@ class Meeting(models.Model):
         blank=True,
         max_length=100,
         verbose_name=_("BBB Create Time"),
+        editable=False
     )
 
     # Time related Info
@@ -297,8 +297,7 @@ class Meeting(models.Model):
         parameters["meta_endCallbackUrl"] = endCallbackUrl
         query = urlencode(parameters)
         hashed = api_call(query, action)
-        url = urljoin(BBB_API_URL, action)
-        url = url + "?%s" % hashed
+        url = slash_join(BBB_API_URL, action, "?%s" % hashed)
         response = requests.get(url)
         if response.status_code != 200:
             msg = {}
@@ -355,8 +354,7 @@ class Meeting(models.Model):
             parameters["createTime"] = self.bbb_create_time
         query = urlencode(parameters)
         hashed = api_call(query, action)
-        url = urljoin(BBB_API_URL, action)
-        url = url + "?%s" % hashed
+        url = slash_join(BBB_API_URL, action, "?%s" % hashed)
         return url
 
     def update_data_from_bbb(self, meeting_json):
@@ -379,8 +377,7 @@ class Meeting(models.Model):
         parameters["meetingID"] = self.meeting_id
         query = urlencode(parameters)
         hashed = api_call(query, action)
-        url = urljoin(BBB_API_URL, action)
-        url = url + "?%s" % hashed
+        url = slash_join(BBB_API_URL, action, "?%s" % hashed)
         response = requests.get(url)
         if response.status_code != 200:
             msg = {}
@@ -412,8 +409,7 @@ class Meeting(models.Model):
         parameters["meetingID"] = self.meeting_id
         query = urlencode(parameters)
         hashed = api_call(query, action)
-        url = urljoin(BBB_API_URL, action)
-        url = url + "?%s" % hashed
+        url = slash_join(BBB_API_URL, action, "?%s" % hashed)
         response = requests.get(url)
         if response.status_code != 200:
             msg = {}
@@ -441,8 +437,7 @@ class Meeting(models.Model):
         parameters["password"] = self.moderator_password
         query = urlencode(parameters)
         hashed = api_call(query, action)
-        url = urljoin(BBB_API_URL, action)
-        url = url + "?%s" % hashed
+        url = slash_join(BBB_API_URL, action, "?%s" % hashed)
         response = requests.get(url)
         if response.status_code != 200:
             msg = {}

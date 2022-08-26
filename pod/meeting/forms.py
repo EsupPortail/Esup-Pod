@@ -156,7 +156,11 @@ class MeetingForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(MeetingForm, self).clean()
 
-        if cleaned_data["start_at"] > cleaned_data["end_at"]:
+        if (
+            "start_at" in cleaned_data.keys()
+            and "end_at" in cleaned_data.keys()
+            and cleaned_data["start_at"] > cleaned_data["end_at"]
+        ):
             raise ValidationError(_("Start date must be less than end date"))
 
         if "additional_owners" in cleaned_data.keys() and isinstance(
@@ -285,7 +289,8 @@ class EmailsListField(CharField):
             raise ValidationError(_(u'Enter at least one e-mail address.'))
 
         for email in emails:
-            validate_email(email)
+            if email != "":
+                validate_email(email)
 
         return emails
 

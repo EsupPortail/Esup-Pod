@@ -23,7 +23,9 @@ from .models import Meeting
 from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm, MeetingInviteForm
 from pod.main.views import in_maintenance
 
-RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = False
+RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
+    settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
+)
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
 BBB_MEETING_INFO = getattr(
     settings,
