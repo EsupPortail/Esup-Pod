@@ -3,13 +3,16 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.test import Client, override_settings
 from django.contrib.sites.models import Site
+from django.conf import settings
 
 from http import HTTPStatus
 from importlib import reload
 import random
+import requests
 
 from .. import views
 from ..models import Meeting
+from pod.authentication.models import AccessGroup
 
 
 class meeting_TestView(TestCase):
@@ -248,3 +251,184 @@ class MeetingDeleteTestView(TestCase):
         # check if meeting has been deleted
         self.assertEqual(Meeting.objects.all().count(), 0)
         print(" --->  test_meeting_delete_post_request of MeetingEditTestView: OK!")
+
+
+class MeetingJoinTestView(TestCase):
+    fixtures = [
+        "initial_data.json",
+    ]
+
+    def setUp(self):
+        site = Site.objects.get(id=1)
+        user = User.objects.create(username="pod", password="pod1234pod")
+        user2 = User.objects.create(username="pod2", password="pod1234pod")
+        Meeting.objects.create(id=1, name='test', owner=user, site=site)
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
+        print(" --->  SetUp of MeetingJoinTestView: OK!")
+
+    def test_meeting_join_get_request(self):
+        self.client = Client()
+        # check meeting
+        url = reverse("meeting:join", kwargs={'meeting_id': "slugauhasard"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 400)  # SuspiciousOperation
+        url = reverse("meeting:join", kwargs={'meeting_id': "2-test"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)  # Not found
+
+        meeting = Meeting.objects.get(name='test')
+        self.assertEqual(meeting.is_running, False)
+        url = reverse("meeting:join", kwargs={'meeting_id': meeting.meeting_id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+
+        # meeting is not running - go to waiting room
+        self.assertEqual(response.context["form"], None)
+
+        # join as moderator to make meeting running
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        url = reverse("meeting:join", kwargs={'meeting_id': meeting.meeting_id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)  # Redirect
+        # update the meeting after creating to get last info
+        newmeeting = Meeting.objects.get(name='test')
+        fullname = self.user.get_full_name() if (
+            self.user.get_full_name() != ""
+        ) else self.user.get_username()
+        join_url = newmeeting.get_join_url(
+            fullname,
+            "MODERATOR",
+            self.user.get_username()
+        )
+        self.assertRedirects(
+            response,
+            join_url,
+            status_code=302,
+            target_status_code=200,
+            msg_prefix='',
+            fetch_redirect_response=False
+        )
+        # check if meeting is created, try to join it
+        response = requests.get(join_url)
+        self.assertEqual(response.status_code, 200)  # OK
+        # fake running meeting
+        newmeeting.is_running = True
+        newmeeting.save()
+        # Anonymous User --> ask for name and attendee_password
+        self.client.logout()
+        url = reverse("meeting:join", kwargs={'meeting_id': newmeeting.meeting_id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)  # OK : NOT redirect
+        self.assertTrue("form" in response.context)
+        self.assertTrue("name" in response.context["form"].fields)
+        self.assertTrue("password" in response.context["form"].fields)
+
+        # check to send name and password
+        response = self.client.post(
+            url,
+            {
+                "name": "anonymous",
+                "password": newmeeting.attendee_password
+            }
+        )
+        join_url = newmeeting.get_join_url(
+            "anonymous",
+            "VIEWER"
+        )
+        self.assertRedirects(
+            response,
+            join_url,
+            status_code=302,
+            target_status_code=200,
+            msg_prefix='',
+            fetch_redirect_response=False
+        )
+
+        # Authenticated User --> ask for name and attendee_password
+        self.user2 = User.objects.get(username="pod2")
+        self.client.force_login(self.user2)
+        url = reverse("meeting:join", kwargs={'meeting_id': newmeeting.meeting_id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)  # OK : NOT redirect
+        self.assertTrue("form" in response.context)
+        self.assertFalse("name" in response.context["form"].fields)
+        self.assertTrue("password" in response.context["form"].fields)
+
+        # check to send password
+        response = self.client.post(
+            url,
+            {"password": newmeeting.attendee_password},
+            # follow=True,
+        )
+        fullname = self.user2.get_full_name() if (
+            self.user2.get_full_name() != ""
+        ) else self.user2.get_username()
+        join_url = newmeeting.get_join_url(
+            fullname,
+            "VIEWER",
+            self.user2.get_username()
+        )
+        self.assertRedirects(
+            response,
+            join_url,
+            status_code=302,
+            target_status_code=200,
+            msg_prefix='',
+            fetch_redirect_response=False
+        )
+        # check to send bad password
+        response = self.client.post(
+            url,
+            {"password": "bad password"},
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTrue(b"Password given is not correct." in response.content)
+
+        # meeting with restricted access
+        newmeeting.is_restricted = True
+        newmeeting.save()
+
+        # Anonymous user asks to auth
+        self.client.logout()
+        url = reverse("meeting:join", kwargs={'meeting_id': newmeeting.meeting_id})
+        response = self.client.get(url)
+        redirect_url = "%s?referrer=%s" % (settings.LOGIN_URL, url)
+        self.assertRedirects(
+            response,
+            redirect_url,
+            status_code=302,
+            target_status_code=302,
+            msg_prefix='',
+            fetch_redirect_response=True
+        )
+
+        # Auth user can have acces and ask password
+        self.user2 = User.objects.get(username="pod2")
+        self.client.force_login(self.user2)
+        url = reverse("meeting:join", kwargs={'meeting_id': newmeeting.meeting_id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)  # OK : NOT redirect
+        self.assertTrue("form" in response.context)
+        self.assertFalse("name" in response.context["form"].fields)
+        self.assertTrue("password" in response.context["form"].fields)
+
+        # restrict access to group
+        ag = AccessGroup.objects.create(code_name="group1", display_name="Group 1")
+        newmeeting.restrict_access_to_groups.add(ag)
+        newmeeting.save()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)  # PermissionDenied
+        self.assertTrue(b"You cannot access to this meeting." in response.content)
+
+        self.user2.owner.accessgroup_set.add(ag)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)  # OK : NOT redirect
+        self.assertTrue("form" in response.context)
+        self.assertFalse("name" in response.context["form"].fields)
+        self.assertTrue("password" in response.context["form"].fields)
+
+        print(" --->  test_meeting_join_get_request of MeetingEditTestView: OK!")

@@ -262,8 +262,6 @@ class MeetingPasswordForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.current_user = kwargs.pop("current_user", None)
-        print("form")
-        print(self.current_user)
         self.remove_password = kwargs.pop("remove_password", None)
         super(MeetingPasswordForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)

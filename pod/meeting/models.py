@@ -30,6 +30,7 @@ BBB_LOGOUT_URL = getattr(
     "BBB_LOGOUT_URL",
     ""
 )
+TEST_SETTINGS = getattr(settings, "TEST_SETTINGS", False)
 
 
 meeting_to_bbb = {
@@ -372,6 +373,8 @@ class Meeting(models.Model):
         self.save()
 
     def get_is_meeting_running(self):
+        if TEST_SETTINGS:
+            return self.is_running
         action = "isMeetingRunning"
         parameters = {}
         parameters["meetingID"] = self.meeting_id

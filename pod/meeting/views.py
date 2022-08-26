@@ -324,13 +324,19 @@ def check_form(request, meeting, remove_password_in_form):
                 #     request, messages.INFO, _("Join as attendee !")
                 # )
                 # get user name from form and redirect to BBB
+                join_url = ""
                 if current_user :
                     fullname = request.user.get_full_name() if (
                         request.user.get_full_name() != ""
                     ) else request.user.get_username()
+                    join_url = meeting.get_join_url(
+                        fullname,
+                        "VIEWER",
+                        request.user.get_username()
+                    )
                 else:
                     fullname = form.cleaned_data["name"]
-                join_url = meeting.get_join_url(fullname, "VIEWER")
+                    join_url = meeting.get_join_url(fullname, "VIEWER")
                 return redirect(join_url)
             else:
                 messages.add_message(
