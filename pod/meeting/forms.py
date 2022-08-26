@@ -289,6 +289,8 @@ class EmailsListField(CharField):
         for email in emails:
             if email != "":
                 validate_email(email)
+            else:
+                emails.remove(email)
 
         return emails
 
