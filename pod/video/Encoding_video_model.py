@@ -95,6 +95,97 @@ class Encoding_video_model(Encoding_video):
             choices[choice[0][:3]] = choice[0]
         return choices.get(filename[:3], "360p")
 
+
+    def store_json_list_mp3_files(self, info_video, video_to_encode):
+        mp3_files = info_video["list_mp3_files"]
+        for audio_file in mp3_files:
+            encoding, created = EncodingAudio.objects.get_or_create(
+                name="audio",
+                video=video_to_encode,
+                encoding_format="audio/mp3",
+                # need to double check path
+                source_file=os.path.join(get_storage_path_video(video_to_encode, mp3_files[audio_file]))
+            )
+
+    def store_json_list_mp4_hls_files(self, info_video, video_to_encode):
+        for list_video in ['list_hls_files', "list_mp4_files"]:
+            mp4_files = info_video[list_video]
+            for video_file in mp4_files:
+                rendition = VideoRendition.objects.get(resolution__contains="x" + video_file)
+                encod_name = self.get_encoding_choice_from_filename(mp4_files[video_file])
+                encoding, created = EncodingVideo.objects.get_or_create(
+                    name=encod_name,
+                    video=video_to_encode,
+                    rendition=rendition,
+                    encoding_format="video/mp4",
+                    source_file=os.path.join(get_storage_path_video(video_to_encode, mp4_files[video_file]))
+                )
+
+    def store_json_encoding_log(self, info_video, video_to_encode):
+        # Need to modify start and stop
+        log_to_text = ""
+        logs = info_video['encoding_log']
+        log_to_text = log_to_text + "Start : " + str(info_video['start'])
+        for log in logs:
+            log_to_text = log_to_text + "[" + log + "]\n\n"
+            logdetails = logs[log]
+            for logcate in logdetails:
+                log_to_text = log_to_text + "- " + logcate + " : \n" + str(logdetails[logcate]) + "\n"
+        log_to_text = log_to_text + "End : " + str(info_video['stop'])
+
+        encoding_log, created = EncodingLog.objects.get_or_create(
+            video=video_to_encode,
+            log=log_to_text)
+
+    def store_json_list_subtitle_files(self, info_video, video_to_encode):
+        list_subtitle_files = info_video["list_subtitle_files"]
+
+        for sub in list_subtitle_files:
+            home = UserFolder.objects.get(name="Home", owner=video_to_encode.owner)
+            podfile, created = CustomFileModel.objects.get_or_create(
+                file=os.path.join(get_storage_path_video(video_to_encode, list_subtitle_files[sub][1])),
+                name=list_subtitle_files[sub][1],
+                description="A subtitle file",
+                created_by=video_to_encode.owner,
+                folder=home
+            )
+
+            Track.objects.get_or_create(
+                video=video_to_encode,
+                kind="subtitles",
+                lang=list_subtitle_files[sub][0],
+                src=podfile,
+                enrich_ready=True
+            )
+
+    def store_json_list_thumbnail_files(self, info_video, video_to_encode):
+        list_thumbnail_files = info_video["list_thumbnail_files"]
+        first = True
+
+        videodir, created = UserFolder.objects.get_or_create(
+            name="%s" % video_to_encode.slug,
+            owner=video_to_encode.owner,
+        )
+
+        for thumbnail_path in list_thumbnail_files:
+            thumbnail, created = CustomImageModel.objects.get_or_create(
+                folder=videodir,
+                created_by=video_to_encode.owner,
+                file=os.path.join(get_storage_path_video(video_to_encode, list_thumbnail_files[thumbnail_path])),
+            )
+            thumbnail.save()
+            if first:
+                video_to_encode.thumbnail = thumbnail
+                video_to_encode.save()
+                first = False
+
+    def store_json_list_overview_files(self, info_video, video_to_encode):
+        list_overview_files = info_video['list_overview_files']
+        if len(list_overview_files) > 0:
+            vtt_file = list_overview_files["0"] if ".vtt" in list_overview_files["0"] else list_overview_files["1"]
+            video_to_encode.overview = vtt_file
+            video_to_encode.save()
+
     # Function need subfunctions, but just for the moment ignore
     # flake8: noqa
     def store_json_info(self):
@@ -105,96 +196,14 @@ class Encoding_video_model(Encoding_video):
             video_to_encode.duration = info_video["duration"]
             video_to_encode.save()
 
-            mp3_files = info_video["list_mp3_files"]
-            for audio_file in mp3_files:
-                encoding, created = EncodingAudio.objects.get_or_create(
-                    name="audio",
-                    video=video_to_encode,
-                    encoding_format="audio/mp3",
-                    # need to double check path
-                    source_file=os.path.join(get_storage_path_video(video_to_encode, mp3_files[audio_file]))
-                )
+            self.store_json_list_mp3_files(info_video, video_to_encode)
+            self.store_json_list_mp4_hls_files(info_video, video_to_encode)
+            self.store_json_encoding_log(info_video, video_to_encode)
+            self.store_json_list_subtitle_files(info_video, video_to_encode)
+            self.store_json_list_thumbnail_files(info_video, video_to_encode)
+            self.store_json_list_overview_files(info_video, video_to_encode)
 
-            for list_video in ['list_hls_files', "list_mp4_files"]:
-                mp4_files = info_video[list_video]
-                for video_file in mp4_files:
-                    rendition = VideoRendition.objects.get(resolution__contains="x" + video_file)
-                    encod_name = self.get_encoding_choice_from_filename(mp4_files[video_file])
-                    encoding, created = EncodingVideo.objects.get_or_create(
-                        name=encod_name,
-                        video=video_to_encode,
-                        rendition=rendition,
-                        encoding_format="video/mp4",
-                        source_file=os.path.join(get_storage_path_video(video_to_encode, mp4_files[video_file]))
-                    )
-
-            # Need to modify start and stop
-            log_to_text = ""
-            logs = info_video['encoding_log']
-            log_to_text = log_to_text + "Start : " + str(info_video['start'])
-            for log in logs:
-                log_to_text = log_to_text + "[" + log + "]\n\n"
-                logdetails = logs[log]
-                for logcate in logdetails:
-                    log_to_text = log_to_text + "- " + logcate + " : \n" + str(logdetails[logcate]) + "\n"
-            log_to_text = log_to_text + "End : " + str(info_video['stop'])
-
-            list_image_track = info_video["list_image_track"]
-            for track in list_image_track:
-                print("nothing")
-                # I don't know what to do with these values
-
-            list_subtitle_files = info_video["list_subtitle_files"]
-
-            for sub in list_subtitle_files:
-                home = UserFolder.objects.get(name="Home", owner=video_to_encode.owner)
-                podfile, created = CustomFileModel.objects.get_or_create(
-                    file=os.path.join(get_storage_path_video(video_to_encode, list_subtitle_files[sub][1])),
-                    name=list_subtitle_files[sub][1],
-                    description="A subtitle file",
-                    created_by=video_to_encode.owner,
-                    folder=home
-                )
-
-                Track.objects.get_or_create(
-                    video=video_to_encode,
-                    kind="subtitles",
-                    lang=list_subtitle_files[sub][0],
-                    src=podfile,
-                    enrich_ready=True
-                )
-
-            list_thumbnail_files = info_video["list_thumbnail_files"]
-            first = True
-
-            videodir, created = UserFolder.objects.get_or_create(
-                name="%s" % video_to_encode.slug,
-                owner=video_to_encode.owner,
-            )
-
-            for thumbnail_path in list_thumbnail_files:
-                thumbnail, created = CustomImageModel.objects.get_or_create(
-                    folder=videodir,
-                    created_by=video_to_encode.owner,
-                    file=os.path.join(get_storage_path_video(video_to_encode, list_thumbnail_files[thumbnail_path])),
-                )
-                thumbnail.save()
-                if first:
-                    video_to_encode.thumbnail = thumbnail
-                    video_to_encode.save()
-                    first = False
-
-            list_overview_files = info_video['list_overview_files']
-            if len(list_overview_files) > 0:
-                vtt_file = list_overview_files["0"] if ".vtt" in list_overview_files["0"] else list_overview_files["1"]
-                video_to_encode.overview = vtt_file
-
-            encoding_log, created = EncodingLog.objects.get_or_create(
-                video=video_to_encode,
-                log=log_to_text)
-
-            # TODO : Without podfile, studio test, modify encode.py , image track ? image file ?
-            # Image track useless, all is in list_thumbnail_files
+            # TODO : Without podfile, studio test, modify encode.py 
 
     def encode_video(self):
         self.start_encode()
