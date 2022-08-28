@@ -219,7 +219,7 @@ def encode_video(video_id):
     change_encoding_step(video_id, 0, "start")
 
     encoding_video = Encoding_video_model(video_id, video_to_encode.video.path)
-    encoding_video.encoding_log.append(start)
+    encoding_video.add_encoding_log("start_time", "", True, start)
     change_encoding_step(video_id, 1, "get video data")
     encoding_video.get_video_data()
     change_encoding_step(video_id, 2, "remove old data")
