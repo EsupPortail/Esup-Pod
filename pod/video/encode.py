@@ -219,6 +219,13 @@ def transcript_video(video_id):
 # REMOVE ENCODING
 ###############################################################
 
+def remove_previous_overview(overviewfilename, overviewimagefilename):
+    """Remove previous overview."""
+    if os.path.isfile(overviewimagefilename):
+        os.remove(overviewimagefilename)
+    if os.path.isfile(overviewfilename):
+        os.remove(overviewfilename)
+
 
 def remove_old_data(video_id):
     """Remove old data."""
