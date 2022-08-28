@@ -432,5 +432,5 @@ def launch_transcript_view(request):
 def store_remote_encoded_video(request):
     video_id = request.GET.get("id", 0)
     video = get_object_or_404(Video, id=video_id)
-    start_store_remote_encoding_video(video_id)
+    # start_store_remote_encoding_video(video_id)
     return Response(VideoSerializer(instance=video, context={"request": request}).data)
