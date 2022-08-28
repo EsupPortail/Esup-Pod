@@ -5,9 +5,9 @@ from .models import EncodingVideo
 from .models import EncodingAudio
 from .models import PlaylistVideo
 from .models import Video
-
-from .utils import check_file
 from .utils import send_email_recording
+from .utils import change_encoding_step, check_file, add_encoding_log, send_email
+from . import Encoding_video_model
 
 # from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 from pod.main.tasks import task_start_encode, task_start_encode_studio
@@ -203,8 +203,37 @@ def start_studio_remote_encode(recording_id, video_output, videos, subtime, pres
 
 
 def encode_video(video_id):
-    print("todo for flake")
-    # TODO
+    start = "Start at: %s" % time.ctime()
+
+    video_to_encode = Video.objects.get(id=video_id)
+    video_to_encode.encoding_in_progress = True
+    video_to_encode.save()
+
+    if not check_file(video_to_encode.video.path):
+        msg = "Wrong file or path:" + "\n%s" % video_to_encode.video.path
+        add_encoding_log(video_id, msg)
+        change_encoding_step(video_id, -1, msg)
+        send_email(msg, video_id)
+        return
+
+    change_encoding_step(video_id, 0, "start")
+
+    encoding_video = Encoding_video_model(video_id, video_to_encode.video.path)
+    encoding_video.encoding_log += start
+    change_encoding_step(video_id, 1, "get video data")
+    encoding_video.get_video_data()
+    change_encoding_step(video_id, 2, "remove old data")
+    encoding_video.remove_old_data()
+    # create video dir
+    change_encoding_step(video_id, 3, "create output dir")
+    encoding_video.create_output_dir()
+
+    encoding_video.start_encode()
+
+    # encode HLS
+    # encode MP4
+    # encode MP3
+    # encode M4A
 
 
 def transcript_video(video_id):
