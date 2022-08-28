@@ -1,3 +1,4 @@
+"""
 from django.conf import settings
 from django.core.files import File
 
@@ -644,3 +645,4 @@ def get_encoding_choice_from_filename(filename):
     for choice in ENCODING_CHOICES:
         choices[choice[0][:3]] = choice[0]
     return choices.get(filename[:3], "360p")
+"""
