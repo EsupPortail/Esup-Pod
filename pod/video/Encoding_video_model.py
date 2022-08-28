@@ -95,7 +95,6 @@ class Encoding_video_model(Encoding_video):
             choices[choice[0][:3]] = choice[0]
         return choices.get(filename[:3], "360p")
 
-
     def store_json_list_mp3_files(self, info_video, video_to_encode):
         mp3_files = info_video["list_mp3_files"]
         for audio_file in mp3_files:
@@ -186,8 +185,6 @@ class Encoding_video_model(Encoding_video):
             video_to_encode.overview = vtt_file
             video_to_encode.save()
 
-    # Function need subfunctions, but just for the moment ignore
-    # flake8: noqa
     def store_json_info(self):
         video_to_encode = Video.objects.get(id=self.id)
 
@@ -203,7 +200,7 @@ class Encoding_video_model(Encoding_video):
             self.store_json_list_thumbnail_files(info_video, video_to_encode)
             self.store_json_list_overview_files(info_video, video_to_encode)
 
-            # TODO : Without podfile, studio test, modify encode.py 
+            # TODO : Without podfile, studio test, modify encode.py
 
     def encode_video(self):
         self.start_encode()

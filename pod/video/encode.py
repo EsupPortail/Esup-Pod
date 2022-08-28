@@ -175,6 +175,7 @@ def start_remote_encode(video_id):
     t.start()
 """
 
+
 def start_encode(video_id):
     """Start local encoding."""
     if CELERY_TO_ENCODE:
