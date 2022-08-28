@@ -48,7 +48,7 @@ class Encoding_video_model(Encoding_video):
         encoding_log_msg += self.remove_previous_encoding_video(video_to_encode)
         encoding_log_msg += self.remove_previous_encoding_audio(video_to_encode)
         encoding_log_msg += self.remove_previous_encoding_playlist(video_to_encode)
-        self.encoding_log += encoding_log_msg
+        self.encoding_log.append(encoding_log_msg)
 
     def remove_previous_encoding_video(self, video_to_encode):
         """Remove previously encoded video."""
