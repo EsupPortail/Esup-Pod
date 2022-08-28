@@ -7,7 +7,7 @@ from .models import PlaylistVideo
 from .models import Video
 from .utils import send_email_recording
 from .utils import change_encoding_step, check_file, add_encoding_log, send_email
-from . import Encoding_video_model
+from .Encoding_video_model import Encoding_video_model
 
 # from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 from pod.main.tasks import task_start_encode, task_start_encode_studio
