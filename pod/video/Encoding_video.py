@@ -261,7 +261,7 @@ class Encoding_video:
                     "output": output_file
                 }
                 self.list_mp4_files[first_item[0]] = output_file
-        if self.cutting_start and self.cutting_stop:
+        if self.cutting_stop != 0:
             mp4_command = mp4_command + self.get_subtime(self.cutting_start, self.cutting_stop)
         return mp4_command
 

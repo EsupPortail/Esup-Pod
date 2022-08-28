@@ -163,9 +163,9 @@ OPENCAST_FILES_DIR = getattr(settings, "OPENCAST_FILES_DIR", "opencast-files")
 # ENCODE VIDEO: THREAD TO LAUNCH ENCODE
 # ##########################################################################
 
-
+# Disable for the moment, will be reactivated in future version
+"""
 def start_remote_encode(video_id):
-    """Start Remote encoding."""
     # load module here to prevent circular import
     from .remote_encode import remote_encode_video
 
@@ -173,7 +173,7 @@ def start_remote_encode(video_id):
     t = threading.Thread(target=remote_encode_video, args=[video_id])
     t.setDaemon(True)
     t.start()
-
+"""
 
 def start_encode(video_id):
     """Start local encoding."""

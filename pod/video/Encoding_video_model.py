@@ -185,15 +185,16 @@ class Encoding_video_model(Encoding_video):
                     first = False
 
             list_overview_files = info_video['list_overview_files']
-            png_overview = list_overview_files["0"]
-            vtt_overview = list_overview_files["1"]
-            print(png_overview)  # useless but for flake8
-            print(vtt_overview)  # useless but for flake8
-            # Ask what to save vtt or png ?
+            if len(list_overview_files) > 0:
+                vtt_file = list_overview_files["0"] if ".vtt" in list_overview_files["0"] else list_overview_files["1"]
+                video_to_encode.overview = vtt_file
 
             encoding_log, created = EncodingLog.objects.get_or_create(
                 video=video_to_encode,
                 log=log_to_text)
+
+            # TODO : Without podfile, studio test, modify encode.py , image track ? image file ?
+            # Image track useless, all is in list_thumbnail_files
 
     def encode_video(self):
         self.start_encode()
