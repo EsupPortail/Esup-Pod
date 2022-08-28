@@ -203,7 +203,8 @@ def start_studio_remote_encode(recording_id, video_output, videos, subtime, pres
 
 
 def encode_video(video_id):
-    start = "Start at: %s" % time.ctime()
+    # TODO readd start and stop
+    # start = "Start at: %s" % time.ctime()
 
     video_to_encode = Video.objects.get(id=video_id)
     video_to_encode.encoding_in_progress = True
