@@ -1,6 +1,9 @@
 from rest_framework import serializers, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.authentication import BasicAuthentication, TokenAuthentication
+from pod.authentication.digest_auth_authentication import DigestAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.http import HttpResponseRedirect, JsonResponse
 from .models import RecordingFile, Recording, Recorder
@@ -38,10 +41,54 @@ class RecorderModelViewSet(viewsets.ModelViewSet):
     queryset = Recorder.objects.all()
     serializer_class = RecorderModelSerializer
 
+@api_view(['GET'])
+@authentication_classes([BasicAuthentication, DigestAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def hello_world(request):
+    print(request.headers)
+    return Response({"message": "Hello, world!"})
 
-@api_view(["GET"])
+@api_view(['GET'])
+@authentication_classes([BasicAuthentication, DigestAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def studio_services_available(request):
+    print(request.headers)
+    serviceType = request.GET.get('serviceType', "")
+    print(serviceType)
+    info = {}
+    if serviceType == "org.opencastproject.ingest":
+        info = {
+            "services": {
+                "service":{
+                    "type": "org.opencastproject.ingest",
+                    "host": "https://pod-test.univ-lille.fr",
+                    "path": "/rest/studio",
+                    "active": True
+                }
+            }
+        }
+    if serviceType == "org.opencastproject.capture.admin":
+        info = {
+            "services": {
+                "service":{
+                    "type": "org.opencastproject.ingest",
+                    "host": "https://pod-test.univ-lille.fr",
+                    "path": "/rest/studio",
+                    "active": True
+                }
+            }
+        }
+    if serviceType == "org.opencastproject.scheduler":
+        return JsonResponse(info, status=404)
+    return JsonResponse(info, status=200)
+
+@api_view(['GET'])
+@authentication_classes([BasicAuthentication, DigestAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def studio_series(request, file):
     print("studio_series")
+    series_json = {}
+    return JsonResponse(series_json, status=200)
     print('HTTP_AUTHORIZATION')
     print(request.META.get('HTTP_AUTHORIZATION'))
     print(request.META.get('Authorization'))

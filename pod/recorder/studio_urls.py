@@ -5,7 +5,7 @@ from .views import ingest_addAttachment, ingest_addTrack
 from .views import ingest_addCatalog, ingest_ingest
 from .views import presenter_post
 
-from .rest_views import studio_series, studio_services
+from .rest_views import studio_services_available, studio_series, hello_world
 
 app_name = "recorder"
 urlpatterns = [
@@ -65,16 +65,29 @@ urlpatterns = [
         name="ingest_ingest",
     ),
 ]
-
+# https://docs.opencast.org/r/11.x/developer/#modules/capture-agent/capture-agent/
+# curl --digest -u pod:f446dd85ac968181ec1b023973cf2b1801dd03a9 -H "X-Requested-Auth: Digest" localhost:8080/rest/studio/services/available.json
 url_rest_patterns = [
-    url(
-        r"^services/(?P<file>.*)$",
-        studio_services,
-        name="studio_services",
+    # ${HOST}/services/available.json?serviceType=<SERVICE>
+    url(r"^hello_world",
+        hello_world
     ),
+    url(
+        r"^services/available.json$",
+        studio_services_available,
+        name="studio_services_available",
+    ),
+    # ${CAPTURE-ADMIN-ENDPOINT}/agents/<name>
     url(
         r"^admin-ng/series/(?P<file>.*)$",
         studio_series,
         name="studio_series",
+    ),
+    # /capture-admin/agents/$AGENT_NAME/configuration
+    # ${CAPTURE-ADMIN-ENDPOINT}/agents/<name>
+    url(
+        r"^capture-admin/agents/agent_name/configuration$",
+        studio_services_available,
+        name="studio_services_available",
     ),
 ]

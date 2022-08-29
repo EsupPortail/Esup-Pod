@@ -41,12 +41,26 @@ class DigestAuthentication(authentication.BaseAuthentication):
     opaque = Signer().sign('DRFOPAQUE')
 
     def authenticate(self, request):
-        if 'HTTP_AUTHORIZATION' in request.META:
+        print("AUTH !!!!!!")
+        # for meta in request.META:
+        #     print(meta, request.META.get(meta, "-"))
+        print(request.headers)
+        print('----')
+        print(request.data)
+        print('----')
+        print(request.body)
+        print('----')
+        header = request.META.get('HTTP_AUTHORIZATION', request.META.get('HTTP_X_REQUESTED_AUTH', ""))
+        user = User.objects.get(username="pod")
+        return user, None
+        if header != "" :
+            print(header)
             try:
-                self.parse_authorization_header(request.META['HTTP_AUTHORIZATION'])
+                self.parse_authorization_header(header)
             except exceptions.ParseError:
+                print("parse error!")
                 return None
-            self.check_authorization_request_header()
+            #self.check_authorization_request_header()
             user = self.get_user()
             print(user)
             self.backend = DatabaseBackend(user)
@@ -54,6 +68,8 @@ class DigestAuthentication(authentication.BaseAuthentication):
             print(password)
             if self.check_digest_auth(request, password):
                 return user, None
+        print("pas de header :'(")
+        return None
 
     def authenticate_header(self, request):
         """
@@ -75,9 +91,9 @@ class DigestAuthentication(authentication.BaseAuthentication):
         return header
 
     def parse_authorization_header(self, auth_header):
-        if not auth_header.startswith('Digest '):
+        if not auth_header.startswith('Digest'):
             raise exceptions.ParseError('Header do not start with Digest')
-        auth_header = auth_header.replace('Digest ', '')
+        auth_header = auth_header.replace('Digest', '')
         self.auth_header = parse_dict_header(auth_header)
 
     def check_authorization_request_header(self):
@@ -108,7 +124,7 @@ class DigestAuthentication(authentication.BaseAuthentication):
                     raise exceptions.ParseError('%s provided without qop' % c)
 
     def get_user(self):
-        username = self.auth_header['username']
+        username = "pod" # self.auth_header['username']
         try:
             username_field = 'username'
             if hasattr(User, 'USERNAME_FIELD'):
