@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load thumbnail %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+<li class="breadcrumb-item"><a href="{% url 'meeting:my_meetings' %}">{% trans 'My meetings' %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{meeting.name}}</li>{% endblock %}
+{% block page_title %}
+{{meeting.name}}
+{% endblock %}
+
+
+{% block page_content %}
+<h1 class="page_title">{% trans 'Join the meeting' %} <b>{{meeting.name}}</b></h1>
+{% if form %}
+<form method="post" action="{{ request.get_full_path }}" id="meeting_password_form" class='needs-validation' novalidate>
+  {% csrf_token %}
+  <div class="list-group">
+    <fieldset>
+      <legend>{% trans 'Please fill the form below' %}</legend>
+      {% if form.errors %}
+        <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+      {% endif %}
+      {% for field_hidden in form.hidden_fields %}
+        {{field_hidden}}
+      {% endfor %}
+      {% for field in form.visible_fields %}
+        {% spaceless %}
+        <div class="list-group-item">
+          <div class="form-group {% if field.field.required %}form-group-required {%endif%}" >
+            {{ field.errors }}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+              <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+            {% endif %}
+            {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+          </div>
+        </div>
+        {% endspaceless %}
+      {% endfor %}
+      <div class="text-center mt-1">
+        <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>
+      </div>
+    </fieldset>
+  </div>
+</form>
+{% else %}
+  {% if meeting.get_is_meeting_running %}
+    <p>{% trans "Unable to access to this meeting" %}</p>
+    <p><a href="/" class="btn btn-primary">{% trans "Back to home" %}</a></p>
+  {% else %}
+    <p>{% trans "The meeting has not started yet" %}.</p>
+    <p>{% trans "You will be redirected right after the meeting starts" %}.</p>
+    <p>{% trans "if not, click on the button below" %}.</p>
+    <p><a href="{{ request.get_full_path }}" class="btn btn-primary">{% trans "reload"%}</a></p>
+  {%endif%}
+{% endif %}
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+{% block more_script %}
+{% if not meeting.get_is_meeting_running %}
+<script>
+  const interval = setInterval(function() {
+    fetch("{% url 'meeting:status' meeting.meeting_id %}", {
+        method: 'GET',
+    }).then((response) => {
+        if (!response.ok) throw Error(response.statusText);
+        return response.json();
+    }).then(function(data){
+        if(data.status === true) location.reload();
+    }).catch((error) => {
+        console.error(error);
+    });
+  }, 10000);
+</script>
+{% endif %}
+{% endblock more_script %}

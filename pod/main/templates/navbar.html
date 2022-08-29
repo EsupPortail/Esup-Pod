@@ -69,9 +69,18 @@
         {%if MAINTENANCE_MODE%}
           <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br /><i width=16 height=16 class="bi bi-exclamation-triangle"></i> {%trans "Some features are unavailable" %}</span>
         {%else%}
-          <a class="nav-item pod-navbar__nav-item__nav-link initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'video:video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans "Add a video" %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
+          <a class="nav-item pod-navbar__nav-item__nav-link initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'video:video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans "Add a video" %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>          
         {%endif%}
       </li>
+      {% if USE_MEETING %}
+      <li class="d-none d-md-block nav-item nav-item pod-navbar__nav-item" id="nav-mymeetings">
+        {%if MAINTENANCE_MODE%}
+          <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br /><i width=16 height=16 class="bi bi-exclamation-triangle"></i> {%trans "Some features are unavailable" %}</span>
+        {%else%}
+          <a class="nav-item pod-navbar__nav-item__nav-link initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'meeting:my_meetings' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans "My meetings" %}"><i class="bi bi-person-video pod-add"></i><span>{% trans "My meetings" %}</span></a>
+        {%endif%}
+      </li>
+      {%endif%}
     {%endif%}
     <!--  Ajout Params Buttons -->
     <li class="nav-item pod-params pod-navbar__nav-item" id="pod-param-buttons">

@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.utils import timezone
-from ..models import Meeting, Attendee, Livestream
+from ..models import BBB_Meeting as Meeting, Attendee, Livestream
 
 
 class MeetingTestCase(TestCase):
