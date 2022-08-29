@@ -85,7 +85,9 @@ class BroadcasterAdmin(admin.ModelAdmin):
         kwargs["widgets"] = {
             "piloting_conf": Textarea(
                 attrs={
-                    "placeholder": "{\n 'server_url':'...',\n 'application':'...',\n 'livestream':'...',\n}"
+                    "placeholder":
+                    "{\n 'server_url':'...',\n \
+                        'application':'...',\n 'livestream':'...',\n}"
                 }
             )
         }

@@ -67,7 +67,8 @@ class LiveViewsTestCase(TestCase):
             video_on_hold=video_on_hold,
             building=building,
             piloting_implementation="wowza",
-            piloting_conf='{"server_url": "http://mock_api.fr", "application": "mock_name", "livestream": "mock_livestream"}',
+            piloting_conf='{"server_url": "http://mock_api.fr", \
+                "application": "mock_name", "livestream": "mock_livestream"}',
         )
         Event.objects.create(
             title="event1",
@@ -655,7 +656,8 @@ class LiveViewsTestCase(TestCase):
             url, {"idbroadcaster": 1}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
         )
         self.assertEqual(response.status_code, 200)
-        # self.assertEqual(response.json(), {'available': False, 'recording': False, 'message': 'implementation error'})
+        # self.assertEqual(response.json(),
+        # {'available': False, 'recording': False, 'message': 'implementation error'})
         print("   --->  test isstreamavailabletorecord implementation error : OK !")
 
     def test_start_record(self):
@@ -679,7 +681,8 @@ class LiveViewsTestCase(TestCase):
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertEqual(response.status_code, 200)
-        # self.assertEqual(response.json(), {'success': False, 'message': 'implementation error'})
+        # self.assertEqual(response.json(),
+        # {'success': False, 'message': 'implementation error'})
         print("   --->  test startrecord implementation error : OK !")
 
     def test_split_record(self):

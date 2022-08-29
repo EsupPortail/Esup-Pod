@@ -228,7 +228,8 @@ class EventForm(forms.ModelForm):
             )
             self.initial["building"] = build.name
         except (ValueError, TypeError):
-            pass  # invalid input from the client; ignore and fallback to empty Broadcaster queryset
+            pass  # invalid input from the client;
+            # ignore and fallback to empty Broadcaster queryset
 
     def initFields(self, is_current_event):
         if not self.user.is_superuser:

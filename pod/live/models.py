@@ -12,7 +12,6 @@ from django.templatetags.static import static
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify

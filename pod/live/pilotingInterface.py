@@ -38,7 +38,9 @@ class PilotingInterface(ABC):
     @abstractmethod
     def is_recording(self, with_file_check=False) -> bool:
         """Checks if the broadcaster is being recorded
-        :param with_file_check: checks if tmp recording file is present on the filesystem (recording could have been launch from somewhere else)
+        :param with_file_check:
+        checks if tmp recording file is present on the filesystem
+        (recording could have been launch from somewhere else)
         """
         raise NotImplementedError
 
@@ -124,7 +126,9 @@ class Wowza(PilotingInterface):
         self.url = None
         if self.check_piloting_conf():
             conf = json.loads(self.broadcaster.piloting_conf)
-            self.url = "{server_url}/v2/servers/_defaultServer_/vhosts/_defaultVHost_/applications/{application}".format(
+            self.url = "{server_url}/v2/servers/_defaultServer_"
+            self.url += "/vhosts/_defaultVHost_/applications/{application}"
+            self.url.format(
                 server_url=conf["server_url"],
                 application=conf["application"],
             )

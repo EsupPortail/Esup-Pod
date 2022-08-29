@@ -674,7 +674,9 @@ class Video(models.Model):
         verbose_name=_("Additional owners"),
         related_name="owners_videos",
         help_text=_(
-            "You can add additional owners to the video. They will have the same rights as you except that they can't delete this video."
+            "You can add additional owners to the video. "
+            + "They will have the same rights as you except "
+            + "that they can't delete this video."
         ),
     )
     description = RichTextField(
@@ -682,7 +684,9 @@ class Video(models.Model):
         config_name="complete",
         blank=True,
         help_text=_(
-            "In this field you can describe your content, add all needed related information, and format the result using the toolbar."
+            "In this field you can describe your content, "
+            + "add all needed related information, "
+            + "and format the result using the toolbar."
         ),
     )
     date_added = models.DateTimeField(_("Date added"), default=timezone.now)
