@@ -128,8 +128,8 @@ class Encoding_video_model(Encoding_video):
                         source_file=get_storage_path_video(video_to_encode, mp4_files[video_file])
                     )
 
-        if os.path.exists(os.path.join(self.get_output_dir(),  "livestream.m3u8")):
-            playlist_file = os.path.join(self.get_output_dir(),  "livestream.m3u8").replace(
+        if os.path.exists(os.path.join(self.get_output_dir(), "livestream.m3u8")):
+            playlist_file = os.path.join(self.get_output_dir(), "livestream.m3u8").replace(
                 os.path.join(settings.MEDIA_ROOT, ""), ""
             )
             encoding, created = PlaylistVideo.objects.get_or_create(
@@ -138,7 +138,6 @@ class Encoding_video_model(Encoding_video):
                 encoding_format="application/x-mpegURL",
                 source_file=playlist_file
             )
-
 
     def store_json_encoding_log(self, info_video, video_to_encode):
         # Need to modify start and stop
