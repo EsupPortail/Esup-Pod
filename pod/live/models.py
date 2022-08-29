@@ -319,7 +319,7 @@ class Event(models.Model):
         User,
         blank=True,
         verbose_name=_("Additional owners"),
-        related_name="owners_videos",
+        related_name="owners_events",
         help_text=_(
             "You can add additional owners to the event. They "
             "will have the same rights as you except that they "
