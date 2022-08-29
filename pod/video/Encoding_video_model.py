@@ -112,13 +112,33 @@ class Encoding_video_model(Encoding_video):
             for video_file in mp4_files:
                 rendition = VideoRendition.objects.get(resolution__contains="x" + video_file)
                 encod_name = self.get_encoding_choice_from_filename(mp4_files[video_file])
-                encoding, created = EncodingVideo.objects.get_or_create(
-                    name=encod_name,
-                    video=video_to_encode,
-                    rendition=rendition,
-                    encoding_format="video/mp4",
-                    source_file=os.path.join(get_storage_path_video(video_to_encode, mp4_files[video_file]))
-                )
+                if list_video == "list_mp4_files":
+                    encoding, created = EncodingVideo.objects.get_or_create(
+                        name=encod_name,
+                        video=video_to_encode,
+                        rendition=rendition,
+                        encoding_format="video/mp4",
+                        source_file=get_storage_path_video(video_to_encode, mp4_files[video_file])
+                    )
+                elif list_video == "list_hls_files":
+                    encoding, created = PlaylistVideo.objects.get_or_create(
+                        name=encod_name,
+                        video=video_to_encode,
+                        encoding_format="application/x-mpegURL",
+                        source_file=get_storage_path_video(video_to_encode, mp4_files[video_file])
+                    )
+
+        if os.path.exists(os.path.join(self.get_output_dir(),  "livestream.m3u8")):
+            playlist_file = os.path.join(self.get_output_dir(),  "livestream.m3u8").replace(
+                os.path.join(settings.MEDIA_ROOT, ""), ""
+            )
+            encoding, created = PlaylistVideo.objects.get_or_create(
+                name="playlist",
+                video=video_to_encode,
+                encoding_format="application/x-mpegURL",
+                source_file=playlist_file
+            )
+
 
     def store_json_encoding_log(self, info_video, video_to_encode):
         # Need to modify start and stop
