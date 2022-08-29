@@ -20,7 +20,7 @@ from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 from django.dispatch import receiver
 from django.utils.html import format_html
 from django.db.models.signals import pre_delete
@@ -32,10 +32,10 @@ from tagging.fields import TagField
 from django.utils.text import capfirst
 from django.contrib.sites.models import Site
 from django.db.models.signals import post_save
+from django.db.models.signals import pre_save
 from pod.main.models import AdditionalChannelTab
 import importlib
 
-from select2 import fields as select2_fields
 from sorl.thumbnail import get_thumbnail
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
@@ -59,6 +59,7 @@ RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
 )
 VIDEO_RECENT_VIEWCOUNT = getattr(settings, "VIDEO_RECENT_VIEWCOUNT", 180)
 VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
+SITE_ID = getattr(settings, "SITE_ID", 1)
 
 LANG_CHOICES = getattr(
     settings,
@@ -308,24 +309,16 @@ class Channel(models.Model):
         blank=True,
         help_text=_("The style will be added to your channel to show it"),
     )
-    owners = select2_fields.ManyToManyField(
+    owners = models.ManyToManyField(
         User,
         related_name="owners_channels",
         verbose_name=_("Owners"),
-        ajax=True,
-        search_field=lambda q: Q(username__icontains=q)
-        | Q(first_name__icontains=q)
-        | Q(last_name__icontains=q),
         blank=True,
     )
-    users = select2_fields.ManyToManyField(
+    users = models.ManyToManyField(
         User,
         related_name="users_channels",
         verbose_name=_("Users"),
-        ajax=True,
-        search_field=lambda q: Q(username__icontains=q)
-        | Q(first_name__icontains=q)
-        | Q(last_name__icontains=q),
         blank=True,
     )
     visible = models.BooleanField(
@@ -336,18 +329,21 @@ class Channel(models.Model):
         ),
         default=False,
     )
-    allow_to_groups = select2_fields.ManyToManyField(
+    allow_to_groups = models.ManyToManyField(
         AccessGroup,
         blank=True,
         verbose_name=_("Groups"),
-        ajax=True,
-        search_field=lambda q: Q(code_name__icontains=q) | Q(display_name__icontains=q),
         help_text=_("Select one or more groups who can upload video to this channel."),
     )
-    add_channels_tab = select2_fields.ManyToManyField(
+    add_channels_tab = models.ManyToManyField(
         AdditionalChannelTab, verbose_name=_("Additionals channels tab"), blank=True
     )
-    sites = models.ManyToManyField(Site)
+    site = models.ForeignKey(
+        Site,
+        verbose_name=_("Site"),
+        on_delete=models.CASCADE,
+        default=SITE_ID
+    )
 
     class Meta:
         """Metadata subclass for Channel object."""
@@ -355,6 +351,9 @@ class Channel(models.Model):
         ordering = ["title"]
         verbose_name = _("Channel")
         verbose_name_plural = _("Channels")
+        constraints = [
+            models.UniqueConstraint(fields=['slug', 'site'], name='channel_unique_slug_site')
+        ]
 
     def __str__(self):
         """Display a channel object as string."""
@@ -362,7 +361,7 @@ class Channel(models.Model):
 
     def get_absolute_url(self):
         """Return channel absolute URL."""
-        return reverse("channel", args=[str(self.slug)])
+        return reverse("channel-video:channel", args=[str(self.slug)])
 
     def get_all_theme(self):
         """Return the list of all child themes in current channel."""
@@ -390,10 +389,10 @@ class Channel(models.Model):
         super(Channel, self).save(*args, **kwargs)
 
 
-@receiver(post_save, sender=Channel)
-def default_site_channel(sender, instance, created, **kwargs):
-    if len(instance.sites.all()) == 0:
-        instance.sites.add(Site.objects.get_current())
+@receiver(pre_save, sender=Channel)
+def default_site_channel(sender, instance, **kwargs):
+    if not hasattr(instance, 'site'):
+        instance.site = Site.objects.get_current()
 
 
 class Theme(models.Model):
@@ -407,6 +406,7 @@ class Theme(models.Model):
         null=True,
         blank=True,
         related_name="children",
+        on_delete=models.CASCADE,
         verbose_name=_("Theme parent"),
     )
     title = models.CharField(
@@ -446,14 +446,17 @@ class Theme(models.Model):
         verbose_name=_("Headband"),
     )
 
-    channel = select2_fields.ForeignKey(
-        "Channel", related_name="themes", verbose_name=_("Channel")
+    channel = models.ForeignKey(
+        "Channel",
+        related_name="themes",
+        verbose_name=_("Channel"),
+        on_delete=models.CASCADE,
     )
 
     @property
-    def sites(self):
+    def site(self):
         """Return sites associated to parent channel."""
-        return self.channel.sites
+        return self.channel.site
 
     def __str__(self):
         """Display current theme as string."""
@@ -461,7 +464,7 @@ class Theme(models.Model):
 
     def get_absolute_url(self):
         """Get current theme absolute URL."""
-        return reverse("theme", args=[str(self.channel.slug), str(self.slug)])
+        return reverse("channel-video:theme", args=[str(self.channel.slug), str(self.slug)])
 
     def save(self, *args, **kwargs):
         """Store current theme object in db."""
@@ -542,6 +545,8 @@ class Theme(models.Model):
 
 
 class Type(models.Model):
+    """Define all video types available."""
+
     title = models.CharField(_("Title"), max_length=100, unique=True)
     slug = models.SlugField(
         _("Slug"),
@@ -566,6 +571,7 @@ class Type(models.Model):
         return "%s" % (self.title)
 
     def save(self, *args, **kwargs):
+        """Store current Type in DB."""
         self.slug = slugify(self.title)
         super(Type, self).save(*args, **kwargs)
 
@@ -600,12 +606,18 @@ class Discipline(models.Model):
         null=True,
         verbose_name=_("Icon"),
     )
-    sites = models.ManyToManyField(Site)
+    site = models.ForeignKey(
+        Site,
+        verbose_name=_("Site"),
+        on_delete=models.CASCADE,
+        default=SITE_ID
+    )
 
     def __str__(self):
         return "%s" % (self.title)
 
     def save(self, *args, **kwargs):
+        """Store current Discipline in DB."""
         self.slug = slugify(self.title)
         super(Discipline, self).save(*args, **kwargs)
 
@@ -615,10 +627,10 @@ class Discipline(models.Model):
         verbose_name_plural = _("Disciplines")
 
 
-@receiver(post_save, sender=Discipline)
-def default_site_discipline(sender, instance, created, **kwargs):
-    if len(instance.sites.all()) == 0:
-        instance.sites.add(Site.objects.get_current())
+@receiver(pre_save, sender=Discipline)
+def default_site_discipline(sender, instance, **kwargs):
+    if not hasattr(instance, 'site'):
+        instance.site = Site.objects.get_current()
 
 
 class Video(models.Model):
@@ -651,26 +663,20 @@ class Video(models.Model):
         editable=False,
     )
     sites = models.ManyToManyField(Site)
-    type = models.ForeignKey(Type, verbose_name=_("Type"))
-    owner = select2_fields.ForeignKey(
-        User,
-        ajax=True,
-        verbose_name=_("Owner"),
-        search_field=select_video_owner(),
+    type = models.ForeignKey(
+        Type,
+        verbose_name=_("Type"),
         on_delete=models.CASCADE,
+        help_text=_("Select the general type of the video."),
     )
-    additional_owners = select2_fields.ManyToManyField(
+    owner = models.ForeignKey(User, verbose_name=_("Owner"), on_delete=models.CASCADE)
+    additional_owners = models.ManyToManyField(
         User,
         blank=True,
-        ajax=True,
-        js_options={"width": "off"},
         verbose_name=_("Additional owners"),
-        search_field=select_video_owner(),
         related_name="owners_videos",
         help_text=_(
-            "You can add additional owners to the video. They "
-            "will have the same rights as you except that they "
-            "can't delete this video."
+            "You can add additional owners to the video. They will have the same rights as you except that they can't delete this video."
         ),
     )
     description = RichTextField(
@@ -678,9 +684,7 @@ class Video(models.Model):
         config_name="complete",
         blank=True,
         help_text=_(
-            "In this field you can describe your content, "
-            "add all needed related information, and "
-            "format the result using the toolbar."
+            "In this field you can describe your content, add all needed related information, and format the result using the toolbar."
         ),
     )
     date_added = models.DateTimeField(_("Date added"), default=timezone.now)
@@ -704,7 +708,9 @@ class Video(models.Model):
     transcript = models.BooleanField(
         _("Transcript"),
         default=False,
-        help_text=_("Check this box if you want to transcript the audio. (beta version)"),
+        help_text=_(
+            "Check this box if you want to transcript the audio." "(beta version)"
+        ),
     )
     tags = TagField(
         help_text=_(
@@ -713,19 +719,13 @@ class Video(models.Model):
         ),
         verbose_name=_("Tags"),
     )
-    discipline = select2_fields.ManyToManyField(
+    discipline = models.ManyToManyField(
         Discipline, blank=True, verbose_name=_("Disciplines")
     )
     licence = models.CharField(
-        _("Licence"),
-        max_length=8,
-        choices=LICENCE_CHOICES,
-        blank=True,
-        null=True,
+        _("Licence"), max_length=8, choices=LICENCE_CHOICES, blank=True, null=True
     )
-    channel = select2_fields.ManyToManyField(
-        Channel, verbose_name=_("Channels"), blank=True
-    )
+    channel = models.ManyToManyField(Channel, verbose_name=_("Channels"), blank=True)
     theme = models.ManyToManyField(
         Theme,
         verbose_name=_("Themes"),
@@ -762,7 +762,7 @@ class Video(models.Model):
         ),
         default=False,
     )
-    restrict_access_to_groups = select2_fields.ManyToManyField(
+    restrict_access_to_groups = models.ManyToManyField(
         AccessGroup,
         blank=True,
         verbose_name=_("Groups"),
@@ -878,6 +878,15 @@ class Video(models.Model):
 
     get_encoding_step.fget.short_description = _("Encoding step")
 
+    def get_player_height(self):
+        """
+        Get the default player height (half size for audio files).
+
+        This height is mostly valid when in iframe mode,
+         as in main mode height is set by % of window.
+        """
+        return 360 if self.is_video else 180
+
     def get_thumbnail_url(self):
         """Get a thumbnail url for the video."""
         request = None
@@ -927,7 +936,7 @@ class Video(models.Model):
         else:
             thumbnail_url = static(DEFAULT_THUMBNAIL)
         return (
-            '<img class="card-img-top" src="%s" alt=""\
+            '<img class="pod-thumbnail" src="%s" alt=""\
             loading="lazy"/>'
             % (thumbnail_url)
         )
@@ -1010,7 +1019,7 @@ class Video(models.Model):
 
     def get_absolute_url(self):
         """Get the video absolute URL."""
-        return reverse("video", args=[str(self.slug)])
+        return reverse("video:video", args=[str(self.slug)])
 
     def get_full_url(self, request=None):
         """Get the video full URL."""
@@ -1145,7 +1154,7 @@ class Video(models.Model):
                     .values("title", "slug")
                 ),
                 "channels": list(
-                    self.channel.all().filter(sites=current_site).values("title", "slug")
+                    self.channel.all().filter(site=current_site).values("title", "slug")
                 ),
                 "themes": list(self.theme.all().values("title", "slug")),
                 "contributors": list(self.contributor_set.values("name", "role")),
@@ -1338,7 +1347,9 @@ def video_files_removal(sender, instance, using, **kwargs):
 
 
 class ViewCount(models.Model):
-    video = models.ForeignKey(Video, verbose_name=_("Video"), editable=False)
+    video = models.ForeignKey(
+        Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
+    )
     date = models.DateField(_("Date"), default=date.today, editable=False)
     count = models.IntegerField(_("Number of view"), default=0, editable=False)
 
@@ -1516,8 +1527,10 @@ class EncodingVideo(models.Model):
         help_text=_("Please use the only format in encoding choices:")
         + " %s" % " ".join(str(key) for key, value in ENCODING_CHOICES),
     )
-    video = models.ForeignKey(Video, verbose_name=_("Video"))
-    rendition = models.ForeignKey(VideoRendition, verbose_name=_("rendition"))
+    video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
+    rendition = models.ForeignKey(
+        VideoRendition, verbose_name=_("rendition"), on_delete=models.CASCADE
+    )
     encoding_format = models.CharField(
         _("Format"),
         max_length=22,
@@ -1591,7 +1604,7 @@ class EncodingAudio(models.Model):
         help_text=_("Please use the only format in encoding choices:")
         + " %s" % " ".join(str(key) for key, value in ENCODING_CHOICES),
     )
-    video = models.ForeignKey(Video, verbose_name=_("Video"))
+    video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
     encoding_format = models.CharField(
         _("Format"),
         max_length=22,
@@ -1656,7 +1669,7 @@ class PlaylistVideo(models.Model):
         help_text=_("Please use the only format in encoding choices:")
         + " %s" % " ".join(str(key) for key, value in ENCODING_CHOICES),
     )
-    video = select2_fields.ForeignKey(Video, verbose_name=_("Video"))
+    video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
     encoding_format = models.CharField(
         _("Format"),
         max_length=22,
@@ -1791,8 +1804,8 @@ class EncodingStep(models.Model):
 
 
 class Notes(models.Model):
-    user = select2_fields.ForeignKey(User)
-    video = select2_fields.ForeignKey(Video)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    video = models.ForeignKey(Video, on_delete=models.CASCADE)
     note = models.TextField(_("Note"), null=True, blank=True)
 
     @property
@@ -1813,8 +1826,8 @@ class Notes(models.Model):
 
 
 class AdvancedNotes(models.Model):
-    user = select2_fields.ForeignKey(User)
-    video = select2_fields.ForeignKey(Video)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    video = models.ForeignKey(Video, on_delete=models.CASCADE)
     status = models.CharField(
         _("Note availability level"),
         max_length=1,
@@ -1870,9 +1883,11 @@ class AdvancedNotes(models.Model):
 
 
 class NoteComments(models.Model):
-    user = select2_fields.ForeignKey(User)
-    parentNote = models.ForeignKey(AdvancedNotes)
-    parentCom = models.ForeignKey("NoteComments", blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    parentNote = models.ForeignKey(AdvancedNotes, on_delete=models.CASCADE)
+    parentCom = models.ForeignKey(
+        "NoteComments", blank=True, null=True, on_delete=models.CASCADE
+    )
     status = models.CharField(
         _("Comment availability level"),
         max_length=1,
@@ -1902,7 +1917,7 @@ class VideoToDelete(models.Model):
     date_deletion = models.DateField(
         _("Date for deletion"), default=date.today, unique=True
     )
-    video = select2_fields.ManyToManyField(Video, verbose_name=_("Videos"))
+    video = models.ManyToManyField(Video, verbose_name=_("Videos"))
 
     class Meta:
         verbose_name = _("Video to delete")

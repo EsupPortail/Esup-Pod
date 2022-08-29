@@ -106,7 +106,7 @@ def direct(request, slug):  # affichage du flux d'un diffuseur
 
     site = get_current_site(request)
     broadcaster = get_broadcaster_by_slug(slug, site)
-    if broadcaster.is_restricted and not request.user.is_authenticated():
+    if broadcaster.is_restricted and not request.user.is_authenticated:
         iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
         return redirect(
             "%s?%sreferrer=%s"

@@ -81,7 +81,7 @@ class ContactUsForm(forms.Form):
         """Init contact us form."""
         super(ContactUsForm, self).__init__(*args, **kwargs)
 
-        if request.user and request.user.is_authenticated():
+        if request.user and request.user.is_authenticated:
             self.fields["name"].widget = forms.HiddenInput()
             self.fields["email"].widget = forms.HiddenInput()
             self.initial["name"] = "%s" % request.user

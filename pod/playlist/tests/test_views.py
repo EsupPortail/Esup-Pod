@@ -12,8 +12,9 @@ from pod.video.models import Type
 from pod.playlist.models import Playlist
 from pod.playlist.models import PlaylistElement
 from django.contrib.sites.models import Site
+from django.urls import reverse
 
-edit_endpoint = "/playlist/edit/{0}/"
+# edit_endpoint = "/playlist/edit/{0}/"
 
 
 class PlaylistViewsTestCase(TestCase):
@@ -49,12 +50,13 @@ class PlaylistViewsTestCase(TestCase):
         owner.owner.save()
 
     def test_myplaylist(self):
-        response = self.client.get("/my_playlists/")
+        url = reverse("playlist:my_playlists", kwargs={})
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
-        response = self.client.get("/my_playlists/")
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "my_playlists.html")
 
@@ -69,7 +71,7 @@ class PlaylistViewsTestCase(TestCase):
         )
         video1 = Video.objects.get(id=1)
         PlaylistElement.objects.create(playlist=playlist, video=video1, position=1)
-        playlist_url = "/playlist/" + playlist.slug + "/"
+        playlist_url = reverse("playlist:playlist", kwargs={"slug": playlist.slug})
         playlist_url_iframe = playlist_url + "?is_iframe=true"
         response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 200)
@@ -103,21 +105,21 @@ class PlaylistViewsTestCase(TestCase):
 
     def test_playlist_create(self):
         owner = User.objects.get(id=1)
-        response = self.client.get("/playlist/edit/")
+        playlist_url = reverse("playlist:playlist_edit", kwargs={})
+        response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 302)
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
-        response = self.client.get("/playlist/edit/")
+        response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "playlist.html")
         self.assertContains(response, "playlist_form")
         self.assertContains(response, _("Add a new playlist"))
         response = self.client.post(
-            "/playlist/edit/",
+            playlist_url,
             data={
                 "action": "edit",
-                "playlist_id": None,
                 "title": "playlist1",
                 "owner": owner.id,
                 "description": "test",
@@ -140,24 +142,25 @@ class PlaylistViewsTestCase(TestCase):
         )
         video1 = Video.objects.get(id=1)
         video2 = Video.objects.get(id=2)
-        response = self.client.get(edit_endpoint.format(playlist.slug))
+        playlist_url = reverse("playlist:playlist_edit", kwargs={"slug": playlist.slug})
+        response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 302)
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
-        response = self.client.get(edit_endpoint.format(playlist.slug))
+        response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "playlist.html")
         self.assertContains(response, "playlist_form")
         self.assertContains(response, _("Editing the playlist"))
         self.assertContains(response, "playlist1")
         response = self.client.post(
-            edit_endpoint.format(playlist.slug),
+            playlist_url,
             data={"action": "add", "video": video1.slug},
         )
         self.assertEqual(response.status_code, 400)
         response = self.client.post(
-            edit_endpoint.format(playlist.slug),
+            playlist_url,
             {"action": "add", "video": video1.slug},
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
@@ -166,7 +169,7 @@ class PlaylistViewsTestCase(TestCase):
         result = PlaylistElement.objects.get(playlist=playlist, video=video1, position=1)
         self.assertTrue(result)
         response = self.client.post(
-            edit_endpoint.format(playlist.slug),
+            playlist_url,
             {"action": "add", "video": video2.slug},
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
@@ -186,12 +189,13 @@ class PlaylistViewsTestCase(TestCase):
         video2 = Video.objects.get(id=2)
         PlaylistElement.objects.create(playlist=playlist, video=video1, position=1)
         PlaylistElement.objects.create(playlist=playlist, video=video2, position=2)
-        response = self.client.get(edit_endpoint.format(playlist.slug))
+        playlist_url = reverse("playlist:playlist_edit", kwargs={"slug": playlist.slug})
+        response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 302)
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
-        response = self.client.get(edit_endpoint.format(playlist.slug))
+        response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "playlist.html")
         self.assertContains(response, "playlist_form")
@@ -200,12 +204,12 @@ class PlaylistViewsTestCase(TestCase):
         self.assertContains(response, "video1")
         self.assertContains(response, "video2")
         response = self.client.post(
-            edit_endpoint.format(playlist.slug),
+            playlist_url,
             data={"action": "remove", "video": video1.slug},
         )
         self.assertEqual(response.status_code, 400)
         response = self.client.post(
-            edit_endpoint.format(playlist.slug),
+            playlist_url,
             {"action": "remove", "video": video1.slug},
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
@@ -227,12 +231,13 @@ class PlaylistViewsTestCase(TestCase):
         video2 = Video.objects.get(id=2)
         PlaylistElement.objects.create(playlist=playlist, video=video1, position=1)
         PlaylistElement.objects.create(playlist=playlist, video=video2, position=2)
-        response = self.client.get(edit_endpoint.format(playlist.slug))
+        playlist_url = reverse("playlist:playlist_edit", kwargs={"slug": playlist.slug})
+        response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 302)
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
-        response = self.client.get(edit_endpoint.format(playlist.slug))
+        response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "playlist.html")
         self.assertContains(response, "playlist_form")
@@ -241,13 +246,13 @@ class PlaylistViewsTestCase(TestCase):
         self.assertContains(response, "video1")
         self.assertContains(response, "video2")
         response = self.client.post(
-            edit_endpoint.format(playlist.slug),
+            playlist_url,
             data={"action": "move", "videos": {"video1": 2, "video2": 1}},
         )
         self.assertEqual(response.status_code, 400)
         json_data = json.dumps({video1.slug: 2, video2.slug: 1})
         response = self.client.post(
-            edit_endpoint.format(playlist.slug),
+            playlist_url,
             data={"action": "move", "videos": json_data},
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
@@ -267,12 +272,13 @@ class PlaylistViewsTestCase(TestCase):
         )
         video1 = Video.objects.get(id=1)
         PlaylistElement.objects.create(playlist=playlist, video=video1, position=1)
-        response = self.client.get(edit_endpoint.format(playlist.slug))
+        playlist_url = reverse("playlist:playlist_edit", kwargs={"slug": playlist.slug})
+        response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 302)
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
-        response = self.client.get(edit_endpoint.format(playlist.slug))
+        response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "playlist.html")
         self.assertContains(response, "playlist_form")
@@ -280,11 +286,11 @@ class PlaylistViewsTestCase(TestCase):
         self.assertContains(response, "playlist1")
         self.assertContains(response, "video1")
         response = self.client.post(
-            edit_endpoint.format(playlist.slug), data={"action": "delete"}
+            playlist_url, data={"action": "delete"}
         )
         self.assertEqual(response.status_code, 400)
         response = self.client.post(
-            edit_endpoint.format(playlist.slug),
+            playlist_url,
             {"action": "delete"},
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )

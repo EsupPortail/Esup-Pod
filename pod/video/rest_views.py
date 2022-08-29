@@ -38,7 +38,7 @@ class ChannelSerializer(serializers.HyperlinkedModelSerializer):
             "users",
             "visible",
             "themes",
-            "sites",
+            "site",
         )
 
 
@@ -53,7 +53,7 @@ class ThemeSerializer(serializers.HyperlinkedModelSerializer):
             "headband",
             "description",
             "channel",
-            "sites",
+            "site",
         )
 
 
@@ -66,7 +66,7 @@ class TypeSerializer(serializers.HyperlinkedModelSerializer):
 class DisciplineSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Discipline
-        fields = ("id", "url", "title", "description", "icon", "sites")
+        fields = ("id", "url", "title", "description", "icon", "site")
 
 
 class VideoSerializer(serializers.HyperlinkedModelSerializer):

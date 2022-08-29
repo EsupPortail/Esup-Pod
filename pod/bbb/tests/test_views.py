@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.test import Client
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
-from ..models import Meeting, Attendee, Livestream
+from ..models import BBB_Meeting as Meeting, Attendee, Livestream
 from django.utils import timezone
 
 

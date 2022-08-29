@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 {% load tagging_tags %}
 {% load thumbnail %}
 {% load video_filters %}
@@ -9,12 +9,12 @@
 {% block opengraph %}
 
 {% if OEMBED %}
-<link rel="alternate" type="application/json+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/oembed/?url={{request.build_absolute_uri|urlencode}}&format=json" />
-<link rel="alternate" type="text/xml+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/oembed/?url={{request.build_absolute_uri|urlencode}}&format=xml" />
+<link rel="alternate" type="application/json+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&format=json" />
+<link rel="alternate" type="text/xml+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&format=xml" />
 {% endif %}
 
 <meta property="og:site_name" content="{{ TITLE_SITE }}">
-<meta property="og:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}">
+<meta property="og:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}">
 <meta property="og:title" content="{{ video.title }}">
 <meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
 <meta property="og:image:alt" content="{{ video.title }}">
@@ -25,21 +25,21 @@
 
 <meta property="og:type" content="video">
 
-<meta property="og:video" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true">
+<meta property="og:video" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
 <meta property="og:video:type" content="text/html">
 <meta property="og:video:width" content="640">
-<meta property="og:video:height" content="360">
+<meta property="og:video:height" content="{{video.get_player_height}}">
 
 <meta name="twitter:card" content="player">
 <meta name="twitter:site" content="{{ TITLE_SITE }}">
-<meta name="twitter:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}">
+<meta name="twitter:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}">
 <meta name="twitter:title" content="{{ video.title }}">
 <meta name="twitter:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% endif %} {% trans 'Added by' %}: {{ video.owner.get_full_name }}">
 <meta name="twitter:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
 
-<meta name="twitter:player" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true">
+<meta name="twitter:player" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
 <meta name="twitter:player:width" content="640">
-<meta name="twitter:player:height" content="360">
+<meta name="twitter:player:height" content="{{video.get_player_height}}">
 
 {% if video.is_draft == True %}
   <meta name="robots" content="NONE,NOARCHIVE">
@@ -64,20 +64,20 @@
 {% block breadcrumbs %}{{ block.super }}
   {%if channel %}
     {% if theme %}
-      <li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'channel-video:channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
       {% for t in theme.get_all_parents reversed %}
         {% if t is not theme %}
-          <li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'channel-video:theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
         {% endif %}
       {% endfor %}
-      <li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=theme.slug%}">{{theme.title}}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'channel-video:theme' slug_c=channel.slug slug_t=theme.slug%}">{{theme.title}}</a></li>
       <li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
     {% else %}
-      <li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'channel-video:channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
       <li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
     {% endif %}
   {% else %}
-    <li class="breadcrumb-item"><a href="{% url "videos"%}">{% trans 'Videos' %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "videos:videos"%}">{% trans 'Videos' %}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
   {% endif %}
 {% endblock %}
@@ -92,14 +92,14 @@
   {# uploadDate doit être au format 'c' - ISO 8601 (yyyy-mm-dd) #}
   <meta itemprop="uploadDate" content="{{ video.date_added|date:'c' }}" />
   <meta itemprop="thumbnailUrl" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}" />
-  <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
-  <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" />
+  <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}" />
+  <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true" />
   <meta itemprop="image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}" />
   <meta itemprop="name" content="{{ video.title }}" />
   <meta itemprop="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }} - {% trans 'Added by' %}: {{ video.owner.get_full_name }}" />
 
 {%if channel %}
-  <h2 class="channel_title">{{channel.title}}{% if request.user in channel.owners.all %}<span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-primary btn-sm"><i data-feather="edit" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{%endif%}</h2>
+  <h2 class="channel_title">{{channel.title}}{% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{%endif%}</h2>
   {% if channel.headband %}
     <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy"/>
   {% endif %}
@@ -109,7 +109,7 @@
   {% if theme %}
     <h3 class="theme_title">{{theme.title}}</h3>
     {% if theme.headband %}
-      <div align="center" class="channelheader">
+      <div class="channelheader">
         <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" loading="lazy"/>
       </div>
     {% endif %}
@@ -141,7 +141,7 @@
     {% include 'videos/video-form.html' %}
 {% else %}
   {% include 'videos/video-element.html' %}
-  <div id="info-video">{% include 'videos/video-all-info.html' %}</div>
+  <div id="info-video" class="pod-info-video">{% include 'videos/video-all-info.html' %}</div>
 {%endif%}
 {% endblock video-element %}
 
@@ -150,15 +150,15 @@
 
 {% block page_aside %}
   {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video or perms.enrichment.edit_enrichment or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay or perms.chapter.change_chapter or perms.video.delete_video %}
-    <div class="card mt-1" id="card-managevideo">
-      <h2 class="card-header card-title pl-2 h4"><i data-feather="settings"></i>&nbsp;{% trans "Manage video"%}</h2>
+    <div class="card" id="card-managevideo">
+      <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
       <div class="card-body card-text text-center">
         {% include "videos/link_video.html" %}
       </div>
     </div>
   {% endif %}
 
-  <div class="card mt-1" id="card-takenote">
+  <div class="card" id="card-takenote">
     {% include 'videos/video_notes.html' %}
   </div>
   {% include 'aside.html' %}
@@ -186,7 +186,8 @@
 
   {% if active_video_comment and not video.disable_comment %}
     <script>
-      const video_slug = `{{video.slug}}`;
+      const comment_url = `{% url "video:get_comments" video_slug=video.slug %}`;
+      const base_url = window.location.origin + comment_url;
       {% if request.user == video.owner %}
         var is_video_owner = true;
       {% else %}
@@ -197,11 +198,11 @@
       var is_authenticated = JSON.parse(`{{request.user.is_authenticated|yesno:"true,false"}}`);
       var is_superuser = JSON.parse(`{{request.user.is_superuser|yesno:"true,false"}}`);
     </script>
-    <script src="{% static 'js/dayjs_relativeTime.min.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'js/dayjs.min.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'js/dayjs_en.min.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'js/dayjs_fr.min.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'js/dayjs_nl.min.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'dayjs/plugin/relativeTime.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'dayjs/dayjs.min.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'dayjs/locale/en.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'dayjs/locale/fr.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'dayjs/locale/nl.js' %}?ver={{VERSION}}"></script>
     <script type="module" defer src="{% static 'js/comment-script.js' %}?ver={{VERSION}}"></script>
   {% endif %}
 {% endblock more_script %}

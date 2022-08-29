@@ -1,5 +1,5 @@
 {% load i18n %}
-<video id="podvideoplayer" class="video-js vjs-default-skin {% if not request.GET.is_iframe %}vjs-16-9{% endif %} vjs-big-play-centered" {% if request.GET.is_iframe %}preload="none"{% else %}preload="auto"{% endif %} {% if not request.GET.is_iframe %}height="360"{% endif %}
+<video id="podvideoplayer" class="video-js vjs-default-skin {% if not request.GET.is_iframe %}vjs-16-9{% endif %} vjs-big-play-centered vjs-show-big-play-button-on-pause" {% if request.GET.is_iframe %}preload="none"{% else %}preload="auto"{% endif %} {% if not request.GET.is_iframe %}height="{{video.get_player_height}}"{% endif %}
 poster="{{video.get_thumbnail_url}}" {% spaceless %}
 {% if request.GET.nocontrol and request.GET.nocontrol == 'true' %}
   autoplay muted
@@ -17,7 +17,7 @@ poster="{{video.get_thumbnail_url}}" {% spaceless %}
     <track id="track_{{ track.id }}" kind="{{ track.kind }}" src="{{ track.src.file.url }}?{% now "U" %}" srclang="{{ track.lang }}" label="{{track.get_label_lang}}" {% if forloop.first %}default{%endif%}>
   {%endfor%}
 </video>
-<form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
+<form method="post" action="{% url 'video:video_count' id=video.id %}" id="video_count_form">
 {% csrf_token %}
 </form>
 {% if video.overlay_set.all %}

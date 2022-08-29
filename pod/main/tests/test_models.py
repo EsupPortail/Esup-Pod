@@ -113,7 +113,6 @@ class ConfigurationTestCase(TestCase):
     def test_delete_object(self):
         Configuration.objects.filter(key="maintenance_mode").delete()
         self.assertEquals(Configuration.objects.filter(key="maintenance_mode").count(), 0)
-
         print("--->  test_delete_object of ConfigurationTestCase : OK " "!")
 
 

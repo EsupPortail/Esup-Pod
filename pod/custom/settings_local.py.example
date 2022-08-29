@@ -25,14 +25,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # La clé secrète d’une installation Django.
 # Elle est utilisée dans le contexte de la signature cryptographique,
 # et doit être définie à une valeur unique et non prédictible.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#secret-key
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#secret-key
 """
 SECRET_KEY = 'A_CHANGER'
 
 """
 # Une valeur booléenne qui active ou désactive le mode de débogage.
 # Ne déployez jamais de site en production avec le réglage DEBUG activé.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#debug
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#debug
 """
 DEBUG = True
 
@@ -49,20 +49,20 @@ CSRF_COOKIE_SECURE = True
 # C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP,
 #  qui sont possibles même avec bien des configurations
 #  de serveur Web apparemment sécurisées.
-#  https://docs.djangoproject.com/fr/1.11/ref/settings/#allowed-hosts
+#  https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts
 """
 ALLOWED_HOSTS = ['localhost']
 
 """
 # L’âge des cookies de sessions, en secondes.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#session-cookie-age
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age
 """
 SESSION_COOKIE_AGE = 14400
 
 """
 # Indique s’il faut que la session expire
 #  lorsque l’utilisateur ferme son navigateur.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#session-cookie-age
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age
 """
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
@@ -101,7 +101,7 @@ CONTACT_US_EMAIL = []
 # C’est un dictionnaire imbriqué dont les contenus font correspondre
 #  l’alias de base de données avec un dictionnaire contenant
 #  les options de chacune des bases de données.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#databases
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#databases
 """
 DATABASES = {
     'default': {
@@ -124,7 +124,7 @@ LANGUAGES = (
 
 """
 # Une chaîne représentant le fuseau horaire pour cette installation.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-TIME_ZONE
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-TIME_ZONE
 """
 TIME_ZONE = "UTC"
 
@@ -132,14 +132,14 @@ TIME_ZONE = "UTC"
 # Le répertoire dans lequel stocker temporairement les données
 #  (typiquement pour les fichiers plus grands que FILE_UPLOAD_MAX_MEMORY_SIZE)
 #  lors des téléversements de fichiers.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#file-upload-temp-dir
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir
 """
 FILE_UPLOAD_TEMP_DIR = "/var/tmp"
 
 """
 # Le chemin absolu vers le répertoire dans lequel collectstatic rassemble
 #  les fichiers statiques en vue du déploiement.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-STATIC_ROOT
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-STATIC_ROOT
 """
 STATIC_ROOT = "/pod/static"
 
@@ -155,7 +155,7 @@ STATICFILES_STORAGE = 'static_compress.CompressedStaticFilesStorage'
 """
 # Chemin absolu du système de fichiers pointant vers le répertoire
 #  qui contiendra les fichiers téléversés par les utilisateurs.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-MEDIA_ROOT
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-MEDIA_ROOT
 """
 MEDIA_ROOT = "/pod/media"
 
@@ -360,12 +360,6 @@ OPENCAST_MEDIAPACKAGE = """<?xml version="1.0" encoding="UTF-8" standalone="yes"
 VIEW_STATS_AUTH = False
 
 """
-# Permet d'utiliser la mise en ligne fragmentée
-#  (qui permet de reprendre la mise en ligne lors de problèmes de connexion)
-"""
-USE_CHUNKED_UPLOAD = False
-
-"""
 # Taille d'un fragment
 # (le fichier sera mis en ligne par fragment de cette taille)
 """
@@ -434,7 +428,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
     # Vous pouvez créer un template dans votre application custom et
     #  indiquer son chemin dans cette variable pour que ce code html,
     # ce template soit affiché en haut de votre page, le code est ajouté
-    #  juste après la balise body.(Or iframe)
+    #  juste après la balise body.(Hors iframe)
     # Si le fichier créé est
     # '/opt/django_projects/podv2/pod/custom/templates/custom/preheader.html'
     # alors la variable doit prendre la valeur 'custom/preheader.html'
@@ -1160,20 +1154,58 @@ ACTIVE_VIDEO_COMMENT = True
 USE_TRANSCRIPTION = True
 
 """
+## Transcription use
+# * STT
+# * VOSK
+"""
+TRANSCRIPTION_TYPE = "STT"
+
+
+"""
+# Temps maximum en secondes des blanc entre chaque mot pour le decoupage des sous-titres
+"""
+SENTENCE_BLANK_SPLIT_TIME = 0.5
+
+"""
 # decoupage de l'audio pour la transcription
 """
 AUDIO_SPLIT_TIME = 300
 
+
 """
-# paramétrage de deepspeech pour le modele
+# paramétrage des modele
+# Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models
 """
-DS_PARAM = {
-  'fr': {
-    # le modèle deepspeech
-    'model': "/usr/local/django_projects/transcription/model_tensorflow_fr/output_graph.pbmm",
-    'scorer': "/usr/local/django_projects/transcription/model_tensorflow_fr/kenlm.scorer",
-  }
+MODEL_PARAM = {
+    # le modèle stt
+    'STT': {
+        'fr': {
+            'model': "/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite",
+            'scorer': "/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer",
+        }
+    },
+    # le modèle vosk
+    'VOSK':{
+        'fr': {
+        'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0",
+        }
+    }
 }
+
+
+"""
+# Définissez à True pour activer la case à cocher dans l'édition des sous-titres.
+"""
+ACTIVE_MODEL_ENRICH  = False
+
+"""
+# paramétrage des chemin du model pour la compilation
+# Pour télécharger les Modeles : https://alphacephei.com/vosk/lm#update-process
+# Ajouter le model dans les sous-dossier de la lang correspondants
+# Exemple pour le français: /path/of/project/Esup-Pod/compile-model/fr/
+"""
+
+MODEL_COMPILE_DIR = "/path/of/project/Esup-Pod/compile-model"
 
 """
 # Temps (en seconde) entre deux envois d'un signal au serveur,
@@ -1276,10 +1308,9 @@ BBB_VERSION_IS_23 = False
 USER_VIDEO_CATEGORY = False
 
 """
-# gestion de l'oboslesence des vidéos
+# gestion de l'obsolesence des vidéos
 """
-USE_OBSOLESCENCE = True
-
+USE_OBSOLESCENCE = False
 WARN_DEADLINES = [60, 30, 7]
 
 """
@@ -1410,3 +1441,19 @@ EMAIL_ADMIN_ON_EVENT_SCHEDULING = True
 # Durée (en nombre de jours) sur laquelle on souhaite compter le nombre de vues récentes
 """
 VIDEO_RECENT_VIEWCOUNT = 180
+
+"""CACHE configurations."""
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    # Persistent cache setup for select2 (NOT DummyCache or LocMemCache).
+    "select2": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+

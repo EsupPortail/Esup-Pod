@@ -18,7 +18,7 @@ var ajaxfail = function (data) {
   );
 };
 
-$(window).ready(function () {
+document.addEventListener("DOMContentLoaded", function () {
   const table = $("#table_list_videos")[0];
 
   $(".position-up").on("click", function () {

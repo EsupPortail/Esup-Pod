@@ -29,6 +29,7 @@ class HeartBeatAdmin(admin.ModelAdmin):
 class BuildingAdmin(admin.ModelAdmin):
     form = BuildingAdminForm
     list_display = ("name", "gmapurl")
+    search_fields = ["name"]
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -53,16 +54,15 @@ class BuildingAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
+                "bootstrap/dist/css/bootstrap.min.css",
+                "bootstrap/dist/css/bootstrap-grid.min.css",
                 "css/pod.css",
             )
         }
         js = (
             "js/main.js",
             "podfile/js/filewidget.js",
-            "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
 
@@ -79,6 +79,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
         "piloting_conf",
     )
     readonly_fields = ["slug"]
+    autocomplete_fields = ["building", "video_on_hold"]
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs["widgets"] = {
@@ -106,16 +107,15 @@ class BroadcasterAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
+                "bootstrap/dist/css/bootstrap.min.css",
+                "bootstrap/dist/css/bootstrap-grid.min.css",
                 "css/pod.css",
             )
         }
         js = (
             "js/main.js",
             "podfile/js/filewidget.js",
-            "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
 
