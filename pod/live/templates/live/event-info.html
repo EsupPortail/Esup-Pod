@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 {% load tagging_tags %}
 {% load thumbnail %}
 
@@ -35,7 +35,7 @@
       <li class="col-6 col-md-4">
         <h3 class="meta-title">{% trans 'Added by:' %}</h3>
         <div>
-          <a href="{% url 'videos' %}?owner={{ event.owner.username }}" title="{{ event.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
+          <a href="{% url 'videos:videos' %}?owner={{ event.owner.username }}" title="{{ event.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
           {% if event.owner.owner.userpicture.file %}
             {% thumbnail event.owner.owner.userpicture.file "x50" as im %}
               <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{ event.owner.get_full_name }}" loading="lazy">
@@ -46,7 +46,7 @@
       </li>
       <li class="col-6 col-md-4">
         <h3 class="meta-title">{% trans 'Type:' %}</h3>
-        <div><a href="{% url 'videos' %}?type={{ event.type.slug }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ event.type.title }}</a></div>
+        <div><a href="{% url 'videos:videos' %}?type={{ event.type.slug }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ event.type.title }}</a></div>
       </li>
     </ul>
   </div>

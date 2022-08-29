@@ -369,7 +369,7 @@ class LiveViewsTestCase(TestCase):
 
         # event restricted with password
         self.event.is_restricted = False
-        self.event.restrict_access_to_groups = []
+        self.event.restrict_access_to_groups.set([])
         event_pswd = "mypasswd"
         self.event.password = event_pswd
         self.event.save()
@@ -401,7 +401,7 @@ class LiveViewsTestCase(TestCase):
 
         # event not restricted nor draft
         self.event.is_restricted = False
-        self.event.restrict_access_to_groups = []
+        self.event.restrict_access_to_groups.set([])
         self.event.is_draft = False
         self.event.password = None
         self.event.save()

@@ -126,7 +126,7 @@ class Wowza(PilotingInterface):
         self.url = None
         if self.check_piloting_conf():
             conf = json.loads(self.broadcaster.piloting_conf)
-            self.url = "{server_url}/v2/servers/_defaultServer_"
+            self.url = "http://{server_url}/v2/servers/_defaultServer_"
             self.url += "/vhosts/_defaultVHost_/applications/{application}"
             self.url.format(
                 server_url=conf["server_url"],

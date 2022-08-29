@@ -8,7 +8,7 @@
 
 {% block breadcrumbs %}
 {{ block.super }}
-<li class="breadcrumb-item"><a href="{% url 'live:lives'%}">{% trans "Lives" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'live:directs_all'%}">{% trans "Lives" %}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{{building.name}}</li>
 {% endblock %}
 
