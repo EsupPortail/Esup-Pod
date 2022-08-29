@@ -95,6 +95,12 @@ USE_BBB_LIVE = getattr(django_settings, "USE_BBB_LIVE", False)
 
 COOKIE_LEARN_MORE = getattr(django_settings, "COOKIE_LEARN_MORE", "")
 
+SHOW_EVENTS_ON_HOMEPAGE = getattr(django_settings, "SHOW_EVENTS_ON_HOMEPAGE", False)
+
+DEFAULT_EVENT_THUMBNAIL = getattr(
+    django_settings, "DEFAULT_EVENT_THUMBNAIL", "/img/default-event.svg"
+)
+
 USE_OPENCAST_STUDIO = getattr(django_settings, "USE_OPENCAST_STUDIO", False)
 
 USE_MEETING = getattr(django_settings, "USE_MEETING", False)
@@ -159,8 +165,9 @@ def context_settings(request):
     new_settings["DYSLEXIAMODE_ENABLED"] = DYSLEXIAMODE_ENABLED
     new_settings["USE_OPENCAST_STUDIO"] = USE_OPENCAST_STUDIO
     new_settings["COOKIE_LEARN_MORE"] = COOKIE_LEARN_MORE
+    new_settings["SHOW_EVENTS_ON_HOMEPAGE"] = SHOW_EVENTS_ON_HOMEPAGE
+    new_settings["DEFAULT_EVENT_THUMBNAIL"] = DEFAULT_EVENT_THUMBNAIL
     new_settings["USE_MEETING"] = USE_MEETING
-
     return new_settings
 
 

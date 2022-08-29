@@ -216,10 +216,10 @@ class ChannelEditTestView(TestCase):
         channel = Channel.objects.get(title="ChannelTest1")
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        url = reverse("channels:channel_edit", kwargs={'slug': "slugauhasard"})
+        url = reverse("channels:channel_edit", kwargs={"slug": "slugauhasard"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
-        url = reverse("channels:channel_edit", kwargs={'slug': channel.slug})
+        url = reverse("channels:channel_edit", kwargs={"slug": channel.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["form"].instance, channel)
@@ -234,7 +234,7 @@ class ChannelEditTestView(TestCase):
         channel = Channel.objects.get(title="ChannelTest1")
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        url = reverse("channels:channel_edit", kwargs={'slug': channel.slug})
+        url = reverse("channels:channel_edit", kwargs={"slug": channel.slug})
         response = self.client.post(
             url,
             {"title": "ChannelTest1", "description": "<p>bl</p>\r\n"},
@@ -283,7 +283,7 @@ class ThemeEditTestView(TestCase):
         channel = Channel.objects.get(title="ChannelTest1")
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        url = reverse("channels:theme_edit", kwargs={'slug': channel.slug})
+        url = reverse("channels:theme_edit", kwargs={"slug": channel.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["channel"], channel)
@@ -297,7 +297,7 @@ class ThemeEditTestView(TestCase):
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         # action new
-        url = reverse("channels:theme_edit", kwargs={'slug': channel.slug})
+        url = reverse("channels:theme_edit", kwargs={"slug": channel.slug})
         response = self.client.post(
             url,
             {"action": "new"},
@@ -513,9 +513,7 @@ class VideosTestView(TestCase):
         response = self.client.get(url + "?discipline=discipline2")
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["videos"].paginator.count, 2)
-        response = self.client.get(
-            url + "?discipline=discipline1&discipline=discipline2"
-        )
+        response = self.client.get(url + "?discipline=discipline1&discipline=discipline2")
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["videos"].paginator.count, 3)
         # owner
@@ -585,7 +583,7 @@ class VideoTestView(TestCase):
         v = Video.objects.get(title="Video1")
         self.assertEqual(v.is_draft, True)
         # test draft
-        url = reverse("video:video", kwargs={'slug': v.slug})
+        url = reverse("video:video", kwargs={"slug": v.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.client = Client()
@@ -635,7 +633,7 @@ class VideoTestView(TestCase):
         # TODO test with hashkey
         url = reverse(
             "video:video_private",
-            kwargs={'slug': v.slug, 'slug_private': v.get_hashkey()}
+            kwargs={"slug": v.slug, "slug_private": v.get_hashkey()},
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -650,7 +648,7 @@ class VideoTestView(TestCase):
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        url = reverse("video:video", kwargs={'slug': v.slug})
+        url = reverse("video:video", kwargs={"slug": v.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.user = User.objects.get(username="pod2")
@@ -711,10 +709,10 @@ class VideoEditTestView(TestCase):
         self.client.force_login(self.user)
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        url = reverse("video:video_edit", kwargs={'slug': "slugauhasard"})
+        url = reverse("video:video_edit", kwargs={"slug": "slugauhasard"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
-        url = reverse("video:video_edit", kwargs={'slug': video.slug})
+        url = reverse("video:video_edit", kwargs={"slug": video.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["form"].instance, video)
@@ -729,7 +727,7 @@ class VideoEditTestView(TestCase):
         url = reverse("video:video_edit", kwargs={})
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        url = reverse("video:video_edit", kwargs={'slug': video.slug})
+        url = reverse("video:video_edit", kwargs={"slug": video.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["form"].instance, video)
@@ -745,7 +743,7 @@ class VideoEditTestView(TestCase):
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         # modify one
-        url = reverse("video:video_edit", kwargs={'slug': video.slug})
+        url = reverse("video:video_edit", kwargs={"slug": video.slug})
         response = self.client.post(
             url,
             {
@@ -766,7 +764,7 @@ class VideoEditTestView(TestCase):
         videofile = SimpleUploadedFile(
             "file.mp4", b"file_content", content_type="video/mp4"
         )
-        url = reverse("video:video_edit", kwargs={'slug': v.slug})
+        url = reverse("video:video_edit", kwargs={"slug": v.slug})
         response = self.client.post(
             url,
             {
@@ -808,7 +806,7 @@ class VideoEditTestView(TestCase):
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
         # modify one
-        url = reverse("video:video_edit", kwargs={'slug': video.slug})
+        url = reverse("video:video_edit", kwargs={"slug": video.slug})
         response = self.client.post(
             url,
             {
@@ -829,7 +827,7 @@ class VideoEditTestView(TestCase):
         videofile = SimpleUploadedFile(
             "file.mp4", b"file_content", content_type="video/mp4"
         )
-        url = reverse("video:video_edit", kwargs={'slug': v.slug})
+        url = reverse("video:video_edit", kwargs={"slug": v.slug})
         response = self.client.post(
             url,
             {
@@ -884,15 +882,15 @@ class video_deleteTestView(TestCase):
     def test_video_delete_get_request(self):
         self.client = Client()
         video = Video.objects.get(title="Video1")
-        url = reverse("video:video_delete", kwargs={'slug': video.slug})
+        url = reverse("video:video_delete", kwargs={"slug": video.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        url = reverse("video:video_delete", kwargs={'slug': "slugauhasard"})
+        url = reverse("video:video_delete", kwargs={"slug": "slugauhasard"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
-        url = reverse("video:video_delete", kwargs={'slug': video.slug})
+        url = reverse("video:video_delete", kwargs={"slug": video.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.user = User.objects.get(username="pod2")
@@ -903,7 +901,7 @@ class video_deleteTestView(TestCase):
         video = Video.objects.get(title="VideoWithAdditionalOwners")
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
-        url = reverse("video:video_delete", kwargs={'slug': video.slug})
+        url = reverse("video:video_delete", kwargs={"slug": video.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
         self.user = User.objects.get(username="pod")
@@ -914,7 +912,7 @@ class video_deleteTestView(TestCase):
         video = Video.objects.get(title="Video1")
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        url = reverse("video:video_delete", kwargs={'slug': video.slug})
+        url = reverse("video:video_delete", kwargs={"slug": video.slug})
         response = self.client.post(
             url,
             {
@@ -925,7 +923,7 @@ class video_deleteTestView(TestCase):
         self.assertRedirects(response, url)
         self.assertEqual(Video.objects.all().count(), 1)
         video = Video.objects.get(title="VideoWithAdditionalOwners")
-        url = reverse("video:video_delete", kwargs={'slug': video.slug})
+        url = reverse("video:video_delete", kwargs={"slug": video.slug})
         response = self.client.post(
             url,
             {
@@ -1329,18 +1327,14 @@ class VideoTestJSONView(TestCase):
         self.assertEqual(v.is_draft, True)
         url = reverse("video:video_xhr", kwargs={"slug": v.slug})
         # test draft
-        response = self.client.get(
-            url, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-        )
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.json()["status"], 302)
         self.assertEqual(response.json()["error"], "access")
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        response = self.client.get(
-            url, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-        )
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.json()["status"], "ok")
         self.user = User.objects.get(username="pod2")
@@ -1352,42 +1346,30 @@ class VideoTestJSONView(TestCase):
         self.client.logout()
         v.is_draft = False
         v.save()
-        response = self.client.get(
-            url, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-        )
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.json()["status"], "ok")
         # test restricted
         v.is_restricted = True
         v.save()
-        response = self.client.get(
-            url, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-        )
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.json()["status"], 302)
         self.assertEqual(response.json()["error"], "access")
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
-        response = self.client.get(
-            url, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-        )
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.json()["status"], "ok")
         # test restricted group
         v.restrict_access_to_groups.add(AccessGroup.objects.get(code_name="group2"))
         v.restrict_access_to_groups.add(AccessGroup.objects.get(code_name="group3"))
-        response = self.client.get(
-            url, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-        )
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.json()["status"], 403)
         self.assertEqual(response.json()["error"], "deny")
         self.user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="group1"))
-        response = self.client.get(
-            url, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-        )
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.json()["status"], 403)
         self.assertEqual(response.json()["error"], "deny")
         self.user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="group2"))
-        response = self.client.get(
-            url, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-        )
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.json()["status"], "ok")
         # TODO test with password (actualy not used in playlist)
         """v.is_restricted = False
@@ -1416,20 +1398,14 @@ class VideoTestJSONView(TestCase):
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        response = self.client.get(
-            url, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-        )
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.json()["status"], "ok")
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
-        response = self.client.get(
-            url, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-        )
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.json()["status"], "ok")
         self.user = User.objects.get(username="pod3")
         self.client.force_login(self.user)
-        response = self.client.get(
-            url, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-        )
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.json()["status"], 403)
         self.assertEqual(response.json()["error"], "deny")

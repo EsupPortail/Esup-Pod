@@ -28,26 +28,22 @@ class MeetingAdmin(admin.ModelAdmin):
     search_fields = ["name", "meeting_id"]
     list_display = (
         "name",
-        'owner',
+        "owner",
         "meeting_id",
         "created_at",
         "join_url",
         "is_running",  # , 'meeting_actions'
     )
 
-    @admin.display(empty_value='')
+    @admin.display(empty_value="")
     def join_url(self, obj):
         direct_join_url = reverse(
-            'meeting:join',
-            args=(obj.meeting_id, obj.get_hashkey())
+            "meeting:join", args=(obj.meeting_id, obj.get_hashkey())
         )
         link = '<a href="%s" target="_blank">%s</a>' % (direct_join_url, _("join"))
         return mark_safe(link)
 
-    list_filter = (
-        "created_at",
-        'owner'
-    )
+    list_filter = ("created_at", "owner")
     # actions = ["update_running_meetings"] if not UPDATE_RUNNING_ON_EACH_CALL else []
     list_per_page = 30
     autocomplete_fields = [

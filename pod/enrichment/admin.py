@@ -52,7 +52,6 @@ class EnrichmentAdmin(admin.ModelAdmin):
         js = (
             "js/main.js",
             "podfile/js/filewidget.js",
-
             "bootstrap/dist/js/bootstrap.min.js",
         )
 

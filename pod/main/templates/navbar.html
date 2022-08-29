@@ -5,7 +5,6 @@
 {% load thumbnail %}
 
 <div class="container-fluid pod-container pod-navbar__container" id="nav-mainbar">
-
   <!--
     <button class="navbar-toggler pod-navbar__button-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#pod-navbar__menu" aria-controls="pod-navbar__menu" aria-expanded="false" title="{% trans 'Toggle navigation' %}">
       <i class="bi bi-list" aria-hidden="true"></i>
@@ -49,7 +48,7 @@
         {% endif %}
         {% if "live" in THIRD_PARTY_APPS %}
           <li class="nav-item pod-navbar__nav-item" id="nav-live">
-            <a class="nav-link   pod-dropdown-item" href="{% url 'live:lives'%}"><i class="bi bi-broadcast pod-nav-link-icon"></i> {% trans "Lives"%}</a>
+            <a class="nav-link   pod-dropdown-item" href="{% url 'live:events'%}"><i class="bi bi-broadcast pod-nav-link-icon"></i> {% trans "Lives"%}</a>
           </li>
         {% endif %}
       </ul>
@@ -193,6 +192,9 @@
           {% if USE_OPENCAST_STUDIO %}
           <a class="dropdown-item pod-dropdown-item" href="{% url 'recorder:studio_pod'%}"><i class="bi bi-camera-video pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans "Video Record" %}</a>
           {% endif %}
+          {% if "live" in THIRD_PARTY_APPS %}
+            <a class="dropdown-item" href="{% url 'live:my_events' %}" title="{% trans 'My events' %}"><i data-feather="radio" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My events' %}</a>
+          {%  endif %}
           {% if request.user.owners_channels.all %}
           <a class="dropdown-item pod-dropdown-item" href="{% url 'channels:my_channels' %}"><i class="bi bi-youtube pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My channels' %}</a>
           {% endif %}

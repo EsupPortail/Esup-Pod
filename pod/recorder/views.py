@@ -460,6 +460,7 @@ def settings_toml(request):
     [return]
     target = "%(target)s"
     label = "%(label)s"
+    [theme]
     """
     content_text = content_text % {
         "serverUrl": studio_url,

@@ -300,7 +300,6 @@ class TrackAdmin(admin.ModelAdmin):
         }
         js = (
             "js/main.js",
-
             "bootstrap/dist/js/bootstrap.min.js",
         )
 

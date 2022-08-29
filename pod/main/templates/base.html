@@ -2,9 +2,7 @@
 {% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
-
 <head>{% spaceless %}
-
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -35,6 +33,9 @@
   {% endif %}
   {% if CSS_OVERRIDE %}
   <link rel="stylesheet" href="{% static CSS_OVERRIDE %}?ver={{VERSION}}" media="screen">
+  {% endif %}
+  {% if SHOW_EVENTS_ON_HOMEPAGE and "live" in THIRD_PARTY_APPS %}
+  <link href="{% static 'css/event.css' %}?ver={{ VERSION }}" rel="stylesheet"/>
   {% endif %}
   <!-- more styles for each App -->
   {% block more_style %}
@@ -87,7 +88,7 @@
           </nav>
           <!-- contenu page statique -->
           <div>
-            {%if page_title%}
+            {%if page_title %}
             <h1 class="page_title">{{page_title|capfirst}}</h1>
             {%endif%}
             {% block page_content %}
@@ -96,6 +97,9 @@
           </div>
           <!-- fin contenu page statique -->
           {% if request.path == "/" %}
+            {% if SHOW_EVENTS_ON_HOMEPAGE and "live" in THIRD_PARTY_APPS %}
+              {% include "live/events_next.html" %}
+            {% endif %}
           {% include "videos/last_videos.html" %}
           {% endif %}
         </div>

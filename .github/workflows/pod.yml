@@ -46,8 +46,9 @@ jobs:
           pip install -r requirements.txt
           pip install flake8
           pip install coveralls
+          pip install httmock
           sudo npm install -g yarn
-          
+
       - name: Flake8 compliance
         run: |
           flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,*_settings.py
