@@ -52,7 +52,7 @@ $(document).on(
  */
 var display_notes_place = function (data) {
   $("div#card-takenote").html(data);
-  
+
   if ($("#video_notes_form").length)
     $("#video_notes_form")[0].scrollIntoView({
       behavior: "smooth",

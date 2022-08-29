@@ -93,9 +93,7 @@ class ChapterViewsTestCase(TestCase):
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
         url = reverse("video:chapter:video_chapter", kwargs={"slug": video.slug})
-        response = self.client.post(
-            url, data={"action": "new"}
-        )
+        response = self.client.post(url, data={"action": "new"})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_chapter.html")
         self.assertContains(response, "videotest")

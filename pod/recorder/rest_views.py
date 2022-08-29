@@ -1,5 +1,12 @@
 from rest_framework import serializers, viewsets
-from .models import RecordingFile, Recording, Recorder
+from .models import RecordingFile, Recording, Recorder, RecordingFileTreatment
+
+
+class RecordingFileTreatmentModelSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = RecordingFileTreatment
+        fields = ("id", "file", "file_size", "recorder", "type", "date_added")
+        filter_fields = ("date_added", "recorder", "file", "id")
 
 
 class RecordingModelSerializer(serializers.HyperlinkedModelSerializer):
@@ -18,6 +25,12 @@ class RecordingFileModelSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = RecordingFile
         fields = ("id", "url", "file", "recorder")
+
+
+class RecordingFileTreatmentModelViewSet(viewsets.ModelViewSet):
+    queryset = RecordingFileTreatment.objects.all()
+    serializer_class = RecordingFileTreatmentModelSerializer
+    filter_fields = ("date_added", "recorder", "file", "id")
 
 
 class RecordingModelViewSet(viewsets.ModelViewSet):

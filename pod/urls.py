@@ -16,7 +16,7 @@ from pod.main.views import (
     user_autocomplete,
     maintenance,
     robots_txt,
-    userpicture
+    userpicture,
 )
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 
@@ -38,17 +38,13 @@ urlpatterns = [
     url(r"^jsi18n/$", JavaScriptCatalog.as_view(), name="javascript-catalog"),
     # Maintenance mode
     url(r"^maintenance/$", maintenance, name="maintenance"),
-
     # videos
     url(r"^videos/", include("pod.video.urls-videos")),
     url(r"^rss", include("pod.video.urls-rss")),
     url(r"^video/", include("pod.video.urls")),
-
     url(r"^ajax_calls/search_user/", user_autocomplete),
-
     # my channels
     url(r"^channels/", include("pod.video.urls-channels")),
-
     # recording
     url(r"^record/", include("pod.recorder.urls")),
     # search
@@ -81,7 +77,7 @@ urlpatterns = [
 ]
 # PLAYLIST
 urlpatterns += [
-    path("playlist/", include("pod.playlist.urls", namespace='playlist')),
+    path("playlist/", include("pod.playlist.urls", namespace="playlist")),
 ]
 
 # CAS

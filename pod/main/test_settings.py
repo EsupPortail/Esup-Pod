@@ -32,13 +32,14 @@ DATABASES = {
         "NAME": "db-test.sqlite",
     }
 }
-LANGUAGES = (("fr", "Français"), ("en", "English"), ("nl", "Netherlands"))
+LANGUAGES = (("fr", "Français"), ("en", "English"))
 LANGUAGE_CODE = "en"
 THIRD_PARTY_APPS = ["enrichment", "live"]
 USE_PODFILE = True
 USE_STATS_VIEW = True
 ACCOMMODATION_YEARS = {"faculty": 1}
 USE_OBSOLESCENCE = True
+SHOW_EVENTS_ON_HOMEPAGE = True
 ACTIVE_VIDEO_COMMENT = True
 USER_VIDEO_CATEGORY = True
 POD_ARCHIVE_AFFILIATION = ["faculty"]
@@ -56,8 +57,10 @@ SHIBBOLETH_ATTRIBUTE_MAP = {
 }
 REMOTE_USER_HEADER = "REMOTE_USER"
 
+EXISTING_BROADCASTER_IMPLEMENTATIONS = ["Wowza", "Test"]
+AFFILIATION_EVENT = ["employee"]
 
 USE_MEETING = True
 # found on https://bigbluebutton.org/api-mate/
-BBB_API_URL = 'http://test-install.blindsidenetworks.com/bigbluebutton/api/'
-BBB_SECRET_KEY = '8cd8ef52e8e101574e400365b55e11a6'
+BBB_API_URL = "http://test-install.blindsidenetworks.com/bigbluebutton/api/"
+BBB_SECRET_KEY = "8cd8ef52e8e101574e400365b55e11a6"

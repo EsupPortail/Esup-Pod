@@ -24,5 +24,5 @@ urlpatterns = [
         r"^login_gateway/$",
         authentication_login_gateway,
         name="authentication_login_gateway",
-    )
+    ),
 ]

@@ -14,7 +14,7 @@ urlpatterns = [
     path(
         "get_meeting_info/<slug:meeting_id>/",
         views.get_meeting_info,
-        name="get_meeting_info"
+        name="get_meeting_info",
     ),
     path("end/<slug:meeting_id>/", views.end, name="end"),
     path("end_callback/<slug:meeting_id>/", views.end_callback, name="end_callback"),

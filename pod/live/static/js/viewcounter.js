@@ -17,7 +17,7 @@ $(document).ready(function () {
       $.ajax({
         type: "GET",
         url:
-          "/live/ajax_calls/heartbeat?key=" +
+          "/live/ajax_calls/heartbeat/?key=" +
           secret +
           "&liveid=" +
           $("#livename").data("liveid"),
