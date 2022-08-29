@@ -46,7 +46,7 @@ class LiveTestUtils(TestCase):
         additional_user1 = User.objects.create(username="adduser1", email=expected[0])
         additional_user2 = User.objects.create(username="adduser2", email=expected[1])
 
-        event.additional_owners = [additional_user1, additional_user2]
+        event.additional_owners.set([additional_user1, additional_user2])
         cc = get_cc(event)
         self.assertEquals(cc, expected)
         print(" --->  test_utils get_cc ok")
