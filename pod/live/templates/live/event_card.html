@@ -1,30 +1,31 @@
 {% load l10n %}
 {% load i18n %}
 {% spaceless %}
-    <div class="card mb-4 box-shadow border-secondary video-card">
+    <div class="card box-shadow pod-card--video video-card">
         <!-- card.html -->
         <div class="card-header">
             <div class="d-flex justify-content-end align-items-center">
 {#            between<small class="text-muted time">{% blocktrans with start_date=event.start_date|date:"d/m/Y" start_time=event.start_time end_time=event.end_time %}The {{start_date}} from {{start_time}} to {{end_time}}{% endblocktrans %}</small>#}
-            <span class="text-muted small">
+            <span class="text-muted small d-flex">
                     <span>
                     {% if event.is_current %}
-                        <i class="current_event_feather" data-feather="radio"></i>
+                        <i class="bi bi-soundwavecurrent_event_feather" aria-hidden="true"></i>
                     {%  else %}
-                        <i data-feather="radio"></i>
+                        <i class="bi bi-soundwave" aria-hidden="true"></i>
                     {%  endif %}
                     </span>
                     <span data-toggle="tooltip" title="{{event.broadcaster.name}}">
                         <i data-feather="info"></i>
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
                     </span>
                     {% if event.password %}
                       <span title="{% trans 'This content is password protected.' %}">
-                        <i data-feather="lock" aria-hidden="true"></i>
+                        <i class="bi bi-lock" aria-hidden="true"></i>
                       </span>
                     {% endif %}
                     {% if event.is_draft %}
                         <span title="{% trans 'This content is in draft.' %}">
-                            <i data-feather="x-circle"></i>
+                            <i class="bi bi-incognito"></i>
                         </span>
                     {% endif %}
                 </span>
