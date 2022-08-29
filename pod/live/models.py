@@ -349,7 +349,7 @@ class Event(models.Model):
         Broadcaster,
         verbose_name=_("Broadcaster"),
         help_text=_("Broadcaster name."),
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
 
     type = models.ForeignKey(

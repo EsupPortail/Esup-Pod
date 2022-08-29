@@ -6,19 +6,18 @@ from ..models import Meeting
 
 
 class MeetingTestCase(TestCase):
-
     def setUp(self):
         user = User.objects.create(username="pod")
         user1 = User.objects.create(username="pod1")
         user2 = User.objects.create(username="pod2")
-        Meeting.objects.create(id=1, name='test', owner=user)
+        Meeting.objects.create(id=1, name="test", owner=user)
         meeting2 = Meeting.objects.create(
             id=2,
-            name='test2',
+            name="test2",
             owner=user,
             attendee_password="1234",
             moderator_password="1234",
-            is_restricted=True
+            is_restricted=True,
         )
         meeting2.additional_owners.add(user1)
         meeting2.additional_owners.add(user2)

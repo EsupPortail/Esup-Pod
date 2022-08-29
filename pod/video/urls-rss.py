@@ -25,5 +25,5 @@ urlpatterns = [
         r"^-audio/(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$",
         RssSiteAudiosFeed(),
         name="rss-audio",
-    )
+    ),
 ]

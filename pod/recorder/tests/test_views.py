@@ -66,23 +66,17 @@ class recorderViewsTestCase(TestCase):
 
         self.user.is_superuser = True
         self.user.save()
-        response = self.client.get(
-            url, {"mediapath": "video.mp4", "recorder": 1}
-        )
+        response = self.client.get(url, {"mediapath": "video.mp4", "recorder": 1})
         self.assertEqual(response.status_code, 302)  # User is not staff
 
         self.user.is_staff = True
         self.user.save()
 
         # recorder not exist
-        response = self.client.get(
-            url, {"mediapath": "video.mp4", "recorder": 100}
-        )
+        response = self.client.get(url, {"mediapath": "video.mp4", "recorder": 100})
         self.assertEqual(response.status_code, 403)
 
-        response = self.client.get(
-            url, {"mediapath": "video.mp4", "recorder": 1}
-        )
+        response = self.client.get(url, {"mediapath": "video.mp4", "recorder": 1})
         self.assertEqual(response.status_code, 200)
 
         self.assertTemplateUsed(response, "recorder/add_recording.html")
@@ -115,7 +109,7 @@ class recorderViewsTestCase(TestCase):
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        url = reverse("record:delete_record", kwargs={'id': 1})
+        url = reverse("record:delete_record", kwargs={"id": 1})
         response = self.client.get(url)
         self.assertRaises(PermissionDenied)
 
@@ -126,10 +120,10 @@ class recorderViewsTestCase(TestCase):
 
         self.user.is_superuser = True
         self.user.save()
-        url = reverse("record:delete_record", kwargs={'id': 2})
+        url = reverse("record:delete_record", kwargs={"id": 2})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
-        url = reverse("record:delete_record", kwargs={'id': 1})
+        url = reverse("record:delete_record", kwargs={"id": 1})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
@@ -160,9 +154,7 @@ class recorderViewsTestCase(TestCase):
         m = hashlib.md5()
         m.update(record.ipunder().encode("utf-8") + record.salt.encode("utf-8"))
         response = self.client.get(
-            url + "?key="
-            + m.hexdigest()
-            + "&mediapath=/some/path&recordingPlace"
+            url + "?key=" + m.hexdigest() + "&mediapath=/some/path&recordingPlace"
             "=16_3_10_37&course_title=title"
         )
         self.assertEqual(response.status_code, 200)

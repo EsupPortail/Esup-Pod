@@ -31,7 +31,7 @@ BBB_MEETING_INFO = getattr(
     settings,
     "BBB_MEETING_INFO",
     {
-        "meetingName" : _("meeting name"),
+        "meetingName": _("meeting name"),
         "hasUserJoined": _("has user joined"),
         "recording": _("recording"),
         "participantCount": _("participant count"),
@@ -41,20 +41,15 @@ BBB_MEETING_INFO = getattr(
         "attendee": _("attendee"),
         "fullName": _("full name"),
         "role": _("role"),
-    }
+    },
 )
 
 
 @login_required(redirect_field_name="referrer")
 def my_meetings(request):
     site = get_current_site(request)
-    if (
-        RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY
-        and request.user.is_staff is False
-    ):
-        return render(
-            request, "meeting/my_meetings.html", {"access_not_allowed": True}
-        )
+    if RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
+        return render(request, "meeting/my_meetings.html", {"access_not_allowed": True})
     meetings = request.user.owner_meeting.all().filter(site=site)
     return render(
         request,
@@ -70,9 +65,7 @@ def add_or_edit(request, meeting_id=None):
     if in_maintenance():
         return redirect(reverse("maintenance"))
     meeting = (
-        get_object_or_404(
-            Meeting, meeting_id=meeting_id, site=get_current_site(request)
-        )
+        get_object_or_404(Meeting, meeting_id=meeting_id, site=get_current_site(request))
         if meeting_id
         else None
     )
@@ -87,18 +80,11 @@ def add_or_edit(request, meeting_id=None):
         )
         and (request.user not in meeting.additional_owners.all())
     ):
-        messages.add_message(
-            request, messages.ERROR, _("You cannot edit this meeting.")
-        )
+        messages.add_message(request, messages.ERROR, _("You cannot edit this meeting."))
         raise PermissionDenied
 
-    if (
-        RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY
-        and request.user.is_staff is False
-    ):
-        return render(
-            request, "meeting/add_or_edit.html", {"access_not_allowed": True}
-        )
+    if RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
+        return render(request, "meeting/add_or_edit.html", {"access_not_allowed": True})
 
     default_owner = meeting.owner.pk if meeting else request.user.pk
     form = MeetingForm(
@@ -143,10 +129,7 @@ def save_meeting_form(request, form):
     meeting = form.save(commit=False)
     meeting.site = get_current_site(request)
     if (
-        (
-            request.user.is_superuser
-            or request.user.has_perm("meeting.add_meeting")
-        )
+        (request.user.is_superuser or request.user.has_perm("meeting.add_meeting"))
         and request.POST.get("owner")
         and request.POST.get("owner") != ""
     ):
@@ -168,8 +151,7 @@ def delete(request, meeting_id):
     )
 
     if request.user != meeting.owner and not (
-        request.user.is_superuser
-        or request.user.has_perm("meeting.delete_meeting")
+        request.user.is_superuser or request.user.has_perm("meeting.delete_meeting")
     ):
         messages.add_message(
             request, messages.ERROR, _("You cannot delete this meeting.")
@@ -193,9 +175,7 @@ def delete(request, meeting_id):
                 _("One or more errors have been found in the form."),
             )
 
-    return render(
-        request, "meeting/delete.html", {"meeting": meeting, "form": form}
-    )
+    return render(request, "meeting/delete.html", {"meeting": meeting, "form": form})
 
 
 @csrf_protect
@@ -208,8 +188,7 @@ def join(request, meeting_id, direct_access=None):
     meeting = get_object_or_404(Meeting, id=id, site=get_current_site(request))
 
     if request.user.is_authenticated and (
-        request.user == meeting.owner
-        or request.user in meeting.additional_owners.all()
+        request.user == meeting.owner or request.user in meeting.additional_owners.all()
     ):
         return join_as_moderator(request, meeting)
 
@@ -232,23 +211,25 @@ def render_show_page(request, meeting, show_page, direct_access):
     if show_page and direct_access and request.user.is_authenticated:
         # join as attendee
         # get user name and redirect to BBB
-        fullname = request.user.get_full_name() if (
-            request.user.get_full_name() != ""
-        ) else request.user.get_username()
+        fullname = (
+            request.user.get_full_name()
+            if (request.user.get_full_name() != "")
+            else request.user.get_username()
+        )
         join_url = meeting.get_join_url(fullname, "VIEWER", request.user.get_username())
         return redirect(join_url)
-    if show_page :
+    if show_page:
         remove_password_in_form = direct_access is not None
         return check_form(request, meeting, remove_password_in_form)
     else:
         return check_user(request)
-    '''
+    """
     return render(
         request,
         "meeting/join.html",
         {"meeting": meeting, "form": form},
     )
-    '''
+    """
 
 
 def join_as_moderator(request, meeting):
@@ -257,17 +238,17 @@ def join_as_moderator(request, meeting):
         created = meeting.create(request)
         if created:
             # get user name and redirect to BBB with moderator rights
-            fullname = request.user.get_full_name() if (
-                request.user.get_full_name() != ""
-            ) else request.user.get_username()
+            fullname = (
+                request.user.get_full_name()
+                if (request.user.get_full_name() != "")
+                else request.user.get_username()
+            )
             join_url = meeting.get_join_url(
-                fullname,
-                "MODERATOR",
-                request.user.get_username()
+                fullname, "MODERATOR", request.user.get_username()
             )
             return redirect(join_url)
         else:
-            msg = 'Unable to create meeting ! '
+            msg = "Unable to create meeting ! "
             messages.add_message(request, messages.ERROR, msg)
             return render(
                 request,
@@ -278,7 +259,7 @@ def join_as_moderator(request, meeting):
         args = ve.args[0]
         msg = ""
         for key in args:
-            msg += ("<b>%s:</b> %s<br/>" % (key, args[key]))
+            msg += "<b>%s:</b> %s<br/>" % (key, args[key])
         messages.add_message(request, messages.ERROR, mark_safe(msg))
         return render(
             request,
@@ -294,9 +275,7 @@ def check_user(request):
         )
         raise PermissionDenied
     else:
-        return redirect(
-            "%s?referrer=%s" % (settings.LOGIN_URL, request.get_full_path())
-        )
+        return redirect("%s?referrer=%s" % (settings.LOGIN_URL, request.get_full_path()))
 
 
 def check_form(request, meeting, remove_password_in_form):
@@ -312,27 +291,24 @@ def check_form(request, meeting, remove_password_in_form):
             remove_password=remove_password_in_form,
         )
         if form.is_valid():
-            access_granted = (
-                remove_password_in_form
-                or (
-                    not remove_password_in_form
-                    and form.cleaned_data["password"] == meeting.attendee_password
-                )
+            access_granted = remove_password_in_form or (
+                not remove_password_in_form
+                and form.cleaned_data["password"] == meeting.attendee_password
             )
-            if access_granted :
+            if access_granted:
                 # messages.add_message(
                 #     request, messages.INFO, _("Join as attendee !")
                 # )
                 # get user name from form and redirect to BBB
                 join_url = ""
-                if current_user :
-                    fullname = request.user.get_full_name() if (
-                        request.user.get_full_name() != ""
-                    ) else request.user.get_username()
+                if current_user:
+                    fullname = (
+                        request.user.get_full_name()
+                        if (request.user.get_full_name() != "")
+                        else request.user.get_username()
+                    )
                     join_url = meeting.get_join_url(
-                        fullname,
-                        "VIEWER",
-                        request.user.get_username()
+                        fullname, "VIEWER", request.user.get_username()
                     )
                 else:
                     fullname = form.cleaned_data["name"]
@@ -360,10 +336,7 @@ def check_form(request, meeting, remove_password_in_form):
 def is_in_meeting_groups(user, meeting):
     return user.owner.accessgroup_set.filter(
         code_name__in=[
-            name[0]
-            for name in meeting.restrict_access_to_groups.values_list(
-                "code_name"
-            )
+            name[0] for name in meeting.restrict_access_to_groups.values_list("code_name")
         ]
     ).exists()
 
@@ -377,9 +350,8 @@ def get_meeting_access(request, meeting):
         access_granted_for_restricted = (
             request.user.is_authenticated and not is_restricted_to_group
         )
-        access_granted_for_group = (
-            request.user.is_authenticated
-            and is_in_meeting_groups(request.user, meeting)
+        access_granted_for_group = request.user.is_authenticated and is_in_meeting_groups(
+            request.user, meeting
         )
         return (is_restricted and access_granted_for_restricted) or (
             is_restricted_to_group and access_granted_for_group
@@ -417,8 +389,7 @@ def end(request, meeting_id):
     )
 
     if request.user != meeting.owner and not (
-        request.user.is_superuser
-        or request.user.has_perm("meeting.delete_meeting")
+        request.user.is_superuser or request.user.has_perm("meeting.delete_meeting")
     ):
         messages.add_message(
             request, messages.ERROR, _("You cannot delete this meeting.")
@@ -431,15 +402,13 @@ def end(request, meeting_id):
         args = ve.args[0]
         msg = ""
         for key in args:
-            msg += ("<b>%s:</b> %s<br/>" % (key, args[key]))
+            msg += "<b>%s:</b> %s<br/>" % (key, args[key])
         msg = mark_safe(msg)
     if request.is_ajax():
         return JsonResponse({"end": meeting.end(), "msg": msg}, safe=False)
     else:
         if msg != "":
-            messages.add_message(
-                request, messages.ERROR, msg
-            )
+            messages.add_message(request, messages.ERROR, msg)
         return redirect(reverse("meeting:my_meetings"))
 
 
@@ -452,8 +421,7 @@ def get_meeting_info(request, meeting_id):
     )
 
     if request.user != meeting.owner and not (
-        request.user.is_superuser
-        or request.user.has_perm("meeting.delete_meeting")
+        request.user.is_superuser or request.user.has_perm("meeting.delete_meeting")
     ):
         messages.add_message(
             request, messages.ERROR, _("You cannot delete this meeting.")
@@ -468,22 +436,20 @@ def get_meeting_info(request, meeting_id):
         args = ve.args[0]
         msg = ""
         for key in args:
-            msg += ("<b>%s:</b> %s<br/>" % (key, args[key]))
+            msg += "<b>%s:</b> %s<br/>" % (key, args[key])
         msg = mark_safe(msg)
     if request.is_ajax():
         return JsonResponse({"info": info, "msg": msg}, safe=False)
     else:
         if msg != "":
-            messages.add_message(
-                request, messages.ERROR, msg
-            )
+            messages.add_message(request, messages.ERROR, msg)
         return JsonResponse({"info": info, "msg": msg}, safe=False)
 
 
 def get_meeting_info_json(info):
     response = {}
     for key in info:
-        if BBB_MEETING_INFO.get(key) :
+        if BBB_MEETING_INFO.get(key):
             response_key = "%s" % BBB_MEETING_INFO.get(key)
             if type(info[key]) is str:
                 response[response_key] = info[key]
@@ -510,8 +476,7 @@ def invite(request, meeting_id):
     )
 
     if request.user != meeting.owner and not (
-        request.user.is_superuser
-        or request.user.has_perm("meeting.delete_meeting")
+        request.user.is_superuser or request.user.has_perm("meeting.delete_meeting")
     ):
         messages.add_message(
             request, messages.ERROR, _("You cannot invite for this meeting.")
@@ -536,17 +501,17 @@ def invite(request, meeting_id):
 
 
 def send_invite(request, meeting, emails):
-    subject = _('%(owner)s invites you to the meeting %(meeting_title)s') % {
-        'owner': meeting.owner.get_full_name(), 'meeting_title': meeting.name
+    subject = _("%(owner)s invites you to the meeting %(meeting_title)s") % {
+        "owner": meeting.owner.get_full_name(),
+        "meeting_title": meeting.name,
     }
     from_email = DEFAULT_FROM_EMAIL
     join_link = request.build_absolute_uri(
-        reverse(
-            "meeting:join",
-            args=(meeting.meeting_id,)
-        )
+        reverse("meeting:join", args=(meeting.meeting_id,))
     )
-    text_content = _('''
+    text_content = (
+        _(
+            """
         Hello,
         %(owner)s invites you to the meeting %(meeting_title)s.
         Start date : %(start_date)s
@@ -554,15 +519,20 @@ def send_invite(request, meeting, emails):
         Here the link to join the meeting : %(join_link)s
         You need this password to enter : %(password)s
         Regards
-    ''') % {
-        'owner': meeting.owner.get_full_name(),
-        'meeting_title': meeting.name,
-        'start_date': meeting.start_at,
-        'end_date': meeting.end_at,
-        'join_link': join_link,
-        'password': meeting.attendee_password
-    }
-    html_content = _('''
+    """
+        )
+        % {
+            "owner": meeting.owner.get_full_name(),
+            "meeting_title": meeting.name,
+            "start_date": meeting.start_at,
+            "end_date": meeting.end_at,
+            "join_link": join_link,
+            "password": meeting.attendee_password,
+        }
+    )
+    html_content = (
+        _(
+            """
         <p>Hello,
         <p>%(owner)s invites you to the meeting <b>%(meeting_title)s</b>.</p>
         <p>Start date : %(start_date)s </p>
@@ -571,37 +541,42 @@ def send_invite(request, meeting, emails):
         <a href="%(join_link)s">%(join_link)s</a></p>
         <p>You need this password to enter : <b>%(password)s</b> </p>
         <p>Regards</p>
-    ''') % {
-        'owner': meeting.owner.get_full_name(),
-        'meeting_title': meeting.name,
-        'start_date': meeting.start_at,
-        'end_date': meeting.end_at,
-        'join_link': join_link,
-        'password': meeting.attendee_password
-    }
+    """
+        )
+        % {
+            "owner": meeting.owner.get_full_name(),
+            "meeting_title": meeting.name,
+            "start_date": meeting.start_at,
+            "end_date": meeting.end_at,
+            "join_link": join_link,
+            "password": meeting.attendee_password,
+        }
+    )
     msg = EmailMultiAlternatives(subject, text_content, from_email, emails)
     msg.attach_alternative(html_content, "text/html")
     # ics calendar
     calendar = Calendar()
     event = Event()
     event.name = _("%(owner)s invites you to the meeting %(meeting_title)s") % {
-        'owner': meeting.owner.get_full_name(),
-        'meeting_title': meeting.name,
+        "owner": meeting.owner.get_full_name(),
+        "meeting_title": meeting.name,
     }
-    event.description = _("""
+    event.description = (
+        _(
+            """
         Here the link to join the meeting : %(join_link)s
         You need this password to enter : %(password)s
-    """) % {
-        'join_link': join_link,
-        'password': meeting.attendee_password
-    }
+    """
+        )
+        % {"join_link": join_link, "password": meeting.attendee_password}
+    )
     event.begin = meeting.start_at
     event.end = meeting.end_at
     event.organizer = meeting.owner.email
     calendar.events.add(event)
-    filename_event = '/tmp/invite-%d.ics' % meeting.id
-    with open(filename_event, 'w') as ics_file:
+    filename_event = "/tmp/invite-%d.ics" % meeting.id
+    with open(filename_event, "w") as ics_file:
         ics_file.writelines(calendar)
-    msg.attach_file(filename_event, 'text/calendar')
+    msg.attach_file(filename_event, "text/calendar")
     msg.send()
     os.remove(filename_event)

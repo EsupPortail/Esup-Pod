@@ -16,5 +16,5 @@ urlpatterns = [
         "<slug:slug_c>/<slug:slug_t>/video/<slug:slug>/",
         video,
         name="video",
-    )
+    ),
 ]

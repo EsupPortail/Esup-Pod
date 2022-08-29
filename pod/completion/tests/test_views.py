@@ -117,8 +117,7 @@ class CompletionContributorViewsTestCase(TestCase):
     def test_video_completion_contributor(self):
         video = Video.objects.get(id=1)
         url = reverse(
-            "video:completion:video_completion_contributor",
-            kwargs={"slug": video.slug}
+            "video:completion:video_completion_contributor", kwargs={"slug": video.slug}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
@@ -143,8 +142,7 @@ class CompletionContributorViewsTestCase(TestCase):
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
         url = reverse(
-            "video:completion:video_completion_contributor",
-            kwargs={"slug": video.slug}
+            "video:completion:video_completion_contributor", kwargs={"slug": video.slug}
         )
         response = self.client.post(
             url,
@@ -181,8 +179,7 @@ class CompletionContributorViewsTestCase(TestCase):
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
         url = reverse(
-            "video:completion:video_completion_contributor",
-            kwargs={"slug": video.slug}
+            "video:completion:video_completion_contributor", kwargs={"slug": video.slug}
         )
         response = self.client.post(
             url,
@@ -238,8 +235,7 @@ class CompletionContributorViewsTestCase(TestCase):
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
         url = reverse(
-            "video:completion:video_completion_contributor",
-            kwargs={"slug": video.slug}
+            "video:completion:video_completion_contributor", kwargs={"slug": video.slug}
         )
         response = self.client.post(
             url,
@@ -299,8 +295,7 @@ class CompletionTrackViewsTestCase(TestCase):
     def test_video_completion_track(self):
         video = Video.objects.get(id=1)
         url = reverse(
-            "video:completion:video_completion_track",
-            kwargs={"slug": video.slug}
+            "video:completion:video_completion_track", kwargs={"slug": video.slug}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
@@ -325,8 +320,7 @@ class CompletionTrackViewsTestCase(TestCase):
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
         url = reverse(
-            "video:completion:video_completion_track",
-            kwargs={"slug": video.slug}
+            "video:completion:video_completion_track", kwargs={"slug": video.slug}
         )
         response = self.client.post(
             url,
@@ -377,8 +371,7 @@ class CompletionTrackViewsTestCase(TestCase):
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
         url = reverse(
-            "video:completion:video_completion_track",
-            kwargs={"slug": video.slug}
+            "video:completion:video_completion_track", kwargs={"slug": video.slug}
         )
         response = self.client.post(
             url,
@@ -448,8 +441,7 @@ class CompletionTrackViewsTestCase(TestCase):
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
         url = reverse(
-            "video:completion:video_completion_track",
-            kwargs={"slug": video.slug}
+            "video:completion:video_completion_track", kwargs={"slug": video.slug}
         )
         response = self.client.post(
             url,
@@ -524,8 +516,7 @@ class CompletionDocumentViewsTestCase(TestCase):
     def test_video_completion_document(self):
         video = Video.objects.get(id=1)
         url = reverse(
-            "video:completion:video_completion_document",
-            kwargs={"slug": video.slug}
+            "video:completion:video_completion_document", kwargs={"slug": video.slug}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
@@ -550,8 +541,7 @@ class CompletionDocumentViewsTestCase(TestCase):
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
         url = reverse(
-            "video:completion:video_completion_document",
-            kwargs={"slug": video.slug}
+            "video:completion:video_completion_document", kwargs={"slug": video.slug}
         )
         response = self.client.post(
             url,
@@ -600,8 +590,7 @@ class CompletionDocumentViewsTestCase(TestCase):
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
         url = reverse(
-            "video:completion:video_completion_document",
-            kwargs={"slug": video.slug}
+            "video:completion:video_completion_document", kwargs={"slug": video.slug}
         )
         response = self.client.post(
             url,
@@ -684,8 +673,7 @@ class CompletionDocumentViewsTestCase(TestCase):
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
         url = reverse(
-            "video:completion:video_completion_document",
-            kwargs={"slug": video.slug}
+            "video:completion:video_completion_document", kwargs={"slug": video.slug}
         )
         response = self.client.post(
             url,
@@ -755,8 +743,7 @@ class CompletionOverlayViewsTestCase(TestCase):
     def test_video_completion_overlay(self):
         video = Video.objects.get(id=1)
         url = reverse(
-            "video:completion:video_completion_overlay",
-            kwargs={"slug": video.slug}
+            "video:completion:video_completion_overlay", kwargs={"slug": video.slug}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
@@ -781,12 +768,9 @@ class CompletionOverlayViewsTestCase(TestCase):
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
         url = reverse(
-            "video:completion:video_completion_overlay",
-            kwargs={"slug": video.slug}
+            "video:completion:video_completion_overlay", kwargs={"slug": video.slug}
         )
-        response = self.client.post(
-            url, data={"action": "new"}
-        )
+        response = self.client.post(url, data={"action": "new"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "form_overlay")
         response = self.client.post(
@@ -819,12 +803,9 @@ class CompletionOverlayViewsTestCase(TestCase):
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
         url = reverse(
-            "video:completion:video_completion_overlay",
-            kwargs={"slug": video.slug}
+            "video:completion:video_completion_overlay", kwargs={"slug": video.slug}
         )
-        response = self.client.post(
-            url, data={"action": "new"}
-        )
+        response = self.client.post(url, data={"action": "new"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "form_overlay")
         response = self.client.post(
@@ -880,8 +861,7 @@ class CompletionOverlayViewsTestCase(TestCase):
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
         url = reverse(
-            "video:completion:video_completion_overlay",
-            kwargs={"slug": video.slug}
+            "video:completion:video_completion_overlay", kwargs={"slug": video.slug}
         )
         response = self.client.post(
             url,

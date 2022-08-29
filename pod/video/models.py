@@ -339,10 +339,7 @@ class Channel(models.Model):
         AdditionalChannelTab, verbose_name=_("Additionals channels tab"), blank=True
     )
     site = models.ForeignKey(
-        Site,
-        verbose_name=_("Site"),
-        on_delete=models.CASCADE,
-        default=SITE_ID
+        Site, verbose_name=_("Site"), on_delete=models.CASCADE, default=SITE_ID
     )
 
     class Meta:
@@ -352,7 +349,9 @@ class Channel(models.Model):
         verbose_name = _("Channel")
         verbose_name_plural = _("Channels")
         constraints = [
-            models.UniqueConstraint(fields=['slug', 'site'], name='channel_unique_slug_site')
+            models.UniqueConstraint(
+                fields=["slug", "site"], name="channel_unique_slug_site"
+            )
         ]
 
     def __str__(self):
@@ -391,7 +390,7 @@ class Channel(models.Model):
 
 @receiver(pre_save, sender=Channel)
 def default_site_channel(sender, instance, **kwargs):
-    if not hasattr(instance, 'site'):
+    if not hasattr(instance, "site"):
         instance.site = Site.objects.get_current()
 
 
@@ -464,7 +463,9 @@ class Theme(models.Model):
 
     def get_absolute_url(self):
         """Get current theme absolute URL."""
-        return reverse("channel-video:theme", args=[str(self.channel.slug), str(self.slug)])
+        return reverse(
+            "channel-video:theme", args=[str(self.channel.slug), str(self.slug)]
+        )
 
     def save(self, *args, **kwargs):
         """Store current theme object in db."""
@@ -607,10 +608,7 @@ class Discipline(models.Model):
         verbose_name=_("Icon"),
     )
     site = models.ForeignKey(
-        Site,
-        verbose_name=_("Site"),
-        on_delete=models.CASCADE,
-        default=SITE_ID
+        Site, verbose_name=_("Site"), on_delete=models.CASCADE, default=SITE_ID
     )
 
     def __str__(self):
@@ -629,7 +627,7 @@ class Discipline(models.Model):
 
 @receiver(pre_save, sender=Discipline)
 def default_site_discipline(sender, instance, **kwargs):
-    if not hasattr(instance, 'site'):
+    if not hasattr(instance, "site"):
         instance.site = Site.objects.get_current()
 
 

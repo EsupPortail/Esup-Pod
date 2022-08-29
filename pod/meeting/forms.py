@@ -175,8 +175,7 @@ class MeetingForm(forms.ModelForm):
             )
             if (
                 meetingowner
-                and meetingowner
-                in self.cleaned_data["additional_owners"].all()
+                and meetingowner in self.cleaned_data["additional_owners"].all()
             ):
                 raise ValidationError(
                     _("Owner of the video cannot be an additional owner too")
@@ -186,10 +185,9 @@ class MeetingForm(forms.ModelForm):
             and len(cleaned_data["restrict_access_to_groups"]) > 0
         ):
             cleaned_data["is_restricted"] = True
-        if (
-            "voice_bridge" in cleaned_data.keys()
-            and cleaned_data["voice_bridge"] not in range(10000, 99999)
-        ):
+        if "voice_bridge" in cleaned_data.keys() and cleaned_data[
+            "voice_bridge"
+        ] not in range(10000, 99999):
             raise ValidationError(
                 _("Voice bridge must be a 5-digit number in the range 10000 to 99999")
             )
@@ -197,9 +195,7 @@ class MeetingForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
 
         self.is_staff = (
-            kwargs.pop("is_staff")
-            if "is_staff" in kwargs.keys()
-            else self.is_staff
+            kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
         )
 
         self.is_superuser = (
@@ -215,9 +211,9 @@ class MeetingForm(forms.ModelForm):
         # Manage required fields html
         self.fields = add_placeholder_and_asterisk(self.fields)
         if self.fields.get("owner"):
-            self.fields["owner"].queryset = self.fields[
-                "owner"
-            ].queryset.filter(owner__sites=Site.objects.get_current())
+            self.fields["owner"].queryset = self.fields["owner"].queryset.filter(
+                owner__sites=Site.objects.get_current()
+            )
         # self.fields.get("attendee_password"):
         if not self.initial.get("attendee_password"):
             self.initial["attendee_password"] = get_random_string(8)
@@ -256,9 +252,7 @@ class MeetingDeleteForm(forms.Form):
 
 class MeetingPasswordForm(forms.Form):
     name = forms.CharField(label=_("Name"))
-    password = forms.CharField(
-        label=_("Password"), widget=forms.PasswordInput()
-    )
+    password = forms.CharField(label=_("Password"), widget=forms.PasswordInput())
 
     def __init__(self, *args, **kwargs):
         self.current_user = kwargs.pop("current_user", None)
@@ -281,10 +275,10 @@ class EmailsListField(CharField):
     def clean(self, value):
         super(EmailsListField, self).clean(value)
 
-        emails = re.compile(r'[^\w\.\-\+@_]+').split(value)
+        emails = re.compile(r"[^\w\.\-\+@_]+").split(value)
 
         if not emails:
-            raise ValidationError(_(u'Enter at least one e-mail address.'))
+            raise ValidationError(_("Enter at least one e-mail address."))
 
         for email in emails:
             if email != "":

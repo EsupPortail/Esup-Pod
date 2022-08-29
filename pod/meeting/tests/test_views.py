@@ -16,10 +16,9 @@ from pod.authentication.models import AccessGroup
 
 
 class meeting_TestView(TestCase):
-
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
-        Meeting.objects.create(id=1, name='test', owner=user)
+        Meeting.objects.create(id=1, name="test", owner=user)
         print(" --->  SetUp of meeting_TestView: OK!")
 
     def test_meeting_TestView_get_request(self):
@@ -32,8 +31,8 @@ class meeting_TestView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
-            list(response.context["meetings"].values_list('id', flat=True)),
-            list(self.user.owner_meeting.all().values_list('id', flat=True))
+            list(response.context["meetings"].values_list("id", flat=True)),
+            list(self.user.owner_meeting.all().values_list("id", flat=True)),
         )
         print(" --->  test_meeting_TestView_get_request of meeting_TestView: OK!")
 
@@ -53,8 +52,8 @@ class meeting_TestView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
-            list(response.context["meetings"].values_list('id', flat=True)),
-            list(self.user.owner_meeting.all().values_list('id', flat=True))
+            list(response.context["meetings"].values_list("id", flat=True)),
+            list(self.user.owner_meeting.all().values_list("id", flat=True)),
         )
         print(
             " --->  test_meeting_TestView_get_request_restrict ",
@@ -63,12 +62,11 @@ class meeting_TestView(TestCase):
 
 
 class MeetingAddEditTestView(TestCase):
-
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
-        Meeting.objects.create(id=1, name='test', owner=user, site=site)
+        Meeting.objects.create(id=1, name="test", owner=user, site=site)
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
@@ -86,11 +84,11 @@ class MeetingAddEditTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["form"].instance.id, None)
         self.assertEqual(response.context["form"].current_user, self.user)
-        meeting = Meeting.objects.get(name='test')
-        url = reverse("meeting:edit", kwargs={'meeting_id': "slugauhasard"})
+        meeting = Meeting.objects.get(name="test")
+        url = reverse("meeting:edit", kwargs={"meeting_id": "slugauhasard"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
-        url = reverse("meeting:edit", kwargs={'meeting_id': meeting.meeting_id})
+        url = reverse("meeting:edit", kwargs={"meeting_id": meeting.meeting_id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["form"].instance, meeting)
@@ -126,7 +124,7 @@ class MeetingAddEditTestView(TestCase):
                 "end_at_0": "2022-08-26",
                 "end_at_1": "18:43:58",
                 "max_participants": 100,
-                "welcome_text": "Hello"
+                "welcome_text": "Hello",
             },
             follow=True,
         )
@@ -139,8 +137,8 @@ class MeetingAddEditTestView(TestCase):
 
     def test_meeting_edit_post_request(self):
         self.client = Client()
-        meeting = Meeting.objects.get(name='test')
-        url = reverse("meeting:edit", kwargs={'meeting_id': meeting.meeting_id})
+        meeting = Meeting.objects.get(name="test")
+        url = reverse("meeting:edit", kwargs={"meeting_id": meeting.meeting_id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.user = User.objects.get(username="pod")
@@ -165,7 +163,7 @@ class MeetingAddEditTestView(TestCase):
                 "end_at_0": "2022-08-26",
                 "end_at_1": "18:43:58",
                 "max_participants": 100,
-                "welcome_text": "Hello"
+                "welcome_text": "Hello",
             },
             follow=True,
         )
@@ -177,12 +175,11 @@ class MeetingAddEditTestView(TestCase):
 
 
 class MeetingDeleteTestView(TestCase):
-
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
-        Meeting.objects.create(id=1, name='test', owner=user, site=site)
+        Meeting.objects.create(id=1, name="test", owner=user, site=site)
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
@@ -192,19 +189,19 @@ class MeetingDeleteTestView(TestCase):
     def test_meeting_delete_get_request(self):
         self.client = Client()
         # check auth
-        url = reverse("meeting:delete", kwargs={'meeting_id': "slugauhasard"})
+        url = reverse("meeting:delete", kwargs={"meeting_id": "slugauhasard"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)  # not auth
         # check meeting
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
-        url = reverse("meeting:delete", kwargs={'meeting_id': "slugauhasard"})
+        url = reverse("meeting:delete", kwargs={"meeting_id": "slugauhasard"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
 
         # check access right
-        meeting = Meeting.objects.get(name='test')
-        url = reverse("meeting:delete", kwargs={'meeting_id': meeting.meeting_id})
+        meeting = Meeting.objects.get(name="test")
+        url = reverse("meeting:delete", kwargs={"meeting_id": meeting.meeting_id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
@@ -221,8 +218,8 @@ class MeetingDeleteTestView(TestCase):
 
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        meeting = Meeting.objects.get(name='test')
-        url = reverse("meeting:delete", kwargs={'meeting_id': meeting.meeting_id})
+        meeting = Meeting.objects.get(name="test")
+        url = reverse("meeting:delete", kwargs={"meeting_id": meeting.meeting_id})
         response = self.client.post(
             url,
             {
@@ -249,12 +246,11 @@ class MeetingDeleteTestView(TestCase):
 
 
 class MeetingJoinTestView(TestCase):
-
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
-        Meeting.objects.create(id=1, name='test', owner=user, site=site)
+        Meeting.objects.create(id=1, name="test", owner=user, site=site)
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
@@ -264,16 +260,16 @@ class MeetingJoinTestView(TestCase):
     def test_meeting_join_get_request(self):
         self.client = Client()
         # check meeting
-        url = reverse("meeting:join", kwargs={'meeting_id': "slugauhasard"})
+        url = reverse("meeting:join", kwargs={"meeting_id": "slugauhasard"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 400)  # SuspiciousOperation
-        url = reverse("meeting:join", kwargs={'meeting_id': "2-test"})
+        url = reverse("meeting:join", kwargs={"meeting_id": "2-test"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)  # Not found
 
-        meeting = Meeting.objects.get(name='test')
+        meeting = Meeting.objects.get(name="test")
         self.assertEqual(meeting.is_running, False)
-        url = reverse("meeting:join", kwargs={'meeting_id': meeting.meeting_id})
+        url = reverse("meeting:join", kwargs={"meeting_id": meeting.meeting_id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
@@ -283,26 +279,26 @@ class MeetingJoinTestView(TestCase):
         # join as moderator to make meeting running
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        url = reverse("meeting:join", kwargs={'meeting_id': meeting.meeting_id})
+        url = reverse("meeting:join", kwargs={"meeting_id": meeting.meeting_id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)  # Redirect
         # update the meeting after creating to get last info
-        newmeeting = Meeting.objects.get(name='test')
-        fullname = self.user.get_full_name() if (
-            self.user.get_full_name() != ""
-        ) else self.user.get_username()
+        newmeeting = Meeting.objects.get(name="test")
+        fullname = (
+            self.user.get_full_name()
+            if (self.user.get_full_name() != "")
+            else self.user.get_username()
+        )
         join_url = newmeeting.get_join_url(
-            fullname,
-            "MODERATOR",
-            self.user.get_username()
+            fullname, "MODERATOR", self.user.get_username()
         )
         self.assertRedirects(
             response,
             join_url,
             status_code=302,
             target_status_code=200,
-            msg_prefix='',
-            fetch_redirect_response=False
+            msg_prefix="",
+            fetch_redirect_response=False,
         )
         # check if meeting is created, try to join it
         response = requests.get(join_url)
@@ -312,7 +308,7 @@ class MeetingJoinTestView(TestCase):
         newmeeting.save()
         # Anonymous User --> ask for name and attendee_password
         self.client.logout()
-        url = reverse("meeting:join", kwargs={'meeting_id': newmeeting.meeting_id})
+        url = reverse("meeting:join", kwargs={"meeting_id": newmeeting.meeting_id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)  # OK : NOT redirect
         self.assertTrue("form" in response.context)
@@ -321,29 +317,22 @@ class MeetingJoinTestView(TestCase):
 
         # check to send name and password
         response = self.client.post(
-            url,
-            {
-                "name": "anonymous",
-                "password": newmeeting.attendee_password
-            }
+            url, {"name": "anonymous", "password": newmeeting.attendee_password}
         )
-        join_url = newmeeting.get_join_url(
-            "anonymous",
-            "VIEWER"
-        )
+        join_url = newmeeting.get_join_url("anonymous", "VIEWER")
         self.assertRedirects(
             response,
             join_url,
             status_code=302,
             target_status_code=200,
-            msg_prefix='',
-            fetch_redirect_response=False
+            msg_prefix="",
+            fetch_redirect_response=False,
         )
 
         # Authenticated User --> ask for name and attendee_password
         self.user2 = User.objects.get(username="pod2")
         self.client.force_login(self.user2)
-        url = reverse("meeting:join", kwargs={'meeting_id': newmeeting.meeting_id})
+        url = reverse("meeting:join", kwargs={"meeting_id": newmeeting.meeting_id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)  # OK : NOT redirect
         self.assertTrue("form" in response.context)
@@ -356,21 +345,19 @@ class MeetingJoinTestView(TestCase):
             {"password": newmeeting.attendee_password},
             # follow=True,
         )
-        fullname = self.user2.get_full_name() if (
-            self.user2.get_full_name() != ""
-        ) else self.user2.get_username()
-        join_url = newmeeting.get_join_url(
-            fullname,
-            "VIEWER",
-            self.user2.get_username()
+        fullname = (
+            self.user2.get_full_name()
+            if (self.user2.get_full_name() != "")
+            else self.user2.get_username()
         )
+        join_url = newmeeting.get_join_url(fullname, "VIEWER", self.user2.get_username())
         self.assertRedirects(
             response,
             join_url,
             status_code=302,
             target_status_code=200,
-            msg_prefix='',
-            fetch_redirect_response=False
+            msg_prefix="",
+            fetch_redirect_response=False,
         )
         # check to send bad password
         response = self.client.post(
@@ -386,7 +373,7 @@ class MeetingJoinTestView(TestCase):
 
         # Anonymous user asks to auth
         self.client.logout()
-        url = reverse("meeting:join", kwargs={'meeting_id': newmeeting.meeting_id})
+        url = reverse("meeting:join", kwargs={"meeting_id": newmeeting.meeting_id})
         response = self.client.get(url)
         redirect_url = "%s?referrer=%s" % (settings.LOGIN_URL, url)
         self.assertRedirects(
@@ -394,14 +381,14 @@ class MeetingJoinTestView(TestCase):
             redirect_url,
             status_code=302,
             target_status_code=302,
-            msg_prefix='',
-            fetch_redirect_response=True
+            msg_prefix="",
+            fetch_redirect_response=True,
         )
 
         # Auth user can have acces and ask password
         self.user2 = User.objects.get(username="pod2")
         self.client.force_login(self.user2)
-        url = reverse("meeting:join", kwargs={'meeting_id': newmeeting.meeting_id})
+        url = reverse("meeting:join", kwargs={"meeting_id": newmeeting.meeting_id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)  # OK : NOT redirect
         self.assertTrue("form" in response.context)
@@ -427,47 +414,43 @@ class MeetingJoinTestView(TestCase):
 
 
 class MeetingStatusTestView(TestCase):
-
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
-        Meeting.objects.create(id=1, name='test', owner=user, site=site)
+        Meeting.objects.create(id=1, name="test", owner=user, site=site)
         print(" --->  SetUp of MeetingStatusTestView: OK!")
 
     def test_meeting_status_get_request(self):
         self.client = Client()
         # check meeting
-        url = reverse("meeting:status", kwargs={'meeting_id': "slugauhasard"})
+        url = reverse("meeting:status", kwargs={"meeting_id": "slugauhasard"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)  # SuspiciousOperation
 
-        meeting = Meeting.objects.get(name='test')
+        meeting = Meeting.objects.get(name="test")
         self.assertEqual(meeting.is_running, False)
-        url = reverse("meeting:status", kwargs={'meeting_id': meeting.meeting_id})
+        url = reverse("meeting:status", kwargs={"meeting_id": meeting.meeting_id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertJSONEqual(
-            str(response.content, encoding='utf8'),
-            {'status': meeting.is_running}
+            str(response.content, encoding="utf8"), {"status": meeting.is_running}
         )
         meeting.is_running = True
         meeting.save()
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertJSONEqual(
-            str(response.content, encoding='utf8'),
-            {'status': meeting.is_running}
+            str(response.content, encoding="utf8"), {"status": meeting.is_running}
         )
         print(" --->  test_meeting_status_get_request of MeetingStatusTestView: OK!")
 
 
 class MeetingEndTestView(TestCase):
-
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
-        Meeting.objects.create(id=1, name='test', owner=user, site=site)
+        Meeting.objects.create(id=1, name="test", owner=user, site=site)
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
@@ -477,19 +460,19 @@ class MeetingEndTestView(TestCase):
     def test_meeting_end_get_request(self):
         self.client = Client()
         # check auth
-        url = reverse("meeting:end", kwargs={'meeting_id': "slugauhasard"})
+        url = reverse("meeting:end", kwargs={"meeting_id": "slugauhasard"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)  # not auth
         # check meeting
         self.user2 = User.objects.get(username="pod2")
         self.client.force_login(self.user2)
-        url = reverse("meeting:end", kwargs={'meeting_id': "slugauhasard"})
+        url = reverse("meeting:end", kwargs={"meeting_id": "slugauhasard"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
 
         # check access right with user2
-        meeting = Meeting.objects.get(name='test')
-        url = reverse("meeting:end", kwargs={'meeting_id': meeting.meeting_id})
+        meeting = Meeting.objects.get(name="test")
+        url = reverse("meeting:end", kwargs={"meeting_id": meeting.meeting_id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)  # permission denied
 
@@ -502,19 +485,18 @@ class MeetingEndTestView(TestCase):
             reverse("meeting:my_meetings"),
             status_code=302,
             target_status_code=200,
-            msg_prefix='',
-            fetch_redirect_response=True
+            msg_prefix="",
+            fetch_redirect_response=True,
         )
         print(" --->  test_meeting_end_get_request of MeetingEndTestView: OK!")
 
 
 class MeetingGetInfoTestView(TestCase):
-
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
-        Meeting.objects.create(id=1, name='test', owner=user, site=site)
+        Meeting.objects.create(id=1, name="test", owner=user, site=site)
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
@@ -524,21 +506,20 @@ class MeetingGetInfoTestView(TestCase):
     def test_meeting_get_info_get_request(self):
         self.client = Client()
         # check auth
-        url = reverse("meeting:get_meeting_info", kwargs={'meeting_id': "slugauhasard"})
+        url = reverse("meeting:get_meeting_info", kwargs={"meeting_id": "slugauhasard"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)  # not auth
         # check meeting
         self.user2 = User.objects.get(username="pod2")
         self.client.force_login(self.user2)
-        url = reverse("meeting:get_meeting_info", kwargs={'meeting_id': "slugauhasard"})
+        url = reverse("meeting:get_meeting_info", kwargs={"meeting_id": "slugauhasard"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
 
         # check access right with user2
-        meeting = Meeting.objects.get(name='test')
+        meeting = Meeting.objects.get(name="test")
         url = reverse(
-            "meeting:get_meeting_info",
-            kwargs={'meeting_id': meeting.meeting_id}
+            "meeting:get_meeting_info", kwargs={"meeting_id": meeting.meeting_id}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)  # permission denied
@@ -552,35 +533,31 @@ class MeetingGetInfoTestView(TestCase):
 
 
 class MeetingEndCallbackTestView(TestCase):
-
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
-        Meeting.objects.create(id=1, name='test', owner=user, site=site)
+        Meeting.objects.create(id=1, name="test", owner=user, site=site)
         print(" --->  SetUp of MeetingEndCallbackTestView: OK!")
 
     def test_meeting_end_callback_get_request(self):
         self.client = Client()
-        url = reverse("meeting:end_callback", kwargs={'meeting_id': "slugauhasard"})
+        url = reverse("meeting:end_callback", kwargs={"meeting_id": "slugauhasard"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
-        meeting = Meeting.objects.get(name='test')
+        meeting = Meeting.objects.get(name="test")
         self.assertEqual(meeting.is_running, False)
-        url = reverse(
-            "meeting:end_callback",
-            kwargs={'meeting_id': meeting.meeting_id}
-        )
+        url = reverse("meeting:end_callback", kwargs={"meeting_id": meeting.meeting_id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        meeting1 = Meeting.objects.get(name='test')
+        meeting1 = Meeting.objects.get(name="test")
         self.assertEqual(meeting1.is_running, False)
         meeting1.is_running = True
         meeting1.save()
-        meeting2 = Meeting.objects.get(name='test')
+        meeting2 = Meeting.objects.get(name="test")
         self.assertEqual(meeting2.is_running, True)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        meeting3 = Meeting.objects.get(name='test')
+        meeting3 = Meeting.objects.get(name="test")
         self.assertEqual(meeting3.is_running, False)
         msg = "--->  test_meeting_end_callback_get_request"
         msg += "of MeetingEndCallbackTestView: OK!"
@@ -588,12 +565,11 @@ class MeetingEndCallbackTestView(TestCase):
 
 
 class MeetingInviteTestView(TestCase):
-
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
-        Meeting.objects.create(id=1, name='test', owner=user, site=site)
+        Meeting.objects.create(id=1, name="test", owner=user, site=site)
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
@@ -603,22 +579,19 @@ class MeetingInviteTestView(TestCase):
     def test_meeting_invite_get_request(self):
         self.client = Client()
         # check auth
-        url = reverse("meeting:invite", kwargs={'meeting_id': "slugauhasard"})
+        url = reverse("meeting:invite", kwargs={"meeting_id": "slugauhasard"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)  # not auth
         # check meeting
         self.user2 = User.objects.get(username="pod2")
         self.client.force_login(self.user2)
-        url = reverse("meeting:invite", kwargs={'meeting_id': "slugauhasard"})
+        url = reverse("meeting:invite", kwargs={"meeting_id": "slugauhasard"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
 
         # check access right with user2
-        meeting = Meeting.objects.get(name='test')
-        url = reverse(
-            "meeting:invite",
-            kwargs={'meeting_id': meeting.meeting_id}
-        )
+        meeting = Meeting.objects.get(name="test")
+        url = reverse("meeting:invite", kwargs={"meeting_id": meeting.meeting_id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)  # permission denied
 
@@ -636,33 +609,24 @@ class MeetingInviteTestView(TestCase):
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        meeting = Meeting.objects.get(name='test')
-        url = reverse(
-            "meeting:invite",
-            kwargs={'meeting_id': meeting.meeting_id}
-        )
+        meeting = Meeting.objects.get(name="test")
+        url = reverse("meeting:invite", kwargs={"meeting_id": meeting.meeting_id})
         response = self.client.post(
             url,
             {
-                "emails":
-                "test@univ.fr\n\rtest2@univ.fr, test3@univ-lille.fr test4@univ-lille.fr"
-            }
+                "emails": "test@univ.fr\n\rtest2@univ.fr, test3@univ-lille.fr test4@univ-lille.fr"
+            },
         )
         self.assertRedirects(
             response,
             reverse("meeting:my_meetings"),
             status_code=302,
             target_status_code=200,
-            msg_prefix='',
-            fetch_redirect_response=True
+            msg_prefix="",
+            fetch_redirect_response=True,
         )
         # check if not valid email
-        response = self.client.post(
-            url,
-            {
-                "emails": "test@univ"
-            }
-        )
+        response = self.client.post(url, {"emails": "test@univ"})
         self.assertEqual(response.status_code, 200)
         self.assertTrue("form" in response.context)
         self.assertTrue("emails" in response.context["form"].fields)
