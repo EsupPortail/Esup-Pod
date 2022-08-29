@@ -228,7 +228,11 @@ def encode_video(video_id):
     change_encoding_step(video_id, 3, "create output dir")
     encoding_video.create_output_dir()
 
+    change_encoding_step(video_id, 4, "start encoding")
     encoding_video.start_encode()
+
+    change_encoding_step(video_id, 5, "store encoding info")
+    encoding_video.store_json_info()
 
     # encode HLS
     # encode MP4
