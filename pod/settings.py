@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "shibboleth",
     "chunked_upload",
     "mozilla_django_oidc",
+    "honeypot",
     # Pod Applications
     "pod.main",
     "django.contrib.admin",  # put it here for template override

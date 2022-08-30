@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% load honeypot %}
 
 {% block breadcrumbs %}
 {{ block.super }}
@@ -13,13 +14,14 @@
   {% csrf_token %}
   <div class="list-group">
     <fieldset>
-      {% if form.errors %}
+        {% if form.errors %}
         <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
         {% endif %}
         {% for field_hidden in form.hidden_fields %}
           {{ field_hidden.errors }}
           {{ field_hidden }}
         {% endfor %}
+        {% render_honeypot_field "firstname" %}
         {% for field in form.visible_fields %}
           {% spaceless %}
           <div class="list-group-item{% if field.id_for_label == 'id_valid_human' %} valid_human{% endif %}">
