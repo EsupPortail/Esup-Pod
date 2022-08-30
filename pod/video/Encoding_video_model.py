@@ -7,6 +7,7 @@ from .models import PlaylistVideo
 from .models import EncodingLog
 from .models import Video
 from pod.completion.models import Track
+from django.core.files import File
 from pod.podfile.models import UserFolder, CustomFileModel, CustomImageModel
 from pod.video.models import get_storage_path_video
 
@@ -207,10 +208,15 @@ class Encoding_video_model(Encoding_video):
         for thumbnail_path in list_thumbnail_files:
             thumbnail, created = CustomImageModel.objects.get_or_create(
                 folder=videodir,
-                created_by=video_to_encode.owner,
-                file=self.get_true_path(list_thumbnail_files[thumbnail_path]),
+                created_by=video_to_encode.owner
             )
-            thumbnail.save()
+            # thumbnail.file.save(
+            #    "%s_%s.png" % (video_to_encode.slug, thumbnail_path),
+            #    File(open(list_thumbnail_files[thumbnail_path], "rb")),
+            #    save=True,
+            #)
+            # rm temp location
+            # os.remove(list_thumbnail_files[thumbnail_path])
             if first:
                 video_to_encode.thumbnail = thumbnail
                 video_to_encode.save()

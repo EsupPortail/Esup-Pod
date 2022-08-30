@@ -93,8 +93,6 @@ class EncodeTestCase(TestCase):
         el = EncodingLog.objects.get(video=audio)
         self.assertTrue("NO VIDEO AND AUDIO FOUND" not in el.log)
         self.assertTrue(len(list_mp3) > 0)
-        print("m4a lenght")
-        print(len(list_m4a))
         self.assertTrue(len(list_m4a) > 0)
         self.assertFalse(audio.overview)
         self.assertFalse(audio.thumbnail)
@@ -123,16 +121,8 @@ class EncodeTestCase(TestCase):
         list_mp4 = EncodingVideo.objects.filter(
             video=video_to_encode, encoding_format="video/mp4"
         )
-
-        print("LIST FILEZ 1 " + os.path.dirname(log_file))
-        for filez in os.listdir(os.path.dirname(log_file)):
-            print(filez)
-
+        
         video_to_encode.delete()
-
-        print("LIST FILEZ 2 "+ os.path.dirname(log_file))
-        for filez in os.listdir(os.path.dirname(log_file)):
-            print(filez)
 
         self.assertTrue(not os.path.exists(video))
         self.assertTrue(not os.path.exists(log_file))
