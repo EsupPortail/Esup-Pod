@@ -15,7 +15,6 @@
                     {%  endif %}
                     </span>
                     <span data-toggle="tooltip" title="{{event.broadcaster.name}}">
-                        <i data-feather="info"></i>
                         <i class="bi bi-info-circle" aria-hidden="true"></i>
                     </span>
                     {% if event.password %}
@@ -42,10 +41,10 @@
                 <footer class="card-footer card-footer-pod p-0 m-0">
                     {% spaceless %}
                     <a href="{% url 'live:event_edit' slug=event.slug %}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
-                        <i data-feather="edit"></i>
+                        <i class="bi bi-pencil-square" aria-hidden="true"></i>
                     </a>
                     <a href="{% url 'live:event_delete' slug=event.slug %}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
-                        <i data-feather="trash-2"></i>
+                        <i class="bi bi-trash" aria-hidden="true"></i>
                     </a>
                     {% endspaceless %}
                 </footer>
