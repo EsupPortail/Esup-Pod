@@ -1,9 +1,6 @@
 """This module handles video encoding with CPU."""
 
 from django.conf import settings
-from .models import EncodingVideo
-from .models import EncodingAudio
-from .models import PlaylistVideo
 from .models import Video
 from .utils import send_email_recording
 from .utils import change_encoding_step, check_file, add_encoding_log, send_email
@@ -14,7 +11,6 @@ from pod.main.tasks import task_start_encode, task_start_encode_studio
 
 # from fractions import Fraction # use for keyframe
 import logging
-import os
 import time
 import subprocess
 import threading
@@ -181,6 +177,7 @@ def start_encode_studio(recording_id, video_output, videos, subtime, presenter):
         )
         t.setDaemon(True)
         t.start()
+
 
 """
 def start_studio_remote_encode(recording_id, video_output, videos, subtime, presenter):

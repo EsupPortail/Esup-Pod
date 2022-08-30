@@ -62,7 +62,6 @@ class Encoding_video_model(Encoding_video):
             msg += "Audio: Nothing to delete"
         return msg
 
-
     def remove_previous_encoding_video(self, video_to_encode):
         """Remove previously encoded video."""
         msg = "\n"
