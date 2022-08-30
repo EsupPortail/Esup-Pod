@@ -228,11 +228,10 @@ def encode_video(video_id):
     encoding_video.start_encode()
 
     change_encoding_step(video_id, 5, "store encoding info")
-    encoding_video.store_json_info()
-
-    video_to_encode.encoding_in_progress = False
-    video_to_encode.save()
-
+    final_video = encoding_video.store_json_info()
+    
+    final_video.encoding_in_progress = False
+    final_video.save()
 
 def transcript_video(video_id):
     """Transcript video audio to text."""

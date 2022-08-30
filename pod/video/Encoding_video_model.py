@@ -206,32 +206,30 @@ class Encoding_video_model(Encoding_video):
         )
 
         for thumbnail_path in list_thumbnail_files:
-            thumbnail, created = CustomImageModel.objects.get_or_create(
-                folder=videodir,
-                created_by=video_to_encode.owner
-            )
-            # thumbnail.file.save(
-            #    "%s_%s.png" % (video_to_encode.slug, thumbnail_path),
-            #    File(open(list_thumbnail_files[thumbnail_path], "rb")),
-            #    save=True,
-            #)
-            # rm temp location
-            # os.remove(list_thumbnail_files[thumbnail_path])
-            if first:
-                video_to_encode.thumbnail = thumbnail
-                video_to_encode.save()
-                first = False
+            #TODO see with Nico why thumbnail 1 not exists
+            if os.path.exists(list_thumbnail_files[thumbnail_path]):
+                thumbnail, created = CustomImageModel.objects.get_or_create(
+                    folder=videodir,
+                    created_by=video_to_encode.owner
+                )
+                thumbnail.file.save(
+                    "%s_%s.png" % (video_to_encode.slug, thumbnail_path),
+                    File(open(list_thumbnail_files[thumbnail_path], "rb")),
+                    save=True,
+                )
+                # rm temp location
+                os.remove(list_thumbnail_files[thumbnail_path])
+                if first:
+                    video_to_encode.thumbnail = thumbnail
+                    video_to_encode.save()
+                    first = False
 
     def store_json_list_overview_files(self, info_video, video_to_encode):
         list_overview_files = info_video['list_overview_files']
 
-        print("OVERVIEW TREAT")
-        print(info_video['list_overview_files'])
         if len(list_overview_files) > 0:
-            print("True")
             vtt_file = list_overview_files["0"] if ".vtt" in list_overview_files["0"] else list_overview_files["1"]
             video_to_encode.overview = vtt_file
-            print(video_to_encode.overview)
             video_to_encode.save()
 
     def store_json_info(self):
@@ -249,7 +247,10 @@ class Encoding_video_model(Encoding_video):
             self.store_json_list_thumbnail_files(info_video, video_to_encode)
             self.store_json_list_overview_files(info_video, video_to_encode)
 
-            # TODO : Without podfile, studio test, modify encode.py
+            #TODO see with Nicolas why need to return
+            return video_to_encode
+
+            # TODO : Without podfile
 
     def encode_video(self):
         self.start_encode()
