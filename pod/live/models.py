@@ -500,6 +500,24 @@ class Event(models.Model):
         )
 
     def is_current(self):
+        # TODO : FIX this to have possibility to run test between 2 days
+        """
+        print("IS CURRENT")
+        print(self.start_date)
+        print(date.today())
+        print("=================")
+        print(self.start_time)
+        print(datetime.now().time())
+        print(self.end_time)
+
+        IS CURRENT
+        2022-08-30
+        2022-08-30
+        =================
+        23:35:00
+        23:35:01.913570
+        00:35:00
+        """
         return self.start_date == date.today() and (
             self.start_time <= datetime.now().time() <= self.end_time
         )
