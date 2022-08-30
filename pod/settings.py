@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     "pod.recorder",
     "pod.lti",
     "pod.bbb",
-    "pod.meeting.apps.MeetingConfig",
+    "pod.meeting",
     "pod.custom",
 ]
 
