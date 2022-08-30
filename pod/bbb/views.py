@@ -10,7 +10,7 @@ from django.shortcuts import redirect
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import csrf_protect
 from django.utils.translation import ugettext_lazy as _
-from pod.bbb.models import Meeting
+from pod.bbb.models import BBB_Meeting as Meeting
 from .models import Livestream
 from .forms import MeetingForm, LivestreamForm
 from django.contrib import messages

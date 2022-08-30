@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Meeting, Attendee, Livestream
+from .models import BBB_Meeting, Attendee, Livestream
 from .forms import MeetingForm
 from django.utils.translation import ugettext_lazy as _
 
@@ -80,6 +80,6 @@ class LivestreamAdmin(admin.ModelAdmin):
     ]
 
 
-admin.site.register(Meeting, MeetingAdmin)
+admin.site.register(BBB_Meeting, MeetingAdmin)
 admin.site.register(Attendee, AttendeeAdmin)
 admin.site.register(Livestream, LivestreamAdmin)

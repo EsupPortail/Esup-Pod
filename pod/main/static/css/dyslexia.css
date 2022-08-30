@@ -27,28 +27,3 @@
 .dyslexia-switch input {
   display: none;
 }
-
-#dyslexia-switch-wrapper .feather-eye {
-  opacity: 0;
-  left: 5px;
-  bottom: 0;
-  color: var(--white) !important;
-  transform: translateX(4px);
-}
-
-#dyslexia-switch-wrapper .feather-eye-off {
-  opacity: 1;
-  right: 5px;
-  bottom: 0;
-  transform: translateX(0);
-}
-
-input:checked+.slider .feather-eye {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-input:checked+.slider .feather-eye-off {
-  opacity: 0;
-  transform: translateX(-4px);
-}

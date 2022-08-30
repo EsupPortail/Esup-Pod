@@ -8,7 +8,7 @@
 
 {% block breadcrumbs %}
 {{ block.super }}
-<li class="breadcrumb-item"><a href="{% url 'live:lives'%}">{% trans "Lives" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'live:directs_all'%}">{% trans "Lives" %}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{{building.name}}</li>
 {% endblock %}
 
@@ -28,9 +28,9 @@
         <p class="card-text" style='height:210px'>
           <iframe id="" style="padding: 0; margin: 0; border:0; width: 100%; height: 100%;"
           title="{{broadcaster.name}}" loading="lazy"
-          src="{% url 'live:video_live' slug=broadcaster.slug %}?is_iframe=true"></iframe>
+          src="{% url 'live:direct' slug=broadcaster.slug %}?is_iframe=true"></iframe>
         </p>
-        <h5 class="card-title pod-card__title"><a href="{% url "live:video_live" slug=broadcaster.slug %}" target="_blank">{{broadcaster.name}}</a></h5>
+        <h5 class="card-title pod-card__title"><a href="{% url "live:direct" slug=broadcaster.slug %}" target="_blank">{{broadcaster.name}}</a></h5>
       </div>
     </div>
   </div>

@@ -258,7 +258,6 @@ var sendandgetform = function (elt, action, name, form, list) {
       $("form.form_delete").hide();
     }
   }
-  feather.replace({ class: "align-bottom" });
 };
 
 // Hide others sections

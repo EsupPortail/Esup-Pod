@@ -12,5 +12,5 @@ urlpatterns = [
         channel_edit,
         name="channel_edit",
     ),
-    path("theme/edit/<slug:slug>/", theme_edit, name="theme_edit")
+    path("theme/edit/<slug:slug>/", theme_edit, name="theme_edit"),
 ]

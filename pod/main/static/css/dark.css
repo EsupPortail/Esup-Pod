@@ -278,28 +278,3 @@ input:checked+.slider:before {
   transition: opacity .2s ease 0s, transform .35s ease 0s;
   pointer-events: none;
 }
-
-.feather-moon {
-  opacity: 0;
-  left: 5px;
-  bottom: 0;
-  color: var(--white) !important;
-  transform: translateX(4px);
-}
-
-.feather-sun {
-  opacity: 1;
-  right: 5px;
-  bottom: 0;
-  transform: translateX(0);
-}
-
-input:checked+.slider .feather-moon {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-input:checked+.slider .feather-sun {
-  opacity: 0;
-  transform: translateX(-4px);
-}

@@ -68,11 +68,11 @@
 <script>
   //Create array of options to be added
   {% if default_presenter and default_presenter == "pipb" %}
-  const list_value = [["pipb", "Pip - {% trans "Camera inside the screen video to bottom right" %}"], ["piph", "Pip - {% trans "Camera inside the screen video to top right" %}"], ["mid", "50/50 - {% trans "Same size for screen and camera" %}"]];
+    const list_value = [["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"], ["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"], ["mid", "50/50 - {% trans 'Same size for screen and camera' %}"]];
   {% elif  default_presenter and default_presenter == "piph" %}
-  const list_value = [["piph", "Pip - {% trans "Camera inside the screen video to top right" %}"], ["pipb", "Pip - {% trans "Camera inside the screen video to bottom right" %}"], ["mid", "50/50 - {% trans "Same size for screen and camera" %}"]];
+    const list_value = [["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"], ["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"], ["mid", "50/50 - {% trans 'Same size for screen and camera' %}"]];
   {% else %}
-  const list_value = [["mid", "50/50 - {% trans "Same size for screen and camera" %}"], ["piph", "Pip - {% trans "Camera inside the screen video to top right" %}"], ["pipb", "Pip - {% trans "Camera inside the screen video to bottom right" %}"]];
+    const list_value = [["mid", "50/50 - {% trans 'Same size for screen and camera' %}"], ["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"], ["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"]];
   {% endif %}
 
   //Create and append select list
@@ -89,7 +89,7 @@
     selectList.appendChild(option);
   }
   let label = document.createElement("label");
-  label.innerHTML = "{% trans "Please select the render you want" %}";
+  label.innerHTML = "{% trans 'Please select the render you want' %}";
   label.setAttribute("for", "input_presenter");
 
   let divselect = document.createElement("div");
@@ -98,6 +98,15 @@
 
   const input_title = "input[name='title'][type='text']";
   let data_send = false;
+<<<<<<< HEAD
+  $(document).on('DOMSubtreeModified', '#root>div>main', function(){
+    if($(input_title).html() === "" && $(input_title).length && $("#root video").length == 2 && $("#input_presenter").length == 0 && data_send == false){
+        let div = $(input_title).first().parent("div").parent("label").parent("div");
+        label.setAttribute("class", $(input_title).first().parent("div").parent("label").attr("class"));
+        div.append(label);
+        send_presenter_value($('#input_presenter').val());
+        data_send = true;
+=======
   $(document).on('DOMSubtreeModified', '#root>div>main', function () {
     if ($(input_title).html() === "" && $(input_title).length && $("#root video").length == 2 && $("#input_presenter").length == 0 && data_send == false) {
       let div = $(input_title).first().parent("div").parent("label").parent("div");
@@ -105,6 +114,7 @@
       div.append(label);
       send_presenter_value($('#input_presenter').val());
       data_send = true;
+>>>>>>> dev3-temp
     }
   });
   $(document).on('change', '#input_presenter', function () {

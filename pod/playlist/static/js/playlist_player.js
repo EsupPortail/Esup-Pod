@@ -83,11 +83,6 @@ let PlaylistPlayer = {
           $("#card-takenote").html(json.html_video_note);
         }
         _this.setCurrent(position);
-        try {
-          feather.replace();
-        } catch (e) {
-          //console.warn('Failled to call feeather function...');
-        }
       } else if (json.error == "password") {
         //Acces restrict by password => Display video password form
         if ($("#video-form-wrapper").length == 0) {

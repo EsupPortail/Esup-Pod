@@ -7,6 +7,7 @@ import unicodedata
 import json
 import logging
 import hashlib
+import datetime
 
 from django.db import models
 from django.conf import settings
@@ -56,8 +57,9 @@ logger = logging.getLogger(__name__)
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
 )
-
+VIDEO_RECENT_VIEWCOUNT = getattr(settings, "VIDEO_RECENT_VIEWCOUNT", 180)
 VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
+SITE_ID = getattr(settings, "SITE_ID", 1)
 
 LANG_CHOICES = getattr(
     settings,
@@ -337,9 +339,7 @@ class Channel(models.Model):
         AdditionalChannelTab, verbose_name=_("Additionals channels tab"), blank=True
     )
     site = models.ForeignKey(
-        Site,
-        verbose_name=_("Site"),
-        on_delete=models.CASCADE,
+        Site, verbose_name=_("Site"), on_delete=models.CASCADE, default=SITE_ID
     )
 
     class Meta:
@@ -349,7 +349,9 @@ class Channel(models.Model):
         verbose_name = _("Channel")
         verbose_name_plural = _("Channels")
         constraints = [
-            models.UniqueConstraint(fields=['slug', 'site'], name='channel_unique_slug_site')
+            models.UniqueConstraint(
+                fields=["slug", "site"], name="channel_unique_slug_site"
+            )
         ]
 
     def __str__(self):
@@ -388,7 +390,7 @@ class Channel(models.Model):
 
 @receiver(pre_save, sender=Channel)
 def default_site_channel(sender, instance, **kwargs):
-    if not hasattr(instance, 'site'):
+    if not hasattr(instance, "site"):
         instance.site = Site.objects.get_current()
 
 
@@ -461,7 +463,9 @@ class Theme(models.Model):
 
     def get_absolute_url(self):
         """Get current theme absolute URL."""
-        return reverse("channel-video:theme", args=[str(self.channel.slug), str(self.slug)])
+        return reverse(
+            "channel-video:theme", args=[str(self.channel.slug), str(self.slug)]
+        )
 
     def save(self, *args, **kwargs):
         """Store current theme object in db."""
@@ -604,9 +608,7 @@ class Discipline(models.Model):
         verbose_name=_("Icon"),
     )
     site = models.ForeignKey(
-        Site,
-        verbose_name=_("Site"),
-        on_delete=models.CASCADE,
+        Site, verbose_name=_("Site"), on_delete=models.CASCADE, default=SITE_ID
     )
 
     def __str__(self):
@@ -625,7 +627,7 @@ class Discipline(models.Model):
 
 @receiver(pre_save, sender=Discipline)
 def default_site_discipline(sender, instance, **kwargs):
-    if not hasattr(instance, 'site'):
+    if not hasattr(instance, "site"):
         instance.site = Site.objects.get_current()
 
 
@@ -672,7 +674,9 @@ class Video(models.Model):
         verbose_name=_("Additional owners"),
         related_name="owners_videos",
         help_text=_(
-            "You can add additional owners to the video. They will have the same rights as you except that they can't delete this video."
+            "You can add additional owners to the video. "
+            + "They will have the same rights as you except "
+            + "that they can't delete this video."
         ),
     )
     description = RichTextField(
@@ -680,7 +684,9 @@ class Video(models.Model):
         config_name="complete",
         blank=True,
         help_text=_(
-            "In this field you can describe your content, add all needed related information, and format the result using the toolbar."
+            "In this field you can describe your content, "
+            + "add all needed related information, "
+            + "and format the result using the toolbar."
         ),
     )
     date_added = models.DateTimeField(_("Date added"), default=timezone.now)
@@ -857,6 +863,13 @@ class Video(models.Model):
     viewcount.fget.short_description = _("Sum of view")
 
     @property
+    def recentViewcount(self):
+        """Get the view counter of a video."""
+        return self.get_viewcount(VIDEO_RECENT_VIEWCOUNT)
+
+    recentViewcount.fget.short_description = _("Sum of view of last 6 months (180 days)")
+
+    @property
     def get_encoding_step(self):
         """Get the current encoding step of a video."""
         try:
@@ -992,9 +1005,16 @@ class Video(models.Model):
                 else:
                     return version["url"]
 
-    def get_viewcount(self):
+    def get_viewcount(self, from_nb_day=0):
         """Get the view counter of a video."""
-        count_sum = self.viewcount_set.all().aggregate(Sum("count"))
+        if from_nb_day > 0:
+            d = datetime.date.today() - timezone.timedelta(days=from_nb_day)
+            set = self.viewcount_set.filter(date__gte=d)
+        else:
+            set = self.viewcount_set.all()
+
+        count_sum = set.aggregate(Sum("count"))
+
         if count_sum["count__sum"] is None:
             return 0
         return count_sum["count__sum"]

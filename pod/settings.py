@@ -4,6 +4,7 @@ Django global settings for pod_project.
 Django version: 3.2.
 """
 import os
+import django.conf.global_settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # will be update in pod/main/settings.py
@@ -38,6 +39,9 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "django_filters",
     "django_select2",
+    "shibboleth",
+    "chunked_upload",
+    "mozilla_django_oidc",
     # Pod Applications
     "pod.main",
     "django.contrib.admin",  # put it here for template override
@@ -52,11 +56,9 @@ INSTALLED_APPS = [
     "pod.live",
     "pod.recorder",
     "pod.lti",
-    "pod.custom",
     "pod.bbb",
-    "shibboleth",
-    "chunked_upload",
-    "mozilla_django_oidc",
+    "pod.meeting.apps.MeetingConfig",
+    "pod.custom",
 ]
 
 ##
@@ -297,3 +299,5 @@ def update_settings(local_settings):
 the_update_settings = update_settings(locals())
 for variable in the_update_settings:
     locals()[variable] = the_update_settings[variable]
+
+TIME_INPUT_FORMATS = ["%H:%M", *django.conf.global_settings.TIME_INPUT_FORMATS]

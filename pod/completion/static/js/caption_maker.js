@@ -462,10 +462,10 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
     // circle buttons
     buttonsDiv: $("<div class='captionButtons'></div>"),
     insertBtn: $(
-      `<button><i data-feather='plus' width='28px' height='28px'></i></button>`
+      `<button><i class="bi bi-plus-circle"></i></button>`
     ),
     deleteBtn: $(
-      `<button><i data-feather='x' width='28px' height='28px'></i></button>`
+      `<button><i class="bi bi-x-circle"></i></button>`
     ),
 
     // textarea
@@ -612,8 +612,6 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
   } else {
     $("#addSubtitle").before(block.div);
   }
-
-  feather.replace();
 
   block.captionTextInput.bind("input propertychange", function () {
     captionsArray[block.div.index()].caption = this.value;

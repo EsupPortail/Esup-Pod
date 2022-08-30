@@ -248,13 +248,20 @@ def transcript_video(video_id):
 
 # Temporary re putting that for studio
 def get_video_info(command):
+    """Get ffprobe video info."""
     ffproberesult = subprocess.run(
         command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
     )
     return json.loads(ffproberesult.stdout.decode("utf-8"))
 
 
+# ##########################################################################
+# ENCODE VIDEO STUDIO: MAIN ENCODE
+# ##########################################################################
+
+
 def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
+    """Encode video from studio."""
     presenter_source = None
     presentation_source = None
     input_video = ""
@@ -372,7 +379,6 @@ def get_height(info):
 
 def launch_encode_video_studio(input_video, subcmd, video_output):
     """Encode video for studio."""
-
     msg = ""
     ffmpegStudioCommand = "%s %s %s %s %s" % (
         FFMPEG,

@@ -45,7 +45,7 @@ def create_missing_conf(sender, **kwargs):
 
 class MainConfig(AppConfig):
     name = "pod.main"
-    default_auto_field = 'django.db.models.BigAutoField'
+    default_auto_field = "django.db.models.BigAutoField"
 
     def ready(self):
         post_migrate.connect(create_missing_conf, sender=self)

@@ -1,7 +1,7 @@
 {% load i18n %}
 
-<p>{% trans 'This live is protected by password, please fill in and click send.' %}</p>
-<form method="post" action="{{ request.get_full_path }}" id="live_password_form" class='needs-validation' novalidate>
+<p>{% trans 'This event is protected by password, please fill in and click send.' %}</p>
+<form method="post" action="{{ request.get_full_path }}" id="event_password_form" class='needs-validation' novalidate>
     {% csrf_token %}
     <div class="list-group">
     <fieldset>
@@ -28,7 +28,7 @@
             {% endspaceless %}
             {% endfor %}
         <div class="text-center mt-1">
-            <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>
+            <button type="submit" class="btn btn-primary btn-sm m-2">{% trans "Send" %}</button>
         </div>
     </fieldset>
     </div>

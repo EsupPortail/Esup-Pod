@@ -285,9 +285,7 @@ class PlaylistViewsTestCase(TestCase):
         self.assertContains(response, _("Editing the playlist"))
         self.assertContains(response, "playlist1")
         self.assertContains(response, "video1")
-        response = self.client.post(
-            playlist_url, data={"action": "delete"}
-        )
+        response = self.client.post(playlist_url, data={"action": "delete"})
         self.assertEqual(response.status_code, 400)
         response = self.client.post(
             playlist_url,
