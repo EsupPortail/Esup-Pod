@@ -4,6 +4,8 @@
 {% load custom_tags %}
 
 {% block page_extra_head %}
+{% include 'videos/video-header.html' %}
+<!--
     <link href="{% static 'player/videojs/video-js.min.css' %}?ver={{ VERSION }}" rel="stylesheet"/>
     <script src="{% static 'player/videojs/video.min.js' %}?ver={{ VERSION }}"></script>
     {% with 'player/videojs/lang/'|add:request.LANGUAGE_CODE|add:'.js' as videojs_lang %}
@@ -11,7 +13,9 @@
     {% endwith %}
 
     <script src="{% static 'js/videojs-logo-controlbar.js' %}?ver={{ VERSION }}"></script>
-    {% if event.broadcaster.enable_viewer_count %}
+   
+-->
+ {% if event.broadcaster.enable_viewer_count %}
         <script>let heartbeat_delay = {{ heartbeat_delay }}</script>
         <script src="{% static 'js/viewcounter.js' %}?ver={{ VERSION }}"></script>
     {% endif %}
@@ -36,7 +40,7 @@
 
 {% block page_content %}
     {% csrf_token %}
-    <h3 id="livename" data-liveid="{{ event.broadcaster.id }}"><i data-feather="airplay"></i>&nbsp;{{ event.title|title }}</h3>
+    <h3 id="livename" data-liveid="{{ event.broadcaster.id }}"><i class="bi bi-cast" aria-hidden="true"></i>&nbsp;{{ event.title|title }}</h3>
 
     {% if form %}
       {% include 'live/event-form.html' %}
@@ -149,18 +153,18 @@
 
         {% if event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser or perms.live.delete_event or perms.live.change_event %}
             <div class="card mt-1" id="card-managevideo">
-                <h5 class="card-header card-title pl-2"><i data-feather="settings"></i>&nbsp;{% trans "Manage event" %}
+                <h5 class="card-header card-title pl-2"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage event" %}
                 </h5>
                 <div class="card-body card-text text-center">
                     <a href="{% url 'live:event_edit' slug=event.slug %}" title="{% trans "Edit the event" %}"
                        class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
-                        <i data-feather="edit"></i>
+                       <i class="bi bi-pencil-square" aria-hidden="true"></i>
                     </a>
 
                     <a href="{% url 'live:event_delete' slug=event.slug %}"
                        class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1"
                        title="{% trans "Delete the event" %}">
-                        <i data-feather="trash-2"></i>
+                       <i class="bi bi-trash" aria-hidden="true"></i>
                     </a>
 
                 </div>

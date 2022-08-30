@@ -4,14 +4,15 @@
 
 {% spaceless %}
     <div class="card card-body">
-        <h4 class="card-title">
-            <i data-feather="sliders"></i>&nbsp;{% trans "Filters" %}</h4>
+        <h2 class="card-title pod-card__title h4">
+            <i class="bi bi-sliders2-vertical"></i>&nbsp;{% trans "Filters" %}
+        </h2>
 
         <form action="{% url 'live:events' %}" method="get" id="filters">
             <fieldset class="border-right border-bottom mt-2">
-                <legend class="h5"><i data-feather="tv"></i> {% trans "Types" %}
+                <legend class="h5"><i class="bi bi-tv"></i> {% trans "Types" %}
                     <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}">
-                        <i data-feather="send"></i>
+                        <i class="bi bi-send"></i>
                     </button>
                 </legend>
                 <div id="filterType">
@@ -27,7 +28,7 @@
                                              style="max-height:32px; max-width:32px;"
                                              loading="lazy"/>
                                     {% else %}
-                                        <i data-feather="type"></i>
+                                    <i class="bi bi-fonts" aria-hidden="true"></i>
                                     {% endif %}
                                     &nbsp;{{ type }}
                                 </label>
