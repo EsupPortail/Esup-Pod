@@ -48,7 +48,20 @@ class Encoding_video_model(Encoding_video):
         encoding_log_msg += self.remove_previous_encoding_video(video_to_encode)
         encoding_log_msg += self.remove_previous_encoding_audio(video_to_encode)
         encoding_log_msg += self.remove_previous_encoding_playlist(video_to_encode)
+        encoding_log_msg += self.remove_previous_encoding_log(video_to_encode)
         self.add_encoding_log("remove_old_data", "", True, encoding_log_msg)
+
+    def remove_previous_encoding_log(self, video_to_encode):
+        """Remove previously logs"""
+        msg = "\n"
+        log_json = self.get_output_dir() + "/info_video.json"
+        if os.path.exists(log_json):
+            os.remove(log_json)
+            msg += "\nDELETE PREVIOUS ENCODING LOG"
+        else:
+            msg += "Audio: Nothing to delete"
+        return msg
+
 
     def remove_previous_encoding_video(self, video_to_encode):
         """Remove previously encoded video."""

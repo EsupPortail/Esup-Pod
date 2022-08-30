@@ -1289,7 +1289,7 @@ class UpdateOwner(models.Model):
 def remove_video_file(video):
     if video.video:
         log_file = os.path.join(
-            os.path.dirname(video.video.path), "%04d" % video.id, "encoding.log"
+            os.path.dirname(video.video.path), "%04d" % video.id, "info_video.json"
         )
         if os.path.isfile(log_file):
             os.remove(log_file)
