@@ -4,7 +4,7 @@
   {{event.title|capfirst}}
   {% if event.start_date %}<small>[{{ event.start_date }}]</small>{% endif %}
   <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans 'Report the video'%}" >
-    <i data-feather="alert-octagon" aria-hidden="true"></i>
+    <i class="bi bi-exclamation-triangle"></i>
   </a>
 </h1>
 
@@ -14,7 +14,7 @@
     {% if event.description %}
     <li class="nav-item">
       <a class="nav-link active show" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-selected="true" title="{% trans 'Summary' %}">
-        <i data-feather="align-justify" aria-hidden="true"></i>
+        <i class="bi bi-justify"></i>
       </a>
     </li>
     {% endif %}
@@ -25,13 +25,14 @@
         {% else %}
           class="nav-link" aria-selected="false"
         {% endif %}
-      ><i data-feather="info" aria-hidden="true"></i></a>
+      >
+      <i class="bi bi-info-circle"></i>&nbsp;</a>
     </li>
 
     {% if event.is_draft == False or event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser %}
       <li class="nav-item">
         <a class="nav-link" id="share-tab" data-toggle="tab" href="#share" role="tab" aria-controls="share" aria-selected="false" title="{% trans 'Embed/Share' %}">
-          <i data-feather="share-2" aria-hidden="true"></i>
+          <i class="bi bi-share" aria-hidden="true"></i>
         </a>
       </li>
     {%endif%}
