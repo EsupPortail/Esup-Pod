@@ -243,16 +243,15 @@ class EventAdmin(admin.ModelAdmin):
         css = {
             "all": (
                 "css/pod.css",
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
+                "bootstrap/dist/css/bootstrap-grid.min.css",
+                "bootstrap/dist/css/bootstrap.min.css",
             )
         }
         js = (
             "podfile/js/filewidget.js",
             "js/main.js",
             "js/validate-date_delete-field.js",
-            "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
 

@@ -195,14 +195,15 @@ a {
 a.btn-outline-primary:not(:hover) svg {
   fill: var(--primary)
 }
-
-a.btn-outline-primary svg.feather {
+/*
+a.btn-outline-primary {
   fill: transparent;
 }
 
-.social_links a svg.feather {
+.social_links a {
   fill: var(--primary);
 }
+*/
 
 #collapseAside .card>.btn {
   white-space: normal !important;
@@ -604,20 +605,9 @@ div.card a:hover>img {
   transform: rotate(10deg);
 }
 
-.video-card .card-footer .feather,
-.video-card .card-header .feather {
+.video-card .card-footer,
+.video-card .card-header {
   height: 1rem;
-}
-
-/* heading feather icons size */
-h1>.feather,
-.h1>.feather,
-h2>.feather,
-.h2>.feather,
-h3>.feather,
-.h3>.feather {
-  width: 1em;
-  height: 1em;
 }
 
 /** menu channels **/

@@ -50,7 +50,7 @@ function run(has_more_themes, Helper) {
       let span = ``;
       let title = gettext("This content is password protected.");
       if (video.has_password) {
-        span = `<span title="${title}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-lock align-bottom"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>`;
+        span = `<span title="${title}"><i class="bi bi-lock" aria-hidden="true"></i></span>`;
       }
       return span;
     };
@@ -58,7 +58,7 @@ function run(has_more_themes, Helper) {
       let span = ``;
       let title = gettext("This content is chaptered.");
       if (video.has_chapter) {
-        span = `<span title="${title}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list align-bottom"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></span>`;
+        span = `<span title="${title}"><i class="bi bi-card-list" aria-hidden="true"></i></span>`;
       }
       return span;
     };
@@ -67,7 +67,7 @@ function run(has_more_themes, Helper) {
       let title = gettext("This content is in draft.");
       if (video.is_draft) {
         span = `<span title="${title}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle align-bottom"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></span>`;
+        <i class="bi bi-incognito"></i></span>`;
       }
       return span;
     };
@@ -76,10 +76,10 @@ function run(has_more_themes, Helper) {
       let title = gettext("Video content.");
       if (video.is_video) {
         span = `<span title="${title}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-film align-bottom"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg></span>`;
+        <i class="bi bi-film"></i></span>`;
       } else {
         title = gettext("Audio content.");
-        span = `<span title="${title}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-radio"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg></i></span>`;
+        span = `<span title="${title}"><i class="bi bi-soundwave" aria-hidden="true"></i></span>`;
       }
       return span;
     };
@@ -119,27 +119,23 @@ function run(has_more_themes, Helper) {
         </a>
       </div>
       <div class="card-body px-3 py-2">
-        <footer class="card-footer card-footer-pod p-0 m-0">
-          <a href="${EDIT_URL}${
-      video.slug
-    }" title="${edit_text}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit align-bottom"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
-          </a>
-          <a href="${COMPLETION_URL}${
-      video.slug
-    }" title="${completion_text}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text align-bottom"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          </a>
-          <a href="${CHAPTER_URL}${
-      video.slug
-    }" title="${chapter_text}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list align-bottom"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg>
-          </a>
-          <a href="${DELETE_URL}${
-      video.slug
-    }" title="${delete_text}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 align-bottom"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-          </a>
+      <footer class="card-footer card-footer-pod p-0 m-0">
+        <a href="${EDIT_URL}${
+            video.slug
+          }" title="${edit_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+          <i class="bi bi-pencil-square" aria-hidden="true"></i></a>
+                <a href="${COMPLETION_URL}${
+            video.slug
+          }" title="${completion_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+          <i class="bi bi-file-text" aria-hidden="true"></i></a>
+                <a href="${CHAPTER_URL}${
+            video.slug
+          }" title="${chapter_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+          <i class="bi bi-card-list" aria-hidden="true"></i></a>
+                <a href="${DELETE_URL}${
+            video.slug
+          }" title="${delete_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+          <i class="bi bi-trash" aria-hidden="true"></i></a>
         </footer>
         <span class="small video-title">
           <a href="${VIDEO_URL}${video.slug}">${video.title

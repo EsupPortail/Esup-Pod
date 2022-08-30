@@ -138,8 +138,6 @@ body{
 .video-js .vjs-info-button::before {
   content: '';display: block;width: 100%;height: 100%;
   background-color: #FFF;
-  mask: url("../feather-icons/icons/info.svg") no-repeat 50% 50%;
-  -webkit-mask: url("../feather-icons/icons/info.svg") no-repeat 50% 50%;
   mask-size: 20px;
   -webkit-mask-size: 20px;
 }
