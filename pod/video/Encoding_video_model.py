@@ -218,9 +218,14 @@ class Encoding_video_model(Encoding_video):
 
     def store_json_list_overview_files(self, info_video, video_to_encode):
         list_overview_files = info_video['list_overview_files']
+
+        print("OVERVIEW TREAT")
+        print(info_video['list_overview_files'])
         if len(list_overview_files) > 0:
+            print("True")
             vtt_file = list_overview_files["0"] if ".vtt" in list_overview_files["0"] else list_overview_files["1"]
             video_to_encode.overview = vtt_file
+            print(video_to_encode.overview)
             video_to_encode.save()
 
     def store_json_info(self):

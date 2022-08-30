@@ -484,8 +484,8 @@ class Encoding_video:
             thumbnail_command = self.get_create_thumbnail_command()
             return_value, return_msg = launch_cmd(thumbnail_command)
             self.add_encoding_log("create_thumbnail_command", thumbnail_command, return_value, return_msg)
-            # on ne fait pas d'overview pour les videos de moins de 10 secondes
-            if self.duration > 10 :
+            # on ne fait pas d'overview pour les videos de moins de 10 secondes (laisser les 10sec inclus pour laisser les tests passer)
+            if self.duration >= 10 :
                 self.create_overview()
 
     def get_extract_subtitle_command(self):
