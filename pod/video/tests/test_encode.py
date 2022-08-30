@@ -78,11 +78,11 @@ class EncodeTestCase(TestCase):
         self.assertTrue("NO VIDEO AND AUDIO FOUND" not in el.log)
         print("mp2t lenght")
         print(len(list_mp2t))
-        # self.assertTrue(len(list_mp2t) > 0)
-        # self.assertEqual(len(list_mp2t) + 1, len(list_playlist_video))
+        self.assertTrue(len(list_mp2t) > 0)
+        self.assertEqual(len(list_mp2t) + 1, len(list_playlist_video))
         self.assertTrue(list_playlist_master)
         self.assertTrue(len(list_mp4) > 0)
-        # self.assertTrue(video_to_encode.overview)
+        self.assertTrue(video_to_encode.overview)
         self.assertTrue(video_to_encode.thumbnail)
         print(" --->  test_encode_video of EncodeTestCase : OK !")
 
@@ -97,7 +97,7 @@ class EncodeTestCase(TestCase):
         self.assertTrue(len(list_mp3) > 0)
         print("m4a lenght")
         print(len(list_m4a))
-        # self.assertTrue(len(list_m4a) > 0)
+        self.assertTrue(len(list_m4a) > 0)
         self.assertFalse(audio.overview)
         self.assertFalse(audio.thumbnail)
         print(" --->  test_result_encoding_audio of EncodeTestCase : OK !")
@@ -148,7 +148,7 @@ class EncodeTestCase(TestCase):
         self.assertEqual(list_mp4.count(), 0)
 
         self.assertEqual(EncodingLog.objects.filter(video__id=1).count(), 0)
-        # self.assertEqual(len(os.listdir(os.path.dirname(log_file))), 0)
+        self.assertEqual(len(os.listdir(os.path.dirname(log_file))), 0)
 
 
 
@@ -160,6 +160,6 @@ class EncodeTestCase(TestCase):
         audio.delete()
         self.assertTrue(not os.path.exists(audio_video_path))
         self.assertTrue(not os.path.exists(audio_log_file))
-        # self.assertEqual(len(os.listdir(os.path.dirname(audio_log_file))), 0)
+        self.assertEqual(len(os.listdir(os.path.dirname(audio_log_file))), 0)
 
         print("   --->  test_delete_object of EncodeTestCase : OK !")
