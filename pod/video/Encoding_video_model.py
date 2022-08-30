@@ -9,7 +9,6 @@ from .models import Video
 from pod.completion.models import Track
 from django.core.files import File
 from pod.podfile.models import UserFolder, CustomFileModel, CustomImageModel
-from pod.video.models import get_storage_path_video
 
 from .Encoding_video import Encoding_video, FFMPEG_MP4_ENCODE
 import json
@@ -139,7 +138,7 @@ class Encoding_video_model(Encoding_video):
                         encoding_format="application/x-mpegURL",
                         source_file=self.get_true_path(mp4_files[video_file])
                     )
-                    ts_file = mp4_files[video_file].replace(".m3u8",".ts")
+                    ts_file = mp4_files[video_file].replace(".m3u8", ".ts")
                     if os.path.exists(ts_file):
                         encoding, created = EncodingVideo.objects.get_or_create(
                             name=encod_name,
@@ -148,7 +147,6 @@ class Encoding_video_model(Encoding_video):
                             encoding_format="video/mp2t",
                             source_file=self.get_true_path(ts_file)
                         )
-                    
 
         if os.path.exists(os.path.join(self.get_output_dir(), "livestream.m3u8")):
             playlist_file = self.get_true_path(os.path.join(self.get_output_dir(), "livestream.m3u8"))
@@ -206,7 +204,7 @@ class Encoding_video_model(Encoding_video):
         )
 
         for thumbnail_path in list_thumbnail_files:
-            #TODO see with Nico why thumbnail 1 not exists
+            # TODO see with Nico why thumbnail 1 not exists
             if os.path.exists(list_thumbnail_files[thumbnail_path]):
                 thumbnail, created = CustomImageModel.objects.get_or_create(
                     folder=videodir,
@@ -247,7 +245,7 @@ class Encoding_video_model(Encoding_video):
             self.store_json_list_thumbnail_files(info_video, video_to_encode)
             self.store_json_list_overview_files(info_video, video_to_encode)
 
-            #TODO see with Nicolas why need to return
+            # TODO see with Nicolas why need to return
             return video_to_encode
 
             # TODO : Without podfile

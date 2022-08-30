@@ -121,7 +121,7 @@ class EncodeTestCase(TestCase):
         list_mp4 = EncodingVideo.objects.filter(
             video=video_to_encode, encoding_format="video/mp4"
         )
-        
+
         video_to_encode.delete()
 
         self.assertTrue(not os.path.exists(video))
