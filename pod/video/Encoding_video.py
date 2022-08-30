@@ -260,7 +260,7 @@ class Encoding_video:
                     "ba": list_rendition[rend]["audio_bitrate"],
                     "output": output_file
                 }
-                self.list_mp4_files[first_item[0]] = output_file
+                self.list_mp4_files[rend] = output_file
         if self.cutting_stop != 0:
             mp4_command = mp4_command + self.get_subtime(self.cutting_start, self.cutting_stop)
         return mp4_command
@@ -305,7 +305,7 @@ class Encoding_video:
                     "hls_time": FFMPEG_HLS_TIME,
                     "output": output_file
                 }
-                self.list_hls_files[first_item[0]] = output_file
+                self.list_hls_files[rend] = output_file
         return hls_command
 
     def encode_video_part(self):

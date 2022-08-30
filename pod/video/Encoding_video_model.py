@@ -102,21 +102,19 @@ class Encoding_video_model(Encoding_video):
             msg += "Playlist: Nothing to delete"
         return msg
 
-    def get_encoding_choice_from_filename(self, filename):
-        choices = {}
-        for choice in ENCODING_CHOICES:
-            choices[choice[0][:3]] = choice[0]
-        return choices.get(filename[:3], "360p")
+    def get_true_path(self, original):
+        return original.replace(os.path.join(settings.MEDIA_ROOT, ""), "")
 
     def store_json_list_mp3_files(self, info_video, video_to_encode):
         mp3_files = info_video["list_mp3_files"]
         for audio_file in mp3_files:
+            print(get_storage_path_video(video_to_encode, mp3_files[audio_file]))
             encoding, created = EncodingAudio.objects.get_or_create(
                 name="audio",
                 video=video_to_encode,
                 encoding_format="audio/mp3",
                 # need to double check path
-                source_file=os.path.join(get_storage_path_video(video_to_encode, mp3_files[audio_file]))
+                source_file=self.get_true_path(mp3_files[audio_file])
             )
 
     def store_json_list_mp4_hls_files(self, info_video, video_to_encode):
@@ -124,27 +122,25 @@ class Encoding_video_model(Encoding_video):
             mp4_files = info_video[list_video]
             for video_file in mp4_files:
                 rendition = VideoRendition.objects.get(resolution__contains="x" + video_file)
-                encod_name = self.get_encoding_choice_from_filename(mp4_files[video_file])
+                encod_name = video_file + "p"
                 if list_video == "list_mp4_files":
                     encoding, created = EncodingVideo.objects.get_or_create(
                         name=encod_name,
                         video=video_to_encode,
                         rendition=rendition,
                         encoding_format="video/mp4",
-                        source_file=get_storage_path_video(video_to_encode, mp4_files[video_file])
+                        source_file=self.get_true_path(mp4_files[video_file])
                     )
                 elif list_video == "list_hls_files":
                     encoding, created = PlaylistVideo.objects.get_or_create(
                         name=encod_name,
                         video=video_to_encode,
                         encoding_format="application/x-mpegURL",
-                        source_file=get_storage_path_video(video_to_encode, mp4_files[video_file])
+                        source_file=self.get_true_path(mp4_files[video_file])
                     )
 
         if os.path.exists(os.path.join(self.get_output_dir(), "livestream.m3u8")):
-            playlist_file = os.path.join(self.get_output_dir(), "livestream.m3u8").replace(
-                os.path.join(settings.MEDIA_ROOT, ""), ""
-            )
+            playlist_file = self.get_true_path(os.path.join(self.get_output_dir(), "livestream.m3u8"))
             encoding, created = PlaylistVideo.objects.get_or_create(
                 name="playlist",
                 video=video_to_encode,
@@ -174,7 +170,7 @@ class Encoding_video_model(Encoding_video):
         for sub in list_subtitle_files:
             home = UserFolder.objects.get(name="Home", owner=video_to_encode.owner)
             podfile, created = CustomFileModel.objects.get_or_create(
-                file=os.path.join(get_storage_path_video(video_to_encode, list_subtitle_files[sub][1])),
+                file=self.get_true_path(list_subtitle_files[sub][1]),
                 name=list_subtitle_files[sub][1],
                 description="A subtitle file",
                 created_by=video_to_encode.owner,
@@ -202,7 +198,7 @@ class Encoding_video_model(Encoding_video):
             thumbnail, created = CustomImageModel.objects.get_or_create(
                 folder=videodir,
                 created_by=video_to_encode.owner,
-                file=os.path.join(get_storage_path_video(video_to_encode, list_thumbnail_files[thumbnail_path])),
+                file=self.get_true_path(list_thumbnail_files[thumbnail_path]),
             )
             thumbnail.save()
             if first:
