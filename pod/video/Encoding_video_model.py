@@ -104,17 +104,18 @@ class Encoding_video_model(Encoding_video):
     def get_true_path(self, original):
         return original.replace(os.path.join(settings.MEDIA_ROOT, ""), "")
 
-    def store_json_list_mp3_files(self, info_video, video_to_encode):
-        mp3_files = info_video["list_mp3_files"]
-        for audio_file in mp3_files:
-            print(get_storage_path_video(video_to_encode, mp3_files[audio_file]))
-            encoding, created = EncodingAudio.objects.get_or_create(
-                name="audio",
-                video=video_to_encode,
-                encoding_format="audio/mp3",
-                # need to double check path
-                source_file=self.get_true_path(mp3_files[audio_file])
-            )
+    def store_json_list_mp3_m4a_files(self, info_video, video_to_encode):
+        encoding_list = ['list_m4a_files', 'list_mp3_files']
+        for encode_item in encoding_list:
+            mp3_files = info_video[encode_item]
+            for audio_file in mp3_files:
+                encoding, created = EncodingAudio.objects.get_or_create(
+                    name="audio",
+                    video=video_to_encode,
+                    encoding_format=("audio/mp3" if (encode_item == 'list_mp3_files') else 'video/mp4'),
+                    # need to double check path
+                    source_file=self.get_true_path(mp3_files[audio_file])
+                )
 
     def store_json_list_mp4_hls_files(self, info_video, video_to_encode):
         for list_video in ['list_hls_files', "list_mp4_files"]:
@@ -137,6 +138,16 @@ class Encoding_video_model(Encoding_video):
                         encoding_format="application/x-mpegURL",
                         source_file=self.get_true_path(mp4_files[video_file])
                     )
+                    ts_file = mp4_files[video_file].replace(".m3u8",".ts")
+                    if os.path.exists(ts_file):
+                        encoding, created = EncodingVideo.objects.get_or_create(
+                            name=encod_name,
+                            video=video_to_encode,
+                            rendition=rendition,
+                            encoding_format="video/mp2t",
+                            source_file=self.get_true_path(ts_file)
+                        )
+                    
 
         if os.path.exists(os.path.join(self.get_output_dir(), "livestream.m3u8")):
             playlist_file = self.get_true_path(os.path.join(self.get_output_dir(), "livestream.m3u8"))
@@ -220,7 +231,7 @@ class Encoding_video_model(Encoding_video):
             video_to_encode.duration = info_video["duration"]
             video_to_encode.save()
 
-            self.store_json_list_mp3_files(info_video, video_to_encode)
+            self.store_json_list_mp3_m4a_files(info_video, video_to_encode)
             self.store_json_list_mp4_hls_files(info_video, video_to_encode)
             self.store_json_encoding_log(info_video, video_to_encode)
             self.store_json_list_subtitle_files(info_video, video_to_encode)
