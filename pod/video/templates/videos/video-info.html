@@ -228,7 +228,7 @@
     </div>
   </div>
 </div>
-{% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all%}
+{% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all%} <!-- Début modale-->
 <div class="modal fade" id="share" tabindex="-1" aria-labelledby="shareLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -341,5 +341,5 @@ Anyone with this links can access it.{% endblocktrans %}
       </div>
     </div>
   </div>
-</div>
+</div> <!-- fin modale -->
 {%endif%}

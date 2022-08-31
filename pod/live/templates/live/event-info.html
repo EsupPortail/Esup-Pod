@@ -19,8 +19,8 @@
       class="tab-pane fade"
     {% endif %}
   >
-    <h2 class="tab-title"><i class="bi bi-info-circle" aria-hidden="true"></i>&nbsp;{% trans 'Infos' %}</h2>
-    <hr/>
+   <!--  <h2 class="tab-title"><i class="bi bi-info-circle" aria-hidden="true"></i>&nbsp;{% trans 'Infos' %}</h2> -->
+    <!-- <hr/> -->
     <ul class="list-inline d-flex flex-wrap">
       <li class="col-6 col-md-4">
         <h3 class="meta-title">{% trans 'Broadcasted on:' %}</h3>
@@ -51,54 +51,66 @@
     </ul>
   </div>
 
-    {% if event.is_draft == False or event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser %}
-    <div class="tab-pane fade" id="share" role="tabpanel" aria-labelledby="share-tab" {% if event.is_draft %}style="border:1px solid red"{% endif %}>
-      <h2 class="tab-title"><i class="bi bi-share" aria-hidden="true"></i>&nbsp;{% if event.is_draft %}{% trans 'Embed/Share (Draft Mode)' %}{% else %}{% trans 'Embed/Share' %}{%endif%}</h2>
-      <hr/>
-      {% if event.is_draft %}
-        <div class="card text-white bg-danger mb-3">
-          <div class="card-body">
-          {% blocktrans %}Please note that your event is in draft mode.<br/>The following links contain a key allowing access. Anyone with this links can access it.{% endblocktrans %}
-          </div>
-        </div>
-      {% endif %}
-
-      <div class="row">
-        <div class="col-md-6">
-          <fieldset>
+    {% if event.is_draft == False or event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser %} <!-- Début modale -->
+    <div class="modal fade" id="share" tabindex="-1" aria-labelledby="shareLabel" aria-hidden="true" {% if event.is_draft %}style="border:1px solid red"{% endif %}>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="shareLabel">
+              <i class="bi bi-share"></i>&nbsp;{% if event.is_draft %}{% trans 'Embed/Share (Draft Mode)' %}{% else %}{% trans 'Embed/Share' %}{%endif%}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+      
+              {% if event.is_draft %}
+              <div class="card text-white bg-danger mb-3">
+                <div class="card-body">
+                {% blocktrans %}Please note that your event is in draft mode.<br/>The following links contain a key allowing access. Anyone with this links can access it.{% endblocktrans %}
+                </div>
+              </div>
+            {% endif %}
+      
+      
+       
+          <fieldset class="pod-share-fieldset">
             <legend><i class="bi bi-code"></i>&nbsp;{% trans 'Embed in a web page' %}</legend>
             <div class="form-group ">
-              <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page:' %}</label>
+              <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page:'%}</label>
               <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'live:event' slug=event.slug %}{% if event.is_draft == True %}{{ event.get_hashkey }}/{% endif %}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
             </div>
           </fieldset>
+
           {% if not event.is_draft and not event.broadcaster.is_restricted %}
-            <dl class="row">
-              <dt class="col-sm-3 text-right">{% trans 'Social Networks' %}</dt>
-              <dd class="col-sm-9 mb-0">
-                <ul class="list-inline mb-0 social_links">
-                  <li class="list-inline-item"><a target="_blank" href="https://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} Facebook"><i class="bi bi-facebook"></i></a></li>
-                  <li class="list-inline-item"><a target="_blank" href="https://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} Twitter"><i class="bi bi-twitter"></i></a></li>
-                  <li class="list-inline-item"><a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} LinkedIn"><i class="bi bi-linkedin"></i></a></li>
-                </ul>
-              </dd>
-            </dl>
+          <dl class="row">
+            <dt class="col-sm-3 text-right visually-hidden">{% trans 'Social Networks' %}</dt>
+            <dd class="col-sm-9 mb-0">
+              <ul class="list-inline mb-0 social_links">
+                <li class="list-inline-item"><a target="_blank" href="https://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} Facebook"><i class="bi bi-facebook"></i></a></li>
+                <li class="list-inline-item"><a target="_blank" href="https://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} Twitter"><i class="bi bi-twitter"></i></a></li>
+                <li class="list-inline-item"><a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} LinkedIn"><i class="bi bi-linkedin"></i></a></li>
+              </ul>
+            </dd>
+          </dl>
+          <hr />
           {% endif %}
-        </div>
-        <div class="col-md-6">
-          <fieldset>
+        
+          <fieldset class="pod-share-fieldset">
             <legend><i class="bi bi-link-45deg"></i>&nbsp;{% trans 'Share the link' %}</legend>
             <div class="form-group">
               <label for="txtpartage">{% trans 'Use this link to share the video:' %}</label>
               <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'live:event' slug=event.slug %}{% if event.is_draft == True %}{{ event.get_hashkey }}/{% endif %}" />
             </div>
             <div class="form-group">
-              <label>{% trans 'QR code for this link:' %}</label>
+              <label>{% trans 'QR code for this link:' %}&nbsp;
+                <a href="#" class="btn pod-btn pod-btn-social m-1" title="{% trans 'Warning, it use google API' %}" role="button" data-bs-toggle="collapse" data-bs-target="#qrcode" aria-expanded="false" aria-controls="qrcode">
+                  <i class="bi bi-eye"></i>
+                </a>
+              </label>
               <img src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'live:event' slug=event.slug %}{% if event.is_draft == True %}{{ event.get_hashkey }}/{% endif %}" alt="qrcode" id="qrcode" loading="lazy"/>
             </div>
           </fieldset>
         </div>
-      </div>
-    </div>
+      
+    </div> <!-- Fin modale -->
   {%endif%}
 </div>
