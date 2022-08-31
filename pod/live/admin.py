@@ -80,9 +80,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
     )
     readonly_fields = ["slug"]
     autocomplete_fields = ["building", "video_on_hold"]
-    list_filter = [
-       "building",
-    ]
+    list_filter = ["building"]
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs["widgets"] = {
