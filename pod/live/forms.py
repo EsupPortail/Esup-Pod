@@ -23,6 +23,7 @@ if getattr(settings, "USE_PODFILE", False):
 
 PILOTING_CHOICES = getattr(settings, "BROADCASTER_PILOTING_SOFTWARE", [])
 
+
 class OwnerWidget(s2forms.ModelSelect2Widget):
     search_fields = [
         "username__icontains",

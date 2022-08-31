@@ -19,22 +19,20 @@
 
 
 {% block page_content %}
+    {% if events.count == 0 %}
+        <h3>{% trans "No event found" %}</h3>
+    {% else %}
+        <h3>{% blocktrans count counter=events_number %}{{ counter }} event found{% plural %}{{ counter }} events found{% endblocktrans %}</h3>
+    {% endif %}
+    {% if display_creation_button %}
+        <div class="d-flex infinite-container mb-2" id="event_add">
+        <a class="btn btn-primary" href="{% url 'live:event_edit' %}" title="{% trans "Plan an event" %}">
+            <i class="bi bi-plus pod-add"></i>
+            <span>{% trans "Plan an event" %}</span>
+        </a>       
+        </div>
+    {% endif %}
 
-    <div class="d-flex infinite-container mb-2" id="event_add">
-        {% if events.count == 0 %}
-            <h3>{% trans "No event found" %}</h3>
-        {% else %}
-            <h3>{% blocktrans count counter=events_number %}{{ counter }} event found{% plural %}{{ counter }} events found{% endblocktrans %}</h3>
-        {% endif %}
-        {% if display_creation_button %}
-            <a class="ml-auto" href="{% url 'live:event_edit' %}" title="{% trans "Plan an event" %}">
-                <button type="button" class="btn btn-primary">
-                    <i class="bi bi-plus pod-add"></i>
-                    {% trans "Plan an event" %}
-                </button>
-            </a>
-        {% endif %}
-    </div>
     {% if events.count == 0 %}
         <p class="alert alert-info">{% trans 'You have not planned any event yet, please use the "Plan an event" button to add one' %}</p>
     {% else %}

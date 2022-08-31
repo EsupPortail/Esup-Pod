@@ -492,7 +492,6 @@
         function reloadIfNeeded() {
             const start = new Date("{{ event.get_start.isoformat }}")
             const end = new Date("{{ event.get_end.isoformat }}")
-
             {% if event.is_coming %}
                 setInterval(() => {
                     if (new Date() >= start) {
