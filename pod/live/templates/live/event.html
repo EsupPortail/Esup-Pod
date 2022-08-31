@@ -5,20 +5,10 @@
 
 {% block page_extra_head %}
 {% include 'videos/video-header.html' %}
-<!--
-    <link href="{% static 'player/videojs/video-js.min.css' %}?ver={{ VERSION }}" rel="stylesheet"/>
-    <script src="{% static 'player/videojs/video.min.js' %}?ver={{ VERSION }}"></script>
-    {% with 'player/videojs/lang/'|add:request.LANGUAGE_CODE|add:'.js' as videojs_lang %}
-        <script src="{% static videojs_lang %}?ver={{ VERSION }}"></script>
-    {% endwith %}
-
-    <script src="{% static 'js/videojs-logo-controlbar.js' %}?ver={{ VERSION }}"></script>
-   
--->
- {% if event.broadcaster.enable_viewer_count %}
-        <script>let heartbeat_delay = {{ heartbeat_delay }}</script>
-        <script src="{% static 'js/viewcounter.js' %}?ver={{ VERSION }}"></script>
-    {% endif %}
+{% if event.broadcaster.enable_viewer_count %}
+    <script>let heartbeat_delay = {{ heartbeat_delay }}</script>
+    <script src="{% static 'js/viewcounter.js' %}?ver={{ VERSION }}"></script>
+{% endif %}
 {% endblock %}
 
 {% block breadcrumbs %}{{ block.super }}
@@ -160,13 +150,11 @@
                        class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
                        <i class="bi bi-pencil-square" aria-hidden="true"></i>
                     </a>
-
                     <a href="{% url 'live:event_delete' slug=event.slug %}"
                        class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1"
                        title="{% trans "Delete the event" %}">
                        <i class="bi bi-trash" aria-hidden="true"></i>
                     </a>
-
                 </div>
             </div>
         {% endif %}

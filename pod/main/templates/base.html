@@ -41,13 +41,14 @@
   {% block more_style %}
   {% endblock more_style %}
   <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|capfirst}}{% endblock %}</title>
+  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
   {% block page_extra_head %}
   {% endblock %}
   {% if request.GET.is_iframe %}
   <link rel="stylesheet" href="{% static 'css/iframe.css' %}?ver={{VERSION}}" media="screen">
   {% endif %}
   {% endspaceless %}
-  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+
 </head>
 
 <body>
