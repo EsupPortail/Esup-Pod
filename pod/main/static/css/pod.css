@@ -607,7 +607,7 @@ div.card a:hover>img {
 
 .video-card .card-footer,
 .video-card .card-header {
-  height: 1rem;
+  /*height: 1rem;*/
 }
 
 /** menu channels **/

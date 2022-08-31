@@ -505,7 +505,7 @@ def send_invite(request, meeting, emails):
         "owner": meeting.owner.get_full_name(),
         "meeting_title": meeting.name,
     }
-    from_email = DEFAULT_FROM_EMAIL
+    from_email = meeting.owner.email  # DEFAULT_FROM_EMAIL
     join_link = request.build_absolute_uri(
         reverse("meeting:join", args=(meeting.meeting_id,))
     )

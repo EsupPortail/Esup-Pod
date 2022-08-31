@@ -92,7 +92,7 @@
     </div>
     <div>
       <!--<p>{% trans "You can load and existing caption file below :" %}-->
-      <form method="post" class="float-sart" action="{% url 'video_caption_maker' slug=video.slug %}" id="captionmaker_form">
+      <form method="post" class="float-sart" action="{% url 'video:completion:video_caption_maker' slug=video.slug %}" id="captionmaker_form">
         {% csrf_token %}
         <fieldset>
           {% if form_make_caption.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
@@ -113,7 +113,7 @@
         {{form_make_caption.media}}
       </form>
 
-      <form class="form_save completion float-start" id="form_save_captions" action="{% url 'video_caption_maker' slug=video.slug %}" method="post" enctype="multipart/form-data">
+      <form class="form_save completion float-start" id="form_save_captions" action="{% url 'video:completion:video_caption_maker' slug=video.slug %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="hidden" name="action" value="save"/>
         <input type="hidden" name="file_id"/>
