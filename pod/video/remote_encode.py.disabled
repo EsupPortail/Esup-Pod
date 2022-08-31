@@ -17,8 +17,8 @@ from .models import EncodingLog
 from .models import PlaylistVideo
 from .models import Video
 
-from .encode import remove_old_data, remove_previous_overview
-from .encode import create_overview_image, create_and_save_thumbnails
+# from .encode import remove_old_data, remove_previous_overview
+# from .encode import create_overview_image, create_and_save_thumbnails
 
 from .utils import change_encoding_step, add_encoding_log, check_file
 from .utils import create_outputdir, send_email, send_email_encoding
