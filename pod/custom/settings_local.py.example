@@ -1457,3 +1457,14 @@ CACHES = {
     }
 }
 
+"""
+Application Meeting pour la gestion de reunion avec BBB
+Mettre USE_MEETING à True pour activer cette application 
+BBB_API_URL et BBB_SECRET_KEY sont obligatoires pour faire fonctionner l'application
+"""
+USE_MEETING = False
+BBB_API_URL = ""
+BBB_SECRET_KEY = ""
+BBB_LOGOUT_URL = "" # optional
+RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = False
+
