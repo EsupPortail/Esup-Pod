@@ -74,6 +74,7 @@ class MainViewsTestCase(TestCase):
                 "captcha_0": captcha.hashkey,
                 "captcha_1": captcha.response,
                 "url_referrer": "http://localhost:8000/",
+                "firstname": ""
             },
         )
         messages = list(response.wsgi_request._messages)
@@ -91,6 +92,7 @@ class MainViewsTestCase(TestCase):
                 "subject": "info",
                 "description": "",
                 "captcha": "",
+                "firstname": ""
             },
         )
         self.assertTemplateUsed(response, "contact_us.html")
