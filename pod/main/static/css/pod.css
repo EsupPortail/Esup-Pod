@@ -122,6 +122,8 @@ a {
 .navbar-light .navbar-nav .nav-link,
 .navbar-light .navbar-toggler {
   color: var(--font-color);
+box-shadow: 0.05rem 0.05rem 0.2rem 0.05rem rgba(0, 0, 0, 0.2);
+border-radius: .15rem;
 }
 
 .table-hover tbody tr {
@@ -1421,3 +1423,23 @@ body {
   min-width: 9rem;
 }
 
+/* ---------------------------------------------------------------------*/
+/* Minor corrections */
+
+/* Buttons side by side under the title */
+#event_add{
+  display: inline-block !important; 
+  padding-right: 0.5rem;
+}
+
+/*Fix table on "My meetings" */ 
+.table > :not(caption) > * > * 
+{
+    padding: .5rem .25rem;
+    border-bottom-width: 0 !important;
+}
+
+th + td + td + td + td {
+  /* border-right: 0.15rem solid var(--pod-primary);  */
+  text-align: center;
+}

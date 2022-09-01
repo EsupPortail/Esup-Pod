@@ -41,7 +41,7 @@ FFMPEG_PROFILE = "high"
 FFMPEG_LEVEL = 3
 FFMPEG_HLS_TIME = 2
 
-FFMPEG_INPUT = "-hide_banner -threads %(nb_threads)s -i %(input)s "
+FFMPEG_INPUT = '-hide_banner -threads %(nb_threads)s -i "%(input)s" '
 FFMPEG_LIBX = "libx264"
 FFMPEG_MP4_ENCODE = (
     '-map 0:v:0 -map 0:a:0 -c:v %(libx)s  -vf "scale=-2:%(height)s" '
@@ -65,13 +65,18 @@ FFMPEG_HLS_ENCODE = (
     + '-hls_time %(hls_time)s -hls_flags single_file '  # -hls_segment_type fmp4
     + '-master_pl_name "livestream.m3u8" -y -vsync 0 "%(output)s" '
 )
-FFMPEG_MP3_ENCODE = '-vn -b:a %(audio_bitrate)s -vn -f mp3 "%(output)s" '
+# FFMPEG_MP3_ENCODE = '-vn -b:a %(audio_bitrate)s -f mp3 -y "%(output)s" '
+FFMPEG_MP3_ENCODE = '-vn -codec:a libmp3lame -qscale:a 2 -y "%(output)s" '
+# In our example above, we selected -qscale:a 2, meaning we used LAME's option -V 2,
+# which gives us a VBR MP3 audio stream with an average stereo bitrate of 170-210 kBit/s.
 FFMPEG_M4A_ENCODE = '-vn -c:a aac -b:a %(audio_bitrate)s "%(output)s" '
 FFMPEG_NB_THREADS = 0
 AUDIO_BITRATE = "192k"
 
 EXTRACT_THUMBNAIL = '-map 0:%(index)s -an -c:v copy -y  "%(output)s" '
-CREATE_THUMBNAIL = '-vframes 1 -an -ss %(time)s -y  "%(output)s" '
+# CREATE_THUMBNAIL = '-map 0:%(index)s -vframes 1 -an -ss %(time)s -y "%(output)s" '
+NB_THUMBNAIL = 3
+CREATE_THUMBNAIL = '-vf "fps=1/(%(duration)s/%(nb_thumbnail)s)" -vsync vfr "%(output)s_%%04d.png"'
 EXTRACT_SUBTITLE = '-map 0:%(index)s -f webvtt -y  "%(output)s" '
 
 
@@ -327,7 +332,7 @@ class Encoding_video:
         }
         output_file = os.path.join(self.output_dir, "audio_%s.mp3" % AUDIO_BITRATE)
         mp3_command += FFMPEG_MP3_ENCODE % {
-            "audio_bitrate": AUDIO_BITRATE,
+            # "audio_bitrate": AUDIO_BITRATE,
             "output": output_file,
         }
         self.list_mp3_files[AUDIO_BITRATE] = output_file
@@ -380,34 +385,15 @@ class Encoding_video:
             "input": input_file,
             "nb_threads": FFMPEG_NB_THREADS,
         }
-        if self.duration < 10:
-            output_file = os.path.join(self.output_dir, "thumbnail_1.png")
-            thumbnail_command += CREATE_THUMBNAIL % {
-                "time": int(self.duration / 2),
+        output_file = os.path.join(self.output_dir, "thumbnail")
+        thumbnail_command += CREATE_THUMBNAIL % {
+                "duration": self.duration,
+                "nb_thumbnail": NB_THUMBNAIL,
                 "output": output_file,
             }
-            self.list_thumbnail_files["1"] = output_file
-        elif 10 <= self.duration < 60:
-            output_file = os.path.join(self.output_dir, "thumbnail_1.png")
-            thumbnail_command += CREATE_THUMBNAIL % {
-                "time": int(self.duration / 3),
-                "output": output_file,
-            }
-            self.list_thumbnail_files["1"] = output_file
-            output_file = os.path.join(self.output_dir, "thumbnail_2.png")
-            thumbnail_command += CREATE_THUMBNAIL % {
-                "time": int((self.duration / 3) * 2),
-                "output": output_file,
-            }
-            self.list_thumbnail_files["2"] = output_file
-        else:
-            for dur in range(1, 4):
-                output_file = os.path.join(self.output_dir, "thumbnail_%s.png" % dur)
-                thumbnail_command += CREATE_THUMBNAIL % {
-                    "time": int((self.duration / 4) * dur),
-                    "output": output_file,
-                }
-                self.list_thumbnail_files["%s" % dur] = output_file
+        for nb in range(0, NB_THUMBNAIL):
+            num_thumb = str(nb+1)
+            self.list_thumbnail_files[num_thumb] = "%s_000%s.png" % (output_file, num_thumb)
         return thumbnail_command
 
     def create_overview(self):
@@ -491,6 +477,8 @@ class Encoding_video:
         elif self.is_video():
             thumbnail_command = self.get_create_thumbnail_command()
             return_value, return_msg = launch_cmd(thumbnail_command)
+            print(return_value)
+            print(return_msg)
             self.add_encoding_log(
                 "create_thumbnail_command", thumbnail_command, return_value, return_msg
             )
@@ -533,16 +521,23 @@ class Encoding_video:
             self.error_encoding = True
 
     def start_encode(self):
+        print(1, time.ctime())
         self.create_output_dir()
+        print(2, time.ctime())
         self.get_video_data()
         print(self.id, self.video_file, self.duration)
+        print(3, time.ctime())
         if self.is_video():
             self.encode_video_part()
+        print(4, time.ctime())
         if len(self.list_audio_track) > 0:
             self.encode_audio_part()
+        print(5, time.ctime())
         self.encode_image_part()
+        print(6, time.ctime())
         if len(self.list_subtitle_track) > 0:
             self.get_subtitle_part()
+        print(7, time.ctime())
         self.export_to_json()
 
 
