@@ -9,6 +9,7 @@ from .models import Video
 from pod.completion.models import Track
 from django.core.files import File
 from pod.podfile.models import UserFolder, CustomFileModel, CustomImageModel
+from .utils import check_file
 
 from .Encoding_video import Encoding_video, FFMPEG_MP4_ENCODE
 import json
@@ -182,8 +183,10 @@ class Encoding_video_model(Encoding_video):
         log_to_text = log_to_text + "End : " + str(info_video["stop"])
 
         encoding_log, created = EncodingLog.objects.get_or_create(
-            video=video_to_encode, log=log_to_text
+            video=video_to_encode
         )
+        encoding_log.log = log_to_text
+        encoding_log.save()
 
     def store_json_list_subtitle_files(self, info_video, video_to_encode):
         list_subtitle_files = info_video["list_subtitle_files"]
@@ -216,9 +219,8 @@ class Encoding_video_model(Encoding_video):
         )
 
         for thumbnail_path in list_thumbnail_files:
-            # TODO see with Nico why thumbnail 1 not exists
-            if os.path.exists(list_thumbnail_files[thumbnail_path]):
-                thumbnail, created = CustomImageModel.objects.get_or_create(
+            if check_file(list_thumbnail_files[thumbnail_path]):
+                thumbnail = CustomImageModel(
                     folder=videodir, created_by=video_to_encode.owner
                 )
                 thumbnail.file.save(

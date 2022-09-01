@@ -76,7 +76,9 @@ AUDIO_BITRATE = "192k"
 EXTRACT_THUMBNAIL = '-map 0:%(index)s -an -c:v copy -y  "%(output)s" '
 # CREATE_THUMBNAIL = '-map 0:%(index)s -vframes 1 -an -ss %(time)s -y "%(output)s" '
 NB_THUMBNAIL = 3
-CREATE_THUMBNAIL = '-vf "fps=1/(%(duration)s/%(nb_thumbnail)s)" -vsync vfr "%(output)s_%%04d.png"'
+CREATE_THUMBNAIL = (
+    '-vf "fps=1/(%(duration)s/%(nb_thumbnail)s)" -vsync vfr "%(output)s_%%04d.png"'
+)
 EXTRACT_SUBTITLE = '-map 0:%(index)s -f webvtt -y  "%(output)s" '
 
 
@@ -387,13 +389,15 @@ class Encoding_video:
         }
         output_file = os.path.join(self.output_dir, "thumbnail")
         thumbnail_command += CREATE_THUMBNAIL % {
-                "duration": self.duration,
-                "nb_thumbnail": NB_THUMBNAIL,
-                "output": output_file,
-            }
+            "duration": self.duration,
+            "nb_thumbnail": NB_THUMBNAIL,
+            "output": output_file,
+        }
         for nb in range(0, NB_THUMBNAIL):
-            num_thumb = str(nb+1)
-            self.list_thumbnail_files[num_thumb] = "%s_000%s.png" % (output_file, num_thumb)
+            num_thumb = str(nb + 1)
+            self.list_thumbnail_files[num_thumb] = "%s_000%s.png" % (
+                output_file, num_thumb
+            )
         return thumbnail_command
 
     def create_overview(self):
@@ -477,8 +481,6 @@ class Encoding_video:
         elif self.is_video():
             thumbnail_command = self.get_create_thumbnail_command()
             return_value, return_msg = launch_cmd(thumbnail_command)
-            print(return_value)
-            print(return_msg)
             self.add_encoding_log(
                 "create_thumbnail_command", thumbnail_command, return_value, return_msg
             )
@@ -521,23 +523,16 @@ class Encoding_video:
             self.error_encoding = True
 
     def start_encode(self):
-        print(1, time.ctime())
         self.create_output_dir()
-        print(2, time.ctime())
         self.get_video_data()
         print(self.id, self.video_file, self.duration)
-        print(3, time.ctime())
         if self.is_video():
             self.encode_video_part()
-        print(4, time.ctime())
         if len(self.list_audio_track) > 0:
             self.encode_audio_part()
-        print(5, time.ctime())
         self.encode_image_part()
-        print(6, time.ctime())
         if len(self.list_subtitle_track) > 0:
             self.get_subtitle_part()
-        print(7, time.ctime())
         self.export_to_json()
 
 
@@ -547,7 +542,6 @@ def fix_input(input):
         path_file = args.input
     else:
         path_file = os.path.join(os.getcwd(), args.input)
-    print(path_file)
     if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
         # remove accent and space
         filename = "".join(
