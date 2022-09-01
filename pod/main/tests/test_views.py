@@ -25,7 +25,7 @@ class MainViewsTestCase(TestCase):
 
     def setUp(self):
         """Create fictive user who will make tests."""
-        User.objects.create(username="pod", password="podv2")
+        User.objects.create(username="pod", password="podv3")
         print(" --->  SetUp of MainViewsTestCase: OK!")
 
     @override_settings(MEDIA_ROOT=tempfile.gettempdir())
@@ -112,7 +112,7 @@ class MaintenanceViewsTestCase(TestCase):
     ]
 
     def setUp(self):
-        User.objects.create(username="pod", password="podv2")
+        User.objects.create(username="pod", password="podv3")
 
     def test_maintenance(self):
         """Test Pod maintenance mode."""

@@ -15,7 +15,7 @@ class authenticationViewsTestCase(TestCase):
     ]
 
     def setUp(self):
-        User.objects.create(username="pod", password="podv2")
+        User.objects.create(username="pod", password="podv3")
         print(" --->  SetUp of authenticationViewsTestCase: OK!")
 
     def test_authentication_login_gateway(self):

@@ -430,7 +430,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
     # ce template soit affiché en haut de votre page, le code est ajouté
     #  juste après la balise body.(Hors iframe)
     # Si le fichier créé est
-    # '/opt/django_projects/podv2/pod/custom/templates/custom/preheader.html'
+    # '/opt/django_projects/podv3/pod/custom/templates/custom/preheader.html'
     # alors la variable doit prendre la valeur 'custom/preheader.html'
     'PRE_HEADER_TEMPLATE': '',
 
@@ -452,7 +452,7 @@ VIDEO_PLAYBACKRATES = '[0.5, 1, 1.5, 2]'
 # Configuration application recherche
 # Pour mettre à jour le moteur de recherche, je lance toutes les nuits
 #  la tache cron suivante :
-# 0 5 * * * cd $path_pod/podv2 && $v_env/python manage.py index_videos --all
+# 0 5 * * * cd $path_pod/podv3 && $v_env/python manage.py index_videos --all
 
 """
 # adresse du ou des instances d'Elasticsearch utilisées pour l'indexation
@@ -1467,4 +1467,11 @@ BBB_API_URL = ""
 BBB_SECRET_KEY = ""
 BBB_LOGOUT_URL = "" # optional
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = False
-
+# use to disable record if bbb instance not deploy it
+MEETING_DISABLE_RECORD = True
+# if disable record set to true, this fields will be remove from form
+MEETING_RECORD_FIELDS = (
+    "record",
+    "auto_start_recording",
+    "allow_start_stop_recording"
+)

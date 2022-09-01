@@ -36,7 +36,7 @@ class recorderViewsTestCase(TestCase):
     def setUp(self):
         site = Site.objects.get(id=1)
         videotype = Type.objects.create(title="others")
-        user = User.objects.create(username="pod", password="podv2")
+        user = User.objects.create(username="pod", password="podv3")
         recorder = Recorder.objects.create(
             id=1,
             user=user,
