@@ -59,8 +59,8 @@ def send_email_confirmation(event):
         _(
             "You have just scheduled a new event called “%(content_title)s” "
             + "in date of %(start_date)s from %(start_time)s to %(end_time)s "
-            + "on video server : %(url_event)s)"
-            + ". You can find the other sharing options in the dedicated tab."
+            + "on video server: %(url_event)s)."
+            + " You can find the other sharing options in the dedicated tab."
         )
         % {
             "content_title": event.title,
@@ -82,8 +82,8 @@ def send_email_confirmation(event):
         _(
             "You have just scheduled a new event called “%(content_title)s” "
             + "in date of %(start_date)s from %(start_time)s to %(end_time)s "
-            + "on video server : %(url_event)s)"
-            + ". You can find the other sharing options in the dedicated tab."
+            + "on video server: %(url_event)s)."
+            + " You can find the other sharing options in the dedicated tab."
         )
         % {
             "content_title": event.title,

@@ -239,7 +239,7 @@ class Broadcaster(models.Model):
         except Exception:
             return format_html('<img src="/static/admin/img/icon-alert.svg" alt="Error">')
 
-    is_recording_admin.short_description = _("Is recording ?")
+    is_recording_admin.short_description = _("Is recording?")
 
 
 class HeartBeat(models.Model):

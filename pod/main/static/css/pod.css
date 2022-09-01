@@ -189,6 +189,13 @@ border-radius: .15rem;
   text-decoration: none;
 }
 
+.link-primary {
+  color: var(--pod-primary);
+}
+.link-primary:hover,.link-primary:focus {
+  color: var(--pod-primary-focus);
+}
+
 .btn-outline-primary {
   color: var(--primary);
   border-color: var(--primary);
@@ -607,10 +614,10 @@ div.card a:hover>img {
   transform: rotate(10deg);
 }
 
-.video-card .card-footer,
+/*.video-card .card-footer,
 .video-card .card-header {
-  /*height: 1rem;*/
-}
+  height: 1rem;
+}*/
 
 /** menu channels **/
 .dropdown-submenu>.dropdown-menu {
@@ -948,17 +955,25 @@ body {
   margin-top: 1.5rem !important;
 }
 
+.btn-link:hover {
+  color: var(--pod-primary);
+}
+
 .btn-primary, .pod-btn-primary {
   background: var(--pod-primary);
   border-color: var(--pod-primary);
   color: var(--pod-btn-text);
 }
 
+.btn-primary.disabled, .btn-primary:disabled {
+  background: var(--pod-primary-darken);
+}
+
 .btn-primary:hover,
 .btn-primary:focus,
 .pod-btn-primary:hover,
 .pod-btn-primary:focus {
-  text-decoration: underline;
+  /*text-decoration: underline;*/
   background: var(--pod-primary-focus);
   border-color: var(--pod-primary-lighten);
   color: var(--pod-btn-text);
@@ -967,6 +982,7 @@ body {
 .btn-outline-primary:hover,
 .btn-outline-primary:focus {
   background-color: var(--pod-primary);
+  color: var(--pod-btn-text);
   border-color: var(--pod-primary);
 }
 

@@ -31,16 +31,16 @@ BBB_MEETING_INFO = getattr(
     settings,
     "BBB_MEETING_INFO",
     {
-        "meetingName": _("meeting name"),
-        "hasUserJoined": _("has user joined"),
-        "recording": _("recording"),
-        "participantCount": _("participant count"),
-        "listenerCount": _("listener count"),
-        "moderatorCount": _("moderator count"),
-        "attendees": _("attendees"),
-        "attendee": _("attendee"),
-        "fullName": _("full name"),
-        "role": _("role"),
+        "meetingName": _("Meeting name"),
+        "hasUserJoined": _("Has user joined?"),
+        "recording": _("Recording"),
+        "participantCount": _("Participant count"),
+        "listenerCount": _("Listener count"),
+        "moderatorCount": _("Moderator count"),
+        "attendees": _("Attendees"),
+        "attendee": _("Attendee"),
+        "fullName": _("Full name"),
+        "role": _("Role"),
     },
 )
 
@@ -517,10 +517,10 @@ def send_invite(request, meeting, emails):
             """
         Hello,
         %(owner)s invites you to the meeting %(meeting_title)s.
-        Start date : %(start_date)s
-        End date : %(end_date)s
-        Here the link to join the meeting : %(join_link)s
-        You need this password to enter : %(password)s
+        Start date: %(start_date)s
+        End date: %(end_date)s
+        Here is the link to join the meeting: %(join_link)s
+        You need this password to enter: %(password)s
         Regards
     """
         )
@@ -538,11 +538,11 @@ def send_invite(request, meeting, emails):
             """
         <p>Hello,
         <p>%(owner)s invites you to the meeting <b>%(meeting_title)s</b>.</p>
-        <p>Start date : %(start_date)s </p>
-        <p>End date : %(end_date)s </p>
-        <p>here the link to join the meeting :
+        <p>Start date: %(start_date)s </p>
+        <p>End date: %(end_date)s </p>
+        <p>here the link to join the meeting:
         <a href="%(join_link)s">%(join_link)s</a></p>
-        <p>You need this password to enter : <b>%(password)s</b> </p>
+        <p>You need this password to enter: <b>%(password)s</b> </p>
         <p>Regards</p>
     """
         )
@@ -567,8 +567,8 @@ def send_invite(request, meeting, emails):
     event.description = (
         _(
             """
-        Here the link to join the meeting : %(join_link)s
-        You need this password to enter : %(password)s
+        Here is the link to join the meeting: %(join_link)s
+        You need this password to enter: %(password)s
     """
         )
         % {"join_link": join_link, "password": meeting.attendee_password}

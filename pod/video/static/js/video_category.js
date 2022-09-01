@@ -629,8 +629,8 @@
 
   // Create alert message
   let showAlertMessage = (message, type = true, delay = 4000) => {
-    let success = gettext("Success..");
-    let error = gettext("Error..");
+    let success = gettext("Success!");
+    let error = gettext("Error...");
     let title = type ? success : error;
     let class_suffix = type ? "success" : "error";
     let icon =

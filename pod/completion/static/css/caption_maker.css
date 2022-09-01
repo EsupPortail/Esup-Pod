@@ -24,29 +24,30 @@
 }
 
 #textCaptionEntry {
+    /*
     width: 100%;
     height: auto;
     line-height: 19px;
     border: 1px solid #999;
     padding: 3px 8px 5px;
-    text-align: center;
     min-height: 50px;
     overflow: hidden;
+    */
+    text-align: center;
 }
 
 #textCaptionEntry.playing {
-    border-color: #666;
-    background-color: #666;
+    background-color: var(--pod-background-dark);
     color: white;
 }
 
-textarea {
+/*textarea {
     line-height: 16px;
     font-size: 14px;
     resize: none;
     border: 1px solid #ccc;
     border-radius: 4px;
-}
+}*/
 
 .shortcutKey {
     display: inline-block;
@@ -72,7 +73,7 @@ textarea {
 }
 
 .videoSection {
-    float: left;  
+    float: left;
     min-height: 425px;
     width: 49%;
     padding: 24px 0px;
@@ -81,6 +82,8 @@ textarea {
 
 .caption_content {
     border-left: 1px solid #E1E1E1;
+    display: inline-block;
+    width: 49%;
 }
 
 .caption_content .caption_title{
@@ -110,11 +113,13 @@ textarea {
 }
 
 .captions_editor {
-    height: 470px; 
-    overflow: auto; 
-    resize: none; 
+    height: 470px;
+    /*
+    overflow: auto;
+    resize: none;
     width: 100%;
     padding: 0;
+    */
 }
 
 #newCaptionsEditor {
@@ -133,11 +138,13 @@ textarea {
 
 .newEditorBlock > textarea {
     width: 77%;
+    /*
     height: 80px;
     border-style: hidden;
     background-color: transparent;
     padding: 8px;
-    transition: 0.4s;
+    transition: .4s;
+    */
 }
 
 .captionBeingEdited {
@@ -145,57 +152,57 @@ textarea {
     background-color: rgba(223, 230, 246, 0.4);
 }
 
-.captionBeingEdited > textarea {
+/*.captionBeingEdited > textarea {
     border: 1px solid var(--primary);
     border-radius: 4px;
     background-color: #FFF5FB;
-}
+}*/
 
 .captionTimestamps {
-    float: right;
+    /*float: right;*/
     line-height: 32px;
 }
 
 .newEditorBlock a {
-    margin: 6px 0px;
-    max-width: 78px;
     display: block;
+    /*
+    margin: 6px 0;
+    max-width: 78px;
     color: #3EA6FF;
     font-weight: 400;
+    */
 }
 
 .newEditorBlock input {
-    margin: 6px 0px;
+    margin: 6px 0;
     max-width: 78px;
-    height: 32px;
-    padding: 0;
-    display: block;
-    padding: 0px 2px;
+    display: inline-block;
+    padding: 4px;
 }
 
-.captionButtons {
+/*.captionButtons {
     float: left;
-}
+}*/
 
 .captionButtons button {
-    margin: 9px 2px 2px 2px;
+    /*margin: 9px 2px 2px 2px;
+    left: 16px;*/
     display: block;
-    left: 0px;
-    left: 16px;
     width: 28px;
     height: 28px;
     padding: 0;
     border: 0;
     border-radius: 50%;
-    background: #fff;
-    box-shadow: 0px 0px 4px rgba(0,0,0,.15);
-    transition: 0.2s;
+    /*background: #fff;
+    box-shadow: 0 0 4px rgba(0,0,0,.15);
+    transition: 0.2s;*/
 }
 
 .captionButtons button:hover {
-    background: var(--primary);
+    background: var(--pod-primary-lighten);
 }
 
+/*
 .captionButtons button:hover svg {
     color: #fff;
 }
@@ -203,7 +210,7 @@ textarea {
 .captionButtons svg{
     color: #707070;
     margin: 0;
-}
+}*/
 
 #addSubtitle svg {
     color: var(--link-color);
@@ -219,6 +226,7 @@ textarea {
     }
 }
 
+/*
 #captionFilename {
     width: 280px;
     margin-left: 32px;
@@ -275,17 +283,17 @@ textarea {
     color: black;
     text-align: left;
     font-size: 16px;
-}
+}*/
 
 #captionmakerModal.save > .modal-dialog {
     max-width: 1000px;
 }
 
 #editorTipsAndGoBack {
-    width: 100%; 
-    clear: both; 
-    padding-top: 24px; 
-    padding-bottom: 24px; 
+    width: 100%;
+    clear: both;
+    padding-top: 24px;
+    padding-bottom: 24px;
     display: block;
     border-top: 1px solid #E1E1E1;
 }
@@ -321,13 +329,13 @@ textarea {
 }
 
 .keyframe-right {
-    transform: translate(0px, -11px);
+    transform: translate(0, -11px);
 }
 
 .regionHighligh {
     position: absolute;
     z-index: 1;
-    background-color: rgba(173, 50, 122, 0.5);
+    background-color: rgba(173, 50, 122, .5);
     height: 3px;
 }
 
