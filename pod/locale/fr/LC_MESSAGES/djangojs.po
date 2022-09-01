@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-01 16:13+0200\n"
-"PO-Revision-Date: 2022-09-01 16:14+0200\n"
+"POT-Creation-Date: 2022-09-01 16:41+0200\n"
+"PO-Revision-Date: 2022-09-01 16:42+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -121,6 +121,11 @@ msgstr "aucune donnée ne peut être stockée."
 #: pod/completion/static/js/caption_maker.js:191
 msgid "Are you sure you want to delete all caption?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer les sous-titres ?"
+
+#: pod/completion/static/js/caption_maker.js:226
+#, javascript-format
+msgid "Caption for segment from %s to %s:"
+msgstr "Texte associé au segment entre %s et %s :"
 
 #: pod/completion/static/js/caption_maker.js:299
 #, javascript-format

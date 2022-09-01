@@ -223,12 +223,12 @@ function DisplayExistingCaption(seconds) {
     var theCaption = captionsArray[ci];
     let divs = document.querySelectorAll(".vjs-text-track-display div");
     divs[divs.length - 1].innerText = theCaption.caption;
+    message = gettext("Caption for segment from %s to %s:");
     $("#captionTitle").text(
-      "Caption for segment from " +
-        FormatTime(theCaption.start) +
-        " to " +
-        FormatTime(theCaption.end) +
-        ":"
+      gettext(interpolate(message,[
+        FormatTime(theCaption.start),
+        FormatTime(theCaption.end)]
+      ))
     );
     $("#textCaptionEntry").val(theCaption.caption);
     $("#previewTrack").val(theCaption.caption);
@@ -481,9 +481,9 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
     endTimeInput: $(`<input class="form-control" type='text'>`),
 
     // time links
-    timeBlock: $(`<div class='captionTimestamps col-2'><span>${gettext('Time stamps')}</span></div>`),
-    startTimeBtn: $(`<a class='startTimeBtn link-primary' href='#'>${start}</a>`),
-    endTimeBtn: $(`<a class='endTimeBtn link-primary' href='#'>${end}</a>`),
+    timeBlock: $(`<div class='captionTimestamps col-sm-3 col-md-2'><span>${gettext('Time stamps')}</span></div>`),
+    startTimeBtn: $(`<a class='startTimeBtn link-primary' href='#podvideoplayer'>${start}</a>`),
+    endTimeBtn: $(`<a class='endTimeBtn link-primary' href='#podvideoplayer'>${end}</a>`),
 
     // flags
     isEditEnabled: false,

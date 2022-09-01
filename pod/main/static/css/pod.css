@@ -980,6 +980,7 @@ body {
 .btn-outline-primary:hover,
 .btn-outline-primary:focus {
   background-color: var(--pod-primary);
+  color: var(--pod-btn-text);
   border-color: var(--pod-primary);
 }
 
