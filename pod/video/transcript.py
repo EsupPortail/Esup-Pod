@@ -55,6 +55,7 @@ AUDIO_SPLIT_TIME = getattr(settings, "AUDIO_SPLIT_TIME", 300)  # 5min
 # time in sec for phrase length
 SENTENCE_MAX_LENGTH = getattr(settings, "SENTENCE_MAX_LENGTH", 3)
 SENTENCE_BLANK_SPLIT_TIME = getattr(settings, "SENTENCE_BLANK_SPLIT_TIME", 0.5)
+WORDS_PER_LINE = getattr(settings, "WORDS_PER_LINE", 7)
 
 NORMALIZE = getattr(settings, "NORMALIZE", False)
 NORMALIZE_TARGET_LEVEL = getattr(settings, "NORMALIZE_TARGET_LEVEL", -16.0)
@@ -306,16 +307,15 @@ def words_to_vtt(
         next_word = None
         blank_duration = 0
         if word != words[-1]:
-            next_word = words[index + 1]
-            blank_duration = ((next_word[start_key] + start_trim) - start_caption) - (
-                ((word[start_key] + start_trim) - start_caption) + word_duration
+            blank_duration = ((next_word[start_key]) - start_caption) - (
+                ((word[start_key]) - start_caption) + word_duration
             )
         all_text += word["word"] + " "
         # word : <class 'dict'> {'word': 'bonjour', 'start ':
         # 0.58, 'duration': 7.34}
         text_caption.append(word["word"])
         if not (
-            (((word[start_key] + start_trim) - start_caption) < SENTENCE_MAX_LENGTH)
+            (((word[start_key]) - start_caption) < SENTENCE_MAX_LENGTH)
             and (next_word is not None and (blank_duration < SENTENCE_BLANK_SPLIT_TIME))
         ):
             # on créé le caption
@@ -325,7 +325,7 @@ def words_to_vtt(
                 is_first_caption = False
                 text_caption = get_text_caption(text_caption, last_word_added)
 
-            stop_caption = start_trim + word[start_key] + word_duration
+            stop_caption = word[start_key] + word_duration
 
             # on evite le chevauchement
             change_previous_end_caption(webvtt, start_caption)
@@ -338,7 +338,7 @@ def words_to_vtt(
 
             webvtt.captions.append(caption)
             # on remet tout à zero pour la prochaine phrase
-            start_caption = start_trim + word[start_key]
+            start_caption = word[start_key]
             text_caption = []
             last_word_added = word["word"]
     if start_trim + AUDIO_SPLIT_TIME > duration:
@@ -378,19 +378,47 @@ def main_vosk_transcript(norm_mp3_file, duration, transript_model):
         )
         msg += "\ntake audio from %s to %s - %s" % (start_trim, end_trim, dur)
         audio = convert_vosk_samplerate(
-            norm_mp3_file, desired_sample_rate, start_trim, dur
+            norm_mp3_file, desired_sample_rate, start_trim, AUDIO_SPLIT_TIME # dur
         )
         msg += "\nRunning inference."
         results = []
         get_word_result_from_data(results, audio, rec)
 
-        webvtt = WebVTT()
+        for i, res in enumerate(results):
+            jres = json.loads(res)
+            if not 'result' in jres:
+                continue
+            words = jres['result']
+            for j in range(0, len(words), WORDS_PER_LINE):
+                line = words[j : j + WORDS_PER_LINE] 
+                caption = Caption(
+                    text=" ".join([l['word'] for l in line]),
+                    # start="%s" % timedelta(seconds=line[0]['start']), # webvtt.errors.MalformedCaptionError: Invalid timestamp: 0:04:06
+                    # end="%s" % timedelta(seconds=line[-1]['end']) # webvtt.errors.MalformedCaptionError: Invalid timestamp: 0:04:06
+                    start = format_time_caption(line[0]['start']),
+                    end = format_time_caption(line[-1]['end'])
+                )
+                print(caption)
+                webvtt.captions.append(caption)
+
         for res in results:
             words = json.loads(res).get("result")
+            text = json.loads(res).get("text")
+
             if not words:
                 continue
 
-            start_caption = start_trim + words[0]["start"]
+            #start_caption = start_trim + words[0]["start"]
+            start_caption = words[0]["start"]
+            stop_caption = words[-1]["end"]
+            print(format_time_caption(words[0]["start"]), format_time_caption(words[-1]["end"]), text)
+            caption = Caption(
+                format_time_caption(start_caption),
+                format_time_caption(stop_caption),
+                text,
+            )
+            webvtt.captions.append(caption)
+
             text_caption = []
             is_first_caption = True
             all_text, webvtt = words_to_vtt(
@@ -405,7 +433,7 @@ def main_vosk_transcript(norm_mp3_file, duration, transript_model):
                 webvtt,
             )
     inference_end = timer() - inference_start
-
+ 
     msg += "\nInference took %0.3fs." % inference_end
     return msg, webvtt, all_text
 
