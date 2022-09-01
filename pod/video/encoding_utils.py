@@ -8,9 +8,33 @@ import os
 # from django.core import serializers
 # serializers.serialize("json", VideoRendition.objects.all())
 video_rendition = [
-    {"resolution": "640x360", "minrate": "500k", "video_bitrate": "750k", "maxrate": "1000k", "audio_bitrate": "96k", "encode_mp4": True, "sites": [1]},
-    {"resolution": "1280x720", "minrate": "1000k", "video_bitrate": "2000k", "maxrate": "3000k", "audio_bitrate": "128k", "encode_mp4": True, "sites": [1]},
-    {"resolution": "1920x1080", "minrate": "2000k", "video_bitrate": "3000k", "maxrate": "4500k", "audio_bitrate": "192k", "encode_mp4": False, "sites": [1]},
+    {
+        "resolution": "640x360",
+        "minrate": "500k",
+        "video_bitrate": "750k",
+        "maxrate": "1000k",
+        "audio_bitrate": "96k",
+        "encode_mp4": True,
+        "sites": [1],
+    },
+    {
+        "resolution": "1280x720",
+        "minrate": "1000k",
+        "video_bitrate": "2000k",
+        "maxrate": "3000k",
+        "audio_bitrate": "128k",
+        "encode_mp4": True,
+        "sites": [1],
+    },
+    {
+        "resolution": "1920x1080",
+        "minrate": "2000k",
+        "video_bitrate": "3000k",
+        "maxrate": "4500k",
+        "audio_bitrate": "192k",
+        "encode_mp4": False,
+        "sites": [1],
+    },
 ]
 
 
@@ -66,10 +90,7 @@ def launch_cmd(cmd):
             pass
         msg += "\n"
         if output.returncode != 0:
-            msg += "ERROR RETURN CODE %s for command %s" % (
-                output.returncode,
-                cmd
-            )
+            msg += "ERROR RETURN CODE %s for command %s" % (output.returncode, cmd)
         else:
             return_value = True
     except subprocess.CalledProcessError as e:
