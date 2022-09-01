@@ -187,6 +187,13 @@ a {
   text-decoration: none;
 }
 
+.link-primary {
+  color: var(--pod-primary);
+}
+.link-primary:hover,.link-primary:focus {
+  color: var(--pod-primary-focus);
+}
+
 .btn-outline-primary {
   color: var(--primary);
   border-color: var(--primary);

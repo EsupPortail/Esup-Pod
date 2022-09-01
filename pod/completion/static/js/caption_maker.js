@@ -457,7 +457,7 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
     div: $(`<div class='newEditorBlock row'></div>`),
 
     // circle buttons
-    buttonsDiv: $("<div class='captionButtons col-auto'></div>"),
+    buttonsDiv: $("<div class='captionButtons col-1 d-flex flex-wrap align-items-center'></div>"),
     insertBtn: $(
       `<button class="btn btn-light" title="${gettext('Add')}"><i class="bi bi-plus-circle"></i></button>`
     ),
@@ -473,15 +473,17 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
 
     // time editable
     timeBlockEditable: $(
-      `<div class='captionTimestamps' style='display:none'></div>"`
+      `<div class='captionTimestamps col-3' style='display:none'></div>"`
     ),
-    startTimeInput: $(`<input type='hidden'>`),
-    endTimeInput: $(`<input type='hidden'>`),
+    startTimeLabel: $(`<label class="p-2">${gettext('Start')}</label>`),
+    startTimeInput: $(`<input class="form-control" type='text'>`),
+    endTimeLabel: $(`<label class="p-2">${gettext('End')}</label>`),
+    endTimeInput: $(`<input class="form-control" type='text'>`),
 
     // time links
-    timeBlock: $(`<div class='captionTimestamps col-2'>${gettext('Time stamps')}</div>`),
-    startTimeBtn: $(`<a class='startTimeBtn btn-link' href='#'>${start}</a>`),
-    endTimeBtn: $(`<a class='endTimeBtn btn-link' href='#'>${end}</a>`),
+    timeBlock: $(`<div class='captionTimestamps col-2'><span>${gettext('Time stamps')}</span></div>`),
+    startTimeBtn: $(`<a class='startTimeBtn link-primary' href='#'>${start}</a>`),
+    endTimeBtn: $(`<a class='endTimeBtn link-primary' href='#'>${end}</a>`),
 
     // flags
     isEditEnabled: false,
@@ -582,7 +584,15 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
       this.captionTextInput.focus(() => this.enableEdit());
 
       this.timeBlock.append(this.startTimeBtn, this.endTimeBtn);
-      this.timeBlockEditable.append(this.startTimeInput, this.endTimeInput);
+      this.startTimeInput.attr("id", "start_" + uniq);
+      this.startTimeLabel.attr("for", "start_" + uniq);
+      this.endTimeInput.attr("id", "end_" + uniq);
+      this.endTimeLabel.attr("for", "end_" + uniq);
+      this.timeBlockEditable.append(
+        this.startTimeLabel,
+        this.startTimeInput,
+        this.endTimeLabel,
+        this.endTimeInput);
       this.buttonsDiv.append(this.insertBtn, this.deleteBtn);
 
       this.captionDiv.append(this.captionTextLabel, this.captionTextInput);

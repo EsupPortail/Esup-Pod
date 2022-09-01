@@ -165,20 +165,20 @@
 }
 
 .newEditorBlock a {
-    margin: 6px 0px;
-    max-width: 78px;
     display: block;
-    /*color: #3EA6FF;*/
+    /*
+    margin: 6px 0;
+    max-width: 78px;
+    color: #3EA6FF;
     font-weight: 400;
+    */
 }
 
 .newEditorBlock input {
-    margin: 6px 0px;
+    margin: 6px 0;
     max-width: 78px;
-    height: 32px;
-    padding: 0;
-    display: block;
-    padding: 0px 2px;
+    display: inline-block;
+    padding: 4px;
 }
 
 /*.captionButtons {
@@ -186,9 +186,9 @@
 }*/
 
 .captionButtons button {
-    margin: 9px 2px 2px 2px;
+    /*margin: 9px 2px 2px 2px;
+    left: 16px;*/
     display: block;
-    left: 16px;
     width: 28px;
     height: 28px;
     padding: 0;

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-01 15:34+0200\n"
+"POT-Creation-Date: 2022-09-01 16:13+0200\n"
 "PO-Revision-Date: 2022-05-13 15:49+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -93,7 +93,7 @@ msgid ""
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js:48
-#: pod/completion/static/js/caption_maker.js:915
+#: pod/completion/static/js/caption_maker.js:925
 msgid "Unrecognized caption file format."
 msgstr ""
 
@@ -102,7 +102,7 @@ msgid "There is no captions to save."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js:96
-#: pod/completion/static/js/caption_maker.js:929
+#: pod/completion/static/js/caption_maker.js:939
 msgid "Not a valid time track file."
 msgstr ""
 
@@ -152,23 +152,31 @@ msgstr ""
 msgid "Caption"
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:482
+#: pod/completion/static/js/caption_maker.js:478
+msgid "Start"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:480
+msgid "End"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:484
 msgid "Time stamps"
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:880
+#: pod/completion/static/js/caption_maker.js:890
 msgid "Error reading caption file. Code = "
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:887
+#: pod/completion/static/js/caption_maker.js:897
 msgid "Exception thrown reading caption file. Code = "
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:891
+#: pod/completion/static/js/caption_maker.js:901
 msgid "Your browser does not support FileReader."
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:898
+#: pod/completion/static/js/caption_maker.js:908
 msgid "Error loading caption file: "
 msgstr ""
 

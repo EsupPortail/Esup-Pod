@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-01 15:34+0200\n"
-"PO-Revision-Date: 2022-09-01 15:34+0200\n"
+"POT-Creation-Date: 2022-09-01 16:13+0200\n"
+"PO-Revision-Date: 2022-09-01 16:14+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -97,7 +97,7 @@ msgstr ""
 "texte de sous-titre"
 
 #: pod/completion/static/js/caption_maker.js:48
-#: pod/completion/static/js/caption_maker.js:915
+#: pod/completion/static/js/caption_maker.js:925
 msgid "Unrecognized caption file format."
 msgstr "Format de fichier de traduction non reconnu."
 
@@ -106,7 +106,7 @@ msgid "There is no captions to save."
 msgstr "Il n’y a aucun sous-titre à sauvegarder."
 
 #: pod/completion/static/js/caption_maker.js:96
-#: pod/completion/static/js/caption_maker.js:929
+#: pod/completion/static/js/caption_maker.js:939
 msgid "Not a valid time track file."
 msgstr "Fichier de traduction invalide."
 
@@ -156,23 +156,31 @@ msgstr "Supprimer"
 msgid "Caption"
 msgstr "Légende / Sous-titre"
 
-#: pod/completion/static/js/caption_maker.js:482
+#: pod/completion/static/js/caption_maker.js:478
+msgid "Start"
+msgstr "Début"
+
+#: pod/completion/static/js/caption_maker.js:480
+msgid "End"
+msgstr "Fin"
+
+#: pod/completion/static/js/caption_maker.js:484
 msgid "Time stamps"
 msgstr "Horodatages"
 
-#: pod/completion/static/js/caption_maker.js:880
+#: pod/completion/static/js/caption_maker.js:890
 msgid "Error reading caption file. Code = "
 msgstr "Erreur durant la lecture du fichier de traduction, Code = "
 
-#: pod/completion/static/js/caption_maker.js:887
+#: pod/completion/static/js/caption_maker.js:897
 msgid "Exception thrown reading caption file. Code = "
 msgstr "Une exception a été levée durant la lecture du fichier. Code = "
 
-#: pod/completion/static/js/caption_maker.js:891
+#: pod/completion/static/js/caption_maker.js:901
 msgid "Your browser does not support FileReader."
 msgstr "Votre navigateur ne supporte pas FileReader."
 
-#: pod/completion/static/js/caption_maker.js:898
+#: pod/completion/static/js/caption_maker.js:908
 msgid "Error loading caption file: "
 msgstr "Erreur durant le chargement du fichier de sous-titres : "
 
