@@ -4,6 +4,11 @@
 
 {% block more_style %}
     <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{ VERSION }}"/>
+    <style>
+        .select2-container {
+            display: block !important;
+        }
+    </style>
 {% endblock %}
 {% block breadcrumbs %}{{ block.super }}
     <li class="breadcrumb-item"><a href="{% url 'live:my_events' %}">{% trans 'My events' %}</a></li>
@@ -77,7 +82,7 @@
           </div>
         </div>
         {% endif %}
-        <fieldset class="{{ last.classes }}" id="event_form_{{fieldset|first}}{{forloop.counter}}" >
+        <fieldset class="{{ last.classes }} " id="event_form_{{fieldset|first}}{{forloop.counter}}" >
         {% if last.legend %}
             <legend>{{ last.legend }}</legend>
         {% endif %}
