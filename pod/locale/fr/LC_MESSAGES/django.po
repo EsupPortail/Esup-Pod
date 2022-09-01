@@ -3245,7 +3245,7 @@ msgstr "Afar"
 
 #: pod/main/lang_settings.py:9
 msgid "Afrikaans"
-msgstr "Africain"
+msgstr "Afrikaans"
 
 #: pod/main/lang_settings.py:10
 msgid "Albanian"
