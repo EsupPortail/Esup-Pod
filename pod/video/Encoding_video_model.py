@@ -10,9 +10,9 @@ from pod.completion.models import Track
 from django.core.files import File
 from pod.podfile.models import UserFolder, CustomFileModel, CustomImageModel
 from .utils import check_file
-
 from .Encoding_video import Encoding_video, FFMPEG_MP4_ENCODE
 import json
+import time
 
 FFMPEG_MP4_ENCODE = getattr(settings, "FFMPEG_MP4_ENCODE", FFMPEG_MP4_ENCODE)
 ENCODING_CHOICES = getattr(
@@ -167,7 +167,7 @@ class Encoding_video_model(Encoding_video):
         # Need to modify start and stop
         log_to_text = ""
         # logs = info_video["encoding_log"]
-        log_to_text = log_to_text + "Start : " + str(info_video["start"])
+        log_to_text = log_to_text + "Start : " + self.start
         """
         for log in logs:
             log_to_text = log_to_text + "[" + log + "]\n\n"
@@ -185,7 +185,7 @@ class Encoding_video_model(Encoding_video):
         # add path to log file to easily open it
         log_to_text = log_to_text + "\nLog File : \n"
         log_to_text = log_to_text + self.get_output_dir() + "/info_video.json"
-        log_to_text = log_to_text + "\nEnd : " + str(info_video["stop"])
+        log_to_text = log_to_text + "\nEnd : " + self.stop
 
         encoding_log, created = EncodingLog.objects.get_or_create(
             video=video_to_encode
@@ -267,7 +267,6 @@ class Encoding_video_model(Encoding_video):
             self.store_json_list_thumbnail_files(info_video, video_to_encode)
             self.store_json_list_overview_files(info_video, video_to_encode)
 
-            # TODO see with Nicolas why need to return
             return video_to_encode
 
             # TODO : Without podfile

@@ -104,7 +104,7 @@ def encode_video(video_id):
         return
 
     change_encoding_step(video_id, 0, "start")
-
+    # start and stop cut ?
     encoding_video = Encoding_video_model(video_id, video_to_encode.video.path)
     encoding_video.add_encoding_log("start_time", "", True, start)
     change_encoding_step(video_id, 1, "get video data")

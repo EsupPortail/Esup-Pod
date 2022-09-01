@@ -5,6 +5,7 @@ import time
 from webvtt import WebVTT, Caption
 import argparse
 import unicodedata
+import time
 
 if __name__ == "__main__":
     from encoding_utils import (
@@ -539,6 +540,7 @@ class Encoding_video:
             self.error_encoding = True
 
     def start_encode(self):
+        self.start = time.ctime()
         self.create_output_dir()
         self.get_video_data()
         print(self.id, self.video_file, self.duration)
@@ -549,6 +551,7 @@ class Encoding_video:
         self.encode_image_part()
         if len(self.list_subtitle_track) > 0:
             self.get_subtitle_part()
+        self.stop = time.ctime()
         self.export_to_json()
 
 
