@@ -1441,7 +1441,13 @@ body {
 
 table :not(footer) > .pod-btn-social {
   font-size: 1.5rem;
-  vertical-align: middle;
+  width: 3rem !important;
+  height: 3rem !important; 
+}
+
+table .btn:hover {
+  background-color: var(--pod-primary) !important;
+  color: var(--pod-font-color-dark);
 }
 
 th + td + td + td + td {
