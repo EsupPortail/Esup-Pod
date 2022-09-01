@@ -33,6 +33,21 @@ MEETING_MAIN_FIELDS = getattr(
         "restrict_access_to_groups",
     ),
 )
+MEETING_DISABLE_RECORD = getattr(
+    settings,
+    "MEETING_DISABLE_RECORD",
+    True
+)
+
+MEETING_RECORD_FIELDS = getattr(
+    settings,
+    "MEETING_RECORD_FIELDS",
+    (
+        "record",
+        "auto_start_recording",
+        "allow_start_stop_recording"
+    )
+)
 
 MEETING_EXCLUDE_FIELDS = MEETING_MAIN_FIELDS + ("id",)
 
@@ -217,6 +232,11 @@ class MeetingForm(forms.ModelForm):
         # self.fields.get("attendee_password"):
         if not self.initial.get("attendee_password"):
             self.initial["attendee_password"] = get_random_string(8)
+        
+        # MEETING_DISABLE_RECORD
+        if MEETING_DISABLE_RECORD:
+            for field in MEETING_RECORD_FIELDS:
+                self.remove_field(field)
 
     def remove_field(self, field):
         if self.fields.get(field):
