@@ -5,7 +5,6 @@ import time
 from webvtt import WebVTT, Caption
 import argparse
 import unicodedata
-import time
 
 if __name__ == "__main__":
     from encoding_utils import (

@@ -1733,7 +1733,6 @@ class EncodingLog(models.Model):
     log = models.TextField(null=True, blank=True, editable=False)
     logfile = models.FileField(max_length=255, blank=True, null=True)
 
-
     @property
     def sites(self):
         return self.video.sites

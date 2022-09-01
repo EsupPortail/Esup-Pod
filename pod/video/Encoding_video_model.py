@@ -12,7 +12,6 @@ from pod.podfile.models import UserFolder, CustomFileModel, CustomImageModel
 from .utils import check_file
 from .Encoding_video import Encoding_video, FFMPEG_MP4_ENCODE
 import json
-import time
 
 FFMPEG_MP4_ENCODE = getattr(settings, "FFMPEG_MP4_ENCODE", FFMPEG_MP4_ENCODE)
 ENCODING_CHOICES = getattr(
