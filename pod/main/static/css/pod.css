@@ -1439,6 +1439,11 @@ body {
     border-bottom-width: 0 !important;
 }
 
+table :not(footer) > .pod-btn-social {
+  font-size: 1.5rem;
+  vertical-align: middle;
+}
+
 th + td + td + td + td {
   /* border-right: 0.15rem solid var(--pod-primary);  */
   text-align: center;
