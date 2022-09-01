@@ -449,8 +449,11 @@ def get_meeting_info(request, meeting_id):
 def get_meeting_info_json(info):
     response = {}
     for key in info:
-        if BBB_MEETING_INFO.get(key):
-            response_key = "%s" % BBB_MEETING_INFO.get(key)
+        temp_key = key.split("__")[0] if "__" in key else key
+        if BBB_MEETING_INFO.get(temp_key):
+            response_key = "%s" % BBB_MEETING_INFO.get(temp_key)
+            if temp_key != key:
+                response_key = response_key + " %s" % key.split("__")[1]
             if type(info[key]) is str:
                 response[response_key] = info[key]
             if type(info[key]) is dict:

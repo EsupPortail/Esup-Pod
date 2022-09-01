@@ -21,16 +21,16 @@
 
 {% block page_content %}
 
-{% if form %}
-  {% include 'live/event-form.html' %}
-{% else %}
-  <h3 id="livename" data-liveid="{{broadcaster.id}}"><i class="bi bi-cast"></i>&nbsp;{% trans "Live" %} {{broadcaster.name}}</h3>
-  <div class="d-flex infinite-container mb-2" id="event_add">
-    <a class="btn btn-primary" href="{% url 'live:event_edit' %}?broadcaster_id={{broadcaster.id}}&building_id={{broadcaster.building.id}}" title="{% trans "Plan an event" %}">
-      <i class="bi bi-plus pod-add"></i>
-      <span>{% trans "Plan an event" %}</span>
-    </a>       
-  </div>
+  {% if form %}
+    {% include 'live/event-form.html' %}
+  {% else %}
+    <h3 id="livename" data-liveid="{{broadcaster.id}}"><i class="bi bi-cast"></i>&nbsp;{% trans "Live" %} {{broadcaster.name}}</h3>
+    <div class="d-flex infinite-container mb-2" id="event_add">
+      <a class="btn btn-primary" href="{% url 'live:event_edit' %}?broadcaster_id={{broadcaster.id}}&building_id={{broadcaster.building.id}}" title="{% trans "Plan an event" %}">
+        <i class="bi bi-plus pod-add"></i>
+        <span>{% trans "Plan an event" %}</span>
+      </a>       
+    </div>
 
   {% if broadcaster.video_on_hold.is_video %}
     <div id="divvideoonhold" style="display: block;">
@@ -70,11 +70,11 @@
     {% include "bbb/bbb_form.html" %}
   {% endif %}
 
-{%endif%}
+  {%endif%}
 
-<div id="info-video" style="display:none" class="pod-info-video">
-  <button type="button" class="btn-close" aria-label="Close"></button>
-</div>
+  <div id="info-video" style="display:none" class="pod-info-video">
+    <button type="button" class="btn-close" aria-label="Close"></button>
+  </div>
     {% if broadcaster.is_recording %}
       <div class="card text-white bg-danger mb-3">
           <div class="card-body">
@@ -102,28 +102,29 @@
 
 {% endblock page_content %}
 
+<!--Bloc aside-->
+
 {% block page_aside %}
-
-{% if request.user.is_superuser %}
-  <div class="card" id="card-managevideo">
-    <h5 class="card-header card-title pod-card__title ps-2"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage live"%}</h5>
-    <div class="card-body card-text text-center">
-      <a href="{% url 'admin:live_broadcaster_change' broadcaster.id %}" title="{% trans "Edit the live"%}" class="btn pod-btn-social p1 m-0 ms-1">
-        <i class="bi bi-pencil-square"></i></a>
+  {% if request.user.is_superuser %}
+    <div class="card" id="card-managevideo">
+      <h5 class="card-header card-title pod-card__title ps-2"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage live"%}</h5>
+      <div class="card-body card-text text-center">
+        <a href="{% url 'admin:live_broadcaster_change' broadcaster.id %}" title="{% trans "Edit the live"%}" class="btn pod-btn-social p1 m-0 ms-1">
+          <i class="bi bi-pencil-square"></i></a>
+      </div>
     </div>
+  {% endif %}
+
+  <div class="card card-body p-2 mt-1" id="card-livebuilding">
+    <h5 class="card-title pod-card__title ps-2">
+      <i class="bi bi-broadcast"></i>
+      <span class="ms-1 broadcaster-name">
+        {{broadcaster.building.name}}
+      </span>
+    </h5>
   </div>
-{% endif %}
 
-<div class="card card-body p-2 mt-1" id="card-livebuilding">
-<h5 class="card-title pod-card__title ps-2">
-  <i class="bi bi-broadcast"></i>
-  <span class="ms-1 broadcaster-name">
-    {{broadcaster.building.name}}
-  </span>
-</h5>
-</div>
-
-<div class="card-text">
+  <div class="card-text">
     {% if broadcaster.building.headband %}
     <p class="card-text broadcaster-headband">
         <img src="{{ broadcaster.building.headband.file.url }}" alt="{% trans 'Headband' %} {{ broadcaster.building.name }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy"/>
@@ -139,19 +140,17 @@
     {% empty %}
       <p class="card-text not-found">{% trans "Sorry, no lives found" %}.</p>
     {% endfor %}
-    {% if broadcaster.building.gmapurl %}
-      <p class="card-text">
-        <small class="text-muted"><a href='{{broadcaster.building.gmapurl}}' title="{% trans 'access map' %}" target="_blank"><i class="bi bi-gear"></i>
-          <span class="ms-1 access-map">{% trans "access map" %}</span>
-        </a></small>
-      </p>
-    {% endif %}
+      {% if broadcaster.building.gmapurl %}
+        <p class="card-text">
+          <small class="text-muted"><a href='{{broadcaster.building.gmapurl}}' title="{% trans 'access map' %}" target="_blank"><i class="bi bi-gear"></i>
+            <span class="ms-1 access-map">{% trans "access map" %}</span>
+          </a></small>
+        </p>
+      {% endif %}
   </div>
 
-</div>
 
-
-{% include 'aside.html'%}
+  {% include 'aside.html'%}
 {% endblock page_aside %}
 
 {% block more_script %}

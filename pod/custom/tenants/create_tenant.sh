@@ -66,30 +66,30 @@ sed -i "s/__ID_SITE__/$ID_SITE/g" ./$NAME/initial_data.json
 sed -i "s/__DOMAIN_NAME__/$DOMAIN_NAME/g" ./$NAME/initial_data.json
 echo "--"
 echo "Pour intégrer les données en base concernant ce nouveau site, il faut lancer la commande suivante:"
-echo "(django_pod) pod@pod:/usr/local/django_projects/podv2$ python manage.py loaddata pod/custom/tenants/$NAME/initial_data.json --settings=pod.custom.tenants.$NAME."$NAME"_settings"
+echo "(django_pod) pod@pod:/usr/local/django_projects/podv3$ python manage.py loaddata pod/custom/tenants/$NAME/initial_data.json --settings=pod.custom.tenants.$NAME."$NAME"_settings"
 echo "--"
 echo "N'oubliez pas de créer l'index dans elasticseach via cette commande :"
-echo "(django_pod) pod@pod:/usr/local/django_projects/podv2$ python manage.py create_pod_index --settings=pod.custom.tenants.$NAME."$NAME"_settings"
+echo "(django_pod) pod@pod:/usr/local/django_projects/podv3$ python manage.py create_pod_index --settings=pod.custom.tenants.$NAME."$NAME"_settings"
 echo "--"
 echo "crontab"
 echo "clear session"
 echo "" >> $BASEDIR/sh_tenants/clearsessions.sh
 echo "# $ID_SITE $NAME " >> $BASEDIR/sh_tenants/clearsessions.sh 
-echo "cd /usr/local/django_projects/podv2 && /home/pod/.virtualenvs/django_pod/bin/python manage.py clearsessions --settings=pod.custom.tenants.$NAME."$NAME"_settings &>> /usr/local/django_projects/podv2/pod/log/cron_clearsessions_$NAME.log 2>&1" >> $BASEDIR/clearsessions.sh 
+echo "cd /usr/local/django_projects/podv3 && /home/pod/.virtualenvs/django_pod/bin/python manage.py clearsessions --settings=pod.custom.tenants.$NAME."$NAME"_settings &>> /usr/local/django_projects/podv3/pod/log/cron_clearsessions_$NAME.log 2>&1" >> $BASEDIR/clearsessions.sh 
 
 echo "index videos"
 echo "" >> $BASEDIR/sh_tenants/index_videos.sh
 echo "# $ID_SITE $NAME " >> $BASEDIR/sh_tenants/index_videos.sh
-echo "cd /usr/local/django_projects/podv2 && /home/pod/.virtualenvs/django_pod/bin/python manage.py index_videos --all  --settings=pod.custom.tenants.$NAME."$NAME"_settings  &>> /usr/local/django_projects/podv2/pod/log/cron_index_$NAME.log 2>&1"  >> $BASEDIR/index_videos.sh
+echo "cd /usr/local/django_projects/podv3 && /home/pod/.virtualenvs/django_pod/bin/python manage.py index_videos --all  --settings=pod.custom.tenants.$NAME."$NAME"_settings  &>> /usr/local/django_projects/podv3/pod/log/cron_index_$NAME.log 2>&1"  >> $BASEDIR/index_videos.sh
 
 echo "check_obsolete_videos"
 echo "" >> $BASEDIR/sh_tenants/check_obsolete_videos.sh
 echo "# $ID_SITE $NAME " >> $BASEDIR/sh_tenants/check_obsolete_videos.sh
-echo "cd /usr/local/django_projects/podv2 && /home/pod/.virtualenvs/django_pod/bin/python manage.py check_obsolete_videos --settings=pod.custom.tenants.$NAME."$NAME"_settings  &>> /usr/local/django_projects/podv2/pod/log/cron_obsolete_$NAME.log 2>&1"  >> $BASEDIR/check_obsolete_videos.sh
+echo "cd /usr/local/django_projects/podv3 && /home/pod/.virtualenvs/django_pod/bin/python manage.py check_obsolete_videos --settings=pod.custom.tenants.$NAME."$NAME"_settings  &>> /usr/local/django_projects/podv3/pod/log/cron_obsolete_$NAME.log 2>&1"  >> $BASEDIR/check_obsolete_videos.sh
 
 echo "live_viewcounter"
 echo "" >> $BASEDIR/sh_tenants/live_viewcounter.sh
 echo "# $ID_SITE $NAME " >> $BASEDIR/sh_tenants/live_viewcounter.sh
-echo "cd /usr/local/django_projects/podv2 && /home/pod/.virtualenvs/django_pod/bin/python manage.py live_viewcounter --settings=pod.custom.tenants.$NAME."$NAME"_settings  &>> /usr/local/django_projects/podv2/pod/log/cron_viewcounter_$NAME.log 2>&1"  >> $BASEDIR/live_viewcounter.sh
+echo "cd /usr/local/django_projects/podv3 && /home/pod/.virtualenvs/django_pod/bin/python manage.py live_viewcounter --settings=pod.custom.tenants.$NAME."$NAME"_settings  &>> /usr/local/django_projects/podv3/pod/log/cron_viewcounter_$NAME.log 2>&1"  >> $BASEDIR/live_viewcounter.sh
 
 echo "FIN" 

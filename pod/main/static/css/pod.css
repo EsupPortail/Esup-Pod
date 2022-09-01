@@ -1374,6 +1374,8 @@ body {
   border: 0;
   margin-right: 1.5rem;
   background: none;
+  width:2.5rem;
+  height: 2.5rem;
 }
 
 .pod-navbar__nav-item__nav-link--add-video {
@@ -1402,3 +1404,4 @@ body {
 #login-form label{
   min-width: 9rem;
 }
+

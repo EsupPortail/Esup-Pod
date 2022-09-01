@@ -11,14 +11,14 @@ if __name__ == "__main__":
         get_info_from_video,
         get_list_rendition,
         launch_cmd,
-        check_file
+        check_file,
     )
 else:
     from .encoding_utils import (
         get_info_from_video,
         get_list_rendition,
         launch_cmd,
-        check_file
+        check_file,
     )
 
 
@@ -40,35 +40,33 @@ FFMPEG_PRESET = "slow"
 FFMPEG_PROFILE = "high"
 FFMPEG_LEVEL = 3
 FFMPEG_HLS_TIME = 2
-# ffmpeg -hide_banner -i test5.mkv \
-# -c:v libx264  -vf "scale=-2:360" -preset slow -profile:v high -pix_fmt yuv420p -level 3 -crf 20 -maxrate 1M -bufsize 2M -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 -c:a aac -ar 48000 -b:a 96k -movflags faststart  -y -vsync 0 360p.mp4 \
-# -c:v libx264  -vf "scale=-2:720" -preset slow -profile:v high -pix_fmt yuv420p -level 3 -crf 20 -maxrate 3M -bufsize 6M -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 -c:a aac -ar 48000 -b:a 128k -movflags faststart  -y -vsync 0 720p.mp4 \
-# -c:v libx264  -vf "scale=-2:1080" -preset slow -profile:v high -pix_fmt yuv420p -level 3 -crf 20 -maxrate 4M -bufsize 8M -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 -c:a aac -ar 48000 -b:a 192k -movflags faststart  -y -vsync 0 1080p.mp4
-
 
 FFMPEG_INPUT = "-hide_banner -threads %(nb_threads)s -i %(input)s "
 FFMPEG_LIBX = "libx264"
 FFMPEG_MP4_ENCODE = (
-    '-map 0:v:0 -map 0:a:0 -c:v %(libx)s  -vf "scale=-2:%(height)s" -preset %(preset)s -profile:v %(profile)s '
-    + '-pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s '
-    + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 '
+    '-map 0:v:0 -map 0:a:0 -c:v %(libx)s  -vf "scale=-2:%(height)s" '
+    + '-preset %(preset)s -profile:v %(profile)s '
+    + '-pix_fmt yuv420p -level %(level)s -crf %(crf)s '
+    + '-maxrate %(maxrate)s -bufsize %(bufsize)s '
+    + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" '
+    + '-max_muxing_queue_size 4000 '
     + '-c:a aac -ar 48000 -b:a %(ba)s -movflags faststart -y -vsync 0 "%(output)s" '
 )
 # https://gist.github.com/Andrey2G/78d42b5c87850f8fbadd0b670b0e6924
 FFMPEG_HLS_ENCODE = (
     "-map 0:v:0 -map 0:a:0 -c:v %(libx)s  "  # take first index of video and audio
-    + '-vf "scale=-2:%(height)s" -preset %(preset)s -profile:v %(profile)s '
-    + '-pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s '
-    + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 '
-    + '-c:a aac -ar 48000 -b:a %(ba)s -hls_playlist_type vod -hls_time %(hls_time)s -hls_flags single_file '  # -hls_segment_type fmp4
+    + '-vf "scale=-2:%(height)s" -preset %(preset)s '
+    + '-profile:v %(profile)s '
+    + '-pix_fmt yuv420p -level %(level)s -crf %(crf)s '
+    + '-maxrate %(maxrate)s -bufsize %(bufsize)s '
+    + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" '
+    + '-max_muxing_queue_size 4000 '
+    + '-c:a aac -ar 48000 -b:a %(ba)s -hls_playlist_type vod '
+    + '-hls_time %(hls_time)s -hls_flags single_file '  # -hls_segment_type fmp4
     + '-master_pl_name "livestream.m3u8" -y -vsync 0 "%(output)s" '
 )
-FFMPEG_MP3_ENCODE = (
-    '-vn -b:a %(audio_bitrate)s -vn -f mp3 "%(output)s" '
-)
-FFMPEG_M4A_ENCODE = (
-    '-vn -c:a aac -b:a %(audio_bitrate)s "%(output)s" '
-)
+FFMPEG_MP3_ENCODE = '-vn -b:a %(audio_bitrate)s -vn -f mp3 "%(output)s" '
+FFMPEG_M4A_ENCODE = '-vn -c:a aac -b:a %(audio_bitrate)s "%(output)s" '
 FFMPEG_NB_THREADS = 0
 AUDIO_BITRATE = "192k"
 
@@ -120,8 +118,8 @@ class Encoding_video:
         self.start = 0
         self.stop = 0
         self.error_encoding = False
-        self.cutting_start = (start or 0)
-        self.cutting_stop = (stop or 0)
+        self.cutting_start = start or 0
+        self.cutting_stop = stop or 0
 
     def is_video(self):
         return len(self.list_video_track) > 0
@@ -163,9 +161,8 @@ class Encoding_video:
     def fix_duration(self, input_file):
         msg = "--> get_info_video" + "\n"
         probe_cmd = 'ffprobe -v quiet -show_entries format=duration -hide_banner  \
-                    -of default=noprint_wrappers=1:nokey=1 -print_format json -i "{}"'.format(
-            input_file
-        )
+                    -of default=noprint_wrappers=1:nokey=1 -print_format json -i \
+                    "{}"'.format(input_file)
         info = get_info_from_video(probe_cmd)
         duration = 0
         try:
@@ -201,9 +198,7 @@ class Encoding_video:
             language = ""
             if stream.get("tags"):
                 language = stream.get("tags").get("language", "")
-            self.list_subtitle_track["%s" % stream.get("index")] = {
-                "language": language
-            }
+            self.list_subtitle_track["%s" % stream.get("index")] = {"language": language}
 
     def get_output_dir(self):
         dirname = os.path.dirname(self.video_file)
@@ -221,7 +216,7 @@ class Encoding_video:
         first_item = list_rendition.popitem(last=False)
         mp4_command += FFMPEG_INPUT % {
             "input": self.video_file,
-            "nb_threads": FFMPEG_NB_THREADS
+            "nb_threads": FFMPEG_NB_THREADS,
         }
         output_file = os.path.join(self.output_dir, "%sp.mp4" % first_item[0])
         mp4_command += FFMPEG_MP4_ENCODE % {
@@ -234,7 +229,7 @@ class Encoding_video:
             "maxrate": first_item[1]["maxrate"],
             "bufsize": first_item[1]["maxrate"],
             "ba": first_item[1]["audio_bitrate"],
-            "output": output_file
+            "output": output_file,
         }
         self.list_mp4_files[first_item[0]] = output_file
         """
@@ -258,11 +253,13 @@ class Encoding_video:
                     "maxrate": list_rendition[rend]["maxrate"],
                     "bufsize": list_rendition[rend]["maxrate"],
                     "ba": list_rendition[rend]["audio_bitrate"],
-                    "output": output_file
+                    "output": output_file,
                 }
                 self.list_mp4_files[rend] = output_file
         if self.cutting_stop != 0:
-            mp4_command = mp4_command + self.get_subtime(self.cutting_start, self.cutting_stop)
+            mp4_command = mp4_command + self.get_subtime(
+                self.cutting_start, self.cutting_stop
+            )
         return mp4_command
 
     def get_hls_command(self):
@@ -271,7 +268,7 @@ class Encoding_video:
         first_item = list_rendition.popitem(last=False)
         hls_command += FFMPEG_INPUT % {
             "input": self.video_file,
-            "nb_threads": FFMPEG_NB_THREADS
+            "nb_threads": FFMPEG_NB_THREADS,
         }
         output_file = os.path.join(self.output_dir, "%sp.m3u8" % first_item[0])
         hls_command += FFMPEG_HLS_ENCODE % {
@@ -285,7 +282,7 @@ class Encoding_video:
             "bufsize": first_item[1]["maxrate"],
             "ba": first_item[1]["audio_bitrate"],
             "hls_time": FFMPEG_HLS_TIME,
-            "output": output_file
+            "output": output_file,
         }
         self.list_hls_files[first_item[0]] = output_file
         in_height = list(self.list_video_track.items())[0][1]["height"]
@@ -303,7 +300,7 @@ class Encoding_video:
                     "bufsize": list_rendition[rend]["maxrate"],
                     "ba": list_rendition[rend]["audio_bitrate"],
                     "hls_time": FFMPEG_HLS_TIME,
-                    "output": output_file
+                    "output": output_file,
                 }
                 self.list_hls_files[rend] = output_file
         return hls_command
@@ -326,7 +323,7 @@ class Encoding_video:
         mp3_command = "%s " % FFMPEG_CMD
         mp3_command += FFMPEG_INPUT % {
             "input": self.video_file,
-            "nb_threads": FFMPEG_NB_THREADS
+            "nb_threads": FFMPEG_NB_THREADS,
         }
         output_file = os.path.join(self.output_dir, "audio_%s.mp3" % AUDIO_BITRATE)
         mp3_command += FFMPEG_MP3_ENCODE % {
@@ -340,7 +337,7 @@ class Encoding_video:
         m4a_command = "%s " % FFMPEG_CMD
         m4a_command += FFMPEG_INPUT % {
             "input": self.video_file,
-            "nb_threads": FFMPEG_NB_THREADS
+            "nb_threads": FFMPEG_NB_THREADS,
         }
         output_file = os.path.join(self.output_dir, "audio_%s.m4a" % AUDIO_BITRATE)
         m4a_command += FFMPEG_M4A_ENCODE % {
@@ -366,14 +363,11 @@ class Encoding_video:
         thumbnail_command = "%s " % FFMPEG_CMD
         thumbnail_command += FFMPEG_INPUT % {
             "input": self.video_file,
-            "nb_threads": FFMPEG_NB_THREADS
+            "nb_threads": FFMPEG_NB_THREADS,
         }
         for img in self.list_image_track:
             output_file = os.path.join(self.output_dir, "thumbnail_%s.png" % img)
-            thumbnail_command += EXTRACT_THUMBNAIL % {
-                "index": img,
-                "output": output_file
-            }
+            thumbnail_command += EXTRACT_THUMBNAIL % {"index": img, "output": output_file}
             self.list_thumbnail_files[img] = output_file
         return thumbnail_command
 
@@ -384,26 +378,26 @@ class Encoding_video:
         input_file = self.list_mp4_files[first_item[0]]
         thumbnail_command += FFMPEG_INPUT % {
             "input": input_file,
-            "nb_threads": FFMPEG_NB_THREADS
+            "nb_threads": FFMPEG_NB_THREADS,
         }
-        if self.duration < 10 :
+        if self.duration < 10:
             output_file = os.path.join(self.output_dir, "thumbnail_1.png")
             thumbnail_command += CREATE_THUMBNAIL % {
                 "time": int(self.duration / 2),
-                "output": output_file
+                "output": output_file,
             }
             self.list_thumbnail_files["1"] = output_file
         elif 10 <= self.duration < 60:
             output_file = os.path.join(self.output_dir, "thumbnail_1.png")
             thumbnail_command += CREATE_THUMBNAIL % {
                 "time": int(self.duration / 3),
-                "output": output_file
+                "output": output_file,
             }
             self.list_thumbnail_files["1"] = output_file
             output_file = os.path.join(self.output_dir, "thumbnail_2.png")
             thumbnail_command += CREATE_THUMBNAIL % {
                 "time": int((self.duration / 3) * 2),
-                "output": output_file
+                "output": output_file,
             }
             self.list_thumbnail_files["2"] = output_file
         else:
@@ -411,7 +405,7 @@ class Encoding_video:
                 output_file = os.path.join(self.output_dir, "thumbnail_%s.png" % dur)
                 thumbnail_command += CREATE_THUMBNAIL % {
                     "time": int((self.duration / 4) * dur),
-                    "output": output_file
+                    "output": output_file,
                 }
                 self.list_thumbnail_files["%s" % dur] = output_file
         return thumbnail_command
@@ -419,8 +413,12 @@ class Encoding_video:
     def create_overview(self):
         list_rendition = get_list_rendition()
         first_item = list_rendition.popitem(last=False)
-        image_width = int(int(first_item[1]["resolution"].split("x")[0]) / 4)  # width of generate image file
-        image_height = int(int(first_item[1]["resolution"].split("x")[1]) / 4)  # width of generate image file
+        image_width = int(
+            int(first_item[1]["resolution"].split("x")[0]) / 4
+        )  # width of generate image file
+        image_height = int(
+            int(first_item[1]["resolution"].split("x")[1]) / 4
+        )  # width of generate image file
         input_file = self.list_mp4_files[first_item[0]]
         nb_img = 100
         step = 1
@@ -436,26 +434,34 @@ class Encoding_video:
             cmd_ffmpegthumbnailer = (
                 'ffmpegthumbnailer -t "%(stamp)s" '
                 + '-s "%(image_width)s" -i %(source)s -c png '
-                + '-o %(output_file)s ') % {
-                    "stamp": str(i) + "%",
-                    "source": input_file,
-                    "output_file": output_file,
-                    "image_width": image_width
+                + "-o %(output_file)s "
+            ) % {
+                "stamp": str(i) + "%",
+                "source": input_file,
+                "output_file": output_file,
+                "image_width": image_width,
             }
             return_value, return_msg = launch_cmd(cmd_ffmpegthumbnailer)
-            # self.add_encoding_log("ffmpegthumbnailer_%s" % i, cmd_ffmpegthumbnailer, return_value, return_msg)
+            # self.add_encoding_log(
+            # "ffmpegthumbnailer_%s" % i, cmd_ffmpegthumbnailer, return_value, return_msg)
             if return_value and check_file(output_file):
                 cmd_montage = (
                     "montage -geometry +0+0 %(overviewimagefilename)s \
                     %(output_file)s  %(overviewimagefilename)s"
-                    % {"overviewimagefilename": overviewimagefilename, "output_file": output_file}
+                    % {
+                        "overviewimagefilename": overviewimagefilename,
+                        "output_file": output_file,
+                    }
                 )
                 return_value, return_msg = launch_cmd(cmd_montage)
-                # self.add_encoding_log("cmd_montage_%s" % i, cmd_montage, return_value, return_msg)
+                # self.add_encoding_log
+                # ("cmd_montage_%s" % i, cmd_montage, return_value, return_msg)
                 os.remove(output_file)
                 start = format(float(self.duration * i / 100), ".3f")
                 end = format(float(self.duration * (i + 1) / 100), ".3f")
-                start_time = time.strftime("%H:%M:%S", time.gmtime(int(str(start).split(".")[0])))
+                start_time = time.strftime(
+                    "%H:%M:%S", time.gmtime(int(str(start).split(".")[0]))
+                )
                 start_time += ".%s" % (str(start).split(".")[1])
                 end_time = time.strftime(
                     "%H:%M:%S", time.gmtime(int(str(end).split(".")[0]))
@@ -479,28 +485,30 @@ class Encoding_video:
         if len(self.list_image_track) > 0:
             thumbnail_command = self.get_extract_thumbnail_command()
             return_value, return_msg = launch_cmd(thumbnail_command)
-            self.add_encoding_log("extract_thumbnail_command", thumbnail_command, return_value, return_msg)
+            self.add_encoding_log(
+                "extract_thumbnail_command", thumbnail_command, return_value, return_msg
+            )
         elif self.is_video():
             thumbnail_command = self.get_create_thumbnail_command()
             return_value, return_msg = launch_cmd(thumbnail_command)
-            self.add_encoding_log("create_thumbnail_command", thumbnail_command, return_value, return_msg)
-            # on ne fait pas d'overview pour les videos de moins de 10 secondes (laisser les 10sec inclus pour laisser les tests passer)
-            if self.duration >= 10 :
+            self.add_encoding_log(
+                "create_thumbnail_command", thumbnail_command, return_value, return_msg
+            )
+            # on ne fait pas d'overview pour les videos de moins de 10 secondes
+            # (laisser les 10sec inclus pour laisser les tests passer) --> OK
+            if self.duration >= 10:
                 self.create_overview()
 
     def get_extract_subtitle_command(self):
         subtitle_command = "%s " % FFMPEG_CMD
         subtitle_command += FFMPEG_INPUT % {
             "input": self.video_file,
-            "nb_threads": FFMPEG_NB_THREADS
+            "nb_threads": FFMPEG_NB_THREADS,
         }
         for sub in self.list_subtitle_track:
-            lang = self.list_subtitle_track[sub]['language']
+            lang = self.list_subtitle_track[sub]["language"]
             output_file = os.path.join(self.output_dir, "subtitle_%s.vtt" % lang)
-            subtitle_command += EXTRACT_SUBTITLE % {
-                "index": sub,
-                "output": output_file
-            }
+            subtitle_command += EXTRACT_SUBTITLE % {"index": sub, "output": output_file}
             self.list_subtitle_files[sub] = [lang, output_file]
         return subtitle_command
 
@@ -508,7 +516,9 @@ class Encoding_video:
         if len(self.list_subtitle_track) > 0:
             subtitle_command = self.get_extract_subtitle_command()
             return_value, return_msg = launch_cmd(subtitle_command)
-            self.add_encoding_log("subtitle_command", subtitle_command, return_value, return_msg)
+            self.add_encoding_log(
+                "subtitle_command", subtitle_command, return_value, return_msg
+            )
 
     def export_to_json(self):
         data_to_dump = {}
@@ -518,20 +528,14 @@ class Encoding_video:
             json.dump(data_to_dump, outfile, indent=2)
 
     def add_encoding_log(self, title, command, result, msg):
-        self.encoding_log[title] = {
-            "command": command,
-            "result": result,
-            "msg": msg
-        }
+        self.encoding_log[title] = {"command": command, "result": result, "msg": msg}
         if result is False and self.error_encoding is False:
             self.error_encoding = True
 
     def start_encode(self):
         self.create_output_dir()
         self.get_video_data()
-        print(
-            self.id, self.video_file, self.duration
-        )
+        print(self.id, self.video_file, self.duration)
         if self.is_video():
             self.encode_video_part()
         if len(self.list_audio_track) > 0:
@@ -544,7 +548,7 @@ class Encoding_video:
 
 def fix_input(input):
     filename = ""
-    if args.input.startswith('/'):
+    if args.input.startswith("/"):
         path_file = args.input
     else:
         path_file = os.path.join(os.getcwd(), args.input)
@@ -576,9 +580,7 @@ if __name__ == "__main__":
     parser.add_argument("--id", required=True, help="the ID of the video")
     parser.add_argument("--start", required=False, help="Start cut")
     parser.add_argument("--stop", required=False, help="Stop cut")
-    parser.add_argument(
-        "--input", required=True, help="name of input file to encode"
-    )
+    parser.add_argument("--input", required=True, help="name of input file to encode")
 
     args = parser.parse_args()
     print(args.start)

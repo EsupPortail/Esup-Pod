@@ -35,7 +35,7 @@ class LiveViewsTestCase(TestCase):
     ]
 
     def setUp(self):
-        user = User.objects.create(username="pod", password="podv2")
+        user = User.objects.create(username="pod", password="podv3")
         building = Building.objects.create(name="bulding1")
         if FILEPICKER:
             homedir, created = UserFolder.objects.get_or_create(name="Home", owner=user)

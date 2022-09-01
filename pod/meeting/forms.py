@@ -232,7 +232,7 @@ class MeetingForm(forms.ModelForm):
         # self.fields.get("attendee_password"):
         if not self.initial.get("attendee_password"):
             self.initial["attendee_password"] = get_random_string(8)
-        
+
         # MEETING_DISABLE_RECORD
         if MEETING_DISABLE_RECORD:
             for field in MEETING_RECORD_FIELDS:

@@ -15,6 +15,7 @@ from .models import Type, Discipline, Video
 from .models import VideoRendition, EncodingVideo, EncodingAudio
 from .models import PlaylistVideo, ViewCount
 from .views import VIDEOS
+
 # commented for v3
 # from .remote_encode import start_store_remote_encoding_video
 from .transcript import start_transcript

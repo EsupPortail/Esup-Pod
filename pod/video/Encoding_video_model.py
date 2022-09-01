@@ -29,7 +29,6 @@ ENCODING_CHOICES = getattr(
 
 
 class Encoding_video_model(Encoding_video):
-
     def remove_old_data(self):
         """Remove old data."""
         video_to_encode = Video.objects.get(id=self.id)
@@ -105,23 +104,27 @@ class Encoding_video_model(Encoding_video):
         return original.replace(os.path.join(settings.MEDIA_ROOT, ""), "")
 
     def store_json_list_mp3_m4a_files(self, info_video, video_to_encode):
-        encoding_list = ['list_m4a_files', 'list_mp3_files']
+        encoding_list = ["list_m4a_files", "list_mp3_files"]
         for encode_item in encoding_list:
             mp3_files = info_video[encode_item]
             for audio_file in mp3_files:
                 encoding, created = EncodingAudio.objects.get_or_create(
                     name="audio",
                     video=video_to_encode,
-                    encoding_format=("audio/mp3" if (encode_item == 'list_mp3_files') else 'video/mp4'),
+                    encoding_format=(
+                        "audio/mp3" if (encode_item == "list_mp3_files") else "video/mp4"
+                    ),
                     # need to double check path
-                    source_file=self.get_true_path(mp3_files[audio_file])
+                    source_file=self.get_true_path(mp3_files[audio_file]),
                 )
 
     def store_json_list_mp4_hls_files(self, info_video, video_to_encode):
-        for list_video in ['list_hls_files', "list_mp4_files"]:
+        for list_video in ["list_hls_files", "list_mp4_files"]:
             mp4_files = info_video[list_video]
             for video_file in mp4_files:
-                rendition = VideoRendition.objects.get(resolution__contains="x" + video_file)
+                rendition = VideoRendition.objects.get(
+                    resolution__contains="x" + video_file
+                )
                 encod_name = video_file + "p"
                 if list_video == "list_mp4_files":
                     encoding, created = EncodingVideo.objects.get_or_create(
@@ -129,14 +132,14 @@ class Encoding_video_model(Encoding_video):
                         video=video_to_encode,
                         rendition=rendition,
                         encoding_format="video/mp4",
-                        source_file=self.get_true_path(mp4_files[video_file])
+                        source_file=self.get_true_path(mp4_files[video_file]),
                     )
                 elif list_video == "list_hls_files":
                     encoding, created = PlaylistVideo.objects.get_or_create(
                         name=encod_name,
                         video=video_to_encode,
                         encoding_format="application/x-mpegURL",
-                        source_file=self.get_true_path(mp4_files[video_file])
+                        source_file=self.get_true_path(mp4_files[video_file]),
                     )
                     ts_file = mp4_files[video_file].replace(".m3u8", ".ts")
                     if os.path.exists(ts_file):
@@ -145,33 +148,42 @@ class Encoding_video_model(Encoding_video):
                             video=video_to_encode,
                             rendition=rendition,
                             encoding_format="video/mp2t",
-                            source_file=self.get_true_path(ts_file)
+                            source_file=self.get_true_path(ts_file),
                         )
 
         if os.path.exists(os.path.join(self.get_output_dir(), "livestream.m3u8")):
-            playlist_file = self.get_true_path(os.path.join(self.get_output_dir(), "livestream.m3u8"))
+            playlist_file = self.get_true_path(
+                os.path.join(self.get_output_dir(), "livestream.m3u8")
+            )
             encoding, created = PlaylistVideo.objects.get_or_create(
                 name="playlist",
                 video=video_to_encode,
                 encoding_format="application/x-mpegURL",
-                source_file=playlist_file
+                source_file=playlist_file,
             )
 
     def store_json_encoding_log(self, info_video, video_to_encode):
         # Need to modify start and stop
         log_to_text = ""
-        logs = info_video['encoding_log']
-        log_to_text = log_to_text + "Start : " + str(info_video['start'])
+        logs = info_video["encoding_log"]
+        log_to_text = log_to_text + "Start : " + str(info_video["start"])
         for log in logs:
             log_to_text = log_to_text + "[" + log + "]\n\n"
             logdetails = logs[log]
             for logcate in logdetails:
-                log_to_text = log_to_text + "- " + logcate + " : \n" + str(logdetails[logcate]) + "\n"
-        log_to_text = log_to_text + "End : " + str(info_video['stop'])
+                log_to_text = (
+                    log_to_text
+                    + "- "
+                    + logcate
+                    + " : \n"
+                    + str(logdetails[logcate])
+                    + "\n"
+                )
+        log_to_text = log_to_text + "End : " + str(info_video["stop"])
 
         encoding_log, created = EncodingLog.objects.get_or_create(
-            video=video_to_encode,
-            log=log_to_text)
+            video=video_to_encode, log=log_to_text
+        )
 
     def store_json_list_subtitle_files(self, info_video, video_to_encode):
         list_subtitle_files = info_video["list_subtitle_files"]
@@ -183,7 +195,7 @@ class Encoding_video_model(Encoding_video):
                 name=list_subtitle_files[sub][1],
                 description="A subtitle file",
                 created_by=video_to_encode.owner,
-                folder=home
+                folder=home,
             )
 
             Track.objects.get_or_create(
@@ -191,7 +203,7 @@ class Encoding_video_model(Encoding_video):
                 kind="subtitles",
                 lang=list_subtitle_files[sub][0],
                 src=podfile,
-                enrich_ready=True
+                enrich_ready=True,
             )
 
     def store_json_list_thumbnail_files(self, info_video, video_to_encode):
@@ -207,8 +219,7 @@ class Encoding_video_model(Encoding_video):
             # TODO see with Nico why thumbnail 1 not exists
             if os.path.exists(list_thumbnail_files[thumbnail_path]):
                 thumbnail, created = CustomImageModel.objects.get_or_create(
-                    folder=videodir,
-                    created_by=video_to_encode.owner
+                    folder=videodir, created_by=video_to_encode.owner
                 )
                 thumbnail.file.save(
                     "%s_%s.png" % (video_to_encode.slug, thumbnail_path),
@@ -223,10 +234,14 @@ class Encoding_video_model(Encoding_video):
                     first = False
 
     def store_json_list_overview_files(self, info_video, video_to_encode):
-        list_overview_files = info_video['list_overview_files']
+        list_overview_files = info_video["list_overview_files"]
 
         if len(list_overview_files) > 0:
-            vtt_file = list_overview_files["0"] if ".vtt" in list_overview_files["0"] else list_overview_files["1"]
+            vtt_file = (
+                list_overview_files["0"]
+                if ".vtt" in list_overview_files["0"]
+                else list_overview_files["1"]
+            )
             video_to_encode.overview = vtt_file
             video_to_encode.save()
 
