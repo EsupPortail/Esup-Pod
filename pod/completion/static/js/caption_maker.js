@@ -223,12 +223,12 @@ function DisplayExistingCaption(seconds) {
     var theCaption = captionsArray[ci];
     let divs = document.querySelectorAll(".vjs-text-track-display div");
     divs[divs.length - 1].innerText = theCaption.caption;
-    message = gettext("Caption for segment from %s to %s:");
+    var message = gettext("Caption for segment from %s to %s:");
     $("#captionTitle").text(
-      gettext(interpolate(message,[
+      interpolate(message,[
         FormatTime(theCaption.start),
         FormatTime(theCaption.end)]
-      ))
+      )
     );
     $("#textCaptionEntry").val(theCaption.caption);
     $("#previewTrack").val(theCaption.caption);
@@ -298,10 +298,10 @@ function videoPauseEventHandler() {
 
       message = gettext("Edit caption for segment from %s to %s:");
       $("#captionTitle").text(
-        gettext(interpolate(message,[
+        interpolate(message,[
           FormatTime(theCaption.start),
           FormatTime(theCaption.end)]
-        ))
+        )
       );
       $("#textCaptionEntry").val(theCaption.caption);
       captionBeingDisplayed = ci;

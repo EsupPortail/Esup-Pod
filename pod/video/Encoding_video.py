@@ -387,13 +387,14 @@ class Encoding_video:
         }
         output_file = os.path.join(self.output_dir, "thumbnail")
         thumbnail_command += CREATE_THUMBNAIL % {
-                "duration": self.duration,
-                "nb_thumbnail": NB_THUMBNAIL,
-                "output": output_file,
-            }
+            "duration": self.duration,
+            "nb_thumbnail": NB_THUMBNAIL,
+            "output": output_file,
+        }
         for nb in range(0, NB_THUMBNAIL):
-            num_thumb = str(nb+1)
-            self.list_thumbnail_files[num_thumb] = "%s_000%s.png" % (output_file, num_thumb)
+            num_thumb = str(nb + 1)
+            self.list_thumbnail_files[num_thumb] = "%s_000%s.png" % (
+                output_file, num_thumb)
         return thumbnail_command
 
     def create_overview(self):
