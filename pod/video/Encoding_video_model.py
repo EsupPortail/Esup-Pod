@@ -191,6 +191,7 @@ class Encoding_video_model(Encoding_video):
             video=video_to_encode
         )
         encoding_log.log = log_to_text
+        encoding_log.logfile = self.get_true_path(self.get_output_dir() + "/info_video.json")
         encoding_log.save()
 
     def store_json_list_subtitle_files(self, info_video, video_to_encode):

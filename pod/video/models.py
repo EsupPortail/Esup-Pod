@@ -1731,6 +1731,8 @@ class EncodingLog(models.Model):
         Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
     )
     log = models.TextField(null=True, blank=True, editable=False)
+    logfile = models.FileField(max_length=255, blank=True, null=True)
+
 
     @property
     def sites(self):
