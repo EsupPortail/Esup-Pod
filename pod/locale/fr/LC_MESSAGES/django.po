@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-01 13:24+0000\n"
+"POT-Creation-Date: 2022-09-01 13:34+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -2189,7 +2189,7 @@ msgstr "La suppression d'évènement est définitive"
 msgid "name"
 msgstr "nom"
 
-#: pod/live/models.py:54 pod/live/templates/live/direct.html:129
+#: pod/live/models.py:54 pod/live/templates/live/direct.html:130
 #: pod/video/models.py:294 pod/video/models.py:445
 #: pod/video/templates/channel/channel.html:85
 #: pod/video/templates/channel/channel.html:161
@@ -2505,39 +2505,39 @@ msgstr "Aucun enregistrement en cours"
 msgid "Next events"
 msgstr "Prochains évènements"
 
-#: pod/live/templates/live/direct.html:109
+#: pod/live/templates/live/direct.html:110
 msgid "Manage live"
 msgstr "Gérer le live"
 
-#: pod/live/templates/live/direct.html:111
+#: pod/live/templates/live/direct.html:112
 msgid "Edit the live"
 msgstr "Éditer le live"
 
-#: pod/live/templates/live/direct.html:136
+#: pod/live/templates/live/direct.html:137
 #: pod/live/templates/live/directs_all.html:38
 msgid "no broadcast in progress"
 msgstr "aucune diffusion actuellement"
 
-#: pod/live/templates/live/direct.html:140
+#: pod/live/templates/live/direct.html:141
 #: pod/live/templates/live/directs.html:38
 #: pod/live/templates/live/directs_all.html:40
 msgid "Sorry, no lives found"
 msgstr "Désolé, aucun direct trouvé"
 
-#: pod/live/templates/live/direct.html:144
 #: pod/live/templates/live/direct.html:145
+#: pod/live/templates/live/direct.html:146
 #: pod/live/templates/live/directs_all.html:44
 #: pod/live/templates/live/directs_all.html:45
 msgid "access map"
 msgstr "plan d'accès"
 
-#: pod/live/templates/live/direct.html:175
+#: pod/live/templates/live/direct.html:174
 #: pod/live/templates/live/event.html:180
 #: pod/video/templates/videos/video-script.html:30
 msgid "Please use different browser"
 msgstr "Utilisez un navigateur compatible"
 
-#: pod/live/templates/live/direct.html:212
+#: pod/live/templates/live/direct.html:211
 #: pod/live/templates/live/event.html:221
 msgid ""
 "Thank you for watching this streaming live with us. The page will reload "
@@ -2547,7 +2547,7 @@ msgstr ""
 "rechargera automatiquement dans quelques secondes pour afficher la vidéo "
 "d’attente."
 
-#: pod/live/templates/live/direct.html:229
+#: pod/live/templates/live/direct.html:228
 #: pod/live/templates/live/event-iframe.html:199
 #: pod/live/templates/live/event.html:246
 msgid "Live not found, displaying the video on hold, retry every 10 seconds"
@@ -2555,24 +2555,24 @@ msgstr ""
 "Le direct n’a pas encore commencé, affichage de la vidéo d’attente, nouvelle "
 "tentative de lecture dans 10 secondes"
 
-#: pod/live/templates/live/direct.html:244
+#: pod/live/templates/live/direct.html:243
 #: pod/live/templates/live/event.html:271
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
 "Le direct n’a pas encore commencé, nouvelle tentative de lecture dans 10 "
 "secondes"
 
-#: pod/live/templates/live/direct.html:300
+#: pod/live/templates/live/direct.html:299
 #: pod/live/templates/live/event.html:522
 msgid "Message sent"
 msgstr "Message envoyé"
 
-#: pod/live/templates/live/direct.html:301
+#: pod/live/templates/live/direct.html:300
 #: pod/live/templates/live/event.html:525
 msgid "Message not sent: no broadcaster found"
 msgstr "Message non envoyé: aucun diffuseur trouvé"
 
-#: pod/live/templates/live/direct.html:302
+#: pod/live/templates/live/direct.html:301
 #: pod/live/templates/live/event.html:528
 msgid "Message not sent: connection problem (REDIS)"
 msgstr "Message non envoyé: problème de connexion (REDIS)"
@@ -4451,20 +4451,20 @@ msgstr "Vous ne pouvez pas accéder à cette réunion."
 msgid "Password given is not correct."
 msgstr "Le mot de passe est incorrect."
 
-#: pod/meeting/views.py:482
+#: pod/meeting/views.py:485
 msgid "You cannot invite for this meeting."
 msgstr "Vous ne pouvez pas inviter à cette réunion."
 
-#: pod/meeting/views.py:493
+#: pod/meeting/views.py:496
 msgid "Invitations send to recipients."
 msgstr "Invitations envoyées aux destinataires."
 
-#: pod/meeting/views.py:504 pod/meeting/views.py:560
+#: pod/meeting/views.py:507 pod/meeting/views.py:563
 #, python-format
 msgid "%(owner)s invites you to the meeting %(meeting_title)s"
 msgstr "%(owner)s vous invite à la réunion %(meeting_title)s"
 
-#: pod/meeting/views.py:514
+#: pod/meeting/views.py:517
 #, python-format
 msgid ""
 "\n"
@@ -4487,7 +4487,7 @@ msgstr ""
 "        Cordialement\n"
 "    "
 
-#: pod/meeting/views.py:535
+#: pod/meeting/views.py:538
 #, python-format
 msgid ""
 "\n"
@@ -4514,7 +4514,7 @@ msgstr ""
 "        <p>Cordialement</p>\n"
 "    "
 
-#: pod/meeting/views.py:566
+#: pod/meeting/views.py:569
 #, python-format
 msgid ""
 "\n"

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-01 13:24+0000\n"
+"POT-Creation-Date: 2022-09-01 13:34+0000\n"
 "PO-Revision-Date: 2022-05-13 15:49+0200\n"
 "Last-Translator: ncan <nicolas.can@univ-lille.fr>\n"
 "Language-Team: \n"
@@ -2085,7 +2085,7 @@ msgstr ""
 msgid "name"
 msgstr ""
 
-#: pod/live/models.py:54 pod/live/templates/live/direct.html:129
+#: pod/live/models.py:54 pod/live/templates/live/direct.html:130
 #: pod/video/models.py:294 pod/video/models.py:445
 #: pod/video/templates/channel/channel.html:85
 #: pod/video/templates/channel/channel.html:161
@@ -2376,67 +2376,67 @@ msgstr ""
 msgid "Next events"
 msgstr ""
 
-#: pod/live/templates/live/direct.html:109
+#: pod/live/templates/live/direct.html:110
 msgid "Manage live"
 msgstr ""
 
-#: pod/live/templates/live/direct.html:111
+#: pod/live/templates/live/direct.html:112
 msgid "Edit the live"
 msgstr ""
 
-#: pod/live/templates/live/direct.html:136
+#: pod/live/templates/live/direct.html:137
 #: pod/live/templates/live/directs_all.html:38
 msgid "no broadcast in progress"
 msgstr ""
 
-#: pod/live/templates/live/direct.html:140
+#: pod/live/templates/live/direct.html:141
 #: pod/live/templates/live/directs.html:38
 #: pod/live/templates/live/directs_all.html:40
 msgid "Sorry, no lives found"
 msgstr ""
 
-#: pod/live/templates/live/direct.html:144
 #: pod/live/templates/live/direct.html:145
+#: pod/live/templates/live/direct.html:146
 #: pod/live/templates/live/directs_all.html:44
 #: pod/live/templates/live/directs_all.html:45
 msgid "access map"
 msgstr ""
 
-#: pod/live/templates/live/direct.html:175
+#: pod/live/templates/live/direct.html:174
 #: pod/live/templates/live/event.html:180
 #: pod/video/templates/videos/video-script.html:30
 msgid "Please use different browser"
 msgstr ""
 
-#: pod/live/templates/live/direct.html:212
+#: pod/live/templates/live/direct.html:211
 #: pod/live/templates/live/event.html:221
 msgid ""
 "Thank you for watching this streaming live with us. The page will reload "
 "automatically within a few seconds to display the video on hold."
 msgstr ""
 
-#: pod/live/templates/live/direct.html:229
+#: pod/live/templates/live/direct.html:228
 #: pod/live/templates/live/event-iframe.html:199
 #: pod/live/templates/live/event.html:246
 msgid "Live not found, displaying the video on hold, retry every 10 seconds"
 msgstr ""
 
-#: pod/live/templates/live/direct.html:244
+#: pod/live/templates/live/direct.html:243
 #: pod/live/templates/live/event.html:271
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
 
-#: pod/live/templates/live/direct.html:300
+#: pod/live/templates/live/direct.html:299
 #: pod/live/templates/live/event.html:522
 msgid "Message sent"
 msgstr ""
 
-#: pod/live/templates/live/direct.html:301
+#: pod/live/templates/live/direct.html:300
 #: pod/live/templates/live/event.html:525
 msgid "Message not sent: no broadcaster found"
 msgstr ""
 
-#: pod/live/templates/live/direct.html:302
+#: pod/live/templates/live/direct.html:301
 #: pod/live/templates/live/event.html:528
 msgid "Message not sent: connection problem (REDIS)"
 msgstr ""
@@ -4275,20 +4275,20 @@ msgstr ""
 msgid "Password given is not correct."
 msgstr ""
 
-#: pod/meeting/views.py:482
+#: pod/meeting/views.py:485
 msgid "You cannot invite for this meeting."
 msgstr ""
 
-#: pod/meeting/views.py:493
+#: pod/meeting/views.py:496
 msgid "Invitations send to recipients."
 msgstr ""
 
-#: pod/meeting/views.py:504 pod/meeting/views.py:560
+#: pod/meeting/views.py:507 pod/meeting/views.py:563
 #, python-format
 msgid "%(owner)s invites you to the meeting %(meeting_title)s"
 msgstr ""
 
-#: pod/meeting/views.py:514
+#: pod/meeting/views.py:517
 #, python-format
 msgid ""
 "\n"
@@ -4302,7 +4302,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: pod/meeting/views.py:535
+#: pod/meeting/views.py:538
 #, python-format
 msgid ""
 "\n"
@@ -4318,7 +4318,7 @@ msgid ""
 "    "
 msgstr ""
 
-#: pod/meeting/views.py:566
+#: pod/meeting/views.py:569
 #, python-format
 msgid ""
 "\n"
