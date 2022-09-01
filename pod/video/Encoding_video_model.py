@@ -8,7 +8,6 @@ from .models import EncodingLog
 from .models import Video
 from pod.completion.models import Track
 from django.core.files import File
-from pod.podfile.models import UserFolder, CustomFileModel, CustomImageModel
 from .utils import check_file
 from .Encoding_video import Encoding_video, FFMPEG_MP4_ENCODE
 import json
@@ -26,6 +25,16 @@ ENCODING_CHOICES = getattr(
         ("playlist", "playlist"),
     ),
 )
+
+if getattr(settings, "USE_PODFILE", False):
+    FILEPICKER = True
+    from pod.podfile.models import CustomImageModel
+    from pod.podfile.models import UserFolder
+    from pod.podfile.models import CustomFileModel
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomImageModel
+    from pod.main.models import CustomFileModel
 
 
 class Encoding_video_model(Encoding_video):
@@ -198,13 +207,18 @@ class Encoding_video_model(Encoding_video):
 
         for sub in list_subtitle_files:
             home = UserFolder.objects.get(name="Home", owner=video_to_encode.owner)
-            podfile, created = CustomFileModel.objects.get_or_create(
-                file=self.get_true_path(list_subtitle_files[sub][1]),
-                name=list_subtitle_files[sub][1],
-                description="A subtitle file",
-                created_by=video_to_encode.owner,
-                folder=home,
-            )
+
+            if FILEPICKER:
+                podfile, created = CustomFileModel.objects.get_or_create(
+                    file=self.get_true_path(list_subtitle_files[sub][1]),
+                    name=list_subtitle_files[sub][1],
+                    description="A subtitle file",
+                    created_by=video_to_encode.owner,
+                    folder=home,
+                )
+            else:
+                podfile = CustomFileModel()
+                podfile.file = self.get_true_path(list_subtitle_files[sub][1])
 
             Track.objects.get_or_create(
                 video=video_to_encode,
@@ -225,14 +239,23 @@ class Encoding_video_model(Encoding_video):
 
         for thumbnail_path in list_thumbnail_files:
             if check_file(list_thumbnail_files[thumbnail_path]):
-                thumbnail = CustomImageModel(
-                    folder=videodir, created_by=video_to_encode.owner
-                )
-                thumbnail.file.save(
-                    "%s_%s.png" % (video_to_encode.slug, thumbnail_path),
-                    File(open(list_thumbnail_files[thumbnail_path], "rb")),
-                    save=True,
-                )
+                if FILEPICKER:
+                    thumbnail = CustomImageModel(
+                        folder=videodir, created_by=video_to_encode.owner
+                    )
+                    thumbnail.file.save(
+                        "%s_%s.png" % (video_to_encode.slug, thumbnail_path),
+                        File(open(list_thumbnail_files[thumbnail_path], "rb")),
+                        save=True,
+                    )
+                else:
+                    thumbnail = CustomImageModel()
+                    thumbnail.file.save(
+                        "%d_%s.png" % (video_to_encode.slug, thumbnail_path),
+                        File(open(list_thumbnail_files[thumbnail_path], "rb")),
+                        save=True,
+                    )
+                    thumbnail.save()
                 # rm temp location
                 os.remove(list_thumbnail_files[thumbnail_path])
                 if first:
