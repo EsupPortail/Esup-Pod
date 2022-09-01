@@ -56,7 +56,7 @@ $(document).on("submit", "#form_save_captions", function (e) {
   if (!oldModeSelected) $("#captionContent").val(GenerateWEBVTT());
 
   if ($("#captionContent").val().trim() === "") {
-    showalert(gettext("There is no captions to save"), "alert-danger");
+    showalert(gettext("There is no captions to save."), "alert-danger");
     return;
   }
   if (typeof file_loaded != "undefined" && file_loaded) {
@@ -209,7 +209,7 @@ $("#switchOldEditMode").on("click", function (e) {
   if (oldModeSelected) {
     $("#captionContent").val(GenerateWEBVTT());
   }
-  $("#captionContent").toggle(oldModeSelected);
+  $("#rawCaptionsEditor").toggle(oldModeSelected);
   $("#newCaptionsEditor").toggle(!oldModeSelected);
 });
 
@@ -290,31 +290,31 @@ function videoPauseEventHandler() {
 
   var playTime = $("#podvideoplayer").get(0).player.currentTime();
   var captionsEndTime = existingCaptionsEndTime();
+  var message = "";
   if (playTime - 1 < captionsEndTime) {
     var ci = FindCaptionIndex(playTime - 1);
     if (ci != -1) {
       var theCaption = captionsArray[ci];
+
+      message = gettext("Edit caption for segment from %s to %s:");
       $("#captionTitle").text(
-        "Edit caption for segment from " +
-          FormatTime(theCaption.start) +
-          " to " +
-          FormatTime(theCaption.end) +
-          ":"
+        gettext(interpolate(message,[
+          FormatTime(theCaption.start),
+          FormatTime(theCaption.end)]
+        ))
       );
       $("#textCaptionEntry").val(theCaption.caption);
       captionBeingDisplayed = ci;
     } else {
-      $("#captionTitle").text("No caption at this time code.");
+      $("#captionTitle").text(gettext("No caption at this time code."));
       $("#textCaptionEntry").val("");
       captionBeingDisplayed = -1;
     }
   } else {
-    $("#captionTitle").text(
-      "Enter caption for segment from " +
-        FormatTime(existingCaptionsEndTime()) +
-        " to " +
-        FormatTime(playTime) +
-        ":"
+    message = gettext("Enter caption for segment from %s to %s:");
+    $("#captionTitle").text(interpolate(message,[
+        FormatTime(existingCaptionsEndTime()),
+        FormatTime(playTime)])
     );
     $("#textCaptionEntry").val("");
     captionBeingDisplayed = -1;
@@ -335,13 +335,10 @@ function videoTimeUpdateEventHandler() {
   if (playTime < captionsEndTime) {
     DisplayExistingCaption(playTime);
   } else {
-    $("#captionTitle").text(
-      "Pause to enter caption for segment from " +
-        FormatTime(captionsEndTime) +
-        " to " +
-        FormatTime(playTime) +
-        ":"
-    );
+    var message = gettext('Pause to enter caption for segment from %s to %s.');
+    $("#captionTitle").text(interpolate(message,
+      [FormatTime(captionsEndTime),
+       FormatTime(playTime)]));
 
     let divs = document.querySelectorAll(".vjs-text-track-display div");
     divs[divs.length - 1].innerText = "";
@@ -457,31 +454,34 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
 
   let block = {
     // parent
-    div: $(`<div class='newEditorBlock'></div>`),
+    div: $(`<div class='newEditorBlock row'></div>`),
 
     // circle buttons
-    buttonsDiv: $("<div class='captionButtons'></div>"),
+    buttonsDiv: $("<div class='captionButtons col-auto'></div>"),
     insertBtn: $(
-      `<button><i class="bi bi-plus-circle"></i></button>`
+      `<button class="btn btn-light" title="${gettext('Add')}"><i class="bi bi-plus-circle"></i></button>`
     ),
     deleteBtn: $(
-      `<button><i class="bi bi-x-circle"></i></button>`
+      `<button class="btn btn-light" title="${gettext('Delete')}"><i class="bi bi-x-circle"></i></button>`
     ),
 
     // textarea
-    captionTextInput: $(`<textarea class='captionTextInput'></textarea>`),
+    captionDiv: $("<div class='captionText col'></div>"),
+    //captionTextInput: $(`<label>${gettext('Caption')}<textarea class='captionTextInput'></textarea></label>`),
+    captionTextLabel: $(`<label>${gettext('Caption')}</label>`),
+    captionTextInput: $(`<textarea class='captionTextInput form-control'></textarea>`),
 
     // time editable
     timeBlockEditable: $(
       `<div class='captionTimestamps' style='display:none'></div>"`
     ),
-    startTimeInput: $(`<input type='text'>`),
-    endTimeInput: $(`<input type='text'>`),
+    startTimeInput: $(`<input type='hidden'>`),
+    endTimeInput: $(`<input type='hidden'>`),
 
     // time links
-    timeBlock: $(`<div class='captionTimestamps'></div>`),
-    startTimeBtn: $(`<a class='startTimeBtn' href='#'>${start}</a>`),
-    endTimeBtn: $(`<a class='endTimeBtn' href='#'>${end}</a>`),
+    timeBlock: $(`<div class='captionTimestamps col-2'>${gettext('Time stamps')}</div>`),
+    startTimeBtn: $(`<a class='startTimeBtn btn-link' href='#'>${start}</a>`),
+    endTimeBtn: $(`<a class='endTimeBtn btn-link' href='#'>${end}</a>`),
 
     // flags
     isEditEnabled: false,
@@ -569,8 +569,11 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
     },
 
     init: function () {
+      var uniq = 'c' + (new Date()).getTime();
       this.div.captionBlockObject = this;
       this.captionTextInput.val(captionText);
+      this.captionTextInput.attr("id", uniq);
+      this.captionTextLabel.attr("for", uniq);
 
       this.insertBtn.click(() => this.spawnNew());
       this.deleteBtn.click(() => this.delete());
@@ -582,9 +585,11 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
       this.timeBlockEditable.append(this.startTimeInput, this.endTimeInput);
       this.buttonsDiv.append(this.insertBtn, this.deleteBtn);
 
+      this.captionDiv.append(this.captionTextLabel, this.captionTextInput);
+
       this.div.append(
         this.buttonsDiv,
-        this.captionTextInput,
+        this.captionDiv,
         this.timeBlock,
         this.timeBlockEditable
       );

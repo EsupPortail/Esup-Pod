@@ -172,8 +172,8 @@ class Meeting(models.Model):
         default=False,
         verbose_name=_("Webcam Only for moderators?"),
         help_text=_(
-            "will cause all webcams shared by viewers "
-            "during this meeting to only appear for moderators"
+            "Will cause all webcams shared by viewers "
+            "during this meeting to only appear for moderators."
         ),
     )
 
@@ -181,32 +181,32 @@ class Meeting(models.Model):
     lock_settings_disable_cam = models.BooleanField(
         default=False,
         verbose_name=_("Disable Camera"),
-        help_text=_("will prevent users from sharing their camera in the meeting"),
+        help_text=_("Will prevent users from sharing their camera in the meeting."),
     )
     lock_settings_disable_mic = models.BooleanField(
         default=False,
         verbose_name=_("Disable Mic"),
-        help_text=_("will only allow user to join listen only"),
+        help_text=_("Will only allow user to join listen only."),
     )
     lock_settings_disable_private_chat = models.BooleanField(
         default=False,
         verbose_name=_("Disable Private chat"),
-        help_text=_("if True will disable private chats in the meeting"),
+        help_text=_("If True, will disable private chats in the meeting."),
     )
     lock_settings_disable_public_chat = models.BooleanField(
         default=False,
         verbose_name=_("Disable public chat"),
-        help_text=_("if True will disable public chat in the meeting"),
+        help_text=_("If True, will disable public chat in the meeting."),
     )
     lock_settings_disable_note = models.BooleanField(
         default=False,
         verbose_name=_("Disable Note"),
-        help_text=_("if True will disable notes in the meeting."),
+        help_text=_("If True, will disable notes in the meeting."),
     )
     lock_settings_locked_layout = models.BooleanField(
         default=False,
         verbose_name=_("Locked Layout"),
-        help_text=_("will lock the layout in the meeting. "),
+        help_text=_("Will lock the layout in the meeting."),
     )
 
     # Not important Info

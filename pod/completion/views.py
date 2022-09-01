@@ -43,6 +43,7 @@ LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOI
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def video_caption_maker(request, slug):
+    """Caption maker app."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     video_folder, created = UserFolder.objects.get_or_create(
         name=video.slug, owner=request.user
@@ -88,6 +89,7 @@ def video_caption_maker(request, slug):
                 "track_language": track_language,
                 "track_kind": track_kind,
                 "active_model_enrich": ACTIVE_MODEL_ENRICH,
+                "page_title": _("Video Caption Maker")
             },
         )
 
@@ -95,6 +97,7 @@ def video_caption_maker(request, slug):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def video_caption_maker_save(request, video):
+    """Caption maker save view."""
     video_folder, created = UserFolder.objects.get_or_create(
         name=video.slug, owner=request.user
     )
@@ -150,6 +153,7 @@ def video_caption_maker_save(request, video):
             "current_folder": video_folder,
             "form_make_caption": form_caption,
             "video": video,
+            "page_title": _("Video Caption Maker")
         },
     )
 
@@ -157,6 +161,7 @@ def video_caption_maker_save(request, video):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_completion(request, slug):
+    """Video Completion view."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     if (
         request.user != video.owner
@@ -193,19 +198,25 @@ def video_completion(request, slug):
                 "list_track": list_track,
                 "list_document": list_document,
                 "list_overlay": list_overlay,
+                "page_title": _("Video additions")
             },
         )
     else:
         return render(
             request,
             "video_completion.html",
-            {"video": video, "list_contributor": list_contributor},
+            {
+                "video": video,
+                "list_contributor": list_contributor,
+                "page_title": _("Video additions")
+            },
         )
 
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_completion_contributor(request, slug):
+    """View to manage contributors of a video."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     if request.user != video.owner and not (
         request.user.is_superuser
@@ -242,17 +253,23 @@ def video_completion_contributor(request, slug):
                 "list_track": list_track,
                 "list_document": list_document,
                 "list_overlay": list_overlay,
+                "page_title": _("Video additions")
             },
         )
     else:
         return render(
             request,
             "video_completion.html",
-            {"video": video, "list_contributor": list_contributor},
+            {
+                "video": video,
+                "list_contributor": list_contributor,
+                "page_title": _("Video additions")
+            },
         )
 
 
 def video_completion_contributor_new(request, video):
+    """View to add new contributor to a video."""
     list_contributor = video.contributor_set.all()
     list_track = video.track_set.all()
     list_document = video.document_set.all()
@@ -281,6 +298,7 @@ def video_completion_contributor_new(request, video):
 
 
 def video_completion_contributor_save(request, video):
+    """View to save contributors of a video."""
     list_contributor = video.contributor_set.all()
     list_track = video.track_set.all()
     list_document = video.document_set.all()
@@ -344,6 +362,7 @@ def video_completion_contributor_save(request, video):
 
 
 def video_completion_contributor_modify(request, video):
+    """View to modify a video contributor."""
     list_contributor = video.contributor_set.all()
     list_track = video.track_set.all()
     list_document = video.document_set.all()
@@ -372,6 +391,7 @@ def video_completion_contributor_modify(request, video):
 
 
 def video_completion_contributor_delete(request, video):
+    """View to delete a video contributor."""
     list_contributor = video.contributor_set.all()
     list_track = video.track_set.all()
     list_document = video.document_set.all()
@@ -405,6 +425,7 @@ def video_completion_contributor_delete(request, video):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def video_completion_document(request, slug):
+    """View to manage documents associated to a video."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     if request.user != video.owner and not (
         request.user.is_superuser
@@ -443,6 +464,7 @@ def video_completion_document(request, slug):
 
 
 def video_completion_document_new(request, video):
+    """View to add new document to a video."""
     list_contributor = video.contributor_set.all()
     list_document = video.document_set.all()
     list_track = video.track_set.all()
@@ -471,6 +493,7 @@ def video_completion_document_new(request, video):
 
 
 def video_completion_document_save(request, video):
+    """View to save document associated to a video."""
     list_contributor = video.contributor_set.all()
     list_document = video.document_set.all()
     list_track = video.track_set.all()
@@ -533,6 +556,7 @@ def video_completion_document_save(request, video):
 
 
 def video_completion_document_modify(request, video):
+    """View to modify a document associated to a video."""
     list_contributor = video.contributor_set.all()
     list_document = video.document_set.all()
     list_track = video.track_set.all()
@@ -562,6 +586,7 @@ def video_completion_document_modify(request, video):
 
 
 def video_completion_document_delete(request, video):
+    """View to delete a document associated to a video."""
     list_contributor = video.contributor_set.all()
     list_document = video.document_set.all()
     list_track = video.track_set.all()
@@ -597,6 +622,7 @@ def video_completion_document_delete(request, video):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def video_completion_track(request, slug):
+    """View to manage tracks associated to a video."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     if request.user != video.owner and not (
         request.user.is_superuser
@@ -635,6 +661,7 @@ def video_completion_track(request, slug):
 
 
 def video_completion_track_new(request, video):
+    """View to add new track to a video."""
     list_contributor = video.contributor_set.all()
     list_track = video.track_set.all()
     list_document = video.document_set.all()
@@ -663,6 +690,7 @@ def video_completion_track_new(request, video):
 
 
 def video_completion_get_form_track(request):
+    """View to get a track form associated to a video."""
     form_track = TrackForm(request.POST)
     if request.POST.get("track_id") and request.POST["track_id"] != "None":
         track = get_object_or_404(Track, id=request.POST["track_id"])
@@ -673,6 +701,7 @@ def video_completion_get_form_track(request):
 
 
 def video_completion_track_save(request, video):
+    """View to save a track associated to a video."""
     list_contributor = video.contributor_set.all()
     list_track = video.track_set.all()
     list_document = video.document_set.all()
@@ -733,6 +762,7 @@ def video_completion_track_save(request, video):
 
 
 def video_completion_track_modify(request, video):
+    """View to modify a track associated to a video."""
     list_contributor = video.contributor_set.all()
     list_track = video.track_set.all()
     list_document = video.document_set.all()
@@ -762,6 +792,7 @@ def video_completion_track_modify(request, video):
 
 
 def video_completion_track_delete(request, video):
+    """View to delete a track associated to a video."""
     list_contributor = video.contributor_set.all()
     list_track = video.track_set.all()
     list_document = video.document_set.all()
@@ -796,12 +827,14 @@ def video_completion_track_delete(request, video):
 
 
 def is_already_link(url, text):
+    """Test if an url is already present as HTML link in a text."""
     link_http = "<a href='{0}' target='_blank'>{1}</a>".format(url, url)
     link = "<a href='//{0}' target='_blank'>{1}</a>".format(url, url)
     return link in text or link_http in text
 
 
 def transform_url_to_link(text):
+    """Transform an URL to an HTML link."""
     text = " " + text
     pattern = re.compile(
         r"((https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}"

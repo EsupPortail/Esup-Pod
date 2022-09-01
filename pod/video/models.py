@@ -2009,7 +2009,7 @@ class Category(models.Model):
         help_text=_(
             "Please choose a title as short and accurate as "
             "possible, reflecting the main subject / context "
-            "of the content.(max length : 100 characters)"
+            "of the content. (max length: 100 characters)"
         ),
     )
     owner = models.ForeignKey(User, on_delete=models.CASCADE)

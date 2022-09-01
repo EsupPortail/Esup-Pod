@@ -37,12 +37,12 @@
     {% else %}
         {% if event.is_past %}
             <div class="p-3 mb-2 bg-warning text-dark">
-                {% trans "Event is finished at : " %} {{ event.start_date }} {{ event.end_time }}
+                {% trans "Event is finished at:" %} {{ event.start_date }} {{ event.end_time }}
                 <br>
             </div>
         {% elif event.is_coming %}
             <div class="p-3 mb-2 bg-warning text-dark">
-                {% trans "The event is scheduled on the : " %} {{ event.start_date }}
+                {% trans "The event is scheduled on the:" %} {{ event.start_date }}
                 {% trans 'from' %} {{ event.start_time }} {% trans 'to' %} {{ event.end_time }}
             </div>
         {% endif %}

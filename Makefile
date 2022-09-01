@@ -27,7 +27,7 @@ upgrade:
 createDB:
 	# Création des données initiales dans la BDD SQLite intégrée
 	find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
-	find . -path "*/migrations/*.pyc"  -delete
+	find . -path "*/migrations/*.pyc" -delete
 	make updatedb
 	make migrate
 	python3 manage.py loaddata pod/video/fixtures/initial_data.json
