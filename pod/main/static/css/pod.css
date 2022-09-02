@@ -330,6 +330,7 @@ label {
 
 .userpicture {
   height: 34px;
+  line-height: 2.5em; /* Align username if no image available */
 }
 
 /** modal **/
@@ -999,10 +1000,31 @@ body {
   font-size: 1.4rem;
   display: flex;
 }
-.pod-params-button:focus,
+
+/* .pod-params-button:focus,
 .pod-params-button:hover {
   color: var(--pod-primary);
   transform:  rotate(10deg);
+} */
+
+#pod-param-buttons__button#pod-param-buttons__button::before { /* Make icon rotate and button remain still */
+  transition: transform ease-in-out .3s, color ease-in-out .5s;
+}
+
+#pod-param-buttons__button:hover#pod-param-buttons__button::before { /* Make icon rotate and button remain still */
+  transition: transform ease-in-out .3s, color ease-in-out .5s;
+  transform: rotate(15deg);
+  color:var(--pod-btn-text);
+}
+
+#pod-param-buttons__button#pod-param-buttons__button { /* Make icon rotate and button remain still */
+  transition: background-color ease-in-out .5s;
+}
+
+#pod-param-buttons__button:hover#pod-param-buttons__button { /* Make icon rotate and button remain still */
+  transition: background-color ease-in-out .5s;
+  background-color:var(--pod-primary);
+  color:var(--pod-btn-text);
 }
 
 .pod-gotoup {
