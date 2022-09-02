@@ -494,12 +494,13 @@ class Event(models.Model):
         else:
             thumbnail_url = static(DEFAULT_EVENT_THUMBNAIL)
         return (
-            '<img class="card-img-top" src="%s" alt=""\
+            '<img class="card-img-top" src="%s" alt="%s"\
             loading="lazy"/>'
-            % thumbnail_url
+            % (thumbnail_url, self.title)
         )
 
     def is_current(self):
+        """Test if event is currently open."""
         # TODO : FIX this to have possibility to run test between 2 days
         """
         print("IS CURRENT")
@@ -523,11 +524,13 @@ class Event(models.Model):
         )
 
     def is_past(self):
+        """Test if event has happened in past."""
         return self.start_date < date.today() or (
             self.start_date == date.today() and self.end_time < datetime.now().time()
         )
 
     def is_coming(self):
+        """Test if event will happen in future."""
         return self.start_date > date.today() or (
             self.start_date == date.today() and datetime.now().time() < self.start_time
         )

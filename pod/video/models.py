@@ -938,9 +938,9 @@ class Video(models.Model):
         else:
             thumbnail_url = static(DEFAULT_THUMBNAIL)
         return (
-            '<img class="pod-thumbnail" src="%s" alt=""\
+            '<img class="pod-thumbnail" src="%s" alt="%s"\
             loading="lazy"/>'
-            % (thumbnail_url)
+            % (thumbnail_url, self.title)
         )
 
     @property
