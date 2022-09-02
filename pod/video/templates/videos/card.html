@@ -37,13 +37,13 @@
   <div class="card-thumbnail">
     {% if channel %}
     {% if theme %}
-    <a class="link-center-pod" href="{% url 'channel-video:video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
-      {{video.get_thumbnail_card|safe}}
-    </a>
+      <a class="link-center-pod" href="{% url 'channel-video:video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}">
+        {{video.get_thumbnail_card|safe}}
+      </a>
     {% else %}
-    <a class="link-center-pod" href="{% url 'channel-video:video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
-      {{video.get_thumbnail_card|safe}}
-    </a>
+      <a class="link-center-pod" href="{% url 'channel-video:video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}">
+        {{video.get_thumbnail_card|safe}}
+      </a>
     {% endif %}
     {% else %}
     <a class="link-center-pod" href="{{video.get_absolute_url}}{% if video.is_draft and fromEvent %}{{ video.get_hashkey }}{% endif %}" title="{{video.title}}">
@@ -60,17 +60,17 @@
 
     <span class="small video-title">
       {% if channel %}
-      {% if theme %}
-      <a href="{% url 'channel-video:video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}"  title="{{video.title|capfirst}}">
-        {{video.title|capfirst|truncatechars:43}}
-      </a>
+        {% if theme %}
+          <a href="{% url 'channel-video:video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}">
+            {{video.title|capfirst|truncatechars:43}}
+          </a>
+        {% else %}
+          <a href="{% url 'channel-video:video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}">
+            {{video.title|capfirst|truncatechars:43}}
+          </a>
+        {% endif %}
       {% else %}
-      <a href="{% url 'channel-video:video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}"  title="{{video.title|capfirst}}">
-        {{video.title|capfirst|truncatechars:43}}
-      </a>
-      {% endif %}
-      {% else %}
-      <a href="{{video.get_absolute_url}}{% if video.is_draft and fromEvent %}{{ video.get_hashkey }}{% endif %}"  title="{{video.title|capfirst}}">{{video.title|capfirst|truncatechars:43}}</a>
+        <a href="{{video.get_absolute_url}}{% if video.is_draft and fromEvent %}{{ video.get_hashkey }}{% endif %}">{{video.title|capfirst|truncatechars:43}}</a>
       {% endif %}
     </span>
   </div>

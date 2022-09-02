@@ -88,13 +88,15 @@
             </div>
           </nav>
           <!-- contenu page statique -->
-          <div>
-            {% if page_title %}
-            <h1 class="page_title">{{page_title|capfirst}}</h1>
-            {% else %}
-            {% block main_page_title %}
-            <h1 class="page_title">&nbsp;</h1>
-            {% endblock main_page_title %}
+          <div class="pod-first-content">
+            {% if request.path != "/" %}
+              {% if page_title %}
+                <h1 class="page_title">{{page_title|capfirst}}</h1>
+              {% else %}
+                {% block main_page_title %}
+                  <h1 class="page_title">&nbsp;</h1>
+                {% endblock main_page_title %}
+              {% endif %}
             {% endif %}
             {% block page_content %}
             <p> Contenu block page_content </p>
@@ -105,7 +107,7 @@
             {% if SHOW_EVENTS_ON_HOMEPAGE and "live" in THIRD_PARTY_APPS %}
               {% include "live/events_next.html" %}
             {% endif %}
-          {% include "videos/last_videos.html" %}
+            {% include "videos/last_videos.html" %}
           {% endif %}
         </div>
         <aside class="pod-aside collapse" id="collapseAside">
