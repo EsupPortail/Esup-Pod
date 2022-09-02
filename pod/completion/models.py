@@ -50,6 +50,7 @@ LANG_CHOICES = getattr(
     ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),
 )
 LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]}
+DEFAULT_LANG_TRACK = getattr(settings, "DEFAULT_LANG_TRACK", "fr")
 
 
 class Contributor(models.Model):
@@ -207,7 +208,12 @@ class Track(models.Model):
     kind = models.CharField(
         _("Kind"), max_length=10, choices=KIND_CHOICES, default="subtitles"
     )
-    lang = models.CharField(_("Language"), max_length=2, choices=LANG_CHOICES)
+    lang = models.CharField(
+        _("Language"),
+        max_length=2,
+        choices=LANG_CHOICES,
+        default=DEFAULT_LANG_TRACK
+    )
     src = models.ForeignKey(
         CustomFileModel,
         blank=True,

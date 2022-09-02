@@ -11,6 +11,7 @@ from django.core.files import File
 from .utils import check_file
 from .Encoding_video import Encoding_video, FFMPEG_MP4_ENCODE
 import json
+from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 
 FFMPEG_MP4_ENCODE = getattr(settings, "FFMPEG_MP4_ENCODE", FFMPEG_MP4_ENCODE)
 ENCODING_CHOICES = getattr(
@@ -25,6 +26,13 @@ ENCODING_CHOICES = getattr(
         ("playlist", "playlist"),
     ),
 )
+LANG_CHOICES = getattr(
+    settings,
+    "LANG_CHOICES",
+    ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),
+)
+LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]}
+DEFAULT_LANG_TRACK = getattr(settings, "DEFAULT_LANG_TRACK", "fr")
 
 if getattr(settings, "USE_PODFILE", False):
     FILEPICKER = True
@@ -199,7 +207,9 @@ class Encoding_video_model(Encoding_video):
             video=video_to_encode
         )
         encoding_log.log = log_to_text
-        encoding_log.logfile = self.get_true_path(self.get_output_dir() + "/info_video.json")
+        encoding_log.logfile = self.get_true_path(
+            self.get_output_dir() + "/info_video.json"
+        )
         encoding_log.save()
 
     def store_json_list_subtitle_files(self, info_video, video_to_encode):
@@ -220,10 +230,16 @@ class Encoding_video_model(Encoding_video):
                 podfile = CustomFileModel()
                 podfile.file = self.get_true_path(list_subtitle_files[sub][1])
 
+            print("subtitle lang: %s " % list_subtitle_files[sub][0])
+
+            sub_lang = list_subtitle_files[sub][0]
+            track_lang = sub_lang[:2] if (
+                LANG_CHOICES_DICT.get(sub_lang[:2])) else DEFAULT_LANG_TRACK
+
             Track.objects.get_or_create(
                 video=video_to_encode,
                 kind="subtitles",
-                lang=list_subtitle_files[sub][0],
+                lang=track_lang,
                 src=podfile,
                 enrich_ready=True,
             )

@@ -193,7 +193,7 @@
           <a class="dropdown-item pod-dropdown-item" href="{% url 'recorder:studio_pod'%}"><i class="bi bi-camera-video pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans "Video Record" %}</a>
           {% endif %}
           {% if "live" in THIRD_PARTY_APPS %}
-            <a class="dropdown-item" href="{% url 'live:my_events' %}" title="{% trans 'My events' %}">
+            <a class="dropdown-item pod-dropdown-item" href="{% url 'live:my_events' %}" title="{% trans 'My events' %}">
               <i class="bi bi-broadcast pod-nav-link-icon d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My events' %}
             </a>
           {%  endif %}

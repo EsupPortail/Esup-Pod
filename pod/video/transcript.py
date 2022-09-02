@@ -391,10 +391,13 @@ def main_vosk_transcript(norm_mp3_file, duration, transript_model):
             words = jres['result']
             for j in range(0, len(words), WORDS_PER_LINE):
                 line = words[j : j + WORDS_PER_LINE]
+                # for caption :
+                # start="%s" % timedelta(seconds=line[0]['start']),
+                # give : webvtt.errors.MalformedCaptionError: Invalid timestamp: 0:04:06
+                # end="%s" % timedelta(seconds=line[-1]['end'])
+                # give : webvtt.errors.MalformedCaptionError: Invalid timestamp: 0:04:06
                 caption = Caption(
                     text=" ".join([word['word'] for word in line]),
-                    # start="%s" % timedelta(seconds=line[0]['start']), # webvtt.errors.MalformedCaptionError: Invalid timestamp: 0:04:06
-                    # end="%s" % timedelta(seconds=line[-1]['end']) # webvtt.errors.MalformedCaptionError: Invalid timestamp: 0:04:06
                     start=format_time_caption(line[0]['start']),
                     end=format_time_caption(line[-1]['end'])
                 )
@@ -404,14 +407,10 @@ def main_vosk_transcript(norm_mp3_file, duration, transript_model):
         for res in results:
             words = json.loads(res).get("result")
             text = json.loads(res).get("text")
-
             if not words:
                 continue
-
-            # start_caption = start_trim + words[0]["start"]
             start_caption = words[0]["start"]
             stop_caption = words[-1]["end"]
-            print(format_time_caption(words[0]["start"]), format_time_caption(words[-1]["end"]), text)
             caption = Caption(
                 format_time_caption(start_caption),
                 format_time_caption(stop_caption),
