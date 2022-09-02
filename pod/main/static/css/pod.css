@@ -20,10 +20,12 @@
 
   /* exemple vert univ-lille.fr 2022 */
   --pod-primary: #1F8389;
-  --pod-primary-lighten: #2cb8c1;
-  --pod-primary-darken:  #19696e;
-
-  --pod-primary-dark: var(--pod-primary-lighten);
+  --pod-primary-lighten: #08b0a0;
+  --pod-primary-darken:  #18575D;
+/**/
+  --pod-primary-dark: #1F8389;
+  --pod-primary-lighten-dark: #18575D;
+  --pod-primary-darken-dark:  #08b0a0;
 
   /*** couleur de fond du site ***/
   --pod-background: #fff;
@@ -31,7 +33,7 @@
 
   /*** couleur du texte des boutons principaux ***/
   --pod-btn-text: #fff;
-  --pod-btn-text-dark: #000;
+  --pod-btn-text-dark: #fff;
 
   /**** couleur de police ****/
   --pod-font-color: #000;
@@ -82,12 +84,14 @@
 
 :root[data-theme="dark"] {
   --pod-primary: var(--pod-primary-dark);
+  --pod-primary-lighten: var(--pod-primary-lighten-dark);
+  --pod-primary-darken: var(--pod-primary-darken-dark);
   --pod-background: var(--pod-background-dark);
   --pod-font-color: var(--pod-font-color-dark);
   --pod-background-neutre1-bloc: var(--pod-background-neutre1-bloc-dark);
   --pod-background-neutre2-bloc: var(--pod-background-neutre2-bloc-dark);
   --pod-links-color: var(--pod-links-color-dark);
-  --pod-primary-focus: var(--pod-primary-darken);
+  --pod-primary-focus: var(--pod-primary-lighten-dark);
   --pod-btn-text:  var(--pod-btn-text-dark);
   --pod-alert: var(--pod-alert-dark);
 }
@@ -126,6 +130,7 @@ a {
 .table,
 .navbar-light .navbar-nav .nav-link,
 .navbar-light .navbar-toggler {
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
   color: var(--font-color);
 box-shadow: 0.05rem 0.05rem 0.2rem 0.05rem rgba(0, 0, 0, 0.2);
 border-radius: .15rem;
@@ -143,6 +148,7 @@ margin-top: 1rem;
 
 .navbar-toggler:focus,
 .navbar-toggler:hover {
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
   color: var(--primary);
   border-color: var(--primary);
 }
@@ -150,6 +156,7 @@ margin-top: 1rem;
 
 .navbar-light .navbar-brand:focus,
 .navbar-light .navbar-brand:hover {
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
   color: var(--color-black)
 }
 
@@ -1491,7 +1498,7 @@ table :not(footer) > .pod-btn-social {
 }
 
 table .btn:hover {
-  background-color: var(--pod-links-color) !important;
+  background-color: var(--pod-primary) !important;
   color: var(--pod-font-color);
 }
 
