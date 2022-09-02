@@ -52,6 +52,10 @@
   /* couleur d'un élément actif (ex. : survol de bouton) */
   --pod-primary-focus: var(--pod-primary-darken);
 
+  /* Couleur d'alerte*/
+  --pod-alert: #B11030;
+  --pod-alert-dark: #FC8670;
+
   /**** font family ****/
   --pod-font-family: "Gill Sans", sans-serif;
   --pod-font-family-dyslexie: "Open Dyslexic";
@@ -85,6 +89,7 @@
   --pod-links-color: var(--pod-links-color-dark);
   --pod-primary-focus: var(--pod-primary-darken);
   --pod-btn-text:  var(--pod-btn-text-dark);
+  --pod-alert: var(--pod-alert-dark);
 }
 
 
@@ -1177,6 +1182,12 @@ body {
 
 .pod-download-title {
   font-size: 1.5rem;
+  padding: 1rem 0 0 1rem;
+}
+
+
+.pod-download-title > .bi {
+    padding-right: 0.5rem;
 }
 
 /* ------ */
@@ -1465,6 +1476,7 @@ body {
 }
 
 /*Fix table on "My meetings" */ 
+
 .table > :not(caption) > * > * 
 {
     padding: .5rem .25rem;
@@ -1478,11 +1490,27 @@ table :not(footer) > .pod-btn-social {
 }
 
 table .btn:hover {
-  background-color: var(--pod-primary) !important;
-  color: var(--pod-font-color-dark);
+  background-color: var(--pod-links-color) !important;
+  color: var(--pod-font-color);
 }
 
 th + td + td + td + td {
-  /* border-right: 0.15rem solid var(--pod-primary);  */
+  /* border-right: 0.15rem solid var(--pod-links-color);  */
   text-align: center;
 }
+
+/* .table, .navbar-light .navbar-nav .nav-link, .navbar-light .navbar-toggler {
+  color: var(--pod-font-color);
+} */
+
+.table-hover > tbody > tr > * {
+  --bs-table-accent-bg: var(--bs-table-hover-bg) !important;
+  color: var(--pod-font-color) !important;
+
+.table-hover > tbody > tr:hover > * {
+  --bs-table-accent-bg: var(--bs-table-hover-bg) !important;
+  color: var(--pod-font-color) !important;
+
+table > tbody > tr > td .alert.alert-danger.btn.pod-btn-social {
+    background-color: var(--pod-alert) !important;
+  }

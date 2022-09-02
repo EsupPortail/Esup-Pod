@@ -184,7 +184,7 @@
         <div class="modal-content">
           {% if video.allow_downloading %} 
           <!-- <div class="col-4"> -->
-            <span class="meta-title pod-meta-title pod-download-title">{% trans 'Video file(s):' %}</span>
+            <span class="meta-title pod-meta-title pod-download-title"><i class="bi bi-camera-video"></i>{% trans 'Video file(s):' %}</span>
               <ul>{% for vid in video.get_video_mp4 %}
                 <li>
                   <form method="post" action="{% url 'download_file' %}">
@@ -198,19 +198,24 @@
           <!-- </div> -->
           <!-- <div class="col-4"> -->
             {% if video.get_video_mp3 %}
-              <span class="meta-title pod-meta-title pod-download-title">{% trans 'Audio file:' %}</span>
-                <form method="post" action="{% url 'download_file' %}">
-                  {% csrf_token %}
-                  <input type="hidden" value="{{video.get_video_mp3.source_file.name}}" name="filename" />
-                  <input type="submit" class="btn btn-link btn-sm" value="{{video.get_video_mp3.name}} ({{video.get_video_mp3.encoding_format}} - {{ video.get_video_mp3.source_file.size|filesizeformat }})">
-                </form>
+              <span class="meta-title pod-meta-title pod-download-title"><i class="bi bi-soundwave"></i>{% trans 'Audio file:' %}</span>
+              <ul>  
+              <li>
+                    <form method="post" action="{% url 'download_file' %}">
+                      {% csrf_token %}
+                      <input type="hidden" value="{{video.get_video_mp3.source_file.name}}" name="filename" />
+                      <input type="submit" class="btn btn-link btn-sm" value="{{video.get_video_mp3.name}} ({{video.get_video_mp3.encoding_format}} - {{ video.get_video_mp3.source_file.size|filesizeformat }})">
+                  </form>
+                </li>
+              </ul>
             {% endif %}
+          
          <!--  </div> -->
           {% endif %}
 
           <!-- <div class="col-4"> -->
             {% if video.document_set.all %}
-              <span class="meta-title pod-meta-title pod-download-title">{% trans 'Document:' %}</span>
+              <span class="meta-title pod-meta-title pod-download-title"><i class="bi bi-files"></i>{% trans 'Document:' %}</span>
                 <ul>{% for doc in video.document_set.all %}
                   <li>
                     <form method="post" action="{% url 'download_file' %}">
