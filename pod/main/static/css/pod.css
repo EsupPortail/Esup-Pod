@@ -53,8 +53,8 @@
   --pod-primary-focus: var(--pod-primary-darken);
 
   /* Couleur d'alerte*/
-  --pod-alert: #B11030;
-  --pod-alert-dark: #FC8670;
+  --pod-alert: #FC8670;
+  --pod-alert-dark: #B11030;
 
   /**** font family ****/
   --pod-font-family: "Gill Sans", sans-serif;
@@ -129,6 +129,7 @@ a {
   color: var(--font-color);
 box-shadow: 0.05rem 0.05rem 0.2rem 0.05rem rgba(0, 0, 0, 0.2);
 border-radius: .15rem;
+margin-top: 1rem;
 }
 
 .table-hover tbody tr {
@@ -1506,11 +1507,13 @@ th + td + td + td + td {
 .table-hover > tbody > tr > * {
   --bs-table-accent-bg: var(--bs-table-hover-bg) !important;
   color: var(--pod-font-color) !important;
+}
 
 .table-hover > tbody > tr:hover > * {
   --bs-table-accent-bg: var(--bs-table-hover-bg) !important;
-  color: var(--pod-font-color) !important;
+  color: var(--pod-font-color) !important; 
+  }
 
-table > tbody > tr > td .alert.alert-danger.btn.pod-btn-social {
+table .alert.alert-danger.btn.pod-btn-social {
     background-color: var(--pod-alert) !important;
   }
