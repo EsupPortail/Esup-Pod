@@ -51,7 +51,7 @@ else:
     from pod.main.models import CustomFileModel
 
 STT_PARAM = getattr(settings, "STT_PARAM", dict())
-AUDIO_SPLIT_TIME = getattr(settings, "AUDIO_SPLIT_TIME", 300)  # 5min
+AUDIO_SPLIT_TIME = getattr(settings, "AUDIO_SPLIT_TIME", 600)  # 10min
 # time in sec for phrase length
 SENTENCE_MAX_LENGTH = getattr(settings, "SENTENCE_MAX_LENGTH", 3)
 SENTENCE_BLANK_SPLIT_TIME = getattr(settings, "SENTENCE_BLANK_SPLIT_TIME", 0.5)
@@ -306,7 +306,8 @@ def words_to_vtt(
             last_word_duration = words[-1]["end"] - words[-1]["start"]
         next_word = None
         blank_duration = 0
-        if word != words[-1]:
+        if word != words[-1] and (index + 1) < len(words):
+            next_word = words[index + 1]
             blank_duration = ((next_word[start_key]) - start_caption) - (
                 ((word[start_key]) - start_caption) + word_duration
             )
@@ -363,47 +364,14 @@ def main_vosk_transcript(norm_mp3_file, duration, transript_model):
     rec.SetWords(True)
 
     webvtt = WebVTT()
-    last_word_added = ""
     all_text = ""
     for start_trim in range(0, duration, AUDIO_SPLIT_TIME):
-        end_trim = (
-            duration
-            if start_trim + AUDIO_SPLIT_TIME > duration
-            else (start_trim + AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH)
-        )
-        dur = (
-            (AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH)
-            if start_trim + AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH < duration
-            else (duration - start_trim)
-        )
-        msg += "\ntake audio from %s to %s - %s" % (start_trim, end_trim, dur)
         audio = convert_vosk_samplerate(
             norm_mp3_file, desired_sample_rate, start_trim, AUDIO_SPLIT_TIME  # dur
         )
         msg += "\nRunning inference."
         results = []
         get_word_result_from_data(results, audio, rec)
-
-        for i, res in enumerate(results):
-            jres = json.loads(res)
-            if 'result' not in jres:
-                continue
-            words = jres['result']
-            for j in range(0, len(words), WORDS_PER_LINE):
-                line = words[j : j + WORDS_PER_LINE]
-                # for caption :
-                # start="%s" % timedelta(seconds=line[0]['start']),
-                # give : webvtt.errors.MalformedCaptionError: Invalid timestamp: 0:04:06
-                # end="%s" % timedelta(seconds=line[-1]['end'])
-                # give : webvtt.errors.MalformedCaptionError: Invalid timestamp: 0:04:06
-                caption = Caption(
-                    text=" ".join([word['word'] for word in line]),
-                    start=format_time_caption(line[0]['start']),
-                    end=format_time_caption(line[-1]['end'])
-                )
-                print(caption)
-                webvtt.captions.append(caption)
-
         for res in results:
             words = json.loads(res).get("result")
             text = json.loads(res).get("text")
@@ -417,7 +385,7 @@ def main_vosk_transcript(norm_mp3_file, duration, transript_model):
                 text,
             )
             webvtt.captions.append(caption)
-
+            """
             text_caption = []
             is_first_caption = True
             all_text, webvtt = words_to_vtt(
@@ -431,6 +399,7 @@ def main_vosk_transcript(norm_mp3_file, duration, transript_model):
                 all_text,
                 webvtt,
             )
+            """
     inference_end = timer() - inference_start
 
     msg += "\nInference took %0.3fs." % inference_end
