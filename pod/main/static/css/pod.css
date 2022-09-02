@@ -313,10 +313,27 @@ label {
   margin-right: auto;
 }
 
+@media (max-width: 576px) {
+  .link-center-pod,
+.file-image {
+  display: block;
+  overflow: hidden;
+  max-height: auto;
+}
+}
+
+@media (min-width: 576px) {
 .link-center-pod,
 .file-image {
   display: block;
   overflow: hidden;
+  max-height: 10rem;
+}
+}
+
+.link-center-pod >img {
+  min-width:100%;
+  height: 100%;
 }
 
 /*** navbar **/
@@ -392,6 +409,14 @@ label {
   border: 1px solid var(--color-alto);
   padding: 1.5rem;
   background: var(--bg-color);
+}
+
+.pod-live-info { /* Very dirty fix */
+  border: 0 !important;
+  border-top: 1px solid var(--color-alto) !important;
+  padding: 1.5rem;
+  background: var(--bg-color);
+  margin-top: 0.75rem;
 }
 
 .nav-tabs {
@@ -966,7 +991,7 @@ body {
 #uploadblock,
 #completebox {
   margin-left: 0 !important;
-  margin-top: 1.5rem !important;
+  margin-top: 5rem !important;
 }
 
 .btn-link:hover {
@@ -1264,11 +1289,16 @@ body {
   transform: scale(1.03);
 }
 
-:root[data-theme="dark"] .pod-navbar__brand img,
-:root[data-theme="dark"] .pod-footer-logo,
-:root[data-theme="dark"] .btn-close {
+:root .pod-footer-logo { filter: brightness(0%);}
+
+:root[data-theme="dark"] .pod-navbar__brand img, :root[data-theme="dark"] .btn-close {
   filter: invert(100%) sepia(0%) saturate(2908%) hue-rotate(27deg) brightness(121%) contrast(99%);
 }
+
+:root[data-theme="dark"]  .pod-footer-logo {
+  filter: brightness(100%);
+}
+
 
 .pod-offcanvas {
   background: var(--pod-background-neutre2-bloc);
@@ -1524,3 +1554,41 @@ th + td + td + td + td {
 table .alert.alert-danger.btn.pod-btn-social {
     background-color: var(--pod-alert) !important;
   }
+
+  /* Quick fix for video preview - override of video-js.min.css on line 1 */
+
+  .vjs-poster {
+    background-size: cover !important;
+  }
+
+  /* My Files font color fix */
+
+  .navbar-brand {
+    color: var(--pod-font-color) !important;
+  }
+
+  .navbar-brand:focus, .navbar-brand:hover {
+   text-decoration: underline;
+  }
+
+  /* Upload page */
+
+  .form-group.hide-on-processing {
+    border: dotted var(--pod-primary);
+    padding: 2rem;
+    margin-bottom:0.5rem;
+    border-radius: 1rem;
+    width: fit-content;
+  }
+
+ .pod-upload-warning {
+    display: block;
+    width: fit-content;
+    /* margin: auto; */
+    color: var(--pod-primary);
+    font-weight: 600;
+ }
+
+ .legal_notice {
+  padding-bottom: 3rem;
+ }

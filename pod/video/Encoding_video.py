@@ -326,6 +326,7 @@ class Encoding_video:
                     "output": output_file,
                 }
                 self.list_hls_files[rend] = output_file
+        print("HSL COMMAND : %s" % hls_command)
         return hls_command
 
     def encode_video_part(self):

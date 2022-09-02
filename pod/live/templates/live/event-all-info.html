@@ -3,7 +3,7 @@
 <h1 class="page_title pt-2 h2">
   {{event.title|capfirst}}
   {% if event.start_date %}<small>[{{ event.start_date }}]</small>{% endif %}
-  <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans 'Report the video'%}" >
+  <a class="pod-info-video__signal" href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans 'Report the video'%}">
     <i class="bi bi-exclamation-triangle"></i>
   </a>
 </h1>
@@ -12,29 +12,16 @@
   <div class="navbar d-flex flex-row-reverse p-0" >
     <ul class="nav nav-tabs" id="myTab" role="tablist"> <!--Début du menu à onglets > remplacer par popup-->
       {% if event.description %}
-        <li class="nav-item">
+        <li class="nav-item dropdown" >
           <a class="nav-link active show" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-selected="true" title="{% trans 'Summary' %}">
             <i class="bi bi-justify"></i>
           </a>
         </li>
       {% endif %}
-                      <!--     <li class="nav-item">
-                            <a id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" title="{% trans 'Infos' %}"
-                              {% if not event.description %}
-                                class="nav-link active show" aria-selected="true"
-                              {% else %}
-                                class="nav-link" aria-selected="false"
-                              {% endif %}
-                            >
-                            <i class="bi bi-info-circle"></i>&nbsp;</a>
-                          </li> -->
+
 
       {% if event.is_draft == False or event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser %}
-                      <!--       <li class="nav-item">
-                              <a class="nav-link" id="share-tab" data-toggle="tab" href="#share" role="tab" aria-controls="share" aria-selected="false" title="{% trans 'Embed/Share' %}">
-                                <i class="bi bi-share" aria-hidden="true"></i>
-                              </a>
-                            </li> -->
+
         <button type="button" class="btn pod-btn-share" data-bs-toggle="modal" data-bs-target="#share">
           <i class="bi bi-share" aria-hidden="true"></i><span class="visually-hidden">{% trans 'Embed/Share' %}</span>
         </button>
