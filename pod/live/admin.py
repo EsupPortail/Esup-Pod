@@ -54,9 +54,9 @@ class BuildingAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap/dist/css/bootstrap.min.css",
-                "bootstrap/dist/css/bootstrap-grid.min.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (
@@ -110,9 +110,9 @@ class BroadcasterAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap/dist/css/bootstrap.min.css",
-                "bootstrap/dist/css/bootstrap-grid.min.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (
@@ -243,9 +243,9 @@ class EventAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "css/pod.css",
-                "bootstrap/dist/css/bootstrap-grid.min.css",
-                "bootstrap/dist/css/bootstrap.min.css",
+                # "css/pod.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
             )
         }
         js = (

@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.html import format_html
+from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
 
@@ -64,10 +65,8 @@ def url_to_edit_object(obj):
         "admin:%s_%s_change" % (obj._meta.app_label, obj._meta.model_name),
         args=[obj.id],
     )
-    return format_html('<a href="{}">{}</a>', url, obj.username)
-
-
-# Register your models here.
+    title = format_html('<a href="{}">{}</a>', url, obj.username)
+    return mark_safe(title)
 
 
 class EncodedFilter(admin.SimpleListFilter):
@@ -199,7 +198,8 @@ class VideoAdmin(admin.ModelAdmin):
     def get_owner_by_name(self, obj):
         owner = obj.owner
         url = url_to_edit_object(owner)
-        return "%s %s (%s)" % (owner.first_name, owner.last_name, url)
+        title = "%s %s (%s)" % (owner.first_name, owner.last_name, url)
+        return mark_safe(title)
 
     get_owner_by_name.allow_tags = True
     get_owner_by_name.short_description = _("Owner")
@@ -268,12 +268,11 @@ class VideoAdmin(admin.ModelAdmin):
             obj.save()
 
     class Media:
-        USE_THEME = getattr(settings, "USE_THEME", "default")
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap-%s.min.css" % USE_THEME,
-                "bootstrap/dist/css/bootstrap-grid.min.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (
@@ -330,8 +329,10 @@ class ChannelAdmin(admin.ModelAdmin):
         owners = []
         for owner in obj.owners.all():
             url = url_to_edit_object(owner)
-            owners.append("%s %s (%s)" % (owner.first_name, owner.last_name, url))
-        return ", ".join(owners)
+            title = "%s %s (%s)" % (owner.first_name, owner.last_name, url)
+            owners.append(mark_safe(title))
+        titles = ", ".join(owners)
+        return mark_safe(titles)
 
     get_owners.allow_tags = True
     get_owners.short_description = _("Owners")
@@ -373,9 +374,9 @@ class ChannelAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap/dist/css/bootstrap.min.css",
-                "bootstrap/dist/css/bootstrap-grid.min.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (
@@ -402,9 +403,9 @@ class ThemeAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap/dist/css/bootstrap.min.css",
-                "bootstrap/dist/css/bootstrap-grid.min.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (
@@ -438,9 +439,9 @@ class TypeAdmin(TranslationAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap/dist/css/bootstrap.min.css",
-                "bootstrap/dist/css/bootstrap-grid.min.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (
@@ -478,9 +479,9 @@ class DisciplineAdmin(TranslationAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap/dist/css/bootstrap-grid.min.css",
-                "bootstrap/dist/css/bootstrap.min.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "css/pod.css",
             )
         }
         js = (
@@ -637,8 +638,8 @@ class NotesAdmin(admin.ModelAdmin):
     list_display = ("video", "user")
     autocomplete_fields = ["video", "user"]
 
-    class Media:
-        css = {"all": ("css/pod.css",)}
+    # class Media:
+    #     css = {"all": ("css/pod.css",)}
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -662,8 +663,8 @@ class AdvancedNotesAdmin(admin.ModelAdmin):
     search_fields = ["note"]
     autocomplete_fields = ["user", "video"]
 
-    class Media:
-        css = {"all": ("css/pod.css",)}
+    # class Media:
+    #     css = {"all": ("css/pod.css",)}
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -687,8 +688,8 @@ class NoteCommentsAdmin(admin.ModelAdmin):
     search_fields = ["comment"]
     list_display = ("parentNote", "user", "added_on", "modified_on")
 
-    class Media:
-        css = {"all": ("css/pod.css",)}
+    # class Media:
+    #     css = {"all": ("css/pod.css",)}
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

@@ -182,47 +182,47 @@
           <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-content">
-          {% if video.allow_downloading %}
-          <div class="col-4">
-            <span class="meta-title pod-meta-title">{% trans 'Video file(s):' %}</span>
-            <ul>{% for vid in video.get_video_mp4 %}
-              <li>
+          {% if video.allow_downloading %} 
+          <!-- <div class="col-4"> -->
+            <span class="meta-title pod-meta-title pod-download-title">{% trans 'Video file(s):' %}</span>
+              <ul>{% for vid in video.get_video_mp4 %}
+                <li>
+                  <form method="post" action="{% url 'download_file' %}">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{vid.source_file.name}}" name="filename" />
+                    <input type="submit" class="btn btn-link btn-sm" value="{{vid.name}} ({{vid.encoding_format}} - {{ vid.source_file.size|filesizeformat }})">
+                  </form>
+                </li>
+                {% endfor %}
+              </ul>
+          <!-- </div> -->
+          <!-- <div class="col-4"> -->
+            {% if video.get_video_mp3 %}
+              <span class="meta-title pod-meta-title pod-download-title">{% trans 'Audio file:' %}</span>
                 <form method="post" action="{% url 'download_file' %}">
                   {% csrf_token %}
-                  <input type="hidden" value="{{vid.source_file.name}}" name="filename" />
-                  <input type="submit" class="btn btn-link btn-sm" value="{{vid.name}} ({{vid.encoding_format}} - {{ vid.source_file.size|filesizeformat }})">
+                  <input type="hidden" value="{{video.get_video_mp3.source_file.name}}" name="filename" />
+                  <input type="submit" class="btn btn-link btn-sm" value="{{video.get_video_mp3.name}} ({{video.get_video_mp3.encoding_format}} - {{ video.get_video_mp3.source_file.size|filesizeformat }})">
                 </form>
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-          <div class="col-4">
-            {% if video.get_video_mp3 %}
-            <span class="meta-title pod-meta-title">{% trans 'Audio file:' %}</span>
-            <form method="post" action="{% url 'download_file' %}">
-              {% csrf_token %}
-              <input type="hidden" value="{{video.get_video_mp3.source_file.name}}" name="filename" />
-              <input type="submit" class="btn btn-link btn-sm" value="{{video.get_video_mp3.name}} ({{video.get_video_mp3.encoding_format}} - {{ video.get_video_mp3.source_file.size|filesizeformat }})">
-            </form>
             {% endif %}
-          </div>
+         <!--  </div> -->
           {% endif %}
 
-          <div class="col-4">
+          <!-- <div class="col-4"> -->
             {% if video.document_set.all %}
-            <span class="meta-title pod-meta-title">{% trans 'Document:' %}</span>
-            <ul>{% for doc in video.document_set.all %}
-              <li>
-                <form method="post" action="{% url 'download_file' %}">
-                  {% csrf_token %}
-                  <input type="hidden" value="{{doc.document.file.name}}" name="filename" />
-                  <input type="submit" class="btn btn-link btn-sm" value="{{doc.document.name}} ({{doc.document.file_type}} - {{ doc.document.file.size|filesizeformat }})">
-                </form>
-              </li>
-              {% endfor%}
-            </ul>
+              <span class="meta-title pod-meta-title pod-download-title">{% trans 'Document:' %}</span>
+                <ul>{% for doc in video.document_set.all %}
+                  <li>
+                    <form method="post" action="{% url 'download_file' %}">
+                      {% csrf_token %}
+                      <input type="hidden" value="{{doc.document.file.name}}" name="filename" />
+                      <input type="submit" class="btn btn-link btn-sm" value="{{doc.document.name}} ({{doc.document.file_type}} - {{ doc.document.file.size|filesizeformat }})">
+                    </form>
+                  </li>
+                  {% endfor%}
+                </ul>
             {% endif %}
-          </div>
+          <!-- </div> -->
         </div>
       </div>
     </div>

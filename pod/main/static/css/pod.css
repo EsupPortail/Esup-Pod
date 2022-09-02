@@ -1171,6 +1171,16 @@ body {
   }
 }
 
+/* Additional class for modal element */
+/* -- */
+/* Download modal */
+
+.pod-download-title {
+  font-size: 1.5rem;
+}
+
+/* ------ */
+
 .video-info_duration-view-share button {
   margin-left: auto;
 }

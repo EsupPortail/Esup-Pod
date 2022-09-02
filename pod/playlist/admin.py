@@ -71,8 +71,8 @@ class PlaylistElementAdmin(admin.ModelAdmin):
             kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-    class Media:
-        css = {"all": ("css/pod.css",)}
+    # class Media:
+    #     css = {"all": ("css/pod.css",)}
 
 
 admin.site.register(PlaylistElement, PlaylistElementAdmin)

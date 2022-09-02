@@ -734,7 +734,7 @@ def user_folders(request):
         )
 
     page = request.GET.get("page", 1)
-
+    user_folder = user_folder.order_by('owner', 'name')
     paginator = Paginator(user_folder, 10)
     try:
         folders = paginator.page(page)

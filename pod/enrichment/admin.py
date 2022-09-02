@@ -44,9 +44,9 @@ class EnrichmentAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap/dist/css/bootstrap.min.css",
-                "bootstrap/dist/css/bootstrap-grid.min.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (
@@ -84,8 +84,8 @@ class EnrichmentGroupAdmin(admin.ModelAdmin):
             )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-    class Media:
-        css = {"all": ("css/pod.css",)}
+    # class Media:
+    #     css = {"all": ("css/pod.css",)}
 
     def get_groups(self, obj):
         return "\n".join([g.name for g in obj.groups.all()])
@@ -109,9 +109,9 @@ class EnrichmentVttAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap/dist/css/bootstrap.min.css",
-                "bootstrap/dist/css/bootstrap-grid.min.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (

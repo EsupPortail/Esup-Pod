@@ -61,8 +61,8 @@ class ContributorAdmin(admin.ModelAdmin):
             kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-    class Media:
-        css = {"all": ("css/pod.css",)}
+    # class Media:
+    #     css = {"all": ("css/pod.css",)}
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -110,12 +110,11 @@ class DocumentAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     class Media:
-        USE_THEME = getattr(settings, "USE_THEME", "default")
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap-%s.min.css" % USE_THEME,
-                "bootstrap/dist/css/bootstrap-grid.min.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (
@@ -293,9 +292,9 @@ class TrackAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap/dist/css/bootstrap.min.css",
-                "bootstrap/dist/css/bootstrap-grid.min.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (
@@ -346,8 +345,8 @@ class OverlayAdmin(admin.ModelAdmin):
             kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-    class Media:
-        css = {"all": ("css/pod.css",)}
+    # class Media:
+    #     css = {"all": ("css/pod.css",)}
 
 
 admin.site.register(Overlay, OverlayAdmin)
