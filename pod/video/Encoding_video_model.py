@@ -288,7 +288,7 @@ class Encoding_video_model(Encoding_video):
                 if ".vtt" in list_overview_files["0"]
                 else list_overview_files["1"]
             )
-            video_to_encode.overview = vtt_file
+            video_to_encode.overview = self.get_true_path(vtt_file)
             video_to_encode.save()
 
     def store_json_info(self):
