@@ -87,8 +87,7 @@ DATABASES = {
 LANGUAGE_CODE = "fr"
 LANGUAGES = (
     ("fr", "Français"),
-    ("en", "English"),
-    ("nl", "Dutch (Netherlands)"),
+    ("en", "English")
 )
 
 ##
@@ -276,14 +275,6 @@ LTI_PROPERTY_USER_USERNAME = "ext_user_username"
 # SOLR Thumbnail use in video model to create thumbnail for video
 # https://sorl-thumbnail.readthedocs.io/en/latest/reference/settings.html
 THUMBNAIL_PRESERVE_FORMAT = True
-
-###
-# Choose a theme for your pod website
-# 'default' is the simpliest, bootstrap $enable_rounded is true
-# 'green' is with a dark green for primary color, $enable_rounded is false
-# 'dark' is black and red, without grey background, $enable_rounded is false
-
-# ie : USE_THEME = 'green'
 
 SHOW_EVENTS_ON_HOMEPAGE = False
 BROADCASTER_PILOTING_SOFTWARE = [

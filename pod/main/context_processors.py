@@ -30,7 +30,7 @@ USE_PODFILE = getattr(django_settings, "USE_PODFILE", False)
 DARKMODE_ENABLED = getattr(django_settings, "DARKMODE_ENABLED", False)
 DYSLEXIAMODE_ENABLED = getattr(django_settings, "DYSLEXIAMODE_ENABLED", False)
 
-VERSION = getattr(django_settings, "VERSION", "2.X")
+VERSION = getattr(django_settings, "VERSION", "3.X")
 ##
 # Settings exposed in templates
 #
@@ -82,10 +82,6 @@ ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
 
 USE_RECORD_PREVIEW = getattr(django_settings, "USE_RECORD_PREVIEW", False)
 SHIB_NAME = getattr(django_settings, "SHIB_NAME", "Identify Federation")
-
-USE_THEME = getattr(django_settings, "USE_THEME", "default")
-
-BOOTSTRAP_CUSTOM = getattr(django_settings, "BOOTSTRAP_CUSTOM", None)
 
 CHUNK_SIZE = getattr(django_settings, "CHUNK_SIZE", 100000)
 
@@ -152,8 +148,6 @@ def context_settings(request):
     new_settings["USE_RECORD_PREVIEW"] = USE_RECORD_PREVIEW
     new_settings["SHIB_NAME"] = SHIB_NAME
     new_settings["ALLOW_MANUAL_RECORDING_CLAIMING"] = ALLOW_MANUAL_RECORDING_CLAIMING
-    new_settings["USE_THEME"] = USE_THEME
-    new_settings["BOOTSTRAP_CUSTOM"] = BOOTSTRAP_CUSTOM
     new_settings["CHUNK_SIZE"] = CHUNK_SIZE
     new_settings["MAINTENANCE_REASON"] = maintenance_text_short
     new_settings["MAINTENANCE_MODE"] = maintenance_mode
