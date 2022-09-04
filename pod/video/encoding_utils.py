@@ -5,7 +5,10 @@ from collections import OrderedDict
 from timeit import default_timer as timer
 import os
 
-from .encoding_settings import VIDEO_RENDITIONS
+try:
+    from .encoding_settings import VIDEO_RENDITIONS
+except ImportError:
+    from encoding_settings import VIDEO_RENDITIONS
 
 
 def get_renditions():
