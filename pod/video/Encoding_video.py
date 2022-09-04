@@ -356,6 +356,7 @@ class Encoding_video:
                     livestream_content += data
                 else:
                     livestream_content += "\n".join(data.split("\n")[2:])
+                os.remove(rend_livestream)
         livestream_file = open(
             os.path.join(self.get_output_dir(), "livestream.m3u8"),
             "w"

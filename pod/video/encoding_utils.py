@@ -5,8 +5,6 @@ from collections import OrderedDict
 from timeit import default_timer as timer
 import os
 
-# from django.core import serializers
-# serializers.serialize("json", VideoRendition.objects.all())
 video_rendition = [
     {
         "resolution": "640x360",
@@ -36,6 +34,17 @@ video_rendition = [
         "sites": [1],
     },
 ]
+try:
+    from pod.video.models import VideoRendition
+    from django.core import serializers
+    renditions = json.loads(
+        serializers.serialize("json", VideoRendition.objects.all())
+    )
+    video_rendition = []
+    for rend in renditions:
+        video_rendition.append(rend["fields"])
+except ImportError:
+    pass
 
 
 def check_file(path_file):
