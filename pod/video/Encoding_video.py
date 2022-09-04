@@ -23,7 +23,8 @@ if __name__ == "__main__":
         FFMPEG_INPUT,
         FFMPEG_LIBX,
         FFMPEG_MP4_ENCODE,
-        FFMPEG_HLS_ENCODE,
+        FFMPEG_HLS_COMMON_PARAMS,
+        FFMPEG_HLS_ENCODE_PARAMS,
         FFMPEG_MP3_ENCODE,
         FFMPEG_M4A_ENCODE,
         FFMPEG_NB_THREADS,
@@ -50,7 +51,8 @@ else:
         FFMPEG_INPUT,
         FFMPEG_LIBX,
         FFMPEG_MP4_ENCODE,
-        FFMPEG_HLS_ENCODE,
+        FFMPEG_HLS_COMMON_PARAMS,
+        FFMPEG_HLS_ENCODE_PARAMS,
         FFMPEG_MP3_ENCODE,
         FFMPEG_M4A_ENCODE,
         FFMPEG_NB_THREADS,
@@ -85,7 +87,16 @@ try:
     FFMPEG_INPUT = getattr(settings, "FFMPEG_INPUT", FFMPEG_INPUT)
     FFMPEG_LIBX = getattr(settings, "FFMPEG_LIBX", FFMPEG_LIBX)
     FFMPEG_MP4_ENCODE = getattr(settings, "FFMPEG_MP4_ENCODE", FFMPEG_MP4_ENCODE)
-    FFMPEG_HLS_ENCODE = getattr(settings, "FFMPEG_HLS_ENCODE", FFMPEG_HLS_ENCODE)
+    FFMPEG_HLS_COMMON_PARAMS = getattr(
+        settings,
+        "FFMPEG_HLS_COMMON_PARAMS",
+        FFMPEG_HLS_COMMON_PARAMS
+    )
+    FFMPEG_HLS_ENCODE_PARAMS = getattr(
+        settings,
+        "FFMPEG_HLS_ENCODE_PARAMS",
+        FFMPEG_HLS_ENCODE_PARAMS
+    )
     FFMPEG_MP3_ENCODE = getattr(settings, "FFMPEG_MP3_ENCODE", FFMPEG_MP3_ENCODE)
     FFMPEG_M4A_ENCODE = getattr(settings, "FFMPEG_M4A_ENCODE", FFMPEG_M4A_ENCODE)
     FFMPEG_NB_THREADS = getattr(settings, "FFMPEG_NB_THREADS", FFMPEG_NB_THREADS)
@@ -288,45 +299,30 @@ class Encoding_video:
     def get_hls_command(self):
         hls_command = "%s " % FFMPEG_CMD
         list_rendition = get_list_rendition()
-        first_item = list_rendition.popitem(last=False)
         hls_command += FFMPEG_INPUT % {
             "input": self.video_file,
             "nb_threads": FFMPEG_NB_THREADS,
         }
-        output_file = os.path.join(self.output_dir, "%sp.m3u8" % first_item[0])
-        hls_command += FFMPEG_HLS_ENCODE % {
+        hls_command += FFMPEG_HLS_COMMON_PARAMS % {
             "libx": FFMPEG_LIBX,
-            "height": first_item[0],
             "preset": FFMPEG_PRESET,
             "profile": FFMPEG_PROFILE,
             "level": FFMPEG_LEVEL,
-            "crf": FFMPEG_CRF,
-            "maxrate": first_item[1]["maxrate"],
-            "bufsize": first_item[1]["maxrate"],
-            "ba": first_item[1]["audio_bitrate"],
-            "hls_time": FFMPEG_HLS_TIME,
-            "output": output_file,
+            "crf": FFMPEG_CRF
         }
-        self.list_hls_files[first_item[0]] = output_file
         in_height = list(self.list_video_track.items())[0][1]["height"]
-        for rend in list_rendition:
-            if in_height >= rend:
+        for index, rend in enumerate(list_rendition):
+            if in_height >= rend or index == 0:
                 output_file = os.path.join(self.output_dir, "%sp.m3u8" % rend)
-                hls_command += FFMPEG_HLS_ENCODE % {
-                    "libx": FFMPEG_LIBX,
+                hls_command += FFMPEG_HLS_ENCODE_PARAMS % {
                     "height": rend,
-                    "preset": FFMPEG_PRESET,
-                    "profile": FFMPEG_PROFILE,
-                    "level": FFMPEG_LEVEL,
-                    "crf": FFMPEG_CRF,
                     "maxrate": list_rendition[rend]["maxrate"],
                     "bufsize": list_rendition[rend]["maxrate"],
                     "ba": list_rendition[rend]["audio_bitrate"],
                     "hls_time": FFMPEG_HLS_TIME,
-                    "output": output_file,
+                    "output": output_file
                 }
                 self.list_hls_files[rend] = output_file
-        print("HSL COMMAND : %s" % hls_command)
         return hls_command
 
     def encode_video_part(self):
@@ -341,7 +337,31 @@ class Encoding_video:
             self.fix_duration(self.list_mp4_files[first_item[0]])
         hls_command = self.get_hls_command()
         return_value, return_msg = launch_cmd(hls_command)
+        if return_value:
+            self.create_main_livestream()
         self.add_encoding_log("hls_command", hls_command, return_value, return_msg)
+
+    def create_main_livestream(self):
+        list_rendition = get_list_rendition()
+        livestream_content = ""
+        for index, rend in enumerate(list_rendition):
+            rend_livestream = os.path.join(
+                self.get_output_dir(),
+                "livestream%s.m3u8" % rend
+            )
+            if os.path.exists(rend_livestream):
+                with open(rend_livestream, 'r') as file:
+                    data = file.read()
+                if index == 0:
+                    livestream_content += data
+                else:
+                    livestream_content += "\n".join(data.split("\n")[2:])
+        livestream_file = open(
+            os.path.join(self.get_output_dir(), "livestream.m3u8"),
+            "w"
+        )
+        livestream_file.write(livestream_content.replace('\n\n', '\n'))
+        livestream_file.close()
 
     def get_mp3_command(self):
         mp3_command = "%s " % FFMPEG_CMD
