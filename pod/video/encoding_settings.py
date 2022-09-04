@@ -31,18 +31,6 @@ FFMPEG_HLS_ENCODE_PARAMS = (
     + "-y \"%(output)s\" "
 )
 
-# FFMPEG_HLS_ENCODE = (
-#     "-map 0:v:0 -map 0:a:0 -c:v %(libx)s  "  # take first index of video and audio
-#     + '-vf "scale=-2:%(height)s" -preset %(preset)s '
-#     + '-profile:v %(profile)s '
-#     + '-pix_fmt yuv420p -level %(level)s -crf %(crf)s '
-#     + '-maxrate %(maxrate)s -bufsize %(bufsize)s '
-#     + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" '
-#     + '-max_muxing_queue_size 4000 '
-#     + '-c:a aac -ar 48000 -b:a %(ba)s -hls_playlist_type vod '
-#     + '-hls_time %(hls_time)s -hls_flags single_file '  # -hls_segment_type fmp4
-#     + '-master_pl_name "livestream.m3u8" -y -vsync 0 "%(output)s" '
-# )
 # FFMPEG_MP3_ENCODE = '-vn -b:a %(audio_bitrate)s -f mp3 -y "%(output)s" '
 FFMPEG_MP3_ENCODE = '-vn -codec:a libmp3lame -qscale:a 2 -y "%(output)s" '
 # In our example above, we selected -qscale:a 2, meaning we used LAME's option -V 2,
@@ -58,3 +46,33 @@ CREATE_THUMBNAIL = (
     '-vf "fps=1/(%(duration)s/%(nb_thumbnail)s)" -vsync vfr "%(output)s_%%04d.png"'
 )
 EXTRACT_SUBTITLE = '-map 0:%(index)s -f webvtt -y  "%(output)s" '
+
+VIDEO_RENDITIONS = [
+    {
+        "resolution": "640x360",
+        "minrate": "500k",
+        "video_bitrate": "750k",
+        "maxrate": "1000k",
+        "audio_bitrate": "96k",
+        "encode_mp4": True,
+        "sites": [1],
+    },
+    {
+        "resolution": "1280x720",
+        "minrate": "1000k",
+        "video_bitrate": "2000k",
+        "maxrate": "3000k",
+        "audio_bitrate": "128k",
+        "encode_mp4": True,
+        "sites": [1],
+    },
+    {
+        "resolution": "1920x1080",
+        "minrate": "2000k",
+        "video_bitrate": "3000k",
+        "maxrate": "4500k",
+        "audio_bitrate": "192k",
+        "encode_mp4": False,
+        "sites": [1],
+    },
+]

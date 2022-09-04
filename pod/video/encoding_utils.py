@@ -5,46 +5,22 @@ from collections import OrderedDict
 from timeit import default_timer as timer
 import os
 
-video_rendition = [
-    {
-        "resolution": "640x360",
-        "minrate": "500k",
-        "video_bitrate": "750k",
-        "maxrate": "1000k",
-        "audio_bitrate": "96k",
-        "encode_mp4": True,
-        "sites": [1],
-    },
-    {
-        "resolution": "1280x720",
-        "minrate": "1000k",
-        "video_bitrate": "2000k",
-        "maxrate": "3000k",
-        "audio_bitrate": "128k",
-        "encode_mp4": True,
-        "sites": [1],
-    },
-    {
-        "resolution": "1920x1080",
-        "minrate": "2000k",
-        "video_bitrate": "3000k",
-        "maxrate": "4500k",
-        "audio_bitrate": "192k",
-        "encode_mp4": False,
-        "sites": [1],
-    },
-]
-try:
-    from pod.video.models import VideoRendition
-    from django.core import serializers
-    renditions = json.loads(
-        serializers.serialize("json", VideoRendition.objects.all())
-    )
-    video_rendition = []
-    for rend in renditions:
-        video_rendition.append(rend["fields"])
-except ImportError:
-    pass
+from encoding_settings import VIDEO_RENDITIONS
+
+
+def get_renditions():
+    try:
+        from pod.video.models import VideoRendition
+        from django.core import serializers
+        renditions = json.loads(
+            serializers.serialize("json", VideoRendition.objects.all())
+        )
+        video_rendition = []
+        for rend in renditions:
+            video_rendition.append(rend["fields"])
+        return video_rendition
+    except ImportError:
+        return VIDEO_RENDITIONS
 
 
 def check_file(path_file):
@@ -55,7 +31,8 @@ def check_file(path_file):
 
 def get_list_rendition():
     list_rendition = {}
-    for rend in video_rendition:
+    renditions = get_renditions()
+    for rend in renditions:
         list_rendition[int(rend["resolution"].split("x")[1])] = rend
     list_rendition = OrderedDict(sorted(list_rendition.items(), key=lambda t: t[0]))
     return list_rendition
