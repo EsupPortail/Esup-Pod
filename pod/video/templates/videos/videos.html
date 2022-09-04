@@ -18,10 +18,8 @@
 
 {% block page_title %}{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}{% endblock %}
 
-
-{% block page_content %}
-
-  <h1 id="video_count">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
+{% block main_page_title %}
+  <h1 id="video_count" class="page_title">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
     <span class="pod-float-end">
       <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
         <i class="bi bi-rss"></i>&nbsp;Audio</a>
@@ -32,7 +30,9 @@
       {% endif %}
     </span>
   </h1>
+{% endblock main_page_title %}
 
+{% block page_content %}
   {% comment %}
   <p>
     "types": request.GET.getlist('type'),

@@ -9,9 +9,9 @@
 {% endblock %}
 
 {% block page_title %}{% trans 'Log in' %}{% endblock %}
+{% block main_page_title %}<h1 class="page_title">{% trans 'Log in' %}</h1>{% endblock %}
 
 {% block page_content %}
-  <h1 class="page_title">{% trans 'Log in' %}</h1>
 
   {% if form.errors and not form.non_field_errors %}
     <p class="errornote">
