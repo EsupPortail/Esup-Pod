@@ -61,13 +61,18 @@
     modal_video_list.innerHTML = "";
     modal_video_list.appendChild(html_paginator);
     if (VIDEOS_LIST_CHUNK.videos.chunk.length > 0) {
-      let videos_to_display = VIDEOS_LIST_CHUNK.videos.chunk[VIDEOS_LIST_CHUNK.page_index]
+      let videos_to_display =
+        VIDEOS_LIST_CHUNK.videos.chunk[VIDEOS_LIST_CHUNK.page_index];
       videos_to_display.forEach((v) => appendVideoCard(toggleSelectedClass(v)));
     } else {
       const cat_modal_alert = document.createElement("div");
       cat_modal_alert.setAttribute("class", "alert alert-warning");
-      cat_modal_alert.innerHTML = gettext("You have no content without a category.");
-      const cat_modal_body = document.querySelector("#manageCategoryModal .modal-body");
+      cat_modal_alert.innerHTML = gettext(
+        "You have no content without a category."
+      );
+      const cat_modal_body = document.querySelector(
+        "#manageCategoryModal .modal-body"
+      );
       cat_modal_body.appendChild(cat_modal_alert);
     }
   };
@@ -131,8 +136,7 @@
     e.stopPropagation();
     VIDEOS_LIST_CHUNK.page_index -= VIDEOS_LIST_CHUNK.page_index > 0 ? 1 : 0;
     let nbr_pages = VIDEOS_LIST_CHUNK.videos.chunk.length - 1;
-    if (VIDEOS_LIST_CHUNK.page_index === 0)
-      prev.classList.add("disabled");
+    if (VIDEOS_LIST_CHUNK.page_index === 0) prev.classList.add("disabled");
     next.classList.remove("disabled");
     pages_info.innerText = `${VIDEOS_LIST_CHUNK.page_index + 1}/${
       nbr_pages + 1
@@ -222,7 +226,10 @@
       CURR_FILTER.id = null;
       getVideosFilteredContainer().classList.add("hidden");
       if (videos_list) {
-        videos_list.setAttribute("class", "pod-infinite-container infinite-container");
+        videos_list.setAttribute(
+          "class",
+          "pod-infinite-container infinite-container"
+        );
         let more_btn = videos_list.parentNode.querySelector(
           ".infinite-more-link"
         );
@@ -238,7 +245,10 @@
       getVideosFilteredContainer().classList.remove("hidden");
 
       if (videos_list) {
-        videos_list.setAttribute("class", "pod-infinite-container infinite-container hidden");
+        videos_list.setAttribute(
+          "class",
+          "pod-infinite-container infinite-container hidden"
+        );
         let more_btn = videos_list.parentNode.querySelector(
           ".infinite-more-link"
         );
@@ -262,7 +272,9 @@
       "filtered infinite-container row"
     );
     videos_list_filtered.setAttribute("id", "videos_list");
-    document.querySelector(".pod-mainContent").appendChild(videos_list_filtered);
+    document
+      .querySelector(".pod-mainContent")
+      .appendChild(videos_list_filtered);
     return videos_list_filtered;
   };
   // Update videos Filtered in filtered container after editing category
@@ -442,13 +454,9 @@
     let videoContent_Text = gettext("Video content.");
     let audioContent_Text = gettext("Audio content.");
     if (is_video) {
-      return (
-        '<span title="' + videoContent_Text + '">'
-      );
+      return '<span title="' + videoContent_Text + '">';
     }
-    return (
-      '<span title="' + audioContent_Text + '">'
-    );
+    return '<span title="' + audioContent_Text + '">';
   };
 
   // Create category html element <li></li>
@@ -635,7 +643,10 @@
         ? `<i class="bi bi-exclamation-triangle"></i>`
         : `<i class="bi bi-info-circle"></i>`;
     let alert_message = document.createElement("div");
-    alert_message.setAttribute("class", `category_alert alert alert-${class_suffix}`);
+    alert_message.setAttribute(
+      "class",
+      `category_alert alert alert-${class_suffix}`
+    );
     alert_message.setAttribute("role", `alert`);
     alert_message.innerHTML = `<div class="alert_content"><span class="alert_icon">${icon}</span><span class="alert_title">${title}</span><span class="alert_text">${message}</span>`;
     document.body.appendChild(alert_message);
@@ -786,8 +797,13 @@
             showAlertMessage(msg_deleted);
             deleteFromSavedData(cat.slug); // delete from local save
             // remove eventual alert message
-            const cat_modal_alert = document.querySelector("#manageCategoryModal .modal-body .alert-warning")
-            if(typeof(cat_modal_alert) != 'undefined' && cat_modal_alert != null){
+            const cat_modal_alert = document.querySelector(
+              "#manageCategoryModal .modal-body .alert-warning"
+            );
+            if (
+              typeof cat_modal_alert != "undefined" &&
+              cat_modal_alert != null
+            ) {
               cat_modal_alert.remove();
             }
             data.videos.forEach((v) => {
@@ -838,7 +854,6 @@
       loader.classList.remove("show");
     }
   });
-
 
   // Add onclick event to save category (create or edit) data
   saveCatBtn.addEventListener("click", (e) => {

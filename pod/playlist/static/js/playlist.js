@@ -205,12 +205,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (response.success) {
           showalert(response.success, "alert-success");
           //window.location.reload(); //hide link playlist
-          link
-            .addClass("disabled")
-            .removeClass("playlist-item")
-            .append(
-              ''
-            );
+          link.addClass("disabled").removeClass("playlist-item").append("");
         } else {
           showalert(response.fail, "alert-danger");
         }

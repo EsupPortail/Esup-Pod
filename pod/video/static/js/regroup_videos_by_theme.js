@@ -121,20 +121,20 @@ function run(has_more_themes, Helper) {
       <div class="card-body px-3 py-2">
       <footer class="card-footer card-footer-pod p-0 m-0">
         <a href="${EDIT_URL}${
-            video.slug
-          }" title="${edit_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+      video.slug
+    }" title="${edit_text}" class="btn pod-btn-social p-1 m-0 ms-1">
           <i class="bi bi-pencil-square" aria-hidden="true"></i></a>
                 <a href="${COMPLETION_URL}${
-            video.slug
-          }" title="${completion_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+      video.slug
+    }" title="${completion_text}" class="btn pod-btn-social p-1 m-0 ms-1">
           <i class="bi bi-file-text" aria-hidden="true"></i></a>
                 <a href="${CHAPTER_URL}${
-            video.slug
-          }" title="${chapter_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+      video.slug
+    }" title="${chapter_text}" class="btn pod-btn-social p-1 m-0 ms-1">
           <i class="bi bi-card-list" aria-hidden="true"></i></a>
                 <a href="${DELETE_URL}${
-            video.slug
-          }" title="${delete_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+      video.slug
+    }" title="${delete_text}" class="btn pod-btn-social p-1 m-0 ms-1">
           <i class="bi bi-trash" aria-hidden="true"></i></a>
         </footer>
         <span class="small video-title">

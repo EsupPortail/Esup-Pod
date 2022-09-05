@@ -543,7 +543,8 @@ var show_picture_form = function (data) {
     );
     //$(".get_form_userpicture").html($(".get_form_userpicture").children());
     $(".get_form_userpicture").html(
-      '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' + gettext("Change your picture")
+      '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' +
+        gettext("Change your picture")
     );
   } else {
     $("#nav-usermenu .userpicture").remove();
@@ -551,7 +552,8 @@ var show_picture_form = function (data) {
     $("#nav-usermenu > button").addClass("initials btn pod-btn-primary");
     //$(".get_form_userpicture").html($(".get_form_userpicture").children());
     $(".get_form_userpicture").html(
-      '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' + gettext("Add your picture")
+      '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' +
+        gettext("Add your picture")
     );
   }
   $("#userpictureModal").modal("hide");
@@ -636,7 +638,7 @@ $("#id_theme option:selected").each(function () {
 
 $("#id_theme option").remove();
 
-$('#id_channel').change(function() {
+$("#id_channel").change(function () {
   /*
   $('#id_channel').on('select2:select', function (e) {
     alert('change 2');
