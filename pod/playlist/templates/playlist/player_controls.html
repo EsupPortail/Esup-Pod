@@ -1,7 +1,7 @@
 {# HTML for playlist controls. Don't use this file alone it must be integrated into another template! #}
 {% load i18n static %}
 <div class="card-controls">
-<a id="pl_loop" class="playlist-options m-1"
+<a id="pl_loop" class="playlist-options m-1 btn btn-outline-primary"
    title="{% trans 'Repeat the playlist' %}"
    role="switch">
   <svg height="32" class="octicon octicon-sync fill-color-pod" viewBox="0 0 12 16" version="1.1" width="24" aria-hidden="true">
@@ -10,7 +10,7 @@
     </path>
   </svg>
 </a>
-<a id="pl_auto" class="playlist-options m-1"
+<a id="pl_auto" class="playlist-options m-1 btn btn-outline-primary"
    title="{% trans 'Switch to next video automatically' %}"
    role="switch">
   <svg height="32" class="octicon octicon-diff-renamed fill-color-pod" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true">

@@ -571,7 +571,7 @@ button:focus .userpicture {
   background: var(--color-black-alpha);
   padding: 0 .25rem;
   z-index: 9;*/
-  padding: .4rem;
+  padding: .4rem !important;
 }
 
 /*#videos_list .card-header .text-muted {
@@ -1155,6 +1155,16 @@ body {
   align-items: center;
 }
 
+@media (min-width: 992px) {
+  .pod-card__title,
+  .pod-card__title label {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-flow: wrap
+  }
+}
+
 .pod-lead {}
 
 .pod-container {}
@@ -1592,3 +1602,6 @@ table .alert.alert-danger.btn.pod-btn-social {
  .legal_notice {
   padding-bottom: 3rem;
  }
+
+ /* Override playlist - video-jsplaylist.css 84 */
+

@@ -1152,7 +1152,7 @@ class Video(models.Model):
                 "type": {"title": self.type.title, "slug": self.type.slug},
                 "disciplines": list(
                     self.discipline.all()
-                    .filter(sites=current_site)
+                    .filter(site=current_site)
                     .values("title", "slug")
                 ),
                 "channels": list(

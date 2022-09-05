@@ -17,6 +17,7 @@ if getattr(settings, "USE_PODFILE", False):
 
 USE_ENRICH_READY = getattr(settings, "USE_ENRICH_READY", False)
 
+
 class ContributorForm(forms.ModelForm):
     """Contributor form fields."""
 
@@ -104,10 +105,8 @@ class TrackForm(forms.ModelForm):
         self.fields["kind"].widget.attrs["class"] = "form-select custom-select"
         self.fields["lang"].widget.attrs["class"] = "form-select custom-select"
         self.fields["enrich_ready"].widget.attrs["class"] = "form-check custom-select"
-
         if not USE_ENRICH_READY:
             self.fields["enrich_ready"].widget = HiddenInput()
-        
         if FILEPICKER:
             self.fields["src"].widget = CustomFileWidget(type="file")
 
