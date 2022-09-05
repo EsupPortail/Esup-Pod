@@ -47,7 +47,7 @@ let PlaylistPlayer = {
   loadVideo: function (position) {
     this.unselectCurrent();
     const video_url = this.elements[position - 1].children[1].children[0].href,
-      ajax_url = video_url.replace("/video/", "/video_xhr/"),
+      ajax_url = video_url.replace("/video/", "/video/xhr/"),
       parameters =
         ajax_url.indexOf("?") > 0
           ? this.getParameters()
