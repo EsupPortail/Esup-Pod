@@ -106,7 +106,7 @@ def direct(request, slug):  # affichage du flux d'un diffuseur
 
     site = get_current_site(request)
     broadcaster = get_broadcaster_by_slug(slug, site)
-    if broadcaster.is_restricted and not request.user.is_authenticated():
+    if broadcaster.is_restricted and not request.user.is_authenticated:
         iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
         return redirect(
             "%s?%sreferrer=%s"
@@ -195,7 +195,7 @@ def can_manage_event(user):
     return user.is_authenticated and (
         user.is_superuser
         or user.owner.accessgroup_set.filter(
-            code_name__in=settings.AFFILIATION_EVENT
+            code_name__in=AFFILIATION_EVENT
         ).exists()
     )
 
@@ -226,11 +226,11 @@ def get_event_access(request, event, slug_private, is_owner):
         if not can_access_draft:
             return False
 
-    if event.is_restricted and not request.user.is_authenticated():
+    if event.is_restricted and not request.user.is_authenticated:
         return False
 
     if event.restrict_access_to_groups.all().exists() and (
-        not request.user.is_authenticated() or not is_in_event_groups(request.user, event)
+        not request.user.is_authenticated or not is_in_event_groups(request.user, event)
     ):
         return False
 
@@ -238,8 +238,8 @@ def get_event_access(request, event, slug_private, is_owner):
 
 
 def event(request, slug, slug_private=None):  # affichage d'un event
-
-    # modif de l'url d'appel pour compatibilité avec le template link_video.html (variable : urleditapp)
+    # modif de l'url d'appel pour compatibilité
+    # avec le template link_video.html (variable : urleditapp)
     request.resolver_match.namespace = ""
 
     try:
@@ -249,12 +249,17 @@ def event(request, slug, slug_private=None):  # affichage d'un event
 
     evemnt = get_object_or_404(Event, id=id)
 
-    if evemnt.is_restricted and not request.user.is_authenticated():
-        url = reverse("authentication_login")
-        url += "?referrer=" + request.get_full_path()
-        return redirect(url)
+    if evemnt.is_restricted and not request.user.is_authenticated:
+        iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
+        return redirect(
+            "%s?%sreferrer=%s"
+            % (settings.LOGIN_URL, iframe_param, request.get_full_path())
+        )
+        # url = reverse("authentication_login")
+        # url += "?referrer=" + request.get_full_path()
+        # return redirect(url)
 
-    user_owns_event = request.user.is_authenticated() and (
+    user_owns_event = request.user.is_authenticated and (
         evemnt.owner == request.user
         or request.user in evemnt.additional_owners.all()
         or request.user.is_superuser
@@ -316,7 +321,7 @@ def events(request):  # affichage des events
         | (Q(start_date=date.today()) & Q(end_time__gte=datetime.now()))
     )
     queryset = queryset.filter(is_draft=False)
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         queryset = queryset.filter(is_restricted=False)
         queryset = queryset.filter(restrict_access_to_groups__isnull=False)
 
@@ -811,7 +816,8 @@ def checkFileSize(full_file_name, max_attempt=6):
         new_size = os.path.getsize(full_file_name)
         if file_size != new_size:
             logger.warning(
-                f"File size of {full_file_name} changing from {file_size} to {new_size}, attempt number {attempt_number} "
+                f"File size of {full_file_name} changing from"
+                f"{file_size} to {new_size}, attempt number {attempt_number} "
             )
             file_size = new_size
             attempt_number = attempt_number + 1

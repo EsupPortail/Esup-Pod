@@ -32,7 +32,7 @@ else:
 
 AUTHENTICATION = True if apps.is_installed("pod.authentication") else False
 
-BASE_DIR = getattr(settings, "BASE_DIR", "/home/pod/django_projects/podv2/pod")
+BASE_DIR = getattr(settings, "BASE_DIR", "/home/pod/django_projects/podv3/pod")
 
 VIDEO_ID_TO_EXCLUDE = getattr(settings, "VIDEO_ID_TO_EXCLUDE", [])
 

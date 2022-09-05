@@ -103,8 +103,6 @@ def generate_intermediate_video(recording, videos, clip_begin, clip_end, present
     # Video file output : at the same directory than the XML file
     # And with the same name .mp4
     video_output = recording.source_file.replace(".xml", ".mp4")
-    # video_output :
-    # /usr/local/django_projects/podv2-dev/pod/media/opencast-files/file.mp4
     subtime = get_subtime(clip_begin, clip_end)
     encode_studio = getattr(encode, ENCODE_STUDIO)
     encode_studio(recording.id, video_output, videos, subtime, presenter)

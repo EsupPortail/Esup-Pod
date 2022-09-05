@@ -20,13 +20,13 @@
             <td class="theme_description">{{theme.description}}</td>
             <td class="theme_headband">{{theme.headband}}</td>
             <td>
-              <form class="get_form_theme" action="{% url 'theme_edit' slug=channel.slug %}" method="POST">
+              <form class="get_form_theme" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="modify"/>
                 <input type="hidden" name="id" value="{{theme.id}}"/>
                 <input type="submit" title="{% trans 'Edit the theme' %}" value="{% trans 'Modify' %}" class="btn btn-primary btn-sm my-1"/>
               </form>
-              <form class="get_form_theme" action="{% url 'theme_edit' slug=channel.slug %}" method="POST">
+              <form class="get_form_theme" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="delete"/>
                 <input type="hidden" name="id" value="{{theme.id}}"/>

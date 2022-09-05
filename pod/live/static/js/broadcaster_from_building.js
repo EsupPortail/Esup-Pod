@@ -40,7 +40,7 @@ $(document).ready(function () {
       },
       error: () => {
         change_restriction(false);
-        alert(gettext("an error occurred on broadcaster fetch ..."));
+        alert(gettext("An error occurred on broadcaster fetch..."));
       },
     });
   };
@@ -80,7 +80,7 @@ $(document).ready(function () {
         }
       },
       error: () => {
-        alert(gettext("an error occurred during broadcasters load ..."));
+        alert(gettext("An error occurred during broadcasters load..."));
       },
     });
   });

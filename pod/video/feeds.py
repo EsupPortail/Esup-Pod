@@ -149,7 +149,7 @@ class RssSiteVideosFeed(Feed):
 
         if slug_c:
             channel = get_object_or_404(
-                Channel, slug=slug_c, sites=get_current_site(request)
+                Channel, slug=slug_c, site=get_current_site(request)
             )
             self.subtitle = "%s" % (channel.title)
             videos_list = videos_list.filter(channel=channel)

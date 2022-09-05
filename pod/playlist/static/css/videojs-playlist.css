@@ -10,6 +10,7 @@
 
 .playlist-videos {
 	overflow-y: auto;
+	overflow-x: hidden;
 	max-height:100%;
 	padding-top:0;
 	padding-bottom:0;
@@ -139,3 +140,53 @@
 }
 
 .vjs-control-bar {z-index:1}
+
+/* Override */
+
+.playlist-videos .row .card-group > .video-card .vdata {
+	background: var(--pod-font-color) right center no-repeat !important;
+   }
+  
+   .playlist-videos .row .card-group.on > .video-card .vdata {
+	padding-right: 1.25rem !important;
+	background-color: var(--pod-primary-darken) !important;
+	background-size: 1rem !important;
+	background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 5 4 19 14 12"></polyline></svg>') !important;
+   }
+  
+   .playlist-videos .row .card-group .video-card .card-body a {
+	padding: 1em 0.25em 1.25em calc(30% + 0.25em) !important;
+   }
+  
+   .playlist-videos .row .card-group .video-card .card-body a .card-thumbnail { /* ligne 39 */
+	background: black;
+	width: 30% !important;
+   }
+  
+   .playlist-videos .row .card-group .video-card .card-body {
+	border-bottom: 0.15rem solid var(--bs-card-border-color) !important;
+   }
+  
+	.playlist-videos .row .card-group.on .card-header {
+	  background-color: var(--pod-primary);
+	  border-bottom: 1px solid var(--pod-background-neutre2-bloc);
+	  border-radius: 0 !important;
+	}
+  
+	.playlist-videos .row .card-group.on > .video-card .card-header .text-muted { /* Remplacer ligne 81 */
+	  color: var(--pod-background) !important;
+	}
+
+	/* Remove parasitic underline inhrited from "a" styling on playlist controls */
+
+	a.playlist-options {
+		text-decoration: none;
+		width: 2rem;
+		height: 2rem;
+	  }
+
+	.playlist-videos .card-header > div > span + span {
+	width: 3rem;
+	justify-content: space-around;
+	display: flex;
+	}

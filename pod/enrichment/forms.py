@@ -65,7 +65,8 @@ class EnrichmentForm(forms.ModelForm):
                 )
             else:
                 self.fields[myField].widget.attrs["class"] = "form-control"
-        self.fields["type"].widget.attrs["class"] = "custom-select"
+        self.fields["type"].widget.attrs["class"] = "custom-select form-select required"
+        self.fields["stop_video"].widget.attrs["class"] = "form-check"
         if FILEPICKER:
             self.fields["image"].widget = CustomFileWidget(type="image")
             self.fields["document"].widget = CustomFileWidget(type="file")

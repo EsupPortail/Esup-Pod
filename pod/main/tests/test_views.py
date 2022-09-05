@@ -5,6 +5,7 @@
 from django.test import override_settings
 from django.test import TestCase
 from django.test import Client
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
@@ -24,7 +25,7 @@ class MainViewsTestCase(TestCase):
 
     def setUp(self):
         """Create fictive user who will make tests."""
-        User.objects.create(username="pod", password="podv2")
+        User.objects.create(username="pod", password="podv3")
         print(" --->  SetUp of MainViewsTestCase: OK!")
 
     @override_settings(MEDIA_ROOT=tempfile.gettempdir())
@@ -73,6 +74,7 @@ class MainViewsTestCase(TestCase):
                 "captcha_0": captcha.hashkey,
                 "captcha_1": captcha.response,
                 "url_referrer": "http://localhost:8000/",
+                "firstname": ""
             },
         )
         messages = list(response.wsgi_request._messages)
@@ -90,6 +92,7 @@ class MainViewsTestCase(TestCase):
                 "subject": "info",
                 "description": "",
                 "captcha": "",
+                "firstname": ""
             },
         )
         self.assertTemplateUsed(response, "contact_us.html")
@@ -109,7 +112,7 @@ class MaintenanceViewsTestCase(TestCase):
     ]
 
     def setUp(self):
-        User.objects.create(username="pod", password="podv2")
+        User.objects.create(username="pod", password="podv3")
 
     def test_maintenance(self):
         """Test Pod maintenance mode."""
@@ -117,14 +120,15 @@ class MaintenanceViewsTestCase(TestCase):
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         # GET method is used
-        response = self.client.get("/video_edit/")
+        url = reverse("video:video_edit", kwargs={})
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
         conf = Configuration.objects.get(key="maintenance_mode")
         conf.value = "1"
         conf.save()
 
-        response = self.client.get("/video_edit/")
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, "/maintenance/")
         print("   --->  test_maintenance of MaintenanceViewsTestCase: OK!")

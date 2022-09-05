@@ -1,12 +1,11 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 
 {% block page_extra_head %}
 <script>
 window.setInterval("location.reload(true)",30000);
 </script>
-
 {% endblock %}
 
 
@@ -18,31 +17,31 @@ window.setInterval("location.reload(true)",30000);
 {% block page_title %}{% trans "Lives" %}{% endblock %}
 
 {% block page_content %}
-<h3><i data-feather="radio"></i>&nbsp;{% trans "Lives" %}</h3>
+<h3><i class="bi bi-broadcast"></i>&nbsp;{% trans "Lives" %}</h3>
 <div class="row">
 
 {% for building in buildings %}
-  <div class="card-group col-12 col-md-6 col-lg-3 mb-2 ">
-    <div class="card  mb-4 box-shadow border-secondary ">
+  <div class="card-group col-12 col-md-6 col-lg-3 mb-2 pod-card-group ">
+    <div class="card  mb-4 box-shadow pod-card ">
     <img class="card-img-top" src="{{building.get_headband_url}}" alt="{{building.name}}" loading="lazy">
     <div class="card-body">
-      <h5 class="card-title">
+      <h5 class="card-title pod-card__title">
         <span class="building-name">
           {{building.name}}
         </span>
-        <a href="{% url "live:directs" building_id=building.id %}"><i data-feather="eye"></i></a>
+        <a href="{% url "live:directs" building_id=building.id %}"><i class="bi bi-eye"></i></i></a>
       </h5>
       <div class="card-text">
         {% for broadcaster in building.broadcaster_set.all %}
         <p class="card-text-item">
-          {%if broadcaster.status %}<a href="{% url "live:direct" slug=broadcaster.slug %}" class="live_on"><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}} </a>
-          {%else%}<span class="live_off"><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}</p>
+          {%if broadcaster.status %}<a href="{% url "live:direct" slug=broadcaster.slug %}" class="live_on"><i class="bi bi-lock"></i>&nbsp;{{broadcaster.name}} </a>
+          {%else%}<span class="live_off"><i class="bi bi-cast"></i>&nbsp;{{broadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}</p>
           {% empty %}
         <p class="card-text-item">{% trans "Sorry, no lives found" %}.</p>
         {% endfor %}
       </div>
       {% if building.gmapurl %}
-      <p class="card-text building-gmapurl"><small class="text-muted"><a href='{{building.gmapurl}}' title="{% trans "access map" %}" target="_blank"><i data-feather="map-pin"></i> <span class="ml-1 access-map">
+      <p class="card-text building-gmapurl"><small class="text-muted"><a href='{{building.gmapurl}}' title="{% trans "access map" %}" target="_blank"><i class="bi bi-geo-alt"></i> <span class="ms-1 access-map">
         {% trans "access map" %}
       </span></a></small></p>
       {% endif %}

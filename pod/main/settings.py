@@ -1,6 +1,7 @@
 """
 Django local settings for pod_project.
-Django version : 1.11.10.
+
+Django version: 3.2.
 """
 import os
 
@@ -16,7 +17,7 @@ SITE_ID = 1
 # and should be set to a unique, unpredictable value.
 #
 # Django will not start if this is not set.
-# https://docs.djangoproject.com/en/1.11/ref/settings/#secret-key
+# https://docs.djangoproject.com/en/3.2/ref/settings/#secret-key
 #
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "A_CHANGER"
@@ -29,7 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ##
 # DEBUG mode activation
 #
-# https://docs.djangoproject.com/en/1.11/ref/settings/#debug
+# https://docs.djangoproject.com/en/3.2/ref/settings/#debug
 #
 # SECURITY WARNING: MUST be set to False when deploying into production.
 DEBUG = True
@@ -38,14 +39,14 @@ DEBUG = True
 # A list of strings representing the host/domain names
 # that this Django site is allowed to serve.
 #
-# https://docs.djangoproject.com/en/1.11/ref/settings/#allowed-hosts
+# https://docs.djangoproject.com/en/3.2/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ["localhost"]
 
 ##
 # Session settings
 #
-# https://docs.djangoproject.com/en/1.11/ref/settings/#session-cookie-age
-# https://docs.djangoproject.com/en/1.11/ref/settings/#session-expire-at-browser-close
+# https://docs.djangoproject.com/en/3.2/ref/settings/#session-cookie-age
+# https://docs.djangoproject.com/en/3.2/ref/settings/#session-expire-at-browser-close
 #
 SESSION_COOKIE_AGE = 14400
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -57,20 +58,20 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # A tuple that lists people who get code error notifications
 #   when DEBUG=False and a view raises an exception.
 #
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-ADMINS
+# https://docs.djangoproject.com/en/3.2/ref/settings/#std:setting-ADMINS
 #
 ADMINS = (("Name", "adminmail@univ.fr"),)
 ##
 # A tuple that lists people who get other notifications
 #   email from contact_us / end of encoding / report video
 #
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-MANAGERS
+# https://docs.djangoproject.com/en/3.2/ref/settings/#std:setting-MANAGERS
 MANAGERS = ADMINS
 ##
 # A dictionary containing the settings for all databases
 # to be used with Django.
 #
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -81,13 +82,12 @@ DATABASES = {
 ##
 # Internationalization and localization.
 #
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
+# https://docs.djangoproject.com/en/3.2/topics/i18n/
 # https://github.com/django/django/blob/master/django/conf/global_settings.py
 LANGUAGE_CODE = "fr"
 LANGUAGES = (
     ("fr", "Français"),
-    ("en", "English"),
-    ("nl", "Dutch (Netherlands)"),
+    ("en", "English")
 )
 
 ##
@@ -102,12 +102,11 @@ TIME_ZONE = "UTC"
 #   If None, the standard temporary directory for the operating system
 #   will be used.
 #
-# https://docs.djangoproject.com/en/1.11/ref/settings/#file-upload-temp-dir
+# https://docs.djangoproject.com/en/3.2/ref/settings/#file-upload-temp-dir
 #
 FILE_UPLOAD_TEMP_DIR = os.path.join(os.path.sep, "var", "tmp")
 # https://github.com/ouhouhsami/django-progressbarupload
 FILE_UPLOAD_HANDLERS = (
-    "progressbarupload.uploadhandler.ProgressBarUploadHandler",
     "django.core.files.uploadhandler.MemoryFileUploadHandler",
     "django.core.files.uploadhandler.TemporaryFileUploadHandler",
 )
@@ -116,15 +115,15 @@ PROGRESSBARUPLOAD_INCLUDE_JQUERY = False
 ##
 # Static files (assets, CSS, JavaScript, fonts...)
 #
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
+# https://docs.djangoproject.com/en/3.2/howto/static-files/
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 ##
 # Dynamic files (user managed content: videos, subtitles, documents, etc...)
 #
-# https://docs.djangoproject.com/en/1.11/ref/settings/#media-url
-# https://docs.djangoproject.com/en/1.11/ref/settings/#media-root
+# https://docs.djangoproject.com/en/3.2/ref/settings/#media-url
+# https://docs.djangoproject.com/en/3.2/ref/settings/#media-root
 #
 # WARNING: this folder must have previously been created.
 MEDIA_URL = "/media/"
@@ -199,9 +198,9 @@ LOGIN_URL = "/authentication_login/"
 ##
 # eMail settings
 #
-# https://docs.djangoproject.com/en/1.11/ref/settings/#email-host
-# https://docs.djangoproject.com/en/1.11/ref/settings/#email-port
-# https://docs.djangoproject.com/en/1.11/ref/settings/#default-from-email
+# https://docs.djangoproject.com/en/3.2/ref/settings/#email-host
+# https://docs.djangoproject.com/en/3.2/ref/settings/#email-port
+# https://docs.djangoproject.com/en/3.2/ref/settings/#default-from-email
 #
 #   username: EMAIL_HOST_USER
 #   password: EMAIL_HOST_PASSWORD
@@ -210,7 +209,7 @@ EMAIL_HOST = "smtp.univ.fr"
 EMAIL_PORT = 25
 DEFAULT_FROM_EMAIL = "noreply@univ.fr"
 
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-SERVER_EMAIL
+# https://docs.djangoproject.com/en/3.2/ref/settings/#std:setting-SERVER_EMAIL
 SERVER_EMAIL = "noreply@univ.fr"
 
 ##
@@ -232,9 +231,10 @@ USE_PODFILE = False
 THIRD_PARTY_APPS = []
 
 ##
-# https://docs.djangoproject.com/fr/1.11/ref/clickjacking/
+# https://docs.djangoproject.com/en/3.2/ref/clickjacking/
+# Add @xframe_options_exempt on a view you want to authorize in frame
 #
-X_FRAME_OPTIONS = "EXEMPT"  # SAMEORIGIN, DENY OR EXEMPT
+X_FRAME_OPTIONS = "EXEMPT"  # SAMEORIGIN OR DENY
 
 ###
 # Enable LTI Provider
@@ -276,14 +276,6 @@ LTI_PROPERTY_USER_USERNAME = "ext_user_username"
 # https://sorl-thumbnail.readthedocs.io/en/latest/reference/settings.html
 THUMBNAIL_PRESERVE_FORMAT = True
 
-###
-# Choose a theme for your pod website
-# 'default' is the simpliest, bootstrap $enable_rounded is true
-# 'green' is with a dark green for primary color, $enable_rounded is false
-# 'dark' is black and red, without grey background, $enable_rounded is false
-
-# ie : USE_THEME = 'green'
-
 SHOW_EVENTS_ON_HOMEPAGE = False
 BROADCASTER_PILOTING_SOFTWARE = [
     "Wowza",
@@ -318,3 +310,5 @@ HIDE_TYPES = False
 """
 
 VIDEO_RECENT_VIEWCOUNT = 180
+
+HONEYPOT_FIELD_NAME = "firstname"

@@ -8,7 +8,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
@@ -19,7 +19,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
-from select2 import fields as select2_fields
 from sorl.thumbnail import get_thumbnail
 
 from pod.authentication.models import AccessGroup
@@ -127,22 +126,21 @@ class Broadcaster(models.Model):
         editable=False,
         default="",
     )  # default empty, fill it in save
-    building = models.ForeignKey("Building", verbose_name=_("Building"))
+    building = models.ForeignKey(
+        "Building", verbose_name=_("Building"), on_delete=models.CASCADE
+    )
     description = RichTextField(_("description"), config_name="complete", blank=True)
     poster = models.ForeignKey(
-        CustomImageModel,
-        models.SET_NULL,
-        blank=True,
-        null=True,
-        verbose_name=_("Poster"),
+        CustomImageModel, models.SET_NULL, blank=True, null=True, verbose_name=_("Poster")
     )
     url = models.URLField(_("URL"), help_text=_("Url of the stream"), unique=True)
-    video_on_hold = select2_fields.ForeignKey(
+    video_on_hold = models.ForeignKey(
         Video,
         help_text=_("This video will be displayed when there is no live stream."),
         blank=True,
         null=True,
         verbose_name=_("Video on hold"),
+        on_delete=models.CASCADE,
     )
     status = models.BooleanField(
         default=0,
@@ -166,7 +164,7 @@ class Broadcaster(models.Model):
     viewcount = models.IntegerField(_("Number of viewers"), default=0, editable=False)
     viewers = models.ManyToManyField(User, editable=False)
 
-    manage_groups = select2_fields.ManyToManyField(
+    manage_groups = models.ManyToManyField(
         Group,
         blank=True,
         verbose_name=_("Groups"),
@@ -241,14 +239,16 @@ class Broadcaster(models.Model):
         except Exception:
             return format_html('<img src="/static/admin/img/icon-alert.svg" alt="Error">')
 
-    is_recording_admin.short_description = _("Is recording ?")
+    is_recording_admin.short_description = _("Is recording?")
 
 
 class HeartBeat(models.Model):
-    user = models.ForeignKey(User, null=True, verbose_name=_("Viewer"))
+    user = models.ForeignKey(
+        User, null=True, verbose_name=_("Viewer"), on_delete=models.CASCADE
+    )
     viewkey = models.CharField(_("Viewkey"), max_length=200, unique=True)
     broadcaster = models.ForeignKey(
-        Broadcaster, null=False, verbose_name=_("Broadcaster")
+        Broadcaster, null=False, verbose_name=_("Broadcaster"), on_delete=models.CASCADE
     )
     last_heartbeat = models.DateTimeField(_("Last heartbeat"), default=timezone.now)
 
@@ -313,21 +313,12 @@ class Event(models.Model):
         ),
     )
 
-    owner = select2_fields.ForeignKey(
-        User,
-        ajax=True,
-        verbose_name=_("Owner"),
-        search_field=select_event_owner(),
-        on_delete=models.CASCADE,
-    )
+    owner = models.ForeignKey(User, verbose_name=_("Owner"), on_delete=models.CASCADE)
 
-    additional_owners = select2_fields.ManyToManyField(
+    additional_owners = models.ManyToManyField(
         User,
         blank=True,
-        ajax=True,
-        js_options={"width": "off"},
         verbose_name=_("Additional owners"),
-        search_field=select_event_owner(),
         related_name="owners_events",
         help_text=_(
             "You can add additional owners to the event. They "
@@ -357,9 +348,15 @@ class Event(models.Model):
         Broadcaster,
         verbose_name=_("Broadcaster"),
         help_text=_("Broadcaster name."),
+        on_delete=models.CASCADE,
     )
 
-    type = models.ForeignKey(Type, default=DEFAULT_EVENT_TYPE_ID, verbose_name=_("Type"))
+    type = models.ForeignKey(
+        Type,
+        default=DEFAULT_EVENT_TYPE_ID,
+        verbose_name=_("Type"),
+        on_delete=models.CASCADE,
+    )
 
     iframe_url = models.URLField(
         _("Embedded Site URL"),
@@ -398,7 +395,7 @@ class Event(models.Model):
         default=False,
     )
 
-    restrict_access_to_groups = select2_fields.ManyToManyField(
+    restrict_access_to_groups = models.ManyToManyField(
         AccessGroup,
         blank=True,
         verbose_name=_("Groups"),
@@ -497,22 +494,43 @@ class Event(models.Model):
         else:
             thumbnail_url = static(DEFAULT_EVENT_THUMBNAIL)
         return (
-            '<img class="card-img-top" src="%s" alt=""\
+            '<img class="card-img-top" src="%s" alt="%s"\
             loading="lazy"/>'
-            % thumbnail_url
+            % (thumbnail_url, self.title)
         )
 
     def is_current(self):
+        """Test if event is currently open."""
+        # TODO : FIX this to have possibility to run test between 2 days
+        """
+        print("IS CURRENT")
+        print(self.start_date)
+        print(date.today())
+        print("=================")
+        print(self.start_time)
+        print(datetime.now().time())
+        print(self.end_time)
+
+        IS CURRENT
+        2022-08-30
+        2022-08-30
+        =================
+        23:35:00
+        23:35:01.913570
+        00:35:00
+        """
         return self.start_date == date.today() and (
             self.start_time <= datetime.now().time() <= self.end_time
         )
 
     def is_past(self):
+        """Test if event has happened in past."""
         return self.start_date < date.today() or (
             self.start_date == date.today() and self.end_time < datetime.now().time()
         )
 
     def is_coming(self):
+        """Test if event will happen in future."""
         return self.start_date > date.today() or (
             self.start_date == date.today() and datetime.now().time() < self.start_time
         )

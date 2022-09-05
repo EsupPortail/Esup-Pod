@@ -13,6 +13,8 @@ from pod.live.models import (
 )
 from pod.live.models import Building, Event
 from pod.main.forms import add_placeholder_and_asterisk
+from django_select2 import forms as s2forms
+
 
 FILEPICKER = False
 if getattr(settings, "USE_PODFILE", False):
@@ -20,6 +22,20 @@ if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.widgets import CustomFileWidget
 
 PILOTING_CHOICES = getattr(settings, "BROADCASTER_PILOTING_SOFTWARE", [])
+
+
+class OwnerWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "username__icontains",
+        "email__icontains",
+    ]
+
+
+class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
+    search_fields = [
+        "username__icontains",
+        "email__icontains",
+    ]
 
 
 class BuildingAdminForm(forms.ModelForm):
@@ -142,7 +158,40 @@ class EventPasswordForm(forms.Form):
 
 
 class EventForm(forms.ModelForm):
-
+    fieldsets = (
+        (None, {
+            "fields": [
+                "title",
+                "start_date",
+                "start_time",
+                "end_time",
+                "building",
+                "broadcaster",
+                "password",
+                "is_restricted",
+                "restrict_access_to_groups"
+            ]
+        }),
+        (
+            "advanced_options",
+            {
+                "legend": _("Display advanced options"),
+                "classes": "collapse",
+                "fields": [
+                    'description',
+                    'owner',
+                    'additional_owners',
+                    'type',
+                    'is_draft',
+                    'is_auto_start',
+                    'iframe_url',
+                    'iframe_height',
+                    'aside_iframe_url',
+                    'thumbnail'
+                ]
+            },
+        ),
+    )
     building = forms.ModelChoiceField(
         label=_("Building"),
         queryset=Building.objects.none(),
@@ -228,7 +277,8 @@ class EventForm(forms.ModelForm):
             )
             self.initial["building"] = build.name
         except (ValueError, TypeError):
-            pass  # invalid input from the client; ignore and fallback to empty Broadcaster queryset
+            pass  # invalid input from the client;
+            # ignore and fallback to empty Broadcaster queryset
 
     def initFields(self, is_current_event):
         if not self.user.is_superuser:
@@ -285,6 +335,8 @@ class EventForm(forms.ModelForm):
             "aside_iframe_url",
         ]
         widgets = {
+            "owner": OwnerWidget,
+            "additional_owners": AddOwnerWidget,
             "start_date": widgets.AdminDateWidget,
             "start_time": forms.TimeInput(format="%H:%M", attrs={"class": "vTimeField"}),
             "end_time": forms.TimeInput(format="%H:%M", attrs={"class": "vTimeField"}),

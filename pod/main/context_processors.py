@@ -30,7 +30,7 @@ USE_PODFILE = getattr(django_settings, "USE_PODFILE", False)
 DARKMODE_ENABLED = getattr(django_settings, "DARKMODE_ENABLED", False)
 DYSLEXIAMODE_ENABLED = getattr(django_settings, "DYSLEXIAMODE_ENABLED", False)
 
-VERSION = getattr(django_settings, "VERSION", "2.X")
+VERSION = getattr(django_settings, "VERSION", "3.X")
 ##
 # Settings exposed in templates
 #
@@ -83,12 +83,6 @@ ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
 USE_RECORD_PREVIEW = getattr(django_settings, "USE_RECORD_PREVIEW", False)
 SHIB_NAME = getattr(django_settings, "SHIB_NAME", "Identify Federation")
 
-USE_THEME = getattr(django_settings, "USE_THEME", "default")
-
-BOOTSTRAP_CUSTOM = getattr(django_settings, "BOOTSTRAP_CUSTOM", None)
-
-USE_CHUNKED_UPLOAD = getattr(django_settings, "USE_CHUNKED_UPLOAD", None)
-
 CHUNK_SIZE = getattr(django_settings, "CHUNK_SIZE", 100000)
 
 USE_BBB = getattr(django_settings, "USE_BBB", False)
@@ -104,6 +98,8 @@ DEFAULT_EVENT_THUMBNAIL = getattr(
 )
 
 USE_OPENCAST_STUDIO = getattr(django_settings, "USE_OPENCAST_STUDIO", False)
+
+USE_MEETING = getattr(django_settings, "USE_MEETING", False)
 
 
 def context_settings(request):
@@ -152,9 +148,6 @@ def context_settings(request):
     new_settings["USE_RECORD_PREVIEW"] = USE_RECORD_PREVIEW
     new_settings["SHIB_NAME"] = SHIB_NAME
     new_settings["ALLOW_MANUAL_RECORDING_CLAIMING"] = ALLOW_MANUAL_RECORDING_CLAIMING
-    new_settings["USE_THEME"] = USE_THEME
-    new_settings["BOOTSTRAP_CUSTOM"] = BOOTSTRAP_CUSTOM
-    new_settings["USE_CHUNKED_UPLOAD"] = USE_CHUNKED_UPLOAD
     new_settings["CHUNK_SIZE"] = CHUNK_SIZE
     new_settings["MAINTENANCE_REASON"] = maintenance_text_short
     new_settings["MAINTENANCE_MODE"] = maintenance_mode
@@ -168,6 +161,7 @@ def context_settings(request):
     new_settings["COOKIE_LEARN_MORE"] = COOKIE_LEARN_MORE
     new_settings["SHOW_EVENTS_ON_HOMEPAGE"] = SHOW_EVENTS_ON_HOMEPAGE
     new_settings["DEFAULT_EVENT_THUMBNAIL"] = DEFAULT_EVENT_THUMBNAIL
+    new_settings["USE_MEETING"] = USE_MEETING
     return new_settings
 
 
@@ -177,7 +171,7 @@ def context_navbar(request):
             visible=True,
             video__is_draft=False,
             add_channels_tab=None,
-            sites=get_current_site(request),
+            site=get_current_site(request),
         )
         .distinct()
         .annotate(video_count=Count("video", distinct=True))
@@ -185,7 +179,7 @@ def context_navbar(request):
             Prefetch(
                 "themes",
                 queryset=Theme.objects.filter(
-                    parentId=None, channel__sites=get_current_site(request)
+                    parentId=None, channel__site=get_current_site(request)
                 )
                 .distinct()
                 .annotate(video_count=Count("video", distinct=True)),
@@ -196,7 +190,7 @@ def context_navbar(request):
     add_channels_tab = AdditionalChannelTab.objects.all().prefetch_related(
         Prefetch(
             "channel_set",
-            queryset=Channel.objects.filter(sites=get_current_site(request))
+            queryset=Channel.objects.filter(site=get_current_site(request))
             .distinct()
             .annotate(video_count=Count("video", distinct=True)),
         )
@@ -204,13 +198,13 @@ def context_navbar(request):
 
     all_channels = (
         Channel.objects.all()
-        .filter(sites=get_current_site(request))
+        .filter(site=get_current_site(request))
         .distinct()
         .annotate(video_count=Count("video", distinct=True))
         .prefetch_related(
             Prefetch(
                 "themes",
-                queryset=Theme.objects.filter(channel__sites=get_current_site(request))
+                queryset=Theme.objects.filter(channel__site=get_current_site(request))
                 .distinct()
                 .annotate(video_count=Count("video", distinct=True)),
             )
@@ -229,7 +223,7 @@ def context_navbar(request):
 
     disciplines = (
         Discipline.objects.filter(
-            sites=get_current_site(request),
+            site=get_current_site(request),
             video__is_draft=False,
             video__sites=get_current_site(request),
         )

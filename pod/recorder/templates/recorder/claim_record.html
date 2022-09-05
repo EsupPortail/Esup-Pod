@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 {% block page_extra_head %}
-  <link href="{% static 'player/videojs/video-js.min.css' %}?ver={{VERSION}}" rel="stylesheet">
-  <script src="{% static 'player/videojs/video.min.js' %}?ver={{VERSION}}"></script>
+
+  <link href="{% static 'video.js/dist/video-js.min.css' %}?ver={{VERSION}}" rel="stylesheet">
+  <script src="{% static 'video.js/dist/video.min.js' %}?ver={{VERSION}}"></script>
   {% with 'player/videojs/lang/'|add:request.LANGUAGE_CODE|add:'.js' as videojs_lang %}
     <script src="{% static videojs_lang %}?ver={{VERSION}}"></script>
   {% endwith %}
@@ -26,13 +27,11 @@
 
 {% if USE_RECORD_PREVIEW%}
 <div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl" style="max-width:1440px"role="document">
+  <div class="modal-dialog modal-xl" style="max-width:1440px" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title" id="exampleModalLabel">{% trans "Record preview" %}</h2>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
@@ -44,7 +43,7 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
       </div>
     </div>
   </div>
@@ -59,8 +58,8 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-<script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'waypoints/lib/shortcuts/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script>
   var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],
@@ -69,7 +68,6 @@
     },
     onAfterPageLoad: function ($items) {
       $('.loading').hide();
-      feather.replace({ class: 'align-bottom'});
       $('footer.static-pod').addClass('small');
       $('footer.static-pod').addClass('fixed-bottom');
       $('footer.static-pod').attr('style','height:80px; overflow-y:auto');
@@ -85,7 +83,7 @@
     }
   });
 
-  $(document).on("click",".previewBtn",function(e) {  
+  $(document).on("click",".previewBtn",function(e) {
   videojs("podvideoplayer").src($(this).data("recid"))
 })
 </script>

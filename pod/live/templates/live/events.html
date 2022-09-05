@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 
 {% block more_style %}
     <link href="{% static 'css/event.css' %}?ver={{ VERSION }}" rel="stylesheet"/>
@@ -19,7 +19,7 @@
         {% if display_direct_button %}
             <a class="ml-auto" href="{% url 'live:directs_all' %}" title="{% trans "Supervise broadcasters" %}">
                <button type="button" class="btn btn-primary">
-                   <i data-feather="activity" aria-hidden="true" class="d-lg-none d-xl-inline"></i>
+                <i class="bi bi-activity"></i>
                    {% trans "Supervise broadcasters" %}
                 </button>
             </a>
@@ -27,7 +27,7 @@
         {% if display_creation_button %}
             <a class="ml-auto" href="{% url 'live:event_edit' %}" title="{% trans "Plan an event" %}">
                 <button type="button" class="btn btn-primary">
-                    <i data-feather="plus" aria-hidden="true" class="d-lg-none d-xl-inline"></i>
+                    <i class="bi bi-plus pod-add"></i>
                     {% trans "Plan an event" %}
                 </button>
             </a>

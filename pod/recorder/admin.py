@@ -20,6 +20,7 @@ class RecordingAdmin(admin.ModelAdmin):
     list_display = ("title", "user", "source_file", "date_added")
     list_display_links = ("title",)
     list_filter = ("type",)
+    autocomplete_fields = ["recorder", "user"]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "recorder":
@@ -40,6 +41,7 @@ class RecordingAdmin(admin.ModelAdmin):
 class RecordingFileTreatmentAdmin(admin.ModelAdmin):
     list_display = ("id", "file")
     actions = ["delete_source"]
+    autocomplete_fields = ["recorder"]
 
     def delete_source(self, request, queryset):
         for item in queryset:
@@ -64,6 +66,16 @@ class RecordingFileTreatmentAdmin(admin.ModelAdmin):
 
 
 class RecorderAdmin(admin.ModelAdmin):
+    search_fields = ["name"]
+    autocomplete_fields = [
+        "user",
+        "additional_users",
+        "type",
+        "discipline",
+        "channel",
+        "theme",
+    ]
+
     def Description(self, obj):
         return mark_safe("%s" % obj.description)
 
@@ -135,6 +147,7 @@ class RecorderAdmin(admin.ModelAdmin):
 
 class RecordingFileAdmin(admin.ModelAdmin):
     list_display = ("id", "file", "recorder")
+    autocomplete_fields = ["recorder"]
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

@@ -88,6 +88,7 @@ class EncodeTestCase(TestCase):
         # video id=1 et audio id=2
         audio = Video.objects.get(id=2)
         list_m4a = EncodingAudio.objects.filter(video=audio, encoding_format="video/mp4")
+
         list_mp3 = EncodingAudio.objects.filter(video=audio, encoding_format="audio/mp3")
         el = EncodingLog.objects.get(video=audio)
         self.assertTrue("NO VIDEO AND AUDIO FOUND" not in el.log)
@@ -102,7 +103,7 @@ class EncodeTestCase(TestCase):
         video_to_encode = Video.objects.get(id=1)
         video = video_to_encode.video.path
         log_file = os.path.join(
-            os.path.dirname(video), "%04d" % video_to_encode.id, "encoding.log"
+            os.path.dirname(video), "%04d" % video_to_encode.id, "info_video.json"
         )
 
         list_mp2t = EncodingVideo.objects.filter(
@@ -122,6 +123,7 @@ class EncodeTestCase(TestCase):
         )
 
         video_to_encode.delete()
+
         self.assertTrue(not os.path.exists(video))
         self.assertTrue(not os.path.exists(log_file))
         self.assertTrue(not os.path.exists(playlist_master_file))
@@ -136,7 +138,7 @@ class EncodeTestCase(TestCase):
         audio = Video.objects.get(id=2)
         audio_video_path = audio.video.path
         audio_log_file = os.path.join(
-            os.path.dirname(video), "%04d" % audio.id, "encoding.log"
+            os.path.dirname(video), "%04d" % audio.id, "info_video.json"
         )
         audio.delete()
         self.assertTrue(not os.path.exists(audio_video_path))

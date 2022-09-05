@@ -21,6 +21,8 @@ class PlaylistAdmin(admin.ModelAdmin):
         "id",
     )
     list_filter = ["visible"]
+    autocomplete_fields = ["owner"]
+    search_fields = ["name"]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "owner":
@@ -52,6 +54,7 @@ class PlaylistElementAdmin(admin.ModelAdmin):
         "playlist__title",
         "id",
     )
+    autocomplete_fields = ["playlist", "video"]
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -68,8 +71,8 @@ class PlaylistElementAdmin(admin.ModelAdmin):
             kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-    class Media:
-        css = {"all": ("css/pod.css",)}
+    # class Media:
+    #     css = {"all": ("css/pod.css",)}
 
 
 admin.site.register(PlaylistElement, PlaylistElementAdmin)

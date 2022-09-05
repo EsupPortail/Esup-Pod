@@ -27,8 +27,8 @@
         <button
             type="button"
             class="btn btn-link btn-sm add-folder-btn"
-            data-toggle="modal"
-            data-target="#folderModalCenter"
+            data-bs-toggle="modal"
+            data-bs-target="#folderModalCenter"
             data-oldname=""
             data-folderid=""
         >
@@ -47,7 +47,7 @@
                 </svg>
             </span>
             {% trans "Add new folder" %}
-            <span class="sr-only">{% trans "Add new folder"%}</span>
+            <span class="visually-hidden">{% trans "Add new folder"%}</span>
         </button>
     </div>
     <div class="close-folder" id="close-folder-icon">
@@ -65,7 +65,7 @@
         </svg>
     </div>
 </div>
-  <label class="sr-only" for="folder-search">{% trans 'Filter files' %}</label>
+  <label class="visually-hidden" for="folder-search">{% trans 'Filter files' %}</label>
   <input
     class="folder-search form-control"
     placeholder="{% trans 'Filter files' %}"
@@ -90,7 +90,7 @@
             <path fill="currentColor" d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"></path>
         </svg>
     </span>
-    <b>{%trans "SuperUser mode : the folders of all users are listed (the owner is noted in brackets)" %}</b>
+    <b>{%trans "SuperUser mode: the folders of all users are listed (the owner is noted in brackets)" %}</b>
     <strong onClick="closeWarning(event)" class="close">X</strong>
 </span>
 {%endif%}
@@ -124,7 +124,7 @@
                     class="{% if folder == current_session_folder%}font-weight-bold{%endif%} folder"
                     data-foldname="{{ folder.name }}"
                     data-id="{{folder.id}}"
-                    data-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}"
+                    data-bs-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}"
                 >
                     {% if folder == current_session_folder%}
                     <span class="folder-open" id="folder-open-icon">
@@ -172,7 +172,7 @@
                     class="{% if folder == current_session_folder%}font-weight-bold{%endif%} folder"
                     data-foldname="{{ folder.name }}"
                     data-id="{{folder.id}}"
-                    data-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}"
+                    data-bs-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}"
                 >
                     {% if folder == current_session_folder%}
                     <span class="folder-open" id="folder-open-icon">

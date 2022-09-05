@@ -35,16 +35,15 @@ class GroupSiteInline(admin.StackedInline):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (
             "podfile/js/filewidget.js",
             "js/main.js",
-            "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
 
@@ -71,16 +70,15 @@ class OwnerInline(admin.StackedInline):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (
             "podfile/js/filewidget.js",
             "js/main.js",
-            "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
 
@@ -167,6 +165,7 @@ class GroupAdmin(admin.ModelAdmin):
     form = GroupAdminForm
     # Filter permissions horizontal as well.
     filter_horizontal = ["permissions"]
+    search_fields = ["name"]
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

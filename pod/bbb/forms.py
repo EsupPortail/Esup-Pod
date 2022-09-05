@@ -1,6 +1,6 @@
 from django import forms
 from django.conf import settings
-from .models import Meeting
+from .models import BBB_Meeting
 from .models import Livestream
 from pod.main.forms import add_placeholder_and_asterisk
 from django.dispatch import receiver
@@ -36,11 +36,11 @@ class MeetingForm(forms.ModelForm):
                 self.fields[field].widget = forms.HiddenInput()
 
     class Meta:
-        model = Meeting
+        model = BBB_Meeting
         exclude = ()
 
 
-@receiver(post_save, sender=Meeting)
+@receiver(post_save, sender=BBB_Meeting)
 def launch_encode(sender, instance, created, **kwargs):
     # Useful when an administrator send a re-encode task
     if hasattr(instance, "launch_encode") and instance.launch_encode is True:

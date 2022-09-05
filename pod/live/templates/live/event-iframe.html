@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 {% load tagging_tags %}
 {% load thumbnail %}
 
@@ -11,20 +11,19 @@
     <title>{{ TITLE_SITE }} - {% block page_title %}{{ video.title }}{% endblock page_title %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
 
     {% block page_extra_head %}
         {% include 'videos/video-header.html' %}
     {% endblock page_extra_head %}
 
-    <script src="{% static 'js/videojs-info-controlbar.js' %}?ver={{ VERSION }}"></script>
+    <script src="{% static 'js/videojs-info-controlbar.js' %}?ver={{VERSION}}"></script>
 
-    <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap-default.min.css' %}?ver={{ VERSION }}"
-          crossorigin="anonymous">
-    <script src="{% static 'bootstrap-4/js/bootstrap.bundle.min.js' %}?ver={{ VERSION }}"></script>
+    <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
+    <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
     <script src="{% url 'javascript-catalog' %}"></script>
 
-    <link rel="stylesheet" href="{% static 'css/video-iframe.css' %}?ver={{ VERSION }}">
+    <link rel="stylesheet" href="{% static 'css/video-iframe.css' %}?ver={{VERSION}}">
 </head>
 
 {% block page_content %}
@@ -34,12 +33,12 @@
         <div class="overlay" id="div-video-wrapper">
             {% if event.is_past %}
                 <div class="p-3 mb-2 bg-warning text-dark">
-                    {% trans "Event is finished at : " %} {{ event.start_date }} {{ event.end_time }}
+                    {% trans "Event is finished at:" %} {{ event.start_date }} {{ event.end_time }}
                     <br>
                 </div>
             {% elif event.is_coming %}
                 <div class="p-3 mb-2 bg-warning text-dark">
-                    {% trans "The event is scheduled on the : " %} {{ event.start_date }}
+                    {% trans "The event is scheduled on the:" %} {{ event.start_date }}
                     {% trans 'from' %} {{ event.start_time }} {% trans 'to' %} {{ event.end_time }}
                 </div>
             {% endif %}
@@ -242,11 +241,6 @@
         {% endif %}
 
     {% endblock more_script %}
-
-    <script src="{% static 'feather-icons/feather.min.js' %}?ver={{ VERSION }}"></script>
-    <script>
-        feather.replace({class: 'align-bottom'});
-    </script>
     {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
 {% endblock page_content %}
 </body>

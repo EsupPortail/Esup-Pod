@@ -3,8 +3,9 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class EnrichmentConfig(AppConfig):
-    name = "enrichment"
+    name = "pod.enrichment"
     trans_version = _("Enrichment version")
     trans_name = _("Enrichment")
     trans_original_name = _("enrichment")
     trans_edit = _("Edit the enrichment")
+    default_auto_field = "django.db.models.BigAutoField"

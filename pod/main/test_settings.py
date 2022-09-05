@@ -29,7 +29,7 @@ for application in INSTALLED_APPS:
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "db.sqlite",
+        "NAME": "db-test.sqlite",
     }
 }
 LANGUAGES = (("fr", "Français"), ("en", "English"))
@@ -58,3 +58,8 @@ SHIBBOLETH_ATTRIBUTE_MAP = {
 REMOTE_USER_HEADER = "REMOTE_USER"
 EXISTING_BROADCASTER_IMPLEMENTATIONS = ["Wowza", "Test"]
 AFFILIATION_EVENT = ["employee"]
+
+USE_MEETING = True
+# found on https://bigbluebutton.org/api-mate/
+BBB_API_URL = "http://test-install.blindsidenetworks.com/bigbluebutton/api/"
+BBB_SECRET_KEY = "8cd8ef52e8e101574e400365b55e11a6"

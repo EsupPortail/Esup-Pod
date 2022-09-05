@@ -258,7 +258,7 @@ $("#ownerboxnavbar").keyup(function () {
               urlvideos +
               "?owner=" +
               elt.username +
-              '" title="">' +
+              '">' +
               elt.first_name +
               " " +
               elt.last_name +
@@ -296,20 +296,20 @@ $(document).ready(function () {
 
   // Fired when #collapseAside has been made visible
   $("#collapseAside").on("shown.bs.collapse", function () {
-    Cookies.set("activeCollapseAside", "open");
-    $(".collapseAside").html(
-      '<i data-feather="corner-left-up"></i><i data-feather="menu"></i>'
-    );
-    feather.replace({ class: "align-bottom" });
+    Cookies.set("activeCollapseAside", "open", { sameSite: "Lax" });
+    $(".collapseAside")
+      .html
+      // '<i class="bi bi-arrow-90deg-up"></i><i class="bi bi-list"></i>'
+      ();
     $("#mainContent").addClass("col-md-9");
   });
   // Fired when #collapseAside has been hidden
   $("#collapseAside").on("hidden.bs.collapse", function () {
-    Cookies.set("activeCollapseAside", "close");
-    $(".collapseAside").html(
-      '<i data-feather="corner-left-down"></i><i data-feather="menu"></i>'
-    );
-    feather.replace({ class: "align-bottom" });
+    Cookies.set("activeCollapseAside", "close", { sameSite: "Lax" });
+    $(".collapseAside")
+      .html
+      // '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
+      ();
     $("#mainContent").removeClass("col-md-9");
   });
 
@@ -322,16 +322,19 @@ $(document).ready(function () {
     $("#mainContent").removeClass("col-md-9");
   } else {
     // Use the last aside state, stored in Cookies
+    // only for > 992, we show collapseAside
     var last = Cookies.get("activeCollapseAside");
     if (last != null && last == "close") {
       $("#collapseAside").collapse("hide");
-      $(".collapseAside").html(
-        '<i data-feather="corner-left-down"></i><i data-feather="menu"></i>'
-      );
-      feather.replace({ class: "align-bottom" });
-      $("#mainContent").removeClass("col-md-9");
+      $(".collapseAside")
+        .html
+        // '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
+        ();
+      // $("#mainContent").removeClass("col-md-9");
     } else {
-      $("#collapseAside").collapse("show");
+      if (window.innerWidth > 992) {
+        $("#collapseAside").collapse("show");
+      }
     }
   }
   TriggerAlertClose();
@@ -529,24 +532,27 @@ var show_picture_form = function (data) {
   $("#userpicture_form").html($(data).find("#userpicture_form").html());
   if ($(data).find("#userpictureurl").val()) {
     //$(".get_form_userpicture").html('<img src="'+$(data).find("#userpictureurl").val()+'" height="34" class="rounded" alt="" loading="lazy">Change your picture');
-    $("#navbarDropdown .userpicture").remove();
-    $("#navbarDropdown .userinitial").hide();
-    $("#navbarDropdown").removeClass("initials");
-    $("#navbarDropdown").append(
+    $("#nav-usermenu .userpicture").remove();
+    $("#nav-usermenu .userinitial").hide();
+    $("#nav-usermenu > button").removeClass("initials btn pod-btn-primary");
+    $("#nav-usermenu > button").addClass("  nav-link");
+    $("#nav-usermenu > button").append(
       '<img src="' +
         $(data).find("#userpictureurl").val() +
-        '" class="userpicture img-fluid rounded" alt="avatar" loading="lazy">'
+        '" class="userpicture rounded" alt="avatar" loading="lazy">'
     );
-    $(".get_form_userpicture").html($(".get_form_userpicture").children());
-    $(".get_form_userpicture").append(
-      "&nbsp;" + gettext("Change your picture")
+    //$(".get_form_userpicture").html($(".get_form_userpicture").children());
+    $(".get_form_userpicture").html(
+      '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' + gettext("Change your picture")
     );
   } else {
-    $("#navbarDropdown .userpicture").remove();
-    $("#navbarDropdown .userinitial").show();
-    $("#navbarDropdown").addClass("initials");
-    $(".get_form_userpicture").html($(".get_form_userpicture").children());
-    $(".get_form_userpicture").html("&nbsp;" + gettext("Add your picture"));
+    $("#nav-usermenu .userpicture").remove();
+    $("#nav-usermenu .userinitial").show();
+    $("#nav-usermenu > button").addClass("initials btn pod-btn-primary");
+    //$(".get_form_userpicture").html($(".get_form_userpicture").children());
+    $(".get_form_userpicture").html(
+      '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' + gettext("Add your picture")
+    );
   }
   $("#userpictureModal").modal("hide");
 };
@@ -630,9 +636,15 @@ $("#id_theme option:selected").each(function () {
 
 $("#id_theme option").remove();
 
-//$('#id_channel').change(function() {
-// use click instead of change due to select2 usage : https://github.com/theatlantic/django-select2-forms/blob/master/select2/static/select2/js/select2.js#L1502
-$("#id_channel").on("click", function (e) {
+$('#id_channel').change(function() {
+  /*
+  $('#id_channel').on('select2:select', function (e) {
+    alert('change 2');
+  });
+  */
+  // use click instead of change due to select2 usage : https://github.com/theatlantic/django-select2-forms/blob/master/select2/static/select2/js/select2.js#L1502
+  //$("#id_channel").on("click", function (e) {
+  //alert('change 3');
   $("#id_theme option").remove();
   var tab_channel_selected = $(this).val();
   var str = "";
@@ -798,7 +810,7 @@ var showalert = function (message, alerttype) {
       alerttype +
       ' alert-dismissible fade show"  role="alert">' +
       message +
-      '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
+      '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
   );
   setTimeout(function () {
     $("#formalertdiv").remove();

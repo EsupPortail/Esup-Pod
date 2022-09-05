@@ -1,4 +1,4 @@
-<!-- HTML for playlist element list. Don't use this file alone it must be integrated into another template ! -->
+{# HTML for playlist element list. Don't use this file alone it must be integrated into another template! #}
 {% load i18n %}
 <div overflow: auto>
 	<table class="table table-sm scroll" id="table_list_videos">
@@ -17,7 +17,7 @@
 			{% for element in list_videos %}
 				<tr class="video">
 					<td class="video_thumbnail">
-						<a href="{% url 'video' slug=element.video.slug %}">
+						<a href="{% url 'video:video' slug=element.video.slug %}">
 							<img class="img-thumbnail" src="{{element.video.get_thumbnail_url}}" alt="{% trans 'Video thumbnail' %}" width="100" height="50" loading="lazy">
 						</a>
 					</td>
@@ -27,10 +27,10 @@
 					<td class="video-position">{{element.position}}</td>
 					<td>
 						<button class="btn btn-sm btn-link position-up" title="{%trans 'Move up'%}">
-							<i data-feather="arrow-up-circle"></i>
+							<i class="bi bi-arrow-up-circle"></i>
 						</button>
 						<button class="btn btn-sm btn-link position-down" title="{%trans 'Move down'%}">
-							<i data-feather="arrow-down-circle"></i>
+							<i class="bi bi-arrow-down-circle"></i>
 						</button>
 						<button class="btn btn-sm btn-danger position-delete">{% trans 'Remove' %}</button>
 					</td>

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Esup-Pod. If not, see <https://www.gnu.org/licenses/>.
 
-from pod.main.forms import ContactUsForm, SUBJECT_CHOICES
+from .forms import ContactUsForm, SUBJECT_CHOICES
 from django.shortcuts import render
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
@@ -33,12 +33,14 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from wsgiref.util import FileWrapper
 from django.db.models import Q
 from pod.video.models import Video
+from pod.authentication.forms import FrontOwnerForm
 import os
 import mimetypes
 import json
 import unicodedata
 from django.contrib.auth.decorators import login_required
 from .models import Configuration
+from honeypot.decorators import check_honeypot
 
 ##
 # Settings exposed in templates
@@ -130,6 +132,7 @@ def get_manager_email(owner):
 
 
 def get_dest_email(owner, video, form_subject, request):
+    """Determine to which recipient an email should be addressed."""
     dest_email = []
     # Soit le owner a été spécifié
     # Soit on le récupere via la video
@@ -139,7 +142,7 @@ def get_dest_email(owner, video, form_subject, request):
     if not v_owner:
         # Vérifier si l'utilisateur est authentifié
         # le manager de son etablissement sera le dest du mail
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return get_manager_email(request.user)
         # Autrement le destinataire du mail sera le(s) manager(s)
         # ou le support dans le cas de Grenoble
@@ -156,11 +159,12 @@ def get_dest_email(owner, video, form_subject, request):
     else:
         # Sinon aucune envie d'utiliser cette fonctionnalité
         # On utilise le fonctionnement de base
-        dest_email = [owner.email] if owner else CONTACT_US_EMAIL
+        dest_email = [v_owner.email] if v_owner else CONTACT_US_EMAIL
     return dest_email
 
 
 @csrf_protect
+@check_honeypot(field_name='firstname')
 def contact_us(request):
     """Handle "Contact us" form."""
     owner = (
@@ -316,6 +320,7 @@ def remove_accents(input_str):
 
 @login_required(redirect_field_name="referrer")
 def user_autocomplete(request):
+    """Search for users with partial names, for autocompletion."""
     if request.is_ajax():
         additional_filters = {
             "video__is_draft": False,
@@ -363,3 +368,29 @@ def robots_txt(request):
         "Disallow: %s" % LOGIN_URL,
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def userpicture(request):
+
+    frontOwnerForm = FrontOwnerForm(instance=request.user.owner)
+
+    if request.method == "POST":
+        frontOwnerForm = FrontOwnerForm(request.POST, instance=request.user.owner)
+        if frontOwnerForm.is_valid():
+            frontOwnerForm.save()
+            # messages.add_message(
+            #    request, messages.INFO, _('Your picture has been saved.'))
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                _("One or more errors have been found in the form."),
+            )
+
+    return render(
+        request,
+        "userpicture/userpicture.html",
+        {"frontOwnerForm": frontOwnerForm},
+    )

@@ -18,7 +18,7 @@ var ajaxfail = function (data) {
   );
 };
 
-$(window).ready(function () {
+document.addEventListener("DOMContentLoaded", function () {
   const table = $("#table_list_videos")[0];
 
   $(".position-up").on("click", function () {
@@ -209,7 +209,7 @@ $(window).ready(function () {
             .addClass("disabled")
             .removeClass("playlist-item")
             .append(
-              '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check align-bottom"><polyline points="20 6 9 17 4 12"></polyline></svg>'
+              ''
             );
         } else {
           showalert(response.fail, "alert-danger");
