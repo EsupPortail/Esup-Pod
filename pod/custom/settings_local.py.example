@@ -494,41 +494,20 @@ FFMPEG = "ffmpeg"
 FFPROBE = "ffprobe"
 
 """
-# durée en seconde des segment HLS
-"""
-SEGMENT_TARGET_DURATION = 2
-
-"""
-# La taille du buffer est égale au bitrate vidéo du rendu
-#  multiplié par cette valeur
-"""
-RATE_MONITOR_BUFFER_RATIO = 2
-
-"""
 # nombre de thread possible pour ffmpeg (0 égale maximum possible)
 """
 FFMPEG_NB_THREADS = 0
 
 """
-# Commande utilisée pour récupérer les informations
-#  de la première piste video du fichier envoyé
-"""
-GET_INFO_VIDEO = "%(ffprobe)s -v quiet -show_format -show_streams -select_streams v:0 -print_format json -i %(source)s"
-
-"""
-# Commande utilisée pour récupérer les informations
-#  de la première piste audio du fichier envoyé
-"""
-GET_INFO_AUDIO = "%(ffprobe)s -v quiet -show_format -show_streams -select_streams a:0 -print_format json -i %(source)s"
-
-"""
 # paramètres de la commande ffmpeg utilisés
 #  pour encoder toutes les vidéos, peu importe le rendu
+# use only for studio encoding
 """
 FFMPEG_STATIC_PARAMS = " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf 20 -sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads %(nb_threads)s "
 
 """
 # autres paramètres qui sont placés au début de la commande
+# use only for studio encoding
 """
 FFMPEG_MISC_PARAMS = " -hide_banner -y "
 # to use in GPU, specify for example
@@ -537,6 +516,7 @@ FFMPEG_MISC_PARAMS = " -hide_banner -y "
 
 """
 # gestion de la taille de la vidéo pour l'encodage ffmpeg
+# not use actually - keep for later
 """
 FFMPEG_SCALE = ' -vf "scale=-2:{height}" '
 # to use in GPU, specify ' -vf "scale_npp=-2:{height}:interp_algo=super" '
@@ -547,20 +527,10 @@ FFMPEG_SCALE = ' -vf "scale=-2:{height}" '
 ENCODE_SHELL = '/bin/sh'
 
 """
-# bitrate audio pour l'encodage M4A
-#  (encodage des fichiers audio envoyés sur la plateforme)
+FFMPEG SETTINGS LOCATE IN :
+pod/video/encoding_settings.py
+all settings can be overwritte in your settings locale
 """
-AUDIO_BITRATE = "192k"
-
-"""
-# commande utilisée pour l'encodage des fichiers audio envoyés
-"""
-ENCODING_M4A = "%(ffmpeg)s -i %(source)s %(misc_params)s -c:a aac -b:a %(audio_bitrate)s -vn -threads %(nb_threads)s \"%(output_dir)s/audio_%(audio_bitrate)s.m4a\""
-
-"""
-# commande utilisée pour l'encodage audio pour tous les fichiers envoyés
-"""
-ENCODE_MP3_CMD = "%(ffmpeg)s -i %(source)s %(misc_params)s -vn -b:a %(audio_bitrate)s -vn -f mp3 -threads %(nb_threads)s \"%(output_dir)s/audio_%(audio_bitrate)s.mp3\""
 
 """
 # Si True, un courriel est envoyé aux managers
