@@ -15,6 +15,7 @@ if getattr(settings, "USE_PODFILE", False):
     FILEPICKER = True
     from pod.podfile.widgets import CustomFileWidget
 
+USE_ENRICH_READY = getattr(settings, "USE_ENRICH_READY", False)
 
 class ContributorForm(forms.ModelForm):
     """Contributor form fields."""
@@ -100,8 +101,13 @@ class TrackForm(forms.ModelForm):
                 )
             else:
                 self.fields[myField].widget.attrs["class"] = "form-control"
-        self.fields["kind"].widget.attrs["class"] = "custom-select"
-        self.fields["lang"].widget.attrs["class"] = "custom-select"
+        self.fields["kind"].widget.attrs["class"] = "form-select custom-select"
+        self.fields["lang"].widget.attrs["class"] = "form-select custom-select"
+        self.fields["enrich_ready"].widget.attrs["class"] = "form-check custom-select"
+
+        if not USE_ENRICH_READY:
+            self.fields["enrich_ready"].widget = HiddenInput()
+        
         if FILEPICKER:
             self.fields["src"].widget = CustomFileWidget(type="file")
 
