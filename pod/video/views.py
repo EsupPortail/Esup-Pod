@@ -2034,7 +2034,7 @@ def video_add(request):
             "allowed_text": allowed_text,
             "restricted_to_staff": RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY,
             "TRANSCRIPT": TRANSCRIPT,
-            "page_title": _("Media upload")
+            "page_title": _("Media upload"),
         },
     )
 

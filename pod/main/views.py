@@ -164,7 +164,7 @@ def get_dest_email(owner, video, form_subject, request):
 
 
 @csrf_protect
-@check_honeypot(field_name='firstname')
+@check_honeypot(field_name="firstname")
 def contact_us(request):
     """Handle "Contact us" form."""
     owner = (

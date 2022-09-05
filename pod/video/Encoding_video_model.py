@@ -203,9 +203,7 @@ class Encoding_video_model(Encoding_video):
         log_to_text = log_to_text + self.get_output_dir() + "/info_video.json"
         log_to_text = log_to_text + "\nEnd : " + self.stop
 
-        encoding_log, created = EncodingLog.objects.get_or_create(
-            video=video_to_encode
-        )
+        encoding_log, created = EncodingLog.objects.get_or_create(video=video_to_encode)
         encoding_log.log = log_to_text
         encoding_log.logfile = self.get_true_path(
             self.get_output_dir() + "/info_video.json"
@@ -233,8 +231,11 @@ class Encoding_video_model(Encoding_video):
             print("subtitle lang: %s " % list_subtitle_files[sub][0])
 
             sub_lang = list_subtitle_files[sub][0]
-            track_lang = sub_lang[:2] if (
-                LANG_CHOICES_DICT.get(sub_lang[:2])) else DEFAULT_LANG_TRACK
+            track_lang = (
+                sub_lang[:2]
+                if (LANG_CHOICES_DICT.get(sub_lang[:2]))
+                else DEFAULT_LANG_TRACK
+            )
 
             Track.objects.get_or_create(
                 video=video_to_encode,

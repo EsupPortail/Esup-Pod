@@ -32,7 +32,7 @@ if __name__ == "__main__":
         EXTRACT_THUMBNAIL,
         NB_THUMBNAIL,
         CREATE_THUMBNAIL,
-        EXTRACT_SUBTITLE
+        EXTRACT_SUBTITLE,
     )
 else:
     from .encoding_utils import (
@@ -60,7 +60,7 @@ else:
         EXTRACT_THUMBNAIL,
         NB_THUMBNAIL,
         CREATE_THUMBNAIL,
-        EXTRACT_SUBTITLE
+        EXTRACT_SUBTITLE,
     )
 
 
@@ -78,6 +78,7 @@ image_codec = ["jpeg", "gif", "png", "bmp", "jpg"]
 
 try:
     from django.conf import settings
+
     FFMPEG_CMD = getattr(settings, "FFMPEG_CMD", FFMPEG_CMD)
     FFMPEG_CRF = getattr(settings, "FFMPEG_CRF", FFMPEG_CRF)
     FFMPEG_PRESET = getattr(settings, "FFMPEG_PRESET", FFMPEG_PRESET)
@@ -88,14 +89,10 @@ try:
     FFMPEG_LIBX = getattr(settings, "FFMPEG_LIBX", FFMPEG_LIBX)
     FFMPEG_MP4_ENCODE = getattr(settings, "FFMPEG_MP4_ENCODE", FFMPEG_MP4_ENCODE)
     FFMPEG_HLS_COMMON_PARAMS = getattr(
-        settings,
-        "FFMPEG_HLS_COMMON_PARAMS",
-        FFMPEG_HLS_COMMON_PARAMS
+        settings, "FFMPEG_HLS_COMMON_PARAMS", FFMPEG_HLS_COMMON_PARAMS
     )
     FFMPEG_HLS_ENCODE_PARAMS = getattr(
-        settings,
-        "FFMPEG_HLS_ENCODE_PARAMS",
-        FFMPEG_HLS_ENCODE_PARAMS
+        settings, "FFMPEG_HLS_ENCODE_PARAMS", FFMPEG_HLS_ENCODE_PARAMS
     )
     FFMPEG_MP3_ENCODE = getattr(settings, "FFMPEG_MP3_ENCODE", FFMPEG_MP3_ENCODE)
     FFMPEG_M4A_ENCODE = getattr(settings, "FFMPEG_M4A_ENCODE", FFMPEG_M4A_ENCODE)
@@ -196,7 +193,9 @@ class Encoding_video:
         msg = "--> get_info_video" + "\n"
         probe_cmd = 'ffprobe -v quiet -show_entries format=duration -hide_banner  \
                     -of default=noprint_wrappers=1:nokey=1 -print_format json -i \
-                    "{}"'.format(input_file)
+                    "{}"'.format(
+            input_file
+        )
         info = get_info_from_video(probe_cmd)
         duration = 0
         try:
@@ -308,7 +307,7 @@ class Encoding_video:
             "preset": FFMPEG_PRESET,
             "profile": FFMPEG_PROFILE,
             "level": FFMPEG_LEVEL,
-            "crf": FFMPEG_CRF
+            "crf": FFMPEG_CRF,
         }
         in_height = list(self.list_video_track.items())[0][1]["height"]
         for index, rend in enumerate(list_rendition):
@@ -320,7 +319,7 @@ class Encoding_video:
                     "bufsize": list_rendition[rend]["maxrate"],
                     "ba": list_rendition[rend]["audio_bitrate"],
                     "hls_time": FFMPEG_HLS_TIME,
-                    "output": output_file
+                    "output": output_file,
                 }
                 self.list_hls_files[rend] = output_file
         return hls_command
@@ -346,11 +345,10 @@ class Encoding_video:
         livestream_content = ""
         for index, rend in enumerate(list_rendition):
             rend_livestream = os.path.join(
-                self.get_output_dir(),
-                "livestream%s.m3u8" % rend
+                self.get_output_dir(), "livestream%s.m3u8" % rend
             )
             if os.path.exists(rend_livestream):
-                with open(rend_livestream, 'r') as file:
+                with open(rend_livestream, "r") as file:
                     data = file.read()
                 if index == 0:
                     livestream_content += data
@@ -358,10 +356,9 @@ class Encoding_video:
                     livestream_content += "\n".join(data.split("\n")[2:])
                 os.remove(rend_livestream)
         livestream_file = open(
-            os.path.join(self.get_output_dir(), "livestream.m3u8"),
-            "w"
+            os.path.join(self.get_output_dir(), "livestream.m3u8"), "w"
         )
-        livestream_file.write(livestream_content.replace('\n\n', '\n'))
+        livestream_file.write(livestream_content.replace("\n\n", "\n"))
         livestream_file.close()
 
     def get_mp3_command(self):
@@ -434,7 +431,8 @@ class Encoding_video:
         for nb in range(0, NB_THUMBNAIL):
             num_thumb = str(nb + 1)
             self.list_thumbnail_files[num_thumb] = "%s_000%s.png" % (
-                output_file, num_thumb
+                output_file,
+                num_thumb,
             )
         return thumbnail_command
 

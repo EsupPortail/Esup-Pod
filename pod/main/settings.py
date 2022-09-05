@@ -85,10 +85,7 @@ DATABASES = {
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 # https://github.com/django/django/blob/master/django/conf/global_settings.py
 LANGUAGE_CODE = "fr"
-LANGUAGES = (
-    ("fr", "Français"),
-    ("en", "English")
-)
+LANGUAGES = (("fr", "Français"), ("en", "English"))
 
 ##
 # A string representing the time zone for this installation.

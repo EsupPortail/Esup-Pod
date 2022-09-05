@@ -10,25 +10,25 @@ FFMPEG_INPUT = '-hide_banner -threads %(nb_threads)s -i "%(input)s" '
 FFMPEG_LIBX = "libx264"
 FFMPEG_MP4_ENCODE = (
     '-map 0:v:0 -map 0:a:0 -c:v %(libx)s  -vf "scale=-2:%(height)s" '
-    + '-preset %(preset)s -profile:v %(profile)s '
-    + '-pix_fmt yuv420p -level %(level)s -crf %(crf)s '
-    + '-maxrate %(maxrate)s -bufsize %(bufsize)s '
+    + "-preset %(preset)s -profile:v %(profile)s "
+    + "-pix_fmt yuv420p -level %(level)s -crf %(crf)s "
+    + "-maxrate %(maxrate)s -bufsize %(bufsize)s "
     + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" '
-    + '-max_muxing_queue_size 4000 '
+    + "-max_muxing_queue_size 4000 "
     + '-c:a aac -ar 48000 -b:a %(ba)s -movflags faststart -y -vsync 0 "%(output)s" '
 )
 # https://gist.github.com/Andrey2G/78d42b5c87850f8fbadd0b670b0e6924
 FFMPEG_HLS_COMMON_PARAMS = (
     "-c:v %(libx)s -preset %(preset)s -profile:v %(profile)s -pix_fmt yuv420p "
     + "-level %(level)s -crf %(crf)s -sc_threshold 0 "
-    + "-force_key_frames \"expr:gte(t,n_forced*1)\" "
+    + '-force_key_frames "expr:gte(t,n_forced*1)" '
     + "-c:a aac -ar 48000 -max_muxing_queue_size 4000 "
 )
 FFMPEG_HLS_ENCODE_PARAMS = (
-    "-vf \"scale=-2:%(height)s\" -maxrate %(maxrate)s -bufsize %(bufsize)s -b:a:0 %(ba)s "
+    '-vf "scale=-2:%(height)s" -maxrate %(maxrate)s -bufsize %(bufsize)s -b:a:0 %(ba)s '
     + "-hls_playlist_type vod -hls_time %(hls_time)s  -hls_flags single_file "
-    + "-master_pl_name \"livestream%(height)s.m3u8\" "
-    + "-y \"%(output)s\" "
+    + '-master_pl_name "livestream%(height)s.m3u8" '
+    + '-y "%(output)s" '
 )
 
 # FFMPEG_MP3_ENCODE = '-vn -b:a %(audio_bitrate)s -f mp3 -y "%(output)s" '

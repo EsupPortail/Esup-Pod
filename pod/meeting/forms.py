@@ -33,20 +33,12 @@ MEETING_MAIN_FIELDS = getattr(
         "restrict_access_to_groups",
     ),
 )
-MEETING_DISABLE_RECORD = getattr(
-    settings,
-    "MEETING_DISABLE_RECORD",
-    True
-)
+MEETING_DISABLE_RECORD = getattr(settings, "MEETING_DISABLE_RECORD", True)
 
 MEETING_RECORD_FIELDS = getattr(
     settings,
     "MEETING_RECORD_FIELDS",
-    (
-        "record",
-        "auto_start_recording",
-        "allow_start_stop_recording"
-    )
+    ("record", "auto_start_recording", "allow_start_stop_recording"),
 )
 
 MEETING_EXCLUDE_FIELDS = MEETING_MAIN_FIELDS + ("id",)

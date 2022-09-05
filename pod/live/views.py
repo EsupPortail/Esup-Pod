@@ -194,9 +194,7 @@ def heartbeat(request):
 def can_manage_event(user):
     return user.is_authenticated and (
         user.is_superuser
-        or user.owner.accessgroup_set.filter(
-            code_name__in=AFFILIATION_EVENT
-        ).exists()
+        or user.owner.accessgroup_set.filter(code_name__in=AFFILIATION_EVENT).exists()
     )
 
 

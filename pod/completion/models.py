@@ -209,10 +209,7 @@ class Track(models.Model):
         _("Kind"), max_length=10, choices=KIND_CHOICES, default="subtitles"
     )
     lang = models.CharField(
-        _("Language"),
-        max_length=2,
-        choices=LANG_CHOICES,
-        default=DEFAULT_LANG_TRACK
+        _("Language"), max_length=2, choices=LANG_CHOICES, default=DEFAULT_LANG_TRACK
     )
     src = models.ForeignKey(
         CustomFileModel,

@@ -15,7 +15,7 @@ class Playlist(models.Model):
         max_length=100,
         help_text=_(
             'Used to access this instance, the "slug" is a short'
-            + ' label containing only letters, numbers, underscore or dash top.'
+            + " label containing only letters, numbers, underscore or dash top."
         ),
     )
     owner = models.ForeignKey(User, verbose_name=_("Owner"), on_delete=models.CASCADE)

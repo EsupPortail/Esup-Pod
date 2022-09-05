@@ -159,36 +159,39 @@ class EventPasswordForm(forms.Form):
 
 class EventForm(forms.ModelForm):
     fieldsets = (
-        (None, {
-            "fields": [
-                "title",
-                "start_date",
-                "start_time",
-                "end_time",
-                "building",
-                "broadcaster",
-                "password",
-                "is_restricted",
-                "restrict_access_to_groups"
-            ]
-        }),
+        (
+            None,
+            {
+                "fields": [
+                    "title",
+                    "start_date",
+                    "start_time",
+                    "end_time",
+                    "building",
+                    "broadcaster",
+                    "password",
+                    "is_restricted",
+                    "restrict_access_to_groups",
+                ]
+            },
+        ),
         (
             "advanced_options",
             {
                 "legend": _("Display advanced options"),
                 "classes": "collapse",
                 "fields": [
-                    'description',
-                    'owner',
-                    'additional_owners',
-                    'type',
-                    'is_draft',
-                    'is_auto_start',
-                    'iframe_url',
-                    'iframe_height',
-                    'aside_iframe_url',
-                    'thumbnail'
-                ]
+                    "description",
+                    "owner",
+                    "additional_owners",
+                    "type",
+                    "is_draft",
+                    "is_auto_start",
+                    "iframe_url",
+                    "iframe_height",
+                    "aside_iframe_url",
+                    "thumbnail",
+                ],
             },
         ),
     )

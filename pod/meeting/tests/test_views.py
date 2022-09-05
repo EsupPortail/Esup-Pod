@@ -614,8 +614,7 @@ class MeetingInviteTestView(TestCase):
         response = self.client.post(
             url,
             {
-                "emails":
-                "test@univ.fr\n\rtest2@univ.fr, test3@univ-lille.fr test4@univ-lille.fr"
+                "emails": "test@univ.fr\n\rtest2@univ.fr, test3@univ-lille.fr test4@univ-lille.fr"
             },
         )
         self.assertRedirects(

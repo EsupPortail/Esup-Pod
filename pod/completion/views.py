@@ -89,7 +89,7 @@ def video_caption_maker(request, slug):
                 "track_language": track_language,
                 "track_kind": track_kind,
                 "active_model_enrich": ACTIVE_MODEL_ENRICH,
-                "page_title": _("Video Caption Maker")
+                "page_title": _("Video Caption Maker"),
             },
         )
 
@@ -153,7 +153,7 @@ def video_caption_maker_save(request, video):
             "current_folder": video_folder,
             "form_make_caption": form_caption,
             "video": video,
-            "page_title": _("Video Caption Maker")
+            "page_title": _("Video Caption Maker"),
         },
     )
 
@@ -198,7 +198,7 @@ def video_completion(request, slug):
                 "list_track": list_track,
                 "list_document": list_document,
                 "list_overlay": list_overlay,
-                "page_title": _("Video additions")
+                "page_title": _("Video additions"),
             },
         )
     else:
@@ -208,7 +208,7 @@ def video_completion(request, slug):
             {
                 "video": video,
                 "list_contributor": list_contributor,
-                "page_title": _("Video additions")
+                "page_title": _("Video additions"),
             },
         )
 
@@ -253,7 +253,7 @@ def video_completion_contributor(request, slug):
                 "list_track": list_track,
                 "list_document": list_document,
                 "list_overlay": list_overlay,
-                "page_title": _("Video additions")
+                "page_title": _("Video additions"),
             },
         )
     else:
@@ -263,7 +263,7 @@ def video_completion_contributor(request, slug):
             {
                 "video": video,
                 "list_contributor": list_contributor,
-                "page_title": _("Video additions")
+                "page_title": _("Video additions"),
             },
         )
 
