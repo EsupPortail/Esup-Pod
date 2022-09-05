@@ -532,24 +532,27 @@ var show_picture_form = function (data) {
   $("#userpicture_form").html($(data).find("#userpicture_form").html());
   if ($(data).find("#userpictureurl").val()) {
     //$(".get_form_userpicture").html('<img src="'+$(data).find("#userpictureurl").val()+'" height="34" class="rounded" alt="" loading="lazy">Change your picture');
-    $("#navbarDropdown .userpicture").remove();
-    $("#navbarDropdown .userinitial").hide();
-    $("#navbarDropdown").removeClass("initials");
-    $("#navbarDropdown").append(
+    $("#nav-usermenu .userpicture").remove();
+    $("#nav-usermenu .userinitial").hide();
+    $("#nav-usermenu > button").removeClass("initials btn pod-btn-primary");
+    $("#nav-usermenu > button").addClass("  nav-link");
+    $("#nav-usermenu > button").append(
       '<img src="' +
         $(data).find("#userpictureurl").val() +
-        '" class="userpicture img-fluid rounded" alt="avatar" loading="lazy">'
+        '" class="userpicture rounded" alt="avatar" loading="lazy">'
     );
-    $(".get_form_userpicture").html($(".get_form_userpicture").children());
-    $(".get_form_userpicture").append(
-      "&nbsp;" + gettext("Change your picture")
+    //$(".get_form_userpicture").html($(".get_form_userpicture").children());
+    $(".get_form_userpicture").html(
+      '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' + gettext("Change your picture")
     );
   } else {
-    $("#navbarDropdown .userpicture").remove();
-    $("#navbarDropdown .userinitial").show();
-    $("#navbarDropdown").addClass("initials");
-    $(".get_form_userpicture").html($(".get_form_userpicture").children());
-    $(".get_form_userpicture").html("&nbsp;" + gettext("Add your picture"));
+    $("#nav-usermenu .userpicture").remove();
+    $("#nav-usermenu .userinitial").show();
+    $("#nav-usermenu > button").addClass("initials btn pod-btn-primary");
+    //$(".get_form_userpicture").html($(".get_form_userpicture").children());
+    $(".get_form_userpicture").html(
+      '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' + gettext("Add your picture")
+    );
   }
   $("#userpictureModal").modal("hide");
 };
