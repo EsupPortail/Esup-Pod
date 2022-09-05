@@ -1,4 +1,4 @@
-Django==3.2
+Django==3.2.15
 django-ckeditor==6.0.0
 Pillow==9.0.0; python_version >= '3.7'
 Pillow==8.3.2; python_version == '3.6'
