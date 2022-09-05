@@ -18,7 +18,7 @@
         {{document.name}}
       {%endif%}
     </span>
-    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-bs-toggle="modal" data-bs-target="#fileModal_{{id}}">
+    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" >
       {% if type == "image" %}
         {% trans 'Change image' %}
       {% else %}
@@ -34,7 +34,7 @@
     </button>
   {% else %}
     <span id="fileinput_{{id}}"></span>
-    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-bs-toggle="modal" data-bs-target="#fileModal_{{id}}">
+    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" >
       {% if type == "image" %}
         {% trans 'Select an image' %}
       {% else %}
@@ -75,6 +75,13 @@ var id_input="";
 var static_url = "{% get_static_prefix %}";
 var deletefolder_url = "{% url 'podfile:deletefolder' %}";
 var deletefile_url = "{% url 'podfile:deletefile' %}";
+
+$(document).on('click', '.btn-fileinput_{{id}}', function (event) {
+  var myModal = new bootstrap.Modal(document.getElementById('fileModal_{{id}}'), {
+    keyboard: true
+  })
+  myModal.show();
+})
 
 $('#fileModal_{{id}}').appendTo(document.body);
 
