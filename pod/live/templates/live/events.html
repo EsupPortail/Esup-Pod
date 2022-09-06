@@ -17,7 +17,7 @@
     <div class="d-flex infinite-container mb-2" id="event_add">
         <h3>{% blocktrans count counter=events.paginator.count %}{{ counter }} event found{% plural %}{{ counter }} events found{% endblocktrans %}</h3>
         {% if display_direct_button %}
-            <a class="ml-auto" href="{% url 'live:directs_all' %}" title="{% trans "Supervise broadcasters" %}">
+            <a class="ml-auto" href="{% url 'live:directs_all' %}" title="{% trans 'Supervise broadcasters' %}">
                <button type="button" class="btn btn-primary">
                 <i class="bi bi-activity"></i>
                    {% trans "Supervise broadcasters" %}
@@ -25,7 +25,7 @@
             </a>
         {% endif %}
         {% if display_creation_button %}
-            <a class="ml-auto" href="{% url 'live:event_edit' %}" title="{% trans "Plan an event" %}">
+            <a class="ml-auto" href="{% url 'live:event_edit' %}" title="{% trans 'Plan an event' %}">
                 <button type="button" class="btn btn-primary">
                     <i class="bi bi-plus pod-add"></i>
                     {% trans "Plan an event" %}

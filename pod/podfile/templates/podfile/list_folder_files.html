@@ -79,7 +79,7 @@
           method="POST"
           id="formuploadfile"
           enctype="multipart/form-data"
-          action="{% url "podfile:uploadfiles" %}"
+          action="{% url 'podfile:uploadfiles' %}"
         >
           {% csrf_token %}
           <input type="hidden" name="folderid" value="{{folder.id}}">
