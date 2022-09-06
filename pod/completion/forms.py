@@ -33,7 +33,7 @@ class ContributorForm(forms.ModelForm):
                 self.fields[myField].label = mark_safe(
                     '{0} <span class="required_star">*</span>'.format(label_unicode)
                 )
-        self.fields["role"].widget.attrs["class"] = "custom-select"
+        self.fields["role"].widget.attrs["class"] = "form-select"
 
     class Meta(object):
         """Set form Metadata."""
@@ -158,7 +158,7 @@ class OverlayForm(forms.ModelForm):
                 )
             else:
                 self.fields[myField].widget.attrs["class"] = "form-control"
-        self.fields["position"].widget.attrs["class"] = "custom-select"
+        self.fields["position"].widget.attrs["class"] = "form-select"
         self.fields["background"].widget.attrs["class"] = "form-check-input"
 
     class Meta(object):

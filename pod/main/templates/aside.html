@@ -23,7 +23,7 @@
   </h2>
   <div class="card-text">
     <form class="form" method="get">
-      <select class="form-control" onchange="this.options[this.selectedIndex].getAttribute('data-value') &amp;&amp; (window.location = this.options[this.selectedIndex].getAttribute('data-value'));" name="discipline" id="discipline">
+      <select class="form-select" onchange="this.options[this.selectedIndex].getAttribute('data-value') &amp;&amp; (window.location = this.options[this.selectedIndex].getAttribute('data-value'));" name="discipline" id="discipline">
         <option value="#">{% trans 'Disciplines' %}...</option>
         {% for disc in DISCIPLINES %}
           <option value="{{disc.slug}}" data-value="{% url 'videos:videos' %}?discipline={{disc.slug}}">{{disc.title}}  ({{disc.video_count}})</option>
@@ -44,7 +44,7 @@
   </h2>
   <div class="card-text">
     <form class="form" method="get">
-      <select class="form-control" onchange="this.options[this.selectedIndex].getAttribute('data-value') &amp;&amp; (window.location = this.options[this.selectedIndex].getAttribute('data-value'));" name="type" id="type">
+      <select class="form-select" onchange="this.options[this.selectedIndex].getAttribute('data-value') &amp;&amp; (window.location = this.options[this.selectedIndex].getAttribute('data-value'));" name="type" id="type">
         <option value="#">{% trans 'Types' %}...</option>
         {% for type in TYPES %}
           <option value="{{type.slug}}" data-value="{% url 'videos:videos' %}?type={{type.slug}}">{{type.title}}  ({{type.video_count}})</option>
@@ -60,7 +60,7 @@
 <div class="card card-body p-2 p-3" id="card-tags">
   <h2 class="card-title pod-card__title h4">
     <i class="bi bi-tag" aria-hidden="true"></i>&nbsp;{% trans 'Tags' %}
-    <!-- 
+    <!--
       <a href="#" class="float-right"><svg height="32" class="octicon octicon-arrow-right" viewBox="0 0 10 16" version="1.1" width="20" aria-hidden="true"><path fill-rule="evenodd" d="M10 8L4 3v3H0v4h4v3z"></path></svg></a>
     -->
   </h2>

@@ -162,12 +162,12 @@
     border: 2px solid rgba(255, 255, 255, 0.8);
     border-radius: 4px;
 }*/
-#manageCategoryModal .category_modal_videos_list .infinite-item .checked_overlay{
+.category_modal_videos_list .infinite-item .checked_overlay {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
     position: absolute;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, .8);
     left: 0;
     right: 0;
     bottom: 0;

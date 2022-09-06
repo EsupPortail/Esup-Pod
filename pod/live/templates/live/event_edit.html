@@ -63,7 +63,7 @@
         {% endif %}
         {% if form.errors %}
             <p class="text-danger">{% trans "One or more errors have been found in the form." %}<br/>
-            {% for error in form.non_field_errors %} 
+            {% for error in form.non_field_errors %}
             <span> - {{ error }}</span> <br/>
             {% endfor %}
             </p>
@@ -130,8 +130,8 @@
     {% if access_not_allowed != True %}
         {% if form.instance.title  and form.instance.slug != '' %}
             <div class="card mt-1" id="card-managevideo">
-                <h5 class="card-header card-title pl-2"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage event" %}
-                </h5>
+                <h2 class="h4 card-header card-title pl-2"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage event" %}
+                </h3>
                 <div class="card-body card-text text-center">
                     {% if event.owner == request.user or request.user.is_superuser %}
                         <a href="{% url 'live:event_edit' slug=form.instance.slug %}" title="{% trans "Edit the event" %}"
@@ -148,7 +148,7 @@
             </div>
         {% endif %}
         <div class="card mt-1" id="card-sharedraftversion">
-            <h5 class="card-header card-title pl-2">{% trans "Event planning" %}</h5>
+            <h2 class="h4 card-header card-title pl-2">{% trans "Event planning" %}</h2>
             <div class="card-body card-text">
                 <p>{% trans "You can schedule a live event by selecting a building and a room or recording device." %}</p>
                 <p>{% trans "You will then need to specify a date, a start time and an end time." %}</p>
@@ -157,9 +157,12 @@
             </div>
         </div>
         <div class="card mt-1" id="card-mandatoryfields">
-            <h5 class="card-header card-title pl-2">{% trans "Mandatory fields" %}</h5>
+            <h2 class="h4 card-header card-title pl-2">{% trans "Mandatory fields" %}</h2>
             <div class="card-body card-text">
-                <p>{% trans "Fields marked with an asterisk are mandatory." %}</p>
+              <p>
+                <span class="required_star">*</span>
+                {% trans "Fields marked with an asterisk are mandatory." %}
+              </p>
             </div>
         </div>
     {% endif %}
@@ -171,7 +174,7 @@
     <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{ VERSION }}"></script>
     <script src="{% static 'admin/js/jquery.init.js' %}?ver={{ VERSION }}"></script>
     <script src="{% static 'js/broadcaster_from_building.js' %}?ver={{ VERSION }}"></script>
-    
+
     {{ form.media }}
 
     <script>
@@ -211,7 +214,7 @@
                 gp_access.removeClass("show").addClass("hide");
             }
         };
-        
+
         $('document').ready(function () {
             DateTimeShortcuts.overrideTimeOptions = function () {
                 var clockCount = 0;
@@ -238,7 +241,7 @@
                 });
             };
             DateTimeShortcuts.overrideTimeOptions();
-        
+
         });
 
     </script>

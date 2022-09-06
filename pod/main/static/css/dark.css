@@ -25,12 +25,21 @@
   */
 }
 
+[data-theme="dark"] .pod-navbar__brand img,
+[data-theme="dark"] :not(.alert-warning)>.btn-close {
+  filter: invert(100%) sepia(0%) saturate(2908%) hue-rotate(27deg) brightness(121%) contrast(99%);
+}
+
+[data-theme="dark"] .pod-footer-logo {
+  filter: brightness(100%);
+}
+
 [data-theme="dark"] .form-control::placeholder {
   color: #BEC1C6;
 }
 
 [data-theme="dark"] .text-muted {
-  color: #eee !important;
+  color: #ccc !important;
 }
 
 [data-theme="dark"] .form-control:focus {
@@ -38,6 +47,10 @@
   color: var(--font-color);
   border-color: var(--primary);
   box-shadow: 0 0 0 .2rem rgba(126, 126, 126, .25);
+}
+
+[data-theme="dark"] .category_modal_videos_list .infinite-item .checked_overlay {
+  background-color: rgba(0, 0, 0, .8);
 }
 
 [data-theme="dark"] #card-takenote .header:hover {
@@ -77,7 +90,8 @@
 
 [data-theme="dark"] .btn-link.disabled,
 [data-theme="dark"] .dropdown-item,
-[data-theme="dark"] footer {
+[data-theme="dark"] footer,
+[data-theme="dark"] .list-group-item {
   color: var(--font-color);
 }
 
@@ -112,6 +126,13 @@
 
 [data-theme="dark"] .btn-secondary {
   color: var(--white);
+}
+[data-theme="dark"] .btn-outline-secondary {
+  color:  #A8AFB5;
+}
+
+[data-theme="dark"] .btn-outline-primary{
+  background-color: #000;
 }
 
 [data-theme="dark"] .btn-outline-primary>svg {
@@ -161,7 +182,8 @@ body.dark {
   color: #ccc;
 }
 
-[data-theme="dark"] #podfile .col {
+[data-theme="dark"] #podfile .col,
+[data-theme="dark"] .card {
   background-color: var(--bg-color);
 }
 
@@ -196,6 +218,7 @@ body.dark {
 [data-theme="dark"] select,
 [data-theme="dark"] input:not(.btn),
 [data-theme="dark"] textarea,
+[data-theme="dark"] .form-control[readonly],
 [data-theme="dark"] .select2-container,
 [data-theme="dark"] .select2-container-multi .select2-choices .select2-search-field input,
 [data-theme="dark"] .select2-container-multi .select2-choices,
@@ -205,10 +228,14 @@ body.dark {
 [data-theme="dark"] .select2-dropdown-open .select2-choice,
 [data-theme="dark"] .select2-results .select2-no-results,
 [data-theme="dark"] .select2-results .select2-searching {
-  background: var(--pod-background-neutre1-bloc);
+  background-color: var(--pod-background-neutre1-bloc);
   border-color: var(--pod-font-color);
   color: var(--pod-font-color);
   box-shadow: none;
+}
+
+[data-theme="dark"] .form-select{
+  background-image:  url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f3f9ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
 }
 
 .theme-switch-wrapper {
