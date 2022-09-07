@@ -23,6 +23,8 @@ if getattr(settings, "USE_PODFILE", False):
 
 PILOTING_CHOICES = getattr(settings, "BROADCASTER_PILOTING_SOFTWARE", [])
 
+EVENT_ACTIVE_AUTO_START = getattr(settings, "EVENT_ACTIVE_AUTO_START", False)
+
 
 class OwnerWidget(s2forms.ModelSelect2Widget):
     search_fields = [
@@ -332,11 +334,12 @@ class EventForm(forms.ModelForm):
             "password",
             "is_restricted",
             "restrict_access_to_groups",
-            "is_auto_start",
             "iframe_url",
             "iframe_height",
             "aside_iframe_url",
         ]
+        if EVENT_ACTIVE_AUTO_START:
+            fields.append("is_auto_start")
         widgets = {
             "owner": OwnerWidget,
             "additional_owners": AddOwnerWidget,

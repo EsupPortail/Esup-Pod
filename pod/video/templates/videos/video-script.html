@@ -73,11 +73,13 @@ const options = {
     }
   },
   plugins: {
+    {% if event is None %}
     seekButtons: {
       forward: seektime,
       back: seektime
     }
-{% if not video.is_video %}
+    {% endif %}
+{% if not video.is_video and event is None %}
     // enable videojs-wavesurfer plugin
     ,wavesurfer: {
       backend: 'MediaElement',
@@ -223,7 +225,7 @@ player.on('firstplay', function(){
 {% endif %}
 
 
-{% if not video.is_video %}
+{% if not video.is_video and event is None %}
   window.addEventListener('resize', function(){
     // Auto resize Waves on window resize.
     player.wavesurfer().surfer && player.wavesurfer().surfer._onResize();
