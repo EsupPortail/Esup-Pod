@@ -26,10 +26,10 @@
   {% else %}
     <h3 id="livename" data-liveid="{{broadcaster.id}}"><i class="bi bi-cast"></i>&nbsp;{% trans "Live" %} {{broadcaster.name}}</h3>
     <div class="d-flex infinite-container mb-2" id="event_add">
-      <a class="btn btn-primary" href="{% url 'live:event_edit' %}?broadcaster_id={{broadcaster.id}}&building_id={{broadcaster.building.id}}" title="{% trans "Plan an event" %}">
+      <a class="btn btn-primary" href="{% url 'live:event_edit' %}?broadcaster_id={{broadcaster.id}}&building_id={{broadcaster.building.id}}" title="{% trans 'Plan an event' %}">
         <i class="bi bi-plus pod-add"></i>
         <span>{% trans "Plan an event" %}</span>
-      </a>       
+      </a>
     </div>
 
   {% if broadcaster.video_on_hold.is_video %}
@@ -109,7 +109,7 @@
     <div class="card" id="card-managevideo">
       <h5 class="card-header card-title pod-card__title ps-2"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage live"%}</h5>
       <div class="card-body card-text text-center">
-        <a href="{% url 'admin:live_broadcaster_change' broadcaster.id %}" title="{% trans "Edit the live"%}" class="btn pod-btn-social p1 m-0 ms-1">
+        <a href="{% url 'admin:live_broadcaster_change' broadcaster.id %}" title="{% trans 'Edit the live' %}" class="btn pod-btn-social p1 m-0 ms-1">
           <i class="bi bi-pencil-square"></i></a>
       </div>
     </div>

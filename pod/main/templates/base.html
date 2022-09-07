@@ -89,15 +89,11 @@
           </nav>
           <!-- contenu page statique -->
           <div class="pod-first-content">
-            {% if request.path != "/" %}
+            {% block main_page_title %}
               {% if page_title %}
                 <h1 class="page_title">{{page_title|capfirst}}</h1>
-              {% else %}
-                {% block main_page_title %}
-                  <h1 class="page_title">&nbsp;</h1>
-                {% endblock main_page_title %}
               {% endif %}
-            {% endif %}
+            {% endblock main_page_title %}
             {% block page_content %}
             <p> Contenu block page_content </p>
             {% endblock page_content %}

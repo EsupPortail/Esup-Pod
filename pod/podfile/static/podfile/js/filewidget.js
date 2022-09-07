@@ -40,35 +40,35 @@ $(document).on("click", "a.folder", function(e) {
     $('#files').addClass('loading');
     var id = $(this).data("id");
     let loader = `
-	<div class="container-loader">
-	    <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-	</div>
-	`;
+       <div class="container-loader">
+           <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+       </div>
+       `;
     $('#files').html(loader);
     let success_func = function($data){
-	let html = document.createElement('div');
-	html.innerHTML = $data.list_element
-	let listfiles = html.querySelector('#listfiles');
-	if( listfiles.children.length === 0 ){
-	    let emptyFolderMsg = `
-		<div class="empty-folder-warning">
-		    ${gettext('This folder is empty')}
-		</div>
-		`;
-	    $data['emptyfoldermsg'] = emptyFolderMsg;
-	}
-	return $data;
+       let html = document.createElement('div');
+       html.innerHTML = $data.list_element
+       let listfiles = html.querySelector('#listfiles');
+       if( listfiles.children.length === 0 ){
+           let emptyFolderMsg = `
+              <div class="empty-folder-warning">
+                  ${gettext('This folder is empty')}
+              </div>
+              `;
+           $data['emptyfoldermsg'] = emptyFolderMsg;
+       }
+       return $data;
     }
     let error_func = function($xhr){
-	console.log("error", $xhr);
+       console.log("error", $xhr);
     }
     send_form_data(
-	    $(this).data('target'),
-	    {},
-	    "show_folder_files",
-	    "get",
-	    success_func,
-	    error_func
+           $(this).data('target'),
+           {},
+           "show_folder_files",
+           "get",
+           success_func,
+           error_func
     );
 });
 /*********** OPEN/CLOSE FOLDER MENU ************/
@@ -160,7 +160,7 @@ $(document).on("submit", "form#formchangeimage, form#formchangefile, form#formup
 function user_li(text, elt, type)
 {
     let cls = type.toLowerCase()==="add"?"btn-success btn-add": "btn-danger btn-remove";
-	return `<li class="list-group-item"><span class="username">${elt.first_name} ${elt.last_name} ${!HIDE_USERNAME?'('+elt.username+')': ''}</span><a href="#" type="button" data-userid="${elt.id}" class="btn btn-share ${cls}">${text}</a></li>`
+       return `<li class="list-group-item"><span class="username">${elt.first_name} ${elt.last_name} ${!HIDE_USERNAME?'('+elt.username+')': ''}</span><a href="#" type="button" data-userid="${elt.id}" class="btn btn-share ${cls}">${text}</a></li>`
 }
 
   function reloadRemoveBtn(){
@@ -196,7 +196,7 @@ function user_li(text, elt, type)
                 response.forEach(elt => {
                   $("#user-search").append( user_li(add, elt, 'add') )
                 });
-      		$("#user-search").fadeIn('slow');
+              $("#user-search").fadeIn('slow');
             },
             error : function(result, status, error){
               showalert(gettext("Server error") + "<br/>"+error, "alert-danger");
@@ -207,7 +207,7 @@ function user_li(text, elt, type)
 
 //$(document).on('click', '#currentfoldershare', function(e){
 $(document).on('hide.bs.modal', '#shareModalCenter', function (event) {
-	event.stopPropagation()
+       event.stopPropagation()
 })
 $(document).on('show.bs.modal', '#shareModalCenter', function (event) {
     event.stopPropagation();
@@ -235,8 +235,7 @@ $(document).on("click", ".btn-remove", function(e) {
             showalert(gettext("Server error") + "<br/>"+error, "alert-danger");
           }
       },
-
-  );
+    );
   });
 
 
@@ -261,7 +260,6 @@ $(document).on("click", ".btn-remove", function(e) {
   $(document).on("click", "#modalSave", function(e) {
     $( "#folderModalCenter form:visible" ).submit();
   });
-
 
 
   $(document).on("click", "#currentfolderdelete", function(e) {
@@ -312,7 +310,7 @@ $(document).on("click", ".btn-remove", function(e) {
                   $("#list_folders_sub").append('<div class="folder_container">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
                 })
                 if(nextPage != -1){
-		    $("#list_folders_sub").append(seeMoreElement(nextPage, response.current_page+1, response.total_pages, text));
+                  $("#list_folders_sub").append(seeMoreElement(nextPage, response.current_page+1, response.total_pages, text));
                 }
                 lock = false
             }
@@ -322,7 +320,6 @@ $(document).on("click", ".btn-remove", function(e) {
 
   });
 
-
   $(document).on('input',"#userInputName",function(e) {
     if($(this).val() && $(this).val().length > 2) {
       var searchTerm = $(this).val();
@@ -330,12 +327,10 @@ $(document).on("click", ".btn-remove", function(e) {
     } else {
       $("#user-search").html("");
       $("#user-search").fadeOut('slow',function(){
-      	$("#user-search").hide();
+       $("#user-search").hide();
       });
     }
   });
-
-
 
   function reloadFolder(data){
     if(data.list_element) {
@@ -371,9 +366,9 @@ $(document).on("click", ".btn-remove", function(e) {
     $('#files').removeClass('loading');
     if(data.list_element) {
         $('#files').html(data.list_element);
-	if('emptyfoldermsg' in data){
-	    $('#files #listfiles').html(data.emptyfoldermsg);
-	}
+       if('emptyfoldermsg' in data){
+           $('#files #listfiles').html(data.emptyfoldermsg);
+       }
         $(".list_folders a").removeClass('font-weight-bold');
         $("img.directory-image").attr("src", static_url + "podfile/images/folder.png");
         $("img.home-image").attr("src", static_url + "podfile/images/home_folder.png");
@@ -421,14 +416,8 @@ $(document).on("click", ".btn-remove", function(e) {
   return folder
   }
 
-var folder_open_icon = `
-	<span class="folder-open" id="folder-open-icon">
-	    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="folder-open" class="svg-inline--fa fa-folder-open fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M572.694 292.093L500.27 416.248A63.997 63.997 0 0 1 444.989 448H45.025c-18.523 0-30.064-20.093-20.731-36.093l72.424-124.155A64 64 0 0 1 152 256h399.964c18.523 0 30.064 20.093 20.73 36.093zM152 224h328v-48c0-26.51-21.49-48-48-48H272l-64-64H48C21.49 64 0 85.49 0 112v278.046l69.077-118.418C86.214 242.25 117.989 224 152 224z"></path></svg>
-	</span>`;
-var folder_icon = `
-	<span class="folder-close" id="folder-icon">
-	    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="folder" class="svg-inline--fa fa-folder fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M464 128H272l-64-64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V176c0-26.51-21.49-48-48-48z"></path></svg>
-	</span>`;
+var folder_open_icon = `<i class="folder-open bi bi-folder2-open" id="folder-open-icon"></i>`;
+var folder_icon = `<i class="folder-close bi bi-folder2" id="folder-icon"></i>`;
 
 function createFolder(foldid, foldname, isCurrent,type,owner=undefined){
     let construct = ""
@@ -459,7 +448,7 @@ function initFolders(){
                 $("#list_folders_sub").append('<div class="folder_container">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
               })
               if(nextPage != -1){
-		$("#list_folders_sub").append(seeMoreElement(nextPage, response.current_page+1, response.total_pages));
+                $("#list_folders_sub").append(seeMoreElement(nextPage, response.current_page+1, response.total_pages));
               }
           }
       }
@@ -476,14 +465,14 @@ var seeMoreElement = function (nextPage, curr_page, tot_page, search=null){
     search = search? `&search=${search}`: '';
     let seeMore = gettext('See more');
     return `
-	<div class="view-more-container">
-	    <a id="more" href="#" data-next="/podfile/ajax_calls/user_folders?page=${nextPage}${search}">
-		<span class="see-more" id="see-more-icon">
-		    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-right" class="svg-inline--fa fa-arrow-right fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z"></path></svg>
-		</span><span class="text">${seeMore} (${curr_page}/${tot_page})</span>
-		<div class="loader lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-	    </a>
-	</div>
+       <div class="view-more-container">
+           <a id="more" href="#" data-next="/podfile/ajax_calls/user_folders?page=${nextPage}${search}">
+              <span class="see-more" id="see-more-icon">
+                  <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-right" class="svg-inline--fa fa-arrow-right fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z"></path></svg>
+              </span><span class="text">${seeMore} (${curr_page}/${tot_page})</span>
+              <div class="loader lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+           </a>
+       </div>
     `;
 }
   $(document).on("click","#list_folders_sub .view-more-container a#more", function(e) {
@@ -499,13 +488,13 @@ var seeMoreElement = function (nextPage, curr_page, tot_page, search=null){
           url: next,
           cache: false,
           success: function (response) {
-    	    parent_el.remove();
+           parent_el.remove();
             let nextPage = response.next_page
                response.folders.forEach(elt => {
                 $("#list_folders_sub").append('<div class="folder_container">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
               })
               if(nextPage != -1){
-		$("#list_folders_sub").append(seeMoreElement(nextPage, response.current_page+1, response.total_pages, search));
+              $("#list_folders_sub").append(seeMoreElement(nextPage, response.current_page+1, response.total_pages, search));
               }
 
           }
