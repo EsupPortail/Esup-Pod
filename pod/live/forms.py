@@ -114,7 +114,7 @@ class CustomBroadcasterChoiceField(forms.ModelChoiceField):
 
 def check_event_date_and_hour(form):
     if (
-        not {"start_time", "start_time", "end_time", "broadcaster"}
+        not {"start_date", "start_time", "end_time", "broadcaster"}
         <= form.cleaned_data.keys()
     ):
         return
