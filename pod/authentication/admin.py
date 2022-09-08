@@ -8,7 +8,7 @@ from pod.authentication.forms import OwnerAdminForm, GroupSiteAdminForm
 from django.utils.html import format_html
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import Group
-from pod.authentication.forms import GroupAdminForm, AccessGroupAdminForm
+from pod.authentication.forms import GroupAdminForm, FrontOwnerForm
 from django.contrib.sites.models import Site
 from django.contrib.admin import widgets
 from pod.authentication.models import AccessGroup
@@ -188,7 +188,9 @@ class GroupAdmin(admin.ModelAdmin):
 
 
 class AccessGroupAdmin(admin.ModelAdmin):
-    form = AccessGroupAdminForm
+    # form = AccessGroupAdminForm
+    # search_fields = ["user__username__icontains", "user__email__icontains"]
+    autocomplete_fields = ['users']
     search_fields = ["id", "code_name", "display_name"]
     list_display = (
         "id",
@@ -196,21 +198,11 @@ class AccessGroupAdmin(admin.ModelAdmin):
         "display_name",
     )
 
-    class Media:
-        css = {
-            "all": (
-                # "bootstrap/dist/css/bootstrap.min.css",
-                # "bootstrap/dist/css/bootstrap-grid.min.css",
-                "css/pod-admin.css",
-            )
-        }
-        js = (
-            "/admin/jsi18n/",
-            # "admin/js/core.js",
-            "admin/js/jquery.init.js",
-            "admin/js/vendor/jquery/jquery.js",
 
-        )
+class OwnerAdmin(admin.ModelAdmin):
+    form = FrontOwnerForm
+    autocomplete_fields = ['user', 'accessgroups']
+    search_fields = ["user__username__icontains", "user__email__icontains"]
 
 
 # Re-register UserAdmin
@@ -220,5 +212,5 @@ admin.site.register(User, UserAdmin)
 # Register the new Group ModelAdmin instead of the original one.
 admin.site.unregister(Group)
 admin.site.register(Group, GroupAdmin)
-
+admin.site.register(Owner, OwnerAdmin)
 admin.site.register(AccessGroup, AccessGroupAdmin)
