@@ -98,7 +98,7 @@ class CustomFileModelForm(forms.ModelForm):
         model = CustomFileModel
         fields = ("file", "folder")
         labels = {
-            'file': _('Choose File'),
+            "file": _("Choose File"),
         }
 
 
@@ -122,5 +122,5 @@ class CustomImageModelForm(forms.ModelForm):
         model = CustomImageModel
         fields = ("file", "folder")
         labels = {
-            'file': _('Choose image file'),
+            "file": _("Choose image file"),
         }

@@ -209,7 +209,6 @@ class AccessGroupAdmin(admin.ModelAdmin):
             # "admin/js/core.js",
             "admin/js/jquery.init.js",
             "admin/js/vendor/jquery/jquery.js",
-
         )
 
 

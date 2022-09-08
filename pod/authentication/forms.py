@@ -91,7 +91,6 @@ class GroupAdminForm(forms.ModelForm):
 
 
 class AccessGroupAdminForm(forms.ModelForm):
-
     class Meta:
         model = Group
         fields = "__all__"
