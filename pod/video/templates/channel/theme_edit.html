@@ -65,13 +65,16 @@
 
 {% block page_aside %}
 <div class="card">
-  <h5 class="card-header card-title pod-card__title">{% trans "Mandatory fields" %}</h5>
+  <h2 class="h4 card-header card-title pod-card__title">{% trans "Mandatory fields" %}</h2>
   <div class="card-body card-text">
-    <p>{% trans "Fields marked with an asterisk are mandatory."%}</p>
+    <p>
+      <span class="required_star">*</span>
+      {% trans "Fields marked with an asterisk are mandatory." %}
+    </p>
   </div>
 </div>
 <div class="card">
-  <h5 class="card-header card-title pod-card__title">{% trans "Form fields"%}</h5>
+  <h2 class="card-header card-title pod-card__title">{% trans "Form fields"%}</h2>
   <div class="card-body" id="formfields">
     {% for title, values in form_theme.THEME_FORM_FIELDS_HELP_TEXT.items %}
     <div class="card">

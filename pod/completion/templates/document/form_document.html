@@ -21,8 +21,10 @@
 			</div>
 		{% endfor %}
 		<input type="hidden" name="action" value="save"/>
-		<input type="submit" id="save_document" value="{% trans 'save' %}" class="btn btn-primary"/>
-		<input type="reset" action="cancel" id="cancel_document" value="{% trans 'cancel' %}" class="btn btn-secondary"/>
+		<div class="mt-3">
+			<input type="submit" id="save_document" value="{% trans 'save' %}" class="btn btn-primary"/>
+			<input type="reset" action="cancel" id="cancel_document" value="{% trans 'cancel' %}" class="btn btn-secondary"/>
+		</div>
 	</div>
 </form>
 {{form_document.media}}

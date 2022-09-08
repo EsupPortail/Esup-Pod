@@ -12,7 +12,7 @@
 </p>
 {% else %}
 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-  <a class="initials btn pod-btn-primary btn-sm" href="{% url 'meeting:add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans "Add a meeting" %}">
+  <a class="initials btn pod-btn-primary btn-sm" href="{% url 'meeting:add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a meeting' %}">
     <i class="bi bi-plus pod-add"></i><span>{% trans "Add a meeting" %}</span>
   </a>
 </div>
@@ -32,14 +32,14 @@
   <tbody>
     {% for meeting in meetings %}
     <tr>
-      <th scope="row">{{meeting.name}} {% if meeting.is_restricted %} <span class="btn pod-btn-social btn-sm p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans "Acces to this meeting is restricted" %}"><i class="bi bi-lock"></i></span>{% endif %}</th>
+      <th scope="row">{{meeting.name}} {% if meeting.is_restricted %} <span class="btn pod-btn-social btn-sm p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Acces to this meeting is restricted' %}"><i class="bi bi-lock"></i></span>{% endif %}</th>
       <td>{{meeting.start_at}}</td>
       <td>{{meeting.end_at}}</td>
       <td>
         <div class="d-grid gap-2 d-md-flex">
           <input class="form-control form-control-sm" id="join-link-{{meeting.meeting_id}}" type="text" value="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id %}">
-          <button type="button" class="btn pod-btn-social p-1 m-0 ms-1 pod-btn-copy" data-bs-target="join-link-{{meeting.meeting_id}}" role="alert" 
-          data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans "Copy the join link" %}">
+          <button type="button" class="btn pod-btn-social p-1 m-0 ms-1 pod-btn-copy" data-bs-target="join-link-{{meeting.meeting_id}}" role="alert"
+          data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Copy the join link' %}">
             <i class="bi bi-clipboard-check"></i>
           </button>
           <a href="{% url 'meeting:join' meeting.meeting_id %}" title="{% trans 'Join the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1" target="_blank"><i class="bi bi-link-45deg" aria-hidden="true"></i></a>
@@ -49,8 +49,8 @@
       <td>
         <div class="d-grid gap-2 d-md-flex">
           <input class="form-control form-control-sm" id="join-direct-link-{{meeting.meeting_id}}" type="text" value="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}">
-          <button type="button" class="btn pod-btn-social p-1 m-0 ms-1 pod-btn-copy" data-bs-target="join-direct-link-{{meeting.meeting_id}}" role="alert" 
-          data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans "Copy the direct join link" %}">
+          <button type="button" class="btn pod-btn-social p-1 m-0 ms-1 pod-btn-copy" data-bs-target="join-direct-link-{{meeting.meeting_id}}" role="alert"
+          data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Copy the direct join link' %}">
             <i class="bi bi-clipboard-check"></i>
           </button>
           <a href="{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}" title="{% trans 'Join the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1" target="_blank"><i class="bi bi-link-45deg" aria-hidden="true"></i></a>
@@ -65,10 +65,10 @@
       </td>
       <td>
         {% if meeting.get_is_meeting_running %}
-        <button type="button" class="alert alert-primary btn pod-btn-social p-1 m-0 ms-1" data-bs-toggle="modal" data-bs-toggle="tooltip" data-bs-target="#meetingModal" 
-          data-bs-meeting-id="{{meeting.meeting_id}}" data-bs-meeting-title="{{meeting.name}}" 
+        <button type="button" class="alert alert-primary btn pod-btn-social p-1 m-0 ms-1" data-bs-toggle="modal" data-bs-toggle="tooltip" data-bs-target="#meetingModal"
+          data-bs-meeting-id="{{meeting.meeting_id}}" data-bs-meeting-title="{{meeting.name}}"
           data-bs-meeting-end-url="{% url 'meeting:end' meeting.meeting_id %}" data-bs-meeting-info-url="{% url 'meeting:get_meeting_info' meeting.meeting_id %}"
-          data-bs-placement="top" title="{% trans "Show meeting informations" %}"
+          data-bs-placement="top" title="{% trans 'Show meeting informations' %}"
           role="alert" >
           <i class="bi bi-person-video2"></i>
         </button>
@@ -90,7 +90,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        
+
       </div>
     </div>
   </div>
@@ -124,7 +124,7 @@ meetingModal.addEventListener('show.bs.modal', function (event) {
       return response.json();
   }).then(function(data){
       if(data.msg != "") {
-        modalBody.innerHTML = "{% trans "Unable to find information about the meeting" %}"
+        modalBody.innerHTML = "{% trans 'Unable to find information about the meeting' %}"
         console.log(msg)
       } else {
         const modalendlink = '<p><a href="'+ endurl +'" title="{% trans 'End the meeting'%}" class="btn btn-primary endlink" >{% trans 'End the meeting'%}</a></p>';
@@ -197,7 +197,7 @@ function copyInputValue(id) {
       .catch(() => {
         //alert("something went wrong");
       });
-} 
+}
 </script>
 
 

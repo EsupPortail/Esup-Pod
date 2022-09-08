@@ -9,8 +9,8 @@
 {% block opengraph %}
 
 {% if OEMBED %}
-<link rel="alternate" type="application/json+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&format=json" />
-<link rel="alternate" type="text/xml+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&format=xml" />
+  <link rel="alternate" type="application/json+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&amp;format=json" />
+  <link rel="alternate" type="text/xml+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&amp;format=xml" />
 {% endif %}
 
 <meta property="og:site_name" content="{{ TITLE_SITE }}">
@@ -77,7 +77,7 @@
       <li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
     {% endif %}
   {% else %}
-    <li class="breadcrumb-item"><a href="{% url "videos:videos"%}">{% trans 'Videos' %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'videos:videos' %}">{% trans 'Videos' %}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
   {% endif %}
 {% endblock %}

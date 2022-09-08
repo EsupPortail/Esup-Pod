@@ -100,6 +100,7 @@ button.close {
   opacity: 0.5;
 }
 
+/*
 .modal-header {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -155,7 +156,7 @@ button.close {
 
 .modal-footer > :not(:last-child) {
   margin-right: .25rem;
-}
+}*/
 
 .modal-scrollbar-measure {
   position: absolute;
@@ -205,9 +206,9 @@ button.close {
   height: 26px;
   vertical-align: middle;
 }
-#podfile a, #podifle .folder_title{
+/*#podfile a, #podifle .folder_title{
   font-size: .8rem;
-}
+}*/
 #podfile .list_folders{
   padding-left: 15px;
   height: auto;
@@ -343,7 +344,7 @@ button.close {
 #podfile #dirs{
   position: absolute;
   left: 0;
-  width: calc(100% - 25px);
+  /*width: calc(100% - 10em);*/
   max-width: 100%;
   height: 100%;
   display: -ms-grid;
@@ -351,23 +352,20 @@ button.close {
   grid-row-gap: .4em;
   opacity: 0;
   z-index: -1;
-  -webkit-transition: .5s opacity;
-  -o-transition: .5s opacity;
   transition: .5s opacity;
   border: none;
   border-top-right-radius: 4px;
-  -webkit-box-shadow: 5px 0 5px -5px #ccc;
-      box-shadow: 5px 0 5px -5px #ccc;
+  box-shadow: 5px 0 5px -5px #ccc;
 }
 #podfile #dirs.open{
   opacity: 1;
   z-index: 9;
 }
-#podfile #dirs .close-folder, #podfile #dirs .close-folder svg{
+/*#podfile #dirs .close-folder, #podfile #dirs .close-folder svg{
   width: 30px;
   color: var(--secondary);
   cursor: pointer;
-}
+}*/
 #podfile #dirs .dirs-nav{
   display: -webkit-box;
   display: -ms-flexbox;
@@ -417,24 +415,14 @@ button.close {
 #podfile #list_folders_sub{ overflow-y: auto;}
 #podfile .share-folders .folder_title{ display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; margin-bottom: .4em; color: var(--primary);}
 #podfile .share-folders .home-directory{-webkit-transform: translateY(-8px);-ms-transform: translateY(-8px);transform: translateY(-8px) }
-#podfile #list_folders_sub a.folder:not(.folder-opened) span.folder-open,
-#podfile #list_folders_sub a.folder-opened span#folder-icon
-{ display: none;}
-#podfile #list_folders_sub a.folder:not(.folder-opened) span#folder-icon,
-#podfile #list_folders_sub a.folder.folder-opened span.folder-open
-{ display: inline-block;}
 
-#podfile #dirs .dirs-nav span.home-directory,
-#podfile #dirs .share-folders span.home-directory,
-#podfile #dirs .dirs-nav span.add-folder,
-#podfile .list_folders span#folder-icon,
-#podfile .list_folders span.folder-open
+#podfile a.folder:not(.folder-opened) .folder-open,
+#podfile a.folder-opened .folder-close
+{ display: none;}
+
+#podfile .bi
 {
-  display: inline-block;
-  width: 22px;
-  height: 22px;
-  margin-right: 8px;
-  color: inherit;
+  margin-right: 3px;
 }
 #podfile #dirs .dirs-nav + *{
   display: -ms-grid;
@@ -453,7 +441,7 @@ button.close {
   -ms-grid-row: 2;
   -ms-grid-column: 1;
 }
-#podfile #dirs .share-folder span.home-directory{ color: var(--primary); }
+/*#podfile #dirs .share-folder span.home-directory{ color: var(--primary); }*/
 #podfile #dirs .folder-search{
   border: 1px solid #ccc;
   font-size: 14px;
@@ -557,7 +545,7 @@ button.close {
   width: 15px;
   left: 15px;
 }
-#podfile .alert-warning{
+/*#podfile .alert-warning{
   position: relative;
   color: #856404!important;
   padding: .4em .8em;
@@ -588,16 +576,15 @@ button.close {
     -ms-transform: translateY(-2px);
       transform: translateY(-2px);
   margin-right: 8px;
-}
+}*/
 #podfile .open-folder{
   min-height: 400px;
-}
-#podfile .open-folder, #podifle .open-folder svg{
   width: 30px;
-  cursor: pointer;
+  margin-left: -1em;
+  /*cursor: pointer;
   -webkit-transform: translateX(-10px);
     -ms-transform: translateX(-10px);
-      transform: translateX(-10px);
+      transform: translateX(-10px);*/
   color: var(--primary);
 }
 #podfile #files{
@@ -611,20 +598,13 @@ button.close {
 }
 #podfile #files .navbar{
   position: relative;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: justify;
-     -ms-flex-pack: justify;
-   justify-content: space-between;
-  -webkit-box-align: center;
-     -ms-flex-align: center;
-        align-items: center;
-  -ms-flex-wrap: nowrap;
-      flex-wrap: nowrap;
-  background: var(--primary);
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  background-color: var(--pod-primary);
   color: var(--white);
-  height: 35px;
+  /*height: 35px;*/
 }
 #podfile #files #currentfolder{
   -webkit-box-flex: unset;
@@ -633,7 +613,7 @@ button.close {
   -ms-flex-preferred-size: auto;
                flex-basis: auto;
 }
-#podfile .current-folder-icon{
+/*#podfile .current-folder-icon{
   width: 25px;
   display: inline-block;
   -webkit-transform: translateY(-3px);
@@ -666,9 +646,10 @@ button.close {
   background: transparent !important;
 }
 #podfile #files .navbar-toggler svg{ height: 22px; }
+*/
 
 #podfile #currentfolder .nav-item:not(:last-child){margin-right: .8em}
-#podfile #files #currentfolder .edit-folder svg{width: 25px; height: 25px;}
+/*#podfile #files #currentfolder .edit-folder svg{width: 25px; height: 25px;}*/
 #podfile #currentfolder .nav-item{
   display: -webkit-box;
   display: -ms-flexbox;
@@ -680,13 +661,12 @@ button.close {
 #podfile #currentfolder .nav-item > form{ height: 26px;}
 
 #podfile #currentfolder .nav-item .btn{padding: 0;}
-#podfile .current-folder-name{
+/*#podfile .current-folder-name{
   font-weight: 700;
   text-transform: uppercase;
   font-size: 16px;
-}
-#podfile .flex,
-#podfile .folder-search + div{
+}*/
+#podfile .flex{
   display: -ms-grid;
   display: grid;
   -ms-grid-rows: minmax(.5fr, 1fr);
@@ -741,6 +721,15 @@ button.close {
      -ms-flex-align: center;
         align-items: center;
 }
+#podfile .navbar .btn-link{
+  color: var(--white);
+}
+#podfile .navbar .btn-link:hover,
+#podfile .navbar .btn-link:focus{
+  color: var(--pod-primary-lighten-dark);
+}
+
+
 #podfile #listfiles .card{
   overflow: unset;
 }
@@ -779,7 +768,7 @@ button.close {
   height: 25px;
   margin: 0 .4em .4em .4em !important;
 }
-#podfile #listfiles .file-navbar .nav-item .edit-file{
+/*#podfile #listfiles .file-navbar .nav-item .edit-file{
   display: inline-block;
   width: 24px; height: 24px;
 }
@@ -804,14 +793,14 @@ button.close {
   height: 100%;
   border: none;
   opacity: 1!important;
-}
+}*/
 #podfile #listfiles .navbar{
-  background: var(--primary) !important;
+  background: var(--primary);
   position: relative;
 }
-#podfile #listfiles .navbar svg{
+/*#podfile #listfiles .navbar svg{
   height: 100%;
-}
+}*/
 
 #podfile #listfiles .card-body{
   overflow: hidden;

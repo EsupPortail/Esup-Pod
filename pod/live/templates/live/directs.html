@@ -30,7 +30,7 @@
           title="{{broadcaster.name}}" loading="lazy"
           src="{% url 'live:direct' slug=broadcaster.slug %}?is_iframe=true"></iframe>
         </p>
-        <h5 class="card-title pod-card__title"><a href="{% url "live:direct" slug=broadcaster.slug %}" target="_blank">{{broadcaster.name}}</a></h5>
+        <h5 class="card-title pod-card__title"><a href="{% url 'live:direct' slug=broadcaster.slug %}" target="_blank">{{broadcaster.name}}</a></h5>
       </div>
     </div>
   </div>

@@ -1005,8 +1005,10 @@ def video_delete(request, slug=None):
                 messages.ERROR,
                 _("One or more errors have been found in the form."),
             )
-
-    return render(request, "videos/video_delete.html", {"video": video, "form": form})
+    page_title = _("Deleting the video \"%(vtitle)s\"") % {'vtitle': video.title}
+    return render(request, "videos/video_delete.html", {"video": video,
+                                                        "form": form,
+                                                        "page_title": page_title})
 
 
 def get_adv_note_list(request, video):

@@ -102,7 +102,6 @@
 }
 
 a {
-  /* color: var(--pod-primary); */
   color: var(--pod-font-color);
 }
 
@@ -1301,15 +1300,6 @@ body {
 
 :root .pod-footer-logo { filter: brightness(0%);}
 
-:root[data-theme="dark"] .pod-navbar__brand img, :root[data-theme="dark"] .btn-close {
-  filter: invert(100%) sepia(0%) saturate(2908%) hue-rotate(27deg) brightness(121%) contrast(99%);
-}
-
-:root[data-theme="dark"]  .pod-footer-logo {
-  filter: brightness(100%);
-}
-
-
 .pod-offcanvas {
   background: var(--pod-background-neutre2-bloc);
 }
@@ -1519,13 +1509,13 @@ body {
 
 /* Buttons side by side under the title */
 #event_add{
-  display: inline-block !important; 
+  display: inline-block !important;
   padding-right: 0.5rem;
 }
 
-/*Fix table on "My meetings" */ 
+/*Fix table on "My meetings" */
 
-.table > :not(caption) > * > * 
+.table > :not(caption) > * > *
 {
     padding: .5rem .25rem;
     border-bottom-width: 0 !important;
@@ -1534,7 +1524,7 @@ body {
 table :not(footer) > .pod-btn-social {
   font-size: 1.5rem;
   width: 3rem !important;
-  height: 3rem !important; 
+  height: 3rem !important;
 }
 
 table .btn:hover {
@@ -1558,7 +1548,7 @@ th + td + td + td + td {
 
 .table-hover > tbody > tr:hover > * {
   --bs-table-accent-bg: var(--bs-table-hover-bg) !important;
-  color: var(--pod-font-color) !important; 
+  color: var(--pod-font-color) !important;
   }
 
 table .alert.alert-danger.btn.pod-btn-social {
@@ -1569,6 +1559,11 @@ table .alert.alert-danger.btn.pod-btn-social {
 
   .vjs-poster {
     background-size: cover !important;
+  }
+
+  /* replace default .video-js 10px font size to avoid an accessibility "Very small text" warning */
+  #podvideoplayer{
+    font-size: 11px;
   }
 
   /* My Files font color fix */

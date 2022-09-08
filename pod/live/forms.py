@@ -23,6 +23,8 @@ if getattr(settings, "USE_PODFILE", False):
 
 PILOTING_CHOICES = getattr(settings, "BROADCASTER_PILOTING_SOFTWARE", [])
 
+EVENT_ACTIVE_AUTO_START = getattr(settings, "EVENT_ACTIVE_AUTO_START", False)
+
 
 class OwnerWidget(s2forms.ModelSelect2Widget):
     search_fields = [
@@ -112,7 +114,7 @@ class CustomBroadcasterChoiceField(forms.ModelChoiceField):
 
 def check_event_date_and_hour(form):
     if (
-        not {"start_time", "start_time", "end_time", "broadcaster"}
+        not {"start_date", "start_time", "end_time", "broadcaster"}
         <= form.cleaned_data.keys()
     ):
         return
@@ -169,6 +171,7 @@ class EventForm(forms.ModelForm):
                     "end_time",
                     "building",
                     "broadcaster",
+                    "is_draft",
                     "password",
                     "is_restricted",
                     "restrict_access_to_groups",
@@ -185,7 +188,6 @@ class EventForm(forms.ModelForm):
                     "owner",
                     "additional_owners",
                     "type",
-                    "is_draft",
                     "is_auto_start",
                     "iframe_url",
                     "iframe_height",
@@ -332,11 +334,12 @@ class EventForm(forms.ModelForm):
             "password",
             "is_restricted",
             "restrict_access_to_groups",
-            "is_auto_start",
             "iframe_url",
             "iframe_height",
             "aside_iframe_url",
         ]
+        if EVENT_ACTIVE_AUTO_START:
+            fields.append("is_auto_start")
         widgets = {
             "owner": OwnerWidget,
             "additional_owners": AddOwnerWidget,
