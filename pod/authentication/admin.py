@@ -8,7 +8,7 @@ from pod.authentication.forms import OwnerAdminForm, GroupSiteAdminForm
 from django.utils.html import format_html
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import Group
-from pod.authentication.forms import GroupAdminForm
+from pod.authentication.forms import GroupAdminForm, AccessGroupAdminForm
 from django.contrib.sites.models import Site
 from django.contrib.admin import widgets
 from pod.authentication.models import AccessGroup
@@ -188,12 +188,29 @@ class GroupAdmin(admin.ModelAdmin):
 
 
 class AccessGroupAdmin(admin.ModelAdmin):
+    form = AccessGroupAdminForm
     search_fields = ["id", "code_name", "display_name"]
     list_display = (
         "id",
         "code_name",
         "display_name",
     )
+
+    class Media:
+        css = {
+            "all": (
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                "css/pod-admin.css",
+            )
+        }
+        js = (
+            "/admin/jsi18n/",
+            # "admin/js/core.js",
+            "admin/js/jquery.init.js",
+            "admin/js/vendor/jquery/jquery.js",
+
+        )
 
 
 # Re-register UserAdmin

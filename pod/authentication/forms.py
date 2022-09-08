@@ -6,12 +6,20 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.models import Group
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.models import Site
+from django_select2 import forms as s2forms
 
 FILEPICKER = False
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.widgets import CustomFileWidget
 
     FILEPICKER = True
+
+
+class UserWidget(s2forms.ModelSelect2MultipleWidget):
+    search_fields = [
+        "user__username__icontains",
+        "user__email__icontains",
+    ]
 
 
 class OwnerAdminForm(forms.ModelForm):
@@ -47,6 +55,7 @@ User = get_user_model()
 class GroupAdminForm(forms.ModelForm):
     class Meta:
         model = Group
+        fields = "__all__"
         exclude = []
 
     # Add the users field.
@@ -79,3 +88,13 @@ class GroupAdminForm(forms.ModelForm):
         # Save many-to-many data
         self.save_m2m()
         return instance
+
+
+class AccessGroupAdminForm(forms.ModelForm):
+
+    class Meta:
+        model = Group
+        fields = "__all__"
+        widgets = {
+            "users": UserWidget,
+        }
