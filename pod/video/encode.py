@@ -120,7 +120,7 @@ def encode_video(video_id):
 
     change_encoding_step(video_id, 5, "store encoding info")
     final_video = encoding_video.store_json_info()
-    final_video.is_video = (final_video.get_video_m4a() == None)
+    final_video.is_video = final_video.get_video_m4a() is None
     final_video.encoding_in_progress = False
     final_video.save()
 
