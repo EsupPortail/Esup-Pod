@@ -1,7 +1,8 @@
 {% extends "admin/base.html" %}
 {% load i18n static %}
 {% block extrastyle %}
-<script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'css/pod-admin.css' %}?ver={{VERSION}}" media="screen">
+  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
   <script src="{% static 'js-cookie/dist/js.cookie.min.js' %}?ver={{VERSION}}"></script>
   {% if max_duration_date_delete %}
     <script> var max_duration_date_delete = {{max_duration_date_delete}};</script>
