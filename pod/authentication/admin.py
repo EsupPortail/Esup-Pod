@@ -8,7 +8,7 @@ from pod.authentication.forms import OwnerAdminForm, GroupSiteAdminForm
 from django.utils.html import format_html
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import Group
-from pod.authentication.forms import GroupAdminForm, FrontOwnerForm
+from pod.authentication.forms import GroupAdminForm, AdminOwnerForm
 from django.contrib.sites.models import Site
 from django.contrib.admin import widgets
 from pod.authentication.models import AccessGroup
@@ -170,7 +170,7 @@ class GroupAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(groupsite__sites=get_current_site(request))
+            qs = qs.filter(sites=get_current_site(request))
         return qs
 
     def save_model(self, request, obj, form, change):
@@ -200,9 +200,18 @@ class AccessGroupAdmin(admin.ModelAdmin):
 
 
 class OwnerAdmin(admin.ModelAdmin):
-    form = FrontOwnerForm
+    form = AdminOwnerForm
     autocomplete_fields = ['user', 'accessgroups']
     search_fields = ["user__username__icontains", "user__email__icontains"]
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(groupsite__sites=get_current_site(request))
+        return qs
+
+    class Meta:
+        verbose_name = 'Access group owner'
 
 
 # Re-register UserAdmin

@@ -10,3 +10,6 @@
         color: white !important;
     }
 }
+tr.model-owner {
+    display:none;
+}
