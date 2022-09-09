@@ -190,7 +190,7 @@ class GroupAdmin(admin.ModelAdmin):
 class AccessGroupAdmin(admin.ModelAdmin):
     # form = AccessGroupAdminForm
     # search_fields = ["user__username__icontains", "user__email__icontains"]
-    autocomplete_fields = ['users']
+    autocomplete_fields = ["users"]
     search_fields = ["id", "code_name", "display_name"]
     list_display = (
         "id",
@@ -201,7 +201,7 @@ class AccessGroupAdmin(admin.ModelAdmin):
 
 class OwnerAdmin(admin.ModelAdmin):
     form = AdminOwnerForm
-    autocomplete_fields = ['user', 'accessgroups']
+    autocomplete_fields = ["user", "accessgroups"]
     search_fields = ["user__username__icontains", "user__email__icontains"]
 
     def get_queryset(self, request):
@@ -211,7 +211,7 @@ class OwnerAdmin(admin.ModelAdmin):
         return qs
 
     class Meta:
-        verbose_name = 'Access group owner'
+        verbose_name = "Access group owner"
 
 
 # Re-register UserAdmin
