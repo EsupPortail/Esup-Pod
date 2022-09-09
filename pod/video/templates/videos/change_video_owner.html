@@ -24,13 +24,13 @@
         {% csrf_token %}
 
         <div class="form-wrapper">
-          <label for="oldlogin" class="form-wrapper__label"
+          <label for="oldlogin" class="form-label"
             >{% trans "Old owner" %}<i class="required">*</i></label
           >
           <input
             type="text"
             id="oldlogin"
-            class="form-wrapper__control"
+            class="form-control"
             placeholder="{% trans 'FirstName/LastName' %}"
             required
           />
@@ -38,13 +38,13 @@
         </div>
 
         <div class="form-wrapper">
-          <label for="newlogin" class="form-wrapper__label"
+          <label for="newlogin" class="form-label"
             >{% trans "New owner" %}<i class="required">*</i></label
           >
           <input
             type="text"
             id="newlogin"
-            class="form-wrapper__control"
+            class="form-control"
             placeholder="{% trans 'FirstName/LastName' %}"
             required
           />
@@ -58,7 +58,7 @@
             placeholder="{% trans 'Filter by title' %}"
             type="text"
             id="list_videos__search"
-            class="list_videos__search"
+            class="form-control"
           />
           <div class="filter suggestions semi-width"></div>
         </div>
@@ -70,18 +70,18 @@
               ></label
             >
             <div class="flex">
-              <label for="select_all"
+              <label for="select_all" class="form-check-label"
                 >{% trans "Select/Deselect all videos" %}</label
               >
               <input
                 name="select_all"
                 type="checkbox"
                 id="select_all"
-                class="select_all"
+                class="select_all form-check-input"
               />
             </div>
         </div>
-        <div class="form-wrapper__control select-videos"></div>
+        <div class="form-wrapper__control select-videos form-control"></div>
         {% include "videos/paginator.html" with disable_next=True%}
         <div class="form-wrapper children-center">
           <button id="submitChanges" class="btn btn-primary">

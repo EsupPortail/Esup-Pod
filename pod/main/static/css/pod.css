@@ -2,30 +2,30 @@
 
 :root {
   /* COMMON COLORS */
-  --color-transparent: transparent;
-  --color-black: black;
-  --color-alto: #ddd;
-  --color-sisal: rgba(218, 208, 190, 1);
+  --color-black: #000;
   --color-black-alpha: rgba(0, 0, 0, .6);
+  --color-alto: #ddd;
   --color-silver: #ccc;
-  --color-fuzzy-wuzzy-brown: rgba(201, 76, 76, .3);
   --color-silver-chalice: #aaa;
-  --color-outer-space: rgba(40, 48, 56, .5);
-  --color-red: #FF0000;
-  --color-mine-shaft: #222;
 
-  /* les valeurs '-dark' ci-dessous sont pour le mode sombre.*/
-
-  /*** couleur principale du thème + variantes clair/sombre ***/
-
-  /* exemple vert univ-lille.fr 2022 */
+  /***
+   *  exemple vert 'univ-lille.fr' 2022
+   ***/
+  /*** Theme primary color ***/
   --pod-primary: #1F8389;
+  --bs-primary-rgb: 31, 131, 137;
+  /* a light variant of primary color, used for button hover */
   --pod-primary-lighten: #08b0a0;
-  --pod-primary-darken:  #18575D;
-/**/
+  /* a dark variant of primary color, used for active links and disabled buttons */
+  --pod-primary-darken: #18575D;
+  /* les valeurs '...-dark' ci-dessous sont pour le mode sombre.*/
   --pod-primary-dark: #1F8389;
   --pod-primary-lighten-dark: #18575D;
-  --pod-primary-darken-dark:  #08b0a0;
+  --pod-primary-darken-dark: #08b0a0;
+
+  /***
+   * Esup-Pod default colors
+   ***/
 
   /*** couleur de fond du site ***/
   --pod-background: #fff;
@@ -48,8 +48,9 @@
   --pod-background-neutre2-bloc-dark: #161c26;
 
   /**** couleur des liens *****/
-  --pod-links-color: var(--pod-primary);
-  --pod-links-color-dark: var(--pod-primary-dark);
+  --pod-link-color: var(--pod-primary);
+  --pod-activelink-color: var(--pod-primary-darken);
+  --pod-link-color-dark: var(--pod-primary-dark);
 
   /* couleur d'un élément actif (ex. : survol de bouton) */
   --pod-primary-focus: var(--pod-primary-darken);
@@ -64,57 +65,25 @@
 
 
   /* BOOTSTRAP COLORS */
-  /* primary color is defined in bootstrap-$theme$.css */
-  --light: #f8f9fa;
-  --dark: #343a40;
-  --white: #ffffff;
-  --color-formfields: #f1f1f1;
+  --bs-light: #f8f9fa;
+  --bs-dark: #343a40;
 
   /* Use system font */
   --font-family-sans-serif: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Verdana, sans-serif;
 
-  --primary: var(--pod-primary);
-  --font-color: var(--pod-font-color);
-  --bg-color: var(--pod-background);
   /** reinit before cleaning all old css vars ***/
-  --activelink-color: var(--pod-primary) !important;
   --primary-background-color: var(--pod-background-neutre1-bloc) !important;
   --third-background-color: var(--pod-background-neutre1-bloc) !important;
 }
-
-:root[data-theme="dark"] {
-  --pod-primary: var(--pod-primary-dark);
-  --pod-primary-lighten: var(--pod-primary-lighten-dark);
-  --pod-primary-darken: var(--pod-primary-darken-dark);
-  --pod-background: var(--pod-background-dark);
-  --pod-font-color: var(--pod-font-color-dark);
-  --pod-background-neutre1-bloc: var(--pod-background-neutre1-bloc-dark);
-  --pod-background-neutre2-bloc: var(--pod-background-neutre2-bloc-dark);
-  --pod-links-color: var(--pod-links-color-dark);
-  --pod-primary-focus: var(--pod-primary-lighten-dark);
-  --pod-btn-text:  var(--pod-btn-text-dark);
-  --pod-alert: var(--pod-alert-dark);
-}
-
 
 :root[data-dyslexia="on"] {
   --pod-font-family: var(--pod-font-family-dyslexie);
 }
 
 a {
-  color: var(--pod-font-color);
+  color: var(--pod-link-color);
 }
 
-/***** COLOR FOR DARK MODE *****/
-/*
-@media (prefers-color-scheme: dark) {
-  body[data-admin-utc-offset] {
-    --primary: #264b5d;
-    --secondary: #417690;
-    --font-color: #eeeeee;
-    --bg-color: #121212;
-  }
-}*/
 .pod-card--video a {
   color: inherit;
 }
@@ -130,7 +99,7 @@ a {
 .navbar-light .navbar-nav .nav-link,
 .navbar-light .navbar-toggler {
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-  color: var(--font-color);
+  color: var(--pod-font-color);
 box-shadow: 0.05rem 0.05rem 0.2rem 0.05rem rgba(0, 0, 0, 0.2);
 border-radius: .15rem;
 margin-top: 1rem;
@@ -141,17 +110,16 @@ margin-top: 1rem;
 }
 
 .table-hover tbody tr:hover {
-  color: var(--font-color);
-  background-color: var(--bg-color);
+  color: var(--pod-font-color);
+  background-color: var(--pod-background);
 }
 
 .navbar-toggler:focus,
 .navbar-toggler:hover {
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-  color: var(--primary);
-  border-color: var(--primary);
+  color: var(--pod-primary);
+  border-color: var(--pod-primary);
 }
-
 
 .navbar-light .navbar-brand:focus,
 .navbar-light .navbar-brand:hover {
@@ -162,25 +130,25 @@ margin-top: 1rem;
 .btn-lang:focus,
 .btn-lang:hover,
 .btn-lang:active {
-  box-shadow: 0 0 3px var(--primary);
+  box-shadow: 0 0 3px var(--pod-primary);
 }
 
 .pod-nav-link-icon {
-  color: var(--link-color);
+  color: var(--pod-link-color);
   font-size: 120%;
 }
 
 .nav-link:focus .pod-nav-link-icon,
 .nav-link:hover .pod-nav-link-icon {
-  color: var(--activelink-color);
+  color: var(--pod-activelink-color);
 }
 
 .modal-title svg {
-  color: var(--primary) !important;
+  color: var(--pod-primary) !important;
 }
 
 .bg-light {
-  background-color: var(--light) !important;
+  background-color: var(--bs-light) !important;
 }
 
 .tab-title {
@@ -197,7 +165,7 @@ margin-top: 1rem;
 
 .btn-link {
   font-weight: 400;
-  color: var(--link-color);
+  color: var(--pod-link-color);
   text-decoration: none;
 }
 
@@ -209,22 +177,14 @@ margin-top: 1rem;
 }
 
 .btn-outline-primary {
-  color: var(--primary);
-  border-color: var(--primary);
+  color: var(--pod-primary);
+  border-color: var(--pod-primary);
 }
 
 a.btn-outline-primary:not(:hover) svg {
-  fill: var(--primary)
-}
-/*
-a.btn-outline-primary {
-  fill: transparent;
+  fill: var(--pod-primary)
 }
 
-.social_links a {
-  fill: var(--primary);
-}
-*/
 
 #collapseAside .card>.btn {
   white-space: normal !important;
@@ -243,21 +203,8 @@ tr,
 }
 
 
-
-/*h1 {
-  font-size: 2rem;
-}*/
-/*
-label {
-  font-variant: small-caps;
-} */
-
 .pod-mt-7 {
   margin-top: 3.5rem;
-}
-
-.pod-inner {
-  /* background: var(--light); */
 }
 
 .pod-share-fieldset {
@@ -269,14 +216,13 @@ label {
   margin-bottom: 1.5rem;
 }
 
-:not(footer)>.pod-btn-social {
+/*:not(footer)>.pod-btn-social {
   font-size: 2rem;
-
 }
 
 .pod-btn-social {
   color: var(--pod-font-color);
-}
+}*/
 
 .pod-btn-social i {
   transition: all 0.2s ease;
@@ -289,11 +235,13 @@ label {
 }
 
 .list-group-item {
-  background: var(--bg-color);
+  background: var(--pod-background);
   padding: .25rem 1.25rem;
 }
 
-/*** video ***/
+/***
+ *  video *
+ ***/
 #myTabContent #info p {
   margin-top: .5rem;
   margin-bottom: .5rem;
@@ -335,7 +283,10 @@ label {
   height: 100%;
 }
 
-/*** navbar **/
+/***
+ * navbar
+ ***/
+
 .btn-lang {
   padding: .2rem .25rem;
   width: 100%;
@@ -343,8 +294,8 @@ label {
 }
 
 .btn-lang-active {
-  background: var(--bg-color);
-  color: var(--font-color);
+  background: var(--pod-background);
+  color: var(--pod-font-color);
 }
 
 .navbar-inner-pod {
@@ -366,11 +317,11 @@ label {
 .modal-title svg {
   height: 40px;
   width: 40px;
-  /*color:var(--primary);*/
+  /*color:var(--pod-primary);*/
 }
 
 .modal-content {
-  background-color: var(--bg-color);
+  background-color: var(--pod-background);
 }
 
 .modal-title {
@@ -401,20 +352,22 @@ label {
 .liste-collapse {
   z-index: 900;
 }
-
 /**end modal **/
-/*** tab **/
+
+/***
+ * tab
+ ***/
 .tab-content>.active {
   border: 1px solid var(--color-alto);
   padding: 1.5rem;
-  background: var(--bg-color);
+  background: var(--pod-background);
 }
 
 .pod-live-info { /* Very dirty fix */
   border: 0 !important;
   border-top: 1px solid var(--color-alto) !important;
   padding: 1.5rem;
-  background: var(--bg-color);
+  background: var(--pod-background);
   margin-top: 0.75rem;
 }
 
@@ -423,8 +376,8 @@ label {
 }
 
 .dropdown-menu {
-  background-color: var(--bg-color);
-  color: var(--font-color);
+  background-color: var(--pod-background);
+  color: var(--pod-font-color);
   border: 1px solid var(--color-silver-chalice);
 }
 
@@ -433,9 +386,9 @@ label {
 }
 
 /***aside ***/
-.open-aside {
+/*.open-aside {
   margin-right: 15px;
-}
+}*/
 
 #card-takenote .dropdown-menu {
   border: none;
@@ -459,28 +412,29 @@ label {
   }
 
   .langs .active {
-    background: var(--primary);
-    color: var(--white);
+    background: var(--pod-primary);
+    color: var(--bs-white);
   }
 
-  .navbar-items-pod {
+  /*.navbar-items-pod {
     position: absolute;
     top: 60px;
     left: 0;
     padding: 1rem;
     width: 100%;
-    background-color: var(--light);
+    background-color: var(--bs-light);
     box-shadow: 1px 1px 3px gray;
     z-index: 100;
-  }
+  }*/
 
   .navbar-nav .login .dropdown-menu {
     position: absolute;
     float: left;
   }
 
+  /*** General search ***/
   #s:not(:focus)::placeholder {
-    color: var(--white);
+    color: var(--bs-white);
   }
 
   #s {
@@ -506,23 +460,21 @@ label {
     width: 100%;
     opacity: 1;
     display: inline-block;
-    /*background: var(--primary) !important;*/
     padding: .5rem 1rem;
     z-index: 99;
     height: 3rem;
   }
 
+  /* nav-search form */
   #nav-search label:hover .pod-nav-link-icon,
   #nav-search label:focus .pod-nav-link-icon {
-    color: var(--activelink-color);
+    color: var(--pod-activelink-color);
   }
 
   .navbar label {
     padding-left: 1px;
     display: inline-block;
     /*margin-top: .3em;*/
-    /* color: var(--color-sisal); */
-    /* text-shadow: 0 0 .1em var(--color-mine-shaft); */
     position: relative;
     left: .1em;
     cursor: pointer;
@@ -573,10 +525,6 @@ button:focus .userpicture {
   padding: .4rem !important;
 }
 
-/*#videos_list .card-header .text-muted {
-  color: var(--white) !important;
-}*/
-
 #videos_list .video-title {
   line-height: 1.2;
   display: inline-block;
@@ -605,7 +553,7 @@ button:focus .userpicture {
 
 a:hover,
 a:focus {
-  color: var(--activelink-color);
+  color: var(--pod-activelink-color);
   text-decoration: underline;
 }
 
@@ -613,7 +561,7 @@ div.card a img {
   transition: -webkit-transform .5s ease;
   transition: transform .5s ease;
   transition: transform .5s ease, -webkit-transform .5s ease;
-  background: #000000;
+  background: #000;
 }
 
 div.card a:hover>img {
@@ -621,11 +569,6 @@ div.card a:hover>img {
   transform: scale(1.1);
   z-index: 0;
 }
-
-/*.card {
-  background-color: var(--bg-color);
-  border-color: var(--color-silver-chalice);
-}*/
 
 .card-footer-pod {
   position: absolute;
@@ -658,7 +601,7 @@ div.card a:hover>img {
 }*/
 
 /** menu channels **/
-.dropdown-submenu>.dropdown-menu {
+/*.dropdown-submenu>.dropdown-menu {
   top: 0;
   left: 100%;
   margin-top: -6px;
@@ -667,7 +610,7 @@ div.card a:hover>img {
 }
 
 .dropdown-submenu:hover {
-  background-color: var(--white);
+  background-color: var(--bs-white);
 }
 
 .dropdown-submenu:hover>.dropdown-menu {
@@ -680,13 +623,13 @@ div.card a:hover>img {
   float: right;
   width: 0;
   height: 0;
-  border-color: var(--color-transparent);
+  border-color: transparent;
   border-style: solid;
   border-width: 5px 0 5px 5px;
   border-left-color: var(--color-silver);
   margin-top: 5px;
   margin-right: -10px;
-}
+}*/
 
 /** aside list video **/
 #filterType div.collapse:not(.show),
@@ -738,13 +681,13 @@ div.card a:hover>img {
 
 .required_star,
 .form-help-inline {
-  color: var(--danger);
+  color: var(--bs-danger);
   font-size: 1.3rem;
 }
 
 .form-group-required .errors,
 .form-group .errorlist {
-  background-color: var(--color-fuzzy-wuzzy-brown);
+  background-color: rgba(var(--bs-danger-rgb),.2);
 }
 
 .form-group .errorlist {
@@ -841,17 +784,17 @@ div.card a:hover>img {
 }
 
 #view-counter-icon {
-  color: var(--primary);
+  color: var(--pod-primary);
 }
 
 #viewers-list {
   position: absolute;
   right: 0;
   margin-right: 80px;
-  color: var(--white);
+  color: var(--color-black);
   text-align: center;
   font-size: 20px;
-  background-color: var(--color-outer-space);
+  background-color: var(--pod-background-neutre1-bloc);
   padding: 10px 0;
   z-index: 2147483647;
   bottom: 100px;
@@ -891,13 +834,13 @@ div.card a:hover>img {
  **/
 body[data-admin-utc-offset] {
   padding-top: 0;
-  --primary: #79aec8;
-  --breadcrumbs-bg: var(--primary);
-  --button-bg: var(--primary);
+  --primary: var(--pod-primary);
+  --breadcrumbs-bg: var(--pod-primary);
+  --button-bg: var(--pod-primary);
 }
 
 body[data-admin-utc-offset] textarea.cke_source {
-  background-color: var(--bg-color);
+  background-color: var(--pod-background);
 }
 
 body[data-admin-utc-offset] caption {
@@ -926,8 +869,8 @@ body[data-admin-utc-offset] .btn-outline-primary {
 
 body[data-admin-utc-offset] .btn-outline-primary:hover,
 body[data-admin-utc-offset] .btn-outline-primary:focus {
-  background-color: var(--primary);
-  color: var(--light);
+  background-color: var(--pod-primary);
+  color: var(--bs-light);
 }
 
 body[data-admin-utc-offset] .form-row.errors {
@@ -938,12 +881,12 @@ body[data-admin-utc-offset] .form-row.errors {
  * (see "additional owners", or "disciplines" for sample.)
  */
 body[data-admin-utc-offset] .select2-selection--multiple {
-  background-color: var(--bg-color);
+  background-color: var(--pod-background);
   border-color: var(--border-color);
 }
 
 body[data-admin-utc-offset] .select2-dropdown {
-  background-color: var(--bg-color);
+  background-color: var(--pod-background);
 }
 
 body[data-admin-utc-offset] .select2-container--open .select2-selection--multiple {
@@ -951,7 +894,7 @@ body[data-admin-utc-offset] .select2-container--open .select2-selection--multipl
 }
 
 body[data-admin-utc-offset] .select2-search--inline .select2-search__field {
-  color: var(--font-color);
+  color: var(--pod-font-color);
 }
 
 body[data-admin-utc-offset] .select2-selection--multiple .select2-selection__choice,
@@ -972,14 +915,14 @@ body {
   justify-content: flex-start;
   min-height: 100vh;
   padding-top: 3.1rem;
-  color: var(--font-color);
+  color: var(--pod-font-color);
   background-color: var(--pod-background);
   font-family: var(--pod-font-family);
 }
 
 /***reinit bootstrap 5***/
 .nav-link {
-  color: var(--font-color);
+  color: var(--pod-font-color);
 }
 
 .nav-link:focus,
@@ -997,6 +940,7 @@ body {
   color: var(--pod-primary);
 }
 
+.text-bg-primary,
 .btn-primary, .pod-btn-primary {
   background: var(--pod-primary);
   border-color: var(--pod-primary);
@@ -1041,7 +985,7 @@ body {
 /* .pod-params-button:focus,
 .pod-params-button:hover {
   color: var(--pod-primary);
-  transform:  rotate(10deg);
+  transform: rotate(10deg);
 } */
 
 #pod-param-buttons__button#pod-param-buttons__button::before { /* Make icon rotate and button remain still */
@@ -1092,7 +1036,7 @@ body {
   color: var(--pod-font-color);
 }
 .pod-aside-collapse__button:hover{
-  background-color: var(--pod-links-color);
+  background-color: var(--pod-link-color);
   color: var(--pod-btn-text);
 }
 
@@ -1396,7 +1340,7 @@ body {
 
 .pod-card--video {
   border: none;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, .16), 0 3px 6px rgba(0, 0, 0, .23);
   background: var(--pod-background);
 }
 
@@ -1466,7 +1410,7 @@ body {
 }
 
 .pod-navbar__button-toggler {
-  color: var(--font-color);
+  color: var(--pod-font-color);
   padding: 0;
   font-size: 1.8rem;
   margin: 0;
@@ -1533,7 +1477,7 @@ table .btn:hover {
 }
 
 th + td + td + td + td {
-  /* border-right: 0.15rem solid var(--pod-links-color);  */
+  /* border-right: 0.15rem solid var(--pod-link-color);  */
   text-align: center;
 }
 
@@ -1599,4 +1543,3 @@ table .alert.alert-danger.btn.pod-btn-social {
  }
 
  /* Override playlist - video-jsplaylist.css 84 */
-

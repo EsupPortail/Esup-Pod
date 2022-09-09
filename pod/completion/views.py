@@ -910,6 +910,7 @@ def video_completion_overlay(request, slug):
 
 
 def video_completion_overlay_new(request, video):
+    """Form to create a new completion overlay."""
     list_contributor = video.contributor_set.all()
     list_document = video.document_set.all()
     list_track = video.track_set.all()

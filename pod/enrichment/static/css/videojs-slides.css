@@ -29,13 +29,13 @@
 }
 .video-slides>li>div {
   height: 100%;
-  background-color: var(--light); /*#fff;*/
-  color: var(--font-color);
+  background-color: var(--bs-light); /*#fff;*/
+  color: var(--pod-font-color);
   padding: 1em;
 }
 .video-slides>li>.slide_embed {
   overflow: auto;
-  background-color: #000; /*var(--light);*/
+  background-color: #000;
   text-align: center;
   display: flex;
   align-items: center;
@@ -192,8 +192,8 @@
 .vjs-control-bar {z-index: 3}
 
 /* Enrich types colors */
-.enrich_image{color:var(--purple)}
-.enrich_document{color:var(--orange)}
-.enrich_richtext{color:var(--blue)}
-.enrich_weblink{color:var(--red)}
-.enrich_embed{color:var(--green)}
+.enrich_image{color:var(--bs-purple)}
+.enrich_document{color:var(--bs-orange)}
+.enrich_richtext{color:var(--bs-blue)}
+.enrich_weblink{color:var(--bs-red)}
+.enrich_embed{color:var(--bs-reen)}

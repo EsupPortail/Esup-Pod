@@ -224,7 +224,7 @@ $(".collapsibleThemes").on("show.bs.collapse", function () {
     0,
     [],
     (tag_type = "li"),
-    (li_class = "list-inline-item badge badge-primary-pod badge-pill"),
+    (li_class = "list-inline-item"),
     (attrs = ""),
     (add_link = true),
     (current = ""),

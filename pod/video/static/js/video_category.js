@@ -488,7 +488,7 @@
       <div class="category_actions"></div>`;
 
     let catTitleHtml = document.createElement("button");
-    catTitleHtml.setAttribute("class", "btn cat_title");
+    catTitleHtml.setAttribute("class", "btn btn-link cat_title");
     catTitleHtml.setAttribute("data-slug", slug);
     catTitleHtml.innerText = title;
     manageFilterVideos(catTitleHtml); // append filter click event
@@ -796,7 +796,7 @@
           response.json().then((data) => {
             showAlertMessage(msg_deleted);
             deleteFromSavedData(cat.slug); // delete from local save
-            // remove eventual alert message
+            // Remove eventual alert message
             const cat_modal_alert = document.querySelector(
               "#manageCategoryModal .modal-body .alert-warning"
             );

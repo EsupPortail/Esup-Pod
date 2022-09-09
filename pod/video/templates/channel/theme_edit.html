@@ -27,10 +27,10 @@
 {% block page_content %}
 <h1 class="page_title">{% trans "Editing the channel's themes" %} {{channel.title}}
   <span class="float-end">
-    <a href="{% url 'channel-video:channel' slug_c=channel.slug %}" class="btn btn pod-btn-social btn-sm">
+    <a href="{% url 'channel-video:channel' slug_c=channel.slug %}" class="btn btn-link">
       <i class="bi bi-play-btn"></i>&nbsp;{% trans "View the channel"%}
     </a>
-    <a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn pod-btn-social btn-sm">
+    <a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn-link">
       <i class="bi bi-pencil-square"></i>&nbsp;{% trans "Edit the channel"%}
     </a>
   </span>
@@ -74,7 +74,7 @@
   </div>
 </div>
 <div class="card">
-  <h2 class="card-header card-title pod-card__title">{% trans "Form fields"%}</h2>
+  <h2 class="h4 card-header card-title pod-card__title">{% trans "Form fields"%}</h2>
   <div class="card-body" id="formfields">
     {% for title, values in form_theme.THEME_FORM_FIELDS_HELP_TEXT.items %}
     <div class="card">

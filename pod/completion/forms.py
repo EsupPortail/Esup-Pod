@@ -148,18 +148,27 @@ class OverlayForm(forms.ModelForm):
         except Exception:
             self.fields["time_start"].widget.attrs["max"] = 36000
             self.fields["time_end"].widget.attrs["max"] = 36000
-        for myField in self.fields:
-            self.fields[myField].widget.attrs["placeholder"] = self.fields[myField].label
-            if self.fields[myField].required:
-                self.fields[myField].widget.attrs["class"] = "form-control required"
-                label_unicode = "{0}".format(self.fields[myField].label)
-                self.fields[myField].label = mark_safe(
+        for fieldName in self.fields:
+            myField = self.fields[fieldName]
+            classname = myField.widget.__class__.__name__
+            if classname == "PasswordInput" or classname == "TextInput":
+                myField.widget.attrs["placeholder"] = myField.label
+
+            if classname == "CheckboxInput":
+                bsClass = "form-check-input"
+            elif classname == "Select":
+                bsClass = "form-select"
+            else:
+                bsClass = "form-control"
+
+            if myField.required:
+                myField.widget.attrs["class"] = "required " + bsClass
+                label_unicode = "{0}".format(myField.label)
+                myField.label = mark_safe(
                     '{0} <span class="required_star">*</span>'.format(label_unicode)
                 )
             else:
-                self.fields[myField].widget.attrs["class"] = "form-control"
-        self.fields["position"].widget.attrs["class"] = "form-select"
-        self.fields["background"].widget.attrs["class"] = "form-check-input"
+                myField.widget.attrs["class"] = bsClass
 
     class Meta(object):
         """Set form Metadata."""

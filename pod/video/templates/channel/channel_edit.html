@@ -24,12 +24,14 @@
 {% endblock %}
 
 {% block page_content %}
-<h1 class="page_title">{% if form.instance.title %}{% trans "Editing the channel" %} "{{form.instance.title}}"{%endif%}
+  {% if form.instance.title %}
+    <h1 class="page_title">{% trans "Editing the channel" %} "{{form.instance.title}}"
+  {%endif%}
   <span>
-    <a href="{% url 'channel-video:channel' slug_c=form.instance.slug %}" class="btn btn pod-btn-social btn-sm">
+    <a href="{% url 'channel-video:channel' slug_c=form.instance.slug %}" class="btn btn-link">
       <i class="bi bi-play-btn"></i>&nbsp;{% trans "View the channel"%}
     </a>
-    <a href="{% url 'channels:theme_edit' slug=form.instance.slug %}" class="btn btn pod-btn-social btn-sm">
+    <a href="{% url 'channels:theme_edit' slug=form.instance.slug %}" class="btn btn-link">
       <i class="bi bi-pencil-square"></i>&nbsp;{% trans "Edit the themes"%}
     </a>
   </span>

@@ -7,22 +7,22 @@
 <html itemscope itemtype="http://schema.org/MediaObject">
     <head>
         <meta charset="utf-8">
-    
+
         <title>{{ TITLE_SITE }} - {% block page_title %}{{ event.title }}{% endblock page_title %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+
         <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
-    
+
         {% block page_extra_head %}
             {% include 'videos/video-header.html' %}
         {% endblock page_extra_head %}
-    
+
         <script src="{% static 'js/videojs-info-controlbar.js' %}?ver={{VERSION}}"></script>
-    
+
         <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
         <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
         <script src="{% url 'javascript-catalog' %}"></script>
-    
+
         <link rel="stylesheet" href="{% static 'css/video-iframe.css' %}?ver={{VERSION}}">
     </head>
 
@@ -71,7 +71,7 @@
                     </div>
                 </div>
                 {# ajouter ici l' event.iframe_url si nécessaire#}
-                <div id="info-video-wrapper" class="jumbotron">
+                <div id="info-video-wrapper">
                     <div class="iframe-header bg-dark text-white">
                         <h2 class="video-title">{{ video.title }}</h2>
                         <button type="button" class="close" aria-label="Close">

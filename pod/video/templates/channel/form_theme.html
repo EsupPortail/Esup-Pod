@@ -1,13 +1,11 @@
 {# HTML for theme form. Don't use this file alone it must be integrated into another template! #}
 {% load i18n %}
 {% load static %}
-<h4 class="form-title">
-	{% if form_theme.instance.title %}{% trans "Editing the theme" %} {{form_theme.instance.title}}{% else %}{% trans "Add a new theme" %}{%endif%}
-</h4>
+
 <form id="form_theme" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="post">
   {% csrf_token %}
   <div id="formcontent" class="form-container">
-    <fieldset>
+    <fieldset class="row">
       <legend class="form-title">
         {% if form_theme.instance.title %}{% trans "Editing the theme" %} {{form_theme.instance.title}}{% else %}{% trans "Add a new theme" %}{%endif%}
       </legend>
@@ -36,8 +34,17 @@
                     <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
                   {% endif %}
                 </div>
-                {% if field.name == "description" %}<button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target=".description" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
-                {% if field.name == "title" %}<button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target=".title" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
+                {% if field.name == "description" %}
+                  <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target=".description" aria-expanded="false">
+                    <i class="bi bi-translate" aria-hidden="true"></i>
+                    {% trans "Other language" %}
+                  </button>
+                {%endif%}{% if field.name == "title" %}
+                  <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target=".title" aria-expanded="false">
+                    <i class="bi bi-translate" aria-hidden="true"></i>
+                    {% trans "Other language" %}
+                  </button>
+                {%endif%}
               </div>
             </div>
           </div>
@@ -48,8 +55,10 @@
       {% endif %}
     </fieldset>
     <input type="hidden" name="action" value="save"/>
-    <input type="submit" id="save_theme" value="{% trans 'Save' %}" class="btn btn-primary"/>
-    <input type="reset" action="cancel" id="cancel_theme" value="{% trans 'Cancel' %}" class="btn btn-secondary" />
+    <div class="mt-2">
+      <input type="submit" id="save_theme" value="{% trans 'Save' %}" class="btn btn-primary"/>
+      <input type="reset" action="cancel" id="cancel_theme" value="{% trans 'Cancel' %}" class="btn btn-secondary" />
+    </div>
   </div>
 </form>
 {{form_theme.media}}

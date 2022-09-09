@@ -102,7 +102,7 @@
 .caption_content .help_text{
     display: none;
     position: absolute;
-    background: var(--primary);
+    background: var(--pod-primary);
     color: #fff;
     width: calc(100% - 110px);
     right: 0;
@@ -115,17 +115,17 @@
 
 .captions_editor {
     height: 470px;
-    
+
     overflow-y: auto;
     /*resize: none;
     width: 100%;
     padding: 0;*/
-    
+
 }
 
 #newCaptionsEditor {
     margin-bottom: 6px;
-    
+
 }
 
 .newEditorBlock {
@@ -150,12 +150,12 @@
 }
 
 .captionBeingEdited {
-    border-left: 3px solid var(--primary);
+    border-left: 3px solid var(--pod-primary);
     background-color: rgba(223, 230, 246, 0.4);
 }
 
 /*.captionBeingEdited > textarea {
-    border: 1px solid var(--primary);
+    border: 1px solid var(--pod-primary);
     border-radius: 4px;
     background-color: #FFF5FB;
 }*/
@@ -215,7 +215,7 @@
 }*/
 
 #addSubtitle svg {
-    color: var(--link-color);
+    color: var(--pod-link-color);
 }
 
 .makerNavbarRight {
@@ -250,7 +250,7 @@
     width: 120px;
     background: none;
     border: none;
-    color: var(--primary);
+    color: var(--pod-primary);
     font-weight: 600;
     font-size: 20px;
 }
@@ -272,7 +272,7 @@
     width: 120px;
     background: none;
     border: none;
-    color: var(--primary);
+    color: var(--pod-primary);
     font-weight: 600;
     font-size: 20px;
 }
@@ -351,6 +351,6 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--primary);
+    background: var(--pod-primary);
     border-radius: 2px;
 }

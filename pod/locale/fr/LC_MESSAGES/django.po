@@ -2400,12 +2400,12 @@ msgstr "Sélectionner un ou plusieurs groupes qui auront accès à cet événeme
 
 #: pod/live/models.py:406
 msgid "Auto start"
-msgstr "Démarrage automatique de l'enregistrement"
+msgstr "Démarrage automatique de l’enregistrement"
 
 #: pod/live/models.py:407
 msgid "If this box is checked, the record will start automatically."
 msgstr ""
-"Si cette case est cochée, l'enregistrement démarrera automatiquement à "
+"Si cette case est cochée, l’enregistrement démarrera automatiquement à "
 "l'heure indiquée."
 
 #: pod/live/models.py:421
@@ -4158,15 +4158,15 @@ msgstr "Enregistrée"
 
 #: pod/meeting/models.py:164
 msgid "Auto Start Recording"
-msgstr "Démarrage automatique de l'enregistrement"
+msgstr "Démarrage automatique de l’enregistrement"
 
 #: pod/meeting/models.py:168
 msgid "Allow Stop/Start Recording"
-msgstr "Autorisé l'arret/le démarrage de l'enregistrement"
+msgstr "Autoriser l’arrêt/le démarrage de l’enregistrement"
 
 #: pod/meeting/models.py:169
 msgid "Allow the user to start/stop recording. (default true)"
-msgstr "Autorisé l'utilisateur a arréter/démarrer l'enregistrement"
+msgstr "Autoriser l’utilisateur à arrêter/démarrer l’enregistrement. (vrai par défaut)"
 
 #: pod/meeting/models.py:173
 msgid "Webcam Only for moderators?"
@@ -4942,7 +4942,7 @@ msgstr "Supprimer cet enregistrement"
 
 #: pod/recorder/forms.py:85
 msgid "If checked, record will be deleted instead of saving it"
-msgstr "Si coché, l'enregistrement sera supprimé et non ajouté"
+msgstr "Si coché, l’enregistrement sera supprimé et non ajouté"
 
 #: pod/recorder/forms.py:93
 msgid "Delete this record cannot be undo"
@@ -5242,7 +5242,7 @@ msgstr "Courriel envoyé ?"
 #: pod/recorder/models.py:368
 msgid "Has an email been sent to the manager of the concerned recorder?"
 msgstr ""
-"Est-ce qu’un courriel a été envoyé au gestionnaire de l'enregistrement "
+"Est-ce qu’un courriel a été envoyé au gestionnaire de l’enregistrement "
 "concerné ?"
 
 #: pod/recorder/models.py:371
@@ -5273,7 +5273,7 @@ msgstr "Ajouter un nouvel enregistrement"
 
 #: pod/recorder/templates/recorder/card.html:19
 msgid "Date of recording."
-msgstr "Date de l'enregistrement."
+msgstr "Date de l’enregistrement."
 
 #: pod/recorder/templates/recorder/claim_record.html:22
 msgid "There is no unassigned records"
@@ -5304,7 +5304,7 @@ msgstr "Enregistrement précédent."
 
 #: pod/recorder/templates/recorder/link_record.html:13
 msgid "Claim the record"
-msgstr "Revendiquer l'enregistrement"
+msgstr "Revendiquer l’enregistrement"
 
 #: pod/recorder/templates/recorder/opencast-studio.html:71
 #: pod/recorder/templates/recorder/opencast-studio.html:73
@@ -5995,7 +5995,7 @@ msgstr "Versions de la video"
 
 #: pod/video/models.py:1803
 msgid "Encoding steps"
-msgstr "Etapes de l'encodage"
+msgstr "Étapes de l'encodage"
 
 #: pod/video/models.py:1812 pod/video/models.py:1823 pod/video/models.py:1841
 #: pod/video/views.py:1655
@@ -6079,7 +6079,7 @@ msgstr "Votes"
 
 #: pod/video/models.py:2008 pod/video/templates/videos/category_modal.html:13
 msgid "Category title"
-msgstr "Titre catégorie"
+msgstr "Titre de la catégorie"
 
 #: pod/video/models.py:2011
 msgid ""
@@ -6170,7 +6170,7 @@ msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne
 #: pod/video/templates/channel/channel.html:167
 #: pod/video/templates/channel/channel_edit.html:33
 msgid "Edit the themes"
-msgstr "Editer les thèmes"
+msgstr "Éditer les thèmes"
 
 #: pod/video/templates/channel/channel.html:187
 msgid "Themes of "
