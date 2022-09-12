@@ -104,14 +104,14 @@ class MyAdminSplitDateTime(forms.MultiWidget):
             dattrs = context["widget"]["subwidgets"][0]["attrs"]
             val = self.date_attrs.get(att, None)
             if val and dattrs.get(att) and att not in unique_value:
-                context["widget"]["subwidgets"][0]["attrs"][att] += val
+                context["widget"]["subwidgets"][0]["attrs"][att] += " " + val
             else:
                 context["widget"]["subwidgets"][0]["attrs"][att] = val
         for att in self.time_attrs:
             dattrs = context["widget"]["subwidgets"][1]["attrs"]
             val = self.time_attrs.get(att, None)
             if val and dattrs.get(att) and att not in unique_value:
-                context["widget"]["subwidgets"][1]["attrs"][att] += val
+                context["widget"]["subwidgets"][1]["attrs"][att] += " " + val
             else:
                 context["widget"]["subwidgets"][1]["attrs"][att] = val
         context["date_label"] = _("Date:")
@@ -133,12 +133,14 @@ class MeetingForm(forms.ModelForm):
     start_at = forms.SplitDateTimeField(
         label=_("Start date"),
         initial=timezone.now,
-        widget=MyAdminSplitDateTime,
+        localize=True,
+        widget=MyAdminSplitDateTime
     )
     end_at = forms.SplitDateTimeField(
         label=_("End date"),
         initial=two_hours_hence(),
-        widget=MyAdminSplitDateTime,
+        localize=True,
+        widget=MyAdminSplitDateTime
     )
     # user = User.objects.all()
     fieldsets = (
