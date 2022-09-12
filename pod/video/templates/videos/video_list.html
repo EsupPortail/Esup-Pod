@@ -2,7 +2,7 @@
 {% spaceless %}
 <div class="pod-infinite-container infinite-container" id="videos_list">
   {% for video in videos %}
-    <div class="infinite-item card-group" {% if categories %}data-slug={{video.slug}}{% endif %} > <!-- min-width: 15rem; -->
+    <div class="infinite-item card-group" {% if categories %}data-slug={{video.slug}}{% endif %} >
       {% include "videos/card.html" %}
     </div>
   {% empty %}
@@ -18,6 +18,6 @@
   {% trans "Loading..." %}
 </div>
 {% endspaceless %}
-<script type="text/javascript">
+<script>
 var countVideos = "{{ count_videos }}";
 </script>

@@ -169,11 +169,12 @@ margin-top: 1rem;
   text-decoration: none;
 }
 
+/** See in caption maker & category modal **/
 .link-primary {
   color: var(--pod-primary);
 }
 .link-primary:hover,.link-primary:focus {
-  color: var(--pod-primary-focus);
+  color: var(--pod-primary-focus) !important;
 }
 
 .btn-outline-primary {
@@ -940,33 +941,26 @@ body {
   color: var(--pod-primary);
 }
 
-.text-bg-primary,
-.btn-primary, .pod-btn-primary {
+.btn {
+  --bs-btn-hover-bg: var(--pod-primary-focus);
+  --bs-btn-hover-color: var(--pod-btn-text);
+  --bs-btn-hover-border-color: var(--pod-primary-lighten);
+}
+.btn-primary {
   background: var(--pod-primary);
   border-color: var(--pod-primary);
   color: var(--pod-btn-text);
+}
+
+/* used in badges (# of videos in channel) */
+.text-bg-primary {
+  background-color: var(--pod-primary) !important;
 }
 
 .btn-primary.disabled, .btn-primary:disabled {
   background: var(--pod-primary-darken);
 }
 
-.btn-primary:hover,
-.btn-primary:focus,
-.pod-btn-primary:hover,
-.pod-btn-primary:focus {
-  /*text-decoration: underline;*/
-  background: var(--pod-primary-focus);
-  border-color: var(--pod-primary-lighten);
-  color: var(--pod-btn-text);
-}
-
-.btn-outline-primary:hover,
-.btn-outline-primary:focus {
-  background-color: var(--pod-primary);
-  color: var(--pod-btn-text);
-  border-color: var(--pod-primary);
-}
 
 .btn-close {
   color: var(--pod-font-color);
@@ -988,24 +982,25 @@ body {
   transform: rotate(10deg);
 } */
 
-#pod-param-buttons__button#pod-param-buttons__button::before { /* Make icon rotate and button remain still */
+/* Make icon rotate and button remain still */
+#pod-param-buttons__button::before {
   transition: transform ease-in-out .3s, color ease-in-out .5s;
 }
 
-#pod-param-buttons__button:hover#pod-param-buttons__button::before { /* Make icon rotate and button remain still */
+#pod-param-buttons__button:hover::before {
   transition: transform ease-in-out .3s, color ease-in-out .5s;
   transform: rotate(15deg);
-  color:var(--pod-btn-text);
 }
 
-#pod-param-buttons__button#pod-param-buttons__button { /* Make icon rotate and button remain still */
+#pod-param-buttons__button {
   transition: background-color ease-in-out .5s;
+  border-color: transparent;
 }
 
-#pod-param-buttons__button:hover#pod-param-buttons__button { /* Make icon rotate and button remain still */
+#pod-param-buttons__button:hover {
   transition: background-color ease-in-out .5s;
-  background-color:var(--pod-primary);
-  color:var(--pod-btn-text);
+/*  background-color:var(--pod-primary);
+  color:var(--pod-btn-text);*/
 }
 
 .pod-gotoup {
