@@ -464,8 +464,8 @@ class Meeting(models.Model):
         db_table = "meeting"
         verbose_name = "Meeting"
         verbose_name_plural = _("Meeting")
-        ordering = ["-created_at", "-id"]
-        get_latest_by = "created_at"
+        ordering = ["-start_at", "-id"]
+        get_latest_by = "start_at"
         constraints = [
             models.UniqueConstraint(
                 fields=["meeting_id", "site"], name="meeting_unique_slug_site"
