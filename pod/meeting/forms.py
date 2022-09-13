@@ -41,7 +41,10 @@ MEETING_RECORD_FIELDS = getattr(
     ("record", "auto_start_recording", "allow_start_stop_recording"),
 )
 
-MEETING_EXCLUDE_FIELDS = MEETING_MAIN_FIELDS + ("id",)
+if MEETING_DISABLE_RECORD:
+    MEETING_EXCLUDE_FIELDS = MEETING_MAIN_FIELDS + ("id",) + MEETING_RECORD_FIELDS
+else:
+    MEETING_EXCLUDE_FIELDS = MEETING_MAIN_FIELDS + ("id",)
 
 for field in Meeting._meta.fields:
     # print(field.name, field.editable)
