@@ -3,15 +3,16 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
-from pod.authentication.models import Owner, GroupSite
-from pod.authentication.forms import OwnerAdminForm, GroupSiteAdminForm
 from django.utils.html import format_html
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import Group
-from pod.authentication.forms import GroupAdminForm, AdminOwnerForm
 from django.contrib.sites.models import Site
 from django.contrib.admin import widgets
+
 from pod.authentication.models import AccessGroup
+from pod.authentication.models import Owner, GroupSite
+from pod.authentication.forms import OwnerAdminForm, GroupSiteAdminForm
+from pod.authentication.forms import GroupAdminForm
 
 # Define an inline admin descriptor for Owner model
 # which acts a bit like a singleton
@@ -200,7 +201,7 @@ class AccessGroupAdmin(admin.ModelAdmin):
 
 
 class OwnerAdmin(admin.ModelAdmin):
-    form = AdminOwnerForm
+    # form = AdminOwnerForm
     autocomplete_fields = ["user", "accessgroups"]
     search_fields = ["user__username__icontains", "user__email__icontains"]
 
@@ -209,6 +210,9 @@ class OwnerAdmin(admin.ModelAdmin):
         if not request.user.is_superuser:
             qs = qs.filter(groupsite__sites=get_current_site(request))
         return qs
+
+    def has_module_permission(self, request):
+        return False
 
     class Meta:
         verbose_name = "Access group owner"
