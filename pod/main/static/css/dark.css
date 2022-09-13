@@ -302,7 +302,7 @@ body.dark {
 
 .slider:focus,
 .slider:hover {
-  box-shadow: 0 0 3px var(--pod-primary);
+  box-shadow: 0 0 3px var(--pod-primary-lighten);
 }
 
 .slider:before {

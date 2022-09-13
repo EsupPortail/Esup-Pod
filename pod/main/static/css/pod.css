@@ -130,6 +130,7 @@ margin-top: 1rem;
 .btn-lang:hover,
 .btn-lang:active {
   box-shadow: 0 0 3px var(--pod-primary);
+  --bs-btn-hover-color: var(--pod-font-color);
 }
 
 .pod-nav-link-icon {

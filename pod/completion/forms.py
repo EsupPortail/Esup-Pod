@@ -10,6 +10,8 @@ from pod.completion.models import Document
 from pod.completion.models import Track
 from pod.completion.models import Overlay
 
+from pod.main.forms import add_placeholder_and_asterisk
+
 FILEPICKER = False
 if getattr(settings, "USE_PODFILE", False):
     FILEPICKER = True
@@ -148,27 +150,8 @@ class OverlayForm(forms.ModelForm):
         except Exception:
             self.fields["time_start"].widget.attrs["max"] = 36000
             self.fields["time_end"].widget.attrs["max"] = 36000
-        for fieldName in self.fields:
-            myField = self.fields[fieldName]
-            classname = myField.widget.__class__.__name__
-            if classname == "PasswordInput" or classname == "TextInput":
-                myField.widget.attrs["placeholder"] = myField.label
 
-            if classname == "CheckboxInput":
-                bsClass = "form-check-input"
-            elif classname == "Select":
-                bsClass = "form-select"
-            else:
-                bsClass = "form-control"
-
-            if myField.required:
-                myField.widget.attrs["class"] = "required " + bsClass
-                label_unicode = "{0}".format(myField.label)
-                myField.label = mark_safe(
-                    '{0} <span class="required_star">*</span>'.format(label_unicode)
-                )
-            else:
-                myField.widget.attrs["class"] = bsClass
+        self.fields = add_placeholder_and_asterisk(self.fields)
 
     class Meta(object):
         """Set form Metadata."""
