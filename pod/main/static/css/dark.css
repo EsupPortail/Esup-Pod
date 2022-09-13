@@ -8,10 +8,10 @@
   --pod-font-color: var(--pod-font-color-dark);
   --pod-background-neutre1-bloc: var(--pod-background-neutre1-bloc-dark);
   --pod-background-neutre2-bloc: var(--pod-background-neutre2-bloc-dark);
-  --pod-link-color: var(--pod-link-color-dark);
-  --pod-primary-focus: var(--pod-primary-lighten-dark);
   --pod-btn-text: var(--pod-btn-text-dark);
   --pod-alert: var(--pod-alert-dark);
+  --pod-link-color: var(--pod-primary-lighten-dark);
+  --pod-activelink-color: var(--pod-primary);
 }
 
 [data-theme="dark"] {
@@ -25,6 +25,7 @@
   --bs-dark: #202025;
   --bs-light: var(--bs-dark);
   --bs-gray-dark: var(--bs-dark);
+  --bs-danger: #FE4C53;
 
   --color-formfields: #454c52;
   --color-silver-chalice: #000;
@@ -110,11 +111,6 @@
   color: var(--pod-activelink-color);
 }
 
-[data-theme="dark"] .dropdown-item:hover,
-[data-theme="dark"] .dropdown-item:focus {
-  color: var(--pod-primary);
-}
-
 [data-theme="dark"] .btn-link.disabled,
 [data-theme="dark"] .dropdown-item,
 [data-theme="dark"] footer,
@@ -160,6 +156,8 @@
 
 [data-theme="dark"] .btn-outline-primary{
   background-color: #000;
+  --bs-btn-hover-bg: var(--pod-primary-darken-dark);
+  color: var(--pod-primary-lighten-dark);
 }
 
 [data-theme="dark"] .btn-outline-primary>svg {

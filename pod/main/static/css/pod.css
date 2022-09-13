@@ -12,16 +12,16 @@
    *  exemple vert 'univ-lille.fr' 2022
    ***/
   /*** Theme primary color ***/
-  --pod-primary: #1F8389;
+  --pod-primary: #1F7C85;
   --bs-primary-rgb: 31, 131, 137;
   /* a light variant of primary color, used for button hover */
   --pod-primary-lighten: #08b0a0;
   /* a dark variant of primary color, used for active links and disabled buttons */
   --pod-primary-darken: #18575D;
   /* les valeurs '...-dark' ci-dessous sont pour le mode sombre.*/
-  --pod-primary-dark: #1F8389;
-  --pod-primary-lighten-dark: #18575D;
-  --pod-primary-darken-dark: #08b0a0;
+  --pod-primary-dark: #1F7C85;
+  --pod-primary-lighten-dark: #08b0a0;
+  --pod-primary-darken-dark: #18575D;
 
   /***
    * Esup-Pod default colors
@@ -50,7 +50,6 @@
   /**** couleur des liens *****/
   --pod-link-color: var(--pod-primary);
   --pod-activelink-color: var(--pod-primary-darken);
-  --pod-link-color-dark: var(--pod-primary-dark);
 
   /* couleur d'un élément actif (ex. : survol de bouton) */
   --pod-primary-focus: var(--pod-primary-darken);
@@ -565,7 +564,7 @@ div.card a img {
   background: #000;
 }
 
-div.card a:hover>img {
+.card .link-center-pod:hover>img {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
   z-index: 0;
@@ -937,15 +936,21 @@ body {
   margin-top: 5rem !important;
 }
 
-.btn-link:hover {
-  color: var(--pod-primary);
+.btn{
+  --bs-btn-hover-color: #FFF;
 }
 
-.btn {
+.btn-link {
+  --bs-btn-hover-color: var(--pod-primary);
+}
+
+.btn-primary,
+.btn-outline-primary {
   --bs-btn-hover-bg: var(--pod-primary-focus);
   --bs-btn-hover-color: var(--pod-btn-text);
   --bs-btn-hover-border-color: var(--pod-primary-lighten);
 }
+
 .btn-primary {
   background: var(--pod-primary);
   border-color: var(--pod-primary);
@@ -972,6 +977,7 @@ body {
 
 .pod-params-button {
   color: var(--pod-font-color);
+  --bs-btn-hover-color: var(--pod-primary);
   font-size: 1.4rem;
   display: flex;
 }
@@ -984,22 +990,17 @@ body {
 
 /* Make icon rotate and button remain still */
 #pod-param-buttons__button::before {
-  transition: transform ease-in-out .3s, color ease-in-out .5s;
+  transition: transform ease-in-out .3s;
 }
 
 #pod-param-buttons__button:hover::before {
-  transition: transform ease-in-out .3s, color ease-in-out .5s;
-  transform: rotate(15deg);
+  transform: rotate(20deg);
 }
 
-#pod-param-buttons__button {
-  transition: background-color ease-in-out .5s;
-  border-color: transparent;
-}
 
 #pod-param-buttons__button:hover {
-  transition: background-color ease-in-out .5s;
-/*  background-color:var(--pod-primary);
+/*  transition: background-color ease-in-out .5s;
+  background-color:var(--pod-primary);
   color:var(--pod-btn-text);*/
 }
 
@@ -1466,10 +1467,10 @@ table :not(footer) > .pod-btn-social {
   height: 3rem !important;
 }
 
-table .btn:hover {
+/*table .btn:hover {
   background-color: var(--pod-primary) !important;
   color: var(--pod-font-color);
-}
+}*/
 
 th + td + td + td + td {
   /* border-right: 0.15rem solid var(--pod-link-color);  */

@@ -169,7 +169,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
 
     Args:
         request (Request): current HTTP Request
-        videos (List[Video]): list of vidéo filter by channel
+        videos (List[Video]): list of video filter by channel
         channel (Channel): current channel
         theme (Theme, optional): current theme. Defaults to None.
 
@@ -245,6 +245,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
                     "is_restricted": v.is_restricted,
                     "has_chapter": v.chapter_set.all().count() > 0,
                     "is_draft": v.is_draft,
+                    "is_editable": v.is_editable(request.user),
                 },
                 videos,
             )

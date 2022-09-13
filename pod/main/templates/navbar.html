@@ -68,7 +68,7 @@
         {% if MAINTENANCE_MODE%}
           <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
         {% else %}
-          <a class="nav-item pod-navbar__nav-item__nav-link initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'video:video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a video' %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
+          <a class="nav-item pod-navbar__nav-item__nav-link initials btn btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'video:video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a video' %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
         {% endif %}
       </li>
       {% if USE_MEETING %}
@@ -76,7 +76,7 @@
           {% if MAINTENANCE_MODE%}
             <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
           {% else %}
-            <a class="nav-item pod-navbar__nav-item__nav-link initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'meeting:my_meetings' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'My meetings' %}"><i class="bi bi-person-video pod-add"></i><span>{% trans "My meetings" %}</span></a>
+            <a class="nav-item pod-navbar__nav-item__nav-link initials btn btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'meeting:my_meetings' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'My meetings' %}"><i class="bi bi-person-video pod-add"></i><span>{% trans "My meetings" %}</span></a>
           {% endif %}
         </li>
       {% endif %}
@@ -157,7 +157,7 @@
 
     {% if user.is_authenticated %}
       <li class="nav-item nav-item pod-navbar__nav-item dropdown login" id="nav-usermenu">
-        <button class="nav-item btn-sm pod-navbar__nav-item__nav-link {% if not request.user.owner.userpicture  %}initials btn pod-btn-primary {% else %} nav-link{% endif %} ps-2 pe-2 d-flex justify-content-center align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menuuser" aria-controls="pod-navbar__menuuser">
+        <button class="nav-item btn-sm pod-navbar__nav-item__nav-link {% if not request.user.owner.userpicture  %}initials btn btn-primary {% else %} nav-link{% endif %} ps-2 pe-2 d-flex justify-content-center align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menuuser" aria-controls="pod-navbar__menuuser">
           {% if request.user.owner.userpicture %}
             <img src="{{user.owner.userpicture.file.url}}" class="userpicture rounded" alt="{{user.get_full_name}}" loading="lazy">
           {% endif %}
@@ -177,7 +177,7 @@
             {% if MAINTENANCE_MODE %}
               <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle "></i> {% trans "Some features are unavailable" %}</span>
             {% else %}
-              <a class="mx-3 mb-2 pod-dropdown-item pod-navbar__nav-item__nav-link initials btn pod-btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'video:video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a video' %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
+              <a class="mx-3 mb-2 pod-dropdown-item pod-navbar__nav-item__nav-link initials btn btn-primary btn-sm d-flex justify-content-center align-items-center pod-navbar__nav-item__nav-link--add-video" href="{% url 'video:video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a video' %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
             {% endif %}
             {% if request.user.is_superuser or user.owner.is_manager %}
               <a class="dropdown-item pod-dropdown-item" href="{% url 'admin:index' %}"><i class="bi bi-cpu pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>Administration</a>
@@ -226,7 +226,7 @@
       {% if request.path != LOGIN_URL %}
         <li class="nav-item dropdown login me-2" id="nav-authentication">
           {% get_url_referrer request as url_referrer %}
-          <a class="btn pod-btn-primary btn-sm ps-2 pe-2 d-flex justify-content-center" href="{% url 'authentication:authentication_login' %}{{ url_referrer }}" aria-label="{% trans 'Log in' %}">
+          <a class="btn btn-primary btn-sm ps-2 pe-2 d-flex justify-content-center" href="{% url 'authentication:authentication_login' %}{{ url_referrer }}" aria-label="{% trans 'Log in' %}">
             <i class="bi bi-person-circle"></i> <span class="ms-1 d-none d-lg-block">{% trans 'Log in' %}</span>
           </a>
         </li>
