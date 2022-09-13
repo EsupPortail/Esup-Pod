@@ -254,11 +254,15 @@ body.dark {
 [data-theme="dark"] .select2-choice .select2-search-choice-close+div,
 [data-theme="dark"] .select2-dropdown-open .select2-choice,
 [data-theme="dark"] .select2-results .select2-no-results,
-[data-theme="dark"] .select2-results .select2-searching {
+[data-theme="dark"] .select2-results .select2-searching,
+[data-theme="dark"] .select2-container--default .select2-selection--multiple {
   background-color: var(--pod-background-neutre1-bloc);
   border-color: var(--pod-font-color);
   color: var(--pod-font-color);
   box-shadow: none;
+}
+[data-theme="dark"] .select2-selection--multiple .select2-selection__choice{
+  color: #000;
 }
 
 [data-theme="dark"] .form-select{

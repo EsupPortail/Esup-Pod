@@ -219,15 +219,14 @@ tr,
 
 /*:not(footer)>.pod-btn-social {
   font-size: 2rem;
-}
-
-.pod-btn-social {
-  color: var(--pod-font-color);
 }*/
+.btn.pod-btn-social {
+  /*color: var(--pod-font-color);*/
+  --bs-btn-hover-color: var(--pod-font-color);
+}
 
 .pod-btn-social i {
   transition: all 0.2s ease;
-
 }
 
 .pod-btn-social:hover i {
@@ -584,6 +583,7 @@ div.card a img {
   border: none;
   color: white;
   background: none;
+  --bs-btn-hover-color: #FFF;
 }
 
 .card-footer-pod a.btn i {

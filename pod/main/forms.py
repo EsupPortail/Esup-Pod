@@ -36,13 +36,14 @@ def add_placeholder_and_asterisk(fields):
             bsClass = "form-control"
 
         if myField.required:
-            myField.widget.attrs["class"] = "required " + bsClass
-            label_unicode = "{0}".format(myField.label)
             myField.label = mark_safe(
-                '{0} <span class="required_star">*</span>'.format(label_unicode)
+                '%s <span class="required_star">*</span>' % myField.label
             )
+            myField.widget.attrs["required"] = ""
+            myField.widget.attrs["class"] = "required " + bsClass
         else:
             myField.widget.attrs["class"] = bsClass
+
     return fields
 
 
