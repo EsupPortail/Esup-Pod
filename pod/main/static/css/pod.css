@@ -221,7 +221,7 @@ tr,
   font-size: 2rem;
 }*/
 .btn.pod-btn-social {
-  /*color: var(--pod-font-color);*/
+  color: var(--pod-font-color);
   --bs-btn-hover-color: var(--pod-font-color);
 }
 
@@ -935,6 +935,10 @@ body {
 #completebox {
   margin-left: 0 !important;
   margin-top: 5rem !important;
+}
+
+.timecode{
+  font-size: 12px;
 }
 
 .btn{

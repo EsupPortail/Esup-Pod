@@ -357,6 +357,9 @@
     color: #fff;
     background-color: var(--pod-primary);
 }
+.active .category_actions>button{
+    color: #fff;
+}
 #my_videos_filter .categories_list_item:not(.active):hover{
     background-color: rgba(149, 149, 149, 0.09);
     border-color: rgba(149, 149, 149, 0.09);
@@ -411,13 +414,11 @@
 }
 */
 
-#my_videos_filter .categories_list_item.active .edit_category:hover,
-#my_videos_filter .categories_list_item.active .edit_category:focus{
-  color: var(--pod-primary-lighten);
+#my_videos_filter .edit_category{
+  --bs-btn-hover-color: var(--pod-primary-darken);
 }
-#my_videos_filter .remove_category:hover,
-#my_videos_filter .remove_category:focus{
-  color: var(--bs-danger);
+#my_videos_filter .remove_category{
+  --bs-btn-hover-color: var(--bs-danger);
 }
 /*
 #my_videos_filter .categories_list_item.active .remove_category{color: #ff4759;}
