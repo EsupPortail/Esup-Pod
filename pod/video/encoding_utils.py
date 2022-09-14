@@ -7,7 +7,7 @@ import os
 
 try:
     from .encoding_settings import VIDEO_RENDITIONS
-except ImportError:
+except (ImportError, ValueError):
     from encoding_settings import VIDEO_RENDITIONS
 
 
@@ -61,6 +61,8 @@ def get_info_from_video(probe_cmd):
 
 
 def launch_cmd(cmd):
+    if cmd == '':
+        return False, "No cmd to launch"
     msg = ""
     encode_start = timer()
     return_value = False
@@ -83,14 +85,9 @@ def launch_cmd(cmd):
             msg += "ERROR RETURN CODE %s for command %s" % (output.returncode, cmd)
         else:
             return_value = True
-    except subprocess.CalledProcessError as e:
+    except (subprocess.CalledProcessError, OSError) as e:
         # raise RuntimeError('ffmpeg returned non-zero status: {}'.format(
         # e.stderr))
         msg += 20 * "////" + "\n"
-        msg += "Runtime Error: {0}\n".format(e)
-
-    except OSError as err:
-        # raise OSError(e.errno, 'ffmpeg not found: {}'.format(e.strerror))
-        msg += 20 * "////" + "\n"
-        msg += "OS error: {0}\n".format(err)
+        msg += "Runtime or OsError Error: {0}\n".format(e)
     return return_value, msg
