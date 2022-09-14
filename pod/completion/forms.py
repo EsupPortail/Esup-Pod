@@ -76,6 +76,7 @@ class TrackForm(forms.ModelForm):
         """Initialize fields."""
         super(TrackForm, self).__init__(*args, **kwargs)
         self.fields["video"].widget = HiddenInput()
+        self.fields["src"].required = True
         self.fields = add_placeholder_and_asterisk(self.fields)
         if not USE_ENRICH_READY:
             self.fields["enrich_ready"].widget = HiddenInput()
