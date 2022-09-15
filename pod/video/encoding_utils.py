@@ -7,7 +7,7 @@ import os
 
 try:
     from .encoding_settings import VIDEO_RENDITIONS
-except ImportError:
+except (ImportError, ValueError) as e :
     from encoding_settings import VIDEO_RENDITIONS
 
 
