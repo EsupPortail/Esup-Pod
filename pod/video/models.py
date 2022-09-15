@@ -869,6 +869,19 @@ class Video(models.Model):
 
     recentViewcount.fget.short_description = _("Sum of view of last 6 months (180 days)")
 
+    def is_editable(self, user):
+        """Return true if video is editable by user."""
+        if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and user.is_staff is False:
+            return False
+
+        if (self.owner == user) or (
+            user.is_superuser) or (
+                user.has_perm("video.change_video")) or (
+                    user in self.additional_owners.all()):
+            return True
+        else:
+            return False
+
     @property
     def get_encoding_step(self):
         """Get the current encoding step of a video."""
@@ -970,6 +983,7 @@ class Video(models.Model):
             return "O"
 
     def get_other_version(self):
+        """Get other versions of a video."""
         version = []
         for app in THIRD_PARTY_APPS:
             mod = importlib.import_module("pod.%s.models" % app)
@@ -998,6 +1012,7 @@ class Video(models.Model):
         return version
 
     def get_default_version_link(self, slug_private):
+        """Get link of the version of a video."""
         for version in self.get_other_version():
             if version["link"] == VERSION_CHOICES_DICT[self.get_version]:
                 if slug_private:

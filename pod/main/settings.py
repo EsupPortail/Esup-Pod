@@ -288,7 +288,7 @@ DEFAULT_EVENT_TYPE_ID = 1
 MENUBAR_HIDE_INACTIVE_OWNERS = True
 # Show only staff users in “Owners” main menu list.
 MENUBAR_SHOW_STAFF_OWNERS_ONLY = False
-# Hide de language selector
+# Hide the language selector
 HIDE_LANGUAGE_SELECTOR = False
 # Hide Users tab in navbar
 HIDE_USER_TAB = False

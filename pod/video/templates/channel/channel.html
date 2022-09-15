@@ -71,7 +71,7 @@
                     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug %}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-rss"></i>&nbsp;Audio</a>
                 {% endif %}
                 {% if request.user in channel.owners.all %}
-                    <a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn pod-btn-social btn-sm">
+                    <a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn-link">
                         <i class="bi bi-pencil-square me-1"></i>&nbsp;{% trans "Edit the channel"%}</a>
                 {% endif %}
             </span>
@@ -182,16 +182,19 @@
 {% endblock page_content %}
 
 {% block page_aside %}
+  {% if channel.themes.count > 0 %}
     <div class="card card-body p-2 p-md-3" id="card-channelthemes">
-        <h2 class="card-title pod-card__title h4">
-            <i class="bi bi-card-list"   aria-hidden="true"></i>&nbsp; {% trans 'Themes of ' %}&nbsp;{{ channel.title }}
-        </h2>
-        <div class="card-text" id="treeview">
-            <ul class="list-group list-group-flush {% if channel.themes.count > 5 %}small{%endif%}" id="ultreeview" style="max-height:300px; overflow:auto;">
-            </ul>
-        </div>
+      <h2 class="card-title h4">
+        <i class="bi bi-card-list" aria-hidden="true" ></i>
+        {% trans 'Themes of' %} "{{ channel.title }}"
+      </h2>
+      <div class="card-text" id="treeview">
+        <ul class="list-group list-group-flush {% if channel.themes.count > 5 %}small{%endif%}" id="ultreeview" style="max-height:300px; overflow:auto;">
+        </ul>
+      </div>
     </div>
-    {% include 'aside.html'%}
+  {% endif %}
+  {% include 'aside.html'%}
 {% endblock page_aside %}
 
 {% block more_script %}

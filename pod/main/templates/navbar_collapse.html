@@ -32,7 +32,7 @@
                     {% blocktrans count counter=channel.themes.all.count %}{{counter}} Theme{% plural %}{{counter}} Themes{% endblocktrans %} <i class="bi bi-chevron-down" class="chevron-down m-0 p-0"></i>
                     </button>
                   {% endif %}
-                  <span class="badge badge-primary badge-pill">{% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</span>
+                  <span class="badge text-bg-primary rounded-pill">{% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</span>
                 </span>
               </div>
               <div id="collapseThemes{{channel.id}}" class="collapse collapsibleThemes" aria-labelledby="channel-title_{{channel.id}}" data-bs-parent="#list-channels" data-id="{{channel.id}}"></div>
@@ -75,7 +75,7 @@
                     {% blocktrans count counter=channel.themes.all.count %}{{counter}} Theme{% plural %}{{counter}} Themes{% endblocktrans %} <i class="bi bi-chevron-down" class="chevron-down m-0 p-0"></i>
                     </button>
                   {% endif %}
-                  <span class="badge badge-primary badge-pill">{% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</span>
+                  <span class="badge text-bg-primary rounded-pill">{% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</span>
                 </span>
               </div>
               <div id="collapseThemes{{channel.id}}" class="collapse collapsibleThemes" aria-labelledby="channel-title_{{channel.id}}" data-bs-parent="#list-channels" data-id="{{channel.id}}"></div>

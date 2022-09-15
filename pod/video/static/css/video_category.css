@@ -202,26 +202,26 @@
 
 #manageCategoryModal .category_modal_videos_list .modal_category_card{
     margin-bottom: .4em !important;
-    position: relative;
-    width: 100%;
     height: 100%;
-    border-radius: 4px;
+    /*position: relative;
+    width: 100%;
+    border-radius: 4px;*/
 }
 #manageCategoryModal .category_modal_videos_list .card-header{
-    background-color: var(--primary);
+    background-color: var(--pod-primary);
     color: white;
     font-size: 14px;
     padding: .4em;
-    height: 30px;
+    /*height: 30px;*/
 }
 #manageCategoryModal .category_modal_videos_list .card-header *{
     color: inherit !important;
 }
 #manageCategoryModal .category_modal_videos_list .card-footer{
     padding: .4em;
-    color: var(--primary);
+    /*color: var(--pod-primary);
     height: 40px;
-    overflow: hidden;
+    overflow: hidden;*/
 }
 #manageCategoryModal .category_modal_videos_list .card-footer .video_title{
     display: inline-block;
@@ -234,13 +234,13 @@
     white-space: nowrap;
     text-align: left;
     font-size: 14px;
-    color: var(--primary);
+    color: var(--pod-primary);
 }
 
 #deleteCategoryModal .modal-body .category_title{
     display: block;
     text-align: center;
-    color: var(--primary);
+    color: var(--pod-primary);
     margin-bottom: .8em;
     font-weight: 700;
 }
@@ -355,7 +355,10 @@
 }
 #my_videos_filter .categories_list_item.active{
     color: #fff;
-    background-color: var(--primary);
+    background-color: var(--pod-primary);
+}
+.active .category_actions>button{
+    color: #fff;
 }
 #my_videos_filter .categories_list_item:not(.active):hover{
     background-color: rgba(149, 149, 149, 0.09);
@@ -383,7 +386,7 @@
     cursor: pointer;
     line-height: 1.8;
     border-right: 1px solid #eee8e8;
-    color: var(--gray-dark)
+    color: var(--bs-gray-dark)
 }
 #my_videos_filter .categories_list_item .category_actions{
     display: -webkit-box;
@@ -411,13 +414,11 @@
 }
 */
 
-#my_videos_filter .categories_list_item.active .edit_category:hover,
-#my_videos_filter .categories_list_item.active .edit_category:focus{
-  color: var(--pod-primary-lighten);
+#my_videos_filter .edit_category{
+  --bs-btn-hover-color: var(--pod-primary-darken);
 }
-#my_videos_filter .remove_category:hover,
-#my_videos_filter .remove_category:focus{
-  color: var(--bs-danger);
+#my_videos_filter .remove_category{
+  --bs-btn-hover-color: var(--bs-danger);
 }
 /*
 #my_videos_filter .categories_list_item.active .remove_category{color: #ff4759;}

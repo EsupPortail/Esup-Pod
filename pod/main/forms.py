@@ -22,26 +22,28 @@ SUBJECT_CHOICES = getattr(
 
 def add_placeholder_and_asterisk(fields):
     """Add placeholder and asterisk to specified fields."""
-    for myField in fields:
-        classname = fields[myField].widget.__class__.__name__
+    for fieldName in fields:
+        myField = fields[fieldName]
+        classname = myField.widget.__class__.__name__
         if classname == "PasswordInput" or classname == "TextInput":
-            fields[myField].widget.attrs["placeholder"] = fields[myField].label
+            myField.widget.attrs["placeholder"] = myField.label
+
         if classname == "CheckboxInput":
             bsClass = "form-check-input"
+        elif classname == "Select":
+            bsClass = "form-select"
         else:
-            if fields[myField].required:
-                fields[myField].label = mark_safe(
-                    '%s <span class="required_star">*</span>' % fields[myField].label
-                )
-                fields[myField].widget.attrs["required"] = ""
-            if classname == "Select":
-                bsClass = "form-select"
-            else:
-                bsClass = "form-control"
-        if fields[myField].widget.attrs.get("class"):
-            fields[myField].widget.attrs["class"] += " " + bsClass
+            bsClass = "form-control"
+
+        if myField.required:
+            myField.label = mark_safe(
+                '%s <span class="required_star">*</span>' % myField.label
+            )
+            myField.widget.attrs["required"] = ""
+            myField.widget.attrs["class"] = "required " + bsClass
         else:
-            fields[myField].widget.attrs["class"] = bsClass
+            myField.widget.attrs["class"] = bsClass
+
     return fields
 
 

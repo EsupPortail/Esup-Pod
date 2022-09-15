@@ -2,13 +2,14 @@
 from django import forms
 from django.conf import settings
 from django.forms.widgets import HiddenInput
-from django.utils.safestring import mark_safe
-
 # from django.utils.translation import ugettext_lazy as _
+
 from pod.completion.models import Contributor
 from pod.completion.models import Document
 from pod.completion.models import Track
 from pod.completion.models import Overlay
+
+from pod.main.forms import add_placeholder_and_asterisk
 
 FILEPICKER = False
 if getattr(settings, "USE_PODFILE", False):
@@ -24,16 +25,8 @@ class ContributorForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Initialize fields."""
         super(ContributorForm, self).__init__(*args, **kwargs)
-        for myField in self.fields:
-            self.fields["video"].widget = HiddenInput()
-            self.fields[myField].widget.attrs["placeholder"] = self.fields[myField].label
-            self.fields[myField].widget.attrs["class"] = "form-control"
-            if self.fields[myField].required:
-                label_unicode = "{0}".format(self.fields[myField].label)
-                self.fields[myField].label = mark_safe(
-                    '{0} <span class="required_star">*</span>'.format(label_unicode)
-                )
-        self.fields["role"].widget.attrs["class"] = "form-select"
+        self.fields["video"].widget = HiddenInput()
+        self.fields = add_placeholder_and_asterisk(self.fields)
 
     class Meta(object):
         """Set form Metadata."""
@@ -48,17 +41,8 @@ class DocumentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Initialize fields."""
         super(DocumentForm, self).__init__(*args, **kwargs)
-        for myField in self.fields:
-            self.fields["video"].widget = HiddenInput()
-            self.fields[myField].widget.attrs["placeholder"] = self.fields[myField].label
-            if self.fields[myField].required or myField == "document":
-                self.fields[myField].widget.attrs["class"] = "form-control required"
-                label_unicode = "{0}".format(self.fields[myField].label)
-                self.fields[myField].label = mark_safe(
-                    '{0} <span class="required_star">*</span>'.format(label_unicode)
-                )
-            else:
-                self.fields[myField].widget.attrs["class"] = "form-control"
+        self.fields["video"].widget = HiddenInput()
+        self.fields = add_placeholder_and_asterisk(self.fields)
         if FILEPICKER:
             self.fields["document"].widget = CustomFileWidget(type="file")
 
@@ -91,20 +75,9 @@ class TrackForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Initialize fields."""
         super(TrackForm, self).__init__(*args, **kwargs)
-        for myField in self.fields:
-            self.fields["video"].widget = HiddenInput()
-            self.fields[myField].widget.attrs["placeholder"] = self.fields[myField].label
-            if self.fields[myField].required or myField == "src":
-                self.fields[myField].widget.attrs["class"] = "form-control required"
-                label_unicode = "{0}".format(self.fields[myField].label)
-                self.fields[myField].label = mark_safe(
-                    '{0} <span class="required_star">*</span>'.format(label_unicode)
-                )
-            else:
-                self.fields[myField].widget.attrs["class"] = "form-control"
-        self.fields["kind"].widget.attrs["class"] = "form-select custom-select"
-        self.fields["lang"].widget.attrs["class"] = "form-select custom-select"
-        self.fields["enrich_ready"].widget.attrs["class"] = "form-check custom-select"
+        self.fields["video"].widget = HiddenInput()
+        self.fields["src"].required = True
+        self.fields = add_placeholder_and_asterisk(self.fields)
         if not USE_ENRICH_READY:
             self.fields["enrich_ready"].widget = HiddenInput()
         if FILEPICKER:
@@ -148,18 +121,8 @@ class OverlayForm(forms.ModelForm):
         except Exception:
             self.fields["time_start"].widget.attrs["max"] = 36000
             self.fields["time_end"].widget.attrs["max"] = 36000
-        for myField in self.fields:
-            self.fields[myField].widget.attrs["placeholder"] = self.fields[myField].label
-            if self.fields[myField].required:
-                self.fields[myField].widget.attrs["class"] = "form-control required"
-                label_unicode = "{0}".format(self.fields[myField].label)
-                self.fields[myField].label = mark_safe(
-                    '{0} <span class="required_star">*</span>'.format(label_unicode)
-                )
-            else:
-                self.fields[myField].widget.attrs["class"] = "form-control"
-        self.fields["position"].widget.attrs["class"] = "form-select"
-        self.fields["background"].widget.attrs["class"] = "form-check-input"
+
+        self.fields = add_placeholder_and_asterisk(self.fields)
 
     class Meta(object):
         """Set form Metadata."""

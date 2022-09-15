@@ -71,10 +71,10 @@ body{
   right: .5em; */
   float:right;
   margin: .395em 0rem 0 0.75em;
-  border: 1px solid var(--light) !important;
-  color: var(--light) !important;
+  border: 1px solid var(--bs-light) !important;
+  color: var(--bs-light) !important;
   padding: 0 .25em .15em !important;
-  background-color: var(--dark)!important;
+  background-color: var(--bs-dark)!important;
   border-radius: .1em;
   overflow: hidden;
   opacity: 1;

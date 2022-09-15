@@ -87,7 +87,7 @@ let PlaylistPlayer = {
         //Acces restrict by password => Display video password form
         if ($("#video-form-wrapper").length == 0) {
           _this.formctn.append(
-            '<div id="video-form-wrapper" class="jumbotron"></div>'
+            '<div id="video-form-wrapper"></div>'
           );
         }
         $("#video-form-wrapper").removeClass("hidden");

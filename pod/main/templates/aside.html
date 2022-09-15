@@ -62,12 +62,12 @@
     <i class="bi bi-tag" aria-hidden="true"></i>&nbsp;{% trans 'Tags' %}
   </h2>
   <p class="card-text">
-    <!-- tag_cloud_for_model video.Video as tagscloud with steps=16 min_count=30 distribution=log -->
     {% tag_cloud_for_model video.Video as tagscloud with distribution=log steps=16 min_count=4 %}
+    {# tag_cloud_for_model video.Video as tagscloud with distribution=log steps=16 min_count=30 #}
     {% with tagslist=tagscloud|dictsortreversed:"count"|slice:":20" %}
     {% for tag in tagslist %}
-      <a href="{% url 'videos:videos' %}?tag={{ tag.name|urlencode }}" style="font-size:{{ tag.font_size }}px" title="{{tag.name}}" class="badge">
-          {{tag.name}}&nbsp;<span class="badge badge-pill badge-info align-top small">{{tag.count}}</span>
+      <a href="{% url 'videos:videos' %}?tag={{ tag.name|urlencode }}" style="font-size:{{ tag.font_size }}px" title="{{tag.name}}" class="btn-link">
+          {{tag.name}}&nbsp;<span class="badge rounded-pill text-bg-info align-top small">{{tag.count}}</span>
       </a>
     {% endfor %}
     {% endwith %}

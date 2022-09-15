@@ -74,5 +74,5 @@
 }
 
 .card-controls > .playlist-options > .fill-color-pod{
-	fill:var(--light);
+	fill:var(--bs-light);
 }

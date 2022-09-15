@@ -92,12 +92,10 @@
     {% get_next_events broadcaster.id 8 as NEXT_EVENTS %}
 
     {% if NEXT_EVENTS %}
-    <div class="jumbotron" id="last_videos">
+      <div id="last_videos">
         <h3>{% trans "Next events" %}</h3>
-
         {% include "live/events_list.html" with events=NEXT_EVENTS %}
-
-    </div>
+      </div>
     {% endif %}
 
 {% endblock page_content %}
