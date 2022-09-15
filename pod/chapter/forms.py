@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 
 from pod.chapter.models import Chapter
 from pod.chapter.utils import vtt_to_chapter
-from pod.main.forms import add_placeholder_and_asterisk
+from pod.main.forms_utils import add_placeholder_and_asterisk
 
 if getattr(settings, "USE_PODFILE", False):
     FILEPICKER = True

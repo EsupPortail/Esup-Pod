@@ -16,7 +16,7 @@ from django.utils import timezone
 from django.forms import CharField, Textarea
 from django.core.validators import validate_email
 
-from pod.main.forms import add_placeholder_and_asterisk
+from pod.main.forms_utils import add_placeholder_and_asterisk
 from .models import Meeting, two_hours_hence
 
 MEETING_MAIN_FIELDS = getattr(

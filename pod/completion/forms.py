@@ -9,7 +9,7 @@ from pod.completion.models import Document
 from pod.completion.models import Track
 from pod.completion.models import Overlay
 
-from pod.main.forms import add_placeholder_and_asterisk
+from pod.main.forms_utils import add_placeholder_and_asterisk
 
 FILEPICKER = False
 if getattr(settings, "USE_PODFILE", False):

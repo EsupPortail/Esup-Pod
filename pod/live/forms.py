@@ -12,7 +12,7 @@ from pod.live.models import (
     get_available_broadcasters_of_building,
 )
 from pod.live.models import Building, Event
-from pod.main.forms import add_placeholder_and_asterisk
+from pod.main.forms_utils import add_placeholder_and_asterisk
 from django_select2 import forms as s2forms
 
 
