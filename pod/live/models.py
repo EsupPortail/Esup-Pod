@@ -81,7 +81,7 @@ def default_site_building(sender, instance, created, **kwargs):
 
 def get_available_broadcasters_of_building(user, building_id, broadcaster_id=None):
     right_filter = Broadcaster.objects.filter(
-        Q(status=True)
+        Q(enable_add_event=True)
         & Q(building_id=building_id)
         & (Q(manage_groups__isnull=True) | Q(manage_groups__in=user.groups.all()))
     )
@@ -97,7 +97,7 @@ def get_available_broadcasters_of_building(user, building_id, broadcaster_id=Non
 
 def get_building_having_available_broadcaster(user, building_id=None):
     right_filter = Building.objects.filter(
-        Q(broadcaster__status=True)
+        Q(broadcaster__enable_add_event=True)
         & (
             Q(broadcaster__manage_groups__isnull=True)
             | Q(broadcaster__manage_groups__in=user.groups.all())
@@ -145,6 +145,10 @@ class Broadcaster(models.Model):
     status = models.BooleanField(
         default=0,
         help_text=_("Check if the broadcaster is currently sending stream."),
+    )
+    enable_add_event = models.BooleanField(
+        default=0,
+        help_text=_("If checked, it will allow to create an event to this broadcaster.")
     )
     enable_viewer_count = models.BooleanField(
         default=1,
@@ -326,7 +330,17 @@ class Event(models.Model):
             "can't delete this event."
         ),
     )
-
+    start_date = models.DateTimeField(
+        _("Start date"),
+        help_text=_("Start of the live event."),
+        default=timezone.now
+    )
+    end_date = models.DateTimeField(
+        _("End date"),
+        help_text=_("End of the live event."),
+        default=one_hour_hence
+    )
+    '''
     start_date = models.DateField(
         _("Date of event"),
         default=date.today,
@@ -343,7 +357,7 @@ class Event(models.Model):
         default=one_hour_hence,
         help_text=_("End time of the live event."),
     )
-
+    '''
     broadcaster = models.ForeignKey(
         Broadcaster,
         verbose_name=_("Broadcaster"),
@@ -432,7 +446,7 @@ class Event(models.Model):
     class Meta:
         verbose_name = _("Event")
         verbose_name_plural = _("Events")
-        ordering = ["start_date", "start_time"]
+        ordering = ["start_date"]
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -518,25 +532,32 @@ class Event(models.Model):
         23:35:00
         23:35:01.913570
         00:35:00
-        """
         return self.start_date == date.today() and (
             self.start_time <= datetime.now().time() <= self.end_time
         )
+        """
+        return self.start_date <= datetime.now() <= self.end_date
 
     def is_past(self):
         """Test if event has happened in past."""
+        """
         return self.start_date < date.today() or (
             self.start_date == date.today() and self.end_time < datetime.now().time()
         )
+        """
+        return self.end_date <= datetime.now()
 
     def is_coming(self):
         """Test if event will happen in future."""
+        """
         return self.start_date > date.today() or (
             self.start_date == date.today() and datetime.now().time() < self.start_time
         )
+        """
+        return self.start_date < datetime.now()
 
     def get_start(self):
-        return datetime.combine(self.start_date, self.start_time)
+        return self.start_date # datetime.combine(self.start_date, self.start_time)
 
     def get_end(self):
-        return datetime.combine(self.start_date, self.end_time)
+        return  self.end_date # datetime.combine(self.start_date, self.end_time)

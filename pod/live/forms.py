@@ -11,9 +11,10 @@ from pod.live.models import (
     get_building_having_available_broadcaster,
     get_available_broadcasters_of_building,
 )
-from pod.live.models import Building, Event
-from pod.main.forms_utils import add_placeholder_and_asterisk
+from pod.live.models import Building, Event, one_hour_hence
+from pod.main.forms_utils import add_placeholder_and_asterisk, MyAdminSplitDateTime
 from django_select2 import forms as s2forms
+from django.utils import timezone
 
 
 FILEPICKER = False
@@ -87,6 +88,18 @@ class BroadcasterAdminForm(forms.ModelForm):
 
 
 class EventAdminForm(forms.ModelForm):
+    start_date = forms.SplitDateTimeField(
+        label=_("Start date"),
+        initial=timezone.now,
+        localize=True,
+        widget=MyAdminSplitDateTime
+    )
+    end_date = forms.SplitDateTimeField(
+        label=_("End date"),
+        initial=one_hour_hence(),
+        localize=True,
+        widget=MyAdminSplitDateTime
+    )
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request", None)
         super(EventAdminForm, self).__init__(*args, **kwargs)
@@ -102,8 +115,8 @@ class EventAdminForm(forms.ModelForm):
         model = Event
         fields = "__all__"
         widgets = {
-            "start_time": forms.TimeInput(format="%H:%M"),
-            "end_time": forms.TimeInput(format="%H:%M"),
+            # "start_time": forms.TimeInput(format="%H:%M"),
+            # "end_time": forms.TimeInput(format="%H:%M"),
         }
 
 
@@ -114,33 +127,30 @@ class CustomBroadcasterChoiceField(forms.ModelChoiceField):
 
 def check_event_date_and_hour(form):
     if (
-        not {"start_date", "start_time", "end_time", "broadcaster"}
+        not {"start_date", "end_date", "broadcaster"}
         <= form.cleaned_data.keys()
     ):
         return
 
     d_deb = form.cleaned_data["start_date"]
-    h_deb = form.cleaned_data["start_time"]
-    h_fin = form.cleaned_data["end_time"]
+    # h_deb = form.cleaned_data["start_time"]
+    d_fin = form.cleaned_data["end_date"]
     brd = form.cleaned_data["broadcaster"]
 
-    if d_deb == date.today() and datetime.now().time() >= h_fin:
-        form.add_error("end_time", _("End should not be in the past"))
+    if datetime.now() >= d_fin:
+        form.add_error("end_date", _("End should not be in the past"))
         raise forms.ValidationError(_("An event cannot be planned in the past"))
 
-    if h_deb >= h_fin:
-        form.add_error("start_time", _("Start should not be after end"))
-        form.add_error("end_time", _("Start should not be after end"))
+    if d_deb >= d_fin:
+        form.add_error("start_date", _("Start should not be after end"))
+        form.add_error("end_date", _("Start should not be after end"))
         raise forms.ValidationError("Date error.")
 
     events = Event.objects.filter(
         Q(broadcaster_id=brd.id)
-        & Q(start_date=d_deb)
         & (
-            (Q(start_time__lte=h_deb) & Q(end_time__gte=h_fin))
-            | (Q(start_time__gte=h_deb) & Q(end_time__lte=h_fin))
-            | (Q(start_time__lte=h_deb) & Q(end_time__gt=h_deb))
-            | (Q(start_time__lt=h_fin) & Q(end_time__gte=h_fin))
+            (Q(start_date__lte=d_deb) & Q(end_date__gte=d_fin))
+            | (Q(start_date__gte=d_deb) & Q(end_date__lte=d_fin))
         )
     )
     if form.instance.id:
@@ -160,6 +170,18 @@ class EventPasswordForm(forms.Form):
 
 
 class EventForm(forms.ModelForm):
+    start_date = forms.SplitDateTimeField(
+        label=_("Start date"),
+        initial=timezone.now,
+        localize=True,
+        widget=MyAdminSplitDateTime
+    )
+    end_date = forms.SplitDateTimeField(
+        label=_("End date"),
+        initial=one_hour_hence(),
+        localize=True,
+        widget=MyAdminSplitDateTime
+    )
     fieldsets = (
         (
             None,
@@ -167,8 +189,7 @@ class EventForm(forms.ModelForm):
                 "fields": [
                     "title",
                     "start_date",
-                    "start_time",
-                    "end_time",
+                    "end_date",
                     "building",
                     "broadcaster",
                     "is_draft",
@@ -291,7 +312,7 @@ class EventForm(forms.ModelForm):
             self.instance.owner = self.user
         if is_current_event:
             self.remove_field("start_date")
-            self.remove_field("start_time")
+            # self.remove_field("start_time")
             self.remove_field("is_draft")
             self.remove_field("is_auto_start")
             self.remove_field("password")
@@ -325,8 +346,7 @@ class EventForm(forms.ModelForm):
             "owner",
             "additional_owners",
             "start_date",
-            "start_time",
-            "end_time",
+            "end_date",
             "building",
             "broadcaster",
             "type",
@@ -343,9 +363,9 @@ class EventForm(forms.ModelForm):
         widgets = {
             "owner": OwnerWidget,
             "additional_owners": AddOwnerWidget,
-            "start_date": widgets.AdminDateWidget,
-            "start_time": forms.TimeInput(format="%H:%M", attrs={"class": "vTimeField"}),
-            "end_time": forms.TimeInput(format="%H:%M", attrs={"class": "vTimeField"}),
+            # "start_date": widgets.AdminDateWidget,
+            # "start_time": forms.TimeInput(format="%H:%M", attrs={"class": "vTimeField"}),
+            # "end_time": forms.TimeInput(format="%H:%M", attrs={"class": "vTimeField"}),
         }
         if FILEPICKER:
             fields.append("thumbnail")
