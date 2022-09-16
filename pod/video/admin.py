@@ -388,7 +388,7 @@ class ChannelAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(sites=get_current_site(request))
+            qs = qs.filter(site=get_current_site(request))
         return qs
 
 

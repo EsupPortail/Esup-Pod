@@ -874,10 +874,12 @@ class Video(models.Model):
         if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and user.is_staff is False:
             return False
 
-        if (self.owner == user) or (
-            user.is_superuser) or (
-                user.has_perm("video.change_video")) or (
-                    user in self.additional_owners.all()):
+        if (
+            (self.owner == user)
+            or (user.is_superuser)
+            or (user.has_perm("video.change_video"))
+            or (user in self.additional_owners.all())
+        ):
             return True
         else:
             return False

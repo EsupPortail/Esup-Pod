@@ -19,20 +19,20 @@ class MeetingSuperAdminForm(MeetingForm):
         model = Meeting
         fields = "__all__"
         widgets = {
-            'owner': widgets.AutocompleteSelect(
-                Meeting._meta.get_field('owner'),
+            "owner": widgets.AutocompleteSelect(
+                Meeting._meta.get_field("owner"),
                 admin.site,
-                attrs={'style': 'width: 20em'},
+                attrs={"style": "width: 20em"},
             ),
             "additional_owners": widgets.AutocompleteSelect(
-                Meeting._meta.get_field('additional_owners'),
+                Meeting._meta.get_field("additional_owners"),
                 admin.site,
-                attrs={'style': 'width: 20em'},
+                attrs={"style": "width: 20em"},
             ),
             "restrict_access_to_groups": widgets.AutocompleteSelect(
-                Meeting._meta.get_field('restrict_access_to_groups'),
+                Meeting._meta.get_field("restrict_access_to_groups"),
                 admin.site,
-                attrs={'style': 'width: 20em'},
+                attrs={"style": "width: 20em"},
             ),
         }
 
@@ -47,20 +47,20 @@ class MeetingAdminForm(MeetingForm):
         model = Meeting
         fields = "__all__"
         widgets = {
-            'owner': widgets.AutocompleteSelect(
-                Meeting._meta.get_field('owner'),
+            "owner": widgets.AutocompleteSelect(
+                Meeting._meta.get_field("owner"),
                 admin.site,
-                attrs={'style': 'width: 20em'},
+                attrs={"style": "width: 20em"},
             ),
             "additional_owners": widgets.AutocompleteSelect(
-                Meeting._meta.get_field('additional_owners'),
+                Meeting._meta.get_field("additional_owners"),
                 admin.site,
-                attrs={'style': 'width: 20em'},
+                attrs={"style": "width: 20em"},
             ),
             "restrict_access_to_groups": widgets.AutocompleteSelect(
-                Meeting._meta.get_field('restrict_access_to_groups'),
+                Meeting._meta.get_field("restrict_access_to_groups"),
                 admin.site,
-                attrs={'style': 'width: 20em'},
+                attrs={"style": "width: 20em"},
             ),
         }
 

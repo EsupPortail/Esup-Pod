@@ -198,7 +198,9 @@ class Comment extends HTMLElement {
       const vote_loader = document.createElement("DIV");
       vote_loader.setAttribute("class", "comment-loader d-none");
 
-      vote_loader.innerHTML = `<div class="spinner-border text-primary" role="status"><span class="visually-hidden">${gettext("Loading...")}</span></div>`;
+      vote_loader.innerHTML = `<div class="spinner-border text-primary" role="status"><span class="visually-hidden">${gettext(
+        "Loading..."
+      )}</span></div>`;
       vote_action.prepend(vote_loader);
       vote_action.addEventListener("click", () => {
         if (!vote_action.classList.contains("voting"))
@@ -261,7 +263,9 @@ class Comment extends HTMLElement {
         <textarea class="new_comment form-control form-control-sm"
           name="new_comment" id="comment" rows="1"
           placeholder="${gettext("Add a public comment")}"></textarea>
-        <button class="btn btn-link btn-lg send_reply disabled" role="button" title="${gettext("Send")}">
+        <button class="btn btn-link btn-lg send_reply disabled" role="button" title="${gettext(
+          "Send"
+        )}">
           <i aria-hidden="true" class="bi bi-send-fill"></i>
         </button>
       `;

@@ -88,13 +88,13 @@ class MeetingForm(forms.ModelForm):
         label=_("Start date"),
         initial=timezone.now,
         localize=True,
-        widget=MyAdminSplitDateTime
+        widget=MyAdminSplitDateTime,
     )
     end_at = forms.SplitDateTimeField(
         label=_("End date"),
         initial=two_hours_hence(),
         localize=True,
-        widget=MyAdminSplitDateTime
+        widget=MyAdminSplitDateTime,
     )
     # user = User.objects.all()
     fieldsets = (
