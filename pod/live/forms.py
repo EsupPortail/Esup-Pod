@@ -1,8 +1,7 @@
-from datetime import date, datetime
+from datetime import datetime
 
 from django import forms
 from django.conf import settings
-from django.contrib.admin import widgets
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
@@ -100,6 +99,7 @@ class EventAdminForm(forms.ModelForm):
         localize=True,
         widget=MyAdminSplitDateTime
     )
+
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request", None)
         super(EventAdminForm, self).__init__(*args, **kwargs)

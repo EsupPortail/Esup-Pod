@@ -526,4 +526,4 @@ class Event(models.Model):
         return self.start_date
 
     def get_end(self):
-        return  self.end_date
+        return self.end_date

@@ -51,7 +51,9 @@ class Command(BaseCommand):
         zero_now = datetime.now().replace(second=0, microsecond=0)
 
         # events ending now
-        events = Event.objects.filter(Q(end_date__date=date.today()) & Q(end_date__time=zero_now))
+        events = Event.objects.filter(
+            Q(end_date__date=date.today()) & Q(end_date__time=zero_now)
+        )
 
         for event in events:
             if not is_recording(event.broadcaster, True):

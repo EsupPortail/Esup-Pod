@@ -2,7 +2,7 @@ import json
 import logging
 import os.path
 import re
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from time import sleep
 
 from django.conf import settings

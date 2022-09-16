@@ -1,9 +1,7 @@
 from django import template
-from datetime import date, datetime
+from datetime import datetime
 
 from pod.live.models import Event
-
-from django.db.models import Q
 
 register = template.Library()
 
