@@ -274,7 +274,7 @@ def get_default_event_type():
 
 
 def present_or_future_date(value):
-    if value < timezone.now():
+    if value < current_time(): # timezone.now():
         raise ValidationError(_("An event cannot be planned in the past"))
     return value
 
@@ -332,7 +332,7 @@ class Event(models.Model):
     start_date = models.DateTimeField(
         _("Start date"),
         help_text=_("Start of the live event."),
-        default=timezone.now
+        default=current_time
     )
     end_date = models.DateTimeField(
         _("End date"),
