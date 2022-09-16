@@ -2,7 +2,7 @@ name: Code Formatting
 
 on:
   push:
-    branches: [master, dev]
+    branches: [master, develop]
 
 jobs:
   code-formatting:
