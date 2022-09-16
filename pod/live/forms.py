@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django import forms
 from django.conf import settings
 from django.db.models import Q
@@ -134,28 +132,25 @@ def check_event_date_and_hour(form):
     d_fin = form.cleaned_data["end_date"]
     brd = form.cleaned_data["broadcaster"]
 
-    if datetime.now() >= d_fin:
+    if timezone.now() >= d_fin:
         form.add_error("end_date", _("End should not be in the past"))
         raise forms.ValidationError(_("An event cannot be planned in the past"))
 
     if d_deb >= d_fin:
         form.add_error("start_date", _("Start should not be after end"))
         form.add_error("end_date", _("Start should not be after end"))
-        raise forms.ValidationError("Date error.")
+        raise forms.ValidationError(_("Planification error."))
 
-    events = Event.objects.filter(
-        Q(broadcaster_id=brd.id)
-        & (
-            (Q(start_date__lte=d_deb) & Q(end_date__gte=d_fin))
-            | (Q(start_date__gte=d_deb) & Q(end_date__lte=d_fin))
-        )
-    )
+    events = Event.objects.exclude(
+        (Q(end_date__lte=d_deb) | Q(start_date__gte=d_fin))
+    ).filter(broadcaster_id=brd.id)
+
     if form.instance.id:
         events = events.exclude(id=form.instance.id)
 
     if events.exists():
         form.add_error("start_date", _("An event is already planned at these dates"))
-        raise forms.ValidationError("Date error.")
+        raise forms.ValidationError(_("Planification error."))
 
 
 class EventPasswordForm(forms.Form):

@@ -1,6 +1,5 @@
 """Esup-Pod "live" models."""
 import hashlib
-from datetime import date, datetime
 
 from ckeditor.fields import RichTextField
 from django.conf import settings
@@ -263,7 +262,7 @@ class HeartBeat(models.Model):
 
 
 def current_time():
-    return datetime.now().replace(second=0, microsecond=0)
+    return timezone.now().replace(second=0, microsecond=0)
 
 
 def one_hour_hence():
@@ -275,7 +274,7 @@ def get_default_event_type():
 
 
 def present_or_future_date(value):
-    if value < date.today():
+    if value < timezone.now():
         raise ValidationError(_("An event cannot be planned in the past"))
     return value
 
@@ -503,7 +502,7 @@ class Event(models.Model):
         print(self.start_date)
         print(date.today())
         print("=================")
-        print(datetime.now().time())
+        print(timezone.now().time())
         IS CURRENT
         2022-08-30
         2022-08-30
@@ -512,18 +511,12 @@ class Event(models.Model):
         23:35:01.913570
         00:35:00
         """
-        return self.start_date <= datetime.now() <= self.end_date
+        return self.start_date <= timezone.now() <= self.end_date
 
     def is_past(self):
         """Test if event has happened in past."""
-        return self.end_date <= datetime.now()
+        return self.end_date <= timezone.now()
 
     def is_coming(self):
         """Test if event will happen in future."""
-        return self.start_date < datetime.now()
-
-    def get_start(self):
-        return self.start_date
-
-    def get_end(self):
-        return self.end_date
+        return self.start_date < timezone.now()

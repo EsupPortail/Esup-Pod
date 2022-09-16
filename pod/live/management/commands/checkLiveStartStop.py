@@ -1,6 +1,6 @@
 import json
-from datetime import date, datetime
-
+from datetime import datetime
+from django.utils import timezone
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db.models import Q
@@ -14,6 +14,7 @@ from pod.live.views import (
 
 DEFAULT_EVENT_PATH = getattr(settings, "DEFAULT_EVENT_PATH", "")
 DEBUG = getattr(settings, "DEBUG", "")
+TIME_ZONE = getattr(settings, "TIME_ZONE", "Europe/Paris")
 
 
 class Command(BaseCommand):
@@ -30,7 +31,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-
         if options["force"]:
             self.debug_mode = False
 
@@ -48,12 +48,9 @@ class Command(BaseCommand):
     def stop_finished(self):
         self.stdout.write("-- Stopping finished events (if started with Pod) :")
 
-        zero_now = datetime.now().replace(second=0, microsecond=0)
-
+        zero_now = timezone.now().replace(second=0, microsecond=0)
         # events ending now
-        events = Event.objects.filter(
-            Q(end_date__date=date.today()) & Q(end_date__time=zero_now)
-        )
+        events = Event.objects.filter(end_date=zero_now)
 
         for event in events:
             if not is_recording(event.broadcaster, True):
@@ -79,8 +76,8 @@ class Command(BaseCommand):
 
         events = Event.objects.filter(
             Q(is_auto_start=True)
-            & Q(start_date__lte=datetime.now())
-            & Q(end_date__gt=datetime.now())
+            & Q(start_date__lte=timezone.now())
+            & Q(end_date__gt=timezone.now())
         )
 
         for event in events:
