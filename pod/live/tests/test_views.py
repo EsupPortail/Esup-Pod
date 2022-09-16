@@ -49,6 +49,7 @@ class LiveViewsTestCase(TestCase):
             poster=poster,
             url="http://test.live",
             status=True,
+            enable_add_event=True,
             is_restricted=True,
             building=building,
         )
@@ -63,6 +64,7 @@ class LiveViewsTestCase(TestCase):
             poster=poster,
             url="http://test2.live",
             status=True,
+            enable_add_event=True,
             is_restricted=False,
             video_on_hold=video_on_hold,
             building=building,

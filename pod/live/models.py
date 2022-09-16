@@ -274,7 +274,7 @@ def get_default_event_type():
 
 
 def present_or_future_date(value):
-    if value < current_time(): # timezone.now():
+    if value < current_time():  # timezone.now():
         raise ValidationError(_("An event cannot be planned in the past"))
     return value
 
