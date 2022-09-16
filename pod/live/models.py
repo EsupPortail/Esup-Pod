@@ -340,24 +340,6 @@ class Event(models.Model):
         help_text=_("End of the live event."),
         default=one_hour_hence
     )
-    '''
-    start_date = models.DateField(
-        _("Date of event"),
-        default=date.today,
-        help_text=_("Start date of the live."),
-        validators=[present_or_future_date],
-    )
-    start_time = models.TimeField(
-        _("Start time"),
-        default=current_time,
-        help_text=_("Start time of the live event."),
-    )
-    end_time = models.TimeField(
-        _("End time"),
-        default=one_hour_hence,
-        help_text=_("End time of the live event."),
-    )
-    '''
     broadcaster = models.ForeignKey(
         Broadcaster,
         verbose_name=_("Broadcaster"),
@@ -521,10 +503,7 @@ class Event(models.Model):
         print(self.start_date)
         print(date.today())
         print("=================")
-        print(self.start_time)
         print(datetime.now().time())
-        print(self.end_time)
-
         IS CURRENT
         2022-08-30
         2022-08-30
@@ -532,32 +511,19 @@ class Event(models.Model):
         23:35:00
         23:35:01.913570
         00:35:00
-        return self.start_date == date.today() and (
-            self.start_time <= datetime.now().time() <= self.end_time
-        )
         """
         return self.start_date <= datetime.now() <= self.end_date
 
     def is_past(self):
         """Test if event has happened in past."""
-        """
-        return self.start_date < date.today() or (
-            self.start_date == date.today() and self.end_time < datetime.now().time()
-        )
-        """
         return self.end_date <= datetime.now()
 
     def is_coming(self):
         """Test if event will happen in future."""
-        """
-        return self.start_date > date.today() or (
-            self.start_date == date.today() and datetime.now().time() < self.start_time
-        )
-        """
         return self.start_date < datetime.now()
 
     def get_start(self):
-        return self.start_date # datetime.combine(self.start_date, self.start_time)
+        return self.start_date
 
     def get_end(self):
-        return  self.end_date # datetime.combine(self.start_date, self.end_time)
+        return  self.end_date

@@ -5,7 +5,6 @@
         <!-- card.html -->
         <div class="card-header">
             <div class="d-flex justify-content-end align-items-center">
-{#            between<small class="text-muted time">{% blocktrans with start_date=event.start_date|date:"d/m/Y" start_time=event.start_time end_time=event.end_time %}The {{start_date}} from {{start_time}} to {{end_time}}{% endblocktrans %}</small>#}
             <span class="text-muted small d-flex">
                     <span>
                     {% if event.is_current %}
@@ -56,7 +55,7 @@
                     {{event.title|capfirst|truncatechars:43}}
                 </a>
                 </br>
-                    {% blocktrans with start_date=event.start_date|date:"d/m/Y" start_time=event.start_time end_time=event.end_time %}The {{start_date}} from {{start_time}} to {{end_time}}{% endblocktrans %}
+                    {% blocktrans with start_date=event.start_date event_videos_listte=event.end_date %} from {{start_date}} to {{end_date}}{% endblocktrans %}
                     {% if display_broadcaster_name %}
                         {{event.broadcaster.name|capfirst|truncatechars:20}}
                     {% endif %}

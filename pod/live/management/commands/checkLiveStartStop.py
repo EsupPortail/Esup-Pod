@@ -48,10 +48,10 @@ class Command(BaseCommand):
     def stop_finished(self):
         self.stdout.write("-- Stopping finished events (if started with Pod) :")
 
-        now = datetime.now().replace(second=0, microsecond=0)
+        zero_now = datetime.now().replace(second=0, microsecond=0)
 
         # events ending now
-        events = Event.objects.filter(Q(start_date=date.today()) & Q(end_time=now))
+        events = Event.objects.filter(Q(end_date__date=date.today()) & Q(end_date__time=zero_now))
 
         for event in events:
             if not is_recording(event.broadcaster, True):
@@ -77,9 +77,8 @@ class Command(BaseCommand):
 
         events = Event.objects.filter(
             Q(is_auto_start=True)
-            & Q(start_date=date.today())
-            & Q(start_time__lte=datetime.now())
-            & Q(end_time__gt=datetime.now())
+            & Q(start_date__lte=datetime.now())
+            & Q(end_date__gt=datetime.now())
         )
 
         for event in events:

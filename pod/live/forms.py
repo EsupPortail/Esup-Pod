@@ -115,8 +115,6 @@ class EventAdminForm(forms.ModelForm):
         model = Event
         fields = "__all__"
         widgets = {
-            # "start_time": forms.TimeInput(format="%H:%M"),
-            # "end_time": forms.TimeInput(format="%H:%M"),
         }
 
 
@@ -133,7 +131,6 @@ def check_event_date_and_hour(form):
         return
 
     d_deb = form.cleaned_data["start_date"]
-    # h_deb = form.cleaned_data["start_time"]
     d_fin = form.cleaned_data["end_date"]
     brd = form.cleaned_data["broadcaster"]
 
@@ -312,7 +309,6 @@ class EventForm(forms.ModelForm):
             self.instance.owner = self.user
         if is_current_event:
             self.remove_field("start_date")
-            # self.remove_field("start_time")
             self.remove_field("is_draft")
             self.remove_field("is_auto_start")
             self.remove_field("password")
@@ -363,9 +359,6 @@ class EventForm(forms.ModelForm):
         widgets = {
             "owner": OwnerWidget,
             "additional_owners": AddOwnerWidget,
-            # "start_date": widgets.AdminDateWidget,
-            # "start_time": forms.TimeInput(format="%H:%M", attrs={"class": "vTimeField"}),
-            # "end_time": forms.TimeInput(format="%H:%M", attrs={"class": "vTimeField"}),
         }
         if FILEPICKER:
             fields.append("thumbnail")

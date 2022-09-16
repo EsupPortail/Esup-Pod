@@ -24,7 +24,8 @@
     <ul class="list-inline d-flex flex-wrap">
       <li class="col-6 col-md-4">
         <h3 class="meta-title">{% trans 'Broadcasted on:' %}</h3>
-        <div>{% blocktrans with start_date=event.start_date|date:"d/m/Y" start_time=event.start_time end_time=event.end_time %}{{start_date}} from {{start_time}} to {{end_time}}{% endblocktrans %}
+        <div>
+          {% blocktrans with start_date=event.start_date event_videos_listte=event.end_date %} from {{start_date}} to {{end_date}}{% endblocktrans %}
         </div>
       </li>
       <li class="col-6 col-md-4">

@@ -168,8 +168,7 @@ def heartbeat(request):
 
         current_event = Event.objects.filter(
             Q(broadcaster_id=broadcaster_id)
-            & Q(start_date=date.today())
-            & (Q(start_date__lte=datetime.now()) & Q(end_time__gte=datetime.now()))
+            & (Q(start_date__lte=datetime.now()) & Q(end_date__gte=datetime.now()))
         ).first()
         if current_event is None:
             can_see = request.user.is_superuser
@@ -315,15 +314,14 @@ def render_event_template(request, evemnt, user_owns_event):
 def events(request):  # affichage des events
 
     queryset = Event.objects.filter(
-        Q(start_date__gt=date.today())
-        | (Q(start_date=date.today()) & Q(end_time__gte=datetime.now()))
+        Q(start_date__gt=datetime.now()) & Q(end_date__gte=datetime.now())
     )
     queryset = queryset.filter(is_draft=False)
     if not request.user.is_authenticated:
         queryset = queryset.filter(is_restricted=False)
         queryset = queryset.filter(restrict_access_to_groups__isnull=False)
 
-    events_list = queryset.all().order_by("start_date", "start_time", "end_time")
+    events_list = queryset.all().order_by("start_date", "end_date")
 
     page = request.GET.get("page", 1)
     full_path = ""
@@ -365,12 +363,12 @@ def my_events(request):
 
     past_events = [evt for evt in queryset if evt.is_past()]
     past_events = sorted(
-        past_events, key=lambda evt: (evt.start_date, evt.start_time), reverse=True
+        past_events, key=lambda evt: (evt.start_date), reverse=True
     )
 
     coming_events = [evt for evt in queryset if not evt.is_past()]
     coming_events = sorted(
-        coming_events, key=lambda evt: (evt.start_date, evt.start_time, evt.end_time)
+        coming_events, key=lambda evt: (evt.start_date, evt.end_date)
     )
 
     events_number = len(past_events) + len(coming_events)
@@ -770,11 +768,10 @@ def event_video_transform(event_id, current_file, segment_number):
         owner=live_event.owner,
         description=live_event.description
         + "<br/>"
-        + _("Record the %(start_date)s from %(start_time)s to %(end_time)s")
+        + _("Record from %(start_date)s to %(end_date)s")
         % {
-            "start_date": live_event.start_date.strftime("%d/%m/%Y"),
-            "start_time": live_event.start_time.strftime("%H:%M"),
-            "end_time": live_event.end_time.strftime("%H:%M"),
+            "start_date": live_event.start_date,
+            "end_date": live_event.end_date,
         },
         is_draft=live_event.is_draft,
         type=live_event.type,
