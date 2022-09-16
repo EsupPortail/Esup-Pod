@@ -250,7 +250,7 @@ class Encoding_video:
         for rend in list_rendition.copy():
             if list_rendition[rend]["encode_mp4"] is False:
                 list_rendition.pop(rend)
-        if len(list_rendition) == 0 :
+        if len(list_rendition) == 0:
             return ""
         first_item = list_rendition.popitem(last=False)
         mp4_command += FFMPEG_INPUT % {

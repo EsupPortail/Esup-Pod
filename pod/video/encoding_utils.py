@@ -61,7 +61,7 @@ def get_info_from_video(probe_cmd):
 
 
 def launch_cmd(cmd):
-    if cmd == '':
+    if cmd == "":
         return False, "No cmd to launch"
     msg = ""
     encode_start = timer()
