@@ -121,13 +121,12 @@
     if (!loader) {
       loader = document.createElement("div");
       loader.setAttribute("class", "manage-video__loader text-center");
-      loader.innerHTML = `<div class="spinner-border text-primary" role="status"><span class="visually-hidden">${gettext("Loading...")}</span></div>`;
+      loader.innerHTML = `<div class="spinner-border text-primary" role="status"><span class="visually-hidden">${gettext(
+        "Loading..."
+      )}</span></div>`;
     }
     if (remove) loader.remove();
-    else if (
-      !container.querySelector(".spinner-border") &&
-      !remove
-    ) {
+    else if (!container.querySelector(".spinner-border") && !remove) {
       container.innerHTML = "";
       container.appendChild(loader);
     }

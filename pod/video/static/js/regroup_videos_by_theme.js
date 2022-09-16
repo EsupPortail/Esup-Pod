@@ -90,37 +90,23 @@ function run(has_more_themes, Helper) {
     let chapter_text = gettext("Chapter the video");
     let delete_text = gettext("Delete the video");
     let infinite_item = document.createElement("div");
-    infinite_item.setAttribute(
-      "class",
-      "infinite-item card-group"
-    );
+    infinite_item.setAttribute("class", "infinite-item card-group");
     //infinite_item.setAttribute("style", "min-width: 12rem; min-height: 11rem;");
     infinite_item.setAttribute("data-slug", video.slug);
     let card = document.createElement("div");
-    card.setAttribute(
-      "class",
-      "card box-shadow pod-card--video video-card"
-    );
+    card.setAttribute("class", "card box-shadow pod-card--video video-card");
     let footer = ``;
     if (video.is_editable) {
-      footer =`<footer class="card-footer card-footer-pod p-0 m-0">
-        <a href="${EDIT_URL}${
-      video.slug
-    }" title="${edit_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+      footer = `<footer class="card-footer card-footer-pod p-0 m-0">
+        <a href="${EDIT_URL}${video.slug}" title="${edit_text}" class="btn pod-btn-social p-1 m-0 ms-1">
           <i class="bi bi-pencil-square" aria-hidden="true"></i></a>
-                <a href="${COMPLETION_URL}${
-      video.slug
-    }" title="${completion_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+                <a href="${COMPLETION_URL}${video.slug}" title="${completion_text}" class="btn pod-btn-social p-1 m-0 ms-1">
           <i class="bi bi-file-text" aria-hidden="true"></i></a>
-                <a href="${CHAPTER_URL}${
-      video.slug
-    }" title="${chapter_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+                <a href="${CHAPTER_URL}${video.slug}" title="${chapter_text}" class="btn pod-btn-social p-1 m-0 ms-1">
           <i class="bi bi-card-list" aria-hidden="true"></i></a>
-                <a href="${DELETE_URL}${
-      video.slug
-    }" title="${delete_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+                <a href="${DELETE_URL}${video.slug}" title="${delete_text}" class="btn pod-btn-social p-1 m-0 ms-1">
           <i class="bi bi-trash" aria-hidden="true"></i></a>
-        </footer>`
+        </footer>`;
     }
     card.innerHTML = `
       <div class="card-header">

@@ -86,9 +86,7 @@ let PlaylistPlayer = {
       } else if (json.error == "password") {
         //Acces restrict by password => Display video password form
         if ($("#video-form-wrapper").length == 0) {
-          _this.formctn.append(
-            '<div id="video-form-wrapper"></div>'
-          );
+          _this.formctn.append('<div id="video-form-wrapper"></div>');
         }
         $("#video-form-wrapper").removeClass("hidden");
         $("#video-form-wrapper").html(json.html_content);
