@@ -2,7 +2,7 @@ from django import forms
 from django.conf import settings
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
-
+from django.contrib.admin import widgets
 from pod.live.models import (
     Broadcaster,
     get_building_having_available_broadcaster,
@@ -12,6 +12,7 @@ from pod.live.models import Building, Event, one_hour_hence
 from pod.main.forms_utils import add_placeholder_and_asterisk, MyAdminSplitDateTime
 from django_select2 import forms as s2forms
 from django.utils import timezone
+from datetime import datetime
 
 
 FILEPICKER = False
@@ -22,6 +23,8 @@ if getattr(settings, "USE_PODFILE", False):
 PILOTING_CHOICES = getattr(settings, "BROADCASTER_PILOTING_SOFTWARE", [])
 
 EVENT_ACTIVE_AUTO_START = getattr(settings, "EVENT_ACTIVE_AUTO_START", False)
+
+EVENT_GROUP_ADMIN = getattr(settings, "EVENT_GROUP_ADMIN", "event admin")
 
 
 class OwnerWidget(s2forms.ModelSelect2Widget):
@@ -122,23 +125,28 @@ class CustomBroadcasterChoiceField(forms.ModelChoiceField):
 
 
 def check_event_date_and_hour(form):
-    if (
-        not {"start_date", "end_date", "broadcaster"}
-        <= form.cleaned_data.keys()
+    if not (
+        {"start_date", "end_date", "broadcaster"} <= form.cleaned_data.keys()
+        or {"start_date", "end_time", "broadcaster"} <= form.cleaned_data.keys()
     ):
         return
-
     d_deb = form.cleaned_data["start_date"]
-    d_fin = form.cleaned_data["end_date"]
+    d_fin = None
+    d_fin_field = "end_time" if form.cleaned_data.get("end_time") else "end_date"
+    if form.cleaned_data.get("end_time"):
+        d_fin = datetime.combine(d_deb.date(), form.cleaned_data["end_time"])
+        d_fin = timezone.make_aware(d_fin)
+    else:
+        d_fin = form.cleaned_data["end_date"]
     brd = form.cleaned_data["broadcaster"]
 
     if timezone.now() >= d_fin:
-        form.add_error("end_date", _("End should not be in the past"))
+        form.add_error(d_fin_field, _("End should not be in the past"))
         raise forms.ValidationError(_("An event cannot be planned in the past"))
 
     if d_deb >= d_fin:
         form.add_error("start_date", _("Start should not be after end"))
-        form.add_error("end_date", _("Start should not be after end"))
+        form.add_error(d_fin_field, _("Start should not be after end"))
         raise forms.ValidationError(_("Planification error."))
 
     events = Event.objects.exclude(
@@ -174,6 +182,11 @@ class EventForm(forms.ModelForm):
         localize=True,
         widget=MyAdminSplitDateTime
     )
+    end_time = forms.TimeField(
+        label=_("End time"),
+        widget=widgets.AdminDateWidget
+    )
+
     fieldsets = (
         (
             None,
@@ -182,6 +195,7 @@ class EventForm(forms.ModelForm):
                     "title",
                     "start_date",
                     "end_date",
+                    "end_time",
                     "building",
                     "broadcaster",
                     "is_draft",
@@ -302,6 +316,21 @@ class EventForm(forms.ModelForm):
         if not self.user.is_superuser:
             self.remove_field("owner")
             self.instance.owner = self.user
+
+        if (
+            self.user.is_superuser
+            or self.user.groups.filter(name=EVENT_GROUP_ADMIN).exists()
+        ):
+            self.remove_field("end_time")
+        else:
+            self.remove_field("end_date")
+            self.fields['end_time'].widget.attrs['class'] += ' vTimeField'
+            self.fields['end_time'].initial = timezone.localtime(
+                self.instance.end_date
+            ).strftime("%H:%M") if self.instance else timezone.localtime(
+                timezone.now() + timezone.timedelta(hours=1)
+            ).strftime("%H:%M")
+
         if is_current_event:
             self.remove_field("start_date")
             self.remove_field("is_draft")
@@ -338,6 +367,7 @@ class EventForm(forms.ModelForm):
             "additional_owners",
             "start_date",
             "end_date",
+            "end_time",
             "building",
             "broadcaster",
             "type",
@@ -354,6 +384,7 @@ class EventForm(forms.ModelForm):
         widgets = {
             "owner": OwnerWidget,
             "additional_owners": AddOwnerWidget,
+            "end_time": widgets.AdminTimeWidget
         }
         if FILEPICKER:
             fields.append("thumbnail")

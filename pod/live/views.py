@@ -56,6 +56,7 @@ DEFAULT_EVENT_THUMBNAIL = getattr(
 AFFILIATION_EVENT = getattr(
     settings, "AFFILIATION_EVENT", ("faculty", "employee", "staff")
 )
+EVENT_GROUP_ADMIN = getattr(settings, "EVENT_GROUP_ADMIN", "event admin")
 VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
 
 logger = logging.getLogger("pod.live")
@@ -194,6 +195,7 @@ def can_manage_event(user):
     return user.is_authenticated and (
         user.is_superuser
         or user.owner.accessgroup_set.filter(code_name__in=AFFILIATION_EVENT).exists()
+        or user.groups.filter(name=EVENT_GROUP_ADMIN).exists()
     )
 
 
@@ -461,7 +463,17 @@ def event_edit(request, slug=None):
             is_current_event=event.is_current() if slug else None,
         )
         if form.is_valid():
-            event = form.save()
+            if form.cleaned_data.get("end_date"):
+                event = form.save()
+            else:
+                event = form.save(commit=False)
+                d_fin = datetime.combine(
+                    form.cleaned_data["start_date"].date(),
+                    form.cleaned_data["end_time"]
+                )
+                d_fin = timezone.make_aware(d_fin)
+                event.end_date = d_fin
+                event.save()
             if EMAIL_ON_EVENT_SCHEDULING:
                 send_email_confirmation(event)
             messages.add_message(
