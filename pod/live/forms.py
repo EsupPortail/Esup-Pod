@@ -328,7 +328,7 @@ class EventForm(forms.ModelForm):
             self.fields['end_time'].initial = timezone.localtime(
                 self.instance.end_date
             ).strftime("%H:%M") if self.instance else timezone.localtime(
-                timezone.now() + timezone.timedelta(hours=1)
+                self.fields['start_date'].initial + timezone.timedelta(hours=1)
             ).strftime("%H:%M")
 
         if is_current_event:

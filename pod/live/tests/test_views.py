@@ -6,11 +6,15 @@ import httmock
 import pytz
 from datetime import datetime
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Permission
 from django.core.management import call_command
 from django.http import JsonResponse, Http404
 from django.test import Client
 from django.test import TestCase
+from django.urls import reverse
+from http import HTTPStatus
+from django.utils import timezone
 from httmock import HTTMock, all_requests
 
 from pod.authentication.models import AccessGroup
@@ -18,7 +22,7 @@ from pod.live.forms import EventForm, EventPasswordForm
 from pod.live.models import Building, Broadcaster, HeartBeat, Event
 from pod.video.models import Type
 from pod.video.models import Video
-from django.contrib.auth.models import Permission
+
 
 if getattr(settings, "USE_PODFILE", False):
     FILEPICKER = True
@@ -81,6 +85,8 @@ class LiveViewsTestCase(TestCase):
             type=Type.objects.get(id=1),
         )
         AccessGroup.objects.create(code_name="group1", display_name="Group 1")
+        AccessGroup.objects.create(code_name="employee", display_name="Employee")
+        Group.objects.create(name="event admin")
         print(" --->  SetUp of liveViewsTestCase : OK !")
 
     def test_directs(self):
@@ -298,6 +304,157 @@ class LiveViewsTestCase(TestCase):
         self.assertEqual(broad.viewcount, 0)
 
         print("   --->  test_heartbeat of liveViewsTestCase : OK !")
+
+    def test_edit_events(self):
+        self.client = Client()
+        self.event = Event.objects.get(title="event1")
+        # Superuser logged in
+        self.superuser = User.objects.create_superuser(
+            "mysuperuser", "myemail@test.com", "superpassword"
+        )
+        self.client.force_login(self.superuser)
+
+        # event edition for super user
+        url = reverse("live:event_edit", kwargs={})
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, "live/event_edit.html")
+        self.assertIsInstance(response.context["form"], EventForm)
+        self.assertTrue(response.context["form"].fields["end_date"])
+        self.assertFalse(response.context["form"].fields.get("end_time", False))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        print("   --->  test_events edit event for superuser : OK !")
+
+        self.client.logout()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)  # not auth
+        print("   --->  test_events edit event for anonymous : OK !")
+        # check auth access
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)  # show message to contact us
+        self.assertFalse(response.context.get("form", False))  # no form
+        print("   --->  test_events edit event for logged user but without right : OK !")
+        ag1 = AccessGroup.objects.get(code_name="group1")
+        ag2 = AccessGroup.objects.get(code_name="employee")
+
+        self.user.owner.accessgroup_set.add(ag1)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)  # show message to contact us
+        self.assertFalse(response.context.get("form", False))  # no form
+        print(
+            "   --->  test_events edit event for "
+            + "logged user but without good accessgroup : OK !"
+        )
+        self.user.owner.accessgroup_set.add(ag2)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)  # show message to contact us
+        self.assertIsInstance(response.context["form"], EventForm)
+        self.assertTrue(response.context["form"].fields["end_time"])
+        self.assertFalse(response.context["form"].fields.get("end_date", False))
+        print(
+            "   --->  test_events edit event for "
+            + "logged user with good access group : OK !"
+        )
+        # check if value ok
+        end_time = response.context['form']['end_time'].value()
+        start_date = response.context['form']['start_date'].value()
+        self.assertEqual(end_time, timezone.localtime(
+            start_date + timezone.timedelta(hours=1)
+        ).strftime("%H:%M"))
+        nb_event = Event.objects.all().count()
+        # form = response.context['form']
+        data = {}
+        data["title"] = "my event"
+        response = self.client.post(
+            url,
+            data,
+            follow=True,
+        )
+        self.assertTrue(response.context["form"].errors)
+        data["broadcaster"] = 1  # Broadcaster.objects.get(id=1)
+        data["type"] = 1  # Type.objects.get(id=1)
+        data["end_time"] = end_time
+        data["start_date_0"] = start_date.date()
+        data["start_date_1"] = start_date.time()
+        data["building"] = "bulding1"
+        response = self.client.post(
+            url,
+            data,
+            follow=True,
+        )
+        self.assertTrue(response.context["form"].errors)
+        self.assertTrue(b"An event is already planned at these dates" in response.content)
+        # change hour by adding 2 hours
+        start_date = timezone.localtime(
+            start_date + timezone.timedelta(hours=2)
+        )
+        end_time = timezone.localtime(
+            start_date + timezone.timedelta(hours=1)
+        ).strftime("%H:%M")
+        data["end_time"] = end_time
+        data["start_date_0"] = start_date.date()
+        data["start_date_1"] = start_date.time()
+        response = self.client.post(
+            url,
+            data,
+            follow=True,
+        )
+        self.assertTrue(b"The changes have been saved." in response.content)
+        e = Event.objects.get(title="my event")
+        self.assertEqual(Event.objects.all().count(), nb_event + 1)
+        delta = (
+            e.end_date.replace(second=0, microsecond=0)
+            - e.start_date.replace(second=0, microsecond=0)
+        )
+        self.assertEqual(
+            timezone.timedelta(hours=1),
+            delta
+        )
+        print("   --->  test_events edit event post event : OK !")
+        g1 = Group.objects.get(name="event admin")
+        self.user.groups.add(g1)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)  # show message to contact us
+        self.assertIsInstance(response.context["form"], EventForm)
+        self.assertTrue(response.context["form"].fields["end_date"])
+        self.assertFalse(response.context["form"].fields.get("end_time", False))
+
+        start_date = response.context['form']['start_date'].value()
+        start_date = timezone.localtime(
+            start_date + timezone.timedelta(days=1)
+        )
+        end_date = timezone.localtime(
+            start_date + timezone.timedelta(days=3)
+        )
+        data = {}
+        data["title"] = "my multi days event"
+        data["broadcaster"] = 1  # Broadcaster.objects.get(id=1)
+        data["type"] = 1  # Type.objects.get(id=1)
+        data["start_date_0"] = start_date.date()
+        data["start_date_1"] = start_date.time()
+        data["end_date_0"] = end_date.date()
+        data["end_date_1"] = end_date.time()
+        data["building"] = "bulding1"
+        response = self.client.post(
+            url,
+            data,
+            follow=True,
+        )
+        self.assertTrue(b"The changes have been saved." in response.content)
+        e = Event.objects.get(title="my multi days event")
+        self.assertEqual(Event.objects.all().count(), nb_event + 2)
+        delta = (
+            e.end_date.replace(second=0, microsecond=0)
+            - e.start_date.replace(second=0, microsecond=0)
+        )
+        self.assertEqual(
+            timezone.timedelta(days=3),
+            delta
+        )
+        print("   --->  test_events edit event post multi days event : OK !")
+
+        print("   --->  test_edit_events of liveViewsTestCase : OK !")
 
     def test_events(self):
         self.client = Client()
