@@ -456,6 +456,316 @@ class LiveViewsTestCase(TestCase):
 
         print("   --->  test_edit_events of liveViewsTestCase : OK !")
 
+    def test_crossing_events(self):
+        e = Event.objects.get(title="event1")
+        delta = (
+            e.end_date.replace(second=0, microsecond=0)
+            - e.start_date.replace(second=0, microsecond=0)
+        )
+        self.assertEqual(timezone.timedelta(hours=1), delta)
+
+        print("  --->  test_crossing_events with end_time")
+        self.user = User.objects.get(username="pod")
+        ag2 = AccessGroup.objects.get(code_name="employee")
+        self.user.owner.accessgroup_set.add(ag2)
+
+        # event after previous event and in the futur : OK
+        data = {}
+        sd = e.end_date
+        ed = sd + timezone.timedelta(hours=1)
+        data["title"] = "my multi days event"
+        data["broadcaster"] = 1  # Broadcaster.objects.get(id=1)
+        data["type"] = 1  # Type.objects.get(id=1)
+        data["start_date_0"] = sd.date()
+        data["start_date_1"] = sd.time()
+        data["end_time"] = ed.time()
+        data["building"] = "bulding1"
+        form = EventForm(
+            data,
+            user=self.user,
+        )
+        self.assertTrue(form.is_valid())
+        print("   --->  test_crossing_events in the futur and not crossing : OK !")
+
+        # event in the past
+        data = {}
+        sd = e.start_date - timezone.timedelta(hours=2)
+        ed = e.start_date - timezone.timedelta(hours=1)
+        data["title"] = "my multi days event"
+        data["broadcaster"] = 1  # Broadcaster.objects.get(id=1)
+        data["type"] = 1  # Type.objects.get(id=1)
+        data["start_date_0"] = sd.date()
+        data["start_date_1"] = sd.time()
+        data["end_time"] = ed.time()
+        data["building"] = "bulding1"
+        form = EventForm(
+            data,
+            user=self.user,
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn('An event cannot be planned in the past', form.errors['__all__'])
+        print("   --->  test_crossing_events in the past : NOK !")
+
+        # event 1 hour before the previous and half an hour after starting
+        # crossing the start
+        data = {}
+        sd = e.start_date - timezone.timedelta(hours=1)
+        ed = e.start_date + timezone.timedelta(seconds=1800)
+        data["title"] = "my multi days event"
+        data["broadcaster"] = 1  # Broadcaster.objects.get(id=1)
+        data["type"] = 1  # Type.objects.get(id=1)
+        data["start_date_0"] = sd.date()
+        data["start_date_1"] = sd.time()
+        data["end_time"] = ed.time()
+        data["building"] = "bulding1"
+        form = EventForm(
+            data,
+            user=self.user,
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn(
+            "An event is already planned at these dates",
+            form.errors['start_date']
+        )
+        self.assertIn("Planification error.", form.errors['__all__'])
+        print("   --->  test_crossing_events in the futur and crossing the start : NOK !")
+        # test changing broadcaster
+        data["broadcaster"] = 2
+        form = EventForm(
+            data,
+            user=self.user,
+        )
+        self.assertTrue(form.is_valid())
+        print(
+            "   --->  test_crossing_events in the futur"
+            + " and crossing the start with another broadcaster : OK !"
+        )
+        # event start during the previous and finish after
+        # crossing the end
+        data = {}
+        sd = e.start_date + timezone.timedelta(seconds=1800)
+        ed = e.end_date + timezone.timedelta(seconds=1800)
+        data["title"] = "my multi days event"
+        data["broadcaster"] = 1  # Broadcaster.objects.get(id=1)
+        data["type"] = 1  # Type.objects.get(id=1)
+        data["start_date_0"] = sd.date()
+        data["start_date_1"] = sd.time()
+        data["end_time"] = ed.time()
+        data["building"] = "bulding1"
+        form = EventForm(
+            data,
+            user=self.user,
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn(
+            "An event is already planned at these dates",
+            form.errors['start_date']
+        )
+        self.assertIn("Planification error.", form.errors['__all__'])
+        print("   --->  test_crossing_events in the futur and crossing the start : NOK !")
+
+        # event start during the previous and finish before
+        # crossing inside
+        data = {}
+        sd = e.start_date + timezone.timedelta(seconds=900)
+        ed = e.end_date - timezone.timedelta(seconds=900)
+        data["title"] = "my multi days event"
+        data["broadcaster"] = 1  # Broadcaster.objects.get(id=1)
+        data["type"] = 1  # Type.objects.get(id=1)
+        data["start_date_0"] = sd.date()
+        data["start_date_1"] = sd.time()
+        data["end_time"] = ed.time()
+        data["building"] = "bulding1"
+        form = EventForm(
+            data,
+            user=self.user,
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn(
+            "An event is already planned at these dates",
+            form.errors['start_date']
+        )
+        self.assertIn("Planification error.", form.errors['__all__'])
+        print("   --->  test_crossing_events crossing inside : NOK !")
+
+        # event start before the previous and finish after
+        # crossing outside
+        data = {}
+        sd = e.start_date - timezone.timedelta(seconds=900)
+        ed = e.end_date + timezone.timedelta(seconds=900)
+        data["title"] = "my multi days event"
+        data["broadcaster"] = 1  # Broadcaster.objects.get(id=1)
+        data["type"] = 1  # Type.objects.get(id=1)
+        data["start_date_0"] = sd.date()
+        data["start_date_1"] = sd.time()
+        data["end_time"] = ed.time()
+        data["building"] = "bulding1"
+        form = EventForm(
+            data,
+            user=self.user,
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn(
+            "An event is already planned at these dates",
+            form.errors['start_date']
+        )
+        self.assertIn("Planification error.", form.errors['__all__'])
+        print("   --->  test_crossing_events crossing outside : NOK !")
+
+        # --------------------------------------------------------------------------
+        print(20 * "/")
+        print("  --->  test_crossing_events with end_date")
+
+        self.user = User.objects.get(username="pod")
+        g1 = Group.objects.get(name="event admin")
+        self.user.groups.add(g1)
+
+        # event after previous event and in the futur : OK
+        data = {}
+        sd = e.end_date
+        ed = sd + timezone.timedelta(hours=1)
+        data["title"] = "my multi days event"
+        data["broadcaster"] = 1  # Broadcaster.objects.get(id=1)
+        data["type"] = 1  # Type.objects.get(id=1)
+        data["start_date_0"] = sd.date()
+        data["start_date_1"] = sd.time()
+        data["end_date_0"] = ed.date()
+        data["end_date_1"] = ed.time()
+        data["building"] = "bulding1"
+        form = EventForm(
+            data,
+            user=self.user,
+        )
+        self.assertTrue(form.is_valid())
+        print("   --->  test_crossing_events in the futur and not crossing : OK !")
+
+        # event in the past
+        data = {}
+        sd = e.start_date - timezone.timedelta(hours=2)
+        ed = e.start_date - timezone.timedelta(hours=1)
+        data["title"] = "my multi days event"
+        data["broadcaster"] = 1  # Broadcaster.objects.get(id=1)
+        data["type"] = 1  # Type.objects.get(id=1)
+        data["start_date_0"] = sd.date()
+        data["start_date_1"] = sd.time()
+        data["end_date_0"] = ed.date()
+        data["end_date_1"] = ed.time()
+        data["building"] = "bulding1"
+        form = EventForm(
+            data,
+            user=self.user,
+        )
+        self.assertFalse(form.is_valid())
+        # for err in form.errors:
+        #     print("- ", err, form.errors[err])
+        self.assertIn('An event cannot be planned in the past', form.errors['__all__'])
+        print("   --->  test_crossing_events in the past : NOK !")
+
+        # event 1 hour before the previous and half an hour after starting
+        # crossing the start
+        data = {}
+        sd = e.start_date - timezone.timedelta(hours=1)
+        ed = e.start_date + timezone.timedelta(seconds=1800)
+        data["title"] = "my multi days event"
+        data["broadcaster"] = 1  # Broadcaster.objects.get(id=1)
+        data["type"] = 1  # Type.objects.get(id=1)
+        data["start_date_0"] = sd.date()
+        data["start_date_1"] = sd.time()
+        data["end_date_0"] = ed.date()
+        data["end_date_1"] = ed.time()
+        data["building"] = "bulding1"
+        form = EventForm(
+            data,
+            user=self.user,
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn(
+            "An event is already planned at these dates",
+            form.errors['start_date']
+        )
+        self.assertIn(
+            "Planification error.",
+            form.errors['__all__']
+        )
+        print("   --->  test_crossing_events in the futur and crossing the start : NOK !")
+
+        # event start during the previous and finish after
+        # crossing the end
+        data = {}
+        sd = e.start_date + timezone.timedelta(seconds=1800)
+        ed = e.end_date + timezone.timedelta(seconds=1800)
+        data["title"] = "my multi days event"
+        data["broadcaster"] = 1  # Broadcaster.objects.get(id=1)
+        data["type"] = 1  # Type.objects.get(id=1)
+        data["start_date_0"] = sd.date()
+        data["start_date_1"] = sd.time()
+        data["end_date_0"] = ed.date()
+        data["end_date_1"] = ed.time()
+        data["building"] = "bulding1"
+        form = EventForm(
+            data,
+            user=self.user,
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn(
+            "An event is already planned at these dates",
+            form.errors['start_date']
+        )
+        self.assertIn("Planification error.", form.errors['__all__'])
+        print("   --->  test_crossing_events in the futur and crossing the start : NOK !")
+
+        # event start during the previous and finish before
+        # crossing inside
+        data = {}
+        sd = e.start_date + timezone.timedelta(seconds=900)
+        ed = e.end_date - timezone.timedelta(seconds=900)
+        data["title"] = "my multi days event"
+        data["broadcaster"] = 1  # Broadcaster.objects.get(id=1)
+        data["type"] = 1  # Type.objects.get(id=1)
+        data["start_date_0"] = sd.date()
+        data["start_date_1"] = sd.time()
+        data["end_date_0"] = ed.date()
+        data["end_date_1"] = ed.time()
+        data["building"] = "bulding1"
+        form = EventForm(
+            data,
+            user=self.user,
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn(
+            "An event is already planned at these dates",
+            form.errors['start_date']
+        )
+        self.assertIn("Planification error.", form.errors['__all__'])
+        print("   --->  test_crossing_events crossing inside : NOK !")
+
+        # event start before the previous and finish after
+        # crossing outside
+        data = {}
+        sd = e.start_date - timezone.timedelta(seconds=900)
+        ed = e.end_date + timezone.timedelta(seconds=900)
+        data["title"] = "my multi days event"
+        data["broadcaster"] = 1  # Broadcaster.objects.get(id=1)
+        data["type"] = 1  # Type.objects.get(id=1)
+        data["start_date_0"] = sd.date()
+        data["start_date_1"] = sd.time()
+        data["end_date_0"] = ed.date()
+        data["end_date_1"] = ed.time()
+        data["building"] = "bulding1"
+        form = EventForm(
+            data,
+            user=self.user,
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn(
+            "An event is already planned at these dates",
+            form.errors['start_date']
+        )
+        self.assertIn("Planification error.", form.errors['__all__'])
+        print("   --->  test_crossing_events crossing outside : NOK !")
+
+        print("   --->  test_crossing_events of liveViewsTestCase : OK !")
+
     def test_events(self):
         self.client = Client()
         access_group = AccessGroup.objects.get(code_name="group1")
