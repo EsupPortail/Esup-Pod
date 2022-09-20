@@ -129,11 +129,13 @@ def encode_video(video_id):
         send_email_encoding(video_to_encode)
 
     transcript_video(video_id)
+    change_encoding_step(video_id, 0, "end of encoding")
 
 
 def transcript_video(video_id):
     """Transcript video audio to text."""
     video = Video.objects.get(id=video_id)
     if TRANSCRIPT and video.transcript:
+        change_encoding_step(video_id, 6, "transcript video")
         start_transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
         start_transcript_video(video_id, False)
