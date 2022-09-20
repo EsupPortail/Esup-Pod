@@ -781,11 +781,17 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
 
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
 
-    if video.get_version != "O" and request.GET.get("redirect") != "false":
+    if (
+        video.get_version != "O"
+        and request.GET.get("redirect") != "false"
+        and video.get_default_version_link(slug_private)
+    ):
+        query_string = "?%s" % request.META["QUERY_STRING"] if (
+            request.META.get("QUERY_STRING")
+        ) else ""
         return redirect(
             video.get_default_version_link(slug_private)
-            + "?"
-            + request.META["QUERY_STRING"]
+            + query_string
         )
 
     template_video = "videos/video.html"
