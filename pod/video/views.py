@@ -786,13 +786,12 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         and request.GET.get("redirect") != "false"
         and video.get_default_version_link(slug_private)
     ):
-        query_string = "?%s" % request.META["QUERY_STRING"] if (
-            request.META.get("QUERY_STRING")
-        ) else ""
-        return redirect(
-            video.get_default_version_link(slug_private)
-            + query_string
+        query_string = (
+            "?%s" % request.META["QUERY_STRING"]
+            if (request.META.get("QUERY_STRING"))
+            else ""
         )
+        return redirect(video.get_default_version_link(slug_private) + query_string)
 
     template_video = "videos/video.html"
     params = {"active_video_comment": ACTIVE_VIDEO_COMMENT}
