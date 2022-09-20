@@ -53,6 +53,13 @@
     <p><a href="/" class="btn btn-primary">{% trans "Back to home" %}</a></p>
   {% else %}
     <p>{% trans "The meeting has not started yet" %}.</p>
+    <p>
+    {% if meeting.start_at__date == meeting.end_at__date %}
+      {% blocktrans with start_date=meeting.start_at|date:"d/m/Y" start_time=meeting.start_at|time:"H:i" end_time=meeting.end_at|time:"H:i" %}it is scheduled for <b>{{start_date}}</b> from <u>{{start_time}}</u> to <u>{{end_time}}</u>.{% endblocktrans %}
+    {% else %}
+      {% blocktrans with start_date=meeting.start_at end_date=meeting.end_at %}it is scheduled from <b>{{start_date}}</b> to <b>{{end_date}}</b>.{% endblocktrans %}
+    {% endif %}
+    </p>
     <p>{% trans "You will be redirected right after the meeting starts" %}.</p>
     <p>{% trans "if not, click on the button below" %}.</p>
     <p><a href="{{ request.get_full_path }}" class="btn btn-primary">{% trans "reload"%}</a></p>
