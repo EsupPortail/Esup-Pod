@@ -61,6 +61,7 @@
                 {% trans "The event is currently in progress. Editing options are limited." %}
             </div>
         {% endif %}
+        <div class="list-group">
         {% if form.errors %}
             <p class="text-danger">{% trans "One or more errors have been found in the form." %}<br/>
             {% for error in form.non_field_errors %}
@@ -74,9 +75,9 @@
         {% for fieldset in form.fieldsets %}
         {% with last=fieldset|last %}
         {% if "collapse" in last.classes %}
-        <div class="my-3">
-          <div class="">
-            <a class="btn btn-primary btn-sm m-1" data-bs-toggle="collapse" href="#event_form_{{fieldset|first}}{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
+        <div class="mb-3">
+          <div class="list-group-item">
+            <a class="btn btn-primary" data-bs-toggle="collapse" href="#event_form_{{fieldset|first}}{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
                 {% trans "Display advanced options" %} &nbsp;<i class="bi bi-chevron-down"></i>
             </a>
           </div>
@@ -89,10 +90,11 @@
         {% for field in form.visible_fields %}
         {% if field.name in last.fields %}
         {% spaceless %}
-            <div class="field_{{ field.name }}
-                {% with 'password is_restricted' as res %}{% if field.name in res.split %} collapse draft_access hide{% endif %}{% endwith %}
-                {% with 'restrict_access_to_groups' as res %}{% if field.name in res.split %} collapse groups_access hide{% endif %}{% endwith %}"
-            >
+        <div class="mb-3 field_{{ field.name }}
+        {% with 'password is_restricted' as res %}{% if field.name in res.split %} collapse draft_access hide{% endif %}{% endwith %}
+        {% with 'restrict_access_to_groups' as res %}{% if field.name in res.split %} collapse groups_access hide{% endif %}{% endwith %}"
+        >
+            <div class="list-group-item" >
                 <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
                     {{ field.errors }}
                     {% if "form-check-input" in field.field.widget.attrs.class %}
@@ -112,13 +114,15 @@
                     {% endif %}
                 </div>
             </div>
+        </div>
         {% endspaceless %}
         {% endif %}
         {% endfor %}
         {% endwith %}
         </fieldset>
         {% endfor %}
-        <div class="text-center mt-1">
+        </div>
+        <div class="text-center mb-3">
             <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>
         </div>
 

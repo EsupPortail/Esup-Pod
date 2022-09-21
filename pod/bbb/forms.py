@@ -2,7 +2,7 @@ from django import forms
 from django.conf import settings
 from .models import BBB_Meeting
 from .models import Livestream
-from pod.main.forms import add_placeholder_and_asterisk
+from pod.main.forms_utils import add_placeholder_and_asterisk
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 import importlib

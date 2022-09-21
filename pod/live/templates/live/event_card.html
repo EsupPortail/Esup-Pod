@@ -1,11 +1,11 @@
 {% load l10n %}
 {% load i18n %}
+{% load tz %}
 {% spaceless %}
     <div class="card box-shadow pod-card--video video-card">
         <!-- card.html -->
         <div class="card-header">
             <div class="d-flex justify-content-end align-items-center">
-{#            between<small class="text-muted time">{% blocktrans with start_date=event.start_date|date:"d/m/Y" start_time=event.start_time end_time=event.end_time %}The {{start_date}} from {{start_time}} to {{end_time}}{% endblocktrans %}</small>#}
             <span class="text-muted small d-flex">
                     <span>
                     {% if event.is_current %}
@@ -56,9 +56,13 @@
                     {{event.title|capfirst|truncatechars:43}}
                 </a>
                 </br>
-                    {% blocktrans with start_date=event.start_date|date:"d/m/Y" start_time=event.start_time end_time=event.end_time %}The {{start_date}} from {{start_time}} to {{end_time}}{% endblocktrans %}
+                    {% if event.start_date__date == event.end_date__date %}
+                        {% blocktrans with start_date=event.start_date|date:"d/m/Y" start_time=event.start_date|time:"H:i" end_time=event.end_date|time:"H:i" %}The {{start_date}} from {{start_time}} to {{end_time}}{% endblocktrans %}
+                    {% else %}
+                    {% blocktrans with start_date=event.start_date end_date=event.end_date %}from {{start_date}} to {{end_date}}{% endblocktrans %}
+                    {% endif %}
                     {% if display_broadcaster_name %}
-                        {{event.broadcaster.name|capfirst|truncatechars:20}}
+                        <br/>{{event.broadcaster.name|capfirst|truncatechars:20}}
                     {% endif %}
              </span>
         </div>
