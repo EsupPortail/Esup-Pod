@@ -89,6 +89,7 @@ meeting_to_bbb = {
 def two_hours_hence():
     return timezone.now() + timezone.timedelta(hours=2)
 
+
 def get_random():
     return 70000 + random.randint(0, 9999)
 
