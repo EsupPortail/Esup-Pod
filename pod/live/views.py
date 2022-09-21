@@ -791,7 +791,7 @@ def event_video_transform(event_id, current_file, segment_number):
     if not live_event.is_draft:
         video.password = live_event.password
         video.is_restricted = live_event.is_restricted
-        video.restrict_access_to_groups = live_event.restrict_access_to_groups.all()
+        video.restrict_access_to_groups.set(live_event.restrict_access_to_groups.all())
 
     video.launch_encode = True
     video.save()
