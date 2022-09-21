@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-20 14:35+0200\n"
+"POT-Creation-Date: 2022-09-21 17:21+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -803,7 +803,7 @@ msgid "slug"
 msgstr "titre court"
 
 #: pod/chapter/models.py:20 pod/completion/models.py:298
-#: pod/enrichment/models.py:118 pod/live/models.py:123
+#: pod/enrichment/models.py:118 pod/live/models.py:122
 #: pod/playlist/models.py:17 pod/video/models.py:274 pod/video/models.py:424
 #: pod/video/models.py:557 pod/video/models.py:598 pod/video/models.py:657
 #: pod/video/models.py:2047
@@ -1867,7 +1867,7 @@ msgstr "Temps de fin de l’affichage de l’enrichissement en secondes."
 
 #: pod/enrichment/models.py:140
 #: pod/enrichment/templates/enrichment/list_enrichment.html:11
-#: pod/live/models.py:357 pod/video/forms.py:116 pod/video/models.py:581
+#: pod/live/models.py:352 pod/video/forms.py:116 pod/video/models.py:581
 #: pod/video/models.py:666 pod/video/views.py:1691
 #: pod/video_search/templates/search/search.html:83
 msgid "Type"
@@ -2095,7 +2095,7 @@ msgstr "Non"
 msgid "Auto start admin"
 msgstr "Enregistrement auto"
 
-#: pod/live/admin.py:186 pod/live/models.py:416 pod/video/models.py:786
+#: pod/live/admin.py:186 pod/live/models.py:411 pod/video/models.py:786
 #: pod/video/models.py:943
 msgid "Thumbnails"
 msgstr "Vignettes"
@@ -2991,7 +2991,7 @@ msgstr "Vous ne pouvez pas accèder à cet évènement en direct."
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
-#: pod/live/views.py:470 pod/meeting/views.py:110 pod/video/views.py:362
+#: pod/live/views.py:480 pod/meeting/views.py:110 pod/video/views.py:362
 #: pod/video/views.py:954
 msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
@@ -3009,6 +3009,7 @@ msgid "Record"
 msgstr "Enregistrée"
 
 #: pod/live/views.py:779
+#, python-format
 msgid "on %(start_date)s from %(start_time)s to %(end_time)s"
 msgstr "le %(start_date)s de %(start_time)s à %(end_time)s"
 
@@ -5843,6 +5844,10 @@ msgid ""
 msgstr ""
 "Vous pouvez ajouter des propriétaires additionnels à la vidéo. Ils auront "
 "les mêmes droits que vous sauf qu’ils ne peuvent pas supprimer cette vidéo."
+
+#: pod/video/models.py:694
+msgid "Date of event"
+msgstr "Date de l'évènement"
 
 #: pod/video/models.py:790
 msgid "Overview"
