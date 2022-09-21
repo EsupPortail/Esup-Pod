@@ -818,7 +818,7 @@ def event_video_transform(event_id, current_file, segment_number):
             "title": video.title,
             "get_absolute_url": video.get_absolute_url(),
         }
-    return JsonResponse({"success": True, "videos": adding_description})
+    return JsonResponse({"success": True, "videos": video_list})
 
 
 def checkFileSize(full_file_name, max_attempt=6):
