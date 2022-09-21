@@ -56,8 +56,7 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
             "slug",
             "description",
             "start_date",
-            "start_time",
-            "end_time",
+            "end_date",
             "broadcaster",
             "type",
             "is_draft",
@@ -85,5 +84,5 @@ class BroadcasterViewSet(viewsets.ModelViewSet):
 
 
 class EventViewSet(viewsets.ModelViewSet):
-    queryset = Event.objects.all().order_by("start_date", "start_time")
+    queryset = Event.objects.all().order_by("start_date")
     serializer_class = EventSerializer

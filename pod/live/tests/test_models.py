@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.conf import settings
@@ -201,16 +199,22 @@ class EventTestCase(TestCase):
         building = Building.objects.create(name="building1")
         building2 = Building.objects.create(name="building2")
         e_broad = Broadcaster.objects.create(
-            name="broadcaster1", building=building, url="http://first.url", status=True
+            name="broadcaster1",
+            building=building,
+            url="http://first.url",
+            enable_add_event=True,
         )
         Broadcaster.objects.create(
-            name="broadcaster2", building=building, url="http://second.url", status=True
+            name="broadcaster2",
+            building=building,
+            url="http://second.url",
+            enable_add_event=True,
         )
         Broadcaster.objects.create(
-            name="broadcaster3", building=building, url="http://third.url", status=False
+            name="broadcaster3", building=building, url="http://third.url"
         )
         Broadcaster.objects.create(
-            name="broad_b2", building=building2, url="http://firstb2.url", status=False
+            name="broad_b2", building=building2, url="http://firstb2.url"
         )
         e_user = User.objects.create(username="user1")
         e_type = Type.objects.create(title="type1")
@@ -237,7 +241,11 @@ class EventTestCase(TestCase):
 
         event = Event.objects.get(id=1)
         defaut_event_start_date = event.start_date
-        self.assertEqual(present_or_future_date(defaut_event_start_date), date.today())
+        # careful with 2 check in one
+        self.assertEqual(
+            present_or_future_date(defaut_event_start_date),
+            timezone.now().replace(second=0, microsecond=0),
+        )
 
         yesterday = defaut_event_start_date + timezone.timedelta(days=-1)
         with self.assertRaises(ValidationError):

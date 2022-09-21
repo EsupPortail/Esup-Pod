@@ -2,7 +2,7 @@ import json
 import logging
 import os.path
 import re
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from time import sleep
 
 from django.conf import settings
@@ -56,6 +56,7 @@ DEFAULT_EVENT_THUMBNAIL = getattr(
 AFFILIATION_EVENT = getattr(
     settings, "AFFILIATION_EVENT", ("faculty", "employee", "staff")
 )
+EVENT_GROUP_ADMIN = getattr(settings, "EVENT_GROUP_ADMIN", "event admin")
 VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
 
 logger = logging.getLogger("pod.live")
@@ -168,8 +169,7 @@ def heartbeat(request):
 
         current_event = Event.objects.filter(
             Q(broadcaster_id=broadcaster_id)
-            & Q(start_date=date.today())
-            & (Q(start_date__lte=datetime.now()) & Q(end_time__gte=datetime.now()))
+            & (Q(start_date__lte=datetime.now()) & Q(end_date__gte=datetime.now()))
         ).first()
         if current_event is None:
             can_see = request.user.is_superuser
@@ -195,6 +195,7 @@ def can_manage_event(user):
     return user.is_authenticated and (
         user.is_superuser
         or user.owner.accessgroup_set.filter(code_name__in=AFFILIATION_EVENT).exists()
+        or user.groups.filter(name=EVENT_GROUP_ADMIN).exists()
     )
 
 
@@ -315,15 +316,14 @@ def render_event_template(request, evemnt, user_owns_event):
 def events(request):  # affichage des events
 
     queryset = Event.objects.filter(
-        Q(start_date__gt=date.today())
-        | (Q(start_date=date.today()) & Q(end_time__gte=datetime.now()))
+        Q(start_date__gt=datetime.now()) & Q(end_date__gte=datetime.now())
     )
     queryset = queryset.filter(is_draft=False)
     if not request.user.is_authenticated:
         queryset = queryset.filter(is_restricted=False)
         queryset = queryset.filter(restrict_access_to_groups__isnull=False)
 
-    events_list = queryset.all().order_by("start_date", "start_time", "end_time")
+    events_list = queryset.all().order_by("start_date", "end_date")
 
     page = request.GET.get("page", 1)
     full_path = ""
@@ -364,14 +364,10 @@ def my_events(request):
     queryset = request.user.event_set.all() | request.user.owners_events.all()
 
     past_events = [evt for evt in queryset if evt.is_past()]
-    past_events = sorted(
-        past_events, key=lambda evt: (evt.start_date, evt.start_time), reverse=True
-    )
+    past_events = sorted(past_events, key=lambda evt: (evt.start_date), reverse=True)
 
     coming_events = [evt for evt in queryset if not evt.is_past()]
-    coming_events = sorted(
-        coming_events, key=lambda evt: (evt.start_date, evt.start_time, evt.end_time)
-    )
+    coming_events = sorted(coming_events, key=lambda evt: (evt.start_date, evt.end_date))
 
     events_number = len(past_events) + len(coming_events)
 
@@ -463,7 +459,16 @@ def event_edit(request, slug=None):
             is_current_event=event.is_current() if slug else None,
         )
         if form.is_valid():
-            event = form.save()
+            if form.cleaned_data.get("end_date"):
+                event = form.save()
+            else:
+                event = form.save(commit=False)
+                d_fin = datetime.combine(
+                    form.cleaned_data["start_date"].date(), form.cleaned_data["end_time"]
+                )
+                d_fin = timezone.make_aware(d_fin)
+                event.end_date = d_fin
+                event.save()
             if EMAIL_ON_EVENT_SCHEDULING:
                 send_email_confirmation(event)
             messages.add_message(
@@ -717,7 +722,6 @@ def event_get_video_cards(request):
 
 def event_video_transform(event_id, current_file, segment_number):
     live_event = Event.objects.get(pk=event_id)
-
     filename = os.path.basename(current_file)
 
     dest_file = os.path.join(
@@ -764,25 +768,39 @@ def event_video_transform(event_id, current_file, segment_number):
 
     segment = "(" + segment_number + ")" if segment_number else ""
 
+    adding_description = _("Record")
+    if live_event.start_date.date() == live_event.end_date.date():
+        adding_description += (
+            " %s"
+            % _("on %(start_date)s from %(start_time)s to %(end_time)s")
+            % {
+                "start_date": timezone.localtime(live_event.start_date).date(),
+                "start_time": timezone.localtime(live_event.start_date).strftime("%H:%M"),
+                "end_time": timezone.localtime(live_event.end_date).strftime("%H:%M"),
+            }
+        )
+    else:
+        adding_description += (
+            " %s"
+            % _("from %(start_date)s to %(end_date)s")
+            % {
+                "start_date": timezone.localtime(live_event.start_date),
+                "end_date": timezone.localtime(live_event.end_date),
+            }
+        )
+
     video = Video.objects.create(
         video=dest_path,
         title=live_event.title + segment,
         owner=live_event.owner,
-        description=live_event.description
-        + "<br/>"
-        + _("Record the %(start_date)s from %(start_time)s to %(end_time)s")
-        % {
-            "start_date": live_event.start_date.strftime("%d/%m/%Y"),
-            "start_time": live_event.start_time.strftime("%H:%M"),
-            "end_time": live_event.end_time.strftime("%H:%M"),
-        },
+        description=live_event.description + "<br/>" + adding_description,
         is_draft=live_event.is_draft,
         type=live_event.type,
     )
     if not live_event.is_draft:
         video.password = live_event.password
         video.is_restricted = live_event.is_restricted
-        video.restrict_access_to_groups = live_event.restrict_access_to_groups.all()
+        video.restrict_access_to_groups.set(live_event.restrict_access_to_groups.all())
 
     video.launch_encode = True
     video.save()
@@ -791,7 +809,6 @@ def event_video_transform(event_id, current_file, segment_number):
     live_event.save()
 
     videos = live_event.videos.all()
-
     video_list = {}
     for video in videos:
         video_list[video.id] = {
@@ -800,7 +817,6 @@ def event_video_transform(event_id, current_file, segment_number):
             "title": video.title,
             "get_absolute_url": video.get_absolute_url(),
         }
-
     return JsonResponse({"success": True, "videos": video_list})
 
 

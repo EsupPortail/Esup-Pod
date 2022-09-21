@@ -58,15 +58,14 @@ def send_email_confirmation(event):
         _("Hello,"),
         _(
             "You have just scheduled a new event called “%(content_title)s” "
-            + "in date of %(start_date)s from %(start_time)s to %(end_time)s "
+            + "from %(start_date)s to %(end_date)s "
             + "on video server: %(url_event)s)."
             + " You can find the other sharing options in the dedicated tab."
         )
         % {
             "content_title": event.title,
-            "start_date": event.start_date.strftime("%d/%m/%Y"),
-            "start_time": event.start_time,
-            "end_time": event.end_time,
+            "start_date": event.start_date,
+            "end_date": event.end_date,
             "url_event": url_event,
         },
         _("Regards."),
@@ -81,15 +80,14 @@ def send_email_confirmation(event):
         _("Hello,"),
         _(
             "You have just scheduled a new event called “%(content_title)s” "
-            + "in date of %(start_date)s from %(start_time)s to %(end_time)s "
+            + "from %(start_date)s to %(end_date)s "
             + "on video server: %(url_event)s)."
             + " You can find the other sharing options in the dedicated tab."
         )
         % {
             "content_title": event.title,
-            "start_date": event.start_date.strftime("%d/%m/%Y"),
-            "start_time": event.start_time,
-            "end_time": event.end_time,
+            "start_date": event.start_date,
+            "end_date": event.end_date,
             "url_event": url_event,
         },
         _("Regards."),

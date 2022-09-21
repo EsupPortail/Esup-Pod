@@ -22,7 +22,7 @@ from django.db.models.query import QuerySet
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.sites.shortcuts import get_current_site
-from pod.main.forms import add_placeholder_and_asterisk
+from pod.main.forms_utils import add_placeholder_and_asterisk
 
 from ckeditor.widgets import CKEditorWidget
 from collections import OrderedDict
