@@ -9,7 +9,7 @@
     body {
       background-color: {{form.instance.color}};
     }
-  {%endif%}
+  {% endif %}
 </style>
 {% endblock page_extra_head %}
 
@@ -39,9 +39,9 @@
         {% endfor %}
         {% for field in form.visible_fields %}
           {% spaceless %}
-          <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}">
+          <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{% endif %}{% if "title_" in field.name %} title{% endif %}">
             <div class="list-group-item">
-              <div class="{% if field.name == "owners" or field.name == "users" %}form-row {%endif%}form-group {% if field.field.required %}form-group-required {%endif%}" >
+              <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}" >
                 {{ field.errors }}
                 {% if "form-check-input" in field.field.widget.attrs.class %}
                   <div class="form-check">
@@ -54,7 +54,7 @@
                 {% if field.help_text %}
                   <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
                 {% endif %}
-                {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+                {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{% endif %}
               </div>
             </div>
           </div>

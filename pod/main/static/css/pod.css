@@ -59,15 +59,18 @@
   --pod-alert-dark: #B11030;
 
   /**** font family ****/
-  --pod-font-family: "Gill Sans", sans-serif;
+  /* For better accessibility, avoid fonts where 1,i,L / O,0 are the same. */
+  --bs-body-font-family: "Verdana", sans-serif;
+  --bs-body-font-size: 11pt;
   --pod-font-family-dyslexie: "Open Dyslexic";
 
+  font-size: var(--bs-body-font-size);
 
   /* BOOTSTRAP COLORS */
   --bs-light: #f8f9fa;
   --bs-dark: #343a40;
 
-  /* Use system font */
+  /* Use system font (faster load) */
   --font-family-sans-serif: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Verdana, sans-serif;
 
   /** reinit before cleaning all old css vars ***/
@@ -76,7 +79,7 @@
 }
 
 :root[data-dyslexia="on"] {
-  --pod-font-family: var(--pod-font-family-dyslexie);
+  --bs-body-font-family: var(--pod-font-family-dyslexie);
 }
 
 a {
@@ -131,6 +134,7 @@ margin-top: 1rem;
 .btn-lang:active {
   box-shadow: 0 0 3px var(--pod-primary);
   --bs-btn-hover-color: var(--pod-font-color);
+  --bs-btn-active-color: var(--pod-font-color);
 }
 
 .pod-nav-link-icon {
@@ -156,7 +160,7 @@ margin-top: 1rem;
 }
 
 .pod-meta-title {
-  font-size: 80%;
+  font-size: 85%;
 }
 
 .pod-meta-title+ul {
@@ -167,14 +171,6 @@ margin-top: 1rem;
   font-weight: 400;
   color: var(--pod-link-color);
   text-decoration: none;
-}
-
-/** See in caption maker & category modal **/
-.link-primary {
-  color: var(--pod-primary);
-}
-.link-primary:hover,.link-primary:focus {
-  color: var(--pod-primary-focus) !important;
 }
 
 .btn-outline-primary {
@@ -217,12 +213,13 @@ tr,
   margin-bottom: 1.5rem;
 }
 
-/*:not(footer)>.pod-btn-social {
+:not(footer)>.pod-btn-social {
   font-size: 2rem;
-}*/
+}
 .btn.pod-btn-social {
   color: var(--pod-font-color);
   --bs-btn-hover-color: var(--pod-font-color);
+  --bs-btn-active-color: var(--pod-font-color);
 }
 
 .pod-btn-social i {
@@ -498,9 +495,13 @@ button.nav-link {
   cursor: pointer;
 }
 
-button:hover .userpicture,
-button:focus .userpicture {
+.btn .userpicture {
+  border: 1px solid transparent;
+}
+.btn:hover .userpicture,
+.btn:focus .userpicture {
   opacity: .8;
+  border-color: #CCC;
 }
 
 /*** CARD ***/
@@ -528,7 +529,6 @@ button:focus .userpicture {
 #videos_list .video-title {
   line-height: 1.2;
   display: inline-block;
-  text-decoration: none;
 }
 
 #videos_list .video-title a {
@@ -557,6 +557,11 @@ a:focus {
   text-decoration: underline;
 }
 
+.btn-link:hover,
+.btn-link:focus {
+  text-decoration: underline;
+}
+
 div.card a img {
   transition: -webkit-transform .5s ease;
   transition: transform .5s ease;
@@ -572,8 +577,8 @@ div.card a img {
 
 .card-footer-pod {
   position: absolute;
-  bottom: 57px;
-  right: 0px;
+  bottom: 3.5rem;
+  right: 0;
   border: none;
   display: flex;
   background: #00000095;
@@ -918,7 +923,6 @@ body {
   padding-top: 3.1rem;
   color: var(--pod-font-color);
   background-color: var(--pod-background);
-  font-family: var(--pod-font-family);
 }
 
 /***reinit bootstrap 5***/
@@ -946,13 +950,15 @@ body {
 }
 
 .btn-link {
-  --bs-btn-hover-color: var(--pod-primary);
+  --bs-btn-hover-color: var(--pod-activelink-color);
+  --bs-btn-active-color: var(--pod-activelink-color);
 }
 
 .btn-primary,
 .btn-outline-primary {
   --bs-btn-hover-bg: var(--pod-primary-focus);
   --bs-btn-hover-color: var(--pod-btn-text);
+  --bs-btn-active-color: var(--pod-btn-text);
   --bs-btn-hover-border-color: var(--pod-primary-lighten);
 }
 
@@ -1066,7 +1072,7 @@ body {
 }
 
 .pod-footer__credits {
-  font-size: 80%;
+  font-size: 85%;
   opacity: .8;
 }
 
@@ -1200,8 +1206,8 @@ body {
 
 .pod-btn-share {
   border: 1px solid silver;
-  transition: all 0.2s ease-in;
-  color: var(--pod-font-color);
+  /*transition: all 0.2s ease-in;
+  color: var(--pod-font-color);*/
 }
 
 .pod-btn-share i {
@@ -1224,7 +1230,6 @@ body {
 
 .pod-info-video__signal {
   font-size: 2rem;
-  color: var(--pod-primary);
 }
 
 .pod-navbar__container {

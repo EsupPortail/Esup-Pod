@@ -53,7 +53,7 @@
               </button>
             </li>
           {% endif %}
-        {%endif%}
+        {% endif %}
 
         {% if folder.owner == request.user or request.user.is_superuser %}
           <li class="nav-item">
@@ -210,7 +210,7 @@
             </a>
           {% else %}
             <img class="card-img-top p-1" src="{% static 'podfile/images/icons/'|add:icon|add:'.png' %}" alt="" loading="lazy">
-          {% endif%}
+          {% endif %}
         {%endwith%}
       {% endif %}
       <div class="card-body">
@@ -219,7 +219,7 @@
             {% if type == "image" and file.class_name == "CustomImageModel" %}
               <a
                 href="{{file.file.url}}"
-                class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif%}"
+                class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif %}"
                 title="{{file.name}}"
                 target="_blank"
                 data-fileid="{{file.id}}"
@@ -230,7 +230,7 @@
             {% elif type == "file" and file.class_name == "CustomFileModel"%}
               <a
                 href="{{file.file.url}}"
-                class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif%}"
+                class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif %}"
                 title="{{file.name}}"
                 target="_blank"
                 data-fileid="{{file.id}}"
@@ -244,7 +244,7 @@
           {% else %}
             <a
               href="{{file.file.url}}"
-              class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif%}"
+              class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif %}"
               title="{{file.name}}"
               target="_blank"
               data-fileid="{{file.id}}"

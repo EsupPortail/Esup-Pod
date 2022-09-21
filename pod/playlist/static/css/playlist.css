@@ -10,12 +10,29 @@
 .playlist-delete:hover {
 	color: #ff0000;
 }*/
-.octicon-eye {
+.pod-playlist-visibility {
 	position: absolute;
-	left: 5px;
-	color: black;
+	right: 5px;
+	font-size: 2em;
+}
+
+.pod-playlist-card .card-img{
+	background-image: url('/static/img/default.svg');
+	background-blend-mode: luminosity;
+	background-position: center;
+	background-color: var(--pod-background-neutre2-bloc);
+	aspect-ratio: 16/9;
 }
 
 .fill-color-pod{
 	fill:white;
+}
+
+#dropmenu-playlist .selected:after{
+	display: inline-block;
+	margin-left: 1em;
+	font-family: bootstrap-icons;
+	content: "\f272";
+	line-height: 1;
+	vertical-align: -.125em;
 }

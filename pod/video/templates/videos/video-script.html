@@ -117,7 +117,7 @@ player.on('firstplay', function(){
       //var qualityLevels = this.qualityLevels();
       {% if request.GET.start and request.GET.start != '0' %}
       player.currentTime({{request.GET.start}});
-      {%endif%}
+      {% endif %}
     });
     //Add source to player
     player.src(srcOptions);
@@ -145,9 +145,9 @@ player.on('firstplay', function(){
   {% if video.overview %}
     //add overview
     player.vttThumbnails({
-      src: '{% if request.is_secure %}https://{%else%}http://{% endif %}{{request.get_host}}{{video.overview.url}}'
+      src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}'
     });
-  {%endif%}
+  {% endif %}
 
   {% if video.overlay_set.all %}
     var list_overlays = [];
@@ -185,7 +185,7 @@ player.on('firstplay', function(){
     player.on('loadedmetadata', function() {
       {% if request.GET.start and request.GET.start != '0' %}
       player.currentTime({{request.GET.start}});
-      {%endif%}
+      {% endif %}
     });
   {% endif %}
 {% endif %}
@@ -231,6 +231,5 @@ player.on('firstplay', function(){
     player.wavesurfer().surfer && player.wavesurfer().surfer._onResize();
   });
 {% endif %}
-
 
 </script>

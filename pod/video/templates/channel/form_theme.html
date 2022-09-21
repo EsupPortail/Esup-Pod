@@ -7,7 +7,7 @@
   <div id="formcontent" class="form-container">
     <fieldset class="row">
       <legend class="form-title">
-        {% if form_theme.instance.title %}{% trans "Editing the theme" %} {{form_theme.instance.title}}{% else %}{% trans "Add a new theme" %}{%endif%}
+        {% if form_theme.instance.title %}{% trans "Editing the theme" %} {{form_theme.instance.title}}{% else %}{% trans "Add a new theme" %}{% endif %}
       </legend>
       {% if form_theme.errors or form_theme.non_field_errors %}
         <div class="alert alert-danger">{% trans 'One or more errors have been found in the form:' %}<br />
@@ -24,7 +24,7 @@
       {% endfor %}
       {% for field in form_theme.visible_fields %}
         {% spaceless %}
-          <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
+          <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{% endif %}{% if "title_" in field.name %} title{% endif %}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
             <div class="list-group-item">
               <div class="form-group row">
                 {{ field.errors }}
@@ -39,12 +39,12 @@
                     <i class="bi bi-translate" aria-hidden="true"></i>
                     {% trans "Other language" %}
                   </button>
-                {%endif%}{% if field.name == "title" %}
+                {% endif %}{% if field.name == "title" %}
                   <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target=".title" aria-expanded="false">
                     <i class="bi bi-translate" aria-hidden="true"></i>
                     {% trans "Other language" %}
                   </button>
-                {%endif%}
+                {% endif %}
               </div>
             </div>
           </div>

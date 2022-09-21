@@ -8,17 +8,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   {% block opengraph %}
-  <meta name="description" content="{{ DESC_SITE }}">
-  <!-- Open Graph data -->
-  <meta property="og:title" content="{{ TITLE_SITE }}" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-  <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
-  <meta property="og:description" content="{{ DESC_SITE }}" />
-  <meta property="og:site_name" content="{{ TITLE_SITE }}" />
+    <meta name="description" content="{{ DESC_SITE }}">
+    <!-- Open Graph data -->
+    <meta property="og:title" content="{{ TITLE_SITE }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+    <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
+    <meta property="og:description" content="{{ DESC_SITE }}" />
+    <meta property="og:site_name" content="{{ TITLE_SITE }}" />
   {% endblock %}
   {% if FAVICON %}
-  <link rel="icon" href="{% static FAVICON %}?ver={{VERSION}}">
+    <link rel="icon" href="{% static FAVICON %}?ver={{VERSION}}">
   {% endif %}
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
@@ -26,16 +26,16 @@
   <!-- pod.css -->
   <link rel="stylesheet" href="{% static 'css/pod.css' %}?ver={{VERSION}}" media="screen">
   {% if DARKMODE_ENABLED == True %}
-  <link rel="stylesheet" href="{% static 'css/dark.css' %}?ver={{VERSION}}" media="screen">
+    <link rel="stylesheet" href="{% static 'css/dark.css' %}?ver={{VERSION}}" media="screen">
   {% endif %}
   {% if DYSLEXIAMODE_ENABLED == True %}
-  <link rel="stylesheet" href="{% static 'css/dyslexia.css' %}?ver={{VERSION}}" media="screen">
+    <link rel="stylesheet" href="{% static 'css/dyslexia.css' %}?ver={{VERSION}}" media="screen">
   {% endif %}
   {% if CSS_OVERRIDE %}
-  <link rel="stylesheet" href="{% static CSS_OVERRIDE %}?ver={{VERSION}}" media="screen">
+    <link rel="stylesheet" href="{% static CSS_OVERRIDE %}?ver={{VERSION}}" media="screen">
   {% endif %}
   {% if SHOW_EVENTS_ON_HOMEPAGE and "live" in THIRD_PARTY_APPS %}
-  <link href="{% static 'css/event.css' %}?ver={{ VERSION }}" rel="stylesheet"/>
+    <link href="{% static 'css/event.css' %}?ver={{ VERSION }}" rel="stylesheet"/>
   {% endif %}
   <!-- more styles for each App -->
   {% block more_style %}
@@ -64,7 +64,7 @@
   {% if request.path == "/" and MAINTENANCE_MODE %}
   {% get_maintenance_welcome as maintenance_text %}
   <div class="p-3 mb-2 bg-danger text-white">{{maintenance_text}}</div>
-  {%endif%}
+  {% endif %}
   <div class="container-fluid pod-container mt-0">
     <main class="mt-0 mb-3">
       <div class="pod-grid-content">

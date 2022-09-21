@@ -25,11 +25,11 @@
 {% else %}
   {% if iframe_url and iframe_url != "" %}
     <iframe title="{{course_title}}" src="{{iframe_url}}" width="100%" height="100%" loading="lazy">
-      <p>{% trans "Your browser does not support iframes"%}.</p>
+      <p>{% trans "Your browser does not support iframes."%}</p>
     </iframe>
   {% else %}
     <p>{% trans "Activity not found" %}</p>
-  {%endif%}
+  {% endif %}
 {% endif %}
 {% comment %}
 <!--

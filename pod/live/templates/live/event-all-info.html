@@ -4,7 +4,7 @@
   {{event.title|capfirst}}
   {% if event.start_date %}<small>[{{ event.start_date }}]</small>{% endif %}
   <a class="pod-info-video__signal" href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans 'Report the video'%}">
-    <i class="bi bi-exclamation-triangle"></i>
+    <i class="bi bi-exclamation-octagon"></i>
   </a>
 </h1>
 
@@ -25,11 +25,10 @@
         <button type="button" class="btn pod-btn-share" data-bs-toggle="modal" data-bs-target="#share">
           <i class="bi bi-share" aria-hidden="true"></i><span class="visually-hidden">{% trans 'Embed/Share' %}</span>
         </button>
-      {%endif%}
+      {% endif %}
     </ul>
-   
+
   </div>
-  
 </div>
 
 {% include 'live/event-info.html' %}

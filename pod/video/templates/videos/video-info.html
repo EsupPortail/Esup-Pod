@@ -27,7 +27,7 @@
     <button type="button" class="btn pod-btn-share" data-bs-toggle="modal" data-bs-target="#downloads">
       <i class="bi bi-download" aria-hidden="true"></i><span class="visually-hidden">{% trans 'Downloads' %}</span>
     </button>
-    {%endif%}
+    {% endif %}
   </div>
 </div>
 
@@ -61,10 +61,10 @@
       <li class="col-6 col-md-4">
         <span class="meta-title pod-meta-title">{% trans 'Added by:' %}</span>
 
-        <a href="{% url 'videos:videos' %}?owner={{ video.owner.username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
+        <a class="btn btn-link" href="{% url 'videos:videos' %}?owner={{ video.owner.username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
           {% if video.owner.owner.userpicture.file %}
-            {% thumbnail video.owner.owner.userpicture.file "x50" as im %}
-              <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="" loading="lazy">
+            {% thumbnail video.owner.owner.userpicture.file "x34" as im %}
+              <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class="userpicture rounded" alt="" loading="lazy">
             {% endthumbnail %}
           {% endif %}
           {{ video.owner.get_full_name }}</a>
@@ -87,7 +87,7 @@
         </ul>
 
       </li>
-      {%endif%}
+      {% endif %}
 
       {% if video.contributor_set.all %}
       <li class="col-6 col-md-4">
@@ -133,7 +133,7 @@
             {% endfor %}
           </ul>
         </li>
-      {%endif%}
+      {% endif %}
 
       <li class="col-6 col-md-4">
         <span class="meta-title pod-meta-title">{% trans 'Type:' %}</span>
@@ -150,7 +150,7 @@
           <span class="meta-title pod-meta-title">{% trans 'Audience:' %}</span>
           {{video.get_cursus}}
         </li>
-      {%endif%}
+      {% endif %}
 
       {% if video.discipline.all %}
         <li class="col-6 col-md-4">
@@ -161,7 +161,7 @@
             {% endfor %}
           </ul>
         </li>
-      {%endif%}
+      {% endif %}
 
       {% if request.GET.is_iframe and video.licence %}
         <li class="col-6 col-md-4">
@@ -237,7 +237,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title h3" id="shareLabel">
-          <i class="bi bi-share"></i>&nbsp;{% if video.is_draft %}{% trans 'Embed/Share (Draft Mode)' %}{% else %}{% trans 'Embed/Share' %}{%endif%}
+          <i class="bi bi-share"></i>&nbsp;{% if video.is_draft %}{% trans 'Embed/Share (Draft Mode)' %}{% else %}{% trans 'Embed/Share' %}{% endif %}
         </h2>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -293,7 +293,7 @@ Anyone with this links can access it.{% endblocktrans %}
               <legend><i class="bi bi-code"></i>&nbsp;{% trans 'Embed in a web page' %}</legend>
               <div class="form-group ">
                 <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page:'%}</label>
-                <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4" readonly>&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video:video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+                <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4" readonly>&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{% else %}{% url 'video:video' slug=video.slug %}{% endif %}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
               </div>
             </fieldset>
 
@@ -321,7 +321,7 @@ Anyone with this links can access it.{% endblocktrans %}
               <legend><i class="bi bi-link-45deg"></i>&nbsp;{% trans 'Share the link' %}</legend>
               <div class="form-group">
                 <label for="txtpartage">{% trans 'Use this link to share the video:' %}</label>
-                <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video:video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" readonly/>
+                <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{% else %}{% url 'video:video' slug=video.slug %}{% endif %}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" readonly/>
               </div>
               <div class="form-group">
                 <label>{% trans 'QR code for this link:' %}&nbsp;
@@ -329,7 +329,7 @@ Anyone with this links can access it.{% endblocktrans %}
                     <i class="bi bi-eye"></i>
                   </a>
                 </label>
-                <img src="" data-src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video:video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" alt="qrcode" id="qrcode" loading="lazy" class="collapse" />
+                <img src="" data-src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{% else %}{% url 'video:video' slug=video.slug %}{% endif %}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" alt="qrcode" id="qrcode" loading="lazy" class="collapse" />
               </div>
             </fieldset>
 
@@ -339,4 +339,4 @@ Anyone with this links can access it.{% endblocktrans %}
     </div>
   </div>
 </div> <!-- fin modale -->
-{%endif%}
+{% endif %}

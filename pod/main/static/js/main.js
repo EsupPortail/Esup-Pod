@@ -535,7 +535,7 @@ var show_picture_form = function (data) {
     $("#nav-usermenu .userpicture").remove();
     $("#nav-usermenu .userinitial").hide();
     $("#nav-usermenu > button").removeClass("initials btn btn-primary");
-    $("#nav-usermenu > button").addClass("  nav-link");
+    $("#nav-usermenu > button").addClass("nav-link");
     $("#nav-usermenu > button").append(
       '<img src="' +
         $(data).find("#userpictureurl").val() +

@@ -9,6 +9,7 @@ from django.http import HttpResponseBadRequest
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ngettext
 from django.views.decorators.csrf import csrf_protect
 from django.db.models import Q
 from pod.playlist.models import Playlist
@@ -104,7 +105,8 @@ def playlist_play(request, slug=None):
         else 0
     )
 
-    if playlist.playlistelement_set.all().count() > position:
+    count = playlist.playlistelement_set.all().count()
+    if count > position:
         video = list(playlist.playlistelement_set.all())[position].video
         # video = playlist.playlistelement_set.first().video
     else:
@@ -116,18 +118,24 @@ def playlist_play(request, slug=None):
         raise PermissionDenied
 
     listNotes = get_video_adv_note_list(request, video)
+
     return render(
         request,
         template_video,
-        {"playlist": playlist, "video": video, "listNotes": listNotes},
+        {"playlist": playlist,
+         "video": video,
+         "listNotes": listNotes,
+         "page_title": ngettext(
+             '%(title)s (%(count)d video)',
+             '%(title)s (%(count)d videos)',
+             count,
+         ) % {'count': count,
+              'title': playlist.title}},
     )
 
 
 def get_video_adv_note_list(request, video):
-    """
-    Return the list of AdvancedNotes of video
-      that can be seen by the current user
-    """
+    """Return the list of AdvancedNotes of video that can be seen by the current user."""
     if request.user.is_authenticated:
         filter = (
             Q(user=request.user)
@@ -220,6 +228,7 @@ def playlist_edit(request, playlist):
 
 
 def playlist_add(request, playlist):
+    """Add a video (in POST) to the playlist. AJAX only."""
     if request.is_ajax():
         if request.POST.get("video"):
             video = get_object_or_404(Video, slug=request.POST["video"])
