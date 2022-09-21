@@ -511,12 +511,21 @@ class Event(models.Model):
         23:35:01.913570
         00:35:00
         """
-        return self.start_date <= timezone.now() <= self.end_date
+        if self.end_date and self.start_date:
+            return self.start_date <= timezone.now() <= self.end_date
+        else:
+            return False
 
     def is_past(self):
         """Test if event has happened in past."""
-        return self.end_date <= timezone.now()
+        if self.end_date:
+            return self.end_date <= timezone.now()
+        else:
+            return False
 
     def is_coming(self):
         """Test if event will happen in future."""
-        return self.start_date < timezone.now()
+        if self.start_date:
+            return self.start_date < timezone.now()
+        else:
+            return False
