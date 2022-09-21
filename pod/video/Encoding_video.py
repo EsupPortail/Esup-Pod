@@ -308,17 +308,19 @@ class Encoding_video:
             "input": self.video_file,
             "nb_threads": FFMPEG_NB_THREADS,
         }
-        hls_command += FFMPEG_HLS_COMMON_PARAMS % {
+        hls_common_params = FFMPEG_HLS_COMMON_PARAMS % {
             "libx": FFMPEG_LIBX,
             "preset": FFMPEG_PRESET,
             "profile": FFMPEG_PROFILE,
             "level": FFMPEG_LEVEL,
             "crf": FFMPEG_CRF,
         }
+        hls_command += hls_common_params
         in_height = list(self.list_video_track.items())[0][1]["height"]
         for index, rend in enumerate(list_rendition):
             if in_height >= rend or index == 0:
                 output_file = os.path.join(self.output_dir, "%sp.m3u8" % rend)
+                hls_command += hls_common_params
                 hls_command += FFMPEG_HLS_ENCODE_PARAMS % {
                     "height": rend,
                     "maxrate": list_rendition[rend]["maxrate"],

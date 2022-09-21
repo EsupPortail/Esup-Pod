@@ -176,7 +176,7 @@
 
 
         let options = {
-            notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
+            notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
             language: "fr", //en or nl
             fluid: !{{ request.GET.is_iframe|yesno:"true,false" }},
             playbackRates: [0.5, 1, 1.5, 2],
@@ -492,18 +492,18 @@
             const start = new Date("{{ event.get_start.isoformat }}")
             const end = new Date("{{ event.get_end.isoformat }}")
             {% if event.is_coming %}
-                /*setInterval(() => {
+                setInterval(() => {
                     if (new Date() >= start) {
                         location.reload()
                     }
-                }, 1000);*/
+                }, 1000);
 
             {% elif event.is_current %}
-                /*setInterval(() => {
+                setInterval(() => {
                     if (new Date() >= end) {
                         location.reload()
                     }
-                }, 1000);*/
+                }, 1000);
             {% endif %}
         }
 

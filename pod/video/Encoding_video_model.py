@@ -214,7 +214,10 @@ class Encoding_video_model(Encoding_video):
         list_subtitle_files = info_video["list_subtitle_files"]
 
         for sub in list_subtitle_files:
-            home = UserFolder.objects.get(name="Home", owner=video_to_encode.owner)
+            # home = UserFolder.objects.get(name="Home", owner=video_to_encode.owner)
+            home, created = UserFolder.objects.get_or_create(
+                name="home", owner=video_to_encode.owner
+            )
 
             if FILEPICKER:
                 podfile, created = CustomFileModel.objects.get_or_create(
