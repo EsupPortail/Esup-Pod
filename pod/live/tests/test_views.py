@@ -357,11 +357,14 @@ class LiveViewsTestCase(TestCase):
             + "logged user with good access group : OK !"
         )
         # check if value ok
-        end_time = response.context['form']['end_time'].value()
-        start_date = response.context['form']['start_date'].value()
-        self.assertEqual(end_time, timezone.localtime(
-            start_date + timezone.timedelta(hours=1)
-        ).strftime("%H:%M"))
+        end_time = response.context["form"]["end_time"].value()
+        start_date = response.context["form"]["start_date"].value()
+        self.assertEqual(
+            end_time,
+            timezone.localtime(start_date + timezone.timedelta(hours=1)).strftime(
+                "%H:%M"
+            ),
+        )
         nb_event = Event.objects.all().count()
         # form = response.context['form']
         data = {}
@@ -386,12 +389,10 @@ class LiveViewsTestCase(TestCase):
         self.assertTrue(response.context["form"].errors)
         self.assertTrue(b"An event is already planned at these dates" in response.content)
         # change hour by adding 2 hours
-        start_date = timezone.localtime(
-            start_date + timezone.timedelta(hours=2)
+        start_date = timezone.localtime(start_date + timezone.timedelta(hours=2))
+        end_time = timezone.localtime(start_date + timezone.timedelta(hours=1)).strftime(
+            "%H:%M"
         )
-        end_time = timezone.localtime(
-            start_date + timezone.timedelta(hours=1)
-        ).strftime("%H:%M")
         data["end_time"] = end_time
         data["start_date_0"] = start_date.date()
         data["start_date_1"] = start_date.time()
@@ -403,14 +404,10 @@ class LiveViewsTestCase(TestCase):
         self.assertTrue(b"The changes have been saved." in response.content)
         e = Event.objects.get(title="my event")
         self.assertEqual(Event.objects.all().count(), nb_event + 1)
-        delta = (
-            e.end_date.replace(second=0, microsecond=0)
-            - e.start_date.replace(second=0, microsecond=0)
+        delta = e.end_date.replace(second=0, microsecond=0) - e.start_date.replace(
+            second=0, microsecond=0
         )
-        self.assertEqual(
-            timezone.timedelta(hours=1),
-            delta
-        )
+        self.assertEqual(timezone.timedelta(hours=1), delta)
         print("   --->  test_events edit event post event : OK !")
         g1 = Group.objects.get(name="event admin")
         self.user.groups.add(g1)
@@ -420,13 +417,9 @@ class LiveViewsTestCase(TestCase):
         self.assertTrue(response.context["form"].fields["end_date"])
         self.assertFalse(response.context["form"].fields.get("end_time", False))
 
-        start_date = response.context['form']['start_date'].value()
-        start_date = timezone.localtime(
-            start_date + timezone.timedelta(days=1)
-        )
-        end_date = timezone.localtime(
-            start_date + timezone.timedelta(days=3)
-        )
+        start_date = response.context["form"]["start_date"].value()
+        start_date = timezone.localtime(start_date + timezone.timedelta(days=1))
+        end_date = timezone.localtime(start_date + timezone.timedelta(days=3))
         data = {}
         data["title"] = "my multi days event"
         data["broadcaster"] = 1  # Broadcaster.objects.get(id=1)
@@ -444,23 +437,18 @@ class LiveViewsTestCase(TestCase):
         self.assertTrue(b"The changes have been saved." in response.content)
         e = Event.objects.get(title="my multi days event")
         self.assertEqual(Event.objects.all().count(), nb_event + 2)
-        delta = (
-            e.end_date.replace(second=0, microsecond=0)
-            - e.start_date.replace(second=0, microsecond=0)
+        delta = e.end_date.replace(second=0, microsecond=0) - e.start_date.replace(
+            second=0, microsecond=0
         )
-        self.assertEqual(
-            timezone.timedelta(days=3),
-            delta
-        )
+        self.assertEqual(timezone.timedelta(days=3), delta)
         print("   --->  test_events edit event post multi days event : OK !")
 
         print("   --->  test_edit_events of liveViewsTestCase : OK !")
 
     def test_crossing_events(self):
         e = Event.objects.get(title="event1")
-        delta = (
-            e.end_date.replace(second=0, microsecond=0)
-            - e.start_date.replace(second=0, microsecond=0)
+        delta = e.end_date.replace(second=0, microsecond=0) - e.start_date.replace(
+            second=0, microsecond=0
         )
         self.assertEqual(timezone.timedelta(hours=1), delta)
 
@@ -503,7 +491,7 @@ class LiveViewsTestCase(TestCase):
             user=self.user,
         )
         self.assertFalse(form.is_valid())
-        self.assertIn('An event cannot be planned in the past', form.errors['__all__'])
+        self.assertIn("An event cannot be planned in the past", form.errors["__all__"])
         print("   --->  test_crossing_events in the past : NOK !")
 
         # event 1 hour before the previous and half an hour after starting
@@ -524,10 +512,9 @@ class LiveViewsTestCase(TestCase):
         )
         self.assertFalse(form.is_valid())
         self.assertIn(
-            "An event is already planned at these dates",
-            form.errors['start_date']
+            "An event is already planned at these dates", form.errors["start_date"]
         )
-        self.assertIn("Planification error.", form.errors['__all__'])
+        self.assertIn("Planification error.", form.errors["__all__"])
         print("   --->  test_crossing_events in the futur and crossing the start : NOK !")
         # test changing broadcaster
         data["broadcaster"] = 2
@@ -558,10 +545,9 @@ class LiveViewsTestCase(TestCase):
         )
         self.assertFalse(form.is_valid())
         self.assertIn(
-            "An event is already planned at these dates",
-            form.errors['start_date']
+            "An event is already planned at these dates", form.errors["start_date"]
         )
-        self.assertIn("Planification error.", form.errors['__all__'])
+        self.assertIn("Planification error.", form.errors["__all__"])
         print("   --->  test_crossing_events in the futur and crossing the start : NOK !")
 
         # event start during the previous and finish before
@@ -582,10 +568,9 @@ class LiveViewsTestCase(TestCase):
         )
         self.assertFalse(form.is_valid())
         self.assertIn(
-            "An event is already planned at these dates",
-            form.errors['start_date']
+            "An event is already planned at these dates", form.errors["start_date"]
         )
-        self.assertIn("Planification error.", form.errors['__all__'])
+        self.assertIn("Planification error.", form.errors["__all__"])
         print("   --->  test_crossing_events crossing inside : NOK !")
 
         # event start before the previous and finish after
@@ -606,10 +591,9 @@ class LiveViewsTestCase(TestCase):
         )
         self.assertFalse(form.is_valid())
         self.assertIn(
-            "An event is already planned at these dates",
-            form.errors['start_date']
+            "An event is already planned at these dates", form.errors["start_date"]
         )
-        self.assertIn("Planification error.", form.errors['__all__'])
+        self.assertIn("Planification error.", form.errors["__all__"])
         print("   --->  test_crossing_events crossing outside : NOK !")
 
         # --------------------------------------------------------------------------
@@ -658,7 +642,7 @@ class LiveViewsTestCase(TestCase):
         self.assertFalse(form.is_valid())
         # for err in form.errors:
         #     print("- ", err, form.errors[err])
-        self.assertIn('An event cannot be planned in the past', form.errors['__all__'])
+        self.assertIn("An event cannot be planned in the past", form.errors["__all__"])
         print("   --->  test_crossing_events in the past : NOK !")
 
         # event 1 hour before the previous and half an hour after starting
@@ -680,13 +664,9 @@ class LiveViewsTestCase(TestCase):
         )
         self.assertFalse(form.is_valid())
         self.assertIn(
-            "An event is already planned at these dates",
-            form.errors['start_date']
+            "An event is already planned at these dates", form.errors["start_date"]
         )
-        self.assertIn(
-            "Planification error.",
-            form.errors['__all__']
-        )
+        self.assertIn("Planification error.", form.errors["__all__"])
         print("   --->  test_crossing_events in the futur and crossing the start : NOK !")
 
         # event start during the previous and finish after
@@ -708,10 +688,9 @@ class LiveViewsTestCase(TestCase):
         )
         self.assertFalse(form.is_valid())
         self.assertIn(
-            "An event is already planned at these dates",
-            form.errors['start_date']
+            "An event is already planned at these dates", form.errors["start_date"]
         )
-        self.assertIn("Planification error.", form.errors['__all__'])
+        self.assertIn("Planification error.", form.errors["__all__"])
         print("   --->  test_crossing_events in the futur and crossing the start : NOK !")
 
         # event start during the previous and finish before
@@ -733,10 +712,9 @@ class LiveViewsTestCase(TestCase):
         )
         self.assertFalse(form.is_valid())
         self.assertIn(
-            "An event is already planned at these dates",
-            form.errors['start_date']
+            "An event is already planned at these dates", form.errors["start_date"]
         )
-        self.assertIn("Planification error.", form.errors['__all__'])
+        self.assertIn("Planification error.", form.errors["__all__"])
         print("   --->  test_crossing_events crossing inside : NOK !")
 
         # event start before the previous and finish after
@@ -758,10 +736,9 @@ class LiveViewsTestCase(TestCase):
         )
         self.assertFalse(form.is_valid())
         self.assertIn(
-            "An event is already planned at these dates",
-            form.errors['start_date']
+            "An event is already planned at these dates", form.errors["start_date"]
         )
-        self.assertIn("Planification error.", form.errors['__all__'])
+        self.assertIn("Planification error.", form.errors["__all__"])
         print("   --->  test_crossing_events crossing outside : NOK !")
 
         print("   --->  test_crossing_events of liveViewsTestCase : OK !")

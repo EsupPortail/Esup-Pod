@@ -364,14 +364,10 @@ def my_events(request):
     queryset = request.user.event_set.all() | request.user.owners_events.all()
 
     past_events = [evt for evt in queryset if evt.is_past()]
-    past_events = sorted(
-        past_events, key=lambda evt: (evt.start_date), reverse=True
-    )
+    past_events = sorted(past_events, key=lambda evt: (evt.start_date), reverse=True)
 
     coming_events = [evt for evt in queryset if not evt.is_past()]
-    coming_events = sorted(
-        coming_events, key=lambda evt: (evt.start_date, evt.end_date)
-    )
+    coming_events = sorted(coming_events, key=lambda evt: (evt.start_date, evt.end_date))
 
     events_number = len(past_events) + len(coming_events)
 
@@ -468,8 +464,7 @@ def event_edit(request, slug=None):
             else:
                 event = form.save(commit=False)
                 d_fin = datetime.combine(
-                    form.cleaned_data["start_date"].date(),
-                    form.cleaned_data["end_time"]
+                    form.cleaned_data["start_date"].date(), form.cleaned_data["end_time"]
                 )
                 d_fin = timezone.make_aware(d_fin)
                 event.end_date = d_fin
@@ -775,26 +770,30 @@ def event_video_transform(event_id, current_file, segment_number):
 
     adding_description = _("Record")
     if live_event.start_date.date() == live_event.end_date.date():
-        adding_description += " %s" % _(
-            "on %(start_date)s from %(start_time)s to %(end_time)s"
-        ) % {
-            "start_date": timezone.localtime(live_event.start_date).date(),
-            "start_time": timezone.localtime(live_event.start_date).strftime("%H:%M"),
-            "end_time": timezone.localtime(live_event.end_date).strftime("%H:%M"),
-        }
+        adding_description += (
+            " %s"
+            % _("on %(start_date)s from %(start_time)s to %(end_time)s")
+            % {
+                "start_date": timezone.localtime(live_event.start_date).date(),
+                "start_time": timezone.localtime(live_event.start_date).strftime("%H:%M"),
+                "end_time": timezone.localtime(live_event.end_date).strftime("%H:%M"),
+            }
+        )
     else:
-        adding_description += " %s" % _("from %(start_date)s to %(end_date)s") % {
-            "start_date": timezone.localtime(live_event.start_date),
-            "end_date": timezone.localtime(live_event.end_date),
-        }
+        adding_description += (
+            " %s"
+            % _("from %(start_date)s to %(end_date)s")
+            % {
+                "start_date": timezone.localtime(live_event.start_date),
+                "end_date": timezone.localtime(live_event.end_date),
+            }
+        )
 
     video = Video.objects.create(
         video=dest_path,
         title=live_event.title + segment,
         owner=live_event.owner,
-        description=live_event.description
-        + "<br/>"
-        + adding_description,
+        description=live_event.description + "<br/>" + adding_description,
         is_draft=live_event.is_draft,
         type=live_event.type,
     )
