@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-20 09:54+0200\n"
+"POT-Creation-Date: 2022-09-21 16:09+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -347,7 +347,7 @@ msgid "Last date where BBB session was in progress."
 msgstr "Dernière date à laquelle la session BBB était en cours."
 
 #: pod/bbb/models.py:98 pod/bbb/models.py:118 pod/bbb/models.py:171
-#: pod/meeting/models.py:466
+#: pod/meeting/models.py:470
 msgid "Meeting"
 msgstr "Session"
 
@@ -395,7 +395,7 @@ msgid "Attendees"
 msgstr "Participants"
 
 #: pod/bbb/models.py:175 pod/live/forms.py:92 pod/live/forms.py:174
-#: pod/live/models.py:333 pod/meeting/forms.py:88 pod/meeting/models.py:124
+#: pod/live/models.py:333 pod/meeting/forms.py:88 pod/meeting/models.py:128
 #: pod/video_search/forms.py:14
 msgid "Start date"
 msgstr "Date de début"
@@ -405,7 +405,7 @@ msgid "Start date of the live."
 msgstr "Date de début du direct."
 
 #: pod/bbb/models.py:181 pod/live/forms.py:98 pod/live/forms.py:180
-#: pod/live/models.py:338 pod/meeting/forms.py:94 pod/meeting/models.py:125
+#: pod/live/models.py:338 pod/meeting/forms.py:94 pod/meeting/models.py:129
 #: pod/video_search/forms.py:17
 msgid "End date"
 msgstr "Date de fin"
@@ -444,7 +444,7 @@ msgstr ""
 "Nom d’utilisateur / ID d’utilisateur, qui souhaite effectuer le direct."
 
 #: pod/bbb/models.py:213 pod/live/models.py:158 pod/live/models.py:385
-#: pod/meeting/models.py:127 pod/recorder/models.py:162 pod/video/forms.py:283
+#: pod/meeting/models.py:131 pod/recorder/models.py:162 pod/video/forms.py:283
 #: pod/video/models.py:760
 msgid "Restricted access"
 msgstr "Accès restreint"
@@ -1823,7 +1823,7 @@ msgid "Edit the enrichment"
 msgstr "Éditer l’enrichissement"
 
 #: pod/enrichment/forms.py:33 pod/enrichment/models.py:366
-#: pod/live/models.py:173 pod/live/models.py:396 pod/meeting/models.py:137
+#: pod/live/models.py:173 pod/live/models.py:396 pod/meeting/models.py:141
 #: pod/podfile/models.py:32 pod/recorder/models.py:172 pod/video/models.py:335
 #: pod/video/models.py:770
 msgid "Groups"
@@ -2307,14 +2307,14 @@ msgstr ""
 "informations nécessaires, et mettre en forme le résultat en utilisant la "
 "barre d’outils."
 
-#: pod/live/models.py:319 pod/meeting/models.py:107 pod/playlist/models.py:21
+#: pod/live/models.py:319 pod/meeting/models.py:111 pod/playlist/models.py:21
 #: pod/playlist/templates/playlist/playlist_element_list.html:10
 #: pod/podfile/models.py:27 pod/video/admin.py:205 pod/video/models.py:670
 #: pod/video_search/templates/search/search.html:71
 msgid "Owner"
 msgstr "Propriétaire"
 
-#: pod/live/models.py:324 pod/meeting/models.py:114 pod/video/forms.py:126
+#: pod/live/models.py:324 pod/meeting/models.py:118 pod/video/forms.py:126
 #: pod/video/models.py:674
 msgid "Additional owners"
 msgstr "Propriétaires additionels"
@@ -2757,7 +2757,7 @@ msgstr "Ce contenu est en mode brouillon."
 msgid "The %(start_date)s from %(start_time)s to %(end_time)s"
 msgstr "Le %(start_date)s de %(start_time)s à %(end_time)s"
 
-#: pod/live/templates/live/event_card.html:62
+#: pod/live/templates/live/event_card.html:62 pod/live/views.py:786
 #, python-format
 msgid "from %(start_date)s to %(end_date)s"
 msgstr "du %(start_date)s au %(end_date)s"
@@ -3004,10 +3004,13 @@ msgstr "Vous ne pouvez pas supprimer cet évènement."
 msgid "The event has been deleted."
 msgstr "L’évènement a été supprimé."
 
-#: pod/live/views.py:783
-#, python-format
-msgid "Record from %(start_date)s to %(end_date)s"
-msgstr "Enregistrement du %(start_date)s au %(end_date)s"
+#: pod/live/views.py:776 pod/meeting/models.py:166
+msgid "Record"
+msgstr "Enregistrée"
+
+#: pod/live/views.py:779
+msgid "on %(start_date)s from %(start_time)s to %(end_time)s"
+msgstr "le %(start_date)s de %(start_time)s à %(end_time)s"
 
 #: pod/lti/templates/lti_provider/assignment.html:28
 msgid "Your browser does not support iframes"
@@ -4057,7 +4060,7 @@ msgstr "votre message intitulé"
 msgid "join"
 msgstr "rejoindre"
 
-#: pod/meeting/forms.py:127 pod/meeting/models.py:481
+#: pod/meeting/forms.py:127 pod/meeting/models.py:485
 msgid "Start date must be less than end date"
 msgstr "La date de début doit être antérieure à la date de fin"
 
@@ -4088,27 +4091,27 @@ msgstr "Courriels"
 msgid "You can fill one email adress per line"
 msgstr "Vous pouvez renseigner une adresse électronique par ligne"
 
-#: pod/meeting/models.py:99
+#: pod/meeting/models.py:103
 msgid "Meeting Name"
 msgstr "Nom de la réunion"
 
-#: pod/meeting/models.py:102
+#: pod/meeting/models.py:106
 msgid "Meeting ID"
 msgstr "Identifiant de réunion"
 
-#: pod/meeting/models.py:116
+#: pod/meeting/models.py:120
 msgid "You can add additional owners to the meeting."
 msgstr "Vous pouvez ajouter des propriétaires additionnels à la réunion."
 
-#: pod/meeting/models.py:119
+#: pod/meeting/models.py:123
 msgid "Attendee Password"
 msgstr "Mot de passe des participants"
 
-#: pod/meeting/models.py:122
+#: pod/meeting/models.py:126
 msgid "Moderator Password"
 msgstr "Mot de passe des modérateurs"
 
-#: pod/meeting/models.py:129
+#: pod/meeting/models.py:133
 msgid ""
 "If this box is checked, the meeting will only be accessible to authenticated "
 "users."
@@ -4116,62 +4119,58 @@ msgstr ""
 "Si cette case est cochée, la reunion sera uniquement accessible aux "
 "utilisateurs authentifiés."
 
-#: pod/meeting/models.py:138
+#: pod/meeting/models.py:142
 msgid "Select one or more groups who can access to this meeting"
 msgstr "Sélectionner un ou plusieurs groupes qui auront accès à cette réunion"
 
-#: pod/meeting/models.py:142
+#: pod/meeting/models.py:146
 msgid "Is running"
 msgstr "En cours d’exécution"
 
-#: pod/meeting/models.py:143
+#: pod/meeting/models.py:147
 msgid "Indicates whether this meeting is running in BigBlueButton or not!"
 msgstr ""
 "Indique si cette réunion est en cours d’exécution dans BigBlueButton ou non !"
 
-#: pod/meeting/models.py:146 pod/video/models.py:342 pod/video/models.py:611
+#: pod/meeting/models.py:150 pod/video/models.py:342 pod/video/models.py:611
 msgid "Site"
 msgstr "Site"
 
-#: pod/meeting/models.py:150
+#: pod/meeting/models.py:154
 msgid "Max Participants"
 msgstr "Nombre maximum de participant"
 
-#: pod/meeting/models.py:153
+#: pod/meeting/models.py:157
 msgid "Welcome!"
 msgstr "Bienvenue !"
 
-#: pod/meeting/models.py:153
+#: pod/meeting/models.py:157
 msgid "Meeting Text in Bigbluebutton"
 msgstr "Message affiché dans BigBlueButton"
 
-#: pod/meeting/models.py:160
+#: pod/meeting/models.py:164
 msgid "URL to visit after user logged out"
 msgstr "URL de redirection après déconnexion à la réunion"
 
-#: pod/meeting/models.py:162
-msgid "Record"
-msgstr "Enregistrée"
-
-#: pod/meeting/models.py:164
+#: pod/meeting/models.py:168
 msgid "Auto Start Recording"
 msgstr "Démarrage automatique de l’enregistrement"
 
-#: pod/meeting/models.py:168
+#: pod/meeting/models.py:172
 msgid "Allow Stop/Start Recording"
 msgstr "Autoriser l’arrêt/le démarrage de l’enregistrement"
 
-#: pod/meeting/models.py:169
+#: pod/meeting/models.py:173
 msgid "Allow the user to start/stop recording. (default true)"
 msgstr ""
 "Autoriser l’utilisateur à arrêter/démarrer l’enregistrement. (vrai par "
 "défaut)"
 
-#: pod/meeting/models.py:173
+#: pod/meeting/models.py:177
 msgid "Webcam Only for moderators?"
 msgstr "Webcam seulement pour les modérateurs ?"
 
-#: pod/meeting/models.py:175
+#: pod/meeting/models.py:179
 msgid ""
 "Will cause all webcams shared by viewers during this meeting to only appear "
 "for moderators."
@@ -4179,67 +4178,67 @@ msgstr ""
 "Aura pour conséquence que les webcams des utilisateurs ne seront vues que "
 "par les modérateurs."
 
-#: pod/meeting/models.py:183
+#: pod/meeting/models.py:187
 msgid "Disable Camera"
 msgstr "Désactiver les caméras"
 
-#: pod/meeting/models.py:184
+#: pod/meeting/models.py:188
 msgid "Will prevent users from sharing their camera in the meeting."
 msgstr "Empêchera les utilisateurs de partager leur caméra dans la réunion."
 
-#: pod/meeting/models.py:188
+#: pod/meeting/models.py:192
 msgid "Disable Mic"
 msgstr "Désactiver les micros"
 
-#: pod/meeting/models.py:189
+#: pod/meeting/models.py:193
 msgid "Will only allow user to join listen only."
 msgstr "Autorisera l’utilisateur à rejoindre l’écoute uniquement."
 
-#: pod/meeting/models.py:193
+#: pod/meeting/models.py:197
 msgid "Disable Private chat"
 msgstr "Désactiver les discussions privées"
 
-#: pod/meeting/models.py:194
+#: pod/meeting/models.py:198
 msgid "If True, will disable private chats in the meeting."
 msgstr "Si vrai, désactivera les discussions privées dans la réunion."
 
-#: pod/meeting/models.py:198
+#: pod/meeting/models.py:202
 msgid "Disable public chat"
 msgstr "Désactiver les discussions publiques"
 
-#: pod/meeting/models.py:199
+#: pod/meeting/models.py:203
 msgid "If True, will disable public chat in the meeting."
 msgstr "Si vrai, désactivera les discussions publiques dans la réunion."
 
-#: pod/meeting/models.py:203
+#: pod/meeting/models.py:207
 msgid "Disable Note"
 msgstr "Désactiver les notes"
 
-#: pod/meeting/models.py:204
+#: pod/meeting/models.py:208
 msgid "If True, will disable notes in the meeting."
 msgstr "Si vrai, désactivera les notes dans la réunion."
 
-#: pod/meeting/models.py:208
+#: pod/meeting/models.py:212
 msgid "Locked Layout"
 msgstr "Mise en page verrouillée"
 
-#: pod/meeting/models.py:209
+#: pod/meeting/models.py:213
 msgid "Will lock the layout in the meeting."
 msgstr "Verrouillera la mise en page dans la réunion."
 
-#: pod/meeting/models.py:217
+#: pod/meeting/models.py:221
 msgid "Parent Meeting ID"
 msgstr "Identifiant de la réunion parente"
 
-#: pod/meeting/models.py:223
+#: pod/meeting/models.py:227
 msgid "Internal Meeting ID"
 msgstr "Identifiant interne de la reunion"
 
-#: pod/meeting/models.py:229
+#: pod/meeting/models.py:233
 msgid "Voice Bridge"
 msgstr "Pont vocal"
 
-#: pod/meeting/models.py:236
+#: pod/meeting/models.py:240
 msgid "BBB Create Time"
 msgstr "date de création dans BBB"
 
