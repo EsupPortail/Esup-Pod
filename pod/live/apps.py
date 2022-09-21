@@ -36,8 +36,8 @@ class LiveConfig(AppConfig):
                 results = c.fetchall()
                 for res in results:
                     EVENT_DATA["%s" % res[0]] = [res[1], res[2], res[3]]
-        except OperationalError as oe:
-            print('OperationalError : ', oe)
+        except OperationalError :
+            pass  # print('OperationalError : ', oe)
 
     def send_previous_data(self, sender, **kwargs):
         from .models import Event
