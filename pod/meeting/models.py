@@ -89,6 +89,9 @@ meeting_to_bbb = {
 def two_hours_hence():
     return timezone.now() + timezone.timedelta(hours=2)
 
+def get_random():
+    return 70000 + random.randint(0, 9999)
+
 
 class Meeting(models.Model):
     """This models hold information about each meeting room.
@@ -122,7 +125,7 @@ class Meeting(models.Model):
         max_length=50, verbose_name=_("Moderator Password"), editable=False
     )
     start_at = models.DateTimeField(_("Start date"), default=timezone.now)
-    end_at = models.DateTimeField(_("End date"), default=two_hours_hence())
+    end_at = models.DateTimeField(_("End date"), default=two_hours_hence)
     is_restricted = models.BooleanField(
         verbose_name=_("Restricted access"),
         help_text=_(
@@ -227,7 +230,7 @@ class Meeting(models.Model):
         null=True,
         blank=True,
         verbose_name=_("Voice Bridge"),
-        default=70000 + random.randint(0, 9999),
+        default=get_random,
     )
     bbb_create_time = models.CharField(
         null=True,
