@@ -141,7 +141,7 @@
       {% include "videos/link_video.html" with video=form.instance %}
     </div>
   </div>
-  {% if form.instance.slug != '' and request.user.is_staff or request.user.is_superuser or perms.video.change_video %}
+  {% if form.instance.slug != '' and (request.user.is_staff or request.user.is_superuser or perms.video.change_video) %}
   {% if THIRD_PARTY_APPS|length > 0 %}
   <div class="card" id="card-alternativeversion">
     <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans "Staff" %} - {% trans "Alternative version" %}</h2>
