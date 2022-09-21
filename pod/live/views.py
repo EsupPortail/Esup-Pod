@@ -727,7 +727,6 @@ def event_get_video_cards(request):
 
 def event_video_transform(event_id, current_file, segment_number):
     live_event = Event.objects.get(pk=event_id)
-
     filename = os.path.basename(current_file)
 
     dest_file = os.path.join(
@@ -774,17 +773,28 @@ def event_video_transform(event_id, current_file, segment_number):
 
     segment = "(" + segment_number + ")" if segment_number else ""
 
+    adding_description = _("Record")
+    if live_event.start_date.date() == live_event.end_date.date():
+        adding_description += " %s" % _(
+            "on %(start_date)s from %(start_time)s to %(end_time)s"
+        ) % {
+            "start_date": timezone.localtime(live_event.start_date).date(),
+            "start_time": timezone.localtime(live_event.start_date).strftime("%H:%M"),
+            "end_time": timezone.localtime(live_event.end_date).strftime("%H:%M"),
+        }
+    else:
+        adding_description += " %s" % _("from %(start_date)s to %(end_date)s") % {
+            "start_date": timezone.localtime(live_event.start_date),
+            "end_date": timezone.localtime(live_event.end_date),
+        }
+
     video = Video.objects.create(
         video=dest_path,
         title=live_event.title + segment,
         owner=live_event.owner,
         description=live_event.description
         + "<br/>"
-        + _("Record from %(start_date)s to %(end_date)s")
-        % {
-            "start_date": live_event.start_date,
-            "end_date": live_event.end_date,
-        },
+        + adding_description,
         is_draft=live_event.is_draft,
         type=live_event.type,
     )
@@ -800,7 +810,6 @@ def event_video_transform(event_id, current_file, segment_number):
     live_event.save()
 
     videos = live_event.videos.all()
-
     video_list = {}
     for video in videos:
         video_list[video.id] = {
@@ -809,8 +818,7 @@ def event_video_transform(event_id, current_file, segment_number):
             "title": video.title,
             "get_absolute_url": video.get_absolute_url(),
         }
-
-    return JsonResponse({"success": True, "videos": video_list})
+    return JsonResponse({"success": True, "videos": adding_description})
 
 
 def checkFileSize(full_file_name, max_attempt=6):
