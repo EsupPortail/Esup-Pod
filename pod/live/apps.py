@@ -32,15 +32,16 @@ class LiveConfig(AppConfig):
         results = []
         try:
             with connection.cursor() as c:
-                c.execute('SELECT id, start_date, start_time, end_time FROM live_event')
+                c.execute("SELECT id, start_date, start_time, end_time FROM live_event")
                 results = c.fetchall()
                 for res in results:
                     EVENT_DATA["%s" % res[0]] = [res[1], res[2], res[3]]
-        except OperationalError :
+        except OperationalError:
             pass  # print('OperationalError : ', oe)
 
     def send_previous_data(self, sender, **kwargs):
         from .models import Event
+
         for id in EVENT_DATA:
             try:
                 evt = Event.objects.get(id=id)

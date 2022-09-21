@@ -92,13 +92,13 @@ class EventAdminForm(forms.ModelForm):
         label=_("Start date"),
         initial=timezone.now,
         localize=True,
-        widget=MyAdminSplitDateTime
+        widget=MyAdminSplitDateTime,
     )
     end_date = forms.SplitDateTimeField(
         label=_("End date"),
         initial=one_hour_hence(),
         localize=True,
-        widget=MyAdminSplitDateTime
+        widget=MyAdminSplitDateTime,
     )
 
     def __init__(self, *args, **kwargs):
@@ -115,8 +115,7 @@ class EventAdminForm(forms.ModelForm):
     class Meta(object):
         model = Event
         fields = "__all__"
-        widgets = {
-        }
+        widgets = {}
 
 
 class CustomBroadcasterChoiceField(forms.ModelChoiceField):
@@ -174,18 +173,15 @@ class EventForm(forms.ModelForm):
         label=_("Start date"),
         initial=timezone.now,
         localize=True,
-        widget=MyAdminSplitDateTime
+        widget=MyAdminSplitDateTime,
     )
     end_date = forms.SplitDateTimeField(
         label=_("End date"),
         initial=one_hour_hence(),
         localize=True,
-        widget=MyAdminSplitDateTime
+        widget=MyAdminSplitDateTime,
     )
-    end_time = forms.TimeField(
-        label=_("End time"),
-        widget=widgets.AdminDateWidget
-    )
+    end_time = forms.TimeField(label=_("End time"), widget=widgets.AdminDateWidget)
 
     fieldsets = (
         (
@@ -324,12 +320,14 @@ class EventForm(forms.ModelForm):
             self.remove_field("end_time")
         else:
             self.remove_field("end_date")
-            self.fields['end_time'].widget.attrs['class'] += ' vTimeField'
-            self.fields['end_time'].initial = timezone.localtime(
-                self.instance.end_date
-            ).strftime("%H:%M") if self.instance else timezone.localtime(
-                self.fields['start_date'].initial + timezone.timedelta(hours=1)
-            ).strftime("%H:%M")
+            self.fields["end_time"].widget.attrs["class"] += " vTimeField"
+            self.fields["end_time"].initial = (
+                timezone.localtime(self.instance.end_date).strftime("%H:%M")
+                if self.instance
+                else timezone.localtime(
+                    self.fields["start_date"].initial + timezone.timedelta(hours=1)
+                ).strftime("%H:%M")
+            )
 
         if is_current_event:
             self.remove_field("start_date")
@@ -384,7 +382,7 @@ class EventForm(forms.ModelForm):
         widgets = {
             "owner": OwnerWidget,
             "additional_owners": AddOwnerWidget,
-            "end_time": widgets.AdminTimeWidget
+            "end_time": widgets.AdminTimeWidget,
         }
         if FILEPICKER:
             fields.append("thumbnail")

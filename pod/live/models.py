@@ -147,7 +147,7 @@ class Broadcaster(models.Model):
     )
     enable_add_event = models.BooleanField(
         default=0,
-        help_text=_("If checked, it will allow to create an event to this broadcaster.")
+        help_text=_("If checked, it will allow to create an event to this broadcaster."),
     )
     enable_viewer_count = models.BooleanField(
         default=1,
@@ -330,14 +330,10 @@ class Event(models.Model):
         ),
     )
     start_date = models.DateTimeField(
-        _("Start date"),
-        help_text=_("Start of the live event."),
-        default=current_time
+        _("Start date"), help_text=_("Start of the live event."), default=current_time
     )
     end_date = models.DateTimeField(
-        _("End date"),
-        help_text=_("End of the live event."),
-        default=one_hour_hence
+        _("End date"), help_text=_("End of the live event."), default=one_hour_hence
     )
     broadcaster = models.ForeignKey(
         Broadcaster,
