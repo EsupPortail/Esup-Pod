@@ -122,15 +122,17 @@ def playlist_play(request, slug=None):
     return render(
         request,
         template_video,
-        {"playlist": playlist,
-         "video": video,
-         "listNotes": listNotes,
-         "page_title": ngettext(
-             '%(title)s (%(count)d video)',
-             '%(title)s (%(count)d videos)',
-             count,
-         ) % {'count': count,
-              'title': playlist.title}},
+        {
+            "playlist": playlist,
+            "video": video,
+            "listNotes": listNotes,
+            "page_title": ngettext(
+                "%(title)s (%(count)d video)",
+                "%(title)s (%(count)d videos)",
+                count,
+            )
+            % {"count": count, "title": playlist.title},
+        },
     )
 
 

@@ -15,7 +15,11 @@ var showalert = function (message, alerttype) {
 
 var ajaxfail = function (data) {
   showalert(
-    gettext("Error getting form.") + "(" + data + ")" + gettext("The form could not be recovered."),
+    gettext("Error getting form.") +
+      "(" +
+      data +
+      ")" +
+      gettext("The form could not be recovered."),
     "alert-danger"
   );
 };
@@ -183,7 +187,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     const slug = $(this).attr("data-slug");
     const link = $(this);
-    const csrfmiddlewaretoken = document.querySelector("input[name=csrfmiddlewaretoken]").value || Cookies.get("csrftoken");
+    const csrfmiddlewaretoken =
+      document.querySelector("input[name=csrfmiddlewaretoken]").value ||
+      Cookies.get("csrftoken");
 
     const jqxhr = $.ajax({
       method: "POST",
@@ -207,8 +213,10 @@ document.addEventListener("DOMContentLoaded", function () {
         if (response.success) {
           showalert(response.success, "alert-success");
           //window.location.reload(); // hide link playlist
-          link.addClass("disabled selected").removeClass("playlist-item").append("");
-
+          link
+            .addClass("disabled selected")
+            .removeClass("playlist-item")
+            .append("");
         } else {
           showalert(response.fail, "alert-danger");
         }
