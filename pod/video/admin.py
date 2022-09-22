@@ -315,26 +315,27 @@ class ChannelSuperAdminForm(ChannelForm):
     is_staff = True
     is_superuser = True
     admin_form = True
+
     class Meta(object):
         model = Channel
         fields = "__all__"
         widgets = {
-                "owners": widgets.AutocompleteSelectMultiple(
-                    Channel._meta.get_field("owners"),
-                    admin.site,
-                    attrs={"style": "width: 20em"},
-                ),
-                "users": widgets.AutocompleteSelectMultiple(
-                    Channel._meta.get_field("users"),
-                    admin.site,
-                    attrs={"style": "width: 20em"},
-                ),
-                "allow_to_groups": widgets.AutocompleteSelectMultiple(
-                    Channel._meta.get_field("allow_to_groups"),
-                    admin.site,
-                    attrs={"style": "width: 20em"},
-                ),
-            }
+            "owners": widgets.AutocompleteSelectMultiple(
+                Channel._meta.get_field("owners"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+            "users": widgets.AutocompleteSelectMultiple(
+                Channel._meta.get_field("users"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+            "allow_to_groups": widgets.AutocompleteSelectMultiple(
+                Channel._meta.get_field("allow_to_groups"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+        }
 
 
 class ChannelAdminForm(ChannelForm):
@@ -346,22 +347,22 @@ class ChannelAdminForm(ChannelForm):
         model = Channel
         fields = "__all__"
         widgets = {
-                "owners": widgets.AutocompleteSelectMultiple(
-                    Channel._meta.get_field("owners"),
-                    admin.site,
-                    attrs={"style": "width: 20em"},
-                ),
-                "users": widgets.AutocompleteSelectMultiple(
-                    Channel._meta.get_field("users"),
-                    admin.site,
-                    attrs={"style": "width: 20em"},
-                ),
-                "allow_to_groups": widgets.AutocompleteSelectMultiple(
-                    Channel._meta.get_field("allow_to_groups"),
-                    admin.site,
-                    attrs={"style": "width: 20em"},
-                ),
-            }
+            "owners": widgets.AutocompleteSelectMultiple(
+                Channel._meta.get_field("owners"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+            "users": widgets.AutocompleteSelectMultiple(
+                Channel._meta.get_field("users"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+            "allow_to_groups": widgets.AutocompleteSelectMultiple(
+                Channel._meta.get_field("allow_to_groups"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+        }
 
 
 class ChannelAdmin(admin.ModelAdmin):
