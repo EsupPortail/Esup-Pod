@@ -68,7 +68,7 @@
           {% endif %}
           {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
 
-          {% if field.name in ["description","title"] %}
+          {% if field.name in "description, title" %}
             <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target=".{{field.name}}" aria-expanded="false">
               <i class="bi bi-translate" aria-hidden="true"></i>
               {% trans "Other(s) language(s)" %}
