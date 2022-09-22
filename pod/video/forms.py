@@ -429,6 +429,13 @@ class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
     ]
 
 
+class AddAccessGroupWidget(s2forms.ModelSelect2MultipleWidget):
+    search_fields = [
+        "display_name__icontains",
+        "code_name__icontains",
+    ]
+
+
 class ChannelWidget(s2forms.ModelSelect2MultipleWidget):
     search_fields = [
         "title__icontains",
@@ -817,6 +824,7 @@ class VideoForm(forms.ModelForm):
             "channel": ChannelWidget,
             "discipline": DisciplineWidget,
             "date_evt": widgets.AdminDateWidget,
+            # "restrict_access_to_groups": AddAccessGroupWidget
         }
         initial = {
             "date_added": TODAY,
@@ -885,6 +893,11 @@ class ChannelForm(forms.ModelForm):
     class Meta(object):
         model = Channel
         fields = "__all__"
+        widgets = {
+            "owners": AddOwnerWidget,
+            "users": AddOwnerWidget,
+            "allow_to_groups": AddAccessGroupWidget
+        }
 
 
 class ThemeForm(forms.ModelForm):
