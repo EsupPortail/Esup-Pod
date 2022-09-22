@@ -147,6 +147,7 @@ class Broadcaster(models.Model):
     )
     enable_add_event = models.BooleanField(
         default=0,
+         verbose_name=_("Enable add event"),
         help_text=_("If checked, it will allow to create an event to this broadcaster."),
     )
     enable_viewer_count = models.BooleanField(
