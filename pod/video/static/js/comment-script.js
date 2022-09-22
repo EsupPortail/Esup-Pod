@@ -4,7 +4,7 @@ let all_comment = null;
 const lang_btn = document.querySelector(".btn-lang.btn-lang-active");
 const comment_title = document.querySelector(".comment_title");
 // Loader Element
-const loader = document.querySelector(".comment_content > .lds-ring");
+const loader = document.querySelector(".comment_content > .comment-loader");
 let VOTED_COMMENTS = [];
 const COLORS = [
   "rgb(15,166,2)",
@@ -68,13 +68,18 @@ class ConfirmModal extends HTMLElement {
     cancel_text = cancel_text ? cancel_text : this.getAttribute("cancel_text");
 
     let modal = `
-      <div class="confirm_delete">
-        <div class="confirm_delete_container">
-          <div class="confirm_title"><h3>${title}</h3></div>
-          <div class="content">
-            ${message}
+      <div class="modal fade confirm_delete" tabindex="-1" aria-labelledby="confirm_delete_title">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title" id="confirm_delete_title">${title}</h3>
+              <!--button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button-->
+            </div>
+            <div class="content modal-body">
+              ${message}
+            </div>
+            <div class="actions modal-footer"></div>
           </div>
-          <div class="actions"></div>
         </div>
       </div>
     `;
@@ -166,8 +171,8 @@ class Comment extends HTMLElement {
         .querySelector(".comment_content_body")
         .appendChild(content);
     let svg_icon = [
-      `<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="unvoted svg-inline--fa fa-star fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path></svg>`,
-      `<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" class="voted svg-inline--fa fa-star fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path></svg>`,
+      `<span class="unvoted"><i class="bi bi-star"></i></span>`,
+      `<span class="voted"><i class="bi bi-star-fill"></i></span>`,
     ];
 
     let vote_text = interpolate(
@@ -191,8 +196,11 @@ class Comment extends HTMLElement {
     );
     if (is_authenticated) {
       const vote_loader = document.createElement("DIV");
-      vote_loader.setAttribute("class", "lds-ring hide");
-      vote_loader.innerHTML = `<div></div><div></div><div></div><div></div>`;
+      vote_loader.setAttribute("class", "comment-loader d-none");
+
+      vote_loader.innerHTML = `<div class="spinner-border text-primary" role="status"><span class="visually-hidden">${gettext(
+        "Loading..."
+      )}</span></div>`;
       vote_action.prepend(vote_loader);
       vote_action.addEventListener("click", () => {
         if (!vote_action.classList.contains("voting"))
@@ -206,7 +214,7 @@ class Comment extends HTMLElement {
       .appendChild(vote_action);
 
     if (user_id) {
-      svg_icon = `<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="comment" class="svg-inline--fa fa-comment fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 32C114.6 32 0 125.1 0 240c0 47.6 19.9 91.2 52.9 126.3C38 405.7 7 439.1 6.5 439.5c-6.6 7-8.4 17.2-4.6 26S14.4 480 24 480c61.5 0 110-25.7 139.1-46.3C192 442.8 223.2 448 256 448c141.4 0 256-93.1 256-208S397.4 32 256 32zm0 368c-26.7 0-53.1-4.1-78.4-12.1l-22.7-7.2-19.5 13.8c-14.3 10.1-33.9 21.4-57.5 29 7.3-12.1 14.4-25.7 19.9-40.2l10.6-28.1-20.6-21.8C69.7 314.1 48 282.2 48 240c0-88.2 93.3-160 208-160s208 71.8 208 160-93.3 160-208 160z"></path></svg>`;
+      svg_icon = `<i aria-hidden="true" class="bi bi-chat"></i>`;
       let response_action = createFooterBtnAction(
         "comment_actions comment_response_action",
         "icon comment_response_icon",
@@ -227,7 +235,7 @@ class Comment extends HTMLElement {
         .appendChild(response_action);
 
       if (is_comment_owner || is_video_owner || is_superuser) {
-        svg_icon = `<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="trash-alt" class="svg-inline--fa fa-trash-alt fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M268 416h24a12 12 0 0 0 12-12V188a12 12 0 0 0-12-12h-24a12 12 0 0 0-12 12v216a12 12 0 0 0 12 12zM432 80h-82.41l-34-56.7A48 48 0 0 0 274.41 0H173.59a48 48 0 0 0-41.16 23.3L98.41 80H16A16 16 0 0 0 0 96v16a16 16 0 0 0 16 16h16v336a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128h16a16 16 0 0 0 16-16V96a16 16 0 0 0-16-16zM171.84 50.91A6 6 0 0 1 177 48h94a6 6 0 0 1 5.15 2.91L293.61 80H154.39zM368 464H80V128h288zm-212-48h24a12 12 0 0 0 12-12V188a12 12 0 0 0-12-12h-24a12 12 0 0 0-12 12v216a12 12 0 0 0 12 12z"></path></svg>`;
+        svg_icon = `<i aria-hidden="true" class="bi bi-trash"></i>`;
         let delete_action = createFooterBtnAction(
           "comment_actions comment_delete_action",
           "icon comment_delete_icon",
@@ -255,12 +263,14 @@ class Comment extends HTMLElement {
         <textarea class="new_comment form-control form-control-sm"
           name="new_comment" id="comment" rows="1"
           placeholder="${gettext("Add a public comment")}"></textarea>
-        <div class="send_reply" id="sendReply" role="button">
-            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="paper-plane" class="svg-inline--fa fa-paper-plane fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z"></path></svg>
-        </div>
+        <button class="btn btn-link btn-lg send_reply disabled" role="button" title="${gettext(
+          "Send"
+        )}">
+          <i aria-hidden="true" class="bi bi-send-fill"></i>
+        </button>
       `;
       let new_comment = add_comment.querySelector(".new_comment");
-      let comment_reply_btn = add_comment.querySelector("#sendReply");
+      let comment_reply_btn = add_comment.querySelector(".send_reply");
       comment_reply_btn.addEventListener("click", (e) => {
         this.submit_comment_reply(new_comment, add_comment, comment_reply_btn);
       });
@@ -268,12 +278,12 @@ class Comment extends HTMLElement {
         // Active/Disable send button
         if (
           this.value.trim().length > 0 &&
-          !comment_reply_btn.classList.contains("active")
+          comment_reply_btn.classList.contains("disabled")
         )
-          comment_reply_btn.classList.add("active");
+          comment_reply_btn.classList.remove("disabled");
 
         if (this.value.trim().length === 0)
-          comment_reply_btn.classList.remove("active");
+          comment_reply_btn.classList.add("disabled");
       });
       new_comment.addEventListener("keydown", (e) => {
         if (
@@ -296,7 +306,7 @@ class Comment extends HTMLElement {
         .appendChild(add_comment);
     }
     if (is_parent) {
-      let comment_icon_svg = `<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="comments" class="svg-inline--fa fa-comments fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M532 386.2c27.5-27.1 44-61.1 44-98.2 0-80-76.5-146.1-176.2-157.9C368.3 72.5 294.3 32 208 32 93.1 32 0 103.6 0 192c0 37 16.5 71 44 98.2-15.3 30.7-37.3 54.5-37.7 54.9-6.3 6.7-8.1 16.5-4.4 25 3.6 8.5 12 14 21.2 14 53.5 0 96.7-20.2 125.2-38.8 9.2 2.1 18.7 3.7 28.4 4.9C208.1 407.6 281.8 448 368 448c20.8 0 40.8-2.4 59.8-6.8C456.3 459.7 499.4 480 553 480c9.2 0 17.5-5.5 21.2-14 3.6-8.5 1.9-18.3-4.4-25-.4-.3-22.5-24.1-37.8-54.8zm-392.8-92.3L122.1 305c-14.1 9.1-28.5 16.3-43.1 21.4 2.7-4.7 5.4-9.7 8-14.8l15.5-31.1L77.7 256C64.2 242.6 48 220.7 48 192c0-60.7 73.3-112 160-112s160 51.3 160 112-73.3 112-160 112c-16.5 0-33-1.9-49-5.6l-19.8-4.5zM498.3 352l-24.7 24.4 15.5 31.1c2.6 5.1 5.3 10.1 8 14.8-14.6-5.1-29-12.3-43.1-21.4l-17.1-11.1-19.9 4.6c-16 3.7-32.5 5.6-49 5.6-54 0-102.2-20.1-131.3-49.7C338 339.5 416 272.9 416 192c0-3.4-.4-6.7-.7-10C479.7 196.5 528 238.8 528 288c0 28.7-16.2 50.6-29.7 64z"></path></svg>`;
+      let comment_icon_svg = `<i aria-hidden="true" class="bi bi-chat-right-dots"></i>`;
       let comment_icon = document.createElement("DIV");
       comment_icon.innerHTML = comment_icon_svg;
       comment_icon.setAttribute("class", "icon comments_icon");
@@ -371,8 +381,8 @@ function createFooterBtnAction(
   return el;
 }
 function hide_or_add_show_children_btn(parent_comment, parent_id, nb_child) {
-  let svg_icon_show = `<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="eye" class="show svg-inline--fa fa-eye fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M288 144a110.94 110.94 0 0 0-31.24 5 55.4 55.4 0 0 1 7.24 27 56 56 0 0 1-56 56 55.4 55.4 0 0 1-27-7.24A111.71 111.71 0 1 0 288 144zm284.52 97.4C518.29 135.59 410.93 64 288 64S57.68 135.64 3.48 241.41a32.35 32.35 0 0 0 0 29.19C57.71 376.41 165.07 448 288 448s230.32-71.64 284.52-177.41a32.35 32.35 0 0 0 0-29.19zM288 400c-98.65 0-189.09-55-237.93-144C98.91 167 189.34 112 288 112s189.09 55 237.93 144C477.1 345 386.66 400 288 400z"></path></svg>`;
-  let svg_icon_hide = `<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="eye-slash" class="hide svg-inline--fa fa-eye-slash fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M634 471L36 3.51A16 16 0 0 0 13.51 6l-10 12.49A16 16 0 0 0 6 41l598 467.49a16 16 0 0 0 22.49-2.49l10-12.49A16 16 0 0 0 634 471zM296.79 146.47l134.79 105.38C429.36 191.91 380.48 144 320 144a112.26 112.26 0 0 0-23.21 2.47zm46.42 219.07L208.42 260.16C210.65 320.09 259.53 368 320 368a113 113 0 0 0 23.21-2.46zM320 112c98.65 0 189.09 55 237.93 144a285.53 285.53 0 0 1-44 60.2l37.74 29.5a333.7 333.7 0 0 0 52.9-75.11 32.35 32.35 0 0 0 0-29.19C550.29 135.59 442.93 64 320 64c-36.7 0-71.71 7-104.63 18.81l46.41 36.29c18.94-4.3 38.34-7.1 58.22-7.1zm0 288c-98.65 0-189.08-55-237.93-144a285.47 285.47 0 0 1 44.05-60.19l-37.74-29.5a333.6 333.6 0 0 0-52.89 75.1 32.35 32.35 0 0 0 0 29.19C89.72 376.41 197.08 448 320 448c36.7 0 71.71-7.05 104.63-18.81l-46.41-36.28C359.28 397.2 339.89 400 320 400z"></path></svg>`;
+  let svg_icon_show = `<i aria-hidden="true" class="comment-show bi bi-eye"></i>`;
+  let svg_icon_hide = `<i aria-hidden="true" class="comment-hide bi bi-eye-slash"></i>`;
   let txt = nb_child > 1 ? answer_plural : answer_sing;
   txt = nb_child ? `${nb_child} ${txt}` : txt;
   let children_action = createFooterBtnAction(
@@ -487,7 +497,7 @@ function save_comment(
 ) {
   // show loader
   const current_loader = loader.cloneNode(true);
-  current_loader.classList.remove("hide"); // waiting for charging child
+  current_loader.classList.remove("d-none"); // waiting for charging child
   comment_container_html.appendChild(current_loader);
 
   let post_url = base_url.replace("comment", "comment/add");
@@ -720,17 +730,16 @@ function add_user_tag(comment_value, parent_comment) {
   const reply_content = get_comment_attribute(parent_comment, "content");
   const tag = document.createElement("a");
   tag.setAttribute("href", "#");
+  tag.setAttribute("class", "reply_to btn-link");
   tag.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
     scrollToComment(parent_comment);
   });
   tag.innerHTML = `
-  <span class="reply_to">
-      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="reply" class="svg-inline--fa fa-reply fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M8.309 189.836L184.313 37.851C199.719 24.546 224 35.347 224 56.015v80.053c160.629 1.839 288 34.032 288 186.258 0 61.441-39.581 122.309-83.333 154.132-13.653 9.931-33.111-2.533-28.077-18.631 45.344-145.012-21.507-183.51-176.59-185.742V360c0 20.7-24.3 31.453-39.687 18.164l-176.004-152c-11.071-9.562-11.086-26.753 0-36.328z"></path></svg>
-      <span class="reply_author">@${reply_to}</span>
-      <span class="reply_content">${reply_content}</span>
-  </span>`;
+    <i aria-hidden="true" class="bi bi-reply-fill"></i>
+    <span class="reply_author">@${reply_to}</span>
+    <span class="reply_content">${reply_content}</span>`;
   const comment_text = document.createElement("span");
   comment_text.setAttribute("class", "comment_text");
   comment_text.innerText = comment_value;
@@ -816,7 +825,7 @@ function fetch_comment_children(
     all_comment.find((c) => c.id === parent_comment_id).children.length === 0
   ) {
     const children_loader = loader.cloneNode(true);
-    children_loader.classList.remove("hide"); // waiting for charging children
+    children_loader.classList.remove("d-none"); // waiting for charging children
     parent_comment_html
       .querySelector(".comments_children_container")
       .appendChild(children_loader);
@@ -1052,7 +1061,7 @@ function set_comments_number() {
  ******************************************************/
 fetch(base_vote_url)
   .then((response) => {
-    loader.classList.remove("hide"); // show loader
+    loader.classList.remove("d-none"); // show loader
     response.json().then((data) => {
       VOTED_COMMENTS = data.comments_votes;
     });
@@ -1063,7 +1072,7 @@ fetch(base_vote_url)
     let url = `${base_url}?only=parents`;
     fetch(url).then((response) => {
       response.json().then((data) => {
-        loader.classList.add("hide"); // hide loader
+        loader.classList.add("d-none"); // hide loader
         all_comment = [];
         data.forEach((comment_data) => {
           comment_data.children = []; // init children to empty array

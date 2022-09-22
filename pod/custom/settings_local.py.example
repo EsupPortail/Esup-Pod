@@ -1395,6 +1395,17 @@ DEFAULT_EVENT_THUMBNAIL = "/img/default-event.svg"
 """
 DEFAULT_EVENT_TYPE_ID = 1
 
+"""
+# Permet de lancer automatiquement l'enregistrement sur l'interface utilisée (wowza, )
+# sur le broadcaster et spécifié par  BROADCASTER_PILOTING_SOFTWARE
+"""
+EVENT_ACTIVE_AUTO_START = False
+
+"""
+# Permet de préciser le nom du groupe dans lequel les utilisateurs 
+# peuvent planifier un évènement sur plusieurs jours
+"""
+EVENT_GROUP_ADMIN = "event admin"
 
 """
 # Si True, un courriel est envoyé aux managers

@@ -1,10 +1,11 @@
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext as _
+
 from pod.chapter.models import Chapter
 from pod.chapter.utils import vtt_to_chapter
-from django.utils.translation import ugettext as _
+from pod.main.forms_utils import add_placeholder_and_asterisk
 
 if getattr(settings, "USE_PODFILE", False):
     FILEPICKER = True
@@ -27,16 +28,7 @@ class ChapterForm(forms.ModelForm):
             )
         except Exception:
             self.fields["time_start"].widget.attrs["max"] = 36000
-        for myField in self.fields:
-            self.fields[myField].widget.attrs["placeholder"] = self.fields[myField].label
-            if self.fields[myField].required:
-                self.fields[myField].widget.attrs["class"] = "form-control required"
-                label_unicode = "{0}".format(self.fields[myField].label)
-                self.fields[myField].label = mark_safe(
-                    '{0} <span class="required_star">*</span>'.format(label_unicode)
-                )
-            else:
-                self.fields[myField].widget.attrs["class"] = "form-control"
+        self.fields = add_placeholder_and_asterisk(self.fields)
 
     class Meta:
         model = Chapter

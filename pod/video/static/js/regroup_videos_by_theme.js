@@ -28,6 +28,7 @@ function run(has_more_themes, Helper) {
    * @returns {Promise} json response
    */
   const makeRequest = (url, method = "GET", body = new FormData()) => {
+    //console.log(`Making request '${url}'`);
     const data = {
       method,
       headers: {
@@ -40,6 +41,7 @@ function run(has_more_themes, Helper) {
     if (method.toLowerCase() === "post") data["body"] = body;
     return fetch(url, data).then((data) => {
       return data.json().then((response) => {
+        //console.log(response);
         return response;
       });
     });
@@ -88,22 +90,29 @@ function run(has_more_themes, Helper) {
     let chapter_text = gettext("Chapter the video");
     let delete_text = gettext("Delete the video");
     let infinite_item = document.createElement("div");
-    infinite_item.setAttribute(
-      "class",
-      "infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group"
-    );
+    infinite_item.setAttribute("class", "infinite-item card-group");
     //infinite_item.setAttribute("style", "min-width: 12rem; min-height: 11rem;");
     infinite_item.setAttribute("data-slug", video.slug);
     let card = document.createElement("div");
-    card.setAttribute(
-      "class",
-      "card mb-4 box-shadow border-secondary video-card"
-    );
+    card.setAttribute("class", "card box-shadow pod-card--video video-card");
+    let footer = ``;
+    if (video.is_editable) {
+      footer = `<footer class="card-footer card-footer-pod p-0 m-0">
+        <a href="${EDIT_URL}${video.slug}" title="${edit_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+          <i class="bi bi-pencil-square" aria-hidden="true"></i></a>
+                <a href="${COMPLETION_URL}${video.slug}" title="${completion_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+          <i class="bi bi-file-text" aria-hidden="true"></i></a>
+                <a href="${CHAPTER_URL}${video.slug}" title="${chapter_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+          <i class="bi bi-card-list" aria-hidden="true"></i></a>
+                <a href="${DELETE_URL}${video.slug}" title="${delete_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+          <i class="bi bi-trash" aria-hidden="true"></i></a>
+        </footer>`;
+    }
     card.innerHTML = `
       <div class="card-header">
         <div class="d-flex justify-content-between align-items-center">
           <small class="text-muted time">${video.duration}</small>
-          <span class="text-muted small">
+          <span class="text-muted small d-flex">
             ${has_password()}
             ${is_draft()}
             ${has_chapter()}
@@ -119,24 +128,7 @@ function run(has_more_themes, Helper) {
         </a>
       </div>
       <div class="card-body px-3 py-2">
-      <footer class="card-footer card-footer-pod p-0 m-0">
-        <a href="${EDIT_URL}${
-      video.slug
-    }" title="${edit_text}" class="btn pod-btn-social p-1 m-0 ms-1">
-          <i class="bi bi-pencil-square" aria-hidden="true"></i></a>
-                <a href="${COMPLETION_URL}${
-      video.slug
-    }" title="${completion_text}" class="btn pod-btn-social p-1 m-0 ms-1">
-          <i class="bi bi-file-text" aria-hidden="true"></i></a>
-                <a href="${CHAPTER_URL}${
-      video.slug
-    }" title="${chapter_text}" class="btn pod-btn-social p-1 m-0 ms-1">
-          <i class="bi bi-card-list" aria-hidden="true"></i></a>
-                <a href="${DELETE_URL}${
-      video.slug
-    }" title="${delete_text}" class="btn pod-btn-social p-1 m-0 ms-1">
-          <i class="bi bi-trash" aria-hidden="true"></i></a>
-        </footer>
+        ${footer}
         <span class="small video-title">
           <a href="${VIDEO_URL}${video.slug}">${video.title
       .charAt(0)
@@ -263,7 +255,7 @@ function run(has_more_themes, Helper) {
       `?limit=${limit}&offset=${current_video_offset}&target=videos`;
     // Chargement vidéos..
     const save_text = video_loader_btn.textContent;
-    video_loader_btn.textContent = gettext("Loading videos..");
+    video_loader_btn.textContent = gettext("Loading videos…");
     video_loader_btn.setAttribute("disabled", "disabled");
     makeRequest(url).then((response) => {
       current_video_offset += limit;

@@ -184,3 +184,4 @@ class AccessGroup(models.Model):
     class Meta:
         verbose_name = _("Access Groups")
         verbose_name_plural = _("Access Groups")
+        ordering = ["display_name"]

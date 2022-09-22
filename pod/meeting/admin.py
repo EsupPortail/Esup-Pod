@@ -3,6 +3,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
+from django.contrib.admin import widgets
 
 from .models import Meeting
 from .forms import MeetingForm, MEETING_MAIN_FIELDS, get_meeting_fields
@@ -14,12 +15,54 @@ class MeetingSuperAdminForm(MeetingForm):
     is_admin = True
     admin_form = True
 
+    class Meta(object):
+        model = Meeting
+        fields = "__all__"
+        widgets = {
+            "owner": widgets.AutocompleteSelect(
+                Meeting._meta.get_field("owner"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+            "additional_owners": widgets.AutocompleteSelect(
+                Meeting._meta.get_field("additional_owners"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+            "restrict_access_to_groups": widgets.AutocompleteSelect(
+                Meeting._meta.get_field("restrict_access_to_groups"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+        }
+
 
 class MeetingAdminForm(MeetingForm):
     is_staff = True
     is_superuser = False
     is_admin = True
     admin_form = True
+
+    class Meta(object):
+        model = Meeting
+        fields = "__all__"
+        widgets = {
+            "owner": widgets.AutocompleteSelect(
+                Meeting._meta.get_field("owner"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+            "additional_owners": widgets.AutocompleteSelect(
+                Meeting._meta.get_field("additional_owners"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+            "restrict_access_to_groups": widgets.AutocompleteSelect(
+                Meeting._meta.get_field("restrict_access_to_groups"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+        }
 
 
 @admin.register(Meeting)
@@ -31,8 +74,9 @@ class MeetingAdmin(admin.ModelAdmin):
         "owner",
         "meeting_id",
         "created_at",
-        "join_url",
-        "is_running",  # , 'meeting_actions'
+        "start_at",
+        "is_running",
+        "join_url",  # , 'meeting_actions'
     )
 
     @admin.display(empty_value="")
@@ -43,7 +87,7 @@ class MeetingAdmin(admin.ModelAdmin):
         link = '<a href="%s" target="_blank">%s</a>' % (direct_join_url, _("join"))
         return mark_safe(link)
 
-    list_filter = ("created_at", "owner")
+    list_filter = ("start_at", "is_running")
     # actions = ["update_running_meetings"] if not UPDATE_RUNNING_ON_EACH_CALL else []
     list_per_page = 30
     autocomplete_fields = [

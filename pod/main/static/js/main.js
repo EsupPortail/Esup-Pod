@@ -224,7 +224,7 @@ $(".collapsibleThemes").on("show.bs.collapse", function () {
     0,
     [],
     (tag_type = "li"),
-    (li_class = "list-inline-item badge badge-primary-pod badge-pill"),
+    (li_class = "list-inline-item"),
     (attrs = ""),
     (add_link = true),
     (current = ""),
@@ -534,7 +534,7 @@ var show_picture_form = function (data) {
     //$(".get_form_userpicture").html('<img src="'+$(data).find("#userpictureurl").val()+'" height="34" class="rounded" alt="" loading="lazy">Change your picture');
     $("#nav-usermenu .userpicture").remove();
     $("#nav-usermenu .userinitial").hide();
-    $("#nav-usermenu > button").removeClass("initials btn pod-btn-primary");
+    $("#nav-usermenu > button").removeClass("initials btn btn-primary");
     $("#nav-usermenu > button").addClass("  nav-link");
     $("#nav-usermenu > button").append(
       '<img src="' +
@@ -549,7 +549,7 @@ var show_picture_form = function (data) {
   } else {
     $("#nav-usermenu .userpicture").remove();
     $("#nav-usermenu .userinitial").show();
-    $("#nav-usermenu > button").addClass("initials btn pod-btn-primary");
+    $("#nav-usermenu > button").addClass("initials btn btn-primary");
     //$(".get_form_userpicture").html($(".get_form_userpicture").children());
     $(".get_form_userpicture").html(
       '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' +

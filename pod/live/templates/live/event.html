@@ -37,13 +37,12 @@
     {% else %}
         {% if event.is_past %}
             <div class="p-3 mb-2 bg-warning text-dark">
-                {% trans "Event is finished at:" %} {{ event.start_date }} {{ event.end_time }}
+                {% trans "Event is finished at:" %} {{ event.end_date }}
                 <br>
             </div>
         {% elif event.is_coming %}
             <div class="p-3 mb-2 bg-warning text-dark">
-                {% trans "The event is scheduled on the:" %} {{ event.start_date }}
-                {% trans 'from' %} {{ event.start_time }} {% trans 'to' %} {{ event.end_time }}
+                {% trans "The event is scheduled from:" %} {{ event.start_date }} {% trans 'to' %} {{ event.end_date }}
             </div>
         {% endif %}
 
@@ -107,7 +106,7 @@
                 {% include "bbb/bbb_form.html" %}
             {% endif %}
 
-            <div id="info-video" style="display:none" class="jumbotron">
+            <div id="info-video" style="display:none">
                 <button type="button" class="close" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -123,7 +122,7 @@
 
         {% if not request.GET.is_iframe %}
             <div id="list_videos_of_event" {% if event.videos.count == 0 %} class="d-none" {% endif %}>
-                <div class="jumbotron pl-0" id="event_videos">
+                <div class="pl-0" id="event_videos">
                     <h4>{% trans "Current event videos" %}</h4>
                     <div id="event_videos_list"></div>
                 </div>
@@ -177,7 +176,7 @@
 
 
         let options = {
-            notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
+            notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
             language: "fr", //en or nl
             fluid: !{{ request.GET.is_iframe|yesno:"true,false" }},
             playbackRates: [0.5, 1, 1.5, 2],

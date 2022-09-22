@@ -302,7 +302,7 @@ class TestStatsView(TestCase):
         url = reverse("video:video_stats_view", kwargs={"slug": self.video3.slug})
         response = self.client.get(url, {"from": "video"})
         input_expected = '<input type="password" name="password" \
-                placeholder="Password" id="id_password" class="form-control " \
+                placeholder="Password" id="id_password" class="required form-control" \
                 required />'
         # Test that the response is 200 Ok
         self.assertEqual(response.status_code, 200)

@@ -9,13 +9,14 @@
     --theme-ui-colors-background: var(--pod-background);
     --theme-ui-colors-text: var(--pod-font-color);
     --theme-ui-colors-primary: var(--pod-primary);
-    --theme-ui-colors-error: var(--pod-primary);
+    --theme-ui-colors-error: rgba(var(--bs-danger-rgb),.2);
   }
 
   [data-theme="dark"] {
-    /*--theme-ui-colors-gray-0: var(--font-color);*/
+    /*--theme-ui-colors-gray-0: var(--pod-font-color);*/
     /* secondary-button::hover */
     --theme-ui-colors-gray-3: #797676;
+    --theme-ui-colors-error: rgb(241, 70, 104);
     /*--theme-ui-colors-gray-4: #737373;*/
   }
 
@@ -29,11 +30,11 @@
   }
 
   #root code {
-    color: var(--font-color);
+    color: var(--pod-font-color);
   }
 
   button>.fa-layers {
-    color: var(--font-color);
+    color: var(--pod-font-color);
   }
 </style>
 <script>

@@ -1,9 +1,9 @@
 """Esup-Pod forms handling."""
 from django import forms
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from captcha.fields import CaptchaField
+from .forms_utils import add_placeholder_and_asterisk
 
 SUBJECT_CHOICES = getattr(
     settings,
@@ -18,31 +18,6 @@ SUBJECT_CHOICES = getattr(
         ("other", _("Other (please specify)")),
     ),
 )
-
-
-def add_placeholder_and_asterisk(fields):
-    """Add placeholder and asterisk to specified fields."""
-    for myField in fields:
-        classname = fields[myField].widget.__class__.__name__
-        if classname == "PasswordInput" or classname == "TextInput":
-            fields[myField].widget.attrs["placeholder"] = fields[myField].label
-        if classname == "CheckboxInput":
-            bsClass = "form-check-input"
-        else:
-            if fields[myField].required:
-                fields[myField].label = mark_safe(
-                    '%s <span class="required_star">*</span>' % fields[myField].label
-                )
-                fields[myField].widget.attrs["required"] = ""
-            if classname == "Select":
-                bsClass = "form-select"
-            else:
-                bsClass = "form-control"
-        if fields[myField].widget.attrs.get("class"):
-            fields[myField].widget.attrs["class"] += " " + bsClass
-        else:
-            fields[myField].widget.attrs["class"] = bsClass
-    return fields
 
 
 class ContactUsForm(forms.Form):

@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-06 16:31+0200\n"
-"PO-Revision-Date: 2022-09-02 16:49+0200\n"
+"POT-Creation-Date: 2022-09-14 09:11+0200\n"
+"PO-Revision-Date: 2022-09-14 12:31+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -152,8 +152,8 @@ msgid "Add"
 msgstr "Ajouter"
 
 #: pod/completion/static/js/caption_maker.js:472
-#: pod/video/static/js/comment-script.js:83
-#: pod/video/static/js/comment-script.js:237
+#: pod/video/static/js/comment-script.js:88
+#: pod/video/static/js/comment-script.js:243
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -445,15 +445,20 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer ce dossier ?"
 msgid "See more"
 msgstr "Voir plus"
 
-#: pod/video/static/js/change_video_owner.js:104
+#: pod/video/static/js/change_video_owner.js:103
 msgid "No element found"
 msgstr "Aucun élément trouvé"
 
-#: pod/video/static/js/change_video_owner.js:637
+#: pod/video/static/js/change_video_owner.js:124
+#: pod/video/static/js/comment-script.js:201
+msgid "Loading..."
+msgstr "Chargement…"
+
+#: pod/video/static/js/change_video_owner.js:636
 msgid "An error occurred during the change of owner"
 msgstr "Une erreur s'est produite lors du changement de propriétaire"
 
-#: pod/video/static/js/change_video_owner.js:648
+#: pod/video/static/js/change_video_owner.js:647
 msgid "Please complete all fields correctly"
 msgstr "Veuillez remplir tous les champs correctement"
 
@@ -465,44 +470,48 @@ msgstr "Réponse"
 msgid "Answers"
 msgstr "Réponses"
 
-#: pod/video/static/js/comment-script.js:96
+#: pod/video/static/js/comment-script.js:101
 msgid "Cancel"
 msgstr "Annuler"
 
-#: pod/video/static/js/comment-script.js:175
-#: pod/video/static/js/comment-script.js:445
-#: pod/video/static/js/comment-script.js:462
+#: pod/video/static/js/comment-script.js:180
+#: pod/video/static/js/comment-script.js:451
+#: pod/video/static/js/comment-script.js:468
 #, javascript-format
 msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
 msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
 msgstr[0] "%s <span class=\"d-none d-md-inline\">vote</span>"
 msgstr[1] "%s <span class=\"d-none d-md-inline\">votes</span>"
 
-#: pod/video/static/js/comment-script.js:186
+#: pod/video/static/js/comment-script.js:191
 msgid "Agree with the comment"
 msgstr "D’accord avec ce commentaire"
 
-#: pod/video/static/js/comment-script.js:213
+#: pod/video/static/js/comment-script.js:219
 msgid "Reply to comment"
 msgstr "Répondre au commentaire"
 
-#: pod/video/static/js/comment-script.js:216
+#: pod/video/static/js/comment-script.js:222
 msgid "Reply"
 msgstr "Répondre"
 
-#: pod/video/static/js/comment-script.js:234
+#: pod/video/static/js/comment-script.js:240
 msgid "Remove this comment"
 msgstr "Supprimer ce commentaire"
 
-#: pod/video/static/js/comment-script.js:257
+#: pod/video/static/js/comment-script.js:263
 msgid "Add a public comment"
 msgstr "Ajouter un commentaire public"
 
-#: pod/video/static/js/comment-script.js:381
+#: pod/video/static/js/comment-script.js:264
+msgid "Send"
+msgstr "Envoyer"
+
+#: pod/video/static/js/comment-script.js:387
 msgid "Show answers"
 msgstr "Afficher les réponses"
 
-#: pod/video/static/js/comment-script.js:600
+#: pod/video/static/js/comment-script.js:606
 msgid "Comment has been deleted successfully."
 msgstr "Commentaire a été supprimé avec succès."
 
@@ -510,56 +519,56 @@ msgstr "Commentaire a été supprimé avec succès."
 msgid "An Error occurred while processing."
 msgstr "Une erreur est survenue durant l’exécution du processus."
 
-#: pod/video/static/js/regroup_videos_by_theme.js:51
+#: pod/video/static/js/regroup_videos_by_theme.js:53
 #: pod/video/static/js/video_category.js:533
 msgid "This content is password protected."
 msgstr "Ce contenu est protégé par mot de passe."
 
-#: pod/video/static/js/regroup_videos_by_theme.js:59
+#: pod/video/static/js/regroup_videos_by_theme.js:61
 #: pod/video/static/js/video_category.js:541
 msgid "This content is chaptered."
 msgstr "Ce contenu est chapitré."
 
-#: pod/video/static/js/regroup_videos_by_theme.js:67
+#: pod/video/static/js/regroup_videos_by_theme.js:69
 #: pod/video/static/js/video_category.js:549
 msgid "This content is in draft."
 msgstr "Ce contenu est en brouillon."
 
-#: pod/video/static/js/regroup_videos_by_theme.js:76
+#: pod/video/static/js/regroup_videos_by_theme.js:78
 #: pod/video/static/js/video_category.js:454
 #: pod/video/static/js/video_category.js:558
 msgid "Video content."
 msgstr "Contenu vidéo."
 
-#: pod/video/static/js/regroup_videos_by_theme.js:81
+#: pod/video/static/js/regroup_videos_by_theme.js:83
 #: pod/video/static/js/video_category.js:455
 #: pod/video/static/js/video_category.js:563
 msgid "Audio content."
 msgstr "Contenu audio."
 
-#: pod/video/static/js/regroup_videos_by_theme.js:86
+#: pod/video/static/js/regroup_videos_by_theme.js:88
 #: pod/video/static/js/video_category.js:568
 msgid "Edit the video"
 msgstr "Éditer la vidéo"
 
-#: pod/video/static/js/regroup_videos_by_theme.js:87
+#: pod/video/static/js/regroup_videos_by_theme.js:89
 #: pod/video/static/js/video_category.js:569
 msgid "Complete the video"
 msgstr "Compléter la vidéo"
 
-#: pod/video/static/js/regroup_videos_by_theme.js:88
+#: pod/video/static/js/regroup_videos_by_theme.js:90
 #: pod/video/static/js/video_category.js:570
 msgid "Chapter the video"
 msgstr "Chapitrer la vidéo"
 
-#: pod/video/static/js/regroup_videos_by_theme.js:89
+#: pod/video/static/js/regroup_videos_by_theme.js:91
 #: pod/video/static/js/video_category.js:571
 msgid "Delete the video"
 msgstr "Supprimer la vidéo"
 
-#: pod/video/static/js/regroup_videos_by_theme.js:266
-msgid "Loading videos.."
-msgstr "Chargement videos.."
+#: pod/video/static/js/regroup_videos_by_theme.js:272
+msgid "Loading videos…"
+msgstr "Chargement des vidéos…"
 
 #: pod/video/static/js/validate-date_delete-field.js:32
 msgid "The date must be before or equal to"

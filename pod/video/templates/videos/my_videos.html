@@ -10,11 +10,6 @@
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My videos" %}</li>{% endblock %}
 
-{% block page_title %}
-  {% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
-{% endblock %}
-
-
 {% block page_content %}
   {% if use_category %}
     <!-- Loader -->

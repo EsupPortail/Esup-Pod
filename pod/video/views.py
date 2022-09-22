@@ -169,7 +169,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
 
     Args:
         request (Request): current HTTP Request
-        videos (List[Video]): list of vidéo filter by channel
+        videos (List[Video]): list of video filter by channel
         channel (Channel): current channel
         theme (Theme, optional): current theme. Defaults to None.
 
@@ -245,6 +245,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
                     "is_restricted": v.is_restricted,
                     "has_chapter": v.chapter_set.all().count() > 0,
                     "is_draft": v.is_draft,
+                    "is_editable": v.is_editable(request.user),
                 },
                 videos,
             )
@@ -780,12 +781,17 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
 
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
 
-    if video.get_version != "O" and request.GET.get("redirect") != "false":
-        return redirect(
-            video.get_default_version_link(slug_private)
-            + "?"
-            + request.META["QUERY_STRING"]
+    if (
+        video.get_version != "O"
+        and request.GET.get("redirect") != "false"
+        and video.get_default_version_link(slug_private)
+    ):
+        query_string = (
+            "?%s" % request.META["QUERY_STRING"]
+            if (request.META.get("QUERY_STRING"))
+            else ""
         )
+        return redirect(video.get_default_version_link(slug_private) + query_string)
 
     template_video = "videos/video.html"
     params = {"active_video_comment": ACTIVE_VIDEO_COMMENT}

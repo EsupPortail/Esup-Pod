@@ -251,7 +251,7 @@ button.close {
   border-bottom: none;
 }
 #shareModalCenter #shared-people.list-group .list-group-item .username{
-  color: var(--gray-dark);
+  color: var(--bs-gray-dark);
   font-weight: 700;
 }
 #shareModalCenter #shared-people.list-group .list-group-item .btn-share.btn-remove{
@@ -260,7 +260,7 @@ button.close {
       order: 1;
   padding: .4em .8em;
   color: #fff !important;
-  background-color: var(--danger);
+  background-color: var(--bs-danger);
   line-height: 1;
   -webkit-box-flex: 0;
     -ms-flex: none;
@@ -301,7 +301,7 @@ button.close {
 }
 #shareModalCenter #user-search.list-group .list-group-item .username{
   font-weight: 700;
-  color: var(--gray);
+  color: var(--bs-gray);
 }
 
 .modal-header {
@@ -316,11 +316,11 @@ button.close {
    justify-content: space-between;
 }
 .modal-header .modal-title{
-  color: var(--primary);
+  color: var(--pod-primary);
 }
 .modal-header .close {
   margin: 0;
-  color: var(--font-color);
+  color: var(--pod-font-color);
   opacity: 1;
   padding: 0;
   -webkit-transform: translate(10px, -15px);
@@ -410,10 +410,10 @@ button.close {
 #podfile #dirs .dirs-nav-container .add-folder-btn{ color: var(--secondary); -webkit-transition: .3s transform; -o-transition: .3s transform; transition: .3s transform; }
 #podfile #dirs .dirs-nav-container .add-folder-btn:hover{ text-decoration: none; -webkit-transform: scale(1.1); -ms-transform: scale(1.1); transform: scale(1.1);}
 
-#podfile .share-folders{ padding-top: .4em; border-top: 2px dotted var(--primary); }
+#podfile .share-folders{ padding-top: .4em; border-top: 2px dotted var(--pod-primary); }
 #podfile .share-folders,
 #podfile #list_folders_sub{ overflow-y: auto;}
-#podfile .share-folders .folder_title{ display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; margin-bottom: .4em; color: var(--primary);}
+#podfile .share-folders .folder_title{ display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; margin-bottom: .4em; color: var(--pod-primary);}
 #podfile .share-folders .home-directory{-webkit-transform: translateY(-8px);-ms-transform: translateY(-8px);transform: translateY(-8px) }
 
 #podfile a.folder:not(.folder-opened) .folder-open,
@@ -441,7 +441,7 @@ button.close {
   -ms-grid-row: 2;
   -ms-grid-column: 1;
 }
-/*#podfile #dirs .share-folder span.home-directory{ color: var(--primary); }*/
+/*#podfile #dirs .share-folder span.home-directory{ color: var(--pod-primary); }*/
 #podfile #dirs .folder-search{
   border: 1px solid #ccc;
   font-size: 14px;
@@ -566,7 +566,7 @@ button.close {
   top: 2px;
   font-size: 20px;
   font-weight: 900;
-  color: var(--gray-dark);
+  color: var(--bs-gray-dark);
   cursor: pointer;
 }
 #podfile .alert-warning .warning-icon{
@@ -585,7 +585,7 @@ button.close {
   -webkit-transform: translateX(-10px);
     -ms-transform: translateX(-10px);
       transform: translateX(-10px);*/
-  color: var(--primary);
+  color: var(--pod-primary);
 }
 #podfile #files{
   width: calc(100% - 30px);
@@ -603,7 +603,7 @@ button.close {
   align-items: center;
   flex-wrap: nowrap;
   background-color: var(--pod-primary);
-  color: var(--white);
+  color: var(--bs-white);
   /*height: 35px;*/
 }
 #podfile #files #currentfolder{
@@ -722,7 +722,7 @@ button.close {
         align-items: center;
 }
 #podfile .navbar .btn-link{
-  color: var(--white);
+  color: var(--bs-white);
 }
 #podfile .navbar .btn-link:hover,
 #podfile .navbar .btn-link:focus{
@@ -741,7 +741,7 @@ button.close {
   -webkit-transform: translateY(100%);
     -ms-transform: translateY(100%);
       transform: translateY(100%);
-  background: var(--primary);
+  background: var(--pod-primary);
   padding: .4em;
   -webkit-transition: .1s all;
   -o-transition: .1s all;
@@ -795,7 +795,7 @@ button.close {
   opacity: 1!important;
 }*/
 #podfile #listfiles .navbar{
-  background: var(--primary);
+  background: var(--pod-primary);
   position: relative;
 }
 /*#podfile #listfiles .navbar svg{
@@ -857,109 +857,5 @@ button.close {
   #podfile #dirs .dirs-nav .dirs-nav-container .add-folder-btn{
     padding-left: 0;
     margin-left: 0;
-  }
-}
-
-/*** Loader CSS ***/
-.lds-ellipsis {
-  display: none;
-  -webkit-box-align: center;
-    -ms-flex-align: center;
-      align-items: center;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: white;
-  z-index: 9;
-}
-.lds-ellipsis div {
-  position: absolute;
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: var(--secondary);
-  -webkit-animation-timing-function: cubic-bezier(0, 1, 1, 0);
-      animation-timing-function: cubic-bezier(0, 1, 1, 0);
-}
-.lds-ellipsis div:nth-child(1) {
-  left: 8px;
-  -webkit-animation: lds-ellipsis1 0.6s infinite;
-      animation: lds-ellipsis1 0.6s infinite;
-}
-.lds-ellipsis div:nth-child(2) {
-  left: 8px;
-  -webkit-animation: lds-ellipsis2 0.6s infinite;
-      animation: lds-ellipsis2 0.6s infinite;
-}
-.lds-ellipsis div:nth-child(3) {
-  left: 32px;
-  -webkit-animation: lds-ellipsis2 0.6s infinite;
-      animation: lds-ellipsis2 0.6s infinite;
-}
-.lds-ellipsis div:nth-child(4) {
-  left: 56px;
-  -webkit-animation: lds-ellipsis3 0.6s infinite;
-      animation: lds-ellipsis3 0.6s infinite;
-}
-@-webkit-keyframes lds-ellipsis1 {
-  0% {
-  -webkit-transform: scale(0);
-      transform: scale(0);
-  }
-  100% {
-  -webkit-transform: scale(1);
-      transform: scale(1);
-  }
-}
-@keyframes lds-ellipsis1 {
-  0% {
-  -webkit-transform: scale(0);
-      transform: scale(0);
-  }
-  100% {
-  -webkit-transform: scale(1);
-      transform: scale(1);
-  }
-}
-@-webkit-keyframes lds-ellipsis3 {
-  0% {
-  -webkit-transform: scale(1);
-      transform: scale(1);
-  }
-  100% {
-  -webkit-transform: scale(0);
-      transform: scale(0);
-  }
-}
-@keyframes lds-ellipsis3 {
-  0% {
-  -webkit-transform: scale(1);
-      transform: scale(1);
-  }
-  100% {
-  -webkit-transform: scale(0);
-      transform: scale(0);
-  }
-}
-@-webkit-keyframes lds-ellipsis2 {
-  0% {
-  -webkit-transform: translate(0, 0);
-      transform: translate(0, 0);
-  }
-  100% {
-  -webkit-transform: translate(24px, 0);
-      transform: translate(24px, 0);
-  }
-}
-@keyframes lds-ellipsis2 {
-  0% {
-  -webkit-transform: translate(0, 0);
-      transform: translate(0, 0);
-  }
-  100% {
-  -webkit-transform: translate(24px, 0);
-      transform: translate(24px, 0);
   }
 }

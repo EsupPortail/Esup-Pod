@@ -27,7 +27,7 @@ window.onmessage = function(event) {
 const seektime = 10;
 
 const options = {
-  notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
+  notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
   //language: "fr", //en or nl
   {% if request.GET.is_iframe %}
     fluid: false,
@@ -87,7 +87,7 @@ const options = {
       debug: false,
       waveColor: 'grey',
       progressColor: 'black',
-      cursorColor: 'var(--primary)',
+      cursorColor: 'var(--pod-primary)',
       hideScrollbar: false
     }
 {% endif %}
