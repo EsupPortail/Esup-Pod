@@ -896,7 +896,7 @@ class ChannelForm(forms.ModelForm):
         widgets = {
             "owners": AddOwnerWidget,
             "users": AddOwnerWidget,
-            "allow_to_groups": AddAccessGroupWidget
+            "allow_to_groups": AddAccessGroupWidget,
         }
 
 
