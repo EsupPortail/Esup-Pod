@@ -1,6 +1,7 @@
 """Admin pages for Esup-Pod Video items."""
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.admin import widgets
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.html import format_html
@@ -314,6 +315,26 @@ class ChannelSuperAdminForm(ChannelForm):
     is_staff = True
     is_superuser = True
     admin_form = True
+    class Meta(object):
+        model = Channel
+        fields = "__all__"
+        widgets = {
+                "owners": widgets.AutocompleteSelectMultiple(
+                    Channel._meta.get_field("owners"),
+                    admin.site,
+                    attrs={"style": "width: 20em"},
+                ),
+                "users": widgets.AutocompleteSelectMultiple(
+                    Channel._meta.get_field("users"),
+                    admin.site,
+                    attrs={"style": "width: 20em"},
+                ),
+                "allow_to_groups": widgets.AutocompleteSelectMultiple(
+                    Channel._meta.get_field("allow_to_groups"),
+                    admin.site,
+                    attrs={"style": "width: 20em"},
+                ),
+            }
 
 
 class ChannelAdminForm(ChannelForm):
@@ -321,9 +342,30 @@ class ChannelAdminForm(ChannelForm):
     is_superuser = False
     admin_form = True
 
+    class Meta(object):
+        model = Channel
+        fields = "__all__"
+        widgets = {
+                "owners": widgets.AutocompleteSelectMultiple(
+                    Channel._meta.get_field("owners"),
+                    admin.site,
+                    attrs={"style": "width: 20em"},
+                ),
+                "users": widgets.AutocompleteSelectMultiple(
+                    Channel._meta.get_field("users"),
+                    admin.site,
+                    attrs={"style": "width: 20em"},
+                ),
+                "allow_to_groups": widgets.AutocompleteSelectMultiple(
+                    Channel._meta.get_field("allow_to_groups"),
+                    admin.site,
+                    attrs={"style": "width: 20em"},
+                ),
+            }
+
 
 class ChannelAdmin(admin.ModelAdmin):
-    search_fields = ["name"]
+    search_fields = ["title"]
 
     def get_owners(self, obj):
         owners = []
@@ -397,7 +439,7 @@ class ThemeAdmin(admin.ModelAdmin):
     list_display = ("title", "channel")
     list_filter = (("channel", admin.RelatedOnlyFieldListFilter),)
     ordering = ("channel", "title")
-    search_fields = ["name"]
+    search_fields = ["title"]
     autocomplete_fields = ["parentId", "channel"]
 
     class Media:
@@ -434,7 +476,7 @@ class ThemeAdmin(admin.ModelAdmin):
 class TypeAdmin(TranslationAdmin):
     form = TypeForm
     prepopulated_fields = {"slug": ("title",)}
-    search_fields = ["name"]
+    search_fields = ["title"]
 
     class Media:
         css = {
@@ -474,7 +516,7 @@ class TypeAdmin(TranslationAdmin):
 class DisciplineAdmin(TranslationAdmin):
     form = DisciplineForm
     prepopulated_fields = {"slug": ("title",)}
-    search_fields = ["name"]
+    search_fields = ["title"]
 
     class Media:
         css = {
