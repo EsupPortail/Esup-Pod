@@ -24,12 +24,12 @@ class MeetingSuperAdminForm(MeetingForm):
                 admin.site,
                 attrs={"style": "width: 20em"},
             ),
-            "additional_owners": widgets.AutocompleteSelect(
+            "additional_owners": widgets.AutocompleteSelectMultiple(
                 Meeting._meta.get_field("additional_owners"),
                 admin.site,
                 attrs={"style": "width: 20em"},
             ),
-            "restrict_access_to_groups": widgets.AutocompleteSelect(
+            "restrict_access_to_groups": widgets.AutocompleteSelectMultiple(
                 Meeting._meta.get_field("restrict_access_to_groups"),
                 admin.site,
                 attrs={"style": "width: 20em"},
