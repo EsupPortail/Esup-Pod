@@ -96,7 +96,7 @@ class EventAdminForm(forms.ModelForm):
     )
     end_date = forms.SplitDateTimeField(
         label=_("End date"),
-        initial=one_hour_hence(),
+        initial=one_hour_hence,
         localize=True,
         widget=MyAdminSplitDateTime,
     )
@@ -177,7 +177,7 @@ class EventForm(forms.ModelForm):
     )
     end_date = forms.SplitDateTimeField(
         label=_("End date"),
-        initial=one_hour_hence(),
+        initial=one_hour_hence,
         localize=True,
         widget=MyAdminSplitDateTime,
     )

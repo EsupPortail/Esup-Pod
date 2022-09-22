@@ -92,7 +92,7 @@ class MeetingForm(forms.ModelForm):
     )
     end_at = forms.SplitDateTimeField(
         label=_("End date"),
-        initial=two_hours_hence(),
+        initial=two_hours_hence,
         localize=True,
         widget=MyAdminSplitDateTime,
     )
