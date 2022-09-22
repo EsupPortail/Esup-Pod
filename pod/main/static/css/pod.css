@@ -935,12 +935,6 @@ body {
   color: inherit;
 }
 
-#uploadblock,
-#completebox {
-  margin-left: 0 !important;
-  margin-top: 5rem !important;
-}
-
 .timecode{
   font-size: 12px;
 }
@@ -1502,50 +1496,63 @@ th + td + td + td + td {
   }
 
 table .alert.alert-danger.btn.pod-btn-social {
-    background-color: var(--pod-alert) !important;
-  }
+  background-color: var(--pod-alert) !important;
+}
 
-  /* Quick fix for video preview - override of video-js.min.css on line 1 */
+/* Quick fix for video preview - override of video-js.min.css on line 1 */
+.vjs-poster {
+  background-size: cover !important;
+}
 
-  .vjs-poster {
-    background-size: cover !important;
-  }
+/* replace default .video-js 10px font size to avoid an accessibility "Very small text" warning */
+#podvideoplayer{
+  font-size: 11px;
+}
 
-  /* replace default .video-js 10px font size to avoid an accessibility "Very small text" warning */
-  #podvideoplayer{
-    font-size: 11px;
-  }
+/* My Files font color fix */
 
-  /* My Files font color fix */
+.navbar-brand {
+  color: var(--pod-font-color) !important;
+}
 
-  .navbar-brand {
-    color: var(--pod-font-color) !important;
-  }
+.navbar-brand:focus, .navbar-brand:hover {
+  text-decoration: underline;
+}
 
-  .navbar-brand:focus, .navbar-brand:hover {
-   text-decoration: underline;
-  }
+/* Upload page */
 
-  /* Upload page */
+.form-group.hide-on-processing {
+  border: dotted var(--pod-link-color);
+  padding: 2rem;
+  margin-bottom:0.5rem;
+  border-radius: 1rem;
+  width: fit-content;
+}
 
-  .form-group.hide-on-processing {
-    border: dotted var(--pod-primary);
-    padding: 2rem;
-    margin-bottom:0.5rem;
-    border-radius: 1rem;
-    width: fit-content;
-  }
+.pod-callout {
+  padding: .7rem 1rem;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid #eee;
+  border-left-width: .33rem;
+  border-radius: .25rem;
+}
+.pod-callout-primary {
+  border-left-color: var(--pod-primary);
+}
+.pod-callout-secondary {
+  border-left-color: var(--bs-secondary);
+}
+.pod-callout-success {
+  border-left-color: var(--bs-success);
+}
+.pod-callout-danger {
+  border-left-color: var(--bs-danger);
+}
+.pod-callout-warning {
+  border-left-color: var(--bs-warning);
+}
+.pod-callout-info {
+  border-left-color: var(--bs-info);
+}
 
- .pod-upload-warning {
-    display: block;
-    width: fit-content;
-    /* margin: auto; */
-    color: var(--pod-primary);
-    font-weight: 600;
- }
-
- .legal_notice {
-  padding-bottom: 3rem;
- }
-
- /* Override playlist - video-jsplaylist.css 84 */

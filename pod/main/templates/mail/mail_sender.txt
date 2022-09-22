@@ -3,4 +3,4 @@
 {% trans "You just sent a message from" %} **{{TITLE_SITE}}**\n\n
 {% trans "Here is the message sent:" %}\n\n
 {{message}}\n\n
-{% trans "Regards" %}.\n\n
+{% trans "Regards." %}\n\n

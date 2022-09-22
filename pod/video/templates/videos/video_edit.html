@@ -31,17 +31,17 @@
 {% block page_content %}
 
 {% spaceless %}
-<h3>{% if form.instance.title and form.instance.slug != '' %}{% trans "Editing the video" %} "{{form.instance.title}}"
+<h1 class="h2">{% if form.instance.title and form.instance.slug != '' %}{% trans "Editing the video" %} "{{form.instance.title}}"
   <span>
     <a href="{% url 'video:video' slug=form.instance.slug %}" class="btn btn-primary btn-sm m-2">
-      <i class="bi bi-film"></i>&nbsp;{% trans "View the video"%}
+      <i class="bi bi-film"></i>&nbsp;{% trans "View the video" %}
     </a>
     <a href="{% url 'video:video_delete' slug=form.instance.slug %}" class="btn btn btn-danger btn-sm m-2">
-      <i class="bi bi-trash"></i>&nbsp;{% trans "Delete the video"%}
+      <i class="bi bi-trash"></i>&nbsp;{% trans "Delete the video" %}
     </a>
   </span>
   {% else %}{% trans "Add a new video" %}{% endif %}
-</h3>
+</h1>
 {% if access_not_allowed == True %}
   <p class="text-info">
     <i class="bi bi-info-circle"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
@@ -50,13 +50,13 @@
   {% if form.instance.slug and form.instance.slug != '' %}
     <form id="video_form" method="post" action="{% url 'video:video_edit' slug=form.instance.slug %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate data-morecheck="videocheck">
   {% else %}
-  <form id="video_form" method="post" action="{% url 'video:video_edit' %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate data-morecheck="videocheck">
-    {% endif %}
+    <form id="video_form" method="post" action="{% url 'video:video_edit' %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate data-morecheck="videocheck">
+  {% endif %}
     {% csrf_token %}
     <!--<div class="group-video-edit">-->
     {% if form.errors %}
-    <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
-    {{form.errors}}
+      <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+      {{form.errors}}
     {% endif %}
 
     {% if form.instance.id and form.instance.get_encoding_step == "" %}
@@ -82,25 +82,30 @@
     {% endfor %}
     {% for field in form.visible_fields %}
     {% spaceless %}
-    <div class="{% if 'description_' in field.name or 'title_'  in field.name %}collapse hide{% else %}{% endif %}{% if 'description_' in field.name %} description{% endif %}{% if 'title_' in field.name %} title{% endif %}{% with 'is_restricted restrict_access_to_groups password' as res %}     {% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
+    <div class="mt-3 {% if 'description_' in field.name or 'title_'  in field.name %}collapse hide ms-4{% endif %}{% if 'description_' in field.name %} description{% endif %}{% if 'title_' in field.name %} title{% endif %}{% with 'is_restricted restrict_access_to_groups password' as res %} {% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
       <div class="form-group {% if field.field.required %}form-group-required{% endif %}"
        {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}style="max-width:44rem; overflow-x:hidden" {% endif %}>
         {{ field.errors }}
         {% if "form-check-input" in field.field.widget.attrs.class %}
-        <div class="form-check">
-          {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
-        </div>
+          <div class="form-check">
+            {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+          </div>
         {% else %}
-        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-        {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br />{% endif %}
-        {{ field }}
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br />{% endif %}
+          {{ field }}
         {% endif %}
         {% if field.help_text %}
-        <small id="{{field.id_for_label}}Help" class="form-text text-muted"> {{ field.help_text|safe }}</small>
+          <small id="{{field.id_for_label}}Help" class="form-text text-muted"> {{ field.help_text|safe }}</small>
         {% endif %}
-        {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{% endif %}
-        {% if field.name == "description" %}<button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target=".description" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{% endif %}
-        {% if field.name == "title" %}<button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target=".title" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{% endif %}
+        {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+        {% if field.name in "description,title" %}
+          <div class="mt-2">
+            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target=".{{field.name}}" aria-expanded="false">
+              <i class="bi bi-translate" aria-hidden="true"></i>
+              {% trans "Other(s) language(s)" %}
+            </button>
+        {% endif %}
       </div>
     </div>
     {% endspaceless %}
@@ -110,7 +115,7 @@
       <div class="card-body">
         <h2 class="h4 card-title pod-card__title">{% trans "Sending, please wait." %}</h2>
         <div class="spinner-border hidespinner" role="status">
-          <span class="visually-hidden">{% trans "Loading" %}…</span>
+          <span class="visually-hidden">{% trans "Loading…" %}</span>
         </div>
       </div>
       <div class="card-footer">
@@ -123,7 +128,7 @@
     <div class="text-center">
       <button type="submit" class="btn btn-primary btn-sm m-2" name="_continue" value="">{% trans 'Save and continue editing' %}</button>
       {% if form.instance.title and form.instance.slug != '' %}<button type="submit" class="btn btn-primary btn-sm m-2" name="_saveandsee" value="{{form.instance.get_full_url}}">{% trans 'Save and see' %}</button> {% endif %}
-      <a href="{% url 'video:my_videos' %}" class="btn btn-secondary btn-sm m-2">{% trans 'back to my videos' %}</a>
+      <a href="{% url 'video:my_videos' %}" class="btn btn-secondary btn-sm m-2">{% trans 'Back to my videos' %}</a>
     </div>
   </form>
   {% endif %}
@@ -135,39 +140,39 @@
   {% if access_not_allowed == True %}
   {% else %}
   {% if form.instance.title and form.instance.slug != '' %}
-  <div class="card" id="card-managevideo">
-    <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
-    <div class="card-body card-text text-center">
-      {% include "videos/link_video.html" with video=form.instance %}
-    </div>
-  </div>
-  {% if form.instance.slug != '' and request.user.is_staff or request.user.is_superuser or perms.video.change_video %}
-  {% if THIRD_PARTY_APPS|length > 0 %}
-  <div class="card" id="card-alternativeversion">
-    <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans "Staff" %} - {% trans "Alternative version" %}</h2>
-    <div class="card-body card-text">
-      <p>{% trans 'As a staff member you can create other version of your video.' %}</p>
-      <div class="input-group-button">
-        {% for app in THIRD_PARTY_APPS %}{% if app != "live" %}{% with urledit=app|add:':edit_'|add:app %}<a href="{% url urledit slug=form.instance.slug %}" title="{% blocktrans %}Edit the {{app}}{% endblocktrans %}" class="p-0 m-0 btn btn-light btn-sm ps-1"><i class="bi bi-file-plus"></i>&nbsp;{% trans app|capfirst %}</a> {% endwith %}{% endif %}{% endfor %}
+    <div class="card" id="card-managevideo">
+      <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video" %}</h2>
+      <div class="card-body card-text text-center">
+        {% include "videos/link_video.html" with video=form.instance %}
       </div>
     </div>
-  </div>
-  {% endif %}
-  <div class="card" id="card-sharedraftversion">
-    <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans 'Embed/Share (Draft Mode)' %}</h2>
-    <div class="card-body card-text">
-      <label class="form-label" for="txtpartageprive">{% trans 'Use this link to share the video in draft mode' %}</label>
-      <div class="input-group">
-        <input class="form-control form-control-sm form-control-plaintext" type="text" name="txtpartageprive" id="txtpartageprive" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video/{{ form.instance.slug }}/{{ form.instance.get_hashkey }}/" readonly />
-        <div class="input-group-button">
-          <clipboard-copy aria-label="Copy to clipboard" class="btn btn-sm btn-default" tabindex="0" role="button" id="btnpartageprive">
-            <i class="bi bi-clipboard"></i>
-          </clipboard-copy>
+    {% if form.instance.slug != '' and request.user.is_staff or request.user.is_superuser or perms.video.change_video %}
+      {% if THIRD_PARTY_APPS|length > 0 %}
+        <div class="card" id="card-alternativeversion">
+          <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans "Staff" %} - {% trans "Alternative version" %}</h2>
+          <div class="card-body card-text">
+            <p>{% trans 'As a staff member you can create other version of your video.' %}</p>
+            <div class="input-group-button">
+              {% for app in THIRD_PARTY_APPS %}{% if app != "live" %}{% with urledit=app|add:':edit_'|add:app %}<a href="{% url urledit slug=form.instance.slug %}" title="{% blocktrans %}Edit the {{app}}{% endblocktrans %}" class="p-0 m-0 btn btn-light btn-sm ps-1"><i class="bi bi-file-plus"></i>&nbsp;{% trans app|capfirst %}</a> {% endwith %}{% endif %}{% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+      <div class="card" id="card-sharedraftversion">
+        <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans 'Embed/Share (Draft Mode)' %}</h2>
+        <div class="card-body card-text">
+          <label class="form-label" for="txtpartageprive">{% trans 'Use this link to share the video in draft mode' %}</label>
+          <div class="input-group">
+            <input class="form-control form-control-sm form-control-plaintext" type="text" name="txtpartageprive" id="txtpartageprive" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video/{{ form.instance.slug }}/{{ form.instance.get_hashkey }}/" readonly />
+            <div class="input-group-button">
+              <clipboard-copy aria-label="Copy to clipboard" class="btn btn-sm btn-default" tabindex="0" role="button" id="btnpartageprive">
+                <i class="bi bi-clipboard"></i>
+              </clipboard-copy>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-  {% endif %}
+    {% endif %}
   {% endif %}
   <div class="card" id="card-sharedraftversion">
     <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans "Uploading" %}</h2>
@@ -189,7 +194,7 @@
     </div>
   </div>
   <div class="card" id="card-helpfields">
-    <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans "Help for form fields"%}</h2>
+    <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans "Help for form fields" %}</h2>
     <div class="card-body" id="formfields">
       {% for title, values in form.VIDEO_FORM_FIELDS_HELP_TEXT.items %}
       <div class="card">
