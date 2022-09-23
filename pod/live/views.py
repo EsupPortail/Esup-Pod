@@ -450,10 +450,12 @@ def event_edit(request, slug=None):
     if not get_event_edition_access(request, event):
         return render(
             request,
-            "live/event_edit.html", {
+            "live/event_edit.html",
+            {
                 "access_not_allowed": True,
                 "page_title": page_title,
-            })
+            },
+        )
 
     form = EventForm(
         request.POST or None,
@@ -495,9 +497,9 @@ def event_edit(request, slug=None):
                 _("One or more errors have been found in the form."),
             )
 
-    return render(request,
-                  "live/event_edit.html",
-                  {"form": form, "page_title": page_title})
+    return render(
+        request, "live/event_edit.html", {"form": form, "page_title": page_title}
+    )
 
 
 @csrf_protect
