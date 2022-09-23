@@ -96,10 +96,10 @@
           <ul class="list-unstyled" aria-labelledby="pod-param-buttons__button">
             {% if HIDE_LANGUAGE_SELECTOR == False %}
               <li class="pod-navbar__theme-switch__item">
-                <label>
-                  <span class="form-label">{% trans 'Language' %}</span>
+                <div>
+                  <label class="form-label" for="pod-lang-select">{% trans 'Language' %}</label>
                   <div class="dropdown" data-bs-toggle="tooltip" data-bs-placement="left" title="{% trans 'Change display language' %}">
-                    <button type="button" class="btn btn-lang btn-lang-active my-2 me-sm-2 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn btn-lang btn-lang-active my-2 me-sm-2 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="pod-lang-select">
                       {{LANGUAGE_CODE}}
                     </button>
                     <div class="dropdown-menu dropdown-menu-end p-0 m-0">
@@ -114,7 +114,7 @@
                       {% endfor %}
                     </div>
                   </div>
-                </label>
+                </div>
               </li>
             {% endif %}{% if DARKMODE_ENABLED == True %}
               <li class="pod-navbar__theme-switch__item" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Uses darker colors' %}">

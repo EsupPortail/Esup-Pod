@@ -18,7 +18,7 @@
         {{document.name}}
       {% endif %}
     </span>
-    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" >
+    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" id="btn-fileinput_{{id}}">
       {% if type == "image" %}
         {% trans 'Change image' %}
       {% else %}
@@ -34,7 +34,7 @@
     </button>
   {% else %}
     <span id="fileinput_{{id}}"></span>
-    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" >
+    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" id="btn-fileinput_{{id}}">
       {% if type == "image" %}
         {% trans 'Select an image' %}
       {% else %}

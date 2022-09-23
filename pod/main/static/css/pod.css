@@ -1248,7 +1248,7 @@ body {
   margin-bottom: 1.5rem;
 }
 
-.pod-navbar__theme-switch__item>label {
+.pod-navbar__theme-switch__item>* {
   display: flex;
   align-items: center;
   margin: 1rem 2rem;
