@@ -3,6 +3,7 @@
 {% load tagging_tags %}
 {% load thumbnail %}
 
+
 <!DOCTYPE html>
 <html itemscope itemtype="http://schema.org/MediaObject">
     <head>
@@ -17,6 +18,11 @@
             {% include 'videos/video-header.html' %}
         {% endblock page_extra_head %}
 
+        {% if event.broadcaster.enable_viewer_count %}
+            <script>let heartbeat_delay = {{ heartbeat_delay }}</script>
+            <script src="{% static 'js/viewcounter.js' %}?ver={{ VERSION }}"></script>
+        {% endif %}
+
         <script src="{% static 'js/videojs-info-controlbar.js' %}?ver={{VERSION}}"></script>
 
         <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
@@ -27,6 +33,8 @@
     </head>
 
 {% block page_content %}
+    {% csrf_token %}
+    <h3 id="livename" data-liveid="{{ event.broadcaster.id }}" class="d-none"><i class="bi bi-cast" aria-hidden="true"></i>&nbsp;{{ event.title|title }}</h3>
     {% if form %}
       {% include 'live/event-form.html' %}
     {% else %}
@@ -86,8 +94,7 @@
     {% endif %}
 
     {% block more_script %}
-
-        {% include 'videos/video-script.html' %}
+        {% include 'live/event-script.html' %}
         <script>
             player.videoJsInfo();
 
@@ -177,67 +184,6 @@
             $('#video-meta .tab-pane').addClass('show').show();
 
         </script>
-
-        {% if not event.is_past %}
-            <script>
-
-                // Management of the video on hold
-                {% if event.broadcaster.video_on_hold.is_video %}
-                    // In this case, loop is necessary
-                    options["loop"] = true;
-                    let playerOnHold = videojs('podvideoonholdplayer', options, function () {
-                    });
-
-                    playerOnHold.videoJsLogo({
-                        imgsrc: '{% static LOGO_PLAYER %}',
-                        linktitle: '{{TITLE_ETB}} - {{TITLE_SITE}}',
-                        link: '{{LINK_PLAYER}}'
-                    });
-                    let mp4_sources = {{event.broadcaster.video_on_hold.get_video_mp4_json|safe}};
-                    playerOnHold.src(mp4_sources);
-                    let modalOnHold = playerOnHold.createModal('{% trans "Live not found, displaying the video on hold, retry every 10 seconds" %}');
-                    setTimeout(function () {
-                        modalOnHold.close();
-                    }, 10000);
-
-                    $("#divvideoonhold").css("display", "block");
-                {% endif %}
-
-                // Fire this event when live started
-                player.on('loadedmetadata', function () {
-                    if (debug) {
-                        console.info("Streaming live starts.");
-                    }
-                    // Display the streaming live
-                    started = true;
-                    $("#divvideoonhold").css("display", "none");
-                    $("#divvideoplayer").css("display", "block");
-                 })
-
-                function reloadIfNeeded() {
-                    console.log('reloading ' + new Date())
-                    const start = new Date("{{ event.get_start.isoformat }}")
-                    const end = new Date("{{ event.get_end.isoformat }}")
-
-                    {% if event.is_coming %}
-                        setInterval(() => {
-                            if (new Date() >= start) {
-                                location.reload()
-                            }
-                        }, 1000);
-
-                    {% elif event.is_current %}
-                        setInterval(() => {
-                            if (new Date() >= end) {
-                                location.reload()
-                            }
-                        }, 1000);
-                    {% endif %}
-                }
-
-                reloadIfNeeded()
-            </script>
-        {% endif %}
 
     {% endblock more_script %}
     {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
