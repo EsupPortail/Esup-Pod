@@ -177,7 +177,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title h3" id="downloadsLabel"><i class="bi bi-download"></i>&nbsp;{% trans 'Downloads' %}</h2>
-          <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
         </div>
         <div class="modal-content">
           {% if video.allow_downloading %}
@@ -239,7 +239,7 @@
         <h2 class="modal-title h3" id="shareLabel">
           <i class="bi bi-share"></i>&nbsp;{% if video.is_draft %}{% trans 'Embed/Share (Draft Mode)' %}{% else %}{% trans 'Embed/Share' %}{% endif %}
         </h2>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
       </div>
       <div class="modal-body">
 

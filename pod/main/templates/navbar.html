@@ -21,7 +21,7 @@
   <div class="offcanvas offcanvas-start pod-offcanvas" tabindex="-1" id="pod-navbar__menu" aria-labelledby="pod-navbar__menuLabel">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="pod-navbar__menuLabel">Menu</h5>
-      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="{% trans 'Close' %}"></button>
     </div>
     <div class="offcanvas-body">
       <ul class="nav flex-column">
@@ -90,7 +90,7 @@
       <div class="offcanvas offcanvas-end pod-offcanvas" tabindex="-1" id="pod-navbar__menusettings" aria-labelledby="pod-navbar__menusettingsLabel">
         <div class="offcanvas-header">
           <h5 id="pod-navbar__menusettingsLabel">{% trans 'Configuration'%}</h5>
-          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="{% trans 'Close' %}"></button>
         </div>
         <div class="offcanvas-body">
           <ul class="list-unstyled" aria-labelledby="pod-param-buttons__button">
@@ -164,7 +164,7 @@
         <div class="offcanvas offcanvas-end pod-offcanvas" tabindex="-1" id="pod-navbar__menuuser" aria-labelledby="pod-navbar__menuuserLabel">
           <div class="offcanvas-header">
             <h5 id="pod-navbar__menuuserLabel">{% if user.get_full_name != '' %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="{% trans 'Close' %}"></button>
           </div>
           <div class="offcanvas-body">
             <nav class="nav flex-column">

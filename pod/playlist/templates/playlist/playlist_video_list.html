@@ -11,7 +11,7 @@
           ({% blocktrans count counter=pllength %}{{ counter }} video{% plural %}{{ counter }} videos){% endblocktrans %})
         </span>
       </h1>
-      <button type="button" class="close playlist hidden" aria-label="Close">
+      <button type="button" class="close playlist hidden" aria-label="{% trans 'Close' %}">
         <span aria-hidden="true">×</span>
       </button>
       {% include 'playlist/player_controls.html' %}

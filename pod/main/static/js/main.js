@@ -812,7 +812,9 @@ var showalert = function (message, alerttype) {
       alerttype +
       ' alert-dismissible fade show"  role="alert">' +
       message +
-      '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+      '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="' +
+      gettext("Close") +
+      '"></button></div>'
   );
   setTimeout(function () {
     $("#formalertdiv").remove();

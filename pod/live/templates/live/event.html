@@ -83,41 +83,41 @@
             </div>
 
             {% if event.iframe_url != "" and event.iframe_url != None %}
-                <iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"
-                        title="Inline Frame Example" loading="lazy"
-                        height="{{ event.iframe_height }}"
-                        src="{{ event.iframe_url }}">
-                </iframe>
+              <iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"
+                      title="Inline Frame Example" loading="lazy"
+                      height="{{ event.iframe_height }}"
+                      src="{{ event.iframe_url }}">
+              </iframe>
             {% endif %}
 
             <div id="recordingduration"></div>
             {% if need_piloting_buttons %}
-                <div id="control">
-                    <button type="button" class="btn btn-primary btn-sm m-1 d-none"
-                            id="startrecord">{% trans "Start record" %}</button>
-                    <button type="button" class="btn btn-primary btn-sm m-1 d-none"
-                            id="stoprecord">{% trans "Stop record" %}</button>
-                    <button type="button" class="btn btn-primary btn-sm m-1 d-none"
-                            id="splitrecord">{% trans "Split record" %}</button>
-                </div>
+              <div id="control">
+                <button type="button" class="btn btn-primary btn-sm m-1 d-none"
+                        id="startrecord">{% trans "Start record" %}</button>
+                <button type="button" class="btn btn-primary btn-sm m-1 d-none"
+                        id="stoprecord">{% trans "Stop record" %}</button>
+                <button type="button" class="btn btn-primary btn-sm m-1 d-none"
+                        id="splitrecord">{% trans "Split record" %}</button>
+              </div>
             {% endif %}
 
             {% if USE_BBB and USE_BBB_LIVE and display_chat %}
-                {% include "bbb/bbb_form.html" %}
+              {% include "bbb/bbb_form.html" %}
             {% endif %}
 
             <div id="info-video" style="display:none">
-                <button type="button" class="close" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+              <button type="button" class="close" aria-label="{% trans 'Close' %}">
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
 
             <div id="viewers-list"><ul id="viewers-ul"></ul></div>
 
         {% else %}
-            <div id="divvideoplayer" style="display: none;">
-                <video id="podvideoplayer"></video>
-            </div>
+          <div id="divvideoplayer" style="display: none;">
+            <video id="podvideoplayer"></video>
+          </div>
         {% endif %}
 
         {% if not request.GET.is_iframe %}
