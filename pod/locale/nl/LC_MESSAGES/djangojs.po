@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-22 11:10+0200\n"
+"POT-Creation-Date: 2022-09-23 15:54+0200\n"
 "PO-Revision-Date: 2022-05-13 15:49+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -19,67 +19,74 @@ msgstr ""
 #: pod/chapter/static/js/chapters.js:9 pod/chapter/static/js/chapters.js:14
 #: pod/enrichment/static/js/enrichment.js:9
 #: pod/enrichment/static/js/enrichment.js:14
-#: pod/enrichment/static/js/enrichment.js:258
-#: pod/enrichment/static/js/enrichment.js:263
+#: pod/enrichment/static/js/enrichment.js:260
+#: pod/enrichment/static/js/enrichment.js:265
 msgid "Get time from the player"
 msgstr ""
 
-#: pod/chapter/static/js/chapters.js:34
+#: pod/chapter/static/js/chapters.js:26
+#: pod/enrichment/static/js/enrichment.js:27 pod/main/static/js/main.js:816
+#: pod/playlist/static/js/playlist.js:8
+#: pod/video/static/js/comment-script.js:69
+msgid "Close"
+msgstr ""
+
+#: pod/chapter/static/js/chapters.js:36
 #: pod/completion/static/js/completion.js:52
-#: pod/enrichment/static/js/enrichment.js:35
+#: pod/enrichment/static/js/enrichment.js:37
 #: pod/playlist/static/js/playlist.js:18
 msgid "Error getting form."
 msgstr ""
 
-#: pod/chapter/static/js/chapters.js:38
+#: pod/chapter/static/js/chapters.js:40
 #: pod/completion/static/js/completion.js:56
-#: pod/enrichment/static/js/enrichment.js:39
-#: pod/playlist/static/js/playlist.js:18
+#: pod/enrichment/static/js/enrichment.js:41
+#: pod/playlist/static/js/playlist.js:22
 msgid "The form could not be recovered."
 msgstr ""
 
-#: pod/chapter/static/js/chapters.js:82 pod/chapter/static/js/chapters.js:111
-#: pod/chapter/static/js/chapters.js:141 pod/chapter/static/js/chapters.js:175
-#: pod/chapter/static/js/chapters.js:221
+#: pod/chapter/static/js/chapters.js:84 pod/chapter/static/js/chapters.js:113
+#: pod/chapter/static/js/chapters.js:143 pod/chapter/static/js/chapters.js:177
+#: pod/chapter/static/js/chapters.js:223
 #: pod/completion/static/js/completion.js:107
 #: pod/completion/static/js/completion.js:149
 #: pod/completion/static/js/completion.js:211
 #: pod/completion/static/js/completion.js:247
-#: pod/enrichment/static/js/enrichment.js:82
-#: pod/enrichment/static/js/enrichment.js:111
-#: pod/enrichment/static/js/enrichment.js:141
-#: pod/enrichment/static/js/enrichment.js:174
-#: pod/enrichment/static/js/enrichment.js:215 pod/main/static/js/main.js:482
+#: pod/enrichment/static/js/enrichment.js:84
+#: pod/enrichment/static/js/enrichment.js:113
+#: pod/enrichment/static/js/enrichment.js:143
+#: pod/enrichment/static/js/enrichment.js:176
+#: pod/enrichment/static/js/enrichment.js:217 pod/main/static/js/main.js:482
 #: pod/main/static/js/main.js:492 pod/main/static/js/main.js:506
-#: pod/main/static/js/main.js:526 pod/playlist/static/js/playlist.js:72
-#: pod/playlist/static/js/playlist.js:111
-#: pod/playlist/static/js/playlist.js:147
-#: pod/playlist/static/js/playlist.js:203
+#: pod/main/static/js/main.js:526 pod/playlist/static/js/playlist.js:76
+#: pod/playlist/static/js/playlist.js:115
+#: pod/playlist/static/js/playlist.js:152
+#: pod/playlist/static/js/playlist.js:210
 #: pod/podfile/static/podfile/js/filewidget.js:360
 #: pod/podfile/static/podfile/js/filewidget.js:393
 msgid "You are no longer authenticated. Please log in again."
 msgstr ""
 
-#: pod/chapter/static/js/chapters.js:199
-#: pod/enrichment/static/js/enrichment.js:193 pod/main/static/js/main.js:429
+#: pod/chapter/static/js/chapters.js:201
+#: pod/enrichment/static/js/enrichment.js:195 pod/main/static/js/main.js:429
 #: pod/main/static/js/main.js:515
 msgid "One or more errors have been found in the form."
 msgstr ""
 
-#: pod/chapter/static/js/chapters.js:251
-#: pod/enrichment/static/js/enrichment.js:318
+#: pod/chapter/static/js/chapters.js:253
+#: pod/enrichment/static/js/enrichment.js:320
 msgid "Please enter a title from 2 to 100 characters."
 msgstr ""
 
-#: pod/chapter/static/js/chapters.js:266
+#: pod/chapter/static/js/chapters.js:268
 msgid "Please enter a correct start field between 0 and"
 msgstr ""
 
-#: pod/chapter/static/js/chapters.js:288
+#: pod/chapter/static/js/chapters.js:290
 msgid "The chapter"
 msgstr ""
 
-#: pod/chapter/static/js/chapters.js:292
+#: pod/chapter/static/js/chapters.js:294
 msgid "starts at the same time."
 msgstr ""
 
@@ -153,8 +160,8 @@ msgid "Add"
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js:472
-#: pod/video/static/js/comment-script.js:88
-#: pod/video/static/js/comment-script.js:245
+#: pod/video/static/js/comment-script.js:89
+#: pod/video/static/js/comment-script.js:246
 msgid "Delete"
 msgstr ""
 
@@ -257,7 +264,7 @@ msgid "There is already a track with the same kind and language in the list."
 msgstr ""
 
 #: pod/completion/static/js/completion.js:451
-#: pod/enrichment/static/js/enrichment.js:422
+#: pod/enrichment/static/js/enrichment.js:424
 msgid "Please select a document."
 msgstr ""
 
@@ -265,59 +272,59 @@ msgstr ""
 msgid "Iframe and Script tags are not allowed."
 msgstr ""
 
-#: pod/enrichment/static/js/enrichment.js:333
+#: pod/enrichment/static/js/enrichment.js:335
 msgid "Please enter a correct start from 0 to "
 msgstr ""
 
-#: pod/enrichment/static/js/enrichment.js:349
+#: pod/enrichment/static/js/enrichment.js:351
 msgid "Please enter a correct end from 1 to "
 msgstr ""
 
-#: pod/enrichment/static/js/enrichment.js:367
+#: pod/enrichment/static/js/enrichment.js:369
 msgid "Please enter a correct image."
 msgstr ""
 
-#: pod/enrichment/static/js/enrichment.js:380
+#: pod/enrichment/static/js/enrichment.js:382
 msgid "Please enter a correct richtext."
 msgstr ""
 
-#: pod/enrichment/static/js/enrichment.js:393
+#: pod/enrichment/static/js/enrichment.js:395
 msgid "Please enter a correct weblink."
 msgstr ""
 
-#: pod/enrichment/static/js/enrichment.js:404
+#: pod/enrichment/static/js/enrichment.js:406
 msgid "Weblink must be less than 200 characters."
 msgstr ""
 
-#: pod/enrichment/static/js/enrichment.js:435
+#: pod/enrichment/static/js/enrichment.js:437
 msgid "Please enter a correct embed."
 msgstr ""
 
-#: pod/enrichment/static/js/enrichment.js:446
+#: pod/enrichment/static/js/enrichment.js:448
 msgid "Embed field must be less than 300 characters."
 msgstr ""
 
-#: pod/enrichment/static/js/enrichment.js:459
+#: pod/enrichment/static/js/enrichment.js:461
 msgid "Please enter a type in index field."
 msgstr ""
 
-#: pod/enrichment/static/js/enrichment.js:474
+#: pod/enrichment/static/js/enrichment.js:476
 msgid "The start field value is greater than the end field one."
 msgstr ""
 
-#: pod/enrichment/static/js/enrichment.js:476
+#: pod/enrichment/static/js/enrichment.js:478
 msgid "The end field value is greater than the video duration."
 msgstr ""
 
-#: pod/enrichment/static/js/enrichment.js:478
+#: pod/enrichment/static/js/enrichment.js:480
 msgid "End field and start field cannot be equal."
 msgstr ""
 
-#: pod/enrichment/static/js/enrichment.js:503
+#: pod/enrichment/static/js/enrichment.js:505
 msgid "There is an overlap with the enrichment "
 msgstr ""
 
-#: pod/enrichment/static/js/enrichment.js:507
+#: pod/enrichment/static/js/enrichment.js:509
 msgid "please change start and/or end values."
 msgstr ""
 
@@ -386,19 +393,15 @@ msgstr ""
 msgid "The file extension not in the allowed extension:"
 msgstr ""
 
-#: pod/playlist/static/js/playlist.js:8
-msgid "Close"
-msgstr ""
-
-#: pod/playlist/static/js/playlist.js:130
+#: pod/playlist/static/js/playlist.js:135
 msgid "Do you want to delete this playlist?"
 msgstr ""
 
-#: pod/playlist/static/js/playlist.js:175
+#: pod/playlist/static/js/playlist.js:180
 msgid "The video can not be added from this page."
 msgstr ""
 
-#: pod/playlist/static/js/playlist.js:181
+#: pod/playlist/static/js/playlist.js:186
 msgid "The video slug not found."
 msgstr ""
 
@@ -451,7 +454,7 @@ msgid "No element found"
 msgstr ""
 
 #: pod/video/static/js/change_video_owner.js:125
-#: pod/video/static/js/comment-script.js:202
+#: pod/video/static/js/comment-script.js:203
 msgid "Loading..."
 msgstr ""
 
@@ -471,48 +474,48 @@ msgstr ""
 msgid "Answers"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:101
+#: pod/video/static/js/comment-script.js:102
 msgid "Cancel"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:180
-#: pod/video/static/js/comment-script.js:455
-#: pod/video/static/js/comment-script.js:472
+#: pod/video/static/js/comment-script.js:181
+#: pod/video/static/js/comment-script.js:456
+#: pod/video/static/js/comment-script.js:473
 #, javascript-format
 msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
 msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pod/video/static/js/comment-script.js:191
+#: pod/video/static/js/comment-script.js:192
 msgid "Agree with the comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:221
+#: pod/video/static/js/comment-script.js:222
 msgid "Reply to comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:224
+#: pod/video/static/js/comment-script.js:225
 msgid "Reply"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:242
+#: pod/video/static/js/comment-script.js:243
 msgid "Remove this comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:265
+#: pod/video/static/js/comment-script.js:266
 msgid "Add a public comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:267
+#: pod/video/static/js/comment-script.js:268
 msgid "Send"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:391
+#: pod/video/static/js/comment-script.js:392
 msgid "Show answers"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:610
+#: pod/video/static/js/comment-script.js:611
 msgid "Comment has been deleted successfully."
 msgstr ""
 
