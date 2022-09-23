@@ -522,7 +522,8 @@ class Event(models.Model):
 
     def is_coming(self):
         """Test if event will happen in future."""
+        print(self.start_date, timezone.now(), self.start_date < timezone.now())
         if self.start_date:
-            return self.start_date < timezone.now()
+            return timezone.now() < self.start_date
         else:
             return False
