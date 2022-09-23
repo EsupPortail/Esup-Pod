@@ -436,7 +436,7 @@ def get_event_edition_access(request, event):
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
 def event_edit(request, slug=None):
-
+    """View to edit the event identified by 'slug' (or plan a new one)."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
 
@@ -474,16 +474,7 @@ def event_edit(request, slug=None):
             is_current_event=event.is_current() if slug else None,
         )
         if form.is_valid():
-            if form.cleaned_data.get("end_date"):
-                event = form.save()
-            else:
-                event = form.save(commit=False)
-                d_fin = datetime.combine(
-                    form.cleaned_data["start_date"].date(), form.cleaned_data["end_time"]
-                )
-                d_fin = timezone.make_aware(d_fin)
-                event.end_date = d_fin
-                event.save()
+            update_event(form)
             if EMAIL_ON_EVENT_SCHEDULING:
                 send_email_confirmation(event)
             messages.add_message(
@@ -502,9 +493,24 @@ def event_edit(request, slug=None):
     )
 
 
+def update_event(form):
+    """Update an event with received form fields."""
+    if form.cleaned_data.get("end_date"):
+        event = form.save()
+    else:
+        event = form.save(commit=False)
+        d_fin = datetime.combine(
+            form.cleaned_data["start_date"].date(), form.cleaned_data["end_time"]
+        )
+        d_fin = timezone.make_aware(d_fin)
+        event.end_date = d_fin
+        event.save()
+
+
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def event_delete(request, slug=None):
+    """Delete the event identified by 'slug'."""
     event = get_object_or_404(Event, slug=slug)
 
     if request.user != event.owner and not (
