@@ -131,6 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   $(".playlist-delete").on("click", function () {
+    const return_url = $(this).data('return-url');
     if (confirm(gettext("Do you want to delete this playlist?"))) {
       var jqxhr = $.ajax({
         method: "POST",
@@ -154,7 +155,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           if (response.success) {
             showalert(response.success, "alert-success");
-            window.location = "/playlist/my/";
+            setTimeout(() => window.location = return_url, 1000);
           } else {
             showalert(response.fail, "alert-danger");
           }
