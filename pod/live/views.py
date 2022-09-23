@@ -353,6 +353,7 @@ def events(request):  # affichage des events
             "display_direct_button": request.user.is_superuser
             or request.user.has_perm("live.acces_live_pages"),
             "display_creation_button": can_manage_event(request.user),
+            "page_title": _("Events"),
         },
     )
 
@@ -414,6 +415,7 @@ def my_events(request):
             "DEFAULT_EVENT_THUMBNAIL": DEFAULT_EVENT_THUMBNAIL,
             "display_broadcaster_name": True,
             "display_creation_button": can_manage_event(request.user),
+            "page_title": _("My events"),
         },
     )
 
@@ -439,8 +441,19 @@ def event_edit(request, slug=None):
         return redirect(reverse("maintenance"))
 
     event = get_object_or_404(Event, slug=slug) if slug else None
+
+    if event:
+        page_title = _("Editing the event")
+    else:
+        page_title = _("Plan an event")
+
     if not get_event_edition_access(request, event):
-        return render(request, "live/event_edit.html", {"access_not_allowed": True})
+        return render(
+            request,
+            "live/event_edit.html", {
+                "access_not_allowed": True,
+                "page_title": page_title,
+            })
 
     form = EventForm(
         request.POST or None,
@@ -481,7 +494,10 @@ def event_edit(request, slug=None):
                 messages.ERROR,
                 _("One or more errors have been found in the form."),
             )
-    return render(request, "live/event_edit.html", {"form": form})
+
+    return render(request,
+                  "live/event_edit.html",
+                  {"form": form, "page_title": page_title})
 
 
 @csrf_protect

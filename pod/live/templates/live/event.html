@@ -30,7 +30,7 @@
 
 {% block page_content %}
     {% csrf_token %}
-    <h3 id="livename" data-liveid="{{ event.broadcaster.id }}"><i class="bi bi-cast" aria-hidden="true"></i>&nbsp;{{ event.title|title }}</h3>
+    <h3 id="livename" data-liveid="{{ event.broadcaster.id }}"><i class="bi bi-broadcast" aria-hidden="true"></i>&nbsp;{{ event.title|title }}</h3>
 
     {% if form %}
       {% include 'live/event-form.html' %}
@@ -46,7 +46,7 @@
             </div>
         {% endif %}
 
-        {# video d'attente #}
+        {# waiting video #}
         {% if event.broadcaster.video_on_hold.is_video and not event.is_past %}
             <div id="divvideoonhold" style="display: none;">
                 <video id="podvideoonholdplayer"
@@ -146,11 +146,11 @@
                 </h2>
                 <div class="card-body card-text text-center">
                     <a href="{% url 'live:event_edit' slug=event.slug %}" title="{% trans 'Edit the event' %}"
-                       class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
+                       class="btn btn-lg pod-btn-social p-1">
                        <i class="bi bi-pencil-square" aria-hidden="true"></i>
                     </a>
                     <a href="{% url 'live:event_delete' slug=event.slug %}"
-                       class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1"
+                       class="btn btn-lg pod-btn-social p-1"
                        title="{% trans 'Delete the event' %}">
                        <i class="bi bi-trash" aria-hidden="true"></i>
                     </a>
