@@ -180,6 +180,7 @@ def playlist_move(request, playlist):
 
 
 def playlist_remove(request, playlist):
+    print("playlist_remove")
     if request.is_ajax():
         if request.POST.get("video"):
             slug = request.POST["video"]

@@ -15,33 +15,34 @@ var ajaxfail = function (data) {
 };
 
 document.addEventListener("DOMContentLoaded", function () {
-  const table = document.getElementById("table_list_videos")[0];
+  const table = document.getElementById("table_list_videos");
 
-  Array.from(document.getElementsByClassName("position-up")).forEach(
-    (element) => {
-      let row = element.parentNode.parentNode;
-
-      let currentposition = row.querySelectorAll(".video-position")[0];
-
-      if (row.previousElementSibling !== null) {
-        let oldposition =
-          row.previousElementSibling.querySelectorAll(".video-position")[0];
-      }
-      let oldposition = currentposition;
-
-      if (currentposition.textContent > 1) {
-        currentposition.textContent = parseInt(currentposition.textContent) - 1;
-        oldposition.textContent = parseInt(oldposition.textContent) + 1;
-      }
-      row.parentNode.insertBefore(row, row.previousSibling);
-    }
-  );
-
-  document.getElementsByClassName("position-down").forEach((element) => {
+  Array.from(document.querySelectorAll(".position-up")).forEach((element) => {
     let row = element.parentNode.parentNode;
-    let currentposition = row.getElementsByClassName("video-position")[0];
-    let oldposition =
-      row.nextSibling.getElementsByClassName("video-position")[0];
+
+    let currentposition = row.querySelectorAll(".video-position")[0];
+
+    if (row.previousElementSibling !== null) {
+      let oldposition =
+        row.previousElementSibling.querySelectorAll(".video-position")[0];
+    }
+    let oldposition = currentposition;
+
+    if (currentposition.textContent > 1) {
+      currentposition.textContent = parseInt(currentposition.textContent) - 1;
+      oldposition.textContent = parseInt(oldposition.textContent) + 1;
+    }
+    row.parentNode.insertBefore(row, row.previousSibling);
+  });
+
+  document.querySelectorAll(".position-down").forEach((element) => {
+    let row = element.parentNode.parentNode;
+    let currentposition = row.querySelector(".video-position");
+    let oldposition = currentposition;
+    if (row.nextElementSibling !== null) {
+      oldposition = row.nextElementSibling.querySelector(".video-position");
+    }
+
     if (parseInt(currentposition.textContent) < table.rows.length - 1) {
       currentposition.textContent = parseInt(currentposition.textContent) + 1;
       oldposition.textContent = parseInt(oldposition.textContent) - 1;
@@ -65,8 +66,9 @@ document.addEventListener("DOMContentLoaded", function () {
         body: {
           action: "move",
           videos: data,
-          csrfmiddlewaretoken:
-            document.getElementById("playlist_form").children[0].value,
+          csrfmiddlewaretoken: document
+            .getElementById("playlist_form")
+            .querySelector('input[name="csrfmiddlewaretoken"]').value,
         },
       })
         .then((response) => {
@@ -95,33 +97,42 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-  document.getElementsByClassName("position-delete").forEach((element) => {
-    element.addEventListener("click", function () {
-      let slug =
-        element.parentNode.parentNode.children[1].attributes["data-slug"].value;
-      let jqxhr = fetch(window.location.href, {
+  document.querySelectorAll(".position-delete").forEach((element) => {
+    element.addEventListener("click", async function () {
+      let slug = element.parentNode.parentNode
+        .querySelector(".video-title")
+        .getAttribute("data-slug");
+      let token = document.cookie
+        .split(";")
+        .filter((item) => item.trim().startsWith("csrftoken="))[0]
+        .split("=")[1];
+
+      headers = {
+        "Content-Type": "application/json",
+        "X-CSRFToken": token,
+      };
+      body = {
+        video: slug,
+        action: "remove",
+        csrfmiddlewaretoken: token,
+      };
+
+      await fetch(window.location.href, {
         method: "POST",
-        body: {
-          action: "delete",
-          video: slug,
-          csrfmiddlewaretoken:
-            document.getElementById("playlist_form").children[0].value,
-        },
+        headers: headers,
+        body: JSON.stringify(body),
       })
         .then((response) => {
-          JSON.parse(response);
-          if (!response.success && !response.fail) {
+          console.log(response.status);
+
+          if (response.status != 200) {
             showalert(
               "You are no longer authenticated. Please log in again.",
               "alert-danger"
             );
           } else {
-            if (response.success) {
-              showalert(response.success, "alert-success");
-              window.location.reload();
-            } else {
-              showalert(response.fail, "alert-danger");
-            }
+            showalert(response.statusText, "alert-success");
+            //window.location.reload();
           }
         })
         .catch((error) => {
@@ -135,30 +146,35 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  document.getElementsByClassName("playlist-delete").forEach((element) => {
+  document.querySelectorAll(".playlist-delete").forEach((element) => {
     element.addEventListener("click", function () {
+      let token = document.cookie
+        .split(";")
+        .filter((item) => item.trim().startsWith("csrftoken="))[0]
+        .split("=")[1];
       if (confirm("Are you sure you want to delete this playlist?")) {
+        headers = {
+          "X-CSRFToken": token,
+        };
         let jqxhr = fetch(window.location.href, {
           method: "POST",
+          headers: headers,
           body: {
             action: "delete",
-            csrfmiddlewaretoken:
-              document.getElementById("playlist_form").children[0].value,
+            csrfmiddlewaretoken: token,
           },
         })
           .then((response) => {
-            JSON.parse(response);
-            if (!response.success && !response.fail) {
+            if (response.status != 200) {
               showalert(
                 "You are no longer authenticated. Please log in again.",
                 "alert-danger"
               );
             } else {
-              if (response.success) {
-                showalert(response.success, "alert-success");
-                window.location = "/my_playlists/";
+              if (response.status == 200) {
+                showalert(response.statusText, "alert-success");
               } else {
-                showalert(response.fail, "alert-danger");
+                showalert(response.statusText, "alert-danger");
               }
             }
           })
@@ -173,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   });
-
+  /*
   document.getElementById("info-video").addEventListener("click", function (e) {
     e.preventDefault();
     const url = window.location.href;
@@ -232,4 +248,5 @@ document.addEventListener("DOMContentLoaded", function () {
         );
       });
   });
+  */
 });
