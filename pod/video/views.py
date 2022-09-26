@@ -252,6 +252,8 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         )
         response["videos"] = videos
         return JsonResponse(response, safe=False)
+        # TODO : replace this return by a
+        #  render(request,"videos/video_list.html") like in channel
 
     return render(
         request,
@@ -796,7 +798,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     template_video = "videos/video.html"
     params = {"active_video_comment": ACTIVE_VIDEO_COMMENT}
     if request.GET.get("is_iframe"):
-        params = {}
+        params = {"page_title": video.title}
         template_video = "videos/video-iframe.html"
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 

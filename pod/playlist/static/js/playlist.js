@@ -4,7 +4,9 @@ var showalert = function (message, alerttype) {
       alerttype +
       ' alert-dismissible fade show" role="alert">' +
       message +
-      '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
+      '<button type="button" class="close" data-dismiss="alert" aria-label="' +
+      gettext("Close") +
+      '"><span aria-hidden="true">&times;</span></button></div>'
   );
   setTimeout(function () {
     $("#formalertdiv").remove();
@@ -13,7 +15,11 @@ var showalert = function (message, alerttype) {
 
 var ajaxfail = function (data) {
   showalert(
-    "Error getting form. (" + data + ") The form could not be recovered.",
+    gettext("Error getting form.") +
+      "(" +
+      data +
+      ")" +
+      gettext("The form could not be recovered."),
     "alert-danger"
   );
 };
@@ -67,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
       response = JSON.parse(data);
       if (!response.success && !response.fail) {
         showalert(
-          "You are no longer authenticated. Please log in again.",
+          gettext("You are no longer authenticated. Please log in again."),
           "alert-danger"
         );
       } else {
@@ -106,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
       response = JSON.parse(data);
       if (!response.success && !response.fail) {
         showalert(
-          "You are no longer authenticated. Please log in again.",
+          gettext("You are no longer authenticated. Please log in again."),
           "alert-danger"
         );
       } else {
@@ -125,7 +131,8 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   $(".playlist-delete").on("click", function () {
-    if (confirm("Do you want to delete this playlist ?")) {
+    const return_url = $(this).data('return-url');
+    if (confirm(gettext("Do you want to delete this playlist?"))) {
       var jqxhr = $.ajax({
         method: "POST",
         url: window.location.href,
@@ -142,13 +149,13 @@ document.addEventListener("DOMContentLoaded", function () {
         response = JSON.parse(data);
         if (!response.success && !response.fail) {
           showalert(
-            "You are no longer authenticated. Please log in again.",
+            gettext("You are no longer authenticated. Please log in again."),
             "alert-danger"
           );
         } else {
           if (response.success) {
             showalert(response.success, "alert-success");
-            window.location = "/my_playlists/";
+            setTimeout(() => window.location = return_url, 1000);
           } else {
             showalert(response.fail, "alert-danger");
           }
@@ -161,6 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // Append current video to clicked playlist
   $("#info-video").on("click", ".playlist-item", function (e) {
     e.preventDefault();
     const url = window.location.href;
@@ -180,16 +188,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     const slug = $(this).attr("data-slug");
     const link = $(this);
+    const csrfmiddlewaretoken =
+      document.querySelector("input[name=csrfmiddlewaretoken]").value ||
+      Cookies.get("csrftoken");
+
     const jqxhr = $.ajax({
       method: "POST",
       url: "/playlist/edit/" + slug + "/",
       data: {
         action: "add",
         video: foundslug[2],
-        csrfmiddlewaretoken: $(this)
-          .parents(".dropdown-menu")
-          .find("input")
-          .val(),
+        csrfmiddlewaretoken: csrfmiddlewaretoken,
       },
       dataType: "html",
     });
@@ -198,14 +207,17 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log(response.success);
       if (!response.success && !response.fail) {
         showalert(
-          "You are no longer authenticated. Please log in again.",
+          gettext("You are no longer authenticated. Please log in again."),
           "alert-danger"
         );
       } else {
         if (response.success) {
           showalert(response.success, "alert-success");
-          //window.location.reload(); //hide link playlist
-          link.addClass("disabled").removeClass("playlist-item").append("");
+          //window.location.reload(); // hide link playlist
+          link
+            .addClass("disabled selected")
+            .removeClass("playlist-item")
+            .append("");
         } else {
           showalert(response.fail, "alert-danger");
         }

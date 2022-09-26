@@ -353,6 +353,7 @@ def events(request):  # affichage des events
             "display_direct_button": request.user.is_superuser
             or request.user.has_perm("live.acces_live_pages"),
             "display_creation_button": can_manage_event(request.user),
+            "page_title": _("Events"),
         },
     )
 
@@ -414,6 +415,7 @@ def my_events(request):
             "DEFAULT_EVENT_THUMBNAIL": DEFAULT_EVENT_THUMBNAIL,
             "display_broadcaster_name": True,
             "display_creation_button": can_manage_event(request.user),
+            "page_title": _("My events"),
         },
     )
 
@@ -434,13 +436,26 @@ def get_event_edition_access(request, event):
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
 def event_edit(request, slug=None):
-
+    """View to edit the event identified by 'slug' (or plan a new one)."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
 
     event = get_object_or_404(Event, slug=slug) if slug else None
+
+    if event:
+        page_title = _("Editing the event")
+    else:
+        page_title = _("Plan an event")
+
     if not get_event_edition_access(request, event):
-        return render(request, "live/event_edit.html", {"access_not_allowed": True})
+        return render(
+            request,
+            "live/event_edit.html",
+            {
+                "access_not_allowed": True,
+                "page_title": page_title,
+            },
+        )
 
     form = EventForm(
         request.POST or None,
@@ -459,16 +474,7 @@ def event_edit(request, slug=None):
             is_current_event=event.is_current() if slug else None,
         )
         if form.is_valid():
-            if form.cleaned_data.get("end_date"):
-                event = form.save()
-            else:
-                event = form.save(commit=False)
-                d_fin = datetime.combine(
-                    form.cleaned_data["start_date"].date(), form.cleaned_data["end_time"]
-                )
-                d_fin = timezone.make_aware(d_fin)
-                event.end_date = d_fin
-                event.save()
+            update_event(form)
             if EMAIL_ON_EVENT_SCHEDULING:
                 send_email_confirmation(event)
             messages.add_message(
@@ -481,12 +487,30 @@ def event_edit(request, slug=None):
                 messages.ERROR,
                 _("One or more errors have been found in the form."),
             )
-    return render(request, "live/event_edit.html", {"form": form})
+
+    return render(
+        request, "live/event_edit.html", {"form": form, "page_title": page_title}
+    )
+
+
+def update_event(form):
+    """Update an event with received form fields."""
+    if form.cleaned_data.get("end_date"):
+        event = form.save()
+    else:
+        event = form.save(commit=False)
+        d_fin = datetime.combine(
+            form.cleaned_data["start_date"].date(), form.cleaned_data["end_time"]
+        )
+        d_fin = timezone.make_aware(d_fin)
+        event.end_date = d_fin
+        event.save()
 
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def event_delete(request, slug=None):
+    """Delete the event identified by 'slug'."""
     event = get_object_or_404(Event, slug=slug)
 
     if request.user != event.owner and not (

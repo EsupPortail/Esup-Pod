@@ -161,9 +161,8 @@ form.view_video_notes_form.hidden, form.view_video_note_coms_form.hidden {
 }
 
 .noNotes {
-  font-size: 13px;
+  font-size: .8rem;
   font-style: italic;
-  font-weight: bold;
   margin: 5px;
 }
 

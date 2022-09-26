@@ -11,7 +11,7 @@
         {% if CHANNELS.count %}
           <h2 class="modal-title"><i class="bi bi-play-btn"></i>&nbsp;{% blocktrans count counter=CHANNELS.count %}{{ counter }} Channel{% plural %}{{ counter }} Channels{% endblocktrans %}</h2>
         {% endif %}
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
       </div>
       <div class="modal-body">
         <ul class="clist-group list-group-flush p-0" id="list-channels">
@@ -29,7 +29,7 @@
                 <span class="text-nowrap">
                   {% if channel.themes.all.count > 0 %}
                     <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseThemes{{channel.id}}" aria-expanded="true" aria-controls="collapseThemes{{channel.id}}">
-                    {% blocktrans count counter=channel.themes.all.count %}{{counter}} Theme{% plural %}{{counter}} Themes{% endblocktrans %} <i class="bi bi-chevron-down" class="chevron-down m-0 p-0"></i>
+                    {% blocktrans count counter=channel.themes.all.count %}{{counter}} Theme{% plural %}{{counter}} Themes{% endblocktrans %} <i class="bi bi-chevron-down"></i>
                     </button>
                   {% endif %}
                   <span class="badge text-bg-primary rounded-pill">{% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</span>
@@ -54,10 +54,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title"><i class="bi bi-play-btn"></i>&nbsp;{% blocktrans count counter=add_channel_tab.channel_set.all.count %}{{ counter }} Channel{% plural %}{{ counter }} Channels{% endblocktrans %}</h2>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
       </div>
       <div class="modal-body row">
-        <ul class="col-12 list-group list-group-flush" id="list-channels">
+        <ul class="col-12 list-group list-group-flush" id="list-add-channels">
           {% for channel in add_channel_tab.channel_set.all %}
             <li class="list-group-item list-group-item-action" data-id="{{channel.id}}">
               <div class="d-flex justify-content-between align-items-center">
@@ -78,7 +78,7 @@
                   <span class="badge text-bg-primary rounded-pill">{% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</span>
                 </span>
               </div>
-              <div id="collapseThemes{{channel.id}}" class="collapse collapsibleThemes" aria-labelledby="channel-title_{{channel.id}}" data-bs-parent="#list-channels" data-id="{{channel.id}}"></div>
+              <div id="collapseThemes{{channel.id}}" class="collapse collapsibleThemes" aria-labelledby="channel-title_{{channel.id}}" data-bs-parent="#list-add-channels" data-id="{{channel.id}}"></div>
             </li>
           {% empty %}
             <li class="list-group-item"> {% trans "No channels found" %} </li>
@@ -99,7 +99,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title"><i class="bi bi-tv"></i>&nbsp;{% trans 'Types of videos'%}</h2>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
       </div>
       <div class="modal-body">
         <ul class="row list-unstyled" id="list-types">
@@ -121,7 +121,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title"><i class="bi bi-people"></i>&nbsp;{% trans "Users"%}</h2>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
       </div>
       <div class="modal-body">
         <div class="row">

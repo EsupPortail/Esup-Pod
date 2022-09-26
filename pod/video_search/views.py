@@ -238,7 +238,7 @@ def search_videos(request):
         num_result = result["hits"]["total"]["value"]
     else:
         num_result = result["hits"]["total"]
-    videos.has_next = ((page + 1) * 12) < num_result
+    videos.has_next = ((page + 1) * size) < num_result
     videos.next_page_number = page + 1
 
     if request.is_ajax():

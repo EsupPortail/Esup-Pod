@@ -8,74 +8,72 @@
     {% if video.date_evt %}<small class="pod-info-video__date">{{ video.date_evt }}</small>{% endif %}
   </div>
   <a class="pod-info-video__signal" href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans 'Report the video'%}">
-    <i class="bi bi-exclamation-triangle"></i>
+    <i class="bi bi-exclamation-octagon"></i>
   </a>
 </div>
 
 
 {% if video.chapter_set.all %}
 <div class="alert alert-info" role="alert">{% blocktrans %}This video is chaptered. Click the chapter button <span class="vjs-icon-chapters"></span> on the video player to view them.{% endblocktrans %}</div>
-{%endif%}
+{% endif %}
 
 <div class="ps-0 pe-0">
   <div class="navbar d-flex flex-row-reverse p-0"> <!-- Début menu à popup -->
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <ul class="nav nav-tabs" role="tablist">
       {% tags_for_object video as tag_list %}
       {% if third_app %}
-      <li class="nav-item dropdown" id="list_third_apps">
-        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Other versions' %}">
-          <i class="bi bi-layers" aria-hidden="true"></i>
-        </a>
-        <div class="dropdown-menu">
-          {% if video.get_hashkey in request.get_full_path %}
-            <a href="{% url 'video:video_private' slug=video.slug slug_private=video.get_hashkey %}?redirect=false" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
-          {% else %}
-            <a href="{% url 'video:video' slug=video.slug %}?redirect=false" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
-          {% endif %}
-        </div>
-      </li>
-      {% else %}
-      {% with video.get_other_version as versions %}
-      {% if versions|length > 0 %}
-      <li class="nav-item dropdown" id="list_third_apps">
-        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Other versions' %}">
-          <i class="bi bi-layers" aria-hidden="true"></i>
-        </a>
-        <div class="dropdown-menu">
-          {% for version in versions %}
+        <li class="nav-item dropdown" id="list_third_apps">
+          <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Other versions' %}">
+            <i class="bi bi-layers" aria-hidden="true"></i>
+          </a>
+          <div class="dropdown-menu">
             {% if video.get_hashkey in request.get_full_path %}
-              <a href="{{version.url}}{{ video.get_hashkey }}/?redirect=false" title="{{version.app}}" class="dropdown-item">{{version.link}}</a>
+              <a href="{% url 'video:video_private' slug=video.slug slug_private=video.get_hashkey %}?redirect=false" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
             {% else %}
-              <a href="{{version.url}}?redirect=false" title="{{version.app}}" class="dropdown-item">{{version.link}}</a>
+              <a href="{% url 'video:video' slug=video.slug %}?redirect=false" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
             {% endif %}
-          {% endfor %}
-        </div>
-      </li>
+          </div>
+        </li>
+      {% else %}
+        {% with video.get_other_version as versions %}
+        {% if versions|length > 0 %}
+          <li class="nav-item dropdown" id="list_third_apps">
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Other versions' %}">
+              <i class="bi bi-layers" aria-hidden="true"></i>
+            </a>
+            <div class="dropdown-menu">
+              {% for version in versions %}
+                {% if video.get_hashkey in request.get_full_path %}
+                  <a href="{{version.url}}{{ video.get_hashkey }}/?redirect=false" title="{{version.app}}" class="dropdown-item">{{version.link}}</a>
+                {% else %}
+                  <a href="{{version.url}}?redirect=false" title="{{version.app}}" class="dropdown-item">{{version.link}}</a>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </li>
+        {% endif %}
+        {% endwith %}
       {% endif %}
-      {% endwith %}
-      {%endif%}
 
       {% if request.user.playlist_set.all and video.is_draft == False %}
-      <li class="nav-item dropdown dropright">
-        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Add the video to a playlist'%}">
+      <li class="nav-item dropdown dropright" id="dropmenu-playlist">
+        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Add the video to a playlist'%}" id="toggle-playlist">
           <i class="bi bi-play-circle" aria-hidden="true"></i>
         </a>
-        <div class="dropdown-menu">
-          {% csrf_token %}
-          <ul class="list-group">
-            {% for playlist in request.user.playlist_set.all %}
-            {% if video in playlist.videos %}
-            <li class="dropdown-item py-0">
-              <a href="#" data-slug="{{playlist.slug}}" class="btn disabled p-0 m-0">{{playlist.title}}<i class="bi bi-check2"></i></a>
-            </li>
-            {% else %}
-            <li class="dropdown-item py-0">
-              <a href="#" data-slug="{{playlist.slug}}" class="btn playlist-item p-0 m-0">{{playlist.title}}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-          </ul>
-        </div>
+        {% csrf_token %}
+        <ul class="dropdown-menu" aria-labelledby="toggle-playlist">
+          {% for playlist in request.user.playlist_set.all %}
+            <li><a href="#" data-slug="{{playlist.slug}}"
+              {% if video in playlist.videos %}
+                class="dropdown-item disabled selected"
+              {% else %}
+                class="dropdown-item playlist-item"
+                title="{% trans 'Add current video to this playlist' %}"
+              {% endif %}
+              >{{playlist.title}}
+            </a></li>
+          {% endfor %}
+        </ul>
       </li>
       {% endif %}
     </ul>

@@ -535,7 +535,7 @@ var show_picture_form = function (data) {
     $("#nav-usermenu .userpicture").remove();
     $("#nav-usermenu .userinitial").hide();
     $("#nav-usermenu > button").removeClass("initials btn btn-primary");
-    $("#nav-usermenu > button").addClass("  nav-link");
+    $("#nav-usermenu > button").addClass("nav-link");
     $("#nav-usermenu > button").append(
       '<img src="' +
         $(data).find("#userpictureurl").val() +
@@ -812,7 +812,9 @@ var showalert = function (message, alerttype) {
       alerttype +
       ' alert-dismissible fade show"  role="alert">' +
       message +
-      '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+      '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="' +
+      gettext("Close") +
+      '"></button></div>'
   );
   setTimeout(function () {
     $("#formalertdiv").remove();

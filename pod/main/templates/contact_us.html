@@ -26,7 +26,7 @@
       {% for field in form.visible_fields %}
         {% spaceless %}
           <div class="list-group-item{% if field.id_for_label == 'id_valid_human' %} valid_human{% endif %}">
-            <div class="form-group {% if field.field.required %}form-group-required {%endif%}" >
+            <div class="form-group {% if field.field.required %}form-group-required {% endif %}" >
               {{ field.errors }}
               {% if "form-check-input" in field.field.widget.attrs.class %}
                 <div class="form-check">
@@ -34,13 +34,13 @@
                 </div>
               {% else %}
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br/>{%endif%}
+                {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br/>{% endif %}
                 {{ field }}
               {% endif %}
               {% if field.help_text %}
                 <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
               {% endif %}
-              {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+              {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
             </div>
           </div>
         {% endspaceless %}

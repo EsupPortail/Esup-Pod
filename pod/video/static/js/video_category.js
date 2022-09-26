@@ -796,6 +796,9 @@
           response.json().then((data) => {
             showAlertMessage(msg_deleted);
             deleteFromSavedData(cat.slug); // delete from local save
+
+            // TODO : Ici il faudrait masquer la recherche si c'est la dernière cat supprimée, et l'afficher sinon.
+
             // Remove eventual alert message
             const cat_modal_alert = document.querySelector(
               "#manageCategoryModal .modal-body .alert-warning"

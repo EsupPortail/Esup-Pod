@@ -29,14 +29,14 @@
       {% for field in form.visible_fields %}
         {% spaceless %}
         <div class="list-group-item">
-          <div class="form-group {% if field.field.required %}form-group-required {%endif%}" >
+          <div class="form-group {% if field.field.required %}form-group-required {% endif %}" >
             {{ field.errors }}
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
             {{ field }}
             {% if field.help_text %}
               <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
             {% endif %}
-            {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+            {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
           </div>
         </div>
         {% endspaceless %}
@@ -52,18 +52,18 @@
     <p>{% trans "Unable to access to this meeting" %}</p>
     <p><a href="/" class="btn btn-primary">{% trans "Back to home" %}</a></p>
   {% else %}
-    <p>{% trans "The meeting has not started yet" %}.</p>
+    <p>{% trans "The meeting has not started yet." %}</p>
     <p>
     {% if meeting.start_at__date == meeting.end_at__date %}
-      {% blocktrans with start_date=meeting.start_at|date:"d/m/Y" start_time=meeting.start_at|time:"H:i" end_time=meeting.end_at|time:"H:i" %}it is scheduled for <b>{{start_date}}</b> from <u>{{start_time}}</u> to <u>{{end_time}}</u>.{% endblocktrans %}
+      {% blocktrans with start_date=meeting.start_at|date:"d/m/Y" start_time=meeting.start_at|time:"H:i" end_time=meeting.end_at|time:"H:i" %}It is scheduled for <b>{{start_date}}</b> from <u>{{start_time}}</u> to <u>{{end_time}}</u>.{% endblocktrans %}
     {% else %}
-      {% blocktrans with start_date=meeting.start_at end_date=meeting.end_at %}it is scheduled from <b>{{start_date}}</b> to <b>{{end_date}}</b>.{% endblocktrans %}
+      {% blocktrans with start_date=meeting.start_at end_date=meeting.end_at %}It is scheduled from <b>{{start_date}}</b> to <b>{{end_date}}</b>.{% endblocktrans %}
     {% endif %}
     </p>
-    <p>{% trans "You will be redirected right after the meeting starts" %}.</p>
-    <p>{% trans "if not, click on the button below" %}.</p>
-    <p><a href="{{ request.get_full_path }}" class="btn btn-primary">{% trans "reload"%}</a></p>
-  {%endif%}
+    <p>{% trans "You will be redirected right after the meeting starts." %}</p>
+    <p>{% trans "if not, click on the button below." %}</p>
+    <p><a href="{{ request.get_full_path }}" class="btn btn-primary">{% trans "Reload"%}</a></p>
+  {% endif %}
 {% endif %}
 {% endblock page_content %}
 

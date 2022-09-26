@@ -26,11 +26,11 @@
 					<td class="video-duration">{{element.video.duration_in_time}}</td>
 					<td class="video-position">{{element.position}}</td>
 					<td>
-						<button class="btn btn-sm btn-link position-up" title="{%trans 'Move up'%}">
-							<i class="bi bi-arrow-up-circle"></i>
+						<button class="btn btn-link position-up" title="{% trans 'Move up'%}">
+							<i class="bi bi-arrow-up-circle" aria-hidden="true"></i>
 						</button>
-						<button class="btn btn-sm btn-link position-down" title="{%trans 'Move down'%}">
-							<i class="bi bi-arrow-down-circle"></i>
+						<button class="btn btn-link position-down" title="{% trans 'Move down'%}">
+							<i class="bi bi-arrow-down-circle" aria-hidden="true"></i>
 						</button>
 						<button class="btn btn-sm btn-danger position-delete">{% trans 'Remove' %}</button>
 					</td>
