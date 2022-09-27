@@ -1,3 +1,4 @@
+import re
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
@@ -68,9 +69,17 @@ def playlist(request, slug=None):
         messages.add_message(request, messages.ERROR, _("You cannot edit this playlist."))
         raise PermissionDenied
     form = PlaylistForm(instance=playlist, initial={"owner": request.user})
-    if request.POST and request.POST.get("action"):
-        if request.POST["action"] in ACTION:
-            return eval("playlist_{0}(request, playlist)".format(request.POST["action"]))
+    
+    
+    actionData= request.body.decode('utf8').replace("'", '"')
+    action = None
+    if actionData != "":
+        actionData = json.loads(actionData)
+        action = actionData.get("action")
+    
+    if request.method == "POST" and action:
+        if action in ACTION:
+            return eval("playlist_{0}(request, playlist)".format(action))
     else:
         return render(
             request, "playlist.html", {"form": form, "list_videos": list_videos}
@@ -154,6 +163,7 @@ def check_playlist_videos(playlist, data):
 
 
 def playlist_move(request, playlist):
+    
     if request.is_ajax():
         if request.POST.get("videos"):
             data = json.loads(request.POST["videos"])
@@ -180,8 +190,8 @@ def playlist_move(request, playlist):
 
 
 def playlist_remove(request, playlist):
-    print("playlist_remove")
     if request.is_ajax():
+        print("playlist_remove")
         if request.POST.get("video"):
             slug = request.POST["video"]
             element = get_object_or_404(
@@ -253,7 +263,8 @@ def playlist_add(request, playlist):
 
 
 def playlist_delete(request, playlist):
-    if request.is_ajax():
+    
+    if request:
         if playlist:
             playlist.delete()
         some_data_to_dump = {
