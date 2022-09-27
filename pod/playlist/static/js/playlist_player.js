@@ -16,16 +16,13 @@ let PlaylistPlayer = {
   },
 
   unselectCurrent: function () {
-    $(this.elements[this.current_position - 1])
-      .parent()
-      .removeClass("on");
+    this.elements[this.current_position - 1].parentNode.classList.remove("on");
   },
   setCurrent: function (position) {
     this.current_position = position;
-    $(this.elements[this.current_position - 1])
-      .parent()
-      .addClass("on");
-    const vtitle = $(this.elements[this.current_position - 1]).data("title"),
+    this.elements[this.current_position - 1].parentNode.classList.add("on");
+
+    const vtitle = this.elements[this.current_position - 1].dataset.title,
       purl =
         "/playlist/" + this.playlist + "/?p=" + position + this.getParameters();
     history.pushState({ title: vtitle }, "", purl);
@@ -44,106 +41,121 @@ let PlaylistPlayer = {
     }
   },
 
-  loadVideo: function (position) {
+  loadVideo: async function (position) {
     this.unselectCurrent();
     const video_url = this.elements[position - 1].children[1].children[0].href,
-      ajax_url = video_url.replace("/video/", "/video/xhr/"),
+      url = video_url.replace("/video/", "/video/xhr/"),
       parameters =
-        ajax_url.indexOf("?") > 0
+        url.indexOf("?") > 0
           ? this.getParameters()
           : this.getParameters().replace(/^&/, "?"),
       //, password = $(this.current_element).parent().children('.vdata').data('password') == 'unchecked'
       _this = this;
-    $.ajax({
-      url: ajax_url + parameters,
+
+    await fetch(url + parameters, {
+      method: "GET",
       context: document.body,
-      dataType: "json",
-    }).done(function (json) {
-      if (json.status == "ok") {
+      datatype: "json",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((json) => {
+      console.log(json.statusText);
+      if (json.statusText == "ok") {
+        json = json.json();
         _this.setPlayer(json);
-        $("#info-video").html(json.html_video_info);
-        // Update aside (Enrichement info, Managment links, Notes)
+        document.getElementById("info-video").html = json.html_video_info;
         if (!_this.is_iframe) {
-          // Show / Hide enrichment info block
-          if (json.version == "E")
-            $("#card-enrichmentinformations").removeClass("off");
-          else $("#card-enrichmentinformations").addClass("off");
-          // Update managment links
-          $("#card-managevideo .card-body a").each(function () {
-            $(this).attr(
-              "href",
-              $(this)
-                .attr("href")
-                .replace(/(.*)\/([^/]*)\/([^/])*$/, function (str, g0, g1, g2) {
+          let card = document
+            .getElementById("card-enrichmentinformations")
+            .classList.remove("off");
+          if (json.version == "E") {
+            card.classList.remove("off");
+          } else {
+            card.classList.add("off");
+          }
+
+          document
+            .querySelectorAll("#card-managevideo .card-body a")
+            .forEach((element) => {
+              element.setAttribute(
+                "href",
+                element.getAttribute("href").replace(/(.*)\/([^/]*)\/([^/])*$/),
+                function (str, g0, g1, g2) {
                   return g0 + "/" + json.slug + "/" + (g2 ? g2 : "");
-                })
-            );
-          });
-          // Update note form
-          $("#card-takenote").html(json.html_video_note);
+                }
+              );
+            });
+          document.getElementById("card-takenote").innerHTML =
+            json.html_video_note;
         }
         _this.setCurrent(position);
-      } else if (json.error == "password") {
-        //Acces restrict by password => Display video password form
-        if ($("#video-form-wrapper").length == 0) {
+      } else if (json.statusText == "Forbidden") {
+        if (document.getElementById("video-form-wrapper") == null) {
           _this.formctn.append('<div id="video-form-wrapper"></div>');
+          console.log(_this.formctn)
         }
-        $("#video-form-wrapper").removeClass("hidden");
-        $("#video-form-wrapper").html(json.html_content);
-        $("#video-form-wrapper .invalid-feedback").hide();
-        $('#video-form-wrapper button[type="submit"]').click(function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          const password = $("#id_password").val(),
-            csrfmiddlewaretoken = $(
+        let wrapper = document.getElementById("video-form-wrapper");
+        wrapper.classList.remove("hidden");
+        wrapper.innerHTML = json.html_content;
+        wrapper.querySelector(".invalid-feedback").style.display = "None";
+        wrapper
+          .querySelector('button[type="submit"]')
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const password = document.getElementById("id_password").value;
+            let csrfmiddlewaretoken = document.querySelector(
               '#video_password_form > input[name="csrfmiddlewaretoken"]'
-            )
-              .first()
-              .val();
-          if (password == "") {
-            $("#video-form-wrapper .invalid-feedback")
-              .html(this.strings.invalid_feedback_value.replace("'", "'"))
-              .show();
-            return;
-          }
-          $.ajax({
-            type: "POST",
-            data: {
-              password: password,
-              csrfmiddlewaretoken: csrfmiddlewaretoken,
-            },
-            url: ajax_url,
-            context: document.body,
-            dataType: "json",
-          }).done(function (json) {
-            if (json.status == "ok") {
-              $("#video-form-wrapper").empty().addClass("hidden");
-              _this.setPlayer(json);
-              $("#info-video").html(json.html_video_info);
-              _this.setCurrent(position);
-            } else {
-              $("#video-form-wrapper .invalid-feedback")
-                .html(this.strings.invalid_feedback_password)
-                .show();
+            ).value;
+            if (password == "") {
+              wrapper.querySelector(".invalid-feedback").innerHTML =
+                _this.invalid_feedback_value;
+              wrapper.querySelector(".invalid-feedback").style.display =
+                "block";
+              return;
             }
+            fetch(url, {
+              method: "POST",
+              context: document.body,
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfmiddlewaretoken,
+              },
+            })
+              .then((response) => {
+                if (response.status == 200) {
+                  json = response.json();
+                  wrapper;
+                  _this.setPlayer(json);
+                  _this.setCurrent(position);
+                  wrapper.classList.add("hidden");
+                  wrapper.childNodes.forEach((node) => {
+                    node.remove();
+                  });
+                  document.getElementById("info-video").html =
+                    json.html_video_info;
+                } else {
+                  wrapper.querySelector(".invalid-feedback").innerHTML =
+                    this.strings.invalid_feedback_password;
+                  wrapper.style.display = "block";
+                }
+              })
+              .catch((error) => {});
           });
-        });
-      } else if (json.error == "access") {
+      } else if (json.error == "acces") {
         rurl = json.url + "?";
         if (_this.is_iframe) {
           rurl += "is_iframe=true&";
         }
-        rurl +=
-          "referrer=" +
-          _this.baseurl +
-          "/playlist/" +
+        rurl += "referrer=" + _this.baseurl;
+        "/playlist/" +
           _this.slug +
           "/?p=" +
           position +
           _this.getParameters().replace(/&/g, "%26");
         window.location.href = rurl;
       } else if (json.error == "deny") {
-        //User is authenticate but not allowed => Go next (TODO... actualy just reload page)
         const nposition = position < _this.elements.length ? position + 1 : 1;
         _this.loadVideo(nposition);
       }
@@ -191,46 +203,46 @@ let PlaylistPlayer = {
     let _this = this;
 
     if (window.location.href.match(parameter[1])) {
-      $(this.controls.auto).addClass("on");
+      this.controls.auto.classList.add("on");
       this.auto_on = true;
     }
     if (window.location.href.match(parameter[2])) {
-      $(this.controls.loop).addClass("on");
+      this.controls.loop.classList.add("on");
       this.loop_on = true;
     }
 
     function toogleOption(e) {
       e.preventDefault();
       e.stopPropagation();
-      if ($(this).hasClass("on")) {
-        $(this).removeClass("on");
-        _this[$(this).data("id") + "_on"] = false;
+      if (this.classList.contains("on")) {
+        this.classList.remove("on");
+        _this[this.dataset.id + "_on"] = false;
       } else {
-        $(this).addClass("on");
-        _this[$(this).data("id") + "_on"] = true;
+        this.classList.add("on");
+        _this[this.dataset.id + "_on"] = true;
       }
     }
 
     for (let c in this.controls) {
-      $(this.controls[c]).data("id", c);
+     
+      this.controls[c].dataset.id = c;
       this.controls[c].onclick = toogleOption;
     }
 
     for (let i = 0, p = 1, nbe = o.elements.length; i < nbe; i++, p++) {
       _this.elements.push(o.elements[i]);
-      $(o.elements[i])
-        .find("a")
-        .data("position", p)
-        .on("click", function (e) {
-          if ($(this).data("position") == _this.current_position) {
-            e.preventDefault(); //e.stopPropagation();
-            player.play();
-          } /*if(_this.auto_on)*/ else {
-            e.preventDefault(); //e.stopPropagation();
-            _this.loadVideo($(this).data("position"));
-          }
-        });
+      o.elements[i].querySelector("a").dataset.position = p;
+      o.elements[i].querySelector("a").addEventListener("click", function (e) {
+        if (this.dataset.position == _this.current_position) {
+          e.preventDefault(); //e.stopPropagation();
+          player.play();
+        } /*if(_this.auto_on)*/ else {
+          e.preventDefault(); //e.stopPropagation();
+          _this.loadVideo(this.dataset.position);
+        }
+      });
     }
+
     player.on("ended", function () {
       _this.onPlayerEnd();
     });
@@ -254,16 +266,18 @@ let PlaylistPlayer = {
     },
     getOrLoad: function (p, cb) {
       if (this.plugins[p].js) {
-        if ($("#" + p + "_style_id").length == 0) {
-          $("head").append(
-            '<link id="' +
-              p +
-              '_style_id" href="' +
-              this.plugins[p].css +
-              '" rel="stylesheet" />'
-          );
+        if (document.querySelectorAll("#" + p + "_style_id").length == 0) {
+          document
+            .querySelector("head")
+            .append(
+              '<link id="' +
+                p +
+                '_style_id" href="' +
+                this.plugins[p].css +
+                '" rel="stylesheet" />'
+            );
         }
-        if ($("#" + p + "_script_id").length == 0) {
+        if (document.querySelectorAll("#" + p + "_style_id").length == 0) {
           let s = document.createElement("SCRIPT");
           s.id = p + "_script_id";
           s.src = this.plugins[p].js;
@@ -277,10 +291,12 @@ let PlaylistPlayer = {
       }
     },
     unload: function (p) {
-      $("#" + p + "_style_id, #" + p + "_script_id").remove();
+      document
+        .querySelector("#" + p + "_style_id, #" + p + "_script_id")
+        .remove();
     },
     unloadCSS: function (p) {
-      $("#" + p + "_style_id").remove();
+      document.querySelector("#" + p + "_style_id").remove();
     },
   },
 
@@ -301,30 +317,48 @@ let PlaylistPlayer = {
     }
 
     // Replace video_element
-    $(
-      "form#video_count_form, ul.video-slides, ul#overlays, div.chapters-list"
-    ).remove();
-    player.dispose();
-    $("#info-video-wrapper, #info-video").eq(0).before(json.html_video_element);
+    document
+      .querySelectorAll(
+        "form#video_count_form, ul.video-slides, ul#overlays, div.chapters-list"
+      )
+      .forEach(function (e) {
+        e.remove();
+      });
 
+    player.dispose();
+
+    $("#info-video-wrapper, #info-video").eq(0).before(json.html_video_element);
+    document
+      .querySelectorAll("#info-video-wrapper,#info-video ")
+      .forEach(function (e) {
+        e[0].insertBefore(json.html_video_element, e[0].firstChild);
+      });
     const _this = this;
 
     player = videojs("podvideoplayer", options, function () {});
-    player.ready(function () {
+    player.addEventListener("load", function () {
       // Chapters
       if (json.chapter.length > 0) {
         player.videoJsChapters();
-        $(".vjs-big-play-button").css("z-index", 2);
-        $(".vjs-control-bar").css("z-index", 3);
+        document.querySelectorAll(".vjs-big-play-button").forEach(function (e) {
+          e.style.style = "z-index : 2";
+
+          document.querySelectorAll(".vjs-control-bar").forEach(function (e) {
+            e.style.style = "z-index : 3";
+          });
+        });
       }
 
       // Enrichments
       if (has_enrichment) {
-        $(player.el().getElementsByTagName("VIDEO")[0]).append(
-          '<track kind="metadata" src="' +
-            json.enrichtracksrc +
-            '" label="enrichment" />'
-        );
+        player
+          .el()
+          .getElementsByTagName("VIDEO")[0]
+          .append(
+            '<track kind="metadata" src="' +
+              json.enrichtracksrc +
+              '" label="enrichment" />'
+          );
         _this.headFiles.getOrLoad("enrichment", function () {
           var tracks = player.el().getElementsByTagName("TRACK");
           for (var i = 0; i < tracks.length; i++) {
@@ -337,7 +371,7 @@ let PlaylistPlayer = {
               break;
             }
           }
-          player.on("loadedmetadata", function () {
+          player.addEventListener("loadedmetadata", function () {
             let slide = [],
               player = this;
             if (!metadataTrack.cues) {
@@ -428,7 +462,12 @@ let PlaylistPlayer = {
         }
         if (!_this.hasPlayed) {
           player.on("firstplay", function () {
-            $("#card-playlist .close.hidden").removeClass("hidden");
+            document
+              .querySelectorAll("#card-playlist .close.hidden")
+              .forEach(function (e) {
+                e.classList.remove("hidden");
+              });
+
             _this.hasPlayed = true;
           });
         }
@@ -449,7 +488,7 @@ let PlaylistPlayer = {
               //console.log('error!', error.code, error.type , error.message);
               if (player.src() == "" || player.src().indexOf("m3u8") != -1) {
                 player.src(json.src.mp4);
-                player.controlBar.addChild("QualitySelector");
+                player.controlBar.appendChild("QualitySelector");
                 if (_this.hasPlayed) player.play();
               }
             }
@@ -465,8 +504,13 @@ let PlaylistPlayer = {
 
       // Add viewCount
       player.on("firstplay", function () {
-        var data_form = $("#video_count_form").serializeArray();
-        jqxhr = $.post($("#video_count_form").attr("action"), data_form);
+        var data_form = document
+          .getElementById("video_count_form")
+          .serializeArray();
+        jqxhr = $.post(
+          document.getElementById("video_count_form").attr("action"),
+          data_form
+        );
       });
 
       // add onPlayerEnd listener for the rebuild player

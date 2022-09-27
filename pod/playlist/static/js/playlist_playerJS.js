@@ -16,13 +16,16 @@ let PlaylistPlayer = {
   },
 
   unselectCurrent: function () {
-    this.elements[this.current_position - 1].parentNode.classList.remove("on");
+    $(this.elements[this.current_position - 1])
+      .parent()
+      .removeClass("on");
   },
   setCurrent: function (position) {
     this.current_position = position;
-    this.elements[this.current_position - 1].parentNode.classList.add("on");
-
-    const vtitle = this.elements[this.current_position - 1].data("title"),
+    $(this.elements[this.current_position - 1])
+      .parent()
+      .addClass("on");
+    const vtitle = $(this.elements[this.current_position - 1]).data("title"),
       purl =
         "/playlist/" + this.playlist + "/?p=" + position + this.getParameters();
     history.pushState({ title: vtitle }, "", purl);
@@ -41,71 +44,16 @@ let PlaylistPlayer = {
     }
   },
 
-  loadVideo: async function (position) {
+  loadVideo: function (position) {
     this.unselectCurrent();
     const video_url = this.elements[position - 1].children[1].children[0].href,
-      url = video_url.replace("/video/", "/video/xhr/"),
+      ajax_url = video_url.replace("/video/", "/video/xhr/"),
       parameters =
-        url.indexOf("?") > 0
+        ajax_url.indexOf("?") > 0
           ? this.getParameters()
           : this.getParameters().replace(/^&/, "?"),
       //, password = $(this.current_element).parent().children('.vdata').data('password') == 'unchecked'
       _this = this;
-
-    await fetch(url + parameters, {
-      method: "GET",
-      context: document.body,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((response) => {
-      if (response.status == 200) {
-        json = response.json();
-        _this.setPlayer(json);
-        document.getElementById("info-video").html = json.html_video_info;
-        if (!_this.is_iframe) {
-          let card = document
-            .getElementById("card-enrichmentinformations")
-            .classList.remove("off");
-          if (json.version == "E") {
-            card.classList.remove("off");
-          } else {
-            card.classList.add("off");
-          }
-
-          document
-            .querySelectorAll("#card-managevideo .card-body a")
-            .forEach((element) => {
-              element.setAttribute(
-                "href",
-                element.getAttribute("href").replace(/(.*)\/([^/]*)\/([^/])*$/),
-                function (str, g0, g1, g2) {
-                  return g0 + "/" + json.slug + "/" + (g2 ? g2 : "");
-                }
-              );
-            });
-          document.getElementById("card-takenote").innerHTML =
-            json.html_video_note;
-        }
-        _this.setCurrent(position);
-      } else if (json.error == "password") {
-        if (document.getElementById("video-form-wrapper").length == 0) {
-          _this.formctn.append('<div id="video-form-wrapper"></div>');
-        }
-        let wrapper = document.getElementById("video-form-wrapper");
-        wrapper.classList.remove("hidden");
-        wrapper.innerHTML = json.html_content;
-        wrapper.querySelector(".invalid-feedback").style.display = "None"
-        wrapper.querySelector('button[type="submit"]').addEventListener("click", function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          const password = document.getElementById("id_password").value;
-          let csrfmiddlewaretoken = document.querySelector('#video_password_form > input[name="csrfmiddlewaretoken"]').value;
-          if (password == "") {
-            wrapper.querySelector(".invalid-feedback").innerHTML = _this.invalid_feedback_value;
-            wrapper.querySelector(".invalid-feedback").style.display = "block";
-          }
-    });   
     $.ajax({
       url: ajax_url + parameters,
       context: document.body,
@@ -200,7 +148,6 @@ let PlaylistPlayer = {
         _this.loadVideo(nposition);
       }
     });
-    }
   },
   init: function (o) {
     /* o is a javascript object containing playlist parameters for playlist player initialisation and playing :
