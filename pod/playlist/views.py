@@ -1,4 +1,5 @@
 import re
+import ast
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
@@ -71,7 +72,7 @@ def playlist(request, slug=None):
     form = PlaylistForm(instance=playlist, initial={"owner": request.user})
     
     action = None
- 
+    
     if  request.POST.get("action") != None:
         action = request.POST.get("action")
     else:
@@ -157,7 +158,8 @@ def get_video_adv_note_list(request, video):
 
 
 def check_playlist_videos(playlist, data):
-    for slug in data:
+    for slug, position in data.items():
+        
         element = get_object_or_404(PlaylistElement, video__slug=slug, playlist=playlist)
         if element.video.is_draft:
             return _("A video in draft mode cannot be added to a playlist.")
@@ -170,17 +172,21 @@ def playlist_move(request, playlist):
     
     if request:
         data = json.loads(request.body.decode('utf8').replace("'", '"'))
-        print(data)
+        
         if data.get("videos"):
             data = data.get("videos")
+            data = ast.literal_eval(data)
+            
             err = check_playlist_videos(playlist, data)
+            
             if err:
                 some_data_to_dump = {"fail": "{0}".format(err)}
             else:
-                for slug in data:
+                for slug, position in data.items():
                     element = get_object_or_404(
                         PlaylistElement, video__slug=slug, playlist=playlist
                     )
+                    
                     element.position = data[slug]
                     element.save()
                 some_data_to_dump = {
