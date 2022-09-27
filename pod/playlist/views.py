@@ -94,13 +94,16 @@ def playlist(request, slug=None):
 # @login_required
 # @csrf_protect
 def playlist_play(request, slug=None):
+    
     template_video = (
         "playlist_player-iframe.html"
         if (request.GET.get("is_iframe"))
         else "playlist_player.html"
     )
     playlist = get_object_or_404(Playlist, slug=slug) if slug is not None else None
+   
     if playlist and request.user != playlist.owner and not playlist.visible:
+        
         # not (request.user.is_superuser or request.user.has_perm(
         #        "video.change_theme")
         messages.add_message(

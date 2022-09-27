@@ -51,7 +51,7 @@ let PlaylistPlayer = {
           : this.getParameters().replace(/^&/, "?"),
       //, password = $(this.current_element).parent().children('.vdata').data('password') == 'unchecked'
       _this = this;
-
+    
     await fetch(url + parameters, {
       method: "GET",
       context: document.body,
