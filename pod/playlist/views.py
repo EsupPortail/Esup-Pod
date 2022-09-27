@@ -70,12 +70,16 @@ def playlist(request, slug=None):
         raise PermissionDenied
     form = PlaylistForm(instance=playlist, initial={"owner": request.user})
     
-    
-    actionData= request.body.decode('utf8').replace("'", '"')
     action = None
-    if actionData != "":
-        actionData = json.loads(actionData)
-        action = actionData.get("action")
+ 
+    if  request.POST.get("action") != None:
+        action = request.POST.get("action")
+    else:
+        actionData= request.body.decode('utf8').replace("'", '"')
+        if actionData != "":
+            actionData = json.loads(actionData)
+            action = actionData.get("action")
+            
     
     if request.method == "POST" and action:
         if action in ACTION:
@@ -164,9 +168,11 @@ def check_playlist_videos(playlist, data):
 
 def playlist_move(request, playlist):
     
-    if request.is_ajax():
-        if request.POST.get("videos"):
-            data = json.loads(request.POST["videos"])
+    if request:
+        data = json.loads(request.body.decode('utf8').replace("'", '"'))
+        print(data)
+        if data.get("videos"):
+            data = data.get("videos")
             err = check_playlist_videos(playlist, data)
             if err:
                 some_data_to_dump = {"fail": "{0}".format(err)}
@@ -190,10 +196,10 @@ def playlist_move(request, playlist):
 
 
 def playlist_remove(request, playlist):
-    if request.is_ajax():
-        print("playlist_remove")
-        if request.POST.get("video"):
-            slug = request.POST["video"]
+    if request:
+        data = json.loads(request.body.decode('utf8').replace("'", '"'))
+        if data.get("video"):
+            slug = data.get("video")
             element = get_object_or_404(
                 PlaylistElement, video__slug=slug, playlist=playlist
             )

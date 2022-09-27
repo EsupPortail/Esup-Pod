@@ -62,11 +62,17 @@ document.addEventListener("DOMContentLoaded", function () {
         var pos = table.rows[i].children[4].innerHTML;
         videos[slug] = pos;
       }
-      data = JSON.stringify(videos);
       let token = document.cookie
         .split(";")
         .filter((item) => item.trim().startsWith("csrftoken="))[0]
         .split("=")[1];
+
+      data = JSON.stringify(videos);
+      body = JSON.stringify({
+        action: "move",
+        videos: data,
+        csrfmiddlewaretoken: token,
+      });
 
       var jqxhr = fetch(window.location.href, {
         method: "POST",
@@ -74,11 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
           "Content-Type": "application/json",
           "X-CSRFToken": token,
         },
-        body: {
-          action: "move",
-          videos: data,
-          csrfmiddlewaretoken: token,
-        },
+        body: body,
       })
         .then((response) => {
           if (response.status !== 200) {
@@ -137,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
             );
           } else {
             showalert(response.statusText, "alert-success");
-            //window.location.reload();
+            window.location.reload();
           }
         })
         .catch((error) => {
