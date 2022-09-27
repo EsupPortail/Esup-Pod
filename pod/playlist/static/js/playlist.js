@@ -22,12 +22,11 @@ document.addEventListener("DOMContentLoaded", function () {
       let row = element.parentNode.parentNode;
 
       let currentposition = row.querySelector(".video-position");
-
+      let oldposition = currentposition;
       if (row.previousElementSibling !== null) {
-        let oldposition =
+        oldposition =
           row.previousElementSibling.querySelector(".video-position");
       }
-      let oldposition = currentposition;
 
       if (currentposition.textContent > 1) {
         currentposition.textContent = parseInt(currentposition.textContent) - 1;

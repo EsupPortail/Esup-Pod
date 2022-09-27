@@ -243,6 +243,7 @@ def playlist_edit(request, playlist):
 
 
 def playlist_add(request, playlist):
+    print("playlist_add")
     if request.is_ajax():
         if request.POST.get("video"):
             video = get_object_or_404(Video, slug=request.POST["video"])
