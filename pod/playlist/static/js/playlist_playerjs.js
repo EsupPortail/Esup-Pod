@@ -306,9 +306,9 @@ let PlaylistPlayer = {
     ).remove();
     player.dispose();
     $("#info-video-wrapper, #info-video").eq(0).before(json.html_video_element);
-
+   
     const _this = this;
-
+    
     player = videojs("podvideoplayer", options, function () {});
     player.ready(function () {
       // Chapters

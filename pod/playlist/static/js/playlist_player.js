@@ -65,7 +65,7 @@ let PlaylistPlayer = {
         if (json.status == "ok") {
           console.log(json);
           _this.setPlayer(json);
-          document.getElementById("info-video").html = json.html_video_info;
+          document.getElementById("info-video").innerHTML = json.html_video_info;
           if (!_this.is_iframe) {
             let card = document.getElementById("card-enrichmentinformations");
 
@@ -127,15 +127,14 @@ let PlaylistPlayer = {
                 .then((response) => {
                   if (response.status == 200) {
                     json = response.json();
-                    wrapper;
-                    _this.setPlayer(json);
-                    _this.setCurrent(position);
-                    wrapper.classList.add("hidden");
                     wrapper.childNodes.forEach((node) => {
                       node.remove();
                     });
+                    wrapper.classList.add("hidden");
+                    _this.setPlayer(json);
                     document.getElementById("info-video").html =
                       json.html_video_info;
+                      _this.setCurrent(position);
                   } else {
                     wrapper.querySelector(".invalid-feedback").innerHTML =
                       this.strings.invalid_feedback_password;
@@ -337,6 +336,7 @@ let PlaylistPlayer = {
     let infoWrapper = document.querySelectorAll(
       "#info-video-wrapper, #info-video"
     )[0];
+    console.log(infoWrapper);
     infoWrapper.insertAdjacentHTML("beforebegin", json.html_video_element);
     const _this = this;
 
