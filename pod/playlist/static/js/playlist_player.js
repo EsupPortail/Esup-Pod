@@ -512,10 +512,18 @@ let PlaylistPlayer = {
         var data_form = document
           .getElementById("video_count_form")
           .serializeArray();
-        jqxhr = $.post(
-          document.getElementById("video_count_form").attr("action"),
-          data_form
-        );
+        
+          
+        
+        var httpReq = new XMLHttpRequest();
+        httpReq.onreadystatechange = function () {
+          
+        }
+       
+        let url =  document.getElementById("video_count_form").getAttribute("action")
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+        httpRequest.open('POST', url)
+        httpRequest.send(data_form)
       });
 
       // add onPlayerEnd listener for the rebuild player

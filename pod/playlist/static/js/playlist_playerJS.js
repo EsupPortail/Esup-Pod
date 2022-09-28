@@ -467,6 +467,8 @@ let PlaylistPlayer = {
       player.on("firstplay", function () {
         var data_form = $("#video_count_form").serializeArray();
         jqxhr = $.post($("#video_count_form").attr("action"), data_form);
+
+        
       });
 
       // add onPlayerEnd listener for the rebuild player
