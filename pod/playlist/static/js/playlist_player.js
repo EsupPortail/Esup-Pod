@@ -92,7 +92,7 @@ let PlaylistPlayer = {
               json.html_video_note;
           }
           _this.setCurrent(position);
-        } else if (json.statusText == "Forbidden") {
+        } else if (json.statusText == "password") {
           if (document.getElementById("video-form-wrapper") == null) {
             _this.formctn.append('<div id="video-form-wrapper"></div>');
           }
@@ -346,10 +346,10 @@ let PlaylistPlayer = {
       if (json.chapter.length > 0) {
         player.videoJsChapters();
         document.querySelectorAll(".vjs-big-play-button").forEach(function (e) {
-          e.style.style = "z-index : 2";
+          e.style = "z-index : 2";
 
           document.querySelectorAll(".vjs-control-bar").forEach(function (e) {
-            e.style.style = "z-index : 3";
+            e.style = "z-index : 3";
           });
         });
       }
