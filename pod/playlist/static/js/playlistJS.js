@@ -178,6 +178,7 @@ document.addEventListener("DOMContentLoaded", function () {
       showalert(gettext("The video slug not found."), "alert-danger");
       return;
     }
+    console.log($(this))
     const slug = $(this).attr("data-slug");
     const link = $(this);
     const jqxhr = $.ajax({

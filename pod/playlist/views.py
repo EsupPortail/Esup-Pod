@@ -72,10 +72,10 @@ def playlist(request, slug=None):
     form = PlaylistForm(instance=playlist, initial={"owner": request.user})
     
     action = None
-    
     if  request.POST.get("action") != None:
         action = request.POST.get("action")
     else:
+        
         actionData= request.body.decode('utf8').replace("'", '"')
         if actionData != "":
             actionData = json.loads(actionData)
@@ -246,10 +246,11 @@ def playlist_edit(request, playlist):
 
 
 def playlist_add(request, playlist):
-    print("playlist_add")
-    if request.is_ajax():
-        if request.POST.get("video"):
-            video = get_object_or_404(Video, slug=request.POST["video"])
+   
+    if request:
+        data = json.loads(request.body.decode('utf8').replace("'", '"'))
+        if data.get("video"):
+            video = get_object_or_404(Video, slug=data.get("video"))
             msg = None
             if video.is_draft:
                 msg = _("A video in draft mode cannot be added to a playlist.")

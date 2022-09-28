@@ -51,7 +51,7 @@ let PlaylistPlayer = {
           : this.getParameters().replace(/^&/, "?"),
       //, password = $(this.current_element).parent().children('.vdata').data('password') == 'unchecked'
       _this = this;
-    
+
     await fetch(url + parameters, {
       method: "GET",
       context: document.body,
@@ -59,107 +59,108 @@ let PlaylistPlayer = {
       headers: {
         "Content-Type": "application/json",
       },
-    }).then((json) => {
-      console.log(json.statusText);
-      if (json.statusText == "ok") {
-        json = json.json();
-        _this.setPlayer(json);
-        document.getElementById("info-video").html = json.html_video_info;
-        if (!_this.is_iframe) {
-          let card = document
-            .getElementById("card-enrichmentinformations")
-            .classList.remove("off");
-          if (json.version == "E") {
-            card.classList.remove("off");
-          } else {
-            card.classList.add("off");
-          }
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.status == "ok") {
+          console.log(json);
+          _this.setPlayer(json);
+          document.getElementById("info-video").html = json.html_video_info;
+          if (!_this.is_iframe) {
+            let card = document.getElementById("card-enrichmentinformations");
 
-          document
-            .querySelectorAll("#card-managevideo .card-body a")
-            .forEach((element) => {
-              element.setAttribute(
-                "href",
-                element.getAttribute("href").replace(/(.*)\/([^/]*)\/([^/])*$/),
-                function (str, g0, g1, g2) {
-                  return g0 + "/" + json.slug + "/" + (g2 ? g2 : "");
-                }
-              );
-            });
-          document.getElementById("card-takenote").innerHTML =
-            json.html_video_note;
-        }
-        _this.setCurrent(position);
-      } else if (json.statusText == "Forbidden") {
-        if (document.getElementById("video-form-wrapper") == null) {
-          _this.formctn.append('<div id="video-form-wrapper"></div>');
-          console.log(_this.formctn)
-        }
-        let wrapper = document.getElementById("video-form-wrapper");
-        wrapper.classList.remove("hidden");
-        wrapper.innerHTML = json.html_content;
-        wrapper.querySelector(".invalid-feedback").style.display = "None";
-        wrapper
-          .querySelector('button[type="submit"]')
-          .addEventListener("click", function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const password = document.getElementById("id_password").value;
-            let csrfmiddlewaretoken = document.querySelector(
-              '#video_password_form > input[name="csrfmiddlewaretoken"]'
-            ).value;
-            if (password == "") {
-              wrapper.querySelector(".invalid-feedback").innerHTML =
-                _this.invalid_feedback_value;
-              wrapper.querySelector(".invalid-feedback").style.display =
-                "block";
-              return;
+            if (json.version == "E") {
+              card.classList.remove("off");
+            } else {
+              card.classList.add("off");
             }
-            fetch(url, {
-              method: "POST",
-              context: document.body,
-              headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": csrfmiddlewaretoken,
-              },
-            })
-              .then((response) => {
-                if (response.status == 200) {
-                  json = response.json();
-                  wrapper;
-                  _this.setPlayer(json);
-                  _this.setCurrent(position);
-                  wrapper.classList.add("hidden");
-                  wrapper.childNodes.forEach((node) => {
-                    node.remove();
-                  });
-                  document.getElementById("info-video").html =
-                    json.html_video_info;
-                } else {
-                  wrapper.querySelector(".invalid-feedback").innerHTML =
-                    this.strings.invalid_feedback_password;
-                  wrapper.style.display = "block";
-                }
+
+            document
+              .querySelectorAll("#card-managevideo .card-body a")
+              .forEach((element) => {
+                element.setAttribute(
+                  "href",
+                  element
+                    .getAttribute("href")
+                    .replace(/(.*)\/([^/]*)\/([^/])*$/),
+                  function (str, g0, g1, g2) {
+                    return g0 + "/" + json.slug + "/" + (g2 ? g2 : "");
+                  }
+                );
+              });
+            document.getElementById("card-takenote").innerHTML =
+              json.html_video_note;
+          }
+          _this.setCurrent(position);
+        } else if (json.statusText == "Forbidden") {
+          if (document.getElementById("video-form-wrapper") == null) {
+            _this.formctn.append('<div id="video-form-wrapper"></div>');
+          }
+          let wrapper = document.getElementById("video-form-wrapper");
+          wrapper.classList.remove("hidden");
+          wrapper.innerHTML = json.html_content;
+          wrapper.querySelector(".invalid-feedback").style.display = "None";
+          wrapper
+            .querySelector('button[type="submit"]')
+            .addEventListener("click", function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              const password = document.getElementById("id_password").value;
+              let csrfmiddlewaretoken = document.querySelector(
+                '#video_password_form > input[name="csrfmiddlewaretoken"]'
+              ).value;
+              if (password == "") {
+                wrapper.querySelector(".invalid-feedback").innerHTML =
+                  _this.invalid_feedback_value;
+                wrapper.querySelector(".invalid-feedback").style.display =
+                  "block";
+                return;
+              }
+              fetch(url, {
+                method: "POST",
+                context: document.body,
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": csrfmiddlewaretoken,
+                },
               })
-              .catch((error) => {});
-          });
-      } else if (json.error == "acces") {
-        rurl = json.url + "?";
-        if (_this.is_iframe) {
-          rurl += "is_iframe=true&";
+                .then((response) => {
+                  if (response.status == 200) {
+                    json = response.json();
+                    wrapper;
+                    _this.setPlayer(json);
+                    _this.setCurrent(position);
+                    wrapper.classList.add("hidden");
+                    wrapper.childNodes.forEach((node) => {
+                      node.remove();
+                    });
+                    document.getElementById("info-video").html =
+                      json.html_video_info;
+                  } else {
+                    wrapper.querySelector(".invalid-feedback").innerHTML =
+                      this.strings.invalid_feedback_password;
+                    wrapper.style.display = "block";
+                  }
+                })
+                .catch((error) => {});
+            });
+        } else if (json.error == "acces") {
+          rurl = json.url + "?";
+          if (_this.is_iframe) {
+            rurl += "is_iframe=true&";
+          }
+          rurl += "referrer=" + _this.baseurl;
+          "/playlist/" +
+            _this.slug +
+            "/?p=" +
+            position +
+            _this.getParameters().replace(/&/g, "%26");
+          window.location.href = rurl;
+        } else if (json.error == "deny") {
+          const nposition = position < _this.elements.length ? position + 1 : 1;
+          _this.loadVideo(nposition);
         }
-        rurl += "referrer=" + _this.baseurl;
-        "/playlist/" +
-          _this.slug +
-          "/?p=" +
-          position +
-          _this.getParameters().replace(/&/g, "%26");
-        window.location.href = rurl;
-      } else if (json.error == "deny") {
-        const nposition = position < _this.elements.length ? position + 1 : 1;
-        _this.loadVideo(nposition);
-      }
-    });
+      });
   },
   init: function (o) {
     /* o is a javascript object containing playlist parameters for playlist player initialisation and playing :
@@ -224,7 +225,6 @@ let PlaylistPlayer = {
     }
 
     for (let c in this.controls) {
-     
       this.controls[c].dataset.id = c;
       this.controls[c].onclick = toogleOption;
     }
@@ -291,12 +291,18 @@ let PlaylistPlayer = {
       }
     },
     unload: function (p) {
-      document
-        .querySelector("#" + p + "_style_id, #" + p + "_script_id")
-        .remove();
+      let unloadFile = document.querySelector(
+        "#" + p + "_style_id, #" + p + "_script_id"
+      );
+      if (unloadFile) {
+        unloadFile.remove();
+      }
     },
     unloadCSS: function (p) {
-      document.querySelector("#" + p + "_style_id").remove();
+      let unloadFile = document.querySelector("#" + p + "_style_id");
+      if (unloadFile) {
+        unloadFile.remove();
+      }
     },
   },
 
@@ -308,6 +314,7 @@ let PlaylistPlayer = {
     // Remove some overlay or enrichment element wich could cause problems if not need
     const has_overlay = json.overlay && json.overlay.length > 0,
       has_enrichment = json.version != "O";
+
     if (!has_enrichment) {
       this.headFiles.unloadCSS("enrichment");
       metadataTrack = null;
@@ -327,16 +334,14 @@ let PlaylistPlayer = {
 
     player.dispose();
 
-    $("#info-video-wrapper, #info-video").eq(0).before(json.html_video_element);
-    document
-      .querySelectorAll("#info-video-wrapper,#info-video ")
-      .forEach(function (e) {
-        e[0].insertBefore(json.html_video_element, e[0].firstChild);
-      });
+    let infoWrapper = document.querySelectorAll(
+      "#info-video-wrapper, #info-video"
+    )[0];
+    infoWrapper.insertAdjacentHTML("beforebegin", json.html_video_element);
     const _this = this;
 
     player = videojs("podvideoplayer", options, function () {});
-    player.addEventListener("load", function () {
+    player.ready(function () {
       // Chapters
       if (json.chapter.length > 0) {
         player.videoJsChapters();

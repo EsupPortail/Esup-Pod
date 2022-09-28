@@ -205,16 +205,17 @@ document.addEventListener("DOMContentLoaded", function () {
     document
       .getElementById("info-video")
       .addEventListener("click", function (e) {
+        let target = e.target;
+        if (!target.classList.contains("playlist-item")) return
         e.preventDefault();
         const url = window.location.href;
         const regex = new RegExp("(.*)/video/(\\d+-(.*))/");
-        const checkslug = regext.test(url);
+        const checkslug = regex.test(url);
         const foundslug = url.match(regex);
         if (!checkslug) {
           showalert(
-            "Error getting video information.",
-            "alert-danger",
-            "alert-danger"
+            gettext("The video can not be added from this page."),
+          "alert-danger"
           );
           return;
         }
@@ -222,37 +223,44 @@ document.addEventListener("DOMContentLoaded", function () {
           showalert(
             "The video slug not found.",
             "alert-danger",
-            "alert-danger"
           );
           return;
         }
-        const slug = foundslug[2];
-        const link = this.href;
-        const jqxhr = fetch(window.location.href, {
+        
+        const slug = target.getAttribute("data-slug");
+        const link = target;
+        let token = document.cookie
+        .split(";")
+        .filter((item) => item.trim().startsWith("csrftoken="))[0]
+        .split("=")[1];
+
+        body = JSON.stringify({
+          action: "add",
+            video: foundslug[2],
+            csrfmiddlewaretoken: token
+        });
+        const jqxhr = fetch("/playlist/edit/" + slug + "/", {
           method: "POST",
-          body: {
-            action: "info",
-            video: slug,
-            csrfmiddlewaretoken:
-              document.getElementById("playlist_form").children[0].value,
+          headers :{
+            "Content-Type": "application/json",
+            "X-CSRFToken": token,
           },
+          body: body,
         })
           .then((response) => {
-            JSON.parse(response);
-            if (!response.success && !response.fail) {
+            if (response.status != 200) {
+           
               showalert(
                 "You are no longer authenticated. Please log in again.",
                 "alert-danger",
                 "alert-danger"
               );
             } else {
-              if (response.success) {
-                showalert(response.success, "alert-success", "alert-success");
+              if (response.status == 200) {
+                showalert("Video add to playlist", "alert-success", "alert-success");
                 link.classList.add("disabled");
                 link.classList.remove("playlist-item");
                 link.append("");
-              } else {
-                showalert(response.fail, "alert-danger", "alert-danger");
               }
             }
           })
