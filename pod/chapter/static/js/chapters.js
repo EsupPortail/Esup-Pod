@@ -287,7 +287,7 @@ var sendform = async function (elt, action) {
     })
       .then((response) => response.text())
       .then((data) => {
-        if ((data.indexOf("list_chapter") == -1) == -1) {
+        if (data.indexOf("list_chapter") == -1) {
           showalert(
             gettext("You are no longer authenticated. Please log in again."),
             "alert-danger"

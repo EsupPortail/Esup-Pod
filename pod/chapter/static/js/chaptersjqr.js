@@ -51,7 +51,6 @@ $(document).on("click", "#cancel_chapter", function () {
 $(document).on("submit", "form.get_form", function (e) {
   e.preventDefault();
   var jqxhr = "";
-
   var action = $(this).find("input[name=action]").val();
   sendandgetform(this, action);
 });
