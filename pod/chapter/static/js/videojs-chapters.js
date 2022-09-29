@@ -98,7 +98,6 @@
           oldList.parentNode.removeChild(oldList);
 
           let podPlayer = document.querySelector("#" + player.id());
-
           podPlayer.append(newList);
         };
 
