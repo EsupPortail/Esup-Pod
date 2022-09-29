@@ -32,7 +32,7 @@
     <div class="list-group">
       {% if form.errors %}
         <p class="text-danger">{% trans "One or more errors have been found in the form." %}<br/>
-          {% for error in form.non_field_errors %} 
+          {% for error in form.non_field_errors %}
           <span> - {{ error }}</span> <br/>
           {% endfor %}
         </p>
@@ -61,7 +61,7 @@
       {% spaceless %}
       <div class="mb-3 {% if "restrict_access_to_groups" in field.name %}collapse restricted_access{% endif %}">
         <div class="list-group-item">
-          <div class="{% if field.name == "owners" or field.name == "users" %}form-row {%endif%}form-group {% if field.field.required %}form-group-required {%endif%}">
+          <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}">
             {{ field.errors }}
             {% if "form-check-input" in field.field.widget.attrs.class %}
               <div class="form-check">
@@ -74,7 +74,7 @@
             {% if field.help_text %}
               <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
             {% endif %}
-            {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+            {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
           </div>
         </div>
       </div>
@@ -84,7 +84,7 @@
       {% endwith %}
       </fieldset>
       {% endfor %}
-      
+
     </div>
     <div class="text-center mb-3">
       <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>

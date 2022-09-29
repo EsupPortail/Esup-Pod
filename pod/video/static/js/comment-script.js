@@ -66,6 +66,7 @@ class ConfirmModal extends HTMLElement {
     message = message ? message : this.getAttribute("message");
     delete_text = delete_text ? delete_text : this.getAttribute("delete_text");
     cancel_text = cancel_text ? cancel_text : this.getAttribute("cancel_text");
+    close_text = gettext("Close");
 
     let modal = `
       <div class="modal fade confirm_delete" tabindex="-1" aria-labelledby="confirm_delete_title">
@@ -73,7 +74,7 @@ class ConfirmModal extends HTMLElement {
           <div class="modal-content">
             <div class="modal-header">
               <h3 class="modal-title" id="confirm_delete_title">${title}</h3>
-              <!--button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button-->
+              <!--button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="${close_text}"></button-->
             </div>
             <div class="content modal-body">
               ${message}

@@ -151,7 +151,7 @@
                 <span class="float-end"><a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm me-1">
                     <i class="bi bi-pencil-square"></i>&nbsp;{% trans "Edit the channel"%}</a>
                 </span>
-            {%endif%}
+            {% endif %}
         {% if theme %}
             </div>
         {% else %}
@@ -164,7 +164,7 @@
             {{ channel.description|safe }}
         {% endif %}
         {% if theme %}
-            {% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channels:theme_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the themes"%}</a></span>{%endif%}
+            {% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channels:theme_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the themes"%}</a></span>{% endif %}
             <h1 class="theme_title h2">{{theme.title}}</h1>
             {% if theme.headband %}
                 <div class="channelheader">
@@ -189,7 +189,7 @@
         {% trans 'Themes of' %} "{{ channel.title }}"
       </h2>
       <div class="card-text" id="treeview">
-        <ul class="list-group list-group-flush {% if channel.themes.count > 5 %}small{%endif%}" id="ultreeview" style="max-height:300px; overflow:auto;">
+        <ul class="list-group list-group-flush {% if channel.themes.count > 5 %}small{% endif %}" id="ultreeview" style="max-height:300px; overflow:auto;">
         </ul>
       </div>
     </div>

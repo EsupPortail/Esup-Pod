@@ -7,7 +7,7 @@
 {% if broadcaster.enable_viewer_count%}
 <script>let heartbeat_delay = {{heartbeat_delay}}</script>
 <script src="{% static 'js/viewcounter.js' %}?ver={{VERSION}}"></script>
-{%endif%}
+{% endif %}
 {% endblock %}
 
 
@@ -70,10 +70,10 @@
     {% include "bbb/bbb_form.html" %}
   {% endif %}
 
-  {%endif%}
+  {% endif %}
 
   <div id="info-video" style="display:none" class="pod-info-video">
-    <button type="button" class="btn-close" aria-label="Close"></button>
+    <button type="button" class="btn-close" aria-label="{% trans 'Close' %}"></button>
   </div>
     {% if broadcaster.is_recording %}
       <div class="card text-white bg-danger mb-3">
@@ -131,12 +131,12 @@
     {% for otherbroadcaster in broadcaster.building.broadcaster_set.all%}
       {% if otherbroadcaster != broadcaster and otherbroadcaster.public %}
         <p class="card-text broadcaster-status">
-          {%if otherbroadcaster.status %}<a href="{% url 'live:direct' slug=otherbroadcaster.slug %}" class="live_on"><i class="bi bi-cast"></i>&nbsp;{{otherbroadcaster.name}}</a>
-          {%else%}<span class="live_off"><i class="bi bi-cast"></i>&nbsp;{{otherbroadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}
+          {% if otherbroadcaster.status %}<a href="{% url 'live:direct' slug=otherbroadcaster.slug %}" class="live_on"><i class="bi bi-cast"></i>&nbsp;{{otherbroadcaster.name}}</a>
+          {% else %}<span class="live_off"><i class="bi bi-cast"></i>&nbsp;{{otherbroadcaster.name}} ({% trans "no broadcast in progress" %})</span>{% endif %}
         </p>
       {% endif %}
     {% empty %}
-      <p class="card-text not-found">{% trans "Sorry, no lives found" %}.</p>
+      <p class="card-text not-found">{% trans "Sorry, no lives found." %}</p>
     {% endfor %}
       {% if broadcaster.building.gmapurl %}
         <p class="card-text">

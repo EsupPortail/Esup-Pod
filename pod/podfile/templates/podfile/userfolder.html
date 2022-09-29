@@ -4,9 +4,9 @@
         <a
             href="#"
             id="folder_{{user_home_folder.id}}"
-            class="{% if user_home_folder == current_session_folder%}font-weight-bold{%endif%} folder"
+            class="{% if user_home_folder == current_session_folder%}font-weight-bold{% endif %} folder"
             data-id="{{user_home_folder.id}}"
-            data-target="{% if type %}{% url 'podfile:get_folder_files' id=user_home_folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=user_home_folder.id %}{%endif%}"
+            data-target="{% if type %}{% url 'podfile:get_folder_files' id=user_home_folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=user_home_folder.id %}{% endif %}"
         >
             <i class="home-directory bi bi-house-door-fill"></i>
             {% trans "My folders"%}
@@ -23,7 +23,7 @@
             {% trans "Add new folder" %}
         </button>
     </div>
-    <button id="close-folder-icon" type="button" class="btn-close" aria-label="{%trans 'Close' %}"></button>
+    <button id="close-folder-icon" type="button" class="btn-close" aria-label="{% trans 'Close' %}"></button>
 </div>
   <label class="visually-hidden" for="folder-search">{% trans 'Filter files' %}</label>
   <input
@@ -38,11 +38,11 @@
   <div class="alert alert-warning alert-dismissible fade show" role="alert">
     <p>
       <i class="bi bi-exclamation-triangle-fill warning-icon" aria-hidden="true"></i>
-      {%trans "SuperUser mode: the folders of all users are listed (the owner is noted in brackets)" %}
+      {% trans "SuperUser mode: the folders of all users are listed (the owner is noted in brackets)" %}
     </p>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button>
   </div>
-{%endif%}
+{% endif %}
 <div class="flex display-vertical">
     <div class="list_folders" id="list_folders_sub" data-type="{{type}}"></div>
     {% if share_folder.count > 0 or share_folder_user.count > 0 %}
@@ -70,10 +70,10 @@
                 <a
                     href="#"
                     id="folder_{{folder.id}}"
-                    class="{% if folder == current_session_folder%}font-weight-bold{%endif%} folder"
+                    class="{% if folder == current_session_folder%}font-weight-bold{% endif %} folder"
                     data-foldname="{{ folder.name }}"
                     data-id="{{folder.id}}"
-                    data-bs-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}"
+                    data-bs-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{% endif %}"
                 >
                     {% if folder == current_session_folder%}
                     <span class="folder-open" id="folder-open-icon">
@@ -118,10 +118,10 @@
                 <a
                     href="#"
                     id="folder_{{folder.id}}"
-                    class="{% if folder == current_session_folder%}font-weight-bold{%endif%} folder"
+                    class="{% if folder == current_session_folder%}font-weight-bold{% endif %} folder"
                     data-foldname="{{ folder.name }}"
                     data-id="{{folder.id}}"
-                    data-bs-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}"
+                    data-bs-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{% endif %}"
                 >
                     {% if folder == current_session_folder%}
                     <span class="folder-open" id="folder-open-icon">
@@ -138,7 +138,7 @@
                             <path fill="currentColor" d="M572.694 292.093L500.27 416.248A63.997 63.997 0 0 1 444.989 448H45.025c-18.523 0-30.064-20.093-20.731-36.093l72.424-124.155A64 64 0 0 1 152 256h399.964c18.523 0 30.064 20.093 20.73 36.093zM152 224h328v-48c0-26.51-21.49-48-48-48H272l-64-64H48C21.49 64 0 85.49 0 112v278.046l69.077-118.418C86.214 242.25 117.989 224 152 224z"></path>
                         </svg>
                     </span>
-                    {%else%}
+                    {% else %}
                     <span class="folder" id="folder-icon">
                         <svg
                             aria-hidden="true"

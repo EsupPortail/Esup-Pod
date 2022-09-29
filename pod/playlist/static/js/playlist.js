@@ -9,7 +9,11 @@ var showalert = (message, alerttype) => {
 
 var ajaxfail = function (data) {
   showalert(
-    "Error getting form. (" + data + ") The form could not be recovered.",
+    gettext("Error getting form.") +
+      "(" +
+      data +
+      ")" +
+      gettext("The form could not be recovered."),
     "alert-danger"
   );
 };
@@ -206,7 +210,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .getElementById("info-video")
       .addEventListener("click", function (e) {
         let target = e.target;
-        if (!target.classList.contains("playlist-item")) return
+        if (!target.classList.contains("playlist-item")) return;
         e.preventDefault();
         const url = window.location.href;
         const regex = new RegExp("(.*)/video/(\\d+-(.*))/");
@@ -215,33 +219,30 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!checkslug) {
           showalert(
             gettext("The video can not be added from this page."),
-          "alert-danger"
+            "alert-danger"
           );
           return;
         }
         if (!foundslug[2]) {
-          showalert(
-            "The video slug not found.",
-            "alert-danger",
-          );
+          showalert("The video slug not found.", "alert-danger");
           return;
         }
-        
+
         const slug = target.getAttribute("data-slug");
         const link = target;
         let token = document.cookie
-        .split(";")
-        .filter((item) => item.trim().startsWith("csrftoken="))[0]
-        .split("=")[1];
+          .split(";")
+          .filter((item) => item.trim().startsWith("csrftoken="))[0]
+          .split("=")[1];
 
         body = JSON.stringify({
           action: "add",
-            video: foundslug[2],
-            csrfmiddlewaretoken: token
+          video: foundslug[2],
+          csrfmiddlewaretoken: token,
         });
         const jqxhr = fetch("/playlist/edit/" + slug + "/", {
           method: "POST",
-          headers :{
+          headers: {
             "Content-Type": "application/json",
             "X-CSRFToken": token,
           },
@@ -249,7 +250,6 @@ document.addEventListener("DOMContentLoaded", function () {
         })
           .then((response) => {
             if (response.status != 200) {
-           
               showalert(
                 "You are no longer authenticated. Please log in again.",
                 "alert-danger",
@@ -257,7 +257,11 @@ document.addEventListener("DOMContentLoaded", function () {
               );
             } else {
               if (response.status == 200) {
-                showalert("Video add to playlist", "alert-success", "alert-success");
+                showalert(
+                  "Video add to playlist",
+                  "alert-success",
+                  "alert-success"
+                );
                 link.classList.add("disabled");
                 link.classList.remove("playlist-item");
                 link.append("");

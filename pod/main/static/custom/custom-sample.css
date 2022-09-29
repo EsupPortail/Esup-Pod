@@ -25,4 +25,9 @@
   --pod-primary-lighten: #d53a92;
   --pod-primary-darken:  #8b1e5c;
 
+When you customize colors, be aware of minimum contrasts for accessibility.
+Usefull tools :
+    * https://wave.webaim.org/ to test accessibility on a whole web page
+    * https://app.contrast-finder.org/ to find a suffisent contrast.
+
 ****/

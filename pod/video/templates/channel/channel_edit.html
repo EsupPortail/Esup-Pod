@@ -10,23 +10,23 @@
     body {
       background-color: {{form.instance.color}};
     }
-  {%endif%}
+  {% endif %}
 </style>
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
 <li class="breadcrumb-item"><a href="{% url 'channels:my_channels' %}">{% trans 'My channels' %}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{% if form.instance.title %}{{form.instance.title}}{%endif%}</li>
+<li class="breadcrumb-item active" aria-current="page">{% if form.instance.title %}{{form.instance.title}}{% endif %}</li>
 {% endblock %}
 
 {% block page_title %}
-{% if form.instance.title %}{% trans "Editing the channel" %} "{{form.instance.title}}"{%endif%}
+{% if form.instance.title %}{% trans "Editing the channel" %} "{{form.instance.title}}"{% endif %}
 {% endblock %}
 
 {% block page_content %}
   {% if form.instance.title %}
     <h1 class="page_title">{% trans "Editing the channel" %} "{{form.instance.title}}"
-  {%endif%}
+  {% endif %}
   <span>
     <a href="{% url 'channel-video:channel' slug_c=form.instance.slug %}" class="btn btn-link">
       <i class="bi bi-play-btn"></i>&nbsp;{% trans "View the channel"%}
@@ -51,9 +51,9 @@
     {% endfor %}
     {% for field in form.visible_fields %}
     {% spaceless %}
-    <div class="{% if " description_" in field.name or "title_" in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}">
+    <div class="{% if " description_" in field.name or "title_" in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{% endif %}{% if "title_" in field.name %} title{% endif %}">
       <div class="list-group-item">
-        <div class="{% if field.name == "owners" or field.name == "users" %}form-row {%endif%}form-group {% if field.field.required %}form-group-required {%endif%}">
+        <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}">
           {{ field.errors }}
           {% if "form-check-input" in field.field.widget.attrs.class %}
             <div class="form-check">
@@ -66,10 +66,14 @@
           {% if field.help_text %}
             <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
           {% endif %}
-          {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+          {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
 
-          {% if field.name == "description" %}<button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target=".description" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
-          {% if field.name == "title" %}<button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target=".title" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
+          {% if field.name in "description, title" %}
+            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target=".{{field.name}}" aria-expanded="false">
+              <i class="bi bi-translate" aria-hidden="true"></i>
+              {% trans "Other(s) language(s)" %}
+            </button>
+          {% endif %}
         </div>
       </div>
     </div>

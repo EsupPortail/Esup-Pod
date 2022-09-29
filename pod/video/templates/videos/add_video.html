@@ -13,7 +13,7 @@
 <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>
 {% endblock %}
 
-{% block page_title %}{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Choose an audio or video file to upload" %}{%endif%}{% endblock %}
+{% block page_title %}{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Choose an audio or video file to upload" %}{% endif %}{% endblock %}
 
 {% block collapse_page_aside %}
 {% if access_not_allowed != True %}
@@ -32,7 +32,7 @@
 
 <div id="uploadblock">
   {% csrf_token %}
-  <div class="legal_notice">
+  <div class="mb-5">
     <h2><i class="bi bi-pin-angle"></i>&nbsp;{% trans "Legal notice" %}</h2>
     <p>{% trans "Please note: make sure that you have the necessary authorizations signed by the speakers and that you respect the Intellectual Property Code before publishing a video." %}</p>
   </div>
@@ -47,24 +47,24 @@
     <progress id="progBar" value="0" max="100"></progress>
   </div>
 
-  {%if TRANSCRIPT %}
-  <div class="form-check hide-on-processing">
-    <input class="form-check-input" type="checkbox" id="transcript-box" name="transbox">
-    <label class="form-check-label" for="transcript-box">{% trans "Transcript" %}</label>
-    <small class="form-text text-muted">{% trans "Check this box if you want to transcript the audio. (beta version)"%}</small>
-  </div>
-  {%endif%}
+  {% if TRANSCRIPT %}
+    <div class="form-check hide-on-processing">
+      <input class="form-check-input" type="checkbox" id="transcript-box" name="transbox">
+      <label class="form-check-label" for="transcript-box">{% trans "Transcript" %}</label>
+      <small class="form-text text-muted">{% trans "Check this box if you want to transcript the audio. (beta version)"%}</small>
+    </div>
+  {% endif %}
 
-  <p class="mt-3 pod-upload-warning ">{% trans "Do not leave the page if you encounter a connection problem during the upload, it will resume automatically when your connection is available again." %}</p>
+  <p class="pod-callout pod-callout-warning">{% trans "Do not leave the page if you encounter a connection problem during the upload, it will resume automatically when your connection is available again." %}</p>
 
 </div>
-{%if slug %}
+{% if slug %}
 <a href="{% url 'video:video_edit' slug=slug %}" class="btn btn-primary btn-sm m-2">
   <i class="bi bi-pencil-square"></i>&nbsp;{% trans "Back to video edit"%}
 </a>
 {% endif %}
 
-{%endif%}
+{% endif %}
 {% endblock page_content %}
 
 {% block page_aside %}
@@ -83,7 +83,7 @@
   <h2 class="card-header card-title pod-card__title h4">{% trans "Help for form fields"%}</h2>
   <div class="card-body" id="formfields">
     <div class="card">
-      <button class="btn rounded-0 pod-btn" id="heading-1" data-bs-toggle="collapse" data-bs-target="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
+      <button class="btn btn-link" id="heading-1" data-bs-toggle="collapse" data-bs-target="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
         {% trans "File" %}
       </button>
       <div id="collapse-1" class="card-body collapse hide card-text small" aria-labelledby="heading-1" data-bs-parent="#formfields">
@@ -92,17 +92,17 @@
       </div>
     </div>
 
-    {%if TRANSCRIPT %}
-    <div class="card">
-      <button class="btn btn-sm-light pod-btn" id="heading-2" data-bs-toggle="collapse" data-bs-target="#collapse-2" aria-expanded="true" aria-controls="collapse-2" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
-        {% trans "Transcript" %}
-      </button>
-      <div id="collapse-2" class="card-body collapse hide card-text small" aria-labelledby="heading-2" data-bs-parent="#formfields">
-        <p> {% trans "Available only in French and English, transcription is a speech recognition technology that transforms an oral speech into text in an automated way. By checking this box, it will generate a subtitle file automatically when encoding the video." %}</p>
-        <p> {% trans "You will probably have to modify this file using the captioning tool in the completion page to improve it." %} </p>
+    {% if TRANSCRIPT %}
+      <div class="card">
+        <button class="btn btn-link" id="heading-2" data-bs-toggle="collapse" data-bs-target="#collapse-2" aria-expanded="true" aria-controls="collapse-2" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
+          {% trans "Transcript" %}
+        </button>
+        <div id="collapse-2" class="card-body collapse hide card-text small" aria-labelledby="heading-2" data-bs-parent="#formfields">
+          <p> {% trans "Available only in French and English, transcription is a speech recognition technology that transforms an oral speech into text in an automated way. By checking this box, it will generate a subtitle file automatically when encoding the video." %}</p>
+          <p> {% trans "You will probably have to modify this file using the captioning tool in the completion page to improve it." %} </p>
+        </div>
       </div>
-    </div>
-    {%endif%}
+    {% endif %}
   </div>
 </div>
 {% endblock page_aside %}
@@ -226,12 +226,6 @@
 
   #progBar {
     width: 100%;
-  }
-
-  #uploadblock,
-  #completebox {
-    margin-left: 10px;
-    margin-top: 20px;
   }
 
   .show-on-processing {
