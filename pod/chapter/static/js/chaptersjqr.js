@@ -51,7 +51,7 @@ $(document).on("click", "#cancel_chapter", function () {
 $(document).on("submit", "form.get_form", function (e) {
   e.preventDefault();
   var jqxhr = "";
-  console.log($(this));
+
   var action = $(this).find("input[name=action]").val();
   sendandgetform(this, action);
 });
@@ -147,6 +147,7 @@ var sendandgetform = function (elt, action) {
         //location.reload();
         updateDom(data);
         manageDelete();
+
         $(list_chapter).html(data["list_chapter"]);
         show_form("");
         $("form.get_form").show();

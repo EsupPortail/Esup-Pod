@@ -180,15 +180,17 @@ var sendandgetform = async function (elt, action) {
     })
       .then((response) => response.text())
       .then((data) => {
-        if (data.indexOf(id_form) == -1) {
+        if (data.indexOf("list_chapter") == -1) {
           showalert(
             gettext("You are no longer authenticated. Please log in again."),
             "alert-danger"
           );
         } else {
+          data = JSON.parse(data);
           updateDom(data);
           manageDelete();
-          document.querySelector(list_chapter).innerHTML(data.list_chapter);
+
+          document.getElementById("list_chapter").innerHTML = data.list_chapter;
           show_form("");
           document.querySelector("form.get_form").style.display = "block";
         }
@@ -225,6 +227,7 @@ var sendform = async function (elt, action) {
         dataType: "html",
       })
         .then((response) => response.text())
+
         .then((data) => {
           if (
             data.indexOf("list_chapter") == -1 &&
@@ -235,14 +238,21 @@ var sendform = async function (elt, action) {
               "alert-danger"
             );
           } else {
-            if (data.erros) {
-              show_form(data.form);
-              document.querySelector("form.form_chapter").style.display =
+            data = JSON.parse(data);
+            console.log(data);
+            if (data.errors) {
+              document.querySelector("form#form_chapter").style.display =
                 "block";
+              showalert(
+                data.errors +
+                  " Make sure your chapter start time is not 0 or equal to the another chapter start time.",
+                "alert-danger"
+              );
             } else {
               updateDom(data);
               manageSave();
-              document.querySelector(list_chapter).innerHTML(data.list_chapter);
+              document.getElementById("list_chapter").innerHTML =
+                data.list_chapter;
               show_form("");
               document.querySelector("form.get_form").style.display = "block";
             }
@@ -283,7 +293,7 @@ var sendform = async function (elt, action) {
         } else {
           updateDom(data);
           manageImport();
-          document.querySelector(list_chapter).innerHTML(data.list_chapter);
+          document.getElementById("list_chapter").innerHTML = data.list_chapter;
           show_form("");
           document.querySelector("form.get_form").style.display = "block";
         }
@@ -431,14 +441,14 @@ var updateDom = function (data) {
   if (chaplist != null && n2 != null) {
     chaplist.className = n2.className;
   }
-  /*
+
   document
     .querySelector("#" + window.videojs.players.podvideoplayer.id_)
     .append(chaplist);
+
   document
     .querySelector("#" + window.videojs.players.podvideoplayer.id_)
     .append(tmp_node.querySelector("ul#chapters"));
-*/
 };
 
 var manageSave = function () {
