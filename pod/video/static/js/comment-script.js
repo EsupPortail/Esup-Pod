@@ -66,7 +66,7 @@ class ConfirmModal extends HTMLElement {
     message = message ? message : this.getAttribute("message");
     delete_text = delete_text ? delete_text : this.getAttribute("delete_text");
     cancel_text = cancel_text ? cancel_text : this.getAttribute("cancel_text");
-    close_text = gettext("Close");
+    const close_text = gettext("Close");
 
     let modal = `
       <div class="modal fade confirm_delete" tabindex="-1" aria-labelledby="confirm_delete_title">
