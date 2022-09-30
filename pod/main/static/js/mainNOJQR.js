@@ -1,4 +1,22 @@
 /** FUNCTIONS **/
+function getParents(el, parentSelector /* optional */) {
+  // If no parentSelector defined will bubble up all the way to *document*
+  if (parentSelector === undefined) {
+    parentSelector = document;
+  }
+
+  var parents = [];
+  var p = el.parentNode;
+
+  while (p !== parentSelector) {
+    var o = p;
+    parents.push(o);
+    p = o.parentNode;
+  }
+  parents.push(parentSelector); // Push that parentSelector you wanted to stop at
+
+  return parents;
+}
 
 function slideUp(target, duration = 500, callback = null) {
   target.style.transitionProperty = "height, margin, padding";
@@ -25,6 +43,18 @@ function slideUp(target, duration = 500, callback = null) {
     callback();
     //alert("!");
   }, duration);
+}
+
+function fadeIn(el, display) {
+  el.style.opacity = 0;
+  el.style.display = display || "block";
+  (function fade() {
+    var val = parseFloat(el.style.opacity);
+    if (!((val += 0.1) > 1)) {
+      el.style.opacity = val;
+      requestAnimationFrame(fade);
+    }
+  })();
 }
 
 function linkTo_UnCryptMailto(s) {
@@ -502,7 +532,7 @@ var result_video_form = function (data) {
 /** FOLDER **/
 
 /** AJAX **/
-var send_form_data = function (
+var send_form_data = async function (
   url,
   data_form,
   fct,
@@ -521,24 +551,50 @@ var send_form_data = function (
 
   method = method || "post";
   var jqxhr = "";
-  if (method == "post") jqxhr = $.post(url, data_form);
-  else jqxhr = $.get(url);
-  jqxhr.done(function ($data) {
-    $data = callbackSuccess($data);
-    window[fct]($data);
-  });
-  jqxhr.fail(function ($xhr) {
-    var data = $xhr.status + " : " + $xhr.statusText;
-    showalert(
-      gettext("Error during exchange") +
-        "(" +
-        data +
-        ")<br/>" +
-        gettext("No data could be stored."),
-      "alert-danger"
-    );
-    callbackFail($xhr);
-  });
+  if (method == "post") {
+    jqxhr = $.post(url, data_form);
+    fetch(url, {
+      method: "POST",
+      body: data_form,
+    })
+      .then((response) => response.text())
+      .then((data) => {
+        callbackSuccess(data);
+        window[fct]($data);
+      })
+      .catch((error) => {
+        showalert(
+          gettext("Error during exchange") +
+            "(" +
+            error +
+            ")<br/>" +
+            gettext("No data could be stored."),
+          "alert-danger"
+        );
+        callbackFail(error);
+      });
+  } else {
+    await fetch(url, {
+      method: "GET",
+    })
+      .then((response) => response.text())
+      .then((data) => {
+        callbackSuccess(data);
+        window[fct](data);
+      })
+      .catch((error) => {
+        showalert(
+          gettext("Error during exchange") +
+            "(" +
+            error +
+            ")<br/>" +
+            gettext("No data could be stored."),
+          "alert-danger"
+        );
+
+        callbackFail(error);
+      });
+  }
 };
 
 var show_form_theme_new = function (data) {
@@ -559,8 +615,8 @@ var show_form_theme_modify = function (data) {
     );
   } else {
     show_form_theme(data);
-    var id = $(data).find("#id_theme").val();
-    $("#theme_" + id).addClass("table-primary");
+    var id = data.querySelector("#id_theme").value;
+    document.querySelector("#theme_" + id).classList.add("table-primary");
   }
 };
 var show_form_theme_delete = function (data) {
@@ -583,7 +639,7 @@ var show_theme_form = function (data) {
       show_form_theme(data.form);
     } else {
       show_form_theme("");
-      $("form.get_form_theme").show();
+      document.querySelector("form.get_form_theme").style.display = "block";
       show_list_theme(data.list_element);
     }
   } else {
@@ -594,116 +650,150 @@ var show_theme_form = function (data) {
   }
 };
 var show_picture_form = function (data) {
-  $("#userpicture_form").html($(data).find("#userpicture_form").html());
-  if ($(data).find("#userpictureurl").val()) {
+  document.getElementById("userpicture_form").innerHTML =
+    data.querySelector("#userpicture_form").innerHTML;
+  if (data.querySelector("#userpictureurl").value) {
     //$(".get_form_userpicture").html('<img src="'+$(data).find("#userpictureurl").val()+'" height="34" class="rounded" alt="" loading="lazy">Change your picture');
-    $("#nav-usermenu .userpicture").remove();
-    $("#nav-usermenu .userinitial").hide();
-    $("#nav-usermenu > button").removeClass("initials btn btn-primary");
-    $("#nav-usermenu > button").addClass("nav-link");
-    $("#nav-usermenu > button").append(
-      '<img src="' +
-        $(data).find("#userpictureurl").val() +
-        '" class="userpicture rounded" alt="avatar" loading="lazy">'
-    );
+    document.querySelector("#nav-usermenu .userpicture").remove();
+    document.querySelector("#nav-usermenu .userinitial").style.display = "none";
+    document
+      .querySelector("#nav-usermenu > button")
+      .classList.remove("initials btn btn-primary");
+    document.querySelector("#nav-usermenu > button").classList.add("nav-link");
+    document
+      .querySelector("#nav-usermenu > button")
+      .append(
+        '<img src="' +
+          data.querySelector("#userpictureurl").value +
+          '" class="userpicture rounded" alt="avatar" loading="lazy">'
+      );
     //$(".get_form_userpicture").html($(".get_form_userpicture").children());
-    $(".get_form_userpicture").html(
+    document.querySelector(".get_form_userpicture").innerHTML =
       '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' +
-        gettext("Change your picture")
-    );
+      gettext("Change your picture");
   } else {
-    $("#nav-usermenu .userpicture").remove();
-    $("#nav-usermenu .userinitial").show();
-    $("#nav-usermenu > button").addClass("initials btn btn-primary");
+    document.querySelector("#nav-usermenu .userpicture").remove();
+    document.querySelector("#nav-usermenu .userinitial").style.display =
+      "inline-block";
+    document
+      .querySelector("#nav-usermenu > button")
+      .classList.add("initials btn btn-primary");
     //$(".get_form_userpicture").html($(".get_form_userpicture").children());
-    $(".get_form_userpicture").html(
+    document.querySelector(".get_form_userpicture").innerHTML =
       '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' +
-        gettext("Add your picture")
-    );
+      gettext("Add your picture");
   }
-  $("#userpictureModal").modal("hide");
+  document.getElementById("userpictureModal").modal("hide");
 };
 var append_picture_form = function (data) {
-  $("body").append(data);
-  $("#userpictureModal").modal("show");
+  document.body.append(data);
+  document.getElementById("userpictureModal").modal("show");
 };
 function show_form_theme(data) {
-  $("#div_form_theme").hide().html(data).fadeIn();
-  if (data != "") $("form.get_form_theme").hide();
+  let div_form = document.getElementById("div_form_theme");
+  div_form.style.display = "none";
+  div_form.innerHTML = data;
+  fadeIn(div_form);
+  if (data != "")
+    document.querySelector("form.get_form_theme").style.display = "none";
   window.scrollTo({
-    top: parseInt($("#div_form_theme").offset().top),
+    top: parseInt(document.getElementById("div_form_theme").offset().top),
     behavior: "smooth",
   });
 }
 function show_list_theme(data) {
-  $("#list_theme").hide().html(data).fadeIn();
+  let list_theme = document.getElementById("list_theme");
+  list_theme.style.display = "none";
+  list_theme.innerHTML = data;
+  fadeIn(list_theme);
   //$('form.get_form_theme').show();
   window.scrollTo({
-    top: parseInt($("#list_theme").offset().top),
+    top: parseInt(document.getElementById("list_theme").offset().top),
     behavior: "smooth",
   });
 }
 /***** VIDEOS *****/
-$("#ownerbox").keyup(function () {
-  if ($(this).val() && $(this).val().length > 2) {
-    var searchTerm = $(this).val();
-    $.ajax({
-      type: "GET",
-      url: "/ajax_calls/search_user?term=" + searchTerm,
-      cache: false,
-      success: function (response) {
-        $("#collapseFilterOwner .added").each(function (index) {
-          var c = $(this).find("input");
-          if (!c.prop("checked")) {
-            $(this).remove();
-          }
-        });
+document
+  .getElementById("ownerbox")
+  .addEventListener("keyup", async function () {
+    let thisE = e.target;
+    if (thisE.value && thisE.value.length > 2) {
+      var searchTerm = thisE.value;
+      var url = "/ajax/search_user/" + searchTerm;
+      var cache = false;
 
-        response.forEach((elt) => {
-          if (
-            listUserChecked.indexOf(elt.username) == -1 &&
-            $("#collapseFilterOwner #id" + elt.username).length == 0
-          ) {
-            let username = HIDE_USERNAME ? "" : " (" + elt.username + ")";
-            var chekboxhtml =
-              '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="' +
-              elt.username +
-              '" id="id' +
-              elt.username +
-              '"><label class="form-check-label" for="id' +
-              elt.username +
-              '">' +
-              elt.first_name +
-              " " +
-              elt.last_name +
-              username +
-              "</label></div>";
-            $("#collapseFilterOwner").append(chekboxhtml);
+      await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: cache,
+      })
+        .then((response) => response.text())
+        .then((data) => {
+          document
+            .querySelectorAll("#collapseFilterOwner .added")
+            .forEach((index) => {
+              var c = index.querySelector("input");
+              if (!c.checked) {
+                index.remove();
+              }
+            });
+
+          data.forEach((elt) => {
+            if (
+              listUserChecked.indexOf(elt.username) == -1 &&
+              document.querySelector("#collapseFilterOwner #id" + elt.username)
+                .length == 0
+            ) {
+              data = JSON.parse(data);
+              let username = HIDE_USERNAME ? "" : " (" + elt.username + ")";
+              var chekboxhtml =
+                '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="' +
+                elt.username +
+                '" id="id' +
+                elt.username +
+                '"><label class="form-check-label" for="id' +
+                elt.username +
+                '">' +
+                elt.first_name +
+                " " +
+                elt.last_name +
+                username +
+                "</label></div>";
+              document
+                .getElementById("collapseFilterOwner")
+                .append(chekboxhtml);
+            }
+          });
+        });
+    } else {
+      document
+        .querySelectorAll("#collapseFilterOwner .added")
+        .forEach((index) => {
+          var c = index.querySelector("input");
+          if (!c.checked) {
+            index.remove();
           }
         });
-      },
-    });
-  } else {
-    $("#collapseFilterOwner .added").each(function (index) {
-      var c = $(this).find("input");
-      if (!c.prop("checked")) {
-        $(this).remove();
-      }
-    });
-  }
-});
+    }
+  });
 /****** VIDEOS EDIT ******/
 /** channel **/
 
 var tab_initial = new Array();
 
-$("#id_theme option:selected").each(function () {
-  tab_initial.push($(this).val());
+document.querySelectorAll("#id_theme select").forEach((select) => {
+  select.options.forEach((option) => {
+    if (option.selected) {
+      tab_initial.push(option.value);
+    }
+  });
 });
 
-$("#id_theme option").remove();
+document.querySelector("#id_theme option").remove();
 
-$("#id_channel").change(function () {
+document.getElementById("id_channel").addEventListener("change", function () {
   /*
   $('#id_channel').on('select2:select', function (e) {
     alert('change 2');
@@ -712,13 +802,15 @@ $("#id_channel").change(function () {
   // use click instead of change due to select2 usage : https://github.com/theatlantic/django-select2-forms/blob/master/select2/static/select2/js/select2.js#L1502
   //$("#id_channel").on("click", function (e) {
   //alert('change 3');
-  $("#id_theme option").remove();
-  var tab_channel_selected = $(this).val();
+  document.querySelector("#id_theme option").remove();
+  var tab_channel_selected = this.value;
   var str = "";
   for (var id in tab_channel_selected) {
-    var chan = $(
-      "#id_channel option[value=" + tab_channel_selected[id] + "]"
-    ).text();
+    var chan = document
+      .querySelector(
+        "#id_channel option[value=" + tab_channel_selected[id] + "]"
+      )
+      .text();
     str += get_list(
       listTheme["channel_" + tab_channel_selected[id]],
       0,
@@ -731,57 +823,96 @@ $("#id_channel").change(function () {
       (channel = chan + ": ")
     );
   }
-  $("#id_theme").append(str);
+  document.getElementById("id_theme").append(str);
 });
-$("#id_channel option:selected").each(function () {
-  var str = get_list(
-    listTheme["channel_" + $(this).val()],
-    0,
-    tab_initial,
-    (tag_type = "option"),
-    (li_class = ""),
-    (attrs = ""),
-    (add_link = false),
-    (current = "")
-  );
-  $("#id_theme").append(str);
+
+document.querySelectorAll("#id_channel select").forEach((select) => {
+  select.options.forEach((option) => {
+    if (option.selected) {
+      var str = get_list(
+        listTheme["channel_" + option.value],
+        0,
+        tab_initial,
+        (tag_type = "option"),
+        (li_class = ""),
+        (attrs = ""),
+        (add_link = false),
+        (current = "")
+      );
+      document.getElementById("id_theme").append(str);
+    }
+  });
 });
 
 /** end channel **/
 /*** Copy to clipboard ***/
-$("#btnpartageprive").click(function () {
-  var copyText = document.getElementById("txtpartageprive");
-  copyText.select();
-  document.execCommand("copy");
-  showalert(gettext("text copied"), "alert-info");
-});
+document
+  .getElementById("btnpartageprive")
+  .addEventListener("click", function () {
+    var copyText = document.getElementById("txtpartageprive");
+    copyText.select();
+    document.execCommand("copy");
+    showalert(gettext("text copied"), "alert-info");
+  });
 
 /** Restrict access **/
 /** restrict access to group */
-$("#id_is_restricted").change(function () {
-  restrict_access_to_groups();
-});
+document
+  .getElementById("id_is_restricted")
+  .addEventListener("click", function () {
+    restrict_access_to_groups();
+  });
 var restrict_access_to_groups = function () {
-  if ($("#id_is_restricted").prop("checked")) {
-    $("#id_restrict_access_to_groups").parents(".restricted_access").show();
+  if (document.getElementById("id_is_restricted").checked) {
+    document
+      .getElementById("id_restrict_access_to_groups")
+      .getParents(".restricted_access")
+      .forEach((elt) => {
+        elt.style.display = "block";
+      });
   } else {
-    $("#id_restrict_access_to_groups option:selected").prop("selected", false);
-    $("#id_restrict_access_to_groups").parents(".restricted_access").hide();
+    document
+      .querySelectorAll("#id_restrict_access_to_groups select")
+      .forEach((select) => {
+        select.options.forEach((option) => {
+          if (option.selected) {
+            option.selected = false;
+          }
+        });
+      });
+
+    document
+      .getElementById("id_restrict_access_to_groups")
+      .getParents(".restricted_access")
+      .forEach((elt) => {
+        elt.style.display = "none";
+      });
   }
 };
-$("#id_is_draft").change(function () {
+document.getElementById("id_is_draft").addEventListener("click", function () {
   restricted_access();
 });
 var restricted_access = function () {
-  if ($("#id_is_draft").prop("checked")) {
-    $(".restricted_access").addClass("hide");
-    $(".restricted_access").removeClass("show");
-    $("#id_password").val("");
-    $("#id_restrict_access_to_groups option:selected").prop("selected", false);
-    $("#id_is_restricted").prop("checked", false);
+  let restricted_access = document.querySelector(".restricted_access");
+  if (document.getElementById("id_is_draft").checked) {
+    restricted_access.classList.add("hide");
+    restricted_access.classList.remove("show");
+    document.getElementById("id_password").value;
+
+    document
+      .querySelectorAll("#id_restrict_access_to_groups select")
+      .forEach((select) => {
+        select.options.forEach((option) => {
+          if (option.selected) {
+            option.selected = false;
+          }
+        });
+      });
+
+    document.getElementById("id_is_restricted").checked = false;
   } else {
-    $(".restricted_access").addClass("show");
-    $(".restricted_access").removeClass("hide");
+    restricted_access.classList.add("show");
+    restricted_access.classList.remove("hide");
   }
   restrict_access_to_groups();
 };
@@ -811,8 +942,8 @@ restricted_access();
               event.preventDefault();
               event.stopPropagation();
             } else {
-              if ($(form).data("morecheck")) {
-                window[$(form).data("morecheck")](form, event);
+              if (form.dataset.morecheck) {
+                window[form.dataset.morecheck](form, event);
               }
             }
             form.classList.add("was-validated");
@@ -826,7 +957,7 @@ restricted_access();
 })();
 /*** VIDEOCHECK FORM ***/
 var videocheck = function (form, event) {
-  var fileInput = $("#id_video");
+  var fileInput = document.getElementById("id_video");
   if (fileInput.get(0).files.length) {
     var fileSize = fileInput.get(0).files[0].size;
     var fileName = fileInput.get(0).files[0].name;
@@ -835,7 +966,7 @@ var videocheck = function (form, event) {
       .toLowerCase();
     if (listext.indexOf(extension) !== -1) {
       if (fileSize > video_max_upload_size) {
-        window.scrollTo($("#video_form").scrollTop(), 0);
+        window.scrollTo(document.getElementById("video_form").scrollTop(), 0);
         showalert(
           gettext("The file size exceeds the maximum allowed value:") +
             " " +
@@ -846,17 +977,19 @@ var videocheck = function (form, event) {
         event.preventDefault();
         event.stopPropagation();
       } else {
-        $("#video_form fieldset").hide();
-        $("#video_form button").hide();
-        $("#js-process").show();
-        window.scrollTo($("#js-process").scrollTop(), 0);
+        document.querySelector("#video_form fieldset").style.display = "none";
+        document.querySelector("#video_form button").style.display = "none";
+
+        let js_process = document.getElementById("js-process");
+        js_process.style.display = "block";
+        window.scrollTo(js_process.scrollTop(), 0);
         if (!show_progress_bar(form)) {
           event.preventDefault();
           event.stopPropagation();
         }
       }
     } else {
-      window.scrollTo($("#video_form").scrollTop(), 0);
+      window.scrollTo(document.getElementById("video_form").scrollTop(), 0);
       showalert(
         gettext("The file extension not in the allowed extension:") +
           " " +
@@ -872,7 +1005,7 @@ var videocheck = function (form, event) {
 
 /***** SHOW ALERT *****/
 var showalert = function (message, alerttype) {
-  $("body").append(
+  document.body.append(
     '<div id="formalertdiv" class="alert ' +
       alerttype +
       ' alert-dismissible fade show"  role="alert">' +
@@ -882,12 +1015,12 @@ var showalert = function (message, alerttype) {
       '"></button></div>'
   );
   setTimeout(function () {
-    $("#formalertdiv").remove();
+    document.getElementById("formalertdiv").remove();
   }, 5000);
 };
 
 function show_messages(msgText, msgClass, loadUrl) {
-  var $msgContainer = $("#show_messages");
+  var $msgContainer = document.getElementById("#show_messages");
   var close_button = "";
   msgClass = typeof msgClass !== "undefined" ? msgClass : "warning";
   loadUrl = typeof loadUrl !== "undefined" ? loadUrl : false;
@@ -897,12 +1030,18 @@ function show_messages(msgText, msgClass, loadUrl) {
       '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
   }
 
-  var $msgBox = $("<div>", {
-    class: "alert alert-" + msgClass + " alert-dismissable fade in",
-    role: "alert",
-    html: close_button + msgText,
-  });
-  $msgContainer.html($msgBox);
+  let $msgBox = document.createElement("div");
+  $msgBox.classList.add(
+    "alert",
+    "alert-" + msgClass,
+    "alert-dismissable",
+    "fade",
+    "in"
+  );
+  $msgBox.setAttribute("role", "alert");
+  $msgBox.innerHTML = close_button + msgText;
+
+  $msgContainer.innerHTML = $msgBox.outerHTML;
 
   if (loadUrl) {
     $msgBox.delay(4000).fadeOut(function () {
@@ -912,9 +1051,33 @@ function show_messages(msgText, msgClass, loadUrl) {
         window.location.assign(loadUrl);
       }
     });
+    setTimeout(function () {
+      fadeOutIn($msgBox);
+      if (loadUrl) {
+        window.location.reload();
+      }
+    }, 5000);
   } else if (msgClass === "info" || msgClass === "success") {
-    $msgBox.delay(3000).fadeOut(function () {
+    setTimeout(function () {
+      fadeOutIn($msgBox);
       $msgBox.remove();
-    });
+    }, 3000);
   }
+}
+
+function fadeOutIn(elem, speed) {
+  if (!elem.style.opacity) {
+    elem.style.opacity = 1;
+  } // end if
+
+  var outInterval = setInterval(function () {
+    elem.style.opacity -= 0.02;
+    if (elem.style.opacity <= 0) {
+      clearInterval(outInterval);
+      var inInterval = setInterval(function () {
+        elem.style.opacity = Number(elem.style.opacity) + 0.02;
+        if (elem.style.opacity >= 1) clearInterval(inInterval);
+      }, speed / 50);
+    } // end if
+  }, speed / 50);
 }

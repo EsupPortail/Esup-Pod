@@ -1,4 +1,3 @@
-import re
 import ast
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
@@ -71,18 +70,14 @@ def playlist(request, slug=None):
         messages.add_message(request, messages.ERROR, _("You cannot edit this playlist."))
         raise PermissionDenied
     form = PlaylistForm(instance=playlist, initial={"owner": request.user})
-    
     action = None
-    if  request.POST.get("action") != None:
+    if request.POST.get("action") is not None:
         action = request.POST.get("action")
     else:
-        
-        actionData= request.body.decode('utf8').replace("'", '"')
+        actionData = request.body.decode('utf8').replace("'", '"')
         if actionData != "":
             actionData = json.loads(actionData)
             action = actionData.get("action")
-            
-    
     if request.method == "POST" and action:
         if action in ACTION:
             return eval("playlist_{0}(request, playlist)".format(action))
@@ -95,16 +90,13 @@ def playlist(request, slug=None):
 # @login_required
 # @csrf_protect
 def playlist_play(request, slug=None):
-    
     template_video = (
         "playlist_player-iframe.html"
         if (request.GET.get("is_iframe"))
         else "playlist_player.html"
     )
     playlist = get_object_or_404(Playlist, slug=slug) if slug is not None else None
-   
     if playlist and request.user != playlist.owner and not playlist.visible:
-        
         # not (request.user.is_superuser or request.user.has_perm(
         #        "video.change_theme")
         messages.add_message(
@@ -172,7 +164,6 @@ def get_video_adv_note_list(request, video):
 
 def check_playlist_videos(playlist, data):
     for slug, position in data.items():
-        
         element = get_object_or_404(PlaylistElement, video__slug=slug, playlist=playlist)
         if element.video.is_draft:
             return _("A video in draft mode cannot be added to a playlist.")
@@ -182,16 +173,12 @@ def check_playlist_videos(playlist, data):
 
 
 def playlist_move(request, playlist):
-    
     if request:
         data = json.loads(request.body.decode('utf8').replace("'", '"'))
-        
         if data.get("videos"):
             data = data.get("videos")
             data = ast.literal_eval(data)
-            
             err = check_playlist_videos(playlist, data)
-            
             if err:
                 some_data_to_dump = {"fail": "{0}".format(err)}
             else:
@@ -199,7 +186,6 @@ def playlist_move(request, playlist):
                     element = get_object_or_404(
                         PlaylistElement, video__slug=slug, playlist=playlist
                     )
-                    
                     element.position = data[slug]
                     element.save()
                 some_data_to_dump = {
@@ -256,7 +242,6 @@ def playlist_edit(request, playlist):
 
 
 def playlist_add(request, playlist):
-   
     if request:
         data = json.loads(request.body.decode('utf8').replace("'", '"'))
         if data.get("video"):
@@ -290,7 +275,6 @@ def playlist_add(request, playlist):
 
 
 def playlist_delete(request, playlist):
-    
     if request:
         if playlist:
             playlist.delete()

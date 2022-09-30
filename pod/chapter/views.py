@@ -18,11 +18,11 @@ import json
 
 ACTION = ["new", "save", "modify", "delete", "cancel", "import", "export"]
 
+
 @api_view(["GET", "POST"])
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_chapter(request, slug):
-    
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     if (
         request.user != video.owner
@@ -37,7 +37,6 @@ def video_chapter(request, slug):
         )
 
     list_chapter = video.chapter_set.all()
- 
     if request.data and request.data["action"]:
         if request.data["action"] in ACTION:
             return eval(
@@ -53,7 +52,6 @@ def video_chapter(request, slug):
 
 def video_chapter_new(request, video):
     list_chapter = video.chapter_set.all()
-    
     form_chapter = ChapterForm(initial={"video": video})
     form_import = ChapterImportForm(user=request.user, video=video)
     if request:
@@ -80,13 +78,10 @@ def video_chapter_new(request, video):
 
 
 def video_chapter_save(request, video):
-    
     list_chapter = video.chapter_set.all()
     form_chapter = None
-   
     data = request.data["data"]
     chapter_id = data["chapter_id"]
-    
     if chapter_id != "None" and chapter_id is not None:
         chapter = get_object_or_404(Chapter, id=chapter_id)
         form_chapter = ChapterForm(data, instance=chapter)
@@ -152,7 +147,6 @@ def video_chapter_save(request, video):
 
 def video_chapter_modify(request, video):
     list_chapter = video.chapter_set.all()
-    
     if request.data["action"] and request.data["action"] == "modify":
         chapter = get_object_or_404(Chapter, id=request.data["id"])
         form_chapter = ChapterForm(instance=chapter)
