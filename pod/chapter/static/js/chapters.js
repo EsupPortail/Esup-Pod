@@ -9,6 +9,7 @@ function fadeIn(el, display) {
     }
   })();
 }
+Ui;
 
 var id_form = "form_chapter";
 function show_form(data) {

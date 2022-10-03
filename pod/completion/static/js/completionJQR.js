@@ -1,105 +1,21 @@
-let slideUp = (target, duration = 500) => {
-  target.style.transitionProperty = "height, margin, padding";
-  target.style.transitionDuration = duration + "ms";
-  target.style.boxSizing = "border-box";
-  target.style.height = target.offsetHeight + "px";
-  target.offsetHeight;
-  target.style.overflow = "hidden";
-  target.style.height = 0;
-  target.style.paddingTop = 0;
-  target.style.paddingBottom = 0;
-  target.style.marginTop = 0;
-  target.style.marginBottom = 0;
-  window.setTimeout(() => {
-    target.style.display = "none";
-    target.style.removeProperty("height");
-    target.style.removeProperty("padding-top");
-    target.style.removeProperty("padding-bottom");
-    target.style.removeProperty("margin-top");
-    target.style.removeProperty("margin-bottom");
-    target.style.removeProperty("overflow");
-    target.style.removeProperty("transition-duration");
-    target.style.removeProperty("transition-property");
-    //alert("!");
-  }, duration);
-};
+$(window).on("load", function () {
+  $("li.contenuTitre").css("display", "none");
 
-/* SLIDE DOWN */
-let slideDown = (target, duration = 500) => {
-  target.style.removeProperty("display");
-  let display = window.getComputedStyle(target).display;
-  if (display === "none") display = "block";
-  target.style.display = display;
-  let height = target.offsetHeight;
-  target.style.overflow = "hidden";
-  target.style.height = 0;
-  target.style.paddingTop = 0;
-  target.style.paddingBottom = 0;
-  target.style.marginTop = 0;
-  target.style.marginBottom = 0;
-  target.offsetHeight;
-  target.style.boxSizing = "border-box";
-  target.style.transitionProperty = "height, margin, padding";
-  target.style.transitionDuration = duration + "ms";
-  target.style.height = height + "px";
-  target.style.removeProperty("padding-top");
-  target.style.removeProperty("padding-bottom");
-  target.style.removeProperty("margin-top");
-  target.style.removeProperty("margin-bottom");
-  window.setTimeout(() => {
-    target.style.removeProperty("height");
-    target.style.removeProperty("overflow");
-    target.style.removeProperty("transition-duration");
-    target.style.removeProperty("transition-property");
-  }, duration);
-};
+  var accordeon_head = $("#accordeon li a.title");
+  var accordeon_body = $("#accordeon li.contenuTitre");
 
-/* TOOGLE */
-var slideToggle = (target, duration = 500) => {
-  if (window.getComputedStyle(target).display === "none") {
-    return slideDown(target, duration);
-  } else {
-    return slideUp(target, duration);
-  }
-};
-
-function fadeIn(el, display) {
-  el.style.opacity = 0;
-  el.style.display = display || "block";
-  (function fade() {
-    var val = parseFloat(el.style.opacity);
-    if (!((val += 0.1) > 1)) {
-      el.style.opacity = val;
-      requestAnimationFrame(fade);
-    }
-  })();
-}
-
-window.addEventListener("load", function () {
-  document.querySelectorAll("li.contenuTitre").forEach(function (element) {
-    element.style.display = "none";
-  });
-
-  var accordeon_head = document.querySelectorAll("#accordeon li a.title");
-  var accordeon_body = document.querySelector("#accordeon li.contenuTitre");
-
-  accordeon_head[0].classList.add("active");
-  let sibling = accordeon_head.parentNode.nextElementSibling;
-  sibling.style.display = "block";
-  slideDown(sibling, 500);
+  accordeon_head.first().addClass("active").parent().next().slideDown("normal");
 
   // Click on .titre
-  accordeon_head.forEach(function (element) {
-    addEventListener("click", function (event) {
-      event.preventDefault();
-      if (element.getAttribute("class") != "title active") {
-        slideToggle(element.parentNode.nextElementSibling);
-        element.classList.add("active");
-      } else if (element.getAttribute("class") == "title active") {
-        slideUp(element.parentNode.nextSibling);
-        element.classList.remove("active");
-      }
-    });
+  accordeon_head.on("click", function (event) {
+    event.preventDefault();
+    if ($(this).attr("class") != "title active") {
+      $(this).parent().next().slideToggle("normal");
+      $(this).addClass("active");
+    } else if ($(this).attr("class") == "title active") {
+      $(this).parent().next().slideUp("normal");
+      $(this).removeClass("active");
+    }
   });
 });
 
@@ -108,36 +24,27 @@ var num = 0;
 var name = "";
 
 // RESET
-document.addEventListener("reset", (event) => {
-  if (event.target !== document.querySelector("#accordeon form.completion"))
-    return;
-
-  var id_form = event.target.getAttribute("id");
+$(document).on("reset", "#accordeon form.completion", function (event) {
+  var id_form = $(this).attr("id");
   var name_form = id_form.substring(5, id_form.length);
   var form_new = "form_new_" + name_form;
   var list = "list_" + name_form;
-  document.querySelector("span#" + id_form).innerHtml = "";
-  if (id_form == "form_track")
-    document.querySelector("span#form_track").style.width = "auto";
-  document.querySelector("form#" + form_new).style.display = "block";
-  document.querySelector("form").style.display = "block";
-  document.querySelector("a.title").forEach(function (element) {
-    element.style.display = "block";
-  });
-  document.querySelectorAll("table tr").forEach(function (element) {
-    element.classList.remove("info");
-  });
-  document.getElementById("fileModal_id_document").remove();
-  document.getElementById("fileModal_id_src").remove();
+  $("span#" + id_form).html("");
+  if (id_form == "form_track") $("span#form_track").css("width", "auto");
+  $("form#" + form_new).show();
+  $("form").show();
+  $("a.title").css("display", "initial");
+  $("table tr").removeClass("info");
+  $("#fileModal_id_document").remove();
+  $("#fileModal_id_src").remove();
 });
 
 function show_form(data, form) {
-  let form = document.querySelector("#" + form);
-  form.style.display = "none";
-  form.innerHTML = data;
-  fadeIn(form);
-  if (form === "form_track")
-    document.getElementById("form_track").style.width = "100%";
+  $("#" + form)
+    .hide()
+    .html(data)
+    .fadeIn();
+  if (form === "form_track") $("#form_track").css("width", "100%");
 }
 
 var ajaxfail = function (data, form) {

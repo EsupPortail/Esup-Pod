@@ -24,7 +24,6 @@ from pod.podfile.models import UserFolder
 from pod.podfile.views import get_current_session_folder, file_edit_save
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.settings import LANGUAGE_CODE
-
 import re
 import json
 from django.contrib.sites.shortcuts import get_current_site
@@ -102,9 +101,9 @@ def video_caption_maker_save(request, video):
     video_folder, created = UserFolder.objects.get_or_create(
         name=video.slug, owner=request.user
     )
+
     if request.method == "POST":
         error = False
-
         lang = request.POST.get("lang")
         kind = request.POST.get("kind")
         enrich_ready = True if request.POST.get("enrich_ready") == "true" else False
