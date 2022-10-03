@@ -1105,17 +1105,16 @@ body {
   }
 }
 
-.pod-lead {}
-
-.pod-container {}
-
 .pod-navbar {
   background: var(--pod-background);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24);
 }
 
 .pod-info-video {
   margin-top: 1.5rem;
+}
+.pod-info-video a{
+  word-wrap: break-word;
 }
 
 .pod-info-video__header {
@@ -1377,6 +1376,9 @@ body {
     width: 100% !important;
     position: fixed;
     min-height: 100vh;
+  }
+  .pod-aside-collapse{
+    position: fixed;
   }
 }
 
