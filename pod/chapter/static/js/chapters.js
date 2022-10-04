@@ -401,7 +401,12 @@ document.addEventListener("change", (event) => {
 });
 
 document.addEventListener("click", (event) => {
+  if (event.target.matches("#getfromvideo_start")) {
+    console.log("getfromvideo_start");
+  }
+
   if (!event.target.matches("#info_video span.getfromvideo a")) return;
+
   event.preventDefault();
   if (!(typeof player === "undefined")) {
     if (event.target.getAttribute("id") == "getfromvideo_start") {

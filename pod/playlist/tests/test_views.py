@@ -288,7 +288,6 @@ class PlaylistViewsTestCase(TestCase):
         response = self.client.post(playlist_url, data={"action": "delete"})
         """ Test qui vérifie que la requete est fait avec ajax,
         est utilisé avec jquery et en plus XMLHttpRequest n'est plus utilisé
-        
         self.assertEqual(response.status_code, 400)
         response = self.client.post(
             playlist_url,
