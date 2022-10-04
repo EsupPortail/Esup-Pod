@@ -1,21 +1,9 @@
-function fadeIn(el, display) {
-  el.style.opacity = 0;
-  el.style.display = display || "block";
-  (function fade() {
-    var val = parseFloat(el.style.opacity);
-    if (!((val += 0.1) > 1)) {
-      el.style.opacity = val;
-      requestAnimationFrame(fade);
-    }
-  })();
-}
-Ui;
-
 var id_form = "form_chapter";
 function show_form(data) {
   let form_chapter = document.getElementById(id_form);
   form_chapter.style.display = "none";
   form_chapter.innerHTML = data;
+
   fadeIn(form_chapter);
 
   let inputStart = document.querySelector("input#id_time_start");
@@ -272,6 +260,7 @@ var sendform = async function (elt, action) {
     var file = elt.querySelector("input[name=file]").value;
     let url = window.location.href;
     let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
+
     let headers = {
       "Content-Type": "application/json",
       "X-CSRFToken": token,
@@ -394,39 +383,37 @@ Number.prototype.toHHMMSS = function () {
   return hours + ":" + minutes + ":" + seconds;
 };
 
-document.querySelectorAll("input#id_time_start").forEach(function (elt) {
-  elt.addEventListener("change", (event) => {
-    elt.parentNode
-      .querySelectorAll("span.getfromvideo span.timecode")
-      .forEach(function (span) {
-        span.innerHTML = " " + parseInt(elt.value).toHHMMSS();
-      });
-  });
-});
-document.querySelectorAll("input#id_time_end").forEach(function (elt) {
-  elt.addEventListener("change", (event) => {
-    elt.parentNode
-      .querySelectorAll("span.getfromvideo span.timecode")
-      .forEach(function (span) {
-        span.innerHTML = " " + parseInt(elt.value).toHHMMSS();
-      });
-  });
-});
-document
-  .querySelectorAll("#info_video span.getfromvideo a")
-  .forEach(function (elt) {
-    elt.addEventListener("click", (event) => {
-      event.preventDefault();
-      if (!(typeof player === "undefined")) {
-        if (elt.getAttribute("id") == "getfromvideo_start") {
-          document.getElementById("id_time_start").value = Math.floor(
-            player.currentTime()
-          );
-          document.getElementById("id_time_start").change();
-        }
-      }
+document.addEventListener("change", (event) => {
+  if (!event.target.matches("#id_time_start")) return;
+  event.target.parentNode
+    .querySelectorAll("span.getfromvideo span.timecode")
+    .forEach(function (span) {
+      span.innerHTML = " " + parseInt(event.target.value).toHHMMSS();
     });
-  });
+});
+document.addEventListener("change", (event) => {
+  if (!event.target.matches("#id_time_end")) return;
+  event.target.parentNode
+    .querySelectorAll("span.getfromvideo span.timecode")
+    .forEach(function (span) {
+      span.innerHTML = " " + parseInt(event.target.value).toHHMMSS();
+    });
+});
+
+document.addEventListener("click", (event) => {
+  if (!event.target.matches("#info_video span.getfromvideo a")) return;
+  event.preventDefault();
+  if (!(typeof player === "undefined")) {
+    if (event.target.getAttribute("id") == "getfromvideo_start") {
+      document.getElementById("id_time_start").value = Math.floor(
+        player.currentTime()
+      );
+      const event = new Event("change");
+      const time_start = document.getElementById("id_time_start");
+      time_start.dispatchEvent(event);
+    }
+  }
+});
 
 var updateDom = function (data) {
   let player = window.videojs.players.podvideoplayer;

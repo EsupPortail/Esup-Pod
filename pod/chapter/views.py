@@ -13,13 +13,12 @@ from pod.chapter.forms import ChapterForm
 from pod.chapter.forms import ChapterImportForm
 from django.middleware.csrf import get_token
 from django.contrib.sites.shortcuts import get_current_site
-from rest_framework.decorators import api_view
+
 import json
 
 ACTION = ["new", "save", "modify", "delete", "cancel", "import", "export"]
 
 
-@api_view(["GET", "POST"])
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_chapter(request, slug):
@@ -37,11 +36,15 @@ def video_chapter(request, slug):
         )
 
     list_chapter = video.chapter_set.all()
-    if request.data and request.data["action"]:
-        if request.data["action"] in ACTION:
-            return eval(
-                "video_chapter_{0}(request, video)".format(request.data["action"])
-            )
+    body = request.body.decode("utf-8")
+
+    if request.method == 'POST' :
+        data = json.loads(body)
+        if data.get("action"):
+            if data.get("action") in ACTION:
+                return eval(
+                    "video_chapter_{0}(request, video)".format(data.get("action"))
+                )
     else:
         return render(
             request,
@@ -80,8 +83,10 @@ def video_chapter_new(request, video):
 def video_chapter_save(request, video):
     list_chapter = video.chapter_set.all()
     form_chapter = None
-    data = request.data["data"]
-    chapter_id = data["chapter_id"]
+    body = request.body.decode("utf-8")
+    data = json.loads(body)
+    data = data.get("data")
+    chapter_id = data.get("chapter_id")
     if chapter_id != "None" and chapter_id is not None:
         chapter = get_object_or_404(Chapter, id=chapter_id)
         form_chapter = ChapterForm(data, instance=chapter)
@@ -147,8 +152,10 @@ def video_chapter_save(request, video):
 
 def video_chapter_modify(request, video):
     list_chapter = video.chapter_set.all()
-    if request.data["action"] and request.data["action"] == "modify":
-        chapter = get_object_or_404(Chapter, id=request.data["id"])
+    body = request.body.decode("utf-8")
+    data = json.loads(body)
+    if data.get("action") and data.get("action") == "modify":
+        chapter = get_object_or_404(Chapter, id=data.get("id"))
         form_chapter = ChapterForm(instance=chapter)
         if request:
             return render(
@@ -170,8 +177,10 @@ def video_chapter_modify(request, video):
 
 def video_chapter_delete(request, video):
     list_chapter = video.chapter_set.all()
+    body = request.body.decode("utf-8")
+    data = json.loads(body)
 
-    chapter = get_object_or_404(Chapter, id=request.data["id"])
+    chapter = get_object_or_404(Chapter, id=data.get("id"))
     chapter.delete()
     list_chapter = video.chapter_set.all()
     if request:
@@ -212,9 +221,10 @@ def video_chapter_cancel(request, video):
 
 def video_chapter_import(request, video):
     list_chapter = video.chapter_set.all()
-
+    body = request.body.decode("utf-8")
+    data = json.loads(body)
     form_chapter = ChapterForm(initial={"video": video})
-    form_import = ChapterImportForm(request.data, user=request.user, video=video)
+    form_import = ChapterImportForm(data, user=request.user, video=video)
     if form_import.is_valid():
         list_chapter = video.chapter_set.all()
         if request:
@@ -244,7 +254,7 @@ def video_chapter_import(request, video):
                 {"video": video, "list_chapter": list_chapter},
             )
     else:
-        if request.is_ajax():
+        if request:
             some_data_to_dump = {
                 "errors": "{0}".format(_("Please correct errors.")),
                 "form": render_to_string(
