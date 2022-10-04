@@ -17,7 +17,7 @@ from pod.playlist.models import Playlist
 from pod.playlist.models import PlaylistElement
 from pod.playlist.forms import PlaylistForm
 from pod.video.models import Video, AdvancedNotes
-
+from django.contrib.sites.shortcuts import get_current_site
 import json
 
 ACTION = ["add", "edit", "move", "remove", "delete"]
@@ -244,9 +244,12 @@ def playlist_edit(request, playlist):
 def playlist_add(request, playlist):
     if request:
         data = json.loads(request.body.decode('utf8').replace("'", '"'))
+
         if data.get("video"):
-            video = get_object_or_404(Video, slug=data.get("video"))
+            video = get_object_or_404(Video, slug=data.get(
+                "video"), sites=get_current_site(request))
             msg = None
+            print(video.get_thumbnail_url())
             if video.is_draft:
                 msg = _("A video in draft mode cannot be added to a playlist.")
             if video.password:

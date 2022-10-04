@@ -82,18 +82,6 @@ var slideToggle = (target, duration = 500) => {
   }
 };
 
-function fadeIn(el, display) {
-  el.style.opacity = 0;
-  el.style.display = display || "block";
-  (function fade() {
-    var val = parseFloat(el.style.opacity);
-    if (!((val += 0.1) > 1)) {
-      el.style.opacity = val;
-      requestAnimationFrame(fade);
-    }
-  })();
-}
-
 window.addEventListener("load", function () {
   document.querySelectorAll("li.contenuTitre").forEach(function (element) {
     element.style.display = "none";
@@ -151,7 +139,6 @@ document.addEventListener("reset", (event) => {
 
 function show_form(data, form) {
   form = document.querySelector("#" + form);
-
   form.style.display = "none";
   form.innerHTML = data;
   fadeIn(form);
@@ -203,7 +190,8 @@ document.addEventListener("submit", (e) => {
   sendandgetform(e.target, action, name_form, form, list);
 });
 
-var sendandgetform = function (elt, action, name, form, list) {
+var sendandgetform = async function (elt, action, name, form, list) {
+  console.log(elt);
   var href = elt.getAttribute("action");
   if (action == "new" || action == "form_save_new") {
     document.querySelector("#" + form).innerHTML =
@@ -218,7 +206,7 @@ var sendandgetform = function (elt, action, name, form, list) {
     form_data = new FormData();
     form_data.append("action", action);
 
-    fetch(url, {
+    await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -230,7 +218,6 @@ var sendandgetform = function (elt, action, name, form, list) {
     })
       .then((response) => response.text())
       .then((data) => {
-        console.log(data);
         if (data.indexOf(form) == -1) {
           showalert(
             gettext(
@@ -270,7 +257,7 @@ var sendandgetform = function (elt, action, name, form, list) {
     var url = window.location.origin + href;
     var token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
 
-    fetch(url, {
+    await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -331,7 +318,7 @@ var sendandgetform = function (elt, action, name, form, list) {
         "input[name=csrfmiddlewaretoken]"
       ).value;
 
-      fetch(url, {
+      await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -377,7 +364,7 @@ var sendandgetform = function (elt, action, name, form, list) {
         "input[name=csrfmiddlewaretoken]"
       ).value;
 
-      fetch(url, {
+      await fetch(url, {
         method: "POST",
         headers: {
           "X-CSRFToken": token,

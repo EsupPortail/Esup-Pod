@@ -853,3 +853,15 @@ function show_messages(msgText, msgClass, loadUrl) {
     });
   }
 }
+function fadeIn(el, display) {
+  console.log("fadeIn");
+  el.style.opacity = 0;
+  el.style.display = display || "block";
+  (function fade() {
+    var val = parseFloat(el.style.opacity);
+    if (!((val += 0.1) > 1)) {
+      el.style.opacity = val;
+      requestAnimationFrame(fade);
+    }
+  })();
+}
