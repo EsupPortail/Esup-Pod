@@ -144,9 +144,11 @@ SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 NOTES_STATUS = getattr(
     settings,
     "NOTES_STATUS",
-    (("0", _("Private (me only)")),
-     ("1", _("Shared with video owner")),
-     ("2", _("Public"))),
+    (
+        ("0", _("Private (me only)")),
+        ("1", _("Shared with video owner")),
+        ("2", _("Public")),
+    ),
 )
 
 THIRD_PARTY_APPS = getattr(settings, "THIRD_PARTY_APPS", [])
