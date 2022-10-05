@@ -432,7 +432,7 @@ def changefile(request):
     file = CustomFileModel()
     file = CustomImageModel()
 
-    if request.POST and request.is_ajax():
+    if request.POST and request:
         folder = get_object_or_404(UserFolder, id=request.POST["folder"])
         if request.user != folder.owner and not (
             request.user.is_superuser
@@ -593,7 +593,7 @@ def get_file(request, type):
 
 @login_required(redirect_field_name="referrer")
 def folder_shared_with(request):
-    if request.is_ajax():
+    if request:
         foldid = request.GET.get("foldid", 0)
         if foldid == 0:
             return HttpResponseBadRequest()
@@ -602,6 +602,7 @@ def folder_shared_with(request):
             data = json.dumps(
                 list(folder.users.values("id", "first_name", "last_name", "username"))
             )
+            print(list(folder.users.values("id", "first_name", "last_name", "username")))
             mimetype = "application/json"
             return HttpResponse(data, mimetype)
         else:
@@ -612,7 +613,7 @@ def folder_shared_with(request):
 
 @login_required(redirect_field_name="referrer")
 def user_share_autocomplete(request):
-    if request.is_ajax():
+    if request:
         foldid = request.GET.get("foldid", 0)
         if foldid == 0:
             return HttpResponseBadRequest()
@@ -644,7 +645,7 @@ def user_share_autocomplete(request):
 
 @login_required(redirect_field_name="referrer")
 def remove_shared_user(request):
-    if request.is_ajax():
+    if request:
         foldid = request.GET.get("foldid", 0)
         userid = request.GET.get("userid", 0)
         if foldid == 0 or userid == 0:
