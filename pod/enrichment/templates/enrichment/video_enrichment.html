@@ -16,7 +16,7 @@
 {% block video-element %}
 
 {% if form %}
-    {% include 'videos/video-form.html' %}
+  {% include 'videos/video-form.html' %}
 {% else %}
   {% include 'enrichment/video-element-enrichment.html' %}
   <div id="info-video" class="pod-info-video">{% include 'videos/video-all-info.html' with third_app=True %}</div>

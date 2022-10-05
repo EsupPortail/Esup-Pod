@@ -6587,7 +6587,7 @@ msgstr "Supprimer définitivement votre commentaire ?"
 #: pod/video/templates/videos/video-form.html:3
 msgid "This video is protected by password, please fill in and click send."
 msgstr ""
-"Cette vidéo est protégée par un mot de passe, veuillez remplir le formulaire "
+"Cette vidéo est protégée par un mot de passe, veuillez le fournir "
 "et cliquez sur envoyer."
 
 #: pod/video/templates/videos/video-form.html:37
