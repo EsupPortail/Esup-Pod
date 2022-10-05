@@ -107,6 +107,7 @@ class RssFeedGenerator(Rss201rev2Feed):
         handler.addQuickElement("itunes:summary", item["description"])
         handler.addQuickElement("itunes:duration", item["duration"])
         handler.addQuickElement("itunes:explicit", item["explicit"])
+        handler.addQuickElement("itunes:image", item["image"])
 
 
 class RssSiteVideosFeed(Feed):
@@ -120,10 +121,18 @@ class RssSiteVideosFeed(Feed):
     author_link = ""
     feed_type = RssFeedGenerator
     feed_copyright = DEFAULT_DC_COVERAGE + " " + DEFAULT_DC_RIGHTS
+    prefix = "https"
 
     def feed_extra_kwargs(self, obj):
         return {
-            "image_url": "".join([settings.STATIC_URL, LOGO_SITE]),
+            "image_url": "".join(
+                [
+                    self.prefix,
+                    get_current_site(None).domain,
+                    settings.STATIC_URL,
+                    LOGO_SITE
+                ]
+            ),
             "iTunes_category": {"text": "Education", "sub": "Higher Education"},
             "iTunes_explicit": "clean",
             "iTunes_name": self.author_name,
@@ -135,10 +144,17 @@ class RssSiteVideosFeed(Feed):
             "summary": item.description,
             "duration": item.duration_in_time,
             "explicit": "clean",
+            "image": "".join(
+                [
+                    self.prefix,
+                    item.get_thumbnail_url().replace("//", "")
+                ]
+            )
         }
 
     def get_object(self, request, slug_c=None, slug_t=None):
         prefix = "https://" if request.is_secure() else "http://"
+        self.prefix = prefix
         self.author_link = "".join([prefix, get_current_site(request).domain])
         self.link = (
             request.get_full_path().replace("rss-audio", "").replace("rss-video", "")
@@ -194,7 +210,13 @@ class RssSiteVideosFeed(Feed):
         )
 
     def item_description(self, item):
-        description = "%s<br/>" % item.get_thumbnail_admin
+        thumbnail = "".join(
+                [
+                    self.prefix,
+                    item.get_thumbnail_url().replace("//", "")
+                ]
+            )
+        description = "%s<br/>" % thumbnail
         sub = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", item.description)
         # use re sub to remove Control characters are not supported in XML 1.0
         description += sub  # item.description
