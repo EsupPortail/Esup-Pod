@@ -76,27 +76,32 @@ var static_url = "{% get_static_prefix %}";
 var deletefolder_url = "{% url 'podfile:deletefolder' %}";
 var deletefile_url = "{% url 'podfile:deletefile' %}";
 
-$(document).on('click', '.btn-fileinput_{{id}}', function (event) {
+document.addEventListener('click',   (event) => {
+  if (!event.target.matches('.btn-fileinput_{{id}}')) return;
   var myModal = new bootstrap.Modal(document.getElementById('fileModal_{{id}}'), {
     keyboard: true
   })
   myModal.show();
 })
 
-$('#fileModal_{{id}}').appendTo(document.body);
+document.body.append(document.querySelector('#fileModal_{{id}}'));
 
-$(document).on('hide.bs.modal', '#fileModal_{{id}}', function (event) {
+document.addEventListener('hide.bs.modal',   (event) => {
+  if (!event.target.matches('#fileModal_{{id}}')) return; 
   event.stopPropagation();
-  $("#modal-folder_"+$(this).data('id')).html("");
+  document.querySelector("#modal-folder_"+event.target.dataset.id.innerHTML = "";
 });
 
-$(document).on('show.bs.modal', '#fileModal_{{id}}', function (event) {
+document.addEventListener('show.bs.modal',  (event) => {
+  if (!event.target.matches('#fileModal_{{id}}')) return;
   event.stopPropagation();
-  id_input = $(this).data('id');
+  id_input = event.target.data('id');
   send_form_data("{% if type %}{% url "podfile:home" type=type %}{% else %}{% url "podfile:home" %}{% endif %}", {}, "append_folder_html_in_modal", "get");
 });
 
-$(document).on("click", "#remove_file_{{id}}", function(event) {
+document.addEventListener("click", (event) => {
+  if (!event.target.matches('#remove_file_{{id}}')) return;
+
   var html_div = '<span id="fileinput_{{id}}"></span>\
     <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput mx-1" data-bs-toggle="modal" data-bs-target="#fileModal_{{id}}">\
     {% if type == "image" %}\
@@ -112,8 +117,8 @@ $(document).on("click", "#remove_file_{{id}}", function(event) {
         {% trans 'Remove file' %}\
       {% endif %}\
     </button>';
-  $(this).parent('span').html(html_div);
-  $("#{{id}}").val("");
+  event.target.parentNode.parentNode.querySelector('span').innerHTML = html_div;
+  document.querySelector("#{{id}}").value = "";
 });
 
 </script>

@@ -44,11 +44,11 @@ if (typeof loaded == "undefined") {
       }
       html +=
         '<strong><a href="' +
-        e.target.attr("href") +
+        e.target.getAttribute("href") +
         '" target="_blank" title="' +
         gettext("Open file in a new tab") +
         '">' +
-        e.target.attr("title") +
+        e.target.getAttribute("title") +
         "</a></strong>&nbsp;";
       document.querySelector("#fileinput_" + id_input).innerHTML = html;
 
@@ -111,12 +111,21 @@ if (typeof loaded == "undefined") {
       return;
     document.querySelector("#podfile #dirs").classList.remove("open");
   });
+
+  document.querySelectorAll("#open-folder-icon > *").forEach((el) => {
+    el.style = "pointer-events: none; cursor : pointer;";
+  });
+  document.getElementById("open-folder-icon").style.cursor = "pointer";
+
   document.addEventListener("click", (e) => {
-    if (e.target.id != "open-folder-icon") return;
+    if (
+      e.target.id != "open-folder-icon" &&
+      !e.target.matches("open-folder-icon i")
+    )
+      return;
     e.preventDefault();
     document.querySelector("#podfile #dirs").classList.add("open");
   });
-
   document.addEventListener("change", (e) => {
     if (e.target.id != "ufile") return;
     e.preventDefault();
@@ -188,7 +197,10 @@ if (typeof loaded == "undefined") {
 
     let button = event.relatedTarget; // Button that triggered the modal
     let modal = event.target;
-    modal.querySelector("form").style.display = "none";
+    modal.querySelectorAll("form").forEach((e) => {
+      e.style.display = "none";
+    });
+
     let folder_id = button.dataset.folderid;
 
     let filetype = button.dataset.filetype;
@@ -287,10 +299,16 @@ if (typeof loaded == "undefined") {
       searchTerm +
       "&foldid=" +
       folderid;
-
+    let token = document.querySelector(
+      'input[name="csrfmiddlewaretoken"]'
+    ).value;
     fetch(url, {
       method: "GET",
-      cache: false,
+      headers: {
+        "X-CSRFToken": token,
+        Authorization: "Bearer " + token,
+      },
+      cache: "no-cache",
     })
       .then((response) => response.json())
       .then((data) => {
@@ -331,10 +349,16 @@ if (typeof loaded == "undefined") {
       document.getElementById("formuserid").value +
       "&userid=" +
       e.target.dataset.userid;
-
+    let token = document.querySelector(
+      'input[name="csrfmiddlewaretoken"]'
+    ).value;
     fetch(url, {
       method: "GET",
-      cache: false,
+      headers: {
+        "X-CSRFToken": token,
+        Authorization: "Bearer " + token,
+      },
+      cache: "no-cache",
     })
       .then((response) => response.json())
       .then((data) => {
@@ -359,10 +383,17 @@ if (typeof loaded == "undefined") {
       document.getElementById("formuserid").value +
       "&userid=" +
       e.target.dataset.userid;
+    let token = document.querySelector(
+      'input[name="csrfmiddlewaretoken"]'
+    ).value;
 
     fetch(url, {
       method: "GET",
-      cache: false,
+      headers: {
+        "X-CSRFToken": token,
+        Authorization: "Bearer " + token,
+      },
+      cache: "no-cache",
     })
       .then((response) => response.json())
       .then((data) => {
@@ -450,9 +481,17 @@ if (typeof loaded == "undefined") {
       let type = document.getElementById("list_folders_sub").dataset.type;
       let currentFolder = getCurrentSessionFolder();
       let url = "/podfile/ajax_calls/user_folders?search=" + text;
+      let token = document.querySelector(
+        'input[name="csrfmiddlewaretoken"]'
+      ).value;
       fetch(url, {
         method: "GET",
-        cache: false,
+        headers: {
+          "X-CSRFToken": token,
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+        cache: "no-cache",
       })
         .then((response) => response.json())
         .then((data) => {
@@ -487,6 +526,9 @@ if (typeof loaded == "undefined") {
               );
           }
           lock = false;
+        })
+        .catch((error) => {
+          showalert(gettext("Server error") + "<br/>" + error, "alert-danger");
         });
     }
   });
@@ -552,11 +594,11 @@ if (typeof loaded == "undefined") {
       );
 
       //dismiss modal
-      let center_modal = document.getElementById("folderModalCenter");
-      center_modal.modal("hide");
-      center_modal.querySelector(".modal-body input#folderInputName").value =
-        "";
-      center_modal.querySelector(".modal-body input#formfolderid").value = "";
+      let center_mod = document.getElementById("folderModalCenter");
+      let center_modal = bootstrap.Modal.getInstance(center_mod);
+      center_modal.hide();
+      center_mod.querySelector(".modal-body input#folderInputName").value = "";
+      center_mod.querySelector(".modal-body input#formfolderid").value = "";
     } else {
       showalert(
         gettext("You are no longer authenticated. Please log in again."),
@@ -577,10 +619,10 @@ if (typeof loaded == "undefined") {
         elt.classList.remove("font-weight-bold");
       });
       document.querySelectorAll("img.directory-image").forEach((elt) => {
-        elt.setAttribute("src", static_url + "podfile/images/folder.png");
+        elt.src = static_url + "podfile/images/folder.png";
       });
       document.querySelectorAll("img.file-image").forEach((elt) => {
-        elt.setAttribute("src", static_url + "podfile/images/home_folders.png");
+        elt.src = static_url + "podfile/images/home_folders.png";
       });
       document
         .querySelector("#folder_" + data.folder_id)
@@ -588,11 +630,8 @@ if (typeof loaded == "undefined") {
       console.log("#folder_" + data.folder_id + " img");
 
       let folder = document.querySelector("#folder_" + data.folder_id + " img");
-      if (folder)
-        folder.setAttribute(
-          "src",
-          static_url + "podfile/images/opened_folder.png"
-        );
+      if (folder) folder.src = static_url + "podfile/images/opened_folder.png";
+      console;
 
       //dismiss modal
       let center_modal = document.getElementById("folderModalCenter");
@@ -627,8 +666,16 @@ if (typeof loaded == "undefined") {
   function getCurrentSessionFolder() {
     let folder = "home";
     let url = "/podfile/ajax_calls/current_session_folder/";
+
+    let token = document.querySelector(
+      'input[name="csrfmiddlewaretoken"]'
+    ).value;
     fetch(url, {
       method: "GET",
+      headers: {
+        "X-CSRFToken": token,
+        Authorization: "Bearer " + token,
+      },
     })
       .then((response) => response.json())
       .then((data) => {
@@ -686,8 +733,16 @@ if (typeof loaded == "undefined") {
     let type = document.getElementById("list_folders_sub").dataset.type;
     let currentFolder = getCurrentSessionFolder();
     let url = "/podfile/ajax_calls/user_folders";
+    let token = document.querySelector(
+      'input[name="csrfmiddlewaretoken"]'
+    ).value;
+
     fetch(url, {
       method: "GET",
+      headers: {
+        "X-CSRFToken": token,
+        Authorization: "Bearer " + token,
+      },
     })
       .then((response) => response.json())
       .then((data) => {
@@ -749,9 +804,17 @@ if (typeof loaded == "undefined") {
     let currentFolder = getCurrentSessionFolder();
     let type = document.getElementById("list_folders_sub").dataset.type;
     let url = next;
+    let token = document.querySelector(
+      'input[name="csrfmiddlewaretoken"]'
+    ).value;
+
     fetch(url, {
       method: "GET",
-      cache: false,
+      headers: {
+        "X-CSRFToken": token,
+        Authorization: "Bearer " + token,
+      },
+      cache: "no-cache",
     })
       .then((response) => response.json())
       .then((data) => {
