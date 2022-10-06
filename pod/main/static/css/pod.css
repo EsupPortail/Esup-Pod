@@ -1016,7 +1016,7 @@ body {
 .pod-aside-collapse {
   position: absolute;
   right: 0.5rem;
-  z-index: 3;
+  z-index: 6;
 }
 
 .pod-aside-collapse__button {
@@ -1355,7 +1355,7 @@ body {
   overflow: hidden;
   margin-left: 100%;
   transition: all 0.15s ease;
-  z-index: 2;
+  z-index: 5;
   padding-top: 5rem;
 }
 
@@ -1388,12 +1388,12 @@ body {
     padding-right: 5rem;
   }
 
-  .pod-aside {
+  /*.pod-aside {
     padding-right: 5rem;
-  }
+  }*/
 
   .pod-grid-content {
-    gap: 0rem;
+    gap: 0;
   }
 
 }
