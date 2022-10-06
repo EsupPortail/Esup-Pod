@@ -583,7 +583,6 @@ var send_form_data = async function (
       .then((response) => response.text())
       .then(($data) => {
         $data = callbackSuccess($data);
-        console.log($data);
         window[fct]($data);
       })
       .catch((error) => {
@@ -934,7 +933,6 @@ var restrict_access_to_groups = function () {
 let id_is_draft = document.getElementById("id_is_draft");
 if (id_is_draft) {
   id_is_draft.addEventListener("click", function () {
-    console.log("ici");
     restricted_access();
   });
 }
@@ -1137,4 +1135,12 @@ function fadeOutIn(elem, speed) {
       }, speed / 50);
     } // end if
   }, speed / 50);
+}
+function isJson(str){
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return true;
+  }
+  return false;
 }

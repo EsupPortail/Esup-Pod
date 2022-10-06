@@ -613,7 +613,7 @@ if (typeof loaded == "undefined") {
 
       //dismiss modal
       let center_mod = document.getElementById("folderModalCenter");
-      let center_modal = new bootstrap.Moda(center_mod);
+      let center_modal = new bootstrap.Modal(center_mod);
       center_modal.hide();
       center_mod.querySelector(".modal-body input#folderInputName").value = "";
       center_mod.querySelector(".modal-body input#formfolderid").value = "";
@@ -626,7 +626,9 @@ if (typeof loaded == "undefined") {
   }
 
   function show_folder_files(data) {
-    data = JSON.parse(data);
+    if (!isJson(data))
+      data = JSON.parse(data);
+
     document.getElementById("files").classList.remove("loading");
     if (data.list_element) {
       document.getElementById("files").innerHTML = data.list_element;
