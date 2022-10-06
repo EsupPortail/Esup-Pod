@@ -1,5 +1,9 @@
 // podfile:filewidjet.js
 // select file
+
+
+
+
 if (typeof loaded == "undefined") {
   loaded = true;
   document.addEventListener("click", (e) => {
@@ -77,10 +81,11 @@ if (typeof loaded == "undefined") {
        `;
     document.getElementById("files").innerHTML = loader;
     let success_func = function ($data) {
+      $data = JSON.parse($data);
       let html = document.createElement("div");
       html.innerHTML = $data.list_element;
       let listfiles = html.querySelector("#listfiles");
-      if (listfiles.children.length === 0) {
+      if (listfiles.childNodes.length === 0) {
         let emptyFolderMsg = `
               <div class="empty-folder-warning">
                   ${gettext("This folder is empty")}
@@ -90,9 +95,7 @@ if (typeof loaded == "undefined") {
       }
       return $data;
     };
-    let error_func = function ($xhr) {
-      console.log("error", $xhr);
-    };
+    let error_func = function ($xhr) {};
     send_form_data(
       e.target.dataset.target,
       {},
@@ -123,32 +126,43 @@ if (typeof loaded == "undefined") {
       !e.target.matches("open-folder-icon i")
     )
       return;
+
+    //unable click on span or i
+    document.querySelectorAll(".folder_name").forEach((e) => {
+      e.style = "pointer-events: none; ";
+    });
+
     e.preventDefault();
     document.querySelector("#podfile #dirs").classList.add("open");
   });
+  
+
   document.addEventListener("change", (e) => {
     if (e.target.id != "ufile") return;
-    e.preventDefault();
-    document.getElementById("formuploadfile").submit();
+   document.getElementById("formuploadfile").querySelector("button").click();
+   
   });
 
   /****** CHANGE FILE ********/
   document.addEventListener("submit", (e) => {
+    
+   
+   e.preventDefault();
     if (
       e.target.id != "formchangeimage" &&
       e.target.id != "formchangefile" &&
       e.target.id != "formuploadfile"
     )
       return;
-
-    e.preventDefault();
+      
+    
     //alert('FORM');
     e.target.style.display = "none";
     document.querySelectorAll(".loadingformfiles").forEach((el) => {
       el.style.display = "block";
     });
     document.getElementById("listfiles").style.display = "none";
-    var data_form = new FormData(e.target[0]); //possible bug
+    var data_form = new FormData(e.target); //possible bug
     var url = e.target.getAttribute("action");
 
     fetch(url, {
@@ -207,7 +221,7 @@ if (typeof loaded == "undefined") {
     switch (filetype) {
       case "CustomImageModel":
         document.getElementById("folderModalCenterTitle").innerHTML =
-          gettext("Change") + " " + button.dataset.setfilename;
+          gettext("Change") + " " + button.dataset.filename;
         modal.querySelector(".modal-body input#id_folder").value = folder_id;
         modal.querySelector(".modal-body input#id_image").value =
           button.dataset.fileid;
@@ -414,13 +428,14 @@ if (typeof loaded == "undefined") {
 
   document.addEventListener("click", (e) => {
     if (e.target.id != "modalSave") return;
-    let modalCenter = document
-      .querySelectorAll("#folderModalCenter form")
-      .forEach((form) => {
-        if (form.offSetParent === null) return;
-
-        form.submit();
-      });
+    document.querySelectorAll("#folderModalCenter form").forEach((form) => {
+      if (form.style.display == "none") return;
+        let button = document.createElement("button")
+        button.type = "submit"
+        button.style.display = "none"
+        form.append(button)
+        button.click();
+    });
   });
 
   document.addEventListener("click", (e) => {
@@ -461,8 +476,10 @@ if (typeof loaded == "undefined") {
   });
 
   document.addEventListener("submit", (e) => {
-    if (e.target.id != "folderFormName") return;
+    
     e.preventDefault();
+  
+    if (e.target.id != "folderFormName") return;
     let form = e.target;
     let data_form = new FormData(form);
     send_form_data(form.getAttribute("action"), data_form, "reloadFolder");
@@ -550,6 +567,7 @@ if (typeof loaded == "undefined") {
   });
 
   function reloadFolder(data) {
+    data = JSON.parse(data);
     if (data.list_element) {
       var folder_id = data.folder_id;
 
@@ -595,7 +613,7 @@ if (typeof loaded == "undefined") {
 
       //dismiss modal
       let center_mod = document.getElementById("folderModalCenter");
-      let center_modal = bootstrap.Modal.getInstance(center_mod);
+      let center_modal = new bootstrap.Moda(center_mod);
       center_modal.hide();
       center_mod.querySelector(".modal-body input#folderInputName").value = "";
       center_mod.querySelector(".modal-body input#formfolderid").value = "";
@@ -608,6 +626,7 @@ if (typeof loaded == "undefined") {
   }
 
   function show_folder_files(data) {
+    data = JSON.parse(data);
     document.getElementById("files").classList.remove("loading");
     if (data.list_element) {
       document.getElementById("files").innerHTML = data.list_element;
@@ -627,15 +646,14 @@ if (typeof loaded == "undefined") {
       document
         .querySelector("#folder_" + data.folder_id)
         .classList.add("font-weight-bold");
-      console.log("#folder_" + data.folder_id + " img");
 
       let folder = document.querySelector("#folder_" + data.folder_id + " img");
       if (folder) folder.src = static_url + "podfile/images/opened_folder.png";
-      console;
 
       //dismiss modal
       let center_modal = document.getElementById("folderModalCenter");
-      center_modal.modal("hide");
+      let center_modal_instance = new bootstrap.Modal(center_modal);
+      center_modal_instance.hide();
       center_modal.querySelector(".modal-body input#folderInputName").value =
         "";
       center_modal.querySelector(".modal-body input#formfolderid").value = "";
@@ -681,9 +699,7 @@ if (typeof loaded == "undefined") {
       .then((data) => {
         folder = data.folder;
       })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      .catch((error) => {});
     return folder;
   }
 

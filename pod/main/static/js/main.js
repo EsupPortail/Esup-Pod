@@ -565,16 +565,25 @@ var send_form_data = async function (
     typeof callbackFail === "function" ? callbackFail : function ($xhr) {};
 
   method = method || "post";
-  var jqxhr = "";
+  let token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+  let form_data = new FormData();
+
+  for (let key in data_form) {
+    form_data.append(key, data_form[key]);
+  }
+
   if (method == "post") {
-    jqxhr = $.post(url, data_form);
     fetch(url, {
       method: "POST",
-      body: data_form,
+      headers: {
+        "X-CSRFToken": token,
+      },
+      body: form_data,
     })
       .then((response) => response.text())
       .then(($data) => {
         $data = callbackSuccess($data);
+        console.log($data);
         window[fct]($data);
       })
       .catch((error) => {
