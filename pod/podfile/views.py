@@ -226,7 +226,7 @@ def decide_owner(request, form, folder):
 @staff_member_required(redirect_field_name="referrer")
 def editfolder(request):
     new_folder = False
-
+    print(request.POST)
     form = UserFolderForm(request.POST)
     if request.POST.get("folderid") and request.POST.get("folderid") != "":
         folder = get_object_or_404(UserFolder, id=request.POST.get("folderid"))

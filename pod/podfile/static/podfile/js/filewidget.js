@@ -57,7 +57,9 @@ if (typeof loaded == "undefined") {
       document.querySelector("#fileinput_" + id_input).innerHTML = html;
 
       document.querySelector("#modal-folder_" + id_input).innerHTML = "";
-      document.querySelector("#fileModal_" + id_input).modal("hide");
+
+      let modalFile = new bootstrap.Modal(document.querySelector("#modal-file_" + id_input)); 
+      modalFile.hide();
     }
     Y;
   });
@@ -568,6 +570,7 @@ if (typeof loaded == "undefined") {
 
   function reloadFolder(data) {
     data = JSON.parse(data);
+    console.log(data);
     if (data.list_element) {
       var folder_id = data.folder_id;
 
@@ -613,7 +616,7 @@ if (typeof loaded == "undefined") {
 
       //dismiss modal
       let center_mod = document.getElementById("folderModalCenter");
-      let center_modal = new bootstrap.Modal(center_mod);
+      let center_modal = bootstrap.Modal.getOrCreateInstance(center_mod);
       center_modal.hide();
       center_mod.querySelector(".modal-body input#folderInputName").value = "";
       center_mod.querySelector(".modal-body input#formfolderid").value = "";

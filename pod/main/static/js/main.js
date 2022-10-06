@@ -565,11 +565,17 @@ var send_form_data = async function (
     typeof callbackFail === "function" ? callbackFail : function ($xhr) {};
 
   method = method || "post";
-  let token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-  let form_data = new FormData();
 
-  for (let key in data_form) {
-    form_data.append(key, data_form[key]);
+  let token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+  
+  form_data = ""
+  if (!data_form instanceof FormData) {
+    form_data  = new FormData();
+    for (let key in data_form) {
+      form_data.append(key, data_form[key]);
+    }
+  }else{
+    form_data = data_form
   }
 
   if (method == "post") {
@@ -599,6 +605,10 @@ var send_form_data = async function (
   } else {
     await fetch(url, {
       method: "GET",
+      headers: {
+        "X-CSRFToken": token,
+      },
+      
     })
       .then((response) => response.text())
       .then((data) => {
