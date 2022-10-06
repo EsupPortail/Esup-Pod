@@ -237,11 +237,9 @@ class RssSiteVideosFeed(Feed):
 
     def item_pubdate(self, item):
         return item.date_added
-        # return datetime.strptime(item.date_added.strftime("%Y-%m-%d"), "%Y-%m-%d")
 
     def item_updateddate(self, item):
         return item.date_added
-        # return datetime.strptime(item.date_added.strftime("%Y-%m-%d"), "%Y-%m-%d")
 
     def item_enclosure_url(self, item):
         if (item.password is not None) or item.is_restricted:
