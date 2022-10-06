@@ -1,11 +1,12 @@
 from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Rss201rev2Feed
-from datetime import datetime
+# from datetime import datetime
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
+from django.utils.html import format_html
 
 from pod.video.views import get_videos_list
 
@@ -192,7 +193,9 @@ class RssSiteVideosFeed(Feed):
         return "%s | %s" % (item.owner.get_full_name(), sub)
 
     def item_link(self, item):
-        return "".join([self.author_link, item.get_absolute_url()])
+        url = "".join([self.author_link, item.get_absolute_url()])
+        url += "?is_iframe=true"
+        return url
 
     def item_author_name(self, item):
         return item.owner.get_full_name()
@@ -210,13 +213,22 @@ class RssSiteVideosFeed(Feed):
         )
 
     def item_description(self, item):
-        thumbnail = "".join(
-                [
-                    self.prefix,
-                    item.get_thumbnail_url().replace("//", "")
-                ]
+        thumbnail_url = "".join(
+            [
+                self.prefix,
+                item.get_thumbnail_url().replace("//", "")
+            ]
+        )
+        title = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", item.title)
+        img = format_html(
+            '<img style="max-width:100px" '
+            'src="%s" alt="%s" loading="lazy"/>'
+            % (
+                thumbnail_url,
+                title.replace("{", "").replace("}", "").replace('"', "'"),
             )
-        description = "%s<br/>" % thumbnail
+        )
+        description = "%s<br/>" % img
         sub = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", item.description)
         # use re sub to remove Control characters are not supported in XML 1.0
         description += sub  # item.description
@@ -224,10 +236,12 @@ class RssSiteVideosFeed(Feed):
         return description
 
     def item_pubdate(self, item):
-        return datetime.strptime(item.date_added.strftime("%Y-%m-%d"), "%Y-%m-%d")
+        return item.date_added
+        # return datetime.strptime(item.date_added.strftime("%Y-%m-%d"), "%Y-%m-%d")
 
     def item_updateddate(self, item):
-        return datetime.strptime(item.date_added.strftime("%Y-%m-%d"), "%Y-%m-%d")
+        return item.date_added
+        # return datetime.strptime(item.date_added.strftime("%Y-%m-%d"), "%Y-%m-%d")
 
     def item_enclosure_url(self, item):
         if (item.password is not None) or item.is_restricted:
