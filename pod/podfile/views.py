@@ -83,6 +83,10 @@ def home(request, type=None):
         .order_by("owner", "id")
     )
     current_session_folder = get_current_session_folder(request)
+
+    # Here we send  home.html if current page is My Files,
+    # else we send the iframe page
+    # home_content.html
     # template = "podfile/home_content.html" if (request) else "podfile/home.html"
     template = "podfile/home.html"
 
@@ -295,7 +299,7 @@ def deletefolder(request):
             folder.delete()
 
     rendered, current_session_folder = get_rendered(request)
-    
+
     list_element = {
         "list_element": rendered,
         "folder_id": current_session_folder.id,

@@ -118,7 +118,10 @@ if (typeof loaded == "undefined") {
   document.querySelectorAll("#open-folder-icon > *").forEach((el) => {
     el.style = "pointer-events: none; cursor : pointer;";
   });
-  document.getElementById("open-folder-icon").style.cursor = "pointer";
+  if (document.querySelector("#open-folder-icon")) {
+    document.getElementById("open-folder-icon").style.cursor = "pointer";
+  }
+ 
 
   document.addEventListener("click", (e) => {
     if (

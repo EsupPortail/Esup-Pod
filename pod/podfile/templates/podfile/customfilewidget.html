@@ -89,13 +89,13 @@ document.body.append(document.querySelector('#fileModal_{{id}}'));
 document.addEventListener('hide.bs.modal',   (event) => {
   if (!event.target.matches('#fileModal_{{id}}')) return; 
   event.stopPropagation();
-  document.querySelector("#modal-folder_"+event.target.dataset.id.innerHTML = "";
+  document.querySelector("#modal-folder_"+event.target.dataset.id).innerHTML = "";
 });
 
 document.addEventListener('show.bs.modal',  (event) => {
   if (!event.target.matches('#fileModal_{{id}}')) return;
   event.stopPropagation();
-  id_input = event.target.data('id');
+  id_input = event.target.dataset.id
   send_form_data("{% if type %}{% url "podfile:home" type=type %}{% else %}{% url "podfile:home" %}{% endif %}", {}, "append_folder_html_in_modal", "get");
 });
 

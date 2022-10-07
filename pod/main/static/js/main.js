@@ -612,9 +612,9 @@ var send_form_data = async function (
       },
     })
       .then((response) => response.text())
-      .then((data) => {
-        callbackSuccess(data);
-        window[fct](data);
+      .then(($data) => {
+        $data = callbackSuccess($data);
+        window[fct]($data);
       });
     /*
       .catch((error) => {
@@ -917,12 +917,13 @@ if (id_is_restricted) {
 }
 var restrict_access_to_groups = function () {
   if (document.getElementById("id_is_restricted").checked) {
-    document
-      .getElementById("id_restrict_access_to_groups")
-      .getParents(".restricted_access")
-      .forEach((elt) => {
-        elt.style.display = "block";
-      });
+    let id_restricted_to_groups = document.getElementById(
+      "id_restrict_access_to_groups"
+    );
+    let div_restricted = id_restricted_to_groups.closest(
+      "div.restricted_access"
+    );
+    div_restricted.style.display = "block";
   } else {
     document
       .querySelectorAll("#id_restrict_access_to_groups select")
@@ -933,13 +934,14 @@ var restrict_access_to_groups = function () {
           }
         });
       });
+    let id_restricted_to_groups = document.getElementById(
+      "id_restrict_access_to_groups"
+    );
+    let div_restricted = id_restricted_to_groups.closest(
+      "div.restricted_access"
+    );
 
-    document
-      .getElementById("id_restrict_access_to_groups")
-      .getParents(".restricted_access")
-      .forEach((elt) => {
-        elt.style.display = "none";
-      });
+    div_restricted.style.display = "none";
   }
 };
 
