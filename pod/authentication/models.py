@@ -5,8 +5,6 @@ from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.sites.models import Site
-from select2 import fields as select2_fields
-from django.db.models import Q
 
 import hashlib
 import logging
@@ -82,7 +80,11 @@ class Owner(models.Model):
     commentaire = models.TextField(_("Comment"), blank=True, default="")
     hashkey = models.CharField(max_length=64, unique=True, blank=True, default="")
     userpicture = models.ForeignKey(
-        CustomImageModel, blank=True, null=True, verbose_name=_("Picture")
+        CustomImageModel,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        verbose_name=_("Picture"),
     )
     establishment = models.CharField(
         _("Establishment"),
@@ -91,9 +93,7 @@ class Owner(models.Model):
         choices=ESTABLISHMENTS,
         default=ESTABLISHMENTS[0][0],
     )
-    accessgroups = select2_fields.ManyToManyField(
-        "authentication.AccessGroup", blank=True
-    )
+    accessgroups = models.ManyToManyField("authentication.AccessGroup", blank=True)
     sites = models.ManyToManyField(Site)
 
     def __str__(self):
@@ -170,15 +170,11 @@ def create_groupsite_profile(sender, instance, created, **kwargs):
 
 class AccessGroup(models.Model):
     display_name = models.CharField(max_length=128, blank=True, default="")
-    code_name = models.CharField(max_length=128, unique=True)
+    code_name = models.CharField(max_length=250, unique=True)
     sites = models.ManyToManyField(Site)
-    users = select2_fields.ManyToManyField(
+    users = models.ManyToManyField(
         Owner,
         blank=True,
-        ajax=True,
-        search_field=lambda q: Q(user__username__icontains=q)
-        | Q(user__first_name__icontains=q)
-        | Q(user__last_name__icontains=q),
         through="Owner_accessgroups",
     )
 
@@ -188,3 +184,4 @@ class AccessGroup(models.Model):
     class Meta:
         verbose_name = _("Access Groups")
         verbose_name_plural = _("Access Groups")
+        ordering = ["display_name"]

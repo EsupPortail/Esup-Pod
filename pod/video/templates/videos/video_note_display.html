@@ -1,11 +1,11 @@
-{% load staticfiles i18n %}
+{% load static i18n %}
 
 <div class="header">
-  <span class="timestamp mr-1" start="{{ note.timestamp }}">{{ note.timestampstr }}</span>
+  <span class="timestamp me-1" start="{{ note.timestamp }}">{{ note.timestampstr }}</span>
 
   {% comment %} Display the full note {% endcomment %}
   {% if noteToDisplay and note == noteToDisplay and note != noteToEdit %}
-    <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_notes_form displayed">
+    <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_notes_form displayed">
       {% csrf_token %}
       <input type="hidden" name="action" value="get"/>
       <p class="note form"><span class="user">{{ note.user.username }}</span><span>, {% trans 'the' %} {{note.modified_on}} :<br />{{ note.note }}</span></p>
@@ -13,11 +13,11 @@
 
   {% comment %} Display a form to edit the note {% endcomment %}
   {% elif note_form and noteToEdit and note == noteToEdit %}
-    <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_notes_form hidden">
+    <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_notes_form hidden">
       {% csrf_token %}
       <input type="hidden" name="action" value="get"/>
     </form>
-    <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
+    <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" id="video_notes_form">
     {% csrf_token %}
       {% if note_form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
       {% for field_hidden in note_form.hidden_fields %} {{field_hidden}} {% endfor %}
@@ -35,50 +35,50 @@
       <input type="hidden" name="idNote" value="{{ note.id }}"/>
       <input type="hidden" name="action" value="save_note"/>
 
-      <input type="submit" name="submit" value="{% trans "Save" %}" class="btn btn-sm btn-outline-primary">
-      <input type="button" name="cancel" id="cancel_save" value="{% trans "Cancel" %}" class="btn btn-sm btn-outline-secondary">
+      <input type="submit" name="submit" value="{% trans 'Save' %}" class="btn btn-sm btn-outline-primary">
+      <input type="button" name="cancel" id="cancel_save" value="{% trans 'Cancel' %}" class="btn btn-sm btn-outline-secondary">
     </form>
 
   {% comment %} Display the note reduced {% endcomment %}
   {% else %}
-    <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_notes_form notdisplayed">
+    <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_notes_form notdisplayed">
       {% csrf_token %}
       <input type="hidden" name="action" value="get"/>
       <input type="hidden" name="idNote" value="{{ note.id }}"/>
       <p class="note form">
         <span class="user">{{ note.user.username }}</span> : {{ note.note}}
-        {% if note.notecomments_set.all.count > 0 %}<span><i data-feather="chevron-down" width="16" height="16"></i></span>{% endif %}
+        {% if note.notecomments_set.all.count > 0 %}<span><i class="bi bi-chevron-down" width="16" height="16"></i></span>{% endif %}
       </p>
     </form>
   {% endif %}
 
   {% if request.user.is_authenticated and not note_form %}
     <div class="mgtNote dropleft">
-      <button class="p-0 m-0 btn btn-outline-primary btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage note' %}"> <i data-feather="more-horizontal"></i> </button>
+      <button class="p-0 m-0 btn btn-outline-primary btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage note' %}"> <i class="bi bi-three-dots"></i> </button>
       <div class="dropdown-menu">
 
         {% if request.user == note.user %}
         {% comment %} Button to edit the note in three dots menu {% endcomment %}
-        <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="edit_video_notes_form" role="menuitem">
+        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="edit_video_notes_form" role="menuitem">
           {% csrf_token %}
           <input type="hidden" name="action" value="form_note"/>
           <input type="hidden" name="idNote" value="{{ note.id }}"/>
-          <button class="p-0 m-0 btn btn-outline-primary btn-sm edit" type="submit" action="edit" title="{% trans 'Edit the note' %}"> <i data-feather="edit-2"></i> </button>
+          <button class="p-0 m-0 btn btn-outline-primary btn-sm edit" type="submit" action="edit" title="{% trans 'Edit the note' %}"> <i class="bi bi-pencil"></i> </button>
         </form>
         {% comment %} Button to remove the note in three dots menu {% endcomment %}
-        <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="remove_video_notes_form" role="menuitem">
+        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="remove_video_notes_form" role="menuitem">
           {% csrf_token %}
           <input type="hidden" name="action" value="remove_note"/>
           <input type="hidden" name="idNote" value="{{ note.id }}"/>
-          <button class="p-0 m-0 btn btn-outline-danger btn-sm remove" type="submit" action="remove" title="{% trans 'Remove the note' %}"> <i data-feather="trash-2"></i></button>
+          <button class="p-0 m-0 btn btn-outline-danger btn-sm remove" type="submit" action="remove" title="{% trans 'Remove the note' %}"> <i class="bi bi-trash"></i></button>
         </form>
         {% endif %}
         {% comment %} Button to comment the note in three dots menu {% endcomment %}
-        <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="comment_video_notes_form" role="menuitem">
+        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="comment_video_notes_form" role="menuitem">
           {% csrf_token %}
           <input type="hidden" name="action" value="form_com"/>
           <input type="hidden" name="idNote" value="{{ note.id }}"/>
-          <button class="p-0 m-0 btn btn-outline-primary btn-sm comment" type="submit" title="{% trans 'Comment the note' %}"> <i data-feather="message-circle"></i></button>
+          <button class="p-0 m-0 btn btn-outline-primary btn-sm comment" type="submit" title="{% trans 'Comment the note' %}"> <i class="bi bi-chat"></i></button>
         </form>
 
       </div>

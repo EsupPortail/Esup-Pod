@@ -22,10 +22,11 @@ from django.db.models.query import QuerySet
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.sites.shortcuts import get_current_site
-from pod.main.forms import add_placeholder_and_asterisk
+from pod.main.forms_utils import add_placeholder_and_asterisk
 
 from ckeditor.widgets import CKEditorWidget
 from collections import OrderedDict
+from django_select2 import forms as s2forms
 
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -414,6 +415,90 @@ THEME_FORM_FIELDS_HELP_TEXT = getattr(
 )
 
 
+class OwnerWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "username__icontains",
+        "email__icontains",
+    ]
+
+
+class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
+    search_fields = [
+        "username__icontains",
+        "email__icontains",
+    ]
+
+
+class AddAccessGroupWidget(s2forms.ModelSelect2MultipleWidget):
+    search_fields = [
+        "display_name__icontains",
+        "code_name__icontains",
+    ]
+
+
+class ChannelWidget(s2forms.ModelSelect2MultipleWidget):
+    search_fields = [
+        "title__icontains",
+    ]
+
+
+class DisciplineWidget(s2forms.ModelSelect2MultipleWidget):
+    search_fields = [
+        "title__icontains",
+    ]
+
+
+class SelectWOA(forms.widgets.Select):
+    """
+    Select With Option Attributes.
+
+        subclass of Django's Select widget that allows attributes in options,
+        like disabled="disabled", title="help text", class="some classes",
+              style="background: color;"...
+
+    Pass a dict instead of a string for its label:
+        choices = [ ('value_1', 'label_1'),
+                    ...
+                    ('value_k', {'label': 'label_k', 'foo': 'bar', ...}),
+                    ... ]
+    The option k will be rendered as:
+        <option value="value_k" foo="bar" ...>label_k</option>
+    """
+
+    def create_option(
+        self, name, value, label, selected, index, subindex=None, attrs=None
+    ):
+        """Replace the option creators from original Select."""
+        # This allows using strings labels as usual
+        if isinstance(label, dict):
+            opt_attrs = label.copy()
+            label = opt_attrs.pop("label")
+        else:
+            opt_attrs = {}
+        option_dict = super(SelectWOA, self).create_option(
+            name, value, label, selected, index, subindex=subindex, attrs=attrs
+        )
+        for key, val in opt_attrs.items():
+            option_dict["attrs"][key] = val
+        return option_dict
+
+
+class DescribedChoiceField(forms.ModelChoiceField):
+    """ChoiceField with description on <options> titles."""
+
+    # Use custom widget "Select With Option Attribute"
+    widget = SelectWOA
+
+    def label_from_instance(self, obj):
+        """Override parent's label_from_instance method."""
+        return {
+            # the usual label:
+            "label": super().label_from_instance(obj),
+            # the new title attribute:
+            "title": obj.description,
+        }
+
+
 @deconstructible
 class FileSizeValidator(object):
     message = _(
@@ -700,7 +785,7 @@ class VideoForm(forms.ModelForm):
                     | Channel.objects.filter(allow_to_groups__in=users_groups)
                 ).distinct()
             )
-            user_channels.filter(sites=get_current_site(None))
+            user_channels.filter(site=get_current_site(None))
             if user_channels:
                 self.fields["channel"].queryset = user_channels
                 list_theme = Theme.objects.filter(channel__in=user_channels).order_by(
@@ -717,24 +802,29 @@ class VideoForm(forms.ModelForm):
             "restrict_access_to_groups"
         ].queryset.filter(sites=Site.objects.get_current())
         self.fields["discipline"].queryset = Discipline.objects.all().filter(
-            sites=Site.objects.get_current()
+            site=Site.objects.get_current()
         )
         if "channel" in self.fields:
             self.fields["channel"].queryset = self.fields["channel"].queryset.filter(
-                sites=Site.objects.get_current()
+                site=Site.objects.get_current()
             )
 
         if "theme" in self.fields:
             self.fields["theme"].queryset = self.fields["theme"].queryset.filter(
-                channel__sites=Site.objects.get_current()
+                channel__site=Site.objects.get_current()
             )
 
     class Meta(object):
         model = Video
         fields = VIDEO_FORM_FIELDS
+        field_classes = {"type": DescribedChoiceField}
         widgets = {
-            # 'date_added': widgets.AdminSplitDateTime,
+            "owner": OwnerWidget,
+            "additional_owners": AddOwnerWidget,
+            "channel": ChannelWidget,
+            "discipline": DisciplineWidget,
             "date_evt": widgets.AdminDateWidget,
+            # "restrict_access_to_groups": AddAccessGroupWidget
         }
         initial = {
             "date_added": TODAY,
@@ -743,7 +833,7 @@ class VideoForm(forms.ModelForm):
 
 
 class ChannelForm(forms.ModelForm):
-    sites = forms.ModelMultipleChoiceField(Site.objects.all(), required=False)
+    site = forms.ModelChoiceField(Site.objects.all(), required=False)
 
     def clean(self):
         cleaned_data = super(ChannelForm, self).clean()
@@ -772,8 +862,8 @@ class ChannelForm(forms.ModelForm):
 
         if not hasattr(self, "admin_form"):
             del self.fields["visible"]
-            if self.fields.get("sites"):
-                del self.fields["sites"]
+            if self.fields.get("site"):
+                del self.fields["site"]
         if not self.is_superuser or not hasattr(self, "admin_form"):
             self.fields["owners"].queryset = self.fields["owners"].queryset.filter(
                 owner__sites=Site.objects.get_current()
@@ -803,6 +893,11 @@ class ChannelForm(forms.ModelForm):
     class Meta(object):
         model = Channel
         fields = "__all__"
+        widgets = {
+            "owners": AddOwnerWidget,
+            "users": AddOwnerWidget,
+            "allow_to_groups": AddAccessGroupWidget,
+        }
 
 
 class ThemeForm(forms.ModelForm):
@@ -929,7 +1024,7 @@ class AdvancedNotesForm(forms.ModelForm):
         self.fields["timestamp"].widget = forms.HiddenInput()
         self.fields["timestamp"].widget.attrs["class"] = "form-control"
         self.fields["timestamp"].widget.attrs["autocomplete"] = "off"
-        self.fields["status"].widget.attrs["class"] = "form-control"
+        self.fields["status"].widget.attrs["class"] = "form-select"
 
     class Meta(object):
         model = AdvancedNotes

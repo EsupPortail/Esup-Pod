@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-26 10:16+0100\n"
-"PO-Revision-Date: 2021-11-25 16:53+0100\n"
+"POT-Creation-Date: 2022-09-14 09:11+0200\n"
+"PO-Revision-Date: 2022-05-13 15:49+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: pod/chapter/static/js/chapters.js:9 pod/chapter/static/js/chapters.js:14
 #: pod/enrichment/static/js/enrichment.js:9
@@ -47,17 +47,17 @@ msgstr ""
 #: pod/enrichment/static/js/enrichment.js:111
 #: pod/enrichment/static/js/enrichment.js:141
 #: pod/enrichment/static/js/enrichment.js:174
-#: pod/enrichment/static/js/enrichment.js:215 pod/main/static/js/main.js:468
-#: pod/main/static/js/main.js:478 pod/main/static/js/main.js:492
-#: pod/main/static/js/main.js:512
-#: pod/podfile/static/podfile/js/filewidget.js:365
-#: pod/podfile/static/podfile/js/filewidget.js:398
+#: pod/enrichment/static/js/enrichment.js:215 pod/main/static/js/main.js:482
+#: pod/main/static/js/main.js:492 pod/main/static/js/main.js:506
+#: pod/main/static/js/main.js:526
+#: pod/podfile/static/podfile/js/filewidget.js:360
+#: pod/podfile/static/podfile/js/filewidget.js:393
 msgid "You are no longer authenticated. Please log in again."
 msgstr ""
 
 #: pod/chapter/static/js/chapters.js:199
-#: pod/enrichment/static/js/enrichment.js:193 pod/main/static/js/main.js:415
-#: pod/main/static/js/main.js:501
+#: pod/enrichment/static/js/enrichment.js:193 pod/main/static/js/main.js:429
+#: pod/main/static/js/main.js:515
 msgid "One or more errors have been found in the form."
 msgstr ""
 
@@ -93,49 +93,100 @@ msgid ""
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js:48
-#: pod/completion/static/js/caption_maker.js:902
+#: pod/completion/static/js/caption_maker.js:944
 msgid "Unrecognized caption file format."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js:59
-msgid "There is no captions to save"
+msgid "There is no captions to save."
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:94
-#: pod/completion/static/js/caption_maker.js:916
+#: pod/completion/static/js/caption_maker.js:96
+#: pod/completion/static/js/caption_maker.js:958
 msgid "Not a valid time track file."
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:115
+#: pod/completion/static/js/caption_maker.js:125
 msgid "error during exchange"
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:119
+#: pod/completion/static/js/caption_maker.js:129
 msgid "no data could be stored."
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:181
+#: pod/completion/static/js/caption_maker.js:191
 msgid "Are you sure you want to delete all caption?"
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:867
+#: pod/completion/static/js/caption_maker.js:226
+#, javascript-format
+msgid "Caption for segment from %s to %s:"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:299
+#, javascript-format
+msgid "Edit caption for segment from %s to %s:"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:309
+msgid "No caption at this time code."
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:314
+#, javascript-format
+msgid "Enter caption for segment from %s to %s:"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:340
+#, javascript-format
+msgid "Pause to enter caption for segment from %s to %s."
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:467
+#: pod/podfile/static/podfile/js/filewidget.js:188
+msgid "Add"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:472
+#: pod/video/static/js/comment-script.js:88
+#: pod/video/static/js/comment-script.js:243
+msgid "Delete"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:479
+msgid "Caption"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:488
+msgid "Start"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:490
+msgid "End"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:496
+msgid "Time stamps"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:909
 msgid "Error reading caption file. Code = "
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:874
+#: pod/completion/static/js/caption_maker.js:916
 msgid "Exception thrown reading caption file. Code = "
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:878
+#: pod/completion/static/js/caption_maker.js:920
 msgid "Your browser does not support FileReader."
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:885
+#: pod/completion/static/js/caption_maker.js:927
 msgid "Error loading caption file: "
 msgstr ""
 
 #: pod/completion/static/js/completion.js:175
-#: pod/podfile/static/podfile/js/filewidget.js:277
+#: pod/podfile/static/podfile/js/filewidget.js:275
 msgid "Are you sure you want to delete this file?"
 msgstr ""
 
@@ -151,61 +202,61 @@ msgstr ""
 msgid "Are you sure you want to delete this overlay?"
 msgstr ""
 
-#: pod/completion/static/js/completion.js:243 pod/main/static/js/main.js:419
+#: pod/completion/static/js/completion.js:243 pod/main/static/js/main.js:433
 msgid "Changes have been saved."
 msgstr ""
 
-#: pod/completion/static/js/completion.js:276
+#: pod/completion/static/js/completion.js:275
 msgid "Display"
 msgstr ""
 
-#: pod/completion/static/js/completion.js:276
+#: pod/completion/static/js/completion.js:275
 msgid "section"
 msgstr ""
 
-#: pod/completion/static/js/completion.js:304
+#: pod/completion/static/js/completion.js:303
 msgid "Please enter a name from 2 to 100 caracteres."
 msgstr ""
 
-#: pod/completion/static/js/completion.js:316
+#: pod/completion/static/js/completion.js:315
 msgid "You cannot enter a weblink with more than 200 caracteres."
 msgstr ""
 
-#: pod/completion/static/js/completion.js:328
+#: pod/completion/static/js/completion.js:327
 msgid "Please enter a role."
 msgstr ""
 
-#: pod/completion/static/js/completion.js:345
+#: pod/completion/static/js/completion.js:344
 msgid ""
 "There is already a contributor with this same name and role in the list."
 msgstr ""
 
-#: pod/completion/static/js/completion.js:361
+#: pod/completion/static/js/completion.js:360
 msgid "Please enter a correct kind."
 msgstr ""
 
-#: pod/completion/static/js/completion.js:376
+#: pod/completion/static/js/completion.js:375
 msgid "Please select a language."
 msgstr ""
 
-#: pod/completion/static/js/completion.js:391
+#: pod/completion/static/js/completion.js:390
 msgid "Please specify a track file."
 msgstr ""
 
-#: pod/completion/static/js/completion.js:401
+#: pod/completion/static/js/completion.js:400
 msgid "Only .vtt format is allowed."
 msgstr ""
 
-#: pod/completion/static/js/completion.js:436
+#: pod/completion/static/js/completion.js:435
 msgid "There is already a track with the same kind and language in the list."
 msgstr ""
 
-#: pod/completion/static/js/completion.js:452
+#: pod/completion/static/js/completion.js:451
 #: pod/enrichment/static/js/enrichment.js:422
 msgid "Please select a document."
 msgstr ""
 
-#: pod/completion/static/js/completion.js:465
+#: pod/completion/static/js/completion.js:464
 msgid "Iframe and Script tags are not allowed."
 msgstr ""
 
@@ -265,162 +316,68 @@ msgstr ""
 msgid "please change start and/or end values."
 msgstr ""
 
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gView"
+#: pod/live/static/js/broadcaster_from_building.js:12
+msgid "Restricted because the broadcaster is restricted"
 msgstr ""
 
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gBox"
+#: pod/live/static/js/broadcaster_from_building.js:19
+msgid ""
+"If this box is checked, the event will only be accessible to authenticated "
+"users."
 msgstr ""
 
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "overlay"
+#: pod/live/static/js/broadcaster_from_building.js:43
+msgid "An error occurred on broadcaster fetch..."
 msgstr ""
 
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "loading"
+#: pod/live/static/js/broadcaster_from_building.js:67
+msgid "No broadcaster set for this building"
 msgstr ""
 
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "states.hover"
+#: pod/live/static/js/broadcaster_from_building.js:83
+msgid "An error occurred during broadcasters load..."
 msgstr ""
 
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "states.disabled"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "pager.pagerSelect"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "pager.pagerInput"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "pager.pagerButton"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "states.hoverTh"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "colHeaders"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "hTable"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "states.select"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "resizer"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gridFooter"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "rowFooter"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gridRow"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "grid"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "top"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "bottom"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "hDiv"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "pager.pager"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "titleButton"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gridTitle"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "toolbarUpper"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "toolbarBottom"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "rowNum"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gridError"
-msgstr ""
-
-#: pod/main/static/js/jquery.jqgrid.min.js:10
-msgid "gridErrorText"
-msgstr ""
-
-#: pod/main/static/js/main.js:378
+#: pod/main/static/js/main.js:392
 msgid "Are you sure you want to delete this element?"
 msgstr ""
 
-#: pod/main/static/js/main.js:454
+#: pod/main/static/js/main.js:468
 #: pod/podfile/static/podfile/js/filewidget.js:114
-#: pod/podfile/static/podfile/js/filewidget.js:391
+#: pod/podfile/static/podfile/js/filewidget.js:386
 msgid "Error during exchange"
 msgstr ""
 
-#: pod/main/static/js/main.js:458
+#: pod/main/static/js/main.js:472
 #: pod/podfile/static/podfile/js/filewidget.js:114
 msgid "No data could be stored."
 msgstr ""
 
-#: pod/main/static/js/main.js:531
+#: pod/main/static/js/main.js:547
 msgid "Change your picture"
 msgstr ""
 
-#: pod/main/static/js/main.js:538
+#: pod/main/static/js/main.js:556
 msgid "Add your picture"
 msgstr ""
 
-#: pod/main/static/js/main.js:666
+#: pod/main/static/js/main.js:691
 msgid "text copied"
 msgstr ""
 
-#: pod/main/static/js/main.js:718
+#: pod/main/static/js/main.js:743
 msgid "Errors appear in the form, please correct them"
 msgstr ""
 
-#: pod/main/static/js/main.js:750
+#: pod/main/static/js/main.js:775
 msgid "The file size exceeds the maximum allowed value:"
 msgstr ""
 
-#: pod/main/static/js/main.js:753
+#: pod/main/static/js/main.js:778
 msgid " GB."
 msgstr ""
 
-#: pod/main/static/js/main.js:771
+#: pod/main/static/js/main.js:796
 msgid "The file extension not in the allowed extension:"
 msgstr ""
 
@@ -428,7 +385,7 @@ msgstr ""
 msgid "The video can not be added from this page."
 msgstr ""
 
-#: pod/playlist/static/js/playlist.js:179
+#: pod/playlist/static/js/playlist.js:178
 msgid "The video slug not found."
 msgstr ""
 
@@ -464,137 +421,141 @@ msgstr ""
 #: pod/podfile/static/podfile/js/filewidget.js:180
 #: pod/podfile/static/podfile/js/filewidget.js:202
 #: pod/podfile/static/podfile/js/filewidget.js:235
-#: pod/podfile/static/podfile/js/filewidget.js:254
+#: pod/podfile/static/podfile/js/filewidget.js:253
 msgid "Server error"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:188
-msgid "Add"
-msgstr ""
-
-#: pod/podfile/static/podfile/js/filewidget.js:268
+#: pod/podfile/static/podfile/js/filewidget.js:266
 msgid "Are you sure you want to delete this folder?"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:477
+#: pod/podfile/static/podfile/js/filewidget.js:466
 msgid "See more"
 msgstr ""
 
-#: pod/video/static/js/change_video_owner.js:104
+#: pod/video/static/js/change_video_owner.js:103
 msgid "No element found"
 msgstr ""
 
-#: pod/video/static/js/change_video_owner.js:637
+#: pod/video/static/js/change_video_owner.js:124
+#: pod/video/static/js/comment-script.js:201
+msgid "Loading..."
+msgstr ""
+
+#: pod/video/static/js/change_video_owner.js:636
 msgid "An error occurred during the change of owner"
 msgstr ""
 
-#: pod/video/static/js/change_video_owner.js:648
+#: pod/video/static/js/change_video_owner.js:647
 msgid "Please complete all fields correctly"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:29
+#: pod/video/static/js/comment-script.js:27
 msgid "Answer"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:30
+#: pod/video/static/js/comment-script.js:28
 msgid "Answers"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:85
-#: pod/video/static/js/comment-script.js:239
-msgid "Delete"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js:98
+#: pod/video/static/js/comment-script.js:101
 msgid "Cancel"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:177
-#: pod/video/static/js/comment-script.js:447
-#: pod/video/static/js/comment-script.js:464
+#: pod/video/static/js/comment-script.js:180
+#: pod/video/static/js/comment-script.js:451
+#: pod/video/static/js/comment-script.js:468
 #, javascript-format
 msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
 msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pod/video/static/js/comment-script.js:188
+#: pod/video/static/js/comment-script.js:191
 msgid "Agree with the comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:215
+#: pod/video/static/js/comment-script.js:219
 msgid "Reply to comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:218
+#: pod/video/static/js/comment-script.js:222
 msgid "Reply"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:236
+#: pod/video/static/js/comment-script.js:240
 msgid "Remove this comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:259
+#: pod/video/static/js/comment-script.js:263
 msgid "Add a public comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:383
+#: pod/video/static/js/comment-script.js:264
+msgid "Send"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:387
 msgid "Show answers"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:602
+#: pod/video/static/js/comment-script.js:606
 msgid "Comment has been deleted successfully."
 msgstr ""
 
-#: pod/video/static/js/regroup_videos_by_theme.js:51
-#: pod/video/static/js/video_category.js:530
+#: pod/video/static/js/filter_aside_video_list_refresh.js:59
+msgid "An Error occurred while processing."
+msgstr ""
+
+#: pod/video/static/js/regroup_videos_by_theme.js:53
+#: pod/video/static/js/video_category.js:533
 msgid "This content is password protected."
 msgstr ""
 
-#: pod/video/static/js/regroup_videos_by_theme.js:59
-#: pod/video/static/js/video_category.js:538
+#: pod/video/static/js/regroup_videos_by_theme.js:61
+#: pod/video/static/js/video_category.js:541
 msgid "This content is chaptered."
 msgstr ""
 
-#: pod/video/static/js/regroup_videos_by_theme.js:67
-#: pod/video/static/js/video_category.js:546
+#: pod/video/static/js/regroup_videos_by_theme.js:69
+#: pod/video/static/js/video_category.js:549
 msgid "This content is in draft."
 msgstr ""
 
-#: pod/video/static/js/regroup_videos_by_theme.js:76
-#: pod/video/static/js/video_category.js:436
-#: pod/video/static/js/video_category.js:555
+#: pod/video/static/js/regroup_videos_by_theme.js:78
+#: pod/video/static/js/video_category.js:454
+#: pod/video/static/js/video_category.js:558
 msgid "Video content."
 msgstr ""
 
-#: pod/video/static/js/regroup_videos_by_theme.js:81
-#: pod/video/static/js/video_category.js:437
-#: pod/video/static/js/video_category.js:560
+#: pod/video/static/js/regroup_videos_by_theme.js:83
+#: pod/video/static/js/video_category.js:455
+#: pod/video/static/js/video_category.js:563
 msgid "Audio content."
 msgstr ""
 
-#: pod/video/static/js/regroup_videos_by_theme.js:86
-#: pod/video/static/js/video_category.js:565
+#: pod/video/static/js/regroup_videos_by_theme.js:88
+#: pod/video/static/js/video_category.js:568
 msgid "Edit the video"
 msgstr ""
 
-#: pod/video/static/js/regroup_videos_by_theme.js:87
-#: pod/video/static/js/video_category.js:566
+#: pod/video/static/js/regroup_videos_by_theme.js:89
+#: pod/video/static/js/video_category.js:569
 msgid "Complete the video"
 msgstr ""
 
-#: pod/video/static/js/regroup_videos_by_theme.js:88
-#: pod/video/static/js/video_category.js:567
+#: pod/video/static/js/regroup_videos_by_theme.js:90
+#: pod/video/static/js/video_category.js:570
 msgid "Chapter the video"
 msgstr ""
 
-#: pod/video/static/js/regroup_videos_by_theme.js:89
-#: pod/video/static/js/video_category.js:568
+#: pod/video/static/js/regroup_videos_by_theme.js:91
+#: pod/video/static/js/video_category.js:571
 msgid "Delete the video"
 msgstr ""
 
-#: pod/video/static/js/regroup_videos_by_theme.js:270
-msgid "Loading videos.."
+#: pod/video/static/js/regroup_videos_by_theme.js:272
+msgid "Loading videos…"
 msgstr ""
 
 #: pod/video/static/js/validate-date_delete-field.js:32
@@ -625,40 +586,52 @@ msgstr ""
 msgid "Save category"
 msgstr ""
 
-#: pod/video/static/js/video_category.js:187
+#: pod/video/static/js/video_category.js:71
+msgid "You have no content without a category."
+msgstr ""
+
+#: pod/video/static/js/video_category.js:197
 msgid "videos found"
 msgstr ""
 
-#: pod/video/static/js/video_category.js:187
+#: pod/video/static/js/video_category.js:197
 msgid "video found"
 msgstr ""
 
-#: pod/video/static/js/video_category.js:191
+#: pod/video/static/js/video_category.js:201
 msgid "Sorry, no video found"
 msgstr ""
 
-#: pod/video/static/js/video_category.js:455
+#: pod/video/static/js/video_category.js:465
 msgid "Edit the category"
 msgstr ""
 
-#: pod/video/static/js/video_category.js:468
+#: pod/video/static/js/video_category.js:475
 msgid "Delete the category"
 msgstr ""
 
+#: pod/video/static/js/video_category.js:635
+msgid "Success!"
+msgstr ""
+
 #: pod/video/static/js/video_category.js:636
-msgid "Success.."
+msgid "Error..."
 msgstr ""
 
-#: pod/video/static/js/video_category.js:637
-msgid "Error.."
-msgstr ""
-
-#: pod/video/static/js/video_category.js:907
+#: pod/video/static/js/video_category.js:925
 msgid "Category created successfully"
 msgstr ""
 
-#: pod/video/static/js/video_category.js:927
+#: pod/video/static/js/video_category.js:943
+msgid "Add new category"
+msgstr ""
+
+#: pod/video/static/js/video_category.js:946
 msgid "Create category"
+msgstr ""
+
+#: pod/video/static/js/video_edit.js:25
+msgid "Select the general type of the video."
 msgstr ""
 
 #: pod/video/static/js/video_stats_view.js:19

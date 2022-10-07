@@ -1,0 +1,71 @@
+{% load l10n %}
+{% load i18n %}
+{% load tz %}
+{% spaceless %}
+    <div class="card box-shadow pod-card--video video-card">
+        <!-- card.html -->
+        <div class="card-header">
+            <div class="d-flex justify-content-end align-items-center">
+            <span class="text-muted small d-flex">
+                    <span>
+                    {% if event.is_current %}
+                        <i class="bi bi-soundwave current_event" aria-hidden="true"></i>
+                    {%  else %}
+                        <i class="bi bi-soundwave" aria-hidden="true"></i>
+                    {%  endif %}
+                    </span>
+                    <span data-toggle="tooltip" title="{{event.broadcaster.name}}">
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    </span>
+                    {% if event.password %}
+                      <span title="{% trans 'This content is password protected.' %}">
+                        <i class="bi bi-lock" aria-hidden="true"></i>
+                      </span>
+                    {% endif %}
+                    {% if event.is_draft %}
+                        <span title="{% trans 'This content is in draft.' %}">
+                            <i class="bi bi-incognito"></i>
+                        </span>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        <div class="card-thumbnail">
+            <a class="link-center-pod" href="{{ event.get_absolute_url }}" title="{{ event.title }}">
+                {{ event.get_thumbnail_card|safe }}
+            </a>
+        </div>
+        <div class="card-body px-3 py-2">
+            {% if event.owner == request.user or request.user.is_superuser or perms.event.change_video or request.user in event.additional_owners.all %}
+
+                <footer class="card-footer card-footer-pod p-0 m-0">
+                    {% spaceless %}
+                    <a href="{% url 'live:event_edit' slug=event.slug %}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
+                        <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                    </a>
+                    <a href="{% url 'live:event_delete' slug=event.slug %}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
+                        <i class="bi bi-trash" aria-hidden="true"></i>
+                    </a>
+                    {% endspaceless %}
+                </footer>
+            {% endif %}
+             <span class="small video-title">
+                <a href="{{event.get_absolute_url}}
+                    {% if playlist %}?playlist={{playlist.slug}}{% endif %}"
+                   title="{{event.title}}">
+                    {{event.title|capfirst|truncatechars:43}}
+                </a>
+                </br>
+                    {% if event.start_date__date == event.end_date__date %}
+                        {% blocktrans with start_date=event.start_date|date:"d/m/Y" start_time=event.start_date|time:"H:i" end_time=event.end_date|time:"H:i" %}The {{start_date}} from {{start_time}} to {{end_time}}{% endblocktrans %}
+                    {% else %}
+                    {% blocktrans with start_date=event.start_date end_date=event.end_date %}from {{start_date}} to {{end_date}}{% endblocktrans %}
+                    {% endif %}
+                    {% if display_broadcaster_name %}
+                        <br/>{{event.broadcaster.name|capfirst|truncatechars:20}}
+                    {% endif %}
+             </span>
+        </div>
+
+    </div>
+{% endspaceless %}

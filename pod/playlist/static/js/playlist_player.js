@@ -47,7 +47,7 @@ let PlaylistPlayer = {
   loadVideo: function (position) {
     this.unselectCurrent();
     const video_url = this.elements[position - 1].children[1].children[0].href,
-      ajax_url = video_url.replace("/video/", "/video_xhr/"),
+      ajax_url = video_url.replace("/video/", "/video/xhr/"),
       parameters =
         ajax_url.indexOf("?") > 0
           ? this.getParameters()
@@ -83,17 +83,10 @@ let PlaylistPlayer = {
           $("#card-takenote").html(json.html_video_note);
         }
         _this.setCurrent(position);
-        try {
-          feather.replace();
-        } catch (e) {
-          //console.warn('Failled to call feeather function...');
-        }
       } else if (json.error == "password") {
         //Acces restrict by password => Display video password form
         if ($("#video-form-wrapper").length == 0) {
-          _this.formctn.append(
-            '<div id="video-form-wrapper" class="jumbotron"></div>'
-          );
+          _this.formctn.append('<div id="video-form-wrapper"></div>');
         }
         $("#video-form-wrapper").removeClass("hidden");
         $("#video-form-wrapper").html(json.html_content);

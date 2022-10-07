@@ -71,7 +71,6 @@ def home(request, type=None):
     if type is not None and type not in FOLDER_FILE_TYPE:
         raise SuspiciousOperation("--> Invalid type")
     user_home_folder = get_object_or_404(UserFolder, name="home", owner=request.user)
-
     share_folder = (
         UserFolder.objects.filter(access_groups=request.user.owner.accessgroup_set.all())
         .exclude(owner=request.user)
@@ -83,7 +82,6 @@ def home(request, type=None):
         .exclude(owner=request.user)
         .order_by("owner", "id")
     )
-
     current_session_folder = get_current_session_folder(request)
 
     template = "podfile/home_content.html" if (request.is_ajax()) else "podfile/home.html"
@@ -117,7 +115,7 @@ def get_current_session_folder(request):
                 name=request.session.get("current_session_folder", "home"),
             )
             | Q(
-                access_groups=request.user.owner.accessgroup_set.all(),
+                access_groups__in=request.user.owner.accessgroup_set.all(),
                 name=request.session.get("current_session_folder", "home"),
             )
         )
@@ -133,7 +131,6 @@ def get_current_session_folder(request):
         current_session_folder = UserFolder.objects.filter(
             owner=request.user, name="home"
         )
-
     return current_session_folder.first()
 
 
@@ -504,6 +501,7 @@ def changefile(request):
 
 # keep it for completion part....
 def file_edit_save(request, folder):
+    print(request.FILES)
     form_file = None
     if request.POST.get("file_id") and request.POST.get("file_id") != "None":
         customfile = get_object_or_404(CustomFileModel, id=request.POST["file_id"])
@@ -739,7 +737,7 @@ def user_folders(request):
         )
 
     page = request.GET.get("page", 1)
-
+    user_folder = user_folder.order_by("owner", "name")
     paginator = Paginator(user_folder, 10)
     try:
         folders = paginator.page(page)

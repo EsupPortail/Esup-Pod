@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 
 {% block opengraph %}
   <meta name="description" content="{{ query }}">
@@ -39,7 +39,7 @@
 {% block page_aside %}
 
 <div class="card card-body">
-  <h2 class="card-title h4">{% trans "Advanced search" %}</h2>
+  <h2 class="card-title pod-card__title h4">{% trans "Advanced search" %}</h2>
   <div class="card-text" >
     <form method="get" action="{{ request.get_full_path }}" id="video_search_form">
     {% if form.errors %}
@@ -64,7 +64,7 @@
 </div>
 
 <div class="card card-body">
-  <h2 class="card-title h4">{% trans 'Filter' %}</h2>
+  <h2 class="card-title pod-card__title h4">{% trans 'Filter' %}</h2>
   <div class="card-text" >
     <dl>
     {% if aggregations.owner_full_name and aggregations.owner_full_name.buckets %}
@@ -162,8 +162,8 @@
 
 {% block more_script %}
 
-<script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'waypoints/lib/shortcuts/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script>
   var infinite = new Waypoint.Infinite({
   element: $('.infinite-container')[0],
@@ -172,7 +172,6 @@
   },
   onAfterPageLoad: function ($items) {
     $('.infinite-loading').hide();
-    feather.replace({ class: 'align-bottom'});
     $('footer.static-pod').addClass('small');
     $('footer.static-pod').addClass('fixed-bottom');
     $('footer.static-pod').attr('style','height:80px; overflow-y:auto');

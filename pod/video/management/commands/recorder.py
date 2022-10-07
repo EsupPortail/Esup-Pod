@@ -25,7 +25,7 @@ This script must be executed regurlaly (for an example, with a CRON task).
 Example : crontab -e */5 * * * * /usr/bin/bash -c '
 export WORKON_HOME=/data/www/%userpod%/.virtualenvs;
 export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.6;
-cd /data/www/%userpod%/django_projects/podv2;
+cd /data/www/%userpod%/django_projects/podv3;
 source /usr/bin/virtualenvwrapper.sh; workon django_pod;
 python manage.py recorder checkDirectory'
 """

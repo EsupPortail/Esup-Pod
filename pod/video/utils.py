@@ -490,7 +490,6 @@ def get_videos(title, user_id, search=None, limit=12, offset=0):
             Q(title__icontains=title)
             | Q(title_fr__icontains=title)
             | Q(title_en__icontains=title)
-            | Q(title_nl__icontains=title)
         )
 
     count = videos.count()
@@ -502,7 +501,7 @@ def get_videos(title, user_id, search=None, limit=12, offset=0):
     )
 
     next_url, previous_url, page_infos = pagination_data(
-        reverse("filter_videos", kwargs={"user_id": user_id}), offset, limit, count
+        reverse("video:filter_videos", kwargs={"user_id": user_id}), offset, limit, count
     )
 
     response = {

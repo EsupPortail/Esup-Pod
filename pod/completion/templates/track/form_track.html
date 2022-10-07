@@ -1,8 +1,8 @@
-<!-- HTML for track form. Don't use this file alone it must be integrated into another template ! -->
+{# HTML for track form. Don't use this file alone it must be integrated into another template! #}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 <div class="card card-body">
-<form id="form_track" action="{% url 'video_completion_track' slug=video.slug %}" method="POST" class="completion">
+<form id="form_track" action="{% url 'video:completion:video_completion_track' slug=video.slug %}" method="POST" class="completion">
 	{% csrf_token %}
 	<div id="form_content" class="form-container">
 		{% if form_track.errors or form_track.non_field_errors %}
@@ -24,8 +24,8 @@
 			<input type="hidden" id="id_track" name="track_id" value="{{form_track.instance.id}}">
 		{% endif %}
 		<input type="hidden" name="action" value="save"/>
-		<input type="submit" id="save_track" value="{% trans 'save' %}" class="btn btn-primary"/>
-		<input type="reset" action="cancel" id="cancel_track" value="{% trans 'cancel' %}" class="btn btn-secondary"/>
+		<input type="submit" id="save_track" value="{% trans 'Save' %}" class="btn btn-primary"/>
+		<input type="reset" action="cancel" id="cancel_track" value="{% trans 'Cancel' %}" class="btn btn-secondary"/>
 	</div>
 </form>
 {{form_track.media}}

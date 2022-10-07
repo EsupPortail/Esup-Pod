@@ -34,7 +34,7 @@ $(document).on(
   "submit",
   "#video_notes_form, div.mgtNotes form, div.mgtNote form, div.mgtComment form",
   function (e) {
-    if ($(this).attr("class") != "download_video_notes_form") {
+    if (!$(this).attr("class").includes("download_video_notes_form")) {
       e.preventDefault();
       let data_form = $(this).serializeArray();
       send_form_data(
@@ -52,7 +52,7 @@ $(document).on(
  */
 var display_notes_place = function (data) {
   $("div#card-takenote").html(data);
-  feather.replace({ class: "align-bottom" });
+
   if ($("#video_notes_form").length)
     $("#video_notes_form")[0].scrollIntoView({
       behavior: "smooth",

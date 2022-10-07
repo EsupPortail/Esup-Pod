@@ -11,7 +11,6 @@ function getInfiniteScrollWaypoint() {
     },
     onAfterPageLoad: function ($items) {
       $(".infinite-loading").hide();
-      feather.replace({ class: "align-bottom" });
       $("footer.static-pod").addClass("small");
       $("footer.static-pod").addClass("fixed-bottom");
       $("footer.static-pod").attr("style", "height:80px; overflow-y:auto");
@@ -57,7 +56,7 @@ function refreshVideosSearch(formCheckedInputs) {
       window.history.pushState({}, "", this.url);
     },
     error: function (result, status, error) {
-      $("#videos_list").html(gettext("An Error occurred while processing "));
+      $("#videos_list").html(gettext("An Error occurred while processing."));
     },
   });
 }

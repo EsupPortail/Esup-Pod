@@ -13,7 +13,6 @@ from django.db.models import Q
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.contrib.sites.models import Site
-from select2 import fields as select2_fields
 from pod.video.models import Type
 from pod.video.models import Discipline, Channel, Theme
 from tagging.fields import TagField
@@ -120,7 +119,7 @@ class Recorder(models.Model):
         default=RECORDER_TYPE[0][0],
     )
     # Manager of the recorder who received mails
-    user = select2_fields.ForeignKey(
+    user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         limit_choices_to={"is_staff": True},
@@ -134,13 +133,10 @@ class Recorder(models.Model):
         blank=True,
     )
     # Additionnal additional_users
-    additional_users = select2_fields.ManyToManyField(
+    additional_users = models.ManyToManyField(
         User,
         blank=True,
-        ajax=True,
-        js_options={"width": "off"},
         verbose_name=_("Additional users"),
-        search_field=select_recorder_user(),
         related_name="users_recorders",
         help_text=_(
             "You can add additionals users to the recorder. They "
@@ -170,7 +166,7 @@ class Recorder(models.Model):
         ),
         default=False,
     )
-    restrict_access_to_groups = select2_fields.ManyToManyField(
+    restrict_access_to_groups = models.ManyToManyField(
         Group,
         blank=True,
         verbose_name=_("Groups"),
@@ -200,7 +196,9 @@ class Recorder(models.Model):
     transcript = models.BooleanField(
         _("Transcript"),
         default=False,
-        help_text=_("Check this box if you want to transcript the audio. (beta version)"),
+        help_text=_(
+            "Check this box if you want to transcript the audio." "(beta version)"
+        ),
     )
     tags = TagField(
         help_text=_(
@@ -209,19 +207,13 @@ class Recorder(models.Model):
         ),
         verbose_name=_("Tags"),
     )
-    discipline = select2_fields.ManyToManyField(
+    discipline = models.ManyToManyField(
         Discipline, blank=True, verbose_name=_("Disciplines")
     )
     licence = models.CharField(
-        _("Licence"),
-        max_length=8,
-        choices=LICENCE_CHOICES,
-        blank=True,
-        null=True,
+        _("Licence"), max_length=8, choices=LICENCE_CHOICES, blank=True, null=True
     )
-    channel = select2_fields.ManyToManyField(
-        Channel, verbose_name=_("Channels"), blank=True
-    )
+    channel = models.ManyToManyField(Channel, verbose_name=_("Channels"), blank=True)
     theme = models.ManyToManyField(
         Theme,
         verbose_name=_("Themes"),
@@ -287,7 +279,7 @@ class Recording(models.Model):
         default=DEFAULT_RECORDER_ID,
         help_text=_("Recorder that made this recording."),
     )
-    user = select2_fields.ForeignKey(
+    user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         limit_choices_to={"is_staff": True},

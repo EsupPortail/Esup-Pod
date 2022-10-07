@@ -149,11 +149,11 @@ class RssSiteVideosFeed(Feed):
 
         if slug_c:
             channel = get_object_or_404(
-                Channel, slug=slug_c, sites=get_current_site(request)
+                Channel, slug=slug_c, site=get_current_site(request)
             )
             self.subtitle = "%s" % (channel.title)
             videos_list = videos_list.filter(channel=channel)
-            self.link = reverse("channel", kwargs={"slug_c": channel.slug})
+            self.link = reverse("channel-video:channel", kwargs={"slug_c": channel.slug})
 
             theme = None
             if slug_t:
@@ -162,7 +162,7 @@ class RssSiteVideosFeed(Feed):
                 list_theme = theme.get_all_children_flat()
                 videos_list = videos_list.filter(theme__in=list_theme)
                 self.link = reverse(
-                    "theme",
+                    "channel-video:theme",
                     kwargs={"slug_c": theme.channel.slug, "slug_t": theme.slug},
                 )
 
@@ -188,7 +188,7 @@ class RssSiteVideosFeed(Feed):
         return "".join(
             [
                 self.author_link,
-                reverse("videos"),
+                reverse("videos:videos"),
                 "?owner=%s" % item.owner.username,
             ]
         )

@@ -40,6 +40,15 @@ class FrontOwnerForm(OwnerAdminForm):
         fields = ("userpicture",)
 
 
+class AdminOwnerForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(AdminOwnerForm, self).__init__(*args, **kwargs)
+
+    class Meta(object):
+        model = Owner
+        fields = []
+
+
 User = get_user_model()
 
 
@@ -47,6 +56,7 @@ User = get_user_model()
 class GroupAdminForm(forms.ModelForm):
     class Meta:
         model = Group
+        fields = "__all__"
         exclude = []
 
     # Add the users field.

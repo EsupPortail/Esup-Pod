@@ -25,14 +25,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # La clé secrète d’une installation Django.
 # Elle est utilisée dans le contexte de la signature cryptographique,
 # et doit être définie à une valeur unique et non prédictible.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#secret-key
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#secret-key
 """
 SECRET_KEY = 'A_CHANGER'
 
 """
 # Une valeur booléenne qui active ou désactive le mode de débogage.
 # Ne déployez jamais de site en production avec le réglage DEBUG activé.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#debug
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#debug
 """
 DEBUG = True
 
@@ -49,20 +49,20 @@ CSRF_COOKIE_SECURE = True
 # C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP,
 #  qui sont possibles même avec bien des configurations
 #  de serveur Web apparemment sécurisées.
-#  https://docs.djangoproject.com/fr/1.11/ref/settings/#allowed-hosts
+#  https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts
 """
 ALLOWED_HOSTS = ['localhost']
 
 """
 # L’âge des cookies de sessions, en secondes.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#session-cookie-age
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age
 """
 SESSION_COOKIE_AGE = 14400
 
 """
 # Indique s’il faut que la session expire
 #  lorsque l’utilisateur ferme son navigateur.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#session-cookie-age
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age
 """
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
@@ -101,7 +101,7 @@ CONTACT_US_EMAIL = []
 # C’est un dictionnaire imbriqué dont les contenus font correspondre
 #  l’alias de base de données avec un dictionnaire contenant
 #  les options de chacune des bases de données.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#databases
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#databases
 """
 DATABASES = {
     'default': {
@@ -124,7 +124,7 @@ LANGUAGES = (
 
 """
 # Une chaîne représentant le fuseau horaire pour cette installation.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-TIME_ZONE
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-TIME_ZONE
 """
 TIME_ZONE = "UTC"
 
@@ -132,14 +132,14 @@ TIME_ZONE = "UTC"
 # Le répertoire dans lequel stocker temporairement les données
 #  (typiquement pour les fichiers plus grands que FILE_UPLOAD_MAX_MEMORY_SIZE)
 #  lors des téléversements de fichiers.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#file-upload-temp-dir
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir
 """
 FILE_UPLOAD_TEMP_DIR = "/var/tmp"
 
 """
 # Le chemin absolu vers le répertoire dans lequel collectstatic rassemble
 #  les fichiers statiques en vue du déploiement.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-STATIC_ROOT
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-STATIC_ROOT
 """
 STATIC_ROOT = "/pod/static"
 
@@ -155,7 +155,7 @@ STATICFILES_STORAGE = 'static_compress.CompressedStaticFilesStorage'
 """
 # Chemin absolu du système de fichiers pointant vers le répertoire
 #  qui contiendra les fichiers téléversés par les utilisateurs.
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-MEDIA_ROOT
+# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-MEDIA_ROOT
 """
 MEDIA_ROOT = "/pod/media"
 
@@ -360,12 +360,6 @@ OPENCAST_MEDIAPACKAGE = """<?xml version="1.0" encoding="UTF-8" standalone="yes"
 VIEW_STATS_AUTH = False
 
 """
-# Permet d'utiliser la mise en ligne fragmentée
-#  (qui permet de reprendre la mise en ligne lors de problèmes de connexion)
-"""
-USE_CHUNKED_UPLOAD = False
-
-"""
 # Taille d'un fragment
 # (le fichier sera mis en ligne par fragment de cette taille)
 """
@@ -434,9 +428,9 @@ TEMPLATE_VISIBLE_SETTINGS = {
     # Vous pouvez créer un template dans votre application custom et
     #  indiquer son chemin dans cette variable pour que ce code html,
     # ce template soit affiché en haut de votre page, le code est ajouté
-    #  juste après la balise body.(Or iframe)
+    #  juste après la balise body.(Hors iframe)
     # Si le fichier créé est
-    # '/opt/django_projects/podv2/pod/custom/templates/custom/preheader.html'
+    # '/opt/django_projects/podv3/pod/custom/templates/custom/preheader.html'
     # alors la variable doit prendre la valeur 'custom/preheader.html'
     'PRE_HEADER_TEMPLATE': '',
 
@@ -458,7 +452,7 @@ VIDEO_PLAYBACKRATES = '[0.5, 1, 1.5, 2]'
 # Configuration application recherche
 # Pour mettre à jour le moteur de recherche, je lance toutes les nuits
 #  la tache cron suivante :
-# 0 5 * * * cd $path_pod/podv2 && $v_env/python manage.py index_videos --all
+# 0 5 * * * cd $path_pod/podv3 && $v_env/python manage.py index_videos --all
 
 """
 # adresse du ou des instances d'Elasticsearch utilisées pour l'indexation
@@ -500,41 +494,20 @@ FFMPEG = "ffmpeg"
 FFPROBE = "ffprobe"
 
 """
-# durée en seconde des segment HLS
-"""
-SEGMENT_TARGET_DURATION = 2
-
-"""
-# La taille du buffer est égale au bitrate vidéo du rendu
-#  multiplié par cette valeur
-"""
-RATE_MONITOR_BUFFER_RATIO = 2
-
-"""
 # nombre de thread possible pour ffmpeg (0 égale maximum possible)
 """
 FFMPEG_NB_THREADS = 0
 
 """
-# Commande utilisée pour récupérer les informations
-#  de la première piste video du fichier envoyé
-"""
-GET_INFO_VIDEO = "%(ffprobe)s -v quiet -show_format -show_streams -select_streams v:0 -print_format json -i %(source)s"
-
-"""
-# Commande utilisée pour récupérer les informations
-#  de la première piste audio du fichier envoyé
-"""
-GET_INFO_AUDIO = "%(ffprobe)s -v quiet -show_format -show_streams -select_streams a:0 -print_format json -i %(source)s"
-
-"""
 # paramètres de la commande ffmpeg utilisés
 #  pour encoder toutes les vidéos, peu importe le rendu
+# use only for studio encoding
 """
 FFMPEG_STATIC_PARAMS = " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf 20 -sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads %(nb_threads)s "
 
 """
 # autres paramètres qui sont placés au début de la commande
+# use only for studio encoding
 """
 FFMPEG_MISC_PARAMS = " -hide_banner -y "
 # to use in GPU, specify for example
@@ -543,6 +516,7 @@ FFMPEG_MISC_PARAMS = " -hide_banner -y "
 
 """
 # gestion de la taille de la vidéo pour l'encodage ffmpeg
+# not use actually - keep for later
 """
 FFMPEG_SCALE = ' -vf "scale=-2:{height}" '
 # to use in GPU, specify ' -vf "scale_npp=-2:{height}:interp_algo=super" '
@@ -553,20 +527,10 @@ FFMPEG_SCALE = ' -vf "scale=-2:{height}" '
 ENCODE_SHELL = '/bin/sh'
 
 """
-# bitrate audio pour l'encodage M4A
-#  (encodage des fichiers audio envoyés sur la plateforme)
+FFMPEG SETTINGS LOCATE IN :
+pod/video/encoding_settings.py
+all settings can be overwritte in your settings locale
 """
-AUDIO_BITRATE = "192k"
-
-"""
-# commande utilisée pour l'encodage des fichiers audio envoyés
-"""
-ENCODING_M4A = "%(ffmpeg)s -i %(source)s %(misc_params)s -c:a aac -b:a %(audio_bitrate)s -vn -threads %(nb_threads)s \"%(output_dir)s/audio_%(audio_bitrate)s.m4a\""
-
-"""
-# commande utilisée pour l'encodage audio pour tous les fichiers envoyés
-"""
-ENCODE_MP3_CMD = "%(ffmpeg)s -i %(source)s %(misc_params)s -vn -b:a %(audio_bitrate)s -vn -f mp3 -threads %(nb_threads)s \"%(output_dir)s/audio_%(audio_bitrate)s.mp3\""
 
 """
 # Si True, un courriel est envoyé aux managers
@@ -997,6 +961,11 @@ CREATE_GROUP_FROM_GROUPS = False
 AFFILIATION_STAFF = ('faculty', 'employee', 'staff')
 
 """
+# Groupes ou affiliations des personnes autorisées à créer un évènement
+"""
+AFFILIATION_EVENT = ['faculty', 'employee', 'staff']
+
+"""
 # Valeurs possibles pour l'Affiliation du compte
 """
 AFFILIATION = (
@@ -1155,25 +1124,58 @@ ACTIVE_VIDEO_COMMENT = True
 USE_TRANSCRIPTION = True
 
 """
+## Transcription use
+# * STT
+# * VOSK
+"""
+TRANSCRIPTION_TYPE = "STT"
+
+
+"""
+# Temps maximum en secondes des blanc entre chaque mot pour le decoupage des sous-titres
+"""
+SENTENCE_BLANK_SPLIT_TIME = 0.5
+
+"""
 # decoupage de l'audio pour la transcription
 """
 AUDIO_SPLIT_TIME = 300
 
-"""
-# paramétrage de deepspeech pour le modele
-"""
-DS_PARAM = {
-  'fr': {
-    # le modèle deepspeech
-    'model': "/usr/local/django_projects/transcription/model_tensorflow_fr/output_graph.pbmm",
-    'scorer': "/usr/local/django_projects/transcription/model_tensorflow_fr/kenlm.scorer",
-  }
-}
 
 """
-# La liste des utilisateurs regardant le direct sera réservée au staff
+# paramétrage des modele
+# Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models
 """
-VIEWERS_ONLY_FOR_STAFF = False
+MODEL_PARAM = {
+    # le modèle stt
+    'STT': {
+        'fr': {
+            'model': "/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite",
+            'scorer': "/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer",
+        }
+    },
+    # le modèle vosk
+    'VOSK':{
+        'fr': {
+        'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0",
+        }
+    }
+}
+
+
+"""
+# Définissez à True pour activer la case à cocher dans l'édition des sous-titres.
+"""
+ACTIVE_MODEL_ENRICH  = False
+
+"""
+# paramétrage des chemin du model pour la compilation
+# Pour télécharger les Modeles : https://alphacephei.com/vosk/lm#update-process
+# Ajouter le model dans les sous-dossier de la lang correspondants
+# Exemple pour le français: /path/of/project/Esup-Pod/compile-model/fr/
+"""
+
+MODEL_COMPILE_DIR = "/path/of/project/Esup-Pod/compile-model"
 
 """
 # Temps (en seconde) entre deux envois d'un signal au serveur,
@@ -1276,10 +1278,9 @@ BBB_VERSION_IS_23 = False
 USER_VIDEO_CATEGORY = False
 
 """
-# gestion de l'oboslesence des vidéos
+# gestion de l'obsolesence des vidéos
 """
-USE_OBSOLESCENCE = True
-
+USE_OBSOLESCENCE = False
 WARN_DEADLINES = [60, 30, 7]
 
 """
@@ -1361,3 +1362,97 @@ COOKIE_LEARN_MORE = ""
 #     'TRACKING_TEMPLATE': 'custom/tracking.html',
 """
 USE_VIDEO_EVENT_TRACKING = False
+
+"""
+# Affiche ou non les prochains évènements sur la page d'accueil
+"""
+SHOW_EVENTS_ON_HOMEPAGE = False
+
+"""
+# Chemin racine du répertoire où sont déposés temporairement les
+# enregistrements des évènements éffectués depuis POD pour
+# converstion en ressource vidéo (VOD)
+"""
+DEFAULT_EVENT_PATH = ""
+
+"""
+# Types de logiciel de serveur de streaming utilisés.
+# Actuellement disponible Wowza.
+# Si vous utilisez une autre logiciel, il faut développer une interface dans pod/live/pilotingInterface.py
+"""
+BROADCASTER_PILOTING_SOFTWARE = ['Wowza',]
+
+"""
+# Image par défaut affichée comme poster ou vignette,
+#  utilisée pour présenter l'évènement'.
+# Cette image doit se situer dans le répertoire static.
+"""
+DEFAULT_EVENT_THUMBNAIL = "/img/default-event.svg"
+
+"""
+# Type par défaut affecté à un évènement direct
+#  (en général, le type ayant pour identifiant '1' est 'Other')
+"""
+DEFAULT_EVENT_TYPE_ID = 1
+
+"""
+# Permet de lancer automatiquement l'enregistrement sur l'interface utilisée (wowza, )
+# sur le broadcaster et spécifié par  BROADCASTER_PILOTING_SOFTWARE
+"""
+EVENT_ACTIVE_AUTO_START = False
+
+"""
+# Permet de préciser le nom du groupe dans lequel les utilisateurs 
+# peuvent planifier un évènement sur plusieurs jours
+"""
+EVENT_GROUP_ADMIN = "event admin"
+
+"""
+# Si True, un courriel est envoyé aux managers
+#  et à l'auteur (si DEBUG est à False) à la création/modification d'un event
+"""
+EMAIL_ON_EVENT_SCHEDULING = True
+
+"""
+# Si True, un courriel est également envoyé à l'admin (si DEBUG est à False)
+#  à la création/modification d'un event
+"""
+EMAIL_ADMIN_ON_EVENT_SCHEDULING = True
+"""
+# Durée (en nombre de jours) sur laquelle on souhaite compter le nombre de vues récentes
+"""
+VIDEO_RECENT_VIEWCOUNT = 180
+
+"""CACHE configurations."""
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    # Persistent cache setup for select2 (NOT DummyCache or LocMemCache).
+    "select2": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+"""
+Application Meeting pour la gestion de reunion avec BBB
+Mettre USE_MEETING à True pour activer cette application 
+BBB_API_URL et BBB_SECRET_KEY sont obligatoires pour faire fonctionner l'application
+"""
+USE_MEETING = False
+BBB_API_URL = ""
+BBB_SECRET_KEY = ""
+BBB_LOGOUT_URL = "" # optional
+RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = False
+# use to disable record if bbb instance not deploy it
+MEETING_DISABLE_RECORD = True
+# if disable record set to true, this fields will be remove from form
+MEETING_RECORD_FIELDS = (
+    "record",
+    "auto_start_recording",
+    "allow_start_stop_recording"
+)

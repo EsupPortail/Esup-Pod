@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 
 {% block more_style %}
   {% if use_category %}
@@ -9,11 +9,6 @@
 {% endblock more_style %}
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My videos" %}</li>{% endblock %}
-
-{% block page_title %}
-  {% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
-{% endblock %}
-
 
 {% block page_content %}
   {% if use_category %}
@@ -49,8 +44,8 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-<script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'waypoints/lib/shortcuts/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script>
   var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],
@@ -59,7 +54,6 @@
     },
     onAfterPageLoad: function ($items) {
       $('.infinite-loading').hide();
-      feather.replace({ class: 'align-bottom'});
       $('footer.static-pod').addClass('small');
       $('footer.static-pod').addClass('fixed-bottom');
       $('footer.static-pod').attr('style','height:80px; overflow-y:auto');

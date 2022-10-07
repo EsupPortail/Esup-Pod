@@ -171,7 +171,7 @@ def add_recording(request):
             )
 
             messages.add_message(request, messages.INFO, message)
-            return redirect(reverse("my_videos"))
+            return redirect(reverse("video:my_videos"))
         else:
             message = _("One or more errors have been found in the form.")
             messages.add_message(request, messages.ERROR, message)
@@ -240,7 +240,7 @@ def recorder_notify(request):
 
             link_url = "".join(
                 [
-                    request.build_absolute_uri(reverse("add_recording")),
+                    request.build_absolute_uri(reverse("record:add_recording")),
                     "?mediapath=",
                     mediapath,
                     "&course_title=%s" % course_title,
@@ -368,7 +368,7 @@ def delete_record(request, id=None):
             messages.add_message(
                 request, messages.INFO, _("The record has been deleted.")
             )
-            return redirect(reverse("claim_record"))
+            return redirect(reverse("record:claim_record"))
         else:
             messages.add_message(
                 request,
@@ -446,7 +446,7 @@ def settings_toml(request):
     )
     myvideo_url = request.build_absolute_uri(
         reverse(
-            "my_videos",
+            "video:my_videos",
         )
     )
     # force https for developpement server
@@ -460,6 +460,7 @@ def settings_toml(request):
     [return]
     target = "%(target)s"
     label = "%(label)s"
+    [theme]
     """
     content_text = content_text % {
         "serverUrl": studio_url,

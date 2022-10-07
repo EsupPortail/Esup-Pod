@@ -1,0 +1,192 @@
+{% load i18n %}
+{% load static %}
+{% load tagging_tags %}
+{% load thumbnail %}
+
+
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/MediaObject">
+    <head>
+        <meta charset="utf-8">
+
+        <title>{{ TITLE_SITE }} - {% block page_title %}{{ event.title }}{% endblock page_title %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+
+        {% block page_extra_head %}
+            {% include 'videos/video-header.html' %}
+        {% endblock page_extra_head %}
+
+        {% if event.broadcaster.enable_viewer_count %}
+            <script>let heartbeat_delay = {{ heartbeat_delay }}</script>
+            <script src="{% static 'js/viewcounter.js' %}?ver={{ VERSION }}"></script>
+        {% endif %}
+
+        <script src="{% static 'js/videojs-info-controlbar.js' %}?ver={{VERSION}}"></script>
+
+        <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
+        <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
+        <script src="{% url 'javascript-catalog' %}"></script>
+
+        <link rel="stylesheet" href="{% static 'css/video-iframe.css' %}?ver={{VERSION}}">
+    </head>
+
+{% block page_content %}
+    {% csrf_token %}
+    <h3 id="livename" data-liveid="{{ event.broadcaster.id }}" class="d-none"><i class="bi bi-cast" aria-hidden="true"></i>&nbsp;{{ event.title|title }}</h3>
+    {% if form %}
+      {% include 'live/event-form.html' %}
+    {% else %}
+        <div class="overlay" id="div-video-wrapper">
+            {% if event.is_past %}
+                <div class="p-3 mb-2 bg-warning text-dark">
+                    {% trans "Event is finished at:" %} {{ event.end_date }}
+                    <br>
+                </div>
+            {% elif event.is_coming %}
+                <div class="p-3 mb-2 bg-warning text-dark">
+                    {% trans "The event is scheduled from:" %} {{ event.start_date }} {% trans 'to' %} {{ event.end_date }}
+                </div>
+            {% endif %}
+
+            {# video d'attente #}
+            {% if event.broadcaster.video_on_hold.is_video and not event.is_past %}
+                <div id="divvideoonhold" style="display: none;">
+                    <video id="podvideoonholdplayer"
+                           class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
+                           controls height="360" muted autoplay>
+                    </video>
+                </div>
+            {% else %}
+                <div id="divvideoonhold" style="display: none;">
+                    <video id="podvideoonholdplayer"></video>
+                </div>
+            {% endif %}
+
+            {% if event.is_current %}
+                <div id="divvideoplayer" style="display: block;">
+                    <div class="row">
+                        <div class="col">
+                            <video id="podvideoplayer"
+                                   class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
+                                   controls height="360" muted autoplay>
+                                <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
+                            </video>
+                        </div>
+                        {# ajouter ici l' event.aside_iframe_url si nécessaire #}
+                    </div>
+                </div>
+                {# ajouter ici l' event.iframe_url si nécessaire#}
+                <div id="info-video-wrapper">
+                    <div class="iframe-header bg-dark text-white">
+                        <h2 class="video-title">{{ video.title }}</h2>
+                        <button type="button" class="close" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="info-video">
+                        {% include 'live/event-info.html' %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% block more_script %}
+        {% include 'live/event-script.html' %}
+        <script>
+            player.videoJsInfo();
+
+            function setOnPlayerPlayPause() {
+                player.on('play', function () {
+                    isPlaying = true;
+                    $('#div-video-wrapper').attr('class', '')
+                })
+                player.on('pause', function () {
+                    isPlaying = false;
+                })
+            }
+
+            $('#div-video-wrapper').append('<div id="overlay-footer"></div>')
+            player.ready(function () {
+                const btinfo = $('.vjs-info-button:eq(0)')[0]
+                $(btinfo).clone().appendTo('#overlay-footer')
+                $('#overlay-footer .vjs-info-button').click(function () {
+                    $(btinfo).click()
+                })
+            })
+            $(document).on('click', '.close', function () {
+                show_info_video()
+            });
+
+            // Responsive
+            const hdres = 1920 / 1080;
+            let isPlaying = false, wasPlaying = false
+            setOnPlayerPlayPause()
+
+            function resizeInfo() {
+                const ihead = document.querySelector('#info-video-wrapper > .iframe-header')
+                    , ph = player.el().offsetHeight
+                    , pb = parseInt(player.el().style.top) + ph - 30
+                    , pw = ph * hdres//$('#podvideoplayer .vjs-poster').width()
+                $('#info-video').css('top', ihead.offsetHeight + 'px')
+                $('#info-video-wrapper').css({
+                    top: player.el().style.top,
+                    height: (ph - 30) + 'px',
+                    left: '50%',
+                    'margin-left': -(pw / 2) + 'px',
+                    width: pw + 'px'
+                })
+                $('#overlay-footer').css({'top': pb + 'px'})
+            }
+
+            function resizeVideoJs() {
+                const width = document.getElementById(player.id()).parentElement.offsetWidth
+                    , height = document.getElementById(player.id()).parentElement.offsetHeight
+                    , ratio = width / height;
+                let margintop = 0
+                if (ratio < hdres) {
+                    player.width(width);
+                    player.height(width / hdres);
+                    margintop = parseInt((height - player.height()) / 2);
+                    document.getElementById("podvideoplayer").style.top = margintop + "px";
+                } else {
+                    player.height(height);
+                    player.width(height * hdres);
+                    document.getElementById("podvideoplayer").style.top = "0";
+                }
+                resizeInfo()
+            }
+
+            resizeVideoJs(); // Initialize the function right now
+            window.onresize = resizeVideoJs; // Call the function on resize
+
+            var show_info_video = function () { // Call by videojs-controllbar
+                const hasStarted = $(player.el()).hasClass('vjs-has-started')
+                    , isOverlayed = $('#div-video-wrapper').hasClass('overlay')
+                    , isInfoOverlayed = isOverlayed && $('#div-video-wrapper').hasClass('info')
+                    , cls = 'overlay info'
+                if (!isOverlayed) { // No overlay is displayed
+                    wasPlaying = isPlaying;
+                    player.pause();
+                    $('#div-video-wrapper').attr('class', cls)
+                    resizeInfo()
+                } else if (!isInfoOverlayed) { // One overlay is displayed but not Info
+                    $('#div-video-wrapper').attr('class', cls)
+                    resizeInfo()
+                } else { // Info overlay is displayed => close
+                    $('#div-video-wrapper').attr('class', (hasStarted ? '' : 'vjs-not-started'))
+                    if (wasPlaying) player.play();
+                }
+            }
+
+            $('#video-meta .tab-pane').addClass('show').show();
+
+        </script>
+
+    {% endblock more_script %}
+    {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
+{% endblock page_content %}
+</body>
+</html>

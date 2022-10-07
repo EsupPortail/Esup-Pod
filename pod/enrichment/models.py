@@ -13,7 +13,6 @@ from django.contrib.auth.models import Group
 
 from pod.video.models import Video
 from pod.main.models import get_nextautoincrement
-from select2 import fields as select2_fields
 
 import os
 import datetime
@@ -109,7 +108,7 @@ class Enrichment(models.Model):
         ("embed", _("embed")),
     )
 
-    video = select2_fields.ForeignKey(Video, verbose_name=_("video"))
+    video = models.ForeignKey(Video, verbose_name=_("video"), on_delete=models.CASCADE)
     title = models.CharField(_("title"), max_length=100)
     slug = models.SlugField(
         _("slug"),
@@ -142,13 +141,18 @@ class Enrichment(models.Model):
     )
 
     image = models.ForeignKey(
-        CustomImageModel, verbose_name=_("Image"), null=True, blank=True
+        CustomImageModel,
+        verbose_name=_("Image"),
+        null=True,
+        on_delete=models.CASCADE,
+        blank=True,
     )
     document = models.ForeignKey(
         CustomFileModel,
         verbose_name=_("Document"),
         null=True,
         blank=True,
+        on_delete=models.CASCADE,
         help_text=_("Integrate a document (PDF, text, html)"),
     )
     richtext = RichTextField(_("Richtext"), config_name="complete", blank=True)
@@ -325,7 +329,11 @@ class EnrichmentVtt(models.Model):
         on_delete=models.CASCADE,
     )
     src = models.ForeignKey(
-        CustomFileModel, blank=True, null=True, verbose_name=_("Subtitle file")
+        CustomFileModel,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        verbose_name=_("Subtitle file"),
     )
 
     @property
@@ -351,13 +359,8 @@ class EnrichmentVtt(models.Model):
 
 
 class EnrichmentGroup(models.Model):
-    video = select2_fields.OneToOneField(
-        Video,
-        verbose_name=_("Video"),
-        # editable=False, null=True,
-        on_delete=models.CASCADE,
-    )
-    groups = select2_fields.ManyToManyField(
+    video = models.OneToOneField(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
+    groups = models.ManyToManyField(
         Group,
         blank=True,
         verbose_name=_("Groups"),

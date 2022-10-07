@@ -72,9 +72,8 @@
   class AlertMessage extends HTMLElement {
     constructor(message, alert_class = "success") {
       super();
-      this.setAttribute("class", "alert " + `alert_${alert_class}`);
       let html = document.createElement("DIV");
-      html.setAttribute("class", "alert_content");
+      html.setAttribute("class", "alert " + `alert-${alert_class}`);
       let content = document.createElement("DIV");
       content.setAttribute("class", "alert_message");
       content.innerText = message || alert_class;
@@ -100,7 +99,7 @@
    */
   const addNotFound = (container, clickable = false) => {
     const div = document.createElement("DIV");
-    div.setAttribute("class", "not-found text-center full-width");
+    div.setAttribute("class", "alert-warning text-center full-width");
     div.innerText = gettext("No element found");
     if (clickable)
       div.addEventListener("click", (e) => {
@@ -121,14 +120,13 @@
     let loader = document.querySelector(".manage-video__loader");
     if (!loader) {
       loader = document.createElement("div");
-      loader.setAttribute("class", "manage-video__loader");
-      loader.innerHTML = `<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>`;
+      loader.setAttribute("class", "manage-video__loader text-center");
+      loader.innerHTML = `<div class="spinner-border text-primary" role="status"><span class="visually-hidden">${gettext(
+        "Loading..."
+      )}</span></div>`;
     }
     if (remove) loader.remove();
-    else if (
-      !container.querySelector(".lds-ellipsis.manage-video__loader") &&
-      !remove
-    ) {
+    else if (!container.querySelector(".spinner-border") && !remove) {
       container.innerHTML = "";
       container.appendChild(loader);
     }
@@ -623,7 +621,7 @@
               .appendChild(
                 new AlertMessage(
                   gettext(response.detail),
-                  (alert_class = "error")
+                  (alert_class = "danger")
                 )
               );
           }
@@ -635,7 +633,7 @@
             .appendChild(
               new AlertMessage(
                 gettext("An error occurred during the change of owner"),
-                (alert_class = "error")
+                (alert_class = "danger")
               )
             );
           console.error(error);
@@ -646,7 +644,7 @@
         .appendChild(
           new AlertMessage(
             gettext("Please complete all fields correctly"),
-            (alert_class = "error")
+            (alert_class = "danger")
           )
         );
     }

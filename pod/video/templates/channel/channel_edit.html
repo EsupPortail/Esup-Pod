@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 {% load thumbnail %}
 {% block page_extra_head %}
 <style>
-  {{form.instance.style}}
+  {{ form.instance.style }}
+
   {% if form.instance.color %}
     body {
       background-color: {{form.instance.color}};
@@ -14,7 +15,7 @@
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
-<li class="breadcrumb-item"><a href="{% url 'my_channels' %}">{% trans 'My channels' %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'channels:my_channels' %}">{% trans 'My channels' %}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{% if form.instance.title %}{{form.instance.title}}{%endif%}</li>
 {% endblock %}
 
@@ -23,23 +24,23 @@
 {% endblock %}
 
 {% block page_content %}
-<h1 class="page_title">{% if form.instance.title %}{% trans "Editing the channel" %} "{{form.instance.title}}"{%endif%}
+  {% if form.instance.title %}
+    <h1 class="page_title">{% trans "Editing the channel" %} "{{form.instance.title}}"
+  {%endif%}
   <span>
-    <a href="{% url 'channel' slug_c=form.instance.slug %}" class="btn btn btn-outline-primary btn-sm">
-      <i data-feather="youtube"></i>&nbsp;{% trans "View the channel"%}
+    <a href="{% url 'channel-video:channel' slug_c=form.instance.slug %}" class="btn btn-link">
+      <i class="bi bi-play-btn"></i>&nbsp;{% trans "View the channel"%}
     </a>
-    <a href="{% url 'theme_edit' slug=form.instance.slug %}" class="btn btn btn-outline-primary btn-sm">
-      <i data-feather="edit"></i>&nbsp;{% trans "Edit the themes"%}
+    <a href="{% url 'channels:theme_edit' slug=form.instance.slug %}" class="btn btn-link">
+      <i class="bi bi-pencil-square"></i>&nbsp;{% trans "Edit the themes"%}
     </a>
   </span>
 </h1>
 {% if form.instance.headband %}
-  <img src="{{ form.instance.headband.file.url }}" alt="{% trans 'Headband' %} {{ form.instance.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy"/>
+<img src="{{ form.instance.headband.file.url }}" alt="{% trans 'Headband' %} {{ form.instance.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy" />
 {% endif %}
 
-<form id="channel_form" method="post"
-  action="{% url 'channel_edit' slug=form.instance.slug %}"
-  accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
+<form id="channel_form" method="post" action="{% url 'channels:channel_edit' slug=form.instance.slug %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
   {% csrf_token %}
   <div class="list-group">
     {% if form.errors %}
@@ -49,30 +50,30 @@
       {{field_hidden}}
     {% endfor %}
     {% for field in form.visible_fields %}
-      {% spaceless %}
-      <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}">
-        <div class="list-group-item">
-          <div class="{% if field.name == "owners" or field.name == "users" %}form-row {%endif%}form-group {% if field.field.required %}form-group-required {%endif%}" >
-            {{ field.errors }}
-            {% if "form-check-input" in field.field.widget.attrs.class %}
-              <div class="form-check">
-                {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label" >{{ field.label }}</label>
-              </div>
-            {% else %}
-              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-              {{ field }}
-            {% endif %}
-            {% if field.help_text %}
-              <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
-            {% endif %}
-            {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+    {% spaceless %}
+    <div class="{% if " description_" in field.name or "title_" in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}">
+      <div class="list-group-item">
+        <div class="{% if field.name == "owners" or field.name == "users" %}form-row {%endif%}form-group {% if field.field.required %}form-group-required {%endif%}">
+          {{ field.errors }}
+          {% if "form-check-input" in field.field.widget.attrs.class %}
+            <div class="form-check">
+              {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+            </div>
+          {% else %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+          {% endif %}
+          {% if field.help_text %}
+            <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+          {% endif %}
+          {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
 
-            {% if field.name == "description" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".description" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
-            {% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
-          </div>
+          {% if field.name == "description" %}<button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target=".description" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
+          {% if field.name == "title" %}<button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target=".title" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
         </div>
       </div>
-      {% endspaceless %}
+    </div>
+    {% endspaceless %}
     {% endfor %}
   </div>
   <div class="text-center">
@@ -82,40 +83,43 @@
 {% endblock page_content %}
 
 {% block collapse_page_aside %}
-  {{ block.super }}
+{{ block.super }}
 {% endblock collapse_page_aside %}
 
 {% block page_aside %}
 <div class="card">
-  <h5 class="card-header card-title">{% trans "Mandatory fields" %}</h5>
-  <div class="card-body" >
-    <p class="card-text">{% trans "Fields marked with an asterisk are mandatory."%}</p>
+  <h2 class="h4 card-header card-title pod-card__title">{% trans "Mandatory fields" %}</h2>
+  <div class="card-body">
+    <p>
+      <span class="required_star">*</span>
+      {% trans "Fields marked with an asterisk are mandatory." %}
+    </p>
   </div>
 </div>
 <div class="card">
-  <h5 class="card-header card-title">{% trans "Form fields"%}</h5>
+  <h2 class="h4 card-header card-title pod-card__title">{% trans "Form fields"%}</h2>
   <div class="card-body" id="formfields">
     {% for title, values in form.CHANNEL_FORM_FIELDS_HELP_TEXT.items %}
-      <div class="card">
-        <button class="btn btn-light rounded-0" id="heading-{{forloop.counter}}" data-toggle="collapse" data-target="#collapse-{{forloop.counter}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter}}">
-          {{title}}
-        </button>
-        <div id="collapse-{{forloop.counter}}" class="card-body collapse hide card-text small" aria-labelledby="heading-{{forloop.counter}}" data-parent="#formfields">
-          {% for value in values %}
-            <p>{{value|safe}}</p>
-          {%endfor%}
-        </div>
+    <div class="card">
+      <button class="btn rounded-0 pod-btn" id="heading-{{forloop.counter}}" data-bs-toggle="collapse" data-bs-target="#collapse-{{forloop.counter}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter}}">
+        {{title}}
+      </button>
+      <div id="collapse-{{forloop.counter}}" class="card-body collapse hide card-text small" aria-labelledby="heading-{{forloop.counter}}" data-bs-parent="#formfields">
+        {% for value in values %}
+        <p>{{value|safe}}</p>
+        {%endfor%}
       </div>
+    </div>
     {% endfor %}
   </div>
 </div>
 {% endblock page_aside %}
 
 {% block more_script %}
-  <script src="/admin/jsi18n/"></script>
-  <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
-  <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
-  <script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>
-  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}" />
-  {{form.media}}
+<script src="/admin/jsi18n/"></script>
+<script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}" />
+{{form.media}}
 {% endblock more_script %}

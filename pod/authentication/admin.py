@@ -3,15 +3,16 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
-from pod.authentication.models import Owner, GroupSite
-from pod.authentication.forms import OwnerAdminForm, GroupSiteAdminForm
 from django.utils.html import format_html
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import Group
-from pod.authentication.forms import GroupAdminForm
 from django.contrib.sites.models import Site
 from django.contrib.admin import widgets
+
 from pod.authentication.models import AccessGroup
+from pod.authentication.models import Owner, GroupSite
+from pod.authentication.forms import OwnerAdminForm, GroupSiteAdminForm
+from pod.authentication.forms import GroupAdminForm
 
 # Define an inline admin descriptor for Owner model
 # which acts a bit like a singleton
@@ -35,16 +36,15 @@ class GroupSiteInline(admin.StackedInline):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (
             "podfile/js/filewidget.js",
             "js/main.js",
-            "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
 
@@ -71,16 +71,15 @@ class OwnerInline(admin.StackedInline):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (
             "podfile/js/filewidget.js",
             "js/main.js",
-            "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
 
@@ -112,6 +111,13 @@ class UserAdmin(BaseUserAdmin):
     )
     if USE_ESTABLISHMENT_FIELD:
         list_display = list_display + ("owner_establishment",)
+
+    # readonly_fields=('is_superuser',)
+    def get_readonly_fields(self, request, obj=None):
+        if request.user.is_superuser:
+            return []
+        self.readonly_fields += ("is_superuser",)
+        return self.readonly_fields
 
     def owner_hashkey(self, obj):
         return "%s" % Owner.objects.get(user=obj).hashkey
@@ -160,11 +166,12 @@ class GroupAdmin(admin.ModelAdmin):
     form = GroupAdminForm
     # Filter permissions horizontal as well.
     filter_horizontal = ["permissions"]
+    search_fields = ["name"]
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(groupsite__sites=get_current_site(request))
+            qs = qs.filter(sites=get_current_site(request))
         return qs
 
     def save_model(self, request, obj, form, change):
@@ -182,12 +189,33 @@ class GroupAdmin(admin.ModelAdmin):
 
 
 class AccessGroupAdmin(admin.ModelAdmin):
+    # form = AccessGroupAdminForm
+    # search_fields = ["user__username__icontains", "user__email__icontains"]
+    autocomplete_fields = ["users"]
     search_fields = ["id", "code_name", "display_name"]
     list_display = (
         "id",
         "code_name",
         "display_name",
     )
+
+
+class OwnerAdmin(admin.ModelAdmin):
+    # form = AdminOwnerForm
+    autocomplete_fields = ["user", "accessgroups"]
+    search_fields = ["user__username__icontains", "user__email__icontains"]
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(groupsite__sites=get_current_site(request))
+        return qs
+
+    def has_module_permission(self, request):
+        return False
+
+    class Meta:
+        verbose_name = "Access group owner"
 
 
 # Re-register UserAdmin
@@ -197,5 +225,5 @@ admin.site.register(User, UserAdmin)
 # Register the new Group ModelAdmin instead of the original one.
 admin.site.unregister(Group)
 admin.site.register(Group, GroupAdmin)
-
+admin.site.register(Owner, OwnerAdmin)
 admin.site.register(AccessGroup, AccessGroupAdmin)

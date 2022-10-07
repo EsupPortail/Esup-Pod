@@ -1,8 +1,8 @@
-<!-- HTML for document form. Don't use this file alone it must be integrated into another template ! -->
+{# HTML for document form. Don't use this file alone it must be integrated into another template! #}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 <div class="card card-body">
-<form id="form_document" action="{% url 'video_completion_document' slug=video.slug %}" method="POST" class="completion">
+<form id="form_document" action="{% url 'video:completion:video_completion_document' slug=video.slug %}" method="POST" class="completion">
 	{% csrf_token %}
 	<div id="form_content" class="form-container">
 		{% if form_document.errors or form_document.non_field_errors %}
@@ -21,8 +21,10 @@
 			</div>
 		{% endfor %}
 		<input type="hidden" name="action" value="save"/>
-		<input type="submit" id="save_document" value="{% trans 'save' %}" class="btn btn-primary"/>
-		<input type="reset" action="cancel" id="cancel_document" value="{% trans 'cancel' %}" class="btn btn-secondary"/>
+		<div class="mt-3">
+			<input type="submit" id="save_document" value="{% trans 'Save' %}" class="btn btn-primary"/>
+			<input type="reset" action="cancel" id="cancel_document" value="{% trans 'Cancel' %}" class="btn btn-secondary"/>
+		</div>
 	</div>
 </form>
 {{form_document.media}}

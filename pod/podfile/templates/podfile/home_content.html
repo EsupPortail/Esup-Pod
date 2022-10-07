@@ -3,13 +3,18 @@
 <div class="container-fluid h-100" id="podfile">
   <div class="row">
     <div class="col col-4" id="dirs">
-        {% include 'podfile/userfolder.html' %}
+      {% include 'podfile/userfolder.html' %}
     </div>
-    <div class="open-folder" id="open-folder-icon">
-	        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="bars" class="svg-inline--fa fa-bars fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path></svg>
+    <div class="open-folder p-0" id="open-folder-icon">
+	    <button class="navbar-toggler pod-navbar__button-toggler"
+              aria-controls="dirs"
+              data-bs-target="#dirs"
+              title="{% trans 'Toggle folders menu' %}">
+        <i class="bi bi-list" aria-hidden="true"></i>
+      </button>
     </div>
     <div class="col col-8 col-md-offset-1" id="files">
-        {% include 'podfile/list_folder_files.html' with folder=current_session_folder %}
+      {% include 'podfile/list_folder_files.html' with folder=current_session_folder %}
   </div>
 </div>
 
@@ -18,10 +23,8 @@
   <div class="modal-dialog modal-dialog-centered" role="document" >
     <div class="modal-content" style="min-height:initial !important;border:2px solid black;">
       <div class="modal-header">
-        <h2 class="modal-title" id="folderModalCenterTitle">{% trans "Enter new name of folder"%}</h2>
-        <button type="button" class="close" data-toggle="modal" data-target="#folderModalCenter" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h2 class="h4 modal-title" id="folderModalCenterTitle">{% trans "Enter new name of folder"%}</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{%trans 'Close' %}"></button>
       </div>
       <div class="modal-body">
 
@@ -30,7 +33,7 @@
           <input type="hidden" name="folderid" id="formfolderid" value=""/>
           <div class="form-group">
             <label for="folderInputName">{% trans "Name"%}</label>
-            <input type="text" class="form-control" name="name" id="folderInputName" placeholder="{% trans "Enter new name of folder"%}">
+            <input type="text" class="form-control" name="name" id="folderInputName" placeholder="{% trans 'Enter new name of folder' %}">
           </div>
         </form>
 
@@ -49,15 +52,15 @@
         </form>
 
         <div class="row loadingformfiles" style="display: none">
-        <div class="d-flex align-items-center col" >
-          <strong>{% trans "Loading"%}...</strong>
-          <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
-        </div>
+          <div class="d-flex align-items-center col" >
+            <strong>{% trans "Loading"%}...</strong>
+            <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+          </div>
         </div>
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#folderModalCenter">{% trans "Close"%}</button>
+        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#folderModalCenter">{% trans "Close"%}</button>
         <button type="button" class="btn btn-primary" id="modalSave">{% trans "Save changes"%}</button>
       </div>
     </div>
@@ -71,9 +74,7 @@
       <div class="modal-header">
         <h2 class="modal-title" id="shareModalCenterTitle">{% trans "Share with someone" %}</h2>
 
-        <button type="button" class="close" data-toggle="modal" data-target="#shareModalCenter" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{%trans 'Close' %}"></button>
       </div>
       <div class="modal-body">
         <h3 class="h5">{% trans "Already shared with:" %}</h3>
@@ -92,7 +93,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#shareModalCenter">{% trans "Close"%}</button>
+        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#shareModalCenter">{% trans "Close"%}</button>
       </div>
     </div>
   </div>

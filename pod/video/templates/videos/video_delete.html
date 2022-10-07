@@ -1,27 +1,22 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 
 
 {% block breadcrumbs %}
   {{ block.super }}
-  <li class="breadcrumb-item"><a href="{% url 'my_videos' %}">{% trans 'My videos' %}</a></li>
-  <li class="breadcrumb-item"><a href="{% url 'video' slug=video.slug %}">{{video.title}}</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'video:my_videos' %}">{% trans 'My videos' %}</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'video:video' slug=video.slug %}">{{video.title}}</a></li>
   <li class="breadcrumb-item active" aria-current="page">{% trans "Delete" %}</li>
 {% endblock %}
 
-{% block page_title %}
-  {% blocktrans with vtitle=video.title %}Deleting the video "{{vtitle}}"{% endblocktrans %}
-{% endblock %}
 
 {% block page_content %}
-  <h3>{% blocktrans with vtitle=video.title %}Deleting the video "{{vtitle}}"{% endblocktrans %}
-    <span class="float-right">
-      <a href="{% url 'video' slug=video.slug %}" title="{% trans 'View the video'%}" class="btn btn btn-secondary btn-sm">
-        <i data-feather="film"></i>&nbsp;{% trans "Back to the video"%}
+  <span class="float-end">
+      <a href="{% url 'video:video' slug=video.slug %}" title="{% trans 'View the video'%}" class="btn btn btn-secondary btn-sm">
+        <i class="bi bi-film"></i>&nbsp;{% trans "Back to the video"%}
       </a>
-    </span>
-  </h3>
+  </span>
   <p>{% trans 'To delete the video, please checked in and click send.' %}</p>
   <form method="post" action="{{ request.get_full_path }}" id="video_delete_form" class='needs-validation' novalidate>
     {% csrf_token %}
@@ -58,7 +53,7 @@
         {% endfor %}
         <div class="text-center mt-1">
           <button type="submit" class="btn btn-danger">{% trans "Delete" %}</button>
-          <a href="{% url 'video' slug=video.slug %}" title="{{video.title}}" class="btn btn-secondary">{% trans "Back to the video"%}</a>
+          <a href="{% url 'video:video' slug=video.slug %}" title="{{video.title}}" class="btn btn-secondary">{% trans "Back to the video"%}</a>
         </div>
       </fieldset>
     </div>
