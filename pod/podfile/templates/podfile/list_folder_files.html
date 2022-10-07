@@ -186,7 +186,7 @@
         {% if type.lower == "image" and file.class_name.lower == "customimagemodel" %}
           <a
             href="{{file.file.url}}"
-            class="card-image {% if request.is_ajax %} file-image {% endif %}"
+            class="card-image {% if request %} file-image {% endif %}"
             title="{{file.name}}"
             target="_blank"
             data-fileid="{{file.id}}"
@@ -202,7 +202,7 @@
           {% if type.lower == "file" and file.class_name.lower == "customfilemodel" or type.lower == "image" and file.class_name.lower == "customimagemodel" %}
             <a
               href="{{file.file.url}}"
-              class="card-image {% if request.is_ajax %} file-image {% endif %}"
+              class="card-image {% if request %} file-image {% endif %}"
               title="{{file.name}}"
               target="_blank"
               data-fileid="{{file.id}}"

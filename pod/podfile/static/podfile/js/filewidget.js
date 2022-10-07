@@ -3,18 +3,24 @@
 
 if (typeof loaded == "undefined") {
   loaded = true;
+  
   document.addEventListener("click", (e) => {
+    
     if (
-      !e.target.classList.contains("file-name") &&
-      !e.target.classList.contains("file-image")
+      !e.target.parentNode.matches(".file-name") &&
+      !e.target.parentNode.matches(".file-image")
+    
     )
+  
       return;
+    let file = e.target.parentNode;
+    e.preventDefault();
     if (id_input != "") {
-      e.preventDefault();
+      
       document.querySelector("input#" + id_input).value =
-        e.target.dataset.fileid;
+      file.dataset.fileid;
 
-      if (e.target.dataset.filetype == "CustomImageModel") {
+      if (file.dataset.filetype == "CustomImageModel") {
         document.querySelector(".btn-fileinput_" + id_input).innerHTML =
           gettext("Change image");
       } else {
@@ -30,12 +36,12 @@ if (typeof loaded == "undefined") {
         "block";
 
       let html = "";
-      if (e.target.dataset.filetype == "CustomImageModel") {
+      if (file.dataset.filetype == "CustomImageModel") {
         html +=
           '<img src="' +
-          e.target.getAttribute("href") +
+          file.getAttribute("href") +
           '" height="34" alt="' +
-          e.target.getAttribute("title") +
+          file.getAttribute("title") +
           '" loading="lazy"/>&nbsp;';
       } else {
         html +=
@@ -45,18 +51,18 @@ if (typeof loaded == "undefined") {
       }
       html +=
         '<strong><a href="' +
-        e.target.getAttribute("href") +
+        file.getAttribute("href") +
         '" target="_blank" title="' +
         gettext("Open file in a new tab") +
         '">' +
-        e.target.getAttribute("title") +
+        file.getAttribute("title") +
         "</a></strong>&nbsp;";
       document.querySelector("#fileinput_" + id_input).innerHTML = html;
 
       document.querySelector("#modal-folder_" + id_input).innerHTML = "";
 
-      let modalFile = new bootstrap.Modal(
-        document.querySelector("#modal-file_" + id_input)
+      let modalFile = bootstrap.Modal.getInstance(
+        document.querySelector("#fileModal_" + id_input)
       );
       modalFile.hide();
     }

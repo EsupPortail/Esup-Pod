@@ -71,6 +71,7 @@ def home(request, type=None):
     if type is not None and type not in FOLDER_FILE_TYPE:
         raise SuspiciousOperation("--> Invalid type")
     user_home_folder = get_object_or_404(UserFolder, name="home", owner=request.user)
+    print(user_home_folder)
     share_folder = (
         UserFolder.objects.filter(access_groups=request.user.owner.accessgroup_set.all())
         .exclude(owner=request.user)
