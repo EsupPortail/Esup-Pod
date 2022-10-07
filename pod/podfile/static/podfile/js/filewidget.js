@@ -319,6 +319,7 @@ if (typeof loaded == "undefined") {
   }
 
   function reloadAddBtn(searchTerm) {
+    if (!document.querySelector("formuserid")) return
     let folderid = Number.parseInt(document.querySelector("formuserid").value);
     let add = gettext("Add");
     let url =
@@ -572,12 +573,15 @@ if (typeof loaded == "undefined") {
       var searchTerm = e.target.value;
       reloadAddBtn(searchTerm);
     } else {
+      
       let user_search = document.getElementById("user_search");
+      if (user_search) {
       user_search.innerHTML = "";
       fadeOut(user_search, 300);
       setTimeout(() => {
         user_search.hide();
       }, 300);
+    }
     }
   });
 
