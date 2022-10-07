@@ -83,8 +83,8 @@ def home(request, type=None):
         .order_by("owner", "id")
     )
     current_session_folder = get_current_session_folder(request)
-
-    template = "podfile/home_content.html" if (request.is_ajax()) else "podfile/home.html"
+    # template = "podfile/home_content.html" if (request) else "podfile/home.html"
+    template = "podfile/home.html"
 
     return render(
         request,
@@ -226,7 +226,6 @@ def decide_owner(request, form, folder):
 @staff_member_required(redirect_field_name="referrer")
 def editfolder(request):
     new_folder = False
-    print(request.POST)
     form = UserFolderForm(request.POST)
     if request.POST.get("folderid") and request.POST.get("folderid") != "":
         folder = get_object_or_404(UserFolder, id=request.POST.get("folderid"))
@@ -278,6 +277,7 @@ def editfolder(request):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def deletefolder(request):
+    print(request.POST)
     if request.POST.get("id"):
         folder = get_object_or_404(UserFolder, id=request.POST.get("id"))
         if folder.name == "home" or (
@@ -295,7 +295,7 @@ def deletefolder(request):
             folder.delete()
 
     rendered, current_session_folder = get_rendered(request)
-
+    
     list_element = {
         "list_element": rendered,
         "folder_id": current_session_folder.id,
@@ -448,7 +448,7 @@ def changefile(request):
             raise PermissionDenied
 
         file = get_object_or_404(
-            eval(request.POST.get("file_type"), id=request.POST.get("file_id"))
+            eval(request.POST.get("file_type")), id=request.POST.get("file_id")
         )
         if request.user != file.created_by and not (
             request.user.is_superuser
@@ -665,7 +665,7 @@ def remove_shared_user(request):
 
 @ login_required(redirect_field_name="referrer")
 def add_shared_user(request):
-    if request.is_ajax():
+    if request:
         foldid = request.GET.get("foldid", 0)
         userid = request.GET.get("userid", 0)
         if foldid == 0 or userid == 0:

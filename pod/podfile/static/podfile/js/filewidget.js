@@ -1,9 +1,6 @@
 // podfile:filewidjet.js
 // select file
 
-
-
-
 if (typeof loaded == "undefined") {
   loaded = true;
   document.addEventListener("click", (e) => {
@@ -58,10 +55,11 @@ if (typeof loaded == "undefined") {
 
       document.querySelector("#modal-folder_" + id_input).innerHTML = "";
 
-      let modalFile = new bootstrap.Modal(document.querySelector("#modal-file_" + id_input)); 
+      let modalFile = new bootstrap.Modal(
+        document.querySelector("#modal-file_" + id_input)
+      );
       modalFile.hide();
     }
-    Y;
   });
 
   document.addEventListener("click", (e) => {
@@ -137,34 +135,31 @@ if (typeof loaded == "undefined") {
     e.preventDefault();
     document.querySelector("#podfile #dirs").classList.add("open");
   });
-  
 
   document.addEventListener("change", (e) => {
     if (e.target.id != "ufile") return;
-   document.getElementById("formuploadfile").querySelector("button").click();
-   
+    document.getElementById("formuploadfile").querySelector("button").click();
   });
 
   /****** CHANGE FILE ********/
   document.addEventListener("submit", (e) => {
-    
-   
-   e.preventDefault();
+    e.preventDefault();
     if (
       e.target.id != "formchangeimage" &&
       e.target.id != "formchangefile" &&
       e.target.id != "formuploadfile"
     )
       return;
-      
-    
+
     //alert('FORM');
     e.target.style.display = "none";
     document.querySelectorAll(".loadingformfiles").forEach((el) => {
       el.style.display = "block";
     });
     document.getElementById("listfiles").style.display = "none";
-    var data_form = new FormData(e.target); //possible bug
+
+    var data_form = new FormData(e.target);
+
     var url = e.target.getAttribute("action");
 
     fetch(url, {
@@ -182,6 +177,7 @@ if (typeof loaded == "undefined") {
         e.target.style.display = "block";
         show_folder_files(data);
       })
+
       .catch((error) => {
         e.target.style.display = "block";
         document.querySelectorAll(".loadingformfiles").forEach((el) => {
@@ -189,6 +185,7 @@ if (typeof loaded == "undefined") {
         });
         document.getElementById("listfiles").style.display = "block";
         var data = error.status + " " + error.statusText;
+
         showalert(
           gettext("Error during exchange") +
             "(" +
@@ -207,6 +204,7 @@ if (typeof loaded == "undefined") {
 
   document.addEventListener("show.bs.modal", (event) => {
     //event.preventDefault();
+
     if (event.target.id != "folderModalCenter") return;
 
     event.stopPropagation();
@@ -218,26 +216,30 @@ if (typeof loaded == "undefined") {
     });
 
     let folder_id = button.dataset.folderid;
-
     let filetype = button.dataset.filetype;
+
     switch (filetype) {
       case "CustomImageModel":
         document.getElementById("folderModalCenterTitle").innerHTML =
           gettext("Change") + " " + button.dataset.filename;
-        modal.querySelector(".modal-body input#id_folder").value = folder_id;
-        modal.querySelector(".modal-body input#id_image").value =
-          button.dataset.fileid;
-        modal.querySelector(".modal-body input#file_type").value =
-          button.dataset.filetype;
+        modal.querySelectorAll(".modal-body input#id_folder").forEach((e) => {
+          e.value = folder_id;
+        });
+        modal.querySelectorAll(".modal-body input#id_image").forEach((e) => {
+          e.value = button.dataset.fileid;
+        });
+        modal.querySelectorAll(".modal-body input#file_type").forEach((e) => {
+          e.value = button.dataset.filetype;
+        });
         document.getElementById("formchangeimage").style.display = "block";
         break;
       case "CustomFileModel":
         document.getElementById("folderModalCenterTitle").innerHTML =
-          gettext("Change") + " " + button.data("filename");
-        modal.querySelector(".modal-body input#id_folder").value = folder_id;
-        modal.querySelector(".modal-body input#file_id").value =
+          gettext("Change") + " " + button.dataset.filename;
+        modal.querySelectorAll(".modal-body input#id_folder").value = folder_id;
+        modal.querySelectorAll(".modal-body input#file_id").value =
           button.dataset.fileid;
-        modal.querySelector(".modal-body input#file_type").value =
+        modal.querySelectorAll(".modal-body input#file_type").value =
           button.dataset.filetype;
         document.getElementById("formchangefile").style.display = "block";
         break;
@@ -432,11 +434,11 @@ if (typeof loaded == "undefined") {
     if (e.target.id != "modalSave") return;
     document.querySelectorAll("#folderModalCenter form").forEach((form) => {
       if (form.style.display == "none") return;
-        let button = document.createElement("button")
-        button.type = "submit"
-        button.style.display = "none"
-        form.append(button)
-        button.click();
+      let button = document.createElement("button");
+      button.type = "submit";
+      button.style.display = "none";
+      form.append(button);
+      button.click();
     });
   });
 
@@ -447,7 +449,9 @@ if (typeof loaded == "undefined") {
     );
     if (deleteConfirm) {
       let id = e.target.dataset.folderid;
-      let csrfmiddlewaretoken = e.target.querySelector("input").value;
+      let csrfmiddlewaretoken = e.target.querySelector(
+        'input[name="csrfmiddlewaretoken"]'
+      ).value;
       send_form_data(
         deletefolder_url,
         { id: id, csrfmiddlewaretoken: csrfmiddlewaretoken },
@@ -478,9 +482,8 @@ if (typeof loaded == "undefined") {
   });
 
   document.addEventListener("submit", (e) => {
-    
     e.preventDefault();
-  
+
     if (e.target.id != "folderFormName") return;
     let form = e.target;
     let data_form = new FormData(form);
@@ -515,6 +518,7 @@ if (typeof loaded == "undefined") {
         .then((response) => response.json())
         .then((data) => {
           let nextPage = data.next_page;
+
           data.folders.forEach((elt) => {
             let string_html =
               '<div class="folder_container">' +
@@ -569,24 +573,19 @@ if (typeof loaded == "undefined") {
   });
 
   function reloadFolder(data) {
-    data = JSON.parse(data);
-    console.log(data);
+    if (!isJson(data)) data = JSON.parse(data);
     if (data.list_element) {
       var folder_id = data.folder_id;
 
-      if (data.folder_name) {
-        document.querySelector("#folder-name-" + folder_id).textContent =
-          "  " + data.folder_name;
-      }
-
       if (data.new_folder == true) {
-        let type = document.getElementById("#list_folders_sub").dataset.type;
+        let type = document.getElementById("list_folders_sub").dataset.type;
+
         let string_html =
           '<div class="folder_container">' +
           createFolder(
-            data.id,
-            data.name,
-            currentFolder == true,
+            data.folder_id,
+            data.folder_name,
+            true,
             type,
             undefined
           ) +
@@ -604,6 +603,11 @@ if (typeof loaded == "undefined") {
           );
       }
 
+      if (data.folder_name) {
+        document.querySelector("#folder-name-" + folder_id).textContent =
+          "  " + data.folder_name;
+      }
+
       if (data.deleted) {
         document.querySelector("#folder_" + data.deleted_id).remove();
       }
@@ -613,7 +617,6 @@ if (typeof loaded == "undefined") {
         "show_folder_files",
         "get"
       );
-
       //dismiss modal
       let center_mod = document.getElementById("folderModalCenter");
       let center_modal = bootstrap.Modal.getOrCreateInstance(center_mod);
@@ -629,8 +632,7 @@ if (typeof loaded == "undefined") {
   }
 
   function show_folder_files(data) {
-    if (!isJson(data))
-      data = JSON.parse(data);
+    if (!isJson(data)) data = JSON.parse(data);
 
     document.getElementById("files").classList.remove("loading");
     if (data.list_element) {
@@ -648,16 +650,20 @@ if (typeof loaded == "undefined") {
       document.querySelectorAll("img.file-image").forEach((elt) => {
         elt.src = static_url + "podfile/images/home_folders.png";
       });
-      document
-        .querySelector("#folder_" + data.folder_id)
-        .classList.add("font-weight-bold");
+      let folder_id = document.getElementById("folder_" + data.folder_id);
+      if (folder_id) {
+        document
+          .querySelector("#folder_" + data.folder_id)
+          .classList.add("font-weight-bold");
+      }
 
       let folder = document.querySelector("#folder_" + data.folder_id + " img");
       if (folder) folder.src = static_url + "podfile/images/opened_folder.png";
 
       //dismiss modal
       let center_modal = document.getElementById("folderModalCenter");
-      let center_modal_instance = new bootstrap.Modal(center_modal);
+      let center_modal_instance =
+        bootstrap.Modal.getOrCreateInstance(center_modal);
       center_modal_instance.hide();
       center_modal.querySelector(".modal-body input#folderInputName").value =
         "";
@@ -757,7 +763,6 @@ if (typeof loaded == "undefined") {
     let token = document.querySelector(
       'input[name="csrfmiddlewaretoken"]'
     ).value;
-
     fetch(url, {
       method: "GET",
       headers: {

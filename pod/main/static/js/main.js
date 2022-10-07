@@ -567,15 +567,16 @@ var send_form_data = async function (
   method = method || "post";
 
   let token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-  
-  form_data = ""
-  if (!data_form instanceof FormData) {
-    form_data  = new FormData();
+
+  form_data = "";
+
+  if (!(data_form instanceof FormData)) {
+    form_data = new FormData();
     for (let key in data_form) {
       form_data.append(key, data_form[key]);
     }
-  }else{
-    form_data = data_form
+  } else {
+    form_data = data_form;
   }
 
   if (method == "post") {
@@ -591,6 +592,7 @@ var send_form_data = async function (
         $data = callbackSuccess($data);
         window[fct]($data);
       })
+
       .catch((error) => {
         showalert(
           gettext("Error during exchange") +
@@ -608,13 +610,13 @@ var send_form_data = async function (
       headers: {
         "X-CSRFToken": token,
       },
-      
     })
       .then((response) => response.text())
       .then((data) => {
         callbackSuccess(data);
         window[fct](data);
-      })
+      });
+    /*
       .catch((error) => {
         showalert(
           gettext("Error during exchange") +
@@ -627,6 +629,7 @@ var send_form_data = async function (
 
         callbackFail(error);
       });
+      */
   }
 };
 
@@ -1146,7 +1149,7 @@ function fadeOutIn(elem, speed) {
     } // end if
   }, speed / 50);
 }
-function isJson(str){
+function isJson(str) {
   try {
     JSON.parse(str);
   } catch (e) {
