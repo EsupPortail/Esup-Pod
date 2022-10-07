@@ -162,7 +162,7 @@ if (typeof loaded == "undefined") {
     document.getElementById("listfiles").style.display = "none";
 
     var data_form = new FormData(e.target);
-
+    
     var url = e.target.getAttribute("action");
 
     fetch(url, {

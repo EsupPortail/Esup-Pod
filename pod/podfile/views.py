@@ -88,8 +88,10 @@ def home(request, type=None):
     # else we send the iframe page
     # home_content.html
     # template = "podfile/home_content.html" if (request) else "podfile/home.html"
-    template = "podfile/home.html"
-
+    if request.get_full_path() == "/podfile/":
+        template = "podfile/home.html"
+    else:
+        template = "podfile/home_content.html"
     return render(
         request,
         template,
@@ -349,7 +351,6 @@ def deletefile(request):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def uploadfiles(request):
-
     if request.POST.get("folderid") and request.POST.get("folderid") != "":
         folder = get_object_or_404(UserFolder, id=request.POST.get("folderid"))
         if request.user != folder.owner and not (
@@ -397,6 +398,7 @@ def uploadfiles(request):
 
 
 def save_uploaded_files(request, folder, files):
+
     upload_errors = ""
     for file in files:
         # Check if file is image

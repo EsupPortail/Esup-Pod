@@ -607,16 +607,14 @@ var send_form_data = async function (
   } else {
     await fetch(url, {
       method: "GET",
-      headers: {
-        "X-CSRFToken": token,
-      },
+      
     })
       .then((response) => response.text())
       .then(($data) => {
         $data = callbackSuccess($data);
         window[fct]($data);
-      });
-    /*
+      })
+    
       .catch((error) => {
         showalert(
           gettext("Error during exchange") +
@@ -629,7 +627,7 @@ var send_form_data = async function (
 
         callbackFail(error);
       });
-      */
+      
   }
 };
 
