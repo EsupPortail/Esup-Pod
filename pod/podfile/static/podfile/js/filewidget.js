@@ -3,22 +3,17 @@
 
 if (typeof loaded == "undefined") {
   loaded = true;
-  
+
   document.addEventListener("click", (e) => {
-    
     if (
       !e.target.parentNode.matches(".file-name") &&
       !e.target.parentNode.matches(".file-image")
-    
     )
-  
       return;
     let file = e.target.parentNode;
     e.preventDefault();
     if (id_input != "") {
-      
-      document.querySelector("input#" + id_input).value =
-      file.dataset.fileid;
+      document.querySelector("input#" + id_input).value = file.dataset.fileid;
 
       if (file.dataset.filetype == "CustomImageModel") {
         document.querySelector(".btn-fileinput_" + id_input).innerHTML =
@@ -127,7 +122,6 @@ if (typeof loaded == "undefined") {
   if (document.querySelector("#open-folder-icon")) {
     document.getElementById("open-folder-icon").style.cursor = "pointer";
   }
- 
 
   document.addEventListener("click", (e) => {
     if (
@@ -168,7 +162,7 @@ if (typeof loaded == "undefined") {
     document.getElementById("listfiles").style.display = "none";
 
     var data_form = new FormData(e.target);
-    
+
     var url = e.target.getAttribute("action");
 
     fetch(url, {
@@ -319,8 +313,8 @@ if (typeof loaded == "undefined") {
   }
 
   function reloadAddBtn(searchTerm) {
-    if (!document.querySelector("formuserid")) return
-    let folderid = Number.parseInt(document.querySelector("formuserid").value);
+    if (!document.getElementById("formuserid")) return;
+    let folderid = Number.parseInt(document.getElementById("formuserid").value);
     let add = gettext("Add");
     let url =
       "/podfile/ajax_calls/search_share_user?term=" +
@@ -340,10 +334,11 @@ if (typeof loaded == "undefined") {
     })
       .then((response) => response.json())
       .then((data) => {
+        document.getElementById("user-search").innerHTML = "";
         data.forEach((elt) => {
           document
             .getElementById("user-search")
-            .append(user_li(add, data, "add"));
+            .append(user_li(add, elt, "add"));
         });
         fadeIn(document.getElementById("user-search"));
       })
@@ -573,15 +568,14 @@ if (typeof loaded == "undefined") {
       var searchTerm = e.target.value;
       reloadAddBtn(searchTerm);
     } else {
-      
       let user_search = document.getElementById("user_search");
       if (user_search) {
-      user_search.innerHTML = "";
-      fadeOut(user_search, 300);
-      setTimeout(() => {
-        user_search.hide();
-      }, 300);
-    }
+        user_search.innerHTML = "";
+        fadeOut(user_search, 300);
+        setTimeout(() => {
+          user_search.hide();
+        }, 300);
+      }
     }
   });
 

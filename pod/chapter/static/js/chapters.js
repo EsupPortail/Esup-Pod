@@ -230,7 +230,6 @@ var sendform = async function (elt, action) {
             );
           } else {
             data = JSON.parse(data);
-            console.log(data);
             if (data.errors) {
               document.querySelector("form#form_chapter").style.display =
                 "block";

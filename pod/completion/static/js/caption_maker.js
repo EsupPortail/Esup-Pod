@@ -139,7 +139,6 @@ const send_form_save_captions = function () {
       let htmlDoc = parser.parseFromString(data, "text/html");
 
       document.body.append(htmlDoc.querySelector("#base-message-alert"));
-      console.log(data);
       if (data.track_id != undefined) {
         var url = new URL(window.location.href);
         var url_params = url.searchParams;
@@ -232,7 +231,6 @@ document
       document.getElementById("captionTitle").innerHTML = "&nbsp;";
       document.getElementById("textCaptionEntry").value = "";
       document.querySelectorAll(".newEditorBlock").forEach((e) => {
-        console.log(this);
         e.remove();
       });
     }
@@ -652,7 +650,6 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
         this.div.classList.remove("captionBeingEdited");
 
         this.placeInOrder();
-        console.log("fizqdq");
         this.isEditEnabled = false;
       }
     },

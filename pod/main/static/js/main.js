@@ -1,4 +1,5 @@
-/** FUNCTIONS **/
+/** Utility FUNCTIONS **/
+
 function getParents(el, parentSelector /* optional */) {
   // If no parentSelector defined will bubble up all the way to *document*
   if (parentSelector === undefined) {
@@ -17,7 +18,7 @@ function getParents(el, parentSelector /* optional */) {
 
   return parents;
 }
-
+/* SLIDE UP */
 function slideUp(target, duration = 500, callback = null) {
   target.style.transitionProperty = "height, margin, padding";
   target.style.transitionDuration = duration + "ms";
@@ -45,6 +46,46 @@ function slideUp(target, duration = 500, callback = null) {
   }, duration);
 }
 
+/* SLIDE DOWN */
+var slideDown = (target, duration = 500) => {
+  target.style.removeProperty("display");
+  let display = window.getComputedStyle(target).display;
+  if (display === "none") display = "block";
+  target.style.display = display;
+  let height = target.offsetHeight;
+  target.style.overflow = "hidden";
+  target.style.height = 0;
+  target.style.paddingTop = 0;
+  target.style.paddingBottom = 0;
+  target.style.marginTop = 0;
+  target.style.marginBottom = 0;
+  target.offsetHeight;
+  target.style.boxSizing = "border-box";
+  target.style.transitionProperty = "height, margin, padding";
+  target.style.transitionDuration = duration + "ms";
+  target.style.height = height + "px";
+  target.style.removeProperty("padding-top");
+  target.style.removeProperty("padding-bottom");
+  target.style.removeProperty("margin-top");
+  target.style.removeProperty("margin-bottom");
+  window.setTimeout(() => {
+    target.style.removeProperty("height");
+    target.style.removeProperty("overflow");
+    target.style.removeProperty("transition-duration");
+    target.style.removeProperty("transition-property");
+  }, duration);
+};
+
+/* SLIDE TOOGLE */
+var slideToggle = (target, duration = 500) => {
+  if (window.getComputedStyle(target).display === "none") {
+    return slideDown(target, duration);
+  } else {
+    return slideUp(target, duration);
+  }
+};
+
+/* FADE IN */
 function fadeIn(el, display) {
   el.style.opacity = 0;
   el.style.display = display || "block";
@@ -55,6 +96,32 @@ function fadeIn(el, display) {
       requestAnimationFrame(fade);
     }
   })();
+}
+
+/* FADE OUT */
+function fadeOut(elem, speed) {
+  if (!elem.style.opacity) {
+    elem.style.opacity = 1;
+  } // end if
+
+  var outInterval = setInterval(function () {
+    elem.style.opacity -= 0.02;
+    if (elem.style.opacity <= 0) {
+      clearInterval(outInterval);
+      var inInterval = setInterval(function () {
+        elem.style.opacity = Number(elem.style.opacity) + 0.02;
+        if (elem.style.opacity >= 1) clearInterval(inInterval);
+      }, speed / 50);
+    } // end if
+  }, speed / 50);
+}
+function isJson(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return true;
+  }
+  return false;
 }
 
 function linkTo_UnCryptMailto(s) {
@@ -383,7 +450,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // '<i class="bi bi-arrow-90deg-up"></i><i class="bi bi-list"></i>'
       let mainContent = document.getElementById("mainContent");
-      if (mainContent) {
+      if (mainContent != null) {
         document.getElementById("mainContent").classList.add("col-md-9");
       }
     });
@@ -392,8 +459,11 @@ document.addEventListener("DOMContentLoaded", function () {
       Cookies.set("activeCollapseAside", "close", { sameSite: "Lax" });
 
       // '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
+      let mainContent = document.getElementById("mainContent");
 
-      document.getElementById("mainContent").classList.add("col-md-9");
+      if (mainContent != null) {
+        document.getElementById("mainContent").classList.add("col-md-9");
+      }
     });
 
     // If aside menu is empty, hide container and button
@@ -607,14 +677,13 @@ var send_form_data = async function (
   } else {
     await fetch(url, {
       method: "GET",
-      
     })
       .then((response) => response.text())
       .then(($data) => {
         $data = callbackSuccess($data);
         window[fct]($data);
       })
-    
+
       .catch((error) => {
         showalert(
           gettext("Error during exchange") +
@@ -627,7 +696,6 @@ var send_form_data = async function (
 
         callbackFail(error);
       });
-      
   }
 };
 
@@ -1112,48 +1180,18 @@ function show_messages(msgText, msgClass, loadUrl) {
   $msgContainer.innerHTML = $msgBox.outerHTML;
 
   if (loadUrl) {
-    $msgBox.delay(4000).fadeOut(function () {
+    setTimeout(function () {
+      fadeOutIn($msgBox);
       if (loadUrl) {
         window.location.reload();
       } else {
         window.location.assign(loadUrl);
       }
-    });
-    setTimeout(function () {
-      fadeOutIn($msgBox);
-      if (loadUrl) {
-        window.location.reload();
-      }
-    }, 5000);
+    }, 4000);
   } else if (msgClass === "info" || msgClass === "success") {
     setTimeout(function () {
       fadeOutIn($msgBox);
       $msgBox.remove();
     }, 3000);
   }
-}
-
-function fadeOutIn(elem, speed) {
-  if (!elem.style.opacity) {
-    elem.style.opacity = 1;
-  } // end if
-
-  var outInterval = setInterval(function () {
-    elem.style.opacity -= 0.02;
-    if (elem.style.opacity <= 0) {
-      clearInterval(outInterval);
-      var inInterval = setInterval(function () {
-        elem.style.opacity = Number(elem.style.opacity) + 0.02;
-        if (elem.style.opacity >= 1) clearInterval(inInterval);
-      }, speed / 50);
-    } // end if
-  }, speed / 50);
-}
-function isJson(str) {
-  try {
-    JSON.parse(str);
-  } catch (e) {
-    return true;
-  }
-  return false;
 }
