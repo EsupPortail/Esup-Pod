@@ -123,17 +123,18 @@ class RssSiteVideosFeed(Feed):
     feed_type = RssFeedGenerator
     feed_copyright = DEFAULT_DC_COVERAGE + " " + DEFAULT_DC_RIGHTS
     prefix = "https"
+    image_url = ""
 
     def feed_extra_kwargs(self, obj):
-        return {
-            "image_url": "".join(
+        if self.image_url == "":
+            self.image_url = "".join(
                 [
                     self.prefix,
-                    get_current_site(None).domain,
-                    settings.STATIC_URL,
-                    LOGO_SITE
+                    obj.first().get_thumbnail_url().replace("//", "")
                 ]
-            ),
+            )
+        return {
+            "image_url": self.image_url,
             "iTunes_category": {"text": "Education", "sub": "Higher Education"},
             "iTunes_explicit": "clean",
             "iTunes_name": self.author_name,
@@ -169,6 +170,11 @@ class RssSiteVideosFeed(Feed):
                 Channel, slug=slug_c, site=get_current_site(request)
             )
             self.subtitle = "%s" % (channel.title)
+            self.title += " - %s" % (channel.title)
+            if channel.headband:
+                self.image_url = "".join(
+                    [prefix, get_current_site(request).domain, channel.headband.file.url]
+                )
             videos_list = videos_list.filter(channel=channel)
             self.link = reverse("channel-video:channel", kwargs={"slug_c": channel.slug})
 
