@@ -1237,7 +1237,13 @@ body {
   transform: scale(1.03);
 }
 
+/* Do not set brightness 0, as many logo are not monochromatic :/
 :root .pod-footer-logo { filter: brightness(0%);}
+*/
+.pod-footer-logo {
+  height:40px;
+  background-repeat: no-repeat;
+}
 
 .pod-offcanvas {
   background: var(--pod-background-neutre2-bloc);
@@ -1497,6 +1503,15 @@ table .alert.alert-danger.btn.pod-btn-social {
 /* Quick fix for video preview - override of video-js.min.css on line 1 */
 .vjs-poster {
   background-size: cover !important;
+}
+
+.vjs-logo-button {
+  filter: invert(100%)
+}
+.vjs-logo-button:hover,
+.vjs-logo-button:focus {
+  transform: rotate(30deg);
+  background-color: transparent !important;
 }
 
 /* replace default .video-js 10px font size to avoid an accessibility "Very small text" warning */
