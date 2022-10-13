@@ -1539,8 +1539,10 @@ def video_note_save_form_valid(request, video, params):
         else:
             # If there is already a note at this timestamp & status, update it.
             note.note = note.note + "\n" + request.POST.get("note")
-            message = _("Your note at %(timestamp)s has been modified." %
-                        {'timestamp': note.timestampstr()})
+            message = _(
+                "Your note at %(timestamp)s has been modified."
+                % {"timestamp": note.timestampstr()}
+            )
         note.save()
         messages.add_message(request, messages.INFO, message)
 
