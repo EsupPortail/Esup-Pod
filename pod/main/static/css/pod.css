@@ -95,7 +95,6 @@
   border-color: #f5c6cb;
 }
 
-.table,
 .navbar-light .navbar-nav .nav-link,
 .navbar-light .navbar-toggler {
   transition: background-color .3s ease-in-out, color .3s ease-in-out;
@@ -160,7 +159,7 @@
 }
 
 .btn-link {
-  font-weight: 400;
+  /*font-weight: 400;*/
   color: var(--pod-link-color);
   text-decoration: none;
 }
@@ -952,7 +951,7 @@ body {
   --bs-btn-active-border-color: var(--pod-primary-lighten);
 }
 
-.btn-primary {
+.btn.btn-primary {
   background: var(--pod-primary);
   border-color: var(--pod-primary);
   color: var(--pod-btn-text);
@@ -1148,7 +1147,6 @@ body {
 .pod-info-video__summary {
   max-width: 900px;
   font-size: 90%;
-  margin: 1.5rem 0;
 }
 
 @media (min-width: 992px) {
@@ -1193,15 +1191,11 @@ body {
   text-decoration: underline;
 }
 
-.pod-btn-share {
+/*.pod-btn-share {
   border: 1px solid silver;
-  /*transition: all 0.2s ease-in;
-  color: var(--pod-font-color);*/
-}
-
-.pod-btn-share i {
-  font-size: 1.3rem;
-}
+  transition: all .2s ease-in;
+  color: var(--pod-font-color);
+}*/
 
 .pod-btn-share i,
 .pod-info-video__signal i {
@@ -1462,8 +1456,8 @@ body {
 
 .table > :not(caption) > * > *
 {
-    padding: .5rem .25rem;
-    border-bottom-width: 0 !important;
+  padding: .5rem .25rem;
+  border-bottom-width: 0 !important;
 }
 
 table :not(footer) > .pod-btn-social {
