@@ -445,7 +445,9 @@ var send_form_data = function (
   callbackSuccess = undefined,
   callbackFail = undefined
 ) {
-  console.log("[Deprecation Warning] send_form_data function will soon be debrecated. Replace it by send_form_data_vanilla.");
+  console.log(
+    "[Deprecation Warning] send_form_data function will soon be debrecated. Replace it by send_form_data_vanilla."
+  );
   callbackSuccess =
     typeof callbackSuccess === "function"
       ? callbackSuccess
@@ -477,7 +479,6 @@ var send_form_data = function (
   });
 };
 
-
 /*!
  * AJAX call function (usually send form data)
  * @param  {String}          url               Address link to be requested
@@ -505,25 +506,23 @@ var send_form_data_vanilla = function (
   callbackFail =
     typeof callbackFail === "function" ? callbackFail : function (err) {};
 
-   if(data_form) {
-     data_form = new FormData(data_form);
-   }
+  if (data_form) {
+    data_form = new FormData(data_form);
+  }
 
   // console.log("Fetching "+url+"...");
-  fetch( url,
-    {
-      method: method,
-      body: data_form
-    }
-  )
-    .then(response => {
+  fetch(url, {
+    method: method,
+    body: data_form,
+  })
+    .then((response) => {
       if (response.ok) {
         return response.text();
       } else {
         throw new Error(`${response.status} : ${response.statusText}`);
       }
     })
-    .then(data => {
+    .then((data) => {
       // console.log("Success. data="+data);
       response = callbackSuccess(data);
       // console.log("Done. Calling "+fct+"...");
@@ -539,7 +538,7 @@ var send_form_data_vanilla = function (
         "alert-danger"
       );
       callbackFail(err);
-    })
+    });
 };
 
 var show_form_theme_new = function (data) {
@@ -929,23 +928,28 @@ function show_messages(msgText, msgClass, loadUrl) {
 var podSerializeArray = function (form) {
   var arr = [];
   Array.prototype.slice.call(form.elements).forEach(function (field) {
-    if (!field.name || field.disabled || ['file', 'reset', 'submit', 'button'].indexOf(field.type) > -1) return;
-    if (field.type === 'select-multiple') {
+    if (
+      !field.name ||
+      field.disabled ||
+      ["file", "reset", "submit", "button"].indexOf(field.type) > -1
+    )
+      return;
+    if (field.type === "select-multiple") {
       Array.prototype.slice.call(field.options).forEach(function (option) {
         if (!option.selected) return;
         arr.push({
           name: field.name,
-          value: option.value
+          value: option.value,
         });
       });
       return;
     }
-    if (['checkbox', 'radio'].indexOf(field.type) >-1 && !field.checked) return;
+    if (["checkbox", "radio"].indexOf(field.type) > -1 && !field.checked)
+      return;
     arr.push({
       name: field.name,
-      value: field.value
+      value: field.value,
     });
   });
   return arr;
 };
-
