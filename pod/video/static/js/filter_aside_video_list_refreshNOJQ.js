@@ -4,25 +4,34 @@ var regExGetOnlyChars = /([\D])/g;
 
 function getInfiniteScrollWaypoint() {
   // Return Waypoint Infinite object to init/refresh the infinite scroll
+  let infinite_loading = document.querySelector(".infinite-loading");
   return new Waypoint.Infinite({
     element: document.getElementById("videos_list"),
     onBeforePageLoad: function () {
-      $(".infinite-loading").show();
+      infinite_loading.style.display = "block";
     },
     onAfterPageLoad: function ($items) {
-      $(".infinite-loading").hide();
-      $("footer.static-pod").addClass("small");
-      $("footer.static-pod").addClass("fixed-bottom");
-      $("footer.static-pod").attr("style", "height:80px; overflow-y:auto");
-      $("footer.static-pod .hidden-pod").css("display", "none");
-      $(window).scroll(function () {
-        if (
-          $(window).height() + $(window).scrollTop() ===
-          $(document).height()
-        ) {
-          $("footer.static-pod .hidden-pod").css("display", "block");
-          $("footer.static-pod").attr("style", "height:auto;");
-          $("footer.static-pod").removeClass("fixed-bottom");
+      infinite_loading.style.display = "none";
+      let footer = document.querySelector("footer.static-pod");
+      footer.classList.add("small");
+      footer.classList.add("fixed-bottom");
+      footer.setAttribute("style", "height:80px; overflow-y:auto");
+      var docHeight = Math.max(
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight
+      );
+      document.querySelector("footer.static-pod .hidden-pod").style.display =
+        "none";
+      window.addEventListener("scroll", function () {
+        if (window.innerHeight + window.scrollTop() === docHeight) {
+          document.querySelector(
+            "footer.static-pod .hidden-pod"
+          ).style.display = "block";
+          footer.setAttribute("style", "height:auto;");
+          footer.classList.remove("fixed-bottom");
         }
       });
     },
@@ -37,6 +46,7 @@ function replaceCountVideos(newCount) {
 
 function refreshVideosSearch(formCheckedInputs) {
   // Ajax request to refresh view with filtered video list
+
   return $.ajax({
     type: "GET",
     url: urlVideos,

@@ -4,6 +4,7 @@ var regExGetOnlyChars = /([\D])/g;
 
 function getInfiniteScrollWaypoint() {
   // Return Waypoint Infinite object to init/refresh the infinite scroll
+  
   return new Waypoint.Infinite({
     element: ("#videos_list")[0],
     onBeforePageLoad: function () {

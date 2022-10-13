@@ -484,6 +484,8 @@ def my_videos(request):
 
     full_path = ""
     if page:
+        print(page)
+
         full_path = (
             request.get_full_path()
             .replace("?page=%s" % page, "")

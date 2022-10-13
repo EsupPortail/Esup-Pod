@@ -1,56 +1,36 @@
-class Waypoint {
-  constructor(
-    waypointElement,
-    handler,
-    onBeforeLoadCallback,
-    onAfterLoadCallback
-  ) {
-    this.waypointElement = waypointElement;
-    this.handler = handler;
-    this.onBeforeLoadCallback = onBeforeLoadCallback;
-    this.onAfterLoadCallback = onAfterLoadCallback;
-    this.initWaypoint();
-  }
+function isFooterInView() {
+    var footer = document.querySelector('footer.container-fluid.pod-footer-container');
+    var rect = footer.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
 
-  initWaypoint() {
-    window.addEventListener(
-      "scroll",
-      function (event) {
-        if (this.onBeforeLoadCallback) {
-          if (isInViewport(theElementToWatch)) {
-            this.onBeforeLoadCallback();
-            this.handler();
-          } else {
-            this.handler();
-          }
-        }
-      },
-      false
     );
-  }
-  isInViewPort() {
-    // Get the bounding client rectangle position in the viewport
-    var bounding = this.waypointElement.getBoundingClientRect();
+}  
 
-    // Checking part. Here the code checks if it's *fully* visible
-    // Edit this part if you just want a partial visibility
-    if (
-      bounding.top >= 0 &&
-      bounding.left >= 0 &&
-      bounding.right <=
-        (window.innerWidth || document.documentElement.clientWidth) &&
-      bounding.bottom <=
-        (window.innerHeight || document.documentElement.clientHeight)
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+//chech if user scrolled to
 
-  onBeforePageLoad() {
-    if (this.onBeforeLoadCallback) {
-      this.onBeforeLoadCallback();
+class InfiniteLoader{
+    constructor(getData){
+        this.page = 1;
+        window.addEventListener('load', (e) => {this.initMore(getData)} );
+        window.addEventListener('scroll', (e) => { ;this.initMore(getData)});
+        
+
     }
-  }
+
+    initMore(getData){
+        if (isFooterInView()) {
+            getData(this.page);
+            console.log(this.page)
+            this.page += 1;
+           
+        }
+    }
+   
+
 }
+
+

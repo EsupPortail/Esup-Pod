@@ -46,7 +46,47 @@
 {% block more_script %}
 <script src="{% static 'waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'waypoints/lib/shortcuts/infinite.min.js' %}?ver={{VERSION}}"></script>
+<script  src="{% static 'js/infinite.js' %}?ver={{VERSION}}" ></script>
 <script>
+  let element = document.getElementById('videos_list');
+
+  
+
+  let getData = function(page) {
+    url = "/video/my/?page=" + page;
+    headers = {
+      'X-CSRFToken': '{{ csrf_token }}',
+      "X-Requested-With": "XMLHttpRequest"
+
+    };
+    fetch (url, {
+      method: 'GET',
+      headers: headers,
+      credentials: 'same-origin'
+    })
+    .then(response => response.text())
+    .then(data => {
+      // parse data into html 
+      let html = new DOMParser().parseFromString(data, 'text/html').body.firstChild;
+      html.childNodes.forEach(function (node) {
+        element.appendChild(node);
+      });
+      
+     
+    })
+  };
+  
+ 
+  document.addEventListener('DOMContentLoaded', (e) =>{
+    var infinite = new InfiniteLoader(getData)  
+  });
+  
+     
+      
+    
+  
+    /*
+ 
   var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],
     onBeforePageLoad: function () {
@@ -67,11 +107,16 @@
         }
       });
     }
+   
   });
+ */
+
+
 {% if use_category %}
   const CATEGORIES_DATA = {{ categories | safe }};
+ 
   </script>
-  <script defer src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
+  <!-- <script defer src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>-->
 {% else %}
   </script>
 {% endif %}
