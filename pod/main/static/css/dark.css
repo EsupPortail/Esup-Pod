@@ -65,16 +65,11 @@
   }
 }
 
-<<<<<<< HEAD
-/*[data-theme="dark"] .pod-footer-logo {
-  filter: brightness(100%);
-}*/
-=======
+/*
 [data-theme="dark"] :not(.alert-warning)>.btn-close,
 [data-theme="dark"] .pod-footer-logo {
-  filter: invert(100%) brightness(100%);
-}
->>>>>>> upstream-develop
+  filter: brightness(100%);
+}*/
 
 [data-theme="dark"] .form-control::placeholder {
   color: #BEC1C6;

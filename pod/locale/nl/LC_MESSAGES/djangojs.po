@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-13 16:14+0200\n"
+"POT-Creation-Date: 2022-10-13 17:20+0200\n"
 "PO-Revision-Date: 2022-05-13 15:49+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -25,7 +25,7 @@ msgid "Get time from the player"
 msgstr ""
 
 #: pod/chapter/static/js/chapters.js:26
-#: pod/enrichment/static/js/enrichment.js:27 pod/main/static/js/main.js:884
+#: pod/enrichment/static/js/enrichment.js:27 pod/main/static/js/main.js:881
 #: pod/playlist/static/js/playlist.js:8
 #: pod/video/static/js/comment-script.js:69
 msgid "Close"
@@ -56,9 +56,9 @@ msgstr ""
 #: pod/enrichment/static/js/enrichment.js:113
 #: pod/enrichment/static/js/enrichment.js:143
 #: pod/enrichment/static/js/enrichment.js:176
-#: pod/enrichment/static/js/enrichment.js:217 pod/main/static/js/main.js:550
-#: pod/main/static/js/main.js:560 pod/main/static/js/main.js:574
-#: pod/main/static/js/main.js:594 pod/playlist/static/js/playlist.js:76
+#: pod/enrichment/static/js/enrichment.js:217 pod/main/static/js/main.js:547
+#: pod/main/static/js/main.js:557 pod/main/static/js/main.js:571
+#: pod/main/static/js/main.js:591 pod/playlist/static/js/playlist.js:76
 #: pod/playlist/static/js/playlist.js:115
 #: pod/playlist/static/js/playlist.js:152
 #: pod/playlist/static/js/playlist.js:210
@@ -69,7 +69,7 @@ msgstr ""
 
 #: pod/chapter/static/js/chapters.js:201
 #: pod/enrichment/static/js/enrichment.js:195 pod/main/static/js/main.js:429
-#: pod/main/static/js/main.js:583
+#: pod/main/static/js/main.js:580
 msgid "One or more errors have been found in the form."
 msgstr ""
 
@@ -386,42 +386,42 @@ msgstr ""
 msgid "Are you sure you want to delete this element?"
 msgstr ""
 
-#: pod/main/static/js/main.js:470 pod/main/static/js/main.js:536
+#: pod/main/static/js/main.js:471 pod/main/static/js/main.js:533
 #: pod/podfile/static/podfile/js/filewidget.js:114
 #: pod/podfile/static/podfile/js/filewidget.js:386
 msgid "Error during exchange"
 msgstr ""
 
-#: pod/main/static/js/main.js:474 pod/main/static/js/main.js:540
+#: pod/main/static/js/main.js:475 pod/main/static/js/main.js:537
 #: pod/podfile/static/podfile/js/filewidget.js:114
 msgid "No data could be stored."
 msgstr ""
 
-#: pod/main/static/js/main.js:615
+#: pod/main/static/js/main.js:612
 msgid "Change your picture"
 msgstr ""
 
-#: pod/main/static/js/main.js:624
+#: pod/main/static/js/main.js:621
 msgid "Add your picture"
 msgstr ""
 
-#: pod/main/static/js/main.js:759
+#: pod/main/static/js/main.js:756
 msgid "text copied"
 msgstr ""
 
-#: pod/main/static/js/main.js:811
+#: pod/main/static/js/main.js:808
 msgid "Errors appear in the form, please correct them"
 msgstr ""
 
-#: pod/main/static/js/main.js:843
+#: pod/main/static/js/main.js:840
 msgid "The file size exceeds the maximum allowed value:"
 msgstr ""
 
-#: pod/main/static/js/main.js:846
+#: pod/main/static/js/main.js:843
 msgid " GB."
 msgstr ""
 
-#: pod/main/static/js/main.js:864
+#: pod/main/static/js/main.js:861
 msgid "The file extension not in the allowed extension:"
 msgstr ""
 

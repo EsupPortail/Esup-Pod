@@ -487,7 +487,7 @@ var send_form_data = function (
  * @param  {String}          [method]          HTTP Request Method (GET or POST).
  * @param  {String}          [callbackSuccess] Function to call on success
  * @param  {String}          [callbackFail]    Function to call on failure
- * @return {Array}           The serialized    form data ?
+ * @return {String}          The raw response from the server
  */
 var send_form_data_vanilla = function (
   url,
