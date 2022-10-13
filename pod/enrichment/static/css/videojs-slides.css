@@ -197,3 +197,10 @@
 .enrich_richtext{color:var(--bs-blue)}
 .enrich_weblink{color:var(--bs-red)}
 .enrich_embed{color:var(--bs-green)}
+
+li[class^="enrich_"]{
+  line-height: 1.2em;
+}
+li[class^="enrich_"]::marker{
+  font-size: 1.5em;
+}
