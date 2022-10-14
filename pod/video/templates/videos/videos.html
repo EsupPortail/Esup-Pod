@@ -1,85 +1,63 @@
-{% extends 'base.html' %} {% load i18n %} {% load static %} {% block opengraph
-%}{% load video_filters %}
-<meta
-  name="description"
-  content="{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}"
-/>
-<!-- Open Graph data -->
-<meta property="og:title" content="{% trans 'Videos' %}" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="{{ request.build_absolute_uri }}" />
-<meta
-  property="og:image"
-  content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}"
-/>
-<meta
-  property="og:description"
-  content="{{ DESC_SITE }} - {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}"
-/>
-<meta property="og:site_name" content="{{ TITLE_SITE }}" />
-{% endblock %} {% block breadcrumbs %}{{ block.super }}
-<li class="breadcrumb-item active" aria-current="page">{% trans "Videos" %}</li>
-{% endblock %} {% block page_title %}{% blocktrans count counter=count_videos
-%}{{ counter }} video found{% plural %}{{ counter }} videos found{%
-endblocktrans %}{% endblock %} {% block main_page_title %}
-<h1 id="video_count" class="page_title">
-  {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural
-  %}{{ counter }} videos found{% endblocktrans %}
-  <span class="pod-float-end">
-    <a
-      href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio'%}?{{request.GET.urlencode}}"
-      title="{% trans 'subscribe to the audio feed'%}"
-      target="_blank"
-      class="btn btn-outline-primary btn-sm"
-    >
-      <i class="bi bi-rss"></i>&nbsp;Audio</a
-    >
-    <a
-      href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video'%}?{{request.GET.urlencode}}"
-      title="{% trans 'subscribe to the video feed'%}"
-      target="_blank"
-      class="btn btn-outline-primary btn-sm"
-    >
-      <i class="bi bi-rss"></i>&nbsp;Video</a
-    >
-    {% if USE_STATS_VIEW %}
-    <a
-      href="{% url 'video:video_stats_view' 'videos'  %}"
-      title="{% trans 'Show view statistics for all videos' %}"
-      target="_blank"
-      rel="noopener"
-      class="btn btn-outline-primary btn-sm"
-      ><i class="bi bi-graph-up"></i> {% trans "Statistics views" %}</a
-    >
-    {% endif %}
-  </span>
-</h1>
-{% endblock main_page_title %} {% block page_content %} {% comment %}
-<p>
-  "types": request.GET.getlist('type'), "owners": request.GET.getlist('owner'),
-  "disciplines": request.GET.getlist('discipline'), "tags_slug":
-  request.GET.getlist('tag'),
-</p>
-{% endcomment %} {% include "videos/video_list.html" %} {% endblock page_content
-%} {% block page_aside %} {% include 'videos/filter_aside.html' %} {% endblock
-page_aside %} {% block more_script %}
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block opengraph %}{% load video_filters %}
+  <meta name="description" content="{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}" />
+  <!-- Open Graph data -->
+  <meta property="og:title" content="{% trans 'Videos' %}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+  <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
+  <meta property="og:description" content="{{ DESC_SITE }} - {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}" />
+  <meta property="og:site_name" content="{{ TITLE_SITE }}" />
+{% endblock %}
+
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Videos" %}</li>{% endblock %}
+
+{% block page_title %}{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}{% endblock %}
+
+{% block main_page_title %}
+  <h1 id="video_count" class="page_title">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
+    <span class="pod-float-end">
+      <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-rss"></i>&nbsp;Audio</a>
+      <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-rss"></i>&nbsp;Video</a>
+      {% if USE_STATS_VIEW %}
+        <a href="{% url 'video:video_stats_view' 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm"><i class="bi bi-graph-up"></i> {% trans "Statistics views" %}</a>
+      {% endif %}
+    </span>
+  </h1>
+{% endblock main_page_title %}
+
+{% block page_content %}
+  {% comment %}
+  <p>
+    "types": request.GET.getlist('type'),
+    "owners": request.GET.getlist('owner'),
+    "disciplines": request.GET.getlist('discipline'),
+    "tags_slug": request.GET.getlist('tag'),
+  </p>
+  {% endcomment %}
+
+  {% include "videos/video_list.html" %}
+
+{% endblock page_content %}
+
+{% block page_aside %}
+  {% include 'videos/filter_aside.html' %}
+{% endblock page_aside %}
+
+
+{% block more_script %}
 <script>
   const urlVideos = "{% url 'videos:videos' %}";
 </script>
 <script src="{% static 'waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'waypoints/lib/shortcuts/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
-<script src="{% static 'js/infinite.js' %}">
-
-  
-
-
-
-
-
-    document.addEventListener("DOMContentLoaded", (e) => {
-    var infinite = new InfiniteLoader();
-  });
-</script>
+<script src="{% static 'js/infinite.js' %}"></script>
 
 {% endblock more_script %}
