@@ -267,7 +267,13 @@ def contact_us(request):
             dest_email = []
             dest_email = get_dest_email(owner, video, form_subject, request)
 
-            msg = EmailMultiAlternatives(subject, text_content, email, dest_email)
+            msg = EmailMultiAlternatives(
+                subject,
+                text_content,
+                DEFAULT_FROM_EMAIL,
+                dest_email,
+                reply_to=[email]
+            )
             msg.attach_alternative(html_content, "text/html")
             msg.send(fail_silently=False)
 
