@@ -27,6 +27,17 @@ document.addEventListener("submit", function (e) {
 });
 
 /**
+ * Add a visual offset on 3 max levels of comments
+ */
+function pod_note_comment_offset(){
+  let divComments = $('#id_notes').find('div.comments');
+  for (var i=0; i < Math.min(divComments.length, 3); i++ ) {
+    $(divComments[i]).addClass('ms-3');
+  }
+}
+
+
+/**
  * Handle every pod-note submission (except download)
  */
 var pod_note_submit = function (e) {
@@ -38,7 +49,6 @@ var pod_note_submit = function (e) {
       e.target
     );
   }
-  TriggerAlertClose();
 };
 
 /**
@@ -52,6 +62,8 @@ var display_notes_place = function (data) {
       behavior: "smooth",
       block: "end",
     });
+  TriggerAlertClose();
+  pod_note_comment_offset();
 };
 
 /*

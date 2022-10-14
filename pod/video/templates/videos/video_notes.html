@@ -52,7 +52,7 @@
         {% include "videos/video_note_display.html" %}
 
         {% if listComments and note == noteToDisplay or note_form and note == noteToDisplay %}
-          <div class="comments ms-3">
+          <div class="comments">
             {% for com in listComments %}
               {% include "videos/video_note_comments_display.html" %}
             {% endfor %}
