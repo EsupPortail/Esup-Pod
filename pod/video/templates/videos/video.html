@@ -17,6 +17,7 @@
 <meta property="og:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}">
 <meta property="og:title" content="{{ video.title }}">
 <meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
+<meta property="og:image:secure_url" content="https:{{ video.get_thumbnail_url }}">
 <meta property="og:image:alt" content="{{ video.title }}">
 <meta property="og:image:width" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.width}}{% else %}640{% endif %}" />
 <meta property="og:image:height" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.height}}{% else %}360{% endif %}" />
@@ -24,9 +25,9 @@
 <meta property="og:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% endif %} {% trans 'Added by' %}: {{ video.owner.get_full_name }}">
 
 <meta property="og:type" content="video">
-
 <meta property="og:video" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
-<meta property="og:video:type" content="text/html">
+<meta property="og:video:secure_url" content="https://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
+<meta property="og:video:type" content="video/mp4">
 <meta property="og:video:width" content="640">
 <meta property="og:video:height" content="{{video.get_player_height}}">
 
