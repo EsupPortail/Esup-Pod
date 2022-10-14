@@ -15,8 +15,8 @@ $(() => {
     url: data_url,
     datatype: "json",
     mtype: "POST",
-    styleUI : 'Bootstrap5',
-    iconSet : 'Bootstrap5',
+    styleUI: "Bootstrap5",
+    iconSet: "Bootstrap5",
     colNames: [
       gettext("Title"),
       gettext("View during the day"),
