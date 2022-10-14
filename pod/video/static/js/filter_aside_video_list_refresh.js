@@ -1,11 +1,10 @@
-var infinite_waypoint;
+var infinite_loader;
 var formCheckedInputs = [];
 var regExGetOnlyChars = /([\D])/g;
 
 // Return Waypoint Infinite object to init/refresh the infinite scroll
 let infinite_loading = document.querySelector(".infinite-loading");
 
-element = document.getElementById("videos_list");
 onBeforePageLoad = function () {
   infinite_loading.style.display = "block";
 };
@@ -34,11 +33,17 @@ onAfterPageLoad = function () {
     }
   });
 };
-url = "";
 
-document.addEventListener("DOMContentLoaded", (e) => {
-  var infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad);
-});
+
+
+
+
+
+function refreshInfiniteLoader(url, nextPage) {
+  console.log("refreshInfiniteLoader");
+  infinite_loader = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad, nextPage);
+}
+
 
 function replaceCountVideos(newCount) {
   // Replace count videos label (h1) with translation and plural
@@ -51,28 +56,39 @@ function refreshVideosSearch(formCheckedInputs) {
   // Ajax request to refresh view with filtered video list
   url = urlVideos;
   data = formCheckedInputs;
+  url = url + "?" 
+  data.forEach((input) => {
+    url += input.name + "=" + input.value + "&";
+  });
+  url = url.slice(0, -1);
+  
+  console.log(url)
 
+
+  
   fetch(url, {
     method: "GET",
     headers: {
       "X-CSRFToken": "{{ csrf_token }}",
     },
-    data: formCheckedInputs,
     dataType: "html",
   })
     .then((response) => response.text())
     .then((data) => {
       // parse data into html and replace videos list
       // destroy waypoint id exists
-
+     
       let html = new DOMParser().parseFromString(data, "text/html").body
-        .firstChild;
+        
+        
       //document.querySelector(".infiniteloading").style.display = "none";
       //document.querySelector(".infinite-more-link").style.display = "none";
-      document.getElementById("videos_list").innerHTML = "";
+      document.getElementById("videos_list").outerHTML = html.querySelector("#videos_list").outerHTML;
+      let nextPage = document.getElementById("videos_list").getAttribute("nextPage");
       replaceCountVideos(countVideos);
       window.history.pushState({}, "", this.url);
       hideInfiniteloading();
+      refreshInfiniteLoader(url, nextPage);
     })
     .catch((error) => {
       console.log(error);
@@ -100,7 +116,7 @@ document.querySelectorAll(".form-check-input").forEach((checkbox) => {
     document
       .querySelectorAll(".form-check-input input[type=checkbox]")
       .forEach((checkbox) => {
-        checkbox.setAttribute("disable", "true");
+        checkbox.setAttribute("disabled", "true");
       });
 
     document.getElementById("videos_list").innerHTML = "";
@@ -113,3 +129,6 @@ document.querySelectorAll(".form-check-input").forEach((checkbox) => {
 
 // First launch of the infinite scroll
 //infinite_waypoint = getInfiniteScrollWaypoint();
+
+url = "/videos/?page=";
+infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad);

@@ -146,14 +146,14 @@ if (typeof loaded == "undefined") {
 
   /****** CHANGE FILE ********/
   document.addEventListener("submit", (e) => {
-    e.preventDefault();
+    
     if (
       e.target.id != "formchangeimage" &&
       e.target.id != "formchangefile" &&
       e.target.id != "formuploadfile"
     )
       return;
-
+    e.preventDefault();
     //alert('FORM');
     e.target.style.display = "none";
     document.querySelectorAll(".loadingformfiles").forEach((el) => {
@@ -487,9 +487,8 @@ if (typeof loaded == "undefined") {
   });
 
   document.addEventListener("submit", (e) => {
-    e.preventDefault();
-
     if (e.target.id != "folderFormName") return;
+    e.preventDefault();
     let form = e.target;
     let data_form = new FormData(form);
     send_form_data(form.getAttribute("action"), data_form, "reloadFolder");

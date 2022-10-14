@@ -49,11 +49,12 @@ const isElementXPercentInViewport = function () {
 };
 
 class InfiniteLoader {
-  constructor(url, callBackBeforeLoad, callBackAfterLoad) {
+  constructor(url, callBackBeforeLoad, callBackAfterLoad, nextPage = true) {
     this.infinite_loading = document.querySelector(".infinite-loading");
     this.videos_list = document.getElementById("videos_list");
     this.page = 0;
-    this.nextPage = true;
+  
+    this.nextPage = nextPage;
     this.callBackBeforeLoad = callBackBeforeLoad;
     this.callBackAfterLoad = callBackAfterLoad;
     this.url = url;
