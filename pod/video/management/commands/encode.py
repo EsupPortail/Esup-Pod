@@ -3,7 +3,7 @@ from pod.video.encode import encode_video
 
 
 class Command(BaseCommand):
-    help = "encoding video by id"
+    help = "Encoding video by id"
 
     def add_arguments(self, parser):
         parser.add_argument(
