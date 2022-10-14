@@ -8,12 +8,21 @@ from .models import EncodingLog
 from .models import Video
 from pod.completion.models import Track
 from django.core.files import File
-from .utils import check_file
-from .Encoding_video import Encoding_video, FFMPEG_MP4_ENCODE
+from .Encoding_video import (
+    Encoding_video,
+    NB_THUMBNAIL,
+    CREATE_THUMBNAIL,
+    FFMPEG_CMD,
+    FFMPEG_INPUT,
+    FFMPEG_NB_THREADS,
+)
 import json
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
+from .encoding_utils import (
+    launch_cmd,
+    check_file,
+)
 
-FFMPEG_MP4_ENCODE = getattr(settings, "FFMPEG_MP4_ENCODE", FFMPEG_MP4_ENCODE)
 ENCODING_CHOICES = getattr(
     settings,
     "ENCODING_CHOICES",
@@ -313,6 +322,75 @@ class Encoding_video_model(Encoding_video):
             return video_to_encode
 
             # TODO : Without podfile
+
+    def get_create_thumbnail_command_from_video(self, video_to_encode):
+        thumbnail_command = "%s " % FFMPEG_CMD
+        ev = EncodingVideo.objects.filter(
+            video=video_to_encode, encoding_format="video/mp4"
+        )
+        encoding_log, created = EncodingLog.objects.get_or_create(video=video_to_encode)
+        if not created:
+            encoding_log.log = ""
+        encoding_log.log += "\n----------------------------------------"
+        if ev.count() == 0:
+            encoding_log.log += "\nget_create_thumbnail_command_from_video"
+            encoding_log.log += "\nNO MP4 FILES FOUND!"
+            return ""
+        video_mp4 = sorted(ev, key=lambda m: m.height)[0]
+        input_file = video_mp4.source_file.path
+        thumbnail_command += FFMPEG_INPUT % {
+            "input": input_file,
+            "nb_threads": FFMPEG_NB_THREADS,
+        }
+        output_file = os.path.join(self.output_dir, "thumbnail")
+        thumbnail_command += CREATE_THUMBNAIL % {
+            "duration": self.duration,
+            "nb_thumbnail": NB_THUMBNAIL,
+            "output": output_file,
+        }
+        for nb in range(0, NB_THUMBNAIL):
+            num_thumb = str(nb + 1)
+            self.list_thumbnail_files[num_thumb] = "%s_000%s.png" % (
+                output_file,
+                num_thumb,
+            )
+        encoding_log.log += "\n %s" % thumbnail_command
+        encoding_log.save()
+        return thumbnail_command
+
+    def recreate_thumbnail(self):
+        self.create_output_dir()
+        self.get_video_data()
+        info_video = {}
+        for attribute, value in self.__dict__.items():
+            info_video[attribute] = value
+        video_to_encode = Video.objects.get(id=self.id)
+        encoding_log, created = EncodingLog.objects.get_or_create(video=video_to_encode)
+        if len(self.list_image_track) > 0:
+            thumbnail_command = self.get_extract_thumbnail_command()
+            return_value, return_msg = launch_cmd(thumbnail_command)
+            if not created:
+                encoding_log.log = ""
+            encoding_log.log += "\n----------------------------------------"
+            encoding_log.log += "\n extract_thumbnail_command"
+            encoding_log.log += "\n %s" % thumbnail_command
+            encoding_log.log += "\n %s" % return_value
+            encoding_log.log += "\n %s" % return_msg
+        elif self.is_video():
+            thumbnail_command = self.get_create_thumbnail_command_from_video(
+                video_to_encode
+            )
+            if thumbnail_command:
+                return_value, return_msg = launch_cmd(thumbnail_command)
+                encoding_log.log += "\n----------------------------------------"
+                encoding_log.log += "\n create_thumbnail_command"
+                encoding_log.log += "\n %s" % thumbnail_command
+                encoding_log.log += "\n %s" % return_value
+                encoding_log.log += "\n %s" % return_msg
+        encoding_log.save()
+        if len(self.list_thumbnail_files) > 0:
+            info_video["list_thumbnail_files"] = self.list_thumbnail_files
+            self.store_json_list_thumbnail_files(info_video, video_to_encode)
 
     def encode_video(self):
         self.start_encode()

@@ -445,6 +445,9 @@ var send_form_data = function (
   callbackSuccess = undefined,
   callbackFail = undefined
 ) {
+  console.log(
+    "[Deprecation Warning] send_form_data function will soon be debrecated. Replace it by send_form_data_vanilla."
+  );
   callbackSuccess =
     typeof callbackSuccess === "function"
       ? callbackSuccess
@@ -474,6 +477,68 @@ var send_form_data = function (
     );
     callbackFail($xhr);
   });
+};
+
+/*!
+ * AJAX call function (usually send form data)
+ * @param  {String}          url               Address link to be requested
+ * @param  {String}          fct               JS Function to call when it's done.
+ * @param  {HTMLFormElement} [data_form]       The form to be sent with POST
+ * @param  {String}          [method]          HTTP Request Method (GET or POST).
+ * @param  {String}          [callbackSuccess] Function to call on success
+ * @param  {String}          [callbackFail]    Function to call on failure
+ * @return {String}          The raw response from the server
+ */
+var send_form_data_vanilla = function (
+  url,
+  fct,
+  data_form = undefined,
+  method = "post",
+  callbackSuccess = undefined,
+  callbackFail = undefined
+) {
+  callbackSuccess =
+    typeof callbackSuccess === "function"
+      ? callbackSuccess
+      : function (data) {
+          return data;
+        };
+  callbackFail =
+    typeof callbackFail === "function" ? callbackFail : function (err) {};
+
+  if (data_form) {
+    data_form = new FormData(data_form);
+  }
+
+  // console.log("Fetching "+url+"...");
+  fetch(url, {
+    method: method,
+    body: data_form,
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.text();
+      } else {
+        throw new Error(`${response.status} : ${response.statusText}`);
+      }
+    })
+    .then((data) => {
+      // console.log("Success. data="+data);
+      response = callbackSuccess(data);
+      // console.log("Done. Calling "+fct+"...");
+      window[fct](data);
+    })
+    .catch(function (err) {
+      showalert(
+        gettext("Error during exchange") +
+          "(" +
+          err +
+          ")<br/>" +
+          gettext("No data could be stored."),
+        "alert-danger"
+      );
+      callbackFail(err);
+    });
 };
 
 var show_form_theme_new = function (data) {
@@ -853,3 +918,38 @@ function show_messages(msgText, msgClass, loadUrl) {
     });
   }
 }
+
+/*!
+ * Serialize all form data into an array of key/value pairs
+ * (c) 2020 Chris Ferdinandi, MIT License, https://gomakethings.com
+ * @param  {Node}   form The form to serialize
+ * @return {Array}       The serialized form data
+ */
+var podSerializeArray = function (form) {
+  var arr = [];
+  Array.prototype.slice.call(form.elements).forEach(function (field) {
+    if (
+      !field.name ||
+      field.disabled ||
+      ["file", "reset", "submit", "button"].indexOf(field.type) > -1
+    )
+      return;
+    if (field.type === "select-multiple") {
+      Array.prototype.slice.call(field.options).forEach(function (option) {
+        if (!option.selected) return;
+        arr.push({
+          name: field.name,
+          value: option.value,
+        });
+      });
+      return;
+    }
+    if (["checkbox", "radio"].indexOf(field.type) > -1 && !field.checked)
+      return;
+    arr.push({
+      name: field.name,
+      value: field.value,
+    });
+  });
+  return arr;
+};

@@ -20,13 +20,13 @@
 				</a>
 			{% endif %}
 			{% if record.encoding_step == 1 %}
-				<small class="form-text text-muted">{% trans "Waiting for encoding"%}</small>
+				<small class="form-text">{% trans "Waiting for encoding"%}</small>
 			{% endif %}
 			{% if record.encoding_step == 2 %}
-				<small class="form-text text-muted">{% trans "Encoding in progress"%}</small>
+				<small class="form-text">{% trans "Encoding in progress"%}</small>
 			{% endif %}
 			{% if record.encoding_step == 3 %}
-				<small class="form-text text-muted">
+				<small class="form-text">
 					{% trans "Already published"%}
 					{% if request.user != record.encoded_by %}
 						{% trans "by"%} {{ record.encoded_by.first_name }} {{ record.encoded_by.last_name }} ({{ record.encoded_by.email }})
