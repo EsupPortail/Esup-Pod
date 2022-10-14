@@ -27,12 +27,12 @@ document.addEventListener("submit", function (e) {
 });
 
 /**
- * Add a visual offset on 3 max levels of comments
+ * Add a visual indent on 3 first levels of comments
  */
 function pod_note_comment_offset(){
-  let divComments = $('#id_notes').find('div.comments');
+  let divComments = document.querySelectorAll('#id_notes div.comments');
   for (var i=0; i < Math.min(divComments.length, 3); i++ ) {
-    $(divComments[i]).addClass('ms-3');
+    divComments[i].classList.add('ms-3');
   }
 }
 
