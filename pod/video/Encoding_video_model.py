@@ -14,7 +14,7 @@ from .Encoding_video import (
     CREATE_THUMBNAIL,
     FFMPEG_CMD,
     FFMPEG_INPUT,
-    FFMPEG_NB_THREADS
+    FFMPEG_NB_THREADS,
 )
 import json
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES

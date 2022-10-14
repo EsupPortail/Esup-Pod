@@ -21,11 +21,13 @@ class Command(BaseCommand):
         ec = EncodingLog.objects.get(video=vid)
         new_vid = Video.objects.get(id=options["id"])
         if new_vid.thumbnail:
-            self.stdout.write(self.style.SUCCESS(
-                'Successfully add thumbnail to video "%s"' % options["id"])
+            self.stdout.write(
+                self.style.SUCCESS(
+                    'Successfully add thumbnail to video "%s"' % options["id"]
+                )
             )
-            self.stdout.write(self.style.SUCCESS(
-                'The thumbnail is "%s"' % new_vid.thumbnail.file)
+            self.stdout.write(
+                self.style.SUCCESS('The thumbnail is "%s"' % new_vid.thumbnail.file)
             )
         else:
             self.stdout.write("Error when addgin new thumbnail %s" % ec.log)
