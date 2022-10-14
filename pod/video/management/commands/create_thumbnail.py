@@ -5,7 +5,7 @@ from pod.video.models import EncodingLog
 
 
 class Command(BaseCommand):
-    help = "add thumbnail to video by id"
+    help = "Add thumbnail to video by id"
 
     def add_arguments(self, parser):
         parser.add_argument(
