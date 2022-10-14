@@ -526,10 +526,14 @@ document.addEventListener("hidden.bs.modal", (e) => {
   if (e.target.id != "userpictureModal") return;
 
   e.target.remove();
-  document.getElementById("fileModal_id_userpicture").remove();
+  if (document.getElementById("fileModal_id_userpicture")) {
+    document.getElementById("fileModal_id_userpicture").remove();
+  }
 });
 document.addEventListener("submit", (e) => {
+  
   if (e.target.id != "userpicture_form") return;
+
   e.preventDefault();
   let form = e.target;
   let data_form = new FormData(form);
@@ -594,7 +598,12 @@ document.addEventListener("change", (e) => {
   ) {
     return;
   }
-  document.getElementById("video_version_form").submit();
+
+  let submit_button = document.createElement("button");
+  submit_button.style.display = "none";
+  submit_button.type = "submit";
+  document.getElementById("video_version_form").appendChild(submit_button);
+  submit_button.click();
 });
 document.addEventListener("submit", (e) => {
   if (e.target.id != "video_version_form") return;
@@ -751,12 +760,6 @@ var show_theme_form = function (data) {
     );
   }
 };
-var userpicture = document.getElementById("userpictureModal");
-if (userpicture) {
-  var userPictureModal = new bootstrap.Modal(userpicture, {
-    keyboard: false,
-  });
-}
 
 var show_picture_form = function (data) {
   document.getElementById("userpicture_form").innerHTML =
@@ -792,11 +795,22 @@ var show_picture_form = function (data) {
       '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' +
       gettext("Add your picture");
   }
-  userpictureModal.hide();
+  let userpicture = document.getElementById("userpictureModal");
+  if (userpicture) {
+    let userPictureModal = bootstrap.Modal.getOrCreateInstance(userpicture);
+    userPictureModal.hide();
+  }
 };
 var append_picture_form = function (data) {
-  document.body.append(data);
-  userpictureModal.show();
+  // parse data into html
+  let parser = new DOMParser();
+  let htmlData = parser.parseFromString(data, "text/html").body.firstChild;
+  document.body.appendChild(htmlData);
+  let userpicture = document.getElementById("userpictureModal");
+  if (userpicture) {
+    let userPictureModal = bootstrap.Modal.getOrCreateInstance(userpicture);
+    userPictureModal.show();
+  }
 };
 function show_form_theme(data) {
   let div_form = document.getElementById("div_form_theme");
@@ -1087,7 +1101,7 @@ restricted_access();
 /*** VIDEOCHECK FORM ***/
 var videocheck = function (form, event) {
   var fileInput = document.getElementById("id_video");
-  if (fileInput.get(0).files.length) {
+  if (fileInput.files.length) {
     var fileSize = fileInput.get(0).files[0].size;
     var fileName = fileInput.get(0).files[0].name;
     var extension = fileName

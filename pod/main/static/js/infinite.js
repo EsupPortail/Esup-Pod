@@ -11,7 +11,27 @@ function isFooterInView() {
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
-/*
+function detect_visibility() {
+  var element = document.querySelector(
+    "footer.container-fluid.pod-footer-container"
+  );
+
+  var top_of_element = element.offsetTop;
+  var bottom_of_element =
+    element.offsetTop + element.offsetHeight + element.style.marginTop;
+  var bottom_of_screen = window.scrollY + window.innerHeight;
+  var top_of_screen = window.scrollY;
+
+  if (bottom_of_screen > top_of_element && top_of_screen < bottom_of_element) {
+    // Element is visible write your codes here
+    // You can add animation or other codes here
+    return true;
+  } else {
+    // the element is not visible, do something else
+    return false;
+  }
+}
+
 const isElementXPercentInViewport = function () {
   percentVisible = 95;
   var footer = document.querySelector(
@@ -28,33 +48,34 @@ const isElementXPercentInViewport = function () {
   );
 };
 
-*/
-
-//chech if user
-
 class InfiniteLoader {
   constructor(url, callBackBeforeLoad, callBackAfterLoad) {
     this.infinite_loading = document.querySelector(".infinite-loading");
     this.videos_list = document.getElementById("videos_list");
-    this.page = 1;
+    this.page = 0;
+    this.nextPage = true;
     this.callBackBeforeLoad = callBackBeforeLoad;
     this.callBackAfterLoad = callBackAfterLoad;
     this.url = url;
-   
     window.addEventListener("scroll", (e) => {
-      this.initMore();
+      if (document.body.getBoundingClientRect().top > this.scrollPos) {
+      } else {
+        if (isElementXPercentInViewport()) {
+          console.log(this.nextPage)
+          if (this.nextPage) 
+            this.initMore();
+        }
+      }
+      this.scrollPos = document.body.getBoundingClientRect().top;
     });
   }
 
   initMore() {
-    console.log(isFooterInView())
-    if (isFooterInView()) {
-      let url = this.url;
-      this.callBackBeforeLoad();
-      this.getData(url, this.page);
-      console.log("page", this.page);
-      this.page += 1;
-    }
+    let url = this.url;
+    this.callBackBeforeLoad();
+    this.page += 1;
+    this.getData(url, this.page);
+    
   }
 
   getData(url, page) {
@@ -72,10 +93,15 @@ class InfiniteLoader {
       .then((data) => {
         // parse data into html
 
-        let html = new DOMParser().parseFromString(data, "text/html").body
-        let element = this.videos_list.parentNode;
+        let html = new DOMParser().parseFromString(data, "text/html").body.firstChild;
+      
+        if (html.getAttribute("nextPage") != "True") {
+          this.nextPage = false ;
+        }
+        
+        let element = this.videos_list;
+        
         html.childNodes.forEach(function (node) {
-          console.log(node)
           element.appendChild(node);
         });
         this.callBackAfterLoad();
