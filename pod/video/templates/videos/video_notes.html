@@ -127,17 +127,4 @@
 
   </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      let divComments = $('#id_notes').find('div.comments');
-      for (var i=0; i < Math.min(divComments.length, 3); i++ ) {
-        $(divComments[i]).addClass('offset');
-      }
-      {% if messages %}
-        // Automatically hide success type alerts
-        TriggerAlertClose();
-      {% endif %}
-    });
-  </script>
-
 </div>

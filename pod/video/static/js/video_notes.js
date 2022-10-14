@@ -14,7 +14,6 @@ document.addEventListener("submit", function (e) {
     const id_timestamp = document.getElementById("id_timestamp");
     // On a comment, there is no id_timestamp.
     if (id_timestamp) {
-      console.log(id_timestamp.value);
       if (!id_timestamp.value) {
         id_timestamp.value = Math.floor(podvideo.player.currentTime());
       }
@@ -39,6 +38,7 @@ var pod_note_submit = function (e) {
       e.target
     );
   }
+  TriggerAlertClose();
 };
 
 /**
