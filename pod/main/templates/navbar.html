@@ -66,7 +66,7 @@
     {% if user.is_authenticated %}
       <li class="d-none d-md-block nav-item pod-navbar__nav-item mx-2" id="nav-addvideo">
         {% if MAINTENANCE_MODE %}
-          <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
+          <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
         {% else %}
           <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
         {% endif %}
@@ -74,7 +74,7 @@
       {% if USE_MEETING %}
         <li class="d-none d-md-block nav-item nav-item pod-navbar__nav-item" id="nav-mymeetings">
           {% if MAINTENANCE_MODE%}
-            <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
+            <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
           {% else %}
             <a class="nav-item btn btn-primary btn-sm d-flex justify-content-center align-items-center" href="{% url 'meeting:my_meetings' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'My meetings' %}"><i class="bi bi-person-video"></i><span>{% trans "My meetings" %}</span></a>
           {% endif %}
@@ -169,7 +169,7 @@
           <div class="offcanvas-body">
             <nav class="nav flex-column">
               {% if MAINTENANCE_MODE %}
-                <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle "></i> {% trans "Some features are unavailable" %}</span>
+                <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle "></i> {% trans "Some features are unavailable" %}</span>
               {% else %}
                 <a class="mx-3 mb-2 btn btn-primary" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
               {% endif %}
