@@ -53,14 +53,23 @@
   }
 }*/
 
-[data-theme="dark"] .pod-navbar__brand img,
-[data-theme="dark"] :not(.alert-warning)>.btn-close {
-  filter: invert(100%) sepia(0%) saturate(2908%) hue-rotate(27deg) brightness(121%) contrast(99%);
+/* logoPod.svg already switch color on browser color-scheme: dark */
+@media (prefers-color-scheme: light) {
+  [data-theme="dark"] .pod-navbar__brand img{
+    filter: invert(100%) saturate(2908%) hue-rotate(27deg) brightness(121%) contrast(99%);
+  }
+}
+@media (prefers-color-scheme: dark) {
+  [data-theme="light"] .pod-navbar__brand img{
+    filter: invert(100%) saturate(2908%) hue-rotate(27deg) brightness(121%) contrast(99%);
+  }
 }
 
+/*
+[data-theme="dark"] :not(.alert-warning)>.btn-close,
 [data-theme="dark"] .pod-footer-logo {
   filter: brightness(100%);
-}
+}*/
 
 [data-theme="dark"] .form-control::placeholder {
   color: #BEC1C6;

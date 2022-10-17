@@ -8,12 +8,12 @@
   </p>
   <div class="pod-footer-content">
     <div>
-      <img src="{% static LOGO_ETB %}" alt="" height="40" loading="lazy" class="pod-footer-logo">
+      <div class="pod-footer-logo" style="background-image: url('{% static LOGO_ETB %}')">&nbsp;</div>
       <address>
         <p class="footer-contact mt-3 hidden-pod pod-hidden">
           <span class="footer-contact-title">{{TITLE_ETB}}</span><br>
           {% for text in FOOTER_TEXT %}
-          {{text|safe}}<br>
+            {{text|safe}}<br>
           {% endfor %}
         </p>
       </address>

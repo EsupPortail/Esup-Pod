@@ -1,12 +1,11 @@
 .grid-container{
     padding-top: 4em;
-    margin-bottom: 0;
     display: flex;
     align-items: center;
     flex-direction: column;
     min-height: calc(100vh - 255px);
 }
-.grid-container h1.title{
+/*.grid-container h1.title{
     margin-bottom: 1em;
     font-size: 24px;
     padding: 0 .8em;
@@ -28,10 +27,10 @@
 }
 ui-icon, .ui-widget-content .ui-icon {
     background-image: url("/static/img/ui-icons_469bdd_256x240.png");
-}
+}*/
 
 /* Override jqgrid default css background-image */
-.ui-widget-content,
+/*.ui-widget-content,
 .ui-state-default,
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default,
@@ -42,10 +41,10 @@ ui-icon, .ui-widget-content .ui-icon {
 .ui-widget-content .ui-state-focus,
 .ui-widget-header .ui-state-focus{
     background-image:none;
-}
+}*/
 
 
-.stat-form-group{
+/*.stat-form-group{
     display: flex;
     justify-content: flex-start;
     max-width: 755px;
@@ -69,4 +68,4 @@ ui-icon, .ui-widget-content .ui-icon {
     .stat-form-group .col-date{
 	width: calc(100% - 2em);
     }
-}
+}*/
