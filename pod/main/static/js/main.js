@@ -290,12 +290,13 @@ var get_list = function (
   var prefix = "";
   for (i = 0; i < level; i++) prefix += "&nbsp;&nbsp;";
   if (level != 0) prefix += "|-";
-  document.forEach(function (_, val) {
+  
+  tab.forEach( (val) => {
     var title = add_link
       ? '<a href="' + val.url + '">' + channel + " " + val.title + "</a>"
       : channel + " " + val.title;
     var selected =
-      $.inArray(val.id.toString(), tab_selected) > -1 ? "selected" : "";
+    tab_selected.indexOf(val.id.toString()) > -1 ? "selected" : "";
     var list_class = 'class="' + li_class;
     if (val.slug == current) list_class += ' list-group-item-info"';
     else list_class += '"';
