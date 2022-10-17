@@ -17,6 +17,10 @@ from django.template.defaultfilters import slugify
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 
+from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
+from django.db.models import F, Q
+
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 
@@ -100,6 +104,26 @@ class Meeting(models.Model):
     Will store it's info here for later usages.
     """
 
+    DAILY, WEEKLY, MONTHLY, YEARLY = "daily", "weekly", "monthly", "yearly"
+
+    INTERVAL_CHOICES = (
+        (DAILY, _("Daily")),
+        (WEEKLY, _("Weekly")),
+        (MONTHLY, _("Monthly")),
+        (YEARLY, _("Yearly")),
+    )
+
+    DATE_DAY, NTH_DAY = "date_day", "nth_day"
+    MONTHLY_TYPE_CHOICES = (
+        (DATE_DAY, _("Every month on this date")),
+        (NTH_DAY, _("Every month on the nth week day of the month")),
+    )
+
+    weekdays_validator = RegexValidator(
+        "^[0-6]{0,7}$",
+        message=_("Weekdays must contain the numbers of the active days."),
+    )
+
     name = models.CharField(max_length=255, verbose_name=_("Meeting Name"))
     meeting_id = models.SlugField(
         max_length=200,
@@ -125,8 +149,33 @@ class Meeting(models.Model):
     moderator_password = models.CharField(
         max_length=50, verbose_name=_("Moderator Password"), editable=False
     )
-    start_at = models.DateTimeField(_("Start date"), default=timezone.now)
-    end_at = models.DateTimeField(_("End date"), default=two_hours_hence)
+    # start_at = models.DateTimeField(_("Start date"), default=timezone.now)
+    # end_at = models.DateTimeField(_("End date"), default=two_hours_hence)
+    # Start and end are the same for a single meeting
+    start = models.DateField(_("Start date"), default=timezone.now)
+    start_time = models.TimeField(_("Start time"), default=timezone.now)
+    expected_duration = models.DurationField(
+        verbose_name=_("Meeting duration"),
+        help_text=_(
+            "Specify the duration of the meeting."
+        ),
+        default=timezone.timedelta(hours=2),
+    )
+
+    # recurrence
+    recurrence = models.CharField(
+        max_length=10, choices=INTERVAL_CHOICES, null=True, blank=True
+    )
+    frequency = models.PositiveIntegerField(default=1)
+    recurring_until = models.DateField(null=True, blank=True)
+    nb_occurrences = models.PositiveIntegerField(null=True, blank=True)
+    weekdays = models.CharField(
+        max_length=7, blank=True, null=True, validators=[weekdays_validator]
+    )
+    monthly_type = models.CharField(
+        max_length=10, choices=MONTHLY_TYPE_CHOICES, default=DATE_DAY
+    )
+
     is_restricted = models.BooleanField(
         verbose_name=_("Restricted access"),
         help_text=_(
@@ -247,9 +296,55 @@ class Meeting(models.Model):
 
     def __str__(self):
         return "{}-{}".format("%04d" % self.id, self.name)
+    
+    def reset_recurrence(self):
+        """
+        Reset recurrence so everything indicates that the event occurs only once.
+        Saving is left up to the caller.
+        """
+        self.recurrence = None
+        self.weekdays = str(self.start.weekday())
+        self.nb_occurrences = 1
+        self.recurring_until = self.start
+
 
     def save(self, *args, **kwargs):
         """Store a video object in db."""
+        """Compute the `recurring_until` field which is the date at which the recurrence ends."""
+        if self.start and self.frequency:
+            if self.recurrence == Meeting.WEEKLY:
+                if self.weekdays is None:
+                    self.reset_recurrence()
+
+                if str(self.start.weekday()) not in self.weekdays:
+                    raise ValidationError(
+                        {"weekdays": _("Weekdays should contain the start date.")}
+                    )
+            if self.recurrence:
+                if self.recurring_until:
+                    if self.recurring_until < self.start:
+                        self.recurring_until = self.start
+                    all_occurrences = self.get_occurrences(
+                        self.start, self.recurring_until
+                    )
+                    self.nb_occurrences = len(all_occurrences)
+                    # Correct the date of end of recurrence
+                    self.recurring_until = all_occurrences[-1]
+                    if self.nb_occurrences <= 1:
+                        self.reset_recurrence()
+
+                elif self.nb_occurrences is not None:
+                    if self.nb_occurrences <= 1:
+                        self.reset_recurrence()
+                    next_occurrence = self.start
+                    for _i in range(self.nb_occurrences - 1):
+                        next_occurrence = self.next_occurrence(next_occurrence)
+                    self.recurring_until = next_occurrence
+                # Infinite recurrence... do nothing
+            else:
+                self.reset_recurrence()
+        else:
+            self.reset_recurrence()
         newid = -1
         if not self.id:
             try:
@@ -468,12 +563,23 @@ class Meeting(models.Model):
         db_table = "meeting"
         verbose_name = "Meeting"
         verbose_name_plural = _("Meeting")
-        ordering = ["-start_at", "-id"]
-        get_latest_by = "start_at"
+        ordering = ("-start", "-start_time")
+        get_latest_by = "start"
         constraints = [
             models.UniqueConstraint(
                 fields=["meeting_id", "site"], name="meeting_unique_slug_site"
-            )
+            ),
+            models.CheckConstraint(
+                check=Q(recurring_until__gte=F("start"))
+                | Q(recurring_until__isnull=True),
+                name="recurring_until_greater_than_start",
+            ),
+            models.CheckConstraint(check=Q(frequency__gte=1), name="frequency_gte_1"),
+            models.CheckConstraint(
+                check=Q(recurring_until__isnull=True, nb_occurrences__isnull=True)
+                | Q(recurring_until__isnull=False, nb_occurrences__isnull=False),
+                name="recurring_until_and_nb_occurrences_mutually_null_or_not",
+            ),
         ]
 
 

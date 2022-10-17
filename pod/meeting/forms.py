@@ -84,6 +84,7 @@ class MeetingForm(forms.ModelForm):
     required_css_class = "required"
     is_admin = False
     is_superuser = False
+    """
     start_at = forms.SplitDateTimeField(
         label=_("Start date"),
         initial=timezone.now,
@@ -96,6 +97,7 @@ class MeetingForm(forms.ModelForm):
         localize=True,
         widget=MyAdminSplitDateTime,
     )
+    """
     # user = User.objects.all()
     fieldsets = (
         (None, {"fields": MEETING_MAIN_FIELDS}),
