@@ -230,7 +230,7 @@
 
   <script>
     var slug = "{{ form.instance.slug }}";
-    let id_video = document.addEventListener("id_video")
+    let id_video = document.getElementById("id_video")
     if (id_video) {
       document.getElementById("id_video").addEventListener("click",function (event) {
         location.href = "{% url 'video:video_add' %}?slug=" + slug

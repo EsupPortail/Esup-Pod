@@ -49,7 +49,7 @@ const isElementXPercentInViewport = function () {
 };
 
 class InfiniteLoader {
-  constructor(url, callBackBeforeLoad, callBackAfterLoad, nextPage = true, page = 0) {
+  constructor(url, callBackBeforeLoad, callBackAfterLoad, nextPage = true, page = 1) {
     this.infinite_loading = document.querySelector(".infinite-loading");
     this.videos_list = document.getElementById("videos_list");
     this.page = page;
@@ -57,12 +57,18 @@ class InfiniteLoader {
     this.callBackBeforeLoad = callBackBeforeLoad;
     this.callBackAfterLoad = callBackAfterLoad;
     this.url = url;
+    
     window.addEventListener("scroll", (e) => {
       if (document.body.getBoundingClientRect().top > this.scrollPos) {
+        
       } else {
         if (isElementXPercentInViewport()) {
-          if (this.nextPage) 
+
+          if (this.nextPage) {
+            console.log(this.page)
             this.initMore();
+          }
+           
         }
       }
       this.scrollPos = document.body.getBoundingClientRect().top;
@@ -72,8 +78,8 @@ class InfiniteLoader {
   initMore() {
     let url = this.url;
     this.callBackBeforeLoad();
-    this.page += 1;
     this.getData(url, this.page);
+    this.page += 1;
     
   }
 

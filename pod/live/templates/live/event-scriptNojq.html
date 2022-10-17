@@ -237,11 +237,11 @@
                 getEventVideos();
             } else {
                 console.warn('Split not done ')
-                document.getElementById("#recordingduration").classList.add("d-none")
+                document.getElementById("recordingduration").classList.add("d-none")
             }
         }).catch(error => {
             console.error('Error calling splitrecord' + error);
-            document.getElementById("#recordingduration").classList.add("d-none")
+            document.getElementById("recordingduration").classList.add("d-none")
 
         });
         if (data){
@@ -420,7 +420,7 @@
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById("#live_bbb_chat_form").reset();
+                document.getElementById("live_bbb_chat_form").reset();
                 if (data.success) {
                     displayReturnMessage("info",  data.message_return);
                 } else {

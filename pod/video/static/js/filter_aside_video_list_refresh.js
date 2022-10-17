@@ -40,7 +40,6 @@ onAfterPageLoad = function () {
 
 
 function refreshInfiniteLoader(url, nextPage) {
-  console.log("refreshInfiniteLoader");
   infinite_loader = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad, nextPage);
 }
 
@@ -70,6 +69,7 @@ function refreshVideosSearch(formCheckedInputs) {
     method: "GET",
     headers: {
       "X-CSRFToken": "{{ csrf_token }}",
+      "X-Requested-With": "XMLHttpRequest",
     },
     dataType: "html",
   })
@@ -131,4 +131,5 @@ document.querySelectorAll(".form-check-input").forEach((checkbox) => {
 //infinite_waypoint = getInfiniteScrollWaypoint();
 
 url = "/videos/?page=";
-infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad);
+infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad, nextPage = true, page = 2)
+

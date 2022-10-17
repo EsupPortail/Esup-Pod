@@ -595,6 +595,7 @@ def videos(request):
     try:
         videos = paginator.page(page)
     except PageNotAnInteger:
+        page = int(page)
         videos = paginator.page(1)
     except EmptyPage:
         videos = paginator.page(paginator.num_pages)

@@ -77,9 +77,14 @@
     }
     
   url = "/video/my/?page="
-  document.addEventListener("DOMContentLoaded", (e) => {
-    var infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad);
-  });
+    var page = 0;
+    if ("{{videos.has_next}}" == "True") {
+     page = parseInt("{{videos.next_page_number}}")
+     var infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad, nextPage = true  ,page = page);
+    } 
+ 
+   
+
 
 
 {% if use_category %}
