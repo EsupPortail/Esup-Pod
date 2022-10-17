@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
         },
         cache: false,
       })

@@ -26,17 +26,16 @@ document.addEventListener("DOMContentLoaded", function () {
     let broadcaster_id = select.options[select.selectedIndex].value;
     if (typeof broadcaster_id === "undefined" || broadcaster_id === "") return;
 
-    let url = "/live/ajax_calls/getbroadcasterrestriction/";
-
+    let url = "/live/ajax_calls/getbroadcasterrestriction/?idbroadcaster=" + broadcaster_id;
+    let data = new FormData()
     await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
       },
       cache: false,
-      body: JSON.stringify({
-        idbroadcaster: broadcaster_id,
-      }),
+      
     })
       .then((response) => response.json())
       .then((data) => {
@@ -52,16 +51,14 @@ document.addEventListener("DOMContentLoaded", function () {
   document
     .getElementById("event_building")
     .addEventListener("change", async function () {
-      let url = "/live/ajax_calls/getbroadcastersfrombuiding/";
+      let url = "/live/ajax_calls/getbroadcastersfrombuiding/?building=" + this.value;    
       await fetch(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
         },
         cache: false,
-        body: JSON.stringify({
-          building: this.value,
-        }),
       })
         .then((response) => response.json())
         .then((broadcasters) => {

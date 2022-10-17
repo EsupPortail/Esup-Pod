@@ -82,15 +82,17 @@ var sendandgetform = async function (elt, action) {
     headers = {
       "Content-Type": "application/json",
       "X-CSRFToken": token,
+      'X-Requested-With': 'XMLHttpRequest'
     };
-    data = JSON.stringify({
-      action: action,
-    });
+
+    form_data = new FormData();
+    form_data.append("action", action);
+   
 
     await fetch(url, {
       method: "POST",
       headers: headers,
-      body: data,
+      body: form_data,
       dataType: "html",
     })
       .then((response) => response.text())
@@ -115,16 +117,17 @@ var sendandgetform = async function (elt, action) {
     headers = {
       "Content-Type": "application/json",
       "X-CSRFToken": token,
+      'X-Requested-With': 'XMLHttpRequest'
     };
-    data = JSON.stringify({
-      action: action,
-      id: id,
-    });
+
+    form_data = new FormData();
+    form_data.append("action", action);
+    form_data.append("id", id);
 
     await fetch(url, {
       method: "POST",
       headers: headers,
-      body: data,
+      body: form_data,
       dataType: "html",
     })
       .then((response) => response.text())
@@ -151,16 +154,15 @@ var sendandgetform = async function (elt, action) {
     headers = {
       "Content-Type": "application/json",
       "X-CSRFToken": token,
+      'X-Requested-With': 'XMLHttpRequest'
     };
-    data = JSON.stringify({
-      action: action,
-      id: id,
-    });
-
+    form_data = new FormData();
+    form_data.append("action", action);
+    form_data.append("id", id);
     await fetch(url, {
       method: "POST",
       headers: headers,
-      body: data,
+      body: form_data,
       dataType: "html",
     })
       .then((response) => response.text())
@@ -190,28 +192,26 @@ var sendform = async function (elt, action) {
     document.querySelector(".form-help-inline").remove();
     if (verify_fields() && verify_end_start_items() && overlaptest()) {
       let form_enrich = document.querySelector("form#form_enrich");
+      form_enrich.style.display = "none";
       var data_form = new FormData(form_chapter);
-      var data = Object.fromEntries(data_form.entries());
 
       let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
       let url = window.location.href;
       let headers = {
         "Content-Type": "application/json",
         "X-CSRFToken": token,
-      };
-      data = JSON.stringify({
-        action: action,
-        data: data,
-      });
+        'X-Requested-With': 'XMLHttpRequest'
+      };  
+      data_form.append("action", action);
+      
 
       await fetch(url, {
         method: "POST",
         headers: headers,
-        body: data,
+        body: data_form,
         dataType: "html",
       })
         .then((response) => response.text())
-
         .then((data) => {
           if (
             data.indexOf("list_enrichment") == -1 &&
@@ -246,15 +246,15 @@ var sendform = async function (elt, action) {
     let headers = {
       "Content-Type": "application/json",
       "X-CSRFToken": token,
+       "X-Requested-With": "XMLHttpRequest",
     };
-    data = JSON.stringify({
-      action: action,
-      file: file,
-    });
+    let form_data = new FormData();
+    form_data.append("action", action);
+    form_data.append("file", file);
     await fetch(url, {
       method: "POST",
       headers: headers,
-      body: data,
+      body: form_data,
       dataType: "html",
     })
       .then((response) => response.text())
@@ -300,7 +300,7 @@ Number.prototype.toHHMMSS = function () {
 };
 
 function get_form(data) {
-  var form = document.getElementById("#form_enrich");
+  var form = document.getElementById("form_enrich");
   form.style.display = "none";
   form.innerHTML = data;
   fadeIn(form);
@@ -365,16 +365,16 @@ document.addEventListener("change", (e) => {
 
   e.target.parentNode.querySelector(
     "span.getfromvideo span.timecode"
-  ).innerHTML = " " + parseInt($(this).val()).toHHMMSS();
+  ).innerHTML = " " + parseInt(e.target.value).tMoHHMSS();
 });
 document.addEventListener("change", (e) => {
   if (e.target.id == "id_end") return;
   e.target.parentNode.querySelector(
     "span.getfromvideo span.timecode"
-  ).innerHTML = " " + parseInt($(this).val()).toHHMMSS();
+  ).innerHTML = " " + parseInt(e.target.value).toHHMMSS();
 });
-document.addEventListener("click", "#page-video .getfromvideo a", function (e) {
-  if (e.target.parentNode.classList.contains("getfromvideo")) return;
+document.addEventListener("click",  (e) => {
+  if (e.target.matches("#page-video .getfromvideo a")) return;
   e.preventDefault();
   if (!(typeof player === "undefined")) {
     if (e.target.getAttribute("id") == "getfromvideo_start") {
