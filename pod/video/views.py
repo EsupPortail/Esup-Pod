@@ -386,10 +386,10 @@ def theme_edit(request, slug):
     ):
         messages.add_message(request, messages.ERROR, _("You cannot edit this channel."))
         raise PermissionDenied
-
-    if request.POST and request.is_ajax():
-        if request.POST["action"] in THEME_ACTION:
-            return eval("theme_edit_{0}(request, channel)".format(request.POST["action"]))
+    if request.POST and request:
+        action = request.POST.get("action")
+        if action in THEME_ACTION:
+            return eval("theme_edit_{0}(request, channel)".format(action))
 
     form_theme = FrontThemeForm(initial={"channel": channel})
     return render(
@@ -434,9 +434,9 @@ def theme_edit_delete(request, channel):
 def theme_edit_save(request, channel):
     """Save theme edition."""
     form_theme = None
-
+    print(request.POST)
     if request.POST.get("theme_id") and request.POST.get("theme_id") != "None":
-        theme = get_object_or_404(Theme, id=request.POST["theme_id"])
+        theme = get_object_or_404(Theme, id=request.POST.get("theme_id"))
         form_theme = FrontThemeForm(request.POST, instance=theme)
     else:
         form_theme = FrontThemeForm(request.POST)

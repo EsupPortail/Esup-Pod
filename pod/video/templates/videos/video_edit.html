@@ -223,8 +223,6 @@
 {% block more_script %}
   <script src="/admin/jsi18n/"></script>
   <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
-  <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
-  <script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>
   <script defer src="{% static 'js/video_edit.js' %}?ver={{VERSION}}"></script>
 
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}" />
@@ -232,13 +230,22 @@
 
   <script>
     var slug = "{{ form.instance.slug }}";
-    $("#id_video").click(function (event) {
-      location.href = "{% url 'video:video_add' %}?slug=" + slug
-      event.preventDefault();
-    });
+    let id_video = document.addEventListener("id_video")
+    if (id_video) {
+      document.getElementById("id_video").addEventListener("click",function (event) {
+        location.href = "{% url 'video:video_add' %}?slug=" + slug
+        event.preventDefault();
+      });
+    }
+   
 
     /** formulaire **/
-    $("#js-process").hide();
+
+    let js_process = document.getElementById("js_process");
+    if (js_process){
+      js_process.style.display = "none"  
+
+    }
     var VIDEO_MAX_UPLOAD_SIZE = {{ form.VIDEO_MAX_UPLOAD_SIZE }};
     var video_max_upload_size = VIDEO_MAX_UPLOAD_SIZE * 1024 * 1024 * 1024;
     var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfor%}";

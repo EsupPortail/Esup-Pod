@@ -559,7 +559,7 @@ document.addEventListener("click", (e) => {
     .getElementById("table_list_theme tr")
     .classList.remove("table-primary");
   window.scrollTo({
-    top: parseInt(document.getElementById("list_theme").offset().top),
+    top: parseInt(document.getElementById("list_theme").offsetTop),
     behavior: "smooth",
   });
 });
@@ -567,12 +567,14 @@ document.addEventListener("submit", (e) => {
   if (!e.target.classList.contains("get_form_theme")) return;
   e.preventDefault();
   var action = e.target.querySelector("input[name=action]").value; // new, modify and delete
+  
+  let form = e.target;
+  let data_form = new FormData(form);
   if (action == "delete") {
     var deleteConfirm = confirm(
       gettext("Are you sure you want to delete this element?")
     );
-    let form = e.target;
-    let data_form = new FormData(form);
+    
     if (deleteConfirm) {
       send_form_data(
         window.location.href,
@@ -726,21 +728,27 @@ var show_form_theme_modify = function (data) {
     );
   } else {
     show_form_theme(data);
+    data = new DOMParser().parseFromString(data, "text/html").body;
     var id = data.querySelector("#id_theme").value;
     document.querySelector("#theme_" + id).classList.add("table-primary");
   }
 };
 var show_form_theme_delete = function (data) {
+  if (!isJson(data)) {
+    data = JSON.parse(data);
+  }
   if (data.list_element) {
     show_list_theme(data.list_element);
   } else {
     showalert(
       gettext("You are no longer authenticated. Please log in again."),
-      "alert-danger"
     );
   }
 };
 var show_theme_form = function (data) {
+  if (!isJson(data)) {
+    data = JSON.parse(data);
+  }
   if (data.list_element || data.form) {
     if (data.errors) {
       showalert(
@@ -820,7 +828,7 @@ function show_form_theme(data) {
   if (data != "")
     document.querySelector("form.get_form_theme").style.display = "none";
   window.scrollTo({
-    top: parseInt(document.getElementById("div_form_theme").offset().top),
+    top: parseInt(document.getElementById("div_form_theme").offsetTop),
     behavior: "smooth",
   });
 }
@@ -831,7 +839,7 @@ function show_list_theme(data) {
   fadeIn(list_theme);
   //$('form.get_form_theme').show();
   window.scrollTo({
-    top: parseInt(document.getElementById("list_theme").offset().top),
+    top: parseInt(document.getElementById("list_theme").offsetTop),
     behavior: "smooth",
   });
 }
