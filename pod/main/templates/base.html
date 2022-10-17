@@ -65,12 +65,19 @@
     {% get_maintenance_welcome as maintenance_text %}
     <div class="p-3 mt-5 bg-danger text-white">{{maintenance_text}}</div>
   {% endif %}
-  <div class="container-fluid pod-container mt-5">
+  <div class="container-fluid pod-container mt-4">
     <main class="mt-0 mb-3">
       <div class="pod-grid-content">
-        <div class="pod-mainContent" id="pod-mainContent">
+        <div class="pod-mainContent mt-2" id="pod-mainContent">
+          <div class="pod-aside-collapse">
+            {% block collapse_page_aside %}
+              <a class="btn btn-outline-primary collapseAside pod-aside-collapse__button" data-bs-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" aria-label="{% trans 'Toggle side Menu' %}">
+                <i class="bi bi-three-dots-vertical"></i>
+              </a>
+            {% endblock collapse_page_aside %}
+          </div>
           {% if MAINTENANCE_SHEDULED and not request.GET.is_iframe %}
-          <div class="alert alert-warning" role="alert">{{MAINTENANCE_TEXT_SHEDULED|safe}}</div>
+            <div class="alert alert-warning" role="alert">{{MAINTENANCE_TEXT_SHEDULED|safe}}</div>
           {% endif %}
           <nav aria-label="{% trans 'Breadcrumb' %}" class="breadcrumb d-flex justify-content-between pb-2" id="mainbreadcrumb">
             <ol class="breadcrumb p-0 mb-0">
@@ -78,14 +85,6 @@
               <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
               {% endblock breadcrumbs %}
             </ol>
-            <div class="pod-aside-collapse">
-              {% block collapse_page_aside %}
-              <a class="btn btn-outline-primary collapseAside pod-aside-collapse__button" data-bs-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" aria-label="{% trans 'Toggle side Menu' %}">
-                <!--<i class="bi bi-arrow-down-up"></i><i class="bi bi-menu-down"></i>-->
-                <i class="bi bi-three-dots-vertical"></i>
-              </a>
-              {% endblock collapse_page_aside %}
-            </div>
           </nav>
           <!-- contenu page statique -->
           <div class="pod-first-content">
