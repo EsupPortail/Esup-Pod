@@ -290,13 +290,13 @@ var get_list = function (
   var prefix = "";
   for (i = 0; i < level; i++) prefix += "&nbsp;&nbsp;";
   if (level != 0) prefix += "|-";
-  
-  tab.forEach( (val) => {
+
+  tab.forEach((val) => {
     var title = add_link
       ? '<a href="' + val.url + '">' + channel + " " + val.title + "</a>"
       : channel + " " + val.title;
     var selected =
-    tab_selected.indexOf(val.id.toString()) > -1 ? "selected" : "";
+      tab_selected.indexOf(val.id.toString()) > -1 ? "selected" : "";
     var list_class = 'class="' + li_class;
     if (val.slug == current) list_class += ' list-group-item-info"';
     else list_class += '"';
@@ -419,7 +419,7 @@ if (ownerboxnavbar) {
 document.addEventListener("DOMContentLoaded", function () {
   let consent = Cookies.get("podCookieConsent");
   var cookieDiv = document.getElementById("cookieModal");
-  var cookieModal = new bootstrap.Modal(cookieDiv);
+  var cookieModal = bootstrap.Modal.getOrCreateInstance(cookieDiv);
   if (consent != null && consent == "ok") {
     cookieModal.hide();
   } else {
@@ -532,7 +532,6 @@ document.addEventListener("hidden.bs.modal", (e) => {
   }
 });
 document.addEventListener("submit", (e) => {
-  
   if (e.target.id != "userpicture_form") return;
 
   e.preventDefault();
@@ -556,9 +555,10 @@ document.addEventListener("click", (e) => {
   if (e.target != "cancel_theme") return;
   document.querySelector("form.get_form_theme").style.display = "block";
   show_form_theme("");
-  document
-    .getElementById("table_list_theme tr")
-    .classList.remove("table-primary");
+  document.querySelectorAll("table_list_theme tr").forEach((el) => {
+    el.classList.remove("table-primary");
+  });
+
   window.scrollTo({
     top: parseInt(document.getElementById("list_theme").offsetTop),
     behavior: "smooth",
@@ -568,14 +568,14 @@ document.addEventListener("submit", (e) => {
   if (!e.target.classList.contains("get_form_theme")) return;
   e.preventDefault();
   var action = e.target.querySelector("input[name=action]").value; // new, modify and delete
-  
+
   let form = e.target;
   let data_form = new FormData(form);
   if (action == "delete") {
     var deleteConfirm = confirm(
       gettext("Are you sure you want to delete this element?")
     );
-    
+
     if (deleteConfirm) {
       send_form_data(
         window.location.href,
@@ -594,10 +594,8 @@ document.addEventListener("submit", (e) => {
 /** VIDEO DEFAULT VERSION **/
 document.addEventListener("change", (e) => {
   if (
-    e.target !==
-    document.querySelector(
-      "#video_version_form input[type=radio][name=version]"
-    )
+    !e.target.matches("#video_version_form input[type=radio][name=version]")
+    
   ) {
     return;
   }
@@ -741,9 +739,7 @@ var show_form_theme_delete = function (data) {
   if (data.list_element) {
     show_list_theme(data.list_element);
   } else {
-    showalert(
-      gettext("You are no longer authenticated. Please log in again."),
-    );
+    showalert(gettext("You are no longer authenticated. Please log in again."));
   }
 };
 var show_theme_form = function (data) {

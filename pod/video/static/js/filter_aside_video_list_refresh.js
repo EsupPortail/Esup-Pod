@@ -16,11 +16,11 @@ onAfterPageLoad = function () {
   footer.classList.add("fixed-bottom");
   footer.setAttribute("style", "height:80px; overflow-y:auto");
   var docHeight = Math.max(
-    body.scrollHeight,
-    body.offsetHeight,
-    html.clientHeight,
-    html.scrollHeight,
-    html.offsetHeight
+    document.body.scrollHeight,
+    document.body.offsetHeight,
+    document.clientHeight,
+    document.scrollHeight,
+    document.offsetHeight
   );
   document.querySelector("footer.static-pod .hidden-pod").style.display =
     "none";

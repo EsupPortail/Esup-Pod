@@ -203,7 +203,6 @@
     <script  src="{% static 'js/infinite.js' %}?ver={{VERSION}}" ></script>
    <script>
         url = "/{{channel.slug}}/?page="
-       
             onBeforePageLoad =  function() {
                 document.querySelector('.infinite-loading').style.display = 'block';
             },
@@ -215,6 +214,13 @@
                 footer.classList.add('fixed-bottom');
                 footer.setAttribute('style', 'height:80px; overflow-y:auto');
                 document.querySelector('footer.static-pod .hidden-pod').style.display = 'none'
+                var docHeight = Math.max(
+                    document.body.scrollHeight,
+                    document.body.offsetHeight,
+                    document.clientHeight,
+                    document.scrollHeight,
+                    document.offsetHeight
+                  );
                 window.addEventListener("scroll", function () {
                     if (window.innerHeight + window.scrollTop() === docHeight) {
                       document.querySelector("footer.static-pod .hidden-pod").style.display =
@@ -224,7 +230,12 @@
                     }
              });
             }
-        infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad);
+        if ("{{ videos.has_next }}" == "True") {
+        page = parseInt("{{ videos.next_page_number }}")
+        console.log(page)
+        var infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad, page = page);
+
+        }
     </script>
     <script>
         var str = get_list(listTheme["channel_" + "{{channel.id}}"], 0, [], tag_type = "li", li_class = "list-group-item", attrs = '', add_link = true, current = "{{theme.slug}}", channel = "");

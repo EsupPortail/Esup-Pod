@@ -61,7 +61,6 @@ class InfiniteLoader {
       if (document.body.getBoundingClientRect().top > this.scrollPos) {
       } else {
         if (isElementXPercentInViewport()) {
-          console.log(this.nextPage)
           if (this.nextPage) 
             this.initMore();
         }

@@ -59,6 +59,13 @@
       footer.classList.add("small");
       footer.classList.add("fixed-bottom");
       footer.setAttribute("style", "height:80px; overflow-y:auto");
+      var docHeight = Math.max(
+        document.body.scrollHeight,
+        document.body.offsetHeight,
+        document.clientHeight,
+        document.scrollHeight,
+        document.offsetHeight
+      );
       window.addEventListener("scroll", function () {
         if (window.innerHeight + window.scrollTop() === docHeight) {
           document.querySelector("footer.static-pod .hidden-pod").style.display =

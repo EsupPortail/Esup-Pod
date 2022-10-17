@@ -71,30 +71,36 @@
 <script src="{% static 'waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'waypoints/lib/shortcuts/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script>
-  var infinite = new Waypoint.Infinite({
-    element: $('.infinite-container')[0],
-    onBeforePageLoad: function () {
-      $('.loading').show();
+    onBeforePageLoad =  function () {
+      document.querySelector('.loading').style.display = 'block';
     },
-    onAfterPageLoad: function ($items) {
-      $('.loading').hide();
-      $('footer.static-pod').addClass('small');
-      $('footer.static-pod').addClass('fixed-bottom');
-      $('footer.static-pod').attr('style','height:80px; overflow-y:auto');
-      $('footer.static-pod .hidden-pod').css('display','none');
-      $(window).scroll(function () {
-        if ($(window).height() + $(window).scrollTop() == $(document).height())
-        {
-           $('footer.static-pod .hidden-pod').css('display','block');
-           $('footer.static-pod').attr('style','height:auto;');
-           $('footer.static-pod').removeClass('fixed-bottom');
+    onAfterPageLoad = function ($items) {
+      document.querySelector('.loading').style.display = "none"; 
+      let footer = document.querySelector('footer.static-pod');
+      footer.classList.add('small');
+      footer.classList.add('fixed-bottom');
+      footer.setAttribute('style','height:80px; overflow-y:auto');
+      document.querySelector('footer.static-pod .hidden-pod').style.display = "none"
+      window.addEventListener("scroll", function () {
+        if (window.innerHeight + window.scrollTop() === docHeight) {
+          document.querySelector("footer.static-pod .hidden-pod").style.display =
+            "block";
+          footer.setAttribute("style", "height:auto;");
+          footer.classList.remove("fixed-bottom");
         }
       });
     }
-  });
+    url = ""
+    infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad);
+ 
 
-$('.previewBtn').on('click', function (e) {
-  $('#iframeBBB').attr('src', $(this).data("recid"));
-})
+document.querySelectorAll('.previewBtn').forEach((elt) =>{
+
+  e.addEventListener('click', (event) => {
+    let url = event.target.getAttribute('data-url');
+    document.querySelector('#iframeBBB').setAttribute('src', elt.dataset("recid"));
+  });
+});
+
 </script>
 {% endblock more_script %}
