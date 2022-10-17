@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% load thumbnail %}
+{% load custom_tags %}
 
 {% block breadcrumbs %}
 {{ block.super }}
@@ -34,7 +35,7 @@
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
             {{ field }}
             {% if field.help_text %}
-              <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+              <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
             {% endif %}
             {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
           </div>
@@ -63,6 +64,11 @@
     <p>{% trans "You will be redirected right after the meeting starts." %}</p>
     <p>{% trans "if not, click on the button below." %}</p>
     <p><a href="{{ request.get_full_path }}" class="btn btn-primary">{% trans "Reload"%}</a></p>
+    {% if not request.user.is_authenticated %}
+    <p>{% trans "If you are the owner or a co-owner, please authenticate yourself by clicking on the link below." %}</p>
+    {% get_url_referrer request as url_referrer %}
+    <p><a href="{% url 'authentication:authentication_login' %}{{ url_referrer }}" class="btn btn-primary">{% trans "Authenticate"%}</a></p>
+    {% endif %}
   {% endif %}
 {% endif %}
 {% endblock page_content %}

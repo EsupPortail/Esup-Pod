@@ -105,21 +105,25 @@ var videojs = window.videojs;
 const slides_defaults = {};
 const registerSlidePlugin = videojs.registerPlugin || videojs.plugin;
 const slide_color = {
-  document: "var(--orange)",
-  image: "var(--purple)",
-  richtext: "var(--blue)",
-  weblink: "var(--red)",
-  embed: "var(--green)",
+  document: "var(--bs-orange)",
+  image: "var(--bs-purple)",
+  richtext: "var(--bs-blue)",
+  weblink: "var(--bs-red)",
+  embed: "var(--bs-green)",
 };
+
+const default_label = gettext("Split view");
+
 const slide_mode_list = {
   //Is now a list of css class instead of video/slide width values
-  "slide off": "no-slide",
-  default: "",
-  "pip media": "pip-slide",
-  "pip video": "big-slide",
-  "video off": "full-slide",
+  [gettext("slide off")]: "no-slide",
+  [default_label]: "",
+  [gettext("pip media")]: "pip-slide",
+  [gettext("pip video")]: "big-slide",
+  [gettext("video off")]: "full-slide",
 };
-var slide_mode = "default";
+
+var slide_mode = default_label;
 var currentSlide = null;
 
 /**
@@ -313,7 +317,7 @@ var VideoSlides = function (items) {
   /**
    * slideMode function to change display mode for the slides.
    *
-   * @return {void} does'nt return anything
+   * @return {void} doesn't return anything
    * @function slideMode
    */
   this.slideMode = function () {
@@ -346,7 +350,7 @@ var VideoSlides = function (items) {
         vjs_menu_item.call(this, player, options);
         this.on("click", this.onClick);
         this.addClass("vjs-slide-mode");
-        this.controlText("Turn to " + options.mode);
+        this.controlText(gettext("Turn to ") + options.mode);
       },
       onClick: function () {
         this.setAttribute("aria-checked", true);
@@ -382,7 +386,7 @@ var VideoSlides = function (items) {
         options = options || {};
         vjs_menu_button.call(this, player, options);
         this.addClass("vjs-slide-manager");
-        this.controlText("Open slide manager");
+        this.controlText(gettext("Open slide manager"));
         this.el().firstChild.firstChild.innerHTML = slide_mode;
       },
       createItems: function () {
@@ -392,7 +396,7 @@ var VideoSlides = function (items) {
           new SlideTitle(player, {
             el: videojs.dom.createEl("li", {
               className: "vjs-menu-title vjs-slide-manager-title",
-              innerHTML: "Slide",
+              innerHTML: gettext("Enrich mode"),
             }),
           })
         );

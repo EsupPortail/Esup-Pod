@@ -5,7 +5,6 @@
 {% block page_extra_head %}
   {% include 'videos/video-header.html' %}
   <link id="enrichment_style_id" href="{% static 'css/videojs-slides.css' %}?ver={{VERSION}}" rel="stylesheet">
-  <script id="enrichment_script_id" src="{% static 'js/videojs-slides.js' %}?ver={{VERSION}}"></script>
 {% endblock page_extra_head %}
 
 {% block page_title %}{% if channel %}{{channel.title}} - {% endif %}{% if theme %}{{theme.title}} - {% endif %}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
@@ -20,5 +19,6 @@
 
 {% block more_script %}
   {{block.super}}
+  <script id="enrichment_script_id" src="{% static 'js/videojs-slides.js' %}?ver={{VERSION}}"></script>
   {% include 'enrichment/video_enrichment-script.html' %}
 {% endblock more_script %}
