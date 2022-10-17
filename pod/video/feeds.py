@@ -126,7 +126,7 @@ class RssSiteVideosFeed(Feed):
     image_url = ""
 
     def feed_extra_kwargs(self, obj):
-        if self.image_url == "":
+        if obj and self.image_url == "":
             self.image_url = "".join(
                 [
                     self.prefix,
