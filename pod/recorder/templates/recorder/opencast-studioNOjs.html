@@ -100,21 +100,21 @@
   const input_title = "input[name='title'][type='text']";
   input_title = new DOMParser().parseFromString(input_title, "text/html").body.firstChild;
   let data_send = false;
-  document.addEventListener('DOMSubtreeModified', '#root>div>main',  (e) => {
+  document.addEventListener('DOMSubtreeModified',  (e) => {
     if (!e.target.matches('#root>div>main')) return
 
     if (input_title.innerHTML === "" && input_title && document.querySelectorAll("#root video").length == 2 && document.getElementById("input_presenter") && data_send == false) 
       let div = input_title.parentNode.parentNode.querySelector("div").parentNode.parentNode.querySelector("label").parentNode.parentNode.querySelector("div");
       label.setAttribute("class", input_title[0].parentNode.parentNode.querySelector("div").parentNode.parentNode.querySelector("label").getAttribute("class"));
       div.append(label);
-      send_presenter_value(document.getElementById('#input_presenter').value);
+      send_presenter_value(document.getElementById('input_presenter').value);
       data_send = true;
     
   });
   document.addEventListener('change', (e) => {
     if (!e.target.id('#input_presenter')) return
     // call ajax to send value
-    send_presenter_value(document.getElementById('#input_presenter').value);
+    send_presenter_value(document.getElementById('input_presenter').value);
   });
 
   function send_presenter_value(val) {

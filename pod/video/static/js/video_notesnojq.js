@@ -61,8 +61,8 @@ document.addEventListener(
 var display_notes_place = function (data) {
   document.querySelector("div#card-takenote").innerHTML = data;
 
-  if (document.getElementById("#video_notes_form"))
-    document.getElementById("#video_notes_form").scrollIntoView({
+  if (document.getElementById("video_notes_form"))
+    document.getElementById("video_notes_form").scrollIntoView({
       behavior: "smooth",
       block: "end",
     });

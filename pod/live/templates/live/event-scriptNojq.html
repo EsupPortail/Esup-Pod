@@ -41,6 +41,7 @@
                     headers : {
                         'Access-Control-Allow-Origin' : '*'
                         'Content-Type' : 'application/json'
+                        'X-Requested-With' : 'XMLHttpRequest'
                     }
 
                 }).then(function (response) {
@@ -255,15 +256,15 @@
     function getEventVideos() {
 
         let url = "{% url 'live:event_get_video_cards' %}";
+        url += "?idevent=" + '{{event.id}}';
         let form_data = new FormData();
-        form_data.append('idevent', '{{event.id}}');
         fetch( url ,{
             method : "GET",
             headers : {
                 "X-CSRFToken" : token,
                 "Content-Type" : "application/json"
+                "Accept" : "application/json"
             },
-            body : form_data
         })
         .then(response => response.json())
         .then(data => {
@@ -282,14 +283,15 @@
     function updateStreamStatus() {
         let url = "{% url 'live:event_isstreamavailabletorecord' %}";
         let form_data = new FormData();
-        form_data.append('idbroadcaster', '{{event.broadcaster.id}}');
+        url += "?idbroadcaster=" + '{{event.broadcaster.id}}';
         fetch( url ,{
             method : "GET",
             headers : {
                 "X-CSRFToken" : token,
-                "Content-Type" : "application/json"
+                "Content-Type" : "application/json",
+                "X-Requested-With" : "XMLHttpRequest"
             },
-            body : form_data
+           
         })
         .then(response => response.json())
         .then(data => {
@@ -335,15 +337,15 @@
     function getInfoCurrentRecord() {
         let url = "{% url 'live:ajax_event_info_record' %}";
         let form_data = new FormData();
-        form_data.append('idevent', '{{event.id}}');
-        form_data.append( "idbroadcaster",  "{{ event.broadcaster.id }}");
+
+        url += "?idevent=" + '{{event.id}}' + "&idbroadcaster=" + '{{event.broadcaster.id}}';
         fetch( url ,{
             method : "GET",
             headers : {
                 "X-CSRFToken" : token,
-                "Content-Type" : "application/json"
+                "Content-Type" : "application/json",
+                "X-Requested-With" : "XMLHttpRequest"
             },
-            body : form_data
         })
         .then(response => response.json())
         .then(data => {
@@ -407,15 +409,14 @@
             e.preventDefault();
             let message = document.getElementById('message').value;
             let url = "{% url 'bbb:live_publish_chat' id=event.broadcaster.id %}"
-            let form_data = new FormData();
-            form_data.append('message', message);
+            url += "&message=" + message;
             fetch( url ,{
                 method : "GET",
                 headers : {
                     "X-CSRFToken" : token,
-                    "Content-Type" : "application/json"
+                    "Content-Type" : "application/json",
+                    "X-Requested-With" : "XMLHttpRequest"
                 },
-                body : form_data
             })
             .then(response => response.json())
             .then(data => {

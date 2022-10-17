@@ -409,7 +409,7 @@ if (ownerboxnavbar) {
           });
         });
     } else {
-      document.getElementById("#accordion").innerHTML = "";
+      document.getElementById("accordion").innerHTML = "";
     }
   });
 }
@@ -1175,7 +1175,7 @@ var showalert = function (message, alerttype) {
 };
 
 function show_messages(msgText, msgClass, loadUrl) {
-  var $msgContainer = document.getElementById("#show_messages");
+  var $msgContainer = document.getElementById("show_messages");
   var close_button = "";
   msgClass = typeof msgClass !== "undefined" ? msgClass : "warning";
   loadUrl = typeof loadUrl !== "undefined" ? loadUrl : false;

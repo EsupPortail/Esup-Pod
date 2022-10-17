@@ -133,7 +133,7 @@
                     , pb = parseInt(player.el().style.top) + ph - 30
                     , pw = ph * hdres//$('#podvideoplayer .vjs-poster').width()
                 document.getElementById('info-video').style.top =  ihead.offsetHeight + 'px'
-                document.getElementById('#info-video-wrapper').style = 
+                document.getElementById('info-video-wrapper').style = 
                 `top: ${player.el().style.top}, height: ${(ph - 30)} + 'px', left: '50%', 'margin-left': ${-(pw / 2)} + 'px',width: ${pw + 'px'}`
                 document.getElementById('overlay-footer').style.top =  pb + 'px'
                
@@ -161,7 +161,7 @@
             window.onresize = resizeVideoJs; // Call the function on resize
 
             var show_info_video = function () { // Call by videojs-controllbar
-                let video_wrapper = document.getElementById('#div-video-wrapper')
+                let video_wrapper = document.getElementById('div-video-wrapper')
                 const hasStarted = player.el().classList.contains('vjs-has-started')
                     , isOverlayed = video_wrapper.classList.contains('overlay')
                     , isInfoOverlayed = isOverlayed && video_wrapper.classList.contains('info')

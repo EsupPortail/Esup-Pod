@@ -74,7 +74,7 @@
       document.querySelector('#overlay-footer .vjs-info-button').addEventListener("click", function(){btinfo.click()})
     })
   {% endif %}
-  document.addEventListener('click', '.close', function() {
+  document.addEventListener('click', function() {
     if (!e.target.matches('.close')) return;
     show_info_video()
    });

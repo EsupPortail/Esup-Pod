@@ -172,56 +172,76 @@
   {{ form.media }}
 
   <script>
-    $("#advanced_options_btn").click(() => {
-      if ($(this).data("display") === true){
-        $(".advanced_options, .draft_access, .groups_access").removeClass("show").addClass("hide");
-        $(this).text("{% trans 'Display advanced options' %}");
-        $(this).data("display", false)
-      } else {
-        $(".advanced_options, .draft_access, .groups_access").removeClass("hide").addClass("show");
-        $(this).text("{% trans 'Hide advanced options' %}");
-        $(this).data("display", true)
-        showRestrictions();
-      }
-    })
-
-    $("#event_is_draft").change(() => showRestrictions());
-    $("#event_is_restricted").change(() => showGroups());
-
+    bouton_advanced_options = document.getElementById("bouton_advanced_options");
+    if (bouton_advanced_options){
+      bouton_advanced_options.addEventListener("click", () => {
+        if (this.dataset.display === true){
+          document.querySelectorAll(".advanced_options, .draft_access, .groups_access").forEach((el) => {
+            el.classList.add("hide");
+            el.classList.remove("show");
+          })
+          this.texContent("{% trans 'Display advanced options' %}");
+          this.dataset.display = false
+        } else {
+          document.addEventListener(".advanced_options, .draft_access, .groups_access").forEach(()=>{
+            e.removeClass("hide").addClass("show");
+            
+          });
+          this.texContent("{% trans 'Hide advanced options' %}");
+          this.dataset.display = true
+          showRestrictions();
+        }
+      })
+    }
+  
+    if (document.getElementById("event_is_draft")){
+      document.getElementById("event_is_draft").addEventListener("click", () => showRestrictions());
+    }
+    if (document.getElementById("event_is_restricted")){
+      document.getElementById("event_is_restricted").addEventListener("click", () => showGroups());
+    }
     {# fields selectable only if not draft #}
     let showRestrictions = () => {
-      let draft_access = $(".draft_access, .groups_access")
-      if ($("#event_is_draft").prop("checked")) {
-        draft_access.removeClass("show").addClass("hide");
-      } else {
-        draft_access.removeClass("hide").addClass("show");
-        showGroups();
-      }
+      document.querySelectorAll(".draft_access, .groups_access").forEach((draft_access) => {
+        if (document.getElementById("event_is_draft").checked) {
+          draft_access.classList.remove("show");
+          draft_access.classList.add("hide");
+        } else {
+          draft_access.classList.remove("hide")
+          draft_access.classList.add("show");
+          showGroups();
+        }
+      })
+    
     };
 
     {# groups field available only if restricted #}
     let showGroups = () => {
-      let gp_access = $(".groups_access")
-      if ($("#event_is_restricted").prop("checked")) {
-        gp_access.removeClass("hide").addClass("show");
-      } else {
-        gp_access.removeClass("show").addClass("hide");
-      }
+     document.querySelectorAll(".groups_access").forEach((gp_access) => {
+        if (document.getElementById("event_is_restricted").checked) {
+          gp_access.classList.remove("hide");
+          gp_access.classList.add("show");
+        } else {
+          gp_access.classList.remove("show");
+          gp_access.classList.add("hide");
+        }
+      })
+   
     };
 
-    $('document').ready(function () {
+    document.addEventListener("DOMContentLoaded",function () {
       DateTimeShortcuts.overrideTimeOptions = function () {
         var clockCount = 0;
-        $('.clockbox').each(function () {
-          var $this = $(this);
+        document.querySelectorAll('.clockbox').forEach( (e) => {
+          var $this = e;
           console.log('clockbox');
-          $this.find('h2').remove();
+          $this.querySelector('h2').remove();
         });
-        $('ul.timelist').each(function () {
-          var $this = $(this);
-          var originalHref = $this.find('a').attr('href');
+        document.querySelectorAll('ul.timelist').forEach( (e) => {
+          var $this = e;
+          var originalHref = $this.querySelector('a').getAttribute('href');
           console.log(originalHref);
-          $this.find('li').remove();
+          $this.querySelector('li').remove();
           for (i=8; i <= 20; i++) {
             var newLink = '<li><a href="javascript:DateTimeShortcuts.handleClockQuicklink('+ clockCount + ', ' + i
                 + ');"> ' + i + ':00</a></li>';
