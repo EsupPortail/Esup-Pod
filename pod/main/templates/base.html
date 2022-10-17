@@ -65,14 +65,14 @@
   {% get_maintenance_welcome as maintenance_text %}
   <div class="p-3 mb-2 bg-danger text-white">{{maintenance_text}}</div>
   {% endif %}
-  <div class="container-fluid pod-container mt-0">
+  <div class="container-fluid pod-container mt-4">
     <main class="mt-0 mb-3">
       <div class="pod-grid-content">
         <div class="pod-mainContent" id="pod-mainContent">
           {% if MAINTENANCE_SHEDULED and not request.GET.is_iframe %}
           <div class="alert alert-warning" role="alert">{{MAINTENANCE_TEXT_SHEDULED|safe}}</div>
           {% endif %}
-          <nav aria-label="{% trans 'Breadcrumb' %}" class="breadcrumb d-flex justify-content-between pt-4 pb-2" id="mainbreadcrumb">
+          <nav aria-label="{% trans 'Breadcrumb' %}" class="breadcrumb d-flex justify-content-between pb-2" id="mainbreadcrumb">
             <ol class="breadcrumb p-0 mb-0">
               {% block breadcrumbs %}
               <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
