@@ -724,14 +724,8 @@ def user_folders(request):
     user_folder = user_folder.values(*VALUES_LIST)
 
     search = request.GET.get("search", "")
-    current_fold = json.loads(
-        get_current_session_folder_ajax(request).content.decode("utf-8")
-    )["folder"]
     if search != "":
-        user_folder = user_folder.filter(
-            Q(name__icontains=search)
-            | (Q(name=current_fold) & ~Q(owner=request.user, name="home"))
-        )
+        user_folder = get_filter_user_folder(request, user_folder, search)
 
     page = request.GET.get("page", 1)
     user_folder = user_folder.order_by("owner", "name")
@@ -754,3 +748,22 @@ def user_folders(request):
     data = json.dumps(json_resp)
     mimetype = "application/json"
     return HttpResponse(data, mimetype)
+
+
+def get_filter_user_folder(request, user_folder, search):
+    # current_fold = json.loads(
+    #     get_current_session_folder_ajax(request).content.decode("utf-8")
+    # )["folder"]
+    if not request.user.is_superuser:
+        user_folder = user_folder.filter(
+            Q(name__icontains=search)
+            # | (Q(name=current_fold) & ~Q(owner=request.user, name="home"))
+        )
+    else :
+        user_folder = user_folder.filter(
+            Q(name__icontains=search)
+            | (Q(owner__username__icontains=search))
+            | (Q(owner__first_name__icontains=search))
+            | (Q(owner__last_name__icontains=search))
+        ).distinct()
+    return user_folder
