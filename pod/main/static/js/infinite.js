@@ -49,41 +49,60 @@ const isElementXPercentInViewport = function () {
 };
 
 class InfiniteLoader {
-  constructor(url, callBackBeforeLoad, callBackAfterLoad, nextPage = true, page = 1) {
+  constructor(url, callBackBeforeLoad, callBackAfterLoad, nextPage = true, page = 2) {
     this.infinite_loading = document.querySelector(".infinite-loading");
     this.videos_list = document.getElementById("videos_list");
-    this.page = page;
+    this.next_page_number = page;
+    this.current_page_number = page - 1
     this.nextPage = nextPage;
     this.callBackBeforeLoad = callBackBeforeLoad;
     this.callBackAfterLoad = callBackAfterLoad;
     this.url = url;
-    
-    window.addEventListener("scroll", (e) => {
+    this.scroller_init = (e) => {
       if (document.body.getBoundingClientRect().top > this.scrollPos) {
-        
       } else {
         if (isElementXPercentInViewport()) {
-
-          if (this.nextPage) {
-            console.log(this.page)
+          console.log(this.next_page_number + " : " + this.current_page_number)
+          if (this.nextPage && this.next_page_number > this.current_page_number) {
+           this.current_page_number = this.next_page_number
             this.initMore();
           }
            
         }
       }
       this.scrollPos = document.body.getBoundingClientRect().top;
-    });
+    }
+    window.addEventListener("scroll", this.scroller_init);
   }
-
   initMore() {
     let url = this.url;
     this.callBackBeforeLoad();
-    this.getData(url, this.page);
-    this.page += 1;
+    this.getData(url, this.next_page_number);
     
   }
 
-  getData(url, page) {
+  updateDom(data){
+    const html = new DOMParser().parseFromString(data, "text/html").body
+      console.log(html.querySelector("#videos_list"));
+  
+    if (html.querySelector("#videos_list").getAttribute("nextPage") != "True") {
+      this.nextPage = false ;
+    }
+    
+    let element = this.videos_list;
+    html.querySelector("#videos_list").childNodes.forEach(function (node) {
+      element.appendChild(node);
+    });
+    this.callBackAfterLoad();
+    this.next_page_number += 1;
+    
+  }
+
+  removeLoader(){
+    window.removeEventListener("scroll", this.scroller_init);
+  }
+
+   getData(url, page) {
     if (!url) return;
     url = url + page;
     fetch(url, {
@@ -94,25 +113,13 @@ class InfiniteLoader {
       },
       credentials: "same-origin",
     })
-      .then((response) => response.text())
-      .then((data) => {
-        // parse data into html
-
-        let html = new DOMParser().parseFromString(data, "text/html").body.firstChild;
-      
-        if (html.getAttribute("nextPage") != "True") {
-          this.nextPage = false ;
-        }
-        
-        let element = this.videos_list;
-        
-        html.childNodes.forEach(function (node) {
-          element.appendChild(node);
-        });
-        this.callBackAfterLoad();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    .then((response) => response.text())
+    .then((data) => {
+      const html = new DOMParser().parseFromString(data, "text/html").body
+      console.log(html.querySelector("#videos_list"));
+      this.updateDom(data);
+    })
+     
   }
+  
 }

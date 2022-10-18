@@ -1,4 +1,4 @@
-var infinite_loader;
+var infinite;
 var formCheckedInputs = [];
 var regExGetOnlyChars = /([\D])/g;
 
@@ -40,7 +40,9 @@ onAfterPageLoad = function () {
 
 
 function refreshInfiniteLoader(url, nextPage) {
-  infinite_loader = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad, nextPage);
+  infinite.removeLoader();
+  infinite = null
+  infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad, page = nextPage);
 }
 
 
@@ -88,7 +90,10 @@ function refreshVideosSearch(formCheckedInputs) {
       replaceCountVideos(countVideos);
       window.history.pushState({}, "", this.url);
       hideInfiniteloading();
-      refreshInfiniteLoader(url, nextPage);
+      if (nextPage) {
+        refreshInfiniteLoader(url, nextPage);
+      }
+      
     })
     .catch((error) => {
       console.log(error);
@@ -129,7 +134,9 @@ document.querySelectorAll(".form-check-input").forEach((checkbox) => {
 
 // First launch of the infinite scroll
 //infinite_waypoint = getInfiniteScrollWaypoint();
+if (next_page) {
+  url = "/videos/?page=";
+  infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad,next_page,  page = 2)
+}
 
-url = "/videos/?page=";
-infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad, nextPage = true, page = 2)
 

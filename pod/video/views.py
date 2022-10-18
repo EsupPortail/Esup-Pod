@@ -596,10 +596,10 @@ def videos(request):
         videos = paginator.page(page)
     except PageNotAnInteger:
         page = int(page)
-        videos = paginator.page(1)
+        videos = paginator.page(page)
     except EmptyPage:
         videos = paginator.page(paginator.num_pages)
-
+    
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
 
     if request.is_ajax():

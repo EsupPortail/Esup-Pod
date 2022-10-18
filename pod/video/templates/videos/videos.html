@@ -58,7 +58,17 @@
 <script src="{% static 'waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'waypoints/lib/shortcuts/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/infinite.js' %}"></script>
+<script>
+  page = 1
+  var page = 0;
+  var has_next = "{{videos.has_next}}"
+  next_page = false
+  if (has_next == "True") {
+    page = parseInt("{{videos.next_page_number}}")
+    next_page = true
+  } 
 
+</script>
 <script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
 
 {% endblock more_script %}
