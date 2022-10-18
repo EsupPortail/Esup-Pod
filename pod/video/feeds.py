@@ -1,5 +1,6 @@
 from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Rss201rev2Feed
+
 # from datetime import datetime
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -128,10 +129,7 @@ class RssSiteVideosFeed(Feed):
     def feed_extra_kwargs(self, obj):
         if obj and self.image_url == "":
             self.image_url = "".join(
-                [
-                    self.prefix,
-                    obj.first().get_thumbnail_url().replace("//", "")
-                ]
+                [self.prefix, obj.first().get_thumbnail_url().replace("//", "")]
             )
         return {
             "image_url": self.image_url,
@@ -146,12 +144,7 @@ class RssSiteVideosFeed(Feed):
             "summary": item.description,
             "duration": item.duration_in_time,
             "explicit": "clean",
-            "image": "".join(
-                [
-                    self.prefix,
-                    item.get_thumbnail_url().replace("//", "")
-                ]
-            )
+            "image": "".join([self.prefix, item.get_thumbnail_url().replace("//", "")]),
         }
 
     def get_object(self, request, slug_c=None, slug_t=None):
@@ -219,12 +212,7 @@ class RssSiteVideosFeed(Feed):
         )
 
     def item_description(self, item):
-        thumbnail_url = "".join(
-            [
-                self.prefix,
-                item.get_thumbnail_url().replace("//", "")
-            ]
-        )
+        thumbnail_url = "".join([self.prefix, item.get_thumbnail_url().replace("//", "")])
         title = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", item.title)
         img = format_html(
             '<img style="max-width:100px" '

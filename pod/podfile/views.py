@@ -759,7 +759,7 @@ def get_filter_user_folder(request, user_folder, search):
             Q(name__icontains=search)
             # | (Q(name=current_fold) & ~Q(owner=request.user, name="home"))
         )
-    else :
+    else:
         user_folder = user_folder.filter(
             Q(name__icontains=search)
             | (Q(owner__username__icontains=search))
