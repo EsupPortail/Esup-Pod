@@ -14,7 +14,6 @@ document.addEventListener("submit", function (e) {
     const id_timestamp = document.getElementById("id_timestamp");
     // On a comment, there is no id_timestamp.
     if (id_timestamp) {
-      console.log(id_timestamp.value);
       if (!id_timestamp.value) {
         id_timestamp.value = Math.floor(podvideo.player.currentTime());
       }
@@ -26,6 +25,17 @@ document.addEventListener("submit", function (e) {
     pod_note_submit(e);
   }
 });
+
+/**
+ * Add a visual indent on 3 first levels of comments
+ */
+function pod_note_comment_offset(){
+  let divComments = document.querySelectorAll('#id_notes div.comments');
+  for (var i=0; i < Math.min(divComments.length, 3); i++ ) {
+    divComments[i].classList.add('ms-3');
+  }
+}
+
 
 /**
  * Handle every pod-note submission (except download)
@@ -52,6 +62,8 @@ var display_notes_place = function (data) {
       behavior: "smooth",
       block: "end",
     });
+  TriggerAlertClose();
+  pod_note_comment_offset();
 };
 
 /*

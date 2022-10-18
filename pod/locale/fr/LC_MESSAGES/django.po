@@ -4987,8 +4987,8 @@ msgid ""
 "SuperUser mode: the folders of all users are listed (the owner is noted in "
 "brackets)"
 msgstr ""
-"Mode SuperUtilisateur : les dossiers de tout les utilisateurs vous sont "
-"listés (le propriétaire est noté entre parenthèse)"
+"Mode SuperUtilisateur : les dossiers de tous les utilisateurs vous sont "
+"listés (le propriétaire est noté entre parenthèses)"
 
 #: pod/podfile/templates/podfile/userfolder.html:65
 msgid "Shared folders"

@@ -160,7 +160,7 @@ STATICFILES_STORAGE = 'static_compress.CompressedStaticFilesStorage'
 MEDIA_ROOT = "/pod/media"
 
 """
-# nom du serveur smtp
+# nom du serveur smtp (https://docs.djangoproject.com/fr/3.2/ref/settings/#email-host)
 """
 EMAIL_HOST = "smtp.univ.fr"
 
@@ -168,6 +168,11 @@ EMAIL_HOST = "smtp.univ.fr"
 # port d'écoute du serveur smtp
 """
 EMAIL_PORT = 25
+
+"""
+# Préfixe par défaut pour l'objet des courriels
+"""
+EMAIL_SUBJECT_PREFIX = "[Pod]"
 
 """
 # Expediteur par défaut pour les envois automatique (erreur de code etc.)
