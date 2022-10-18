@@ -61,7 +61,7 @@
     {% include 'navbar_collapse.html' %}
   </header>
   {% block content %}
-  {% if request.path == "/" and MAINTENANCE_MODE %}
+  {% if request.path in "/,/authentication_login/,/accounts/login/" and MAINTENANCE_MODE %}
     {% get_maintenance_welcome as maintenance_text %}
     <div class="p-3 mt-5 bg-danger text-white">{{maintenance_text}}</div>
   {% endif %}
