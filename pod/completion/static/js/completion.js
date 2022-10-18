@@ -107,12 +107,14 @@ document.addEventListener("submit", (e) => {
 });
 
 var sendandgetform = async function (elt, action, name, form, list) {
+ 
   var href = elt.getAttribute("action");
   if (action == "new" || action == "form_save_new") {
     document.querySelector("#" + form).innerHTML =
       '<div style="width:100%; margin: 2rem;"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
     document.querySelectorAll(".info-card").forEach(function (element) {
       element.style.display = "none";
+     
     });
     document.querySelector("#" + name + "-info").style.display = "block";
 

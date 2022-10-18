@@ -59,8 +59,8 @@
 <script src="{% static 'waypoints/lib/shortcuts/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/infinite.js' %}"></script>
 <script>
-  page = 1
-  var page = 0;
+  
+  var page = 1
   var has_next = "{{videos.has_next}}"
   next_page = false
   if (has_next == "True") {

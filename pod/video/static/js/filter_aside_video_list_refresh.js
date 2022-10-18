@@ -87,10 +87,15 @@ function refreshVideosSearch(formCheckedInputs) {
       //document.querySelector(".infinite-more-link").style.display = "none";
       document.getElementById("videos_list").outerHTML = html.querySelector("#videos_list").outerHTML;
       let nextPage = document.getElementById("videos_list").getAttribute("nextPage");
+      
       replaceCountVideos(countVideos);
       window.history.pushState({}, "", this.url);
       hideInfiniteloading();
       if (nextPage) {
+        pageNext = document.querySelector("a.infinite-more-link")
+        if (url != urlVideos) 
+          url = url + "?page=" + page;
+        url = url + "&page=" + page;
         refreshInfiniteLoader(url, nextPage);
       }
       

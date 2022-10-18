@@ -44,7 +44,9 @@ function slideUp(target, duration = 500, callback = null) {
     target.style.removeProperty("overflow");
     target.style.removeProperty("transition-duration");
     target.style.removeProperty("transition-property");
+    if (callback !== null) {
     callback();
+    }
     //alert("!");
   }, duration);
 }
