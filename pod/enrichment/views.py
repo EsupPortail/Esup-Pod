@@ -82,6 +82,7 @@ def edit_enrichment(request, slug):
             raise PermissionDenied
 
     list_enrichment = video.enrichment_set.all()
+    print(request.POST)
     if request.POST and request.POST.get("action"):
         if request.POST["action"] in ACTION:
             return eval(

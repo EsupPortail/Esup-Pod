@@ -1,5 +1,4 @@
-{% extends 'enrichment/video_enrichment.html' %} {% load i18n %} {% load static %} 
-{% block page_title %}{% trans 'Enrichment of the video' %} "{{video.title}}"
+{% extends 'enrichment/video_enrichment.html' %} {% load i18n %} {% load static %} {% block page_title %}{% trans 'Enrichment of the video' %} "{{video.title}}"
 {% endblock page_title %} {% block page_extra_head %} {{ block.super }}
 
 <link
@@ -17,7 +16,8 @@
   /*** For the form ***/;
   var video_duration = {{video.duration}};
   /*** For the Cancel button ***/
-  document.addEvenListener("reset",   (e) => {
+ 
+  document.addEventListener("reset",   (e) => {
     if (e.target !== document.querySelector("#page-video form"))  return
     document.querySelector("span#form_enrich").html = "";
     document.querySelector("form#form_new").style.display = "block";

@@ -265,10 +265,10 @@ var sendandgetform = async function (elt, action, name, form, list) {
   }
   if (action == "save") {
     let form_group = document.querySelector(".form-help-inline");
-    let form_parents = getParents(form_group, "div.form-group");
-    form_parents.forEach(function (element) {
-      element.classList.remove("has-error");
-    });
+    let form_parents = form_group.closest("div.form-group");
+    form_parentsclassList.remove("has-error");
+    
+
 
     document.querySelector(".form-help-inline").remove();
     if (verify_fields(form)) {
@@ -373,10 +373,10 @@ function verify_fields(form) {
           gettext("Please enter a name from 2 to 100 caracteres.") +
           "</span>"
       );
-      let form_group = getParents(input, "div.form-group");
-      form_group.forEach(function (element) {
-        element.classList.add("has-error");
-      });
+      let form_group = input.closest("div.form-group");
+    
+      form_group.classList.add("has-error");
+     
       error = true;
     }
     if (document.getElementById("id_weblink").value.length >= 200) {
@@ -387,10 +387,9 @@ function verify_fields(form) {
           gettext("You cannot enter a weblink with more than 200 caracteres.") +
           "</span>"
       );
-      let form_group = getParents(id_weblink, "div.form-group");
-      form_group.forEach(function (element) {
-        element.classList.add("has-error");
-      });
+      let form_group = id_weblink.closest("div.form-group");
+      form_group.classList.add("has-error");
+      
       error = true;
     }
     if (document.getElementById("id_role").value == "") {
@@ -401,10 +400,8 @@ function verify_fields(form) {
           gettext("Please enter a role.") +
           "</span>"
       );
-      let form_group = getParents(id_role, "div.form-group");
-      form_group.forEach(function (element) {
-        element.classList.add("has-error");
-      });
+      let form_group = id_role.closest("div.form-group");
+      form_group.classList.add("has-error");
       error = true;
     }
     var id = parseInt(document.getElementById("id_contributor").value);
@@ -440,10 +437,8 @@ function verify_fields(form) {
           gettext("Please enter a correct kind.") +
           "</span>"
       );
-      let form_group = getParents(id_kind, "div.form-group");
-      form_group.forEach(function (element) {
-        element.classList.add("has-error");
-      });
+      let form_group = id_kind.closest("div.form-group");
+      form_group.classList.add("has-error");
 
       error = true;
     }
@@ -459,10 +454,9 @@ function verify_fields(form) {
           gettext("Please select a language.") +
           "</span>"
       );
-      let form_group = getParents(id_lang, "div.form-group");
-      form_group.forEach(function (element) {
-        element.classList.add("has-error");
-      });
+      let form_group = id_lang.closest( "div.form-group");
+      form_group.classList.add("has-error");
+     
 
       error = true;
     }
@@ -478,10 +472,8 @@ function verify_fields(form) {
           gettext("Please specify a track file.") +
           "</span>"
       );
-      let form_group = getParents(id_src, "div.form-group");
-      form_group.forEach(function (element) {
-        element.classList.add("has-error");
-      });
+      let form_group = id_src.closest("div.form-group");
+      form_group.classList.add("has-error");
       error = true;
     } else if (!file_abs_path.match(/\.vtt$/)) {
       id_src.insertAdjacentHTML(
@@ -490,10 +482,8 @@ function verify_fields(form) {
           gettext("Only .vtt format is allowed.") +
           "</span>"
       );
-      let form_group = getParents(id_src, "div.form-group");
-      form_group.forEach(function (element) {
-        element.classList.add("has-error");
-      });
+      let form_group = id_src.closest("div.form-group");
+      form_group.classList.add("has-error");
       error = true;
     }
     var is_duplicate = false;
@@ -528,10 +518,8 @@ function verify_fields(form) {
           ) +
           "</span>"
       );
-      let form_group = getParents(id_src, "div.form-group");
-      form_group.forEach(function (element) {
-        element.classList.add("has-error");
-      });
+      let form_group = id_src.closest("div.form-group");
+      form_group.classList.add("has-error");
       error = true;
     }
   } else if (form == "form_document") {
@@ -549,10 +537,9 @@ function verify_fields(form) {
           gettext("Please select a document") +
           "</span>"
       );
-      let form_group = getParents(id_document_thumbnail, "div.form-group");
-      form_group.forEach(function (element) {
-        element.classList.add("has-error");
-      });
+      let form_group = id_document_thumbnail.closest("div.form-group");
+      form_group.classList.add("has-error");
+      
       error = true;
     }
   } else if (form == "form_overlay") {
@@ -565,7 +552,7 @@ function verify_fields(form) {
           gettext("Iframe and Script tags are not allowed.") +
           "</span>"
       );
-      let form_group = getParents(id_content, "div.form-group");
+      let form_group = id_content.closest( "div.form-group");
       form_group.forEach(function (element) {
         element.classList.add("has-error");
       });

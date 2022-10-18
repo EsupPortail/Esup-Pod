@@ -1,4 +1,3 @@
-
 var id_form = "form_enrich";
 function show_form(data) {
   var form = document.querySelector("#" + id_form);
@@ -7,15 +6,15 @@ function show_form(data) {
   fadeIn(form);
 
   var inputStart = document.querySelector("input#id_start");
-  if (!inputStart) return
+  if (!inputStart) return;
   inputStart.insertAdjacentHTML(
     "beforebegin",
     "&nbsp;<div class='getfromvideo pull-right mb-1'><a href='' id='getfromvideo_start' class='btn btn-primary btn-sm'>" +
       gettext("Get time from the player") +
       "</a><span class='timecode'></span></div>"
   );
-  var inputEnd= document.querySelector("input#id_end");
-  if (!inputEnd) return
+  var inputEnd = document.querySelector("input#id_end");
+  if (!inputEnd) return;
   inputEnd.insertAdjacentHTML(
     "beforebegin",
     "&nbsp;<div class='getfromvideo pull-right mb-1'><a href='' id='getfromvideo_end' class='btn btn-primary btn-sm'>" +
@@ -50,6 +49,7 @@ var ajaxfail = function (data) {
     "alert-danger"
   );
   document.querySelector("form.get_form").style.display = "block";
+
   show_form("");
 };
 
@@ -64,7 +64,7 @@ document.addEventListener("submit", (e) => {
   e.preventDefault();
   var jqxhr = "";
   var action = e.target.querySelector("input[name=action]").value;
- 
+
   sendandgetform(e.target, action);
 });
 document.addEventListener("submit", (e) => {
@@ -106,6 +106,7 @@ var sendandgetform = async function (elt, action) {
         }
       })
       .catch((error) => {
+        console.log(error);
         ajaxfail(error);
       });
   }
@@ -115,7 +116,7 @@ var sendandgetform = async function (elt, action) {
     let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
     headers = {
       "X-CSRFToken": token,
-      'X-Requested-With': 'XMLHttpRequest'
+      "X-Requested-With": "XMLHttpRequest",
     };
 
     form_data = new FormData();
@@ -150,9 +151,8 @@ var sendandgetform = async function (elt, action) {
     url = window.location.href;
     let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
     headers = {
-      "Content-Type": "application/json",
       "X-CSRFToken": token,
-      'X-Requested-With': 'XMLHttpRequest'
+      "X-Requested-With": "XMLHttpRequest",
     };
     form_data = new FormData();
     form_data.append("action", action);
@@ -182,25 +182,26 @@ var sendandgetform = async function (elt, action) {
 
 var sendform = async function (elt, action) {
   if (action == "save") {
-    document
-      .querySelector(".form-help-inline")
-      .parentNode.querySelectorAll.forEach((elt) => {
-        elt.classList.remove("has-error");
-      });
-    document.querySelector(".form-help-inline").remove();
+    if (document.querySelector(".form-help-inline")) {
+      document
+        .querySelector(".form-help-inline")
+        .closest("div.form-group")
+        .classList.remove("has-error");
+      document.querySelector(".form-help-inline").remove();
+    }
+
     if (verify_fields() && verify_end_start_items() && overlaptest()) {
       let form_enrich = document.querySelector("form#form_enrich");
       form_enrich.style.display = "none";
-      var data_form = new FormData(form_chapter);
+      var data_form = new FormData(form_enrich);
 
       let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
       let url = window.location.href;
       let headers = {
         "X-CSRFToken": token,
-        'X-Requested-With': 'XMLHttpRequest'
-      };  
+        "X-Requested-With": "XMLHttpRequest",
+      };
       data_form.append("action", action);
-      
 
       await fetch(url, {
         method: "POST",
@@ -242,7 +243,7 @@ var sendform = async function (elt, action) {
     let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
     let headers = {
       "X-CSRFToken": token,
-       "X-Requested-With": "XMLHttpRequest",
+      "X-Requested-With": "XMLHttpRequest",
     };
     let form_data = new FormData();
     form_data.append("action", action);
@@ -318,41 +319,27 @@ function get_form(data) {
   manageResize();
 }
 function enrich_type() {
-  document
-    .getElementById("id_image")
-    .parentNode.querySelectorAll("div.form-group")
-    .forEach((elt) => {
-      elt.style.display = "none";
-    });
+  document.getElementById("id_image").closest("div.form-group").style.display =
+    "none";
   document
     .querySelector("textarea#id_richtext")
-    .parentNode.querySelector("div.form-group").style.display = "none";
+    .closest("div.form-group").style.display = "none";
 
   document
     .getElementById("id_weblink")
-    .parentNode.querySelectorAll("div.form-group")
-    .forEach((elt) => {
-      elt.style.display = "none";
-    });
+    .closest("div.form-group").style.display = "none";
 
   document
     .getElementById("id_document")
-    .parentNode.querySelectorAll("div.form-group")
-    .forEach((elt) => {
-      elt.style.display = "none";
-    });
+    .closest("div.form-group").style.display = "none";
 
-  document
-    .getElementById("id_embed")
-    .parentNode.querySelectorAll("div.form-group")
-    .forEach((elt) => {
-      elt.style.display = "none";
-    });
+  document.getElementById("id_embed").closest("div.form-group").style.display =
+    "none";
   var val = document.querySelector("select#id_type").value;
   if (val != "") {
     var form = document.getElementById("form_enrich");
     form.querySelectorAll('[id^="id_' + val + '"]').forEach((elt) => {
-      elt.parentNode.querySelector("div.form-group").style.display = "block";
+      elt.closest("div.form-group").style.display = "block";
     });
   }
 }
@@ -369,18 +356,20 @@ document.addEventListener("change", (e) => {
     "span.getfromvideo span.timecode"
   ).innerHTML = " " + parseInt(e.target.value).toHHMMSS();
 });
-document.addEventListener("click",  (e) => {
+document.addEventListener("click", (e) => {
   if (!e.target.matches("#page-video .getfromvideo a")) return;
   e.preventDefault();
   if (!(typeof player === "undefined")) {
     if (e.target.getAttribute("id") == "getfromvideo_start") {
       let inputStart = document.querySelector("input#id_start");
       inputStart.value = parseInt(player.currentTime());
-      inputStart.change();
+      changeEvent = new Event("change");
+      inputStart.dispatchEvent(changeEvent);
     } else {
       let inputEnd = document.querySelector("input#id_end");
       inputEnd.value = parseInt(player.currentTime());
-      inputEnd.change();
+      changeEvent = new Event("change");
+      inputEnd.dispatchEvent(changeEvent);
     }
   }
 });
@@ -399,9 +388,7 @@ function verify_fields() {
         gettext("Please enter a title from 2 to 100 characters.") +
         "</span>"
     );
-    inputTitle.parentNode.querySelectorAll("div.form-group").forEach((elt) => {
-      elt.classList.add("has-error");
-    });
+    inputTitle.closest("div.form-group").classList.add("has-error");
 
     error = true;
   }
@@ -418,9 +405,7 @@ function verify_fields() {
         (video_duration - 1) +
         "</span>"
     );
-    inputStart.parentNode.querySelectorAll("div.form-group").forEach((elt) => {
-      elt.classList.add("has-error");
-    });
+    inputStart.closest("div.form-group").classList.add("has-error");
 
     error = true;
   }
@@ -437,29 +422,29 @@ function verify_fields() {
         video_duration +
         "</span>"
     );
-    inputEnd.parentNode.querySelectorAll("div.form-group").forEach((elt) => {
-      elt.classList.add("has-error");
-    });
+    inputEnd.closest("div.form-group").classList.add("has-error");
 
     error = true;
   }
   switch (document.getElementById("id_type").value) {
     case "image":
+      
       let img = document.getElementById("id_image_thumbnail_img");
-      if (img.src == "/static/filer/icons/nofile_48x48.png") {
-        //check with id_image value
-        img.insertAdjacentElement(
-          "beforebegin",
-          "<span class='form-help-inline'>&nbsp; &nbsp;" +
-            gettext("Please enter a correct image.") +
-            "</span>"
-        );
-        img.parentNode.querySelectorAll("div.form-group").forEach((elt) => {
-          elt.classList.add("has-error");
-        });
+      if (img){
+        if (img.src == "/static/filer/icons/nofile_48x48.png") {
+          //check with id_image value
+          img.insertAdjacentElement(
+            "beforebegin",
+            "<span class='form-help-inline'>&nbsp; &nbsp;" +
+              gettext("Please enter a correct image.") +
+              "</span>"
+          );
+          img.closest("div.form-group").classList.add("has-error");
+          error = true;
+        }
 
-        error = true;
       }
+     
       break;
     case "richtext":
       let richtext = document.getElementById("id_richtext");
@@ -470,11 +455,7 @@ function verify_fields() {
             gettext("Please enter a correct richtext.") +
             "</span>"
         );
-        richtext.parentNode
-          .querySelectorAll("div.form-group")
-          .forEach((elt) => {
-            elt.classList.add("has-error");
-          });
+        richtext.closest("div.form-group").classList.add("has-error");
 
         error = true;
       }
@@ -488,9 +469,7 @@ function verify_fields() {
             gettext("Please enter a correct weblink.") +
             "</span>"
         );
-        weblink.parentNode.querySelectorAll("div.form-group").forEach((elt) => {
-          elt.classList.add("has-error");
-        });
+        weblink.closest("div.form-group").classList.add("has-error");
 
         error = true;
       } else {
@@ -501,11 +480,7 @@ function verify_fields() {
               gettext("Weblink must be less than 200 characters.") +
               "</span>"
           );
-          weblink.parentNode
-            .querySelectorAll("div.form-group")
-            .forEach((elt) => {
-              elt.classList.add("has-error");
-            });
+          weblink.closest("div.form-group").classList.add("has-error");
 
           error = true;
         }
@@ -521,11 +496,7 @@ function verify_fields() {
             gettext("Please select a document.") +
             "</span>"
         );
-        documentD.parentNode
-          .querySelectorAll("div.form-group")
-          .forEach((elt) => {
-            elt.classList.add("has-error");
-          });
+        documentD.closest("div.form-group").classList.add("has-error");
 
         error = true;
       }
@@ -539,9 +510,7 @@ function verify_fields() {
             gettext("Please enter a correct embed.") +
             "</span>"
         );
-        embed.parentNode.querySelectorAll("div.form-group").forEach((elt) => {
-          elt.classList.add("has-error");
-        });
+        embed.closest("div.form-group").classList.add("has-error");
 
         error = true;
       } else {
@@ -553,9 +522,7 @@ function verify_fields() {
               "</span>"
           );
 
-          embed.parentNode.querySelectorAll("div.form-group").forEach((elt) => {
-            elt.classList.add("has-error");
-          });
+          embed.closes("div.form-group").classList.add("has-error");
 
           error = true;
         }
@@ -569,9 +536,7 @@ function verify_fields() {
           gettext("Please enter a type in index field.") +
           "</span>"
       );
-      inputType.parentNode.querySelectorAll("div.form-group").forEach((elt) => {
-        elt.classList.add("has-error");
-      });
+      inputType.closest("div.form-group").classList.add("has-error");
 
       error = true;
   }

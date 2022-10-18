@@ -3,16 +3,19 @@
 function getParents(el, parentSelector /* optional */) {
   // If no parentSelector defined will bubble up all the way to *document*
   if (parentSelector === undefined) {
-    parentSelector = document;
+    parentSelector = document.body;
   }
 
   var parents = [];
   var p = el.parentNode;
-
-  while (p !== parentSelector) {
+  var is_selector = p.matches(parentSelector);
+ 
+  while (!is_selector || p !== document) {
     var o = p;
     parents.push(o);
+    
     p = o.parentNode;
+    console.log(p, parentSelector)
   }
   parents.push(parentSelector); // Push that parentSelector you wanted to stop at
 
