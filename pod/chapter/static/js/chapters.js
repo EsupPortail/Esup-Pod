@@ -432,7 +432,6 @@ var updateDom = function (data) {
   document
     .querySelector("#" + window.videojs.players.podvideoplayer.id_)
     .append(chaplist);
-
   document
     .querySelector("#" + window.videojs.players.podvideoplayer.id_)
     .append(tmp_node.querySelector("ul#chapters"));

@@ -1,89 +1,94 @@
-$(document).ready(function () {
-  let broadcastField = $("#event_broadcaster");
-  let restrictedCheckBox = $("#event_is_restricted");
-  let restrictedHelp = $("#event_is_restrictedHelp");
-  let restrictedLabel = $(".field_is_restricted");
+document.addEventListener("DOMContentLoaded", function () {
+  let broadcastField = document.getElementById("event_broadcaster");
+  let restrictedCheckBox = document.getElementById("event_is_restricted");
+  let restrictedHelp = document.getElementById("event_is_restrictedHelp");
+  let restrictedLabel = document.querySelector(".field_is_restricted");
 
   let change_restriction = (restrict) => {
     if (restrict === true) {
-      restrictedCheckBox.prop("checked", true);
-      restrictedCheckBox.attr("onclick", "return false");
-      restrictedHelp.html(
-        gettext("Restricted because the broadcaster is restricted")
+      restrictedCheckBox.checked = true;
+      restrictedCheckBox.setAttribute("onclick", "return false");
+      restrictedHelp.innerHTML = gettext(
+        "Restricted because the broadcaster is restricted"
       );
-      restrictedLabel.css("opacity", "0.5");
+      restrictedLabel.style.opacity = "0.5";
     } else {
-      restrictedCheckBox.removeAttr("onclick");
-      restrictedHelp.html(
-        gettext(
-          "If this box is checked, the event will only be accessible to authenticated users."
-        )
+      restrictedCheckBox.removeAttribute("onclick");
+      restrictedHelp.innerHTML = gettext(
+        "If this box is checked, the event will only be accessible to authenticated users."
       );
-      restrictedLabel.css("opacity", "");
+      restrictedLabel.style.opacity = "1";
     }
   };
 
-  let getBroadcasterRestriction = () => {
-    let broadcaster_id = broadcastField.find(":selected").val();
+  let getBroadcasterRestriction = async () => {
+    let select = broadcastField.querySelector("select");
+    let broadcaster_id = select.options[select.selectedIndex].value;
     if (typeof broadcaster_id === "undefined" || broadcaster_id === "") return;
 
-    $.ajax({
-      url: "/live/ajax_calls/getbroadcasterrestriction/",
-      type: "GET",
-      dataType: "JSON",
+    let url = "/live/ajax_calls/getbroadcasterrestriction/?idbroadcaster=" + broadcaster_id;
+    let data = new FormData()
+    await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
       cache: false,
-      data: {
-        idbroadcaster: broadcaster_id,
-      },
-      success: (s) => {
-        change_restriction(s.restricted);
-      },
-      error: () => {
+      
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        change_restriction(data.restricted);
+      })
+      .catch((error) => {
         change_restriction(false);
         alert(gettext("An error occurred on broadcaster fetch..."));
-      },
-    });
+      });
   };
 
   // Update broadcasters list after building change
-  $("#event_building").change(function () {
-    $.ajax({
-      url: "/live/ajax_calls/getbroadcastersfrombuiding/",
-      type: "GET",
-      dataType: "JSON",
-      cache: false,
-      data: {
-        building: this.value,
-      },
-
-      success: (broadcasters) => {
-        broadcastField.html("");
-
-        if (broadcasters.length === 0) {
-          console.log("no Broadcaster");
-          broadcastField.prop("disabled", true);
-          broadcastField.append(
-            "<option value> " +
-              gettext("No broadcaster set for this building") +
-              "</option>"
-          );
-        } else {
-          broadcastField.prop("disabled", false);
-          $.each(broadcasters, (key, value) => {
+  document
+    .getElementById("event_building")
+    .addEventListener("change", async function () {
+      let url = "/live/ajax_calls/getbroadcastersfrombuiding/?building=" + this.value;    
+      await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+        cache: false,
+      })
+        .then((response) => response.json())
+        .then((broadcasters) => {
+          broadcastField.innerHTML = "";
+          if (broadcasters.length === 0) {
+            console.log("no Broadcaster");
+            broadcastField.prop.disabled = true;
             broadcastField.append(
-              '<option value="' + value.id + '">' + value.name + "</option>"
+              "<option value> " +
+                gettext("No broadcaster set for this building") +
+                "</option>"
             );
-          });
-
-          // Update restriction after list reload
-          getBroadcasterRestriction();
-        }
-      },
-      error: () => {
-        alert(gettext("An error occurred during broadcasters load..."));
-      },
+          } else {
+            broadcastField.prop.disabled = false;
+            for (let i = 0; i < broadcasters.length; i++) {
+              broadcastField.append(
+                "<option value=" +
+                  broadcasters[i].id +
+                  ">" +
+                  broadcasters[i].name +
+                  "</option>"
+              );
+            }
+            getBroadcasterRestriction();
+          }
+        })
+        .catch((error) => {
+          alert(gettext("An error occurred during broadcasters load..."));
+        });
     });
-  });
 
   // Update restriction after broadcaster change
   broadcastField.change(function () {

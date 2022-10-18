@@ -39,9 +39,12 @@
         document.querySelector(".vjs-chapters-button button").style =
           "text-shadow : 0 0 1em #fff";
       } else {
+        
         document
           .querySelector(".chapters-list.active")
           .setAttribute("class", "chapters-list inactive");
+        
+        
         document.querySelector(".vjs-chapters-button button").style =
           "text-shadow : '' ";
       }
@@ -159,6 +162,9 @@
           if (data.length >= 1) {
             player.createChapters(data);
           }
+
+          let podPlayer = document.querySelector("#" + player.id());
+          podPlayer.appendChild(document.querySelector(".chapters-list"));
         };
 
         player.ready(player.main);

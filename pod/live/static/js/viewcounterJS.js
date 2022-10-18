@@ -9,45 +9,38 @@ function makeid(length) {
   return result;
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+$(document).ready(function () {
   let podplayer = videojs("podvideoplayer");
   podplayer.ready(function () {
     let secret = makeid(24);
-    (async function () {
-      let url =
-        "/live/ajax_calls/heartbeat/?key=" +
-        secret +
-        "&liveid=" +
-        document.getElementById("livename").dataset.liveid;
-      await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-        },
+    (function () {
+      $.ajax({
+        type: "GET",
+        url:
+          "/live/ajax_calls/heartbeat/?key=" +
+          secret +
+          "&liveid=" +
+          $("#livename").data("liveid"),
         cache: false,
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          document.getElementById("viewers-ul").innerHTML = "";
-          document.getElementById("viewcount").textContent = response.viewers;
+        success: function (response) {
+          $("#viewers-ul").html("");
+          $("#viewcount").text(response.viewers);
           response.viewers_list.forEach((view) => {
             let name = view.first_name + " " + view.last_name;
             if (name == " ") {
               name = "???";
             }
-            document
-              .getElementById("viewers-ul")
-              .append("<li>" + name + "</li>");
+            $("#viewers-ul").append("<li>" + name + "</li>");
           });
-        });
+        },
+      });
+
       setTimeout(arguments.callee, heartbeat_delay * 1000);
-    });
-  })();
+    })();
+  });
 
   function resizeViewerList() {
-    document.getElementById("viewers-list").style.width =
-      0.3 * document.getElementById("podvideoplayer").clientWidth + "";
+    $("#viewers-list").css("width", 0.3 * $("#podvideoplayer").width());
   }
   window.onresize = resizeViewerList;
   resizeViewerList();
@@ -79,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
         options.label = "Viewers";
         MenuButton.call(this, player, options);
         this.el().setAttribute("aria-label", "Viewers");
-        videojs.dom.classList.add(this.el(), "vjs-info-button");
+        videojs.dom.addClass(this.el(), "vjs-info-button");
         this.controlText("Viewers");
         //because sometimes doesn't
         let eyeSVG =
@@ -92,14 +85,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     InfoMenuButton.prototype.handleClick = function (event) {
       MenuButton.prototype.handleClick.call(this, event);
-      let menu = document.getElementById("viewers-list");
       if (
-        menu.style.display == "none" &&
-        document.getElementById("viewers-ul").childNodes.length > 0
+        $("#viewers-list").css("display") == "none" &&
+        $("#viewers-ul").children().length > 0
       ) {
-        menu.style.display = "block";
+        $("#viewers-list").css("display", "block");
       } else {
-        menu.style.display = "none";
+        $("#viewers-list").css("display", "none");
       }
     };
     MenuButton.registerComponent("InfoMenuButton", InfoMenuButton);

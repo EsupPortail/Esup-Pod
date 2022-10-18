@@ -94,7 +94,7 @@
 
   document.addEventListener("click",(e) => {
     if (!e.target.matches(".previewBtn")) return
-  videojs("podvideoplayer").src = e.target.dataset("recid")
+  videojs("podvideoplayer").src = e.target.dataset.recid
 })
 </script>
 {% endblock more_script %}

@@ -85,13 +85,14 @@ $(document).ready(function () {
     });
     InfoMenuButton.prototype.handleClick = function (event) {
       MenuButton.prototype.handleClick.call(this, event);
+      let menu = document.getElementById("viewers-list");
       if (
-        $("#viewers-list").css("display") == "none" &&
-        $("#viewers-ul").children().length > 0
+        menu.style.display == "none" &&
+        document.getElementById("viewers-ul").childNodes.length > 0
       ) {
-        $("#viewers-list").css("display", "block");
+        menu.style.display = "block";
       } else {
-        $("#viewers-list").css("display", "none");
+        menu.style.display = "none";
       }
     };
     MenuButton.registerComponent("InfoMenuButton", InfoMenuButton);

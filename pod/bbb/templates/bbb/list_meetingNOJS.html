@@ -98,7 +98,7 @@ document.querySelectorAll('.previewBtn').forEach((elt) =>{
 
   e.addEventListener('click', (event) => {
     let url = event.target.getAttribute('data-url');
-    document.querySelector('#iframeBBB').setAttribute('src', elt.dataset("recid"));
+    document.querySelector('#iframeBBB').setAttribute('src', elt.dataset.recid);
   });
 });
 
