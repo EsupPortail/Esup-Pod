@@ -80,22 +80,7 @@ class InfiniteLoader {
     
   }
 
-  updateDom(data){
-    const html = new DOMParser().parseFromString(data, "text/html").body
-      console.log(html.querySelector("#videos_list"));
-  
-    if (html.querySelector("#videos_list").getAttribute("nextPage") != "True") {
-      this.nextPage = false ;
-    }
-    
-    let element = this.videos_list;
-    html.querySelector("#videos_list").childNodes.forEach(function (node) {
-      element.appendChild(node);
-    });
-    this.callBackAfterLoad();
-    this.next_page_number += 1;
-    
-  }
+ 
 
   removeLoader(){
     window.removeEventListener("scroll", this.scroller_init);
@@ -117,8 +102,26 @@ class InfiniteLoader {
       const html = new DOMParser().parseFromString(data, "text/html").body
       console.log(html.querySelector("#videos_list"));
       this.updateDom(data);
+      this.callBackAfterLoad();
     })
      
+  }
+
+   updateDom(data){
+    const html = new DOMParser().parseFromString(data, "text/html").body
+    console.log(html.querySelector("#videos_list"));
+  
+    if (html.querySelector("#videos_list").getAttribute("nextPage") != "True") {
+      this.nextPage = false ;
+    }
+    
+    let element = this.videos_list;
+    html.querySelector("#videos_list").childNodes.forEach(function (node) {
+      element.appendChild(node);
+    });
+    this.callBackAfterLoad();
+    this.next_page_number += 1;
+    
   }
   
 }

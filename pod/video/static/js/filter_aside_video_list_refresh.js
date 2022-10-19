@@ -128,7 +128,6 @@ hideInfiniteloading = function () {
 document.querySelectorAll(".form-check-input").forEach((checkbox) => {
   checkbox.addEventListener("change", function () {
     // Filter checkboxes change triggered event
-    console.log("checkbox changed");
     formCheckedInputs = [];
     document.querySelector(".infinite-loading").display = "block";
     document
