@@ -70,20 +70,19 @@ document.addEventListener("DOMContentLoaded", function () {
         .filter((item) => item.trim().startsWith("csrftoken="))[0]
         .split("=")[1];
 
-      data = JSON.stringify(videos);
-      body = JSON.stringify({
-        action: "move",
-        videos: data,
-        csrfmiddlewaretoken: token,
-      });
+      form_data = new FormData();
+      form_data.append("videos", JSON.stringify(videos));
+      form_data.append("csrfmiddlewaretoken", token);
+      form_data.append("action", "move");
+    
 
       var jqxhr = fetch(window.location.href, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           "X-CSRFToken": token,
+          "X-Requested-With": "XMLHttpRequest",
         },
-        body: body,
+        body: form_data,
       })
         .then((response) => {
           if (response.status !== 200) {
@@ -118,19 +117,20 @@ document.addEventListener("DOMContentLoaded", function () {
         .split("=")[1];
 
       headers = {
-        "Content-Type": "application/json",
         "X-CSRFToken": token,
+        "X-Requested-With": "XMLHttpRequest",
       };
-      body = {
-        video: slug,
-        action: "remove",
-        csrfmiddlewaretoken: token,
-      };
+   
+
+      form_data = new FormData();
+      form_data.append("video", slug);
+      form_data.append("action", "remove");
+
 
       await fetch(window.location.href, {
         method: "POST",
         headers: headers,
-        body: JSON.stringify(body),
+        body: form_data,
       })
         .then((response) => {
           console.log(response.status);
@@ -241,18 +241,18 @@ document.addEventListener("DOMContentLoaded", function () {
           .filter((item) => item.trim().startsWith("csrftoken="))[0]
           .split("=")[1];
 
-        body = JSON.stringify({
-          action: "add",
-          video: foundslug[2],
-          csrfmiddlewaretoken: token,
-        });
+
+        form_data = new FormData();
+        form_data.append("video", foundslug[2]);
+        form_data.append("action", "add");
+
         const jqxhr = fetch("/playlist/edit/" + slug + "/", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
             "X-CSRFToken": token,
+            "X-Requested-With": "XMLHttpRequest",
           },
-          body: body,
+          body: form_data,
         })
           .then((response) => {
             if (response.status != 200) {

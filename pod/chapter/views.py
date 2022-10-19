@@ -36,14 +36,12 @@ def video_chapter(request, slug):
         )
 
     list_chapter = video.chapter_set.all()
-    body = request.body.decode("utf-8")
 
     if request.method == 'POST' :
-        data = json.loads(body)
-        if data.get("action"):
-            if data.get("action") in ACTION:
+        if request.POST.get("action"):
+            if request.POST.get("action") in ACTION:
                 return eval(
-                    "video_chapter_{0}(request, video)".format(data.get("action"))
+                    "video_chapter_{0}(request, video)".format(request.POST.get("action"))
                 )
     else:
         return render(
@@ -57,7 +55,7 @@ def video_chapter_new(request, video):
     list_chapter = video.chapter_set.all()
     form_chapter = ChapterForm(initial={"video": video})
     form_import = ChapterImportForm(user=request.user, video=video)
-    if request:
+    if request.is_ajax():
         return render(
             request,
             "chapter/form_chapter.html",
@@ -83,15 +81,13 @@ def video_chapter_new(request, video):
 def video_chapter_save(request, video):
     list_chapter = video.chapter_set.all()
     form_chapter = None
-    body = request.body.decode("utf-8")
-    data = json.loads(body)
-    data = data.get("data")
-    chapter_id = data.get("chapter_id")
+
+    chapter_id = request.POST.get("chapter_id")
     if chapter_id != "None" and chapter_id is not None:
         chapter = get_object_or_404(Chapter, id=chapter_id)
-        form_chapter = ChapterForm(data, instance=chapter)
+        form_chapter = ChapterForm(request.POST, instance=chapter)
     else:
-        form_chapter = ChapterForm(data)
+        form_chapter = ChapterForm(request.POST)
     if form_chapter.is_valid():
         form_chapter.save()
         list_chapter = video.chapter_set.all()
@@ -152,10 +148,8 @@ def video_chapter_save(request, video):
 
 def video_chapter_modify(request, video):
     list_chapter = video.chapter_set.all()
-    body = request.body.decode("utf-8")
-    data = json.loads(body)
-    if data.get("action") and data.get("action") == "modify":
-        chapter = get_object_or_404(Chapter, id=data.get("id"))
+    if request.POST.get("action") and request.POST.get("action") == "modify":
+        chapter = get_object_or_404(Chapter, id=request.POST.get("id"))
         form_chapter = ChapterForm(instance=chapter)
         if request:
             return render(
@@ -177,10 +171,7 @@ def video_chapter_modify(request, video):
 
 def video_chapter_delete(request, video):
     list_chapter = video.chapter_set.all()
-    body = request.body.decode("utf-8")
-    data = json.loads(body)
-
-    chapter = get_object_or_404(Chapter, id=data.get("id"))
+    chapter = get_object_or_404(Chapter, id=request.POST.get("id"))
     chapter.delete()
     list_chapter = video.chapter_set.all()
     if request:
@@ -221,10 +212,8 @@ def video_chapter_cancel(request, video):
 
 def video_chapter_import(request, video):
     list_chapter = video.chapter_set.all()
-    body = request.body.decode("utf-8")
-    data = json.loads(body)
     form_chapter = ChapterForm(initial={"video": video})
-    form_import = ChapterImportForm(data, user=request.user, video=video)
+    form_import = ChapterImportForm(request.POST, user=request.user, video=video)
     if form_import.is_valid():
         list_chapter = video.chapter_set.all()
         if request:

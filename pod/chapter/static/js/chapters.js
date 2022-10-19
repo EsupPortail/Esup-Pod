@@ -86,17 +86,17 @@ var sendandgetform = async function (elt, action) {
   if (action == "new") {
     url = window.location.href;
     headers = {
-      "Content-Type": "application/json",
       "X-CSRFToken": token,
+      "X-Requested-With": "XMLHttpRequest",
     };
-    data = JSON.stringify({
-      action: action,
-    });
+    form_data = new FormData();
+    form_data.append("action", action);
+
 
     await fetch(url, {
       method: "POST",
       headers: headers,
-      body: data,
+      body: form_data,
       dataType: "html",
     })
       .then((response) => response.text())
@@ -119,18 +119,18 @@ var sendandgetform = async function (elt, action) {
     url = window.location.href;
     let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
     headers = {
-      "Content-Type": "application/json",
       "X-CSRFToken": token,
+      "X-Requested-With": "XMLHttpRequest",
     };
-    data = JSON.stringify({
-      action: action,
-      id: id,
-    });
+   
+    form_data = new FormData();
+    form_data.append("action", action);
+    form_data.append("id", id);
 
     await fetch(url, {
       method: "POST",
       headers: headers,
-      body: data,
+      body: form_data,
       dataType: "html",
     })
       .then((response) => response.text())
@@ -155,18 +155,20 @@ var sendandgetform = async function (elt, action) {
     url = window.location.href;
     let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
     headers = {
-      "Content-Type": "application/json",
+     
       "X-CSRFToken": token,
+      "X-Requested-With": "XMLHttpRequest",
     };
-    data = JSON.stringify({
-      action: action,
-      id: id,
-    });
+   
+    form_data = new FormData();
+    form_data.append("action", action);
+    form_data.append("id", id);
+
 
     await fetch(url, {
       method: "POST",
       headers: headers,
-      body: data,
+      body: form_data,
       dataType: "html",
     })
       .then((response) => response.text())
@@ -198,23 +200,17 @@ var sendform = async function (elt, action) {
       let form_chapter = document.querySelector("form#form_chapter");
       form_chapter.style.display = "none";
       var data_form = new FormData(form_chapter);
-      var data = Object.fromEntries(data_form.entries());
 
       let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
       let url = window.location.href;
       let headers = {
-        "Content-Type": "application/json",
         "X-CSRFToken": token,
+        "X-Requested-With": "XMLHttpRequest",
       };
-      data = JSON.stringify({
-        action: action,
-        data: data,
-      });
-
       await fetch(url, {
         method: "POST",
         headers: headers,
-        body: data,
+        body: data_form,
         dataType: "html",
       })
         .then((response) => response.text())
@@ -261,17 +257,18 @@ var sendform = async function (elt, action) {
     let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
 
     let headers = {
-      "Content-Type": "application/json",
       "X-CSRFToken": token,
+      "X-Requested-With": "XMLHttpRequest",
     };
-    data = JSON.stringify({
-      action: action,
-      file: file,
-    });
+   
+    form_data = new FormData();
+    form_data.append("action", action);
+    form_data.append("file", file);
+
     await fetch(url, {
       method: "POST",
       headers: headers,
-      body: data,
+      body: form_data,
       dataType: "html",
     })
       .then((response) => response.text())

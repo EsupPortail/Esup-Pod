@@ -173,10 +173,9 @@ def check_playlist_videos(playlist, data):
 
 
 def playlist_move(request, playlist):
-    if request:
-        data = json.loads(request.body.decode('utf8').replace("'", '"'))
-        if data.get("videos"):
-            data = data.get("videos")
+    if request.is_ajax():
+        if request.POST.get("videos"):
+            data = request.POST.get("videos")
             data = ast.literal_eval(data)
             err = check_playlist_videos(playlist, data)
             if err:
@@ -201,10 +200,9 @@ def playlist_move(request, playlist):
 
 
 def playlist_remove(request, playlist):
-    if request:
-        data = json.loads(request.body.decode('utf8').replace("'", '"'))
-        if data.get("video"):
-            slug = data.get("video")
+    if request.is_ajax():
+        if request.POST.get("video"):
+            slug = request.POST.get("video")
             element = get_object_or_404(
                 PlaylistElement, video__slug=slug, playlist=playlist
             )
@@ -242,11 +240,10 @@ def playlist_edit(request, playlist):
 
 
 def playlist_add(request, playlist):
-    if request:
-        data = json.loads(request.body.decode('utf8').replace("'", '"'))
+    if request.is_ajax():
 
-        if data.get("video"):
-            video = get_object_or_404(Video, slug=data.get(
+        if request.POST.get("video"):
+            video = get_object_or_404(Video, slug=request.POST.get(
                 "video"), sites=get_current_site(request))
             msg = None
             print(video.get_thumbnail_url())
