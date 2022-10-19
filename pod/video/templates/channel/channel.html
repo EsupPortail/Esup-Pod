@@ -230,12 +230,13 @@
                     }
              });
             }
-        if ("{{ videos.has_next }}" == "True") {
-        page = parseInt("{{ videos.next_page_number }}")
-        console.log(page)
-        var infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad, page = page);
 
-        }
+
+        {% if videos.has_next %}
+            page = parseInt("{{videos.next_page_number}}")
+            next_page = true
+            var infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad, page = page);
+        {% endif %}
     </script>
     <script>
         var str = get_list(listTheme["channel_" + "{{channel.id}}"], 0, [], tag_type = "li", li_class = "list-group-item", attrs = '', add_link = true, current = "{{theme.slug}}", channel = "");

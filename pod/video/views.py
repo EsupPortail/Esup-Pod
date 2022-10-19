@@ -252,8 +252,6 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         )
         response["videos"] = videos
         return JsonResponse(response, safe=False)
-        # TODO : replace this return by a
-        #  render(request,"videos/video_list.html") like in channel
 
     return render(
         request,
@@ -386,10 +384,10 @@ def theme_edit(request, slug):
     ):
         messages.add_message(request, messages.ERROR, _("You cannot edit this channel."))
         raise PermissionDenied
-    if request.POST and request:
-        action = request.POST.get("action")
-        if action in THEME_ACTION:
-            return eval("theme_edit_{0}(request, channel)".format(action))
+
+    if request.POST and request.is_ajax():
+        if request.POST["action"] in THEME_ACTION:
+            return eval("theme_edit_{0}(request, channel)".format(request.POST["action"]))
 
     form_theme = FrontThemeForm(initial={"channel": channel})
     return render(
@@ -434,9 +432,9 @@ def theme_edit_delete(request, channel):
 def theme_edit_save(request, channel):
     """Save theme edition."""
     form_theme = None
-    print(request.POST)
+
     if request.POST.get("theme_id") and request.POST.get("theme_id") != "None":
-        theme = get_object_or_404(Theme, id=request.POST.get("theme_id"))
+        theme = get_object_or_404(Theme, id=request.POST["theme_id"])
         form_theme = FrontThemeForm(request.POST, instance=theme)
     else:
         form_theme = FrontThemeForm(request.POST)
@@ -484,8 +482,6 @@ def my_videos(request):
 
     full_path = ""
     if page:
-        print(page)
-
         full_path = (
             request.get_full_path()
             .replace("?page=%s" % page, "")
@@ -595,8 +591,7 @@ def videos(request):
     try:
         videos = paginator.page(page)
     except PageNotAnInteger:
-        page = int(page)
-        videos = paginator.page(page)
+        videos = paginator.page(1)
     except EmptyPage:
         videos = paginator.page(paginator.num_pages)
 
@@ -801,7 +796,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     template_video = "videos/video.html"
     params = {"active_video_comment": ACTIVE_VIDEO_COMMENT}
     if request.GET.get("is_iframe"):
-        params = {"page_title": video.title}
+        params = {}
         template_video = "videos/video-iframe.html"
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
@@ -1381,7 +1376,7 @@ def video_note_form_case(request, params):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_note_save(request, slug):
-    """Save a Video note or comment."""
+    """Save a Video note."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     idNote, idCom = None, None
     note, com = None, None
@@ -1462,7 +1457,6 @@ def video_note_save(request, slug):
 
 
 def video_note_save_form_valid(request, video, params):
-    """Save a note or a note comment."""
     (
         idNote,
         idCom,
@@ -1483,11 +1477,11 @@ def video_note_save_form_valid(request, video, params):
         com.status = request.POST.get("status")
         com.modified_on = timezone.now()
         com.save()
-        messages.add_message(request, messages.INFO, _("The comment has been modified."))
+        messages.add_message(request, messages.INFO, _("The comment has been saved."))
         noteToDisplay, comToDisplay = note, get_com_tree(com)
         listNotesCom = get_adv_note_com_list(request, idNote)
         dictComments = get_com_coms_dict(request, listNotesCom)
-    # Saving a new answer (com) to a note
+    # Saving a new answer (com) to a com
     elif (
         idCom is not None
         and idNote is not None
@@ -1513,7 +1507,7 @@ def video_note_save_form_valid(request, video, params):
         note.status = request.POST.get("status")
         note.modified_on = timezone.now()
         note.save()
-        messages.add_message(request, messages.INFO, _("Your note has been modified."))
+        messages.add_message(request, messages.INFO, _("The note has been saved."))
     # Saving a new com for a note
     elif (
         idCom is None and idNote is not None and request.POST.get("action") == "save_com"
@@ -1524,36 +1518,28 @@ def video_note_save_form_valid(request, video, params):
             status=request.POST.get("status"),
             comment=request.POST.get("comment"),
         )
-        messages.add_message(request, messages.INFO, _("Your comment has been saved."))
+        messages.add_message(request, messages.INFO, _("The comment has been saved."))
         noteToDisplay = note
         listNotesCom = get_adv_note_com_list(request, idNote)
     # Saving a new note
     elif idCom is None and idNote is None:
-        timestamp = request.POST.get("timestamp")
         note, created = AdvancedNotes.objects.get_or_create(
             user=request.user,
             video=video,
             status=request.POST.get("status"),
-            timestamp=timestamp,
+            timestamp=request.POST.get("timestamp"),
         )
         if created or not note.note:
             note.note = request.POST.get("note")
-            message = _("The note has been saved.")
         else:
-            # If there is already a note at this timestamp & status, update it.
             note.note = note.note + "\n" + request.POST.get("note")
-            message = _(
-                "Your note at %(timestamp)s has been modified."
-                % {"timestamp": note.timestampstr()}
-            )
         note.save()
-        messages.add_message(request, messages.INFO, message)
+        messages.add_message(request, messages.INFO, _("The note has been saved."))
 
     return (note, com, noteToDisplay, comToDisplay, listNotesCom, dictComments)
 
 
 def video_note_form_not_valid(request, params):
-    """Display a warning when a note or a note comment is not valid."""
     (
         idNote,
         idCom,

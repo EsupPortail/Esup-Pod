@@ -76,15 +76,13 @@
       });
     }
     
-  url = "/video/my/?page="
   var page = 0;
-  if ("{{videos.has_next}}" == "True") {
+  {% if videos.has_next %}
+    url = "/video/my/?page="
     page = parseInt("{{videos.next_page_number}}")
+    next_page = true
     var infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad, nextPage = true  ,page = page);
-  } 
- 
-   
-
+  {% endif %}
 
 
 {% if use_category %}
