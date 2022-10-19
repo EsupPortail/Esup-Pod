@@ -114,8 +114,9 @@ document.getElementById("id_is_restricted").addEventListener("change", function 
 });
 var restrict_access_to_groups = function () {
   var id_restrict_access_to_groups = document.getElementById("id_restrict_access_to_groups")
+  let restrict__access = id_restrict_access_to_groups.closest(".restricted_access")
   if (document.getElementById("id_is_restricted").checked) {
-    getParents(id_restrict_access_to_groups, ".restricted_access")[0].style.display = "block";
+    restrict__access.style.display = "block";
   } else {
     let select = id_restrict_access_to_groups.querySelector("select");
     if (select) {
@@ -125,7 +126,7 @@ var restrict_access_to_groups = function () {
         }
       });
     }
-    getParents(id_restrict_access_to_groups, ".restricted_access")[0].style.display  = "none";
+    restrict__access.style.display  = "none";
   }
 };
 restrict_access_to_groups();
