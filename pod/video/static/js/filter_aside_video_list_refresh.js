@@ -62,8 +62,7 @@ function refreshVideosSearch(formCheckedInputs) {
     url += input.name + "=" + input.value + "&";
   });
   url = url.slice(0, -1);
-  
-  console.log(url)
+
 
 
   
@@ -92,11 +91,20 @@ function refreshVideosSearch(formCheckedInputs) {
       window.history.pushState({}, "", this.url);
       hideInfiniteloading();
       if (nextPage) {
-        pageNext = document.querySelector("a.infinite-more-link")
-        if (url != urlVideos) 
-          url = url + "?page=" + page;
-        url = url + "&page=" + page;
-        refreshInfiniteLoader(url, nextPage);
+        pageNext = document.querySelector("a.infinite-more-link").getAttribute("nextPageNumber");
+
+        url = urlVideos + "?" 
+        data = formCheckedInputs;
+        if (data.length > 0) {
+        data.forEach((input) => {
+          url += input.name + "=" + input.value + "&";
+        });
+        url = url.slice(0, -1);
+        url = url + "&page="
+        } else{
+          url +=   "page="
+        }
+        refreshInfiniteLoader(url, pageNext);
       }
       
     })

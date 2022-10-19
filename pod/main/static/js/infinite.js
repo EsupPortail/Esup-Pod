@@ -62,7 +62,6 @@ class InfiniteLoader {
       if (document.body.getBoundingClientRect().top > this.scrollPos) {
       } else {
         if (isElementXPercentInViewport()) {
-          console.log(this.next_page_number + " : " + this.current_page_number)
           if (this.nextPage && this.next_page_number > this.current_page_number) {
            this.current_page_number = this.next_page_number
             this.initMore();
