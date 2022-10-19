@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-18 10:10+0000\n"
+"POT-Creation-Date: 2022-10-19 08:42+0000\n"
 "PO-Revision-Date: 2022-05-13 15:49+0200\n"
 "Last-Translator: ncan <nicolas.can@univ-lille.fr>\n"
 "Language-Team: \n"
@@ -4699,7 +4699,7 @@ msgstr ""
 
 #: pod/podfile/templates/podfile/home_content.html:56
 #: pod/podfile/templates/podfile/list_folder_files.html:112
-#: pod/video/templates/videos/video-comment.html:22
+#: pod/video/templates/videos/video-comment.html:28
 #: pod/video/templates/videos/video_edit.html:125
 msgid "Loading…"
 msgstr ""
@@ -5838,7 +5838,7 @@ msgstr ""
 msgid "Videos to delete"
 msgstr ""
 
-#: pod/video/models.py:1982 pod/video/templates/videos/video-comment.html:9
+#: pod/video/models.py:1982
 msgid "Comments"
 msgstr ""
 
@@ -6234,23 +6234,31 @@ msgstr ""
 msgid "Comments have been disabled for this video."
 msgstr ""
 
-#: pod/video/templates/videos/video-comment.html:14
+#: pod/video/templates/videos/video-comment.html:9
+msgid "comment(s)"
+msgstr ""
+
+#: pod/video/templates/videos/video-comment.html:14 pod/video/views.py:2119
+msgid "Sorry, you can't comment while the server is under maintenance."
+msgstr ""
+
+#: pod/video/templates/videos/video-comment.html:19
 msgid "Your comment"
 msgstr ""
 
-#: pod/video/templates/videos/video-comment.html:15
+#: pod/video/templates/videos/video-comment.html:20
 msgid "Add a public comment"
 msgstr ""
 
-#: pod/video/templates/videos/video-comment.html:18
+#: pod/video/templates/videos/video-comment.html:23
 msgid "Comment!"
 msgstr ""
 
-#: pod/video/templates/videos/video-comment.html:24
+#: pod/video/templates/videos/video-comment.html:30
 msgid "Delete comment"
 msgstr ""
 
-#: pod/video/templates/videos/video-comment.html:24
+#: pod/video/templates/videos/video-comment.html:30
 msgid "Permanently delete your comment?"
 msgstr ""
 
@@ -6806,35 +6814,44 @@ msgstr ""
 msgid "Media upload"
 msgstr ""
 
-#: pod/video/views.py:2302
+#: pod/video/views.py:2088
+msgid "Sorry, you can't vote a comment while the server is under maintenance."
+msgstr ""
+
+#: pod/video/views.py:2304
+msgid ""
+"Sorry, you can't delete a comment while the server is under maintenance."
+msgstr ""
+
+#: pod/video/views.py:2315
 msgid "You do not have rights to delete this comment"
 msgstr ""
 
-#: pod/video/views.py:2407 pod/video/views.py:2478
+#: pod/video/views.py:2420 pod/video/views.py:2491
 msgid "One or many videos already have a category."
 msgstr ""
 
-#: pod/video/views.py:2449 pod/video/views.py:2525
+#: pod/video/views.py:2462 pod/video/views.py:2538
 msgid "Title field is required"
 msgstr ""
 
-#: pod/video/views.py:2455 pod/video/views.py:2531 pod/video/views.py:2580
+#: pod/video/views.py:2468 pod/video/views.py:2544 pod/video/views.py:2593
 msgid "Method Not Allowed"
 msgstr ""
 
-#: pod/video/views.py:2496
+#: pod/video/views.py:2509
 msgid "Category updated successfully."
 msgstr ""
 
-#: pod/video/views.py:2519
+#: pod/video/views.py:2532
 msgid "You do not have rights to edit this category"
 msgstr ""
 
-#: pod/video/views.py:2573
+#: pod/video/views.py:2586
 msgid "You do not have rights to delete this category"
 msgstr ""
 
-#: pod/video/views.py:2647
+#: pod/video/views.py:2660
 msgid "Update successfully"
 msgstr ""
 

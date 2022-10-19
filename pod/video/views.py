@@ -2083,6 +2083,10 @@ def vote_get(request, video_slug):
 def vote_post(request, video_slug, comment_id):
     if request.method == "GET":
         return HttpResponseNotFound("<h1>Method Not Allowed</h1>", status=405)
+    if in_maintenance():
+        return HttpResponseForbidden(
+            _("Sorry, you can't vote a comment while the server is under maintenance.")
+        )
     # current video
     c_video = get_object_or_404(Video, slug=video_slug)
     # current comment
@@ -2110,6 +2114,10 @@ def vote_post(request, video_slug, comment_id):
 @login_required(redirect_field_name="referrer")
 @csrf_protect
 def add_comment(request, video_slug, comment_id=None):
+    if in_maintenance():
+        return HttpResponseForbidden(
+            _("Sorry, you can't comment while the server is under maintenance.")
+        )
     if request.method == "POST":
         # current video
         c_video = get_object_or_404(Video, slug=video_slug)
@@ -2290,6 +2298,11 @@ def delete_comment(request, video_slug, comment_id):
     response = {
         "deleted": True,
     }
+
+    if in_maintenance():
+        return HttpResponseForbidden(
+            _("Sorry, you can't delete a comment while the server is under maintenance.")
+        )
 
     if c.author == c_user or v.owner == c_user or c_user.is_superuser:
 

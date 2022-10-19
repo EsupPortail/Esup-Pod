@@ -1,6 +1,7 @@
 const base_vote_url = base_url.replace("comment", "comment/vote");
 const base_delete_url = base_url.replace("comment", "comment/del");
 let all_comment = null;
+const pod_comment_wrapper = document.getElementById("pod_comment_wrapper");
 const lang_btn = document.querySelector(".btn-lang.btn-lang-active");
 const comment_title = document.querySelector(".comment_title");
 // Loader Element
@@ -26,6 +27,7 @@ const ACTION_COMMENT = {
 };
 const answer_sing = gettext("Answer");
 const answer_plural = gettext("Answers");
+
 if (!is_authenticated)
   document.querySelector(".comment_counter_container").style.margin =
     "0 0 1em 0";
@@ -33,23 +35,26 @@ if (!is_authenticated)
 class AlertMessage extends HTMLElement {
   constructor(message, alert_class = "success") {
     super();
-    this.setAttribute("class", "alert " + `alert_${alert_class}`);
+    this.setAttribute("class", "alert alert-dismissible fade show alert-" + alert_class);
+    this.setAttribute("role", "alert");
+    this.alert_class = alert_class;
     let html = document.createElement("DIV");
     html.setAttribute("class", "alert_content");
-    let content = document.createElement("DIV");
-    content.setAttribute("class", "alert_message");
-    content.textContent = message;
-    html.appendChild(content);
+    html.innerHTML = message +
+    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="' +
+      gettext("Close") +
+      '"></button></div>';
     this.appendChild(html);
   }
   connectedCallback() {
     super.connectedCallback && super.connectedCallback();
+    let show_duration = this.alert_class == "success" ? 3000:6000;
     window.setTimeout(() => {
       this.classList.add("alert_close");
       window.setTimeout(() => {
         this.parentElement.removeChild(this);
       }, 1000);
-    }, 3000);
+    }, show_duration);
   }
 }
 customElements.define("alert-message", AlertMessage);
@@ -214,7 +219,7 @@ class Comment extends HTMLElement {
       .querySelector(".comment_content_footer .actions")
       .appendChild(vote_action);
 
-    if (user_id) {
+    if (user_id && !maintenance_mode) {
       svg_icon = `<i aria-hidden="true" class="bi bi-chat"></i>`;
       let response_action = createFooterBtnAction(
         "comment_actions comment_response_action",
@@ -438,48 +443,59 @@ function vote(comment_action_html, comment_id) {
     body: data,
   })
     .then((response) => {
-      response.json().then((data) => {
-        comment_action_html.classList.remove("voting");
-        const target_comment = document.getElementById(
-          comment_action_html.dataset.comment
-        );
+      comment_action_html.classList.remove("voting");
+      if (response.ok) {
+        response.json().then((data) => {
+          const target_comment = document.getElementById(
+            comment_action_html.dataset.comment
+          );
 
-        if (data.voted === true) {
-          const nb_vote = update_comment_attribute(
-            target_comment,
-            null,
-            "nbr_vote",
-            "increment"
-          );
-          btn.innerHTML = interpolate(
-            ngettext(
-              '%s <span class="d-none d-md-inline">vote</span>',
-              '%s <span class="d-none d-md-inline">votes</span>',
-              nb_vote
-            ),
-            [nb_vote]
-          );
-          if (!comment_action_html.classList.contains("voted"))
-            comment_action_html.classList.add("voted");
-        } else {
-          const nb_vote = update_comment_attribute(
-            target_comment,
-            null,
-            "nbr_vote",
-            "decrement"
-          );
-          btn.innerHTML = interpolate(
-            ngettext(
-              '%s <span class="d-none d-md-inline">vote</span>',
-              '%s <span class="d-none d-md-inline">votes</span>',
-              nb_vote
-            ),
-            [nb_vote]
-          );
-          if (comment_action_html.classList.contains("voted"))
-            comment_action_html.classList.remove("voted");
+          if (data.voted === true) {
+            const nb_vote = update_comment_attribute(
+              target_comment,
+              null,
+              "nbr_vote",
+              "increment"
+            );
+            btn.innerHTML = interpolate(
+              ngettext(
+                '%s <span class="d-none d-md-inline">vote</span>',
+                '%s <span class="d-none d-md-inline">votes</span>',
+                nb_vote
+              ),
+              [nb_vote]
+            );
+            if (!comment_action_html.classList.contains("voted"))
+              comment_action_html.classList.add("voted");
+          } else {
+            const nb_vote = update_comment_attribute(
+              target_comment,
+              null,
+              "nbr_vote",
+              "decrement"
+            );
+            btn.innerHTML = interpolate(
+              ngettext(
+                '%s <span class="d-none d-md-inline">vote</span>',
+                '%s <span class="d-none d-md-inline">votes</span>',
+                nb_vote
+              ),
+              [nb_vote]
+            );
+            if (comment_action_html.classList.contains("voted"))
+              comment_action_html.classList.remove("voted");
+          }
+        });
+      } else {
+        let message = gettext("Bad response from the server.");
+        if (response.status == 403) {
+          message = gettext("Sorry, you're not allowed to vote by now.");
         }
-      });
+        pod_comment_wrapper.appendChild(
+          new AlertMessage(message, "danger")
+        );
+        // console.log("Bad response from network", response);
+      }
     })
     .catch((error) => {
       console.log(error);
@@ -576,7 +592,14 @@ function save_comment(
           set_comments_number();
         });
       } else {
-        console.log("Bad response from network", response);
+        let message = gettext("Bad response from the server.");
+        if (response.status == 403) {
+          message = gettext("Sorry, you can't comment this video by now.");
+        }
+        pod_comment_wrapper.appendChild(
+          new AlertMessage(message, "danger")
+        );
+        // console.log("Bad response from network", response);
       }
     })
     .catch((error) => {
@@ -605,35 +628,46 @@ function delete_comment(comment) {
     body: data,
   })
     .then((response) => {
-      response.json().then((data) => {
-        if (data.deleted) {
-          document.body.appendChild(
-            new AlertMessage(gettext("Comment has been deleted successfully."))
-          );
-          let parent_el = null;
-          if (is_child) {
-            parent_el = get_node(comment, "comment_element", "comment_child");
-            let parent_id = get_comment_attribute(parent_el);
-            delete_comment_child_DOM(comment, parent_id, is_child); // delete all children from the DOM
-            let remaining_children = get_comment_attribute(
-              parent_el,
-              "nbr_child"
+      if (response.ok) {
+        response.json().then((data) => {
+          if (data.deleted) {
+            pod_comment_wrapper.appendChild(
+              new AlertMessage(gettext("The comment has been deleted successfully."))
             );
-            deleteWithAnimation(comment, true); // delete comment from the DOM
-            hide_or_add_show_children_btn(
-              parent_el,
-              parent_id,
-              remaining_children
-            ); // Manage show answers button
-            update_answer_text(parent_el, remaining_children); // Update number of child text displayed
+            let parent_el = null;
+            if (is_child) {
+              parent_el = get_node(comment, "comment_element", "comment_child");
+              let parent_id = get_comment_attribute(parent_el);
+              delete_comment_child_DOM(comment, parent_id, is_child); // delete all children from the DOM
+              let remaining_children = get_comment_attribute(
+                parent_el,
+                "nbr_child"
+              );
+              deleteWithAnimation(comment, true); // delete comment from the DOM
+              hide_or_add_show_children_btn(
+                parent_el,
+                parent_id,
+                remaining_children
+              ); // Manage show answers button
+              update_answer_text(parent_el, remaining_children); // Update number of child text displayed
+              set_comments_number();
+              return;
+            }
+            all_comment = all_comment.filter((c) => c.id != data.comment_deleted);
+            deleteWithAnimation(comment, false);
             set_comments_number();
-            return;
-          }
-          all_comment = all_comment.filter((c) => c.id != data.comment_deleted);
-          deleteWithAnimation(comment, false);
-          set_comments_number();
-        } else document.body.appendChild(new AlertMessage(data.message));
-      });
+          } else pod_comment_wrapper.appendChild(new AlertMessage(data.message, "warning"));
+        });
+      } else {
+        let message = gettext("Bad response from the server.");
+        if (response.status == 403) {
+          message = gettext("Sorry, you can't delete this comment by now.");
+        }
+        pod_comment_wrapper.appendChild(
+          new AlertMessage(message, "danger")
+        );
+        //console.log("Bad response from network", response);
+      }
     })
     .catch((error) => {
       console.log(error);
