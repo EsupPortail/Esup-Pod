@@ -446,7 +446,7 @@ var send_form_data = function (
   callbackFail = undefined
 ) {
   console.log(
-    "[Deprecation Warning] send_form_data function will soon be debrecated. Replace it by send_form_data_vanilla."
+    "[Deprecation Warning] send_form_data function will soon be deprecated. Replace it by send_form_data_vanilla."
   );
   callbackSuccess =
     typeof callbackSuccess === "function"
@@ -918,38 +918,3 @@ function show_messages(msgText, msgClass, loadUrl) {
     });
   }
 }
-
-/*!
- * Serialize all form data into an array of key/value pairs
- * (c) 2020 Chris Ferdinandi, MIT License, https://gomakethings.com
- * @param  {Node}   form The form to serialize
- * @return {Array}       The serialized form data
- */
-var podSerializeArray = function (form) {
-  var arr = [];
-  Array.prototype.slice.call(form.elements).forEach(function (field) {
-    if (
-      !field.name ||
-      field.disabled ||
-      ["file", "reset", "submit", "button"].indexOf(field.type) > -1
-    )
-      return;
-    if (field.type === "select-multiple") {
-      Array.prototype.slice.call(field.options).forEach(function (option) {
-        if (!option.selected) return;
-        arr.push({
-          name: field.name,
-          value: option.value,
-        });
-      });
-      return;
-    }
-    if (["checkbox", "radio"].indexOf(field.type) > -1 && !field.checked)
-      return;
-    arr.push({
-      name: field.name,
-      value: field.value,
-    });
-  });
-  return arr;
-};

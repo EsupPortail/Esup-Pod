@@ -105,7 +105,9 @@
 {% block page_aside %}
   {% if request.user.is_superuser %}
     <div class="card" id="card-managevideo">
-      <h5 class="card-header card-title pod-card__title ps-2"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage live"%}</h5>
+      <h2 class="card-header card-title pod-card__title h4">
+        <i class="bi bi-gear"></i>&nbsp;{% trans "Manage live"%}
+      </h2>
       <div class="card-body card-text text-center">
         <a href="{% url 'admin:live_broadcaster_change' broadcaster.id %}" title="{% trans 'Edit the live' %}" class="btn pod-btn-social p1 m-0 ms-1">
           <i class="bi bi-pencil-square"></i></a>
@@ -114,12 +116,12 @@
   {% endif %}
 
   <div class="card card-body p-2 mt-1" id="card-livebuilding">
-    <h5 class="card-title pod-card__title ps-2">
+    <h2 class="card-title pod-card__title h4">
       <i class="bi bi-broadcast"></i>
       <span class="ms-1 broadcaster-name">
         {{broadcaster.building.name}}
       </span>
-    </h5>
+    </h2>
   </div>
 
   <div class="card-text">
