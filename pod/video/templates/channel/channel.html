@@ -239,6 +239,7 @@
         {% endif %}
     </script>
     <script>
+
         var str = get_list(listTheme["channel_" + "{{channel.id}}"], 0, [], tag_type = "li", li_class = "list-group-item", attrs = '', add_link = true, current = "{{theme.slug}}", channel = "");
         document.getElementById("ultreeview").innerHTML = str;
         setTimeout(function() {

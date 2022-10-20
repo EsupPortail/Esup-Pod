@@ -69,12 +69,12 @@
 </div>
 <!-- End Select File Modal -->
 {% block more_script %}
-<script>
+<script id ="filewidget_script">
 var id_input="";
-
 var static_url = "{% get_static_prefix %}";
 var deletefolder_url = "{% url 'podfile:deletefolder' %}";
 var deletefile_url = "{% url 'podfile:deletefile' %}";
+
 
 document.addEventListener('click',   (event) => {
   if (!event.target.matches('.btn-fileinput_{{id}}')) return;

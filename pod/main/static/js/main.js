@@ -700,6 +700,7 @@ var send_form_data = async function (
       .then(($data) => {
         $data = callbackSuccess($data);
         window[fct]($data);
+        
       })
 
       .catch((error) => {
@@ -880,7 +881,21 @@ var append_picture_form = function (data) {
   // parse data into html
   let parser = new DOMParser();
   let htmlData = parser.parseFromString(data, "text/html").body.firstChild;
+  
   document.body.appendChild(htmlData);
+  document.querySelectorAll("script").forEach((script) => {
+    
+    if (script.src.includes("filewidget.js")) {
+      let newScript = document.createElement("script");
+      script.remove();
+      newScript.src = script.src;
+      document.body.appendChild(newScript);
+    } 
+  });
+  
+  eval(document.body.querySelector("#filewidget_script").innerHTML);
+  
+  
   let userpicture = document.getElementById("userpictureModal");
   if (userpicture) {
     let userPictureModal = bootstrap.Modal.getOrCreateInstance(userpicture);

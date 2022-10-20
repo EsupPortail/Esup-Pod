@@ -11,6 +11,8 @@ function isFooterInView() {
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
+
+/* Another way to detect the footer 
 function detect_visibility() {
   var element = document.querySelector(
     "footer.container-fluid.pod-footer-container"
@@ -31,6 +33,7 @@ function detect_visibility() {
     return false;
   }
 }
+*/ 
 
 const isElementXPercentInViewport = function () {
   percentVisible = 95;
@@ -100,7 +103,7 @@ class InfiniteLoader {
     .then((response) => response.text())
     .then((data) => {
       const html = new DOMParser().parseFromString(data, "text/html").body
-      console.log(html.querySelector("#videos_list"));
+      console.log(html.querySelector("#videos_list")); // here all the videos from the page are loaded
       this.updateDom(data);
       this.callBackAfterLoad();
     })
@@ -109,7 +112,7 @@ class InfiniteLoader {
 
    updateDom(data){
     const html = new DOMParser().parseFromString(data, "text/html").body
-    console.log(html.querySelector("#videos_list"));
+    console.log(html.querySelector("#videos_list")); // here only half of the videos are loaded ??? 
   
     if (html.querySelector("#videos_list").getAttribute("nextPage") != "True") {
       this.nextPage = false ;
