@@ -22,9 +22,7 @@ class FeedTestView(TestCase):
         mediaPackage_content = minidom.parseString(response.content)
         mediapackage = mediaPackage_content.getElementsByTagName("rss")[0]
         self.assertTrue(mediapackage)
-        print(
-            " -->  test_get_rss_video_from_video of FeedTestView", " : OK !"
-        )
+        print(" -->  test_get_rss_video_from_video of FeedTestView", " : OK !")
 
     def test_get_rss_audio_from_video(self):
         self.client = Client()
@@ -34,6 +32,4 @@ class FeedTestView(TestCase):
         mediaPackage_content = minidom.parseString(response.content)
         mediapackage = mediaPackage_content.getElementsByTagName("rss")[0]
         self.assertTrue(mediapackage)
-        print(
-            " -->  test_get_rss_audio_from_video of FeedTestView", " : OK !"
-        )
+        print(" -->  test_get_rss_audio_from_video of FeedTestView", " : OK !")
