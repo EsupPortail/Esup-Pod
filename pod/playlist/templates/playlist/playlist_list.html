@@ -37,6 +37,6 @@
 	{% if playlists.has_next %}
 		<a class="infinite-more-link" href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{% endif %}page={{ playlists.next_page_number }}">{% trans "More" %}</a>
 	{% endif %}
-	<div class="loading" style="display: none;">{% trans "Loading..." %}</div>
+	<div class="loading" style="display: none;">{% trans "Loading…" %}</div>
 </div>
 {% endspaceless %}

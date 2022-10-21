@@ -28,7 +28,7 @@ from dateutil.parser import parse
 import concurrent.futures as futures
 
 from pod.main.views import in_maintenance
-from pod.main.decorators import ajax_required, admin_required
+from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
 from pod.video.utils import get_videos as video_get_videos
 from pod.video.models import Video
@@ -2079,7 +2079,8 @@ def vote_get(request, video_slug):
         )
 
 
-@login_required(redirect_field_name="referrer")
+@ajax_login_required
+@csrf_protect
 def vote_post(request, video_slug, comment_id):
     if request.method == "GET":
         return HttpResponseNotFound("<h1>Method Not Allowed</h1>", status=405)
@@ -2111,7 +2112,7 @@ def vote_post(request, video_slug, comment_id):
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 
-@login_required(redirect_field_name="referrer")
+@ajax_login_required
 @csrf_protect
 def add_comment(request, video_slug, comment_id=None):
     if in_maintenance():
