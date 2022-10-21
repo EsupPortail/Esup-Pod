@@ -19,7 +19,7 @@
 <li class="breadcrumb-item active playlist-video-title" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
 {% endblock %}
 
-{% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
+{% block page_title %}{% if channel %}{{channel.title}} &mdash; {% endif %}{% if theme %}{{theme.title}} &mdash; {% endif %}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
 
 {% block page_content %}
 {% block video-element %}
@@ -28,7 +28,7 @@
 {% else %}
   <video id="podvideoplayer"></video>
   <div id="info-video" class="pod-info-video"></div>
-{%endif%}
+{% endif %}
 {% endblock video-element %}
 {% endblock page_content %}
 

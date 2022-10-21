@@ -1,5 +1,5 @@
 let PlaylistPlayer = {
-  invalid_feedback_value: "Please provide a valid value for this field",
+  invalid_feedback_value: "Please provide a valid value for this field.",
   invalid_feedback_password: "The password is incorrect.",
   getParameters: function () {
     let parameters = "";

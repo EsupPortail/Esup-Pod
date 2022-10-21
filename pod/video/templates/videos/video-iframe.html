@@ -9,7 +9,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>{{ TITLE_SITE }} - {% block page_title %}{{video.title}}{% endblock page_title %}</title>
+  <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|capfirst}}{% endblock page_title %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
@@ -43,7 +43,7 @@
   <div id="info-video-wrapper" class="pod-inner">
     <div class="iframe-header bg-dark text-white">
       <h2 class="video-title">{{ video.title }}</h2>
-      <button type="button" class="close" aria-label="Close">
+      <button type="button" class="close" aria-label="{% trans 'Close' %}">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>

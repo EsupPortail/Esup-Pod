@@ -27,9 +27,9 @@
 
 .paginator,
 .headband-description {
-    margin-bottom: 1em;
+    /*margin-bottom: 1em;*/
 }
-
+/*
 .channelheader {
     float: left;
     margin-right: 1em;
@@ -40,7 +40,7 @@
     width: 300px;
     max-width: 100%;
 }
-
+*/
 li.child-theme {
     padding: 0;
     margin: .4em 0;

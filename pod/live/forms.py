@@ -13,6 +13,7 @@ from pod.main.forms_utils import add_placeholder_and_asterisk, MyAdminSplitDateT
 from django_select2 import forms as s2forms
 from django.utils import timezone
 from datetime import datetime
+from django.contrib import admin
 
 
 FILEPICKER = False
@@ -115,7 +116,23 @@ class EventAdminForm(forms.ModelForm):
     class Meta(object):
         model = Event
         fields = "__all__"
-        widgets = {}
+        widgets = {
+            "owner": widgets.AutocompleteSelect(
+                Event._meta.get_field("owner"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+            "additional_owners": widgets.AutocompleteSelectMultiple(
+                Event._meta.get_field("additional_owners"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+            "restrict_access_to_groups": widgets.AutocompleteSelectMultiple(
+                Event._meta.get_field("restrict_access_to_groups"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+        }
 
 
 class CustomBroadcasterChoiceField(forms.ModelChoiceField):

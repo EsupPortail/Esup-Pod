@@ -4,20 +4,22 @@
 <div class="pod-infinite-container infinite-container">
 	{% for playlist in playlists %}
 		<div>
-			<div class="card h-100" data-id="{{playlist.id}}">
+			<div class="card h-100 pod-playlist-card" data-id="{{playlist.id}}">
 				<img class="card-img" src="{{playlist.first.video.get_thumbnail_url}}" alt='' width="100" height="auto" loading="lazy">
 				{% if playlist.visible %}
-					<svg height="32" class="octicon octicon-eye" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M8.06 2C3 2 0 8 0 8s3 6 8.06 6C13 14 16 8 16 8s-3-6-7.94-6zM8 12c-2.2 0-4-1.78-4-4 0-2.2 1.8-4 4-4 2.22 0 4 1.8 4 4 0 2.22-1.78 4-4 4zm2-4c0 1.11-.89 2-2 2-1.11 0-2-.89-2-2 0-1.11.89-2 2-2 1.11 0 2 .89 2 2z"></path></svg>
+					<i class="bi bi-eye pod-playlist-visibility" title="{% trans 'This playlist is visible to all users.' %}"></i>
+				{% else %}
+					<i class="bi bi-eye-slash pod-playlist-visibility" title="{% trans 'This playlist is only visible by you.' %}"></i>
 				{% endif %}
 				<div class="card-body">
 					<h2 class="card-title pod-card__title h4">{{playlist.title}}</h2>
 					<p class="card-subtitle mb-2 text-muted">{% blocktrans count counter=playlist.videos|length %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</p>
 					<p class="card-text">{{playlist.description}}</p>
 				</div>
-				<div class="btn-group">
-					<a href="{% url 'playlist:playlist_edit' slug=playlist.slug %}" class="btn btn-sm btn-primary"><i class="bi bi-pencil-square" aria-hidden="true"></i> {% trans 'Edit' %}</a>
+				<div class="btn-group btn-group-sm" role="group">
+					<a href="{% url 'playlist:playlist_edit' slug=playlist.slug %}" class="btn btn-outline-primary"><i class="bi bi-pencil-square" aria-hidden="true"></i> {% trans 'Edit' %}</a>
 					{% if playlist.videos %}
-						&nbsp;<a href="{% url 'playlist:playlist' slug=playlist.slug %}" class="btn btn-sm btn-primary"><i class="bi bi-play" aria-hidden="true"></i> {% trans 'Launch' %}</a>
+						<a href="{% url 'playlist:playlist' slug=playlist.slug %}" class="btn btn-outline-primary"><i class="bi bi-play" aria-hidden="true"></i> {% trans 'Launch' %}</a>
 					{% endif %}
 				</div>
 			</div>
@@ -33,7 +35,7 @@
 			</a>
 	</div>
 	{% if playlists.has_next %}
-		<a class="infinite-more-link" href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{%endif%}page={{ playlists.next_page_number }}">{% trans "More" %}</a>
+		<a class="infinite-more-link" href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{% endif %}page={{ playlists.next_page_number }}">{% trans "More" %}</a>
 	{% endif %}
 	<div class="loading" style="display: none;">{% trans "Loading..." %}</div>
 </div>

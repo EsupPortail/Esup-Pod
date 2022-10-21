@@ -3,27 +3,23 @@
 {% load static %}
 
 {% block more_style %}
-    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{ VERSION }}"/>
-    <style>
-        .select2-container {
-            display: block !important;
-        }
-    </style>
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{ VERSION }}"/>
+  <style>
+    .select2-container {
+      display: block !important;
+    }
+  </style>
 {% endblock %}
 {% block breadcrumbs %}{{ block.super }}
-    <li class="breadcrumb-item"><a href="{% url 'live:my_events' %}">{% trans 'My events' %}</a></li>
-    {% if form.instance.title and form.instance.slug != '' %}
-        <li class="breadcrumb-item"><a href="{% url 'live:event' slug=form.instance.slug %}"
-                                       title="{{ form.instance.title }}">{{ form.instance.title|title|truncatechars:45 }}</a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans "Editing the event" %}</li>
-    {% else %}
-        <li class="breadcrumb-item active" aria-current="page">{% trans "Plan an event" %}</li>
-    {% endif %}
+  <li class="breadcrumb-item"><a href="{% url 'live:my_events' %}">{% trans 'My events' %}</a></li>
+  {% if form.instance.title and form.instance.slug != '' %}
+    <li class="breadcrumb-item">
+      <a href="{% url 'live:event' slug=form.instance.slug %}"
+         title="{{ form.instance.title }}">{{ form.instance.title|title|truncatechars:45 }}</a>
+    </li>
+  {% endif %}
+  <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>
 {% endblock %}
-
-{% block page_title %}{% if form.instance.title %}{% trans "Editing the event" %} "{{ form.instance.title }}"{% else %}
-    {% trans "Plan an event" %}{% endif %}{% endblock %}
 
 {% block collapse_page_aside %}
   {% if access_not_allowed != True %}
@@ -32,222 +28,216 @@
 {% endblock collapse_page_aside %}
 
 {% block page_content %}
-    <h3>
-        {% if form.instance.slug and form.instance.slug != '' %}
-            {% trans "Editing the event" %}
-        {% else %}
-            {% trans "Plan an event" %}
-        {% endif %}
-    </h3>
 
-    {% if access_not_allowed == True %}
-        <p class="text-info">
-            <i class="bi bi-info-circle"></i>&nbsp;{% trans "Access to adding event has been restricted. If you want to add events on the platform, please" %}
-            <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
-        </p>
+  {% if access_not_allowed == True %}
+    <p class="text-info">
+      <i class="bi bi-info-circle"></i>&nbsp;{% trans "Access to adding event has been restricted. If you want to add events on the platform, please" %}
+      <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
+    </p>
+  {% else %}
+
+    {% if form.instance.slug and form.instance.slug != '' %}
+      <form action="{% url 'live:event_edit' slug=form.instance.slug %}"
+            method="post" class='needs-validation' novalidate>
     {% else %}
+      <form action="{% url 'live:event_edit' %}"
+            method="post" class='needs-validation' novalidate>
+    {% endif %}
 
-        {% if form.instance.slug and form.instance.slug != '' %}
-            <form action="{% url 'live:event_edit' slug=form.instance.slug %}"
-                  method="post" class='needs-validation' novalidate>
-        {% else %}
-            <form action="{% url 'live:event_edit' %}"
-                  method="post" class='needs-validation' novalidate>
-        {% endif %}
-
-        {% csrf_token %}
-        {% if form.instance.slug and form.instance.slug != '' and form.instance.is_current %}
-            <div class="alert alert-warning" role="alert">
-                {% trans "The event is currently in progress. Editing options are limited." %}
-            </div>
-        {% endif %}
-        <div class="list-group">
-        {% if form.errors %}
-            <p class="text-danger">{% trans "One or more errors have been found in the form." %}<br/>
+    {% csrf_token %}
+    {% if form.instance.slug and form.instance.slug != '' and form.instance.is_current %}
+      <div class="alert alert-warning" role="alert">
+        {% trans "The event is currently in progress. Editing options are limited." %}
+      </div>
+    {% endif %}
+    <div class="list-group">
+      {% if form.errors %}
+        <div class="text-danger">
+          {% trans "One or more errors have been found in the form." %}
+          <ul>
             {% for error in form.non_field_errors %}
-            <span> - {{ error }}</span> <br/>
+              <li>{{ error }}</li>
             {% endfor %}
-            </p>
-        {% endif %}
-        {% for field_hidden in form.hidden_fields %}
-            {{field_hidden}}
-        {% endfor %}
-        {% for fieldset in form.fieldsets %}
-        {% with last=fieldset|last %}
-        {% if "collapse" in last.classes %}
-        <div class="mb-3">
-          <div class="list-group-item">
-            <a class="btn btn-primary" data-bs-toggle="collapse" href="#event_form_{{fieldset|first}}{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
-                {% trans "Display advanced options" %} &nbsp;<i class="bi bi-chevron-down"></i>
-            </a>
-          </div>
+          </ul>
         </div>
-        {% endif %}
-        <fieldset class="{{ last.classes }} " id="event_form_{{fieldset|first}}{{forloop.counter}}" >
-        {% if last.legend %}
-            <legend>{{ last.legend }}</legend>
-        {% endif %}
-        {% for field in form.visible_fields %}
-        {% if field.name in last.fields %}
-        {% spaceless %}
-        <div class="mb-3 field_{{ field.name }}
-        {% with 'password is_restricted' as res %}{% if field.name in res.split %} collapse draft_access hide{% endif %}{% endwith %}
-        {% with 'restrict_access_to_groups' as res %}{% if field.name in res.split %} collapse groups_access hide{% endif %}{% endwith %}"
-        >
-            <div class="list-group-item" >
-                <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
-                    {{ field.errors }}
-                    {% if "form-check-input" in field.field.widget.attrs.class %}
+      {% endif %}
+      {% for field_hidden in form.hidden_fields %}
+        {{field_hidden}}
+      {% endfor %}
+      {% for fieldset in form.fieldsets %}
+        {% with last=fieldset|last %}
+          {% if "collapse" in last.classes %}
+            <div class="mb-3">
+                <a class="btn btn-link" data-bs-toggle="collapse" href="#event_form_{{fieldset|first}}{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
+                    {% trans "Display advanced options" %} &nbsp;<i class="bi bi-chevron-down"></i>
+                </a>
+            </div>
+          {% endif %}
+          <fieldset class="{{ last.classes }} " id="event_form_{{fieldset|first}}{{forloop.counter}}" >
+            {% if last.legend %}
+              <legend>{{ last.legend }}</legend>
+            {% endif %}
+            {% for field in form.visible_fields %}
+              {% if field.name in last.fields %}
+                {% spaceless %}
+                <div class="mb-3 field_{{ field.name }}
+                  {% with 'password is_restricted' as res %}{% if field.name in res.split %} collapse draft_access hide{% endif %}{% endwith %}
+                  {% with 'restrict_access_to_groups' as res %}{% if field.name in res.split %} collapse groups_access hide{% endif %}{% endwith %}"
+                >
+                  <div class="list-group-item" >
+                    <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
+                      {{ field.errors }}
+                      {% if "form-check-input" in field.field.widget.attrs.class %}
                         <div class="form-check">
-                            {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                          {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
                         </div>
-                    {% else %}
+                      {% else %}
                         <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                         {{ field }}
-                    {% endif %}
-                    {% if field.help_text %}
+                      {% endif %}
+                      {% if field.help_text %}
                         <small id="{{ field.id_for_label }}Help"
-                                class="form-text text-muted">{{ field.help_text|safe }}</small>
-                    {% endif %}
-                    {% if field.field.required %}
-                        <div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>
-                    {% endif %}
+                          class="form-text">{{ field.help_text|safe }}</small>
+                      {% endif %}
+                      {% if field.field.required %}
+                        <div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>
+                      {% endif %}
+                    </div>
+                  </div>
                 </div>
-            </div>
-        </div>
-        {% endspaceless %}
-        {% endif %}
-        {% endfor %}
+                {% endspaceless %}
+              {% endif %}
+            {% endfor %}
+          </fieldset>
         {% endwith %}
-        </fieldset>
-        {% endfor %}
-        </div>
-        <div class="text-center mb-3">
-            <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>
-        </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mb-3">
+      <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>
+    </div>
 
-        </form>
-    {% endif %}
-{% endblock %}
+    </form>
+  {% endif %}
+{% endblock page_content %}
 
 {% block page_aside %}
-    {% if access_not_allowed != True %}
-        {% if form.instance.title  and form.instance.slug != '' %}
-            <div class="card mt-1" id="card-managevideo">
-                <h2 class="h4 card-header card-title pl-2"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage event" %}
-                </h2>
-                <div class="card-body card-text text-center">
-                    {% if event.owner == request.user or request.user.is_superuser %}
-                        <a href="{% url 'live:event_edit' slug=form.instance.slug %}" title="{% trans 'Edit the event' %}"
-                           class="btn pod-btn-social p-1 m-0 ms-1">
-                           <i class="bi bi-pencil" aria-hidden="true"></i>
-                        </a>
-                    {% endif %}
-                    <a href="{% url 'live:event_delete' slug=form.instance.slug %}"
-                       class="btn pod-btn-social p-1 m-0 ms-1"
-                       title="{% trans 'Delete the event' %}">
-                       <i class="bi bi-trash" aria-hidden="true"></i>
-                    </a>
-                </div>
-            </div>
-        {% endif %}
-        <div class="card mt-1" id="card-sharedraftversion">
-            <h2 class="h4 card-header card-title pl-2">{% trans "Event planning" %}</h2>
-            <div class="card-body card-text">
-                <p>{% trans "You can schedule a live event by selecting a building and a room or recording device." %}</p>
-                <p>{% trans "You will then need to specify a date, a start time and an end time." %}</p>
-                <p>{% trans "Please note that 2 events cannot be scheduled in the same room simultaneously." %}<p>
-                <p>{% trans "Finally, remember to provide as precise a description as possible." %}<p>
-            </div>
+  {% if access_not_allowed != True %}
+    {% if form.instance.title  and form.instance.slug != '' %}
+      <div class="card mt-1" id="card-managevideo">
+        <h2 class="h4 card-header card-title pl-2"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage event" %}
+        </h2>
+        <div class="card-body card-text text-center">
+          {% if event.owner == request.user or request.user.is_superuser %}
+            <a href="{% url 'live:event_edit' slug=form.instance.slug %}" title="{% trans 'Edit the event' %}"
+               class="btn pod-btn-social p-1 m-0 ms-1">
+                <i class="bi bi-pencil" aria-hidden="true"></i>
+            </a>
+          {% endif %}
+          <a href="{% url 'live:event_delete' slug=form.instance.slug %}"
+             class="btn pod-btn-social p-1 m-0 ms-1"
+             title="{% trans 'Delete the event' %}">
+              <i class="bi bi-trash" aria-hidden="true"></i>
+          </a>
         </div>
-        <div class="card mt-1" id="card-mandatoryfields">
-            <h2 class="h4 card-header card-title pl-2">{% trans "Mandatory fields" %}</h2>
-            <div class="card-body card-text">
-              <p>
-                <span class="required_star">*</span>
-                {% trans "Fields marked with an asterisk are mandatory." %}
-              </p>
-            </div>
-        </div>
+      </div>
     {% endif %}
+    <div class="card mt-1" id="card-sharedraftversion">
+      <h2 class="h4 card-header card-title pl-2">{% trans "Event planning" %}</h2>
+      <div class="card-body card-text">
+        <p>{% trans "You can schedule a live event by selecting a building and a room or recording device." %}</p>
+        <p>{% trans "You will then need to specify a date, a start time and an end time." %}</p>
+        <p>{% trans "Please note that 2 events cannot be scheduled in the same room simultaneously." %}<p>
+        <p>{% trans "Finally, remember to provide as precise a description as possible." %}<p>
+      </div>
+    </div>
+    <div class="card mt-1" id="card-mandatoryfields">
+      <h2 class="h4 card-header card-title pl-2">{% trans "Mandatory fields" %}</h2>
+      <div class="card-body card-text">
+          <p>
+            <span class="required_star">*</span>
+            {% trans "Fields marked with an asterisk are mandatory." %}
+          </p>
+        </div>
+    </div>
+  {% endif %}
 {% endblock page_aside %}
 
 {% block more_script %}
-    <script src="/admin/jsi18n/"></script>
-    <script src="{% static 'admin/js/core.js' %}?ver={{ VERSION }}"></script>
-    <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{ VERSION }}"></script>
-    <script src="{% static 'admin/js/jquery.init.js' %}?ver={{ VERSION }}"></script>
-    <script src="{% static 'js/broadcaster_from_building.js' %}?ver={{ VERSION }}"></script>
+  <script src="/admin/jsi18n/"></script>
+  <script src="{% static 'admin/js/core.js' %}?ver={{ VERSION }}"></script>
+  <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{ VERSION }}"></script>
+  <script src="{% static 'admin/js/jquery.init.js' %}?ver={{ VERSION }}"></script>
+  <script src="{% static 'js/broadcaster_from_building.js' %}?ver={{ VERSION }}"></script>
 
-    {{ form.media }}
+  {{ form.media }}
 
-    <script>
-        $("#advanced_options_btn").click(() => {
-            if ($(this).data("display") === true){
-                $(".advanced_options, .draft_access, .groups_access").removeClass("show").addClass("hide");
-                $(this).text("{% trans 'Display advanced options' %}");
-                $(this).data("display", false)
-            } else {
-                $(".advanced_options, .draft_access, .groups_access").removeClass("hide").addClass("show");
-                $(this).text("{% trans 'Hide advanced options' %}");
-                $(this).data("display", true)
-                showRestrictions();
-            }
-        })
+  <script>
+    $("#advanced_options_btn").click(() => {
+      if ($(this).data("display") === true){
+        $(".advanced_options, .draft_access, .groups_access").removeClass("show").addClass("hide");
+        $(this).text("{% trans 'Display advanced options' %}");
+        $(this).data("display", false)
+      } else {
+        $(".advanced_options, .draft_access, .groups_access").removeClass("hide").addClass("show");
+        $(this).text("{% trans 'Hide advanced options' %}");
+        $(this).data("display", true)
+        showRestrictions();
+      }
+    })
 
-        $("#event_is_draft").change(() => showRestrictions());
-        $("#event_is_restricted").change(() => showGroups());
+    $("#event_is_draft").change(() => showRestrictions());
+    $("#event_is_restricted").change(() => showGroups());
 
-        {# fields selectable only if not draft #}
-        let showRestrictions = () => {
-            let draft_access = $(".draft_access, .groups_access")
-            if ($("#event_is_draft").prop("checked")) {
-                draft_access.removeClass("show").addClass("hide");
-            } else {
-                draft_access.removeClass("hide").addClass("show");
-                showGroups();
-            }
-        };
+    {# fields selectable only if not draft #}
+    let showRestrictions = () => {
+      let draft_access = $(".draft_access, .groups_access")
+      if ($("#event_is_draft").prop("checked")) {
+        draft_access.removeClass("show").addClass("hide");
+      } else {
+        draft_access.removeClass("hide").addClass("show");
+        showGroups();
+      }
+    };
 
-        {# groups field available only if restricted #}
-        let showGroups = () => {
-            let gp_access = $(".groups_access")
-            if ($("#event_is_restricted").prop("checked")) {
-                gp_access.removeClass("hide").addClass("show");
-            } else {
-                gp_access.removeClass("show").addClass("hide");
-            }
-        };
+    {# groups field available only if restricted #}
+    let showGroups = () => {
+      let gp_access = $(".groups_access")
+      if ($("#event_is_restricted").prop("checked")) {
+        gp_access.removeClass("hide").addClass("show");
+      } else {
+        gp_access.removeClass("show").addClass("hide");
+      }
+    };
 
-        $('document').ready(function () {
-            DateTimeShortcuts.overrideTimeOptions = function () {
-                var clockCount = 0;
-                $('.clockbox').each(function () {
-                    var $this = $(this);
-                    console.log('clockbox');
-                     $this.find('h2').remove();
-                });
-                $('ul.timelist').each(function () {
-                    var $this = $(this);
-                    var originalHref = $this.find('a').attr('href');
-                    console.log(originalHref);
-                    $this.find('li').remove();
-                    for (i=8; i <= 20; i++) {
-                        var newLink = '<li><a href="javascript:DateTimeShortcuts.handleClockQuicklink('+ clockCount + ', ' + i
-                            + ');"> ' + i + ':00</a></li>';
-                        // Plan B : forcer le format au lieu de changer TIME_INPUT_FORMATS dans settings.py
-                        // var newLink = '<li><a href="javascript:settime('+ clockCount + ', ' + i
-                        //    + ');"> ' + i + ':00</a></li>';
-                        $this.append(newLink);
-                    }
-
-                    clockCount++;
-                });
-            };
-            DateTimeShortcuts.overrideTimeOptions();
-
+    $('document').ready(function () {
+      DateTimeShortcuts.overrideTimeOptions = function () {
+        var clockCount = 0;
+        $('.clockbox').each(function () {
+          var $this = $(this);
+          console.log('clockbox');
+          $this.find('h2').remove();
         });
+        $('ul.timelist').each(function () {
+          var $this = $(this);
+          var originalHref = $this.find('a').attr('href');
+          console.log(originalHref);
+          $this.find('li').remove();
+          for (i=8; i <= 20; i++) {
+            var newLink = '<li><a href="javascript:DateTimeShortcuts.handleClockQuicklink('+ clockCount + ', ' + i
+                + ');"> ' + i + ':00</a></li>';
+            // Plan B : forcer le format au lieu de changer TIME_INPUT_FORMATS dans settings.py
+            // var newLink = '<li><a href="javascript:settime('+ clockCount + ', ' + i
+            //    + ');"> ' + i + ':00</a></li>';
+            $this.append(newLink);
+          }
 
-    </script>
+          clockCount++;
+        });
+      };
+      DateTimeShortcuts.overrideTimeOptions();
+
+    });
+
+  </script>
 
 {% endblock more_script %}

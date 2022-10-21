@@ -144,7 +144,11 @@ SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 NOTES_STATUS = getattr(
     settings,
     "NOTES_STATUS",
-    (("0", _("Private -")), ("1", _("Private +")), ("2", _("Public"))),
+    (
+        ("0", _("Private (me only)")),
+        ("1", _("Shared with video owner")),
+        ("2", _("Public")),
+    ),
 )
 
 THIRD_PARTY_APPS = getattr(settings, "THIRD_PARTY_APPS", [])
@@ -916,7 +920,13 @@ class Video(models.Model):
                 ]
             )
         else:
-            thumbnail_url = static(DEFAULT_THUMBNAIL)
+            thumbnail_url = "".join(
+                [
+                    "//",
+                    get_current_site(request).domain,
+                    static(DEFAULT_THUMBNAIL),
+                ]
+            )
         return thumbnail_url
 
     @property
@@ -1849,7 +1859,7 @@ class AdvancedNotes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
     status = models.CharField(
-        _("Note availability level"),
+        _("Availability level"),
         max_length=1,
         choices=NOTES_STATUS,
         default="0",
@@ -1909,7 +1919,7 @@ class NoteComments(models.Model):
         "NoteComments", blank=True, null=True, on_delete=models.CASCADE
     )
     status = models.CharField(
-        _("Comment availability level"),
+        _("Availability level"),
         max_length=1,
         choices=NOTES_STATUS,
         default="0",

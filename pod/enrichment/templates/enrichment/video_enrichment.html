@@ -5,30 +5,29 @@
 {% block page_extra_head %}
   {% include 'videos/video-header.html' %}
   <link id="enrichment_style_id" href="{% static 'css/videojs-slides.css' %}?ver={{VERSION}}" rel="stylesheet">
-  <script id="enrichment_script_id" src="{% static 'js/videojs-slides.js' %}?ver={{VERSION}}"></script>
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
 {% endblock %}
 
-{% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
+{% block page_title %}{% if channel %}{{channel.title}} - {% endif %}{% if theme %}{{theme.title}} - {% endif %}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
 
 {% block video-element %}
 
 {% if form %}
-    {% include 'videos/video-form.html' %}
+  {% include 'videos/video-form.html' %}
 {% else %}
   {% include 'enrichment/video-element-enrichment.html' %}
   <div id="info-video" class="pod-info-video">{% include 'videos/video-all-info.html' with third_app=True %}</div>
-{%endif%}
+{% endif %}
 
 {% endblock video-element %}
 
 {% block page_aside %}
   <div class="card" id="card-enrichmentinformations">
-    <h5 class="card-header card-title pod-card__title ps-2">
+    <h2 class="card-header card-title pod-card__title h4">
       <i class="bi bi-info-circle"></i>&nbsp;{% trans 'Informations' %}
-    </h5>
+    </h2>
     <div class="card-body card-text">
       <p>{% trans 'To help you, the different types of enrichments have specific colors:' %}</p>
       <p>
@@ -47,6 +46,7 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-{{block.super}}
-{% include 'enrichment/video_enrichment-script.html' %}
+  {{block.super}}
+  <script id="enrichment_script_id" src="{% static 'js/videojs-slides.js' %}?ver={{VERSION}}"></script>
+  {% include 'enrichment/video_enrichment-script.html' %}
 {% endblock more_script %}

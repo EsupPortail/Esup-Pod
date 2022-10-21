@@ -42,9 +42,9 @@ class GroupSiteInline(admin.StackedInline):
             )
         }
         js = (
-            "podfile/js/filewidget.js",
-            "js/main.js",
-            "bootstrap/dist/js/bootstrap.min.js",
+            # "podfile/js/filewidget.js",
+            # "js/main.js",
+            # "bootstrap/dist/js/bootstrap.min.js",
         )
 
 
@@ -171,7 +171,7 @@ class GroupAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(sites=get_current_site(request))
+            qs = qs.filter(groupsite__sites=get_current_site(request))
         return qs
 
     def save_model(self, request, obj, form, change):

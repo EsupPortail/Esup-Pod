@@ -17,16 +17,17 @@
 <meta property="og:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}">
 <meta property="og:title" content="{{ video.title }}">
 <meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
+<meta property="og:image:secure_url" content="https:{{ video.get_thumbnail_url }}">
 <meta property="og:image:alt" content="{{ video.title }}">
-<meta property="og:image:width" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.width}}{% else %}640{%endif%}" />
-<meta property="og:image:height" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.height}}{% else %}360{%endif%}" />
+<meta property="og:image:width" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.width}}{% else %}640{% endif %}" />
+<meta property="og:image:height" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.height}}{% else %}360{% endif %}" />
 
 <meta property="og:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% endif %} {% trans 'Added by' %}: {{ video.owner.get_full_name }}">
 
 <meta property="og:type" content="video">
-
 <meta property="og:video" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
-<meta property="og:video:type" content="text/html">
+<meta property="og:video:secure_url" content="https://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
+<meta property="og:video:type" content="video/mp4">
 <meta property="og:video:width" content="640">
 <meta property="og:video:height" content="{{video.get_player_height}}">
 
@@ -43,7 +44,7 @@
 
 {% if video.is_draft == True %}
   <meta name="robots" content="NONE,NOARCHIVE">
-{%endif%}
+{% endif %}
 
 {% endblock %}
 
@@ -57,12 +58,12 @@
     body {
       background-color: {{channel.color}};
     }
-  {%endif%}
+  {% endif %}
 </style>
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
-  {%if channel %}
+  {% if channel %}
     {% if theme %}
       <li class="breadcrumb-item"><a href="{% url 'channel-video:channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
       {% for t in theme.get_all_parents reversed %}
@@ -82,7 +83,7 @@
   {% endif %}
 {% endblock %}
 
-{% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}{{video.title|title|truncatechars:45}}{% endblock %}
+{% block page_title %}{% if channel %}{{channel.title}} - {% endif %}{% if theme %}{{theme.title}} - {% endif %}{{video.title|title|truncatechars:45}}{% endblock %}
 
 {% block page_content %}
 
@@ -98,8 +99,8 @@
   <meta itemprop="name" content="{{ video.title }}" />
   <meta itemprop="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }} - {% trans 'Added by' %}: {{ video.owner.get_full_name }}" />
 
-{%if channel %}
-  <h2 class="channel_title">{{channel.title}}{% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{%endif%}</h2>
+{% if channel %}
+  <h2 class="channel_title">{{channel.title}}{% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{% endif %}</h2>
   {% if channel.headband %}
     <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy"/>
   {% endif %}
@@ -116,8 +117,8 @@
     {% if theme.description %}
       {{ theme.description|safe }}
     {% endif %}
-  {%endif%}
-{%endif%}
+  {% endif %}
+{% endif %}
 {% if video.get_encoding_step == "" %}
   <div class="alert alert-warning" role="alert">
     {% trans "The video is currently waiting for encoding." %}
@@ -142,7 +143,7 @@
 {% else %}
   {% include 'videos/video-element.html' %}
   <div id="info-video" class="pod-info-video">{% include 'videos/video-all-info.html' %}</div>
-{%endif%}
+{% endif %}
 {% endblock video-element %}
 
 </div>
@@ -158,9 +159,12 @@
     </div>
   {% endif %}
 
-  <div class="card" id="card-takenote">
-    {% include 'videos/video_notes.html' %}
-  </div>
+  {# Do not display notes if video is restricted. #}
+  {% if not form %}
+    <div class="card" id="card-takenote">
+      {% include 'videos/video_notes.html' %}
+    </div>
+  {% endif %}
   {% include 'aside.html' %}
 {% endblock page_aside %}
 
@@ -172,37 +176,37 @@
     $(document).ready(() => {
       var url = window.location.href;
         if (url.indexOf("#") > 0){
-        var activeTab = url.substring(url.indexOf("#") + 1);
-        $('.nav[role="tablist"] a[href="#'+activeTab+'"]').tab('show');
-        var position = $("#myTab").offset().top -57;
-        $("html, body").animate({
-          scrollTop: position
+          var activeTab = url.substring(url.indexOf("#") + 1);
+          $('.nav[role="tablist"] a[href="#'+activeTab+'"]').tab('show');
+          var position = $("#pod-infos-tabs").offset().top -57;
+          $("html, body").animate({
+            scrollTop: position
         }, 1000);
       }
     });
     </script>
-    {% include 'videos/video-script.html'%}
-  {% endif %}
+    {% include 'videos/video-script.html' %}
 
-  {% if active_video_comment and not video.disable_comment %}
-    <script>
-      const comment_url = `{% url "video:get_comments" video_slug=video.slug %}`;
-      const base_url = window.location.origin + comment_url;
-      {% if request.user == video.owner %}
-        var is_video_owner = true;
-      {% else %}
-        var is_video_owner = false;
-      {% endif %}
-      var user_fullName = `{{request.user.first_name}} {{request.user.last_name}}`;
-      var user_id = `{{ request.user.id }}` === "None"? false: `{{ request.user.id }}`;
-      var is_authenticated = JSON.parse(`{{request.user.is_authenticated|yesno:"true,false"}}`);
-      var is_superuser = JSON.parse(`{{request.user.is_superuser|yesno:"true,false"}}`);
-    </script>
-    <script src="{% static 'dayjs/plugin/relativeTime.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'dayjs/dayjs.min.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'dayjs/locale/en.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'dayjs/locale/fr.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'dayjs/locale/nl.js' %}?ver={{VERSION}}"></script>
-    <script type="module" defer src="{% static 'js/comment-script.js' %}?ver={{VERSION}}"></script>
+    {% if active_video_comment and not video.disable_comment %}
+      <script>
+        const comment_url = `{% url "video:get_comments" video_slug=video.slug %}`;
+        const base_url = window.location.origin + comment_url;
+        {% if request.user == video.owner %}
+          var is_video_owner = true;
+        {% else %}
+          var is_video_owner = false;
+        {% endif %}
+        var user_fullName = `{{request.user.first_name}} {{request.user.last_name}}`;
+        var user_id = `{{ request.user.id }}` === "None"? false: `{{ request.user.id }}`;
+        var is_authenticated = JSON.parse(`{{request.user.is_authenticated|yesno:"true,false"}}`);
+        var is_superuser = JSON.parse(`{{request.user.is_superuser|yesno:"true,false"}}`);
+      </script>
+      <script src="{% static 'dayjs/plugin/relativeTime.js' %}?ver={{VERSION}}"></script>
+      <script src="{% static 'dayjs/dayjs.min.js' %}?ver={{VERSION}}"></script>
+      <script src="{% static 'dayjs/locale/en.js' %}?ver={{VERSION}}"></script>
+      <script src="{% static 'dayjs/locale/fr.js' %}?ver={{VERSION}}"></script>
+      <script src="{% static 'dayjs/locale/nl.js' %}?ver={{VERSION}}"></script>
+      <script type="module" defer src="{% static 'js/comment-script.js' %}?ver={{VERSION}}"></script>
+    {% endif %}
   {% endif %}
 {% endblock more_script %}

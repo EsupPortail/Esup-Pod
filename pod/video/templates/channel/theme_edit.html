@@ -52,7 +52,7 @@
   </form>
   {% endif %}
 </div>
-<form id="theme_form_new" class="get_form_theme" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="POST" {% if form_theme %}style="display:none;" {%endif%}>
+<form id="theme_form_new" class="get_form_theme" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="POST" {% if form_theme %}style="display:none;" {% endif %}>
   {% csrf_token %}
   <input type="hidden" name="action" value="new" />
   <input type="submit" value="{% trans 'Add a new theme' %}" class="btn btn-primary" />

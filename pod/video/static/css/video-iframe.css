@@ -46,11 +46,11 @@ body{
 .tab-title {
   font-size: 1.5em;
 }
-.meta-title {
+/*.meta-title {
   font-size: 1.2rem;
-}
+}*/
 .list-group-item {
-  background-color: rgba(250, 250, 250, 0.90) !important;
+  background-color: rgba(250, 250, 250, .9) !important;
 }
 
 .iframe-header {
@@ -59,7 +59,7 @@ body{
   border-radius: 0;
   overflow: hidden;
 }
-.iframe-header >  h2 {
+.iframe-header > h1 {
   display: inline-block;
   font-size: 1.25em;
   padding: .25em 5em 0 0;
