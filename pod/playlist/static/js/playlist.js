@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   $(".playlist-delete").on("click", function () {
     const return_url = $(this).data("return-url");
-    if (confirm(gettext("Do you want to delete this playlist?"))) {
+    if (confirm(gettext("Do you want to delete this playlist ?"))) {
       var jqxhr = $.ajax({
         method: "POST",
         url: window.location.href,
