@@ -1,7 +1,11 @@
+/**
+ * comment-scripts.js
+ * Handle comments under a video in Esup-Pod
+ */
+
 const base_vote_url = base_url.replace("comment", "comment/vote");
 const base_delete_url = base_url.replace("comment", "comment/del");
 let all_comment = null;
-const pod_comment_wrapper = document.getElementById("pod_comment_wrapper");
 const lang_btn = document.querySelector(".btn-lang.btn-lang-active");
 const comment_title = document.querySelector(".comment_title");
 // Loader Element
@@ -32,7 +36,7 @@ if (!is_authenticated)
   document.querySelector(".comment_counter_container").style.margin =
     "0 0 1em 0";
 
-class AlertMessage extends HTMLElement {
+/*class AlertMessage extends HTMLElement {
   constructor(message, alert_class = "success") {
     super();
     this.setAttribute("class", "alert alert-dismissible fade show alert-" + alert_class);
@@ -57,7 +61,7 @@ class AlertMessage extends HTMLElement {
     }, show_duration);
   }
 }
-customElements.define("alert-message", AlertMessage);
+customElements.define("alert-message", AlertMessage);*/
 
 class ConfirmModal extends HTMLElement {
   constructor(
@@ -205,12 +209,11 @@ class Comment extends HTMLElement {
       vote_loader.setAttribute("class", "comment-loader d-none");
 
       vote_loader.innerHTML = `<div class="spinner-border text-primary" role="status"><span class="visually-hidden">${gettext(
-        "Loading..."
+        "Loading…"
       )}</span></div>`;
       vote_action.prepend(vote_loader);
       vote_action.addEventListener("click", () => {
-        if (!vote_action.classList.contains("voting"))
-          vote_action.classList.add("voting");
+        vote_action.classList.add("voting");
         let comment_id = get_comment_attribute(document.getElementById(id));
         vote(vote_action, comment_id);
       });
@@ -281,7 +284,7 @@ class Comment extends HTMLElement {
         this.submit_comment_reply(new_comment, add_comment, comment_reply_btn);
       });
       new_comment.addEventListener("keyup", function (e) {
-        // Active/Disable send button
+        // Enable/Disable send button
         if (
           this.value.trim().length > 0 &&
           comment_reply_btn.classList.contains("disabled")
@@ -340,13 +343,13 @@ class Comment extends HTMLElement {
   }
   submit_comment_reply(html_field, html_container, reply_btn) {
     if (html_field.value.trim() !== "") {
+      // Remove focus from the text field
       html_field.blur();
       // Disable send button
-      reply_btn.classList.remove("active");
+      reply_btn.classList.add("disabled");
 
       let child_container = get_node(html_field, "comments_children_container");
-      if (!child_container.classList.contains("show"))
-        child_container.classList.add("show");
+      child_container.classList.add("show");
 
       let comment_parent = get_node(
         html_field,
@@ -433,13 +436,18 @@ customElements.define("comment-element", Comment);
 /*******************  Voting for a comment  ********************
  ***************************************************************/
 function vote(comment_action_html, comment_id) {
-  // send request to the server to check if the current user already vote
+  // send request to the server to check if the current user already voted
   let vote_url = base_vote_url + comment_id + "/";
   let btn = comment_action_html.querySelector(".comment_vote_btn");
   let data = new FormData();
   data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
+
   fetch(vote_url, {
     method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+    },
     body: data,
   })
     .then((response) => {
@@ -502,8 +510,17 @@ function vote(comment_action_html, comment_id) {
     });
 }
 
-/****************  Save comment into the server  ****************
- ***************************************************************/
+/**
+ * Save comment into the server
+ *
+ * @param  {string}      content                   Comment content text.
+ * @param  {HTMLElement} textarea                  Input used to send the comment
+ * @param  {Date}        date                      date of the comment
+ * @param  {HTMLElement} comment_html              new Element to be added to DOM
+ * @param  {HTMLElement} comment_container_html    container where to add comment_html
+ * @param  {[type]}      [direct_parent_id]        [description]
+ * @param  {[type]}      [top_parent_comment_html] [description]
+ */
 function save_comment(
   content,
   date,
@@ -531,6 +548,9 @@ function save_comment(
   fetch(post_url, {
     method: "POST",
     body: data,
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+    },
   })
     .then((response) => {
       // remove loader
@@ -608,8 +628,12 @@ function save_comment(
     });
 }
 
-/****************  Delete Comment  ****************
- ******************************************************/
+/**
+ * Delete a comment with an animation
+ *
+ * @param  {HTMLElement} comment     comment to be deleted
+ * @param  {boolean}     [is_child]  if comment is a comment reply
+ */
 function deleteWithAnimation(comment, is_child = false) {
   let selector = is_child ? ".comment_child_container" : ".comment";
   comment.querySelector(selector).classList.add("onDelete");
@@ -617,6 +641,11 @@ function deleteWithAnimation(comment, is_child = false) {
     comment.parentElement.removeChild(comment);
   }, 999);
 }
+/**
+ * Delete a comment
+ *
+ * @param  {HTMLElement} comment     comment to be deleted
+ */
 function delete_comment(comment) {
   let comment_id = get_comment_attribute(comment);
   let is_child = !!get_comment_attribute(comment, "parent__id");
@@ -626,14 +655,15 @@ function delete_comment(comment) {
   fetch(url, {
     method: "POST",
     body: data,
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+    },
   })
     .then((response) => {
       if (response.ok) {
         response.json().then((data) => {
           if (data.deleted) {
-            pod_comment_wrapper.appendChild(
-              new AlertMessage(gettext("The comment has been deleted successfully."))
-            );
+            showalert(gettext("The comment has been deleted successfully."), "alert-success");
             let parent_el = null;
             if (is_child) {
               parent_el = get_node(comment, "comment_element", "comment_child");
@@ -656,16 +686,14 @@ function delete_comment(comment) {
             all_comment = all_comment.filter((c) => c.id != data.comment_deleted);
             deleteWithAnimation(comment, false);
             set_comments_number();
-          } else pod_comment_wrapper.appendChild(new AlertMessage(data.message, "warning"));
+          } else showalert(data.message, "alert-warning");
         });
       } else {
         let message = gettext("Bad response from the server.");
         if (response.status == 403) {
           message = gettext("Sorry, you can't delete this comment by now.");
         }
-        pod_comment_wrapper.appendChild(
-          new AlertMessage(message, "danger")
-        );
+        showalert(message, "alert-danger");
         //console.log("Bad response from network", response);
       }
     })
@@ -675,6 +703,13 @@ function delete_comment(comment) {
     });
 }
 
+/**
+ * Recursive delete of a comment and its children
+ *
+ * @param  {HTMLElement} comment                comment to be deleted
+ * @param  {string}      comment_top_parent_id  id of parent
+ * @param  {boolean}     [is_child]             if comment is a comment reply
+ */
 function delete_comment_child_DOM(comment, comment_top_parent_id, is_child) {
   if (is_child) {
     let comment_id = get_comment_attribute(comment);
@@ -703,8 +738,11 @@ function delete_comment_child_DOM(comment, comment_top_parent_id, is_child) {
   }
 }
 
-/*********** Get Html element his position ************
- * ****************************************************/
+/**
+ * Get Html element his position
+ *
+ * @param  {HTMLElement} element  element to get
+ */
 function getElementPosition(element) {
   let xPosition = 0;
   let yPosition = 0;
@@ -722,8 +760,11 @@ function getElementPosition(element) {
   return { x: xPosition, y: yPosition - bodyPaddingTop };
 }
 
-/***** Check if element is visible in the viewport *****
- * ****************************************************/
+/**
+ * Check if element is visible in the viewport
+ *
+ * @param  {HTMLElement} el  element to be checked
+ */
 function isInViewport(el) {
   const rect = el.getBoundingClientRect();
   return (
@@ -734,8 +775,12 @@ function isInViewport(el) {
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
-/*********** Scroll to a specific comment *************
- * ****************************************************/
+
+/**
+ * Scroll to a specific comment
+ *
+ * @param  {HTMLElement} targetComment  target element of the scroll
+ */
 function scrollToComment(targetComment) {
   const alreadyInViewPort = isInViewport(targetComment);
   const animationDuration = alreadyInViewPort ? 2000 : 4000;
@@ -758,8 +803,12 @@ function scrollToComment(targetComment) {
   htmlTarget.classList.add("scroll_to");
 }
 
-/****** Add the owner of parent comment as a tag ******
- ******************************************************/
+/**
+ * Add the owner of parent comment as a tag.
+ *
+ * @param  {string}      comment_value   text to put in the comment
+ * @param  {HTMLElement} parent_comment  parent element
+ */
 function add_user_tag(comment_value, parent_comment) {
   const reply_to = get_comment_attribute(parent_comment, "author_name");
   const reply_content = get_comment_attribute(parent_comment, "content");
@@ -785,8 +834,12 @@ function add_user_tag(comment_value, parent_comment) {
   return comment_content;
 }
 
-/****************  return color index  ****************
- ******************************************************/
+/**
+ * return color index.
+ *
+ * @param  {HTMLElement} comment         target comment
+ * @param  {HTMLElement} parent_comment  parent element
+ */
 function setBorderLeftColor(comment, parent_element) {
   try {
     let index = Number.parseInt(parent_element.dataset.level) + 1;
@@ -815,6 +868,7 @@ function setBorderLeftColor(comment, parent_element) {
     }`;
   }
 }
+
 /****************  Add parent Comment  ****************
  ******************************************************/
 if (is_authenticated) {
@@ -848,8 +902,14 @@ if (is_authenticated) {
     }
   });
 }
-/*****  Fetch children and add them into the DOM  *****
- ******************************************************/
+
+/**
+ * Fetch children and add them into the DOM.
+ *
+ * @param  {HTMLElement} parent_comment_html
+ * @param  {string}      parent_comment_id
+ * @param  {boolean}     scroll_to_last
+ */
 function fetch_comment_children(
   parent_comment_html,
   parent_comment_id,
@@ -934,9 +994,15 @@ function fetch_comment_children(
   }
 }
 
-/****************  Add child Comment  *****************
- ******************************************************/
-function add_child_comment(el, container_el, top_parent_comment_html) {
+/**
+ * Add child Comment.
+ *
+ * @param  {HTMLElement} el                      input/textarea element containing the comment
+ * @param  {HTMLElement} el_container            parent containing the input (usually div.add_comment)
+ * @param  {HTMLElement} child_container         container where to add the comment
+ * @param  {HTMLElement} top_parent_comment_html
+ */
+function add_child_comment(el, el_container, child_container, top_parent_comment_html) {
   let date_added = new Date();
   if (el.value.trim() !== "") {
     let child_direct_parent = document.querySelector(
@@ -968,13 +1034,15 @@ function add_child_comment(el, container_el, top_parent_comment_html) {
   }
 }
 
-/**** Set comment backend attribute from saved data ****
- * @param comment_html HTMLElement
- * @param value Any
- * @param attr String
- * @param action String values(increment or decrement)
- * @return any
- ******************************************************/
+/**
+ * Set comment backend attribute from saved data.
+ *
+ * @param {HTMLElement} comment_html
+ * @param {any}         value
+ * @param {string}      attr
+ * @param {string}      [action]       values(increment or decrement)
+ * @return {any}
+ */
 function update_comment_attribute(comment_html, value, attr, action = null) {
   let curr_html_id = comment_html.getAttribute("id");
   let new_value = value;
@@ -1009,8 +1077,12 @@ function update_comment_attribute(comment_html, value, attr, action = null) {
   return new_value;
 }
 
-/** Return comment backend attribute from saved data  **
- ******************************************************/
+/**
+ * Return comment backend attribute from saved data.
+ *
+ * @param  {HTMLElement} comment_html
+ * @param  {string}      [attr]        requested attribute
+ */
 function get_comment_attribute(comment_html, attr = "id") {
   let curr_html_id = comment_html.getAttribute("id");
   let comment_attr = null;
@@ -1034,6 +1106,13 @@ function get_comment_attribute(comment_html, attr = "id") {
   return comment_attr;
 }
 
+/**
+ * html Contains all Classes ?
+ *
+ * @param  {HTMLElement} html_el
+ * @param  {Array}       classes
+ * @return {boolean}     true if html_el contains all classes
+ */
 function htmlContainsClass(html_el, classes) {
   let ctn = true;
   classes.split(".").forEach((cls) => {
@@ -1042,8 +1121,14 @@ function htmlContainsClass(html_el, classes) {
   return ctn;
 }
 
-/**********  Get parentNode or sibling node  **********
- ******************************************************/
+/**
+ * Get parentNode or sibling node.
+ *
+ * @param  {HTMLElement} el
+ * @param  {string}      class_name
+ * @param  {string}      not
+ * @return {HTMLElement} parentNode or sibling node
+ */
 function get_node(el, class_name, not) {
   class_name = class_name || "comment_container";
   not = not || "";
@@ -1059,10 +1144,14 @@ function get_node(el, class_name, not) {
   }
 }
 
-/*******  Manage hide/show child comment text  ********
+/**
+ * Manage hide/show child comment text
  * update the number of child comments displayed
  * only if element exists
- ******************************************************/
+ *
+ * @param  {HTMLElement} el
+ * @param  {number}      [nb_child]
+ */
 function update_answer_text(el, nb_child = 0) {
   let children_container = get_node(el, "comments_children_container");
   nb_child = nb_child === 0 ? "" : nb_child;
@@ -1072,8 +1161,12 @@ function update_answer_text(el, nb_child = 0) {
   if (answer_text_element) answer_text_element.innerText = txt;
 }
 
-/*****************  Manage vote svg  ******************
- ******************************************************/
+/**
+ * Manage vote icons
+ *
+ * @param  {string}  id
+ * @param  {HTMLElement} el
+ */
 function manage_vote_frontend(id, el) {
   VOTED_COMMENTS.forEach((obj) => {
     if (obj.comment__id === id) {
@@ -1082,14 +1175,18 @@ function manage_vote_frontend(id, el) {
   });
 }
 
-/******* Set number comments in comment label *********
- * ****************************************************/
+/**
+ * Set number comments in comment label
+ */
 function set_comments_number() {
-  let title_text = comment_title.innerText.replace(/\d+\s+/, "");
   let nb_comments =
     all_comment.reduce((acc, curr) => (acc += curr.nbr_child), 0) +
     all_comment.length;
-  comment_title.innerText = `${nb_comments} ${title_text}`;
+  comment_title.innerText = interpolate(ngettext(
+        '%s comment',
+        '%s comments',
+        nb_comments
+      ), [nb_comments]);
 }
 
 /************  Get vote from the server  **************
