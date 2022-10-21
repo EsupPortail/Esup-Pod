@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-19 08:42+0000\n"
+"POT-Creation-Date: 2022-10-21 15:17+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -442,7 +442,7 @@ msgstr "Participant"
 msgid "Attendees"
 msgstr "Participants"
 
-#: pod/bbb/models.py:175 pod/live/forms.py:92 pod/live/forms.py:173
+#: pod/bbb/models.py:175 pod/live/forms.py:93 pod/live/forms.py:190
 #: pod/live/models.py:334 pod/meeting/forms.py:88 pod/meeting/models.py:128
 #: pod/video_search/forms.py:14
 msgid "Start date"
@@ -452,7 +452,7 @@ msgstr "Date de début"
 msgid "Start date of the live."
 msgstr "Date de début du direct."
 
-#: pod/bbb/models.py:181 pod/live/forms.py:98 pod/live/forms.py:179
+#: pod/bbb/models.py:181 pod/live/forms.py:99 pod/live/forms.py:196
 #: pod/live/models.py:337 pod/meeting/forms.py:94 pod/meeting/models.py:129
 #: pod/video_search/forms.py:17
 msgid "End date"
@@ -784,10 +784,14 @@ msgstr "Plus"
 #: pod/bbb/templates/bbb/record_list.html:18
 #: pod/live/templates/live/events_list.html:42
 #: pod/playlist/templates/playlist/playlist_list.html:40
+#: pod/podfile/templates/podfile/home_content.html:56
+#: pod/podfile/templates/podfile/list_folder_files.html:112
 #: pod/recorder/templates/recorder/record_list.html:18
+#: pod/video/templates/videos/video-comment.html:28
+#: pod/video/templates/videos/video_edit.html:125
 #: pod/video/templates/videos/video_list.html:18
-msgid "Loading..."
-msgstr "Chargement en cours..."
+msgid "Loading…"
+msgstr "Chargement en cours…"
 
 #: pod/bbb/templates/bbb/publish_meeting.html:18
 #: pod/bbb/templates/bbb/publish_meeting.html:22
@@ -1364,7 +1368,7 @@ msgstr "Titre court"
 msgid "Start time of the overlay, in seconds."
 msgstr "Début de la superposition, en secondes."
 
-#: pod/completion/models.py:310 pod/live/forms.py:184
+#: pod/completion/models.py:310 pod/live/forms.py:201
 msgid "End time"
 msgstr "Heure de fin"
 
@@ -2151,60 +2155,60 @@ msgstr "Enregistrement auto"
 msgid "Thumbnails"
 msgstr "Vignettes"
 
-#: pod/live/forms.py:78 pod/live/models.py:185
+#: pod/live/forms.py:79 pod/live/models.py:185
 msgid "Piloting implementation"
 msgstr "Implémentation de pilotage"
 
-#: pod/live/forms.py:79 pod/live/models.py:186
+#: pod/live/forms.py:80 pod/live/models.py:186
 msgid "Select the piloting implementation for to this broadcaster."
 msgstr ""
 "Sélectionner l’implémentation de pilotage des enregistrements pour ce "
 "diffuseur."
 
-#: pod/live/forms.py:143
+#: pod/live/forms.py:160
 msgid "End should not be in the past"
 msgstr "La fin d’un évènement ne peut pas être planifiée dans le passé"
 
-#: pod/live/forms.py:144 pod/live/models.py:279
+#: pod/live/forms.py:161 pod/live/models.py:279
 msgid "An event cannot be planned in the past"
 msgstr "Un évènement ne peut pas être planifié dans le passé"
 
-#: pod/live/forms.py:147 pod/live/forms.py:148
+#: pod/live/forms.py:164 pod/live/forms.py:165
 msgid "Start should not be after end"
 msgstr "L’heure de début doit être avant l’heure de fin"
 
-#: pod/live/forms.py:149 pod/live/forms.py:160
+#: pod/live/forms.py:166 pod/live/forms.py:177
 msgid "Planification error."
 msgstr "Erreur de planification."
 
-#: pod/live/forms.py:159
+#: pod/live/forms.py:176
 msgid "An event is already planned at these dates"
 msgstr "Un évenement est déjà planifié à cette date"
 
-#: pod/live/forms.py:164 pod/meeting/forms.py:223 pod/video/forms.py:292
+#: pod/live/forms.py:181 pod/meeting/forms.py:223 pod/video/forms.py:292
 #: pod/video/forms.py:950
 msgid "Password"
 msgstr "Mot de passe"
 
-#: pod/live/forms.py:207 pod/live/templates/live/event_edit.html:72
+#: pod/live/forms.py:224 pod/live/templates/live/event_edit.html:72
 #: pod/live/templates/live/event_edit.html:178
 msgid "Display advanced options"
 msgstr "Options avancées"
 
-#: pod/live/forms.py:224 pod/live/models.py:69 pod/live/models.py:129
+#: pod/live/forms.py:241 pod/live/models.py:69 pod/live/models.py:129
 msgid "Building"
 msgstr "Bâtiment"
 
-#: pod/live/forms.py:231
+#: pod/live/forms.py:248
 msgid "Broadcaster device"
 msgstr "Matériel de captation"
 
-#: pod/live/forms.py:394 pod/meeting/forms.py:211 pod/recorder/forms.py:92
+#: pod/live/forms.py:411 pod/meeting/forms.py:211 pod/recorder/forms.py:92
 #: pod/video/forms.py:959
 msgid "I agree"
 msgstr "J’accepte"
 
-#: pod/live/forms.py:395
+#: pod/live/forms.py:412
 msgid "Delete event cannot be undo"
 msgstr "La suppression d’évènement est définitive"
 
@@ -4912,13 +4916,6 @@ msgstr "Afficher/masquer le menu des dossiers"
 msgid "Enter new name of folder"
 msgstr "Indiquer un nouveau nom à ce dossier"
 
-#: pod/podfile/templates/podfile/home_content.html:56
-#: pod/podfile/templates/podfile/list_folder_files.html:112
-#: pod/video/templates/videos/video-comment.html:28
-#: pod/video/templates/videos/video_edit.html:125
-msgid "Loading…"
-msgstr "Chargement…"
-
 #: pod/podfile/templates/podfile/home_content.html:75
 msgid "Share with someone"
 msgstr "Partager avec quelqu’un"
@@ -6599,10 +6596,10 @@ msgid "Comments have been disabled for this video."
 msgstr "Les commentaires ont été désactivés pour cette vidéo."
 
 #: pod/video/templates/videos/video-comment.html:9
-msgid "comment(s)"
-msgstr "commentaire(s)"
+msgid "Comment(s)"
+msgstr "Commentaire(s)"
 
-#: pod/video/templates/videos/video-comment.html:14 pod/video/views.py:2119
+#: pod/video/templates/videos/video-comment.html:14 pod/video/views.py:2120
 msgid "Sorry, you can't comment while the server is under maintenance."
 msgstr ""
 "Désolé, vous ne pouvez pas commenter pendant que le serveur est en "
@@ -7202,48 +7199,48 @@ msgstr "La video suivante n’existe pas : %s"
 msgid "Media upload"
 msgstr "Téléverser un média"
 
-#: pod/video/views.py:2088
+#: pod/video/views.py:2089
 msgid "Sorry, you can't vote a comment while the server is under maintenance."
 msgstr ""
 "Désolé, vous ne pouvez pas voter pour un commentaire pendant que le serveur "
 "est en maintenance."
 
-#: pod/video/views.py:2304
+#: pod/video/views.py:2305
 msgid ""
 "Sorry, you can't delete a comment while the server is under maintenance."
 msgstr ""
 "Désolé, vous ne pouvez pas supprimer un commentaire pendant que le serveur "
 "est en maintenance."
 
-#: pod/video/views.py:2315
+#: pod/video/views.py:2316
 msgid "You do not have rights to delete this comment"
 msgstr "Vous n’avez pas les droits pour supprimer ce commentaire"
 
-#: pod/video/views.py:2420 pod/video/views.py:2491
+#: pod/video/views.py:2421 pod/video/views.py:2492
 msgid "One or many videos already have a category."
 msgstr "Une ou plusieurs vidéos possèdent déjà une catégorie."
 
-#: pod/video/views.py:2462 pod/video/views.py:2538
+#: pod/video/views.py:2463 pod/video/views.py:2539
 msgid "Title field is required"
 msgstr "Champ de titre est requis"
 
-#: pod/video/views.py:2468 pod/video/views.py:2544 pod/video/views.py:2593
+#: pod/video/views.py:2469 pod/video/views.py:2545 pod/video/views.py:2594
 msgid "Method Not Allowed"
 msgstr "Méthode non autorisée"
 
-#: pod/video/views.py:2509
+#: pod/video/views.py:2510
 msgid "Category updated successfully."
 msgstr "Catégorie mise à jour avec succès."
 
-#: pod/video/views.py:2532
+#: pod/video/views.py:2533
 msgid "You do not have rights to edit this category"
 msgstr "Vous n’avez pas les droits pour éditer cette catégorie"
 
-#: pod/video/views.py:2586
+#: pod/video/views.py:2587
 msgid "You do not have rights to delete this category"
 msgstr "Vous n’avez pas les droits pour supprimer cette catégorie"
 
-#: pod/video/views.py:2660
+#: pod/video/views.py:2661
 msgid "Update successfully"
 msgstr "Mise à jour réussie"
 
