@@ -29,13 +29,12 @@ document.addEventListener("submit", function (e) {
 /**
  * Add a visual indent on 3 first levels of comments
  */
-function pod_note_comment_offset(){
-  let divComments = document.querySelectorAll('#id_notes div.comments');
-  for (var i=0; i < Math.min(divComments.length, 3); i++ ) {
-    divComments[i].classList.add('ms-3');
+function pod_note_comment_offset() {
+  let divComments = document.querySelectorAll("#id_notes div.comments");
+  for (var i = 0; i < Math.min(divComments.length, 3); i++) {
+    divComments[i].classList.add("ms-3");
   }
 }
-
 
 /**
  * Handle every pod-note submission (except download)
