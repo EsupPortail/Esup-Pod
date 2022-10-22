@@ -15,7 +15,7 @@ jobs:
 
       - name: Check for modified files
         id: prettier-git-check
-        run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
+        run: echo modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi) >> $GITHUB_OUTPUT
 
       - name: Push changes
         if: steps.prettier-git-check.outputs.modified == 'true'
@@ -34,7 +34,7 @@ jobs:
 
       - name: Check for modified files
         id: black-git-check
-        run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
+        run: echo modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi) >> $GITHUB_OUTPUT
 
       - name: Commit changes
         if: steps.black-git-check.outputs.modified == 'true'
