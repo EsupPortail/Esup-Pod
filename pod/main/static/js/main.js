@@ -699,11 +699,13 @@ var send_form_data = async function (
       .then((response) => response.text())
       .then(($data) => {
         $data = callbackSuccess($data);
+        console.log($data);
         window[fct]($data);
         
       })
 
       .catch((error) => {
+        console.log(error)
         showalert(
           gettext("Error during exchange") +
             "(" +
@@ -881,8 +883,11 @@ var append_picture_form = function (data) {
   // parse data into html
   let parser = new DOMParser();
   let htmlData = parser.parseFromString(data, "text/html").body.firstChild;
-  
+   
   document.body.appendChild(htmlData);
+  eval(document.body.querySelector("#filewidget_script").innerHTML);
+
+  /*
   document.querySelectorAll("script").forEach((script) => {
     
     if (script.src.includes("filewidget.js")) {
@@ -892,8 +897,8 @@ var append_picture_form = function (data) {
       document.body.appendChild(newScript);
     } 
   });
-  
-  eval(document.body.querySelector("#filewidget_script").innerHTML);
+ 
+ */
   
   
   let userpicture = document.getElementById("userpictureModal");

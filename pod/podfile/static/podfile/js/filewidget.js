@@ -695,6 +695,7 @@ if (typeof loaded == "undefined") {
   }
 
   function append_folder_html_in_modal(data) {
+    console.log('appended folder html in modal');
     document.querySelector("#modal-folder_" + id_input).innerHTML = data;
   }
 
@@ -888,7 +889,7 @@ if (typeof loaded == "undefined") {
     if (!event.target.matches(".podfilemodal")) return;
     event.stopPropagation();
     setTimeout(function () {
-      initFolders();
+      //initFolders();
     }, 500);
   });
 }
