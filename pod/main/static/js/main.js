@@ -699,8 +699,10 @@ var send_form_data = async function (
       .then((response) => response.text())
       .then(($data) => {
         $data = callbackSuccess($data);
-        console.log($data);
-        window[fct]($data);
+        if (typeof window[fct] === "function"){
+          window[fct]($data);
+
+        }
         
       })
 
@@ -746,7 +748,7 @@ var send_form_data_vanilla = function (
         };
   callbackFail =
     typeof callbackFail === "function" ? callbackFail : function (err) {};
-
+  console.log(data_form)
   if (data_form) {
     data_form = new FormData(data_form);
   }
@@ -770,6 +772,7 @@ var send_form_data_vanilla = function (
       window[fct](data);
     })
     .catch(function (err) {
+      console.log(err)
       showalert(
         gettext("Error during exchange") +
           "(" +
@@ -885,20 +888,17 @@ var append_picture_form = function (data) {
   let htmlData = parser.parseFromString(data, "text/html").body.firstChild;
    
   document.body.appendChild(htmlData);
+
   eval(document.body.querySelector("#filewidget_script").innerHTML);
 
-  /*
-  document.querySelectorAll("script").forEach((script) => {
-    
-    if (script.src.includes("filewidget.js")) {
-      let newScript = document.createElement("script");
-      script.remove();
-      newScript.src = script.src;
-      document.body.appendChild(newScript);
-    } 
-  });
  
- */
+   
+
+
+
+
+ 
+ 
   
   
   let userpicture = document.getElementById("userpictureModal");

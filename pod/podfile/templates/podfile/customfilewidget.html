@@ -69,12 +69,13 @@
 </div>
 <!-- End Select File Modal -->
 {% block more_script %}
+
 <script id ="filewidget_script">
 var id_input="";
 var static_url = "{% get_static_prefix %}";
 var deletefolder_url = "{% url 'podfile:deletefolder' %}";
 var deletefile_url = "{% url 'podfile:deletefile' %}";
-
+console.log("%cloaded script", 'color : red')
 
 document.addEventListener('click',   (event) => {
   if (!event.target.matches('.btn-fileinput_{{id}}')) return;
@@ -96,6 +97,7 @@ document.addEventListener('show.bs.modal',  (event) => {
   if (!event.target.matches('#fileModal_{{id}}')) return;
   event.stopPropagation();
   id_input = event.target.dataset.id
+  console.log("custom : " + id_input)
   send_form_data("{% if type %}{% url "podfile:home" type=type %}{% else %}{% url "podfile:home" %}{% endif %}", {}, "append_folder_html_in_modal", "get");
 });
 
@@ -120,6 +122,20 @@ document.addEventListener("click", (event) => {
   event.target.parentNode.parentNode.querySelector('span').innerHTML = html_div;
   document.querySelector("#{{id}}").value = "";
 });
+
+
+
+document.querySelectorAll("script").forEach((script) => {
+    
+  if (script.src.includes("filewidget.js")) {
+    var newScript = document.createElement("script");
+    script.remove();
+    newScript.src = script.src;
+    document.body.appendChild(newScript);
+  } 
+});
+
+
 
 </script>
 {% endblock more_script %}

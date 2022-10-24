@@ -1,8 +1,7 @@
-window.addEventListener("load", function () {
+document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll("li.contenuTitre").forEach(function (element) {
     element.style.display = "none";
   });
-
   var accordeon_head = document.querySelectorAll("#accordeon li a.title");
 
   accordeon_head[0].classList.add("active");
@@ -31,33 +30,39 @@ var name = "";
 
 // RESET
 document.addEventListener("reset", (event) => {
-  if (event.target !== document.querySelector("#accordeon form.completion"))
-    return;
+  if (!event.target.matches("#accordeon form.completion")) return;
 
   var id_form = event.target.getAttribute("id");
   var name_form = id_form.substring(5, id_form.length);
   var form_new = "form_new_" + name_form;
   var list = "list_" + name_form;
-  document.querySelector("span#" + id_form).innerHtml = "";
+  console.log(document.querySelector("span#" + id_form));
+  document.querySelector("span#" + id_form).innerHTML = "";
   if (id_form == "form_track")
     document.querySelector("span#form_track").style.width = "auto";
   document.querySelector("form#" + form_new).style.display = "block";
-  document.querySelector("form").style.display = "block";
-  document.querySelector("a.title").forEach(function (element) {
-    element.style.display = "block";
+  document.querySelectorAll("form").forEach((form) => {
+    form.style.display = "block";
+  });
+  document.querySelectorAll("a.title").forEach(function (element) {
+    element.style.display = "initial";
   });
   document.querySelectorAll("table tr").forEach(function (element) {
     element.classList.remove("info");
   });
-  document.getElementById("fileModal_id_document").remove();
-  document.getElementById("fileModal_id_src").remove();
+
+  let fileModalDoc = document.getElementById("fileModal_id_document");
+  let fileModalSrc = document.getElementById("fileModal_id_src");
+
+  if (fileModalDoc) fileModalDoc.remove();
+  if (fileModalSrc) fileModalSrc.remove();
 });
 
 function show_form(data, form) {
-  form = document.querySelector("#" + form);
-  form.style.display = "none";
-  form.innerHTML = data;
-  fadeIn(form);
+  let form_el = document.querySelector("#" + form);
+  form_el.style.display = "none";
+  form_el.innerHTML = data;
+  fadeIn(form_el);
   if (form === "form_track")
     document.getElementById("form_track").style.width = "100%";
 }
@@ -77,12 +82,13 @@ var ajaxfail = function (data, form) {
 
 document.addEventListener("submit", (e) => {
   if (
-    e.target !== document.querySelector("#form_new_contributor") ||
-    e.target !== document.querySelector("#form_new_document") ||
-    e.target !== document.querySelector("#form_new_track") ||
-    e.target !== document.querySelector("#form_new_src")
+    e.target.id != "form_new_contributor" &&
+    e.target.id != "form_new_document" &&
+    e.target.id != "form_new_track" &&
+    e.target.id != "form_new_overlay"
   )
     return;
+
   e.preventDefault();
   var jqxhr = "";
   var exp = /_([a-z]*)\s?/g;
@@ -107,14 +113,12 @@ document.addEventListener("submit", (e) => {
 });
 
 var sendandgetform = async function (elt, action, name, form, list) {
- 
   var href = elt.getAttribute("action");
   if (action == "new" || action == "form_save_new") {
     document.querySelector("#" + form).innerHTML =
       '<div style="width:100%; margin: 2rem;"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
     document.querySelectorAll(".info-card").forEach(function (element) {
       element.style.display = "none";
-     
     });
     document.querySelector("#" + name + "-info").style.display = "block";
 
@@ -126,8 +130,8 @@ var sendandgetform = async function (elt, action, name, form, list) {
     await fetch(url, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         "X-CSRFToken": token,
+        "X-Requested-With": "XMLHttpRequest",
       },
 
       body: form_data,
@@ -135,6 +139,8 @@ var sendandgetform = async function (elt, action, name, form, list) {
     })
       .then((response) => response.text())
       .then((data) => {
+        //parse data into html and log it
+
         if (data.indexOf(form) == -1) {
           showalert(
             gettext(
@@ -155,18 +161,24 @@ var sendandgetform = async function (elt, action, name, form, list) {
         document.querySelector("#" + form).innerHTML = "";
       });
 
-    let form_new = document.querySelector("form.form_new");
-    if (form_new) form_new.style.display = "none";
+    document.querySelectorAll("form.form_new").forEach((form) => {
+      if (form) form.style.display = "none";
+    });
 
-    let form_change = document.querySelector("form.form_change");
-    if (form_change) form_change.style.display = "none";
+    document.querySelectorAll("form.form_change").forEach((form) => {
+      if (form) form.style.display = "none";
+    });
 
-    let form_modif = document.querySelector("form.form_modif");
-    if (form_modif) form_modif.style.display = "none";
+    document.querySelectorAll("form.form_modif").forEach((form) => {
+      if (form) form.style.display = "none";
+    });
 
-    let form_delete = document.querySelector("form.form_delete");
-    if (form_delete) form_delete.style.display = "none";
-
+    document.querySelectorAll("form.form_delete").forEach((form) => {
+      if (form) form.style.display = "none";
+    });
+    document.querySelectorAll("a.title").forEach(function (element) {
+      element.style.display = "none";
+    });
     hide_others_sections(name);
   }
   if (action == "modify" || action == "form_save_modify") {
@@ -174,16 +186,17 @@ var sendandgetform = async function (elt, action, name, form, list) {
     var url = window.location.origin + href;
     var token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
 
+    form_data = new FormData();
+    form_data.append("action", action);
+    form_data.append("id", id);
+
     await fetch(url, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         "X-CSRFToken": token,
+        "X-Requested-With": "XMLHttpRequest",
       },
-      body: JSON.stringify({
-        action: action,
-        id: id,
-      }),
+      body: form_data,
     })
       .then((response) => response.text())
       .then((data) => {
@@ -234,17 +247,17 @@ var sendandgetform = async function (elt, action, name, form, list) {
       var token = document.querySelector(
         "input[name=csrfmiddlewaretoken]"
       ).value;
+      let form_data = new FormData();
+      form_data.append("action", action);
+      form_data.append("id", id);
 
       await fetch(url, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           "X-CSRFToken": token,
+          "X-Requested-With": "XMLHttpRequest",
         },
-        body: JSON.stringify({
-          action: action,
-          id: id,
-        }),
+        body: form_data,
       })
         .then((response) => response.text())
         .then((data) => {
@@ -267,10 +280,7 @@ var sendandgetform = async function (elt, action, name, form, list) {
   }
   if (action == "save") {
     let form_group = document.querySelector(".form-help-inline");
-    let form_parents = form_group.closest("div.form-group");
-    form_parentsclassList.remove("has-error");
-    
-
+    form_group.closest("div.form-group").classList.remove("has-error");
 
     document.querySelector(".form-help-inline").remove();
     if (verify_fields(form)) {
@@ -285,6 +295,7 @@ var sendandgetform = async function (elt, action, name, form, list) {
         method: "POST",
         headers: {
           "X-CSRFToken": token,
+          "X-Requested-With": "XMLHttpRequest",
         },
         body: data_form,
       })
@@ -376,9 +387,9 @@ function verify_fields(form) {
           "</span>"
       );
       let form_group = input.closest("div.form-group");
-    
+
       form_group.classList.add("has-error");
-     
+
       error = true;
     }
     if (document.getElementById("id_weblink").value.length >= 200) {
@@ -391,7 +402,7 @@ function verify_fields(form) {
       );
       let form_group = id_weblink.closest("div.form-group");
       form_group.classList.add("has-error");
-      
+
       error = true;
     }
     if (document.getElementById("id_role").value == "") {
@@ -456,9 +467,8 @@ function verify_fields(form) {
           gettext("Please select a language.") +
           "</span>"
       );
-      let form_group = id_lang.closest( "div.form-group");
+      let form_group = id_lang.closest("div.form-group");
       form_group.classList.add("has-error");
-     
 
       error = true;
     }
@@ -541,7 +551,7 @@ function verify_fields(form) {
       );
       let form_group = id_document_thumbnail.closest("div.form-group");
       form_group.classList.add("has-error");
-      
+
       error = true;
     }
   } else if (form == "form_overlay") {
@@ -554,7 +564,7 @@ function verify_fields(form) {
           gettext("Iframe and Script tags are not allowed.") +
           "</span>"
       );
-      let form_group = id_content.closest( "div.form-group");
+      let form_group = id_content.closest("div.form-group");
       form_group.forEach(function (element) {
         element.classList.add("has-error");
       });

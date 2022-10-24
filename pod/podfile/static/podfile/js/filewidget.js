@@ -1,9 +1,11 @@
 // podfile:filewidjet.js
 // select file
 
-if (typeof loaded == "undefined") {
-  loaded = true;
 
+if (typeof loaded == "undefined") {
+  console.log("%c filewidget.js loaded", 'color : #bada55');
+  console.log(`%c ${id_input} `, 'color : #bada55');
+  loaded = true;
   document.addEventListener("click", (e) => {
     if (
       !e.target.parentNode.matches(".file-name") &&
@@ -12,7 +14,8 @@ if (typeof loaded == "undefined") {
       return;
     let file = e.target.parentNode;
     e.preventDefault();
-    if (id_input != "") {
+    if (id_input && id_input != "") {
+      
       document.querySelector("input#" + id_input).value = file.dataset.fileid;
 
       if (file.dataset.filetype == "CustomImageModel") {

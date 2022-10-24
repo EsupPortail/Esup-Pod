@@ -274,6 +274,11 @@ var sendform = async function (elt, action) {
 document.addEventListener("change", (e) => {
   if (e.target.id != "id_type") return;
   enrich_type();
+  let file_input = document.body.querySelector("#filewidget_script");
+  if (file_input) {
+    eval(file_input.innerHTML);
+  }
+
 });
 
 /*** Display element of form enrich ***/
@@ -428,9 +433,8 @@ function verify_fields() {
   }
   switch (document.getElementById("id_type").value) {
     case "image":
-      
       let img = document.getElementById("id_image_thumbnail_img");
-      if (img){
+      if (img) {
         if (img.src == "/static/filer/icons/nofile_48x48.png") {
           //check with id_image value
           img.insertAdjacentElement(
@@ -442,9 +446,8 @@ function verify_fields() {
           img.closest("div.form-group").classList.add("has-error");
           error = true;
         }
-
       }
-     
+
       break;
     case "richtext":
       let richtext = document.getElementById("id_richtext");
