@@ -4,4 +4,4 @@
 {% trans "Here is the message sent:" %}\n\n
 {{message}}\n\n
 {% trans "Referrer page:" %} {{url_referrer}}\n\n
-{% trans "Regards" %}.\n\n
+{% trans "Regards." %}\n\n

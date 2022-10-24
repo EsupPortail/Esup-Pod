@@ -28,7 +28,7 @@
     <h4>{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}</h4>
     {% trans "This is the list of the recorded BigBlueButton sessions for which you were moderator. This module allows you to create a video from a BigBlueButton presentation." %}<br/>
     {% trans "Shortly after the presentation is published, the corresponding video will appear in your videos." %}<br/>
-    <small class="form-text text-muted">
+    <small class="form-text">
       <i>
         {% trans "Please note: a BigBlueButton presentation can be encoded by another moderator." %}
         {% trans "If such a case occurs, this information will be displayed directly in the list. You can then contact this user directly to ask him/her to share the video with you, or even to put you as additional owner of the video." %}
@@ -43,7 +43,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title" id="exampleModalLabel">{% trans "BigBlueButton presentation preview" %}</h2>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
         </div>
         <div class="modal-body">
           <center>
@@ -57,7 +57,7 @@
     </div>
   </div>
 
-  <small class="form-text text-muted"><i>{% trans "Please note: this page refreshes automatically every 30 seconds." %}</i></small>
+  <small class="form-text"><i>{% trans "Please note: this page refreshes automatically every 30 seconds." %}</i></small>
 
 {% endblock page_content %}
 

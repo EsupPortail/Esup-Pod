@@ -107,18 +107,18 @@ def encode_video(video_id):
     # start and stop cut ?
     encoding_video = Encoding_video_model(video_id, video_to_encode.video.path)
     encoding_video.add_encoding_log("start_time", "", True, start)
-    change_encoding_step(video_id, 1, "get video data")
-    encoding_video.get_video_data()
-    change_encoding_step(video_id, 2, "remove old data")
+    # change_encoding_step(video_id, 1, "get video data")
+    # encoding_video.get_video_data()
+    change_encoding_step(video_id, 1, "remove old data")
     encoding_video.remove_old_data()
     # create video dir
-    change_encoding_step(video_id, 3, "create output dir")
-    encoding_video.create_output_dir()
+    # change_encoding_step(video_id, 3, "create output dir")
+    # encoding_video.create_output_dir()
 
-    change_encoding_step(video_id, 4, "start encoding")
+    change_encoding_step(video_id, 2, "start encoding")
     encoding_video.start_encode()
 
-    change_encoding_step(video_id, 5, "store encoding info")
+    change_encoding_step(video_id, 3, "store encoding info")
     final_video = encoding_video.store_json_info()
     final_video.is_video = final_video.get_video_m4a() is None
     final_video.encoding_in_progress = False
@@ -136,6 +136,6 @@ def transcript_video(video_id):
     """Transcript video audio to text."""
     video = Video.objects.get(id=video_id)
     if TRANSCRIPT and video.transcript:
-        change_encoding_step(video_id, 6, "transcript video")
+        change_encoding_step(video_id, 4, "transcript video")
         start_transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
         start_transcript_video(video_id, False)

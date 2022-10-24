@@ -160,7 +160,7 @@ STATICFILES_STORAGE = 'static_compress.CompressedStaticFilesStorage'
 MEDIA_ROOT = "/pod/media"
 
 """
-# nom du serveur smtp
+# nom du serveur smtp (https://docs.djangoproject.com/fr/3.2/ref/settings/#email-host)
 """
 EMAIL_HOST = "smtp.univ.fr"
 
@@ -168,6 +168,11 @@ EMAIL_HOST = "smtp.univ.fr"
 # port d'écoute du serveur smtp
 """
 EMAIL_PORT = 25
+
+"""
+# Préfixe par défaut pour l'objet des courriels
+"""
+EMAIL_SUBJECT_PREFIX = "[Pod]"
 
 """
 # Expediteur par défaut pour les envois automatique (erreur de code etc.)
@@ -331,20 +336,25 @@ USE_STATS_VIEW = False
 USE_OPENCAST_STUDIO = False
 
 """
-# Permet de spécifier le dossier de stockage des enregistrements du studio avant traitement
+# Permet de spécifier le dossier de stockage des enregistrements
+# du studio avant traitement.
 """
 OPENCAST_FILES_DIR = "opencast-files"
 """
 # Permet de spécifier la valeur par défaut du placement de la vidéo du
 # presenteur par rapport à la vidéo de présentation (écran)
-# les valeurs possibles sont "mid" (ecran et caméra ont la même taille)
-# "piph" (le presenteur, caméra, est inscruté dans la vidéo de présentation, en haut à droite)
-# "pipb" (le presenteur, caméra, est inscruté dans la vidéo de présentation, en bas à droite)
+# les valeurs possibles sont :
+#  * "mid" (écran et caméra ont la même taille)
+#  * "piph" (le presenteur, caméra, est incrusté dans la vidéo de présentation,
+#      en haut à droite)
+#  * "pipb" (le presenteur, caméra, est incrusté dans la vidéo de présentation,
+#      en bas à droite)
 """
 OPENCAST_DEFAULT_PRESENTER = "mid"
 """
 # Contenu par défaut du fichier xml pour créer le mediapackage pour le studio.
-# ce fichier va contenir toutes les spécificités de l'enregistrement (source, cutting, title, presenter etc.)
+# Ce fichier va contenir toutes les spécificités de l'enregistrement
+# (source, cutting, title, presenter etc.)
 """
 OPENCAST_MEDIAPACKAGE = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
     <mediapackage xmlns="http://mediapackage.opencastproject.org" id="" start="">
@@ -479,7 +489,7 @@ ES_MAX_RETRIES = 10
 # elasticsearch==7.10.1
 # https://elasticsearch-py.readthedocs.io/en/v7.10.1/
 """
-ES_VERSION = 6 # Si 7, faire un une mise à jour du paquet
+ES_VERSION = 6  # Si 7, faire un une mise à jour du paquet
 
 # ## Configuration encodage ## #
 
@@ -887,11 +897,11 @@ KIND_CHOICES = (('subtitles', _('subtitles')), ('captions', _('captions')))
 #  Pour l'instant local ou cas
 """
 AUTH_TYPE = (
-        ('local', _('local')),
-        ('CAS', 'CAS'),
-        ('OIDC', "OIDC"),
-        ("Shibboleth", "Shibboleth")
-    )
+    ('local', _('local')),
+    ('CAS', 'CAS'),
+    ('OIDC', "OIDC"),
+    ("Shibboleth", "Shibboleth")
+)
 
 """
 # Activation de l'authentification CAS en plus de l'authentification locale
@@ -1155,9 +1165,9 @@ MODEL_PARAM = {
         }
     },
     # le modèle vosk
-    'VOSK':{
+    'VOSK': {
         'fr': {
-        'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0",
+            'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0",
         }
     }
 }
@@ -1166,7 +1176,7 @@ MODEL_PARAM = {
 """
 # Définissez à True pour activer la case à cocher dans l'édition des sous-titres.
 """
-ACTIVE_MODEL_ENRICH  = False
+ACTIVE_MODEL_ENRICH = False
 
 """
 # paramétrage des chemin du model pour la compilation
@@ -1251,7 +1261,8 @@ BBB_NUMBER_DAYS_BEFORE_DELETE = 0
 USE_BBB_LIVE = False
 
 """
-# Autoriser les utilisateurs à enregistrer leur direct BigBlueButton directement dans Mes vidéos
+ Autoriser les utilisateurs à enregistrer leur direct BigBlueButton
+ directement dans `Mes vidéos`
 """
 USE_BBB_LIVE_DOWNLOADING = False
 
@@ -1290,6 +1301,14 @@ WARN_DEADLINES = [60, 30, 7]
 """
 MAX_DURATION_DATE_DELETE = 10
 
+# Affiliations pour lesquelles on souhaite archiver la vidéo
+#  plutôt que de la supprimer.
+# Si l'affiliation du propriétaire est dans cette variable,
+#  alors les vidéos sont affectées à un utilisateur précis
+#  que l'on peut spécifier via le paramètre ARCHIVE_OWNER_USERNAME.
+# Elles sont mise en mode brouillon et le mot "archived" est ajouté à leur titre.
+# Enfin, elles sont également ajoutées à l'ensemble `Vidéo à Supprimer
+#  (accessible via l'interface d'admin)
 POD_ARCHIVE_AFFILIATION = ['faculty',
                            'staff',
                            'employee',
@@ -1302,10 +1321,12 @@ POD_ARCHIVE_AFFILIATION = ['faculty',
                            'teacher',
                            'registered-reader',
                            'member']
-
+ARCHIVE_OWNER_USERNAME = "archive"
+# Durée d'obsolescence personnalisée par Affiliation
 ACCOMMODATION_YEARS = {
     'affiliate': 1
 }
+# Durée d'obsolescence par défaut (en années après la date d'ajout).
 DEFAULT_YEAR_DATE_DELETE = 2
 
 """
@@ -1353,13 +1374,16 @@ DYSLEXIAMODE_ENABLED = False
 COOKIE_LEARN_MORE = ""
 
 """
-# Ce paramètre permet d'activer l'envoi d'évènements sur le lecteur vidéo à Matomo
-# n'est utile que si le code piwik / matomo est présent dans l'instance de Esup-Pod
-# les évènements envoyés sont : play, pause, seeked, ended, ratechange, fullscreen, error, loadmetadata
-# Pour rajouter le code Piwik/Matomo dans votre instance de Pod, il suffit de créer un fichier
-# 'pod/custom/templates/custom/tracking.html' et d'y insérer le code javascript
-# puis dans votre fichier settings_local.py, de préciser dans la variable TEMPLATE_VISIBLE_SETTINGS
-#     'TRACKING_TEMPLATE': 'custom/tracking.html',
+ Ce paramètre permet d'activer l’envoi d'évènements sur le lecteur vidéo à Matomo
+ n'est utile que si le code piwik / matomo est présent dans l'instance de Esup-Pod
+ les évènements envoyés sont :
+    play, pause, seeked, ended, ratechange, fullscreen, error, loadmetadata
+ Pour rajouter le code Piwik/Matomo dans votre instance de Pod,
+  il suffit de créer un fichier 'pod/custom/templates/custom/tracking.html'
+  et d'y insérer le code javascript
+  puis dans votre fichier settings_local.py,
+  de préciser dans la variable TEMPLATE_VISIBLE_SETTINGS :
+  'TRACKING_TEMPLATE': 'custom/tracking.html',
 """
 USE_VIDEO_EVENT_TRACKING = False
 
@@ -1376,11 +1400,12 @@ SHOW_EVENTS_ON_HOMEPAGE = False
 DEFAULT_EVENT_PATH = ""
 
 """
-# Types de logiciel de serveur de streaming utilisés.
-# Actuellement disponible Wowza.
-# Si vous utilisez une autre logiciel, il faut développer une interface dans pod/live/pilotingInterface.py
+ Types de logiciel de serveur de streaming utilisés.
+ Actuellement disponible Wowza.
+ Si vous utilisez une autre logiciel,
+ il faut développer une interface dans `pod/live/pilotingInterface.py`
 """
-BROADCASTER_PILOTING_SOFTWARE = ['Wowza',]
+BROADCASTER_PILOTING_SOFTWARE = ['Wowza', ]
 
 """
 # Image par défaut affichée comme poster ou vignette,
@@ -1402,7 +1427,7 @@ DEFAULT_EVENT_TYPE_ID = 1
 EVENT_ACTIVE_AUTO_START = False
 
 """
-# Permet de préciser le nom du groupe dans lequel les utilisateurs 
+# Permet de préciser le nom du groupe dans lequel les utilisateurs
 # peuvent planifier un évènement sur plusieurs jours
 """
 EVENT_GROUP_ADMIN = "event admin"
@@ -1440,13 +1465,13 @@ CACHES = {
 
 """
 Application Meeting pour la gestion de reunion avec BBB
-Mettre USE_MEETING à True pour activer cette application 
+Mettre USE_MEETING à True pour activer cette application
 BBB_API_URL et BBB_SECRET_KEY sont obligatoires pour faire fonctionner l'application
 """
 USE_MEETING = False
 BBB_API_URL = ""
 BBB_SECRET_KEY = ""
-BBB_LOGOUT_URL = "" # optional
+BBB_LOGOUT_URL = ""  # optional
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = False
 # use to disable record if bbb instance not deploy it
 MEETING_DISABLE_RECORD = True

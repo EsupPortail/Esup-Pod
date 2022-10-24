@@ -14,14 +14,13 @@
 {% endblock %}
 
 {% block page_content %}
-    <h3>{% blocktrans with vtitle=event.title %}Deleting the event "{{ vtitle }}"{% endblocktrans %}
-        <span class="float-end">
-          <a href="{% url 'live:event' slug=event.slug %}" title="{% trans 'View the event' %}"
-             class="btn btn btn-secondary btn-sm">
-             <i class="bi bi-film"></i>&nbsp;{% trans "Back to the event" %}
-          </a>
-        </span>
-    </h3>
+    <a href="{% url 'live:event' slug=event.slug %}"
+       class="btn btn btn-secondary btn-sm float-end">
+        <i class="bi bi-broadcast"></i>&nbsp;{% trans "Back to the event" %}
+    </a>
+    </span>
+    <h1>{% blocktrans with vtitle=event.title %}Deleting the event "{{ vtitle }}"{% endblocktrans %}
+    </h1>
 
     {% if event.is_current %}
         <div class="alert alert-warning" role="alert">
@@ -59,10 +58,10 @@
                                 {% endif %}
                                 {% if field.help_text %}
                                     <small id="{{ field.id_for_label }}Help"
-                                           class="form-text text-muted">{{ field.help_text|safe }}</small>
+                                           class="form-text">{{ field.help_text|safe }}</small>
                                 {% endif %}
                                 {% if field.field.required %}
-                                    <div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{% endif %}
+                                    <div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
                             </div>
                         </div>
                     {% endspaceless %}

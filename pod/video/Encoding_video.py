@@ -528,10 +528,10 @@ class Encoding_video:
             self.add_encoding_log(
                 "create_thumbnail_command", thumbnail_command, return_value, return_msg
             )
-            # on ne fait pas d'overview pour les videos de moins de 10 secondes
-            # (laisser les 10sec inclus pour laisser les tests passer) --> OK
-            if self.duration >= 10:
-                self.create_overview()
+        # on ne fait pas d'overview pour les videos de moins de 10 secondes
+        # (laisser les 10sec inclus pour laisser les tests passer) --> OK
+        if self.is_video() and self.duration >= 10:
+            self.create_overview()
 
     def get_extract_subtitle_command(self):
         subtitle_command = "%s " % FFMPEG_CMD

@@ -497,10 +497,10 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
       )}</span></div>`
     ),
     startTimeBtn: $(
-      `<a class='startTimeBtn link-primary' href='#podvideoplayer'>${start}</a>`
+      `<a class='startTimeBtn btn-link' href='#podvideoplayer'>${start}</a>`
     ),
     endTimeBtn: $(
-      `<a class='endTimeBtn link-primary' href='#podvideoplayer'>${end}</a>`
+      `<a class='endTimeBtn btn-link' href='#podvideoplayer'>${end}</a>`
     ),
 
     // flags
@@ -589,7 +589,7 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
     },
 
     init: function () {
-      var uniq = "c" + new Date().getTime();
+      var uniq = "c" + Math.floor(Math.random() * 100000000);
       this.div.captionBlockObject = this;
       this.captionTextInput.val(captionText);
       this.captionTextInput.attr("id", uniq);

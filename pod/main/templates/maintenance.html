@@ -6,10 +6,14 @@
 {% load video_filters %}
 {% load video_tags %}
 
-
 {% block page_content %}
-
-  <div class="p-3 mb-2 bg-danger text-white">{{text}}</div>
-  <a href="/" type="button" class="btn btn-primary" data-bs-dismiss="modal">{%trans "Return to homepage"%}</a>
-  <a href="{% url 'contact_us' %}" type="button" class="btn btn-secondary" data-bs-dismiss="modal">{%trans "Contact us"%}</a>
-{%endblock page_content%}
+  {% if MAINTENANCE_MODE %}
+    <div class="p-3 mb-2 bg-danger text-white">{{text}}</div>
+  {% else %}
+    <div class="p-3 mb-2 bg-success text-white">{% trans "The maintenance is over, you can go back to work. Thank you for your patience." %}</div>
+  {% endif %}
+  <div class="text-center">
+    <a href="/" type="button" class="btn btn-primary">{% trans "Return to homepage" %}</a>
+    <a href="{% url 'contact_us' %}" type="button" class="btn btn-secondary">{% trans "Contact us" %}</a>
+  </div>
+{% endblock page_content %}

@@ -35,16 +35,16 @@
     </div>
     <footer class="card-footer p-0 m-1">
       {% if not record.live %}
-        <small class="form-text text-muted">{% trans "Live not published"%}</small>
+        <small class="form-text">{% trans "Live not published"%}</small>
       {% else %}
         {% if record.live.status == 0 %}
-          <small class="form-text text-muted">{% trans "Live not already started"%}</small>
+          <small class="form-text">{% trans "Live not already started"%}</small>
         {% endif %}
         {% if record.live.status == 1 %}
-          <small class="form-text text-muted">{% trans "Live in progress"%}</small>
+          <small class="form-text">{% trans "Live in progress"%}</small>
         {% endif %}
         {% if record.live.status == 2 %}
-          <small class="form-text text-muted">{% trans "Live stopped"%}</small>
+          <small class="form-text">{% trans "Live stopped"%}</small>
         {% endif %}
       {% endif %}
     </footer>

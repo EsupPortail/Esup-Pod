@@ -54,11 +54,6 @@ User = get_user_model()
 
 # Create ModelForm based on the Group model.
 class GroupAdminForm(forms.ModelForm):
-    class Meta:
-        model = Group
-        fields = "__all__"
-        exclude = []
-
     # Add the users field.
     users = forms.ModelMultipleChoiceField(
         queryset=User.objects.all(),
@@ -67,6 +62,11 @@ class GroupAdminForm(forms.ModelForm):
         widget=FilteredSelectMultiple(_("Users"), False),
         label=_("Users"),
     )
+
+    class Meta:
+        model = Group
+        fields = "__all__"
+        exclude = []
 
     def __init__(self, *args, **kwargs):
         # Do the normal form initialisation.
