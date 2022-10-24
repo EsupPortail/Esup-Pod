@@ -33,7 +33,7 @@ function detect_visibility() {
     return false;
   }
 }
-*/ 
+*/
 
 const isElementXPercentInViewport = function () {
   percentVisible = 95;
@@ -52,11 +52,17 @@ const isElementXPercentInViewport = function () {
 };
 
 class InfiniteLoader {
-  constructor(url, callBackBeforeLoad, callBackAfterLoad, nextPage = true, page = 2) {
+  constructor(
+    url,
+    callBackBeforeLoad,
+    callBackAfterLoad,
+    nextPage = true,
+    page = 2
+  ) {
     this.infinite_loading = document.querySelector(".infinite-loading");
     this.videos_list = document.getElementById("videos_list");
     this.next_page_number = page;
-    this.current_page_number = page - 1
+    this.current_page_number = page - 1;
     this.nextPage = nextPage;
     this.callBackBeforeLoad = callBackBeforeLoad;
     this.callBackAfterLoad = callBackAfterLoad;
@@ -65,41 +71,61 @@ class InfiniteLoader {
       if (document.body.getBoundingClientRect().top > this.scrollPos) {
       } else {
         if (isElementXPercentInViewport()) {
-          if (this.nextPage && this.next_page_number > this.current_page_number) {
-           this.current_page_number = this.next_page_number
+          if (
+            this.nextPage &&
+            this.next_page_number > this.current_page_number
+          ) {
+            this.current_page_number = this.next_page_number;
             this.initMore();
           }
-           
         }
       }
       this.scrollPos = document.body.getBoundingClientRect().top;
-    }
+    };
     window.addEventListener("scroll", this.scroller_init);
   }
-  initMore() {
+  async initMore() {
     let url = this.url;
     this.callBackBeforeLoad();
-    this.getData(url, this.next_page_number);
     
+    //UPDATE DOM
+    this.getData(url, this.next_page_number).then((data) => {
+      const html = new DOMParser().parseFromString(data, "text/html");
+      console.log(); // here all the videos from the page are loaded
+
+      if (
+        html.querySelector("#videos_list").getAttribute("nextPage") != "True"
+      ) {
+        this.nextPage = false;
+      }
+
+      let element = this.videos_list;
+     
+      element.innerHTML += html.querySelector("#videos_list").innerHTML
+      this.callBackAfterLoad();
+      this.next_page_number += 1;
+    });
   }
 
- 
-
-  removeLoader(){
+  removeLoader() {
     window.removeEventListener("scroll", this.scroller_init);
   }
 
-   getData(url, page) {
+  async getData(url, page) {
     if (!url) return;
     url = url + page;
-    fetch(url, {
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         "X-CSRFToken": "{{ csrf_token }}",
         "X-Requested-With": "XMLHttpRequest",
       },
       credentials: "same-origin",
-    })
+    });
+    const data = await response.text();
+    return data;
+
+    /*
     .then((response) => response.text())
     .then((data) => {
       const html = new DOMParser().parseFromString(data, "text/html").body
@@ -107,24 +133,6 @@ class InfiniteLoader {
       this.updateDom(data);
       this.callBackAfterLoad();
     })
-     
+    */
   }
-
-   updateDom(data){
-    const html = new DOMParser().parseFromString(data, "text/html").body
-    console.log(html.querySelector("#videos_list")); // here only half of the videos are loaded ??? 
-  
-    if (html.querySelector("#videos_list").getAttribute("nextPage") != "True") {
-      this.nextPage = false ;
-    }
-    
-    let element = this.videos_list;
-    html.querySelector("#videos_list").childNodes.forEach(function (node) {
-      element.appendChild(node);
-    });
-    this.callBackAfterLoad();
-    this.next_page_number += 1;
-    
-  }
-  
 }

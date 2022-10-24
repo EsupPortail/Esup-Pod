@@ -15,7 +15,6 @@ function getParents(el, parentSelector /* optional */) {
     parents.push(o);
 
     p = o.parentNode;
-    console.log(p, parentSelector);
   }
   parents.push(parentSelector); // Push that parentSelector you wanted to stop at
 
@@ -667,7 +666,7 @@ var send_form_data = async function (
   }
 
   if (method == "post") {
-    fetch(url, {
+   await fetch(url, {
       method: "POST",
       headers: {
         "X-CSRFToken": token,
@@ -879,14 +878,25 @@ var show_picture_form = function (data) {
     userPictureModal.hide();
   }
 };
-var append_picture_form = function (data) {
+var append_picture_form = async function (data) {
   // parse data into html
   let parser = new DOMParser();
   let htmlData = parser.parseFromString(data, "text/html").body.firstChild;
   console.log(htmlData);
   document.body.appendChild(htmlData);
 
-  eval(document.body.querySelector("#filewidget_script").innerHTML);
+ htmlData.querySelectorAll("script").forEach((item) => {
+    if (item.src) {
+      // external script
+      let script = document.createElement("script");
+      script.src = item.src;
+      document.body.appendChild(script);
+    } else {
+      // inline script
+    eval(item.innerHTML);
+    }
+  });
+
 
   let userpicture = document.getElementById("userpictureModal");
   if (userpicture) {
