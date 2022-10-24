@@ -128,7 +128,7 @@
   {% with comid=com.id|slugify %}
   {% with dCom=dictComments|lookup:comid %}
   {% if dCom %}
-    <div class="comments ms-3">
+    <div class="comments">
       {% for com in dCom %}
         {% include "videos/video_note_comments_display.html" %}
       {% endfor %}

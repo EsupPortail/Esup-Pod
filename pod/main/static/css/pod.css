@@ -1090,16 +1090,13 @@ body {
 .pod-card__title,
 .pod-card__title label {
   display: flex;
-  gap: 0.5rem;
+  gap: .5rem;
   align-items: center;
 }
 
 @media (min-width: 992px) {
   .pod-card__title,
   .pod-card__title label {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
     flex-flow: wrap
   }
 }

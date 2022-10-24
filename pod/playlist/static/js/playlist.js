@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
       form_data.append("csrfmiddlewaretoken", token);
       form_data.append("action", "move");
     
-
+      const return_url = $(this).data("return-url");
       var jqxhr = fetch(window.location.href, {
         method: "POST",
         headers: {
