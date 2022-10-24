@@ -1,10 +1,8 @@
 // podfile:filewidjet.js
 // select file
 
-
 if (typeof loaded == "undefined") {
-  console.log("%c filewidget.js loaded", 'color : #bada55');
-  console.log(`%c ${id_input} `, 'color : #bada55');
+  console.log("%c filewidget.js loaded", "color : #bada55");
   loaded = true;
   document.addEventListener("click", (e) => {
     if (
@@ -15,7 +13,6 @@ if (typeof loaded == "undefined") {
     let file = e.target.parentNode;
     e.preventDefault();
     if (id_input && id_input != "") {
-      
       document.querySelector("input#" + id_input).value = file.dataset.fileid;
 
       if (file.dataset.filetype == "CustomImageModel") {
@@ -149,7 +146,6 @@ if (typeof loaded == "undefined") {
 
   /****** CHANGE FILE ********/
   document.addEventListener("submit", (e) => {
-    
     if (
       e.target.id != "formchangeimage" &&
       e.target.id != "formchangefile" &&
@@ -698,7 +694,7 @@ if (typeof loaded == "undefined") {
   }
 
   function append_folder_html_in_modal(data) {
-    console.log('appended folder html in modal');
+    console.log("appended folder html in modal");
     document.querySelector("#modal-folder_" + id_input).innerHTML = data;
   }
 

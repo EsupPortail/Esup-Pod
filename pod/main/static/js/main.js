@@ -9,13 +9,13 @@ function getParents(el, parentSelector /* optional */) {
   var parents = [];
   var p = el.parentNode;
   var is_selector = p.matches(parentSelector);
- 
+
   while (!is_selector || p !== document) {
     var o = p;
     parents.push(o);
-    
+
     p = o.parentNode;
-    console.log(p, parentSelector)
+    console.log(p, parentSelector);
   }
   parents.push(parentSelector); // Push that parentSelector you wanted to stop at
 
@@ -45,7 +45,7 @@ function slideUp(target, duration = 500, callback = null) {
     target.style.removeProperty("transition-duration");
     target.style.removeProperty("transition-property");
     if (callback !== null) {
-    callback();
+      callback();
     }
     //alert("!");
   }, duration);
@@ -600,7 +600,6 @@ document.addEventListener("submit", (e) => {
 document.addEventListener("change", (e) => {
   if (
     !e.target.matches("#video_version_form input[type=radio][name=version]")
-    
   ) {
     return;
   }
@@ -699,15 +698,13 @@ var send_form_data = async function (
       .then((response) => response.text())
       .then(($data) => {
         $data = callbackSuccess($data);
-        if (typeof window[fct] === "function"){
+        if (typeof window[fct] === "function") {
           window[fct]($data);
-
         }
-        
       })
 
       .catch((error) => {
-        console.log(error)
+        console.log(error);
         showalert(
           gettext("Error during exchange") +
             "(" +
@@ -748,7 +745,7 @@ var send_form_data_vanilla = function (
         };
   callbackFail =
     typeof callbackFail === "function" ? callbackFail : function (err) {};
-  console.log(data_form)
+  console.log(data_form);
   if (data_form) {
     data_form = new FormData(data_form);
   }
@@ -772,7 +769,7 @@ var send_form_data_vanilla = function (
       window[fct](data);
     })
     .catch(function (err) {
-      console.log(err)
+      console.log(err);
       showalert(
         gettext("Error during exchange") +
           "(" +
@@ -886,21 +883,11 @@ var append_picture_form = function (data) {
   // parse data into html
   let parser = new DOMParser();
   let htmlData = parser.parseFromString(data, "text/html").body.firstChild;
-   
+  console.log(htmlData);
   document.body.appendChild(htmlData);
 
   eval(document.body.querySelector("#filewidget_script").innerHTML);
 
- 
-   
-
-
-
-
- 
- 
-  
-  
   let userpicture = document.getElementById("userpictureModal");
   if (userpicture) {
     let userPictureModal = bootstrap.Modal.getOrCreateInstance(userpicture);
