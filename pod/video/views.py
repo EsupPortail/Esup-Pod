@@ -2290,9 +2290,18 @@ def get_comments(request, video_slug):
         )
 
 
-@login_required(redirect_field_name="referrer")
+@ajax_login_required
+@csrf_protect
 def delete_comment(request, video_slug, comment_id):
+    """Delete the comment `comment_id` associated to `video_slug`.
 
+    Args:
+        video_slug (string): the video associated to this comment
+        comment_id (): id of the comment to be deleted
+
+    Returns:
+        HttpResponse
+    """
     v = get_object_or_404(Video, slug=video_slug)
     c_user = request.user
     c = get_object_or_404(Comment, video=v, id=comment_id)
@@ -2306,12 +2315,10 @@ def delete_comment(request, video_slug, comment_id):
         )
 
     if c.author == c_user or v.owner == c_user or c_user.is_superuser:
-
         c.delete()
         response["comment_deleted"] = comment_id
         return HttpResponse(json.dumps(response), content_type="application/json")
     else:
-
         response["deleted"] = False
         response["message"] = _("You do not have rights to delete this comment")
         return HttpResponse(
