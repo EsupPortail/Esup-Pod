@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-21 15:17+0000\n"
+"POT-Creation-Date: 2022-10-24 13:05+0000\n"
 "PO-Revision-Date: 2022-05-13 15:49+0200\n"
 "Last-Translator: ncan <nicolas.can@univ-lille.fr>\n"
 "Language-Team: \n"
@@ -6815,40 +6815,40 @@ msgstr ""
 msgid "Sorry, you can't vote a comment while the server is under maintenance."
 msgstr ""
 
-#: pod/video/views.py:2305
+#: pod/video/views.py:2314
 msgid ""
 "Sorry, you can't delete a comment while the server is under maintenance."
 msgstr ""
 
-#: pod/video/views.py:2316
+#: pod/video/views.py:2323
 msgid "You do not have rights to delete this comment"
 msgstr ""
 
-#: pod/video/views.py:2421 pod/video/views.py:2492
+#: pod/video/views.py:2428 pod/video/views.py:2499
 msgid "One or many videos already have a category."
 msgstr ""
 
-#: pod/video/views.py:2463 pod/video/views.py:2539
+#: pod/video/views.py:2470 pod/video/views.py:2546
 msgid "Title field is required"
 msgstr ""
 
-#: pod/video/views.py:2469 pod/video/views.py:2545 pod/video/views.py:2594
+#: pod/video/views.py:2476 pod/video/views.py:2552 pod/video/views.py:2601
 msgid "Method Not Allowed"
 msgstr ""
 
-#: pod/video/views.py:2510
+#: pod/video/views.py:2517
 msgid "Category updated successfully."
 msgstr ""
 
-#: pod/video/views.py:2533
+#: pod/video/views.py:2540
 msgid "You do not have rights to edit this category"
 msgstr ""
 
-#: pod/video/views.py:2587
+#: pod/video/views.py:2594
 msgid "You do not have rights to delete this category"
 msgstr ""
 
-#: pod/video/views.py:2661
+#: pod/video/views.py:2668
 msgid "Update successfully"
 msgstr ""
 

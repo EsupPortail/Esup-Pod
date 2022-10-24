@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-21 15:17+0000\n"
+"POT-Creation-Date: 2022-10-24 13:05+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -1776,8 +1776,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html:150
 msgid "Subtitles and/or caption(s) files must be in \".vtt\" format."
 msgstr ""
-"Les fichiers de sous-titres et/ou de légendes doivent être au format \".vtt"
-"\"."
+"Les fichiers de sous-titres et/ou de légendes doivent être au format \"."
+"vtt\"."
 
 #: pod/completion/templates/video_completion.html:151
 msgid "You can use"
@@ -2057,8 +2057,8 @@ msgid ""
 msgstr ""
 "Les champs \"Début\" et \"Fin\" doivent contenir des valeurs en secondes. "
 "Lancez la lecture de la vidéo, mettez sur pause et cliquez sur \"Récupérer "
-"le temps depuis le lecteur\" pour renseigner automatiquement le champ \"Début"
-"\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
+"le temps depuis le lecteur\" pour renseigner automatiquement le champ "
+"\"Début\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:78
 msgid "You cannot overlap enrichments."
@@ -4392,11 +4392,11 @@ msgstr "La réunion n’a pas encore commencé."
 #: pod/meeting/templates/meeting/join.html:59
 #, python-format
 msgid ""
-"It is scheduled for <b>%(start_date)s</b> from <u>%(start_time)s</u> to <u>"
-"%(end_time)s</u>."
+"It is scheduled for <b>%(start_date)s</b> from <u>%(start_time)s</u> to "
+"<u>%(end_time)s</u>."
 msgstr ""
-"Elle est planifiée le <b>%(start_date)s</b> de <u>%(start_time)s</u> à <u>"
-"%(end_time)s</u>."
+"Elle est planifiée le <b>%(start_date)s</b> de <u>%(start_time)s</u> à "
+"<u>%(end_time)s</u>."
 
 #: pod/meeting/templates/meeting/join.html:61
 #, python-format
@@ -4586,8 +4586,8 @@ msgstr ""
 "        <p>Date de fin : %(end_date)s </p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
-"%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : "
+"<b>%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -4664,8 +4664,8 @@ msgstr "Aucune liste de lecture trouvée"
 
 #: pod/playlist/templates/my_playlists.html:19
 msgid ""
-"You have not created any playlists yet, please use the \"Add a new playlist"
-"\" button to add one."
+"You have not created any playlists yet, please use the \"Add a new "
+"playlist\" button to add one."
 msgstr ""
 "Vous n’avez pas encore créé de liste de lecture, veuillez cliquer sur le "
 "bouton « Ajouter une nouvelle liste de lecture » pour en ajouter une."
@@ -5394,8 +5394,8 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html:13
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
 "passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
@@ -5507,9 +5507,10 @@ msgid ""
 msgstr ""
 "Bonjour, <p>un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur \"%(recorder)s\".<br/>Pour "
-"l’ajouter, cliquez sur le lien ci dessous.</p><a href=\"%(link_url)s\">"
-"%(link_url)s</a><br/><i>Si le lien n’est pas actif, il faut le copier-coller "
-"dans la barre d’adresse de votre navigateur.</i><p><p>Cordialement</p>"
+"l’ajouter, cliquez sur le lien ci dessous.</p><a "
+"href=\"%(link_url)s\">%(link_url)s</a><br/><i>Si le lien n’est pas actif, il "
+"faut le copier-coller dans la barre d’adresse de votre navigateur.</"
+"i><p><p>Cordialement</p>"
 
 #: pod/recorder/views.py:286
 msgid "New recording added."
@@ -6575,8 +6576,8 @@ msgid ""
 "This video is chaptered. Click the chapter button <span class=\"vjs-icon-"
 "chapters\"></span> on the video player to view them."
 msgstr ""
-"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span class="
-"\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
+"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span "
+"class=\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
 
 #: pod/video/templates/videos/video-all-info.html:26
 #: pod/video/templates/videos/video-all-info.html:41
@@ -7205,42 +7206,42 @@ msgstr ""
 "Désolé, vous ne pouvez pas voter pour un commentaire pendant que le serveur "
 "est en maintenance."
 
-#: pod/video/views.py:2305
+#: pod/video/views.py:2314
 msgid ""
 "Sorry, you can't delete a comment while the server is under maintenance."
 msgstr ""
 "Désolé, vous ne pouvez pas supprimer un commentaire pendant que le serveur "
 "est en maintenance."
 
-#: pod/video/views.py:2316
+#: pod/video/views.py:2323
 msgid "You do not have rights to delete this comment"
 msgstr "Vous n’avez pas les droits pour supprimer ce commentaire"
 
-#: pod/video/views.py:2421 pod/video/views.py:2492
+#: pod/video/views.py:2428 pod/video/views.py:2499
 msgid "One or many videos already have a category."
 msgstr "Une ou plusieurs vidéos possèdent déjà une catégorie."
 
-#: pod/video/views.py:2463 pod/video/views.py:2539
+#: pod/video/views.py:2470 pod/video/views.py:2546
 msgid "Title field is required"
 msgstr "Champ de titre est requis"
 
-#: pod/video/views.py:2469 pod/video/views.py:2545 pod/video/views.py:2594
+#: pod/video/views.py:2476 pod/video/views.py:2552 pod/video/views.py:2601
 msgid "Method Not Allowed"
 msgstr "Méthode non autorisée"
 
-#: pod/video/views.py:2510
+#: pod/video/views.py:2517
 msgid "Category updated successfully."
 msgstr "Catégorie mise à jour avec succès."
 
-#: pod/video/views.py:2533
+#: pod/video/views.py:2540
 msgid "You do not have rights to edit this category"
 msgstr "Vous n’avez pas les droits pour éditer cette catégorie"
 
-#: pod/video/views.py:2587
+#: pod/video/views.py:2594
 msgid "You do not have rights to delete this category"
 msgstr "Vous n’avez pas les droits pour supprimer cette catégorie"
 
-#: pod/video/views.py:2661
+#: pod/video/views.py:2668
 msgid "Update successfully"
 msgstr "Mise à jour réussie"
 

@@ -356,11 +356,7 @@ class Comment extends HTMLElement {
         "comment_element",
         "comment_child"
       );
-      html_container.parentElement.classList.toggle("show");
-      if (!comment_parent.classList.contains("show"))
-        comment_parent.classList.add("show");
-      add_child_comment(html_field, child_container, comment_parent);
-      html_field.value = "";
+      add_child_comment(html_field, html_container, child_container, comment_parent);
     }
   }
 }
@@ -449,65 +445,47 @@ function vote(comment_action_html, comment_id) {
       "X-Requested-With": "XMLHttpRequest",
     },
     body: data,
-  })
-    .then((response) => {
-      comment_action_html.classList.remove("voting");
-      if (response.ok) {
-        response.json().then((data) => {
-          const target_comment = document.getElementById(
-            comment_action_html.dataset.comment
-          );
-
-          if (data.voted === true) {
-            const nb_vote = update_comment_attribute(
-              target_comment,
-              null,
-              "nbr_vote",
-              "increment"
-            );
-            btn.innerHTML = interpolate(
-              ngettext(
-                '%s <span class="d-none d-md-inline">vote</span>',
-                '%s <span class="d-none d-md-inline">votes</span>',
-                nb_vote
-              ),
-              [nb_vote]
-            );
-            if (!comment_action_html.classList.contains("voted"))
-              comment_action_html.classList.add("voted");
-          } else {
-            const nb_vote = update_comment_attribute(
-              target_comment,
-              null,
-              "nbr_vote",
-              "decrement"
-            );
-            btn.innerHTML = interpolate(
-              ngettext(
-                '%s <span class="d-none d-md-inline">vote</span>',
-                '%s <span class="d-none d-md-inline">votes</span>',
-                nb_vote
-              ),
-              [nb_vote]
-            );
-            if (comment_action_html.classList.contains("voted"))
-              comment_action_html.classList.remove("voted");
-          }
-        });
-      } else {
-        let message = gettext("Bad response from the server.");
-        if (response.status == 403) {
-          message = gettext("Sorry, you're not allowed to vote by now.");
-        }
-        pod_comment_wrapper.appendChild(
-          new AlertMessage(message, "danger")
-        );
-        // console.log("Bad response from network", response);
+  }).then((response) => {
+    comment_action_html.classList.remove("voting");
+    if (response.ok) {
+      return response.json();
+    } else {
+      let message = gettext("Bad response from the server.");
+      if (response.status == 403) {
+        message = gettext("Sorry, you're not allowed to vote by now.");
       }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      throw new Error(message);
+    }
+  }).then((data) => {
+    const target_comment = document.getElementById(
+      comment_action_html.dataset.comment
+    );
+
+    let action = "";
+    if (data.voted === true) {
+      action = "increment";
+      comment_action_html.classList.add("voted");
+    } else {
+      action = "decrement";
+      comment_action_html.classList.remove("voted");
+    }
+    const nb_vote = update_comment_attribute(
+      target_comment,
+      null,
+      "nbr_vote",
+      action
+    );
+    btn.innerHTML = interpolate(
+      ngettext(
+        '%s <span class="d-none d-md-inline">vote</span>',
+        '%s <span class="d-none d-md-inline">votes</span>',
+        nb_vote
+      ),
+      [nb_vote]
+    );
+  }).catch((error) => {
+    showalert(error.message, "alert-danger");
+  });
 }
 
 /**
@@ -523,12 +501,17 @@ function vote(comment_action_html, comment_id) {
  */
 function save_comment(
   content,
+  textarea,
   date,
   comment_html,
   comment_container_html,
   direct_parent_id = null,
   top_parent_comment_html = null
 ) {
+
+  // Prevent input to be modified until comment is really added.
+  textarea.setAttribute("readonly", true);
+
   // show loader
   const current_loader = loader.cloneNode(true);
   current_loader.classList.remove("d-none"); // waiting for charging child
@@ -543,7 +526,7 @@ function save_comment(
     data.append("direct_parent", direct_parent_id);
   }
   data.append("content", content);
-  data.append("date_added", date);
+  data.append("date_added", date.toISOString());
   data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
   fetch(post_url, {
     method: "POST",
@@ -552,80 +535,86 @@ function save_comment(
       "X-Requested-With": "XMLHttpRequest",
     },
   })
-    .then((response) => {
-      // remove loader
-      comment_container_html.removeChild(current_loader);
-      if (response.ok) {
-        response.json().then((data) => {
-          let c = {
-            author_name: data.author_name,
-            is_owner: true,
-            content: content,
-            id: data.id,
-            added: date,
-            parent__id: top_parent_id,
-            direct_parent__id: direct_parent_id,
-            nbr_vote: 0,
-          };
-          if (!top_parent_id) {
-            c.children = [];
-            c.nbr_child = 0;
-            // update all_comment data
-            all_comment = [...all_comment, c];
-            comment_container_html.after(comment_html);
-          } else {
-            // Fetch comment"s children if not already loaded
-            if (
-              get_comment_attribute(top_parent_comment_html, "children")
-                .length === 0
-            )
-              fetch_comment_children(
-                top_parent_comment_html,
-                top_parent_id,
-                true
-              );
-            else {
-              // Add comment child into the DOM
-              comment_container_html.appendChild(comment_html);
-              // Scroll to the comment child
-              scrollToComment(comment_html);
-            }
-            // update local saved data (all_comment)
-            all_comment = all_comment.map((comment) => {
-              if (comment.id === top_parent_id) {
-                comment.children = [...comment.children, c];
-                comment.nbr_child += 1;
-              }
-              return comment;
-            });
-            let nbr_child = get_comment_attribute(
-              top_parent_comment_html,
-              "nbr_child"
-            );
-            hide_or_add_show_children_btn(
-              top_parent_comment_html,
-              top_parent_id,
-              nbr_child
-            );
-            update_answer_text(top_parent_comment_html, nbr_child);
-          }
-          set_comments_number();
-        });
-      } else {
-        let message = gettext("Bad response from the server.");
-        if (response.status == 403) {
-          message = gettext("Sorry, you can't comment this video by now.");
-        }
-        pod_comment_wrapper.appendChild(
-          new AlertMessage(message, "danger")
-        );
-        // console.log("Bad response from network", response);
+  .then((response) => {
+    comment_container_html.removeChild(current_loader);
+    textarea.removeAttribute("readonly");
+    //raw_response = response.clone();
+    if (response.ok) {
+      return response.json();
+    } else {
+      let message = gettext("Bad response from the server.");
+      if (response.status == 403) {
+        message = gettext("Sorry, you can't comment this video by now.");
       }
-    })
-    .catch((error) => {
-      console.log(error);
-      console.log(error.message);
-    });
+      throw new Error(message);
+    }
+  })
+  .then((data) => {
+    textarea.value="";
+    let c = {
+      author_name: data.author_name,
+      is_owner: true,
+      content: content,
+      id: data.id,
+      added: date,
+      parent__id: top_parent_id,
+      direct_parent__id: direct_parent_id,
+      nbr_vote: 0,
+    };
+
+    if (!top_parent_id) {
+      c.children = [];
+      c.nbr_child = 0;
+      // update all_comment data
+      all_comment = [...all_comment, c];
+      comment_container_html.after(comment_html);
+    } else {
+
+      /* Ensure that the top parent container is shown. */
+      top_parent_comment_html.classList.add("show");
+
+      // Fetch comment's children if not already loaded
+      if (
+        get_comment_attribute(top_parent_comment_html, "children")
+          .length === 0
+      )
+        fetch_comment_children(
+          top_parent_comment_html,
+          top_parent_id,
+          true
+        );
+      else {
+        // Add comment child into the DOM
+        comment_container_html.appendChild(comment_html);
+        // Scroll to the comment child
+        scrollToComment(comment_html);
+      }
+      // update local saved data (all_comment)
+      all_comment = all_comment.map((comment) => {
+        if (comment.id === top_parent_id) {
+          comment.children = [...comment.children, c];
+          comment.nbr_child += 1;
+        }
+        return comment;
+      });
+      let nbr_child = get_comment_attribute(
+        top_parent_comment_html,
+        "nbr_child"
+      );
+      hide_or_add_show_children_btn(
+        top_parent_comment_html,
+        top_parent_id,
+        nbr_child
+      );
+      update_answer_text(top_parent_comment_html, nbr_child);
+    }
+    set_comments_number();
+
+  })
+  .catch((error) => {
+    showalert(error.message, "alert-danger");
+    //console.log(raw_response.text())
+  });
 }
 
 /**
@@ -644,63 +633,61 @@ function deleteWithAnimation(comment, is_child = false) {
 /**
  * Delete a comment
  *
- * @param  {HTMLElement} comment     comment to be deleted
+ * @param  {HTMLElement} comment  comment to be deleted
  */
 function delete_comment(comment) {
   let comment_id = get_comment_attribute(comment);
   let is_child = !!get_comment_attribute(comment, "parent__id");
   let url = base_delete_url + comment_id + "/";
-  let data = new FormData();
-  data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
+  let formdata = new FormData();
+  formdata.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
   fetch(url, {
     method: "POST",
-    body: data,
+    body: formdata,
     headers: {
       "X-Requested-With": "XMLHttpRequest",
     },
-  })
-    .then((response) => {
-      if (response.ok) {
-        response.json().then((data) => {
-          if (data.deleted) {
-            showalert(gettext("The comment has been deleted successfully."), "alert-success");
-            let parent_el = null;
-            if (is_child) {
-              parent_el = get_node(comment, "comment_element", "comment_child");
-              let parent_id = get_comment_attribute(parent_el);
-              delete_comment_child_DOM(comment, parent_id, is_child); // delete all children from the DOM
-              let remaining_children = get_comment_attribute(
-                parent_el,
-                "nbr_child"
-              );
-              deleteWithAnimation(comment, true); // delete comment from the DOM
-              hide_or_add_show_children_btn(
-                parent_el,
-                parent_id,
-                remaining_children
-              ); // Manage show answers button
-              update_answer_text(parent_el, remaining_children); // Update number of child text displayed
-              set_comments_number();
-              return;
-            }
-            all_comment = all_comment.filter((c) => c.id != data.comment_deleted);
-            deleteWithAnimation(comment, false);
+  }).then((response) => {
+    if (response.ok) {
+      response.json().then((data) => {
+        if (data.deleted) {
+          showalert(gettext("The comment has been deleted successfully."), "alert-success");
+          let parent_el = null;
+          if (is_child) {
+            parent_el = get_node(comment, "comment_element", "comment_child");
+            let parent_id = get_comment_attribute(parent_el);
+            delete_comment_child_DOM(comment, parent_id, is_child); // delete all children from the DOM
+            let remaining_children = get_comment_attribute(
+              parent_el,
+              "nbr_child"
+            );
+            deleteWithAnimation(comment, true); // delete comment from the DOM
+            hide_or_add_show_children_btn(
+              parent_el,
+              parent_id,
+              remaining_children
+            ); // Manage show answers button
+            update_answer_text(parent_el, remaining_children); // Update number of child text displayed
             set_comments_number();
-          } else showalert(data.message, "alert-warning");
-        });
-      } else {
-        let message = gettext("Bad response from the server.");
-        if (response.status == 403) {
-          message = gettext("Sorry, you can't delete this comment by now.");
-        }
-        showalert(message, "alert-danger");
-        //console.log("Bad response from network", response);
+            return;
+          }
+          all_comment = all_comment.filter((c) => c.id != data.comment_deleted);
+          deleteWithAnimation(comment, false);
+          set_comments_number();
+        } else showalert(data.message, "alert-warning");
+      });
+    } else {
+      let message = gettext("Bad response from the server.");
+      if (response.status == 403) {
+        message = gettext("Sorry, you can't delete this comment by now.");
       }
-    })
-    .catch((error) => {
-      console.log(error);
-      console.log(error.message);
-    });
+      showalert(message, "alert-danger");
+      //console.log("Bad response from network", response);
+    }
+  }).catch((error) => {
+    console.log(error);
+    console.log(error.message);
+  });
 }
 
 /**
@@ -889,11 +876,11 @@ if (is_authenticated) {
         true
       );
       c.dataset.level = "-1";
-      el.value = "";
       // INSERT INTO DATABASE THE CURRENT COMMENT CHILD
       save_comment(
         comment_content,
-        date_added.toISOString(),
+        el,
+        date_added,
         c,
         document.querySelector(
           ".comment_container .comment_content form.add_parent_comment"
@@ -1025,12 +1012,15 @@ function add_child_comment(el, el_container, child_container, top_parent_comment
 
     save_comment(
       el.value,
-      date_added.toISOString(),
+      el,
+      date_added,
       c,
-      container_el,
+      child_container,
       direct_parent_id,
       top_parent_comment_html
     );
+
+    el_container.parentElement.classList.remove("show");
   }
 }
 
