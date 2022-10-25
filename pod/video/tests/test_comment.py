@@ -347,6 +347,42 @@ class TestComment(TestCase):
         response = self.client.get(url, HTTP_ACCEPT_LANGUAGE="en", **self.ajax_header)
         self.assertContains(response, b"<h1>Method Not Allowed</h1>", status_code=405)
 
+    def test_vote_without_ajax(self):
+        """Verify that Pod will refuse a comment request done without AJAX http header."""
+        # Ensure that comment owner is logged
+        self.client.logout()
+        self.client.force_login(self.owner_user)
+
+        # Vote +1
+        url = reverse(
+            "video:add_vote",
+            kwargs={
+                "video_slug": self.video.slug,
+                "comment_id": self.admin_comment.id,
+            },
+        )
+        response = self.client.post(url)
+        # Check that the response is 403 Forbidden.
+        self.assertEqual(response.status_code, 403)
+
+        # Delete comment
+        url = reverse(
+            "video:delete_comment",
+            kwargs={
+                "video_slug": self.video.slug,
+                "comment_id": self.owner_to_admin_comment.id,
+            },
+        )
+        response = self.client.post(url)
+        # Check that the response is 403 Forbidden.
+        self.assertEqual(response.status_code, 403)
+
+        # Add a comment
+        url = reverse("video:add_comment", kwargs={"video_slug": self.video.slug})
+        response = self.client.post(url, {"content": "New parent comment"})
+        # Check that the response is 403 Forbidden.
+        self.assertEqual(response.status_code, 403)
+
     def tearDown(self):
         """Cleanup all created stuffs."""
         del self.video
