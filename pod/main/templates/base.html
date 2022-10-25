@@ -45,7 +45,7 @@
   {% block page_extra_head %}
   {% endblock %}
   {% if request.GET.is_iframe %}
-  <link rel="stylesheet" href="{% static 'css/iframe.css' %}?ver={{VERSION}}" media="screen">
+    <link rel="stylesheet" href="{% static 'css/iframe.css' %}?ver={{VERSION}}" media="screen">
   {% endif %}
   {% endspaceless %}
 
@@ -172,73 +172,73 @@
   {% endblock more_script %}
 
   {% if DARKMODE_ENABLED == True %}
-  <script>
-    // Get the theme toggle input
-    const themeToggle = document.querySelector(
-      '.theme-switch input[type="checkbox"]'
-    );
-    // Get the current theme from local storage
-    const currentTheme = localStorage.getItem("theme");
-    // If the current local storage item can be found
-    if (currentTheme) {
+    <script>
+      // Get the theme toggle input
+      const themeToggle = document.querySelector(
+        '.theme-switch input[type="checkbox"]'
+      );
+      // Get the current theme from local storage
+      const currentTheme = localStorage.getItem("theme");
+      // If the current local storage item can be found
+
       // Set the body data-theme attribute to match the local storage item
-      document.documentElement.setAttribute("data-theme", currentTheme);
+      document.documentElement.dataset.theme = currentTheme?currentTheme:"light";
       // If the current theme is dark, check the theme toggle
       if (currentTheme === "dark") {
         themeToggle.checked = true;
       }
-    }
-    // Function that will switch the theme based on the if the theme toggle is checked or not
-    function switchTheme(e) {
-      if (e.target.checked) {
-        document.documentElement.setAttribute("data-theme", "dark");
-        localStorage.setItem("theme", "dark");
-      } else {
-        document.documentElement.setAttribute("data-theme", "light");
-        localStorage.setItem("theme", "light");
+
+      // Function that will switch the theme based on if the theme toggle is checked or not
+      function switchTheme(e) {
+        if (e.target.checked) {
+          document.documentElement.dataset.theme = "dark";
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.dataset.theme = "light";
+          localStorage.setItem("theme", "light");
+        }
       }
-    }
-    // Add an event listener to the theme toggle, which will switch the theme
-    themeToggle.addEventListener("change", switchTheme, false);
-  </script>
+      // Add an event listener to the theme toggle, which will switch the theme
+      themeToggle.addEventListener("change", switchTheme, false);
+    </script>
   {% endif %}
   {% if DYSLEXIAMODE_ENABLED == True %}
-  <script>
-    // Get the dyslexia toggle input
-    const dyslexiaToggle = document.querySelector(
-      '.dyslexia-switch input[type="checkbox"]'
-    );
-    // Get the current dyslexia from local storage
-    const currentDyslexia = localStorage.getItem("dyslexia");
-    // If the current local storage item can be found
-    if (currentDyslexia) {
-      // Set the body data-dyslexia attribute to match the local storage item
-      document.documentElement.setAttribute("data-dyslexia", currentDyslexia);
-      // If the current dyslexia is on, check the dyslexia toggle
-      if (currentDyslexia === "on") {
-        dyslexiaToggle.checked = true;
+    <script>
+      // Get the dyslexia toggle input
+      const dyslexiaToggle = document.querySelector(
+        '.dyslexia-switch input[type="checkbox"]'
+      );
+      // Get the current dyslexia from local storage
+      const currentDyslexia = localStorage.getItem("dyslexia");
+      // If the current local storage item can be found
+      if (currentDyslexia) {
+        // Set the body data-dyslexia attribute to match the local storage item
+        document.documentElement.setAttribute("data-dyslexia", currentDyslexia);
+        // If the current dyslexia is on, check the dyslexia toggle
+        if (currentDyslexia === "on") {
+          dyslexiaToggle.checked = true;
+        }
       }
-    }
-    // Function that will switch the dyslexia based on the if the dyslexia toggle is checked or not
-    function switchDyslexia(e) {
-      if (e.target.checked) {
-        document.documentElement.setAttribute("data-dyslexia", "on");
-        localStorage.setItem("dyslexia", "on");
-      } else {
-        document.documentElement.setAttribute("data-dyslexia", "off");
-        localStorage.setItem("dyslexia", "off");
+      // Function that will switch the dyslexia based on the if the dyslexia toggle is checked or not
+      function switchDyslexia(e) {
+        if (e.target.checked) {
+          document.documentElement.setAttribute("data-dyslexia", "on");
+          localStorage.setItem("dyslexia", "on");
+        } else {
+          document.documentElement.setAttribute("data-dyslexia", "off");
+          localStorage.setItem("dyslexia", "off");
+        }
       }
-    }
-    // Add an event listener to the dyslexia toggle, which will switch the dyslexia
-    dyslexiaToggle.addEventListener("change", switchDyslexia, false);
-  </script>
+      // Add an event listener to the dyslexia toggle, which will switch the dyslexia
+      dyslexiaToggle.addEventListener("change", switchDyslexia, false);
+    </script>
   {% endif %}
   {% if DARKMODE_ENABLED == True or DYSLEXIAMODE_ENABLED == True %}
-  <script>
-    $(function () {
-      $('[data-bs-toggle="tooltip"]').tooltip()
-    })
-  </script>
+    <script>
+      $(function () {
+        $('[data-bs-toggle="tooltip"]').tooltip()
+      })
+    </script>
   {% endif %}
   {% if POST_FOOTER_TEMPLATE %}{% include POST_FOOTER_TEMPLATE %}{% endif %}
   {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
