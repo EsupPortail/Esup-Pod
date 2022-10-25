@@ -1,5 +1,14 @@
 /** Utility FUNCTIONS **/
-
+var setInnerHTML = function(elm, html) {
+  elm.innerHTML = html;
+  Array.from(elm.querySelectorAll("script")).forEach( oldScript => {
+    const newScript = document.createElement("script");
+    Array.from(oldScript.attributes)
+      .forEach( attr => newScript.setAttribute(attr.name, attr.value) );
+    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+    oldScript.parentNode.replaceChild(newScript, oldScript);
+  });
+}
 function getParents(el, parentSelector /* optional */) {
   // If no parentSelector defined will bubble up all the way to *document*
   if (parentSelector === undefined) {
@@ -880,11 +889,39 @@ var show_picture_form = function (data) {
 };
 var append_picture_form = async function (data) {
   // parse data into html
-  let parser = new DOMParser();
-  let htmlData = parser.parseFromString(data, "text/html").body.firstChild;
-  console.log(htmlData);
-  document.body.appendChild(htmlData);
+  let lastChild = document.createElement("div");
+  document.body.appendChild(lastChild);
+  //setInnerHTML( lastChild, data);
+  let htmlData = new DOMParser().parseFromString(
+    data,
+    "text/html"
+  ).body.firstChild;
 
+
+  //$('body').append(data);
+  document.body.append(htmlData)
+    // load all scripts in the html
+    let scripts = htmlData.querySelectorAll("script");   
+    for (let i = 0; i < scripts.length; i++) {
+      let script = scripts[i];
+      if (script.src) {
+        await loadScript(script.src);
+      } else {
+        eval(script.innerHTML);
+      }
+    }
+   function loadScript(src){
+      return new Promise(function(resolve, reject) {
+        let script = document.createElement('script');
+        script.src = src;
+        script.onload = () => resolve(script);
+        script.onerror = () => reject(new Error(`Script load error for ${src}`));
+        document.head.append(script);
+      });
+   }
+
+
+  /*
  htmlData.querySelectorAll("script").forEach((item) => {
     if (item.src) {
       // external script
@@ -896,7 +933,7 @@ var append_picture_form = async function (data) {
     eval(item.innerHTML);
     }
   });
-
+*/
 
   let userpicture = document.getElementById("userpictureModal");
   if (userpicture) {
@@ -941,7 +978,7 @@ if (ownerbox) {
       await fetch(url, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
         },
         cache: cache,
       })

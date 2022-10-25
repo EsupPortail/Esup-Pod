@@ -5,6 +5,7 @@ if (typeof loaded == "undefined") {
  
 
   console.log("%c filewidget.js loaded", "color : #bada55");
+  
   loaded = true;
   document.addEventListener("click", (e) => {
     if (

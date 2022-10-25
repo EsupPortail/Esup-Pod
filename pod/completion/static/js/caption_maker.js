@@ -126,7 +126,7 @@ const send_form_save_captions = function () {
     method: "POST",
     body: data_form,
     headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
+      "X-Requested-With": "XMLHttpRequest",
     },
     processData: false,
     contentType: false,

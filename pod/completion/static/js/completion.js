@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     element.style.display = "none";
   });
   var accordeon_head = document.querySelectorAll("#accordeon li a.title");
-
+  if(accordeon_head.length <= 0  ) return;
   accordeon_head[0].classList.add("active");
   let sibling = accordeon_head[0].parentNode.nextElementSibling;
   slideDown(sibling, 500);
