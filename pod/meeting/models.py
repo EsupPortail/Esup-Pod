@@ -1,6 +1,7 @@
 import hashlib
 import random
 import requests
+import datetime
 
 from urllib.parse import urlencode
 import xml.etree.ElementTree as et
@@ -124,6 +125,36 @@ class Meeting(models.Model):
         message=_("Weekdays must contain the numbers of the active days."),
     )
 
+    def get_time_choices(
+        start_time=datetime.time(0, 0, 0),
+        end_time=datetime.time(23, 0, 0),
+        delta=datetime.timedelta(minutes=30)
+    ):
+        '''
+            Builds a choices tuple of (time object, time string) tuples
+            starting at the start time specified and ending at or before
+            the end time specified in increments of size delta.
+
+            The default is to return a choices tuple for
+            9am to 5pm in 15-minute increments.
+        '''
+        time_choices = ()
+        time = start_time
+        while time <= end_time:
+            time_choices += ((time, time.replace(second=0, microsecond=0)),)
+            # This complicated line is because you can't add
+            # a timedelta object to a time object.
+            time = (datetime.datetime.combine(datetime.date.today(), time) + delta).time()
+        return time_choices
+
+    def get_rouded_time():
+        now = timezone.localtime(timezone.now()).time().replace(second=0, microsecond=0)
+        if now.minute < 30:
+            now = now.replace(minute=30)
+        else:
+            now = now.replace(now.hour + 1, minute=0)
+        return now
+
     name = models.CharField(max_length=255, verbose_name=_("Meeting Name"))
     meeting_id = models.SlugField(
         max_length=200,
@@ -153,7 +184,11 @@ class Meeting(models.Model):
     # end_at = models.DateTimeField(_("End date"), default=two_hours_hence)
     # Start and end are the same for a single meeting
     start = models.DateField(_("Start date"), default=timezone.now)
-    start_time = models.TimeField(_("Start time"), default=timezone.now)
+    start_time = models.TimeField(
+        _("Start time"),
+        choices=get_time_choices(),
+        default=get_rouded_time
+    )
     expected_duration = models.DurationField(
         verbose_name=_("Meeting duration"),
         help_text=_(
@@ -296,7 +331,7 @@ class Meeting(models.Model):
 
     def __str__(self):
         return "{}-{}".format("%04d" % self.id, self.name)
-    
+
     def reset_recurrence(self):
         """
         Reset recurrence so everything indicates that the event occurs only once.
@@ -307,10 +342,11 @@ class Meeting(models.Model):
         self.nb_occurrences = 1
         self.recurring_until = self.start
 
-
-    def save(self, *args, **kwargs):
-        """Store a video object in db."""
-        """Compute the `recurring_until` field which is the date at which the recurrence ends."""
+    def check_recurrence(self):  # noqa: C901
+        """
+        Compute the `recurring_until` field
+        which is the date at which the recurrence ends.
+        """
         if self.start and self.frequency:
             if self.recurrence == Meeting.WEEKLY:
                 if self.weekdays is None:
@@ -345,6 +381,10 @@ class Meeting(models.Model):
                 self.reset_recurrence()
         else:
             self.reset_recurrence()
+
+    def save(self, *args, **kwargs):
+        """Store a video object in db."""
+        self.check_recurrence()
         newid = -1
         if not self.id:
             try:
@@ -587,5 +627,5 @@ class Meeting(models.Model):
 def default_site_meeting(sender, instance, **kwargs):
     if not hasattr(instance, "site"):
         instance.site = Site.objects.get_current()
-    if instance.start_at > instance.end_at:
-        raise ValueError(_("Start date must be less than end date"))
+    # if instance.start_at > instance.end_at:
+    #    raise ValueError(_("Start date must be less than end date"))

@@ -9,13 +9,13 @@ from django.db.models.query import QuerySet
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django_select2 import forms as s2forms
-from django.utils import timezone
+from django.contrib.admin import widgets as admin_widgets
 
 from django.forms import CharField, Textarea
 from django.core.validators import validate_email
 
-from pod.main.forms_utils import add_placeholder_and_asterisk, MyAdminSplitDateTime
-from .models import Meeting, two_hours_hence
+from pod.main.forms_utils import add_placeholder_and_asterisk
+from .models import Meeting
 
 MEETING_MAIN_FIELDS = getattr(
     settings,
@@ -25,8 +25,9 @@ MEETING_MAIN_FIELDS = getattr(
         "owner",
         "additional_owners",
         "attendee_password",
-        "start_at",
-        "end_at",
+        "start",
+        "start_time",
+        "expected_duration",
         "is_restricted",
         "restrict_access_to_groups",
     ),
@@ -84,21 +85,7 @@ class MeetingForm(forms.ModelForm):
     required_css_class = "required"
     is_admin = False
     is_superuser = False
-    """
-    start_at = forms.SplitDateTimeField(
-        label=_("Start date"),
-        initial=timezone.now,
-        localize=True,
-        widget=MyAdminSplitDateTime,
-    )
-    end_at = forms.SplitDateTimeField(
-        label=_("End date"),
-        initial=two_hours_hence,
-        localize=True,
-        widget=MyAdminSplitDateTime,
-    )
-    """
-    # user = User.objects.all()
+
     fieldsets = (
         (None, {"fields": MEETING_MAIN_FIELDS}),
         (
@@ -120,14 +107,14 @@ class MeetingForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(MeetingForm, self).clean()
-
+        '''
         if (
             "start_at" in cleaned_data.keys()
             and "end_at" in cleaned_data.keys()
             and cleaned_data["start_at"] > cleaned_data["end_at"]
         ):
             raise ValidationError(_("Start date must be less than end date"))
-
+        '''
         if "additional_owners" in cleaned_data.keys() and isinstance(
             self.cleaned_data["additional_owners"], QuerySet
         ):
@@ -205,6 +192,8 @@ class MeetingForm(forms.ModelForm):
         widgets = {
             "owner": OwnerWidget,
             "additional_owners": AddOwnerWidget,
+            "start": admin_widgets.AdminDateWidget,
+            "recurring_until": admin_widgets.AdminDateWidget,
         }
 
 

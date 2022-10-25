@@ -34,6 +34,8 @@ class MeetingSuperAdminForm(MeetingForm):
                 admin.site,
                 attrs={"style": "width: 20em"},
             ),
+            "start": widgets.AdminDateWidget(),
+            "recurring_until": widgets.AdminDateWidget()
         }
 
 
@@ -62,6 +64,8 @@ class MeetingAdminForm(MeetingForm):
                 admin.site,
                 attrs={"style": "width: 20em"},
             ),
+            "start": widgets.AdminDateWidget(),
+            "recurring_until": widgets.AdminDateWidget()
         }
 
 
