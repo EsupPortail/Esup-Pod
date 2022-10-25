@@ -86,6 +86,14 @@ class MeetingForm(forms.ModelForm):
     is_admin = False
     is_superuser = False
 
+    expected_duration = forms.IntegerField(
+        label=_("Duration"),
+        initial=2,
+        max_value=5,
+        min_value=1,
+        help_text=_("Specify a duration in hour between 1 and 5 hours")
+    )
+
     fieldsets = (
         (None, {"fields": MEETING_MAIN_FIELDS}),
         (
@@ -107,14 +115,12 @@ class MeetingForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(MeetingForm, self).clean()
-        '''
         if (
-            "start_at" in cleaned_data.keys()
-            and "end_at" in cleaned_data.keys()
-            and cleaned_data["start_at"] > cleaned_data["end_at"]
+            "start" in cleaned_data.keys()
+            and "recurring_until" in cleaned_data.keys()
+            and cleaned_data["start"] > cleaned_data["recurring_until"]
         ):
-            raise ValidationError(_("Start date must be less than end date"))
-        '''
+            raise ValidationError(_("Start date must be less than recurring until date"))
         if "additional_owners" in cleaned_data.keys() and isinstance(
             self.cleaned_data["additional_owners"], QuerySet
         ):

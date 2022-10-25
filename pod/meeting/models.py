@@ -199,16 +199,40 @@ class Meeting(models.Model):
 
     # recurrence
     recurrence = models.CharField(
+        verbose_name=_("Custom recurrence"),
+        help_text=_(
+            "Specify the reccurrence of the meeting : daily, weekly, monthly or yearly"
+        ),
         max_length=10, choices=INTERVAL_CHOICES, null=True, blank=True
     )
-    frequency = models.PositiveIntegerField(default=1)
-    recurring_until = models.DateField(null=True, blank=True)
-    nb_occurrences = models.PositiveIntegerField(null=True, blank=True)
+    frequency = models.PositiveIntegerField(
+        verbose_name=_("Repeat each time"),
+        default=1,
+        help_text=_(
+            "The meeting will be repeat each time of value specify."
+            " i.e: each 3 days if recurring daily"
+        ),
+    )
+    recurring_until = models.DateField(
+        verbose_name=_("End date of recurring meeting"),
+        help_text=_("Recurring meeting till the date specify"),
+        null=True,
+        blank=True
+    )
+    nb_occurrences = models.PositiveIntegerField(
+        verbose_name=_("Number of occurences"),
+        help_text=_("Recurring meeting till the number of occurences specify"),
+        null=True,
+        blank=True
+    )
     weekdays = models.CharField(
+        verbose_name=_("Day(s) of week for the meeting"),
+        help_text=_("Recurring meeting each day(s) specified"),
         max_length=7, blank=True, null=True, validators=[weekdays_validator]
     )
     monthly_type = models.CharField(
-        max_length=10, choices=MONTHLY_TYPE_CHOICES, default=DATE_DAY
+        max_length=10, choices=MONTHLY_TYPE_CHOICES, default=DATE_DAY,
+        editable=False
     )
 
     is_restricted = models.BooleanField(
@@ -233,7 +257,7 @@ class Meeting(models.Model):
     )
     site = models.ForeignKey(Site, verbose_name=_("Site"), on_delete=models.CASCADE)
 
-    # Configs
+    # #################### Configs
     max_participants = models.IntegerField(
         default=100, verbose_name=_("Max Participants")
     )
@@ -247,15 +271,6 @@ class Meeting(models.Model):
         blank=True,
         verbose_name=_("URL to visit after user logged out"),
     )
-    record = models.BooleanField(default=False, verbose_name=_("Record"))
-    auto_start_recording = models.BooleanField(
-        default=False, verbose_name=_("Auto Start Recording")
-    )
-    allow_start_stop_recording = models.BooleanField(
-        default=True,
-        verbose_name=_("Allow Stop/Start Recording"),
-        help_text=_("Allow the user to start/stop recording. (default true)"),
-    )
     webcam_only_for_moderators = models.BooleanField(
         default=False,
         verbose_name=_("Webcam Only for moderators?"),
@@ -265,7 +280,18 @@ class Meeting(models.Model):
         ),
     )
 
-    # Lock settings
+    # #################### RECORD PART
+    record = models.BooleanField(default=False, verbose_name=_("Record"))
+    auto_start_recording = models.BooleanField(
+        default=False, verbose_name=_("Auto Start Recording")
+    )
+    allow_start_stop_recording = models.BooleanField(
+        default=True,
+        verbose_name=_("Allow Stop/Start Recording"),
+        help_text=_("Allow the user to start/stop recording. (default true)"),
+    )
+
+    # #################### Lock settings
     lock_settings_disable_cam = models.BooleanField(
         default=False,
         verbose_name=_("Disable Camera"),
@@ -627,5 +653,8 @@ class Meeting(models.Model):
 def default_site_meeting(sender, instance, **kwargs):
     if not hasattr(instance, "site"):
         instance.site = Site.objects.get_current()
-    # if instance.start_at > instance.end_at:
-    #    raise ValueError(_("Start date must be less than end date"))
+    if (
+        instance.recurring_until
+        and instance.start > instance.recurring_until
+    ):
+        raise ValueError(_("Start date must be less than recurring until date"))
