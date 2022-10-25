@@ -62,7 +62,21 @@ function show_form(data, form) {
   let form_el = document.querySelector("#" + form);
   form_el.style.display = "none";
   //form_el.innerHTML = data;
-  $("#" + form).html(data);
+  form_el.innerHTML = data;
+  form_el.querySelectorAll("script").forEach((item) => {
+    
+    if (item.src) {
+      // external script
+      
+      let script = document.createElement("script");
+      script.src = item.src;
+      document.body.appendChild(script);
+    } else {
+      // inline script
+    (0,eval)(item.innerHTML);
+    }
+  });
+  
   fadeIn(form_el);
   if (form === "form_track")
     document.getElementById("form_track").style.width = "100%";

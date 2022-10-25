@@ -895,17 +895,11 @@ var show_picture_form = function (data) {
   }
 };
 var append_picture_form = async function (data) {
-  // parse data into html
-  let lastChild = document.createElement("div");
-  document.body.appendChild(lastChild);
-  //setInnerHTML( lastChild, data);
+  
   let htmlData = new DOMParser().parseFromString(data, "text/html").body
     .firstChild;
-
-  $("body").append(data);
-  // reload all scripts in order
-
-  /*
+  //$("body").append(data);
+  document.body.appendChild(htmlData);
  htmlData.querySelectorAll("script").forEach((item) => {
     if (item.src) {
       // external script
@@ -914,10 +908,10 @@ var append_picture_form = async function (data) {
       document.body.appendChild(script);
     } else {
       // inline script
-    eval(item.innerHTML);
+    (0,eval)(item.innerHTML);
     }
   });
-*/
+
 
   let userpicture = document.getElementById("userpictureModal");
   if (userpicture) {
