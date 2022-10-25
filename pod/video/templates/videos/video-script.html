@@ -198,6 +198,7 @@ player.on('firstplay', function(){
 {% endif %}
 
 {% if video_event_tracking %}
+  {# Be sure to define _paq in a tracking script in TEMPLATE_VISIBLE_SETTINGS:TRACKING_TEMPLATE pref. #}
   player.on('play', function() {
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'play', player.currentTime()]);
   });
