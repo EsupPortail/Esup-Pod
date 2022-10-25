@@ -1,14 +1,20 @@
-/** Utility FUNCTIONS **/
-var setInnerHTML = function(elm, html) {
-  elm.innerHTML = html;
-  Array.from(elm.querySelectorAll("script")).forEach( oldScript => {
-    const newScript = document.createElement("script");
-    Array.from(oldScript.attributes)
-      .forEach( attr => newScript.setAttribute(attr.name, attr.value) );
-    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-    oldScript.parentNode.replaceChild(newScript, oldScript);
-  });
+function appendHTML(node, html) {
+  var temp = document.createElement("div");
+  temp.innerHTML = html;
+  var scripts = temp.getElementsByTagName("script");
+  for (var i = 0; i < scripts.length; i++) {
+    var script = scripts[i];
+    var s = document.createElement("script");
+    s.type = script.type || "text/javascript";
+    if (script.src) {
+      s.src = script.src;
+    } else {
+      s.text = script.text;
+    }
+    node.appendChild(s);
+  }
 }
+
 function getParents(el, parentSelector /* optional */) {
   // If no parentSelector defined will bubble up all the way to *document*
   if (parentSelector === undefined) {
@@ -675,7 +681,7 @@ var send_form_data = async function (
   }
 
   if (method == "post") {
-   await fetch(url, {
+    await fetch(url, {
       method: "POST",
       headers: {
         "X-CSRFToken": token,
@@ -689,6 +695,7 @@ var send_form_data = async function (
       })
 
       .catch((error) => {
+        console.log(error);
         showalert(
           gettext("Error during exchange") +
             "(" +
@@ -753,7 +760,6 @@ var send_form_data_vanilla = function (
         };
   callbackFail =
     typeof callbackFail === "function" ? callbackFail : function (err) {};
-  console.log(data_form);
   if (data_form) {
     data_form = new FormData(data_form);
   }
@@ -848,21 +854,22 @@ var show_theme_form = function (data) {
 };
 
 var show_picture_form = function (data) {
+  let htmlData = new DOMParser().parseFromString(data, "text/html").body;
   document.getElementById("userpicture_form").innerHTML =
-    data.querySelector("#userpicture_form").innerHTML;
-  if (data.querySelector("#userpictureurl").value) {
+    htmlData.querySelector("#userpicture_form").innerHTML;
+  if (htmlData.querySelector("#userpictureurl").value) {
     //$(".get_form_userpicture").html('<img src="'+$(data).find("#userpictureurl").val()+'" height="34" class="rounded" alt="" loading="lazy">Change your picture');
     document.querySelector("#nav-usermenu .userpicture").remove();
     document.querySelector("#nav-usermenu .userinitial").style.display = "none";
     document
       .querySelector("#nav-usermenu > button")
-      .classList.remove("initials btn btn-primary");
+      .classList.remove("initials","btn" , "btn-primary");
     document.querySelector("#nav-usermenu > button").classList.add("nav-link");
     document
       .querySelector("#nav-usermenu > button")
-      .append(
+      .insertAdjacentHTML( 'beforeend', 
         '<img src="' +
-          data.querySelector("#userpictureurl").value +
+          htmlData.querySelector("#userpictureurl").value +
           '" class="userpicture rounded" alt="avatar" loading="lazy">'
       );
     //$(".get_form_userpicture").html($(".get_form_userpicture").children());
@@ -892,34 +899,11 @@ var append_picture_form = async function (data) {
   let lastChild = document.createElement("div");
   document.body.appendChild(lastChild);
   //setInnerHTML( lastChild, data);
-  let htmlData = new DOMParser().parseFromString(
-    data,
-    "text/html"
-  ).body.firstChild;
+  let htmlData = new DOMParser().parseFromString(data, "text/html").body
+    .firstChild;
 
-
-  //$('body').append(data);
-  document.body.append(htmlData)
-    // load all scripts in the html
-    let scripts = htmlData.querySelectorAll("script");   
-    for (let i = 0; i < scripts.length; i++) {
-      let script = scripts[i];
-      if (script.src) {
-        await loadScript(script.src);
-      } else {
-        eval(script.innerHTML);
-      }
-    }
-   function loadScript(src){
-      return new Promise(function(resolve, reject) {
-        let script = document.createElement('script');
-        script.src = src;
-        script.onload = () => resolve(script);
-        script.onerror = () => reject(new Error(`Script load error for ${src}`));
-        document.head.append(script);
-      });
-   }
-
+  $("body").append(data);
+  // reload all scripts in order
 
   /*
  htmlData.querySelectorAll("script").forEach((item) => {

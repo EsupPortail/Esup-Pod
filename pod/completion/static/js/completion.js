@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     element.style.display = "none";
   });
   var accordeon_head = document.querySelectorAll("#accordeon li a.title");
-  if(accordeon_head.length <= 0  ) return;
+  if (accordeon_head.length <= 0) return;
   accordeon_head[0].classList.add("active");
   let sibling = accordeon_head[0].parentNode.nextElementSibling;
   slideDown(sibling, 500);
@@ -61,7 +61,8 @@ document.addEventListener("reset", (event) => {
 function show_form(data, form) {
   let form_el = document.querySelector("#" + form);
   form_el.style.display = "none";
-  form_el.innerHTML = data;
+  //form_el.innerHTML = data;
+  $("#" + form).html(data);
   fadeIn(form_el);
   if (form === "form_track")
     document.getElementById("form_track").style.width = "100%";

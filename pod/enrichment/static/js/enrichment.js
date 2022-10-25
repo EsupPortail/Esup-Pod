@@ -2,7 +2,8 @@ var id_form = "form_enrich";
 function show_form(data) {
   var form = document.querySelector("#" + id_form);
   form.style.display = "none";
-  form.innerHTML = data;
+  //form.innerHTML = data;
+  $("#" + id_form).html(data);
   fadeIn(form);
 
   var inputStart = document.querySelector("input#id_start");
@@ -278,7 +279,6 @@ document.addEventListener("change", (e) => {
   if (file_input) {
     eval(file_input.innerHTML);
   }
-
 });
 
 /*** Display element of form enrich ***/
@@ -304,7 +304,8 @@ Number.prototype.toHHMMSS = function () {
 function get_form(data) {
   var form = document.getElementById("form_enrich");
   form.style.display = "none";
-  form.innerHTML = data;
+  //form.innerHTML = data;
+  $("#form_enrich").html(data);
   fadeIn(form);
   var inputStart = document.querySelector("input#id_start");
   inputStart.insertAdjacentHTML(

@@ -124,15 +124,9 @@ document.addEventListener("click", (event) => {
 
 
 
-document.querySelectorAll("script").forEach((script) => {
-    
-  if (script.src.includes("filewidget.js")) {
-    var newScript = document.createElement("script");
-    script.remove();
-    newScript.src = script.src;
-    document.body.appendChild(newScript);
-  } 
-});
+
+
+//let open_folder = document.querySelector(".open-folder").querySelector("button").style ="pointer-events : none" ;
 
 
 
