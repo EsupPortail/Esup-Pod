@@ -906,7 +906,7 @@ class Video(models.Model):
         This height is mostly valid when in iframe mode,
          as in main mode height is set by % of window.
         """
-        return 360 if self.is_video else 180
+        return 360 if self.is_video else 244
 
     def get_thumbnail_url(self):
         """Get a thumbnail url for the video."""
