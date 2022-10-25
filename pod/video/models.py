@@ -921,7 +921,11 @@ class Video(models.Model):
             )
         else:
             thumbnail_url = "".join(
-                ["//", get_current_site(request).domain, static(DEFAULT_THUMBNAIL)]
+                [
+                    "//",
+                    get_current_site(request).domain,
+                    static(DEFAULT_THUMBNAIL),
+                ]
             )
         return thumbnail_url
 
