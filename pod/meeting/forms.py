@@ -10,6 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django_select2 import forms as s2forms
 from django.contrib.admin import widgets as admin_widgets
+from django.utils import timezone
 
 from django.forms import CharField, Textarea
 from django.core.validators import validate_email
@@ -115,9 +116,15 @@ class MeetingForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(MeetingForm, self).clean()
+        if "expected_duration" in cleaned_data.keys():
+            self.cleaned_data["expected_duration"] = timezone.timedelta(
+                hours=self.cleaned_data["expected_duration"]
+            )
+
         if (
             "start" in cleaned_data.keys()
             and "recurring_until" in cleaned_data.keys()
+            and cleaned_data["recurring_until"] is not None
             and cleaned_data["start"] > cleaned_data["recurring_until"]
         ):
             raise ValidationError(_("Start date must be less than recurring until date"))
@@ -175,6 +182,11 @@ class MeetingForm(forms.ModelForm):
         # self.fields.get("attendee_password"):
         if not self.initial.get("attendee_password"):
             self.initial["attendee_password"] = get_random_string(8)
+
+        if self.initial.get("expected_duration"):
+            self.initial["expected_duration"] = int(
+                self.initial.get("expected_duration").seconds / 3600
+            )
 
         # MEETING_DISABLE_RECORD
         if MEETING_DISABLE_RECORD:
