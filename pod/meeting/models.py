@@ -2,6 +2,7 @@ import hashlib
 import random
 import requests
 import datetime
+from datetime import timedelta
 
 from urllib.parse import urlencode
 import xml.etree.ElementTree as et
@@ -25,7 +26,10 @@ from django.db.models import F, Q
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 
-from .utils import api_call, parseXmlToJson, slash_join
+from .utils import (
+    api_call, parseXmlToJson, slash_join, get_nth_week_number, get_weekday_in_nth_week
+)
+from dateutil.relativedelta import relativedelta
 
 SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 BBB_API_URL = getattr(settings, "BBB_API_URL", "")
@@ -432,7 +436,89 @@ class Meeting(models.Model):
             ("%s-%s-%s" % (SECRET_KEY, self.id, self.attendee_password)).encode("utf-8")
         ).hexdigest()
 
-    # BBB API
+    # ##############################    Meeting occurences
+    def next_occurrence(self, current_date):  # noqa: C901
+        """
+        This method takes as assumption that the current date passed in argument
+        IS a valid occurrence. If it is not the case, it will return an irrelevant date.
+        Returns the next occurrence without consideration for the end of the recurrence.
+        """
+        if self.recurrence == Meeting.DAILY:
+            return current_date + timedelta(days=self.frequency)
+
+        if self.recurrence == Meeting.WEEKLY:
+            increment = 1
+            # Look in the current week
+            weekday = current_date.weekday()
+            while weekday + increment <= 6:
+                if str(weekday + increment) in self.weekdays:
+                    return current_date + timedelta(days=increment)
+                increment += 1
+            # Skip the weeks not covered by frequency
+            next_date = (
+                current_date
+                + timedelta(days=increment)
+                + timedelta(weeks=self.frequency - 1)
+            )
+
+            # Look in this week and be sure to find
+            weekday = 0
+            increment = 1
+            while weekday + increment <= 6:
+                if str(weekday + increment) in self.weekdays:
+                    return next_date + timedelta(days=increment)
+                increment += 1
+
+            raise RuntimeError(
+                "You should have found the next weekly occurrence by now."
+            )
+
+        if self.recurrence == Meeting.MONTHLY:
+            next_date = current_date + relativedelta(months=self.frequency)
+            if self.monthly_type == Meeting.DATE_DAY:
+                return next_date
+
+            if self.monthly_type == Meeting.NTH_DAY:
+                weekday = current_date.weekday()
+                week_number = get_nth_week_number(current_date)
+                return get_weekday_in_nth_week(
+                    next_date.year, next_date.month, week_number, weekday
+                )
+
+            raise RuntimeError(
+                "You should have found the next monthly occurrence by now."
+            )
+
+        if self.recurrence == Meeting.YEARLY:
+            return current_date + relativedelta(years=self.frequency)
+
+        raise RuntimeError("Non recurrent meetings don't have next occurences.")
+
+    def get_occurrences(self, start, end=None):
+        """
+        Returns a list of occurrences for this meeting between start and end dates passed
+        as arguments.
+        """
+        real_end = end or start
+        if self.recurrence:
+            if self.recurring_until and self.recurring_until < real_end:
+                real_end = self.recurring_until
+
+            occurrences = []
+            new_start = self.start
+            while new_start <= real_end:
+                if new_start >= start:
+                    occurrences.append(new_start)
+                new_start = self.next_occurrence(new_start)
+            return occurrences
+
+        # check if event is in the period
+        if self.start <= real_end and self.start + self.expected_duration >= start:
+            return [self.start]
+
+        return []
+
+    # ##############################    BBB API
     def create(self, request=None):
         action = "create"
         parameters = {}
