@@ -17,8 +17,10 @@ from django.urls import reverse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
+from django.utils import timezone
+from datetime import datetime
 
-from ics import Calendar, Event  # At the top of your .py file
+from ics import Calendar, Event
 from .models import Meeting
 from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm, MeetingInviteForm
 from pod.main.views import in_maintenance
@@ -559,6 +561,7 @@ def send_invite(request, meeting, emails):
     msg.attach_alternative(html_content, "text/html")
     # ics calendar
     calendar = Calendar()
+    # for reccuring meeting, get all events (max year ?)
     event = Event()
     event.name = _("%(owner)s invites you to the meeting %(meeting_title)s") % {
         "owner": meeting.owner.get_full_name(),
@@ -573,13 +576,18 @@ def send_invite(request, meeting, emails):
         )
         % {"join_link": join_link, "password": meeting.attendee_password}
     )
-    event.begin = meeting.start_at
-    event.end = meeting.end_at
+    start = datetime.combine(meeting.start, meeting.start_time)
+    event.begin = timezone.make_aware(start).isoformat()
+    # end = start + timezone.timedelta(hours=meeting.expected_duration)
+    # event.end = timezone.make_aware(end).isoformat()
+    event.duration = meeting.expected_duration
     event.organizer = meeting.owner.email
+
     calendar.events.add(event)
     filename_event = "/tmp/invite-%d.ics" % meeting.id
     with open(filename_event, "w") as ics_file:
         ics_file.writelines(calendar)
+
     msg.attach_file(filename_event, "text/calendar")
     msg.send()
     os.remove(filename_event)
