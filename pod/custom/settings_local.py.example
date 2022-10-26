@@ -1118,6 +1118,12 @@ OIDC_OP_JWKS_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/discovery/keys"
 OIDC_CLAIM_FAMILY_NAME = "family_name"
 OIDC_CLAIM_GIVEN_NAME = "given_name"
 
+ """
+# Utiliser un proxy
+ """
+PROXY_HOST = ""
+PROXY_PORT = ""
+
 """
 # Permettre l'usage du oembed, partage dans Moodle, Facebook, Twitter etc.
 """
