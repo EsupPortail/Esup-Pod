@@ -26,12 +26,24 @@ MEETING_MAIN_FIELDS = getattr(
         "owner",
         "additional_owners",
         "attendee_password",
+        "is_restricted",
+        "restrict_access_to_groups",
         "start",
         "start_time",
         "expected_duration",
-        "is_restricted",
-        "restrict_access_to_groups",
-    ),
+    )
+)
+MEETING_RECURRING_FIELDS = getattr(
+    settings,
+    "MEETING_RECURRING_FIELDS",
+    (
+        "recurrence",
+        "frequency",
+        "recurring_until",
+        "nb_occurrences",
+        "weekdays",
+        "monthly_type"
+    )
 )
 MEETING_DISABLE_RECORD = getattr(settings, "MEETING_DISABLE_RECORD", True)
 
@@ -42,9 +54,9 @@ MEETING_RECORD_FIELDS = getattr(
 )
 
 if MEETING_DISABLE_RECORD:
-    MEETING_EXCLUDE_FIELDS = MEETING_MAIN_FIELDS + ("id",) + MEETING_RECORD_FIELDS
+    MEETING_EXCLUDE_FIELDS = MEETING_MAIN_FIELDS + MEETING_RECURRING_FIELDS + ("id",) + MEETING_RECORD_FIELDS
 else:
-    MEETING_EXCLUDE_FIELDS = MEETING_MAIN_FIELDS + ("id",)
+    MEETING_EXCLUDE_FIELDS = MEETING_MAIN_FIELDS + MEETING_RECURRING_FIELDS + ("id",)
 
 for field in Meeting._meta.fields:
     # print(field.name, field.editable)
@@ -97,6 +109,14 @@ class MeetingForm(forms.ModelForm):
 
     fieldsets = (
         (None, {"fields": MEETING_MAIN_FIELDS}),
+        (
+            "recurring_options",
+            {
+                "legend": _("Recurring options"),
+                "classes": "modal",
+                "fields": MEETING_RECURRING_FIELDS,
+            },
+        ),
         (
             "advanced_options",
             {
