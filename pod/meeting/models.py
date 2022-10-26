@@ -235,8 +235,7 @@ class Meeting(models.Model):
         max_length=7, blank=True, null=True, validators=[weekdays_validator]
     )
     monthly_type = models.CharField(
-        max_length=10, choices=MONTHLY_TYPE_CHOICES, default=DATE_DAY,
-        editable=False
+        max_length=10, choices=MONTHLY_TYPE_CHOICES, default=DATE_DAY
     )
 
     is_restricted = models.BooleanField(
