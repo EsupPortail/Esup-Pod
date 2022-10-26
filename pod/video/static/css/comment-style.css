@@ -13,16 +13,6 @@
 	--content-third-color: #B6B4B4;
 }
 
-#pod_comment_wrapper alert-message {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	text-align: center;
-	margin: 0 auto;
-	transform: translate(-50%, 0);
-	z-index: 1000;
-}
-
 .comment_disable {
 	text-align: center;
 	padding: .4em .8em;
@@ -109,40 +99,9 @@
 }
 
 .comment_main .comment_container .add_comment_footer {
-	margin-top: 0.5rem;
+	margin-top: .5rem;
 	padding-bottom: 1em;
 }
-
-/* Alert message */
-
-.alert_error {
-	background: #d14130;
-	color: #fff;
-}
-
-.alert .close_btn {
-	width: 10px;
-	position: absolute;
-	right: 8px;
-	top: 5px;
-	cursor: pointer;
-}
-
-.alert_close {
-	animation: slide-down 1s cubic-bezier(.77, 0, .18, 1) forwards;
-}
-
-@keyframes slide-down {
-	0% {
-		opacity: 1;
-	}
-
-	100% {
-		top: 100%;
-		opacity: .1;
-	}
-}
-/* End Alert message */
 
 /* Confirm Modal */
 .comment_main .confirm_delete {
