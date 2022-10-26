@@ -6,7 +6,12 @@ from django.utils.html import mark_safe
 from django.contrib.admin import widgets
 
 from .models import Meeting
-from .forms import MeetingForm, MEETING_MAIN_FIELDS, get_meeting_fields
+from .forms import (
+    MeetingForm,
+    MEETING_MAIN_FIELDS,
+    MEETING_RECURRING_FIELDS,
+    get_meeting_fields
+)
 
 
 class MeetingSuperAdminForm(MeetingForm):
@@ -104,6 +109,7 @@ class MeetingAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {"fields": MEETING_MAIN_FIELDS}),
+        (None, {"fields": MEETING_RECURRING_FIELDS}),
         (
             "Advanced options",
             {
@@ -121,7 +127,7 @@ class MeetingAdmin(admin.ModelAdmin):
             form = MeetingAdminForm
         # form = super(MeetingAdmin, self).get_form(request, obj, **kwargs)
         return form
-
+    
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
