@@ -46,13 +46,30 @@
       {% if "collapse" in last.classes %}
       <div class="mb-3">
         <div class="list-group-item">
-          <a class="btn btn-primary" data-bs-toggle="collapse" href="#meeting_form_{{fieldset|first}}{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
+          <a class="btn btn-primary" data-bs-toggle="collapse" href="#meeting_form_{{fieldset|first}}_{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
             {{ last.legend }}
           </a>
         </div>
       </div>
       {% endif %}
-      <fieldset class="{{ last.classes }}" id="meeting_form_{{fieldset|first}}{{forloop.counter}}" >
+      {% if "modal" in last.classes %}
+      <div class="mb-3">
+        <div class="list-group-item">
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#meeting_form_modal_{{fieldset|first}}_{{forloop.counter}}">
+            {{ last.legend }}
+          </button>
+        </div>
+      </div>
+      <div class="modal fade" id="meeting_form_modal_{{fieldset|first}}_{{forloop.counter}}" tabindex="-1" aria-labelledby="{{ last.legend }}" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>      
+            <div class="modal-body">
+      {% endif %}
+      <fieldset class="{{ last.classes|cut:"modal" }}" id="meeting_form_{{fieldset|first}}_{{forloop.counter}}" >
       {% if last.legend %}
           <legend>{{ last.legend }}</legend>
       {% endif %}
@@ -81,6 +98,16 @@
       {% endspaceless %}
       {% endif %}
       {% endfor %}
+      {% if "modal" in last.classes %}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                <button type="button" class="btn btn-primary">{% trans "Save changes" %}</button>
+              </div>        
+            </div>
+          </div>
+        </div>
+      {% endif %}
       {% endwith %}
       </fieldset>
       {% endfor %}
