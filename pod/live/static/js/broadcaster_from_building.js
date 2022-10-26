@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
-  let broadcastField = document.getElementById("event_broadcaster");
-  let restrictedCheckBox = document.getElementById("event_is_restricted");
-  let restrictedHelp = document.getElementById("event_is_restrictedHelp");
-  let restrictedLabel = document.querySelector(".field_is_restricted");
+  var broadcastField = document.getElementById("event_broadcaster");
+  var restrictedCheckBox = document.getElementById("event_is_restricted");
+  var restrictedHelp = document.getElementById("event_is_restrictedHelp");
+  var restrictedLabel = document.querySelector(".field_is_restricted");
 
   let change_restriction = (restrict) => {
     if (restrict === true) {
@@ -22,19 +22,16 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   let getBroadcasterRestriction = async () => {
-    let select = broadcastField.querySelector("select");
+    let select = broadcastField
     let broadcaster_id = select.options[select.selectedIndex].value;
     if (typeof broadcaster_id === "undefined" || broadcaster_id === "") return;
 
     let url = "/live/ajax_calls/getbroadcasterrestriction/?idbroadcaster=" + broadcaster_id;
-    let data = new FormData()
     await fetch(url, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
         "X-Requested-With": "XMLHttpRequest",
       },
-      cache: false,
       
     })
       .then((response) => response.json())
@@ -42,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
         change_restriction(data.restricted);
       })
       .catch((error) => {
+        console.log(error)
         change_restriction(false);
         alert(gettext("An error occurred on broadcaster fetch..."));
       });
@@ -55,7 +53,6 @@ document.addEventListener("DOMContentLoaded", function () {
       await fetch(url, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
           "X-Requested-With": "XMLHttpRequest",
         },
         cache: false,
@@ -91,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
   // Update restriction after broadcaster change
-  broadcastField.change(function () {
+  broadcastField.addEventListener("change", function () {
     getBroadcasterRestriction();
   });
 

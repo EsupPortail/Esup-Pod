@@ -198,8 +198,7 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-    <script src="{% static 'waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'waypoints/lib/shortcuts/infinite.min.js' %}?ver={{VERSION}}"></script>
+    
     <script  src="{% static 'js/infinite.js' %}?ver={{VERSION}}" ></script>
    <script>
         url = "/{{channel.slug}}/?page="
