@@ -18,11 +18,6 @@
   <i class="bi bi-info-circle"></i>&nbsp;{% trans "Access to adding meeting has been restricted. If you want to add meetings on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
 </p>
 {% else %}
-<h1 class="page_title">{% if form.instance.meeting_id and form.instance.meeting_id != '' %}
-  {% trans "Edit the meeting" %} <b>{{form.instance.name}}</b>
-  {% else %}
-  {% trans "Add a new meeting" %}
-  {% endif %}</h1>
 {% if form.instance.meeting_id and form.instance.meeting_id != '' %}
 <form id="meeting_form" method="post" action="{% url 'meeting:edit' form.instance.meeting_id %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
 {% else %}
@@ -47,7 +42,7 @@
       <div class="mb-3">
         <div class="list-group-item">
           <a class="btn btn-primary" data-bs-toggle="collapse" href="#meeting_form_{{fieldset|first}}_{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
-            {{ last.legend }}
+            {{ last.legend|safe }}
           </a>
         </div>
       </div>
@@ -55,8 +50,8 @@
       {% if "modal" in last.classes %}
       <div class="mb-3">
         <div class="list-group-item">
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#meeting_form_modal_{{fieldset|first}}_{{forloop.counter}}">
-            {{ last.legend }}
+          <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#meeting_form_modal_{{fieldset|first}}_{{forloop.counter}}">
+            {{ last.legend|safe }}
           </button>
         </div>
       </div>
@@ -71,7 +66,7 @@
       {% endif %}
       <fieldset class="{{ last.classes|cut:"modal" }}" id="meeting_form_{{fieldset|first}}_{{forloop.counter}}" >
       {% if last.legend %}
-          <legend>{{ last.legend }}</legend>
+          <legend>{{ last.legend|safe }}</legend>
       {% endif %}
       {% for field in form.visible_fields %}
       {% if field.name in last.fields %}
@@ -101,8 +96,8 @@
       {% if "modal" in last.classes %}
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
-                <button type="button" class="btn btn-primary">{% trans "Save changes" %}</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >{% trans "Save" %}</button>
               </div>        
             </div>
           </div>
