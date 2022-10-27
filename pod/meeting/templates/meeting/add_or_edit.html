@@ -37,74 +37,125 @@
       {% endfor %}
 
       {% for fieldset in form.fieldsets %}
-      {% with last=fieldset|last %}
+      {% with last=fieldset|last name=fieldset|first%}
       {% if "collapse" in last.classes %}
-      <div class="mb-3">
-        <div class="list-group-item">
-          <a class="btn btn-primary" data-bs-toggle="collapse" href="#meeting_form_{{fieldset|first}}_{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
-            {{ last.legend|safe }}
-          </a>
+        <div class="mb-3">
+          <div class="list-group-item">
+            <a class="btn btn-primary" data-bs-toggle="collapse" href="#meeting_form_{{fieldset|first}}_{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
+              {{ last.legend|safe }}
+            </a>
+          </div>
         </div>
-      </div>
       {% endif %}
-      {% if "modal" in last.classes %}
-      <div class="mb-3">
-        <div class="list-group-item">
-          <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#meeting_form_modal_{{fieldset|first}}_{{forloop.counter}}">
-            {{ last.legend|safe }}
-          </button>
+      {% if name != "modal" %}
+      <fieldset class="{{ last.classes }}" id="meeting_form_{{fieldset|first}}_{{forloop.counter}}" >
+        {% if last.legend %}
+          <legend>{{ last.legend|safe }}</legend>
+        {% endif %}
+        {% if name == "input-group" %}
+        <div class="list-group-item mb-3">
+          <div class="input-group">
+        {% endif %}
+        {% for field in form.visible_fields %}
+          {% if field.name in last.fields %}
+            {% spaceless %}
+            {% if name != "input-group" %}
+              <div class="mb-3 {% if "restrict_access_to_groups" in field.name %}collapse restricted_access{% endif %}">
+                <div class="list-group-item">
+            {% else %}
+              <div class="m-1">
+            {% endif %}
+                  <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}">
+                    {{ field.errors }}
+                    {% if "form-check-input" in field.field.widget.attrs.class %}
+                      <div class="form-check">
+                        {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                      </div>
+                    {% else %}
+                      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                      {{ field }}
+                    {% endif %}
+                    {% if field.help_text %}
+                      <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+                    {% endif %}
+                    {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+                  </div>
+            {% if name != "input-group" %}
+                </div>
+              </div>
+            {% else %}
+              </div>
+            {% endif %}
+            {% endspaceless %}
+          {% endif %}
+        {% endfor %}
+        <div class="d-flex align-items-center">
+        {{ last.additional_data|safe }}
         </div>
-      </div>
-      <div class="modal fade" id="meeting_form_modal_{{fieldset|first}}_{{forloop.counter}}" tabindex="-1" aria-labelledby="{{ last.legend }}" aria-hidden="true">
+        {% if name == "input-group" %}
+          </div> <!-- end list-group-item -->
+        </div>
+        {% endif %}
+      </fieldset>
+      {% endif %}
+      {% if name == "modal" %}
+      <div class="modal fade" id="{{last.id}}" tabindex="-1" aria-labelledby="{{ last.legend|safe }}" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
+              <h5 class="modal-title" id="exampleModalLabel">{{ last.legend|safe }}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>      
+            </div>
             <div class="modal-body">
-      {% endif %}
-      <fieldset class="{{ last.classes|cut:"modal" }}" id="meeting_form_{{fieldset|first}}_{{forloop.counter}}" >
-      {% if last.legend %}
-          <legend>{{ last.legend|safe }}</legend>
-      {% endif %}
-      {% for field in form.visible_fields %}
-      {% if field.name in last.fields %}
-      {% spaceless %}
-      <div class="mb-3 {% if "restrict_access_to_groups" in field.name %}collapse restricted_access{% endif %}">
-        <div class="list-group-item">
-          <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}">
-            {{ field.errors }}
-            {% if "form-check-input" in field.field.widget.attrs.class %}
-              <div class="form-check">
-                {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+              
+              <div class="row g-3 align-items-center m-1">
+                <div class="col-auto">Répéter tou(te)s les</div>
+                <div class="col-auto">{{ form.frequency }}</div>
+                <div class="col-auto">{{ form.recurrence }}</div>
               </div>
-            {% else %}
-              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-              {{ field }}
-            {% endif %}
-            {% if field.help_text %}
-              <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
-            {% endif %}
-            {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
-          </div>
-        </div>
-      </div>
-      {% endspaceless %}
-      {% endif %}
-      {% endfor %}
-      {% if "modal" in last.classes %}
+
+              <div class="row g-3 align-items-center m-1">
+                <div class="col-auto">Répéter le ou les</div>
+                <div class="col-auto">{{ form.weekdays }}</div>
               </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >{% trans "Save" %}</button>
-              </div>        
+
+              {% comment "Optional note" %}
+                "recurrence",
+                "frequency",
+                "recurring_until",
+                "nb_occurrences",
+                "weekdays",
+                "monthly_type"
+              {% for field in form.visible_fields %}
+                {% if field.name in last.fields %}
+                <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}">
+                  {{ field.errors }}
+                  {% if "form-check-input" in field.field.widget.attrs.class %}
+                    <div class="form-check">
+                      {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                    </div>
+                  {% else %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                  {% endif %}
+                  {% if field.help_text %}
+                    <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+                  {% endif %}
+                  {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+                </div>
+                {% endif %}
+              {% endfor %}
+              {% endcomment %}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+              <button type="button" class="btn btn-primary">{% trans "Save" %}</button>
             </div>
           </div>
         </div>
+      </div>
       {% endif %}
       {% endwith %}
-      </fieldset>
       {% endfor %}
 
     </div>

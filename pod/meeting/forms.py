@@ -28,7 +28,13 @@ MEETING_MAIN_FIELDS = getattr(
         "attendee_password",
         "is_restricted",
         "restrict_access_to_groups",
-        "start",
+    )
+)
+MEETING_DATE_FIELDS = getattr(
+    settings,
+    "MEETING_DATE_FIELDS",
+    (
+       "start",
         "start_time",
         "expected_duration",
     )
@@ -56,12 +62,15 @@ MEETING_RECORD_FIELDS = getattr(
 if MEETING_DISABLE_RECORD:
     MEETING_EXCLUDE_FIELDS = (
         MEETING_MAIN_FIELDS
+        + MEETING_DATE_FIELDS
         + MEETING_RECURRING_FIELDS
         + ("id",)
         + MEETING_RECORD_FIELDS
     )
 else:
-    MEETING_EXCLUDE_FIELDS = MEETING_MAIN_FIELDS + MEETING_RECURRING_FIELDS + ("id",)
+    MEETING_EXCLUDE_FIELDS = (
+        MEETING_MAIN_FIELDS + MEETING_DATE_FIELDS + MEETING_RECURRING_FIELDS + ("id",)
+    )
 
 for field in Meeting._meta.fields:
     # print(field.name, field.editable)
@@ -114,16 +123,29 @@ class MeetingForm(forms.ModelForm):
 
     fieldsets = (
         (None, {"fields": MEETING_MAIN_FIELDS}),
-        (
-            "recurring_options",
-            {
-                "legend": (
-                    '<i class="bi bi-calendar-date"></i> %s' % _("Recurring options")
+        ("input-group", {
+            "legend": (
+                    '<i class="bi bi-clock-history"></i>'
+                    + ' %s' % _("Date and time options")
                 ),
-                "classes": "modal",
-                "fields": MEETING_RECURRING_FIELDS,
-            },
-        ),
+            "fields": MEETING_DATE_FIELDS,
+            "additional_data": '''
+                <div class="m-1">
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#recurring_fields">
+                    <i class="bi bi-calendar3-range"></i> %s
+                </button>
+                </div>
+            ''' % _("Recurring options")
+
+        }),
+        ("modal", {
+            "legend": (
+                    '<i class="bi bi-calendar3-range"></i>'
+                    + '  %s' % _("Recurring options")
+                ),
+            "id": "recurring_fields",
+            "fields": MEETING_RECURRING_FIELDS
+        }),
         (
             "advanced_options",
             {
@@ -131,7 +153,7 @@ class MeetingForm(forms.ModelForm):
                     '<i class="bi bi-file-earmark-plus-fill"></i>'
                     + ' %s' % _("Advanced options")
                 ),
-                "classes": "collapse",
+                "classes": "collapse border border-primary p-1 m-1",
                 "fields": get_meeting_fields(),
             },
         ),
