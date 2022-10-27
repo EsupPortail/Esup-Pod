@@ -97,7 +97,6 @@ class IsPaidFilter(admin.SimpleListFilter):
             ]
             return queryset.filter(id__in=meetings)
         else:
-            # If is_paid=True filter is activated
             return queryset
 
 
