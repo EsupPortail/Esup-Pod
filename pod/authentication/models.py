@@ -48,6 +48,9 @@ AFFILIATION = getattr(
         ("registered-reader", _("registered-reader")),
     ),
 )
+AFFILIATION_STAFF = getattr(
+    settings, "AFFILIATION_STAFF", ("faculty", "employee", "staff")
+)
 ESTABLISHMENTS = getattr(
     settings,
     "ESTABLISHMENTS",

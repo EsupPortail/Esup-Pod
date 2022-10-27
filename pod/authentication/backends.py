@@ -5,13 +5,11 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 
+from pod.authentication.models import AFFILIATION_STAFF
+
 User = get_user_model()
 
 CREATE_GROUP_FROM_AFFILIATION = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION", False)
-
-AFFILIATION_STAFF = getattr(
-    settings, "AFFILIATION_STAFF", ("faculty", "employee", "staff")
-)
 
 
 class ShibbBackend(ShibbolethRemoteUserBackend):

@@ -1,7 +1,7 @@
 # test_populated
 from django.conf import settings
 from django.test import TestCase, override_settings
-from pod.authentication.models import Owner, AccessGroup
+from pod.authentication.models import Owner, AccessGroup, AFFILIATION_STAFF
 from pod.authentication import populatedCASbackend
 from pod.authentication import shibmiddleware
 from pod.authentication.backends import ShibbBackend
@@ -66,10 +66,6 @@ SHIBBOLETH_ATTRIBUTE_MAP = getattr(
 
 SHIBBOLETH_STAFF_ALLOWED_DOMAINS = getattr(
     settings, "SHIBBOLETH_STAFF_ALLOWED_DOMAINS", None
-)
-
-AFFILIATION_STAFF = getattr(
-    settings, "AFFILIATION_STAFF", ("employee", "faculty", "staff")
 )
 
 SHIB_URL = getattr(settings, "SHIB_URL", "https://univ.fr/Shibboleth.sso/WAYF")

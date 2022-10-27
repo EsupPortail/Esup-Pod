@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from pod.authentication.models import Owner
-from pod.authentication.models import AFFILIATION
+from pod.authentication.models import AFFILIATION, AFFILIATION_STAFF
 from ldap3 import Server
 from ldap3 import ALL
 from ldap3 import Connection
@@ -39,11 +39,7 @@ CREATE_GROUP_FROM_AFFILIATION = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION
 
 CREATE_GROUP_FROM_GROUPS = getattr(settings, "CREATE_GROUP_FROM_GROUPS", False)
 
-AFFILIATION_STAFF = getattr(
-    settings, "AFFILIATION_STAFF", ("faculty", "employee", "staff")
-)
-
-GROUP_STAFF = getattr(settings, "AFFILIATION_STAFF", ("faculty", "employee", "staff"))
+GROUP_STAFF = AFFILIATION_STAFF
 
 LDAP_SERVER = getattr(settings, "LDAP_SERVER", {"url": "", "port": 389, "use_ssl": False})
 AUTH_LDAP_BIND_DN = getattr(settings, "AUTH_LDAP_BIND_DN", "")
