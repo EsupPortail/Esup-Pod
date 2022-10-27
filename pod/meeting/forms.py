@@ -54,7 +54,12 @@ MEETING_RECORD_FIELDS = getattr(
 )
 
 if MEETING_DISABLE_RECORD:
-    MEETING_EXCLUDE_FIELDS = MEETING_MAIN_FIELDS + MEETING_RECURRING_FIELDS + ("id",) + MEETING_RECORD_FIELDS
+    MEETING_EXCLUDE_FIELDS = (
+        MEETING_MAIN_FIELDS
+        + MEETING_RECURRING_FIELDS
+        + ("id",)
+        + MEETING_RECORD_FIELDS
+    )
 else:
     MEETING_EXCLUDE_FIELDS = MEETING_MAIN_FIELDS + MEETING_RECURRING_FIELDS + ("id",)
 
@@ -112,7 +117,9 @@ class MeetingForm(forms.ModelForm):
         (
             "recurring_options",
             {
-                "legend": '<i class="bi bi-calendar-date"></i> %s' % _("Recurring options"),
+                "legend": (
+                    '<i class="bi bi-calendar-date"></i> %s' % _("Recurring options")
+                ),
                 "classes": "modal",
                 "fields": MEETING_RECURRING_FIELDS,
             },
@@ -120,7 +127,10 @@ class MeetingForm(forms.ModelForm):
         (
             "advanced_options",
             {
-                "legend": '<i class="bi bi-file-earmark-plus-fill"></i> %s' % _("Advanced options"),
+                "legend": (
+                    '<i class="bi bi-file-earmark-plus-fill"></i>'
+                    + ' %s' % _("Advanced options")
+                ),
                 "classes": "collapse",
                 "fields": get_meeting_fields(),
             },

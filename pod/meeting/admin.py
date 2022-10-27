@@ -127,7 +127,7 @@ class MeetingAdmin(admin.ModelAdmin):
             form = MeetingAdminForm
         # form = super(MeetingAdmin, self).get_form(request, obj, **kwargs)
         return form
-    
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
