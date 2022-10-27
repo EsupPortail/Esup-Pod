@@ -488,14 +488,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // If aside menu is empty, hide container and button
     if (collapseAside.querySelectorAll("div").length == 0) {
+     
+
+      if (collapseAside.offsetParent) {
+       
       collapseAside.style.display = "none";
+     
       collapseBoot.show();
       // Destroy collapse object
+      
       collapseBoot.dispose();
+      
       let mainContent = document.getElementById("mainContent");
       if (mainContent) {
         document.getElementById("mainContent").classList.remove("col-md-9");
       }
+    }
     } else {
       // Use the last aside state, stored in Cookies
       // only for > 992, we show collapseAside

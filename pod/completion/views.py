@@ -106,6 +106,7 @@ def video_caption_maker_save(request, video):
         error = False
         lang = request.POST.get("lang")
         kind = request.POST.get("kind")
+        print(request.POST)
         enrich_ready = True if request.POST.get("enrich_ready") == "true" else False
         cur_folder = get_current_session_folder(request)
         response = file_edit_save(request, cur_folder)
