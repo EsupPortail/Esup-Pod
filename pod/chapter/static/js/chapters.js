@@ -291,20 +291,35 @@ var sendform = async function (elt, action) {
     })
       .then((response) => response.text())
       .then((data) => {
-        if (data.indexOf("list_chapter") == -1) {
+        if (data.indexOf("list_chapter") == -1 && data.indexOf("form") == -1) {
           showalert(
             gettext("You are no longer authenticated. Please log in again."),
             "alert-danger"
           );
         } else {
-          updateDom(data);
-          manageImport();
-          document.getElementById("list_chapter").innerHTML = data.list_chapter;
-          show_form("");
-          document.querySelector("form.get_form").style.display = "block";
+          
+          data = JSON.parse(data);
+          if (data.errors) {
+            document.querySelector("form#form_chapter").style.display =
+              "block";
+            showalert(
+              data.errors +
+                " Make sure you added a file and that it is a valid file.",
+              "alert-danger"
+            );
+          }else{
+           
+
+            updateDom(data);
+            manageImport();
+            document.getElementById("list_chapter").innerHTML = data.list_chapter;
+            show_form("");
+            document.querySelector("form.get_form").style.display = "block";
+          }
         }
       })
       .catch((error) => {
+        console.log(error)
         ajaxfail(error);
       });
   }
