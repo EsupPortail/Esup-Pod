@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.exceptions import ObjectDoesNotExist
 
-from pod.authentication.models import AccessGroup, AFFILIATION, AFFILIATION_STAFF
+from pod.authentication.models import AccessGroup, DEFAULT_AFFILIATION, AFFILIATION_STAFF
 
 User = get_user_model()
 
@@ -71,7 +71,7 @@ class OIDCBackend(OIDCAuthenticationBackend):
 
         user.first_name = claims.get(OIDC_CLAIM_GIVEN_NAME, "")
         user.last_name = claims.get(OIDC_CLAIM_FAMILY_NAME, "")
-        user.owner.affiliation = getattr(settings, "OIDC_DEFAULT_AFFILIATION", AFFILIATION[0][0])
+        user.owner.affiliation = getattr(settings, "OIDC_DEFAULT_AFFILIATION", DEFAULT_AFFILIATION)
         try:
             user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name=user.owner.affiliation))
         except ObjectDoesNotExist:

@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from pod.authentication.models import Owner
-from pod.authentication.models import AFFILIATION, AFFILIATION_STAFF
+from pod.authentication.models import DEFAULT_AFFILIATION, AFFILIATION_STAFF
 from ldap3 import Server
 from ldap3 import ALL
 from ldap3 import Connection
@@ -232,7 +232,7 @@ def populate_user_from_entry(user, owner, entry):
             USER_LDAP_MAPPING_ATTRIBUTES.get("primaryAffiliation")
             and entry[USER_LDAP_MAPPING_ATTRIBUTES["primaryAffiliation"]]
         )
-        else AFFILIATION[0][0]
+        else DEFAULT_AFFILIATION
     )
     owner.establishment = (
         entry[USER_LDAP_MAPPING_ATTRIBUTES["establishment"]].value
@@ -296,7 +296,7 @@ def populate_user_from_tree(user, owner, tree):
     owner.affiliation = (
         primary_affiliation_element.text
         if (primary_affiliation_element is not None)
-        else AFFILIATION[0][0]
+        else DEFAULT_AFFILIATION
     )
     # affiliation
     affiliation_element = tree.findall(
