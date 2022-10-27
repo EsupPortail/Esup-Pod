@@ -112,7 +112,7 @@ class MeetingForm(forms.ModelForm):
         (
             "recurring_options",
             {
-                "legend": _("Recurring options"),
+                "legend": '<i class="bi bi-calendar-date"></i> %s' % _("Recurring options"),
                 "classes": "modal",
                 "fields": MEETING_RECURRING_FIELDS,
             },
@@ -120,7 +120,7 @@ class MeetingForm(forms.ModelForm):
         (
             "advanced_options",
             {
-                "legend": _("Advanced options"),
+                "legend": '<i class="bi bi-file-earmark-plus-fill"></i> %s' % _("Advanced options"),
                 "classes": "collapse",
                 "fields": get_meeting_fields(),
             },
