@@ -4,12 +4,17 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from django.core.exceptions import ObjectDoesNotExist
 
-from pod.authentication.models import AFFILIATION_STAFF
+from pod.authentication.models import AccessGroup, AFFILIATION, AFFILIATION_STAFF
 
 User = get_user_model()
 
 CREATE_GROUP_FROM_AFFILIATION = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION", False)
+
+
+def is_staff_affiliation(affiliation):
+    return affiliation in AFFILIATION_STAFF
 
 
 class ShibbBackend(ShibbolethRemoteUserBackend):
@@ -44,7 +49,7 @@ class ShibbBackend(ShibbolethRemoteUserBackend):
         user.owner.save()
         # affiliation
         user.owner.affiliation = params["affiliation"]
-        if params["affiliation"] in AFFILIATION_STAFF:
+        if is_staff_affiliation(affiliation=params["affiliation"]):
             user.is_staff = True
         if CREATE_GROUP_FROM_AFFILIATION:
             group, group_created = Group.objects.get_or_create(name=params["affiliation"])
@@ -66,6 +71,13 @@ class OIDCBackend(OIDCAuthenticationBackend):
 
         user.first_name = claims.get(OIDC_CLAIM_GIVEN_NAME, "")
         user.last_name = claims.get(OIDC_CLAIM_FAMILY_NAME, "")
+        user.owner.affiliation = getattr(settings, "OIDC_DEFAULT_AFFILIATION", AFFILIATION[0][0])
+        try:
+            user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name=user.owner.affiliation))
+        except ObjectDoesNotExist:
+            pass
+        user.is_staff = is_staff_affiliation(affiliation=user.owner.affiliation)
+        user.owner.save()
         user.save()
 
         return user

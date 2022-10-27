@@ -1,10 +1,11 @@
 # test_populated
+import random
 from django.conf import settings
 from django.test import TestCase, override_settings
 from pod.authentication.models import Owner, AccessGroup, AFFILIATION_STAFF
 from pod.authentication import populatedCASbackend
 from pod.authentication import shibmiddleware
-from pod.authentication.backends import ShibbBackend
+from pod.authentication.backends import ShibbBackend, OIDCBackend, OIDC_CLAIM_FAMILY_NAME, OIDC_CLAIM_GIVEN_NAME
 from django.test import RequestFactory
 from django.contrib.auth.models import User
 from importlib import reload
@@ -73,6 +74,11 @@ SHIB_URL = getattr(settings, "SHIB_URL", "https://univ.fr/Shibboleth.sso/WAYF")
 SHIB_LOGOUT_URL = getattr(
     settings, "SHIB_LOGOUT_URL", "https://univ.fr/Shibboleth.sso/Logout"
 )
+
+UNSTAFFABLE_AFFILIATIONS = ["member", "unprobable"]
+
+UNSTAFFABLE_AFFILIATION = random.choice(UNSTAFFABLE_AFFILIATIONS)
+STAFFABLE_AFFILIATION = random.choice(AFFILIATION_STAFF)
 
 
 class PopulatedCASTestCase(TestCase):
@@ -400,8 +406,7 @@ class PopulatedShibTestCase(TestCase):
         self.assertTrue(user.is_staff)
 
         """ Test if same user with new unstaffable affiliation keep his staff status """
-        unstaffable_affiliation = ["member", "unprobable"]
-        for a in unstaffable_affiliation:
+        for a in UNSTAFFABLE_AFFILIATIONS:
             self.assertFalse(a in AFFILIATION_STAFF)
         user, shib_meta = self._authenticate_shib_user(
             {
@@ -409,7 +414,7 @@ class PopulatedShibTestCase(TestCase):
                 "first_name": "Jean",
                 "last_name": "Do",
                 "email": "jean.do@univ.fr",
-                "affiliations": ";".join(unstaffable_affiliation),
+                "affiliations": ";".join(UNSTAFFABLE_AFFILIATIONS),
             }
         )
         shibmiddleware.ShibbMiddleware.make_profile(
@@ -429,7 +434,7 @@ class PopulatedShibTestCase(TestCase):
                 "first_name": "Ada",
                 "last_name": "Da",
                 "email": "ada.da@univ.fr",
-                "affiliations": ";".join(unstaffable_affiliation),
+                "affiliations": ";".join(UNSTAFFABLE_AFFILIATIONS),
             }
         )
         shibmiddleware.ShibbMiddleware.make_profile(
@@ -438,3 +443,48 @@ class PopulatedShibTestCase(TestCase):
         self.assertFalse(user.is_staff)
 
         print(" --->  test_make_profile" " of PopulatedShibTestCase : OK !")
+
+
+class PopulatedOIDCTestCase(TestCase):
+
+    def setUp(self):
+        AccessGroup.objects.create(code_name="access_group", display_name="Access group")
+
+    @override_settings(
+        OIDC_RP_CLIENT_ID = "MWViNTY2NzJjNGY4YTQ1MTAwMTNiYjk3",
+        OIDC_RP_CLIENT_SECRET = "YTM0MzIxZTVmMzZmMTdjNzY5NDQyODcw",
+        OIDC_OP_TOKEN_ENDPOINT = "https://auth.server.com/oauth/token",
+        OIDC_OP_USER_ENDPOINT = "https://auth.server.com/oauth/userinfo",
+        OIDC_DEFAULT_AFFILIATION = UNSTAFFABLE_AFFILIATION
+    )
+    def test_OIDC_user_with_default_unstaffable_access_group(self):
+        user = OIDCBackend().create_user(claims={
+            OIDC_CLAIM_GIVEN_NAME: "John",
+            OIDC_CLAIM_FAMILY_NAME: "Doe"
+        })
+        self.assertFalse(settings.OIDC_DEFAULT_AFFILIATION in AFFILIATION_STAFF)
+        self.assertEqual(user.first_name, "John")
+        self.assertEqual(user.last_name, "Doe")
+        self.assertEqual(user.owner.affiliation, settings.OIDC_DEFAULT_AFFILIATION)
+        self.assertFalse(user.is_staff)
+        print(" --->  test_OIDC_user_with_default_unstaffable_access_group" " of PopulatedOIDCTestCase : OK !")
+
+
+    @override_settings(
+        OIDC_RP_CLIENT_ID = "MWViNTY2NzJjNGY4YTQ1MTAwMTNiYjk3",
+        OIDC_RP_CLIENT_SECRET = "YTM0MzIxZTVmMzZmMTdjNzY5NDQyODcw",
+        OIDC_OP_TOKEN_ENDPOINT = "https://auth.server.com/oauth/token",
+        OIDC_OP_USER_ENDPOINT = "https://auth.server.com/oauth/userinfo",
+        OIDC_DEFAULT_AFFILIATION = STAFFABLE_AFFILIATION
+    )
+    def test_OIDC_user_with_default_staff_access_group(self):
+        user = OIDCBackend().create_user(claims={
+            OIDC_CLAIM_GIVEN_NAME: "Jane",
+            OIDC_CLAIM_FAMILY_NAME: "Did"
+        })
+        self.assertEqual(user.first_name, "Jane")
+        self.assertEqual(user.last_name, "Did")
+        self.assertEqual(user.owner.affiliation, settings.OIDC_DEFAULT_AFFILIATION)
+        self.assertTrue(user.is_staff)
+
+        print(" --->  test_OIDC_user_with_default_staff_access_group" " of PopulatedOIDCTestCase : OK !")

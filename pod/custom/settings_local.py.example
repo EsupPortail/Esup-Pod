@@ -1119,6 +1119,11 @@ OIDC_CLAIM_FAMILY_NAME = "family_name"
 OIDC_CLAIM_GIVEN_NAME = "given_name"
 
 """
+# Affiliation par défaut d'un utilisateur authentifié par OIDC
+"""
+OIDC_DEFAULT_AFFILIATION = ""
+
+"""
 # Permettre l'usage du oembed, partage dans Moodle, Facebook, Twitter etc.
 """
 OEMBED = True
