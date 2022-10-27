@@ -33,8 +33,8 @@
     {% for meeting in meetings %}
     <tr>
       <th scope="row">{{meeting.name}} {% if meeting.is_restricted %} <span class="btn pod-btn-social btn-sm p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Acces to this meeting is restricted' %}"><i class="bi bi-lock"></i></span>{% endif %}</th>
-      <td>{{meeting.start_at}}</td>
-      <td>{{meeting.end_at}}</td>
+      <td>{{meeting.start}}</td>
+      <td>{{meeting.expected_duration}}</td>
       <td>
         <div class="d-grid gap-2 d-md-flex">
           <input class="form-control form-control-sm" id="join-link-{{meeting.meeting_id}}" type="text" value="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id %}">
