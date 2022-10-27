@@ -8,6 +8,7 @@ if (typeof loaded == "undefined") {
   
   loaded = true;
   document.addEventListener("click", (e) => {
+    if (!e.target.parentNode) return
     if (
       !e.target.parentNode.matches(".file-name") &&
       !e.target.parentNode.matches(".file-image")
@@ -17,14 +18,17 @@ if (typeof loaded == "undefined") {
     e.preventDefault();
     if (id_input && id_input != "") {
       document.querySelector("input#" + id_input).value = file.dataset.fileid;
-
-      if (file.dataset.filetype == "CustomImageModel") {
-        document.querySelector(".btn-fileinput_" + id_input).innerHTML =
-          gettext("Change image");
-      } else {
-        document.querySelector(".btn-fileinput_" + id_input).innerHTML =
-          gettext("Change file");
+      if (document.querySelector(".btn-fileinput_" + id_input))
+      {
+        if (file.dataset.filetype == "CustomImageModel") {
+          document.querySelector(".btn-fileinput_" + id_input).innerHTML =
+            gettext("Change image");
+        } else {
+          document.querySelector(".btn-fileinput_" + id_input).innerHTML =
+            gettext("Change file");
+        }
       }
+      
       //
       //if($(".btn-fileinput_"+id_input).text().indexOf(gettext('Change file')) != -1 || $(".btn-fileinput_"+id_input).text().indexOf(gettext('Select a file')) != -1)
       //    $(".btn-fileinput_"+id_input).html(gettext('Change file'));

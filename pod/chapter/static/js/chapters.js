@@ -3,7 +3,19 @@ function show_form(data) {
   let form_chapter = document.getElementById(id_form);
   form_chapter.style.display = "none";
   form_chapter.innerHTML = data;
-
+  form_chapter.querySelectorAll("script").forEach((item) => {
+    
+    if (item.src) {
+      // external script
+      
+      let script = document.createElement("script");
+      script.src = item.src;
+      document.body.appendChild(script);
+    } else {
+      // inline script
+    (0,eval)(item.innerHTML);
+    }
+  });
   fadeIn(form_chapter);
 
   let inputStart = document.querySelector("input#id_time_start");
@@ -57,9 +69,13 @@ var ajaxfail = function (data) {
 document.addEventListener("click", (e) => {
   if (e.target.id != "cancel_chapter") return;
 
-  document.querySelectorAll("form.get_form").style.display = "block";
+  document.querySelectorAll("form.get_form").forEach((form) =>{
+    form.style.display = "block";
+  })
   show_form("");
-  document.getElementById("fileModal_id_file").remove();
+  let file_modal = document.getElementById("fileModal_id_file");
+  if (file_modal) 
+    file_modal.remove();
 });
 
 document.addEventListener("submit", (e) => {
@@ -101,6 +117,7 @@ var sendandgetform = async function (elt, action) {
     })
       .then((response) => response.text())
       .then((data) => {
+        
         if (data.indexOf(id_form) == -1) {
           showalert(
             gettext("You are no longer authenticated. Please log in again."),
@@ -111,6 +128,7 @@ var sendandgetform = async function (elt, action) {
         }
       })
       .catch((error) => {
+        
         ajaxfail(error);
       });
   }
