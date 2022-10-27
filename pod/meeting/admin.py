@@ -74,6 +74,33 @@ class MeetingAdminForm(MeetingForm):
         }
 
 
+class IsPaidFilter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = 'is active'
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'is_active'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('1', _('Yes')),
+            ('0', _('No'))
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == '1':
+            meetings = [
+                meeting.id for meeting in (
+                    queryset
+                ) if meeting.is_active
+            ]
+            return queryset.filter(id__in=meetings)
+        else:
+            # If is_paid=True filter is activated
+            return queryset
+
+
 @admin.register(Meeting)
 class MeetingAdmin(admin.ModelAdmin):
     date_hierarchy = "updated_at"
@@ -84,6 +111,7 @@ class MeetingAdmin(admin.ModelAdmin):
         "meeting_id",
         "created_at",
         "start",
+        "is_active",
         "is_running",
         "join_url",  # , 'meeting_actions'
     )
@@ -96,7 +124,7 @@ class MeetingAdmin(admin.ModelAdmin):
         link = '<a href="%s" target="_blank">%s</a>' % (direct_join_url, _("join"))
         return mark_safe(link)
 
-    list_filter = ("start", "is_running")
+    list_filter = ("start", "is_running", IsPaidFilter)
     # actions = ["update_running_meetings"] if not UPDATE_RUNNING_ON_EACH_CALL else []
     list_per_page = 30
     autocomplete_fields = [

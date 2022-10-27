@@ -2,7 +2,7 @@ import hashlib
 import random
 import requests
 import datetime
-from datetime import timedelta
+from datetime import timedelta, datetime as dt
 
 from urllib.parse import urlencode
 import xml.etree.ElementTree as et
@@ -516,6 +516,21 @@ class Meeting(models.Model):
             return [self.start]
 
         return []
+
+    @property
+    def is_active(self):
+        """
+        Compute meeting to know if it is past or not.
+        """
+        start_datetime = dt.combine(self.start, self.start_time)
+        start_datetime = timezone.make_aware(start_datetime)
+        if self.recurrence is None and start_datetime > timezone.now():
+            return True
+        end_datetime = dt.combine(self.recurring_until, self.start_time)
+        end_datetime = timezone.make_aware(end_datetime)
+        if self.recurrence and end_datetime > timezone.now():
+            return True
+        return False
 
     # ##############################    BBB API
     def create(self, request=None):

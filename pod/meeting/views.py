@@ -52,7 +52,13 @@ def my_meetings(request):
     site = get_current_site(request)
     if RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
         return render(request, "meeting/my_meetings.html", {"access_not_allowed": True})
-    meetings = request.user.owner_meeting.all().filter(site=site)
+    # meetings = request.user.owner_meeting.all().filter(site=site)
+    # remove past meeting
+    meetings = [
+        meeting for meeting in (
+            request.user.owner_meeting.all().filter(site=site)
+        ) if meeting.is_active
+    ]
     return render(
         request,
         "meeting/my_meetings.html",
@@ -118,11 +124,15 @@ def add_or_edit(request, meeting_id=None):
                 messages.ERROR,
                 _("One or more errors have been found in the form."),
             )
+    page_title = "%s <b>%s</b>" % (
+        _("Edit the meeting"), meeting.name
+    ) if meeting else _("Add a new meeting")
     return render(
         request,
         "meeting/add_or_edit.html",
         {
             "form": form,
+            "page_title": mark_safe(page_title)
         },
     )
 
