@@ -201,9 +201,8 @@ class TestComment(TestCase):
         self.client.logout()
         self.client.force_login(self.simple_user)
         response = self.client.post(
-            url,
-            {"content": "Third parent comment"},
-            **self.ajax_header)
+            url, {"content": "Third parent comment"}, **self.ajax_header
+        )
         data = {
             "author_name": "{0} {1}".format(
                 self.simple_user.first_name, self.simple_user.last_name
@@ -233,9 +232,8 @@ class TestComment(TestCase):
         self.client.logout()
         self.client.force_login(self.owner_user)
         response = self.client.post(
-            url,
-            {"content": "Response to third comment"},
-            **self.ajax_header)
+            url, {"content": "Response to third comment"}, **self.ajax_header
+        )
         data["author_name"] = "{0} {1}".format(
             self.owner_user.first_name, self.owner_user.last_name
         )

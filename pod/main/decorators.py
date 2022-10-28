@@ -11,10 +11,13 @@ def ajax_login_required(_view):
     If your request wait for a json, it's better than adding ajax_required+login_required
     raise PermissionDenied if necessary (instead of redirecting to login page).
     """
+
     @wraps(_view)
     def _wrapped_view(request, *args, **kwargs):
-        if (request.headers.get('x-requested-with') == 'XMLHttpRequest'
-           and request.user.is_authenticated):
+        if (
+            request.headers.get("x-requested-with") == "XMLHttpRequest"
+            and request.user.is_authenticated
+        ):
             return _view(request, *args, **kwargs)
         else:
             raise PermissionDenied()
@@ -32,7 +35,7 @@ def ajax_required(_view):
     @wraps(_view)
     def _wrapped_view(request, *args, **kwargs):
 
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
             return _view(request, *args, **kwargs)
         else:
             raise PermissionDenied()
