@@ -65,7 +65,7 @@ msgstr "Le formulaire ne peut pas être récupéré."
 #: pod/podfile/static/podfile/js/filewidget.js:360
 #: pod/podfile/static/podfile/js/filewidget.js:393
 msgid "You are no longer authenticated. Please log in again."
-msgstr "Vous n'êtes plus authentifié. Veuillez vous reconnectez."
+msgstr "Vous n’êtes plus authentifié. Veuillez vous reconnecter."
 
 #: pod/chapter/static/js/chapters.js:201
 #: pod/enrichment/static/js/enrichment.js:195 pod/main/static/js/main.js:429
@@ -310,7 +310,7 @@ msgstr "Veuillez entrer une intégration correct."
 
 #: pod/enrichment/static/js/enrichment.js:448
 msgid "Embed field must be less than 300 characters."
-msgstr "Un lien d'intégration doit être inférieur à 300 caractères."
+msgstr "Un lien d’intégration doit être inférieur à 300 caractères."
 
 #: pod/enrichment/static/js/enrichment.js:461
 msgid "Please enter a type in index field."
@@ -330,7 +330,7 @@ msgstr "Le commencement et la fin ne peuvent être équivalents."
 
 #: pod/enrichment/static/js/enrichment.js:505
 msgid "There is an overlap with the enrichment "
-msgstr "Il y a un chevauchement avec l'enrichissement "
+msgstr "Il y a un chevauchement avec l’enrichissement "
 
 #: pod/enrichment/static/js/enrichment.js:509
 msgid "please change start and/or end values."
@@ -377,12 +377,12 @@ msgid ""
 "If this box is checked, the event will only be accessible to authenticated "
 "users."
 msgstr ""
-"Si cette case est cochée, l’évènement ne sera accessible qu'aux utilisateurs "
+"Si cette case est cochée, l’évènement ne sera accessible qu’aux utilisateurs "
 "authentifiés."
 
 #: pod/live/static/js/broadcaster_from_building.js:43
 msgid "An error occurred on broadcaster fetch..."
-msgstr "Une erreur s'est produite lors du chargement du diffuseur…"
+msgstr "Une erreur s’est produite lors du chargement du diffuseur…"
 
 #: pod/live/static/js/broadcaster_from_building.js:67
 msgid "No broadcaster set for this building"
@@ -390,7 +390,7 @@ msgstr "Pas de diffuseur pour ce bâtiment"
 
 #: pod/live/static/js/broadcaster_from_building.js:83
 msgid "An error occurred during broadcasters load..."
-msgstr "Une erreur s'est produite lors du chargement des diffuseurs…"
+msgstr "Une erreur s’est produite lors du chargement des diffuseurs…"
 
 #: pod/main/static/js/main.js:392
 msgid "Are you sure you want to delete this element?"
@@ -434,7 +434,7 @@ msgstr " Go."
 #: pod/main/static/js/main.js:862
 msgid "The file extension not in the allowed extension:"
 msgstr ""
-"Cette extension de fichier n'est pas présente dans les extensions "
+"Cette extension de fichier n’est pas présente dans les extensions "
 "autorisées :"
 
 #: pod/playlist/static/js/playlist.js:135
@@ -451,7 +451,7 @@ msgstr "La trace (slug) de la vidéo est introuvable."
 
 #: pod/podfile/static/podfile/js/filewidget.js:11
 msgid "Change image"
-msgstr "Changer d'image"
+msgstr "Changer d’image"
 
 #: pod/podfile/static/podfile/js/filewidget.js:13
 msgid "Change file"
@@ -504,7 +504,7 @@ msgstr "Chargement en cours…"
 
 #: pod/video/static/js/change_video_owner.js:635
 msgid "An error occurred during the change of owner"
-msgstr "Une erreur s'est produite lors du changement de propriétaire"
+msgstr "Une erreur s’est produite lors du changement de propriétaire"
 
 #: pod/video/static/js/change_video_owner.js:646
 msgid "Please complete all fields correctly"
@@ -566,7 +566,7 @@ msgstr "Mauvaise réponse du serveur."
 
 #: pod/video/static/js/comment-script.js:455
 msgid "Sorry, you're not allowed to vote by now."
-msgstr "Désolé, vous n'êtes pas autorisé à voter maintenant."
+msgstr "Désolé, vous n’êtes pas autorisé à voter maintenant."
 
 #: pod/video/static/js/comment-script.js:547
 msgid "Sorry, you can't comment this video by now."
@@ -733,7 +733,7 @@ msgstr "Vue du mois"
 
 #: pod/video/static/js/video_stats_view.js:24
 msgid "View during the year"
-msgstr "Vue de l'année"
+msgstr "Vue de l’année"
 
 #: pod/video/static/js/video_stats_view.js:25
 msgid "Total view from creation"
