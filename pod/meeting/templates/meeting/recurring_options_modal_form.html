@@ -1,0 +1,39 @@
+<div class="mb-3">
+<div class="list-group-item">
+    <div class="row g-3 align-items-center m-1">
+    <div class="col-auto">Répéter tou(te)s les</div>
+    <div class="col-auto">{{ form.frequency }}</div>
+    <div class="col-auto">{{ form.recurrence }}</div>
+    </div>
+</div>
+</div>
+<div class="mb-3">
+<div class="list-group-item">
+    <div class="row g-3 align-items-center m-1">
+    <div class="col-auto">Répéter le ou les : </div>
+    <div class="col-auto ">
+        {% for day in form.days_of_week %}
+        <div class="form-check form-check-inline">
+        {{day}}
+        </div>
+        {% endfor %}
+    </div>
+    </div>
+</div>
+</div>
+<div class="mb-3">
+<div class="list-group-item">
+    <div class="">Se termine : </div>
+    <div class="row g-3 align-items-center m-1">
+        <div class="col-auto align-items-center">
+            <div class="input-group input-group-sm">
+                <span class="input-group-text p-1" >Le : </span>
+                <span class="align-items-center">{{ form.recurring_until }}</span>
+                <span class="input-group-text ms-1 p-1" > Ou après </span>
+                {{ form.nb_occurrences }}
+                <span class="input-group-text p-1" > occurences</span>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

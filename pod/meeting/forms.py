@@ -120,6 +120,21 @@ class MeetingForm(forms.ModelForm):
         min_value=1,
         help_text=_("Specify a duration in hour between 1 and 5 hours")
     )
+    DAYS_OF_WEEK = [
+        (0, _('Monday')),
+        (1, _('Tuesday')),
+        (2, _('Wednesday')),
+        (3, _('Thursday')),
+        (4, _('Friday')),
+        (5, _('Saturday')),
+        (6, _('Sunday'))
+    ]
+
+    days_of_week = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        choices=DAYS_OF_WEEK
+    )
 
     fieldsets = (
         (None, {"fields": MEETING_MAIN_FIELDS}),
@@ -140,11 +155,12 @@ class MeetingForm(forms.ModelForm):
         }),
         ("modal", {
             "legend": (
-                    '<i class="bi bi-calendar3-range"></i>'
+                    '<i class="bi bi-calendar3-range"></i>&nbsp;'
                     + '  %s' % _("Recurring options")
                 ),
             "id": "recurring_fields",
-            "fields": MEETING_RECURRING_FIELDS
+            "fields": MEETING_RECURRING_FIELDS,
+            "template": "meeting/recurring_options_modal_form.html"
         }),
         (
             "advanced_options",
@@ -165,6 +181,8 @@ class MeetingForm(forms.ModelForm):
 
         if not hasattr(form, "admin_form"):
             form.remove_field("site")
+        else:
+            form.remove_field("days_of_week")
 
     def clean(self):
         cleaned_data = super(MeetingForm, self).clean()
