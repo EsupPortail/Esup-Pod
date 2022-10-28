@@ -524,13 +524,17 @@ def send_invite(request, meeting, emails):
     join_link = request.build_absolute_uri(
         reverse("meeting:join", args=(meeting.meeting_id,))
     )
+    meeting_start_datetime = timezone.make_aware(
+        datetime.combine(meeting.start, meeting.start_time)
+    )
+    # check if recurring meeting or not...
     text_content = (
         _(
             """
         Hello,
         %(owner)s invites you to the meeting %(meeting_title)s.
-        Start date: %(start_date)s
-        End date: %(end_date)s
+        Start date: %(start_date_time)s
+        Expected duration: %(expected_duration)s hour(s)
         Here is the link to join the meeting: %(join_link)s
         You need this password to enter: %(password)s
         Regards
@@ -539,8 +543,8 @@ def send_invite(request, meeting, emails):
         % {
             "owner": meeting.owner.get_full_name(),
             "meeting_title": meeting.name,
-            "start_date": meeting.start_at,
-            "end_date": meeting.end_at,
+            "start_date_time": meeting_start_datetime,
+            "expected_duration": meeting.expected_duration,
             "join_link": join_link,
             "password": meeting.attendee_password,
         }
@@ -550,8 +554,8 @@ def send_invite(request, meeting, emails):
             """
         <p>Hello,
         <p>%(owner)s invites you to the meeting <b>%(meeting_title)s</b>.</p>
-        <p>Start date: %(start_date)s </p>
-        <p>End date: %(end_date)s </p>
+        <p>Start date: %(start_date_time)s </p>
+        <p>Expected duration: %(expected_duration)s hour(s) </p>
         <p>here the link to join the meeting:
         <a href="%(join_link)s">%(join_link)s</a></p>
         <p>You need this password to enter: <b>%(password)s</b> </p>
@@ -561,8 +565,8 @@ def send_invite(request, meeting, emails):
         % {
             "owner": meeting.owner.get_full_name(),
             "meeting_title": meeting.name,
-            "start_date": meeting.start_at,
-            "end_date": meeting.end_at,
+            "start_date_time": meeting_start_datetime,
+            "expected_duration": meeting.expected_duration,
             "join_link": join_link,
             "password": meeting.attendee_password,
         }
@@ -572,12 +576,11 @@ def send_invite(request, meeting, emails):
     # ics calendar
     calendar = Calendar()
     # for reccuring meeting, get all events (max year ?)
-    event = Event()
-    event.name = _("%(owner)s invites you to the meeting %(meeting_title)s") % {
+    event_name =  _("%(owner)s invites you to the meeting %(meeting_title)s") % {
         "owner": meeting.owner.get_full_name(),
         "meeting_title": meeting.name,
     }
-    event.description = (
+    event_description = (
         _(
             """
         Here is the link to join the meeting: %(join_link)s
@@ -586,14 +589,20 @@ def send_invite(request, meeting, emails):
         )
         % {"join_link": join_link, "password": meeting.attendee_password}
     )
-    start = datetime.combine(meeting.start, meeting.start_time)
-    event.begin = timezone.make_aware(start).isoformat()
-    # end = start + timezone.timedelta(hours=meeting.expected_duration)
-    # event.end = timezone.make_aware(end).isoformat()
-    event.duration = meeting.expected_duration
-    event.organizer = meeting.owner.email
+    occurrences = meeting.get_occurrences(meeting.start, meeting.recurring_until)
+    for occurrence in occurrences:
+        if occurrence >= timezone.now().date():
+            event = Event()
+            event.name = event_name
+            event.description = event_description
+            start = datetime.combine(occurrence, meeting.start_time)
+            event.begin = timezone.make_aware(start).isoformat()
+            # end = start + timezone.timedelta(hours=meeting.expected_duration)
+            # event.end = timezone.make_aware(end).isoformat()
+            event.duration = meeting.expected_duration
+            event.organizer = meeting.owner.email
+            calendar.events.add(event)
 
-    calendar.events.add(event)
     filename_event = "/tmp/invite-%d.ics" % meeting.id
     with open(filename_event, "w") as ics_file:
         ics_file.writelines(calendar)
