@@ -37,27 +37,27 @@
       {% endfor %}
 
       {% for fieldset in form.fieldsets %}
-      {% with last=fieldset|last name=fieldset|first%}
-      {% if "collapse" in last.classes %}
+      {% with options=fieldset|last name=fieldset|first%}
+      {% if "collapse" in options.classes %}
         <div class="mb-3">
           <div class="list-group-item">
             <a class="btn btn-primary" data-bs-toggle="collapse" href="#meeting_form_{{fieldset|first}}_{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
-              {{ last.legend|safe }}
+              {{ options.legend|safe }}
             </a>
           </div>
         </div>
       {% endif %}
       {% if name != "modal" %}
-      <fieldset class="{{ last.classes }}" id="meeting_form_{{fieldset|first}}_{{forloop.counter}}" >
-        {% if last.legend %}
-          <legend>{{ last.legend|safe }}</legend>
+      <fieldset class="{{ options.classes }}" id="meeting_form_{{fieldset|first}}_{{forloop.counter}}" >
+        {% if options.legend %}
+          <legend>{{ options.legend|safe }}</legend>
         {% endif %}
         {% if name == "input-group" %}
         <div class="list-group-item mb-3">
           <div class="input-group">
         {% endif %}
         {% for field in form.visible_fields %}
-          {% if field.name in last.fields %}
+          {% if field.name in options.fields %}
             {% spaceless %}
             {% if name != "input-group" %}
               <div class="mb-3 {% if "restrict_access_to_groups" in field.name %}collapse restricted_access{% endif %}">
@@ -90,7 +90,7 @@
           {% endif %}
         {% endfor %}
         <div class="d-flex align-items-center">
-        {{ last.additional_data|safe }}
+        {{ options.additional_data|safe }}
         </div>
         {% if name == "input-group" %}
           </div> <!-- end list-group-item -->
@@ -99,19 +99,19 @@
       </fieldset>
       {% endif %}
       {% if name == "modal" %}
-      <div class="modal fade" id="{{last.id}}" tabindex="-1" aria-labelledby="{{ last.legend|safe|striptags }}" aria-hidden="true">
+      <div class="modal fade" id="{{options.id}}" tabindex="-1" aria-labelledby="{{ options.legend|safe|striptags }}" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">{{ last.legend|safe }}</h5>
+              <h5 class="modal-title" id="exampleModalLabel">{{ options.legend|safe }}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              {% if last.template %}
-                {% include last.template %}
+              {% if options.template %}
+                {% include options.template %}
               {% else %}
                 {% for field in form.visible_fields %}
-                  {% if field.name in last.fields %}
+                  {% if field.name in options.fields %}
                   <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}">
                     {{ field.errors }}
                     {% if "form-check-input" in field.field.widget.attrs.class %}
