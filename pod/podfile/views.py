@@ -284,7 +284,6 @@ def editfolder(request):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def deletefolder(request):
-    print(request.POST)
     if request.POST.get("id"):
         folder = get_object_or_404(UserFolder, id=request.POST.get("id"))
         if folder.name == "home" or (

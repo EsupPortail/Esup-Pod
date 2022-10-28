@@ -212,7 +212,6 @@ def video_chapter_cancel(request, video):
 
 def video_chapter_import(request, video):
     list_chapter = video.chapter_set.all()
-    print(request.POST)
     form_chapter = ChapterForm(initial={"video": video})
     form_import = ChapterImportForm(request.POST, user=request.user, video=video)
     if form_import.is_valid():

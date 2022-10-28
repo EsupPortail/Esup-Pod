@@ -488,22 +488,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // If aside menu is empty, hide container and button
     if (collapseAside.querySelectorAll("div").length == 0) {
-     
-
       if (collapseAside.offsetParent) {
-       
-      collapseAside.style.display = "none";
-     
-      collapseBoot.show();
-      // Destroy collapse object
-      
-      collapseBoot.dispose();
-      
-      let mainContent = document.getElementById("mainContent");
-      if (mainContent) {
-        document.getElementById("mainContent").classList.remove("col-md-9");
+        collapseAside.style.display = "none";
+
+        collapseBoot.hide();
+        // Destroy collapse object
+
+        collapseBoot.dispose();
+
+        let mainContent = document.getElementById("mainContent");
+        if (mainContent) {
+          document.getElementById("mainContent").classList.remove("col-md-9");
+        }
       }
-    }
     } else {
       // Use the last aside state, stored in Cookies
       // only for > 992, we show collapseAside
@@ -871,11 +868,12 @@ var show_picture_form = function (data) {
     document.querySelector("#nav-usermenu .userinitial").style.display = "none";
     document
       .querySelector("#nav-usermenu > button")
-      .classList.remove("initials","btn" , "btn-primary");
+      .classList.remove("initials", "btn", "btn-primary");
     document.querySelector("#nav-usermenu > button").classList.add("nav-link");
     document
       .querySelector("#nav-usermenu > button")
-      .insertAdjacentHTML( 'beforeend', 
+      .insertAdjacentHTML(
+        "beforeend",
         '<img src="' +
           htmlData.querySelector("#userpictureurl").value +
           '" class="userpicture rounded" alt="avatar" loading="lazy">'
@@ -903,12 +901,11 @@ var show_picture_form = function (data) {
   }
 };
 var append_picture_form = async function (data) {
-  
   let htmlData = new DOMParser().parseFromString(data, "text/html").body
     .firstChild;
   //$("body").append(data);
   document.body.appendChild(htmlData);
- htmlData.querySelectorAll("script").forEach((item) => {
+  htmlData.querySelectorAll("script").forEach((item) => {
     if (item.src) {
       // external script
       let script = document.createElement("script");
@@ -916,10 +913,9 @@ var append_picture_form = async function (data) {
       document.body.appendChild(script);
     } else {
       // inline script
-    (0,eval)(item.innerHTML);
+      (0, eval)(item.innerHTML);
     }
   });
-
 
   let userpicture = document.getElementById("userpictureModal");
   if (userpicture) {

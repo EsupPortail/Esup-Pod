@@ -4,16 +4,15 @@ function show_form(data) {
   form_chapter.style.display = "none";
   form_chapter.innerHTML = data;
   form_chapter.querySelectorAll("script").forEach((item) => {
-    
     if (item.src) {
       // external script
-      
+
       let script = document.createElement("script");
       script.src = item.src;
       document.body.appendChild(script);
     } else {
       // inline script
-    (0,eval)(item.innerHTML);
+      (0, eval)(item.innerHTML);
     }
   });
   fadeIn(form_chapter);
@@ -69,13 +68,12 @@ var ajaxfail = function (data) {
 document.addEventListener("click", (e) => {
   if (e.target.id != "cancel_chapter") return;
 
-  document.querySelectorAll("form.get_form").forEach((form) =>{
+  document.querySelectorAll("form.get_form").forEach((form) => {
     form.style.display = "block";
-  })
+  });
   show_form("");
   let file_modal = document.getElementById("fileModal_id_file");
-  if (file_modal) 
-    file_modal.remove();
+  if (file_modal) file_modal.remove();
 });
 
 document.addEventListener("submit", (e) => {
@@ -108,7 +106,6 @@ var sendandgetform = async function (elt, action) {
     form_data = new FormData();
     form_data.append("action", action);
 
-
     await fetch(url, {
       method: "POST",
       headers: headers,
@@ -117,7 +114,6 @@ var sendandgetform = async function (elt, action) {
     })
       .then((response) => response.text())
       .then((data) => {
-        
         if (data.indexOf(id_form) == -1) {
           showalert(
             gettext("You are no longer authenticated. Please log in again."),
@@ -128,7 +124,6 @@ var sendandgetform = async function (elt, action) {
         }
       })
       .catch((error) => {
-        
         ajaxfail(error);
       });
   }
@@ -140,7 +135,7 @@ var sendandgetform = async function (elt, action) {
       "X-CSRFToken": token,
       "X-Requested-With": "XMLHttpRequest",
     };
-   
+
     form_data = new FormData();
     form_data.append("action", action);
     form_data.append("id", id);
@@ -173,15 +168,13 @@ var sendandgetform = async function (elt, action) {
     url = window.location.href;
     let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
     headers = {
-     
       "X-CSRFToken": token,
       "X-Requested-With": "XMLHttpRequest",
     };
-   
+
     form_data = new FormData();
     form_data.append("action", action);
     form_data.append("id", id);
-
 
     await fetch(url, {
       method: "POST",
@@ -278,7 +271,7 @@ var sendform = async function (elt, action) {
       "X-CSRFToken": token,
       "X-Requested-With": "XMLHttpRequest",
     };
-   
+
     form_data = new FormData();
     form_data.append("action", action);
     form_data.append("file", file);
@@ -297,29 +290,26 @@ var sendform = async function (elt, action) {
             "alert-danger"
           );
         } else {
-          
           data = JSON.parse(data);
+
           if (data.errors) {
-            document.querySelector("form#form_chapter").style.display =
-              "block";
+            document.querySelector("form#form_chapter").style.display = "block";
             showalert(
               data.errors +
                 " Make sure you added a file and that it is a valid file.",
               "alert-danger"
             );
-          }else{
-           
-
+          } else {
             updateDom(data);
             manageImport();
-            document.getElementById("list_chapter").innerHTML = data.list_chapter;
+            document.getElementById("list_chapter").innerHTML =
+              data.list_chapter;
             show_form("");
             document.querySelector("form.get_form").style.display = "block";
           }
         }
       })
       .catch((error) => {
-        console.log(error)
         ajaxfail(error);
       });
   }
