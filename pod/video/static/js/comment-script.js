@@ -356,7 +356,12 @@ class Comment extends HTMLElement {
         "comment_element",
         "comment_child"
       );
-      add_child_comment(html_field, html_container, child_container, comment_parent);
+      add_child_comment(
+        html_field,
+        html_container,
+        child_container,
+        comment_parent
+      );
     }
   }
 }
@@ -441,51 +446,54 @@ function vote(comment_action_html, comment_id) {
   fetch(vote_url, {
     method: "POST",
     headers: {
-      "Accept": "application/json",
+      Accept: "application/json",
       "X-Requested-With": "XMLHttpRequest",
     },
     body: data,
-  }).then((response) => {
-    comment_action_html.classList.remove("voting");
-    if (response.ok) {
-      return response.json();
-    } else {
-      let message = gettext("Bad response from the server.");
-      if (response.status == 403) {
-        message = gettext("Sorry, you're not allowed to vote by now.");
+  })
+    .then((response) => {
+      comment_action_html.classList.remove("voting");
+      if (response.ok) {
+        return response.json();
+      } else {
+        let message = gettext("Bad response from the server.");
+        if (response.status == 403) {
+          message = gettext("Sorry, you're not allowed to vote by now.");
+        }
+        throw new Error(message);
       }
-      throw new Error(message);
-    }
-  }).then((data) => {
-    const target_comment = document.getElementById(
-      comment_action_html.dataset.comment
-    );
+    })
+    .then((data) => {
+      const target_comment = document.getElementById(
+        comment_action_html.dataset.comment
+      );
 
-    let action = "";
-    if (data.voted === true) {
-      action = "increment";
-      comment_action_html.classList.add("voted");
-    } else {
-      action = "decrement";
-      comment_action_html.classList.remove("voted");
-    }
-    const nb_vote = update_comment_attribute(
-      target_comment,
-      null,
-      "nbr_vote",
-      action
-    );
-    btn.innerHTML = interpolate(
-      ngettext(
-        '%s <span class="d-none d-md-inline">vote</span>',
-        '%s <span class="d-none d-md-inline">votes</span>',
-        nb_vote
-      ),
-      [nb_vote]
-    );
-  }).catch((error) => {
-    showalert(error.message, "alert-danger");
-  });
+      let action = "";
+      if (data.voted === true) {
+        action = "increment";
+        comment_action_html.classList.add("voted");
+      } else {
+        action = "decrement";
+        comment_action_html.classList.remove("voted");
+      }
+      const nb_vote = update_comment_attribute(
+        target_comment,
+        null,
+        "nbr_vote",
+        action
+      );
+      btn.innerHTML = interpolate(
+        ngettext(
+          '%s <span class="d-none d-md-inline">vote</span>',
+          '%s <span class="d-none d-md-inline">votes</span>',
+          nb_vote
+        ),
+        [nb_vote]
+      );
+    })
+    .catch((error) => {
+      showalert(error.message, "alert-danger");
+    });
 }
 
 /**
@@ -508,7 +516,6 @@ function save_comment(
   direct_parent_id = null,
   top_parent_comment_html = null
 ) {
-
   // Prevent input to be modified until comment is really added.
   textarea.setAttribute("readonly", true);
 
@@ -535,86 +542,80 @@ function save_comment(
       "X-Requested-With": "XMLHttpRequest",
     },
   })
-  .then((response) => {
-    comment_container_html.removeChild(current_loader);
-    textarea.removeAttribute("readonly");
-    //raw_response = response.clone();
-    if (response.ok) {
-      return response.json();
-    } else {
-      let message = gettext("Bad response from the server.");
-      if (response.status == 403) {
-        message = gettext("Sorry, you can't comment this video by now.");
+    .then((response) => {
+      comment_container_html.removeChild(current_loader);
+      textarea.removeAttribute("readonly");
+      //raw_response = response.clone();
+      if (response.ok) {
+        return response.json();
+      } else {
+        let message = gettext("Bad response from the server.");
+        if (response.status == 403) {
+          message = gettext("Sorry, you can't comment this video by now.");
+        }
+        throw new Error(message);
       }
-      throw new Error(message);
-    }
-  })
-  .then((data) => {
-    textarea.value="";
-    let c = {
-      author_name: data.author_name,
-      is_owner: true,
-      content: content,
-      id: data.id,
-      added: date,
-      parent__id: top_parent_id,
-      direct_parent__id: direct_parent_id,
-      nbr_vote: 0,
-    };
+    })
+    .then((data) => {
+      textarea.value = "";
+      let c = {
+        author_name: data.author_name,
+        is_owner: true,
+        content: content,
+        id: data.id,
+        added: date,
+        parent__id: top_parent_id,
+        direct_parent__id: direct_parent_id,
+        nbr_vote: 0,
+      };
 
-    if (!top_parent_id) {
-      c.children = [];
-      c.nbr_child = 0;
-      // update all_comment data
-      all_comment = [...all_comment, c];
-      comment_container_html.after(comment_html);
-    } else {
+      if (!top_parent_id) {
+        c.children = [];
+        c.nbr_child = 0;
+        // update all_comment data
+        all_comment = [...all_comment, c];
+        comment_container_html.after(comment_html);
+      } else {
+        /* Ensure that the top parent container is shown. */
+        top_parent_comment_html.classList.add("show");
 
-      /* Ensure that the top parent container is shown. */
-      top_parent_comment_html.classList.add("show");
-
-      // Fetch comment's children if not already loaded
-      if (
-        get_comment_attribute(top_parent_comment_html, "children")
-          .length === 0
-      )
-        fetch_comment_children(
+        // Fetch comment's children if not already loaded
+        if (
+          get_comment_attribute(top_parent_comment_html, "children").length ===
+          0
+        )
+          fetch_comment_children(top_parent_comment_html, top_parent_id, true);
+        else {
+          // Add comment child into the DOM
+          comment_container_html.appendChild(comment_html);
+          // Scroll to the comment child
+          scrollToComment(comment_html);
+        }
+        // update local saved data (all_comment)
+        all_comment = all_comment.map((comment) => {
+          if (comment.id === top_parent_id) {
+            comment.children = [...comment.children, c];
+            comment.nbr_child += 1;
+          }
+          return comment;
+        });
+        let nbr_child = get_comment_attribute(
+          top_parent_comment_html,
+          "nbr_child"
+        );
+        hide_or_add_show_children_btn(
           top_parent_comment_html,
           top_parent_id,
-          true
+          nbr_child
         );
-      else {
-        // Add comment child into the DOM
-        comment_container_html.appendChild(comment_html);
-        // Scroll to the comment child
-        scrollToComment(comment_html);
+        update_answer_text(top_parent_comment_html, nbr_child);
       }
-      // update local saved data (all_comment)
-      all_comment = all_comment.map((comment) => {
-        if (comment.id === top_parent_id) {
-          comment.children = [...comment.children, c];
-          comment.nbr_child += 1;
-        }
-        return comment;
-      });
-      let nbr_child = get_comment_attribute(
-        top_parent_comment_html,
-        "nbr_child"
-      );
-      hide_or_add_show_children_btn(
-        top_parent_comment_html,
-        top_parent_id,
-        nbr_child
-      );
-      update_answer_text(top_parent_comment_html, nbr_child);
-    }
-    set_comments_number();
-
-  })
-  .catch((error) => {
-    showalert(error.message, "alert-danger");
-    //console.log(raw_response.text())
-  });
+      set_comments_number();
+    })
+    .catch((error) => {
+      showalert(error.message, "alert-danger");
+      //console.log(raw_response.text())
+    });
 }
 
 /**
@@ -647,47 +648,54 @@ function delete_comment(comment) {
     headers: {
       "X-Requested-With": "XMLHttpRequest",
     },
-  }).then((response) => {
-    if (response.ok) {
-      response.json().then((data) => {
-        if (data.deleted) {
-          showalert(gettext("The comment has been deleted successfully."), "alert-success");
-          let parent_el = null;
-          if (is_child) {
-            parent_el = get_node(comment, "comment_element", "comment_child");
-            let parent_id = get_comment_attribute(parent_el);
-            delete_comment_child_DOM(comment, parent_id, is_child); // delete all children from the DOM
-            let remaining_children = get_comment_attribute(
-              parent_el,
-              "nbr_child"
+  })
+    .then((response) => {
+      if (response.ok) {
+        response.json().then((data) => {
+          if (data.deleted) {
+            showalert(
+              gettext("The comment has been deleted successfully."),
+              "alert-success"
             );
-            deleteWithAnimation(comment, true); // delete comment from the DOM
-            hide_or_add_show_children_btn(
-              parent_el,
-              parent_id,
-              remaining_children
-            ); // Manage show answers button
-            update_answer_text(parent_el, remaining_children); // Update number of child text displayed
+            let parent_el = null;
+            if (is_child) {
+              parent_el = get_node(comment, "comment_element", "comment_child");
+              let parent_id = get_comment_attribute(parent_el);
+              delete_comment_child_DOM(comment, parent_id, is_child); // delete all children from the DOM
+              let remaining_children = get_comment_attribute(
+                parent_el,
+                "nbr_child"
+              );
+              deleteWithAnimation(comment, true); // delete comment from the DOM
+              hide_or_add_show_children_btn(
+                parent_el,
+                parent_id,
+                remaining_children
+              ); // Manage show answers button
+              update_answer_text(parent_el, remaining_children); // Update number of child text displayed
+              set_comments_number();
+              return;
+            }
+            all_comment = all_comment.filter(
+              (c) => c.id != data.comment_deleted
+            );
+            deleteWithAnimation(comment, false);
             set_comments_number();
-            return;
-          }
-          all_comment = all_comment.filter((c) => c.id != data.comment_deleted);
-          deleteWithAnimation(comment, false);
-          set_comments_number();
-        } else showalert(data.message, "alert-warning");
-      });
-    } else {
-      let message = gettext("Bad response from the server.");
-      if (response.status == 403) {
-        message = gettext("Sorry, you can't delete this comment by now.");
+          } else showalert(data.message, "alert-warning");
+        });
+      } else {
+        let message = gettext("Bad response from the server.");
+        if (response.status == 403) {
+          message = gettext("Sorry, you can't delete this comment by now.");
+        }
+        showalert(message, "alert-danger");
+        //console.log("Bad response from network", response);
       }
-      showalert(message, "alert-danger");
-      //console.log("Bad response from network", response);
-    }
-  }).catch((error) => {
-    console.log(error);
-    console.log(error.message);
-  });
+    })
+    .catch((error) => {
+      console.log(error);
+      console.log(error.message);
+    });
 }
 
 /**
@@ -989,7 +997,12 @@ function fetch_comment_children(
  * @param  {HTMLElement} child_container         container where to add the comment
  * @param  {HTMLElement} top_parent_comment_html
  */
-function add_child_comment(el, el_container, child_container, top_parent_comment_html) {
+function add_child_comment(
+  el,
+  el_container,
+  child_container,
+  top_parent_comment_html
+) {
   let date_added = new Date();
   if (el.value.trim() !== "") {
     let child_direct_parent = document.querySelector(
@@ -1172,11 +1185,10 @@ function set_comments_number() {
   let nb_comments =
     all_comment.reduce((acc, curr) => (acc += curr.nbr_child), 0) +
     all_comment.length;
-  comment_title.innerText = interpolate(ngettext(
-        '%s comment',
-        '%s comments',
-        nb_comments
-      ), [nb_comments]);
+  comment_title.innerText = interpolate(
+    ngettext("%s comment", "%s comments", nb_comments),
+    [nb_comments]
+  );
 }
 
 /************  Get vote from the server  **************
