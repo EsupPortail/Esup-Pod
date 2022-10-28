@@ -107,8 +107,9 @@ class Meeting(models.Model):
     """This models hold information about each meeting room.
     When creating a big blue button room with BBB APIs,
     Will store it's info here for later usages.
-    // Recurring code come from https://github.com/openfun/jitsi-magnify/blob/main/src/magnify/apps/core/models.py#L266
-    //Thanks to FUN Team for helping us
+    // Recurring code come from
+    // https://github.com/openfun/jitsi-magnify/blob/main/src/magnify/apps/core/models.py
+    // Thanks to FUN Team for helping us
     """
 
     DAILY, WEEKLY, MONTHLY, YEARLY = "daily", "weekly", "monthly", "yearly"
