@@ -111,7 +111,7 @@ $(document).on("submit", "form#formchangeimage, form#formchangefile, form#formup
             $(".loadingformfiles").hide();
             $("#listfiles").show();
             var data = $xhr.status+ " : " +$xhr.statusText;
-            showalert(gettext("Error during exchange") + "("+data+")<br/>"+gettext("No data could be stored."), "alert-danger");
+            showalert(gettext("Error during exchange") + " ("+data+")<br/>"+gettext("No data could be stored."), "alert-danger");
         });
     });
 /****** CHANGE FILE ********/
