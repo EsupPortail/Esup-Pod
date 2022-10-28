@@ -186,7 +186,6 @@ class MeetingForm(forms.ModelForm):
 
         if not hasattr(form, "admin_form"):
             form.remove_field("site")
-            form.remove_field("monthly_type")
         else:
             form.remove_field("days_of_week")
 
