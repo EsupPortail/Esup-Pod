@@ -107,6 +107,8 @@ class Meeting(models.Model):
     """This models hold information about each meeting room.
     When creating a big blue button room with BBB APIs,
     Will store it's info here for later usages.
+    // Recurring code come from https://github.com/openfun/jitsi-magnify/blob/main/src/magnify/apps/core/models.py#L266
+    //Thanks to FUN Team for helping us
     """
 
     DAILY, WEEKLY, MONTHLY, YEARLY = "daily", "weekly", "monthly", "yearly"
@@ -121,7 +123,8 @@ class Meeting(models.Model):
     DATE_DAY, NTH_DAY = "date_day", "nth_day"
     MONTHLY_TYPE_CHOICES = (
         (DATE_DAY, _("Every month on this date")),
-        (NTH_DAY, _("Every month on the nth week day of the month")),
+        (NTH_DAY, _("Every month on the nth week, the same day of week")),
+        # Every month on the nth week day of the month
     )
 
     weekdays_validator = RegexValidator(
@@ -205,7 +208,7 @@ class Meeting(models.Model):
     recurrence = models.CharField(
         verbose_name=_("Custom recurrence"),
         help_text=_(
-            "Specify the reccurrence of the meeting : daily, weekly, monthly or yearly"
+            "Specify the recurrence of the meeting : daily, weekly, monthly or yearly"
         ),
         max_length=10, choices=INTERVAL_CHOICES, null=True, blank=True
     )
@@ -224,8 +227,8 @@ class Meeting(models.Model):
         blank=True
     )
     nb_occurrences = models.PositiveIntegerField(
-        verbose_name=_("Number of occurences"),
-        help_text=_("Recurring meeting till the number of occurences specify"),
+        verbose_name=_("Number of occurrences"),
+        help_text=_("Recurring meeting till the number of occurrences specify"),
         null=True,
         blank=True
     )
