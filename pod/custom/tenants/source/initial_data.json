@@ -1,13 +1,13 @@
 [
   {
-    "model": "sites.site", 
-    "pk": __ID_SITE__, 
+    "model": "sites.site",
+    "pk": __ID_SITE__,
     "fields": {
-        "domain": "__DOMAIN_NAME__", 
+        "domain": "__DOMAIN_NAME__",
         "name": "__NAME__"
     }
   },
-  {    
+  {
     "model": "flatpages.flatpage",
     "fields": {
         "content_fr": "<p>Bienvenue</p>\r\n",

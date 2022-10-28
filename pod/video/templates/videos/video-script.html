@@ -29,7 +29,7 @@ const seektime = 10;
 const options = {
   notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
   //language: "fr", //en or nl
-  {% if request.GET.is_iframe %}
+  {% if video.is_video and request.GET.is_iframe %}
     fluid: false,
   {% else %}
     fluid: true,
@@ -198,6 +198,7 @@ player.on('firstplay', function(){
 {% endif %}
 
 {% if video_event_tracking %}
+  {# Be sure to define _paq in a tracking script in TEMPLATE_VISIBLE_SETTINGS:TRACKING_TEMPLATE pref. #}
   player.on('play', function() {
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'play', player.currentTime()]);
   });
