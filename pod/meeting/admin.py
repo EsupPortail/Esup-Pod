@@ -9,6 +9,7 @@ from .models import Meeting
 from .forms import (
     MeetingForm,
     MEETING_MAIN_FIELDS,
+    MEETING_DATE_FIELDS,
     MEETING_RECURRING_FIELDS,
     get_meeting_fields
 )
@@ -136,7 +137,8 @@ class MeetingAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {"fields": MEETING_MAIN_FIELDS}),
-        (None, {"fields": MEETING_RECURRING_FIELDS}),
+        ("Date", {"fields": MEETING_DATE_FIELDS}),
+        ("Reccuring", {"fields": MEETING_RECURRING_FIELDS}),
         (
             "Advanced options",
             {
