@@ -36,7 +36,6 @@ document.addEventListener("reset", (event) => {
   var name_form = id_form.substring(5, id_form.length);
   var form_new = "form_new_" + name_form;
   var list = "list_" + name_form;
-  console.log(document.querySelector("span#" + id_form));
   document.querySelector("span#" + id_form).innerHTML = "";
   if (id_form == "form_track")
     document.querySelector("span#form_track").style.width = "auto";
@@ -100,7 +99,8 @@ document.addEventListener("submit", (e) => {
     e.target.id != "form_new_contributor" &&
     e.target.id != "form_new_document" &&
     e.target.id != "form_new_track" &&
-    e.target.id != "form_new_overlay"
+    e.target.id != "form_new_overlay" &&
+    !e.target.matches(".form_change")
   )
     return;
 
@@ -123,7 +123,6 @@ document.addEventListener("submit", (e) => {
   var form = "form_" + name_form;
   var list = "list_" + name_form;
   var action = e.target.querySelector("input[name=action]").value;
-
   sendandgetform(e.target, action, name_form, form, list);
 });
 
@@ -155,7 +154,6 @@ var sendandgetform = async function (elt, action, name, form, list) {
       .then((response) => response.text())
       .then((data) => {
         //parse data into html and log it
-
         if (data.indexOf(form) == -1) {
           showalert(
             gettext(
@@ -197,10 +195,10 @@ var sendandgetform = async function (elt, action, name, form, list) {
     hide_others_sections(name);
   }
   if (action == "modify" || action == "form_save_modify") {
+
     var id = elt.querySelector("input[name=id]").value;
     var url = window.location.origin + href;
     var token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
-
     form_data = new FormData();
     form_data.append("action", action);
     form_data.append("id", id);

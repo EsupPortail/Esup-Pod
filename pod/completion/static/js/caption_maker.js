@@ -712,15 +712,18 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
           playTime > newCaption.end ? playTime : parseInt(newCaption.end) + 2,
         caption: "",
       };
+      let index = Array.from(this.div.parentNode.children).indexOf(this.div);
 
-      captionsArray.splice(this.div.index() + 1, 0, captionObj);
+      captionsArray.splice(index + 1, 0, captionObj);
       CreateCaptionBlock(captionObj, (newDiv) =>
         this.div.parentNode.insertBefore(newDiv, this.div.nextSibling)
       );
     },
 
     delete: function () {
-      captionsArray.splice(this.div.index(), 1);
+      let index = Array.from(this.div.parentNode.children).indexOf(this.div);
+
+      captionsArray.splice(index, 1);
       this.div.remove();
     },
 

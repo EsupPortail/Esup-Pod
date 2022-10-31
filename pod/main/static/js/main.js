@@ -700,7 +700,6 @@ var send_form_data = async function (
       })
 
       .catch((error) => {
-        console.log(error);
         showalert(
           gettext("Error during exchange") +
             "(" +
@@ -724,7 +723,6 @@ var send_form_data = async function (
       })
 
       .catch((error) => {
-        console.log(error);
         showalert(
           gettext("Error during exchange") +
             "(" +
@@ -788,7 +786,6 @@ var send_form_data_vanilla = function (
       window[fct](data);
     })
     .catch(function (err) {
-      console.log(err);
       showalert(
         gettext("Error during exchange") +
           "(" +
