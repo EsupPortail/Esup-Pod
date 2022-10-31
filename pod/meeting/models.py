@@ -165,7 +165,7 @@ class Meeting(models.Model):
 
     name = models.CharField(max_length=255, verbose_name=_("Meeting Name"))
     meeting_id = models.SlugField(
-        max_length=200,
+        max_length=260,
         verbose_name=_("Meeting ID"),
         editable=False,
     )

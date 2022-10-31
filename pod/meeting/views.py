@@ -20,8 +20,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.utils import timezone
 from datetime import datetime
 
-from ics import Calendar, Event
 from .models import Meeting
+from .utils import get_nth_week_number
 from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm, MeetingInviteForm
 from pod.main.views import in_maintenance
 
@@ -44,6 +44,32 @@ BBB_MEETING_INFO = getattr(
         "fullName": _("Full name"),
         "role": _("Role"),
     },
+)
+TEMPLATE_VISIBLE_SETTINGS = getattr(
+    settings,
+    "TEMPLATE_VISIBLE_SETTINGS",
+    {
+        "TITLE_SITE": "Pod",
+        "DESC_SITE": "The purpose of Esup-Pod is to facilitate the provision of video and\
+        thereby encourage its use in teaching and research.",
+        "TITLE_ETB": "University name",
+        "LOGO_SITE": "img/logoPod.svg",
+        "LOGO_ETB": "img/logo_etb.svg",
+        "LOGO_PLAYER": "img/pod_favicon.svg",
+        "LINK_PLAYER": "",
+        "FOOTER_TEXT": ("",),
+        "FAVICON": "img/pod_favicon.svg",
+        "CSS_OVERRIDE": "",
+        "PRE_HEADER_TEMPLATE": "",
+        "POST_FOOTER_TEMPLATE": "",
+        "TRACKING_TEMPLATE": "",
+    },
+)
+
+TITLE_SITE = (
+    TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
+    if (TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"))
+    else "Pod"
 )
 
 
@@ -521,47 +547,17 @@ def send_invite(request, meeting, emails):
         "meeting_title": meeting.name,
     }
     from_email = meeting.owner.email  # DEFAULT_FROM_EMAIL
-    join_link = request.build_absolute_uri(
-        reverse("meeting:join", args=(meeting.meeting_id,))
-    )
     text_content = get_text_content(request, meeting)
     html_content = get_html_content(request, meeting)
 
     msg = EmailMultiAlternatives(subject, text_content, from_email, emails)
     msg.attach_alternative(html_content, "text/html")
     # ics calendar
-    calendar = Calendar()
-    # for reccuring meeting, get all events (max year ?)
-    event_name = _("%(owner)s invites you to the meeting %(meeting_title)s") % {
-        "owner": meeting.owner.get_full_name(),
-        "meeting_title": meeting.name,
-    }
-    event_description = (
-        _(
-            """
-        Here is the link to join the meeting: %(join_link)s
-        You need this password to enter: %(password)s
-    """
-        )
-        % {"join_link": join_link, "password": meeting.attendee_password}
-    )
-    occurrences = meeting.get_occurrences(meeting.start, meeting.recurring_until)
-    for occurrence in occurrences:
-        if occurrence >= timezone.now().date():
-            event = Event()
-            event.name = event_name
-            event.description = event_description
-            start = datetime.combine(occurrence, meeting.start_time)
-            event.begin = timezone.make_aware(start).isoformat()
-            # end = start + timezone.timedelta(hours=meeting.expected_duration)
-            # event.end = timezone.make_aware(end).isoformat()
-            event.duration = meeting.expected_duration
-            event.organizer = meeting.owner.email
-            calendar.events.add(event)
+    ics_content = create_ics(request, meeting)
 
     filename_event = "/tmp/invite-%d.ics" % meeting.id
     with open(filename_event, "w") as ics_file:
-        ics_file.writelines(calendar)
+        ics_file.writelines(ics_content)
 
     msg.attach_file(filename_event, "text/calendar")
     msg.send()
@@ -681,3 +677,110 @@ def get_html_content(request, meeting):
             }
         )
     return html_content
+
+
+def create_ics(request, meeting):
+    join_link = request.build_absolute_uri(
+        reverse("meeting:join", args=(meeting.meeting_id,))
+    )
+    event_name = _("%(owner)s invites you to the meeting %(meeting_title)s") % {
+        "owner": meeting.owner.get_full_name(),
+        "meeting_title": meeting.name,
+    }
+    description = (
+        _(
+            """
+        Here is the link to join the meeting: %(join_link)s
+        You need this password to enter: %(password)s
+    """
+        )
+        % {"join_link": join_link, "password": meeting.attendee_password}
+    )
+    event_description = "\\n".join(
+        line for line in description.replace("    ", "").split("\n")
+    )
+    start = datetime.combine(meeting.start, meeting.start_time)
+    start_date_time = timezone.make_aware(start)
+    start_date_time = "TZID=%s:%s" % (
+        timezone.get_current_timezone(),
+        start_date_time.strftime("%Y%m%dT%H%M%S%z")
+    )
+    duration = int(
+        meeting.expected_duration.seconds / 3600
+    )
+    rrule = ""
+    if meeting.recurrence:
+        rrule = get_rrule(meeting)
+
+    event = """
+    BEGIN:VCALENDAR
+    VERSION:2.0
+    PRODID:%(prodid)s
+    BEGIN:VEVENT
+    DESCRIPTION:%(description)s
+    DURATION:PT%(duration)sH
+    ORGANIZER;CN=%(mail)s:mailto:%(mail)s
+    DTSTART;%(dtstart)s
+    %(rrule)s
+    SUMMARY:%(summary)s
+    URL:%(url)s
+    UID:%(uid)s
+    BEGIN:VALARM
+    ACTION:DISPLAY
+    DESCRIPTION:%(summary)s
+    TRIGGER:-PT5M
+    END:VALARM
+    END:VEVENT
+    END:VCALENDAR
+    """ % {
+        "prodid": TITLE_SITE + " - " + request.scheme + "://" + request.get_host(),
+        "summary": event_name,
+        "description": event_description,
+        "duration": duration,
+        "url": join_link,
+        "mail": meeting.owner.email,
+        "rrule": rrule,
+        "dtstart": start_date_time,
+        "uid": meeting.meeting_id + "@" + request.get_host()
+    }
+    event_lines = event.replace("    ", "").split("\n")
+    return "\n".join(filter(None, event_lines))
+
+
+def get_rrule(meeting):
+    """
+    i.e:
+    RRULE:FREQ=DAILY;INTERVAL=2;COUNT=28
+    RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,TU;UNTIL=20221011T100000Z
+    RRULE:FREQ=MONTHLY;BYDAY=1MO;COUNT=42
+    RRULE:FREQ=MONTHLY;BYDAY=4TH;COUNT=42
+    RRULE:FREQ=MONTHLY;BYMONTHDAY=3;UNTIL=20221024T100000Z
+    """
+    DAYS_OF_WEEK = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"]
+    rrule = "RRULE:FREQ=%s;INTERVAL=%s;" % (
+        meeting.recurrence.upper(),
+        meeting.frequency
+    )
+    if meeting.recurrence == Meeting.WEEKLY:
+        rrule += "BYDAY=%s;" % ",".join(
+            DAYS_OF_WEEK[int(d)] for d in list(meeting.weekdays)
+        )
+
+    if meeting.recurrence == Meeting.MONTHLY:
+        if meeting.monthly_type == Meeting.DATE_DAY:
+            rrule += "BYMONTHDAY=%s;" % meeting.start.strftime("%d")
+        if meeting.monthly_type == Meeting.NTH_DAY:
+            weekday = meeting.start.weekday()
+            week_number = get_nth_week_number(meeting.start)
+            rrule += "BYDAY=%s%s;" % (
+                week_number,
+                DAYS_OF_WEEK[weekday]
+            )
+
+    if meeting.nb_occurrences and meeting.nb_occurrences > 1:
+        rrule += "COUNT=%s" % meeting.nb_occurrences
+    else:
+        end = datetime.combine(meeting.recurring_until, meeting.start_time)
+        end_date_time = timezone.make_aware(end)
+        rrule += "UNTIL=%s" % end_date_time.strftime("%Y%m%dT%H%M%S%z")
+    return rrule
