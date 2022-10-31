@@ -30,8 +30,9 @@ class meeting_TestView(TestCase):
         self.client.force_login(self.user)
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
+        list_id = [meeting.id for meeting in response.context["meetings"]]
         self.assertEqual(
-            list(response.context["meetings"].values_list("id", flat=True)),
+            list_id,
             list(self.user.owner_meeting.all().values_list("id", flat=True)),
         )
         print(" --->  test_meeting_TestView_get_request of meeting_TestView: OK!")
@@ -51,8 +52,9 @@ class meeting_TestView(TestCase):
         self.user.save()
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
+        list_id = [meeting.id for meeting in response.context["meetings"]]
         self.assertEqual(
-            list(response.context["meetings"].values_list("id", flat=True)),
+            list_id,
             list(self.user.owner_meeting.all().values_list("id", flat=True)),
         )
         print(
@@ -119,10 +121,11 @@ class MeetingAddEditTestView(TestCase):
                 "name": "test1",
                 "voice_bridge": 70000 + random.randint(0, 9999),
                 "attendee_password": "1234",
-                "start_at_0": "2022-08-26",
-                "start_at_1": "16:43:58",
-                "end_at_0": "2022-08-26",
-                "end_at_1": "18:43:58",
+                "start": "2022-08-26",
+                "start_time": "01:00:00",
+                "expected_duration": "2",
+                "frequency": "1",
+                "monthly_type": "date_day",
                 "max_participants": 100,
                 "welcome_text": "Hello",
             },
@@ -158,10 +161,11 @@ class MeetingAddEditTestView(TestCase):
                 "name": "test1",
                 "voice_bridge": 70000 + random.randint(0, 9999),
                 "attendee_password": "1234",
-                "start_at_0": "2022-08-26",
-                "start_at_1": "16:43:58",
-                "end_at_0": "2022-08-26",
-                "end_at_1": "18:43:58",
+                "start": "2022-08-26",
+                "start_time": "01:00:00",
+                "expected_duration": "2",
+                "frequency": "1",
+                "monthly_type": "date_day",
                 "max_participants": 100,
                 "welcome_text": "Hello",
             },

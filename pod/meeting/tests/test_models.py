@@ -4,6 +4,26 @@ from django.template.defaultfilters import slugify
 
 from ..models import Meeting
 
+"""
+use example from https://github.com/openfun/jitsi-magnify
+factory-boy==3.2.1
+https://github.com/openfun/jitsi-magnify/blob/main/tests/apps/core/test_core_models_meetings.py
+https://github.com/openfun/jitsi-magnify/blob/main/tests/apps/core/test_core_models_meetings_get_occurences.py
+
+class MeetingFactory(factory.django.DjangoModelFactory):
+    # Create fake meetings for testing.
+
+    class Meta:
+        model = Meeting
+
+    name = factory.Faker("catch_phrase")
+    start = factory.Faker("future_date")
+    start_time = factory.Faker("time_object")
+    expected_duration = factory.LazyFunction(
+        lambda: timedelta(minutes=random.randint(5, 600))  # nosec
+    )
+"""
+
 
 class MeetingTestCase(TestCase):
     def setUp(self):
