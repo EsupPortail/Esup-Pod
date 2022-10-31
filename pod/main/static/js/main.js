@@ -737,8 +737,9 @@ var send_form_data = async function (
   }
 };
 
-/*!
+/**
  * AJAX call function (usually send form data)
+ *
  * @param  {String}          url               Address link to be requested
  * @param  {String}          fct               JS Function to call when it's done.
  * @param  {HTMLFormElement} [data_form]       The form to be sent with POST
@@ -788,7 +789,7 @@ var send_form_data_vanilla = function (
     .catch(function (err) {
       showalert(
         gettext("Error during exchange") +
-          "(" +
+          " (" +
           err +
           ")<br/>" +
           gettext("No data could be stored."),
