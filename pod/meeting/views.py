@@ -524,59 +524,15 @@ def send_invite(request, meeting, emails):
     join_link = request.build_absolute_uri(
         reverse("meeting:join", args=(meeting.meeting_id,))
     )
-    meeting_start_datetime = timezone.make_aware(
-        datetime.combine(meeting.start, meeting.start_time)
-    )
-    # check if recurring meeting or not...
-    text_content = (
-        _(
-            """
-        Hello,
-        %(owner)s invites you to the meeting %(meeting_title)s.
-        Start date: %(start_date_time)s
-        Expected duration: %(expected_duration)s hour(s)
-        Here is the link to join the meeting: %(join_link)s
-        You need this password to enter: %(password)s
-        Regards
-    """
-        )
-        % {
-            "owner": meeting.owner.get_full_name(),
-            "meeting_title": meeting.name,
-            "start_date_time": meeting_start_datetime,
-            "expected_duration": meeting.expected_duration,
-            "join_link": join_link,
-            "password": meeting.attendee_password,
-        }
-    )
-    html_content = (
-        _(
-            """
-        <p>Hello,
-        <p>%(owner)s invites you to the meeting <b>%(meeting_title)s</b>.</p>
-        <p>Start date: %(start_date_time)s </p>
-        <p>Expected duration: %(expected_duration)s hour(s) </p>
-        <p>here the link to join the meeting:
-        <a href="%(join_link)s">%(join_link)s</a></p>
-        <p>You need this password to enter: <b>%(password)s</b> </p>
-        <p>Regards</p>
-    """
-        )
-        % {
-            "owner": meeting.owner.get_full_name(),
-            "meeting_title": meeting.name,
-            "start_date_time": meeting_start_datetime,
-            "expected_duration": meeting.expected_duration,
-            "join_link": join_link,
-            "password": meeting.attendee_password,
-        }
-    )
+    text_content = get_text_content(request, meeting)
+    html_content = get_html_content(request, meeting)
+
     msg = EmailMultiAlternatives(subject, text_content, from_email, emails)
     msg.attach_alternative(html_content, "text/html")
     # ics calendar
     calendar = Calendar()
     # for reccuring meeting, get all events (max year ?)
-    event_name =  _("%(owner)s invites you to the meeting %(meeting_title)s") % {
+    event_name = _("%(owner)s invites you to the meeting %(meeting_title)s") % {
         "owner": meeting.owner.get_full_name(),
         "meeting_title": meeting.name,
     }
@@ -610,3 +566,118 @@ def send_invite(request, meeting, emails):
     msg.attach_file(filename_event, "text/calendar")
     msg.send()
     os.remove(filename_event)
+
+
+def get_text_content(request, meeting):
+    join_link = request.build_absolute_uri(
+        reverse("meeting:join", args=(meeting.meeting_id,))
+    )
+    meeting_start_datetime = timezone.make_aware(
+        datetime.combine(meeting.start, meeting.start_time)
+    )
+    if meeting.recurrence:
+        text_content = (
+            _(
+                """
+            Hello,
+            %(owner)s invites you to a recurring meeting %(meeting_title)s.
+            Start date: %(start_date_time)s
+            Reccuring until date: %(end_date)s
+            The meeting will be occure each %(frequency)s %(recurrence)s
+            Here is the link to join the meeting: %(join_link)s
+            You need this password to enter: %(password)s
+            Regards
+        """
+            )
+            % {
+                "owner": meeting.owner.get_full_name(),
+                "meeting_title": meeting.name,
+                "start_date_time": meeting_start_datetime,
+                "end_date": meeting.recurring_until,
+                "frequency": meeting.frequency,
+                "recurrence": meeting.recurrence,
+                "join_link": join_link,
+                "password": meeting.attendee_password,
+            }
+        )
+    else:
+        text_content = (
+            _(
+                """
+            Hello,
+            %(owner)s invites you to the meeting %(meeting_title)s.
+            Start date: %(start_date_time)s
+            End date: %(end_date)s
+            Here is the link to join the meeting: %(join_link)s
+            You need this password to enter: %(password)s
+            Regards
+        """
+            )
+            % {
+                "owner": meeting.owner.get_full_name(),
+                "meeting_title": meeting.name,
+                "start_date_time": meeting_start_datetime,
+                "end_date": meeting_start_datetime + meeting.expected_duration,
+                "join_link": join_link,
+                "password": meeting.attendee_password,
+            }
+        )
+    return text_content
+
+
+def get_html_content(request, meeting):
+    join_link = request.build_absolute_uri(
+        reverse("meeting:join", args=(meeting.meeting_id,))
+    )
+    meeting_start_datetime = timezone.make_aware(
+        datetime.combine(meeting.start, meeting.start_time)
+    )
+    if meeting.recurrence:
+        html_content = (
+            _(
+                """
+            <p>Hello,</p>
+            <p>%(owner)s invites you to a recurring meeting %(meeting_title)s.</p>
+            <p>Start date: %(start_date_time)s</p>
+            <p>Reccuring until date: %(end_date)s</p>
+            <p>The meeting will be occure each %(frequency)s %(recurrence)s </p>
+            <p>Here is the link to join the meeting: %(join_link)s</p>
+            <p>You need this password to enter: %(password)s</p>
+            <p>Regards</p>
+        """
+            )
+            % {
+                "owner": meeting.owner.get_full_name(),
+                "meeting_title": meeting.name,
+                "start_date_time": meeting_start_datetime,
+                "end_date": meeting.recurring_until,
+                "frequency": meeting.frequency,
+                "recurrence": meeting.recurrence,
+                "join_link": join_link,
+                "password": meeting.attendee_password,
+            }
+        )
+    else:
+        html_content = (
+            _(
+                """
+            <p>Hello,</p>
+            <p>%(owner)s invites you to the meeting <b>%(meeting_title)s</b>.</p>
+            <p>Start date: %(start_date_time)s </p>
+            <p>End date: %(end_date)s </p>
+            <p>here the link to join the meeting:
+            <a href="%(join_link)s">%(join_link)s</a></p>
+            <p>You need this password to enter: <b>%(password)s</b> </p>
+            <p>Regards</p>
+        """
+            )
+            % {
+                "owner": meeting.owner.get_full_name(),
+                "meeting_title": meeting.name,
+                "start_date_time": meeting_start_datetime,
+                "end_date": meeting_start_datetime + meeting.expected_duration,
+                "join_link": join_link,
+                "password": meeting.attendee_password,
+            }
+        )
+    return html_content
