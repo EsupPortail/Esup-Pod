@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-28 16:50+0200\n"
+"POT-Creation-Date: 2022-10-31 13:26+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ncan <nicolas.can@univ-lille.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -99,7 +99,7 @@ msgid "Picture"
 msgstr "Image"
 
 #: pod/authentication/models.py:100 pod/live/models.py:320
-#: pod/meeting/models.py:173 pod/playlist/models.py:21
+#: pod/meeting/models.py:174 pod/playlist/models.py:21
 #: pod/playlist/templates/playlist/playlist_element_list.html:10
 #: pod/podfile/models.py:27 pod/video/admin.py:206 pod/video/models.py:674
 #: pod/video_search/templates/search/search.html:71
@@ -397,7 +397,7 @@ msgid "Last date where BBB session was in progress."
 msgstr "Dernière date à laquelle la session BBB était en cours."
 
 #: pod/bbb/models.py:98 pod/bbb/models.py:118 pod/bbb/models.py:171
-#: pod/meeting/models.py:736
+#: pod/meeting/models.py:737
 msgid "Meeting"
 msgstr "Session"
 
@@ -445,7 +445,7 @@ msgid "Attendees"
 msgstr "Participants"
 
 #: pod/bbb/models.py:175 pod/live/forms.py:93 pod/live/forms.py:190
-#: pod/live/models.py:334 pod/meeting/models.py:193
+#: pod/live/models.py:334 pod/meeting/models.py:194
 #: pod/video_search/forms.py:14
 msgid "Start date"
 msgstr "Date de début"
@@ -493,7 +493,7 @@ msgstr ""
 "Nom d’utilisateur / ID d’utilisateur, qui souhaite effectuer le direct."
 
 #: pod/bbb/models.py:213 pod/live/models.py:159 pod/live/models.py:382
-#: pod/meeting/models.py:245 pod/recorder/models.py:162 pod/video/forms.py:283
+#: pod/meeting/models.py:246 pod/recorder/models.py:162 pod/video/forms.py:283
 #: pod/video/models.py:764
 msgid "Restricted access"
 msgstr "Accès restreint"
@@ -870,7 +870,7 @@ msgstr ""
 
 #: pod/chapter/models.py:27 pod/chapter/models.py:122
 #: pod/chapter/templates/chapter/list_chapter.html:12
-#: pod/completion/models.py:305 pod/meeting/models.py:195
+#: pod/completion/models.py:305 pod/meeting/models.py:196
 msgid "Start time"
 msgstr "Début"
 
@@ -1881,7 +1881,7 @@ msgid "Edit the enrichment"
 msgstr "Éditer l’enrichissement"
 
 #: pod/enrichment/forms.py:33 pod/enrichment/models.py:366
-#: pod/live/models.py:174 pod/live/models.py:393 pod/meeting/models.py:255
+#: pod/live/models.py:174 pod/live/models.py:393 pod/meeting/models.py:256
 #: pod/podfile/models.py:32 pod/recorder/models.py:172 pod/video/models.py:339
 #: pod/video/models.py:774
 msgid "Groups"
@@ -2369,7 +2369,7 @@ msgstr ""
 "informations nécessaires, et mettre en forme le résultat en utilisant la "
 "barre d’outils."
 
-#: pod/live/models.py:325 pod/meeting/models.py:180 pod/video/forms.py:126
+#: pod/live/models.py:325 pod/meeting/models.py:181 pod/video/forms.py:126
 #: pod/video/models.py:678
 msgid "Additional owners"
 msgstr "Propriétaires additionels"
@@ -3060,7 +3060,7 @@ msgstr "Vous ne pouvez pas supprimer cet évènement."
 msgid "The event has been deleted."
 msgstr "L’évènement a été supprimé."
 
-#: pod/live/views.py:795 pod/meeting/models.py:290
+#: pod/live/views.py:795 pod/meeting/models.py:291
 msgid "Record"
 msgstr "Enregistrée"
 
@@ -4189,7 +4189,7 @@ msgstr ""
 "Le propriétaire de la video ne peut pas être propriétaire additionnel en "
 "même temps"
 
-#: pod/meeting/forms.py:228 pod/meeting/models.py:765
+#: pod/meeting/forms.py:228 pod/meeting/models.py:766
 msgid "Start date must be less than recurring until date"
 msgstr "La date de début doit être antérieure à la date de fin récurrente"
 
@@ -4214,78 +4214,78 @@ msgstr "Courriels"
 msgid "You can fill one email adress per line"
 msgstr "Vous pouvez renseigner une adresse électronique par ligne"
 
-#: pod/meeting/models.py:117
+#: pod/meeting/models.py:118
 msgid "Daily"
 msgstr "Jours"
 
-#: pod/meeting/models.py:118
+#: pod/meeting/models.py:119
 msgid "Weekly"
 msgstr "Semaine"
 
-#: pod/meeting/models.py:119
+#: pod/meeting/models.py:120
 msgid "Monthly"
 msgstr "Mois"
 
-#: pod/meeting/models.py:120
+#: pod/meeting/models.py:121
 msgid "Yearly"
 msgstr "Année"
 
-#: pod/meeting/models.py:125
+#: pod/meeting/models.py:126
 msgid "Every month on this date"
 msgstr "Tous les mois à cette date"
 
-#: pod/meeting/models.py:126
+#: pod/meeting/models.py:127
 msgid "Every month on the nth week, the same day of week"
 msgstr "Chaque mois la nième semaine, le même jour de la semaine"
 
-#: pod/meeting/models.py:132
+#: pod/meeting/models.py:133
 msgid "Weekdays must contain the numbers of the active days."
 msgstr "Les jours de la semaine doivent contenir les numéros des jours actifs."
 
-#: pod/meeting/models.py:165
+#: pod/meeting/models.py:166
 msgid "Meeting Name"
 msgstr "Nom de la réunion"
 
-#: pod/meeting/models.py:168
+#: pod/meeting/models.py:169
 msgid "Meeting ID"
 msgstr "Identifiant de réunion"
 
-#: pod/meeting/models.py:182
+#: pod/meeting/models.py:183
 msgid "You can add additional owners to the meeting."
 msgstr "Vous pouvez ajouter des propriétaires additionnels à la réunion."
 
-#: pod/meeting/models.py:185
+#: pod/meeting/models.py:186
 msgid "Attendee Password"
 msgstr "Mot de passe des participants"
 
-#: pod/meeting/models.py:188
+#: pod/meeting/models.py:189
 msgid "Moderator Password"
 msgstr "Mot de passe des modérateurs"
 
-#: pod/meeting/models.py:200
+#: pod/meeting/models.py:201
 msgid "Meeting duration"
 msgstr "Durée de la réunion"
 
-#: pod/meeting/models.py:202
+#: pod/meeting/models.py:203
 msgid "Specify the duration of the meeting."
 msgstr "Précisez la durée de la réunion."
 
-#: pod/meeting/models.py:209
+#: pod/meeting/models.py:210
 msgid "Custom recurrence"
 msgstr "Récurrence personnalisée"
 
-#: pod/meeting/models.py:211
+#: pod/meeting/models.py:212
 msgid ""
 "Specify the recurrence of the meeting : daily, weekly, monthly or yearly"
 msgstr ""
 "Précisez la récurrence de la réunion : quotidienne, hebdomadaire, mensuelle "
 "ou annuelle"
 
-#: pod/meeting/models.py:216
+#: pod/meeting/models.py:217
 msgid "Repeat each time"
 msgstr "Répétez à chaque fois"
 
-#: pod/meeting/models.py:219
+#: pod/meeting/models.py:220
 msgid ""
 "The meeting will be repeat each time of value specify. i.e: each 3 days if "
 "recurring daily"
@@ -4293,31 +4293,31 @@ msgstr ""
 "La séance sera répétée à chaque fois de valeur précise. c'est-à-dire : tous "
 "les 3 jours si récurrent en jour"
 
-#: pod/meeting/models.py:224
+#: pod/meeting/models.py:225
 msgid "End date of recurring meeting"
 msgstr "Date de fin de la réunion récurrente"
 
-#: pod/meeting/models.py:225
+#: pod/meeting/models.py:226
 msgid "Recurring meeting till the date specify"
 msgstr "Réunion récurrente jusqu'à la date précisée"
 
-#: pod/meeting/models.py:230
+#: pod/meeting/models.py:231
 msgid "Number of occurrences"
 msgstr "Nombre d'occurrences"
 
-#: pod/meeting/models.py:231
+#: pod/meeting/models.py:232
 msgid "Recurring meeting till the number of occurrences specify"
 msgstr "Réunion récurrente jusqu'au nombre d'occurrences spécifié"
 
-#: pod/meeting/models.py:236
+#: pod/meeting/models.py:237
 msgid "Day(s) of week for the meeting"
 msgstr "Jour(s) de la semaine pour la réunion"
 
-#: pod/meeting/models.py:237
+#: pod/meeting/models.py:238
 msgid "Recurring meeting each day(s) specified"
 msgstr "Réunion récurrente chaque jour spécifié"
 
-#: pod/meeting/models.py:247
+#: pod/meeting/models.py:248
 msgid ""
 "If this box is checked, the meeting will only be accessible to authenticated "
 "users."
@@ -4325,44 +4325,44 @@ msgstr ""
 "Si cette case est cochée, la reunion sera uniquement accessible aux "
 "utilisateurs authentifiés."
 
-#: pod/meeting/models.py:256
+#: pod/meeting/models.py:257
 msgid "Select one or more groups who can access to this meeting"
 msgstr "Sélectionner un ou plusieurs groupes qui auront accès à cette réunion"
 
-#: pod/meeting/models.py:260
+#: pod/meeting/models.py:261
 msgid "Is running"
 msgstr "En cours d’exécution"
 
-#: pod/meeting/models.py:261
+#: pod/meeting/models.py:262
 msgid "Indicates whether this meeting is running in BigBlueButton or not!"
 msgstr ""
 "Indique si cette réunion est en cours d’exécution dans BigBlueButton ou non !"
 
-#: pod/meeting/models.py:264 pod/video/models.py:346 pod/video/models.py:615
+#: pod/meeting/models.py:265 pod/video/models.py:346 pod/video/models.py:615
 msgid "Site"
 msgstr "Site"
 
-#: pod/meeting/models.py:268
+#: pod/meeting/models.py:269
 msgid "Max Participants"
 msgstr "Nombre maximum de participant"
 
-#: pod/meeting/models.py:271
+#: pod/meeting/models.py:272
 msgid "Welcome!"
 msgstr "Bienvenue !"
 
-#: pod/meeting/models.py:271
+#: pod/meeting/models.py:272
 msgid "Meeting Text in Bigbluebutton"
 msgstr "Message affiché dans BigBlueButton"
 
-#: pod/meeting/models.py:278
+#: pod/meeting/models.py:279
 msgid "URL to visit after user logged out"
 msgstr "URL de redirection après déconnexion à la réunion"
 
-#: pod/meeting/models.py:282
+#: pod/meeting/models.py:283
 msgid "Webcam Only for moderators?"
 msgstr "Webcam seulement pour les modérateurs ?"
 
-#: pod/meeting/models.py:284
+#: pod/meeting/models.py:285
 msgid ""
 "Will cause all webcams shared by viewers during this meeting to only appear "
 "for moderators."
@@ -4370,85 +4370,85 @@ msgstr ""
 "Aura pour conséquence que les webcams des utilisateurs ne seront vues que "
 "par les modérateurs."
 
-#: pod/meeting/models.py:292
+#: pod/meeting/models.py:293
 msgid "Auto Start Recording"
 msgstr "Démarrage automatique de l’enregistrement"
 
-#: pod/meeting/models.py:296
+#: pod/meeting/models.py:297
 msgid "Allow Stop/Start Recording"
 msgstr "Autoriser l’arrêt/le démarrage de l’enregistrement"
 
-#: pod/meeting/models.py:297
+#: pod/meeting/models.py:298
 msgid "Allow the user to start/stop recording. (default true)"
 msgstr ""
 "Autoriser l’utilisateur à arrêter/démarrer l’enregistrement. (vrai par "
 "défaut)"
 
-#: pod/meeting/models.py:303
+#: pod/meeting/models.py:304
 msgid "Disable Camera"
 msgstr "Désactiver les caméras"
 
-#: pod/meeting/models.py:304
+#: pod/meeting/models.py:305
 msgid "Will prevent users from sharing their camera in the meeting."
 msgstr "Empêchera les utilisateurs de partager leur caméra dans la réunion."
 
-#: pod/meeting/models.py:308
+#: pod/meeting/models.py:309
 msgid "Disable Mic"
 msgstr "Désactiver les micros"
 
-#: pod/meeting/models.py:309
+#: pod/meeting/models.py:310
 msgid "Will only allow user to join listen only."
 msgstr "Autorisera l’utilisateur à rejoindre l’écoute uniquement."
 
-#: pod/meeting/models.py:313
+#: pod/meeting/models.py:314
 msgid "Disable Private chat"
 msgstr "Désactiver les discussions privées"
 
-#: pod/meeting/models.py:314
+#: pod/meeting/models.py:315
 msgid "If True, will disable private chats in the meeting."
 msgstr "Si vrai, désactivera les discussions privées dans la réunion."
 
-#: pod/meeting/models.py:318
+#: pod/meeting/models.py:319
 msgid "Disable public chat"
 msgstr "Désactiver les discussions publiques"
 
-#: pod/meeting/models.py:319
+#: pod/meeting/models.py:320
 msgid "If True, will disable public chat in the meeting."
 msgstr "Si vrai, désactivera les discussions publiques dans la réunion."
 
-#: pod/meeting/models.py:323
+#: pod/meeting/models.py:324
 msgid "Disable Note"
 msgstr "Désactiver les notes"
 
-#: pod/meeting/models.py:324
+#: pod/meeting/models.py:325
 msgid "If True, will disable notes in the meeting."
 msgstr "Si vrai, désactivera les notes dans la réunion."
 
-#: pod/meeting/models.py:328
+#: pod/meeting/models.py:329
 msgid "Locked Layout"
 msgstr "Mise en page verrouillée"
 
-#: pod/meeting/models.py:329
+#: pod/meeting/models.py:330
 msgid "Will lock the layout in the meeting."
 msgstr "Verrouillera la mise en page dans la réunion."
 
-#: pod/meeting/models.py:337
+#: pod/meeting/models.py:338
 msgid "Parent Meeting ID"
 msgstr "Identifiant de la réunion parente"
 
-#: pod/meeting/models.py:343
+#: pod/meeting/models.py:344
 msgid "Internal Meeting ID"
 msgstr "Identifiant interne de la reunion"
 
-#: pod/meeting/models.py:349
+#: pod/meeting/models.py:350
 msgid "Voice Bridge"
 msgstr "Pont vocal"
 
-#: pod/meeting/models.py:356
+#: pod/meeting/models.py:357
 msgid "BBB Create Time"
 msgstr "date de création dans BBB"
 
-#: pod/meeting/models.py:389
+#: pod/meeting/models.py:390
 msgid "Weekdays should contain the start date."
 msgstr "Les jours de la semaine doivent contenir la date de début."
 
@@ -4690,54 +4690,96 @@ msgstr "Vous ne pouvez pas inviter à cette réunion."
 msgid "Invitations send to recipients."
 msgstr "Invitations envoyées aux destinataires."
 
-#: pod/meeting/views.py:519 pod/meeting/views.py:576
+#: pod/meeting/views.py:519 pod/meeting/views.py:535
 #, python-format
 msgid "%(owner)s invites you to the meeting %(meeting_title)s"
 msgstr "%(owner)s vous invite à la réunion %(meeting_title)s"
 
-#: pod/meeting/views.py:529
+#: pod/meeting/views.py:541
 #, python-format
 msgid ""
 "\n"
-"        Hello,\n"
-"        %(owner)s invites you to the meeting %(meeting_title)s.\n"
-"        Start date: %(start_date)s\n"
-"        End date: %(end_date)s\n"
 "        Here is the link to join the meeting: %(join_link)s\n"
 "        You need this password to enter: %(password)s\n"
-"        Regards\n"
 "    "
+msgstr ""
+"\n"
+"        Voici le lien pour rejoindre la réunion : %(join_link)s\n"
+"        Vous avez besoin de ce mot de passe pour entrer : %(password)s\n"
+"    "
+
+#: pod/meeting/views.py:581
+#, python-format
+msgid ""
+"\n"
+"            Hello,\n"
+"            %(owner)s invites you to a recurring meeting %(meeting_title)s.\n"
+"            Start date: %(start_date_time)s\n"
+"            Recurring until date: %(end_date)s\n"
+"            The meeting will be occur each %(frequency)s %(recurrence)s\n"
+"            Here is the link to join the meeting: %(join_link)s\n"
+"            You need this password to enter: %(password)s\n"
+"            Regards\n"
+"        "
+msgstr ""
+"\n"
+"        Bonjour,\n"
+"        %(owner)s vous invite à une réunion récurrente %(meeting_title)s.\n"
+"        Date de début: %(start_date_time)s\n"
+"        Récurrent jusqu'à la date: %(end_date)s\n"
+"        La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s\n"
+"        Voici le lien pour rejoindre la réunion : %(join_link)s\n"
+"        Vous avez besoin de ce mot de passe pour entrer : %(password)s\n"
+"        Cordialement\n"
+"    "
+
+#: pod/meeting/views.py:606
+#, python-format
+msgid ""
+"\n"
+"            Hello,\n"
+"            %(owner)s invites you to the meeting %(meeting_title)s.\n"
+"            Start date: %(start_date_time)s\n"
+"            End date: %(end_date)s\n"
+"            Here is the link to join the meeting: %(join_link)s\n"
+"            You need this password to enter: %(password)s\n"
+"            Regards\n"
+"        "
 msgstr ""
 "\n"
 "        Bonjour,\n"
 "        %(owner)s vous invite à la réunion %(meeting_title)s.\n"
-"        Date de début : %(start_date)s\n"
+"        Date de début : %(start_date_time)s\n"
 "        Date de fin : %(end_date)s\n"
 "        Voici le lien pour rejoindre la réunion : %(join_link)s\n"
 "        Vous avez besoin de ce mot de passe pour entrer : %(password)s\n"
 "        Cordialement\n"
 "    "
 
-#: pod/meeting/views.py:550
+#: pod/meeting/views.py:638
 #, python-format
 msgid ""
 "\n"
-"        <p>Hello,\n"
-"        <p>%(owner)s invites you to the meeting <b>%(meeting_title)s</b>.</"
+"            <p>Hello,</p>\n"
+"            <p>%(owner)s invites you to a recurring meeting "
+"%(meeting_title)s.</p>\n"
+"            <p>Start date: %(start_date_time)s</p>\n"
+"            <p>Recurring until date: %(end_date)s</p>\n"
+"            <p>The meeting will be occur each %(frequency)s %(recurrence)s </"
 "p>\n"
-"        <p>Start date: %(start_date)s </p>\n"
-"        <p>End date: %(end_date)s </p>\n"
-"        <p>here the link to join the meeting:\n"
-"        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>You need this password to enter: <b>%(password)s</b> </p>\n"
-"        <p>Regards</p>\n"
-"    "
+"            <p>Here is the link to join the meeting: %(join_link)s</p>\n"
+"            <p>You need this password to enter: %(password)s</p>\n"
+"            <p>Regards</p>\n"
+"        "
 msgstr ""
 "\n"
 "        <p>Bonjour,\n"
-"        <p>%(owner)s vous invite à la réunion <b>%(meeting_title)s</b>.</p>\n"
-"        <p>Date de début : %(start_date)s </p>\n"
-"        <p>Date de fin : %(end_date)s </p>\n"
+"        <p>%(owner)s vous invite à une réunion récurrente <b>"
+"%(meeting_title)s</b>.</p>\n"
+"        <p>Date de début : %(start_date_time)s </p>\n"
+"        <p>Récurrent jusqu'à la date : %(end_date)s </p>\n"
+"        <p>La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s </"
+"p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
@@ -4745,17 +4787,31 @@ msgstr ""
 "        <p>Cordialement</p>\n"
 "    "
 
-#: pod/meeting/views.py:582
+#: pod/meeting/views.py:663
 #, python-format
 msgid ""
 "\n"
-"        Here is the link to join the meeting: %(join_link)s\n"
-"        You need this password to enter: %(password)s\n"
-"    "
+"            <p>Hello,</p>\n"
+"            <p>%(owner)s invites you to the meeting <b>%(meeting_title)s</b>."
+"</p>\n"
+"            <p>Start date: %(start_date_time)s </p>\n"
+"            <p>End date: %(end_date)s </p>\n"
+"            <p>here the link to join the meeting:\n"
+"            <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
+"            <p>You need this password to enter: <b>%(password)s</b> </p>\n"
+"            <p>Regards</p>\n"
+"        "
 msgstr ""
 "\n"
-"        Voici le lien pour rejoindre la réunion : %(join_link)s\n"
-"        Vous avez besoin de ce mot de passe pour entrer : %(password)s\n"
+"        <p>Bonjour,\n"
+"        <p>%(owner)s vous invite à la réunion <b>%(meeting_title)s</b>.</p>\n"
+"        <p>Date de début : %(start_date_time)s </p>\n"
+"        <p>Date de fin : %(end_date)s </p>\n"
+"        <p>Voici le lien pour rejoindre la réunion :\n"
+"        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
+"%(password)s</b> </p>\n"
+"        <p>Cordialement</p>\n"
 "    "
 
 #: pod/playlist/models.py:27

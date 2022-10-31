@@ -582,8 +582,8 @@ def get_text_content(request, meeting):
             Hello,
             %(owner)s invites you to a recurring meeting %(meeting_title)s.
             Start date: %(start_date_time)s
-            Reccuring until date: %(end_date)s
-            The meeting will be occure each %(frequency)s %(recurrence)s
+            Recurring until date: %(end_date)s
+            The meeting will be occur each %(frequency)s %(recurrence)s
             Here is the link to join the meeting: %(join_link)s
             You need this password to enter: %(password)s
             Regards
@@ -639,8 +639,8 @@ def get_html_content(request, meeting):
             <p>Hello,</p>
             <p>%(owner)s invites you to a recurring meeting %(meeting_title)s.</p>
             <p>Start date: %(start_date_time)s</p>
-            <p>Reccuring until date: %(end_date)s</p>
-            <p>The meeting will be occure each %(frequency)s %(recurrence)s </p>
+            <p>Recurring until date: %(end_date)s</p>
+            <p>The meeting will be occur each %(frequency)s %(recurrence)s </p>
             <p>Here is the link to join the meeting: %(join_link)s</p>
             <p>You need this password to enter: %(password)s</p>
             <p>Regards</p>
