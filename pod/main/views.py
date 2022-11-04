@@ -36,7 +36,6 @@ from pod.authentication.forms import FrontOwnerForm
 import os
 import mimetypes
 import json
-import unicodedata
 from django.contrib.auth.decorators import login_required
 from .models import Configuration
 from honeypot.decorators import check_honeypot
