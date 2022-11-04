@@ -19,7 +19,7 @@ from .models import CustomImageModel
 from .forms import UserFolderForm
 from .forms import CustomFileModelForm
 from .forms import CustomImageModelForm
-from pod.main.views import remove_accents
+from pod.video.models import remove_accents
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
 import re

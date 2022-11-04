@@ -28,11 +28,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
-from django.db.models import Count
 from django.http import HttpResponse, HttpResponseBadRequest
 from wsgiref.util import FileWrapper
-from django.db.models import Q
-from pod.video.models import Video
+from django.db.models import Q, Count
+from pod.video.models import Video, remove_accents
 from pod.authentication.forms import FrontOwnerForm
 import os
 import mimetypes
@@ -311,13 +310,6 @@ def contact_us(request):
         "contact_us.html",
         {"form": form, "owner": owner, "page_title": _("Contact us")},
     )
-
-
-def remove_accents(input_str):
-    """Remove diacritics(accent, cedilla...) in input string."""
-    nfkd_form = unicodedata.normalize("NFKD", input_str)
-    only_ascii = nfkd_form.encode("ASCII", "ignore")
-    return only_ascii
 
 
 @login_required(redirect_field_name="referrer")
