@@ -404,7 +404,8 @@ if (ownerboxnavbar) {
       fetch(url, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
+          
+          "X-Requested-With": "XMLHttpRequest"
         },
       })
         .then((response) => response.json())
