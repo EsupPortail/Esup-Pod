@@ -7,7 +7,7 @@
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
       <div class="modal-header">
-        <!-- suppression temp du |get_type == 'int' dans le if-->
+        {# suppression temp du |get_type == 'int' dans le if #}
         {% if CHANNELS.count %}
           <h2 class="modal-title"><i class="bi bi-play-btn"></i>&nbsp;{% blocktrans count counter=CHANNELS.count %}{{ counter }} Channel{% plural %}{{ counter }} Channels{% endblocktrans %}</h2>
         {% endif %}
