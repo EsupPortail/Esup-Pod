@@ -403,12 +403,12 @@ if (ownerboxnavbar) {
       let data = new FormData();
       data.append("term", searchTerm);
       data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
-      url = "/ajax_calls/search_user/" 
+      url = "/ajax_calls/search_user/";
       fetch(url, {
         method: "POST",
-        body : data,
+        body: data,
         headers: {
-          "Accept": "application/json",
+          Accept: "application/json",
           "X-Requested-With": "XMLHttpRequest",
         },
       })
@@ -417,19 +417,18 @@ if (ownerboxnavbar) {
           let accordion = document.getElementById("accordion");
           accordion.innerHTML = "";
           data.forEach((elt) => {
-            accordion.innerHTML += 
+            accordion.innerHTML +=
               '<li><a href="' +
-                urlvideos +
-                "?owner=" +
-                elt.username +
-                '">' +
-                elt.first_name +
-                " " +
-                elt.last_name +
-                (!HIDE_USERNAME
-                  ? " (" + elt.username + ")</a></li>"
-                  : "</a></li>")
-            ;
+              urlvideos +
+              "?owner=" +
+              elt.username +
+              '">' +
+              elt.first_name +
+              " " +
+              elt.last_name +
+              (!HIDE_USERNAME
+                ? " (" + elt.username + ")</a></li>"
+                : "</a></li>");
           });
         });
     } else {
@@ -967,8 +966,8 @@ if (ownerbox) {
       })
         .then((response) => response.text())
         .then((data) => {
-          console.log(data);
-          if (data) {
+          data = JSON.parse(data);
+          if (data.length > 0) {
             document
               .querySelectorAll("#collapseFilterOwner .added")
               .forEach((index) => {
@@ -977,15 +976,16 @@ if (ownerbox) {
                   index.remove();
                 }
               });
-
             data.forEach((elt) => {
               if (
-                listUserChecked.indexOf(elt.username) == -1 &&
+                (listUserChecked.indexOf(elt.username) == -1 &&
+                  (document.querySelector(
+                    "#collapseFilterOwner #id" + elt.username
+                  ) == null ||
                 document.querySelector(
                   "#collapseFilterOwner #id" + elt.username
-                ).length == 0
+                ).length == 0))
               ) {
-                data = JSON.parse(data);
                 let username = HIDE_USERNAME ? "" : " (" + elt.username + ")";
                 var chekboxhtml =
                   '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="' +
@@ -1000,14 +1000,13 @@ if (ownerbox) {
                   elt.last_name +
                   username +
                   "</label></div>";
-                document
-                  .getElementById("collapseFilterOwner")
-                  .append(chekboxhtml);
+                document.getElementById("collapseFilterOwner").innerHTML +=
+                  chekboxhtml;
               }
             });
           }
         })
-        
+
         .catch((error) => {
           /*
           showalert(

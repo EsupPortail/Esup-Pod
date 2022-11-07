@@ -32,15 +32,15 @@ from django.db.models import Count
 from django.http import HttpResponse, HttpResponseBadRequest
 from wsgiref.util import FileWrapper
 from django.db.models import Q
-from pod.video.models import Video
+from pod.video.models import Video, remove_accents
 from pod.authentication.forms import FrontOwnerForm
 import os
 import mimetypes
 import json
-import unicodedata
 from django.contrib.auth.decorators import login_required
 from .models import Configuration
 from honeypot.decorators import check_honeypot
+
 
 ##
 # Settings exposed in templates
@@ -313,17 +313,9 @@ def contact_us(request):
     )
 
 
-# def remove_accents(input_str):
-  #  """Remove diacritics(accent, cedilla...) in input string."""
-   # nfkd_form = unicodedata.normalize("NFKD", input_str)
-    #only_ascii = nfkd_form.encode("ASCII", "ignore")
-    #return only_ascii
-
-
 @login_required(redirect_field_name="referrer")
 def user_autocomplete(request):
     """Search for users with partial names, for autocompletion."""
-    
     if request.is_ajax():
         additional_filters = {
             "video__is_draft": False,
@@ -334,7 +326,6 @@ def user_autocomplete(request):
         if MENUBAR_SHOW_STAFF_OWNERS_ONLY:
             additional_filters["is_staff"] = True
         VALUES_LIST = ["username", "first_name", "last_name", "video_count"]
-        print(request.GET)
         q = remove_accents(request.GET.get("term", "").lower())
         users = (
             User.objects.filter(**additional_filters)
