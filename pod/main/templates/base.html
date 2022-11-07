@@ -69,23 +69,25 @@
     <main class="mt-0 mb-3">
       <div class="pod-grid-content">
         <div class="pod-mainContent mt-2" id="pod-mainContent">
-          <div class="pod-aside-collapse">
-            {% block collapse_page_aside %}
-              <a class="btn btn-outline-primary collapseAside pod-aside-collapse__button" data-bs-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" aria-label="{% trans 'Toggle side Menu' %}">
-                <i class="bi bi-three-dots-vertical"></i>
-              </a>
-            {% endblock collapse_page_aside %}
-          </div>
-          {% if MAINTENANCE_SHEDULED and not request.GET.is_iframe %}
-            <div class="alert alert-warning" role="alert">{{MAINTENANCE_TEXT_SHEDULED|safe}}</div>
+          {% if not request.GET.is_iframe %}
+            <div class="pod-aside-collapse">
+              {% block collapse_page_aside %}
+                <a class="btn btn-outline-primary collapseAside pod-aside-collapse__button" data-bs-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" aria-label="{% trans 'Toggle side Menu' %}">
+                  <i class="bi bi-three-dots-vertical"></i>
+                </a>
+              {% endblock collapse_page_aside %}
+            </div>
+            {% if MAINTENANCE_SHEDULED %}
+              <div class="alert alert-warning" role="alert">{{MAINTENANCE_TEXT_SHEDULED|safe}}</div>
+            {% endif %}
+            <nav aria-label="{% trans 'Breadcrumb' %}" class="breadcrumb d-flex justify-content-between pb-2" id="mainbreadcrumb">
+              <ol class="breadcrumb p-0 mb-0">
+                {% block breadcrumbs %}
+                <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+                {% endblock breadcrumbs %}
+              </ol>
+            </nav>
           {% endif %}
-          <nav aria-label="{% trans 'Breadcrumb' %}" class="breadcrumb d-flex justify-content-between pb-2" id="mainbreadcrumb">
-            <ol class="breadcrumb p-0 mb-0">
-              {% block breadcrumbs %}
-              <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
-              {% endblock breadcrumbs %}
-            </ol>
-          </nav>
           <!-- contenu page statique -->
           <div class="pod-first-content">
             {% block main_page_title %}
@@ -105,20 +107,24 @@
             {% include "videos/last_videos.html" %}
           {% endif %}
         </div>
-        <aside class="pod-aside collapse" id="collapseAside">
-          {% block page_aside %}
-          {% include 'aside.html'%}
-          {% endblock page_aside %}
-        </aside>
+        {% if not request.GET.is_iframe %}
+          <aside class="pod-aside collapse" id="collapseAside">
+            {% block page_aside %}
+              {% include 'aside.html'%}
+            {% endblock page_aside %}
+          </aside>
+        {% endif %}
       </div> <!-- fin div pod-grid-content -->
     </main>
   </div> <!-- fin container -->
   {% endblock content %}
-  <footer class="container-fluid pod-footer-container">
-    <div class="pod-footer">
-      {% include 'footer.html' %}
-    </div>
-  </footer>
+  {% if not request.GET.is_iframe %}
+    <footer class="container-fluid pod-footer-container">
+      <div class="pod-footer">
+        {% include 'footer.html' %}
+      </div>
+    </footer>
+  {% endif %}
 
   {% if messages %}
   <div id="base-message-alert">
