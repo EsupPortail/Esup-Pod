@@ -400,12 +400,16 @@ if (ownerboxnavbar) {
   ownerboxnavbar.addEventListener("keyup", function () {
     if (ownerboxnavbar.value && ownerboxnavbar.value.length > 2) {
       var searchTerm = ownerboxnavbar.value;
-      url = "/ajax_calls/search_user?term=" + searchTerm;
+      let data = new FormData();
+      data.append("term", searchTerm);
+      data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
+      url = "/ajax_calls/search_user/" 
       fetch(url, {
-        method: "GET",
+        method: "POST",
+        body : data,
         headers: {
-          
-          "X-Requested-With": "XMLHttpRequest"
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
         },
       })
         .then((response) => response.json())
@@ -413,7 +417,7 @@ if (ownerboxnavbar) {
           let accordion = document.getElementById("accordion");
           accordion.innerHTML = "";
           data.forEach((elt) => {
-            accordion.append(
+            accordion.innerHTML += 
               '<li><a href="' +
                 urlvideos +
                 "?owner=" +
@@ -425,7 +429,7 @@ if (ownerboxnavbar) {
                 (!HIDE_USERNAME
                   ? " (" + elt.username + ")</a></li>"
                   : "</a></li>")
-            );
+            ;
           });
         });
     } else {
@@ -949,57 +953,68 @@ function show_list_theme(data) {
 
 let ownerbox = document.getElementById("ownerbox");
 if (ownerbox) {
-  ownerbox.addEventListener("keyup", async function () {
+  ownerbox.addEventListener("keyup", async (e) => {
     let thisE = e.target;
     if (thisE.value && thisE.value.length > 2) {
       var searchTerm = thisE.value;
-      var url = "/ajax/search_user/" + searchTerm;
-      var cache = false;
+      var url = "/ajax_calls/search_user?term=" + searchTerm;
 
       await fetch(url, {
         method: "GET",
         headers: {
           "X-Requested-With": "XMLHttpRequest",
         },
-        cache: cache,
       })
         .then((response) => response.text())
         .then((data) => {
-          document
-            .querySelectorAll("#collapseFilterOwner .added")
-            .forEach((index) => {
-              var c = index.querySelector("input");
-              if (!c.checked) {
-                index.remove();
+          console.log(data);
+          if (data) {
+            document
+              .querySelectorAll("#collapseFilterOwner .added")
+              .forEach((index) => {
+                var c = index.querySelector("input");
+                if (!c.checked) {
+                  index.remove();
+                }
+              });
+
+            data.forEach((elt) => {
+              if (
+                listUserChecked.indexOf(elt.username) == -1 &&
+                document.querySelector(
+                  "#collapseFilterOwner #id" + elt.username
+                ).length == 0
+              ) {
+                data = JSON.parse(data);
+                let username = HIDE_USERNAME ? "" : " (" + elt.username + ")";
+                var chekboxhtml =
+                  '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="' +
+                  elt.username +
+                  '" id="id' +
+                  elt.username +
+                  '"><label class="form-check-label" for="id' +
+                  elt.username +
+                  '">' +
+                  elt.first_name +
+                  " " +
+                  elt.last_name +
+                  username +
+                  "</label></div>";
+                document
+                  .getElementById("collapseFilterOwner")
+                  .append(chekboxhtml);
               }
             });
-
-          data.forEach((elt) => {
-            if (
-              listUserChecked.indexOf(elt.username) == -1 &&
-              document.querySelector("#collapseFilterOwner #id" + elt.username)
-                .length == 0
-            ) {
-              data = JSON.parse(data);
-              let username = HIDE_USERNAME ? "" : " (" + elt.username + ")";
-              var chekboxhtml =
-                '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="' +
-                elt.username +
-                '" id="id' +
-                elt.username +
-                '"><label class="form-check-label" for="id' +
-                elt.username +
-                '">' +
-                elt.first_name +
-                " " +
-                elt.last_name +
-                username +
-                "</label></div>";
-              document
-                .getElementById("collapseFilterOwner")
-                .append(chekboxhtml);
-            }
-          });
+          }
+        })
+        
+        .catch((error) => {
+          /*
+          showalert(
+            gettext("User not found"),
+            "alert-danger"
+          );
+          */
         });
     } else {
       document

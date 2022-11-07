@@ -313,16 +313,17 @@ def contact_us(request):
     )
 
 
-def remove_accents(input_str):
-    """Remove diacritics(accent, cedilla...) in input string."""
-    nfkd_form = unicodedata.normalize("NFKD", input_str)
-    only_ascii = nfkd_form.encode("ASCII", "ignore")
-    return only_ascii
+# def remove_accents(input_str):
+  #  """Remove diacritics(accent, cedilla...) in input string."""
+   # nfkd_form = unicodedata.normalize("NFKD", input_str)
+    #only_ascii = nfkd_form.encode("ASCII", "ignore")
+    #return only_ascii
 
 
 @login_required(redirect_field_name="referrer")
 def user_autocomplete(request):
     """Search for users with partial names, for autocompletion."""
+    
     if request.is_ajax():
         additional_filters = {
             "video__is_draft": False,
@@ -333,6 +334,7 @@ def user_autocomplete(request):
         if MENUBAR_SHOW_STAFF_OWNERS_ONLY:
             additional_filters["is_staff"] = True
         VALUES_LIST = ["username", "first_name", "last_name", "video_count"]
+        print(request.GET)
         q = remove_accents(request.GET.get("term", "").lower())
         users = (
             User.objects.filter(**additional_filters)
