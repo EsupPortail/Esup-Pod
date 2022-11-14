@@ -28,7 +28,7 @@ from dateutil.parser import parse
 import concurrent.futures as futures
 
 from pod.main.views import in_maintenance
-from pod.main.decorators import ajax_required, admin_required
+from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
 from pod.video.utils import get_videos as video_get_videos
 from pod.video.models import Video
@@ -89,10 +89,10 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         "TITLE_ETB": "University name",
         "LOGO_SITE": "img/logoPod.svg",
         "LOGO_ETB": "img/logo_etb.svg",
-        "LOGO_PLAYER": "img/logoPod.svg",
+        "LOGO_PLAYER": "img/pod_favicon.svg",
         "LINK_PLAYER": "",
         "FOOTER_TEXT": ("",),
-        "FAVICON": "img/logoPod.svg",
+        "FAVICON": "img/pod_favicon.svg",
         "CSS_OVERRIDE": "",
         "PRE_HEADER_TEMPLATE": "",
         "POST_FOOTER_TEMPLATE": "",
@@ -2079,10 +2079,15 @@ def vote_get(request, video_slug):
         )
 
 
-@login_required(redirect_field_name="referrer")
+@ajax_login_required
+@csrf_protect
 def vote_post(request, video_slug, comment_id):
     if request.method == "GET":
         return HttpResponseNotFound("<h1>Method Not Allowed</h1>", status=405)
+    if in_maintenance():
+        return HttpResponseForbidden(
+            _("Sorry, you can't vote a comment while the server is under maintenance.")
+        )
     # current video
     c_video = get_object_or_404(Video, slug=video_slug)
     # current comment
@@ -2107,9 +2112,13 @@ def vote_post(request, video_slug, comment_id):
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 
-@login_required(redirect_field_name="referrer")
+@ajax_login_required
 @csrf_protect
 def add_comment(request, video_slug, comment_id=None):
+    if in_maintenance():
+        return HttpResponseForbidden(
+            _("Sorry, you can't comment while the server is under maintenance.")
+        )
     if request.method == "POST":
         # current video
         c_video = get_object_or_404(Video, slug=video_slug)
@@ -2281,9 +2290,18 @@ def get_comments(request, video_slug):
         )
 
 
-@login_required(redirect_field_name="referrer")
+@ajax_login_required
+@csrf_protect
 def delete_comment(request, video_slug, comment_id):
+    """Delete the comment `comment_id` associated to `video_slug`.
 
+    Args:
+        video_slug (string): the video associated to this comment
+        comment_id (): id of the comment to be deleted
+
+    Returns:
+        HttpResponse
+    """
     v = get_object_or_404(Video, slug=video_slug)
     c_user = request.user
     c = get_object_or_404(Comment, video=v, id=comment_id)
@@ -2291,13 +2309,16 @@ def delete_comment(request, video_slug, comment_id):
         "deleted": True,
     }
 
-    if c.author == c_user or v.owner == c_user or c_user.is_superuser:
+    if in_maintenance():
+        return HttpResponseForbidden(
+            _("Sorry, you can't delete a comment while the server is under maintenance.")
+        )
 
+    if c.author == c_user or v.owner == c_user or c_user.is_superuser:
         c.delete()
         response["comment_deleted"] = comment_id
         return HttpResponse(json.dumps(response), content_type="application/json")
     else:
-
         response["deleted"] = False
         response["message"] = _("You do not have rights to delete this comment")
         return HttpResponse(
