@@ -315,13 +315,22 @@ def render_event_template(request, evemnt, user_owns_event):
 
 def events(request):  # affichage des events
 
+    if request.user.is_authenticated:
+        access_group_filter = Q(restrict_access_to_groups__in=[
+            group_id for group_id in request.user.owner.accessgroups.values_list("id")
+        ])
+        restricted_filter = Q()
+    else:
+        access_group_filter = Q()
+        restricted_filter = Q(is_restricted=False)
+
     queryset = Event.objects.filter(
-        Q(start_date__gt=datetime.now()) & Q(end_date__gte=datetime.now())
+        Q(start_date__gt=datetime.now())
+        & Q(end_date__gte=datetime.now())
+        & Q(is_draft=False)
+        & (Q(restrict_access_to_groups__isnull=True) | access_group_filter)
+        & restricted_filter
     )
-    queryset = queryset.filter(is_draft=False)
-    if not request.user.is_authenticated:
-        queryset = queryset.filter(is_restricted=False)
-        queryset = queryset.filter(restrict_access_to_groups__isnull=False)
 
     events_list = queryset.all().order_by("start_date", "end_date")
 
