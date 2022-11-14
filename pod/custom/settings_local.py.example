@@ -172,7 +172,7 @@ EMAIL_PORT = 25
 """
 # Préfixe par défaut pour l'objet des courriels
 """
-EMAIL_SUBJECT_PREFIX = "[Pod]"
+EMAIL_SUBJECT_PREFIX = "[Pod] "
 
 """
 # Expediteur par défaut pour les envois automatique (erreur de code etc.)
@@ -414,7 +414,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
 
     # Logo affiché sur le player video.
     # Doit se situer dans le répertoire static
-    'LOGO_PLAYER': 'img/logoPod.svg',
+    'LOGO_PLAYER': 'img/pod_favicon.svg',
 
     # Lien de destination du logo affiché sur le player
     'LINK_PLAYER': '',
@@ -428,7 +428,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
     'FOOTER_TEXT': ('',),
 
     # Icone affichée dans la barre d'adresse du navigateur
-    'FAVICON': 'img/logoPod.svg',
+    'FAVICON': 'img/pod_favicon.svg',
 
     # Si souhaitée, à créer et sauvegarder
     #  dans le répertoire static de l'application custom et

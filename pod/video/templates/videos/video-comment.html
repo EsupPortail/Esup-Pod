@@ -2,22 +2,28 @@
 {% if disable %}
   <div class="comment_disable">{% trans "Comments have been disabled for this video." %}</div>
 {% else %}
-<div class="comment_main">
+<div class="comment_main" id="pod_comment_wrapper">
   <div class="comment_container">
     <div class="comment_content">
       <div class="inline_flex_space comment_counter_container">
-        <h2 class="comment_title">{% trans "Comments" %}</h2>
+        <h2 class="comment_title h4">{% trans "Comment(s)" %}</h2>
       </div>
       {% if is_auth %}
-        <form class="add_comment add_parent_comment">
-          <div class="form-wrapper form-group">
-            <label class="comment_label" for="comment">{% trans "Your comment" %}</label>
-            <textarea class="form-control new_comment new_parent_comment" name="new_parent_comment" id="comment" placeholder='{% trans "Add a public comment" %}'></textarea>
+        {% if MAINTENANCE_MODE %}
+          <div class="alert alert-warning">
+            {% trans "Sorry, you can't comment while the server is under maintenance." %}
           </div>
-          <div class="add_comment_footer">
-              <button type="submit" class="add_comment_btn btn btn-primary">{% trans "Comment!" %}</button>
-          </div>
-        </form>
+        {% else %}
+          <form class="add_comment add_parent_comment">
+            <div class="form-wrapper form-group">
+              <label class="comment_label" for="comment">{% trans "Your comment" %}</label>
+              <textarea class="form-control new_comment new_parent_comment" name="new_parent_comment" id="comment" placeholder='{% trans "Add a public comment" %}'></textarea>
+            </div>
+            <div class="add_comment_footer">
+                <button type="submit" class="add_comment_btn btn btn-primary">{% trans "Comment!" %}</button>
+            </div>
+          </form>
+        {% endif %}
       {% endif %}
       <div class="comment-loader text-center d-none"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">{% trans "Loading…" %}</span></div></div>
     </div>
