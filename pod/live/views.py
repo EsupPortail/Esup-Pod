@@ -314,11 +314,15 @@ def render_event_template(request, evemnt, user_owns_event):
 
 
 def events(request):  # affichage des events
-
+    '''
     queryset = Event.objects.filter(
         Q(start_date__gt=datetime.now()) & Q(end_date__gte=datetime.now())
     )
     queryset = queryset.filter(is_draft=False)
+    '''
+    queryset = Event.objects.filter(
+        end_date__gt=datetime.now(), is_draft=False
+    )
     if not request.user.is_authenticated:
         queryset = queryset.filter(is_restricted=False)
         queryset = queryset.filter(restrict_access_to_groups__isnull=False)
