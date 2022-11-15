@@ -325,7 +325,7 @@ def events(request):  # affichage des events
         restricted_filter = Q(is_restricted=False)
 
     queryset = Event.objects.filter(
-        Q(end_date__gt=datetime.now())
+        Q(end_date__gt=timezone.now())
         & Q(is_draft=False)
         & (Q(restrict_access_to_groups__isnull=True) | access_group_filter)
         & restricted_filter
