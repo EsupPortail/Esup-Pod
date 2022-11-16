@@ -248,15 +248,12 @@ def event(request, slug, slug_private=None):  # affichage d'un event
 
     evemnt = get_object_or_404(Event, id=id)
 
-    if evemnt.is_restricted and not request.user.is_authenticated:
+    if (evemnt.is_restricted or evemnt.restrict_access_to_groups.all().exists()) and not request.user.is_authenticated:
         iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
         return redirect(
             "%s?%sreferrer=%s"
             % (settings.LOGIN_URL, iframe_param, request.get_full_path())
         )
-        # url = reverse("authentication_login")
-        # url += "?referrer=" + request.get_full_path()
-        # return redirect(url)
 
     user_owns_event = request.user.is_authenticated and (
         evemnt.owner == request.user
