@@ -72,3 +72,20 @@ compile-model
 ################
 bower_components
 node_modules
+
+# Conteneurisation de POD #
+###########################
+.run
+.env.dev
+portainer-data
+v8-compile-cache-0
+pod/log
+pod/media
+pod/static
+pod/node_modules/*
+docker-compose-all-in-one-noway.yml
+dockerfile-all-in-one-noway
+docker-compose-dev-without-volumes.yml
+dockerfile-dev-without-volumes
+docker-compose-tmp-with-volumes.yml
+dockerfile-tmp

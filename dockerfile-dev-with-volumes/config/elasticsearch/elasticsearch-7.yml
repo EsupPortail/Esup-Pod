@@ -1,0 +1,2 @@
+cluster.name: "pod-application"
+network.host: 0.0.0.0

@@ -1,0 +1,64 @@
+x-pod-volumes: &pod-volumes
+  - .:/usr/src/app
+
+x-elasticsearch-volumes: &elasticsearch-volumes
+  - ./dockerfile-dev-with-volumes/config/elasticsearch/elasticsearch-7.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+
+version: '3.7'
+
+services:
+  pod:
+    container_name: pod-dev-with-volumes
+    build:
+      context: .
+      dockerfile: dockerfile-dev-with-volumes/pod/dockerfile-pod-dev
+    depends_on:
+      - elasticsearch
+      - redis
+    env_file:
+      - ./.env.dev
+    ports:
+      - 8080:8080
+    volumes: *pod-volumes
+    command:
+      - bash
+      - -c
+      - |
+        #
+        echo "Launching commandes into pod-dev"
+        ln -fs /tmp/node_modules/* pod/node_modules 
+        until nc -z elasticsearch 9200; do echo waiting for elasticsearch; sleep 10; done; 
+        python3 manage.py create_pod_index 
+        curl -XGET "elasticsearch:9200/pod/_search" 
+        # Deployez les fichiers statiques
+        python3 manage.py collectstatic --no-input --clear
+        # Mise en route
+        # Base de données SQLite intégrée
+        # Lancez le script présent à la racine afin de créer les fichiers de migration, puis de les lancer pour créer la base de données SQLite intégrée.
+        make createDB
+        # SuperUtilisateur
+        # Il faut créer un premier utilisateur qui aura tous les pouvoirs sur votre instance.
+        python3 manage.py createsuperuser --noinput
+        # Serveur de développement
+        # Le serveur de développement permet de tester vos futures modifications facilement.
+        # N'hésitez pas à lancer le serveur de développement pour vérifier vos modifications au fur et à mesure.
+        # À ce niveau, vous devriez avoir le site en français et en anglais et voir l'ensemble de la page d'accueil.
+        python3 manage.py runserver 0.0.0.0:8080 --insecure
+        sleep infinity
+
+  elasticsearch:
+    container_name: elasticsearch-with-volumes
+    build:
+      context: .
+      dockerfile: dockerfile-dev-with-volumes/elasticsearch/dockerfile-elasticsearch-dev
+    ports:
+      - 9200:9200
+    environment:
+      - discovery.type=single-node
+    volumes: *elasticsearch-volumes
+
+  redis:
+    container_name: redis-with-volumes
+    image: redis:alpine3.16
+    ports:
+      - 6379:6379
