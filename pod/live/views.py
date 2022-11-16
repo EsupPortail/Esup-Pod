@@ -248,7 +248,9 @@ def event(request, slug, slug_private=None):  # affichage d'un event
 
     evemnt = get_object_or_404(Event, id=id)
 
-    if (evemnt.is_restricted or evemnt.restrict_access_to_groups.all().exists()) and not request.user.is_authenticated:
+    if (
+        evemnt.is_restricted or evemnt.restrict_access_to_groups.all().exists()
+    ) and not request.user.is_authenticated:
         iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
         return redirect(
             "%s?%sreferrer=%s"
