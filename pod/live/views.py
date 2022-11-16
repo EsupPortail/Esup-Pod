@@ -248,15 +248,12 @@ def event(request, slug, slug_private=None):  # affichage d'un event
 
     evemnt = get_object_or_404(Event, id=id)
 
-    if evemnt.is_restricted and not request.user.is_authenticated:
+    if (evemnt.is_restricted or evemnt.restrict_access_to_groups.all().exists()) and not request.user.is_authenticated:
         iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
         return redirect(
             "%s?%sreferrer=%s"
             % (settings.LOGIN_URL, iframe_param, request.get_full_path())
         )
-        # url = reverse("authentication_login")
-        # url += "?referrer=" + request.get_full_path()
-        # return redirect(url)
 
     user_owns_event = request.user.is_authenticated and (
         evemnt.owner == request.user
@@ -315,14 +312,8 @@ def render_event_template(request, evemnt, user_owns_event):
 
 def events(request):  # affichage des events
 
-    queryset = Event.objects.filter(
-        Q(start_date__gt=datetime.now()) & Q(end_date__gte=datetime.now())
-    )
-    queryset = queryset.filter(is_draft=False)
-    if not request.user.is_authenticated:
-        queryset = queryset.filter(is_restricted=False)
-        queryset = queryset.filter(restrict_access_to_groups__isnull=False)
-
+    # Tous les events à venir (sauf les drafts sont affichés)
+    queryset = Event.objects.filter(end_date__gt=timezone.now(), is_draft=False)
     events_list = queryset.all().order_by("start_date", "end_date")
 
     page = request.GET.get("page", 1)
