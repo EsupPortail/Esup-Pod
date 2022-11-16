@@ -175,9 +175,9 @@ class Encoding_video_model(Encoding_video):
                 name=encod_name,
                 video=video_to_encode,
                 encoding_format="application/x-mpegURL",
-                source_file=self.get_true_path(mp4_files[video_file]),
+                source_file=self.get_true_path(hls_files[video_file]),
             )
-            ts_file = mp4_files[video_file].replace(".m3u8", ".ts")
+            ts_file = hls_files[video_file].replace(".m3u8", ".ts")
             if check_file(ts_file):
                 encoding, created = EncodingVideo.objects.get_or_create(
                     name=encod_name,
