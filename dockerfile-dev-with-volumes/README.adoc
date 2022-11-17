@@ -54,7 +54,7 @@ $ sh reset-local-pod.sh
 TODO
 
 == (C)  Copyright :
-https://www.esup-portail.org/wiki/display/ES/Installation+de+la+plateforme+Pod+V3
-https://github.com/EsupPortail/pod
-https://hub.docker.com/_/debian/tags?page=2
-https://forums.docker.com/t/git-clone-command-fails-with-timeout/100655
+- https://www.esup-portail.org/wiki/display/ES/Installation+de+la+plateforme+Pod+V3
+- https://github.com/EsupPortail/pod
+- https://hub.docker.com/_/debian/tags?page=2
+- https://forums.docker.com/t/git-clone-command-fails-with-timeout/100655
