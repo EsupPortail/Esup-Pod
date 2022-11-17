@@ -12,7 +12,7 @@ v1.0, 2022-11-17
 1. Renommer le fichier .env.dev-exemple en .env.dev
 2. Renseigner le fichier .env.dev
 
-=== Portainer.io
+=== Portainer.io (facultatif)
 ----
 TODO pour windows, apple
 $ docker-compose -f ./docker-compose-portainer-with-volumes.yml -p portainer up --build
