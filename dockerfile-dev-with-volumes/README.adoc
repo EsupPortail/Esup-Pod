@@ -1,0 +1,60 @@
+= Docker
+Nom de l’auteur <farid.aitkarra@univ-lille.fr>
+v1.0, 2022-11-17
+:toc:
+:toc-title: Liste des rubriques
+:imagesdir: ./images
+
+== Docker / docker-compose
+
+=== Environnement local de développement (Linux, windows, TODO apple)
+
+1. Renommer le fichier .env.dev-exemple en .env.dev
+2. Renseigner le fichier .env.dev
+
+=== Portainer.io
+----
+TODO pour windows, apple
+$ docker-compose -f ./docker-compose-portainer-with-volumes.yml -p portainer up --build
+$ docker-compose -f ./docker-compose-portainer-with-volumes.yml -p portainer down -v
+----
+
+=== Esup-pod
+----
+$ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod up --build
+$ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod down -v
+----
+
+=== Commandes
+----
+$ docker run --rm -it -v ${PWD}:/usr/src/app --entrypoint bash python:3.7-buster
+$ docker run --rm -it -v ${PWD}:/tmp --entrypoint bash node:19
+$ docker run --rm -it --entrypoint bash elasticsearch:7.17.7
+
+$ pip show webrtcvad
+$ ls -ltrah /usr/local/lib/python3.7/site-packages/
+$ apt update && apt install netcat  telnet vim -y
+$ until nc -z elasticsearch 9200; do echo waiting for elasticsearch; sleep 2; done;
+$ telnet elasticsearch 9200; do echo waiting for elasticsearch; sleep 2; done;
+$ curl -XGET "elasticsearch:9200/pod/_search"
+----
+
+== Nettoyage de son workspace
+TODO pour windows, apple
+
+Le fichier "dockerfile-dev-with-volumes/reset-local-pod.sh" peut être executé afin de nettoyer automatiquement le workspace local.
+
+----
+$ cd ./dockerfile-dev-with-volumes
+$ sh reset-local-pod.sh
+----
+
+== HELM / Kubernetes
+
+TODO
+
+== (C)  Copyright :
+https://www.esup-portail.org/wiki/display/ES/Installation+de+la+plateforme+Pod+V3
+https://github.com/EsupPortail/pod
+https://hub.docker.com/_/debian/tags?page=2
+https://forums.docker.com/t/git-clone-command-fails-with-timeout/100655
