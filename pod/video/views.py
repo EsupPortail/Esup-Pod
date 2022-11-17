@@ -1774,7 +1774,7 @@ def video_oembed(request):
     if not request.GET.get("url"):
         raise SuspiciousOperation("URL must be specified")
     format = "xml" if request.GET.get("format") == "xml" else "json"
-
+    version = request.GET.get("version") if request.GET.get("version") else "video"
     data = {}
     data["type"] = "video"
     data["version"] = "1.0"
@@ -1795,7 +1795,7 @@ def video_oembed(request):
     p = re.compile(reg)
     m = p.match(url)
 
-    if m:
+    if m and m.group("slug") not in ["add", "edit"]:
         video_slug = m.group("slug")
         slug_private = m.group("slug_private")
         try:
@@ -1811,6 +1811,13 @@ def video_oembed(request):
             reverse("videos:videos"),
             video.owner.username,
         )
+        video_url = reverse(
+            "video:video",
+            kwargs={"slug": video.slug}
+        ) if version == "video" else reverse(
+            "%(version)s:video_%(version)s" % {"version": version},
+            kwargs={"slug": video.slug}
+        )
         data["html"] = (
             '<iframe src="%(provider)s%(video_url)s%(slug_private)s'
             + '?is_iframe=true" width="640" height="360" '
@@ -1818,7 +1825,7 @@ def video_oembed(request):
             + "allowfullscreen loading='lazy'></iframe>"
         ) % {
             "provider": data["provider_url"],
-            "video_url": reverse("video:video", kwargs={"slug": video.slug}),
+            "video_url": video_url,
             "slug_private": "%s/" % slug_private if slug_private else "",
         }
     else:
