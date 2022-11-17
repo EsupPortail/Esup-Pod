@@ -467,7 +467,7 @@ def event_edit(request, slug=None):
             is_current_event=event.is_current() if slug else None,
         )
         if form.is_valid():
-            update_event(form)
+            event = update_event(form)
             if EMAIL_ON_EVENT_SCHEDULING:
                 send_email_confirmation(event)
             messages.add_message(
@@ -490,6 +490,7 @@ def update_event(form):
     """Update an event with received form fields."""
     if form.cleaned_data.get("end_date"):
         event = form.save()
+        return event
     else:
         event = form.save(commit=False)
         d_fin = datetime.combine(
@@ -498,6 +499,7 @@ def update_event(form):
         d_fin = timezone.make_aware(d_fin)
         event.end_date = d_fin
         event.save()
+        return event
 
 
 @csrf_protect
