@@ -335,7 +335,6 @@ var VideoSlides = function (items) {
       var videoplayer = document.getElementsByClassName("vjs-tech")[0],
         sclass = mode in slide_mode_list ? mode : "",
         vclass = sclass != "" ? "vjs-tech " + sclass : "vjs-tech";
-      console.log("changemode : " + mode + " - " + sclass + " - " + vclass + " - " + slide_mode_list[mode]);
       currentSlide.className = sclass;
       videoplayer.className = vclass;
       document.getElementsByClassName(
@@ -368,7 +367,7 @@ var VideoSlides = function (items) {
         this.setAttribute("aria-checked", true);
         this.addClass("vjs-selected");
         current_slide_mode = this.el().getAttribute("data-mode");
-        console.log("click current_slide_mode : " + current_slide_mode);
+        // console.log("click current_slide_mode : " + current_slide_mode);
         player.trigger("changemode", current_slide_mode);
 
         var available = document.getElementsByClassName("vjs-slide-mode");
