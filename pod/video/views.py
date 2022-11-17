@@ -1811,12 +1811,13 @@ def video_oembed(request):
             reverse("videos:videos"),
             video.owner.username,
         )
-        video_url = reverse(
-            "video:video",
-            kwargs={"slug": video.slug}
-        ) if version == "video" else reverse(
-            "%(version)s:video_%(version)s" % {"version": version},
-            kwargs={"slug": video.slug}
+        video_url = (
+            reverse("video:video", kwargs={"slug": video.slug})
+            if version == "video"
+            else reverse(
+                "%(version)s:video_%(version)s" % {"version": version},
+                kwargs={"slug": video.slug},
+            )
         )
         data["html"] = (
             '<iframe src="%(provider)s%(video_url)s%(slug_private)s'
