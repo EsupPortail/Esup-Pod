@@ -9,7 +9,7 @@ FFMPEG_HLS_TIME = 2
 FFMPEG_INPUT = '-hide_banner -threads %(nb_threads)s -i "%(input)s" '
 FFMPEG_LIBX = "libx264"
 FFMPEG_MP4_ENCODE = (
-    '-map 0:v:0 -map 0:a:0 -c:v %(libx)s  -vf "scale=-2:%(height)s" '
+    '-map 0:v:0 %(map_audio)s -c:v %(libx)s  -vf "scale=-2:%(height)s" '
     + "-preset %(preset)s -profile:v %(profile)s "
     + "-pix_fmt yuv420p -level %(level)s -crf %(crf)s "
     + "-maxrate %(maxrate)s -bufsize %(bufsize)s "

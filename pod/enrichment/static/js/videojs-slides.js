@@ -119,9 +119,9 @@ const no_slide = "no-slide";
 const pip_slide_label = gettext("pip media");
 const pip_slide = "pip-slide";
 const pip_video_label = gettext("pip video");
-const pip_video = "big-slide"
+const pip_video = "big-slide";
 const full_slide_label = gettext("video off");
-const full_slide = "full-slide"
+const full_slide = "full-slide";
 // no really understood the meaning of putting key of dict in []...
 const slide_mode_list = {
   [no_slide]: no_slide_label,
@@ -130,7 +130,6 @@ const slide_mode_list = {
   [pip_video]: pip_video_label,
   [full_slide]: full_slide_label,
 };
-
 
 var default_slide_mode = split_slide;
 var current_slide_mode = split_slide;
@@ -335,7 +334,9 @@ var VideoSlides = function (items) {
       var videoplayer = document.getElementsByClassName("vjs-tech")[0],
         sclass = mode in slide_mode_list ? mode : "",
         vclass = sclass != "" ? "vjs-tech " + sclass : "vjs-tech";
-      if(currentSlide){ currentSlide.className = sclass; }
+      if (currentSlide) {
+        currentSlide.className = sclass;
+      }
       videoplayer.className = vclass;
       document.getElementsByClassName(
         "vjs-slide-manager"
@@ -399,7 +400,8 @@ var VideoSlides = function (items) {
         vjs_menu_button.call(this, player, options);
         this.addClass("vjs-slide-manager");
         this.controlText(gettext("Open slide manager"));
-        this.el().firstChild.firstChild.innerHTML = slide_mode_list[current_slide_mode];
+        this.el().firstChild.firstChild.innerHTML =
+          slide_mode_list[current_slide_mode];
       },
       createItems: function () {
         var items = [];
@@ -417,7 +419,7 @@ var VideoSlides = function (items) {
           items.push(
             new SlideMode(player, {
               label: slide_mode_list[e],
-              mode: e
+              mode: e,
             })
           );
         }
