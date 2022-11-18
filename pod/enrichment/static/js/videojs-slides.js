@@ -335,7 +335,7 @@ var VideoSlides = function (items) {
       var videoplayer = document.getElementsByClassName("vjs-tech")[0],
         sclass = mode in slide_mode_list ? mode : "",
         vclass = sclass != "" ? "vjs-tech " + sclass : "vjs-tech";
-      currentSlide.className = sclass;
+      if(currentSlide){ currentSlide.className = sclass; }
       videoplayer.className = vclass;
       document.getElementsByClassName(
         "vjs-slide-manager"
