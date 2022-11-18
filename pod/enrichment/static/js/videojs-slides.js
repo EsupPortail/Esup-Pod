@@ -111,19 +111,29 @@ const slide_color = {
   weblink: "var(--bs-red)",
   embed: "var(--bs-green)",
 };
-
-const default_label = gettext("Split view");
-
+//Is now a list of css class instead of video/slide width values
+const split_slide_label = gettext("Split view");
+const split_slide = "split-slide";
+const no_slide_label = gettext("slide off");
+const no_slide = "no-slide";
+const pip_slide_label = gettext("pip media");
+const pip_slide = "pip-slide";
+const pip_video_label = gettext("pip video");
+const pip_video = "big-slide"
+const full_slide_label = gettext("video off");
+const full_slide = "full-slide"
+// no really understood the meaning of putting key of dict in []...
 const slide_mode_list = {
-  //Is now a list of css class instead of video/slide width values
-  [gettext("slide off")]: "no-slide",
-  [default_label]: "",
-  [gettext("pip media")]: "pip-slide",
-  [gettext("pip video")]: "big-slide",
-  [gettext("video off")]: "full-slide",
+  [no_slide]: no_slide_label,
+  [split_slide]: split_slide_label,
+  [pip_slide]: pip_slide_label,
+  [pip_video]: pip_video_label,
+  [full_slide]: full_slide_label,
 };
 
-var slide_mode = default_label;
+
+var default_slide_mode = split_slide;
+var current_slide_mode = split_slide;
 var currentSlide = null;
 
 /**
@@ -259,14 +269,14 @@ var VideoSlides = function (items) {
         }
         currentSlide.style.display = "block";
         active = true;
-        player.trigger("changemode", slide_mode);
+        player.trigger("changemode", current_slide_mode);
       } else {
         const oldSlide = document.getElementById("slide_" + i);
         oldSlide.style.display = "none";
       }
     }
     if (!active) {
-      player.trigger("changemode", "slide off");
+      player.trigger("changemode", no_slide);
     }
     return false;
   };
@@ -323,13 +333,13 @@ var VideoSlides = function (items) {
   this.slideMode = function () {
     player.on("changemode", function (e, mode) {
       var videoplayer = document.getElementsByClassName("vjs-tech")[0],
-        sclass = mode in slide_mode_list ? slide_mode_list[mode] : "",
+        sclass = mode in slide_mode_list ? mode : "",
         vclass = sclass != "" ? "vjs-tech " + sclass : "vjs-tech";
-      currentSlide.className = sclass;
+      if(currentSlide){ currentSlide.className = sclass; }
       videoplayer.className = vclass;
       document.getElementsByClassName(
         "vjs-slide-manager"
-      )[0].firstChild.firstChild.innerHTML = slide_mode;
+      )[0].firstChild.firstChild.innerHTML = slide_mode_list[mode];
     });
   };
 
@@ -346,17 +356,19 @@ var VideoSlides = function (items) {
     var SlideMode = videojs.extend(vjs_menu_item, {
       constructor: function (player, options) {
         options = options || {};
-        options.label = options.mode;
+        options.label = options.label;
         vjs_menu_item.call(this, player, options);
         this.on("click", this.onClick);
         this.addClass("vjs-slide-mode");
         this.controlText(gettext("Turn to ") + options.mode);
+        this.setAttribute("data-mode", options.mode);
       },
       onClick: function () {
         this.setAttribute("aria-checked", true);
         this.addClass("vjs-selected");
-        slide_mode = this.el().firstChild.innerHTML;
-        player.trigger("changemode", this.el().firstChild.innerHTML);
+        current_slide_mode = this.el().getAttribute("data-mode");
+        // console.log("click current_slide_mode : " + current_slide_mode);
+        player.trigger("changemode", current_slide_mode);
 
         var available = document.getElementsByClassName("vjs-slide-mode");
         for (let i = 0, nb = available.length, e; i < nb; i++) {
@@ -387,7 +399,7 @@ var VideoSlides = function (items) {
         vjs_menu_button.call(this, player, options);
         this.addClass("vjs-slide-manager");
         this.controlText(gettext("Open slide manager"));
-        this.el().firstChild.firstChild.innerHTML = slide_mode;
+        this.el().firstChild.firstChild.innerHTML = slide_mode_list[current_slide_mode];
       },
       createItems: function () {
         var items = [];
@@ -404,7 +416,8 @@ var VideoSlides = function (items) {
         for (let e in slide_mode_list) {
           items.push(
             new SlideMode(player, {
-              mode: e,
+              label: slide_mode_list[e],
+              mode: e
             })
           );
         }
@@ -435,7 +448,7 @@ var VideoSlides = function (items) {
   this.slideButton();
   this.slideMode();
   currentSlide = document.getElementById("slide_0");
-  player.trigger("changemode", slide_mode);
+  player.trigger("changemode", default_slide_mode);
 };
 
 const onPlayerReady = function (player, options) {
