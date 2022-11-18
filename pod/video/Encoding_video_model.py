@@ -151,9 +151,7 @@ class Encoding_video_model(Encoding_video):
         for video_file in mp4_files:
             if not check_file(mp4_files[video_file]):
                 continue
-            rendition = VideoRendition.objects.get(
-                resolution__contains="x" + video_file
-            )
+            rendition = VideoRendition.objects.get(resolution__contains="x" + video_file)
             encod_name = video_file + "p"
             encoding, created = EncodingVideo.objects.get_or_create(
                 name=encod_name,
@@ -167,9 +165,7 @@ class Encoding_video_model(Encoding_video):
         for video_file in hls_files:
             if not check_file(hls_files[video_file]):
                 continue
-            rendition = VideoRendition.objects.get(
-                resolution__contains="x" + video_file
-            )
+            rendition = VideoRendition.objects.get(resolution__contains="x" + video_file)
             encod_name = video_file + "p"
             encoding, created = PlaylistVideo.objects.get_or_create(
                 name=encod_name,
