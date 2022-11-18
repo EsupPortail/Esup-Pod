@@ -469,7 +469,7 @@ var send_form_data = function (
     var data = $xhr.status + " : " + $xhr.statusText;
     showalert(
       gettext("Error during exchange") +
-        "(" +
+        " (" +
         data +
         ")<br/>" +
         gettext("No data could be stored."),
@@ -479,8 +479,9 @@ var send_form_data = function (
   });
 };
 
-/*!
+/**
  * AJAX call function (usually send form data)
+ *
  * @param  {String}          url               Address link to be requested
  * @param  {String}          fct               JS Function to call when it's done.
  * @param  {HTMLFormElement} [data_form]       The form to be sent with POST
@@ -531,7 +532,7 @@ var send_form_data_vanilla = function (
     .catch(function (err) {
       showalert(
         gettext("Error during exchange") +
-          "(" +
+          " (" +
           err +
           ")<br/>" +
           gettext("No data could be stored."),
@@ -875,7 +876,7 @@ var showalert = function (message, alerttype) {
   $("body").append(
     '<div id="formalertdiv" class="alert ' +
       alerttype +
-      ' alert-dismissible fade show"  role="alert">' +
+      ' alert-dismissible fade show" role="alert">' +
       message +
       '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="' +
       gettext("Close") +

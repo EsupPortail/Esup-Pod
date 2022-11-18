@@ -1,7 +1,8 @@
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate, pre_migrate
 from django.db import connection
-from django.db.utils import OperationalError
+
+# from django.db.utils import OperationalError
 from django.utils import timezone
 from datetime import datetime
 
@@ -36,7 +37,7 @@ class LiveConfig(AppConfig):
                 results = c.fetchall()
                 for res in results:
                     EVENT_DATA["%s" % res[0]] = [res[1], res[2], res[3]]
-        except OperationalError:
+        except Exception:  # OperationalError or MySQLdb.ProgrammingError
             pass  # print('OperationalError : ', oe)
 
     def send_previous_data(self, sender, **kwargs):
