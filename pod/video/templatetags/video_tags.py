@@ -15,6 +15,7 @@ from tagging.utils import LOGARITHMIC
 
 from ..forms import VideoVersionForm
 from ..models import Video
+from ..utils import check_file
 
 import importlib
 
@@ -23,6 +24,11 @@ register = template.Library()
 HOMEPAGE_SHOWS_PASSWORDED = getattr(django_settings, "HOMEPAGE_SHOWS_PASSWORDED", True)
 HOMEPAGE_SHOWS_RESTRICTED = getattr(django_settings, "HOMEPAGE_SHOWS_RESTRICTED", True)
 HOMEPAGE_NB_VIDEOS = getattr(django_settings, "HOMEPAGE_NB_VIDEOS", 12)
+
+
+@register.filter(name="file_exists")
+def file_exists(filepath):
+    return check_file(filepath.path)
 
 
 @register.simple_tag
