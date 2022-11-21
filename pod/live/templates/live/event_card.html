@@ -16,8 +16,8 @@
           <span data-toggle="tooltip" title="{{event.broadcaster.name}}">
             <i class="bi bi-info-circle" aria-hidden="true"></i>
           </span>
-          {% if event.password %}
-            <span title="{% trans 'This content is password protected.' %}">
+          {% if event.password or event.is_restricted or event.restrict_access_to_groups.all|length > 0 %}
+            <span title="{% trans 'Restricted access' %}">
               <i class="bi bi-lock" aria-hidden="true"></i>
             </span>
           {% endif %}

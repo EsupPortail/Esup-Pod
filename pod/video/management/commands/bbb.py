@@ -49,7 +49,7 @@ import traceback
 from django.utils import translation
 from django.core.management.base import BaseCommand
 from django.conf import settings
-from pod.bbb.models import Meeting, Attendee
+from pod.bbb.models import BBB_Meeting as Meeting, Attendee
 import hashlib
 import requests
 import datetime

@@ -184,6 +184,7 @@
         }, 1000);
       }
     });
+    var maintenance_mode = {{MAINTENANCE_MODE|yesno:"true,false"}};
     </script>
     {% include 'videos/video-script.html' %}
 
@@ -198,8 +199,12 @@
         {% endif %}
         var user_fullName = `{{request.user.first_name}} {{request.user.last_name}}`;
         var user_id = `{{ request.user.id }}` === "None"? false: `{{ request.user.id }}`;
-        var is_authenticated = JSON.parse(`{{request.user.is_authenticated|yesno:"true,false"}}`);
-        var is_superuser = JSON.parse(`{{request.user.is_superuser|yesno:"true,false"}}`);
+        {% if MAINTENANCE_MODE %}
+          var is_authenticated = false;
+        {% else %}
+          var is_authenticated = {{request.user.is_authenticated|yesno:"true,false"}};
+        {% endif %}
+        var is_superuser = {{request.user.is_superuser|yesno:"true,false"}};
       </script>
       <script src="{% static 'dayjs/plugin/relativeTime.js' %}?ver={{VERSION}}"></script>
       <script src="{% static 'dayjs/dayjs.min.js' %}?ver={{VERSION}}"></script>

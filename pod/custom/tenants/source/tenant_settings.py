@@ -29,7 +29,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
     'LOGO_SITE': 'img/logoPod.svg',
     'LOGO_COMPACT_SITE': 'img/logoPod.svg',
     'LOGO_ETB': '__NAME__/custom/images/__NAME__.png',
-    'LOGO_PLAYER': 'img/logoPod.svg',
+    'LOGO_PLAYER': 'img/pod_favicon.svg',
     'FOOTER_TEXT': (
         '__NAME__ ',
         ' '
