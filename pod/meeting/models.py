@@ -288,7 +288,11 @@ class Meeting(models.Model):
     )
 
     # #################### RECORD PART
-    record = models.BooleanField(default=False, verbose_name=_("Record"))
+    record = models.BooleanField(
+        default=False,
+        verbose_name=_("Active record"),
+        help_text=_("Will active the recording of the meeting"),
+    )
     auto_start_recording = models.BooleanField(
         default=False, verbose_name=_("Auto Start Recording")
     )
@@ -677,7 +681,7 @@ class Meeting(models.Model):
             meeting_json[elt.tag] = elt.text
         if meeting_json.get("returncode", "") != "SUCCESS":
             msg = {}
-            msg["error"] = "Unable to create meeting ! "
+            msg["error"] = "Unable to get meeting status ! "
             msg["returncode"] = meeting_json.get("returncode", "")
             msg["messageKey"] = meeting_json.get("messageKey", "")
             msg["message"] = meeting_json.get("message", "")
