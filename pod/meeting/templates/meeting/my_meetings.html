@@ -11,17 +11,16 @@
   <i class="bi bi-info-circle"></i>&nbsp;{% trans "Access to adding meeting has been restricted. If you want to add meetings on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
 </p>
 {% else %}
-<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-  <a class="initials btn pod-btn-primary btn-sm" href="{% url 'meeting:add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a meeting' %}">
+<div class="d-grid gap-2 d-md-flex justify-content-md-end mb-2">
+  <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{% url 'meeting:add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a meeting' %}">
     <i class="bi bi-plus pod-add"></i><span>{% trans "Add a meeting" %}</span>
   </a>
 </div>
-<table class="table table-striped table-hover align-middle">
+<table class="table table-striped align-middle table-sm table-bordered">
   <thead>
     <tr>
       <th scope="col">{% trans "Name" %}</th>
       <th scope="col">{% trans "Start" %}</th>
-      <th scope="col">{% trans "End" %}</th>
       <th scope="col">{% trans "Join link" %}</th>
       <th scope="col">{% trans "Attendee password" %}</th>
       <th scope="col">{% trans "Direct Join link" %}</th>
@@ -32,9 +31,19 @@
   <tbody>
     {% for meeting in meetings %}
     <tr>
-      <th scope="row">{{meeting.name}} {% if meeting.is_restricted %} <span class="btn pod-btn-social btn-sm p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Acces to this meeting is restricted' %}"><i class="bi bi-lock"></i></span>{% endif %}</th>
-      <td>{{meeting.start}}</td>
-      <td>{{meeting.expected_duration}}</td>
+      <th scope="row">
+        {{meeting.name|capfirst}}
+        {% if meeting.is_restricted %}
+        <span class="btn pod-btn-social btn-sm p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Acces to this meeting is restricted' %}">
+          <i class="bi bi-lock"></i>
+        </span>
+        {% endif %}
+      </th>
+      {% if meeting.recurrence %}
+      <td>{{meeting.next_occurrence_from_today}} {{meeting.start_time}}</td>
+      {% else %}
+      <td>{{meeting.start}} {{meeting.start_time}}</td>
+      {% endif %}
       <td>
         <div class="d-grid gap-2 d-md-flex">
           <input class="form-control form-control-sm" id="join-link-{{meeting.meeting_id}}" type="text" value="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id %}">
@@ -42,7 +51,9 @@
           data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Copy the join link' %}">
             <i class="bi bi-clipboard-check"></i>
           </button>
-          <a href="{% url 'meeting:join' meeting.meeting_id %}" title="{% trans 'Join the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1" target="_blank"><i class="bi bi-link-45deg" aria-hidden="true"></i></a>
+          <a href="{% url 'meeting:join' meeting.meeting_id %}" title="{% trans 'Join the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Join the meeting' %}">
+            <i class="bi bi-link-45deg" aria-hidden="true"></i>
+          </a>
         </div>
       </td>
       <td>{{meeting.attendee_password}}</td>
@@ -53,14 +64,14 @@
           data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Copy the direct join link' %}">
             <i class="bi bi-clipboard-check"></i>
           </button>
-          <a href="{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}" title="{% trans 'Join the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1" target="_blank"><i class="bi bi-link-45deg" aria-hidden="true"></i></a>
+          <a href="{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}" title="{% trans 'Join the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1" target="_blank"  data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Join the meeting' %}">
+            <i class="bi bi-link-45deg" aria-hidden="true"></i>
+          </a>
         </div>
       </td>
       <td>
         <a href="{% url 'meeting:edit' meeting.meeting_id %}" title="{% trans 'Edit the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-pencil-square" aria-hidden="true"></i></a>
-        &nbsp;
         <a href="{% url 'meeting:invite' meeting.meeting_id %}" title="{% trans 'Invite to the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-envelope" aria-hidden="true"></i></a>
-        &nbsp;
         <a href="{% url 'meeting:delete' meeting.meeting_id %}" title="{% trans 'Delete the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-trash3" aria-hidden="true"></i></a>
       </td>
       <td>

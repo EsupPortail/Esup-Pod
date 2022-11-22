@@ -442,6 +442,18 @@ class Meeting(models.Model):
         ).hexdigest()
 
     # ##############################    Meeting occurences
+    def next_occurrence_from_today(self):
+        if self.start == timezone.now().date():
+            start_datetime = dt.combine(self.start, self.start_time)
+            start_datetime = timezone.make_aware(start_datetime)
+            start_datetime = start_datetime + self.expected_duration
+            if start_datetime > timezone.now():
+                return self.start
+        next_one = self.next_occurrence(self.start)
+        while next_one < timezone.now().date():
+            next_one = self.next_occurrence(next_one)
+        return next_one
+
     def next_occurrence(self, current_date):  # noqa: C901
         """
         This method takes as assumption that the current date passed in argument
@@ -530,10 +542,12 @@ class Meeting(models.Model):
         """
         start_datetime = dt.combine(self.start, self.start_time)
         start_datetime = timezone.make_aware(start_datetime)
+        start_datetime = start_datetime + self.expected_duration
         if self.recurrence is None and start_datetime > timezone.now():
             return True
         end_datetime = dt.combine(self.recurring_until, self.start_time)
         end_datetime = timezone.make_aware(end_datetime)
+        end_datetime = end_datetime + self.expected_duration
         if self.recurrence and end_datetime > timezone.now():
             return True
         return False
