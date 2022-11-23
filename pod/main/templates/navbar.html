@@ -64,22 +64,20 @@
 
   <ul class="navbar-nav flex-row align-items-center" id="nav-useraction">
     {% if user.is_authenticated %}
-      <li class="d-none d-md-block nav-item pod-navbar__nav-item mx-2" id="nav-addvideo">
         {% if MAINTENANCE_MODE %}
-          <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
-        {% else %}
-          <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a video' %}"><i class="bi bi-plus pod-add me-1"></i><span>{% trans "Add a video" %}</span></a>
-        {% endif %}
-      </li>
-      {% if USE_MEETING %}
-        <li class="d-none d-md-block nav-item pod-navbar__nav-item mx-2" id="nav-mymeetings">
-          {% if MAINTENANCE_MODE%}
+          <li class="d-none d-md-block nav-item pod-navbar__nav-item mx-2" id="nav-addvideo">
             <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
-          {% else %}
-            <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'My meetings' %}"><i class="bi bi-person-video pod-add me-1"></i><span>{% trans "My meetings" %}</span></a>
+          </li>
+        {% else %}
+          <li class="d-none d-md-block nav-item pod-navbar__nav-item mx-2" id="nav-addvideo">
+            <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add me-1"></i><span>{% trans "Add a video" %}</span></a>
+          </li>
+          {% if USE_MEETING %}
+          <li class="d-none d-md-block nav-item pod-navbar__nav-item mx-2" id="nav-mymeetings">
+            <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-add me-1"></i><span>{% trans "My meetings" %}</span></a>
+          </li>
           {% endif %}
-        </li>
-      {% endif %}
+        {% endif %}
     {% endif %}
     <!--  Ajout Params Buttons -->
     <li class="nav-item pod-params pod-navbar__nav-item" id="pod-param-buttons">
