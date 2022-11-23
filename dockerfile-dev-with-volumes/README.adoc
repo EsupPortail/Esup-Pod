@@ -41,6 +41,9 @@ CACHES = {
         },
     },
 }
+
+# Uniquement lors d'environnement conteneurisé
+MIGRATION_MODULES = {'flatpages': 'pod.db_migrations'}
 ----
 
 === Conteneur ElasticSearch
