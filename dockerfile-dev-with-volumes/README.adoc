@@ -5,53 +5,76 @@ v1.0, 2022-11-17
 :toc-title: Liste des rubriques
 :imagesdir: ./images
 
-== Docker / docker-compose
+== Docker / docker-compose avec volumes sur la machine hôte
 
-=== Environnement local de développement (Linux, windows, TODO apple)
+=== Conteneur Python /  FFMPEG  (esup-pod)
 
+==== Environnement local de développement (Linux, windows, TODO apple)
+
+===== Variables d'environnement du conteneur esup-pod
 1. Renommer le fichier .env.dev-exemple en .env.dev
 2. Renseigner le fichier .env.dev
 
-=== Portainer.io (facultatif)
+===== Configuration
+3. créer un fichier pod/custom/settings_local.py
+
+Renseignez le comme ceci :
+----
+# Si ElasticSearch 7
+ES_VERSION = 7
+
+# URL serveur ElascticSeach
+ES_URL = ['http://elasticsearch:9200/']
+
+# URL serveur Redis
+CACHES = {
+    # … default cache config and others
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    },
+    # Persistent cache setup for select2 (NOT DummyCache or LocMemCache).
+    "select2": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    },
+}
+----
+
+=== Conteneur ElasticSearch
+
+=== Conteneur Redis
+
+=== Conteneur Portainer.io (facultatif)
 ----
 TODO pour windows, apple
-$ docker-compose -f ./docker-compose-portainer-with-volumes.yml -p portainer up --build
+$ docker-compose -f ./docker-compose-portainer-with-volumes.yml -p portainer up
 $ docker-compose -f ./docker-compose-portainer-with-volumes.yml -p portainer down -v
 ----
 
-=== Esup-pod
+=== Lancement de la stack
 ----
-$ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod up --build
+Lancement de la stack
+$ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod up
+
+Arrêt de la stack
 $ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod down -v
-----
+Des messages d'erreurs peuvent apparaître lors du redémmarrage de la stack :
+- Premier utilisateur qui aura tous les pouvoirs sur votre instance (CommandError: Error: That nom d’utilisateur is already taken)
 
-=== Commandes
-----
-$ docker run --rm -it -v ${PWD}:/usr/src/app --entrypoint bash python:3.7-buster
-$ docker run --rm -it -v ${PWD}:/tmp --entrypoint bash node:19
-$ docker run --rm -it --entrypoint bash elasticsearch:7.17.7
 
-$ pip show webrtcvad
-$ ls -ltrah /usr/local/lib/python3.7/site-packages/
-$ apt update && apt install netcat  telnet vim -y
-$ until nc -z elasticsearch 9200; do echo waiting for elasticsearch; sleep 2; done;
-$ telnet elasticsearch 9200; do echo waiting for elasticsearch; sleep 2; done;
-$ curl -XGET "elasticsearch:9200/pod/_search"
-----
-
-== Nettoyage de son workspace
-TODO pour windows, apple
-
-Le fichier "dockerfile-dev-with-volumes/reset-local-pod.sh" peut être executé afin de nettoyer automatiquement le workspace local.
-
-----
-$ cd ./dockerfile-dev-with-volumes
-$ sh reset-local-pod.sh
+Reset des données
+Sous linux (TODO windows, apple)
+$ sh dockerfile-tmp/reset-local-pod.sh
 ----
 
 == HELM / Kubernetes
+----
+TODO...
+----
 
-TODO
 
 == (C)  Copyright :
 - https://www.esup-portail.org/wiki/display/ES/Installation+de+la+plateforme+Pod+V3

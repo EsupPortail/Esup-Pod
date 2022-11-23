@@ -1,46 +1,29 @@
 #------------------------------------------------------------------------------------------------------------------------------
 #  (\___/)
-#  (='.'=) Dockerfile multi-stage
+#  (='.'=) Dockerfile multi-stages node & python
 #  (")_(")
 #------------------------------------------------------------------------------------------------------------------------------
-# La récupération des sources de la V3 se fait via cette commande : git clone https://github.com/EsupPortail/Esup-Pod.git podv3
-#FROM alpine/git:2.36.3 as source-github
-#USER root
-#RUN git clone --progress --verbose https://github.com/EsupPortail/Esup-Pod.git /tmp/podv3
-#------------------------------------------------------------------------------------------------------------------------------
-# TODO
+# Conteneur node:19
 FROM node:19 as source-build-js
 WORKDIR /tmp/pod
-COPY ./pod/ /tmp/pod/
-RUN cd /tmp && ls -ltra
-RUN cd /tmp/pod && pwd && ls -ltrah && yarn
+COPY ./pod/ .
+RUN yarn
 #------------------------------------------------------------------------------------------------------------------------------
-FROM python:3.7-buster as source-build-python
-
-#RUN apt-get update \
-#    && apt-get install -y netcat \
-#                          telnet \
-#                          vim
+# Conteneur python:3.7-buster
+FROM python:3.7-buster
 
 RUN apt-get update \
     && apt-get install -y netcat \
-                          telnet \
-                          vim \
                           ffmpeg \
                           ffmpegthumbnailer \
                           imagemagick
 
 WORKDIR /usr/src/app
 
-#COPY . /usr/src/app/
 COPY ./requirements.txt .
 COPY ./requirements-conteneur.txt .
 RUN mkdir /tmp/node_modules/
+
 COPY --from=source-build-js /tmp/pod/node_modules/ /tmp/node_modules/
 
 RUN pip3 install --no-cache-dir -r requirements-conteneur.txt
-
-# ENTRYPOINT :
-#COPY dockerfile-dev-with-volumes/pod/my-entrypoint.sh /tmp/my-entrypoint.sh
-
-#ENTRYPOINT ["bash", "/tmp/my-entrypoint.sh"]
