@@ -6,11 +6,10 @@ La plateforme Esup-Pod se base sur le framework Django écrit en Python. Elle su
 
 **Django Version : 3.2 LTS** 
 
-> La documentation compléte du framework : https://docs.djangoproject.com/fr/3.2/ (ou https://docs.djangoproject.com/en/3.2/)<br>
-> L'Ensemble des variables de configuration du framework est accessible à cette adresse : https://docs.djangoproject.com/fr/3.2/ref/settings/
+> La documentation complète du framework : https://docs.djangoproject.com/fr/3.2/ (ou https://docs.djangoproject.com/en/3.2/)<br>
+> L’Ensemble des variables de configuration du framework est accessible à cette adresse : https://docs.djangoproject.com/fr/3.2/ref/settings/
 
 ## 2/ Configuration Générale de la plateforme Esup_Pod
-
 
 - SITE_ID = 1
 
@@ -51,19 +50,18 @@ ALLOWED_HOSTS = ['localhost']
 > C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP, qui sont possibles même avec bien des configurations de serveur Web apparemment sécurisées.<br>
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts__
 
+**Cookie de session**
+> __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age__
 
 - SESSION_COOKIE_AGE = 14400
 
 > _Valeur par défaut :  14400 (secondes, soit 4 heures)_<br>
-> L’âge des cookies de sessions, en secondes.<br>
-> __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age__
-
+> L’âge des cookies de sessions, en secondes.
 
 - SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 > _Valeur par défaut :  True_<br>
-> Indique s’il faut que la session expire lorsque l’utilisateur ferme son navigateur.<br>
-> __*ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age*__
+> Indique s’il faut que la session expire lorsque l’utilisateur ferme son navigateur.
 
 
 - ADMINS = (('Name', 'adminmail@univ.fr'),)
@@ -143,7 +141,6 @@ DATABASES = {
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#databases__
 
 Voici un exemple de configuration pour utiliser une base MySQL : 
-
 ````
 DATABASES = {
     'default': {
@@ -164,9 +161,7 @@ DATABASES = {
 ### 1.3/ Langues
 
 Par défaut, Esup-Pod est fournie en Francais et en anglais.
-
 Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra pour cela créer un fichier de langue et traduire chaque entrée.
-
 
 - LANGUAGE_CODE = "fr"
 
@@ -218,6 +213,5 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 ## 3/ Configuration par application
 
 ## 4/ Commande de gestion de l'application
-
 ### 4.1/ Creation d'un super utilisateur
 _
