@@ -6,8 +6,7 @@ La plateforme Esup-Pod se base sur le framework Django écrit en Python. Elle su
 
 **Django Version : 3.2 LTS** 
 
-> La documentation compléte du framework : https://docs.djangoproject.com/fr/3.2/ (ou https://docs.djangoproject.com/en/3.2/)
-> 
+> La documentation compléte du framework : https://docs.djangoproject.com/fr/3.2/ (ou https://docs.djangoproject.com/en/3.2/)<br>
 > L'Ensemble des variables de configuration du framework est accessible à cette adresse : https://docs.djangoproject.com/fr/3.2/ref/settings/
 
 ## 2/ Configuration Générale de la plateforme Esup_Pod
@@ -15,111 +14,81 @@ La plateforme Esup-Pod se base sur le framework Django écrit en Python. Elle su
 
 - SITE_ID = 1
 
-> _Valeur par défaut : 1_
-> 
-> L’identifiant (nombre entier) du site actuel. Peut être utilisé pour mettre en place une instance multi-tenant et ainsi gérer dans une même base de données du contenu pour plusieurs sites.
->
+> _Valeur par défaut : 1_<br>
+> L’identifiant (nombre entier) du site actuel. Peut être utilisé pour mettre en place une instance multi-tenant et ainsi gérer dans une même base de données du contenu pour plusieurs sites.<br>
 > __ref : https://docs.djangoproject.com/fr/3.2/ref/settings/#site-id__
 
 
 - SECRET_KEY = 'A_CHANGER'
 
-> _Valeur par défaut : 'A_CHANGER'_
-> 
-> La clé secrète d’une installation Django.
-> 
-> Elle est utilisée dans le contexte de la signature cryptographique, et doit être définie à une valeur unique et non prédictible.
-> 
-> Vous pouvez utiliser ce site pour en générer une : https://djecrety.ir/
-> 
+> _Valeur par défaut : 'A_CHANGER'_<br>
+> La clé secrète d’une installation Django.<br>
+> Elle est utilisée dans le contexte de la signature cryptographique, et doit être définie à une valeur unique et non prédictible.<br>
+> Vous pouvez utiliser ce site pour en générer une : https://djecrety.ir/<br>
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#secret-key__
 
 
 - DEBUG = True
 
-> _Valeur par défaut : True_
-> 
-> Une valeur booléenne qui active ou désactive le mode de débogage.
-> 
-> Ne déployez jamais de site en production avec le réglage DEBUG activé.
-> 
+> _Valeur par défaut : True_<br>
+> Une valeur booléenne qui active ou désactive le mode de débogage.<br>
+> Ne déployez jamais de site en production avec le réglage DEBUG activé.<br>
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#debug__
 
 - SECURE_SSL_REDIRECT = not DEBUG
 - SESSION_COOKIE_SECURE =  not DEBUG
 - CSRF_COOKIE_SECURE =  not DEBUG
 
-> _Valeur par défaut :  not DEBUG_
-> 
-> Ces 3 variables servent à sécuriser la plateforme en passant l'ensemble des requetes en https. Idem pour les cookies de session et de cross-sites qui seront également sécurisés
-> 
-> Il faut les passer à False en cas d'usage du runserver (phase de développement / debugage)
-> 
+> _Valeur par défaut :  not DEBUG_<br>
+> Ces 3 variables servent à sécuriser la plateforme en passant l'ensemble des requetes en https. Idem pour les cookies de session et de cross-sites qui seront également sécurisés<br>
+> Il faut les passer à False en cas d'usage du runserver (phase de développement / debugage)<br>
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#secure-ssl-redirect__
 
 ALLOWED_HOSTS = ['localhost']
 
-> _Valeur par défaut :  ['localhost']_
-> 
-> Une liste de chaînes représentant des noms de domaine/d’hôte que ce site Django peut servir.
-> 
-> C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP, qui sont possibles même avec bien des configurations de serveur Web apparemment sécurisées.
-> 
+> _Valeur par défaut :  ['localhost']_<br>
+> Une liste de chaînes représentant des noms de domaine/d’hôte que ce site Django peut servir.<br>
+> C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP, qui sont possibles même avec bien des configurations de serveur Web apparemment sécurisées.<br>
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts__
 
 
 - SESSION_COOKIE_AGE = 14400
 
-> _Valeur par défaut :  14400 (secondes, soit 4 heures)_
-> 
-> L’âge des cookies de sessions, en secondes.
-> 
+> _Valeur par défaut :  14400 (secondes, soit 4 heures)_<br>
+> L’âge des cookies de sessions, en secondes.<br>
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age__
 
 
 - SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-> _Valeur par défaut :  True_
-> 
-> Indique s’il faut que la session expire lorsque l’utilisateur ferme son navigateur.
-> 
+> _Valeur par défaut :  True_<br>
+> Indique s’il faut que la session expire lorsque l’utilisateur ferme son navigateur.<br>
 > __*ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age*__
 
 
 - ADMINS = (('Name', 'adminmail@univ.fr'),)
 
-> _Valeur par défaut :  (('Name', 'adminmail@univ.fr'),)_
-> 
-> Une liste de toutes les personnes qui reçoivent les notifications d’erreurs dans le code.
-> 
-> Lorsque DEBUG=False et qu’une vue lève une exception, Django envoie un courriel à ces personnes contenant les informations complètes de l’exception.
-> 
-> Chaque élément de la liste doit être un tuple au format  « (nom complet, adresse électronique) ».
-> 
-> Exemple : [('John', 'john@example.com'), ('Mary', 'mary@example.com')]
-> 
-> Dans Pod, les "admins" sont également destinataires des courriels de contact, d'encodage ou de flux rss si la variable CONTACT_US_EMAIL n'est pas renseignée.
-> 
+> _Valeur par défaut :  (('Name', 'adminmail@univ.fr'),)_<br>
+> Une liste de toutes les personnes qui reçoivent les notifications d’erreurs dans le code.<br>
+> Lorsque DEBUG=False et qu’une vue lève une exception, Django envoie un courriel à ces personnes contenant les informations complètes de l’exception.<br>
+> Chaque élément de la liste doit être un tuple au format  « (nom complet, adresse électronique) ».<br>
+> Exemple : [('John', 'john@example.com'), ('Mary', 'mary@example.com')]<br>
+> Dans Pod, les "admins" sont également destinataires des courriels de contact, d'encodage ou de flux rss si la variable CONTACT_US_EMAIL n'est pas renseignée.<br>
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#admins__
 
 
 - MANAGERS = ADMINS
 
-> Dans Pod, les "managers" sont destinataires des courriels de fin d'encodage (et ainsi des vidéos déposées sur la plateforme).
-> 
-> Le premier managers renseigné est également contact des flus rss.
-> 
-> Ils sont aussi destinataires des courriels de contact si la variable CONTACT_US_EMAIL n'est pas renseignée.
-> 
+> Dans Pod, les "managers" sont destinataires des courriels de fin d'encodage (et ainsi des vidéos déposées sur la plateforme).<br>
+> Le premier managers renseigné est également contact des flus rss.<br>
+> Ils sont aussi destinataires des courriels de contact si la variable CONTACT_US_EMAIL n'est pas renseignée.<br>
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#managers__
 
 
 - TIME_ZONE = "UTC"
 
-> _Valeur par défaut :  "UTC"_
-> 
-> Une chaîne représentant le fuseau horaire pour cette installation.
->
+> _Valeur par défaut :  "UTC"_<br>
+> Une chaîne représentant le fuseau horaire pour cette installation.<br>
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-TIME_ZONE__
 
 
@@ -166,12 +135,11 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-}````
+}
+````
 
-> Un dictionnaire contenant les réglages de toutes les bases de données à utiliser avec Django.
-> 
-> C’est un dictionnaire imbriqué dont les contenus font correspondre l’alias de base de données avec un dictionnaire contenant les options de chacune des bases de données.
-> 
+> Un dictionnaire contenant les réglages de toutes les bases de données à utiliser avec Django.<br>
+> C’est un dictionnaire imbriqué dont les contenus font correspondre l’alias de base de données avec un dictionnaire contenant les options de chacune des bases de données.<br>
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#databases__
 
 Voici un exemple de configuration pour utiliser une base MySQL : 
@@ -215,15 +183,13 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
 - FILE_UPLOAD_TEMP_DIR = "/var/tmp"
 
-> Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que FILE_UPLOAD_MAX_MEMORY_SIZE) lors des téléversements de fichiers.
->
+> Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que FILE_UPLOAD_MAX_MEMORY_SIZE) lors des téléversements de fichiers.<br>
 > _ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir_
 
 
 - STATIC_ROOT = "/pod/static"
 
-> Le chemin absolu vers le répertoire dans lequel collectstatic rassemble les fichiers statiques en vue du déploiement. Ce chemin sera précisé dans le fichier de configurtation du vhost nginx
->
+> Le chemin absolu vers le répertoire dans lequel collectstatic rassemble les fichiers statiques en vue du déploiement. Ce chemin sera précisé dans le fichier de configurtation du vhost nginx.<br>
 > _ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-STATIC_ROOT_
 
 - STATIC_URL = "/static/"
@@ -233,17 +199,15 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
 - STATICFILES_STORAGE = 'static_compress.CompressedStaticFilesStorage'
 
-> Indique à django de compresser automatiquement les fichiers css/js les plus gros lors du collectstatic pour optimiser les tailles de requetes.
->
-> À combiner avec un réglage webserver ("gzip_static  on;" sur nginx)
->
+> Indique à django de compresser automatiquement les fichiers css/js les plus gros lors du collectstatic pour optimiser les tailles de requetes.<br>
+> À combiner avec un réglage webserver ("gzip_static  on;" sur nginx)<br>
 > _ref: https://github.com/whs/django-static-compress
 
 
 - MEDIA_ROOT = "/pod/media"
 
-> Chemin absolu du système de fichiers pointant vers le répertoire qui contiendra les fichiers téléversés par les utilisateurs.
-> Attention, ce répertoire doit exister
+> Chemin absolu du système de fichiers pointant vers le répertoire qui contiendra les fichiers téléversés par les utilisateurs.<br>
+> Attention, ce répertoire doit exister<br>
 > _ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-MEDIA_ROOT_
 
 - MEDIA_URL = "/media/"
