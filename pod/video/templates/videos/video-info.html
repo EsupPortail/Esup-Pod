@@ -2,6 +2,7 @@
 {% load static %}
 {% load tagging_tags %}
 {% load thumbnail %}
+{% load video_tags %}
 <div class="video-info_duration-view-share">
   <div class="video-info__duration">
     <i class="bi bi-clock"></i>
@@ -194,6 +195,7 @@
               {% trans 'Video file(s):' %}
             </h3>
             <ul>{% for vid in video.get_video_mp4 %}
+              {% if vid.source_file|file_exists %}
               <li>
                 <form method="post" action="{% url 'download_file' %}">
                   {% csrf_token %}
@@ -201,6 +203,7 @@
                   <input type="submit" class="btn btn-link" value="{{vid.name}} ({{vid.encoding_format}} - {{ vid.source_file.size|filesizeformat }})">
                 </form>
               </li>
+              {% endif %}
               {% endfor %}
             </ul>
           <!-- </div> -->

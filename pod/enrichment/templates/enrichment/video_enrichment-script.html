@@ -4,12 +4,14 @@
 {% endif %}
 player.ready(function() {
   const tracks = player.textTracks();
+  const trackElts = player.remoteTextTrackEls();
   let metadataTrack, i, track;
   for (i = 0; i < tracks.length; i++) {
       track = tracks[i];
       if (track.kind === 'metadata' && track.label === 'enrichment') {
           metadataTrack = track;
           metadataTrack.index = i;
+          metadataTrack.src = trackElts[i].src;
           break;
       }
   }
@@ -17,8 +19,9 @@ player.ready(function() {
   player.on('loadedmetadata', function() {
       let slide = [];
       if(!metadataTrack.cues) { //Safari do not get cues
-          let tracksrc = player.el().getElementsByTagName('TRACK')[metadataTrack.index].src;
-          loadEnrichmentVTTfile(tracksrc, function(cues) {
+          //let tracksrc = player.el().getElementsByTagName('TRACK')[metadataTrack.index].src;
+          //let tracksrc = player.el().querySelector("TRACK[kind='metadata'][label='enrichment']").src
+          loadEnrichmentVTTfile(metadataTrack.src, function(cues) {
               if (typeof player.slides === "function") {
                   player.slides(cues);
               }
