@@ -12,7 +12,8 @@ La plateforme Esup-Pod se base sur le framework Django écrit en Python. Elle su
 
 ## 2/ Configuration Générale de la plateforme Esup_Pod
 
-SITE_ID = 1
+
+- SITE_ID = 1
 
 > _Valeur par défaut : 1_
 > 
@@ -20,7 +21,8 @@ SITE_ID = 1
 >
 > __ref : https://docs.djangoproject.com/fr/3.2/ref/settings/#site-id__
 
-SECRET_KEY = 'A_CHANGER'
+
+- SECRET_KEY = 'A_CHANGER'
 
 > _Valeur par défaut : 'A_CHANGER'_
 > 
@@ -32,7 +34,8 @@ SECRET_KEY = 'A_CHANGER'
 > 
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#secret-key__
 
-DEBUG = True
+
+- DEBUG = True
 
 > _Valeur par défaut : True_
 > 
@@ -42,9 +45,9 @@ DEBUG = True
 > 
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#debug__
 
-SECURE_SSL_REDIRECT = not DEBUG
-SESSION_COOKIE_SECURE =  not DEBUG
-CSRF_COOKIE_SECURE =  not DEBUG
+- SECURE_SSL_REDIRECT = not DEBUG
+- SESSION_COOKIE_SECURE =  not DEBUG
+- CSRF_COOKIE_SECURE =  not DEBUG
 
 > _Valeur par défaut :  not DEBUG_
 > 
@@ -65,7 +68,7 @@ ALLOWED_HOSTS = ['localhost']
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts__
 
 
-SESSION_COOKIE_AGE = 14400
+- SESSION_COOKIE_AGE = 14400
 
 > _Valeur par défaut :  14400 (secondes, soit 4 heures)_
 > 
@@ -73,7 +76,8 @@ SESSION_COOKIE_AGE = 14400
 > 
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age__
 
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+- SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 > _Valeur par défaut :  True_
 > 
@@ -81,7 +85,8 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 > 
 > __*ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age*__
 
-ADMINS = (('Name', 'adminmail@univ.fr'),)
+
+- ADMINS = (('Name', 'adminmail@univ.fr'),)
 
 > _Valeur par défaut :  (('Name', 'adminmail@univ.fr'),)_
 > 
@@ -97,7 +102,8 @@ ADMINS = (('Name', 'adminmail@univ.fr'),)
 > 
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#admins__
 
-MANAGERS = ADMINS
+
+- MANAGERS = ADMINS
 
 > Dans Pod, les "managers" sont destinataires des courriels de fin d'encodage (et ainsi des vidéos déposées sur la plateforme).
 > 
@@ -110,14 +116,16 @@ MANAGERS = ADMINS
 
 ### 1.1/ Courriel
 
-CONTACT_US_EMAIL
+
+- CONTACT_US_EMAIL
 
 > Liste des adresses destinataires des courriels de contact
 
 
 ### 1.2/ Base de données
 
-DATABASES = {
+
+- DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
@@ -157,11 +165,12 @@ Par défaut, Esup-Pod est fournie en Francais et en anglais.
 Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra pour cela créer un fichier de langue et traduire chaque entrée.
 
 
-LANGUAGE_CODE = "fr"
+- LANGUAGE_CODE = "fr"
 
 > Langue par défaut si non détectée
 
-LANGUAGES = (
+
+- LANGUAGES = (
     ('fr', 'Français'), ('en', 'English'))
 )
 
