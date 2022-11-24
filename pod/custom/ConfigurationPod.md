@@ -13,13 +13,15 @@ La documentation complète du framework :
 
 ## 2/ Configuration Générale de la plateforme Esup_Pod
 
-SITE_ID = 1
+
+- SITE_ID = 1
 
 > _Valeur par défaut : 1_
 >L’identifiant (nombre entier) du site actuel. Peut être utilisé pour mettre en place une instance multi-tenant et ainsi gérer dans une même base de données du contenu pour plusieurs sites.
 > __ref : https://docs.djangoproject.com/fr/3.2/ref/settings/#site-id__
 
-SECRET_KEY = 'A_CHANGER'
+
+- SECRET_KEY = 'A_CHANGER'
 
 > _Valeur par défaut : 'A_CHANGER'_
 > La clé secrète d’une installation Django.
@@ -27,16 +29,17 @@ SECRET_KEY = 'A_CHANGER'
 > Vous pouvez utiliser ce site pour en générer une : https://djecrety.ir/
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#secret-key__
 
-DEBUG = True
+
+- DEBUG = True
 
 > _Valeur par défaut : True_
 > Une valeur booléenne qui active ou désactive le mode de débogage.
 > Ne déployez jamais de site en production avec le réglage DEBUG activé.
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#debug__
 
-SECURE_SSL_REDIRECT = not DEBUG
-SESSION_COOKIE_SECURE =  not DEBUG
-CSRF_COOKIE_SECURE =  not DEBUG
+- SECURE_SSL_REDIRECT = not DEBUG
+- SESSION_COOKIE_SECURE =  not DEBUG
+- CSRF_COOKIE_SECURE =  not DEBUG
 
 > _Valeur par défaut :  not DEBUG_
 > Ces 3 variables servent à sécuriser la plateforme en passant l'ensemble des requetes en https. Idem pour les cookies de session et de cross-sites qui seront également sécurisés
@@ -53,17 +56,19 @@ ALLOWED_HOSTS = ['localhost']
 **Cookie de session**
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age__
 
-SESSION_COOKIE_AGE = 14400
+- SESSION_COOKIE_AGE = 14400
 
 > _Valeur par défaut :  14400 (secondes, soit 4 heures)_
 > L’âge des cookies de sessions, en secondes.
 
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+- SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 > _Valeur par défaut :  True_
 > Indique s’il faut que la session expire lorsque l’utilisateur ferme son navigateur.
 
-ADMINS = (('Name', 'adminmail@univ.fr'),)
+
+- ADMINS = (('Name', 'adminmail@univ.fr'),)
 
 > _Valeur par défaut :  (('Name', 'adminmail@univ.fr'),)_
 > Une liste de toutes les personnes qui reçoivent les notifications d’erreurs dans le code.
@@ -73,7 +78,8 @@ ADMINS = (('Name', 'adminmail@univ.fr'),)
 > Dans Pod, les "admins" sont également destinataires des courriels de contact, d'encodage ou de flux rss si la variable CONTACT_US_EMAIL n'est pas renseignée.
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#admins__
 
-MANAGERS = ADMINS
+
+- MANAGERS = ADMINS
 
 > Dans Pod, les "managers" sont destinataires des courriels de fin d'encodage (et ainsi des vidéos déposées sur la plateforme).
 > Le premier managers renseigné est également contact des flus rss.
@@ -81,21 +87,59 @@ MANAGERS = ADMINS
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#managers__
 
 
+- TIME_ZONE = "UTC"
+
+> _Valeur par défaut :  "UTC"_
+> 
+> Une chaîne représentant le fuseau horaire pour cette installation.
+>
+> __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-TIME_ZONE__
+
+
 ### 1.1/ Courriel
 
-CONTACT_US_EMAIL
+
+- CONTACT_US_EMAIL
 
 > Liste des adresses destinataires des courriels de contact
 
 
+- EMAIL_HOST = "smtp.univ.fr"
+
+> nom du serveur smtp 
+> _ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#email-host_
+
+
+- EMAIL_PORT = 25
+
+> port d'écoute du serveur smtp
+
+
+- EMAIL_SUBJECT_PREFIX = "[Pod] "
+
+> Préfixe par défaut pour l'objet des courriels
+
+
+- SERVER_EMAIL = "noreply@univ.fr"
+
+> Expediteur par défaut pour les envois automatique (erreur de code etc.)
+
+
+- DEFAULT_FROM_EMAIL = "noreply@univ.fr"
+
+> Expediteur par défaut pour les envois de courriel (contact, encodage etc.)
+
+
 ### 1.2/ Base de données
 
+
+````
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-}
+}````
 
 > Un dictionnaire contenant les réglages de toutes les bases de données à utiliser avec Django.
 > C’est un dictionnaire imbriqué dont les contenus font correspondre l’alias de base de données avec un dictionnaire contenant les options de chacune des bases de données.
@@ -119,24 +163,64 @@ DATABASES = {
 ````
 
 
-
 ### 1.3/ Langues
 
 Par défaut, Esup-Pod est fournie en Francais et en anglais.
 Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra pour cela créer un fichier de langue et traduire chaque entrée.
 
-LANGUAGE_CODE = "fr"
+- LANGUAGE_CODE = "fr"
 
 > Langue par défaut si non détectée
 
-LANGUAGES = (
+
+- LANGUAGES = (
     ('fr', 'Français'), ('en', 'English'))
 )
 
 > Langue disponible et traduite
+
+### 1.4/ Gestion des fichiers
+
+- FILE_UPLOAD_TEMP_DIR = "/var/tmp"
+
+> Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que FILE_UPLOAD_MAX_MEMORY_SIZE) lors des téléversements de fichiers.
+>
+> _ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir_
+
+
+- STATIC_ROOT = "/pod/static"
+
+> Le chemin absolu vers le répertoire dans lequel collectstatic rassemble les fichiers statiques en vue du déploiement. Ce chemin sera précisé dans le fichier de configurtation du vhost nginx
+>
+> _ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-STATIC_ROOT_
+
+- STATIC_URL = "/static/"
+
+> prefix url utilisé pour accèder aux fichiers static
+
+
+- STATICFILES_STORAGE = 'static_compress.CompressedStaticFilesStorage'
+
+> Indique à django de compresser automatiquement les fichiers css/js les plus gros lors du collectstatic pour optimiser les tailles de requetes.
+>
+> À combiner avec un réglage webserver ("gzip_static  on;" sur nginx)
+>
+> _ref: https://github.com/whs/django-static-compress
+
+
+- MEDIA_ROOT = "/pod/media"
+
+> Chemin absolu du système de fichiers pointant vers le répertoire qui contiendra les fichiers téléversés par les utilisateurs.
+> Attention, ce répertoire doit exister
+> _ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-MEDIA_ROOT_
+
+- MEDIA_URL = "/media/"
+
+> prefix url utilisé pour accéder aux fichiers du répertoire media
 
 
 ## 3/ Configuration par application
 
 ## 4/ Commande de gestion de l'application
 ### 4.1/ Creation d'un super utilisateur
+_
