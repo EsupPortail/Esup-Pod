@@ -6,10 +6,10 @@ La plateforme Esup-Pod se base sur le framework Django écrit en Python. Elle su
 
 **Django Version : 3.2 LTS** 
 
-La documentation compléte du framework :
+La documentation complète du framework :
 - https://docs.djangoproject.com/fr/3.2/ (ou https://docs.djangoproject.com/en/3.2/)
 
-> L'Ensemble des variables de configuration du framework est accessible à cette adresse : https://docs.djangoproject.com/fr/3.2/ref/settings/
+> L’Ensemble des variables de configuration du framework est accessible à cette adresse : https://docs.djangoproject.com/fr/3.2/ref/settings/
 
 ## 2/ Configuration Générale de la plateforme Esup_Pod
 
