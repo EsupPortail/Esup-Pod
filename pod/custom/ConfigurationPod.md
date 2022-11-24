@@ -114,6 +114,15 @@ ALLOWED_HOSTS = ['localhost']
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#managers__
 
 
+- TIME_ZONE = "UTC"
+
+> _Valeur par défaut :  "UTC"_
+> 
+> Une chaîne représentant le fuseau horaire pour cette installation.
+>
+> __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-TIME_ZONE__
+
+
 ### 1.1/ Courriel
 
 
@@ -122,15 +131,42 @@ ALLOWED_HOSTS = ['localhost']
 > Liste des adresses destinataires des courriels de contact
 
 
+- EMAIL_HOST = "smtp.univ.fr"
+
+> nom du serveur smtp 
+> _ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#email-host_
+
+
+- EMAIL_PORT = 25
+
+> port d'écoute du serveur smtp
+
+
+- EMAIL_SUBJECT_PREFIX = "[Pod] "
+
+> Préfixe par défaut pour l'objet des courriels
+
+
+- SERVER_EMAIL = "noreply@univ.fr"
+
+> Expediteur par défaut pour les envois automatique (erreur de code etc.)
+
+
+- DEFAULT_FROM_EMAIL = "noreply@univ.fr"
+
+> Expediteur par défaut pour les envois de courriel (contact, encodage etc.)
+
+
 ### 1.2/ Base de données
 
 
-- DATABASES = {
+````
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-}
+}````
 
 > Un dictionnaire contenant les réglages de toutes les bases de données à utiliser avec Django.
 > 
@@ -157,7 +193,6 @@ DATABASES = {
 ````
 
 
-
 ### 1.3/ Langues
 
 Par défaut, Esup-Pod est fournie en Francais et en anglais.
@@ -176,9 +211,49 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
 > Langue disponible et traduite
 
+### 1.4/ Gestion des fichiers
+
+- FILE_UPLOAD_TEMP_DIR = "/var/tmp"
+
+> Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que FILE_UPLOAD_MAX_MEMORY_SIZE) lors des téléversements de fichiers.
+>
+> _ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir_
+
+
+- STATIC_ROOT = "/pod/static"
+
+> Le chemin absolu vers le répertoire dans lequel collectstatic rassemble les fichiers statiques en vue du déploiement. Ce chemin sera précisé dans le fichier de configurtation du vhost nginx
+>
+> _ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-STATIC_ROOT_
+
+- STATIC_URL = "/static/"
+
+> prefix url utilisé pour accèder aux fichiers static
+
+
+- STATICFILES_STORAGE = 'static_compress.CompressedStaticFilesStorage'
+
+> Indique à django de compresser automatiquement les fichiers css/js les plus gros lors du collectstatic pour optimiser les tailles de requetes.
+>
+> À combiner avec un réglage webserver ("gzip_static  on;" sur nginx)
+>
+> _ref: https://github.com/whs/django-static-compress
+
+
+- MEDIA_ROOT = "/pod/media"
+
+> Chemin absolu du système de fichiers pointant vers le répertoire qui contiendra les fichiers téléversés par les utilisateurs.
+> Attention, ce répertoire doit exister
+> _ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-MEDIA_ROOT_
+
+- MEDIA_URL = "/media/"
+
+> prefix url utilisé pour accéder aux fichiers du répertoire media
+
 
 ## 3/ Configuration par application
 
 ## 4/ Commande de gestion de l'application
 
 ### 4.1/ Creation d'un super utilisateur
+_
