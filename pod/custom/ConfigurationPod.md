@@ -6,8 +6,7 @@ La plateforme Esup-Pod se base sur le framework Django écrit en Python. Elle su
 
 **Django Version : 3.2 LTS** 
 
-La documentation complète du framework :
-> https://docs.djangoproject.com/fr/3.2/ (ou https://docs.djangoproject.com/en/3.2/)
+> La documentation complète du framework : https://docs.djangoproject.com/fr/3.2/ (ou https://docs.djangoproject.com/en/3.2/)<br>
 > L’Ensemble des variables de configuration du framework est accessible à cette adresse : https://docs.djangoproject.com/fr/3.2/ref/settings/
 
 ## 2/ Configuration Générale de la plateforme Esup_Pod
@@ -58,7 +57,6 @@ ALLOWED_HOSTS = ['localhost']
 
 > _Valeur par défaut :  14400 (secondes, soit 4 heures)_
 > L’âge des cookies de sessions, en secondes.
-
 
 - SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
