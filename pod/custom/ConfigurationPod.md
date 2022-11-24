@@ -55,12 +55,12 @@ ALLOWED_HOSTS = ['localhost']
 
 - SESSION_COOKIE_AGE = 14400
 
-> _Valeur par défaut :  14400 (secondes, soit 4 heures)_
+> _Valeur par défaut :  14400 (secondes, soit 4 heures)_<br>
 > L’âge des cookies de sessions, en secondes.
 
 - SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-> _Valeur par défaut :  True_
+> _Valeur par défaut :  True_<br>
 > Indique s’il faut que la session expire lorsque l’utilisateur ferme son navigateur.
 
 
