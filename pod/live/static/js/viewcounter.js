@@ -119,3 +119,4 @@ $(document).ready(function () {
     videojs.registerPlugin("videoJsViewerCount", videoJsViewerCount);
   })(window, videojs);
 })();
+
