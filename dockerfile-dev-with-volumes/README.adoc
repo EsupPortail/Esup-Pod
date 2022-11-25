@@ -70,7 +70,7 @@ Des messages d'erreurs peuvent apparaître lors du redémmarrage de la stack :
 
 Reset des données
 Sous linux (TODO windows, apple)
-$ sh dockerfile-tmp/reset-local-pod.sh
+$ sh dockerfile-dev-with-volumes/reset-local-pod.sh
 ----
 
 == HELM / Kubernetes
@@ -78,9 +78,8 @@ $ sh dockerfile-tmp/reset-local-pod.sh
 TODO...
 ----
 
-
 == (C)  Copyright :
 - https://www.esup-portail.org/wiki/display/ES/Installation+de+la+plateforme+Pod+V3
-- https://github.com/EsupPortail/pod
+- https://github.com/EsupPortail/Esup-Pod
 - https://hub.docker.com/_/debian/tags?page=2
 - https://forums.docker.com/t/git-clone-command-fails-with-timeout/100655
