@@ -14,6 +14,8 @@ v1.0, 2022-11-17
 ===== Variables d'environnement du conteneur esup-pod
 1. Renommer le fichier .env.dev-exemple en .env.dev
 2. Renseigner le fichier .env.dev
+3. Renommer le fichier requirements-conteneur.txt.example en requirements-conteneur.txt
+4. Renseigner le fichier requirements-conteneur.txt
 
 ===== Configuration
 3. créer un fichier pod/custom/settings_local.py

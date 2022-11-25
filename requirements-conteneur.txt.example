@@ -1,0 +1,3 @@
+-r requirements.txt
+importlib-metadata==4.13.0
+elasticsearch==<MyVersion>
