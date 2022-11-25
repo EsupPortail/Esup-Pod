@@ -211,6 +211,38 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
 
 ## 3/ Configuration par application
+### 3.1/ Activer le studio Opencast dans Pod
+
+- USE_OPENCAST_STUDIO = False
+
+> Activer l'utilisation du studio Opencast
+
+- OPENCAST_FILES_DIR = "opencast-files"
+
+> Permet de spécifier le dossier de stockage des enregistrements du studio avant traitement.
+
+- OPENCAST_DEFAULT_PRESENTER = "mid"
+
+> Permet de spécifier la valeur par défaut du placement de la vidéo du
+> presenteur par rapport à la vidéo de présentation (écran)
+> les valeurs possibles sont :
+>  * "mid" (écran et caméra ont la même taille)
+>  * "piph" (le presenteur, caméra, est incrusté dans la vidéo de présentation, en haut à droite)
+>  * "pipb" (le presenteur, caméra, est incrusté dans la vidéo de présentation, en bas à droite)
+
+````
+OPENCAST_MEDIAPACKAGE = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <mediapackage xmlns="http://mediapackage.opencastproject.org" id="" start="">
+    <media/>
+    <metadata/>
+    <attachments/>
+    <publications/>
+    </mediapackage>"""
+````
+
+> Contenu par défaut du fichier xml pour créer le mediapackage pour le studio.
+> Ce fichier va contenir toutes les spécificités de l'enregistrement
+> (source, cutting, title, presenter etc.)
 
 ## 4/ Commande de gestion de l'application
 ### 4.1/ Creation d'un super utilisateur
