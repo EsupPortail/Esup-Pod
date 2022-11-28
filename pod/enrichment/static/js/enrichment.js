@@ -1,6 +1,6 @@
 var id_form = "form_enrich";
 function show_form(data) {
-  var form = document.querySelector("#" + id_form);
+  var form = document.getElementById("#" + id_form);
   form.style.display = "none";
   //form.innerHTML = data;
 
@@ -21,7 +21,7 @@ function show_form(data) {
   
   fadeIn(form);
 
-  var inputStart = document.querySelector("input#id_start");
+  var inputStart = document.getElementById("id_start");
   if (!inputStart) return;
   inputStart.insertAdjacentHTML(
     "beforebegin",
@@ -29,7 +29,7 @@ function show_form(data) {
       gettext("Get time from the player") +
       "</a><span class='timecode'></span></div>"
   );
-  var inputEnd = document.querySelector("input#id_end");
+  var inputEnd = document.getElementById("id_end");
   if (!inputEnd) return;
   inputEnd.insertAdjacentHTML(
     "beforebegin",
@@ -339,14 +339,14 @@ function get_form(data) {
 
   
   fadeIn(form);
-  var inputStart = document.querySelector("input#id_start");
+  var inputStart = document.getElementById("id_start");
   inputStart.insertAdjacentHTML(
     "beforebegin",
     "&nbsp;<div class='getfromvideo pull-right mb-1'><a href='' id='getfromvideo_start' class='btn btn-primary btn-sm'>" +
       gettext("Get time from the player") +
       "</a><span class='timecode'></span></div>"
   );
-  var inputStart = document.querySelector("input#id_start");
+  var inputStart = document.getElementById("id_end");
   inputStart.insertAdjacentHTML(
     "beforebegin",
     "&nbsp;<div class='getfromvideo pull-right mb-1'><a href='' id='getfromvideo_end' class='btn btn-primary btn-sm'>" +
@@ -373,7 +373,7 @@ function enrich_type() {
 
   document.getElementById("id_embed").closest("div.form-group").style.display =
     "none";
-  var val = document.querySelector("select#id_type").value;
+  var val = document.getElementById("id_type").value;
   if (val != "") {
     var form = document.getElementById("form_enrich");
     form.querySelectorAll('[id^="id_' + val + '"]').forEach((elt) => {
@@ -399,12 +399,12 @@ document.addEventListener("click", (e) => {
   e.preventDefault();
   if (!(typeof player === "undefined")) {
     if (e.target.getAttribute("id") == "getfromvideo_start") {
-      let inputStart = document.querySelector("input#id_start");
+      let inputStart = document.getElementById("id_start");
       inputStart.value = parseInt(player.currentTime());
       changeEvent = new Event("change");
       inputStart.dispatchEvent(changeEvent);
     } else {
-      let inputEnd = document.querySelector("input#id_end");
+      let inputEnd = document.getElementById("id_end");
       inputEnd.value = parseInt(player.currentTime());
       changeEvent = new Event("change");
       inputEnd.dispatchEvent(changeEvent);
@@ -419,7 +419,7 @@ function verify_fields() {
     document.getElementById("id_title").value.length < 2 ||
     document.getElementById("id_title").value.length > 100
   ) {
-    let inputTitle = document.querySelector("input#id_title");
+    let inputTitle = document.getElementById("id_title");
     inputTitle.insertAdjacentHTML(
       "beforebegin",
       "<span class='form-help-inline'>&nbsp;&nbsp;" +
@@ -430,12 +430,14 @@ function verify_fields() {
 
     error = true;
   }
+  let inputStart = document.getElementById("id_start");
   if (
-    document.getElementById("id_start").value == "" ||
-    document.getElementById("id_start").value < 0 ||
-    document.getElementById("id_start").value >= video_duration
+   
+    inputStart.value == "" ||
+    inputStart.value < 0 ||
+    inputStart.value >= video_duration
   ) {
-    let inputStart = document.querySelector("input#id_start");
+    
     inputStart.insertAdjacentHTML(
       "beforebegin",
       "<span class='form-help-inline'>&nbsp; &nbsp;" +
@@ -447,12 +449,13 @@ function verify_fields() {
 
     error = true;
   }
+  let inputEnd = document.getElementById("id_end");
   if (
-    document.getElementById("id_end").value == "" ||
-    document.getElementById("id_end").value <= 0 ||
-    document.getElementById("id_end").value > video_duration
+    inputEnd.value == "" ||
+    inputEnd.value <= 0 ||
+    inputEnd.value > video_duration
   ) {
-    let inputEnd = document.querySelector("input#id_end");
+   
     inputEnd.insertAdjacentHTML(
       "beforebegin",
       "<span class='form-help-inline'>&nbsp; &nbsp;" +
@@ -565,7 +568,7 @@ function verify_fields() {
       }
       break;
     default:
-      let inputType = document.querySelector("input#id_type");
+      let inputType = document.getElementById("id_type");
       inputType.insertAdjacentHTML(
         "beforebegin",
         "<span class='form-help-inline'>&nbsp; &nbsp;" +
@@ -603,10 +606,10 @@ function overlaptest() {
   var id = document.getElementById("id_enrich").value;
   var msg = "";
   document.querySelectorAll("ul#slides li").forEach((e) => {
-    var data_start = parseInt(e.getAttribute("data-start"));
-    var data_end = parseInt(e.getAttribute("data-end"));
+    var data_start = parseInt(e.dataset.start);
+    var data_end = parseInt(e.dataset.end);
     if (
-      id != e.getAttribute("data-id") &&
+      id != e.dataset.id &&
       !(
         (new_start < data_start && new_end <= data_start) ||
         (new_start >= data_end && new_end > data_end)
@@ -615,7 +618,7 @@ function overlaptest() {
       var text =
         gettext("There is an overlap with the enrichment ") +
         '"' +
-        e.getAttribute("data-title") +
+        e.dataset.title +
         '"';
       text += ", " + gettext("please change start and/or end values.");
       msg += '<div class="alert alert-warning">' + text + "</div>";

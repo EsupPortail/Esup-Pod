@@ -20,9 +20,9 @@
   document.addEventListener("reset",   (e) => {
     if (e.target !== document.querySelector("#page-video form"))  return
     document.querySelector("span#form_enrich").html = "";
-    document.querySelector("form#form_new").style.display = "block";
-   document.querySelector("form").style.display = "block";
-    document.querySelector("table tr").forEach((tr) => {
+    document.getElementById("form_new").style.display = "block";
+   document.querySelectorAll("form").style.display = "block";
+    document.querySelectorAll("table tr").forEach((tr) => {
       tr.classList.remove("info");
     });
 
