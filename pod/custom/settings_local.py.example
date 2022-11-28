@@ -1125,6 +1125,11 @@ OIDC_CLAIM_GIVEN_NAME = "given_name"
 """
 OIDC_DEFAULT_AFFILIATION = ""
 
+# """
+# Groupes d'accès attribués par défaut à un nouvel utilisateur authentifié par OIDC
+# """
+OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = []
+
 """
 # Permettre l'usage du oembed, partage dans Moodle, Facebook, Twitter etc.
 """

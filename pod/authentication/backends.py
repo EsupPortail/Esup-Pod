@@ -72,10 +72,11 @@ class OIDCBackend(OIDCAuthenticationBackend):
         user.first_name = claims.get(OIDC_CLAIM_GIVEN_NAME, "")
         user.last_name = claims.get(OIDC_CLAIM_FAMILY_NAME, "")
         user.owner.affiliation = getattr(settings, "OIDC_DEFAULT_AFFILIATION", DEFAULT_AFFILIATION)
-        try:
-            user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name=user.owner.affiliation))
-        except ObjectDoesNotExist:
-            pass
+        for code_name in getattr(settings, "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES", []):
+            try:
+                user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name=code_name))
+            except ObjectDoesNotExist:
+                pass
         user.is_staff = is_staff_affiliation(affiliation=user.owner.affiliation)
         user.owner.save()
         user.save()
