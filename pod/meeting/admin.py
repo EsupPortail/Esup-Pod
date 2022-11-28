@@ -110,7 +110,7 @@ class MeetingAdmin(admin.ModelAdmin):
         "owner",
         "meeting_id",
         "created_at",
-        "start",
+        "start_at",
         "is_active",
         "is_running",
         "join_url",  # , 'meeting_actions'
@@ -124,7 +124,7 @@ class MeetingAdmin(admin.ModelAdmin):
         link = '<a href="%s" target="_blank">%s</a>' % (direct_join_url, _("join"))
         return mark_safe(link)
 
-    list_filter = ("start", "is_running", IsPaidFilter)
+    list_filter = ("start_at", "is_running", IsPaidFilter)
     # actions = ["update_running_meetings"] if not UPDATE_RUNNING_ON_EACH_CALL else []
     list_per_page = 30
     autocomplete_fields = [

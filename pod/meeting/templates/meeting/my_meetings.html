@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n l10n %}
 {% load static %}
 {% load thumbnail %}
 
@@ -40,9 +40,9 @@
         {% endif %}
       </th>
       {% if meeting.recurrence %}
-      <td>{{meeting.next_occurrence_from_today}} {{meeting.start_time}}</td>
+      <td>{{meeting.next_occurrence_from_today}} {% localize on %}{{ meeting.start_at|time }}{% endlocalize %}</td>
       {% else %}
-      <td>{{meeting.start}} {{meeting.start_time}}</td>
+      <td>{% localize on %}{{ meeting.start_at }}{% endlocalize %}</td>
       {% endif %}
       <td>
         <div class="d-grid gap-2 d-md-flex">

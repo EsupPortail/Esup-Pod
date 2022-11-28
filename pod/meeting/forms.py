@@ -1,5 +1,6 @@
 import random
 import string
+import datetime
 import re
 
 from django import forms
@@ -113,6 +114,42 @@ class MeetingForm(forms.ModelForm):
     is_admin = False
     is_superuser = False
 
+    def get_time_choices(
+        start_time=datetime.time(0, 0, 0),
+        end_time=datetime.time(23, 0, 0),
+        delta=datetime.timedelta(minutes=30)
+    ):
+        '''
+            Builds a choices tuple of (time object, time string) tuples
+            starting at the start time specified and ending at or before
+            the end time specified in increments of size delta.
+
+            The default is to return a choices tuple for
+            9am to 5pm in 15-minute increments.
+        '''
+        time_choices = ()
+        time = start_time
+        while time <= end_time:
+            time_choices += ((time, time.replace(second=0, microsecond=0)),)
+            # This complicated line is because you can't add
+            # a timedelta object to a time object.
+            time = (datetime.datetime.combine(datetime.date.today(), time) + delta).time()
+        return time_choices
+
+    def get_rouded_time():
+        now = timezone.localtime(timezone.now()).time().replace(second=0, microsecond=0)
+        if now.minute < 30:
+            now = now.replace(minute=30)
+        else:
+            now = now.replace(now.hour + 1, minute=0)
+        return now
+
+    start = forms.DateField(label=_("Start date"), initial=timezone.now)
+    start_time = forms.ChoiceField(
+        label=_("Start time"),
+        choices=get_time_choices(),
+        initial=get_rouded_time
+    )
     expected_duration = forms.IntegerField(
         label=_("Duration"),
         initial=2,
@@ -120,6 +157,7 @@ class MeetingForm(forms.ModelForm):
         min_value=1,
         help_text=_("Specify a duration in hour between 1 and 5 hours")
     )
+    field_order = ["start", "start_time", "expected_duration"]
     DAYS_OF_WEEK = [
         (0, _('Monday')),
         (1, _('Tuesday')),
@@ -135,7 +173,6 @@ class MeetingForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         choices=DAYS_OF_WEEK
     )
-
     fieldsets = (
         (None, {"fields": MEETING_MAIN_FIELDS}),
         ("input-group", {
@@ -143,7 +180,7 @@ class MeetingForm(forms.ModelForm):
                 '<i class="bi bi-clock-history"></i>'
                 + ' %s' % _("Date and time options")
             ),
-            "fields": MEETING_DATE_FIELDS,
+            "fields": ["start", "start_time", "expected_duration"],
             "additional_data": '''
                 <div class="m-1">
                 <button type="button" class="%s" data-bs-toggle="%s" data-bs-target="%s">
@@ -233,6 +270,14 @@ class MeetingForm(forms.ModelForm):
         ):
             cleaned_data["is_restricted"] = True
 
+        start_time = datetime.datetime.strptime(
+            self.cleaned_data["start_time"],
+            "%H:%M:%S"
+        ).time()
+        start_datetime = datetime.datetime.combine(self.cleaned_data["start"], start_time)
+        start_datetime = timezone.make_aware(start_datetime)
+        self.cleaned_data["start_at"] = start_datetime
+
         if "voice_bridge" in cleaned_data.keys() and cleaned_data[
             "voice_bridge"
         ] not in range(10000, 99999):
@@ -256,6 +301,7 @@ class MeetingForm(forms.ModelForm):
         super(MeetingForm, self).__init__(*args, **kwargs)
         self.set_queryset()
         self.filter_fields_admin()
+        self.date_time_duration()
         # Manage required fields html
         self.fields = add_placeholder_and_asterisk(self.fields)
         if self.fields.get("owner"):
@@ -264,11 +310,11 @@ class MeetingForm(forms.ModelForm):
             )
         if not self.initial.get("attendee_password"):
             self.initial["attendee_password"] = get_random_string(8)
-        if self.initial.get("expected_duration"):
-            self.initial["expected_duration"] = int(
-                self.initial.get("expected_duration").seconds / 3600
-            )
-        if self.instance and self.instance.weekdays:
+
+        if (
+            getattr(self.instance, "id", None)
+            and getattr(self.instance, "weekdays", None)
+        ):
             self.initial["days_of_week"] = list(self.instance.weekdays)
 
         # MEETING_DISABLE_RECORD
@@ -286,6 +332,18 @@ class MeetingForm(forms.ModelForm):
         self.fields["restrict_access_to_groups"].queryset = self.fields[
             "restrict_access_to_groups"
         ].queryset.filter(sites=Site.objects.get_current())
+
+    def date_time_duration(self):
+        if self.initial.get("expected_duration"):
+            self.initial["expected_duration"] = int(
+                self.initial.get("expected_duration").seconds / 3600
+            )
+        if (
+            getattr(self.instance, "id", None)
+            and getattr(self.instance, "start_at", None)
+        ):
+            self.initial["start"] = self.instance.start_at.date()
+            self.initial["start_time"] = timezone.localtime(self.instance.start_at).time()
 
     class Meta(object):
         model = Meeting

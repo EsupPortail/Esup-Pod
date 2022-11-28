@@ -1,7 +1,6 @@
 import hashlib
 import random
 import requests
-import datetime
 from datetime import timedelta, datetime as dt
 
 from urllib.parse import urlencode
@@ -133,36 +132,6 @@ class Meeting(models.Model):
         message=_("Weekdays must contain the numbers of the active days."),
     )
 
-    def get_time_choices(
-        start_time=datetime.time(0, 0, 0),
-        end_time=datetime.time(23, 0, 0),
-        delta=datetime.timedelta(minutes=30)
-    ):
-        '''
-            Builds a choices tuple of (time object, time string) tuples
-            starting at the start time specified and ending at or before
-            the end time specified in increments of size delta.
-
-            The default is to return a choices tuple for
-            9am to 5pm in 15-minute increments.
-        '''
-        time_choices = ()
-        time = start_time
-        while time <= end_time:
-            time_choices += ((time, time.replace(second=0, microsecond=0)),)
-            # This complicated line is because you can't add
-            # a timedelta object to a time object.
-            time = (datetime.datetime.combine(datetime.date.today(), time) + delta).time()
-        return time_choices
-
-    def get_rouded_time():
-        now = timezone.localtime(timezone.now()).time().replace(second=0, microsecond=0)
-        if now.minute < 30:
-            now = now.replace(minute=30)
-        else:
-            now = now.replace(now.hour + 1, minute=0)
-        return now
-
     name = models.CharField(max_length=255, verbose_name=_("Meeting Name"))
     meeting_id = models.SlugField(
         max_length=260,
@@ -191,12 +160,13 @@ class Meeting(models.Model):
     # start_at = models.DateTimeField(_("Start date"), default=timezone.now)
     # end_at = models.DateTimeField(_("End date"), default=two_hours_hence)
     # Start and end are the same for a single meeting
-    start = models.DateField(_("Start date"), default=timezone.now)
-    start_time = models.TimeField(
-        _("Start time"),
-        choices=get_time_choices(),
-        default=get_rouded_time
-    )
+    # start = models.DateField(_("Start date"), default=timezone.now)
+    # start_time = models.TimeField(
+    #     _("Start time"),
+    #     choices=get_time_choices(),
+    #     default=get_rouded_time
+    # )
+    start_at = models.DateTimeField(_("Start date"), default=timezone.now)
     expected_duration = models.DurationField(
         verbose_name=_("Meeting duration"),
         help_text=_(
@@ -223,13 +193,13 @@ class Meeting(models.Model):
     )
     recurring_until = models.DateField(
         verbose_name=_("End date of recurring meeting"),
-        help_text=_("Recurring meeting till the date specify"),
+        help_text=_("Recurring meeting until the specified date"),
         null=True,
         blank=True
     )
     nb_occurrences = models.PositiveIntegerField(
         verbose_name=_("Number of occurrences"),
-        help_text=_("Recurring meeting till the number of occurrences specify"),
+        help_text=_("Recurring meeting until the specified number of occurrences"),
         null=True,
         blank=True
     )
@@ -369,6 +339,14 @@ class Meeting(models.Model):
     def __str__(self):
         return "{}-{}".format("%04d" % self.id, self.name)
 
+    @property
+    def start(self):
+        return self.start_at.date()
+
+    @property
+    def start_time(self):
+        return self.start_at.time()
+
     def reset_recurrence(self):
         """
         Reset recurrence so everything indicates that the event occurs only once.
@@ -448,9 +426,9 @@ class Meeting(models.Model):
     # ##############################    Meeting occurences
     def next_occurrence_from_today(self):
         if self.start == timezone.now().date():
-            start_datetime = dt.combine(self.start, self.start_time)
-            start_datetime = timezone.make_aware(start_datetime)
-            start_datetime = start_datetime + self.expected_duration
+            # start_datetime = dt.combine(self.start, self.start_time)
+            # start_datetime = timezone.make_aware(start_datetime)
+            start_datetime = self.start_at + self.expected_duration
             if start_datetime > timezone.now():
                 return self.start
         next_one = self.next_occurrence(self.start)
@@ -544,9 +522,7 @@ class Meeting(models.Model):
         """
         Compute meeting to know if it is past or not.
         """
-        start_datetime = dt.combine(self.start, self.start_time)
-        start_datetime = timezone.make_aware(start_datetime)
-        start_datetime = start_datetime + self.expected_duration
+        start_datetime = self.start_at + self.expected_duration
         if self.recurrence is None and start_datetime > timezone.now():
             return True
         end_datetime = dt.combine(self.recurring_until, self.start_time)
@@ -753,14 +729,14 @@ class Meeting(models.Model):
         db_table = "meeting"
         verbose_name = "Meeting"
         verbose_name_plural = _("Meeting")
-        ordering = ("-start", "-start_time")
-        get_latest_by = "start"
+        ordering = ("-start_at",)
+        get_latest_by = "start_at"
         constraints = [
             models.UniqueConstraint(
                 fields=["meeting_id", "site"], name="meeting_unique_slug_site"
             ),
             models.CheckConstraint(
-                check=Q(recurring_until__gte=F("start"))
+                check=Q(recurring_until__gte=F("start_at__date"))
                 | Q(recurring_until__isnull=True),
                 name="recurring_until_greater_than_start",
             ),

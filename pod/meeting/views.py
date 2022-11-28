@@ -699,12 +699,12 @@ def create_ics(request, meeting):
     event_description = "\\n".join(
         line for line in description.replace("    ", "").split("\n")
     )
-    start = datetime.combine(meeting.start, meeting.start_time)
-    start_date_time = timezone.make_aware(start)
+
     start_date_time = "TZID=%s:%s" % (
         timezone.get_current_timezone(),
-        start_date_time.strftime("%Y%m%dT%H%M%S%z")
+        timezone.localtime(meeting.start_at).strftime("%Y%m%dT%H%M%S%z")
     )
+
     duration = int(
         meeting.expected_duration.seconds / 3600
     )
