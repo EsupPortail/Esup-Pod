@@ -90,7 +90,7 @@ ALLOWED_HOSTS = ['localhost']
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-TIME_ZONE__
 
 
-### 1.1/ Courriel
+### 2.1/ Courriel
 
 
 - CONTACT_US_EMAIL
@@ -123,8 +123,35 @@ ALLOWED_HOSTS = ['localhost']
 
 > Expediteur par défaut pour les envois de courriel (contact, encodage etc.)
 
+- CUSTOM_CONTACT_US = False
 
-### 1.2/ Base de données
+> Si 'True', les e-mails de contacts seront adressés, selon le sujet,
+> soit au propriétaire de la vidéo soit au(x) manageur(s) des vidéos Pod.
+> (voir USER_CONTACT_EMAIL_CASE et USE_ESTABLISHMENT_FIELD)
+
+- USER_CONTACT_EMAIL_CASE = []
+
+> Une liste contenant les sujets de contact dont l'utilisateur
+> sera seul destinataire plutôt que le(s) manageur(s).
+> Si la liste est vide, les mails de contact seront envoyés au(x) manageur(s).
+> Valeurs possibles :
+>  'info', 'contribute', 'request_password',
+>  'inapropriate_content', 'bug', 'other'
+
+- USE_ESTABLISHMENT_FIELD = False
+
+> Si valeur vaut 'True', rajoute un attribut 'establishment'
+> à l'utilisateur Pod, ce qui permet de gérer plus d'un établissement.
+> Dans ce cas, les emails de contact par exemple seront envoyés
+>  soit à l'utilisateur soit au(x) manageur(s)
+>  de l'établissement de l'utilisateur.
+> (voir USER_CONTACT_EMAIL_CASE)
+> Egalement, les emails de fin d'encodage seront envoyés au(x) manageur(s)
+>  de l'établissement du propriétaire de la vidéo encodée,
+>  en plus d'un email au propriétaire confirmant la fin d'encodage d'une vidéo.
+
+
+### 2.2/ Base de données
 
 
 ````
@@ -158,7 +185,7 @@ DATABASES = {
 ````
 
 
-### 1.3/ Langues
+### 2.3/ Langues
 
 Par défaut, Esup-Pod est fournie en Francais et en anglais.
 Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra pour cela créer un fichier de langue et traduire chaque entrée.
@@ -174,7 +201,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
 > Langue disponible et traduite
 
-### 1.4/ Gestion des fichiers
+### 2.4/ Gestion des fichiers
 
 - FILE_UPLOAD_TEMP_DIR = "/var/tmp"
 
@@ -209,8 +236,346 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
 > prefix url utilisé pour accéder aux fichiers du répertoire media
 
+- FILES_DIR = "files"
+
+> Nom du répertoire racine où les fichiers "complémentaires"
+> hors vidéos etc.) sont téléversés.
+
+### 2.5/ Gestion du Cache
+
+````
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    # Persistent cache setup for select2 (NOT DummyCache or LocMemCache).
+    "select2": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+````
+
+> A modifier principalement pour indiquer dans LOCATION votre serveur de cache si elle n'est pas sur la même machine que votre POD
+
+### 2.6/ Gestion de l'application de recherche ElasticSearch
+
+- ES_URL = ['http://127.0.0.1:9200/']
+
+> adresse du ou des instances d'Elasticsearch utilisées pour l'indexation et la recherche de vidéo. Ne pas modifier si votre instance ElasticSearch est sur la même machine que votre POD
+
+- ES_INDEX = "pod"
+
+> Valeur pour l’index de ElasticSearch
+
+- ES_TIMEOUT = 30
+
+> Valeur timeout pour configuration de ElasticSearch
+
+- ES_MAX_RETRIES = 10
+
+> Valeur max essai pour configuration de ElasticSearch
+
+- ES_VERSION = 6
+
+> Version d'ElasticSearch
+> valeurs possibles 6 ou 7 (pour indiquer utiliser ElasticSearch 6 ou 7)
+> pour utiliser la version 7, faire une mise à jour du paquet elasticsearch-py
+> elasticsearch==7.10.1
+> https://elasticsearch-py.readthedocs.io/en/v7.10.1/
+
+### 2.7/ Gestion de la page d'accueil et des menus
+
 
 ## 3/ Configuration par application
+
+### 3.2/ Configuration application authentification (Local, CAS et LDAP)
+
+````
+AUTH_TYPE = (
+    ('local', _('local')),
+    ('CAS', 'CAS'),
+    ('OIDC', "OIDC"),
+    ("Shibboleth", "Shibboleth")
+)
+````
+
+> Type d'authentification possible sur votre instance.
+>  Choix : local, CAS, OIDC, Shibboleth
+
+- USE_CAS = False
+
+> Activation de l'authentification CAS en plus de l'authentification locale
+
+- CAS_SERVER_URL = "sso_cas"
+
+> Url du serveur cas de l'établissement. Format http://url_cas
+
+- CAS_GATEWAY = False
+
+> Si True, authentifie automatiquement l'individu
+> si déjà authentifié sur le serveur CAS
+
+- POPULATE_USER = None
+
+> Si utilisation de la connection CAS, renseigne les champs du compte
+> de la personne depuis une source externe.
+> Valeurs possibles :
+>  - None (pas de renseignement),
+>  - CAS (renseigne les champs depuis les informations renvoyées par le CAS),
+>  - LDAP (Interroge le serveur LDAP pour renseigner les champs)
+
+- AUTH_CAS_USER_SEARCH = "user"
+
+> Variable utilisée pour trouver les informations de l'individu
+> connecté dans le fichier renvoyé par le CAS lors de l'authentification
+
+````
+USER_CAS_MAPPING_ATTRIBUTES = {
+    "uid": "uid",
+    "mail": "mail",
+    "last_name": "sn",
+    "first_name": "givenname",
+    "affiliation": "eduPersonAffiliation",
+    "groups": "memberOf"
+}
+
+````
+
+> Liste de correspondance entre les champs d'un compte de Pod
+> et les champs renvoyés par le CAS
+
+- CREATE_GROUP_FROM_AFFILIATION = False
+
+> Si True, des groupes sont créés automatiquement
+> à partir des affiliations des individus qui se connectent sur la plateforme
+> et l'individu qui se connecte est ajouté automatiquement à ces groupes
+
+- CREATE_GROUP_FROM_GROUPS = False
+
+> Si True, des groupes sont créés automatiquement
+> à partir des groupes (attribut groups à memberOf)
+> des individus qui se connectent sur la plateforme
+> et l'individu qui se connecte est ajouté automatiquement à ces groupes
+
+- AFFILIATION_STAFF = ('faculty', 'employee', 'staff')
+
+> Les personnes ayant pour affiliation les valeurs
+> renseignées dans cette variable ont automatiquement
+> la valeur staff de leur compte à True
+
+- AFFILIATION_EVENT = ['faculty', 'employee', 'staff']
+
+> Groupes ou affiliations des personnes autorisées à créer un évènement
+
+````
+AFFILIATION = (
+    ('student', _('student')),
+    ('faculty', _('faculty')),
+    ('staff', _('staff')),
+    ('employee', _('employee')),
+    ('member', _('member')),
+    ('affiliate', _('affiliate')),
+    ('alum', _('alum')),
+    ('library-walk-in', _('library-walk-in')),
+    ('researcher', _('researcher')),
+    ('retired', _('retired')),
+    ('emeritus', _('emeritus')),
+    ('teacher', _('teacher')),
+    ('registered-reader', _('registered-reader'))
+)
+
+````
+
+> Valeurs possibles pour l'Affiliation du compte
+
+- LDAP_SERVER = {'url': '', 'port': 389, 'use_ssl': False}
+
+> Information de connection au serveur LDAP.
+> Le champ url peut contenir une ou plusieurs url
+>  pour ajouter des hôtes de référence, exemple :
+> Si un seul host :
+> {'url': "ldap.univ.fr'', 'port': 389, 'use_ssl': False}
+> Si plusieurs :
+> {'url': ("ldap.univ.fr'',"ldap2.univ.fr"), 'port': 389, 'use_ssl': False}
+
+- AUTH_LDAP_BIND_DN = ""
+
+> Identifiant (DN) du compte pour se connecter au serveur LDAP
+
+- AUTH_LDAP_BIND_PASSWORD = ""
+
+> Mot de passe du compte pour se connecter au serveur LDAP
+
+- AUTH_LDAP_USER_SEARCH = ('ou=people,dc=univ,dc=fr', "(uid=%(uid)s)")
+
+> Filtre LDAP permettant la recherche de l'individu dans le serveur LDAP
+ 
+````
+USER_LDAP_MAPPING_ATTRIBUTES = {
+    "uid": "uid",
+    "mail": "mail",
+    "last_name": "sn",
+    "first_name": "givenname",
+    "primaryAffiliation": "eduPersonPrimaryAffiliation",
+    "affiliations": "eduPersonAffiliation",
+    "groups": "memberOf"
+}
+
+````
+
+> Liste de correspondance entre les champs d'un compte de Pod
+> et les champs renvoyés par le LDAP
+
+- USE_SHIB = False
+
+> Mettre à True pour utiliser l'authentification Shibboleth
+
+- SHIB_NAME = ""
+
+> Nom de la fédération d'identité utilisée
+
+````
+SHIBBOLETH_ATTRIBUTE_MAP = {
+    "shib-user": (True, "username"),
+    "shib-given-name": (True, "first_name"),
+    "shib-sn": (True, "last_name"),
+    "shib-mail": (False, "email"),
+    "shib-primary-affiliation": (False, "affiliation"),
+    "shib-unscoped-affiliation": (False, "affiliations"),
+}
+````
+
+> Mapping des attributs entre shibboleth et la classe utilisateur
+
+- SHIBBOLETH_STAFF_ALLOWED_DOMAINS = ('univ-domain.fr',)
+
+> permettre à l'utilisateur d'un domaine d'être membre du personnel
+> Si vide, tous les domaines seront autorisés
+
+- REMOTE_USER_HEADER = "REMOTE_USER"
+
+> Nom de l'attribut dans les headers qui sert à identifier
+> l'utilisateur connecté avec Shibboleth
+
+- SHIB_URL = ""
+
+> URL de connexion à votre instance Shibboleth
+
+- SHIB_LOGOUT_URL = ""
+
+> URL de déconnexion à votre instance Shibboleth
+
+- CAS_FORCE_LOWERCASE_USERNAME = False
+
+> Forcer le passage en minuscule du nom d'utilisateur CAS
+> (permet de prévenir des doubles créations de comptes dans certain cas).
+
+- USE_OIDC = False
+
+> Mettre à True pour utiliser l'authentification OpenID Connect
+
+- OIDC_NAME = "" 
+> Nom du Service Provider OIDC
+
+- OIDC_RP_CLIENT_ID = os.environ('OIDC_CLIENT_ID')
+- OIDC_RP_CLIENT_SECRET = os.environ('OIDC_CLIENT_SECRET')
+
+> CLIENT_ID et CLIENT_SECRET de OIDC sont plutôt à positionner
+> à travers des variables d'environnement
+
+- OIDC_OP_AUTHORIZATION_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/authorize"
+- OIDC_OP_TOKEN_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/token"
+- OIDC_OP_USER_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/userinfo"
+- OIDC_RP_SIGN_ALGO = 'RS256'
+- OIDC_OP_JWKS_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/discovery/keys"
+
+> Différents paramètres pour OIDC
+> tant que mozilla_django_oidc n'accepte le mécanisme de discovery
+> ref: https://github.com/mozilla/mozilla-django-oidc/pull/309
+
+- OIDC_CLAIM_FAMILY_NAME = "family_name"
+- OIDC_CLAIM_GIVEN_NAME = "given_name"
+
+> Noms des Claim permettant de récupérer les attributs nom, prénom, email
+
+
+
+
+### 3.2/ Activer le studio Opencast dans Pod
+
+- USE_OPENCAST_STUDIO = False
+
+> Activer l'utilisation du studio Opencast
+
+- OPENCAST_FILES_DIR = "opencast-files"
+
+> Permet de spécifier le dossier de stockage des enregistrements du studio avant traitement.
+
+- OPENCAST_DEFAULT_PRESENTER = "mid"
+
+> Permet de spécifier la valeur par défaut du placement de la vidéo du
+> presenteur par rapport à la vidéo de présentation (écran)
+> les valeurs possibles sont :
+>  * "mid" (écran et caméra ont la même taille)
+>  * "piph" (le presenteur, caméra, est incrusté dans la vidéo de présentation, en haut à droite)
+>  * "pipb" (le presenteur, caméra, est incrusté dans la vidéo de présentation, en bas à droite)
+
+````
+OPENCAST_MEDIAPACKAGE = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <mediapackage xmlns="http://mediapackage.opencastproject.org" id="" start="">
+    <media/>
+    <metadata/>
+    <attachments/>
+    <publications/>
+    </mediapackage>"""
+````
+
+> Contenu par défaut du fichier xml pour créer le mediapackage pour le studio.
+> Ce fichier va contenir toutes les spécificités de l'enregistrement
+> (source, cutting, title, presenter etc.)
+
+### 3.3/ Application meeting
+> Application Meeting pour la gestion de reunion avec BBB.
+> Mettre USE_MEETING à True pour activer cette application.
+> BBB_API_URL et BBB_SECRET_KEY sont obligatoires pour faire fonctionner l'application
+
+- USE_MEETING = False
+
+> Activer l'application meeting
+
+- BBB_API_URL = ""
+
+> Indiquer l'URL API de BBB par ex https://webconf.univ.fr/bigbluebutton/api
+
+- BBB_SECRET_KEY = ""
+
+> Clé de votre serveur BBB. Vous pouvez récupérer cette clé à l'aide de la commande bbb-conf --secret sur le serveur BBB
+
+- BBB_LOGOUT_URL = ""
+
+> Indiquer l'URL de retour au moment où vous quittez la réunion BBB. Ce champ est optionnel
+
+- RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = False
+
+> Seuls les utilisateurs "staff" pourront éditer les réunions
+
+- MEETING_DISABLE_RECORD = True
+
+> Mettre à True pour désactiver les enregistrements de réunion
+
+````
+MEETING_RECORD_FIELDS = (
+    "record",
+    "auto_start_recording",
+    "allow_start_stop_recording"
+)
+````
+
+> Configuration de l'enregistrement des réunions. Ce champ n'est pas pris en compte si MEETING_DISABLE_RECORD = True
 
 ## 4/ Commande de gestion de l'application
 ### 4.1/ Creation d'un super utilisateur
