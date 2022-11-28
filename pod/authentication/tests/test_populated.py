@@ -448,7 +448,29 @@ class PopulatedShibTestCase(TestCase):
 class PopulatedOIDCTestCase(TestCase):
 
     def setUp(self):
-        AccessGroup.objects.create(code_name="access_group", display_name="Access group")
+        AccessGroup.objects.create(code_name=STAFFABLE_AFFILIATION, display_name=STAFFABLE_AFFILIATION)
+        AccessGroup.objects.create(code_name=UNSTAFFABLE_AFFILIATION, display_name=UNSTAFFABLE_AFFILIATION)
+
+    @override_settings(
+        OIDC_RP_CLIENT_ID = "MWViNTY2NzJjNGY4YTQ1MTAwMTNiYjk3",
+        OIDC_RP_CLIENT_SECRET = "YTM0MzIxZTVmMzZmMTdjNzY5NDQyODcw",
+        OIDC_OP_TOKEN_ENDPOINT = "https://auth.server.com/oauth/token",
+        OIDC_OP_USER_ENDPOINT = "https://auth.server.com/oauth/userinfo",
+        OIDC_DEFAULT_AFFILIATION = "freelancer"
+    )
+    def test_OIDC_userer_with_default_unstaffable_affiliation(self):
+        user = OIDCBackend().create_user(claims={
+            OIDC_CLAIM_GIVEN_NAME: "Jean",
+            OIDC_CLAIM_FAMILY_NAME: "Fit"
+        })
+        self.assertFalse(settings.OIDC_DEFAULT_AFFILIATION in AFFILIATION_STAFF)
+        self.assertEqual(user.first_name, "Jean")
+        self.assertEqual(user.last_name, "Fit")
+        self.assertEqual(user.owner.affiliation, settings.OIDC_DEFAULT_AFFILIATION)
+        self.assertFalse(user.is_staff)
+        self.assertEqual(AccessGroup.objects.all().count(), 2)
+        self.assertEqual(user.owner.accessgroup_set.all().count(), 0)  # user affiliation does not exists in access_groups
+        print(" --->  test_OIDC_userer_with_default_unstaffable_affiliation" " of PopulatedOIDCTestCase : OK !")
 
     @override_settings(
         OIDC_RP_CLIENT_ID = "MWViNTY2NzJjNGY4YTQ1MTAwMTNiYjk3",
@@ -457,7 +479,7 @@ class PopulatedOIDCTestCase(TestCase):
         OIDC_OP_USER_ENDPOINT = "https://auth.server.com/oauth/userinfo",
         OIDC_DEFAULT_AFFILIATION = UNSTAFFABLE_AFFILIATION
     )
-    def test_OIDC_user_with_default_unstaffable_access_group(self):
+    def test_OIDC_commoner_with_default_unstaffable_access_group(self):
         user = OIDCBackend().create_user(claims={
             OIDC_CLAIM_GIVEN_NAME: "John",
             OIDC_CLAIM_FAMILY_NAME: "Doe"
@@ -467,7 +489,13 @@ class PopulatedOIDCTestCase(TestCase):
         self.assertEqual(user.last_name, "Doe")
         self.assertEqual(user.owner.affiliation, settings.OIDC_DEFAULT_AFFILIATION)
         self.assertFalse(user.is_staff)
-        print(" --->  test_OIDC_user_with_default_unstaffable_access_group" " of PopulatedOIDCTestCase : OK !")
+        self.assertFalse(
+            user.owner.accessgroup_set.filter(code_name=STAFFABLE_AFFILIATION).exists()  # user should not be linked with unrelated access_group
+        )
+        self.assertTrue(
+            user.owner.accessgroup_set.filter(code_name=UNSTAFFABLE_AFFILIATION).exists()  # specific affiliation should link user to specific access_group if it exists
+        )
+        print(" --->  test_OIDC_commoner_with_default_unstaffable_access_group" " of PopulatedOIDCTestCase : OK !")
 
 
     @override_settings(
@@ -477,7 +505,7 @@ class PopulatedOIDCTestCase(TestCase):
         OIDC_OP_USER_ENDPOINT = "https://auth.server.com/oauth/userinfo",
         OIDC_DEFAULT_AFFILIATION = STAFFABLE_AFFILIATION
     )
-    def test_OIDC_user_with_default_staff_access_group(self):
+    def test_OIDC_django_admin_with_default_staff_access_group(self):
         user = OIDCBackend().create_user(claims={
             OIDC_CLAIM_GIVEN_NAME: "Jane",
             OIDC_CLAIM_FAMILY_NAME: "Did"
@@ -485,6 +513,12 @@ class PopulatedOIDCTestCase(TestCase):
         self.assertEqual(user.first_name, "Jane")
         self.assertEqual(user.last_name, "Did")
         self.assertEqual(user.owner.affiliation, settings.OIDC_DEFAULT_AFFILIATION)
-        self.assertTrue(user.is_staff)
+        self.assertTrue(user.is_staff)  # staffable affiliation should give user access to django admin
+        self.assertFalse(
+            user.owner.accessgroup_set.filter(code_name=UNSTAFFABLE_AFFILIATION).exists()
+        )
+        self.assertTrue(
+            user.owner.accessgroup_set.filter(code_name=STAFFABLE_AFFILIATION).exists()  # specific affiliation should link user to specific access_group if it exists 
+        )
 
-        print(" --->  test_OIDC_user_with_default_staff_access_group" " of PopulatedOIDCTestCase : OK !")
+        print(" --->  test_OIDC_django_admin_with_default_staff_access_group" " of PopulatedOIDCTestCase : OK !")
