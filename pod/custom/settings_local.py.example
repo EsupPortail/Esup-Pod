@@ -1119,7 +1119,9 @@ OIDC_CLAIM_FAMILY_NAME = "family_name"
 OIDC_CLAIM_GIVEN_NAME = "given_name"
 
 """
-# Affiliation par défaut d'un utilisateur authentifié par OIDC
+# Affiliation par défaut d'un utilisateur authentifié par OIDC. Ce contenu
+# sera comparé à la liste AFFILIATION_STAFF pour déterminer si l'utilisateur
+# doit être admin django
 """
 OIDC_DEFAULT_AFFILIATION = ""
 
