@@ -6,19 +6,18 @@ function show_form(data) {
 
   form.innerHTML = data;
   form.querySelectorAll("script").forEach((item) => {
-    
     if (item.src) {
       // external script
-      
+
       let script = document.createElement("script");
       script.src = item.src;
-      document.body.appendChild(script);
+      if (script.src.includes("filewidget.js"))
+        document.body.appendChild(script);
     } else {
-      // inline script
-    (0,eval)(item.innerHTML);
+      if (item.id == "filewidget_script") (0, eval)(item.innerHTML);
     }
   });
-  
+
   fadeIn(form);
 
   var inputStart = document.getElementById("id_start");
@@ -320,24 +319,20 @@ function get_form(data) {
   var form = document.getElementById("form_enrich");
   form.style.display = "none";
   //form.innerHTML = data;
-  let htmlData = new DOMParser().parseFromString(data, "text/html").body.firstChild;
+  let htmlData = new DOMParser().parseFromString(data, "text/html").body
+    .firstChild;
   form.innerHTML(htmlData);
   htmlData.querySelectorAll("script").forEach((item) => {
-   
     if (item.src) {
-      
       let script = document.createElement("script");
       script.src = item.src;
       document.body.appendChild(script);
     } else {
       // inline script
-    (0,eval)(item.innerHTML);
+      (0, eval)(item.innerHTML);
     }
   });
-  
 
-
-  
   fadeIn(form);
   var inputStart = document.getElementById("id_start");
   inputStart.insertAdjacentHTML(
@@ -420,7 +415,6 @@ function verify_fields() {
     inputTitle.value.length < 2 ||
     inputTitle.value.length > 100
   ) {
-    
     inputTitle.insertAdjacentHTML(
       "beforebegin",
       "<span class='form-help-inline'>&nbsp;&nbsp;" +
@@ -437,7 +431,6 @@ function verify_fields() {
     inputStart.value < 0 ||
     inputStart.value >= video_duration
   ) {
-   
     inputStart.insertAdjacentHTML(
       "beforebegin",
       "<span class='form-help-inline'>&nbsp; &nbsp;" +

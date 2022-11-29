@@ -912,10 +912,11 @@ var append_picture_form = async function (data) {
       // external script
       let script = document.createElement("script");
       script.src = item.src;
-      document.body.appendChild(script);
+      if (script.src.includes("filewidget.js"))
+        document.body.appendChild(script);
     } else {
       // inline script
-      (0, eval)(item.innerHTML);
+      if (item.id == "filewidget_script") (0, eval)(item.innerHTML);
     }
   });
 
@@ -978,13 +979,13 @@ if (ownerbox) {
               });
             data.forEach((elt) => {
               if (
-                (listUserChecked.indexOf(elt.username) == -1 &&
-                  (document.querySelector(
-                    "#collapseFilterOwner #id" + elt.username
-                  ) == null ||
-                document.querySelector(
+                listUserChecked.indexOf(elt.username) == -1 &&
+                (document.querySelector(
                   "#collapseFilterOwner #id" + elt.username
-                ).length == 0))
+                ) == null ||
+                  document.querySelector(
+                    "#collapseFilterOwner #id" + elt.username
+                  ).length == 0)
               ) {
                 let username = HIDE_USERNAME ? "" : " (" + elt.username + ")";
                 var chekboxhtml =

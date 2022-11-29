@@ -9,10 +9,11 @@ function show_form(data) {
 
       let script = document.createElement("script");
       script.src = item.src;
-      document.body.appendChild(script);
+      if (script.src.includes("filewidget.js"))
+        document.body.appendChild(script);
     } else {
       // inline script
-      (0, eval)(item.innerHTML);
+      if (item.id == "filewidget_script") (0, eval)(item.innerHTML);
     }
   });
   fadeIn(form_chapter);
