@@ -507,7 +507,7 @@ class PopulatedOIDCTestCase(TestCase):
             "dull",
         ]:
             AccessGroup.objects.create(
-                ode_name=code_name, display_name=f"Access group {code_name}"
+                code_name=code_name, display_name=f"Access group {code_name}"
             )
         user = OIDCBackend().create_user(
             claims={OIDC_CLAIM_GIVEN_NAME: "Jean", OIDC_CLAIM_FAMILY_NAME: "Fit"}
