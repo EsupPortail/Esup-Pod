@@ -44,34 +44,52 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-<script src="{% static 'waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'waypoints/lib/shortcuts/infinite.min.js' %}?ver={{VERSION}}"></script>
+
+<script  src="{% static 'js/infinite.js' %}?ver={{VERSION}}" ></script>
 <script>
-  var infinite = new Waypoint.Infinite({
-    element: $('.infinite-container')[0],
-    onBeforePageLoad: function () {
-      $('.infinite-loading').show();
-    },
-    onAfterPageLoad: function ($items) {
-      $('.infinite-loading').hide();
-      $('footer.static-pod').addClass('small');
-      $('footer.static-pod').addClass('fixed-bottom');
-      $('footer.static-pod').attr('style','height:80px; overflow-y:auto');
-      $('footer.static-pod .hidden-pod').css('display','none');
-      $(window).scroll(function () {
-        if ($(window).height() + $(window).scrollTop() == $(document).height())
-        {
-           $('footer.static-pod .hidden-pod').css('display','block');
-           $('footer.static-pod').attr('style','height:auto;');
-           $('footer.static-pod').removeClass('fixed-bottom');
+
+
+  function onBeforePageLoad() {
+      this.infinite_loading.style.display = "block";
+    }
+  function onAfterPageLoad() {
+      this.infinite_loading.style.display = "none";
+      let footer = document.querySelector("footer.static-pod");
+      if (!footer) return;
+      footer.classList.add("small");
+      footer.classList.add("fixed-bottom");
+      footer.setAttribute("style", "height:80px; overflow-y:auto");
+      var docHeight = Math.max(
+        document.body.scrollHeight,
+        document.body.offsetHeight,
+        document.clientHeight,
+        document.scrollHeight,
+        document.offsetHeight
+      );
+      window.addEventListener("scroll", function () {
+        if (window.innerHeight + window.scrollTop() === docHeight) {
+          document.querySelector("footer.static-pod .hidden-pod").style.display =
+            "block";
+          footer.setAttribute("style", "height:auto;");
+          footer.classList.remove("fixed-bottom");
         }
       });
     }
-  });
+    
+  var page = 0;
+  {% if videos.has_next %}
+    url = "/video/my/?page="
+    page = parseInt("{{videos.next_page_number}}")
+    next_page = true
+    var infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad, nextPage = true  ,page = page);
+  {% endif %}
+
+
 {% if use_category %}
   const CATEGORIES_DATA = {{ categories | safe }};
+ 
   </script>
-  <script defer src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
+ <script defer src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
 {% else %}
   </script>
 {% endif %}

@@ -262,7 +262,7 @@ function run(has_more_themes, Helper) {
       video_loader_btn.textContent = save_text;
       video_loader_btn.removeAttribute("disabled");
       if (!response.has_more_videos) video_loader_btn.remove();
-
+      console.log("load more videos");
       response.videos.forEach((v) => {
         videos_container.appendChild(createVideoElement(v));
       });

@@ -103,7 +103,7 @@
               {{ field }}
             {% endif %}
             {% if field.help_text %}
-              <small id="{{field.id_for_label}}Help" class="form-text"> {{ field.help_text|safe }}</small>
+              <small id="{{field.id_for_label}}Help" class="form-text text-muted"> {{ field.help_text|safe }}</small>
             {% endif %}
             {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
             {% if field.name in "description,title" %}
@@ -230,22 +230,13 @@
 
   <script>
     var slug = "{{ form.instance.slug }}";
-    let id_video = document.getElementById("id_video")
-    if (id_video) {
-      document.getElementById("id_video").addEventListener("click",function (event) {
-        location.href = "{% url 'video:video_add' %}?slug=" + slug
-        event.preventDefault();
-      });
-    }
-   
+    $("#id_video").click(function (event) {
+      location.href = "{% url 'video:video_add' %}?slug=" + slug
+      event.preventDefault();
+    });
 
     /** formulaire **/
-
-    let js_process = document.getElementById("js_process");
-    if (js_process){
-      js_process.style.display = "none"  
-
-    }
+    $("#js-process").hide();
     var VIDEO_MAX_UPLOAD_SIZE = {{ form.VIDEO_MAX_UPLOAD_SIZE }};
     var video_max_upload_size = VIDEO_MAX_UPLOAD_SIZE * 1024 * 1024 * 1024;
     var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfor%}";

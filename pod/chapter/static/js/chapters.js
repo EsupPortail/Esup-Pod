@@ -1,23 +1,45 @@
 var id_form = "form_chapter";
 function show_form(data) {
-  $("#" + id_form)
-    .hide()
-    .html(data)
-    .fadeIn();
-  $("input#id_time_start").before(
-    "&nbsp;<span class='getfromvideo'><a id='getfromvideo_start' class='btn btn-primary btn-sm'>" +
-      gettext("Get time from the player") +
-      "</a><span class='timecode'>&nbsp;</span></span>"
-  );
-  $("input#id_time_end").before(
-    "&nbsp;<span class='getfromvideo'><a id='getfromvideo_end' class='btn btn-primary btn-sm'>" +
-      gettext("Get time from the player") +
-      "</a><span class='timecode'>&nbsp;</span></span>"
-  );
+  let form_chapter = document.getElementById(id_form);
+  form_chapter.style.display = "none";
+  form_chapter.innerHTML = data;
+  form_chapter.querySelectorAll("script").forEach((item) => {
+    if (item.src) {
+      // external script
+
+      let script = document.createElement("script");
+      script.src = item.src;
+      if (script.src.includes("filewidget.js"))
+        document.body.appendChild(script);
+    } else {
+      // inline script
+      if (item.id == "filewidget_script") (0, eval)(item.innerHTML);
+    }
+  });
+  fadeIn(form_chapter);
+
+  let inputStart = document.querySelector("input#id_time_start");
+  if (inputStart) {
+    inputStart.insertAdjacentHTML(
+      "beforebegin",
+      "&nbsp;<span class='getfromvideo'><a id='getfromvideo_start' class='btn btn-primary btn-sm'>" +
+        gettext("Get time from the player") +
+        "</a><span class='timecode'>&nbsp;</span></span>"
+    );
+  }
+  let inputEnd = document.querySelector("input#id_time_end");
+  if (inputEnd) {
+    inputEnd.insertAdjacentHTML(
+      "beforebegin",
+      "&nbsp;<span class='getfromvideo'><a id='getfromvideo_end' class='btn btn-primary btn-sm'>" +
+        gettext("Get time from the player") +
+        "</a><span class='timecode'>&nbsp;</span></span>"
+    );
+  }
 }
 
 var showalert = function (message, alerttype) {
-  $("body").append(
+  document.body.append(
     '<div id="formalertdiv" class="alert ' +
       alerttype +
       ' alert-dismissible fade show" role="alert">' +
@@ -27,7 +49,7 @@ var showalert = function (message, alerttype) {
       '"><span aria-hidden="true">&times;</span></button></div>'
   );
   setTimeout(function () {
-    $("#formalertdiv").remove();
+    document.getElementById("formalertdiv").remove();
   }, 5000);
 };
 
@@ -40,162 +62,200 @@ var ajaxfail = function (data) {
       gettext("The form could not be recovered."),
     "alert-danger"
   );
-  $("form.get_form").show();
+  document.querySelector("form.get_form").style;
   show_form("");
 };
 
-$(document).on("click", "#cancel_chapter", function () {
-  $("form.get_form").show();
+document.addEventListener("click", (e) => {
+  if (e.target.id != "cancel_chapter") return;
+
+  document.querySelectorAll("form.get_form").forEach((form) => {
+    form.style.display = "block";
+  });
   show_form("");
-  $("#fileModal_id_file").remove();
+  let file_modal = document.getElementById("fileModal_id_file");
+  if (file_modal) file_modal.remove();
 });
 
-$(document).on("submit", "form.get_form", function (e) {
+document.addEventListener("submit", (e) => {
+  if (!e.target.classList.contains("get_form")) return;
   e.preventDefault();
   var jqxhr = "";
-  var action = $(this).find("input[name=action]").val();
-  sendandgetform(this, action);
+  var action = e.target.querySelector("input[name=action]").value;
+
+  sendandgetform(e.target, action);
 });
 
-$(document).on("submit", "form.form_save", function (e) {
+document.addEventListener("submit", (e) => {
+  if (!e.target.classList.contains("form_save")) return;
   e.preventDefault();
   var jqxhr = "";
-  var action = $(this).find("input[name=action]").val();
-  sendform(this, action);
+
+  var action = e.target.querySelector("input[name=action]").value;
+  sendform(e.target, action);
 });
 
-var sendandgetform = function (elt, action) {
-  $("form.get_form").hide();
+var sendandgetform = async function (elt, action) {
+  document.querySelector("form.get_form").style.display = "none";
+  let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
   if (action == "new") {
-    var jqxhr = $.ajax({
+    url = window.location.href;
+    headers = {
+      "X-CSRFToken": token,
+      "X-Requested-With": "XMLHttpRequest",
+    };
+    form_data = new FormData();
+    form_data.append("action", action);
+
+    await fetch(url, {
       method: "POST",
-      url: window.location.href,
-      data: {
-        action: "new",
-        csrfmiddlewaretoken: $(elt)
-          .find('input[name="csrfmiddlewaretoken"]')
-          .val(),
-      },
+      headers: headers,
+      body: form_data,
       dataType: "html",
-    });
-    jqxhr.done(function (data) {
-      if (data.indexOf(id_form) == -1) {
-        showalert(
-          gettext("You are no longer authenticated. Please log in again."),
-          "alert-danger"
-        );
-      } else {
-        show_form(data);
-      }
-    });
-    jqxhr.fail(function ($xhr) {
-      var data = $xhr.status + " : " + $xhr.statusText;
-      ajaxfail(data);
-    });
+    })
+      .then((response) => response.text())
+      .then((data) => {
+        if (data.indexOf(id_form) == -1) {
+          showalert(
+            gettext("You are no longer authenticated. Please log in again."),
+            "alert-danger"
+          );
+        } else {
+          show_form(data);
+        }
+      })
+      .catch((error) => {
+        ajaxfail(error);
+      });
   }
   if (action == "modify") {
-    var id = $(elt).find("input[name=id]").val();
-    var jqxhr = $.ajax({
-      method: "POST",
-      url: window.location.href,
-      data: {
-        action: "modify",
-        id: id,
-        csrfmiddlewaretoken: $(elt)
-          .find('input[name="csrfmiddlewaretoken"]')
-          .val(),
-      },
-      dataType: "html",
-    });
-    jqxhr.done(function (data) {
-      if (data.indexOf(id_form) == -1) {
-        showalert(
-          gettext("You are no longer authenticated. Please log in again."),
-          "alert-danger"
-        );
-      } else {
-        show_form(data);
-        $(elt).addClass("info");
-      }
-    });
-    jqxhr.fail(function ($xhr) {
-      var data = $xhr.status + " : " + $xhr.statusText;
-      ajaxfail(data);
-    });
-  }
-  if (action == "delete") {
-    var id = $(elt).find("input[name=id]").val();
-    var jqxhr = $.ajax({
-      method: "POST",
-      url: window.location.href,
-      data: {
-        action: "delete",
-        id: id,
-        csrfmiddlewaretoken: $(elt)
-          .find('input[name="csrfmiddlewaretoken"]')
-          .val(),
-      },
-      dataType: "html",
-    });
-    jqxhr.done(function (data) {
-      if (data.indexOf("list_chapter") == -1) {
-        showalert(
-          gettext("You are no longer authenticated. Please log in again."),
-          "alert-danger"
-        );
-      } else {
-        data = JSON.parse(data);
-        //location.reload();
-        updateDom(data);
-        manageDelete();
-        $(list_chapter).html(data["list_chapter"]);
-        show_form("");
-        $("form.get_form").show();
-      }
-    });
-    jqxhr.fail(function ($xhr) {
-      var data = $xhr.status + " : " + $xhr.statusText;
-      ajaxfail(data);
-    });
-  }
-};
+    var id = elt.querySelector("input[name=id]").value;
+    url = window.location.href;
+    let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
+    headers = {
+      "X-CSRFToken": token,
+      "X-Requested-With": "XMLHttpRequest",
+    };
 
-var sendform = function (elt, action) {
-  if (action == "save") {
-    if (verify_start_title_items()) {
-      $("form#form_chapter").hide();
-      var data_form = $("form#form_chapter").serialize();
-      var jqxhr = $.ajax({
-        method: "POST",
-        url: window.location.href,
-        data: data_form,
-        dataType: "html",
+    form_data = new FormData();
+    form_data.append("action", action);
+    form_data.append("id", id);
+
+    await fetch(url, {
+      method: "POST",
+      headers: headers,
+      body: form_data,
+      dataType: "html",
+    })
+      .then((response) => response.text())
+      .then((data) => {
+        if (data.indexOf(id_form) == -1) {
+          showalert(
+            gettext("You are no longer authenticated. Please log in again."),
+            "alert-danger"
+          );
+        } else {
+          show_form(data);
+          elt.classList.add("info");
+        }
+      })
+      .catch((error) => {
+        ajaxfail(error);
       });
-      jqxhr.done(function (data) {
-        if (data.indexOf("list_chapter") == -1 && data.indexOf("form") == -1) {
+  }
+
+  if (action == "delete") {
+    var id = elt.querySelector("input[name=id]").value;
+    url = window.location.href;
+    let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
+    headers = {
+      "X-CSRFToken": token,
+      "X-Requested-With": "XMLHttpRequest",
+    };
+
+    form_data = new FormData();
+    form_data.append("action", action);
+    form_data.append("id", id);
+
+    await fetch(url, {
+      method: "POST",
+      headers: headers,
+      body: form_data,
+      dataType: "html",
+    })
+      .then((response) => response.text())
+      .then((data) => {
+        if (data.indexOf("list_chapter") == -1) {
           showalert(
             gettext("You are no longer authenticated. Please log in again."),
             "alert-danger"
           );
         } else {
           data = JSON.parse(data);
-          if (data.errors) {
-            show_form(data.form);
-            $("form#form_chapter").show();
-          } else {
-            //location.reload();
-            updateDom(data);
-            manageSave();
-            $(list_chapter).html(data["list_chapter"]);
-            show_form("");
-            $("form.get_form").show();
-          }
+          updateDom(data);
+          manageDelete();
+
+          document.getElementById("list_chapter").innerHTML = data.list_chapter;
+          show_form("");
+          document.querySelector("form.get_form").style.display = "block";
         }
+      })
+      .catch((error) => {
+        ajaxfail(error);
       });
-      jqxhr.fail(function ($xhr) {
-        var data = $xhr.status + " : " + $xhr.statusText;
-        ajaxfail(data);
-      });
+  }
+};
+
+var sendform = async function (elt, action) {
+  if (action == "save") {
+    if (verify_start_title_items()) {
+      let form_chapter = document.querySelector("form#form_chapter");
+      form_chapter.style.display = "none";
+      var data_form = new FormData(form_chapter);
+
+      let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
+      let url = window.location.href;
+      let headers = {
+        "X-CSRFToken": token,
+        "X-Requested-With": "XMLHttpRequest",
+      };
+      await fetch(url, {
+        method: "POST",
+        headers: headers,
+        body: data_form,
+        dataType: "html",
+      })
+        .then((response) => response.text())
+
+        .then((data) => {
+          if (
+            data.indexOf("list_chapter") == -1 &&
+            data.indexOf("form") == -1
+          ) {
+            showalert(
+              gettext("You are no longer authenticated. Please log in again."),
+              "alert-danger"
+            );
+          } else {
+            data = JSON.parse(data);
+            if (data.errors) {
+              document.querySelector("form#form_chapter").style.display =
+                "block";
+              showalert(
+                data.errors +
+                  " Make sure your chapter start time is not 0 or equal to the another chapter start time.",
+                "alert-danger"
+              );
+            } else {
+              updateDom(data);
+              manageSave();
+              document.getElementById("list_chapter").innerHTML =
+                data.list_chapter;
+              show_form("");
+              document.querySelector("form.get_form").style.display = "block";
+            }
+          }
+        });
     } else {
       showalert(
         gettext("One or more errors have been found in the form."),
@@ -204,39 +264,55 @@ var sendform = function (elt, action) {
     }
   }
   if (action == "import") {
-    var file = $(elt).find("input[name=file]").val();
-    var jqxhr = $.ajax({
+    var file = elt.querySelector("input[name=file]").value;
+    let url = window.location.href;
+    let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
+
+    let headers = {
+      "X-CSRFToken": token,
+      "X-Requested-With": "XMLHttpRequest",
+    };
+
+    form_data = new FormData();
+    form_data.append("action", action);
+    form_data.append("file", file);
+
+    await fetch(url, {
       method: "POST",
-      url: window.location.href,
-      data: {
-        action: "import",
-        file: file,
-        csrfmiddlewaretoken: $(elt)
-          .find('input[name="csrfmiddlewaretoken"]')
-          .val(),
-      },
+      headers: headers,
+      body: form_data,
       dataType: "html",
-    });
-    jqxhr.done(function (data) {
-      if (data.indexOf("list_chapter") == -1) {
-        showalert(
-          gettext("You are no longer authenticated. Please log in again."),
-          "alert-danger"
-        );
-      } else {
-        //location.reload();
-        data = JSON.parse(data);
-        updateDom(data);
-        manageImport();
-        $(list_chapter).html(data["list_chapter"]);
-        show_form("");
-        $("form.get_form").show();
-      }
-    });
-    jqxhr.fail(function ($xhr) {
-      var data = $xhr.status + " : " + $xhr.statusText;
-      ajaxfail(data);
-    });
+    })
+      .then((response) => response.text())
+      .then((data) => {
+        if (data.indexOf("list_chapter") == -1 && data.indexOf("form") == -1) {
+          showalert(
+            gettext("You are no longer authenticated. Please log in again."),
+            "alert-danger"
+          );
+        } else {
+          data = JSON.parse(data);
+
+          if (data.errors) {
+            document.querySelector("form#form_chapter").style.display = "block";
+            showalert(
+              data.errors +
+                " Make sure you added a file and that it is a valid file.",
+              "alert-danger"
+            );
+          } else {
+            updateDom(data);
+            manageImport();
+            document.getElementById("list_chapter").innerHTML =
+              data.list_chapter;
+            show_form("");
+            document.querySelector("form.get_form").style.display = "block";
+          }
+        }
+      })
+      .catch((error) => {
+        ajaxfail(error);
+      });
   }
 };
 
@@ -247,14 +323,19 @@ function verify_start_title_items() {
     document.getElementById("id_title").value.length < 2 ||
     document.getElementById("id_title").value.length > 100
   ) {
-    $("input#id_title")
-      .before(
-        "<span class='form-help-inline'>&nbsp;&nbsp;" +
-          gettext("Please enter a title from 2 to 100 characters.") +
-          "</span>"
-      )
-      .parents("div.form-group")
-      .addClass("has-error");
+    let inputTitle = document.querySelector("input#id_title");
+    inputTitle.insertAdjacentElement(
+      "beforebegin",
+      "<span class='form-help-inline'>&nbsp;&nbsp;" +
+        gettext("Please enter a title from 2 to 100 characters.") +
+        "</span>"
+    );
+    inputTitle.parentNode.parentNode
+      .querySelectorAll("div.form-group")
+      .forEach(function (elt) {
+        elt.classList.add("has-error");
+      });
+
     return false;
   }
   if (
@@ -262,16 +343,20 @@ function verify_start_title_items() {
     document.getElementById("id_time_start").value < 0 ||
     document.getElementById("id_time_start").value >= video_duration
   ) {
-    $("input#id_time_start")
-      .before(
-        "<span class='form-help-inline'>&nbsp;&nbsp;" +
-          gettext("Please enter a correct start field between 0 and") +
-          " " +
-          (video_duration - 1) +
-          "</span>"
-      )
-      .parents("div.form-group")
-      .addClass("has-error");
+    let inputStart = document.querySelector("input#id_time_start");
+    inputStart.insertAdjacentElement(
+      "beforebegin",
+      "<span class='form-help-inline'>&nbsp;&nbsp;" +
+        gettext("Please enter a correct start field between 0 and") +
+        " " +
+        (video_duration - 1) +
+        "</span>"
+    );
+    inputStart.parentNode.parentNode
+      .querySelectorAll("div.form-group")
+      .forEach(function (elt) {
+        elt.classList.add("has-error");
+      });
     return false;
   }
   return true;
@@ -281,15 +366,15 @@ function overlaptest() {
   var new_start = parseInt(document.getElementById("id_time_start").value);
   var id = parseInt(document.getElementById("id_chapter").value);
   var msg = "";
-  $("ul#chapters li").each(function () {
+  document.querySelectorAll("ul#chapters li").foreach(function (li) {
     if (
-      id != $(this).attr("data-id") &&
-      new_start == $(this).attr("data-start")
+      id != li.getAttribute("data-id") &&
+      new_start == lit.getAttribute("data-start")
     ) {
       var text =
         gettext("The chapter") +
         ' "' +
-        $(this).attr("data-title") +
+        li.getAttribute("data-title") +
         '" ' +
         gettext("starts at the same time.");
       msg += "<br/>" + text;
@@ -318,25 +403,32 @@ Number.prototype.toHHMMSS = function () {
   return hours + ":" + minutes + ":" + seconds;
 };
 
-$(document).on("change", "input#id_time_start", function () {
-  $(this)
-    .parent()
-    .find("span.getfromvideo span.timecode")
-    .html(" " + parseInt($(this).val()).toHHMMSS());
+document.addEventListener("change", (event) => {
+  if (!event.target.matches("#id_time_start")) return;
+  event.target.parentNode
+    .querySelectorAll("span.getfromvideo span.timecode")
+    .forEach(function (span) {
+      span.innerHTML = " " + parseInt(event.target.value).toHHMMSS();
+    });
 });
-$(document).on("change", "input#id_time_end", function () {
-  $(this)
-    .parent()
-    .find("span.getfromvideo span.timecode")
-    .html(" " + parseInt($(this).val()).toHHMMSS());
+document.addEventListener("change", (event) => {
+  if (!event.target.matches("#id_time_end")) return;
+  event.target.parentNode
+    .querySelectorAll("span.getfromvideo span.timecode")
+    .forEach(function (span) {
+      span.innerHTML = " " + parseInt(event.target.value).toHHMMSS();
+    });
 });
 
-$(document).on("click", "#info_video span.getfromvideo a", function (e) {
-  e.preventDefault();
+document.addEventListener("click", (event) => {
   if (!(typeof player === "undefined")) {
-    if ($(this).attr("id") == "getfromvideo_start") {
-      $("input#id_time_start").val(parseInt(player.currentTime()));
-      $("input#id_time_start").trigger("change");
+    if (event.target.matches("#getfromvideo_start")) {
+      document.getElementById("id_time_start").value = Math.floor(
+        player.currentTime()
+      );
+      const event = new Event("change");
+      const time_start = document.getElementById("id_time_start");
+      time_start.dispatchEvent(event);
     }
   }
 });
@@ -346,7 +438,7 @@ var updateDom = function (data) {
   let n1 = document.querySelector("ul#chapters");
   let n2 = document.querySelector("div.chapters-list");
   let tmp_node = document.createElement("div");
-  $(tmp_node).html(data["video-elem"]);
+  tmp_node.innerHTML = data["video-elem"];
   let chaplist = tmp_node.querySelector("div.chapters-list");
   if (n1 != null) {
     n1.parentNode.removeChild(n1);
@@ -357,10 +449,13 @@ var updateDom = function (data) {
   if (chaplist != null && n2 != null) {
     chaplist.className = n2.className;
   }
-  $("#" + window.videojs.players.podvideoplayer.id_).append(chaplist);
-  $("#" + window.videojs.players.podvideoplayer.id_).append(
-    tmp_node.querySelector("ul#chapters")
-  );
+
+  document
+    .querySelector("#" + window.videojs.players.podvideoplayer.id_)
+    .append(chaplist);
+  document
+    .querySelector("#" + window.videojs.players.podvideoplayer.id_)
+    .append(tmp_node.querySelector("ul#chapters"));
 };
 
 var manageSave = function () {

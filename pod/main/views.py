@@ -40,6 +40,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Configuration
 from honeypot.decorators import check_honeypot
 
+
 ##
 # Settings exposed in templates
 #

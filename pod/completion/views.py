@@ -101,10 +101,12 @@ def video_caption_maker_save(request, video):
     video_folder, created = UserFolder.objects.get_or_create(
         name=video.slug, owner=request.user
     )
+
     if request.method == "POST":
         error = False
         lang = request.POST.get("lang")
         kind = request.POST.get("kind")
+
         enrich_ready = True if request.POST.get("enrich_ready") == "true" else False
         cur_folder = get_current_session_folder(request)
         response = file_edit_save(request, cur_folder)
@@ -234,7 +236,6 @@ def video_completion_contributor(request, slug):
         list_overlay = video.overlay_set.all()
     else:
         list_contributor = video.contributor_set.all()
-
     if request.POST and request.POST.get("action"):
         if request.POST["action"] in ACTION:
             return eval(
