@@ -96,6 +96,11 @@ class Owner(models.Model):
     accessgroups = models.ManyToManyField("authentication.AccessGroup", blank=True)
     sites = models.ManyToManyField(Site)
 
+    class Meta:
+        verbose_name = _("Owner")
+        verbose_name_plural = _("Owners")
+        ordering = ["user"]
+
     def __str__(self):
         if HIDE_USERNAME:
             return "%s %s" % (self.user.first_name, self.user.last_name)
@@ -148,6 +153,11 @@ def create_owner_profile(sender, instance, created, **kwargs):
 class GroupSite(models.Model):
     group = models.OneToOneField(Group, on_delete=models.CASCADE)
     sites = models.ManyToManyField(Site)
+
+    class Meta:
+        verbose_name = _("Group site")
+        verbose_name_plural = _("Groups site")
+        ordering = ["group"]
 
 
 @receiver(post_save, sender=GroupSite)

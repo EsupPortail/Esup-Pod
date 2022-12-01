@@ -122,7 +122,7 @@
       loader = document.createElement("div");
       loader.setAttribute("class", "manage-video__loader text-center");
       loader.innerHTML = `<div class="spinner-border text-primary" role="status"><span class="visually-hidden">${gettext(
-        "Loading..."
+        "Loading…"
       )}</span></div>`;
     }
     if (remove) loader.remove();

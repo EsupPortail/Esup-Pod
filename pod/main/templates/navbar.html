@@ -5,10 +5,10 @@
 {% load thumbnail %}
 
 <div class="container-fluid pod-container pod-navbar__container" id="nav-mainbar">
-  <!--
+  {% comment %}<!--
     <button class="navbar-toggler pod-navbar__button-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#pod-navbar__menu" aria-controls="pod-navbar__menu" aria-expanded="false" title="{% trans 'Toggle navigation' %}">
       <i class="bi bi-list" aria-hidden="true"></i>
-    </button> -->
+    </button> -->{% endcomment %}
   <button class="pod-navbar__button-toggler navbar-toggler" type="button"
     data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menu"
     aria-controls="pod-navbar__menu" title="{% trans 'Toggle navigation' %}">
@@ -64,22 +64,20 @@
 
   <ul class="navbar-nav flex-row align-items-center" id="nav-useraction">
     {% if user.is_authenticated %}
-      <li class="d-none d-md-block nav-item pod-navbar__nav-item mx-2" id="nav-addvideo">
         {% if MAINTENANCE_MODE %}
-          <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
+          <li class="d-none d-md-block nav-item pod-navbar__nav-item mx-2" id="nav-addvideo">
+            <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
+          </li>
         {% else %}
-          <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
-        {% endif %}
-      </li>
-      {% if USE_MEETING %}
-        <li class="d-none d-md-block nav-item nav-item pod-navbar__nav-item" id="nav-mymeetings">
-          {% if MAINTENANCE_MODE%}
-            <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
-          {% else %}
-            <a class="nav-item btn btn-primary btn-sm d-flex justify-content-center align-items-center" href="{% url 'meeting:my_meetings' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'My meetings' %}"><i class="bi bi-person-video"></i><span>{% trans "My meetings" %}</span></a>
+          <li class="d-none d-md-block nav-item pod-navbar__nav-item mx-2" id="nav-addvideo">
+            <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add me-1"></i><span>{% trans "Add a video" %}</span></a>
+          </li>
+          {% if USE_MEETING %}
+          <li class="d-none d-md-block nav-item pod-navbar__nav-item mx-2" id="nav-mymeetings">
+            <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-add me-1"></i><span>{% trans "My meetings" %}</span></a>
+          </li>
           {% endif %}
-        </li>
-      {% endif %}
+        {% endif %}
     {% endif %}
     <!--  Ajout Params Buttons -->
     <li class="nav-item pod-params pod-navbar__nav-item" id="pod-param-buttons">
@@ -169,7 +167,7 @@
           <div class="offcanvas-body">
             <nav class="nav flex-column">
               {% if MAINTENANCE_MODE %}
-                <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle "></i> {% trans "Some features are unavailable" %}</span>
+                <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle "></i> {% trans "Some features are unavailable" %}</span>
               {% else %}
                 <a class="mx-3 mb-2 btn btn-primary" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
               {% endif %}

@@ -160,7 +160,7 @@ STATICFILES_STORAGE = 'static_compress.CompressedStaticFilesStorage'
 MEDIA_ROOT = "/pod/media"
 
 """
-# nom du serveur smtp
+# nom du serveur smtp (https://docs.djangoproject.com/fr/3.2/ref/settings/#email-host)
 """
 EMAIL_HOST = "smtp.univ.fr"
 
@@ -168,6 +168,11 @@ EMAIL_HOST = "smtp.univ.fr"
 # port d'écoute du serveur smtp
 """
 EMAIL_PORT = 25
+
+"""
+# Préfixe par défaut pour l'objet des courriels
+"""
+EMAIL_SUBJECT_PREFIX = "[Pod] "
 
 """
 # Expediteur par défaut pour les envois automatique (erreur de code etc.)
@@ -409,7 +414,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
 
     # Logo affiché sur le player video.
     # Doit se situer dans le répertoire static
-    'LOGO_PLAYER': 'img/logoPod.svg',
+    'LOGO_PLAYER': 'img/pod_favicon.svg',
 
     # Lien de destination du logo affiché sur le player
     'LINK_PLAYER': '',
@@ -423,7 +428,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
     'FOOTER_TEXT': ('',),
 
     # Icone affichée dans la barre d'adresse du navigateur
-    'FAVICON': 'img/logoPod.svg',
+    'FAVICON': 'img/pod_favicon.svg',
 
     # Si souhaitée, à créer et sauvegarder
     #  dans le répertoire static de l'application custom et
@@ -1112,6 +1117,12 @@ OIDC_OP_JWKS_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/discovery/keys"
 """
 OIDC_CLAIM_FAMILY_NAME = "family_name"
 OIDC_CLAIM_GIVEN_NAME = "given_name"
+
+ """
+# Utiliser un proxy
+ """
+PROXY_HOST = ""
+PROXY_PORT = ""
 
 """
 # Permettre l'usage du oembed, partage dans Moodle, Facebook, Twitter etc.

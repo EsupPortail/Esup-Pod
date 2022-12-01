@@ -1,41 +1,12 @@
-/** iframe .css **/
-body {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-nav {
-    display:none !important;
-}
-#mainbreadcrumb {
-    display:none !important;
-}
-#livename {
-    display:none !important;
-}
+/** Esup-Pod iframe mode iframe.css **/
+body,
 .container-pod {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-.mt-3 {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-.back-to-top {
-     display:none !important;
-}
-#event_add {
-     display:none !important;
-}
-#navbar_collapse {
-    display:none !important;
-}
-#collapseAside {
-    display:none !important;
-}
-#navbar-video {
-    display:none !important;
-}
-footer {
-    display:none !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
+#livename,
+.pod-navbar,
+#event_add {
+  display:none !important;
+}

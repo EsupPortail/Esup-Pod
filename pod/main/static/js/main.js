@@ -446,7 +446,7 @@ var send_form_data = function (
   callbackFail = undefined
 ) {
   console.log(
-    "[Deprecation Warning] send_form_data function will soon be debrecated. Replace it by send_form_data_vanilla."
+    "[Deprecation Warning] send_form_data function will soon be deprecated. Replace it by send_form_data_vanilla."
   );
   callbackSuccess =
     typeof callbackSuccess === "function"
@@ -469,7 +469,7 @@ var send_form_data = function (
     var data = $xhr.status + " : " + $xhr.statusText;
     showalert(
       gettext("Error during exchange") +
-        "(" +
+        " (" +
         data +
         ")<br/>" +
         gettext("No data could be stored."),
@@ -479,8 +479,9 @@ var send_form_data = function (
   });
 };
 
-/*!
+/**
  * AJAX call function (usually send form data)
+ *
  * @param  {String}          url               Address link to be requested
  * @param  {String}          fct               JS Function to call when it's done.
  * @param  {HTMLFormElement} [data_form]       The form to be sent with POST
@@ -531,7 +532,7 @@ var send_form_data_vanilla = function (
     .catch(function (err) {
       showalert(
         gettext("Error during exchange") +
-          "(" +
+          " (" +
           err +
           ")<br/>" +
           gettext("No data could be stored."),
@@ -875,7 +876,7 @@ var showalert = function (message, alerttype) {
   $("body").append(
     '<div id="formalertdiv" class="alert ' +
       alerttype +
-      ' alert-dismissible fade show"  role="alert">' +
+      ' alert-dismissible fade show" role="alert">' +
       message +
       '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="' +
       gettext("Close") +
@@ -918,38 +919,3 @@ function show_messages(msgText, msgClass, loadUrl) {
     });
   }
 }
-
-/*!
- * Serialize all form data into an array of key/value pairs
- * (c) 2020 Chris Ferdinandi, MIT License, https://gomakethings.com
- * @param  {Node}   form The form to serialize
- * @return {Array}       The serialized form data
- */
-var podSerializeArray = function (form) {
-  var arr = [];
-  Array.prototype.slice.call(form.elements).forEach(function (field) {
-    if (
-      !field.name ||
-      field.disabled ||
-      ["file", "reset", "submit", "button"].indexOf(field.type) > -1
-    )
-      return;
-    if (field.type === "select-multiple") {
-      Array.prototype.slice.call(field.options).forEach(function (option) {
-        if (!option.selected) return;
-        arr.push({
-          name: field.name,
-          value: option.value,
-        });
-      });
-      return;
-    }
-    if (["checkbox", "radio"].indexOf(field.type) > -1 && !field.checked)
-      return;
-    arr.push({
-      name: field.name,
-      value: field.value,
-    });
-  });
-  return arr;
-};

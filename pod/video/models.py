@@ -177,10 +177,10 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         "TITLE_ETB": "University name",
         "LOGO_SITE": "img/logoPod.svg",
         "LOGO_ETB": "img/logo_etb.svg",
-        "LOGO_PLAYER": "img/logoPod.svg",
+        "LOGO_PLAYER": "img/pod_favicon.svg",
         "LINK_PLAYER": "",
         "FOOTER_TEXT": ("",),
-        "FAVICON": "img/logoPod.svg",
+        "FAVICON": "img/pod_favicon.svg",
         "CSS_OVERRIDE": "",
         "PRE_HEADER_TEMPLATE": "",
         "POST_FOOTER_TEMPLATE": "",
@@ -906,7 +906,7 @@ class Video(models.Model):
         This height is mostly valid when in iframe mode,
          as in main mode height is set by % of window.
         """
-        return 360 if self.is_video else 180
+        return 360 if self.is_video else 244
 
     def get_thumbnail_url(self):
         """Get a thumbnail url for the video."""
@@ -921,7 +921,11 @@ class Video(models.Model):
             )
         else:
             thumbnail_url = "".join(
-                ["//", get_current_site(request).domain, static(DEFAULT_THUMBNAIL)]
+                [
+                    "//",
+                    get_current_site(request).domain,
+                    static(DEFAULT_THUMBNAIL),
+                ]
             )
         return thumbnail_url
 

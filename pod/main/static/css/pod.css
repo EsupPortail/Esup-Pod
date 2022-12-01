@@ -461,7 +461,7 @@ tr,
 
   .navbar label {
     padding-left: 1px;
-    display: inline-block;
+    /*display: inline-block;*/
     /*margin-top: .3em;*/
     position: relative;
     left: .1em;
@@ -1030,6 +1030,7 @@ body {
   background: none;
   border: 1px solid silver;
   color: var(--pod-font-color);
+  text-shadow: 1px 1px 0  var(--pod-background);
 }
 .pod-aside-collapse__button:hover{
   background-color: var(--pod-link-color);
@@ -1090,16 +1091,13 @@ body {
 .pod-card__title,
 .pod-card__title label {
   display: flex;
-  gap: 0.5rem;
+  gap: .5rem;
   align-items: center;
 }
 
 @media (min-width: 992px) {
   .pod-card__title,
   .pod-card__title label {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
     flex-flow: wrap
   }
 }

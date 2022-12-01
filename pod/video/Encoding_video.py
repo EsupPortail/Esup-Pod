@@ -259,6 +259,7 @@ class Encoding_video:
         }
         output_file = os.path.join(self.output_dir, "%sp.mp4" % first_item[0])
         mp4_command += FFMPEG_MP4_ENCODE % {
+            "map_audio": "-map 0:a:0" if len(self.list_audio_track) > 0 else "",
             "libx": FFMPEG_LIBX,
             "height": first_item[0],
             "preset": FFMPEG_PRESET,
@@ -283,6 +284,7 @@ class Encoding_video:
             if in_height >= rend:
                 output_file = os.path.join(self.output_dir, "%sp.mp4" % rend)
                 mp4_command += FFMPEG_MP4_ENCODE % {
+                    "map_audio": "-map 0:a:0" if len(self.list_audio_track) > 0 else "",
                     "libx": FFMPEG_LIBX,
                     "height": rend,
                     "preset": FFMPEG_PRESET,
