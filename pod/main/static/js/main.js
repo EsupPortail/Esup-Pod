@@ -1249,7 +1249,7 @@ var videocheck = function (form, event) {
         document.querySelector("#video_form button").style.display = "none";
 
         let js_process = document.getElementById("js-process");
-        js_process.style.display = "block";
+        js_process.classList.remove('d-none')
         window.scrollTo(js_process.scrollTop(), 0);
         if (!show_progress_bar(form)) {
           event.preventDefault();
