@@ -96,7 +96,7 @@ document.addEventListener("submit", (e) => {
 });
 
 var sendandgetform = async function (elt, action) {
-  document.querySelector("form.get_form").style.display = "none";
+  //document.querySelector("form.get_form").style.display = "none";
   let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
   if (action == "new") {
     url = window.location.href;
@@ -243,7 +243,7 @@ var sendform = async function (elt, action) {
                 "block";
               showalert(
                 data.errors +
-                  " Make sure your chapter start time is not 0 or equal to the another chapter start time.",
+                  " Make sure your chapter start time is not 0 or equal to another chapter start time.",
                 "alert-danger"
               );
             } else {
@@ -344,7 +344,7 @@ function verify_start_title_items() {
     document.getElementById("id_time_start").value >= video_duration
   ) {
     let inputStart = document.querySelector("input#id_time_start");
-    inputStart.insertAdjacentElement(
+    inputStart.insertAdjacentHTML(
       "beforebegin",
       "<span class='form-help-inline'>&nbsp;&nbsp;" +
         gettext("Please enter a correct start field between 0 and") +

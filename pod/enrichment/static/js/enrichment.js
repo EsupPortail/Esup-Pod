@@ -63,15 +63,22 @@ var ajaxfail = function (data) {
       gettext("The form could not be recovered."),
     "alert-danger"
   );
-  document.querySelector("form.get_form").style.display = "block";
+  document.querySelectorAll("form.get_form").forEach((form)=>{
+    form.style.display = "block";
+  })
+  
 
   show_form("");
 };
 
 document.addEventListener("click", (e) => {
   if (e.target.id != "cancel_enrichment") return;
-  document.querySelectorAll("form.get_form").style.display = "block";
-  show_form("");
+  document.querySelectorAll("form.get_form").forEach((form)=> {
+    form.style.display = "block";
+    show_form("");
+  })
+  
+  
 });
 
 document.addEventListener("submit", (e) => {
@@ -92,7 +99,7 @@ document.addEventListener("submit", (e) => {
 });
 
 var sendandgetform = async function (elt, action) {
-  document.querySelector("form.get_form").style.display = "none";
+  // document.querySelector("form.get_form").style.display = "none";
   let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
   if (action == "new") {
     url = window.location.href;
