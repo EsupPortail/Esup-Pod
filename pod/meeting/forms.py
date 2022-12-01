@@ -270,13 +270,17 @@ class MeetingForm(forms.ModelForm):
         ):
             cleaned_data["is_restricted"] = True
 
-        start_time = datetime.datetime.strptime(
-            self.cleaned_data["start_time"],
-            "%H:%M:%S"
-        ).time()
-        start_datetime = datetime.datetime.combine(self.cleaned_data["start"], start_time)
-        start_datetime = timezone.make_aware(start_datetime)
-        self.cleaned_data["start_at"] = start_datetime
+        if "start_time" in cleaned_data.keys() and "start" in cleaned_data.keys():
+            start_time = datetime.datetime.strptime(
+                self.cleaned_data["start_time"],
+                "%H:%M:%S"
+            ).time()
+            start_datetime = datetime.datetime.combine(
+                self.cleaned_data["start"],
+                start_time
+            )
+            start_datetime = timezone.make_aware(start_datetime)
+            self.cleaned_data["start_at"] = start_datetime
 
         if "voice_bridge" in cleaned_data.keys() and cleaned_data[
             "voice_bridge"

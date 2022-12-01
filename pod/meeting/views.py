@@ -570,6 +570,9 @@ def get_text_content(request, meeting):
     )
     meeting_start_datetime = timezone.localtime(
         meeting.start_at).strftime("%d/%m/%Y %H:%M")
+    full_name = meeting.owner.get_full_name() if (
+        meeting.owner.get_full_name() != ""
+    ) else meeting.owner.username
     if meeting.recurrence:
         text_content = (
             _(
@@ -585,7 +588,7 @@ def get_text_content(request, meeting):
         """
             )
             % {
-                "owner": meeting.owner.get_full_name(),
+                "owner": full_name,
                 "meeting_title": meeting.name,
                 "start_date_time": meeting_start_datetime,
                 "end_date": meeting.recurring_until.strftime("%d/%m/%Y"),
@@ -609,7 +612,7 @@ def get_text_content(request, meeting):
         """
             )
             % {
-                "owner": meeting.owner.get_full_name(),
+                "owner": full_name,
                 "meeting_title": meeting.name,
                 "start_date_time": meeting_start_datetime,
                 "end_date": timezone.localtime(
@@ -628,6 +631,9 @@ def get_html_content(request, meeting):
     )
     meeting_start_datetime = timezone.localtime(
         meeting.start_at).strftime("%d/%m/%Y %H:%M")
+    full_name = meeting.owner.get_full_name() if (
+        meeting.owner.get_full_name() != ""
+    ) else meeting.owner.username
     if meeting.recurrence:
         html_content = (
             _(
@@ -643,7 +649,7 @@ def get_html_content(request, meeting):
         """
             )
             % {
-                "owner": meeting.owner.get_full_name(),
+                "owner": full_name,
                 "meeting_title": meeting.name,
                 "start_date_time": meeting_start_datetime,
                 "end_date": meeting.recurring_until.strftime("%d/%m/%Y"),
@@ -668,7 +674,7 @@ def get_html_content(request, meeting):
         """
             )
             % {
-                "owner": meeting.owner.get_full_name(),
+                "owner": full_name,
                 "meeting_title": meeting.name,
                 "start_date_time": meeting_start_datetime,
                 "end_date": timezone.localtime(
