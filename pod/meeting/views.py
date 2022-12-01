@@ -568,9 +568,8 @@ def get_text_content(request, meeting):
     join_link = request.build_absolute_uri(
         reverse("meeting:join", args=(meeting.meeting_id,))
     )
-    meeting_start_datetime = timezone.make_aware(
-        datetime.combine(meeting.start, meeting.start_time)
-    )
+    meeting_start_datetime = timezone.localtime(
+        meeting.start_at).strftime("%d/%m/%Y %H:%M")
     if meeting.recurrence:
         text_content = (
             _(
@@ -589,9 +588,9 @@ def get_text_content(request, meeting):
                 "owner": meeting.owner.get_full_name(),
                 "meeting_title": meeting.name,
                 "start_date_time": meeting_start_datetime,
-                "end_date": meeting.recurring_until,
+                "end_date": meeting.recurring_until.strftime("%d/%m/%Y"),
                 "frequency": meeting.frequency,
-                "recurrence": meeting.recurrence,
+                "recurrence": meeting.get_recurrence_display().lower(),
                 "join_link": join_link,
                 "password": meeting.attendee_password,
             }
@@ -613,7 +612,9 @@ def get_text_content(request, meeting):
                 "owner": meeting.owner.get_full_name(),
                 "meeting_title": meeting.name,
                 "start_date_time": meeting_start_datetime,
-                "end_date": meeting_start_datetime + meeting.expected_duration,
+                "end_date": timezone.localtime(
+                    meeting.start_at + meeting.expected_duration
+                ).strftime("%d/%m/%Y %H:%M"),
                 "join_link": join_link,
                 "password": meeting.attendee_password,
             }
@@ -625,9 +626,8 @@ def get_html_content(request, meeting):
     join_link = request.build_absolute_uri(
         reverse("meeting:join", args=(meeting.meeting_id,))
     )
-    meeting_start_datetime = timezone.make_aware(
-        datetime.combine(meeting.start, meeting.start_time)
-    )
+    meeting_start_datetime = timezone.localtime(
+        meeting.start_at).strftime("%d/%m/%Y %H:%M")
     if meeting.recurrence:
         html_content = (
             _(
@@ -646,9 +646,9 @@ def get_html_content(request, meeting):
                 "owner": meeting.owner.get_full_name(),
                 "meeting_title": meeting.name,
                 "start_date_time": meeting_start_datetime,
-                "end_date": meeting.recurring_until,
+                "end_date": meeting.recurring_until.strftime("%d/%m/%Y"),
                 "frequency": meeting.frequency,
-                "recurrence": meeting.recurrence,
+                "recurrence": meeting.get_recurrence_display().lower(),
                 "join_link": join_link,
                 "password": meeting.attendee_password,
             }
@@ -671,7 +671,9 @@ def get_html_content(request, meeting):
                 "owner": meeting.owner.get_full_name(),
                 "meeting_title": meeting.name,
                 "start_date_time": meeting_start_datetime,
-                "end_date": meeting_start_datetime + meeting.expected_duration,
+                "end_date": timezone.localtime(
+                    meeting.start_at + meeting.expected_duration
+                ).strftime("%d/%m/%Y %H:%M"),
                 "join_link": join_link,
                 "password": meeting.attendee_password,
             }
@@ -700,9 +702,9 @@ def create_ics(request, meeting):
         line for line in description.replace("    ", "").split("\n")
     )
 
-    start_date_time = "TZID=%s:%s" % (
+    start_date_time = "TZID=\"%s\":%s" % (
         timezone.get_current_timezone(),
-        timezone.localtime(meeting.start_at).strftime("%Y%m%dT%H%M%S%z")
+        timezone.localtime(meeting.start_at).strftime("%Y%m%dT%H%M%S")
     )
 
     duration = int(
