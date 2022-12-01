@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
-from datetime import date
+from datetime import datetime, date
 from django.core.exceptions import ValidationError
 
 import random
@@ -151,7 +151,7 @@ class OccurencesMeetingTestCase(TestCase):
     def test_models_meetings_get_occurrences_no_recurrence(self):
         """A meeting without recurrence should return 1 occurence."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = date(2022, 7, 7)
+        meeting.start_at = datetime(2022, 7, 7, 14, 0, 0)
         meeting.recurrence = None
         meeting.save()
         self.assertEqual(
@@ -167,7 +167,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Daily occurences with date of end of reccurrence filled in but not \
         number of occurrences."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = date(2022, 7, 7)
+        meeting.start_at = datetime(2022, 7, 7, 14, 0, 0)
         meeting.recurrence = "daily"
         meeting.frequency = 1
         meeting.recurring_until = date(2022, 8, 2)
@@ -207,7 +207,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Daily occurences with date of end of reccurrence not leaving any \
         possibliity of repeated occurence."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = date(2022, 7, 7)
+        meeting.start_at = datetime(2022, 7, 7, 14, 0, 0)
         meeting.recurrence = "daily"
         meeting.frequency = 3
         meeting.recurring_until = date(2022, 7, 9)
@@ -229,7 +229,7 @@ class OccurencesMeetingTestCase(TestCase):
         end of occurence. The date of end of reccurrence shoud be calculated if \
         the number of occurrences is repeated."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = date(2022, 7, 7)
+        meeting.start_at = datetime(2022, 7, 7, 14, 0, 0)
         meeting.recurrence = "daily"
         meeting.frequency = 1
         meeting.recurring_until = None
@@ -309,7 +309,7 @@ class OccurencesMeetingTestCase(TestCase):
         meeting = meeting = Meeting.objects.get(id=1)
         with self.assertRaises(ValidationError) as context:
             # 2022-7-7 is a Thursday, and weekday 2 is Tuesday
-            meeting.start_at = date(2022, 7, 7)
+            meeting.start_at = datetime(2022, 7, 7, 14, 0, 0)
             meeting.recurrence = "weekly"
             meeting.weekdays = "2"
             meeting.save()
@@ -323,7 +323,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Weekly occurences with date of end of reccurrence filled in but not \
         number of occurrences."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = date(2022, 7, 7)
+        meeting.start_at = datetime(2022, 7, 7, 14, 0, 0)
         meeting.recurrence = "weekly"
         meeting.frequency = 1
         meeting.recurring_until = date(2022, 8, 2)
@@ -378,7 +378,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Weekly occurences with number of occurrences filled in but not date \
         of end of reccurrence."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = date(2022, 7, 6)
+        meeting.start_at = datetime(2022, 7, 6, 14, 0, 0)
         meeting.recurrence = "weekly"
         meeting.frequency = 1
         meeting.recurring_until = None
@@ -426,7 +426,7 @@ class OccurencesMeetingTestCase(TestCase):
     def test_models_meetings_get_occurrences_weekly_reset_weekdays(self):
         """reset weekdays if recurrence not equal to weekly"""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = date(2022, 7, 6)
+        meeting.start_at = datetime(2022, 7, 6, 14, 0, 0)
         meeting.recurrence = "weekly"
         meeting.frequency = 1
         meeting.recurring_until = None
@@ -453,7 +453,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Monthly occurences with date of end of recurrence filled in but not number of \
         occurences. The monthly reccurence is on the precise date each month"""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = date(2022, 10, 7)
+        meeting.start_at = datetime(2022, 10, 7, 14, 0, 0)
         meeting.recurrence = "monthly"
         meeting.frequency = 1
         meeting.recurring_until = date(2023, 4, 2)
@@ -488,7 +488,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Monthly occurences with number of occurrences filled in but not date of end \
         of reccurrence. The monthly reccurence is on the nth weekday of the month."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = date(2022, 10, 7)
+        meeting.start_at = datetime(2022, 10, 7, 14, 0, 0)
         meeting.recurrence = "monthly"
         meeting.frequency = 1
         meeting.recurring_until = None
@@ -534,7 +534,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Monthly occurences with date of end of recurrence filled in but not number \
         of occurences. The monthly reccurence is on the nth weekday of the month."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = date(2022, 10, 21)
+        meeting.start_at = datetime(2022, 10, 21, 14, 0, 0)
         meeting.recurrence = "monthly"
         meeting.frequency = 1
         meeting.recurring_until = date(2023, 4, 2)
@@ -576,7 +576,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Monthly occurences with date of end of recurrence filled in but not number \
         of occurrences. The monthly reccurence is on the nth weekday of the month."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = date(2022, 10, 21)
+        meeting.start_at = datetime(2022, 10, 21, 14, 0, 0)
         meeting.recurrence = "monthly"
         meeting.frequency = 1
         meeting.recurring_until = None
@@ -632,7 +632,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Yearly occurences with date of end of recurrence filled in but not \
         number of occurrences."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = date(2022, 10, 7)
+        meeting.start_at = datetime(2022, 10, 7, 14, 0, 0)
         meeting.recurrence = "yearly"
         meeting.frequency = 1
         meeting.recurring_until = date(2028, 4, 2)
@@ -672,7 +672,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Yearly occurences with number of occurrences filled in but not date of \
         end of reccurrence."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = date(2022, 10, 7)
+        meeting.start_at = datetime(2022, 10, 7, 14, 0, 0)
         meeting.recurrence = "yearly"
         meeting.frequency = 1
         meeting.recurring_until = None
