@@ -37,7 +37,7 @@ class MeetingTestCase(TestCase):
         """
         user = User.objects.get(username="pod")
         meeting = Meeting.objects.create(
-            start=date(2022, 6, 27),
+            start_at=datetime(2022, 6, 27, 14, 0, 0),
             recurring_until=date(2022, 6, 26),
             recurrence="daily",
             owner=user

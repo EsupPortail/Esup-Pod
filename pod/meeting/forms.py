@@ -65,12 +65,13 @@ if MEETING_DISABLE_RECORD:
         MEETING_MAIN_FIELDS
         + MEETING_DATE_FIELDS
         + MEETING_RECURRING_FIELDS
-        + ("id",)
+        + ("id", "start_at")
         + MEETING_RECORD_FIELDS
     )
 else:
     MEETING_EXCLUDE_FIELDS = (
-        MEETING_MAIN_FIELDS + MEETING_DATE_FIELDS + MEETING_RECURRING_FIELDS + ("id",)
+        MEETING_MAIN_FIELDS + MEETING_DATE_FIELDS + MEETING_RECURRING_FIELDS + (
+            "id", "start_at")
     )
 
 for field in Meeting._meta.fields:
@@ -144,7 +145,11 @@ class MeetingForm(forms.ModelForm):
             now = now.replace(now.hour + 1, minute=0)
         return now
 
-    start = forms.DateField(label=_("Start date"), initial=timezone.now)
+    start = forms.DateField(
+        label=_("Start date"),
+        initial=timezone.now,
+        widget=admin_widgets.AdminDateWidget
+    )
     start_time = forms.ChoiceField(
         label=_("Start time"),
         choices=get_time_choices(),
@@ -280,7 +285,7 @@ class MeetingForm(forms.ModelForm):
                 start_time
             )
             start_datetime = timezone.make_aware(start_datetime)
-            self.cleaned_data["start_at"] = start_datetime
+            self.instance.start_at = start_datetime
 
         if "voice_bridge" in cleaned_data.keys() and cleaned_data[
             "voice_bridge"
@@ -320,11 +325,19 @@ class MeetingForm(forms.ModelForm):
             and getattr(self.instance, "weekdays", None)
         ):
             self.initial["days_of_week"] = list(self.instance.weekdays)
+        # remove recurring until value if recurrence is None
+        if (
+            getattr(self.instance, "id", None)
+            and getattr(self.instance, "recurrence", None) is None
+        ):
+            self.initial["recurring_until"] = None
 
         # MEETING_DISABLE_RECORD
         if MEETING_DISABLE_RECORD:
             for field in MEETING_RECORD_FIELDS:
                 self.remove_field(field)
+        # remove start_at
+        self.remove_field("start_at")
 
     def remove_field(self, field):
         if self.fields.get(field):
@@ -355,8 +368,7 @@ class MeetingForm(forms.ModelForm):
         widgets = {
             "owner": OwnerWidget,
             "additional_owners": AddOwnerWidget,
-            "start": admin_widgets.AdminDateWidget,
-            "recurring_until": admin_widgets.AdminDateWidget,
+            "recurring_until": admin_widgets.AdminDateWidget
         }
 
 

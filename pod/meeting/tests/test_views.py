@@ -4,6 +4,8 @@ from django.urls import reverse
 from django.test import Client, override_settings
 from django.contrib.sites.models import Site
 from django.conf import settings
+from django.utils import timezone
+from datetime import datetime
 
 from http import HTTPStatus
 from importlib import reload
@@ -122,7 +124,7 @@ class MeetingAddEditTestView(TestCase):
                 "voice_bridge": 70000 + random.randint(0, 9999),
                 "attendee_password": "1234",
                 "start": "2022-08-26",
-                "start_time": "01:00:00",
+                "start_time": "21:00:00",
                 "expected_duration": "2",
                 "frequency": "1",
                 "monthly_type": "date_day",
@@ -136,6 +138,7 @@ class MeetingAddEditTestView(TestCase):
         m = Meeting.objects.get(name="test1")
         self.assertEqual(m.attendee_password, "1234")
         self.assertEqual(Meeting.objects.all().count(), nb_meeting + 1)
+        self.assertEqual(m.start_at, timezone.make_aware(datetime(2022, 8, 26, 21, 0, 0)))
         print("   --->  test_meeting_add_post_request of MeetingEditTestView: OK!")
 
     def test_meeting_edit_post_request(self):
@@ -162,7 +165,7 @@ class MeetingAddEditTestView(TestCase):
                 "voice_bridge": 70000 + random.randint(0, 9999),
                 "attendee_password": "1234",
                 "start": "2022-08-26",
-                "start_time": "01:00:00",
+                "start_time": "14:00:00",
                 "expected_duration": "2",
                 "frequency": "1",
                 "monthly_type": "date_day",
@@ -175,6 +178,7 @@ class MeetingAddEditTestView(TestCase):
         # check if meeting has been updated
         m = Meeting.objects.get(name="test1")
         self.assertEqual(m.attendee_password, "1234")
+        self.assertEqual(m.start_at, timezone.make_aware(datetime(2022, 8, 26, 14, 0, 0)))
         print("   --->  test_meeting_edit_post_request of MeetingEditTestView: OK!")
 
 
