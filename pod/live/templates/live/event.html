@@ -169,46 +169,64 @@
 {% block more_script %}
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let player = videojs("podvideoplayer");
-        player.ready(function () {
-          setInterval(function () {
-            let tracks = player.textTracks();
-            for (var i = 0; i < tracks.length; i++) {
-              var track = tracks[i];
+  document.addEventListener("DOMContentLoaded", function () {
+      let player = videojs("podvideoplayer");
+      player.ready(function () {
+        var lastMod = null;
       
-              // Find the English captions track and mark it as "showing".
-              
-              if (track.kind === "captions") {
-                player.removeRemoteTextTrack(track);
-                let newTrack = player.addRemoteTextTrack(
-                  {
-                    kind: "captions",
-                    label: "français",
-                    language: "fr",
-                    src: "{{ MEDIA_URL }}/media/files/sub.vtt",
-                    default: true,
-                  },
-                  false
-                );
-                newTrack.addEventListener('load', (e)=>{
-                  newTrack.mode = 'showing';
-                })
-                // show all tracks
-                for (var i = 0; i < tracks.length; i++) {
-                  if (tracks[i].kind === "captions") {
-                  tracks[i].mode = "showing";
-      
-                  }else{
-                  }
-                }
-              }
+        setInterval(function () {
+          let tracks = player.textTracks();
+          for (var i = 0; i < tracks.length; i++) {
+            var track = tracks[i];
+            if (track.kind === "captions") {
+            
+            let current_mod = null
+            fetch("{{ MEDIA_URL }}/media/files/sub.vtt").then(r => {
+                current_mod = r.headers.get('Last-Modified');
+               
+         
+            
+            if (lastMod && current_mod && lastMod === current_mod){
+              return
             }
             
-          }, 3500);
-        });
+            lastMod = current_mod
+            
+
+
+
+              let newTrack = player.addRemoteTextTrack(
+                {
+                  kind: "captions",
+                  label: "français",
+                  language: "fr",
+                  src: "{{ MEDIA_URL }}/media/files/sub.vtt",
+                  default: true,
+                },
+                false
+              );
+             
+              player.removeRemoteTextTrack(track);
+
+              newTrack.addEventListener('load', (e)=>{
+                newTrack.mode = 'showing';
+              })
+              // show all tracks
+              for (var i = 0; i < tracks.length; i++) {
+                if (tracks[i].kind === "captions") {
+                tracks[i].mode = "showing";
+    
+                }else{
+                }
+              }
+            })
+            }
+          }
+          
+        }, 1000);
       });
-      
+    });
+    
 </script>
 {% include 'live/event-script.html' %}
 {% endblock more_script %}
