@@ -36,10 +36,10 @@ document.addEventListener("reset", (event) => {
   var name_form = id_form.substring(5, id_form.length);
   var form_new = "form_new_" + name_form;
   var list = "list_" + name_form;
-  document.querySelector("span#" + id_form).innerHTML = "";
+  document.getElementById(id_form).innerHTML = "";
   if (id_form == "form_track")
-    document.querySelector("span#form_track").style.width = "auto";
-  document.querySelector("form#" + form_new).style.display = "block";
+    document.getElementById("form_track").style.width = "auto";
+  document.getElementById(form_new).style.display = "block";
   document.querySelectorAll("form").forEach((form) => {
     form.style.display = "block";
   });
@@ -58,7 +58,7 @@ document.addEventListener("reset", (event) => {
 });
 
 function show_form(data, form) {
-  let form_el = document.querySelector("#" + form);
+  let form_el = document.getElementById(form);
   form_el.style.display = "none";
   //form_el.innerHTML = data;
   form_el.innerHTML = data;
@@ -129,12 +129,12 @@ document.addEventListener("submit", (e) => {
 var sendandgetform = async function (elt, action, name, form, list) {
   var href = elt.getAttribute("action");
   if (action == "new" || action == "form_save_new") {
-    document.querySelector("#" + form).innerHTML =
+    document.getElementById(form).innerHTML =
       '<div style="width:100%; margin: 2rem;"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
     document.querySelectorAll(".info-card").forEach(function (element) {
       element.style.display = "none";
     });
-    document.querySelector("#" + name + "-info").style.display = "block";
+    document.getElementById(name + "-info").style.display = "block";
 
     let url = window.location.origin + href;
     let token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
@@ -171,7 +171,7 @@ var sendandgetform = async function (elt, action, name, form, list) {
         document.querySelector("form.form_modif").style.display = "block";
         document.querySelector("form.form_delete").style.display = "block";
         document.querySelector("form.form_new").style.display = "block";
-        document.querySelector("#" + form).innerHTML = "";
+        document.getElementById(form).innerHTML = "";
       });
 
     document.querySelectorAll("form.form_new").forEach((form) => {
@@ -229,7 +229,7 @@ var sendandgetform = async function (elt, action, name, form, list) {
         document.querySelector("form.form_modif").style.display = "block";
         document.querySelector("form.form_delete").style.display = "block";
         document.querySelector("form.form_new").style.display = "block";
-        document.querySelector("#" + form).innerHTML = "";
+        document.getElementById(form).innerHTML = "";
       });
 
     document.querySelector("a.title").style.display = "none";
@@ -297,7 +297,7 @@ var sendandgetform = async function (elt, action, name, form, list) {
 
     document.querySelector(".form-help-inline").remove();
     if (verify_fields(form)) {
-      var form_el = document.querySelector("form#" + form);
+      var form_el = document.getElementById(form);
       let data_form = new FormData(form_el);
       let url = window.location.origin + href;
       let token = document.querySelector(
@@ -372,7 +372,7 @@ function hide_others_sections(name_form) {
 
 // Refreshes the list
 function refresh_list(data, form, list) {
-  document.querySelector("#" + form).html = "";
+  document.getElementById(form).html = "";
   document.querySelector("form.form_new").style.display = "block";
   document.querySelectorAll("form").forEach(function (element) {
     element.style.display = "block";
@@ -380,8 +380,8 @@ function refresh_list(data, form, list) {
   document.querySelectorAll("a.title").forEach(function (element) {
     element.style.display = "initial";
   });
-  document.querySelector("span#enrich_player").innerHTML = data.player;
-  documentL.querySelector("span#" + list).innerHTML = data.list_data;
+  document.getElementById("enrich_player").innerHTML = data.player;
+  documentL.getElementById(list).innerHTML = data.list_data;
 }
 
 // Check fields
@@ -393,7 +393,7 @@ function verify_fields(form) {
       document.getElementById("id_name").value.length < 2 ||
       document.getElementById("id_name").length > 200
     ) {
-      let input = document.querySelector("input#id_name");
+      let input = document.getElementById("id_name");
       input.parentNode.append(
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
           gettext("Please enter a name from 2 to 100 caracteres.") +
@@ -406,7 +406,7 @@ function verify_fields(form) {
       error = true;
     }
     if (document.getElementById("id_weblink").value.length >= 200) {
-      let id_weblink = document.querySelector("input#id_weblink");
+      let id_weblink = document.getElementById("id_weblink");
       id_weblink.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
@@ -419,7 +419,7 @@ function verify_fields(form) {
       error = true;
     }
     if (document.getElementById("id_role").value == "") {
-      let id_role = document.querySelector("select#id_role");
+      let id_role = document.getElementById("id_role");
       id_role.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
@@ -456,7 +456,7 @@ function verify_fields(form) {
       .toLowerCase();
     var kind = element.options[element.selectedIndex].text.trim().toLowerCase();
     if (value !== "subtitles" && value !== "captions") {
-      let id_kind = document.querySelector("select#id_kind");
+      let id_kind = document.getElementById("id_kind");
       id_kind.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>" +
@@ -473,7 +473,7 @@ function verify_fields(form) {
       .trim()
       .toLowerCase();
     if (element.options[element.selectedIndex].value.trim() === "") {
-      let id_lang = document.querySelector("select#id_lang");
+      let id_lang = document.getElementById("id_lang");
       id_lang.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>" +
@@ -489,7 +489,7 @@ function verify_fields(form) {
       .getElementById("fileinput_id_src")
       .getElementsByTagName("a")[0]
       .getAttribute("href");
-    let id_src = document.querySelector("input#id_src");
+    let id_src = document.getElementById("id_src");
     if (document.getElementById("id_src").value.trim() === "") {
       id_src.insertAdjacentHTML(
         "afterend",
@@ -550,11 +550,11 @@ function verify_fields(form) {
   } else if (form == "form_document") {
     if (
       document
-        .querySelector("img#id_document_thumbnail_img")
+        .getElementById("id_document_thumbnail_img")
         .getAttribute("src") == "/static/icons/nofile_48x48.png"
     ) {
-      let id_document_thumbnail = document.querySelector(
-        "img#id_document_thubmanil_img"
+      let id_document_thumbnail = document.getElementById(
+        "id_document_thubmanil_img"
       );
       id_document_thumbnail.insertAdjacentHTML(
         "afterend",

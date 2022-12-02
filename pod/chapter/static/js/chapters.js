@@ -18,7 +18,7 @@ function show_form(data) {
   });
   fadeIn(form_chapter);
 
-  let inputStart = document.querySelector("input#id_time_start");
+  let inputStart = document.getElementById("id_time_start");
   if (inputStart) {
     inputStart.insertAdjacentHTML(
       "beforebegin",
@@ -27,7 +27,7 @@ function show_form(data) {
         "</a><span class='timecode'>&nbsp;</span></span>"
     );
   }
-  let inputEnd = document.querySelector("input#id_time_end");
+  let inputEnd = document.getElementById("id_time_end");
   if (inputEnd) {
     inputEnd.insertAdjacentHTML(
       "beforebegin",
@@ -209,7 +209,7 @@ var sendandgetform = async function (elt, action) {
 var sendform = async function (elt, action) {
   if (action == "save") {
     if (verify_start_title_items()) {
-      let form_chapter = document.querySelector("form#form_chapter");
+      let form_chapter = document.getElementById("form_chapter");
       form_chapter.style.display = "none";
       var data_form = new FormData(form_chapter);
 
@@ -239,7 +239,7 @@ var sendform = async function (elt, action) {
           } else {
             data = JSON.parse(data);
             if (data.errors) {
-              document.querySelector("form#form_chapter").style.display =
+              document.getElementById("form_chapter").style.display =
                 "block";
               showalert(
                 data.errors +
@@ -294,7 +294,7 @@ var sendform = async function (elt, action) {
           data = JSON.parse(data);
 
           if (data.errors) {
-            document.querySelector("form#form_chapter").style.display = "block";
+            document.getElementById("form_chapter").style.display = "block";
             showalert(
               data.errors +
                 " Make sure you added a file and that it is a valid file.",
@@ -318,12 +318,13 @@ var sendform = async function (elt, action) {
 
 /*** Verify if value of field respect form field ***/
 function verify_start_title_items() {
+  let inputTitle = document.getElementById("id_title");
+
   if (
-    document.getElementById("id_title").value == "" ||
-    document.getElementById("id_title").value.length < 2 ||
-    document.getElementById("id_title").value.length > 100
+    inputTitle.value == "" ||
+    inputTitle.value.length < 2 ||
+    inputTitle.value.length > 100
   ) {
-    let inputTitle = document.querySelector("input#id_title");
     inputTitle.insertAdjacentElement(
       "beforebegin",
       "<span class='form-help-inline'>&nbsp;&nbsp;" +
@@ -338,12 +339,13 @@ function verify_start_title_items() {
 
     return false;
   }
+  let inputStart = document.getElementById("id_time_start");
   if (
-    document.getElementById("id_time_start").value == "" ||
-    document.getElementById("id_time_start").value < 0 ||
-    document.getElementById("id_time_start").value >= video_duration
+    inputStart.value == "" ||
+    inputStart.value < 0 ||
+    inputStart.value >= video_duration
   ) {
-    let inputStart = document.querySelector("input#id_time_start");
+    
     inputStart.insertAdjacentHTML(
       "beforebegin",
       "<span class='form-help-inline'>&nbsp;&nbsp;" +
@@ -435,7 +437,7 @@ document.addEventListener("click", (event) => {
 
 var updateDom = function (data) {
   let player = window.videojs.players.podvideoplayer;
-  let n1 = document.querySelector("ul#chapters");
+  let n1 = document.getElementById("chapters");
   let n2 = document.querySelector("div.chapters-list");
   let tmp_node = document.createElement("div");
   tmp_node.innerHTML = data["video-elem"];
@@ -451,10 +453,10 @@ var updateDom = function (data) {
   }
 
   document
-    .querySelector("#" + window.videojs.players.podvideoplayer.id_)
+    .getElementById(window.videojs.players.podvideoplayer.id_)
     .append(chaplist);
   document
-    .querySelector("#" + window.videojs.players.podvideoplayer.id_)
+    .getElementById(window.videojs.players.podvideoplayer.id_)
     .append(tmp_node.querySelector("ul#chapters"));
 };
 

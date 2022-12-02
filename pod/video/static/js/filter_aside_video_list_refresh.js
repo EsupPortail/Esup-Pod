@@ -80,7 +80,7 @@ function refreshVideosSearch(formCheckedInputs) {
       //document.querySelector(".infiniteloading").style.display = "none";
       //document.querySelector(".infinite-more-link").style.display = "none";
       document.getElementById("videos_list").outerHTML =
-        html.querySelector("#videos_list").outerHTML;
+        html.getElementById("videos_list").outerHTML;
       let nextPage = document
         .getElementById("videos_list")
         .getAttribute("nextPage");
@@ -126,7 +126,7 @@ hideInfiniteloading = function () {
 
 document.addEventListener("change", (e) => {
   if (!e.target.matches(".form-check-input")) return;
-  console.log("ici")
+  console.log("ici");
   formCheckedInputs = [];
   document.querySelector(".infinite-loading").display = "block";
   document
@@ -140,8 +140,6 @@ document.addEventListener("change", (e) => {
   });
   refreshVideosSearch(formCheckedInputs);
 });
-
-
 
 // First launch of the infinite scroll
 //infinite_waypoint = getInfiniteScrollWaypoint();

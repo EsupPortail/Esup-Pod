@@ -213,7 +213,7 @@ var sendform = async function (elt, action) {
     }
 
     if (verify_fields() && verify_end_start_items() && overlaptest()) {
-      let form_enrich = document.querySelector("form#form_enrich");
+      let form_enrich = document.getElementById("form_enrich");
       form_enrich.style.display = "none";
       var data_form = new FormData(form_enrich);
 
@@ -245,7 +245,7 @@ var sendform = async function (elt, action) {
             data = JSON.parse(data);
             if (data.errors) {
               show_form(data.form);
-              document.querySelector("form#form_enrich").style.display =
+              document.getElementById("form_enrich").style.display =
                 "block";
             } else {
               location.reload();
@@ -296,7 +296,7 @@ var sendform = async function (elt, action) {
 document.addEventListener("change", (e) => {
   if (e.target.id != "id_type") return;
   enrich_type();
-  let file_input = document.body.querySelector("#filewidget_script");
+  let file_input = document.body.getElementById("filewidget_script");
   if (file_input) {
     eval(file_input.innerHTML);
   }
@@ -375,7 +375,7 @@ function enrich_type() {
 
   document.getElementById("id_embed").closest("div.form-group").style.display =
     "none";
-  var val = document.querySelector("select#id_type").value;
+  var val = document.getElementById("id_type").value;
   if (val != "") {
     var form = document.getElementById("form_enrich");
     form.querySelectorAll('[id^="id_' + val + '"]').forEach((elt) => {

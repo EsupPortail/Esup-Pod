@@ -151,8 +151,8 @@ const send_form_save_captions = function () {
 
       let parser = new DOMParser();
       let htmlDoc = parser.parseFromString(data, "text/html");
-
-      document.body.append(htmlDoc.querySelector("#base-message-alert"));
+     
+      document.body.append(htmlDoc.getElementById("base-message-alert"));
       if (data.track_id != undefined) {
         var url = new URL(window.location.href);
         var url_params = url.searchParams;

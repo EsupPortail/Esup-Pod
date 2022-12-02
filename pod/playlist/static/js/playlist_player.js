@@ -298,7 +298,7 @@ let PlaylistPlayer = {
       }
     },
     unloadCSS: function (p) {
-      let unloadFile = document.querySelector("#" + p + "_style_id");
+      let unloadFile = document.getElementById(p + "_style_id");
       if (unloadFile) {
         unloadFile.remove();
       }

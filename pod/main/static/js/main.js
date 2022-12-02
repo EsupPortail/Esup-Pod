@@ -822,8 +822,8 @@ var show_form_theme_modify = function (data) {
   } else {
     show_form_theme(data);
     data = new DOMParser().parseFromString(data, "text/html").body;
-    var id = data.querySelector("#id_theme").value;
-    document.querySelector("#theme_" + id).classList.add("table-primary");
+    var id = data.getElementById("id_theme").value;
+    document.getElementById("theme_" + id).classList.add("table-primary");
   }
 };
 var show_form_theme_delete = function (data) {
@@ -863,8 +863,8 @@ var show_theme_form = function (data) {
 var show_picture_form = function (data) {
   let htmlData = new DOMParser().parseFromString(data, "text/html").body;
   document.getElementById("userpicture_form").innerHTML =
-    htmlData.querySelector("#userpicture_form").innerHTML;
-  if (htmlData.querySelector("#userpictureurl").value) {
+    htmlData.getElementById("userpicture_form").innerHTML;
+  if (htmlData.getElementById("userpictureurl").value) {
     //$(".get_form_userpicture").html('<img src="'+$(data).find("#userpictureurl").val()+'" height="34" class="rounded" alt="" loading="lazy">Change your picture');
     document.querySelector("#nav-usermenu .userpicture").remove();
     document.querySelector("#nav-usermenu .userinitial").style.display = "none";
@@ -877,7 +877,7 @@ var show_picture_form = function (data) {
       .insertAdjacentHTML(
         "beforeend",
         '<img src="' +
-          htmlData.querySelector("#userpictureurl").value +
+          htmlData.getElementById("userpictureurl").value +
           '" class="userpicture rounded" alt="avatar" loading="lazy">'
       );
     //$(".get_form_userpicture").html($(".get_form_userpicture").children());
@@ -1032,7 +1032,7 @@ if (ownerbox) {
 }
 var tab_initial = new Array();
 
-let select = document.querySelector("#id_theme select");
+let select = document.getElementById("id_theme select");
 if (select) {
   select.options.forEach((option) => {
     if (option.selected) {

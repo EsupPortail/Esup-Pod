@@ -2,13 +2,11 @@
 // select file
 
 if (typeof loaded == "undefined") {
- 
-
   console.log("%c filewidget.js loaded", "color : #bada55");
-  
+
   loaded = true;
   document.addEventListener("click", (e) => {
-    if (!e.target.parentNode) return
+    if (!e.target.parentNode) return;
     if (
       !e.target.parentNode.matches(".file-name") &&
       !e.target.parentNode.matches(".file-image")
@@ -17,9 +15,8 @@ if (typeof loaded == "undefined") {
     let file = e.target.parentNode;
     e.preventDefault();
     if (id_input && id_input != "") {
-      document.querySelector("input#" + id_input).value = file.dataset.fileid;
-      if (document.querySelector(".btn-fileinput_" + id_input))
-      {
+      document.getElementById(id_input).value = file.dataset.fileid;
+      if (document.querySelector(".btn-fileinput_" + id_input)) {
         if (file.dataset.filetype == "CustomImageModel") {
           document.querySelector(".btn-fileinput_" + id_input).innerHTML =
             gettext("Change image");
@@ -28,13 +25,13 @@ if (typeof loaded == "undefined") {
             gettext("Change file");
         }
       }
-      
+
       //
       //if($(".btn-fileinput_"+id_input).text().indexOf(gettext('Change file')) != -1 || $(".btn-fileinput_"+id_input).text().indexOf(gettext('Select a file')) != -1)
       //    $(".btn-fileinput_"+id_input).html(gettext('Change file'));
       //else $(".btn-fileinput_"+id_input).html(gettext('Change image'));
       //
-      document.querySelector("#remove_file_" + id_input).style.display =
+      document.getElementById("remove_file_" + id_input).style.display =
         "block";
 
       let html = "";
@@ -59,12 +56,12 @@ if (typeof loaded == "undefined") {
         '">' +
         file.getAttribute("title") +
         "</a></strong>&nbsp;";
-      document.querySelector("#fileinput_" + id_input).innerHTML = html;
+      document.getElementById("fileinput_" + id_input).innerHTML = html;
 
-      document.querySelector("#modal-folder_" + id_input).innerHTML = "";
+      document.getElementById("modal-folder_" + id_input).innerHTML = "";
 
       let modalFile = bootstrap.Modal.getInstance(
-        document.querySelector("#fileModal_" + id_input)
+        document.getElementById("fileModal_" + id_input)
       );
       modalFile.hide();
     }
@@ -92,7 +89,7 @@ if (typeof loaded == "undefined") {
       $data = JSON.parse($data);
       let html = document.createElement("div");
       html.innerHTML = $data.list_element;
-      let listfiles = html.querySelector("#listfiles");
+      let listfiles = html.getElementById("listfiles");
       if (listfiles.childNodes.length === 0) {
         let emptyFolderMsg = `
               <div class="empty-folder-warning">
@@ -120,13 +117,13 @@ if (typeof loaded == "undefined") {
       e.target.id != "close-folder-icon"
     )
       return;
-    document.querySelector("#podfile #dirs").classList.remove("open");
+    document.getElementById("dirs").classList.remove("open");
   });
 
   document.querySelectorAll("#open-folder-icon > *").forEach((el) => {
     el.style = "pointer-events: none; cursor : pointer;";
   });
-  if (document.querySelector("#open-folder-icon")) {
+  if (document.getElementById("open-folder-icon")) {
     document.getElementById("open-folder-icon").style.cursor = "pointer";
   }
 
@@ -143,7 +140,7 @@ if (typeof loaded == "undefined") {
     });
 
     e.preventDefault();
-    document.querySelector("#podfile #dirs").classList.add("open");
+    document.getElementById("dirs").classList.add("open");
   });
 
   document.addEventListener("change", (e) => {
@@ -261,9 +258,7 @@ if (typeof loaded == "undefined") {
         let oldname = button.dataset.oldname;
         // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
         // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        let folder_input = modal.querySelector(
-          ".modal-body input#folderInputName"
-        );
+        let folder_input = modal.getElementById(folderInputName);
         folder_input.value = oldname;
         let focus = new Event("focus");
         folder_input.dispatchEvent(focus);
@@ -367,7 +362,7 @@ if (typeof loaded == "undefined") {
     var folder_id = button.dataset.folderid;
 
     let modal = document.querySelector(button.dataset.bsTarget);
-    modal.querySelector("#formuserid").value = folder_id;
+    modal.getElementById("formuserid").value = folder_id;
     reloadRemoveBtn();
   });
 
@@ -616,12 +611,12 @@ if (typeof loaded == "undefined") {
       }
 
       if (data.folder_name) {
-        document.querySelector("#folder-name-" + folder_id).textContent =
+        document.getElementById("folder-name-" + folder_id).textContent =
           "  " + data.folder_name;
       }
 
       if (data.deleted) {
-        document.querySelector("#folder_" + data.deleted_id).remove();
+        document.getElementById("folder_" + data.deleted_id).remove();
       }
       send_form_data(
         "/podfile/get_folder_files/" + folder_id,
@@ -633,8 +628,8 @@ if (typeof loaded == "undefined") {
       let center_mod = document.getElementById("folderModalCenter");
       let center_modal = bootstrap.Modal.getOrCreateInstance(center_mod);
       center_modal.hide();
-      center_mod.querySelector(".modal-body input#folderInputName").value = "";
-      center_mod.querySelector(".modal-body input#formfolderid").value = "";
+      center_mod.getElementById("folderInputName").value = "";
+      center_mod.getElementById("formfolderid").value = "";
     } else {
       showalert(
         gettext("You are no longer authenticated. Please log in again."),
@@ -650,8 +645,7 @@ if (typeof loaded == "undefined") {
     if (data.list_element) {
       document.getElementById("files").innerHTML = data.list_element;
       if ("emptyfoldermsg" in data) {
-        document.querySelector("#files #listfiles").innerHTML =
-          data.emptyfoldermsg;
+        document.getElementById("listfiles").innerHTML = data.emptyfoldermsg;
       }
       document.querySelectorAll(".list_folders a").forEach((elt) => {
         elt.classList.remove("font-weight-bold");
@@ -665,11 +659,11 @@ if (typeof loaded == "undefined") {
       let folder_id = document.getElementById("folder_" + data.folder_id);
       if (folder_id) {
         document
-          .querySelector("#folder_" + data.folder_id)
+          .getElementById("folder_" + data.folder_id)
           .classList.add("font-weight-bold");
       }
 
-      let folder = document.querySelector("#folder_" + data.folder_id + " img");
+      let folder = document.getElementById("folder_" + data.folder_id + " img");
       if (folder) folder.src = static_url + "podfile/images/opened_folder.png";
 
       //dismiss modal
@@ -677,9 +671,8 @@ if (typeof loaded == "undefined") {
       let center_modal_instance =
         bootstrap.Modal.getOrCreateInstance(center_modal);
       center_modal_instance.hide();
-      center_modal.querySelector(".modal-body input#folderInputName").value =
-        "";
-      center_modal.querySelector(".modal-body input#formfolderid").value = "";
+      center_modal.getElementById("folderInputName").value = "";
+      center_modal.getElementById("formfolderid").value = "";
 
       if (data.upload_errors && data.upload_errors != "") {
         const str = data.upload_errors.split("\n").join("<br/>");
@@ -702,7 +695,7 @@ if (typeof loaded == "undefined") {
 
   function append_folder_html_in_modal(data) {
     console.log("appended folder html in modal");
-    document.querySelector("#modal-folder_" + id_input).innerHTML = data;
+    document.getElementById("modal-folder_" + id_input).innerHTML = data;
   }
 
   function getCurrentSessionFolder() {

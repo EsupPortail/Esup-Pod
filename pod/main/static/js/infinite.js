@@ -94,14 +94,14 @@ class InfiniteLoader {
       console.log(); // here all the videos from the page are loaded
 
       if (
-        html.querySelector("#videos_list").getAttribute("nextPage") != "True"
+        html.getElementById("videos_list").getAttribute("nextPage") != "True"
       ) {
         this.nextPage = false;
       }
 
       let element = this.videos_list;
      
-      element.innerHTML += html.querySelector("#videos_list").innerHTML
+      element.innerHTML += html.getElementById("videos_list").innerHTML
       this.callBackAfterLoad();
       this.next_page_number += 1;
     });
