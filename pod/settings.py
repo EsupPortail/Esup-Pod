@@ -209,8 +209,15 @@ LOGGING = {
 
 CACHES = {
     # … default cache config and others
+    # "default": {
+    #     "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    # },
     "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
     },
     # Persistent cache setup for select2 (NOT DummyCache or LocMemCache).
     "select2": {
