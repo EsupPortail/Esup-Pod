@@ -242,10 +242,10 @@ if (typeof loaded == "undefined") {
       case "CustomFileModel":
         document.getElementById("folderModalCenterTitle").innerHTML =
           gettext("Change") + " " + button.dataset.filename;
-        modal.querySelectorAll(".modal-body input#id_folder").value = folder_id;
-        modal.querySelectorAll(".modal-body input#file_id").value =
+        modal.getElementById("id_folder").value = folder_id;
+        modal.getElementById("file_id").value =
           button.dataset.fileid;
-        modal.querySelectorAll(".modal-body input#file_type").value =
+        modal.getElementById("file_type").value =
           button.dataset.filetype;
         document.getElementById("formchangefile").style.display = "block";
         break;

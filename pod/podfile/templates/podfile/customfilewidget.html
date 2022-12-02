@@ -84,12 +84,12 @@ document.addEventListener('click',   (event) => {
   myModal.show();
 })
 
-document.body.append(document.querySelector('#fileModal_{{id}}'));
+document.body.append(document.getElementById('fileModal_{{id}}'));
 
 document.addEventListener('hide.bs.modal',   (event) => {
   if (!event.target.matches('#fileModal_{{id}}')) return; 
   event.stopPropagation();
-  document.querySelector("#modal-folder_"+event.target.dataset.id).innerHTML = "";
+  document.getElementById("modal-folder_"+event.target.dataset.id).innerHTML = "";
 });
 
 document.addEventListener('show.bs.modal',  (event) => {
@@ -119,7 +119,7 @@ document.addEventListener("click", (event) => {
       {% endif %}\
     </button>';
   event.target.parentNode.parentNode.querySelector('span').innerHTML = html_div;
-  document.querySelector("#{{id}}").value = "";
+  document.getElementById("{{id}}").value = "";
 });
 
 
