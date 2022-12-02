@@ -9,6 +9,33 @@ La plateforme Esup-Pod se base sur le framework Django écrit en Python. Elle su
 > La documentation complète du framework : https://docs.djangoproject.com/fr/3.2/ (ou https://docs.djangoproject.com/en/3.2/)<br>
 > L’Ensemble des variables de configuration du framework est accessible à cette adresse : https://docs.djangoproject.com/fr/3.2/ref/settings/
 
+Voici les configurations des applications tierces utilisées par Esup-Pod : 
+
+- ModelTransalation (0.18.7): L'application modeltranslation est utilisée pour traduire le contenu dynamique des modèles Django existants
+    https://django-modeltranslation.readthedocs.io/en/latest/installation.html#configuration
+- ckeditor (6.3.0): application permettant d'ajouter un éditeur CKEditor dans certains champs
+    https://django-ckeditor.readthedocs.io/en/latest/#installation
+- sorl.thumbnail (12.9.0): utilisée pour la génération des vignettes des vidéos 
+    https://sorl-thumbnail.readthedocs.io/en/latest/reference/settings.html
+- tagging (0.5.0): gestion des mots-clés associés à une vidéo // voir pour référencer une nouvelle application
+    https://django-tagging.readthedocs.io/en/develop/#settings
+- CAS (1.5.2): système d'authentification SSO_CAS
+    https://github.com/kstateome/django-cas
+- captcha (0.5.17): gestion du captcha du formulaire de contact 
+    https://django-simple-captcha.readthedocs.io/en/latest/usage.html
+- rest_framework (3.14.0): mise en place de l'API rest pour l'application
+    https://www.django-rest-framework.org/
+- django_select2 (latest): recherche et completion dans les formulaire
+    https://django-select2.readthedocs.io/en/latest/
+- shibboleth (latest): système d'authentification Shibboleth
+    https://github.com/Brown-University-Library/django-shibboleth-remoteuser
+- chunked_upload (2.0.0): // voir pour mettre à jour si nécessaire
+    https://github.com/juliomalegria/django-chunked-upload
+- mozilla_django_oidc (3.0.0): système d'authentification OpenID Connect
+    https://mozilla-django-oidc.readthedocs.io/en/stable/installation.html
+- honeypot (1.0.3): utilisé pour le formulaire de contact de Pod - ajoute un champ caché pour diminuer le spam
+    https://github.com/jamesturk/django-honeypot/
+
 ## 2/ Configuration Générale de la plateforme Esup_Pod
 
 - SITE_ID = 1
