@@ -48,6 +48,10 @@ AFFILIATION = getattr(
         ("registered-reader", _("registered-reader")),
     ),
 )
+DEFAULT_AFFILIATION = AFFILIATION[0][0]
+AFFILIATION_STAFF = getattr(
+    settings, "AFFILIATION_STAFF", ("faculty", "employee", "staff")
+)
 ESTABLISHMENTS = getattr(
     settings,
     "ESTABLISHMENTS",
@@ -75,7 +79,7 @@ class Owner(models.Model):
         max_length=20, choices=AUTH_TYPE, default=AUTH_TYPE[0][0]
     )
     affiliation = models.CharField(
-        max_length=50, choices=AFFILIATION, default=AFFILIATION[0][0]
+        max_length=50, choices=AFFILIATION, default=DEFAULT_AFFILIATION
     )
     commentaire = models.TextField(_("Comment"), blank=True, default="")
     hashkey = models.CharField(max_length=64, unique=True, blank=True, default="")
