@@ -245,6 +245,34 @@ class PopulatedCASTestCase(TestCase):
             " of PopulatedCASTestCase : OK !"
         )
 
+    def test_delete_synchronized_access_group(self):
+        user = User.objects.get(username="pod")
+        user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest"))
+        user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest2"))
+        user.save()
+        populatedCASbackend.delete_synchronized_access_group(user.owner)
+        self.assertEqual(AccessGroup.objects.all().count(), 2)
+        self.assertTrue(
+            user.owner.accessgroup_set.filter(
+                code_name__in=[
+                    "groupTest",
+                ]
+            ).exists()
+        )
+        self.assertFalse(
+            user.owner.accessgroup_set.filter(
+                code_name__in=[
+                    "groupTest2",
+                ]
+            ).exists()
+        )
+        print(
+            " --->  test_delete_synchronized_access_group"
+            " of PopulatedCASTestCase : OK !"
+        )
+
+
+
 class PopulatedLDAPTestCase(TestCase):
     attrs = {
         "eduPersonAffiliation": ["staff", "member"],
@@ -391,7 +419,6 @@ class PopulatedLDAPTestCase(TestCase):
                 " --->  test_populate_user_from_entry_unpopulate_group"
                 " of PopulatedLDAPTestCase : OK !"
             )
-
 
 
 class PopulatedShibTestCase(TestCase):

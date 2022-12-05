@@ -87,9 +87,7 @@ def populateUser(tree):
     owner, owner_created = Owner.objects.get_or_create(user=user)
     owner.auth_type = "CAS"
 
-    groups_to_sync = AccessGroup.objects.filter(auto_sync=True)
-    for group_to_sync in groups_to_sync:
-        owner.accessgroup_set.remove(group_to_sync)
+    delete_synchronized_access_group(owner)
 
     owner.save()
 
@@ -104,6 +102,12 @@ def populateUser(tree):
             entry = get_entry(conn, username, list_value)
             if entry is not None:
                 populate_user_from_entry(user, owner, entry)
+
+
+def delete_synchronized_access_group(owner):
+    groups_to_sync = AccessGroup.objects.filter(auto_sync=True)
+    for group_to_sync in groups_to_sync:
+        owner.accessgroup_set.remove(group_to_sync)
 
 
 def get_server():
