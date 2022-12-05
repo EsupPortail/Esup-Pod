@@ -157,15 +157,7 @@ class Meeting(models.Model):
     moderator_password = models.CharField(
         max_length=50, verbose_name=_("Moderator Password"), editable=False
     )
-    # start_at = models.DateTimeField(_("Start date"), default=timezone.now)
-    # end_at = models.DateTimeField(_("End date"), default=two_hours_hence)
-    # Start and end are the same for a single meeting
-    # start = models.DateField(_("Start date"), default=timezone.now)
-    # start_time = models.TimeField(
-    #     _("Start time"),
-    #     choices=get_time_choices(),
-    #     default=get_rouded_time
-    # )
+
     start_at = models.DateTimeField(_("Start date"), default=timezone.now)
     expected_duration = models.DurationField(
         verbose_name=_("Meeting duration"),
@@ -369,7 +361,10 @@ class Meeting(models.Model):
 
                 if str(self.start.weekday()) not in self.weekdays:
                     raise ValidationError(
-                        {"weekdays": _("Weekdays should contain the start date.")}
+                        {
+                            "weekdays": 
+                            _("The day of the start date of the meeting must be included in the recurrence weekdays.")
+                        }
                     )
             else:
                 self.weekdays = None
