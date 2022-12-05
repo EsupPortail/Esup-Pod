@@ -278,7 +278,6 @@ class PopulatedCASTestCase(TestCase):
         )
 
 
-
 class PopulatedLDAPTestCase(TestCase):
     attrs = {
         "eduPersonAffiliation": ["staff", "member"],
