@@ -316,7 +316,7 @@ class OccurencesMeetingTestCase(TestCase):
 
         self.assertEqual(
             context.exception.messages,
-            ["Weekdays should contain the start date."],
+            ["The day of the start date of the meeting must be included in the recurrence weekdays."],
         )
 
     def test_models_meetings_get_occurrences_weekly_recurring_until_filled(self):
