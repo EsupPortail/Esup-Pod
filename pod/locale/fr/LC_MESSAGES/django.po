@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-05 14:36+0100\n"
+"POT-Creation-Date: 2022-12-05 22:57+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "Email"
 msgstr "Courriel"
 
-#: pod/authentication/admin.py:136 pod/authentication/models.py:90
+#: pod/authentication/admin.py:136 pod/authentication/models.py:94
 #: pod/video/admin.py:189
 msgid "Establishment"
 msgstr "Établissement"
@@ -89,16 +89,16 @@ msgstr "enseignant"
 msgid "registered-reader"
 msgstr "lecteur enregistré"
 
-#: pod/authentication/models.py:80 pod/recorder/models.py:299
+#: pod/authentication/models.py:84 pod/recorder/models.py:299
 #: pod/video/models.py:1928 pod/video/models.py:1981 pod/video/views.py:1666
 msgid "Comment"
 msgstr "Commentaire"
 
-#: pod/authentication/models.py:87
+#: pod/authentication/models.py:91
 msgid "Picture"
 msgstr "Image"
 
-#: pod/authentication/models.py:100 pod/live/models.py:320
+#: pod/authentication/models.py:104 pod/live/models.py:320
 #: pod/meeting/models.py:111 pod/playlist/models.py:21
 #: pod/playlist/templates/playlist/playlist_element_list.html:10
 #: pod/podfile/models.py:27 pod/video/admin.py:206 pod/video/models.py:674
@@ -106,20 +106,29 @@ msgstr "Image"
 msgid "Owner"
 msgstr "Propriétaire"
 
-#: pod/authentication/models.py:101 pod/video/admin.py:381
+#: pod/authentication/models.py:105 pod/video/admin.py:381
 #: pod/video/forms.py:372 pod/video/models.py:319
 msgid "Owners"
 msgstr "Propriétaires"
 
-#: pod/authentication/models.py:158
+#: pod/authentication/models.py:162
 msgid "Group site"
 msgstr "Site du groupe"
 
-#: pod/authentication/models.py:159
+#: pod/authentication/models.py:163
 msgid "Groups site"
 msgstr "Sites du groupe"
 
-#: pod/authentication/models.py:195 pod/authentication/models.py:196
+#: pod/authentication/models.py:190
+msgid "Auto synchronize"
+msgstr "Synchronisation automatique"
+
+#: pod/authentication/models.py:192
+msgid "Check if the access_group must be synchronized on user connexion."
+msgstr "Cocher cette case si le groupe doit être synchronisé à la connexion de "
+"l'utilisateur"
+
+#: pod/authentication/models.py:204 pod/authentication/models.py:205
 msgid "Access Groups"
 msgstr "Groupes d’Accès"
 
@@ -1776,8 +1785,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html:150
 msgid "Subtitles and/or caption(s) files must be in \".vtt\" format."
 msgstr ""
-"Les fichiers de sous-titres et/ou de légendes doivent être au format \".vtt"
-"\"."
+"Les fichiers de sous-titres et/ou de légendes doivent être au format \"."
+"vtt\"."
 
 #: pod/completion/templates/video_completion.html:151
 msgid "You can use"
@@ -2057,8 +2066,8 @@ msgid ""
 msgstr ""
 "Les champs \"Début\" et \"Fin\" doivent contenir des valeurs en secondes. "
 "Lancez la lecture de la vidéo, mettez sur pause et cliquez sur \"Récupérer "
-"le temps depuis le lecteur\" pour renseigner automatiquement le champ \"Début"
-"\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
+"le temps depuis le lecteur\" pour renseigner automatiquement le champ "
+"\"Début\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:78
 msgid "You cannot overlap enrichments."
@@ -4394,11 +4403,11 @@ msgstr "La réunion n’a pas encore commencé."
 #: pod/meeting/templates/meeting/join.html:59
 #, python-format
 msgid ""
-"It is scheduled for <b>%(start_date)s</b> from <u>%(start_time)s</u> to <u>"
-"%(end_time)s</u>."
+"It is scheduled for <b>%(start_date)s</b> from <u>%(start_time)s</u> to "
+"<u>%(end_time)s</u>."
 msgstr ""
-"Elle est planifiée le <b>%(start_date)s</b> de <u>%(start_time)s</u> à <u>"
-"%(end_time)s</u>."
+"Elle est planifiée le <b>%(start_date)s</b> de <u>%(start_time)s</u> à "
+"<u>%(end_time)s</u>."
 
 #: pod/meeting/templates/meeting/join.html:61
 #, python-format
@@ -4588,8 +4597,8 @@ msgstr ""
 "        <p>Date de fin : %(end_date)s </p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
-"%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : "
+"<b>%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -4666,8 +4675,8 @@ msgstr "Aucune liste de lecture trouvée"
 
 #: pod/playlist/templates/my_playlists.html:19
 msgid ""
-"You have not created any playlists yet, please use the \"Add a new playlist"
-"\" button to add one."
+"You have not created any playlists yet, please use the \"Add a new "
+"playlist\" button to add one."
 msgstr ""
 "Vous n’avez pas encore créé de liste de lecture, veuillez cliquer sur le "
 "bouton « Ajouter une nouvelle liste de lecture » pour en ajouter une."
@@ -5401,8 +5410,8 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html:13
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
 "passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
@@ -5514,9 +5523,10 @@ msgid ""
 msgstr ""
 "Bonjour, <p>un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur \"%(recorder)s\".<br/>Pour "
-"l’ajouter, cliquez sur le lien ci dessous.</p><a href=\"%(link_url)s\">"
-"%(link_url)s</a><br/><i>Si le lien n’est pas actif, il faut le copier-coller "
-"dans la barre d’adresse de votre navigateur.</i><p><p>Cordialement</p>"
+"l’ajouter, cliquez sur le lien ci dessous.</p><a "
+"href=\"%(link_url)s\">%(link_url)s</a><br/><i>Si le lien n’est pas actif, il "
+"faut le copier-coller dans la barre d’adresse de votre navigateur.</"
+"i><p><p>Cordialement</p>"
 
 #: pod/recorder/views.py:286
 msgid "New recording added."
@@ -6255,14 +6265,14 @@ msgstr "Éditer la chaîne"
 
 #: pod/video/templates/channel/channel.html:99
 #, python-format
-
 msgid "%(counter)s theme found for this channel"
 msgid_plural "%(counter)s themes found for this channel"
 msgstr[0] "%(counter)s thème trouvé dans cette chaine"
 msgstr[1] "%(counter)s thèmes trouvés dans cette chaine"
 
-#: pod/video/templates/channel/channel.html:123
 #  python-format
+#: pod/video/templates/channel/channel.html:123
+#, python-format
 msgid "%(counter)s video found for this theme"
 msgid_plural "%(counter)s videos found for this theme"
 msgstr[0] "%(counter)s vidéo trouvée dans ce thème"
@@ -6596,8 +6606,8 @@ msgid ""
 "This video is chaptered. Click the chapter button <span class=\"vjs-icon-"
 "chapters\"></span> on the video player to view them."
 msgstr ""
-"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span class="
-"\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
+"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span "
+"class=\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
 
 #: pod/video/templates/videos/video-all-info.html:26
 #: pod/video/templates/videos/video-all-info.html:41
@@ -6981,63 +6991,6 @@ msgstr "Modifier la période de visualisation"
 msgid "Show view statistics for all videos"
 msgstr "Afficher les statistiques de visualisation de toutes les vidéos"
 
-#: pod/video/templatetags/video_tags.py:99
-#, python-format
-msgid "tags_for_model tag was given an invalid model: %s"
-msgstr "la balise tags_for_model a reçu un modèle invalide : %s"
-
-#: pod/video/templatetags/video_tags.py:139
-#, python-format
-msgid "%s tag requires either three or five arguments"
-msgstr "la balise %s requiert trois ou cinq arguments"
-
-#: pod/video/templatetags/video_tags.py:142
-#: pod/video/templatetags/video_tags.py:203
-#, python-format
-msgid "second argument to %s tag must be 'as'"
-msgstr "le deuxième argument de la balise %s doit être 'as'"
-
-#: pod/video/templatetags/video_tags.py:146
-#: pod/video/templatetags/video_tags.py:208
-#, python-format
-msgid "if given, fourth argument to %s tag must be 'with'"
-msgstr ""
-"si il est donné, le quatrième argument de la balise %s doit être 'with'"
-
-#: pod/video/templatetags/video_tags.py:150
-#, python-format
-msgid "if given, fifth argument to %s tag must be 'counts'"
-msgstr "si donné, le 5e argument de la balise %s doit être ‘counts’"
-
-#: pod/video/templatetags/video_tags.py:199
-#, python-format
-msgid "%s tag requires either three or between five and seven arguments"
-msgstr "la balise %s requiert soit trois, soit entre cinq et sept arguments"
-
-#: pod/video/templatetags/video_tags.py:223
-#, python-format
-msgid "%(tag)s tag was given an invalid option: '%(option)s'"
-msgstr "l’option ‘%(option)s’ est invalide pour la balise %(tag)s"
-
-#: pod/video/templatetags/video_tags.py:231
-#, python-format
-msgid "%(tag)s tag was given a badly formatted option: '%(option)s'"
-msgstr "l’option ‘%(option)s’ n’est pas au bon format pour la balise %(tag)s"
-
-#: pod/video/templatetags/video_tags.py:249
-#, python-format
-msgid "%(tag)s tag's '%(option)s' option was not a valid integer: '%(value)s'"
-msgstr ""
-"l’option ‘%(option)s’ de la balise %(tag)s n’est pas un entier valide : "
-"’%(value)s’"
-
-#: pod/video/templatetags/video_tags.py:264
-#, python-format
-msgid "%(tag)s tag's '%(option)s' option was not a valid choice: '%(value)s'"
-msgstr ""
-"l’option ‘%(option)s’ de la balise %(tag)s n’est pas un choix valide : "
-"’%(value)s’"
-
 #: pod/video/tests/test_models.py:222 pod/video/tests/test_models.py:275
 #: pod/video/translation.py:12 pod/video/translation.py:17
 msgid "-- sorry, no translation provided --"
@@ -7278,6 +7231,54 @@ msgstr "Désolé, la recherche de vidéos est limitée à 500 pages maximum."
 #: pod/video_search/views.py:261
 msgid "Search results"
 msgstr "Résultats de la recherche"
+
+#, python-format
+#~ msgid "tags_for_model tag was given an invalid model: %s"
+#~ msgstr "la balise tags_for_model a reçu un modèle invalide : %s"
+
+#, python-format
+#~ msgid "%s tag requires either three or five arguments"
+#~ msgstr "la balise %s requiert trois ou cinq arguments"
+
+#, python-format
+#~ msgid "second argument to %s tag must be 'as'"
+#~ msgstr "le deuxième argument de la balise %s doit être 'as'"
+
+#, python-format
+#~ msgid "if given, fourth argument to %s tag must be 'with'"
+#~ msgstr ""
+#~ "si il est donné, le quatrième argument de la balise %s doit être 'with'"
+
+#, python-format
+#~ msgid "if given, fifth argument to %s tag must be 'counts'"
+#~ msgstr "si donné, le 5e argument de la balise %s doit être ‘counts’"
+
+#, python-format
+#~ msgid "%s tag requires either three or between five and seven arguments"
+#~ msgstr "la balise %s requiert soit trois, soit entre cinq et sept arguments"
+
+#, python-format
+#~ msgid "%(tag)s tag was given an invalid option: '%(option)s'"
+#~ msgstr "l’option ‘%(option)s’ est invalide pour la balise %(tag)s"
+
+#, python-format
+#~ msgid "%(tag)s tag was given a badly formatted option: '%(option)s'"
+#~ msgstr ""
+#~ "l’option ‘%(option)s’ n’est pas au bon format pour la balise %(tag)s"
+
+#, python-format
+#~ msgid ""
+#~ "%(tag)s tag's '%(option)s' option was not a valid integer: '%(value)s'"
+#~ msgstr ""
+#~ "l’option ‘%(option)s’ de la balise %(tag)s n’est pas un entier valide : "
+#~ "’%(value)s’"
+
+#, python-format
+#~ msgid ""
+#~ "%(tag)s tag's '%(option)s' option was not a valid choice: '%(value)s'"
+#~ msgstr ""
+#~ "l’option ‘%(option)s’ de la balise %(tag)s n’est pas un choix valide : "
+#~ "’%(value)s’"
 
 #~ msgid "the %(com.modified_on)s:"
 #~ msgstr "le %(com.modified_on)s :"
