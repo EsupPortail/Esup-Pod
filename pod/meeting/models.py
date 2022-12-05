@@ -362,8 +362,11 @@ class Meeting(models.Model):
                 if str(self.start.weekday()) not in self.weekdays:
                     raise ValidationError(
                         {
-                            "weekdays": 
-                            _("The day of the start date of the meeting must be included in the recurrence weekdays.")
+                            "weekdays":
+                            _(
+                                "The day of the start date of the meeting must "
+                                + "be included in the recurrence weekdays."
+                            )
                         }
                     )
             else:

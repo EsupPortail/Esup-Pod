@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-05 09:45+0100\n"
+"POT-Creation-Date: 2022-12-05 09:54+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ncan <nicolas.can@univ-lille.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -397,7 +397,7 @@ msgid "Last date where BBB session was in progress."
 msgstr "Dernière date à laquelle la session BBB était en cours."
 
 #: pod/bbb/models.py:98 pod/bbb/models.py:118 pod/bbb/models.py:171
-#: pod/meeting/models.py:726
+#: pod/meeting/models.py:729
 msgid "Meeting"
 msgstr "Session"
 
@@ -4189,7 +4189,7 @@ msgstr ""
 "Le propriétaire de la video ne peut pas être propriétaire additionnel en "
 "même temps"
 
-#: pod/meeting/forms.py:270 pod/meeting/models.py:755
+#: pod/meeting/forms.py:270 pod/meeting/models.py:758
 msgid "Start date must be less than recurring until date"
 msgstr "La date de début doit être antérieure à la date de fin récurrente"
 
@@ -4456,7 +4456,7 @@ msgstr "Pont vocal"
 msgid "BBB Create Time"
 msgstr "date de création dans BBB"
 
-#: pod/meeting/models.py:366
+#: pod/meeting/models.py:367
 msgid ""
 "The day of the start date of the meeting must be included in the recurrence "
 "weekdays."
@@ -4537,6 +4537,8 @@ msgstr "La réunion n’a pas encore commencé."
 
 #: pod/meeting/templates/meeting/join.html:60
 #: pod/meeting/templates/meeting/join.html:62
+#, fuzzy, python-format
+#| msgid "It is scheduled for <b>%(start_date)s</b> at <u>%(start_time)s</u>."
 msgid "It is scheduled for <b>%(start_date)s</b> at <u>%(start_time)s</u>."
 msgstr "Elle est planifiée le <b>%(start_date)s</b> à <u>%(end_date)s</u>."
 
