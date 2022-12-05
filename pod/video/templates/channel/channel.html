@@ -95,13 +95,18 @@
         <div class="themes-videos">
             <!-- THEME SECTION -->
             <section class="theme-section">
-                <p class="theme-count">{% blocktrans count counter=count_themes %}{{ counter }} theme found{% plural %}{{ counter }} themes found{% endblocktrans %}</p>
+                <p class="theme-count">
+                    {% blocktrans count counter=count_themes %}{{ counter }} theme found{% plural %}{{ counter }} themes found for this channel{% endblocktrans %}
+                    - {% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}
+                </p>
                 {% if theme_children|length %}
                     <div class="scroll_wrapper">
                         <ul class="list-children-theme">
                             {% for th in theme_children %}
                             <li class="btn btn-sm btn-outline-secondary text-truncate child-theme">
-                                <a href="{% url 'channel-video:theme' slug_c=channel.slug slug_t=th.slug%}" class="text-truncate">{{th.title}}</a>
+                                <a href="{% url 'channel-video:theme' slug_c=channel.slug slug_t=th.slug%}" class="text-truncate" title="{{th.title}} ({{th.video_count}})">
+                                    {{th.title}} ({{th.video_count}})
+                                </a>
                             </li>
                             {% endfor %}
                         </ul>
@@ -114,7 +119,11 @@
             <section class="video-section">
                 {% if videos %}
                     <p class="video-count">
-                        {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
+                        {% if theme %}
+                        {% blocktrans count counter=count_videos %}{{ counter }} video found for this theme{% plural %}{{ counter }} videos found for this theme{% endblocktrans %}
+                        {% else %}
+                        {% blocktrans count counter=count_videos %}{{ counter }} video found without theme{% plural %}{{ counter }} videos found without theme{% endblocktrans %}
+                        {% endif %}
                     </p>
                     {% include "videos/video_list.html" %}
                     {% if has_more_videos %}
