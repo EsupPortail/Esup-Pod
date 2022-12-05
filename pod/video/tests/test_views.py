@@ -76,7 +76,11 @@ class ChannelTestView(TestCase):
             "title": self.c.title,
             "description": self.c.description,
             "headband": None,
-            "theme_children": [{"slug": self.theme.slug, "title": self.theme.title}],
+            "theme_children": [{
+                "slug": self.theme.slug,
+                "title": self.theme.title,
+                "video_count": 0
+            }],
             "has_more_themes": False,
             "has_more_videos": False,
             "videos": [self.v],

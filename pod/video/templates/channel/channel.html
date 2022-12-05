@@ -96,7 +96,7 @@
             <!-- THEME SECTION -->
             <section class="theme-section">
                 <p class="theme-count">
-                    {% blocktrans count counter=count_themes %}{{ counter }} theme found{% plural %}{{ counter }} themes found for this channel{% endblocktrans %}
+                    {% blocktrans count counter=count_themes %}{{ counter }} theme found for this channel{% plural %}{{ counter }} themes found for this channel{% endblocktrans %}
                     - {% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}
                 </p>
                 {% if theme_children|length %}
