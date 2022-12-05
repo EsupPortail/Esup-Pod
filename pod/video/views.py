@@ -177,7 +177,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         Dict[str, Any]: json data
     """
     target = request.GET.get("target", "").lower()
-    limit = int(request.GET.get("limit", 8))
+    limit = int(request.GET.get("limit", 12))
     offset = int(request.GET.get("offset", 0))
     theme_children = None
     parent_title = ""
@@ -209,7 +209,12 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
     if theme_children is not None:
         count_themes = theme_children.count()
         has_more_themes = (offset + limit) < count_themes
-        theme_children = theme_children.values("slug", "title")[offset : limit + offset]
+        theme_children = theme_children.annotate(
+            video_count=Count("video", filter=Q(video__is_draft=False), distinct=True)
+        )
+        theme_children = theme_children.values("slug", "title", "video_count")[
+            offset : limit + offset
+        ]
         next_url, previous_url, theme_pages_info = pagination_data(
             request.path, offset, limit, count_themes
         )
@@ -282,6 +287,7 @@ def channel(request, slug_c, slug_t=None):
     channel = get_object_or_404(Channel, slug=slug_c, site=get_current_site(request))
 
     videos_list = VIDEOS.filter(channel=channel)
+    channel.video_count = videos_list.count()
 
     theme = None
     if slug_t:
