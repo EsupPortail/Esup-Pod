@@ -212,9 +212,9 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         theme_children = theme_children.annotate(
             video_count=Count("video", filter=Q(video__is_draft=False), distinct=True)
         )
-        theme_children = theme_children.values(
-            "slug", "title", "video_count"
-        )[offset : limit + offset]
+        theme_children = theme_children.values("slug", "title", "video_count")[
+            offset : limit + offset
+        ]
         next_url, previous_url, theme_pages_info = pagination_data(
             request.path, offset, limit, count_themes
         )
