@@ -186,6 +186,11 @@ class AccessGroup(models.Model):
     display_name = models.CharField(max_length=128, blank=True, default="")
     code_name = models.CharField(max_length=250, unique=True)
     sites = models.ManyToManyField(Site)
+    auto_sync = models.BooleanField(
+        _("Auto synchronize"),
+        default=False,
+        help_text=_("Check if the access_group must be synchronized on user connexion."),
+    )
     users = models.ManyToManyField(
         Owner,
         blank=True,

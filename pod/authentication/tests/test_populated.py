@@ -109,6 +109,7 @@ class PopulatedCASTestCase(TestCase):
         """setUp PopulatedCASTestCase create user pod"""
         User.objects.create(username="pod", password="pod1234pod")
         AccessGroup.objects.create(code_name="groupTest", display_name="Group de test")
+        AccessGroup.objects.create(code_name="groupTest2", display_name="Group de test 2", auto_sync="True")
         print(" --->  SetUp of PopulatedCASTestCase : OK !")
 
     @override_settings(DEBUG=False)
@@ -128,7 +129,7 @@ class PopulatedCASTestCase(TestCase):
         #    settings, 'CREATE_GROUP_FROM_GROUPS', False)
         # check no group are created any from affiliation or groups
         self.assertEqual(user.is_staff, True)
-        self.assertEqual(AccessGroup.objects.all().count(), 1)
+        self.assertEqual(AccessGroup.objects.all().count(), 2)
         self.assertEqual(user.owner.accessgroup_set.all().count(), 0)
         print(
             " --->  test_populate_user_from_tree by default"
@@ -143,7 +144,7 @@ class PopulatedCASTestCase(TestCase):
         reload(populatedCASbackend)
         tree = ET.fromstring(self.xml_string)
         populatedCASbackend.populate_user_from_tree(user, owner, tree)
-        self.assertEqual(AccessGroup.objects.all().count(), 3)
+        self.assertEqual(AccessGroup.objects.all().count(), 4)
         self.assertTrue(
             user.owner.accessgroup_set.filter(code_name__in=["member", "staff"]).exists()
         )
@@ -164,7 +165,7 @@ class PopulatedCASTestCase(TestCase):
         reload(populatedCASbackend)
         tree = ET.fromstring(self.xml_string)
         populatedCASbackend.populate_user_from_tree(user, owner, tree)
-        self.assertEqual(AccessGroup.objects.all().count(), 5)
+        self.assertEqual(AccessGroup.objects.all().count(), 6)
         self.assertTrue(
             user.owner.accessgroup_set.filter(
                 code_name__in=[
@@ -194,7 +195,7 @@ class PopulatedCASTestCase(TestCase):
         tree = ET.fromstring(self.xml_string)
         populatedCASbackend.populate_user_from_tree(user, owner, tree)
         # check they are only existing group and affiliation groups x2
-        self.assertEqual(AccessGroup.objects.all().count(), 3)
+        self.assertEqual(AccessGroup.objects.all().count(), 4)
 
         self.assertTrue(
             user.owner.accessgroup_set.filter(
@@ -206,6 +207,73 @@ class PopulatedCASTestCase(TestCase):
         )
         print(
             " --->  test_populate_user_from_tree_affiliation_nogroup"
+            " of PopulatedCASTestCase : OK !"
+        )
+
+    @override_settings(
+        DEBUG=True,
+        CREATE_GROUP_FROM_AFFILIATION=True,
+        CREATE_GROUP_FROM_GROUPS=True,
+        POPULATE_USER="CAS"
+    )
+    def test_populate_user_from_tree_unpopulate_group(self):
+        user = User.objects.get(username="pod")
+        user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest"))
+        user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest2"))
+        user.save()
+
+        reload(populatedCASbackend)
+        tree = ET.fromstring(self.xml_string)
+        populatedCASbackend.populateUser(tree)
+        user = User.objects.get(username="pod")
+
+        self.assertEqual(AccessGroup.objects.all().count(), 6)
+        self.assertTrue(
+            user.owner.accessgroup_set.filter(
+                code_name__in=[
+                    "member",
+                    "staff",
+                    "cn=group1,ou=groups,dc=univ,dc=fr",
+                    "cn=group2,ou=groups,dc=univ,dc=fr",
+                    "groupTest",
+                ]
+            ).exists()
+        )
+        self.assertFalse(
+            user.owner.accessgroup_set.filter(
+                code_name__in=[
+                    "groupTest2",
+                ]
+            ).exists()
+        )
+        print(
+            " --->  test_populate_user_from_tree_unpopulate_group"
+            " of PopulatedCASTestCase : OK !"
+        )
+
+    def test_delete_synchronized_access_group(self):
+        user = User.objects.get(username="pod")
+        user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest"))
+        user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest2"))
+        user.save()
+        populatedCASbackend.delete_synchronized_access_group(user.owner)
+        self.assertEqual(AccessGroup.objects.all().count(), 2)
+        self.assertTrue(
+            user.owner.accessgroup_set.filter(
+                code_name__in=[
+                    "groupTest",
+                ]
+            ).exists()
+        )
+        self.assertFalse(
+            user.owner.accessgroup_set.filter(
+                code_name__in=[
+                    "groupTest2",
+                ]
+            ).exists()
+        )
+        print(
+            " --->  test_delete_synchronized_access_group"
             " of PopulatedCASTestCase : OK !"
         )
 
@@ -229,6 +297,7 @@ class PopulatedLDAPTestCase(TestCase):
         """setUp PopulatedLDAPTestCase create user pod"""
         User.objects.create(username="pod", password="pod1234pod")
         AccessGroup.objects.create(code_name="groupTest", display_name="Group de test")
+        AccessGroup.objects.create(code_name="groupTest2", display_name="Group de test 2", auto_sync="True")
         fake_server = Server("my_fake_server")
         fake_connection = Connection(fake_server, client_strategy=MOCK_SYNC)
         fake_connection.strategy.add_entry("uid=pod,ou=people,dc=univ,dc=fr", self.attrs)
@@ -264,7 +333,7 @@ class PopulatedLDAPTestCase(TestCase):
         #    settings, 'CREATE_GROUP_FROM_GROUPS', False)
         # check no group are created any from affiliation or groups
         self.assertEqual(user.is_staff, True)
-        self.assertEqual(AccessGroup.objects.all().count(), 1)
+        self.assertEqual(AccessGroup.objects.all().count(), 2)
         self.assertEqual(user.owner.accessgroup_set.all().count(), 0)
         print(
             " --->  test_populate_user_from_entry by default"
@@ -278,7 +347,7 @@ class PopulatedLDAPTestCase(TestCase):
         self.assertEqual(user.owner, owner)
         reload(populatedCASbackend)
         populatedCASbackend.populate_user_from_entry(user, owner, self.entry)
-        self.assertEqual(AccessGroup.objects.all().count(), 3)
+        self.assertEqual(AccessGroup.objects.all().count(), 4)
         self.assertTrue(
             user.owner.accessgroup_set.filter(code_name__in=["member", "staff"]).exists()
         )
@@ -298,7 +367,7 @@ class PopulatedLDAPTestCase(TestCase):
         self.assertEqual(user.owner, owner)
         reload(populatedCASbackend)
         populatedCASbackend.populate_user_from_entry(user, owner, self.entry)
-        self.assertEqual(AccessGroup.objects.all().count(), 5)
+        self.assertEqual(AccessGroup.objects.all().count(), 6)
         # user.owner.accessgroup_set.add(accessgroup)
         self.assertTrue(
             user.owner.accessgroup_set.filter(
@@ -314,6 +383,47 @@ class PopulatedLDAPTestCase(TestCase):
             " --->  test_populate_user_from_entry_affiliation_group"
             " of PopulatedLDAPTestCase : OK !"
         )
+
+        @override_settings(
+            DEBUG=True,
+            CREATE_GROUP_FROM_AFFILIATION=True,
+            CREATE_GROUP_FROM_GROUPS=True,
+            POPULATE_USER="LDAP"
+        )
+        def test_populate_user_from_entry_unpopulate_group(self):
+            user = User.objects.get(username="pod")
+            user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest"))
+            user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest2"))
+            user.save()
+
+            reload(populatedCASbackend)
+            tree = ET.fromstring(self.xml_string)
+            populatedCASbackend.populateUser(tree)
+            user = User.objects.get(username="pod")
+
+            self.assertEqual(AccessGroup.objects.all().count(), 6)
+            self.assertTrue(
+                user.owner.accessgroup_set.filter(
+                    code_name__in=[
+                        "member",
+                        "staff",
+                        "cn=group1,ou=groups,dc=univ,dc=fr",
+                        "cn=group2,ou=groups,dc=univ,dc=fr",
+                        "groupTest",
+                    ]
+                ).exists()
+            )
+            self.assertFalse(
+                user.owner.accessgroup_set.filter(
+                    code_name__in=[
+                        "groupTest2",
+                    ]
+                ).exists()
+            )
+            print(
+                " --->  test_populate_user_from_entry_unpopulate_group"
+                " of PopulatedLDAPTestCase : OK !"
+            )
 
 
 class PopulatedShibTestCase(TestCase):
