@@ -109,7 +109,9 @@ class PopulatedCASTestCase(TestCase):
         """setUp PopulatedCASTestCase create user pod"""
         User.objects.create(username="pod", password="pod1234pod")
         AccessGroup.objects.create(code_name="groupTest", display_name="Group de test")
-        AccessGroup.objects.create(code_name="groupTest2", display_name="Group de test 2", auto_sync="True")
+        AccessGroup.objects.create(
+            code_name="groupTest2", display_name="Group de test 2", auto_sync="True"
+        )
         print(" --->  SetUp of PopulatedCASTestCase : OK !")
 
     @override_settings(DEBUG=False)
@@ -214,7 +216,7 @@ class PopulatedCASTestCase(TestCase):
         DEBUG=True,
         CREATE_GROUP_FROM_AFFILIATION=True,
         CREATE_GROUP_FROM_GROUPS=True,
-        POPULATE_USER="CAS"
+        POPULATE_USER="CAS",
     )
     def test_populate_user_from_tree_unpopulate_group(self):
         user = User.objects.get(username="pod")
@@ -297,7 +299,9 @@ class PopulatedLDAPTestCase(TestCase):
         """setUp PopulatedLDAPTestCase create user pod"""
         User.objects.create(username="pod", password="pod1234pod")
         AccessGroup.objects.create(code_name="groupTest", display_name="Group de test")
-        AccessGroup.objects.create(code_name="groupTest2", display_name="Group de test 2", auto_sync="True")
+        AccessGroup.objects.create(
+            code_name="groupTest2", display_name="Group de test 2", auto_sync="True"
+        )
         fake_server = Server("my_fake_server")
         fake_connection = Connection(fake_server, client_strategy=MOCK_SYNC)
         fake_connection.strategy.add_entry("uid=pod,ou=people,dc=univ,dc=fr", self.attrs)
@@ -388,12 +392,14 @@ class PopulatedLDAPTestCase(TestCase):
             DEBUG=True,
             CREATE_GROUP_FROM_AFFILIATION=True,
             CREATE_GROUP_FROM_GROUPS=True,
-            POPULATE_USER="LDAP"
+            POPULATE_USER="LDAP",
         )
         def test_populate_user_from_entry_unpopulate_group(self):
             user = User.objects.get(username="pod")
             user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest"))
-            user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest2"))
+            user.owner.accessgroup_set.add(
+                AccessGroup.objects.get(code_name="groupTest2")
+            )
             user.save()
 
             reload(populatedCASbackend)
