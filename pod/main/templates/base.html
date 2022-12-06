@@ -40,7 +40,7 @@
   <!-- more styles for each App -->
   {% block more_style %}
   {% endblock more_style %}
-  <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|capfirst}}{% endblock %}</title>
+  <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|striptags|capfirst}}{% endblock %}</title>
   <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
   {% block page_extra_head %}
   {% endblock %}
