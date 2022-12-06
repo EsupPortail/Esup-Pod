@@ -570,7 +570,7 @@ function verify_fields(form) {
   } else if (form == "form_overlay") {
     var tags = /<script.+?>|<iframe.+?>/;
     if (tags.exec(document.getElementById("id_content").value) != null) {
-      let id_content = document.querySelector("textarea#id_content");
+      let id_content = document.getElementById("id_content");
       id_content.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +

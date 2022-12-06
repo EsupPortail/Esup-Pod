@@ -91,7 +91,6 @@ class InfiniteLoader {
     //UPDATE DOM
     this.getData(url, this.next_page_number).then((data) => {
       const html = new DOMParser().parseFromString(data, "text/html");
-      console.log(); // here all the videos from the page are loaded
 
       if (
         html.getElementById("videos_list").getAttribute("nextPage") != "True"
@@ -125,14 +124,6 @@ class InfiniteLoader {
     const data = await response.text();
     return data;
 
-    /*
-    .then((response) => response.text())
-    .then((data) => {
-      const html = new DOMParser().parseFromString(data, "text/html").body
-      console.log(html.querySelector("#videos_list")); // here all the videos from the page are loaded
-      this.updateDom(data);
-      this.callBackAfterLoad();
-    })
-    */
+   
   }
 }

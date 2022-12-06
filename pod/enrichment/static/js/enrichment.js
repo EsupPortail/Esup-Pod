@@ -128,7 +128,6 @@ var sendandgetform = async function (elt, action) {
         }
       })
       .catch((error) => {
-        console.log(error);
         ajaxfail(error);
       });
   }

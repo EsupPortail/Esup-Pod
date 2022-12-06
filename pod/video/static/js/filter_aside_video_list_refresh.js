@@ -108,7 +108,6 @@ function refreshVideosSearch(formCheckedInputs) {
       }
     })
     .catch((error) => {
-      console.log(error);
       document.getElementById("videos_list").innerHTML = gettext(
         "An Error occurred while processing."
       );
@@ -126,7 +125,6 @@ hideInfiniteloading = function () {
 
 document.addEventListener("change", (e) => {
   if (!e.target.matches(".form-check-input")) return;
-  console.log("ici");
   formCheckedInputs = [];
   document.querySelector(".infinite-loading").display = "block";
   document

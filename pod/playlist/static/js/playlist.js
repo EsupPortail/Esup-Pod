@@ -133,7 +133,6 @@ document.addEventListener("DOMContentLoaded", function () {
         body: form_data,
       })
         .then((response) => {
-          console.log(response.status);
 
           if (response.status != 200) {
             showalert(
@@ -190,7 +189,6 @@ document.addEventListener("DOMContentLoaded", function () {
               );
             } else {
               if (response.status == 200) {
-                console.log(response);
                 showalert(response.statusText, "alert-success");
 
                 window.location.href = "/playlist/my/";

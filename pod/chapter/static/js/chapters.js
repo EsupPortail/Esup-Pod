@@ -62,7 +62,6 @@ var ajaxfail = function (data) {
       gettext("The form could not be recovered."),
     "alert-danger"
   );
-  document.querySelector("form.get_form").style;
   show_form("");
 };
 
@@ -239,8 +238,7 @@ var sendform = async function (elt, action) {
           } else {
             data = JSON.parse(data);
             if (data.errors) {
-              document.getElementById("form_chapter").style.display =
-                "block";
+              document.getElementById("form_chapter").style.display = "block";
               showalert(
                 data.errors +
                   " Make sure your chapter start time is not 0 or equal to another chapter start time.",
@@ -345,7 +343,6 @@ function verify_start_title_items() {
     inputStart.value < 0 ||
     inputStart.value >= video_duration
   ) {
-    
     inputStart.insertAdjacentHTML(
       "beforebegin",
       "<span class='form-help-inline'>&nbsp;&nbsp;" +

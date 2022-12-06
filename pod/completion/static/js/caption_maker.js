@@ -237,7 +237,7 @@ document
   .getElementById("clearAllCaptions")
   .addEventListener("click", function (e) {
     e.preventDefault();
-    if (confirm(gettext("Are you sure you want to delete all caption?"))) {
+    if (confirm(gettext("Are you sure you want to delete all captions?"))) {
       captionsArray.length = 0;
       autoPauseAtTime = -1;
 
@@ -259,8 +259,6 @@ document
 
     if (oldModeSelected) {
       document.getElementById("captionContent").value = GenerateWEBVTT();
-    }
-    if (oldModeSelected) {
       document.getElementById("rawCaptionsEditor").style.display = "block";
       document.getElementById("newCaptionsEditor").style.display = "none";
     } else {

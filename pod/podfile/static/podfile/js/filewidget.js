@@ -2,7 +2,6 @@
 // select file
 
 if (typeof loaded == "undefined") {
-  console.log("%c filewidget.js loaded", "color : #bada55");
 
   loaded = true;
   document.addEventListener("click", (e) => {
@@ -694,7 +693,6 @@ if (typeof loaded == "undefined") {
   }
 
   function append_folder_html_in_modal(data) {
-    console.log("appended folder html in modal");
     document.getElementById("modal-folder_" + id_input).innerHTML = data;
   }
 
