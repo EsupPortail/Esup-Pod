@@ -257,7 +257,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         )
         response["videos"] = videos
         return JsonResponse(response, safe=False)
-         # TODO : replace this return by a
+        # TODO : replace this return by a
         #  render(request,"videos/video_list.html") like in channel
     return render(
         request,
