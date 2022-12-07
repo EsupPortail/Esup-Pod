@@ -548,8 +548,8 @@ def file_edit_save(request, folder):
         return HttpResponse(data, content_type="application/json")
 
 
-@ csrf_protect
-@ staff_member_required(redirect_field_name="referrer")
+@csrf_protect
+@staff_member_required(redirect_field_name="referrer")
 def get_file(request, type):
     id = None
     if request.method == "POST" and request.POST.get("src"):
@@ -598,7 +598,7 @@ def get_file(request, type):
     return HttpResponse(data, content_type="application/json")
 
 
-@ login_required(redirect_field_name="referrer")
+@login_required(redirect_field_name="referrer")
 def folder_shared_with(request):
     if request:
         foldid = request.GET.get("foldid", 0)
@@ -617,7 +617,7 @@ def folder_shared_with(request):
         return HttpResponseBadRequest()
 
 
-@ login_required(redirect_field_name="referrer")
+@login_required(redirect_field_name="referrer")
 def user_share_autocomplete(request):
     if request:
         foldid = request.GET.get("foldid", 0)
@@ -649,7 +649,7 @@ def user_share_autocomplete(request):
     return HttpResponse(data, mimetype)
 
 
-@ login_required(redirect_field_name="referrer")
+@login_required(redirect_field_name="referrer")
 def remove_shared_user(request):
     if request:
         foldid = request.GET.get("foldid", 0)
@@ -668,7 +668,7 @@ def remove_shared_user(request):
         return HttpResponseBadRequest()
 
 
-@ login_required(redirect_field_name="referrer")
+@login_required(redirect_field_name="referrer")
 def add_shared_user(request):
     if request:
         foldid = request.GET.get("foldid", 0)
@@ -714,7 +714,7 @@ def filter_folders_with_truly_files(folders):
     return folders
 
 
-@ staff_member_required(redirect_field_name="referrer")
+@staff_member_required(redirect_field_name="referrer")
 def user_folders(request):
     VALUES_LIST = ["id", "name"]
     if request.user.is_superuser:

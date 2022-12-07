@@ -257,7 +257,8 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         )
         response["videos"] = videos
         return JsonResponse(response, safe=False)
-
+         # TODO : replace this return by a
+        #  render(request,"videos/video_list.html") like in channel
     return render(
         request,
         "channel/channel.html",
@@ -802,7 +803,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     template_video = "videos/video.html"
     params = {"active_video_comment": ACTIVE_VIDEO_COMMENT}
     if request.GET.get("is_iframe"):
-        params = {}
+        params = {"page_title": video.title}
         template_video = "videos/video-iframe.html"
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
@@ -1382,7 +1383,7 @@ def video_note_form_case(request, params):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_note_save(request, slug):
-    """Save a Video note."""
+    """Save a Video note or comment."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     idNote, idCom = None, None
     note, com = None, None
@@ -1483,11 +1484,11 @@ def video_note_save_form_valid(request, video, params):
         com.status = request.POST.get("status")
         com.modified_on = timezone.now()
         com.save()
-        messages.add_message(request, messages.INFO, _("The comment has been saved."))
+        messages.add_message(request, messages.INFO, _("The comment has been modified."))
         noteToDisplay, comToDisplay = note, get_com_tree(com)
         listNotesCom = get_adv_note_com_list(request, idNote)
         dictComments = get_com_coms_dict(request, listNotesCom)
-    # Saving a new answer (com) to a com
+    # Saving a new answer (com) to a note
     elif (
         idCom is not None
         and idNote is not None
@@ -1513,7 +1514,7 @@ def video_note_save_form_valid(request, video, params):
         note.status = request.POST.get("status")
         note.modified_on = timezone.now()
         note.save()
-        messages.add_message(request, messages.INFO, _("The note has been saved."))
+        messages.add_message(request, messages.INFO, _("The note has been modified."))
     # Saving a new com for a note
     elif (
         idCom is None and idNote is not None and request.POST.get("action") == "save_com"
@@ -1537,10 +1538,15 @@ def video_note_save_form_valid(request, video, params):
         )
         if created or not note.note:
             note.note = request.POST.get("note")
+            message = _("The note has been saved.")
         else:
             note.note = note.note + "\n" + request.POST.get("note")
+            message = _(
+                "Your note at %(timestamp)s has been modified."
+                % {"timestamp": note.timestampstr()}
+            )
         note.save()
-        messages.add_message(request, messages.INFO, _("The note has been saved."))
+        messages.add_message(request, messages.INFO, message)
 
     return (note, com, noteToDisplay, comToDisplay, listNotesCom, dictComments)
 
