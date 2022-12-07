@@ -1158,7 +1158,8 @@ if (id_is_draft) {
 }
 
 var restricted_access = function () {
-  let restricted_access = document.querySelector(".restricted_access");
+  document.querySelectorAll(".restricted_access").forEach((restricted_access) => {
+
   if (restricted_access) {
     let is_draft = document.getElementById("id_is_draft");
     if (is_draft != null && is_draft.checked) {
@@ -1183,6 +1184,7 @@ var restricted_access = function () {
     }
     restrict_access_to_groups();
   }
+  });
 };
 restricted_access();
 //restrict_access_to_groups();
