@@ -137,8 +137,8 @@ class MeetingAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {"fields": MEETING_MAIN_FIELDS}),
-        ("Date", {"fields": MEETING_DATE_FIELDS}),
-        ("Reccuring", {"fields": MEETING_RECURRING_FIELDS}),
+        (_("Date"), {"fields": MEETING_DATE_FIELDS}),
+        (_("Recurring"), {"fields": MEETING_RECURRING_FIELDS}),
         (
             "Advanced options",
             {

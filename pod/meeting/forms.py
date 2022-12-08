@@ -19,6 +19,12 @@ from django.core.validators import validate_email
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from .models import Meeting
 
+MEETING_MAX_DURATION = getattr(
+    settings,
+    "MEETING_MAX_DURATION",
+    5
+)
+
 MEETING_MAIN_FIELDS = getattr(
     settings,
     "MEETING_MAIN_FIELDS",
@@ -137,7 +143,7 @@ class MeetingForm(forms.ModelForm):
             time = (datetime.datetime.combine(datetime.date.today(), time) + delta).time()
         return time_choices
 
-    def get_rouded_time():
+    def get_rounded_time():
         now = timezone.localtime(timezone.now()).time().replace(second=0, microsecond=0)
         if now.minute < 30:
             now = now.replace(minute=30)
@@ -153,14 +159,16 @@ class MeetingForm(forms.ModelForm):
     start_time = forms.ChoiceField(
         label=_("Start time"),
         choices=get_time_choices(),
-        initial=get_rouded_time
+        initial=get_rounded_time
     )
     expected_duration = forms.IntegerField(
         label=_("Duration"),
         initial=2,
-        max_value=5,
+        max_value=MEETING_MAX_DURATION,
         min_value=1,
-        help_text=_("Specify a duration in hour between 1 and 5 hours")
+        help_text=_("Specify a duration in hour between 1 and %(max_duration)s hours") % {
+            "max_duration": MEETING_MAX_DURATION
+        }
     )
     field_order = ["start", "start_time", "expected_duration"]
     DAYS_OF_WEEK = [

@@ -16,7 +16,8 @@
     <i class="bi bi-plus pod-add"></i><span>{% trans "Add a meeting" %}</span>
   </a>
 </div>
-<table class="table table-striped align-middle table-sm table-bordered">
+<table class="table table-striped align-middle table-sm table-bordered caption-top">
+  <caption>{% if request.GET.all == "true" %}{% trans "All my meetings" %} {% else %} {% trans "My active meetings" %} {% endif %}</caption>
   <thead>
     <tr>
       <th scope="col">{% trans "Name" %}</th>
@@ -30,7 +31,7 @@
   </thead>
   <tbody>
     {% for meeting in meetings %}
-    <tr>
+    <tr {% if request.GET.all == "true" and meeting.is_active %}class="table-primary"{% endif %}>
       <th scope="row">
         {{meeting.name|capfirst}}
         {% if meeting.is_restricted %}
@@ -91,7 +92,21 @@
     {% endfor %}
   </tbody>
 </table>
-
+{% if meetings %}
+  {% if request.GET.all == "true" %}
+  <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-2">
+    <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a meeting' %}">
+      <i class="bi bi-eye pod-add"></i> <span>{% trans "See my active meetings" %}</span>
+    </a>
+  </div>
+  {% else %}
+  <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-2">
+    <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}?all=true" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a meeting' %}">
+      <i class="bi bi-eye pod-add"></i> <span>{% trans "See all my meetings" %}</span>
+    </a>
+  </div>
+  {% endif %}
+{% endif %}
 <!-- Modal -->
 <div class="modal fade" id="meetingModal" tabindex="-1" aria-labelledby="meetingModal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
