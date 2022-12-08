@@ -125,6 +125,7 @@ def direct(request, slug):  # affichage du flux d'un diffuseur
         "live/direct.html",
         {
             "display_chat": display_chat,
+            "display_event_btn": can_manage_event(request.user),
             "broadcaster": broadcaster,
             "heartbeat_delay": HEARTBEAT_DELAY,
         },
