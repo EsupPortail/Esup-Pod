@@ -89,10 +89,12 @@
         {% endif %}
       </td>
     </tr>
+    {% empty %}
+    <tr><td colspan="7" class="text-center">{% trans "No meetings found" %}</td></tr>
     {% endfor %}
   </tbody>
 </table>
-{% if meetings %}
+{% if meetings or request.user.owner_meeting.all %}
   {% if request.GET.all == "true" %}
   <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-2">
     <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a meeting' %}">
