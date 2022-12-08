@@ -247,6 +247,7 @@ document.addEventListener("change", (e) => {
   if (e.target.id !== "displaytime") return;
   let displayTime = document.getElementById("displaytime");
   let txtpartage = document.getElementById("txtpartage");
+  let txtinteg = document.getElementById("txtintegration")
   if (displayTime.checked) {
     if (txtpartage.value.indexOf("start") < 0) {
       txtpartage.value =
@@ -254,8 +255,8 @@ document.addEventListener("change", (e) => {
 
       if (txtpartage.value.indexOf("??") > 0)
         txtpartage.value = txtpartage.value.replace("??", "?");
-      var valeur = txtpartage.value;
-      txtpartage.value = valeur.replace(
+      var valeur = txtinteg.value;
+      txtinteg.value = valeur.replace(
         "/?",
         "/?start=" + parseInt(player.currentTime()) + "&"
       );
@@ -270,7 +271,7 @@ document.addEventListener("change", (e) => {
       .replace(/(\?start=)\d+/, "");
 
     txtpartage.valuex;
-    document.getElementById("txtintegration").value.replace(/(start=)\d+&/, "");
+    txtinteg.value = txtinteg.value.replace(/(start=)\d+&/, "");
     document.getElementById("txtposition").value = "";
   }
 
