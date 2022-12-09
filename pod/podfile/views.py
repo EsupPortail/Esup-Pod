@@ -687,7 +687,7 @@ def add_shared_user(request):
         return HttpResponseBadRequest()
 
 
-@ login_required(redirect_field_name="referrer")
+@login_required(redirect_field_name="referrer")
 def get_current_session_folder_ajax(request):
     fold = request.session.get("current_session_folder", "home")
     mimetype = "application/json"
