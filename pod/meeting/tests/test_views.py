@@ -4,6 +4,8 @@ from django.urls import reverse
 from django.test import Client, override_settings
 from django.contrib.sites.models import Site
 from django.conf import settings
+from django.utils import timezone
+from datetime import datetime
 
 from http import HTTPStatus
 from importlib import reload
@@ -30,8 +32,9 @@ class meeting_TestView(TestCase):
         self.client.force_login(self.user)
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
+        list_id = [meeting.id for meeting in response.context["meetings"]]
         self.assertEqual(
-            list(response.context["meetings"].values_list("id", flat=True)),
+            list_id,
             list(self.user.owner_meeting.all().values_list("id", flat=True)),
         )
         print(" --->  test_meeting_TestView_get_request of meeting_TestView: OK!")
@@ -51,8 +54,9 @@ class meeting_TestView(TestCase):
         self.user.save()
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
+        list_id = [meeting.id for meeting in response.context["meetings"]]
         self.assertEqual(
-            list(response.context["meetings"].values_list("id", flat=True)),
+            list_id,
             list(self.user.owner_meeting.all().values_list("id", flat=True)),
         )
         print(
@@ -119,10 +123,11 @@ class MeetingAddEditTestView(TestCase):
                 "name": "test1",
                 "voice_bridge": 70000 + random.randint(0, 9999),
                 "attendee_password": "1234",
-                "start_at_0": "2022-08-26",
-                "start_at_1": "16:43:58",
-                "end_at_0": "2022-08-26",
-                "end_at_1": "18:43:58",
+                "start": "2022-08-26",
+                "start_time": "21:00:00",
+                "expected_duration": "2",
+                "frequency": "1",
+                "monthly_type": "date_day",
                 "max_participants": 100,
                 "welcome_text": "Hello",
             },
@@ -133,6 +138,7 @@ class MeetingAddEditTestView(TestCase):
         m = Meeting.objects.get(name="test1")
         self.assertEqual(m.attendee_password, "1234")
         self.assertEqual(Meeting.objects.all().count(), nb_meeting + 1)
+        self.assertEqual(m.start_at, timezone.make_aware(datetime(2022, 8, 26, 21, 0, 0)))
         print("   --->  test_meeting_add_post_request of MeetingEditTestView: OK!")
 
     def test_meeting_edit_post_request(self):
@@ -158,10 +164,11 @@ class MeetingAddEditTestView(TestCase):
                 "name": "test1",
                 "voice_bridge": 70000 + random.randint(0, 9999),
                 "attendee_password": "1234",
-                "start_at_0": "2022-08-26",
-                "start_at_1": "16:43:58",
-                "end_at_0": "2022-08-26",
-                "end_at_1": "18:43:58",
+                "start": "2022-08-26",
+                "start_time": "14:00:00",
+                "expected_duration": "2",
+                "frequency": "1",
+                "monthly_type": "date_day",
                 "max_participants": 100,
                 "welcome_text": "Hello",
             },
@@ -171,6 +178,7 @@ class MeetingAddEditTestView(TestCase):
         # check if meeting has been updated
         m = Meeting.objects.get(name="test1")
         self.assertEqual(m.attendee_password, "1234")
+        self.assertEqual(m.start_at, timezone.make_aware(datetime(2022, 8, 26, 14, 0, 0)))
         print("   --->  test_meeting_edit_post_request of MeetingEditTestView: OK!")
 
 

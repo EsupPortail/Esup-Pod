@@ -60,13 +60,15 @@ def add_placeholder_and_asterisk(fields):
         if classname == "PasswordInput" or classname == "TextInput":
             myField.widget.attrs["placeholder"] = myField.label
 
-        if classname == "CheckboxInput":
+        if classname == "CheckboxInput" or classname == "CheckboxSelectMultiple":
             bsClass = "form-check-input"
         elif classname == "Select":
             bsClass = "form-select"
         else:
             bsClass = "form-control"
 
+        init_class = myField.widget.attrs.get("class", "")
+        bsClass = bsClass + " " + init_class
         if myField.required:
             myField.label = mark_safe(
                 '%s <span class="required_star">*</span>' % myField.label
