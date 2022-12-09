@@ -6,7 +6,13 @@ from django.utils.html import mark_safe
 from django.contrib.admin import widgets
 
 from .models import Meeting
-from .forms import MeetingForm, MEETING_MAIN_FIELDS, get_meeting_fields
+from .forms import (
+    MeetingForm,
+    MEETING_MAIN_FIELDS,
+    MEETING_DATE_FIELDS,
+    MEETING_RECURRING_FIELDS,
+    get_meeting_fields
+)
 
 
 class MeetingSuperAdminForm(MeetingForm):
@@ -34,6 +40,8 @@ class MeetingSuperAdminForm(MeetingForm):
                 admin.site,
                 attrs={"style": "width: 20em"},
             ),
+            "start": widgets.AdminDateWidget(),
+            "recurring_until": widgets.AdminDateWidget()
         }
 
 
@@ -62,7 +70,35 @@ class MeetingAdminForm(MeetingForm):
                 admin.site,
                 attrs={"style": "width: 20em"},
             ),
+            "start": widgets.AdminDateWidget(),
+            "recurring_until": widgets.AdminDateWidget()
         }
+
+
+class IsPaidFilter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = 'is active'
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'is_active'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('1', _('Yes')),
+            ('0', _('No'))
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == '1':
+            meetings = [
+                meeting.id for meeting in (
+                    queryset
+                ) if meeting.is_active
+            ]
+            return queryset.filter(id__in=meetings)
+        else:
+            return queryset
 
 
 @admin.register(Meeting)
@@ -75,6 +111,7 @@ class MeetingAdmin(admin.ModelAdmin):
         "meeting_id",
         "created_at",
         "start_at",
+        "is_active",
         "is_running",
         "join_url",  # , 'meeting_actions'
     )
@@ -87,7 +124,7 @@ class MeetingAdmin(admin.ModelAdmin):
         link = '<a href="%s" target="_blank">%s</a>' % (direct_join_url, _("join"))
         return mark_safe(link)
 
-    list_filter = ("start_at", "is_running")
+    list_filter = ("start_at", "is_running", IsPaidFilter)
     # actions = ["update_running_meetings"] if not UPDATE_RUNNING_ON_EACH_CALL else []
     list_per_page = 30
     autocomplete_fields = [
@@ -100,6 +137,8 @@ class MeetingAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {"fields": MEETING_MAIN_FIELDS}),
+        (_("Date"), {"fields": MEETING_DATE_FIELDS}),
+        (_("Recurring"), {"fields": MEETING_RECURRING_FIELDS}),
         (
             "Advanced options",
             {

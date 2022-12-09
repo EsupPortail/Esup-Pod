@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n l10n %}
 {% load static %}
 {% load thumbnail %}
 {% load custom_tags %}
@@ -55,11 +55,13 @@
   {% else %}
     <p>{% trans "The meeting has not started yet." %}</p>
     <p>
-    {% if meeting.start_at__date == meeting.end_at__date %}
-      {% blocktrans with start_date=meeting.start_at|date:"d/m/Y" start_time=meeting.start_at|time:"H:i" end_time=meeting.end_at|time:"H:i" %}It is scheduled for <b>{{start_date}}</b> from <u>{{start_time}}</u> to <u>{{end_time}}</u>.{% endblocktrans %}
+    {% localize on %}
+    {% if meeting.recurrence %}
+    {% blocktranslate with start_date=meeting.next_occurrence_from_today start_time=meeting.start_at|time %}It is scheduled for <b>{{start_date}}</b> at <u>{{start_time}}</u>.{% endblocktranslate %}
     {% else %}
-      {% blocktrans with start_date=meeting.start_at end_date=meeting.end_at %}It is scheduled from <b>{{start_date}}</b> to <b>{{end_date}}</b>.{% endblocktrans %}
+    {% blocktranslate with start_date=meeting.start_at|date start_time=meeting.start_at|time %}It is scheduled for <b>{{start_date}}</b> at <u>{{start_time}}</u>.{% endblocktranslate %}
     {% endif %}
+    {% endlocalize %}
     </p>
     <p>{% trans "You will be redirected right after the meeting starts." %}</p>
     <p>{% trans "if not, click on the button below." %}</p>
