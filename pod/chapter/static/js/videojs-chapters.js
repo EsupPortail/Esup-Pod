@@ -100,7 +100,7 @@
           );
           oldList.parentNode.removeChild(oldList);
 
-          let podPlayer = document.querySelector("#" + player.id());
+          let podPlayer = document.getElementById(player.id());
           podPlayer.append(newList);
         };
 
