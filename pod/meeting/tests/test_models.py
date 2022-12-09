@@ -40,14 +40,14 @@ class MeetingTestCase(TestCase):
             start_at=datetime(2022, 6, 27, 14, 0, 0),
             recurring_until=date(2022, 6, 26),
             recurrence="daily",
-            owner=user
+            owner=user,
         )
         self.assertEqual(meeting.recurring_until, meeting.start)
         m1 = Meeting.objects.create(
             name="a" * 255,
             owner=user,
             attendee_password="1234",
-            moderator_password="1234"
+            moderator_password="1234",
         )
         m1.full_clean()  # ok !
         with self.assertRaises(ValidationError) as context:
@@ -55,14 +55,14 @@ class MeetingTestCase(TestCase):
                 name="a" * 260,
                 owner=user,
                 attendee_password="1234",
-                moderator_password="1234"
+                moderator_password="1234",
             )
             m2.full_clean()
         self.assertEqual(
             context.exception.messages,
             [
-                'Ensure this value has at most 255 characters (it has 260).',
-                'Ensure this value has at most 260 characters (it has 265).'
+                "Ensure this value has at most 255 characters (it has 260).",
+                "Ensure this value has at most 260 characters (it has 265).",
             ],
         )
 
@@ -296,11 +296,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Weekly recurrence should set weekdays or it is not really a recurrence \
         and should be reset."""
         user = User.objects.get(username="pod")
-        meeting = Meeting.objects.create(
-            name="test",
-            owner=user,
-            recurrence="weekly"
-        )
+        meeting = Meeting.objects.create(name="test", owner=user, recurrence="weekly")
         self.assertIsNone(meeting.recurrence)
 
     def test_models_meetings_get_occurrences_weekly_weekdays_include_start(self):

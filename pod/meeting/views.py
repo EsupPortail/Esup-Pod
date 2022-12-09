@@ -83,9 +83,9 @@ def my_meetings(request):
     else:
         # remove past meeting
         meetings = [
-            meeting for meeting in (
-                request.user.owner_meeting.all().filter(site=site)
-            ) if meeting.is_active
+            meeting
+            for meeting in (request.user.owner_meeting.all().filter(site=site))
+            if meeting.is_active
         ]
     return render(
         request,
@@ -152,16 +152,15 @@ def add_or_edit(request, meeting_id=None):
                 messages.ERROR,
                 _("One or more errors have been found in the form."),
             )
-    page_title = "%s <b>%s</b>" % (
-        _("Edit the meeting"), meeting.name
-    ) if meeting else _("Add a new meeting")
+    page_title = (
+        "%s <b>%s</b>" % (_("Edit the meeting"), meeting.name)
+        if meeting
+        else _("Add a new meeting")
+    )
     return render(
         request,
         "meeting/add_or_edit.html",
-        {
-            "form": form,
-            "page_title": mark_safe(page_title)
-        },
+        {"form": form, "page_title": mark_safe(page_title)},
     )
 
 
@@ -570,11 +569,14 @@ def get_text_content(request, meeting):
     join_link = request.build_absolute_uri(
         reverse("meeting:join", args=(meeting.meeting_id,))
     )
-    meeting_start_datetime = timezone.localtime(
-        meeting.start_at).strftime("%d/%m/%Y %H:%M")
-    full_name = meeting.owner.get_full_name() if (
-        meeting.owner.get_full_name() != ""
-    ) else meeting.owner.username
+    meeting_start_datetime = timezone.localtime(meeting.start_at).strftime(
+        "%d/%m/%Y %H:%M"
+    )
+    full_name = (
+        meeting.owner.get_full_name()
+        if (meeting.owner.get_full_name() != "")
+        else meeting.owner.username
+    )
     if meeting.recurrence:
         text_content = (
             _(
@@ -631,11 +633,14 @@ def get_html_content(request, meeting):
     join_link = request.build_absolute_uri(
         reverse("meeting:join", args=(meeting.meeting_id,))
     )
-    meeting_start_datetime = timezone.localtime(
-        meeting.start_at).strftime("%d/%m/%Y %H:%M")
-    full_name = meeting.owner.get_full_name() if (
-        meeting.owner.get_full_name() != ""
-    ) else meeting.owner.username
+    meeting_start_datetime = timezone.localtime(meeting.start_at).strftime(
+        "%d/%m/%Y %H:%M"
+    )
+    full_name = (
+        meeting.owner.get_full_name()
+        if (meeting.owner.get_full_name() != "")
+        else meeting.owner.username
+    )
     if meeting.recurrence:
         html_content = (
             _(
@@ -710,14 +715,12 @@ def create_ics(request, meeting):
         line for line in description.replace("    ", "").split("\n")
     )
 
-    start_date_time = "TZID=\"%s\":%s" % (
+    start_date_time = 'TZID="%s":%s' % (
         timezone.get_current_timezone(),
-        timezone.localtime(meeting.start_at).strftime("%Y%m%dT%H%M%S")
+        timezone.localtime(meeting.start_at).strftime("%Y%m%dT%H%M%S"),
     )
 
-    duration = int(
-        meeting.expected_duration.seconds / 3600
-    )
+    duration = int(meeting.expected_duration.seconds / 3600)
     rrule = ""
     if meeting.recurrence:
         rrule = get_rrule(meeting)
@@ -751,7 +754,7 @@ def create_ics(request, meeting):
         "mail": meeting.owner.email,
         "rrule": rrule,
         "dtstart": start_date_time,
-        "uid": meeting.meeting_id + "@" + request.get_host()
+        "uid": meeting.meeting_id + "@" + request.get_host(),
     }
     event_lines = event.replace("    ", "").split("\n")
     return "\n".join(filter(None, event_lines))
@@ -767,10 +770,7 @@ def get_rrule(meeting):
     RRULE:FREQ=MONTHLY;BYMONTHDAY=3;UNTIL=20221024T100000Z
     """
     DAYS_OF_WEEK = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"]
-    rrule = "RRULE:FREQ=%s;INTERVAL=%s;" % (
-        meeting.recurrence.upper(),
-        meeting.frequency
-    )
+    rrule = "RRULE:FREQ=%s;INTERVAL=%s;" % (meeting.recurrence.upper(), meeting.frequency)
     if meeting.recurrence == Meeting.WEEKLY:
         rrule += "BYDAY=%s;" % ",".join(
             DAYS_OF_WEEK[int(d)] for d in list(meeting.weekdays)
@@ -782,10 +782,7 @@ def get_rrule(meeting):
         if meeting.monthly_type == Meeting.NTH_DAY:
             weekday = meeting.start.weekday()
             week_number = get_nth_week_number(meeting.start)
-            rrule += "BYDAY=%s%s;" % (
-                week_number,
-                DAYS_OF_WEEK[weekday]
-            )
+            rrule += "BYDAY=%s%s;" % (week_number, DAYS_OF_WEEK[weekday])
 
     if meeting.nb_occurrences and meeting.nb_occurrences > 1:
         rrule += "COUNT=%s" % meeting.nb_occurrences

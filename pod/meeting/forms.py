@@ -19,11 +19,7 @@ from django.core.validators import validate_email
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from .models import Meeting
 
-MEETING_MAX_DURATION = getattr(
-    settings,
-    "MEETING_MAX_DURATION",
-    5
-)
+MEETING_MAX_DURATION = getattr(settings, "MEETING_MAX_DURATION", 5)
 
 MEETING_MAIN_FIELDS = getattr(
     settings,
@@ -35,7 +31,7 @@ MEETING_MAIN_FIELDS = getattr(
         "attendee_password",
         "is_restricted",
         "restrict_access_to_groups",
-    )
+    ),
 )
 MEETING_DATE_FIELDS = getattr(
     settings,
@@ -44,7 +40,7 @@ MEETING_DATE_FIELDS = getattr(
         "start",
         "start_time",
         "expected_duration",
-    )
+    ),
 )
 MEETING_RECURRING_FIELDS = getattr(
     settings,
@@ -55,8 +51,8 @@ MEETING_RECURRING_FIELDS = getattr(
         "recurring_until",
         "nb_occurrences",
         "weekdays",
-        "monthly_type"
-    )
+        "monthly_type",
+    ),
 )
 MEETING_DISABLE_RECORD = getattr(settings, "MEETING_DISABLE_RECORD", True)
 
@@ -76,8 +72,10 @@ if MEETING_DISABLE_RECORD:
     )
 else:
     MEETING_EXCLUDE_FIELDS = (
-        MEETING_MAIN_FIELDS + MEETING_DATE_FIELDS + MEETING_RECURRING_FIELDS + (
-            "id", "start_at")
+        MEETING_MAIN_FIELDS
+        + MEETING_DATE_FIELDS
+        + MEETING_RECURRING_FIELDS
+        + ("id", "start_at")
     )
 
 for field in Meeting._meta.fields:
@@ -124,16 +122,16 @@ class MeetingForm(forms.ModelForm):
     def get_time_choices(
         start_time=datetime.time(0, 0, 0),
         end_time=datetime.time(23, 0, 0),
-        delta=datetime.timedelta(minutes=30)
+        delta=datetime.timedelta(minutes=30),
     ):
-        '''
-            Builds a choices tuple of (time object, time string) tuples
-            starting at the start time specified and ending at or before
-            the end time specified in increments of size delta.
+        """
+        Builds a choices tuple of (time object, time string) tuples
+        starting at the start time specified and ending at or before
+        the end time specified in increments of size delta.
 
-            The default is to return a choices tuple for
-            9am to 5pm in 15-minute increments.
-        '''
+        The default is to return a choices tuple for
+        9am to 5pm in 15-minute increments.
+        """
         time_choices = ()
         time = start_time
         while time <= end_time:
@@ -152,77 +150,76 @@ class MeetingForm(forms.ModelForm):
         return now
 
     start = forms.DateField(
-        label=_("Start date"),
-        initial=timezone.now,
-        widget=admin_widgets.AdminDateWidget
+        label=_("Start date"), initial=timezone.now, widget=admin_widgets.AdminDateWidget
     )
     start_time = forms.ChoiceField(
-        label=_("Start time"),
-        choices=get_time_choices(),
-        initial=get_rounded_time
+        label=_("Start time"), choices=get_time_choices(), initial=get_rounded_time
     )
     expected_duration = forms.IntegerField(
         label=_("Duration"),
         initial=2,
         max_value=MEETING_MAX_DURATION,
         min_value=1,
-        help_text=_("Specify a duration in hour between 1 and %(max_duration)s hours") % {
-            "max_duration": MEETING_MAX_DURATION
-        }
+        help_text=_("Specify a duration in hour between 1 and %(max_duration)s hours")
+        % {"max_duration": MEETING_MAX_DURATION},
     )
     field_order = ["start", "start_time", "expected_duration"]
     DAYS_OF_WEEK = [
-        (0, _('Monday')),
-        (1, _('Tuesday')),
-        (2, _('Wednesday')),
-        (3, _('Thursday')),
-        (4, _('Friday')),
-        (5, _('Saturday')),
-        (6, _('Sunday'))
+        (0, _("Monday")),
+        (1, _("Tuesday")),
+        (2, _("Wednesday")),
+        (3, _("Thursday")),
+        (4, _("Friday")),
+        (5, _("Saturday")),
+        (6, _("Sunday")),
     ]
 
     days_of_week = forms.MultipleChoiceField(
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-        choices=DAYS_OF_WEEK
+        required=False, widget=forms.CheckboxSelectMultiple, choices=DAYS_OF_WEEK
     )
     fieldsets = (
         (None, {"fields": MEETING_MAIN_FIELDS}),
-        ("input-group", {
-            "legend": (
-                '<i class="bi bi-clock-history"></i>'
-                + ' %s' % _("Date and time options")
-            ),
-            "fields": ["start", "start_time", "expected_duration"],
-            "additional_data": '''
+        (
+            "input-group",
+            {
+                "legend": (
+                    '<i class="bi bi-clock-history"></i>'
+                    + " %s" % _("Date and time options")
+                ),
+                "fields": ["start", "start_time", "expected_duration"],
+                "additional_data": """
                 <div class="m-1">
                 <button type="button" class="%s" data-bs-toggle="%s" data-bs-target="%s">
                     <i class="bi bi-calendar3-range"></i> %s
                 </button>
                 </div>
-            ''' % (
-                "btn btn-primary btn-sm",
-                "modal",
-                "#recurring_fields",
-                _("Recurring options")
-            )
-
-        }),
-        ("modal", {
-            "legend": (
-                '<i class="bi bi-calendar3-range"></i>&nbsp;'
-                + '  %s' % _("Recurring options")
-            ),
-            "id": "recurring_fields",
-            "fields": MEETING_RECURRING_FIELDS,
-            "template": "meeting/recurring_options_modal_form.html"
-        }),
+            """
+                % (
+                    "btn btn-primary btn-sm",
+                    "modal",
+                    "#recurring_fields",
+                    _("Recurring options"),
+                ),
+            },
+        ),
+        (
+            "modal",
+            {
+                "legend": (
+                    '<i class="bi bi-calendar3-range"></i>&nbsp;'
+                    + "  %s" % _("Recurring options")
+                ),
+                "id": "recurring_fields",
+                "fields": MEETING_RECURRING_FIELDS,
+                "template": "meeting/recurring_options_modal_form.html",
+            },
+        ),
         (
             "advanced_options",
             {
                 "legend": (
                     '<i class="bi bi-file-earmark-plus-fill"></i>'
-                    + ' %s' % _("Advanced options")
+                    + " %s" % _("Advanced options")
                 ),
                 "classes": "collapse border border-primary p-1 m-1",
                 "fields": get_meeting_fields(),
@@ -285,12 +282,10 @@ class MeetingForm(forms.ModelForm):
 
         if "start_time" in cleaned_data.keys() and "start" in cleaned_data.keys():
             start_time = datetime.datetime.strptime(
-                self.cleaned_data["start_time"],
-                "%H:%M:%S"
+                self.cleaned_data["start_time"], "%H:%M:%S"
             ).time()
             start_datetime = datetime.datetime.combine(
-                self.cleaned_data["start"],
-                start_time
+                self.cleaned_data["start"], start_time
             )
             start_datetime = timezone.make_aware(start_datetime)
             self.instance.start_at = start_datetime
@@ -328,9 +323,8 @@ class MeetingForm(forms.ModelForm):
         if not self.initial.get("attendee_password"):
             self.initial["attendee_password"] = get_random_string(8)
 
-        if (
-            getattr(self.instance, "id", None)
-            and getattr(self.instance, "weekdays", None)
+        if getattr(self.instance, "id", None) and getattr(
+            self.instance, "weekdays", None
         ):
             self.initial["days_of_week"] = list(self.instance.weekdays)
         # remove recurring until value if recurrence is None
@@ -363,9 +357,8 @@ class MeetingForm(forms.ModelForm):
             self.initial["expected_duration"] = int(
                 self.initial.get("expected_duration").seconds / 3600
             )
-        if (
-            getattr(self.instance, "id", None)
-            and getattr(self.instance, "start_at", None)
+        if getattr(self.instance, "id", None) and getattr(
+            self.instance, "start_at", None
         ):
             self.initial["start"] = self.instance.start_at.date()
             self.initial["start_time"] = timezone.localtime(self.instance.start_at).time()
@@ -376,7 +369,7 @@ class MeetingForm(forms.ModelForm):
         widgets = {
             "owner": OwnerWidget,
             "additional_owners": AddOwnerWidget,
-            "recurring_until": admin_widgets.AdminDateWidget
+            "recurring_until": admin_widgets.AdminDateWidget,
         }
 
 

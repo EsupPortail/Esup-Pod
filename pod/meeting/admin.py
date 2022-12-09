@@ -11,7 +11,7 @@ from .forms import (
     MEETING_MAIN_FIELDS,
     MEETING_DATE_FIELDS,
     MEETING_RECURRING_FIELDS,
-    get_meeting_fields
+    get_meeting_fields,
 )
 
 
@@ -41,7 +41,7 @@ class MeetingSuperAdminForm(MeetingForm):
                 attrs={"style": "width: 20em"},
             ),
             "start": widgets.AdminDateWidget(),
-            "recurring_until": widgets.AdminDateWidget()
+            "recurring_until": widgets.AdminDateWidget(),
         }
 
 
@@ -71,31 +71,24 @@ class MeetingAdminForm(MeetingForm):
                 attrs={"style": "width: 20em"},
             ),
             "start": widgets.AdminDateWidget(),
-            "recurring_until": widgets.AdminDateWidget()
+            "recurring_until": widgets.AdminDateWidget(),
         }
 
 
 class IsPaidFilter(admin.SimpleListFilter):
     # Human-readable title which will be displayed in the
     # right admin sidebar just above the filter options.
-    title = 'is active'
+    title = "is active"
 
     # Parameter for the filter that will be used in the URL query.
-    parameter_name = 'is_active'
+    parameter_name = "is_active"
 
     def lookups(self, request, model_admin):
-        return (
-            ('1', _('Yes')),
-            ('0', _('No'))
-        )
+        return (("1", _("Yes")), ("0", _("No")))
 
     def queryset(self, request, queryset):
-        if self.value() == '1':
-            meetings = [
-                meeting.id for meeting in (
-                    queryset
-                ) if meeting.is_active
-            ]
+        if self.value() == "1":
+            meetings = [meeting.id for meeting in (queryset) if meeting.is_active]
             return queryset.filter(id__in=meetings)
         else:
             return queryset

@@ -26,7 +26,11 @@ from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 
 from .utils import (
-    api_call, parseXmlToJson, slash_join, get_nth_week_number, get_weekday_in_nth_week
+    api_call,
+    parseXmlToJson,
+    slash_join,
+    get_nth_week_number,
+    get_weekday_in_nth_week,
 )
 from dateutil.relativedelta import relativedelta
 
@@ -161,9 +165,7 @@ class Meeting(models.Model):
     start_at = models.DateTimeField(_("Start date"), default=timezone.now)
     expected_duration = models.DurationField(
         verbose_name=_("Meeting duration"),
-        help_text=_(
-            "Specify the duration of the meeting."
-        ),
+        help_text=_("Specify the duration of the meeting."),
         default=timezone.timedelta(hours=2),
     )
 
@@ -173,7 +175,10 @@ class Meeting(models.Model):
         help_text=_(
             "Specify the recurrence of the meeting : daily, weekly, monthly or yearly"
         ),
-        max_length=10, choices=INTERVAL_CHOICES, null=True, blank=True
+        max_length=10,
+        choices=INTERVAL_CHOICES,
+        null=True,
+        blank=True,
     )
     frequency = models.PositiveIntegerField(
         verbose_name=_("Repeat each time"),
@@ -187,18 +192,21 @@ class Meeting(models.Model):
         verbose_name=_("End date of recurring meeting"),
         help_text=_("Recurring meeting until the specified date"),
         null=True,
-        blank=True
+        blank=True,
     )
     nb_occurrences = models.PositiveIntegerField(
         verbose_name=_("Number of occurrences"),
         help_text=_("Recurring meeting until the specified number of occurrences"),
         null=True,
-        blank=True
+        blank=True,
     )
     weekdays = models.CharField(
         verbose_name=_("Day(s) of week for the meeting"),
         help_text=_("Recurring meeting each day(s) specified"),
-        max_length=7, blank=True, null=True, validators=[weekdays_validator]
+        max_length=7,
+        blank=True,
+        null=True,
+        validators=[weekdays_validator],
     )
     monthly_type = models.CharField(
         max_length=10, choices=MONTHLY_TYPE_CHOICES, default=DATE_DAY
@@ -362,8 +370,7 @@ class Meeting(models.Model):
                 if str(self.start.weekday()) not in self.weekdays:
                     raise ValidationError(
                         {
-                            "weekdays":
-                            _(
+                            "weekdays": _(
                                 "The day of the start date of the meeting must "
                                 + "be included in the recurrence weekdays."
                             )
@@ -466,9 +473,7 @@ class Meeting(models.Model):
                     return next_date + timedelta(days=increment)
                 increment += 1
 
-            raise RuntimeError(
-                "You should have found the next weekly occurrence by now."
-            )
+            raise RuntimeError("You should have found the next weekly occurrence by now.")
 
         if self.recurrence == Meeting.MONTHLY:
             next_date = current_date + relativedelta(months=self.frequency)
@@ -751,8 +756,5 @@ class Meeting(models.Model):
 def default_site_meeting(sender, instance, **kwargs):
     if not hasattr(instance, "site"):
         instance.site = Site.objects.get_current()
-    if (
-        instance.recurring_until
-        and instance.start > instance.recurring_until
-    ):
+    if instance.recurring_until and instance.start > instance.recurring_until:
         raise ValueError(_("Start date must be less than recurring until date"))
