@@ -31,7 +31,6 @@ let PlaylistPlayer = {
     }
   },
   onPlayerEnd: function () {
-    const _this = this;
     if (this.current_position != this.length || this.loop_on) {
       if (this.current_position != this.length) {
         this.loadVideo(this.current_position + 1);
@@ -51,7 +50,7 @@ let PlaylistPlayer = {
           : this.getParameters().replace(/^&/, "?"),
       //, password = $(this.current_element).parent().children('.vdata').data('password') == 'unchecked'
       _this = this;
-    
+
     await fetch(url + parameters, {
       method: "GET",
       datatype: "json",
@@ -64,7 +63,8 @@ let PlaylistPlayer = {
       .then((json) => {
         if (json.status == "ok") {
           _this.setPlayer(json);
-          document.getElementById("info-video").innerHTML = json.html_video_info;
+          document.getElementById("info-video").innerHTML =
+            json.html_video_info;
           if (!_this.is_iframe) {
             let card = document.getElementById("card-enrichmentinformations");
 
@@ -133,7 +133,7 @@ let PlaylistPlayer = {
                     _this.setPlayer(json);
                     document.getElementById("info-video").html =
                       json.html_video_info;
-                      _this.setCurrent(position);
+                    _this.setCurrent(position);
                   } else {
                     wrapper.querySelector(".invalid-feedback").innerHTML =
                       this.strings.invalid_feedback_password;
@@ -513,10 +513,10 @@ let PlaylistPlayer = {
         fetch(url, {
           method: "POST",
           body: data_form,
-          headers : {
+          headers: {
             "X-Requested-With": "XMLHttpRequest",
-          }
-        })
+          },
+        });
       });
 
       // add onPlayerEnd listener for the rebuild player

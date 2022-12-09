@@ -2,7 +2,6 @@
 // select file
 
 if (typeof loaded == "undefined") {
-
   loaded = true;
   document.addEventListener("click", (e) => {
     if (!e.target.parentNode) return;
@@ -88,7 +87,7 @@ if (typeof loaded == "undefined") {
       $data = JSON.parse($data);
       let html = document.createElement("div");
       html.innerHTML = $data.list_element;
-      let listfiles = html.getElementById("listfiles");
+      let listfiles = html.querySelector("#listfiles");
       if (listfiles.childNodes.length === 0) {
         let emptyFolderMsg = `
               <div class="empty-folder-warning">
@@ -242,10 +241,8 @@ if (typeof loaded == "undefined") {
         document.getElementById("folderModalCenterTitle").innerHTML =
           gettext("Change") + " " + button.dataset.filename;
         modal.getElementById("id_folder").value = folder_id;
-        modal.getElementById("file_id").value =
-          button.dataset.fileid;
-        modal.getElementById("file_type").value =
-          button.dataset.filetype;
+        modal.getElementById("file_id").value = button.dataset.fileid;
+        modal.getElementById("file_type").value = button.dataset.filetype;
         document.getElementById("formchangefile").style.display = "block";
         break;
       default: // Extract info from data-* attributes
@@ -257,7 +254,7 @@ if (typeof loaded == "undefined") {
         let oldname = button.dataset.oldname;
         // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
         // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        let folder_input = modal.getElementById(folderInputName);
+        let folder_input = modal.querySelector("#folderInputName");
         folder_input.value = oldname;
         let focus = new Event("focus");
         folder_input.dispatchEvent(focus);
@@ -361,7 +358,7 @@ if (typeof loaded == "undefined") {
     var folder_id = button.dataset.folderid;
 
     let modal = document.querySelector(button.dataset.bsTarget);
-    modal.getElementById("formuserid").value = folder_id;
+    modal.querySelector("#formuserid").value = folder_id;
     reloadRemoveBtn();
   });
 
@@ -627,8 +624,8 @@ if (typeof loaded == "undefined") {
       let center_mod = document.getElementById("folderModalCenter");
       let center_modal = bootstrap.Modal.getOrCreateInstance(center_mod);
       center_modal.hide();
-      center_mod.getElementById("folderInputName").value = "";
-      center_mod.getElementById("formfolderid").value = "";
+      center_mod.querySelector("#folderInputName").value = "";
+      center_mod.querySelector("#formfolderid").value = "";
     } else {
       showalert(
         gettext("You are no longer authenticated. Please log in again."),
@@ -670,8 +667,8 @@ if (typeof loaded == "undefined") {
       let center_modal_instance =
         bootstrap.Modal.getOrCreateInstance(center_modal);
       center_modal_instance.hide();
-      center_modal.getElementById("folderInputName").value = "";
-      center_modal.getElementById("formfolderid").value = "";
+      center_modal.querySelector("#folderInputName").value = "";
+      center_modal.querySelector("#formfolderid").value = "";
 
       if (data.upload_errors && data.upload_errors != "") {
         const str = data.upload_errors.split("\n").join("<br/>");

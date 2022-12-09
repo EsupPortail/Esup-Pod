@@ -247,7 +247,7 @@ document.addEventListener("change", (e) => {
   if (e.target.id !== "displaytime") return;
   let displayTime = document.getElementById("displaytime");
   let txtpartage = document.getElementById("txtpartage");
-  let txtinteg = document.getElementById("txtintegration")
+  let txtinteg = document.getElementById("txtintegration");
   if (displayTime.checked) {
     if (txtpartage.value.indexOf("start") < 0) {
       txtpartage.value =
@@ -442,21 +442,24 @@ if (ownerboxnavbar) {
 
 document.addEventListener("DOMContentLoaded", function () {
   let consent = Cookies.get("podCookieConsent");
+
   var cookieDiv = document.getElementById("cookieModal");
-  var cookieModal = bootstrap.Modal.getOrCreateInstance(cookieDiv);
-  if (consent != null && consent == "ok") {
-    cookieModal.hide();
-  } else {
-    cookieModal.show();
+  if (cookieModal) {
+    var cookieModal = bootstrap.Modal.getOrCreateInstance(cookieDiv);
+    if (consent != null && consent == "ok") {
+      cookieModal.hide();
+    } else {
+      cookieModal.show();
+    }
+    document.addEventListener("click", (e) => {
+      if (e.target.id != "okcookie") return;
+      let expiryDate = new Date();
+      expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+      document.cookie =
+        "podCookieConsent=ok; path=/; expires=" + expiryDate.toGMTString();
+      cookieModal.hide();
+    });
   }
-  document.addEventListener("click", (e) => {
-    if (e.target.id != "okcookie") return;
-    let expiryDate = new Date();
-    expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-    document.cookie =
-      "podCookieConsent=ok; path=/; expires=" + expiryDate.toGMTString();
-    cookieModal.hide();
-  });
 });
 /** MENU ASIDE **/
 document.addEventListener("DOMContentLoaded", function () {
@@ -862,13 +865,16 @@ var show_theme_form = function (data) {
   }
 };
 
-var show_picture_form =  function (data) {
+var show_picture_form = function (data) {
   let htmlData = new DOMParser().parseFromString(data, "text/html");
   document.getElementById("userpicture_form").innerHTML =
     htmlData.querySelector("#userpicture_form").innerHTML;
   let userpict = document.querySelector("#nav-usermenu .userpicture");
-  if (htmlData.querySelector("#userpictureurl") && htmlData.querySelector("#userpictureurl").value) {
-    console.log(document.querySelector("#nav-usermenu"))
+  if (
+    htmlData.querySelector("#userpictureurl") &&
+    htmlData.querySelector("#userpictureurl").value
+  ) {
+    console.log(document.querySelector("#nav-usermenu"));
     if (userpict) {
       userpict.remove();
     }
@@ -890,7 +896,6 @@ var show_picture_form =  function (data) {
       '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' +
       gettext("Change your picture");
   } else {
-
     if (userpict) {
       userpict.remove();
     }
@@ -1166,33 +1171,34 @@ if (id_is_draft) {
 }
 
 var restricted_access = function () {
-  document.querySelectorAll(".restricted_access").forEach((restricted_access) => {
+  document
+    .querySelectorAll(".restricted_access")
+    .forEach((restricted_access) => {
+      if (restricted_access) {
+        let is_draft = document.getElementById("id_is_draft");
+        if (is_draft != null && is_draft.checked) {
+          restricted_access.classList.add("hide");
+          restricted_access.classList.remove("show");
+          document.getElementById("id_password").value;
 
-  if (restricted_access) {
-    let is_draft = document.getElementById("id_is_draft");
-    if (is_draft != null && is_draft.checked) {
-      restricted_access.classList.add("hide");
-      restricted_access.classList.remove("show");
-      document.getElementById("id_password").value;
+          document
+            .querySelectorAll("#id_restrict_access_to_groups select")
+            .forEach((select) => {
+              select.options.forEach((option) => {
+                if (option.selected) {
+                  option.selected = false;
+                }
+              });
+            });
 
-      document
-        .querySelectorAll("#id_restrict_access_to_groups select")
-        .forEach((select) => {
-          select.options.forEach((option) => {
-            if (option.selected) {
-              option.selected = false;
-            }
-          });
-        });
-
-      document.getElementById("id_is_restricted").checked = false;
-    } else {
-      restricted_access.classList.add("show");
-      restricted_access.classList.remove("hide");
-    }
-    restrict_access_to_groups();
-  }
-  });
+          document.getElementById("id_is_restricted").checked = false;
+        } else {
+          restricted_access.classList.add("show");
+          restricted_access.classList.remove("hide");
+        }
+        restrict_access_to_groups();
+      }
+    });
 };
 restricted_access();
 //restrict_access_to_groups();
@@ -1259,7 +1265,7 @@ var videocheck = function (form, event) {
         document.querySelector("#video_form button").style.display = "none";
 
         let js_process = document.getElementById("js-process");
-        js_process.classList.remove('d-none')
+        js_process.classList.remove("d-none");
         window.scrollTo(js_process.scrollTop(), 0);
         if (!show_progress_bar(form)) {
           event.preventDefault();
