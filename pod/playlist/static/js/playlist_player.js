@@ -63,7 +63,6 @@ let PlaylistPlayer = {
       .then((response) => response.json())
       .then((json) => {
         if (json.status == "ok") {
-          console.log(json);
           _this.setPlayer(json);
           document.getElementById("info-video").innerHTML = json.html_video_info;
           if (!_this.is_iframe) {
@@ -336,7 +335,6 @@ let PlaylistPlayer = {
     let infoWrapper = document.querySelectorAll(
       "#info-video-wrapper, #info-video"
     )[0];
-    console.log(infoWrapper);
     infoWrapper.insertAdjacentHTML("beforebegin", json.html_video_element);
     const _this = this;
 
@@ -509,21 +507,16 @@ let PlaylistPlayer = {
 
       // Add viewCount
       player.on("firstplay", function () {
-        var data_form = document
-          .getElementById("video_count_form")
-          .serializeArray();
-        
-          
-        
-        var httpReq = new XMLHttpRequest();
-        httpReq.onreadystatechange = function () {
-          
-        }
-       
-        let url =  document.getElementById("video_count_form").getAttribute("action")
-        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-        httpRequest.open('POST', url)
-        httpRequest.send(data_form)
+        var video_count_form = document.getElementById("video_count_form");
+        var data_form = new FormData(video_count_form);
+        let url = video_count_form.getAttribute("action");
+        fetch(url, {
+          method: "POST",
+          body: data_form,
+          headers : {
+            "X-Requested-With": "XMLHttpRequest",
+          }
+        })
       });
 
       // add onPlayerEnd listener for the rebuild player

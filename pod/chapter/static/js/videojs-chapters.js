@@ -163,8 +163,13 @@
             player.createChapters(data);
           }
 
-          let podPlayer = document.querySelector("#" + player.id());
-          podPlayer.appendChild(document.querySelector(".chapters-list"));
+          let podPlayer = document.getElementById(player.id());
+          let chapters_list = document.querySelectorAll(".chapters-list");
+          if (chapters_list.length > 0) {
+            chapters_list.forEach((element) => {
+              podPlayer.appendChild(element);
+            } );
+          }
         };
 
         player.ready(player.main);
