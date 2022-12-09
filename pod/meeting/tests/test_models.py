@@ -44,7 +44,7 @@ class MeetingTestCase(TestCase):
         )
         self.assertEqual(meeting.recurring_until, meeting.start)
         m1 = Meeting.objects.create(
-            name="a" * 255,
+            name="a" * 250,
             owner=user,
             attendee_password="1234",
             moderator_password="1234",
@@ -61,8 +61,8 @@ class MeetingTestCase(TestCase):
         self.assertEqual(
             context.exception.messages,
             [
-                "Ensure this value has at most 255 characters (it has 260).",
-                "Ensure this value has at most 260 characters (it has 265).",
+                "Ensure this value has at most 250 characters (it has 260).",
+                "Ensure this value has at most 255 characters (it has 265).",
             ],
         )
 

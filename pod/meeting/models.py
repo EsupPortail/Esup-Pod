@@ -136,9 +136,9 @@ class Meeting(models.Model):
         message=_("Weekdays must contain the numbers of the active days."),
     )
 
-    name = models.CharField(max_length=255, verbose_name=_("Meeting Name"))
+    name = models.CharField(max_length=250, verbose_name=_("Meeting Name"))
     meeting_id = models.SlugField(
-        max_length=260,
+        max_length=255,
         verbose_name=_("Meeting ID"),
         editable=False,
     )
