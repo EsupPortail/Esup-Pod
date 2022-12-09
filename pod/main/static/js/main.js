@@ -713,6 +713,7 @@ var send_form_data = async function (
             gettext("No data could be stored."),
           "alert-danger"
         );
+
         callbackFail(error);
       });
   } else {
@@ -861,11 +862,11 @@ var show_theme_form = function (data) {
   }
 };
 
-var show_picture_form = function (data) {
-  let htmlData = new DOMParser().parseFromString(data, "text/html").body;
+var show_picture_form =  function (data) {
+  let htmlData = new DOMParser().parseFromString(data, "text/html");
   document.getElementById("userpicture_form").innerHTML =
-    htmlData.getElementById("userpicture_form").innerHTML;
-  if (htmlData.getElementById("userpictureurl").value) {
+    htmlData.querySelector("#userpicture_form").innerHTML;
+  if (htmlData.querySelector("#userpictureurl") && htmlData.querySelector("#userpictureurl").value) {
     //$(".get_form_userpicture").html('<img src="'+$(data).find("#userpictureurl").val()+'" height="34" class="rounded" alt="" loading="lazy">Change your picture');
     document.querySelector("#nav-usermenu .userpicture").remove();
     document.querySelector("#nav-usermenu .userinitial").style.display = "none";
@@ -878,7 +879,7 @@ var show_picture_form = function (data) {
       .insertAdjacentHTML(
         "beforeend",
         '<img src="' +
-          htmlData.getElementById("userpictureurl").value +
+          htmlData.querySelector("#userpictureurl").value +
           '" class="userpicture rounded" alt="avatar" loading="lazy">'
       );
     //$(".get_form_userpicture").html($(".get_form_userpicture").children());
@@ -891,7 +892,7 @@ var show_picture_form = function (data) {
       "inline-block";
     document
       .querySelector("#nav-usermenu > button")
-      .classList.add("initials btn btn-primary");
+      .classList.add("initials", "btn", "btn-primary");
     //$(".get_form_userpicture").html($(".get_form_userpicture").children());
     document.querySelector(".get_form_userpicture").innerHTML =
       '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' +
