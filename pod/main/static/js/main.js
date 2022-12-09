@@ -866,9 +866,12 @@ var show_picture_form =  function (data) {
   let htmlData = new DOMParser().parseFromString(data, "text/html");
   document.getElementById("userpicture_form").innerHTML =
     htmlData.querySelector("#userpicture_form").innerHTML;
+  let userpict = document.querySelector("#nav-usermenu .userpicture");
   if (htmlData.querySelector("#userpictureurl") && htmlData.querySelector("#userpictureurl").value) {
-    //$(".get_form_userpicture").html('<img src="'+$(data).find("#userpictureurl").val()+'" height="34" class="rounded" alt="" loading="lazy">Change your picture');
-    document.querySelector("#nav-usermenu .userpicture").remove();
+    console.log(document.querySelector("#nav-usermenu"))
+    if (userpict) {
+      userpict.remove();
+    }
     document.querySelector("#nav-usermenu .userinitial").style.display = "none";
     document
       .querySelector("#nav-usermenu > button")
@@ -887,7 +890,10 @@ var show_picture_form =  function (data) {
       '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' +
       gettext("Change your picture");
   } else {
-    document.querySelector("#nav-usermenu .userpicture").remove();
+
+    if (userpict) {
+      userpict.remove();
+    }
     document.querySelector("#nav-usermenu .userinitial").style.display =
       "inline-block";
     document
