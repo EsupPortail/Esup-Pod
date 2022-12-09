@@ -214,7 +214,8 @@ var sendform = async function (elt, action) {
     if (verify_fields() && verify_end_start_items() && overlaptest()) {
       let form_enrich = document.getElementById("form_enrich");
       form_enrich.style.display = "none";
-      var data_form = new FormData(form_enrich);
+      let form_save = form_enrich.querySelector('form')
+      var data_form = new FormData(form_save);
 
       let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
       let url = window.location.href;
@@ -295,7 +296,7 @@ var sendform = async function (elt, action) {
 document.addEventListener("change", (e) => {
   if (e.target.id != "id_type") return;
   enrich_type();
-  let file_input = document.body.getElementById("filewidget_script");
+  let file_input = document.getElementById("filewidget_script");
   if (file_input) {
     eval(file_input.innerHTML);
   }
@@ -384,15 +385,14 @@ function enrich_type() {
 }
 document.addEventListener("change", (e) => {
   if (e.target.id != "id_start") return;
-
   e.target.parentNode.querySelector(
-    "span.getfromvideo span.timecode"
-  ).innerHTML = " " + parseInt(e.target.value).tMoHHMSS();
+    "div.getfromvideo span.timecode"
+  ).innerHTML = " " + parseInt(e.target.value).toHHMMSS();
 });
 document.addEventListener("change", (e) => {
   if (e.target.id != "id_end") return;
   e.target.parentNode.querySelector(
-    "span.getfromvideo span.timecode"
+    "div.getfromvideo span.timecode"
   ).innerHTML = " " + parseInt(e.target.value).toHHMMSS();
 });
 document.addEventListener("click", (e) => {
