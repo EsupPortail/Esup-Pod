@@ -209,8 +209,9 @@ var sendform = async function (elt, action) {
   if (action == "save") {
     if (verify_start_title_items()) {
       let form_chapter = document.getElementById("form_chapter");
-      form_chapter.style.display = "none";
-      var data_form = new FormData(form_chapter);
+      let form_save = form_chapter.querySelector("form");
+      form_save.style.display = "none";
+      var data_form = new FormData(form_save);
 
       let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
       let url = window.location.href;

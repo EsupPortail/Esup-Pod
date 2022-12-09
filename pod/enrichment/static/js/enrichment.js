@@ -213,8 +213,8 @@ var sendform = async function (elt, action) {
 
     if (verify_fields() && verify_end_start_items() && overlaptest()) {
       let form_enrich = document.getElementById("form_enrich");
-      form_enrich.style.display = "none";
       let form_save = form_enrich.querySelector('form')
+      form_save.style.display = "none";
       var data_form = new FormData(form_save);
 
       let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
