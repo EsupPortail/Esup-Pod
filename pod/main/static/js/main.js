@@ -444,7 +444,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let consent = Cookies.get("podCookieConsent");
 
   var cookieDiv = document.getElementById("cookieModal");
-  if (cookieModal) {
+  if (cookieDiv) {
     var cookieModal = bootstrap.Modal.getOrCreateInstance(cookieDiv);
     if (consent != null && consent == "ok") {
       cookieModal.hide();
