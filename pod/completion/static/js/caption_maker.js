@@ -12,11 +12,11 @@ document.addEventListener("click", (e) => {
     !e.target.parentNode.matches("a.file-image")
   )
     return;
-  
+
   let url = "/podfile/get_file/file/";
   let form = document.getElementById("captionmaker_form");
   let data_form = new FormData(form);
- 
+
   send_form_data(url, data_form, "ProcessProxyVttResponse");
 });
 
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
       src: url_search.get("src"),
       csrfmiddlewaretoken: Cookies.get("csrftoken"),
     };
-    
+
     send_form_data(url, data, "ProcessProxyVttResponse");
   } else {
     document.getElementById(
@@ -77,7 +77,7 @@ document.addEventListener("submit", (e) => {
   }
   if (typeof file_loaded != "undefined" && file_loaded) {
     let saveModalId = document.getElementById("saveCaptionsModal");
-    let saveModal = bootstrap.Modal.getOrCreateInstance(saveModalId)
+    let saveModal = bootstrap.Modal.getOrCreateInstance(saveModalId);
     saveModal.show();
   } else {
     document.querySelector('input[name="file_id"]').value = "";
@@ -86,18 +86,17 @@ document.addEventListener("submit", (e) => {
 });
 
 document.addEventListener("click", (elt) => {
-  
   if (elt.target.id != "modal-btn-new" && elt.target.id != "modal-btn-override")
     return;
   let caption_content = document.getElementById("captionContent");
   if (!oldModeSelected) caption_content.value = GenerateWEBVTT();
 
   let saveModalId = document.getElementById("saveCaptionsModal");
-  let saveModal = bootstrap.Modal.getOrCreateInstance(saveModalId)
+  let saveModal = bootstrap.Modal.getOrCreateInstance(saveModalId);
   saveModal.hide();
- 
+
   let form_save_captions = document.getElementById("form_save_captions");
-  if (elt.target.id== "modal-btn-override") {
+  if (elt.target.id == "modal-btn-override") {
     document
       .getElementById("form_save_captions")
       .querySelector('input[name="file_id"]').value = file_loaded_id;
@@ -107,7 +106,7 @@ document.addEventListener("click", (elt) => {
   } else if (elt.target.id == "modal-btn-new") {
     form_save_captions.querySelector('input[name="file_id"]').value = "";
     //form_save_captions.querySelector('input[name="enrich_ready"]').value="";
-    
+
     send_form_save_captions();
   }
 });
@@ -128,10 +127,7 @@ const send_form_save_captions = function () {
 
   let f = new File([vttContent], fileName + ".vtt", { type: "text/vtt" });
   let data_form = new FormData(document.getElementById("form_save_captions"));
-  // log data form data
-  for (var pair of data_form.entries()) {
-    console.log(pair[0] + ", " + pair[1]);
-  }
+
   data_form.append("folder", current_folder);
   data_form.append("file", f);
   url = document.getElementById("form_save_captions").getAttribute("action");
@@ -147,11 +143,9 @@ const send_form_save_captions = function () {
   })
     .then((response) => response.text())
     .then((data) => {
-      
-
       let parser = new DOMParser();
       let htmlDoc = parser.parseFromString(data, "text/html");
-     
+
       document.body.append(htmlDoc.getElementById("base-message-alert"));
       if (data.track_id != undefined) {
         var url = new URL(window.location.href);
@@ -301,7 +295,7 @@ function existingCaptionsEndTime() {
 let updateCaptionsArray = (vtt) => {
   let arr = vtt.split("\n\n");
   captionsArray = [];
-  document.querySelectorAll(".newEditorBlock").forEach( (e) => {
+  document.querySelectorAll(".newEditorBlock").forEach((e) => {
     e.remove();
   });
   arr.forEach((text) => {
@@ -690,14 +684,13 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
       }
 
       // if this caption is the last, move it to the end
-      if (this.div.parenNode){
+      if (this.div.parenNode) {
         let index = Array.from(this.div.parentNode.children).indexOf(this.div);
         captionsArray.splice(index, 1);
         captionsArray.push(newCaption);
         let addSubtitle = document.getElementById("addSubtitle");
         addSubtitle.parentNode.insertBefore(this.div, addSubtitle);
       }
-     
     },
 
     spawnNew: function () {
@@ -1087,7 +1080,7 @@ function LoadCaptionFile(fileObject) {
 
 // invoked by script insertion of proxyvtt.ashx
 function ProcessProxyVttResponse(obj) {
-  obj = JSON.parse(obj)
+  obj = JSON.parse(obj);
   if (obj.status == "error")
     alert(gettext("Error loading caption file: ") + obj.message);
   else if (obj.status == "success") {
@@ -1105,9 +1098,8 @@ function ProcessProxyVttResponse(obj) {
       /\.[^/.]+$/,
       ""
     );
-   
+
     if (obj.response.match(/^WEBVTT/)) {
-      
       ParseAndLoadWebVTT(obj.response);
     } else {
       alert(gettext("Unrecognized caption file format."));

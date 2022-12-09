@@ -874,7 +874,6 @@ var show_picture_form = function (data) {
     htmlData.querySelector("#userpictureurl") &&
     htmlData.querySelector("#userpictureurl").value
   ) {
-    console.log(document.querySelector("#nav-usermenu"));
     if (userpict) {
       userpict.remove();
     }
