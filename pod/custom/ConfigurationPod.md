@@ -319,8 +319,9 @@ CACHES = {
 
 ## 3/ Configuration par application
 
-### 3.2/ Configuration application authentification (Local, CAS et LDAP)
+### 3.2/ Configuration application authentification
 
+- AUTH_TYPE :
 ````
 AUTH_TYPE = (
     ('local', _('local')),
@@ -398,6 +399,7 @@ USER_CAS_MAPPING_ATTRIBUTES = {
 
 > Groupes ou affiliations des personnes autorisées à créer un évènement
 
+- AFFILIATION :
 ````
 AFFILIATION = (
     ('student', _('student')),
