@@ -82,6 +82,9 @@ def populateUser(tree):
     user, user_created = User.objects.get_or_create(username=username)
     owner, owner_created = Owner.objects.get_or_create(user=user)
     owner.auth_type = "CAS"
+
+    delete_synchronized_access_group(owner)
+
     owner.save()
 
     if POPULATE_USER == "CAS":
@@ -95,6 +98,12 @@ def populateUser(tree):
             entry = get_entry(conn, username, list_value)
             if entry is not None:
                 populate_user_from_entry(user, owner, entry)
+
+
+def delete_synchronized_access_group(owner):
+    groups_to_sync = AccessGroup.objects.filter(auto_sync=True)
+    for group_to_sync in groups_to_sync:
+        owner.accessgroup_set.remove(group_to_sync)
 
 
 def get_server():
@@ -163,6 +172,7 @@ def assign_accessgroups(groups_element, user):
             )
             if group_created:
                 accessgroup.display_name = group
+                accessgroup.auto_sync = True
             accessgroup.sites.add(Site.objects.get_current())
             accessgroup.save()
             user.owner.accessgroup_set.add(accessgroup)
@@ -260,6 +270,7 @@ def populate_user_from_entry(user, owner, entry):
             )
             if group_created:
                 accessgroup.display_name = affiliation
+                accessgroup.auto_sync = True
             accessgroup.sites.add(Site.objects.get_current())
             accessgroup.save()
             # group.groupsite.sites.add(Site.objects.get_current())
@@ -311,6 +322,7 @@ def populate_user_from_tree(user, owner, tree):
             )
             if group_created:
                 accessgroup.display_name = affiliation.text
+                accessgroup.auto_sync = True
             accessgroup.sites.add(Site.objects.get_current())
             accessgroup.save()
             user.owner.accessgroup_set.add(accessgroup)
