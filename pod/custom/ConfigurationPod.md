@@ -230,6 +230,11 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
 ### 2.4/ Gestion des fichiers
 
+- USE_PODFILE = False
+
+> Utiliser l'application de gestion de fichier fourni avec le projet.
+> Si False, chaque fichier envoyé ne pourra être utilisé qu'une seule fois.
+
 - FILE_UPLOAD_TEMP_DIR = "/var/tmp"
 
 > Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que FILE_UPLOAD_MAX_MEMORY_SIZE) lors des téléversements de fichiers.<br>
@@ -361,6 +366,7 @@ AUTH_TYPE = (
 > Variable utilisée pour trouver les informations de l'individu
 > connecté dans le fichier renvoyé par le CAS lors de l'authentification
 
+- USER_CAS_MAPPING_ATTRIBUTES :
 ````
 USER_CAS_MAPPING_ATTRIBUTES = {
     "uid": "uid",
@@ -443,6 +449,7 @@ AFFILIATION = (
 
 > Filtre LDAP permettant la recherche de l'individu dans le serveur LDAP
  
+ - USER_LDAP_MAPPING_ATTRIBUTES :
 ````
 USER_LDAP_MAPPING_ATTRIBUTES = {
     "uid": "uid",
@@ -467,6 +474,7 @@ USER_LDAP_MAPPING_ATTRIBUTES = {
 
 > Nom de la fédération d'identité utilisée
 
+- SHIBBOLETH_ATTRIBUTE_MAP : 
 ````
 SHIBBOLETH_ATTRIBUTE_MAP = {
     "shib-user": (True, "username"),
@@ -531,7 +539,22 @@ SHIBBOLETH_ATTRIBUTE_MAP = {
 
 > Noms des Claim permettant de récupérer les attributs nom, prénom, email
 
+- DEFAULT_AFFILIATION = ""
 
+> Affiliation par défaut d'un utilisateur authentifié par OIDC.
+> Ce contenu sera comparé à la liste AFFILIATION_STAFF pour déterminer si l'utilisateur doit être admin django
+
+- ESTABLISHMENTS = ???
+
+> A compléter
+
+- GROUP_STAFF = AFFILIATION_STAFF
+
+> utilisé dans populatedCasbackend
+
+- HIDE_USERNAME = False
+
+> Si valeur vaut 'True', le username de l'utilisateur ne sera pas visible sur la plate-forme Pod et si la valeur vaut 'False' le username sera affichés aux utilisateurs authentifiés. (par soucis du respect du RGPD)
 
 
 ### 3.2/ Activer le studio Opencast dans Pod
@@ -605,6 +628,106 @@ MEETING_RECORD_FIELDS = (
 ````
 
 > Configuration de l'enregistrement des réunions. Ce champ n'est pas pris en compte si MEETING_DISABLE_RECORD = True
+
+### 3.4/ Configuration application completion
+
+- ACTIVE_MODEL_ENRICH = False
+
+> Définissez à True pour activer la case à cocher dans l'édition des sous-titres.
+
+- ALL_LANG_CHOICES = ()
+
+> liste toutes les langues pour l'ajout de fichier de sous-titre
+> voir le fichier pod/main/lang_settings.py
+
+- DEFAULT_LANG_TRACK = "fr"
+
+> langue par défaut pour l'ajout de piste à une vidéo
+
+- KIND_CHOICES = (('subtitles', _('subtitles')), ('captions', _('captions')))
+
+> Liste de type de piste possible pour une vidéo (sous-titre, légende etc.)
+
+- LANG_CHOICES = (PREF_LANG_CHOICES + (('', '----------'),) + ALL_LANG_CHOICES)
+
+> Liste des langues proposées lors de l'ajout des vidéos.
+> Affichés en dessous d'une vidéos, les choix sont aussi utilisés pour affiner la recherche.
+
+- LINK_SUPERPOSITION = False
+
+> Si valeur vaut 'True', les URLs contenues dans le texte de superposition seront transformées, à la lecture de la vidéo, en lien cliquable.
+
+
+- MODEL_COMPILE_DIR = "/path/of/project/Esup-Pod/compile-model"
+
+> paramétrage des chemin du model pour la compilation
+> Pour télécharger les Modeles : https://alphacephei.com/vosk/lm#update-process
+> Ajouter le model dans les sous-dossier de la lang correspondants
+> Exemple pour le français: /path/of/project/Esup-Pod/compile-model/fr/
+
+- MODEL_PARAM :
+````
+MODEL_PARAM = {
+    # le modèle stt
+    'STT': {
+        'fr': {
+            'model': "/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite",
+            'scorer': "/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer",
+        }
+    },
+    # le modèle vosk
+    'VOSK': {
+        'fr': {
+            'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0",
+        }
+    }
+}
+````
+> paramétrage des modele. 
+> Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models
+
+- PREF_LANG_CHOICES
+````
+PREF_LANG_CHOICES = (
+    ("de", _("German")),
+    ("en", _("English")),
+    ("ar", _("Arabic")),
+    ("zh", _("Chinese")),
+    ("es", _("Spanish")),
+    ("fr", _("French")),
+    ("it", _("Italian")),
+    ("ja", _("Japanese")),
+    ("ru", _("Russian")),
+)
+````
+> liste des langues affichées en premier dans les propositions de choix
+
+- ROLE_CHOICES : 
+````
+ROLE_CHOICES = (
+    ('actor', _('actor')),
+    ('author', _('author')),
+    ('designer', _('designer')),
+    ('consultant', _('consultant')),
+    ('contributor', _('contributor')),
+    ('editor', _('editor')),
+    ('speaker', _('speaker')),
+    ('soundman', _('soundman')),
+    ('director', _('director')),
+    ('writer', _('writer')),
+    ('technician', _('technician')),
+    ('voice-over', _('voice-over')),
+)
+````
+> Liste de rôle possible pour un contributeur
+
+- TRANSCRIPTION_TYPE = "STT"
+
+> STT ou VOSK
+
+- USE_ENRICH_READY = False 
+
+> voir ACTIVE_MODEL_ENRICH
 
 ## 4/ Commande de gestion de l'application
 ### 4.1/ Creation d'un super utilisateur

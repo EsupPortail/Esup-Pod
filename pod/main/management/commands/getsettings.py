@@ -37,7 +37,7 @@ class Command(BaseCommand):
             match = re.search(r'- (?P<set>\w+) (=|:)?.*', line)
             if match:
                 settings = match.group('set')
-                if settings not in mk_settings:
+                if settings.isupper() and settings not in mk_settings:
                     mk_settings.append(settings)
         mk_settings.sort()
         print("Configuration settings :")
