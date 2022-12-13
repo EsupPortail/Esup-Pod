@@ -271,7 +271,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 - FILES_DIR = "files"
 
 > Nom du répertoire racine où les fichiers "complémentaires"
-> hors vidéos etc.) sont téléversés.
+> (hors vidéos etc.) sont téléversés. Notament utilisé par PODFILE
 
 ### 2.5/ Gestion du Cache
 
@@ -728,6 +728,52 @@ ROLE_CHOICES = (
 - USE_ENRICH_READY = False 
 
 > voir ACTIVE_MODEL_ENRICH
+
+### 3.5/ Configuration application live
+
+- DEFAULT_EVENT_PATH = ""
+
+> Chemin racine du répertoire où sont déposés temporairement les  enregistrements des évènements éffectués depuis POD pour convertion en ressource vidéo (VOD)
+
+- DEFAULT_EVENT_THUMBNAIL = "/img/default-event.svg"
+
+> Image par défaut affichée comme poster ou vignette, utilisée pour présenter l'évènement'.
+> Cette image doit se situer dans le répertoire static.
+
+- DEFAULT_EVENT_TYPE_ID = 1
+
+> Type par défaut affecté à un évènement direct (en général, le type ayant pour identifiant '1' est 'Other')
+
+- DEFAULT_THUMBNAIL = "img/default.svg"
+
+> Image par défaut affichée comme poster ou vignette,  utilisée pour présenter la vidéo.
+> Cette image doit se situer dans le répertoire static.
+
+- EMAIL_ON_EVENT_SCHEDULING = True
+
+> Si True, un courriel est envoyé aux managers et à l'auteur (si DEBUG est à False) à la création/modification d'un event.
+
+- EVENT_ACTIVE_AUTO_START = False
+
+> Permet de lancer automatiquement l'enregistrement sur l'interface utilisée (wowza, ) sur le broadcaster et spécifié par  BROADCASTER_PILOTING_SOFTWARE
+
+- EVENT_GROUP_ADMIN = "event admin"
+
+> Permet de préciser le nom du groupe dans lequel les utilisateurs  peuvent planifier un évènement sur plusieurs jours
+
+- HEARTBEAT_DELAY = 45
+
+> Temps (en seconde) entre deux envois d'un signal au serveur, pour signaler la présence sur un live.
+> Peut être augmenté en cas de perte de performance mais au détriment de la qualité du comptage des valeurs
+
+- USE_BBB = True
+
+> Utilisation de BigBlueButton
+
+- USE_BBB_LIVE = False 
+
+> Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton
+
 
 ## 4/ Commande de gestion de l'application
 ### 4.1/ Creation d'un super utilisateur
