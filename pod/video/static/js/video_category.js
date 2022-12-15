@@ -6,12 +6,6 @@
     id: undefined,
     slug: undefined,
   };
-  const BASE_URL = `${window.location.origin}${window.location.pathname}categories/`;
-  const EDIT_URL = `${window.location.origin}/video_edit/`;
-  const COMPLETION_URL = `${window.location.origin}/video_completion/`;
-  const CHAPTER_URL = `${window.location.origin}/video_chapter/`;
-  const DELETE_URL = `${window.location.origin}/video_delete/`;
-  const VIDEO_URL = `${window.location.origin}/video/`;
   const VIDEOS_LIST_CHUNK = {
     videos: {
       chunk: [], // all videos chunked
