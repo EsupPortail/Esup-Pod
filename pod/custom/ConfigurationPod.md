@@ -45,7 +45,7 @@ Voici les configurations des applications tierces utilisées par Esup-Pod :
 > __ref : https://docs.djangoproject.com/fr/3.2/ref/settings/#site-id__
 
 
-- SECRET_KEY = 'A_CHANGER'
+- SECRET_KEY = "A_CHANGER"
 
 > _Valeur par défaut : 'A_CHANGER'_<br>
 > La clé secrète d’une installation Django.<br>
@@ -70,7 +70,7 @@ Voici les configurations des applications tierces utilisées par Esup-Pod :
 > Il faut les passer à False en cas d'usage du runserver (phase de développement / debugage)<br>
 > __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#secure-ssl-redirect__
 
-ALLOWED_HOSTS = ['localhost']
+- ALLOWED_HOSTS = ['localhost']
 
 > _Valeur par défaut :  ['localhost']_<br>
 > Une liste de chaînes représentant des noms de domaine/d’hôte que ce site Django peut servir.<br>
@@ -120,7 +120,7 @@ ALLOWED_HOSTS = ['localhost']
 ### 2.1/ Courriel
 
 
-- CONTACT_US_EMAIL
+- CONTACT_US_EMAIL = ""
 
 > Liste des adresses destinataires des courriels de contact
 
@@ -557,38 +557,200 @@ SHIBBOLETH_ATTRIBUTE_MAP = {
 > Si valeur vaut 'True', le username de l'utilisateur ne sera pas visible sur la plate-forme Pod et si la valeur vaut 'False' le username sera affichés aux utilisateurs authentifiés. (par soucis du respect du RGPD)
 
 
-### 3.2/ Activer le studio Opencast dans Pod
+### 3.2/ Configuration application video
 
-- USE_OPENCAST_STUDIO = False
+- ACTIVE_VIDEO_COMMENT = True
 
-> Activer l'utilisation du studio Opencast
+> Activer les commentaires au niveau de la plateforme
 
-- OPENCAST_FILES_DIR = "opencast-files"
+- AUDIO_BITRATE = "192k"
 
-> Permet de spécifier le dossier de stockage des enregistrements du studio avant traitement.
+- AUDIO_SPLIT_TIME = 300
 
-- OPENCAST_DEFAULT_PRESENTER = "mid"
+> decoupage de l'audio pour la transcription
 
-> Permet de spécifier la valeur par défaut du placement de la vidéo du
-> presenteur par rapport à la vidéo de présentation (écran)
-> les valeurs possibles sont :
->  * "mid" (écran et caméra ont la même taille)
->  * "piph" (le presenteur, caméra, est incrusté dans la vidéo de présentation, en haut à droite)
->  * "pipb" (le presenteur, caméra, est incrusté dans la vidéo de présentation, en bas à droite)
+- CELERY_TO_ENCODE = False
+- CELERY_BROKER_URL = "amqp://pod:xxx@localhost/rabbitpod"
 
+> Utilisation de Celery pour la gestion des taches d'encodage
+
+- CHANNEL_FORM_FIELDS_HELP_TEXT = ""
+
+> Ensemble des textes d'aide affichés avec le formulaire d'édition de chaine.
+> voir pod/video/forms.py
+
+- CREATE_THUMBNAIL = ""
+
+> ffmpeg command use to create thumbnail
+> ffmpeg -i <video_input> -vf "fps=1/(%(duration)s/%(nb_thumbnail)s)" -vsync vfr "%(output)s_%%04d.png"
+
+- CURSUS_CODES : 
 ````
-OPENCAST_MEDIAPACKAGE = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-    <mediapackage xmlns="http://mediapackage.opencastproject.org" id="" start="">
-    <media/>
-    <metadata/>
-    <attachments/>
-    <publications/>
-    </mediapackage>"""
+CURSUS_CODES = (
+    ('0', _("None / All")),
+    ('L', _("Bachelor’s Degree")),
+    ('M', _("Master’s Degree")),
+    ('D', _("Doctorate")),
+    ('1', _("Other"))
+)
+````
+> Liste des cursus proposés lors de l'ajout des vidéos.
+> Affichés en dessous d'une vidéos, ils sont aussi utilisés pour affiner la recherche.
+
+- CURSUS_CODES_DICT = {}
+
+> dictionnaire créé à partir de CURSUS_CODES
+
+- DEFAULT_DC_COVERAGE = TITLE_ETB + " - Town - Country"
+
+> couverture du droit pour chaque vidéo
+
+- DEFAULT_DC_RIGHTS = "BY-NC-SA"
+
+> droit par défaut affichés dans le flux RSS si non renseigné
+
+- DEFAULT_TYPE_ID = 1
+
+> Les vidéos créées sans type (par importation par exemple)seront affectées au type par défaut (en général, le type ayant pour identifiant '1' est 'Other')
+
+- DEFAULT_YEAR_DATE_DELETE = 2
+
+> Durée d'obsolescence par défaut (en années après la date d'ajout).
+
+- EMAIL_ON_ENCODING_COMPLETION = True
+
+> Si True, un courriel est envoyé aux managers et à l'auteur (si DEBUG est à False) à la fin de l'encodage
+
+- EMAIL_ON_TRANSCRIPTING_COMPLETION = True
+
+> Si True, un courriel est envoyé aux managers et à l'auteur (si DEBUG est à False) à la fin de transcription
+
+- ENCODE_VIDEO = "start_encode"
+
+> Fonction appelée pour lancer l'encodage des vidéos
+
+- ENCODING_CHOICES:
+````
+ENCODING_CHOICES = (
+    ("audio", "audio"),
+    ("360p", "360p"),
+    ("480p", "480p"),
+    ("720p", "720p"),
+    ("1080p", "1080p"),
+    ("playlist", "playlist")
+)
+````
+> Encodage possible sur la plateforme.
+> Associé à un rendu dans le cas d'une vidéo.
+
+- EXTRACT_SUBTITLE = '-map 0:%(index)s -f webvtt -y  "%(output)s" '
+
+> commande ffmpeg utilisée pour extraire une piste de sous-titre d'une video
+
+- EXTRACT_THUMBNAIL = = '-map 0:%(index)s -an -c:v copy -y  "%(output)s" '
+
+> commande ffmpeg utilisée pour extraire une piste image d'une video
+
+- FFMPEG = ?
+- FFMPEG_CMD = "ffmpeg"
+
+> commande utilisée pour lancer ffmpeg
+
+- FFMPEG_CRF = 20 
+
+> valeur par défaut du paramètre crf de ffmpeg
+
+- FFMPEG_HLS_COMMON_PARAMS
+````
+FFMPEG_HLS_COMMON_PARAMS = (
+    "-c:v %(libx)s -preset %(preset)s -profile:v %(profile)s -pix_fmt yuv420p "
+    + "-level %(level)s -crf %(crf)s -sc_threshold 0 "
+    + '-force_key_frames "expr:gte(t,n_forced*1)" '
+    + "-c:a aac -ar 48000 -max_muxing_queue_size 4000 "
+)
 ````
 
-> Contenu par défaut du fichier xml pour créer le mediapackage pour le studio.
-> Ce fichier va contenir toutes les spécificités de l'enregistrement
-> (source, cutting, title, presenter etc.)
+- FFMPEG_HLS_ENCODE_PARAMS
+````
+FFMPEG_HLS_ENCODE_PARAMS = (
+    '-vf "scale=-2:%(height)s" -maxrate %(maxrate)s -bufsize %(bufsize)s -b:a:0 %(ba)s '
+    + "-hls_playlist_type vod -hls_time %(hls_time)s  -hls_flags single_file "
+    + '-master_pl_name "livestream%(height)s.m3u8" '
+    + '-y "%(output)s" '
+)
+````
+
+- FFMPEG_HLS_TIME = 2
+
+> valeur par défaut du paramètre hls_time de ffmpeg
+
+- FFMPEG_INPUT :
+````
+````
+
+    - FFMPEG_LEVEL
+    - FFMPEG_LIBX
+    - FFMPEG_M4A_ENCODE
+    - FFMPEG_MISC_PARAMS
+    - FFMPEG_MP3_ENCODE
+    - FFMPEG_MP4_ENCODE
+    - FFMPEG_NB_THREADS
+    - FFMPEG_PRESET
+    - FFMPEG_PROFILE
+    - FFMPEG_STATIC_PARAMS
+    - FFPROBE
+    - FILEPICKER
+    - FORMAT_CHOICES
+    - GET_DURATION_VIDEO
+    - GET_INFO_VIDEO
+    - LANG_CHOICES_DICT
+    - LAUNCH_ENCODE_VIDEO
+    - LICENCE_CHOICES
+    - LICENCE_CHOICES_DICT
+    - LOGO_SITE
+    - MAX_D
+    - MAX_DURATION_DATE_DELETE
+    - NB_THUMBNAIL
+    - NORMALIZE
+    - NORMALIZE_TARGET_LEVEL
+    - NOTES_STATUS
+    - NOTE_ACTION
+    - PREF_LANG_CHOICES
+    - RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
+    - SAMPLE_OVERLAP
+    - SAMPLE_WINDOW
+    - SENTENCE_BLANK_SPLIT_TIME
+    - SENTENCE_MAX_LENGTH
+    - STT_PARAM
+    - TEMPLATE_VISIBLE_SETTINGS
+    - THEME_ACTION
+    - THEME_FORM_FIELDS_HELP_TEXT
+    - THIRD_PARTY_APPS
+    - THIRD_PARTY_APPS_CHOICES
+    - THRESHOLD_UNVOICED
+    - THRESHOLD_VOICED
+    - TITLE_ETB
+    - TITLE_SITE
+    - TODAY
+    - TRANSCRIPT
+    - TRANSCRIPT_VIDEO
+    - USE_CATEGORY
+    - USE_ESTABLISHMENT
+    - USE_OBSOLESCENCE
+    - VAD_AGRESSIVITY
+    - VERSION_CHOICES
+    - VERSION_CHOICES_DICT
+    - VIDEOS
+    - VIDEOS_DIR
+    - VIDEO_ALLOWED_EXTENSIONS
+    - VIDEO_FORM_FIELDS
+    - VIDEO_FORM_FIELDS_HELP_TEXT
+    - VIDEO_MAX_UPLOAD_SIZE
+    - VIDEO_RECENT_VIEWCOUNT
+    - VIDEO_RENDITIONS
+    - VIDEO_REQUIRED_FIELDS
+    - VIEW_STATS_AUTH
+    - WORDS_PER_LINE
 
 ### 3.3/ Application meeting
 > Application Meeting pour la gestion de reunion avec BBB.
@@ -774,6 +936,39 @@ ROLE_CHOICES = (
 
 > Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton
 
+
+### 3.X/ Activer le studio Opencast dans Pod
+
+- USE_OPENCAST_STUDIO = False
+
+> Activer l'utilisation du studio Opencast
+
+- OPENCAST_FILES_DIR = "opencast-files"
+
+> Permet de spécifier le dossier de stockage des enregistrements du studio avant traitement.
+
+- OPENCAST_DEFAULT_PRESENTER = "mid"
+
+> Permet de spécifier la valeur par défaut du placement de la vidéo du
+> presenteur par rapport à la vidéo de présentation (écran)
+> les valeurs possibles sont :
+>  * "mid" (écran et caméra ont la même taille)
+>  * "piph" (le presenteur, caméra, est incrusté dans la vidéo de présentation, en haut à droite)
+>  * "pipb" (le presenteur, caméra, est incrusté dans la vidéo de présentation, en bas à droite)
+
+````
+OPENCAST_MEDIAPACKAGE = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <mediapackage xmlns="http://mediapackage.opencastproject.org" id="" start="">
+    <media/>
+    <metadata/>
+    <attachments/>
+    <publications/>
+    </mediapackage>"""
+````
+
+> Contenu par défaut du fichier xml pour créer le mediapackage pour le studio.
+> Ce fichier va contenir toutes les spécificités de l'enregistrement
+> (source, cutting, title, presenter etc.)
 
 ## 4/ Commande de gestion de l'application
 ### 4.1/ Creation d'un super utilisateur
