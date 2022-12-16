@@ -348,8 +348,8 @@ function get_form(data) {
       gettext("Get time from the player") +
       "</a><span class='timecode'></span></div>"
   );
-  var inputStart = document.getElementById("id_end");
-  inputStart.insertAdjacentHTML(
+  var inputEnd = document.getElementById("id_end");
+  inputEnd.insertAdjacentHTML(
     "beforebegin",
     "&nbsp;<div class='getfromvideo pull-right mb-1'><a href='' id='getfromvideo_end' class='btn btn-primary btn-sm'>" +
       gettext("Get time from the player") +

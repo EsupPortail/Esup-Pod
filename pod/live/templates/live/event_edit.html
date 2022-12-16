@@ -170,28 +170,7 @@
   {{ form.media }}
 
   <script>
-    bouton_advanced_options = document.getElementById("bouton_advanced_options");
-    if (bouton_advanced_options){
-      bouton_advanced_options.addEventListener("click", () => {
-        if (this.dataset.display === true){
-          document.querySelectorAll(".advanced_options, .draft_access, .groups_access").forEach((el) => {
-            el.classList.add("hide");
-            el.classList.remove("show");
-          })
-          this.texContent("{% trans 'Display advanced options' %}");
-          this.dataset.display = false
-        } else {
-          document.addEventListener(".advanced_options, .draft_access, .groups_access").forEach(()=>{
-            e.removeClass("hide").addClass("show");
-            
-          });
-          this.texContent("{% trans 'Hide advanced options' %}");
-          this.dataset.display = true
-          showRestrictions();
-        }
-      })
-    }
-  
+    
     if (document.getElementById("event_is_draft")){
       document.getElementById("event_is_draft").addEventListener("click", () => showRestrictions());
     }

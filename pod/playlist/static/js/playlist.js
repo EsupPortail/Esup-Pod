@@ -21,22 +21,18 @@ var ajaxfail = function (data) {
 document.addEventListener("DOMContentLoaded", function () {
   const table = document.getElementById("table_list_videos");
 
-  Array.from(document.querySelectorAll(".position-up")).forEach((element) => {
-    element.addEventListener("click", function () {
-      let row = element.parentNode.parentNode;
-
+  Array.from(document.querySelectorAll(".position-up")).forEach((button) => {
+    button.addEventListener("click", function () {
+      let row = button.closest("tr");
       let currentposition = row.querySelector(".video-position");
-      let oldposition = currentposition;
-      if (row.previousElementSibling !== null) {
-        oldposition =
-          row.previousElementSibling.querySelector(".video-position");
-      }
-
+      
       if (currentposition.textContent > 1) {
+        let oldposition = row.previousElementSibling.querySelector(".video-position");
         currentposition.textContent = parseInt(currentposition.textContent) - 1;
         oldposition.textContent = parseInt(oldposition.textContent) + 1;
       }
-      row.parentNode.insertBefore(row, row.previousSibling);
+      console.log(row.previousSibling)
+      row.parentNode.insertBefore(row, row.previousElementSibling);
     });
   });
 
@@ -53,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
         currentposition.textContent = parseInt(currentposition.textContent) + 1;
         oldposition.textContent = parseInt(oldposition.textContent) - 1;
       }
-      row.parentNode.insertBefore(row.nextSibling, row);
+      row.parentNode.insertBefore(row.nextElementSibling, row);
     });
   });
   let savePosition = document.getElementById("save-position");

@@ -19,7 +19,7 @@
  
   document.addEventListener("reset",   (e) => {
     if (e.target !== document.querySelector("#page-video form"))  return
-    document.getElementById("form_enrich").html = "";
+    document.getElementById("form_enrich").innerHTML = "";
    document.querySelectorAll("form").forEach((form)=>{
     form.style.display = "block";
    })
