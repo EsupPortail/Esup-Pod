@@ -263,11 +263,11 @@
     videos_list_filtered = document.createElement("div");
     videos_list_filtered.setAttribute(
       "class",
-      "filtered infinite-container row"
+      "filtered infinite-container pod-infinite-container"
     );
     videos_list_filtered.setAttribute("id", "videos_list");
     document
-      .querySelector(".pod-mainContent")
+      .querySelector(".pod-mainContent .pod-first-content")
       .appendChild(videos_list_filtered);
     return videos_list_filtered;
   };
@@ -566,14 +566,14 @@
     let infinite_item = document.createElement("div");
     infinite_item.setAttribute(
       "class",
-      "infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group"
+      "infinite-item card-group"
     );
     // infinite_item.setAttribute("style", "min-width: 12rem; min-height: 11rem;");
     infinite_item.setAttribute("data-slug", video.slug);
     let card = document.createElement("div");
     card.setAttribute(
       "class",
-      "card mb-4 box-shadow border-secondary video-card"
+      "card box-shadow pod-card--video video-card" // "card mb-4 box-shadow border-secondary video-card"
     );
     card.innerHTML = `
       <div class="card-header">
@@ -598,19 +598,19 @@
         <footer class="card-footer card-footer-pod p-0 m-0">
           <a href="${EDIT_URL}${
       video.slug
-    }" title="${edit_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+    }" title="${edit_text}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
     <i class="bi bi-pencil-square" aria-hidden="true"></i></a>
           <a href="${COMPLETION_URL}${
       video.slug
-    }" title="${completion_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+    }" title="${completion_text}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
     <i class="bi bi-file-text" aria-hidden="true"></i></a>
           <a href="${CHAPTER_URL}${
       video.slug
-    }" title="${chapter_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+    }" title="${chapter_text}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
     <i class="bi bi-card-list" aria-hidden="true"></i></a>
           <a href="${DELETE_URL}${
       video.slug
-    }" title="${delete_text}" class="btn pod-btn-social p-1 m-0 ms-1">
+    }" title="${delete_text}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
     <i class="bi bi-trash" aria-hidden="true"></i></a>
         </footer>
         <span class="small video-title">
