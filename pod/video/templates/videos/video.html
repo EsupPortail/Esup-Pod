@@ -13,34 +13,37 @@
   <link rel="alternate" type="text/xml+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&amp;format=xml" />
 {% endif %}
 
-<meta property="og:site_name" content="{{ TITLE_SITE }}">
-<meta property="og:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}">
-<meta property="og:title" content="{{ video.title }}">
-<meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
-<meta property="og:image:secure_url" content="https:{{ video.get_thumbnail_url }}">
-<meta property="og:image:alt" content="{{ video.title }}">
-<meta property="og:image:width" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.width}}{% else %}640{% endif %}" />
-<meta property="og:image:height" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.height}}{% else %}360{% endif %}" />
+{# Do not include metadata if video is restricted. #}
+{% if not form %}
+  <meta property="og:site_name" content="{{ TITLE_SITE }}">
+  <meta property="og:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}">
+  <meta property="og:title" content="{{ video.title }}">
+  <meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
+  <meta property="og:image:secure_url" content="https:{{ video.get_thumbnail_url }}">
+  <meta property="og:image:alt" content="{{ video.title }}">
+  <meta property="og:image:width" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.width}}{% else %}640{% endif %}" />
+  <meta property="og:image:height" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.height}}{% else %}360{% endif %}" />
 
-<meta property="og:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% endif %} {% trans 'Added by' %}: {{ video.owner.get_full_name }}">
+  <meta property="og:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% endif %} {% trans 'Added by' %}: {{ video.owner.get_full_name }}">
 
-<meta property="og:type" content="video">
-<meta property="og:video" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
-<meta property="og:video:secure_url" content="https://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
-<meta property="og:video:type" content="video/mp4">
-<meta property="og:video:width" content="640">
-<meta property="og:video:height" content="{{video.get_player_height}}">
+  <meta property="og:type" content="video">
+  <meta property="og:video" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
+  <meta property="og:video:secure_url" content="https://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
+  <meta property="og:video:type" content="video/mp4">
+  <meta property="og:video:width" content="640">
+  <meta property="og:video:height" content="{{video.get_player_height}}">
 
-<meta name="twitter:card" content="player">
-<meta name="twitter:site" content="{{ TITLE_SITE }}">
-<meta name="twitter:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}">
-<meta name="twitter:title" content="{{ video.title }}">
-<meta name="twitter:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% endif %} {% trans 'Added by' %}: {{ video.owner.get_full_name }}">
-<meta name="twitter:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
+  <meta name="twitter:card" content="player">
+  <meta name="twitter:site" content="{{ TITLE_SITE }}">
+  <meta name="twitter:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}">
+  <meta name="twitter:title" content="{{ video.title }}">
+  <meta name="twitter:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% endif %} {% trans 'Added by' %}: {{ video.owner.get_full_name }}">
+  <meta name="twitter:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
 
-<meta name="twitter:player" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
-<meta name="twitter:player:width" content="640">
-<meta name="twitter:player:height" content="{{video.get_player_height}}">
+  <meta name="twitter:player" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
+  <meta name="twitter:player:width" content="640">
+  <meta name="twitter:player:height" content="{{video.get_player_height}}">
+{% endif %}
 
 {% if video.is_draft == True %}
   <meta name="robots" content="NONE,NOARCHIVE">
@@ -87,7 +90,11 @@
 
 {% block page_content %}
 
-<div itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+
+<div
+{# Do not include metadata if video is restricted. #}
+{% if not form %}
+ itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
 
   <meta itemprop="duration" content="P{{ video.duration }}S" />
   {# uploadDate doit être au format 'c' - ISO 8601 (yyyy-mm-dd) #}
@@ -98,7 +105,9 @@
   <meta itemprop="image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}" />
   <meta itemprop="name" content="{{ video.title }}" />
   <meta itemprop="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }} - {% trans 'Added by' %}: {{ video.owner.get_full_name }}" />
-
+{% else %}
+ >
+{% endif %}
 {% if channel %}
   <h2 class="channel_title">{{channel.title}}{% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{% endif %}</h2>
   {% if channel.headband %}
