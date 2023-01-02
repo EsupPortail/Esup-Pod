@@ -72,8 +72,7 @@ document.addEventListener("click", (e) => {
     form.style.display = "block";
   });
   show_form("");
-  let file_modal = document.getElementById("fileModal_id_file");
-  if (file_modal) file_modal.remove();
+  document.getElementById("fileModal_id_file")?.remove();
 });
 
 document.addEventListener("submit", (e) => {

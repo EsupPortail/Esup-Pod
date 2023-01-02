@@ -53,8 +53,8 @@ document.addEventListener("reset", (event) => {
   let fileModalDoc = document.getElementById("fileModal_id_document");
   let fileModalSrc = document.getElementById("fileModal_id_src");
 
-  if (fileModalDoc) fileModalDoc.remove();
-  if (fileModalSrc) fileModalSrc.remove();
+  fileModalDoc?.remove();
+  fileModalSrc?.remove();
 });
 
 function show_form(data, form) {

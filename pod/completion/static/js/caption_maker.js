@@ -804,8 +804,7 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
       clearVideoRegion();
     }
   );
-  let noCaptionsText = document.getElementById("noCaptionsText");
-  if (noCaptionsText) noCaptionsText.remove();
+  document.getElementById("noCaptionsText")?.remove();
 
   return block;
 }

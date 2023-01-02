@@ -559,9 +559,7 @@ document.addEventListener("hidden.bs.modal", (e) => {
   if (e.target.id != "userpictureModal") return;
 
   e.target.remove();
-  if (document.getElementById("fileModal_id_userpicture")) {
-    document.getElementById("fileModal_id_userpicture").remove();
-  }
+  document.getElementById("fileModal_id_userpicture")?.remove();
 });
 document.addEventListener("submit", (e) => {
   if (e.target.id != "userpicture_form") return;
@@ -874,9 +872,7 @@ var show_picture_form = function (data) {
     htmlData.querySelector("#userpictureurl") &&
     htmlData.querySelector("#userpictureurl").value
   ) {
-    if (userpict) {
-      userpict.remove();
-    }
+    userpict?.remove();
     document.querySelector("#nav-usermenu .userinitial").style.display = "none";
     document
       .querySelector("#nav-usermenu > button")
@@ -895,9 +891,8 @@ var show_picture_form = function (data) {
       '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' +
       gettext("Change your picture");
   } else {
-    if (userpict) {
-      userpict.remove();
-    }
+    userpict?.remove();
+
     document.querySelector("#nav-usermenu .userinitial").style.display =
       "inline-block";
     document
@@ -1303,9 +1298,7 @@ var showalert = function (message, alerttype) {
   document.body.appendChild(parsedHTML);
   setTimeout(function () {
     let formalertdiv = document.getElementById("formalertdiv");
-    if (formalertdiv) {
-      formalertdiv.remove();
-    }
+    formalertdiv?.remove();
   }, 5000);
 };
 
