@@ -80,8 +80,7 @@ document.addEventListener("submit", (e) => {
   e.preventDefault();
   var jqxhr = "";
   var action = e.target.querySelector("input[name=action]").value;
-
-  sendandgetform(e.target, action);
+  sendandgetform(e.target);
 });
 
 document.addEventListener("submit", (e) => {
@@ -93,17 +92,17 @@ document.addEventListener("submit", (e) => {
   sendform(e.target, action);
 });
 
-var sendandgetform = async function (elt, action) {
+var sendandgetform = async function (elt) {
   //document.querySelector("form.get_form").style.display = "none";
-  let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
+  const token = elt.csrfmiddlewaretoken.value;
+  const action = elt.action.value;
   if (action == "new") {
     url = window.location.href;
     headers = {
       "X-CSRFToken": token,
       "X-Requested-With": "XMLHttpRequest",
     };
-    form_data = new FormData();
-    form_data.append("action", action);
+    form_data = new FormData(elt);
 
     await fetch(url, {
       method: "POST",

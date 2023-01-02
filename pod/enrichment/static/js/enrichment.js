@@ -63,22 +63,19 @@ var ajaxfail = function (data) {
       gettext("The form could not be recovered."),
     "alert-danger"
   );
-  document.querySelectorAll("form.get_form").forEach((form)=>{
+  document.querySelectorAll("form.get_form").forEach((form) => {
     form.style.display = "block";
-  })
-  
+  });
 
   show_form("");
 };
 
 document.addEventListener("click", (e) => {
   if (e.target.id != "cancel_enrichment") return;
-  document.querySelectorAll("form.get_form").forEach((form)=> {
+  document.querySelectorAll("form.get_form").forEach((form) => {
     form.style.display = "block";
     show_form("");
-  })
-  
-  
+  });
 });
 
 document.addEventListener("submit", (e) => {
@@ -213,7 +210,7 @@ var sendform = async function (elt, action) {
 
     if (verify_fields() && verify_end_start_items() && overlaptest()) {
       let form_enrich = document.getElementById("form_enrich");
-      let form_save = form_enrich.querySelector('form')
+      let form_save = form_enrich.querySelector("form");
       form_save.style.display = "none";
       var data_form = new FormData(form_save);
 
@@ -245,8 +242,7 @@ var sendform = async function (elt, action) {
             data = JSON.parse(data);
             if (data.errors) {
               show_form(data.form);
-              document.getElementById("form_enrich").style.display =
-                "block";
+              document.getElementById("form_enrich").style.display = "block";
             } else {
               location.reload();
             }
