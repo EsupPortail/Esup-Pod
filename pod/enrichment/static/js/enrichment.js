@@ -6,9 +6,9 @@ function show_form(data) {
 
   form.innerHTML = data;
   form.querySelectorAll("script").forEach((item) => {
-    if (item.src) {
-      // external script
+    // run script tags of filewidget.js and custom_filewidget.js
 
+    if (item.src) {
       let script = document.createElement("script");
       script.src = item.src;
       if (script.src.includes("filewidget.js"))
@@ -97,16 +97,15 @@ document.addEventListener("submit", (e) => {
 
 var sendandgetform = async function (elt, action) {
   // document.querySelector("form.get_form").style.display = "none";
-  let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
+  const token = elt.csrfmiddlewaretoken.value;
+  const url = window.location.href;
   if (action == "new") {
-    url = window.location.href;
     headers = {
       "X-CSRFToken": token,
       "X-Requested-With": "XMLHttpRequest",
     };
 
-    let form_data = new FormData();
-    form_data.append("action", action);
+    let form_data = new FormData(elt);
     await fetch(url, {
       method: "POST",
       headers: headers,
@@ -129,17 +128,12 @@ var sendandgetform = async function (elt, action) {
       });
   }
   if (action == "modify") {
-    var id = elt.querySelector("input[name=id]").value;
-    url = window.location.href;
-    let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
     headers = {
       "X-CSRFToken": token,
       "X-Requested-With": "XMLHttpRequest",
     };
 
-    form_data = new FormData();
-    form_data.append("action", action);
-    form_data.append("id", id);
+    form_data = new FormData(elt);
 
     await fetch(url, {
       method: "POST",
@@ -165,16 +159,11 @@ var sendandgetform = async function (elt, action) {
   }
 
   if (action == "delete") {
-    var id = elt.querySelector("input[name=id]").value;
-    url = window.location.href;
-    let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
     headers = {
       "X-CSRFToken": token,
       "X-Requested-With": "XMLHttpRequest",
     };
-    form_data = new FormData();
-    form_data.append("action", action);
-    form_data.append("id", id);
+    form_data = new FormData(elt);
     await fetch(url, {
       method: "POST",
       headers: headers,
@@ -214,13 +203,12 @@ var sendform = async function (elt, action) {
       form_save.style.display = "none";
       var data_form = new FormData(form_save);
 
-      let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
+      let token = elt.csrfmiddlewaretoken.value;
       let url = window.location.href;
       let headers = {
         "X-CSRFToken": token,
         "X-Requested-With": "XMLHttpRequest",
       };
-      data_form.append("action", action);
 
       await fetch(url, {
         method: "POST",
@@ -258,7 +246,7 @@ var sendform = async function (elt, action) {
   if (action == "import") {
     var file = elt.querySelector("input[name=file]").value;
     let url = window.location.href;
-    let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
+    let token = elt.csrfmiddlewaretoken.value;
     let headers = {
       "X-CSRFToken": token,
       "X-Requested-With": "XMLHttpRequest",

@@ -63,19 +63,18 @@ function show_form(data, form) {
   //form_el.innerHTML = data;
   form_el.innerHTML = data;
   form_el.querySelectorAll("script").forEach((item) => {
-    
     if (item.src) {
       // external script
-      
+
       let script = document.createElement("script");
       script.src = item.src;
       document.body.appendChild(script);
     } else {
       // inline script
-    (0,eval)(item.innerHTML);
+      (0, eval)(item.innerHTML);
     }
   });
-  
+
   fadeIn(form_el);
   if (form === "form_track")
     document.getElementById("form_track").style.width = "100%";
@@ -137,9 +136,8 @@ var sendandgetform = async function (elt, action, name, form, list) {
     document.getElementById(name + "-info").style.display = "block";
 
     let url = window.location.origin + href;
-    let token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
-    form_data = new FormData();
-    form_data.append("action", action);
+    let token = elt.csrfmiddlewaretoken.value;
+    form_data = new FormData(elt);
 
     await fetch(url, {
       method: "POST",
@@ -195,10 +193,9 @@ var sendandgetform = async function (elt, action, name, form, list) {
     hide_others_sections(name);
   }
   if (action == "modify" || action == "form_save_modify") {
-
     var id = elt.querySelector("input[name=id]").value;
     var url = window.location.origin + href;
-    var token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
+    var token = document.csrfmiddlewaretoken.value;
     form_data = new FormData();
     form_data.append("action", action);
     form_data.append("id", id);

@@ -4,15 +4,13 @@ function show_form(data) {
   form_chapter.style.display = "none";
   form_chapter.innerHTML = data;
   form_chapter.querySelectorAll("script").forEach((item) => {
+    // run script tags of filewidget.js and custom_filewidget.js
     if (item.src) {
-      // external script
-
       let script = document.createElement("script");
       script.src = item.src;
       if (script.src.includes("filewidget.js"))
         document.body.appendChild(script);
     } else {
-      // inline script
       if (item.id == "filewidget_script") (0, eval)(item.innerHTML);
     }
   });
@@ -96,14 +94,14 @@ var sendandgetform = async function (elt) {
   //document.querySelector("form.get_form").style.display = "none";
   const token = elt.csrfmiddlewaretoken.value;
   const action = elt.action.value;
+  const url = window.location.href;
+
   if (action == "new") {
-    url = window.location.href;
     headers = {
       "X-CSRFToken": token,
       "X-Requested-With": "XMLHttpRequest",
     };
     form_data = new FormData(elt);
-
     await fetch(url, {
       method: "POST",
       headers: headers,
@@ -126,18 +124,11 @@ var sendandgetform = async function (elt) {
       });
   }
   if (action == "modify") {
-    var id = elt.querySelector("input[name=id]").value;
-    url = window.location.href;
-    let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
     headers = {
       "X-CSRFToken": token,
       "X-Requested-With": "XMLHttpRequest",
     };
-
-    form_data = new FormData();
-    form_data.append("action", action);
-    form_data.append("id", id);
-
+    form_data = new FormData(elt);
     await fetch(url, {
       method: "POST",
       headers: headers,
@@ -162,18 +153,11 @@ var sendandgetform = async function (elt) {
   }
 
   if (action == "delete") {
-    var id = elt.querySelector("input[name=id]").value;
-    url = window.location.href;
-    let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
     headers = {
       "X-CSRFToken": token,
       "X-Requested-With": "XMLHttpRequest",
     };
-
-    form_data = new FormData();
-    form_data.append("action", action);
-    form_data.append("id", id);
-
+    form_data = new FormData(elt);
     await fetch(url, {
       method: "POST",
       headers: headers,
@@ -191,7 +175,6 @@ var sendandgetform = async function (elt) {
           data = JSON.parse(data);
           updateDom(data);
           manageDelete();
-
           document.getElementById("list_chapter").innerHTML = data.list_chapter;
           show_form("");
           document.querySelector("form.get_form").style.display = "block";
@@ -211,7 +194,7 @@ var sendform = async function (elt, action) {
       form_save.style.display = "none";
       var data_form = new FormData(form_save);
 
-      let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
+      let token = elt.csrfmiddlewaretoken.value;
       let url = window.location.href;
       let headers = {
         "X-CSRFToken": token,
@@ -261,18 +244,15 @@ var sendform = async function (elt, action) {
     }
   }
   if (action == "import") {
-    var file = elt.querySelector("input[name=file]").value;
     let url = window.location.href;
-    let token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
+    let token = elt.csrfmiddlewaretoken.value;
 
     let headers = {
       "X-CSRFToken": token,
       "X-Requested-With": "XMLHttpRequest",
     };
 
-    form_data = new FormData();
-    form_data.append("action", action);
-    form_data.append("file", file);
+    form_data = new FormData(elt);
 
     await fetch(url, {
       method: "POST",

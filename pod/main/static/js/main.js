@@ -915,14 +915,14 @@ var append_picture_form = async function (data) {
   //$("body").append(data);
   document.body.appendChild(htmlData);
   htmlData.querySelectorAll("script").forEach((item) => {
+    // run script tags of filewidget.js and custom_filewidget.js
+
     if (item.src) {
-      // external script
       let script = document.createElement("script");
       script.src = item.src;
       if (script.src.includes("filewidget.js"))
         document.body.appendChild(script);
     } else {
-      // inline script
       if (item.id == "filewidget_script") (0, eval)(item.innerHTML);
     }
   });
