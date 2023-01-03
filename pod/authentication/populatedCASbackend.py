@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from pod.authentication.models import Owner
-from pod.authentication.models import AFFILIATION
+from pod.authentication.models import DEFAULT_AFFILIATION, AFFILIATION_STAFF
 from ldap3 import Server
 from ldap3 import ALL
 from ldap3 import Connection
@@ -39,11 +39,7 @@ CREATE_GROUP_FROM_AFFILIATION = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION
 
 CREATE_GROUP_FROM_GROUPS = getattr(settings, "CREATE_GROUP_FROM_GROUPS", False)
 
-AFFILIATION_STAFF = getattr(
-    settings, "AFFILIATION_STAFF", ("faculty", "employee", "staff")
-)
-
-GROUP_STAFF = getattr(settings, "AFFILIATION_STAFF", ("faculty", "employee", "staff"))
+GROUP_STAFF = AFFILIATION_STAFF
 
 LDAP_SERVER = getattr(settings, "LDAP_SERVER", {"url": "", "port": 389, "use_ssl": False})
 AUTH_LDAP_BIND_DN = getattr(settings, "AUTH_LDAP_BIND_DN", "")
@@ -86,6 +82,9 @@ def populateUser(tree):
     user, user_created = User.objects.get_or_create(username=username)
     owner, owner_created = Owner.objects.get_or_create(user=user)
     owner.auth_type = "CAS"
+
+    delete_synchronized_access_group(owner)
+
     owner.save()
 
     if POPULATE_USER == "CAS":
@@ -99,6 +98,12 @@ def populateUser(tree):
             entry = get_entry(conn, username, list_value)
             if entry is not None:
                 populate_user_from_entry(user, owner, entry)
+
+
+def delete_synchronized_access_group(owner):
+    groups_to_sync = AccessGroup.objects.filter(auto_sync=True)
+    for group_to_sync in groups_to_sync:
+        owner.accessgroup_set.remove(group_to_sync)
 
 
 def get_server():
@@ -167,6 +172,7 @@ def assign_accessgroups(groups_element, user):
             )
             if group_created:
                 accessgroup.display_name = group
+                accessgroup.auto_sync = True
             accessgroup.sites.add(Site.objects.get_current())
             accessgroup.save()
             user.owner.accessgroup_set.add(accessgroup)
@@ -236,7 +242,7 @@ def populate_user_from_entry(user, owner, entry):
             USER_LDAP_MAPPING_ATTRIBUTES.get("primaryAffiliation")
             and entry[USER_LDAP_MAPPING_ATTRIBUTES["primaryAffiliation"]]
         )
-        else AFFILIATION[0][0]
+        else DEFAULT_AFFILIATION
     )
     owner.establishment = (
         entry[USER_LDAP_MAPPING_ATTRIBUTES["establishment"]].value
@@ -264,6 +270,7 @@ def populate_user_from_entry(user, owner, entry):
             )
             if group_created:
                 accessgroup.display_name = affiliation
+                accessgroup.auto_sync = True
             accessgroup.sites.add(Site.objects.get_current())
             accessgroup.save()
             # group.groupsite.sites.add(Site.objects.get_current())
@@ -300,7 +307,7 @@ def populate_user_from_tree(user, owner, tree):
     owner.affiliation = (
         primary_affiliation_element.text
         if (primary_affiliation_element is not None)
-        else AFFILIATION[0][0]
+        else DEFAULT_AFFILIATION
     )
     # affiliation
     affiliation_element = tree.findall(
@@ -315,6 +322,7 @@ def populate_user_from_tree(user, owner, tree):
             )
             if group_created:
                 accessgroup.display_name = affiliation.text
+                accessgroup.auto_sync = True
             accessgroup.sites.add(Site.objects.get_current())
             accessgroup.save()
             user.owner.accessgroup_set.add(accessgroup)

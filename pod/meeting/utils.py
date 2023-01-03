@@ -1,5 +1,6 @@
 from django.conf import settings
 from hashlib import sha1
+from datetime import date, timedelta
 
 BBB_API_URL = getattr(settings, "BBB_API_URL", "")
 BBB_SECRET_KEY = getattr(settings, "BBB_SECRET_KEY", "")
@@ -33,3 +34,35 @@ def parseXmlToJson(xml, sub=False):
 
 def slash_join(*args):
     return "/".join(arg.strip("/") for arg in args)
+
+
+def get_weekday_in_nth_week(year, month, nth_week, week_day):
+    """
+    Returns the date corresponding to the nth weekday of a month.
+    e.g. 3rd Friday of July 2022 is July 15, 2002 so:
+    > get_weekday_in_nth_week(2022, 7, 3, 4)
+    date(2022, 7, 15)
+    """
+    new_date = date(year, month, 1)
+    delta = (week_day - new_date.weekday()) % 7
+    new_date += timedelta(days=delta)
+    new_date += timedelta(weeks=nth_week - 1)
+    return new_date
+
+
+def get_nth_week_number(original_date):
+    """
+    Returns the number of the week within the month for the date passed in argment.
+    e.g. July 15, 2022 is the 3rd Friday of the month of Juy 2022 so:
+    > get_nth_week_number(date(2022, 7, 15))
+    3
+    """
+    first_day = original_date.replace(day=1)
+    first_week_last_day = 7 - first_day.weekday()
+    day_of_month = original_date.day
+    if day_of_month < first_week_last_day:
+        return 1
+    nb_weeks = 1 + (day_of_month - first_week_last_day) // 7
+    if first_day.weekday() <= original_date.weekday():
+        nb_weeks += 1
+    return nb_weeks
