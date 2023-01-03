@@ -1,0 +1,1880 @@
+[
+    {
+        "header" : {
+            "en": "",
+            "fr": "Configuration de la plateforme Esup-Pod"
+        },
+        "information" : {
+            "title": {
+                "en": "",
+                "fr": "Information générale"
+            },
+            "description": {
+                "en": "",
+                "fr": ["",
+                "La plateforme Esup-Pod se base sur le framework Django écrit en Python. Elle supporte les versions 3.7, 3.8 et 3.9 de Python",
+                "",
+                "**Django Version : 3.2 LTS**",
+                "",
+                "> La documentation complète du framework : https://docs.djangoproject.com/fr/3.2/ (ou https://docs.djangoproject.com/en/3.2/)<br>",
+                "> L’Ensemble des variables de configuration du framework est accessible à cette adresse : https://docs.djangoproject.com/fr/3.2/ref/settings/",
+                "",
+                "Voici les configurations des applications tierces utilisées par Esup-Pod.",
+                ""]
+            },
+            "settings": {
+                "ModelTransalation" : {
+                    "pod_version_init": "3.1",
+                    "pod_version_end": "",
+                    "default_value": "0.18.7",
+                    "description": {
+                        "en": "",
+                        "fr": [
+                            "L'application modeltranslation est utilisée pour traduire le contenu dynamique des modèles Django existants",
+                            "https://django-modeltranslation.readthedocs.io/en/latest/installation.html#configuration"
+                        ]
+                    }
+                },
+                "ckeditor" : {
+                    "pod_version_init": "3.1",
+                    "pod_version_end": "",
+                    "default_value": "6.3.0",
+                    "description": {
+                        "en": "",
+                        "fr": [
+                            "Application permettant d'ajouter un éditeur CKEditor dans certains champs",
+                            "https://django-ckeditor.readthedocs.io/en/latest/#installation"
+                        ]
+                    }
+                },
+                "sorl.thumbnail" : {
+                    "pod_version_init": "3.1",
+                    "pod_version_end": "",
+                    "default_value": "12.9.0",
+                    "description": {
+                        "en": "",
+                        "fr": [
+                            "Utilisée pour la génération de miniature des images",
+                            "https://sorl-thumbnail.readthedocs.io/en/latest/reference/settings.html"
+                        ]
+                    }
+                },
+                "tagging" : {
+                    "pod_version_init": "3.1",
+                    "pod_version_end": "",
+                    "default_value": "0.5.0",
+                    "description": {
+                        "en": "",
+                        "fr": [
+                            "Gestion des mots-clés associés à une vidéo // voir pour référencer une nouvelle application",
+                            "https://django-tagging.readthedocs.io/en/develop/#settings"
+                        ]
+                    }
+                },
+                "CAS" : {
+                    "pod_version_init": "3.1",
+                    "pod_version_end": "",
+                    "default_value": "1.5.2",
+                    "description": {
+                        "en": "",
+                        "fr": [
+                            "Système d'authentification SSO_CAS",
+                            "https://github.com/kstateome/django-cas"
+                        ]
+                    }
+                },
+                "captcha" : {
+                    "pod_version_init": "3.1",
+                    "pod_version_end": "",
+                    "default_value": "0.5.17",
+                    "description": {
+                        "en": "",
+                        "fr": [
+                            "Gestion du captcha du formulaire de contact",
+                            "https://django-simple-captcha.readthedocs.io/en/latest/usage.html"
+                        ]
+                    }
+                },
+                "rest_framework" : {
+                    "pod_version_init": "3.1",
+                    "pod_version_end": "",
+                    "default_value": "3.14.0",
+                    "description": {
+                        "en": "",
+                        "fr": [
+                            "version 3.14.0: mise en place de l'API rest pour l'application",
+                            "https://www.django-rest-framework.org/"
+                        ]
+                    }
+                },
+                "django_select2" : {
+                    "pod_version_init": "3.1",
+                    "pod_version_end": "",
+                    "default_value": "latest",
+                    "description": {
+                        "en": "",
+                        "fr": [
+                            "Recherche et completion dans les formulaires",
+                            "https://django-select2.readthedocs.io/en/latest/"
+                        ]
+                    }
+                },
+                "shibboleth" : {
+                    "pod_version_init": "3.1",
+                    "pod_version_end": "",
+                    "default_value": "latest",
+                    "description": {
+                        "en": "",
+                        "fr": [
+                            "Système d'authentification Shibboleth",
+                            "https://github.com/Brown-University-Library/django-shibboleth-remoteuser"
+                        ]
+                    }
+                },
+                "chunked_upload" : {
+                    "pod_version_init": "3.1",
+                    "pod_version_end": "",
+                    "default_value": "2.0.0",
+                    "description": {
+                        "en": "",
+                        "fr": [
+                            "Envoie de fichier par morceaux // voir pour mettre à jour si nécessaire",
+                            "https://github.com/juliomalegria/django-chunked-upload"
+                        ]
+                    }
+                },
+                "mozilla_django_oidc" : {
+                    "pod_version_init": "3.1",
+                    "pod_version_end": "",
+                    "default_value": "3.0.0",
+                    "description": {
+                        "en": "",
+                        "fr": [
+                            "Système d'authentification OpenID Connect",
+                            "https://mozilla-django-oidc.readthedocs.io/en/stable/installation.html"
+                        ]
+                    }
+                },
+                "honeypot" : {
+                    "pod_version_init": "3.1",
+                    "pod_version_end": "",
+                    "default_value": "1.0.3",
+                    "description": {
+                        "en": "",
+                        "fr": [
+                            "Utilisé pour le formulaire de contact de Pod - ajoute un champ caché pour diminuer le spam",
+                            "https://github.com/jamesturk/django-honeypot/"
+                        ]
+                    }
+                }
+            }
+        },
+        "configuration_pod": {
+            "title": {
+                "en": "",
+                "fr": "Configuration Générale de la plateforme Esup_Pod"
+            },
+            "description": {
+                "main": {
+                    "title": {
+                        "en": "Main",
+                        "fr": "Divers"
+                    },
+                    "description": {},
+                    "settings": {
+                          "SITE_ID": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": 1,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "_Valeur par défaut : 1_<br>",
+                                "L’identifiant (nombre entier) du site actuel. Peut être utilisé pour mettre en place une instance multi-tenant et ainsi gérer dans une même base de données du contenu pour plusieurs sites.<br>",
+                                "__ref : https://docs.djangoproject.com/fr/3.2/ref/settings/#site-id__"
+                              ]
+                            }
+                          },
+                          "SECRET_KEY": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "A_CHANGER",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "_Valeur par défaut : 'A_CHANGER'_<br>",
+                                "La clé secrète d’une installation Django.<br>",
+                                "Elle est utilisée dans le contexte de la signature cryptographique, et doit être définie à une valeur unique et non prédictible.<br>",
+                                "Vous pouvez utiliser ce site pour en générer une : https://djecrety.ir/<br>",
+                                "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#secret-key__"
+                              ]
+                            }
+                          },
+                          "DEBUG": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": true,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "_Valeur par défaut : True_<br>",
+                                "Une valeur booléenne qui active ou désactive le mode de débogage.<br>",
+                                "Ne déployez jamais de site en production avec le réglage DEBUG activé.<br>",
+                                "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#debug__"
+                              ]
+                            }
+                          },
+                          "SECURE_SSL_REDIRECT": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "not DEBUG",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                ""
+                              ]
+                            }
+                          },
+                          "SESSION_COOKIE_SECURE": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": " not DEBUG",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                ""
+                              ]
+                            }
+                          },
+                          "CSRF_COOKIE_SECURE": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": " not DEBUG",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "_Valeur par défaut :  not DEBUG_<br>",
+                                "Ces 3 variables servent à sécuriser la plateforme en passant l'ensemble des requetes en https. Idem pour les cookies de session et de cross-sites qui seront également sécurisés<br>",
+                                "Il faut les passer à False en cas d'usage du runserver (phase de développement / debugage)<br>",
+                                "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#secure-ssl-redirect__"
+                              ]
+                            }
+                          },
+                          "ALLOWED_HOSTS": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "_Valeur par défaut :  ['localhost']_<br>",
+                                "Une liste de chaînes représentant des noms de domaine/d’hôte que ce site Django peut servir.<br>",
+                                "C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP, qui sont possibles même avec bien des configurations de serveur Web apparemment sécurisées.<br>",
+                                "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts__",
+                                "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age__"
+                              ]
+                            }
+                          },
+                          "SESSION_COOKIE_AGE": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": 14400,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "_Valeur par défaut :  14400 (secondes, soit 4 heures)_<br>",
+                                "L’âge des cookies de sessions, en secondes."
+                              ]
+                            }
+                          },
+                          "SESSION_EXPIRE_AT_BROWSER_CLOSE": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": true,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "_Valeur par défaut :  True_<br>",
+                                "Indique s’il faut que la session expire lorsque l’utilisateur ferme son navigateur."
+                              ]
+                            }
+                          },
+                          "ADMINS": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "_Valeur par défaut :  (('Name', 'adminmail@univ.fr'),)_<br>",
+                                "Une liste de toutes les personnes qui reçoivent les notifications d’erreurs dans le code.<br>",
+                                "Lorsque DEBUG=False et qu’une vue lève une exception, Django envoie un courriel à ces personnes contenant les informations complètes de l’exception.<br>",
+                                "Chaque élément de la liste doit être un tuple au format  « (nom complet, adresse électronique) ».<br>",
+                                "Exemple : [('John', 'john@example.com'), ('Mary', 'mary@example.com')]<br>",
+                                "Dans Pod, les \"admins\" sont également destinataires des courriels de contact, d'encodage ou de flux rss si la variable CONTACT_US_EMAIL n'est pas renseignée.<br>",
+                                "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#admins__"
+                              ]
+                            }
+                          },
+                          "MANAGERS": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "ADMINS",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Dans Pod, les \"managers\" sont destinataires des courriels de fin d'encodage (et ainsi des vidéos déposées sur la plateforme).<br>",
+                                "Le premier managers renseigné est également contact des flus rss.<br>",
+                                "Ils sont aussi destinataires des courriels de contact si la variable CONTACT_US_EMAIL n'est pas renseignée.<br>",
+                                "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#managers__"
+                              ]
+                            }
+                          },
+                          "TIME_ZONE": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "UTC",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "_Valeur par défaut :  \"UTC\"_<br>",
+                                "Une chaîne représentant le fuseau horaire pour cette installation.<br>",
+                                "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-TIME_ZONE__",
+                                "Liste des adresses destinataires des courriels de contact"
+                              ]
+                            }
+                          }
+                    }
+                },
+                "courriel": {
+                    "title": {
+                        "en": "Email",
+                        "fr": "Courriel"
+                    },
+                    "description": {},
+                    "settings": {
+                          "CONTACT_US_EMAIL": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Liste des adresses destinataires des courriels de contact"
+                              ]
+                            }
+                          },
+                          "EMAIL_HOST": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "smtp.univ.fr",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "nom du serveur smtp ",
+                                "_ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#email-host_"
+                              ]
+                            }
+                          },
+                          "EMAIL_PORT": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": 25,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "port d'écoute du serveur smtp"
+                              ]
+                            }
+                          },
+                          "EMAIL_SUBJECT_PREFIX": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Préfixe par défaut pour l'objet des courriels"
+                              ]
+                            }
+                          },
+                          "SERVER_EMAIL": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "noreply",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Expediteur par défaut pour les envois automatique (erreur de code etc.)"
+                              ]
+                            }
+                          },
+                          "DEFAULT_FROM_EMAIL": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "noreply",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Expediteur par défaut pour les envois de courriel (contact, encodage etc.)"
+                              ]
+                            }
+                          },
+                          "CUSTOM_CONTACT_US": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": false,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Si 'True', les e-mails de contacts seront adressés, selon le sujet,",
+                                "soit au propriétaire de la vidéo soit au(x) manageur(s) des vidéos Pod.",
+                                "(voir USER_CONTACT_EMAIL_CASE et USE_ESTABLISHMENT_FIELD)"
+                              ]
+                            }
+                          },
+                          "USER_CONTACT_EMAIL_CASE": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Une liste contenant les sujets de contact dont l'utilisateur",
+                                "sera seul destinataire plutôt que le(s) manageur(s).",
+                                "Si la liste est vide, les mails de contact seront envoyés au(x) manageur(s).",
+                                "Valeurs possibles :",
+                                " 'info', 'contribute', 'request_password',",
+                                " 'inapropriate_content', 'bug', 'other'"
+                              ]
+                            }
+                          },
+                          "USE_ESTABLISHMENT_FIELD": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": false,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Si valeur vaut 'True', rajoute un attribut 'establishment'",
+                                "à l'utilisateur Pod, ce qui permet de gérer plus d'un établissement.",
+                                "Dans ce cas, les emails de contact par exemple seront envoyés",
+                                " soit à l'utilisateur soit au(x) manageur(s)",
+                                " de l'établissement de l'utilisateur.",
+                                "(voir USER_CONTACT_EMAIL_CASE)",
+                                "Egalement, les emails de fin d'encodage seront envoyés au(x) manageur(s)",
+                                " de l'établissement du propriétaire de la vidéo encodée,",
+                                " en plus d'un email au propriétaire confirmant la fin d'encodage d'une vidéo.",
+                                "Un dictionnaire contenant les réglages de toutes les bases de données à utiliser avec Django.<br>",
+                                "C’est un dictionnaire imbriqué dont les contenus font correspondre l’alias de base de données avec un dictionnaire contenant les options de chacune des bases de données.<br>",
+                                "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#databases__"
+                              ]
+                            }
+                          }
+                    }
+                },
+                "database": {
+                    "title": {
+                        "en": "Database",
+                        "fr": "Base de données"
+                    },
+                    "description": {},
+                    "settings": {
+                        "DATABASES": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Un dictionnaire contenant les réglages de toutes les bases de données à utiliser avec Django.",
+                                "C’est un dictionnaire imbriqué dont les contenus font correspondre l’alias de base de données avec un dictionnaire contenant les options de chacune des bases de données.",
+                                "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#databases__",
+                                "valeur par défaut : une base de données au format sqlite",
+                                "````",
+                                "DATABASES = {",
+                                "    'default': {",
+                                "        'ENGINE': 'django.db.backends.sqlite3',",
+                                "        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),",
+                                "    }",
+                                "}",
+                                "````",
+                                "Voici un exemple de configuration pour utiliser une base MySQL : ",
+                                "````",
+                                "DATABASES = {",
+                                "    'default': {",
+                                "        'ENGINE': 'django.db.backends.mysql',",
+                                "        'NAME': 'pod',",
+                                "        'USER': 'pod',",
+                                "        'PASSWORD': 'password',",
+                                "        'HOST': 'mysql.univ.fr',",
+                                "        'PORT': '3306',",
+                                "        'OPTIONS': {",
+                                "            'init_command': \"SET storage_engine=INNODB, sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1, foreign_key_checks = 1\",",
+                                "         },",
+                                "    }",
+                                "}",
+                                "````"
+                              ]
+                            }
+                        }
+                    }
+                },
+                "language": {
+                    "title": {
+                        "en": "language",
+                        "fr": "Langue"
+                    },
+                    "description": {
+                        "en": [""],
+                        "fr": [
+                            "Par défaut, Esup-Pod est fournie en Francais et en anglais.",
+                            "Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra pour cela créer un fichier de langue et traduire chaque entrée."
+                        ]
+                    },
+                    "settings": {
+                          "LANGUAGE_CODE": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "fr",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Langue par défaut si non détectée"
+                              ]
+                            }
+                          },
+                          "LANGUAGES": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "(('fr', 'Français'), ('en', 'English')))",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Langue disponible et traduite"
+                              ]
+                            }
+                          }
+                    }
+                },
+                "files": {
+                    "title": {
+                        "en": "file management",
+                        "fr": "Gestion des fichiers"
+                    },
+                    "description": {
+                        "en": [""],
+                        "fr": [""]
+                    },
+                    "settings": {
+                          "USE_PODFILE": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": false,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Utiliser l'application de gestion de fichier fourni avec le projet.",
+                                "Si False, chaque fichier envoyé ne pourra être utilisé qu'une seule fois."
+                              ]
+                            }
+                          },
+                          "FILE_UPLOAD_TEMP_DIR": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "/var/tmp",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que FILE_UPLOAD_MAX_MEMORY_SIZE) lors des téléversements de fichiers.<br>",
+                                "_ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir_"
+                              ]
+                            }
+                          },
+                          "STATIC_ROOT": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "/pod/static",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Le chemin absolu vers le répertoire dans lequel collectstatic rassemble les fichiers statiques en vue du déploiement. Ce chemin sera précisé dans le fichier de configurtation du vhost nginx.<br>",
+                                "_ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-STATIC_ROOT_"
+                              ]
+                            }
+                          },
+                          "STATIC_URL": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "/static/",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "prefix url utilisé pour accèder aux fichiers static"
+                              ]
+                            }
+                          },
+                          "STATICFILES_STORAGE": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Indique à django de compresser automatiquement les fichiers css/js les plus gros lors du collectstatic pour optimiser les tailles de requetes.<br>",
+                                "À combiner avec un réglage webserver (\"gzip_static  on;\" sur nginx)<br>",
+                                "_ref: https://github.com/whs/django-static-compress"
+                              ]
+                            }
+                          },
+                          "MEDIA_ROOT": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "/pod/media",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Chemin absolu du système de fichiers pointant vers le répertoire qui contiendra les fichiers téléversés par les utilisateurs.<br>",
+                                "Attention, ce répertoire doit exister<br>",
+                                "_ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-MEDIA_ROOT_"
+                              ]
+                            }
+                          },
+                          "MEDIA_URL": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "/media/",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "prefix url utilisé pour accéder aux fichiers du répertoire media"
+                              ]
+                            }
+                          },
+                          "FILES_DIR": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "files",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Nom du répertoire racine où les fichiers \"complémentaires\"",
+                                "(hors vidéos etc.) sont téléversés. Notament utilisé par PODFILE",
+                                "A modifier principalement pour indiquer dans LOCATION votre serveur de cache si elle n'est pas sur la même machine que votre POD"
+                              ]
+                            }
+                          }
+                    }
+                }
+            },
+            "settings": {
+
+            }
+        },
+        "configuration_apps": {
+            "title": {
+                "en": "",
+                "fr": "Configuration Générale de la plateforme Esup_Pod"
+            },
+            "description": {
+                "authentification": {
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application authentification"
+                    },
+                    "description": {},
+                    "settings": {
+                        "AUTH_TYPE": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Type d'authentification possible sur votre instance.",
+                                " Choix : local, CAS, OIDC, Shibboleth"
+                              ]
+                            }
+                          },
+                          "USE_CAS": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": false,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Activation de l'authentification CAS en plus de l'authentification locale"
+                              ]
+                            }
+                          },
+                          "CAS_SERVER_URL": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "sso_cas",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Url du serveur cas de l'établissement. Format http://url_cas"
+                              ]
+                            }
+                          },
+                          "CAS_GATEWAY": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": false,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Si True, authentifie automatiquement l'individu",
+                                "si déjà authentifié sur le serveur CAS"
+                              ]
+                            }
+                          },
+                          "POPULATE_USER": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "None",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Si utilisation de la connection CAS, renseigne les champs du compte",
+                                "de la personne depuis une source externe.",
+                                "Valeurs possibles :",
+                                " - None (pas de renseignement),",
+                                " - CAS (renseigne les champs depuis les informations renvoyées par le CAS),"
+                              ]
+                            }
+                          },
+                          "LDAP": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                " - LDAP (Interroge le serveur LDAP pour renseigner les champs)"
+                              ]
+                            }
+                          },
+                          "AUTH_CAS_USER_SEARCH": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "user",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Variable utilisée pour trouver les informations de l'individu",
+                                "connecté dans le fichier renvoyé par le CAS lors de l'authentification"
+                              ]
+                            }
+                          },
+                          "USER_CAS_MAPPING_ATTRIBUTES": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Liste de correspondance entre les champs d'un compte de Pod",
+                                "et les champs renvoyés par le CAS"
+                              ]
+                            }
+                          },
+                          "CREATE_GROUP_FROM_AFFILIATION": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": false,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Si True, des groupes sont créés automatiquement",
+                                "à partir des affiliations des individus qui se connectent sur la plateforme",
+                                "et l'individu qui se connecte est ajouté automatiquement à ces groupes"
+                              ]
+                            }
+                          },
+                          "CREATE_GROUP_FROM_GROUPS": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": false,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Si True, des groupes sont créés automatiquement",
+                                "à partir des groupes (attribut groups à memberOf)",
+                                "des individus qui se connectent sur la plateforme",
+                                "et l'individu qui se connecte est ajouté automatiquement à ces groupes"
+                              ]
+                            }
+                          },
+                          "AFFILIATION_STAFF": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Les personnes ayant pour affiliation les valeurs",
+                                "renseignées dans cette variable ont automatiquement",
+                                "la valeur staff de leur compte à True"
+                              ]
+                            }
+                          },
+                          "AFFILIATION_EVENT": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Groupes ou affiliations des personnes autorisées à créer un évènement"
+                              ]
+                            }
+                          },
+                          "AFFILIATION": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Valeurs possibles pour l'Affiliation du compte"
+                              ]
+                            }
+                          },
+                          "LDAP_SERVER": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Information de connection au serveur LDAP.",
+                                "Le champ url peut contenir une ou plusieurs url",
+                                " pour ajouter des hôtes de référence, exemple :",
+                                "Si un seul host :",
+                                "{'url': \"ldap.univ.fr'', 'port': 389, 'use_ssl': False}",
+                                "Si plusieurs :",
+                                "{'url': (\"ldap.univ.fr'',\"ldap2.univ.fr\"), 'port': 389, 'use_ssl': False}"
+                              ]
+                            }
+                          },
+                          "AUTH_LDAP_BIND_DN": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Identifiant (DN) du compte pour se connecter au serveur LDAP"
+                              ]
+                            }
+                          },
+                          "AUTH_LDAP_BIND_PASSWORD": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Mot de passe du compte pour se connecter au serveur LDAP"
+                              ]
+                            }
+                          },
+                          "AUTH_LDAP_USER_SEARCH": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Filtre LDAP permettant la recherche de l'individu dans le serveur LDAP"
+                              ]
+                            }
+                          },
+                          "USER_LDAP_MAPPING_ATTRIBUTES": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Liste de correspondance entre les champs d'un compte de Pod",
+                                "et les champs renvoyés par le LDAP"
+                              ]
+                            }
+                          },
+                          "USE_SHIB": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": false,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Mettre à True pour utiliser l'authentification Shibboleth"
+                              ]
+                            }
+                          },
+                          "SHIB_NAME": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Nom de la fédération d'identité utilisée"
+                              ]
+                            }
+                          },
+                          "SHIBBOLETH_ATTRIBUTE_MAP": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Mapping des attributs entre shibboleth et la classe utilisateur"
+                              ]
+                            }
+                          },
+                          "SHIBBOLETH_STAFF_ALLOWED_DOMAINS": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "permettre à l'utilisateur d'un domaine d'être membre du personnel",
+                                "Si vide, tous les domaines seront autorisés"
+                              ]
+                            }
+                          },
+                          "REMOTE_USER_HEADER": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "REMOTE_USER",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Nom de l'attribut dans les headers qui sert à identifier",
+                                "l'utilisateur connecté avec Shibboleth"
+                              ]
+                            }
+                          },
+                          "SHIB_URL": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "URL de connexion à votre instance Shibboleth"
+                              ]
+                            }
+                          },
+                          "SHIB_LOGOUT_URL": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "URL de déconnexion à votre instance Shibboleth"
+                              ]
+                            }
+                          },
+                          "CAS_FORCE_LOWERCASE_USERNAME": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": false,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Forcer le passage en minuscule du nom d'utilisateur CAS",
+                                "(permet de prévenir des doubles créations de comptes dans certain cas)."
+                              ]
+                            }
+                          },
+                          "USE_OIDC": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": false,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Mettre à True pour utiliser l'authentification OpenID Connect"
+                              ]
+                            }
+                          },
+                          "OIDC_NAME": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Nom du Service Provider OIDC"
+                              ]
+                            }
+                          },
+                          "OIDC_RP_CLIENT_ID": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "os.environ",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                ""
+                              ]
+                            }
+                          },
+                          "OIDC_RP_CLIENT_SECRET": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "os.environ",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "CLIENT_ID et CLIENT_SECRET de OIDC sont plutôt à positionner",
+                                "à travers des variables d'environnement"
+                              ]
+                            }
+                          },
+                          "OIDC_OP_AUTHORIZATION_ENDPOINT": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "https",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                ""
+                              ]
+                            }
+                          },
+                          "OIDC_OP_TOKEN_ENDPOINT": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "https",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                ""
+                              ]
+                            }
+                          },
+                          "OIDC_OP_USER_ENDPOINT": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "https",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                ""
+                              ]
+                            }
+                          },
+                          "OIDC_RP_SIGN_ALGO": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                ""
+                              ]
+                            }
+                          },
+                          "OIDC_OP_JWKS_ENDPOINT": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "https",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Différents paramètres pour OIDC",
+                                "tant que mozilla_django_oidc n'accepte le mécanisme de discovery",
+                                "ref: https://github.com/mozilla/mozilla-django-oidc/pull/309"
+                              ]
+                            }
+                          },
+                          "OIDC_CLAIM_FAMILY_NAME": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "family_name",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                ""
+                              ]
+                            }
+                          },
+                          "OIDC_CLAIM_GIVEN_NAME": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "given_name",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Noms des Claim permettant de récupérer les attributs nom, prénom, email"
+                              ]
+                            }
+                          },
+                          "DEFAULT_AFFILIATION": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Affiliation par défaut d'un utilisateur authentifié par OIDC.",
+                                "Ce contenu sera comparé à la liste AFFILIATION_STAFF pour déterminer si l'utilisateur doit être admin django"
+                              ]
+                            }
+                          },
+                          "ESTABLISHMENTS": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "A compléter"
+                              ]
+                            }
+                          },
+                          "GROUP_STAFF": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "AFFILIATION_STAFF",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "utilisé dans populatedCasbackend"
+                              ]
+                            }
+                          },
+                          "HIDE_USERNAME": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": false,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Si valeur vaut 'True', le username de l'utilisateur ne sera pas visible sur la plate-forme Pod et si la valeur vaut 'False' le username sera affichés aux utilisateurs authentifiés. (par soucis du respect du RGPD)"
+                              ]
+                            }
+                          }
+                    }
+                },
+                "video": {
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application vidéo"
+                    },
+                    "description": {},
+                    "settings": {
+
+                    }
+                },
+                "meeting": {
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application meeting"
+                    },
+                    "description": {
+                        "en": [""],
+                        "fr": [
+                            "",
+                            "Application Meeting pour la gestion de reunion avec BBB.",
+                            "Mettre USE_MEETING à True pour activer cette application.",
+                            "BBB_API_URL et BBB_SECRET_KEY sont obligatoires pour faire fonctionner l'application"
+                        ]
+                    },
+                    "settings": {
+                        "USE_MEETING": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": false,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Activer l'application meeting"
+                              ]
+                            }
+                          },
+                          "BBB_API_URL": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Indiquer l'URL API de BBB par ex https://webconf.univ.fr/bigbluebutton/api"
+                              ]
+                            }
+                          },
+                          "BBB_SECRET_KEY": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Clé de votre serveur BBB. Vous pouvez récupérer cette clé à l'aide de la commande bbb-conf --secret sur le serveur BBB"
+                              ]
+                            }
+                          },
+                          "BBB_LOGOUT_URL": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Indiquer l'URL de retour au moment où vous quittez la réunion BBB. Ce champ est optionnel"
+                              ]
+                            }
+                          },
+                          "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": false,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Seuls les utilisateurs \"staff\" pourront éditer les réunions"
+                              ]
+                            }
+                          },
+                          "MEETING_DISABLE_RECORD": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": true,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Mettre à True pour désactiver les enregistrements de réunion",
+                                "Configuration de l'enregistrement des réunions. Ce champ n'est pas pris en compte si MEETING_DISABLE_RECORD = True"
+                              ]
+                            }
+                          }
+                    }
+                },
+                "completion": {
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application completion"
+                    },
+                    "description": {},
+                    "settings": {
+                        "ACTIVE_MODEL_ENRICH": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": false,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Définissez à True pour activer la case à cocher dans l'édition des sous-titres."
+                              ]
+                            }
+                          },
+                          "ALL_LANG_CHOICES": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "liste toutes les langues pour l'ajout de fichier de sous-titre",
+                                "voir le fichier pod/main/lang_settings.py"
+                              ]
+                            }
+                          },
+                          "DEFAULT_LANG_TRACK": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "fr",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "langue par défaut pour l'ajout de piste à une vidéo"
+                              ]
+                            }
+                          },
+                          "KIND_CHOICES": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Liste de type de piste possible pour une vidéo (sous-titre, légende etc.)"
+                              ]
+                            }
+                          },
+                          "LANG_CHOICES": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Liste des langues proposées lors de l'ajout des vidéos.",
+                                "Affichés en dessous d'une vidéos, les choix sont aussi utilisés pour affiner la recherche."
+                              ]
+                            }
+                          },
+                          "LINK_SUPERPOSITION": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": false,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Si valeur vaut 'True', les URLs contenues dans le texte de superposition seront transformées, à la lecture de la vidéo, en lien cliquable."
+                              ]
+                            }
+                          },
+                          "MODEL_COMPILE_DIR": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "/path/of/project/Esup-Pod/compile-model",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "paramétrage des chemin du model pour la compilation",
+                                "Pour télécharger les Modeles : https://alphacephei.com/vosk/lm#update-process",
+                                "Ajouter le model dans les sous-dossier de la lang correspondants",
+                                "Exemple pour le français: /path/of/project/Esup-Pod/compile-model/fr/"
+                              ]
+                            }
+                          },
+                          "MODEL_PARAM": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "paramétrage des modele. ",
+                                "Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models",
+                                "liste des langues affichées en premier dans les propositions de choix"
+                              ]
+                            }
+                          },
+                          "ROLE_CHOICES": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Liste de rôle possible pour un contributeur"
+                              ]
+                            }
+                          },
+                          "TRANSCRIPTION_TYPE": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "STT",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "STT ou VOSK"
+                              ]
+                            }
+                          },
+                          "USE_ENRICH_READY": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "False ",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "voir ACTIVE_MODEL_ENRICH"
+                              ]
+                            }
+                          }
+                    }
+                },
+                "recorder": {
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application recorder"
+                    },
+                    "description": {},
+                    "settings": {
+                        "USE_OPENCAST_STUDIO": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": false,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Activer l'utilisation du studio Opencast"
+                              ]
+                            }
+                          },
+                          "OPENCAST_FILES_DIR": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "opencast-files",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Permet de spécifier le dossier de stockage des enregistrements du studio avant traitement."
+                              ]
+                            }
+                          },
+                          "OPENCAST_DEFAULT_PRESENTER": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "mid",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Permet de spécifier la valeur par défaut du placement de la vidéo du",
+                                "presenteur par rapport à la vidéo de présentation (écran)",
+                                "les valeurs possibles sont :",
+                                " * \"mid\" (écran et caméra ont la même taille)",
+                                " * \"piph\" (le presenteur, caméra, est incrusté dans la vidéo de présentation, en haut à droite)",
+                                " * \"pipb\" (le presenteur, caméra, est incrusté dans la vidéo de présentation, en bas à droite)",
+                                "Contenu par défaut du fichier xml pour créer le mediapackage pour le studio.",
+                                "Ce fichier va contenir toutes les spécificités de l'enregistrement",
+                                "(source, cutting, title, presenter etc.)"
+                              ]
+                            }
+                          }
+                    }
+                },
+                "live": {
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application live"
+                    },
+                    "description": {},
+                    "settings": {
+                        "DEFAULT_EVENT_PATH": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Chemin racine du répertoire où sont déposés temporairement les  enregistrements des évènements éffectués depuis POD pour convertion en ressource vidéo (VOD)"
+                              ]
+                            }
+                          },
+                          "DEFAULT_EVENT_THUMBNAIL": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "/img/default-event.svg",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Image par défaut affichée comme poster ou vignette, utilisée pour présenter l'évènement'.",
+                                "Cette image doit se situer dans le répertoire static."
+                              ]
+                            }
+                          },
+                          "DEFAULT_EVENT_TYPE_ID": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": 1,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Type par défaut affecté à un évènement direct (en général, le type ayant pour identifiant '1' est 'Other')"
+                              ]
+                            }
+                          },
+                          "DEFAULT_THUMBNAIL": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "img/default.svg",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Image par défaut affichée comme poster ou vignette,  utilisée pour présenter la vidéo.",
+                                "Cette image doit se situer dans le répertoire static."
+                              ]
+                            }
+                          },
+                          "EMAIL_ON_EVENT_SCHEDULING": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": true,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Si True, un courriel est envoyé aux managers et à l'auteur (si DEBUG est à False) à la création/modification d'un event."
+                              ]
+                            }
+                          },
+                          "EVENT_ACTIVE_AUTO_START": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": false,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Permet de lancer automatiquement l'enregistrement sur l'interface utilisée (wowza, ) sur le broadcaster et spécifié par  BROADCASTER_PILOTING_SOFTWARE"
+                              ]
+                            }
+                          },
+                          "EVENT_GROUP_ADMIN": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "event admin",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Permet de préciser le nom du groupe dans lequel les utilisateurs  peuvent planifier un évènement sur plusieurs jours"
+                              ]
+                            }
+                          },
+                          "HEARTBEAT_DELAY": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": 45,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Temps (en seconde) entre deux envois d'un signal au serveur, pour signaler la présence sur un live.",
+                                "Peut être augmenté en cas de perte de performance mais au détriment de la qualité du comptage des valeurs"
+                              ]
+                            }
+                          },
+                          "USE_BBB": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": true,
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Utilisation de BigBlueButton"
+                              ]
+                            }
+                          },
+                          "USE_BBB_LIVE": {
+                            "pod_version_init": "3.1",
+                            "pod_version_end": "",
+                            "default_value": "False ",
+                            "description": {
+                              "en": [
+                                ""
+                              ],
+                              "fr": [
+                                "",
+                                "Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton"
+                              ]
+                            }
+                          }
+                    }
+                }
+            },
+            "settings": {
+                
+            }
+        }
+    }
+
+]
