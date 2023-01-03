@@ -19,11 +19,8 @@ class Command(BaseCommand):
             mod = importlib.import_module(
                 '.'.join(['pod', options["app_name"], f.replace(".py", "")])
             )
-            data = dir(mod)
-            settings_list = []
-            for d in data:
-                if d.isupper() and len(d) > 1:
-                    settings_list.append(d)
+            items = dir(mod)
+            settings_list = [item for item in items if item.isupper() and len(item) > 1]
             global_settings_list += settings_list
         global_settings_list = list(dict.fromkeys(global_settings_list))
         global_settings_list.sort()
