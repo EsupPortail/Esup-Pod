@@ -27,7 +27,7 @@ class Command(BaseCommand):
         global_settings_list.sort()
         self.print_log(options["app_name"], global_settings_list)
         mk_settings = []
-        with open(os.path.join("pod", "custom", "ConfigurationPod.md"), "r") as  mk_file:
+        with open(os.path.join("pod", "custom", "ConfigurationPod.md"), "r") as mk_file:
             for line in mk_file:
                 match = re.search(r'- (?P<set>\w+) (=|:)?.*', line)
                 if match:
