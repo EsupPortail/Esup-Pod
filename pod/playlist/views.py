@@ -165,7 +165,7 @@ def check_playlist_videos(playlist, data):
 
 
 def playlist_move(request, playlist):
-    if request.is_ajax():
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         if request.POST.get("videos"):
             data = json.loads(request.POST["videos"])
             err = check_playlist_videos(playlist, data)
@@ -191,7 +191,7 @@ def playlist_move(request, playlist):
 
 
 def playlist_remove(request, playlist):
-    if request.is_ajax():
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         if request.POST.get("video"):
             slug = request.POST.get("video")
             element = get_object_or_404(
@@ -231,7 +231,7 @@ def playlist_edit(request, playlist):
 
 
 def playlist_add(request, playlist):
-    if request.is_ajax():
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
 
         if request.POST.get("video"):
             video = get_object_or_404(Video, slug=request.POST.get(
@@ -266,7 +266,7 @@ def playlist_add(request, playlist):
 
 
 def playlist_delete(request, playlist):
-    if request.is_ajax():
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         if playlist:
             playlist.delete()
         some_data_to_dump = {
