@@ -34,6 +34,7 @@ import shutil
 from django.utils import translation
 from django.core.management.base import BaseCommand
 from django.conf import settings
+from django.urls import reverse
 from pod.recorder.models import Recorder, Recording, RecordingFileTreatment
 from pod.recorder.utils import add_comment
 import hashlib
@@ -163,10 +164,12 @@ def case_manager_exist(
     # https://pod.univ.fr/mediacourses_notify/?recordingPlace
     # =192_168_1_10&mediapath=file.zip&key
     # =77fac92a3f06d50228116898187e50e5
+    recorder_notify = reverse("record:recorder_notify")
     urlNotify = "".join(
         [
             BASE_URL,
-            "/recorder_notify/?recordingPlace="
+            recorder_notify,
+            "?recordingPlace="
             + recorder.ipunder()
             + "&mediapath="
             + source_file
