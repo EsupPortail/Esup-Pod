@@ -436,7 +436,7 @@ def changefile(request):
     file = CustomFileModel()
     file = CustomImageModel()
 
-    if request and request.POST :
+    if request.POST and request.headers.get('x-requested-with') == 'XMLHttpRequest' :
         folder = get_object_or_404(UserFolder, id=request.POST.get("folder"))
         if request.user != folder.owner and not (
             request.user.is_superuser
