@@ -275,7 +275,7 @@ def playlist_add(request, playlist):
 
 
 def playlist_delete(request, playlist):
-    if request:
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         if playlist:
             playlist.delete()
         some_data_to_dump = {

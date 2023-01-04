@@ -291,6 +291,7 @@ if (typeof loaded == "undefined") {
       method: "GET",
       headers: {
         "X-CSRFToken": token,
+        "X-Requested-With": "XMLHttpRequest",
         Authorization: "Bearer " + token,
       },
     })
@@ -325,6 +326,7 @@ if (typeof loaded == "undefined") {
       method: "GET",
       headers: {
         "X-CSRFToken": token,
+        "X-Requested-With": "XMLHttpRequest",
         Authorization: "Bearer " + token,
       },
       cache: "no-cache",
@@ -377,6 +379,7 @@ if (typeof loaded == "undefined") {
       headers: {
         "X-CSRFToken": token,
         Authorization: "Bearer " + token,
+        "X-Requested-With": "XMLHttpRequest",
       },
       cache: "no-cache",
     })
@@ -412,6 +415,7 @@ if (typeof loaded == "undefined") {
       headers: {
         "X-CSRFToken": token,
         Authorization: "Bearer " + token,
+        "X-Requested-With": "XMLHttpRequest",
       },
       cache: "no-cache",
     })
@@ -512,7 +516,7 @@ if (typeof loaded == "undefined") {
         headers: {
           "X-CSRFToken": token,
           Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
         },
         cache: "no-cache",
       })
@@ -705,6 +709,7 @@ if (typeof loaded == "undefined") {
       headers: {
         "X-CSRFToken": token,
         Authorization: "Bearer " + token,
+        "X-Requested-With": "XMLHttpRequest",
       },
     })
       .then((response) => response.json())
@@ -769,6 +774,7 @@ if (typeof loaded == "undefined") {
       headers: {
         "X-CSRFToken": token,
         Authorization: "Bearer " + token,
+        "X-Requested-With": "XMLHttpRequest",
       },
     })
       .then((response) => response.json())
@@ -840,6 +846,7 @@ if (typeof loaded == "undefined") {
       headers: {
         "X-CSRFToken": token,
         Authorization: "Bearer " + token,
+        "X-Requested-With": "XMLHttpRequest",
       },
       cache: "no-cache",
     })

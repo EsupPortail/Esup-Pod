@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .split("=")[1];
       if (confirm("Are you sure you want to delete this playlist?")) {
         headers = {
-          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
           "X-CSRFToken": token,
         };
         data = {

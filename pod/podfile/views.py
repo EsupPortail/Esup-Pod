@@ -600,7 +600,7 @@ def get_file(request, type):
 
 @login_required(redirect_field_name="referrer")
 def folder_shared_with(request):
-    if request:
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         foldid = request.GET.get("foldid", 0)
         if foldid == 0:
             return HttpResponseBadRequest()
@@ -619,7 +619,7 @@ def folder_shared_with(request):
 
 @login_required(redirect_field_name="referrer")
 def user_share_autocomplete(request):
-    if request:
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         foldid = request.GET.get("foldid", 0)
         if foldid == 0:
             return HttpResponseBadRequest()
@@ -651,7 +651,7 @@ def user_share_autocomplete(request):
 
 @login_required(redirect_field_name="referrer")
 def remove_shared_user(request):
-    if request:
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         foldid = request.GET.get("foldid", 0)
         userid = request.GET.get("userid", 0)
         if foldid == 0 or userid == 0:
@@ -670,7 +670,7 @@ def remove_shared_user(request):
 
 @login_required(redirect_field_name="referrer")
 def add_shared_user(request):
-    if request:
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         foldid = request.GET.get("foldid", 0)
         userid = request.GET.get("userid", 0)
         if foldid == 0 or userid == 0:

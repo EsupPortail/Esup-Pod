@@ -696,6 +696,7 @@ var send_form_data = async function (
       method: "POST",
       headers: {
         "X-CSRFToken": token,
+        "X-Requested-With": "XMLHttpRequest",
       },
       body: form_data,
     })
