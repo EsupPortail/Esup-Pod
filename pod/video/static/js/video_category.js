@@ -564,10 +564,7 @@
     let chapter_text = gettext("Chapter the video");
     let delete_text = gettext("Delete the video");
     let infinite_item = document.createElement("div");
-    infinite_item.setAttribute(
-      "class",
-      "infinite-item card-group"
-    );
+    infinite_item.setAttribute("class", "infinite-item card-group");
     // infinite_item.setAttribute("style", "min-width: 12rem; min-height: 11rem;");
     infinite_item.setAttribute("data-slug", video.slug);
     let card = document.createElement("div");
