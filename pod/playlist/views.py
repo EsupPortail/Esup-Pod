@@ -1,4 +1,3 @@
-import ast
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
@@ -81,6 +80,8 @@ def playlist(request, slug=None):
         )
 # @login_required
 # @csrf_protect
+
+
 def playlist_play(request, slug=None):
     template_video = (
         "playlist_player-iframe.html"
