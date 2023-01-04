@@ -20,7 +20,7 @@ from pod.video.models import Video, AdvancedNotes
 from django.contrib.sites.shortcuts import get_current_site
 import json
 
-ACTION = ["add", "edit", "move", "remove", "delete"]
+AVAILABLE_ACTIONS = ["add", "edit", "move", "remove", "delete"]
 
 
 @login_required(redirect_field_name="referrer")
@@ -79,7 +79,7 @@ def playlist(request, slug=None):
             actionData = json.loads(actionData)
             action = actionData.get("action")
     if request.method == "POST" and action:
-        if action in ACTION:
+        if action in AVAILABLE_ACTIONS:
             return eval("playlist_{0}(request, playlist)".format(action))
     else:
         return render(

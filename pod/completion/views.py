@@ -30,7 +30,7 @@ from django.contrib.sites.shortcuts import get_current_site
 
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTIVE_MODEL_ENRICH = getattr(settings, "ACTIVE_MODEL_ENRICH", False)
-ACTION = ["new", "save", "modify", "delete"]
+AVAILABLE_ACTIONS = ["new", "save", "modify", "delete"]
 CAPTION_MAKER_ACTION = ["save"]
 LANG_CHOICES = getattr(
     settings,
@@ -237,7 +237,7 @@ def video_completion_contributor(request, slug):
     else:
         list_contributor = video.contributor_set.all()
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in ACTION:
+        if request.POST["action"] in AVAILABLE_ACTIONS:
             return eval(
                 "video_completion_contributor_{0}(request, video)".format(
                     request.POST["action"]
@@ -444,7 +444,7 @@ def video_completion_document(request, slug):
     list_overlay = video.overlay_set.all()
 
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in ACTION:
+        if request.POST["action"] in AVAILABLE_ACTIONS:
             return eval(
                 "video_completion_document_{0}(request, video)".format(
                     request.POST["action"]
@@ -641,7 +641,7 @@ def video_completion_track(request, slug):
     list_overlay = video.overlay_set.all()
 
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in ACTION:
+        if request.POST["action"] in AVAILABLE_ACTIONS:
             return eval(
                 "video_completion_track_{0}(request, video)".format(
                     request.POST["action"]
@@ -890,7 +890,7 @@ def video_completion_overlay(request, slug):
     list_track = video.track_set.all()
     list_overlay = video.overlay_set.all()
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in ACTION:
+        if request.POST["action"] in AVAILABLE_ACTIONS:
             return eval(
                 "video_completion_overlay_{0}(request, video)".format(
                     request.POST["action"]

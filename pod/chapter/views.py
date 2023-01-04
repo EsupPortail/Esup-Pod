@@ -16,7 +16,7 @@ from django.contrib.sites.shortcuts import get_current_site
 
 import json
 
-ACTION = ["new", "save", "modify", "delete", "cancel", "import", "export"]
+AVAILABLE_ACTIONS = ["new", "save", "modify", "delete", "cancel", "import", "export"]
 
 
 @csrf_protect
@@ -39,7 +39,7 @@ def video_chapter(request, slug):
 
     if request.method == 'POST' :
         if request.POST.get("action"):
-            if request.POST.get("action") in ACTION:
+            if request.POST.get("action") in AVAILABLE_ACTIONS:
                 return eval(
                     "video_chapter_{0}(request, video)".format(request.POST.get("action"))
                 )
