@@ -70,6 +70,7 @@ def playlist(request, slug=None):
         messages.add_message(request, messages.ERROR, _("You cannot edit this playlist."))
         raise PermissionDenied
     form = PlaylistForm(instance=playlist, initial={"owner": request.user})
+    action = request.POST.get("action", "").lower()
     if request.method == "POST":
         action = request.POST.get("action", "").lower()
         if action in AVAILABLE_ACTIONS:
@@ -154,7 +155,7 @@ def get_video_adv_note_list(request, video):
 
 
 def check_playlist_videos(playlist, data):
-    for slug, position in data.items():
+    for slug in data:
         element = get_object_or_404(PlaylistElement, video__slug=slug, playlist=playlist)
         if element.video.is_draft:
             return _("A video in draft mode cannot be added to a playlist.")
@@ -166,13 +167,12 @@ def check_playlist_videos(playlist, data):
 def playlist_move(request, playlist):
     if request.is_ajax():
         if request.POST.get("videos"):
-            data = request.POST.get("videos")
-            data = ast.literal_eval(data)
+            data = json.loads(request.POST["videos"])
             err = check_playlist_videos(playlist, data)
             if err:
                 some_data_to_dump = {"fail": "{0}".format(err)}
             else:
-                for slug, position in data.items():
+                for slug in data:
                     element = get_object_or_404(
                         PlaylistElement, video__slug=slug, playlist=playlist
                     )
@@ -266,7 +266,7 @@ def playlist_add(request, playlist):
 
 
 def playlist_delete(request, playlist):
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    if request.is_ajax():
         if playlist:
             playlist.delete()
         some_data_to_dump = {

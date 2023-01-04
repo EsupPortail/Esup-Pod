@@ -158,24 +158,25 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.querySelectorAll(".playlist-delete").forEach((element) => {
+    const return_url = element.dataset.returnUrl;
     element.addEventListener("click", function () {
-      let token = document.cookie
-        .split(";")
-        .filter((item) => item.trim().startsWith("csrftoken="))[0]
-        .split("=")[1];
+    let token = document.cookie
+      .split(";")
+      .filter((item) => item.trim().startsWith("csrftoken="))[0]
+      .split("=")[1];
       if (confirm("Are you sure you want to delete this playlist?")) {
         headers = {
           "X-Requested-With": "XMLHttpRequest",
           "X-CSRFToken": token,
         };
-        data = {
-          action: "delete",
-          csrfmiddlewaretoken: token,
-        };
+
+        let form_data = new FormData();
+        form_data.append("action", "delete");
+       
         let jqxhr = fetch(window.location.href, {
           method: "POST",
           headers: headers,
-          body: JSON.stringify(data),
+          body: form_data,
         })
           .then((response) => {
             if (response.status != 200) {
@@ -186,8 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
               if (response.status == 200) {
                 showalert(response.statusText, "alert-success");
-
-                window.location.href = "/playlist/my/";
+                setTimeout(() => (window.location = return_url), 1000);
               } else {
                 showalert(response.statusText, "alert-danger");
               }
