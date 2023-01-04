@@ -148,7 +148,7 @@ def video_chapter_save(request, video):
 
 def video_chapter_modify(request, video):
     list_chapter = video.chapter_set.all()
-    if request.POST.get("action") and request.POST.get("action") == "modify":
+    if request.POST.get("action", "").lower() == "modify":
         chapter = get_object_or_404(Chapter, id=request.POST.get("id"))
         form_chapter = ChapterForm(instance=chapter)
         if request:
