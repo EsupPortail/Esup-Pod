@@ -13,8 +13,8 @@
   <link rel="alternate" type="text/xml+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&amp;format=xml" />
 {% endif %}
 
-{# Do not include metadata if video is restricted. #}
-{% if not form %}
+{# Do not include metadata if video has access restrictions. #}
+{% if not video.password and not video.is_restricted %}
   <meta property="og:site_name" content="{{ TITLE_SITE }}">
   <meta property="og:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}">
   <meta property="og:title" content="{{ video.title }}">
@@ -92,7 +92,7 @@
 
 
 <div
-{# Do not include metadata if video is restricted. #}
+{# Do not include meta until acces is granted. #}
 {% if not form %}
  itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
 
