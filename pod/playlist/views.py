@@ -70,23 +70,14 @@ def playlist(request, slug=None):
         messages.add_message(request, messages.ERROR, _("You cannot edit this playlist."))
         raise PermissionDenied
     form = PlaylistForm(instance=playlist, initial={"owner": request.user})
-    action = None
-    if request.POST.get("action") is not None:
-        action = request.POST.get("action")
-    else:
-        actionData = request.body.decode('utf8').replace("'", '"')
-        if actionData != "":
-            actionData = json.loads(actionData)
-            action = actionData.get("action")
-    if request.method == "POST" and action:
+    if request.method == "POST":
+        action = request.POST.get("action", "").lower()
         if action in AVAILABLE_ACTIONS:
             return eval("playlist_{0}(request, playlist)".format(action))
     else:
         return render(
             request, "playlist.html", {"form": form, "list_videos": list_videos}
         )
-
-
 # @login_required
 # @csrf_protect
 def playlist_play(request, slug=None):

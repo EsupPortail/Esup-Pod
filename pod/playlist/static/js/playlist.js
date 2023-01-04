@@ -138,10 +138,10 @@ document.addEventListener("DOMContentLoaded", function () {
           } else {
             if (response.status == 200) {
               showalert(response.success, "alert-success");
-              setTimeout(() => (window.location = return_url), 1000);
-            } else {
-              showalert(response.statusText, "alert-success");
               window.location.reload();
+            } else {
+              showalert(response.statusText, "alert-danger");
+              
             }
           }
         })
