@@ -88,10 +88,7 @@ def home(request, type=None):
     # else we send the iframe page
     # home_content.html
     # template = "podfile/home_content.html" if (request) else "podfile/home.html"
-    if request.get_full_path() == "/podfile/":
-        template = "podfile/home.html"
-    else:
-        template = "podfile/home_content.html"
+    template = "podfile/home_content.html" if (request.headers.get('x-requested-with') == 'XMLHttpRequest') else "podfile/home.html"
     return render(
         request,
         template,

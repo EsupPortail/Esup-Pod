@@ -165,7 +165,7 @@ if (typeof loaded == "undefined") {
     var data_form = new FormData(e.target);
 
     var url = e.target.getAttribute("action");
-
+    
     fetch(url, {
       method: "POST",
       body: data_form,
