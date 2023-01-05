@@ -771,7 +771,7 @@
                 "fr": "Configuration Générale de la plateforme Esup_Pod"
             },
             "description": {
-                "authentification": {
+                "authentication": {
                     "title": {
                         "en": "",
                         "fr": "Configuration application authentification"
