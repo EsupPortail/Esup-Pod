@@ -4,6 +4,7 @@ import re
 import os
 import fnmatch
 import importlib
+import json
 
 
 class Command(BaseCommand):
@@ -38,7 +39,15 @@ class Command(BaseCommand):
         self.print_log("Configuration setting", mk_settings)
         new_settings = list(set(global_settings_list) - set(mk_settings))
         new_settings.sort()
-        self.print_log("New settings", new_settings)
+        self.print_log("New settings from MD", new_settings)
+        with open(os.path.join("pod", "custom", "configuration.json"), "r") as json_file:
+            data = json.load(json_file)
+        app_settings = data[0]["configuration_apps"]["description"][options["app_name"]]["settings"]
+        print(app_settings.keys())
+
+        new_settings = list(set(global_settings_list) - set(app_settings.keys()))
+        new_settings.sort()
+        self.print_log("New settings from JSON", new_settings)
         # raise CommandError('Poll "%s" does not exist' % poll_id)
         # self.stdout.write(self.style.SUCCESS('Successfully closed poll "%s"' % poll_id))
 
