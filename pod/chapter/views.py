@@ -13,7 +13,7 @@ from pod.chapter.forms import ChapterForm
 from pod.chapter.forms import ChapterImportForm
 from django.middleware.csrf import get_token
 from django.contrib.sites.shortcuts import get_current_site
-
+from pod.main.utils import is_ajax
 import json
 
 AVAILABLE_ACTIONS = ["new", "save", "modify", "delete", "cancel", "import", "export"]
@@ -55,7 +55,7 @@ def video_chapter_new(request, video):
     list_chapter = video.chapter_set.all()
     form_chapter = ChapterForm(initial={"video": video})
     form_import = ChapterImportForm(user=request.user, video=video)
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    if is_ajax(request):
         return render(
             request,
             "chapter/form_chapter.html",
@@ -91,7 +91,7 @@ def video_chapter_save(request, video):
     if form_chapter.is_valid():
         form_chapter.save()
         list_chapter = video.chapter_set.all()
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        if is_ajax(request):
             csrf_token_value = get_token(request)
             some_data_to_dump = {
                 "list_chapter": render_to_string(
@@ -118,7 +118,7 @@ def video_chapter_save(request, video):
                 {"video": video, "list_chapter": list_chapter},
             )
     else:
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        if is_ajax(request):
             csrf_token_value = get_token(request)
             some_data_to_dump = {
                 "errors": "{0}".format(_("Please correct errors.")),
@@ -151,7 +151,7 @@ def video_chapter_modify(request, video):
     if request.POST.get("action", "").lower() == "modify":
         chapter = get_object_or_404(Chapter, id=request.POST.get("id"))
         form_chapter = ChapterForm(instance=chapter)
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        if is_ajax(request):
             return render(
                 request,
                 "chapter/form_chapter.html",
@@ -174,7 +174,7 @@ def video_chapter_delete(request, video):
     chapter = get_object_or_404(Chapter, id=request.POST.get("id"))
     chapter.delete()
     list_chapter = video.chapter_set.all()
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    if is_ajax(request):
         csrf_token_value = get_token(request)
         some_data_to_dump = {
             "list_chapter": render_to_string(
@@ -216,7 +216,7 @@ def video_chapter_import(request, video):
     form_import = ChapterImportForm(request.POST, user=request.user, video=video)
     if form_import.is_valid():
         list_chapter = video.chapter_set.all()
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        if is_ajax(request):
             csrf_token_value = get_token(request)
             some_data_to_dump = {
                 "list_chapter": render_to_string(
@@ -243,7 +243,7 @@ def video_chapter_import(request, video):
                 {"video": video, "list_chapter": list_chapter},
             )
     else:
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        if is_ajax(request):
             some_data_to_dump = {
                 "errors": "{0}".format(_("Please correct errors.")),
                 "form": render_to_string(

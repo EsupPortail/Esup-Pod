@@ -18,6 +18,7 @@ from pod.playlist.forms import PlaylistForm
 from pod.video.models import Video, AdvancedNotes
 from django.contrib.sites.shortcuts import get_current_site
 import json
+from pod.main.utils import is_ajax
 
 AVAILABLE_ACTIONS = ["add", "edit", "move", "remove", "delete"]
 
@@ -164,9 +165,9 @@ def check_playlist_videos(playlist, data):
             return _("A video with a password cannot be added to a playlist.")
     return None
 
-
+is_ajax
 def playlist_move(request, playlist):
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    if is_ajax(request):
         if request.POST.get("videos"):
             data = json.loads(request.POST["videos"])
             err = check_playlist_videos(playlist, data)
@@ -192,7 +193,7 @@ def playlist_move(request, playlist):
 
 
 def playlist_remove(request, playlist):
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    if is_ajax(request):
         if request.POST.get("video"):
             slug = request.POST.get("video")
             element = get_object_or_404(
@@ -232,7 +233,7 @@ def playlist_edit(request, playlist):
 
 
 def playlist_add(request, playlist):
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    if is_ajax(request):
 
         if request.POST.get("video"):
             video = get_object_or_404(Video, slug=request.POST.get(
@@ -267,7 +268,7 @@ def playlist_add(request, playlist):
 
 
 def playlist_delete(request, playlist):
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    if is_ajax(request):
         if playlist:
             playlist.delete()
         some_data_to_dump = {

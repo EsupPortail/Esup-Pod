@@ -25,7 +25,7 @@ from django.http import HttpResponseBadRequest
 import re
 import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from pod.main.utils import is_ajax
 
 IMAGE_ALLOWED_EXTENSIONS = getattr(
     settings,
@@ -88,7 +88,7 @@ def home(request, type=None):
     # else we send the iframe page
     # home_content.html
     # template = "podfile/home_content.html" if (request) else "podfile/home.html"
-    template = "podfile/home_content.html" if (request.headers.get('x-requested-with') == 'XMLHttpRequest') else "podfile/home.html"
+    template = "podfile/home_content.html" if (is_ajax(request)) else "podfile/home.html"
     return render(
         request,
         template,
@@ -436,7 +436,7 @@ def changefile(request):
     file = CustomFileModel()
     file = CustomImageModel()
 
-    if request.POST and request.headers.get('x-requested-with') == 'XMLHttpRequest' :
+    if request.POST and is_ajax(request) :
         folder = get_object_or_404(UserFolder, id=request.POST.get("folder"))
         if request.user != folder.owner and not (
             request.user.is_superuser
@@ -597,7 +597,7 @@ def get_file(request, type):
 
 @login_required(redirect_field_name="referrer")
 def folder_shared_with(request):
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    if is_ajax(request):
         foldid = request.GET.get("foldid", 0)
         if foldid == 0:
             return HttpResponseBadRequest()
@@ -616,7 +616,7 @@ def folder_shared_with(request):
 
 @login_required(redirect_field_name="referrer")
 def user_share_autocomplete(request):
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    if is_ajax(request):
         foldid = request.GET.get("foldid", 0)
         if foldid == 0:
             return HttpResponseBadRequest()
@@ -648,7 +648,7 @@ def user_share_autocomplete(request):
 
 @login_required(redirect_field_name="referrer")
 def remove_shared_user(request):
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    if is_ajax(request):
         foldid = request.GET.get("foldid", 0)
         userid = request.GET.get("userid", 0)
         if foldid == 0 or userid == 0:
@@ -667,7 +667,7 @@ def remove_shared_user(request):
 
 @login_required(redirect_field_name="referrer")
 def add_shared_user(request):
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    if is_ajax(request):
         foldid = request.GET.get("foldid", 0)
         userid = request.GET.get("userid", 0)
         if foldid == 0 or userid == 0:
