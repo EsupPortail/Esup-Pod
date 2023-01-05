@@ -1377,6 +1377,211 @@
                           }
                     }
                 },
+                "chapter": {
+                  "title": {
+                    "en": "",
+                    "fr": "Configuration application chapter"
+                  },
+                  "description": {},
+                  "settings": {
+
+                  }
+                },
+                "completion": {
+                  "title": {
+                      "en": "",
+                      "fr": "Configuration application completion"
+                  },
+                  "description": {},
+                  "settings": {
+                      "ACTIVE_MODEL_ENRICH": {
+                          "pod_version_init": "3.1",
+                          "pod_version_end": "",
+                          "default_value": false,
+                          "description": {
+                            "en": [
+                              ""
+                            ],
+                            "fr": [
+                              "",
+                              "Définissez à True pour activer la case à cocher dans l'édition des sous-titres."
+                            ]
+                          }
+                        },
+                        "ALL_LANG_CHOICES": {
+                          "pod_version_init": "3.1",
+                          "pod_version_end": "",
+                          "default_value": "",
+                          "description": {
+                            "en": [
+                              ""
+                            ],
+                            "fr": [
+                              "",
+                              "liste toutes les langues pour l'ajout de fichier de sous-titre",
+                              "voir le fichier pod/main/lang_settings.py"
+                            ]
+                          }
+                        },
+                        "PREF_LANG_CHOICES": {
+                          "pod_version_init": "3.1",
+                          "pod_version_end": "",
+                          "default_value": "",
+                          "description": {
+                            "en": [
+                              ""
+                            ],
+                            "fr": [
+                              "",
+                              "liste des langues à afficher en premier dans la liste des toutes les langues",
+                              "voir le fichier pod/main/lang_settings.py"
+                            ]
+                          }
+                        },
+                        "DEFAULT_LANG_TRACK": {
+                          "pod_version_init": "3.1",
+                          "pod_version_end": "",
+                          "default_value": "fr",
+                          "description": {
+                            "en": [
+                              ""
+                            ],
+                            "fr": [
+                              "",
+                              "langue par défaut pour l'ajout de piste à une vidéo"
+                            ]
+                          }
+                        },
+                        "KIND_CHOICES": {
+                          "pod_version_init": "3.1",
+                          "pod_version_end": "",
+                          "default_value": "",
+                          "description": {
+                            "en": [
+                              ""
+                            ],
+                            "fr": [
+                              "",
+                              "Liste de type de piste possible pour une vidéo (sous-titre, légende etc.)"
+                            ]
+                          }
+                        },
+                        "LANG_CHOICES": {
+                          "pod_version_init": "3.1",
+                          "pod_version_end": "",
+                          "default_value": "",
+                          "description": {
+                            "en": [
+                              ""
+                            ],
+                            "fr": [
+                              "",
+                              "Liste des langues proposées lors de l'ajout des vidéos.",
+                              "Affichés en dessous d'une vidéos, les choix sont aussi utilisés pour affiner la recherche."
+                            ]
+                          }
+                        },
+                        "LINK_SUPERPOSITION": {
+                          "pod_version_init": "3.1",
+                          "pod_version_end": "",
+                          "default_value": false,
+                          "description": {
+                            "en": [
+                              ""
+                            ],
+                            "fr": [
+                              "",
+                              "Si valeur vaut 'True', les URLs contenues dans le texte de superposition seront transformées, à la lecture de la vidéo, en lien cliquable."
+                            ]
+                          }
+                        },
+                        "MODEL_COMPILE_DIR": {
+                          "pod_version_init": "3.1",
+                          "pod_version_end": "",
+                          "default_value": "/path/of/project/Esup-Pod/compile-model",
+                          "description": {
+                            "en": [
+                              ""
+                            ],
+                            "fr": [
+                              "",
+                              "paramétrage des chemin du model pour la compilation",
+                              "Pour télécharger les Modeles : https://alphacephei.com/vosk/lm#update-process",
+                              "Ajouter le model dans les sous-dossier de la lang correspondants",
+                              "Exemple pour le français: /path/of/project/Esup-Pod/compile-model/fr/"
+                            ]
+                          }
+                        },
+                        "MODEL_PARAM": {
+                          "pod_version_init": "3.1",
+                          "pod_version_end": "",
+                          "default_value": "",
+                          "description": {
+                            "en": [
+                              ""
+                            ],
+                            "fr": [
+                              "",
+                              "paramétrage des modele. ",
+                              "Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models",
+                              "liste des langues affichées en premier dans les propositions de choix"
+                            ]
+                          }
+                        },
+                        "ROLE_CHOICES": {
+                          "pod_version_init": "3.1",
+                          "pod_version_end": "",
+                          "default_value": "",
+                          "description": {
+                            "en": [
+                              ""
+                            ],
+                            "fr": [
+                              "",
+                              "Liste de rôle possible pour un contributeur"
+                            ]
+                          }
+                        },
+                        "TRANSCRIPTION_TYPE": {
+                          "pod_version_init": "3.1",
+                          "pod_version_end": "",
+                          "default_value": "STT",
+                          "description": {
+                            "en": [
+                              ""
+                            ],
+                            "fr": [
+                              "",
+                              "STT ou VOSK"
+                            ]
+                          }
+                        },
+                        "USE_ENRICH_READY": {
+                          "pod_version_init": "3.1",
+                          "pod_version_end": "",
+                          "default_value": "False ",
+                          "description": {
+                            "en": [
+                              ""
+                            ],
+                            "fr": [
+                              "",
+                              "voir ACTIVE_MODEL_ENRICH"
+                            ]
+                          }
+                        }
+                  }
+                },
+                "enrichment": {
+                  "title": {
+                    "en": "",
+                    "fr": "Configuration application enrichment"
+                  },
+                  "description": {},
+                  "settings": {
+
+                  }
+                },
                 "video": {
                     "title": {
                         "en": "",
@@ -1489,176 +1694,7 @@
                           }
                     }
                 },
-                "completion": {
-                    "title": {
-                        "en": "",
-                        "fr": "Configuration application completion"
-                    },
-                    "description": {},
-                    "settings": {
-                        "ACTIVE_MODEL_ENRICH": {
-                            "pod_version_init": "3.1",
-                            "pod_version_end": "",
-                            "default_value": false,
-                            "description": {
-                              "en": [
-                                ""
-                              ],
-                              "fr": [
-                                "",
-                                "Définissez à True pour activer la case à cocher dans l'édition des sous-titres."
-                              ]
-                            }
-                          },
-                          "ALL_LANG_CHOICES": {
-                            "pod_version_init": "3.1",
-                            "pod_version_end": "",
-                            "default_value": "",
-                            "description": {
-                              "en": [
-                                ""
-                              ],
-                              "fr": [
-                                "",
-                                "liste toutes les langues pour l'ajout de fichier de sous-titre",
-                                "voir le fichier pod/main/lang_settings.py"
-                              ]
-                            }
-                          },
-                          "DEFAULT_LANG_TRACK": {
-                            "pod_version_init": "3.1",
-                            "pod_version_end": "",
-                            "default_value": "fr",
-                            "description": {
-                              "en": [
-                                ""
-                              ],
-                              "fr": [
-                                "",
-                                "langue par défaut pour l'ajout de piste à une vidéo"
-                              ]
-                            }
-                          },
-                          "KIND_CHOICES": {
-                            "pod_version_init": "3.1",
-                            "pod_version_end": "",
-                            "default_value": "",
-                            "description": {
-                              "en": [
-                                ""
-                              ],
-                              "fr": [
-                                "",
-                                "Liste de type de piste possible pour une vidéo (sous-titre, légende etc.)"
-                              ]
-                            }
-                          },
-                          "LANG_CHOICES": {
-                            "pod_version_init": "3.1",
-                            "pod_version_end": "",
-                            "default_value": "",
-                            "description": {
-                              "en": [
-                                ""
-                              ],
-                              "fr": [
-                                "",
-                                "Liste des langues proposées lors de l'ajout des vidéos.",
-                                "Affichés en dessous d'une vidéos, les choix sont aussi utilisés pour affiner la recherche."
-                              ]
-                            }
-                          },
-                          "LINK_SUPERPOSITION": {
-                            "pod_version_init": "3.1",
-                            "pod_version_end": "",
-                            "default_value": false,
-                            "description": {
-                              "en": [
-                                ""
-                              ],
-                              "fr": [
-                                "",
-                                "Si valeur vaut 'True', les URLs contenues dans le texte de superposition seront transformées, à la lecture de la vidéo, en lien cliquable."
-                              ]
-                            }
-                          },
-                          "MODEL_COMPILE_DIR": {
-                            "pod_version_init": "3.1",
-                            "pod_version_end": "",
-                            "default_value": "/path/of/project/Esup-Pod/compile-model",
-                            "description": {
-                              "en": [
-                                ""
-                              ],
-                              "fr": [
-                                "",
-                                "paramétrage des chemin du model pour la compilation",
-                                "Pour télécharger les Modeles : https://alphacephei.com/vosk/lm#update-process",
-                                "Ajouter le model dans les sous-dossier de la lang correspondants",
-                                "Exemple pour le français: /path/of/project/Esup-Pod/compile-model/fr/"
-                              ]
-                            }
-                          },
-                          "MODEL_PARAM": {
-                            "pod_version_init": "3.1",
-                            "pod_version_end": "",
-                            "default_value": "",
-                            "description": {
-                              "en": [
-                                ""
-                              ],
-                              "fr": [
-                                "",
-                                "paramétrage des modele. ",
-                                "Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models",
-                                "liste des langues affichées en premier dans les propositions de choix"
-                              ]
-                            }
-                          },
-                          "ROLE_CHOICES": {
-                            "pod_version_init": "3.1",
-                            "pod_version_end": "",
-                            "default_value": "",
-                            "description": {
-                              "en": [
-                                ""
-                              ],
-                              "fr": [
-                                "",
-                                "Liste de rôle possible pour un contributeur"
-                              ]
-                            }
-                          },
-                          "TRANSCRIPTION_TYPE": {
-                            "pod_version_init": "3.1",
-                            "pod_version_end": "",
-                            "default_value": "STT",
-                            "description": {
-                              "en": [
-                                ""
-                              ],
-                              "fr": [
-                                "",
-                                "STT ou VOSK"
-                              ]
-                            }
-                          },
-                          "USE_ENRICH_READY": {
-                            "pod_version_init": "3.1",
-                            "pod_version_end": "",
-                            "default_value": "False ",
-                            "description": {
-                              "en": [
-                                ""
-                              ],
-                              "fr": [
-                                "",
-                                "voir ACTIVE_MODEL_ENRICH"
-                              ]
-                            }
-                          }
-                    }
-                },
+
                 "recorder": {
                     "title": {
                         "en": "",
