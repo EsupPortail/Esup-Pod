@@ -16,12 +16,12 @@ from datetime import datetime
 from django.contrib import admin
 
 
-FILEPICKER = False
+__FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
-    FILEPICKER = True
+    __FILEPICKER__ = True
     from pod.podfile.widgets import CustomFileWidget
 
-PILOTING_CHOICES = getattr(settings, "BROADCASTER_PILOTING_SOFTWARE", [])
+BROADCASTER_PILOTING_SOFTWARE = getattr(settings, "BROADCASTER_PILOTING_SOFTWARE", [])
 
 EVENT_ACTIVE_AUTO_START = getattr(settings, "EVENT_ACTIVE_AUTO_START", False)
 
@@ -50,7 +50,7 @@ class BuildingAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(BuildingAdminForm, self).__init__(*args, **kwargs)
-        if FILEPICKER:
+        if __FILEPICKER__:
             self.fields["headband"].widget = CustomFileWidget(type="image")
 
     def clean(self):
@@ -66,11 +66,11 @@ class BroadcasterAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(BroadcasterAdminForm, self).__init__(*args, **kwargs)
-        if FILEPICKER:
+        if __FILEPICKER__:
             self.fields["poster"].widget = CustomFileWidget(type="image")
 
         impl_choices = [[None, ""]]
-        for val in PILOTING_CHOICES:
+        for val in BROADCASTER_PILOTING_SOFTWARE:
             impl_choices.append([val, val])
 
         self.fields["piloting_implementation"] = forms.ChoiceField(
@@ -106,7 +106,7 @@ class EventAdminForm(forms.ModelForm):
         self.request = kwargs.pop("request", None)
         super(EventAdminForm, self).__init__(*args, **kwargs)
         self.fields["owner"].initial = self.request.user
-        if FILEPICKER and self.fields.get("thumbnail"):
+        if __FILEPICKER__ and self.fields.get("thumbnail"):
             self.fields["thumbnail"].widget = CustomFileWidget(type="image")
 
     def clean(self):
@@ -401,7 +401,7 @@ class EventForm(forms.ModelForm):
             "additional_owners": AddOwnerWidget,
             "end_time": widgets.AdminTimeWidget,
         }
-        if FILEPICKER:
+        if __FILEPICKER__:
             fields.append("thumbnail")
             widgets["thumbnail"] = CustomFileWidget(type="image")
 
