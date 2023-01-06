@@ -356,7 +356,10 @@ def events(request):  # affichage des events
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
 def my_events(request):
-    queryset = request.user.event_set.all() | request.user.owners_events.all()
+    queryset = (
+        request.user.event_set.all().distinct()
+        | request.user.owners_events.all().distinct()
+    )
 
     past_events = [evt for evt in queryset if evt.is_past()]
     past_events = sorted(past_events, key=lambda evt: (evt.start_date), reverse=True)
