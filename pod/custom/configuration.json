@@ -812,6 +812,37 @@
                 "live": {
                     "description": {},
                     "settings": {
+                        "AFFILIATION_EVENT": {
+                            "default_value": "['faculty', 'employee', 'staff']",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Groupes ou affiliations des personnes autorisées à créer un évènement"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "BROADCASTER_PILOTING_SOFTWARE": {
+                            "default_value": "[]",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Types de logiciel de serveur de streaming utilisés.",
+                                    "Actuellement disponible Wowza. Il faut préciser cette valeur pour l'activer ['Wowza', ]",
+                                    "Si vous utilisez une autre logiciel,",
+                                    "il faut développer une interface dans `pod/live/pilotingInterface.py`"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "DEFAULT_EVENT_PATH": {
                             "default_value": "",
                             "description": {
@@ -1141,7 +1172,57 @@
         },
         "configuration_pod": {
             "description": {
-                "courriel": {
+                "database": {
+                    "description": {},
+                    "settings": {
+                        "DATABASES": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Un dictionnaire contenant les réglages de toutes les bases de données à utiliser avec Django.",
+                                    "C’est un dictionnaire imbriqué dont les contenus font correspondre l’alias de base de données avec un dictionnaire contenant les options de chacune des bases de données.",
+                                    "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#databases__",
+                                    "valeur par défaut : une base de données au format sqlite",
+                                    "````",
+                                    "DATABASES = {",
+                                    "    'default': {",
+                                    "        'ENGINE': 'django.db.backends.sqlite3',",
+                                    "        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),",
+                                    "    }",
+                                    "}",
+                                    "````",
+                                    "Voici un exemple de configuration pour utiliser une base MySQL : ",
+                                    "````",
+                                    "DATABASES = {",
+                                    "    'default': {",
+                                    "        'ENGINE': 'django.db.backends.mysql',",
+                                    "        'NAME': 'pod',",
+                                    "        'USER': 'pod',",
+                                    "        'PASSWORD': 'password',",
+                                    "        'HOST': 'mysql.univ.fr',",
+                                    "        'PORT': '3306',",
+                                    "        'OPTIONS': {",
+                                    "            'init_command': \"SET storage_engine=INNODB, sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1, foreign_key_checks = 1\",",
+                                    "         },",
+                                    "    }",
+                                    "}",
+                                    "````"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
+                        }
+                    },
+                    "title": {
+                        "en": "Database",
+                        "fr": "Base de données"
+                    }
+                },
+                "email": {
                     "description": {},
                     "settings": {
                         "CONTACT_US_EMAIL": {
@@ -1295,56 +1376,6 @@
                         "fr": "Courriel"
                     }
                 },
-                "database": {
-                    "description": {},
-                    "settings": {
-                        "DATABASES": {
-                            "default_value": "",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "",
-                                    "Un dictionnaire contenant les réglages de toutes les bases de données à utiliser avec Django.",
-                                    "C’est un dictionnaire imbriqué dont les contenus font correspondre l’alias de base de données avec un dictionnaire contenant les options de chacune des bases de données.",
-                                    "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#databases__",
-                                    "valeur par défaut : une base de données au format sqlite",
-                                    "````",
-                                    "DATABASES = {",
-                                    "    'default': {",
-                                    "        'ENGINE': 'django.db.backends.sqlite3',",
-                                    "        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),",
-                                    "    }",
-                                    "}",
-                                    "````",
-                                    "Voici un exemple de configuration pour utiliser une base MySQL : ",
-                                    "````",
-                                    "DATABASES = {",
-                                    "    'default': {",
-                                    "        'ENGINE': 'django.db.backends.mysql',",
-                                    "        'NAME': 'pod',",
-                                    "        'USER': 'pod',",
-                                    "        'PASSWORD': 'password',",
-                                    "        'HOST': 'mysql.univ.fr',",
-                                    "        'PORT': '3306',",
-                                    "        'OPTIONS': {",
-                                    "            'init_command': \"SET storage_engine=INNODB, sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1, foreign_key_checks = 1\",",
-                                    "         },",
-                                    "    }",
-                                    "}",
-                                    "````"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1"
-                        }
-                    },
-                    "title": {
-                        "en": "Database",
-                        "fr": "Base de données"
-                    }
-                },
                 "files": {
                     "description": {
                         "en": [
@@ -1475,6 +1506,20 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "VIDEOS_DIR": {
+                            "default_value": "videos",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Répertoire par défaut pour le téléversement des vidéos."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
                         }
                     },
                     "title": {
@@ -1730,6 +1775,86 @@
                     "title": {
                         "en": "Main",
                         "fr": "Divers"
+                    }
+                },
+                "templating": {
+                    "description": {},
+                    "settings": {
+                        "TEMPLATE_VISIBLE_SETTINGS": {
+                            "default_value": "{}",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "# Titre du site.",
+                                    "'TITLE_SITE': 'Pod',",
+                                    " ",
+                                    "# Description du site.",
+                                    "'DESC_SITE': 'L’objectif d’Esup-Pod est de faciliter la mise à disposition de vidéos et ainsi d’encourager son utilisation dans l’enseignement et la recherche.',",
+                                    " ",
+                                    "# Titre de l’établissement.",
+                                    "'TITLE_ETB': 'University name',",
+                                    " ",
+                                    "# Logo affiché en haut à gauche sur toutes les pages.",
+                                    "# Doit se situer dans le répertoire static",
+                                    "'LOGO_SITE': 'img/logoPod.svg',",
+                                    " ",
+                                    "# Logo affiché dans le footer sur toutes les pages.",
+                                    "# Doit se situer dans le répertoire static",
+                                    "'LOGO_ETB': 'img/logo_etb.svg',",
+                                    " ",
+                                    "# Logo affiché sur le player video.",
+                                    "# Doit se situer dans le répertoire static",
+                                    "'LOGO_PLAYER': 'img/pod_favicon.svg',",
+                                    " ",
+                                    "# Lien de destination du logo affiché sur le player",
+                                    "'LINK_PLAYER': '',",
+                                    " ",
+                                    "# Texte affiché dans le footer. Une ligne par entrée, accepte du code html.",
+                                    "# Par exemple :",
+                                    "# ( '42, rue Paul Duez',",
+                                    "#   '59000 Lille - France',",
+                                    "#   ('<a href=\"https://goo.gl/maps/AZnyBK4hHaM2\"'",
+                                    "#    ' target=\"_blank\">Google maps</a>') )",
+                                    "'FOOTER_TEXT': ('',),",
+                                    " ",
+                                    "# Icone affichée dans la barre d'adresse du navigateur",
+                                    "'FAVICON': 'img/pod_favicon.svg',",
+                                    " ",
+                                    "# Si souhaitée, à créer et sauvegarder",
+                                    "#  dans le répertoire static de l'application custom et",
+                                    "#  préciser le chemin d'accès. Par exemple : \"custom/etab.css\"",
+                                    "'CSS_OVERRIDE': '',",
+                                    " ",
+                                    "# Vous pouvez créer un template dans votre application custom et",
+                                    "#  indiquer son chemin dans cette variable pour que ce code html,",
+                                    "# ce template soit affiché en haut de votre page, le code est ajouté",
+                                    "#  juste après la balise body.(Hors iframe)",
+                                    "# Si le fichier créé est",
+                                    "# '/opt/django_projects/podv3/pod/custom/templates/custom/preheader.html'",
+                                    "# alors la variable doit prendre la valeur 'custom/preheader.html'",
+                                    "'PRE_HEADER_TEMPLATE': '',",
+                                    " ",
+                                    "# Idem que pre-header, le code contenu dans le template",
+                                    "#  sera affiché juste avant la fermeture du body. (Or iframe)",
+                                    "'POST_FOOTER_TEMPLATE': '',",
+                                    " ",
+                                    "# vous pouvez créer un template dans votre application custom",
+                                    "#  pour y intégrer votre code Piwik ou Google analytics.",
+                                    "# Ce template est inséré dans toutes les pages de la plateforme,",
+                                    "#  y compris en mode iframe",
+                                    "'TRACKING_TEMPLATE': '',"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        }
+                    },
+                    "title": {
+                        "en": "Templating",
+                        "fr": "Modèle"
                     }
                 }
             },
