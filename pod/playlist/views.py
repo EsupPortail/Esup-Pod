@@ -165,7 +165,7 @@ def check_playlist_videos(playlist, data):
             return _("A video with a password cannot be added to a playlist.")
     return None
 
-is_ajax
+
 def playlist_move(request, playlist):
     if is_ajax(request):
         if request.POST.get("videos"):
