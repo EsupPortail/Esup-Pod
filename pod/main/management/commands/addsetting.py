@@ -57,6 +57,12 @@ class Command(BaseCommand):
         else:
             return {}
 
+    def get_configuration_pod(self):
+        filename = os.path.join("pod", "custom", "configuration.json")
+        with open(filename, "r", encoding='utf-8') as json_file:
+            data = json.load(json_file)
+        return data[0]["configuration_pod"]["description"].keys()
+
     def save_setting(self, options, config_part, setting):
         filename = os.path.join("pod", "custom", "configuration.json")
         with open(filename, "r", encoding='utf-8') as json_file:
@@ -75,21 +81,23 @@ class Command(BaseCommand):
             json.dump(data, f, sort_keys=True, indent=4, ensure_ascii=False)
 
     def fix_default_value(self, default_value):
-        input_value = input(
-            'Default value (leave blank to keep previous value : %s) : ' % default_value
-        )
+        msg = 'Default value (leave blank to keep previous value : %s) : ' % default_value
+        if default_value == '':
+            msg = 'Default value : '
+        input_value = input(msg)
         if input_value != '':
             default_value = input_value
         if default_value == "False":
             default_value = False
         if default_value == "True":
             default_value = True
-        if default_value != '' and default_value == str(int(default_value)):
+        if default_value.isdigit():
             default_value = int(default_value)
         return default_value
 
     def get_description(self, previous_description):
-        print("(--> Type enter directly to keep previous value !)")
+        if previous_description != [""]:
+            print("(--> Type enter directly to keep previous value !)")
         description = [""]
         while True:
             user_input = input()
@@ -112,9 +120,17 @@ class Command(BaseCommand):
 
         config_part = "main"
         if options['app_name'] == 'pod':
+            list_conf = self.get_configuration_pod()
+            print("Here is available configuration : %s" % ", ".join(list_conf))
             config_part = input(
-                'Give configuration part ',
-                '(main, courriel, database, etc.) leave blank to use main:')
+                'Give configuration part in available configuration, '
+                + 'leave blank to use main: '
+            )
+            if config_part == '':
+                config_part = "main"
+            if config_part not in list_conf:
+                self.stdout.write(self.style.ERROR('Configuration not available !'))
+                return
 
         setting = self.get_setting(options, config_part)
 
@@ -125,16 +141,22 @@ class Command(BaseCommand):
             pod_version_init = VERSION
 
         pod_version_end = input(
-            'Pod initial version (i.e : 2.9.0, deprecated or not use anymore): '
+            'Pod last version (i.e : 2.9.0, deprecated or not use anymore): '
         )
 
         default_value = self.fix_default_value(setting.get('default_value', ''))
 
         print('Add a english description (leave blank and type enter to leave):')
-        description_en = self.get_description(setting['description'].get('en', [""]))
+        previous_value = setting['description'].get(
+            'en', [""]
+        ) if setting.get("description") else [""]
+        description_en = self.get_description(previous_value)
 
         print('Add a french description (leave blank and type enter to leave):')
-        description_fr = self.get_description(setting['description'].get('fr', [""]))
+        previous_value = setting['description'].get(
+            'fr', [""]
+        ) if setting.get("description") else [""]
+        description_fr = self.get_description(previous_value)
 
         setting = {
             "pod_version_init": pod_version_init,
@@ -145,7 +167,12 @@ class Command(BaseCommand):
                 "fr": description_fr
             }
         }
-        setting_json = json.dumps(setting, sort_keys=False, indent=2, ensure_ascii=False)
+        setting_json = json.dumps(
+            {options['setting_name'] : setting},
+            sort_keys=True,
+            indent=2,
+            ensure_ascii=False
+        )
         self.stdout.write(self.style.SUCCESS(setting_json))
         confirm = input('Save it to config file ? y/n : ')
         if confirm != "y":
