@@ -110,6 +110,8 @@ TEMPLATES = [
                 # Local contexts
                 "pod.main.context_processors.context_settings",
                 "pod.main.context_processors.context_navbar",
+                "pod.video.context_processors.context_video_settings",
+                "pod.authentication.context_processors.context_authentication_settings",
             ],
         },
     },
