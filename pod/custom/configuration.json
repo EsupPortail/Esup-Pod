@@ -992,6 +992,14 @@
                         "fr": "Configuration application live"
                     }
                 },
+                "lti": {
+                    "description": {},
+                    "settings": {},
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application LTI"
+                    }
+                },
                 "meeting": {
                     "description": {
                         "en": [
