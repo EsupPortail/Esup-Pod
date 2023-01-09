@@ -91,7 +91,7 @@ class Command(BaseCommand):
             default_value = False
         if default_value == "True":
             default_value = True
-        if default_value.isdigit():
+        if not isinstance(default_value, bool) and default_value.isdigit():
             default_value = int(default_value)
         return default_value
 

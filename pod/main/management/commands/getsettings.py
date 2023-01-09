@@ -17,6 +17,8 @@ class Command(BaseCommand):
         files_names = fnmatch.filter(os.listdir("pod/" + options["app_name"]), '*.py')
         global_settings_list = []
         for f in files_names:
+            if "settings" in str(f):
+                continue
             print(" - %s" % f)
             mod = importlib.import_module(
                 '.'.join(['pod', options["app_name"], f.replace(".py", "")])
