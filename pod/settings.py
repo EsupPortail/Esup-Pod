@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "3.0.4"
+VERSION = "3.1.0"
 
 ##
 # Installed applications list
@@ -226,6 +226,10 @@ CACHES = {
 SELECT2_CACHE_BACKEND = "select2"
 
 MODELTRANSLATION_FALLBACK_LANGUAGES = ("fr", "en")
+
+# MIGRATION_MODULES = {
+#     'flatpages': 'pod.db_migrations'
+# }
 
 ##
 # Applications settings (and settings locale if any)

@@ -25,12 +25,17 @@
     {% include 'live/event-form.html' %}
   {% else %}
     <h3 id="livename" data-liveid="{{broadcaster.id}}"><i class="bi bi-cast"></i>&nbsp;{% trans "Live" %} {{broadcaster.name}}</h3>
-    <div class="d-flex infinite-container mb-2" id="event_add">
-      <a class="btn btn-primary" href="{% url 'live:event_edit' %}?broadcaster_id={{broadcaster.id}}&building_id={{broadcaster.building.id}}" title="{% trans 'Plan an event' %}">
-        <i class="bi bi-plus pod-add"></i>
-        <span>{% trans "Plan an event" %}</span>
-      </a>
-    </div>
+
+      {% if display_event_btn %}
+          <div class="d-flex infinite-container mb-2" id="event_add">
+              <a class="btn btn-primary"
+                 href="{% url 'live:event_edit' %}?broadcaster_id={{ broadcaster.id }}&building_id={{ broadcaster.building.id }}"
+                 title="{% trans 'Plan an event' %}">
+                  <i class="bi bi-plus pod-add"></i>
+                  <span>{% trans "Plan an event" %}</span>
+              </a>
+          </div>
+      {% endif %}
 
   {% if broadcaster.video_on_hold.is_video %}
     <div id="divvideoonhold" style="display: block;">
