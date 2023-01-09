@@ -1000,6 +1000,14 @@
                         "fr": "Configuration application LTI"
                     }
                 },
+                "main": {
+                    "description": {},
+                    "settings": {},
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application main"
+                    }
+                },
                 "meeting": {
                     "description": {
                         "en": [
@@ -1165,7 +1173,23 @@
                 },
                 "video": {
                     "description": {},
-                    "settings": {},
+                    "settings": {
+                        "CHUNK_SIZE": {
+                            "default_value": 1000000,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Taille d'un fragment lors de l'envoie d'une vidéo",
+                                    "le fichier sera mis en ligne par fragment de cette taille"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        }
+                    },
                     "title": {
                         "en": "",
                         "fr": "Configuration application vidéo"
@@ -1333,6 +1357,44 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "SUBJECT_CHOICES": {
+                            "default_value": "()",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Choix de sujet pour les courriels envoyés depuis la plateforme",
+                                    "SUBJECT_CHOICES = (",
+                                    "    ('', '-----'),",
+                                    "    ('info', ('Request more information')),",
+                                    "    ('contribute', ('Learn more about how to contribute')),",
+                                    "    ('request_password', ('Password request for a video')),",
+                                    "    ('inappropriate_content', ('Report inappropriate content')),",
+                                    "    ('bug', ('Correction or bug report')),",
+                                    "    ('other', ('Other (please specify)'))",
+                                    ")"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "SUPPORT_EMAIL": {
+                            "default_value": "None",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "liste de destinataire pour les demandes d'assistance si différent de CONTACT_US_EMAIL",
+                                    "i.e.: SUPPORT_EMAIL = [\"assistance_pod@univ.fr\"]"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
                         },
                         "USER_CONTACT_EMAIL_CASE": {
                             "default_value": "",
@@ -1655,6 +1717,21 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "LOGIN_URL": {
+                            "default_value": "/authentication_login/",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "url de redirection pour l'authentification de l'utilisateur",
+                                    "voir : https://docs.djangoproject.com/fr/3.2/ref/settings/#login-url"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "MANAGERS": {
                             "default_value": "ADMINS",
                             "description": {
@@ -1785,9 +1862,297 @@
                         "fr": "Divers"
                     }
                 },
+                "obsolescence": {
+                    "description": {},
+                    "settings": {
+                        "ACCOMMODATION_YEARS": {
+                            "default_value": "{}",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Durée d'obsolescence personnalisée par Affiliation",
+                                    "ACCOMMODATION_YEARS = {",
+                                    "    'affiliate': 1",
+                                    "}"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        }
+                    },
+                    "title": {
+                        "en": "Obsolescence",
+                        "fr": "Obsolescence"
+                    }
+                },
                 "templating": {
                     "description": {},
                     "settings": {
+                        "ALLOW_MANUAL_RECORDING_CLAIMING": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "si True, active un lien dans le menu de l'utilisateur permettant de réclamer un enregistrement"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "COOKIE_LEARN_MORE": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Ce paramètre permet d'afficher un lien \"En savoir plus\"",
+                                    "sur la boite de dialogue d'information sur l'usage des cookies dans Pod.",
+                                    "On peut préciser un lien vers les mentions légales ou page dpo"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "DARKMODE_ENABLED": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Activation du mode sombre"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "DYSLEXIAMODE_ENABLED": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Activation du mode dyslexie"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "HIDE_CHANNEL_TAB": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, permet de cacher l'onglet chaine dans la barre de menu du haut"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "HIDE_DISCIPLINES": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, permet de ne pas afficher les disciplines dans la colonne de droite"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "HIDE_LANGUAGE_SELECTOR": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, permet de cacher le sélecteur de langue dans le menu du haut"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "HIDE_SHARE": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, permet de ne pas afficher les liens de partage sur les réseaux sociaux dans la colonne de droite"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "HIDE_TAGS": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, permet de ne pas afficher le nuage de mots clés dans la colonne de droite"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "HIDE_TYPES": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "si True, permet de ne pas afficher la liste des types dans la colonne de droite"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "HIDE_TYPES_TAB": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, permet de cacher l'entrée type dans le menu de navigation"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "HIDE_USERNAME": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Voir description dans authentification",
+                                    "Si valeur vaut 'True', le username de l'utilisateur ne sera pas visible sur la plate-forme Pod et",
+                                    "si la valeur vaut 'False' le username sera affichés aux utilisateurs authentifiés. (par soucis du respect du RGPD)"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "HIDE_USER_FILTER": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si 'True', le filtre des vidéos par utilisateur ne sera plus visible",
+                                    "si 'False' le filtre sera visible qu'aux personnes authentifiées.",
+                                    "(par soucis du respect du RGPD)"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "HIDE_USER_TAB": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si valeur vaut 'True', l'onglet Utilisateur ne sera pas visible",
+                                    "et si la valeur vaut 'False' l'onglet Utilisateur ne sera visible",
+                                    "qu'aux personnes authentifiées.",
+                                    "(par soucis du respect du RGPD)"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "MENUBAR_HIDE_INACTIVE_OWNERS": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Les utilisateurs inactifs ne sont plus affichés dans la barre de menu utilisateur"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "MENUBAR_SHOW_STAFF_OWNERS_ONLY": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Les utilisateurs non staff ne sont plus affichés dans la barre de menu utilisateur"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "SHIB_NAME": {
+                            "default_value": "Identify Federation",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Nom de la fédération d'identité utilisée",
+                                    "Affiché sur le bouton de connexion si l'authentification shibboleth est utilisée"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "SHOW_EVENTS_ON_HOMEPAGE": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, affiche les prochains évènements sur la page d'accueil"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "TEMPLATE_VISIBLE_SETTINGS": {
                             "default_value": "{}",
                             "description": {
