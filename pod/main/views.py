@@ -118,7 +118,7 @@ def get_manager_email(owner):
     else return all managers emails
     """
     # Si la fonctionnalité des etablissements est activée
-    if USE_ESTABLISHMENT and owner:
+    if USE_ESTABLISHMENT_FIELD and owner:
         v_estab = owner.owner.establishment.lower()
         # vérifier si le mail du manager (de l'etablissement
         # du propriétaire de la vidéo) est renseigné

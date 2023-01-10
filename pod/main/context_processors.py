@@ -60,8 +60,6 @@ HIDE_TYPES_TAB = getattr(django_settings, "HIDE_TYPES_TAB", False)
 
 HIDE_LANGUAGE_SELECTOR = getattr(django_settings, "HIDE_LANGUAGE_SELECTOR", False)
 
-USE_STATS_VIEW = getattr(django_settings, "USE_STATS_VIEW", False)
-
 HIDE_TAGS = getattr(django_settings, "HIDE_TAGS", False)
 
 HIDE_SHARE = getattr(django_settings, "HIDE_SHARE", False)
@@ -74,7 +72,6 @@ ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
     django_settings, "ALLOW_MANUAL_RECORDING_CLAIMING", False
 )
 
-USE_RECORD_PREVIEW = getattr(django_settings, "USE_RECORD_PREVIEW", False)
 SHIB_NAME = getattr(django_settings, "SHIB_NAME", "Identify Federation")
 
 USE_BBB = getattr(django_settings, "USE_BBB", False)
@@ -130,8 +127,6 @@ def context_settings(request):
     new_settings["HIDE_SHARE"] = HIDE_SHARE
     new_settings["HIDE_DISCIPLINES"] = HIDE_DISCIPLINES
     new_settings["HIDE_TYPES"] = HIDE_TYPES
-    new_settings["USE_STATS_VIEW"] = USE_STATS_VIEW
-    new_settings["USE_RECORD_PREVIEW"] = USE_RECORD_PREVIEW
     new_settings["SHIB_NAME"] = SHIB_NAME
     new_settings["ALLOW_MANUAL_RECORDING_CLAIMING"] = ALLOW_MANUAL_RECORDING_CLAIMING
     new_settings["MAINTENANCE_REASON"] = maintenance_text_short

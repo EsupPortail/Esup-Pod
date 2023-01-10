@@ -966,7 +966,7 @@
                                 ],
                                 "fr": [
                                     "",
-                                    "Utilisation de BigBlueButton"
+                                    "Utilisation de BigBlueButton - A retirer dans les futures versions de Pod"
                                 ]
                             },
                             "pod_version_end": "",
@@ -980,7 +980,7 @@
                                 ],
                                 "fr": [
                                     "",
-                                    "Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton"
+                                    "Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - A retirer dans les futures versions de Pod"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1002,7 +1002,81 @@
                 },
                 "main": {
                     "description": {},
-                    "settings": {},
+                    "settings": {
+                        "USE_BBB": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Utilisation de BigBlueButton - A retirer dans les futures versions de Pod"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
+                        },
+                        "USE_BBB_LIVE": {
+                            "default_value": "False ",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - A retirer dans les futures versions de Pod"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
+                        },
+                        "USE_MEETING": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Activate the meeting application"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Activation de l'application meeting"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "USE_OPENCAST_STUDIO": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Activate the opencast studio"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Activation du studio opencast"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "VERSION": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Version of the project"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Version courante du projet"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        }
+                    },
                     "title": {
                         "en": "",
                         "fr": "Configuration application main"
