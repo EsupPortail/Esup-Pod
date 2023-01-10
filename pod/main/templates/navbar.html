@@ -59,7 +59,12 @@
     <label for="s" class="d-lg-none">
       <i class="bi bi-search"></i> <span class="visually-hidden">{% trans "Search" %}</span>
     </label>
-    <input class="form-control form-control-sm me-sm-2" id="s" placeholder="{% trans 'Search' %}" type="search" name="q">
+    <div class="input-group me-sm-2">
+      <input class="form-control form-control-sm" id="s" placeholder="{% trans 'Search' %}" type="search" name="q">
+      <button type="submit" class="btn btn-primary">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
   </form>
 
   <ul class="navbar-nav flex-row align-items-center" id="nav-useraction">
