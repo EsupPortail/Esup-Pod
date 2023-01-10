@@ -1403,6 +1403,83 @@
                 "recorder": {
                     "description": {},
                     "settings": {
+                        "ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "",
+                                    "If True, the manager of the recorder can choose the recorder file owner"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, le manager de l'enregistreur pourra choisir un propriétaire de l'enregistrement."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "DEFAULT_RECORDER_ID": {
+                            "default_value": 1,
+                            "description": {
+                                "en": [
+                                    "",
+                                    "add a default recorder to an unidentifiable recording file"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Ajoute un enregistreur par défaut à un enregistrement non identifiable (mauvais chemin dans le dépôt FTP)"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "DEFAULT_RECORDER_PATH": {
+                            "default_value": "/data/ftp-pod/ftp/",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Root path of the directory where the recordings are deposited"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Chemin racine du répertoire où sont déposés les enregistrements",
+                                    "(chemin du serveur FTP)."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "DEFAULT_RECORDER_TYPE_ID": {
+                            "default_value": 1,
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Default video type identifier (if not specified)."
+                                ],
+                                "fr": [
+                                    "",
+                                    "Identifiant du type de vidéo par défaut (si non spécifié).",
+                                    "(Exemple : 3 pour Colloque/conférence, 4 pour Cours...)"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "DEFAULT_RECORDER_USER_ID": {
+                            "default_value": 1,
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Identifier of the default owner (if not specified) of the deposited records."
+                                ],
+                                "fr": [
+                                    "",
+                                    "Identifiant du propriétaire par défaut (si non spécifié) des enregistrements déposés."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "OPENCAST_DEFAULT_PRESENTER": {
                             "default_value": "mid",
                             "description": {
@@ -1439,6 +1516,81 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "OPENCAST_MEDIAPACKAGE": {
+                            "default_value": "-> see xml content",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Default content of the xml file to create the mediapackage for the studio. This file will contain all the specifics of the recording (source, cutting, title, presenter etc.)"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Contenu par défaut du fichier xml pour créer le mediapackage pour le studio. Ce fichier va contenir toutes les spécificités de l'enregistrement (source, cutting, title, presenter etc.)",
+                                    "OPENCAST_MEDIAPACKAGE = \"\"\"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>",
+                                    "    <mediapackage xmlns=\"http://mediapackage.opencastproject.org\" id=\"\" start=\"\">",
+                                    "    <media/>",
+                                    "    <metadata/>",
+                                    "    <attachments/>",
+                                    "    <publications/>",
+                                    "    </mediapackage>\"\"\""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "PUBLIC_RECORD_DIR": {
+                            "default_value": "records",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Web access path (public) to the recording repository directory (DEFAULT_RECORDER_PATH). Warning: remember to modify the NGINX conf"
+                                ],
+                                "fr": [
+                                    "",
+                                    " Chemin d'accès web (public) au répertoire de dépot des enregistrements (DEFAULT_RECORDER_PATH). Attention : penser à modifier la conf de NGINX"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "RECORDER_ADDITIONAL_FIELDS": {
+                            "default_value": "()",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "List of additional fields for the recorders form. This list includes the name of the fields corresponding to the editing parameters of a video (Discipline, Channel, Theme, keywords...).",
+                                    "The following example includes all the possible fields, but can be lightened according to needs.",
+                                    "The videos will then be generated with the values of the additional fields as defined in their recorder."
+                                ],
+                                "fr": [
+                                    "",
+                                    "Liste des champs supplémentaires pour le formulaire des enregistreurs. Cette liste reprend le nom des champs correspondants aux paramètres d'édition d'une vidéo (Discipline, Chaine, Theme, mots clés...).",
+                                    "L'exemple suivant comporte l'ensemble des champs possibles, mais peut être allégée en fonction des besoins.",
+                                    "Les vidéos seront alors générées avec les valeurs des champs supplémentaires telles que définies dans leur enregistreur."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "RECORDER_TYPE": {
+                            "default_value": "(('video', _('Video')), ('audiovideocast', _('Audiovideocast')), ('studio', _('Studio')))",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Type of record managed by the platform.",
+                                    "A recorder can only upload files of the type offered by the platform.",
+                                    "The processing is done according to the type of file deposited."
+                                ],
+                                "fr": [
+                                    "",
+                                    "Type d'enregistrement géré par la plateforme.",
+                                    "Un enregistreur ne peut déposer que des fichiers  de type proposé par la plateforme.",
+                                    "Le traitement se fait en fonction du type de fichier déposé."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "USE_OPENCAST_STUDIO": {
                             "default_value": false,
                             "description": {
@@ -1452,6 +1604,21 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "USE_RECORD_PREVIEW": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "",
+                                    "If True, displays the video preview icon in the \"Claim a recording\" page"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, affiche l'icone de prévisualisation des vidéos dans la page \"Revendiquer un enregistrement\""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
                         }
                     },
                     "title": {

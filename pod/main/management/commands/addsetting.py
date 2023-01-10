@@ -11,12 +11,12 @@ class Command(BaseCommand):
     help = 'Add setting to specific app'
 
     def add_arguments(self, parser):
-        parser.add_argument('setting_name', type=str, help='the name of the setting')
         parser.add_argument(
             'app_name',
             type=str,
             help='the name of the app to add the setting, use pod for a global setting'
         )
+        parser.add_argument('setting_name', type=str, help='the name of the setting')
 
     def get_setting(self, options, config_part):
         data = app_settings = settings = []
