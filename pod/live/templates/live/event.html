@@ -52,7 +52,7 @@
                 <video id="podvideoonholdplayer"
                        class="video-js vjs-default-skin vjs-big-play-centered"
                        controls height="360" muted autoplay>
-                <track kind="captions" src="http://127.0.0.1:8000/media/files/sub.webvtt" srclang="fr" label="Français" default>
+                
 
                 </video>
 
@@ -72,7 +72,7 @@
                                class="video-js vjs-default-skin vjs-big-play-centered"
                                controls height="360" muted autoplay>
                             <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
-                            <track kind="captions" src="{{ MEDIA_URL}}/media/files/sub.vtt" srclang="fr" label="Français" default>
+                            <track kind="captions" src="{{ MEDIA_URL}}/media/transcripts/{{event.broadcaster.slug}}.vtt" srclang="fr" label="Français" default>
                         </video>
                     </div>
                     {% if event.aside_iframe_url %}
@@ -179,9 +179,10 @@
           for (var i = 0; i < tracks.length; i++) {
             var track = tracks[i];
             if (track.kind === "captions") {
+            let broadcaster_slug = "{{ event.broadcaster.slug }}";
             
             let current_mod = null
-            fetch("{{ MEDIA_URL }}/media/files/sub.vtt").then(r => {
+            fetch("{{ MEDIA_URL }}/media/transcripts/" + broadcaster_slug + ".vtt").then(r => {
                 current_mod = r.headers.get('Last-Modified');
                
          
@@ -200,7 +201,7 @@
                   kind: "captions",
                   label: "français",
                   language: "fr",
-                  src: "{{ MEDIA_URL }}/media/files/sub.vtt",
+                  src: "{{ MEDIA_URL }}/media/transcripts/"+broadcaster_slug + ".vtt",
                   default: true,
                 },
                 false

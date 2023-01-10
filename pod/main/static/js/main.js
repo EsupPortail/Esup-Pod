@@ -804,6 +804,7 @@ var send_form_data_vanilla = function (
 };
 
 var show_form_theme_new = function (data) {
+  
   if (data.indexOf("form_theme") == -1) {
     showalert(
       gettext("You are no longer authenticated. Please log in again."),
@@ -837,6 +838,7 @@ var show_form_theme_delete = function (data) {
   }
 };
 var show_theme_form = function (data) {
+ 
   if (!isJson(data)) {
     data = JSON.parse(data);
   }
