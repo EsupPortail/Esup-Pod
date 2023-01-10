@@ -1322,6 +1322,14 @@
                         "fr": "Configuration application meeting"
                     }
                 },
+                "playlist": {
+                    "description": {},
+                    "settings": {},
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application playlist"
+                    }
+                },
                 "recorder": {
                     "description": {},
                     "settings": {

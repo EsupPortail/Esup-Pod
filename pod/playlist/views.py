@@ -19,7 +19,7 @@ from pod.video.models import Video, AdvancedNotes
 
 import json
 
-ACTION = ["add", "edit", "move", "remove", "delete"]
+__ACTION__ = ["add", "edit", "move", "remove", "delete"]
 
 
 @login_required(redirect_field_name="referrer")
@@ -70,7 +70,7 @@ def playlist(request, slug=None):
         raise PermissionDenied
     form = PlaylistForm(instance=playlist, initial={"owner": request.user})
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in ACTION:
+        if request.POST["action"] in __ACTION__:
             return eval("playlist_{0}(request, playlist)".format(request.POST["action"]))
     else:
         return render(
