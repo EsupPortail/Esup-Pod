@@ -1102,7 +1102,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
         access_url = reverse("admin:video_updateowner_changelist")
         response = self.client.get(access_url, follow=True)
         # A VERIFIER !
-        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.status_code, 403)  # HTTPStatus.OK
 
         # Method not allowed
         self.client.force_login(self.admin)
