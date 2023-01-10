@@ -1330,6 +1330,76 @@
                         "fr": "Configuration application playlist"
                     }
                 },
+                "podfile": {
+                    "description": {},
+                    "settings": {
+                        "FILES_DIR": {
+                            "default_value": "files",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Nom du répertoire racine où les fichiers \"complémentaires\"",
+                                    "(hors vidéos etc.) sont téléversés. Notament utilisé par PODFILE",
+                                    "A modifier principalement pour indiquer dans LOCATION votre serveur de cache si elle n'est pas sur la même machine que votre POD"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
+                        },
+                        "FILE_ALLOWED_EXTENSIONS": {
+                            "default_value": "('doc', 'docx', 'odt', 'pdf', 'xls', 'xlsx', 'ods', 'ppt', 'pptx', 'txt', 'html', 'htm', 'vtt', 'srt', 'webm', 'ts')",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Extensions allowed for documents uploaded in the file manager"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FILE_MAX_UPLOAD_SIZE": {
+                            "default_value": 10,
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Maximum size in MB per file uploaded in the file manager"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Poids maximum en Mo par fichier téléversé dans le gestionnaire de fichier"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "IMAGE_ALLOWED_EXTENSIONS": {
+                            "default_value": "('jpg', 'jpeg', 'bmp', 'png', 'gif', 'tiff')",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Extensions allowed for images uploaded in the file manager"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Extensions autorisées pour les images téléversées dans le gestionnaire de fichier"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        }
+                    },
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application podfile"
+                    }
+                },
                 "recorder": {
                     "description": {},
                     "settings": {

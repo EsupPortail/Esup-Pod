@@ -30,6 +30,8 @@ FILE_ALLOWED_EXTENSIONS = getattr(
         "htm",
         "vtt",
         "srt",
+        'webm',
+        'ts'
     ),
 )
 IMAGE_ALLOWED_EXTENSIONS = getattr(
@@ -41,7 +43,7 @@ IMAGE_ALLOWED_EXTENSIONS = getattr(
         "bmp",
         "png",
         "gif",
-        "tiff",
+        "tiff"
     ),
 )
 FILE_MAX_UPLOAD_SIZE = getattr(settings, "FILE_MAX_UPLOAD_SIZE", 10)
