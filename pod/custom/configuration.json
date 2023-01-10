@@ -1123,6 +1123,35 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "BBB_MEETING_INFO": {
+                            "default_value": "{}",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "list of key:value to get information from session meeting in BBB"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Dictionnaire de clé:valeur permettant d'afficher les informations d'une session de réunion dans BBB",
+                                    "Voici la liste par défaut",
+                                    "BBB_MEETING_INFO:",
+                                    "{",
+                                    "    \"meetingName\": _(\"Meeting name\"),",
+                                    "    \"hasUserJoined\": _(\"Has user joined?\"),",
+                                    "    \"recording\": _(\"Recording\"),",
+                                    "    \"participantCount\": _(\"Participant count\"),",
+                                    "    \"listenerCount\": _(\"Listener count\"),",
+                                    "    \"moderatorCount\": _(\"Moderator count\"),",
+                                    "    \"attendees\": _(\"Attendees\"),",
+                                    "    \"attendee\": _(\"Attendee\"),",
+                                    "    \"fullName\": _(\"Full name\"),",
+                                    "    \"role\": _(\"Role\"),",
+                                    "}"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "BBB_SECRET_KEY": {
                             "default_value": "",
                             "description": {
@@ -1136,6 +1165,29 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "MEETING_DATE_FIELDS": {
+                            "default_value": "()",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "list of date fields for the meeting form",
+                                    "the fields are grouped into a fieldset"
+                                ],
+                                "fr": [
+                                    "",
+                                    "liste des champs du formulaire de creation d'une reunion",
+                                    "les champs sont regroupés dans un ensemble de champs",
+                                    "MEETING_DATE_FIELDS:",
+                                    "(",
+                                    "    \"start\",",
+                                    "    \"start_time\",",
+                                    "    \"expected_duration\",",
+                                    ")"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
                         },
                         "MEETING_DISABLE_RECORD": {
                             "default_value": true,
@@ -1151,6 +1203,90 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "MEETING_MAIN_FIELDS": {
+                            "default_value": "()",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "list the main fields for the meeting session form",
+                                    "the main fields are displayed directly in the form page of a meeting"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Permet de définir les champs principaux du formulaire de creation d'une réunion",
+                                    "les champs principaux sont affichés directement dans la page de formulaire d'une réunion",
+                                    "MEETING_MAIN_FIELDS:",
+                                    "(",
+                                    "    \"name\",",
+                                    "    \"owner\",",
+                                    "    \"additional_owners\",",
+                                    "    \"attendee_password\",",
+                                    "    \"is_restricted\",",
+                                    "    \"restrict_access_to_groups\",",
+                                    ")"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "MEETING_MAX_DURATION": {
+                            "default_value": 5,
+                            "description": {
+                                "en": [
+                                    "",
+                                    "set the max duration for a meeting session"
+                                ],
+                                "fr": [
+                                    "",
+                                    "permet de définir la durée maximum pour une reunion",
+                                    "(en heure)"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "MEETING_RECORD_FIELDS": {
+                            "default_value": "()",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "list of all fields that will be hidden if MEETING_DISABLE_RECORD is set to True"
+                                ],
+                                "fr": [
+                                    "",
+                                    "ensemble des champs qui serotn cachés si MEETING_DISABLE_RECORD est défini à true",
+                                    "MEETING_RECORD_FIELDS : (\"record\", \"auto_start_recording\", \"allow_start_stop_recording\")"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "MEETING_RECURRING_FIELDS": {
+                            "default_value": "()",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "list of all fields involved by the recurring of a meeting",
+                                    "In this case, all this fields are grouped in a fieldset shown in modal"
+                                ],
+                                "fr": [
+                                    "",
+                                    "permet de définir la liste de tous les champs permettant de définir la récurrence d'une reunion",
+                                    "tous ces champs sont regroupés dans un ensemble de champs affichés dans une modale",
+                                    "MEETING_RECURRING_FIELDS:",
+                                    "(",
+                                    "    \"recurrence\",",
+                                    "    \"frequency\",",
+                                    "    \"recurring_until\",",
+                                    "    \"nb_occurrences\",",
+                                    "    \"weekdays\",",
+                                    "    \"monthly_type\",",
+                                    ")"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
                         },
                         "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY": {
                             "default_value": false,
@@ -1912,6 +2048,21 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "TEST_SETTINGS": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Use to check if gloabls settings are in test mode or not"
+                                ],
+                                "fr": [
+                                    "",
+                                    "permet de vérifier si la configuration de la plateforme est en mode test"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
                         },
                         "TIME_ZONE": {
                             "default_value": "UTC",
