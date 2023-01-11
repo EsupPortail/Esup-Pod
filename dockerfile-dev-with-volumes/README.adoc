@@ -56,6 +56,7 @@ MIGRATION_MODULES = {'flatpages': 'pod.db_migrations'}
 ----
 TODO pour windows, apple
 $ docker-compose -f ./docker-compose-portainer-with-volumes.yml -p portainer up
+$ docker-compose -f ./docker-compose-portainer-with-volumes.yml -p portainer stop
 $ docker-compose -f ./docker-compose-portainer-with-volumes.yml -p portainer down -v
 ----
 
@@ -63,8 +64,12 @@ $ docker-compose -f ./docker-compose-portainer-with-volumes.yml -p portainer dow
 ----
 Lancement de la stack
 $ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod up
+$ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod up --build
 
 Arrêt de la stack
+$ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod stop
+
+Suppression de la stack
 $ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod down -v
 Des messages d'erreurs peuvent apparaître lors du redémmarrage de la stack :
 - Premier utilisateur qui aura tous les pouvoirs sur votre instance (CommandError: Error: That nom d’utilisateur is already taken)

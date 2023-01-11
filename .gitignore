@@ -77,6 +77,7 @@ node_modules
 ###########################
 .run
 .env.dev
+tmp-local/
 portainer-data
 v8-compile-cache-0
 pod/db_migrations
@@ -84,9 +85,9 @@ pod/log
 pod/media
 pod/static
 pod/node_modules/*
-docker-compose-all-in-one-noway.yml
-dockerfile-all-in-one-noway
-docker-compose-dev-without-volumes.yml
-dockerfile-dev-without-volumes
-docker-compose-tmp-with-volumes.yml
-dockerfile-tmp
+tmp/docker-compose-all-in-one-noway.yml
+tmp/dockerfile-all-in-one-noway
+tmp/docker-compose-dev-without-volumes.yml
+tmp/dockerfile-dev-without-volumes
+tmp/docker-compose-tmp-with-volumes.yml
+tmp/dockerfile-tmp
