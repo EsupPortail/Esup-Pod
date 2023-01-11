@@ -89,6 +89,7 @@ jobs:
         run: |
           python manage.py loaddata pod/video/fixtures/initial_data.json --settings=pod.main.test_settings
           python manage.py loaddata pod/main/fixtures/initial_data.json --settings=pod.main.test_settings
+          python manage.py collectstatic --clear --settings=pod.main.test_settings
           python manage.py runserver localhost:8080 --insecure --settings=pod.main.test_settings &
           sleep 5
 
