@@ -59,7 +59,7 @@
     <label for="s" class="d-lg-none">
       <i class="bi bi-search"></i> <span class="visually-hidden">{% trans "Search" %}</span>
     </label>
-    <div class="input-group me-sm-2">
+    <div class="input-group me-sm-2 pod-navbar-search">
       <input class="form-control form-control-sm" id="s" placeholder="{% trans 'Search' %}" type="search" name="q">
       <button type="submit" class="btn btn-primary" title="{% trans 'Search' %}">
         <i class="bi bi-search"></i>
@@ -74,12 +74,12 @@
             <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
           </li>
         {% else %}
-          <li class="d-none d-md-block nav-item pod-navbar__nav-item mx-2" id="nav-addvideo">
-            <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add me-1"></i><span>{% trans "Add a video" %}</span></a>
+          <li class="nav-item pod-navbar__nav-item mx-2" id="nav-addvideo">
+            <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span class="ms-1 d-none d-md-block">{% trans "Add a video" %}</span></a>
           </li>
           {% if USE_MEETING %}
-          <li class="d-none d-md-block nav-item pod-navbar__nav-item mx-2" id="nav-mymeetings">
-            <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-add me-1"></i><span>{% trans "My meetings" %}</span></a>
+          <li class="nav-item pod-navbar__nav-item mx-2" id="nav-mymeetings">
+            <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-add"></i><span class="ms-1 d-none d-md-block">{% trans "My meetings" %}</span></a>
           </li>
           {% endif %}
         {% endif %}
