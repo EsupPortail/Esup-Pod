@@ -382,6 +382,16 @@ tr,
   border: none;
 }
 
+/* general search */
+#s+button {
+  opacity: 0;
+  transition: opacity .8s ease-in;
+}
+
+#s:focus+button {
+  opacity: 1;
+}
+
 /*** modif taille logo ***/
 @media (max-width: 576px) {
   .navbar-brand img {
@@ -951,10 +961,10 @@ body {
   --bs-btn-active-border-color: var(--pod-primary-lighten);
 }
 
-.btn.btn-primary {
-  background: var(--pod-primary);
-  border-color: var(--pod-primary);
-  color: var(--pod-btn-text);
+.btn-primary {
+  --bs-btn-bg: var(--pod-primary);
+  --bs-btn-border-color: var(--pod-primary);
+  --bs-btn-color: var(--pod-btn-text);
 }
 
 /* used in badges (# of videos in channel) */
