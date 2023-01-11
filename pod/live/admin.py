@@ -198,6 +198,7 @@ class EventAdmin(admin.ModelAdmin):
         "password",
         "is_auto_start_admin",
         "get_thumbnail_admin",
+        "enable_transcription",
     ]
     fields = [
         "title",
@@ -216,6 +217,7 @@ class EventAdmin(admin.ModelAdmin):
         "is_restricted",
         "restrict_access_to_groups",
         "is_auto_start",
+        "enable_transcription",
     ]
     search_fields = [
         "title",

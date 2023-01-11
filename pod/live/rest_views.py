@@ -1,6 +1,6 @@
 from .models import Building, Broadcaster, Event
 from rest_framework import serializers, viewsets
-
+from pod.live.live_transcript import transcribe_live
 # Serializers define the API representation.
 
 
@@ -64,6 +64,7 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
             "is_auto_start",
             "videos",
             "thumbnail",
+            "enable_transcription",
         )
 
 
@@ -81,6 +82,17 @@ class BroadcasterViewSet(viewsets.ModelViewSet):
     queryset = Broadcaster.objects.all().order_by("building", "name")
     serializer_class = BroadcasterSerializer
     lookup_field = "slug"
+
+    def partial_update(self, request, *args, **kwargs):
+        data_updated = super().partial_update(request, *args, **kwargs)
+        if data_updated.status_code == 200:
+            broadcaster = Broadcaster.objects.get(slug=kwargs["slug"])
+            events = Event.objects.filter(
+                broadcaster=broadcaster, enable_transcription=True)
+            if events:
+                transcribe_live(broadcaster.url, broadcaster.slug,
+                                request.data.get("status"))
+        return data_updated
 
 
 class EventViewSet(viewsets.ModelViewSet):

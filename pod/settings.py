@@ -306,3 +306,5 @@ for variable in the_update_settings:
     locals()[variable] = the_update_settings[variable]
 
 TIME_INPUT_FORMATS = ["%H:%M", *django.conf.global_settings.TIME_INPUT_FORMATS]
+
+CELERY_TO_TRANSCRIBE_LIVE = False

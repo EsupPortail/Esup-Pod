@@ -197,7 +197,7 @@ class Broadcaster(models.Model):
         return reverse("live:direct", args=[str(self.slug)])
 
     def __str__(self):
-        return "%s - %s" % (self.name, self.url)
+            return "%s - %s" % (self.name, self.url)
 
     def get_poster_url(self):
         if self.poster:
@@ -419,6 +419,11 @@ class Event(models.Model):
     videos = models.ManyToManyField(
         Video,
         editable=False,
+    )
+    enable_transcription = models.BooleanField(
+        verbose_name=_("Enable transcription"),
+        help_text=_("If this box is checked, " "the transcription will be enabled."),
+        default=False,
     )
 
     class Meta:

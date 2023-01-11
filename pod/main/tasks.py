@@ -33,3 +33,17 @@ def task_start_encode_studio(
     from pod.video.encode import encode_video_studio
 
     encode_video_studio(recording_id, video_output, videos, subtime, presenter)
+
+
+@shared_task(bind=True)
+def task_start_live_transcription(self, url, slug):
+    print("CELERY START LIVE TRANSCRIPTION %s" % slug)
+    from pod.live.live_transcript import transcribe
+    transcribe(url, slug)
+
+
+@shared_task(bind=True)
+def task_end_live_transcription(self, slug):
+    print("CELERY START LIVE TRANSCRIPTION %s" % slug)
+    from pod.live.live_transcript import end_live_transcription
+    end_live_transcription(slug)
