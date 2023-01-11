@@ -1118,6 +1118,24 @@ OIDC_OP_JWKS_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/discovery/keys"
 OIDC_CLAIM_FAMILY_NAME = "family_name"
 OIDC_CLAIM_GIVEN_NAME = "given_name"
 
+ """
+# Utiliser un proxy
+ """
+PROXY_HOST = ""
+PROXY_PORT = ""
+
+"""
+# Affiliation par défaut d'un utilisateur authentifié par OIDC. Ce contenu
+# sera comparé à la liste AFFILIATION_STAFF pour déterminer si l'utilisateur
+# doit être admin django
+"""
+OIDC_DEFAULT_AFFILIATION = ""
+
+# """
+# Groupes d'accès attribués par défaut à un nouvel utilisateur authentifié par OIDC
+# """
+OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = []
+
 """
 # Permettre l'usage du oembed, partage dans Moodle, Facebook, Twitter etc.
 """

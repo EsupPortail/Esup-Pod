@@ -177,7 +177,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         Dict[str, Any]: json data
     """
     target = request.GET.get("target", "").lower()
-    limit = int(request.GET.get("limit", 8))
+    limit = int(request.GET.get("limit", 12))
     offset = int(request.GET.get("offset", 0))
     theme_children = None
     parent_title = ""
@@ -209,7 +209,12 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
     if theme_children is not None:
         count_themes = theme_children.count()
         has_more_themes = (offset + limit) < count_themes
-        theme_children = theme_children.values("slug", "title")[offset : limit + offset]
+        theme_children = theme_children.annotate(
+            video_count=Count("video", filter=Q(video__is_draft=False), distinct=True)
+        )
+        theme_children = theme_children.values("slug", "title", "video_count")[
+            offset : limit + offset
+        ]
         next_url, previous_url, theme_pages_info = pagination_data(
             request.path, offset, limit, count_themes
         )
@@ -282,6 +287,7 @@ def channel(request, slug_c, slug_t=None):
     channel = get_object_or_404(Channel, slug=slug_c, site=get_current_site(request))
 
     videos_list = VIDEOS.filter(channel=channel)
+    channel.video_count = videos_list.count()
 
     theme = None
     if slug_t:
@@ -1774,7 +1780,7 @@ def video_oembed(request):
     if not request.GET.get("url"):
         raise SuspiciousOperation("URL must be specified")
     format = "xml" if request.GET.get("format") == "xml" else "json"
-
+    version = request.GET.get("version") if request.GET.get("version") else "video"
     data = {}
     data["type"] = "video"
     data["version"] = "1.0"
@@ -1795,7 +1801,7 @@ def video_oembed(request):
     p = re.compile(reg)
     m = p.match(url)
 
-    if m:
+    if m and m.group("slug") not in ["add", "edit"]:
         video_slug = m.group("slug")
         slug_private = m.group("slug_private")
         try:
@@ -1811,6 +1817,14 @@ def video_oembed(request):
             reverse("videos:videos"),
             video.owner.username,
         )
+        video_url = (
+            reverse("video:video", kwargs={"slug": video.slug})
+            if version == "video"
+            else reverse(
+                "%(version)s:video_%(version)s" % {"version": version},
+                kwargs={"slug": video.slug},
+            )
+        )
         data["html"] = (
             '<iframe src="%(provider)s%(video_url)s%(slug_private)s'
             + '?is_iframe=true" width="640" height="360" '
@@ -1818,7 +1832,7 @@ def video_oembed(request):
             + "allowfullscreen loading='lazy'></iframe>"
         ) % {
             "provider": data["provider_url"],
-            "video_url": reverse("video:video", kwargs={"slug": video.slug}),
+            "video_url": video_url,
             "slug_private": "%s/" % slug_private if slug_private else "",
         }
     else:

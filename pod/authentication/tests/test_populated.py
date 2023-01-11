@@ -1,10 +1,16 @@
 # test_populated
+import random
 from django.conf import settings
 from django.test import TestCase, override_settings
-from pod.authentication.models import Owner, AccessGroup
+from pod.authentication.models import Owner, AccessGroup, AFFILIATION_STAFF
 from pod.authentication import populatedCASbackend
 from pod.authentication import shibmiddleware
-from pod.authentication.backends import ShibbBackend
+from pod.authentication.backends import (
+    ShibbBackend,
+    OIDCBackend,
+    OIDC_CLAIM_FAMILY_NAME,
+    OIDC_CLAIM_GIVEN_NAME,
+)
 from django.test import RequestFactory
 from django.contrib.auth.models import User
 from importlib import reload
@@ -68,15 +74,15 @@ SHIBBOLETH_STAFF_ALLOWED_DOMAINS = getattr(
     settings, "SHIBBOLETH_STAFF_ALLOWED_DOMAINS", None
 )
 
-AFFILIATION_STAFF = getattr(
-    settings, "AFFILIATION_STAFF", ("employee", "faculty", "staff")
-)
-
 SHIB_URL = getattr(settings, "SHIB_URL", "https://univ.fr/Shibboleth.sso/WAYF")
 
 SHIB_LOGOUT_URL = getattr(
     settings, "SHIB_LOGOUT_URL", "https://univ.fr/Shibboleth.sso/Logout"
 )
+
+UNSTAFFABLE_AFFILIATIONS = ["member", "unprobable"]
+
+UNSTAFFABLE_AFFILIATION = random.choice(UNSTAFFABLE_AFFILIATIONS)
 
 
 class PopulatedCASTestCase(TestCase):
@@ -103,6 +109,9 @@ class PopulatedCASTestCase(TestCase):
         """setUp PopulatedCASTestCase create user pod"""
         User.objects.create(username="pod", password="pod1234pod")
         AccessGroup.objects.create(code_name="groupTest", display_name="Group de test")
+        AccessGroup.objects.create(
+            code_name="groupTest2", display_name="Group de test 2", auto_sync="True"
+        )
         print(" --->  SetUp of PopulatedCASTestCase : OK !")
 
     @override_settings(DEBUG=False)
@@ -122,7 +131,7 @@ class PopulatedCASTestCase(TestCase):
         #    settings, 'CREATE_GROUP_FROM_GROUPS', False)
         # check no group are created any from affiliation or groups
         self.assertEqual(user.is_staff, True)
-        self.assertEqual(AccessGroup.objects.all().count(), 1)
+        self.assertEqual(AccessGroup.objects.all().count(), 2)
         self.assertEqual(user.owner.accessgroup_set.all().count(), 0)
         print(
             " --->  test_populate_user_from_tree by default"
@@ -137,7 +146,7 @@ class PopulatedCASTestCase(TestCase):
         reload(populatedCASbackend)
         tree = ET.fromstring(self.xml_string)
         populatedCASbackend.populate_user_from_tree(user, owner, tree)
-        self.assertEqual(AccessGroup.objects.all().count(), 3)
+        self.assertEqual(AccessGroup.objects.all().count(), 4)
         self.assertTrue(
             user.owner.accessgroup_set.filter(code_name__in=["member", "staff"]).exists()
         )
@@ -158,7 +167,7 @@ class PopulatedCASTestCase(TestCase):
         reload(populatedCASbackend)
         tree = ET.fromstring(self.xml_string)
         populatedCASbackend.populate_user_from_tree(user, owner, tree)
-        self.assertEqual(AccessGroup.objects.all().count(), 5)
+        self.assertEqual(AccessGroup.objects.all().count(), 6)
         self.assertTrue(
             user.owner.accessgroup_set.filter(
                 code_name__in=[
@@ -188,7 +197,7 @@ class PopulatedCASTestCase(TestCase):
         tree = ET.fromstring(self.xml_string)
         populatedCASbackend.populate_user_from_tree(user, owner, tree)
         # check they are only existing group and affiliation groups x2
-        self.assertEqual(AccessGroup.objects.all().count(), 3)
+        self.assertEqual(AccessGroup.objects.all().count(), 4)
 
         self.assertTrue(
             user.owner.accessgroup_set.filter(
@@ -200,6 +209,73 @@ class PopulatedCASTestCase(TestCase):
         )
         print(
             " --->  test_populate_user_from_tree_affiliation_nogroup"
+            " of PopulatedCASTestCase : OK !"
+        )
+
+    @override_settings(
+        DEBUG=True,
+        CREATE_GROUP_FROM_AFFILIATION=True,
+        CREATE_GROUP_FROM_GROUPS=True,
+        POPULATE_USER="CAS",
+    )
+    def test_populate_user_from_tree_unpopulate_group(self):
+        user = User.objects.get(username="pod")
+        user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest"))
+        user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest2"))
+        user.save()
+
+        reload(populatedCASbackend)
+        tree = ET.fromstring(self.xml_string)
+        populatedCASbackend.populateUser(tree)
+        user = User.objects.get(username="pod")
+
+        self.assertEqual(AccessGroup.objects.all().count(), 6)
+        self.assertTrue(
+            user.owner.accessgroup_set.filter(
+                code_name__in=[
+                    "member",
+                    "staff",
+                    "cn=group1,ou=groups,dc=univ,dc=fr",
+                    "cn=group2,ou=groups,dc=univ,dc=fr",
+                    "groupTest",
+                ]
+            ).exists()
+        )
+        self.assertFalse(
+            user.owner.accessgroup_set.filter(
+                code_name__in=[
+                    "groupTest2",
+                ]
+            ).exists()
+        )
+        print(
+            " --->  test_populate_user_from_tree_unpopulate_group"
+            " of PopulatedCASTestCase : OK !"
+        )
+
+    def test_delete_synchronized_access_group(self):
+        user = User.objects.get(username="pod")
+        user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest"))
+        user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest2"))
+        user.save()
+        populatedCASbackend.delete_synchronized_access_group(user.owner)
+        self.assertEqual(AccessGroup.objects.all().count(), 2)
+        self.assertTrue(
+            user.owner.accessgroup_set.filter(
+                code_name__in=[
+                    "groupTest",
+                ]
+            ).exists()
+        )
+        self.assertFalse(
+            user.owner.accessgroup_set.filter(
+                code_name__in=[
+                    "groupTest2",
+                ]
+            ).exists()
+        )
+        print(
+            " --->  test_delete_synchronized_access_group"
             " of PopulatedCASTestCase : OK !"
         )
 
@@ -223,6 +299,9 @@ class PopulatedLDAPTestCase(TestCase):
         """setUp PopulatedLDAPTestCase create user pod"""
         User.objects.create(username="pod", password="pod1234pod")
         AccessGroup.objects.create(code_name="groupTest", display_name="Group de test")
+        AccessGroup.objects.create(
+            code_name="groupTest2", display_name="Group de test 2", auto_sync="True"
+        )
         fake_server = Server("my_fake_server")
         fake_connection = Connection(fake_server, client_strategy=MOCK_SYNC)
         fake_connection.strategy.add_entry("uid=pod,ou=people,dc=univ,dc=fr", self.attrs)
@@ -258,7 +337,7 @@ class PopulatedLDAPTestCase(TestCase):
         #    settings, 'CREATE_GROUP_FROM_GROUPS', False)
         # check no group are created any from affiliation or groups
         self.assertEqual(user.is_staff, True)
-        self.assertEqual(AccessGroup.objects.all().count(), 1)
+        self.assertEqual(AccessGroup.objects.all().count(), 2)
         self.assertEqual(user.owner.accessgroup_set.all().count(), 0)
         print(
             " --->  test_populate_user_from_entry by default"
@@ -272,7 +351,7 @@ class PopulatedLDAPTestCase(TestCase):
         self.assertEqual(user.owner, owner)
         reload(populatedCASbackend)
         populatedCASbackend.populate_user_from_entry(user, owner, self.entry)
-        self.assertEqual(AccessGroup.objects.all().count(), 3)
+        self.assertEqual(AccessGroup.objects.all().count(), 4)
         self.assertTrue(
             user.owner.accessgroup_set.filter(code_name__in=["member", "staff"]).exists()
         )
@@ -292,7 +371,7 @@ class PopulatedLDAPTestCase(TestCase):
         self.assertEqual(user.owner, owner)
         reload(populatedCASbackend)
         populatedCASbackend.populate_user_from_entry(user, owner, self.entry)
-        self.assertEqual(AccessGroup.objects.all().count(), 5)
+        self.assertEqual(AccessGroup.objects.all().count(), 6)
         # user.owner.accessgroup_set.add(accessgroup)
         self.assertTrue(
             user.owner.accessgroup_set.filter(
@@ -308,6 +387,49 @@ class PopulatedLDAPTestCase(TestCase):
             " --->  test_populate_user_from_entry_affiliation_group"
             " of PopulatedLDAPTestCase : OK !"
         )
+
+        @override_settings(
+            DEBUG=True,
+            CREATE_GROUP_FROM_AFFILIATION=True,
+            CREATE_GROUP_FROM_GROUPS=True,
+            POPULATE_USER="LDAP",
+        )
+        def test_populate_user_from_entry_unpopulate_group(self):
+            user = User.objects.get(username="pod")
+            user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest"))
+            user.owner.accessgroup_set.add(
+                AccessGroup.objects.get(code_name="groupTest2")
+            )
+            user.save()
+
+            reload(populatedCASbackend)
+            tree = ET.fromstring(self.xml_string)
+            populatedCASbackend.populateUser(tree)
+            user = User.objects.get(username="pod")
+
+            self.assertEqual(AccessGroup.objects.all().count(), 6)
+            self.assertTrue(
+                user.owner.accessgroup_set.filter(
+                    code_name__in=[
+                        "member",
+                        "staff",
+                        "cn=group1,ou=groups,dc=univ,dc=fr",
+                        "cn=group2,ou=groups,dc=univ,dc=fr",
+                        "groupTest",
+                    ]
+                ).exists()
+            )
+            self.assertFalse(
+                user.owner.accessgroup_set.filter(
+                    code_name__in=[
+                        "groupTest2",
+                    ]
+                ).exists()
+            )
+            print(
+                " --->  test_populate_user_from_entry_unpopulate_group"
+                " of PopulatedLDAPTestCase : OK !"
+            )
 
 
 class PopulatedShibTestCase(TestCase):
@@ -404,8 +526,7 @@ class PopulatedShibTestCase(TestCase):
         self.assertTrue(user.is_staff)
 
         """ Test if same user with new unstaffable affiliation keep his staff status """
-        unstaffable_affiliation = ["member", "unprobable"]
-        for a in unstaffable_affiliation:
+        for a in UNSTAFFABLE_AFFILIATIONS:
             self.assertFalse(a in AFFILIATION_STAFF)
         user, shib_meta = self._authenticate_shib_user(
             {
@@ -413,7 +534,7 @@ class PopulatedShibTestCase(TestCase):
                 "first_name": "Jean",
                 "last_name": "Do",
                 "email": "jean.do@univ.fr",
-                "affiliations": ";".join(unstaffable_affiliation),
+                "affiliations": ";".join(UNSTAFFABLE_AFFILIATIONS),
             }
         )
         shibmiddleware.ShibbMiddleware.make_profile(
@@ -433,7 +554,7 @@ class PopulatedShibTestCase(TestCase):
                 "first_name": "Ada",
                 "last_name": "Da",
                 "email": "ada.da@univ.fr",
-                "affiliations": ";".join(unstaffable_affiliation),
+                "affiliations": ";".join(UNSTAFFABLE_AFFILIATIONS),
             }
         )
         shibmiddleware.ShibbMiddleware.make_profile(
@@ -442,3 +563,107 @@ class PopulatedShibTestCase(TestCase):
         self.assertFalse(user.is_staff)
 
         print(" --->  test_make_profile" " of PopulatedShibTestCase : OK !")
+
+
+class PopulatedOIDCTestCase(TestCase):
+    @override_settings(
+        OIDC_RP_CLIENT_ID="MWViNTY2NzJjNGY4YTQ1MTAwMTNiYjk3",
+        OIDC_RP_CLIENT_SECRET="YTM0MzIxZTVmMzZmMTdjNzY5NDQyODcw",
+        OIDC_OP_TOKEN_ENDPOINT="https://auth.server.com/oauth/token",
+        OIDC_OP_USER_ENDPOINT="https://auth.server.com/oauth/userinfo",
+        OIDC_DEFAULT_AFFILIATION=UNSTAFFABLE_AFFILIATION,
+    )
+    def test_OIDC_commoner_with_default_unstaffable_affiliation(self):
+        user = OIDCBackend().create_user(
+            claims={OIDC_CLAIM_GIVEN_NAME: "John", OIDC_CLAIM_FAMILY_NAME: "Doe"}
+        )
+        self.assertEqual(user.first_name, "John")
+        self.assertEqual(user.last_name, "Doe")
+        self.assertEqual(user.owner.affiliation, settings.OIDC_DEFAULT_AFFILIATION)
+        self.assertFalse(
+            user.is_staff
+        )  # user should not be django admin according to its unstaffable affiliation
+        print(
+            " --->  test_OIDC_commoner_with_default_unstaffable_access_group"
+            " of PopulatedOIDCTestCase : OK !"
+        )
+
+    @override_settings(
+        OIDC_RP_CLIENT_ID="MWViNTY2NzJjNGY4YTQ1MTAwMTNiYjk3",
+        OIDC_RP_CLIENT_SECRET="YTM0MzIxZTVmMzZmMTdjNzY5NDQyODcw",
+        OIDC_OP_TOKEN_ENDPOINT="https://auth.server.com/oauth/token",
+        OIDC_OP_USER_ENDPOINT="https://auth.server.com/oauth/userinfo",
+        OIDC_DEFAULT_AFFILIATION=random.choice(AFFILIATION_STAFF),
+    )
+    def test_OIDC_django_admin_user_with_default_staff_affiliation(self):
+        user = OIDCBackend().create_user(
+            claims={OIDC_CLAIM_GIVEN_NAME: "Jane", OIDC_CLAIM_FAMILY_NAME: "Did"}
+        )
+        self.assertEqual(user.first_name, "Jane")
+        self.assertEqual(user.last_name, "Did")
+        self.assertEqual(user.owner.affiliation, settings.OIDC_DEFAULT_AFFILIATION)
+        self.assertTrue(
+            user.is_staff
+        )  # staffable affiliation should give user access to django admin
+        print(
+            " --->  test_OIDC_django_admin_user_with_default_staff_affiliation"
+            " of PopulatedOIDCTestCase : OK !"
+        )
+
+    @override_settings(
+        OIDC_RP_CLIENT_ID="MWViNTY2NzJjNGY4YTQ1MTAwMTNiYjk3",
+        OIDC_RP_CLIENT_SECRET="YTM0MzIxZTVmMzZmMTdjNzY5NDQyODcw",
+        OIDC_OP_TOKEN_ENDPOINT="https://auth.server.com/oauth/token",
+        OIDC_OP_USER_ENDPOINT="https://auth.server.com/oauth/userinfo",
+        OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES=["specific"],
+    )
+    def test_OIDC_user_with_default_access_group(self):
+        for code_name in settings.OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES + [
+            "useless",
+            "dull",
+        ]:
+            AccessGroup.objects.create(
+                code_name=code_name, display_name=f"Access group {code_name}"
+            )
+        user = OIDCBackend().create_user(
+            claims={OIDC_CLAIM_GIVEN_NAME: "Jean", OIDC_CLAIM_FAMILY_NAME: "Fit"}
+        )
+        self.assertEqual(user.first_name, "Jean")
+        self.assertEqual(user.last_name, "Fit")
+        self.assertEqual(AccessGroup.objects.all().count(), 3)
+        self.assertEqual(user.owner.accessgroup_set.all().count(), 1)
+        self.assertTrue(
+            user.owner.accessgroup_set.filter(code_name="specific").exists()
+        )  # OIDC new user should have the specified access group from in settings
+        print(
+            " --->  test_OIDC_user_with_default_access_group"
+            " of PopulatedOIDCTestCase : OK !"
+        )
+
+    @override_settings(
+        OIDC_RP_CLIENT_ID="MWViNTY2NzJjNGY4YTQ1MTAwMTNiYjk3",
+        OIDC_RP_CLIENT_SECRET="YTM0MzIxZTVmMzZmMTdjNzY5NDQyODcw",
+        OIDC_OP_TOKEN_ENDPOINT="https://auth.server.com/oauth/token",
+        OIDC_OP_USER_ENDPOINT="https://auth.server.com/oauth/userinfo",
+        OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES=["specific", "unique"],
+    )
+    def test_OIDC_user_with_multiple_default_access_groups(self):
+        for code_name in settings.OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES + ["dull"]:
+            AccessGroup.objects.create(
+                code_name=code_name, display_name=f"Access group {code_name}"
+            )
+        user = OIDCBackend().create_user(
+            claims={OIDC_CLAIM_GIVEN_NAME: "Jean", OIDC_CLAIM_FAMILY_NAME: "Fit"}
+        )
+        self.assertEqual(user.first_name, "Jean")
+        self.assertEqual(user.last_name, "Fit")
+        self.assertEqual(AccessGroup.objects.all().count(), 3)
+        self.assertEqual(
+            user.owner.accessgroup_set.all().count(), 2
+        )  # OIDC new user should have 2 access groups
+        self.assertTrue(user.owner.accessgroup_set.filter(code_name="specific").exists())
+        self.assertTrue(user.owner.accessgroup_set.filter(code_name="unique").exists())
+        print(
+            " --->  test_OIDC_user_with_multiple_default_access_groups"
+            " of PopulatedOIDCTestCase : OK !"
+        )
