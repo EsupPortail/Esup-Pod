@@ -5,6 +5,7 @@
       "fields": {
           "description": "",
           "title": "Other",
+          "title_fr": "Autre",
           "icon": null,
           "slug": "other",
           "sites": [
