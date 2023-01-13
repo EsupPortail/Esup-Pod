@@ -1,3 +1,4 @@
+"""Update viewcounter for lives."""
 from django.core.management.base import BaseCommand
 from pod.live.models import HeartBeat, Broadcaster
 from django.utils import timezone

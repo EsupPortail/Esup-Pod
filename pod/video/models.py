@@ -1290,6 +1290,7 @@ class Video(models.Model):
         return "%s" % LICENCE_CHOICES_DICT[self.licence]
 
     def get_dublin_core(self):
+        """Export Dublin Core items for current video."""
         contributors = []
         current_site = Site.objects.get_current()
         for contrib in self.contributor_set.values_list("name", "role"):
