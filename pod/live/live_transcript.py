@@ -1,3 +1,4 @@
+import multiprocessing
 from django.conf import settings
 from vosk import Model, KaldiRecognizer, SetLogLevel
 from webvtt import WebVTT, Caption
@@ -6,7 +7,6 @@ import time
 import json
 import subprocess
 from pod.main.tasks import task_end_live_transcription, task_start_live_transcription
-threads_list = {}
 
 CELERY_TO_TRANSCRIBE_LIVE = getattr(settings, "CELERY_TO_TRANSCRIBE_LIVE", False)
 path_to_media_folder = r"C:\Users\mateo\Desktop\django_projects\podv3\pod\media\transcripts"
@@ -23,9 +23,6 @@ def timestring(seconds):
 def transcribe(url, slug):
     save_path = path_to_media_folder + "\\" + slug + ".vtt"
     url = url.split('.m3u8')[0] + "_low/index.m3u8"
-    print(url)
-    print(save_path)
-    threads_list[slug] = threading.get_ident()
     SAMPLE_RATE = 16000
     SetLogLevel(-1)
     small_model = r"C:\Users\mateo\Desktop\transcription\vosk-model-small-fr-0.22"
@@ -105,20 +102,17 @@ def transcribe_live(url, slug, status):
         if status:
             task_start_live_transcription.delay(url, slug)
         else:
-            task_end_live_transcription(slug)
+            task_end_live_transcription.delay(slug)
     else:
         if status:
+            print("main process")
             t = threading.Thread(target=transcribe, args=(
                 url, slug))
             t.setDaemon(True)
             t.start()
         else:
-            if slug in threads_list:
-                threads_id = threads_list[slug]
-                print(threads_id)
+            print("end process")
 
 
 def end_live_transcription():
-    for thread in threading.enumerate():
-        if thread.ident in threads_list.values():
-            print(thread.ident)
+    print("end live transcription")
