@@ -68,6 +68,7 @@
                                class="video-js vjs-default-skin vjs-big-play-centered"
                                controls height="360" muted autoplay>
                             <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
+                            <track kind="captions" src="{{ MEDIA_URL}}/media/transcripts/{{event.broadcaster.slug}}.vtt" srclang="fr" label="Français" default>
                         </video>
                     </div>
                     {% if event.aside_iframe_url %}
@@ -162,5 +163,69 @@
 {% endif %}
 
 {% block more_script %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      let player = videojs("podvideoplayer");
+      player.ready(function () {
+        var lastMod = null;
+      
+        setInterval(function () {
+          let tracks = player.textTracks();
+          for (var i = 0; i < tracks.length; i++) {
+            var track = tracks[i];
+            if (track.kind === "captions") {
+            let broadcaster_slug = "{{ event.broadcaster.slug }}";
+            
+            let current_mod = null
+            fetch("{{ MEDIA_URL }}/media/transcripts/" + broadcaster_slug + ".vtt").then(r => {
+                current_mod = r.headers.get('Last-Modified');
+               
+         
+            
+            if (lastMod && current_mod && lastMod === current_mod){
+              return
+            }
+            
+            lastMod = current_mod
+            
+
+
+
+              let newTrack = player.addRemoteTextTrack(
+                {
+                  kind: "captions",
+                  label: "français",
+                  language: "fr",
+                  src: "{{ MEDIA_URL }}/media/transcripts/"+broadcaster_slug + ".vtt",
+                  default: true,
+                },
+                false
+              );
+             
+              player.removeRemoteTextTrack(track);
+
+              newTrack.addEventListener('load', (e)=>{
+                newTrack.mode = 'showing';
+              })
+              // show all tracks
+              for (var i = 0; i < tracks.length; i++) {
+                if (tracks[i].kind === "captions") {
+                tracks[i].mode = "showing";
+    
+                }else{
+                }
+              }
+            })
+            }
+          }
+          
+        }, 1000);
+      });
+    });
+    
+</script>
+
+
 {% include 'live/event-script.html' %}
 {% endblock more_script %}

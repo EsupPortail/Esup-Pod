@@ -233,6 +233,7 @@ class EventForm(forms.ModelForm):
                     "iframe_height",
                     "aside_iframe_url",
                     "thumbnail",
+                    "enable_transcription",
                 ],
             },
         ),
@@ -393,6 +394,7 @@ class EventForm(forms.ModelForm):
             "iframe_url",
             "iframe_height",
             "aside_iframe_url",
+            "enable_transcription",
         ]
         if EVENT_ACTIVE_AUTO_START:
             fields.append("is_auto_start")

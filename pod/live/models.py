@@ -420,6 +420,11 @@ class Event(models.Model):
         Video,
         editable=False,
     )
+    enable_transcription = models.BooleanField(
+        verbose_name=_("Enable transcription"),
+        help_text=_("If this box is checked, " "the transcription will be enabled."),
+        default=False,
+    )
 
     class Meta:
         verbose_name = _("Event")
@@ -527,3 +532,17 @@ class Event(models.Model):
             return timezone.now() < self.start_date
         else:
             return False
+
+
+class RunningTask(models.Model):
+    task_id = models.CharField(max_length=255, unique=True)
+    broadcaster = models.ForeignKey(
+        Broadcaster,
+        verbose_name=_("Broadcaster"),
+        help_text=_("Broadcaster name."),
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        verbose_name = _("Running task")
+        verbose_name_plural = _("Running tasks")
