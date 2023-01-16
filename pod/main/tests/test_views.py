@@ -159,7 +159,7 @@ class XSSTests(TestCase):
     def setUp(self):
         """Set up some generic test strings."""
         self.XSS_inject = "</script><script>alert(document.domain)</script>"
-        self.XSS_detect = "<script>alert(document.domain)</script>"
+        self.XSS_detect = b"<script>alert(document.domain)</script>"
 
     def test_videos_XSS(self):
         """Test if /videos/ is safe against some XSS."""
@@ -167,7 +167,7 @@ class XSSTests(TestCase):
             response = self.client.get("/videos/?%s=%s" % (param, self.XSS_inject))
 
             self.assertEqual(response.status_code, HTTPStatus.OK)
-            self.assertNotIn(response.content, self.XSS_detect)
+            self.assertFalse(self.XSS_detect in response.content)
 
     def test_search_XSS(self):
         """Test if /search/ is safe against some XSS."""
@@ -175,7 +175,7 @@ class XSSTests(TestCase):
             response = self.client.get("/search/?%s=%s" % (param, self.XSS_inject))
 
             self.assertEqual(response.status_code, HTTPStatus.OK)
-            self.assertNotIn(response.content, self.XSS_detect)
+            self.assertFalse(self.XSS_detect in response.content)
 
         # Test that even with a recognized facet it doesn't open a breach
         for facet in ["type", "slug"]:
@@ -183,4 +183,4 @@ class XSSTests(TestCase):
                 facet, self.XSS_inject))
 
             self.assertEqual(response.status_code, HTTPStatus.OK)
-            self.assertNotIn(response.content, self.XSS_detect)
+            self.assertFalse(self.XSS_detect in response.content)
