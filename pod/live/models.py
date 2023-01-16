@@ -197,7 +197,7 @@ class Broadcaster(models.Model):
         return reverse("live:direct", args=[str(self.slug)])
 
     def __str__(self):
-            return "%s - %s" % (self.name, self.url)
+        return "%s - %s" % (self.name, self.url)
 
     def get_poster_url(self):
         if self.poster:
@@ -532,3 +532,17 @@ class Event(models.Model):
             return timezone.now() < self.start_date
         else:
             return False
+
+
+class RunningTask(models.Model):
+    task_id = models.CharField(max_length=255, unique=True)
+    broadcaster = models.ForeignKey(
+        Broadcaster,
+        verbose_name=_("Broadcaster"),
+        help_text=_("Broadcaster name."),
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        verbose_name = _("Running task")
+        verbose_name_plural = _("Running tasks")
