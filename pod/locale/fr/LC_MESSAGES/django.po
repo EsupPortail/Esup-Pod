@@ -1,11 +1,11 @@
 # Esup Pod main French strings.
 # This file is distributed under the same license as the POD package.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-11 10:27+0100\n"
+"POT-Creation-Date: 2023-01-16 10:05+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ncan <nicolas.can@univ-lille.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -2160,6 +2160,10 @@ msgstr "Vous ne pouvez pas enrichir cette vidéo."
 msgid "QR code to record immediately an event"
 msgstr "QR code pour la programmation d'un évènement immédiat"
 
+#: pod/live/admin.py:113
+msgid "QR Code"
+msgstr "QR Code"
+
 #: pod/live/admin.py:132 pod/live/models.py:431 pod/recorder/models.py:176
 #: pod/video/models.py:778
 msgid "password"
@@ -2240,6 +2244,7 @@ msgid "Delete event cannot be undo"
 msgstr "La suppression d’évènement est définitive"
 
 #: pod/live/forms.py:446
+#, python-format
 msgid "Recording of %(user)s the %(date)s"
 msgstr "Enregistrement de %(user)s le %(date)s"
 

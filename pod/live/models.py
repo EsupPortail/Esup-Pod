@@ -262,7 +262,7 @@ class Broadcaster(models.Model):
                 url_immediate_event,
             ]
         )
-        return mark_safe(f'<img src={to_encode} width="300px" height="300px">')
+        return mark_safe(f'<img src={to_encode} width="300px" height="300px" alt="Qr Code for immediate live event">')
 
 
 class HeartBeat(models.Model):
