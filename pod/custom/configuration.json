@@ -241,6 +241,20 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "HIDE_LOCAL_LOGIN": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, masque l'authentification locale"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "HIDE_USERNAME": {
                             "default_value": false,
                             "description": {
@@ -1629,6 +1643,49 @@
                 "video": {
                     "description": {},
                     "settings": {
+                        "ACTIVE_VIDEO_COMMENT": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Activer les commentaires au niveau de la plateforme"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "CELERY_TO_ENCODE": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Utilisation de Celery pour la gestion des taches d'encodage"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "CHANNEL_FORM_FIELDS_HELP_TEXT": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Ensemble des textes d'aide affichés avec le formulaire d'édition de chaine.",
+                                    "voir pod/video/forms.py"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "CHUNK_SIZE": {
                             "default_value": 1000000,
                             "description": {
@@ -1639,6 +1696,791 @@
                                     "",
                                     "Taille d'un fragment lors de l'envoie d'une vidéo",
                                     "le fichier sera mis en ligne par fragment de cette taille"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "CURSUS_CODES": {
+                            "default_value": "()",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Liste des cursus proposés lors de l'ajout des vidéos.",
+                                    "Affichés en dessous d'une vidéos, ils sont aussi utilisés pour affiner la recherche.",
+                                    "CURSUS_CODES = (",
+                                    "    ('0', _(\"None / All\")),",
+                                    "    ('L', _(\"Bachelor’s Degree\")),",
+                                    "    ('M', _(\"Master’s Degree\")),",
+                                    "    ('D', _(\"Doctorate\")),",
+                                    "    ('1', _(\"Other\"))",
+                                    ")"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "DEFAULT_DC_COVERAGE": {
+                            "default_value": "TITLE_ETB + \" - Town - Country\"",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "couverture du droit pour chaque vidéo"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "DEFAULT_DC_RIGHTS": {
+                            "default_value": "BY-NC-SA",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "droit par défaut affichés dans le flux RSS si non renseigné"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "DEFAULT_LANG_TRACK": {
+                            "default_value": "fr",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "langue par défaut pour l'ajout de piste à une vidéo"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
+                        },
+                        "DEFAULT_THUMBNAIL": {
+                            "default_value": "img/default.svg",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Image par défaut affichée comme poster ou vignette, utilisée pour présenter la vidéo.",
+                                    "Cette image doit se situer dans le répertoire static."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "DEFAULT_TYPE_ID": {
+                            "default_value": 1,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Les vidéos créées sans type (par importation par exemple) seront affectées au type par défaut (en général, le type ayant pour identifiant '1' est 'Other')"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "DEFAULT_YEAR_DATE_DELETE": {
+                            "default_value": 2,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Durée d'obsolescence par défaut (en années après la date d'ajout)."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "EMAIL_ON_ENCODING_COMPLETION": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, un courriel est envoyé aux managers et à l'auteur (si DEBUG est à False) à la fin de l'encodage/transcription"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "EMAIL_ON_TRANSCRIPTING_COMPLETION": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, un courriel est envoyé aux managers et à l'auteur (si DEBUG est à False) à la fin de l'encodage/transcription"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "ENCODE_VIDEO": {
+                            "default_value": "start_encode",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Fonction appelée pour lancer l'encodage des vidéos direct par thread ou distant par celery"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "ENCODING_CHOICES": {
+                            "default_value": "()",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Encodage possible sur la plateforme. Associé à un rendu dans le cas d'une vidéo.",
+                                    "ENCODING_CHOICES = (",
+                                    "    (\"audio\", \"audio\"),",
+                                    "    (\"360p\", \"360p\"),",
+                                    "    (\"480p\", \"480p\"),",
+                                    "    (\"720p\", \"720p\"),",
+                                    "    (\"1080p\", \"1080p\"),",
+                                    "    (\"playlist\", \"playlist\")",
+                                    ")"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FORMAT_CHOICES": {
+                            "default_value": "()",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Format d'encodage réalisé sur la plateforme.",
+                                    "FORMAT_CHOICES = (",
+                                    "    (\"video/mp4\", 'video/mp4'),",
+                                    "    (\"video/mp2t\", 'video/mp2t'),",
+                                    "    (\"video/webm\", 'video/webm'),",
+                                    "    (\"audio/mp3\", \"audio/mp3\"),",
+                                    "    (\"audio/wav\", \"audio/wav\"),",
+                                    "    (\"application/x-mpegURL\", \"application/x-mpegURL\"),",
+                                    ")"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "LANG_CHOICES": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Liste des langues proposées lors de l'ajout des vidéos.",
+                                    "Affichés en dessous d'une vidéos, les choix sont aussi utilisés pour affiner la recherche."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
+                        },
+                        "LAUNCH_ENCODE_VIDEO": {
+                            "default_value": "encode_video",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Fonction appelée pour lancer l'encodage des vidéos directement (sans thread ni celery)"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "LICENCE_CHOICES": {
+                            "default_value": "()",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Licence proposées pour les vidéos en creative commons : ",
+                                    "LICENCE_CHOICES = (",
+                                    "    ('by', (\"Attribution 4.0 International (CC BY 4.0)\")),",
+                                    "    ('by-nd', (\"Attribution-NoDerivatives 4.0 \"",
+                                    "               \"International (CC BY-ND 4.0)\")),",
+                                    "    ('by-nc-nd', (\"Attribution-NonCommercial-NoDerivatives 4.0 \"",
+                                    "                  \"International (CC BY-NC-ND 4.0)\")),",
+                                    "    ('by-nc', (\"Attribution-NonCommercial 4.0 \"",
+                                    "               \"International (CC BY-NC 4.0)\")),",
+                                    "    ('by-nc-sa', (\"Attribution-NonCommercial-ShareAlike 4.0 \"",
+                                    "                  \"International (CC BY-NC-SA 4.0)\")),",
+                                    "    ('by-sa', (\"Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)\"))",
+                                    ")"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "MAX_DURATION_DATE_DELETE": {
+                            "default_value": 10,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Fixe une durée maximale que la date de suppression d'une vidéo ne peut dépasser.",
+                                    "Par défaut : 10 (Année courante + 10 ans)."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "NOTES_STATUS": {
+                            "default_value": "()",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Valeurs possible pour l'accès à une note",
+                                    "NOTES_STATUS = (",
+                                    "    (\"0\", _(\"Private (me only)\")),",
+                                    "    (\"1\", _(\"Shared with video owner\")),",
+                                    "    (\"2\", _(\"Public\")),",
+                                    ")"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "OEMBED": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Permettre l'usage du oembed, partage dans Moodle, Facebook, Twitter etc."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, seule les personnes \"Staff\" peuvent déposer des vidéos"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "THEME_FORM_FIELDS_HELP_TEXT": {
+                            "default_value": "\"\"",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Ensemble des textes d'aide affichés avec le formulaire d'édition de theme.",
+                                    "voir pod/video/forms.py",
+                                    "THEME_FORM_FIELDS_HELP_TEXT = OrderedDict(",
+                                    "    [",
+                                    "        (",
+                                    "            \"{0}\".format(_(\"Title field\")),",
+                                    "            [",
+                                    "                _(",
+                                    "                    \"Please choose a title as short and accurate as possible, \"",
+                                    "                    \"reflecting the main subject / context of the content.\"",
+                                    "                ),",
+                                    "                _(",
+                                    "                    \"You can use the “Description” field below for all \"",
+                                    "                    \"additional information.\"",
+                                    "                ),",
+                                    "            ],",
+                                    "        ),",
+                                    "        (",
+                                    "            \"{0}\".format(_(\"Description\")),",
+                                    "            [",
+                                    "                _(",
+                                    "                    \"In this field you can describe your content, add all needed \"",
+                                    "                    \"related information, and format the result \"",
+                                    "                    \"using the toolbar.\"",
+                                    "                )",
+                                    "            ],",
+                                    "        ),",
+                                    "    ]",
+                                    ")"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "USER_VIDEO_CATEGORY": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Permet d'activer le fonctionnement de categorie au niveau de ses vidéos.",
+                                    "Vous pouvez créer des catégories pour pouvoir ranger vos propres vidéos",
+                                    "Les catégories sont liées à l'utilisateur"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "USE_OBSOLESCENCE": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Activation de l'obsolescence des video. Permet d'afficher la date de suppression de la video",
+                                    "dans le formulaire d'edition et dans la partie admin"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "USE_STATS_VIEW": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Permet d'activer la possibilité de voir en details le nombre de visualisation d'une vidéo durant un jour donné ou mois,",
+                                    "année ou encore le nombre de vue total depuis la création de la vidéo.",
+                                    "Un lien est rajouté dans la partie info lors de la lecture d'une vidéo, un lien est rajouté dans la page de visualisation d'une chaîne ou un theme",
+                                    "ou encore toutes les vidéos présentes sur la plateforme."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "VIDEO_ALLOWED_EXTENSIONS": {
+                            "default_value": "()",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Extension autorisée pour le téléversement sur la plateforme",
+                                    "VIDEO_ALLOWED_EXTENSIONS = (",
+                                    "    \"3gp\",",
+                                    "    \"avi\",",
+                                    "    \"divx\",",
+                                    "    \"flv\",",
+                                    "    \"m2p\",",
+                                    "    \"m4v\",",
+                                    "    \"mkv\",",
+                                    "    \"mov\",",
+                                    "    \"mp4\",",
+                                    "    \"mpeg\",",
+                                    "    \"mpg\",",
+                                    "    \"mts\",",
+                                    "    \"wmv\",",
+                                    "    \"mp3\",",
+                                    "    \"ogg\",",
+                                    "    \"wav\",",
+                                    "    \"wma\",",
+                                    "    \"webm\",",
+                                    "    \"ts\",",
+                                    ")"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "VIDEO_FORM_FIELDS": {
+                            "default_value": "__all__",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Liste des champs du formulaire d'édition de vidéos affichés"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "VIDEO_FORM_FIELDS_HELP_TEXT": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Ensemble des textes d'aide affichés avec le formulaire d'envoi de vidéo",
+                                    "VIDEO_FORM_FIELDS_HELP_TEXT = OrderedDict(",
+                                    "    [",
+                                    "        (",
+                                    "            \"{0}\".format(_(\"File field\")),",
+                                    "            [",
+                                    "                _(\"You can send an audio or video file.\"),",
+                                    "                _(\"The following formats are supported: %s\")",
+                                    "                % \", \".join(map(str, VIDEO_ALLOWED_EXTENSIONS)),",
+                                    "            ],",
+                                    "        ),",
+                                    "        (",
+                                    "            \"{0}\".format(_(\"Title field\")),",
+                                    "            [",
+                                    "                _(",
+                                    "                    \"Please choose a title as short and accurate as possible, \"",
+                                    "                    \"reflecting the main subject / context of the content.\"",
+                                    "                ),",
+                                    "                _(",
+                                    "                    \"You can use the “Description” field below for all \"",
+                                    "                    \"additional information.\"",
+                                    "                ),",
+                                    "                _(",
+                                    "                    \"You may add contributors later using the second button of \"",
+                                    "                    \"the content edition toolbar: they will appear in the “Info” \"",
+                                    "                    \"tab at the bottom of the audio / video player.\"",
+                                    "                ),",
+                                    "            ],",
+                                    "        ),",
+                                    "        (",
+                                    "            \"{0}\".format(_(\"Type\")),",
+                                    "            [",
+                                    "                _(",
+                                    "                    \"Select the type of your content. If the type you wish does \"",
+                                    "                    \"not appear in the list, please temporary select “Other” \"",
+                                    "                    \"and contact us to explain your needs.\"",
+                                    "                )",
+                                    "            ],",
+                                    "        ),",
+                                    "        (",
+                                    "            \"{0}\".format(_(\"Additional owners\")),",
+                                    "            [",
+                                    "                _(",
+                                    "                    \"In this field you can select and add additional owners to the \"",
+                                    "                    \"video. These additional owners will have the same rights as \"",
+                                    "                    \"you except that they can't delete this video.\"",
+                                    "                )",
+                                    "            ],",
+                                    "        ),",
+                                    "        (",
+                                    "            \"{0}\".format(_(\"Description\")),",
+                                    "            [",
+                                    "                _(",
+                                    "                    \"In this field you can describe your content, add all needed \"",
+                                    "                    \"related information, and format the result \"",
+                                    "                    \"using the toolbar.\"",
+                                    "                )",
+                                    "            ],",
+                                    "        ),",
+                                    "        (",
+                                    "            \"{0}\".format(_(\"Date of the event field\")),",
+                                    "            [",
+                                    "                _(",
+                                    "                    \"Enter the date of the event, if applicable, in the \"",
+                                    "                    \"AAAA-MM-JJ format.\"",
+                                    "                )",
+                                    "            ],",
+                                    "        ),",
+                                    "        (",
+                                    "            \"{0}\".format(_(\"University course\")),",
+                                    "            [",
+                                    "                _(",
+                                    "                    \"Select an university course as audience target of \"",
+                                    "                    \"the content.\"",
+                                    "                ),",
+                                    "                _(",
+                                    "                    \"Choose “None / All” if it does not apply or if all are \"",
+                                    "                    \"concerned, or “Other” for an audience outside \"",
+                                    "                    \"the european LMD scheme.\"",
+                                    "                ),",
+                                    "            ],",
+                                    "        ),",
+                                    "        (",
+                                    "            \"{0}\".format(_(\"Main language\")),",
+                                    "            [_(\"Select the main language used in the content.\")],",
+                                    "        ),",
+                                    "        (",
+                                    "            \"{0}\".format(_(\"Tags\")),",
+                                    "            [",
+                                    "                _(",
+                                    "                    \"Please try to add only relevant keywords that can be \"",
+                                    "                    \"useful to other users.\"",
+                                    "                )",
+                                    "            ],",
+                                    "        ),",
+                                    "        (",
+                                    "            \"{0}\".format(_(\"Disciplines\")),",
+                                    "            [",
+                                    "                _(",
+                                    "                    \"Select the discipline to which your content belongs. \"",
+                                    "                    \"If the discipline you wish does not appear in the list, \"",
+                                    "                    \"please select nothing and contact us to explain your needs.\"",
+                                    "                ),",
+                                    "                _(",
+                                    "                    'Hold down \"Control\", or \"Command\" on a Mac, '",
+                                    "                    \"to select more than one.\"",
+                                    "                ),",
+                                    "            ],",
+                                    "        ),",
+                                    "        (",
+                                    "            \"{0}\".format(_(\"Licence\")),",
+                                    "            [",
+                                    "                (",
+                                    "                    '<a href=\"https://creativecommons.org/licenses/by/4.0/\" '",
+                                    "                    'title=\"%(lic)s\" target=\"_blank\">%(lic)s</a>'",
+                                    "                )",
+                                    "                % {\"lic\": _(\"Attribution 4.0 International (CC BY 4.0)\")},",
+                                    "                (",
+                                    "                    '<a href=\"https://creativecommons.org/licenses/by-nd/4.0/\" '",
+                                    "                    'title=\"%(lic)s\" target=\"_blank\">%(lic)s</a>'",
+                                    "                )",
+                                    "                % {",
+                                    "                    \"lic\": _(",
+                                    "                        \"Attribution-NoDerivatives 4.0 \"",
+                                    "                        \"International (CC BY-ND 4.0)\"",
+                                    "                    )",
+                                    "                },",
+                                    "                (",
+                                    "                    '<a href=\"https://creativecommons.org/licenses/by-nc-nd/4.0/\" '",
+                                    "                    'title=\"%(lic)s\" target=\"_blank\">%(lic)s</a>'",
+                                    "                )",
+                                    "                % {",
+                                    "                    \"lic\": _(",
+                                    "                        \"Attribution-NonCommercial-NoDerivatives 4.0 \"",
+                                    "                        \"International (CC BY-NC-ND 4.0)\"",
+                                    "                    )",
+                                    "                },",
+                                    "                (",
+                                    "                    '<a href=\"https://creativecommons.org/licenses/by-nc/4.0/\" '",
+                                    "                    'title=\"%(lic)s\" target=\"_blank\">%(lic)s</a>'",
+                                    "                )",
+                                    "                % {",
+                                    "                    \"lic\": _(",
+                                    "                        \"Attribution-NonCommercial 4.0 \"",
+                                    "                        \"International (CC BY-NC 4.0)\"",
+                                    "                    )",
+                                    "                },",
+                                    "                (",
+                                    "                    '<a href=\"https://creativecommons.org/licenses/by-nc-sa/4.0/\" '",
+                                    "                    'title=\"%(lic)s\" target=\"_blank\">%(lic)s</a>'",
+                                    "                )",
+                                    "                % {",
+                                    "                    \"lic\": _(",
+                                    "                        \"Attribution-NonCommercial-ShareAlike 4.0 \"",
+                                    "                        \"International (CC BY-NC-SA 4.0)\"",
+                                    "                    )",
+                                    "                },",
+                                    "                (",
+                                    "                    '<a href=\"https://creativecommons.org/licenses/by-sa/4.0/\" '",
+                                    "                    'title=\"%(lic)s\" target=\"_blank\">%(lic)s</a>'",
+                                    "                )",
+                                    "                % {",
+                                    "                    \"lic\": _(",
+                                    "                        \"Attribution-ShareAlike 4.0 \" \"International (CC BY-SA 4.0)\"",
+                                    "                    )",
+                                    "                },",
+                                    "            ],",
+                                    "        ),",
+                                    "        (",
+                                    "            \"{0} / {1}\".format(_(\"Channels\"), _(\"Themes\")),",
+                                    "            [",
+                                    "                _(\"Select the channel in which you want your content to appear.\"),",
+                                    "                _(",
+                                    "                    \"Themes related to this channel will \"",
+                                    "                    \"appear in the “Themes” list below.\"",
+                                    "                ),",
+                                    "                _(",
+                                    "                    'Hold down \"Control\", or \"Command\" on a Mac, '",
+                                    "                    \"to select more than one.\"",
+                                    "                ),",
+                                    "                _(",
+                                    "                    \"If the channel or Themes you wish does not appear \"",
+                                    "                    \"in the list, please select nothing and contact \"",
+                                    "                    \"us to explain your needs.\"",
+                                    "                ),",
+                                    "            ],",
+                                    "        ),",
+                                    "        (",
+                                    "            \"{0}\".format(_(\"Draft\")),",
+                                    "            [",
+                                    "                _(",
+                                    "                    \"In “Draft mode”, the content shows nowhere and nobody \"",
+                                    "                    \"else but you can see it.\"",
+                                    "                )",
+                                    "            ],",
+                                    "        ),",
+                                    "        (",
+                                    "            \"{0}\".format(_(\"Restricted access\")),",
+                                    "            [",
+                                    "                _(",
+                                    "                    \"If you don't select “Draft mode”, you can restrict \"",
+                                    "                    \"the content access to only people who can log in\"",
+                                    "                )",
+                                    "            ],",
+                                    "        ),",
+                                    "        (",
+                                    "            \"{0}\".format(_(\"Password\")),",
+                                    "            [",
+                                    "                _(",
+                                    "                    \"If you don't select “Draft mode”, you can add a password \"",
+                                    "                    \"which will be asked to anybody willing to watch \"",
+                                    "                    \"your content.\"",
+                                    "                ),",
+                                    "                _(",
+                                    "                    \"If your video is in a playlist the password of your \"",
+                                    "                    \"video will be removed automatically.\"",
+                                    "                ),",
+                                    "            ],",
+                                    "        ),",
+                                    "    ]",
+                                    ")"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "VIDEO_MAX_UPLOAD_SIZE": {
+                            "default_value": 1,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Taille maximum en Go des fichiers téléversés sur la plateforme"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "VIDEO_RECENT_VIEWCOUNT": {
+                            "default_value": 180,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Durée (en nombre de jours) sur laquelle on souhaite compter le nombre de vues récentes"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "VIDEO_RENDITIONS": {
+                            "default_value": "[]",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Rendu serializé des rendus pour l'encodage des videos. Cela permet de pouvoir encoder les vidéos sans l'environnement de Pod",
+                                    "VIDEO_RENDITIONS = [",
+                                    "    {",
+                                    "        \"resolution\": \"640x360\",",
+                                    "        \"minrate\": \"500k\",",
+                                    "        \"video_bitrate\": \"750k\",",
+                                    "        \"maxrate\": \"1000k\",",
+                                    "        \"audio_bitrate\": \"96k\",",
+                                    "        \"encode_mp4\": True,",
+                                    "        \"sites\": [1],",
+                                    "    },",
+                                    "    {",
+                                    "        \"resolution\": \"1280x720\",",
+                                    "        \"minrate\": \"1000k\",",
+                                    "        \"video_bitrate\": \"2000k\",",
+                                    "        \"maxrate\": \"3000k\",",
+                                    "        \"audio_bitrate\": \"128k\",",
+                                    "        \"encode_mp4\": True,",
+                                    "        \"sites\": [1],",
+                                    "    },",
+                                    "    {",
+                                    "        \"resolution\": \"1920x1080\",",
+                                    "        \"minrate\": \"2000k\",",
+                                    "        \"video_bitrate\": \"3000k\",",
+                                    "        \"maxrate\": \"4500k\",",
+                                    "        \"audio_bitrate\": \"192k\",",
+                                    "        \"encode_mp4\": False,",
+                                    "        \"sites\": [1],",
+                                    "    },",
+                                    "]"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "VIDEO_REQUIRED_FIELDS": {
+                            "default_value": "[]",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Permet d'ajouter l'attribut obligatoire dans le formulaire d'edition et d'ajout d'une video:",
+                                    "Exemple valeur: [\"discipline\", \"tags\"]",
+                                    "NB: les champs cachés et suivant ne sont pas pris en compte:",
+                                    "(video, title, type, owner, date_added, cursus, main_lang)"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "VIEW_STATS_AUTH": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Réserve l'accès aux statistiques des vidéos aux personnes authentifiées"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1899,6 +2741,303 @@
                     "title": {
                         "en": "Email",
                         "fr": "Courriel"
+                    }
+                },
+                "encoding": {
+                    "description": {},
+                    "settings": {
+                        "FFMPEG_AUDIO_BITRATE": {
+                            "default_value": "192k",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_CMD": {
+                            "default_value": "ffmpeg",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_CREATE_THUMBNAIL": {
+                            "default_value": "-vf \"fps=1/(%(duration)s/%(nb_thumbnail)s)\" -vsync vfr \"%(output)s_%%04d.png\"",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_CRF": {
+                            "default_value": 20,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_EXTRACT_SUBTITLE": {
+                            "default_value": "-map 0:%(index)s -f webvtt -y  \"%(output)s\" ",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_EXTRACT_THUMBNAIL": {
+                            "default_value": "-map 0:%(index)s -an -c:v copy -y  \"%(output)s\" ",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_HLS_COMMON_PARAMS": {
+                            "default_value": "-c:v %(libx)s -preset %(preset)s -profile:v %(profile)s -pix_fmt yuv420p -level %(level)s -crf %(crf)s -sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -c:a aac -ar 48000 -max_muxing_queue_size 4000 ",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_HLS_ENCODE_PARAMS": {
+                            "default_value": "-vf \"scale=-2:%(height)s\" -maxrate %(maxrate)s -bufsize %(bufsize)s -b:a:0 %(ba)s -hls_playlist_type vod -hls_time %(hls_time)s  -hls_flags single_file -master_pl_name \"livestream%(height)s.m3u8\" -y \"%(output)s\" ",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_HLS_TIME": {
+                            "default_value": 2,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_INPUT": {
+                            "default_value": "-hide_banner -threads %(nb_threads)s -i \"%(input)s\" ",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_LEVEL": {
+                            "default_value": 3,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_LIBX": {
+                            "default_value": "libx264",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_M4A_ENCODE": {
+                            "default_value": "-vn -c:a aac -b:a %(audio_bitrate)s \"%(output)s\" ",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_MP3_ENCODE": {
+                            "default_value": "-vn -codec:a libmp3lame -qscale:a 2 -y \"%(output)s\" ",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_MP4_ENCODE": {
+                            "default_value": "-map 0:v:0 %(map_audio)s -c:v %(libx)s  -vf \"scale=-2:%(height)s\" -preset %(preset)s -profile:v %(profile)s -pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s -sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -max_muxing_queue_size 4000 -c:a aac -ar 48000 -b:a %(ba)s -movflags faststart -y -vsync 0 \"%(output)s\" ",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_NB_THREADS": {
+                            "default_value": 0,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_NB_THUMBNAIL": {
+                            "default_value": 3,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_PRESET": {
+                            "default_value": "slow",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_PROFILE": {
+                            "default_value": "high",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_STUDIO_COMMAND": {
+                            "default_value": [
+                                " -hide_banner -threads %(nb_threads)s -i \"%(input)s\" %(subtime)s -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf %(crf)s -sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -max_muxing_queue_size 4000 -deinterlace "
+                            ],
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFPROBE_CMD": {
+                            "default_value": "ffprobe",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FFPROBE_GET_INFO": {
+                            "default_value": "%(ffprobe)s -v quiet -show_format -show_streams %(select_streams)s -print_format json -i %(source)s",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    ""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        }
+                    },
+                    "title": {
+                        "en": "Encoding",
+                        "fr": "Encodage"
                     }
                 },
                 "files": {
@@ -2309,6 +3448,21 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "THIRD_PARTY_APPS": {
+                            "default_value": [],
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Liste des applications tierces accessibles.",
+                                    "THIRD_PARTY_APPS = [\"enrichment\", \"live\"]"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
+                        },
                         "TIME_ZONE": {
                             "default_value": "UTC",
                             "description": {
@@ -2698,6 +3852,158 @@
                     "title": {
                         "en": "Templating",
                         "fr": "Modèle"
+                    }
+                },
+                "transcoding": {
+                    "description": {},
+                    "settings": {
+                        "TRANSCRIPTION_AUDIO_SPLIT_TIME": {
+                            "default_value": 600,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "decoupage de l'audio pour la transcription"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "TRANSCRIPTION_MODEL_PARAM": {
+                            "default_value": "{}",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Paramétrage des modèles pour la transcription",
+                                    "Voir la documentation à cette adresse : https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3",
+                                    "Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models",
+                                    "TRANSCRIPTION_MODEL_PARAM = {",
+                                    "    # le modèle stt",
+                                    "    'STT': {",
+                                    "        'fr': {",
+                                    "            'model': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite\",",
+                                    "            'scorer': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer\",",
+                                    "        }",
+                                    "    },",
+                                    "    # le modèle vosk",
+                                    "    'VOSK': {",
+                                    "        'fr': {",
+                                    "            'model': \"/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0\",",
+                                    "        }",
+                                    "    }",
+                                    "}"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "TRANSCRIPTION_NORMALIZE": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Activation de la normalisation de l'audio avant sa transcription"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "TRANSCRIPTION_NORMALIZE_TARGET_LEVEL": {
+                            "default_value": -16.0,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Niveau de normalisation de l'audio avant sa transcription"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "TRANSCRIPTION_STT_SENTENCE_BLANK_SPLIT_TIME": {
+                            "default_value": 0.5,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Temps maximum en secondes des blanc entre chaque mot pour le decoupage des sous-titres avec l'outil STT"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH": {
+                            "default_value": 3,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Temps en seconde maximum pour une phrase lors de la transcription avec l'outil STT"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "TRANSCRIPTION_TYPE": {
+                            "default_value": "STT",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Choix de l'outil pour la transcription : STT ou VOSK"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "TRANSCRIPT_VIDEO": {
+                            "default_value": "start_transcript",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Fonction appelée pour lancer la transcription des vidéos"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "USE_TRANSCRIPTION": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Activation de la transcription"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        }
+                    },
+                    "title": {
+                        "en": "Transcoding",
+                        "fr": "Transcodage"
                     }
                 }
             },

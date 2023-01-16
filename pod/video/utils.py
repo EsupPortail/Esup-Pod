@@ -1,7 +1,6 @@
 import os
 import re
 import shutil
-import subprocess
 from math import ceil
 
 from django.urls import reverse
@@ -11,13 +10,13 @@ from django.core.mail import send_mail
 from django.core.mail import mail_admins
 from django.core.mail import mail_managers
 from django.core.mail import EmailMultiAlternatives
-from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from django.db.models import Q
+from django.contrib.sites.shortcuts import get_current_site
 
 from .models import EncodingStep
 from .models import EncodingLog
-from .models import Video, EncodingAudio, EncodingVideo
+from .models import Video
 
 
 DEBUG = getattr(settings, "DEBUG", True)
@@ -41,7 +40,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     },
 )
 
-TITLE_SITE = (
+__TITLE_SITE__ = (
     TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
     if (TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"))
     else "Pod"
@@ -49,77 +48,34 @@ TITLE_SITE = (
 
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
 
-USE_ESTABLISHMENT = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
+USE_ESTABLISHMENT_FIELD = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
 
 MANAGERS = getattr(settings, "MANAGERS", {})
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
-FFPROBE = getattr(settings, "FFPROBE", "ffprobe")
 
-GET_DURATION_VIDEO = getattr(
-    settings,
-    "GET_DURATION_VIDEO",
-    "%(ffprobe)s -v error -show_entries format=duration "
-    + "-of default=noprint_wrappers=1:nokey=1 -i %(source)s",
-)
+# ##########################################################################
+# get all videos available
+# ##########################################################################
+
+def get_available_videos():
+    videos = Video.objects.filter(encoding_in_progress=False, is_draft=False).defer(
+        "video", "slug", "owner", "additional_owners", "description"
+    )
+    # for clean install, produces errors
+    try:
+        videos = videos.exclude(
+            pk__in=[vid.id for vid in videos if not vid.encoded]
+        ).filter(sites=get_current_site(None))
+    except Exception:
+        pass
+    return videos
+
 
 # ##########################################################################
 # ENCODE VIDEO : GENERIC FUNCTION
 # ##########################################################################
-
-
-def get_duration_from_mp4(mp4_file, output_dir):
-    msg = ""
-    duration = 0
-    command = GET_DURATION_VIDEO % {"ffprobe": FFPROBE, "source": mp4_file}
-    ffproberesult = subprocess.run(
-        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-    )
-    msg += "\nduration ffprobe command: \n- %s\n" % command
-
-    try:
-        duration = int(float("%s" % ffproberesult.stdout.decode("utf-8")))
-    except (RuntimeError, TypeError, AttributeError, ValueError) as err:
-        msg += "\nUnexpected error: {0}".format(err)
-
-    with open(output_dir + "/encoding.log", "a") as f:
-        f.write(msg)
-        f.write("\nffprobe command duration video result: ")
-        f.write(ffproberesult.stdout.decode("utf-8") + "\n")
-        f.write("Duration : %s \n\n" % duration)
-
-    if DEBUG:
-        print(msg)
-        print("\nffprobe command duration video result: ")
-        print(ffproberesult.stdout.decode("utf-8"))
-        print("Duration : %s" % duration)
-
-    return duration
-
-
-def fix_video_duration(video_id, output_dir):
-    try:
-        vid = Video.objects.get(id=video_id)
-    except ObjectDoesNotExist as err:
-        print("ObjectDoesNotExist error: {0}".format(err))
-        return
-    if vid.duration == 0:
-        if vid.is_video:
-            ev = EncodingVideo.objects.filter(video=vid, encoding_format="video/mp4")
-            if ev.count() > 0:
-                video_mp4 = sorted(ev, key=lambda m: m.height)[0]
-                vid.duration = get_duration_from_mp4(
-                    video_mp4.source_file.path, output_dir
-                )
-                vid.save()
-        else:
-            ea = EncodingAudio.objects.filter(video=vid, encoding_format="audio/mp3")
-            if ea.count() > 0:
-                vid.duration = get_duration_from_mp4(
-                    ea.first().source_file.path, output_dir
-                )
-                vid.save()
 
 
 def change_encoding_step(video_id, num_step, desc):
@@ -167,7 +123,7 @@ def create_outputdir(video_id, video_path):
 
 
 def send_email(msg, video_id):
-    subject = "[" + TITLE_SITE + "] Error Encoding Video id:%s" % video_id
+    subject = "[" + __TITLE_SITE__ + "] Error Encoding Video id:%s" % video_id
     message = "Error Encoding  video id : %s\n%s" % (video_id, msg)
     html_message = "<p>Error Encoding video id : %s</p><p>%s</p>" % (
         video_id,
@@ -177,7 +133,7 @@ def send_email(msg, video_id):
 
 
 def send_email_recording(msg, recording_id):
-    subject = "[" + TITLE_SITE + "] Error Encoding Recording id:%s" % recording_id
+    subject = "[" + __TITLE_SITE__ + "] Error Encoding Recording id:%s" % recording_id
     message = "Error Encoding  recording id : %s\n%s" % (recording_id, msg)
     html_message = "<p>Error Encoding recording id : %s</p><p>%s</p>" % (
         recording_id,
@@ -192,7 +148,7 @@ def send_email_transcript(video_to_encode):
     url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
     content_url = "%s:%s" % (url_scheme, video_to_encode.get_full_url())
     subject = "[%s] %s" % (
-        TITLE_SITE,
+        __TITLE_SITE__,
         _("Transcripting #%(content_id)s completed") % {"content_id": video_to_encode.id},
     )
     message = "%s\n%s\n\n%s\n%s\n%s\n" % (
@@ -201,7 +157,7 @@ def send_email_transcript(video_to_encode):
             "The content “%(content_title)s” has been automatically"
             + " transcript, and is now available on %(site_title)s."
         )
-        % {"content_title": video_to_encode.title, "site_title": TITLE_SITE},
+        % {"content_title": video_to_encode.title, "site_title": __TITLE_SITE__},
         _("You will find it here:"),
         content_url,
         _("Regards."),
@@ -228,7 +184,7 @@ def send_email_transcript(video_to_encode):
             )
             % {
                 "content_title": "<b>%s</b>" % video_to_encode.title,
-                "site_title": TITLE_SITE,
+                "site_title": __TITLE_SITE__,
             },
             _("You will find it here:"),
             content_url,
@@ -244,7 +200,7 @@ def send_email_transcript(video_to_encode):
     )
 
     if (
-        USE_ESTABLISHMENT
+        USE_ESTABLISHMENT_FIELD
         and MANAGERS
         and video_to_encode.owner.owner.establishment.lower() in dict(MANAGERS)
     ):
@@ -285,7 +241,7 @@ def send_email_encoding(video_to_encode):
     url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
     content_url = "%s:%s" % (url_scheme, video_to_encode.get_full_url())
     subject = "[%s] %s" % (
-        TITLE_SITE,
+        __TITLE_SITE__,
         _("Encoding #%(content_id)s completed") % {"content_id": video_to_encode.id},
     )
     message = "%s\n%s\n\n%s\n%s\n%s\n" % (
@@ -294,7 +250,7 @@ def send_email_encoding(video_to_encode):
             "The video “%(content_title)s” has been encoded to Web "
             + "formats, and is now available on %(site_title)s."
         )
-        % {"content_title": video_to_encode.title, "site_title": TITLE_SITE},
+        % {"content_title": video_to_encode.title, "site_title": __TITLE_SITE__},
         _("You will find it here:"),
         content_url,
         _("Regards."),
@@ -321,7 +277,7 @@ def send_email_encoding(video_to_encode):
             )
             % {
                 "content_title": "<b>%s</b>" % video_to_encode.title,
-                "site_title": TITLE_SITE,
+                "site_title": __TITLE_SITE__,
             },
             _("You will find it here:"),
             content_url,
@@ -337,7 +293,7 @@ def send_email_encoding(video_to_encode):
     )
 
     if (
-        USE_ESTABLISHMENT
+        USE_ESTABLISHMENT_FIELD
         and MANAGERS
         and video_to_encode.owner.owner.establishment.lower() in dict(MANAGERS)
     ):
