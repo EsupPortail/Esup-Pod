@@ -159,7 +159,7 @@ class XSSTests(TestCase):
     def setUp(self):
         """Set up some generic test strings."""
         self.XSS_inject = "</script><script>alert(document.domain)</script>"
-        self.XSS_detect = "alert(document.domain)"
+        self.XSS_detect = "<script>alert(document.domain)</script>"
 
     def test_videos_XSS(self):
         """Test if /videos/ is safe against some XSS."""
@@ -171,8 +171,16 @@ class XSSTests(TestCase):
 
     def test_search_XSS(self):
         """Test if /search/ is safe against some XSS."""
-        for param in ["q", "start_date", "end_date", "selected_facets"]:
+        for param in ["q", "start_date", "end_date"]:
             response = self.client.get("/search/?%s=%s" % (param, self.XSS_inject))
+
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+            self.assertNotIn(response.content, self.XSS_detect)
+
+        # Test that even with a recognized facet it doesn't open a breach
+        for facet in ["type", "slug"]:
+            response = self.client.get("/search/?selected_facets=%s:%s" % (
+                facet, self.XSS_inject))
 
             self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertNotIn(response.content, self.XSS_detect)
