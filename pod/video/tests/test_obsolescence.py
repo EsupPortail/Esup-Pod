@@ -91,7 +91,7 @@ class ObsolescenceTestCase(TestCase):
             date_delete=date.today() + timedelta(days=7),
         )
 
-        # on modifie la date après la création pour etre sur qu'elle soit bonne
+        # On modifie la date après la création pour etre sur qu'elle soit bonne
         vid1 = Video.objects.create(
             title="Video_to_archive",
             owner=user_faculty,
@@ -117,6 +117,7 @@ class ObsolescenceTestCase(TestCase):
         print(" --->  SetUp of ObsolescenceTestCase : OK !")
 
     def test_check_video_date_delete(self):
+        """Check that the videos deletion date complies with the settings."""
         video = Video.objects.get(id=1)
         date1 = date(
             date.today().year + DEFAULT_YEAR_DATE_DELETE,
@@ -137,6 +138,7 @@ class ObsolescenceTestCase(TestCase):
         print("--->  check_video_date_delete of ObsolescenceTestCase: OK")
 
     def test_notify_user_obsolete_video(self):
+        """Check user notification of obsolete video."""
         from pod.video.management.commands import check_obsolete_videos
 
         cmd = check_obsolete_videos.Command()
@@ -151,6 +153,7 @@ class ObsolescenceTestCase(TestCase):
         )
 
     def test_obsolete_video(self):
+        """Check that videos with  deletion date in 7,30 and 60 days will be notified."""
         from pod.video.management.commands import check_obsolete_videos
 
         cmd = check_obsolete_videos.Command()
@@ -170,6 +173,7 @@ class ObsolescenceTestCase(TestCase):
         print("--->  test_obsolete_video of ObsolescenceTestCase: OK")
 
     def test_delete_video(self):
+        """Check that obsolete videos are deleted."""
         from pod.video.management.commands import check_obsolete_videos
 
         cmd = check_obsolete_videos.Command()
