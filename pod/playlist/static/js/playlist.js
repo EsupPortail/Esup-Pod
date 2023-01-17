@@ -146,9 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch((error) => {
           showalert(
             gettext(
-              "Error deleting video. (" +
-                error +
-                ") The video could not be deleted."
+              "Error deleting video from playlist. The video could not be deleted."
             ),
             "alert-danger"
           );
@@ -197,9 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
           .catch((error) => {
             showalert(
               gettext(
-                "Error deleting playlist. (" +
-                  error +
-                  ") The playlist could not be deleted."
+                "Error deleting playlist. The playlist could not be deleted."
               ),
               "alert-danger"
             );
@@ -275,9 +271,7 @@ document.addEventListener("DOMContentLoaded", function () {
           .catch((error) => {
             showalert(
               gettext(
-                "Error getting video information. (" +
-                  error +
-                  ") The video information could not be retrieved."
+                "Error getting video information. The video information could not be retrieved."
               ),
               "alert-danger",
               "alert-danger"
