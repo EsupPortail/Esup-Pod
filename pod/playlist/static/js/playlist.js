@@ -25,13 +25,14 @@ document.addEventListener("DOMContentLoaded", function () {
     button.addEventListener("click", function () {
       let row = button.closest("tr");
       let currentposition = row.querySelector(".video-position");
-      
+
       if (currentposition.textContent > 1) {
-        let oldposition = row.previousElementSibling.querySelector(".video-position");
+        let oldposition =
+          row.previousElementSibling.querySelector(".video-position");
         currentposition.textContent = parseInt(currentposition.textContent) - 1;
         oldposition.textContent = parseInt(oldposition.textContent) + 1;
       }
-      console.log(row.previousSibling)
+      console.log(row.previousSibling);
       row.parentNode.insertBefore(row, row.previousElementSibling);
     });
   });
@@ -70,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
       form_data.append("videos", JSON.stringify(videos));
       form_data.append("csrfmiddlewaretoken", token);
       form_data.append("action", "move");
-    
+
       const return_url = $(this).data("return-url");
       var jqxhr = fetch(window.location.href, {
         method: "POST",
@@ -83,11 +84,11 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((response) => {
           if (response.status !== 200) {
             showalert(
-              "You are no longer authenticated. Please log in again.",
+              gettext("You are no longer authenticated. Please log in again."),
               "alert-danger"
             );
           } else {
-            showalert("Position Saved", "alert-success");
+            showalert(gettext("Position Saved"), "alert-success");
             window.location.reload();
           }
         })
@@ -116,12 +117,10 @@ document.addEventListener("DOMContentLoaded", function () {
         "X-CSRFToken": token,
         "X-Requested-With": "XMLHttpRequest",
       };
-   
 
       form_data = new FormData();
       form_data.append("video", slug);
       form_data.append("action", "remove");
-
 
       await fetch(window.location.href, {
         method: "POST",
@@ -129,10 +128,9 @@ document.addEventListener("DOMContentLoaded", function () {
         body: form_data,
       })
         .then((response) => {
-
           if (response.status != 200) {
             showalert(
-              "You are no longer authenticated. Please log in again.",
+              gettext("You are no longer authenticated. Please log in again."),
               "alert-danger"
             );
           } else {
@@ -141,16 +139,17 @@ document.addEventListener("DOMContentLoaded", function () {
               window.location.reload();
             } else {
               showalert(response.statusText, "alert-danger");
-              
             }
           }
         })
 
         .catch((error) => {
           showalert(
-            "Error deleting video. (" +
-              error +
-              ") The video could not be deleted.",
+            gettext(
+              "Error deleting video. (" +
+                error +
+                ") The video could not be deleted."
+            ),
             "alert-danger"
           );
         });
@@ -160,10 +159,10 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".playlist-delete").forEach((element) => {
     const return_url = element.dataset.returnUrl;
     element.addEventListener("click", function () {
-    let token = document.cookie
-      .split(";")
-      .filter((item) => item.trim().startsWith("csrftoken="))[0]
-      .split("=")[1];
+      let token = document.cookie
+        .split(";")
+        .filter((item) => item.trim().startsWith("csrftoken="))[0]
+        .split("=")[1];
       if (confirm("Are you sure you want to delete this playlist?")) {
         headers = {
           "X-Requested-With": "XMLHttpRequest",
@@ -172,7 +171,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let form_data = new FormData();
         form_data.append("action", "delete");
-       
+
         let jqxhr = fetch(window.location.href, {
           method: "POST",
           headers: headers,
@@ -181,7 +180,9 @@ document.addEventListener("DOMContentLoaded", function () {
           .then((response) => {
             if (response.status != 200) {
               showalert(
-                "You are no longer authenticated. Please log in again.",
+                gettext(
+                  "You are no longer authenticated. Please log in again."
+                ),
                 "alert-danger"
               );
             } else {
@@ -195,9 +196,11 @@ document.addEventListener("DOMContentLoaded", function () {
           })
           .catch((error) => {
             showalert(
-              "Error deleting playlist. (" +
-                error +
-                ") The playlist could not be deleted.",
+              gettext(
+                "Error deleting playlist. (" +
+                  error +
+                  ") The playlist could not be deleted."
+              ),
               "alert-danger"
             );
           });
@@ -224,7 +227,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
         if (!foundslug[2]) {
-          showalert("The video slug not found.", "alert-danger");
+          showalert(gettext("The video slug not found."), "alert-danger");
           return;
         }
 
@@ -234,7 +237,6 @@ document.addEventListener("DOMContentLoaded", function () {
           .split(";")
           .filter((item) => item.trim().startsWith("csrftoken="))[0]
           .split("=")[1];
-
 
         form_data = new FormData();
         form_data.append("video", foundslug[2]);
@@ -251,14 +253,16 @@ document.addEventListener("DOMContentLoaded", function () {
           .then((response) => {
             if (response.status != 200) {
               showalert(
-                "You are no longer authenticated. Please log in again.",
+                gettext(
+                  "You are no longer authenticated. Please log in again."
+                ),
                 "alert-danger",
                 "alert-danger"
               );
             } else {
               if (response.status == 200) {
                 showalert(
-                  "Video add to playlist",
+                  gettext("Video add to playlist"),
                   "alert-success",
                   "alert-success"
                 );
@@ -270,9 +274,11 @@ document.addEventListener("DOMContentLoaded", function () {
           })
           .catch((error) => {
             showalert(
-              "Error getting video information. (" +
-                error +
-                ") The video information could not be retrieved.",
+              gettext(
+                "Error getting video information. (" +
+                  error +
+                  ") The video information could not be retrieved."
+              ),
               "alert-danger",
               "alert-danger"
             );

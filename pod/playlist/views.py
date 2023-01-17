@@ -233,8 +233,8 @@ def playlist_edit(request, playlist):
 
 
 def playlist_add(request, playlist):
+    """Add a video (in POST) to the playlist. AJAX only."""
     if is_ajax(request):
-
         if request.POST.get("video"):
             video = get_object_or_404(Video, slug=request.POST.get(
                 "video"), sites=get_current_site(request))
