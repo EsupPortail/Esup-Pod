@@ -4,8 +4,9 @@
 #  (")_(")
 #------------------------------------------------------------------------------------------------------------------------------
 # Conteneur node:19
-#FROM node:19 as source-build-js
-FROM harbor.urba.univ-lille.fr/store/node:19 as source-build-js
+FROM node:19 as source-build-js
+# TODO
+#FROM harbor.urba.univ-lille.fr/store/node:19 as source-build-js
 WORKDIR /tmp/pod
 COPY ./pod/ .
 RUN yarn
