@@ -40,13 +40,12 @@ def task_start_encode_studio(
 def task_start_live_transcription(self, url, slug):
     print("CELERY START LIVE TRANSCRIPTION %s" % slug)
     from pod.live.live_transcript import transcribe
-    #transcribe(url, slug)
     broadcaster = Broadcaster.objects.get(slug=slug)
     running_task = RunningTask.objects.create(
         broadcaster=broadcaster, task_id=self.request.id
     )
     running_task.save()
-    # transcribe(url, slug)
+    transcribe(url, slug)
 
 
 @shared_task(bind=True)

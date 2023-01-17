@@ -1,14 +1,17 @@
 from django.conf import settings
 from vosk import Model, KaldiRecognizer, SetLogLevel
 from webvtt import WebVTT, Caption
+from pod.main.tasks import task_end_live_transcription, task_start_live_transcription
 import threading
 import time
 import json
 import subprocess
-from pod.main.tasks import task_end_live_transcription, task_start_live_transcription
 
 CELERY_TO_TRANSCRIBE_LIVE = getattr(settings, "CELERY_TO_TRANSCRIBE_LIVE", False)
-path_to_media_folder = r"C:\Users\mateo\Desktop\django_projects\podv3\pod\media\transcripts"
+VOSK_MODEL = getattr(settings, "VOSK_MODEL", None)
+TRANSCRIPTIONS_FOLDER = getattr(settings, "TRANSCRIPTIONS_FOLDER", None)
+threads = {}
+threads_to_stop = []
 
 
 def timestring(seconds):
@@ -20,17 +23,17 @@ def timestring(seconds):
 
 
 def transcribe(url, slug):
-    save_path = path_to_media_folder + "\\" + slug + ".vtt"
+    save_path = TRANSCRIPTIONS_FOLDER + "\\" + slug + ".vtt"  # enlever le backslash pour linux
     url = url.split('.m3u8')[0] + "_low/index.m3u8"
     SAMPLE_RATE = 16000
     SetLogLevel(-1)
-    small_model = r"C:\Users\mateo\Desktop\transcription\vosk-model-small-fr-0.22"
-
+    small_model = VOSK_MODEL
     model = Model(small_model)
     rec = KaldiRecognizer(model, SAMPLE_RATE)
     rec.SetWords(True)
     last_caption = None
-    while True:
+    thread_id = threading.get_ident()
+    while CELERY_TO_TRANSCRIBE_LIVE or thread_id not in threads_to_stop:
         start = time.time()
         command = ["ffmpeg", "-y", "-loglevel", "quiet", "-i", url, "-ss", "00:00:00.005", "-t",
                    "00:00:05", "-acodec", "pcm_s16le", "-ac", "1", "-ar", str(SAMPLE_RATE), "-f", "s16le", "-"]
@@ -94,6 +97,8 @@ def transcribe(url, slug):
         now = time.time() - start
         if now < 5:
             time.sleep(5 - now)
+    print("stopped transcription")
+    threads_to_stop.remove(thread_id)
 
 
 def transcribe_live(url, slug, status):
@@ -109,9 +114,11 @@ def transcribe_live(url, slug, status):
                 url, slug))
             t.setDaemon(True)
             t.start()
+            # get id of the thread
+            threads[slug] = t.ident
+
         else:
-            print("end process")
-
-
-def end_live_transcription():
-    print("end live transcription")
+            stop_thread = threads.get(slug, None)
+            if stop_thread:
+                threads_to_stop.append(stop_thread)
+                print("stopping thread")

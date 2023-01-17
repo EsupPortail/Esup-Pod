@@ -306,3 +306,9 @@ for variable in the_update_settings:
     locals()[variable] = the_update_settings[variable]
 
 TIME_INPUT_FORMATS = ["%H:%M", *django.conf.global_settings.TIME_INPUT_FORMATS]
+
+# Dans le settings_local.py
+CELERY_TO_TRANSCRIBE_LIVE = False
+CELERY_BROKER_URL = "amqp://pod:*mdp*@localhost/rabbitpod"
+VOSK_MODEL = r"C:\Users\mateo\Desktop\transcription\vosk-model-small-fr-0.22"
+TRANSCRIPTIONS_FOLDER = r"C:\Users\mateo\Desktop\django_projects\podv3\pod\media\transcripts"

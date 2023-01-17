@@ -9,7 +9,7 @@ from js_asset import static
 from sorl.thumbnail import get_thumbnail
 
 from pod.live.forms import BuildingAdminForm, EventAdminForm, BroadcasterAdminForm
-from pod.live.models import Building, Event, Broadcaster, HeartBeat, Video
+from pod.live.models import Building, Event, Broadcaster, HeartBeat, RunningTask, Video
 
 DEFAULT_EVENT_THUMBNAIL = getattr(
     settings, "DEFAULT_EVENT_THUMBNAIL", "img/default-event.svg"
@@ -259,3 +259,4 @@ admin.site.register(Building, BuildingAdmin)
 admin.site.register(Broadcaster, BroadcasterAdmin)
 admin.site.register(HeartBeat, HeartBeatAdmin)
 admin.site.register(Event, EventAdmin)
+admin.site.register(RunningTask)
