@@ -145,6 +145,7 @@ VIEW_STATS_AUTH = getattr(settings, "VIEW_STATS_AUTH", False)
 ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
 USER_VIDEO_CATEGORY = getattr(settings, "USER_VIDEO_CATEGORY", False)
 DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
+ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
 
 __VIDEOS__ = get_available_videos()
 
@@ -284,7 +285,7 @@ def channel(request, slug_c, slug_t=None):
         list_theme = theme.get_all_children_flat()
         videos_list = videos_list.filter(theme__in=list_theme)
 
-    if getattr(settings, "ORGANIZE_BY_THEME", False):
+    if ORGANIZE_BY_THEME :
         return _regroup_videos_by_theme(request, videos_list, channel, theme)
 
     page = request.GET.get("page", 1)

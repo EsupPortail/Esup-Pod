@@ -1997,6 +1997,21 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "ORGANIZE_BY_THEME": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Affichage uniquement des vidéos de la chaîne ou du thème actuel(le).",
+                                    "Affichage des sous-thèmes directs de la chaîne ou du thème actuel(le)"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY": {
                             "default_value": false,
                             "description": {
@@ -2096,6 +2111,25 @@
                                     "année ou encore le nombre de vue total depuis la création de la vidéo.",
                                     "Un lien est rajouté dans la partie info lors de la lecture d'une vidéo, un lien est rajouté dans la page de visualisation d'une chaîne ou un theme",
                                     "ou encore toutes les vidéos présentes sur la plateforme."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "USE_VIDEO_EVENT_TRACKING": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Ce paramètre permet d'activer l’envoi d'évènements sur le lecteur vidéo à Matomo n'est utile que si le code piwik / matomo est présent dans l'instance de Esup-Pod.",
+                                    "les évènements envoyés sont :",
+                                    "   play, pause, seeked, ended, ratechange, fullscreen, error, loadmetadata",
+                                    "Pour rajouter le code Piwik/Matomo dans votre instance de Pod, il suffit de créer un fichier 'pod/custom/templates/custom/tracking.html'",
+                                    "Il faut ensuite y insérer le code javascript puis dans votre fichier settings_local.py,",
+                                    "de préciser dans la variable TEMPLATE_VISIBLE_SETTINGS :'TRACKING_TEMPLATE': 'custom/tracking.html'"
                                 ]
                             },
                             "pod_version_end": "",
@@ -2398,6 +2432,20 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "VIDEO_PLAYBACKRATES": {
+                            "default_value": "[0.5, 1, 1.5, 2]",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Configuration des choix de vitesse de lecture pour le lecteur vidéo"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "VIDEO_RECENT_VIEWCOUNT": {
                             "default_value": 180,
                             "description": {
@@ -2490,6 +2538,89 @@
                     "title": {
                         "en": "",
                         "fr": "Configuration application vidéo"
+                    }
+                },
+                "video_search": {
+                    "description": {},
+                    "settings": {
+                        "ES_INDEX": {
+                            "default_value": "pod",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Valeur pour l’index de ElasticSearch"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "ES_MAX_RETRIES": {
+                            "default_value": 10,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Valeur max essai pour configuration de ElasticSearch"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "ES_TIMEOUT": {
+                            "default_value": 30,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Valeur timeout pour configuration de ElasticSearch"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "ES_URL": {
+                            "default_value": "[\"http://127.0.0.1:9200/\"]",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "adresse du ou des instances d'Elasticsearch utilisées pour l'indexation et la recherche de vidéo."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "ES_VERSION": {
+                            "default_value": 6,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Version d'ElasticSearch",
+                                    "valeurs possibles 6 ou 7 (pour indiquer utiliser ElasticSearch 6 ou 7)",
+                                    "pour utiliser la version 7, faire une mise à jour du paquet elasticsearch-py ",
+                                    "pip3 install elasticsearch==7.10.1",
+                                    "https://elasticsearch-py.readthedocs.io/en/v7.10.1/"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        }
+                    },
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application search"
                     }
                 }
             },
@@ -3772,6 +3903,20 @@
                                 "fr": [
                                     "",
                                     "Si True, affiche les prochains évènements sur la page d'accueil"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "SHOW_ONLY_PARENT_THEMES": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, affiche uniquement les thèmes de premier niveau dans l'onglet 'Chaîne'"
                                 ]
                             },
                             "pod_version_end": "",
