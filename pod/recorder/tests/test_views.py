@@ -20,7 +20,6 @@ from django.contrib.sites.models import Site
 from xml.dom import minidom
 
 from .. import views
-from importlib import reload
 from http import HTTPStatus
 import os
 
@@ -205,7 +204,7 @@ class studio_podTestView(TestCase):
 
     @override_settings(DEBUG=True, RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
     def test_studio_podTestView_get_request_restrict(self):
-        reload(views)
+        views.__REVATSO__ = True
         self.create_index_file()
         self.client = Client()
         url = reverse("recorder:studio_pod", kwargs={})
