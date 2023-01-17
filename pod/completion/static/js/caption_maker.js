@@ -178,23 +178,26 @@ document
     let video_error = document.getElementById("video_error");
     switch (event.originalEvent.target.error.code) {
       case event.originalEvent.target.error.MEDIA_ERR_ABORTED:
-        video_error.textContent = "You aborted the video playback.";
+        video_error.textContent = gettext("You aborted the video playback.");
         break;
       case event.originalEvent.target.error.MEDIA_ERR_NETWORK:
-        video_error.textContent =
-          "A network error caused the video download to fail part-way.";
+        video_error.textContent = gettext(
+          "A network error caused the video download to fail part-way."
+        );
         break;
       case event.originalEvent.target.error.MEDIA_ERR_DECODE:
-        video_error.textContent =
-          "The video playback was aborted due to a corruption problem or because the video used features your browser did not support.";
+        video_error.textContent = gettext(
+          "The video playback was aborted due to a corruption problem or because the video used features your browser did not support."
+        );
         break;
       case event.originalEvent.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-        video_error.textContent =
-          "The video could not be loaded, either because the server or network failed or because the format is not supported.";
+        video_error.textContent = gettext(
+          "The video could not be loaded, either because the server or network failed or because the format is not supported."
+        );
 
         break;
       default:
-        video_error.textContent = "An unknown error occurred.";
+        video_error.textContent = gettext("An unknown error occurred.");
         break;
     }
     document.getElementById("videoError").height(vh).style.display = "block";
