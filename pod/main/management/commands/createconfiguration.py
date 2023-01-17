@@ -82,9 +82,15 @@ class Command(BaseCommand):
         for key, value in settings.items():
             msg += "\n\n - %s " % key
             msg += "\n> default value : %s <br>" % value["default_value"]
+            code = False
             for line in value["description"][self.language]:
+                if line.startswith('`'):
+                    msg += "\n>> %s" % line
+                    code = not code
+                    continue
+                endline = "" if code else "<br>"
                 if line != "":
-                    msg += "\n>> %s <br>" % line
+                    msg += "\n>> %s %s" % (line, endline)
                 else:
                     msg += "\n"
         return msg

@@ -1148,6 +1148,7 @@
                                     "",
                                     "Dictionnaire de clé:valeur permettant d'afficher les informations d'une session de réunion dans BBB",
                                     "Voici la liste par défaut",
+                                    "```",
                                     "BBB_MEETING_INFO:",
                                     "{",
                                     "    \"meetingName\": _(\"Meeting name\"),",
@@ -1160,7 +1161,8 @@
                                     "    \"attendee\": _(\"Attendee\"),",
                                     "    \"fullName\": _(\"Full name\"),",
                                     "    \"role\": _(\"Role\"),",
-                                    "}"
+                                    "}",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1192,12 +1194,14 @@
                                     "",
                                     "liste des champs du formulaire de creation d'une reunion",
                                     "les champs sont regroupés dans un ensemble de champs",
+                                    "```",
                                     "MEETING_DATE_FIELDS:",
                                     "(",
                                     "    \"start\",",
                                     "    \"start_time\",",
                                     "    \"expected_duration\",",
-                                    ")"
+                                    ")",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1230,6 +1234,7 @@
                                     "",
                                     "Permet de définir les champs principaux du formulaire de creation d'une réunion",
                                     "les champs principaux sont affichés directement dans la page de formulaire d'une réunion",
+                                    "```",
                                     "MEETING_MAIN_FIELDS:",
                                     "(",
                                     "    \"name\",",
@@ -1238,7 +1243,8 @@
                                     "    \"attendee_password\",",
                                     "    \"is_restricted\",",
                                     "    \"restrict_access_to_groups\",",
-                                    ")"
+                                    ")",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1270,7 +1276,9 @@
                                 "fr": [
                                     "",
                                     "ensemble des champs qui serotn cachés si MEETING_DISABLE_RECORD est défini à true",
-                                    "MEETING_RECORD_FIELDS : (\"record\", \"auto_start_recording\", \"allow_start_stop_recording\")"
+                                    "```",
+                                    "MEETING_RECORD_FIELDS : (\"record\", \"auto_start_recording\", \"allow_start_stop_recording\")",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1288,6 +1296,7 @@
                                     "",
                                     "permet de définir la liste de tous les champs permettant de définir la récurrence d'une reunion",
                                     "tous ces champs sont regroupés dans un ensemble de champs affichés dans une modale",
+                                    "```",
                                     "MEETING_RECURRING_FIELDS:",
                                     "(",
                                     "    \"recurrence\",",
@@ -1296,7 +1305,8 @@
                                     "    \"nb_occurrences\",",
                                     "    \"weekdays\",",
                                     "    \"monthly_type\",",
-                                    ")"
+                                    ")",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1417,6 +1427,20 @@
                 "recorder": {
                     "description": {},
                     "settings": {
+                        "ALLOW_MANUAL_RECORDING_CLAIMING": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "si True, active un lien dans le menu de l'utilisateur permettant de réclamer un enregistrement"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER": {
                             "default_value": true,
                             "description": {
@@ -1540,13 +1564,15 @@
                                 "fr": [
                                     "",
                                     "Contenu par défaut du fichier xml pour créer le mediapackage pour le studio. Ce fichier va contenir toutes les spécificités de l'enregistrement (source, cutting, title, presenter etc.)",
+                                    "```",
                                     "OPENCAST_MEDIAPACKAGE = \"\"\"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>",
                                     "    <mediapackage xmlns=\"http://mediapackage.opencastproject.org\" id=\"\" start=\"\">",
                                     "    <media/>",
                                     "    <metadata/>",
                                     "    <attachments/>",
                                     "    <publications/>",
-                                    "    </mediapackage>\"\"\""
+                                    "    </mediapackage>\"\"\"",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1711,13 +1737,15 @@
                                     "",
                                     "Liste des cursus proposés lors de l'ajout des vidéos.",
                                     "Affichés en dessous d'une vidéos, ils sont aussi utilisés pour affiner la recherche.",
+                                    "```",
                                     "CURSUS_CODES = (",
                                     "    ('0', _(\"None / All\")),",
                                     "    ('L', _(\"Bachelor’s Degree\")),",
                                     "    ('M', _(\"Master’s Degree\")),",
                                     "    ('D', _(\"Doctorate\")),",
                                     "    ('1', _(\"Other\"))",
-                                    ")"
+                                    ")",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1859,6 +1887,7 @@
                                 "fr": [
                                     "",
                                     "Encodage possible sur la plateforme. Associé à un rendu dans le cas d'une vidéo.",
+                                    "```",
                                     "ENCODING_CHOICES = (",
                                     "    (\"audio\", \"audio\"),",
                                     "    (\"360p\", \"360p\"),",
@@ -1866,7 +1895,8 @@
                                     "    (\"720p\", \"720p\"),",
                                     "    (\"1080p\", \"1080p\"),",
                                     "    (\"playlist\", \"playlist\")",
-                                    ")"
+                                    ")",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1881,6 +1911,7 @@
                                 "fr": [
                                     "",
                                     "Format d'encodage réalisé sur la plateforme.",
+                                    "```",
                                     "FORMAT_CHOICES = (",
                                     "    (\"video/mp4\", 'video/mp4'),",
                                     "    (\"video/mp2t\", 'video/mp2t'),",
@@ -1888,7 +1919,8 @@
                                     "    (\"audio/mp3\", \"audio/mp3\"),",
                                     "    (\"audio/wav\", \"audio/wav\"),",
                                     "    (\"application/x-mpegURL\", \"application/x-mpegURL\"),",
-                                    ")"
+                                    ")",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1932,6 +1964,7 @@
                                 "fr": [
                                     "",
                                     "Licence proposées pour les vidéos en creative commons : ",
+                                    "```",
                                     "LICENCE_CHOICES = (",
                                     "    ('by', (\"Attribution 4.0 International (CC BY 4.0)\")),",
                                     "    ('by-nd', (\"Attribution-NoDerivatives 4.0 \"",
@@ -1943,7 +1976,8 @@
                                     "    ('by-nc-sa', (\"Attribution-NonCommercial-ShareAlike 4.0 \"",
                                     "                  \"International (CC BY-NC-SA 4.0)\")),",
                                     "    ('by-sa', (\"Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)\"))",
-                                    ")"
+                                    ")",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1973,11 +2007,13 @@
                                 "fr": [
                                     "",
                                     "Valeurs possible pour l'accès à une note",
+                                    "```",
                                     "NOTES_STATUS = (",
                                     "    (\"0\", _(\"Private (me only)\")),",
                                     "    (\"1\", _(\"Shared with video owner\")),",
                                     "    (\"2\", _(\"Public\")),",
-                                    ")"
+                                    ")",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -2036,6 +2072,7 @@
                                     "",
                                     "Ensemble des textes d'aide affichés avec le formulaire d'édition de theme.",
                                     "voir pod/video/forms.py",
+                                    "```",
                                     "THEME_FORM_FIELDS_HELP_TEXT = OrderedDict(",
                                     "    [",
                                     "        (",
@@ -2062,7 +2099,8 @@
                                     "            ],",
                                     "        ),",
                                     "    ]",
-                                    ")"
+                                    ")",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -2144,6 +2182,7 @@
                                 "fr": [
                                     "",
                                     "Extension autorisée pour le téléversement sur la plateforme",
+                                    "```",
                                     "VIDEO_ALLOWED_EXTENSIONS = (",
                                     "    \"3gp\",",
                                     "    \"avi\",",
@@ -2164,7 +2203,8 @@
                                     "    \"wma\",",
                                     "    \"webm\",",
                                     "    \"ts\",",
-                                    ")"
+                                    ")",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -2193,6 +2233,7 @@
                                 "fr": [
                                     "",
                                     "Ensemble des textes d'aide affichés avec le formulaire d'envoi de vidéo",
+                                    "```",
                                     "VIDEO_FORM_FIELDS_HELP_TEXT = OrderedDict(",
                                     "    [",
                                     "        (",
@@ -2412,7 +2453,8 @@
                                     "            ],",
                                     "        ),",
                                     "    ]",
-                                    ")"
+                                    ")",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -2469,6 +2511,7 @@
                                 "fr": [
                                     "",
                                     "Rendu serializé des rendus pour l'encodage des videos. Cela permet de pouvoir encoder les vidéos sans l'environnement de Pod",
+                                    "```",
                                     "VIDEO_RENDITIONS = [",
                                     "    {",
                                     "        \"resolution\": \"640x360\",",
@@ -2497,7 +2540,8 @@
                                     "        \"encode_mp4\": False,",
                                     "        \"sites\": [1],",
                                     "    },",
-                                    "]"
+                                    "]",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -2647,16 +2691,16 @@
                                     "C’est un dictionnaire imbriqué dont les contenus font correspondre l’alias de base de données avec un dictionnaire contenant les options de chacune des bases de données.",
                                     "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#databases__",
                                     "valeur par défaut : une base de données au format sqlite",
-                                    "````",
+                                    "```",
                                     "DATABASES = {",
                                     "    'default': {",
                                     "        'ENGINE': 'django.db.backends.sqlite3',",
                                     "        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),",
                                     "    }",
                                     "}",
-                                    "````",
+                                    "```",
                                     "Voici un exemple de configuration pour utiliser une base MySQL : ",
-                                    "````",
+                                    "```",
                                     "DATABASES = {",
                                     "    'default': {",
                                     "        'ENGINE': 'django.db.backends.mysql',",
@@ -2670,7 +2714,7 @@
                                     "         },",
                                     "    }",
                                     "}",
-                                    "````"
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -2795,6 +2839,7 @@
                                 "fr": [
                                     "",
                                     "Choix de sujet pour les courriels envoyés depuis la plateforme",
+                                    "```",
                                     "SUBJECT_CHOICES = (",
                                     "    ('', '-----'),",
                                     "    ('info', ('Request more information')),",
@@ -2803,7 +2848,8 @@
                                     "    ('inappropriate_content', ('Report inappropriate content')),",
                                     "    ('bug', ('Correction or bug report')),",
                                     "    ('other', ('Other (please specify)'))",
-                                    ")"
+                                    ")",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3588,7 +3634,9 @@
                                 "fr": [
                                     "",
                                     "Liste des applications tierces accessibles.",
-                                    "THIRD_PARTY_APPS = [\"enrichment\", \"live\"]"
+                                    "```",
+                                    "THIRD_PARTY_APPS = [\"enrichment\", \"live\"]",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3629,9 +3677,11 @@
                                 "fr": [
                                     "",
                                     "Durée d'obsolescence personnalisée par Affiliation",
+                                    "```",
                                     "ACCOMMODATION_YEARS = {",
                                     "    'affiliate': 1",
-                                    "}"
+                                    "}",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3646,20 +3696,6 @@
                 "templating": {
                     "description": {},
                     "settings": {
-                        "ALLOW_MANUAL_RECORDING_CLAIMING": {
-                            "default_value": false,
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "",
-                                    "si True, active un lien dans le menu de l'utilisateur permettant de réclamer un enregistrement"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
-                        },
                         "COOKIE_LEARN_MORE": {
                             "default_value": "",
                             "description": {
@@ -3930,6 +3966,8 @@
                                 ],
                                 "fr": [
                                     "",
+                                    "```",
+                                    "TEMPLATE_VISIBLE_SETTINGS = {",
                                     "# Titre du site.",
                                     "'TITLE_SITE': 'Pod',",
                                     " ",
@@ -3987,7 +4025,9 @@
                                     "#  pour y intégrer votre code Piwik ou Google analytics.",
                                     "# Ce template est inséré dans toutes les pages de la plateforme,",
                                     "#  y compris en mode iframe",
-                                    "'TRACKING_TEMPLATE': '',"
+                                    "'TRACKING_TEMPLATE': '',",
+                                    "}",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4027,6 +4067,7 @@
                                     "Paramétrage des modèles pour la transcription",
                                     "Voir la documentation à cette adresse : https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3",
                                     "Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models",
+                                    "```",
                                     "TRANSCRIPTION_MODEL_PARAM = {",
                                     "    # le modèle stt",
                                     "    'STT': {",
@@ -4041,7 +4082,8 @@
                                     "            'model': \"/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0\",",
                                     "        }",
                                     "    }",
-                                    "}"
+                                    "}",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
