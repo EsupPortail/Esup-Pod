@@ -11,8 +11,9 @@ COPY ./pod/ .
 RUN yarn
 #------------------------------------------------------------------------------------------------------------------------------
 # Conteneur python:3.7-buster
-#FROM python:3.7-buster
-FROM harbor.urba.univ-lille.fr/store/python:3.7-buster
+FROM python:3.7-buster
+# TODO
+#FROM harbor.urba.univ-lille.fr/store/python:3.7-buster
 
 RUN apt-get update \
     && apt-get install -y netcat \
