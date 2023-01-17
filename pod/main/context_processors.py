@@ -68,12 +68,6 @@ HIDE_DISCIPLINES = getattr(django_settings, "HIDE_DISCIPLINES", False)
 
 HIDE_TYPES = getattr(django_settings, "HIDE_TYPES", False)
 
-ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
-    django_settings, "ALLOW_MANUAL_RECORDING_CLAIMING", False
-)
-
-SHIB_NAME = getattr(django_settings, "SHIB_NAME", "Identify Federation")
-
 USE_BBB = getattr(django_settings, "USE_BBB", False)
 
 USE_BBB_LIVE = getattr(django_settings, "USE_BBB_LIVE", False)
@@ -127,8 +121,6 @@ def context_settings(request):
     new_settings["HIDE_SHARE"] = HIDE_SHARE
     new_settings["HIDE_DISCIPLINES"] = HIDE_DISCIPLINES
     new_settings["HIDE_TYPES"] = HIDE_TYPES
-    new_settings["SHIB_NAME"] = SHIB_NAME
-    new_settings["ALLOW_MANUAL_RECORDING_CLAIMING"] = ALLOW_MANUAL_RECORDING_CLAIMING
     new_settings["MAINTENANCE_REASON"] = maintenance_text_short
     new_settings["MAINTENANCE_MODE"] = maintenance_mode
     new_settings["MAINTENANCE_TEXT_SHEDULED"] = maintenance_text_sheduled
