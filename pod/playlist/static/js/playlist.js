@@ -257,11 +257,7 @@ document.addEventListener("DOMContentLoaded", function () {
               );
             } else {
               if (response.status == 200) {
-                showalert(
-                  gettext("Video add to playlist"),
-                  "alert-success",
-                  "alert-success"
-                );
+                showalert(gettext("Video add to playlist"), "alert-success");
                 link.classList.add("disabled");
                 link.classList.remove("playlist-item");
                 link.append("");
@@ -273,7 +269,6 @@ document.addEventListener("DOMContentLoaded", function () {
               gettext(
                 "Error getting video information. The video information could not be retrieved."
               ),
-              "alert-danger",
               "alert-danger"
             );
           });
