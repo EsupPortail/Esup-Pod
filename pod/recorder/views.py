@@ -30,36 +30,14 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 
-# from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
+
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 # import urllib.parse
 from django.shortcuts import get_object_or_404
-from pod.main.views import in_maintenance
+from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
 from django.views.decorators.csrf import csrf_exempt
 from xml.dom import minidom
-
-##
-# Settings exposed in templates
-#
-TEMPLATE_VISIBLE_SETTINGS = getattr(
-    settings,
-    "TEMPLATE_VISIBLE_SETTINGS",
-    {
-        "TITLE_SITE": "Pod",
-        "TITLE_ETB": "University name",
-        "LOGO_SITE": "img/logoPod.svg",
-        "LOGO_ETB": "img/logo_etb.svg",
-        "LOGO_PLAYER": "img/pod_favicon.svg",
-        "LINK_PLAYER": "",
-        "FOOTER_TEXT": ("",),
-        "FAVICON": "img/pod_favicon.svg",
-        "CSS_OVERRIDE": "",
-        "PRE_HEADER_TEMPLATE": "",
-        "POST_FOOTER_TEMPLATE": "",
-        "TRACKING_TEMPLATE": "",
-    },
-)
 
 DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/")
 
