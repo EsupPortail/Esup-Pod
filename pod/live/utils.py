@@ -23,7 +23,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     },
 )
 
-TITLE_SITE = (
+__TITLE_SITE__ = (
     TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
     if (TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"))
     else "Pod"
@@ -31,7 +31,7 @@ TITLE_SITE = (
 
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
 
-USE_ESTABLISHMENT = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
+USE_ESTABLISHMENT_FIELD = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
 
 MANAGERS = getattr(settings, "MANAGERS", {})
 
@@ -46,7 +46,7 @@ def send_email_confirmation(event):
     url_event = get_event_url(event)
 
     subject = "[%s] %s" % (
-        TITLE_SITE,
+        __TITLE_SITE__,
         _("Registration of event #%(content_id)s") % {"content_id": event.id},
     )
 
@@ -95,7 +95,7 @@ def send_email_confirmation(event):
 
     # email establishment
     if (
-        USE_ESTABLISHMENT
+        USE_ESTABLISHMENT_FIELD
         and MANAGERS
         and event.owner.owner.establishment.lower() in dict(MANAGERS)
     ):

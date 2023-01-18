@@ -19,6 +19,7 @@ from .models import CustomImageModel
 from .forms import UserFolderForm
 from .forms import CustomFileModelForm
 from .forms import CustomImageModelForm
+from .forms import IMAGE_ALLOWED_EXTENSIONS, FILE_ALLOWED_EXTENSIONS
 from pod.video.models import remove_accents
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
@@ -26,49 +27,14 @@ import re
 import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-
-IMAGE_ALLOWED_EXTENSIONS = getattr(
-    settings,
-    "IMAGE_ALLOWED_EXTENSIONS",
-    (
-        "jpg",
-        "jpeg",
-        "bmp",
-        "png",
-        "gif",
-        "tiff",
-    ),
-)
-
-FILE_ALLOWED_EXTENSIONS = getattr(
-    settings,
-    "FILE_ALLOWED_EXTENSIONS",
-    (
-        "doc",
-        "docx",
-        "odt",
-        "pdf",
-        "xls",
-        "xlsx",
-        "ods",
-        "ppt",
-        "pptx",
-        "txt",
-        "html",
-        "htm",
-        "vtt",
-        "srt",
-    ),
-)
-
 TEST_SETTINGS = getattr(settings, "TEST_SETTINGS", False)
-FOLDER_FILE_TYPE = ["image", "file"]
+__FOLDER_FILE_TYPE__ = ["image", "file"]
 
 
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def home(request, type=None):
-    if type is not None and type not in FOLDER_FILE_TYPE:
+    if type is not None and type not in __FOLDER_FILE_TYPE__:
         raise SuspiciousOperation("--> Invalid type")
     user_home_folder = get_object_or_404(UserFolder, name="home", owner=request.user)
     share_folder = (

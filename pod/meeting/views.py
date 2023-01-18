@@ -66,7 +66,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     },
 )
 
-TITLE_SITE = (
+__TITLE_SITE__ = (
     TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
     if (TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"))
     else "Pod"
@@ -746,7 +746,7 @@ def create_ics(request, meeting):
     END:VEVENT
     END:VCALENDAR
     """ % {
-        "prodid": TITLE_SITE + " - " + request.scheme + "://" + request.get_host(),
+        "prodid": __TITLE_SITE__ + " - " + request.scheme + "://" + request.get_host(),
         "summary": event_name,
         "description": event_description,
         "duration": duration,

@@ -2,7 +2,7 @@ import threading
 import logging
 
 from django.conf import settings
-from pod.video.bbb import start_bbb_encode
+from pod.bbb.bbb import start_bbb_encode
 
 BBB_ENCODE_MEETING = getattr(settings, "BBB_ENCODE_MEETING", start_bbb_encode)
 

@@ -30,14 +30,16 @@ from django.contrib.sites.shortcuts import get_current_site
 
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTIVE_MODEL_ENRICH = getattr(settings, "ACTIVE_MODEL_ENRICH", False)
-ACTION = ["new", "save", "modify", "delete"]
-CAPTION_MAKER_ACTION = ["save"]
+__ACTION__ = ["new", "save", "modify", "delete"]
+__CAPTION_MAKER_ACTION__ = ["save"]
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
     ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),
 )
-LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]}
+__LANG_CHOICES_DICT__ = {
+    key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]
+}
 
 
 @csrf_protect
@@ -63,7 +65,7 @@ def video_caption_maker(request, slug):
         raise PermissionDenied
     if request.method == "POST" and request.POST.get("action"):
         action = request.POST.get("action")
-    if action in CAPTION_MAKER_ACTION:
+    if action in __CAPTION_MAKER_ACTION__:
         return eval("video_caption_maker_{0}".format(action))(request, video)
     else:
         track_language = LANGUAGE_CODE
@@ -109,7 +111,7 @@ def video_caption_maker_save(request, video):
         cur_folder = get_current_session_folder(request)
         response = file_edit_save(request, cur_folder)
         response_data = json.loads(response.content)
-        if ("list_element" in response_data) and (lang in LANG_CHOICES_DICT):
+        if ("list_element" in response_data) and (lang in __LANG_CHOICES_DICT__):
             captFile = get_object_or_404(CustomFileModel, id=response_data["file_id"])
             # immediately assign the newly created captions file to the video
             desired = Track.objects.filter(video=video, src=captFile)
@@ -236,7 +238,7 @@ def video_completion_contributor(request, slug):
         list_contributor = video.contributor_set.all()
 
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in ACTION:
+        if request.POST["action"] in __ACTION__:
             return eval(
                 "video_completion_contributor_{0}(request, video)".format(
                     request.POST["action"]
@@ -443,7 +445,7 @@ def video_completion_document(request, slug):
     list_overlay = video.overlay_set.all()
 
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in ACTION:
+        if request.POST["action"] in __ACTION__:
             return eval(
                 "video_completion_document_{0}(request, video)".format(
                     request.POST["action"]
@@ -640,7 +642,7 @@ def video_completion_track(request, slug):
     list_overlay = video.overlay_set.all()
 
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in ACTION:
+        if request.POST["action"] in __ACTION__:
             return eval(
                 "video_completion_track_{0}(request, video)".format(
                     request.POST["action"]
@@ -889,7 +891,7 @@ def video_completion_overlay(request, slug):
     list_track = video.track_set.all()
     list_overlay = video.overlay_set.all()
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in ACTION:
+        if request.POST["action"] in __ACTION__:
             return eval(
                 "video_completion_overlay_{0}(request, video)".format(
                     request.POST["action"]
