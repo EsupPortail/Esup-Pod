@@ -10,7 +10,8 @@
 # https://docs.djangoproject.com/en/1.11/ref/settings/#secret-key
 #
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '7suge=srvod10hcn5^mw69ob4$zl()vyg)nh@)mow%9)ri(ho8'
+# N'oubliez ps de renseigner la SECERT_KEY django (https://djecrety.ir/)
+SECRET_KEY = '<MY_SECERT_KEY>'
 
 ##
 # DEBUG mode activation
@@ -36,7 +37,7 @@ ALLOWED_HOSTS = ['*']
 # https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-ADMINS
 #
 ADMINS = (
-    ('Name', 'farid.aitkarra@univ-lille.fr'),
+    ('Name', 'XXX@univ-XXX.fr'),
 )
 # configuration exemple pour utiliser une base de données MySql,
 # voir ci-apprès l'installation de lib tierce nécessaire
@@ -86,12 +87,12 @@ HIDE_DISCIPLINES = True
 #   username: EMAIL_HOST_USER
 #   password: EMAIL_HOST_PASSWORD
 #
-EMAIL_HOST = 'smtp.univ-lille.fr'
+EMAIL_HOST = 'smtp.univ-XXX.fr'
 EMAIL_PORT = 25
-DEFAULT_FROM_EMAIL = 'noreply@univ-lille.fr'
+DEFAULT_FROM_EMAIL = 'noreply@univ-XXX.fr'
 
 # https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-SERVER_EMAIL
-SERVER_EMAIL = 'noreply@univ-lille.fr'
+SERVER_EMAIL = 'noreply@univ-XXX.fr'
 
 ##
 # THIRD PARTY APPS OPTIONNAL
@@ -103,8 +104,8 @@ USE_PODFILE = True
 #
 TEMPLATE_VISIBLE_SETTINGS = {
 
-    'TITLE_SITE': 'Lille.Pod',
-    'TITLE_ETB': 'Université de Lille',
+    'TITLE_SITE': 'XXX.Pod',
+    'TITLE_ETB': 'Université de XXX',
     'LOGO_SITE': 'img/logoPod.svg',
     'LOGO_COMPACT_SITE': 'img/logoPod.svg',
     'LOGO_ETB': 'img/logo_etb.svg',
@@ -115,7 +116,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
         ('<a href="https://goo.gl/maps/AZnyBK4hHaM2"'
          ' target="_blank">Google maps</a>')
     ),
-    'LINK_PLAYER': 'http://www.univ-lille.fr',
+    'LINK_PLAYER': 'http://www.univ-XXX.fr',
     # 'CSS_OVERRIDE': 'custom/mycss.css',
     'PRE_HEADER_TEMPLATE': ''
 }

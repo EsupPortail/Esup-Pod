@@ -16,6 +16,8 @@ v1.0, 2022-11-17
 2. Renseigner le fichier .env.dev
 3. Renommer le fichier requirements-conteneur.txt.example en requirements-conteneur.txt
 4. Renseigner le fichier requirements-conteneur.txt
+5. Renommer le fichier dockerfile-dev-with-volumes/config/elasticsearch/settings_local-7-exemple.py en dockerfile-dev-with-volumes/config/elasticsearch/settings_local-7.py
+6. Renseigner le fichier dockerfile-dev-with-volumes/config/elasticsearch/settings_local-7.py
 
 ===== Configuration
 3. créer un fichier pod/custom/settings_local.py
@@ -89,4 +91,3 @@ TODO...
 - https://www.esup-portail.org/wiki/display/ES/Installation+de+la+plateforme+Pod+V3
 - https://github.com/EsupPortail/Esup-Pod
 - https://hub.docker.com/_/debian/tags?page=2
-- https://forums.docker.com/t/git-clone-command-fails-with-timeout/100655

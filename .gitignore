@@ -91,3 +91,6 @@ tmp/docker-compose-dev-without-volumes.yml
 tmp/dockerfile-dev-without-volumes
 tmp/docker-compose-tmp-with-volumes.yml
 tmp/dockerfile-tmp
+
+dockerfile-dev-with-volumes/config/elasticsearch/settings_local-6.py
+dockerfile-dev-with-volumes/config/elasticsearch/settings_local-7.py
