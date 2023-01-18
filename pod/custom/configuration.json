@@ -1374,7 +1374,7 @@
                             "pod_version_init": "3.1"
                         },
                         "FILE_ALLOWED_EXTENSIONS": {
-                            "default_value": "('doc', 'docx', 'odt', 'pdf', 'xls', 'xlsx', 'ods', 'ppt', 'pptx', 'txt', 'html', 'htm', 'vtt', 'srt', 'webm', 'ts')",
+                            "default_value": "('doc', 'docx', 'odt', 'pdf', 'xls', 'xlsx', 'ods', 'ppt', 'pptx', 'txt', 'html', 'htm', 'vtt', 'srt')",
                             "description": {
                                 "en": [
                                     "",
@@ -1404,7 +1404,7 @@
                             "pod_version_init": "3.1.0"
                         },
                         "IMAGE_ALLOWED_EXTENSIONS": {
-                            "default_value": "('jpg', 'jpeg', 'bmp', 'png', 'gif', 'tiff')",
+                            "default_value": "('jpg', 'jpeg', 'bmp', 'png', 'gif', 'tiff', 'webp')",
                             "description": {
                                 "en": [
                                     "",

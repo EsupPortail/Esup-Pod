@@ -1,4 +1,4 @@
-""" Esup-Pod "live" models. """
+"""Esup-Pod "live" models."""
 import hashlib
 
 from ckeditor.fields import RichTextField
