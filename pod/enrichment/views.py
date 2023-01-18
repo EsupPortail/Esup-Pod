@@ -19,7 +19,7 @@ from .forms import EnrichmentForm, EnrichmentGroupForm
 
 import json
 
-AVAILABLE_ACTIONS = ["new", "save", "modify", "delete", "cancel"]
+__AVAILABLE_ACTIONS__ = ["new", "save", "modify", "delete", "cancel"]
 
 
 @csrf_protect
@@ -83,7 +83,7 @@ def edit_enrichment(request, slug):
 
     list_enrichment = video.enrichment_set.all()
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in AVAILABLE_ACTIONS:
+        if request.POST["action"] in __AVAILABLE_ACTIONS__:
             return eval(
                 "edit_enrichment_{0}(request, video)".format(request.POST["action"])
             )

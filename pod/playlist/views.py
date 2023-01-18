@@ -20,7 +20,7 @@ from django.contrib.sites.shortcuts import get_current_site
 import json
 from pod.main.utils import is_ajax
 
-AVAILABLE_ACTIONS = ["add", "edit", "move", "remove", "delete"]
+__AVAILABLE_ACTIONS__ = ["add", "edit", "move", "remove", "delete"]
 
 
 @login_required(redirect_field_name="referrer")
@@ -73,7 +73,7 @@ def playlist(request, slug=None):
     action = request.POST.get("action", "").lower()
     if request.method == "POST":
         action = request.POST.get("action", "").lower()
-        if action in AVAILABLE_ACTIONS:
+        if action in __AVAILABLE_ACTIONS__:
             return eval("playlist_{0}(request, playlist)".format(action))
     else:
         return render(

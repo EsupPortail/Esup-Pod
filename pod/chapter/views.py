@@ -16,7 +16,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from pod.main.utils import is_ajax
 import json
 
-AVAILABLE_ACTIONS = ["new", "save", "modify", "delete", "cancel", "import", "export"]
+__AVAILABLE_ACTIONS__ = ["new", "save", "modify", "delete", "cancel", "import", "export"]
 
 
 @csrf_protect
@@ -38,11 +38,10 @@ def video_chapter(request, slug):
     list_chapter = video.chapter_set.all()
 
     if request.method == 'POST' :
-        if request.POST.get("action"):
-            if request.POST.get("action") in AVAILABLE_ACTIONS:
-                return eval(
-                    "video_chapter_{0}(request, video)".format(request.POST.get("action"))
-                )
+        if request.POST.get("action") and request.POST.get("action") in __AVAILABLE_ACTIONS__:
+            return eval(
+                "video_chapter_{0}(request, video)".format(request.POST.get("action"))
+            )
     else:
         return render(
             request,
