@@ -11,7 +11,7 @@
 #
 # SECURITY WARNING: keep the secret key used in production secret!
 # N'oubliez ps de renseigner la SECERT_KEY django (https://djecrety.ir/)
-SECRET_KEY = '<MY_SECERT_KEY>'
+SECRET_KEY = '<MY_SECRET_KEY>'
 
 ##
 # DEBUG mode activation
