@@ -28,39 +28,6 @@ import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from pod.main.utils import is_ajax
 
-IMAGE_ALLOWED_EXTENSIONS = getattr(
-    settings,
-    "IMAGE_ALLOWED_EXTENSIONS",
-    (
-        "jpg",
-        "jpeg",
-        "bmp",
-        "png",
-        "gif",
-        "tiff",
-    ),
-)
-
-FILE_ALLOWED_EXTENSIONS = getattr(
-    settings,
-    "FILE_ALLOWED_EXTENSIONS",
-    (
-        "doc",
-        "docx",
-        "odt",
-        "pdf",
-        "xls",
-        "xlsx",
-        "ods",
-        "ppt",
-        "pptx",
-        "txt",
-        "html",
-        "htm",
-        "vtt",
-        "srt",
-    ),
-)
 
 TEST_SETTINGS = getattr(settings, "TEST_SETTINGS", False)
 __FOLDER_FILE_TYPE__ = ["image", "file"]
