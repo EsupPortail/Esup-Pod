@@ -21,6 +21,7 @@ if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomImageModel
     from pod.podfile.models import CustomFileModel
     from pod.podfile.models import UserFolder
+
     __FILEPICKER__ = True
 else:
     __FILEPICKER__ = False

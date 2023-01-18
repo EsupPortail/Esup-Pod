@@ -10,6 +10,7 @@ from django.contrib.sites.models import Site
 __FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.widgets import CustomFileWidget
+
     __FILEPICKER__ = True
 
 

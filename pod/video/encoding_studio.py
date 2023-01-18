@@ -14,8 +14,9 @@ from .encoding_settings import (
     FFMPEG_CRF,
     FFMPEG_NB_THREADS,
     FFPROBE_GET_INFO,
-    FFMPEG_STUDIO_COMMAND
+    FFMPEG_STUDIO_COMMAND,
 )
+
 FFMPEG_CMD = getattr(settings, "FFMPEG_CMD", FFMPEG_CMD)
 FFPROBE_CMD = getattr(settings, "FFPROBE_CMD", FFPROBE_CMD)
 FFMPEG_CRF = getattr(settings, "FFMPEG_CRF", FFMPEG_CRF)
@@ -80,9 +81,7 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
         subcmd = " -vsync 0 "
     subcmd += " -movflags +faststart -f mp4 "
 
-    msg = launch_encode_video_studio(
-        input_video, subtime, subcmd, video_output
-    )
+    msg = launch_encode_video_studio(input_video, subtime, subcmd, video_output)
     from pod.recorder.models import Recording
 
     recording = Recording.objects.get(id=recording_id)
@@ -162,10 +161,10 @@ def launch_encode_video_studio(input_video, subtime, subcmd, video_output):
     """Encode video for studio."""
     msg = ""
     partial_command = FFMPEG_STUDIO_COMMAND % {
-        "nb_threads" : FFMPEG_NB_THREADS,
+        "nb_threads": FFMPEG_NB_THREADS,
         "input": input,
         "subtime": subtime,
-        "crf": FFMPEG_CRF
+        "crf": FFMPEG_CRF,
     }
     ffmpegStudioCommand = "%s %s %s %s" % (
         FFMPEG_CMD,

@@ -285,7 +285,7 @@ def channel(request, slug_c, slug_t=None):
         list_theme = theme.get_all_children_flat()
         videos_list = videos_list.filter(theme__in=list_theme)
 
-    if ORGANIZE_BY_THEME :
+    if ORGANIZE_BY_THEME:
         return _regroup_videos_by_theme(request, videos_list, channel, theme)
 
     page = request.GET.get("page", 1)

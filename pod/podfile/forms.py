@@ -29,21 +29,13 @@ FILE_ALLOWED_EXTENSIONS = getattr(
         "html",
         "htm",
         "vtt",
-        "srt"
+        "srt",
     ),
 )
 IMAGE_ALLOWED_EXTENSIONS = getattr(
     settings,
     "IMAGE_ALLOWED_EXTENSIONS",
-    (
-        "jpg",
-        "jpeg",
-        "bmp",
-        "png",
-        "gif",
-        "tiff",
-        "webp"
-    ),
+    ("jpg", "jpeg", "bmp", "png", "gif", "tiff", "webp"),
 )
 FILE_MAX_UPLOAD_SIZE = getattr(settings, "FILE_MAX_UPLOAD_SIZE", 10)
 

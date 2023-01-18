@@ -136,10 +136,9 @@ def get_model(lang):
             )
             scorer_load_end = timer() - scorer_load_start
             print("Loaded scorer in {:.3}s.".format(scorer_load_end), file=sys.stderr)
-            if (
-                TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("lm_alpha")
-                and TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("lm_beta")
-            ):
+            if TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get(
+                "lm_alpha"
+            ) and TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("lm_beta"):
                 transript_model.setScorerAlphaBeta(
                     TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["lm_alpha"],
                     TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["lm_beta"],
@@ -379,7 +378,7 @@ def main_vosk_transcript(norm_mp3_file, duration, transript_model):
             norm_mp3_file,
             desired_sample_rate,
             start_trim,
-            TRANSCRIPTION_AUDIO_SPLIT_TIME  # dur
+            TRANSCRIPTION_AUDIO_SPLIT_TIME,  # dur
         )
         msg += "\nRunning inference."
         results = []
@@ -451,7 +450,8 @@ def main_stt_transcript(norm_mp3_file, duration, transript_model):
                     start_trim
                     + TRANSCRIPTION_AUDIO_SPLIT_TIME
                     + TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH
-                ) < duration
+                )
+                < duration
             )
             else (duration - start_trim)
         )

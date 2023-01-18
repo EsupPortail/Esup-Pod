@@ -11,6 +11,7 @@ from django.contrib.sites.shortcuts import get_current_site
 __FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.widgets import CustomFileWidget
+
     __FILEPICKER__ = True
 
 

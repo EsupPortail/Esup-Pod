@@ -103,15 +103,11 @@ try:
     FFMPEG_MP3_ENCODE = getattr(settings, "FFMPEG_MP3_ENCODE", FFMPEG_MP3_ENCODE)
     FFMPEG_M4A_ENCODE = getattr(settings, "FFMPEG_M4A_ENCODE", FFMPEG_M4A_ENCODE)
     FFMPEG_NB_THREADS = getattr(settings, "FFMPEG_NB_THREADS", FFMPEG_NB_THREADS)
-    FFMPEG_AUDIO_BITRATE = getattr(
-        settings, "FFMPEG_AUDIO_BITRATE", FFMPEG_AUDIO_BITRATE
-    )
+    FFMPEG_AUDIO_BITRATE = getattr(settings, "FFMPEG_AUDIO_BITRATE", FFMPEG_AUDIO_BITRATE)
     FFMPEG_EXTRACT_THUMBNAIL = getattr(
         settings, "FFMPEG_EXTRACT_THUMBNAIL", FFMPEG_EXTRACT_THUMBNAIL
     )
-    FFMPEG_NB_THUMBNAIL = getattr(
-        settings, "FFMPEG_NB_THUMBNAIL", FFMPEG_NB_THUMBNAIL
-    )
+    FFMPEG_NB_THUMBNAIL = getattr(settings, "FFMPEG_NB_THUMBNAIL", FFMPEG_NB_THUMBNAIL)
     FFMPEG_CREATE_THUMBNAIL = getattr(
         settings, "FFMPEG_CREATE_THUMBNAIL", FFMPEG_CREATE_THUMBNAIL
     )
@@ -437,7 +433,8 @@ class Encoding_video:
         for img in self.list_image_track:
             output_file = os.path.join(self.output_dir, "thumbnail_%s.png" % img)
             thumbnail_command += FFMPEG_EXTRACT_THUMBNAIL % {
-                "index": img, "output": output_file
+                "index": img,
+                "output": output_file,
             }
             self.list_thumbnail_files[img] = output_file
         return thumbnail_command
@@ -564,7 +561,8 @@ class Encoding_video:
             lang = self.list_subtitle_track[sub]["language"]
             output_file = os.path.join(self.output_dir, "subtitle_%s.vtt" % lang)
             subtitle_command += FFMPEG_EXTRACT_SUBTITLE % {
-                "index": sub, "output": output_file
+                "index": sub,
+                "output": output_file,
             }
             self.list_subtitle_files[sub] = [lang, output_file]
         return subtitle_command

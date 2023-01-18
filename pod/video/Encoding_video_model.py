@@ -16,9 +16,7 @@ from .Encoding_video import (
     FFMPEG_INPUT,
     FFMPEG_NB_THREADS,
 )
-from .models import (
-    LANG_CHOICES
-)
+from .models import LANG_CHOICES
 import json
 
 from .encoding_utils import (

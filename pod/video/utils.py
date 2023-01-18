@@ -59,6 +59,7 @@ SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 # get all videos available
 # ##########################################################################
 
+
 def get_available_videos():
     videos = Video.objects.filter(encoding_in_progress=False, is_draft=False).defer(
         "video", "slug", "owner", "additional_owners", "description"
