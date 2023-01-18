@@ -16,11 +16,10 @@ import threading
 __license__ = "LGPL v3"
 log = logging.getLogger(__name__)
 
-TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
+USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
-if TRANSCRIPT:
+if USE_TRANSCRIPTION:
     from . import transcript
-
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
@@ -135,7 +134,7 @@ def encode_video(video_id):
 def transcript_video(video_id):
     """Transcript video audio to text."""
     video = Video.objects.get(id=video_id)
-    if TRANSCRIPT and video.transcript:
+    if USE_TRANSCRIPTION and video.transcript:
         change_encoding_step(video_id, 4, "transcript video")
         start_transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
         start_transcript_video(video_id, False)

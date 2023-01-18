@@ -128,6 +128,8 @@ While the prerequisites above must be satisfied prior to having your pull reques
 
 Start reading our code and you'll get the hang of it. We optimize for readability:
 
+  * Configuration variables are uppercase and can be called in all modules keeping the same name. For example, MAVAR = getattr(settings, "MAVAR", default value)
+  * Global variables to a module are also in uppercase but are considered private to the module and therefore must be prefixed and suffixed with a double underscore
   * We indent using two spaces (soft tabs)
   * This is open source software. Consider the people who will read your code, and make it look nice for them. It's sort of like driving a car: Perhaps you love doing donuts when you're alone, but with passengers the goal is to make the ride as smooth as possible.
 

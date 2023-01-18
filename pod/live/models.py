@@ -26,10 +26,7 @@ from pod.video.models import Video, Type
 
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomImageModel
-
-    FILEPICKER = True
 else:
-    FILEPICKER = False
     from pod.main.models import CustomImageModel
 
 DEFAULT_THUMBNAIL = getattr(settings, "DEFAULT_THUMBNAIL", "img/default.svg")

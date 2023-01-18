@@ -7,17 +7,16 @@ from django.contrib.auth.models import Group
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.models import Site
 
-FILEPICKER = False
+__FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.widgets import CustomFileWidget
-
-    FILEPICKER = True
+    __FILEPICKER__ = True
 
 
 class OwnerAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(OwnerAdminForm, self).__init__(*args, **kwargs)
-        if FILEPICKER:
+        if __FILEPICKER__:
             self.fields["userpicture"].widget = CustomFileWidget(type="image")
 
     class Meta(object):

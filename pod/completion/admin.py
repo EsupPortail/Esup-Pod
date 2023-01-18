@@ -19,9 +19,9 @@ import threading
 import os
 import shutil
 
-FILEPICKER = False
+__FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
-    FILEPICKER = True
+    __FILEPICKER__ = True
 
 DEBUG = getattr(settings, "DEBUG", True)
 TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "STT")
@@ -88,7 +88,7 @@ class DocumentInline(admin.TabularInline):
 
 class DocumentAdmin(admin.ModelAdmin):
 
-    if FILEPICKER:
+    if __FILEPICKER__:
         form = DocumentAdminForm
     list_display = (
         "document",
@@ -256,7 +256,7 @@ class TrackAdmin(admin.ModelAdmin):
                 t.setDaemon(True)
                 t.start()
 
-    if FILEPICKER:
+    if __FILEPICKER__:
         form = TrackAdminForm
     list_display = (
         "src",

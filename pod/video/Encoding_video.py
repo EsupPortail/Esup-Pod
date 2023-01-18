@@ -15,6 +15,8 @@ if __name__ == "__main__":
     )
     from encoding_settings import (
         FFMPEG_CMD,
+        FFPROBE_CMD,
+        FFPROBE_GET_INFO,
         FFMPEG_CRF,
         FFMPEG_PRESET,
         FFMPEG_PROFILE,
@@ -28,11 +30,11 @@ if __name__ == "__main__":
         FFMPEG_MP3_ENCODE,
         FFMPEG_M4A_ENCODE,
         FFMPEG_NB_THREADS,
-        AUDIO_BITRATE,
-        EXTRACT_THUMBNAIL,
-        NB_THUMBNAIL,
-        CREATE_THUMBNAIL,
-        EXTRACT_SUBTITLE,
+        FFMPEG_AUDIO_BITRATE,
+        FFMPEG_EXTRACT_THUMBNAIL,
+        FFMPEG_NB_THUMBNAIL,
+        FFMPEG_CREATE_THUMBNAIL,
+        FFMPEG_EXTRACT_SUBTITLE,
     )
 else:
     from .encoding_utils import (
@@ -43,6 +45,8 @@ else:
     )
     from .encoding_settings import (
         FFMPEG_CMD,
+        FFPROBE_CMD,
+        FFPROBE_GET_INFO,
         FFMPEG_CRF,
         FFMPEG_PRESET,
         FFMPEG_PROFILE,
@@ -56,11 +60,11 @@ else:
         FFMPEG_MP3_ENCODE,
         FFMPEG_M4A_ENCODE,
         FFMPEG_NB_THREADS,
-        AUDIO_BITRATE,
-        EXTRACT_THUMBNAIL,
-        NB_THUMBNAIL,
-        CREATE_THUMBNAIL,
-        EXTRACT_SUBTITLE,
+        FFMPEG_AUDIO_BITRATE,
+        FFMPEG_EXTRACT_THUMBNAIL,
+        FFMPEG_NB_THUMBNAIL,
+        FFMPEG_CREATE_THUMBNAIL,
+        FFMPEG_EXTRACT_SUBTITLE,
     )
 
 
@@ -80,6 +84,8 @@ try:
     from django.conf import settings
 
     FFMPEG_CMD = getattr(settings, "FFMPEG_CMD", FFMPEG_CMD)
+    FFPROBE_CMD = getattr(settings, "FFPROBE_CMD", FFPROBE_CMD)
+    FFPROBE_GET_INFO = getattr(settings, "FFPROBE_GET_INFO", FFPROBE_GET_INFO)
     FFMPEG_CRF = getattr(settings, "FFMPEG_CRF", FFMPEG_CRF)
     FFMPEG_PRESET = getattr(settings, "FFMPEG_PRESET", FFMPEG_PRESET)
     FFMPEG_PROFILE = getattr(settings, "FFMPEG_PROFILE", FFMPEG_PROFILE)
@@ -97,11 +103,21 @@ try:
     FFMPEG_MP3_ENCODE = getattr(settings, "FFMPEG_MP3_ENCODE", FFMPEG_MP3_ENCODE)
     FFMPEG_M4A_ENCODE = getattr(settings, "FFMPEG_M4A_ENCODE", FFMPEG_M4A_ENCODE)
     FFMPEG_NB_THREADS = getattr(settings, "FFMPEG_NB_THREADS", FFMPEG_NB_THREADS)
-    AUDIO_BITRATE = getattr(settings, "AUDIO_BITRATE", AUDIO_BITRATE)
-    EXTRACT_THUMBNAIL = getattr(settings, "EXTRACT_THUMBNAIL", EXTRACT_THUMBNAIL)
-    NB_THUMBNAIL = getattr(settings, "NB_THUMBNAIL", NB_THUMBNAIL)
-    CREATE_THUMBNAIL = getattr(settings, "CREATE_THUMBNAIL", CREATE_THUMBNAIL)
-    EXTRACT_SUBTITLE = getattr(settings, "EXTRACT_SUBTITLE", EXTRACT_SUBTITLE)
+    FFMPEG_AUDIO_BITRATE = getattr(
+        settings, "FFMPEG_AUDIO_BITRATE", FFMPEG_AUDIO_BITRATE
+    )
+    FFMPEG_EXTRACT_THUMBNAIL = getattr(
+        settings, "FFMPEG_EXTRACT_THUMBNAIL", FFMPEG_EXTRACT_THUMBNAIL
+    )
+    FFMPEG_NB_THUMBNAIL = getattr(
+        settings, "FFMPEG_NB_THUMBNAIL", FFMPEG_NB_THUMBNAIL
+    )
+    FFMPEG_CREATE_THUMBNAIL = getattr(
+        settings, "FFMPEG_CREATE_THUMBNAIL", FFMPEG_CREATE_THUMBNAIL
+    )
+    FFMPEG_EXTRACT_SUBTITLE = getattr(
+        settings, "FFMPEG_EXTRACT_SUBTITLE", FFMPEG_EXTRACT_SUBTITLE
+    )
 except ImportError:
     pass
 
@@ -168,10 +184,11 @@ class Encoding_video:
         get alls tracks from video source and put it in object passed in parameter
         """
         msg = "--> get_info_video" + "\n"
-        probe_cmd = 'ffprobe -v quiet -show_format -show_streams \
-                    -print_format json -i "{}"'.format(
-            self.video_file
-        )
+        probe_cmd = FFPROBE_GET_INFO % {
+            "ffprobe": FFPROBE_CMD,
+            "select_streams": "",
+            "source": '"' + self.video_file + '" ',
+        }
         msg += probe_cmd + "\n"
         duration = 0
         info, return_msg = get_info_from_video(probe_cmd)
@@ -377,12 +394,12 @@ class Encoding_video:
             "input": self.video_file,
             "nb_threads": FFMPEG_NB_THREADS,
         }
-        output_file = os.path.join(self.output_dir, "audio_%s.mp3" % AUDIO_BITRATE)
+        output_file = os.path.join(self.output_dir, "audio_%s.mp3" % FFMPEG_AUDIO_BITRATE)
         mp3_command += FFMPEG_MP3_ENCODE % {
             # "audio_bitrate": AUDIO_BITRATE,
             "output": output_file,
         }
-        self.list_mp3_files[AUDIO_BITRATE] = output_file
+        self.list_mp3_files[FFMPEG_AUDIO_BITRATE] = output_file
         return mp3_command
 
     def get_m4a_command(self):
@@ -391,12 +408,12 @@ class Encoding_video:
             "input": self.video_file,
             "nb_threads": FFMPEG_NB_THREADS,
         }
-        output_file = os.path.join(self.output_dir, "audio_%s.m4a" % AUDIO_BITRATE)
+        output_file = os.path.join(self.output_dir, "audio_%s.m4a" % FFMPEG_AUDIO_BITRATE)
         m4a_command += FFMPEG_M4A_ENCODE % {
-            "audio_bitrate": AUDIO_BITRATE,
+            "audio_bitrate": FFMPEG_AUDIO_BITRATE,
             "output": output_file,
         }
-        self.list_m4a_files[AUDIO_BITRATE] = output_file
+        self.list_m4a_files[FFMPEG_AUDIO_BITRATE] = output_file
         return m4a_command
 
     def encode_audio_part(self):
@@ -419,7 +436,9 @@ class Encoding_video:
         }
         for img in self.list_image_track:
             output_file = os.path.join(self.output_dir, "thumbnail_%s.png" % img)
-            thumbnail_command += EXTRACT_THUMBNAIL % {"index": img, "output": output_file}
+            thumbnail_command += FFMPEG_EXTRACT_THUMBNAIL % {
+                "index": img, "output": output_file
+            }
             self.list_thumbnail_files[img] = output_file
         return thumbnail_command
 
@@ -433,12 +452,12 @@ class Encoding_video:
             "nb_threads": FFMPEG_NB_THREADS,
         }
         output_file = os.path.join(self.output_dir, "thumbnail")
-        thumbnail_command += CREATE_THUMBNAIL % {
+        thumbnail_command += FFMPEG_CREATE_THUMBNAIL % {
             "duration": self.duration,
-            "nb_thumbnail": NB_THUMBNAIL,
+            "nb_thumbnail": FFMPEG_NB_THUMBNAIL,
             "output": output_file,
         }
-        for nb in range(0, NB_THUMBNAIL):
+        for nb in range(0, FFMPEG_NB_THUMBNAIL):
             num_thumb = str(nb + 1)
             self.list_thumbnail_files[num_thumb] = "%s_000%s.png" % (
                 output_file,
@@ -544,7 +563,9 @@ class Encoding_video:
         for sub in self.list_subtitle_track:
             lang = self.list_subtitle_track[sub]["language"]
             output_file = os.path.join(self.output_dir, "subtitle_%s.vtt" % lang)
-            subtitle_command += EXTRACT_SUBTITLE % {"index": sub, "output": output_file}
+            subtitle_command += FFMPEG_EXTRACT_SUBTITLE % {
+                "index": sub, "output": output_file
+            }
             self.list_subtitle_files[sub] = [lang, output_file]
         return subtitle_command
 
