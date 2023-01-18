@@ -239,7 +239,6 @@ def playlist_add(request, playlist):
             video = get_object_or_404(Video, slug=request.POST.get(
                 "video"), sites=get_current_site(request))
             msg = None
-            print(video.get_thumbnail_url())
             if video.is_draft:
                 msg = _("A video in draft mode cannot be added to a playlist.")
             if video.password:
