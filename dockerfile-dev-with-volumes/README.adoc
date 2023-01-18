@@ -15,7 +15,7 @@ v1.0, 2023-01-18
 1. Renommer le fichier .env.dev-exemple en .env.dev
 2. Renseigner le fichier .env.dev
 3. Renommer le fichier requirements-conteneur.txt.example en requirements-conteneur.txt
-4. Renseigner le fichier requirements-conteneur.txt
+4. Modifier le fichier requirements-conteneur.txt (facultatif)
 5. Le fichier requirements.txt contient une version elasticsearch (elasticsearch==7.17.7) par défault
 6. Renommer le fichier dockerfile-dev-with-volumes/config/elasticsearch/settings_local-7-exemple.py en dockerfile-dev-with-volumes/config/elasticsearch/settings_local-7.py
 7. Renseigner le fichier dockerfile-dev-with-volumes/config/elasticsearch/settings_local-7.py
