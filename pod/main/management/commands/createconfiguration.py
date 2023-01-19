@@ -19,7 +19,7 @@ class Command(BaseCommand):
         self.language = options["language"]
         if self.language not in ["fr", "en"]:
             raise CommandError("Langage must be fr or en")
-        filename = os.path.join("pod", "custom", "configuration.json")
+        filename = os.path.join("pod", "main", "configuration.json")
         with open(filename, "r", encoding="utf-8") as json_file:
             self.data = json.load(json_file)
         # header, information, configuration_pod, configuration_apps
@@ -29,7 +29,7 @@ class Command(BaseCommand):
         output += self.get_configuration("pod")
         output += self.get_configuration("apps")
 
-        md_filename = os.path.join("pod", "custom", "configuration_%s.md" % self.language)
+        md_filename = os.path.join("./", "configuration_%s.md" % self.language)
         open(md_filename, "w").close()  # erase it
         with open(md_filename, "w", encoding="utf-8") as f:
             f.write(output)
@@ -49,7 +49,9 @@ class Command(BaseCommand):
 
     def get_configuration(self, app):
         msg = "\n"
-        msg += "\n## %s \n" % self.data[0]["configuration_%s" % app]["title"][self.language]
+        msg += "\n## %s \n" % (
+            self.data[0]["configuration_%s" % app]["title"][self.language]
+        )
         descs = self.data[0]["configuration_%s" % app]["description"]
         for key, desc in descs.items():
             msg += "\n\n### %s" % desc["title"][self.language]

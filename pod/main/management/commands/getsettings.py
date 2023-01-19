@@ -34,7 +34,7 @@ class Command(BaseCommand):
         global_settings_list = list(dict.fromkeys(global_settings_list))
         global_settings_list.sort()
         self.print_log(options["app_name"], global_settings_list)
-        with open(os.path.join("pod", "custom", "configuration.json"), "r") as json_file:
+        with open(os.path.join("pod", "main", "configuration.json"), "r") as json_file:
             data = json.load(json_file)
         json_settings = []
         pod_settings = data[0]["configuration_pod"]["description"]
