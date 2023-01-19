@@ -10,6 +10,11 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
+      - name: set git config
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+
       - name: Running prettier
         run: npx prettier --write pod/*/static/**/*.js
 
@@ -19,10 +24,7 @@ jobs:
 
       - name: Push changes
         if: steps.prettier-git-check.outputs.modified == 'true'
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git commit -am "Fixup: format code with Prettier"
+        run: git commit -am "Fixup: format code with Prettier"
 
       - name: Install Black
         run: |
@@ -38,9 +40,21 @@ jobs:
 
       - name: Commit changes
         if: steps.black-git-check.outputs.modified == 'true'
+        run: git commit -am "Fixup: format code with Black"
+
+      - name: Generate configuration doc in fr
+        run: python manage.py createconfiguration fr
+
+      - name: Check for modified files
+        id: config-git-check
+        run: echo modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi) >> $GITHUB_OUTPUT
+
+      - name: Commit changes
+        if: steps.config-git-check.outputs.modified == 'true'
+        run: git commit -am "Auto-update configuration files"
+
+      - name: Push changes
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git commit -am "Auto-update configuration files"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git commit -am "Fixup: format code with Black"
           git push
