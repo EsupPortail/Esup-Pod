@@ -1,3 +1,5 @@
+"""A set of utilities for forms."""
+
 from django import forms
 from django.contrib.admin import widgets
 from django.forms.utils import to_current_timezone
@@ -6,9 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class MyAdminSplitDateTime(forms.MultiWidget):
-    """
-    A SplitDateTime Widget that has some admin-specific styling.
-    """
+    """A SplitDateTime Widget that has some admin-specific styling."""
 
     template_name = "admin/widgets/split_datetime.html"
     date_attrs = None
