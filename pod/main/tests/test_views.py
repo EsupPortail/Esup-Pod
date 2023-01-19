@@ -151,3 +151,36 @@ class RobotsTxtTests(TestCase):
         response = self.client.post("/robots.txt")
 
         self.assertEqual(HTTPStatus.METHOD_NOT_ALLOWED, response.status_code)
+
+
+class XSSTests(TestCase):
+    """Tests against some Reflected XSS security breach."""
+
+    def setUp(self):
+        """Set up some generic test strings."""
+        self.XSS_inject = "</script><script>alert(document.domain)</script>"
+        self.XSS_detect = b"<script>alert(document.domain)</script>"
+
+    def test_videos_XSS(self):
+        """Test if /videos/ is safe against some XSS."""
+        for param in ["owner", "discipline", "tag", "cursus"]:
+            response = self.client.get("/videos/?%s=%s" % (param, self.XSS_inject))
+
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+            self.assertFalse(self.XSS_detect in response.content)
+
+    def test_search_XSS(self):
+        """Test if /search/ is safe against some XSS."""
+        for param in ["q", "start_date", "end_date"]:
+            response = self.client.get("/search/?%s=%s" % (param, self.XSS_inject))
+
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+            self.assertFalse(self.XSS_detect in response.content)
+
+        # Test that even with a recognized facet it doesn't open a breach
+        for facet in ["type", "slug"]:
+            response = self.client.get("/search/?selected_facets=%s:%s" % (
+                facet, self.XSS_inject))
+
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+            self.assertFalse(self.XSS_detect in response.content)
