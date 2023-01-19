@@ -179,8 +179,9 @@ class XSSTests(TestCase):
 
         # Test that even with a recognized facet it doesn't open a breach
         for facet in ["type", "slug"]:
-            response = self.client.get("/search/?selected_facets=%s:%s" % (
-                facet, self.XSS_inject))
+            response = self.client.get(
+                "/search/?selected_facets=%s:%s" % (facet, self.XSS_inject)
+            )
 
             self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertFalse(self.XSS_detect in response.content)

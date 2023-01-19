@@ -14,12 +14,14 @@ class SearchForm(forms.Form):
         widget=forms.TextInput(attrs={"type": "search"}),
     )
     start_date = forms.DateField(
-        required=False, label=_("Start date"),
-        widget=widgets.AdminDateWidget(attrs={'type': 'date'})
+        required=False,
+        label=_("Start date"),
+        widget=widgets.AdminDateWidget(attrs={"type": "date"}),
     )
     end_date = forms.DateField(
-        required=False, label=_("End date"),
-        widget=widgets.AdminDateWidget(attrs={'type': 'date'})
+        required=False,
+        label=_("End date"),
+        widget=widgets.AdminDateWidget(attrs={"type": "date"}),
     )
 
     def __init__(self, *args, **kwargs):
