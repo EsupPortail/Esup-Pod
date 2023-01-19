@@ -20,7 +20,7 @@ class Command(BaseCommand):
 
     def get_setting(self, options, config_part):
         data = app_settings = settings = []
-        filename = os.path.join("pod", "custom", "configuration.json")
+        filename = os.path.join("pod", "main", "configuration.json")
         with open(filename, "r", encoding="utf-8") as json_file:
             data = json.load(json_file)
 
@@ -56,13 +56,13 @@ class Command(BaseCommand):
             return {}
 
     def get_configuration_pod(self):
-        filename = os.path.join("pod", "custom", "configuration.json")
+        filename = os.path.join("pod", "main", "configuration.json")
         with open(filename, "r", encoding="utf-8") as json_file:
             data = json.load(json_file)
         return data[0]["configuration_pod"]["description"].keys()
 
     def save_setting(self, options, config_part, setting):
-        filename = os.path.join("pod", "custom", "configuration.json")
+        filename = os.path.join("pod", "main", "configuration.json")
         with open(filename, "r", encoding="utf-8") as json_file:
             data = json.load(json_file)
 
