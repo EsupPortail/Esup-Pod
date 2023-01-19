@@ -55,6 +55,5 @@ jobs:
 
       - name: Push changes
         run: |
-          git commit -am "Auto-update configuration files"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git push
