@@ -14,6 +14,8 @@ v1.0, 2023-01-18
 ===== Variables d'environnement du conteneur esup-pod
 1. Renommer le fichier .env.dev-exemple en .env.dev
 2. Renseigner le fichier .env.dev
+3. Renommer le fichier docker-compose-dev-with-volumes-exemple.yml en docker-compose-dev-with-volumes.yml
+4. Modifier le fichier docker-compose-dev-with-volumes.yml (facultatif)
 
 ===== Configuration
 1. Créer un fichier pod/custom/settings_local.py

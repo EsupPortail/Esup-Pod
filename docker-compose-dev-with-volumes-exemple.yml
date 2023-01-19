@@ -30,8 +30,8 @@ services:
       context: .
       dockerfile: dockerfile-dev-with-volumes/elasticsearch/dockerfile-elasticsearch-dev
       args:
-        ELASTICSEARCH_VERSION: "elasticsearch:6.8.23"
-#        ELASTICSEARCH_VERSION: "elasticsearch:7.17.7"
+#        ELASTICSEARCH_VERSION: "elasticsearch:6.8.23"
+        ELASTICSEARCH_VERSION: "elasticsearch:7.17.7"
     env_file:
       - ./.env.dev
     ports:
