@@ -45,15 +45,8 @@
       </fieldset>
     </form>
 
-<<<<<<< HEAD
   </div>
   <script>
-    var listUserChecked = {{owners|safe}};
-=======
-    </div>
-    <script>
-        var listUserChecked = "{{owners|safe}}";
->>>>>>> b9c6532c6aadfed92a913660ce2d8fafcbf7d2d1
-
+    var listUserChecked = {{owners|escapejs}};
   </script>
 {% endspaceless %}
