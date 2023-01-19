@@ -30,7 +30,7 @@ from django.contrib.sites.shortcuts import get_current_site
 
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTIVE_MODEL_ENRICH = getattr(settings, "ACTIVE_MODEL_ENRICH", False)
-__ACTION__ = ["new", "save", "modify", "delete"]
+__AVAILABLE_ACTIONS__ = ["new", "save", "modify", "delete"]
 __CAPTION_MAKER_ACTION__ = ["save"]
 LANG_CHOICES = getattr(
     settings,
@@ -103,10 +103,12 @@ def video_caption_maker_save(request, video):
     video_folder, created = UserFolder.objects.get_or_create(
         name=video.slug, owner=request.user
     )
+
     if request.method == "POST":
         error = False
         lang = request.POST.get("lang")
         kind = request.POST.get("kind")
+
         enrich_ready = True if request.POST.get("enrich_ready") == "true" else False
         cur_folder = get_current_session_folder(request)
         response = file_edit_save(request, cur_folder)
@@ -236,9 +238,8 @@ def video_completion_contributor(request, slug):
         list_overlay = video.overlay_set.all()
     else:
         list_contributor = video.contributor_set.all()
-
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in __ACTION__:
+        if request.POST["action"] in __AVAILABLE_ACTIONS__:
             return eval(
                 "video_completion_contributor_{0}(request, video)".format(
                     request.POST["action"]
@@ -445,7 +446,7 @@ def video_completion_document(request, slug):
     list_overlay = video.overlay_set.all()
 
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in __ACTION__:
+        if request.POST["action"] in __AVAILABLE_ACTIONS__:
             return eval(
                 "video_completion_document_{0}(request, video)".format(
                     request.POST["action"]
@@ -642,7 +643,7 @@ def video_completion_track(request, slug):
     list_overlay = video.overlay_set.all()
 
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in __ACTION__:
+        if request.POST["action"] in __AVAILABLE_ACTIONS__:
             return eval(
                 "video_completion_track_{0}(request, video)".format(
                     request.POST["action"]
@@ -891,7 +892,7 @@ def video_completion_overlay(request, slug):
     list_track = video.track_set.all()
     list_overlay = video.overlay_set.all()
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in __ACTION__:
+        if request.POST["action"] in __AVAILABLE_ACTIONS__:
             return eval(
                 "video_completion_overlay_{0}(request, video)".format(
                     request.POST["action"]

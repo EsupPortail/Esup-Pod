@@ -127,7 +127,7 @@ msgid "no data could be stored."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js:191
-msgid "Are you sure you want to delete all caption?"
+msgid "Are you sure you want to delete all captions?"
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js:226
