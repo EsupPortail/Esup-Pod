@@ -2,7 +2,7 @@ x-pod-volumes: &pod-volumes
   - .:/usr/src/app
 
 x-elasticsearch-volumes: &elasticsearch-volumes
-  - ./dockerfile-dev-with-volumes/config/elasticsearch/elasticsearch-7.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+  - ./dockerfile-dev-with-volumes/config/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
 version: '3.7'
 
@@ -12,6 +12,9 @@ services:
     build:
       context: .
       dockerfile: dockerfile-dev-with-volumes/pod/Dockerfile
+      args:
+        NODE_VERSION: "node:19"
+        PYTHON_VERSION: "python:3.7-buster"
     depends_on:
       - elasticsearch
       - redis
@@ -26,6 +29,11 @@ services:
     build:
       context: .
       dockerfile: dockerfile-dev-with-volumes/elasticsearch/dockerfile-elasticsearch-dev
+      args:
+        ELASTICSEARCH_VERSION: "elasticsearch:6.8.23"
+#        ELASTICSEARCH_VERSION: "elasticsearch:7.17.7"
+    env_file:
+      - ./.env.dev
     ports:
       - 9200:9200
     environment:

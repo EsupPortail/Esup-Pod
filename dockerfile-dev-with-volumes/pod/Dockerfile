@@ -4,15 +4,20 @@
 #  (")_(")
 #------------------------------------------------------------------------------------------------------------------------------
 # Conteneur node:19
-FROM node:19 as source-build-js
+ARG NODE_VERSION
+ARG PYTHON_VERSION
+FROM $NODE_VERSION as source-build-js
+#FROM node:19 as source-build-js
 # TODO
 #FROM harbor.urba.univ-lille.fr/store/node:19 as source-build-js
+
 WORKDIR /tmp/pod
 COPY ./pod/ .
 RUN yarn
 #------------------------------------------------------------------------------------------------------------------------------
 # Conteneur python:3.7-buster
-FROM python:3.7-buster
+#FROM python:3.7-buster
+FROM $PYTHON_VERSION
 # TODO
 #FROM harbor.urba.univ-lille.fr/store/python:3.7-buster
 
@@ -30,7 +35,8 @@ RUN mkdir /tmp/node_modules/
 
 COPY --from=source-build-js /tmp/pod/node_modules/ /tmp/node_modules/
 
-RUN pip3 install --no-cache-dir -r requirements-conteneur.txt
+RUN pip3 install --no-cache-dir -r requirements.txt \
+    && pip3 install --no-cache-dir -r requirements-conteneur.txt
 
 # ENTRYPOINT :
 COPY ./dockerfile-dev-with-volumes/pod/my-entrypoint.sh /tmp/my-entrypoint.sh

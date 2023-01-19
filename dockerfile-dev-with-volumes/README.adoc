@@ -14,14 +14,9 @@ v1.0, 2023-01-18
 ===== Variables d'environnement du conteneur esup-pod
 1. Renommer le fichier .env.dev-exemple en .env.dev
 2. Renseigner le fichier .env.dev
-3. Renommer le fichier requirements-conteneur.txt.example en requirements-conteneur.txt
-4. Modifier le fichier requirements-conteneur.txt (facultatif)
-5. Le fichier requirements.txt contient une version elasticsearch (elasticsearch==7.17.7) par défault
-6. Renommer le fichier dockerfile-dev-with-volumes/config/elasticsearch/settings_local-7-exemple.py en dockerfile-dev-with-volumes/config/elasticsearch/settings_local-7.py
-7. Renseigner le fichier dockerfile-dev-with-volumes/config/elasticsearch/settings_local-7.py
 
 ===== Configuration
-3. créer un fichier pod/custom/settings_local.py
+1. Créer un fichier pod/custom/settings_local.py
 
 Renseignez le comme ceci :
 ----
@@ -53,30 +48,75 @@ MIGRATION_MODULES = {'flatpages': 'pod.db_migrations'}
 
 === Conteneur ElasticSearch
 
+----
+FROM elasticsearch:6.8.23
+{
+  "name" : "VDwWffh",
+  "cluster_name" : "pod-application",
+  "cluster_uuid" : "irGmqQ3RSP29W4D5YtwLtQ",
+  "version" : {
+    "number" : "6.8.23",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "4f67856",
+    "build_date" : "2022-01-06T21:30:50.087716Z",
+    "build_snapshot" : false,
+    "lucene_version" : "7.7.3",
+    "minimum_wire_compatibility_version" : "5.6.0",
+    "minimum_index_compatibility_version" : "5.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+
+---
+
+FROM elasticsearch:7.17.7
+{
+  "name" : "3acf3d142e9a",
+  "cluster_name" : "pod-application",
+  "cluster_uuid" : "w-8T7nbGQx299bnwXG_hhA",
+  "version" : {
+    "number" : "7.17.7",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "78dcaaa8cee33438b91eca7f5c7f56a70fec9e80",
+    "build_date" : "2022-10-17T15:29:54.167373105Z",
+    "build_snapshot" : false,
+    "lucene_version" : "8.11.1",
+    "minimum_wire_compatibility_version" : "6.8.0",
+    "minimum_index_compatibility_version" : "6.0.0-beta1"
+  },
+  "tagline" : "You Know, for Search"
+}
+----
+
 === Conteneur Redis
 
-=== Conteneur Portainer.io (facultatif)
-----
-TODO pour windows, apple
-$ docker-compose -f ./docker-compose-portainer-with-volumes.yml -p portainer up
-$ docker-compose -f ./docker-compose-portainer-with-volumes.yml -p portainer stop
-$ docker-compose -f ./docker-compose-portainer-with-volumes.yml -p portainer down -v
-----
-
 === Lancement de la stack
-----
+
 Lancement de la stack
+----
 $ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod up
+----
+Ou en forçant la recompilation des conteneurs
+----
 $ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod up --build
+----
+Vous devriez obtenir ce message une fois esup-pod lancé
+----
+$ pod-dev-with-volumes        | Superuser created successfully.
+----
 
-Arrêt de la stack
+=== Arrêt de la stack
+----
 $ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod stop
+----
 
-Suppression de la stack
+=== Suppression de la stack
+----
 $ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod down -v
 Des messages d'erreurs peuvent apparaître lors du redémmarrage de la stack :
 - Premier utilisateur qui aura tous les pouvoirs sur votre instance (CommandError: Error: That nom d’utilisateur is already taken)
-
 
 Reset des données
 Sous linux (TODO windows, apple)
