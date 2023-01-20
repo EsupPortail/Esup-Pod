@@ -32,7 +32,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 
 from pod.bbb.models import Livestream
 from . import pilotingInterface
-from .forms import EventPasswordForm, EventForm, EventDeleteForm
+from .forms import EventPasswordForm, EventForm, EventDeleteForm, EventImmediateForm
 from .models import (
     Building,
     Broadcaster,
@@ -96,7 +96,11 @@ def directs(request, building_id):  # affichage des directs d'un batiment
         messages.add_message(request, messages.ERROR, _("You cannot view this page."))
         raise PermissionDenied
     building = get_object_or_404(Building, id=building_id)
-    return render(request, "live/directs.html", {"building": building})
+    return render(
+        request,
+        "live/directs.html",
+        {"building": building},
+    )
 
 
 @login_required(redirect_field_name="referrer")
@@ -496,10 +500,13 @@ def update_event(form):
         event = form.save()
         return event
     else:
+        if form.cleaned_data.get("start_date"):
+            d_debut = form.cleaned_data["start_date"].date()
+        else:
+            d_debut = datetime.now()
+
         event = form.save(commit=False)
-        d_fin = datetime.combine(
-            form.cleaned_data["start_date"].date(), form.cleaned_data["end_time"]
-        )
+        d_fin = datetime.combine(d_debut, form.cleaned_data["end_time"])
         d_fin = timezone.make_aware(d_fin)
         event.end_date = d_fin
         event.save()
@@ -533,7 +540,65 @@ def event_delete(request, slug=None):
                 _("One or more errors have been found in the form."),
             )
 
-    return render(request, "live/event_delete.html", {"event": event, "form": form})
+    return render(
+        request,
+        "live/event_delete.html",
+        {"event": event, "form": form},
+    )
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def event_immediate_edit(request, broadcaster_id=None):
+    if in_maintenance():
+        return redirect(reverse("maintenance"))
+
+    broadcaster = get_object_or_404(Broadcaster, id=broadcaster_id)
+
+    page_title = _("Plan an immediate event")
+
+    if not can_manage_event(request.user):
+        return render(
+            request,
+            "live/event_edit.html",
+            {
+                "access_not_allowed": True,
+                "page_title": page_title,
+            },
+        )
+
+    my_event = Event()
+    my_event.owner = request.user
+    my_event.broadcaster = broadcaster
+    my_event.is_auto_start = True
+
+    form = EventImmediateForm(
+        request.GET or None,
+        user=request.user,
+    )
+
+    if request.POST:
+        form = EventImmediateForm(
+            request.POST,
+            instance=my_event,
+            user=request.user,
+        )
+
+        if form.is_valid():
+            update_event(form)
+            return redirect(reverse("live:event", kwargs={"slug": my_event.slug}))
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                _("One or more errors have been found in the form."),
+            )
+
+    return render(
+        request,
+        "live/event_immediate_edit.html",
+        {"form": form, "broadcaster": broadcaster.id, "page_title": page_title},
+    )
 
 
 def broadcasters_from_building(request):

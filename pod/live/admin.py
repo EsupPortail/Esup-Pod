@@ -75,7 +75,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
         "is_restricted",
         "piloting_conf",
     )
-    readonly_fields = ["slug"]
+    readonly_fields = ["slug", "qrcode"]
     autocomplete_fields = ["building", "video_on_hold"]
     list_filter = ["building"]
 
@@ -88,6 +88,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
                 }
             )
         }
+        kwargs["help_texts"] = {"qrcode": _("QR code to record immediately an event")}
         return super().get_form(request, obj, **kwargs)
 
     def get_queryset(self, request):
@@ -97,11 +98,17 @@ class BroadcasterAdmin(admin.ModelAdmin):
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if (db_field.name) == "building":
+        if db_field.name == "building":
             kwargs["queryset"] = Building.objects.filter(sites=Site.objects.get_current())
-        if (db_field.name) == "video_on_hold":
+        if db_field.name == "video_on_hold":
             kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def qrcode(self, obj):
+        return obj.qrcode
+
+    qrcode.short_description = _("QR Code")
+    qrcode.allow_tags = True
 
     class Media:
         css = {

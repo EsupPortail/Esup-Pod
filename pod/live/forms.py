@@ -141,27 +141,41 @@ class CustomBroadcasterChoiceField(forms.ModelChoiceField):
 
 
 def check_event_date_and_hour(form):
-    if not (
-        {"start_date", "end_date", "broadcaster"} <= form.cleaned_data.keys()
-        or {"start_date", "end_time", "broadcaster"} <= form.cleaned_data.keys()
+    if (
+        "end_date" not in form.cleaned_data.keys()
+        and "end_time" not in form.cleaned_data.keys()
     ):
         return
-    d_deb = form.cleaned_data["start_date"]
-    d_fin = None
-    d_fin_field = "end_time" if form.cleaned_data.get("end_time") else "end_date"
+
+    if "start_date" in form.cleaned_data.keys():
+        d_deb = form.cleaned_data["start_date"]
+    else:
+        d_deb = form.instance.start_date
+
+    if "broadcaster" in form.cleaned_data.keys():
+        brd = form.cleaned_data["broadcaster"]
+    else:
+        brd = form.instance.broadcaster
+
     if form.cleaned_data.get("end_time"):
         d_fin = datetime.combine(d_deb.date(), form.cleaned_data["end_time"])
         d_fin = timezone.make_aware(d_fin)
+        d_fin_field = "end_time"
     else:
         d_fin = form.cleaned_data["end_date"]
-    brd = form.cleaned_data["broadcaster"]
+        d_fin_field = "end_date"
 
+    validate_consistency(brd, d_deb, d_fin, d_fin_field, form)
+
+
+def validate_consistency(brd, d_deb, d_fin, d_fin_field, form):
     if timezone.now() >= d_fin:
         form.add_error(d_fin_field, _("End should not be in the past"))
         raise forms.ValidationError(_("An event cannot be planned in the past"))
 
     if d_deb >= d_fin:
-        form.add_error("start_date", _("Start should not be after end"))
+        if form.cleaned_data.get("start_date"):
+            form.add_error("start_date", _("Start should not be after end"))
         form.add_error(d_fin_field, _("Start should not be after end"))
         raise forms.ValidationError(_("Planification error."))
 
@@ -173,7 +187,10 @@ def check_event_date_and_hour(form):
         events = events.exclude(id=form.instance.id)
 
     if events.exists():
-        form.add_error("start_date", _("An event is already planned at these dates"))
+        if form.cleaned_data.get("start_date"):
+            form.add_error("start_date", _("An event is already planned at these dates"))
+        else:
+            form.add_error(d_fin_field, _("An event is already planned at these dates"))
         raise forms.ValidationError(_("Planification error."))
 
 
@@ -416,3 +433,47 @@ class EventDeleteForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(EventDeleteForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
+
+
+class EventImmediateForm(forms.ModelForm):
+    end_date = forms.SplitDateTimeField()
+    end_time = forms.TimeField(label=_("End time"), widget=widgets.AdminDateWidget)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user", None)
+        super(EventImmediateForm, self).__init__(*args, **kwargs)
+        self.auto_id = "event_%s"
+        event_date = timezone.localtime().strftime("%d/%m/%Y %H:%M")
+        self.fields["title"].initial = _("Recording of %(user)s the %(date)s") % {
+            "user": self.user.first_name + " " + self.user.last_name,
+            "date": event_date,
+        }
+
+        # Manage required fields html
+        self.fields = add_placeholder_and_asterisk(self.fields)
+        # Manage fields to display
+        self.initFields()
+
+    def clean(self):
+        check_event_date_and_hour(self)
+
+    def initFields(self):
+        del self.fields["end_date"]
+        self.fields["end_time"].widget.attrs["class"] += " vTimeField"
+        self.fields["end_time"].initial = (
+            timezone.localtime(self.instance.end_date).strftime("%H:%M")
+            if self.instance
+            else timezone.localtime(
+                self.fields["start_date"].initial + timezone.timedelta(hours=1)
+            ).strftime("%H:%M")
+        )
+
+    class Meta(object):
+        model = Event
+        fields = [
+            "title",
+        ]
+        hidden_fields = []
+        widgets = {
+            "end_time": widgets.AdminTimeWidget,
+        }
