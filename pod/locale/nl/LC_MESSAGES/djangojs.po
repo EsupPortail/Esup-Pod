@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-20 11:03+0100\n"
+"POT-Creation-Date: 2023-01-20 17:38+0100\n"
 "PO-Revision-Date: 2022-05-13 15:49+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -46,7 +46,7 @@ msgstr ""
 
 #: pod/chapter/static/js/chapters.js:115 pod/chapter/static/js/chapters.js:142
 #: pod/chapter/static/js/chapters.js:171 pod/chapter/static/js/chapters.js:217
-#: pod/chapter/static/js/chapters.js:269
+#: pod/chapter/static/js/chapters.js:270
 #: pod/completion/static/js/completion.js:158
 #: pod/completion/static/js/completion.js:216
 #: pod/completion/static/js/completion.js:280
@@ -66,32 +66,32 @@ msgstr ""
 msgid "You are no longer authenticated. Please log in again."
 msgstr ""
 
-#: pod/chapter/static/js/chapters.js:227
+#: pod/chapter/static/js/chapters.js:228
 msgid ""
 "Make sure your chapter start time is not 0 or equal to another chapter start "
 "time."
 msgstr ""
 
-#: pod/chapter/static/js/chapters.js:243
+#: pod/chapter/static/js/chapters.js:244
 #: pod/enrichment/static/js/enrichment.js:241 pod/main/static/js/main.js:648
 #: pod/main/static/js/main.js:853
 msgid "One or more errors have been found in the form."
 msgstr ""
 
-#: pod/chapter/static/js/chapters.js:310
+#: pod/chapter/static/js/chapters.js:311
 #: pod/enrichment/static/js/enrichment.js:411
 msgid "Please enter a title from 2 to 100 characters."
 msgstr ""
 
-#: pod/chapter/static/js/chapters.js:330
+#: pod/chapter/static/js/chapters.js:331
 msgid "Please enter a correct start field between 0 and"
 msgstr ""
 
-#: pod/chapter/static/js/chapters.js:355
+#: pod/chapter/static/js/chapters.js:356
 msgid "The chapter"
 msgstr ""
 
-#: pod/chapter/static/js/chapters.js:359
+#: pod/chapter/static/js/chapters.js:360
 msgid "starts at the same time."
 msgstr ""
 

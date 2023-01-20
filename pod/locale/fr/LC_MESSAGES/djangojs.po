@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-20 11:03+0100\n"
-"PO-Revision-Date: 2023-01-20 11:04+0100\n"
+"POT-Creation-Date: 2023-01-20 17:38+0100\n"
+"PO-Revision-Date: 2023-01-20 17:38+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -46,7 +46,7 @@ msgstr "Le formulaire ne peut pas être récupéré."
 
 #: pod/chapter/static/js/chapters.js:115 pod/chapter/static/js/chapters.js:142
 #: pod/chapter/static/js/chapters.js:171 pod/chapter/static/js/chapters.js:217
-#: pod/chapter/static/js/chapters.js:269
+#: pod/chapter/static/js/chapters.js:270
 #: pod/completion/static/js/completion.js:158
 #: pod/completion/static/js/completion.js:216
 #: pod/completion/static/js/completion.js:280
@@ -66,7 +66,7 @@ msgstr "Le formulaire ne peut pas être récupéré."
 msgid "You are no longer authenticated. Please log in again."
 msgstr "Vous n’êtes plus authentifié. Veuillez vous reconnecter."
 
-#: pod/chapter/static/js/chapters.js:227
+#: pod/chapter/static/js/chapters.js:228
 msgid ""
 "Make sure your chapter start time is not 0 or equal to another chapter start "
 "time."
@@ -74,26 +74,26 @@ msgstr ""
 "Assurez-vous que l’heure de début de votre chapitre n’est pas égale à 0 ou à "
 "une autre heure de début de chapitre."
 
-#: pod/chapter/static/js/chapters.js:243
+#: pod/chapter/static/js/chapters.js:244
 #: pod/enrichment/static/js/enrichment.js:241 pod/main/static/js/main.js:648
 #: pod/main/static/js/main.js:853
 msgid "One or more errors have been found in the form."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 
-#: pod/chapter/static/js/chapters.js:310
+#: pod/chapter/static/js/chapters.js:311
 #: pod/enrichment/static/js/enrichment.js:411
 msgid "Please enter a title from 2 to 100 characters."
 msgstr "Veuillez entrer un titre contenant entre 2 et 100 caractères."
 
-#: pod/chapter/static/js/chapters.js:330
+#: pod/chapter/static/js/chapters.js:331
 msgid "Please enter a correct start field between 0 and"
 msgstr "Veuillez entrer un correct temps de début compris entre 0 et"
 
-#: pod/chapter/static/js/chapters.js:355
+#: pod/chapter/static/js/chapters.js:356
 msgid "The chapter"
 msgstr "Le chapitre"
 
-#: pod/chapter/static/js/chapters.js:359
+#: pod/chapter/static/js/chapters.js:360
 msgid "starts at the same time."
 msgstr "commencent au même moment."
 
