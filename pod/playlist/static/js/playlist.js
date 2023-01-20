@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
               "alert-danger"
             );
           } else {
-            showalert(gettext("Position Saved"), "alert-success");
+            showalert(gettext("Position saved"), "alert-success");
             window.location.reload();
           }
         })

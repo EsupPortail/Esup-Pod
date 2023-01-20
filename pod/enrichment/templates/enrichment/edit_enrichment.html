@@ -16,7 +16,7 @@
   /*** For the form ***/;
   var video_duration = {{video.duration}};
   /*** For the Cancel button ***/
- 
+
   document.addEventListener("reset",   (e) => {
     if (e.target !== document.querySelector("#page-video form"))  return
     document.getElementById("form_enrich").innerHTML = "";
@@ -38,7 +38,7 @@
   <div id="info_video">
     <div id="list_enrich">{% include 'enrichment/list_enrichment.html' %}</div>
     <div id="form_enrich">
-      {% if form_enrichment %} {% include 'enrichment/form_enrichment.html' with form_enrichment=form_enrichment %} 
+      {% if form_enrichment %} {% include 'enrichment/form_enrichment.html' with form_enrichment=form_enrichment %}
       {% endif %}
     </div>
     {% if not form_enrichment %}
@@ -84,7 +84,7 @@
     {% if video.owner == request.user or request.user.is_superuser or perms.enrichment.change_enrichment or request.user in video.additional_owners.all %}
     <p>
       <a href="{% url 'enrichment:group_enrichment' slug=video.slug %}"
-        ><i class="bi bi-people"></i>&nbsp;{% trans 'You can specify the, group(s) of users who can access this page' %}</a
+        ><i class="bi bi-people"></i>&nbsp;{% trans 'You can specify the group(s) of users who can access this page' %}</a
       >
     </p>
     {% endif %}

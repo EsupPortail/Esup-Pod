@@ -37,8 +37,11 @@ def video_chapter(request, slug):
 
     list_chapter = video.chapter_set.all()
 
-    if request.method == 'POST' :
-        if request.POST.get("action") and request.POST.get("action") in __AVAILABLE_ACTIONS__:
+    if request.method == "POST":
+        if (
+            request.POST.get("action")
+            and request.POST.get("action") in __AVAILABLE_ACTIONS__
+        ):
             return eval(
                 "video_chapter_{0}(request, video)".format(request.POST.get("action"))
             )

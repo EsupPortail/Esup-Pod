@@ -87,7 +87,7 @@ class InfiniteLoader {
   async initMore() {
     let url = this.url;
     this.callBackBeforeLoad();
-    
+
     //UPDATE DOM
     this.getData(url, this.next_page_number).then((data) => {
       const html = new DOMParser().parseFromString(data, "text/html");
@@ -99,8 +99,8 @@ class InfiniteLoader {
       }
 
       let element = this.videos_list;
-     
-      element.innerHTML += html.getElementById("videos_list").innerHTML
+
+      element.innerHTML += html.getElementById("videos_list").innerHTML;
       this.callBackAfterLoad();
       this.next_page_number += 1;
     });
@@ -123,7 +123,5 @@ class InfiniteLoader {
     });
     const data = await response.text();
     return data;
-
-   
   }
 }

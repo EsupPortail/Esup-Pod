@@ -13,6 +13,7 @@ start:
 install:
 	# Première installation de pod (BDD SQLite intégrée)
 	npm install -g yarn
+	cd pod; yarn
 	make upgrade
 	make createDB
 
@@ -58,5 +59,7 @@ pystyle:
 	flake8
 
 statics:
-	cd pod; yarn
-	python3 manage.py collectstatic
+	cd pod; yarn upgrade
+	# Collects all static files inside all apps and put a copy inside the static directory declared in settings.py
+	# --clear Clear the existing files before trying to copy or link the original file.
+	python3 manage.py collectstatic --clear
