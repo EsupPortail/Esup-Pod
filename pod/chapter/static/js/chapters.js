@@ -222,9 +222,9 @@ var sendform = async function (elt, action) {
             if (data.errors) {
               document.getElementById("form_chapter").style.display = "block";
               showalert(
-                data.errors +
+                data.errors + " " +
                   gettext(
-                    " Make sure your chapter start time is not 0 or equal to another chapter start time."
+                    "Make sure your chapter start time is not 0 or equal to another chapter start time."
                   ),
                 "alert-danger"
               );
