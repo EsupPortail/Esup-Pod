@@ -29,10 +29,7 @@ SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomImageModel
-
-    FILEPICKER = True
 else:
-    FILEPICKER = False
     from pod.main.models import CustomImageModel
 
 DEFAULT_THUMBNAIL = getattr(settings, "DEFAULT_THUMBNAIL", "img/default.svg")

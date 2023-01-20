@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib import messages
 from pod.video.models import Video
 from django.utils.translation import ugettext_lazy as _
+from django.utils.html import strip_tags
 
 # import json
 
@@ -52,7 +53,7 @@ def get_remove_selected_facet_link(request, selected_facets):
     for facet in selected_facets:
         if ":" in facet:
             term = facet.split(":")[0]
-            value = facet.split(":")[1]
+            value = strip_tags(facet.split(":")[1])
             link = request.get_full_path().replace(
                 "&selected_facets=%s:%s" % (term, value), ""
             )

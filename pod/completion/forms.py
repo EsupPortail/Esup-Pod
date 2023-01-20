@@ -12,12 +12,12 @@ from pod.completion.models import Overlay
 
 from pod.main.forms_utils import add_placeholder_and_asterisk
 
-FILEPICKER = False
+__FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
-    FILEPICKER = True
+    __FILEPICKER__ = True
     from pod.podfile.widgets import CustomFileWidget
 
-USE_ENRICH_READY = getattr(settings, "USE_ENRICH_READY", False)
+ACTIVE_MODEL_ENRICH = getattr(settings, "ACTIVE_MODEL_ENRICH", False)
 
 
 class ContributorForm(forms.ModelForm):
@@ -44,7 +44,7 @@ class DocumentForm(forms.ModelForm):
         super(DocumentForm, self).__init__(*args, **kwargs)
         self.fields["video"].widget = HiddenInput()
         self.fields = add_placeholder_and_asterisk(self.fields)
-        if FILEPICKER:
+        if __FILEPICKER__:
             self.fields["document"].widget = CustomFileWidget(type="file")
 
     class Meta(object):
@@ -60,7 +60,7 @@ class DocumentAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Initialize fields."""
         super(DocumentAdminForm, self).__init__(*args, **kwargs)
-        if FILEPICKER:
+        if __FILEPICKER__:
             self.fields["document"].widget = CustomFileWidget(type="file")
 
     class Meta(object):
@@ -79,9 +79,9 @@ class TrackForm(forms.ModelForm):
         self.fields["video"].widget = HiddenInput()
         self.fields["src"].required = True
         self.fields = add_placeholder_and_asterisk(self.fields)
-        if not USE_ENRICH_READY:
+        if not ACTIVE_MODEL_ENRICH:
             self.fields["enrich_ready"].widget = HiddenInput()
-        if FILEPICKER:
+        if __FILEPICKER__:
             self.fields["src"].widget = CustomFileWidget(type="file")
 
     class Meta(object):
@@ -97,7 +97,7 @@ class TrackAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Initialize fields."""
         super(TrackAdminForm, self).__init__(*args, **kwargs)
-        if FILEPICKER:
+        if __FILEPICKER__:
             self.fields["src"].widget = CustomFileWidget(type="file")
 
     class Meta(object):

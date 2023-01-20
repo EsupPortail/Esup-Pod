@@ -16,10 +16,7 @@ DEFAULT_EVENT_THUMBNAIL = getattr(
 )
 
 # Register your models here.
-
-FILEPICKER = False
-if getattr(settings, "USE_PODFILE", False):
-    FILEPICKER = True
+USE_PODFILE = getattr(settings, "USE_PODFILE", False)
 
 
 class HeartBeatAdmin(admin.ModelAdmin):
@@ -241,7 +238,7 @@ class EventAdmin(admin.ModelAdmin):
     get_broadcaster_admin.admin_order_field = "broadcaster"
     is_auto_start_admin.admin_order_field = "is_auto_start"
 
-    if FILEPICKER:
+    if USE_PODFILE:
         fields.append("thumbnail")
 
     class Media:

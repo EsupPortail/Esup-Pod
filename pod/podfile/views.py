@@ -19,56 +19,24 @@ from .models import CustomImageModel
 from .forms import UserFolderForm
 from .forms import CustomFileModelForm
 from .forms import CustomImageModelForm
+from .forms import IMAGE_ALLOWED_EXTENSIONS, FILE_ALLOWED_EXTENSIONS
 from pod.video.models import remove_accents
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
 import re
 import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from pod.main.utils import is_ajax
 
-
-IMAGE_ALLOWED_EXTENSIONS = getattr(
-    settings,
-    "IMAGE_ALLOWED_EXTENSIONS",
-    (
-        "jpg",
-        "jpeg",
-        "bmp",
-        "png",
-        "gif",
-        "tiff",
-    ),
-)
-
-FILE_ALLOWED_EXTENSIONS = getattr(
-    settings,
-    "FILE_ALLOWED_EXTENSIONS",
-    (
-        "doc",
-        "docx",
-        "odt",
-        "pdf",
-        "xls",
-        "xlsx",
-        "ods",
-        "ppt",
-        "pptx",
-        "txt",
-        "html",
-        "htm",
-        "vtt",
-        "srt",
-    ),
-)
 
 TEST_SETTINGS = getattr(settings, "TEST_SETTINGS", False)
-FOLDER_FILE_TYPE = ["image", "file"]
+__FOLDER_FILE_TYPE__ = ["image", "file"]
 
 
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def home(request, type=None):
-    if type is not None and type not in FOLDER_FILE_TYPE:
+    if type is not None and type not in __FOLDER_FILE_TYPE__:
         raise SuspiciousOperation("--> Invalid type")
     user_home_folder = get_object_or_404(UserFolder, name="home", owner=request.user)
     share_folder = (
@@ -84,8 +52,11 @@ def home(request, type=None):
     )
     current_session_folder = get_current_session_folder(request)
 
-    template = "podfile/home_content.html" if (request.is_ajax()) else "podfile/home.html"
-
+    # Here we send  home.html if current page is My Files,
+    # else we send the iframe page
+    # home_content.html
+    # template = "podfile/home_content.html" if (request) else "podfile/home.html"
+    template = "podfile/home_content.html" if (is_ajax(request)) else "podfile/home.html"
     return render(
         request,
         template,
@@ -226,10 +197,9 @@ def decide_owner(request, form, folder):
 @staff_member_required(redirect_field_name="referrer")
 def editfolder(request):
     new_folder = False
-
     form = UserFolderForm(request.POST)
     if request.POST.get("folderid") and request.POST.get("folderid") != "":
-        folder = get_object_or_404(UserFolder, id=request.POST["folderid"])
+        folder = get_object_or_404(UserFolder, id=request.POST.get("folderid"))
         if folder.name == "home" or (
             request.user != folder.owner
             and not (
@@ -278,8 +248,8 @@ def editfolder(request):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def deletefolder(request):
-    if request.POST["id"]:
-        folder = get_object_or_404(UserFolder, id=request.POST["id"])
+    if request.POST.get("id"):
+        folder = get_object_or_404(UserFolder, id=request.POST.get("id"))
         if folder.name == "home" or (
             request.user != folder.owner
             and not (
@@ -300,7 +270,7 @@ def deletefolder(request):
         "list_element": rendered,
         "folder_id": current_session_folder.id,
         "deleted": True,
-        "deleted_id": request.POST["id"],
+        "deleted_id": request.POST.get("id"),
     }
     data = json.dumps(list_element)
     return HttpResponse(data, content_type="application/json")
@@ -309,8 +279,10 @@ def deletefolder(request):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def deletefile(request):
-    if request.POST["id"] and request.POST["classname"]:
-        file = get_object_or_404(eval(request.POST["classname"]), id=request.POST["id"])
+
+    if request.POST.get("id") and request.POST.get("classname"):
+        file = get_object_or_404(
+            eval(request.POST.get("classname")), id=request.POST.get("id"))
         folder = file.folder
         if request.user != file.created_by and not (
             request.user.is_superuser
@@ -343,9 +315,8 @@ def deletefile(request):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def uploadfiles(request):
-
     if request.POST.get("folderid") and request.POST.get("folderid") != "":
-        folder = get_object_or_404(UserFolder, id=request.POST["folderid"])
+        folder = get_object_or_404(UserFolder, id=request.POST.get("folderid"))
         if request.user != folder.owner and not (
             request.user.is_superuser
             or request.user.has_perm("podfile.add_customfilemodel")
@@ -366,7 +337,7 @@ def uploadfiles(request):
             if request.POST.get("type"):
                 rendered = render_to_string(
                     "podfile/list_folder_files.html",
-                    {"folder": folder, "type": request.POST["type"]},
+                    {"folder": folder, "type": request.POST.get("type")},
                     request,
                 )
             else:
@@ -391,6 +362,7 @@ def uploadfiles(request):
 
 
 def save_uploaded_files(request, folder, files):
+
     upload_errors = ""
     for file in files:
         # Check if file is image
@@ -432,8 +404,8 @@ def changefile(request):
     file = CustomFileModel()
     file = CustomImageModel()
 
-    if request.POST and request.is_ajax():
-        folder = get_object_or_404(UserFolder, id=request.POST["folder"])
+    if request.POST and is_ajax(request) :
+        folder = get_object_or_404(UserFolder, id=request.POST.get("folder"))
         if request.user != folder.owner and not (
             request.user.is_superuser
             or request.user.has_perm("podfile.change_customfilemodel")
@@ -446,7 +418,7 @@ def changefile(request):
             raise PermissionDenied
 
         file = get_object_or_404(
-            eval(request.POST["file_type"]), id=request.POST["file_id"]
+            eval(request.POST.get("file_type")), id=request.POST.get("file_id")
         )
         if request.user != file.created_by and not (
             request.user.is_superuser
@@ -457,7 +429,7 @@ def changefile(request):
             messages.add_message(request, messages.ERROR, _("You cannot edit this file."))
             raise PermissionDenied
 
-        form_file = eval("%sForm" % request.POST["file_type"])(
+        form_file = eval("%sForm" % request.POST.get("file_type"))(
             request.POST, request.FILES, instance=file
         )
 
@@ -501,10 +473,10 @@ def changefile(request):
 
 # keep it for completion part....
 def file_edit_save(request, folder):
-    print(request.FILES)
+
     form_file = None
     if request.POST.get("file_id") and request.POST.get("file_id") != "None":
-        customfile = get_object_or_404(CustomFileModel, id=request.POST["file_id"])
+        customfile = get_object_or_404(CustomFileModel, id=request.POST.get("file_id"))
         form_file = CustomFileModelForm(request.POST, request.FILES, instance=customfile)
     else:
         form_file = CustomFileModelForm(request.POST, request.FILES)
@@ -593,7 +565,7 @@ def get_file(request, type):
 
 @login_required(redirect_field_name="referrer")
 def folder_shared_with(request):
-    if request.is_ajax():
+    if is_ajax(request):
         foldid = request.GET.get("foldid", 0)
         if foldid == 0:
             return HttpResponseBadRequest()
@@ -612,7 +584,7 @@ def folder_shared_with(request):
 
 @login_required(redirect_field_name="referrer")
 def user_share_autocomplete(request):
-    if request.is_ajax():
+    if is_ajax(request):
         foldid = request.GET.get("foldid", 0)
         if foldid == 0:
             return HttpResponseBadRequest()
@@ -644,7 +616,7 @@ def user_share_autocomplete(request):
 
 @login_required(redirect_field_name="referrer")
 def remove_shared_user(request):
-    if request.is_ajax():
+    if is_ajax(request):
         foldid = request.GET.get("foldid", 0)
         userid = request.GET.get("userid", 0)
         if foldid == 0 or userid == 0:
@@ -663,7 +635,7 @@ def remove_shared_user(request):
 
 @login_required(redirect_field_name="referrer")
 def add_shared_user(request):
-    if request.is_ajax():
+    if is_ajax(request):
         foldid = request.GET.get("foldid", 0)
         userid = request.GET.get("userid", 0)
         if foldid == 0 or userid == 0:

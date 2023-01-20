@@ -41,20 +41,15 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     },
 )
 
-TITLE_ETB = (
+__TITLE_ETB__ = (
     TEMPLATE_VISIBLE_SETTINGS["TITLE_ETB"]
     if (TEMPLATE_VISIBLE_SETTINGS.get("TITLE_ETB"))
     else "University name"
 )
-TITLE_SITE = (
+__TITLE_SITE__ = (
     TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
     if (TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"))
     else "Pod"
-)
-LOGO_SITE = (
-    TEMPLATE_VISIBLE_SETTINGS["LOGO_SITE"]
-    if (TEMPLATE_VISIBLE_SETTINGS.get("LOGO_SITE"))
-    else "img/logoPod.svg"
 )
 
 CONTACT_US_EMAIL = getattr(
@@ -64,7 +59,7 @@ CONTACT_US_EMAIL = getattr(
 )
 
 DEFAULT_DC_COVERAGE = getattr(
-    settings, "DEFAULT_DC_COVERAGE", TITLE_ETB + " - Town - Country"
+    settings, "DEFAULT_DC_COVERAGE", __TITLE_ETB__ + " - Town - Country"
 )
 DEFAULT_DC_RIGHTS = getattr(settings, "DEFAULT_DC_RIGHT", "BY-NC-SA")
 
@@ -113,11 +108,11 @@ class RssFeedGenerator(Rss201rev2Feed):
 
 
 class RssSiteVideosFeed(Feed):
-    title = TITLE_SITE
+    title = __TITLE_SITE__
     link = "/videos/rss/"
     feed_url = "/videos/rss/"
-    description = "%s %s %s" % (TITLE_SITE, _("video platform of"), TITLE_ETB)
-    author_name = TITLE_ETB
+    description = "%s %s %s" % (__TITLE_SITE__, _("video platform of"), __TITLE_ETB__)
+    author_name = __TITLE_ETB__
     author_email = CONTACT_US_EMAIL[0]
     categories = ["Education"]
     author_link = ""
