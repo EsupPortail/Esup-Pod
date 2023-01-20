@@ -67,6 +67,7 @@ jobs:
 
       - name: Run Tests and coveralls
         env:
+          PYTHONUNBUFFERED: 1
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           coverage run --source='.' manage.py test -v 3 --settings=pod.main.test_settings
