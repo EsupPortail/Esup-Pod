@@ -7,9 +7,6 @@ on:
   pull_request:
     branches: ["*"]
 
-permissions:
-  pull-requests: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -108,7 +105,7 @@ jobs:
           path: ./pa11y_output.txt
 
       - name: Comment on pull request.
-        if: matrix.python-version == 3.9 && github.event_name == 'pull_request'
+        if: contains(steps.pa11y_output.outputs.content, 'Errors in http://')
         uses: thollander/actions-comment-pull-request@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
