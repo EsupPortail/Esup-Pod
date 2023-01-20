@@ -1,5 +1,9 @@
 """Esup-Pod "live" models."""
+import base64
 import hashlib
+import io
+
+import qrcode
 
 from ckeditor.fields import RichTextField
 from django.conf import settings
@@ -247,19 +251,24 @@ class Broadcaster(models.Model):
 
     @property
     def qrcode(self, request=None):
-        googleApi = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl="
         url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
         url_immediate_event = reverse("live:event_immediate_edit", args={self.id})
-        to_encode = "".join(
+        data = "".join(
             [
-                googleApi,
                 url_scheme,
                 "://",
                 get_current_site(request).domain,
                 url_immediate_event,
             ]
         )
-        return mark_safe(f'<img src={to_encode} width="300px" height="300px" alt="Qr Code for immediate live event">')
+
+        img = qrcode.make(data)
+        type(img)
+        buffer = io.BytesIO()
+        img.save(buffer, format="PNG")
+        img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
+        return mark_safe(f'<img src="data:image/png;base64, {img_str}" '
+                         f'width="300px" height="300px" alt="Qr Code for immediate live event">')
 
 
 class HeartBeat(models.Model):
