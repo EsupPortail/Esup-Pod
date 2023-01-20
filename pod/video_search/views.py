@@ -218,6 +218,8 @@ def search_videos(request):
     # if settings.DEBUG:
     #    print(json.dumps(bodysearch, indent=4))
 
+    if settings.TEST_SETTINGS:
+        print("ES_URL=%s | ES_INDEX=%s" % (ES_URL, ES_INDEX))
     result = es.search(index=ES_INDEX, body=bodysearch)
 
     # if settings.DEBUG:

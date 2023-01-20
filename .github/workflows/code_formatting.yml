@@ -1,3 +1,4 @@
+---
 name: Code Formatting
 
 on:
@@ -24,7 +25,7 @@ jobs:
 
       - name: Push changes
         if: steps.prettier-git-check.outputs.modified == 'true'
-        run: git commit -am "Fixup: format code with Prettier"
+        run: git commit -am "Fixup. Format code with Prettier"
 
       - name: Install Black
         run: |
@@ -40,7 +41,7 @@ jobs:
 
       - name: Commit changes
         if: steps.black-git-check.outputs.modified == 'true'
-        run: git commit -am "Fixup: format code with Black"
+        run: git commit -am "Fixup. Format code with Black"
 
       - name: Generate configuration doc in fr
         run: python manage.py createconfiguration fr
