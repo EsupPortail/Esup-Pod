@@ -53,10 +53,11 @@ jobs:
           flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,*_settings.py
 
       - name: Runs Elasticsearch
-        uses: elastic/elastic-github-actions/elasticsearch@master
+        uses: elastic/elastic-github-actions/elasticsearch@refactor_with_plugins
         with:
           # stack-version: 7.6.0
           stack-version: 6.8.23
+          plugins: analysis-icu
 
       - name: Setup Pod
         run: |
