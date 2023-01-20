@@ -263,7 +263,6 @@ class Broadcaster(models.Model):
         )
 
         img = qrcode.make(data)
-        type(img)
         buffer = io.BytesIO()
         img.save(buffer, format="PNG")
         img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
