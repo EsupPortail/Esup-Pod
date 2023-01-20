@@ -44,7 +44,9 @@ jobs:
         run: git commit -am "Fixup. Format code with Black"
 
       - name: Generate configuration doc in fr
-        run: python manage.py createconfiguration fr
+        run: |
+          pip install -r requirements.txt
+          python manage.py createconfiguration fr
 
       - name: Check for modified files
         id: config-git-check
