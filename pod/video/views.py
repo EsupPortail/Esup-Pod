@@ -382,7 +382,7 @@ def theme_edit(request, slug):
         messages.add_message(request, messages.ERROR, _("You cannot edit this channel."))
         raise PermissionDenied
 
-    if is_ajax(request) :
+    if is_ajax(request):
         if request.POST["action"] in __THEME_ACTION__:
             return eval("theme_edit_{0}(request, channel)".format(request.POST["action"]))
 

@@ -79,6 +79,8 @@ def playlist(request, slug=None):
         return render(
             request, "playlist.html", {"form": form, "list_videos": list_videos}
         )
+
+
 # @login_required
 # @csrf_protect
 
@@ -236,8 +238,9 @@ def playlist_add(request, playlist):
     """Add a video (in POST) to the playlist. AJAX only."""
     if is_ajax(request):
         if request.POST.get("video"):
-            video = get_object_or_404(Video, slug=request.POST.get(
-                "video"), sites=get_current_site(request))
+            video = get_object_or_404(
+                Video, slug=request.POST.get("video"), sites=get_current_site(request)
+            )
             msg = None
             if video.is_draft:
                 msg = _("A video in draft mode cannot be added to a playlist.")

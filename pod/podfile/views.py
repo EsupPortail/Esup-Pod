@@ -282,7 +282,8 @@ def deletefile(request):
 
     if request.POST.get("id") and request.POST.get("classname"):
         file = get_object_or_404(
-            eval(request.POST.get("classname")), id=request.POST.get("id"))
+            eval(request.POST.get("classname")), id=request.POST.get("id")
+        )
         folder = file.folder
         if request.user != file.created_by and not (
             request.user.is_superuser
@@ -404,7 +405,7 @@ def changefile(request):
     file = CustomFileModel()
     file = CustomImageModel()
 
-    if request.POST and is_ajax(request) :
+    if request.POST and is_ajax(request):
         folder = get_object_or_404(UserFolder, id=request.POST.get("folder"))
         if request.user != folder.owner and not (
             request.user.is_superuser
