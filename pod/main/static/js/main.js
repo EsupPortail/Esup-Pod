@@ -721,9 +721,9 @@ var send_form_data = async function (
   } else {
     await fetch(url, {
       method: "GET",
-      headers : {
+      headers: {
         "X-Requested-With": "XMLHttpRequest",
-      }
+      },
     })
       .then((response) => response.text())
       .then(($data) => {

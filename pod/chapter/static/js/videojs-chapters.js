@@ -39,12 +39,10 @@
         document.querySelector(".vjs-chapters-button button").style =
           "text-shadow : 0 0 1em #fff";
       } else {
-        
         document
           .querySelector(".chapters-list.active")
           .setAttribute("class", "chapters-list inactive");
-        
-        
+
         document.querySelector(".vjs-chapters-button button").style =
           "text-shadow : '' ";
       }
@@ -168,7 +166,7 @@
           if (chapters_list.length > 0) {
             chapters_list.forEach((element) => {
               podPlayer.appendChild(element);
-            } );
+            });
           }
         };
 
