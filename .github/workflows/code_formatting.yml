@@ -58,7 +58,7 @@ jobs:
 
       - name: Check for modified files
         id: config-git-check
-        run: echo modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi) >> $GITHUB_OUTPUT
+        run: echo modified=$(if git diff --quiet; then echo "false"; else echo "true"; fi) >> $GITHUB_OUTPUT
 
       - name: Push auto-config changes
         if: steps.config-git-check.outputs.modified == 'true'
