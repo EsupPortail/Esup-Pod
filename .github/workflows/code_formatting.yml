@@ -25,7 +25,7 @@ jobs:
         id: prettier-git-check
         run: echo modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi) >> $GITHUB_OUTPUT
 
-      - name: Push changes
+      - name: Push prettify changes
         if: steps.prettier-git-check.outputs.modified == 'true'
         run: |
           git commit -am "Fixup. Format code with Prettier"
@@ -44,7 +44,7 @@ jobs:
         id: black-git-check
         run: echo modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi) >> $GITHUB_OUTPUT
 
-      - name: Commit changes
+      - name: Push black changes
         if: steps.black-git-check.outputs.modified == 'true'
         run: |
           git commit -am "Fixup. Format code with Black"
@@ -60,8 +60,8 @@ jobs:
         id: config-git-check
         run: echo modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi) >> $GITHUB_OUTPUT
 
-      - name: Commit changes
+      - name: Push auto-config changes
         if: steps.config-git-check.outputs.modified == 'true'
         run: |
-          git commit -am "Auto-update configuration files" 2>&1
+          git commit -am "Auto-update configuration files"
           git push
