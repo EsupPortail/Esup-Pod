@@ -6,21 +6,18 @@ import hashlib
 from django.conf import settings
 from django.urls import reverse
 from django.test import TestCase
-from django.test import Client, override_settings
+from django.test import Client
+from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-# from django.contrib.sites.shortcuts import get_current_site
-
 from ..models import Recorder, Recording, RecordingFileTreatment
 from pod.video.models import Type
-from django.contrib.sites.models import Site
 
 from xml.dom import minidom
 
 from .. import views
-from importlib import reload
 from http import HTTPStatus
 import os
 
@@ -203,9 +200,8 @@ class studio_podTestView(TestCase):
 
         print(" --->  test_studio_podTestView_get_request of openCastTestView: OK!")
 
-    @override_settings(DEBUG=True, RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
     def test_studio_podTestView_get_request_restrict(self):
-        reload(views)
+        views.__REVATSO__ = True  # override setting value to test
         self.create_index_file()
         self.client = Client()
         url = reverse("recorder:studio_pod", kwargs={})
@@ -219,6 +215,7 @@ class studio_podTestView(TestCase):
         self.user.save()
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
+        views.__REVATSO__ = False
         print(
             " --->  test_studio_podTestView_get_request_restrict ",
             "of studio_podTestView: OK!",

@@ -12,8 +12,8 @@ A list of much-appreciated contributors who have submitted patches and reported 
 * Olivier Bado-Faustin, University Cote d'Azur (design and template)
 * Nicolas Lahoche, University of Lille (design and template) with all the PRI Team 
 * Nathaniel Burlot, University of Lille (member of PRI team for Logo and color of V3)
-* Antoine leva, University of Lille (Meetings App)
 * Céline Didier and Matthieu Bildstein, University of Lorraine (Live's Event App)
+* French Ministry of Education (who funded the development of some features)
 
 Partnership 
 ----------------------------

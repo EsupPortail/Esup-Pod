@@ -3,7 +3,7 @@ import json
 import logging
 import os
 import re
-from abc import ABC, abstractmethod
+from abc import ABC as __ABC__, abstractmethod
 from typing import Optional
 
 import requests
@@ -11,13 +11,13 @@ from django.conf import settings
 
 from .models import Broadcaster
 
-EXISTING_BROADCASTER_IMPLEMENTATIONS = ["Wowza"]
+__EXISTING_BROADCASTER_IMPLEMENTATIONS__ = ["Wowza"]
 DEFAULT_EVENT_PATH = getattr(settings, "DEFAULT_EVENT_PATH", "")
 
 logger = logging.getLogger("pod.live")
 
 
-class PilotingInterface(ABC):
+class PilotingInterface(__ABC__):
     @abstractmethod
     def __init__(self, broadcaster: Broadcaster):
         """Initialize the PilotingInterface
@@ -75,15 +75,15 @@ def get_piloting_implementation(broadcaster) -> Optional[PilotingInterface]:
             + "' broadcaster."
         )
         return None
-
-    if not piloting_impl.lower() in map(str.lower, EXISTING_BROADCASTER_IMPLEMENTATIONS):
+    map_interface = map(str.lower, __EXISTING_BROADCASTER_IMPLEMENTATIONS__)
+    if not piloting_impl.lower() in map_interface:
         logger.warning(
             "'piloting_implementation' : "
             + piloting_impl
             + " is not know for '"
             + broadcaster.name
             + "' broadcaster. Available piloting_implementations are '"
-            + "','".join(EXISTING_BROADCASTER_IMPLEMENTATIONS)
+            + "','".join(__EXISTING_BROADCASTER_IMPLEMENTATIONS__)
             + "'"
         )
         return None

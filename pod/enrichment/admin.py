@@ -7,9 +7,7 @@ from django.contrib.sites.models import Site
 from pod.video.models import Video
 from django.contrib.auth.models import Group
 
-FILEPICKER = False
-if getattr(settings, "USE_PODFILE", False):
-    FILEPICKER = True
+USE_PODFILE = getattr(settings, "USE_PODFILE", False)
 
 
 class EnrichmentInline(admin.TabularInline):
@@ -56,7 +54,7 @@ class EnrichmentAdmin(admin.ModelAdmin):
         )
 
 
-if FILEPICKER:
+if USE_PODFILE:
     admin.site.register(Enrichment, EnrichmentAdmin)
 else:
     admin.site.register(Enrichment)

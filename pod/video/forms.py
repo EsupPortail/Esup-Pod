@@ -33,18 +33,18 @@ from dateutil.relativedelta import relativedelta
 import os
 import re
 
-FILEPICKER = False
+__FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
-    FILEPICKER = True
+    __FILEPICKER__ = True
     from pod.podfile.widgets import CustomFileWidget
 
 MAX_DURATION_DATE_DELETE = getattr(settings, "MAX_DURATION_DATE_DELETE", 10)
 
-TODAY = datetime.date.today()
+__TODAY__ = datetime.date.today()
 
-MAX_D = TODAY.replace(year=TODAY.year + MAX_DURATION_DATE_DELETE)
+__MAX_D__ = __TODAY__.replace(year=__TODAY__.year + MAX_DURATION_DATE_DELETE)
 
-TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
+USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
 
@@ -306,7 +306,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
     ),
 )
 
-if TRANSCRIPT:
+if USE_TRANSCRIPTION:
     transcript_help_text = OrderedDict(
         [
             (
@@ -618,14 +618,14 @@ class VideoForm(forms.ModelForm):
 
     def clean_date_delete(self):
         mddd = MAX_DURATION_DATE_DELETE
-        in_dt = relativedelta(self.cleaned_data["date_delete"], TODAY)
+        in_dt = relativedelta(self.cleaned_data["date_delete"], __TODAY__)
         if (
             (in_dt.years > mddd)
             or (in_dt.years == mddd and in_dt.months > 0)
             or (in_dt.years == mddd and in_dt.months == 0 and in_dt.days > 0)
         ):
             raise ValidationError(
-                _("The date must be before or equal to " + MAX_D.strftime("%d-%m-%Y"))
+                _("The date must be before or equal to " + __MAX_D__.strftime("%d-%m-%Y"))
             )
         return self.cleaned_data["date_delete"]
 
@@ -726,10 +726,10 @@ class VideoForm(forms.ModelForm):
         if not ACTIVE_VIDEO_COMMENT:
             self.remove_field("disable_comment")
 
-        if FILEPICKER and self.fields.get("thumbnail"):
+        if __FILEPICKER__ and self.fields.get("thumbnail"):
             self.fields["thumbnail"].widget = CustomFileWidget(type="image")
 
-        if not TRANSCRIPT:
+        if not USE_TRANSCRIPTION:
             self.remove_field("transcript")
 
     def manage_more_required_fields(self):
@@ -827,8 +827,8 @@ class VideoForm(forms.ModelForm):
             # "restrict_access_to_groups": AddAccessGroupWidget
         }
         initial = {
-            "date_added": TODAY,
-            "date_evt": TODAY,
+            "date_added": __TODAY__,
+            "date_evt": __TODAY__,
         }
 
 
@@ -857,7 +857,7 @@ class ChannelForm(forms.ModelForm):
         self.CHANNEL_FORM_FIELDS_HELP_TEXT = CHANNEL_FORM_FIELDS_HELP_TEXT
 
         super(ChannelForm, self).__init__(*args, **kwargs)
-        if FILEPICKER:
+        if __FILEPICKER__:
             self.fields["headband"].widget = CustomFileWidget(type="image")
 
         if not hasattr(self, "admin_form"):
@@ -903,7 +903,7 @@ class ChannelForm(forms.ModelForm):
 class ThemeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ThemeForm, self).__init__(*args, **kwargs)
-        if FILEPICKER:
+        if __FILEPICKER__:
             self.fields["headband"].widget = CustomFileWidget(type="image")
 
         # hide default langage
@@ -969,7 +969,7 @@ class VideoDeleteForm(forms.Form):
 class TypeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TypeForm, self).__init__(*args, **kwargs)
-        if FILEPICKER:
+        if __FILEPICKER__:
             self.fields["icon"].widget = CustomFileWidget(type="image")
 
     class Meta(object):
@@ -980,7 +980,7 @@ class TypeForm(forms.ModelForm):
 class DisciplineForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DisciplineForm, self).__init__(*args, **kwargs)
-        if FILEPICKER:
+        if __FILEPICKER__:
             self.fields["icon"].widget = CustomFileWidget(type="image")
 
     class Meta(object):

@@ -1,5 +1,9 @@
 """Esup-Pod "live" models."""
+import base64
 import hashlib
+import io
+
+import qrcode
 
 from ckeditor.fields import RichTextField
 from django.conf import settings
@@ -17,6 +21,7 @@ from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from sorl.thumbnail import get_thumbnail
 
@@ -24,12 +29,11 @@ from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 from pod.video.models import Video, Type
 
+SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
+
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomImageModel
-
-    FILEPICKER = True
 else:
-    FILEPICKER = False
     from pod.main.models import CustomImageModel
 
 DEFAULT_THUMBNAIL = getattr(settings, "DEFAULT_THUMBNAIL", "img/default.svg")
@@ -244,6 +248,28 @@ class Broadcaster(models.Model):
             return format_html('<img src="/static/admin/img/icon-alert.svg" alt="Error">')
 
     is_recording_admin.short_description = _("Is recording?")
+
+    @property
+    def qrcode(self, request=None):
+        url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
+        url_immediate_event = reverse("live:event_immediate_edit", args={self.id})
+        data = "".join(
+            [
+                url_scheme,
+                "://",
+                get_current_site(request).domain,
+                url_immediate_event,
+            ]
+        )
+
+        img = qrcode.make(data)
+        buffer = io.BytesIO()
+        img.save(buffer, format="PNG")
+        img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
+        alt = _("QR code to record immediately an event")
+        return mark_safe(
+            f'<img src="data:image/png;base64, {img_str}" width="300px" height="300px" alt={alt}>'
+        )
 
 
 class HeartBeat(models.Model):
