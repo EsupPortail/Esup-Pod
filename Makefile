@@ -4,11 +4,16 @@
 # Lancer via `make $cmd`
 # (en remplacant $cmd par une commande ci-dessous)
 
+# -- Docker
+# Get the current user ID to use for docker run and docker exec commands
+COMPOSE = docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod
+DOCKER_LOGS = docker logs -f
+
 start:
 	# Démarre le serveur de test
 	(sleep 15 ; open http://localhost:8080) &
 	python3 manage.py runserver localhost:8080 --insecure
-	# --insecure let serve static files even when DEBUG=False
+	# --insecure let serve statupic files even when DEBUG=False
 
 install:
 	# Première installation de pod (BDD SQLite intégrée)
@@ -60,3 +65,24 @@ pystyle:
 statics:
 	cd pod; yarn
 	python3 manage.py collectstatic
+
+docker-start:
+	# Démarre le serveur de test
+	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
+	@$(COMPOSE) up
+	# Vous devriez obtenir ce message une fois esup-pod lancé
+	# $ pod-dev-with-volumes        | Superuser created successfully.
+
+docker-start-build:
+	# Démarre le serveur de test en recompilant les conteuneurs de la stack
+	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
+	@$(COMPOSE) up --build
+	# Vous devriez obtenir ce message une fois esup-pod lancé
+	# $ pod-dev-with-volumes        | Superuser created successfully.
+
+docker-down-v:
+	# Arrête le serveur de test
+	@$(COMPOSE) down -v
+
+docker-logs: ## display app logs (follow mode)
+	@$(DOCKER_LOGS) pod-dev-with-volumes

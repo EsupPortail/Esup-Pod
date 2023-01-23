@@ -94,9 +94,9 @@ FROM elasticsearch:7.17.7
 
 === Conteneur Redis
 
-=== Lancement de la stack
+=== Lancement de la stack esup-pod depuis docker-compose ou make
 
-Lancement de la stack
+==== Lancement de la stack via docker-compose
 ----
 $ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod up
 ----
@@ -107,23 +107,64 @@ $ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod up --build
 Vous devriez obtenir ce message une fois esup-pod lancé
 ----
 $ pod-dev-with-volumes        | Superuser created successfully.
+
+farid@farid-Latitude-5420:~/workspaces/workspaces-github/Esup-Pod$ docker-compose -p esup-pod ps
+NAME                         COMMAND                  SERVICE             STATUS              PORTS
+elasticsearch-with-volumes   "/bin/tini -- /usr/l…"   elasticsearch       running             0.0.0.0:9200->9200/tcp, :::9200->9200/tcp, 9300/tcp
+pod-dev-with-volumes         "bash /tmp/my-entryp…"   pod                 running             0.0.0.0:9090->8080/tcp, :::9090->8080/tcp
+redis-with-volumes           "docker-entrypoint.s…"   redis               running             0.0.0.0:6379->6379/tcp, :::6379->6379/tcp
 ----
 Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes. ;)
 
+==== Lancement de la stack via make
+----
+$ make docker-start
+----
+Ou en forçant la recompilation des conteneurs
+----
+$ make docker-start-build
+----
+Vous devriez obtenir ce message une fois esup-pod lancé
+----
+$ pod-dev-with-volumes        | Superuser created successfully.
+
+farid@farid-Latitude-5420:~/workspaces/workspaces-github/Esup-Pod$ docker-compose -p esup-pod ps
+NAME                         COMMAND                  SERVICE             STATUS              PORTS
+elasticsearch-with-volumes   "/bin/tini -- /usr/l…"   elasticsearch       running             0.0.0.0:9200->9200/tcp, :::9200->9200/tcp, 9300/tcp
+pod-dev-with-volumes         "bash /tmp/my-entryp…"   pod                 running             0.0.0.0:9090->8080/tcp, :::9090->8080/tcp
+redis-with-volumes           "docker-entrypoint.s…"   redis               running             0.0.0.0:6379->6379/tcp, :::6379->6379/tcp
+----
+Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes. ;)
+
+L'application esup-pod est dès lors disponible via cette URL : localhost:9090
+
 === Arrêt de la stack
 ----
+$ CTRL+C dans la fenetre depuis laquelle l'application esup-pod a été lancée
+
+OU depuis une autre fenêtre via
+
 $ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod stop
 ----
 
 === Suppression de la stack
 ----
 $ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod down -v
-Des messages d'erreurs peuvent apparaître lors du redémmarrage de la stack :
-- Premier utilisateur qui aura tous les pouvoirs sur votre instance (CommandError: Error: That nom d’utilisateur is already taken)
+----
 
-Reset des données
+=== Suppression des données
+Cette commande supprime l'ensemble des données crées depuis le/les conteneur(s) via les volumes montés
+----
 Sous linux (TODO windows, apple)
 $ sh dockerfile-dev-with-volumes/reset-local-pod.sh
+
+sudo rm -rf ./pod/log
+sudo rm -rf ./pod/media
+sudo rm -rf ./pod/static
+sudo rm -rf ./pod/node_modules
+sudo rm -rf ./pod/db_migrations
+sudo rm ./pod/db.sqlite3
+sudo rm ./pod/yarn.lock
 ----
 
 == HELM / Kubernetes
