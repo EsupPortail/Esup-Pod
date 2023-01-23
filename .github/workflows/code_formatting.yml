@@ -15,7 +15,9 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
+      # Prettify js code with prettier
       - name: Running prettier
         run: npx prettier --write pod/*/static/**/*.js
 
@@ -23,10 +25,13 @@ jobs:
         id: prettier-git-check
         run: echo modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi) >> $GITHUB_OUTPUT
 
-      - name: Push changes
+      - name: Push prettify changes
         if: steps.prettier-git-check.outputs.modified == 'true'
-        run: git commit -am "Fixup. Format code with Prettier"
+        run: |
+          git commit -am "Fixup. Format code with Prettier"
+          git push
 
+      # Prettify py code with black
       - name: Install Black
         run: |
           python -m pip install --upgrade pip
@@ -39,10 +44,13 @@ jobs:
         id: black-git-check
         run: echo modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi) >> $GITHUB_OUTPUT
 
-      - name: Commit changes
+      - name: Push black changes
         if: steps.black-git-check.outputs.modified == 'true'
-        run: git commit -am "Fixup. Format code with Black"
+        run: |
+          git commit -am "Fixup. Format code with Black"
+          git push
 
+      # Generate configuration doc
       - name: Generate configuration doc in fr
         run: |
           pip install -r requirements.txt
@@ -50,13 +58,10 @@ jobs:
 
       - name: Check for modified files
         id: config-git-check
-        run: echo modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi) >> $GITHUB_OUTPUT
+        run: echo modified=$(if git diff --quiet; then echo "false"; else echo "true"; fi) >> $GITHUB_OUTPUT
 
-      - name: Commit changes
+      - name: Push auto-config changes
         if: steps.config-git-check.outputs.modified == 'true'
-        run: git commit -am "Auto-update configuration files"
-
-      - name: Push changes
         run: |
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git commit -am "Auto-update configuration files"
           git push
