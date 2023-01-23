@@ -23,7 +23,7 @@ from datetime import datetime
 from .models import Meeting
 from .utils import get_nth_week_number
 from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm, MeetingInviteForm
-from pod.main.views import in_maintenance
+from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
 
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
@@ -43,26 +43,6 @@ BBB_MEETING_INFO = getattr(
         "attendee": _("Attendee"),
         "fullName": _("Full name"),
         "role": _("Role"),
-    },
-)
-TEMPLATE_VISIBLE_SETTINGS = getattr(
-    settings,
-    "TEMPLATE_VISIBLE_SETTINGS",
-    {
-        "TITLE_SITE": "Pod",
-        "DESC_SITE": "The purpose of Esup-Pod is to facilitate the provision of video and\
-        thereby encourage its use in teaching and research.",
-        "TITLE_ETB": "University name",
-        "LOGO_SITE": "img/logoPod.svg",
-        "LOGO_ETB": "img/logo_etb.svg",
-        "LOGO_PLAYER": "img/pod_favicon.svg",
-        "LINK_PLAYER": "",
-        "FOOTER_TEXT": ("",),
-        "FAVICON": "img/pod_favicon.svg",
-        "CSS_OVERRIDE": "",
-        "PRE_HEADER_TEMPLATE": "",
-        "POST_FOOTER_TEMPLATE": "",
-        "TRACKING_TEMPLATE": "",
     },
 )
 
@@ -483,6 +463,50 @@ def get_meeting_info(request, meeting_id):
         if msg != "":
             messages.add_message(request, messages.ERROR, msg)
         return JsonResponse({"info": info, "msg": msg}, safe=False)
+
+
+@csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
+def recordings(request, meeting_id):
+    meeting = get_object_or_404(
+        Meeting, meeting_id=meeting_id, site=get_current_site(request)
+    )
+
+    if request.user != meeting.owner and not (
+        request.user.is_superuser or request.user.has_perm("meeting.delete_meeting")
+    ):
+        messages.add_message(
+            request, messages.ERROR, _("You cannot delete this meeting.")
+        )
+        raise PermissionDenied
+
+    meeting_recordings = meeting.get_recordings()
+    recordings = []
+    for record in meeting_recordings.get("recordings"):
+        data = meeting_recordings["recordings"][record]
+        videos = []
+        for playback in data["playback"]:
+            videos.append(
+                [data["playback"][playback]["type"], data["playback"][playback]["url"]]
+            )
+        recordings.append(
+            {
+                'videos': videos,
+                'name': data['name'],
+                'state': data['state'],
+                'date': data['startTime'],
+            }
+        )
+    return render(
+        request,
+        "meeting/recordings.html",
+        {
+            "meeting": meeting,
+            "recordings": recordings,
+            "page_title": _("Meeting recordings")
+        }
+    )
 
 
 def get_meeting_info_json(info):

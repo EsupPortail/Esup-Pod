@@ -11,6 +11,7 @@ urlpatterns = [
     path("delete/<slug:meeting_id>/", views.delete, name="delete"),
     path("status/<slug:meeting_id>/", views.status, name="status"),
     path("invite/<slug:meeting_id>/", views.invite, name="invite"),
+    path("recordings/<slug:meeting_id>/", views.recordings, name="recordings"),
     path(
         "get_meeting_info/<slug:meeting_id>/",
         views.get_meeting_info,

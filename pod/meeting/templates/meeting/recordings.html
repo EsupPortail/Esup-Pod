@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load i18n l10n %}
+{% load static %}
+{% load thumbnail %}
+
+{% block breadcrumbs %}{{ block.super }} 
+<li class="breadcrumb-item"><a href="{% url 'meeting:my_meetings' %}">{% trans "My meetings" %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{% trans "Meeting recordings" %}</li>
+{% endblock %}
+
+{% block page_content %}
+<table class="table table-striped align-middle table-sm table-bordered caption-top">
+    <thead>
+      <tr>
+        <th scope="col">{% trans "Playback" %}</th>
+        <th scope="col">{% trans "Name" %}</th>
+        <th scope="col">{% trans "State" %}</th>
+        <th scope="col">{% trans "Date" %}</th>
+        <th scope="col">{% trans "Duration" %}</th>
+        <th scope="col">{% trans "Toolbar" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for record in recordings %}
+        <tr>
+            {% for key, value in record.items %}
+            <th>
+            {% if key == "videos" %}
+                {% for vid in value %}
+                    <a href="{{vid|last}}" target="_blank">{{vid|first}}</a>
+                {% endfor %}
+            {% else %}
+                {{value}}
+            {% endif %}
+            </th>
+            {% endfor %}
+            <th> - </th>
+            <th> - </th>
+        </tr>
+
+        {%endfor%}
+    </tbody>
+</table>
+
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+{% block more_script %}
+
+{% endblock more_script %}

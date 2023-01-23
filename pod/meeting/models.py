@@ -728,6 +728,33 @@ class Meeting(models.Model):
         else:
             return True
 
+    def get_recordings(self):
+        action = "getRecordings"
+        parameters = {}
+        parameters["meetingID"] = self.meeting_id
+        query = urlencode(parameters)
+        hashed = api_call(query, action)
+        url = slash_join(BBB_API_URL, action, "?%s" % hashed)
+        response = requests.get(url)
+        if response.status_code != 200:
+            msg = {}
+            msg["error"] = "Unable to call BBB server."
+            msg["returncode"] = response.status_code
+            msg["message"] = response.content.decode("utf-8")
+            raise ValueError(msg)
+        result = response.content.decode("utf-8")
+        xmldoc = et.fromstring(result)
+        meeting_json = parseXmlToJson(xmldoc)
+        if meeting_json.get("returncode", "") != "SUCCESS":
+            msg = {}
+            msg["error"] = "Unable to end meeting ! "
+            msg["returncode"] = meeting_json.get("returncode", "")
+            msg["messageKey"] = meeting_json.get("messageKey", "")
+            msg["message"] = meeting_json.get("message", "")
+            raise ValueError(msg)
+        else:
+            return meeting_json
+
     class Meta:
         db_table = "meeting"
         verbose_name = "Meeting"
