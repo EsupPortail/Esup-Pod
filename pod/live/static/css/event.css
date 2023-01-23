@@ -1,3 +1,9 @@
 .current_event{
   stroke: red;
 }
+.video-js .vjs-time-control {
+  display: block;
+}
+.video-js .vjs-remaining-time {
+  display: none;
+}

@@ -19,6 +19,7 @@ from .views import (
     event_get_video_cards,
     ajax_event_info_record,
     broadcaster_restriction,
+    event_immediate_edit,
 )
 
 app_name = "live"
@@ -87,4 +88,9 @@ urlpatterns += [
     ),
     url(r"^events/$", events, name="events"),
     url(r"^my_events/$", my_events, name="my_events"),
+    url(
+        r"^event_immediate_edit/(?P<broadcaster_id>[\d]+)/$",
+        event_immediate_edit,
+        name="event_immediate_edit",
+    ),
 ]

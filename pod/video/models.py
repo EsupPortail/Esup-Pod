@@ -39,17 +39,15 @@ import importlib
 from sorl.thumbnail import get_thumbnail
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
-from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
+from pod.main.lang_settings import ALL_LANG_CHOICES as __ALL_LANG_CHOICES__
+from pod.main.lang_settings import PREF_LANG_CHOICES as __PREF_LANG_CHOICES__
 from django.db.models import Count, Case, When, Value, BooleanField, Q
 from django.db.models.functions import Concat
 from os.path import splitext
 
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomImageModel
-
-    FILEPICKER = True
 else:
-    FILEPICKER = False
     from pod.main.models import CustomImageModel
 
 logger = logging.getLogger(__name__)
@@ -64,7 +62,7 @@ SITE_ID = getattr(settings, "SITE_ID", 1)
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
-    ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),
+    ((" ", __PREF_LANG_CHOICES__), ("----------", __ALL_LANG_CHOICES__)),
 )
 
 CURSUS_CODES = getattr(
@@ -79,8 +77,10 @@ CURSUS_CODES = getattr(
     ),
 )
 
-LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]}
-CURSUS_CODES_DICT = {key: value for key, value in CURSUS_CODES}
+__LANG_CHOICES_DICT__ = {
+    key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]
+}
+__CURSUS_CODES_DICT__ = {key: value for key, value in CURSUS_CODES}
 
 DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
 LICENCE_CHOICES = getattr(
@@ -113,7 +113,7 @@ LICENCE_CHOICES = getattr(
         ("by-sa", _("Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)")),
     ),
 )
-LICENCE_CHOICES_DICT = {key: value for key, value in LICENCE_CHOICES}
+__LICENCE_CHOICES_DICT__ = {key: value for key, value in LICENCE_CHOICES}
 FORMAT_CHOICES = getattr(
     settings,
     "FORMAT_CHOICES",
@@ -153,18 +153,18 @@ NOTES_STATUS = getattr(
 
 THIRD_PARTY_APPS = getattr(settings, "THIRD_PARTY_APPS", [])
 
-THIRD_PARTY_APPS_CHOICES = THIRD_PARTY_APPS.copy()
-THIRD_PARTY_APPS_CHOICES.remove("live") if (
-    "live" in THIRD_PARTY_APPS_CHOICES
-) else THIRD_PARTY_APPS_CHOICES
-THIRD_PARTY_APPS_CHOICES.insert(0, "Original")
+__THIRD_PARTY_APPS_CHOICES__ = THIRD_PARTY_APPS.copy()
+__THIRD_PARTY_APPS_CHOICES__.remove("live") if (
+    "live" in __THIRD_PARTY_APPS_CHOICES__
+) else __THIRD_PARTY_APPS_CHOICES__
+__THIRD_PARTY_APPS_CHOICES__.insert(0, "Original")
 
-VERSION_CHOICES = [
+__VERSION_CHOICES__ = [
     (app.capitalize()[0], _("%(app)s version" % {"app": app.capitalize()}))
-    for app in THIRD_PARTY_APPS_CHOICES
+    for app in __THIRD_PARTY_APPS_CHOICES__
 ]
 
-VERSION_CHOICES_DICT = {key: value for key, value in VERSION_CHOICES}
+__VERSION_CHOICES_DICT__ = {key: value for key, value in __VERSION_CHOICES__}
 
 ##
 # Settings exposed in templates
@@ -187,13 +187,13 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         "TRACKING_TEMPLATE": "",
     },
 )
-TITLE_ETB = (
+__TITLE_ETB__ = (
     TEMPLATE_VISIBLE_SETTINGS["TITLE_ETB"]
     if (TEMPLATE_VISIBLE_SETTINGS.get("TITLE_ETB"))
     else "University name"
 )
 DEFAULT_DC_COVERAGE = getattr(
-    settings, "DEFAULT_DC_COVERAGE", TITLE_ETB + " - Town - Country"
+    settings, "DEFAULT_DC_COVERAGE", __TITLE_ETB__ + " - Town - Country"
 )
 DEFAULT_DC_RIGHTS = getattr(settings, "DEFAULT_DC_RIGHT", "BY-NC-SA")
 
@@ -1018,7 +1018,7 @@ class Video(models.Model):
                         {
                             "app": app,
                             "url": url,
-                            "link": VERSION_CHOICES_DICT[app.capitalize()[0]],
+                            "link": __VERSION_CHOICES_DICT__[app.capitalize()[0]],
                         }
                     )
         return version
@@ -1026,7 +1026,7 @@ class Video(models.Model):
     def get_default_version_link(self, slug_private):
         """Get link of the version of a video."""
         for version in self.get_other_version():
-            if version["link"] == VERSION_CHOICES_DICT[self.get_version]:
+            if version["link"] == __VERSION_CHOICES_DICT__[self.get_version]:
                 if slug_private:
                     return version["url"] + slug_private + "/"
                 else:
@@ -1194,8 +1194,8 @@ class Video(models.Model):
                 "password": True if self.password != "" else False,
                 "duration_in_time": self.duration_in_time,
                 "mediatype": "video" if self.is_video else "audio",
-                "cursus": "%s" % CURSUS_CODES_DICT[self.cursus],
-                "main_lang": "%s" % LANG_CHOICES_DICT[self.main_lang],
+                "cursus": "%s" % __CURSUS_CODES_DICT__[self.cursus],
+                "main_lang": "%s" % __LANG_CHOICES_DICT__[self.main_lang],
             }
             return json.dumps(data_to_dump)
         except ObjectDoesNotExist as e:
@@ -1281,13 +1281,13 @@ class Video(models.Model):
             return json.dumps({})
 
     def get_main_lang(self):
-        return "%s" % LANG_CHOICES_DICT[self.main_lang]
+        return "%s" % __LANG_CHOICES_DICT__[self.main_lang]
 
     def get_cursus(self):
-        return "%s" % CURSUS_CODES_DICT[self.cursus]
+        return "%s" % __CURSUS_CODES_DICT__[self.cursus]
 
     def get_licence(self):
-        return "%s" % LICENCE_CHOICES_DICT[self.licence]
+        return "%s" % __LICENCE_CHOICES_DICT__[self.licence]
 
     def get_dublin_core(self):
         """Export Dublin Core items for current video."""
@@ -1309,7 +1309,7 @@ class Video(models.Model):
                         .values_list("title", flat=True)
                     ),
                 ),
-                "dc.publisher": TITLE_ETB,
+                "dc.publisher": __TITLE_ETB__,
                 "dc.contributor": ", ".join(contributors),
                 "dc.date": "%s" % self.date_added.strftime("%Y/%m/%d"),
                 "dc.type": "video" if self.is_video else "audio",
@@ -1786,7 +1786,7 @@ class VideoVersion(models.Model):
         _("Video version"),
         max_length=1,
         blank=True,
-        choices=VERSION_CHOICES,
+        choices=__VERSION_CHOICES__,
         default="O",
         help_text=_("Video default version."),
     )

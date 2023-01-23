@@ -51,9 +51,10 @@
     {% for field in form.visible_fields %}
       {% spaceless %}
         {{ field.errors }}
-        <div class="form-group">
-        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-        {{field}}</div>
+        <div class="mb-3">
+          <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{field}}
+        </div>
       {% endspaceless %}
     {%endfor%}
     <div class="text-center">

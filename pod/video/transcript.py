@@ -30,9 +30,9 @@ except ImportError:
 import threading
 import logging
 
-MODEL_PARAM = getattr(settings, "MODEL_PARAM", False)
-TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
-if TRANSCRIPT:
+TRANSCRIPTION_MODEL_PARAM = getattr(settings, "TRANSCRIPTION_MODEL_PARAM", False)
+USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
+if USE_TRANSCRIPTION:
     TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "STT")
     if TRANSCRIPTION_TYPE == "VOSK":
         from vosk import Model, KaldiRecognizer
@@ -42,23 +42,28 @@ if TRANSCRIPT:
 DEBUG = getattr(settings, "DEBUG", False)
 
 if getattr(settings, "USE_PODFILE", False):
+    __FILEPICKER__ = True
     from pod.podfile.models import CustomFileModel
     from pod.podfile.models import UserFolder
-
-    FILEPICKER = True
 else:
-    FILEPICKER = False
+    __FILEPICKER__ = False
     from pod.main.models import CustomFileModel
 
-STT_PARAM = getattr(settings, "STT_PARAM", dict())
-AUDIO_SPLIT_TIME = getattr(settings, "AUDIO_SPLIT_TIME", 600)  # 10min
+TRANSCRIPTION_AUDIO_SPLIT_TIME = getattr(
+    settings, "TRANSCRIPTION_AUDIO_SPLIT_TIME", 600
+)  # 10min
 # time in sec for phrase length
-SENTENCE_MAX_LENGTH = getattr(settings, "SENTENCE_MAX_LENGTH", 3)
-SENTENCE_BLANK_SPLIT_TIME = getattr(settings, "SENTENCE_BLANK_SPLIT_TIME", 0.5)
-WORDS_PER_LINE = getattr(settings, "WORDS_PER_LINE", 7)
+TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH = getattr(
+    settings, "TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH", 3
+)
+TRANSCRIPTION_STT_SENTENCE_BLANK_SPLIT_TIME = getattr(
+    settings, "TRANSCRIPTION_STT_SENTENCE_BLANK_SPLIT_TIME", 0.5
+)
 
-NORMALIZE = getattr(settings, "NORMALIZE", False)
-NORMALIZE_TARGET_LEVEL = getattr(settings, "NORMALIZE_TARGET_LEVEL", -16.0)
+TRANSCRIPTION_NORMALIZE = getattr(settings, "TRANSCRIPTION_NORMALIZE", False)
+TRANSCRIPTION_NORMALIZE_TARGET_LEVEL = getattr(
+    settings, "TRANSCRIPTION_NORMALIZE_TARGET_LEVEL", -16.0
+)
 
 EMAIL_ON_TRANSCRIPTING_COMPLETION = getattr(
     settings, "EMAIL_ON_TRANSCRIPTING_COMPLETION", True
@@ -112,31 +117,31 @@ def start_transcript(video_id, threaded=True):
 
 
 def get_model(lang):
-    transript_model = Model(MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["model"])
+    transript_model = Model(TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["model"])
     if TRANSCRIPTION_TYPE == "STT":
-        if MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("beam_width"):
+        if TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("beam_width"):
             transript_model.setBeamWidth(
-                MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["beam_width"]
+                TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["beam_width"]
             )
-        if MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("scorer"):
+        if TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("scorer"):
             print(
                 "Loading scorer from files {}".format(
-                    MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["scorer"]
+                    TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["scorer"]
                 ),
                 file=sys.stderr,
             )
             scorer_load_start = timer()
             transript_model.enableExternalScorer(
-                MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["scorer"]
+                TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["scorer"]
             )
             scorer_load_end = timer() - scorer_load_start
             print("Loaded scorer in {:.3}s.".format(scorer_load_end), file=sys.stderr)
-            if MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("lm_alpha") and MODEL_PARAM[
-                TRANSCRIPTION_TYPE
-            ][lang].get("lm_beta"):
+            if TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get(
+                "lm_alpha"
+            ) and TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("lm_beta"):
                 transript_model.setScorerAlphaBeta(
-                    MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["lm_alpha"],
-                    MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["lm_beta"],
+                    TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["lm_alpha"],
+                    TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["lm_beta"],
                 )
     return transript_model
 
@@ -161,10 +166,10 @@ def main_threaded_transcript(video_to_encode_id):
 
     msg = ""
     lang = video_to_encode.main_lang
-    # check if MODEL_PARAM [lang] exist
-    if not MODEL_PARAM[TRANSCRIPTION_TYPE].get(lang):
+    # check if TRANSCRIPTION_MODEL_PARAM [lang] exist
+    if not TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE].get(lang):
         msg += "\n no stt model found for lang:%s." % lang
-        msg += "Please add it in MODEL_PARAM."
+        msg += "Please add it in TRANSCRIPTION_MODEL_PARAM."
         change_encoding_step(video_to_encode.id, -1, msg)
         send_email(msg, video_to_encode.id)
     else:
@@ -182,7 +187,7 @@ def main_threaded_transcript(video_to_encode_id):
         else:
             # NORMALIZE MP3
             mp3filepath = mp3file.path
-            if NORMALIZE:
+            if TRANSCRIPTION_NORMALIZE:
                 mp3filepath = normalize_mp3(mp3filepath)
 
             msg, webvtt, all_text = start_main_transcript(
@@ -232,7 +237,7 @@ def normalize_mp3(mp3filepath):
     # normalize_cmd += \
     # '--loudness-range-target 7.0 --true-peak 0.0 --offset 0.0 '
     normalize_cmd += "--target-level {} -f -o {}".format(
-        NORMALIZE_TARGET_LEVEL, quote(mp3normfile)
+        TRANSCRIPTION_NORMALIZE_TARGET_LEVEL, quote(mp3normfile)
     )
     if DEBUG:
         print(normalize_cmd)
@@ -316,8 +321,11 @@ def words_to_vtt(
         # 0.58, 'duration': 7.34}
         text_caption.append(word["word"])
         if not (
-            (((word[start_key]) - start_caption) < SENTENCE_MAX_LENGTH)
-            and (next_word is not None and (blank_duration < SENTENCE_BLANK_SPLIT_TIME))
+            (((word[start_key]) - start_caption) < TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH)
+            and (
+                next_word is not None
+                and (blank_duration < TRANSCRIPTION_STT_SENTENCE_BLANK_SPLIT_TIME)
+            )
         ):
             # on créé le caption
             if is_first_caption:
@@ -342,7 +350,7 @@ def words_to_vtt(
             start_caption = word[start_key]
             text_caption = []
             last_word_added = word["word"]
-    if start_trim + AUDIO_SPLIT_TIME > duration:
+    if start_trim + TRANSCRIPTION_AUDIO_SPLIT_TIME > duration:
         # on ajoute ici la dernière phrase de la vidéo
         stop_caption = start_trim + words[-1][start_key] + last_word_duration
         caption = Caption(
@@ -365,9 +373,12 @@ def main_vosk_transcript(norm_mp3_file, duration, transript_model):
 
     webvtt = WebVTT()
     all_text = ""
-    for start_trim in range(0, duration, AUDIO_SPLIT_TIME):
+    for start_trim in range(0, duration, TRANSCRIPTION_AUDIO_SPLIT_TIME):
         audio = convert_vosk_samplerate(
-            norm_mp3_file, desired_sample_rate, start_trim, AUDIO_SPLIT_TIME  # dur
+            norm_mp3_file,
+            desired_sample_rate,
+            start_trim,
+            TRANSCRIPTION_AUDIO_SPLIT_TIME,  # dur
         )
         msg += "\nRunning inference."
         results = []
@@ -420,17 +431,28 @@ def main_stt_transcript(norm_mp3_file, duration, transript_model):
 
     all_text = ""
 
-    for start_trim in range(0, duration, AUDIO_SPLIT_TIME):
+    for start_trim in range(0, duration, TRANSCRIPTION_AUDIO_SPLIT_TIME):
 
         end_trim = (
             duration
-            if start_trim + AUDIO_SPLIT_TIME > duration
-            else (start_trim + AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH)
+            if start_trim + TRANSCRIPTION_AUDIO_SPLIT_TIME > duration
+            else (
+                start_trim
+                + TRANSCRIPTION_AUDIO_SPLIT_TIME
+                + TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH
+            )
         )
 
         dur = (
-            (AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH)
-            if start_trim + AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH < duration
+            (TRANSCRIPTION_AUDIO_SPLIT_TIME + TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH)
+            if (
+                (
+                    start_trim
+                    + TRANSCRIPTION_AUDIO_SPLIT_TIME
+                    + TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH
+                )
+                < duration
+            )
             else (duration - start_trim)
         )
 
@@ -531,7 +553,7 @@ def saveVTT(video, webvtt):
     webvtt.save(temp_vtt_file.name)
     if webvtt.captions:
         msg += "\nstore vtt file in bdd with CustomFileModel model file field"
-        if FILEPICKER:
+        if __FILEPICKER__:
             videodir, created = UserFolder.objects.get_or_create(
                 name="%s" % video.slug, owner=video.owner
             )

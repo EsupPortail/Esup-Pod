@@ -7,9 +7,6 @@ on:
   pull_request:
     branches: ["*"]
 
-permissions:
-  pull-requests: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -56,13 +53,15 @@ jobs:
           flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,*_settings.py
 
       - name: Runs Elasticsearch
-        uses: elastic/elastic-github-actions/elasticsearch@master
+        uses: elastic/elastic-github-actions/elasticsearch@refactor_with_plugins
         with:
-          stack-version: 7.6.0
+          # stack-version: 7.6.0
+          stack-version: 6.8.23
+          plugins: analysis-icu
 
       - name: Setup Pod
         run: |
-          python manage.py create_pod_index
+          python manage.py create_pod_index --settings=pod.main.test_settings
           python manage.py makemigrations --settings=pod.main.test_settings
           python manage.py migrate --settings=pod.main.test_settings
           cd pod
@@ -70,6 +69,7 @@ jobs:
 
       - name: Run Tests and coveralls
         env:
+          PYTHONUNBUFFERED: 1
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           coverage run --source='.' manage.py test -v 3 --settings=pod.main.test_settings
@@ -108,7 +108,7 @@ jobs:
           path: ./pa11y_output.txt
 
       - name: Comment on pull request.
-        if: matrix.python-version == 3.9 && github.event_name == 'pull_request'
+        if: contains(steps.pa11y_output.outputs.content, 'Errors in http://')
         uses: thollander/actions-comment-pull-request@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
