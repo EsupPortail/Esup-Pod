@@ -63,7 +63,7 @@ urlpatterns += [
         event_get_video_cards,
         name="event_get_video_cards",
     ),
-    url(r"^ajax_calls/heartbeat/", heartbeat),
+    url(r"^ajax_calls/heartbeat/", heartbeat, name="heartbeat"),
     url(r"^direct/(?P<slug>[\-\d\w]+)/$", direct, name="direct"),
     url(r"^directs/$", directs_all, name="directs_all"),
     url(r"^directs/(?P<building_id>[\d]+)/$", directs, name="directs"),

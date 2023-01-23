@@ -29,6 +29,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
+from rest_framework import status
 
 from pod.bbb.models import Livestream
 from . import pilotingInterface
@@ -157,42 +158,72 @@ def change_status(request, slug):
 
 def heartbeat(request):
     if request.is_ajax() and request.method == "GET":
-        broadcaster_id = int(request.GET.get("liveid", 0))
-        broadcast = get_object_or_404(Broadcaster, id=broadcaster_id)
-        key = request.GET.get("key", "")
-        heartbeat, created = HeartBeat.objects.get_or_create(
-            viewkey=key, broadcaster_id=broadcaster_id
-        )
-        if created:
-            if not request.user.is_anonymous:
-                heartbeat.user = request.user
-        heartbeat.last_heartbeat = timezone.now()
-        heartbeat.save()
+
+        if request.GET.get("broadcasterid") is None and request.GET.get("eventid") is None:
+            return HttpResponse(content="missing parameters", status=status.HTTP_400_BAD_REQUEST)
 
         mimetype = "application/json"
-        viewers = broadcast.viewers.values("first_name", "last_name", "is_superuser")
+        current_event = None
 
-        current_event = Event.objects.filter(
-            Q(broadcaster_id=broadcaster_id)
-            & (Q(start_date__lte=datetime.now()) & Q(end_date__gte=datetime.now()))
-        ).first()
-        if current_event is None:
-            can_see = request.user.is_superuser
-        else:
-            can_see = (
-                request.user.is_superuser
-                or request.user == current_event.owner
-                or request.user in current_event.additional_owners.all()
+        # Admin's supervision only
+        if request.GET.get("broadcasterid") is not None:
+            broadcaster_id = int(request.GET.get("broadcasterid", 0))
+
+            # find current event with broadcaster id
+            Event.objects.filter()
+            query = Event.objects.filter(broadcaster_id=broadcaster_id)
+            ids = [evt.id for evt in query if evt.is_current()]
+
+            # no current event
+            if len(ids) != 1:
+                return HttpResponse(
+                    json.dumps({
+                        "viewers": 0,
+                        "viewers_list": [],
+                    }),
+                    mimetype,
+                )
+
+            current_event = get_object_or_404(Event, id=ids[0])
+
+        # save viewer's heartbeat
+        if request.GET.get("eventid") is not None:
+            event_id = int(request.GET.get("eventid", 0))
+            current_event = get_object_or_404(Event, id=event_id)
+            key = request.GET.get("key", "")
+            viewer_heartbeat, created = HeartBeat.objects.get_or_create(
+                viewkey=key, event_id=event_id
             )
+            if created:
+                if not request.user.is_anonymous:
+                    viewer_heartbeat.user = request.user
+            viewer_heartbeat.last_heartbeat = timezone.now()
+            viewer_heartbeat.save()
+
+        viewers = current_event.viewers.values("first_name", "last_name", "is_superuser")
+
+        can_see = (
+            request.user.is_superuser
+            or request.user == current_event.owner
+            or request.user in current_event.additional_owners.all()
+        )
+
+        heartbeats_count = HeartBeat.objects.filter(
+            event_id=current_event.id
+        ).count()
+
+        if current_event.max_viewers < heartbeats_count:
+            current_event.max_viewers = heartbeats_count
+            current_event.save()
+
         return HttpResponse(
-            json.dumps(
-                {
-                    "viewers": broadcast.viewcount,
-                    "viewers_list": list(viewers) if can_see else [],
-                }
-            ),
+            json.dumps({
+                "viewers": heartbeats_count,
+                "viewers_list": list(viewers) if can_see else [],
+            }),
             mimetype,
         )
+
     return HttpResponseBadRequest()
 
 

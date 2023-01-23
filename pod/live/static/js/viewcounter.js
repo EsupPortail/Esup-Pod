@@ -9,41 +9,66 @@ function makeid(length) {
   return result;
 }
 
-$(document).ready(function () {
+document.addEventListener("DOMContentLoaded", function() {
+
   let podplayer = videojs("podvideoplayer");
+
   podplayer.ready(function () {
+
     let secret = makeid(24);
-    (function () {
-      $.ajax({
-        type: "GET",
-        url:
-          "/live/ajax_calls/heartbeat/?key=" +
-          secret +
-          "&liveid=" +
-          $("#livename").data("liveid"),
-        cache: false,
-        success: function (response) {
-          $("#viewers-ul").html("");
-          $("#viewcount").text(response.viewers);
-          response.viewers_list.forEach((view) => {
-            let name = view.first_name + " " + view.last_name;
-            if (name == " ") {
-              name = "???";
-            }
-            $("#viewers-ul").append("<li>" + name + "</li>");
-          });
-        },
+
+    let live_element = document.getElementById("livename");
+
+    let param;
+    if (live_element.dataset.broadcasterid !== undefined)
+      param = "&broadcasterid=" + live_element.dataset.broadcasterid
+    else if (live_element.dataset.eventid !== undefined)
+      param = "&eventid=" + live_element.dataset.eventid
+
+    let url = "/live/ajax_calls/heartbeat/?key=" + secret + param;
+
+    function sendHeartBeat() {
+      fetch(url, {
+            method: "GET",
+            headers: {
+              "X-Requested-With": "XMLHttpRequest",
+            },
+          }
+      ).then((response) => {
+        if (response.ok)
+          return response.json();
+        else
+          return Promise.reject(response);
+      }).then((result) => {
+
+        let names = "";
+        result.viewers_list.forEach((viewer) => {
+          let name = viewer.first_name + " " + viewer.last_name;
+          if (name === " ") {
+            name = "?";
+          }
+          names += ("<li>" + name + "</li>");
+        });
+
+        document.getElementById("viewcount").innerHTML = result.viewers;
+        document.getElementById("viewers-ul").innerHTML = names;
+
+      }).catch((error) => {
+        console.log('Impossible to get viewers list. ', error.message);
       });
 
-      setTimeout(arguments.callee, heartbeat_delay * 1000);
-    })();
-  });
+    }
 
-  function resizeViewerList() {
-    $("#viewers-list").css("width", 0.3 * $("#podvideoplayer").width());
-  }
-  window.onresize = resizeViewerList;
-  resizeViewerList();
+    // Heartbeat sent every x seconds
+    setInterval(sendHeartBeat, heartbeat_delay * 1000);
+
+    function resizeViewerList() {
+      $("#viewers-list").css("width", 0.3 * $("#podvideoplayer").width());
+    }
+
+    window.onresize = resizeViewerList;
+    resizeViewerList();
+  });
 });
 
 (function () {
