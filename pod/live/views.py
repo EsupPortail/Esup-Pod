@@ -13,7 +13,6 @@ from django.core.exceptions import SuspiciousOperation
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Prefetch
-from django.db.models import Q
 from django.http import (
     HttpResponse,
     HttpResponseBadRequest,
@@ -159,72 +158,74 @@ def change_status(request, slug):
 def heartbeat(request):
     if request.is_ajax() and request.method == "GET":
 
-        if request.GET.get("broadcasterid") is None and request.GET.get("eventid") is None:
+        broadcasterid = request.GET.get("broadcasterid")
+        eventid = request.GET.get("eventid")
+        if broadcasterid is None and eventid is None:
             return HttpResponse(content="missing parameters", status=status.HTTP_400_BAD_REQUEST)
 
-        mimetype = "application/json"
-        current_event = None
-
-        # Admin's supervision only
-        if request.GET.get("broadcasterid") is not None:
-            broadcaster_id = int(request.GET.get("broadcasterid", 0))
-
-            # find current event with broadcaster id
-            Event.objects.filter()
-            query = Event.objects.filter(broadcaster_id=broadcaster_id)
-            ids = [evt.id for evt in query if evt.is_current()]
-
-            # no current event
-            if len(ids) != 1:
-                return HttpResponse(
-                    json.dumps({
-                        "viewers": 0,
-                        "viewers_list": [],
-                    }),
-                    mimetype,
-                )
-
-            current_event = get_object_or_404(Event, id=ids[0])
-
-        # save viewer's heartbeat
-        if request.GET.get("eventid") is not None:
-            event_id = int(request.GET.get("eventid", 0))
-            current_event = get_object_or_404(Event, id=event_id)
-            key = request.GET.get("key", "")
-            viewer_heartbeat, created = HeartBeat.objects.get_or_create(
-                viewkey=key, event_id=event_id
-            )
-            if created:
-                if not request.user.is_anonymous:
-                    viewer_heartbeat.user = request.user
-            viewer_heartbeat.last_heartbeat = timezone.now()
-            viewer_heartbeat.save()
-
-        viewers = current_event.viewers.values("first_name", "last_name", "is_superuser")
-
-        can_see = (
-            request.user.is_superuser
-            or request.user == current_event.owner
-            or request.user in current_event.additional_owners.all()
-        )
-
-        heartbeats_count = HeartBeat.objects.filter(
-            event_id=current_event.id
-        ).count()
-
-        if current_event.max_viewers < heartbeats_count:
-            current_event.max_viewers = heartbeats_count
-            current_event.save()
-
-        return HttpResponse(
-            json.dumps({
-                "viewers": heartbeats_count,
-                "viewers_list": list(viewers) if can_see else [],
-            }),
-            mimetype,
-        )
+        return manage_heartbeat(broadcasterid, eventid, request.GET.get("key", ""), request.user)
 
     return HttpResponseBadRequest()
+
+
+def manage_heartbeat(broadcaster_id, event_id, key, current_user):
+    mimetype = "application/json"
+    current_event = None
+
+    # Admin's supervision only
+    if broadcaster_id is not None:
+
+        # find current event with broadcaster id
+        Event.objects.filter()
+        query = Event.objects.filter(broadcaster_id=broadcaster_id)
+        ids = [evt.id for evt in query if evt.is_current()]
+
+        # no current event
+        if len(ids) != 1:
+            return HttpResponse(
+                json.dumps({
+                    "viewers": 0,
+                    "viewers_list": [],
+                }),
+                mimetype,
+            )
+
+        current_event = get_object_or_404(Event, id=ids[0])
+
+    # save viewer's heartbeat
+    if event_id is not None:
+        current_event = get_object_or_404(Event, id=event_id)
+        viewer_heartbeat, created = HeartBeat.objects.get_or_create(
+            viewkey=key, event_id=event_id
+        )
+        if created and not current_user.is_anonymous:
+            viewer_heartbeat.user = current_user
+        viewer_heartbeat.last_heartbeat = timezone.now()
+        viewer_heartbeat.save()
+
+    viewers = current_event.viewers.values("first_name", "last_name", "is_superuser")
+
+    can_see = (
+        current_user.is_superuser
+        or current_user == current_event.owner
+        or current_user in current_event.additional_owners.all()
+    )
+
+    heartbeats_count = HeartBeat.objects.filter(
+        event_id=current_event.id
+    ).count()
+
+    if current_event.max_viewers < heartbeats_count:
+        current_event.max_viewers = heartbeats_count
+        current_event.save()
+
+    return HttpResponse(
+        json.dumps({
+            "viewers": heartbeats_count,
+            "viewers_list": list(viewers) if can_see else [],
+        }),
+        mimetype,
+    )
 
 
 def can_manage_event(user):

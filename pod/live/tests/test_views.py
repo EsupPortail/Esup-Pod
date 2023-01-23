@@ -1,17 +1,14 @@
 """
 Unit tests for live views
 """
-import ast
-from datetime import datetime
 from http import HTTPStatus
 
 import httmock
-import pytz
 from django.conf import settings
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User, Group
 from django.core.management import call_command
-from django.http import JsonResponse, Http404
+from django.http import Http404
 from django.test import Client
 from django.test import TestCase
 from django.urls import reverse

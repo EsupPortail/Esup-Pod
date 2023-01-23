@@ -168,11 +168,18 @@ class HeartbeatTestCase(TestCase):
             public=False,
         )
         user = User.objects.create(username="pod")
+        h_type = Type.objects.create(title="type1")
+        event = Event.objects.create(
+            title="event1",
+            owner=user,
+            broadcaster=broad,
+            type=h_type
+        )
         HeartBeat.objects.create(
             user=user,
             viewkey="testkey",
-            broadcaster=broad,
             last_heartbeat=timezone.now(),
+            event=event,
         )
         print(" --->  SetUp of HeartbeatTestCase : OK !")
 
@@ -184,7 +191,7 @@ class HeartbeatTestCase(TestCase):
         hb = HeartBeat.objects.get(id=1)
         self.assertEqual(hb.user.username, "pod")
         self.assertEqual(hb.viewkey, "testkey")
-        self.assertEqual(hb.broadcaster.name, "broadcaster1")
+        self.assertEqual(hb.event.title, "event1")
         print("   --->  test_attributs of HeartbeatTestCase : OK !")
 
 
