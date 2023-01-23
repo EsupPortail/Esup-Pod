@@ -108,6 +108,7 @@ Vous devriez obtenir ce message une fois esup-pod lancé
 ----
 $ pod-dev-with-volumes        | Superuser created successfully.
 ----
+Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes. ;)
 
 === Arrêt de la stack
 ----

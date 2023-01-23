@@ -86,9 +86,4 @@ pod/log
 pod/media
 pod/static
 pod/node_modules/*
-tmp/docker-compose-all-in-one-noway.yml
-tmp/dockerfile-all-in-one-noway
-tmp/docker-compose-dev-without-volumes.yml
-tmp/dockerfile-dev-without-volumes
-tmp/docker-compose-tmp-with-volumes.yml
-tmp/dockerfile-tmp
+tmp/
