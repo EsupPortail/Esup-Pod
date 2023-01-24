@@ -84,6 +84,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
             "description",
             "poster",
             "url",
+            "video_on_hold",
             "status",
             "enable_add_event",
             "enable_viewer_count",
@@ -105,7 +106,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
         return ["slug", "qrcode"]
 
     def get_autocomplete_fields(self, request):
-        return ["building"]
+        return ["building", "video_on_hold"]
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs["widgets"] = {
