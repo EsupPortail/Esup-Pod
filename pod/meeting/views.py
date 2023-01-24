@@ -488,17 +488,18 @@ def recordings(request, meeting_id):
 
     meeting_recordings = meeting.get_recordings()
     recordings = []
-    for record in meeting_recordings.get("recordings"):
-        data = meeting_recordings["recordings"][record]
-        recording = Recording(data["recordID"], data["name"], data["state"])
-        recording.startTime = data["startTime"]
-        recording.endTime = data["endTime"]
-        for playback in data["playback"]:
-            recording.add_playback(
-                data["playback"][playback]["type"],
-                data["playback"][playback]["url"]
-            )
-        recordings.append(recording)
+    if type(meeting_recordings.get("recordings")) is dict:
+        for record in meeting_recordings.get("recordings"):
+            data = meeting_recordings["recordings"][record]
+            recording = Recording(data["recordID"], data["name"], data["state"])
+            recording.startTime = data["startTime"]
+            recording.endTime = data["endTime"]
+            for playback in data["playback"]:
+                recording.add_playback(
+                    data["playback"][playback]["type"],
+                    data["playback"][playback]["url"]
+                )
+            recordings.append(recording)
 
     return render(
         request,
