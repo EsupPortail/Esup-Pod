@@ -1,4 +1,5 @@
 """Esup-Pod custom tags for templates."""
+import os
 from django import template
 from django.conf import settings
 from pod.main.models import Configuration
@@ -7,6 +8,10 @@ import json
 from urllib.parse import urlparse, urlunparse, parse_qs
 
 register = template.Library()
+USE_LIVE_TRANSCRIPTION = getattr(settings, "USE_LIVE_TRANSCRIPTION", False)
+
+if USE_LIVE_TRANSCRIPTION:
+    TRANSCRIPTIONS_FOLDER = getattr(settings, "TRANSCRIPTIONS_FOLDER", "transcriptions")
 
 
 @register.simple_tag
@@ -52,3 +57,8 @@ def get_url_referrer(request):
             query = parse_qs(uri.query, keep_blank_values=True)
 
     return "?referrer=%s" % urlunparse(uri)
+
+
+@register.simple_tag
+def join_path(path_to_join):
+    return os.path.join(TRANSCRIPTIONS_FOLDER, path_to_join)
