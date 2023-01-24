@@ -23,21 +23,18 @@
     <tbody>
         {% for record in recordings %}
         <tr>
-            {% for key, value in record.items %}
-            <th>
-            {% if key == "videos" %}
-                {% for vid in value %}
-                    <a href="{{vid|last}}" target="_blank">{{vid|first}}</a>
-                {% endfor %}
-            {% else %}
-                {{value}}
-            {% endif %}
+            <th> {% for type, url in record.playback.items %}<a class="initials btn btn-primary pod-btn-primary btn-sm" href="{{url}}" target="_blank">{{type}}</a> {% endfor %}</th>
+            <th> {{ record.name }}</th>
+            <th> {{ record.state }}</th>
+            <th> {{ record.get_start_time }}</th>
+            <th> {{ record.get_duration }} </th>
+            <th> 
+                <form method="post" action="{% url "meeting:delete_recording" meeting_id=meeting.meeting_id recording_id=record.recordID %}" onsubmit="return confirm('{% trans "Please confirm you want to delete the recording" %}');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary pod-btn-primary btn-sm"><i class="bi bi-trash3 pod-add"></i></button>
+                </form>
             </th>
-            {% endfor %}
-            <th> - </th>
-            <th> - </th>
         </tr>
-
         {%endfor%}
     </tbody>
 </table>

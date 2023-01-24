@@ -20,7 +20,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.utils import timezone
 from datetime import datetime
 
-from .models import Meeting
+from .models import Meeting, Recording
 from .utils import get_nth_week_number
 from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm, MeetingInviteForm
 from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
@@ -465,8 +465,6 @@ def get_meeting_info(request, meeting_id):
         return JsonResponse({"info": info, "msg": msg}, safe=False)
 
 
-@csrf_protect
-@ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
 def recordings(request, meeting_id):
     meeting = get_object_or_404(
@@ -485,19 +483,16 @@ def recordings(request, meeting_id):
     recordings = []
     for record in meeting_recordings.get("recordings"):
         data = meeting_recordings["recordings"][record]
-        videos = []
+        recording = Recording(data["recordID"], data["name"], data["state"])
+        recording.startTime = data["startTime"]
+        recording.endTime = data["endTime"]
         for playback in data["playback"]:
-            videos.append(
-                [data["playback"][playback]["type"], data["playback"][playback]["url"]]
+            recording.add_playback(
+                data["playback"][playback]["type"],
+                data["playback"][playback]["url"]
             )
-        recordings.append(
-            {
-                'videos': videos,
-                'name': data['name'],
-                'state': data['state'],
-                'date': data['startTime'],
-            }
-        )
+        recordings.append(recording)
+
     return render(
         request,
         "meeting/recordings.html",
@@ -507,6 +502,47 @@ def recordings(request, meeting_id):
             "page_title": _("Meeting recordings")
         }
     )
+
+
+@csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
+def delete_recording(request, meeting_id, recording_id):
+    meeting = get_object_or_404(
+        Meeting, meeting_id=meeting_id, site=get_current_site(request)
+    )
+
+    if request.user != meeting.owner and not (
+        request.user.is_superuser or request.user.has_perm("meeting.delete_meeting")
+    ):
+        messages.add_message(
+            request, messages.ERROR, _("You cannot delete this recording.")
+        )
+        raise PermissionDenied
+
+    if request.method == "POST":
+        msg = ""
+        delete = False
+        try:
+            delete = meeting.delete_recording(recording_id)
+        except ValueError as ve:
+            args = ve.args[0]
+            msg = ""
+            for key in args:
+                msg += "<b>%s:</b> %s<br/>" % (key, args[key])
+            msg = mark_safe(msg)
+        if delete and msg == "":
+            messages.add_message(
+                request, messages.INFO, _("The recording has been deleted.")
+            )
+        else:
+            messages.add_message(request, messages.ERROR, msg)
+        return redirect(reverse("meeting:recordings", args=(meeting.meeting_id,)))
+    else:
+        messages.add_message(
+            request, messages.INFO, _("This view cannot be accessed directly.")
+        )
+        return redirect(reverse("meeting:recordings", args=(meeting.meeting_id,)))
 
 
 def get_meeting_info_json(info):
