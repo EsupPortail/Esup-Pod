@@ -11,7 +11,7 @@
   </div>
   <div class="pod-info-video__view">
     <i class="bi bi-eye"></i> {% trans 'Number of views' %}
-    {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.slug %}?from=video">
+    {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.id %}">
       {{ video.get_viewcount }}</a>
     {% else %}
       {{ video.get_viewcount }}
