@@ -7523,3 +7523,38 @@ msgstr "Désolé, la recherche de vidéos est limitée à 500 pages maximum."
 #: pod/video_search/views.py:261
 msgid "Search results"
 msgstr "Résultats de la recherche"
+
+
+msgid "My stats"
+msgstr "Mes statistiques"
+
+msgid "Views during the day"
+msgstr "Vues pour ce jour"
+
+msgid "Views during the month"
+msgstr "Vues pour ce mois"
+
+msgid "Views during the year"
+msgstr "Vue pour cette année"
+
+msgid "Total views from creation"
+msgstr "Vues totales depuis la création"
+
+msgid "See detail"
+msgstr "Voir détail"
+
+msgid "Detail"
+msgstr "Détail"
+
+msgid "Download as"
+msgstr "Télécharger en "
+
+msgid "Views per day"
+msgstr "Vues par jour"
+
+msgid "Cumulative views"
+msgstr "Vues cumulées"
+
+msgid "Viewcount of %s"
+msgstr "Vues of %s"
+
