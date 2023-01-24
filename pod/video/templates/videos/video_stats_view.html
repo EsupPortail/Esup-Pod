@@ -1,39 +1,45 @@
 {% extends 'base.html' %}
-{% load static i18n %}
+{% load staticfiles i18n %}
+
 {% block opengraph %}
   {{ block.super }}
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
 {% endblock opengraph %}
 {% block page_title %}{{ title }}{% endblock page_title %}
 {% block page_extra_head %}
-  <link type="text/css" rel="stylesheet" href="{% static 'jqGrid/css/ui.jqgrid-bootstrap5.css' %}?ver={{VERSION}}">
   <link rel="stylesheet" href="{% static 'css/video_stats_view.css' %}?ver={{VERSION}}">
 {% endblock page_extra_head %}
 
 {% block content %}
-<div class="grid-container container">
-  {% if form %}
-    {% include "videos/video-form.html" %}
-  {% else %}
-    <h1 class="page_title h2">{{ title }}</h1>
-    <div class="form-group row stat-form-group mb-1">
-      <label for="jsperiode" class="col-7 col-form-label">{% trans "Change the date" %}</label>
-      <div class="col-5 col-date">
-        <input class="form-control" type="date" name="periode" id="jsperiode">
-      </div>
-    </div>
-    <div class="table-responsive-md mb-4">
-      <table id="grid"></table>
-    </div>
-    <div id="pager"></div>
-  {% endif %}
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+<script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
+
+<div class="row, stats_graph_per_day">
+  <div class="col-sm-8 offset-sm-2 ">
+    <canvas id="chart_view_per_day"></canvas>
+    <script type="text/javascript">
+      var ctx = $("#chart_view_per_day").get(0).getContext("2d");
+      new Chart(ctx, {
+          type: 'line', data: {{ data_day|safe }},
+      });
+    </script>
+    <hr>
+  </div>
 </div>
+
+<div class="row, stats_graph_cumulated">
+  <div class="col-sm-8 offset-sm-2 ">
+    <canvas id="chart_view_cumulated"></canvas>
+    <script type="text/javascript">
+      var ctx = $("#chart_view_cumulated").get(0).getContext("2d");
+      new Chart(ctx, {
+          type: 'line', data: {{ data_cumulated|safe }},
+      });
+    </script>
+    <br/>
+  </div>
+</div>
+
 {% endblock content %}
 
-{% block more_script %}
-  <script src="{% static 'jqGrid/js/i18n/grid.locale-'|add:LANGUAGE_CODE|add:'.js' %}?ver={{VERSION}}" charset="utf-8"></script>
-  <script src="{% static 'jqGrid/js/jquery.jqGrid.min.js' %}?ver={{VERSION}}" charset="utf-8"></script>
-  <script src="{% static 'js/video_stats_view.js' %}?ver={{VERSION}}" charset="utf-8"></script>
-{% endblock %}
