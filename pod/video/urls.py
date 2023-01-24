@@ -15,7 +15,7 @@ from .views import get_categories, add_category
 from .views import edit_category, delete_category
 from .views import update_video_owner, filter_owners, filter_videos
 from .views import PodChunkedUploadView, PodChunkedUploadCompleteView
-from .views import stats_view
+from .views import stats_view, video_stats_view
 from .views import video_oembed
 
 from .views import get_comments, get_children_comment
@@ -107,17 +107,11 @@ if getattr(settings, "USER_VIDEO_CATEGORY", False):
 
 if getattr(settings, "USE_STATS_VIEW", False):
     urlpatterns += [
-        url(r"^stats_view/$", stats_view, name="video_stats_view"),
+        url(r"^stats_view/$", stats_view, name="stats_view"),
+        url(r"^video_stats_view/$", video_stats_view, name="video_stats_view"),
         url(
-            r"^stats_view/(?P<slug>[-\w]+)/$",
-            stats_view,
-            name="video_stats_view",
-        ),
-        url(
-            r"^stats_view/(?P<slug>[-\w]+)/(?P<slug_t>[-\w]+)/$",
-            stats_view,
-            name="video_stats_view",
-        ),
+            r"^video_stats_view/(?P<id>[-\w]+)/$",
+            video_stats_view,
     ]
 
 # COMMENT and VOTE
