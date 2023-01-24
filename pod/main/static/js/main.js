@@ -15,26 +15,42 @@ function appendHTML(node, html) {
   }
 }
 
-function getParents(el, parentSelector /* optional */) {
-  // If no parentSelector defined will bubble up all the way to *document*
+function getParents(el, parentSelector) {
   if (parentSelector === undefined) {
-    parentSelector = document.body;
+      parentSelector = document;
   }
-
   var parents = [];
   var p = el.parentNode;
-  var is_selector = p.matches(parentSelector);
-
-  while (!is_selector || p !== document) {
-    var o = p;
-    parents.push(o);
-
-    p = o.parentNode;
+  while (p !== parentSelector) {
+      var o = p;
+      parents.push(o);
+      p = o.parentNode;
   }
-  parents.push(parentSelector); // Push that parentSelector you wanted to stop at
-
+  parents.push(parentSelector);
   return parents;
 }
+
+// function getParents(el, parentSelector /* optional */) {
+//   // If no parentSelector defined will bubble up all the way to *document*
+//   if (parentSelector === undefined) {
+//     parentSelector = document.body;
+//   }
+
+//   var parents = [];
+//   var p = el.parentNode;
+//   var is_selector = p.matches(parentSelector);
+
+//   while (!is_selector || p !== document) {
+//     var o = p;
+//     parents.push(o);
+
+//     p = o.parentNode;
+//   }
+//   parents.push(parentSelector); // Push that parentSelector you wanted to stop at
+
+//   return parents;
+// }
+
 /* SLIDE UP */
 function slideUp(target, duration = 500, callback = null) {
   target.style.transitionProperty = "height, margin, padding";
