@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load staticfiles i18n %}
+{% load render_table from django_tables2 %}
+{% load export_url from django_tables2 %}
+
+{% block opengraph %}
+  {{ block.super }}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+{% endblock opengraph %}
+{% block page_title %}{{ title }}{% endblock page_title %}
+{% block page_extra_head %}
+  <link rel="stylesheet" href="{% static 'css/video_stats_view.css' %}?ver={{VERSION}}">
+{% endblock page_extra_head %}
+
+{% block content %}
+<div class="stats_table">
+  {% render_table table %}
+</div>
+<div class="export_stats, text-center">
+  {% for format in table.export_formats %}
+    <button onclick="window.location.href='{% export_url format %}';">
+      {% trans "Download as" %} {{ format }}
+    </button>
+  {% endfor %}
+</div>
+<br/>
+{% endblock content %}
