@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     "chunked_upload",
     "mozilla_django_oidc",
     "honeypot",
+    "django_tables2",
+    "chartjs",
     # Pod Applications
     "pod.main",
     "django.contrib.admin",  # put it here for template override
