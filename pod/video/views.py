@@ -23,6 +23,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.db.models import Sum, Min
+from django_tables2.export.export import TableExport
 
 from dateutil.parser import parse
 import concurrent.futures as futures
@@ -46,6 +47,7 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
+from pod.video.tables import Stats_table
 from pod.video.utils import pagination_data, get_headband, change_owner
 
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -53,8 +55,9 @@ from django.core.exceptions import ObjectDoesNotExist
 import json
 import re
 import pandas
+import pytz
 from http import HTTPStatus
-from datetime import date
+from datetime import date, datetime, timedelta
 from chunked_upload.models import ChunkedUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 
@@ -1933,12 +1936,6 @@ def get_videos(p_slug, target, p_slug_t=None):
     return (videos, title)
 
 
-def view_stats_if_authenticated(user):
-    if VIEW_STATS_AUTH and user.__str__() == "AnonymousUser":
-        return False
-    return True
-
-
 def manage_access_rights_stats_video(request, video, page_title):
     video_access_ok = get_video_access(request, video, slug_private=None)
     is_password_protected = video.password is not None and video.password != ""
@@ -1965,66 +1962,122 @@ def manage_access_rights_stats_video(request, video, page_title):
         _("You do not have access rights to this video: %s " % video.slug)
     )
 
+@login_required(redirect_field_name="referrer")
+def stats_view(request):
+    #videos = Video.objects.filter()
+    site = get_current_site(request)
 
-@user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
-def stats_view(request, slug=None, slug_t=None):
-    """
-    View for statistics.
+    # Admin
+    if request.user.is_superuser :
+        videos_list = Video.objects.all().filter(sites=site)
+    else :
+    # Videos list which user is the owner + which user is an additional owner
+        videos_list = request.user.video_set.all().filter(sites=site) | request.user.owners_videos.all().filter(sites=site)
 
-    " slug reference video's slug or channel's slug
-    " t_slug reference theme's slug
-    " from defined the source of the request such as
-    " (videos, video, channel or theme)
-    """
-    target = request.GET.get("from", "videos")
-    videos, title = get_videos(slug, target, slug_t)
-    error_message = (
-        "The following %(target)s does not " "exist or contain any videos: %(slug)s"
-    )
-    if request.method == "GET" and target == "video" and videos:
-        return manage_access_rights_stats_video(request, videos[0], title)
+    videos_list = videos_list.distinct()
 
-    elif request.method == "GET" and target == "video" and not videos:
-        return HttpResponseNotFound(_("The following video does not exist: %s") % slug)
-
-    if request.method == "GET" and (
-        not videos and target in ("channel", "theme", "videos")
-    ):
-        slug = slug if not slug_t else slug_t
-        target = "Pod" if target == "videos" else target
-        return HttpResponseNotFound(_(error_message) % {"target": target, "slug": slug})
-
-    if (
-        request.method == "POST"
-        and target == "video"
-        and (
-            request.POST.get("password")
-            and request.POST.get("password") == videos[0].password
-        )
-    ) or (
-        request.method == "GET" and videos and target in ("videos", "channel", "theme")
-    ):
-        return render(request, "videos/video_stats_view.html", {"title": title})
-    else:
-        date_filter = request.POST.get("periode", date.today())
-        if isinstance(date_filter, str):
-            date_filter = parse(date_filter).date()
-
-        data = list(
-            map(
-                lambda v: {
-                    "title": v.title,
-                    "slug": v.slug,
-                    **get_all_views_count(v.id, date_filter),
-                },
-                videos,
+    data = list(
+                map(
+                    lambda v: {
+                        "video_id":v.id,
+                        "title": v.title,
+                        **get_all_views_count(v.id),
+                    },
+                    videos_list,
+                )
             )
-        )
 
-        min_date = VIDEOS.aggregate(Min("date_added"))["date_added__min"].date()
-        data.append({"min_date": min_date})
+    table = Stats_table(data)
+    table.paginate(page=request.GET.get("page", 1), per_page=25)
 
-        return JsonResponse(data, safe=False)
+    export_format = request.GET.get("_export", None)
+    if TableExport.is_valid_format(export_format):
+        exporter = TableExport(export_format, table)
+        return exporter.response("table.{}".format(export_format))
+
+    return render(request, "videos/stats_view.html", { "table":table, "title":str(_("My stats")) }) #TODO Internationalize title 
+
+def is_owner_or_additionnal_owner(user, video):
+    if user.is_superuser :
+        return True
+    if video.owner==user or user in video.additional_owners.all() :
+        return True
+    return False
+
+def get_viewcount_data(video):
+    view_cumulated_list = []
+    view_per_day_list = []
+    start_date = video.date_added
+    end_date = datetime.now(pytz.utc)
+    date_list = []
+    date_list_str = []
+    d = start_date
+    while d <= end_date:
+        date_list.append(d)
+        date_list_str.append(d.strftime("%d-%m-%Y"))
+        d += timedelta(days=1)
+
+    for day in date_list :
+        count = ViewCount.objects.filter(video_id=video.id, date=day).aggregate(
+            Sum("count")
+        )["count__sum"]
+        count = count if count else 0
+        view_per_day_list.append(count)
+        view_cumulated_list.append(view_cumulated_list[-1]+count if len(view_cumulated_list)>0 else count)
+
+    return {"labels":date_list_str, "view_per_day":view_per_day_list, "view_cumulated":view_cumulated_list}
+
+@login_required(redirect_field_name="referrer")
+def video_stats_view(request, id=None):
+    # Some checks, if no right or no video, return to general stats view
+    if id==None :
+        return redirect("stats_view")
+    video = Video.objects.filter(id=id).first()
+    if not video :
+        return redirect("stats_view")
+    if not is_owner_or_additionnal_owner(request.user, video) :
+        return redirect("stats_view")
+    
+    # Compute datas
+
+    d = get_viewcount_data(video)
+
+    data_day = {
+        "labels":d["labels"],
+        "datasets": [{
+            "label": str(_('Views per day')),
+            "data": d["view_per_day"],
+            "fill": False,
+            "borderColor": 'rgb(15, 136, 178)', # Let the templage change this ?
+            "tension": 0
+        }]
+    }
+
+    data_cumulated = {
+        "labels":d["labels"],
+        "datasets": [{
+            "label": str(_('Cumulative views')),
+            "data": d["view_cumulated"],
+            "fill": False,
+            "borderColor": 'rgb(15, 136, 178)', # And this ?
+            "tension": 0
+        }]
+    }
+
+#     Add code bellow to secure JSON injection in video_stats_view.html, only work above Django 2.1
+#   {{ data|json_script:"chart-data" }}
+#   <script type="text/javascript">
+#     var ctx = $("#chart").get(0).getContext("2d");
+#     new Chart(ctx, {
+#         type: 'line', data: JSON.parse(document.getElementById('chart-data').textContent)
+#     });
+#   </script>
+
+
+    # Plot the chart
+    # Play with this https://www.chartjs.org/docs/latest/charts/line.html
+
+    return render(request, "videos/video_stats_view.html", {"data_day":json.dumps(data_day), "data_cumulated":json.dumps(data_cumulated), "title":str(_("Viewcount of %s") % video.title)})
 
 
 @login_required(redirect_field_name="referrer")
