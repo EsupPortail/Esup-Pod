@@ -6871,3 +6871,38 @@ msgstr ""
 #: pod/video_search/views.py:261
 msgid "Search results"
 msgstr ""
+
+
+msgid "My stats"
+msgstr ""
+
+msgid "Views during the day"
+msgstr ""
+
+msgid "Views during the month"
+msgstr ""
+
+msgid "Views during the year"
+msgstr ""
+
+msgid "Total views from creation"
+msgstr ""
+
+msgid "See detail"
+msgstr ""
+
+msgid "Detail"
+msgstr ""
+
+msgid "Download as"
+msgstr ""
+
+msgid "Views per day"
+msgstr ""
+
+msgid "Cumulative views"
+msgstr ""
+
+msgid "Viewcount of %s"
+msgstr ""
+
