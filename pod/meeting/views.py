@@ -45,6 +45,9 @@ BBB_MEETING_INFO = getattr(
         "role": _("Role"),
     },
 )
+MEETING_DISABLE_RECORD = getattr(
+    settings, "MEETING_DISABLE_RECORD", True
+)
 
 __TITLE_SITE__ = (
     TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
@@ -70,7 +73,11 @@ def my_meetings(request):
     return render(
         request,
         "meeting/my_meetings.html",
-        {"meetings": meetings, "page_title": _("My meetings")},
+        {
+            "meetings": meetings,
+            "page_title": _("My meetings"),
+            "meeting_disable_record": MEETING_DISABLE_RECORD,
+        }
     )
 
 
