@@ -33,3 +33,8 @@ redis==3.5.3
 mozilla_django_oidc==2.0.0
 ics==0.7.2
 django-honeypot==1.0.3
+django-tables2==2.4.1
+tablib==3.3.0
+odfpy==1.4.1
+openpyxl==3.0.10
+django-chartjs==2.3.0
