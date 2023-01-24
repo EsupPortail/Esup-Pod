@@ -229,6 +229,10 @@ SELECT2_CACHE_BACKEND = "select2"
 
 MODELTRANSLATION_FALLBACK_LANGUAGES = ("fr", "en")
 
+##
+# Stats table template
+DJANGO_TABLES2_TEMPLATE = "django_tables2/semantic.html"
+
 # MIGRATION_MODULES = {
 #     'flatpages': 'pod.db_migrations'
 # }
