@@ -204,6 +204,9 @@
                   <a class="nav-item nav-link" href="{% url 'bbb:live_list_meeting' %}"><i class="bi bi-lightning-charge pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Perform a BigBlueButton live' %}</a>
                 {% endif %}
               {% endif %}
+              {% if USE_STATS_VIEW %}
+                <a class="dropdown-item" href="{% url 'stats_view' %}"><i data-feather="trending-up" class="nav-link-icone d-lg-none d-xl-inline mx-1" aria-hidden="true"></i>{% trans 'My stats' %}</a>
+              {% endif %}
               {% comment %}
                 <a class="nav-item nav-link" href="#">Gestion de mon compte</a> {% endcomment %}
               <hr class="dropdown-divider">
