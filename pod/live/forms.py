@@ -14,7 +14,9 @@ from django_select2 import forms as s2forms
 from django.utils import timezone
 from datetime import datetime
 from django.contrib import admin
+from django.conf import settings
 
+USE_LIVE_TRANSCRIPTION = getattr(settings, "USE_LIVE_TRANSCRIPTION", False)
 
 FILEPICKER = False
 if getattr(settings, "USE_PODFILE", False):
@@ -394,7 +396,6 @@ class EventForm(forms.ModelForm):
             "iframe_url",
             "iframe_height",
             "aside_iframe_url",
-            "enable_transcription",
         ]
         if EVENT_ACTIVE_AUTO_START:
             fields.append("is_auto_start")
@@ -406,6 +407,9 @@ class EventForm(forms.ModelForm):
         if FILEPICKER:
             fields.append("thumbnail")
             widgets["thumbnail"] = CustomFileWidget(type="image")
+
+        if USE_LIVE_TRANSCRIPTION:
+            fields.append("enable_transcription")
 
 
 class EventDeleteForm(forms.Form):

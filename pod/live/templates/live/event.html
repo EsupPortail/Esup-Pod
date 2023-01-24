@@ -68,8 +68,8 @@
                                class="video-js vjs-default-skin vjs-big-play-centered"
                                controls height="360" muted autoplay>
                             <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
-                            {% if event.enable_transcription %}
-                              <track kind="captions" src="{{ MEDIA_URL}}/media/transcripts/{{event.broadcaster.slug}}.vtt" srclang="fr" label="Français" default>
+                            {% if event.broadcaster.status and event.enable_transcription %}
+                              <track kind="captions" src="{{ MEDIA_URL}}/media/transcripts/{{event.broadcaster.slug}}.vtt" srclang="fr" label="Français" >
                             {% endif %}
                         </video>
                     </div>
@@ -166,7 +166,7 @@
 
 {% block more_script %}
 
-{% if event.enable_transcription %}
+{% if  event.broadcaster.status and event.enable_transcription %}
 <script>
   document.addEventListener("DOMContentLoaded", function () {
       let player = videojs("podvideoplayer");

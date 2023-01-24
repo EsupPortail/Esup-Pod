@@ -1,3 +1,4 @@
+import os
 from django.conf import settings
 from vosk import Model, KaldiRecognizer, SetLogLevel
 from webvtt import WebVTT, Caption
@@ -8,7 +9,8 @@ import json
 import subprocess
 
 CELERY_TO_TRANSCRIBE_LIVE = getattr(settings, "CELERY_TO_TRANSCRIBE_LIVE", False)
-VOSK_MODEL = getattr(settings, "VOSK_MODEL", None)
+VOSK_MODEL = getattr(settings, "LIVE_TRANSCRIPTION_MODEL", None)
+
 TRANSCRIPTIONS_FOLDER = getattr(settings, "TRANSCRIPTIONS_FOLDER", None)
 threads = {}
 threads_to_stop = []
@@ -22,14 +24,15 @@ def timestring(seconds):
     return "%i:%02i:%06.3f" % (hours, minutes, seconds)
 
 
-def transcribe(url, slug):
-    save_path = TRANSCRIPTIONS_FOLDER + "\\" + slug + ".vtt"  # enlever le backslash pour linux
+def transcribe(url, slug, model):
+    filename = slug + ".vtt"
+    save_path = os.path.join(TRANSCRIPTIONS_FOLDER, filename)
     url = url.split('.m3u8')[0] + "_low/index.m3u8"
     SAMPLE_RATE = 16000
     SetLogLevel(-1)
-    small_model = VOSK_MODEL
-    model = Model(small_model)
-    rec = KaldiRecognizer(model, SAMPLE_RATE)
+    print(model)
+    trans_model = Model(model)
+    rec = KaldiRecognizer(trans_model, SAMPLE_RATE)
     rec.SetWords(True)
     last_caption = None
     thread_id = threading.get_ident()
@@ -101,24 +104,27 @@ def transcribe(url, slug):
     threads_to_stop.remove(thread_id)
 
 
-def transcribe_live(url, slug, status):
-    if CELERY_TO_TRANSCRIBE_LIVE:
-        if status:
-            task_start_live_transcription.delay(url, slug)
+def transcribe_live(url, slug, status, lang):
+    print(lang)
+    if VOSK_MODEL and VOSK_MODEL.get(lang):
+        model = VOSK_MODEL.get(lang).get("model")
+        if CELERY_TO_TRANSCRIBE_LIVE:
+            if status:
+                task_start_live_transcription.delay(url, slug, model)
+            else:
+                task_end_live_transcription.delay(slug)
         else:
-            task_end_live_transcription.delay(slug)
-    else:
-        if status:
-            print("main process")
-            t = threading.Thread(target=transcribe, args=(
-                url, slug))
-            t.setDaemon(True)
-            t.start()
-            # get id of the thread
-            threads[slug] = t.ident
+            if status:
+                print("main process")
+                t = threading.Thread(target=transcribe, args=(
+                    url, slug, model))
+                t.setDaemon(True)
+                t.start()
+                # get id of the thread
+                threads[slug] = t.ident
 
-        else:
-            stop_thread = threads.get(slug, None)
-            if stop_thread:
-                threads_to_stop.append(stop_thread)
-                print("stopping thread")
+            else:
+                stop_thread = threads.get(slug, None)
+                if stop_thread:
+                    threads_to_stop.append(stop_thread)
+                    print("stopping thread")

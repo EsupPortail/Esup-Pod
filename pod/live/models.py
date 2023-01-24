@@ -1,6 +1,5 @@
 """Esup-Pod "live" models."""
 import hashlib
-
 from ckeditor.fields import RichTextField
 from django.conf import settings
 from django.contrib.auth.models import Group
@@ -19,7 +18,8 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from sorl.thumbnail import get_thumbnail
-
+from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
+from django.utils.translation import get_language
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 from pod.video.models import Video, Type
@@ -41,6 +41,11 @@ AFFILIATION_EVENT = getattr(
     settings, "AFFILIATION_EVENT", ("faculty", "employee", "staff")
 )
 SECRET_KEY = getattr(settings, "SECRET_KEY", "")
+LANG_CHOICES = getattr(
+    settings,
+    "LANG_CHOICES",
+    ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),
+)
 
 
 class Building(models.Model):
@@ -191,6 +196,13 @@ class Broadcaster(models.Model):
         blank=True,
         verbose_name=_("Piloting configuration parameters"),
         help_text=_("Add piloting configuration parameters in Json format."),
+    )
+    main_lang = models.CharField(
+        _("Main language"),
+        max_length=2,
+        choices=LANG_CHOICES,
+        default=get_language(),
+        help_text=_("Select the main language used in the content."),
     )
 
     def get_absolute_url(self):
