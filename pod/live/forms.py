@@ -362,6 +362,7 @@ class EventForm(forms.ModelForm):
             self.remove_field("broadcaster")
             self.remove_field("owner")
             self.remove_field("thumbnail")
+            self.remove_field("enable_transcription")
 
     def remove_field(self, field):
         if self.fields.get(field):
