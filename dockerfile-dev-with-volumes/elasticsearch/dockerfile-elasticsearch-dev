@@ -6,8 +6,6 @@
 # Conteneur elasticsearch
 ARG ELASTICSEARCH_VERSION
 FROM $ELASTICSEARCH_VERSION
-#FROM elasticsearch:6.8.23
-#FROM elasticsearch:7.17.7
 # TODO
 #FROM harbor.urba.univ-lille.fr/store/elasticsearch:7.17.7
 
