@@ -434,7 +434,7 @@ class Event(models.Model):
     )
     enable_transcription = models.BooleanField(
         verbose_name=_("Enable transcription"),
-        help_text=_("If this box is checked, " "the transcription will be enabled."),
+        help_text=_("If this box is checked, the transcription will be enabled."),
         default=False,
     )
 

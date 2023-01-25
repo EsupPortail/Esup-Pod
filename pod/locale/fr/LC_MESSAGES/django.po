@@ -2480,6 +2480,14 @@ msgstr "Voir cet évènement n’est pas possible sans mot de passe."
 msgid "Event"
 msgstr "Évènement"
 
+#:pod/live/models.py:436
+msgid "Enable transcription"
+msgstr "Activer la transcription"
+
+#: pod/live/models.py:437
+# msgid "If this box is checked, the transcription will be enabled."
+# msgstr "Si cette case est cochée, la transcription sera activée."
+
 #: pod/live/models.py:426 pod/live/templates/live/event.html:20
 #: pod/live/templates/live/events.html:9 pod/live/templates/live/events.html:12
 #: pod/live/views.py:349
