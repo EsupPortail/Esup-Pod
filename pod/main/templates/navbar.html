@@ -75,11 +75,11 @@
           </li>
         {% else %}
           <li class="nav-item pod-navbar__nav-item mx-2" id="nav-addvideo">
-            <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span class="ms-1 d-none d-md-block">{% trans "Add a video" %}</span></a>
+            <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "Add a video" %}</span></a>
           </li>
           {% if USE_MEETING %}
           <li class="nav-item pod-navbar__nav-item mx-2" id="nav-mymeetings">
-            <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-add"></i><span class="ms-1 d-none d-md-block">{% trans "My meetings" %}</span></a>
+            <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "My meetings" %}</span></a>
           </li>
           {% endif %}
         {% endif %}
