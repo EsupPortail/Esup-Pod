@@ -37,7 +37,7 @@ createDB:
 lang:
 	# Mise à jour des fichiers de langue
 	echo "Processing python files..."
-	python3 manage.py makemessages --all -i "opencast-studio/*"
+	python3 manage.py makemessages --all -i "opencast-studio/*" -i "pod/custom/settings_local.py"
 	echo "Processing javascript files..."
 	django-admin makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/node_modules/*"
 

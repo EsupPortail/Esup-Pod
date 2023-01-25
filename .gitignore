@@ -46,6 +46,7 @@ log/
 media/
 pod/*/migrations/
 pod/custom/*
+pod/main/static/custom/img
 !pod/custom/settings_local.py.example
 settings_local.py
 scripts/bbb-pod-live/docker-compose.yml
@@ -68,7 +69,6 @@ compile-model
 *.crt
 *.key
 
-# Bower stuffs #
+# NPM stuffs #
 ################
-bower_components
 node_modules

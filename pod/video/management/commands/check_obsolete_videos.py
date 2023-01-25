@@ -62,7 +62,10 @@ LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
 
 
 class Command(BaseCommand):
+    """Checking obsolete videos."""
+
     def handle(self, *args, **options):
+        """Handle the check_obsolete_videos command call."""
         # Activate a fixed locale fr
         translation.activate(LANGUAGE_CODE)
 
@@ -80,7 +83,7 @@ class Command(BaseCommand):
             raise CommandError(_("USE_OBSOLESCENCE is FALSE"))
 
     def get_video_treatment_and_notify_user(self):
-        # check video with deadlines to send email to each owner
+        """Check video with deadlines to send email to each owner."""
         list_video_notified_by_establishment = {}
         list_video_notified_by_establishment.setdefault("other", {})
         for step_day in sorted(WARN_DEADLINES):
@@ -109,7 +112,7 @@ class Command(BaseCommand):
         return list_video_notified_by_establishment
 
     def get_video_archived_deleted_treatment(self):
-        # get video with deadline out of time to deal with deletion
+        """Get video with deadline out of time to deal with deletion."""
         vids = Video.objects.filter(
             sites=get_current_site(None), date_delete__lt=date.today()
         ).exclude(owner__username=ARCHIVE_OWNER_USERNAME)
@@ -129,6 +132,7 @@ class Command(BaseCommand):
                 archive_user, created = User.objects.get_or_create(
                     username=ARCHIVE_OWNER_USERNAME,
                 )
+                # Rename video and change owner.
                 vid.owner = archive_user
                 vid.is_draft = True
                 vid.title = "%s %s %s" % (
@@ -136,6 +140,8 @@ class Command(BaseCommand):
                     date.today(),
                     vid.title,
                 )
+                # Trunc title to 250 chars max.
+                vid.title = vid.title[:250]
                 vid.save()
 
                 # add video to delete
@@ -173,6 +179,7 @@ class Command(BaseCommand):
         )
 
     def notify_user(self, video, step_day):
+        """Notify a user that his video will be deleted soon."""
         name = video.owner.last_name + " " + video.owner.first_name
         if video.owner.is_staff:
             msg_html = _("Hello %(name)s,") % {"name": name}
@@ -224,6 +231,7 @@ class Command(BaseCommand):
         )
 
     def notify_manager_of_obsolete_video(self, list_video):
+        """Notify manager(s) with a list of obsolete videos."""
         for estab in list_video:
             if len(list_video[estab]) > 0:
                 msg_html = _("Hello manager(s),") + " <br/>\n"
@@ -267,6 +275,7 @@ class Command(BaseCommand):
                     )
 
     def notify_manager_of_deleted_video(self, list_video):
+        """Notify manager(s) with a list of deleted videos."""
         for estab in list_video:
             if len(list_video[estab]) > 0:
                 msg_html = _("Hello manager(s),") + " <br/>\n"
@@ -309,6 +318,7 @@ class Command(BaseCommand):
                     )
 
     def notify_manager_of_archived_video(self, list_video):
+        """Notify manager(s) with a list of archived videos."""
         for estab in list_video:
             if len(list_video[estab]) > 0:
                 msg_html = _("Hello manager(s),") + " <br/>\n"
@@ -351,6 +361,7 @@ class Command(BaseCommand):
                     )
 
     def get_list_video_html(self, list_video, deleted):
+        """Generate an html version of list_video."""
         msg_html = ""
         for i, deadline in enumerate(list_video):
             if deleted is False and deadline != "0":
@@ -375,6 +386,7 @@ class Command(BaseCommand):
         return msg_html
 
     def get_manager_emails(self, video):
+        """Return the list of manager emails."""
         if (
             USE_ESTABLISHMENT
             and MANAGERS
@@ -386,6 +398,7 @@ class Command(BaseCommand):
             return CONTACT_US_EMAIL
 
     def write_in_csv(self, vid, type):
+        """Add in `type`.csv file informations about the video."""
         file = "%s/%s.csv" % (settings.LOG_DIRECTORY, type)
         exists = os.path.isfile(file)
         with open(file, "a", newline="", encoding="utf-8") as csvfile:

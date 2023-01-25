@@ -388,7 +388,9 @@ tr,
   transition: opacity .8s ease-in;
 }
 
-#s:focus+button {
+#s:focus+button,
+#s+button:focus,
+#s+button:hover  {
   opacity: 1;
 }
 
