@@ -13,15 +13,15 @@ class Command(BaseCommand):
 
         # Suppression des Heartbeat trop anciens
         accepted_time = timezone.now() - timezone.timedelta(seconds=VIEW_EXPIRATION_DELAY)
-        expired_hbs = HeartBeat.objects.filter(last_heartbeat__lt=accepted_time).all()
-        expired_hbs.delete()
+        HeartBeat.objects.filter(last_heartbeat__lt=accepted_time).delete()
 
         # Suppression des viewers des events finis de la journée
-        for finished_event in Event.objects.filter(
-                start_date__date=timezone.now().date(),
-                end_date__lt=timezone.now(),
-                broadcaster__enable_viewer_count=True
-        ).all():
+        q = Event.objects.filter(
+            start_date__date=timezone.now().date(),
+            end_date__lt=timezone.now(),
+            broadcaster__enable_viewer_count=True
+        )
+        for finished_event in q.all():
             finished_event.viewers.set([])
 
         # Maj des viewers des events en cours
