@@ -14,7 +14,6 @@ from django_select2 import forms as s2forms
 from django.utils import timezone
 from datetime import datetime
 from django.contrib import admin
-from django.conf import settings
 
 USE_LIVE_TRANSCRIPTION = getattr(settings, "USE_LIVE_TRANSCRIPTION", False)
 
