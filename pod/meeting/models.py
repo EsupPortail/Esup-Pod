@@ -720,7 +720,7 @@ class Meeting(models.Model):
             meeting_json[elt.tag] = elt.text
         if meeting_json.get("returncode", "") != "SUCCESS":
             msg = {}
-            msg["error"] = _("Unable to end meeting ! ")
+            msg["error"] = _("Unable to end meeting!")
             msg["returncode"] = meeting_json.get("returncode", "")
             msg["messageKey"] = meeting_json.get("messageKey", "")
             msg["message"] = meeting_json.get("message", "")
@@ -747,7 +747,7 @@ class Meeting(models.Model):
         meeting_json = parseXmlToJson(xmldoc)
         if meeting_json.get("returncode", "") != "SUCCESS":
             msg = {}
-            msg["error"] = _("Unable to get meeting recordings ! ")
+            msg["error"] = _("Unable to get meeting recordings!")
             msg["returncode"] = meeting_json.get("returncode", "")
             msg["messageKey"] = meeting_json.get("messageKey", "")
             msg["message"] = meeting_json.get("message", "")
@@ -776,7 +776,7 @@ class Meeting(models.Model):
             meeting_json[elt.tag] = elt.text
         if meeting_json.get("returncode", "") != "SUCCESS":
             msg = {}
-            msg["error"] = _("Unable to delete recording ! ")
+            msg["error"] = _("Unable to delete recording!")
             msg["returncode"] = meeting_json.get("returncode", "")
             msg["messageKey"] = meeting_json.get("messageKey", "")
             msg["message"] = meeting_json.get("message", "")
