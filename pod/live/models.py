@@ -261,11 +261,13 @@ class Broadcaster(models.Model):
                 url_immediate_event,
             ]
         )
-
-        img = qrcode.make(data)
-        buffer = io.BytesIO()
-        img.save(buffer, format="PNG")
-        img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
+        try:
+            img = qrcode.make(data)
+            buffer = io.BytesIO()
+            img.save(buffer, format="PNG")
+            img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
+        except Exception:
+            img_str = ""
         alt = _("QR code to record immediately an event")
         return mark_safe(
             f'<img src="data:image/png;base64, {img_str}" width="300px" height="300px" alt={alt}>'

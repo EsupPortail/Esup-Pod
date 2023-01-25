@@ -133,7 +133,8 @@ class BroadcasterTestCase(TestCase):
         self.assertEqual(
             broadcaster.get_absolute_url(), "/live/direct/%s/" % broadcaster.slug
         )
-
+        qrcode_with_error = '<img src="data:image/png;base64, " width="300px" height="300px" alt=QR code to record immediately an event>'
+        self.assertNotEqual(broadcaster.qrcode, qrcode_with_error)
         broadcaster2 = Broadcaster.objects.get(id=2)
         self.assertEqual(broadcaster2.video_on_hold.id, 1)
         print("   --->  test_attributs of BroadcasterTestCase : OK !")
