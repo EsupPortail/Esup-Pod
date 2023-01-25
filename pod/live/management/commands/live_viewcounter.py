@@ -13,7 +13,8 @@ class Command(BaseCommand):
 
         # Suppression des Heartbeat trop anciens
         accepted_time = timezone.now() - timezone.timedelta(seconds=VIEW_EXPIRATION_DELAY)
-        HeartBeat.objects.filter(last_heartbeat__lt=accepted_time).delete()
+        expired_hbs = HeartBeat.objects.filter(last_heartbeat__lt=accepted_time).all()
+        expired_hbs.delete()
 
         # Suppression des viewers des events finis de la journée
         for finished_event in Event.objects.filter(
@@ -24,16 +25,15 @@ class Command(BaseCommand):
             finished_event.viewers.set([])
 
         # Maj des viewers des events en cours
-        for current_event in [evt for evt in Event.objects.all() if evt.is_current()]:
-            hbs = HeartBeat.objects.filter(event=current_event)
-            hbs = hbs.exclude(user=None)
-            users = []
-            for hb in hbs:
-                if hb.user not in users:
-                    users.append(hb.user)
-            current_event.viewers.set(users)
+        events = Event.objects.all()
 
-            # faut-il garder le compteur sur le broadcaster pour le superviseur ?
-            current_event.broadcaster.viewcount = hbs.count()
-
-            current_event.save()
+        for event in events:
+            if event.is_current():
+                hbs = HeartBeat.objects.filter(event=event)
+                hbs = hbs.exclude(user=None)
+                users = []
+                for hb in hbs:
+                    if hb.user not in users:
+                        users.append(hb.user)
+                event.viewers.set(users)
+                event.save()
