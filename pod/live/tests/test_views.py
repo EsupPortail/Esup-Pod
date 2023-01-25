@@ -2,27 +2,28 @@
 Unit tests for live views
 """
 import ast
+from datetime import datetime
+from http import HTTPStatus
+
 import httmock
 import pytz
-from datetime import datetime
 from django.conf import settings
-from django.contrib.auth.models import User, Group
 from django.contrib.auth.models import Permission
+from django.contrib.auth.models import User, Group
 from django.core.management import call_command
 from django.http import JsonResponse, Http404
 from django.test import Client
 from django.test import TestCase
 from django.urls import reverse
-from http import HTTPStatus
 from django.utils import timezone
 from httmock import HTTMock, all_requests
 
 from pod.authentication.models import AccessGroup
 from pod.live.forms import EventForm, EventPasswordForm
 from pod.live.models import Building, Broadcaster, HeartBeat, Event
+from pod.main.models import Configuration
 from pod.video.models import Type
 from pod.video.models import Video
-
 
 if getattr(settings, "USE_PODFILE", False):
     FILEPICKER = True
@@ -1489,3 +1490,111 @@ class LiveViewsTestCase(TestCase):
         with self.assertRaises(Exception):
             checkFileExists("filename", 2)
             print("   --->  test checkFileExists exception : OK !")
+
+    def test_immediate_event(self):
+        self.client = Client()
+
+        self.user = User.objects.get(username="pod")
+        self.superuser = User.objects.create_superuser(
+            "myuser", "myemail@test.com", "password1234"
+        )
+
+        # pas loggé
+        notExistingBroadcasterId = 999
+        response = self.client.get(
+            "/live/event_immediate_edit/%s/" % notExistingBroadcasterId
+        )
+        self.assertRedirects(
+            response,
+            "%s?referrer=%s%s/"
+            % (
+                settings.LOGIN_URL,
+                "/live/event_immediate_edit/",
+                notExistingBroadcasterId,
+            ),
+            status_code=302,
+            target_status_code=302,
+        )
+        print("   --->  test test_immediate_event not logged OK !")
+
+        # Superuser logged in
+        self.client.force_login(self.superuser)
+        response = self.client.get(
+            "/live/event_immediate_edit/%s/" % notExistingBroadcasterId
+        )
+        self.assertEqual(response.status_code, 404)
+        print("   --->  test test_immediate_event logged event non existant OK !")
+
+        # Récup d'un broadcaster
+        self.broadcaster = Broadcaster.objects.get(id=1)
+
+        # Logué sans droit
+        self.client.force_login(self.user)
+        response = self.client.get("/live/event_immediate_edit/%s/" % self.broadcaster.id)
+        self.assertTemplateUsed(response, "live/event_edit.html")
+        self.assertEqual(response.context["access_not_allowed"], True)
+        print("   --->  test test_immediate_event logged sans droit event existant OK !")
+
+        # Superuser avec broadcaster existant
+        self.client.force_login(self.superuser)
+        response = self.client.get("/live/event_immediate_edit/%s/" % self.broadcaster.id)
+        self.assertTemplateUsed(response, "live/event_immediate_edit.html")
+        print("   --->  test test_immediate_event logged event existant OK !")
+
+    def test_immediate_event_form_post(self):
+
+        self.user = User.objects.get(username="pod")
+        self.broadcaster = Broadcaster.objects.get(id=1)
+
+        # Post formulaire basique pour ayant droit
+        self.superuser = User.objects.create_superuser(
+            "myuser", "myemail@test.com", "password1234"
+        )
+        self.client.force_login(self.superuser)
+
+        # existing event has to be deleted as date would be the same
+        event = Event.objects.get(title="event1")
+        event.delete()
+
+        endTime = timezone.now() + timezone.timedelta(hours=1)
+
+        data = {
+            "owner": self.user,
+            "is_auto_start": True,
+            "title": "test",
+            "end_date": endTime,
+            "end_time": endTime.strftime("%H:%M"),
+        }
+        response = self.client.post(
+            "/live/event_immediate_edit/%s/" % self.broadcaster.id, data, format="json"
+        )
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        print("   --->  test test_immediate_event_form_post valid OK !")
+
+        # same form submitted again - fail because start and end dates are the same
+        response = self.client.post(
+            "/live/event_immediate_edit/%s/" % self.broadcaster.id, data, format="json"
+        )
+        messages = list(response.context["messages"])
+        self.assertGreaterEqual(len(messages), 1)
+        print("   --->  test test_immediate_event_form_post not valid OK !")
+
+    def test_immediate_event_maintenance(self):
+        Configuration.objects.get(key="maintenance_mode").delete()
+        Configuration.objects.create(key="maintenance_mode", value=1)
+
+        self.client = Client()
+        self.superuser = User.objects.create_superuser(
+            "myuser", "myemail@test.com", "password1234"
+        )
+
+        # maintenance Superuser avec broadcaster existant
+        self.client.force_login(self.superuser)
+        response = self.client.get("/live/event_immediate_edit/%s/" % 1)
+        self.assertRedirects(
+            response,
+            reverse("maintenance"),
+            status_code=302,
+            target_status_code=200,
+        )
+        print("   --->  test test_immediate_event in maintenance OK !")

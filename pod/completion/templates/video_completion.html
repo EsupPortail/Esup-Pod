@@ -68,6 +68,7 @@
         {% csrf_token %}
         <input type="hidden" name="action" value="new" />
         <input type="submit" value="{% trans 'Add a new subtitle or caption file' %}" class="new_track btn btn-primary" />
+        <span>{% trans 'The file must be in VTT format.' %}</span>
       </form>
     </div>
   </li>

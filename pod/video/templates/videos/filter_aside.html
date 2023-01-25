@@ -89,7 +89,7 @@
       {% endfor %}
     </div>
     {% if tagslist|length > 5 %}
-      <span class="badge badge-light float-end"><a class="collapsed" data-bs-toggle="collapse" href="#collapseFilterTag" aria-expanded="false" aria-controls="collapseFilterTag"></a></span>
+      <span class="badge badge-light float-end"><a class="collapsed" data-bs-toggle="collapse" href="#collapseFilterTag" aria-expanded="false" aria-controls="collapseFilterTag" title="{% trans 'Fold/Unfold filter tags' %}"></a></span>
     {% endif %}
     {% endwith %}
   </div>
@@ -115,11 +115,11 @@
     {% endif %}
   </div>
 </fieldset>
+<input class="d-none" type="submit" value="{% trans 'Filter' %}">
 </form>
 
 </div>
 <script>
-var listUserChecked = {{owners|safe}};
-
+  var listUserChecked = {{owners|escapejs}};
 </script>
 {% endspaceless %}

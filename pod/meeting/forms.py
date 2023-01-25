@@ -63,7 +63,7 @@ MEETING_RECORD_FIELDS = getattr(
 )
 
 if MEETING_DISABLE_RECORD:
-    MEETING_EXCLUDE_FIELDS = (
+    __MEETING_EXCLUDE_FIELDS__ = (
         MEETING_MAIN_FIELDS
         + MEETING_DATE_FIELDS
         + MEETING_RECURRING_FIELDS
@@ -71,7 +71,7 @@ if MEETING_DISABLE_RECORD:
         + MEETING_RECORD_FIELDS
     )
 else:
-    MEETING_EXCLUDE_FIELDS = (
+    __MEETING_EXCLUDE_FIELDS__ = (
         MEETING_MAIN_FIELDS
         + MEETING_DATE_FIELDS
         + MEETING_RECURRING_FIELDS
@@ -81,13 +81,13 @@ else:
 for field in Meeting._meta.fields:
     # print(field.name, field.editable)
     if field.editable is False:
-        MEETING_EXCLUDE_FIELDS = MEETING_EXCLUDE_FIELDS + (field.name,)
+        __MEETING_EXCLUDE_FIELDS__ = __MEETING_EXCLUDE_FIELDS__ + (field.name,)
 
 
 def get_meeting_fields():
     fields = []
     for field in Meeting._meta.fields:
-        if field.name not in MEETING_EXCLUDE_FIELDS:
+        if field.name not in __MEETING_EXCLUDE_FIELDS__:
             fields.append(field.name)
     return fields
 
