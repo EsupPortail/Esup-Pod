@@ -9,6 +9,11 @@ function makeid(length) {
   return result;
 }
 
+function resizeViewerList() {
+  let desired_width = 0.3 * document.getElementById("podvideoplayer").offsetWidth;
+  document.getElementById("viewers-list").style.width = desired_width + 'px';
+}
+
 document.addEventListener("DOMContentLoaded", function() {
 
   let podplayer = videojs("podvideoplayer");
@@ -62,12 +67,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Heartbeat sent every x seconds
     setInterval(sendHeartBeat, heartbeat_delay * 1000);
 
-    function resizeViewerList() {
-      $("#viewers-list").css("width", 0.3 * $("#podvideoplayer").width());
-    }
-
     window.onresize = resizeViewerList;
-    resizeViewerList();
   });
 });
 
@@ -110,15 +110,19 @@ document.addEventListener("DOMContentLoaded", function() {
     });
     InfoMenuButton.prototype.handleClick = function (event) {
       MenuButton.prototype.handleClick.call(this, event);
-      if (
-        $("#viewers-list").css("display") == "none" &&
-        $("#viewers-ul").children().length > 0
-      ) {
-        $("#viewers-list").css("display", "block");
+      let viewer_list_el = document.getElementById("viewers-list")
+
+      if (viewer_list_el.style.display === "none" && document.getElementById("viewers-ul").children.length > 0) {
+        viewer_list_el.style.display = "block";
       } else {
-        $("#viewers-list").css("display", "none");
+        viewer_list_el.style.display = "none";
+      }
+
+      if (viewer_list_el.style.width === '0px') {
+        resizeViewerList();
       }
     };
+
     MenuButton.registerComponent("InfoMenuButton", InfoMenuButton);
 
     /**
