@@ -489,8 +489,7 @@ def recordings(request, meeting_id):
     meeting_recordings = meeting.get_recordings()
     recordings = []
     if type(meeting_recordings.get("recordings")) is dict:
-        for record in meeting_recordings.get("recordings"):
-            data = meeting_recordings["recordings"][record]
+        for data in meeting_recordings["recordings"].values():
             recording = Recording(data["recordID"], data["name"], data["state"])
             recording.startTime = data["startTime"]
             recording.endTime = data["endTime"]

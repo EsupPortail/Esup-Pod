@@ -18,7 +18,6 @@ urlpatterns = [
     ),
     path("end/<slug:meeting_id>/", views.end, name="end"),
     path("end_callback/<slug:meeting_id>/", views.end_callback, name="end_callback"),
-
 ]
 
 if not views.MEETING_DISABLE_RECORD:
@@ -28,10 +27,10 @@ if not views.MEETING_DISABLE_RECORD:
             "delete_recording/<slug:meeting_id>/<slug:recording_id>/",
             views.delete_recording,
             name="delete_recording"
-        )
+        ),
     ]
 
 urlpatterns += [
     path("<slug:meeting_id>/", views.join, name="join"),
-    path("<slug:meeting_id>/<slug:direct_access>", views.join, name="join")
+    path("<slug:meeting_id>/<slug:direct_access>", views.join, name="join"),
 ]
