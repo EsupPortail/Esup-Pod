@@ -159,24 +159,34 @@
 {% block more_script %}
 <script src="/admin/jsi18n/"></script>
 <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
+<!-- 
 <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>
+-->
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}" />
 {{form.media}}
 <script>
   /** Restrict access **/
 /** restrict access to group */
-$("#id_is_restricted").change(function () {
-  restrict_access_to_groups();
-});
+var is_restricted_elt;
 var restrict_access_to_groups = function () {
-  if ($("#id_is_restricted").prop("checked")) {
-    $("#id_restrict_access_to_groups").parents(".restricted_access").show();
+  //here we call our getParents function
+  const parents = getParents(document.getElementById("id_restrict_access_to_groups"), document.querySelector(".restricted_access"))
+  if (is_restricted_elt.checked) {
+    parents[parents.length-1].style.display = 'block';
   } else {
-    $("#id_restrict_access_to_groups option:selected").prop("selected", false);
-    $("#id_restrict_access_to_groups").parents(".restricted_access").hide();
+    Array.from(document.getElementById("id_restrict_access_to_groups").options).forEach(function (option) {
+      option.selected = false;
+    });
+    parents[parents.length-1].style.display = 'none';
   }
 };
-restrict_access_to_groups();
+window.addEventListener('load', function(event) {
+  is_restricted_elt = document.getElementById("id_is_restricted");
+  is_restricted_elt.addEventListener('clicked',function (event) {
+    restrict_access_to_groups();
+  });
+  restrict_access_to_groups();
+});
 </script>
 {% endblock more_script %}
