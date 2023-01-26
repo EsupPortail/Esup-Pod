@@ -10,58 +10,54 @@ function makeid(length) {
 }
 
 function resizeViewerList() {
-  let desired_width = 0.3 * document.getElementById("podvideoplayer").offsetWidth;
-  document.getElementById("viewers-list").style.width = desired_width + 'px';
+  let desired_width =
+    0.3 * document.getElementById("podvideoplayer").offsetWidth;
+  document.getElementById("viewers-list").style.width = desired_width + "px";
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-
+document.addEventListener("DOMContentLoaded", function () {
   let podplayer = videojs("podvideoplayer");
 
   podplayer.ready(function () {
-
     let secret = makeid(24);
 
     let live_element = document.getElementById("livename");
 
     let param;
     if (live_element.dataset.broadcasterid !== undefined)
-      param = "&broadcasterid=" + live_element.dataset.broadcasterid
+      param = "&broadcasterid=" + live_element.dataset.broadcasterid;
     else if (live_element.dataset.eventid !== undefined)
-      param = "&eventid=" + live_element.dataset.eventid
+      param = "&eventid=" + live_element.dataset.eventid;
 
     let url = "/live/ajax_calls/heartbeat/?key=" + secret + param;
 
     function sendHeartBeat() {
       fetch(url, {
-            method: "GET",
-            headers: {
-              "X-Requested-With": "XMLHttpRequest",
-            },
-          }
-      ).then((response) => {
-        if (response.ok)
-          return response.json();
-        else
-          return Promise.reject(response);
-      }).then((result) => {
+        method: "GET",
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      })
+        .then((response) => {
+          if (response.ok) return response.json();
+          else return Promise.reject(response);
+        })
+        .then((result) => {
+          let names = "";
+          result.viewers_list.forEach((viewer) => {
+            let name = viewer.first_name + " " + viewer.last_name;
+            if (name === " ") {
+              name = "?";
+            }
+            names += "<li>" + name + "</li>";
+          });
 
-        let names = "";
-        result.viewers_list.forEach((viewer) => {
-          let name = viewer.first_name + " " + viewer.last_name;
-          if (name === " ") {
-            name = "?";
-          }
-          names += ("<li>" + name + "</li>");
+          document.getElementById("viewcount").innerHTML = result.viewers;
+          document.getElementById("viewers-ul").innerHTML = names;
+        })
+        .catch((error) => {
+          console.log("Impossible to get viewers list. ", error.message);
         });
-
-        document.getElementById("viewcount").innerHTML = result.viewers;
-        document.getElementById("viewers-ul").innerHTML = names;
-
-      }).catch((error) => {
-        console.log('Impossible to get viewers list. ', error.message);
-      });
-
     }
 
     // Heartbeat sent every x seconds
@@ -110,15 +106,18 @@ document.addEventListener("DOMContentLoaded", function() {
     });
     InfoMenuButton.prototype.handleClick = function (event) {
       MenuButton.prototype.handleClick.call(this, event);
-      let viewer_list_el = document.getElementById("viewers-list")
+      let viewer_list_el = document.getElementById("viewers-list");
 
-      if (viewer_list_el.style.display === "none" && document.getElementById("viewers-ul").children.length > 0) {
+      if (
+        viewer_list_el.style.display === "none" &&
+        document.getElementById("viewers-ul").children.length > 0
+      ) {
         viewer_list_el.style.display = "block";
       } else {
         viewer_list_el.style.display = "none";
       }
 
-      if (viewer_list_el.style.width === '0px') {
+      if (viewer_list_el.style.width === "0px") {
         resizeViewerList();
       }
     };
