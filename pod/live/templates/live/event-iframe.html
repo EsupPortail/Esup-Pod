@@ -34,7 +34,7 @@
 
 {% block page_content %}
     {% csrf_token %}
-    <h3 id="livename" data-liveid="{{ event.broadcaster.id }}" class="d-none"><i class="bi bi-cast" aria-hidden="true"></i>&nbsp;{{ event.title|title }}</h3>
+    <h3 id="livename" data-eventid="{{ event.id }}" class="d-none"><i class="bi bi-cast" aria-hidden="true"></i>&nbsp;{{ event.title|title }}</h3>
     {% if form %}
       {% include 'live/event-form.html' %}
     {% else %}
@@ -72,6 +72,7 @@
                                    class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
                                    controls height="360" muted autoplay>
                                 <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
+
                             </video>
                         </div>
                         {# ajouter ici l' event.aside_iframe_url si nécessaire #}

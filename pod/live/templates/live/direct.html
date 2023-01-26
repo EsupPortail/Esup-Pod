@@ -24,7 +24,7 @@
   {% if form %}
     {% include 'live/event-form.html' %}
   {% else %}
-    <h3 id="livename" data-liveid="{{broadcaster.id}}"><i class="bi bi-cast"></i>&nbsp;{% trans "Live" %} {{broadcaster.name}}</h3>
+    <h3 id="livename" data-broadcasterid={{ broadcaster.id }}><i class="bi bi-cast"></i>&nbsp;{% trans "Live" %} {{broadcaster.name}}</h3>
 
       {% if display_event_btn %}
           <div class="d-flex infinite-container mb-2" id="event_add">
@@ -45,11 +45,7 @@
     <div id="divvideoplayer" style="display: none;">
       <div class="row">
         <div class="col">
-          <video id="podvideoplayer" class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" poster="{{broadcaster.get_poster_url}}" muted autoplay>
-            <source
-             src="{{broadcaster.url}}"
-             type="application/x-mpegURL">
-          </video>
+         
 
         </div>
       </div>
@@ -62,6 +58,7 @@
         <source
          src="{{broadcaster.url}}"
          type="application/x-mpegURL">
+
       </video>
 
     </div>

@@ -26,6 +26,7 @@ from django.db.models import Sum, Min
 
 from dateutil.parser import parse
 import concurrent.futures as futures
+from pod.main.utils import is_ajax
 
 from pod.main.views import in_maintenance
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
@@ -156,13 +157,11 @@ __VIDEOS__ = get_available_videos()
 
 def _regroup_videos_by_theme(request, videos, channel, theme=None):
     """Regroup videos by theme.
-
     Args:
         request (Request): current HTTP Request
         videos (List[Video]): list of video filter by channel
         channel (Channel): current channel
         theme (Theme, optional): current theme. Defaults to None.
-
     Returns:
         Dict[str, Any]: json data
     """
@@ -383,7 +382,7 @@ def theme_edit(request, slug):
         messages.add_message(request, messages.ERROR, _("You cannot edit this channel."))
         raise PermissionDenied
 
-    if request.POST and request.is_ajax():
+    if is_ajax(request):
         if request.POST["action"] in __THEME_ACTION__:
             return eval("theme_edit_{0}(request, channel)".format(request.POST["action"]))
 
@@ -813,7 +812,6 @@ def render_video(
     # Do it only for video --> move code in video definition
     app_name = request.resolver_match.namespace.capitalize()[0] \
         if request.resolver_match.namespace else 'O'
-
     if (
         video.get_version != app_name and
         request.GET.get('redirect') != "false"
@@ -1038,7 +1036,6 @@ def get_adv_note_list(request, video):
 def get_adv_note_com_list(request, id):
     """
     Return the list of coms which are direct sons of the AdvancedNote id.
-
         ...that can be seen by the current user
     """
     if id:
@@ -1064,7 +1061,6 @@ def get_adv_note_com_list(request, id):
 def get_com_coms_dict(request, listComs):
     """
     Return the list of the direct sons of a com.
-
       for each encountered com
     Starting from the coms present in listComs
     Example, having the next tree of coms :
@@ -1100,7 +1096,6 @@ def get_com_coms_dict(request, listComs):
 def get_com_tree(com):
     """
     Return the list of the successive parents of com.
-
       including com from bottom to top
     """
     tree, c = [], com
@@ -1114,7 +1109,6 @@ def get_com_tree(com):
 def can_edit_or_remove_note_or_com(request, nc, action):
     """
     Check if the current user can apply action to the note or comment nc.
-
     Typically action is in ['edit', 'delete']
     If not raise PermissionDenied
     """
@@ -1138,7 +1132,6 @@ def can_edit_or_remove_note_or_com(request, nc, action):
 def can_see_note_or_com(request, nc):
     """
     Check if the current user can view the note or comment nc.
-
     If not raise PermissionDenied
     """
     if isinstance(nc, AdvancedNotes):
@@ -1891,7 +1884,6 @@ def get_all_views_count(v_id, date_filter=date.today()):
 
 def get_videos(p_slug, target, p_slug_t=None):
     """Retourne une ou plusieurs videos selon le slug donné.
-
     Renvoi vidéo/s et titre de
     (theme, ou video ou channel ou videos pour toutes)
     selon la réference du slug donnée
@@ -1960,7 +1952,6 @@ def manage_access_rights_stats_video(request, video, page_title):
 def stats_view(request, slug=None, slug_t=None):
     """
     View for statistics.
-
     " slug reference video's slug or channel's slug
     " t_slug reference theme's slug
     " from defined the source of the request such as
@@ -2164,7 +2155,6 @@ def add_comment(request, video_slug, comment_id=None):
 def get_parent_comments(request, video):
     """
     Return only comments without parent.
-
     (direct comments to video) which contains
     number of votes and children
     """
@@ -2298,11 +2288,9 @@ def get_comments(request, video_slug):
 @csrf_protect
 def delete_comment(request, video_slug, comment_id):
     """Delete the comment `comment_id` associated to `video_slug`.
-
     Args:
         video_slug (string): the video associated to this comment
         comment_id (): id of the comment to be deleted
-
     Returns:
         HttpResponse
     """

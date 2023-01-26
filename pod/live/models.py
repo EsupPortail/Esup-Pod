@@ -1,5 +1,9 @@
 """Esup-Pod "live" models."""
+import base64
 import hashlib
+import io
+
+import qrcode
 
 from ckeditor.fields import RichTextField
 from django.conf import settings
@@ -17,12 +21,15 @@ from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from sorl.thumbnail import get_thumbnail
 
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 from pod.video.models import Video, Type
+
+SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomImageModel
@@ -162,8 +169,6 @@ class Broadcaster(models.Model):
         help_text=_("Live is accessible from the Live tab"),
         default=True,
     )
-    viewcount = models.IntegerField(_("Number of viewers"), default=0, editable=False)
-    viewers = models.ManyToManyField(User, editable=False)
 
     manage_groups = models.ManyToManyField(
         Group,
@@ -242,21 +247,27 @@ class Broadcaster(models.Model):
 
     is_recording_admin.short_description = _("Is recording?")
 
+    @property
+    def qrcode(self, request=None):
+        url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
+        url_immediate_event = reverse("live:event_immediate_edit", args={self.id})
+        data = "".join(
+            [
+                url_scheme,
+                "://",
+                get_current_site(request).domain,
+                url_immediate_event,
+            ]
+        )
 
-class HeartBeat(models.Model):
-    user = models.ForeignKey(
-        User, null=True, verbose_name=_("Viewer"), on_delete=models.CASCADE
-    )
-    viewkey = models.CharField(_("Viewkey"), max_length=200, unique=True)
-    broadcaster = models.ForeignKey(
-        Broadcaster, null=False, verbose_name=_("Broadcaster"), on_delete=models.CASCADE
-    )
-    last_heartbeat = models.DateTimeField(_("Last heartbeat"), default=timezone.now)
-
-    class Meta:
-        verbose_name = _("Heartbeat")
-        verbose_name_plural = _("Heartbeats")
-        ordering = ["broadcaster"]
+        img = qrcode.make(data)
+        buffer = io.BytesIO()
+        img.save(buffer, format="PNG")
+        img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
+        alt = _("QR code to record immediately an event")
+        return mark_safe(
+            f'<img src="data:image/png;base64, {img_str}" width="300px" height="300px" alt={alt}>'
+        )
 
 
 def current_time():
@@ -413,6 +424,15 @@ class Event(models.Model):
         null=True,
     )
 
+    max_viewers = models.IntegerField(
+        _("Max viewers"),
+        null=False,
+        default=0,
+        help_text=_("Maximum of distinct viewers"),
+    )
+
+    viewers = models.ManyToManyField(User, related_name="viewers_events", editable=False)
+
     videos = models.ManyToManyField(
         Video,
         editable=False,
@@ -524,3 +544,19 @@ class Event(models.Model):
             return timezone.now() < self.start_date
         else:
             return False
+
+
+class HeartBeat(models.Model):
+    user = models.ForeignKey(
+        User, null=True, verbose_name=_("Viewer"), on_delete=models.CASCADE
+    )
+    viewkey = models.CharField(_("Viewkey"), max_length=200, unique=True)
+    event = models.ForeignKey(
+        Event, null=True, verbose_name=_("Event"), on_delete=models.CASCADE
+    )
+    last_heartbeat = models.DateTimeField(_("Last heartbeat"), default=timezone.now)
+
+    class Meta:
+        verbose_name = _("Heartbeat")
+        verbose_name_plural = _("Heartbeats")
+        ordering = ["event"]

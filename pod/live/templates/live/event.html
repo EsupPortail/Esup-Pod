@@ -30,7 +30,7 @@
 
 {% block page_content %}
     {% csrf_token %}
-    <h3 id="livename" data-liveid="{{ event.broadcaster.id }}"><i class="bi bi-broadcast" aria-hidden="true"></i>&nbsp;{{ event.title|title }}</h3>
+    <h3 id="livename" data-eventid="{{ event.id }}"><i class="bi bi-broadcast" aria-hidden="true"></i>&nbsp;{{ event.title|title }}</h3>
 
     {% if form %}
       {% include 'live/event-form.html' %}
@@ -53,6 +53,7 @@
                        class="video-js vjs-default-skin vjs-big-play-centered"
                        controls height="360" muted autoplay>
                 </video>
+
             </div>
         {% else %}
             <div id="divvideoonhold" style="display: none;">
