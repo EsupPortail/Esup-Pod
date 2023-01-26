@@ -20,7 +20,7 @@ USE_PODFILE = getattr(settings, "USE_PODFILE", False)
 
 
 class HeartBeatAdmin(admin.ModelAdmin):
-    list_display = ("viewkey", "user", "broadcaster", "last_heartbeat")
+    list_display = ("viewkey", "user", "event", "last_heartbeat")
 
 
 class BuildingAdmin(admin.ModelAdmin):
