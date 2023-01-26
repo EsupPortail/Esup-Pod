@@ -24,7 +24,7 @@
   {% if form %}
     {% include 'live/event-form.html' %}
   {% else %}
-    <h3 id="livename" data-liveid="{{broadcaster.id}}"><i class="bi bi-cast"></i>&nbsp;{% trans "Live" %} {{broadcaster.name}}</h3>
+    <h3 id="livename" data-broadcasterid={{ broadcaster.id }}><i class="bi bi-cast"></i>&nbsp;{% trans "Live" %} {{broadcaster.name}}</h3>
 
       {% if display_event_btn %}
           <div class="d-flex infinite-container mb-2" id="event_add">
