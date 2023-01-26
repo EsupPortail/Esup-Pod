@@ -431,10 +431,7 @@ class Event(models.Model):
         help_text=_("Maximum of distinct viewers"),
     )
 
-    viewers = models.ManyToManyField(
-        User,
-        related_name="viewers_events",
-        editable=False)
+    viewers = models.ManyToManyField(User, related_name="viewers_events", editable=False)
 
     videos = models.ManyToManyField(
         Video,

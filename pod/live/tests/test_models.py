@@ -170,10 +170,7 @@ class HeartbeatTestCase(TestCase):
         user = User.objects.create(username="pod")
         h_type = Type.objects.create(title="type1")
         event = Event.objects.create(
-            title="event1",
-            owner=user,
-            broadcaster=broad,
-            type=h_type
+            title="event1", owner=user, broadcaster=broad, type=h_type
         )
         HeartBeat.objects.create(
             user=user,

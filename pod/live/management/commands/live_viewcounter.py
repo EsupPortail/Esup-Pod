@@ -19,7 +19,7 @@ class Command(BaseCommand):
         q = Event.objects.filter(
             start_date__date=timezone.now().date(),
             end_date__lt=timezone.now(),
-            broadcaster__enable_viewer_count=True
+            broadcaster__enable_viewer_count=True,
         )
         for finished_event in q.all():
             finished_event.viewers.set([])

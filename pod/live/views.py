@@ -161,9 +161,13 @@ def heartbeat(request):
         broadcasterid = request.GET.get("broadcasterid")
         eventid = request.GET.get("eventid")
         if broadcasterid is None and eventid is None:
-            return HttpResponse(content="missing parameters", status=status.HTTP_400_BAD_REQUEST)
+            return HttpResponse(
+                content="missing parameters", status=status.HTTP_400_BAD_REQUEST
+            )
 
-        return manage_heartbeat(broadcasterid, eventid, request.GET.get("key", ""), request.user)
+        return manage_heartbeat(
+            broadcasterid, eventid, request.GET.get("key", ""), request.user
+        )
 
     return HttpResponseBadRequest()
 
@@ -183,10 +187,12 @@ def manage_heartbeat(broadcaster_id, event_id, key, current_user):
         # no current event
         if len(ids) != 1:
             return HttpResponse(
-                json.dumps({
-                    "viewers": 0,
-                    "viewers_list": [],
-                }),
+                json.dumps(
+                    {
+                        "viewers": 0,
+                        "viewers_list": [],
+                    }
+                ),
                 mimetype,
             )
 
@@ -211,19 +217,19 @@ def manage_heartbeat(broadcaster_id, event_id, key, current_user):
         or current_user in current_event.additional_owners.all()
     )
 
-    heartbeats_count = HeartBeat.objects.filter(
-        event_id=current_event.id
-    ).count()
+    heartbeats_count = HeartBeat.objects.filter(event_id=current_event.id).count()
 
     if current_event.max_viewers < heartbeats_count:
         current_event.max_viewers = heartbeats_count
         current_event.save()
 
     return HttpResponse(
-        json.dumps({
-            "viewers": heartbeats_count,
-            "viewers_list": list(viewers) if can_see else [],
-        }),
+        json.dumps(
+            {
+                "viewers": heartbeats_count,
+                "viewers_list": list(viewers) if can_see else [],
+            }
+        ),
         mimetype,
     )
 

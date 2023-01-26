@@ -260,7 +260,13 @@ class LiveViewsTestCase(TestCase):
             **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"},
         )
         self.assertEqual(response.status_code, 200)
-        data_users = [{"first_name": self.user.first_name, "last_name": self.user.last_name, "is_superuser": False}]
+        data_users = [
+            {
+                "first_name": self.user.first_name,
+                "last_name": self.user.last_name,
+                "is_superuser": False,
+            }
+        ]
         self.assertEqual(response.json(), {"viewers": 3, "viewers_list": data_users})
         print(" --->  test_heartbeat current event superuser : OK !")
 
@@ -272,8 +278,16 @@ class LiveViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         data_users = [
-            {"first_name": self.user.first_name, "last_name": self.user.last_name, "is_superuser": False},
-            {"first_name": self.superuser.first_name, "last_name": self.superuser.last_name, "is_superuser": True}
+            {
+                "first_name": self.user.first_name,
+                "last_name": self.user.last_name,
+                "is_superuser": False,
+            },
+            {
+                "first_name": self.superuser.first_name,
+                "last_name": self.superuser.last_name,
+                "is_superuser": True,
+            },
         ]
         self.assertEqual(response.json(), {"viewers": 3, "viewers_list": data_users})
         print(" --->  test_heartbeat current event superuser after names refresh : OK !")
