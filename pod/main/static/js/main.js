@@ -17,14 +17,14 @@ function appendHTML(node, html) {
 
 function getParents(el, parentSelector) {
   if (parentSelector === undefined) {
-      parentSelector = document;
+    parentSelector = document;
   }
   var parents = [];
   var p = el.parentNode;
   while (p !== parentSelector) {
-      var o = p;
-      parents.push(o);
-      p = o.parentNode;
+    var o = p;
+    parents.push(o);
+    p = o.parentNode;
   }
   parents.push(parentSelector);
   return parents;
