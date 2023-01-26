@@ -45,9 +45,7 @@ BBB_MEETING_INFO = getattr(
         "role": _("Role"),
     },
 )
-MEETING_DISABLE_RECORD = getattr(
-    settings, "MEETING_DISABLE_RECORD", True
-)
+MEETING_DISABLE_RECORD = getattr(settings, "MEETING_DISABLE_RECORD", True)
 
 __TITLE_SITE__ = (
     TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
@@ -77,7 +75,7 @@ def my_meetings(request):
             "meetings": meetings,
             "page_title": _("My meetings"),
             "meeting_disable_record": MEETING_DISABLE_RECORD,
-        }
+        },
     )
 
 
@@ -495,8 +493,7 @@ def recordings(request, meeting_id):
             recording.endTime = data["endTime"]
             for playback in data["playback"]:
                 recording.add_playback(
-                    data["playback"][playback]["type"],
-                    data["playback"][playback]["url"]
+                    data["playback"][playback]["type"], data["playback"][playback]["url"]
                 )
             recordings.append(recording)
 
@@ -506,8 +503,8 @@ def recordings(request, meeting_id):
         {
             "meeting": meeting,
             "recordings": recordings,
-            "page_title": _("Meeting recordings")
-        }
+            "page_title": _("Meeting recordings"),
+        },
     )
 
 

@@ -548,7 +548,7 @@ class MeetingRecordingTestView(TestCase):
             kwargs={
                 "meeting_id": "slugauhasard",
                 "recording_id": "slugauhasard",
-            }
+            },
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)  # not auth
@@ -566,7 +566,7 @@ class MeetingRecordingTestView(TestCase):
             kwargs={
                 "meeting_id": meeting.meeting_id,
                 "recording_id": "slugauhasard",
-            }
+            },
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)  # permission denied
@@ -577,10 +577,7 @@ class MeetingRecordingTestView(TestCase):
 
         self.assertRedirects(
             response,
-            reverse(
-                "meeting:recordings",
-                kwargs={"meeting_id": meeting.meeting_id}
-            ),
+            reverse("meeting:recordings", kwargs={"meeting_id": meeting.meeting_id}),
             status_code=302,
             target_status_code=200,
             msg_prefix="",
@@ -596,7 +593,7 @@ class MeetingRecordingTestView(TestCase):
 
         print(
             " --->  test_meeting_delete_recordings_get_request",
-            " of MeetingEndTestView: OK!"
+            " of MeetingEndTestView: OK!",
         )
 
 

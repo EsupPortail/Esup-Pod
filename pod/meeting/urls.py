@@ -26,7 +26,7 @@ if not views.MEETING_DISABLE_RECORD:
         path(
             "delete_recording/<slug:meeting_id>/<slug:recording_id>/",
             views.delete_recording,
-            name="delete_recording"
+            name="delete_recording",
         ),
     ]
 

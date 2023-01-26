@@ -843,7 +843,7 @@ def default_site_meeting(sender, instance, **kwargs):
         raise ValueError(_("Start date must be less than recurring until date"))
 
 
-class Recording():
+class Recording:
     recordID = ""
     playback = {}
     name = ""
@@ -868,4 +868,4 @@ class Recording():
         return dt.fromtimestamp(float(self.endTime) / 1000)
 
     def get_duration(self):
-        return str(self.get_end_time() - self.get_start_time()).split('.')[0]
+        return str(self.get_end_time() - self.get_start_time()).split(".")[0]
