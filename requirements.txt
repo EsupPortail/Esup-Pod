@@ -18,8 +18,6 @@ django-auth-mixins==1.0.1
 celery==5.2.7
 vine==5.0.0;
 pandas
-stt==1.3.0
-vosk==0.3.43
 billiard<4.0,>=3.6.0
 webrtcvad
 django-shibboleth-remoteuser

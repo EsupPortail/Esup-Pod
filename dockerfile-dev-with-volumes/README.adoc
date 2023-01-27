@@ -65,6 +65,7 @@ FROM elasticsearch:6.8.23
 OS/ARCH
 linux/amd64
 
+Voilà ce que l'on obtient lorsque l'on accède à elasticsearch via http://localhost:9200
 
 {
   "name" : "VDwWffh",
@@ -90,6 +91,8 @@ FROM elasticsearch:7.17.7
 OS/ARCH
 linux/amd64
 linux/arm64/v8
+
+Voilà ce que l'on obtient lorsque l'on accède à elasticsearch via http://localhost:9200
 
 {
   "name" : "3acf3d142e9a",
