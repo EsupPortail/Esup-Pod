@@ -2666,6 +2666,14 @@
                         "en": "",
                         "fr": "Configuration application search"
                     }
+                },
+                "xapi": {
+                    "description": {},
+                    "settings": {},
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application xapi"
+                    }
                 }
             },
             "settings": {},
