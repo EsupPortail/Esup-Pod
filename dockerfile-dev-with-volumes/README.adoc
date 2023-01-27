@@ -9,6 +9,14 @@ v1.0, 2023-01-18
 
 === Conteneur Python /  FFMPEG  (esup-pod)
 
+==== OS/ARCH
+-----
+linux/386
+linux/amd64
+linux/arm/v7
+linux/arm64/v8
+-----
+
 ==== Environnement local de développement (Linux, windows, TODO apple)
 
 ===== Variables d'environnement du conteneur esup-pod
@@ -50,8 +58,14 @@ MIGRATION_MODULES = {'flatpages': 'pod.db_migrations'}
 
 === Conteneur ElasticSearch
 
+==== OS/ARCH
 ----
 FROM elasticsearch:6.8.23
+
+OS/ARCH
+linux/amd64
+
+
 {
   "name" : "VDwWffh",
   "cluster_name" : "pod-application",
@@ -71,8 +85,12 @@ FROM elasticsearch:6.8.23
 }
 
 ---
-
 FROM elasticsearch:7.17.7
+
+OS/ARCH
+linux/amd64
+linux/arm64/v8
+
 {
   "name" : "3acf3d142e9a",
   "cluster_name" : "pod-application",
@@ -93,6 +111,17 @@ FROM elasticsearch:7.17.7
 ----
 
 === Conteneur Redis
+
+==== OS/ARCH
+----
+linux/386
+linux/amd64
+linux/arm/v6
+linux/arm/v7
+linux/arm64/v8
+linux/ppc64le
+linux/s390x
+----
 
 === Lancement de la stack esup-pod depuis docker-compose ou make
 
