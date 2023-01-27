@@ -7,14 +7,14 @@ import importlib
 import json
 
 __OLD_SETTINGS__ = [
-    'BBB_NUMBER_DAYS_BEFORE_DELETE',
-    'BBB_NUMBER_MAX_LIVES',
-    'BBB_SERVER_URL',
-    'BBB_USERNAME_FORMAT',
-    'BBB_VERSION_IS_23',
-    'DEFAULT_BBB_PATH',
-    'DEFAULT_BBB_PLUGIN',
-    'DEFAULT_BBB_TYPE_ID'
+    "BBB_NUMBER_DAYS_BEFORE_DELETE",
+    "BBB_NUMBER_MAX_LIVES",
+    "BBB_SERVER_URL",
+    "BBB_USERNAME_FORMAT",
+    "BBB_VERSION_IS_23",
+    "DEFAULT_BBB_PATH",
+    "DEFAULT_BBB_PLUGIN",
+    "DEFAULT_BBB_TYPE_ID",
 ]
 
 
@@ -22,9 +22,7 @@ class Command(BaseCommand):
     help = "Get all settings for the specified app and compare it to configuration file"
 
     def handle(self, *args, **options):
-        mod = importlib.import_module(
-            ".".join(["pod", "custom", "settings_local"])
-        )
+        mod = importlib.import_module(".".join(["pod", "custom", "settings_local"]))
         items = dir(mod)
         settings_list = [
             item

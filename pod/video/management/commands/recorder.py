@@ -96,9 +96,7 @@ RECORDER_SELF_REQUESTS_PROXIES = getattr(
     },
 )
 RECORDER_ALLOW_INSECURE_REQUESTS = getattr(
-    settings,
-    "RECORDER_ALLOW_INSECURE_REQUESTS",
-    False
+    settings, "RECORDER_ALLOW_INSECURE_REQUESTS", False
 )
 
 # Encode video
@@ -193,9 +191,7 @@ def case_manager_exist(
     except Exception:
         if RECORDER_ALLOW_INSECURE_REQUESTS:
             request = requests.get(
-                urlNotify,
-                proxies=RECORDER_SELF_REQUESTS_PROXIES,
-                verify=False
+                urlNotify, proxies=RECORDER_SELF_REQUESTS_PROXIES, verify=False
             )
         else:
             certif_err = (
