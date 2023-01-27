@@ -70,6 +70,7 @@ OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = getattr(
     settings, "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES", []
 )
 
+
 class OIDCBackend(OIDCAuthenticationBackend):
     def create_user(self, claims):
         user = super(OIDCBackend, self).create_user(claims)

@@ -3,7 +3,6 @@ from django.core.management.base import BaseCommand
 
 # import re
 import os
-import fnmatch
 import importlib
 import json
 
@@ -17,6 +16,7 @@ __OLD_SETTINGS__ = [
     'DEFAULT_BBB_PLUGIN',
     'DEFAULT_BBB_TYPE_ID'
 ]
+
 
 class Command(BaseCommand):
     help = "Get all settings for the specified app and compare it to configuration file"
@@ -47,7 +47,7 @@ class Command(BaseCommand):
         print(f"{title} :")
         print("\n    - " + "\n    - ".join(data))
         # print(20 * "-")
-    
+
     def get_all_settings(self):
         with open(os.path.join("pod", "main", "configuration.json"), "r") as json_file:
             data = json.load(json_file)

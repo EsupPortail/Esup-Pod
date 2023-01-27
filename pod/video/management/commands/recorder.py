@@ -95,7 +95,11 @@ RECORDER_SELF_REQUESTS_PROXIES = getattr(
         "https": None,
     },
 )
-RECORDER_ALLOW_INSECURE_REQUESTS = getattr(settings, "RECORDER_ALLOW_INSECURE_REQUESTS", False)
+RECORDER_ALLOW_INSECURE_REQUESTS = getattr(
+    settings,
+    "RECORDER_ALLOW_INSECURE_REQUESTS",
+    False
+)
 
 # Encode video
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
@@ -167,7 +171,7 @@ def case_manager_exist(
     recorder_notify = reverse("record:recorder_notify")
     urlNotify = "".join(
         [
-            BASE_URL,
+            RECORDER_BASE_URL,
             recorder_notify,
             "?recordingPlace="
             + recorder.ipunder()
@@ -188,7 +192,11 @@ def case_manager_exist(
         request = requests.get(urlNotify, proxies=RECORDER_SELF_REQUESTS_PROXIES)
     except Exception:
         if RECORDER_ALLOW_INSECURE_REQUESTS:
-            request = requests.get(urlNotify, proxies=RECORDER_SELF_REQUESTS_PROXIES, verify=False)
+            request = requests.get(
+                urlNotify,
+                proxies=RECORDER_SELF_REQUESTS_PROXIES,
+                verify=False
+            )
         else:
             certif_err = (
                 "The request on recorder_notfy cannot be complete."
