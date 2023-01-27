@@ -259,7 +259,6 @@ class Broadcaster(models.Model):
                 url_immediate_event,
             ]
         )
-
         img = qrcode.make(data)
         buffer = io.BytesIO()
         img.save(buffer, format="PNG")
