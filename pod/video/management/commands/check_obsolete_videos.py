@@ -222,7 +222,7 @@ class Command(BaseCommand):
         to_email = []
         to_email.append(video.owner.email)
         return send_mail(
-            "[%s] %s" % (TITLE_SITE, _("A video will be obsolete on Pod")),
+            "[%s] %s" % (TITLE_SITE, _("Your video will be obsolete")),
             striptags(msg_html),
             DEFAULT_FROM_EMAIL,
             to_email,

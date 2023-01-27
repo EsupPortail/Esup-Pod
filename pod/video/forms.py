@@ -617,6 +617,7 @@ class VideoForm(forms.ModelForm):
         return video
 
     def clean_date_delete(self):
+        """Validate 'date_delete' field."""
         mddd = MAX_DURATION_DATE_DELETE
         in_dt = relativedelta(self.cleaned_data["date_delete"], __TODAY__)
         if (
