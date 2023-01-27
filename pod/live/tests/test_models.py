@@ -135,9 +135,9 @@ class BroadcasterTestCase(TestCase):
             broadcaster.get_absolute_url(), "/live/direct/%s/" % broadcaster.slug
         )
         self.assertTrue(isinstance(broadcaster.qrcode, SafeString))
-        empty_qrcode = '\"data:image/png;base64, \"'
+        empty_qrcode = '"data:image/png;base64, "'
         self.assertNotIn(empty_qrcode, broadcaster.qrcode)
-        none_qrcode = '\"data:image/png;base64, None\"'
+        none_qrcode = '"data:image/png;base64, None"'
         self.assertNotIn(none_qrcode, broadcaster.qrcode)
         broadcaster2 = Broadcaster.objects.get(id=2)
         self.assertEqual(broadcaster2.video_on_hold.id, 1)
