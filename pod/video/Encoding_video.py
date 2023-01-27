@@ -209,13 +209,16 @@ class Encoding_video:
                     "{}"'.format(
             input_file
         )
-        info = get_info_from_video(probe_cmd)
+        info, return_msg = get_info_from_video(probe_cmd)
+        msg += json.dumps(info, indent=2)
+        msg += " \n"
+        msg += return_msg + "\n"
         duration = 0
         try:
             duration = int(float("%s" % info["format"]["duration"]))
         except (RuntimeError, KeyError, AttributeError, ValueError, TypeError) as err:
             msg += "\nUnexpected error: {0}".format(err)
-            self.add_encoding_log("fix_duration", "", True, msg)
+        self.add_encoding_log("fix_duration", "", True, msg)
         self.duration = duration
 
     def add_stream(self, stream):

@@ -169,8 +169,6 @@ class Broadcaster(models.Model):
         help_text=_("Live is accessible from the Live tab"),
         default=True,
     )
-    viewcount = models.IntegerField(_("Number of viewers"), default=0, editable=False)
-    viewers = models.ManyToManyField(User, editable=False)
 
     manage_groups = models.ManyToManyField(
         Group,
@@ -270,22 +268,6 @@ class Broadcaster(models.Model):
         return mark_safe(
             f'<img src="data:image/png;base64, {img_str}" width="300px" height="300px" alt={alt}>'
         )
-
-
-class HeartBeat(models.Model):
-    user = models.ForeignKey(
-        User, null=True, verbose_name=_("Viewer"), on_delete=models.CASCADE
-    )
-    viewkey = models.CharField(_("Viewkey"), max_length=200, unique=True)
-    broadcaster = models.ForeignKey(
-        Broadcaster, null=False, verbose_name=_("Broadcaster"), on_delete=models.CASCADE
-    )
-    last_heartbeat = models.DateTimeField(_("Last heartbeat"), default=timezone.now)
-
-    class Meta:
-        verbose_name = _("Heartbeat")
-        verbose_name_plural = _("Heartbeats")
-        ordering = ["broadcaster"]
 
 
 def current_time():
@@ -442,6 +424,15 @@ class Event(models.Model):
         null=True,
     )
 
+    max_viewers = models.IntegerField(
+        _("Max viewers"),
+        null=False,
+        default=0,
+        help_text=_("Maximum of distinct viewers"),
+    )
+
+    viewers = models.ManyToManyField(User, related_name="viewers_events", editable=False)
+
     videos = models.ManyToManyField(
         Video,
         editable=False,
@@ -553,3 +544,19 @@ class Event(models.Model):
             return timezone.now() < self.start_date
         else:
             return False
+
+
+class HeartBeat(models.Model):
+    user = models.ForeignKey(
+        User, null=True, verbose_name=_("Viewer"), on_delete=models.CASCADE
+    )
+    viewkey = models.CharField(_("Viewkey"), max_length=200, unique=True)
+    event = models.ForeignKey(
+        Event, null=True, verbose_name=_("Event"), on_delete=models.CASCADE
+    )
+    last_heartbeat = models.DateTimeField(_("Last heartbeat"), default=timezone.now)
+
+    class Meta:
+        verbose_name = _("Heartbeat")
+        verbose_name_plural = _("Heartbeats")
+        ordering = ["event"]
