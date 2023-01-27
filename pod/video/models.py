@@ -19,6 +19,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.validators import MaxValueValidator
 from django.contrib.sites.shortcuts import get_current_site
 from django.templatetags.static import static
 from django.dispatch import receiver
@@ -1429,6 +1430,13 @@ class VideoRendition(models.Model):
             + "<em>300k</em> or <em>600k</em>"
             + " or <em>1000k</em>."
         ),
+    )
+    encoding_resolution_threshold = models.PositiveIntegerField(
+        _("encoding resolution threshold"),
+        default=0,
+        validators=[
+            MaxValueValidator(100)
+        ]
     )
     audio_bitrate = models.CharField(
         _("bitrate audio"),

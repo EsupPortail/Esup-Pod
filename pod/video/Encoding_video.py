@@ -281,12 +281,12 @@ class Encoding_video:
         """
         in_height = list(self.list_video_track.items())[0][1]["height"]
         for rend in list_rendition:
-            if in_height >= rend:
+            if in_height >= rend - rend * (list_rendition[rend]["encoding_resolution_threshold"] / 100):
                 output_file = os.path.join(self.output_dir, "%sp.mp4" % rend)
                 mp4_command += FFMPEG_MP4_ENCODE % {
                     "map_audio": "-map 0:a:0" if len(self.list_audio_track) > 0 else "",
                     "libx": FFMPEG_LIBX,
-                    "height": rend,
+                    "height": min(rend, in_height),
                     "preset": FFMPEG_PRESET,
                     "profile": FFMPEG_PROFILE,
                     "level": FFMPEG_LEVEL,
@@ -320,11 +320,11 @@ class Encoding_video:
         hls_command += hls_common_params
         in_height = list(self.list_video_track.items())[0][1]["height"]
         for index, rend in enumerate(list_rendition):
-            if in_height >= rend or index == 0:
+            if in_height >= rend - rend * (list_rendition[rend]["encoding_resolution_threshold"] / 100) or index == 0:
                 output_file = os.path.join(self.output_dir, "%sp.m3u8" % rend)
                 hls_command += hls_common_params
                 hls_command += FFMPEG_HLS_ENCODE_PARAMS % {
-                    "height": rend,
+                    "height": min(rend, in_height),
                     "maxrate": list_rendition[rend]["maxrate"],
                     "bufsize": list_rendition[rend]["maxrate"],
                     "ba": list_rendition[rend]["audio_bitrate"],
