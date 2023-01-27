@@ -29,7 +29,7 @@ class Command(BaseCommand):
         output += self.get_configuration("pod")
         output += self.get_configuration("apps")
 
-        md_filename = os.path.join("./", "configuration_%s.md" % self.language)
+        md_filename = os.path.join("./", "CONFIGURATION_%s.md" % self.language.upper())
         open(md_filename, "w").close()  # erase it
         with open(md_filename, "w", encoding="utf-8") as f:
             f.write(output)
