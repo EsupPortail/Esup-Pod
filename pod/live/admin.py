@@ -75,9 +75,38 @@ class BroadcasterAdmin(admin.ModelAdmin):
         "is_restricted",
         "piloting_conf",
     )
-    readonly_fields = ["slug", "qrcode"]
-    autocomplete_fields = ["building", "video_on_hold"]
     list_filter = ["building"]
+
+    def get_fields(self, request, obj=None):
+        fields = (
+            "name",
+            "building",
+            "description",
+            "poster",
+            "url",
+            "video_on_hold",
+            "status",
+            "enable_add_event",
+            "enable_viewer_count",
+            "is_restricted",
+            "public",
+            "manage_groups",
+            "piloting_implementation",
+            "piloting_conf",
+            "slug",
+        )
+        if obj is None:
+            return fields
+        fields += ("qrcode",)
+        return fields
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj is None:
+            return ["slug"]
+        return ["slug", "qrcode"]
+
+    def get_autocomplete_fields(self, request):
+        return ["building", "video_on_hold"]
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs["widgets"] = {
