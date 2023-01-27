@@ -7,6 +7,16 @@ import fnmatch
 import importlib
 import json
 
+__OLD_SETTINGS__ = [
+    'BBB_NUMBER_DAYS_BEFORE_DELETE',
+    'BBB_NUMBER_MAX_LIVES',
+    'BBB_SERVER_URL',
+    'BBB_USERNAME_FORMAT',
+    'BBB_VERSION_IS_23',
+    'DEFAULT_BBB_PATH',
+    'DEFAULT_BBB_PLUGIN',
+    'DEFAULT_BBB_TYPE_ID'
+]
 
 class Command(BaseCommand):
     help = "Get all settings for the specified app and compare it to configuration file"
@@ -25,6 +35,7 @@ class Command(BaseCommand):
         local_settings_list.sort()
         self.print_log("Settings local", local_settings_list)
         json_settings = self.get_all_settings()
+        json_settings += __OLD_SETTINGS__
         new_settings = list(set(local_settings_list) - set(json_settings))
         new_settings.sort()
         self.print_log("Local setting not in global configuration file : ", new_settings)
