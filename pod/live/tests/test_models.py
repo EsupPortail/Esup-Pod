@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.utils.safestring import SafeString
 
 from pod.video.models import Type
 from pod.video.models import Video
@@ -133,8 +134,11 @@ class BroadcasterTestCase(TestCase):
         self.assertEqual(
             broadcaster.get_absolute_url(), "/live/direct/%s/" % broadcaster.slug
         )
-        qrcode_with_error = '<img src="data:image/png;base64, " width="300px" height="300px" alt=QR code to record immediately an event>'
-        self.assertNotEqual(broadcaster.qrcode, qrcode_with_error)
+        self.assertTrue(isinstance(broadcaster.qrcode, SafeString))
+        empty_qrcode = '\"data:image/png;base64, \"'
+        self.assertNotIn(empty_qrcode, broadcaster.qrcode)
+        none_qrcode = '\"data:image/png;base64, None\"'
+        self.assertNotIn(none_qrcode, broadcaster.qrcode)
         broadcaster2 = Broadcaster.objects.get(id=2)
         self.assertEqual(broadcaster2.video_on_hold.id, 1)
         print("   --->  test_attributs of BroadcasterTestCase : OK !")
