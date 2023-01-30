@@ -4,15 +4,19 @@ from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
 
 # import requests
+import uuid
+from .models import XAPI_Statement
 
 XAPI_LRS_URL = getattr(settings, "XAPI_LRS_URL", "")
 XAPI_LRS_LOGIN = getattr(settings, "XAPI_LRS_URL", "")
 XAPI_LRS_PWD = getattr(settings, "XAPI_LRS_PWD", "")
 
+XAPI_ANONYMIZE_ACTOR = getattr(settings, "XAPI_ANONYMIZE_ACTOR", True)
+
 
 @csrf_protect
 @ensure_csrf_cookie
-def statement(request):
+def statement(request, app: str = None):
     """
     get from \
         https://liveaspankaj.gitbooks.io/xapi-video-profile/content/statement_data_model.html
@@ -28,7 +32,8 @@ def statement(request):
             in which it is included.
     statement Context : Registration ? Language Extension : session ID, \
         CC/Subtitle Enabled and language, Frame rate, full screen, quality, \
-            screen size, video size, speed, user agent, sound volume, length : video duration
+            screen size, video size, speed, user agent, sound volume,
+            length : video duration
       Completion Threshold
     Context Activities ? https://w3id.org/xapi/video
 
@@ -36,5 +41,19 @@ def statement(request):
     x = requests.post(url, json = myobj)
     print(x.text)
     """
-
+    statement = XAPI_Statement(uuid.uuid4())
+    if request.user.is_authenticated :
+        if XAPI_ANONYMIZE_ACTOR:
+            statement.set_actor(request.user.owner.hashkey)
+        else:
+            statement.set_actor(request.user.get_display_name())
+    else:
+        if not request.session or not request.session.session_key:
+            request.session.save()
+        statement.set_actor(request.session.session_key)
+    # request.POST
+    if request.POST:
+        print(request.POST)
+    statement.set_verb(app, "Initialized")
+    print(statement.actor.name)
     return JsonResponse({"status": "ok"}, safe=False)
