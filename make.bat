@@ -1,5 +1,5 @@
 @echo off
-if /i "%1"=="build" (
+if /i "%1"=="docker-build" (
   echo "Suppression du repertoire node_modules"
   rmdir /s /q .\pod\node_modules
   echo "Suppression du repertoire node_modules"
@@ -12,16 +12,18 @@ if /i "%1"=="build" (
   docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod build --build-arg ELASTICSEARCH_VERSION=%ELASTICSEARCH_TAG% --build-arg NODE_VERSION=%NODE_TAG% --build-arg PYTHON_VERSION=%PYTHON_TAG% --no-cache
   echo "Debut du start"
   docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod up
+  echo "Vous devriez obtenir ce message une fois esup-pod lance"
+  echo "pod-dev-with-volumes        | Superuser created successfully."
   echo "Fin du build"
-) else if /i "%1"=="start" (
+) else if /i "%1"=="docker-start" (
   echo "Debut du start"
   docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod up
   echo "Fin du start"
-) else if /i "%1"=="stop" (
+) else if /i "%1"=="docker-stop" (
   echo "Debut du stop"
   docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod down -v
   echo "Fin du stop"
-) else if /i "%1"=="reset" (
+) else if /i "%1"=="docker-reset" (
   echo "Debut du reset"
   docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod down -v
   echo "Suppression du repertoire node_modules"

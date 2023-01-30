@@ -85,31 +85,48 @@ docker-start:
 #	# Vous devriez obtenir ce message une fois esup-pod lancé
 #	# $ pod-dev-with-volumes        | Superuser created successfully.
 
-docker-down-v:
-	# Arrête le serveur de test
-	@$(COMPOSE) down -v
-
 docker-logs: ## display app logs (follow mode)
 	@$(DOCKER_LOGS) pod-dev-with-volumes
 
 echo-env:
 	echo $(ELASTICSEARCH_TAG)
 
-docker-start-build:
+docker-build:
+	# Démarre le serveur de test en recompilant les conteuneurs de la stack
+	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
+	# N'oubliez pas de supprimer :
+	# sudo rm -rf ./pod/log
+	sudo rm -rf ./pod/log
+	# sudo rm -rf ./pod/static
+	sudo rm -rf ./pod/static
+	# sudo rm -rf ./pod/node_modules
+	sudo rm -rf ./pod/node_modules
+	@$(COMPOSE) build --build-arg ELASTICSEARCH_VERSION=$(ELASTICSEARCH_TAG) --build-arg NODE_VERSION=$(NODE_TAG) --build-arg PYTHON_VERSION=$(PYTHON_TAG)
+	@$(COMPOSE) up
+	# Vous devriez obtenir ce message une fois esup-pod lancé
+	# $ pod-dev-with-volumes        | Superuser created successfully.
+
+docker-start:
 	# Démarre le serveur de test en recompilant les conteuneurs de la stack
 	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
 	@$(COMPOSE) up
 	# Vous devriez obtenir ce message une fois esup-pod lancé
 	# $ pod-dev-with-volumes        | Superuser created successfully.
 
-docker-start-build:
-	# Démarre le serveur de test en recompilant les conteuneurs de la stack
-	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
-	# N'oubliez pas de supprimer :
+docker-stop:
+	# Arrête le serveur de test
+	@$(COMPOSE) down -v
+
+docker-reset:
 	# sudo rm -rf ./pod/log
+	sudo rm -rf ./pod/log
 	# sudo rm -rf ./pod/static
+	sudo rm -rf ./pod/static
 	# sudo rm -rf ./pod/node_modules
-	@$(COMPOSE) build --build-arg ELASTICSEARCH_VERSION=$(ELASTICSEARCH_TAG) --build-arg NODE_VERSION=$(NODE_TAG) --build-arg PYTHON_VERSION=$(PYTHON_TAG)
-	@$(COMPOSE) up
-	# Vous devriez obtenir ce message une fois esup-pod lancé
-	# $ pod-dev-with-volumes        | Superuser created successfully.
+	sudo rm -rf ./pod/node_modules
+	# sudo rm -rf ./pod/db_migrations
+	sudo rm -rf ./pod/db_migrations
+	# sudo rm -rf ./pod/db.sqlite3"
+	sudo rm -rf ./pod/db.sqlite3
+	# sudo rm -rf ./pod/media"
+	sudo rm -rf ./pod/media
