@@ -7,6 +7,36 @@ v1.0, 2023-01-18
 
 == Docker / docker-compose avec volumes sur la machine hôte
 
+=== Conteneur ElasticSearch
+http://localhost:9200
+
+==== elasticsearch:6.8.23
+===== OS/ARCH
+----
+OS/ARCH
+linux/amd64
+----
+
+==== elasticsearch:7.17.7
+===== OS/ARCH
+----
+OS/ARCH
+linux/amd64
+linux/arm64/v8
+----
+
+=== Conteneur Redis
+==== OS/ARCH
+----
+linux/386
+linux/amd64
+linux/arm/v6
+linux/arm/v7
+linux/arm64/v8
+linux/ppc64le
+linux/s390x
+----
+
 === Conteneur Python /  FFMPEG  (esup-pod)
 
 ==== OS/ARCH
@@ -17,26 +47,23 @@ linux/arm/v7
 linux/arm64/v8
 -----
 
-==== Environnement local de développement (Linux, windows, TODO apple)
-
-===== Variables d'environnement du conteneur esup-pod
+===== Configuration
 1. Renommer le fichier .env.dev-exemple en .env.dev
 2. Renseigner le fichier .env.dev
-3. Renommer le fichier docker-compose-dev-with-volumes-exemple.yml en docker-compose-dev-with-volumes.yml
-4. Modifier le fichier docker-compose-dev-with-volumes.yml (facultatif)
+3. Créer un fichier pod/custom/settings_local.py
 
-===== Configuration
-1. Créer un fichier pod/custom/settings_local.py
-
-Renseignez le comme ceci :
+Renseignez le fichier pod/custom/settings_local.py comme ceci :
 ----
 # Si ElasticSearch 7
+USE_PODFILE = True
+EMAIL_ON_ENCODING_COMPLETION = False
+SECRET_KEY = "A_CHANGER"
+DEBUG = True
+
 ES_VERSION = 7
 
-# URL serveur ElascticSeach
 ES_URL = ['http://elasticsearch:9200/']
 
-# URL serveur Redis
 CACHES = {
     # … default cache config and others
     "default": {
@@ -56,147 +83,56 @@ CACHES = {
 MIGRATION_MODULES = {'flatpages': 'pod.db_migrations'}
 ----
 
-=== Conteneur ElasticSearch
+==== Lancement de la stack esup-pod
+- Se positionner à la racine du projet
+- Sous windows, devez remplacer make par make.bat
 
-==== OS/ARCH
+===== Commandes
+Force la recompilation des conteneurs (obligatoire au premier lancement ou après un docker-reset)
 ----
-FROM elasticsearch:6.8.23
-
-OS/ARCH
-linux/amd64
-
-Voilà ce que l'on obtient lorsque l'on accède à elasticsearch via http://localhost:9200
-
-{
-  "name" : "VDwWffh",
-  "cluster_name" : "pod-application",
-  "cluster_uuid" : "irGmqQ3RSP29W4D5YtwLtQ",
-  "version" : {
-    "number" : "6.8.23",
-    "build_flavor" : "default",
-    "build_type" : "docker",
-    "build_hash" : "4f67856",
-    "build_date" : "2022-01-06T21:30:50.087716Z",
-    "build_snapshot" : false,
-    "lucene_version" : "7.7.3",
-    "minimum_wire_compatibility_version" : "5.6.0",
-    "minimum_index_compatibility_version" : "5.0.0"
-  },
-  "tagline" : "You Know, for Search"
-}
-
----
-FROM elasticsearch:7.17.7
-
-OS/ARCH
-linux/amd64
-linux/arm64/v8
-
-Voilà ce que l'on obtient lorsque l'on accède à elasticsearch via http://localhost:9200
-
-{
-  "name" : "3acf3d142e9a",
-  "cluster_name" : "pod-application",
-  "cluster_uuid" : "w-8T7nbGQx299bnwXG_hhA",
-  "version" : {
-    "number" : "7.17.7",
-    "build_flavor" : "default",
-    "build_type" : "docker",
-    "build_hash" : "78dcaaa8cee33438b91eca7f5c7f56a70fec9e80",
-    "build_date" : "2022-10-17T15:29:54.167373105Z",
-    "build_snapshot" : false,
-    "lucene_version" : "8.11.1",
-    "minimum_wire_compatibility_version" : "6.8.0",
-    "minimum_index_compatibility_version" : "6.0.0-beta1"
-  },
-  "tagline" : "You Know, for Search"
-}
+Force la recompilation des conteneurs
+$ make docker-build
+Suppression des répertoires suivants :
+- ./pod/log
+- ./pod/static
+- ./pod/node_modules
 ----
 
-=== Conteneur Redis
-
-==== OS/ARCH
+Lancement sans recompilation des conteneurs, ni suppressions répertoires ./pod/log, ./pod/static, ./pod/node_modules
 ----
-linux/386
-linux/amd64
-linux/arm/v6
-linux/arm/v7
-linux/arm64/v8
-linux/ppc64le
-linux/s390x
-----
-
-=== Lancement de la stack esup-pod depuis docker-compose ou make
-
-==== Lancement de la stack via docker-compose
-----
-$ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod up
-----
-Ou en forçant la recompilation des conteneurs
-----
-$ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod up --build
-----
-Vous devriez obtenir ce message une fois esup-pod lancé
-----
-$ pod-dev-with-volumes        | Superuser created successfully.
-
-farid@farid-Latitude-5420:~/workspaces/workspaces-github/Esup-Pod$ docker-compose -p esup-pod ps
-NAME                         COMMAND                  SERVICE             STATUS              PORTS
-elasticsearch-with-volumes   "/bin/tini -- /usr/l…"   elasticsearch       running             0.0.0.0:9200->9200/tcp, :::9200->9200/tcp, 9300/tcp
-pod-dev-with-volumes         "bash /tmp/my-entryp…"   pod                 running             0.0.0.0:9090->8080/tcp, :::9090->8080/tcp
-redis-with-volumes           "docker-entrypoint.s…"   redis               running             0.0.0.0:6379->6379/tcp, :::6379->6379/tcp
-----
-Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes. ;)
-
-==== Lancement de la stack via make
-----
+Force la recompilation des conteneurs
 $ make docker-start
 ----
-Ou en forçant la recompilation des conteneurs
-----
-$ make docker-start-build
-----
+
+Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes. ;)
+
 Vous devriez obtenir ce message une fois esup-pod lancé
 ----
 $ pod-dev-with-volumes        | Superuser created successfully.
-
-farid@farid-Latitude-5420:~/workspaces/workspaces-github/Esup-Pod$ docker-compose -p esup-pod ps
-NAME                         COMMAND                  SERVICE             STATUS              PORTS
-elasticsearch-with-volumes   "/bin/tini -- /usr/l…"   elasticsearch       running             0.0.0.0:9200->9200/tcp, :::9200->9200/tcp, 9300/tcp
-pod-dev-with-volumes         "bash /tmp/my-entryp…"   pod                 running             0.0.0.0:9090->8080/tcp, :::9090->8080/tcp
-redis-with-volumes           "docker-entrypoint.s…"   redis               running             0.0.0.0:6379->6379/tcp, :::6379->6379/tcp
 ----
-Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes. ;)
-
 L'application esup-pod est dès lors disponible via cette URL : localhost:9090
 
-=== Arrêt de la stack
+===== Arrêt de la stack
 ----
 $ CTRL+C dans la fenetre depuis laquelle l'application esup-pod a été lancée
 
 OU depuis une autre fenêtre via
 
-$ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod stop
+$ make docker-stop
 ----
 
-=== Suppression de la stack
-----
-$ docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod down -v
-----
-
-=== Suppression des données
+===== Reset de la stack
 Cette commande supprime l'ensemble des données crées depuis le/les conteneur(s) via les volumes montés
 ----
-Sous linux (TODO windows, apple)
-$ sh dockerfile-dev-with-volumes/reset-local-pod.sh
-
-sudo rm -rf ./pod/log
-sudo rm -rf ./pod/media
-sudo rm -rf ./pod/static
-sudo rm -rf ./pod/node_modules
-sudo rm -rf ./pod/db_migrations
-sudo rm ./pod/db.sqlite3
-sudo rm ./pod/yarn.lock
+$ make docker-reset
+Suppression des répertoires suivants :
+- ./pod/log
+- ./pod/media
+- ./pod/static
+- ./pod/node_modules
+- ./pod/db_migrations
+- ./pod/db.sqlite3
+- ./pod/yarn.lock
 ----
 
 == HELM / Kubernetes

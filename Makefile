@@ -101,7 +101,7 @@ docker-build:
 	sudo rm -rf ./pod/static
 	# sudo rm -rf ./pod/node_modules
 	sudo rm -rf ./pod/node_modules
-	@$(COMPOSE) build --build-arg ELASTICSEARCH_VERSION=$(ELASTICSEARCH_TAG) --build-arg NODE_VERSION=$(NODE_TAG) --build-arg PYTHON_VERSION=$(PYTHON_TAG)
+	@$(COMPOSE) build --build-arg ELASTICSEARCH_VERSION=$(ELASTICSEARCH_TAG) --build-arg NODE_VERSION=$(NODE_TAG) --build-arg PYTHON_VERSION=$(PYTHON_TAG) --no-cache
 	@$(COMPOSE) up
 	# Vous devriez obtenir ce message une fois esup-pod lancé
 	# $ pod-dev-with-volumes        | Superuser created successfully.
