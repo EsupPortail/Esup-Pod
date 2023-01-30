@@ -12,9 +12,9 @@ services:
     build:
       context: .
       dockerfile: dockerfile-dev-with-volumes/pod/Dockerfile
-      args:
-        NODE_VERSION: "node:19"
-        PYTHON_VERSION: "python:3.7-buster"
+#      args:
+#        NODE_VERSION: "node:19"
+#        PYTHON_VERSION: "python:3.7-buster"
     depends_on:
       - elasticsearch
       - redis
@@ -29,11 +29,11 @@ services:
     build:
       context: .
       dockerfile: dockerfile-dev-with-volumes/elasticsearch/dockerfile-elasticsearch-dev
-      args:
+#      args:
 #        ELASTICSEARCH_VERSION: "elasticsearch:6.8.23"
-        ELASTICSEARCH_VERSION: "elasticsearch:7.17.7"
-    env_file:
-      - ./.env.dev
+#        ELASTICSEARCH_VERSION: "elasticsearch:7.17.7"
+#    env_file:
+#      - ./.env.dev
     ports:
       - 9200:9200
     environment:
@@ -42,8 +42,11 @@ services:
 
   redis:
     container_name: redis-with-volumes
-    image: redis:alpine3.16
+#    image: redis:alpine3.16
+    image: ${REDIS_TAG}
 # TODO
 #    image: harbor.urba.univ-lille.fr/store/redis:alpine3.16
+    env_file:
+      - ./.env.dev
     ports:
       - 6379:6379
