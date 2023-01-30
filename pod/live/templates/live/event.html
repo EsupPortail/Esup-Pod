@@ -69,7 +69,7 @@
                                controls height="360" muted autoplay>
                             <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
                             {% if event.broadcaster.status and event.enable_transcription %}
-                              <track kind="captions" src="{% get_setting "TRANSCRIPTIONS_FOLDER_URL" %}{{event.broadcaster.slug}}.vtt" srclang="fr" label="Français" >
+                              <track kind="captions" src="{% get_setting "TRANSCRIPTIONS_FOLDER_URL" %}{{event.broadcaster.slug}}.vtt" srclang="{{event.broadcaster.main_lang}}">
                             {% endif %}
                         </video>
                     </div>
@@ -191,8 +191,7 @@
                   let newTrack = player.addRemoteTextTrack(
                     {
                       kind: "captions",
-                      label: "français",
-                      language: "fr",
+                      language: "{{ event.broadcaster.main_lang }}",
                       src: vtt_url,
                       default: true,
                     },
