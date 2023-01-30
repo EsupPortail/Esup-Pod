@@ -12,6 +12,8 @@ LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
 
 
 class Command(BaseCommand):
+    """unarchive_video command class."""
+
     help = "Unarchive a video"
 
     def add_arguments(self, parser):

@@ -153,7 +153,7 @@ class ObsolescenceTestCase(TestCase):
         )
 
     def test_obsolete_video(self):
-        """Check that videos with  deletion date in 7,30 and 60 days will be notified."""
+        """Check that videos with deletion date in 7,30 and 60 days will be notified."""
         from pod.video.management.commands import check_obsolete_videos
 
         cmd = check_obsolete_videos.Command()
