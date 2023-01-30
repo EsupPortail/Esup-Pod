@@ -4,6 +4,7 @@
 # Déclarez explicitement les fichiers texte que vous souhaitez toujours normaliser et convertir
 # *.c text
 # *.h text
+*.sh text eol=lf
 
 # Déclarez les fichiers qui auront toujours des fins de ligne CRLF.
 # *.sln text eol=crlf
