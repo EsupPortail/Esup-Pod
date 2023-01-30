@@ -5,7 +5,9 @@
 # (en remplacant $cmd par une commande ci-dessous)
 
 # -- Docker
-# Get the current user ID to use for docker run and docker exec commands
+# Use for docker run and docker exec commands
+include .env.dev
+export
 COMPOSE = docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod
 DOCKER_LOGS = docker logs -f
 
@@ -76,12 +78,12 @@ docker-start:
 	# Vous devriez obtenir ce message une fois esup-pod lancé
 	# $ pod-dev-with-volumes        | Superuser created successfully.
 
-docker-start-build:
-	# Démarre le serveur de test en recompilant les conteuneurs de la stack
-	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
-	@$(COMPOSE) up --build
-	# Vous devriez obtenir ce message une fois esup-pod lancé
-	# $ pod-dev-with-volumes        | Superuser created successfully.
+#docker-start-build:
+#	# Démarre le serveur de test en recompilant les conteuneurs de la stack
+#	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
+#	@$(COMPOSE) up --build
+#	# Vous devriez obtenir ce message une fois esup-pod lancé
+#	# $ pod-dev-with-volumes        | Superuser created successfully.
 
 docker-down-v:
 	# Arrête le serveur de test
@@ -89,3 +91,25 @@ docker-down-v:
 
 docker-logs: ## display app logs (follow mode)
 	@$(DOCKER_LOGS) pod-dev-with-volumes
+
+echo-env:
+	echo $(ELASTICSEARCH_TAG)
+
+docker-start-build:
+	# Démarre le serveur de test en recompilant les conteuneurs de la stack
+	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
+	@$(COMPOSE) up
+	# Vous devriez obtenir ce message une fois esup-pod lancé
+	# $ pod-dev-with-volumes        | Superuser created successfully.
+
+docker-start-build:
+	# Démarre le serveur de test en recompilant les conteuneurs de la stack
+	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
+	# N'oubliez pas de supprimer :
+	# sudo rm -rf ./pod/log
+	# sudo rm -rf ./pod/static
+	# sudo rm -rf ./pod/node_modules
+	@$(COMPOSE) build --build-arg ELASTICSEARCH_VERSION=$(ELASTICSEARCH_TAG) --build-arg NODE_VERSION=$(NODE_TAG) --build-arg PYTHON_VERSION=$(PYTHON_TAG)
+	@$(COMPOSE) up
+	# Vous devriez obtenir ce message une fois esup-pod lancé
+	# $ pod-dev-with-volumes        | Superuser created successfully.
