@@ -812,7 +812,7 @@ div.card a img {
   background-color: var(--pod-background-neutre1-bloc);
   padding: 10px 0;
   z-index: 2147483647;
-  bottom: 100px;
+  /*bottom: 100px;*/
   display: none;
 }
 

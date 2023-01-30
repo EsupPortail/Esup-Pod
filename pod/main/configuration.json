@@ -121,6 +121,22 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "CAS_ADMIN_AUTH": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "",
+                                    "o disable CAS authentication for the entire django admin app, you should use the CAS_ADMIN_AUTH parameter"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Pemet d'activer l'authentification CAS pour la partie admin",
+                                    "Voir : https://github.com/kstateome/django-cas"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "CAS_FORCE_LOWERCASE_USERNAME": {
                             "default_value": false,
                             "description": {
@@ -150,6 +166,20 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "CAS_LOGOUT_COMPLETELY": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "voir https://github.com/kstateome/django-cas"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
                         },
                         "CAS_SERVER_URL": {
                             "default_value": "sso_cas",
@@ -329,6 +359,35 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES": {
+                            "default_value": "[]",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Groupes d'accès attribués par défaut à un nouvel utilisateur authentifié par OIDC"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "OIDC_DEFAULT_AFFILIATION": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Affiliation par défaut d'un utilisateur authentifié par OIDC.",
+                                    "Ce contenu sera comparé à la liste AFFILIATION_STAFF pour déterminer si l'utilisateur doit être admin django"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
                         },
                         "OIDC_NAME": {
                             "default_value": "",
@@ -999,6 +1058,20 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "VIEW_EXPIRATION_DELAY": {
+                            "default_value": 60,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Délai (en seconde) selon lequel une vue est considérée comme expirée si elle n'as pas renvoyé de signal depuis"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
                         }
                     },
                     "title": {
@@ -1008,7 +1081,51 @@
                 },
                 "lti": {
                     "description": {},
-                    "settings": {},
+                    "settings": {
+                        "LTI_ENABLED": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Configuration / Activation du LTI voir pod/main/settings.py L.224"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "PYLTI_CONFIG": {
+                            "default_value": "{}",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "The PYLTI_CONFIG variable in your settings.py configures the application consumers and secrets.",
+                                    "PYLTI_CONFIG = {",
+                                    "    'consumers': {",
+                                    "        '<random number string>': {",
+                                    "            'secret': '<random number string>'",
+                                    "        }",
+                                    "    }",
+                                    "}"
+                                ],
+                                "fr": [
+                                    "",
+                                    "cette varaible permet de configurer l'application cliente et le secret partagé",
+                                    "PYLTI_CONFIG = {",
+                                    "    'consumers': {",
+                                    "        '<random number string>': {",
+                                    "            'secret': '<random number string>'",
+                                    "        }",
+                                    "    }",
+                                    "}"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        }
+                    },
                     "title": {
                         "en": "",
                         "fr": "Configuration application LTI"
@@ -1612,6 +1729,62 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "RECORDER_ALLOW_INSECURE_REQUESTS": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Autorise la requête sur l'application en elle-même sans vérifier le certificat SSL"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "RECORDER_BASE_URL": {
+                            "default_value": "https://pod.univ.fr",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "url racine de l'instance permettant l'envoi de notification lors de la réception d'enregistrement"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "RECORDER_SELF_REQUESTS_PROXIES": {
+                            "default_value": "{\"http\": None, \"https\": None}",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Précise les proxy à utiliser pour une requête vers l'application elle même dans le cadre d'enregistrement par défaut force la non utilisation de proxy"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "RECORDER_SKIP_FIRST_IMAGE": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, permet de ne pas prendre en compte la 1° image lors du traitement d'un fichier d'enregistrement de type AudioVideoCast."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "RECORDER_TYPE": {
                             "default_value": "(('video', _('Video')), ('audiovideocast', _('Audiovideocast')), ('studio', _('Studio')))",
                             "description": {
@@ -1678,6 +1851,20 @@
                                 "fr": [
                                     "",
                                     "Activer les commentaires au niveau de la plateforme"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "CELERY_BROKER_URL": {
+                            "default_value": "amqp://pod:xxx@localhost/rabbitpod",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Utilisation de Celery pour la gestion des taches d'encodage"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1864,6 +2051,20 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "ENCODE_STUDIO": {
+                            "default_value": "start_encode_studio",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Fonction appelée pour lancer l'encodage du studio (merge and cut)"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "ENCODE_VIDEO": {
                             "default_value": "start_encode",
                             "description": {
@@ -1897,6 +2098,20 @@
                                     "    (\"playlist\", \"playlist\")",
                                     ")",
                                     "```"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FORCE_LOWERCASE_TAGS": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Les mots clés saisis lors de l'ajout de vidéo sont convertis automatiquement en minuscule"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1993,6 +2208,20 @@
                                     "",
                                     "Fixe une durée maximale que la date de suppression d'une vidéo ne peut dépasser.",
                                     "Par défaut : 10 (Année courante + 10 ans)."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "MAX_TAG_LENGTH": {
+                            "default_value": 50,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Les mots clés saisis lors de l'ajout de vidéo ne peuvent dépasser la longueur saisie"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3454,6 +3683,54 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "BASE_DIR": {
+                            "default_value": "os.path.dirname(os.path.dirname(os.path.abspath(__file__)))",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "répertoire de base"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "CACHES": {
+                            "default_value": "{}",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "CACHES = {",
+                                    "    # … default cache config and others",
+                                    "    # \"default\": {",
+                                    "    #     \"BACKEND\": \"django.core.cache.backends.locmem.LocMemCache\",",
+                                    "    # },",
+                                    "    \"default\": {",
+                                    "        \"BACKEND\": \"django_redis.cache.RedisCache\",",
+                                    "        \"LOCATION\": \"redis://127.0.0.1:6379/1\",",
+                                    "        \"OPTIONS\": {",
+                                    "            \"CLIENT_CLASS\": \"django_redis.client.DefaultClient\",",
+                                    "        },",
+                                    "    },",
+                                    "    # Persistent cache setup for select2 (NOT DummyCache or LocMemCache).",
+                                    "    \"select2\": {",
+                                    "        \"BACKEND\": \"django_redis.cache.RedisCache\",",
+                                    "        \"LOCATION\": \"redis://127.0.0.1:6379/2\",",
+                                    "        \"OPTIONS\": {",
+                                    "            \"CLIENT_CLASS\": \"django_redis.client.DefaultClient\",",
+                                    "        },",
+                                    "    },",
+                                    "}"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "CSRF_COOKIE_SECURE": {
                             "default_value": " not DEBUG",
                             "description": {
@@ -3520,6 +3797,34 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "PROXY_HOST": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Utilisation du proxy - host"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "PROXY_PORT": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Utilisation du proxy - port"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "SECRET_KEY": {
                             "default_value": "A_CHANGER",
                             "description": {
@@ -3565,6 +3870,21 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "SESSION_COOKIE_SAMESITE": {
+                            "default_value": "Lax",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Cette option empêche le cookie d’être envoyé dans les requêtes inter-sites, ce qui prévient les attaques CSRF et rend impossible certaines méthodes de vol du cookie de session.",
+                                    "Voir https://docs.djangoproject.com/en/3.2/ref/settings/#std-setting-SESSION_COOKIE_SAMESITE"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
                         },
                         "SESSION_COOKIE_SECURE": {
                             "default_value": " not DEBUG",
@@ -3682,6 +4002,65 @@
                                     "    'affiliate': 1",
                                     "}",
                                     "```"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "ARCHIVE_OWNER_USERNAME": {
+                            "default_value": "\"archive\"",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Nom de l'utilisateur pour l'archivage des vidéos"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "POD_ARCHIVE_AFFILIATION": {
+                            "default_value": "[]",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Affiliations pour lesquelles on souhaite archiver la vidéo plutôt que de la supprimer.",
+                                    "Si l'affiliation du propriétaire est dans cette variable, alors les vidéos sont affectées à un utilisateur précis",
+                                    "que l'on peut spécifier via le paramètre ARCHIVE_OWNER_USERNAME.",
+                                    "Elles sont mises en mode brouillon et le mot \"archived\" est ajouté à leur titre.",
+                                    "Enfin, elles sont également ajoutées à l'ensemble `Vidéo à Supprimer` (accessible via l'interface d'admin).",
+                                    "POD_ARCHIVE_AFFILIATION = ['faculty',",
+                                    "                           'staff',",
+                                    "                           'employee',",
+                                    "                           'affiliate',",
+                                    "                           'alum',",
+                                    "                           'library-walk-in',",
+                                    "                           'researcher',",
+                                    "                           'retired',",
+                                    "                           'emeritus',",
+                                    "                           'teacher',",
+                                    "                           'registered-reader',",
+                                    "                           'member']",
+                                    "ARCHIVE_OWNER_USERNAME = \"archive\""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "WARN_DEADLINES": {
+                            "default_value": "[60, 30, 7]",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Liste de jour de délais avant l'obsolescence de la vidéo. A chaque délais, le propriétaire recoit un mail d'avertissement pour éventuellement changer la date d'obsolescence de sa vidéo"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3882,6 +4261,48 @@
                                     "et si la valeur vaut 'False' l'onglet Utilisateur ne sera visible",
                                     "qu'aux personnes authentifiées.",
                                     "(par soucis du respect du RGPD)"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "HOMEPAGE_NB_VIDEOS": {
+                            "default_value": 12,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Nombre de vidéos à afficher sur la page d'accueil par défaut, le nombre est fixé à 12"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "HOMEPAGE_SHOWS_PASSWORDED": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Afficher les vidéos dont l'accès est protégé par mot de passe sur la page d'accueil"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "HOMEPAGE_SHOWS_RESTRICTED": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Afficher les vidéos dont l'accès est protégé par authentification sur la page d'accueil"
                                 ]
                             },
                             "pod_version_end": "",
