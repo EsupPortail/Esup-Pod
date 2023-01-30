@@ -8,6 +8,7 @@
 
 # Déclarez les fichiers qui auront toujours des fins de ligne CRLF.
 # *.sln text eol=crlf
+*.bat text eol=crlf
 
 # Désigne tous les fichiers qui sont vraiment binaires et ne doivent pas être modifiés.
 *.png binary
