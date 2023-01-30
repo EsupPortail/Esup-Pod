@@ -281,7 +281,9 @@ class Encoding_video:
         """
         in_height = list(self.list_video_track.items())[0][1]["height"]
         for rend in list_rendition:
-            resolution_threshold = rend - rend * (list_rendition[rend]["encoding_resolution_threshold"] / 100)
+            resolution_threshold = rend - rend * (
+                list_rendition[rend]["encoding_resolution_threshold"] / 100
+            )
             if in_height >= resolution_threshold:
                 output_file = os.path.join(self.output_dir, "%sp.mp4" % rend)
                 mp4_command += FFMPEG_MP4_ENCODE % {
@@ -321,7 +323,9 @@ class Encoding_video:
         hls_command += hls_common_params
         in_height = list(self.list_video_track.items())[0][1]["height"]
         for index, rend in enumerate(list_rendition):
-            resolution_threshold = rend - rend * (list_rendition[rend]["encoding_resolution_threshold"] / 100)
+            resolution_threshold = rend - rend * (
+                list_rendition[rend]["encoding_resolution_threshold"] / 100
+            )
             if in_height >= resolution_threshold or index == 0:
                 output_file = os.path.join(self.output_dir, "%sp.m3u8" % rend)
                 hls_command += hls_common_params

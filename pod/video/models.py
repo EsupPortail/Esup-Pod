@@ -1432,11 +1432,7 @@ class VideoRendition(models.Model):
         ),
     )
     encoding_resolution_threshold = models.PositiveIntegerField(
-        _("encoding resolution threshold"),
-        default=0,
-        validators=[
-            MaxValueValidator(100)
-        ]
+        _("encoding resolution threshold"), default=0, validators=[MaxValueValidator(100)]
     )
     audio_bitrate = models.CharField(
         _("bitrate audio"),
