@@ -3,13 +3,13 @@ from django.utils import timezone
 # Create your models here.
 
 __XAPI_VIDEO_VERBS__ = {
-    "Initialized": "http://adlnet.gov/expapi/verbs/initialized",
-    "Played": "https://w3id.org/xapi/video/verbs/played",
-    "Paused": "https://w3id.org/xapi/video/verbs/paused",
-    "Seeked": "https://w3id.org/xapi/video/verbs/seeked",
-    "Interacted": "http://adlnet.gov/expapi/verbs/interacted",
-    "Completed": "http://adlnet.gov/expapi/verbs/completed",
-    "Terminated": "http://adlnet.gov/expapi/verbs/terminated",
+    "initialized": "http://adlnet.gov/expapi/verbs/initialized",
+    "played": "https://w3id.org/xapi/video/verbs/played",
+    "paused": "https://w3id.org/xapi/video/verbs/paused",
+    "seeked": "https://w3id.org/xapi/video/verbs/seeked",
+    "interacted": "http://adlnet.gov/expapi/verbs/interacted",
+    "completed": "http://adlnet.gov/expapi/verbs/completed",
+    "terminated": "http://adlnet.gov/expapi/verbs/terminated",
 }
 
 __XAPI_VIDEO_CONTEXT_EXTENSIONS__ = {
@@ -27,6 +27,15 @@ __XAPI_VIDEO_CONTEXT_EXTENSIONS__ = {
     "volume": "https://w3id.org/xapi/video/extensions/volume",
     "length": "https://w3id.org/xapi/video/extensions/length",
     "completion-threshold": "https://w3id.org/xapi/video/extensions/completion-threshold"
+}
+
+__XAPI_VIDEO_RESULT_EXTENSIONS__ = {
+    # score, completion (only for completed statement), duration
+    "time": "https://w3id.org/xapi/video/extensions/time",
+    "time-from": "https://w3id.org/xapi/video/extensions/time-from",
+    "time-to": "https://w3id.org/xapi/video/extensions/time-to",
+    "progress": "https://w3id.org/xapi/video/extensions/progress",
+    "played-segments": "https://w3id.org/xapi/video/extensions/played-segments"
 }
 
 

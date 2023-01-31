@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
 
 # import requests
+import json
 import uuid
 from .models import XAPI_Statement
 
@@ -38,7 +39,7 @@ def statement(request, app: str = None):
     Context Activities ? https://w3id.org/xapi/video
 
     send data to lrs
-    x = requests.post(url, json = myobj)
+    x = requests.post(url, json = myobj, auth = HTTPBasicAuth('user', 'pass'))
     print(x.text)
     """
     statement = XAPI_Statement(uuid.uuid4())
@@ -51,9 +52,9 @@ def statement(request, app: str = None):
         if not request.session or not request.session.session_key:
             request.session.save()
         statement.set_actor(request.session.session_key)
-    # request.POST
-    if request.POST:
-        print(request.POST)
-    statement.set_verb(app, "Initialized")
-    print(statement.actor.name)
+    if request.body:
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        print(json.dumps(body, indent=2))
+        
     return JsonResponse({"status": "ok"}, safe=False)
