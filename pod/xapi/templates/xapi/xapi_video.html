@@ -60,7 +60,11 @@
     }
     
     player.on('play', function() {
-        verb = "played"
+        action = "played"
+        verb = {
+            "id": __XAPI_VIDEO_VERBS__[action],
+            "display": {"en-US": action},
+        }
         result = {
             "extensions": {
                 "https://w3id.org/xapi/video/extensions/time": player.currentTime()
@@ -75,7 +79,7 @@
             "registration": registration
         }
         timestamp = new Date().toISOString();
-        stmt = createStatement();
+        stmt = createStatement(action);
         sendStatement(stmt);
     });
     player.on('pause', function() {
