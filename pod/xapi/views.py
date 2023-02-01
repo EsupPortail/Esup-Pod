@@ -27,16 +27,18 @@ def statement(request, app: str = None):
         }
         for key, value in body.items():
             statement[key] = value
-        
         x = requests.post(
             XAPI_LRS_URL,
             json=statement,
             auth=HTTPBasicAuth(XAPI_LRS_LOGIN, XAPI_LRS_PWD)
         )
-        json_object = json.dumps(statement, indent=2)
+        json_object = json.dumps({
+            "statement": statement,
+            "return": x.text
+        }, indent=2)
         return JsonResponse(json_object, safe=False)
-    
     raise SuspiciousOperation("Invalid video id")
+
 
 def get_actor(request):
     if request.user.is_authenticated :
@@ -50,7 +52,7 @@ def get_actor(request):
         name = request.session.session_key
     return {
         "account" : {
-            "homePage": request.get_host(), 
+            "homePage": request.get_host(),
             "name": name,
         },
         "objectType": "Agent",
