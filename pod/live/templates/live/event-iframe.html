@@ -1,11 +1,8 @@
 {% load i18n %}
 {% load static %}
-{% load tagging_tags %}
-{% load thumbnail %}
-
 
 <!DOCTYPE html>
-<html itemscope itemtype="http://schema.org/MediaObject">
+<html itemscope itemtype="https://schema.org/MediaObject" lang="eng">
     <head>
         <meta charset="utf-8">
 
@@ -20,7 +17,6 @@
 
         {% if event.broadcaster.enable_viewer_count %}
             <script>let heartbeat_delay = {{ heartbeat_delay }}</script>
-            <script src="{% static 'js/viewcounter.js' %}?ver={{ VERSION }}"></script>
         {% endif %}
 
         <script src="{% static 'js/videojs-info-controlbar.js' %}?ver={{VERSION}}"></script>
@@ -45,43 +41,60 @@
                     <br>
                 </div>
             {% elif event.is_coming %}
-                <div class="p-3 mb-2 bg-warning text-dark">
+                <div class="p-3 mb-2 bg-warning text-dark position-absolute">
                     {% trans "The event is scheduled from:" %} {{ event.start_date }} {% trans 'to' %} {{ event.end_date }}
                 </div>
-            {% endif %}
-
-            {# video d'attente #}
-            {% if event.broadcaster.video_on_hold.is_video and not event.is_past %}
-                <div id="divvideoonhold" style="display: none;">
-                    <video id="podvideoonholdplayer"
-                           class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
-                           controls height="360" muted autoplay>
-                    </video>
-                </div>
-            {% else %}
-                <div id="divvideoonhold" style="display: none;">
+                <div id="divvideoplayer" class="d-none">
                     <video id="podvideoonholdplayer"></video>
                 </div>
-            {% endif %}
+                {# waiting video #}
+                {% if event.video_on_hold.is_video %}
+                    <div id="divvideoonhold" class="d-block">
+                        <video id="podvideoonholdplayer"
+                           class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
+                               controls height="360" muted autoplay>
+                        </video>
+                        <div id="info-video-wrapper">
+                            <div class="iframe-header bg-dark text-white">
+                                <h2 class="video-title">{{ event.title }}</h2>
+                                <button type="button" class="close" aria-label="{% trans 'Close' %}">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div id="info-video">
+                                {% include 'live/event-info.html' %}
+                            </div>
+                        </div>
+                    </div>
+                {# event thumbnail  #}
+                {% elif event.thumbnail  %}
+                    <div id="divvideoonhold" class="d-none"></div>
+                    <img src="{{ event.get_thumbnail_url }}" height="360" alt={{ event.title }}>
+                {# broadcaster thumbnail  #}
+                {% elif event.broadcaster.poster %}
+                    <div id="divvideoonhold" class="d-none"></div>
+                    <img src="{{ event.broadcaster.get_poster_url }}" height="360" alt={{ event.title }}>
+                {% endif %}
 
-            {% if event.is_current %}
-                <div id="divvideoplayer" style="display: block;">
+            {% elif event.is_current %}
+                <div id="divvideoplayer" class="d-block">
                     <div class="row">
                         <div class="col">
                             <video id="podvideoplayer"
                                    class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
-                                   controls height="360" muted autoplay>
+                                   preload="none" controls height="360" muted autoplay>
                                 <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
-
                             </video>
                         </div>
                         {# ajouter ici l' event.aside_iframe_url si nécessaire #}
+                        {# ajouter ici le chatBBB si nécessaire #}
+                        {# ajouter ici le viewers-list si nécessaire #}
                     </div>
                 </div>
                 {# ajouter ici l' event.iframe_url si nécessaire #}
                 <div id="info-video-wrapper">
                     <div class="iframe-header bg-dark text-white">
-                        <h2 class="video-title">{{ video.title }}</h2>
+                        <h2 class="video-title">{{ event.title }}</h2>
                         <button type="button" class="close" aria-label="{% trans 'Close' %}">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -89,6 +102,11 @@
                     <div id="info-video">
                         {% include 'live/event-info.html' %}
                     </div>
+                </div>
+            {% else %}
+                <div id="divvideoonhold" class="d-none"></div>
+                <div id="divvideoplayer" class="d-none">
+                    <video id="podvideoplayer"></video>
                 </div>
             {% endif %}
         </div>
@@ -142,28 +160,7 @@
                 $('#overlay-footer').css({'top': pb + 'px'})
             }
 
-            function resizeVideoJs() {
-                const width = document.getElementById(player.id()).parentElement.offsetWidth
-                    , height = document.getElementById(player.id()).parentElement.offsetHeight
-                    , ratio = width / height;
-                let margintop = 0
-                if (ratio < hdres) {
-                    player.width(width);
-                    player.height(width / hdres);
-                    margintop = parseInt((height - player.height()) / 2);
-                    document.getElementById("podvideoplayer").style.top = margintop + "px";
-                } else {
-                    player.height(height);
-                    player.width(height * hdres);
-                    document.getElementById("podvideoplayer").style.top = "0";
-                }
-                resizeInfo()
-            }
-
-            resizeVideoJs(); // Initialize the function right now
-            window.onresize = resizeVideoJs; // Call the function on resize
-
-            var show_info_video = function () { // Call by videojs-controllbar
+            let show_info_video = function () { // Call by videojs-controllbar
                 const hasStarted = $(player.el()).hasClass('vjs-has-started')
                     , isOverlayed = $('#div-video-wrapper').hasClass('overlay')
                     , isInfoOverlayed = isOverlayed && $('#div-video-wrapper').hasClass('info')

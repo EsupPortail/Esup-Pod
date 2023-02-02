@@ -30,7 +30,7 @@
 
 {% block page_content %}
     {% csrf_token %}
-    <h3 id="livename" data-eventid="{{ event.id }}"><i class="bi bi-broadcast" aria-hidden="true"></i>&nbsp;{{ event.title|title }}</h3>
+    <h3 id="livename" data-eventid="{{ event.id }}"><i class="bi bi-broadcast pe-2" aria-hidden="true"></i>{{ event.title|title }}</h3>
 
     {% if form %}
       {% include 'live/event-form.html' %}
@@ -44,25 +44,31 @@
             <div class="p-3 mb-2 bg-warning text-dark">
                 {% trans "The event is scheduled from:" %} {{ event.start_date }} {% trans 'to' %} {{ event.end_date }}
             </div>
-        {% endif %}
-
-        {# waiting video #}
-        {% if event.broadcaster.video_on_hold.is_video and not event.is_past %}
-            <div id="divvideoonhold" style="display: none;">
-                <video id="podvideoonholdplayer"
-                       class="video-js vjs-default-skin vjs-big-play-centered"
-                       controls height="360" muted autoplay>
-                </video>
-
-            </div>
-        {% else %}
             <div id="divvideoonhold" style="display: none;">
                 <video id="podvideoonholdplayer"></video>
             </div>
-        {% endif %}
 
-        {% if event.is_current %}
-            <div id="divvideoplayer" style="display: none;">
+            {# waiting video #}
+            {% if event.video_on_hold.is_video %}
+                <div id="divvideoonhold" class="d-block">
+                    <video id="podvideoonholdplayer"
+                           class="video-js vjs-default-skin vjs-big-play-centered"
+                           controls height="360" muted autoplay>
+                    </video>
+                </div>
+            {# event thumbnail  #}
+            {% elif event.thumbnail  %}
+                <div id="divvideoonhold" class="d-none"></div>
+                <img src="{{ event.get_thumbnail_url }}" alt={{ event.title }}>
+            {# broadcaster thumbnail  #}
+            {% elif event.broadcaster.poster %}
+                <div id="divvideoonhold" class="d-none"></div>
+                <img src="{{ event.broadcaster.get_poster_url }}" alt={{ event.title }}>
+            {% endif %}
+
+        {% elif event.is_current %}
+
+            <div id="divvideoplayer" class="d-block">
                 <div class="row">
                     <div class="col">
                         <video id="podvideoplayer"
@@ -107,36 +113,34 @@
               {% include "bbb/bbb_form.html" %}
             {% endif %}
 
-            <div id="info-video" style="display:none">
-              <button type="button" class="close" aria-label="{% trans 'Close' %}">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
+{#            <div id="info-video" class="d-none">#}
+{#              <button type="button" class="close" aria-label="{% trans 'Close' %}">#}
+{#                <span aria-hidden="true">&times;</span>#}
+{#              </button>#}
+{#            </div>#}
 
             <div id="viewers-list"><ul id="viewers-ul"></ul></div>
 
         {% else %}
-          <div id="divvideoplayer" style="display: none;">
-            <video id="podvideoplayer"></video>
-          </div>
-        {% endif %}
-
-        {% if not request.GET.is_iframe %}
-            <div id="list_videos_of_event" {% if event.videos.count == 0 %} class="d-none" {% endif %}>
-                <div class="pl-0" id="event_videos">
-                    <h4>{% trans "Current event videos" %}</h4>
-                    <div id="event_videos_list"></div>
-                </div>
+            <div id="divvideoonhold" class="d-none"></div>
+            <div id="divvideoplayer" class="d-none">
+                <video id="podvideoplayer"></video>
             </div>
-
-            <div id="info-video">{% include 'live/event-all-info.html' %}</div>
         {% endif %}
+
+        <div id="list_videos_of_event" {% if event.videos.count == 0 %} class="d-none" {% endif %}>
+            <div class="pl-0" id="event_videos">
+                <h4>{% trans "Current event videos" %}</h4>
+                <div id="event_videos_list"></div>
+            </div>
+        </div>
+
+        <div id="info-video-all">{% include 'live/event-all-info.html' %}</div>
 
     {% endif %}
 
 {% endblock %}
 
-{% if not request.GET.is_iframe %}
     {% block page_aside %}
 
         {% include 'aside.html' with HIDE_DISCIPLINES=True HIDE_TAGS=True %}
@@ -160,7 +164,6 @@
         {% endif %}
 
     {% endblock page_aside %}
-{% endif %}
 
 {% block more_script %}
 {% include 'live/event-script.html' %}

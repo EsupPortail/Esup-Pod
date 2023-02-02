@@ -2585,7 +2585,7 @@ msgstr "Directs"
 #: pod/live/templates/live/direct.html:20
 #: pod/live/templates/live/direct.html:27
 msgid "Live"
-msgstr "Directs"
+msgstr "Direct"
 
 #: pod/live/templates/live/direct.html:33
 #: pod/live/templates/live/direct.html:35
@@ -2737,7 +2737,7 @@ msgstr "L'événement est programmé du :"
 #: pod/live/templates/live/event-iframe.html:49
 #: pod/live/templates/live/event.html:45
 msgid "to"
-msgstr "à"
+msgstr "au"
 
 #: pod/live/templates/live/event-info.html:26
 msgid "Broadcasted on:"
