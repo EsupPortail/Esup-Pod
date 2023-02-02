@@ -3,8 +3,8 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
-import requests
-from requests.auth import HTTPBasicAuth
+# import requests
+# from requests.auth import HTTPBasicAuth
 import json
 import uuid
 
@@ -27,15 +27,14 @@ def statement(request, app: str = None):
         }
         for key, value in body.items():
             statement[key] = value
+        """
         x = requests.post(
             XAPI_LRS_URL,
             json=statement,
             auth=HTTPBasicAuth(XAPI_LRS_LOGIN, XAPI_LRS_PWD)
         )
-        json_object = json.dumps({
-            "statement": statement,
-            "return": x.text
-        }, indent=2)
+        """
+        json_object = json.dumps(statement, indent=2)
         return JsonResponse(json_object, safe=False)
     raise SuspiciousOperation("Invalid video id")
 
@@ -45,7 +44,7 @@ def get_actor(request):
         if XAPI_ANONYMIZE_ACTOR:
             name = request.user.owner.hashkey
         else:
-            name = request.user.get_display_name()
+            name = str(request.user)
     else:
         if not request.session or not request.session.session_key:
             request.session.save()

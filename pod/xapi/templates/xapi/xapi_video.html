@@ -4,8 +4,9 @@
     const endpoint = "{% url "xapi:statement" app="video" %}";
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     const session_id = create_UUID();
-    let registration, timestamp = "";
-
+    let registration, timestamp, action = "";
+    const progress = [];
+    let result, context = {}
     const object = {
         "definition": {
             "type": "https://w3id.org/xapi/video/activity-type/video",
@@ -19,10 +20,6 @@
         "id": "{% if request.is_secure %}https:{% else %}http:{% endif %}{{video.get_full_url}}",
         "objectType": "Activity"
     }
-
-    let result = {}
-
-    let context = {}
 
     const __XAPI_VIDEO_VERBS__ = {
         "initialized": "http://adlnet.gov/expapi/verbs/initialized",
@@ -58,6 +55,22 @@
         "progress": "https://w3id.org/xapi/video/extensions/progress",
         "played-segments": "https://w3id.org/xapi/video/extensions/played-segments"
     }
+
+    var last_time = [];
+    const played_segments = [];
+    var time_played = 0;
+    var time_paused = 0;
+    var time_seek = 0;
+
+    player.on("timeupdate", function() {
+        progress[parseInt(player.currentTime())] = 1;
+        if(progress.length == parseInt(player.duration())) {
+            set_completed_statement();
+            active_statement();
+        }
+        last_time.push(player.currentTime().toFixed(3))
+        last_time = last_time.slice(-10) // we keep only the 10 last values
+    });
     
     player.on('play', function() {
         action = "played"
@@ -65,48 +78,291 @@
             "id": __XAPI_VIDEO_VERBS__[action],
             "display": {"en-US": action},
         }
+        time_played = player.currentTime().toFixed(3);
         result = {
             "extensions": {
-                "https://w3id.org/xapi/video/extensions/time": player.currentTime()
+                "https://w3id.org/xapi/video/extensions/time": time_played
             }
         }
         if(registration == "") registration = create_UUID();
         context= {
+            "contextActivities": {
+                "category": [
+                    {
+                        "id": "https://w3id.org/xapi/video"
+                    }
+                ]
+            },
             "extensions": {
                 "https://w3id.org/xapi/video/extensions/session-id": session_id,
-                "https://w3id.org/xapi/video/extensions/length": player.duration
+                "https://w3id.org/xapi/video/extensions/length": player.duration().toFixed(3)
             },
             "registration": registration
         }
-        timestamp = new Date().toISOString();
-        stmt = createStatement(action);
-        sendStatement(stmt);
-    });
-    player.on('pause', function() {
-        
-    });
-    player.on("seeked", function (e) {
-        
-    });
-    player.on("ended", function (e) {
-        
-    });
-    player.on("ratechange", function (e) {
-        
-    });
-    player.on("fullscreenchange", function (e) {
-        
-    });
-    player.on("error", function (e) {
-        
-    });
-    player.on("loadedmetadata", function (e) {
-        context["extensions"] = {
-            "https://w3id.org/xapi/video/extensions/session-id": session_id,
-            "https://w3id.org/xapi/video/extensions/length": player.duration
-        };
-        if(registration == "") registration = create_UUID();
-        context["registration"] = registration;
+        active_statement();
     });
 
+    player.on('pause', function() {
+        action = "paused"
+        verb = {
+            "id": __XAPI_VIDEO_VERBS__[action],
+            "display": {"en-US": action},
+        }
+        time_paused = player.currentTime().toFixed(3);
+        result = {
+            "extensions": {
+                "https://w3id.org/xapi/video/extensions/time": time_paused,
+                "https://w3id.org/xapi/video/extensions/played-segments": time_played + "[.]" + time_paused,
+                "https://w3id.org/xapi/video/extensions/progress": (progress.length / player.duration()).toFixed(3),
+            }
+        }
+        played_segments.push(time_played + "[.]" + time_paused);
+        if(registration == "") registration = create_UUID();
+        context= {
+            "contextActivities": {
+                "category": [
+                    {
+                        "id": "https://w3id.org/xapi/video"
+                    }
+                ]
+            },
+            "extensions": {
+                "https://w3id.org/xapi/video/extensions/session-id": session_id,
+                "https://w3id.org/xapi/video/extensions/length": player.duration().toFixed(3),
+                
+            },
+            "registration": registration
+        }
+        active_statement();
+    });
+    
+    player.on("seeking", function (e) { });
+    
+    player.on("seeked", function (e) {
+        time_seek = player.currentTime().toFixed(3)
+        action = "seeked"
+        verb = {
+            "id": __XAPI_VIDEO_VERBS__[action],
+            "display": {"en-US": action},
+        }
+        result = {
+            "extensions": {
+                "https://w3id.org/xapi/video/extensions/time-to": time_seek,
+                "https://w3id.org/xapi/video/extensions/time-from": last_time[last_time.indexOf(time_seek)-1]
+            }
+        }
+        if(registration == "") registration = create_UUID();
+        context= {
+            "contextActivities": {
+                "category": [
+                    {
+                        "id": "https://w3id.org/xapi/video"
+                    }
+                ]
+            },
+            "extensions": {
+                "https://w3id.org/xapi/video/extensions/session-id": session_id,
+            },
+            "registration": registration
+        }
+        active_statement();
+    });
+    
+    player.on("ended", function (e) {
+        action = "terminated"
+        verb = {
+            "id": __XAPI_VIDEO_VERBS__[action],
+            "display": {"en-US": action},
+        }
+        result = {
+            "completion": true,
+            "extensions": {
+                "https://w3id.org/xapi/video/extensions/played-segments": played_segments.join('[,]'),
+                "https://w3id.org/xapi/video/extensions/progress": (progress.length / player.duration()).toFixed(3),
+                "https://w3id.org/xapi/video/extensions/time": player.currentTime().toFixed(3)
+            }
+        }
+        if(registration == "") registration = create_UUID();
+        context= {
+            "contextActivities": {
+                "category": [
+                    {
+                        "id": "https://w3id.org/xapi/video"
+                    }
+                ]
+            },
+            "extensions": {
+                "https://w3id.org/xapi/video/extensions/session-id": session_id,
+                "https://w3id.org/xapi/video/extensions/length": player.duration().toFixed(3),
+                "https://w3id.org/xapi/video/extensions/completion-threshold": (parseInt(player.duration())/player.duration()).toFixed(3)
+                
+            },
+            "registration": registration
+        }
+        active_statement();
+    });
+
+    player.on("ratechange", function (e) {
+        set_interacted_statement();
+        active_statement();
+    });
+    player.on("fullscreenchange", function (e) {
+        set_interacted_statement();
+        active_statement();
+    });
+    player.on("volumechange", function (e) {
+        set_interacted_statement();
+        active_statement();
+    });
+    player.on("texttrackchange", function (e) {
+        set_interacted_statement();
+        active_statement();
+    });
+    player.on("resize", function (e) {
+        set_interacted_statement();
+        active_statement();
+    });
+
+    player.on("loadedmetadata", function (e) {
+        action = "initialized"
+        verb = {
+            "id": __XAPI_VIDEO_VERBS__[action],
+            "display": {"en-US": action},
+        }
+        result = {}
+        if(registration == "") registration = create_UUID();
+        cc_lang = get_current_subtitle_lang()
+        current_quality = get_current_quality()
+        context= {
+            "contextActivities": {
+                "category": [
+                    {
+                        "id": "https://w3id.org/xapi/video"
+                    }
+                ]
+            },
+            "extensions": {
+                "https://w3id.org/xapi/video/extensions/volume": player.volume(),
+                "https://w3id.org/xapi/video/extensions/video-playback-size": player.currentWidth() + "x" + player.currentHeight(),
+                "https://w3id.org/xapi/video/extensions/user-agent": window.navigator.userAgent,
+                "https://w3id.org/xapi/video/extensions/speed": player.playbackRate(),
+                "https://w3id.org/xapi/video/extensions/completion-threshold": (parseInt(player.duration())/player.duration()).toFixed(3),
+                "https://w3id.org/xapi/video/extensions/session-id": session_id,
+                "https://w3id.org/xapi/video/extensions/length": player.duration().toFixed(3),
+                "https://w3id.org/xapi/video/extensions/quality": current_quality.width + "x" + current_quality.height,
+                "https://w3id.org/xapi/video/extensions/screen-size": screen.width + "x" + screen.height,
+                "https://w3id.org/xapi/video/extensions/frame-rate": current_quality.frameRate,
+                "https://w3id.org/xapi/video/extensions/cc-enabled": cc_lang != "",
+                "https://w3id.org/xapi/video/extensions/cc-subtitle-lang": cc_lang,
+                "https://w3id.org/xapi/video/extensions/full-screen": player.isFullscreen()
+            },
+            "registration": registration
+        }
+        active_statement();
+    });
+
+
+
+function set_completed_statement() {
+    action = "completed"
+    verb = {
+        "id": __XAPI_VIDEO_VERBS__[action],
+        "display": {"en-US": action},
+    }
+    result = {
+        "completion": true,
+        "extensions": {
+            "https://w3id.org/xapi/video/extensions/played-segments": played_segments.join('[,]'),
+            "https://w3id.org/xapi/video/extensions/progress": (progress.length / player.duration()).toFixed(3),
+            "https://w3id.org/xapi/video/extensions/time": player.currentTime().toFixed(3)
+        }
+    }
+    context= {
+        "contextActivities": {
+            "category": [
+                {
+                    "id": "https://w3id.org/xapi/video"
+                }
+            ]
+        },
+        "extensions": {
+            "https://w3id.org/xapi/video/extensions/completion-threshold": (parseInt(player.duration())/player.duration()).toFixed(3),
+            "https://w3id.org/xapi/video/extensions/session-id": session_id,
+            "https://w3id.org/xapi/video/extensions/length": player.duration().toFixed(3),
+        },
+        "registration": registration
+    }
+
+}
+
+function set_interacted_statement() {
+    action = "interacted"
+    verb = {
+        "id": __XAPI_VIDEO_VERBS__[action],
+        "display": {"en-US": action},
+    }
+    result = {
+        "extensions": {
+            "https://w3id.org/xapi/video/extensions/time": player.currentTime().toFixed(3)
+        }
+    }
+    if(registration == "") registration = create_UUID();
+    cc_lang = get_current_subtitle_lang();
+    current_quality = get_current_quality();
+    quality = "";
+    framerate = "";
+    if(current_quality) {
+        quality = current_quality.width + "x" + current_quality.height;
+        framerate = current_quality.frameRate
+    }
+
+    context= {
+        "contextActivities": {
+            "category": [
+                {
+                    "id": "https://w3id.org/xapi/video"
+                }
+            ]
+        },
+        "extensions": {
+            "https://w3id.org/xapi/video/extensions/volume": player.volume(),
+            "https://w3id.org/xapi/video/extensions/video-playback-size": player.currentWidth() + "x" + player.currentHeight(),
+            "https://w3id.org/xapi/video/extensions/user-agent": window.navigator.userAgent,
+            "https://w3id.org/xapi/video/extensions/speed": player.playbackRate(),
+            "https://w3id.org/xapi/video/extensions/completion-threshold": (parseInt(player.duration())/player.duration()).toFixed(3),
+            "https://w3id.org/xapi/video/extensions/session-id": session_id,
+            "https://w3id.org/xapi/video/extensions/length": player.duration().toFixed(3),
+            "https://w3id.org/xapi/video/extensions/quality": quality,
+            "https://w3id.org/xapi/video/extensions/screen-size": screen.width + "x" + screen.height,
+            "https://w3id.org/xapi/video/extensions/frame-rate": framerate,
+            "https://w3id.org/xapi/video/extensions/cc-enabled": cc_lang != "",
+            "https://w3id.org/xapi/video/extensions/cc-subtitle-lang": cc_lang,
+            "https://w3id.org/xapi/video/extensions/full-screen": player.isFullscreen()
+        },
+        "registration": registration
+    }
+}
+
+function get_current_subtitle_lang() {
+    textTracks = player.textTracks()
+    lang = ""
+    for(var i=0; i < textTracks.length; i++) {
+        if (textTracks[i].kind == "subtitles" && textTracks[i].mode == "showing"){
+            lang = textTracks[i].language
+        }
+    }
+    return lang
+}
+
+function get_current_quality() {
+    qualitys = player.qualityLevels()
+    if(qualitys.length > 0 )
+        return qualitys[qualitys.selectedIndex]
+}
+
+function active_statement() {
+    timestamp = new Date().toISOString();
+    stmt = createStatement();
+    sendStatement(stmt);
+}
 </script>
