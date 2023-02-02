@@ -2402,6 +2402,20 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "USE_XAPI_VIDEO": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Activation de l'envoie de statement pour le lecteur video. Attention, il faut mettre USE_XAPI à True pour que les statements soient envoyés"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "VIDEO_ALLOWED_EXTENSIONS": {
                             "default_value": "()",
                             "description": {
@@ -2897,8 +2911,89 @@
                     }
                 },
                 "xapi": {
-                    "description": {},
-                    "settings": {},
+                    "description": {
+                        "en": [
+                            ""
+                        ],
+                        "fr": [
+                            "",
+                            "application pour l'envoie de statement xAPI à un LRS.",
+                            "Aucun statement n'est persisté dans Pod, ils sont tous envoyés au LRS paramétré.",
+                            "Attention, il faut configurer *Celery* pour l'envoi des statements",
+                        ]
+                    },
+                    "settings": {
+                        "USE_XAPI": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Activation de l'application xAPI"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "XAPI_ANONYMIZE_ACTOR": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si False, le nom de l'utilisateur sera stocké en clair dans les statements xAPI, si False, son nom d'utilisateur sera anonymisé"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "XAPI_LRS_LOGIN": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "identifiant de connexion du LRS pour l'envoi des statements"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "XAPI_LRS_PWD": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "mot de passe de connexion du LRS pour l'envoi des statements"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "XAPI_LRS_URL": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "URL de destination pour l'envoi des statements. I.E. : https://ralph.univ.fr/xAPI/statements"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        }
+                    },
                     "title": {
                         "en": "",
                         "fr": "Configuration application xapi"
