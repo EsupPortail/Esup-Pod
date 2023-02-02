@@ -118,6 +118,8 @@ docker-stop:
 	@$(COMPOSE) down -v
 
 docker-reset:
+	# Arrête le serveur de test
+	@$(COMPOSE) down -v
 	# sudo rm -rf ./pod/log
 	sudo rm -rf ./pod/log
 	# sudo rm -rf ./pod/static
