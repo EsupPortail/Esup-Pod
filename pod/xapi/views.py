@@ -23,6 +23,7 @@ To test with celery :
 (django_pod3) pod@pod:/.../podv3$ python -m celery -A pod.main worker
 """
 XAPI_ANONYMIZE_ACTOR = getattr(settings, "XAPI_ANONYMIZE_ACTOR", True)
+XAPI_LRS_URL = getattr(settings, "XAPI_LRS_URL", "")
 
 
 @csrf_protect
@@ -44,7 +45,8 @@ def statement(request, app: str = None):
         for key, value in body.items():
             statement[key] = value
         # send statement via celery
-        send_xapi_statement_task.delay(statement)
+        if XAPI_LRS_URL != "":
+            send_xapi_statement_task.delay(statement)
         json_object = json.dumps(statement, indent=2)
         return JsonResponse(json_object, safe=False)
     raise SuspiciousOperation(
