@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils.safestring import SafeString
 
+from pod.podfile.models import CustomImageModel
 from pod.video.models import Type
 from pod.video.models import Video
 from ..models import (
@@ -18,13 +19,10 @@ from ..models import (
 )
 from django.utils import timezone
 
+__FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
-    FILEPICKER = True
-    from pod.podfile.models import CustomImageModel
+    __FILEPICKER__ = True
     from pod.podfile.models import UserFolder
-else:
-    FILEPICKER = False
-    from pod.main.models import CustomImageModel
 
 
 class BuildingTestCase(TestCase):
@@ -42,7 +40,7 @@ class BuildingTestCase(TestCase):
         building.gmapurl = "b"
         building.save()
         self.assertEqual(building.gmapurl, "b")
-        if FILEPICKER:
+        if __FILEPICKER__:
             user = User.objects.create(username="pod")
             homedir, created = UserFolder.objects.get_or_create(name="Home", owner=user)
             headband = CustomImageModel.objects.create(
@@ -79,7 +77,7 @@ class BroadcasterTestCase(TestCase):
     def setUp(self):
         building = Building.objects.create(name="building1")
         user = User.objects.create(username="pod")
-        if FILEPICKER:
+        if __FILEPICKER__:
             homedir, created = UserFolder.objects.get_or_create(name="Home", owner=user)
             poster = CustomImageModel.objects.create(
                 folder=homedir, created_by=user, file="blabla.jpg"
@@ -94,22 +92,6 @@ class BroadcasterTestCase(TestCase):
             is_restricted=True,
             building=building,
             public=False,
-        )
-        # Test with a video on hold
-        video_on_hold = Video.objects.create(
-            title="VideoOnHold",
-            owner=user,
-            video="test.mp4",
-            type=Type.objects.get(id=1),
-        )
-        Broadcaster.objects.create(
-            name="broadcaster2",
-            poster=poster,
-            url="http://test2.live",
-            status=True,
-            is_restricted=False,
-            video_on_hold=video_on_hold,
-            building=building,
         )
         print(" --->  SetUp of BroadcasterTestCase : OK !")
 
@@ -139,8 +121,6 @@ class BroadcasterTestCase(TestCase):
         self.assertNotIn(empty_qrcode, broadcaster.qrcode)
         none_qrcode = '"data:image/png;base64, None"'
         self.assertNotIn(none_qrcode, broadcaster.qrcode)
-        broadcaster2 = Broadcaster.objects.get(id=2)
-        self.assertEqual(broadcaster2.video_on_hold.id, 1)
         print("   --->  test_attributs of BroadcasterTestCase : OK !")
 
     """
@@ -149,14 +129,12 @@ class BroadcasterTestCase(TestCase):
 
     def test_delete_object(self):
         Broadcaster.objects.get(id=1).delete()
-        Broadcaster.objects.get(id=2).delete()
         self.assertEqual(Broadcaster.objects.all().count(), 0)
 
         print("   --->  test_delete_object of BroadcasterTestCase : OK !")
 
     def test_is_recording_admin(self):
         html = Broadcaster.objects.get(id=1).is_recording_admin()
-        print(html)
         expected_html = '<img src="/static/admin/img/icon-no.svg" alt="No">'
         self.assertEqual(html, expected_html)
 
@@ -303,7 +281,7 @@ class EventTestCase(TestCase):
 
     def test_add_thumbnail(self):
         event = Event.objects.get(id=1)
-        if FILEPICKER:
+        if __FILEPICKER__:
             fp_user, created = User.objects.get_or_create(username="pod")
             homedir, created = UserFolder.objects.get_or_create(
                 name="Home", owner=fp_user
@@ -317,6 +295,15 @@ class EventTestCase(TestCase):
         event.save()
         self.assertTrue("blabla" in event.thumbnail.name)
         print(" --->  test_add_thumbnail of EventTestCase : OK !")
+
+    def test_add_video_on_hold(self):
+        # Test with a video on hold
+        video = Video.objects.get(id=1)
+        event = Event.objects.get(id=1)
+        event.video_on_hold = video
+        event.save()
+        self.assertEquals(event.video_on_hold.id, video.id)
+        print(" --->  test_add_video_on_hold of EventTestCase : OK !")
 
     def test_add_video(self):
         event = Event.objects.get(id=1)

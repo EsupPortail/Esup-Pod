@@ -23,7 +23,6 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from sorl.thumbnail import get_thumbnail
 
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
