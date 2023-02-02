@@ -7,28 +7,30 @@ from .tasks import send_xapi_statement_task
 import json
 import uuid
 
-# pip3 install ralph-malph==3.2.1
-# from ralph.models.xapi.fields.actors import AccountActorField
-# from ralph.models.xapi.video.statements import VideoPlayed
-
+"""
+To use Ralph :
+pip3 install ralph-malph==3.2.1
+from ralph.models.xapi.fields.actors import AccountActorField
+from ralph.models.xapi.video.statements import VideoPlayed
+actor = AccountActorField(
+    objectType = "Agent",
+    account={
+        "homePage": request.get_host(),
+        "name": get_actor_name(request)
+    },
+)
+To test with celery :
+(django_pod3) pod@pod:/.../podv3$ python -m celery -A pod.main worker
+"""
 XAPI_ANONYMIZE_ACTOR = getattr(settings, "XAPI_ANONYMIZE_ACTOR", True)
 
 
 @csrf_protect
 @ensure_csrf_cookie
 def statement(request, app: str = None):
-    if request.body:
+    if request.body and app == "video":  # we develop only video statement
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-        """
-        actor = AccountActorField(
-            objectType = "Agent",
-            account={
-                "homePage": request.get_host(),
-                "name": get_actor_name(request)
-            },
-        )
-        """
         statement = {
             "actor": {
                 "objectType": "Agent",
@@ -43,10 +45,11 @@ def statement(request, app: str = None):
             statement[key] = value
         # send statement via celery
         send_xapi_statement_task.delay(statement)
-
         json_object = json.dumps(statement, indent=2)
         return JsonResponse(json_object, safe=False)
-    raise SuspiciousOperation("Invalid video id")
+    raise SuspiciousOperation(
+        "none post data was sent and app parameter has to be equals to video"
+    )
 
 
 def get_actor_name(request):
