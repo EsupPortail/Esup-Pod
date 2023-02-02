@@ -64,6 +64,8 @@ LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
 class Command(BaseCommand):
     """Checking obsolete videos."""
 
+    help = "Treatment of obsolete videos."
+
     def handle(self, *args, **options):
         """Handle the check_obsolete_videos command call."""
         # Activate a fixed locale fr
@@ -219,8 +221,9 @@ class Command(BaseCommand):
             ) % {"email_address": ", ".join(self.get_manager_emails(video))}
             msg_html += "<p>" + _("Regards") + "</p>\n"
 
-        to_email = []
-        to_email.append(video.owner.email)
+        to_email = [video.owner.email]
+        for additional in video.additional_owners.all():
+            to_email.append(additional.email)
         return send_mail(
             "[%s] %s" % (TITLE_SITE, _("Your video will be obsolete")),
             striptags(msg_html),
