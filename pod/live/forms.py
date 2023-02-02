@@ -326,8 +326,7 @@ class EventForm(forms.ModelForm):
                 ].queryset = get_available_broadcasters_of_building(
                     self.user, query_buildings.first()
                 )
-        query_videos = Video.objects.filter(owner=self.user)
-        print(query_videos.all())
+        query_videos = Video.objects.filter(Q(owner=self.user) | Q(additional_owners__in=[self.user]))
         self.fields["video_on_hold"].queryset = query_videos.all()
 
     def editing(self):
@@ -339,7 +338,7 @@ class EventForm(forms.ModelForm):
             self.user, broadcaster.building.id
         )
         self.initial["building"] = broadcaster.building.name
-        query_videos = Video.objects.filter(owner=self.user)
+        query_videos = Video.objects.filter(Q(owner=self.user) | Q(additional_owners__in=[self.user]))
         self.fields["video_on_hold"].queryset = query_videos.all()
 
     def saving(self):
