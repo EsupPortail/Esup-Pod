@@ -12,30 +12,26 @@ class xapi_statement_TestView(TestCase):
         print(" --->  SetUp of xapi_statement_TestView: OK!")
 
     def test_xapi_statment_TestView_get_request(self):
-        
         bad_url = reverse("xapi:statement", kwargs={})
         response = self.client.get(bad_url)
-        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST) # need post request and video app parameter
+        # need post request and video app parameter
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
 
-        good_url = reverse("xapi:statement", kwargs={"app":"video"})
+        good_url = reverse("xapi:statement", kwargs={"app": "video"})
         response = self.client.get(good_url)
-        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST) # need post request 
+        # video app parameter ok but need post data
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
 
         response = self.client.post(
             good_url,
             json.dumps({}),
-            content_type="application/json"
+            'json',
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
         )
-        self.assertEqual(response.status_code, HTTPStatus.OK) # ok
-
-        """
-        self.client.force_login(self.user)
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        list_id = [meeting.id for meeting in response.context["meetings"]]
-        self.assertEqual(
-            list_id,
-            list(self.user.owner_meeting.all().values_list("id", flat=True)),
+        self.assertEqual(response.status_code, HTTPStatus.OK)  # 200
+        self.assertEqual(response['Content-Type'], 'application/json')
+        # self.assertEqual(return_data["actor"]["objectType"], "Agent")
+        print(
+            " --->  test_xapi_statment_TestView_get_request ",
+            "of xapi_statement_TestView: OK!"
         )
-        """
-        print(" --->  test_xapi_statment_TestView_get_request of xapi_statement_TestView: OK!")
