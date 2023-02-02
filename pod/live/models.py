@@ -137,14 +137,6 @@ class Broadcaster(models.Model):
         CustomImageModel, models.SET_NULL, blank=True, null=True, verbose_name=_("Poster")
     )
     url = models.URLField(_("URL"), help_text=_("Url of the stream"), unique=True)
-    video_on_hold = models.ForeignKey(
-        Video,
-        help_text=_("This video will be displayed when there is no live stream."),
-        blank=True,
-        null=True,
-        verbose_name=_("Video on hold"),
-        on_delete=models.CASCADE,
-    )
     status = models.BooleanField(
         default=0,
         help_text=_("Check if the broadcaster is currently sending stream."),
@@ -169,7 +161,8 @@ class Broadcaster(models.Model):
         help_text=_("Live is accessible from the Live tab"),
         default=True,
     )
-
+    viewcount = models.IntegerField(_("Number of viewers"), default=0, editable=False)
+    viewers = models.ManyToManyField(User, editable=False)
     manage_groups = models.ManyToManyField(
         Group,
         blank=True,
@@ -302,7 +295,6 @@ class Event(models.Model):
         max_length=255,
         editable=False,
     )
-
     title = models.CharField(
         _("Title"),
         max_length=250,
@@ -312,7 +304,6 @@ class Event(models.Model):
             "of the content. (max length: 250 characters)"
         ),
     )
-
     description = RichTextField(
         _("Description"),
         config_name="complete",
@@ -323,9 +314,7 @@ class Event(models.Model):
             "format the result using the toolbar."
         ),
     )
-
     owner = models.ForeignKey(User, verbose_name=_("Owner"), on_delete=models.CASCADE)
-
     additional_owners = models.ManyToManyField(
         User,
         blank=True,
@@ -349,14 +338,12 @@ class Event(models.Model):
         help_text=_("Broadcaster name."),
         on_delete=models.CASCADE,
     )
-
     type = models.ForeignKey(
         Type,
         default=DEFAULT_EVENT_TYPE_ID,
         verbose_name=_("Type"),
         on_delete=models.CASCADE,
     )
-
     iframe_url = models.URLField(
         _("Embedded Site URL"),
         help_text=_("Url of the embedded site to display"),
@@ -375,7 +362,6 @@ class Event(models.Model):
         null=True,
         blank=True,
     )
-
     is_draft = models.BooleanField(
         verbose_name=_("Draft"),
         help_text=_(
@@ -393,20 +379,25 @@ class Event(models.Model):
         ),
         default=False,
     )
-
     restrict_access_to_groups = models.ManyToManyField(
         AccessGroup,
         blank=True,
         verbose_name=_("Groups"),
         help_text=_("Select one or more groups who can access to this event"),
     )
-
     is_auto_start = models.BooleanField(
         verbose_name=_("Auto start"),
         help_text=_("If this box is checked, " "the record will start automatically."),
         default=False,
     )
-
+    video_on_hold = models.ForeignKey(
+        Video,
+        help_text=_("This video will be displayed when there is no live stream."),
+        blank=True,
+        null=True,
+        verbose_name=_("Video on hold"),
+        on_delete=models.CASCADE,
+    )
     thumbnail = models.ForeignKey(
         CustomImageModel,
         models.SET_NULL,
@@ -414,7 +405,6 @@ class Event(models.Model):
         null=True,
         verbose_name=_("Thumbnails"),
     )
-
     password = models.CharField(
         _("password"),
         help_text=_("Viewing this event will not be possible without this password."),
@@ -422,19 +412,17 @@ class Event(models.Model):
         blank=True,
         null=True,
     )
-
     max_viewers = models.IntegerField(
         _("Max viewers"),
         null=False,
         default=0,
         help_text=_("Maximum of distinct viewers"),
     )
-
     viewers = models.ManyToManyField(User, related_name="viewers_events", editable=False)
-
     videos = models.ManyToManyField(
         Video,
         editable=False,
+        related_name="event_videos",
     )
 
     class Meta:
@@ -495,17 +483,11 @@ class Event(models.Model):
         return thumbnail_url
 
     def get_thumbnail_card(self):
-        """Return thumbnail image card of current event."""
-        if self.thumbnail and self.thumbnail.file_exist():
-            im = get_thumbnail(self.thumbnail.file, "x170", crop="center", quality=72)
-            thumbnail_url = im.url
+        if self.thumbnail:
+            return self.thumbnail.file.url
         else:
             thumbnail_url = static(DEFAULT_EVENT_THUMBNAIL)
-        return (
-            '<img class="card-img-top" src="%s" alt="%s"\
-            loading="lazy"/>'
-            % (thumbnail_url, self.title)
-        )
+            return thumbnail_url
 
     def is_current(self):
         """Test if event is currently open."""
@@ -538,7 +520,6 @@ class Event(models.Model):
 
     def is_coming(self):
         """Test if event will happen in future."""
-        print(self.start_date, timezone.now(), self.start_date < timezone.now())
         if self.start_date:
             return timezone.now() < self.start_date
         else:

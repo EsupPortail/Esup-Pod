@@ -64,6 +64,7 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
             "is_auto_start",
             "videos",
             "thumbnail",
+            "video_on_hold",
         )
 
 
