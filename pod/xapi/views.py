@@ -47,8 +47,7 @@ def statement(request, app: str = None):
         # send statement via celery
         if XAPI_LRS_URL != "":
             send_xapi_statement_task.delay(statement)
-        json_object = json.dumps(statement, indent=2)
-        return JsonResponse(json_object, safe=False)
+        return JsonResponse(statement, safe=False)
     raise SuspiciousOperation(
         "none post data was sent and app parameter has to be equals to video"
     )
