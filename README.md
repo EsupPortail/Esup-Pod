@@ -10,7 +10,13 @@ Créé en 2014, le projet Pod a connu de nombreux changement ces dernières ann�
 Le projet et la plateforme qui porte le même nom ont pour but de faciliter la mise à disposition de vidéo et de ce fait, d’encourager l’utilisation de celles-ci dans le cadre de l’enseignement et la recherche.
 
 ### Documentation technique
-* Accédez à toute la documentation (installation, paramétrage etc.) [sur notre wiki](https://www.esup-portail.org/wiki/display/ES/esup-pod "Documentation")
+* Accédez à toute la documentation (installation, paramétrage etc.) [sur notre wiki](https://www.esup-portail.org/wiki/display/ES/esup-pod "Documentation technique")
+
+### Documentation conteneurisation
+* Accédez à toute la documentation concernant la conteneurisation (installation, paramétrage, lancement etc.) [dockerfile-dev-with-volumes/README.adoc](./dockerfile-dev-with-volumes/README.adoc "Documentation conteneurisation")
+
+### Documentation configuration de la plateforme
+* Accédez à toute la documentation concernant la configuration (paramétrage, personnalisation etc.) [configuration](./CONFIGURATION_FR.md "Documentation configuration")
 
 [EN]
 ## Video file management platform
