@@ -159,7 +159,6 @@ def start_main_transcript(mp3filepath, video_to_encode, transript_model):
 
 
 def main_threaded_transcript(video_to_encode_id):
-
     change_encoding_step(video_to_encode_id, 5, "transcripting audio")
 
     video_to_encode = Video.objects.get(id=video_to_encode_id)
@@ -432,7 +431,6 @@ def main_stt_transcript(norm_mp3_file, duration, transript_model):
     all_text = ""
 
     for start_trim in range(0, duration, TRANSCRIPTION_AUDIO_SPLIT_TIME):
-
         end_trim = (
             duration
             if start_trim + TRANSCRIPTION_AUDIO_SPLIT_TIME > duration
