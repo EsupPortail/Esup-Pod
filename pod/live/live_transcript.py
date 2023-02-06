@@ -30,7 +30,6 @@ def transcribe(url, slug, model):
     url = url.split('.m3u8')[0] + "_low/index.m3u8"
     SAMPLE_RATE = 16000
     SetLogLevel(-1)
-    print(model)
     trans_model = Model(model)
     rec = KaldiRecognizer(trans_model, SAMPLE_RATE)
     rec.SetWords(True)
@@ -75,8 +74,6 @@ def transcribe(url, slug, model):
 
                 for i in range(len(last_caption_words) - 1, 0, -1):
                     if last_caption_words[-i:] == current_caption_words[:i] or last_caption_words[-i:] == current_caption_words1[:i]:
-                        # print(" ".join(last_caption_words[-i:]) + " ----------- " +
-                        #      " ".join(current_caption_words[:i]))
                         caption_text = " ".join(current_caption_words[i:])
                         break
                 if last_caption_text in caption_text:
@@ -92,7 +89,7 @@ def transcribe(url, slug, model):
                 caption = Caption(current_start, current_end,
                                   caption_text)
                 last_caption = caption
-                print(caption_text)
+                # print(caption_text)
                 vtt.captions.append(caption)
                 # save or return webvtt
                 vtt.save(save_path)
@@ -100,12 +97,12 @@ def transcribe(url, slug, model):
         now = time.time() - start
         if now < 5:
             time.sleep(5 - now)
-    print("stopped transcription")
+    # print("stopped transcription")
     threads_to_stop.remove(thread_id)
 
 
 def transcribe_live(url, slug, status, lang):
-    print(lang)
+    # print(lang)
     if VOSK_MODEL and VOSK_MODEL.get(lang):
         model = VOSK_MODEL.get(lang).get("model")
         if CELERY_TO_TRANSCRIBE_LIVE:
@@ -115,7 +112,7 @@ def transcribe_live(url, slug, status, lang):
                 task_end_live_transcription.delay(slug)
         else:
             if status:
-                print("main process")
+                # print("main process")
                 t = threading.Thread(target=transcribe, args=(
                     url, slug, model))
                 t.setDaemon(True)
@@ -127,4 +124,4 @@ def transcribe_live(url, slug, status, lang):
                 stop_thread = threads.get(slug, None)
                 if stop_thread:
                     threads_to_stop.append(stop_thread)
-                    print("stopping thread")
+                    # print("stopping thread")
