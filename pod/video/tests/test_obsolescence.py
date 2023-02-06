@@ -17,6 +17,7 @@ ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
 
 class ObsolescenceTestCase(TestCase):
     """Test the Obsolete videos."""
+
     fixtures = [
         "initial_data.json",
     ]

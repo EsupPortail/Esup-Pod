@@ -265,8 +265,8 @@ class Broadcaster(models.Model):
         img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
         alt = _("QR code to record immediately an event")
         return mark_safe(
-            f'''<img src="data:image/png;base64, {img_str}"
-            width="300px" height="300px" alt={alt}>'''
+            f"""<img src="data:image/png;base64, {img_str}"
+            width="300px" height="300px" alt={alt}>"""
         )
 
 
