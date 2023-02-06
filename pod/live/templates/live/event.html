@@ -69,7 +69,10 @@
                                controls height="360" muted autoplay>
                             <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
                             {% if event.broadcaster.status and event.enable_transcription %}
-                              <track kind="captions" src="{% get_setting "TRANSCRIPTIONS_FOLDER_URL" %}{{event.broadcaster.slug}}.vtt" srclang="{{event.broadcaster.main_lang}}">
+
+                          
+                            
+                              <track kind="captions" src="{{ event.broadcaster.get_transcription_file }}?v={% now "U" %}" srclang="{{event.broadcaster.main_lang}}?v={% now "U" %}">
                             {% endif %}
                         </video>
                     </div>
@@ -177,11 +180,8 @@
           for (var i = 0; i < tracks.length; i++) {
             var track = tracks[i];
             if (track.kind === "captions") {
-                let broadcaster_slug = "{{ event.broadcaster.slug }}";
-                
                 let current_mod = null
-                let filename = broadcaster_slug + ".vtt"
-                let vtt_url ="{% get_setting "TRANSCRIPTIONS_FOLDER_URL" %}" + filename
+                let vtt_url ="{{ event.broadcaster.get_transcription_file }}?v={% now "U" %}"
                 fetch(vtt_url).then(r => {
                   current_mod = r.headers.get('Last-Modified');
                   if (lastMod && current_mod && lastMod === current_mod){
@@ -191,7 +191,7 @@
                   let newTrack = player.addRemoteTextTrack(
                     {
                       kind: "captions",
-                      language: "{{ event.broadcaster.main_lang }}",
+                      language: "{{ event.broadcaster.main_lang }}?v={% now "U" %}",
                       src: vtt_url,
                       default: true,
                     },

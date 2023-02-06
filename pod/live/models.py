@@ -24,8 +24,8 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from sorl.thumbnail import get_thumbnail
-from pod.main.lang_settings import ALL_LANG_CHOICES as ALL_LANG_CHOICES
-from pod.main.lang_settings import PREF_LANG_CHOICES as PREF_LANG_CHOICES
+from pod.main.lang_settings import ALL_LANG_CHOICES as __ALL_LANG_CHOICES__
+from pod.main.lang_settings import PREF_LANG_CHOICES as __PREF_LANG_CHOICES__
 from django.utils.translation import get_language
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
@@ -47,11 +47,10 @@ AFFILIATION_EVENT = getattr(
     settings, "AFFILIATION_EVENT", ("faculty", "employee", "staff")
 )
 SECRET_KEY = getattr(settings, "SECRET_KEY", "")
-LANG_CHOICES = getattr(
-    settings,
-    "LANG_CHOICES",
-    ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),
-)
+
+LANG_CHOICES = getattr(settings, "LANG_CHOICES", ((
+    " ", __PREF_LANG_CHOICES__), ("----------", __ALL_LANG_CHOICES__)), )
+MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
 
 
 class Building(models.Model):
@@ -208,6 +207,9 @@ class Broadcaster(models.Model):
         default=get_language(),
         help_text=_("Select the main language used in the content."),
     )
+
+    def get_transcription_file(self):
+        return MEDIA_URL + "transcripts/" + self.slug + ".vtt"
 
     def get_absolute_url(self):
         return reverse("live:direct", args=[str(self.slug)])
