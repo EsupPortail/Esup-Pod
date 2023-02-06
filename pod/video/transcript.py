@@ -420,17 +420,11 @@ def main_stt_transcript(norm_mp3_file, duration, transript_model):
     msg = ""
     inference_start = timer()
     msg += "\nInference start %0.3fs." % inference_start
-
     desired_sample_rate = transript_model.sampleRate()
-
     webvtt = WebVTT()
-
     last_word_added = ""
     metadata = None
-
     all_text = ""
-
-
     for start_trim in range(0, duration, TRANSCRIPTION_AUDIO_SPLIT_TIME):
         end_trim = (
             duration
