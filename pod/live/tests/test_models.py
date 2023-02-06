@@ -298,7 +298,7 @@ class EventTestCase(TestCase):
         event.id = None
         self.assertEqual(event.__str__(), "None")
         self.assertEqual(event.get_thumbnail_url(), "/static/img/default-event.svg")
-        self.assertEqual(event.get_full_url(), "//example.com/live/event/0001-event1/")
+        self.assertEqual(event.get_full_url(), "//localhost:9090/live/event/0001-event1/")
         print(" --->  test_attributs of EventTestCase : OK !")
 
     def test_add_thumbnail(self):
