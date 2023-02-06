@@ -1,17 +1,14 @@
 """
 Unit tests for live views
 """
-import ast
-from datetime import datetime
 from http import HTTPStatus
 
 import httmock
-import pytz
 from django.conf import settings
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User, Group
 from django.core.management import call_command
-from django.http import JsonResponse, Http404
+from django.http import Http404
 from django.test import Client
 from django.test import TestCase
 from django.urls import reverse
@@ -190,121 +187,138 @@ class LiveViewsTestCase(TestCase):
         self.user = User.objects.create(
             username="randomviewer", first_name="Jean", last_name="Viewer"
         )
-        response = self.client.get(
-            "/live/ajax_calls/heartbeat/?key=testkey&liveid=1",
-            {},
-            False,
-            False,
-            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"},
-        )
-        self.assertEqual(response.status_code, 200)
-
-        data = {"viewers": 0, "viewers_list": []}
-        expected_content = JsonResponse(data, safe=False).content
-        exp_content = expected_content.decode("UTF-8")
-        exp_content = ast.literal_eval(exp_content)
-
-        resp_content = response.content.decode("UTF-8")
-        resp_content = ast.literal_eval(resp_content)
-
-        self.assertEqual(resp_content, exp_content)
-        call_command("live_viewcounter")
-
-        response = self.client.get(
-            "/live/ajax_calls/heartbeat/?key=testkey&liveid=1",
-            {},
-            False,
-            False,
-            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"},
-        )
-        self.assertEqual(response.status_code, 200)
-
-        data = {"viewers": 1, "viewers_list": []}
-        expected_content = JsonResponse(data, safe=False).content
-        exp_content = expected_content.decode("UTF-8")
-        exp_content = ast.literal_eval(exp_content)
-
-        resp_content = response.content.decode("UTF-8")
-        resp_content = ast.literal_eval(resp_content)
-
-        self.assertEqual(resp_content, exp_content)
-
-        # user with no permission
-        self.client.force_login(self.user)
-        response = self.client.get(
-            "/live/ajax_calls/heartbeat/?key=testkeypod&liveid=1",
-            {},
-            False,
-            False,
-            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"},
-        )
-        self.assertEqual(response.status_code, 200)
-
-        data = {"viewers": 1, "viewers_list": []}
-        expected_content = JsonResponse(data, safe=False).content
-        exp_content = expected_content.decode("UTF-8")
-        exp_content = exp_content.replace("false", "False")
-        exp_content = ast.literal_eval(exp_content)
-
-        resp_content = response.content.decode("UTF-8")
-        resp_content = resp_content.replace("false", "False")
-        resp_content = ast.literal_eval(resp_content)
-
-        self.assertEqual(resp_content, exp_content)
-
-        # superUser sees names
         self.superuser = User.objects.create_superuser(
             "superuser", "superuser@test.com", "psswd"
         )
-        call_command("live_viewcounter")
-        self.client.force_login(self.superuser)
+
+        heartbeat_url = reverse("live:heartbeat")
+
+        # not ajax
+        response = self.client.get(heartbeat_url)
+        self.assertEqual(response.status_code, 400)
+        print(" --->  test_heartbeat no ajax : OK !")
+
+        # no mandatory param
         response = self.client.get(
-            "/live/ajax_calls/heartbeat/?key=testkeypod&liveid=1",
-            {},
-            False,
-            False,
+            path=heartbeat_url,
+            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"},
+        )
+        self.assertEqual(response.status_code, 400)
+        print(" --->  test_heartbeat without mandatory param : OK !")
+
+        # broadcaster without current event
+        data_no_viewers = {"viewers": 0, "viewers_list": []}
+        url_with_broadcaster = "%s?key=anonymous_key&broadcasterid=2" % heartbeat_url
+        response = self.client.get(
+            path=url_with_broadcaster,
             **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"},
         )
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), data_no_viewers)
+        print(" --->  test_heartbeat broadcaster without current event : OK !")
 
-        data = {
-            "viewers": 2,
-            "viewers_list": [
-                {
-                    "first_name": "Jean",
-                    "is_superuser": False,
-                    "last_name": "Viewer",
-                }
-            ],
-        }
-        expected_content = JsonResponse(data, safe=False).content
-        exp_content = expected_content.decode("UTF-8")
-        exp_content = exp_content.replace("false", "False")
-        exp_content = ast.literal_eval(exp_content)
+        # broadcaster with current event
+        url_with_broadcaster = "%s?key=anonymous_key&broadcasterid=1" % heartbeat_url
+        response = self.client.get(
+            path=url_with_broadcaster,
+            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), data_no_viewers)
+        print(" --->  test_heartbeat broadcaster with current event (no viewer): OK !")
 
-        resp_content = response.content.decode("UTF-8")
-        resp_content = resp_content.replace("false", "False")
-        resp_content = ast.literal_eval(resp_content)
+        # with event (anonymous)
+        url_with_event = "%s?key=anonymous_key&eventid=1" % heartbeat_url
+        response = self.client.get(
+            path=url_with_event,
+            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"viewers": 1, "viewers_list": []})
+        print(" --->  test_heartbeat add one to current event : OK !")
 
-        self.assertEqual(resp_content, exp_content)
+        # with event (logged no right to see names)
+        call_command("live_viewcounter")
+        self.client.force_login(self.user)
 
-        ##
-        hb1 = HeartBeat.objects.get(viewkey="testkey")
-        hb2 = HeartBeat.objects.get(viewkey="testkeypod")
+        url_with_event = "%s?key=logged_user_key&eventid=1" % heartbeat_url
+        response = self.client.get(
+            path=url_with_event,
+            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"viewers": 2, "viewers_list": []})
+        print(" --->  test_heartbeat add another to current event : OK !")
 
-        paris_tz = pytz.timezone("Europe/Paris")
+        # superUser sees names
+        call_command("live_viewcounter")
+        self.client.force_login(self.superuser)
+
+        url_with_event = "%s?key=super_user_key&eventid=1" % heartbeat_url
+        response = self.client.get(
+            path=url_with_event,
+            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"},
+        )
+        self.assertEqual(response.status_code, 200)
+        data_users = [
+            {
+                "first_name": self.user.first_name,
+                "last_name": self.user.last_name,
+                "is_superuser": False,
+            }
+        ]
+        self.assertEqual(response.json(), {"viewers": 3, "viewers_list": data_users})
+        print(" --->  test_heartbeat current event superuser : OK !")
+
+        # superUser after call command live_viewcounter
+        call_command("live_viewcounter")
+        response = self.client.get(
+            path=url_with_event,
+            **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"},
+        )
+        self.assertEqual(response.status_code, 200)
+        data_users = [
+            {
+                "first_name": self.user.first_name,
+                "last_name": self.user.last_name,
+                "is_superuser": False,
+            },
+            {
+                "first_name": self.superuser.first_name,
+                "last_name": self.superuser.last_name,
+                "is_superuser": True,
+            },
+        ]
+        self.assertEqual(response.json(), {"viewers": 3, "viewers_list": data_users})
+        print(" --->  test_heartbeat current event superuser after names refresh : OK !")
+
+        # delete expired heartbeats
+        hb_anonymous = HeartBeat.objects.get(viewkey="anonymous_key")
+        hb_logged = HeartBeat.objects.get(viewkey="logged_user_key")
+        # hb3 = HeartBeat.objects.get(viewkey="super_user_key")
+
+        eventOne = Event.objects.get(id=1)
+        self.assertEqual(eventOne.max_viewers, 3)
+        print(" --->  test_heartbeat number of max viewers : OK !")
+
+        self.assertEqual(eventOne.viewers.count(), 2)  # the anonymous in not set
+        print(" --->  test_heartbeat number of logged viewers : OK !")
+
         # make heartbeat expire now
-        hb1.last_heartbeat = paris_tz.localize(datetime(2012, 3, 3, 1, 30))
-        hb1.save()
-        hb2.last_heartbeat = paris_tz.localize(datetime(2012, 3, 3, 1, 30))
-        hb2.save()
+        one_hour_tz = timezone.now() + timezone.timedelta(hours=-1)
+        hb_anonymous.last_heartbeat = one_hour_tz
+        hb_anonymous.save()
+        hb_logged.last_heartbeat = one_hour_tz
+        hb_logged.save()
 
         call_command("live_viewcounter")
 
-        broad = Broadcaster.objects.get(name="broadcaster1")
-        self.assertEqual(broad.viewcount, 0)
+        eventOne = Event.objects.get(id=1)
+        self.assertEqual(eventOne.max_viewers, 3)
+        print(" --->  test_heartbeat number of max viewers after command : OK !")
 
-        print("   --->  test_heartbeat of liveViewsTestCase : OK !")
+        self.assertEqual(eventOne.viewers.count(), 1)  # the anonymous in not set
+        print(" --->  test_heartbeat number of logged viewers after command : OK !")
 
     def test_edit_events(self):
         self.client = Client()
@@ -1542,7 +1556,6 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test test_immediate_event logged event existant OK !")
 
     def test_immediate_event_form_post(self):
-
         self.user = User.objects.get(username="pod")
         self.broadcaster = Broadcaster.objects.get(id=1)
 

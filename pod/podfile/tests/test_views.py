@@ -36,7 +36,6 @@ class FolderViewTestCase(TestCase):
         user2.owner.save()
 
     def test_list_folders(self):
-
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)

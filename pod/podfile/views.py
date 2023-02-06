@@ -279,7 +279,6 @@ def deletefolder(request):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def deletefile(request):
-
     if request.POST.get("id") and request.POST.get("classname"):
         file = get_object_or_404(
             eval(request.POST.get("classname")), id=request.POST.get("id")
@@ -363,7 +362,6 @@ def uploadfiles(request):
 
 
 def save_uploaded_files(request, folder, files):
-
     upload_errors = ""
     for file in files:
         # Check if file is image
@@ -474,7 +472,6 @@ def changefile(request):
 
 # keep it for completion part....
 def file_edit_save(request, folder):
-
     form_file = None
     if request.POST.get("file_id") and request.POST.get("file_id") != "None":
         customfile = get_object_or_404(CustomFileModel, id=request.POST.get("file_id"))

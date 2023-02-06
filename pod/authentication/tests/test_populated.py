@@ -5,6 +5,7 @@ from django.test import TestCase, override_settings
 from pod.authentication.models import Owner, AccessGroup, AFFILIATION_STAFF
 from pod.authentication import populatedCASbackend
 from pod.authentication import shibmiddleware
+from pod.authentication import backends
 from pod.authentication.backends import (
     ShibbBackend,
     OIDCBackend,
@@ -574,6 +575,7 @@ class PopulatedOIDCTestCase(TestCase):
         OIDC_DEFAULT_AFFILIATION=UNSTAFFABLE_AFFILIATION,
     )
     def test_OIDC_commoner_with_default_unstaffable_affiliation(self):
+        backends.OIDC_DEFAULT_AFFILIATION = UNSTAFFABLE_AFFILIATION
         user = OIDCBackend().create_user(
             claims={OIDC_CLAIM_GIVEN_NAME: "John", OIDC_CLAIM_FAMILY_NAME: "Doe"}
         )
@@ -593,15 +595,16 @@ class PopulatedOIDCTestCase(TestCase):
         OIDC_RP_CLIENT_SECRET="YTM0MzIxZTVmMzZmMTdjNzY5NDQyODcw",
         OIDC_OP_TOKEN_ENDPOINT="https://auth.server.com/oauth/token",
         OIDC_OP_USER_ENDPOINT="https://auth.server.com/oauth/userinfo",
-        OIDC_DEFAULT_AFFILIATION=random.choice(AFFILIATION_STAFF),
+        # OIDC_DEFAULT_AFFILIATION=random.choice(AFFILIATION_STAFF),
     )
     def test_OIDC_django_admin_user_with_default_staff_affiliation(self):
+        backends.OIDC_DEFAULT_AFFILIATION = random.choice(AFFILIATION_STAFF)
         user = OIDCBackend().create_user(
             claims={OIDC_CLAIM_GIVEN_NAME: "Jane", OIDC_CLAIM_FAMILY_NAME: "Did"}
         )
         self.assertEqual(user.first_name, "Jane")
         self.assertEqual(user.last_name, "Did")
-        self.assertEqual(user.owner.affiliation, settings.OIDC_DEFAULT_AFFILIATION)
+        self.assertEqual(user.owner.affiliation, backends.OIDC_DEFAULT_AFFILIATION)
         self.assertTrue(
             user.is_staff
         )  # staffable affiliation should give user access to django admin
@@ -618,6 +621,7 @@ class PopulatedOIDCTestCase(TestCase):
         OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES=["specific"],
     )
     def test_OIDC_user_with_default_access_group(self):
+        backends.OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = ["specific"]
         for code_name in settings.OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES + [
             "useless",
             "dull",
@@ -648,6 +652,7 @@ class PopulatedOIDCTestCase(TestCase):
         OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES=["specific", "unique"],
     )
     def test_OIDC_user_with_multiple_default_access_groups(self):
+        backends.OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = ["specific", "unique"]
         for code_name in settings.OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES + ["dull"]:
             AccessGroup.objects.create(
                 code_name=code_name, display_name=f"Access group {code_name}"

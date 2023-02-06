@@ -383,6 +383,36 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 >> __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts__ <br>
 >> __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age__ <br>
 
+ - `BASE_DIR` 
+> default value : os.path.dirname(os.path.dirname(os.path.abspath(__file__))) <br>
+
+>> répertoire de base <br>
+
+ - `CACHES` 
+> default value : {} <br>
+
+>> CACHES = { <br>
+>>     # … default cache config and others <br>
+>>     # "default": { <br>
+>>     #     "BACKEND": "django.core.cache.backends.locmem.LocMemCache", <br>
+>>     # }, <br>
+>>     "default": { <br>
+>>         "BACKEND": "django_redis.cache.RedisCache", <br>
+>>         "LOCATION": "redis://127.0.0.1:6379/1", <br>
+>>         "OPTIONS": { <br>
+>>             "CLIENT_CLASS": "django_redis.client.DefaultClient", <br>
+>>         }, <br>
+>>     }, <br>
+>>     # Persistent cache setup for select2 (NOT DummyCache or LocMemCache). <br>
+>>     "select2": { <br>
+>>         "BACKEND": "django_redis.cache.RedisCache", <br>
+>>         "LOCATION": "redis://127.0.0.1:6379/2", <br>
+>>         "OPTIONS": { <br>
+>>             "CLIENT_CLASS": "django_redis.client.DefaultClient", <br>
+>>         }, <br>
+>>     }, <br>
+>> } <br>
+
  - `CSRF_COOKIE_SECURE` 
 > default value :  not DEBUG <br>
 
@@ -413,6 +443,16 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 >> Ils sont aussi destinataires des courriels de contact si la variable CONTACT_US_EMAIL n'est pas renseignée.<br> <br>
 >> __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#managers__ <br>
 
+ - `PROXY_HOST` 
+> default value :  <br>
+
+>> Utilisation du proxy - host <br>
+
+ - `PROXY_PORT` 
+> default value :  <br>
+
+>> Utilisation du proxy - port <br>
+
  - `SECRET_KEY` 
 > default value : A_CHANGER <br>
 
@@ -431,6 +471,12 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
 >> _Valeur par défaut :  14400 (secondes, soit 4 heures)_<br> <br>
 >> L’âge des cookies de sessions, en secondes. <br>
+
+ - `SESSION_COOKIE_SAMESITE` 
+> default value : Lax <br>
+
+>> Cette option empêche le cookie d’être envoyé dans les requêtes inter-sites, ce qui prévient les attaques CSRF et rend impossible certaines méthodes de vol du cookie de session. <br>
+>> Voir https://docs.djangoproject.com/en/3.2/ref/settings/#std-setting-SESSION_COOKIE_SAMESITE <br>
 
  - `SESSION_COOKIE_SECURE` 
 > default value :  not DEBUG <br>
@@ -481,6 +527,38 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 >>     'affiliate': 1 
 >> } 
 >> ```
+
+ - `ARCHIVE_OWNER_USERNAME` 
+> default value : "archive" <br>
+
+>> Nom de l'utilisateur pour l'archivage des vidéos <br>
+
+ - `POD_ARCHIVE_AFFILIATION` 
+> default value : [] <br>
+
+>> Affiliations pour lesquelles on souhaite archiver la vidéo plutôt que de la supprimer. <br>
+>> Si l'affiliation du propriétaire est dans cette variable, alors les vidéos sont affectées à un utilisateur précis <br>
+>> que l'on peut spécifier via le paramètre ARCHIVE_OWNER_USERNAME. <br>
+>> Elles sont mises en mode brouillon et le mot "archived" est ajouté à leur titre. <br>
+>> Enfin, elles sont également ajoutées à l'ensemble `Vidéo à Supprimer` (accessible via l'interface d'admin). <br>
+>> POD_ARCHIVE_AFFILIATION = ['faculty', <br>
+>>                            'staff', <br>
+>>                            'employee', <br>
+>>                            'affiliate', <br>
+>>                            'alum', <br>
+>>                            'library-walk-in', <br>
+>>                            'researcher', <br>
+>>                            'retired', <br>
+>>                            'emeritus', <br>
+>>                            'teacher', <br>
+>>                            'registered-reader', <br>
+>>                            'member'] <br>
+>> ARCHIVE_OWNER_USERNAME = "archive" <br>
+
+ - `WARN_DEADLINES` 
+> default value : [60, 30, 7] <br>
+
+>> Liste de jour de délais avant l'obsolescence de la vidéo. A chaque délais, le propriétaire recoit un mail d'avertissement pour éventuellement changer la date d'obsolescence de sa vidéo <br>
 
 ### Modèle
 
@@ -557,6 +635,21 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 >> et si la valeur vaut 'False' l'onglet Utilisateur ne sera visible <br>
 >> qu'aux personnes authentifiées. <br>
 >> (par soucis du respect du RGPD) <br>
+
+ - `HOMEPAGE_NB_VIDEOS` 
+> default value : 12 <br>
+
+>> Nombre de vidéos à afficher sur la page d'accueil par défaut, le nombre est fixé à 12 <br>
+
+ - `HOMEPAGE_SHOWS_PASSWORDED` 
+> default value : False <br>
+
+>> Afficher les vidéos dont l'accès est protégé par mot de passe sur la page d'accueil <br>
+
+ - `HOMEPAGE_SHOWS_RESTRICTED` 
+> default value : False <br>
+
+>> Afficher les vidéos dont l'accès est protégé par authentification sur la page d'accueil <br>
 
  - `MENUBAR_HIDE_INACTIVE_OWNERS` 
 > default value : True <br>
@@ -765,6 +858,12 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 >> Type d'authentification possible sur votre instance. <br>
 >>  Choix : local, CAS, OIDC, Shibboleth <br>
 
+ - `CAS_ADMIN_AUTH` 
+> default value : False <br>
+
+>> Pemet d'activer l'authentification CAS pour la partie admin <br>
+>> Voir : https://github.com/kstateome/django-cas <br>
+
  - `CAS_FORCE_LOWERCASE_USERNAME` 
 > default value : False <br>
 
@@ -776,6 +875,11 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
 >> Si True, authentifie automatiquement l'individu <br>
 >> si déjà authentifié sur le serveur CAS <br>
+
+ - `CAS_LOGOUT_COMPLETELY` 
+> default value : True <br>
+
+>> voir https://github.com/kstateome/django-cas <br>
 
  - `CAS_SERVER_URL` 
 > default value : sso_cas <br>
@@ -847,6 +951,17 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 > default value : given_name <br>
 
 >> Noms des Claim permettant de récupérer les attributs nom, prénom, email <br>
+
+ - `OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES` 
+> default value : [] <br>
+
+>> Groupes d'accès attribués par défaut à un nouvel utilisateur authentifié par OIDC <br>
+
+ - `OIDC_DEFAULT_AFFILIATION` 
+> default value :  <br>
+
+>> Affiliation par défaut d'un utilisateur authentifié par OIDC. <br>
+>> Ce contenu sera comparé à la liste AFFILIATION_STAFF pour déterminer si l'utilisateur doit être admin django <br>
 
  - `OIDC_NAME` 
 > default value :  <br>
@@ -1096,7 +1211,29 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
 >> Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - A retirer dans les futures versions de Pod <br>
 
+ - `VIEW_EXPIRATION_DELAY` 
+> default value : 60 <br>
+
+>> Délai (en seconde) selon lequel une vue est considérée comme expirée si elle n'as pas renvoyé de signal depuis <br>
+
 ### Configuration application LTI
+
+ - `LTI_ENABLED` 
+> default value : False <br>
+
+>> Configuration / Activation du LTI voir pod/main/settings.py L.224 <br>
+
+ - `PYLTI_CONFIG` 
+> default value : {} <br>
+
+>> cette varaible permet de configurer l'application cliente et le secret partagé <br>
+>> PYLTI_CONFIG = { <br>
+>>     'consumers': { <br>
+>>         '<random number string>': { <br>
+>>             'secret': '<random number string>' <br>
+>>         } <br>
+>>     } <br>
+>> } <br>
 
 ### Configuration application main
 
@@ -1349,6 +1486,26 @@ BBB_API_URL et BBB_SECRET_KEY sont obligatoires pour faire fonctionner l'applica
 >> L'exemple suivant comporte l'ensemble des champs possibles, mais peut être allégée en fonction des besoins. <br>
 >> Les vidéos seront alors générées avec les valeurs des champs supplémentaires telles que définies dans leur enregistreur. <br>
 
+ - `RECORDER_ALLOW_INSECURE_REQUESTS` 
+> default value : False <br>
+
+>> Autorise la requête sur l'application en elle-même sans vérifier le certificat SSL <br>
+
+ - `RECORDER_BASE_URL` 
+> default value : https://pod.univ.fr <br>
+
+>> url racine de l'instance permettant l'envoi de notification lors de la réception d'enregistrement <br>
+
+ - `RECORDER_SELF_REQUESTS_PROXIES` 
+> default value : {"http": None, "https": None} <br>
+
+>> Précise les proxy à utiliser pour une requête vers l'application elle même dans le cadre d'enregistrement par défaut force la non utilisation de proxy <br>
+
+ - `RECORDER_SKIP_FIRST_IMAGE` 
+> default value : False <br>
+
+>> Si True, permet de ne pas prendre en compte la 1° image lors du traitement d'un fichier d'enregistrement de type AudioVideoCast. <br>
+
  - `RECORDER_TYPE` 
 > default value : (('video', _('Video')), ('audiovideocast', _('Audiovideocast')), ('studio', _('Studio'))) <br>
 
@@ -1372,6 +1529,11 @@ BBB_API_URL et BBB_SECRET_KEY sont obligatoires pour faire fonctionner l'applica
 > default value : True <br>
 
 >> Activer les commentaires au niveau de la plateforme <br>
+
+ - `CELERY_BROKER_URL` 
+> default value : amqp://pod:xxx@localhost/rabbitpod <br>
+
+>> Utilisation de Celery pour la gestion des taches d'encodage <br>
 
  - `CELERY_TO_ENCODE` 
 > default value : False <br>
@@ -1446,6 +1608,11 @@ BBB_API_URL et BBB_SECRET_KEY sont obligatoires pour faire fonctionner l'applica
 
 >> Si True, un courriel est envoyé aux managers et à l'auteur (si DEBUG est à False) à la fin de l'encodage/transcription <br>
 
+ - `ENCODE_STUDIO` 
+> default value : start_encode_studio <br>
+
+>> Fonction appelée pour lancer l'encodage du studio (merge and cut) <br>
+
  - `ENCODE_VIDEO` 
 > default value : start_encode <br>
 
@@ -1465,6 +1632,11 @@ BBB_API_URL et BBB_SECRET_KEY sont obligatoires pour faire fonctionner l'applica
 >>     ("playlist", "playlist") 
 >> ) 
 >> ```
+
+ - `FORCE_LOWERCASE_TAGS` 
+> default value : True <br>
+
+>> Les mots clés saisis lors de l'ajout de vidéo sont convertis automatiquement en minuscule <br>
 
  - `FORMAT_CHOICES` 
 > default value : () <br>
@@ -1516,6 +1688,11 @@ BBB_API_URL et BBB_SECRET_KEY sont obligatoires pour faire fonctionner l'applica
 
 >> Fixe une durée maximale que la date de suppression d'une vidéo ne peut dépasser. <br>
 >> Par défaut : 10 (Année courante + 10 ans). <br>
+
+ - `MAX_TAG_LENGTH` 
+> default value : 50 <br>
+
+>> Les mots clés saisis lors de l'ajout de vidéo ne peuvent dépasser la longueur saisie <br>
 
  - `NOTES_STATUS` 
 > default value : () <br>

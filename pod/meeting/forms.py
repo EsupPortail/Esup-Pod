@@ -298,7 +298,6 @@ class MeetingForm(forms.ModelForm):
             )
 
     def __init__(self, *args, **kwargs):
-
         self.is_staff = (
             kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
         )

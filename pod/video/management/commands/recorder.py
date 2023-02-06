@@ -52,7 +52,7 @@ LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
 DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/")
 
 # Site address
-BASE_URL = getattr(settings, "BASE_URL", "https://pod.univ.fr")
+RECORDER_BASE_URL = getattr(settings, "RECORDER_BASE_URL", "https://pod.univ.fr")
 
 VIDEO_ALLOWED_EXTENSIONS = getattr(
     settings,
@@ -87,15 +87,17 @@ ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
 # Debug mode (0: False, 1: True)
 DEBUG = getattr(settings, "DEBUG", False)
 
-SELF_REQUESTS_PROXIES = getattr(
+RECORDER_SELF_REQUESTS_PROXIES = getattr(
     settings,
-    "SELF_REQUESTS_PROXIES",
+    "RECORDER_SELF_REQUESTS_PROXIES",
     {
         "http": None,
         "https": None,
     },
 )
-ALLOW_INSECURE_REQUESTS = getattr(settings, "ALLOW_INSECURE_REQUESTS", False)
+RECORDER_ALLOW_INSECURE_REQUESTS = getattr(
+    settings, "RECORDER_ALLOW_INSECURE_REQUESTS", False
+)
 
 # Encode video
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
@@ -167,7 +169,7 @@ def case_manager_exist(
     recorder_notify = reverse("record:recorder_notify")
     urlNotify = "".join(
         [
-            BASE_URL,
+            RECORDER_BASE_URL,
             recorder_notify,
             "?recordingPlace="
             + recorder.ipunder()
@@ -185,16 +187,18 @@ def case_manager_exist(
     )
     # Make a request on this URL
     try:
-        request = requests.get(urlNotify, proxies=SELF_REQUESTS_PROXIES)
+        request = requests.get(urlNotify, proxies=RECORDER_SELF_REQUESTS_PROXIES)
     except Exception:
-        if ALLOW_INSECURE_REQUESTS:
-            request = requests.get(urlNotify, proxies=SELF_REQUESTS_PROXIES, verify=False)
+        if RECORDER_ALLOW_INSECURE_REQUESTS:
+            request = requests.get(
+                urlNotify, proxies=RECORDER_SELF_REQUESTS_PROXIES, verify=False
+            )
         else:
             certif_err = (
                 "The request on recorder_notfy cannot be complete."
                 "It may be a certificate issue. If you want to ignore"
                 "the verification of the SSl certificate set"
-                "ALLOW_INSECURE_REQUESTS to True"
+                "RECORDER_ALLOW_INSECURE_REQUESTS to True"
             )
             message_error += certif_err
             print_if_debug(certif_err)
@@ -545,11 +549,9 @@ class Command(BaseCommand):
         parser.add_argument("task")
 
     def handle(self, *args, **options):
-
         # Activate a fixed locale fr
         translation.activate(LANGUAGE_CODE)
         if options["task"] and options["task"] in self.valid_args:
-
             html_message_error = ""
             message_error = ""
             # Path the tree

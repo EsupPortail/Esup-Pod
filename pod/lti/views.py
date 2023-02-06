@@ -15,7 +15,6 @@ from pod.video.models import Video
 
 @method_decorator([csrf_exempt], name="dispatch")
 class LTIAssignmentAddVideoView(LTIAuthMixin, LoginRequiredMixin, TemplateView):
-
     redirect_field_name = "referrer"
     template_name = "lti_provider/assignment.html"
 
@@ -35,7 +34,6 @@ class LTIAssignmentAddVideoView(LTIAuthMixin, LoginRequiredMixin, TemplateView):
 
 @method_decorator([csrf_exempt], name="dispatch")
 class LTIAssignmentGetVideoView(LTIAuthMixin, LoginRequiredMixin, TemplateView):
-
     redirect_field_name = "referrer"
     template_name = "lti_provider/assignment.html"
 

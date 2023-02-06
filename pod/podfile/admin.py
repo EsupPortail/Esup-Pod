@@ -49,7 +49,6 @@ admin.site.register(UserFolder, UserFolderAdmin)
 
 
 class CustomImageModelAdmin(admin.ModelAdmin):
-
     list_display = (
         "name",
         "file_type",
@@ -90,7 +89,6 @@ admin.site.register(CustomImageModel, CustomImageModelAdmin)
 
 
 class CustomFileModelAdmin(admin.ModelAdmin):
-
     list_display = (
         "name",
         "file_type",
