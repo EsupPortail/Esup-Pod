@@ -20,13 +20,11 @@ ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
 
 
 class ObsolescenceTestCase(TestCase):
-
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
-
         site = Site.objects.get(id=1)
         user = User.objects.create(
             username="pod", password="pod1234pod", email="pod@univ.fr"

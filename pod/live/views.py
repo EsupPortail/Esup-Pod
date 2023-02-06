@@ -314,7 +314,6 @@ def render_event_template(request, evemnt, user_owns_event):
 
 
 def events(request):  # affichage des events
-
     # Tous les events à venir (sauf les drafts sont affichés)
     queryset = Event.objects.filter(end_date__gt=timezone.now(), is_draft=False)
     events_list = queryset.all().order_by("start_date", "end_date")

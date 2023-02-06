@@ -343,7 +343,6 @@ def deletefile(request):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def uploadfiles(request):
-
     if request.POST.get("folderid") and request.POST.get("folderid") != "":
         folder = get_object_or_404(UserFolder, id=request.POST["folderid"])
         if request.user != folder.owner and not (

@@ -21,7 +21,6 @@ class EnrichmentInline(admin.TabularInline):
 
 
 class EnrichmentAdmin(admin.ModelAdmin):
-
     form = EnrichmentAdminForm
     list_display = (
         "title",
@@ -92,7 +91,6 @@ class EnrichmentGroupAdmin(admin.ModelAdmin):
 
 
 class EnrichmentVttAdmin(admin.ModelAdmin):
-
     form = EnrichmentVttAdminForm
     list_display = ("video", "src", "get_file_name")
     readonly_fields = ("video",)

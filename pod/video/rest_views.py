@@ -372,7 +372,6 @@ class XmlTextRenderer(renderers.BaseRenderer):
 
 
 class DublinCoreView(APIView):
-
     # authentication_classes = [authentication.TokenAuthentication]
     renderer_classes = (XmlTextRenderer,)
     pagination_class = "rest_framework.pagination.PageNumberPagination"
