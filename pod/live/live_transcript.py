@@ -24,7 +24,7 @@ def timestring(seconds):
     return "%i:%02i:%06.3f" % (hours, minutes, seconds)
 
 
-def transcribe(url, slug, model):
+def transcribe(url, slug, model):  # noqa: C901
     filename = slug + ".vtt"
     save_path = os.path.join(TRANSCRIPTIONS_FOLDER, filename)
     url = url.split('.m3u8')[0] + "_low/index.m3u8"
