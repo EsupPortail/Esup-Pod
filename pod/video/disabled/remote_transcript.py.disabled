@@ -68,7 +68,6 @@ def remote_transcript_video(video_id):
     )
 
     if mp3file and check_file(mp3file.path):
-
         # launch remote transcoding
         cmd = "{remote_cmd} \
             -n transcoding-{video_id} -i {video_input} \

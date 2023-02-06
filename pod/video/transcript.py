@@ -430,6 +430,7 @@ def main_stt_transcript(norm_mp3_file, duration, transript_model):
 
     all_text = ""
 
+
     for start_trim in range(0, duration, TRANSCRIPTION_AUDIO_SPLIT_TIME):
         end_trim = (
             duration
