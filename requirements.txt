@@ -32,3 +32,4 @@ mozilla_django_oidc==3.0.0
 ics==0.7.2
 django-honeypot==1.0.3
 qrcode
+ralph-malph==3.3.0

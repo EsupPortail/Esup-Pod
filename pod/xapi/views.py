@@ -7,9 +7,14 @@ from .tasks import send_xapi_statement_task
 import json
 import uuid
 
+from ralph.models.xapi.fields.actors import AccountActorField
+from ralph.models.xapi.video.statements import VideoPlayed
+from ralph.models.selector import ModelSelector
+from ralph.models.validator import Validator
+
 """
 To use Ralph :
-pip3 install ralph-malph==3.2.1
+pip3 install ralph-malph==3.3.0
 from ralph.models.xapi.fields.actors import AccountActorField
 from ralph.models.xapi.video.statements import VideoPlayed
 actor = AccountActorField(
@@ -44,8 +49,7 @@ def statement(request, app: str = None):
         }
         for key, value in body.items():
             statement[key] = value
-        # send statement via celery
-        if XAPI_LRS_URL != "":
+        if validate_statement(statement) and XAPI_LRS_URL != "":
             send_xapi_statement_task.delay(statement)
         return JsonResponse(statement, safe=False)
     raise SuspiciousOperation(
@@ -64,3 +68,27 @@ def get_actor_name(request):
             request.session.save()
         name = request.session.session_key
     return name
+
+
+def validate_statement(statement):
+    try:
+        validator = Validator(ModelSelector("ralph.models.xapi"))
+        ## Merge into one dict (compatible python3.7) 
+        """
+        request = {**{"actor": actor_dict}, **request_post}
+        
+        actor = AccountActorField(
+            objectType = "Agent",
+            account={
+                "homePage": request.get_host(),
+                "name": get_actor_name(request)
+            },
+        )
+        print(actor)
+        """
+        ## Get the corresponding xAPI model and validate request
+        event1 = validator.get_first_valid_model(statement)
+        return True
+    except Exception as e:
+        print(e)
+        return False

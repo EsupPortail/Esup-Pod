@@ -4,18 +4,19 @@
     const endpoint = "{% url "xapi:statement" app="video" %}";
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     const session_id = create_UUID();
-    let registration, timestamp, action = "";
+    let registration, action = "";
     const progress = [];
-    let result, context = {}
-    const object = {
+    object = {
         "definition": {
             "type": "https://w3id.org/xapi/video/activity-type/video",
             "name": {
                 "{{video.main_lang}}": "{{video.slug|addslashes}}"
             },
+            {% if video.description|addslashes != "" %}
             "description": {
                 "{{video.main_lang}}": "{{video.description|addslashes}}"
             }
+            {% endif %}
         },
         "id": "{% if request.is_secure %}https:{% else %}http:{% endif %}{{video.get_full_url}}",
         "objectType": "Activity"
@@ -258,6 +259,7 @@
             },
             "registration": registration
         }
+        result = {}
         active_statement();
     });
 
