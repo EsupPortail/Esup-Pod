@@ -74,6 +74,8 @@ class BroadcasterAdmin(admin.ModelAdmin):
         "is_recording_admin",
         "is_restricted",
         "piloting_conf",
+        "main_lang"
+        
     )
     list_filter = ["building"]
 
@@ -94,6 +96,8 @@ class BroadcasterAdmin(admin.ModelAdmin):
             "piloting_implementation",
             "piloting_conf",
             "slug",
+            "main_lang"
+            
         )
         if obj is None:
             return fields
