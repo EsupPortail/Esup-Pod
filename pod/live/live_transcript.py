@@ -7,11 +7,11 @@ import threading
 import time
 import json
 import subprocess
+SAMPLE_RATE = 16000
+LIVE_CELERY_TRANSCRTION = getattr(settings, "LIVE_CELERY_TRANSCRTION", False)
+LIVE_VOSK_MODEL = getattr(settings, "LIVE_VOSK_MODEL", None)
 
-CELERY_TO_TRANSCRIBE_LIVE = getattr(settings, "CELERY_TO_TRANSCRIBE_LIVE", False)
-VOSK_MODEL = getattr(settings, "LIVE_TRANSCRIPTION_MODEL", None)
-
-TRANSCRIPTIONS_FOLDER = getattr(settings, "TRANSCRIPTIONS_FOLDER", None)
+LIVE_TRANSCRIPTIONS_FOLDER = getattr(settings, "LIVE_TRANSCRIPTIONS_FOLDER", "live_transcriptions")
 threads = {}
 threads_to_stop = []
 
@@ -26,20 +26,18 @@ def timestring(seconds):
 
 def transcribe(url, slug, model):  # noqa: C901
     filename = slug + ".vtt"
-    save_path = os.path.join(TRANSCRIPTIONS_FOLDER, filename)
+    save_path = os.path.join(LIVE_TRANSCRIPTIONS_FOLDER, filename)
     url = url.split('.m3u8')[0] + "_low/index.m3u8"
-    SAMPLE_RATE = 16000
     SetLogLevel(-1)
     trans_model = Model(model)
     rec = KaldiRecognizer(trans_model, SAMPLE_RATE)
     rec.SetWords(True)
     last_caption = None
     thread_id = threading.get_ident()
-    while CELERY_TO_TRANSCRIBE_LIVE or thread_id not in threads_to_stop:
+    while LIVE_CELERY_TRANSCRTION or thread_id not in threads_to_stop:
         start = time.time()
         command = ["ffmpeg", "-y", "-loglevel", "quiet", "-i", url, "-ss", "00:00:00.005", "-t",
                    "00:00:05", "-acodec", "pcm_s16le", "-ac", "1", "-ar", str(SAMPLE_RATE), "-f", "s16le", "-"]
-
         with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
             results = []
             data = process.stdout.read(4000)
@@ -50,18 +48,14 @@ def transcribe(url, slug, model):  # noqa: C901
                     data = process.stdout.read(4000)
                 if rec.AcceptWaveform(data):
                     results.append(rec.Result())
-
             results.append(rec.FinalResult())
-
             vtt = WebVTT()
             caption_text = ""
             for _, res in enumerate(results):
                 words = json.loads(res).get("result")
                 if not words:
                     continue
-
                 # start = timestring(words[0]["start"])
-
                 # end = timestring(words[-1]["end"])
                 content = " ".join([w["word"] for w in words])
                 caption_text += content + " "
@@ -103,9 +97,9 @@ def transcribe(url, slug, model):  # noqa: C901
 
 def transcribe_live(url, slug, status, lang):
     # print(lang)
-    if VOSK_MODEL and VOSK_MODEL.get(lang):
-        model = VOSK_MODEL.get(lang).get("model")
-        if CELERY_TO_TRANSCRIBE_LIVE:
+    if LIVE_VOSK_MODEL and LIVE_VOSK_MODEL.get(lang):
+        model = LIVE_VOSK_MODEL.get(lang).get("model")
+        if LIVE_CELERY_TRANSCRTION:
             if status:
                 task_start_live_transcription.delay(url, slug, model)
             else:

@@ -1,5 +1,5 @@
 from celery import shared_task
-from pod.live.models import RunningTask, Broadcaster
+from pod.live.models import LiveTranscriptRunningTask, Broadcaster
 
 
 @shared_task(bind=True)
@@ -41,7 +41,7 @@ def task_start_live_transcription(self, url, slug, model):
     print("CELERY START LIVE TRANSCRIPTION %s" % slug)
     from pod.live.live_transcript import transcribe
     broadcaster = Broadcaster.objects.get(slug=slug)
-    running_task = RunningTask.objects.create(
+    running_task = LiveTranscriptRunningTask.objects.create(
         broadcaster=broadcaster, task_id=self.request.id
     )
     running_task.save()
@@ -52,7 +52,7 @@ def task_start_live_transcription(self, url, slug, model):
 def task_end_live_transcription(self, slug):
     print("CELERY END LIVE TRANSCRIPTION %s" % slug)
     broadcaster = Broadcaster.objects.get(slug=slug)
-    running_task = RunningTask.objects.get(broadcaster=broadcaster)
+    running_task = LiveTranscriptRunningTask.objects.get(broadcaster=broadcaster)
     if running_task:
         self.app.control.revoke(running_task.task_id, terminate=True)
         running_task.delete()

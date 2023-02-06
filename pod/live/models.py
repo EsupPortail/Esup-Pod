@@ -24,7 +24,8 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from sorl.thumbnail import get_thumbnail
-from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
+from pod.main.lang_settings import ALL_LANG_CHOICES as ALL_LANG_CHOICES
+from pod.main.lang_settings import PREF_LANG_CHOICES as PREF_LANG_CHOICES
 from django.utils.translation import get_language
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
@@ -563,7 +564,7 @@ class Event(models.Model):
             return False
 
 
-class RunningTask(models.Model):
+class LiveTranscriptRunningTask(models.Model):
     task_id = models.CharField(max_length=255, unique=True)
     broadcaster = models.ForeignKey(
         Broadcaster,

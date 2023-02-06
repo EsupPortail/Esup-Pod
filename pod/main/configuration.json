@@ -916,7 +916,7 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
-                        "CELERY_TO_TRANSCRIBE_LIVE": {
+                        "LIVE_CELERY_TRANSCRTION": {
                             "default_value": false,
                             "description": {
                                 "en": [
@@ -1045,7 +1045,7 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
-                        "LIVE_TRANSCRIPTION_MODEL": {
+                        "LIVE_VOSK_MODEL": {
                             "default_value": "{}",
                             "description": {
                                 "en": [
@@ -1057,7 +1057,7 @@
                                     "La documentation sera présente prochaînement",
                                     "Pour télécharger les Modèles Vosk : https://alphacephei.com/vosk/models",
                                     "```",
-                                    "LIVE_TRANSCRIPTION_MODEL = {",
+                                    "LIVE_VOSK_MODEL = {",
                                     "   'fr': {",
                                     "       'model': \"/path/of/project/django_projects/transcription/live/fr/vosk-model-small-fr-0.22\",",
                                     "    }",
