@@ -8,7 +8,7 @@ import time
 import json
 import subprocess
 SAMPLE_RATE = 16000
-LIVE_CELERY_TRANSCRTION = getattr(settings, "LIVE_CELERY_TRANSCRTION", False)
+LIVE_CELERY_TRANSCRIPTION = getattr(settings, "LIVE_CELERY_TRANSCRIPTION ", False)
 LIVE_VOSK_MODEL = getattr(settings, "LIVE_VOSK_MODEL", None)
 
 LIVE_TRANSCRIPTIONS_FOLDER = getattr(settings, "LIVE_TRANSCRIPTIONS_FOLDER", "live_transcriptions")
@@ -34,7 +34,7 @@ def transcribe(url, slug, model):  # noqa: C901
     rec.SetWords(True)
     last_caption = None
     thread_id = threading.get_ident()
-    while LIVE_CELERY_TRANSCRTION or thread_id not in threads_to_stop:
+    while LIVE_CELERY_TRANSCRIPTION or thread_id not in threads_to_stop:
         start = time.time()
         command = ["ffmpeg", "-y", "-loglevel", "quiet", "-i", url, "-ss", "00:00:00.005", "-t",
                    "00:00:05", "-acodec", "pcm_s16le", "-ac", "1", "-ar", str(SAMPLE_RATE), "-f", "s16le", "-"]
@@ -83,7 +83,7 @@ def transcribe(url, slug, model):  # noqa: C901
                 caption = Caption(current_start, current_end,
                                   caption_text)
                 last_caption = caption
-                # print(caption_text)
+                print(caption_text)
                 vtt.captions.append(caption)
                 # save or return webvtt
                 vtt.save(save_path)
@@ -91,15 +91,14 @@ def transcribe(url, slug, model):  # noqa: C901
         now = time.time() - start
         if now < 5:
             time.sleep(5 - now)
-    # print("stopped transcription")
+    print("stopped transcription")
     threads_to_stop.remove(thread_id)
 
 
 def transcribe_live(url, slug, status, lang):
-    # print(lang)
     if LIVE_VOSK_MODEL and LIVE_VOSK_MODEL.get(lang):
         model = LIVE_VOSK_MODEL.get(lang).get("model")
-        if LIVE_CELERY_TRANSCRTION:
+        if LIVE_CELERY_TRANSCRIPTION:
             if status:
                 task_start_live_transcription.delay(url, slug, model)
             else:
