@@ -94,6 +94,7 @@ class BroadcasterTestCase(TestCase):
             is_restricted=True,
             building=building,
             public=False,
+            main_lang="fr",
         )
         # Test with a video on hold
         video_on_hold = Video.objects.create(
@@ -110,6 +111,7 @@ class BroadcasterTestCase(TestCase):
             is_restricted=False,
             video_on_hold=video_on_hold,
             building=building,
+            main_lang="en",
         )
         print(" --->  SetUp of BroadcasterTestCase : OK !")
 
@@ -139,10 +141,11 @@ class BroadcasterTestCase(TestCase):
         self.assertNotIn(empty_qrcode, broadcaster.qrcode)
         none_qrcode = '"data:image/png;base64, None"'
         self.assertNotIn(none_qrcode, broadcaster.qrcode)
+        self.assertEqual(broadcaster.main_lang, "fr")
         broadcaster2 = Broadcaster.objects.get(id=2)
         self.assertEqual(broadcaster2.video_on_hold.id, 1)
         print("   --->  test_attributs of BroadcasterTestCase : OK !")
-
+        self.assertEqual(broadcaster2.main_lang, "en")
     """
         test delete object
     """
