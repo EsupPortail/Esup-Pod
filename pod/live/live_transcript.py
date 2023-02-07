@@ -11,7 +11,7 @@ import subprocess
 LIVE_CELERY_TRANSCRIPTION = getattr(settings, "LIVE_CELERY_TRANSCRIPTION ", False)
 LIVE_VOSK_MODEL = getattr(settings, "LIVE_VOSK_MODEL", None)
 LIVE_TRANSCRIPTIONS_FOLDER = getattr(
-    settings, "LIVE_TRANSCRIPTIONS_FOLDER", "transcripts")
+    settings, "LIVE_TRANSCRIPTIONS_FOLDER", "live_transcripts")
 MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", None)
 __SAMPLE_RATE__ = 16000
 threads = {}
