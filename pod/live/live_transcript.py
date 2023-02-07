@@ -85,7 +85,7 @@ def transcribe(url, slug, model):  # noqa: C901
                 caption = Caption(current_start, current_end,
                                   caption_text)
                 last_caption = caption
-                #print(caption_text)
+                # print(caption_text)
                 vtt.captions.append(caption)
                 # save or return webvtt
                 vtt.save(save_path)
@@ -93,7 +93,7 @@ def transcribe(url, slug, model):  # noqa: C901
         now = time.time() - start
         if now < 5:
             time.sleep(5 - now)
-    #print("stopped transcription")
+    # print("stopped transcription")
     threads_to_stop.remove(thread_id)
 
 

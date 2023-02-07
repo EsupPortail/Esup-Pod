@@ -2,6 +2,7 @@
 import base64
 import hashlib
 import io
+import os
 
 import qrcode
 
@@ -212,7 +213,11 @@ class Broadcaster(models.Model):
     )
 
     def get_transcription_file(self):
-        return urljoin(MEDIA_URL, LIVE_TRANSCRIPTIONS_FOLDER + "/" + self.slug + ".vtt")
+        filename = self.slug + ".vtt"
+        path = os.path.join(LIVE_TRANSCRIPTIONS_FOLDER, filename)
+        url = urljoin(settings.MEDIA_URL, path)
+        url = url.replace("\\", "/")
+        return url
 
     def get_absolute_url(self):
         return reverse("live:direct", args=[str(self.slug)])
