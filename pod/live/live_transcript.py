@@ -1,9 +1,7 @@
-import os
 from django.conf import settings
 from vosk import Model, KaldiRecognizer, SetLogLevel
 from webvtt import WebVTT, Caption
 from pod.main.tasks import task_end_live_transcription, task_start_live_transcription
-from pod.live.models import Broadcaster
 import threading
 import time
 import json
@@ -11,9 +9,6 @@ import subprocess
 
 LIVE_CELERY_TRANSCRIPTION = getattr(settings, "LIVE_CELERY_TRANSCRIPTION ", False)
 LIVE_VOSK_MODEL = getattr(settings, "LIVE_VOSK_MODEL", None)
-LIVE_TRANSCRIPTIONS_FOLDER = getattr(
-    settings, "LIVE_TRANSCRIPTIONS_FOLDER", "live_transcripts")
-MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", None)
 __SAMPLE_RATE__ = 16000
 threads = {}
 threads_to_stop = []
@@ -28,23 +23,7 @@ def timestring(seconds):
     return "%i:%02i:%06.3f" % (hours, minutes, seconds)
 
 
-def set_broadcaster_file(slug, filename):
-    broadcaster = Broadcaster.objects.get(slug=slug)
-    trans_folder = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER)
-    trans_file = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER, filename)
-    if not os.path.exists(trans_folder):
-        os.makedirs(trans_folder)
-    if not os.path.exists(trans_file):
-        open(trans_file, 'a').close()
-    broadcaster.transcription_file = os.path.join(LIVE_TRANSCRIPTIONS_FOLDER, filename)
-    broadcaster.save()
-    return broadcaster
-
-
-def transcribe(url, slug, model):  # noqa: C901
-    filename = slug + ".vtt"
-    broadcaster = set_broadcaster_file(slug, filename)
-    save_path = broadcaster.transcription_file.path
+def transcribe(url, slug, model, filepath):  # noqa: C901
     url = url.split('.m3u8')[0] + "_low/index.m3u8"
     trans_model = Model(model)
     rec = KaldiRecognizer(trans_model, __SAMPLE_RATE__)
@@ -103,7 +82,7 @@ def transcribe(url, slug, model):  # noqa: C901
                 # print(caption_text)
                 vtt.captions.append(caption)
                 # save or return webvtt
-                vtt.save(save_path)
+                vtt.save(filepath)
 
         now = time.time() - start
         if now < 5:
@@ -112,19 +91,19 @@ def transcribe(url, slug, model):  # noqa: C901
     threads_to_stop.remove(thread_id)
 
 
-def transcribe_live(url, slug, status, lang):
+def transcribe_live(url, slug, status, lang, filepath):
     if LIVE_VOSK_MODEL and LIVE_VOSK_MODEL.get(lang):
         model = LIVE_VOSK_MODEL.get(lang).get("model")
         if LIVE_CELERY_TRANSCRIPTION:
             if status:
-                task_start_live_transcription.delay(url, slug, model)
+                task_start_live_transcription.delay(url, slug, model, filepath)
             else:
                 task_end_live_transcription.delay(slug)
         else:
             if status:
                 # print("main process")
                 t = threading.Thread(target=transcribe, args=(
-                    url, slug, model))
+                    url, slug, model, filepath))
                 t.setDaemon(True)
                 t.start()
                 # get id of the thread
