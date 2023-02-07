@@ -69,7 +69,7 @@
                                controls height="360" muted autoplay>
                             <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
                             {% if event.broadcaster.status and event.enable_transcription %}
-                              <track kind="captions" src="{{ event.broadcaster.get_transcription_file }}?d={% now "U" %}" srclang="{{event.broadcaster.main_lang}}">
+                              <track kind="captions" src="{{ event.broadcaster.get_transcription_file_url }}?d={% now "U" %}" srclang="{{event.broadcaster.main_lang}}">
                             {% endif %}
                         </video>
                     </div>
@@ -178,7 +178,7 @@
             var track = tracks[i];
             if (track.kind === "captions") {
                 let current_mod = null
-                let vtt_url ="{{ event.broadcaster.get_transcription_file }}?d={% now "U" %}"
+                let vtt_url ="{{ event.broadcaster.get_transcription_file_url }}?d={% now "U" %}"
                 fetch(vtt_url).then(r => {
                   current_mod = r.headers.get('Last-Modified');
                   if (lastMod && current_mod && lastMod === current_mod){
