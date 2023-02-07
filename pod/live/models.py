@@ -2,8 +2,6 @@
 import base64
 import hashlib
 import io
-import os
-
 import qrcode
 
 from ckeditor.fields import RichTextField
@@ -31,7 +29,6 @@ from django.utils.translation import get_language
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 from pod.video.models import Video, Type
-from urllib.parse import urljoin
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
