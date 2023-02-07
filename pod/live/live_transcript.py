@@ -10,10 +10,13 @@ import subprocess
 
 LIVE_CELERY_TRANSCRIPTION = getattr(settings, "LIVE_CELERY_TRANSCRIPTION ", False)
 LIVE_VOSK_MODEL = getattr(settings, "LIVE_VOSK_MODEL", None)
-LIVE_TRANSCRIPTIONS_FOLDER = getattr(settings, "LIVE_TRANSCRIPTIONS_FOLDER", "live_transcriptions")
+LIVE_TRANSCRIPTIONS_FOLDER = getattr(
+    settings, "LIVE_TRANSCRIPTIONS_FOLDER", "transcripts")
+MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", None)
 __SAMPLE_RATE__ = 16000
 threads = {}
 threads_to_stop = []
+SetLogLevel(-1)
 
 
 def timestring(seconds):
@@ -26,7 +29,7 @@ def timestring(seconds):
 
 def transcribe(url, slug, model):  # noqa: C901
     filename = slug + ".vtt"
-    save_path = os.path.join(LIVE_TRANSCRIPTIONS_FOLDER, filename)
+    save_path = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER, filename)
     url = url.split('.m3u8')[0] + "_low/index.m3u8"
     trans_model = Model(model)
     rec = KaldiRecognizer(trans_model, __SAMPLE_RATE__)
@@ -82,7 +85,7 @@ def transcribe(url, slug, model):  # noqa: C901
                 caption = Caption(current_start, current_end,
                                   caption_text)
                 last_caption = caption
-                print(caption_text)
+                #print(caption_text)
                 vtt.captions.append(caption)
                 # save or return webvtt
                 vtt.save(save_path)
@@ -90,7 +93,7 @@ def transcribe(url, slug, model):  # noqa: C901
         now = time.time() - start
         if now < 5:
             time.sleep(5 - now)
-    print("stopped transcription")
+    #print("stopped transcription")
     threads_to_stop.remove(thread_id)
 
 

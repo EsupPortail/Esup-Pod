@@ -1076,7 +1076,7 @@
                                 ],
                                 "fr": [
                                     "",
-                                    "Chemin absolut pour acceder aux modèles  (utilisé uniquement par le script de transcription)."
+                                    "Dossier contenat les fichiers de sous-titre au format vtt pour les directs"
                                 ]
                             },
                             "pod_version_end": "",

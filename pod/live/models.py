@@ -30,6 +30,7 @@ from django.utils.translation import get_language
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 from pod.video.models import Video, Type
+from urllib.parse import urljoin
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
@@ -51,6 +52,8 @@ SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 LANG_CHOICES = getattr(settings, "LANG_CHOICES", ((
     " ", __PREF_LANG_CHOICES__), ("----------", __ALL_LANG_CHOICES__)), )
 MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
+LIVE_TRANSCRIPTIONS_FOLDER = getattr(
+    settings, "LIVE_TRANSCRIPTIONS_FOLDER", "transcripts")
 
 
 class Building(models.Model):
@@ -209,7 +212,7 @@ class Broadcaster(models.Model):
     )
 
     def get_transcription_file(self):
-        return MEDIA_URL + "transcripts/" + self.slug + ".vtt"
+        return urljoin(MEDIA_URL, LIVE_TRANSCRIPTIONS_FOLDER + "/" + self.slug + ".vtt")
 
     def get_absolute_url(self):
         return reverse("live:direct", args=[str(self.slug)])
