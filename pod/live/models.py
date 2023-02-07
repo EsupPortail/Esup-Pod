@@ -212,7 +212,7 @@ class Broadcaster(models.Model):
         help_text=_("Select the main language used in the content."),
     )
 
-    def get_transcription_file(self):
+    def get_transcription_file_url(self):
         filename = self.slug + ".vtt"
         path = os.path.join(LIVE_TRANSCRIPTIONS_FOLDER, filename)
         url = urljoin(settings.MEDIA_URL, path)
