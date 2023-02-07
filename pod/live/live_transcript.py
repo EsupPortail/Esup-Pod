@@ -28,7 +28,6 @@ def transcribe(url, slug, model):  # noqa: C901
     filename = slug + ".vtt"
     save_path = os.path.join(LIVE_TRANSCRIPTIONS_FOLDER, filename)
     url = url.split('.m3u8')[0] + "_low/index.m3u8"
-    SetLogLevel(-1)
     trans_model = Model(model)
     rec = KaldiRecognizer(trans_model, __SAMPLE_RATE__)
     rec.SetWords(True)
