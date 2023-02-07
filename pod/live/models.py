@@ -211,14 +211,11 @@ class Broadcaster(models.Model):
         default=get_language(),
         help_text=_("Select the main language used in the content."),
     )
-
-    def get_transcription_file_url(self):
-        filename = self.slug + ".vtt"
-        path = os.path.join(LIVE_TRANSCRIPTIONS_FOLDER, filename)
-        url = urljoin(settings.MEDIA_URL, path)
-        # replace "\" with "/"
-        url = url.replace("\\", "/")
-        return url
+    transcription_file = models.FileField(
+        upload_to="media/" + LIVE_TRANSCRIPTIONS_FOLDER,
+        max_length=255,
+        null=True,
+    )
 
     def get_absolute_url(self):
         return reverse("live:direct", args=[str(self.slug)])

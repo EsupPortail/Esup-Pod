@@ -3,6 +3,7 @@ from django.conf import settings
 from vosk import Model, KaldiRecognizer, SetLogLevel
 from webvtt import WebVTT, Caption
 from pod.main.tasks import task_end_live_transcription, task_start_live_transcription
+from pod.live.models import Broadcaster
 import threading
 import time
 import json
@@ -27,9 +28,23 @@ def timestring(seconds):
     return "%i:%02i:%06.3f" % (hours, minutes, seconds)
 
 
+def set_broadcaster_file(slug, filename):
+    broadcaster = Broadcaster.objects.get(slug=slug)
+    trans_folder = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER)
+    trans_file = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER, filename)
+    if not os.path.exists(trans_folder):
+        os.makedirs(trans_folder)
+    if not os.path.exists(trans_file):
+        open(trans_file, 'a').close()
+    broadcaster.transcription_file = os.path.join(LIVE_TRANSCRIPTIONS_FOLDER, filename)
+    broadcaster.save()
+    return broadcaster
+
+
 def transcribe(url, slug, model):  # noqa: C901
     filename = slug + ".vtt"
-    save_path = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER, filename)
+    broadcaster = set_broadcaster_file(slug, filename)
+    save_path = broadcaster.transcription_file.path
     url = url.split('.m3u8')[0] + "_low/index.m3u8"
     trans_model = Model(model)
     rec = KaldiRecognizer(trans_model, __SAMPLE_RATE__)
