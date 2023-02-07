@@ -212,6 +212,7 @@ class Broadcaster(models.Model):
         upload_to="media/" + LIVE_TRANSCRIPTIONS_FOLDER,
         max_length=255,
         null=True,
+        editable=False,
     )
 
     def get_absolute_url(self):
