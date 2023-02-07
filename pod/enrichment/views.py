@@ -233,7 +233,6 @@ def edit_enrichment_cancel(request, video):
 @csrf_protect
 @ensure_csrf_cookie
 def video_enrichment(request, slug, slug_c=None, slug_t=None, slug_private=None):
-
     template_video = (
         "enrichment/video_enrichment-iframe.html"
         if (request.GET.get("is_iframe"))

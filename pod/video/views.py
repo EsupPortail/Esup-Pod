@@ -478,7 +478,6 @@ def theme_edit_save(request, channel):
 
 @login_required(redirect_field_name="referrer")
 def my_videos(request):
-
     data_context = {}
     site = get_current_site(request)
     # Videos list which user is the owner + which user is an additional owner
@@ -996,7 +995,6 @@ def save_video_form(request, form):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_delete(request, slug=None):
-
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
 
     if request.user != video.owner and not (
@@ -2344,13 +2342,11 @@ def delete_comment(request, video_slug, comment_id):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def get_categories(request, c_slug=None):
-
     response = {"success": False}
     c_user = request.user  # connected user
 
     # GET method
     if c_slug:  # get category with slug
-
         cat = get_object_or_404(Category, slug=c_slug)
         response["success"] = True
         response["id"] = cat.id
@@ -2384,7 +2380,6 @@ def get_categories(request, c_slug=None):
         )
 
     else:  # get all categories of connected user
-
         cats = Category.objects.prefetch_related("video").filter(owner=c_user)
         cats = list(
             map(
@@ -2424,12 +2419,10 @@ def get_categories(request, c_slug=None):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def add_category(request):
-
     response = {"success": False}
     c_user = request.user  # connected user
 
     if request.method == "POST":  # create new category
-
         data = json.loads(request.body.decode("utf-8"))
 
         videos = Video.objects.filter(slug__in=data.get("videos", []))
@@ -2493,12 +2486,10 @@ def add_category(request):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def edit_category(request, c_slug):
-
     response = {"success": False}
     c_user = request.user  # connected user
 
     if request.method == "POST":  # edit current category
-
         cat = get_object_or_404(Category, slug=c_slug)
         data = json.loads(request.body.decode("utf-8"))
 
@@ -2518,9 +2509,7 @@ def edit_category(request, c_slug):
             )
 
         if "title" in data and data["title"].strip() != "":
-
             if c_user == cat.owner or c_user.is_superuser:
-
                 cat.title = data["title"]
                 cat.video.set(list(new_videos))
                 cat.save()
@@ -2573,16 +2562,13 @@ def edit_category(request, c_slug):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def delete_category(request, c_id):
-
     response = {"success": False}
     c_user = request.user  # connected user
 
     if request.method == "POST":  # create new category
-
         cat = get_object_or_404(Category, id=c_id)
 
         if cat.owner == c_user:
-
             response["id"] = cat.id
             response["videos"] = list(
                 map(
@@ -2616,7 +2602,6 @@ def delete_category(request, c_id):
 
 
 class PodChunkedUploadView(ChunkedUploadView):
-
     model = ChunkedUpload
     field_name = "the_file"
 
@@ -2629,7 +2614,6 @@ class PodChunkedUploadView(ChunkedUploadView):
 
 
 class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
-
     model = ChunkedUpload
     slug = ""
 

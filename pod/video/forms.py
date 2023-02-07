@@ -722,7 +722,6 @@ class VideoForm(forms.ModelForm):
             )
 
     def custom_video_form(self):
-
         if not ACTIVE_VIDEO_COMMENT:
             self.remove_field("disable_comment")
 
@@ -773,7 +772,6 @@ class VideoForm(forms.ModelForm):
             del self.fields[field]
 
     def set_queryset(self):
-
         if self.current_user is not None:
             users_groups = self.current_user.owner.accessgroup_set.all()
             user_channels = (
@@ -930,7 +928,6 @@ class ThemeForm(forms.ModelForm):
 
 class FrontThemeForm(ThemeForm):
     def __init__(self, *args, **kwargs):
-
         self.THEME_FORM_FIELDS_HELP_TEXT = THEME_FORM_FIELDS_HELP_TEXT
 
         super(FrontThemeForm, self).__init__(*args, **kwargs)
