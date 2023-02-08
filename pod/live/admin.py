@@ -78,6 +78,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
 
     )
     list_filter = ["building"]
+
     def get_fields(self, request, obj=None):
         fields = (
             "name",
