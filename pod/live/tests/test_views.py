@@ -1556,7 +1556,6 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test test_immediate_event logged event existant OK !")
 
     def test_immediate_event_form_post(self):
-
         self.user = User.objects.get(username="pod")
         self.broadcaster = Broadcaster.objects.get(id=1)
 

@@ -135,7 +135,6 @@ def add_recording(request):
         # A form bound to the POST data
         form = RecordingForm(request, request.POST)
         if form.is_valid():  # All validation rules pass
-
             if form.cleaned_data["delete"] is True:
                 case_delete(form, request)
                 return redirect("/")
@@ -196,7 +195,6 @@ def reformat_url_if_use_cas_or_shib(request, link_url):
 
 
 def recorder_notify(request):
-
     # Used by URL like https://pod.univ.fr/recorder_notify/?recordingPlace
     # =192_168_1_10&mediapath=file.zip&key=77fac92a3f06d50228116898187e50e5
     mediapath = request.GET.get("mediapath") or ""
@@ -336,7 +334,6 @@ def claim_record(request):
     redirect_field_name="referrer",
 )
 def delete_record(request, id=None):
-
     record = get_object_or_404(RecordingFileTreatment, id=id)
 
     form = RecordingFileTreatmentDeleteForm()

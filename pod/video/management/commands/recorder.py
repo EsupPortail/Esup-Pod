@@ -549,11 +549,9 @@ class Command(BaseCommand):
         parser.add_argument("task")
 
     def handle(self, *args, **options):
-
         # Activate a fixed locale fr
         translation.activate(LANGUAGE_CODE)
         if options["task"] and options["task"] in self.valid_args:
-
             html_message_error = ""
             message_error = ""
             # Path the tree

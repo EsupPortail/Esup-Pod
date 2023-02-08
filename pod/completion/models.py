@@ -54,7 +54,6 @@ DEFAULT_LANG_TRACK = getattr(settings, "DEFAULT_LANG_TRACK", "fr")
 
 
 class Contributor(models.Model):
-
     video = models.ForeignKey(Video, verbose_name=_("video"), on_delete=models.CASCADE)
     name = models.CharField(_("lastname / firstname"), max_length=200)
     email_address = models.EmailField(_("mail"), null=True, blank=True, default="")
@@ -203,7 +202,6 @@ class EnrichModelQueue(models.Model):
 
 
 class Track(models.Model):
-
     video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
     kind = models.CharField(
         _("Kind"), max_length=10, choices=KIND_CHOICES, default="subtitles"
@@ -276,7 +274,6 @@ class Track(models.Model):
 
 
 class Overlay(models.Model):
-
     POSITION_CHOICES = (
         ("top-left", _("top-left")),
         ("top", _("top")),

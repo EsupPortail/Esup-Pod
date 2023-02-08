@@ -157,7 +157,6 @@ def change_status(request, slug):
 
 def heartbeat(request):
     if request.is_ajax() and request.method == "GET":
-
         broadcasterid = request.GET.get("broadcasterid")
         eventid = request.GET.get("eventid")
         if broadcasterid is None and eventid is None:
@@ -178,7 +177,6 @@ def manage_heartbeat(broadcaster_id, event_id, key, current_user):
 
     # Admin's supervision only
     if broadcaster_id is not None:
-
         # find current event with broadcaster id
         Event.objects.filter()
         query = Event.objects.filter(broadcaster_id=broadcaster_id)
@@ -356,7 +354,6 @@ def render_event_template(request, evemnt, user_owns_event):
 
 
 def events(request):  # affichage des events
-
     # Tous les events à venir (sauf les drafts sont affichés)
     queryset = Event.objects.filter(end_date__gt=timezone.now(), is_draft=False)
     events_list = queryset.all().order_by("start_date", "end_date")

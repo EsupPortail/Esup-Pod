@@ -109,7 +109,6 @@ class Command(BaseCommand):
         parser.add_argument("file", nargs="?", default="")
 
     def handle(self, *args, **options):
-
         # Activate a fixed locale fr
         translation.activate(LANGUAGE_CODE)
         if options["task"] and options["task"] in self.valid_args:

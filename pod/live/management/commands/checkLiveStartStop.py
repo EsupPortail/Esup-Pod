@@ -73,7 +73,6 @@ class Command(BaseCommand):
                 self.stderr.write(" ... fail to stop recording")
 
     def start_new(self):
-
         self.stdout.write("-- Starting new events :")
 
         events = Event.objects.filter(
@@ -83,7 +82,6 @@ class Command(BaseCommand):
         )
 
         for event in events:
-
             if is_recording(event.broadcaster):
                 self.stdout.write(
                     f"Broadcaster {event.broadcaster.name} is already recording"

@@ -99,7 +99,6 @@ def enrichment_to_vtt_type(enrich):
 
 
 class Enrichment(models.Model):
-
     ENRICH_CHOICES = (
         ("image", _("image")),
         ("richtext", _("richtext")),

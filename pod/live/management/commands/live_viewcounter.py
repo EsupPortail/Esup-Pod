@@ -11,7 +11,10 @@ class Command(BaseCommand):
     help = "Update viewcounter for live events"
 
     def handle(self, *args, **options):
+<<<<<<< HEAD
         """Handle the live_viewcounter command call."""
+=======
+>>>>>>> develop
         # Suppression des Heartbeat trop anciens
         accepted_time = timezone.now() - timezone.timedelta(seconds=VIEW_EXPIRATION_DELAY)
         HeartBeat.objects.filter(last_heartbeat__lt=accepted_time).delete()

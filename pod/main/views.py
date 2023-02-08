@@ -366,7 +366,6 @@ def robots_txt(request):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def userpicture(request):
-
     frontOwnerForm = FrontOwnerForm(instance=request.user.owner)
 
     if request.method == "POST":
