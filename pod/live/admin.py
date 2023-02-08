@@ -78,7 +78,6 @@ class BroadcasterAdmin(admin.ModelAdmin):
 
     )
     list_filter = ["building"]
-
     def get_fields(self, request, obj=None):
         fields = (
             "name",
@@ -97,7 +96,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
             "piloting_conf",
             "slug",
             "main_lang",
-            "transcription_file",
+            "transcription_file"
 
         )
         if obj is None:
@@ -107,7 +106,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if obj is None:
-            return ["slug"]
+            return ["slug", "transcription_file"]
         return ["slug", "qrcode", "transcription_file"]
 
     def get_autocomplete_fields(self, request):
