@@ -147,7 +147,7 @@ class BroadcasterTestCase(TestCase):
         self.assertEqual(broadcaster2.video_on_hold.id, 1)
         print("   --->  test_attributs of BroadcasterTestCase : OK !")
         self.assertEqual(broadcaster2.main_lang, "en")
-        self.assertEqual(broadcaster2.transcription_file, "testfile.vtt")
+        self.assertEqual(broadcaster.transcription_file.url, "/media/testfile.vtt")
     """
         test delete object
     """
