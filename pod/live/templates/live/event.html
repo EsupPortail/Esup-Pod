@@ -68,7 +68,7 @@
                                class="video-js vjs-default-skin vjs-big-play-centered"
                                controls height="360" muted autoplay>
                             <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
-                            {% if event.broadcaster.status and event.enable_transcription %}
+                            {% if event.broadcaster.status and event.enable_transcription and event.broadcaster.transcription_file %}
                               <track kind="captions" src="{{ event.broadcaster.transcription_file.url }}?d={% now "U" %}" srclang="{{event.broadcaster.main_lang}}">
                             {% endif %}
                         </video>
@@ -166,7 +166,7 @@
 
 {% block more_script %}
 
-{% if  event.broadcaster.status and event.enable_transcription %}
+{% if  event.broadcaster.status and event.enable_transcription and event.broadcaster.transcription_file %}
 <script>
   document.addEventListener("DOMContentLoaded", function () {
       let player = videojs("podvideoplayer");
