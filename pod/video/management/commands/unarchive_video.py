@@ -17,10 +17,12 @@ class Command(BaseCommand):
     help = "Unarchive a video"
 
     def add_arguments(self, parser):
+        """Add possible args to the command."""
         parser.add_argument("video_id", type=int, help="Video id")
         parser.add_argument("user_id", type=int, help="User id")
 
     def handle(self, *args, **options):
+        """Handle the unarchive_video command call."""
         activate(LANGUAGE_CODE)
         video = 1
         user = 1
