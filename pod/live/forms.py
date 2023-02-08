@@ -45,8 +45,7 @@ class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
 
 class AddVideoHoldWidget(s2forms.ModelSelect2Widget):
     search_fields = [
-        "title__icontains",
-        # "description__icontains", Doit-on ajouter une recherche sur la description ?
+        "slug__icontains",
     ]
 
 
@@ -326,7 +325,9 @@ class EventForm(forms.ModelForm):
                 ].queryset = get_available_broadcasters_of_building(
                     self.user, query_buildings.first()
                 )
-        query_videos = Video.objects.filter(Q(owner=self.user) | Q(additional_owners__in=[self.user]))
+        query_videos = Video.objects\
+            .filter(is_video=True)\
+            .filter(Q(owner=self.user) | Q(additional_owners__in=[self.user]))
         self.fields["video_on_hold"].queryset = query_videos.all()
 
     def editing(self):
@@ -338,7 +339,9 @@ class EventForm(forms.ModelForm):
             self.user, broadcaster.building.id
         )
         self.initial["building"] = broadcaster.building.name
-        query_videos = Video.objects.filter(Q(owner=self.user) | Q(additional_owners__in=[self.user]))
+        query_videos = Video.objects\
+            .filter(is_video=True)\
+            .filter(Q(owner=self.user) | Q(additional_owners__in=[self.user]))
         self.fields["video_on_hold"].queryset = query_videos.all()
 
     def saving(self):
