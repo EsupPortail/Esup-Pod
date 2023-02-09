@@ -7,8 +7,6 @@ from .tasks import send_xapi_statement_task
 import json
 import uuid
 
-from ralph.models.xapi.fields.actors import AccountActorField
-from ralph.models.xapi.video.statements import VideoPlayed
 from ralph.models.selector import ModelSelector
 from ralph.models.validator import Validator
 
@@ -73,10 +71,9 @@ def get_actor_name(request):
 def validate_statement(statement):
     try:
         validator = Validator(ModelSelector("ralph.models.xapi"))
-        ## Merge into one dict (compatible python3.7) 
         """
+        # Merge into one dict (compatible python3.7)
         request = {**{"actor": actor_dict}, **request_post}
-        
         actor = AccountActorField(
             objectType = "Agent",
             account={
@@ -86,9 +83,12 @@ def validate_statement(statement):
         )
         print(actor)
         """
-        ## Get the corresponding xAPI model and validate request
-        event1 = validator.get_first_valid_model(statement)
-        return True
+        # Get the corresponding xAPI model and validate request
+        event = validator.get_first_valid_model(statement)
+        if event:
+            return True
+        else:
+            return False
     except Exception as e:
         print(e)
         return False
