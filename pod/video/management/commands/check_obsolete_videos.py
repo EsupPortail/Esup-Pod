@@ -20,7 +20,7 @@ from datetime import date, timedelta
 
 USE_OBSOLESCENCE = getattr(settings, "USE_OBSOLESCENCE", False)
 USE_ESTABLISHMENT = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
-MANAGERS = getattr(settings, "MANAGERS", {})
+MANAGERS = getattr(settings, "MANAGERS", [])
 CONTACT_US_EMAIL = getattr(
     settings,
     "CONTACT_US_EMAIL",
@@ -253,9 +253,14 @@ class Command(BaseCommand):
         """Notify manager(s) with a list of obsolete videos."""
         for estab in list_video:
             if len(list_video[estab]) > 0:
-                msg_html = _("Hello manager(s) of %(estab)s,") % estab + " <br/>\n"
+                if (estab != 'other'):
+                    msg_html = _("Hello manager(s) of %(estab)s on %(site_title)s,") % {
+                        'estab': estab, 'site_title': __TITLE_SITE__}
+                else:
+                    msg_html = _("Hello manager(s) of %(site_title)s,") % {
+                        'site_title': __TITLE_SITE__}
                 msg_html += (
-                    "<p>"
+                    "<br/>\n<p>"
                     + _(
                         "For information, "
                         + "you will find below the list of video will soon arrive "
@@ -300,9 +305,14 @@ class Command(BaseCommand):
         """Notify manager(s) with a list of deleted videos."""
         for estab in list_video:
             if len(list_video[estab]) > 0:
-                msg_html = _("Hello manager(s) of %(estab)s,") % estab + " <br/>\n"
+                if (estab != 'other'):
+                    msg_html = _("Hello manager(s) of %(estab)s on %(site_title)s,") % {
+                        'estab': estab, 'site_title': __TITLE_SITE__}
+                else:
+                    msg_html = _("Hello manager(s) of %(site_title)s,") % {
+                        'site_title': __TITLE_SITE__}
                 msg_html += (
-                    "<p>"
+                    "<br/>\n<p>"
                     + _(
                         "For information, "
                         + "you will find below the list of deleted video."
@@ -339,16 +349,21 @@ class Command(BaseCommand):
                         html_message=msg_html,
                     )
                 if MANAGERS:
-                    print(_("Manager of '%(estab)s' notified for %(nb)s deleted video(s).") %
-                          {'estab': estab, 'nb': len(list_video[estab])})
+                    print(_("Manager of '%(et)s' notified for %(nb)s deleted video(s).") %
+                          {'et': estab, 'nb': len(list_video[estab])})
 
     def notify_manager_of_archived_video(self, list_video):
         """Notify manager(s) with a list of archived videos."""
         for estab in list_video:
             if len(list_video[estab]) > 0:
-                msg_html = _("Hello manager(s) of %(estab)s,") % estab + " <br/>\n"
+                if (estab != 'other'):
+                    msg_html = _("Hello manager(s) of %(estab)s on %(site_title)s,") % {
+                        'estab': estab, 'site_title': __TITLE_SITE__}
+                else:
+                    msg_html = _("Hello manager(s) of %(site_title)s,") % {
+                        'site_title': __TITLE_SITE__}
                 msg_html += (
-                    "<p>"
+                    "<br/>\n<p>"
                     + _(
                         "For information, "
                         + "you will find below the list of archived video."
