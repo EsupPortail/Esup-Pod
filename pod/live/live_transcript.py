@@ -24,7 +24,8 @@ def timestring(seconds):
 
 
 def transcribe(url, slug, model, filepath):  # noqa: C901
-    url = url.split('.m3u8')[0] + "_low/index.m3u8"
+    if url.endswith(".m3u8"):
+        url = url.split('.m3u8')[0] + "_low/index.m3u8"
     trans_model = Model(model)
     rec = KaldiRecognizer(trans_model, __SAMPLE_RATE__)
     rec.SetWords(True)
