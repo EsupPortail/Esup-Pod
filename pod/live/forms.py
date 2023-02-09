@@ -15,7 +15,7 @@ from django.utils import timezone
 from datetime import datetime
 from django.contrib import admin
 
-
+USE_LIVE_TRANSCRIPTION = getattr(settings, "USE_LIVE_TRANSCRIPTION", False)
 __FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
@@ -142,8 +142,7 @@ class CustomBroadcasterChoiceField(forms.ModelChoiceField):
 
 def check_event_date_and_hour(form):
     if (
-        "end_date" not in form.cleaned_data.keys()
-        and "end_time" not in form.cleaned_data.keys()
+        "end_date" not in form.cleaned_data.keys() and "end_time" not in form.cleaned_data.keys()
     ):
         return
 
@@ -250,6 +249,7 @@ class EventForm(forms.ModelForm):
                     "iframe_height",
                     "aside_iframe_url",
                     "thumbnail",
+                    "enable_transcription",
                 ],
             },
         ),
@@ -348,8 +348,8 @@ class EventForm(forms.ModelForm):
             self.instance.owner = self.user
 
         if (
-            self.user.is_superuser
-            or self.user.groups.filter(name=EVENT_GROUP_ADMIN).exists()
+            self.user.is_superuser or self.user.groups.filter(
+                name=EVENT_GROUP_ADMIN).exists()
         ):
             self.remove_field("end_time")
         else:
@@ -376,6 +376,7 @@ class EventForm(forms.ModelForm):
             self.remove_field("broadcaster")
             self.remove_field("owner")
             self.remove_field("thumbnail")
+            self.remove_field("enable_transcription")
 
     def remove_field(self, field):
         if self.fields.get(field):
@@ -421,6 +422,8 @@ class EventForm(forms.ModelForm):
         if __FILEPICKER__:
             fields.append("thumbnail")
             widgets["thumbnail"] = CustomFileWidget(type="image")
+        if USE_LIVE_TRANSCRIPTION:
+            fields.append("enable_transcription")
 
 
 class EventDeleteForm(forms.Form):

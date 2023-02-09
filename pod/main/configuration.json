@@ -916,6 +916,20 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "LIVE_CELERY_TRANSCRIPTION ": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Activer la transcription déportée sur une machine distante."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "DEFAULT_EVENT_PATH": {
                             "default_value": "",
                             "description": {
@@ -1031,6 +1045,43 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "LIVE_VOSK_MODEL": {
+                            "default_value": "{}",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Paramétrage des modèles pour la transcription des directs",
+                                    "La documentation sera présente prochaînement",
+                                    "Pour télécharger les Modèles Vosk : https://alphacephei.com/vosk/models",
+                                    "```",
+                                    "LIVE_VOSK_MODEL = {",
+                                    "   'fr': {",
+                                    "       'model': \"/path/of/project/django_projects/transcription/live/fr/vosk-model-small-fr-0.22\",",
+                                    "    }",
+                                    "}",
+                                    "```"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "LIVE_TRANSCRIPTIONS_FOLDER": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Dossier contenat les fichiers de sous-titre au format vtt pour les directs"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "USE_BBB": {
                             "default_value": true,
                             "description": {
@@ -1058,6 +1109,21 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "USE_LIVE_TRANSCRIPTION": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Enable auto-transcritption for live events"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Activer l'auto-transcription pour les directs"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
                         },
                         "VIEW_EXPIRATION_DELAY": {
                             "default_value": 60,
