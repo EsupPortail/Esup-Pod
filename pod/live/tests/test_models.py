@@ -95,7 +95,7 @@ class BroadcasterTestCase(TestCase):
             building=building,
             public=False,
             main_lang="fr",
-            transcription_file="testfile.vtt"
+            transcription_file="testfile.vtt",
         )
         # Test with a video on hold
         video_on_hold = Video.objects.create(
@@ -148,6 +148,7 @@ class BroadcasterTestCase(TestCase):
         self.assertEqual(broadcaster2.video_on_hold.id, 1)
         print("   --->  test_attributs of BroadcasterTestCase : OK !")
         self.assertEqual(broadcaster2.main_lang, "en")
+
     """
         test delete object
     """

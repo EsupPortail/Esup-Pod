@@ -47,11 +47,15 @@ AFFILIATION_EVENT = getattr(
 )
 SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 
-LANG_CHOICES = getattr(settings, "LANG_CHOICES", ((
-    " ", __PREF_LANG_CHOICES__), ("----------", __ALL_LANG_CHOICES__)), )
+LANG_CHOICES = getattr(
+    settings,
+    "LANG_CHOICES",
+    ((" ", __PREF_LANG_CHOICES__), ("----------", __ALL_LANG_CHOICES__)),
+)
 MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
 LIVE_TRANSCRIPTIONS_FOLDER = getattr(
-    settings, "LIVE_TRANSCRIPTIONS_FOLDER", "live_transcripts")
+    settings, "LIVE_TRANSCRIPTIONS_FOLDER", "live_transcripts"
+)
 
 
 class Building(models.Model):

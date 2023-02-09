@@ -25,7 +25,7 @@ def timestring(seconds):
 
 def transcribe(url, slug, model, filepath):  # noqa: C901
     if url.endswith(".m3u8"):
-        url = url.split('.m3u8')[0] + "_low/index.m3u8"
+        url = url.split(".m3u8")[0] + "_low/index.m3u8"
     trans_model = Model(model)
     rec = KaldiRecognizer(trans_model, __SAMPLE_RATE__)
     rec.SetWords(True)
@@ -33,9 +33,30 @@ def transcribe(url, slug, model, filepath):  # noqa: C901
     thread_id = threading.get_ident()
     while LIVE_CELERY_TRANSCRIPTION or thread_id not in threads_to_stop:
         start = time.time()
-        command = ["ffmpeg", "-y", "-loglevel", "quiet", "-i", url, "-ss", "00:00:00.005", "-t",
-                   "00:00:05", "-acodec", "pcm_s16le", "-ac", "1", "-ar", str(__SAMPLE_RATE__), "-f", "s16le", "-"]
-        with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+        command = [
+            "ffmpeg",
+            "-y",
+            "-loglevel",
+            "quiet",
+            "-i",
+            url,
+            "-ss",
+            "00:00:00.005",
+            "-t",
+            "00:00:05",
+            "-acodec",
+            "pcm_s16le",
+            "-ac",
+            "1",
+            "-ar",
+            str(__SAMPLE_RATE__),
+            "-f",
+            "s16le",
+            "-",
+        ]
+        with subprocess.Popen(
+            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        ) as process:
             results = []
             data = process.stdout.read(4000)
             while True:
@@ -57,28 +78,33 @@ def transcribe(url, slug, model, filepath):  # noqa: C901
                 content = " ".join([w["word"] for w in words])
                 caption_text += content + " "
             if last_caption:
-                last_caption_text, current_caption_text = last_caption.text.strip(), caption_text.strip()
+                last_caption_text, current_caption_text = (
+                    last_caption.text.strip(),
+                    caption_text.strip(),
+                )
                 last_caption_words, current_caption_words = last_caption_text.split(
-                    " "), current_caption_text.split(" ")
-                current_caption_words1 = current_caption_words[1:len(
-                    current_caption_words)]
+                    " "
+                ), current_caption_text.split(" ")
+                current_caption_words1 = current_caption_words[
+                    1 : len(current_caption_words)
+                ]
 
                 for i in range(len(last_caption_words) - 1, 0, -1):
-                    if last_caption_words[-i:] == current_caption_words[:i] or last_caption_words[-i:] == current_caption_words1[:i]:
+                    if (
+                        last_caption_words[-i:] == current_caption_words[:i]
+                        or last_caption_words[-i:] == current_caption_words1[:i]
+                    ):
                         caption_text = " ".join(current_caption_words[i:])
                         break
                 if last_caption_text in caption_text:
-                    caption_text = caption_text.replace(
-                        last_caption_text, "").strip()
+                    caption_text = caption_text.replace(last_caption_text, "").strip()
                 if caption_text in last_caption_text:
-                    caption_text = caption_text.replace(
-                        caption_text, "").strip()
+                    caption_text = caption_text.replace(caption_text, "").strip()
 
             current_start = timestring(0)
             current_end = timestring(86400)
             if caption_text != "":
-                caption = Caption(current_start, current_end,
-                                  caption_text)
+                caption = Caption(current_start, current_end, caption_text)
                 last_caption = caption
                 # print(caption_text)
                 vtt.captions.append(caption)
@@ -103,8 +129,7 @@ def transcribe_live(url, slug, status, lang, filepath):
         else:
             if status:
                 # print("main process")
-                t = threading.Thread(target=transcribe, args=(
-                    url, slug, model, filepath))
+                t = threading.Thread(target=transcribe, args=(url, slug, model, filepath))
                 t.setDaemon(True)
                 t.start()
                 # get id of the thread

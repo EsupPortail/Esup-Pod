@@ -9,7 +9,14 @@ from js_asset import static
 from sorl.thumbnail import get_thumbnail
 
 from pod.live.forms import BuildingAdminForm, EventAdminForm, BroadcasterAdminForm
-from pod.live.models import Building, Event, Broadcaster, HeartBeat, LiveTranscriptRunningTask, Video
+from pod.live.models import (
+    Building,
+    Event,
+    Broadcaster,
+    HeartBeat,
+    LiveTranscriptRunningTask,
+    Video,
+)
 
 DEFAULT_EVENT_THUMBNAIL = getattr(
     settings, "DEFAULT_EVENT_THUMBNAIL", "img/default-event.svg"
@@ -75,7 +82,6 @@ class BroadcasterAdmin(admin.ModelAdmin):
         "is_restricted",
         "piloting_conf",
         "main_lang",
-
     )
     list_filter = ["building"]
 
@@ -97,8 +103,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
             "piloting_conf",
             "slug",
             "main_lang",
-            "transcription_file"
-
+            "transcription_file",
         )
         if obj is None:
             return fields

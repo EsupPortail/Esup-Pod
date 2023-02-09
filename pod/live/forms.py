@@ -142,7 +142,8 @@ class CustomBroadcasterChoiceField(forms.ModelChoiceField):
 
 def check_event_date_and_hour(form):
     if (
-        "end_date" not in form.cleaned_data.keys() and "end_time" not in form.cleaned_data.keys()
+        "end_date" not in form.cleaned_data.keys()
+        and "end_time" not in form.cleaned_data.keys()
     ):
         return
 
@@ -348,8 +349,8 @@ class EventForm(forms.ModelForm):
             self.instance.owner = self.user
 
         if (
-            self.user.is_superuser or self.user.groups.filter(
-                name=EVENT_GROUP_ADMIN).exists()
+            self.user.is_superuser
+            or self.user.groups.filter(name=EVENT_GROUP_ADMIN).exists()
         ):
             self.remove_field("end_time")
         else:
