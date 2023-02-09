@@ -1158,6 +1158,11 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 >> Si vous utilisez une autre logiciel, <br>
 >> il faut développer une interface dans `pod/live/pilotingInterface.py` <br>
 
+ - `LIVE_CELERY_TRANSCRIPTION ` 
+> default value : False <br>
+
+>> Activer la transcription déportée sur une machine distante. <br>
+
  - `DEFAULT_EVENT_PATH` 
 > default value :  <br>
 
@@ -1201,6 +1206,25 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 >> Temps (en seconde) entre deux envois d'un signal au serveur, pour signaler la présence sur un live. <br>
 >> Peut être augmenté en cas de perte de performance mais au détriment de la qualité du comptage des valeurs <br>
 
+ - `LIVE_VOSK_MODEL` 
+> default value : {} <br>
+
+>> Paramétrage des modèles pour la transcription des directs <br>
+>> La documentation sera présente prochaînement <br>
+>> Pour télécharger les Modèles Vosk : https://alphacephei.com/vosk/models <br>
+>> ```
+>> LIVE_VOSK_MODEL = { 
+>>    'fr': { 
+>>        'model': "/path/of/project/django_projects/transcription/live/fr/vosk-model-small-fr-0.22", 
+>>     } 
+>> } 
+>> ```
+
+ - `LIVE_TRANSCRIPTIONS_FOLDER` 
+> default value :  <br>
+
+>> Dossier contenat les fichiers de sous-titre au format vtt pour les directs <br>
+
  - `USE_BBB` 
 > default value : True <br>
 
@@ -1210,6 +1234,11 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 > default value : False  <br>
 
 >> Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - A retirer dans les futures versions de Pod <br>
+
+ - `USE_LIVE_TRANSCRIPTION` 
+> default value : False <br>
+
+>> Activer l'auto-transcription pour les directs <br>
 
  - `VIEW_EXPIRATION_DELAY` 
 > default value : 60 <br>
