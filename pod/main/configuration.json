@@ -2406,11 +2406,14 @@
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    ""
+                                    "",
+                                    "Enables sending xAPI statements for the video player.",
+                                    "Attention, you must set USE_XAPI to True for the statements to be sent."
                                 ],
                                 "fr": [
                                     "",
-                                    "Activation de l'envoie de statement pour le lecteur video. Attention, il faut mettre USE_XAPI à True pour que les statements soient envoyés"
+                                    "Active l‘envoi d’instructions xAPI pour le lecteur vidéo.",
+                                    "Attention, il faut mettre USE_XAPI à True pour que les instructions soient envoyées."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2913,13 +2916,16 @@
                 "xapi": {
                     "description": {
                         "en": [
-                            ""
+                            "",
+                            "Application for sending xAPI statements to an LRS.",
+                            "No statements persist in Pod, they are all sent to the configured LRS.",
+                            "Please note, Celery must be set to send statements."
                         ],
                         "fr": [
                             "",
-                            "application pour l'envoie de statement xAPI à un LRS.",
-                            "Aucun statement n'est persisté dans Pod, ils sont tous envoyés au LRS paramétré.",
-                            "Attention, il faut configurer *Celery* pour l'envoi des statements",
+                            "Application pour l’envoi d‘instructions xAPI à un LRS.",
+                            "Aucune instruction ne persiste dans Pod, elles sont toutes envoyées au LRS paramétré.",
+                            "Attention, il faut configurer Celery pour l’envoi des instructions."
                         ]
                     },
                     "settings": {
@@ -2945,7 +2951,7 @@
                                 ],
                                 "fr": [
                                     "",
-                                    "Si False, le nom de l'utilisateur sera stocké en clair dans les statements xAPI, si False, son nom d'utilisateur sera anonymisé"
+                                    "Si False, le nom de l'utilisateur sera stocké en clair dans les statements xAPI, si True, son nom d'utilisateur sera anonymisé"
                                 ]
                             },
                             "pod_version_end": "",
