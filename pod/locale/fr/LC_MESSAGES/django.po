@@ -2487,9 +2487,6 @@ msgstr "Nombre maximum de spectateurs différents"
 msgid "Event"
 msgstr "Évènement"
 
-<<<<<<< HEAD
-#: pod/live/models.py:442 pod/live/templates/live/event.html:20
-=======
 #:pod/live/models.py:436
 msgid "Enable transcription"
 msgstr "Activer la transcription"
@@ -2499,7 +2496,6 @@ msgstr "Activer la transcription"
 # msgstr "Si cette case est cochée, la transcription sera activée."
 
 #: pod/live/models.py:426 pod/live/templates/live/event.html:20
->>>>>>> develop
 #: pod/live/templates/live/events.html:9 pod/live/templates/live/events.html:12
 #: pod/live/views.py:392
 msgid "Events"
