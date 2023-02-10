@@ -503,6 +503,7 @@ class Command(BaseCommand):
             with open(csv_file, "w") as f:
                 f.writelines(lines)
 
+
 """
 # TO CHANGE DATE DELETED FOR ALL VIDEOS
 from pod.video.models import Video
