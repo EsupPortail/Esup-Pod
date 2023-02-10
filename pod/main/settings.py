@@ -60,7 +60,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 #
 # https://docs.djangoproject.com/en/3.2/ref/settings/#std:setting-ADMINS
 #
-ADMINS = [("Name", "adminmail@univ.fr"),]
+ADMINS = [("Name", "adminmail@univ.fr")]
 ##
 # A tuple that lists people who get other notifications
 #   email from contact_us / end of encoding / report video
