@@ -1,3 +1,4 @@
+"""Model for video encoding."""
 import os
 from django.conf import settings
 from .models import EncodingVideo
@@ -8,6 +9,8 @@ from .models import EncodingLog
 from .models import Video
 from pod.completion.models import Track
 from django.core.files import File
+from django.dispatch import receiver
+from django.db.models.signals import pre_delete
 from .Encoding_video import (
     Encoding_video,
     FFMPEG_NB_THUMBNAIL,
@@ -54,8 +57,10 @@ else:
 
 
 class Encoding_video_model(Encoding_video):
+    """Encoding video model."""
+
     def remove_old_data(self):
-        """Remove old data."""
+        """Remove data from previous encoding."""
         video_to_encode = Video.objects.get(id=self.id)
         video_to_encode.thumbnail = None
         if video_to_encode.overview:
@@ -76,7 +81,7 @@ class Encoding_video_model(Encoding_video):
         self.add_encoding_log("remove_old_data", "", True, encoding_log_msg)
 
     def remove_previous_encoding_log(self, video_to_encode):
-        """Remove previously logs"""
+        """Remove previous logs."""
         msg = "\n"
         log_json = self.get_output_dir() + "/info_video.json"
         if os.path.exists(log_json):
@@ -400,4 +405,11 @@ class Encoding_video_model(Encoding_video):
             self.store_json_list_thumbnail_files(info_video, video_to_encode)
 
     def encode_video(self):
+        """Start video encoding."""
         self.start_encode()
+
+
+@receiver(pre_delete, sender=Encoding_video_model, dispatch_uid="pre_del-encoding_video")
+def encoding_video_removal(sender, instance, using, **kwargs):
+    """Remove related data before deleting an Encoding_video_model."""
+    instance.remove_old_data()

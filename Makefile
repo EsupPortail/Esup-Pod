@@ -4,13 +4,6 @@
 # Lancer via `make $cmd`
 # (en remplacant $cmd par une commande ci-dessous)
 
-# -- Docker
-# Use for docker run and docker exec commands
-include .env.dev
-export
-COMPOSE = docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod
-DOCKER_LOGS = docker logs -f
-
 start:
 	# Démarre le serveur de test
 	(sleep 15 ; open http://localhost:8080) &
@@ -71,12 +64,16 @@ statics:
 	# --clear Clear the existing files before trying to copy or link the original file.
 	python3 manage.py collectstatic --clear
 
-docker-start:
-	# Démarre le serveur de test
-	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
-	@$(COMPOSE) up
-	# Vous devriez obtenir ce message une fois esup-pod lancé
-	# $ pod-dev-with-volumes        | Superuser created successfully.
+createconfigs:
+	python3 manage.py createconfiguration fr
+	python3 manage.py createconfiguration en
+
+# -- Docker
+# Use for docker run and docker exec commands
+include .env.dev
+export
+COMPOSE = docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod
+DOCKER_LOGS = docker logs -f
 
 #docker-start-build:
 #	# Démarre le serveur de test en recompilant les conteuneurs de la stack
