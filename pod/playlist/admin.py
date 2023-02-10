@@ -8,7 +8,6 @@ from pod.video.models import Video
 
 
 class PlaylistAdmin(admin.ModelAdmin):
-
     list_display = (
         "title",
         "owner",
@@ -42,7 +41,6 @@ admin.site.register(Playlist, PlaylistAdmin)
 
 
 class PlaylistElementAdmin(admin.ModelAdmin):
-
     list_display = (
         "playlist",
         "video",

@@ -114,7 +114,6 @@ class VideoVersionInline(admin.StackedInline):
 
 
 class VideoAdmin(admin.ModelAdmin):
-
     list_display = (
         "id",
         "title",
@@ -598,7 +597,6 @@ class EncodingAudioAdmin(admin.ModelAdmin):
 
 
 class PlaylistVideoAdmin(admin.ModelAdmin):
-
     autocomplete_fields = ["video"]
     list_display = ("name", "video", "encoding_format")
     search_fields = ["id", "video__id", "video__title"]

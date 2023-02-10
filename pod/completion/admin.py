@@ -45,7 +45,6 @@ class ContributorInline(admin.TabularInline):
 
 
 class ContributorAdmin(admin.ModelAdmin):
-
     list_display = (
         "name",
         "role",
@@ -87,7 +86,6 @@ class DocumentInline(admin.TabularInline):
 
 
 class DocumentAdmin(admin.ModelAdmin):
-
     if __FILEPICKER__:
         form = DocumentAdminForm
     list_display = (
@@ -325,7 +323,6 @@ class OverlayInline(admin.TabularInline):
 
 
 class OverlayAdmin(admin.ModelAdmin):
-
     list_display = (
         "title",
         "video",

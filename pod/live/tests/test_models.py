@@ -92,6 +92,17 @@ class BroadcasterTestCase(TestCase):
             is_restricted=True,
             building=building,
             public=False,
+            main_lang="fr",
+            transcription_file="testfile.vtt",
+        )
+        Broadcaster.objects.create(
+            name="broadcaster2",
+            poster=poster,
+            url="http://test2.live",
+            status=True,
+            is_restricted=False,
+            building=building,
+            main_lang="en",
         )
         print(" --->  SetUp of BroadcasterTestCase : OK !")
 
@@ -121,6 +132,10 @@ class BroadcasterTestCase(TestCase):
         self.assertNotIn(empty_qrcode, broadcaster.qrcode)
         none_qrcode = '"data:image/png;base64, None"'
         self.assertNotIn(none_qrcode, broadcaster.qrcode)
+        self.assertEqual(broadcaster.main_lang, "fr")
+        self.assertEqual(broadcaster.transcription_file.url, "/media/testfile.vtt")
+        broadcaster2 = Broadcaster.objects.get(id=2)
+        self.assertEqual(broadcaster2.main_lang, "en")
         print("   --->  test_attributs of BroadcasterTestCase : OK !")
 
     """
@@ -129,6 +144,7 @@ class BroadcasterTestCase(TestCase):
 
     def test_delete_object(self):
         Broadcaster.objects.get(id=1).delete()
+        Broadcaster.objects.get(id=2).delete()
         self.assertEqual(Broadcaster.objects.all().count(), 0)
 
         print("   --->  test_delete_object of BroadcasterTestCase : OK !")
@@ -276,7 +292,7 @@ class EventTestCase(TestCase):
         event.id = None
         self.assertEqual(event.__str__(), "None")
         self.assertEqual(event.get_thumbnail_url(), "/static/img/default-event.svg")
-        self.assertEqual(event.get_full_url(), "//example.com/live/event/0001-event1/")
+        self.assertEqual(event.get_full_url(), "//localhost:9090/live/event/0001-event1/")
         print(" --->  test_attributs of EventTestCase : OK !")
 
     def test_add_thumbnail(self):

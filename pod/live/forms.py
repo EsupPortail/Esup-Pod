@@ -16,7 +16,7 @@ from django.utils import timezone
 from datetime import datetime
 from django.contrib import admin
 
-
+USE_LIVE_TRANSCRIPTION = getattr(settings, "USE_LIVE_TRANSCRIPTION", False)
 __FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
@@ -258,6 +258,7 @@ class EventForm(forms.ModelForm):
                     "aside_iframe_url",
                     "thumbnail",
                     "video_on_hold",
+                    "enable_transcription",
                 ],
             },
         ),
@@ -325,9 +326,9 @@ class EventForm(forms.ModelForm):
                 ].queryset = get_available_broadcasters_of_building(
                     self.user, query_buildings.first()
                 )
-        query_videos = Video.objects\
-            .filter(is_video=True)\
-            .filter(Q(owner=self.user) | Q(additional_owners__in=[self.user]))
+        query_videos = Video.objects.filter(is_video=True).filter(
+            Q(owner=self.user) | Q(additional_owners__in=[self.user])
+        )
         self.fields["video_on_hold"].queryset = query_videos.all()
 
     def editing(self):
@@ -339,9 +340,9 @@ class EventForm(forms.ModelForm):
             self.user, broadcaster.building.id
         )
         self.initial["building"] = broadcaster.building.name
-        query_videos = Video.objects\
-            .filter(is_video=True)\
-            .filter(Q(owner=self.user) | Q(additional_owners__in=[self.user]))
+        query_videos = Video.objects.filter(is_video=True).filter(
+            Q(owner=self.user) | Q(additional_owners__in=[self.user])
+        )
         self.fields["video_on_hold"].queryset = query_videos.all()
 
     def saving(self):
@@ -393,6 +394,7 @@ class EventForm(forms.ModelForm):
             self.remove_field("owner")
             self.remove_field("thumbnail")
             self.remove_field("video_on_hold")
+            self.remove_field("enable_transcription")
 
     def remove_field(self, field):
         if self.fields.get(field):
@@ -440,6 +442,8 @@ class EventForm(forms.ModelForm):
         if __FILEPICKER__:
             fields.append("thumbnail")
             widgets["thumbnail"] = CustomFileWidget(type="image")
+        if USE_LIVE_TRANSCRIPTION:
+            fields.append("enable_transcription")
 
 
 class EventDeleteForm(forms.Form):

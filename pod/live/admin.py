@@ -9,7 +9,14 @@ from js_asset import static
 from sorl.thumbnail import get_thumbnail
 
 from pod.live.forms import BuildingAdminForm, EventAdminForm, BroadcasterAdminForm
-from pod.live.models import Building, Event, Broadcaster, HeartBeat, Video
+from pod.live.models import (
+    Building,
+    Event,
+    Broadcaster,
+    HeartBeat,
+    LiveTranscriptRunningTask,
+    Video,
+)
 
 DEFAULT_EVENT_THUMBNAIL = getattr(
     settings, "DEFAULT_EVENT_THUMBNAIL", "img/default-event.svg"
@@ -74,6 +81,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
         "is_recording_admin",
         "is_restricted",
         "piloting_conf",
+        "main_lang",
     )
     list_filter = ["building"]
 
@@ -93,6 +101,8 @@ class BroadcasterAdmin(admin.ModelAdmin):
             "piloting_implementation",
             "piloting_conf",
             "slug",
+            "main_lang",
+            "transcription_file",
         )
         if obj is None:
             return fields
@@ -101,8 +111,8 @@ class BroadcasterAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if obj is None:
-            return ["slug"]
-        return ["slug", "qrcode"]
+            return ["slug", "transcription_file"]
+        return ["slug", "qrcode", "transcription_file"]
 
     def get_autocomplete_fields(self, request):
         return ["building"]
@@ -233,6 +243,7 @@ class EventAdmin(admin.ModelAdmin):
         "password",
         "is_auto_start_admin",
         "get_thumbnail_admin",
+        "enable_transcription",
     ]
     fields = [
         "title",
@@ -252,6 +263,7 @@ class EventAdmin(admin.ModelAdmin):
         "restrict_access_to_groups",
         "is_auto_start",
         "video_on_hold",
+        "enable_transcription",
     ]
     search_fields = [
         "title",
@@ -294,3 +306,4 @@ admin.site.register(Building, BuildingAdmin)
 admin.site.register(Broadcaster, BroadcasterAdmin)
 admin.site.register(HeartBeat, HeartBeatAdmin)
 admin.site.register(Event, EventAdmin)
+admin.site.register(LiveTranscriptRunningTask)

@@ -75,6 +75,9 @@
                                class="video-js vjs-default-skin vjs-big-play-centered"
                                controls height="360" muted autoplay>
                             <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
+                            {% if event.broadcaster.status and event.enable_transcription and event.broadcaster.transcription_file %}
+                              <track kind="captions" src="{{ event.broadcaster.transcription_file.url }}?d={% now "U" %}" srclang="{{event.broadcaster.main_lang}}">
+                            {% endif %}
                         </video>
                     </div>
                     {% if event.aside_iframe_url %}
@@ -166,5 +169,62 @@
     {% endblock page_aside %}
 
 {% block more_script %}
+
+{% if  event.broadcaster.status and event.enable_transcription and event.broadcaster.transcription_file %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      let player = videojs("podvideoplayer");
+      player.ready(function () {
+        var lastMod = null;
+        setInterval(function () {
+          let tracks = player.textTracks();
+          for (var i = 0; i < tracks.length; i++) {
+            var track = tracks[i];
+            if (track.kind === "captions") {
+                let current_mod = null
+                let vtt_url ="{{ event.broadcaster.transcription_file.url }}?d={% now "U" %}"
+                fetch(vtt_url).then(r => {
+                  current_mod = r.headers.get('Last-Modified');
+                  if (lastMod && current_mod && lastMod === current_mod){
+                    return
+                  }
+                  lastMod = current_mod
+                  let newTrack = player.addRemoteTextTrack(
+                    {
+                      kind: "captions",
+                      language: "{{ event.broadcaster.main_lang }}",
+                      src: vtt_url,
+                      default: true,
+                    },
+                    false
+                  );
+
+                  player.removeRemoteTextTrack(track);
+
+                  newTrack.addEventListener('load', (e)=>{
+                    newTrack.mode = 'showing';
+                  })
+                  // show all tracks
+                  for (var i = 0; i < tracks.length; i++) {
+                    if (tracks[i].kind === "captions") {
+                    tracks[i].mode = "showing";
+
+                    }
+                  }
+                }).catch(e => {
+                  // console.log(e)
+                })
+            }
+          }
+
+        }, 1000);
+      });
+    });
+
+</script>
+{% endif %}
+
+
+
 {% include 'live/event-script.html' %}
 {% endblock more_script %}

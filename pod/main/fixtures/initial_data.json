@@ -1,5 +1,13 @@
 [
   {
+    "model": "sites.site",
+    "pk": 1,
+    "fields": {
+      "domain": "localhost:9090",
+      "name": "localhost:9090"
+    }
+  },
+  {
     "pk": 1,
     "model": "flatpages.flatpage",
     "fields": {
