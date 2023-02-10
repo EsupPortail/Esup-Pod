@@ -298,7 +298,8 @@ class Command(BaseCommand):
                         html_message=msg_html,
                     )
                 if MANAGERS:
-                    print(_("Manager of '%(estab)s' notified for %(nb)s soon to be obsolete video(s).") %
+                    print(_("Manager of '%(estab)s' notified for"
+                            + " %(nb)s soon to be obsolete video(s).") %
                           {'estab': estab, 'nb': len(list_video[estab])})
 
     def notify_manager_of_deleted_video(self, list_video):
@@ -410,23 +411,26 @@ class Command(BaseCommand):
         for i, deadline in enumerate(list_video):
             if deleted is False and deadline != "0":
                 if i != 0:
-                    msg_html += "<br><br>"
-                msg_html += "\n<strong>"
+                    msg_html += "<br>\n"
+                msg_html += "<p><strong>"
                 msg_html += _("In %(deadline)s days") % {"deadline": deadline}
-                msg_html += ":</strong>"
+                msg_html += ":</strong></p>\n<ol>"
             for vid in list_video[deadline]:
+                msg_html += "\n<li>"
                 if deleted:
-                    msg_html += "\n<br/> - " + vid
+                    msg_html += vid
                 else:
                     msg_html += (
-                        "\n<br/> - %(title)s : "
+                        "%(title)s ("
                         + "<a href='%(scheme)s:%(url)s' rel='noopener'"
-                        + " target='_blank'>%(scheme)s:%(url)s</a>."
+                        + " target='_blank'>%(scheme)s:%(url)s</a>)."
                     ) % {
                         "scheme": URL_SCHEME,
                         "url": vid.get_full_url(),
                         "title": vid,
                     }
+                msg_html += "</li>"
+            msg_html += "</ol>"
         return msg_html
 
     def get_manager_emails(self, video):
@@ -445,20 +449,28 @@ class Command(BaseCommand):
         """Add in `type`.csv file informations about the video."""
         file = "%s/%s.csv" % (settings.LOG_DIRECTORY, type)
         exists = os.path.isfile(file)
+
+        fieldnames = [
+            "Date",
+            "User name",
+            "User email",
+            "User Affiliation",
+            "User Establishment",
+            "Video Id",
+            "Video title",
+            "Video URL",
+            "Video type",
+            "Date added",
+            "Source file",
+            "Description",
+            "Views"
+        ]
+        if exists:
+            self.check_csv_header(file, fieldnames)
+
         with open(file, "a", newline="", encoding="utf-8") as csvfile:
-            fieldnames = [
-                "Date",
-                "User name",
-                "User email",
-                "User Affiliation",
-                "User Establishment",
-                "Video Id",
-                "Video title",
-                "Video URL",
-                "Video type",
-                "Date added",
-            ]
             writer = csv.DictWriter(csvfile, delimiter=";", fieldnames=fieldnames)
+
             if not exists:
                 writer.writeheader()
             writer.writerow(
@@ -473,15 +485,46 @@ class Command(BaseCommand):
                     "Video URL": "https:%s" % vid.get_full_url(),
                     "Video type": vid.type.title,
                     "Date added": "%s" % vid.date_added.strftime("%Y/%m/%d"),
+                    "Source file": vid.video,
+                    "Description": vid.description.replace(
+                        ";", "$semic$").replace("\r", '').replace("\n\n", "\n").replace(
+                        "\n", "$newl$"),
+                    "Views": vid.viewcount
                 }
             )
 
+    def check_csv_header(self, csv_file, fieldnames):
+        """Check for (and add) missing columns in an existing CSV file."""
+        with open(csv_file, 'r') as f:
+            lines = f.readlines()
+        if (len(lines[0].split(";")) < len(fieldnames)):
+            print("Adding missing header columns in %s." % csv_file)
+            lines[0] = ";".join(fieldnames) + "\n"
+            with open(csv_file, "w") as f:
+                f.writelines(lines)
 
 """
 # TO CHANGE DATE DELETED FOR ALL VIDEOS
+from pod.video.models import Video
+from datetime import date
 vds = Video.objects.all()
 for vid in vds:
   vid.date_delete = date(vid.date_added.year+2,
                           vid.date_added.month,vid.date_added.day)
+  print("%s,%s" % (vid.id, vid.title))
+  vid.save()
+"""
+
+"""
+# TO CHANGE DATE DELETED for user "adminPod"
+from pod.video.models import Video
+from datetime import date
+
+vds = Video.objects.filter(date_delete__lte="2023-03-01", owner__username="adminPod")
+# Do only the 50 first to avoid too many connexion on DB
+for vid in vds[:50]:
+  vid.date_delete = date(vid.date_delete.year+9,
+                          vid.date_delete.month,vid.date_delete.day)
+  print("%s,vid.owner,%s" % (vid.id, vid.title))
   vid.save()
 """

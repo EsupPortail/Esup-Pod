@@ -317,6 +317,7 @@ class Encoding_video_model(Encoding_video):
             video_to_encode.save()
 
     def store_json_info(self):
+        """Open json file and store its data in current instance."""
         video_to_encode = Video.objects.get(id=self.id)
 
         with open(self.get_output_dir() + "/info_video.json") as json_file:
