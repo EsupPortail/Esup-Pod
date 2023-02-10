@@ -747,16 +747,40 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
-                        "MODEL_PARAM": {
+                        "TRANSCRIPTION_MODEL_PARAM": {
                             "default_value": "",
                             "description": {
                                 "en": [
                                     ""
                                 ],
                                 "fr": [
+<<<<<<< HEAD
                                     "paramétrage des modele. ",
                                     "Pour télécharger les Modeles Vosk : [https://alphacephei.com/vosk/models]()",
                                     "liste des langues affichées en premier dans les propositions de choix"
+=======
+                                    "",
+                                    "Paramétrage des modèles pour la transcription",
+                                    "Voir la documentation à cette adresse : https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3",
+                                    "Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models",
+                                    "```",
+                                    "TRANSCRIPTION_MODEL_PARAM = {",
+                                    "    # le modèle stt",
+                                    "    'STT': {",
+                                    "        'fr': {",
+                                    "            'model': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite\",",
+                                    "            'scorer': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer\",",
+                                    "        }",
+                                    "    },",
+                                    "    # le modèle vosk",
+                                    "    'VOSK': {",
+                                    "        'fr': {",
+                                    "            'model': \"/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0\",",
+                                    "        }",
+                                    "    }",
+                                    "}",
+                                    "```"
+>>>>>>> develop
                                 ]
                             },
                             "pod_version_end": "",

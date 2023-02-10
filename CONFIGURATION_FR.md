@@ -1113,12 +1113,29 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 >> Ajouter le model dans les sous-dossier de la lang correspondants <br>
 >> Exemple pour le français: /path/of/project/Esup-Pod/compile-model/fr/ <br>
 
- - `MODEL_PARAM` 
+ - `TRANSCRIPTION_MODEL_PARAM` 
 > default value :  <br>
 
->> paramétrage des modele.  <br>
+>> Paramétrage des modèles pour la transcription <br>
+>> Voir la documentation à cette adresse : https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3 <br>
 >> Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models <br>
->> liste des langues affichées en premier dans les propositions de choix <br>
+>> ```
+>> TRANSCRIPTION_MODEL_PARAM = { 
+>>     # le modèle stt 
+>>     'STT': { 
+>>         'fr': { 
+>>             'model': "/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite", 
+>>             'scorer': "/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer", 
+>>         } 
+>>     }, 
+>>     # le modèle vosk 
+>>     'VOSK': { 
+>>         'fr': { 
+>>             'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0", 
+>>         } 
+>>     } 
+>> } 
+>> ```
 
  - `PREF_LANG_CHOICES` 
 > default value :  <br>
