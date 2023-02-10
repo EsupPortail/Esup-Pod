@@ -168,6 +168,8 @@ class studio_podTestView(TestCase):
     def create_index_file(self):
         text = """
         <html>
+            <head>
+            </head>
             <body>
                 <h1>Heading</h1>
             </body>
