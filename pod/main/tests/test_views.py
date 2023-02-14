@@ -20,7 +20,8 @@ class MainViewsTestCase(TestCase):
     """Main views test cases."""
 
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):
@@ -108,7 +109,8 @@ class MainViewsTestCase(TestCase):
 
 class MaintenanceViewsTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):

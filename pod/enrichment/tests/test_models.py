@@ -27,7 +27,8 @@ else:
 
 class EnrichmentGroupModelTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):
@@ -85,7 +86,8 @@ class EnrichmentGroupModelTestCase(TestCase):
 
 class EnrichmentModelTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):

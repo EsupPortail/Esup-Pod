@@ -33,6 +33,7 @@ DATABASES = {
         "NAME": "db-test.sqlite",
     }
 }
+
 LANGUAGES = (("fr", "Français"), ("en", "English"))
 LANGUAGE_CODE = "en"
 THIRD_PARTY_APPS = ["enrichment", "live"]
@@ -61,7 +62,35 @@ EXISTING_BROADCASTER_IMPLEMENTATIONS = ["Wowza", "Test"]
 AFFILIATION_EVENT = ["employee"]
 
 USE_MEETING = True
+
+
 # found on https://bigbluebutton.org/api-mate/
+def get_secret_key():
+    import requests
+    import re
+    response = requests.get('https://bigbluebutton.org/api-mate/')
+    htmlStr = response.content.decode("utf-8")
+    salt = re.findall('<input.[a-z=" ]*id="input-custom-server-salt" .[a-z="]+ value=".[a-z0-9]+"', str(htmlStr))
+    if len(salt) > 0:
+        salt = salt[0]
+    else:
+        salt = ""
+    value = salt[salt.index("value=")+7:-1]
+    return value
+
+
 BBB_API_URL = "http://test-install.blindsidenetworks.com/bigbluebutton/api/"
-BBB_SECRET_KEY = "8cd8ef52e8e101574e400365b55e11a6"
+BBB_SECRET_KEY = get_secret_key()
 MEETING_DISABLE_RECORD = False
+
+DARKMODE_ENABLED = True
+DYSLEXIAMODE_ENABLED = True
+
+for application in INSTALLED_APPS:
+    if application.startswith("pod"):
+        path = application.replace(".", os.path.sep) + "/test_settings_local.py"
+        if os.path.exists(path):
+            _temp = __import__(application, globals(), locals(), ["settings_local"])
+            for variable in dir(_temp.settings_local):
+                if variable == variable.upper():
+                    locals()[variable] = getattr(_temp.settings_local, variable)

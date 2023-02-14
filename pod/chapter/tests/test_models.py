@@ -11,7 +11,8 @@ from ..models import Chapter
 
 class ChapterModelTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):

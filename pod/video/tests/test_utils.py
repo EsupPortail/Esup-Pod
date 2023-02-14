@@ -11,7 +11,8 @@ from pod.video.utils import change_owner, get_videos
 
 class VideoTestUtils(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):

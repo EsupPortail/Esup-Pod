@@ -17,7 +17,8 @@ class TestComment(TestCase):
     """Class containing Tests for video comments and votes."""
 
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):

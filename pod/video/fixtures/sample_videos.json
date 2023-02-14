@@ -2,7 +2,7 @@
   "model": "auth.user",
   "fields":
   {
-    "username": "pod",
+    "username": "podvideo",
     "first_name": "Utilisateur",
     "last_name": "De test",
     "is_active": true,

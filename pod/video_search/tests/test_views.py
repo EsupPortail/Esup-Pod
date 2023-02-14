@@ -12,7 +12,8 @@ from pod.video_search.views import (
 
 class VideoSearchTest(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):

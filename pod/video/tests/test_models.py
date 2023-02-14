@@ -44,7 +44,8 @@ else:
 
 class ChannelTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):
@@ -123,7 +124,8 @@ class ChannelTestCase(TestCase):
 
 class ThemeTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):
@@ -198,7 +200,10 @@ class ThemeTestCase(TestCase):
 
 
 class TypeTestCase(TestCase):
-    # fixtures = ['initial_data.json', ]
+    fixtures = [
+        "initial_data_main.json",
+        # "initial_data_video.json",
+    ]
 
     def setUp(self):
         Type.objects.create(title="Type1")
@@ -249,7 +254,8 @@ class TypeTestCase(TestCase):
 
 class DisciplineTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):
@@ -303,7 +309,8 @@ class DisciplineTestCase(TestCase):
 
 class VideoTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):
@@ -419,7 +426,10 @@ class VideoTestCase(TestCase):
 
 
 class VideoRenditionTestCase(TestCase):
-    # fixtures = ['initial_data.json', ]
+    fixtures = [
+        "initial_data_main.json",
+        # "initial_data_video.json",
+    ]
 
     def create_video_rendition(
         self,
@@ -518,7 +528,10 @@ class VideoRenditionTestCase(TestCase):
 
 
 class EncodingVideoTestCase(TestCase):
-    # fixtures = ['initial_data.json', ]
+    fixtures = [
+        "initial_data_main.json",
+        # "initial_data_video.json",
+    ]
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -604,7 +617,10 @@ class EncodingVideoTestCase(TestCase):
 
 
 class EncodingAudioTestCase(TestCase):
-    # fixtures = ['initial_data.json', ]
+    fixtures = [
+        "initial_data_main.json",
+        "initial_data_video.json",
+    ]
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -675,7 +691,8 @@ class EncodingAudioTestCase(TestCase):
 
 class PlaylistVideoTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):
@@ -746,7 +763,8 @@ class PlaylistVideoTestCase(TestCase):
 
 class EncodingLogTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):
@@ -790,7 +808,8 @@ class EncodingLogTestCase(TestCase):
 
 class EncodingStepTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):
@@ -835,7 +854,8 @@ class EncodingStepTestCase(TestCase):
 
 class NotesTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):

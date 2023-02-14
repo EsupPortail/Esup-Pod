@@ -7,7 +7,8 @@ from pod.authentication.utils import get_owners
 
 class UserTestUtils(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):

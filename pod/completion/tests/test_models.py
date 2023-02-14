@@ -25,7 +25,8 @@ else:
 
 class ContributorModelTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):
@@ -100,7 +101,8 @@ class ContributorModelTestCase(TestCase):
 
 class DocumentModelTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):
@@ -157,7 +159,8 @@ class DocumentModelTestCase(TestCase):
 
 class OverlayModelTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):
@@ -254,7 +257,8 @@ class OverlayModelTestCase(TestCase):
 
 class TrackModelTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):

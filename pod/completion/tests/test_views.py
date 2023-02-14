@@ -27,7 +27,8 @@ else:
 
 class CompletionViewsTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):
@@ -96,7 +97,8 @@ class CompletionViewsTestCase(TestCase):
 
 class CompletionContributorViewsTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):
@@ -272,7 +274,8 @@ class CompletionContributorViewsTestCase(TestCase):
 
 class CompletionTrackViewsTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):
@@ -493,7 +496,8 @@ class CompletionTrackViewsTestCase(TestCase):
 
 class CompletionDocumentViewsTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):
@@ -723,7 +727,8 @@ class CompletionDocumentViewsTestCase(TestCase):
 
 class CompletionOverlayViewsTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):

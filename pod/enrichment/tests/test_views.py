@@ -12,7 +12,8 @@ from django.contrib.sites.models import Site
 
 class EnrichmentViewsTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):

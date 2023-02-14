@@ -19,7 +19,8 @@ from django.urls import reverse
 
 class PlaylistViewsTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):

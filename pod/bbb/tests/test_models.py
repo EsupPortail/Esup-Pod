@@ -5,9 +5,9 @@ from ..models import BBB_Meeting as Meeting, Attendee, Livestream
 
 
 class MeetingTestCase(TestCase):
-    fixtures = [
-        "initial_data.json",
-    ]
+    # fixtures = [
+    #     "initial_data.json",
+    # ]
 
     def setUp(self):
         Meeting.objects.create(
@@ -73,9 +73,9 @@ class MeetingTestCase(TestCase):
 
 
 class AttendeeTestCase(TestCase):
-    fixtures = [
-        "initial_data.json",
-    ]
+    # fixtures = [
+    #     "initial_data.json",
+    # ]
 
     def setUp(self):
         meeting1 = Meeting.objects.create(
@@ -143,7 +143,8 @@ class AttendeeTestCase(TestCase):
 
 class LivestreamTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):

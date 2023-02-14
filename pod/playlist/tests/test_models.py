@@ -12,7 +12,8 @@ from pod.playlist.models import PlaylistElement
 
 class PlaylistModelTestCase(TestCase):
     fixtures = [
-        "initial_data.json",
+        "initial_data_main.json",
+        "initial_data_video.json",
     ]
 
     def setUp(self):
