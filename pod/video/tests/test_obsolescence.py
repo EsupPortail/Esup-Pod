@@ -114,7 +114,7 @@ class ObsolescenceTestCase(TestCase):
         for vid in Video.objects.all():
             vid.sites.add(site)
 
-        print(" --->  SetUp of ObsolescenceTestCase : OK !")
+        print(" --->  SetUp of ObsolescenceTestCase: OK!")
 
     def test_check_video_date_delete(self):
         """Check that the videos deletion date complies with the settings."""

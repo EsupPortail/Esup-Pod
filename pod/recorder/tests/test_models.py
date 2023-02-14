@@ -1,3 +1,4 @@
+"""Unit tests for Pod recorder."""
 from django.test import TestCase
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError
@@ -7,6 +8,8 @@ from ..models import Recording, RecordingFile, Recorder, RecordingFileTreatment
 
 
 class RecorderTestCase(TestCase):
+    """Test case for Pod Recorder."""
+
     fixtures = [
         "initial_data.json",
     ]
@@ -54,7 +57,7 @@ class RecorderTestCase(TestCase):
         Recorder.objects.filter(name="recorder1").delete()
         self.assertEqual(Recorder.objects.all().count(), 0)
 
-        print("   --->  test_delete_object of RecorderTestCase : OK !")
+        print("   --->  test_delete_object of RecorderTestCase: OK!")
 
 
 class RecordingTestCase(TestCase):
@@ -85,7 +88,7 @@ class RecordingTestCase(TestCase):
         )
         recording.save()
 
-        print(" --->  SetUp of RecordingTestCase : OK !")
+        print(" --->  SetUp of RecordingTestCase: OK!")
 
     """
         test attributs
@@ -102,7 +105,7 @@ class RecordingTestCase(TestCase):
         self.assertEqual(recording.date_added.year, date.year)
         self.assertEqual(recording.date_added.month, date.month)
         self.assertEqual(recording.date_added.day, date.day)
-        print("   --->  test_attributs of RecordingTestCase : OK !")
+        print("   --->  test_attributs of RecordingTestCase: OK!")
 
     # Testing the two if cases of verify_attibuts method
     def test_verifying_attributs_fst_cases(self):
@@ -113,7 +116,7 @@ class RecordingTestCase(TestCase):
         self.assertEqual(2, len(recording.verify_attributs()))
         print(
             "   --->  test_verifying_attributs_fst_cases \
-            of RecordingTestCase : OK !"
+            of RecordingTestCase: OK!"
         )
 
     # Testing the two elif cases of verify_attibuts method
@@ -125,7 +128,7 @@ class RecordingTestCase(TestCase):
         self.assertEqual(2, len(recording.verify_attributs()))
         print(
             "   --->  test_verifying_attributs_snd_cases \
-            of RecordingTestCase : OK !"
+            of RecordingTestCase: OK!"
         )
 
     def test_clean_raise_exception(self):
@@ -133,7 +136,7 @@ class RecordingTestCase(TestCase):
         recording.type = "something"
         recording.save()
         self.assertRaises(ValidationError, recording.clean)
-        print("   --->  test_clean_raise_exception of RecordingTestCase : OK !")
+        print("   --->  test_clean_raise_exception of RecordingTestCase: OK!")
 
     """
         test delete object
@@ -143,7 +146,7 @@ class RecordingTestCase(TestCase):
         Recording.objects.filter(title="media1").delete()
         self.assertEqual(Recording.objects.all().count(), 0)
 
-        print("   --->  test_delete_object of RecordingTestCase : OK !")
+        print("   --->  test_delete_object of RecordingTestCase: OK!")
 
 
 class RecordingFileTreatmentTestCase(TestCase):
@@ -169,7 +172,7 @@ class RecordingFileTreatmentTestCase(TestCase):
             recorder=recorder1,
         )
         recording_file.save()
-        print(" --->  SetUp of RecordingFileTestCase : OK !")
+        print(" --->  SetUp of RecordingFileTestCase: OK!")
 
     """
         test attributs
@@ -186,7 +189,7 @@ class RecordingFileTreatmentTestCase(TestCase):
         self.assertEqual(recording_file.date_added.year, date.year)
         self.assertEqual(recording_file.date_added.month, date.month)
         self.assertEqual(recording_file.date_added.day, date.day)
-        print("   --->  test_attributs of RecordingFileTreatmentTestCase : OK !")
+        print("   --->  test_attributs of RecordingFileTreatmentTestCase: OK!")
 
     """
         test delete object
@@ -220,7 +223,7 @@ class RecordingFileTestCase(TestCase):
         recording_file = RecordingFile.objects.create(recorder=recorder1)
         recording_file.file = "/home/pod/files/somefile.mp4"
         recording_file.save()
-        print(" --->  SetUp of RecordingFileTestCase : OK !")
+        print(" --->  SetUp of RecordingFileTestCase: OK!")
 
     """
         test attributs
@@ -229,7 +232,7 @@ class RecordingFileTestCase(TestCase):
     def test_attributs(self):
         recording_file = RecordingFile.objects.get(id=1)
         self.assertEqual(recording_file.file, "/home/pod/files/somefile.mp4")
-        print("   --->  test_attributs of RecordingFileTestCase : OK !")
+        print("   --->  test_attributs of RecordingFileTestCase: OK!")
 
     """
         test delete object
@@ -240,4 +243,4 @@ class RecordingFileTestCase(TestCase):
         RecordingFile.objects.filter(file=filepath).delete()
         self.assertEqual(RecordingFile.objects.all().count(), 0)
 
-        print("   --->  test_delete_object of RecordingFileTestCase : OK !")
+        print("   --->  test_delete_object of RecordingFileTestCase: OK!")

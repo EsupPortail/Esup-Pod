@@ -1079,12 +1079,12 @@ class Video(models.Model):
     def delete_video_folder(self):
         """Delete UserFolder associated to current video."""
         if USE_PODFILE:
-            video_folder = UserFolder.objects.get(
-                name="%s" % self.slug,
+            video_folder = UserFolder.objects.filter(
+                name=self.slug,
                 owner=self.owner,
             )
             if video_folder:
-                video_folder.delete()
+                video_folder[0].delete()
 
     def get_playlist_master(self):
         try:

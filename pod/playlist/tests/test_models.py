@@ -1,6 +1,4 @@
-"""
-Unit tests for playlist models
-"""
+"""Unit tests for playlist models."""
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -11,6 +9,8 @@ from pod.playlist.models import PlaylistElement
 
 
 class PlaylistModelTestCase(TestCase):
+    """Test case for Pod Playlist model."""
+
     fixtures = [
         "initial_data.json",
     ]
@@ -54,7 +54,7 @@ class PlaylistModelTestCase(TestCase):
         self.assertEqual(playlist.description, None)
         self.assertFalse(playlist.visible)
 
-        print(" ---> test_attributs : OK ! --- PlaylistModel")
+        print(" ---> test_attributs: OK! --- PlaylistModel")
 
     def test_attributs_full(self):
         playlist = Playlist.objects.get(id=2)
@@ -65,14 +65,14 @@ class PlaylistModelTestCase(TestCase):
         self.assertEqual(playlist.description, "description")
         self.assertTrue(playlist.visible)
 
-        print(" ---> test_attributs_full : OK ! --- PlaylistModel")
+        print(" ---> test_attributs_full: OK! --- PlaylistModel")
 
     def test_first(self):
         playlist = Playlist.objects.get(id=1)
         element = PlaylistElement.objects.get(id=1)
         self.assertEqual(playlist.first(), element)
 
-        print(" ---> test_first : OK ! --- PlaylistModel")
+        print(" ---> test_first: OK! --- PlaylistModel")
 
     def test_last(self):
         playlist = Playlist.objects.get(id=1)
@@ -80,7 +80,7 @@ class PlaylistModelTestCase(TestCase):
         self.assertEqual(playlist.last(), 3)
         self.assertEqual(playlist2.last(), 1)
 
-        print(" ---> test_last : OK ! --- PlaylistModel")
+        print(" ---> test_last: OK! --- PlaylistModel")
 
     def test_videos(self):
         playlist = Playlist.objects.get(id=1)
@@ -90,7 +90,7 @@ class PlaylistModelTestCase(TestCase):
         self.assertEqual(playlist.videos()[0], video)
         self.assertEqual(playlist.videos()[1], video2)
 
-        print(" ---> test_videos : OK ! --- PlaylistModel")
+        print(" ---> test_videos: OK! --- PlaylistModel")
         print(" [ END PLAYLIST_TEST MODEL ] ")
 
     def test_delete(self):
@@ -99,7 +99,7 @@ class PlaylistModelTestCase(TestCase):
         self.assertEqual(Playlist.objects.all().count(), 0)
         self.assertEqual(PlaylistElement.objects.all().count(), 0)
 
-        print(" ---> test_delete : OK ! --- PlaylistModel")
+        print(" ---> test_delete: OK! --- PlaylistModel")
 
 
 class PlaylistElementModelTestCase(TestCase):
@@ -146,7 +146,7 @@ class PlaylistElementModelTestCase(TestCase):
         self.assertEqual(element.video, video)
         self.assertEqual(element.position, 1)
 
-        print(" ---> test_attributs : OK ! --- PlaylistElementModel")
+        print(" ---> test_attributs: OK! --- PlaylistElementModel")
 
     def test_attributs_full(self):
         element = PlaylistElement.objects.get(id=2)
@@ -156,7 +156,7 @@ class PlaylistElementModelTestCase(TestCase):
         self.assertEqual(element.video, video2)
         self.assertEqual(element.position, 2)
 
-        print(" ---> test_attributs_full : OK ! --- PlaylistElementModel")
+        print(" ---> test_attributs_full: OK! --- PlaylistElementModel")
 
     def test_delete(self):
         PlaylistElement.objects.get(id=1).delete()
@@ -164,7 +164,7 @@ class PlaylistElementModelTestCase(TestCase):
         self.assertTrue(PlaylistElement.objects.all().count() == 0)
         self.assertTrue(Playlist.objects.all().count() == 1)
 
-        print(" ---> test_delete : OK ! --- PlaylistElementModel")
+        print(" ---> test_delete: OK! --- PlaylistElementModel")
 
     def test_add_draft(self):
         playlist = Playlist.objects.get(id=1)
@@ -175,7 +175,7 @@ class PlaylistElementModelTestCase(TestCase):
         self.assertRaises(ValidationError, element.clean)
 
         print(" [ BEGIN PLAYLIST_TEST MODEL ] ")
-        print(" ---> test_add_draft : OK ! -- PlaylistElementModel")
+        print(" ---> test_add_draft: OK! -- PlaylistElementModel")
 
     def test_add_password(self):
         playlist = Playlist.objects.get(id=1)
@@ -185,4 +185,4 @@ class PlaylistElementModelTestCase(TestCase):
         element.video = video
         self.assertRaises(ValidationError, element.clean)
 
-        print(" ---> test_add_password : OK ! -- PlaylistElementModel")
+        print(" ---> test_add_password: OK! -- PlaylistElementModel")
