@@ -60,6 +60,7 @@ class EncodeTestCase(TestCase):
         print(" --->  SetUp of EncodeTestCase: OK!")
 
     def test_result_encoding_video(self):
+        """Test if video encoding worked properly."""
         # video id=1 et audio id=2
         video_to_encode = Video.objects.get(id=1)
         list_mp2t = EncodingVideo.objects.filter(
@@ -87,7 +88,7 @@ class EncodeTestCase(TestCase):
         print(" --->  test_encode_video of EncodeTestCase: OK!")
 
     def test_result_encoding_audio(self):
-        """Tester if audio encoding worked properly."""
+        """Test if audio encoding worked properly."""
         # video id=1 & audio id=2
         audio = Video.objects.get(id=2)
         list_m4a = EncodingAudio.objects.filter(video=audio, encoding_format="video/mp4")
