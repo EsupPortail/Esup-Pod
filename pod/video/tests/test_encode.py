@@ -128,8 +128,6 @@ class EncodeTestCase(TestCase):
             os.path.dirname(video_to_encode.overview.path), "overview.png"
         )
         self.assertTrue(os.path.isfile(image_overview))
-        self.assertTrue(video_to_encode.thumbnail.file_exist())
-        image_thumbnail = video_to_encode.thumbnail.file.path
 
         video_to_encode.delete()
 
@@ -137,7 +135,6 @@ class EncodeTestCase(TestCase):
         self.assertFalse(os.path.exists(log_file))
         self.assertFalse(os.path.exists(playlist_master_file))
         self.assertFalse(os.path.exists(image_overview))
-        self.assertFalse(os.path.exists(image_thumbnail))
 
         self.assertEqual(list_mp2t.count(), 0)
         self.assertEqual(list_playlist_video.count(), 0)

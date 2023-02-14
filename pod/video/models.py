@@ -45,8 +45,10 @@ from django.db.models import Count, Case, When, Value, BooleanField, Q
 from django.db.models.functions import Concat
 from os.path import splitext
 
-if getattr(settings, "USE_PODFILE", False):
+USE_PODFILE = getattr(settings, "USE_PODFILE", False)
+if USE_PODFILE:
     from pod.podfile.models import CustomImageModel
+    from pod.podfile.models import UserFolder
 else:
     from pod.main.models import CustomImageModel
 
@@ -1071,7 +1073,18 @@ class Video(models.Model):
         if self.overview:
             if os.path.isfile(self.overview.path):
                 os.remove(self.overview.path)
+        self.delete_video_folder()
         super(Video, self).delete()
+
+    def delete_video_folder(self):
+        """Delete UserFolder associated to current video."""
+        if USE_PODFILE:
+            video_folder = UserFolder.objects.get(
+                name="%s" % self.slug,
+                owner=self.owner,
+            )
+            if video_folder:
+                video_folder.delete()
 
     def get_playlist_master(self):
         try:

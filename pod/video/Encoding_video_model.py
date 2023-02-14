@@ -270,6 +270,7 @@ class Encoding_video_model(Encoding_video):
             )
 
     def store_json_list_thumbnail_files(self, info_video, video_to_encode):
+        """store_json_list_thumbnail_files."""
         list_thumbnail_files = info_video["list_thumbnail_files"]
         first = True
 
@@ -337,6 +338,7 @@ class Encoding_video_model(Encoding_video):
             # TODO : Without podfile
 
     def get_create_thumbnail_command_from_video(self, video_to_encode):
+        """Create command line to generate thumbnails from video."""
         thumbnail_command = "%s " % FFMPEG_CMD
         ev = EncodingVideo.objects.filter(
             video=video_to_encode, encoding_format="video/mp4"

@@ -155,13 +155,17 @@ class CustomImageModelTestCase(TestCase):
 
 
 class UserFolderTestCase(TestCase):
+    """Test case for UserFolder."""
+
     def setUp(self):
+        """Create UserFolders to be tested."""
         test = User.objects.create(username="test")
         UserFolder.objects.get(name="home", owner=test)
         UserFolder.objects.create(name="Images", owner=test)
         UserFolder.objects.create(name="Documents", owner=test)
 
     def test_attributs_full(self):
+        """Test UserFolder attributes."""
         user = User.objects.get(id=1)
         child = UserFolder.objects.get(id=2)
         self.assertEqual(child.name, "Images")
@@ -170,6 +174,7 @@ class UserFolderTestCase(TestCase):
         print(" ---> test_attributs_full : OK ! --- UserFolder")
 
     def test_attributs(self):
+        """Test UserFolder attributes."""
         user = User.objects.get(id=1)
         home = UserFolder.objects.get(id=1)
         self.assertEqual(home.name, "home")
@@ -178,6 +183,7 @@ class UserFolderTestCase(TestCase):
         print(" ---> test_attributs : OK ! --- UserFolder")
 
     def test_delete(self):
+        """Test UserFolder deletion."""
         UserFolder.objects.get(id=1).delete()
         UserFolder.objects.get(id=2).delete()
         UserFolder.objects.get(id=3).delete()
