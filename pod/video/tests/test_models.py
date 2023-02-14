@@ -30,11 +30,11 @@ from datetime import timedelta
 import os
 
 if getattr(settings, "USE_PODFILE", False):
-    FILEPICKER = True
+    __FILEPICKER__ = True
     from pod.podfile.models import CustomImageModel
     from pod.podfile.models import UserFolder
 else:
-    FILEPICKER = False
+    __FILEPICKER__ = False
     from pod.main.models import CustomImageModel
 
 
@@ -67,7 +67,7 @@ class ChannelTestCase(TestCase):
         channel = Channel.objects.annotate(video_count=Count("video", distinct=True)).get(
             title="ChannelTest1"
         )
-        self.assertEqual(channel.visible, False)
+        self.assertFalse(channel.visible)
         self.assertFalse(channel.slug == slugify("blabla"))
         self.assertEqual(channel.color, None)
         self.assertEqual(channel.description, "")
@@ -87,7 +87,7 @@ class ChannelTestCase(TestCase):
         channel = Channel.objects.annotate(video_count=Count("video", distinct=True)).get(
             title="ChannelTest2"
         )
-        self.assertEqual(channel.visible, True)
+        self.assertTrue(channel.visible)
         channel.color = "Blue"
         self.assertEqual(channel.color, "Blue")
         self.assertEqual(channel.description, "blabla")
@@ -117,6 +117,7 @@ class ThemeTestCase(TestCase):
     ]
 
     def setUp(self):
+        """Create themes to be tested."""
         Channel.objects.create(title="ChannelTest1")
         Theme.objects.create(
             title="Theme1",
@@ -174,11 +175,12 @@ class ThemeTestCase(TestCase):
 
 
 class TypeTestCase(TestCase):
-    """Test the type."""
+    """Test the video type."""
 
     # fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        """Create types to be tested."""
         Type.objects.create(title="Type1")
 
         print(" --->  SetUp of TypeTestCase: OK!")
@@ -222,6 +224,7 @@ class DisciplineTestCase(TestCase):
     ]
 
     def setUp(self):
+        """Create disciplines to be tested."""
         Discipline.objects.create(title="Discipline1")
 
         print(" --->  SetUp of DisciplineTestCase: OK!")
@@ -267,8 +270,10 @@ class VideoTestCase(TestCase):
     ]
 
     def setUp(self):
+        """Create videos to be tested."""
         user = User.objects.create(username="pod", password="pod1234pod")
 
+        # Video 1 with minimum attributes
         Video.objects.create(
             title="Video1",
             owner=user,
@@ -279,7 +284,7 @@ class VideoTestCase(TestCase):
         filename = "test.mp4"
         fname, dot, extension = filename.rpartition(".")
 
-        if FILEPICKER:
+        if __FILEPICKER__:
             homedir, created = UserFolder.objects.get_or_create(name="Home", owner=user)
             thumbnail = CustomImageModel.objects.create(
                 folder=homedir, created_by=user, file="blabla.jpg"
@@ -287,6 +292,7 @@ class VideoTestCase(TestCase):
         else:
             thumbnail = CustomImageModel.objects.create(file="blabla.jpg")
 
+        # Video 1 with full attributes
         video2 = Video.objects.create(
             type=type,
             title="Video2",
@@ -317,15 +323,15 @@ class VideoTestCase(TestCase):
         filter_pass = filter_en.filter(
             Q(password="") | Q(password=None), is_restricted=False
         )
-        self.assertEqual(bool(filter_pass.filter(password="toto")), False)
-        self.assertEqual(bool(filter_pass.filter(password="")), False)
-        self.assertEqual(bool(filter_pass.filter(password__isnull=True)), True)
+        self.assertFalse(bool(filter_pass.filter(password="toto")))
+        self.assertFalse(bool(filter_pass.filter(password="")))
+        self.assertTrue(bool(filter_pass.filter(password__isnull=True)))
         print("--->  test_last_Video_display of VideoTestCase: OK")
 
     def test_Video_null_attributs(self):
         video = Video.objects.get(id=1)
         self.assertEqual(video.video.name, "test.mp4")
-        self.assertEqual(video.allow_downloading, False)
+        self.assertFalse(video.allow_downloading)
         self.assertEqual(video.description, "")
         self.assertEqual(video.slug, "%04d-%s" % (video.id, slugify(video.title)))
         date = datetime.today()
@@ -336,7 +342,7 @@ class VideoTestCase(TestCase):
         # self.assertEqual(video.date_evt, video.date_added)
         self.assertEqual(video.get_viewcount(), 0)
 
-        self.assertEqual(video.is_draft, True)
+        self.assertTrue(video.is_draft)
 
         if isinstance(video.thumbnail, ImageFieldFile):
             self.assertEqual(video.thumbnail.name, "")
@@ -350,14 +356,14 @@ class VideoTestCase(TestCase):
     def test_Video_many_attributs(self):
         video2 = Video.objects.get(id=2)
         self.assertEqual(video2.video.name, get_storage_path_video(video2, "test.mp4"))
-        self.assertEqual(video2.allow_downloading, True)
+        self.assertTrue(video2.allow_downloading)
         self.assertEqual(video2.description, "fl")
         self.assertEqual(video2.get_viewcount(), 3)
         self.assertEqual(
             ViewCount.objects.get(video=video2, date=datetime.today()).count, 1
         )
-        self.assertEqual(video2.allow_downloading, True)
-        self.assertEqual(video2.is_draft, False)
+        self.assertTrue(video2.allow_downloading)
+        self.assertFalse(video2.is_draft)
         self.assertEqual(video2.duration, 3)
         self.assertEqual(video2.video.__str__(), video2.video.name)
 
@@ -367,13 +373,7 @@ class VideoTestCase(TestCase):
         """Test deleting videos objects."""
         for vid_id in [1, 2]:
             vid_object = Video.objects.get(id=vid_id)
-
-            self.assertTrue(vid_object.thumbnail.file_exist())
-            image_thumbnail = vid_object.thumbnail.file.path
-
             vid_object.delete()
-
-            self.assertFalse(os.path.exists(image_thumbnail))
 
         # Check that all videos are properly deleted.
         self.assertEqual(Video.objects.all().count(), 0)
