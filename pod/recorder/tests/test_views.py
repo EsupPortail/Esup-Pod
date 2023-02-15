@@ -168,6 +168,8 @@ class studio_podTestView(TestCase):
     def create_index_file(self):
         text = """
         <html>
+            <head>
+            </head>
             <body>
                 <h1>Heading</h1>
             </body>
@@ -179,9 +181,10 @@ class studio_podTestView(TestCase):
         template_dir = os.path.dirname(template_file)
         if not os.path.exists(template_dir):
             os.makedirs(template_dir)
-        file = open(template_file, "w+")
-        file.write(text)
-        file.close()
+        if not (os.access(template_file, os.F_OK) and os.stat(template_file).st_size > 0):
+            file = open(template_file, "w+")
+            file.write(text)
+            file.close()
 
     def setUp(self):
         User.objects.create(username="pod", password="pod1234pod")
