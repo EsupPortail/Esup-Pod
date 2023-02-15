@@ -55,6 +55,7 @@ transcription/*
 ## Others
 pod/static/
 *.bak
+*.pem
 .coverage
 htmlcov
 compile-model

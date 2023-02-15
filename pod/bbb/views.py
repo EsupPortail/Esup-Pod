@@ -28,7 +28,7 @@ BBB_NUMBER_MAX_LIVES = getattr(settings, "BBB_NUMBER_MAX_LIVES", 1)
 @login_required(redirect_field_name="referrer")
 @staff_member_required(redirect_field_name="referrer")
 def list_meeting(request):
-    # Get meetings list, which recordings are available, ordered by date
+    """Get meetings list, which recordings are available, ordered by date."""
     meetings_list = Meeting.objects.filter(
         attendee__user_id=request.user.id, recording_available=True
     )
@@ -132,7 +132,7 @@ def publish_meeting(request, id=None):
 @login_required(redirect_field_name="referrer")
 @staff_member_required(redirect_field_name="referrer")
 def live_list_meeting(request):
-    # Get meetings list in progress
+    """Get a list of live meetings in progress."""
     dateSince10Min = timezone.now() - timezone.timedelta(minutes=10)
     meetings_list = Meeting.objects.filter(
         attendee__user_id=request.user.id,

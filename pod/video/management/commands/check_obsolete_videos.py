@@ -413,8 +413,8 @@ class Command(BaseCommand):
                 if i != 0:
                     msg_html += "<br>\n"
                 msg_html += "<p><strong>"
-                msg_html += _("In %(deadline)s days") % {"deadline": deadline}
-                msg_html += ":</strong></p>\n<ol>"
+                msg_html += _("In %(deadline)s days:") % {"deadline": deadline}
+                msg_html += "</strong></p>\n<ol>"
             for vid in list_video[deadline]:
                 msg_html += "\n<li>"
                 if deleted:

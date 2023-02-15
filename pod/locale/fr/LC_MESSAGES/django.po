@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-14 10:02+0000\n"
+"POT-Creation-Date: 2023-02-15 16:00+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -223,7 +223,7 @@ msgstr "Fermer"
 #: pod/authentication/tests/test_views.py:97
 #: pod/bbb/templates/bbb/live_publish_meeting.html:45
 #: pod/bbb/templates/bbb/publish_meeting.html:37 pod/bbb/views.py:125
-#: pod/bbb/views.py:252 pod/completion/templates/video_caption_maker.html:124
+#: pod/bbb/views.py:251 pod/completion/templates/video_caption_maker.html:124
 #: pod/enrichment/templates/enrichment/group_enrichment.html:29
 #: pod/live/templates/live/event-form.html:10
 #: pod/live/templates/live/event_delete.html:38
@@ -837,7 +837,7 @@ msgstr ""
 msgid "Sorry, no record found"
 msgstr "Désolé, aucun enregistrement trouvé"
 
-#: pod/bbb/views.py:97 pod/bbb/views.py:231
+#: pod/bbb/views.py:97 pod/bbb/views.py:230
 msgid "You aren't the moderator of this BigBlueButton session."
 msgstr "Vous n’êtes pas le modérateur de cette session BigBlueButton."
 
@@ -845,7 +845,7 @@ msgstr "Vous n’êtes pas le modérateur de cette session BigBlueButton."
 msgid "The BigBlueButton session has been published."
 msgstr "La session BigBlueButton a été publiée."
 
-#: pod/bbb/views.py:245
+#: pod/bbb/views.py:244
 msgid "The BigBlueButton live has been performed."
 msgstr "Le direct BigBlueButton a été publié et va bientôt démarrer."
 
@@ -4041,11 +4041,11 @@ msgid "You just sent a message from"
 msgstr "Vous venez d’envoyer un message depuis"
 
 #: pod/main/templates/mail/mail_sender.html:6
-#: pod/video/management/commands/check_obsolete_videos.py:223
-#: pod/video/management/commands/check_obsolete_videos.py:240
-#: pod/video/management/commands/check_obsolete_videos.py:279
-#: pod/video/management/commands/check_obsolete_videos.py:331
-#: pod/video/management/commands/check_obsolete_videos.py:382
+#: pod/video/management/commands/check_obsolete_videos.py:219
+#: pod/video/management/commands/check_obsolete_videos.py:236
+#: pod/video/management/commands/check_obsolete_videos.py:275
+#: pod/video/management/commands/check_obsolete_videos.py:327
+#: pod/video/management/commands/check_obsolete_videos.py:378
 msgid "Regards"
 msgstr "Cordialement"
 
@@ -6107,30 +6107,30 @@ msgstr "Une erreur est survenue durant l’exécution du processus."
 msgid "USE_OBSOLESCENCE is FALSE"
 msgstr "USE_OBSOLESCENCE est à FALSE"
 
-#: pod/video/management/commands/check_obsolete_videos.py:154
+#: pod/video/management/commands/check_obsolete_videos.py:150
 #: pod/video/management/commands/unarchive_video.py:29
 #: pod/video/tests/test_obsolescence.py:202
 msgid "Archived"
 msgstr "Archivé"
 
-#: pod/video/management/commands/check_obsolete_videos.py:193
+#: pod/video/management/commands/check_obsolete_videos.py:189
 #, python-format
 msgid "%s video(s) deleted."
 msgstr "%s vidéo(s) supprimée(s)."
 
-#: pod/video/management/commands/check_obsolete_videos.py:194
+#: pod/video/management/commands/check_obsolete_videos.py:190
 #, python-format
 msgid "%s video(s) archived."
 msgstr "%s vidéo(s) archivée(s)."
 
-#: pod/video/management/commands/check_obsolete_videos.py:205
-#: pod/video/management/commands/check_obsolete_videos.py:225
+#: pod/video/management/commands/check_obsolete_videos.py:201
+#: pod/video/management/commands/check_obsolete_videos.py:221
 #, python-format
 msgid "Hello %(name)s,"
 msgstr "Bonjour %(name)s,"
 
-#: pod/video/management/commands/check_obsolete_videos.py:208
-#: pod/video/management/commands/check_obsolete_videos.py:228
+#: pod/video/management/commands/check_obsolete_videos.py:204
+#: pod/video/management/commands/check_obsolete_videos.py:224
 #, python-format
 msgid ""
 "Your video intitled \"%(title)s\" will soon arrive at the deletion deadline."
@@ -6138,8 +6138,8 @@ msgstr ""
 "Votre vidéo intitulée \"%(title)s\" arrive bientôt à la date limite de "
 "suppression."
 
-#: pod/video/management/commands/check_obsolete_videos.py:213
-#: pod/video/management/commands/check_obsolete_videos.py:233
+#: pod/video/management/commands/check_obsolete_videos.py:209
+#: pod/video/management/commands/check_obsolete_videos.py:229
 #, python-format
 msgid ""
 "It will be deleted on %(date_delete)s.<br/>\n"
@@ -6148,7 +6148,7 @@ msgstr ""
 "Elle sera supprimée le %(date_delete)s.<br/>\n"
 "Si vous souhaitez la conserver, "
 
-#: pod/video/management/commands/check_obsolete_videos.py:217
+#: pod/video/management/commands/check_obsolete_videos.py:213
 #, python-format
 msgid ""
 "you can change the removal date by editing your video:</p>\n"
@@ -6160,7 +6160,7 @@ msgstr ""
 "%(url)s</a></p>\n"
 "\n"
 
-#: pod/video/management/commands/check_obsolete_videos.py:237
+#: pod/video/management/commands/check_obsolete_videos.py:233
 #, python-format
 msgid ""
 "please contact the manager(s) in charge of your establishment at this "
@@ -6169,30 +6169,30 @@ msgstr ""
 "veuillez contacter les gestionnaires en charge de votre établissement à "
 "l’adresse suivante : %(email_address)s</p>\n"
 
-#: pod/video/management/commands/check_obsolete_videos.py:246
+#: pod/video/management/commands/check_obsolete_videos.py:242
 msgid "Your video will be obsolete"
 msgstr "Votre vidéo sera obsolète"
 
-#: pod/video/management/commands/check_obsolete_videos.py:253
+#: pod/video/management/commands/check_obsolete_videos.py:249
 #, python-format
 msgid "Mail sent to %(to_email)s for video %(title)s."
 msgstr "Courriel envoyé à %(to_email)s pour la vidéo %(title)s."
 
-#: pod/video/management/commands/check_obsolete_videos.py:261
-#: pod/video/management/commands/check_obsolete_videos.py:314
-#: pod/video/management/commands/check_obsolete_videos.py:365
+#: pod/video/management/commands/check_obsolete_videos.py:257
+#: pod/video/management/commands/check_obsolete_videos.py:310
+#: pod/video/management/commands/check_obsolete_videos.py:361
 #, python-format
 msgid "Hello manager(s) of %(estab)s on %(site_title)s,"
 msgstr "Bonjour les gestionnaire(s) de %(estab)s sur %(site_title)s,"
 
-#: pod/video/management/commands/check_obsolete_videos.py:264
-#: pod/video/management/commands/check_obsolete_videos.py:317
-#: pod/video/management/commands/check_obsolete_videos.py:368
+#: pod/video/management/commands/check_obsolete_videos.py:260
+#: pod/video/management/commands/check_obsolete_videos.py:313
+#: pod/video/management/commands/check_obsolete_videos.py:364
 #, python-format
 msgid "Hello manager(s) of %(site_title)s,"
 msgstr "Bonjour au(x) gestionnaire(s) de %(site_title)s,"
 
-#: pod/video/management/commands/check_obsolete_videos.py:269
+#: pod/video/management/commands/check_obsolete_videos.py:265
 msgid ""
 "For information, you will find below the list of video will soon arrive at "
 "the deletion deadline."
@@ -6200,11 +6200,11 @@ msgstr ""
 "Pour information, vous trouverez ci-dessous la liste des vidéos qui "
 "arriveront bientôt à la date limite de suppression."
 
-#: pod/video/management/commands/check_obsolete_videos.py:281
+#: pod/video/management/commands/check_obsolete_videos.py:277
 msgid "The obsolete videos on Pod"
 msgstr "Les vidéos obsolètes sur Pod"
 
-#: pod/video/management/commands/check_obsolete_videos.py:305
+#: pod/video/management/commands/check_obsolete_videos.py:301
 #, python-format
 msgid ""
 "Manager of '%(estab)s' notified for %(nb)s soon to be obsolete video(s)."
@@ -6212,43 +6212,42 @@ msgstr ""
 "Le(s) gestionnaire(s) de « %(estab)s » ont été notifié(s) de %(nb)s vidéo(s) "
 "bientôt obsolètes."
 
-#: pod/video/management/commands/check_obsolete_videos.py:322
+#: pod/video/management/commands/check_obsolete_videos.py:318
 msgid "For information, you will find below the list of deleted video."
 msgstr ""
 "Pour information, vous trouverez ci-dessous la liste des vidéos supprimées."
 
-#: pod/video/management/commands/check_obsolete_videos.py:333
+#: pod/video/management/commands/check_obsolete_videos.py:329
 msgid "The deleted videos on Pod"
 msgstr "Les vidéos supprimées sur Pod"
 
-#: pod/video/management/commands/check_obsolete_videos.py:357
+#: pod/video/management/commands/check_obsolete_videos.py:353
 #, python-format
 msgid "Manager of '%(et)s' notified for %(nb)s deleted video(s)."
 msgstr ""
 "Le(s) gestionnaire(s) de « %(et)s » ont été notifié(s) de %(nb)s vidéo(s) "
 "supprimée(s)."
 
-#: pod/video/management/commands/check_obsolete_videos.py:373
+#: pod/video/management/commands/check_obsolete_videos.py:369
 msgid "For information, you will find below the list of archived video."
 msgstr ""
 "Pour information, vous trouverez ci-dessous la liste des vidéos archivées."
 
-#: pod/video/management/commands/check_obsolete_videos.py:384
+#: pod/video/management/commands/check_obsolete_videos.py:380
 msgid "The archived videos on Pod"
 msgstr "Les vidéos archivées sur Pod"
 
-#: pod/video/management/commands/check_obsolete_videos.py:409
+#: pod/video/management/commands/check_obsolete_videos.py:405
 #, python-format
 msgid "Manager of '%(estab)s' notified for %(nb)s archived video(s)."
 msgstr ""
 "Le(s) gestionnaire(s) de '%(estab)s' ont été notifié(s) de %(nb)s vidéo(s) "
 "archivée(s)."
 
-#: pod/video/management/commands/check_obsolete_videos.py:420
-#, fuzzy, python-format
-#| msgid "In %(deadline)s days"
+#: pod/video/management/commands/check_obsolete_videos.py:416
+#, python-format
 msgid "In %(deadline)s days:"
-msgstr "Dans %(deadline)s jours"
+msgstr "Dans %(deadline)s jours :"
 
 #: pod/video/models.py:74 pod/video/views.py:136
 msgid "None / All"
@@ -7468,7 +7467,7 @@ msgstr ""
 "l’option ‘%(option)s’ de la balise %(tag)s n’est pas un choix valide : "
 "’%(value)s’"
 
-#: pod/video/tests/test_models.py:200 pod/video/tests/test_models.py:244
+#: pod/video/tests/test_models.py:202 pod/video/tests/test_models.py:247
 #: pod/video/translation.py:12 pod/video/translation.py:17
 msgid "-- sorry, no translation provided --"
 msgstr "-- désolé, aucune traduction fournie --"
