@@ -10,6 +10,13 @@ start:
 	python3 manage.py runserver localhost:8080 --insecure
 	# --insecure let serve static files even when DEBUG=False
 
+starts:
+	# Démarre le serveur de test en https auto-signé
+	# nécessite les django-extensions
+	# cf https://timonweb.com/django/https-django-development-server-ssl-certificate/
+	(sleep 15 ; open https://localhost:8000) &
+	coverage run --source='.' manage.py runserver_plus --cert-file cert.pem --key-file key.pem
+
 install:
 	# Première installation de pod (BDD SQLite intégrée)
 	npm install -g yarn

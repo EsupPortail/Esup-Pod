@@ -410,9 +410,3 @@ class Encoding_video_model(Encoding_video):
     def encode_video(self):
         """Start video encoding."""
         self.start_encode()
-
-
-@receiver(pre_delete, sender=Encoding_video_model, dispatch_uid="pre_del-encoding_video")
-def encoding_video_removal(sender, instance, using, **kwargs):
-    """Remove related data before deleting an Encoding_video_model."""
-    instance.remove_old_data()
