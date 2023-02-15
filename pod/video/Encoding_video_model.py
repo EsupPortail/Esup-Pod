@@ -9,8 +9,6 @@ from .models import EncodingLog
 from .models import Video
 from pod.completion.models import Track
 from django.core.files import File
-from django.dispatch import receiver
-from django.db.models.signals import pre_delete
 from .Encoding_video import (
     Encoding_video,
     FFMPEG_NB_THUMBNAIL,
