@@ -535,7 +535,7 @@ class Event(models.Model):
         00:35:00
         """
         if self.end_date and self.start_date:
-            return self.start_date <= timezone.now() <= self.end_date
+            return self.start_date <= timezone.localtime(timezone.now()) <= self.end_date
         else:
             return False
 

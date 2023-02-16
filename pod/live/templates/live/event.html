@@ -5,7 +5,7 @@
 
 {% block page_extra_head %}
 {% include 'videos/video-header.html' %}
-{% if event.broadcaster.enable_viewer_count %}
+{% if event.is_current and event.broadcaster.enable_viewer_count %}
     <script>let heartbeat_delay = {{ heartbeat_delay }}</script>
     <script src="{% static 'js/viewcounter.js' %}?ver={{ VERSION }}"></script>
 {% endif %}
@@ -172,6 +172,7 @@
 
 {% if  event.broadcaster.status and event.enable_transcription and event.broadcaster.transcription_file %}
 <script>
+
   document.addEventListener("DOMContentLoaded", function () {
       let player = videojs("podvideoplayer");
       player.ready(function () {
