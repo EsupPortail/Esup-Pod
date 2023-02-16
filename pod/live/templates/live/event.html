@@ -44,9 +44,12 @@
             <div class="p-3 mb-2 bg-warning text-dark">
                 {% trans "The event is scheduled from:" %} {{ event.start_date }} {% trans 'to' %} {{ event.end_date }}
             </div>
+            <!--
             <div id="divvideoonhold" style="display: none;">
                 <video id="podvideoonholdplayer"></video>
             </div>
+            -->
+
 
             {# waiting video #}
             {% if event.video_on_hold.is_video %}

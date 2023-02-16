@@ -69,6 +69,7 @@
 
     // Management of the video on hold
     {% if event.video_on_hold.is_video and event.is_coming %}
+
         // In this case, loop is necessary
         options["loop"] = true;
         let playerOnHold = videojs('podvideoonholdplayer', options, function () {
@@ -83,49 +84,51 @@
         playerOnHold.src(mp4_sources);
 
         $("#divvideoonhold").css("display", "block");
+    {% else %}
+            // Management of the streaming live
+            let player = videojs('podvideoplayer', options, function () {
+            })
+
+            {% if event.broadcaster.enable_viewer_count and not request.GET.is_iframe %}
+                player.videoJsViewerCount();
+            {% endif %}
+
+            player.videoJsLogo({
+                imgsrc: '{% static LOGO_PLAYER %}',
+                linktitle: '{{TITLE_ETB}} - {{TITLE_SITE}}',
+                link: '{{LINK_PLAYER}}'
+            });
+
+            player.on('error', function () {
+                // Handle successives errors to avoid multiple reload
+                if (typeof (errored) == 'undefined' || !errored) {
+                    let errored = true;
+                    let modal = player.createModal('{% trans "Live not found, retry in 10 seconds" %}');
+                    setTimeout(function () {
+                        errored = false;
+                        modal.close();
+                        player.src({
+                            src: player.currentSrc(),
+                            type: player.currentType(),
+                            overrideNative: true
+                        });
+                    }, 10000)
+                }
+            })
+
+            // Fire this event when live started
+            player.on('loadedmetadata', function () {
+                if (debug) {
+                    console.info("Streaming live starts.");
+                }
+                // Display the streaming live
+                started = true;
+                $("#divvideoonhold").css("display", "none");
+                $("#divvideoplayer").css("display", "block");
+            })
     {% endif %}
 
-    // Management of the streaming live
-    let player = videojs('podvideoplayer', options, function () {
-    })
 
-    {% if event.broadcaster.enable_viewer_count and not request.GET.is_iframe %}
-        player.videoJsViewerCount();
-    {% endif %}
-
-    player.videoJsLogo({
-        imgsrc: '{% static LOGO_PLAYER %}',
-        linktitle: '{{TITLE_ETB}} - {{TITLE_SITE}}',
-        link: '{{LINK_PLAYER}}'
-    });
-
-    player.on('error', function () {
-        // Handle successives errors to avoid multiple reload
-        if (typeof (errored) == 'undefined' || !errored) {
-            let errored = true;
-            let modal = player.createModal('{% trans "Live not found, retry in 10 seconds" %}');
-            setTimeout(function () {
-                errored = false;
-                modal.close();
-                player.src({
-                    src: player.currentSrc(),
-                    type: player.currentType(),
-                    overrideNative: true
-                });
-            }, 10000)
-        }
-    })
-
-    // Fire this event when live started
-    player.on('loadedmetadata', function () {
-        if (debug) {
-            console.info("Streaming live starts.");
-        }
-        // Display the streaming live
-        started = true;
-        $("#divvideoonhold").css("display", "none");
-        $("#divvideoplayer").css("display", "block");
-     })
 
     // Recording actions on the stream
     $(document).on('click', '#startrecord', function () {
