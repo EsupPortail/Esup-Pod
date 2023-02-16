@@ -77,7 +77,7 @@ createconfigs:
 
 # -- Docker
 # Use for docker run and docker exec commands
-include .env.dev
+-include .env.dev
 export
 COMPOSE = docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod
 DOCKER_LOGS = docker logs -f
@@ -93,7 +93,8 @@ docker-logs: ## display app logs (follow mode)
 	@$(DOCKER_LOGS) pod-dev-with-volumes
 
 echo-env:
-	echo $(ELASTICSEARCH_TAG)
+	@echo ELASTICSEARCH_TAG=$(ELASTICSEARCH_TAG)
+	@echo PYTHON_TAG=$(PYTHON_TAG)
 
 docker-build:
 	# Démarre le serveur de test en recompilant les conteuneurs de la stack
