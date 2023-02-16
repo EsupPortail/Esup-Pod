@@ -47,9 +47,9 @@ User._meta.ordering = ["username"]
 # SET USE_ESTABLISHMENT_FIELD
 USE_ESTABLISHMENT_FIELD = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
 
-TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
+USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
-if TRANSCRIPT:
+if USE_TRANSCRIPTION:
     from . import transcript
 
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
@@ -219,7 +219,7 @@ class VideoAdmin(admin.ModelAdmin):
                 "video",
                 "owner",
             )
-        if not TRANSCRIPT:
+        if not USE_TRANSCRIPTION:
             exclude += ("transcript",)
         if request.user.is_staff is False or obj is None or USE_OBSOLESCENCE is False:
             exclude += ("date_delete",)

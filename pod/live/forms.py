@@ -15,13 +15,13 @@ from django.utils import timezone
 from datetime import datetime
 from django.contrib import admin
 
-
-FILEPICKER = False
+USE_LIVE_TRANSCRIPTION = getattr(settings, "USE_LIVE_TRANSCRIPTION", False)
+__FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
-    FILEPICKER = True
+    __FILEPICKER__ = True
     from pod.podfile.widgets import CustomFileWidget
 
-PILOTING_CHOICES = getattr(settings, "BROADCASTER_PILOTING_SOFTWARE", [])
+BROADCASTER_PILOTING_SOFTWARE = getattr(settings, "BROADCASTER_PILOTING_SOFTWARE", [])
 
 EVENT_ACTIVE_AUTO_START = getattr(settings, "EVENT_ACTIVE_AUTO_START", False)
 
@@ -50,7 +50,7 @@ class BuildingAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(BuildingAdminForm, self).__init__(*args, **kwargs)
-        if FILEPICKER:
+        if __FILEPICKER__:
             self.fields["headband"].widget = CustomFileWidget(type="image")
 
     def clean(self):
@@ -66,11 +66,11 @@ class BroadcasterAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(BroadcasterAdminForm, self).__init__(*args, **kwargs)
-        if FILEPICKER:
+        if __FILEPICKER__:
             self.fields["poster"].widget = CustomFileWidget(type="image")
 
         impl_choices = [[None, ""]]
-        for val in PILOTING_CHOICES:
+        for val in BROADCASTER_PILOTING_SOFTWARE:
             impl_choices.append([val, val])
 
         self.fields["piloting_implementation"] = forms.ChoiceField(
@@ -106,7 +106,7 @@ class EventAdminForm(forms.ModelForm):
         self.request = kwargs.pop("request", None)
         super(EventAdminForm, self).__init__(*args, **kwargs)
         self.fields["owner"].initial = self.request.user
-        if FILEPICKER and self.fields.get("thumbnail"):
+        if __FILEPICKER__ and self.fields.get("thumbnail"):
             self.fields["thumbnail"].widget = CustomFileWidget(type="image")
 
     def clean(self):
@@ -141,27 +141,41 @@ class CustomBroadcasterChoiceField(forms.ModelChoiceField):
 
 
 def check_event_date_and_hour(form):
-    if not (
-        {"start_date", "end_date", "broadcaster"} <= form.cleaned_data.keys()
-        or {"start_date", "end_time", "broadcaster"} <= form.cleaned_data.keys()
+    if (
+        "end_date" not in form.cleaned_data.keys()
+        and "end_time" not in form.cleaned_data.keys()
     ):
         return
-    d_deb = form.cleaned_data["start_date"]
-    d_fin = None
-    d_fin_field = "end_time" if form.cleaned_data.get("end_time") else "end_date"
+
+    if "start_date" in form.cleaned_data.keys():
+        d_deb = form.cleaned_data["start_date"]
+    else:
+        d_deb = form.instance.start_date
+
+    if "broadcaster" in form.cleaned_data.keys():
+        brd = form.cleaned_data["broadcaster"]
+    else:
+        brd = form.instance.broadcaster
+
     if form.cleaned_data.get("end_time"):
         d_fin = datetime.combine(d_deb.date(), form.cleaned_data["end_time"])
         d_fin = timezone.make_aware(d_fin)
+        d_fin_field = "end_time"
     else:
         d_fin = form.cleaned_data["end_date"]
-    brd = form.cleaned_data["broadcaster"]
+        d_fin_field = "end_date"
 
+    validate_consistency(brd, d_deb, d_fin, d_fin_field, form)
+
+
+def validate_consistency(brd, d_deb, d_fin, d_fin_field, form):
     if timezone.now() >= d_fin:
         form.add_error(d_fin_field, _("End should not be in the past"))
         raise forms.ValidationError(_("An event cannot be planned in the past"))
 
     if d_deb >= d_fin:
-        form.add_error("start_date", _("Start should not be after end"))
+        if form.cleaned_data.get("start_date"):
+            form.add_error("start_date", _("Start should not be after end"))
         form.add_error(d_fin_field, _("Start should not be after end"))
         raise forms.ValidationError(_("Planification error."))
 
@@ -173,7 +187,10 @@ def check_event_date_and_hour(form):
         events = events.exclude(id=form.instance.id)
 
     if events.exists():
-        form.add_error("start_date", _("An event is already planned at these dates"))
+        if form.cleaned_data.get("start_date"):
+            form.add_error("start_date", _("An event is already planned at these dates"))
+        else:
+            form.add_error(d_fin_field, _("An event is already planned at these dates"))
         raise forms.ValidationError(_("Planification error."))
 
 
@@ -233,6 +250,7 @@ class EventForm(forms.ModelForm):
                     "iframe_height",
                     "aside_iframe_url",
                     "thumbnail",
+                    "enable_transcription",
                 ],
             },
         ),
@@ -359,6 +377,7 @@ class EventForm(forms.ModelForm):
             self.remove_field("broadcaster")
             self.remove_field("owner")
             self.remove_field("thumbnail")
+            self.remove_field("enable_transcription")
 
     def remove_field(self, field):
         if self.fields.get(field):
@@ -401,9 +420,11 @@ class EventForm(forms.ModelForm):
             "additional_owners": AddOwnerWidget,
             "end_time": widgets.AdminTimeWidget,
         }
-        if FILEPICKER:
+        if __FILEPICKER__:
             fields.append("thumbnail")
             widgets["thumbnail"] = CustomFileWidget(type="image")
+        if USE_LIVE_TRANSCRIPTION:
+            fields.append("enable_transcription")
 
 
 class EventDeleteForm(forms.Form):
@@ -416,3 +437,47 @@ class EventDeleteForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(EventDeleteForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
+
+
+class EventImmediateForm(forms.ModelForm):
+    end_date = forms.SplitDateTimeField()
+    end_time = forms.TimeField(label=_("End time"), widget=widgets.AdminDateWidget)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user", None)
+        super(EventImmediateForm, self).__init__(*args, **kwargs)
+        self.auto_id = "event_%s"
+        event_date = timezone.localtime().strftime("%d/%m/%Y %H:%M")
+        self.fields["title"].initial = _("Recording of %(user)s the %(date)s") % {
+            "user": self.user.first_name + " " + self.user.last_name,
+            "date": event_date,
+        }
+
+        # Manage required fields html
+        self.fields = add_placeholder_and_asterisk(self.fields)
+        # Manage fields to display
+        self.initFields()
+
+    def clean(self):
+        check_event_date_and_hour(self)
+
+    def initFields(self):
+        del self.fields["end_date"]
+        self.fields["end_time"].widget.attrs["class"] += " vTimeField"
+        self.fields["end_time"].initial = (
+            timezone.localtime(self.instance.end_date).strftime("%H:%M")
+            if self.instance
+            else timezone.localtime(
+                self.fields["start_date"].initial + timezone.timedelta(hours=1)
+            ).strftime("%H:%M")
+        )
+
+    class Meta(object):
+        model = Event
+        fields = [
+            "title",
+        ]
+        hidden_fields = []
+        widgets = {
+            "end_time": widgets.AdminTimeWidget,
+        }

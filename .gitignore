@@ -72,3 +72,17 @@ compile-model
 ################
 bower_components
 node_modules
+
+# Conteneurisation de POD #
+###########################
+.run
+.env.dev
+tmp-local/
+portainer-data
+v8-compile-cache-0
+pod/db_migrations
+pod/log
+pod/media
+pod/static
+pod/node_modules/*
+tmp/

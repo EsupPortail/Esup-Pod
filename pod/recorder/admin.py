@@ -13,7 +13,6 @@ from pod.video.models import Type
 # Register your models here.
 
 RECORDER_ADDITIONAL_FIELDS = getattr(settings, "RECORDER_ADDITIONAL_FIELDS", ())
-TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
 
 
 class RecordingAdmin(admin.ModelAdmin):
@@ -117,7 +116,10 @@ class RecorderAdmin(admin.ModelAdmin):
         for f in available_fields:
             if f not in RECORDER_ADDITIONAL_FIELDS:
                 exclude += (f,)
-        if not TRANSCRIPT and "transcript" not in exclude:
+        if (
+            not getattr(settings, "USE_TRANSCRIPTION", False)
+            and "transcript" not in exclude
+        ):
             exclude += ("transcript",)
         if not request.user.is_superuser:
             exclude += ("sites",)

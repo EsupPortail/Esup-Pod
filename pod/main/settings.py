@@ -125,7 +125,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 # WARNING: this folder must have previously been created.
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-
 ##
 # CKeditor settings
 #

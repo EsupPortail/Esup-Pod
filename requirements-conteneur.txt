@@ -1,0 +1,2 @@
+importlib-metadata==4.13.0
+elasticsearch==7.17.7
