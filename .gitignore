@@ -46,10 +46,15 @@ log/
 media/
 pod/*/migrations/
 pod/custom/*
+pod/main/static/custom/img
 !pod/custom/settings_local.py.example
 settings_local.py
 scripts/bbb-pod-live/docker-compose.yml
 transcription/*
+
+# Unit test utilities #
+#######################
+chromedriver
 
 ## Others
 pod/static/
@@ -67,6 +72,7 @@ compile-model
 ################
 *.crt
 *.key
+*.pem
 
 # Bower stuffs #
 ################
@@ -81,8 +87,4 @@ tmp-local/
 portainer-data
 v8-compile-cache-0
 pod/db_migrations
-pod/log
-pod/media
-pod/static
-pod/node_modules/*
 tmp/
