@@ -8,26 +8,34 @@ import time
 import subprocess
 import json
 
-from .encoding_settings import (
-    FFMPEG_CMD,
-    FFPROBE_CMD,
-    FFMPEG_CRF,
-    FFMPEG_NB_THREADS,
-    FFPROBE_GET_INFO,
-    FFMPEG_STUDIO_COMMAND,
-)
-
-FFMPEG_CMD = getattr(settings, "FFMPEG_CMD", FFMPEG_CMD)
-FFPROBE_CMD = getattr(settings, "FFPROBE_CMD", FFPROBE_CMD)
-FFMPEG_CRF = getattr(settings, "FFMPEG_CRF", FFMPEG_CRF)
-FFMPEG_NB_THREADS = getattr(settings, "FFMPEG_NB_THREADS", FFMPEG_NB_THREADS)
-FFPROBE_GET_INFO = getattr(settings, "FFPROBE_GET_INFO", FFPROBE_GET_INFO)
-FFMPEG_STUDIO_COMMAND = getattr(settings, "FFMPEG_STUDIO_COMMAND", FFMPEG_STUDIO_COMMAND)
-
+FFMPEG = getattr(settings, "FFMPEG", "ffmpeg")
+FFPROBE = getattr(settings, "FFPROBE", "ffprobe")
 DEBUG = getattr(settings, "DEBUG", True)
 
 LAUNCH_ENCODE_VIDEO = getattr(settings, "LAUNCH_ENCODE_VIDEO", "encode_video")
 
+# maximum threads use by ffmpeg
+FFMPEG_NB_THREADS = getattr(settings, "FFMPEG_NB_THREADS", 0)
+
+GET_INFO_VIDEO = getattr(
+    settings,
+    "GET_INFO_VIDEO",
+    "%(ffprobe)s -v quiet -show_format -show_streams -select_streams v:0 "
+    + "-print_format json -i %(source)s",
+)
+
+FFMPEG_STATIC_PARAMS = getattr(
+    settings,
+    "FFMPEG_STATIC_PARAMS",
+    " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf %(crf)s "
+    + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" '
+    + "-max_muxing_queue_size 4000 "
+    + "-deinterlace -threads %(nb_threads)s ",
+)
+
+FFMPEG_CRF = getattr(settings, "FFMPEG_CRF", 22)
+
+FFMPEG_MISC_PARAMS = getattr(settings, "FFMPEG_MISC_PARAMS", " -hide_banner -y -vsync 0 ")
 
 # ##########################################################################
 # ENCODE VIDEO STUDIO: MAIN ENCODE
@@ -59,15 +67,13 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
     if presenter_source and presentation_source:
         # to put it in the right order
         input_video = '-i "' + presentation_source + '" -i "' + presenter_source + '" '
-        command = FFPROBE_GET_INFO % {
-            "ffprobe": FFPROBE_CMD,
-            "select_streams": "-select_streams v:0 ",
+        command = GET_INFO_VIDEO % {
+            "ffprobe": FFPROBE,
             "source": '"' + presentation_source + '" ',
         }
         info_presentation_video = get_video_info(command)
-        command = FFPROBE_GET_INFO % {
-            "ffprobe": FFPROBE_CMD,
-            "select_streams": "-select_streams v:0 ",
+        command = GET_INFO_VIDEO % {
+            "ffprobe": FFPROBE,
             "source": '"' + presenter_source + '" ',
         }
         info_presenter_video = get_video_info(command)
@@ -80,8 +86,13 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
     else:
         subcmd = " -vsync 0 "
     subcmd += " -movflags +faststart -f mp4 "
-
-    msg = launch_encode_video_studio(input_video, subtime, subcmd, video_output)
+    static_params = FFMPEG_STATIC_PARAMS % {
+        "nb_threads": FFMPEG_NB_THREADS,
+        "crf": FFMPEG_CRF,
+    }
+    msg = launch_encode_video_studio(
+        input_video, subtime + static_params + subcmd, video_output
+    )
     from pod.recorder.models import Recording
 
     recording = Recording.objects.get(id=recording_id)
@@ -157,18 +168,13 @@ def get_height(info):
     return in_height
 
 
-def launch_encode_video_studio(input_video, subtime, subcmd, video_output):
+def launch_encode_video_studio(input_video, subcmd, video_output):
     """Encode video for studio."""
     msg = ""
-    partial_command = FFMPEG_STUDIO_COMMAND % {
-        "nb_threads": FFMPEG_NB_THREADS,
-        "input": input,
-        "subtime": subtime,
-        "crf": FFMPEG_CRF,
-    }
-    ffmpegStudioCommand = "%s %s %s %s" % (
-        FFMPEG_CMD,
-        partial_command,
+    ffmpegStudioCommand = "%s %s %s %s %s" % (
+        FFMPEG,
+        FFMPEG_MISC_PARAMS,
+        input_video,
         subcmd,
         video_output,
     )

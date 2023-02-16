@@ -165,60 +165,63 @@
 {% block more_script %}
   <script src="/admin/jsi18n/"></script>
   <script src="{% static 'admin/js/core.js' %}?ver={{ VERSION }}"></script>
+  <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{ VERSION }}"></script>
+  <script src="{% static 'admin/js/jquery.init.js' %}?ver={{ VERSION }}"></script>
   <script src="{% static 'js/broadcaster_from_building.js' %}?ver={{ VERSION }}"></script>
 
   {{ form.media }}
 
   <script>
-    
-    if (document.getElementById("event_is_draft")){
-      document.getElementById("event_is_draft").addEventListener("click", () => showRestrictions());
-    }
-    if (document.getElementById("event_is_restricted")){
-      document.getElementById("event_is_restricted").addEventListener("click", () => showGroups());
-    }
+    $("#advanced_options_btn").click(() => {
+      if ($(this).data("display") === true){
+        $(".advanced_options, .draft_access, .groups_access").removeClass("show").addClass("hide");
+        $(this).text("{% trans 'Display advanced options' %}");
+        $(this).data("display", false)
+      } else {
+        $(".advanced_options, .draft_access, .groups_access").removeClass("hide").addClass("show");
+        $(this).text("{% trans 'Hide advanced options' %}");
+        $(this).data("display", true)
+        showRestrictions();
+      }
+    })
+
+    $("#event_is_draft").change(() => showRestrictions());
+    $("#event_is_restricted").change(() => showGroups());
+
     {# fields selectable only if not draft #}
     let showRestrictions = () => {
-      document.querySelectorAll(".draft_access, .groups_access").forEach((draft_access) => {
-        if (document.getElementById("event_is_draft").checked) {
-          draft_access.classList.remove("show");
-          draft_access.classList.add("hide");
-        } else {
-          draft_access.classList.remove("hide")
-          draft_access.classList.add("show");
-          showGroups();
-        }
-      })
-    
+      let draft_access = $(".draft_access, .groups_access")
+      if ($("#event_is_draft").prop("checked")) {
+        draft_access.removeClass("show").addClass("hide");
+      } else {
+        draft_access.removeClass("hide").addClass("show");
+        showGroups();
+      }
     };
 
     {# groups field available only if restricted #}
     let showGroups = () => {
-     document.querySelectorAll(".groups_access").forEach((gp_access) => {
-        if (document.getElementById("event_is_restricted").checked) {
-          gp_access.classList.remove("hide");
-          gp_access.classList.add("show");
-        } else {
-          gp_access.classList.remove("show");
-          gp_access.classList.add("hide");
-        }
-      })
-   
+      let gp_access = $(".groups_access")
+      if ($("#event_is_restricted").prop("checked")) {
+        gp_access.removeClass("hide").addClass("show");
+      } else {
+        gp_access.removeClass("show").addClass("hide");
+      }
     };
 
-    document.addEventListener("DOMContentLoaded",function () {
+    $('document').ready(function () {
       DateTimeShortcuts.overrideTimeOptions = function () {
         var clockCount = 0;
-        document.querySelectorAll('.clockbox').forEach( (e) => {
-          var $this = e;
+        $('.clockbox').each(function () {
+          var $this = $(this);
           console.log('clockbox');
-          $this.querySelector('h2').remove();
+          $this.find('h2').remove();
         });
-        document.querySelectorAll('ul.timelist').forEach( (e) => {
-          var $this = e;
-          var originalHref = $this.querySelector('a').getAttribute('href');
+        $('ul.timelist').each(function () {
+          var $this = $(this);
+          var originalHref = $this.find('a').attr('href');
           console.log(originalHref);
-          $this.querySelector('li').remove();
+          $this.find('li').remove();
           for (i=8; i <= 20; i++) {
             var newLink = '<li><a href="javascript:DateTimeShortcuts.handleClockQuicklink('+ clockCount + ', ' + i
                 + ');"> ' + i + ':00</a></li>';

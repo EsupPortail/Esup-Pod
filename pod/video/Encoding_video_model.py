@@ -10,15 +10,14 @@ from pod.completion.models import Track
 from django.core.files import File
 from .Encoding_video import (
     Encoding_video,
-    FFMPEG_NB_THUMBNAIL,
-    FFMPEG_CREATE_THUMBNAIL,
+    NB_THUMBNAIL,
+    CREATE_THUMBNAIL,
     FFMPEG_CMD,
     FFMPEG_INPUT,
     FFMPEG_NB_THREADS,
 )
-from .models import LANG_CHOICES
 import json
-
+from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from .encoding_utils import (
     launch_cmd,
     check_file,
@@ -36,19 +35,21 @@ ENCODING_CHOICES = getattr(
         ("playlist", "playlist"),
     ),
 )
-
-__LANG_CHOICES_DICT__ = {
-    key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]
-}
+LANG_CHOICES = getattr(
+    settings,
+    "LANG_CHOICES",
+    ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),
+)
+LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]}
 DEFAULT_LANG_TRACK = getattr(settings, "DEFAULT_LANG_TRACK", "fr")
 
 if getattr(settings, "USE_PODFILE", False):
-    __FILEPICKER__ = True
+    FILEPICKER = True
     from pod.podfile.models import CustomImageModel
     from pod.podfile.models import UserFolder
     from pod.podfile.models import CustomFileModel
 else:
-    __FILEPICKER__ = False
+    FILEPICKER = False
     from pod.main.models import CustomImageModel
     from pod.main.models import CustomFileModel
 
@@ -235,7 +236,7 @@ class Encoding_video_model(Encoding_video):
                 name="home", owner=video_to_encode.owner
             )
 
-            if __FILEPICKER__:
+            if FILEPICKER:
                 podfile, created = CustomFileModel.objects.get_or_create(
                     file=self.get_true_path(list_subtitle_files[sub][1]),
                     name=list_subtitle_files[sub][1],
@@ -252,7 +253,7 @@ class Encoding_video_model(Encoding_video):
             sub_lang = list_subtitle_files[sub][0]
             track_lang = (
                 sub_lang[:2]
-                if (__LANG_CHOICES_DICT__.get(sub_lang[:2]))
+                if (LANG_CHOICES_DICT.get(sub_lang[:2]))
                 else DEFAULT_LANG_TRACK
             )
 
@@ -275,7 +276,7 @@ class Encoding_video_model(Encoding_video):
 
         for thumbnail_path in list_thumbnail_files:
             if check_file(list_thumbnail_files[thumbnail_path]):
-                if __FILEPICKER__:
+                if FILEPICKER:
                     thumbnail = CustomImageModel(
                         folder=videodir, created_by=video_to_encode.owner
                     )
@@ -350,12 +351,12 @@ class Encoding_video_model(Encoding_video):
             "nb_threads": FFMPEG_NB_THREADS,
         }
         output_file = os.path.join(self.output_dir, "thumbnail")
-        thumbnail_command += FFMPEG_CREATE_THUMBNAIL % {
+        thumbnail_command += CREATE_THUMBNAIL % {
             "duration": self.duration,
-            "nb_thumbnail": FFMPEG_NB_THUMBNAIL,
+            "nb_thumbnail": NB_THUMBNAIL,
             "output": output_file,
         }
-        for nb in range(0, FFMPEG_NB_THUMBNAIL):
+        for nb in range(0, NB_THUMBNAIL):
             num_thumb = str(nb + 1)
             self.list_thumbnail_files[num_thumb] = "%s_000%s.png" % (
                 output_file,

@@ -8,17 +8,16 @@ from .models import Enrichment, EnrichmentGroup, EnrichmentVtt
 from django.contrib.auth.models import Group
 from django.contrib.sites.shortcuts import get_current_site
 
-__FILEPICKER__ = False
+FILEPICKER = False
 if getattr(settings, "USE_PODFILE", False):
+    FILEPICKER = True
     from pod.podfile.widgets import CustomFileWidget
-
-    __FILEPICKER__ = True
 
 
 class EnrichmentAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(EnrichmentAdminForm, self).__init__(*args, **kwargs)
-        if __FILEPICKER__:
+        if FILEPICKER:
             self.fields["image"].widget = CustomFileWidget(type="image")
             self.fields["document"].widget = CustomFileWidget(type="file")
 
@@ -68,7 +67,7 @@ class EnrichmentForm(forms.ModelForm):
                 self.fields[myField].widget.attrs["class"] = "form-control"
         self.fields["type"].widget.attrs["class"] = "custom-select form-select required"
         self.fields["stop_video"].widget.attrs["class"] = "form-check"
-        if __FILEPICKER__:
+        if FILEPICKER:
             self.fields["image"].widget = CustomFileWidget(type="image")
             self.fields["document"].widget = CustomFileWidget(type="file")
 
@@ -80,7 +79,7 @@ class EnrichmentForm(forms.ModelForm):
 class EnrichmentVttAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(EnrichmentVttAdminForm, self).__init__(*args, **kwargs)
-        if __FILEPICKER__:
+        if FILEPICKER:
             self.fields["src"].widget = CustomFileWidget(type="file")
 
     class Meta(object):

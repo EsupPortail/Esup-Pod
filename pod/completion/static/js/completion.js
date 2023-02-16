@@ -1,26 +1,21 @@
-document.addEventListener("DOMContentLoaded", function () {
-  document.querySelectorAll("li.contenuTitre").forEach(function (element) {
-    element.style.display = "none";
-  });
-  var accordeon_head = document.querySelectorAll("#accordeon li a.title");
-  if (accordeon_head.length <= 0) return;
-  accordeon_head[0].classList.add("active");
-  let sibling = accordeon_head[0].parentNode.nextElementSibling;
-  slideDown(sibling, 500);
+$(window).on("load", function () {
+  $("li.contenuTitre").css("display", "none");
+
+  var accordeon_head = $("#accordeon li a.title");
+  var accordeon_body = $("#accordeon li.contenuTitre");
+
+  accordeon_head.first().addClass("active").parent().next().slideDown("normal");
 
   // Click on .titre
-  accordeon_head.forEach((element) => {
-    addEventListener("click", (event) => {
-      if (event.target != element) return;
-      event.preventDefault();
-      if (element.getAttribute("class") != "title active") {
-        slideToggle(element.parentNode.nextElementSibling);
-        element.classList.add("active");
-      } else if (element.getAttribute("class") == "title active") {
-        slideUp(element.parentNode.nextElementSibling);
-        element.classList.remove("active");
-      }
-    });
+  accordeon_head.on("click", function (event) {
+    event.preventDefault();
+    if ($(this).attr("class") != "title active") {
+      $(this).parent().next().slideToggle("normal");
+      $(this).addClass("active");
+    } else if ($(this).attr("class") == "title active") {
+      $(this).parent().next().slideUp("normal");
+      $(this).removeClass("active");
+    }
   });
 });
 
@@ -29,55 +24,27 @@ var num = 0;
 var name = "";
 
 // RESET
-document.addEventListener("reset", (event) => {
-  if (!event.target.matches("#accordeon form.completion")) return;
-
-  var id_form = event.target.getAttribute("id");
+$(document).on("reset", "#accordeon form.completion", function (event) {
+  var id_form = $(this).attr("id");
   var name_form = id_form.substring(5, id_form.length);
   var form_new = "form_new_" + name_form;
   var list = "list_" + name_form;
-  document.getElementById(id_form).innerHTML = "";
-  if (id_form == "form_track")
-    document.getElementById("form_track").style.width = "auto";
-  document.getElementById(form_new).style.display = "block";
-  document.querySelectorAll("form").forEach((form) => {
-    form.style.display = "block";
-  });
-  document.querySelectorAll("a.title").forEach(function (element) {
-    element.style.display = "initial";
-  });
-  document.querySelectorAll("table tr").forEach(function (element) {
-    element.classList.remove("info");
-  });
-
-  let fileModalDoc = document.getElementById("fileModal_id_document");
-  let fileModalSrc = document.getElementById("fileModal_id_src");
-
-  fileModalDoc?.remove();
-  fileModalSrc?.remove();
+  $("span#" + id_form).html("");
+  if (id_form == "form_track") $("span#form_track").css("width", "auto");
+  $("form#" + form_new).show();
+  $("form").show();
+  $("a.title").css("display", "initial");
+  $("table tr").removeClass("info");
+  $("#fileModal_id_document").remove();
+  $("#fileModal_id_src").remove();
 });
 
 function show_form(data, form) {
-  let form_el = document.getElementById(form);
-  form_el.style.display = "none";
-  //form_el.innerHTML = data;
-  form_el.innerHTML = data;
-  form_el.querySelectorAll("script").forEach((item) => {
-    if (item.src) {
-      // external script
-
-      let script = document.createElement("script");
-      script.src = item.src;
-      document.body.appendChild(script);
-    } else {
-      // inline script
-      (0, eval)(item.innerHTML);
-    }
-  });
-
-  fadeIn(form_el);
-  if (form === "form_track")
-    document.getElementById("form_track").style.width = "100%";
+  $("#" + form)
+    .hide()
+    .html(data)
+    .fadeIn();
+  if (form === "form_track") $("#form_track").css("width", "100%");
 }
 
 var ajaxfail = function (data, form) {
@@ -93,26 +60,15 @@ var ajaxfail = function (data, form) {
 
 //SUBMIT
 
-document.addEventListener("submit", (e) => {
-  if (
-    e.target.id != "form_new_contributor" &&
-    e.target.id != "form_new_document" &&
-    e.target.id != "form_new_track" &&
-    e.target.id != "form_new_overlay" &&
-    !e.target.matches(".form_change")
-  )
-    return;
-
+$(document).on("submit", "#accordeon form.completion", function (e) {
   e.preventDefault();
   var jqxhr = "";
   var exp = /_([a-z]*)\s?/g;
-  var id_form = e.target.getAttribute("id");
+  var id_form = $(this).attr("id");
   var name_form = "";
   var result_regexp = "";
   if (id_form == undefined) {
-    var form_class = e.target
-      .querySelector("input[type=submit]")
-      .getAttribute("class");
+    var form_class = $(this).find("input[type=submit]").attr("class");
     result_regexp = exp.exec(form_class);
     name_form = result_regexp[1];
   } else {
@@ -121,115 +77,95 @@ document.addEventListener("submit", (e) => {
   }
   var form = "form_" + name_form;
   var list = "list_" + name_form;
-  var action = e.target.querySelector("input[name=action]").value;
-  sendandgetform(e.target, action, name_form, form, list);
+  var action = $(this).find("input[name=action]").val();
+  sendandgetform(this, action, name_form, form, list);
 });
 
-var sendandgetform = async function (elt, action, name, form, list) {
-  var href = elt.getAttribute("action");
+var sendandgetform = function (elt, action, name, form, list) {
+  var href = $(elt).attr("action");
   if (action == "new" || action == "form_save_new") {
-    document.getElementById(form).innerHTML =
-      '<div style="width:100%; margin: 2rem;"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
-    document.querySelectorAll(".info-card").forEach(function (element) {
-      element.style.display = "none";
-    });
-    document.getElementById(name + "-info").style.display = "block";
-
-    let url = window.location.origin + href;
-    let token = elt.csrfmiddlewaretoken.value;
-    form_data = new FormData(elt);
-
-    await fetch(url, {
+    $("#" + form).html(
+      '<div style="width:100%; margin: 2rem;"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>'
+    );
+    $(".info-card").hide();
+    $("#" + name + "-info").show();
+    var jqxhr = $.ajax({
       method: "POST",
-      headers: {
-        "X-CSRFToken": token,
-        "X-Requested-With": "XMLHttpRequest",
+      url: window.location.origin + href,
+      data: {
+        action: action,
+        csrfmiddlewaretoken: $(elt)
+          .find('input[name="csrfmiddlewaretoken"]')
+          .val(),
       },
-
-      body: form_data,
-      datatype: "html",
-    })
-      .then((response) => response.text())
-      .then((data) => {
-        //parse data into html and log it
-        if (data.indexOf(form) == -1) {
-          showalert(
-            gettext(
-              "You are no longer authenticated. Please log in again.",
-              "alert-danger"
-            )
-          );
-        } else {
-          show_form(data, form);
-        }
-      })
-      .catch((error) => {
-        ajaxfail(error, form);
-        document.querySelector("form.form_change").style.display = "block";
-        document.querySelector("form.form_modif").style.display = "block";
-        document.querySelector("form.form_delete").style.display = "block";
-        document.querySelector("form.form_new").style.display = "block";
-        document.getElementById(form).innerHTML = "";
-      });
-
-    document.querySelectorAll("form.form_new").forEach((form) => {
-      if (form) form.style.display = "none";
+      dataType: "html",
     });
-
-    document.querySelectorAll("form.form_change").forEach((form) => {
-      if (form) form.style.display = "none";
+    jqxhr.done(function (data) {
+      if (data.indexOf(form) == -1) {
+        showalert(
+          gettext(
+            "You are no longer authenticated. Please log in again.",
+            "alert-danger"
+          )
+        );
+      } else {
+        show_form(data, form);
+      }
     });
-
-    document.querySelectorAll("form.form_modif").forEach((form) => {
-      if (form) form.style.display = "none";
+    jqxhr.fail(function ($xhr) {
+      var data = $xhr.status + " : " + $xhr.statusText;
+      ajaxfail(data);
+      $("form.form_change").show();
+      $("form.form_modif").show();
+      $("form.form_delete").show();
+      $("form.form_new").show();
+      $("#" + form).html("");
     });
-
-    document.querySelectorAll("form.form_delete").forEach((form) => {
-      if (form) form.style.display = "none";
-    });
-    document.querySelectorAll("a.title").forEach(function (element) {
-      element.style.display = "none";
-    });
+    $("form.form_new").hide();
+    $("form.form_change").hide();
+    $("form.form_modif").hide();
+    $("form.form_delete").hide();
+    $("a.title").css("display", "none");
     hide_others_sections(name);
   }
   if (action == "modify" || action == "form_save_modify") {
-    var id = elt.querySelector("input[name=id]").value;
-    var url = window.location.origin + href;
-    var token = document.csrfmiddlewaretoken.value;
-    form_data = new FormData();
-    form_data.append("action", action);
-    form_data.append("id", id);
-
-    await fetch(url, {
+    var id = $(elt).find("input[name=id]").val();
+    var jqxhr = $.ajax({
       method: "POST",
-      headers: {
-        "X-CSRFToken": token,
-        "X-Requested-With": "XMLHttpRequest",
+      url: window.location.origin + href,
+      data: {
+        action: action,
+        id: id,
+        csrfmiddlewaretoken: $(elt)
+          .find('input[name="csrfmiddlewaretoken"]')
+          .val(),
       },
-      body: form_data,
-    })
-      .then((response) => response.text())
-      .then((data) => {
-        if (data.indexOf(form) == -1) {
-          showalert(
-            gettext(
-              "You are no longer authenticated. Please log in again.",
-              "alert-danger"
-            )
-          );
-        } else {
-          show_form(data, form);
-        }
-      })
-      .catch((error) => {
-        ajaxfail(error, form);
-        document.querySelector("form.form_modif").style.display = "block";
-        document.querySelector("form.form_delete").style.display = "block";
-        document.querySelector("form.form_new").style.display = "block";
-        document.getElementById(form).innerHTML = "";
-      });
-
-    document.querySelector("a.title").style.display = "none";
+      dataType: "html",
+    });
+    jqxhr.done(function (data) {
+      if (data.indexOf(form) == -1) {
+        showalert(
+          gettext(
+            "You are no longer authenticated. Please log in again.",
+            "alert-danger"
+          )
+        );
+      } else {
+        show_form(data, form);
+      }
+    });
+    jqxhr.fail(function ($xhr) {
+      var data = $xhr.status + " : " + $xhr.statusText;
+      ajaxfail(data, form);
+      $("form.form_modif").show();
+      $("form.form_delete").show();
+      $("form.form_new").show();
+      $("#" + form).html("");
+    });
+    $("form.form_new").hide();
+    $("form.form_modif").hide();
+    $("form.form_delete").hide();
+    $("a.title").css("display", "none");
     hide_others_sections(name);
   }
   if (action == "delete") {
@@ -252,109 +188,84 @@ var sendandgetform = async function (elt, action, name, form, list) {
       );
     }
     if (deleteConfirm) {
-      var id = elt.querySelector("input[name=id]").value;
-      var url = window.location.origin + href;
-      var token = document.querySelector(
-        "input[name=csrfmiddlewaretoken]"
-      ).value;
-      let form_data = new FormData();
-      form_data.append("action", action);
-      form_data.append("id", id);
-
-      await fetch(url, {
+      var id = $(elt).find("input[name=id]").val();
+      jqxhr = $.ajax({
         method: "POST",
-        headers: {
-          "X-CSRFToken": token,
-          "X-Requested-With": "XMLHttpRequest",
+        url: window.location.origin + href,
+        data: {
+          action: action,
+          id: id,
+          csrfmiddlewaretoken: $(elt)
+            .find('input[name="csrfmiddlewaretoken"]')
+            .val(),
         },
-        body: form_data,
-      })
-        .then((response) => response.text())
-        .then((data) => {
-          data = JSON.parse(data);
-          if (data.list_data) {
-            refresh_list(data, form, list);
-          } else {
-            showalert(
-              gettext(
-                "You are no longer authenticated. Please log in again.",
-                "alert-danger"
-              )
-            );
-          }
-        })
-        .catch((error) => {
-          ajaxfail(error, form);
-        });
+        dataType: "html",
+      });
+      jqxhr.done(function (data) {
+        data = JSON.parse(data);
+        if (data.list_data) {
+          refresh_list(data, form, list);
+        } else {
+          showalert(
+            gettext(
+              "You are no longer authenticated. Please log in again.",
+              "alert-danger"
+            )
+          );
+        }
+      });
+      jqxhr.fail(function ($xhr) {
+        var data = $xhr.status + " : " + $xhr.statusText;
+        ajaxfail(data, form);
+      });
     }
   }
   if (action == "save") {
-    let form_group = document.querySelector(".form-help-inline");
-    form_group.closest("div.form-group").classList.remove("has-error");
-
-    document.querySelector(".form-help-inline").remove();
+    $(".form-help-inline").parents("div.form-group").removeClass("has-error");
+    $(".form-help-inline").remove();
     if (verify_fields(form)) {
-      var form_el = document.getElementById(form);
-      let data_form = new FormData(form_el);
-      let url = window.location.origin + href;
-      let token = document.querySelector(
-        "input[name=csrfmiddlewaretoken]"
-      ).value;
-
-      await fetch(url, {
+      var data_form = $("form#" + form).serialize();
+      var jqxhr = $.ajax({
         method: "POST",
-        headers: {
-          "X-CSRFToken": token,
-          "X-Requested-With": "XMLHttpRequest",
-        },
-        body: data_form,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.list_data || data.form) {
-            if (data.errors) {
-              document.getElementById("fomeModal_id_src").remove();
-              show_form(data.form, form);
-            } else {
-              refresh_list(data, form, list);
-              window.scrollTop(100);
-            }
+        url: window.location.origin + href,
+        data: data_form,
+        dataType: "html",
+      });
+      jqxhr.done(function (data) {
+        data = JSON.parse(data);
+        if (data.list_data || data.form) {
+          if (data.errors) {
+            $("#fileModal_id_src").remove();
+            show_form(data.form, form);
           } else {
-            showalert(
-              gettext(
-                "You are no longer authenticated. Please log in again.",
-                "alert-danger"
-              )
-            );
+            refresh_list(data, form, list);
+            $(window).scrollTop(100);
+            showalert(gettext("Changes have been saved."), "alert-info");
           }
-        })
-        .catch((error) => {
-          ajaxfail(error, form);
-        });
-
-      document.querySelector("form.form_new").style.display = "none";
-      document.querySelector("form.form_modif").style.display = "none";
-      document.querySelector("form.form_delete").style.display = "none";
+        } else {
+          showalert(
+            gettext("You are no longer authenticated. Please log in again."),
+            "alert-danger"
+          );
+        }
+      });
+      jqxhr.fail(function ($xhr) {
+        var data = $xhr.status + " : " + $xhr.statusText;
+        ajaxfail(data, form);
+      });
+      $("form.form_new").hide();
+      $("form.form_modif").hide();
+      $("form.form_delete").hide();
     }
   }
 };
 
 // Hide others sections
 function hide_others_sections(name_form) {
-  var allElements = document.querySelectorAll("a.title.active");
-  var sections = [];
-  let form = document.querySelector('a[id="section_' + name_form + '"]');
-
-  allElements.forEach(function (element) {
-    if (element.id !== form.id) {
-      sections.push(element);
-    }
-  });
+  var sections = $("a.title.active").not('a[id="section_' + name_form + '"]');
   if (sections.length > 0) {
-    sections.forEach(function (element) {
-      slideUp(element.parentNode.nextElementSibling);
-      element.classList.remove("active");
-    });
+    sections.parent().next().slideUp("normal");
+    sections.removeClass("active");
     var i;
     for (i = 0; i < sections.length; i++) {
       var section = sections[i];
@@ -369,16 +280,12 @@ function hide_others_sections(name_form) {
 
 // Refreshes the list
 function refresh_list(data, form, list) {
-  document.getElementById(form).html = "";
-  document.querySelector("form.form_new").style.display = "block";
-  document.querySelectorAll("form").forEach(function (element) {
-    element.style.display = "block";
-  });
-  document.querySelectorAll("a.title").forEach(function (element) {
-    element.style.display = "initial";
-  });
-  document.getElementById("enrich_player").innerHTML = data.player;
-  documentL.getElementById(list).innerHTML = data.list_data;
+  $("#" + form).html("");
+  $("form.form_new").show();
+  $("form").show();
+  $("a.title").css("display", "initial");
+  $("span#enrich_player").html(data.player);
+  $("span#" + list).html(data.list_data);
 }
 
 // Check fields
@@ -390,62 +297,56 @@ function verify_fields(form) {
       document.getElementById("id_name").value.length < 2 ||
       document.getElementById("id_name").length > 200
     ) {
-      let input = document.getElementById("id_name");
-      input.parentNode.append(
-        "<span class='form-help-inline'>&nbsp;&nbsp;" +
-          gettext("Please enter a name from 2 to 100 caracteres.") +
-          "</span>"
-      );
-      let form_group = input.closest("div.form-group");
-
-      form_group.classList.add("has-error");
-
+      $("input#id_name")
+        .after(
+          "<span class='form-help-inline'>&nbsp;&nbsp;" +
+            gettext("Please enter a name from 2 to 100 caracteres.") +
+            "</span>"
+        )
+        .parents("div.form-group")
+        .addClass("has-error");
       error = true;
     }
     if (document.getElementById("id_weblink").value.length >= 200) {
-      let id_weblink = document.getElementById("id_weblink");
-      id_weblink.insertAdjacentHTML(
-        "afterend",
-        "<span class='form-help-inline'>&nbsp;&nbsp;" +
-          gettext("You cannot enter a weblink with more than 200 caracteres.") +
-          "</span>"
-      );
-      let form_group = id_weblink.closest("div.form-group");
-      form_group.classList.add("has-error");
-
+      $("input#id_weblink")
+        .after(
+          "<span class='form-help-inline'>&nbsp;&nbsp;" +
+            gettext(
+              "You cannot enter a weblink with more than 200 caracteres."
+            ) +
+            "</span>"
+        )
+        .parents("div.form-group")
+        .addClass("has-error");
       error = true;
     }
     if (document.getElementById("id_role").value == "") {
-      let id_role = document.getElementById("id_role");
-      id_role.insertAdjacentHTML(
-        "afterend",
-        "<span class='form-help-inline'>&nbsp;&nbsp;" +
-          gettext("Please enter a role.") +
-          "</span>"
-      );
-      let form_group = id_role.closest("div.form-group");
-      form_group.classList.add("has-error");
+      $("select#id_role")
+        .after(
+          "<span class='form-help-inline'>&nbsp;&nbsp;" +
+            gettext("Please enter a role.") +
+            "</span>"
+        )
+        .parents("div.form-group")
+        .addClass("has-error");
       error = true;
     }
     var id = parseInt(document.getElementById("id_contributor").value);
     var new_role = document.getElementById("id_role").value;
     var new_name = document.getElementById("id_name").value;
-    document
-      .querySelectorAll("#table_list_contributors tbody > tr")
-      .forEach((tr) => {
-        if (
-          id != tr.querySelector("input[name=id]").value &&
-          tr.querySelector("td[class=contributor_name]").innerHTML ==
-            new_name &&
-          tr.querySelector("td[class=contributor_role]").innerHTML == new_role
-        ) {
-          var text = gettext(
-            "There is already a contributor with this same name and role in the list."
-          );
-          showalert(text, "alert-danger");
-          error = true;
-        }
-      });
+    $("#table_list_contributors tbody > tr").each(function () {
+      if (
+        id != $(this).find("input[name=id]")[0].value &&
+        $(this).find("td[class=contributor_name]")[0].innerHTML == new_name &&
+        $(this).find("td[class=contributor_role]")[0].innerHTML == new_role
+      ) {
+        var text = gettext(
+          "There is already a contributor with this same name and role in the list."
+        );
+        showalert(text, "alert-danger");
+        error = true;
+      }
+    });
   } else if (form == "form_track") {
     var element = document.getElementById("id_kind");
     var value = element.options[element.selectedIndex].value
@@ -453,16 +354,14 @@ function verify_fields(form) {
       .toLowerCase();
     var kind = element.options[element.selectedIndex].text.trim().toLowerCase();
     if (value !== "subtitles" && value !== "captions") {
-      let id_kind = document.getElementById("id_kind");
-      id_kind.insertAdjacentHTML(
-        "afterend",
-        "<span class='form-help-inline'>" +
-          gettext("Please enter a correct kind.") +
-          "</span>"
-      );
-      let form_group = id_kind.closest("div.form-group");
-      form_group.classList.add("has-error");
-
+      $("select#id_kind")
+        .after(
+          "<span class='form-help-inline'>" +
+            gettext("Please enter a correct kind.") +
+            "</span>"
+        )
+        .parents("div.form-group")
+        .addClass("has-error");
       error = true;
     }
     var element = document.getElementById("id_lang");
@@ -470,114 +369,103 @@ function verify_fields(form) {
       .trim()
       .toLowerCase();
     if (element.options[element.selectedIndex].value.trim() === "") {
-      let id_lang = document.getElementById("id_lang");
-      id_lang.insertAdjacentHTML(
-        "afterend",
-        "<span class='form-help-inline'>" +
-          gettext("Please select a language.") +
-          "</span>"
-      );
-      let form_group = id_lang.closest("div.form-group");
-      form_group.classList.add("has-error");
-
+      $("select#id_lang")
+        .after(
+          "<span class='form-help-inline'>" +
+            gettext("Please select a language.") +
+            "</span>"
+        )
+        .parents("div.form-group")
+        .addClass("has-error");
       error = true;
     }
     var file_abs_path = document
       .getElementById("fileinput_id_src")
       .getElementsByTagName("a")[0]
       .getAttribute("href");
-    let id_src = document.getElementById("id_src");
     if (document.getElementById("id_src").value.trim() === "") {
-      id_src.insertAdjacentHTML(
-        "afterend",
-        "<span class='form-help-inline'>" +
-          gettext("Please specify a track file.") +
-          "</span>"
-      );
-      let form_group = id_src.closest("div.form-group");
-      form_group.classList.add("has-error");
+      $("input#id_src")
+        .after(
+          "<span class='form-help-inline'>" +
+            gettext("Please specify a track file.") +
+            "</span>"
+        )
+        .parents("div.form-group")
+        .addClass("has-error");
       error = true;
     } else if (!file_abs_path.match(/\.vtt$/)) {
-      id_src.insertAdjacentHTML(
-        "afterend",
-        "<span class='form-help-inline'>" +
-          gettext("Only .vtt format is allowed.") +
-          "</span>"
-      );
-      let form_group = id_src.closest("div.form-group");
-      form_group.classList.add("has-error");
+      $("input#id_src")
+        .after(
+          "<span class='form-help-inline'>" +
+            gettext("Only .vtt format is allowed.") +
+            "</span>"
+        )
+        .parents("div.form-group")
+        .addClass("has-error");
       error = true;
     }
     var is_duplicate = false;
     var file_name = file_abs_path.match(/([\w\d_\-]+)(\.vtt)/)[1].toLowerCase();
-    document
-      .querySelectorAll(".grid-list-track .track_kind.kind")
-      .forEach((elt) => {
-        if (
-          kind === elt.textContent.trim().toLowerCase() &&
-          lang ===
-            elt.parentNode
-              .querySelector("#" + elt.get("id") + ".track_kind.lang")
-              .textContent.trim()
-              .toLowerCase() &&
-          file_name ===
-            elt.parentNode
-              .querySelector("#" + elt.get("id") + ".track_kind.file")
-              .textContent.trim()
-              .split(" ")[0]
-              .toLowerCase()
-        ) {
-          is_duplicate = true;
-          return false;
-        }
-      });
+    $(".grid-list-track .track_kind.kind").each(function () {
+      if (
+        kind === $(this).text().trim().toLowerCase() &&
+        lang ===
+          $(this)
+            .siblings("#" + $(this).attr("id") + ".track_kind.lang")
+            .text()
+            .trim()
+            .toLowerCase() &&
+        file_name ===
+          $(this)
+            .siblings("#" + $(this).attr("id") + ".track_kind.file")
+            .text()
+            .trim()
+            .split(" ")[0]
+            .toLowerCase()
+      ) {
+        is_duplicate = true;
+        return false;
+      }
+    });
     if (is_duplicate) {
-      id_src.insertAdjacentHTML(
-        "afterend",
-        "<span class='form-help-inline'>" +
-          gettext(
-            "There is already a track with the same kind and language in the list."
-          ) +
-          "</span>"
-      );
-      let form_group = id_src.closest("div.form-group");
-      form_group.classList.add("has-error");
+      $("input#id_src")
+        .after(
+          "<br><span class='form-help-inline'>" +
+            gettext(
+              "There is already a track with the same kind and language in the list."
+            ) +
+            "</span>"
+        )
+        .parents("div.form-group")
+        .addClass("has-error");
       error = true;
     }
   } else if (form == "form_document") {
     if (
-      document
-        .getElementById("id_document_thumbnail_img")
-        .getAttribute("src") == "/static/icons/nofile_48x48.png"
+      $("img#id_document_thumbnail_img").attr("src") ==
+      "/static/icons/nofile_48x48.png"
     ) {
-      let id_document_thumbnail = document.getElementById(
-        "id_document_thubmanil_img"
-      );
-      id_document_thumbnail.insertAdjacentHTML(
-        "afterend",
-        "<span class='form-help-inline'>" +
-          gettext("Please select a document") +
-          "</span>"
-      );
-      let form_group = id_document_thumbnail.closest("div.form-group");
-      form_group.classList.add("has-error");
-
+      $("img#id_document_thubmanil_img")
+        .after(
+          "<span class='form-help-inline'>&nbsp;&nbsp;" +
+            gettext("Please select a document.") +
+            "</span>"
+        )
+        .parents("div.form-group")
+        .addClass("has-error");
       error = true;
     }
   } else if (form == "form_overlay") {
     var tags = /<script.+?>|<iframe.+?>/;
     if (tags.exec(document.getElementById("id_content").value) != null) {
-      let id_content = document.getElementById("id_content");
-      id_content.insertAdjacentHTML(
-        "afterend",
-        "<span class='form-help-inline'>&nbsp;&nbsp;" +
-          gettext("Iframe and Script tags are not allowed.") +
-          "</span>"
-      );
-      let form_group = id_content.closest("div.form-group");
-      form_group.forEach(function (element) {
-        element.classList.add("has-error");
-      });
+      $("textarea#id_content")
+        .after(
+          "<span class='form-help-inline'>&nbsp;&nbsp;" +
+            gettext("Iframe and Script tags are not allowed.") +
+            "</span>"
+        )
+        .parents("div.form-group")
+        .addClass("has-error");
       error = true;
     }
   }

@@ -6,18 +6,11 @@
 {% block page_extra_head %}
 <style>
 
-:root{
+  :root{
     --theme-ui-colors-background: var(--pod-background);
     --theme-ui-colors-text: var(--pod-font-color);
-    --theme-ui-colors-gray-0: var(--pod-font-color);
-    --theme-ui-colors-gray-4: var(--pod-background-neutre2-bloc);
-    --theme-ui-colors-button_bg: var(--pod-font-color);
-    --theme-ui-colors-btn-hover: var(--bs-btn-hover-bg);
   }
 
-  .pod-opencast-studio .loading-indicator > svg > circle {
-    stroke: var(--pod-font-color);
-  }
   .pod-opencast-studio {
     --theme-ui-colors-primary: var(--pod-primary);
     --theme-ui-colors-btn-hover: var(--pod-primary-focus);
@@ -25,12 +18,6 @@
   }
   .pod-opencast-studio a[role="button"]:hover{
     color: var(--pod-btn-text);
-  }
-  .pod-opencast-studio .buttons button{
-    transition: filter 1s;
-  }
-  .pod-opencast-studio .buttons button:hover{
-    filter: drop-shadow(0 0 2px var(--pod-btn-text))
   }
 
   [data-theme="dark"] {

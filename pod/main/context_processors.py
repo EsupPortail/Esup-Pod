@@ -15,6 +15,9 @@ from pod.main.models import Configuration
 from django.contrib.sites.shortcuts import get_current_site
 from pod.main.models import AdditionalChannelTab
 
+ORDER_BY = "last_name"
+VALUES_LIST = ["username", "first_name", "last_name"]
+
 MENUBAR_HIDE_INACTIVE_OWNERS = getattr(
     django_settings, "MENUBAR_HIDE_INACTIVE_OWNERS", False
 )
@@ -49,6 +52,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         "TRACKING_TEMPLATE": "",
     },
 )
+OEMBED = getattr(django_settings, "OEMBED", False)
 
 HIDE_USERNAME = getattr(django_settings, "HIDE_USERNAME", False)
 
@@ -60,6 +64,10 @@ HIDE_TYPES_TAB = getattr(django_settings, "HIDE_TYPES_TAB", False)
 
 HIDE_LANGUAGE_SELECTOR = getattr(django_settings, "HIDE_LANGUAGE_SELECTOR", False)
 
+HIDE_USER_FILTER = getattr(django_settings, "HIDE_USER_FILTER", False)
+
+USE_STATS_VIEW = getattr(django_settings, "USE_STATS_VIEW", False)
+
 HIDE_TAGS = getattr(django_settings, "HIDE_TAGS", False)
 
 HIDE_SHARE = getattr(django_settings, "HIDE_SHARE", False)
@@ -68,6 +76,15 @@ HIDE_DISCIPLINES = getattr(django_settings, "HIDE_DISCIPLINES", False)
 
 HIDE_TYPES = getattr(django_settings, "HIDE_TYPES", False)
 
+ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
+    django_settings, "ALLOW_MANUAL_RECORDING_CLAIMING", False
+)
+
+USE_RECORD_PREVIEW = getattr(django_settings, "USE_RECORD_PREVIEW", False)
+SHIB_NAME = getattr(django_settings, "SHIB_NAME", "Identify Federation")
+
+CHUNK_SIZE = getattr(django_settings, "CHUNK_SIZE", 100000)
+
 USE_BBB = getattr(django_settings, "USE_BBB", False)
 
 USE_BBB_LIVE = getattr(django_settings, "USE_BBB_LIVE", False)
@@ -75,6 +92,10 @@ USE_BBB_LIVE = getattr(django_settings, "USE_BBB_LIVE", False)
 COOKIE_LEARN_MORE = getattr(django_settings, "COOKIE_LEARN_MORE", "")
 
 SHOW_EVENTS_ON_HOMEPAGE = getattr(django_settings, "SHOW_EVENTS_ON_HOMEPAGE", False)
+
+DEFAULT_EVENT_THUMBNAIL = getattr(
+    django_settings, "DEFAULT_EVENT_THUMBNAIL", "/img/default-event.svg"
+)
 
 USE_OPENCAST_STUDIO = getattr(django_settings, "USE_OPENCAST_STUDIO", False)
 
@@ -112,6 +133,7 @@ def context_settings(request):
     new_settings["VERSION"] = VERSION
     new_settings["USE_PODFILE"] = USE_PODFILE
     new_settings["THIRD_PARTY_APPS"] = django_settings.THIRD_PARTY_APPS
+    new_settings["OEMBED"] = OEMBED
     new_settings["HIDE_USERNAME"] = HIDE_USERNAME
     new_settings["HIDE_USER_TAB"] = HIDE_USER_TAB
     new_settings["HIDE_CHANNEL_TAB"] = HIDE_CHANNEL_TAB
@@ -121,6 +143,12 @@ def context_settings(request):
     new_settings["HIDE_SHARE"] = HIDE_SHARE
     new_settings["HIDE_DISCIPLINES"] = HIDE_DISCIPLINES
     new_settings["HIDE_TYPES"] = HIDE_TYPES
+    new_settings["HIDE_USER_FILTER"] = HIDE_USER_FILTER
+    new_settings["USE_STATS_VIEW"] = USE_STATS_VIEW
+    new_settings["USE_RECORD_PREVIEW"] = USE_RECORD_PREVIEW
+    new_settings["SHIB_NAME"] = SHIB_NAME
+    new_settings["ALLOW_MANUAL_RECORDING_CLAIMING"] = ALLOW_MANUAL_RECORDING_CLAIMING
+    new_settings["CHUNK_SIZE"] = CHUNK_SIZE
     new_settings["MAINTENANCE_REASON"] = maintenance_text_short
     new_settings["MAINTENANCE_MODE"] = maintenance_mode
     new_settings["MAINTENANCE_TEXT_SHEDULED"] = maintenance_text_sheduled
@@ -132,6 +160,7 @@ def context_settings(request):
     new_settings["USE_OPENCAST_STUDIO"] = USE_OPENCAST_STUDIO
     new_settings["COOKIE_LEARN_MORE"] = COOKIE_LEARN_MORE
     new_settings["SHOW_EVENTS_ON_HOMEPAGE"] = SHOW_EVENTS_ON_HOMEPAGE
+    new_settings["DEFAULT_EVENT_THUMBNAIL"] = DEFAULT_EVENT_THUMBNAIL
     new_settings["USE_MEETING"] = USE_MEETING
     return new_settings
 

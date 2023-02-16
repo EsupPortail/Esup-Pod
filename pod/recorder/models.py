@@ -15,16 +15,60 @@ from django.core.exceptions import ValidationError
 from django.contrib.sites.models import Site
 from pod.video.models import Type
 from pod.video.models import Discipline, Channel, Theme
-from pod.video.models import LANG_CHOICES as __LANG_CHOICES__
-from pod.video.models import CURSUS_CODES as __CURSUS_CODES__
-from pod.video.models import LICENCE_CHOICES as __LICENCE_CHOICES__
-from pod.video.models import RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY as __REVATSO__
 from tagging.fields import TagField
+from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from django.utils.translation import get_language
+
+LANG_CHOICES = getattr(
+    settings,
+    "LANG_CHOICES",
+    ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),
+)
+CURSUS_CODES = getattr(
+    settings,
+    "CURSUS_CODES",
+    (
+        ("0", _("None / All")),
+        ("L", _("Bachelor’s Degree")),
+        ("M", _("Master’s Degree")),
+        ("D", _("Doctorate")),
+        ("1", _("Other")),
+    ),
+)
+LICENCE_CHOICES = getattr(
+    settings,
+    "LICENCE_CHOICES",
+    (
+        ("by", _("Attribution 4.0 International (CC BY 4.0)")),
+        (
+            "by-nd",
+            _("Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)"),
+        ),
+        (
+            "by-nc-nd",
+            _(
+                "Attribution-NonCommercial-NoDerivatives 4.0 "
+                "International (CC BY-NC-ND 4.0)"
+            ),
+        ),
+        (
+            "by-nc",
+            _("Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"),
+        ),
+        (
+            "by-nc-sa",
+            _(
+                "Attribution-NonCommercial-ShareAlike 4.0 "
+                "International (CC BY-NC-SA 4.0)"
+            ),
+        ),
+        ("by-sa", _("Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)")),
+    ),
+)
 
 
 def select_recorder_user():
-    if __REVATSO__:
+    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY:
         return lambda q: (
             Q(is_staff=True) & (Q(first_name__icontains=q) | Q(last_name__icontains=q))
         ) & Q(owner__sites=Site.objects.get_current())
@@ -33,6 +77,10 @@ def select_recorder_user():
             owner__sites=Site.objects.get_current()
         )
 
+
+RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
+    settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
+)
 
 RECORDER_TYPE = getattr(
     settings,
@@ -134,14 +182,14 @@ class Recorder(models.Model):
     cursus = models.CharField(
         _("University course"),
         max_length=1,
-        choices=__CURSUS_CODES__,
+        choices=CURSUS_CODES,
         default="0",
         help_text=_("Select an university course as audience target of the content."),
     )
     main_lang = models.CharField(
         _("Main language"),
         max_length=2,
-        choices=__LANG_CHOICES__,
+        choices=LANG_CHOICES,
         default=get_language(),
         help_text=_("Select the main language used in the content."),
     )
@@ -163,7 +211,7 @@ class Recorder(models.Model):
         Discipline, blank=True, verbose_name=_("Disciplines")
     )
     licence = models.CharField(
-        _("Licence"), max_length=8, choices=__LICENCE_CHOICES__, blank=True, null=True
+        _("Licence"), max_length=8, choices=LICENCE_CHOICES, blank=True, null=True
     )
     channel = models.ManyToManyField(Channel, verbose_name=_("Channels"), blank=True)
     theme = models.ManyToManyField(

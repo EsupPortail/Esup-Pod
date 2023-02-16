@@ -22,9 +22,9 @@ if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomFileModel
     from pod.podfile.models import UserFolder
 
-    __FILEPICKER__ = True
+    FILEPICKER = True
 else:
-    __FILEPICKER__ = False
+    FILEPICKER = False
     from pod.main.models import CustomImageModel
     from pod.main.models import CustomFileModel
 
@@ -58,7 +58,7 @@ def enrichment_to_vtt(list_enrichment, video):
     temp_vtt_file = NamedTemporaryFile(suffix=".vtt")
     with open(temp_vtt_file.name, "w") as f:
         webvtt.write(f)
-    if __FILEPICKER__:
+    if FILEPICKER:
         videodir, created = UserFolder.objects.get_or_create(
             name="%s" % video.slug, owner=video.owner
         )

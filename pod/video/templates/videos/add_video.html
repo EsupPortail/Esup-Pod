@@ -177,6 +177,7 @@
           { "name": "upload_id", "value": data.result.upload_id }
         );
       }
+      console.log(JSON.stringify(data.result))
       var progress = parseInt(data.loaded / data.total * 100.0, 10);
       $('#progBar').val(progress);
     },
@@ -193,6 +194,7 @@
         },
         dataType: "json",
         success: function (data) {
+          console.log(JSON.stringify(data));
           location.href = data.redirlink
         }
       });

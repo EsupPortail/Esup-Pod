@@ -19,13 +19,13 @@ import threading
 import os
 import shutil
 
-__FILEPICKER__ = False
+FILEPICKER = False
 if getattr(settings, "USE_PODFILE", False):
-    __FILEPICKER__ = True
+    FILEPICKER = True
 
 DEBUG = getattr(settings, "DEBUG", True)
 TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "STT")
-TRANSCRIPTION_MODEL_PARAM = getattr(settings, "TRANSCRIPTION_MODEL_PARAM", {})
+MODEL_PARAM = getattr(settings, "MODEL_PARAM", {})
 MODEL_COMPILE_DIR = getattr(settings, "MODEL_COMPILE_DIR", "")
 
 
@@ -86,7 +86,7 @@ class DocumentInline(admin.TabularInline):
 
 
 class DocumentAdmin(admin.ModelAdmin):
-    if __FILEPICKER__:
+    if FILEPICKER:
         form = DocumentAdminForm
     list_display = (
         "document",
@@ -181,9 +181,7 @@ class TrackAdmin(admin.ModelAdmin):
             MODEL_COMPILE_DIR + "/" + enrichModelQueue.lang + "/exp/chain/tdnn/graph"
         )
         to_path: str = (
-            TRANSCRIPTION_MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang][
-                "model"
-            ]
+            MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"]
             + "/graph"
         )
         if os.path.exists(to_path):
@@ -194,9 +192,7 @@ class TrackAdmin(admin.ModelAdmin):
             MODEL_COMPILE_DIR + "/" + enrichModelQueue.lang + "/data/lang_test_rescore"
         )
         to_path: str = (
-            TRANSCRIPTION_MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang][
-                "model"
-            ]
+            MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"]
             + "/rescore/"
         )
         if os.path.isfile(from_path + "/G.fst") and os.path.isfile(
@@ -209,9 +205,7 @@ class TrackAdmin(admin.ModelAdmin):
             MODEL_COMPILE_DIR + "/" + enrichModelQueue.lang + "/exp/rnnlm_out"
         )
         to_path: str = (
-            TRANSCRIPTION_MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang][
-                "model"
-            ]
+            MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang]["model"]
             + "/rnnlm/"
         )
         if os.path.exists(from_path):
@@ -260,7 +254,7 @@ class TrackAdmin(admin.ModelAdmin):
                 t.setDaemon(True)
                 t.start()
 
-    if __FILEPICKER__:
+    if FILEPICKER:
         form = TrackAdminForm
     list_display = (
         "src",

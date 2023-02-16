@@ -1,4 +1,3 @@
-{% load event_tags %}
 {% load static i18n custom_tags %}{% spaceless %}
 {% get_current_language as LANGUAGE_CODE %}
 {% get_available_languages as LANGUAGES %}
@@ -60,12 +59,7 @@
     <label for="s" class="d-lg-none">
       <i class="bi bi-search"></i> <span class="visually-hidden">{% trans "Search" %}</span>
     </label>
-    <div class="input-group me-sm-2 pod-navbar-search">
-      <input class="form-control form-control-sm" id="s" placeholder="{% trans 'Search' %}" type="search" name="q">
-      <button type="submit" class="btn btn-primary" title="{% trans 'Search' %}">
-        <i class="bi bi-search"></i>
-      </button>
-    </div>
+    <input class="form-control form-control-sm me-sm-2" id="s" placeholder="{% trans 'Search' %}" type="search" name="q">
   </form>
 
   <ul class="navbar-nav flex-row align-items-center" id="nav-useraction">
@@ -75,12 +69,12 @@
             <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
           </li>
         {% else %}
-          <li class="nav-item pod-navbar__nav-item mx-2" id="nav-addvideo">
-            <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "Add a video" %}</span></a>
+          <li class="d-none d-md-block nav-item pod-navbar__nav-item mx-2" id="nav-addvideo">
+            <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add me-1"></i><span>{% trans "Add a video" %}</span></a>
           </li>
           {% if USE_MEETING %}
-          <li class="nav-item pod-navbar__nav-item mx-2" id="nav-mymeetings">
-            <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "My meetings" %}</span></a>
+          <li class="d-none d-md-block nav-item pod-navbar__nav-item mx-2" id="nav-mymeetings">
+            <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-add me-1"></i><span>{% trans "My meetings" %}</span></a>
           </li>
           {% endif %}
         {% endif %}
@@ -189,7 +183,7 @@
               {% if USE_OPENCAST_STUDIO %}
                 <a class="nav-item nav-link" href="{% url 'recorder:studio_pod'%}"><i class="bi bi-camera-video pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans "Video Record" %}</a>
               {% endif %}
-              {% if "live" in THIRD_PARTY_APPS and request.user|can_manage_event_filter %}
+              {% if "live" in THIRD_PARTY_APPS %}
                 <a class="nav-item nav-link" href="{% url 'live:my_events' %}" title="{% trans 'My events' %}">
                   <i class="bi bi-broadcast pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My events' %}
                 </a>

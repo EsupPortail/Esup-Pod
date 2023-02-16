@@ -80,7 +80,6 @@
           id="formuploadfile"
           enctype="multipart/form-data"
           action="{% url 'podfile:uploadfiles' %}"
-          
         >
           {% csrf_token %}
           <input type="hidden" name="folderid" value="{{folder.id}}">
@@ -96,7 +95,6 @@
               multiple
               style="position:fixed;top:-100px"
             >
-            <button id='podfile_submit_button' type = "submit" style = "display : none"></button>
             <label for="ufile" class="btn btn-link btn-lg" title={% trans 'Upload Files' %}>
               <span class="upload-file" id="upload-file-icon">
                 <i class="bi bi-file-earmark-arrow-up-fill" aria-hidden="true"></i>
@@ -186,7 +184,7 @@
         {% if type.lower == "image" and file.class_name.lower == "customimagemodel" %}
           <a
             href="{{file.file.url}}"
-            class="card-image {% if request %} file-image {% endif %}"
+            class="card-image {% if request.is_ajax %} file-image {% endif %}"
             title="{{file.name}}"
             target="_blank"
             data-fileid="{{file.id}}"
@@ -202,7 +200,7 @@
           {% if type.lower == "file" and file.class_name.lower == "customfilemodel" or type.lower == "image" and file.class_name.lower == "customimagemodel" %}
             <a
               href="{{file.file.url}}"
-              class="card-image {% if request %} file-image {% endif %}"
+              class="card-image {% if request.is_ajax %} file-image {% endif %}"
               title="{{file.name}}"
               target="_blank"
               data-fileid="{{file.id}}"

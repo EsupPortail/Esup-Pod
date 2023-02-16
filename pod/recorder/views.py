@@ -4,9 +4,7 @@ from __future__ import unicode_literals
 import os
 import datetime
 import uuid
-import re
-
-# import urllib
+import urllib
 from urllib.parse import unquote
 
 from django.contrib.auth.decorators import login_required
@@ -15,8 +13,7 @@ from django.shortcuts import render
 from django.conf import settings
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
-
-# from django.core.exceptions import SuspiciousOperation
+from django.core.exceptions import SuspiciousOperation
 from django.shortcuts import redirect
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.admin.views.decorators import user_passes_test
@@ -25,7 +22,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.shortcuts import get_current_site
 from pod.recorder.models import Recorder, Recording, RecordingFileTreatment
 from .forms import RecordingForm, RecordingFileTreatmentDeleteForm
-from .models import __REVATSO__
 from django.contrib import messages
 import hashlib
 from django.http import HttpResponseRedirect, JsonResponse
@@ -33,23 +29,46 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 
-
+# from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-
-# import urllib.parse
+import urllib.parse
 from django.shortcuts import get_object_or_404
-from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
+from pod.main.views import in_maintenance
 from django.views.decorators.csrf import csrf_exempt
 from xml.dom import minidom
 
+##
+# Settings exposed in templates
+#
+TEMPLATE_VISIBLE_SETTINGS = getattr(
+    settings,
+    "TEMPLATE_VISIBLE_SETTINGS",
+    {
+        "TITLE_SITE": "Pod",
+        "TITLE_ETB": "University name",
+        "LOGO_SITE": "img/logoPod.svg",
+        "LOGO_ETB": "img/logo_etb.svg",
+        "LOGO_PLAYER": "img/pod_favicon.svg",
+        "LINK_PLAYER": "",
+        "FOOTER_TEXT": ("",),
+        "FAVICON": "img/pod_favicon.svg",
+        "CSS_OVERRIDE": "",
+        "PRE_HEADER_TEMPLATE": "",
+        "POST_FOOTER_TEMPLATE": "",
+        "TRACKING_TEMPLATE": "",
+    },
+)
+
 DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/")
 
-# USE_CAS = getattr(settings, "USE_CAS", False)
-# USE_SHIB = getattr(settings, "USE_SHIB", False)
+USE_CAS = getattr(settings, "USE_CAS", False)
+USE_SHIB = getattr(settings, "USE_SHIB", False)
 LOGIN_URL = getattr(settings, "LOGIN_URL", "/authentication_login/")
-__TITLE_SITE__ = getattr(TEMPLATE_VISIBLE_SETTINGS, "TITLE_SITE", "Pod")
-
+TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, "TITLE_SITE", "Pod")
+RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
+    settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
+)
 OPENCAST_FILES_DIR = getattr(settings, "OPENCAST_FILES_DIR", "opencast-files")
 OPENCAST_MEDIAPACKAGE = getattr(
     settings,
@@ -159,7 +178,6 @@ def add_recording(request):
     return render(request, "recorder/add_recording.html", {"form": form})
 
 
-"""
 def reformat_url_if_use_cas_or_shib(request, link_url):
     # Pointing to the URL of the CAS allows to reach the already
     # authenticated form URL like
@@ -192,7 +210,6 @@ def reformat_url_if_use_cas_or_shib(request, link_url):
         )
     else:
         return link_url
-"""
 
 
 def recorder_notify(request):
@@ -228,7 +245,7 @@ def recorder_notify(request):
                     "&recorder=%s" % recorder.id,
                 ]
             )
-            # link_url = reformat_url_if_use_cas_or_shib(request, link_url)
+            link_url = reformat_url_if_use_cas_or_shib(request, link_url)
 
             text_msg = _(
                 "Hello, \n\na new recording has just be added on the video "
@@ -239,7 +256,7 @@ def recorder_notify(request):
                 "browser. "
                 "\n\nRegards"
             ) % {
-                "title_site": __TITLE_SITE__,
+                "title_site": TITLE_SITE,
                 "recorder": recorder.name,
                 "link_url": link_url,
             }
@@ -252,7 +269,7 @@ def recorder_notify(request):
                 "link, just copy-paste it in your browser.</i> "
                 "<p><p>Regards</p>"
             ) % {
-                "title_site": __TITLE_SITE__,
+                "title_site": TITLE_SITE,
                 "recorder": recorder.name,
                 "link_url": link_url,
             }
@@ -264,7 +281,7 @@ def recorder_notify(request):
                 admin_emails = User.objects.filter(is_superuser=True).values_list(
                     "email", flat=True
                 )
-            subject = "[" + __TITLE_SITE__ + "] %s" % _("New recording added.")
+            subject = "[" + TITLE_SITE + "] %s" % _("New recording added.")
             # Send the mail to the managers or admins (if not found)
             email_msg = EmailMultiAlternatives(
                 subject, text_msg, settings.DEFAULT_FROM_EMAIL, admin_emails
@@ -366,23 +383,18 @@ def delete_record(request, id=None):
 def studio_pod(request):
     if in_maintenance():
         return redirect(reverse("maintenance"))
-    if __REVATSO__ and request.user.is_staff is False:
+    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
         return render(
             request, "recorder/opencast-studio.html", {"access_not_allowed": True}
         )
     # Render the Opencast studio index file
     opencast_studio_rendered = render_to_string("studio/index.html")
-    head = opencast_studio_rendered[
-        opencast_studio_rendered.index("<head>")
-        + len("<head>") : opencast_studio_rendered.index("</head>")
-    ]
-    scripts = re.findall('<script .[a-z="]+ src=".[a-z/.0-9]+"></script>', head)
-    styles = re.findall("<style>.*</style>", head)
+    # head = opencast_studio_rendered[opencast_studio_rendered.index("<head>")
+    # + len("<head>"):opencast_studio_rendered.index("</head>")]
     body = opencast_studio_rendered[
         opencast_studio_rendered.index("<body>")
         + len("<body>") : opencast_studio_rendered.index("</body>")
     ]
-    body = "".join(scripts) + "".join(styles) + body
     return render(
         # Render the Opencast studio index file
         request,

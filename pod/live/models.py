@@ -1,8 +1,5 @@
 """Esup-Pod "live" models."""
-import base64
 import hashlib
-import io
-import qrcode
 
 from ckeditor.fields import RichTextField
 from django.conf import settings
@@ -20,21 +17,19 @@ from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from sorl.thumbnail import get_thumbnail
-from pod.main.lang_settings import ALL_LANG_CHOICES as __ALL_LANG_CHOICES__
-from pod.main.lang_settings import PREF_LANG_CHOICES as __PREF_LANG_CHOICES__
-from django.utils.translation import get_language
+
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 from pod.video.models import Video, Type
 
-SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
-
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomImageModel
+
+    FILEPICKER = True
 else:
+    FILEPICKER = False
     from pod.main.models import CustomImageModel
 
 DEFAULT_THUMBNAIL = getattr(settings, "DEFAULT_THUMBNAIL", "img/default.svg")
@@ -46,16 +41,6 @@ AFFILIATION_EVENT = getattr(
     settings, "AFFILIATION_EVENT", ("faculty", "employee", "staff")
 )
 SECRET_KEY = getattr(settings, "SECRET_KEY", "")
-
-LANG_CHOICES = getattr(
-    settings,
-    "LANG_CHOICES",
-    ((" ", __PREF_LANG_CHOICES__), ("----------", __ALL_LANG_CHOICES__)),
-)
-MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
-LIVE_TRANSCRIPTIONS_FOLDER = getattr(
-    settings, "LIVE_TRANSCRIPTIONS_FOLDER", "live_transcripts"
-)
 
 
 class Building(models.Model):
@@ -180,6 +165,8 @@ class Broadcaster(models.Model):
         help_text=_("Live is accessible from the Live tab"),
         default=True,
     )
+    viewcount = models.IntegerField(_("Number of viewers"), default=0, editable=False)
+    viewers = models.ManyToManyField(User, editable=False)
 
     manage_groups = models.ManyToManyField(
         Group,
@@ -204,19 +191,6 @@ class Broadcaster(models.Model):
         blank=True,
         verbose_name=_("Piloting configuration parameters"),
         help_text=_("Add piloting configuration parameters in Json format."),
-    )
-    main_lang = models.CharField(
-        _("Main language"),
-        max_length=2,
-        choices=LANG_CHOICES,
-        default=get_language(),
-        help_text=_("Select the main language used in the content."),
-    )
-    transcription_file = models.FileField(
-        upload_to="media/" + LIVE_TRANSCRIPTIONS_FOLDER,
-        max_length=255,
-        null=True,
-        editable=False,
     )
 
     def get_absolute_url(self):
@@ -271,27 +245,21 @@ class Broadcaster(models.Model):
 
     is_recording_admin.short_description = _("Is recording?")
 
-    @property
-    def qrcode(self, request=None):
-        url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
-        url_immediate_event = reverse("live:event_immediate_edit", args={self.id})
-        data = "".join(
-            [
-                url_scheme,
-                "://",
-                get_current_site(request).domain,
-                url_immediate_event,
-            ]
-        )
-        img = qrcode.make(data)
-        buffer = io.BytesIO()
-        img.save(buffer, format="PNG")
-        img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
-        alt = _("QR code to record immediately an event")
-        return mark_safe(
-            f"""<img src="data:image/png;base64, {img_str}"
-            width="300px" height="300px" alt={alt}>"""
-        )
+
+class HeartBeat(models.Model):
+    user = models.ForeignKey(
+        User, null=True, verbose_name=_("Viewer"), on_delete=models.CASCADE
+    )
+    viewkey = models.CharField(_("Viewkey"), max_length=200, unique=True)
+    broadcaster = models.ForeignKey(
+        Broadcaster, null=False, verbose_name=_("Broadcaster"), on_delete=models.CASCADE
+    )
+    last_heartbeat = models.DateTimeField(_("Last heartbeat"), default=timezone.now)
+
+    class Meta:
+        verbose_name = _("Heartbeat")
+        verbose_name_plural = _("Heartbeats")
+        ordering = ["broadcaster"]
 
 
 def current_time():
@@ -448,23 +416,9 @@ class Event(models.Model):
         null=True,
     )
 
-    max_viewers = models.IntegerField(
-        _("Max viewers"),
-        null=False,
-        default=0,
-        help_text=_("Maximum of distinct viewers"),
-    )
-
-    viewers = models.ManyToManyField(User, related_name="viewers_events", editable=False)
-
     videos = models.ManyToManyField(
         Video,
         editable=False,
-    )
-    enable_transcription = models.BooleanField(
-        verbose_name=_("Enable transcription"),
-        help_text=_("If this box is checked, the transcription will be enabled."),
-        default=False,
     )
 
     class Meta:
@@ -573,33 +527,3 @@ class Event(models.Model):
             return timezone.now() < self.start_date
         else:
             return False
-
-
-class LiveTranscriptRunningTask(models.Model):
-    task_id = models.CharField(max_length=255, unique=True)
-    broadcaster = models.ForeignKey(
-        Broadcaster,
-        verbose_name=_("Broadcaster"),
-        help_text=_("Broadcaster name."),
-        on_delete=models.CASCADE,
-    )
-
-    class Meta:
-        verbose_name = _("Running task")
-        verbose_name_plural = _("Running tasks")
-
-
-class HeartBeat(models.Model):
-    user = models.ForeignKey(
-        User, null=True, verbose_name=_("Viewer"), on_delete=models.CASCADE
-    )
-    viewkey = models.CharField(_("Viewkey"), max_length=200, unique=True)
-    event = models.ForeignKey(
-        Event, null=True, verbose_name=_("Event"), on_delete=models.CASCADE
-    )
-    last_heartbeat = models.DateTimeField(_("Last heartbeat"), default=timezone.now)
-
-    class Meta:
-        verbose_name = _("Heartbeat")
-        verbose_name_plural = _("Heartbeats")
-        ordering = ["event"]

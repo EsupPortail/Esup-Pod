@@ -4,7 +4,7 @@ from django.contrib.sites.models import Site
 from pod.authentication.models import Owner
 from pod.authentication.models import DEFAULT_AFFILIATION, AFFILIATION_STAFF
 from ldap3 import Server
-from ldap3 import ALL as __ALL__
+from ldap3 import ALL
 from ldap3 import Connection
 from ldap3.core.exceptions import LDAPSocketOpenError
 from ldap3.core.exceptions import LDAPBindError
@@ -66,9 +66,9 @@ USER_LDAP_MAPPING_ATTRIBUTES = getattr(
 CAS_FORCE_LOWERCASE_USERNAME = getattr(settings, "CAS_FORCE_LOWERCASE_USERNAME", False)
 
 # search scope
-__BASE__ = "BASE"
-__LEVEL__ = "LEVEL"
-__SUBTREE__ = "SUBTREE"
+BASE = "BASE"
+LEVEL = "LEVEL"
+SUBTREE = "SUBTREE"
 
 
 def populateUser(tree):
@@ -112,7 +112,7 @@ def get_server():
             LDAP_SERVER["url"],
             port=LDAP_SERVER["port"],
             use_ssl=LDAP_SERVER["use_ssl"],
-            get_info=__ALL__,
+            get_info=ALL,
         )
     elif isinstance(LDAP_SERVER["url"], tuple):
         hosts = []
@@ -123,7 +123,7 @@ def get_server():
             LDAP_SERVER["url"][0],
             port=LDAP_SERVER["port"],
             use_ssl=LDAP_SERVER["use_ssl"],
-            get_info=__ALL__,
+            get_info=ALL,
             allowed_referral_hosts=hosts,
         )
     return server
@@ -149,7 +149,7 @@ def get_entry(conn, username, list_value):
         conn.search(
             AUTH_LDAP_USER_SEARCH[0],
             AUTH_LDAP_USER_SEARCH[1] % {"uid": username},
-            search_scope=__SUBTREE__,  # BASE, LEVEL and SUBTREE
+            search_scope=SUBTREE,  # BASE, LEVEL and SUBTREE
             attributes=list_value,
             size_limit=1,
         )

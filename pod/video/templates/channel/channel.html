@@ -207,56 +207,40 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-    
-    <script  src="{% static 'js/infinite.js' %}?ver={{VERSION}}" ></script>
-   <script>
-        url = "/{{channel.slug}}/?page="
-            onBeforePageLoad =  function() {
-                document.querySelector('.infinite-loading').style.display = 'block';
+    <script src="{% static 'waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'waypoints/lib/shortcuts/infinite.min.js' %}?ver={{VERSION}}"></script>
+    <script>
+        var infinite = new Waypoint.Infinite({
+            element: $('.infinite-container')[0],
+            onBeforePageLoad: function() {
+                $('.infinite-loading').show();
             },
-            onAfterPageLoad = function($items) {
-                document.querySelector('.infinite-loading').style.display = 'none';
-                let footer = document.querySelector('footer.static-pod');
-                if (!footer) return
-                footer.classList.add('small');
-                footer.classList.add('fixed-bottom');
-                footer.setAttribute('style', 'height:80px; overflow-y:auto');
-                document.querySelector('footer.static-pod .hidden-pod').style.display = 'none'
-                var docHeight = Math.max(
-                    document.body.scrollHeight,
-                    document.body.offsetHeight,
-                    document.clientHeight,
-                    document.scrollHeight,
-                    document.offsetHeight
-                  );
-                window.addEventListener("scroll", function () {
-                    if (window.innerHeight + window.scrollTop() === docHeight) {
-                      document.querySelector("footer.static-pod .hidden-pod").style.display =
-                        "block";
-                      footer.setAttribute("style", "height:auto;");
-                      footer.classList.remove("fixed-bottom");
+            onAfterPageLoad: function($items) {
+                $('.infinite-loading').hide();
+                $('footer.static-pod').addClass('small');
+                $('footer.static-pod').addClass('fixed-bottom');
+                $('footer.static-pod').attr('style', 'height:80px; overflow-y:auto');
+                $('footer.static-pod .hidden-pod').css('display', 'none');
+                $(window).scroll(function() {
+                    if ($(window).height() + $(window).scrollTop() == $(document).height()) {
+                        $('footer.static-pod .hidden-pod').css('display', 'block');
+                        $('footer.static-pod').attr('style', 'height:auto;');
+                        $('footer.static-pod').removeClass('fixed-bottom');
                     }
-             });
+                });
             }
-
-
-        {% if videos.has_next %}
-            page = parseInt("{{videos.next_page_number}}")
-            next_page = true
-            var infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad, page = page);
-        {% endif %}
+        });
     </script>
     <script>
-
         var str = get_list(listTheme["channel_" + "{{channel.id}}"], 0, [], tag_type = "li", li_class = "list-group-item", attrs = '', add_link = true, current = "{{theme.slug}}", channel = "");
-        document.getElementById("ultreeview").innerHTML = str;
+        $("#ultreeview").html(str);
         setTimeout(function() {
-            const tree_item_info = document.querySelector("#ultreeview li.list-group-item-info");
-            const tree_item = document.querySelectorAll("#ultreeview li")
-            if(tree_item_info && tree_item)
+            const tree_item_info = $("#ultreeview li.list-group-item-info");
+            const tree_item = $("#ultreeview li")
+            if(!!tree_item_info.length && !!tree_item.length)
             {
-                const position = parseInt(tree_item_info.offsetTop) - parseInt(tree_item[0].offsetTop);
-                document.getElementById("ultreeview").scrollTop = position;
+                const position = parseInt(tree_item_info.position().top) - parseInt(tree_item.first().position().top);
+                $("#ultreeview").scrollTop(position);
             }
         }, 500);
     </script>

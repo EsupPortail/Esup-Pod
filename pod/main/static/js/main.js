@@ -1,142 +1,4 @@
-function appendHTML(node, html) {
-  var temp = document.createElement("div");
-  temp.innerHTML = html;
-  var scripts = temp.getElementsByTagName("script");
-  for (var i = 0; i < scripts.length; i++) {
-    var script = scripts[i];
-    var s = document.createElement("script");
-    s.type = script.type || "text/javascript";
-    if (script.src) {
-      s.src = script.src;
-    } else {
-      s.text = script.text;
-    }
-    node.appendChild(s);
-  }
-}
-
-function getParents(el, parentSelector) {
-  if (parentSelector === undefined) {
-    parentSelector = document;
-  }
-  var parents = [];
-  var p = el.parentNode;
-  while (p !== parentSelector) {
-    var o = p;
-    parents.push(o);
-    p = o.parentNode;
-  }
-  parents.push(parentSelector);
-  return parents;
-}
-
-/* SLIDE UP */
-function slideUp(target, duration = 500, callback = null) {
-  target.style.transitionProperty = "height, margin, padding";
-  target.style.transitionDuration = duration + "ms";
-  target.style.boxSizing = "border-box";
-  target.style.height = target.offsetHeight + "px";
-  target.offsetHeight;
-  target.style.overflow = "hidden";
-  target.style.height = 0;
-  target.style.paddingTop = 0;
-  target.style.paddingBottom = 0;
-  target.style.marginTop = 0;
-  target.style.marginBottom = 0;
-  window.setTimeout(() => {
-    target.style.display = "none";
-    target.style.removeProperty("height");
-    target.style.removeProperty("padding-top");
-    target.style.removeProperty("padding-bottom");
-    target.style.removeProperty("margin-top");
-    target.style.removeProperty("margin-bottom");
-    target.style.removeProperty("overflow");
-    target.style.removeProperty("transition-duration");
-    target.style.removeProperty("transition-property");
-    if (callback !== null) {
-      callback();
-    }
-    //alert("!");
-  }, duration);
-}
-
-/* SLIDE DOWN */
-var slideDown = (target, duration = 500) => {
-  target.style.removeProperty("display");
-  let display = window.getComputedStyle(target).display;
-  if (display === "none") display = "block";
-  target.style.display = display;
-  let height = target.offsetHeight;
-  target.style.overflow = "hidden";
-  target.style.height = 0;
-  target.style.paddingTop = 0;
-  target.style.paddingBottom = 0;
-  target.style.marginTop = 0;
-  target.style.marginBottom = 0;
-  target.offsetHeight;
-  target.style.boxSizing = "border-box";
-  target.style.transitionProperty = "height, margin, padding";
-  target.style.transitionDuration = duration + "ms";
-  target.style.height = height + "px";
-  target.style.removeProperty("padding-top");
-  target.style.removeProperty("padding-bottom");
-  target.style.removeProperty("margin-top");
-  target.style.removeProperty("margin-bottom");
-  window.setTimeout(() => {
-    target.style.removeProperty("height");
-    target.style.removeProperty("overflow");
-    target.style.removeProperty("transition-duration");
-    target.style.removeProperty("transition-property");
-  }, duration);
-};
-
-/* SLIDE TOOGLE */
-var slideToggle = (target, duration = 500) => {
-  if (window.getComputedStyle(target).display === "none") {
-    return slideDown(target, duration);
-  } else {
-    return slideUp(target, duration);
-  }
-};
-
-/* FADE IN */
-function fadeIn(el, display) {
-  el.style.opacity = 0;
-  el.style.display = display || "block";
-  (function fade() {
-    var val = parseFloat(el.style.opacity);
-    if (!((val += 0.1) > 1)) {
-      el.style.opacity = val;
-      requestAnimationFrame(fade);
-    }
-  })();
-}
-
-/* FADE OUT */
-function fadeOut(elem, speed) {
-  if (!elem.style.opacity) {
-    elem.style.opacity = 1;
-  } // end if
-
-  var outInterval = setInterval(function () {
-    elem.style.opacity -= 0.02;
-    if (elem.style.opacity <= 0) {
-      clearInterval(outInterval);
-      var inInterval = setInterval(function () {
-        elem.style.opacity = Number(elem.style.opacity) + 0.02;
-        if (elem.style.opacity >= 1) clearInterval(inInterval);
-      }, speed / 50);
-    } // end if
-  }, speed / 50);
-}
-function isJson(str) {
-  try {
-    JSON.parse(str);
-  } catch (e) {
-    return true;
-  }
-  return false;
-}
+/** FUNCTIONS **/
 
 function linkTo_UnCryptMailto(s) {
   location.href = "mailto:" + window.atob(s);
@@ -164,10 +26,9 @@ Number.prototype.toHHMMSS = function () {
 // Edit the iframe and share link code
 function writeInFrame() {
   // Iframe
-  var txtintegration = document.getElementById("txtintegration");
-  var str = txtintegration.value;
+  var str = $("#txtintegration").val();
   // Autoplay
-  if (document.getElementById("autoplay").checked) {
+  if ($("#autoplay").is(":checked")) {
     if (str.indexOf("autoplay=true") < 0) {
       str = str.replace("is_iframe=true", "is_iframe=true&autoplay=true");
     }
@@ -175,19 +36,19 @@ function writeInFrame() {
     str = str.replace("&autoplay=true", "");
   }
   // Loop
-  if (document.getElementById("loop").checked) {
+  if ($("#loop").is(":checked")) {
     if (str.indexOf("loop=true") < 0) {
       str = str.replace("is_iframe=true", "is_iframe=true&loop=true");
     }
   } else if (str.indexOf("loop=true") > 0) {
     str = str.replace("&loop=true", "");
   }
-  txtintegration.value = str;
+  $("#txtintegration").val(str);
 
   // Share link
-  var link = document.getElementById("txtpartage").value;
+  var link = $("#txtpartage").val();
   // Autoplay
-  if (document.getElementById("autoplay").checked) {
+  if ($("#autoplay").is(":checked")) {
     if (link.indexOf("autoplay=true") < 0) {
       if (link.indexOf("?") < 0) link = link + "?autoplay=true";
       else if (link.indexOf("loop=true") > 0 || link.indexOf("start=") > 0)
@@ -201,7 +62,7 @@ function writeInFrame() {
       .replace("?autoplay=true", "?");
   }
   // Loop
-  if (document.getElementById("loop").checked) {
+  if ($("#loop").is(":checked")) {
     if (link.indexOf("loop=true") < 0) {
       if (link.indexOf("?") < 0) link = link + "?loop=true";
       else if (link.indexOf("autoplay=true") > 0 || link.indexOf("start=") > 0)
@@ -218,66 +79,68 @@ function writeInFrame() {
   //Remove ? to start when he's first
   if (link.indexOf("??") > 0) link = link.replace(/\?\?/, "?");
 
-  document.getElementById("txtpartage").value = link;
+  $("#txtpartage").val(link);
 
   var img = document.getElementById("qrcode");
   var imgsrc = "//chart.apis.google.com/chart?cht=qr&chs=200x200&chl=" + link;
   if (img.getAttribute("src") === "") img.setAttribute("data-src", imgsrc);
   else img.src = imgsrc;
 }
-document.addEventListener("change", (e) => {
-  if (e.target.id === "autoplay" || e.target.id === "loop") writeInFrame();
+$(document).on("change", "#autoplay", function () {
+  writeInFrame();
+});
+$(document).on("change", "#loop", function () {
+  writeInFrame();
 });
 
-document.addEventListener("shown.bs.collapse", (e) => {
-  if (e.target.id === "qrcode")
-    e.target.setAttribute("src", e.target.getAttribute("data-src"));
+$(document).on("shown.bs.collapse", "#qrcode", function () {
+  $("#qrcode").attr("src", $("#qrcode").attr("data-src"));
 });
 
-document.addEventListener("hidden.bs.collapse", (e) => {
-  if (e.target.id === "qrcode") e.target.setAttribute("src", "");
+$(document).on("hidden.bs.collapse", "#qrcode", function () {
+  $("#qrcode").attr("src", "");
 });
 
-document.addEventListener("change", (e) => {
-  if (e.target.id !== "displaytime") return;
-  let displayTime = document.getElementById("displaytime");
-  let txtpartage = document.getElementById("txtpartage");
-  let txtinteg = document.getElementById("txtintegration");
-  if (displayTime.checked) {
-    if (txtpartage.value.indexOf("start") < 0) {
-      txtpartage.value =
-        txtpartage.value + "&start=" + parseInt(player.currentTime());
-
-      if (txtpartage.value.indexOf("??") > 0)
-        txtpartage.value = txtpartage.value.replace("??", "?");
-      var valeur = txtinteg.value;
-      txtinteg.value = valeur.replace(
-        "/?",
-        "/?start=" + parseInt(player.currentTime()) + "&"
+$(document).on("change", "#displaytime", function (e) {
+  if ($("#displaytime").is(":checked")) {
+    if ($("#txtpartage").val().indexOf("start") < 0) {
+      $("#txtpartage").val(
+        $("#txtpartage").val() + "&start=" + parseInt(player.currentTime())
+      );
+      if ($("#txtpartage").val().indexOf("??") > 0)
+        $("#txtpartage").val($("#txtpartage").val().replace("??", "?"));
+      var valeur = $("#txtintegration").val();
+      $("#txtintegration").val(
+        valeur.replace("/?", "/?start=" + parseInt(player.currentTime()) + "&")
       );
     }
-    document.getElementById("txtposition").value = player
-      .currentTime()
-      .toHHMMSS();
+    $("#txtposition").val(player.currentTime().toHHMMSS());
   } else {
-    txtpartage.value = txtpartage.value
-      .replace(/(\&start=)\d+/, "")
-      .replace(/(\start=)\d+/, "")
-      .replace(/(\?start=)\d+/, "");
+    $("#txtpartage").val(
+      $("#txtpartage")
+        .val()
+        .replace(/(\&start=)\d+/, "")
+        .replace(/(\start=)\d+/, "")
+        .replace(/(\?start=)\d+/, "")
+    );
 
-    txtpartage.valuex;
-    txtinteg.value = txtinteg.value.replace(/(start=)\d+&/, "");
-    document.getElementById("txtposition").value = "";
+    $("#txtintegration").val(
+      $("#txtintegration")
+        .val()
+        .replace(/(start=)\d+&/, "")
+    );
+    $("#txtposition").val("");
   }
 
   //Replace /& => /?
-  var link = txtpartage.value;
-  if (link.indexOf("/&") > 0) link = link.replace("/&", "/?");
-  txtpartage.value = link;
+  var link = $("#txtpartage").val();
+  if ($("#txtpartage").val().indexOf("/&") > 0) link = link.replace("/&", "/?");
+  $("#txtpartage").val(link);
 
   var img = document.getElementById("qrcode");
   img.src =
-    "//chart.apis.google.com/chart?cht=qr&chs=200x200&chl=" + txtpartage.value;
+    "//chart.apis.google.com/chart?cht=qr&chs=200x200&chl=" +
+    $("#txtpartage").val();
 });
 
 /*** USE TO SHOW THEME FROM CHANNELS ***/
@@ -305,13 +168,12 @@ var get_list = function (
   var prefix = "";
   for (i = 0; i < level; i++) prefix += "&nbsp;&nbsp;";
   if (level != 0) prefix += "|-";
-
-  tab.forEach((val) => {
+  $.each(tab, function (_, val) {
     var title = add_link
       ? '<a href="' + val.url + '">' + channel + " " + val.title + "</a>"
       : channel + " " + val.title;
     var selected =
-      tab_selected.indexOf(val.id.toString()) > -1 ? "selected" : "";
+      $.inArray(val.id.toString(), tab_selected) > -1 ? "selected" : "";
     var list_class = 'class="' + li_class;
     if (val.slug == current) list_class += ' list-group-item-info"';
     else list_class += '"';
@@ -356,65 +218,43 @@ var get_list = function (
 
 /*** CHANNELS IN NAVBAR ***/
 
-document.querySelectorAll(".collapsibleThemes").forEach((cl) => {
-  cl.addEventListener("show.bs.collapse", function () {
-    var str = get_list(
-      listTheme["channel_" + cl.dataset.id],
-      0,
-      [],
-      (tag_type = "li"),
-      (li_class = "list-inline-item"),
-      (attrs = ""),
-      (add_link = true),
-      (current = ""),
-      (channel = ""),
-      (show_only_parent_themes = show_only_parent_themes)
-    );
-    cl.innerHTML = '<ul class="list-inline p-1 border">' + str + "</ul>";
-    //$(this).parents("li").addClass('list-group-item-light');
-    cl.parentNode.querySelectorAll("li").forEach((li) =>
-      li.querySelectorAll(".chevron-down").forEach((el) => {
-        el.setAttribute("style", "transform: rotate(180deg);");
-      })
-    );
-  });
+$(".collapsibleThemes").on("show.bs.collapse", function () {
+  var str = get_list(
+    listTheme["channel_" + $(this).data("id")],
+    0,
+    [],
+    (tag_type = "li"),
+    (li_class = "list-inline-item"),
+    (attrs = ""),
+    (add_link = true),
+    (current = ""),
+    (channel = ""),
+    (show_only_parent_themes = show_only_parent_themes)
+  );
+  $(this).html('<ul class="list-inline p-1 border">' + str + "</ul>");
+  //$(this).parents("li").addClass('list-group-item-light');
+  $(this)
+    .parents("li")
+    .find(".chevron-down")
+    .attr("style", "transform: rotate(180deg);");
 });
-document.querySelectorAll(".collapsibleThemes").forEach((cl) => {
-  cl.addEventListener("hidden.bs.collapse", function () {
-    // do something…
-    //$(this).parents("li").removeClass('list-group-item-light');
-    cl.parentNode.querySelectorAll("li").forEach((li) => {
-      li.querySelectorAll(".chevron-down").forEach((el) => {
-        el.setAttribute("style", "");
-      });
-    });
-  });
+$(".collapsibleThemes").on("hidden.bs.collapse", function () {
+  // do something…
+  //$(this).parents("li").removeClass('list-group-item-light');
+  $(this).parents("li").find(".chevron-down").attr("style", "");
 });
-
-let ownerboxnavbar = document.getElementById("ownerboxnavbar");
-if (ownerboxnavbar) {
-  ownerboxnavbar.addEventListener("keyup", function () {
-    if (ownerboxnavbar.value && ownerboxnavbar.value.length > 2) {
-      var searchTerm = ownerboxnavbar.value;
-      let data = new FormData();
-      data.append("term", searchTerm);
-      data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
-      url = "/ajax_calls/search_user/";
-      fetch(url, {
-        method: "POST",
-        body: data,
-        headers: {
-          Accept: "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          let accordion = document.getElementById("accordion");
-          accordion.innerHTML = "";
-          data.forEach((elt) => {
-            accordion.innerHTML +=
-              '<li><a href="' +
+$("#ownerboxnavbar").keyup(function () {
+  if ($(this).val() && $(this).val().length > 2) {
+    var searchTerm = $(this).val();
+    $.ajax({
+      type: "GET",
+      url: "/ajax_calls/search_user?term=" + searchTerm,
+      cache: false,
+      success: function (response) {
+        $("#accordion").html("");
+        response.forEach((elt) => {
+          $("#accordion").append(
+            '<li><a href="' +
               urlvideos +
               "?owner=" +
               elt.username +
@@ -424,218 +264,164 @@ if (ownerboxnavbar) {
               elt.last_name +
               (!HIDE_USERNAME
                 ? " (" + elt.username + ")</a></li>"
-                : "</a></li>");
-          });
+                : "</a></li>")
+          );
         });
-    } else {
-      document.getElementById("accordion").innerHTML = "";
-    }
-  });
-}
-
-/** COOKIE DIALOG **/
-
-document.addEventListener("DOMContentLoaded", function () {
-  let consent = Cookies.get("podCookieConsent");
-
-  var cookieDiv = document.getElementById("cookieModal");
-  if (cookieDiv) {
-    var cookieModal = bootstrap.Modal.getOrCreateInstance(cookieDiv);
-    if (consent != null && consent == "ok") {
-      cookieModal.hide();
-    } else {
-      cookieModal.show();
-    }
-    document.addEventListener("click", (e) => {
-      if (e.target.id != "okcookie") return;
-      let expiryDate = new Date();
-      expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-      document.cookie =
-        "podCookieConsent=ok; path=/; expires=" + expiryDate.toGMTString();
-      cookieModal.hide();
+      },
     });
+  } else {
+    $("#accordion").html("");
   }
 });
+/** COOKIE DIALOG **/
+$(document).ready(function () {
+  let consent = Cookies.get("podCookieConsent");
+  if (consent != null && consent == "ok") {
+    $("#cookieModal").modal("hide");
+  } else {
+    $("#cookieModal").modal("show");
+  }
+  $(document).on("click", "#okcookie", function () {
+    let expiryDate = new Date();
+    expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+    document.cookie =
+      "podCookieConsent=ok; path=/; expires=" + expiryDate.toGMTString();
+    $("#cookieModal").modal("hide");
+  });
+});
 /** MENU ASIDE **/
-document.addEventListener("DOMContentLoaded", function () {
+$(document).ready(function () {
   //.collapseAside is on the toggle button
   //#collapseAside is the side menu
+
   // Fired when #collapseAside has been made visible
-
-  let collapseAside = document.getElementById("collapseAside");
-  if (collapseAside != null) {
-    let collapseBoot = new bootstrap.Collapse(collapseAside, {
-      toggle: false,
-    });
-
-    collapseAside.addEventListener("shown.bs.collapse", function () {
-      Cookies.set("activeCollapseAside", "open", { sameSite: "Lax" });
-
+  $("#collapseAside").on("shown.bs.collapse", function () {
+    Cookies.set("activeCollapseAside", "open", { sameSite: "Lax" });
+    $(".collapseAside")
+      .html
       // '<i class="bi bi-arrow-90deg-up"></i><i class="bi bi-list"></i>'
-      let mainContent = document.getElementById("mainContent");
-      if (mainContent != null) {
-        document.getElementById("mainContent").classList.add("col-md-9");
-      }
-    });
-    // Fired when #collapseAside has been hidden
-    collapseAside.addEventListener("hidden.bs.collapse", function () {
-      Cookies.set("activeCollapseAside", "close", { sameSite: "Lax" });
-
+      ();
+    $("#mainContent").addClass("col-md-9");
+  });
+  // Fired when #collapseAside has been hidden
+  $("#collapseAside").on("hidden.bs.collapse", function () {
+    Cookies.set("activeCollapseAside", "close", { sameSite: "Lax" });
+    $(".collapseAside")
+      .html
       // '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
-      let mainContent = document.getElementById("mainContent");
+      ();
+    $("#mainContent").removeClass("col-md-9");
+  });
 
-      if (mainContent != null) {
-        document.getElementById("mainContent").classList.add("col-md-9");
-      }
-    });
-
-    // If aside menu is empty, hide container and button
-    if (collapseAside.querySelectorAll("div").length == 0) {
-      if (collapseAside.offsetParent) {
-        collapseAside.style.display = "none";
-
-        collapseBoot.hide();
-        // Destroy collapse object
-
-        collapseBoot.dispose();
-
-        let mainContent = document.getElementById("mainContent");
-        if (mainContent) {
-          document.getElementById("mainContent").classList.remove("col-md-9");
-        }
-      }
-    } else {
-      // Use the last aside state, stored in Cookies
-      // only for > 992, we show collapseAside
-      var last = Cookies.get("activeCollapseAside");
-      if (last != null && last == "close") {
-        collapseBoot.hide();
-        document.querySelector(".collapseAside").innerHTML;
+  // If aside menu is empty, hide container and button
+  if ($("#collapseAside").find("div").length == 0) {
+    $(".collapseAside").hide();
+    $("#collapseAside").collapse("hide");
+    // Destroy collapse object
+    $("#collapseAside").collapse("dispose");
+    $("#mainContent").removeClass("col-md-9");
+  } else {
+    // Use the last aside state, stored in Cookies
+    // only for > 992, we show collapseAside
+    var last = Cookies.get("activeCollapseAside");
+    if (last != null && last == "close") {
+      $("#collapseAside").collapse("hide");
+      $(".collapseAside")
+        .html
         // '<i class="bi bi-arrow-90deg-down"></i><i class="bi bi-list"></i>'
-        // $("#mainContent").removeClass("col-md-9");
-      } else {
-        if (window.innerWidth > 992) {
-          collapseBoot.show();
-        }
+        ();
+      // $("#mainContent").removeClass("col-md-9");
+    } else {
+      if (window.innerWidth > 992) {
+        $("#collapseAside").collapse("show");
       }
     }
-    TriggerAlertClose();
   }
+  TriggerAlertClose();
 });
 
 function TriggerAlertClose() {
   // Automatically hide success type alerts
   // (alert-warning and alert-danger will remain on screen)
   window.setTimeout(function () {
-    document
-      .querySelectorAll(".alert.alert-success, .alert.alert-info")
-      .forEach((el) => {
-        el.animate(
-          {
-            opacity: 0,
-          },
-          {
-            duration: 1000,
-          }
-        );
-        slideUp(el, 1000, function () {
-          el.remove();
-        });
+    $(".alert.alert-success, .alert.alert-info")
+      .fadeTo(1000, 0)
+      .slideUp(1000, function () {
+        $(this).remove();
       });
   }, 5000);
 }
 /*** FORM THEME USER PICTURE ***/
 /** PICTURE **/
-document.addEventListener("click", (e) => {
-  if (!e.target.classList.contains("get_form_userpicture")) return;
-  send_form_data(e.target.dataset.url, {}, "append_picture_form", "get");
+$(document).on("click", ".get_form_userpicture", function () {
+  send_form_data($(this).data("url"), {}, "append_picture_form", "get");
 });
-document.addEventListener("hidden.bs.modal", (e) => {
-  if (e.target.id != "userpictureModal") return;
-
-  e.target.remove();
-  document.getElementById("fileModal_id_userpicture")?.remove();
+$(document).on("hidden.bs.modal", "#userpictureModal", function (e) {
+  $("#userpictureModal").remove();
+  $("#fileModal_id_userpicture").remove();
 });
-document.addEventListener("submit", (e) => {
-  if (e.target.id != "userpicture_form") return;
-
+$(document).on("submit", "#userpicture_form", function (e) {
   e.preventDefault();
-  let form = e.target;
-  let data_form = new FormData(form);
+  var data_form = $("#userpicture_form").serializeArray();
   send_form_data(
-    e.target.getAttribute("action"),
+    $("#userpicture_form").attr("action"),
     data_form,
     "show_picture_form"
   );
 });
 /** THEME **/
-document.addEventListener("submit", (e) => {
-  if (e.target.id != "form_theme") return;
+$(document).on("submit", "#form_theme", function (e) {
   e.preventDefault();
-  let form = e.target;
-  let data_form = new FormData(form);
-  send_form_data(form.getAttribute("action"), data_form, "show_theme_form");
+  var data_form = $("#form_theme").serializeArray();
+  send_form_data($("#form_theme").attr("action"), data_form, "show_theme_form");
 });
-document.addEventListener("click", (e) => {
-  if (e.target != "cancel_theme") return;
-  document.querySelector("form.get_form_theme").style.display = "block";
+$(document).on("click", "#cancel_theme", function () {
+  $("form.get_form_theme").show();
   show_form_theme("");
-  document.querySelectorAll("table_list_theme tr").forEach((el) => {
-    el.classList.remove("table-primary");
-  });
-
+  $("#table_list_theme tr").removeClass("table-primary");
   window.scrollTo({
-    top: parseInt(document.getElementById("list_theme").offsetTop),
+    top: parseInt($("#list_theme").offset().top),
     behavior: "smooth",
   });
 });
-document.addEventListener("submit", (e) => {
-  if (!e.target.classList.contains("get_form_theme")) return;
+$(document).on("submit", "form.get_form_theme", function (e) {
   e.preventDefault();
-  var action = e.target.querySelector("input[name=action]").value; // new, modify and delete
-
-  let form = e.target;
-  let data_form = new FormData(form);
+  var action = $(this).find("input[name=action]").val(); // new, modify and delete
   if (action == "delete") {
     var deleteConfirm = confirm(
       gettext("Are you sure you want to delete this element?")
     );
-
     if (deleteConfirm) {
       send_form_data(
         window.location.href,
-        data_form,
+        $(this).serializeArray(),
         "show_form_theme_" + action
       );
     }
   } else {
     send_form_data(
       window.location.href,
-      data_form,
+      $(this).serializeArray(),
       "show_form_theme_" + action
     );
   }
 });
 /** VIDEO DEFAULT VERSION **/
-document.addEventListener("change", (e) => {
-  if (
-    !e.target.matches("#video_version_form input[type=radio][name=version]")
-  ) {
-    return;
+$(document).on(
+  "change",
+  "#video_version_form input[type=radio][name=version]",
+  function (e) {
+    $("#video_version_form").submit();
   }
-
-  let submit_button = document.createElement("button");
-  submit_button.style.display = "none";
-  submit_button.type = "submit";
-  document.getElementById("video_version_form").appendChild(submit_button);
-  submit_button.click();
-});
-document.addEventListener("submit", (e) => {
-  if (e.target.id != "video_version_form") return;
+);
+$(document).on("submit", "#video_version_form", function (e) {
   e.preventDefault();
-  let form = e.target;
-  let data_form = new FormData(form);
-  send_form_data(form.getAttribute("action"), data_form, "result_video_form");
+  var data_form = $("#video_version_form").serializeArray();
+  send_form_data(
+    $("#video_version_form").attr("action"),
+    data_form,
+    "result_video_form"
+  );
 });
 var result_video_form = function (data) {
   if (data.errors) {
@@ -651,7 +437,7 @@ var result_video_form = function (data) {
 /** FOLDER **/
 
 /** AJAX **/
-var send_form_data = async function (
+var send_form_data = function (
   url,
   data_form,
   fct,
@@ -672,75 +458,25 @@ var send_form_data = async function (
     typeof callbackFail === "function" ? callbackFail : function ($xhr) {};
 
   method = method || "post";
-
-  let token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-
-  form_data = "";
-
-  if (!(data_form instanceof FormData)) {
-    form_data = new FormData();
-    for (let key in data_form) {
-      form_data.append(key, data_form[key]);
-    }
-  } else {
-    form_data = data_form;
-  }
-
-  if (method == "post") {
-    await fetch(url, {
-      method: "POST",
-      headers: {
-        "X-CSRFToken": token,
-        "X-Requested-With": "XMLHttpRequest",
-      },
-      body: form_data,
-    })
-      .then((response) => response.text())
-      .then(($data) => {
-        $data = callbackSuccess($data);
-        window[fct]($data);
-      })
-
-      .catch((error) => {
-        showalert(
-          gettext("Error during exchange") +
-            "(" +
-            error +
-            ")<br/>" +
-            gettext("No data could be stored."),
-          "alert-danger"
-        );
-
-        callbackFail(error);
-      });
-  } else {
-    await fetch(url, {
-      method: "GET",
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    })
-      .then((response) => response.text())
-      .then(($data) => {
-        $data = callbackSuccess($data);
-        if (typeof window[fct] === "function") {
-          window[fct]($data);
-        }
-      })
-
-      .catch((error) => {
-        showalert(
-          gettext("Error during exchange") +
-            "(" +
-            error +
-            ")<br/>" +
-            gettext("No data could be stored."),
-          "alert-danger"
-        );
-
-        callbackFail(error);
-      });
-  }
+  var jqxhr = "";
+  if (method == "post") jqxhr = $.post(url, data_form);
+  else jqxhr = $.get(url);
+  jqxhr.done(function ($data) {
+    $data = callbackSuccess($data);
+    window[fct]($data);
+  });
+  jqxhr.fail(function ($xhr) {
+    var data = $xhr.status + " : " + $xhr.statusText;
+    showalert(
+      gettext("Error during exchange") +
+        " (" +
+        data +
+        ")<br/>" +
+        gettext("No data could be stored."),
+      "alert-danger"
+    );
+    callbackFail($xhr);
+  });
 };
 
 /**
@@ -770,6 +506,7 @@ var send_form_data_vanilla = function (
         };
   callbackFail =
     typeof callbackFail === "function" ? callbackFail : function (err) {};
+
   if (data_form) {
     data_form = new FormData(data_form);
   }
@@ -823,25 +560,21 @@ var show_form_theme_modify = function (data) {
     );
   } else {
     show_form_theme(data);
-    data = new DOMParser().parseFromString(data, "text/html").body;
-    var id = data.getElementById("id_theme").value;
-    document.getElementById("theme_" + id).classList.add("table-primary");
+    var id = $(data).find("#id_theme").val();
+    $("#theme_" + id).addClass("table-primary");
   }
 };
 var show_form_theme_delete = function (data) {
-  if (!isJson(data)) {
-    data = JSON.parse(data);
-  }
   if (data.list_element) {
     show_list_theme(data.list_element);
   } else {
-    showalert(gettext("You are no longer authenticated. Please log in again."));
+    showalert(
+      gettext("You are no longer authenticated. Please log in again."),
+      "alert-danger"
+    );
   }
 };
 var show_theme_form = function (data) {
-  if (!isJson(data)) {
-    data = JSON.parse(data);
-  }
   if (data.list_element || data.form) {
     if (data.errors) {
       showalert(
@@ -851,7 +584,7 @@ var show_theme_form = function (data) {
       show_form_theme(data.form);
     } else {
       show_form_theme("");
-      document.querySelector("form.get_form_theme").style.display = "block";
+      $("form.get_form_theme").show();
       show_list_theme(data.list_element);
     }
   } else {
@@ -861,337 +594,197 @@ var show_theme_form = function (data) {
     );
   }
 };
-
 var show_picture_form = function (data) {
-  let htmlData = new DOMParser().parseFromString(data, "text/html");
-  document.getElementById("userpicture_form").innerHTML =
-    htmlData.querySelector("#userpicture_form").innerHTML;
-  let userpict = document.querySelector("#nav-usermenu .userpicture");
-  if (
-    htmlData.querySelector("#userpictureurl") &&
-    htmlData.querySelector("#userpictureurl").value
-  ) {
-    userpict?.remove();
-    document.querySelector("#nav-usermenu .userinitial").style.display = "none";
-    document
-      .querySelector("#nav-usermenu > button")
-      .classList.remove("initials", "btn", "btn-primary");
-    document.querySelector("#nav-usermenu > button").classList.add("nav-link");
-    document
-      .querySelector("#nav-usermenu > button")
-      .insertAdjacentHTML(
-        "beforeend",
-        '<img src="' +
-          htmlData.querySelector("#userpictureurl").value +
-          '" class="userpicture rounded" alt="avatar" loading="lazy">'
-      );
+  $("#userpicture_form").html($(data).find("#userpicture_form").html());
+  if ($(data).find("#userpictureurl").val()) {
+    //$(".get_form_userpicture").html('<img src="'+$(data).find("#userpictureurl").val()+'" height="34" class="rounded" alt="" loading="lazy">Change your picture');
+    $("#nav-usermenu .userpicture").remove();
+    $("#nav-usermenu .userinitial").hide();
+    $("#nav-usermenu > button").removeClass("initials btn btn-primary");
+    $("#nav-usermenu > button").addClass("nav-link");
+    $("#nav-usermenu > button").append(
+      '<img src="' +
+        $(data).find("#userpictureurl").val() +
+        '" class="userpicture rounded" alt="avatar" loading="lazy">'
+    );
     //$(".get_form_userpicture").html($(".get_form_userpicture").children());
-    document.querySelector(".get_form_userpicture").innerHTML =
+    $(".get_form_userpicture").html(
       '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' +
-      gettext("Change your picture");
+        gettext("Change your picture")
+    );
   } else {
-    userpict?.remove();
-
-    document.querySelector("#nav-usermenu .userinitial").style.display =
-      "inline-block";
-    document
-      .querySelector("#nav-usermenu > button")
-      .classList.add("initials", "btn", "btn-primary");
+    $("#nav-usermenu .userpicture").remove();
+    $("#nav-usermenu .userinitial").show();
+    $("#nav-usermenu > button").addClass("initials btn btn-primary");
     //$(".get_form_userpicture").html($(".get_form_userpicture").children());
-    document.querySelector(".get_form_userpicture").innerHTML =
+    $(".get_form_userpicture").html(
       '<i class="bi bi-card-image pod-nav-link-icon d-lg-none d-xl-inline mx-1"></i>' +
-      gettext("Add your picture");
+        gettext("Add your picture")
+    );
   }
-  let userpicture = document.getElementById("userpictureModal");
-  if (userpicture) {
-    let userPictureModal = bootstrap.Modal.getOrCreateInstance(userpicture);
-    userPictureModal.hide();
-  }
+  $("#userpictureModal").modal("hide");
 };
-var append_picture_form = async function (data) {
-  let htmlData = new DOMParser().parseFromString(data, "text/html").body
-    .firstChild;
-  //$("body").append(data);
-  document.body.appendChild(htmlData);
-  htmlData.querySelectorAll("script").forEach((item) => {
-    // run script tags of filewidget.js and custom_filewidget.js
-
-    if (item.src) {
-      let script = document.createElement("script");
-      script.src = item.src;
-      if (script.src.includes("filewidget.js"))
-        document.body.appendChild(script);
-    } else {
-      if (item.id == "filewidget_script") (0, eval)(item.innerHTML);
-    }
-  });
-
-  let userpicture = document.getElementById("userpictureModal");
-  if (userpicture) {
-    let userPictureModal = bootstrap.Modal.getOrCreateInstance(userpicture);
-    userPictureModal.show();
-  }
+var append_picture_form = function (data) {
+  $("body").append(data);
+  $("#userpictureModal").modal("show");
 };
 function show_form_theme(data) {
-  let div_form = document.getElementById("div_form_theme");
-  div_form.style.display = "none";
-  div_form.innerHTML = data;
-  fadeIn(div_form);
-  if (data != "")
-    document.querySelector("form.get_form_theme").style.display = "none";
+  $("#div_form_theme").hide().html(data).fadeIn();
+  if (data != "") $("form.get_form_theme").hide();
   window.scrollTo({
-    top: parseInt(document.getElementById("div_form_theme").offsetTop),
+    top: parseInt($("#div_form_theme").offset().top),
     behavior: "smooth",
   });
 }
 function show_list_theme(data) {
-  let list_theme = document.getElementById("list_theme");
-  list_theme.style.display = "none";
-  list_theme.innerHTML = data;
-  fadeIn(list_theme);
+  $("#list_theme").hide().html(data).fadeIn();
   //$('form.get_form_theme').show();
   window.scrollTo({
-    top: parseInt(document.getElementById("list_theme").offsetTop),
+    top: parseInt($("#list_theme").offset().top),
     behavior: "smooth",
   });
 }
 /***** VIDEOS *****/
-
-let ownerbox = document.getElementById("ownerbox");
-if (ownerbox) {
-  ownerbox.addEventListener("keyup", async (e) => {
-    let thisE = e.target;
-    if (thisE.value && thisE.value.length > 2) {
-      var searchTerm = thisE.value;
-      var url = "/ajax_calls/search_user?term=" + searchTerm;
-
-      await fetch(url, {
-        method: "GET",
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      })
-        .then((response) => response.text())
-        .then((data) => {
-          data = JSON.parse(data);
-          if (data.length > 0) {
-            document
-              .querySelectorAll("#collapseFilterOwner .added")
-              .forEach((index) => {
-                var c = index.querySelector("input");
-                if (!c.checked) {
-                  index.remove();
-                }
-              });
-            data.forEach((elt) => {
-              if (
-                listUserChecked.indexOf(elt.username) == -1 &&
-                (document.querySelector(
-                  "#collapseFilterOwner #id" + elt.username
-                ) == null ||
-                  document.querySelector(
-                    "#collapseFilterOwner #id" + elt.username
-                  ).length == 0)
-              ) {
-                let username = HIDE_USERNAME ? "" : " (" + elt.username + ")";
-                var chekboxhtml =
-                  '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="' +
-                  elt.username +
-                  '" id="id' +
-                  elt.username +
-                  '"><label class="form-check-label" for="id' +
-                  elt.username +
-                  '">' +
-                  elt.first_name +
-                  " " +
-                  elt.last_name +
-                  username +
-                  "</label></div>";
-                document.getElementById("collapseFilterOwner").innerHTML +=
-                  chekboxhtml;
-              }
-            });
-          }
-        })
-
-        .catch((error) => {
-          /*
-          showalert(
-            gettext("User not found"),
-            "alert-danger"
-          );
-          */
-        });
-    } else {
-      document
-        .querySelectorAll("#collapseFilterOwner .added")
-        .forEach((index) => {
-          var c = index.querySelector("input");
-          if (!c.checked) {
-            index.remove();
+$("#ownerbox").keyup(function () {
+  if ($(this).val() && $(this).val().length > 2) {
+    var searchTerm = $(this).val();
+    $.ajax({
+      type: "GET",
+      url: "/ajax_calls/search_user?term=" + searchTerm,
+      cache: false,
+      success: function (response) {
+        $("#collapseFilterOwner .added").each(function (index) {
+          var c = $(this).find("input");
+          if (!c.prop("checked")) {
+            $(this).remove();
           }
         });
-    }
-  });
-  /****** VIDEOS EDIT ******/
-  /** channel **/
-}
-var tab_initial = new Array();
 
-let select = document.getElementById("id_theme select");
-if (select) {
-  select.options.forEach((option) => {
-    if (option.selected) {
-      tab_initial.push(option.value);
-    }
-  });
-
-  select.options.forEach((option) => {
-    option.remove();
-  });
-}
-let id_channel = document.getElementById("id_channel");
-if (id_channel) {
-  id_channel.addEventListener("change", function () {
-    /*
-    $('#id_channel').on('select2:select', function (e) {
-      alert('change 2');
+        response.forEach((elt) => {
+          if (
+            listUserChecked.indexOf(elt.username) == -1 &&
+            $("#collapseFilterOwner #id" + elt.username).length == 0
+          ) {
+            let username = HIDE_USERNAME ? "" : " (" + elt.username + ")";
+            var chekboxhtml =
+              '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="' +
+              elt.username +
+              '" id="id' +
+              elt.username +
+              '"><label class="form-check-label" for="id' +
+              elt.username +
+              '">' +
+              elt.first_name +
+              " " +
+              elt.last_name +
+              username +
+              "</label></div>";
+            $("#collapseFilterOwner").append(chekboxhtml);
+          }
+        });
+      },
     });
-    */
-    // use click instead of change due to select2 usage : https://github.com/theatlantic/django-select2-forms/blob/master/select2/static/select2/js/select2.js#L1502
-    //$("#id_channel").on("click", function (e) {
-    //alert('change 3');
-    document.querySelector("#id_theme option").remove();
-    var tab_channel_selected = this.value;
-    var str = "";
-    for (var id in tab_channel_selected) {
-      var chan = document
-        .querySelector(
-          "#id_channel option[value=" + tab_channel_selected[id] + "]"
-        )
-        .text();
-      str += get_list(
-        listTheme["channel_" + tab_channel_selected[id]],
-        0,
-        [],
-        (tag_type = "option"),
-        (li_class = ""),
-        (attrs = ""),
-        (add_link = false),
-        (current = ""),
-        (channel = chan + ": ")
-      );
-    }
-    document.getElementById("id_theme").append(str);
-  });
-}
-
-document.querySelectorAll("#id_channel select").forEach((select) => {
-  if (select) {
-    select.options.forEach((option) => {
-      if (option.selected) {
-        var str = get_list(
-          listTheme["channel_" + option.value],
-          0,
-          tab_initial,
-          (tag_type = "option"),
-          (li_class = ""),
-          (attrs = ""),
-          (add_link = false),
-          (current = "")
-        );
-        document.getElementById("id_theme").append(str);
+  } else {
+    $("#collapseFilterOwner .added").each(function (index) {
+      var c = $(this).find("input");
+      if (!c.prop("checked")) {
+        $(this).remove();
       }
     });
   }
 });
+/****** VIDEOS EDIT ******/
+/** channel **/
+
+var tab_initial = new Array();
+
+$("#id_theme option:selected").each(function () {
+  tab_initial.push($(this).val());
+});
+
+$("#id_theme option").remove();
+
+$("#id_channel").change(function () {
+  /*
+  $('#id_channel').on('select2:select', function (e) {
+    alert('change 2');
+  });
+  */
+  // use click instead of change due to select2 usage : https://github.com/theatlantic/django-select2-forms/blob/master/select2/static/select2/js/select2.js#L1502
+  //$("#id_channel").on("click", function (e) {
+  //alert('change 3');
+  $("#id_theme option").remove();
+  var tab_channel_selected = $(this).val();
+  var str = "";
+  for (var id in tab_channel_selected) {
+    var chan = $(
+      "#id_channel option[value=" + tab_channel_selected[id] + "]"
+    ).text();
+    str += get_list(
+      listTheme["channel_" + tab_channel_selected[id]],
+      0,
+      [],
+      (tag_type = "option"),
+      (li_class = ""),
+      (attrs = ""),
+      (add_link = false),
+      (current = ""),
+      (channel = chan + ": ")
+    );
+  }
+  $("#id_theme").append(str);
+});
+$("#id_channel option:selected").each(function () {
+  var str = get_list(
+    listTheme["channel_" + $(this).val()],
+    0,
+    tab_initial,
+    (tag_type = "option"),
+    (li_class = ""),
+    (attrs = ""),
+    (add_link = false),
+    (current = "")
+  );
+  $("#id_theme").append(str);
+});
 
 /** end channel **/
 /*** Copy to clipboard ***/
+$("#btnpartageprive").click(function () {
+  var copyText = document.getElementById("txtpartageprive");
+  copyText.select();
+  document.execCommand("copy");
+  showalert(gettext("text copied"), "alert-info");
+});
 
-let btnpartageprive = document.getElementById("btnpartageprive");
-if (btnpartageprive) {
-  btnpartageprive.addEventListener("click", function () {
-    var copyText = document.getElementById("txtpartageprive");
-    copyText.select();
-    document.execCommand("copy");
-    showalert(gettext("text copied"), "alert-info");
-  });
-}
 /** Restrict access **/
 /** restrict access to group */
-let id_is_restricted = document.getElementById("id_is_restricted");
-if (id_is_restricted) {
-  id_is_restricted.addEventListener("click", function () {
-    restrict_access_to_groups();
-  });
-}
+$("#id_is_restricted").change(function () {
+  restrict_access_to_groups();
+});
 var restrict_access_to_groups = function () {
-  if (document.getElementById("id_is_restricted").checked) {
-    let id_restricted_to_groups = document.getElementById(
-      "id_restrict_access_to_groups"
-    );
-    let div_restricted = id_restricted_to_groups.closest(
-      "div.restricted_access"
-    );
-    div_restricted.style.display = "block";
+  if ($("#id_is_restricted").prop("checked")) {
+    $("#id_restrict_access_to_groups").parents(".restricted_access").show();
   } else {
-    document
-      .querySelectorAll("#id_restrict_access_to_groups select")
-      .forEach((select) => {
-        select.options.forEach((option) => {
-          if (option.selected) {
-            option.selected = false;
-          }
-        });
-      });
-    let id_restricted_to_groups = document.getElementById(
-      "id_restrict_access_to_groups"
-    );
-    let div_restricted = id_restricted_to_groups.closest(
-      "div.restricted_access"
-    );
-
-    div_restricted.style.display = "none";
+    $("#id_restrict_access_to_groups option:selected").prop("selected", false);
+    $("#id_restrict_access_to_groups").parents(".restricted_access").hide();
   }
 };
-
-let id_is_draft = document.getElementById("id_is_draft");
-if (id_is_draft) {
-  id_is_draft.addEventListener("click", function () {
-    restricted_access();
-  });
-}
-
+$("#id_is_draft").change(function () {
+  restricted_access();
+});
 var restricted_access = function () {
-  document
-    .querySelectorAll(".restricted_access")
-    .forEach((restricted_access) => {
-      if (restricted_access) {
-        let is_draft = document.getElementById("id_is_draft");
-        if (is_draft != null && is_draft.checked) {
-          restricted_access.classList.add("hide");
-          restricted_access.classList.remove("show");
-          document.getElementById("id_password").value;
-
-          document
-            .querySelectorAll("#id_restrict_access_to_groups select")
-            .forEach((select) => {
-              select.options.forEach((option) => {
-                if (option.selected) {
-                  option.selected = false;
-                }
-              });
-            });
-
-          document.getElementById("id_is_restricted").checked = false;
-        } else {
-          restricted_access.classList.add("show");
-          restricted_access.classList.remove("hide");
-        }
-        restrict_access_to_groups();
-      }
-    });
+  if ($("#id_is_draft").prop("checked")) {
+    $(".restricted_access").addClass("hide");
+    $(".restricted_access").removeClass("show");
+    $("#id_password").val("");
+    $("#id_restrict_access_to_groups option:selected").prop("selected", false);
+    $("#id_is_restricted").prop("checked", false);
+  } else {
+    $(".restricted_access").addClass("show");
+    $(".restricted_access").removeClass("hide");
+  }
+  restrict_access_to_groups();
 };
 restricted_access();
 //restrict_access_to_groups();
@@ -1219,8 +812,8 @@ restricted_access();
               event.preventDefault();
               event.stopPropagation();
             } else {
-              if (form.dataset.morecheck) {
-                window[form.dataset.morecheck](form, event);
+              if ($(form).data("morecheck")) {
+                window[$(form).data("morecheck")](form, event);
               }
             }
             form.classList.add("was-validated");
@@ -1234,8 +827,8 @@ restricted_access();
 })();
 /*** VIDEOCHECK FORM ***/
 var videocheck = function (form, event) {
-  var fileInput = document.getElementById("id_video");
-  if (fileInput.files.length) {
+  var fileInput = $("#id_video");
+  if (fileInput.get(0).files.length) {
     var fileSize = fileInput.get(0).files[0].size;
     var fileName = fileInput.get(0).files[0].name;
     var extension = fileName
@@ -1243,7 +836,7 @@ var videocheck = function (form, event) {
       .toLowerCase();
     if (listext.indexOf(extension) !== -1) {
       if (fileSize > video_max_upload_size) {
-        window.scrollTo(document.getElementById("video_form").scrollTop(), 0);
+        window.scrollTo($("#video_form").scrollTop(), 0);
         showalert(
           gettext("The file size exceeds the maximum allowed value:") +
             " " +
@@ -1254,19 +847,17 @@ var videocheck = function (form, event) {
         event.preventDefault();
         event.stopPropagation();
       } else {
-        document.querySelector("#video_form fieldset").style.display = "none";
-        document.querySelector("#video_form button").style.display = "none";
-
-        let js_process = document.getElementById("js-process");
-        js_process.classList.remove("d-none");
-        window.scrollTo(js_process.scrollTop(), 0);
+        $("#video_form fieldset").hide();
+        $("#video_form button").hide();
+        $("#js-process").show();
+        window.scrollTo($("#js-process").scrollTop(), 0);
         if (!show_progress_bar(form)) {
           event.preventDefault();
           event.stopPropagation();
         }
       }
     } else {
-      window.scrollTo(document.getElementById("video_form").scrollTop(), 0);
+      window.scrollTo($("#video_form").scrollTop(), 0);
       showalert(
         gettext("The file extension not in the allowed extension:") +
           " " +
@@ -1282,27 +873,22 @@ var videocheck = function (form, event) {
 
 /***** SHOW ALERT *****/
 var showalert = function (message, alerttype) {
-  let textHtml =
+  $("body").append(
     '<div id="formalertdiv" class="alert ' +
-    alerttype +
-    ' alert-dismissible fade show"  role="alert">' +
-    message +
-    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="' +
-    gettext("Close") +
-    '"></button></div>';
-
-  let parsedHTML = new DOMParser().parseFromString(textHtml, "text/html").body
-    .firstChild;
-
-  document.body.appendChild(parsedHTML);
+      alerttype +
+      ' alert-dismissible fade show" role="alert">' +
+      message +
+      '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="' +
+      gettext("Close") +
+      '"></button></div>'
+  );
   setTimeout(function () {
-    let formalertdiv = document.getElementById("formalertdiv");
-    formalertdiv?.remove();
+    $("#formalertdiv").remove();
   }, 5000);
 };
 
 function show_messages(msgText, msgClass, loadUrl) {
-  var $msgContainer = document.getElementById("show_messages");
+  var $msgContainer = $("#show_messages");
   var close_button = "";
   msgClass = typeof msgClass !== "undefined" ? msgClass : "warning";
   loadUrl = typeof loadUrl !== "undefined" ? loadUrl : false;
@@ -1312,32 +898,24 @@ function show_messages(msgText, msgClass, loadUrl) {
       '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
   }
 
-  let $msgBox = document.createElement("div");
-  $msgBox.classList.add(
-    "alert",
-    "alert-" + msgClass,
-    "alert-dismissable",
-    "fade",
-    "in"
-  );
-  $msgBox.setAttribute("role", "alert");
-  $msgBox.innerHTML = close_button + msgText;
-
-  $msgContainer.innerHTML = $msgBox.outerHTML;
+  var $msgBox = $("<div>", {
+    class: "alert alert-" + msgClass + " alert-dismissable fade in",
+    role: "alert",
+    html: close_button + msgText,
+  });
+  $msgContainer.html($msgBox);
 
   if (loadUrl) {
-    setTimeout(function () {
-      fadeOutIn($msgBox);
+    $msgBox.delay(4000).fadeOut(function () {
       if (loadUrl) {
         window.location.reload();
       } else {
         window.location.assign(loadUrl);
       }
-    }, 4000);
+    });
   } else if (msgClass === "info" || msgClass === "success") {
-    setTimeout(function () {
-      fadeOutIn($msgBox);
+    $msgBox.delay(3000).fadeOut(function () {
       $msgBox.remove();
-    }, 3000);
+    });
   }
 }

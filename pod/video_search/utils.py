@@ -101,13 +101,13 @@ def create_index_es():
     except TransportError as e:
         # (400, u'IndexAlreadyExistsException[[pod] already exists]')
         if e.status_code == 400:
-            logger.error("ES responded with ERROR 400. Does pod index already exists?")
-
-        logger.error(
-            "An error occured during"
-            " index creation: %s-%s : %s"
-            % (e.status_code, e.error, e.info["error"]["reason"])
-        )
+            logger.error("Pod index already exists: %s" % e.error)
+        else:
+            logger.error(
+                "An error occured during"
+                " index creation: %s-%s : %s"
+                % (e.status_code, e.error, e.info["error"]["reason"])
+            )
 
 
 def delete_index_es():

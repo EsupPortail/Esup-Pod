@@ -9,25 +9,21 @@ from js_asset import static
 from sorl.thumbnail import get_thumbnail
 
 from pod.live.forms import BuildingAdminForm, EventAdminForm, BroadcasterAdminForm
-from pod.live.models import (
-    Building,
-    Event,
-    Broadcaster,
-    HeartBeat,
-    LiveTranscriptRunningTask,
-    Video,
-)
+from pod.live.models import Building, Event, Broadcaster, HeartBeat, Video
 
 DEFAULT_EVENT_THUMBNAIL = getattr(
     settings, "DEFAULT_EVENT_THUMBNAIL", "img/default-event.svg"
 )
 
 # Register your models here.
-USE_PODFILE = getattr(settings, "USE_PODFILE", False)
+
+FILEPICKER = False
+if getattr(settings, "USE_PODFILE", False):
+    FILEPICKER = True
 
 
 class HeartBeatAdmin(admin.ModelAdmin):
-    list_display = ("viewkey", "user", "event", "last_heartbeat")
+    list_display = ("viewkey", "user", "broadcaster", "last_heartbeat")
 
 
 class BuildingAdmin(admin.ModelAdmin):
@@ -81,42 +77,10 @@ class BroadcasterAdmin(admin.ModelAdmin):
         "is_recording_admin",
         "is_restricted",
         "piloting_conf",
-        "main_lang",
     )
+    readonly_fields = ["slug"]
+    autocomplete_fields = ["building", "video_on_hold"]
     list_filter = ["building"]
-
-    def get_fields(self, request, obj=None):
-        fields = (
-            "name",
-            "building",
-            "description",
-            "poster",
-            "url",
-            "video_on_hold",
-            "status",
-            "enable_add_event",
-            "enable_viewer_count",
-            "is_restricted",
-            "public",
-            "manage_groups",
-            "piloting_implementation",
-            "piloting_conf",
-            "slug",
-            "main_lang",
-            "transcription_file",
-        )
-        if obj is None:
-            return fields
-        fields += ("qrcode",)
-        return fields
-
-    def get_readonly_fields(self, request, obj=None):
-        if obj is None:
-            return ["slug", "transcription_file"]
-        return ["slug", "qrcode", "transcription_file"]
-
-    def get_autocomplete_fields(self, request):
-        return ["building", "video_on_hold"]
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs["widgets"] = {
@@ -127,7 +91,6 @@ class BroadcasterAdmin(admin.ModelAdmin):
                 }
             )
         }
-        kwargs["help_texts"] = {"qrcode": _("QR code to record immediately an event")}
         return super().get_form(request, obj, **kwargs)
 
     def get_queryset(self, request):
@@ -137,17 +100,11 @@ class BroadcasterAdmin(admin.ModelAdmin):
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "building":
+        if (db_field.name) == "building":
             kwargs["queryset"] = Building.objects.filter(sites=Site.objects.get_current())
-        if db_field.name == "video_on_hold":
+        if (db_field.name) == "video_on_hold":
             kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
-    def qrcode(self, obj):
-        return obj.qrcode
-
-    qrcode.short_description = _("QR Code")
-    qrcode.allow_tags = True
 
     class Media:
         css = {
@@ -241,7 +198,6 @@ class EventAdmin(admin.ModelAdmin):
         "password",
         "is_auto_start_admin",
         "get_thumbnail_admin",
-        "enable_transcription",
     ]
     fields = [
         "title",
@@ -260,7 +216,6 @@ class EventAdmin(admin.ModelAdmin):
         "is_restricted",
         "restrict_access_to_groups",
         "is_auto_start",
-        "enable_transcription",
     ]
     search_fields = [
         "title",
@@ -279,7 +234,7 @@ class EventAdmin(admin.ModelAdmin):
     get_broadcaster_admin.admin_order_field = "broadcaster"
     is_auto_start_admin.admin_order_field = "is_auto_start"
 
-    if USE_PODFILE:
+    if FILEPICKER:
         fields.append("thumbnail")
 
     class Media:
@@ -302,4 +257,3 @@ admin.site.register(Building, BuildingAdmin)
 admin.site.register(Broadcaster, BroadcasterAdmin)
 admin.site.register(HeartBeat, HeartBeatAdmin)
 admin.site.register(Event, EventAdmin)
-admin.site.register(LiveTranscriptRunningTask)

@@ -69,38 +69,34 @@
 </div>
 <!-- End Select File Modal -->
 {% block more_script %}
-
-<script id ="filewidget_script">
+<script>
 var id_input="";
+
 var static_url = "{% get_static_prefix %}";
 var deletefolder_url = "{% url 'podfile:deletefolder' %}";
 var deletefile_url = "{% url 'podfile:deletefile' %}";
-document.addEventListener('click',   (event) => {
-  if (!event.target.matches('.btn-fileinput_{{id}}')) return;
-  var myModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('fileModal_{{id}}'), {
+
+$(document).on('click', '.btn-fileinput_{{id}}', function (event) {
+  var myModal = new bootstrap.Modal(document.getElementById('fileModal_{{id}}'), {
     keyboard: true
   })
   myModal.show();
 })
 
-document.body.append(document.getElementById('fileModal_{{id}}'));
+$('#fileModal_{{id}}').appendTo(document.body);
 
-document.addEventListener('hide.bs.modal',   (event) => {
-  if (!event.target.matches('#fileModal_{{id}}')) return; 
+$(document).on('hide.bs.modal', '#fileModal_{{id}}', function (event) {
   event.stopPropagation();
-  document.getElementById("modal-folder_"+event.target.dataset.id).innerHTML = "";
+  $("#modal-folder_"+$(this).data('id')).html("");
 });
 
-document.addEventListener('show.bs.modal',  (event) => {
-  if (!event.target.matches('#fileModal_{{id}}')) return;
+$(document).on('show.bs.modal', '#fileModal_{{id}}', function (event) {
   event.stopPropagation();
-  id_input = event.target.dataset.id
+  id_input = $(this).data('id');
   send_form_data("{% if type %}{% url "podfile:home" type=type %}{% else %}{% url "podfile:home" %}{% endif %}", {}, "append_folder_html_in_modal", "get");
 });
 
-document.addEventListener("click", (event) => {
-  if (!event.target.matches('#remove_file_{{id}}')) return;
-
+$(document).on("click", "#remove_file_{{id}}", function(event) {
   var html_div = '<span id="fileinput_{{id}}"></span>\
     <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput mx-1" data-bs-toggle="modal" data-bs-target="#fileModal_{{id}}">\
     {% if type == "image" %}\
@@ -116,17 +112,9 @@ document.addEventListener("click", (event) => {
         {% trans 'Remove file' %}\
       {% endif %}\
     </button>';
-  event.target.parentNode.parentNode.querySelector('span').innerHTML = html_div;
-  document.getElementById("{{id}}").value = "";
+  $(this).parent('span').html(html_div);
+  $("#{{id}}").val("");
 });
-
-
-
-
-
-//let open_folder = document.querySelector(".open-folder").querySelector("button").style ="pointer-events : none" ;
-
-
 
 </script>
 {% endblock more_script %}

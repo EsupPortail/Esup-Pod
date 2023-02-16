@@ -34,7 +34,6 @@ def check_show_user(request):
     if request.GET.get("recorder") and ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER:
         try:
             recorder = Recorder.objects.get(id=request.GET.get("recorder"))
-            # little doubt about this condition
             if recorder and (request.user == recorder.user):
                 show_user = True
         except ObjectDoesNotExist:

@@ -2,7 +2,6 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.utils.safestring import SafeString
 
 from pod.video.models import Type
 from pod.video.models import Video
@@ -94,8 +93,6 @@ class BroadcasterTestCase(TestCase):
             is_restricted=True,
             building=building,
             public=False,
-            main_lang="fr",
-            transcription_file="testfile.vtt",
         )
         # Test with a video on hold
         video_on_hold = Video.objects.create(
@@ -112,7 +109,6 @@ class BroadcasterTestCase(TestCase):
             is_restricted=False,
             video_on_hold=video_on_hold,
             building=building,
-            main_lang="en",
         )
         print(" --->  SetUp of BroadcasterTestCase : OK !")
 
@@ -137,17 +133,10 @@ class BroadcasterTestCase(TestCase):
         self.assertEqual(
             broadcaster.get_absolute_url(), "/live/direct/%s/" % broadcaster.slug
         )
-        self.assertTrue(isinstance(broadcaster.qrcode, SafeString))
-        empty_qrcode = '"data:image/png;base64, "'
-        self.assertNotIn(empty_qrcode, broadcaster.qrcode)
-        none_qrcode = '"data:image/png;base64, None"'
-        self.assertNotIn(none_qrcode, broadcaster.qrcode)
-        self.assertEqual(broadcaster.main_lang, "fr")
-        self.assertEqual(broadcaster.transcription_file.url, "/media/testfile.vtt")
+
         broadcaster2 = Broadcaster.objects.get(id=2)
         self.assertEqual(broadcaster2.video_on_hold.id, 1)
         print("   --->  test_attributs of BroadcasterTestCase : OK !")
-        self.assertEqual(broadcaster2.main_lang, "en")
 
     """
         test delete object
@@ -179,15 +168,11 @@ class HeartbeatTestCase(TestCase):
             public=False,
         )
         user = User.objects.create(username="pod")
-        h_type = Type.objects.create(title="type1")
-        event = Event.objects.create(
-            title="event1", owner=user, broadcaster=broad, type=h_type
-        )
         HeartBeat.objects.create(
             user=user,
             viewkey="testkey",
+            broadcaster=broad,
             last_heartbeat=timezone.now(),
-            event=event,
         )
         print(" --->  SetUp of HeartbeatTestCase : OK !")
 
@@ -199,7 +184,7 @@ class HeartbeatTestCase(TestCase):
         hb = HeartBeat.objects.get(id=1)
         self.assertEqual(hb.user.username, "pod")
         self.assertEqual(hb.viewkey, "testkey")
-        self.assertEqual(hb.event.title, "event1")
+        self.assertEqual(hb.broadcaster.name, "broadcaster1")
         print("   --->  test_attributs of HeartbeatTestCase : OK !")
 
 
@@ -304,7 +289,7 @@ class EventTestCase(TestCase):
         event.id = None
         self.assertEqual(event.__str__(), "None")
         self.assertEqual(event.get_thumbnail_url(), "/static/img/default-event.svg")
-        self.assertEqual(event.get_full_url(), "//localhost:9090/live/event/0001-event1/")
+        self.assertEqual(event.get_full_url(), "//example.com/live/event/0001-event1/")
         print(" --->  test_attributs of EventTestCase : OK !")
 
     def test_add_thumbnail(self):

@@ -720,96 +720,13 @@ class Meeting(models.Model):
             meeting_json[elt.tag] = elt.text
         if meeting_json.get("returncode", "") != "SUCCESS":
             msg = {}
-            msg["error"] = _("Unable to end meeting!")
+            msg["error"] = "Unable to end meeting ! "
             msg["returncode"] = meeting_json.get("returncode", "")
             msg["messageKey"] = meeting_json.get("messageKey", "")
             msg["message"] = meeting_json.get("message", "")
             raise ValueError(msg)
         else:
             return True
-
-    def get_recordings(self):
-        action = "getRecordings"
-        parameters = {}
-        parameters["meetingID"] = self.meeting_id
-        query = urlencode(parameters)
-        hashed = api_call(query, action)
-        url = slash_join(BBB_API_URL, action, "?%s" % hashed)
-        response = requests.get(url)
-        if response.status_code != 200:
-            msg = {}
-            msg["error"] = "Unable to call BBB server."
-            msg["returncode"] = response.status_code
-            msg["message"] = response.content.decode("utf-8")
-            raise ValueError(msg)
-        result = response.content.decode("utf-8")
-        xmldoc = et.fromstring(result)
-        meeting_json = parseXmlToJson(xmldoc)
-        if meeting_json.get("returncode", "") != "SUCCESS":
-            msg = {}
-            msg["error"] = _("Unable to get meeting recordings!")
-            msg["returncode"] = meeting_json.get("returncode", "")
-            msg["messageKey"] = meeting_json.get("messageKey", "")
-            msg["message"] = meeting_json.get("message", "")
-            raise ValueError(msg)
-        else:
-            return meeting_json
-
-    def delete_recording(self, record_id):
-        action = "deleteRecordings"
-        parameters = {}
-        parameters["recordID"] = record_id
-        query = urlencode(parameters)
-        hashed = api_call(query, action)
-        url = slash_join(BBB_API_URL, action, "?%s" % hashed)
-        response = requests.get(url)
-        if response.status_code != 200:
-            msg = {}
-            msg["error"] = "Unable to call BBB server."
-            msg["returncode"] = response.status_code
-            msg["message"] = response.content.decode("utf-8")
-            raise ValueError(msg)
-        result = response.content.decode("utf-8")
-        xmldoc = et.fromstring(result)
-        meeting_json = {}
-        for elt in xmldoc:
-            meeting_json[elt.tag] = elt.text
-        if meeting_json.get("returncode", "") != "SUCCESS":
-            msg = {}
-            msg["error"] = _("Unable to delete recording!")
-            msg["returncode"] = meeting_json.get("returncode", "")
-            msg["messageKey"] = meeting_json.get("messageKey", "")
-            msg["message"] = meeting_json.get("message", "")
-            raise ValueError(msg)
-        else:
-            return True
-
-    @staticmethod
-    def get_all_meetings():
-        action = "getMeetings"
-        parameters = {}
-        query = urlencode(parameters)
-        hashed = api_call(query, action)
-        url = slash_join(BBB_API_URL, action, "?%s" % hashed)
-        response = requests.get(url)
-        if response.status_code != 200:
-            msg = {}
-            msg["error"] = "Unable to call BBB server."
-            msg["returncode"] = response.status_code
-            msg["message"] = response.content.decode("utf-8")
-            raise ValueError(msg)
-        result = response.content.decode("utf-8")
-        xmldoc = et.fromstring(result)
-        meeting_json = parseXmlToJson(xmldoc)
-        if meeting_json.get("returncode", "") != "SUCCESS":
-            msg = {}
-            msg["error"] = _("Unable to get meeting recordings!")
-            msg["returncode"] = meeting_json.get("returncode", "")
-            msg["messageKey"] = meeting_json.get("messageKey", "")
-            msg["message"] = meeting_json.get("message", "")
-            raise ValueError(msg)
-        else:
-            return meeting_json
 
     class Meta:
         db_table = "meeting"
@@ -841,31 +758,3 @@ def default_site_meeting(sender, instance, **kwargs):
         instance.site = Site.objects.get_current()
     if instance.recurring_until and instance.start > instance.recurring_until:
         raise ValueError(_("Start date must be less than recurring until date"))
-
-
-class Recording:
-    recordID = ""
-    playback = {}
-    name = ""
-    state = ""
-    startTime = ""
-    endTime = ""
-
-    def __init__(self, recordID, name, state):
-        self.recordID = recordID
-        self.name = name
-        self.state = state
-
-    def add_playback(self, type, url):
-        self.playback[type] = url
-
-    def get_start_time(self):
-        # BBB epoch in milliseconds
-        return dt.fromtimestamp(float(self.startTime) / 1000)
-
-    def get_end_time(self):
-        # BBB epoch in milliseconds
-        return dt.fromtimestamp(float(self.endTime) / 1000)
-
-    def get_duration(self):
-        return str(self.get_end_time() - self.get_start_time()).split(".")[0]

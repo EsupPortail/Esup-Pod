@@ -1,4 +1,3 @@
-"""Test the Obsolete videos."""
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -15,15 +14,17 @@ DEFAULT_YEAR_DATE_DELETE = getattr(settings, "DEFAULT_YEAR_DATE_DELETE", 2)
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
 
 
-class ObsolescenceTestCase(TestCase):
-    """Test the Obsolete videos."""
+"""
+    test the Obsolete video
+"""
 
+
+class ObsolescenceTestCase(TestCase):
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
-        """Set up."""
         site = Site.objects.get(id=1)
         user = User.objects.create(
             username="pod", password="pod1234pod", email="pod@univ.fr"
@@ -67,7 +68,7 @@ class ObsolescenceTestCase(TestCase):
             type=Type.objects.get(id=1),
         )
 
-        # pour les 3 vidéos suivantes, la date n'est pas changée à la création
+        # pour les 3 vidéos suivante, la date n'est pas changée à la création
         # car l'affiliation du prop n'est pas dans ACCOMMODATION_YEARS
         Video.objects.create(
             title="Video1_60",
@@ -202,10 +203,10 @@ class ObsolescenceTestCase(TestCase):
         vid_delete = VideoToDelete.objects.get(date_deletion=video_to_archive.date_delete)
         self.assertTrue(video_to_archive in vid_delete.video.all())
 
-        # On vérifie que la video supprimée est bien supprimée
+        # on vérifie que la video supprimée est bien supprimée
         self.assertEqual(Video.objects.filter(id=7).count(), 0)
 
-        # On verifie que les fichiers csv sont bien créés
+        # on verifie que les fichiers csvsont bien créés
         file1 = "%s/%s.csv" % (settings.LOG_DIRECTORY, "deleted")
         self.assertTrue(os.path.isfile(file1))
         file2 = "%s/%s.csv" % (settings.LOG_DIRECTORY, "archived")
@@ -228,7 +229,6 @@ class ObsolescenceTestCase(TestCase):
         print("--->  test_obsolete_video of ObsolescenceTestCase: OK")
 
     def tearDown(self):
-        """Cleanup all created stuffs."""
         try:
             os.remove("%s/%s.csv" % (settings.LOG_DIRECTORY, "deleted"))
             os.remove("%s/%s.csv" % (settings.LOG_DIRECTORY, "archived"))

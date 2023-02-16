@@ -32,19 +32,12 @@
     });
     ChapterMenuButton.prototype.handleClick = function (event) {
       MenuButton.prototype.handleClick.call(this, event);
-      if (document.querySelectorAll(".chapters-list.inactive li").length > 0) {
-        document
-          .querySelector(".chapters-list.inactive")
-          .setAttribute("class", "chapters-list active");
-        document.querySelector(".vjs-chapters-button button").style =
-          "text-shadow : 0 0 1em #fff";
+      if ($(".chapters-list.inactive li").length > 0) {
+        $(".chapters-list.inactive").attr("class", "chapters-list active");
+        $(".vjs-chapters-button button").css("text-shadow", "0 0 1em #fff");
       } else {
-        document
-          .querySelector(".chapters-list.active")
-          .setAttribute("class", "chapters-list inactive");
-
-        document.querySelector(".vjs-chapters-button button").style =
-          "text-shadow : '' ";
+        $(".chapters-list.active").attr("class", "chapters-list inactive");
+        $(".vjs-chapters-button button").css("text-shadow", "");
       }
     };
     MenuButton.registerComponent("ChapterMenuButton", ChapterMenuButton);
@@ -97,9 +90,7 @@
             "chapters-list inactive"
           );
           oldList.parentNode.removeChild(oldList);
-
-          let podPlayer = document.getElementById(player.id());
-          podPlayer.append(newList);
+          $(newList).appendTo("#" + player.id());
         };
 
         /**
@@ -141,7 +132,7 @@
         };
 
         player.main = function () {
-          var data = document.querySelectorAll("#chapters li");
+          var data = $("#chapters li");
           if (
             settings.ui &&
             data.length >= 1 &&
@@ -159,14 +150,6 @@
           }
           if (data.length >= 1) {
             player.createChapters(data);
-          }
-
-          let podPlayer = document.getElementById(player.id());
-          let chapters_list = document.querySelectorAll(".chapters-list");
-          if (chapters_list.length > 0) {
-            chapters_list.forEach((element) => {
-              podPlayer.appendChild(element);
-            });
           }
         };
 

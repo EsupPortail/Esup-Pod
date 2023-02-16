@@ -16,11 +16,10 @@ from pod.playlist.models import Playlist
 from pod.playlist.models import PlaylistElement
 from pod.playlist.forms import PlaylistForm
 from pod.video.models import Video, AdvancedNotes
-from django.contrib.sites.shortcuts import get_current_site
-import json
-from pod.main.utils import is_ajax
 
-__AVAILABLE_ACTIONS__ = ["add", "edit", "move", "remove", "delete"]
+import json
+
+ACTION = ["add", "edit", "move", "remove", "delete"]
 
 
 @login_required(redirect_field_name="referrer")
@@ -70,11 +69,9 @@ def playlist(request, slug=None):
         messages.add_message(request, messages.ERROR, _("You cannot edit this playlist."))
         raise PermissionDenied
     form = PlaylistForm(instance=playlist, initial={"owner": request.user})
-    action = request.POST.get("action", "").lower()
-    if request.method == "POST":
-        action = request.POST.get("action", "").lower()
-        if action in __AVAILABLE_ACTIONS__:
-            return eval("playlist_{0}(request, playlist)".format(action))
+    if request.POST and request.POST.get("action"):
+        if request.POST["action"] in ACTION:
+            return eval("playlist_{0}(request, playlist)".format(request.POST["action"]))
     else:
         return render(
             request, "playlist.html", {"form": form, "list_videos": list_videos}
@@ -83,8 +80,6 @@ def playlist(request, slug=None):
 
 # @login_required
 # @csrf_protect
-
-
 def playlist_play(request, slug=None):
     template_video = (
         "playlist_player-iframe.html"
@@ -169,7 +164,7 @@ def check_playlist_videos(playlist, data):
 
 
 def playlist_move(request, playlist):
-    if is_ajax(request):
+    if request.is_ajax():
         if request.POST.get("videos"):
             data = json.loads(request.POST["videos"])
             err = check_playlist_videos(playlist, data)
@@ -195,9 +190,9 @@ def playlist_move(request, playlist):
 
 
 def playlist_remove(request, playlist):
-    if is_ajax(request):
+    if request.is_ajax():
         if request.POST.get("video"):
-            slug = request.POST.get("video")
+            slug = request.POST["video"]
             element = get_object_or_404(
                 PlaylistElement, video__slug=slug, playlist=playlist
             )
@@ -236,11 +231,9 @@ def playlist_edit(request, playlist):
 
 def playlist_add(request, playlist):
     """Add a video (in POST) to the playlist. AJAX only."""
-    if is_ajax(request):
+    if request.is_ajax():
         if request.POST.get("video"):
-            video = get_object_or_404(
-                Video, slug=request.POST.get("video"), sites=get_current_site(request)
-            )
+            video = get_object_or_404(Video, slug=request.POST["video"])
             msg = None
             if video.is_draft:
                 msg = _("A video in draft mode cannot be added to a playlist.")
@@ -270,7 +263,7 @@ def playlist_add(request, playlist):
 
 
 def playlist_delete(request, playlist):
-    if is_ajax(request):
+    if request.is_ajax():
         if playlist:
             playlist.delete()
         some_data_to_dump = {

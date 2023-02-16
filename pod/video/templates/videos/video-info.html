@@ -33,25 +33,24 @@
 
 {% if video.description or tag_list or video.is_360 %}
 <div class="pod-info-video__summary my-3" id="summary">
-  {% if video.is_360 %}
-    <p class="alert">{% trans "This is a 360 degree video. To look around click and drag your mouse on the video." %}</p>
-  {% endif %}
+  {% if video.is_360 %}<p>{% trans "This is a 360 degree video. To look around click and drag your mouse on the
+    video."%}</p>{% endif %}
   {% tags_for_object video as tag_list %}
   {% if video.description or tag_list %}
-    <p>{{ video.description|safe }}</p>
-    {% if tag_list %}
-      <p>{% trans 'Tags:' %}
-        {% for tag in tag_list %}
-        <a href="{% url 'videos:videos' %}?tag={{ tag }}"
-           {% if request.GET.is_iframe %} target="_blank" {% endif %}
-           class="btn btn-link btn-sm">
-          {{ tag }}
-        </a>
-        {% endfor %}
-      </p>
-    {% endif %}
+  <p>{{ video.description|safe }}</p>
+  {% if tag_list %}
+  <p>{% trans 'Tags:' %}
+    {% for tag in tag_list %}
+    <a href="{% url 'videos:videos' %}?tag={{ tag }}"
+       {% if request.GET.is_iframe %} target="_blank" {% endif %}
+       class="btn btn-link btn-sm">
+      {{ tag }}
+    </a>
+    {% endfor %}
+  </p>
+  {% endif %}
   {% elif not video.is_360 %}
-    <p>[... {% trans "No information available" %} ...]</p>
+  <p>[... {% trans "No information available" %} ...]</p>
   {% endif %}
 </div>
 {% endif %}

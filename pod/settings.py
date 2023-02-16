@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     "chunked_upload",
     "mozilla_django_oidc",
     "honeypot",
-    "lti_provider",
     # Pod Applications
     "pod.main",
     "django.contrib.admin",  # put it here for template override
@@ -110,9 +109,6 @@ TEMPLATES = [
                 # Local contexts
                 "pod.main.context_processors.context_settings",
                 "pod.main.context_processors.context_navbar",
-                "pod.video.context_processors.context_video_settings",
-                "pod.authentication.context_processors.context_authentication_settings",
-                "pod.recorder.context_processors.context_recorder_settings",
             ],
         },
     },

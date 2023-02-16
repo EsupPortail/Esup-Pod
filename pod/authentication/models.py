@@ -189,7 +189,7 @@ class AccessGroup(models.Model):
     auto_sync = models.BooleanField(
         _("Auto synchronize"),
         default=False,
-        help_text=_("Check if the access group must be synchronized on user connexion."),
+        help_text=_("Check if the access_group must be synchronized on user connexion."),
     )
     users = models.ManyToManyField(
         Owner,

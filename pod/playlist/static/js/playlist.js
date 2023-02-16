@@ -1,9 +1,15 @@
-var showalert = (message, alerttype) => {
-  document.body.append(
-    `<div id="formalertdiv" class="alert ${alerttype} alert-dismissible fade show" role="alert">${message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
+var showalert = function (message, alerttype) {
+  $("body").append(
+    '<div id="formalertdiv" class="alert ' +
+      alerttype +
+      ' alert-dismissible fade show" role="alert">' +
+      message +
+      '<button type="button" class="close" data-dismiss="alert" aria-label="' +
+      gettext("Close") +
+      '"><span aria-hidden="true">&times;</span></button></div>'
   );
-  setTimeout(() => {
-    document.getElementById("formalertdiv").remove();
+  setTimeout(function () {
+    $("#formalertdiv").remove();
   }, 5000);
 };
 
@@ -19,259 +25,207 @@ var ajaxfail = function (data) {
 };
 
 document.addEventListener("DOMContentLoaded", function () {
-  const table = document.getElementById("table_list_videos");
+  const table = $("#table_list_videos")[0];
 
-  Array.from(document.querySelectorAll(".position-up")).forEach((button) => {
-    button.addEventListener("click", function () {
-      let row = button.closest("tr");
-      let currentposition = row.querySelector(".video-position");
+  $(".position-up").on("click", function () {
+    var row = $(this).parents("tr:first");
+    var currentposition = row.find(".video-position");
+    var oldposition = row.prev().find(".video-position");
+    if (currentposition.text() > 1) {
+      currentposition.text(parseInt(currentposition.text()) - 1);
+      oldposition.text(parseInt(oldposition.text()) + 1);
+    }
+    row.insertBefore(row.prev());
+  });
 
-      if (currentposition.textContent > 1) {
-        let oldposition =
-          row.previousElementSibling.querySelector(".video-position");
-        currentposition.textContent = parseInt(currentposition.textContent) - 1;
-        oldposition.textContent = parseInt(oldposition.textContent) + 1;
+  $(".position-down").on("click", function () {
+    var row = $(this).parents("tr:first");
+    var currentposition = row.find(".video-position");
+    var oldposition = row.next().find(".video-position");
+    if (parseInt(currentposition.text()) < table.rows.length - 1) {
+      currentposition.text(parseInt(currentposition.text()) + 1);
+      oldposition.text(parseInt(oldposition.text()) - 1);
+    }
+    row.insertAfter(row.next());
+  });
+
+  $("#save-position").on("click", function () {
+    var videos = {};
+    for (let i = 1; i < table.rows.length; i++) {
+      var slug = table.rows[i].children[1].attributes["data-slug"].value;
+      var pos = table.rows[i].children[4].innerHTML;
+      videos[slug] = pos;
+    }
+    data = JSON.stringify(videos);
+    var jqxhr = $.ajax({
+      method: "POST",
+      url: window.location.href,
+      data: {
+        action: "move",
+        videos: data,
+        csrfmiddlewaretoken: $("#playlist_form")
+          .find('input[name="csrfmiddlewaretoken"]')
+          .val(),
+      },
+      dataType: "html",
+    });
+    jqxhr.done(function (data) {
+      response = JSON.parse(data);
+      if (!response.success && !response.fail) {
+        showalert(
+          gettext("You are no longer authenticated. Please log in again."),
+          "alert-danger"
+        );
+      } else {
+        if (response.success) {
+          showalert(response.success, "alert-success");
+          window.location.reload();
+        } else {
+          showalert(response.fail, "alert-danger");
+        }
       }
-      console.log(row.previousSibling);
-      row.parentNode.insertBefore(row, row.previousElementSibling);
+    });
+    jqxhr.fail(function ($xhr) {
+      var data = $xhr.status + " : " + $xhr.statusText;
+      ajaxfail(data);
     });
   });
 
-  document.querySelectorAll(".position-down").forEach((element) => {
-    element.addEventListener("click", function () {
-      let row = element.parentNode.parentNode;
-      let currentposition = row.querySelector(".video-position");
-      let oldposition = currentposition;
-      if (row.nextElementSibling !== null) {
-        oldposition = row.nextElementSibling.querySelector(".video-position");
+  $(".position-delete").on("click", function () {
+    var slug = $(this)
+      .parents("tr:first")
+      .find(".video-title")
+      .attr("data-slug");
+    var jqxhr = $.ajax({
+      method: "POST",
+      url: window.location.href,
+      data: {
+        action: "remove",
+        video: slug,
+        csrfmiddlewaretoken: $("#playlist_form")
+          .find('input[name="csrfmiddlewaretoken"]')
+          .val(),
+      },
+      dataType: "html",
+    });
+    jqxhr.done(function (data) {
+      response = JSON.parse(data);
+      if (!response.success && !response.fail) {
+        showalert(
+          gettext("You are no longer authenticated. Please log in again."),
+          "alert-danger"
+        );
+      } else {
+        if (response.success) {
+          showalert(response.success, "alert-success");
+          window.location.reload();
+        } else {
+          showalert(response.fail, "alert-danger");
+        }
       }
-
-      if (parseInt(currentposition.textContent) < table.rows.length - 1) {
-        currentposition.textContent = parseInt(currentposition.textContent) + 1;
-        oldposition.textContent = parseInt(oldposition.textContent) - 1;
-      }
-      row.parentNode.insertBefore(row.nextElementSibling, row);
+    });
+    jqxhr.fail(function ($xhr) {
+      var data = $xhr.status + " : " + $xhr.statusText;
+      ajaxfail(data);
     });
   });
-  let savePosition = document.getElementById("save-position");
-  if (savePosition !== null) {
-    savePosition.addEventListener("click", function () {
-      var videos = {};
-      for (let i = 1; i < table.rows.length; i++) {
-        var slug = table.rows[i].children[1].attributes["data-slug"].value;
-        var pos = table.rows[i].children[4].innerHTML;
-        videos[slug] = pos;
-      }
-      let token = document.cookie
-        .split(";")
-        .filter((item) => item.trim().startsWith("csrftoken="))[0]
-        .split("=")[1];
 
-      form_data = new FormData();
-      form_data.append("videos", JSON.stringify(videos));
-      form_data.append("csrfmiddlewaretoken", token);
-      form_data.append("action", "move");
-
-      const return_url = $(this).data("return-url");
-      var jqxhr = fetch(window.location.href, {
+  $(".playlist-delete").on("click", function () {
+    const return_url = $(this).data("return-url");
+    if (confirm(gettext("Do you want to delete this playlist?"))) {
+      var jqxhr = $.ajax({
         method: "POST",
-        headers: {
-          "X-CSRFToken": token,
-          "X-Requested-With": "XMLHttpRequest",
+        url: window.location.href,
+        data: {
+          action: "delete",
+          csrfmiddlewaretoken: $(this)
+            .parents("div:first")
+            .find('input[name="csrfmiddlewaretoken"]')
+            .val(),
         },
-        body: form_data,
-      })
-        .then((response) => {
-          if (response.status !== 200) {
-            showalert(
-              gettext("You are no longer authenticated. Please log in again."),
-              "alert-danger"
-            );
-          } else {
-            showalert(gettext("Position saved"), "alert-success");
-            window.location.reload();
-          }
-        })
-        .catch((error) => {
+        dataType: "html",
+      });
+      jqxhr.done(function (data) {
+        response = JSON.parse(data);
+        if (!response.success && !response.fail) {
           showalert(
-            "Error moving videos. (" +
-              error +
-              ") The videos could not be moved.",
+            gettext("You are no longer authenticated. Please log in again."),
             "alert-danger"
           );
-        });
-    });
-  }
-
-  document.querySelectorAll(".position-delete").forEach((element) => {
-    element.addEventListener("click", async function () {
-      let slug = element.parentNode.parentNode
-        .querySelector(".video-title")
-        .getAttribute("data-slug");
-      let token = document.cookie
-        .split(";")
-        .filter((item) => item.trim().startsWith("csrftoken="))[0]
-        .split("=")[1];
-
-      headers = {
-        "X-CSRFToken": token,
-        "X-Requested-With": "XMLHttpRequest",
-      };
-
-      form_data = new FormData();
-      form_data.append("video", slug);
-      form_data.append("action", "remove");
-
-      await fetch(window.location.href, {
-        method: "POST",
-        headers: headers,
-        body: form_data,
-      })
-        .then((response) => {
-          if (response.status != 200) {
-            showalert(
-              gettext("You are no longer authenticated. Please log in again."),
-              "alert-danger"
-            );
+        } else {
+          if (response.success) {
+            showalert(response.success, "alert-success");
+            setTimeout(() => (window.location = return_url), 1000);
           } else {
-            if (response.status == 200) {
-              showalert(response.success, "alert-success");
-              window.location.reload();
-            } else {
-              showalert(response.statusText, "alert-danger");
-            }
+            showalert(response.fail, "alert-danger");
           }
-        })
-
-        .catch((error) => {
-          showalert(
-            gettext(
-              "Error deleting video from playlist. The video could not be deleted."
-            ),
-            "alert-danger"
-          );
-        });
-    });
+        }
+      });
+      jqxhr.fail(function ($xhr) {
+        var data = $xhr.status + " : " + $xhr.statusText;
+        ajaxfail(data);
+      });
+    }
   });
 
-  document.querySelectorAll(".playlist-delete").forEach((element) => {
-    const return_url = element.dataset.returnUrl;
-    element.addEventListener("click", function () {
-      let token = document.cookie
-        .split(";")
-        .filter((item) => item.trim().startsWith("csrftoken="))[0]
-        .split("=")[1];
-      if (confirm("Are you sure you want to delete this playlist?")) {
-        headers = {
-          "X-Requested-With": "XMLHttpRequest",
-          "X-CSRFToken": token,
-        };
+  // Append current video to clicked playlist
+  $("#info-video").on("click", ".playlist-item", function (e) {
+    e.preventDefault();
+    const url = window.location.href;
+    const regex = new RegExp("(.*)/video/(\\d+-(.*))/");
+    const checkslug = regex.test(url);
+    const foundslug = url.match(regex);
+    if (!checkslug) {
+      showalert(
+        gettext("The video can not be added from this page."),
+        "alert-danger"
+      );
+      return;
+    }
+    if (!foundslug[2]) {
+      showalert(gettext("The video slug not found."), "alert-danger");
+      return;
+    }
+    const slug = $(this).attr("data-slug");
+    const link = $(this);
+    const csrfmiddlewaretoken =
+      document.querySelector("input[name=csrfmiddlewaretoken]").value ||
+      Cookies.get("csrftoken");
 
-        let form_data = new FormData();
-        form_data.append("action", "delete");
-
-        let jqxhr = fetch(window.location.href, {
-          method: "POST",
-          headers: headers,
-          body: form_data,
-        })
-          .then((response) => {
-            if (response.status != 200) {
-              showalert(
-                gettext(
-                  "You are no longer authenticated. Please log in again."
-                ),
-                "alert-danger"
-              );
-            } else {
-              if (response.status == 200) {
-                showalert(response.statusText, "alert-success");
-                setTimeout(() => (window.location = return_url), 1000);
-              } else {
-                showalert(response.statusText, "alert-danger");
-              }
-            }
-          })
-          .catch((error) => {
-            showalert(
-              gettext(
-                "Error deleting playlist. The playlist could not be deleted."
-              ),
-              "alert-danger"
-            );
-          });
+    const jqxhr = $.ajax({
+      method: "POST",
+      url: "/playlist/edit/" + slug + "/",
+      data: {
+        action: "add",
+        video: foundslug[2],
+        csrfmiddlewaretoken: csrfmiddlewaretoken,
+      },
+      dataType: "html",
+    });
+    jqxhr.done(function (data) {
+      response = JSON.parse(data);
+      console.log(response.success);
+      if (!response.success && !response.fail) {
+        showalert(
+          gettext("You are no longer authenticated. Please log in again."),
+          "alert-danger"
+        );
+      } else {
+        if (response.success) {
+          showalert(response.success, "alert-success");
+          //window.location.reload(); // hide link playlist
+          link
+            .addClass("disabled selected")
+            .removeClass("playlist-item")
+            .append("");
+        } else {
+          showalert(response.fail, "alert-danger");
+        }
       }
     });
+    jqxhr.fail(function ($xhr) {
+      var data = $xhr.status + " : " + $xhr.statusText;
+      ajaxfail(data);
+    });
   });
-  let infoVideo = document.getElementById("info-video");
-  if (infoVideo !== null) {
-    document
-      .getElementById("info-video")
-      .addEventListener("click", function (e) {
-        let target = e.target;
-        if (!target.classList.contains("playlist-item")) return;
-        e.preventDefault();
-        const url = window.location.href;
-        const regex = new RegExp("(.*)/video/(\\d+-(.*))/");
-        const checkslug = regex.test(url);
-        const foundslug = url.match(regex);
-        if (!checkslug) {
-          showalert(
-            gettext("The video can not be added from this page."),
-            "alert-danger"
-          );
-          return;
-        }
-        if (!foundslug[2]) {
-          showalert(gettext("The video slug not found."), "alert-danger");
-          return;
-        }
-
-        const slug = target.getAttribute("data-slug");
-        const link = target;
-        let token = document.cookie
-          .split(";")
-          .filter((item) => item.trim().startsWith("csrftoken="))[0]
-          .split("=")[1];
-
-        form_data = new FormData();
-        form_data.append("video", foundslug[2]);
-        form_data.append("action", "add");
-
-        const jqxhr = fetch("/playlist/edit/" + slug + "/", {
-          method: "POST",
-          headers: {
-            "X-CSRFToken": token,
-            "X-Requested-With": "XMLHttpRequest",
-          },
-          body: form_data,
-        })
-          .then((response) => {
-            if (response.status != 200) {
-              showalert(
-                gettext(
-                  "You are no longer authenticated. Please log in again."
-                ),
-                "alert-danger",
-                "alert-danger"
-              );
-            } else {
-              if (response.status == 200) {
-                showalert(gettext("Video add to playlist"), "alert-success");
-                link.classList.add("disabled");
-                link.classList.remove("playlist-item");
-                link.append("");
-              }
-            }
-          })
-          .catch((error) => {
-            showalert(
-              gettext(
-                "Error getting video information. The video information could not be retrieved."
-              ),
-              "alert-danger"
-            );
-          });
-      });
-  }
 });

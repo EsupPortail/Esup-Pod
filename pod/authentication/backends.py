@@ -63,12 +63,6 @@ class ShibbBackend(ShibbolethRemoteUserBackend):
 # #changing-how-django-users-are-created
 OIDC_CLAIM_GIVEN_NAME = getattr(settings, "OIDC_CLAIM_GIVEN_NAME", "given_name")
 OIDC_CLAIM_FAMILY_NAME = getattr(settings, "OIDC_CLAIM_FAMILY_NAME", "family_name")
-OIDC_DEFAULT_AFFILIATION = getattr(
-    settings, "OIDC_DEFAULT_AFFILIATION", DEFAULT_AFFILIATION
-)
-OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = getattr(
-    settings, "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES", []
-)
 
 
 class OIDCBackend(OIDCAuthenticationBackend):
@@ -77,8 +71,10 @@ class OIDCBackend(OIDCAuthenticationBackend):
 
         user.first_name = claims.get(OIDC_CLAIM_GIVEN_NAME, "")
         user.last_name = claims.get(OIDC_CLAIM_FAMILY_NAME, "")
-        user.owner.affiliation = OIDC_DEFAULT_AFFILIATION
-        for code_name in OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES:
+        user.owner.affiliation = getattr(
+            settings, "OIDC_DEFAULT_AFFILIATION", DEFAULT_AFFILIATION
+        )
+        for code_name in getattr(settings, "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES", []):
             try:
                 user.owner.accessgroup_set.add(
                     AccessGroup.objects.get(code_name=code_name)
