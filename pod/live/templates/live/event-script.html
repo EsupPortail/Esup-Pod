@@ -79,7 +79,7 @@
             linktitle: '{{TITLE_ETB}} - {{TITLE_SITE}}',
             link: '{{LINK_PLAYER}}'
         });
-        let mp4_sources = {{event.video_on_hold.video_on_hold.get_video_mp4_json|safe}};
+        let mp4_sources = {{event.video_on_hold.get_video_mp4_json|safe}};
         playerOnHold.src(mp4_sources);
 
         $("#divvideoonhold").css("display", "block");
