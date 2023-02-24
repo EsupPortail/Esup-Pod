@@ -495,21 +495,6 @@ class Event(models.Model):
             ("%s-%s" % (SECRET_KEY, self.id)).encode("utf-8")
         ).hexdigest()
 
-    def get_thumbnail_url(self):
-        """Get a thumbnail url for the event."""
-        request = None
-        if self.thumbnail and self.thumbnail.file_exist():
-            thumbnail_url = "".join(
-                [
-                    "//",
-                    get_current_site(request).domain,
-                    self.thumbnail.file.url,
-                ]
-            )
-        else:
-            thumbnail_url = static(DEFAULT_EVENT_THUMBNAIL)
-        return thumbnail_url
-
     def get_thumbnail_card(self):
         if self.thumbnail:
             return self.thumbnail.file.url

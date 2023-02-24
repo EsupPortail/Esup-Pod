@@ -69,11 +69,11 @@
                 {# event thumbnail  #}
                 {% elif event.thumbnail  %}
                     <div id="divvideoonhold" class="d-none"></div>
-                    <img src="{{ event.get_thumbnail_url }}" height="360" alt={{ event.title }}>
+                    <img src="{{ event.get_thumbnail_card }}" height="360" alt="{{ event.title }}">
                 {# broadcaster thumbnail  #}
                 {% elif event.broadcaster.poster %}
                     <div id="divvideoonhold" class="d-none"></div>
-                    <img src="{{ event.broadcaster.get_poster_url }}" height="360" alt={{ event.title }}>
+                    <img src="{{ event.broadcaster.get_poster_url }}" height="360" alt="{{ event.title }}">
                 {% endif %}
 
             {% elif event.is_current %}
