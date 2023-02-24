@@ -5,7 +5,7 @@
 
 {% block page_extra_head %}
 {% include 'videos/video-header.html' %}
-{% if event.broadcaster.enable_viewer_count %}
+{% if event.is_current and event.broadcaster.enable_viewer_count %}
     <script>let heartbeat_delay = {{ heartbeat_delay }}</script>
     <script src="{% static 'js/viewcounter.js' %}?ver={{ VERSION }}"></script>
 {% endif %}
@@ -44,9 +44,12 @@
             <div class="p-3 mb-2 bg-warning text-dark">
                 {% trans "The event is scheduled from:" %} {{ event.start_date }} {% trans 'to' %} {{ event.end_date }}
             </div>
+            <!--
             <div id="divvideoonhold" style="display: none;">
                 <video id="podvideoonholdplayer"></video>
             </div>
+            -->
+
 
             {# waiting video #}
             {% if event.video_on_hold.is_video %}
@@ -172,6 +175,7 @@
 
 {% if  event.broadcaster.status and event.enable_transcription and event.broadcaster.transcription_file %}
 <script>
+
   document.addEventListener("DOMContentLoaded", function () {
       let player = videojs("podvideoplayer");
       player.ready(function () {
