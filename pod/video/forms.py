@@ -626,8 +626,10 @@ class VideoForm(forms.ModelForm):
             or (in_dt.years == mddd and in_dt.months == 0 and in_dt.days > 0)
         ):
             raise ValidationError(
-                _("The date must be before or equal to %(date)s." % {
-                    "date": __MAX_D__.strftime("%d-%m-%Y")})
+                _(
+                    "The date must be before or equal to %(date)s."
+                    % {"date": __MAX_D__.strftime("%d-%m-%Y")}
+                )
             )
         return self.cleaned_data["date_delete"]
 

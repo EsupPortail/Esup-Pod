@@ -873,8 +873,9 @@ class Video(models.Model):
         """Get the recent view counter of a video."""
         return self.get_viewcount(VIDEO_RECENT_VIEWCOUNT)
 
-    recentViewcount.fget.short_description = _("Sum of view of last %(ndays)s days" % {
-        'ndays': VIDEO_RECENT_VIEWCOUNT})
+    recentViewcount.fget.short_description = _(
+        "Sum of view of last %(ndays)s days" % {"ndays": VIDEO_RECENT_VIEWCOUNT}
+    )
 
     def is_editable(self, user):
         """Return true if video is editable by user."""

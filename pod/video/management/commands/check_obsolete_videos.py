@@ -83,7 +83,7 @@ class Command(BaseCommand):
             # Archive and delete videos with past deadlines
             (
                 list_video_deleted,
-                list_video_archived
+                list_video_archived,
             ) = self.get_video_archived_deleted_treatment()
             self.notify_manager_of_deleted_video(list_video_deleted)
             self.notify_manager_of_archived_video(list_video_archived)
@@ -246,19 +246,24 @@ class Command(BaseCommand):
             fail_silently=False,
             html_message=msg_html,
         )
-        print(_("Mail sent to %(to_email)s for video %(title)s.") %
-              {'to_email': to_email, 'title': video.title})
+        print(
+            _("Mail sent to %(to_email)s for video %(title)s.")
+            % {"to_email": to_email, "title": video.title}
+        )
 
     def notify_manager_of_obsolete_video(self, list_video):
         """Notify manager(s) with a list of obsolete videos."""
         for estab in list_video:
             if len(list_video[estab]) > 0:
-                if (estab != 'other'):
+                if estab != "other":
                     msg_html = _("Hello manager(s) of %(estab)s on %(site_title)s,") % {
-                        'estab': estab, 'site_title': __TITLE_SITE__}
+                        "estab": estab,
+                        "site_title": __TITLE_SITE__,
+                    }
                 else:
                     msg_html = _("Hello manager(s) of %(site_title)s,") % {
-                        'site_title': __TITLE_SITE__}
+                        "site_title": __TITLE_SITE__
+                    }
                 msg_html += (
                     "<br/>\n<p>"
                     + _(
@@ -287,7 +292,8 @@ class Command(BaseCommand):
                     to_email = []
                     to_email.append(dict(MANAGERS)[estab])
                     send_mail(
-                        "[%s] %s" % (
+                        "[%s] %s"
+                        % (
                             __TITLE_SITE__,
                             subject,
                         ),
@@ -298,20 +304,27 @@ class Command(BaseCommand):
                         html_message=msg_html,
                     )
                 if MANAGERS:
-                    print(_("Manager of '%(estab)s' notified for"
-                            + " %(nb)s soon to be obsolete video(s).") %
-                          {'estab': estab, 'nb': len(list_video[estab])})
+                    print(
+                        _(
+                            "Manager of '%(estab)s' notified for"
+                            + " %(nb)s soon to be obsolete video(s)."
+                        )
+                        % {"estab": estab, "nb": len(list_video[estab])}
+                    )
 
     def notify_manager_of_deleted_video(self, list_video):
         """Notify manager(s) with a list of deleted videos."""
         for estab in list_video:
             if len(list_video[estab]) > 0:
-                if (estab != 'other'):
+                if estab != "other":
                     msg_html = _("Hello manager(s) of %(estab)s on %(site_title)s,") % {
-                        'estab': estab, 'site_title': __TITLE_SITE__}
+                        "estab": estab,
+                        "site_title": __TITLE_SITE__,
+                    }
                 else:
                     msg_html = _("Hello manager(s) of %(site_title)s,") % {
-                        'site_title': __TITLE_SITE__}
+                        "site_title": __TITLE_SITE__
+                    }
                 msg_html += (
                     "<br/>\n<p>"
                     + _(
@@ -326,7 +339,7 @@ class Command(BaseCommand):
                 msg_html += "\n</p>"
                 msg_html += "\n<p>" + _("Regards") + "</p>\n"
 
-                subject = _("The deleted videos on Pod"),
+                subject = (_("The deleted videos on Pod"),)
 
                 if estab == "other":
                     mail_managers(
@@ -339,7 +352,8 @@ class Command(BaseCommand):
                     to_email = []
                     to_email.append(dict(MANAGERS)[estab])
                     send_mail(
-                        "[%s] %s" % (
+                        "[%s] %s"
+                        % (
                             __TITLE_SITE__,
                             subject,
                         ),
@@ -350,19 +364,24 @@ class Command(BaseCommand):
                         html_message=msg_html,
                     )
                 if MANAGERS:
-                    print(_("Manager of '%(et)s' notified for %(nb)s deleted video(s).") %
-                          {'et': estab, 'nb': len(list_video[estab])})
+                    print(
+                        _("Manager of '%(et)s' notified for %(nb)s deleted video(s).")
+                        % {"et": estab, "nb": len(list_video[estab])}
+                    )
 
     def notify_manager_of_archived_video(self, list_video):
         """Notify manager(s) with a list of archived videos."""
         for estab in list_video:
             if len(list_video[estab]) > 0:
-                if (estab != 'other'):
+                if estab != "other":
                     msg_html = _("Hello manager(s) of %(estab)s on %(site_title)s,") % {
-                        'estab': estab, 'site_title': __TITLE_SITE__}
+                        "estab": estab,
+                        "site_title": __TITLE_SITE__,
+                    }
                 else:
                     msg_html = _("Hello manager(s) of %(site_title)s,") % {
-                        'site_title': __TITLE_SITE__}
+                        "site_title": __TITLE_SITE__
+                    }
                 msg_html += (
                     "<br/>\n<p>"
                     + _(
@@ -391,7 +410,8 @@ class Command(BaseCommand):
                     to_email = []
                     to_email.append(dict(MANAGERS)[estab])
                     send_mail(
-                        "[%s] %s" % (
+                        "[%s] %s"
+                        % (
                             __TITLE_SITE__,
                             subject,
                         ),
@@ -402,8 +422,10 @@ class Command(BaseCommand):
                         html_message=msg_html,
                     )
                 if MANAGERS:
-                    print(_("Manager of '%(estab)s' notified for %(nb)s archived video(s).") %
-                          {'estab': estab, 'nb': len(list_video[estab])})
+                    print(
+                        _("Manager of '%(estab)s' notified for %(nb)s archived video(s).")
+                        % {"estab": estab, "nb": len(list_video[estab])}
+                    )
 
     def get_list_video_html(self, list_video, deleted):
         """Generate an html version of list_video."""
@@ -463,7 +485,7 @@ class Command(BaseCommand):
             "Date added",
             "Source file",
             "Description",
-            "Views"
+            "Views",
         ]
         if exists:
             self.check_csv_header(file, fieldnames)
@@ -486,18 +508,19 @@ class Command(BaseCommand):
                     "Video type": vid.type.title,
                     "Date added": "%s" % vid.date_added.strftime("%Y/%m/%d"),
                     "Source file": vid.video,
-                    "Description": vid.description.replace(
-                        ";", "$semic$").replace("\r", '').replace("\n\n", "\n").replace(
-                        "\n", "$newl$"),
-                    "Views": vid.viewcount
+                    "Description": vid.description.replace(";", "$semic$")
+                    .replace("\r", "")
+                    .replace("\n\n", "\n")
+                    .replace("\n", "$newl$"),
+                    "Views": vid.viewcount,
                 }
             )
 
     def check_csv_header(self, csv_file, fieldnames):
         """Check for (and add) missing columns in an existing CSV file."""
-        with open(csv_file, 'r') as f:
+        with open(csv_file, "r") as f:
             lines = f.readlines()
-        if (len(lines[0].split(";")) < len(fieldnames)):
+        if len(lines[0].split(";")) < len(fieldnames):
             print("Adding missing header columns in %s." % csv_file)
             lines[0] = ";".join(fieldnames) + "\n"
             with open(csv_file, "w") as f:
