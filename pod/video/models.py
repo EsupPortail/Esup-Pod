@@ -1,5 +1,4 @@
 """Esup-Pod Video models."""
-
 import os
 import re
 import time
@@ -46,8 +45,10 @@ from django.db.models import Count, Case, When, Value, BooleanField, Q
 from django.db.models.functions import Concat
 from os.path import splitext
 
-if getattr(settings, "USE_PODFILE", False):
+USE_PODFILE = getattr(settings, "USE_PODFILE", False)
+if USE_PODFILE:
     from pod.podfile.models import CustomImageModel
+    from pod.podfile.models import UserFolder
 else:
     from pod.main.models import CustomImageModel
 
@@ -869,10 +870,11 @@ class Video(models.Model):
 
     @property
     def recentViewcount(self):
-        """Get the view counter of a video."""
+        """Get the recent view counter of a video."""
         return self.get_viewcount(VIDEO_RECENT_VIEWCOUNT)
 
-    recentViewcount.fget.short_description = _("Sum of view of last 6 months (180 days)")
+    recentViewcount.fget.short_description = _("Sum of view of last %(ndays)s days" % {
+        'ndays': VIDEO_RECENT_VIEWCOUNT})
 
     def is_editable(self, user):
         """Return true if video is editable by user."""
@@ -1071,7 +1073,18 @@ class Video(models.Model):
         if self.overview:
             if os.path.isfile(self.overview.path):
                 os.remove(self.overview.path)
+        self.delete_video_folder()
         super(Video, self).delete()
+
+    def delete_video_folder(self):
+        """Delete UserFolder associated to current video."""
+        if USE_PODFILE:
+            video_folder = UserFolder.objects.filter(
+                name=self.slug,
+                owner=self.owner,
+            )
+            if video_folder:
+                video_folder[0].delete()
 
     def get_playlist_master(self):
         try:
@@ -1291,6 +1304,7 @@ class Video(models.Model):
         return "%s" % __LICENCE_CHOICES_DICT__[self.licence]
 
     def get_dublin_core(self):
+        """Export Dublin Core items for current video."""
         contributors = []
         current_site = Site.objects.get_current()
         for contrib in self.contributor_set.values_list("name", "role"):

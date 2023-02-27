@@ -157,6 +157,7 @@ __VIDEOS__ = get_available_videos()
 
 def _regroup_videos_by_theme(request, videos, channel, theme=None):
     """Regroup videos by theme.
+
     Args:
         request (Request): current HTTP Request
         videos (List[Video]): list of video filter by channel

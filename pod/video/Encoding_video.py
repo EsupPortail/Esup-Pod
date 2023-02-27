@@ -1,4 +1,4 @@
-from __future__ import absolute_import, division, print_function
+"""Encoding video."""
 import json
 import os
 import time
@@ -119,6 +119,8 @@ except ImportError:
 
 
 class Encoding_video:
+    """Encoding video object."""
+
     id = 0
     video_file = ""
     duration = 0
@@ -142,6 +144,7 @@ class Encoding_video:
     cutting_stop = 0
 
     def __init__(self, id=0, video_file="", start=0, stop=0):
+        """Initialize a new Encoding_video object."""
         self.id = id
         self.video_file = video_file
         self.duration = 0
@@ -165,6 +168,7 @@ class Encoding_video:
         self.cutting_stop = stop or 0
 
     def is_video(self):
+        """Check if current encoding correspond to a video."""
         return len(self.list_video_track) > 0
 
     def get_subtime(self, clip_begin, clip_end):
@@ -176,9 +180,7 @@ class Encoding_video:
         return subtime
 
     def get_video_data(self):
-        """
-        get alls tracks from video source and put it in object passed in parameter
-        """
+        """Get alls tracks from video source and put it in object passed in parameter."""
         msg = "--> get_info_video" + "\n"
         probe_cmd = FFPROBE_GET_INFO % {
             "ffprobe": FFPROBE_CMD,

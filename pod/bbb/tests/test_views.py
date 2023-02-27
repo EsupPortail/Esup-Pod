@@ -1,6 +1,4 @@
-"""
-Unit tests for BBB views
-"""
+"""Unit tests for BBB views."""
 
 from django.test import TestCase
 from django.test import Client
@@ -11,6 +9,8 @@ from django.utils import timezone
 
 
 class MeetingViewsTestCase(TestCase):
+    """Test case for BBB MeetingViews."""
+
     fixtures = [
         "initial_data.json",
     ]
@@ -34,7 +34,7 @@ class MeetingViewsTestCase(TestCase):
             meeting=meeting1,
             user=userJohnDoe,
         )
-        print(" --->  SetUp of MeetingViewsTestCase : OK !")
+        print(" --->  SetUp of MeetingViewsTestCase: OK!")
 
     def test_list_meeting(self):
         self.client = Client()
@@ -50,7 +50,7 @@ class MeetingViewsTestCase(TestCase):
         self.assertTrue(b"Session BBB1" in response.content)
         self.assertEqual(response.status_code, 200)
 
-        print("   --->  test_list_meeting of MeetingViewsTestCase : OK !")
+        print("   --->  test_list_meeting of MeetingViewsTestCase: OK!")
 
     def test_publish_meeting(self):
         self.client = Client()
@@ -67,7 +67,7 @@ class MeetingViewsTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
         else:
             self.assertEqual(response.status_code, 301)
-        print("   --->  test_publish_meeting of MeetingViewsTestCase : OK !")
+        print("   --->  test_publish_meeting of MeetingViewsTestCase: OK!")
 
 
 class LivestreamViewsTestCase(TestCase):
@@ -101,7 +101,7 @@ class LivestreamViewsTestCase(TestCase):
             status=0,
             user=userJohnDoe,
         )
-        print(" --->  SetUp of LivestreamViewsTestCase : OK !")
+        print(" --->  SetUp of LivestreamViewsTestCase: OK!")
 
     def test_live_list_meeting(self):
         self.client = Client()
@@ -117,7 +117,7 @@ class LivestreamViewsTestCase(TestCase):
         self.assertTrue(b"Session BBB1" in response.content)
         self.assertEqual(response.status_code, 200)
 
-        print("   ---> test_live_list_meeting of LivestreamViewsTestCase : OK !")
+        print("   ---> test_live_list_meeting of LivestreamViewsTestCase: OK!")
 
     def test_live_publish_meeting(self):
         self.client = Client()

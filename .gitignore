@@ -46,6 +46,7 @@ log/
 media/
 pod/*/migrations/
 pod/custom/*
+pod/main/static/custom/img
 !pod/custom/settings_local.py.example
 settings_local.py
 scripts/bbb-pod-live/docker-compose.yml
@@ -54,6 +55,7 @@ transcription/*
 ## Others
 pod/static/
 *.bak
+*.pem
 .coverage
 htmlcov
 compile-model
@@ -68,9 +70,8 @@ compile-model
 *.crt
 *.key
 
-# Bower stuffs #
+# NPM stuffs #
 ################
-bower_components
 node_modules
 
 # Conteneurisation de POD #
@@ -83,6 +84,5 @@ v8-compile-cache-0
 pod/db_migrations
 pod/log
 pod/media
-pod/static
 pod/node_modules/*
 tmp/
