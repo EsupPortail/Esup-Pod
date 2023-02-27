@@ -67,10 +67,11 @@
         return options;
     }
 
-    // Management of the video on hold
     {% if event.video_on_hold.is_video and event.is_coming %}
 
-        // In this case, loop is necessary
+        // Management of the video on hold
+
+        // loop to repeat the video
         options["loop"] = true;
         let playerOnHold = videojs('podvideoonholdplayer', options, function () {
         });
@@ -84,14 +85,11 @@
         playerOnHold.src(mp4_sources);
 
         $("#divvideoonhold").css("display", "block");
-    {% else %}
+
+    {% elif event.is_current %}
             // Management of the streaming live
             let player = videojs('podvideoplayer', options, function () {
             })
-
-            {% if event.broadcaster.enable_viewer_count and not request.GET.is_iframe %}
-                player.videoJsViewerCount();
-            {% endif %}
 
             player.videoJsLogo({
                 imgsrc: '{% static LOGO_PLAYER %}',
@@ -125,6 +123,10 @@
                 started = true;
                 $("#divvideoonhold").css("display", "none");
                 $("#divvideoplayer").css("display", "block");
+
+                {% if event.broadcaster.enable_viewer_count %}
+                    player.videoJsViewerCount();
+                {% endif %}
             })
     {% endif %}
 
