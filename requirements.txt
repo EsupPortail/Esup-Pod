@@ -5,7 +5,7 @@ django-tagging==0.5.0
 django-modeltranslation==0.18.7
 webvtt-py==0.4.5
 django-cas-client==1.5.3
-ldap3==2.5
+ldap3==2.9
 django-simple-captcha==0.5.17
 urllib3==1.26.5
 elasticsearch==6.3.1
