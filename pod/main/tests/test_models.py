@@ -1,3 +1,4 @@
+"""Test case for Pod Main models."""
 from django.test import TestCase
 from django.contrib.flatpages.models import FlatPage
 from django.conf import settings
@@ -6,14 +7,12 @@ from pod.main.models import Configuration, AdditionalChannelTab
 
 SITE_ID = getattr(settings, "SITE_ID", 1)
 
-"""
-    test the flatepages
-    Creation fo welcome page
-"""
 # Add customImage, customFile, linkFooter
 
 
 class FlatepageTestCase(TestCase):
+    """Test the flatepages creation for welcome page."""
+
     def setUp(self):
         fp1 = FlatPage.objects.create(title="Home", url="/")
         fp1.sites.add(Site.objects.get(id=SITE_ID))
@@ -46,7 +45,11 @@ class FlatepageTestCase(TestCase):
         self.assertEqual(flatPage.title, "Home")
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
+<<<<<<< HEAD
         print("   --->  test_Flatepage_null_attribut of FlatepageTestCase: OK!")
+=======
+        print("   --->  test_Flatepage_null_attribut" " of FlatepageTestCase: OK!")
+>>>>>>> develop
 
     """
         test attributs when a channel have many attributs
@@ -67,7 +70,11 @@ class FlatepageTestCase(TestCase):
         self.assertEqual(flatPage.content_fr, "<p>Bienvenue</p>\r\n")
         response = self.client.get("/home/")
         self.assertEqual(response.status_code, 200)
+<<<<<<< HEAD
         print("   --->  test_Flatepage_with_attributs of FlatepageTestCase: OK!")
+=======
+        print("   --->  test_Flatepage_with_attributs" " of FlatepageTestCase: OK!")
+>>>>>>> develop
 
     """
         test delete object

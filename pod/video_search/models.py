@@ -3,7 +3,7 @@ from django.conf import settings
 from pod.video_search.utils import index_es, delete_es
 from pod.video.models import Video
 from django.dispatch import receiver
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, pre_delete
 
 import threading
 
@@ -33,7 +33,7 @@ def index_video(video):  # pragma: no cover
         delete_es(video)
 
 
-@receiver(post_delete, sender=Video)
+@receiver(pre_delete, sender=Video)
 def delete_video_index(
     sender, instance=None, created=False, **kwargs
 ):  # pragma: no cover

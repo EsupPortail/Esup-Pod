@@ -113,7 +113,8 @@ class RssSiteVideosFeed(Feed):
     feed_url = "/videos/rss/"
     description = "%s %s %s" % (__TITLE_SITE__, _("video platform of"), __TITLE_ETB__)
     author_name = __TITLE_ETB__
-    author_email = CONTACT_US_EMAIL[0]
+    author_email = CONTACT_US_EMAIL[0] if (CONTACT_US_EMAIL) else "adminpod@univ.fr"
+
     categories = ["Education"]
     author_link = ""
     feed_type = RssFeedGenerator

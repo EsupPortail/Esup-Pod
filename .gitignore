@@ -59,6 +59,7 @@ chromedriver
 ## Others
 pod/static/
 *.bak
+*.pem
 .coverage
 htmlcov
 compile-model
@@ -74,9 +75,8 @@ compile-model
 *.key
 *.pem
 
-# Bower stuffs #
+# NPM stuffs #
 ################
-bower_components
 node_modules
 
 # Conteneurisation de POD #
@@ -87,4 +87,10 @@ tmp-local/
 portainer-data
 v8-compile-cache-0
 pod/db_migrations
+<<<<<<< HEAD
+=======
+pod/log
+pod/media
+pod/node_modules/*
+>>>>>>> develop
 tmp/
