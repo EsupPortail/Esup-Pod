@@ -45,11 +45,7 @@ class FlatepageTestCase(TestCase):
         self.assertEqual(flatPage.title, "Home")
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
-<<<<<<< HEAD
         print("   --->  test_Flatepage_null_attribut of FlatepageTestCase: OK!")
-=======
-        print("   --->  test_Flatepage_null_attribut" " of FlatepageTestCase: OK!")
->>>>>>> develop
 
     """
         test attributs when a channel have many attributs
@@ -70,11 +66,7 @@ class FlatepageTestCase(TestCase):
         self.assertEqual(flatPage.content_fr, "<p>Bienvenue</p>\r\n")
         response = self.client.get("/home/")
         self.assertEqual(response.status_code, 200)
-<<<<<<< HEAD
         print("   --->  test_Flatepage_with_attributs of FlatepageTestCase: OK!")
-=======
-        print("   --->  test_Flatepage_with_attributs" " of FlatepageTestCase: OK!")
->>>>>>> develop
 
     """
         test delete object

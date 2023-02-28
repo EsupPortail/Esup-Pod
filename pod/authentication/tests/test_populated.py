@@ -276,12 +276,7 @@ class PopulatedCASTestCase(TestCase):
             ).exists()
         )
         print(
-<<<<<<< HEAD
-            " --->  test_delete_synchronized_access_group"
-            " of PopulatedCASTestCase: OK!"
-=======
             " --->  test_delete_synchronized_access_group" " of PopulatedCASTestCase: OK!"
->>>>>>> develop
         )
 
 
@@ -567,11 +562,7 @@ class PopulatedShibTestCase(TestCase):
         )
         self.assertFalse(user.is_staff)
 
-<<<<<<< HEAD
         print(" --->  test_make_profile of PopulatedShibTestCase: OK!")
-=======
-        print(" --->  test_make_profile" " of PopulatedShibTestCase: OK!")
->>>>>>> develop
 
 
 class PopulatedOIDCTestCase(TestCase):
