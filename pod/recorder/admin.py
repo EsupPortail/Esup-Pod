@@ -49,7 +49,7 @@ class RecordingFileTreatmentAdmin(admin.ModelAdmin):
             item.delete()
 
     delete_source.short_description = _(
-        "Delete selected Recording file " "treatments + source files"
+        "Delete selected Recording file treatments + source files"
     )
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

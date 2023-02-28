@@ -113,7 +113,7 @@ class PopulatedCASTestCase(TestCase):
         AccessGroup.objects.create(
             code_name="groupTest2", display_name="Group de test 2", auto_sync="True"
         )
-        print(" --->  SetUp of PopulatedCASTestCase : OK !")
+        print(" --->  SetUp of PopulatedCASTestCase: OK!")
 
     @override_settings(DEBUG=False)
     def test_populate_user_from_tree(self):
@@ -136,7 +136,7 @@ class PopulatedCASTestCase(TestCase):
         self.assertEqual(user.owner.accessgroup_set.all().count(), 0)
         print(
             " --->  test_populate_user_from_tree by default"
-            " of PopulatedCASTestCase : OK !"
+            " of PopulatedCASTestCase: OK!"
         )
 
     @override_settings(DEBUG=False, CREATE_GROUP_FROM_AFFILIATION=True)
@@ -153,7 +153,7 @@ class PopulatedCASTestCase(TestCase):
         )
         print(
             " --->  test_populate_user_from_tree_affiliation"
-            " of PopulatedCASTestCase : OK !"
+            " of PopulatedCASTestCase: OK!"
         )
 
     @override_settings(
@@ -181,7 +181,7 @@ class PopulatedCASTestCase(TestCase):
         )
         print(
             " --->  test_populate_user_from_tree_affiliation_group"
-            " of PopulatedCASTestCase : OK !"
+            " of PopulatedCASTestCase: OK!"
         )
 
     @override_settings(
@@ -210,7 +210,7 @@ class PopulatedCASTestCase(TestCase):
         )
         print(
             " --->  test_populate_user_from_tree_affiliation_nogroup"
-            " of PopulatedCASTestCase : OK !"
+            " of PopulatedCASTestCase: OK!"
         )
 
     @override_settings(
@@ -251,7 +251,7 @@ class PopulatedCASTestCase(TestCase):
         )
         print(
             " --->  test_populate_user_from_tree_unpopulate_group"
-            " of PopulatedCASTestCase : OK !"
+            " of PopulatedCASTestCase: OK!"
         )
 
     def test_delete_synchronized_access_group(self):
@@ -277,7 +277,7 @@ class PopulatedCASTestCase(TestCase):
         )
         print(
             " --->  test_delete_synchronized_access_group"
-            " of PopulatedCASTestCase : OK !"
+            " of PopulatedCASTestCase: OK!"
         )
 
 
@@ -320,7 +320,7 @@ class PopulatedLDAPTestCase(TestCase):
         if is_entry:
             self.entry = fake_connection.entries[0]
         fake_connection.unbind()
-        print(" --->  SetUp of PopulatedLDAPTestCase : OK !")
+        print(" --->  SetUp of PopulatedLDAPTestCase: OK!")
 
     @override_settings(DEBUG=False)
     def test_populate_user_from_entry(self):
@@ -342,7 +342,7 @@ class PopulatedLDAPTestCase(TestCase):
         self.assertEqual(user.owner.accessgroup_set.all().count(), 0)
         print(
             " --->  test_populate_user_from_entry by default"
-            " of PopulatedLDAPTestCase : OK !"
+            " of PopulatedLDAPTestCase: OK!"
         )
 
     @override_settings(DEBUG=False, CREATE_GROUP_FROM_AFFILIATION=True)
@@ -358,7 +358,7 @@ class PopulatedLDAPTestCase(TestCase):
         )
         print(
             " --->  test_populate_user_from_entry_affiliation"
-            " of PopulatedLDAPTestCase : OK !"
+            " of PopulatedLDAPTestCase: OK!"
         )
 
     @override_settings(
@@ -386,7 +386,7 @@ class PopulatedLDAPTestCase(TestCase):
         )
         print(
             " --->  test_populate_user_from_entry_affiliation_group"
-            " of PopulatedLDAPTestCase : OK !"
+            " of PopulatedLDAPTestCase: OK!"
         )
 
         @override_settings(
@@ -429,7 +429,7 @@ class PopulatedLDAPTestCase(TestCase):
             )
             print(
                 " --->  test_populate_user_from_entry_unpopulate_group"
-                " of PopulatedLDAPTestCase : OK !"
+                " of PopulatedLDAPTestCase: OK!"
             )
 
 
@@ -441,7 +441,7 @@ class PopulatedShibTestCase(TestCase):
             self.hmap[SHIBBOLETH_ATTRIBUTE_MAP[a][1]] = a
             # print(SHIBBOLETH_ATTRIBUTE_MAP[a][1] + ' > ' + a)
 
-        print(" --->  SetUp of PopulatedShibTestCase : OK !")
+        print(" --->  SetUp of PopulatedShibTestCase: OK!")
 
     def _authenticate_shib_user(self, u):
         """Simulate shibboleth header"""
@@ -563,7 +563,7 @@ class PopulatedShibTestCase(TestCase):
         )
         self.assertFalse(user.is_staff)
 
-        print(" --->  test_make_profile" " of PopulatedShibTestCase : OK !")
+        print(" --->  test_make_profile of PopulatedShibTestCase: OK!")
 
 
 class PopulatedOIDCTestCase(TestCase):
@@ -587,7 +587,7 @@ class PopulatedOIDCTestCase(TestCase):
         )  # user should not be django admin according to its unstaffable affiliation
         print(
             " --->  test_OIDC_commoner_with_default_unstaffable_access_group"
-            " of PopulatedOIDCTestCase : OK !"
+            " of PopulatedOIDCTestCase: OK!"
         )
 
     @override_settings(
@@ -610,7 +610,7 @@ class PopulatedOIDCTestCase(TestCase):
         )  # staffable affiliation should give user access to django admin
         print(
             " --->  test_OIDC_django_admin_user_with_default_staff_affiliation"
-            " of PopulatedOIDCTestCase : OK !"
+            " of PopulatedOIDCTestCase: OK!"
         )
 
     @override_settings(
@@ -641,7 +641,7 @@ class PopulatedOIDCTestCase(TestCase):
         )  # OIDC new user should have the specified access group from in settings
         print(
             " --->  test_OIDC_user_with_default_access_group"
-            " of PopulatedOIDCTestCase : OK !"
+            " of PopulatedOIDCTestCase: OK!"
         )
 
     @override_settings(
@@ -670,5 +670,5 @@ class PopulatedOIDCTestCase(TestCase):
         self.assertTrue(user.owner.accessgroup_set.filter(code_name="unique").exists())
         print(
             " --->  test_OIDC_user_with_multiple_default_access_groups"
-            " of PopulatedOIDCTestCase : OK !"
+            " of PopulatedOIDCTestCase: OK!"
         )

@@ -50,7 +50,7 @@ class EnrichmentGroupModelTestCase(TestCase):
         self.assertTrue(video.enrichmentgroup)
         with self.assertRaises(IntegrityError):
             EnrichmentGroup.objects.create(video=video)
-        print(" ---> test_create_enrichmentGroup : OK !" " --- EnrichmentGroupModel")
+        print(" ---> test_create_enrichmentGroup: OK! --- EnrichmentGroupModel")
 
     def test_modify_enrichmentGroup(self):
         video = Video.objects.get(id=1)
@@ -66,7 +66,7 @@ class EnrichmentGroupModelTestCase(TestCase):
         self.assertEqual(video.enrichmentgroup.groups.all().count(), 2)
         Group.objects.get(id=2).delete()
         self.assertEqual(video.enrichmentgroup.groups.all().count(), 1)
-        print(" ---> test_modify_enrichmentGroup : OK !" " --- EnrichmentGroupModel")
+        print(" ---> test_modify_enrichmentGroup: OK! --- EnrichmentGroupModel")
 
     def test_delete_enrichmentGroup(self):
         video = Video.objects.get(id=1)
@@ -80,7 +80,7 @@ class EnrichmentGroupModelTestCase(TestCase):
         self.assertTrue(Video.objects.filter(id=1).exists())
         self.assertTrue(Group.objects.filter(id=1).exists())
         self.assertTrue(Group.objects.filter(id=2).exists())
-        print(" ---> test_delete_enrichmentGroup : OK !" " --- EnrichmentGroupModel")
+        print(" ---> test_delete_enrichmentGroup: OK! --- EnrichmentGroupModel")
 
 
 class EnrichmentModelTestCase(TestCase):
@@ -142,7 +142,7 @@ class EnrichmentModelTestCase(TestCase):
         self.assertTrue(enrichment.stop_video)
         self.assertEqual(enrichment.type, "image")
         self.assertTrue("testimage" in enrichment.image.name)
-        print(" ---> test_attributs_full : OK ! --- EnrichmentModel")
+        print(" ---> test_attributs_full: OK! --- EnrichmentModel")
 
     def test_attributs(self):
         enrichment = Enrichment.objects.get(id=2)
@@ -156,7 +156,7 @@ class EnrichmentModelTestCase(TestCase):
         self.assertEqual(enrichment.weblink, "http://test.com")
 
         print(" [ BEGIN ENRICHMENT_TEST MODEL ] ")
-        print(" ---> test_attributs : OK ! --- EnrichmentModel")
+        print(" ---> test_attributs: OK! --- EnrichmentModel")
 
     def test_type(self):
         video = Video.objects.get(id=1)
@@ -166,7 +166,7 @@ class EnrichmentModelTestCase(TestCase):
         enrichment.type = "badtype"
         self.assertRaises(ValidationError, enrichment.clean)
 
-        print(" ---> test_type : OK ! --- EnrichmentModel")
+        print(" ---> test_type: OK! --- EnrichmentModel")
         print(" [ END ENRICHMENT_TEST MODEL ] ")
 
     def test_bad_attributs(self):
@@ -186,7 +186,7 @@ class EnrichmentModelTestCase(TestCase):
         enrichment.start = 21
         self.assertRaises(ValidationError, enrichment.clean)
 
-        print(" ---> test_bad_attributs : OK ! --- EnrichmentModel")
+        print(" ---> test_bad_attributs: OK! --- EnrichmentModel")
 
     def test_overlap(self):
         video = Video.objects.get(id=1)
@@ -197,7 +197,7 @@ class EnrichmentModelTestCase(TestCase):
         enrichment.start = 1
         enrichment.end = 3
         self.assertRaises(ValidationError, enrichment.clean)
-        print(" ---> test_overlap : OK ! --- EnrichmentModel")
+        print(" ---> test_overlap: OK! --- EnrichmentModel")
 
     def test_delete(self):
         video = Video.objects.get(id=1)
@@ -208,4 +208,4 @@ class EnrichmentModelTestCase(TestCase):
         Enrichment.objects.get(id=2).delete()
         self.assertTrue(Enrichment.objects.all().count() == 0)
         self.assertEqual(EnrichmentVtt.objects.filter(video=video).count(), 0)
-        print(" ---> test_delete : OK ! --- EnrichmentModel")
+        print(" ---> test_delete: OK! --- EnrichmentModel")

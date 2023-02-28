@@ -246,7 +246,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                     )
                     % {
                         "lic": _(
-                            "Attribution-ShareAlike 4.0 " "International (CC BY-SA 4.0)"
+                            "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"
                         )
                     },
                 ],
