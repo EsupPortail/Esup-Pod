@@ -92,7 +92,8 @@ def change_encoding_step(video_id, num_step, desc):
 
 
 def add_encoding_log(video_id, log):
-    encoding_log = EncodingLog.objects.get(video=Video.objects.get(id=video_id))
+    """Add message in video_id encoding log."""
+    encoding_log = EncodingLog.objects.get_or_create(video=Video.objects.get(id=video_id))
     encoding_log.log += "\n\n%s" % (log)
     encoding_log.save()
     if DEBUG:

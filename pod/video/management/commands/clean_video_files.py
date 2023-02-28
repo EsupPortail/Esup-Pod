@@ -33,6 +33,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Handle the clean_video_files command call."""
+        if options["dry"]:
+            print("Simulation mode ('dry'). Nothing will be deleted.")
         clean_type = options["type"].lower()
         self.nb_deleted = {}
         if clean_type in ["userfolder", "all"]:

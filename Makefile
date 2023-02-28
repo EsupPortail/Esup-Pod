@@ -83,7 +83,7 @@ COMPOSE = docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod
 DOCKER_LOGS = docker logs -f
 
 #docker-start-build:
-#	# Démarre le serveur de test en recompilant les conteuneurs de la stack
+#	# Démarre le serveur de test en recompilant les conteneurs de la stack
 #	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
 #	@$(COMPOSE) up --build
 #	# Vous devriez obtenir ce message une fois esup-pod lancé
@@ -97,7 +97,7 @@ echo-env:
 	@echo PYTHON_TAG=$(PYTHON_TAG)
 
 docker-build:
-	# Démarre le serveur de test en recompilant les conteuneurs de la stack
+	# Démarre le serveur de test en recompilant les conteneurs de la stack
 	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
 	# N'oubliez pas de supprimer :
 	# sudo rm -rf ./pod/log
@@ -112,7 +112,7 @@ docker-build:
 	# $ pod-dev-with-volumes        | Superuser created successfully.
 
 docker-start:
-	# Démarre le serveur de test en recompilant les conteuneurs de la stack
+	# Démarre le serveur de test en recompilant les conteneurs de la stack
 	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
 	@$(COMPOSE) up
 	# Vous devriez obtenir ce message une fois esup-pod lancé
