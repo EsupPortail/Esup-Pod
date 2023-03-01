@@ -1,3 +1,4 @@
+"""Unit test case for Pod video feeds."""
 from django.test import TestCase
 from django.test import Client
 from http import HTTPStatus
@@ -7,6 +8,8 @@ from xml.dom import minidom
 
 
 class FeedTestView(TestCase):
+    """Test case for Pod video feeds view."""
+
     fixtures = [
         "initial_data_main.json",
         "initial_data_video.json",
@@ -23,7 +26,7 @@ class FeedTestView(TestCase):
         mediaPackage_content = minidom.parseString(response.content)
         mediapackage = mediaPackage_content.getElementsByTagName("rss")[0]
         self.assertTrue(mediapackage)
-        print(" -->  test_get_rss_video_from_video of FeedTestView", " : OK !")
+        print(" -->  test_get_rss_video_from_video of FeedTestView", ": OK!")
 
     def test_get_rss_audio_from_video(self):
         self.client = Client()
@@ -33,4 +36,4 @@ class FeedTestView(TestCase):
         mediaPackage_content = minidom.parseString(response.content)
         mediapackage = mediaPackage_content.getElementsByTagName("rss")[0]
         self.assertTrue(mediapackage)
-        print(" -->  test_get_rss_audio_from_video of FeedTestView", " : OK !")
+        print(" -->  test_get_rss_audio_from_video of FeedTestView", ": OK!")

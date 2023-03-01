@@ -1,6 +1,4 @@
-"""
-Unit tests for chapters models
-"""
+"""Unit tests for chapters models."""
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
@@ -10,6 +8,8 @@ from ..models import Chapter
 
 
 class ChapterModelTestCase(TestCase):
+    """Test case for Pod chapter model."""
+
     fixtures = [
         "initial_data_main.json",
         "initial_data_video.json",
@@ -36,7 +36,7 @@ class ChapterModelTestCase(TestCase):
         self.assertEqual(chapter.slug, "{0}-{1}".format(chapter.id, "chaptertest"))
         self.assertEqual(chapter.time_start, 1)
 
-        print(" ---> test_attributs_full : OK ! --- ChapterModel")
+        print(" ---> test_attributs_full: OK! --- ChapterModel")
 
     def test_attributs(self):
         chapter = Chapter.objects.get(id=2)
@@ -47,7 +47,7 @@ class ChapterModelTestCase(TestCase):
         self.assertEqual(chapter.time_start, 0)
 
         print(" [ BEGIN CHAPTER_TEST MODEL ] ")
-        print(" ---> test_attributs : OK ! --- ChapterModel")
+        print(" ---> test_attributs: OK! --- ChapterModel")
 
     def test_without_title(self):
         video = Video.objects.get(id=1)
@@ -56,7 +56,7 @@ class ChapterModelTestCase(TestCase):
         chapter.video = video
         self.assertRaises(ValidationError, chapter.clean)
 
-        print(" ---> test_without_title : OK ! --- ChapterModel")
+        print(" ---> test_without_title: OK! --- ChapterModel")
         print(" [ END CHAPTER_TEST MODEL ] ")
 
     def test_bad_time(self):
@@ -70,7 +70,7 @@ class ChapterModelTestCase(TestCase):
         chapter.time_start = -1
         self.assertRaises(ValidationError, chapter.clean)
 
-        print(" ---> test_bad_time : OK ! --- ChapterModel")
+        print(" ---> test_bad_time: OK! --- ChapterModel")
 
     def test_overlap(self):
         video = Video.objects.get(id=1)
@@ -80,4 +80,4 @@ class ChapterModelTestCase(TestCase):
         chapter.time_start = 1
         self.assertRaises(ValidationError, chapter.clean)
 
-        print(" ---> test_overlap : OK ! --- ChapterModel")
+        print(" ---> test_overlap: OK! --- ChapterModel")

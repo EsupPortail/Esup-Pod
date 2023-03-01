@@ -51,6 +51,7 @@ def index_es(video):
 
 
 def delete_es(video):
+    """Delete an Elasticsearch entry."""
     es = Elasticsearch(
         ES_URL,
         timeout=ES_TIMEOUT,

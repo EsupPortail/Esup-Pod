@@ -1,3 +1,4 @@
+"""Test authentication utils."""
 import json
 
 from django.test import TestCase
@@ -22,7 +23,7 @@ class UserTestUtils(TestCase):
         self.simple_user = User.objects.create(
             first_name="Pod", last_name="User", username="pod", password="pod1234pod"
         )
-        print(" --->  SetUp of VideoTestFiltersViews : OK !")
+        print(" --->  SetUp of VideoTestFiltersViews: OK!")
 
     def test_get_owners(self):
         # Search with common word

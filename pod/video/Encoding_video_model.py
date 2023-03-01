@@ -1,3 +1,4 @@
+"""Model for video encoding."""
 import os
 from django.conf import settings
 from .models import EncodingVideo
@@ -54,8 +55,10 @@ else:
 
 
 class Encoding_video_model(Encoding_video):
+    """Encoding video model."""
+
     def remove_old_data(self):
-        """Remove old data."""
+        """Remove data from previous encoding."""
         video_to_encode = Video.objects.get(id=self.id)
         video_to_encode.thumbnail = None
         if video_to_encode.overview:
@@ -76,7 +79,7 @@ class Encoding_video_model(Encoding_video):
         self.add_encoding_log("remove_old_data", "", True, encoding_log_msg)
 
     def remove_previous_encoding_log(self, video_to_encode):
-        """Remove previously logs"""
+        """Remove previous logs."""
         msg = "\n"
         log_json = self.get_output_dir() + "/info_video.json"
         if os.path.exists(log_json):
@@ -265,6 +268,7 @@ class Encoding_video_model(Encoding_video):
             )
 
     def store_json_list_thumbnail_files(self, info_video, video_to_encode):
+        """store_json_list_thumbnail_files."""
         list_thumbnail_files = info_video["list_thumbnail_files"]
         first = True
 
@@ -312,6 +316,7 @@ class Encoding_video_model(Encoding_video):
             video_to_encode.save()
 
     def store_json_info(self):
+        """Open json file and store its data in current instance."""
         video_to_encode = Video.objects.get(id=self.id)
 
         with open(self.get_output_dir() + "/info_video.json") as json_file:
@@ -331,6 +336,7 @@ class Encoding_video_model(Encoding_video):
             # TODO : Without podfile
 
     def get_create_thumbnail_command_from_video(self, video_to_encode):
+        """Create command line to generate thumbnails from video."""
         thumbnail_command = "%s " % FFMPEG_CMD
         ev = EncodingVideo.objects.filter(
             video=video_to_encode, encoding_format="video/mp4"
@@ -400,4 +406,5 @@ class Encoding_video_model(Encoding_video):
             self.store_json_list_thumbnail_files(info_video, video_to_encode)
 
     def encode_video(self):
+        """Start video encoding."""
         self.start_encode()

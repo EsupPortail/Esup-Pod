@@ -1,3 +1,4 @@
+"""Unit test for Pod recorder plugins."""
 import os
 import shutil
 import importlib
@@ -15,6 +16,8 @@ AUDIOVIDEOCAST_TEST = getattr(
 
 
 class PluginVideoTestCase(TestCase):
+    """Test case for video plugin."""
+
     fixtures = [
         "initial_data_main.json",
         "initial_data_video.json",
@@ -62,7 +65,7 @@ class PluginVideoTestCase(TestCase):
             recorder=recorder2,
         )
 
-        print(" --->  SetUp of PluginVideoTestCase : OK !")
+        print(" --->  SetUp of PluginVideoTestCase: OK!")
 
     def test_type_video_published_attributs(self):
         recording = Recording.objects.get(id=1)

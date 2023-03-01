@@ -1,6 +1,4 @@
-"""
-Unit tests for live views
-"""
+"""Unit tests for live views."""
 from http import HTTPStatus
 
 import httmock
@@ -32,6 +30,8 @@ else:
 
 
 class LiveViewsTestCase(TestCase):
+    """Test case for Pod Live views."""
+
     fixtures = [
         "initial_data_main.json",
         "initial_data_video.json",
@@ -86,7 +86,7 @@ class LiveViewsTestCase(TestCase):
         AccessGroup.objects.create(code_name="group1", display_name="Group 1")
         AccessGroup.objects.create(code_name="employee", display_name="Employee")
         Group.objects.create(name="event admin")
-        print(" --->  SetUp of liveViewsTestCase : OK !")
+        print(" --->  SetUp of liveViewsTestCase: OK!")
 
     def test_directs(self):
         # User not logged in
@@ -100,7 +100,7 @@ class LiveViewsTestCase(TestCase):
             status_code=302,
             target_status_code=302,
         )
-        print("   --->  test_directs of liveViewsTestCase : OK !")
+        print("   --->  test_directs of liveViewsTestCase: OK!")
 
         # User logged without permission
         self.client.force_login(self.user)
@@ -149,7 +149,7 @@ class LiveViewsTestCase(TestCase):
         response = self.client.get("/live/directs/%s/" % self.building.id)
         self.assertTemplateUsed(response, "live/directs.html")
 
-        print("   --->  test_directs_building of liveViewsTestCase : OK !")
+        print("   --->  test_directs_building of liveViewsTestCase: OK!")
 
     def test_direct(self):
         self.client = Client()
@@ -181,7 +181,7 @@ class LiveViewsTestCase(TestCase):
         response = self.client.get("/live/direct/%s/" % self.broadcaster.slug)
         self.assertTemplateUsed(response, "live/direct.html")
 
-        print("   --->  test_direct of liveViewsTestCase : OK !")
+        print("   --->  test_direct of liveViewsTestCase: OK!")
 
     def test_heartbeat(self):
         self.client = Client()
@@ -197,7 +197,7 @@ class LiveViewsTestCase(TestCase):
         # not ajax
         response = self.client.get(heartbeat_url)
         self.assertEqual(response.status_code, 400)
-        print(" --->  test_heartbeat no ajax : OK !")
+        print(" --->  test_heartbeat no ajax: OK!")
 
         # no mandatory param
         response = self.client.get(
@@ -205,7 +205,7 @@ class LiveViewsTestCase(TestCase):
             **{"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"},
         )
         self.assertEqual(response.status_code, 400)
-        print(" --->  test_heartbeat without mandatory param : OK !")
+        print(" --->  test_heartbeat without mandatory param: OK!")
 
         # broadcaster without current event
         data_no_viewers = {"viewers": 0, "viewers_list": []}
@@ -216,7 +216,7 @@ class LiveViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), data_no_viewers)
-        print(" --->  test_heartbeat broadcaster without current event : OK !")
+        print(" --->  test_heartbeat broadcaster without current event: OK!")
 
         # broadcaster with current event
         url_with_broadcaster = "%s?key=anonymous_key&broadcasterid=1" % heartbeat_url
@@ -236,7 +236,7 @@ class LiveViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"viewers": 1, "viewers_list": []})
-        print(" --->  test_heartbeat add one to current event : OK !")
+        print(" --->  test_heartbeat add one to current event: OK!")
 
         # with event (logged no right to see names)
         call_command("live_viewcounter")
@@ -249,7 +249,7 @@ class LiveViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"viewers": 2, "viewers_list": []})
-        print(" --->  test_heartbeat add another to current event : OK !")
+        print(" --->  test_heartbeat add another to current event: OK!")
 
         # superUser sees names
         call_command("live_viewcounter")
@@ -269,7 +269,7 @@ class LiveViewsTestCase(TestCase):
             }
         ]
         self.assertEqual(response.json(), {"viewers": 3, "viewers_list": data_users})
-        print(" --->  test_heartbeat current event superuser : OK !")
+        print(" --->  test_heartbeat current event superuser: OK!")
 
         # superUser after call command live_viewcounter
         call_command("live_viewcounter")
@@ -291,7 +291,7 @@ class LiveViewsTestCase(TestCase):
             },
         ]
         self.assertEqual(response.json(), {"viewers": 3, "viewers_list": data_users})
-        print(" --->  test_heartbeat current event superuser after names refresh : OK !")
+        print(" --->  test_heartbeat current event superuser after names refresh: OK!")
 
         # delete expired heartbeats
         hb_anonymous = HeartBeat.objects.get(viewkey="anonymous_key")
@@ -300,10 +300,10 @@ class LiveViewsTestCase(TestCase):
 
         eventOne = Event.objects.get(id=1)
         self.assertEqual(eventOne.max_viewers, 3)
-        print(" --->  test_heartbeat number of max viewers : OK !")
+        print(" --->  test_heartbeat number of max viewers: OK!")
 
         self.assertEqual(eventOne.viewers.count(), 2)  # the anonymous in not set
-        print(" --->  test_heartbeat number of logged viewers : OK !")
+        print(" --->  test_heartbeat number of logged viewers: OK!")
 
         # make heartbeat expire now
         one_hour_tz = timezone.now() + timezone.timedelta(hours=-1)
@@ -316,10 +316,10 @@ class LiveViewsTestCase(TestCase):
 
         eventOne = Event.objects.get(id=1)
         self.assertEqual(eventOne.max_viewers, 3)
-        print(" --->  test_heartbeat number of max viewers after command : OK !")
+        print(" --->  test_heartbeat number of max viewers after command: OK!")
 
         self.assertEqual(eventOne.viewers.count(), 1)  # the anonymous in not set
-        print(" --->  test_heartbeat number of logged viewers after command : OK !")
+        print(" --->  test_heartbeat number of logged viewers after command: OK!")
 
     def test_edit_events(self):
         self.client = Client()
@@ -338,19 +338,19 @@ class LiveViewsTestCase(TestCase):
         self.assertTrue(response.context["form"].fields["end_date"])
         self.assertFalse(response.context["form"].fields.get("end_time", False))
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        print("   --->  test_events edit event for superuser : OK !")
+        print("   --->  test_events edit event for superuser: OK!")
 
         self.client.logout()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)  # not auth
-        print("   --->  test_events edit event for anonymous : OK !")
+        print("   --->  test_events edit event for anonymous: OK!")
         # check auth access
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)  # show message to contact us
         self.assertFalse(response.context.get("form", False))  # no form
-        print("   --->  test_events edit event for logged user but without right : OK !")
+        print("   --->  test_events edit event for logged user but without right: OK!")
         ag1 = AccessGroup.objects.get(code_name="group1")
         ag2 = AccessGroup.objects.get(code_name="employee")
 
@@ -360,7 +360,7 @@ class LiveViewsTestCase(TestCase):
         self.assertFalse(response.context.get("form", False))  # no form
         print(
             "   --->  test_events edit event for "
-            + "logged user but without good accessgroup : OK !"
+            + "logged user but without good accessgroup: OK!"
         )
         self.user.owner.accessgroup_set.add(ag2)
         response = self.client.get(url)
@@ -370,7 +370,7 @@ class LiveViewsTestCase(TestCase):
         self.assertFalse(response.context["form"].fields.get("end_date", False))
         print(
             "   --->  test_events edit event for "
-            + "logged user with good access group : OK !"
+            + "logged user with good access group: OK!"
         )
         # check if value ok
         end_time = response.context["form"]["end_time"].value()
@@ -424,7 +424,7 @@ class LiveViewsTestCase(TestCase):
             second=0, microsecond=0
         )
         self.assertEqual(timezone.timedelta(hours=1), delta)
-        print("   --->  test_events edit event post event : OK !")
+        print("   --->  test_events edit event post event: OK!")
         g1 = Group.objects.get(name="event admin")
         self.user.groups.add(g1)
         response = self.client.get(url)
@@ -457,9 +457,9 @@ class LiveViewsTestCase(TestCase):
             second=0, microsecond=0
         )
         self.assertEqual(timezone.timedelta(days=3), delta)
-        print("   --->  test_events edit event post multi days event : OK !")
+        print("   --->  test_events edit event post multi days event: OK!")
 
-        print("   --->  test_edit_events of liveViewsTestCase : OK !")
+        print("   --->  test_edit_events of liveViewsTestCase: OK!")
 
     def test_crossing_events(self):
         e = Event.objects.get(title="event1")
@@ -489,7 +489,7 @@ class LiveViewsTestCase(TestCase):
             user=self.user,
         )
         self.assertTrue(form.is_valid())
-        print("   --->  test_crossing_events in the futur and not crossing : OK !")
+        print("   --->  test_crossing_events in the futur and not crossing: OK!")
 
         # event in the past
         data = {}
@@ -541,7 +541,7 @@ class LiveViewsTestCase(TestCase):
         self.assertTrue(form.is_valid())
         print(
             "   --->  test_crossing_events in the futur"
-            + " and crossing the start with another broadcaster : OK !"
+            + " and crossing the start with another broadcaster: OK!"
         )
         # event start during the previous and finish after
         # crossing the end
@@ -637,7 +637,7 @@ class LiveViewsTestCase(TestCase):
             user=self.user,
         )
         self.assertTrue(form.is_valid())
-        print("   --->  test_crossing_events in the futur and not crossing : OK !")
+        print("   --->  test_crossing_events in the futur and not crossing: OK!")
 
         # event in the past
         data = {}
@@ -757,7 +757,7 @@ class LiveViewsTestCase(TestCase):
         self.assertIn("Planification error.", form.errors["__all__"])
         print("   --->  test_crossing_events crossing outside : NOK !")
 
-        print("   --->  test_crossing_events of liveViewsTestCase : OK !")
+        print("   --->  test_crossing_events of liveViewsTestCase: OK!")
 
     def test_events(self):
         self.client = Client()
@@ -765,11 +765,11 @@ class LiveViewsTestCase(TestCase):
         # User not logged in
         response = self.client.get("/")
         self.assertTemplateUsed(response, "live/events_next.html")
-        print("   --->  test_events of / : OK !")
+        print("   --->  test_events of `/`: OK!")
 
         response = self.client.get("/live/events/")
         self.assertTemplateUsed(response, "live/events.html")
-        print("   --->  test_events of live/events : OK !")
+        print("   --->  test_events of live/events: OK!")
 
         response = self.client.get("/live/events/?page=100")
         self.assertTemplateUsed(response, "live/events.html")
@@ -786,7 +786,7 @@ class LiveViewsTestCase(TestCase):
             status_code=302,
             target_status_code=302,
         )
-        print("   --->  test_events of live/my_events : OK !")
+        print("   --->  test_events of live/my_events: OK!")
 
         # event is draft (permission denied)
         self.event = Event.objects.get(title="event1")
@@ -795,14 +795,14 @@ class LiveViewsTestCase(TestCase):
         self.event.save()
         response = self.client.get("/live/event/%s/" % self.event.slug)
         self.assertEqual(response.status_code, 403)
-        print("   --->  test_events access draft event : OK !")
+        print("   --->  test_events access draft event: OK!")
 
         # with shared link
         response = self.client.get(
             "/live/event/%s/%s/" % (self.event.slug, self.event.get_hashkey())
         )
         self.assertTemplateUsed(response, "live/event.html")
-        print("   --->  test_events access draft with public link event : OK !")
+        print("   --->  test_events access draft with public link event: OK!")
 
         # event restricted and not draft (permission denied)
         self.event.is_draft = False
@@ -815,7 +815,7 @@ class LiveViewsTestCase(TestCase):
             status_code=302,
             target_status_code=302,
         )
-        print("   --->  test_events access restricted and not draft event : OK !")
+        print("   --->  test_events access restricted and not draft event: OK!")
 
         # event restricted with access_groups (permission denied)
         self.event.restrict_access_to_groups.add(access_group)
@@ -827,7 +827,7 @@ class LiveViewsTestCase(TestCase):
             status_code=302,
             target_status_code=302,
         )
-        print("   --->  test_events restricted access group : OK !")
+        print("   --->  test_events restricted access group: OK!")
 
         # event restricted with password
         self.event.is_restricted = False
@@ -851,7 +851,7 @@ class LiveViewsTestCase(TestCase):
         self.assertIsInstance(response.context["form"], EventPasswordForm)
         messages = list(response.context["messages"])
         self.assertEqual(len(messages), 1)
-        print("   --->  test_events restricted with wrong password : OK !")
+        print("   --->  test_events restricted with wrong password: OK!")
 
         # event restricted with password (provided)
         response = self.client.post(
@@ -859,7 +859,7 @@ class LiveViewsTestCase(TestCase):
             {"password": event_pswd},
         )
         self.assertTrue("form" not in response.context)
-        print("   --->  test_events restricted with good password : OK !")
+        print("   --->  test_events restricted with good password: OK!")
 
         # event not restricted nor draft
         self.event.is_restricted = False
@@ -869,13 +869,13 @@ class LiveViewsTestCase(TestCase):
         self.event.save()
         response = self.client.get("/live/event/%s/" % self.event.slug)
         self.assertTemplateUsed(response, "live/event.html")
-        print("   --->  test_events access not restricted nor draft event : OK !")
+        print("   --->  test_events access not restricted nor draft event: OK!")
 
         response = self.client.get(
             "/live/event/%s/" % self.event.slug, {"is_iframe": True}
         )
         self.assertTemplateUsed(response, "live/event-iframe.html")
-        print("   --->  test_events access not restricted nor draft iframe event : OK !")
+        print("   --->  test_events access not restricted nor draft iframe event: OK!")
 
         # event creation
         response = self.client.get("/live/event_edit/")
@@ -885,7 +885,7 @@ class LiveViewsTestCase(TestCase):
             status_code=302,
             target_status_code=302,
         )
-        print("   --->  test_events creation event : OK !")
+        print("   --->  test_events creation event: OK!")
 
         # User logged in
         self.user = User.objects.create(username="johndoe", password="johnpwd")
@@ -893,7 +893,7 @@ class LiveViewsTestCase(TestCase):
 
         response = self.client.get("/live/my_events/")
         self.assertTemplateUsed(response, "live/my_events.html")
-        print("   --->  test_events of live/my_events : OK !")
+        print("   --->  test_events of live/my_events: OK!")
 
         response = self.client.get("/live/my_events/?ppage=100")
         self.assertTemplateUsed(response, "live/my_events.html")
@@ -909,7 +909,7 @@ class LiveViewsTestCase(TestCase):
         self.event.save()
         response = self.client.get("/live/event/%s/" % self.event.slug)
         self.assertEqual(response.status_code, 403)
-        print("   --->  test_events access draft with logged user : OK !")
+        print("   --->  test_events access draft with logged user: OK!")
 
         # event restricted
         self.event.is_draft = False
@@ -917,7 +917,7 @@ class LiveViewsTestCase(TestCase):
         self.event.save()
         response = self.client.get("/live/event/%s/" % self.event.slug)
         self.assertTemplateUsed(response, "live/event.html")
-        print("   --->  test_events access restricted with logged user : OK !")
+        print("   --->  test_events access restricted with logged user: OK!")
 
         # event restricted with access_groups (permission denied)
         access_group = AccessGroup.objects.get(code_name="group1")
@@ -925,7 +925,7 @@ class LiveViewsTestCase(TestCase):
         self.event.save()
         response = self.client.get("/live/event/%s/" % self.event.slug)
         self.assertEqual(response.status_code, 403)
-        print("   --->  test_events restricted access_group prevent : OK !")
+        print("   --->  test_events restricted access_group prevent: OK!")
 
         # event restricted with access_groups (user is in group)
         self.user.owner.accessgroup_set.add(access_group)
@@ -942,23 +942,23 @@ class LiveViewsTestCase(TestCase):
         # wrong event id
         response = self.client.get("/live/event/what-ever/")
         self.assertEqual(400, response.status_code)
-        print("  --->  test_events access nonexistent event : OK !")
+        print("  --->  test_events access nonexistent event: OK!")
 
         # event creation
         response = self.client.get("/live/event_edit/")
         self.assertTemplateUsed(response, "live/event_edit.html")
-        print("   --->  test_events creation event : OK !")
+        print("   --->  test_events creation event: OK!")
 
         # event edition (access_not_allowed)
         response = self.client.get("/live/event_edit/%s/" % self.event.slug)
         self.assertTemplateUsed(response, "live/event_edit.html")
         self.assertEqual(response.context["access_not_allowed"], True)
-        print("   --->  test_events edit event access_not_allowed : OK !")
+        print("   --->  test_events edit event access_not_allowed: OK!")
 
         # event delete (permission denied)
         response = self.client.post("/live/event_delete/%s/" % self.event.slug)
         self.assertEqual(response.status_code, 403)
-        print("   --->  test_events delete event : OK !")
+        print("   --->  test_events delete event: OK!")
 
         # User is event's owner
         self.user = User.objects.get(username="pod")
@@ -1001,7 +1001,7 @@ class LiveViewsTestCase(TestCase):
         response = self.client.get("/live/event_edit/%s/" % self.event.slug)
         self.assertTemplateUsed(response, "live/event_edit.html")
         self.assertIsInstance(response.context["form"], EventForm)
-        print("   --->  test_events edit event for owner : OK !")
+        print("   --->  test_events edit event for owner: OK!")
 
         # piloting buttons
         response = self.client.get("/live/event/%s/" % self.event.slug)
@@ -1022,12 +1022,12 @@ class LiveViewsTestCase(TestCase):
         response = self.client.post("/live/event_edit/%s/" % self.event.slug)
         self.assertTemplateUsed(response, "live/event_edit.html")
         self.assertIsInstance(response.context["form"], EventForm)
-        print("   --->  test_events edit event for superuser : OK !")
+        print("   --->  test_events edit event for superuser: OK!")
 
         # event delete
         response = self.client.post("/live/event_delete/%s/" % self.event.slug)
         self.assertTemplateUsed(response, "live/event_delete.html")
-        print("   --->  test_events delete event for superuser : OK !")
+        print("   --->  test_events delete event for superuser: OK!")
 
     def test_get_broadcaster_by_slug(self):
         from pod.live.views import get_broadcaster_by_slug
@@ -1037,37 +1037,37 @@ class LiveViewsTestCase(TestCase):
 
         broad = get_broadcaster_by_slug(1, site)
         self.assertEqual(broad, broadcaster)
-        print("   --->  test get_broadcaster_by_slug (int) : OK !")
+        print("   --->  test get_broadcaster_by_slug (int): OK!")
 
         broad = get_broadcaster_by_slug(broad.slug, site)
         self.assertEqual(broad, broadcaster)
-        print("   --->  test get_broadcaster_by_slug : OK !")
+        print("   --->  test get_broadcaster_by_slug: OK!")
 
         with self.assertRaises(Http404):
             get_broadcaster_by_slug(1, None)
-        print("   --->  test get_broadcaster_by_slug (int) No Site : OK !")
+        print("   --->  test get_broadcaster_by_slug (int) No Site: OK!")
 
         with self.assertRaises(Http404):
             get_broadcaster_by_slug(broad.slug, None)
-        print("   --->  test get_broadcaster_by_slug No Site : OK !")
+        print("   --->  test get_broadcaster_by_slug No Site: OK!")
 
         with self.assertRaises(Http404):
             get_broadcaster_by_slug(-1, site)
-        print("   --->  test get_broadcaster_by_slug Http404 : OK !")
+        print("   --->  test get_broadcaster_by_slug Http404: OK!")
 
     def test_broadcasters_from_building(self):
         url = "/live/ajax_calls/getbroadcastersfrombuiding/"
         response = self.client.get(url, {})
         self.assertEqual(response.status_code, 400)
-        print("   --->  test broadcasters_from_building HttpResponseBadRequest : OK !")
+        print("   --->  test broadcasters_from_building HttpResponseBadRequest: OK!")
 
         response = self.client.get(url, {"building": "nonexistant"})
         self.assertEqual(response.status_code, 404)
-        print("   --->  test broadcasters_from_building HttpResponseBadRequest : OK !")
+        print("   --->  test broadcasters_from_building HttpResponseBadRequest: OK!")
 
         response = self.client.get(url, {"building": "bulding1"})
         self.assertEqual(response.status_code, 200)
-        print("   --->  test broadcasters_from_building : OK !")
+        print("   --->  test broadcasters_from_building: OK!")
 
         # log as superUser to get all Broadcaster of building1
         self.superuser = User.objects.create_superuser(
@@ -1082,29 +1082,29 @@ class LiveViewsTestCase(TestCase):
             "2": {"id": 2, "name": "broadcaster2", "restricted": False},
         }
         self.assertEqual(response.json(), expected)
-        print("   --->  test broadcasters_from_building all : OK !")
+        print("   --->  test broadcasters_from_building all: OK!")
 
     def test_broadcaster_restriction(self):
         url = "/live/ajax_calls/getbroadcasterrestriction/"
         response = self.client.post(url)
         self.assertEqual(response.status_code, 405)
-        print("   --->  test broadcaster_restriction HttpResponseNotAllowed : OK !")
+        print("   --->  test broadcaster_restriction HttpResponseNotAllowed: OK!")
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 400)
-        print("   --->  test broadcaster_restriction HttpResponseBadRequest : OK !")
+        print("   --->  test broadcaster_restriction HttpResponseBadRequest: OK!")
 
         response = self.client.get(url, {"idbroadcaster": 1})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"restricted": True})
-        print("   --->  test broadcaster_restriction : OK !")
+        print("   --->  test broadcaster_restriction: OK!")
 
     def test_isstreamavailabletorecord(self):
         url = "/live/event_isstreamavailabletorecord/"
         # not logged
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        print("   --->  test isstreamavailabletorecord user not logged : OK !")
+        print("   --->  test isstreamavailabletorecord user not logged: OK!")
 
         # user logged
         self.user = User.objects.get(username="pod")
@@ -1112,7 +1112,7 @@ class LiveViewsTestCase(TestCase):
 
         response = self.client.post(url)
         self.assertEqual(response.status_code, 405)
-        print("   --->  test isstreamavailabletorecord HttpResponseNotAllowed : OK !")
+        print("   --->  test isstreamavailabletorecord HttpResponseNotAllowed: OK!")
 
         response = self.client.get(
             url, {"idbroadcaster": 1}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
@@ -1120,7 +1120,7 @@ class LiveViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         # self.assertEqual(response.json(),
         # {'available': False, 'recording': False, 'message': 'implementation error'})
-        print("   --->  test isstreamavailabletorecord implementation error : OK !")
+        print("   --->  test isstreamavailabletorecord implementation error: OK!")
 
     def test_start_record(self):
         url = "/live/ajax_calls/event_startrecord/"
@@ -1128,14 +1128,14 @@ class LiveViewsTestCase(TestCase):
         # not logged
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
-        print("   --->  test startrecord user not logged : OK !")
+        print("   --->  test startrecord user not logged: OK!")
 
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 405)
-        print("   --->  test startrecord HttpResponseNotAllowed : OK !")
+        print("   --->  test startrecord HttpResponseNotAllowed: OK!")
 
         response = self.client.post(
             url,
@@ -1145,7 +1145,7 @@ class LiveViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         # self.assertEqual(response.json(),
         # {'success': False, 'message': 'implementation error'})
-        print("   --->  test startrecord implementation error : OK !")
+        print("   --->  test startrecord implementation error: OK!")
 
     def test_split_record(self):
         url = "/live/ajax_calls/event_splitrecord/"
@@ -1153,14 +1153,14 @@ class LiveViewsTestCase(TestCase):
         # not logged
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
-        print("   --->  test splitrecord user not logged : OK !")
+        print("   --->  test splitrecord user not logged: OK!")
 
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 405)
-        print("   --->  test splitrecord HttpResponseNotAllowed : OK !")
+        print("   --->  test splitrecord HttpResponseNotAllowed: OK!")
 
         response = self.client.post(
             url,
@@ -1168,7 +1168,7 @@ class LiveViewsTestCase(TestCase):
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertEqual(response.status_code, 200)
-        print("   --->  test splitrecord implementation error : OK !")
+        print("   --->  test splitrecord implementation error: OK!")
 
     def test_stop_record(self):
         url = "/live/ajax_calls/event_stoprecord/"
@@ -1176,14 +1176,14 @@ class LiveViewsTestCase(TestCase):
         # not logged
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
-        print("   --->  test stoprecord user not logged : OK !")
+        print("   --->  test stoprecord user not logged: OK!")
 
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 405)
-        print("   --->  test stoprecord HttpResponseNotAllowed : OK !")
+        print("   --->  test stoprecord HttpResponseNotAllowed: OK!")
 
         response = self.client.post(
             url,
@@ -1191,7 +1191,7 @@ class LiveViewsTestCase(TestCase):
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertEqual(response.status_code, 200)
-        print("   --->  test stoprecord implementation error : OK !")
+        print("   --->  test stoprecord implementation error: OK!")
 
     def test_event_info_record(self):
         url = "/live/ajax_calls/geteventinforcurrentecord/"
@@ -1199,14 +1199,14 @@ class LiveViewsTestCase(TestCase):
         # not logged
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
-        print("   --->  test event_info_record user not logged : OK !")
+        print("   --->  test event_info_record user not logged: OK!")
 
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 405)
-        print("   --->  test event_info_record HttpResponseNotAllowed : OK !")
+        print("   --->  test event_info_record HttpResponseNotAllowed: OK!")
 
         response = self.client.post(
             url,
@@ -1214,7 +1214,7 @@ class LiveViewsTestCase(TestCase):
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertEqual(response.status_code, 200)
-        print("   --->  test event_info_record implementation error : OK !")
+        print("   --->  test event_info_record implementation error: OK!")
 
         # Brodacaster with implementation parameters
         @all_requests
@@ -1248,7 +1248,7 @@ class LiveViewsTestCase(TestCase):
             response.json(),
             {"success": False, "error": "the broadcaster is not recording"},
         )
-        print("   --->  test event_info_record not recording : OK !")
+        print("   --->  test event_info_record not recording: OK!")
 
         with HTTMock(response_is_recording_ok):
             response = self.client.post(
@@ -1257,7 +1257,7 @@ class LiveViewsTestCase(TestCase):
                 HTTP_X_REQUESTED_WITH="XMLHttpRequest",
             )
         self.assertEqual(response.json(), {"success": True, "duration": 3})
-        print("   --->  test event_info_record recording : OK !")
+        print("   --->  test event_info_record recording: OK!")
 
     def test_is_recording(self):
         from pod.live.views import is_recording
@@ -1288,17 +1288,17 @@ class LiveViewsTestCase(TestCase):
 
         response = is_recording(broadcaster)
         self.assertFalse(response)
-        print("   --->  test misc_broadcaster is_recording no impl : OK !")
+        print("   --->  test misc_broadcaster is_recording no impl: OK!")
 
         with HTTMock(response_is_recording_ko):
             response = is_recording(broad_with_impl, False)
         self.assertFalse(response)
-        print("   --->  test misc_broadcaster is_recording no : OK !")
+        print("   --->  test misc_broadcaster is_recording no: OK!")
 
         with HTTMock(response_is_recording_ok):
             response = is_recording(broad_with_impl, False)
         self.assertTrue(response)
-        print("   --->  test misc_broadcaster is_recording yes : OK !")
+        print("   --->  test misc_broadcaster is_recording yes: OK!")
 
     def test_is_available_to_record(self):
         from pod.live.views import is_available_to_record
@@ -1328,12 +1328,12 @@ class LiveViewsTestCase(TestCase):
         with HTTMock(response_is_recording_ok):
             response = is_available_to_record(broad_with_impl)
         self.assertFalse(response)
-        print("   --->  test misc_broadcaster is_available_to_record no : OK !")
+        print("   --->  test misc_broadcaster is_available_to_record no: OK!")
 
         with HTTMock(response_is_available_to_record_ok):
             response = is_available_to_record(broad_with_impl)
         self.assertTrue(response)
-        print("   --->  test misc_broadcaster is_available_to_record yes : OK !")
+        print("   --->  test misc_broadcaster is_available_to_record yes: OK!")
 
     def test_method_start_record(self):
         from pod.live.views import start_record
@@ -1351,17 +1351,17 @@ class LiveViewsTestCase(TestCase):
 
         response = start_record(broadcaster, 1)
         self.assertFalse(response)
-        print("   --->  test misc_broadcaster start_record no impl : OK !")
+        print("   --->  test misc_broadcaster start_record no impl: OK!")
 
         with HTTMock(response_created_ko):
             response = start_record(broad_with_impl, 1)
         self.assertFalse(response)
-        print("   --->  test misc_broadcaster start_record no : OK !")
+        print("   --->  test misc_broadcaster start_record no: OK!")
 
         with HTTMock(response_created_ok):
             response = start_record(broad_with_impl, 1)
         self.assertTrue(response)
-        print("   --->  test misc_broadcaster start_record yes  : OK !")
+        print("   --->  test misc_broadcaster start_record yes : OK!")
 
     def test_method_split_record(self):
         from pod.live.views import split_record
@@ -1379,17 +1379,17 @@ class LiveViewsTestCase(TestCase):
 
         response = split_record(broadcaster)
         self.assertFalse(response)
-        print("   --->  test misc_broadcaster split_record no impl : OK !")
+        print("   --->  test misc_broadcaster split_record no impl: OK!")
 
         with HTTMock(response_ko):
             response = split_record(broad_with_impl)
         self.assertFalse(response)
-        print("   --->  test misc_broadcaster split_record no : OK !")
+        print("   --->  test misc_broadcaster split_record no: OK!")
 
         with HTTMock(response_ok):
             response = split_record(broad_with_impl)
         self.assertTrue(response)
-        print("   --->  test misc_broadcaster split_record yes : OK !")
+        print("   --->  test misc_broadcaster split_record yes: OK!")
 
     def test_method_stop_record(self):
         from pod.live.views import stop_record
@@ -1407,17 +1407,17 @@ class LiveViewsTestCase(TestCase):
 
         response = stop_record(broadcaster)
         self.assertFalse(response)
-        print("   --->  test misc_broadcaster stop_record no impl : OK !")
+        print("   --->  test misc_broadcaster stop_record no impl: OK!")
 
         with HTTMock(response_ko):
             response = stop_record(broad_with_impl)
         self.assertFalse(response)
-        print("   --->  test misc_broadcaster stop_record no : OK !")
+        print("   --->  test misc_broadcaster stop_record no: OK!")
 
         with HTTMock(response_ok):
             response = stop_record(broad_with_impl)
         self.assertTrue(response)
-        print("   --->  test misc_broadcaster stop_record yes : OK !")
+        print("   --->  test misc_broadcaster stop_record yes: OK!")
 
     def test_method_info_current_record(self):
         from pod.live.views import get_info_current_record
@@ -1454,7 +1454,7 @@ class LiveViewsTestCase(TestCase):
         with HTTMock(response_info_current_record_ko):
             response = get_info_current_record(broad_with_impl)
         self.assertEqual(response, expected_on_error)
-        print("   --->  test misc_broadcaster get_info_current_record error : OK !")
+        print("   --->  test misc_broadcaster get_info_current_record error: OK!")
 
         with HTTMock(response_info_current_record_ok):
             response = get_info_current_record(broad_with_impl)
@@ -1467,7 +1467,7 @@ class LiveViewsTestCase(TestCase):
                 "segmentDuration": "60",
             },
         )
-        print("   --->  test misc_broadcaster get_info_current_record ok : OK !")
+        print("   --->  test misc_broadcaster get_info_current_record ok: OK!")
 
     def test_event_video_cards(self):
         url = "/live/ajax_calls/geteventvideocards/"
@@ -1475,13 +1475,13 @@ class LiveViewsTestCase(TestCase):
         # not ajax
         response = self.client.get(url)
         self.assertEqual(response.status_code, 400)
-        print("   --->  test event_video_cards not ajax : OK !")
+        print("   --->  test event_video_cards not ajax: OK!")
 
         response = self.client.get(
             url, {"idevent": 1}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
         )
         self.assertEqual(response.json(), {"content": ""})
-        print("   --->  test event_video_cards empty : OK !")
+        print("   --->  test event_video_cards empty: OK!")
 
         video = Video.objects.get(id=1)
         event = Event.objects.get(id=1)
@@ -1493,18 +1493,18 @@ class LiveViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(response.json(), {"content": ""})
-        print("   --->  test event_video_cards with videos : OK !")
+        print("   --->  test event_video_cards with videos: OK!")
 
     def test_event_dir_exists(self):
         from pod.live.views import checkDirExists, checkFileExists
 
         with self.assertRaises(Exception):
             checkDirExists("dirname", 2)
-            print("   --->  test checkDirExists exception : OK !")
+            print("   --->  test checkDirExists exception: OK!")
 
         with self.assertRaises(Exception):
             checkFileExists("filename", 2)
-            print("   --->  test checkFileExists exception : OK !")
+            print("   --->  test checkFileExists exception: OK!")
 
     def test_immediate_event(self):
         self.client = Client()

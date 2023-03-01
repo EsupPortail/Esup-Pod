@@ -5,7 +5,6 @@
 # encode_gpu.py
 # Wed Sep  2 11:49:12 CEST 2020
 
-from __future__ import absolute_import, division, print_function
 import os
 import argparse
 import subprocess
