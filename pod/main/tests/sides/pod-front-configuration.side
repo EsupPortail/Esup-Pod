@@ -1,35 +1,35 @@
 {
-  "id": "f7a98fac-e666-443b-9252-b7cb07e6eb96",
+  "id": "f060a750-1757-4b5d-8ed0-ce6b1c49b62b",
   "version": "2.0",
   "name": "pod-front",
-  "url": "http://localhost:9090",
+  "url": "http://localhost:9090/",
   "tests": [{
-    "id": "861fb6ff-6dc1-4351-916e-ea3c49a70db3",
+    "id": "pod-front-configuration",
     "name": "configuration",
     "commands": [{
-      "id": "6c5c1a4e-9129-4c69-975a-2fe80d3b2adb",
-      "comment": "",
+      "id": "pod-open-home",
+      "comment": "Ouvre la page d'accueil",
       "command": "open",
       "target": "/",
       "targets": [],
       "value": ""
     }, {
-      "id": "b4c4b34a-3a76-487a-b104-c87bcae9f295",
-      "comment": "",
+      "id": "pod-resize-window",
+      "comment": "Redimensionne la fenetre",
       "command": "setWindowSize",
-      "target": "936x634",
+      "target": "1080x720",
       "targets": [],
       "value": ""
     }, {
-      "id": "83d5df4b-bda0-46fa-b773-c96a2ce4269c",
-      "comment": "",
+      "id": "pod-accept-cookies",
+      "comment": "Valide les cookies du navigateur",
       "command": "click",
       "target": "id=okcookie",
       "targets": [],
       "value": ""
     }, {
-      "id": "7b21c76d-953b-42d2-b6cf-32fd7353f681",
-      "comment": "",
+      "id": "pod-open-configuration",
+      "comment": "Ouvre la page de configuration",
       "command": "click",
       "target": "id=pod-param-buttons__button",
       "targets": [
@@ -41,10 +41,126 @@
       ],
       "value": ""
     }, {
-      "id": "fadc4b1b-9288-4a0f-bbb8-ca81a290366c",
-      "comment": "",
+      "id": "pod-toggle-langue-menu",
+      "comment": "Sélectionne menu choix langue",
+      "command": "mouseOver",
+      "target": "id=pod-lang-select",
+      "targets": [
+        ["id=pod-lang-select", "id"],
+        ["css=#pod-lang-select", "css:finder"],
+        ["xpath=//button[@id='pod-lang-select']", "xpath:attributes"],
+        ["xpath=//div[@id='pod-navbar__menusettings']/div[2]/ul/li/div/div/button", "xpath:idRelative"],
+        ["xpath=//div[2]/ul/li/div/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "pod-toggle-lang-select",
+      "comment": "Sélectionne la langue",
       "command": "click",
-      "target": "css=#pod-navbar__menusettings .btn-close",
+      "target": "id=pod-lang-select",
+      "targets": [
+        ["id=pod-lang-select", "id"],
+        ["css=#pod-lang-select", "css:finder"],
+        ["xpath=//button[@id='pod-lang-select']", "xpath:attributes"],
+        ["xpath=//div[@id='pod-navbar__menusettings']/div[2]/ul/li/div/div/button", "xpath:idRelative"],
+        ["xpath=//div[2]/ul/li/div/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "pod-toggle-lang-deselect",
+      "comment": "Déselectionne langue actuelle",
+      "command": "mouseOut",
+      "target": "id=pod-lang-select",
+      "targets": [
+        ["id=pod-lang-select", "id"],
+        ["css=#pod-lang-select", "css:finder"],
+        ["xpath=//button[@id='pod-lang-select']", "xpath:attributes"],
+        ["xpath=//div[@id='pod-navbar__menusettings']/div[2]/ul/li/div/div/button", "xpath:idRelative"],
+        ["xpath=//div[2]/ul/li/div/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "pod-toggle-lang-confirmation",
+      "comment": "Sélectionne langue ciblée",
+      "command": "click",
+      "target": "css=.dropdown-item",
+      "targets": [
+        ["css=.dropdown-item", "css:finder"],
+        ["xpath=//input[@value='English (en)']", "xpath:attributes"],
+        ["xpath=//div[@id='pod-navbar__menusettings']/div[2]/ul/li/div/div/div/form/input[3]", "xpath:idRelative"],
+        ["xpath=//input[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "pod-search",
+      "comment": "Sélectionne barre recherche",
+      "command": "click",
+      "target": "id=s",
+      "targets": [
+        ["id=s", "id"],
+        ["name=q", "name"],
+        ["css=#s", "css:finder"],
+        ["xpath=//input[@id='s']", "xpath:attributes"],
+        ["xpath=//form[@id='nav-search']/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "pod-search-type",
+      "comment": "Tape mot clé",
+      "command": "type",
+      "target": "id=s",
+      "targets": [
+        ["id=s", "id"],
+        ["name=q", "name"],
+        ["css=#s", "css:finder"],
+        ["xpath=//input[@id='s']", "xpath:attributes"],
+        ["xpath=//form[@id='nav-search']/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "pas de résultat attendu"
+    }, {
+      "id": "pod-search-enter",
+      "comment": "Appuie touche entrée",
+      "command": "sendKeys",
+      "target": "id=s",
+      "targets": [
+        ["id=s", "id"],
+        ["name=q", "name"],
+        ["css=#s", "css:finder"],
+        ["xpath=//input[@id='s']", "xpath:attributes"],
+        ["xpath=//form[@id='nav-search']/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "${KEY_ENTER}"
+    }, {
+      "id": "pod-accueil-logo",
+      "comment": "Retour à la page d'accueil via logo",
+      "command": "click",
+      "target": "xpath=//div[@id='nav-mainbar']/a/strong",
+      "targets": [
+        ["css=strong", "css:finder"],
+        ["xpath=//div[@id='nav-mainbar']/a/strong", "xpath:idRelative"],
+        ["xpath=//strong", "xpath:position"],
+        ["xpath=//strong[contains(.,'Lille.Pod')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "pod-sidebar-open",
+      "comment": "Ouvre side menu",
+      "command": "click",
+      "target": "css=.bi-list",
+      "targets": [
+        ["css=.bi-list", "css:finder"],
+        ["xpath=//div[@id='nav-mainbar']/button/i", "xpath:idRelative"],
+        ["xpath=//i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "pod-sidebar-close",
+      "comment": "Ferme sidebar",
+      "command": "click",
+      "target": "css=#pod-navbar__menu .btn-close",
       "targets": [
         ["css=#pod-navbar__menusettings .btn-close", "css:finder"],
         ["xpath=(//button[@type='button'])[4]", "xpath:attributes"],
@@ -55,12 +171,12 @@
     }]
   }],
   "suites": [{
-    "id": "02a479f6-cfcc-42ea-afaf-47e6f3cb17a0",
-    "name": "Default Suite",
+    "id": "pod-front-suite1",
+    "name": "Esup-pod front test suite 01",
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["861fb6ff-6dc1-4351-916e-ea3c49a70db3"]
+    "tests": ["pod-front-configuration"]
   }],
   "urls": ["http://localhost:9090/"],
   "plugins": []

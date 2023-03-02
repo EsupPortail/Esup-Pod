@@ -1,0 +1,67 @@
+{
+  "id": "f7a98fac-e666-443b-9252-b7cb07e6eb96",
+  "version": "2.0",
+  "name": "pod-front",
+  "url": "http://localhost:9090",
+  "tests": [{
+    "id": "861fb6ff-6dc1-4351-916e-ea3c49a70db3",
+    "name": "configuration",
+    "commands": [{
+      "id": "6c5c1a4e-9129-4c69-975a-2fe80d3b2adb",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "b4c4b34a-3a76-487a-b104-c87bcae9f295",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "936x634",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "83d5df4b-bda0-46fa-b773-c96a2ce4269c",
+      "comment": "",
+      "command": "click",
+      "target": "id=okcookie",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "7b21c76d-953b-42d2-b6cf-32fd7353f681",
+      "comment": "",
+      "command": "click",
+      "target": "id=pod-param-buttons__button",
+      "targets": [
+        ["id=pod-param-buttons__button", "id"],
+        ["css=#pod-param-buttons__button", "css:finder"],
+        ["xpath=//button[@id='pod-param-buttons__button']", "xpath:attributes"],
+        ["xpath=//li[@id='pod-param-buttons']/button", "xpath:idRelative"],
+        ["xpath=//nav/div/ul/li/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "fadc4b1b-9288-4a0f-bbb8-ca81a290366c",
+      "comment": "",
+      "command": "click",
+      "target": "css=#pod-navbar__menusettings .btn-close",
+      "targets": [
+        ["css=#pod-navbar__menusettings .btn-close", "css:finder"],
+        ["xpath=(//button[@type='button'])[4]", "xpath:attributes"],
+        ["xpath=//div[@id='pod-navbar__menusettings']/div/button", "xpath:idRelative"],
+        ["xpath=//li/div/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "02a479f6-cfcc-42ea-afaf-47e6f3cb17a0",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["861fb6ff-6dc1-4351-916e-ea3c49a70db3"]
+  }],
+  "urls": ["http://localhost:9090/"],
+  "plugins": []
+}
