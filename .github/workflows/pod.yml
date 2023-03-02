@@ -97,6 +97,11 @@ jobs:
           python manage.py collectstatic --clear --settings=pod.main.test_settings
           python manage.py runserver localhost:9090 --insecure --settings=pod.main.test_settings &
           sleep 5
+      
+      - name: Run selenium front test
+        if: matrix.python-version == 3.9
+        run: |
+          selenium-side-runner -c "goog:chromeOptions.args=[--headless,--nogpu] browserName=chrome" pod/main/tests/sides/*.side
 
       - name: Run pa11y-ci.
         if: matrix.python-version == 3.9
@@ -130,8 +135,3 @@ ${{ steps.pa11y_output.outputs.content }}```
         run: |
           echo "::error::The site is failing accessibility tests. Please review the comment in the pull request or the pa11y-ci step in the workflow for details."
           exit 1
-      
-      - name: Run Front test
-        if: matrix.python-version == 3.9
-        run: |
-          selenium-side-runner -c "goog:chromeOptions.args=[--headless,--nogpu] browserName=chrome" pod/main/tests/sides/*.side
