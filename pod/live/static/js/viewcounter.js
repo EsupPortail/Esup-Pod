@@ -1,9 +1,9 @@
 function makeid(length) {
-  var result = "";
-  var characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
+  let result = "";
+  const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
@@ -20,10 +20,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   podplayer.ready(function () {
     let secret = makeid(24);
-
     let live_element = document.getElementById("livename");
+    let param = '';
 
-    let param;
     if (live_element.dataset.broadcasterid !== undefined)
       param = "&broadcasterid=" + live_element.dataset.broadcasterid;
     else if (live_element.dataset.eventid !== undefined)
@@ -43,17 +42,20 @@ document.addEventListener("DOMContentLoaded", function () {
           else return Promise.reject(response);
         })
         .then((result) => {
-          let names = "";
-          result.viewers_list.forEach((viewer) => {
-            let name = viewer.first_name + " " + viewer.last_name;
-            if (name === " ") {
-              name = "?";
-            }
-            names += "<li>" + name + "</li>";
-          });
-
           document.getElementById("viewcount").innerHTML = result.viewers;
-          document.getElementById("viewers-ul").innerHTML = names;
+          let viewers_list = document.getElementById("viewers-ul");
+          if (viewers_list !== null) {
+            let names = "";
+            result.viewers_list.forEach((viewer) => {
+              let name = viewer.first_name + " " + viewer.last_name;
+              if (name === " ") {
+                name = "?";
+              }
+              names += "<li>" + name + "</li>";
+            });
+            viewers_list.innerHTML = names;
+          }
+
         })
         .catch((error) => {
           console.log("Impossible to get viewers list. ", error.message);
@@ -69,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 (function () {
   "use strict";
-  var videojs = null;
+  let videojs = null;
   if (typeof window.videojs === "undefined" && typeof require === "function") {
     videojs = require("video.js");
   } else {
@@ -77,62 +79,59 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   (function (window, videojs) {
-    var videoJsViewerCount,
-      defaults = {
-        ui: true,
-        innerHTML: "test",
-      };
+    let videoJsViewerCount,
+        defaults = {
+          ui: true,
+          innerHTML: "test",
+        };
 
-    /*
-     * Chapter menu button
-     */
-    var MenuButton = videojs.getComponent("Button");
+    const MenuButton = videojs.getComponent("Button");
 
-    var InfoMenuButton = videojs.extend(MenuButton, {
+    const ViewerCountMenuButton = videojs.extend(MenuButton, {
       constructor: function (player, options) {
         options.label = "Viewers";
         MenuButton.call(this, player, options);
         this.el().setAttribute("aria-label", "Viewers");
-        videojs.dom.addClass(this.el(), "vjs-info-button");
+        // videojs.dom.addClass(this.el(), "vjs-info-button");
         this.controlText("Viewers");
-        //because sometimes doesn't
         let eyeSVG =
-          '<svg id="view-counter-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="align-bottom" color="red"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+            '<svg id="view-counter-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="align-bottom"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
         this.el().innerHTML =
-          '<span style="line-height:1.7">' +
-          eyeSVG +
-          '<span style="padding-left:4px" id="viewcount">?</div></span></span>';
+            '<span style="line-height:1.7">' +
+            eyeSVG +
+            '<span style="padding-left:4px" id="viewcount">?</div></span></span>';
       },
     });
-    InfoMenuButton.prototype.handleClick = function (event) {
+
+    ViewerCountMenuButton.prototype.handleClick = function (event) {
       MenuButton.prototype.handleClick.call(this, event);
       let viewer_list_el = document.getElementById("viewers-list");
 
-      if (
-        viewer_list_el.style.display === "none" &&
-        document.getElementById("viewers-ul").children.length > 0
-      ) {
-        viewer_list_el.style.display = "block";
-      } else {
-        viewer_list_el.style.display = "none";
-      }
+      if (viewer_list_el !== null) {
+        if (
+            viewer_list_el.style.display === "none" &&
+            document.getElementById("viewers-ul").children.length > 0
+        ) {
+          viewer_list_el.style.display = "block";
+        } else {
+          viewer_list_el.style.display = "none";
+        }
 
-      if (viewer_list_el.style.width === "0px") {
-        resizeViewerList();
+        if (viewer_list_el.style.width === "0px") {
+          resizeViewerList();
+        }
       }
     };
 
-    MenuButton.registerComponent("InfoMenuButton", InfoMenuButton);
+    MenuButton.registerComponent("ViewerCountMenuButton", ViewerCountMenuButton);
 
-    /**
-     * Initialize the plugin.
-     */
+    // Initialize the plugin
     videoJsViewerCount = function (options) {
-      var settings = videojs.mergeOptions(defaults, options),
-        player = this;
+      const settings = videojs.mergeOptions(defaults, options),
+          player = this;
       player.ready(function () {
         if (settings.ui) {
-          var menuButton = new InfoMenuButton(player, settings);
+          const menuButton = new ViewerCountMenuButton(player, settings);
           player.controlBar.info = player.controlBar.el_.appendChild(
             menuButton.el_
           );

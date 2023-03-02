@@ -17,6 +17,7 @@
 
         {% if event.broadcaster.enable_viewer_count %}
             <script>let heartbeat_delay = {{ heartbeat_delay }}</script>
+            <script src="{% static 'js/viewcounter.js' %}?ver={{VERSION}}"></script>
         {% endif %}
 
         <script src="{% static 'js/videojs-info-controlbar.js' %}?ver={{VERSION}}"></script>
@@ -88,7 +89,6 @@
                         </div>
                         {# ajouter ici l' event.aside_iframe_url si nécessaire #}
                         {# ajouter ici le chatBBB si nécessaire #}
-                        {# ajouter ici le viewers-list si nécessaire #}
                     </div>
                 </div>
                 {# ajouter ici l' event.iframe_url si nécessaire #}
