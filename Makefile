@@ -6,15 +6,15 @@
 
 start:
 	# Démarre le serveur de test
-	(sleep 15 ; open http://localhost:8080) &
-	python3 manage.py runserver localhost:8080 --insecure
+	(sleep 15 ; open http://localhost:9090) &
+	python3 manage.py runserver localhost:9090 --insecure
 	# --insecure let serve static files even when DEBUG=False
 
 starts:
 	# Démarre le serveur de test en https auto-signé
 	# nécessite les django-extensions
 	# cf https://timonweb.com/django/https-django-development-server-ssl-certificate/
-	(sleep 15 ; open https://localhost:8000) &
+	(sleep 15 ; open https://localhost:9000) &
 	coverage run --source='.' manage.py runserver_plus --cert-file cert.pem --key-file key.pem
 
 install:
