@@ -14,7 +14,7 @@ starts:
 	# Démarre le serveur de test en https auto-signé
 	# nécessite les django-extensions
 	# cf https://timonweb.com/django/https-django-development-server-ssl-certificate/
-	(sleep 15 ; open https://localhost:9000) &
+	(sleep 15 ; open https://localhost:8000) &
 	coverage run --source='.' manage.py runserver_plus --cert-file cert.pem --key-file key.pem
 
 install:
