@@ -5,7 +5,7 @@
   "url": "http://localhost:9090",
   "tests": [{
     "id": "861fb6ff-6dc1-4351-916e-ea3c49a70db3",
-    "name": "configuration",
+    "name": "configuration bak",
     "commands": [{
       "id": "6c5c1a4e-9129-4c69-975a-2fe80d3b2adb",
       "comment": "",
