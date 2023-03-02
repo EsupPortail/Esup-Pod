@@ -6,8 +6,8 @@
 
 start:
 	# Démarre le serveur de test
-	(sleep 15 ; open http://localhost:8080) &
-	python3 manage.py runserver localhost:8080 --insecure
+	(sleep 15 ; open http://localhost:9090) &
+	python3 manage.py runserver localhost:9090 --insecure
 	# --insecure let serve static files even when DEBUG=False
 
 starts:
