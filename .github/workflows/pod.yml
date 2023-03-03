@@ -89,11 +89,7 @@ jobs:
           python manage.py loaddata pod/main/fixtures/initial_data.json --settings=pod.main.test_settings
           python manage.py loaddata pod/video/fixtures/sample_videos.json --settings=pod.main.test_settings
           python manage.py collectstatic --clear --settings=pod.main.test_settings
-<<<<<<< HEAD
-          coverage run --append --source='.' manage.py runserver localhost:8080 --insecure --settings=pod.main.test_settings &
-=======
-          python manage.py runserver localhost:9090 --insecure --settings=pod.main.test_settings &
->>>>>>> develop
+          coverage run --append --source='.' manage.py runserver localhost:9090 --insecure --settings=pod.main.test_settings &
           sleep 5
 
       - name: Run pa11y-ci.
