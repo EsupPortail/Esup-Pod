@@ -29,7 +29,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from pod.main.utils import is_ajax
 
 
-TEST_SETTINGS = getattr(settings, "TEST_SETTINGS", False)
 __FOLDER_FILE_TYPE__ = ["image", "file"]
 
 
@@ -665,13 +664,11 @@ def fetch_owners(request, folders_list):
 
 
 def filter_folders_with_truly_files(folders):
-    if not TEST_SETTINGS:
-        return (
-            folders.annotate(nbr_image=Count("customimagemodel", distinct=True))
-            .annotate(nbr_file=Count("customfilemodel", distinct=True))
-            .filter(Q(nbr_image__gt=0) | Q(nbr_file__gt=0))
-        )
-    return folders
+    return (
+        folders.annotate(nbr_image=Count("customimagemodel", distinct=True))
+        .annotate(nbr_file=Count("customfilemodel", distinct=True))
+        .filter(Q(nbr_image__gt=0) | Q(nbr_file__gt=0))
+    )
 
 
 @staff_member_required(redirect_field_name="referrer")
