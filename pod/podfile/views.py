@@ -1,4 +1,4 @@
-from django.conf import settings
+"""Esup-Pod podfile views."""
 from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import render
