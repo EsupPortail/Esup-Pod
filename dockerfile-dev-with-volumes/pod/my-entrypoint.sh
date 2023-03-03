@@ -7,7 +7,7 @@ until nc -z elasticsearch 9200; do echo waiting for elasticsearch; sleep 10; don
 # Mise en route
 # Base de données SQLite intégrée
 BDD_FILE=/usr/src/app/pod/db.sqlite3
-if test ! -f "$BDD_PATH"; then
+if test ! -f "$BDD_FILE"; then
     echo "$BDD_FILE does not exist."
     python3 manage.py create_pod_index
     curl -XGET "elasticsearch:9200/pod/_search"

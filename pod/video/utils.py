@@ -1,3 +1,4 @@
+"""Esup-Pod video utilities."""
 import os
 import re
 import shutil
@@ -55,12 +56,8 @@ MANAGERS = getattr(settings, "MANAGERS", {})
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
 
-# ##########################################################################
-# get all videos available
-# ##########################################################################
-
-
 def get_available_videos():
+    """Get all videos available."""
     videos = Video.objects.filter(encoding_in_progress=False, is_draft=False).defer(
         "video", "slug", "owner", "additional_owners", "description"
     )
@@ -75,7 +72,7 @@ def get_available_videos():
 
 
 # ##########################################################################
-# ENCODE VIDEO : GENERIC FUNCTION
+# ENCODE VIDEO : GENERIC FUNCTIONS
 # ##########################################################################
 
 
@@ -106,12 +103,8 @@ def check_file(path_file):
     return False
 
 
-# ##########################################################################
-# ENCODE VIDEO : CREATE OUTPUT DIR
-# ##########################################################################
-
-
 def create_outputdir(video_id, video_path):
+    """ENCODE VIDEO: CREATE OUTPUT DIR."""
     dirname = os.path.dirname(video_path)
     output_dir = os.path.join(dirname, "%04d" % video_id)
     if not os.path.exists(output_dir):
@@ -125,6 +118,7 @@ def create_outputdir(video_id, video_path):
 
 
 def send_email(msg, video_id):
+    """Send email notification when video encoding failed."""
     subject = "[" + __TITLE_SITE__ + "] Error Encoding Video id:%s" % video_id
     message = "Error Encoding  video id : %s\n%s" % (video_id, msg)
     html_message = "<p>Error Encoding video id : %s</p><p>%s</p>" % (
@@ -135,6 +129,7 @@ def send_email(msg, video_id):
 
 
 def send_email_recording(msg, recording_id):
+    """Send email notification when recording encoding failed."""
     subject = "[" + __TITLE_SITE__ + "] Error Encoding Recording id:%s" % recording_id
     message = "Error Encoding  recording id : %s\n%s" % (recording_id, msg)
     html_message = "<p>Error Encoding recording id : %s</p><p>%s</p>" % (
@@ -145,6 +140,7 @@ def send_email_recording(msg, recording_id):
 
 
 def send_email_transcript(video_to_encode):
+    """Send email on transcripting completion."""
     if DEBUG:
         print("SEND EMAIL ON TRANSCRIPTING COMPLETION")
     url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
@@ -330,17 +326,14 @@ def send_email_encoding(video_to_encode):
 
 
 def pagination_data(request_path, offset, limit, total_count):
-    """Get next, previous url and info about
-    max number of page and current page\n
+    """Get next, previous url and info about max number of page and current page.
 
-    Args:\n
-        request_path (str): current request path
-        offset (int): data offset\n
-        limit (int): data max number\n
-        total_count (int): total data count\n
+    :param request_path: str: current request path
+    :param offset:       int: data offset
+    :param limit:        int: data max number
+    :param total_count:  int: total data count
 
-    Returns:\n
-        Tuple[str]: next, previous url and current page info\n
+    :return: Tuple[str]: next, previous url and current page info
     """
     next_url = previous_url = None
     pages_info = "0/0"
@@ -358,28 +351,27 @@ def pagination_data(request_path, offset, limit, total_count):
 
 
 def get_headband(channel, theme=None):
-    """Get headband with priority to theme headband\n
+    """Get headband with priority to theme headband.
 
-    Args:\n
-        channel (Channel): channel\n
-        theme (Theme, optional): theme, Defaults to None.\n
+    :param channel: (Channel): channel
+    :param theme: (Theme, optional): theme, Defaults to None.
 
-    Returns:\n
-        dict: type(theme, channel) and headband path\n
+    :return: dict: type(theme, channel) and headband path
     """
     result = {
         "type": "channel" if theme is None else "theme",
         "headband": None,
     }
     if theme is not None and theme.headband is not None:
-        result["headband"] = theme.headband.file.url  # pragma: no cover
+        result["headband"] = theme.headband.file.url
     elif theme is None and channel.headband is not None:
-        result["headband"] = channel.headband.file.url  # pragma: no cover
+        result["headband"] = channel.headband.file.url
 
     return result
 
 
 def change_owner(video_id, new_owner):
+    """Replace current video_id owner by new_owner."""
     if video_id is None:
         return False
 
@@ -392,7 +384,8 @@ def change_owner(video_id, new_owner):
     return True
 
 
-def move_video_file(video, new_owner):  # pragma: no cover
+def move_video_file(video, new_owner):
+    """Move video files in new_owner folder."""
     # overview and encoding video folder name
     encod_folder_pattern = "%04d" % video.id
     old_dest = os.path.join(os.path.dirname(video.video.path), encod_folder_pattern)

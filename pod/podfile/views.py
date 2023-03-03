@@ -399,9 +399,6 @@ def manage_form_file(request, upload_errors, fname, form_file):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def changefile(request):
-    # did it only for flake !
-    file = CustomFileModel()
-    file = CustomImageModel()
 
     if request.POST and is_ajax(request):
         folder = get_object_or_404(UserFolder, id=request.POST.get("folder"))
