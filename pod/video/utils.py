@@ -93,7 +93,10 @@ def add_encoding_log(video_id, log):
     encoding_log, created = EncodingLog.objects.get_or_create(
         video=Video.objects.get(id=video_id)
     )
-    encoding_log.log += "\n\n%s" % (log)
+    if created:
+        encoding_log.log = log
+    else:
+        encoding_log.log += "\n\n%s" % log
     encoding_log.save()
     if DEBUG:
         print(log)
