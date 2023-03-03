@@ -59,6 +59,19 @@ class EncodeTestCase(TestCase):
 
         print(" --->  SetUp of EncodeTestCase: OK!")
 
+    def test_encoding_wrong_file(self):
+        """Test if a try to encode a wrong file ends well."""
+        video = Video.objects.create(
+            title="Video2",
+            owner=User.objects.get(id=1),
+            video="test.txt",
+            type=Type.objects.get(id=1),
+        )
+        print("\n ---> Try to Encode video 2")
+        encode.encode_video(video.id)
+        el = EncodingLog.objects.get(video=video)
+        self.assertTrue("Wrong file or path:" in el.log)
+
     def test_result_encoding_video(self):
         """Test if video encoding worked properly."""
         # video id=1 et audio id=2
