@@ -48,23 +48,28 @@ class Command(BaseCommand):
 
     def clean_userFolders(self, dry_run):
         """Clean useless User folders."""
-        nb_deleted = 0
+        folder_deleted = 0
+        files_deleted = 0
 
         print("Start cleaning useless User folders, please wait...")
         user_folders = UserFolder.objects.all()
         for folder in user_folders:
             if "-" in folder.name:
                 folder_data = folder.name.split("-")
-                vid_id = int(folder_data[0])
-                try:
-                    Video.objects.get(id=vid_id)
-                except Video.DoesNotExist:
-                    print("%s -- %s " % (folder, folder.get_all_files()))
-                    nb_deleted += 1
-                    if not dry_run:
-                        folder.delete()
-        print("Cleaning useless User folders done.")
-        return nb_deleted
+                if folder_data[0].isdigit():
+                    vid_id = int(folder_data[0])
+                    try:
+                        Video.objects.get(id=vid_id)
+                    except Video.DoesNotExist:
+                        folder_content = folder.get_all_files()
+                        print("%s;%s;%s" % (
+                            folder, folder_content, len(folder_content)))
+                        folder_deleted += 1
+                        files_deleted += len(folder_content)
+                        if not dry_run:
+                            folder.delete()
+        print("Cleaning useless User folders done. %s deleted files." % files_deleted)
+        return folder_deleted
 
     def clean_videos(self, dry_run):
         """Clean useless video files."""

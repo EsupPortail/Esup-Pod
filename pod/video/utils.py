@@ -90,7 +90,9 @@ def change_encoding_step(video_id, num_step, desc):
 
 def add_encoding_log(video_id, log):
     """Add message in video_id encoding log."""
-    encoding_log = EncodingLog.objects.get_or_create(video=Video.objects.get(id=video_id))
+    encoding_log, created = EncodingLog.objects.get_or_create(
+        video=Video.objects.get(id=video_id)
+    )
     encoding_log.log += "\n\n%s" % (log)
     encoding_log.save()
     if DEBUG:
@@ -98,6 +100,7 @@ def add_encoding_log(video_id, log):
 
 
 def check_file(path_file):
+    """Check if path_file is accessible and is not null."""
     if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
         return True
     return False
