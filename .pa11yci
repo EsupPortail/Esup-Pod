@@ -10,15 +10,15 @@
         "debug": true
     },
     "urls": [
-        "http://localhost:8080/",
-        "http://localhost:8080/accounts/login",
-        "http://localhost:8080/videos",
-        "http://localhost:8080/video/0001-video-test/",
-        "http://localhost:8080/live/events/"
+        "http://localhost:9090/",
+        "http://localhost:9090/accounts/login",
+        "http://localhost:9090/videos",
+        "http://localhost:9090/video/0001-video-test/",
+        "http://localhost:9090/live/events/"
     ],
     "todo":[
         "These urls are not A11y compliant yet, and need more work from 3rd party",
-        "http://localhost:8080/video/stats_view/videos/"
+        "http://localhost:9090/video/stats_view/videos/"
     ]
 }
 
