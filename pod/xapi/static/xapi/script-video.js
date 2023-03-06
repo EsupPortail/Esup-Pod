@@ -114,8 +114,6 @@ player.on('pause', function() {
     active_statement();
 });
 
-player.on("seeking", function (e) { });
-
 player.on("seeked", function (e) {
     time_seek = player.currentTime().toFixed(3)
     action = "seeked"
