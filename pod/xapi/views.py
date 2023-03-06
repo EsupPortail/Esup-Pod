@@ -33,17 +33,17 @@ XAPI_LRS_URL = getattr(settings, "XAPI_LRS_URL", "")
 @ensure_csrf_cookie
 def statement(request, app: str = None):
     if request.body and app == "video":  # we develop only video statement
-        body_unicode = request.body.decode('utf-8')
+        body_unicode = request.body.decode("utf-8")
         body = json.loads(body_unicode)
         statement = {
             "actor": {
                 "objectType": "Agent",
                 "account": {
                     "homePage": request.get_host(),
-                    "name": get_actor_name(request)
-                }
+                    "name": get_actor_name(request),
+                },
             },
-            "id": str(uuid.uuid4())
+            "id": str(uuid.uuid4()),
         }
         for key, value in body.items():
             statement[key] = value
@@ -56,7 +56,7 @@ def statement(request, app: str = None):
 
 
 def get_actor_name(request):
-    if request.user.is_authenticated :
+    if request.user.is_authenticated:
         if XAPI_ANONYMIZE_ACTOR:
             name = request.user.owner.hashkey
         else:

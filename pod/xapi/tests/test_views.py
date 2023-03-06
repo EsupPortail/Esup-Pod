@@ -23,17 +23,14 @@ class xapi_statement_TestView(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
 
         response = self.client.post(
-            good_url,
-            json.dumps({}),
-            'json',
-            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+            good_url, json.dumps({}), "json", HTTP_X_REQUESTED_WITH="XMLHttpRequest"
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)  # 200
-        self.assertEqual(response['Content-Type'], 'application/json')
-        response_unicode = response.content.decode('utf-8')
+        self.assertEqual(response["Content-Type"], "application/json")
+        response_unicode = response.content.decode("utf-8")
         data = json.loads(response_unicode)
         self.assertEqual(data["actor"]["objectType"], "Agent")
         print(
             " --->  test_xapi_statment_TestView_get_request ",
-            "of xapi_statement_TestView: OK!"
+            "of xapi_statement_TestView: OK!",
         )
