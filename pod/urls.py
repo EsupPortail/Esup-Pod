@@ -23,7 +23,6 @@ from pod.main.rest_router import urlpatterns as rest_urlpatterns
 USE_CAS = getattr(settings, "USE_CAS", False)
 USE_SHIB = getattr(settings, "USE_SHIB", False)
 USE_OIDC = getattr(settings, "USE_OIDC", False)
-USE_BBB = getattr(settings, "USE_BBB", False)
 
 if USE_CAS:
     from cas import views as cas_views
@@ -98,6 +97,10 @@ if USE_OIDC:
 if getattr(settings, "USE_MEETING", False):
     urlpatterns += [
         url(r"^meeting/", include("pod.meeting.urls")),
+    ]
+if getattr(settings, "USE_XAPI", False):
+    urlpatterns += [
+        url(r"^xapi/", include("pod.xapi.urls")),
     ]
 if getattr(settings, "USE_BBB", False):
     urlpatterns += [

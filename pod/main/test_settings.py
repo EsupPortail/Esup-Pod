@@ -94,3 +94,12 @@ for application in INSTALLED_APPS:
             for variable in dir(_temp.settings_local):
                 if variable == variable.upper():
                     locals()[variable] = getattr(_temp.settings_local, variable)
+
+# xAPI settings
+USE_XAPI = True
+USE_XAPI_VIDEO = True
+XAPI_ANONYMIZE_ACTOR = False
+XAPI_LRS_URL = ""
+XAPI_LRS_LOGIN = ""
+XAPI_LRS_PWD = ""
+
