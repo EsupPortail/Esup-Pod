@@ -1,3 +1,4 @@
+"""Encoding video by id."""
 from django.core.management.base import BaseCommand
 from pod.video.encode import encode_video
 

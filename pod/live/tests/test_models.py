@@ -1,3 +1,4 @@
+"""Test case for Pod live."""
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.conf import settings
@@ -30,7 +31,7 @@ else:
 class BuildingTestCase(TestCase):
     def setUp(self):
         Building.objects.create(name="building1")
-        print(" --->  SetUp of BuildingTestCase : OK !")
+        print(" --->  SetUp of BuildingTestCase: OK!")
 
     """
         test attributs
@@ -53,7 +54,7 @@ class BuildingTestCase(TestCase):
         building.headband = headband
         building.save()
         self.assertTrue("blabla" in building.headband.name)
-        print("   --->  test_attributs of BuildingTestCase : OK !")
+        print("   --->  test_attributs of BuildingTestCase: OK!")
 
     """
         test delete object
@@ -63,7 +64,7 @@ class BuildingTestCase(TestCase):
         Building.objects.get(id=1).delete()
         self.assertEqual(Building.objects.all().count(), 0)
 
-        print("   --->  test_delete_object of BuildingTestCase : OK !")
+        print("   --->  test_delete_object of BuildingTestCase: OK!")
 
 
 """
@@ -94,6 +95,8 @@ class BroadcasterTestCase(TestCase):
             is_restricted=True,
             building=building,
             public=False,
+            main_lang="fr",
+            transcription_file="testfile.vtt",
         )
         # Test with a video on hold
         video_on_hold = Video.objects.create(
@@ -110,8 +113,9 @@ class BroadcasterTestCase(TestCase):
             is_restricted=False,
             video_on_hold=video_on_hold,
             building=building,
+            main_lang="en",
         )
-        print(" --->  SetUp of BroadcasterTestCase : OK !")
+        print(" --->  SetUp of BroadcasterTestCase: OK!")
 
     """
         test attributs
@@ -139,9 +143,12 @@ class BroadcasterTestCase(TestCase):
         self.assertNotIn(empty_qrcode, broadcaster.qrcode)
         none_qrcode = '"data:image/png;base64, None"'
         self.assertNotIn(none_qrcode, broadcaster.qrcode)
+        self.assertEqual(broadcaster.main_lang, "fr")
+        self.assertEqual(broadcaster.transcription_file.url, "/media/testfile.vtt")
         broadcaster2 = Broadcaster.objects.get(id=2)
         self.assertEqual(broadcaster2.video_on_hold.id, 1)
-        print("   --->  test_attributs of BroadcasterTestCase : OK !")
+        print("   --->  test_attributs of BroadcasterTestCase: OK!")
+        self.assertEqual(broadcaster2.main_lang, "en")
 
     """
         test delete object
@@ -152,7 +159,7 @@ class BroadcasterTestCase(TestCase):
         Broadcaster.objects.get(id=2).delete()
         self.assertEqual(Broadcaster.objects.all().count(), 0)
 
-        print("   --->  test_delete_object of BroadcasterTestCase : OK !")
+        print("   --->  test_delete_object of BroadcasterTestCase: OK!")
 
     def test_is_recording_admin(self):
         html = Broadcaster.objects.get(id=1).is_recording_admin()
@@ -183,7 +190,7 @@ class HeartbeatTestCase(TestCase):
             last_heartbeat=timezone.now(),
             event=event,
         )
-        print(" --->  SetUp of HeartbeatTestCase : OK !")
+        print(" --->  SetUp of HeartbeatTestCase: OK!")
 
     """
         test attributs
@@ -194,7 +201,7 @@ class HeartbeatTestCase(TestCase):
         self.assertEqual(hb.user.username, "pod")
         self.assertEqual(hb.viewkey, "testkey")
         self.assertEqual(hb.event.title, "event1")
-        print("   --->  test_attributs of HeartbeatTestCase : OK !")
+        print("   --->  test_attributs of HeartbeatTestCase: OK!")
 
 
 def add_video(event):
@@ -242,11 +249,11 @@ class EventTestCase(TestCase):
             iframe_height=120,
             aside_iframe_url="http://asideiframe.live",
         )
-        print("--->  SetUp of EventTestCase : OK !")
+        print("--->  SetUp of EventTestCase: OK!")
 
     def test_class_methods(self):
         self.assertEqual(get_default_event_type(), 1)
-        print(" --->  test_class_methods default_event_type : OK !")
+        print(" --->  test_class_methods default_event_type: OK!")
 
         event = Event.objects.get(id=1)
         defaut_event_start_date = event.start_date
@@ -259,7 +266,7 @@ class EventTestCase(TestCase):
         yesterday = defaut_event_start_date + timezone.timedelta(days=-1)
         with self.assertRaises(ValidationError):
             present_or_future_date(yesterday)
-        print(" --->  test_class_methods present_or_future_date : OK !")
+        print(" --->  test_class_methods present_or_future_date: OK!")
 
     def test_create(self):
         e_broad = Broadcaster.objects.get(id=1)
@@ -272,7 +279,7 @@ class EventTestCase(TestCase):
             type=e_type,
         )
         self.assertEqual(2, event.id)
-        print(" --->  test_create of EventTestCase : OK !")
+        print(" --->  test_create of EventTestCase: OK!")
 
     def test_attributs(self):
         event = Event.objects.get(id=1)
@@ -298,8 +305,8 @@ class EventTestCase(TestCase):
         event.id = None
         self.assertEqual(event.__str__(), "None")
         self.assertEqual(event.get_thumbnail_url(), "/static/img/default-event.svg")
-        self.assertEqual(event.get_full_url(), "//example.com/live/event/0001-event1/")
-        print(" --->  test_attributs of EventTestCase : OK !")
+        self.assertEqual(event.get_full_url(), "//localhost:9090/live/event/0001-event1/")
+        print(" --->  test_attributs of EventTestCase: OK!")
 
     def test_add_thumbnail(self):
         event = Event.objects.get(id=1)
@@ -316,19 +323,19 @@ class EventTestCase(TestCase):
         event.thumbnail = thumb
         event.save()
         self.assertTrue("blabla" in event.thumbnail.name)
-        print(" --->  test_add_thumbnail of EventTestCase : OK !")
+        print(" --->  test_add_thumbnail of EventTestCase: OK!")
 
     def test_add_video(self):
         event = Event.objects.get(id=1)
         event = add_video(event)
         self.assertEquals(event.videos.count(), 1)
-        print(" --->  test_add_video of EventTestCase : OK !")
+        print(" --->  test_add_video of EventTestCase: OK!")
 
     def test_delete_object(self):
         event = Event.objects.get(id=1)
         event.delete()
         self.assertEquals(Event.objects.all().count(), 0)
-        print(" --->  test_delete_object of EventTestCase : OK !")
+        print(" --->  test_delete_object of EventTestCase: OK!")
 
     def test_delete_object_keep_video(self):
         event = Event.objects.get(id=1)
@@ -336,34 +343,34 @@ class EventTestCase(TestCase):
         event.delete()
         # video is not deleted with event
         self.assertEquals(Video.objects.all().count(), 1)
-        print(" --->  test_delete_object_keep_video of EventTestCase : OK !")
+        print(" --->  test_delete_object_keep_video of EventTestCase: OK!")
 
     def test_event_filters(self):
         user = User.objects.get(username="user1")
 
         # total Broadcaster
         self.assertEqual(Broadcaster.objects.count(), 4)
-        print(" --->  test_filter broadcasters EventTestCase : OK !")
+        print(" --->  test_filter broadcasters EventTestCase: OK!")
 
         # available broadcasters for user and building
         filtered_broads = get_available_broadcasters_of_building(user, 1)
         self.assertEqual(filtered_broads.count(), 2)
-        print(" --->  test_filtered broadcasters 1 of EventTestCase : OK !")
+        print(" --->  test_filtered broadcasters 1 of EventTestCase: OK!")
 
         # available broadcasters for user and building + the one passed in the param
         filtered_broads = get_available_broadcasters_of_building(user, 1, 3)
         self.assertEqual(filtered_broads.count(), 3)
-        print(" --->  test_filtered broadcasters 2 of EventTestCase : OK !")
+        print(" --->  test_filtered broadcasters 2 of EventTestCase: OK!")
 
         # total Building
         self.assertEqual(Building.objects.count(), 2)
-        print(" --->  test_filter building EventTestCase : OK !")
+        print(" --->  test_filter building EventTestCase: OK!")
 
         filtered_buildings = get_building_having_available_broadcaster(user)
         self.assertEqual(filtered_buildings.count(), 1)
-        print(" --->  test_filtered buildings 2 of EventTestCase : OK !")
+        print(" --->  test_filtered buildings 2 of EventTestCase: OK!")
 
         # total plus
         filtered_buildings = get_building_having_available_broadcaster(user, 2)
         self.assertEqual(filtered_buildings.count(), 2)
-        print(" --->  test_filtered buildings 2 of EventTestCase : OK !")
+        print(" --->  test_filtered buildings 2 of EventTestCase: OK!")

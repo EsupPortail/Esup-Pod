@@ -1,6 +1,4 @@
-"""
-Unit tests for recorder views
-"""
+"""Unit tests for recorder views."""
 import hashlib
 
 from django.conf import settings
@@ -26,6 +24,8 @@ OPENCAST_DEFAULT_PRESENTER = getattr(settings, "OPENCAST_DEFAULT_PRESENTER", "mi
 
 
 class recorderViewsTestCase(TestCase):
+    """Test case for Pod recorder views."""
+
     fixtures = [
         "initial_data.json",
     ]
@@ -51,7 +51,7 @@ class recorderViewsTestCase(TestCase):
 
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
-        print(" --->  SetUp of recorderViewsTestCase : OK !")
+        print(" --->  SetUp of recorderViewsTestCase: OK!")
 
     def test_add_recording(self):
         self.client = Client()
@@ -78,7 +78,7 @@ class recorderViewsTestCase(TestCase):
 
         self.assertTemplateUsed(response, "recorder/add_recording.html")
 
-        print("   --->  test_add_recording of recorderViewsTestCase : OK !")
+        print("   --->  test_add_recording of recorderViewsTestCase: OK!")
 
     def test_claim_recording(self):
         self.client = Client()
@@ -100,7 +100,7 @@ class recorderViewsTestCase(TestCase):
 
         self.assertTemplateUsed(response, "recorder/claim_record.html")
 
-        print("   --->  test_claim_record of recorderViewsTestCase : OK !")
+        print("   --->  test_claim_record of recorderViewsTestCase: OK!")
 
     def test_delete_record(self):
         self.client = Client()
@@ -126,7 +126,7 @@ class recorderViewsTestCase(TestCase):
 
         self.assertTemplateUsed(response, "recorder/record_delete.html")
 
-        print("   --->  test_delete_record recorderViewsTestCase : OK !")
+        print("   --->  test_delete_record recorderViewsTestCase: OK!")
 
     def test_recorder_notify(self):
         self.client = Client()
@@ -157,7 +157,7 @@ class recorderViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, b"ok")
 
-        print("   --->  test_record_notify of recorderViewsTestCase : OK !")
+        print("   --->  test_record_notify of recorderViewsTestCase: OK!")
 
 
 class studio_podTestView(TestCase):
@@ -168,6 +168,8 @@ class studio_podTestView(TestCase):
     def create_index_file(self):
         text = """
         <html>
+            <head>
+            </head>
             <body>
                 <h1>Heading</h1>
             </body>
@@ -179,9 +181,10 @@ class studio_podTestView(TestCase):
         template_dir = os.path.dirname(template_file)
         if not os.path.exists(template_dir):
             os.makedirs(template_dir)
-        file = open(template_file, "w+")
-        file.write(text)
-        file.close()
+        if not (os.access(template_file, os.F_OK) and os.stat(template_file).st_size > 0):
+            file = open(template_file, "w+")
+            file.write(text)
+            file.close()
 
     def setUp(self):
         User.objects.create(username="pod", password="pod1234pod")
@@ -242,7 +245,7 @@ class studio_podTestView(TestCase):
         response = self.client.post(url, {"presenter": "mid"})
         self.assertEqual(response.status_code, 200)
 
-        print(" -->  test_studio_presenter_post of studio_podTestView", " : OK !")
+        print(" -->  test_studio_presenter_post of studio_podTestView", ": OK!")
 
     def test_studio_info_me_json(self):
         self.client = Client()
@@ -259,7 +262,7 @@ class studio_podTestView(TestCase):
         self.assertTrue(b"ROLE_ADMIN" in response.content)
         self.assertEqual(response.status_code, 200)
 
-        print(" -->  test_studio_info_me_json of studio_podTestView", " : OK !")
+        print(" -->  test_studio_info_me_json of studio_podTestView", ": OK!")
 
     def test_studio_ingest_createMediaPackage(self):
         self.client = Client()
@@ -293,7 +296,7 @@ class studio_podTestView(TestCase):
         self.assertEqual(mediapackage.getAttribute("id"), idMedia)
 
         print(
-            " -->  test_studio_ingest_createMediaPackage of studio_podTestView", " : OK !"
+            " -->  test_studio_ingest_createMediaPackage of studio_podTestView", ": OK!"
         )
 
     def test_studio_ingest_createMediaPackage_with_presenter(self):
@@ -336,7 +339,7 @@ class studio_podTestView(TestCase):
         print(
             " -->  test_studio_ingest_createMediaPackage_with_presenter"
             + " of studio_podTestView",
-            " : OK !",
+            ": OK!",
         )
 
     def test_studio_ingest_addDCCatalog(self):
@@ -410,7 +413,7 @@ class studio_podTestView(TestCase):
         self.assertTrue(catalog)
         self.assertEqual(catalog.getAttribute("type"), "dublincore/episode")
 
-        print(" -->  test_studio_ingest_addDCCatalog of studio_podTestView", " : OK !")
+        print(" -->  test_studio_ingest_addDCCatalog of studio_podTestView", ": OK!")
 
     def test_studio_ingest_addAttachment(self):
         self.client = Client()
@@ -471,7 +474,7 @@ class studio_podTestView(TestCase):
         self.assertTrue(attachment)
         self.assertEqual(attachment.getAttribute("type"), "security/xacml+episode")
 
-        print(" -->  test_studio_ingest_addAttachment of studio_podTestView", " : OK !")
+        print(" -->  test_studio_ingest_addAttachment of studio_podTestView", ": OK!")
 
     def test_studio_ingest_addTrack(self):
         self.client = Client()
@@ -542,7 +545,7 @@ class studio_podTestView(TestCase):
         # chek if mediapackage file exist
         self.assertTrue(os.path.exists(video_file))
 
-        print(" -->  test_studio_ingest_addTrack of studio_podTestView", " : OK !")
+        print(" -->  test_studio_ingest_addTrack of studio_podTestView", ": OK!")
 
     def test_studio_ingest_addCatalog(self):
         self.client = Client()
@@ -608,7 +611,7 @@ class studio_podTestView(TestCase):
         cutting_file = os.path.join(mediaPackage_dir, cutting.name)
         self.assertTrue(os.path.exists(cutting_file))
 
-        print(" -->  test_studio_ingest_addCatalog of studio_podTestView", " : OK !")
+        print(" -->  test_studio_ingest_addCatalog of studio_podTestView", ": OK!")
 
     def test_studio_ingest_ingest(self):
         self.client = Client()
@@ -681,4 +684,4 @@ class studio_podTestView(TestCase):
         # check if recording object exist
         self.assertTrue(recording.first())
 
-        print(" -->  test_studio_ingest_ingest of studio_podTestView", " : OK !")
+        print(" -->  test_studio_ingest_ingest of studio_podTestView", ": OK!")

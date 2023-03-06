@@ -1,3 +1,4 @@
+"""Import transcripted video into Pod."""
 from django.conf import settings
 
 from django.utils import translation
@@ -13,7 +14,7 @@ LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
 
 class Command(BaseCommand):
     # args = 'video_id'
-    help = "Import recorded video into Pod"
+    help = "Import transcripted video into Pod"
 
     def add_arguments(self, parser):
         parser.add_argument(

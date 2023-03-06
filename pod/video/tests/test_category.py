@@ -12,7 +12,6 @@ import logging
 
 
 class TestCategory(TestCase):
-
     fixtures = [
         "initial_data.json",
     ]

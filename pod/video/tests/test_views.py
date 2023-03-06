@@ -1,3 +1,4 @@
+"""Tests for Video views."""
 from django.test import Client
 from django.test import TestCase, override_settings, TransactionTestCase
 from django.urls import reverse
@@ -21,11 +22,14 @@ from importlib import reload
 
 
 class ChannelTestView(TestCase):
+    """Test case for Channel views."""
+
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
+        """Set up some test channels."""
         site = Site.objects.get(id=1)
         self.c = Channel.objects.create(title="ChannelTest1")
         self.c2 = Channel.objects.create(title="ChannelTest2")
@@ -1089,7 +1093,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
             video="test3.mp4",
             type=Type.objects.get(id=1),
         )
-        print(" --->  SetUp of VideoTestUpdateOwner : OK !")
+        print(" --->  SetUp of VideoTestUpdateOwner: OK!")
 
     def test_update_video_owner(self):
         url = reverse("video:update_video_owner", kwargs={"user_id": self.admin.id})
@@ -1182,7 +1186,7 @@ class VideoTestFiltersViews(TestCase):
             video="test3.mp4",
             type=Type.objects.get(id=1),
         )
-        print(" --->  SetUp of VideoTestFiltersViews : OK !")
+        print(" --->  SetUp of VideoTestFiltersViews: OK!")
 
     def test_filter_owners(self):
         url = reverse("video:filter_owners")

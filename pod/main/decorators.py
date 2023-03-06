@@ -34,7 +34,6 @@ def ajax_required(_view):
 
     @wraps(_view)
     def _wrapped_view(request, *args, **kwargs):
-
         if request.headers.get("x-requested-with") == "XMLHttpRequest":
             return _view(request, *args, **kwargs)
         else:
@@ -53,7 +52,6 @@ def admin_required(_view):
 
     @wraps(_view)
     def _wrapped_view(request, *args, **kwargs):
-
         if request.user.is_superuser:
             return _view(request, *args, **kwargs)
         else:

@@ -1,3 +1,4 @@
+"""Video Models test cases."""
 from django.test import TestCase
 from django.db.models import Count, Q
 from django.template.defaultfilters import slugify
@@ -29,25 +30,23 @@ from datetime import timedelta
 import os
 
 if getattr(settings, "USE_PODFILE", False):
-    FILEPICKER = True
+    __FILEPICKER__ = True
     from pod.podfile.models import CustomImageModel
     from pod.podfile.models import UserFolder
 else:
-    FILEPICKER = False
+    __FILEPICKER__ = False
     from pod.main.models import CustomImageModel
-
-# Create your tests here.
-"""
-    test the channel
-"""
 
 
 class ChannelTestCase(TestCase):
+    """Test the channels."""
+
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
+        """Create Channels to be tested."""
         Channel.objects.create(title="ChannelTest1", slug="blabla")
         Channel.objects.create(
             title="ChannelTest2",
@@ -57,18 +56,18 @@ class ChannelTestCase(TestCase):
             description="blabla",
         )
 
-        print(" --->  SetUp of ChannelTestCase : OK !")
-
-    """
-        test all attributs when a channel have been save with the minimum of
-        attributs
-    """
+        print(" --->  SetUp of ChannelTestCase: OK!")
 
     def test_Channel_null_attribut(self):
+        """
+        Test all channel attributs.
+
+        when a channel has been saved with the minimum of attributes
+        """
         channel = Channel.objects.annotate(video_count=Count("video", distinct=True)).get(
             title="ChannelTest1"
         )
-        self.assertEqual(channel.visible, False)
+        self.assertFalse(channel.visible)
         self.assertFalse(channel.slug == slugify("blabla"))
         self.assertEqual(channel.color, None)
         self.assertEqual(channel.description, "")
@@ -81,17 +80,14 @@ class ChannelTestCase(TestCase):
         # self.assertEqual(
         #    channel.get_absolute_url(), "/" + channel.slug + "/")
 
-        print("   --->  test_Channel_null_attribut of ChannelTestCase : OK !")
-
-    """
-        test attributs when a channel have many attributs
-    """
+        print("   --->  test_Channel_null_attribut of ChannelTestCase: OK!")
 
     def test_Channel_with_attributs(self):
+        """Test attributs when a channel has many attributs."""
         channel = Channel.objects.annotate(video_count=Count("video", distinct=True)).get(
             title="ChannelTest2"
         )
-        self.assertEqual(channel.visible, True)
+        self.assertTrue(channel.visible)
         channel.color = "Blue"
         self.assertEqual(channel.color, "Blue")
         self.assertEqual(channel.description, "blabla")
@@ -102,31 +98,26 @@ class ChannelTestCase(TestCase):
         # self.assertEqual(
         #    channel.get_absolute_url(), "/" + channel.slug + "/")
 
-        print("   --->  test_Channel_with_attributs of ChannelTestCase : OK !")
-
-    """
-        test delete object
-    """
+        print("   --->  test_Channel_with_attributs of ChannelTestCase: OK!")
 
     def test_delete_object(self):
+        """Test deleting Channels."""
         Channel.objects.get(id=1).delete()
         Channel.objects.get(id=2).delete()
         self.assertEqual(Channel.objects.all().count(), 0)
 
-        print("   --->  test_delete_object of ChannelTestCase : OK !")
-
-
-"""
-    test the theme
-"""
+        print("   --->  test_delete_object of ChannelTestCase: OK!")
 
 
 class ThemeTestCase(TestCase):
+    """Test the theme."""
+
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
+        """Create themes to be tested."""
         Channel.objects.create(title="ChannelTest1")
         Theme.objects.create(
             title="Theme1",
@@ -139,14 +130,14 @@ class ThemeTestCase(TestCase):
             slug="blabla",
             channel=Channel.objects.get(title="ChannelTest1"),
         )
-        print(" --->  SetUp of ThemeTestCase : OK !")
-
-    """
-        test all attributs when a theme have been save with the minimum
-        of attributs
-    """
+        print(" --->  SetUp of ThemeTestCase: OK!")
 
     def test_Theme_null_attribut(self):
+        """
+        Test all attributs.
+
+        when a theme has been saved with the minimum of attributs.
+        """
         theme = Theme.objects.annotate(video_count=Count("video", distinct=True)).get(
             title="Theme1"
         )
@@ -159,58 +150,47 @@ class ThemeTestCase(TestCase):
         # self.assertEqual(
         #    theme.get_absolute_url(), "/" + theme.channel.slug + "/"
         #    + theme.slug + "/")
-        print("   --->  test_Theme_null_attribut of ThemeTestCase : OK !")
-
-    """
-        test attributs when a theme have many attributs
-    """
+        print("   --->  test_Theme_null_attribut of ThemeTestCase: OK!")
 
     def test_Theme_with_attributs(self):
+        """Test attributs when a theme have many attributs."""
         theme = Theme.objects.get(title="Theme1")
         theme.description = "blabla"
         self.assertEqual(theme.description, "blabla")
-        print("   --->  test_Theme_with_attributs of ThemeTestCase : OK !")
-
-    """
-        test attributs when a theme have many attributs
-    """
+        print("   --->  test_Theme_with_attributs of ThemeTestCase: OK!")
 
     def test_Theme_with_parent(self):
+        """Test attributs when a theme have many attributs."""
         theme1 = Theme.objects.get(title="Theme1")
         theme2 = Theme.objects.get(title="Theme2")
         self.assertEqual(theme2.parentId, theme1)
         self.assertIn(theme2, theme1.children.all())
-        print("   --->  test_Theme_with_parent of ThemeTestCase : OK !")
-
-    """
-        test delete object
-    """
+        print("   --->  test_Theme_with_parent of ThemeTestCase: OK!")
 
     def test_delete_object(self):
+        """Test delete object."""
         Theme.objects.get(id=1).delete()
         self.assertEqual(Theme.objects.all().count(), 0)
-        print("   --->  test_delete_object of ThemeTestCase : OK !")
-
-
-"""
-    test the type
-"""
+        print("   --->  test_delete_object of ThemeTestCase: OK!")
 
 
 class TypeTestCase(TestCase):
+    """Test the video type."""
+
     # fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        """Create types to be tested."""
         Type.objects.create(title="Type1")
 
-        print(" --->  SetUp of TypeTestCase : OK !")
-
-    """
-        test all attributs when a type have been save with the minimum
-        of attributs
-    """
+        print(" --->  SetUp of TypeTestCase: OK!")
 
     def test_Type_null_attribut(self):
+        """
+        Test all attributs.
+
+        when a type have been save with the minimum of attributs.
+        """
         type1 = Type.objects.annotate(video_count=Count("video", distinct=True)).get(
             title="Type1"
         )
@@ -220,49 +200,41 @@ class TypeTestCase(TestCase):
         self.assertEqual(type1.__str__(), "Type1")
         self.assertEqual(type1.video_count, 0)
         self.assertEqual(type1.description, _("-- sorry, no translation provided --"))
-        print("   --->  test_Type_null_attribut of TypeTestCase : OK !")
-
-    """
-        test attributs when a type have many attributs
-    """
+        print("   --->  test_Type_null_attribut of TypeTestCase: OK!")
 
     def test_Type_with_attributs(self):
+        """Test attributs when a type have many attributs."""
         type1 = Type.objects.get(title="Type1")
         type1.description = "blabla"
         self.assertEqual(type1.description, "blabla")
-        print("   --->  test_Type_with_attributs of TypeTestCase : OK !")
-
-    """
-        test delete object
-    """
+        print("   --->  test_Type_with_attributs of TypeTestCase: OK!")
 
     def test_delete_object(self):
+        """Test delete object."""
         Type.objects.get(id=1).delete()
         self.assertEquals(Type.objects.all().count(), 0)
-        print("   --->  test_delete_object of TypeTestCase : OK !")
-
-
-"""
-    test the discipline
-"""
+        print("   --->  test_delete_object of TypeTestCase: OK!")
 
 
 class DisciplineTestCase(TestCase):
+    """Test the discipline."""
+
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
+        """Create disciplines to be tested."""
         Discipline.objects.create(title="Discipline1")
 
-        print(" --->  SetUp of DisciplineTestCase : OK !")
-
-    """
-        test all attributs when a type have been save with the minimum
-        of attributs
-    """
+        print(" --->  SetUp of DisciplineTestCase: OK!")
 
     def test_Discipline_null_attribut(self):
+        """
+        Test all attributs.
+
+        when a type has been save with the minimum of attributs.
+        """
         discipline1 = Discipline.objects.annotate(
             video_count=Count("video", distinct=True)
         ).get(title="Discipline1")
@@ -274,41 +246,34 @@ class DisciplineTestCase(TestCase):
         self.assertEqual(
             discipline1.description, _("-- sorry, no translation provided --")
         )
-        print("   --->  test_Type_null_attribut of TypeTestCase : OK !")
-
-    """
-        test attributs when a type have many attributs
-    """
+        print("   --->  test_Type_null_attribut of TypeTestCase: OK!")
 
     def test_Discipline_with_attributs(self):
+        """Test attributs when a type has many attributs."""
         discipline1 = Discipline.objects.get(title="Discipline1")
         discipline1.description = "blabla"
         self.assertEqual(discipline1.description, "blabla")
-        print("   --->  test_Discipline_with_attributs of TypeTestCase : OK !")
-
-    """
-        test delete object
-    """
+        print("   --->  test_Discipline_with_attributs of TypeTestCase: OK!")
 
     def test_delete_object(self):
+        """Test delete object."""
         Discipline.objects.get(id=1).delete()
         self.assertEqual(Discipline.objects.all().count(), 0)
-        print("   --->  test_delete_object of TypeTestCase : OK !")
-
-
-"""
-    test the Video and ViewCount
-"""
+        print("   --->  test_delete_object of TypeTestCase: OK!")
 
 
 class VideoTestCase(TestCase):
+    """Test the Video and ViewCount."""
+
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
+        """Create videos to be tested."""
         user = User.objects.create(username="pod", password="pod1234pod")
 
+        # Video 1 with minimum attributes
         Video.objects.create(
             title="Video1",
             owner=user,
@@ -319,7 +284,7 @@ class VideoTestCase(TestCase):
         filename = "test.mp4"
         fname, dot, extension = filename.rpartition(".")
 
-        if FILEPICKER:
+        if __FILEPICKER__:
             homedir, created = UserFolder.objects.get_or_create(name="Home", owner=user)
             thumbnail = CustomImageModel.objects.create(
                 folder=homedir, created_by=user, file="blabla.jpg"
@@ -327,6 +292,7 @@ class VideoTestCase(TestCase):
         else:
             thumbnail = CustomImageModel.objects.create(file="blabla.jpg")
 
+        # Video 1 with full attributes
         video2 = Video.objects.create(
             type=type,
             title="Video2",
@@ -350,23 +316,22 @@ class VideoTestCase(TestCase):
         ViewCount.objects.create(video=video2, date=datetime.today(), count=1)
         tomorrow = datetime.today() + timedelta(days=1)
         ViewCount.objects.create(video=video2, date=tomorrow, count=2)
-        print(" --->  SetUp of VideoTestCase : OK !")
+        print(" --->  SetUp of VideoTestCase: OK!")
 
     def test_last_Video_display(self):
-
         filter_en = Video.objects.filter(encoding_in_progress=False, is_draft=False)
         filter_pass = filter_en.filter(
             Q(password="") | Q(password=None), is_restricted=False
         )
-        self.assertEqual(bool(filter_pass.filter(password="toto")), False)
-        self.assertEqual(bool(filter_pass.filter(password="")), False)
-        self.assertEqual(bool(filter_pass.filter(password__isnull=True)), True)
+        self.assertFalse(bool(filter_pass.filter(password="toto")))
+        self.assertFalse(bool(filter_pass.filter(password="")))
+        self.assertTrue(bool(filter_pass.filter(password__isnull=True)))
         print("--->  test_last_Video_display of VideoTestCase: OK")
 
     def test_Video_null_attributs(self):
         video = Video.objects.get(id=1)
         self.assertEqual(video.video.name, "test.mp4")
-        self.assertEqual(video.allow_downloading, False)
+        self.assertFalse(video.allow_downloading)
         self.assertEqual(video.description, "")
         self.assertEqual(video.slug, "%04d-%s" % (video.id, slugify(video.title)))
         date = datetime.today()
@@ -377,7 +342,7 @@ class VideoTestCase(TestCase):
         # self.assertEqual(video.date_evt, video.date_added)
         self.assertEqual(video.get_viewcount(), 0)
 
-        self.assertEqual(video.is_draft, True)
+        self.assertTrue(video.is_draft)
 
         if isinstance(video.thumbnail, ImageFieldFile):
             self.assertEqual(video.thumbnail.name, "")
@@ -386,40 +351,42 @@ class VideoTestCase(TestCase):
         # self.assertEqual(pod.get_absolute_url(), "/video/" + pod.slug + "/")
         self.assertEqual(video.__str__(), "%s - %s" % ("%04d" % video.id, video.title))
 
-        print("   --->  test_Video_null_attributs of VideoTestCase : OK !")
+        print("   --->  test_Video_null_attributs of VideoTestCase: OK!")
 
     def test_Video_many_attributs(self):
         video2 = Video.objects.get(id=2)
         self.assertEqual(video2.video.name, get_storage_path_video(video2, "test.mp4"))
-        self.assertEqual(video2.allow_downloading, True)
+        self.assertTrue(video2.allow_downloading)
         self.assertEqual(video2.description, "fl")
         self.assertEqual(video2.get_viewcount(), 3)
         self.assertEqual(
             ViewCount.objects.get(video=video2, date=datetime.today()).count, 1
         )
-        self.assertEqual(video2.allow_downloading, True)
-        self.assertEqual(video2.is_draft, False)
+        self.assertTrue(video2.allow_downloading)
+        self.assertFalse(video2.is_draft)
         self.assertEqual(video2.duration, 3)
         self.assertEqual(video2.video.__str__(), video2.video.name)
 
-        print("   --->  test_Video_many_attributs of VideoTestCase : OK !")
+        print("   --->  test_Video_many_attributs of VideoTestCase: OK!")
 
     def test_delete_object(self):
-        Video.objects.get(id=1).delete()
-        Video.objects.get(id=2).delete()
+        """Test deleting videos objects."""
+        for vid_id in [1, 2]:
+            vid_object = Video.objects.get(id=vid_id)
+            vid_object.delete()
+
+        # Check that all videos are properly deleted.
         self.assertEqual(Video.objects.all().count(), 0)
 
-        # check delete view count cascade
+        # Check delete view count cascade
         self.assertEqual(ViewCount.objects.all().count(), 0)
-        print("   --->  test_delete_object of Video : OK !")
 
-
-"""
-    test the Video Rendition
-"""
+        print("   --->  test_delete_object of Video: OK!")
 
 
 class VideoRenditionTestCase(TestCase):
+    """Test the Video Rendition."""
+
     # fixtures = ['initial_data.json', ]
 
     def create_video_rendition(
@@ -431,7 +398,7 @@ class VideoRenditionTestCase(TestCase):
         audio_bitrate="300k",
         encode_mp4=False,
     ):
-        # print("create_video_rendition : %s" % resolution)
+        # print("create_video_rendition: %s" % resolution)
         return VideoRendition.objects.create(
             resolution=resolution,
             minrate=minrate,
@@ -451,7 +418,7 @@ class VideoRenditionTestCase(TestCase):
         vr.clean()
         print(
             " --->  test_VideoRendition_creation_by_default of \
-            VideoRenditionTestCase : OK !"
+            VideoRenditionTestCase: OK!"
         )
 
     def test_VideoRendition_creation_with_values(self):
@@ -502,7 +469,7 @@ class VideoRenditionTestCase(TestCase):
         self.assertRaises(ValidationError, vr.clean)
         print(
             " --->  test_VideoRendition_creation_with_values of \
-            VideoRenditionTestCase : OK !"
+            VideoRenditionTestCase: OK!"
         )
 
     def test_delete_object(self):
@@ -510,15 +477,12 @@ class VideoRenditionTestCase(TestCase):
         VideoRendition.objects.get(id=1).delete()
         self.assertEqual(VideoRendition.objects.all().count(), 0)
 
-        print("   --->  test_delete_object of VideoRenditionTestCase : OK !")
-
-
-"""
-    test the Video Encoding model
-"""
+        print("   --->  test_delete_object of VideoRenditionTestCase: OK!")
 
 
 class EncodingVideoTestCase(TestCase):
+    """Test the Video Encoding model."""
+
     # fixtures = ['initial_data.json', ]
 
     def setUp(self):
@@ -536,7 +500,7 @@ class EncodingVideoTestCase(TestCase):
             audio_bitrate="300k",
             encode_mp4=False,
         )
-        print(" --->  SetUp of EncodingVideoTestCase : OK !")
+        print(" --->  SetUp of EncodingVideoTestCase: OK!")
 
     def test_EncodingVideo_null_attributs(self):
         ev = EncodingVideo.objects.create(
@@ -554,7 +518,7 @@ class EncodingVideoTestCase(TestCase):
         self.assertEqual(ev.encoding_format, "video/mp4")
         self.assertEqual(ev.owner, Video.objects.get(id=1).owner)
         ev.clean()
-        print(" --->  SetUp of test_EncodingVideo_null_attributs : OK !")
+        print(" --->  SetUp of test_EncodingVideo_null_attributs: OK!")
 
     def test_EncodingVideo_with_attributs(self):
         ev = EncodingVideo.objects.create(
@@ -574,7 +538,7 @@ class EncodingVideoTestCase(TestCase):
         self.assertEqual(ev.encoding_format, "audio/mp3")
         self.assertEqual(ev.owner, Video.objects.get(id=1).owner)
         ev.clean()
-        print(" --->  SetUp of test_EncodingVideo_with_attributs : OK !")
+        print(" --->  SetUp of test_EncodingVideo_with_attributs: OK!")
 
     def test_EncodingVideo_with_false_attributs(self):
         ev = EncodingVideo.objects.create(
@@ -586,7 +550,7 @@ class EncodingVideoTestCase(TestCase):
         self.assertTrue(isinstance(ev, EncodingVideo))
         self.assertEqual(ev.name, "error")
         self.assertRaises(ValidationError, ev.clean)
-        print(" --->  SetUp of test_EncodingVideo_with_false_attributs : OK !")
+        print(" --->  SetUp of test_EncodingVideo_with_false_attributs: OK!")
 
     def test_delete_object(self):
         EncodingVideo.objects.create(
@@ -596,15 +560,12 @@ class EncodingVideoTestCase(TestCase):
         EncodingVideo.objects.get(id=1).delete()
         self.assertEqual(EncodingVideo.objects.all().count(), 0)
 
-        print("   --->  test_delete_object of EncodingVideoTestCase : OK !")
-
-
-"""
-    test the Audio Encoding model
-"""
+        print("   --->  test_delete_object of EncodingVideoTestCase: OK!")
 
 
 class EncodingAudioTestCase(TestCase):
+    """Test the Audio Encoding model."""
+
     # fixtures = ['initial_data.json', ]
 
     def setUp(self):
@@ -616,7 +577,7 @@ class EncodingAudioTestCase(TestCase):
             video="test.mp4",
             type=Type.objects.get(id=1),
         )
-        print(" --->  SetUp of EncodingAudioTestCase : OK !")
+        print(" --->  SetUp of EncodingAudioTestCase: OK!")
 
     def test_EncodingVideo_null_attributs(self):
         ea = EncodingAudio.objects.create(video=Video.objects.get(id=1))
@@ -631,7 +592,7 @@ class EncodingAudioTestCase(TestCase):
         self.assertEqual(ea.encoding_format, "audio/mp3")
         self.assertEqual(ea.owner, Video.objects.get(id=1).owner)
         ea.clean()
-        print(" --->  test_EncodingVideo_null_attributs : OK !")
+        print(" --->  test_EncodingVideo_null_attributs: OK!")
 
     def test_EncodingAudio_with_attributs(self):
         ea = EncodingAudio.objects.create(
@@ -650,7 +611,7 @@ class EncodingAudioTestCase(TestCase):
         self.assertEqual(ea.encoding_format, "video/mp4")
         self.assertEqual(ea.owner, Video.objects.get(id=1).owner)
         ea.clean()
-        print(" --->  test_EncodingAudio_with_attributs : OK !")
+        print(" --->  test_EncodingAudio_with_attributs: OK!")
 
     def test_EncodingAudio_with_false_attributs(self):
         ea = EncodingAudio.objects.create(
@@ -659,22 +620,19 @@ class EncodingAudioTestCase(TestCase):
         self.assertTrue(isinstance(ea, EncodingAudio))
         self.assertEqual(ea.name, "error")
         self.assertRaises(ValidationError, ea.clean)
-        print(" --->  test_EncodingAudio_with_false_attributs : OK !")
+        print(" --->  test_EncodingAudio_with_false_attributs: OK!")
 
     def test_delete_object(self):
         EncodingAudio.objects.create(video=Video.objects.get(id=1))
         EncodingAudio.objects.get(id=1).delete()
         self.assertEqual(EncodingAudio.objects.all().count(), 0)
 
-        print("   --->  test_delete_object of EncodingAudioTestCase : OK !")
-
-
-"""
-    test the PlaylistVideo model
-"""
+        print("   --->  test_delete_object of EncodingAudioTestCase: OK!")
 
 
 class PlaylistVideoTestCase(TestCase):
+    """Test the PlaylistVideo model."""
+
     fixtures = [
         "initial_data.json",
     ]
@@ -687,7 +645,7 @@ class PlaylistVideoTestCase(TestCase):
             video="test.mp4",
             type=Type.objects.get(id=1),
         )
-        print(" --->  SetUp of PlaylistVideoTestCase : OK !")
+        print(" --->  SetUp of PlaylistVideoTestCase: OK!")
 
     def test_PlaylistVideo_null_attributs(self):
         pv = PlaylistVideo.objects.create(video=Video.objects.get(id=1))
@@ -702,7 +660,7 @@ class PlaylistVideoTestCase(TestCase):
         self.assertEqual(pv.encoding_format, "application/x-mpegURL")
         self.assertEqual(pv.owner, Video.objects.get(id=1).owner)
         pv.clean()
-        print(" --->  test_PlaylistVideo_null_attributs : OK !")
+        print(" --->  test_PlaylistVideo_null_attributs: OK!")
 
     def test_PlaylistVideo_with_attributs(self):
         pv = PlaylistVideo.objects.create(
@@ -721,7 +679,7 @@ class PlaylistVideoTestCase(TestCase):
         self.assertEqual(pv.encoding_format, "video/mp4")
         self.assertEqual(pv.owner, Video.objects.get(id=1).owner)
         pv.clean()
-        print(" --->  test_PlaylistVideo_with_attributs : OK !")
+        print(" --->  test_PlaylistVideo_with_attributs: OK!")
 
     def test_PlaylistVideo_with_false_attributs(self):
         pv = PlaylistVideo.objects.create(
@@ -730,22 +688,19 @@ class PlaylistVideoTestCase(TestCase):
         self.assertTrue(isinstance(pv, PlaylistVideo))
         self.assertEqual(pv.name, "error")
         self.assertRaises(ValidationError, pv.clean)
-        print(" --->  test_PlaylistVideo_with_false_attributs : OK !")
+        print(" --->  test_PlaylistVideo_with_false_attributs: OK!")
 
     def test_delete_object(self):
         PlaylistVideo.objects.create(video=Video.objects.get(id=1))
         PlaylistVideo.objects.get(id=1).delete()
         self.assertEqual(PlaylistVideo.objects.all().count(), 0)
 
-        print("   --->  test_delete_object of PlaylistVideoTestCase : OK !")
-
-
-"""
-    test the EncodingLog model
-"""
+        print("   --->  test_delete_object of PlaylistVideoTestCase: OK!")
 
 
 class EncodingLogTestCase(TestCase):
+    """Test the EncodingLog model."""
+
     fixtures = [
         "initial_data.json",
     ]
@@ -758,7 +713,7 @@ class EncodingLogTestCase(TestCase):
             video="test.mp4",
             type=Type.objects.get(id=1),
         )
-        print(" --->  SetUp of EncodingLogTestCase : OK !")
+        print(" --->  SetUp of EncodingLogTestCase: OK!")
 
     def test_EncodingLogTestCase_null_attributs(self):
         el = EncodingLog.objects.create(video=Video.objects.get(id=1))
@@ -766,7 +721,7 @@ class EncodingLogTestCase(TestCase):
         elslug = "Log for encoding video %s" % (el.video.id)
         self.assertEqual(el.__str__(), elslug)
         self.assertEqual(el.log, None)
-        print(" --->  test_EncodingLogTestCase_null_attributs : OK !")
+        print(" --->  test_EncodingLogTestCase_null_attributs: OK!")
 
     def test_EncodingLogTestCase_with_attributs(self):
         el = EncodingLog.objects.create(video=Video.objects.get(id=1), log="encoding log")
@@ -774,22 +729,19 @@ class EncodingLogTestCase(TestCase):
         elslug = "Log for encoding video %s" % (el.video.id)
         self.assertEqual(el.__str__(), elslug)
         self.assertEqual(el.log, "encoding log")
-        print(" --->  test_EncodingLogTestCase_with_attributs : OK !")
+        print(" --->  test_EncodingLogTestCase_with_attributs: OK!")
 
     def test_delete_object(self):
         EncodingLog.objects.create(video=Video.objects.get(id=1))
         EncodingLog.objects.get(id=1).delete()
         self.assertEqual(EncodingLog.objects.all().count(), 0)
 
-        print("   --->  test_delete_object of EncodingLogTestCase : OK !")
-
-
-"""
-    test the EncodingStep model
-"""
+        print("   --->  test_delete_object of EncodingLogTestCase: OK!")
 
 
 class EncodingStepTestCase(TestCase):
+    """Test the EncodingStep model."""
+
     fixtures = [
         "initial_data.json",
     ]
@@ -802,7 +754,7 @@ class EncodingStepTestCase(TestCase):
             video="test.mp4",
             type=Type.objects.get(id=1),
         )
-        print(" --->  SetUp of EncodingLogTestCase : OK !")
+        print(" --->  SetUp of EncodingLogTestCase: OK!")
 
     def test_EncodingStepTestCase_null_attributs(self):
         es = EncodingStep.objects.create(video=Video.objects.get(id=1))
@@ -811,7 +763,7 @@ class EncodingStepTestCase(TestCase):
         self.assertEqual(es.__str__(), esslug)
         self.assertEqual(es.num_step, 0)
         self.assertEqual(es.desc_step, None)
-        print(" --->  test_EncodingStepTestCase_null_attributs : OK !")
+        print(" --->  test_EncodingStepTestCase_null_attributs: OK!")
 
     def test_EncodingStepTestCase_with_attributs(self):
         es = EncodingStep.objects.create(
@@ -824,14 +776,14 @@ class EncodingStepTestCase(TestCase):
         self.assertEqual(es.__str__(), esslug)
         self.assertEqual(es.num_step, 1)
         self.assertEqual(es.desc_step, "encoding step")
-        print(" --->  test_EncodingStepTestCase_with_attributs : OK !")
+        print(" --->  test_EncodingStepTestCase_with_attributs: OK!")
 
     def test_delete_object(self):
         EncodingStep.objects.create(video=Video.objects.get(id=1))
         EncodingStep.objects.get(id=1).delete()
         self.assertEqual(EncodingStep.objects.all().count(), 0)
 
-        print("   --->  test_delete_object of EncodingStepTestCase : OK !")
+        print("   --->  test_delete_object of EncodingStepTestCase: OK!")
 
 
 class NotesTestCase(TestCase):
@@ -847,7 +799,7 @@ class NotesTestCase(TestCase):
             video="test.mp4",
             type=Type.objects.get(id=1),
         )
-        print(" --->  SetUp of EncodingLogTestCase : OK !")
+        print(" --->  SetUp of EncodingLogTestCase: OK!")
 
     def test_NotesTestCase_null_attributs(self):
         note = Notes.objects.create(
@@ -867,7 +819,7 @@ class NotesTestCase(TestCase):
         self.assertEqual(advnote.note, None)
         self.assertEqual(advnote.timestamp, None)
         self.assertEqual(advnote.status, "0")
-        print(" --->  test_NotesTestCase_null_attributs : OK !")
+        print(" --->  test_NotesTestCase_null_attributs: OK!")
 
     def test_NotesTestCase_with_attributs(self):
         note = Notes.objects.create(
@@ -893,7 +845,7 @@ class NotesTestCase(TestCase):
         self.assertEqual(advnote.note, "coucou")
         self.assertEqual(advnote.timestamp, 0)
         self.assertEqual(advnote.status, "1")
-        print(" --->  test_NotesTestCase_with_attributs : OK !")
+        print(" --->  test_NotesTestCase_with_attributs: OK!")
 
     def test_delete_object(self):
         Notes.objects.create(
@@ -907,4 +859,4 @@ class NotesTestCase(TestCase):
         self.assertEqual(Notes.objects.all().count(), 0)
         self.assertEqual(AdvancedNotes.objects.all().count(), 0)
 
-        print("   --->  test_delete_object of NotesTestCase : OK !")
+        print("   --->  test_delete_object of NotesTestCase: OK!")

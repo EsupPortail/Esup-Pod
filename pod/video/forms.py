@@ -617,6 +617,7 @@ class VideoForm(forms.ModelForm):
         return video
 
     def clean_date_delete(self):
+        """Validate 'date_delete' field."""
         mddd = MAX_DURATION_DATE_DELETE
         in_dt = relativedelta(self.cleaned_data["date_delete"], __TODAY__)
         if (
@@ -625,7 +626,10 @@ class VideoForm(forms.ModelForm):
             or (in_dt.years == mddd and in_dt.months == 0 and in_dt.days > 0)
         ):
             raise ValidationError(
-                _("The date must be before or equal to " + __MAX_D__.strftime("%d-%m-%Y"))
+                _(
+                    "The date must be before or equal to %(date)s."
+                    % {"date": __MAX_D__.strftime("%d-%m-%Y")}
+                )
             )
         return self.cleaned_data["date_delete"]
 
@@ -722,7 +726,6 @@ class VideoForm(forms.ModelForm):
             )
 
     def custom_video_form(self):
-
         if not ACTIVE_VIDEO_COMMENT:
             self.remove_field("disable_comment")
 
@@ -773,7 +776,6 @@ class VideoForm(forms.ModelForm):
             del self.fields[field]
 
     def set_queryset(self):
-
         if self.current_user is not None:
             users_groups = self.current_user.owner.accessgroup_set.all()
             user_channels = (
@@ -930,7 +932,6 @@ class ThemeForm(forms.ModelForm):
 
 class FrontThemeForm(ThemeForm):
     def __init__(self, *args, **kwargs):
-
         self.THEME_FORM_FIELDS_HELP_TEXT = THEME_FORM_FIELDS_HELP_TEXT
 
         super(FrontThemeForm, self).__init__(*args, **kwargs)

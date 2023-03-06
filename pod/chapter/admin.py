@@ -33,6 +33,5 @@ admin.site.register(Chapter, ChapterAdmin)
 
 
 class ChapterInline(admin.TabularInline):
-
     model = Chapter
     extra = 0

@@ -15,7 +15,7 @@ from django.utils import timezone
 from datetime import datetime
 from django.contrib import admin
 
-
+USE_LIVE_TRANSCRIPTION = getattr(settings, "USE_LIVE_TRANSCRIPTION", False)
 __FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
@@ -250,6 +250,7 @@ class EventForm(forms.ModelForm):
                     "iframe_height",
                     "aside_iframe_url",
                     "thumbnail",
+                    "enable_transcription",
                 ],
             },
         ),
@@ -376,6 +377,7 @@ class EventForm(forms.ModelForm):
             self.remove_field("broadcaster")
             self.remove_field("owner")
             self.remove_field("thumbnail")
+            self.remove_field("enable_transcription")
 
     def remove_field(self, field):
         if self.fields.get(field):
@@ -421,6 +423,8 @@ class EventForm(forms.ModelForm):
         if __FILEPICKER__:
             fields.append("thumbnail")
             widgets["thumbnail"] = CustomFileWidget(type="image")
+        if USE_LIVE_TRANSCRIPTION:
+            fields.append("enable_transcription")
 
 
 class EventDeleteForm(forms.Form):

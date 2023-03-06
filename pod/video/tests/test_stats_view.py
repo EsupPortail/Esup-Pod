@@ -90,7 +90,6 @@ class TestStatsView(TestCase):
         self.superuser.owner.sites.add(Site.objects.get_current())
         self.superuser.owner.save()
         try:
-
             self.stat_video_url = (
                 reverse("video:video_stats_view", kwargs={"slug": self.video.slug})
                 + "?from=video"

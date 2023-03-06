@@ -6,9 +6,16 @@
 
 start:
 	# Démarre le serveur de test
-	(sleep 15 ; open http://localhost:8080) &
-	python3 manage.py runserver localhost:8080 --insecure
+	(sleep 15 ; open http://localhost:9090) &
+	python3 manage.py runserver localhost:9090 --insecure
 	# --insecure let serve static files even when DEBUG=False
+
+starts:
+	# Démarre le serveur de test en https auto-signé
+	# nécessite les django-extensions
+	# cf https://timonweb.com/django/https-django-development-server-ssl-certificate/
+	(sleep 15 ; open https://localhost:8000) &
+	coverage run --source='.' manage.py runserver_plus --cert-file cert.pem --key-file key.pem
 
 install:
 	# Première installation de pod (BDD SQLite intégrée)
@@ -37,7 +44,7 @@ createDB:
 lang:
 	# Mise à jour des fichiers de langue
 	echo "Processing python files..."
-	python3 manage.py makemessages --all -i "opencast-studio/*"
+	python3 manage.py makemessages --all -i "opencast-studio/*" -i "pod/custom/settings_local.py"
 	echo "Processing javascript files..."
 	django-admin makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/node_modules/*"
 
@@ -63,3 +70,70 @@ statics:
 	# Collects all static files inside all apps and put a copy inside the static directory declared in settings.py
 	# --clear Clear the existing files before trying to copy or link the original file.
 	python3 manage.py collectstatic --clear
+
+createconfigs:
+	python3 manage.py createconfiguration fr
+	python3 manage.py createconfiguration en
+
+# -- Docker
+# Use for docker run and docker exec commands
+-include .env.dev
+export
+COMPOSE = docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod
+DOCKER_LOGS = docker logs -f
+
+#docker-start-build:
+#	# Démarre le serveur de test en recompilant les conteuneurs de la stack
+#	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
+#	@$(COMPOSE) up --build
+#	# Vous devriez obtenir ce message une fois esup-pod lancé
+#	# $ pod-dev-with-volumes        | Superuser created successfully.
+
+docker-logs: ## display app logs (follow mode)
+	@$(DOCKER_LOGS) pod-dev-with-volumes
+
+echo-env:
+	@echo ELASTICSEARCH_TAG=$(ELASTICSEARCH_TAG)
+	@echo PYTHON_TAG=$(PYTHON_TAG)
+
+docker-build:
+	# Démarre le serveur de test en recompilant les conteuneurs de la stack
+	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
+	# N'oubliez pas de supprimer :
+	# sudo rm -rf ./pod/log
+	sudo rm -rf ./pod/log
+	# sudo rm -rf ./pod/static
+	sudo rm -rf ./pod/static
+	# sudo rm -rf ./pod/node_modules
+	sudo rm -rf ./pod/node_modules
+	@$(COMPOSE) build --build-arg ELASTICSEARCH_VERSION=$(ELASTICSEARCH_TAG) --build-arg NODE_VERSION=$(NODE_TAG) --build-arg PYTHON_VERSION=$(PYTHON_TAG) --no-cache
+	@$(COMPOSE) up
+	# Vous devriez obtenir ce message une fois esup-pod lancé
+	# $ pod-dev-with-volumes        | Superuser created successfully.
+
+docker-start:
+	# Démarre le serveur de test en recompilant les conteuneurs de la stack
+	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
+	@$(COMPOSE) up
+	# Vous devriez obtenir ce message une fois esup-pod lancé
+	# $ pod-dev-with-volumes        | Superuser created successfully.
+
+docker-stop:
+	# Arrête le serveur de test
+	@$(COMPOSE) down -v
+
+docker-reset:
+	# Arrête le serveur de test
+	@$(COMPOSE) down -v
+	# sudo rm -rf ./pod/log
+	sudo rm -rf ./pod/log
+	# sudo rm -rf ./pod/static
+	sudo rm -rf ./pod/static
+	# sudo rm -rf ./pod/node_modules
+	sudo rm -rf ./pod/node_modules
+	# sudo rm -rf ./pod/db_migrations
+	sudo rm -rf ./pod/db_migrations
+	# sudo rm -rf ./pod/db.sqlite3"
+	sudo rm -rf ./pod/db.sqlite3
+	# sudo rm -rf ./pod/media"
+	sudo rm -rf ./pod/media

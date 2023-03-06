@@ -1,3 +1,4 @@
+"""start or stop broadcaster recording based on live events."""
 import json
 from datetime import datetime
 from django.utils import timezone
@@ -18,7 +19,7 @@ TIME_ZONE = getattr(settings, "TIME_ZONE", "Europe/Paris")
 
 
 class Command(BaseCommand):
-    help = "start or stop broadcaster recording based on live events "
+    help = "start or stop broadcaster recording based on live events"
 
     debug_mode = DEBUG
 
@@ -31,6 +32,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        """Handle the checkLiveStartStop command call."""
         if options["force"]:
             self.debug_mode = False
 
@@ -71,7 +73,6 @@ class Command(BaseCommand):
                 self.stderr.write(" ... fail to stop recording")
 
     def start_new(self):
-
         self.stdout.write("-- Starting new events :")
 
         events = Event.objects.filter(
@@ -81,7 +82,6 @@ class Command(BaseCommand):
         )
 
         for event in events:
-
             if is_recording(event.broadcaster):
                 self.stdout.write(
                     f"Broadcaster {event.broadcaster.name} is already recording"

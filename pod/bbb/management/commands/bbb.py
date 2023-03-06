@@ -674,7 +674,6 @@ class Command(BaseCommand):
         # Activate a fixed locale fr
         translation.activate(LANGUAGE_CODE)
         if options["task"] and options["task"] in self.valid_args:
-
             html_message_error = ""
             message_error = ""
             # Connect to BBB / Scalelite server to get infos

@@ -2,7 +2,6 @@
 import base64
 import hashlib
 import io
-
 import qrcode
 
 from ckeditor.fields import RichTextField
@@ -24,7 +23,9 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from sorl.thumbnail import get_thumbnail
-
+from pod.main.lang_settings import ALL_LANG_CHOICES as __ALL_LANG_CHOICES__
+from pod.main.lang_settings import PREF_LANG_CHOICES as __PREF_LANG_CHOICES__
+from django.utils.translation import get_language
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 from pod.video.models import Video, Type
@@ -45,6 +46,16 @@ AFFILIATION_EVENT = getattr(
     settings, "AFFILIATION_EVENT", ("faculty", "employee", "staff")
 )
 SECRET_KEY = getattr(settings, "SECRET_KEY", "")
+
+LANG_CHOICES = getattr(
+    settings,
+    "LANG_CHOICES",
+    ((" ", __PREF_LANG_CHOICES__), ("----------", __ALL_LANG_CHOICES__)),
+)
+MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
+LIVE_TRANSCRIPTIONS_FOLDER = getattr(
+    settings, "LIVE_TRANSCRIPTIONS_FOLDER", "live_transcripts"
+)
 
 
 class Building(models.Model):
@@ -194,6 +205,19 @@ class Broadcaster(models.Model):
         verbose_name=_("Piloting configuration parameters"),
         help_text=_("Add piloting configuration parameters in Json format."),
     )
+    main_lang = models.CharField(
+        _("Main language"),
+        max_length=2,
+        choices=LANG_CHOICES,
+        default=get_language(),
+        help_text=_("Select the main language used in the content."),
+    )
+    transcription_file = models.FileField(
+        upload_to="media/" + LIVE_TRANSCRIPTIONS_FOLDER,
+        max_length=255,
+        null=True,
+        editable=False,
+    )
 
     def get_absolute_url(self):
         return reverse("live:direct", args=[str(self.slug)])
@@ -265,7 +289,8 @@ class Broadcaster(models.Model):
         img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
         alt = _("QR code to record immediately an event")
         return mark_safe(
-            f'<img src="data:image/png;base64, {img_str}" width="300px" height="300px" alt={alt}>'
+            f"""<img src="data:image/png;base64, {img_str}"
+            width="300px" height="300px" alt={alt}>"""
         )
 
 
@@ -436,6 +461,11 @@ class Event(models.Model):
         Video,
         editable=False,
     )
+    enable_transcription = models.BooleanField(
+        verbose_name=_("Enable transcription"),
+        help_text=_("If this box is checked, the transcription will be enabled."),
+        default=False,
+    )
 
     class Meta:
         verbose_name = _("Event")
@@ -543,6 +573,20 @@ class Event(models.Model):
             return timezone.now() < self.start_date
         else:
             return False
+
+
+class LiveTranscriptRunningTask(models.Model):
+    task_id = models.CharField(max_length=255, unique=True)
+    broadcaster = models.ForeignKey(
+        Broadcaster,
+        verbose_name=_("Broadcaster"),
+        help_text=_("Broadcaster name."),
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        verbose_name = _("Running task")
+        verbose_name_plural = _("Running tasks")
 
 
 class HeartBeat(models.Model):
