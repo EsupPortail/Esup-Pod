@@ -2181,6 +2181,14 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
   >> Il faut ensuite y insérer le code javascript puis dans votre fichier settings_local.py, <br>
   >> de préciser dans la variable `TEMPLATE_VISIBLE_SETTINGS`: `'TRACKING_TEMPLATE': 'custom/tracking.html' <br>
 
+ - `USE_XAPI_VIDEO`
+
+  > valeur par défaut : `False`
+
+
+  >> Active l‘envoi d’instructions xAPI pour le lecteur vidéo. <br>
+  >> Attention, il faut mettre USE_XAPI à True pour que les instructions soient envoyées. <br>
+
  - `VIDEO_ALLOWED_EXTENSIONS`
 
   > valeur par défaut : `()`
@@ -2557,3 +2565,44 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
   >>
   >> `pip3 install elasticsearch==7.10.1`
   >> [https://elasticsearch-py.readthedocs.io/en/v7.10.1/]() 
+
+### Configuration application xapi
+
+Application pour l’envoi d‘instructions xAPI à un LRS.<br/>
+Aucune instruction ne persiste dans Pod, elles sont toutes envoyées au LRS paramétré.<br/>
+Attention, il faut configurer Celery pour l’envoi des instructions.<br/>
+
+ - `USE_XAPI`
+
+  > valeur par défaut : `False`
+
+
+  >> Activation de l'application xAPI <br>
+
+ - `XAPI_ANONYMIZE_ACTOR`
+
+  > valeur par défaut : `True`
+
+
+  >> Si False, le nom de l'utilisateur sera stocké en clair dans les statements xAPI, si True, son nom d'utilisateur sera anonymisé <br>
+
+ - `XAPI_LRS_LOGIN`
+
+  > valeur par défaut : ``
+
+
+  >> identifiant de connexion du LRS pour l'envoi des statements <br>
+
+ - `XAPI_LRS_PWD`
+
+  > valeur par défaut : ``
+
+
+  >> mot de passe de connexion du LRS pour l'envoi des statements <br>
+
+ - `XAPI_LRS_URL`
+
+  > valeur par défaut : ``
+
+
+  >> URL de destination pour l'envoi des statements. I.E. : https://ralph.univ.fr/xAPI/statements <br>

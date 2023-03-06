@@ -19,7 +19,6 @@ celery==5.2.7
 vine==5.0.0;
 pandas
 billiard<4.0,>=3.6.0
-webrtcvad
 django-shibboleth-remoteuser
 django-chunked-upload==2.0.0
 django-select2
@@ -33,3 +32,4 @@ mozilla_django_oidc==3.0.0
 ics==0.7.2
 django-honeypot==1.0.3
 qrcode
+ralph-malph==3.3.0

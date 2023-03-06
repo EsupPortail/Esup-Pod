@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load static %}
+{% load static custom_tags %}
 {% load tagging_tags %}
 {% load thumbnail %}
 {% load video_filters %}
@@ -213,5 +213,9 @@
       <script src="{% static 'dayjs/locale/nl.js' %}?ver={{VERSION}}"></script>
       <script type="module" defer src="{% static 'js/comment-script.js' %}?ver={{VERSION}}"></script>
     {% endif %}
+  {% endif %}
+  {% get_setting "USE_XAPI_VIDEO" False as USE_XAPI_VIDEO %}
+  {% if USE_XAPI_VIDEO %}
+    {% include 'xapi/xapi_video.html' %}
   {% endif %}
 {% endblock more_script %}
