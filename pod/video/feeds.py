@@ -159,7 +159,7 @@ class RssSiteVideosFeed(Feed):
                 Channel, slug=slug_c, site=get_current_site(request)
             )
             self.subtitle = "%s" % (channel.title)
-            self.title += " - %s" % (channel.title)
+            self.title = "%s - %s" % (__TITLE_SITE__, channel.title)
             if channel.headband:
                 self.image_url = "".join(
                     [prefix, get_current_site(request).domain, channel.headband.file.url]
