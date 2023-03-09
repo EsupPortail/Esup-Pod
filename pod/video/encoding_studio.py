@@ -162,7 +162,7 @@ def launch_encode_video_studio(input_video, subtime, subcmd, video_output):
     msg = ""
     partial_command = FFMPEG_STUDIO_COMMAND % {
         "nb_threads": FFMPEG_NB_THREADS,
-        "input": input,
+        "input": input_video,
         "subtime": subtime,
         "crf": FFMPEG_CRF,
     }
