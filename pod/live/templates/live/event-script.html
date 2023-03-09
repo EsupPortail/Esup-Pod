@@ -12,6 +12,7 @@
     let nbLoop = 0;
     // Live seems stopped
     let stopped = false;
+    let video_on_hold_is_displayed = false;
 
 
     let options = {
@@ -68,23 +69,7 @@
     }
 
     {% if event.video_on_hold.is_video and event.is_coming %}
-
-        // Management of the video on hold
-
-        // loop to repeat the video
-        options["loop"] = true;
-        let playerOnHold = videojs('podvideoonholdplayer', options, function () {
-        });
-
-        playerOnHold.videoJsLogo({
-            imgsrc: '{% static LOGO_PLAYER %}',
-            linktitle: '{{TITLE_ETB}} - {{TITLE_SITE}}',
-            link: '{{LINK_PLAYER}}'
-        });
-        let mp4_sources = {{event.video_on_hold.get_video_mp4_json|safe}};
-        playerOnHold.src(mp4_sources);
-
-        $("#divvideoonhold").css("display", "block");
+        showWaitingVideo(false);
 
     {% elif event.is_current %}
             // Management of the streaming live
@@ -110,7 +95,13 @@
                             type: player.currentType(),
                             overrideNative: true
                         });
-                    }, 10000)
+                     }, 10000)
+
+                    {# chargement de la vidéo d'attente si le stream n'a pas commencé #}
+                    {% if event.video_on_hold.is_video %}
+                        modal.close();
+                        showWaitingVideo(true);
+                    {% endif %}
                 }
             })
 
@@ -121,6 +112,7 @@
                 }
                 // Display the streaming live
                 started = true;
+                video_on_hold_is_displayed = false;
                 $("#divvideoonhold").css("display", "none");
                 $("#divvideoplayer").css("display", "block");
 
@@ -129,7 +121,6 @@
                 {% endif %}
             })
     {% endif %}
-
 
 
     // Recording actions on the stream
@@ -326,6 +317,33 @@
                 console.error('Error calling info record : ' + err.error)
             },
         })
+    }
+
+    function showWaitingVideo(withModal){
+        if (video_on_hold_is_displayed) {
+            return;
+        }
+
+        options["loop"] = true;
+        let playerOnHold = videojs('podvideoonholdplayer', options, function () {
+         });
+
+        if (withModal)
+            playerOnHold.createModal('{% trans "Live not found, retry in 10 seconds" %}');
+
+        playerOnHold.videoJsLogo({
+            imgsrc: '{% static LOGO_PLAYER %}',
+            linktitle: '{{TITLE_ETB}} - {{TITLE_SITE}}',
+            link: '{{LINK_PLAYER}}'
+        });
+
+        let mp4_sources = {{event.video_on_hold.get_video_mp4_json|safe|default:'null'}};
+        playerOnHold.src(mp4_sources);
+
+        $("#divvideoonhold").css("display", "block");
+        $("#divvideoplayer").css("display", "none");
+
+        video_on_hold_is_displayed = true;
     }
 
     // if event has started or ended while viewing, the page is reloaded

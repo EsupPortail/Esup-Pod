@@ -42,7 +42,10 @@ document.addEventListener("DOMContentLoaded", function () {
           else return Promise.reject(response);
         })
         .then((result) => {
-          document.getElementById("viewcount").innerHTML = result.viewers;
+          let viewers_number = document.getElementById("viewcount");
+          if (viewers_number !== null) {
+            viewers_number.innerHTML = result.viewers;
+          }
           let viewers_list = document.getElementById("viewers-ul");
           if (viewers_list !== null) {
             let names = "";
