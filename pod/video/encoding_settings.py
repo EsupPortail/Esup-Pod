@@ -15,11 +15,10 @@ FFPROBE_GET_INFO = (
 FFMPEG_INPUT = '-hide_banner -threads %(nb_threads)s -i "%(input)s" '
 
 FFMPEG_STUDIO_COMMAND = (
-    ' -hide_banner -threads %(nb_threads)s -i "%(input)s" %(subtime)s'
-    + " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf %(crf)s "
-    + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" '
-    + "-max_muxing_queue_size 4000 "
-    + "-deinterlace ",
+    " -hide_banner -threads %(nb_threads)s %(input)s %(subtime)s"
+    + " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p"
+    + " -crf %(crf)s -sc_threshold 0 -force_key_frames"
+    + ' "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 -deinterlace '
 )
 
 FFMPEG_LIBX = "libx264"
