@@ -308,5 +308,3 @@ HIDE_TYPES = False
 VIDEO_RECENT_VIEWCOUNT = 180
 
 HONEYPOT_FIELD_NAME = "firstname"
-
-DEFAULT_MEETING_THUMBNAIL = "/img/default-meeting.svg"
