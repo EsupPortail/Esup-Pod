@@ -68,10 +68,7 @@
         return options;
     }
 
-    {% if event.video_on_hold.is_video and event.is_coming %}
-        showWaitingVideo(false);
-
-    {% elif event.is_current %}
+    {% if event.is_current %}
             // Management of the streaming live
             let player = videojs('podvideoplayer', options, function () {
             })
@@ -97,7 +94,8 @@
                         });
                      }, 10000)
 
-                    {# chargement de la vidéo d'attente si le stream n'a pas commencé #}
+
+                    // Chargement de la vidéo d'attente si le stream n'a pas commencé
                     {% if event.video_on_hold.is_video %}
                         modal.close();
                         showWaitingVideo(true);
@@ -110,14 +108,27 @@
                 if (debug) {
                     console.info("Streaming live starts.");
                 }
-                // Display the streaming live
+
+                // Affichage du flux direct
                 started = true;
-                video_on_hold_is_displayed = false;
-                $("#divvideoonhold").css("display", "none");
+                if (video_on_hold_is_displayed) {
+                    $("#divvideoonhold").css("display", "none");
+                    video_on_hold_is_displayed = false;
+                }
                 $("#divvideoplayer").css("display", "block");
 
+                // Affichage du nombre de spectateurs
                 {% if event.broadcaster.enable_viewer_count %}
                     player.videoJsViewerCount();
+                {% endif %}
+
+                // Affichage des boutons de contrôle
+                {% if not request.GET.is_iframe %}
+                    {% if event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser %}
+                        updateStreamStatus()
+                        setInterval(updateStreamStatus, 60000) // every 60 sec
+                        setInterval(displayRecordingDuration, 1000) // every sec
+                    {% endif %}
                 {% endif %}
             })
     {% endif %}
@@ -413,19 +424,22 @@
         $(document).on('click', '.send-message', sendBBBMessage);
     {% endif %}
 
-    // On load
+    // On page load
     $(function () {
-        getEventVideos()
 
-        {% if event.is_current %}
-            {% if event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser %}
-                updateStreamStatus()
-                setInterval(updateStreamStatus, 60000) // every 60 sec
-                setInterval(displayRecordingDuration, 1000) // every sec
+        {% if not event.is_past %}
+            {% if not request.GET.is_iframe %}
+                getEventVideos()
+            {% endif %}
+
+        {% elif event.is_coming %}
+            {% if event.video_on_hold.is_video %}
+                showWaitingVideo(false);
             {% endif %}
         {% endif %}
 
-        reloadIfNeeded()
+        reloadIfNeeded();
+
     })
 
 </script>

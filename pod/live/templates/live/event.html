@@ -36,24 +36,18 @@
       {% include 'live/event-form.html' %}
     {% else %}
         {% if event.is_past %}
-            <div class="p-3 mb-2 bg-warning text-dark">
+            <div class="p-3 mb-2 bg-warning text-dark" style="width:fit-content">
                 {% trans "Event is finished at:" %} {{ event.end_date }}
                 <br>
             </div>
         {% elif event.is_coming %}
-            <div class="p-3 mb-2 bg-warning text-dark">
+            <div class="p-3 mb-2 bg-warning text-dark" style="width:fit-content">
                 {% trans "The event is scheduled from:" %} {{ event.start_date }} {% trans 'to' %} {{ event.end_date }}
             </div>
-            <!--
-            <div id="divvideoonhold" style="display: none;">
-                <video id="podvideoonholdplayer"></video>
-            </div>
-            -->
-
 
             {# waiting video #}
             {% if event.video_on_hold.is_video %}
-                <div id="divvideoonhold" class="d-block">
+                <div id="divvideoonhold" style="display:block">
                     <video id="podvideoonholdplayer"
                            class="video-js vjs-default-skin vjs-big-play-centered"
                            controls height="360" muted autoplay>
@@ -61,17 +55,21 @@
                 </div>
             {# event thumbnail  #}
             {% elif event.thumbnail  %}
-                <div id="divvideoonhold" class="d-none"></div>
+                <div id="divvideoonhold" style="display:none"></div>
                 <img src="{{ event.get_thumbnail_card }}" alt="{{ event.title }}" style="max-height: 360px;">
             {# broadcaster thumbnail  #}
             {% elif event.broadcaster.poster %}
-                <div id="divvideoonhold" class="d-none"></div>
+                <div id="divvideoonhold" style="display:none"></div>
                 <img src="{{ event.broadcaster.get_poster_url }}" alt="{{ event.title }}" style="max-height: 360px;">
+            {% else %}
+                <div id="divvideoonhold" style="display:none">
+                    <video id="podvideoonholdplayer"></video>
+                </div>
             {% endif %}
 
         {% elif event.is_current %}
 
-            <div id="divvideoplayer" class="d-block">
+            <div id="divvideoplayer" style="display:block">
                 <div class="row">
                     <div class="col">
                         <video id="podvideoplayer"
@@ -95,12 +93,34 @@
                 </div>
             </div>
 
+            {# waiting video #}
+            {% if event.video_on_hold.is_video %}
+                <div id="divvideoonhold" style="display:none">
+                    <video id="podvideoonholdplayer"
+                           class="video-js vjs-default-skin vjs-big-play-centered"
+                           controls height="360" muted autoplay>
+                    </video>
+                </div>
+            {# event thumbnail  #}
+            {% elif event.thumbnail %}
+                <div id="divvideoonhold" style="display:none"></div>
+                <img src="{{ event.get_thumbnail_card }}" alt="{{ event.title }}" style="max-height: 360px;">
+            {# broadcaster thumbnail  #}
+            {% elif event.broadcaster.poster %}
+                <div id="divvideoonhold" style="display:none"></div>
+                <img src="{{ event.broadcaster.get_poster_url }}" alt="{{ event.title }}" style="max-height: 360px;">
+            {% else %}
+                <div id="divvideoonhold" style="display:none">
+                    <video id="podvideoonholdplayer"></video>
+                </div>
+            {% endif %}
+
             {% if event.iframe_url != "" and event.iframe_url != None %}
-              <iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"
-                      title="Inline Frame Example" loading="lazy"
-                      height="{{ event.iframe_height }}"
-                      src="{{ event.iframe_url }}">
-              </iframe>
+                <iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"
+                        title="Inline Frame Example" loading="lazy"
+                        height="{{ event.iframe_height }}"
+                        src="{{ event.iframe_url }}">
+                </iframe>
             {% endif %}
 
             <div id="recordingduration"></div>
@@ -119,19 +139,13 @@
               {% include "bbb/bbb_form.html" %}
             {% endif %}
 
-{#            <div id="info-video" class="d-none">#}
-{#              <button type="button" class="close" aria-label="{% trans 'Close' %}">#}
-{#                <span aria-hidden="true">&times;</span>#}
-{#              </button>#}
-{#            </div>#}
-
             <div id="viewers-list"><ul id="viewers-ul"></ul></div>
 
-        {% else %}
-            <div id="divvideoonhold" class="d-none"></div>
-            <div id="divvideoplayer" class="d-none">
-                <video id="podvideoplayer"></video>
-            </div>
+{#        {% else %}#}
+{#            <div id="divvideoonhold" style="display:none"></div>#}
+{#            <div id="divvideoplayer" style="display:none">#}
+{#                <video id="podvideoplayer"></video>#}
+{#            </div>#}
         {% endif %}
 
         <div id="list_videos_of_event" {% if event.videos.count == 0 %} class="d-none" {% endif %}>
@@ -176,6 +190,7 @@
 {% if  event.broadcaster.status and event.enable_transcription and event.broadcaster.transcription_file %}
 <script>
 
+    {# TODO exporter ce block dans un fichier static transcription.js #}
   document.addEventListener("DOMContentLoaded", function () {
       let player = videojs("podvideoplayer");
       player.ready(function () {
@@ -227,8 +242,6 @@
 
 </script>
 {% endif %}
-
-
 
 {% include 'live/event-script.html' %}
 {% endblock more_script %}
