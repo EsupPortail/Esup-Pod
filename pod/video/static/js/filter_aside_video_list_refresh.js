@@ -74,13 +74,11 @@ function refreshVideosSearch(formCheckedInputs) {
     .then((data) => {
       // parse data into html and replace videos list
       // destroy waypoint id exists
-
-      let html = new DOMParser().parseFromString(data, "text/html").body;
-
+      let parser = new DOMParser();
+      let html = parser.parseFromString(data, "text/html").body;
+      document.getElementById("videos_list").outerHTML = html.outerHTML;
       //document.querySelector(".infiniteloading").style.display = "none";
       //document.querySelector(".infinite-more-link").style.display = "none";
-      document.getElementById("videos_list").outerHTML =
-        html.getElementById("videos_list").outerHTML;
       let nextPage = document
         .getElementById("videos_list")
         .getAttribute("nextPage");
