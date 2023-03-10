@@ -542,8 +542,35 @@ def my_videos(request):
     return render(request, "videos/my_videos.html", data_context)
 
 
-def get_videos_list(request):
+def get_videos_list():
     videos_list = __VIDEOS__
+    return videos_list.distinct()
+
+
+def get_paginated_videos(paginator, page):
+    try:
+        return paginator.page(page)
+    except PageNotAnInteger:
+        return paginator.page(1)
+    except EmptyPage:
+        return paginator.page(paginator.num_pages)
+
+
+def sort_videos_list(request, videos_list):
+    # sort Videos by specific column (select html) and ascending or descending direction (boolean)
+    if request.GET.get('sort'):
+        sort = request.GET.get('sort')
+    else:
+        sort = "date_added"
+    if not request.GET.get('sort_direction'):
+        sort = '-' + sort
+
+    videos_list = videos_list.order_by(sort)
+
+    return videos_list.distinct()
+
+
+def get_filtered_videos_list(request, videos_list):
 
     if request.GET.getlist("type"):
         videos_list = videos_list.filter(type__slug__in=request.GET.getlist("type"))
@@ -579,8 +606,11 @@ def get_owners_has_instances(owners):
 
 def videos(request):
     """Render the main list of videos."""
-    videos_list = get_videos_list(request)
+    videos_list = get_videos_list()
     count_videos = len(videos_list)
+
+    videos_list = get_filtered_videos_list(request, videos_list)
+    videos_list = sort_videos_list(request, videos_list)
 
     page = request.GET.get("page", 1)
     full_path = ""
@@ -592,20 +622,18 @@ def videos(request):
         )
 
     paginator = Paginator(videos_list, 12)
-    try:
-        videos = paginator.page(page)
-    except PageNotAnInteger:
-        videos = paginator.page(1)
-    except EmptyPage:
-        videos = paginator.page(paginator.num_pages)
-
+    videos = get_paginated_videos(paginator, page)
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
 
     if request.is_ajax():
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
+            {
+                "videos": videos,
+                "full_path": full_path,
+                "count_videos": count_videos
+            },
         )
 
     return render(
