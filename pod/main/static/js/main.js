@@ -305,8 +305,8 @@ var get_list = function (
   var prefix = "";
   for (i = 0; i < level; i++) prefix += "&nbsp;&nbsp;";
   if (level != 0) prefix += "|-";
-
-  tab.forEach((val) => {
+  for(var i = 0; i < tab.length; i++) {
+    var val = tab[i];
     var title = add_link
       ? '<a href="' + val.url + '">' + channel + " " + val.title + "</a>"
       : channel + " " + val.title;
@@ -350,7 +350,7 @@ var get_list = function (
         channel
       );
     }
-  });
+  }
   return list;
 };
 
@@ -1036,75 +1036,75 @@ if (ownerbox) {
   /****** VIDEOS EDIT ******/
   /** channel **/
 }
-var tab_initial = new Array();
 
-let select = document.getElementById("id_theme select");
-if (select) {
-  select.options.forEach((option) => {
-    if (option.selected) {
-      tab_initial.push(option.value);
-    }
-  });
 
-  select.options.forEach((option) => {
-    option.remove();
-  });
-}
 let id_channel = document.getElementById("id_channel");
 if (id_channel) {
-  id_channel.addEventListener("change", function () {
-    /*
-    $('#id_channel').on('select2:select', function (e) {
-      alert('change 2');
-    });
-    */
-    // use click instead of change due to select2 usage : https://github.com/theatlantic/django-select2-forms/blob/master/select2/static/select2/js/select2.js#L1502
-    //$("#id_channel").on("click", function (e) {
-    //alert('change 3');
-    document.querySelector("#id_theme option").remove();
-    var tab_channel_selected = this.value;
-    var str = "";
-    for (var id in tab_channel_selected) {
-      var chan = document
-        .querySelector(
-          "#id_channel option[value=" + tab_channel_selected[id] + "]"
-        )
-        .text();
-      str += get_list(
-        listTheme["channel_" + tab_channel_selected[id]],
-        0,
-        [],
-        (tag_type = "option"),
-        (li_class = ""),
-        (attrs = ""),
-        (add_link = false),
-        (current = ""),
-        (channel = chan + ": ")
-      );
+  let tab_initial = new Array();
+  let id_theme = document.getElementById("id_theme");
+  const update_theme = function(){
+    tab_initial = []
+    if (id_theme) {
+      for(i = 0; i < id_theme.options.length; i++) {
+        if (id_theme.options[i].selected) {
+          tab_initial.push(id_theme.options[i].value);
+        }
+      }
+      //remove all options
+      for (option in id_theme.options) { id_theme.options.remove(0); }
     }
-    document.getElementById("id_theme").append(str);
-  });
+  }
+  update_theme()
+  
+  const id_channel_config = { attributes: false, childList: true, subtree: false };
+  // Callback function to execute when mutations are observed
+  const id_channel_callback = (mutationList, observer) => {
+    for (const mutation of mutationList) {
+      if (mutation.type === "childList") {
+        update_theme();
+        var new_themes = [];
+        for(i = 0; i < id_channel.options.length; i++) {
+          new_themes.push(get_list(
+            listTheme["channel_" + id_channel.options[i].value],
+            0,
+            tab_initial,
+            (tag_type = "option"),
+            (li_class = ""),
+            (attrs = ""),
+            (add_link = false),
+            (current = ""),
+            (channel = id_channel.options[i].text + ": ")
+          ));
+        }
+        id_theme.innerHTML = new_themes.join('\n');
+        let last_theme_id = listTheme["channel_" + id_channel.options[id_channel.options.length-1].value][0].id;
+        if(last_theme_id && document.getElementById("theme_"+last_theme_id)) document.getElementById("theme_"+last_theme_id).scrollIntoView()
+      }
+    }
+  };
+  // Create an observer instance linked to the callback function
+  const id_channel_observer = new MutationObserver(id_channel_callback);
+  // Start observing the target node for configured mutations
+  id_channel_observer.observe(id_channel, id_channel_config);
+
+  var initial_themes = [];
+  for(i = 0; i < id_channel.options.length; i++) {
+    initial_themes.push(get_list(
+      listTheme["channel_" + id_channel.options[i].value],
+      0,
+      tab_initial,
+      (tag_type = "option"),
+      (li_class = ""),
+      (attrs = ""),
+      (add_link = false),
+      (current = ""),
+      (channel = id_channel.options[i].text + ": ")
+    ));
+  }
+  id_theme.innerHTML = initial_themes.join('\n');
 }
 
-document.querySelectorAll("#id_channel select").forEach((select) => {
-  if (select) {
-    select.options.forEach((option) => {
-      if (option.selected) {
-        var str = get_list(
-          listTheme["channel_" + option.value],
-          0,
-          tab_initial,
-          (tag_type = "option"),
-          (li_class = ""),
-          (attrs = ""),
-          (add_link = false),
-          (current = "")
-        );
-        document.getElementById("id_theme").append(str);
-      }
-    });
-  }
-});
+
 
 /** end channel **/
 /*** Copy to clipboard ***/
