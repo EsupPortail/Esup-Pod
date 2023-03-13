@@ -134,14 +134,14 @@ document.addEventListener("DOMContentLoaded", function () {
               "alert-danger"
             );
           } else {
-             response.json().then((data) => {
+            response.json().then((data) => {
               if (data.success) {
                 showalert(data.success, "alert-success");
                 window.location.reload(); // hide link playlist
               } else {
                 showalert(data.fail, "alert-danger");
               }
-            })
+            });
           }
         })
         .catch((error) => {
@@ -247,29 +247,29 @@ document.addEventListener("DOMContentLoaded", function () {
           },
           body: form_data,
         })
-        .then((response) => {
-          if (response.status == 200) {
-            response.json().then((data) => {
-              if (data.success) {
-                showalert(data.success, "alert-success");
-                //window.location.reload(); // hide link playlist
-                link.classList.add("disabled");
-                link.classList.remove("playlist-item");
-                link.append("");
-              } else {
-                showalert(data.fail, "alert-danger");
-              }
-            })
-          } else {
-            showalert(
-              gettext(
-                "You are no longer authenticated. Please log in again."
-              ),
-              "alert-danger"
-            );
-          }
-        })
-        .catch((error) => {
+          .then((response) => {
+            if (response.status == 200) {
+              response.json().then((data) => {
+                if (data.success) {
+                  showalert(data.success, "alert-success");
+                  //window.location.reload(); // hide link playlist
+                  link.classList.add("disabled");
+                  link.classList.remove("playlist-item");
+                  link.append("");
+                } else {
+                  showalert(data.fail, "alert-danger");
+                }
+              });
+            } else {
+              showalert(
+                gettext(
+                  "You are no longer authenticated. Please log in again."
+                ),
+                "alert-danger"
+              );
+            }
+          })
+          .catch((error) => {
             showalert(
               gettext(
                 "Error getting video information. The video information could not be retrieved."
