@@ -492,15 +492,17 @@ def update_event(form):
     if form.cleaned_data.get("end_date"):
         event = form.save()
         return event
+
+    if form.cleaned_data.get("start_date"):
+        d_debut = form.cleaned_data["start_date"].date()
     else:
-        event = form.save(commit=False)
-        d_fin = datetime.combine(
-            form.cleaned_data["start_date"].date(), form.cleaned_data["end_time"]
-        )
-        d_fin = timezone.make_aware(d_fin)
-        event.end_date = d_fin
-        event.save()
-        return event
+        d_debut = datetime.now()
+    event = form.save(commit=False)
+    d_fin = datetime.combine(d_debut, form.cleaned_data["end_time"])
+    d_fin = timezone.make_aware(d_fin)
+    event.end_date = d_fin
+    event.save()
+    return event
 
 
 @csrf_protect
