@@ -12,8 +12,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Valeurs possibles pour l'Affiliation du compte"
+                                    "Valeurs possibles pour l’affiliation du compte."
                                 ]
                             },
                             "pod_version_end": "",
@@ -26,8 +25,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Groupes ou affiliations des personnes autorisées à créer un évènement"
+                                    "Groupes ou affiliations des personnes autorisées à créer un évènement."
                                 ]
                             },
                             "pod_version_end": "",
@@ -40,10 +38,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Les personnes ayant pour affiliation les valeurs",
                                     "renseignées dans cette variable ont automatiquement",
-                                    "la valeur staff de leur compte à True"
+                                    "la valeur staff de leur compte à True."
                                 ]
                             },
                             "pod_version_end": "",
@@ -56,9 +53,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Variable utilisée pour trouver les informations de l'individu",
-                                    "connecté dans le fichier renvoyé par le CAS lors de l'authentification"
+                                    "Variable utilisée pour trouver les informations de l’individu",
+                                    "connecté dans le fichier renvoyé par le CAS lors de l’authentification."
                                 ]
                             },
                             "pod_version_end": "",
@@ -71,8 +67,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Identifiant (DN) du compte pour se connecter au serveur LDAP"
+                                    "Identifiant (DN) du compte pour se connecter au serveur LDAP."
                                 ]
                             },
                             "pod_version_end": "",
@@ -85,8 +80,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Mot de passe du compte pour se connecter au serveur LDAP"
+                                    "Mot de passe du compte pour se connecter au serveur LDAP."
                                 ]
                             },
                             "pod_version_end": "",
@@ -99,8 +93,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Filtre LDAP permettant la recherche de l'individu dans le serveur LDAP"
+                                    "Filtre LDAP permettant la recherche de l’individu dans le serveur LDAP."
                                 ]
                             },
                             "pod_version_end": "",
@@ -113,9 +106,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Type d'authentification possible sur votre instance.",
-                                    " Choix : local, CAS, OIDC, Shibboleth"
+                                    "Type d’authentification possible sur votre instance.",
+                                    " Choix : local, CAS, OIDC, Shibboleth"
                                 ]
                             },
                             "pod_version_end": "",
@@ -125,13 +117,11 @@
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    "",
-                                    "o disable CAS authentication for the entire django admin app, you should use the CAS_ADMIN_AUTH parameter"
+                                    "To disable CAS authentication for the entire django admin app, set CAS_ADMIN_AUTH = False"
                                 ],
                                 "fr": [
-                                    "",
-                                    "Pemet d'activer l'authentification CAS pour la partie admin",
-                                    "Voir : https://github.com/kstateome/django-cas"
+                                    "Permet d’activer l’authentification CAS pour la partie admin",
+                                    "Voir : [https://pypi.org/project/django-cas-sso/]()"
                                 ]
                             },
                             "pod_version_end": "",
@@ -144,8 +134,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Forcer le passage en minuscule du nom d'utilisateur CAS",
+                                    "Forcer le passage en minuscule du nom d’utilisateur CAS",
                                     "(permet de prévenir des doubles créations de comptes dans certain cas)."
                                 ]
                             },
@@ -159,8 +148,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si True, authentifie automatiquement l'individu",
+                                    "Si True, authentifie automatiquement l’individu",
                                     "si déjà authentifié sur le serveur CAS"
                                 ]
                             },
@@ -171,11 +159,10 @@
                             "default_value": true,
                             "description": {
                                 "en": [
-                                    ""
+                                    "See [https://github.com/kstateome/django-cas]()"
                                 ],
                                 "fr": [
-                                    "",
-                                    "voir https://github.com/kstateome/django-cas"
+                                    "Voir [https://github.com/kstateome/django-cas]()"
                                 ]
                             },
                             "pod_version_end": "",
@@ -188,8 +175,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Url du serveur cas de l'établissement. Format http://url_cas"
+                                    "Url du serveur CAS de l’établissement. Format http://url_cas"
                                 ]
                             },
                             "pod_version_end": "",
@@ -202,10 +188,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Si True, des groupes sont créés automatiquement",
                                     "à partir des affiliations des individus qui se connectent sur la plateforme",
-                                    "et l'individu qui se connecte est ajouté automatiquement à ces groupes"
+                                    "et l’individu qui se connecte est ajouté automatiquement à ces groupes."
                                 ]
                             },
                             "pod_version_end": "",
@@ -218,11 +203,10 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Si True, des groupes sont créés automatiquement",
                                     "à partir des groupes (attribut groups à memberOf)",
                                     "des individus qui se connectent sur la plateforme",
-                                    "et l'individu qui se connecte est ajouté automatiquement à ces groupes"
+                                    "et l’individu qui se connecte est ajouté automatiquement à ces groupes"
                                 ]
                             },
                             "pod_version_end": "",
@@ -235,9 +219,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Affiliation par défaut d'un utilisateur authentifié par OIDC.",
-                                    "Ce contenu sera comparé à la liste AFFILIATION_STAFF pour déterminer si l'utilisateur doit être admin django"
+                                    "Affiliation par défaut d’un utilisateur authentifié par OIDC.",
+                                    "Ce contenu sera comparé à la liste AFFILIATION_STAFF pour déterminer si l’utilisateur doit être admin Django"
                                 ]
                             },
                             "pod_version_end": "",
@@ -250,8 +233,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "A compléter"
+                                    "[TODO] À compléter"
                                 ]
                             },
                             "pod_version_end": "",
@@ -264,7 +246,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "utilisé dans populatedCasbackend"
                                 ]
                             },
@@ -278,8 +259,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si True, masque l'authentification locale"
+                                    "Si True, masque l’authentification locale"
                                 ]
                             },
                             "pod_version_end": "",
@@ -292,8 +272,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si valeur vaut 'True', le username de l'utilisateur ne sera pas visible sur la plate-forme Pod et si la valeur vaut 'False' le username sera affichés aux utilisateurs authentifiés. (par soucis du respect du RGPD)"
+                                    "Si valeur vaut `True`, le username de l’utilisateur ne sera pas visible sur la plate-forme Pod et si la valeur vaut `False` le username sera affiché aux utilisateurs authentifiés. (par soucis du respect du RGPD)"
                                 ]
                             },
                             "pod_version_end": "",
@@ -306,7 +285,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     " - LDAP (Interroge le serveur LDAP pour renseigner les champs)"
                                 ]
                             },
@@ -320,14 +298,13 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Information de connection au serveur LDAP.",
                                     "Le champ url peut contenir une ou plusieurs url",
-                                    " pour ajouter des hôtes de référence, exemple :",
-                                    "Si un seul host :",
-                                    "{'url': \"ldap.univ.fr'', 'port': 389, 'use_ssl': False}",
-                                    "Si plusieurs :",
-                                    "{'url': (\"ldap.univ.fr'',\"ldap2.univ.fr\"), 'port': 389, 'use_ssl': False}"
+                                    " pour ajouter des hôtes de référence, exemple :",
+                                    "Si un seul host :",
+                                    "`{'url': \"ldap.univ.fr'', 'port': 389, 'use_ssl': False}`",
+                                    "Si plusieurs :",
+                                    "`{'url': (\"ldap.univ.fr'',\"ldap2.univ.fr\"), 'port': 389, 'use_ssl': False}`"
                                 ]
                             },
                             "pod_version_end": "",
@@ -353,7 +330,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Noms des Claim permettant de récupérer les attributs nom, prénom, email"
                                 ]
                             },
@@ -367,8 +343,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Groupes d'accès attribués par défaut à un nouvel utilisateur authentifié par OIDC"
+                                    "Groupes d’accès attribués par défaut à un nouvel utilisateur authentifié par OIDC"
                                 ]
                             },
                             "pod_version_end": "",
@@ -381,9 +356,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Affiliation par défaut d'un utilisateur authentifié par OIDC.",
-                                    "Ce contenu sera comparé à la liste AFFILIATION_STAFF pour déterminer si l'utilisateur doit être admin django"
+                                    "Affiliation par défaut d’un utilisateur authentifié par OIDC.",
+                                    "Ce contenu sera comparé à la liste AFFILIATION_STAFF pour déterminer si l’utilisateur doit être admin Django"
                                 ]
                             },
                             "pod_version_end": "",
@@ -396,7 +370,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Nom du Service Provider OIDC"
                                 ]
                             },
@@ -423,10 +396,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Différents paramètres pour OIDC",
-                                    "tant que mozilla_django_oidc n'accepte le mécanisme de discovery",
-                                    "ref: https://github.com/mozilla/mozilla-django-oidc/pull/309"
+                                    "tant que `mozilla_django_oidc` n’accepte pas le mécanisme de discovery",
+                                    "ref: [https://github.com/mozilla/mozilla-django-oidc/pull/309]()"
                                 ]
                             },
                             "pod_version_end": "",
@@ -478,9 +450,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "CLIENT_ID et CLIENT_SECRET de OIDC sont plutôt à positionner",
-                                    "à travers des variables d'environnement"
+                                    "`CLIENT_ID` et `CLIENT_SECRET` de OIDC sont plutôt à positionner",
+                                    "à travers des variables d’environnement."
                                 ]
                             },
                             "pod_version_end": "",
@@ -506,10 +477,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Si utilisation de la connection CAS, renseigne les champs du compte",
                                     "de la personne depuis une source externe.",
-                                    "Valeurs possibles :",
+                                    "Valeurs possibles :",
                                     " - None (pas de renseignement),",
                                     " - CAS (renseigne les champs depuis les informations renvoyées par le CAS),"
                                 ]
@@ -524,9 +494,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Nom de l'attribut dans les headers qui sert à identifier",
-                                    "l'utilisateur connecté avec Shibboleth"
+                                    "Nom de l’attribut dans les headers qui sert à identifier",
+                                    "l’utilisateur connecté avec Shibboleth."
                                 ]
                             },
                             "pod_version_end": "",
@@ -539,7 +508,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Mapping des attributs entre shibboleth et la classe utilisateur"
                                 ]
                             },
@@ -553,9 +521,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "permettre à l'utilisateur d'un domaine d'être membre du personnel",
-                                    "Si vide, tous les domaines seront autorisés"
+                                    "Permettre à l’utilisateur d’un domaine d’être membre du personnel.",
+                                    "Si vide, tous les domaines seront autorisés."
                                 ]
                             },
                             "pod_version_end": "",
@@ -568,7 +535,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "URL de déconnexion à votre instance Shibboleth"
                                 ]
                             },
@@ -582,8 +548,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Nom de la fédération d'identité utilisée"
+                                    "Nom de la fédération d’identité utilisée."
                                 ]
                             },
                             "pod_version_end": "",
@@ -596,8 +561,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "URL de connexion à votre instance Shibboleth"
+                                    "URL de connexion à votre instance Shibboleth."
                                 ]
                             },
                             "pod_version_end": "",
@@ -610,9 +574,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Liste de correspondance entre les champs d'un compte de Pod",
-                                    "et les champs renvoyés par le CAS"
+                                    "Liste de correspondance entre les champs d’un compte de Pod",
+                                    "et les champs renvoyés par le CAS."
                                 ]
                             },
                             "pod_version_end": "",
@@ -625,9 +588,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Liste de correspondance entre les champs d'un compte de Pod",
-                                    "et les champs renvoyés par le LDAP"
+                                    "Liste de correspondance entre les champs d’un compte de Pod",
+                                    "et les champs renvoyés par le LDAP."
                                 ]
                             },
                             "pod_version_end": "",
@@ -640,8 +602,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Activation de l'authentification CAS en plus de l'authentification locale"
+                                    "Activation de l’authentification CAS en plus de l’authentification locale."
                                 ]
                             },
                             "pod_version_end": "",
@@ -654,8 +615,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Mettre à True pour utiliser l'authentification OpenID Connect"
+                                    "Mettre à True pour utiliser l’authentification OpenID Connect."
                                 ]
                             },
                             "pod_version_end": "",
@@ -668,8 +628,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Mettre à True pour utiliser l'authentification Shibboleth"
+                                    "Mettre à True pour utiliser l’authentification Shibboleth."
                                 ]
                             },
                             "pod_version_end": "",
@@ -678,7 +637,7 @@
                     },
                     "title": {
                         "en": "",
-                        "fr": "Configuration application authentification"
+                        "fr": "Configuration application authentification."
                     }
                 },
                 "chapter": {
@@ -686,7 +645,7 @@
                     "settings": {},
                     "title": {
                         "en": "",
-                        "fr": "Configuration application chapter"
+                        "fr": "Configuration application chapter."
                     }
                 },
                 "completion": {
@@ -699,8 +658,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Définissez à True pour activer la case à cocher dans l'édition des sous-titres."
+                                    "Définissez à True pour activer la case à cocher dans l’édition des sous-titres."
                                 ]
                             },
                             "pod_version_end": "",
@@ -713,9 +671,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "liste toutes les langues pour l'ajout de fichier de sous-titre",
-                                    "voir le fichier pod/main/lang_settings.py"
+                                    "liste toutes les langues pour l’ajout de fichier de sous-titre",
+                                    "voir le fichier `pod/main/lang_settings.py`."
                                 ]
                             },
                             "pod_version_end": "",
@@ -728,8 +685,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "langue par défaut pour l'ajout de piste à une vidéo"
+                                    "langue par défaut pour l’ajout de piste à une vidéo."
                                 ]
                             },
                             "pod_version_end": "",
@@ -742,8 +698,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Liste de type de piste possible pour une vidéo (sous-titre, légende etc.)"
+                                    "Liste de types de piste possibles pour une vidéo (sous-titre, légende etc.)"
                                 ]
                             },
                             "pod_version_end": "",
@@ -756,9 +711,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Liste des langues proposées lors de l'ajout des vidéos.",
-                                    "Affichés en dessous d'une vidéos, les choix sont aussi utilisés pour affiner la recherche."
+                                    "Liste des langues proposées lors de l’ajout des vidéos.",
+                                    "Affichés en dessous d’une vidéo, les choix sont aussi utilisés pour affiner la recherche."
                                 ]
                             },
                             "pod_version_end": "",
@@ -771,8 +725,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si valeur vaut 'True', les URLs contenues dans le texte de superposition seront transformées, à la lecture de la vidéo, en lien cliquable."
+                                    "Si valeur vaut 'True', les URLs contenues dans le texte de superposition seront transformées, à la lecture de la vidéo, en liens cliquables."
                                 ]
                             },
                             "pod_version_end": "",
@@ -785,27 +738,43 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "paramétrage des chemin du model pour la compilation",
-                                    "Pour télécharger les Modeles : https://alphacephei.com/vosk/lm#update-process",
+                                    "Pour télécharger les modèles : [https://alphacephei.com/vosk/lm#update-process]()",
                                     "Ajouter le model dans les sous-dossier de la lang correspondants",
-                                    "Exemple pour le français: /path/of/project/Esup-Pod/compile-model/fr/"
+                                    "Exemple pour le français: `/path/of/project/Esup-Pod/compile-model/fr/`"
                                 ]
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
-                        "MODEL_PARAM": {
+                        "TRANSCRIPTION_MODEL_PARAM": {
                             "default_value": "",
                             "description": {
                                 "en": [
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "paramétrage des modele. ",
-                                    "Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models",
-                                    "liste des langues affichées en premier dans les propositions de choix"
+                                    "Paramétrage des modèles pour la transcription",
+                                    "Voir la documentation à cette adresse :",
+                                    " [https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3]()",
+                                    "Pour télécharger les modèles Vosk : [https://alphacephei.com/vosk/models]()",
+                                    "```",
+                                    "TRANSCRIPTION_MODEL_PARAM = {",
+                                    "    # le modèle stt",
+                                    "    'STT': {",
+                                    "        'fr': {",
+                                    "            'model': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite\",",
+                                    "            'scorer': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer\",",
+                                    "        }",
+                                    "    },",
+                                    "    # le modèle vosk",
+                                    "    'VOSK': {",
+                                    "        'fr': {",
+                                    "            'model': \"/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0\",",
+                                    "        }",
+                                    "    }",
+                                    "}",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -818,9 +787,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "liste des langues à afficher en premier dans la liste des toutes les langues",
-                                    "voir le fichier pod/main/lang_settings.py"
+                                    "voir le fichier `pod/main/lang_settings.py`"
                                 ]
                             },
                             "pod_version_end": "",
@@ -833,8 +801,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Liste de rôle possible pour un contributeur"
+                                    "Liste de rôles possibles pour un contributeur."
                                 ]
                             },
                             "pod_version_end": "",
@@ -847,7 +814,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "STT ou VOSK"
                                 ]
                             },
@@ -861,7 +827,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "voir ACTIVE_MODEL_ENRICH"
                                 ]
                             },
@@ -892,7 +857,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Groupes ou affiliations des personnes autorisées à créer un évènement"
                                 ]
                             },
@@ -906,9 +870,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Types de logiciel de serveur de streaming utilisés.",
-                                    "Actuellement disponible Wowza. Il faut préciser cette valeur pour l'activer ['Wowza', ]",
+                                    "Actuellement disponible Wowza. Il faut préciser cette valeur pour l’activer ['Wowza', ]",
                                     "Si vous utilisez une autre logiciel,",
                                     "il faut développer une interface dans `pod/live/pilotingInterface.py`"
                                 ]
@@ -937,8 +900,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Chemin racine du répertoire où sont déposés temporairement les  enregistrements des évènements éffectués depuis POD pour convertion en ressource vidéo (VOD)"
+                                    "Chemin racine du répertoire où sont déposés temporairement les enregistrements des évènements éffectués depuis POD pour convertion en ressource vidéo (VOD)"
                                 ]
                             },
                             "pod_version_end": "",
@@ -951,9 +913,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Image par défaut affichée comme poster ou vignette, utilisée pour présenter l'évènement'.",
-                                    "Cette image doit se situer dans le répertoire static."
+                                    "Image par défaut affichée comme poster ou vignette, utilisée pour présenter l’évènement.",
+                                    "Cette image doit se situer dans le répertoire `static`."
                                 ]
                             },
                             "pod_version_end": "",
@@ -966,7 +927,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Type par défaut affecté à un évènement direct (en général, le type ayant pour identifiant '1' est 'Other')"
                                 ]
                             },
@@ -980,8 +940,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Image par défaut affichée comme poster ou vignette,  utilisée pour présenter la vidéo.",
+                                    "Image par défaut affichée comme poster ou vignette, utilisée pour présenter la vidéo.",
                                     "Cette image doit se situer dans le répertoire static."
                                 ]
                             },
@@ -995,8 +954,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si True, un courriel est envoyé aux managers et à l'auteur (si DEBUG est à False) à la création/modification d'un event."
+                                    "Si True, un courriel est envoyé aux managers et à l’auteur (si DEBUG est à False) à la création/modification d’un event."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1009,8 +967,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Permet de lancer automatiquement l'enregistrement sur l'interface utilisée (wowza, ) sur le broadcaster et spécifié par  BROADCASTER_PILOTING_SOFTWARE"
+                                    "Permet de lancer automatiquement l’enregistrement sur l’interface utilisée (wowza, ) sur le broadcaster et spécifié par `BROADCASTER_PILOTING_SOFTWARE`"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1023,8 +980,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Permet de préciser le nom du groupe dans lequel les utilisateurs  peuvent planifier un évènement sur plusieurs jours"
+                                    "Permet de préciser le nom du groupe dans lequel les utilisateurs peuvent planifier un évènement sur plusieurs jours."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1037,9 +993,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Temps (en seconde) entre deux envois d'un signal au serveur, pour signaler la présence sur un live.",
-                                    "Peut être augmenté en cas de perte de performance mais au détriment de la qualité du comptage des valeurs"
+                                    "Temps (en secondes) entre deux envois d’un signal au serveur, pour signaler la présence sur un live.",
+                                    "Peut être augmenté en cas de perte de performance, mais au détriment de la qualité du comptage des valeurs."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1055,7 +1010,7 @@
                                     "",
                                     "Paramétrage des modèles pour la transcription des directs",
                                     "La documentation sera présente prochaînement",
-                                    "Pour télécharger les Modèles Vosk : https://alphacephei.com/vosk/models",
+                                    "Pour télécharger les Modèles Vosk : https://alphacephei.com/vosk/models",
                                     "```",
                                     "LIVE_VOSK_MODEL = {",
                                     "   'fr': {",
@@ -1089,7 +1044,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Utilisation de BigBlueButton - A retirer dans les futures versions de Pod"
                                 ]
                             },
@@ -1103,7 +1057,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - A retirer dans les futures versions de Pod"
                                 ]
                             },
@@ -1132,8 +1085,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Délai (en seconde) selon lequel une vue est considérée comme expirée si elle n'as pas renvoyé de signal depuis"
+                                    "Délai (en seconde) selon lequel une vue est considérée comme expirée si elle n’a pas renvoyé de signal depuis."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1155,7 +1107,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Configuration / Activation du LTI voir pod/main/settings.py L.224"
                                 ]
                             },
@@ -1166,26 +1117,28 @@
                             "default_value": "{}",
                             "description": {
                                 "en": [
-                                    "",
                                     "The PYLTI_CONFIG variable in your settings.py configures the application consumers and secrets.",
+                                    "```",
                                     "PYLTI_CONFIG = {",
                                     "    'consumers': {",
                                     "        '<random number string>': {",
                                     "            'secret': '<random number string>'",
                                     "        }",
                                     "    }",
-                                    "}"
+                                    "}",
+                                    "```"
                                 ],
                                 "fr": [
-                                    "",
-                                    "cette varaible permet de configurer l'application cliente et le secret partagé",
+                                    "Cette variable permet de configurer l’application cliente et le secret partagé",
+                                    "```",
                                     "PYLTI_CONFIG = {",
                                     "    'consumers': {",
                                     "        '<random number string>': {",
                                     "            'secret': '<random number string>'",
                                     "        }",
                                     "    }",
-                                    "}"
+                                    "}",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1207,8 +1160,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Utilisation de BigBlueButton - A retirer dans les futures versions de Pod"
+                                    "Utilisation de BigBlueButton - [TODO] À retirer dans les futures versions de Pod"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1221,8 +1173,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - A retirer dans les futures versions de Pod"
+                                    "Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - [TODO] À retirer dans les futures versions de Pod"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1232,12 +1183,10 @@
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    "",
                                     "Activate the meeting application"
                                 ],
                                 "fr": [
-                                    "",
-                                    "Activation de l'application meeting"
+                                    "Activation de l’application meeting"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1247,11 +1196,9 @@
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    "",
                                     "Activate the opencast studio"
                                 ],
                                 "fr": [
-                                    "",
                                     "Activation du studio opencast"
                                 ]
                             },
@@ -1262,11 +1209,9 @@
                             "default_value": "",
                             "description": {
                                 "en": [
-                                    "",
                                     "Version of the project"
                                 ],
                                 "fr": [
-                                    "",
                                     "Version courante du projet"
                                 ]
                             },
@@ -1287,8 +1232,8 @@
                         "fr": [
                             "",
                             "Application Meeting pour la gestion de reunion avec BBB.",
-                            "Mettre USE_MEETING à True pour activer cette application.",
-                            "BBB_API_URL et BBB_SECRET_KEY sont obligatoires pour faire fonctionner l'application"
+                            "Mettre `USE_MEETING` à True pour activer cette application.",
+                            "`BBB_API_URL` et `BBB_SECRET_KEY` sont obligatoires pour faire fonctionner l’application"
                         ]
                     },
                     "settings": {
@@ -1299,8 +1244,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Indiquer l'URL API de BBB par ex https://webconf.univ.fr/bigbluebutton/api"
+                                    "Indiquer l’URL API de BBB par ex `https://webconf.univ.fr/bigbluebutton/api"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1313,8 +1257,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Indiquer l'URL de retour au moment où vous quittez la réunion BBB. Ce champ est optionnel"
+                                    "Indiquer l’URL de retour au moment où vous quittez la réunion BBB. Ce champ est optionnel."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1324,12 +1267,10 @@
                             "default_value": "{}",
                             "description": {
                                 "en": [
-                                    "",
                                     "list of key:value to get information from session meeting in BBB"
                                 ],
                                 "fr": [
-                                    "",
-                                    "Dictionnaire de clé:valeur permettant d'afficher les informations d'une session de réunion dans BBB",
+                                    "Dictionnaire de clé:valeur permettant d’afficher les informations d’une session de réunion dans BBB",
                                     "Voici la liste par défaut",
                                     "```",
                                     "BBB_MEETING_INFO:",
@@ -1358,8 +1299,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Clé de votre serveur BBB. Vous pouvez récupérer cette clé à l'aide de la commande bbb-conf --secret sur le serveur BBB"
+                                    "Clé de votre serveur BBB.",
+                                    "Vous pouvez récupérer cette clé à l’aide de la commande `bbb-conf --secret` sur le serveur BBB."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1369,13 +1310,11 @@
                             "default_value": "()",
                             "description": {
                                 "en": [
-                                    "",
                                     "list of date fields for the meeting form",
                                     "the fields are grouped into a fieldset"
                                 ],
                                 "fr": [
-                                    "",
-                                    "liste des champs du formulaire de creation d'une reunion",
+                                    "liste des champs du formulaire de creation d’une reunion",
                                     "les champs sont regroupés dans un ensemble de champs",
                                     "```",
                                     "MEETING_DATE_FIELDS:",
@@ -1397,9 +1336,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Mettre à True pour désactiver les enregistrements de réunion",
-                                    "Configuration de l'enregistrement des réunions. Ce champ n'est pas pris en compte si MEETING_DISABLE_RECORD = True"
+                                    "Configuration de l’enregistrement des réunions.",
+                                    "Ce champ n’est pas pris en compte si `MEETING_DISABLE_RECORD = True`."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1409,14 +1348,12 @@
                             "default_value": "()",
                             "description": {
                                 "en": [
-                                    "",
                                     "list the main fields for the meeting session form",
                                     "the main fields are displayed directly in the form page of a meeting"
                                 ],
                                 "fr": [
-                                    "",
-                                    "Permet de définir les champs principaux du formulaire de creation d'une réunion",
-                                    "les champs principaux sont affichés directement dans la page de formulaire d'une réunion",
+                                    "Permet de définir les champs principaux du formulaire de création d’une réunion",
+                                    "les champs principaux sont affichés directement dans la page de formulaire d’une réunion",
                                     "```",
                                     "MEETING_MAIN_FIELDS:",
                                     "(",
@@ -1437,11 +1374,9 @@
                             "default_value": 5,
                             "description": {
                                 "en": [
-                                    "",
                                     "set the max duration for a meeting session"
                                 ],
                                 "fr": [
-                                    "",
                                     "permet de définir la durée maximum pour une reunion",
                                     "(en heure)"
                                 ]
@@ -1453,14 +1388,12 @@
                             "default_value": "()",
                             "description": {
                                 "en": [
-                                    "",
                                     "list of all fields that will be hidden if MEETING_DISABLE_RECORD is set to True"
                                 ],
                                 "fr": [
-                                    "",
                                     "ensemble des champs qui serotn cachés si MEETING_DISABLE_RECORD est défini à true",
                                     "```",
-                                    "MEETING_RECORD_FIELDS : (\"record\", \"auto_start_recording\", \"allow_start_stop_recording\")",
+                                    "MEETING_RECORD_FIELDS: (\"record\", \"auto_start_recording\", \"allow_start_stop_recording\")",
                                     "```"
                                 ]
                             },
@@ -1471,13 +1404,11 @@
                             "default_value": "()",
                             "description": {
                                 "en": [
-                                    "",
                                     "list of all fields involved by the recurring of a meeting",
                                     "In this case, all this fields are grouped in a fieldset shown in modal"
                                 ],
                                 "fr": [
-                                    "",
-                                    "permet de définir la liste de tous les champs permettant de définir la récurrence d'une reunion",
+                                    "permet de définir la liste de tous les champs permettant de définir la récurrence d’une reunion",
                                     "tous ces champs sont regroupés dans un ensemble de champs affichés dans une modale",
                                     "```",
                                     "MEETING_RECURRING_FIELDS:",
@@ -1502,7 +1433,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Seuls les utilisateurs \"staff\" pourront éditer les réunions"
                                 ]
                             },
@@ -1516,8 +1446,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Activer l'application meeting"
+                                    "Activer l’application meeting"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1547,10 +1476,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Nom du répertoire racine où les fichiers \"complémentaires\"",
                                     "(hors vidéos etc.) sont téléversés. Notament utilisé par PODFILE",
-                                    "A modifier principalement pour indiquer dans LOCATION votre serveur de cache si elle n'est pas sur la même machine que votre POD"
+                                    "À modifier principalement pour indiquer dans LOCATION votre serveur de cache si elle n’est pas sur la même machine que votre POD."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1560,11 +1488,9 @@
                             "default_value": "('doc', 'docx', 'odt', 'pdf', 'xls', 'xlsx', 'ods', 'ppt', 'pptx', 'txt', 'html', 'htm', 'vtt', 'srt')",
                             "description": {
                                 "en": [
-                                    "",
                                     "Extensions allowed for documents uploaded in the file manager"
                                 ],
                                 "fr": [
-                                    "",
                                     "Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier"
                                 ]
                             },
@@ -1575,11 +1501,9 @@
                             "default_value": 10,
                             "description": {
                                 "en": [
-                                    "",
                                     "Maximum size in MB per file uploaded in the file manager"
                                 ],
                                 "fr": [
-                                    "",
                                     "Poids maximum en Mo par fichier téléversé dans le gestionnaire de fichier"
                                 ]
                             },
@@ -1590,11 +1514,9 @@
                             "default_value": "('jpg', 'jpeg', 'bmp', 'png', 'gif', 'tiff', 'webp')",
                             "description": {
                                 "en": [
-                                    "",
                                     "Extensions allowed for images uploaded in the file manager"
                                 ],
                                 "fr": [
-                                    "",
                                     "Extensions autorisées pour les images téléversées dans le gestionnaire de fichier"
                                 ]
                             },
@@ -1617,8 +1539,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "si True, active un lien dans le menu de l'utilisateur permettant de réclamer un enregistrement"
+                                    "si True, active un lien dans le menu de l’utilisateur permettant de réclamer un enregistrement"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1628,12 +1549,10 @@
                             "default_value": true,
                             "description": {
                                 "en": [
-                                    "",
                                     "If True, the manager of the recorder can choose the recorder file owner"
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si True, le manager de l'enregistreur pourra choisir un propriétaire de l'enregistrement."
+                                    "Si True, le manager de l’enregistreur pourra choisir un propriétaire de l’enregistrement."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1643,11 +1562,9 @@
                             "default_value": 1,
                             "description": {
                                 "en": [
-                                    "",
                                     "add a default recorder to an unidentifiable recording file"
                                 ],
                                 "fr": [
-                                    "",
                                     "Ajoute un enregistreur par défaut à un enregistrement non identifiable (mauvais chemin dans le dépôt FTP)"
                                 ]
                             },
@@ -1658,11 +1575,9 @@
                             "default_value": "/data/ftp-pod/ftp/",
                             "description": {
                                 "en": [
-                                    "",
                                     "Root path of the directory where the recordings are deposited"
                                 ],
                                 "fr": [
-                                    "",
                                     "Chemin racine du répertoire où sont déposés les enregistrements",
                                     "(chemin du serveur FTP)."
                                 ]
@@ -1674,13 +1589,11 @@
                             "default_value": 1,
                             "description": {
                                 "en": [
-                                    "",
                                     "Default video type identifier (if not specified)."
                                 ],
                                 "fr": [
-                                    "",
                                     "Identifiant du type de vidéo par défaut (si non spécifié).",
-                                    "(Exemple : 3 pour Colloque/conférence, 4 pour Cours...)"
+                                    "(Exemple : 3 pour Colloque/conférence, 4 pour Cours...)"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1690,11 +1603,9 @@
                             "default_value": 1,
                             "description": {
                                 "en": [
-                                    "",
                                     "Identifier of the default owner (if not specified) of the deposited records."
                                 ],
                                 "fr": [
-                                    "",
                                     "Identifiant du propriétaire par défaut (si non spécifié) des enregistrements déposés."
                                 ]
                             },
@@ -1708,15 +1619,14 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Permet de spécifier la valeur par défaut du placement de la vidéo du",
                                     "presenteur par rapport à la vidéo de présentation (écran)",
-                                    "les valeurs possibles sont :",
+                                    "les valeurs possibles sont :",
                                     " * \"mid\" (écran et caméra ont la même taille)",
                                     " * \"piph\" (le presenteur, caméra, est incrusté dans la vidéo de présentation, en haut à droite)",
                                     " * \"pipb\" (le presenteur, caméra, est incrusté dans la vidéo de présentation, en bas à droite)",
                                     "Contenu par défaut du fichier xml pour créer le mediapackage pour le studio.",
-                                    "Ce fichier va contenir toutes les spécificités de l'enregistrement",
+                                    "Ce fichier va contenir toutes les spécificités de l’enregistrement",
                                     "(source, cutting, title, presenter etc.)"
                                 ]
                             },
@@ -1730,7 +1640,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Permet de spécifier le dossier de stockage des enregistrements du studio avant traitement."
                                 ]
                             },
@@ -1741,12 +1650,10 @@
                             "default_value": "-> see xml content",
                             "description": {
                                 "en": [
-                                    "",
                                     "Default content of the xml file to create the mediapackage for the studio. This file will contain all the specifics of the recording (source, cutting, title, presenter etc.)"
                                 ],
                                 "fr": [
-                                    "",
-                                    "Contenu par défaut du fichier xml pour créer le mediapackage pour le studio. Ce fichier va contenir toutes les spécificités de l'enregistrement (source, cutting, title, presenter etc.)",
+                                    "Contenu par défaut du fichier xml pour créer le mediapackage pour le studio. Ce fichier va contenir toutes les spécificités de l’enregistrement (source, cutting, title, presenter etc.)",
                                     "```",
                                     "OPENCAST_MEDIAPACKAGE = \"\"\"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>",
                                     "    <mediapackage xmlns=\"http://mediapackage.opencastproject.org\" id=\"\" start=\"\">",
@@ -1765,12 +1672,11 @@
                             "default_value": "records",
                             "description": {
                                 "en": [
-                                    "",
                                     "Web access path (public) to the recording repository directory (DEFAULT_RECORDER_PATH). Warning: remember to modify the NGINX conf"
                                 ],
                                 "fr": [
-                                    "",
-                                    " Chemin d'accès web (public) au répertoire de dépot des enregistrements (DEFAULT_RECORDER_PATH). Attention : penser à modifier la conf de NGINX"
+                                    "Chemin d’accès web (public) au répertoire de dépot des enregistrements (DEFAULT_RECORDER_PATH).",
+                                    "Attention : penser à modifier la conf de NGINX."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1780,15 +1686,13 @@
                             "default_value": "()",
                             "description": {
                                 "en": [
-                                    "",
                                     "List of additional fields for the recorders form. This list includes the name of the fields corresponding to the editing parameters of a video (Discipline, Channel, Theme, keywords...).",
                                     "The following example includes all the possible fields, but can be lightened according to needs.",
                                     "The videos will then be generated with the values of the additional fields as defined in their recorder."
                                 ],
                                 "fr": [
-                                    "",
-                                    "Liste des champs supplémentaires pour le formulaire des enregistreurs. Cette liste reprend le nom des champs correspondants aux paramètres d'édition d'une vidéo (Discipline, Chaine, Theme, mots clés...).",
-                                    "L'exemple suivant comporte l'ensemble des champs possibles, mais peut être allégée en fonction des besoins.",
+                                    "Liste des champs supplémentaires pour le formulaire des enregistreurs. Cette liste reprend le nom des champs correspondants aux paramètres d’édition d’une vidéo (Discipline, Chaine, Theme, mots clés...).",
+                                    "L’exemple suivant comporte l’ensemble des champs possibles, mais peut être allégée en fonction des besoins.",
                                     "Les vidéos seront alors générées avec les valeurs des champs supplémentaires telles que définies dans leur enregistreur."
                                 ]
                             },
@@ -1802,8 +1706,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Autorise la requête sur l'application en elle-même sans vérifier le certificat SSL"
+                                    "Autorise la requête sur l’application en elle-même sans vérifier le certificat SSL"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1816,8 +1719,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "url racine de l'instance permettant l'envoi de notification lors de la réception d'enregistrement"
+                                    "url racine de l’instance permettant l’envoi de notification lors de la réception d’enregistrement."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1830,8 +1732,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Précise les proxy à utiliser pour une requête vers l'application elle même dans le cadre d'enregistrement par défaut force la non utilisation de proxy"
+                                    "Précise les proxy à utiliser pour une requête vers l’application elle même dans le cadre d’enregistrement par défaut force la non utilisation de proxy."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1844,8 +1745,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si True, permet de ne pas prendre en compte la 1° image lors du traitement d'un fichier d'enregistrement de type AudioVideoCast."
+                                    "Si True, permet de ne pas prendre en compte la 1ère image lors du traitement d’un fichier d’enregistrement de type AudioVideoCast."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1855,15 +1755,13 @@
                             "default_value": "(('video', _('Video')), ('audiovideocast', _('Audiovideocast')), ('studio', _('Studio')))",
                             "description": {
                                 "en": [
-                                    "",
                                     "Type of record managed by the platform.",
                                     "A recorder can only upload files of the type offered by the platform.",
                                     "The processing is done according to the type of file deposited."
                                 ],
                                 "fr": [
-                                    "",
-                                    "Type d'enregistrement géré par la plateforme.",
-                                    "Un enregistreur ne peut déposer que des fichiers  de type proposé par la plateforme.",
+                                    "Type d’enregistrement géré par la plateforme.",
+                                    "Un enregistreur ne peut déposer que des fichiers de type proposé par la plateforme.",
                                     "Le traitement se fait en fonction du type de fichier déposé."
                                 ]
                             },
@@ -1877,8 +1775,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Activer l'utilisation du studio Opencast"
+                                    "Activer l’utilisation du studio Opencast."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1888,12 +1785,10 @@
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    "",
-                                    "If True, displays the video preview icon in the \"Claim a recording\" page"
+                                    "If True, displays the video preview icon in the \"Claim a recording\" page."
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si True, affiche l'icone de prévisualisation des vidéos dans la page \"Revendiquer un enregistrement\""
+                                    "Si True, affiche l’icone de prévisualisation des vidéos dans la page \"Revendiquer un enregistrement\"."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1915,7 +1810,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Activer les commentaires au niveau de la plateforme"
                                 ]
                             },
@@ -1929,8 +1823,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Utilisation de Celery pour la gestion des taches d'encodage"
+                                    "URL de Celery pour la gestion des taches d’encodage."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1943,8 +1836,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Utilisation de Celery pour la gestion des taches d'encodage"
+                                    "Utilisation de Celery pour la gestion des taches d’encodage"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1957,8 +1849,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Ensemble des textes d'aide affichés avec le formulaire d'édition de chaine.",
+                                    "Ensemble des textes d’aide affichés avec le formulaire d’édition de chaine.",
                                     "voir pod/video/forms.py"
                                 ]
                             },
@@ -1972,9 +1863,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Taille d'un fragment lors de l'envoie d'une vidéo",
-                                    "le fichier sera mis en ligne par fragment de cette taille"
+                                    "Taille d’un fragment lors de l’envoi d’une vidéo",
+                                    "le fichier sera mis en ligne par fragment de cette taille."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1987,9 +1877,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Liste des cursus proposés lors de l'ajout des vidéos.",
-                                    "Affichés en dessous d'une vidéos, ils sont aussi utilisés pour affiner la recherche.",
+                                    "Liste des cursus proposés lors de l’ajout des vidéos.",
+                                    "Affichés en dessous d’une vidéos, ils sont aussi utilisés pour affiner la recherche.",
                                     "```",
                                     "CURSUS_CODES = (",
                                     "    ('0', _(\"None / All\")),",
@@ -2011,7 +1900,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "couverture du droit pour chaque vidéo"
                                 ]
                             },
@@ -2025,26 +1913,11 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "droit par défaut affichés dans le flux RSS si non renseigné"
                                 ]
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
-                        },
-                        "DEFAULT_LANG_TRACK": {
-                            "default_value": "fr",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "",
-                                    "langue par défaut pour l'ajout de piste à une vidéo"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1"
                         },
                         "DEFAULT_THUMBNAIL": {
                             "default_value": "img/default.svg",
@@ -2053,7 +1926,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Image par défaut affichée comme poster ou vignette, utilisée pour présenter la vidéo.",
                                     "Cette image doit se situer dans le répertoire static."
                                 ]
@@ -2068,7 +1940,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Les vidéos créées sans type (par importation par exemple) seront affectées au type par défaut (en général, le type ayant pour identifiant '1' est 'Other')"
                                 ]
                             },
@@ -2082,8 +1953,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Durée d'obsolescence par défaut (en années après la date d'ajout)."
+                                    "Durée d’obsolescence par défaut (en années après la date d’ajout)."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2096,8 +1966,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si True, un courriel est envoyé aux managers et à l'auteur (si DEBUG est à False) à la fin de l'encodage/transcription"
+                                    "Si True, un courriel est envoyé aux managers et à l’auteur (si DEBUG est à False) à la fin de l’encodage."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2110,8 +1979,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si True, un courriel est envoyé aux managers et à l'auteur (si DEBUG est à False) à la fin de l'encodage/transcription"
+                                    "Si True, un courriel est envoyé aux managers et à l’auteur (si DEBUG est à False) à la fin de la transcription"
                                 ]
                             },
                             "pod_version_end": "",
@@ -2124,8 +1992,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Fonction appelée pour lancer l'encodage du studio (merge and cut)"
+                                    "Fonction appelée pour lancer l’encodage du studio (merge and cut)."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2138,8 +2005,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Fonction appelée pour lancer l'encodage des vidéos direct par thread ou distant par celery"
+                                    "Fonction appelée pour lancer l’encodage des vidéos direct par thread ou distant par celery"
                                 ]
                             },
                             "pod_version_end": "",
@@ -2152,8 +2018,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Encodage possible sur la plateforme. Associé à un rendu dans le cas d'une vidéo.",
+                                    "Encodage possible sur la plateforme. Associé à un rendu dans le cas d’une vidéo.",
                                     "```",
                                     "ENCODING_CHOICES = (",
                                     "    (\"audio\", \"audio\"),",
@@ -2176,8 +2041,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Les mots clés saisis lors de l'ajout de vidéo sont convertis automatiquement en minuscule"
+                                    "Les mots clés saisis lors de l’ajout de vidéo sont convertis automatiquement en minuscule."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2190,13 +2054,12 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Format d'encodage réalisé sur la plateforme.",
+                                    "Format d’encodage réalisé sur la plateforme.",
                                     "```",
                                     "FORMAT_CHOICES = (",
-                                    "    (\"video/mp4\", 'video/mp4'),",
-                                    "    (\"video/mp2t\", 'video/mp2t'),",
-                                    "    (\"video/webm\", 'video/webm'),",
+                                    "    (\"video/mp4\", \"video/mp4\"),",
+                                    "    (\"video/mp2t\", \"video/mp2t\"),",
+                                    "    (\"video/webm\", \"video/webm\"),",
                                     "    (\"audio/mp3\", \"audio/mp3\"),",
                                     "    (\"audio/wav\", \"audio/wav\"),",
                                     "    (\"application/x-mpegURL\", \"application/x-mpegURL\"),",
@@ -2214,9 +2077,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Liste des langues proposées lors de l'ajout des vidéos.",
-                                    "Affichés en dessous d'une vidéos, les choix sont aussi utilisés pour affiner la recherche."
+                                    "Liste des langues proposées lors de l’ajout des vidéos.",
+                                    "Affichés en dessous d’une vidéos, les choix sont aussi utilisés pour affiner la recherche."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2229,8 +2091,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Fonction appelée pour lancer l'encodage des vidéos directement (sans thread ni celery)"
+                                    "Fonction appelée pour lancer l’encodage des vidéos directement (sans thread ni celery)."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2243,8 +2104,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Licence proposées pour les vidéos en creative commons : ",
+                                    "Licence proposées pour les vidéos en creative commons : ",
                                     "```",
                                     "LICENCE_CHOICES = (",
                                     "    ('by', (\"Attribution 4.0 International (CC BY 4.0)\")),",
@@ -2271,9 +2131,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Fixe une durée maximale que la date de suppression d'une vidéo ne peut dépasser.",
-                                    "Par défaut : 10 (Année courante + 10 ans)."
+                                    "Fixe une durée maximale que la date de suppression d’une vidéo ne peut dépasser.",
+                                    "Par défaut : 10 (Année courante + 10 ans)."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2286,8 +2145,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Les mots clés saisis lors de l'ajout de vidéo ne peuvent dépasser la longueur saisie"
+                                    "Les mots clés saisis lors de l’ajout de vidéo ne peuvent dépasser cette longueur."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2300,8 +2158,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Valeurs possible pour l'accès à une note",
+                                    "Valeurs possible pour l’accès à une note.",
                                     "```",
                                     "NOTES_STATUS = (",
                                     "    (\"0\", _(\"Private (me only)\")),",
@@ -2321,8 +2178,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Permettre l'usage du oembed, partage dans Moodle, Facebook, Twitter etc."
+                                    "Permettre l’usage du oembed, partage dans Moodle, Facebook, Twitter etc."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2335,7 +2191,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Affichage uniquement des vidéos de la chaîne ou du thème actuel(le).",
                                     "Affichage des sous-thèmes directs de la chaîne ou du thème actuel(le)"
                                 ]
@@ -2350,7 +2205,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Si True, seule les personnes \"Staff\" peuvent déposer des vidéos"
                                 ]
                             },
@@ -2364,8 +2218,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Ensemble des textes d'aide affichés avec le formulaire d'édition de theme.",
+                                    "Ensemble des textes d’aide affichés avec le formulaire d’édition de theme.",
                                     "voir pod/video/forms.py",
                                     "```",
                                     "THEME_FORM_FIELDS_HELP_TEXT = OrderedDict(",
@@ -2408,10 +2261,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Permet d'activer le fonctionnement de categorie au niveau de ses vidéos.",
-                                    "Vous pouvez créer des catégories pour pouvoir ranger vos propres vidéos",
-                                    "Les catégories sont liées à l'utilisateur"
+                                    "Permet d’activer le fonctionnement de categorie au niveau de ses vidéos.",
+                                    "Vous pouvez créer des catégories pour pouvoir ranger vos propres vidéos.",
+                                    "Les catégories sont liées à l’utilisateur."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2424,9 +2276,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Activation de l'obsolescence des video. Permet d'afficher la date de suppression de la video",
-                                    "dans le formulaire d'edition et dans la partie admin"
+                                    "Activation de l’obsolescence des video. Permet d’afficher la date de suppression de la video",
+                                    "dans le formulaire d’edition et dans la partie admin."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2439,10 +2290,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Permet d'activer la possibilité de voir en details le nombre de visualisation d'une vidéo durant un jour donné ou mois,",
+                                    "Permet d’activer la possibilité de voir en details le nombre de visualisation d’une vidéo durant un jour donné ou mois,",
                                     "année ou encore le nombre de vue total depuis la création de la vidéo.",
-                                    "Un lien est rajouté dans la partie info lors de la lecture d'une vidéo, un lien est rajouté dans la page de visualisation d'une chaîne ou un theme",
+                                    "Un lien est rajouté dans la partie info lors de la lecture d’une vidéo, un lien est rajouté dans la page de visualisation d’une chaîne ou un theme",
                                     "ou encore toutes les vidéos présentes sur la plateforme."
                                 ]
                             },
@@ -2456,13 +2306,30 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Ce paramètre permet d'activer l’envoi d'évènements sur le lecteur vidéo à Matomo n'est utile que si le code piwik / matomo est présent dans l'instance de Esup-Pod.",
-                                    "les évènements envoyés sont :",
+                                    "Ce paramètre permet d’activer l’envoi d’évènements sur le lecteur vidéo à Matomo.",
+                                    "N’est utile que si le code piwik / matomo est présent dans l’instance de Esup-Pod.",
+                                    "Les évènements envoyés sont :",
                                     "   play, pause, seeked, ended, ratechange, fullscreen, error, loadmetadata",
-                                    "Pour rajouter le code Piwik/Matomo dans votre instance de Pod, il suffit de créer un fichier 'pod/custom/templates/custom/tracking.html'",
+                                    "Pour rajouter le code Piwik/Matomo dans votre instance de Pod, il suffit de créer un fichier `pod/custom/templates/custom/tracking.html`",
                                     "Il faut ensuite y insérer le code javascript puis dans votre fichier settings_local.py,",
-                                    "de préciser dans la variable TEMPLATE_VISIBLE_SETTINGS :'TRACKING_TEMPLATE': 'custom/tracking.html'"
+                                    "de préciser dans la variable `TEMPLATE_VISIBLE_SETTINGS`: `'TRACKING_TEMPLATE': 'custom/tracking.html'"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "USE_XAPI_VIDEO": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Enables sending xAPI statements for the video player.",
+                                    "Attention, you must set USE_XAPI to True for the statements to be sent."
+                                ],
+                                "fr": [
+                                    "",
+                                    "Active l‘envoi d’instructions xAPI pour le lecteur vidéo.",
+                                    "Attention, il faut mettre USE_XAPI à True pour que les instructions soient envoyées."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2475,7 +2342,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Extension autorisée pour le téléversement sur la plateforme",
                                     "```",
                                     "VIDEO_ALLOWED_EXTENSIONS = (",
@@ -2512,8 +2378,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Liste des champs du formulaire d'édition de vidéos affichés"
+                                    "Liste des champs du formulaire d’édition de vidéos affichées."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2526,8 +2391,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Ensemble des textes d'aide affichés avec le formulaire d'envoi de vidéo",
+                                    "Ensemble des textes d’aide affichés avec le formulaire d’envoi de vidéo.",
                                     "```",
                                     "VIDEO_FORM_FIELDS_HELP_TEXT = OrderedDict(",
                                     "    [",
@@ -2762,8 +2626,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Taille maximum en Go des fichiers téléversés sur la plateforme"
+                                    "Taille maximum en Go des fichiers téléversés sur la plateforme."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2776,8 +2639,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Configuration des choix de vitesse de lecture pour le lecteur vidéo"
+                                    "Configuration des choix de vitesse de lecture pour le lecteur vidéo."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2790,8 +2652,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Durée (en nombre de jours) sur laquelle on souhaite compter le nombre de vues récentes"
+                                    "Durée (en nombre de jours) sur laquelle on souhaite compter le nombre de vues récentes."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2804,8 +2665,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Rendu serializé des rendus pour l'encodage des videos. Cela permet de pouvoir encoder les vidéos sans l'environnement de Pod",
+                                    "Rendu serializé pour l’encodage des videos.",
+                                    "Cela permet de pouvoir encoder les vidéos sans l’environnement de Pod.",
                                     "```",
                                     "VIDEO_RENDITIONS = [",
                                     "    {",
@@ -2849,10 +2710,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Permet d'ajouter l'attribut obligatoire dans le formulaire d'edition et d'ajout d'une video:",
-                                    "Exemple valeur: [\"discipline\", \"tags\"]",
-                                    "NB: les champs cachés et suivant ne sont pas pris en compte:",
+                                    "Permet d’ajouter l’attribut obligatoire dans le formulaire d’edition et d’ajout d’une video :",
+                                    "Exemple de valeur : [\"discipline\", \"tags\"]",
+                                    "NB : les champs cachés et suivant ne sont pas pris en compte :",
                                     "(video, title, type, owner, date_added, cursus, main_lang)"
                                 ]
                             },
@@ -2866,8 +2726,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Réserve l'accès aux statistiques des vidéos aux personnes authentifiées"
+                                    "Réserve l’accès aux statistiques des vidéos aux personnes authentifiées."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2876,7 +2735,7 @@
                     },
                     "title": {
                         "en": "",
-                        "fr": "Configuration application vidéo"
+                        "fr": "Configuration application vidéo."
                     }
                 },
                 "video_search": {
@@ -2889,7 +2748,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Valeur pour l’index de ElasticSearch"
                                 ]
                             },
@@ -2903,8 +2761,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Valeur max essai pour configuration de ElasticSearch"
+                                    "Valeur max de tentatives pour ElasticSearch."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2917,8 +2774,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Valeur timeout pour configuration de ElasticSearch"
+                                    "Valeur de timeout pour ElasticSearch."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2931,8 +2787,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "adresse du ou des instances d'Elasticsearch utilisées pour l'indexation et la recherche de vidéo."
+                                    "Adresse du ou des instances d’Elasticsearch utilisées pour l’indexation et la recherche de vidéo."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2945,12 +2800,11 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Version d'ElasticSearch",
+                                    "Version d’ElasticSearch.",
                                     "valeurs possibles 6 ou 7 (pour indiquer utiliser ElasticSearch 6 ou 7)",
                                     "pour utiliser la version 7, faire une mise à jour du paquet elasticsearch-py ",
-                                    "pip3 install elasticsearch==7.10.1",
-                                    "https://elasticsearch-py.readthedocs.io/en/v7.10.1/"
+                                    "`pip3 install elasticsearch==7.10.1`",
+                                    "[https://elasticsearch-py.readthedocs.io/en/v7.10.1/]()"
                                 ]
                             },
                             "pod_version_end": "",
@@ -2960,6 +2814,98 @@
                     "title": {
                         "en": "",
                         "fr": "Configuration application search"
+                    }
+                },
+                "xapi": {
+                    "description": {
+                        "en": [
+                            "",
+                            "Application for sending xAPI statements to an LRS.",
+                            "No statements persist in Pod, they are all sent to the configured LRS.",
+                            "Please note, Celery must be set to send statements."
+                        ],
+                        "fr": [
+                            "",
+                            "Application pour l’envoi d‘instructions xAPI à un LRS.",
+                            "Aucune instruction ne persiste dans Pod, elles sont toutes envoyées au LRS paramétré.",
+                            "Attention, il faut configurer Celery pour l’envoi des instructions."
+                        ]
+                    },
+                    "settings": {
+                        "USE_XAPI": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Activation de l'application xAPI"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "XAPI_ANONYMIZE_ACTOR": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si False, le nom de l'utilisateur sera stocké en clair dans les statements xAPI, si True, son nom d'utilisateur sera anonymisé"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "XAPI_LRS_LOGIN": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "identifiant de connexion du LRS pour l'envoi des statements"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "XAPI_LRS_PWD": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "mot de passe de connexion du LRS pour l'envoi des statements"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "XAPI_LRS_URL": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "URL de destination pour l'envoi des statements. I.E. : https://ralph.univ.fr/xAPI/statements"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        }
+                    },
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application xapi"
                     }
                 }
             },
@@ -2975,26 +2921,17 @@
                     "description": {},
                     "settings": {
                         "DATABASES": {
-                            "default_value": "",
+                            "default_value": "```python\n{\n    'default': {\n        'ENGINE': 'django.db.backends.sqlite3',\n        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),\n    }\n}\n```",
                             "description": {
                                 "en": [
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Un dictionnaire contenant les réglages de toutes les bases de données à utiliser avec Django.",
                                     "C’est un dictionnaire imbriqué dont les contenus font correspondre l’alias de base de données avec un dictionnaire contenant les options de chacune des bases de données.",
-                                    "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#databases__",
-                                    "valeur par défaut : une base de données au format sqlite",
-                                    "```",
-                                    "DATABASES = {",
-                                    "    'default': {",
-                                    "        'ENGINE': 'django.db.backends.sqlite3',",
-                                    "        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),",
-                                    "    }",
-                                    "}",
-                                    "```",
-                                    "Voici un exemple de configuration pour utiliser une base MySQL : ",
+                                    "__ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#databases]()__",
+                                    "valeur par défaut : une base de données au format sqlite",
+                                    "Voici un exemple de configuration pour utiliser une base MySQL :",
                                     "```",
                                     "DATABASES = {",
                                     "    'default': {",
@@ -3031,7 +2968,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Liste des adresses destinataires des courriels de contact"
                                 ]
                             },
@@ -3045,10 +2981,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Si 'True', les e-mails de contacts seront adressés, selon le sujet,",
-                                    "soit au propriétaire de la vidéo soit au(x) manageur(s) des vidéos Pod.",
-                                    "(voir USER_CONTACT_EMAIL_CASE et USE_ESTABLISHMENT_FIELD)"
+                                    "soit au propriétaire de la vidéo soit au(x) manager(s) des vidéos Pod.",
+                                    "(voir `USER_CONTACT_EMAIL_CASE` et `USE_ESTABLISHMENT_FIELD`)"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3061,7 +2996,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Expediteur par défaut pour les envois de courriel (contact, encodage etc.)"
                                 ]
                             },
@@ -3075,9 +3009,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "nom du serveur smtp ",
-                                    "_ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#email-host_"
+                                    "_ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#email-host]()_"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3090,8 +3023,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "port d'écoute du serveur smtp"
+                                    "Port d’écoute du serveur SMTP."
                                 ]
                             },
                             "pod_version_end": "",
@@ -3104,8 +3036,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Préfixe par défaut pour l'objet des courriels"
+                                    "Préfixe par défaut pour l’objet des courriels."
                                 ]
                             },
                             "pod_version_end": "",
@@ -3118,7 +3049,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Expediteur par défaut pour les envois automatique (erreur de code etc.)"
                                 ]
                             },
@@ -3132,7 +3062,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Choix de sujet pour les courriels envoyés depuis la plateforme",
                                     "```",
                                     "SUBJECT_CHOICES = (",
@@ -3157,9 +3086,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "liste de destinataire pour les demandes d'assistance si différent de CONTACT_US_EMAIL",
-                                    "i.e.: SUPPORT_EMAIL = [\"assistance_pod@univ.fr\"]"
+                                    "Liste de destinataire(s) pour les demandes d’assistance, si différent de `CONTACT_US_EMAIL`",
+                                    "i.e.: `SUPPORT_EMAIL = [\"assistance_pod@univ.fr\"]`"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3172,11 +3100,10 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Une liste contenant les sujets de contact dont l'utilisateur",
-                                    "sera seul destinataire plutôt que le(s) manageur(s).",
-                                    "Si la liste est vide, les mails de contact seront envoyés au(x) manageur(s).",
-                                    "Valeurs possibles :",
+                                    "Une liste contenant les sujets de contact dont l’utilisateur",
+                                    "sera seul destinataire plutôt que le(s) manager(s).",
+                                    "Si la liste est vide, les mails de contact seront envoyés au(x) manager(s).",
+                                    "Valeurs possibles :",
                                     " 'info', 'contribute', 'request_password',",
                                     " 'inapropriate_content', 'bug', 'other'"
                                 ]
@@ -3191,19 +3118,15 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Si valeur vaut 'True', rajoute un attribut 'establishment'",
-                                    "à l'utilisateur Pod, ce qui permet de gérer plus d'un établissement.",
+                                    "à l’utilisateur Pod, ce qui permet de gérer plus d’un établissement.",
                                     "Dans ce cas, les emails de contact par exemple seront envoyés",
-                                    " soit à l'utilisateur soit au(x) manageur(s)",
-                                    " de l'établissement de l'utilisateur.",
-                                    "(voir USER_CONTACT_EMAIL_CASE)",
-                                    "Egalement, les emails de fin d'encodage seront envoyés au(x) manageur(s)",
-                                    " de l'établissement du propriétaire de la vidéo encodée,",
-                                    " en plus d'un email au propriétaire confirmant la fin d'encodage d'une vidéo.",
-                                    "Un dictionnaire contenant les réglages de toutes les bases de données à utiliser avec Django.<br>",
-                                    "C’est un dictionnaire imbriqué dont les contenus font correspondre l’alias de base de données avec un dictionnaire contenant les options de chacune des bases de données.<br>",
-                                    "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#databases__"
+                                    " soit à l’utilisateur soit au(x) manager(s)",
+                                    " de l’établissement de l’utilisateur.",
+                                    "(voir `USER_CONTACT_EMAIL_CASE`)",
+                                    "Également, les emails de fin d’encodage seront envoyés au(x) manager(s)",
+                                    " de l’établissement du propriétaire de la vidéo encodée,",
+                                    " en plus d’un email au propriétaire confirmant la fin d’encodage d’une vidéo."
                                 ]
                             },
                             "pod_version_end": "",
@@ -3271,7 +3194,7 @@
                             "pod_version_init": "3.1.0"
                         },
                         "FFMPEG_EXTRACT_SUBTITLE": {
-                            "default_value": "-map 0:%(index)s -f webvtt -y  \"%(output)s\" ",
+                            "default_value": "-map 0:%(index)s -f webvtt -y \"%(output)s\" ",
                             "description": {
                                 "en": [
                                     ""
@@ -3284,7 +3207,7 @@
                             "pod_version_init": "3.1.0"
                         },
                         "FFMPEG_EXTRACT_THUMBNAIL": {
-                            "default_value": "-map 0:%(index)s -an -c:v copy -y  \"%(output)s\" ",
+                            "default_value": "-map 0:%(index)s -an -c:v copy -y \"%(output)s\" ",
                             "description": {
                                 "en": [
                                     ""
@@ -3310,7 +3233,7 @@
                             "pod_version_init": "3.1.0"
                         },
                         "FFMPEG_HLS_ENCODE_PARAMS": {
-                            "default_value": "-vf \"scale=-2:%(height)s\" -maxrate %(maxrate)s -bufsize %(bufsize)s -b:a:0 %(ba)s -hls_playlist_type vod -hls_time %(hls_time)s  -hls_flags single_file -master_pl_name \"livestream%(height)s.m3u8\" -y \"%(output)s\" ",
+                            "default_value": "-vf \"scale=-2:%(height)s\" -maxrate %(maxrate)s -bufsize %(bufsize)s -b:a:0 %(ba)s -hls_playlist_type vod -hls_time %(hls_time)s -hls_flags single_file -master_pl_name \"livestream%(height)s.m3u8\" -y \"%(output)s\" ",
                             "description": {
                                 "en": [
                                     ""
@@ -3401,7 +3324,7 @@
                             "pod_version_init": "3.1.0"
                         },
                         "FFMPEG_MP4_ENCODE": {
-                            "default_value": "-map 0:v:0 %(map_audio)s -c:v %(libx)s  -vf \"scale=-2:%(height)s\" -preset %(preset)s -profile:v %(profile)s -pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s -sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -max_muxing_queue_size 4000 -c:a aac -ar 48000 -b:a %(ba)s -movflags faststart -y -vsync 0 \"%(output)s\" ",
+                            "default_value": "-map 0:v:0 %(map_audio)s -c:v %(libx)s -vf \"scale=-2:%(height)s\" -preset %(preset)s -profile:v %(profile)s -pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s -sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -max_muxing_queue_size 4000 -c:a aac -ar 48000 -b:a %(ba)s -movflags faststart -y -vsync 0 \"%(output)s\" ",
                             "description": {
                                 "en": [
                                     ""
@@ -3466,9 +3389,9 @@
                             "pod_version_init": "3.1.0"
                         },
                         "FFMPEG_STUDIO_COMMAND": {
-                            "default_value": [
-                                " -hide_banner -threads %(nb_threads)s -i \"%(input)s\" %(subtime)s -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf %(crf)s -sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -max_muxing_queue_size 4000 -deinterlace "
-                            ],
+                            "default_value":
+                                " -hide_banner -threads %(nb_threads)s %(input)s %(subtime)s -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf %(crf)s -sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -max_muxing_queue_size 4000 -deinterlace "
+                            ,
                             "description": {
                                 "en": [
                                     ""
@@ -3529,10 +3452,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Nom du répertoire racine où les fichiers \"complémentaires\"",
                                     "(hors vidéos etc.) sont téléversés. Notament utilisé par PODFILE",
-                                    "A modifier principalement pour indiquer dans LOCATION votre serveur de cache si elle n'est pas sur la même machine que votre POD"
+                                    "À modifier principalement pour indiquer dans LOCATION votre serveur de cache si elle n’est pas sur la même machine que votre POD."
                                 ]
                             },
                             "pod_version_end": "",
@@ -3545,9 +3467,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que FILE_UPLOAD_MAX_MEMORY_SIZE) lors des téléversements de fichiers.<br>",
-                                    "_ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir_"
+                                    "_ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir]()_"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3560,10 +3481,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Chemin absolu du système de fichiers pointant vers le répertoire qui contiendra les fichiers téléversés par les utilisateurs.<br>",
                                     "Attention, ce répertoire doit exister<br>",
-                                    "_ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-MEDIA_ROOT_"
+                                    "_ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-MEDIA_ROOT]()_"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3576,7 +3496,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "prefix url utilisé pour accéder aux fichiers du répertoire media"
                                 ]
                             },
@@ -3590,10 +3509,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Indique à django de compresser automatiquement les fichiers css/js les plus gros lors du collectstatic pour optimiser les tailles de requetes.<br>",
-                                    "À combiner avec un réglage webserver (\"gzip_static  on;\" sur nginx)<br>",
-                                    "_ref: https://github.com/whs/django-static-compress"
+                                    "À combiner avec un réglage webserver (`gzip_static on;` sur nginx)<br>",
+                                    "_ref: [https://github.com/whs/django-static-compress]()"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3606,9 +3524,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Le chemin absolu vers le répertoire dans lequel collectstatic rassemble les fichiers statiques en vue du déploiement. Ce chemin sera précisé dans le fichier de configurtation du vhost nginx.<br>",
-                                    "_ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-STATIC_ROOT_"
+                                    "_ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-STATIC_ROOT]()_"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3621,7 +3538,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "prefix url utilisé pour accèder aux fichiers static"
                                 ]
                             },
@@ -3635,9 +3551,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Utiliser l'application de gestion de fichier fourni avec le projet.",
-                                    "Si False, chaque fichier envoyé ne pourra être utilisé qu'une seule fois."
+                                    "Utiliser l’application de gestion de fichier fourni avec le projet.",
+                                    "Si False, chaque fichier envoyé ne pourra être utilisé qu’une seule fois."
                                 ]
                             },
                             "pod_version_end": "",
@@ -3650,7 +3565,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Répertoire par défaut pour le téléversement des vidéos."
                                 ]
                             },
@@ -3681,7 +3595,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Langue disponible et traduite"
                                 ]
                             },
@@ -3695,7 +3608,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Langue par défaut si non détectée"
                                 ]
                             },
@@ -3712,38 +3624,33 @@
                     "description": {},
                     "settings": {
                         "ADMINS": {
-                            "default_value": "",
+                            "default_value": "[(\"Name\", \"adminmail@univ.fr\"),]",
                             "description": {
                                 "en": [
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "_Valeur par défaut :  (('Name', 'adminmail@univ.fr'),)_<br>",
                                     "Une liste de toutes les personnes qui reçoivent les notifications d’erreurs dans le code.<br>",
                                     "Lorsque DEBUG=False et qu’une vue lève une exception, Django envoie un courriel à ces personnes contenant les informations complètes de l’exception.<br>",
-                                    "Chaque élément de la liste doit être un tuple au format  « (nom complet, adresse électronique) ».<br>",
-                                    "Exemple : [('John', 'john@example.com'), ('Mary', 'mary@example.com')]<br>",
-                                    "Dans Pod, les \"admins\" sont également destinataires des courriels de contact, d'encodage ou de flux rss si la variable CONTACT_US_EMAIL n'est pas renseignée.<br>",
-                                    "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#admins__"
+                                    "Chaque élément de la liste doit être un tuple au format « (nom complet, adresse électronique) ».<br>",
+                                    "Exemple : `[('John', 'john@example.com'), ('Mary', 'mary@example.com')]`<br>",
+                                    "Dans Pod, les \"admins\" sont également destinataires des courriels de contact, d’encodage ou de flux RSS si la variable `CONTACT_US_EMAIL` n’est pas renseignée.<br>",
+                                    "__ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#admins]()__"
                                 ]
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
                         "ALLOWED_HOSTS": {
-                            "default_value": "",
+                            "default_value": "['localhost']",
                             "description": {
                                 "en": [
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "_Valeur par défaut :  ['localhost']_<br>",
                                     "Une liste de chaînes représentant des noms de domaine/d’hôte que ce site Django peut servir.<br>",
                                     "C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP, qui sont possibles même avec bien des configurations de serveur Web apparemment sécurisées.<br>",
-                                    "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts__",
-                                    "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age__"
+                                    "__ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts]()__"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3756,7 +3663,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "répertoire de base"
                                 ]
                             },
@@ -3770,7 +3676,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "CACHES = {",
                                     "    # … default cache config and others",
                                     "    # \"default\": {",
@@ -3804,11 +3709,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "_Valeur par défaut :  not DEBUG_<br>",
-                                    "Ces 3 variables servent à sécuriser la plateforme en passant l'ensemble des requetes en https. Idem pour les cookies de session et de cross-sites qui seront également sécurisés<br>",
-                                    "Il faut les passer à False en cas d'usage du runserver (phase de développement / debugage)<br>",
-                                    "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#secure-ssl-redirect__"
+                                    "Ces 3 variables servent à sécuriser la plateforme en passant l’ensemble des requetes en https. Idem pour les cookies de session et de cross-sites qui seront également sécurisés<br>",
+                                    "Il faut les passer à False en cas d’usage du runserver (phase de développement / debugage)<br>",
+                                    "__ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#secure-ssl-redirect]()__"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3821,11 +3724,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "_Valeur par défaut : True_<br>",
                                     "Une valeur booléenne qui active ou désactive le mode de débogage.<br>",
                                     "Ne déployez jamais de site en production avec le réglage DEBUG activé.<br>",
-                                    "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#debug__"
+                                    "__ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#debug]()__"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3838,26 +3739,24 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "url de redirection pour l'authentification de l'utilisateur",
-                                    "voir : https://docs.djangoproject.com/fr/3.2/ref/settings/#login-url"
+                                    "url de redirection pour l’authentification de l’utilisateur",
+                                    "voir : [https://docs.djangoproject.com/fr/3.2/ref/settings/#login-url]()"
                                 ]
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
                         "MANAGERS": {
-                            "default_value": "ADMINS",
+                            "default_value": "[]",
                             "description": {
                                 "en": [
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Dans Pod, les \"managers\" sont destinataires des courriels de fin d'encodage (et ainsi des vidéos déposées sur la plateforme).<br>",
-                                    "Le premier managers renseigné est également contact des flus rss.<br>",
-                                    "Ils sont aussi destinataires des courriels de contact si la variable CONTACT_US_EMAIL n'est pas renseignée.<br>",
-                                    "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#managers__"
+                                    "Dans Pod, les \"managers\" sont destinataires des courriels de fin d’encodage (et ainsi des vidéos déposées sur la plateforme).<br>",
+                                    "Le premier manager renseigné est également contact des flus RSS.<br>",
+                                    "Ils sont aussi destinataires des courriels de contact si la variable `CONTACT_US_EMAIL` n’est pas renseignée.<br>",
+                                    "__ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#managers]()__"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3870,7 +3769,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Utilisation du proxy - host"
                                 ]
                             },
@@ -3884,7 +3782,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Utilisation du proxy - port"
                                 ]
                             },
@@ -3898,12 +3795,10 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "_Valeur par défaut : 'A_CHANGER'_<br>",
                                     "La clé secrète d’une installation Django.<br>",
                                     "Elle est utilisée dans le contexte de la signature cryptographique, et doit être définie à une valeur unique et non prédictible.<br>",
-                                    "Vous pouvez utiliser ce site pour en générer une : https://djecrety.ir/<br>",
-                                    "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#secret-key__"
+                                    "Vous pouvez utiliser ce site pour en générer une : [https://djecrety.ir/]()<br>",
+                                    "__ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#secret-key]()__"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3929,8 +3824,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "_Valeur par défaut :  14400 (secondes, soit 4 heures)_<br>",
+                                    "_Valeur par défaut : 14400 (secondes, soit 4 heures)_<br>",
                                     "L’âge des cookies de sessions, en secondes."
                                 ]
                             },
@@ -3944,9 +3838,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Cette option empêche le cookie d’être envoyé dans les requêtes inter-sites, ce qui prévient les attaques CSRF et rend impossible certaines méthodes de vol du cookie de session.",
-                                    "Voir https://docs.djangoproject.com/en/3.2/ref/settings/#std-setting-SESSION_COOKIE_SAMESITE"
+                                    "Voir [https://docs.djangoproject.com/en/3.2/ref/settings/#std-setting-SESSION_COOKIE_SAMESITE]()"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3972,8 +3865,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "_Valeur par défaut :  True_<br>",
                                     "Indique s’il faut que la session expire lorsque l’utilisateur ferme son navigateur."
                                 ]
                             },
@@ -3987,10 +3878,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "_Valeur par défaut : 1_<br>",
                                     "L’identifiant (nombre entier) du site actuel. Peut être utilisé pour mettre en place une instance multi-tenant et ainsi gérer dans une même base de données du contenu pour plusieurs sites.<br>",
-                                    "__ref : https://docs.djangoproject.com/fr/3.2/ref/settings/#site-id__"
+                                    "__ref : [https://docs.djangoproject.com/fr/3.2/ref/settings/#site-id]()__"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4000,11 +3889,9 @@
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    "",
                                     "Use to check if gloabls settings are in test mode or not"
                                 ],
                                 "fr": [
-                                    "",
                                     "permet de vérifier si la configuration de la plateforme est en mode test"
                                 ]
                             },
@@ -4018,7 +3905,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Liste des applications tierces accessibles.",
                                     "```",
                                     "THIRD_PARTY_APPS = [\"enrichment\", \"live\"]",
@@ -4035,10 +3921,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "_Valeur par défaut :  \"UTC\"_<br>",
                                     "Une chaîne représentant le fuseau horaire pour cette installation.<br>",
-                                    "__ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-TIME_ZONE__",
+                                    "__ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-TIME_ZONE]()__",
                                     "Liste des adresses destinataires des courriels de contact"
                                 ]
                             },
@@ -4061,8 +3945,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Durée d'obsolescence personnalisée par Affiliation",
+                                    "Durée d’obsolescence personnalisée par Affiliation",
                                     "```",
                                     "ACCOMMODATION_YEARS = {",
                                     "    'affiliate': 1",
@@ -4080,8 +3963,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Nom de l'utilisateur pour l'archivage des vidéos"
+                                    "Nom de l’utilisateur pour l’archivage des vidéos."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4094,12 +3976,12 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Affiliations pour lesquelles on souhaite archiver la vidéo plutôt que de la supprimer.",
-                                    "Si l'affiliation du propriétaire est dans cette variable, alors les vidéos sont affectées à un utilisateur précis",
-                                    "que l'on peut spécifier via le paramètre ARCHIVE_OWNER_USERNAME.",
+                                    "Si l’affiliation du propriétaire est dans cette variable, alors les vidéos sont affectées à un utilisateur précis",
+                                    "que l’on peut spécifier via le paramètre `ARCHIVE_OWNER_USERNAME`.",
                                     "Elles sont mises en mode brouillon et le mot \"archived\" est ajouté à leur titre.",
-                                    "Enfin, elles sont également ajoutées à l'ensemble `Vidéo à Supprimer` (accessible via l'interface d'admin).",
+                                    "Enfin, elles sont également ajoutées à l’ensemble `Vidéo à Supprimer` (accessible via l’interface d’admin).",
+                                    "```python",
                                     "POD_ARCHIVE_AFFILIATION = ['faculty',",
                                     "                           'staff',",
                                     "                           'employee',",
@@ -4112,7 +3994,7 @@
                                     "                           'teacher',",
                                     "                           'registered-reader',",
                                     "                           'member']",
-                                    "ARCHIVE_OWNER_USERNAME = \"archive\""
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4125,8 +4007,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Liste de jour de délais avant l'obsolescence de la vidéo. A chaque délais, le propriétaire recoit un mail d'avertissement pour éventuellement changer la date d'obsolescence de sa vidéo"
+                                    "Liste de jours de délais avant l’obsolescence de la vidéo.",
+                                    "À chaque délai, le propriétaire reçoit un mail d’avertissement pour éventuellement changer la date d’obsolescence de sa vidéo."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4148,9 +4030,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Ce paramètre permet d'afficher un lien \"En savoir plus\"",
-                                    "sur la boite de dialogue d'information sur l'usage des cookies dans Pod.",
+                                    "Ce paramètre permet d’afficher un lien \"En savoir plus\"",
+                                    "sur la boite de dialogue d’information sur l’usage des cookies dans Pod.",
                                     "On peut préciser un lien vers les mentions légales ou page dpo"
                                 ]
                             },
@@ -4164,7 +4045,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Activation du mode sombre"
                                 ]
                             },
@@ -4178,7 +4058,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Activation du mode dyslexie"
                                 ]
                             },
@@ -4192,8 +4071,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si True, permet de cacher l'onglet chaine dans la barre de menu du haut"
+                                    "Si True, permet de cacher l’onglet chaine dans la barre de menu du haut."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4206,7 +4084,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Si True, permet de ne pas afficher les disciplines dans la colonne de droite"
                                 ]
                             },
@@ -4220,8 +4097,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si True, permet de cacher le sélecteur de langue dans le menu du haut"
+                                    "Si True, permet de cacher le sélecteur de langue dans le menu du haut."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4234,8 +4110,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si True, permet de ne pas afficher les liens de partage sur les réseaux sociaux dans la colonne de droite"
+                                    "Si True, permet de ne pas afficher les liens de partage sur les réseaux sociaux dans la colonne de droite."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4248,8 +4123,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si True, permet de ne pas afficher le nuage de mots clés dans la colonne de droite"
+                                    "Si True, permet de ne pas afficher le nuage de mots clés dans la colonne de droite."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4262,7 +4136,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "si True, permet de ne pas afficher la liste des types dans la colonne de droite"
                                 ]
                             },
@@ -4276,8 +4149,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si True, permet de cacher l'entrée type dans le menu de navigation"
+                                    "Si True, permet de cacher l’entrée 'type' dans le menu de navigation."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4290,9 +4162,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Voir description dans authentification",
-                                    "Si valeur vaut 'True', le username de l'utilisateur ne sera pas visible sur la plate-forme Pod et",
+                                    "Si valeur vaut 'True', le username de l’utilisateur ne sera pas visible sur la plate-forme Pod et",
                                     "si la valeur vaut 'False' le username sera affichés aux utilisateurs authentifiés. (par soucis du respect du RGPD)"
                                 ]
                             },
@@ -4306,9 +4177,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Si 'True', le filtre des vidéos par utilisateur ne sera plus visible",
-                                    "si 'False' le filtre sera visible qu'aux personnes authentifiées.",
+                                    "si 'False' le filtre sera visible qu’aux personnes authentifiées.",
                                     "(par soucis du respect du RGPD)"
                                 ]
                             },
@@ -4322,10 +4192,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si valeur vaut 'True', l'onglet Utilisateur ne sera pas visible",
-                                    "et si la valeur vaut 'False' l'onglet Utilisateur ne sera visible",
-                                    "qu'aux personnes authentifiées.",
+                                    "Si valeur vaut 'True', l’onglet Utilisateur ne sera pas visible",
+                                    "et si la valeur vaut 'False' l’onglet Utilisateur ne sera visible",
+                                    "qu’aux personnes authentifiées.",
                                     "(par soucis du respect du RGPD)"
                                 ]
                             },
@@ -4339,8 +4208,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Nombre de vidéos à afficher sur la page d'accueil par défaut, le nombre est fixé à 12"
+                                    "Nombre de vidéos à afficher sur la page d’accueil."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4353,8 +4221,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Afficher les vidéos dont l'accès est protégé par mot de passe sur la page d'accueil"
+                                    "Afficher les vidéos dont l’accès est protégé par mot de passe sur la page d’accueil."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4367,8 +4234,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Afficher les vidéos dont l'accès est protégé par authentification sur la page d'accueil"
+                                    "Afficher les vidéos dont l’accès est protégé par authentification sur la page d’accueil."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4381,8 +4247,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Les utilisateurs inactifs ne sont plus affichés dans la barre de menu utilisateur"
+                                    "Les utilisateurs inactifs ne sont plus affichés dans la barre de menu utilisateur."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4395,8 +4260,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Les utilisateurs non staff ne sont plus affichés dans la barre de menu utilisateur"
+                                    "Les utilisateurs non staff ne sont plus affichés dans la barre de menu utilisateur."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4409,9 +4273,8 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Nom de la fédération d'identité utilisée",
-                                    "Affiché sur le bouton de connexion si l'authentification shibboleth est utilisée"
+                                    "Nom de la fédération d’identité utilisée",
+                                    "Affiché sur le bouton de connexion si l’authentification shibboleth est utilisée."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4424,8 +4287,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si True, affiche les prochains évènements sur la page d'accueil"
+                                    "Si True, affiche les prochains évènements sur la page d’accueil."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4438,8 +4300,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Si True, affiche uniquement les thèmes de premier niveau dans l'onglet 'Chaîne'"
+                                    "Si True, affiche uniquement les thèmes de premier niveau dans l’onglet 'Chaîne'."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4452,7 +4313,6 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "```",
                                     "TEMPLATE_VISIBLE_SETTINGS = {",
                                     "# Titre du site.",
@@ -4480,7 +4340,7 @@
                                     "'LINK_PLAYER': '',",
                                     " ",
                                     "# Texte affiché dans le footer. Une ligne par entrée, accepte du code html.",
-                                    "# Par exemple :",
+                                    "# Par exemple :",
                                     "# ( '42, rue Paul Duez',",
                                     "#   '59000 Lille - France',",
                                     "#   ('<a href=\"https://goo.gl/maps/AZnyBK4hHaM2\"'",
@@ -4492,7 +4352,7 @@
                                     " ",
                                     "# Si souhaitée, à créer et sauvegarder",
                                     "#  dans le répertoire static de l'application custom et",
-                                    "#  préciser le chemin d'accès. Par exemple : \"custom/etab.css\"",
+                                    "#  préciser le chemin d'accès. Par exemple : \"custom/etab.css\"",
                                     "'CSS_OVERRIDE': '',",
                                     " ",
                                     "# Vous pouvez créer un template dans votre application custom et",
@@ -4536,8 +4396,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "decoupage de l'audio pour la transcription"
+                                    "Découpage de l’audio pour la transcription."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4550,10 +4409,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
                                     "Paramétrage des modèles pour la transcription",
-                                    "Voir la documentation à cette adresse : https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3",
-                                    "Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models",
+                                    "Voir la documentation à cette adresse : [https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3]()",
+                                    "Pour télécharger les Modeles Vosk : [https://alphacephei.com/vosk/models]()",
                                     "```",
                                     "TRANSCRIPTION_MODEL_PARAM = {",
                                     "    # le modèle stt",
@@ -4583,8 +4441,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Activation de la normalisation de l'audio avant sa transcription"
+                                    "Activation de la normalisation de l’audio avant sa transcription."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4597,8 +4454,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Niveau de normalisation de l'audio avant sa transcription"
+                                    "Niveau de normalisation de l’audio avant sa transcription."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4611,8 +4467,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Temps maximum en secondes des blanc entre chaque mot pour le decoupage des sous-titres avec l'outil STT"
+                                    "Temps maximum en secondes des blancs entre chaque mot pour le decoupage des sous-titres avec l’outil STT."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4625,8 +4480,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Temps en seconde maximum pour une phrase lors de la transcription avec l'outil STT"
+                                    "Temps en secondes maximum pour une phrase lors de la transcription avec l’outil STT."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4639,8 +4493,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Choix de l'outil pour la transcription : STT ou VOSK"
+                                    "Choix de l’outil pour la transcription : STT ou VOSK."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4653,8 +4506,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Fonction appelée pour lancer la transcription des vidéos"
+                                    "Fonction appelée pour lancer la transcription des vidéos."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4667,8 +4519,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Activation de la transcription"
+                                    "Activation de la transcription."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4696,12 +4547,13 @@
                 "en": "",
                 "fr": [
                     "",
-                    "La plateforme Esup-Pod se base sur le framework Django écrit en Python. Elle supporte les versions 3.7, 3.8 et 3.9 de Python",
+                    "La plateforme Esup-Pod se base sur le framework Django écrit en Python.",
+                    "Elle supporte les versions 3.7, 3.8 et 3.9 de Python.",
                     "",
-                    "**Django Version : 3.2 LTS**",
+                    "**Django Version : 3.2 LTS**",
                     "",
-                    "> La documentation complète du framework : https://docs.djangoproject.com/fr/3.2/ (ou https://docs.djangoproject.com/en/3.2/)<br>",
-                    "> L’Ensemble des variables de configuration du framework est accessible à cette adresse : https://docs.djangoproject.com/fr/3.2/ref/settings/",
+                    "> La documentation complète du framework : [https://docs.djangoproject.com/fr/3.2/]() (ou [https://docs.djangoproject.com/en/3.2/]())<br>",
+                    "> L’ensemble des variables de configuration du framework est accessible à cette adresse : [https://docs.djangoproject.com/fr/3.2/ref/settings/]()",
                     "",
                     "Voici les configurations des applications tierces utilisées par Esup-Pod.",
                     ""
@@ -4713,8 +4565,8 @@
                     "description": {
                         "en": "",
                         "fr": [
-                            "Système d'authentification SSO_CAS",
-                            "https://github.com/kstateome/django-cas"
+                            "Système d’authentification SSO_CAS",
+                            "[https://github.com/kstateome/django-cas]()"
                         ]
                     },
                     "pod_version_end": "",
@@ -4725,8 +4577,8 @@
                     "description": {
                         "en": "",
                         "fr": [
-                            "L'application modeltranslation est utilisée pour traduire le contenu dynamique des modèles Django existants",
-                            "https://django-modeltranslation.readthedocs.io/en/latest/installation.html#configuration"
+                            "L’application modeltranslation est utilisée pour traduire le contenu dynamique des modèles Django existants",
+                            "[https://django-modeltranslation.readthedocs.io/en/latest/installation.html#configuration]()"
                         ]
                     },
                     "pod_version_end": "",
@@ -4738,7 +4590,7 @@
                         "en": "",
                         "fr": [
                             "Gestion du captcha du formulaire de contact",
-                            "https://django-simple-captcha.readthedocs.io/en/latest/usage.html"
+                            "[https://django-simple-captcha.readthedocs.io/en/latest/usage.html]()"
                         ]
                     },
                     "pod_version_end": "",
@@ -4749,8 +4601,8 @@
                     "description": {
                         "en": "",
                         "fr": [
-                            "Envoie de fichier par morceaux // voir pour mettre à jour si nécessaire",
-                            "https://github.com/juliomalegria/django-chunked-upload"
+                            "Envoi de fichier par morceaux // voir pour mettre à jour si nécessaire",
+                            "[https://github.com/juliomalegria/django-chunked-upload]()"
                         ]
                     },
                     "pod_version_end": "",
@@ -4761,8 +4613,8 @@
                     "description": {
                         "en": "",
                         "fr": [
-                            "Application permettant d'ajouter un éditeur CKEditor dans certains champs",
-                            "https://django-ckeditor.readthedocs.io/en/latest/#installation"
+                            "Application permettant d’ajouter un éditeur CKEditor dans certains champs",
+                            "[https://django-ckeditor.readthedocs.io/en/latest/#installation]()"
                         ]
                     },
                     "pod_version_end": "",
@@ -4774,7 +4626,7 @@
                         "en": "",
                         "fr": [
                             "Recherche et completion dans les formulaires",
-                            "https://django-select2.readthedocs.io/en/latest/"
+                            "[https://django-select2.readthedocs.io/en/latest/]()"
                         ]
                     },
                     "pod_version_end": "",
@@ -4786,7 +4638,7 @@
                         "en": "",
                         "fr": [
                             "Utilisé pour le formulaire de contact de Pod - ajoute un champ caché pour diminuer le spam",
-                            "https://github.com/jamesturk/django-honeypot/"
+                            "[https://github.com/jamesturk/django-honeypot/]()"
                         ]
                     },
                     "pod_version_end": "",
@@ -4797,8 +4649,8 @@
                     "description": {
                         "en": "",
                         "fr": [
-                            "Système d'authentification OpenID Connect",
-                            "https://mozilla-django-oidc.readthedocs.io/en/stable/installation.html"
+                            "Système d’authentification OpenID Connect",
+                            "[https://mozilla-django-oidc.readthedocs.io/en/stable/installation.html]()"
                         ]
                     },
                     "pod_version_end": "",
@@ -4809,8 +4661,8 @@
                     "description": {
                         "en": "",
                         "fr": [
-                            "version 3.14.0: mise en place de l'API rest pour l'application",
-                            "https://www.django-rest-framework.org/"
+                            "version 3.14.0: mise en place de l’API rest pour l’application",
+                            "[https://www.django-rest-framework.org/]()"
                         ]
                     },
                     "pod_version_end": "",
@@ -4821,8 +4673,8 @@
                     "description": {
                         "en": "",
                         "fr": [
-                            "Système d'authentification Shibboleth",
-                            "https://github.com/Brown-University-Library/django-shibboleth-remoteuser"
+                            "Système d’authentification Shibboleth",
+                            "[https://github.com/Brown-University-Library/django-shibboleth-remoteuser]()"
                         ]
                     },
                     "pod_version_end": "",
@@ -4834,7 +4686,7 @@
                         "en": "",
                         "fr": [
                             "Utilisée pour la génération de miniature des images",
-                            "https://sorl-thumbnail.readthedocs.io/en/latest/reference/settings.html"
+                            "[https://sorl-thumbnail.readthedocs.io/en/latest/reference/settings.html]()"
                         ]
                     },
                     "pod_version_end": "",
@@ -4846,7 +4698,7 @@
                         "en": "",
                         "fr": [
                             "Gestion des mots-clés associés à une vidéo // voir pour référencer une nouvelle application",
-                            "https://django-tagging.readthedocs.io/en/develop/#settings"
+                            "[https://django-tagging.readthedocs.io/en/develop/#settings]()"
                         ]
                     },
                     "pod_version_end": "",

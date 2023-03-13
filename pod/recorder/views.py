@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """Esup-pod recorder views."""
-from __future__ import unicode_literals
 import os
 import datetime
 import uuid
+import re
 
 # import urllib
 from urllib.parse import unquote
@@ -371,12 +371,17 @@ def studio_pod(request):
         )
     # Render the Opencast studio index file
     opencast_studio_rendered = render_to_string("studio/index.html")
-    # head = opencast_studio_rendered[opencast_studio_rendered.index("<head>")
-    # + len("<head>"):opencast_studio_rendered.index("</head>")]
+    head = opencast_studio_rendered[
+        opencast_studio_rendered.index("<head>")
+        + len("<head>") : opencast_studio_rendered.index("</head>")
+    ]
+    scripts = re.findall('<script .[a-z="]+ src=".[a-z/.0-9]+"></script>', head)
+    styles = re.findall("<style>.*</style>", head)
     body = opencast_studio_rendered[
         opencast_studio_rendered.index("<body>")
         + len("<body>") : opencast_studio_rendered.index("</body>")
     ]
+    body = "".join(scripts) + "".join(styles) + body
     return render(
         # Render the Opencast studio index file
         request,

@@ -5,2169 +5,2604 @@
 ## Information générale 
 
 
-La plateforme Esup-Pod se base sur le framework Django écrit en Python. Elle supporte les versions 3.7, 3.8 et 3.9 de Python <br/>
+La plateforme Esup-Pod se base sur le framework Django écrit en Python.<br/>
+Elle supporte les versions 3.7, 3.8 et 3.9 de Python.<br/>
 
-**Django Version : 3.2 LTS** <br/>
+**Django Version : 3.2 LTS**<br/>
 
-> La documentation complète du framework : https://docs.djangoproject.com/fr/3.2/ (ou https://docs.djangoproject.com/en/3.2/)<br> <br/>
-> L’Ensemble des variables de configuration du framework est accessible à cette adresse : https://docs.djangoproject.com/fr/3.2/ref/settings/ <br/>
+> La documentation complète du framework : [https://docs.djangoproject.com/fr/3.2/]() (ou [https://docs.djangoproject.com/en/3.2/]())<br><br/>
+> L’ensemble des variables de configuration du framework est accessible à cette adresse : [https://docs.djangoproject.com/fr/3.2/ref/settings/]()<br/>
 
-Voici les configurations des applications tierces utilisées par Esup-Pod. <br/>
+Voici les configurations des applications tierces utilisées par Esup-Pod.<br/>
 
 
- - `CAS` 
-> default value : 1.5.2 <br>
->> Système d'authentification SSO_CAS <br>
->> https://github.com/kstateome/django-cas <br>
+ - `CAS`
 
- - `ModelTransalation` 
-> default value : 0.18.7 <br>
->> L'application modeltranslation est utilisée pour traduire le contenu dynamique des modèles Django existants <br>
->> https://django-modeltranslation.readthedocs.io/en/latest/installation.html#configuration <br>
+  > valeur par défaut : `1.5.2`
 
- - `captcha` 
-> default value : 0.5.17 <br>
->> Gestion du captcha du formulaire de contact <br>
->> https://django-simple-captcha.readthedocs.io/en/latest/usage.html <br>
+  >> Système d’authentification SSO_CAS <br>
+  >> [https://github.com/kstateome/django-cas]() <br>
 
- - `chunked_upload` 
-> default value : 2.0.0 <br>
->> Envoie de fichier par morceaux // voir pour mettre à jour si nécessaire <br>
->> https://github.com/juliomalegria/django-chunked-upload <br>
+ - `ModelTransalation`
 
- - `ckeditor` 
-> default value : 6.3.0 <br>
->> Application permettant d'ajouter un éditeur CKEditor dans certains champs <br>
->> https://django-ckeditor.readthedocs.io/en/latest/#installation <br>
+  > valeur par défaut : `0.18.7`
 
- - `django_select2` 
-> default value : latest <br>
->> Recherche et completion dans les formulaires <br>
->> https://django-select2.readthedocs.io/en/latest/ <br>
+  >> L’application modeltranslation est utilisée pour traduire le contenu dynamique des modèles Django existants <br>
+  >> [https://django-modeltranslation.readthedocs.io/en/latest/installation.html#configuration]() <br>
 
- - `honeypot` 
-> default value : 1.0.3 <br>
->> Utilisé pour le formulaire de contact de Pod - ajoute un champ caché pour diminuer le spam <br>
->> https://github.com/jamesturk/django-honeypot/ <br>
+ - `captcha`
 
- - `mozilla_django_oidc` 
-> default value : 3.0.0 <br>
->> Système d'authentification OpenID Connect <br>
->> https://mozilla-django-oidc.readthedocs.io/en/stable/installation.html <br>
+  > valeur par défaut : `0.5.17`
 
- - `rest_framework` 
-> default value : 3.14.0 <br>
->> version 3.14.0: mise en place de l'API rest pour l'application <br>
->> https://www.django-rest-framework.org/ <br>
+  >> Gestion du captcha du formulaire de contact <br>
+  >> [https://django-simple-captcha.readthedocs.io/en/latest/usage.html]() <br>
 
- - `shibboleth` 
-> default value : latest <br>
->> Système d'authentification Shibboleth <br>
->> https://github.com/Brown-University-Library/django-shibboleth-remoteuser <br>
+ - `chunked_upload`
 
- - `sorl.thumbnail` 
-> default value : 12.9.0 <br>
->> Utilisée pour la génération de miniature des images <br>
->> https://sorl-thumbnail.readthedocs.io/en/latest/reference/settings.html <br>
+  > valeur par défaut : `2.0.0`
 
- - `tagging` 
-> default value : 0.5.0 <br>
->> Gestion des mots-clés associés à une vidéo // voir pour référencer une nouvelle application <br>
->> https://django-tagging.readthedocs.io/en/develop/#settings <br>
+  >> Envoi de fichier par morceaux // voir pour mettre à jour si nécessaire <br>
+  >> [https://github.com/juliomalegria/django-chunked-upload]() <br>
+
+ - `ckeditor`
+
+  > valeur par défaut : `6.3.0`
+
+  >> Application permettant d’ajouter un éditeur CKEditor dans certains champs <br>
+  >> [https://django-ckeditor.readthedocs.io/en/latest/#installation]() <br>
+
+ - `django_select2`
+
+  > valeur par défaut : `latest`
+
+  >> Recherche et completion dans les formulaires <br>
+  >> [https://django-select2.readthedocs.io/en/latest/]() <br>
+
+ - `honeypot`
+
+  > valeur par défaut : `1.0.3`
+
+  >> Utilisé pour le formulaire de contact de Pod - ajoute un champ caché pour diminuer le spam <br>
+  >> [https://github.com/jamesturk/django-honeypot/]() <br>
+
+ - `mozilla_django_oidc`
+
+  > valeur par défaut : `3.0.0`
+
+  >> Système d’authentification OpenID Connect <br>
+  >> [https://mozilla-django-oidc.readthedocs.io/en/stable/installation.html]() <br>
+
+ - `rest_framework`
+
+  > valeur par défaut : `3.14.0`
+
+  >> version 3.14.0: mise en place de l’API rest pour l’application <br>
+  >> [https://www.django-rest-framework.org/]() <br>
+
+ - `shibboleth`
+
+  > valeur par défaut : `latest`
+
+  >> Système d’authentification Shibboleth <br>
+  >> [https://github.com/Brown-University-Library/django-shibboleth-remoteuser]() <br>
+
+ - `sorl.thumbnail`
+
+  > valeur par défaut : `12.9.0`
+
+  >> Utilisée pour la génération de miniature des images <br>
+  >> [https://sorl-thumbnail.readthedocs.io/en/latest/reference/settings.html]() <br>
+
+ - `tagging`
+
+  > valeur par défaut : `0.5.0`
+
+  >> Gestion des mots-clés associés à une vidéo // voir pour référencer une nouvelle application <br>
+  >> [https://django-tagging.readthedocs.io/en/develop/#settings]() <br>
 
 ## Configuration Générale de la plateforme Esup_Pod 
 
 
 ### Base de données
 
- - `DATABASES` 
-> default value :  <br>
+ - `DATABASES`
 
->> Un dictionnaire contenant les réglages de toutes les bases de données à utiliser avec Django. <br>
->> C’est un dictionnaire imbriqué dont les contenus font correspondre l’alias de base de données avec un dictionnaire contenant les options de chacune des bases de données. <br>
->> __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#databases__ <br>
->> valeur par défaut : une base de données au format sqlite <br>
->> ```
->> DATABASES = { 
->>     'default': { 
->>         'ENGINE': 'django.db.backends.sqlite3', 
->>         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'), 
->>     } 
->> } 
->> ```
->> Voici un exemple de configuration pour utiliser une base MySQL :  <br>
->> ```
->> DATABASES = { 
->>     'default': { 
->>         'ENGINE': 'django.db.backends.mysql', 
->>         'NAME': 'pod', 
->>         'USER': 'pod', 
->>         'PASSWORD': 'password', 
->>         'HOST': 'mysql.univ.fr', 
->>         'PORT': '3306', 
->>         'OPTIONS': { 
->>             'init_command': "SET storage_engine=INNODB, sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1, foreign_key_checks = 1", 
->>          }, 
->>     } 
->> } 
->> ```
+  > valeur par défaut :
+
+  >```python
+  {
+      'default': {
+          'ENGINE': 'django.db.backends.sqlite3',
+          'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+      }
+  }
+  ```
+
+  >> Un dictionnaire contenant les réglages de toutes les bases de données à utiliser avec Django. <br>
+  >> C’est un dictionnaire imbriqué dont les contenus font correspondre l’alias de base de données avec un dictionnaire contenant les options de chacune des bases de données. <br>
+  >> __ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#databases]()__ <br>
+  >> valeur par défaut : une base de données au format sqlite <br>
+  >> Voici un exemple de configuration pour utiliser une base MySQL : <br>
+  >>
+  >> ```
+  >> DATABASES = { 
+  >>     'default': { 
+  >>         'ENGINE': 'django.db.backends.mysql', 
+  >>         'NAME': 'pod', 
+  >>         'USER': 'pod', 
+  >>         'PASSWORD': 'password', 
+  >>         'HOST': 'mysql.univ.fr', 
+  >>         'PORT': '3306', 
+  >>         'OPTIONS': { 
+  >>             'init_command': "SET storage_engine=INNODB, sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1, foreign_key_checks = 1", 
+  >>          }, 
+  >>     } 
+  >> } 
+  >>
+  >> ```
 
 ### Courriel
 
- - `CONTACT_US_EMAIL` 
-> default value :  <br>
+ - `CONTACT_US_EMAIL`
 
->> Liste des adresses destinataires des courriels de contact <br>
+  > valeur par défaut : ``
 
- - `CUSTOM_CONTACT_US` 
-> default value : False <br>
+  >> Liste des adresses destinataires des courriels de contact <br>
 
->> Si 'True', les e-mails de contacts seront adressés, selon le sujet, <br>
->> soit au propriétaire de la vidéo soit au(x) manageur(s) des vidéos Pod. <br>
->> (voir USER_CONTACT_EMAIL_CASE et USE_ESTABLISHMENT_FIELD) <br>
+ - `CUSTOM_CONTACT_US`
 
- - `DEFAULT_FROM_EMAIL` 
-> default value : noreply <br>
+  > valeur par défaut : `False`
 
->> Expediteur par défaut pour les envois de courriel (contact, encodage etc.) <br>
+  >> Si 'True', les e-mails de contacts seront adressés, selon le sujet, <br>
+  >> soit au propriétaire de la vidéo soit au(x) manager(s) des vidéos Pod. <br>
+  >> (voir `USER_CONTACT_EMAIL_CASE` et `USE_ESTABLISHMENT_FIELD`) <br>
 
- - `EMAIL_HOST` 
-> default value : smtp.univ.fr <br>
+ - `DEFAULT_FROM_EMAIL`
 
->> nom du serveur smtp  <br>
->> _ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#email-host_ <br>
+  > valeur par défaut : `noreply`
 
- - `EMAIL_PORT` 
-> default value : 25 <br>
+  >> Expediteur par défaut pour les envois de courriel (contact, encodage etc.) <br>
 
->> port d'écoute du serveur smtp <br>
+ - `EMAIL_HOST`
 
- - `EMAIL_SUBJECT_PREFIX` 
-> default value :  <br>
+  > valeur par défaut : `smtp.univ.fr`
 
->> Préfixe par défaut pour l'objet des courriels <br>
+  >> nom du serveur smtp  <br>
+  >> _ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#email-host]()_ <br>
 
- - `SERVER_EMAIL` 
-> default value : noreply <br>
+ - `EMAIL_PORT`
 
->> Expediteur par défaut pour les envois automatique (erreur de code etc.) <br>
+  > valeur par défaut : `25`
 
- - `SUBJECT_CHOICES` 
-> default value : () <br>
+  >> Port d’écoute du serveur SMTP. <br>
 
->> Choix de sujet pour les courriels envoyés depuis la plateforme <br>
->> ```
->> SUBJECT_CHOICES = ( 
->>     ('', '-----'), 
->>     ('info', ('Request more information')), 
->>     ('contribute', ('Learn more about how to contribute')), 
->>     ('request_password', ('Password request for a video')), 
->>     ('inappropriate_content', ('Report inappropriate content')), 
->>     ('bug', ('Correction or bug report')), 
->>     ('other', ('Other (please specify)')) 
->> ) 
->> ```
+ - `EMAIL_SUBJECT_PREFIX`
 
- - `SUPPORT_EMAIL` 
-> default value : None <br>
+  > valeur par défaut : ``
 
->> liste de destinataire pour les demandes d'assistance si différent de CONTACT_US_EMAIL <br>
->> i.e.: SUPPORT_EMAIL = ["assistance_pod@univ.fr"] <br>
+  >> Préfixe par défaut pour l’objet des courriels. <br>
 
- - `USER_CONTACT_EMAIL_CASE` 
-> default value :  <br>
+ - `SERVER_EMAIL`
 
->> Une liste contenant les sujets de contact dont l'utilisateur <br>
->> sera seul destinataire plutôt que le(s) manageur(s). <br>
->> Si la liste est vide, les mails de contact seront envoyés au(x) manageur(s). <br>
->> Valeurs possibles : <br>
->>  'info', 'contribute', 'request_password', <br>
->>  'inapropriate_content', 'bug', 'other' <br>
+  > valeur par défaut : `noreply`
 
- - `USE_ESTABLISHMENT_FIELD` 
-> default value : False <br>
+  >> Expediteur par défaut pour les envois automatique (erreur de code etc.) <br>
 
->> Si valeur vaut 'True', rajoute un attribut 'establishment' <br>
->> à l'utilisateur Pod, ce qui permet de gérer plus d'un établissement. <br>
->> Dans ce cas, les emails de contact par exemple seront envoyés <br>
->>  soit à l'utilisateur soit au(x) manageur(s) <br>
->>  de l'établissement de l'utilisateur. <br>
->> (voir USER_CONTACT_EMAIL_CASE) <br>
->> Egalement, les emails de fin d'encodage seront envoyés au(x) manageur(s) <br>
->>  de l'établissement du propriétaire de la vidéo encodée, <br>
->>  en plus d'un email au propriétaire confirmant la fin d'encodage d'une vidéo. <br>
->> Un dictionnaire contenant les réglages de toutes les bases de données à utiliser avec Django.<br> <br>
->> C’est un dictionnaire imbriqué dont les contenus font correspondre l’alias de base de données avec un dictionnaire contenant les options de chacune des bases de données.<br> <br>
->> __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#databases__ <br>
+ - `SUBJECT_CHOICES`
+
+  > valeur par défaut : `()`
+
+  >> Choix de sujet pour les courriels envoyés depuis la plateforme <br>
+  >>
+  >> ```
+  >> SUBJECT_CHOICES = ( 
+  >>     ('', '-----'), 
+  >>     ('info', ('Request more information')), 
+  >>     ('contribute', ('Learn more about how to contribute')), 
+  >>     ('request_password', ('Password request for a video')), 
+  >>     ('inappropriate_content', ('Report inappropriate content')), 
+  >>     ('bug', ('Correction or bug report')), 
+  >>     ('other', ('Other (please specify)')) 
+  >> ) 
+  >>
+  >> ```
+
+ - `SUPPORT_EMAIL`
+
+  > valeur par défaut : `None`
+
+  >> Liste de destinataire(s) pour les demandes d’assistance, si différent de `CONTACT_US_EMAIL` <br>
+  >> i.e.: `SUPPORT_EMAIL = ["assistance_pod@univ.fr"]` <br>
+
+ - `USER_CONTACT_EMAIL_CASE`
+
+  > valeur par défaut : ``
+
+  >> Une liste contenant les sujets de contact dont l’utilisateur <br>
+  >> sera seul destinataire plutôt que le(s) manager(s). <br>
+  >> Si la liste est vide, les mails de contact seront envoyés au(x) manager(s). <br>
+  >> Valeurs possibles : <br>
+  >>  'info', 'contribute', 'request_password', <br>
+  >>  'inapropriate_content', 'bug', 'other' <br>
+
+ - `USE_ESTABLISHMENT_FIELD`
+
+  > valeur par défaut : `False`
+
+  >> Si valeur vaut 'True', rajoute un attribut 'establishment' <br>
+  >> à l’utilisateur Pod, ce qui permet de gérer plus d’un établissement. <br>
+  >> Dans ce cas, les emails de contact par exemple seront envoyés <br>
+  >>  soit à l’utilisateur soit au(x) manager(s) <br>
+  >>  de l’établissement de l’utilisateur. <br>
+  >> (voir `USER_CONTACT_EMAIL_CASE`) <br>
+  >> Également, les emails de fin d’encodage seront envoyés au(x) manager(s) <br>
+  >>  de l’établissement du propriétaire de la vidéo encodée, <br>
+  >>  en plus d’un email au propriétaire confirmant la fin d’encodage d’une vidéo. <br>
 
 ### Encodage
 
- - `FFMPEG_AUDIO_BITRATE` 
-> default value : 192k <br>
+ - `FFMPEG_AUDIO_BITRATE`
+
+  > valeur par défaut : `192k`
 
 
- - `FFMPEG_CMD` 
-> default value : ffmpeg <br>
+
+ - `FFMPEG_CMD`
+
+  > valeur par défaut : `ffmpeg`
 
 
- - `FFMPEG_CREATE_THUMBNAIL` 
-> default value : -vf "fps=1/(%(duration)s/%(nb_thumbnail)s)" -vsync vfr "%(output)s_%%04d.png" <br>
+
+ - `FFMPEG_CREATE_THUMBNAIL`
+
+  > valeur par défaut : `-vf "fps=1/(%(duration)s/%(nb_thumbnail)s)" -vsync vfr "%(output)s_%%04d.png"`
 
 
- - `FFMPEG_CRF` 
-> default value : 20 <br>
+
+ - `FFMPEG_CRF`
+
+  > valeur par défaut : `20`
 
 
- - `FFMPEG_EXTRACT_SUBTITLE` 
-> default value : -map 0:%(index)s -f webvtt -y  "%(output)s"  <br>
+
+ - `FFMPEG_EXTRACT_SUBTITLE`
+
+  > valeur par défaut : `-map 0:%(index)s -f webvtt -y "%(output)s" `
 
 
- - `FFMPEG_EXTRACT_THUMBNAIL` 
-> default value : -map 0:%(index)s -an -c:v copy -y  "%(output)s"  <br>
+
+ - `FFMPEG_EXTRACT_THUMBNAIL`
+
+  > valeur par défaut : `-map 0:%(index)s -an -c:v copy -y "%(output)s" `
 
 
- - `FFMPEG_HLS_COMMON_PARAMS` 
-> default value : -c:v %(libx)s -preset %(preset)s -profile:v %(profile)s -pix_fmt yuv420p -level %(level)s -crf %(crf)s -sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" -c:a aac -ar 48000 -max_muxing_queue_size 4000  <br>
+
+ - `FFMPEG_HLS_COMMON_PARAMS`
+
+  > valeur par défaut : `-c:v %(libx)s -preset %(preset)s -profile:v %(profile)s -pix_fmt yuv420p -level %(level)s -crf %(crf)s -sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" -c:a aac -ar 48000 -max_muxing_queue_size 4000 `
 
 
- - `FFMPEG_HLS_ENCODE_PARAMS` 
-> default value : -vf "scale=-2:%(height)s" -maxrate %(maxrate)s -bufsize %(bufsize)s -b:a:0 %(ba)s -hls_playlist_type vod -hls_time %(hls_time)s  -hls_flags single_file -master_pl_name "livestream%(height)s.m3u8" -y "%(output)s"  <br>
+
+ - `FFMPEG_HLS_ENCODE_PARAMS`
+
+  > valeur par défaut : `-vf "scale=-2:%(height)s" -maxrate %(maxrate)s -bufsize %(bufsize)s -b:a:0 %(ba)s -hls_playlist_type vod -hls_time %(hls_time)s -hls_flags single_file -master_pl_name "livestream%(height)s.m3u8" -y "%(output)s" `
 
 
- - `FFMPEG_HLS_TIME` 
-> default value : 2 <br>
+
+ - `FFMPEG_HLS_TIME`
+
+  > valeur par défaut : `2`
 
 
- - `FFMPEG_INPUT` 
-> default value : -hide_banner -threads %(nb_threads)s -i "%(input)s"  <br>
+
+ - `FFMPEG_INPUT`
+
+  > valeur par défaut : `-hide_banner -threads %(nb_threads)s -i "%(input)s" `
 
 
- - `FFMPEG_LEVEL` 
-> default value : 3 <br>
+
+ - `FFMPEG_LEVEL`
+
+  > valeur par défaut : `3`
 
 
- - `FFMPEG_LIBX` 
-> default value : libx264 <br>
+
+ - `FFMPEG_LIBX`
+
+  > valeur par défaut : `libx264`
 
 
- - `FFMPEG_M4A_ENCODE` 
-> default value : -vn -c:a aac -b:a %(audio_bitrate)s "%(output)s"  <br>
+
+ - `FFMPEG_M4A_ENCODE`
+
+  > valeur par défaut : `-vn -c:a aac -b:a %(audio_bitrate)s "%(output)s" `
 
 
- - `FFMPEG_MP3_ENCODE` 
-> default value : -vn -codec:a libmp3lame -qscale:a 2 -y "%(output)s"  <br>
+
+ - `FFMPEG_MP3_ENCODE`
+
+  > valeur par défaut : `-vn -codec:a libmp3lame -qscale:a 2 -y "%(output)s" `
 
 
- - `FFMPEG_MP4_ENCODE` 
-> default value : -map 0:v:0 %(map_audio)s -c:v %(libx)s  -vf "scale=-2:%(height)s" -preset %(preset)s -profile:v %(profile)s -pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s -sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 -c:a aac -ar 48000 -b:a %(ba)s -movflags faststart -y -vsync 0 "%(output)s"  <br>
+
+ - `FFMPEG_MP4_ENCODE`
+
+  > valeur par défaut : `-map 0:v:0 %(map_audio)s -c:v %(libx)s -vf "scale=-2:%(height)s" -preset %(preset)s -profile:v %(profile)s -pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s -sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 -c:a aac -ar 48000 -b:a %(ba)s -movflags faststart -y -vsync 0 "%(output)s" `
 
 
- - `FFMPEG_NB_THREADS` 
-> default value : 0 <br>
+
+ - `FFMPEG_NB_THREADS`
+
+  > valeur par défaut : `0`
 
 
- - `FFMPEG_NB_THUMBNAIL` 
-> default value : 3 <br>
+
+ - `FFMPEG_NB_THUMBNAIL`
+
+  > valeur par défaut : `3`
 
 
- - `FFMPEG_PRESET` 
-> default value : slow <br>
+
+ - `FFMPEG_PRESET`
+
+  > valeur par défaut : `slow`
 
 
- - `FFMPEG_PROFILE` 
-> default value : high <br>
+
+ - `FFMPEG_PROFILE`
+
+  > valeur par défaut : `high`
 
 
- - `FFMPEG_STUDIO_COMMAND` 
-> default value : [' -hide_banner -threads %(nb_threads)s -i "%(input)s" %(subtime)s -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf %(crf)s -sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 -deinterlace '] <br>
+
+ - `FFMPEG_STUDIO_COMMAND`
+
+  > valeur par défaut : ` -hide_banner -threads %(nb_threads)s %(input)s %(subtime)s -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf %(crf)s -sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 -deinterlace `
 
 
- - `FFPROBE_CMD` 
-> default value : ffprobe <br>
+
+ - `FFPROBE_CMD`
+
+  > valeur par défaut : `ffprobe`
 
 
- - `FFPROBE_GET_INFO` 
-> default value : %(ffprobe)s -v quiet -show_format -show_streams %(select_streams)s -print_format json -i %(source)s <br>
+
+ - `FFPROBE_GET_INFO`
+
+  > valeur par défaut : `%(ffprobe)s -v quiet -show_format -show_streams %(select_streams)s -print_format json -i %(source)s`
+
 
 
 ### Gestion des fichiers
 
 
- - `FILES_DIR` 
-> default value : files <br>
+ - `FILES_DIR`
 
->> Nom du répertoire racine où les fichiers "complémentaires" <br>
->> (hors vidéos etc.) sont téléversés. Notament utilisé par PODFILE <br>
->> A modifier principalement pour indiquer dans LOCATION votre serveur de cache si elle n'est pas sur la même machine que votre POD <br>
+  > valeur par défaut : `files`
 
- - `FILE_UPLOAD_TEMP_DIR` 
-> default value : /var/tmp <br>
+  >> Nom du répertoire racine où les fichiers "complémentaires" <br>
+  >> (hors vidéos etc.) sont téléversés. Notament utilisé par PODFILE <br>
+  >> À modifier principalement pour indiquer dans LOCATION votre serveur de cache si elle n’est pas sur la même machine que votre POD. <br>
 
->> Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que FILE_UPLOAD_MAX_MEMORY_SIZE) lors des téléversements de fichiers.<br> <br>
->> _ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir_ <br>
+ - `FILE_UPLOAD_TEMP_DIR`
 
- - `MEDIA_ROOT` 
-> default value : /pod/media <br>
+  > valeur par défaut : `/var/tmp`
 
->> Chemin absolu du système de fichiers pointant vers le répertoire qui contiendra les fichiers téléversés par les utilisateurs.<br> <br>
->> Attention, ce répertoire doit exister<br> <br>
->> _ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-MEDIA_ROOT_ <br>
+  >> Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que FILE_UPLOAD_MAX_MEMORY_SIZE) lors des téléversements de fichiers.<br> <br>
+  >> _ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir]()_ <br>
 
- - `MEDIA_URL` 
-> default value : /media/ <br>
+ - `MEDIA_ROOT`
 
->> prefix url utilisé pour accéder aux fichiers du répertoire media <br>
+  > valeur par défaut : `/pod/media`
 
- - `STATICFILES_STORAGE` 
-> default value :  <br>
+  >> Chemin absolu du système de fichiers pointant vers le répertoire qui contiendra les fichiers téléversés par les utilisateurs.<br> <br>
+  >> Attention, ce répertoire doit exister<br> <br>
+  >> _ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-MEDIA_ROOT]()_ <br>
 
->> Indique à django de compresser automatiquement les fichiers css/js les plus gros lors du collectstatic pour optimiser les tailles de requetes.<br> <br>
->> À combiner avec un réglage webserver ("gzip_static  on;" sur nginx)<br> <br>
->> _ref: https://github.com/whs/django-static-compress <br>
+ - `MEDIA_URL`
 
- - `STATIC_ROOT` 
-> default value : /pod/static <br>
+  > valeur par défaut : `/media/`
 
->> Le chemin absolu vers le répertoire dans lequel collectstatic rassemble les fichiers statiques en vue du déploiement. Ce chemin sera précisé dans le fichier de configurtation du vhost nginx.<br> <br>
->> _ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-STATIC_ROOT_ <br>
+  >> prefix url utilisé pour accéder aux fichiers du répertoire media <br>
 
- - `STATIC_URL` 
-> default value : /static/ <br>
+ - `STATICFILES_STORAGE`
 
->> prefix url utilisé pour accèder aux fichiers static <br>
+  > valeur par défaut : ``
 
- - `USE_PODFILE` 
-> default value : False <br>
+  >> Indique à django de compresser automatiquement les fichiers css/js les plus gros lors du collectstatic pour optimiser les tailles de requetes.<br> <br>
+  >> À combiner avec un réglage webserver (`gzip_static on;` sur nginx)<br> <br>
+  >> _ref: [https://github.com/whs/django-static-compress]() <br>
 
->> Utiliser l'application de gestion de fichier fourni avec le projet. <br>
->> Si False, chaque fichier envoyé ne pourra être utilisé qu'une seule fois. <br>
+ - `STATIC_ROOT`
 
- - `VIDEOS_DIR` 
-> default value : videos <br>
+  > valeur par défaut : `/pod/static`
 
->> Répertoire par défaut pour le téléversement des vidéos. <br>
+  >> Le chemin absolu vers le répertoire dans lequel collectstatic rassemble les fichiers statiques en vue du déploiement. Ce chemin sera précisé dans le fichier de configurtation du vhost nginx.<br> <br>
+  >> _ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-STATIC_ROOT]()_ <br>
+
+ - `STATIC_URL`
+
+  > valeur par défaut : `/static/`
+
+  >> prefix url utilisé pour accèder aux fichiers static <br>
+
+ - `USE_PODFILE`
+
+  > valeur par défaut : `False`
+
+  >> Utiliser l’application de gestion de fichier fourni avec le projet. <br>
+  >> Si False, chaque fichier envoyé ne pourra être utilisé qu’une seule fois. <br>
+
+ - `VIDEOS_DIR`
+
+  > valeur par défaut : `videos`
+
+  >> Répertoire par défaut pour le téléversement des vidéos. <br>
 
 ### Langue
-Par défaut, Esup-Pod est fournie en Francais et en anglais. <br/>
-Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra pour cela créer un fichier de langue et traduire chaque entrée. <br/>
+Par défaut, Esup-Pod est fournie en Francais et en anglais.<br/>
+Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br/>
 
- - `LANGUAGES` 
-> default value : (('fr', 'Français'), ('en', 'English'))) <br>
+ - `LANGUAGES`
 
->> Langue disponible et traduite <br>
+  > valeur par défaut : `(('fr', 'Français'), ('en', 'English')))`
 
- - `LANGUAGE_CODE` 
-> default value : fr <br>
+  >> Langue disponible et traduite <br>
 
->> Langue par défaut si non détectée <br>
+ - `LANGUAGE_CODE`
+
+  > valeur par défaut : `fr`
+
+  >> Langue par défaut si non détectée <br>
 
 ### Divers
 
- - `ADMINS` 
-> default value :  <br>
+ - `ADMINS`
 
->> _Valeur par défaut :  (('Name', 'adminmail@univ.fr'),)_<br> <br>
->> Une liste de toutes les personnes qui reçoivent les notifications d’erreurs dans le code.<br> <br>
->> Lorsque DEBUG=False et qu’une vue lève une exception, Django envoie un courriel à ces personnes contenant les informations complètes de l’exception.<br> <br>
->> Chaque élément de la liste doit être un tuple au format  « (nom complet, adresse électronique) ».<br> <br>
->> Exemple : [('John', 'john@example.com'), ('Mary', 'mary@example.com')]<br> <br>
->> Dans Pod, les "admins" sont également destinataires des courriels de contact, d'encodage ou de flux rss si la variable CONTACT_US_EMAIL n'est pas renseignée.<br> <br>
->> __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#admins__ <br>
+  > valeur par défaut : `[("Name", "adminmail@univ.fr"),]`
 
- - `ALLOWED_HOSTS` 
-> default value :  <br>
+  >> Une liste de toutes les personnes qui reçoivent les notifications d’erreurs dans le code.<br> <br>
+  >> Lorsque DEBUG=False et qu’une vue lève une exception, Django envoie un courriel à ces personnes contenant les informations complètes de l’exception.<br> <br>
+  >> Chaque élément de la liste doit être un tuple au format « (nom complet, adresse électronique) ».<br> <br>
+  >> Exemple : `[('John', 'john@example.com'), ('Mary', 'mary@example.com')]`<br> <br>
+  >> Dans Pod, les "admins" sont également destinataires des courriels de contact, d’encodage ou de flux RSS si la variable `CONTACT_US_EMAIL` n’est pas renseignée.<br> <br>
+  >> __ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#admins]()__ <br>
 
->> _Valeur par défaut :  ['localhost']_<br> <br>
->> Une liste de chaînes représentant des noms de domaine/d’hôte que ce site Django peut servir.<br> <br>
->> C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP, qui sont possibles même avec bien des configurations de serveur Web apparemment sécurisées.<br> <br>
->> __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts__ <br>
->> __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#session-cookie-age__ <br>
+ - `ALLOWED_HOSTS`
 
- - `BASE_DIR` 
-> default value : os.path.dirname(os.path.dirname(os.path.abspath(__file__))) <br>
+  > valeur par défaut : `['localhost']`
 
->> répertoire de base <br>
+  >> Une liste de chaînes représentant des noms de domaine/d’hôte que ce site Django peut servir.<br> <br>
+  >> C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP, qui sont possibles même avec bien des configurations de serveur Web apparemment sécurisées.<br> <br>
+  >> __ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts]()__ <br>
 
- - `CACHES` 
-> default value : {} <br>
+ - `BASE_DIR`
 
->> CACHES = { <br>
->>     # … default cache config and others <br>
->>     # "default": { <br>
->>     #     "BACKEND": "django.core.cache.backends.locmem.LocMemCache", <br>
->>     # }, <br>
->>     "default": { <br>
->>         "BACKEND": "django_redis.cache.RedisCache", <br>
->>         "LOCATION": "redis://127.0.0.1:6379/1", <br>
->>         "OPTIONS": { <br>
->>             "CLIENT_CLASS": "django_redis.client.DefaultClient", <br>
->>         }, <br>
->>     }, <br>
->>     # Persistent cache setup for select2 (NOT DummyCache or LocMemCache). <br>
->>     "select2": { <br>
->>         "BACKEND": "django_redis.cache.RedisCache", <br>
->>         "LOCATION": "redis://127.0.0.1:6379/2", <br>
->>         "OPTIONS": { <br>
->>             "CLIENT_CLASS": "django_redis.client.DefaultClient", <br>
->>         }, <br>
->>     }, <br>
->> } <br>
+  > valeur par défaut : `os.path.dirname(os.path.dirname(os.path.abspath(__file__)))`
 
- - `CSRF_COOKIE_SECURE` 
-> default value :  not DEBUG <br>
+  >> répertoire de base <br>
 
->> _Valeur par défaut :  not DEBUG_<br> <br>
->> Ces 3 variables servent à sécuriser la plateforme en passant l'ensemble des requetes en https. Idem pour les cookies de session et de cross-sites qui seront également sécurisés<br> <br>
->> Il faut les passer à False en cas d'usage du runserver (phase de développement / debugage)<br> <br>
->> __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#secure-ssl-redirect__ <br>
+ - `CACHES`
 
- - `DEBUG` 
-> default value : True <br>
+  > valeur par défaut : `{}`
 
->> _Valeur par défaut : True_<br> <br>
->> Une valeur booléenne qui active ou désactive le mode de débogage.<br> <br>
->> Ne déployez jamais de site en production avec le réglage DEBUG activé.<br> <br>
->> __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#debug__ <br>
+  >> CACHES = { <br>
+  >>     # … default cache config and others <br>
+  >>     # "default": { <br>
+  >>     #     "BACKEND": "django.core.cache.backends.locmem.LocMemCache", <br>
+  >>     # }, <br>
+  >>     "default": { <br>
+  >>         "BACKEND": "django_redis.cache.RedisCache", <br>
+  >>         "LOCATION": "redis://127.0.0.1:6379/1", <br>
+  >>         "OPTIONS": { <br>
+  >>             "CLIENT_CLASS": "django_redis.client.DefaultClient", <br>
+  >>         }, <br>
+  >>     }, <br>
+  >>     # Persistent cache setup for select2 (NOT DummyCache or LocMemCache). <br>
+  >>     "select2": { <br>
+  >>         "BACKEND": "django_redis.cache.RedisCache", <br>
+  >>         "LOCATION": "redis://127.0.0.1:6379/2", <br>
+  >>         "OPTIONS": { <br>
+  >>             "CLIENT_CLASS": "django_redis.client.DefaultClient", <br>
+  >>         }, <br>
+  >>     }, <br>
+  >> } <br>
 
- - `LOGIN_URL` 
-> default value : /authentication_login/ <br>
+ - `CSRF_COOKIE_SECURE`
 
->> url de redirection pour l'authentification de l'utilisateur <br>
->> voir : https://docs.djangoproject.com/fr/3.2/ref/settings/#login-url <br>
+  > valeur par défaut : ` not DEBUG`
 
- - `MANAGERS` 
-> default value : ADMINS <br>
+  >> Ces 3 variables servent à sécuriser la plateforme en passant l’ensemble des requetes en https. Idem pour les cookies de session et de cross-sites qui seront également sécurisés<br> <br>
+  >> Il faut les passer à False en cas d’usage du runserver (phase de développement / debugage)<br> <br>
+  >> __ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#secure-ssl-redirect]()__ <br>
 
->> Dans Pod, les "managers" sont destinataires des courriels de fin d'encodage (et ainsi des vidéos déposées sur la plateforme).<br> <br>
->> Le premier managers renseigné est également contact des flus rss.<br> <br>
->> Ils sont aussi destinataires des courriels de contact si la variable CONTACT_US_EMAIL n'est pas renseignée.<br> <br>
->> __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#managers__ <br>
+ - `DEBUG`
 
- - `PROXY_HOST` 
-> default value :  <br>
+  > valeur par défaut : `True`
 
->> Utilisation du proxy - host <br>
+  >> Une valeur booléenne qui active ou désactive le mode de débogage.<br> <br>
+  >> Ne déployez jamais de site en production avec le réglage DEBUG activé.<br> <br>
+  >> __ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#debug]()__ <br>
 
- - `PROXY_PORT` 
-> default value :  <br>
+ - `LOGIN_URL`
 
->> Utilisation du proxy - port <br>
+  > valeur par défaut : `/authentication_login/`
 
- - `SECRET_KEY` 
-> default value : A_CHANGER <br>
+  >> url de redirection pour l’authentification de l’utilisateur <br>
+  >> voir : [https://docs.djangoproject.com/fr/3.2/ref/settings/#login-url]() <br>
 
->> _Valeur par défaut : 'A_CHANGER'_<br> <br>
->> La clé secrète d’une installation Django.<br> <br>
->> Elle est utilisée dans le contexte de la signature cryptographique, et doit être définie à une valeur unique et non prédictible.<br> <br>
->> Vous pouvez utiliser ce site pour en générer une : https://djecrety.ir/<br> <br>
->> __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#secret-key__ <br>
+ - `MANAGERS`
 
- - `SECURE_SSL_REDIRECT` 
-> default value : not DEBUG <br>
+  > valeur par défaut : `[]`
 
+  >> Dans Pod, les "managers" sont destinataires des courriels de fin d’encodage (et ainsi des vidéos déposées sur la plateforme).<br> <br>
+  >> Le premier manager renseigné est également contact des flus RSS.<br> <br>
+  >> Ils sont aussi destinataires des courriels de contact si la variable `CONTACT_US_EMAIL` n’est pas renseignée.<br> <br>
+  >> __ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#managers]()__ <br>
 
- - `SESSION_COOKIE_AGE` 
-> default value : 14400 <br>
+ - `PROXY_HOST`
 
->> _Valeur par défaut :  14400 (secondes, soit 4 heures)_<br> <br>
->> L’âge des cookies de sessions, en secondes. <br>
+  > valeur par défaut : ``
 
- - `SESSION_COOKIE_SAMESITE` 
-> default value : Lax <br>
+  >> Utilisation du proxy - host <br>
 
->> Cette option empêche le cookie d’être envoyé dans les requêtes inter-sites, ce qui prévient les attaques CSRF et rend impossible certaines méthodes de vol du cookie de session. <br>
->> Voir https://docs.djangoproject.com/en/3.2/ref/settings/#std-setting-SESSION_COOKIE_SAMESITE <br>
+ - `PROXY_PORT`
 
- - `SESSION_COOKIE_SECURE` 
-> default value :  not DEBUG <br>
+  > valeur par défaut : ``
+
+  >> Utilisation du proxy - port <br>
+
+ - `SECRET_KEY`
+
+  > valeur par défaut : `A_CHANGER`
+
+  >> La clé secrète d’une installation Django.<br> <br>
+  >> Elle est utilisée dans le contexte de la signature cryptographique, et doit être définie à une valeur unique et non prédictible.<br> <br>
+  >> Vous pouvez utiliser ce site pour en générer une : [https://djecrety.ir/]()<br> <br>
+  >> __ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#secret-key]()__ <br>
+
+ - `SECURE_SSL_REDIRECT`
+
+  > valeur par défaut : `not DEBUG`
 
 
- - `SESSION_EXPIRE_AT_BROWSER_CLOSE` 
-> default value : True <br>
 
->> _Valeur par défaut :  True_<br> <br>
->> Indique s’il faut que la session expire lorsque l’utilisateur ferme son navigateur. <br>
+ - `SESSION_COOKIE_AGE`
 
- - `SITE_ID` 
-> default value : 1 <br>
+  > valeur par défaut : `14400`
 
->> _Valeur par défaut : 1_<br> <br>
->> L’identifiant (nombre entier) du site actuel. Peut être utilisé pour mettre en place une instance multi-tenant et ainsi gérer dans une même base de données du contenu pour plusieurs sites.<br> <br>
->> __ref : https://docs.djangoproject.com/fr/3.2/ref/settings/#site-id__ <br>
+  >> _Valeur par défaut : 14400 (secondes, soit 4 heures)_<br> <br>
+  >> L’âge des cookies de sessions, en secondes. <br>
 
- - `TEST_SETTINGS` 
-> default value : False <br>
+ - `SESSION_COOKIE_SAMESITE`
 
->> permet de vérifier si la configuration de la plateforme est en mode test <br>
+  > valeur par défaut : `Lax`
 
- - `THIRD_PARTY_APPS` 
-> default value : [] <br>
+  >> Cette option empêche le cookie d’être envoyé dans les requêtes inter-sites, ce qui prévient les attaques CSRF et rend impossible certaines méthodes de vol du cookie de session. <br>
+  >> Voir [https://docs.djangoproject.com/en/3.2/ref/settings/#std-setting-SESSION_COOKIE_SAMESITE]() <br>
 
->> Liste des applications tierces accessibles. <br>
->> ```
->> THIRD_PARTY_APPS = ["enrichment", "live"] 
->> ```
+ - `SESSION_COOKIE_SECURE`
 
- - `TIME_ZONE` 
-> default value : UTC <br>
+  > valeur par défaut : ` not DEBUG`
 
->> _Valeur par défaut :  "UTC"_<br> <br>
->> Une chaîne représentant le fuseau horaire pour cette installation.<br> <br>
->> __ref: https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-TIME_ZONE__ <br>
->> Liste des adresses destinataires des courriels de contact <br>
+
+
+ - `SESSION_EXPIRE_AT_BROWSER_CLOSE`
+
+  > valeur par défaut : `True`
+
+  >> Indique s’il faut que la session expire lorsque l’utilisateur ferme son navigateur. <br>
+
+ - `SITE_ID`
+
+  > valeur par défaut : `1`
+
+  >> L’identifiant (nombre entier) du site actuel. Peut être utilisé pour mettre en place une instance multi-tenant et ainsi gérer dans une même base de données du contenu pour plusieurs sites.<br> <br>
+  >> __ref : [https://docs.djangoproject.com/fr/3.2/ref/settings/#site-id]()__ <br>
+
+ - `TEST_SETTINGS`
+
+  > valeur par défaut : `False`
+
+  >> permet de vérifier si la configuration de la plateforme est en mode test <br>
+
+ - `THIRD_PARTY_APPS`
+
+  > valeur par défaut : `[]`
+
+  >> Liste des applications tierces accessibles. <br>
+  >>
+  >> ```
+  >> THIRD_PARTY_APPS = ["enrichment", "live"] 
+  >>
+  >> ```
+
+ - `TIME_ZONE`
+
+  > valeur par défaut : `UTC`
+
+  >> Une chaîne représentant le fuseau horaire pour cette installation.<br> <br>
+  >> __ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-TIME_ZONE]()__ <br>
+  >> Liste des adresses destinataires des courriels de contact <br>
 
 ### Obsolescence
 
- - `ACCOMMODATION_YEARS` 
-> default value : {} <br>
+ - `ACCOMMODATION_YEARS`
 
->> Durée d'obsolescence personnalisée par Affiliation <br>
->> ```
->> ACCOMMODATION_YEARS = { 
->>     'affiliate': 1 
->> } 
->> ```
+  > valeur par défaut : `{}`
 
- - `ARCHIVE_OWNER_USERNAME` 
-> default value : "archive" <br>
+  >> Durée d’obsolescence personnalisée par Affiliation <br>
+  >>
+  >> ```
+  >> ACCOMMODATION_YEARS = { 
+  >>     'affiliate': 1 
+  >> } 
+  >>
+  >> ```
 
->> Nom de l'utilisateur pour l'archivage des vidéos <br>
+ - `ARCHIVE_OWNER_USERNAME`
 
- - `POD_ARCHIVE_AFFILIATION` 
-> default value : [] <br>
+  > valeur par défaut : `"archive"`
 
->> Affiliations pour lesquelles on souhaite archiver la vidéo plutôt que de la supprimer. <br>
->> Si l'affiliation du propriétaire est dans cette variable, alors les vidéos sont affectées à un utilisateur précis <br>
->> que l'on peut spécifier via le paramètre ARCHIVE_OWNER_USERNAME. <br>
->> Elles sont mises en mode brouillon et le mot "archived" est ajouté à leur titre. <br>
->> Enfin, elles sont également ajoutées à l'ensemble `Vidéo à Supprimer` (accessible via l'interface d'admin). <br>
->> POD_ARCHIVE_AFFILIATION = ['faculty', <br>
->>                            'staff', <br>
->>                            'employee', <br>
->>                            'affiliate', <br>
->>                            'alum', <br>
->>                            'library-walk-in', <br>
->>                            'researcher', <br>
->>                            'retired', <br>
->>                            'emeritus', <br>
->>                            'teacher', <br>
->>                            'registered-reader', <br>
->>                            'member'] <br>
->> ARCHIVE_OWNER_USERNAME = "archive" <br>
+  >> Nom de l’utilisateur pour l’archivage des vidéos. <br>
 
- - `WARN_DEADLINES` 
-> default value : [60, 30, 7] <br>
+ - `POD_ARCHIVE_AFFILIATION`
 
->> Liste de jour de délais avant l'obsolescence de la vidéo. A chaque délais, le propriétaire recoit un mail d'avertissement pour éventuellement changer la date d'obsolescence de sa vidéo <br>
+  > valeur par défaut : `[]`
+
+  >> Affiliations pour lesquelles on souhaite archiver la vidéo plutôt que de la supprimer. <br>
+  >> Si l’affiliation du propriétaire est dans cette variable, alors les vidéos sont affectées à un utilisateur précis <br>
+  >> que l’on peut spécifier via le paramètre `ARCHIVE_OWNER_USERNAME`. <br>
+  >> Elles sont mises en mode brouillon et le mot "archived" est ajouté à leur titre. <br>
+  >> Enfin, elles sont également ajoutées à l’ensemble `Vidéo à Supprimer` (accessible via l’interface d’admin). <br>
+  >>
+  >> ```python
+  >> POD_ARCHIVE_AFFILIATION = ['faculty', 
+  >>                            'staff', 
+  >>                            'employee', 
+  >>                            'affiliate', 
+  >>                            'alum', 
+  >>                            'library-walk-in', 
+  >>                            'researcher', 
+  >>                            'retired', 
+  >>                            'emeritus', 
+  >>                            'teacher', 
+  >>                            'registered-reader', 
+  >>                            'member'] 
+  >>
+  >> ```
+
+ - `WARN_DEADLINES`
+
+  > valeur par défaut : `[60, 30, 7]`
+
+  >> Liste de jours de délais avant l’obsolescence de la vidéo. <br>
+  >> À chaque délai, le propriétaire reçoit un mail d’avertissement pour éventuellement changer la date d’obsolescence de sa vidéo. <br>
 
 ### Modèle
 
- - `COOKIE_LEARN_MORE` 
-> default value :  <br>
+ - `COOKIE_LEARN_MORE`
 
->> Ce paramètre permet d'afficher un lien "En savoir plus" <br>
->> sur la boite de dialogue d'information sur l'usage des cookies dans Pod. <br>
->> On peut préciser un lien vers les mentions légales ou page dpo <br>
+  > valeur par défaut : ``
 
- - `DARKMODE_ENABLED` 
-> default value : False <br>
+  >> Ce paramètre permet d’afficher un lien "En savoir plus" <br>
+  >> sur la boite de dialogue d’information sur l’usage des cookies dans Pod. <br>
+  >> On peut préciser un lien vers les mentions légales ou page dpo <br>
 
->> Activation du mode sombre <br>
+ - `DARKMODE_ENABLED`
 
- - `DYSLEXIAMODE_ENABLED` 
-> default value : False <br>
+  > valeur par défaut : `False`
 
->> Activation du mode dyslexie <br>
+  >> Activation du mode sombre <br>
 
- - `HIDE_CHANNEL_TAB` 
-> default value : False <br>
+ - `DYSLEXIAMODE_ENABLED`
 
->> Si True, permet de cacher l'onglet chaine dans la barre de menu du haut <br>
+  > valeur par défaut : `False`
 
- - `HIDE_DISCIPLINES` 
-> default value : False <br>
+  >> Activation du mode dyslexie <br>
 
->> Si True, permet de ne pas afficher les disciplines dans la colonne de droite <br>
+ - `HIDE_CHANNEL_TAB`
 
- - `HIDE_LANGUAGE_SELECTOR` 
-> default value : False <br>
+  > valeur par défaut : `False`
 
->> Si True, permet de cacher le sélecteur de langue dans le menu du haut <br>
+  >> Si True, permet de cacher l’onglet chaine dans la barre de menu du haut. <br>
 
- - `HIDE_SHARE` 
-> default value : False <br>
+ - `HIDE_DISCIPLINES`
 
->> Si True, permet de ne pas afficher les liens de partage sur les réseaux sociaux dans la colonne de droite <br>
+  > valeur par défaut : `False`
 
- - `HIDE_TAGS` 
-> default value : False <br>
+  >> Si True, permet de ne pas afficher les disciplines dans la colonne de droite <br>
 
->> Si True, permet de ne pas afficher le nuage de mots clés dans la colonne de droite <br>
+ - `HIDE_LANGUAGE_SELECTOR`
 
- - `HIDE_TYPES` 
-> default value : False <br>
+  > valeur par défaut : `False`
 
->> si True, permet de ne pas afficher la liste des types dans la colonne de droite <br>
+  >> Si True, permet de cacher le sélecteur de langue dans le menu du haut. <br>
 
- - `HIDE_TYPES_TAB` 
-> default value : False <br>
+ - `HIDE_SHARE`
 
->> Si True, permet de cacher l'entrée type dans le menu de navigation <br>
+  > valeur par défaut : `False`
 
- - `HIDE_USERNAME` 
-> default value : False <br>
+  >> Si True, permet de ne pas afficher les liens de partage sur les réseaux sociaux dans la colonne de droite. <br>
 
->> Voir description dans authentification <br>
->> Si valeur vaut 'True', le username de l'utilisateur ne sera pas visible sur la plate-forme Pod et <br>
->> si la valeur vaut 'False' le username sera affichés aux utilisateurs authentifiés. (par soucis du respect du RGPD) <br>
+ - `HIDE_TAGS`
 
- - `HIDE_USER_FILTER` 
-> default value : False <br>
+  > valeur par défaut : `False`
 
->> Si 'True', le filtre des vidéos par utilisateur ne sera plus visible <br>
->> si 'False' le filtre sera visible qu'aux personnes authentifiées. <br>
->> (par soucis du respect du RGPD) <br>
+  >> Si True, permet de ne pas afficher le nuage de mots clés dans la colonne de droite. <br>
 
- - `HIDE_USER_TAB` 
-> default value : False <br>
+ - `HIDE_TYPES`
 
->> Si valeur vaut 'True', l'onglet Utilisateur ne sera pas visible <br>
->> et si la valeur vaut 'False' l'onglet Utilisateur ne sera visible <br>
->> qu'aux personnes authentifiées. <br>
->> (par soucis du respect du RGPD) <br>
+  > valeur par défaut : `False`
 
- - `HOMEPAGE_NB_VIDEOS` 
-> default value : 12 <br>
+  >> si True, permet de ne pas afficher la liste des types dans la colonne de droite <br>
 
->> Nombre de vidéos à afficher sur la page d'accueil par défaut, le nombre est fixé à 12 <br>
+ - `HIDE_TYPES_TAB`
 
- - `HOMEPAGE_SHOWS_PASSWORDED` 
-> default value : False <br>
+  > valeur par défaut : `False`
 
->> Afficher les vidéos dont l'accès est protégé par mot de passe sur la page d'accueil <br>
+  >> Si True, permet de cacher l’entrée 'type' dans le menu de navigation. <br>
 
- - `HOMEPAGE_SHOWS_RESTRICTED` 
-> default value : False <br>
+ - `HIDE_USERNAME`
 
->> Afficher les vidéos dont l'accès est protégé par authentification sur la page d'accueil <br>
+  > valeur par défaut : `False`
 
- - `MENUBAR_HIDE_INACTIVE_OWNERS` 
-> default value : True <br>
+  >> Voir description dans authentification <br>
+  >> Si valeur vaut 'True', le username de l’utilisateur ne sera pas visible sur la plate-forme Pod et <br>
+  >> si la valeur vaut 'False' le username sera affichés aux utilisateurs authentifiés. (par soucis du respect du RGPD) <br>
 
->> Les utilisateurs inactifs ne sont plus affichés dans la barre de menu utilisateur <br>
+ - `HIDE_USER_FILTER`
 
- - `MENUBAR_SHOW_STAFF_OWNERS_ONLY` 
-> default value : False <br>
+  > valeur par défaut : `False`
 
->> Les utilisateurs non staff ne sont plus affichés dans la barre de menu utilisateur <br>
+  >> Si 'True', le filtre des vidéos par utilisateur ne sera plus visible <br>
+  >> si 'False' le filtre sera visible qu’aux personnes authentifiées. <br>
+  >> (par soucis du respect du RGPD) <br>
 
- - `SHIB_NAME` 
-> default value : Identify Federation <br>
+ - `HIDE_USER_TAB`
 
->> Nom de la fédération d'identité utilisée <br>
->> Affiché sur le bouton de connexion si l'authentification shibboleth est utilisée <br>
+  > valeur par défaut : `False`
 
- - `SHOW_EVENTS_ON_HOMEPAGE` 
-> default value : False <br>
+  >> Si valeur vaut 'True', l’onglet Utilisateur ne sera pas visible <br>
+  >> et si la valeur vaut 'False' l’onglet Utilisateur ne sera visible <br>
+  >> qu’aux personnes authentifiées. <br>
+  >> (par soucis du respect du RGPD) <br>
 
->> Si True, affiche les prochains évènements sur la page d'accueil <br>
+ - `HOMEPAGE_NB_VIDEOS`
 
- - `SHOW_ONLY_PARENT_THEMES` 
-> default value : False <br>
+  > valeur par défaut : `12`
 
->> Si True, affiche uniquement les thèmes de premier niveau dans l'onglet 'Chaîne' <br>
+  >> Nombre de vidéos à afficher sur la page d’accueil. <br>
 
- - `TEMPLATE_VISIBLE_SETTINGS` 
-> default value : {} <br>
+ - `HOMEPAGE_SHOWS_PASSWORDED`
 
->> ```
->> TEMPLATE_VISIBLE_SETTINGS = { 
->> # Titre du site. 
->> 'TITLE_SITE': 'Pod', 
->>   
->> # Description du site. 
->> 'DESC_SITE': 'L’objectif d’Esup-Pod est de faciliter la mise à disposition de vidéos et ainsi d’encourager son utilisation dans l’enseignement et la recherche.', 
->>   
->> # Titre de l’établissement. 
->> 'TITLE_ETB': 'University name', 
->>   
->> # Logo affiché en haut à gauche sur toutes les pages. 
->> # Doit se situer dans le répertoire static 
->> 'LOGO_SITE': 'img/logoPod.svg', 
->>   
->> # Logo affiché dans le footer sur toutes les pages. 
->> # Doit se situer dans le répertoire static 
->> 'LOGO_ETB': 'img/logo_etb.svg', 
->>   
->> # Logo affiché sur le player video. 
->> # Doit se situer dans le répertoire static 
->> 'LOGO_PLAYER': 'img/pod_favicon.svg', 
->>   
->> # Lien de destination du logo affiché sur le player 
->> 'LINK_PLAYER': '', 
->>   
->> # Texte affiché dans le footer. Une ligne par entrée, accepte du code html. 
->> # Par exemple : 
->> # ( '42, rue Paul Duez', 
->> #   '59000 Lille - France', 
->> #   ('<a href="https://goo.gl/maps/AZnyBK4hHaM2"' 
->> #    ' target="_blank">Google maps</a>') ) 
->> 'FOOTER_TEXT': ('',), 
->>   
->> # Icone affichée dans la barre d'adresse du navigateur 
->> 'FAVICON': 'img/pod_favicon.svg', 
->>   
->> # Si souhaitée, à créer et sauvegarder 
->> #  dans le répertoire static de l'application custom et 
->> #  préciser le chemin d'accès. Par exemple : "custom/etab.css" 
->> 'CSS_OVERRIDE': '', 
->>   
->> # Vous pouvez créer un template dans votre application custom et 
->> #  indiquer son chemin dans cette variable pour que ce code html, 
->> # ce template soit affiché en haut de votre page, le code est ajouté 
->> #  juste après la balise body.(Hors iframe) 
->> # Si le fichier créé est 
->> # '/opt/django_projects/podv3/pod/custom/templates/custom/preheader.html' 
->> # alors la variable doit prendre la valeur 'custom/preheader.html' 
->> 'PRE_HEADER_TEMPLATE': '', 
->>   
->> # Idem que pre-header, le code contenu dans le template 
->> #  sera affiché juste avant la fermeture du body. (Or iframe) 
->> 'POST_FOOTER_TEMPLATE': '', 
->>   
->> # vous pouvez créer un template dans votre application custom 
->> #  pour y intégrer votre code Piwik ou Google analytics. 
->> # Ce template est inséré dans toutes les pages de la plateforme, 
->> #  y compris en mode iframe 
->> 'TRACKING_TEMPLATE': '', 
->> } 
->> ```
+  > valeur par défaut : `False`
+
+  >> Afficher les vidéos dont l’accès est protégé par mot de passe sur la page d’accueil. <br>
+
+ - `HOMEPAGE_SHOWS_RESTRICTED`
+
+  > valeur par défaut : `False`
+
+  >> Afficher les vidéos dont l’accès est protégé par authentification sur la page d’accueil. <br>
+
+ - `MENUBAR_HIDE_INACTIVE_OWNERS`
+
+  > valeur par défaut : `True`
+
+  >> Les utilisateurs inactifs ne sont plus affichés dans la barre de menu utilisateur. <br>
+
+ - `MENUBAR_SHOW_STAFF_OWNERS_ONLY`
+
+  > valeur par défaut : `False`
+
+  >> Les utilisateurs non staff ne sont plus affichés dans la barre de menu utilisateur. <br>
+
+ - `SHIB_NAME`
+
+  > valeur par défaut : `Identify Federation`
+
+  >> Nom de la fédération d’identité utilisée <br>
+  >> Affiché sur le bouton de connexion si l’authentification shibboleth est utilisée. <br>
+
+ - `SHOW_EVENTS_ON_HOMEPAGE`
+
+  > valeur par défaut : `False`
+
+  >> Si True, affiche les prochains évènements sur la page d’accueil. <br>
+
+ - `SHOW_ONLY_PARENT_THEMES`
+
+  > valeur par défaut : `False`
+
+  >> Si True, affiche uniquement les thèmes de premier niveau dans l’onglet 'Chaîne'. <br>
+
+ - `TEMPLATE_VISIBLE_SETTINGS`
+
+  > valeur par défaut : `{}`
+
+  >>
+  >> ```
+  >> TEMPLATE_VISIBLE_SETTINGS = { 
+  >> # Titre du site. 
+  >> 'TITLE_SITE': 'Pod', 
+  >>   
+  >> # Description du site. 
+  >> 'DESC_SITE': 'L’objectif d’Esup-Pod est de faciliter la mise à disposition de vidéos et ainsi d’encourager son utilisation dans l’enseignement et la recherche.', 
+  >>   
+  >> # Titre de l’établissement. 
+  >> 'TITLE_ETB': 'University name', 
+  >>   
+  >> # Logo affiché en haut à gauche sur toutes les pages. 
+  >> # Doit se situer dans le répertoire static 
+  >> 'LOGO_SITE': 'img/logoPod.svg', 
+  >>   
+  >> # Logo affiché dans le footer sur toutes les pages. 
+  >> # Doit se situer dans le répertoire static 
+  >> 'LOGO_ETB': 'img/logo_etb.svg', 
+  >>   
+  >> # Logo affiché sur le player video. 
+  >> # Doit se situer dans le répertoire static 
+  >> 'LOGO_PLAYER': 'img/pod_favicon.svg', 
+  >>   
+  >> # Lien de destination du logo affiché sur le player 
+  >> 'LINK_PLAYER': '', 
+  >>   
+  >> # Texte affiché dans le footer. Une ligne par entrée, accepte du code html. 
+  >> # Par exemple : 
+  >> # ( '42, rue Paul Duez', 
+  >> #   '59000 Lille - France', 
+  >> #   ('<a href="https://goo.gl/maps/AZnyBK4hHaM2"' 
+  >> #    ' target="_blank">Google maps</a>') ) 
+  >> 'FOOTER_TEXT': ('',), 
+  >>   
+  >> # Icone affichée dans la barre d'adresse du navigateur 
+  >> 'FAVICON': 'img/pod_favicon.svg', 
+  >>   
+  >> # Si souhaitée, à créer et sauvegarder 
+  >> #  dans le répertoire static de l'application custom et 
+  >> #  préciser le chemin d'accès. Par exemple : "custom/etab.css" 
+  >> 'CSS_OVERRIDE': '', 
+  >>   
+  >> # Vous pouvez créer un template dans votre application custom et 
+  >> #  indiquer son chemin dans cette variable pour que ce code html, 
+  >> # ce template soit affiché en haut de votre page, le code est ajouté 
+  >> #  juste après la balise body.(Hors iframe) 
+  >> # Si le fichier créé est 
+  >> # '/opt/django_projects/podv3/pod/custom/templates/custom/preheader.html' 
+  >> # alors la variable doit prendre la valeur 'custom/preheader.html' 
+  >> 'PRE_HEADER_TEMPLATE': '', 
+  >>   
+  >> # Idem que pre-header, le code contenu dans le template 
+  >> #  sera affiché juste avant la fermeture du body. (Or iframe) 
+  >> 'POST_FOOTER_TEMPLATE': '', 
+  >>   
+  >> # vous pouvez créer un template dans votre application custom 
+  >> #  pour y intégrer votre code Piwik ou Google analytics. 
+  >> # Ce template est inséré dans toutes les pages de la plateforme, 
+  >> #  y compris en mode iframe 
+  >> 'TRACKING_TEMPLATE': '', 
+  >> } 
+  >>
+  >> ```
 
 ### Transcodage
 
- - `TRANSCRIPTION_AUDIO_SPLIT_TIME` 
-> default value : 600 <br>
+ - `TRANSCRIPTION_AUDIO_SPLIT_TIME`
 
->> decoupage de l'audio pour la transcription <br>
+  > valeur par défaut : `600`
 
- - `TRANSCRIPTION_MODEL_PARAM` 
-> default value : {} <br>
+  >> Découpage de l’audio pour la transcription. <br>
 
->> Paramétrage des modèles pour la transcription <br>
->> Voir la documentation à cette adresse : https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3 <br>
->> Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models <br>
->> ```
->> TRANSCRIPTION_MODEL_PARAM = { 
->>     # le modèle stt 
->>     'STT': { 
->>         'fr': { 
->>             'model': "/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite", 
->>             'scorer': "/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer", 
->>         } 
->>     }, 
->>     # le modèle vosk 
->>     'VOSK': { 
->>         'fr': { 
->>             'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0", 
->>         } 
->>     } 
->> } 
->> ```
+ - `TRANSCRIPTION_MODEL_PARAM`
 
- - `TRANSCRIPTION_NORMALIZE` 
-> default value : False <br>
+  > valeur par défaut : `{}`
 
->> Activation de la normalisation de l'audio avant sa transcription <br>
+  >> Paramétrage des modèles pour la transcription <br>
+  >> Voir la documentation à cette adresse : [https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3]() <br>
+  >> Pour télécharger les Modeles Vosk : [https://alphacephei.com/vosk/models]() <br>
+  >>
+  >> ```
+  >> TRANSCRIPTION_MODEL_PARAM = { 
+  >>     # le modèle stt 
+  >>     'STT': { 
+  >>         'fr': { 
+  >>             'model': "/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite", 
+  >>             'scorer': "/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer", 
+  >>         } 
+  >>     }, 
+  >>     # le modèle vosk 
+  >>     'VOSK': { 
+  >>         'fr': { 
+  >>             'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0", 
+  >>         } 
+  >>     } 
+  >> } 
+  >>
+  >> ```
 
- - `TRANSCRIPTION_NORMALIZE_TARGET_LEVEL` 
-> default value : -16.0 <br>
+ - `TRANSCRIPTION_NORMALIZE`
 
->> Niveau de normalisation de l'audio avant sa transcription <br>
+  > valeur par défaut : `False`
 
- - `TRANSCRIPTION_STT_SENTENCE_BLANK_SPLIT_TIME` 
-> default value : 0.5 <br>
+  >> Activation de la normalisation de l’audio avant sa transcription. <br>
 
->> Temps maximum en secondes des blanc entre chaque mot pour le decoupage des sous-titres avec l'outil STT <br>
+ - `TRANSCRIPTION_NORMALIZE_TARGET_LEVEL`
 
- - `TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH` 
-> default value : 3 <br>
+  > valeur par défaut : `-16.0`
 
->> Temps en seconde maximum pour une phrase lors de la transcription avec l'outil STT <br>
+  >> Niveau de normalisation de l’audio avant sa transcription. <br>
 
- - `TRANSCRIPTION_TYPE` 
-> default value : STT <br>
+ - `TRANSCRIPTION_STT_SENTENCE_BLANK_SPLIT_TIME`
 
->> Choix de l'outil pour la transcription : STT ou VOSK <br>
+  > valeur par défaut : `0.5`
 
- - `TRANSCRIPT_VIDEO` 
-> default value : start_transcript <br>
+  >> Temps maximum en secondes des blancs entre chaque mot pour le decoupage des sous-titres avec l’outil STT. <br>
 
->> Fonction appelée pour lancer la transcription des vidéos <br>
+ - `TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH`
 
- - `USE_TRANSCRIPTION` 
-> default value : False <br>
+  > valeur par défaut : `3`
 
->> Activation de la transcription <br>
+  >> Temps en secondes maximum pour une phrase lors de la transcription avec l’outil STT. <br>
+
+ - `TRANSCRIPTION_TYPE`
+
+  > valeur par défaut : `STT`
+
+  >> Choix de l’outil pour la transcription : STT ou VOSK. <br>
+
+ - `TRANSCRIPT_VIDEO`
+
+  > valeur par défaut : `start_transcript`
+
+  >> Fonction appelée pour lancer la transcription des vidéos. <br>
+
+ - `USE_TRANSCRIPTION`
+
+  > valeur par défaut : `False`
+
+  >> Activation de la transcription. <br>
 
 ## Configuration Générale de la plateforme Esup_Pod 
 
 
-### Configuration application authentification
+### Configuration application authentification.
 
- - `AFFILIATION` 
-> default value :  <br>
+ - `AFFILIATION`
 
->> Valeurs possibles pour l'Affiliation du compte <br>
+  > valeur par défaut : ``
 
- - `AFFILIATION_EVENT` 
-> default value :  <br>
+  >> Valeurs possibles pour l’affiliation du compte. <br>
 
->> Groupes ou affiliations des personnes autorisées à créer un évènement <br>
+ - `AFFILIATION_EVENT`
 
- - `AFFILIATION_STAFF` 
-> default value :  <br>
+  > valeur par défaut : ``
 
->> Les personnes ayant pour affiliation les valeurs <br>
->> renseignées dans cette variable ont automatiquement <br>
->> la valeur staff de leur compte à True <br>
+  >> Groupes ou affiliations des personnes autorisées à créer un évènement. <br>
 
- - `AUTH_CAS_USER_SEARCH` 
-> default value : user <br>
+ - `AFFILIATION_STAFF`
 
->> Variable utilisée pour trouver les informations de l'individu <br>
->> connecté dans le fichier renvoyé par le CAS lors de l'authentification <br>
+  > valeur par défaut : ``
 
- - `AUTH_LDAP_BIND_DN` 
-> default value :  <br>
+  >> Les personnes ayant pour affiliation les valeurs <br>
+  >> renseignées dans cette variable ont automatiquement <br>
+  >> la valeur staff de leur compte à True. <br>
 
->> Identifiant (DN) du compte pour se connecter au serveur LDAP <br>
+ - `AUTH_CAS_USER_SEARCH`
 
- - `AUTH_LDAP_BIND_PASSWORD` 
-> default value :  <br>
+  > valeur par défaut : `user`
 
->> Mot de passe du compte pour se connecter au serveur LDAP <br>
+  >> Variable utilisée pour trouver les informations de l’individu <br>
+  >> connecté dans le fichier renvoyé par le CAS lors de l’authentification. <br>
 
- - `AUTH_LDAP_USER_SEARCH` 
-> default value :  <br>
+ - `AUTH_LDAP_BIND_DN`
 
->> Filtre LDAP permettant la recherche de l'individu dans le serveur LDAP <br>
+  > valeur par défaut : ``
 
- - `AUTH_TYPE` 
-> default value :  <br>
+  >> Identifiant (DN) du compte pour se connecter au serveur LDAP. <br>
 
->> Type d'authentification possible sur votre instance. <br>
->>  Choix : local, CAS, OIDC, Shibboleth <br>
+ - `AUTH_LDAP_BIND_PASSWORD`
 
- - `CAS_ADMIN_AUTH` 
-> default value : False <br>
+  > valeur par défaut : ``
 
->> Pemet d'activer l'authentification CAS pour la partie admin <br>
->> Voir : https://github.com/kstateome/django-cas <br>
+  >> Mot de passe du compte pour se connecter au serveur LDAP. <br>
 
- - `CAS_FORCE_LOWERCASE_USERNAME` 
-> default value : False <br>
+ - `AUTH_LDAP_USER_SEARCH`
 
->> Forcer le passage en minuscule du nom d'utilisateur CAS <br>
->> (permet de prévenir des doubles créations de comptes dans certain cas). <br>
+  > valeur par défaut : ``
 
- - `CAS_GATEWAY` 
-> default value : False <br>
+  >> Filtre LDAP permettant la recherche de l’individu dans le serveur LDAP. <br>
 
->> Si True, authentifie automatiquement l'individu <br>
->> si déjà authentifié sur le serveur CAS <br>
+ - `AUTH_TYPE`
 
- - `CAS_LOGOUT_COMPLETELY` 
-> default value : True <br>
+  > valeur par défaut : ``
 
->> voir https://github.com/kstateome/django-cas <br>
+  >> Type d’authentification possible sur votre instance. <br>
+  >>  Choix : local, CAS, OIDC, Shibboleth <br>
 
- - `CAS_SERVER_URL` 
-> default value : sso_cas <br>
+ - `CAS_ADMIN_AUTH`
 
->> Url du serveur cas de l'établissement. Format http://url_cas <br>
+  > valeur par défaut : `False`
 
- - `CREATE_GROUP_FROM_AFFILIATION` 
-> default value : False <br>
+  >> Permet d’activer l’authentification CAS pour la partie admin <br>
+  >> Voir : [https://pypi.org/project/django-cas-sso/]() <br>
 
->> Si True, des groupes sont créés automatiquement <br>
->> à partir des affiliations des individus qui se connectent sur la plateforme <br>
->> et l'individu qui se connecte est ajouté automatiquement à ces groupes <br>
+ - `CAS_FORCE_LOWERCASE_USERNAME`
 
- - `CREATE_GROUP_FROM_GROUPS` 
-> default value : False <br>
+  > valeur par défaut : `False`
 
->> Si True, des groupes sont créés automatiquement <br>
->> à partir des groupes (attribut groups à memberOf) <br>
->> des individus qui se connectent sur la plateforme <br>
->> et l'individu qui se connecte est ajouté automatiquement à ces groupes <br>
+  >> Forcer le passage en minuscule du nom d’utilisateur CAS <br>
+  >> (permet de prévenir des doubles créations de comptes dans certain cas). <br>
 
- - `DEFAULT_AFFILIATION` 
-> default value :  <br>
+ - `CAS_GATEWAY`
 
->> Affiliation par défaut d'un utilisateur authentifié par OIDC. <br>
->> Ce contenu sera comparé à la liste AFFILIATION_STAFF pour déterminer si l'utilisateur doit être admin django <br>
+  > valeur par défaut : `False`
 
- - `ESTABLISHMENTS` 
-> default value :  <br>
+  >> Si True, authentifie automatiquement l’individu <br>
+  >> si déjà authentifié sur le serveur CAS <br>
 
->> A compléter <br>
+ - `CAS_LOGOUT_COMPLETELY`
 
- - `GROUP_STAFF` 
-> default value : AFFILIATION_STAFF <br>
+  > valeur par défaut : `True`
 
->> utilisé dans populatedCasbackend <br>
+  >> Voir [https://github.com/kstateome/django-cas]() <br>
 
- - `HIDE_LOCAL_LOGIN` 
-> default value : False <br>
+ - `CAS_SERVER_URL`
 
->> Si True, masque l'authentification locale <br>
+  > valeur par défaut : `sso_cas`
 
- - `HIDE_USERNAME` 
-> default value : False <br>
+  >> Url du serveur CAS de l’établissement. Format http://url_cas <br>
 
->> Si valeur vaut 'True', le username de l'utilisateur ne sera pas visible sur la plate-forme Pod et si la valeur vaut 'False' le username sera affichés aux utilisateurs authentifiés. (par soucis du respect du RGPD) <br>
+ - `CREATE_GROUP_FROM_AFFILIATION`
 
- - `LDAP` 
-> default value :  <br>
+  > valeur par défaut : `False`
 
->>  - LDAP (Interroge le serveur LDAP pour renseigner les champs) <br>
+  >> Si True, des groupes sont créés automatiquement <br>
+  >> à partir des affiliations des individus qui se connectent sur la plateforme <br>
+  >> et l’individu qui se connecte est ajouté automatiquement à ces groupes. <br>
 
- - `LDAP_SERVER` 
-> default value :  <br>
+ - `CREATE_GROUP_FROM_GROUPS`
 
->> Information de connection au serveur LDAP. <br>
->> Le champ url peut contenir une ou plusieurs url <br>
->>  pour ajouter des hôtes de référence, exemple : <br>
->> Si un seul host : <br>
->> {'url': "ldap.univ.fr'', 'port': 389, 'use_ssl': False} <br>
->> Si plusieurs : <br>
->> {'url': ("ldap.univ.fr'',"ldap2.univ.fr"), 'port': 389, 'use_ssl': False} <br>
+  > valeur par défaut : `False`
 
- - `OIDC_CLAIM_FAMILY_NAME` 
-> default value : family_name <br>
+  >> Si True, des groupes sont créés automatiquement <br>
+  >> à partir des groupes (attribut groups à memberOf) <br>
+  >> des individus qui se connectent sur la plateforme <br>
+  >> et l’individu qui se connecte est ajouté automatiquement à ces groupes <br>
 
+ - `DEFAULT_AFFILIATION`
 
- - `OIDC_CLAIM_GIVEN_NAME` 
-> default value : given_name <br>
+  > valeur par défaut : ``
 
->> Noms des Claim permettant de récupérer les attributs nom, prénom, email <br>
+  >> Affiliation par défaut d’un utilisateur authentifié par OIDC. <br>
+  >> Ce contenu sera comparé à la liste AFFILIATION_STAFF pour déterminer si l’utilisateur doit être admin Django <br>
 
- - `OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES` 
-> default value : [] <br>
+ - `ESTABLISHMENTS`
 
->> Groupes d'accès attribués par défaut à un nouvel utilisateur authentifié par OIDC <br>
+  > valeur par défaut : ``
 
- - `OIDC_DEFAULT_AFFILIATION` 
-> default value :  <br>
+  >> [TODO] À compléter <br>
 
->> Affiliation par défaut d'un utilisateur authentifié par OIDC. <br>
->> Ce contenu sera comparé à la liste AFFILIATION_STAFF pour déterminer si l'utilisateur doit être admin django <br>
+ - `GROUP_STAFF`
 
- - `OIDC_NAME` 
-> default value :  <br>
+  > valeur par défaut : `AFFILIATION_STAFF`
 
->> Nom du Service Provider OIDC <br>
+  >> utilisé dans populatedCasbackend <br>
 
- - `OIDC_OP_AUTHORIZATION_ENDPOINT` 
-> default value : https <br>
+ - `HIDE_LOCAL_LOGIN`
 
+  > valeur par défaut : `False`
 
- - `OIDC_OP_JWKS_ENDPOINT` 
-> default value : https <br>
+  >> Si True, masque l’authentification locale <br>
 
->> Différents paramètres pour OIDC <br>
->> tant que mozilla_django_oidc n'accepte le mécanisme de discovery <br>
->> ref: https://github.com/mozilla/mozilla-django-oidc/pull/309 <br>
+ - `HIDE_USERNAME`
 
- - `OIDC_OP_TOKEN_ENDPOINT` 
-> default value : https <br>
+  > valeur par défaut : `False`
 
+  >> Si valeur vaut `True`, le username de l’utilisateur ne sera pas visible sur la plate-forme Pod et si la valeur vaut `False` le username sera affiché aux utilisateurs authentifiés. (par soucis du respect du RGPD) <br>
 
- - `OIDC_OP_USER_ENDPOINT` 
-> default value : https <br>
+ - `LDAP`
 
+  > valeur par défaut : ``
 
- - `OIDC_RP_CLIENT_ID` 
-> default value : os.environ <br>
+  >>  - LDAP (Interroge le serveur LDAP pour renseigner les champs) <br>
 
+ - `LDAP_SERVER`
 
- - `OIDC_RP_CLIENT_SECRET` 
-> default value : os.environ <br>
+  > valeur par défaut : ``
 
->> CLIENT_ID et CLIENT_SECRET de OIDC sont plutôt à positionner <br>
->> à travers des variables d'environnement <br>
+  >> Information de connection au serveur LDAP. <br>
+  >> Le champ url peut contenir une ou plusieurs url <br>
+  >>  pour ajouter des hôtes de référence, exemple : <br>
+  >> Si un seul host : <br>
+  >>
+  >> `{'url': "ldap.univ.fr'', 'port': 389, 'use_ssl': False}`
+  >> Si plusieurs : 
+  >>
+  >> `{'url': ("ldap.univ.fr'',"ldap2.univ.fr"), 'port': 389, 'use_ssl': False}`
 
- - `OIDC_RP_SIGN_ALGO` 
-> default value :  <br>
+ - `OIDC_CLAIM_FAMILY_NAME`
 
+  > valeur par défaut : `family_name`
 
- - `POPULATE_USER` 
-> default value : None <br>
 
->> Si utilisation de la connection CAS, renseigne les champs du compte <br>
->> de la personne depuis une source externe. <br>
->> Valeurs possibles : <br>
->>  - None (pas de renseignement), <br>
->>  - CAS (renseigne les champs depuis les informations renvoyées par le CAS), <br>
 
- - `REMOTE_USER_HEADER` 
-> default value : REMOTE_USER <br>
+ - `OIDC_CLAIM_GIVEN_NAME`
 
->> Nom de l'attribut dans les headers qui sert à identifier <br>
->> l'utilisateur connecté avec Shibboleth <br>
+  > valeur par défaut : `given_name`
 
- - `SHIBBOLETH_ATTRIBUTE_MAP` 
-> default value :  <br>
+  >> Noms des Claim permettant de récupérer les attributs nom, prénom, email <br>
 
->> Mapping des attributs entre shibboleth et la classe utilisateur <br>
+ - `OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES`
 
- - `SHIBBOLETH_STAFF_ALLOWED_DOMAINS` 
-> default value :  <br>
+  > valeur par défaut : `[]`
 
->> permettre à l'utilisateur d'un domaine d'être membre du personnel <br>
->> Si vide, tous les domaines seront autorisés <br>
+  >> Groupes d’accès attribués par défaut à un nouvel utilisateur authentifié par OIDC <br>
 
- - `SHIB_LOGOUT_URL` 
-> default value :  <br>
+ - `OIDC_DEFAULT_AFFILIATION`
 
->> URL de déconnexion à votre instance Shibboleth <br>
+  > valeur par défaut : ``
 
- - `SHIB_NAME` 
-> default value :  <br>
+  >> Affiliation par défaut d’un utilisateur authentifié par OIDC. <br>
+  >> Ce contenu sera comparé à la liste AFFILIATION_STAFF pour déterminer si l’utilisateur doit être admin Django <br>
 
->> Nom de la fédération d'identité utilisée <br>
+ - `OIDC_NAME`
 
- - `SHIB_URL` 
-> default value :  <br>
+  > valeur par défaut : ``
 
->> URL de connexion à votre instance Shibboleth <br>
+  >> Nom du Service Provider OIDC <br>
 
- - `USER_CAS_MAPPING_ATTRIBUTES` 
-> default value :  <br>
+ - `OIDC_OP_AUTHORIZATION_ENDPOINT`
 
->> Liste de correspondance entre les champs d'un compte de Pod <br>
->> et les champs renvoyés par le CAS <br>
+  > valeur par défaut : `https`
 
- - `USER_LDAP_MAPPING_ATTRIBUTES` 
-> default value :  <br>
 
->> Liste de correspondance entre les champs d'un compte de Pod <br>
->> et les champs renvoyés par le LDAP <br>
 
- - `USE_CAS` 
-> default value : False <br>
+ - `OIDC_OP_JWKS_ENDPOINT`
 
->> Activation de l'authentification CAS en plus de l'authentification locale <br>
+  > valeur par défaut : `https`
 
- - `USE_OIDC` 
-> default value : False <br>
+  >> Différents paramètres pour OIDC <br>
+  >> tant que `mozilla_django_oidc` n’accepte pas le mécanisme de discovery <br>
+  >> ref: [https://github.com/mozilla/mozilla-django-oidc/pull/309]() <br>
 
->> Mettre à True pour utiliser l'authentification OpenID Connect <br>
+ - `OIDC_OP_TOKEN_ENDPOINT`
 
- - `USE_SHIB` 
-> default value : False <br>
+  > valeur par défaut : `https`
 
->> Mettre à True pour utiliser l'authentification Shibboleth <br>
 
-### Configuration application chapter
+
+ - `OIDC_OP_USER_ENDPOINT`
+
+  > valeur par défaut : `https`
+
+
+
+ - `OIDC_RP_CLIENT_ID`
+
+  > valeur par défaut : `os.environ`
+
+
+
+ - `OIDC_RP_CLIENT_SECRET`
+
+  > valeur par défaut : `os.environ`
+
+  >>
+  >> `CLIENT_ID` et `CLIENT_SECRET` de OIDC sont plutôt à positionner
+  >> à travers des variables d’environnement. 
+
+ - `OIDC_RP_SIGN_ALGO`
+
+  > valeur par défaut : ``
+
+
+
+ - `POPULATE_USER`
+
+  > valeur par défaut : `None`
+
+  >> Si utilisation de la connection CAS, renseigne les champs du compte <br>
+  >> de la personne depuis une source externe. <br>
+  >> Valeurs possibles : <br>
+  >>  - None (pas de renseignement), <br>
+  >>  - CAS (renseigne les champs depuis les informations renvoyées par le CAS), <br>
+
+ - `REMOTE_USER_HEADER`
+
+  > valeur par défaut : `REMOTE_USER`
+
+  >> Nom de l’attribut dans les headers qui sert à identifier <br>
+  >> l’utilisateur connecté avec Shibboleth. <br>
+
+ - `SHIBBOLETH_ATTRIBUTE_MAP`
+
+  > valeur par défaut : ``
+
+  >> Mapping des attributs entre shibboleth et la classe utilisateur <br>
+
+ - `SHIBBOLETH_STAFF_ALLOWED_DOMAINS`
+
+  > valeur par défaut : ``
+
+  >> Permettre à l’utilisateur d’un domaine d’être membre du personnel. <br>
+  >> Si vide, tous les domaines seront autorisés. <br>
+
+ - `SHIB_LOGOUT_URL`
+
+  > valeur par défaut : ``
+
+  >> URL de déconnexion à votre instance Shibboleth <br>
+
+ - `SHIB_NAME`
+
+  > valeur par défaut : ``
+
+  >> Nom de la fédération d’identité utilisée. <br>
+
+ - `SHIB_URL`
+
+  > valeur par défaut : ``
+
+  >> URL de connexion à votre instance Shibboleth. <br>
+
+ - `USER_CAS_MAPPING_ATTRIBUTES`
+
+  > valeur par défaut : ``
+
+  >> Liste de correspondance entre les champs d’un compte de Pod <br>
+  >> et les champs renvoyés par le CAS. <br>
+
+ - `USER_LDAP_MAPPING_ATTRIBUTES`
+
+  > valeur par défaut : ``
+
+  >> Liste de correspondance entre les champs d’un compte de Pod <br>
+  >> et les champs renvoyés par le LDAP. <br>
+
+ - `USE_CAS`
+
+  > valeur par défaut : `False`
+
+  >> Activation de l’authentification CAS en plus de l’authentification locale. <br>
+
+ - `USE_OIDC`
+
+  > valeur par défaut : `False`
+
+  >> Mettre à True pour utiliser l’authentification OpenID Connect. <br>
+
+ - `USE_SHIB`
+
+  > valeur par défaut : `False`
+
+  >> Mettre à True pour utiliser l’authentification Shibboleth. <br>
+
+### Configuration application chapter.
 
 ### Configuration application completion
 
- - `ACTIVE_MODEL_ENRICH` 
-> default value : False <br>
+ - `ACTIVE_MODEL_ENRICH`
 
->> Définissez à True pour activer la case à cocher dans l'édition des sous-titres. <br>
+  > valeur par défaut : `False`
 
- - `ALL_LANG_CHOICES` 
-> default value :  <br>
+  >> Définissez à True pour activer la case à cocher dans l’édition des sous-titres. <br>
 
->> liste toutes les langues pour l'ajout de fichier de sous-titre <br>
->> voir le fichier pod/main/lang_settings.py <br>
+ - `ALL_LANG_CHOICES`
 
- - `DEFAULT_LANG_TRACK` 
-> default value : fr <br>
+  > valeur par défaut : ``
 
->> langue par défaut pour l'ajout de piste à une vidéo <br>
+  >> liste toutes les langues pour l’ajout de fichier de sous-titre <br>
+  >> voir le fichier `pod/main/lang_settings.py`. <br>
 
- - `KIND_CHOICES` 
-> default value :  <br>
+ - `DEFAULT_LANG_TRACK`
 
->> Liste de type de piste possible pour une vidéo (sous-titre, légende etc.) <br>
+  > valeur par défaut : `fr`
 
- - `LANG_CHOICES` 
-> default value :  <br>
+  >> langue par défaut pour l’ajout de piste à une vidéo. <br>
 
->> Liste des langues proposées lors de l'ajout des vidéos. <br>
->> Affichés en dessous d'une vidéos, les choix sont aussi utilisés pour affiner la recherche. <br>
+ - `KIND_CHOICES`
 
- - `LINK_SUPERPOSITION` 
-> default value : False <br>
+  > valeur par défaut : ``
 
->> Si valeur vaut 'True', les URLs contenues dans le texte de superposition seront transformées, à la lecture de la vidéo, en lien cliquable. <br>
+  >> Liste de types de piste possibles pour une vidéo (sous-titre, légende etc.) <br>
 
- - `MODEL_COMPILE_DIR` 
-> default value : /path/of/project/Esup-Pod/compile-model <br>
+ - `LANG_CHOICES`
 
->> paramétrage des chemin du model pour la compilation <br>
->> Pour télécharger les Modeles : https://alphacephei.com/vosk/lm#update-process <br>
->> Ajouter le model dans les sous-dossier de la lang correspondants <br>
->> Exemple pour le français: /path/of/project/Esup-Pod/compile-model/fr/ <br>
+  > valeur par défaut : ``
 
- - `MODEL_PARAM` 
-> default value :  <br>
+  >> Liste des langues proposées lors de l’ajout des vidéos. <br>
+  >> Affichés en dessous d’une vidéo, les choix sont aussi utilisés pour affiner la recherche. <br>
 
->> paramétrage des modele.  <br>
->> Pour télécharger les Modeles Vosk : https://alphacephei.com/vosk/models <br>
->> liste des langues affichées en premier dans les propositions de choix <br>
+ - `LINK_SUPERPOSITION`
 
- - `PREF_LANG_CHOICES` 
-> default value :  <br>
+  > valeur par défaut : `False`
 
->> liste des langues à afficher en premier dans la liste des toutes les langues <br>
->> voir le fichier pod/main/lang_settings.py <br>
+  >> Si valeur vaut 'True', les URLs contenues dans le texte de superposition seront transformées, à la lecture de la vidéo, en liens cliquables. <br>
 
- - `ROLE_CHOICES` 
-> default value :  <br>
+ - `MODEL_COMPILE_DIR`
 
->> Liste de rôle possible pour un contributeur <br>
+  > valeur par défaut : `/path/of/project/Esup-Pod/compile-model`
 
- - `TRANSCRIPTION_TYPE` 
-> default value : STT <br>
+  >> paramétrage des chemin du model pour la compilation <br>
+  >> Pour télécharger les modèles : [https://alphacephei.com/vosk/lm#update-process]() <br>
+  >> Ajouter le model dans les sous-dossier de la lang correspondants <br>
+  >> Exemple pour le français: `/path/of/project/Esup-Pod/compile-model/fr/` <br>
 
->> STT ou VOSK <br>
+ - `TRANSCRIPTION_MODEL_PARAM`
 
- - `USE_ENRICH_READY` 
-> default value : False  <br>
+  > valeur par défaut : ``
 
->> voir ACTIVE_MODEL_ENRICH <br>
+  >> Paramétrage des modèles pour la transcription <br>
+  >> Voir la documentation à cette adresse : <br>
+  >>  [https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3]() <br>
+  >> Pour télécharger les modèles Vosk : [https://alphacephei.com/vosk/models]() <br>
+  >>
+  >> ```
+  >> TRANSCRIPTION_MODEL_PARAM = { 
+  >>     # le modèle stt 
+  >>     'STT': { 
+  >>         'fr': { 
+  >>             'model': "/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite", 
+  >>             'scorer': "/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer", 
+  >>         } 
+  >>     }, 
+  >>     # le modèle vosk 
+  >>     'VOSK': { 
+  >>         'fr': { 
+  >>             'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0", 
+  >>         } 
+  >>     } 
+  >> } 
+  >>
+  >> ```
+
+ - `PREF_LANG_CHOICES`
+
+  > valeur par défaut : ``
+
+  >> liste des langues à afficher en premier dans la liste des toutes les langues <br>
+  >> voir le fichier `pod/main/lang_settings.py` <br>
+
+ - `ROLE_CHOICES`
+
+  > valeur par défaut : ``
+
+  >> Liste de rôles possibles pour un contributeur. <br>
+
+ - `TRANSCRIPTION_TYPE`
+
+  > valeur par défaut : `STT`
+
+  >> STT ou VOSK <br>
+
+ - `USE_ENRICH_READY`
+
+  > valeur par défaut : `False `
+
+  >> voir ACTIVE_MODEL_ENRICH <br>
 
 ### Configuration application enrichment
 
 ### Configuration application live
 
- - `AFFILIATION_EVENT` 
-> default value : ['faculty', 'employee', 'staff'] <br>
+ - `AFFILIATION_EVENT`
 
->> Groupes ou affiliations des personnes autorisées à créer un évènement <br>
+  > valeur par défaut : `['faculty', 'employee', 'staff']`
 
- - `BROADCASTER_PILOTING_SOFTWARE` 
-> default value : [] <br>
+  >> Groupes ou affiliations des personnes autorisées à créer un évènement <br>
 
->> Types de logiciel de serveur de streaming utilisés. <br>
->> Actuellement disponible Wowza. Il faut préciser cette valeur pour l'activer ['Wowza', ] <br>
->> Si vous utilisez une autre logiciel, <br>
->> il faut développer une interface dans `pod/live/pilotingInterface.py` <br>
+ - `BROADCASTER_PILOTING_SOFTWARE`
 
- - `LIVE_CELERY_TRANSCRIPTION ` 
-> default value : False <br>
+  > valeur par défaut : `[]`
 
->> Activer la transcription déportée sur une machine distante. <br>
+  >> Types de logiciel de serveur de streaming utilisés. <br>
+  >> Actuellement disponible Wowza. Il faut préciser cette valeur pour l’activer ['Wowza', ] <br>
+  >> Si vous utilisez une autre logiciel, <br>
+  >> il faut développer une interface dans `pod/live/pilotingInterface.py` <br>
 
- - `DEFAULT_EVENT_PATH` 
-> default value :  <br>
+ - `LIVE_CELERY_TRANSCRIPTION `
 
->> Chemin racine du répertoire où sont déposés temporairement les  enregistrements des évènements éffectués depuis POD pour convertion en ressource vidéo (VOD) <br>
+  > valeur par défaut : `False`
 
- - `DEFAULT_EVENT_THUMBNAIL` 
-> default value : /img/default-event.svg <br>
 
->> Image par défaut affichée comme poster ou vignette, utilisée pour présenter l'évènement'. <br>
->> Cette image doit se situer dans le répertoire static. <br>
+  >> Activer la transcription déportée sur une machine distante. <br>
 
- - `DEFAULT_EVENT_TYPE_ID` 
-> default value : 1 <br>
+ - `DEFAULT_EVENT_PATH`
 
->> Type par défaut affecté à un évènement direct (en général, le type ayant pour identifiant '1' est 'Other') <br>
+  > valeur par défaut : ``
 
- - `DEFAULT_THUMBNAIL` 
-> default value : img/default.svg <br>
+  >> Chemin racine du répertoire où sont déposés temporairement les enregistrements des évènements éffectués depuis POD pour convertion en ressource vidéo (VOD) <br>
 
->> Image par défaut affichée comme poster ou vignette,  utilisée pour présenter la vidéo. <br>
->> Cette image doit se situer dans le répertoire static. <br>
+ - `DEFAULT_EVENT_THUMBNAIL`
 
- - `EMAIL_ON_EVENT_SCHEDULING` 
-> default value : True <br>
+  > valeur par défaut : `/img/default-event.svg`
 
->> Si True, un courriel est envoyé aux managers et à l'auteur (si DEBUG est à False) à la création/modification d'un event. <br>
+  >> Image par défaut affichée comme poster ou vignette, utilisée pour présenter l’évènement. <br>
+  >> Cette image doit se situer dans le répertoire `static`. <br>
 
- - `EVENT_ACTIVE_AUTO_START` 
-> default value : False <br>
+ - `DEFAULT_EVENT_TYPE_ID`
 
->> Permet de lancer automatiquement l'enregistrement sur l'interface utilisée (wowza, ) sur le broadcaster et spécifié par  BROADCASTER_PILOTING_SOFTWARE <br>
+  > valeur par défaut : `1`
 
- - `EVENT_GROUP_ADMIN` 
-> default value : event admin <br>
+  >> Type par défaut affecté à un évènement direct (en général, le type ayant pour identifiant '1' est 'Other') <br>
 
->> Permet de préciser le nom du groupe dans lequel les utilisateurs  peuvent planifier un évènement sur plusieurs jours <br>
+ - `DEFAULT_THUMBNAIL`
 
- - `HEARTBEAT_DELAY` 
-> default value : 45 <br>
+  > valeur par défaut : `img/default.svg`
 
->> Temps (en seconde) entre deux envois d'un signal au serveur, pour signaler la présence sur un live. <br>
->> Peut être augmenté en cas de perte de performance mais au détriment de la qualité du comptage des valeurs <br>
+  >> Image par défaut affichée comme poster ou vignette, utilisée pour présenter la vidéo. <br>
+  >> Cette image doit se situer dans le répertoire static. <br>
 
- - `LIVE_VOSK_MODEL` 
-> default value : {} <br>
+ - `EMAIL_ON_EVENT_SCHEDULING`
 
->> Paramétrage des modèles pour la transcription des directs <br>
->> La documentation sera présente prochaînement <br>
->> Pour télécharger les Modèles Vosk : https://alphacephei.com/vosk/models <br>
->> ```
->> LIVE_VOSK_MODEL = { 
->>    'fr': { 
->>        'model': "/path/of/project/django_projects/transcription/live/fr/vosk-model-small-fr-0.22", 
->>     } 
->> } 
->> ```
+  > valeur par défaut : `True`
 
- - `LIVE_TRANSCRIPTIONS_FOLDER` 
-> default value :  <br>
+  >> Si True, un courriel est envoyé aux managers et à l’auteur (si DEBUG est à False) à la création/modification d’un event. <br>
 
->> Dossier contenat les fichiers de sous-titre au format vtt pour les directs <br>
+ - `EVENT_ACTIVE_AUTO_START`
 
- - `USE_BBB` 
-> default value : True <br>
+  > valeur par défaut : `False`
 
->> Utilisation de BigBlueButton - A retirer dans les futures versions de Pod <br>
+  >> Permet de lancer automatiquement l’enregistrement sur l’interface utilisée (wowza, ) sur le broadcaster et spécifié par `BROADCASTER_PILOTING_SOFTWARE` <br>
 
- - `USE_BBB_LIVE` 
-> default value : False  <br>
+ - `EVENT_GROUP_ADMIN`
 
->> Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - A retirer dans les futures versions de Pod <br>
+  > valeur par défaut : `event admin`
 
- - `USE_LIVE_TRANSCRIPTION` 
-> default value : False <br>
+  >> Permet de préciser le nom du groupe dans lequel les utilisateurs peuvent planifier un évènement sur plusieurs jours. <br>
 
->> Activer l'auto-transcription pour les directs <br>
+ - `HEARTBEAT_DELAY`
 
- - `VIEW_EXPIRATION_DELAY` 
-> default value : 60 <br>
+  > valeur par défaut : `45`
 
->> Délai (en seconde) selon lequel une vue est considérée comme expirée si elle n'as pas renvoyé de signal depuis <br>
+  >> Temps (en secondes) entre deux envois d’un signal au serveur, pour signaler la présence sur un live. <br>
+  >> Peut être augmenté en cas de perte de performance, mais au détriment de la qualité du comptage des valeurs. <br>
+
+ - `LIVE_VOSK_MODEL`
+
+  > valeur par défaut : `{}`
+
+
+  >> Paramétrage des modèles pour la transcription des directs <br>
+  >> La documentation sera présente prochaînement <br>
+  >> Pour télécharger les Modèles Vosk : https://alphacephei.com/vosk/models <br>
+  >>
+  >> ```
+  >> LIVE_VOSK_MODEL = { 
+  >>    'fr': { 
+  >>        'model': "/path/of/project/django_projects/transcription/live/fr/vosk-model-small-fr-0.22", 
+  >>     } 
+  >> } 
+  >>
+  >> ```
+
+ - `LIVE_TRANSCRIPTIONS_FOLDER`
+
+  > valeur par défaut : ``
+
+
+  >> Dossier contenat les fichiers de sous-titre au format vtt pour les directs <br>
+
+ - `USE_BBB`
+
+  > valeur par défaut : `True`
+
+  >> Utilisation de BigBlueButton - A retirer dans les futures versions de Pod <br>
+
+ - `USE_BBB_LIVE`
+
+  > valeur par défaut : `False `
+
+  >> Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - A retirer dans les futures versions de Pod <br>
+
+ - `USE_LIVE_TRANSCRIPTION`
+
+  > valeur par défaut : `False`
+
+
+  >> Activer l'auto-transcription pour les directs <br>
+
+ - `VIEW_EXPIRATION_DELAY`
+
+  > valeur par défaut : `60`
+
+  >> Délai (en seconde) selon lequel une vue est considérée comme expirée si elle n’a pas renvoyé de signal depuis. <br>
 
 ### Configuration application LTI
 
- - `LTI_ENABLED` 
-> default value : False <br>
+ - `LTI_ENABLED`
 
->> Configuration / Activation du LTI voir pod/main/settings.py L.224 <br>
+  > valeur par défaut : `False`
 
- - `PYLTI_CONFIG` 
-> default value : {} <br>
+  >> Configuration / Activation du LTI voir pod/main/settings.py L.224 <br>
 
->> cette varaible permet de configurer l'application cliente et le secret partagé <br>
->> PYLTI_CONFIG = { <br>
->>     'consumers': { <br>
->>         '<random number string>': { <br>
->>             'secret': '<random number string>' <br>
->>         } <br>
->>     } <br>
->> } <br>
+ - `PYLTI_CONFIG`
+
+  > valeur par défaut : `{}`
+
+  >> Cette variable permet de configurer l’application cliente et le secret partagé <br>
+  >>
+  >> ```
+  >> PYLTI_CONFIG = { 
+  >>     'consumers': { 
+  >>         '<random number string>': { 
+  >>             'secret': '<random number string>' 
+  >>         } 
+  >>     } 
+  >> } 
+  >>
+  >> ```
 
 ### Configuration application main
 
- - `USE_BBB` 
-> default value : True <br>
+ - `USE_BBB`
 
->> Utilisation de BigBlueButton - A retirer dans les futures versions de Pod <br>
+  > valeur par défaut : `True`
 
- - `USE_BBB_LIVE` 
-> default value : False  <br>
+  >> Utilisation de BigBlueButton - [TODO] À retirer dans les futures versions de Pod <br>
 
->> Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - A retirer dans les futures versions de Pod <br>
+ - `USE_BBB_LIVE`
 
- - `USE_MEETING` 
-> default value : False <br>
+  > valeur par défaut : `False `
 
->> Activation de l'application meeting <br>
+  >> Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - [TODO] À retirer dans les futures versions de Pod <br>
 
- - `USE_OPENCAST_STUDIO` 
-> default value : False <br>
+ - `USE_MEETING`
 
->> Activation du studio opencast <br>
+  > valeur par défaut : `False`
 
- - `VERSION` 
-> default value :  <br>
+  >> Activation de l’application meeting <br>
 
->> Version courante du projet <br>
+ - `USE_OPENCAST_STUDIO`
+
+  > valeur par défaut : `False`
+
+  >> Activation du studio opencast <br>
+
+ - `VERSION`
+
+  > valeur par défaut : ``
+
+  >> Version courante du projet <br>
 
 ### Configuration application meeting
 
-Application Meeting pour la gestion de reunion avec BBB. <br/>
-Mettre USE_MEETING à True pour activer cette application. <br/>
-BBB_API_URL et BBB_SECRET_KEY sont obligatoires pour faire fonctionner l'application <br/>
+Application Meeting pour la gestion de reunion avec BBB.<br/>
+Mettre `USE_MEETING` à True pour activer cette application.<br/>
+`BBB_API_URL` et `BBB_SECRET_KEY` sont obligatoires pour faire fonctionner l’application<br/>
 
- - `BBB_API_URL` 
-> default value :  <br>
+ - `BBB_API_URL`
 
->> Indiquer l'URL API de BBB par ex https://webconf.univ.fr/bigbluebutton/api <br>
+  > valeur par défaut : ``
 
- - `BBB_LOGOUT_URL` 
-> default value :  <br>
+  >> Indiquer l’URL API de BBB par ex `https://webconf.univ.fr/bigbluebutton/api <br>
 
->> Indiquer l'URL de retour au moment où vous quittez la réunion BBB. Ce champ est optionnel <br>
+ - `BBB_LOGOUT_URL`
 
- - `BBB_MEETING_INFO` 
-> default value : {} <br>
+  > valeur par défaut : ``
 
->> Dictionnaire de clé:valeur permettant d'afficher les informations d'une session de réunion dans BBB <br>
->> Voici la liste par défaut <br>
->> ```
->> BBB_MEETING_INFO: 
->> { 
->>     "meetingName": _("Meeting name"), 
->>     "hasUserJoined": _("Has user joined?"), 
->>     "recording": _("Recording"), 
->>     "participantCount": _("Participant count"), 
->>     "listenerCount": _("Listener count"), 
->>     "moderatorCount": _("Moderator count"), 
->>     "attendees": _("Attendees"), 
->>     "attendee": _("Attendee"), 
->>     "fullName": _("Full name"), 
->>     "role": _("Role"), 
->> } 
->> ```
+  >> Indiquer l’URL de retour au moment où vous quittez la réunion BBB. Ce champ est optionnel. <br>
 
- - `BBB_SECRET_KEY` 
-> default value :  <br>
+ - `BBB_MEETING_INFO`
 
->> Clé de votre serveur BBB. Vous pouvez récupérer cette clé à l'aide de la commande bbb-conf --secret sur le serveur BBB <br>
+  > valeur par défaut : `{}`
 
- - `MEETING_DATE_FIELDS` 
-> default value : () <br>
+  >> Dictionnaire de clé:valeur permettant d’afficher les informations d’une session de réunion dans BBB <br>
+  >> Voici la liste par défaut <br>
+  >>
+  >> ```
+  >> BBB_MEETING_INFO: 
+  >> { 
+  >>     "meetingName": _("Meeting name"), 
+  >>     "hasUserJoined": _("Has user joined?"), 
+  >>     "recording": _("Recording"), 
+  >>     "participantCount": _("Participant count"), 
+  >>     "listenerCount": _("Listener count"), 
+  >>     "moderatorCount": _("Moderator count"), 
+  >>     "attendees": _("Attendees"), 
+  >>     "attendee": _("Attendee"), 
+  >>     "fullName": _("Full name"), 
+  >>     "role": _("Role"), 
+  >> } 
+  >>
+  >> ```
 
->> liste des champs du formulaire de creation d'une reunion <br>
->> les champs sont regroupés dans un ensemble de champs <br>
->> ```
->> MEETING_DATE_FIELDS: 
->> ( 
->>     "start", 
->>     "start_time", 
->>     "expected_duration", 
->> ) 
->> ```
+ - `BBB_SECRET_KEY`
 
- - `MEETING_DISABLE_RECORD` 
-> default value : True <br>
+  > valeur par défaut : ``
 
->> Mettre à True pour désactiver les enregistrements de réunion <br>
->> Configuration de l'enregistrement des réunions. Ce champ n'est pas pris en compte si MEETING_DISABLE_RECORD = True <br>
+  >> Clé de votre serveur BBB. <br>
+  >> Vous pouvez récupérer cette clé à l’aide de la commande `bbb-conf --secret` sur le serveur BBB. <br>
 
- - `MEETING_MAIN_FIELDS` 
-> default value : () <br>
+ - `MEETING_DATE_FIELDS`
 
->> Permet de définir les champs principaux du formulaire de creation d'une réunion <br>
->> les champs principaux sont affichés directement dans la page de formulaire d'une réunion <br>
->> ```
->> MEETING_MAIN_FIELDS: 
->> ( 
->>     "name", 
->>     "owner", 
->>     "additional_owners", 
->>     "attendee_password", 
->>     "is_restricted", 
->>     "restrict_access_to_groups", 
->> ) 
->> ```
+  > valeur par défaut : `()`
 
- - `MEETING_MAX_DURATION` 
-> default value : 5 <br>
+  >> liste des champs du formulaire de creation d’une reunion <br>
+  >> les champs sont regroupés dans un ensemble de champs <br>
+  >>
+  >> ```
+  >> MEETING_DATE_FIELDS: 
+  >> ( 
+  >>     "start", 
+  >>     "start_time", 
+  >>     "expected_duration", 
+  >> ) 
+  >>
+  >> ```
 
->> permet de définir la durée maximum pour une reunion <br>
->> (en heure) <br>
+ - `MEETING_DISABLE_RECORD`
 
- - `MEETING_RECORD_FIELDS` 
-> default value : () <br>
+  > valeur par défaut : `True`
 
->> ensemble des champs qui serotn cachés si MEETING_DISABLE_RECORD est défini à true <br>
->> ```
->> MEETING_RECORD_FIELDS : ("record", "auto_start_recording", "allow_start_stop_recording") 
->> ```
+  >> Mettre à True pour désactiver les enregistrements de réunion <br>
+  >> Configuration de l’enregistrement des réunions. <br>
+  >> Ce champ n’est pas pris en compte si `MEETING_DISABLE_RECORD = True`. <br>
 
- - `MEETING_RECURRING_FIELDS` 
-> default value : () <br>
+ - `MEETING_MAIN_FIELDS`
 
->> permet de définir la liste de tous les champs permettant de définir la récurrence d'une reunion <br>
->> tous ces champs sont regroupés dans un ensemble de champs affichés dans une modale <br>
->> ```
->> MEETING_RECURRING_FIELDS: 
->> ( 
->>     "recurrence", 
->>     "frequency", 
->>     "recurring_until", 
->>     "nb_occurrences", 
->>     "weekdays", 
->>     "monthly_type", 
->> ) 
->> ```
+  > valeur par défaut : `()`
 
- - `RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY` 
-> default value : False <br>
+  >> Permet de définir les champs principaux du formulaire de création d’une réunion <br>
+  >> les champs principaux sont affichés directement dans la page de formulaire d’une réunion <br>
+  >>
+  >> ```
+  >> MEETING_MAIN_FIELDS: 
+  >> ( 
+  >>     "name", 
+  >>     "owner", 
+  >>     "additional_owners", 
+  >>     "attendee_password", 
+  >>     "is_restricted", 
+  >>     "restrict_access_to_groups", 
+  >> ) 
+  >>
+  >> ```
 
->> Seuls les utilisateurs "staff" pourront éditer les réunions <br>
+ - `MEETING_MAX_DURATION`
 
- - `USE_MEETING` 
-> default value : False <br>
+  > valeur par défaut : `5`
 
->> Activer l'application meeting <br>
+  >> permet de définir la durée maximum pour une reunion <br>
+  >> (en heure) <br>
+
+ - `MEETING_RECORD_FIELDS`
+
+  > valeur par défaut : `()`
+
+  >> ensemble des champs qui serotn cachés si MEETING_DISABLE_RECORD est défini à true <br>
+  >>
+  >> ```
+  >> MEETING_RECORD_FIELDS: ("record", "auto_start_recording", "allow_start_stop_recording") 
+  >>
+  >> ```
+
+ - `MEETING_RECURRING_FIELDS`
+
+  > valeur par défaut : `()`
+
+  >> permet de définir la liste de tous les champs permettant de définir la récurrence d’une reunion <br>
+  >> tous ces champs sont regroupés dans un ensemble de champs affichés dans une modale <br>
+  >>
+  >> ```
+  >> MEETING_RECURRING_FIELDS: 
+  >> ( 
+  >>     "recurrence", 
+  >>     "frequency", 
+  >>     "recurring_until", 
+  >>     "nb_occurrences", 
+  >>     "weekdays", 
+  >>     "monthly_type", 
+  >> ) 
+  >>
+  >> ```
+
+ - `RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY`
+
+  > valeur par défaut : `False`
+
+  >> Seuls les utilisateurs "staff" pourront éditer les réunions <br>
+
+ - `USE_MEETING`
+
+  > valeur par défaut : `False`
+
+  >> Activer l’application meeting <br>
 
 ### Configuration application playlist
 
 ### Configuration application podfile
 
- - `FILES_DIR` 
-> default value : files <br>
+ - `FILES_DIR`
 
->> Nom du répertoire racine où les fichiers "complémentaires" <br>
->> (hors vidéos etc.) sont téléversés. Notament utilisé par PODFILE <br>
->> A modifier principalement pour indiquer dans LOCATION votre serveur de cache si elle n'est pas sur la même machine que votre POD <br>
+  > valeur par défaut : `files`
 
- - `FILE_ALLOWED_EXTENSIONS` 
-> default value : ('doc', 'docx', 'odt', 'pdf', 'xls', 'xlsx', 'ods', 'ppt', 'pptx', 'txt', 'html', 'htm', 'vtt', 'srt') <br>
+  >> Nom du répertoire racine où les fichiers "complémentaires" <br>
+  >> (hors vidéos etc.) sont téléversés. Notament utilisé par PODFILE <br>
+  >> À modifier principalement pour indiquer dans LOCATION votre serveur de cache si elle n’est pas sur la même machine que votre POD. <br>
 
->> Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier <br>
+ - `FILE_ALLOWED_EXTENSIONS`
 
- - `FILE_MAX_UPLOAD_SIZE` 
-> default value : 10 <br>
+  > valeur par défaut : `('doc', 'docx', 'odt', 'pdf', 'xls', 'xlsx', 'ods', 'ppt', 'pptx', 'txt', 'html', 'htm', 'vtt', 'srt')`
 
->> Poids maximum en Mo par fichier téléversé dans le gestionnaire de fichier <br>
+  >> Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier <br>
 
- - `IMAGE_ALLOWED_EXTENSIONS` 
-> default value : ('jpg', 'jpeg', 'bmp', 'png', 'gif', 'tiff', 'webp') <br>
+ - `FILE_MAX_UPLOAD_SIZE`
 
->> Extensions autorisées pour les images téléversées dans le gestionnaire de fichier <br>
+  > valeur par défaut : `10`
+
+  >> Poids maximum en Mo par fichier téléversé dans le gestionnaire de fichier <br>
+
+ - `IMAGE_ALLOWED_EXTENSIONS`
+
+  > valeur par défaut : `('jpg', 'jpeg', 'bmp', 'png', 'gif', 'tiff', 'webp')`
+
+  >> Extensions autorisées pour les images téléversées dans le gestionnaire de fichier <br>
 
 ### Configuration application recorder
 
- - `ALLOW_MANUAL_RECORDING_CLAIMING` 
-> default value : False <br>
+ - `ALLOW_MANUAL_RECORDING_CLAIMING`
 
->> si True, active un lien dans le menu de l'utilisateur permettant de réclamer un enregistrement <br>
+  > valeur par défaut : `False`
 
- - `ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER` 
-> default value : True <br>
+  >> si True, active un lien dans le menu de l’utilisateur permettant de réclamer un enregistrement <br>
 
->> Si True, le manager de l'enregistreur pourra choisir un propriétaire de l'enregistrement. <br>
+ - `ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER`
 
- - `DEFAULT_RECORDER_ID` 
-> default value : 1 <br>
+  > valeur par défaut : `True`
 
->> Ajoute un enregistreur par défaut à un enregistrement non identifiable (mauvais chemin dans le dépôt FTP) <br>
+  >> Si True, le manager de l’enregistreur pourra choisir un propriétaire de l’enregistrement. <br>
 
- - `DEFAULT_RECORDER_PATH` 
-> default value : /data/ftp-pod/ftp/ <br>
+ - `DEFAULT_RECORDER_ID`
 
->> Chemin racine du répertoire où sont déposés les enregistrements <br>
->> (chemin du serveur FTP). <br>
+  > valeur par défaut : `1`
 
- - `DEFAULT_RECORDER_TYPE_ID` 
-> default value : 1 <br>
+  >> Ajoute un enregistreur par défaut à un enregistrement non identifiable (mauvais chemin dans le dépôt FTP) <br>
 
->> Identifiant du type de vidéo par défaut (si non spécifié). <br>
->> (Exemple : 3 pour Colloque/conférence, 4 pour Cours...) <br>
+ - `DEFAULT_RECORDER_PATH`
 
- - `DEFAULT_RECORDER_USER_ID` 
-> default value : 1 <br>
+  > valeur par défaut : `/data/ftp-pod/ftp/`
 
->> Identifiant du propriétaire par défaut (si non spécifié) des enregistrements déposés. <br>
+  >> Chemin racine du répertoire où sont déposés les enregistrements <br>
+  >> (chemin du serveur FTP). <br>
 
- - `OPENCAST_DEFAULT_PRESENTER` 
-> default value : mid <br>
+ - `DEFAULT_RECORDER_TYPE_ID`
 
->> Permet de spécifier la valeur par défaut du placement de la vidéo du <br>
->> presenteur par rapport à la vidéo de présentation (écran) <br>
->> les valeurs possibles sont : <br>
->>  * "mid" (écran et caméra ont la même taille) <br>
->>  * "piph" (le presenteur, caméra, est incrusté dans la vidéo de présentation, en haut à droite) <br>
->>  * "pipb" (le presenteur, caméra, est incrusté dans la vidéo de présentation, en bas à droite) <br>
->> Contenu par défaut du fichier xml pour créer le mediapackage pour le studio. <br>
->> Ce fichier va contenir toutes les spécificités de l'enregistrement <br>
->> (source, cutting, title, presenter etc.) <br>
+  > valeur par défaut : `1`
 
- - `OPENCAST_FILES_DIR` 
-> default value : opencast-files <br>
+  >> Identifiant du type de vidéo par défaut (si non spécifié). <br>
+  >> (Exemple : 3 pour Colloque/conférence, 4 pour Cours...) <br>
 
->> Permet de spécifier le dossier de stockage des enregistrements du studio avant traitement. <br>
+ - `DEFAULT_RECORDER_USER_ID`
 
- - `OPENCAST_MEDIAPACKAGE` 
-> default value : -> see xml content <br>
+  > valeur par défaut : `1`
 
->> Contenu par défaut du fichier xml pour créer le mediapackage pour le studio. Ce fichier va contenir toutes les spécificités de l'enregistrement (source, cutting, title, presenter etc.) <br>
->> ```
->> OPENCAST_MEDIAPACKAGE = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?> 
->>     <mediapackage xmlns="http://mediapackage.opencastproject.org" id="" start=""> 
->>     <media/> 
->>     <metadata/> 
->>     <attachments/> 
->>     <publications/> 
->>     </mediapackage>""" 
->> ```
+  >> Identifiant du propriétaire par défaut (si non spécifié) des enregistrements déposés. <br>
 
- - `PUBLIC_RECORD_DIR` 
-> default value : records <br>
+ - `OPENCAST_DEFAULT_PRESENTER`
 
->>  Chemin d'accès web (public) au répertoire de dépot des enregistrements (DEFAULT_RECORDER_PATH). Attention : penser à modifier la conf de NGINX <br>
+  > valeur par défaut : `mid`
 
- - `RECORDER_ADDITIONAL_FIELDS` 
-> default value : () <br>
+  >> Permet de spécifier la valeur par défaut du placement de la vidéo du <br>
+  >> presenteur par rapport à la vidéo de présentation (écran) <br>
+  >> les valeurs possibles sont : <br>
+  >>  * "mid" (écran et caméra ont la même taille) <br>
+  >>  * "piph" (le presenteur, caméra, est incrusté dans la vidéo de présentation, en haut à droite) <br>
+  >>  * "pipb" (le presenteur, caméra, est incrusté dans la vidéo de présentation, en bas à droite) <br>
+  >> Contenu par défaut du fichier xml pour créer le mediapackage pour le studio. <br>
+  >> Ce fichier va contenir toutes les spécificités de l’enregistrement <br>
+  >> (source, cutting, title, presenter etc.) <br>
 
->> Liste des champs supplémentaires pour le formulaire des enregistreurs. Cette liste reprend le nom des champs correspondants aux paramètres d'édition d'une vidéo (Discipline, Chaine, Theme, mots clés...). <br>
->> L'exemple suivant comporte l'ensemble des champs possibles, mais peut être allégée en fonction des besoins. <br>
->> Les vidéos seront alors générées avec les valeurs des champs supplémentaires telles que définies dans leur enregistreur. <br>
+ - `OPENCAST_FILES_DIR`
 
- - `RECORDER_ALLOW_INSECURE_REQUESTS` 
-> default value : False <br>
+  > valeur par défaut : `opencast-files`
 
->> Autorise la requête sur l'application en elle-même sans vérifier le certificat SSL <br>
+  >> Permet de spécifier le dossier de stockage des enregistrements du studio avant traitement. <br>
 
- - `RECORDER_BASE_URL` 
-> default value : https://pod.univ.fr <br>
+ - `OPENCAST_MEDIAPACKAGE`
 
->> url racine de l'instance permettant l'envoi de notification lors de la réception d'enregistrement <br>
+  > valeur par défaut : `-> see xml content`
 
- - `RECORDER_SELF_REQUESTS_PROXIES` 
-> default value : {"http": None, "https": None} <br>
+  >> Contenu par défaut du fichier xml pour créer le mediapackage pour le studio. Ce fichier va contenir toutes les spécificités de l’enregistrement (source, cutting, title, presenter etc.) <br>
+  >>
+  >> ```
+  >> OPENCAST_MEDIAPACKAGE = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?> 
+  >>     <mediapackage xmlns="http://mediapackage.opencastproject.org" id="" start=""> 
+  >>     <media/> 
+  >>     <metadata/> 
+  >>     <attachments/> 
+  >>     <publications/> 
+  >>     </mediapackage>""" 
+  >>
+  >> ```
 
->> Précise les proxy à utiliser pour une requête vers l'application elle même dans le cadre d'enregistrement par défaut force la non utilisation de proxy <br>
+ - `PUBLIC_RECORD_DIR`
 
- - `RECORDER_SKIP_FIRST_IMAGE` 
-> default value : False <br>
+  > valeur par défaut : `records`
 
->> Si True, permet de ne pas prendre en compte la 1° image lors du traitement d'un fichier d'enregistrement de type AudioVideoCast. <br>
+  >> Chemin d’accès web (public) au répertoire de dépot des enregistrements (DEFAULT_RECORDER_PATH). <br>
+  >> Attention : penser à modifier la conf de NGINX. <br>
 
- - `RECORDER_TYPE` 
-> default value : (('video', _('Video')), ('audiovideocast', _('Audiovideocast')), ('studio', _('Studio'))) <br>
+ - `RECORDER_ADDITIONAL_FIELDS`
 
->> Type d'enregistrement géré par la plateforme. <br>
->> Un enregistreur ne peut déposer que des fichiers  de type proposé par la plateforme. <br>
->> Le traitement se fait en fonction du type de fichier déposé. <br>
+  > valeur par défaut : `()`
 
- - `USE_OPENCAST_STUDIO` 
-> default value : False <br>
+  >> Liste des champs supplémentaires pour le formulaire des enregistreurs. Cette liste reprend le nom des champs correspondants aux paramètres d’édition d’une vidéo (Discipline, Chaine, Theme, mots clés...). <br>
+  >> L’exemple suivant comporte l’ensemble des champs possibles, mais peut être allégée en fonction des besoins. <br>
+  >> Les vidéos seront alors générées avec les valeurs des champs supplémentaires telles que définies dans leur enregistreur. <br>
 
->> Activer l'utilisation du studio Opencast <br>
+ - `RECORDER_ALLOW_INSECURE_REQUESTS`
 
- - `USE_RECORD_PREVIEW` 
-> default value : False <br>
+  > valeur par défaut : `False`
 
->> Si True, affiche l'icone de prévisualisation des vidéos dans la page "Revendiquer un enregistrement" <br>
+  >> Autorise la requête sur l’application en elle-même sans vérifier le certificat SSL <br>
 
-### Configuration application vidéo
+ - `RECORDER_BASE_URL`
 
- - `ACTIVE_VIDEO_COMMENT` 
-> default value : True <br>
+  > valeur par défaut : `https://pod.univ.fr`
 
->> Activer les commentaires au niveau de la plateforme <br>
+  >> url racine de l’instance permettant l’envoi de notification lors de la réception d’enregistrement. <br>
 
- - `CELERY_BROKER_URL` 
-> default value : amqp://pod:xxx@localhost/rabbitpod <br>
+ - `RECORDER_SELF_REQUESTS_PROXIES`
 
->> Utilisation de Celery pour la gestion des taches d'encodage <br>
+  > valeur par défaut : `{"http": None, "https": None}`
 
- - `CELERY_TO_ENCODE` 
-> default value : False <br>
+  >> Précise les proxy à utiliser pour une requête vers l’application elle même dans le cadre d’enregistrement par défaut force la non utilisation de proxy. <br>
 
->> Utilisation de Celery pour la gestion des taches d'encodage <br>
+ - `RECORDER_SKIP_FIRST_IMAGE`
 
- - `CHANNEL_FORM_FIELDS_HELP_TEXT` 
-> default value :  <br>
+  > valeur par défaut : `False`
 
->> Ensemble des textes d'aide affichés avec le formulaire d'édition de chaine. <br>
->> voir pod/video/forms.py <br>
+  >> Si True, permet de ne pas prendre en compte la 1ère image lors du traitement d’un fichier d’enregistrement de type AudioVideoCast. <br>
 
- - `CHUNK_SIZE` 
-> default value : 1000000 <br>
+ - `RECORDER_TYPE`
 
->> Taille d'un fragment lors de l'envoie d'une vidéo <br>
->> le fichier sera mis en ligne par fragment de cette taille <br>
+  > valeur par défaut : `(('video', _('Video')), ('audiovideocast', _('Audiovideocast')), ('studio', _('Studio')))`
 
- - `CURSUS_CODES` 
-> default value : () <br>
+  >> Type d’enregistrement géré par la plateforme. <br>
+  >> Un enregistreur ne peut déposer que des fichiers de type proposé par la plateforme. <br>
+  >> Le traitement se fait en fonction du type de fichier déposé. <br>
 
->> Liste des cursus proposés lors de l'ajout des vidéos. <br>
->> Affichés en dessous d'une vidéos, ils sont aussi utilisés pour affiner la recherche. <br>
->> ```
->> CURSUS_CODES = ( 
->>     ('0', _("None / All")), 
->>     ('L', _("Bachelor’s Degree")), 
->>     ('M', _("Master’s Degree")), 
->>     ('D', _("Doctorate")), 
->>     ('1', _("Other")) 
->> ) 
->> ```
+ - `USE_OPENCAST_STUDIO`
 
- - `DEFAULT_DC_COVERAGE` 
-> default value : TITLE_ETB + " - Town - Country" <br>
+  > valeur par défaut : `False`
 
->> couverture du droit pour chaque vidéo <br>
+  >> Activer l’utilisation du studio Opencast. <br>
 
- - `DEFAULT_DC_RIGHTS` 
-> default value : BY-NC-SA <br>
+ - `USE_RECORD_PREVIEW`
 
->> droit par défaut affichés dans le flux RSS si non renseigné <br>
+  > valeur par défaut : `False`
 
- - `DEFAULT_LANG_TRACK` 
-> default value : fr <br>
+  >> Si True, affiche l’icone de prévisualisation des vidéos dans la page "Revendiquer un enregistrement". <br>
 
->> langue par défaut pour l'ajout de piste à une vidéo <br>
+### Configuration application vidéo.
 
- - `DEFAULT_THUMBNAIL` 
-> default value : img/default.svg <br>
+ - `ACTIVE_VIDEO_COMMENT`
 
->> Image par défaut affichée comme poster ou vignette, utilisée pour présenter la vidéo. <br>
->> Cette image doit se situer dans le répertoire static. <br>
+  > valeur par défaut : `True`
 
- - `DEFAULT_TYPE_ID` 
-> default value : 1 <br>
+  >> Activer les commentaires au niveau de la plateforme <br>
 
->> Les vidéos créées sans type (par importation par exemple) seront affectées au type par défaut (en général, le type ayant pour identifiant '1' est 'Other') <br>
+ - `CELERY_BROKER_URL`
 
- - `DEFAULT_YEAR_DATE_DELETE` 
-> default value : 2 <br>
+  > valeur par défaut : `amqp://pod:xxx@localhost/rabbitpod`
 
->> Durée d'obsolescence par défaut (en années après la date d'ajout). <br>
+  >> URL de Celery pour la gestion des taches d’encodage. <br>
 
- - `EMAIL_ON_ENCODING_COMPLETION` 
-> default value : True <br>
+ - `CELERY_TO_ENCODE`
 
->> Si True, un courriel est envoyé aux managers et à l'auteur (si DEBUG est à False) à la fin de l'encodage/transcription <br>
+  > valeur par défaut : `False`
 
- - `EMAIL_ON_TRANSCRIPTING_COMPLETION` 
-> default value : True <br>
+  >> Utilisation de Celery pour la gestion des taches d’encodage <br>
 
->> Si True, un courriel est envoyé aux managers et à l'auteur (si DEBUG est à False) à la fin de l'encodage/transcription <br>
+ - `CHANNEL_FORM_FIELDS_HELP_TEXT`
 
- - `ENCODE_STUDIO` 
-> default value : start_encode_studio <br>
+  > valeur par défaut : ``
 
->> Fonction appelée pour lancer l'encodage du studio (merge and cut) <br>
+  >> Ensemble des textes d’aide affichés avec le formulaire d’édition de chaine. <br>
+  >> voir pod/video/forms.py <br>
 
- - `ENCODE_VIDEO` 
-> default value : start_encode <br>
+ - `CHUNK_SIZE`
 
->> Fonction appelée pour lancer l'encodage des vidéos direct par thread ou distant par celery <br>
+  > valeur par défaut : `1000000`
 
- - `ENCODING_CHOICES` 
-> default value : () <br>
+  >> Taille d’un fragment lors de l’envoi d’une vidéo <br>
+  >> le fichier sera mis en ligne par fragment de cette taille. <br>
 
->> Encodage possible sur la plateforme. Associé à un rendu dans le cas d'une vidéo. <br>
->> ```
->> ENCODING_CHOICES = ( 
->>     ("audio", "audio"), 
->>     ("360p", "360p"), 
->>     ("480p", "480p"), 
->>     ("720p", "720p"), 
->>     ("1080p", "1080p"), 
->>     ("playlist", "playlist") 
->> ) 
->> ```
+ - `CURSUS_CODES`
 
- - `FORCE_LOWERCASE_TAGS` 
-> default value : True <br>
+  > valeur par défaut : `()`
 
->> Les mots clés saisis lors de l'ajout de vidéo sont convertis automatiquement en minuscule <br>
+  >> Liste des cursus proposés lors de l’ajout des vidéos. <br>
+  >> Affichés en dessous d’une vidéos, ils sont aussi utilisés pour affiner la recherche. <br>
+  >>
+  >> ```
+  >> CURSUS_CODES = ( 
+  >>     ('0', _("None / All")), 
+  >>     ('L', _("Bachelor’s Degree")), 
+  >>     ('M', _("Master’s Degree")), 
+  >>     ('D', _("Doctorate")), 
+  >>     ('1', _("Other")) 
+  >> ) 
+  >>
+  >> ```
 
- - `FORMAT_CHOICES` 
-> default value : () <br>
+ - `DEFAULT_DC_COVERAGE`
 
->> Format d'encodage réalisé sur la plateforme. <br>
->> ```
->> FORMAT_CHOICES = ( 
->>     ("video/mp4", 'video/mp4'), 
->>     ("video/mp2t", 'video/mp2t'), 
->>     ("video/webm", 'video/webm'), 
->>     ("audio/mp3", "audio/mp3"), 
->>     ("audio/wav", "audio/wav"), 
->>     ("application/x-mpegURL", "application/x-mpegURL"), 
->> ) 
->> ```
+  > valeur par défaut : `TITLE_ETB + " - Town - Country"`
 
- - `LANG_CHOICES` 
-> default value :  <br>
+  >> couverture du droit pour chaque vidéo <br>
 
->> Liste des langues proposées lors de l'ajout des vidéos. <br>
->> Affichés en dessous d'une vidéos, les choix sont aussi utilisés pour affiner la recherche. <br>
+ - `DEFAULT_DC_RIGHTS`
 
- - `LAUNCH_ENCODE_VIDEO` 
-> default value : encode_video <br>
+  > valeur par défaut : `BY-NC-SA`
 
->> Fonction appelée pour lancer l'encodage des vidéos directement (sans thread ni celery) <br>
+  >> droit par défaut affichés dans le flux RSS si non renseigné <br>
 
- - `LICENCE_CHOICES` 
-> default value : () <br>
+ - `DEFAULT_THUMBNAIL`
 
->> Licence proposées pour les vidéos en creative commons :  <br>
->> ```
->> LICENCE_CHOICES = ( 
->>     ('by', ("Attribution 4.0 International (CC BY 4.0)")), 
->>     ('by-nd', ("Attribution-NoDerivatives 4.0 " 
->>                "International (CC BY-ND 4.0)")), 
->>     ('by-nc-nd', ("Attribution-NonCommercial-NoDerivatives 4.0 " 
->>                   "International (CC BY-NC-ND 4.0)")), 
->>     ('by-nc', ("Attribution-NonCommercial 4.0 " 
->>                "International (CC BY-NC 4.0)")), 
->>     ('by-nc-sa', ("Attribution-NonCommercial-ShareAlike 4.0 " 
->>                   "International (CC BY-NC-SA 4.0)")), 
->>     ('by-sa', ("Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)")) 
->> ) 
->> ```
+  > valeur par défaut : `img/default.svg`
 
- - `MAX_DURATION_DATE_DELETE` 
-> default value : 10 <br>
+  >> Image par défaut affichée comme poster ou vignette, utilisée pour présenter la vidéo. <br>
+  >> Cette image doit se situer dans le répertoire static. <br>
 
->> Fixe une durée maximale que la date de suppression d'une vidéo ne peut dépasser. <br>
->> Par défaut : 10 (Année courante + 10 ans). <br>
+ - `DEFAULT_TYPE_ID`
 
- - `MAX_TAG_LENGTH` 
-> default value : 50 <br>
+  > valeur par défaut : `1`
 
->> Les mots clés saisis lors de l'ajout de vidéo ne peuvent dépasser la longueur saisie <br>
+  >> Les vidéos créées sans type (par importation par exemple) seront affectées au type par défaut (en général, le type ayant pour identifiant '1' est 'Other') <br>
 
- - `NOTES_STATUS` 
-> default value : () <br>
+ - `DEFAULT_YEAR_DATE_DELETE`
 
->> Valeurs possible pour l'accès à une note <br>
->> ```
->> NOTES_STATUS = ( 
->>     ("0", _("Private (me only)")), 
->>     ("1", _("Shared with video owner")), 
->>     ("2", _("Public")), 
->> ) 
->> ```
-
- - `OEMBED` 
-> default value : False <br>
-
->> Permettre l'usage du oembed, partage dans Moodle, Facebook, Twitter etc. <br>
-
- - `ORGANIZE_BY_THEME` 
-> default value : False <br>
-
->> Affichage uniquement des vidéos de la chaîne ou du thème actuel(le). <br>
->> Affichage des sous-thèmes directs de la chaîne ou du thème actuel(le) <br>
-
- - `RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY` 
-> default value : False <br>
-
->> Si True, seule les personnes "Staff" peuvent déposer des vidéos <br>
-
- - `THEME_FORM_FIELDS_HELP_TEXT` 
-> default value : "" <br>
-
->> Ensemble des textes d'aide affichés avec le formulaire d'édition de theme. <br>
->> voir pod/video/forms.py <br>
->> ```
->> THEME_FORM_FIELDS_HELP_TEXT = OrderedDict( 
->>     [ 
->>         ( 
->>             "{0}".format(_("Title field")), 
->>             [ 
->>                 _( 
->>                     "Please choose a title as short and accurate as possible, " 
->>                     "reflecting the main subject / context of the content." 
->>                 ), 
->>                 _( 
->>                     "You can use the “Description” field below for all " 
->>                     "additional information." 
->>                 ), 
->>             ], 
->>         ), 
->>         ( 
->>             "{0}".format(_("Description")), 
->>             [ 
->>                 _( 
->>                     "In this field you can describe your content, add all needed " 
->>                     "related information, and format the result " 
->>                     "using the toolbar." 
->>                 ) 
->>             ], 
->>         ), 
->>     ] 
->> ) 
->> ```
-
- - `USER_VIDEO_CATEGORY` 
-> default value : False <br>
-
->> Permet d'activer le fonctionnement de categorie au niveau de ses vidéos. <br>
->> Vous pouvez créer des catégories pour pouvoir ranger vos propres vidéos <br>
->> Les catégories sont liées à l'utilisateur <br>
-
- - `USE_OBSOLESCENCE` 
-> default value : False <br>
-
->> Activation de l'obsolescence des video. Permet d'afficher la date de suppression de la video <br>
->> dans le formulaire d'edition et dans la partie admin <br>
-
- - `USE_STATS_VIEW` 
-> default value : False <br>
-
->> Permet d'activer la possibilité de voir en details le nombre de visualisation d'une vidéo durant un jour donné ou mois, <br>
->> année ou encore le nombre de vue total depuis la création de la vidéo. <br>
->> Un lien est rajouté dans la partie info lors de la lecture d'une vidéo, un lien est rajouté dans la page de visualisation d'une chaîne ou un theme <br>
->> ou encore toutes les vidéos présentes sur la plateforme. <br>
-
- - `USE_VIDEO_EVENT_TRACKING` 
-> default value : False <br>
-
->> Ce paramètre permet d'activer l’envoi d'évènements sur le lecteur vidéo à Matomo n'est utile que si le code piwik / matomo est présent dans l'instance de Esup-Pod. <br>
->> les évènements envoyés sont : <br>
->>    play, pause, seeked, ended, ratechange, fullscreen, error, loadmetadata <br>
->> Pour rajouter le code Piwik/Matomo dans votre instance de Pod, il suffit de créer un fichier 'pod/custom/templates/custom/tracking.html' <br>
->> Il faut ensuite y insérer le code javascript puis dans votre fichier settings_local.py, <br>
->> de préciser dans la variable TEMPLATE_VISIBLE_SETTINGS :'TRACKING_TEMPLATE': 'custom/tracking.html' <br>
-
- - `VIDEO_ALLOWED_EXTENSIONS` 
-> default value : () <br>
-
->> Extension autorisée pour le téléversement sur la plateforme <br>
->> ```
->> VIDEO_ALLOWED_EXTENSIONS = ( 
->>     "3gp", 
->>     "avi", 
->>     "divx", 
->>     "flv", 
->>     "m2p", 
->>     "m4v", 
->>     "mkv", 
->>     "mov", 
->>     "mp4", 
->>     "mpeg", 
->>     "mpg", 
->>     "mts", 
->>     "wmv", 
->>     "mp3", 
->>     "ogg", 
->>     "wav", 
->>     "wma", 
->>     "webm", 
->>     "ts", 
->> ) 
->> ```
-
- - `VIDEO_FORM_FIELDS` 
-> default value : __all__ <br>
-
->> Liste des champs du formulaire d'édition de vidéos affichés <br>
-
- - `VIDEO_FORM_FIELDS_HELP_TEXT` 
-> default value :  <br>
-
->> Ensemble des textes d'aide affichés avec le formulaire d'envoi de vidéo <br>
->> ```
->> VIDEO_FORM_FIELDS_HELP_TEXT = OrderedDict( 
->>     [ 
->>         ( 
->>             "{0}".format(_("File field")), 
->>             [ 
->>                 _("You can send an audio or video file."), 
->>                 _("The following formats are supported: %s") 
->>                 % ", ".join(map(str, VIDEO_ALLOWED_EXTENSIONS)), 
->>             ], 
->>         ), 
->>         ( 
->>             "{0}".format(_("Title field")), 
->>             [ 
->>                 _( 
->>                     "Please choose a title as short and accurate as possible, " 
->>                     "reflecting the main subject / context of the content." 
->>                 ), 
->>                 _( 
->>                     "You can use the “Description” field below for all " 
->>                     "additional information." 
->>                 ), 
->>                 _( 
->>                     "You may add contributors later using the second button of " 
->>                     "the content edition toolbar: they will appear in the “Info” " 
->>                     "tab at the bottom of the audio / video player." 
->>                 ), 
->>             ], 
->>         ), 
->>         ( 
->>             "{0}".format(_("Type")), 
->>             [ 
->>                 _( 
->>                     "Select the type of your content. If the type you wish does " 
->>                     "not appear in the list, please temporary select “Other” " 
->>                     "and contact us to explain your needs." 
->>                 ) 
->>             ], 
->>         ), 
->>         ( 
->>             "{0}".format(_("Additional owners")), 
->>             [ 
->>                 _( 
->>                     "In this field you can select and add additional owners to the " 
->>                     "video. These additional owners will have the same rights as " 
->>                     "you except that they can't delete this video." 
->>                 ) 
->>             ], 
->>         ), 
->>         ( 
->>             "{0}".format(_("Description")), 
->>             [ 
->>                 _( 
->>                     "In this field you can describe your content, add all needed " 
->>                     "related information, and format the result " 
->>                     "using the toolbar." 
->>                 ) 
->>             ], 
->>         ), 
->>         ( 
->>             "{0}".format(_("Date of the event field")), 
->>             [ 
->>                 _( 
->>                     "Enter the date of the event, if applicable, in the " 
->>                     "AAAA-MM-JJ format." 
->>                 ) 
->>             ], 
->>         ), 
->>         ( 
->>             "{0}".format(_("University course")), 
->>             [ 
->>                 _( 
->>                     "Select an university course as audience target of " 
->>                     "the content." 
->>                 ), 
->>                 _( 
->>                     "Choose “None / All” if it does not apply or if all are " 
->>                     "concerned, or “Other” for an audience outside " 
->>                     "the european LMD scheme." 
->>                 ), 
->>             ], 
->>         ), 
->>         ( 
->>             "{0}".format(_("Main language")), 
->>             [_("Select the main language used in the content.")], 
->>         ), 
->>         ( 
->>             "{0}".format(_("Tags")), 
->>             [ 
->>                 _( 
->>                     "Please try to add only relevant keywords that can be " 
->>                     "useful to other users." 
->>                 ) 
->>             ], 
->>         ), 
->>         ( 
->>             "{0}".format(_("Disciplines")), 
->>             [ 
->>                 _( 
->>                     "Select the discipline to which your content belongs. " 
->>                     "If the discipline you wish does not appear in the list, " 
->>                     "please select nothing and contact us to explain your needs." 
->>                 ), 
->>                 _( 
->>                     'Hold down "Control", or "Command" on a Mac, ' 
->>                     "to select more than one." 
->>                 ), 
->>             ], 
->>         ), 
->>         ( 
->>             "{0}".format(_("Licence")), 
->>             [ 
->>                 ( 
->>                     '<a href="https://creativecommons.org/licenses/by/4.0/" ' 
->>                     'title="%(lic)s" target="_blank">%(lic)s</a>' 
->>                 ) 
->>                 % {"lic": _("Attribution 4.0 International (CC BY 4.0)")}, 
->>                 ( 
->>                     '<a href="https://creativecommons.org/licenses/by-nd/4.0/" ' 
->>                     'title="%(lic)s" target="_blank">%(lic)s</a>' 
->>                 ) 
->>                 % { 
->>                     "lic": _( 
->>                         "Attribution-NoDerivatives 4.0 " 
->>                         "International (CC BY-ND 4.0)" 
->>                     ) 
->>                 }, 
->>                 ( 
->>                     '<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" ' 
->>                     'title="%(lic)s" target="_blank">%(lic)s</a>' 
->>                 ) 
->>                 % { 
->>                     "lic": _( 
->>                         "Attribution-NonCommercial-NoDerivatives 4.0 " 
->>                         "International (CC BY-NC-ND 4.0)" 
->>                     ) 
->>                 }, 
->>                 ( 
->>                     '<a href="https://creativecommons.org/licenses/by-nc/4.0/" ' 
->>                     'title="%(lic)s" target="_blank">%(lic)s</a>' 
->>                 ) 
->>                 % { 
->>                     "lic": _( 
->>                         "Attribution-NonCommercial 4.0 " 
->>                         "International (CC BY-NC 4.0)" 
->>                     ) 
->>                 }, 
->>                 ( 
->>                     '<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" ' 
->>                     'title="%(lic)s" target="_blank">%(lic)s</a>' 
->>                 ) 
->>                 % { 
->>                     "lic": _( 
->>                         "Attribution-NonCommercial-ShareAlike 4.0 " 
->>                         "International (CC BY-NC-SA 4.0)" 
->>                     ) 
->>                 }, 
->>                 ( 
->>                     '<a href="https://creativecommons.org/licenses/by-sa/4.0/" ' 
->>                     'title="%(lic)s" target="_blank">%(lic)s</a>' 
->>                 ) 
->>                 % { 
->>                     "lic": _( 
->>                         "Attribution-ShareAlike 4.0 " "International (CC BY-SA 4.0)" 
->>                     ) 
->>                 }, 
->>             ], 
->>         ), 
->>         ( 
->>             "{0} / {1}".format(_("Channels"), _("Themes")), 
->>             [ 
->>                 _("Select the channel in which you want your content to appear."), 
->>                 _( 
->>                     "Themes related to this channel will " 
->>                     "appear in the “Themes” list below." 
->>                 ), 
->>                 _( 
->>                     'Hold down "Control", or "Command" on a Mac, ' 
->>                     "to select more than one." 
->>                 ), 
->>                 _( 
->>                     "If the channel or Themes you wish does not appear " 
->>                     "in the list, please select nothing and contact " 
->>                     "us to explain your needs." 
->>                 ), 
->>             ], 
->>         ), 
->>         ( 
->>             "{0}".format(_("Draft")), 
->>             [ 
->>                 _( 
->>                     "In “Draft mode”, the content shows nowhere and nobody " 
->>                     "else but you can see it." 
->>                 ) 
->>             ], 
->>         ), 
->>         ( 
->>             "{0}".format(_("Restricted access")), 
->>             [ 
->>                 _( 
->>                     "If you don't select “Draft mode”, you can restrict " 
->>                     "the content access to only people who can log in" 
->>                 ) 
->>             ], 
->>         ), 
->>         ( 
->>             "{0}".format(_("Password")), 
->>             [ 
->>                 _( 
->>                     "If you don't select “Draft mode”, you can add a password " 
->>                     "which will be asked to anybody willing to watch " 
->>                     "your content." 
->>                 ), 
->>                 _( 
->>                     "If your video is in a playlist the password of your " 
->>                     "video will be removed automatically." 
->>                 ), 
->>             ], 
->>         ), 
->>     ] 
->> ) 
->> ```
-
- - `VIDEO_MAX_UPLOAD_SIZE` 
-> default value : 1 <br>
-
->> Taille maximum en Go des fichiers téléversés sur la plateforme <br>
-
- - `VIDEO_PLAYBACKRATES` 
-> default value : [0.5, 1, 1.5, 2] <br>
-
->> Configuration des choix de vitesse de lecture pour le lecteur vidéo <br>
-
- - `VIDEO_RECENT_VIEWCOUNT` 
-> default value : 180 <br>
-
->> Durée (en nombre de jours) sur laquelle on souhaite compter le nombre de vues récentes <br>
-
- - `VIDEO_RENDITIONS` 
-> default value : [] <br>
-
->> Rendu serializé des rendus pour l'encodage des videos. Cela permet de pouvoir encoder les vidéos sans l'environnement de Pod <br>
->> ```
->> VIDEO_RENDITIONS = [ 
->>     { 
->>         "resolution": "640x360", 
->>         "minrate": "500k", 
->>         "video_bitrate": "750k", 
->>         "maxrate": "1000k", 
->>         "audio_bitrate": "96k", 
->>         "encode_mp4": True, 
->>         "sites": [1], 
->>     }, 
->>     { 
->>         "resolution": "1280x720", 
->>         "minrate": "1000k", 
->>         "video_bitrate": "2000k", 
->>         "maxrate": "3000k", 
->>         "audio_bitrate": "128k", 
->>         "encode_mp4": True, 
->>         "sites": [1], 
->>     }, 
->>     { 
->>         "resolution": "1920x1080", 
->>         "minrate": "2000k", 
->>         "video_bitrate": "3000k", 
->>         "maxrate": "4500k", 
->>         "audio_bitrate": "192k", 
->>         "encode_mp4": False, 
->>         "sites": [1], 
->>     }, 
->> ] 
->> ```
-
- - `VIDEO_REQUIRED_FIELDS` 
-> default value : [] <br>
-
->> Permet d'ajouter l'attribut obligatoire dans le formulaire d'edition et d'ajout d'une video: <br>
->> Exemple valeur: ["discipline", "tags"] <br>
->> NB: les champs cachés et suivant ne sont pas pris en compte: <br>
->> (video, title, type, owner, date_added, cursus, main_lang) <br>
-
- - `VIEW_STATS_AUTH` 
-> default value : False <br>
-
->> Réserve l'accès aux statistiques des vidéos aux personnes authentifiées <br>
+  > valeur par défaut : `2`
+
+  >> Durée d’obsolescence par défaut (en années après la date d’ajout). <br>
+
+ - `EMAIL_ON_ENCODING_COMPLETION`
+
+  > valeur par défaut : `True`
+
+  >> Si True, un courriel est envoyé aux managers et à l’auteur (si DEBUG est à False) à la fin de l’encodage. <br>
+
+ - `EMAIL_ON_TRANSCRIPTING_COMPLETION`
+
+  > valeur par défaut : `True`
+
+  >> Si True, un courriel est envoyé aux managers et à l’auteur (si DEBUG est à False) à la fin de la transcription <br>
+
+ - `ENCODE_STUDIO`
+
+  > valeur par défaut : `start_encode_studio`
+
+  >> Fonction appelée pour lancer l’encodage du studio (merge and cut). <br>
+
+ - `ENCODE_VIDEO`
+
+  > valeur par défaut : `start_encode`
+
+  >> Fonction appelée pour lancer l’encodage des vidéos direct par thread ou distant par celery <br>
+
+ - `ENCODING_CHOICES`
+
+  > valeur par défaut : `()`
+
+  >> Encodage possible sur la plateforme. Associé à un rendu dans le cas d’une vidéo. <br>
+  >>
+  >> ```
+  >> ENCODING_CHOICES = ( 
+  >>     ("audio", "audio"), 
+  >>     ("360p", "360p"), 
+  >>     ("480p", "480p"), 
+  >>     ("720p", "720p"), 
+  >>     ("1080p", "1080p"), 
+  >>     ("playlist", "playlist") 
+  >> ) 
+  >>
+  >> ```
+
+ - `FORCE_LOWERCASE_TAGS`
+
+  > valeur par défaut : `True`
+
+  >> Les mots clés saisis lors de l’ajout de vidéo sont convertis automatiquement en minuscule. <br>
+
+ - `FORMAT_CHOICES`
+
+  > valeur par défaut : `()`
+
+  >> Format d’encodage réalisé sur la plateforme. <br>
+  >>
+  >> ```
+  >> FORMAT_CHOICES = ( 
+  >>     ("video/mp4", "video/mp4"), 
+  >>     ("video/mp2t", "video/mp2t"), 
+  >>     ("video/webm", "video/webm"), 
+  >>     ("audio/mp3", "audio/mp3"), 
+  >>     ("audio/wav", "audio/wav"), 
+  >>     ("application/x-mpegURL", "application/x-mpegURL"), 
+  >> ) 
+  >>
+  >> ```
+
+ - `LANG_CHOICES`
+
+  > valeur par défaut : ``
+
+  >> Liste des langues proposées lors de l’ajout des vidéos. <br>
+  >> Affichés en dessous d’une vidéos, les choix sont aussi utilisés pour affiner la recherche. <br>
+
+ - `LAUNCH_ENCODE_VIDEO`
+
+  > valeur par défaut : `encode_video`
+
+  >> Fonction appelée pour lancer l’encodage des vidéos directement (sans thread ni celery). <br>
+
+ - `LICENCE_CHOICES`
+
+  > valeur par défaut : `()`
+
+  >> Licence proposées pour les vidéos en creative commons :  <br>
+  >>
+  >> ```
+  >> LICENCE_CHOICES = ( 
+  >>     ('by', ("Attribution 4.0 International (CC BY 4.0)")), 
+  >>     ('by-nd', ("Attribution-NoDerivatives 4.0 " 
+  >>                "International (CC BY-ND 4.0)")), 
+  >>     ('by-nc-nd', ("Attribution-NonCommercial-NoDerivatives 4.0 " 
+  >>                   "International (CC BY-NC-ND 4.0)")), 
+  >>     ('by-nc', ("Attribution-NonCommercial 4.0 " 
+  >>                "International (CC BY-NC 4.0)")), 
+  >>     ('by-nc-sa', ("Attribution-NonCommercial-ShareAlike 4.0 " 
+  >>                   "International (CC BY-NC-SA 4.0)")), 
+  >>     ('by-sa', ("Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)")) 
+  >> ) 
+  >>
+  >> ```
+
+ - `MAX_DURATION_DATE_DELETE`
+
+  > valeur par défaut : `10`
+
+  >> Fixe une durée maximale que la date de suppression d’une vidéo ne peut dépasser. <br>
+  >> Par défaut : 10 (Année courante + 10 ans). <br>
+
+ - `MAX_TAG_LENGTH`
+
+  > valeur par défaut : `50`
+
+  >> Les mots clés saisis lors de l’ajout de vidéo ne peuvent dépasser cette longueur. <br>
+
+ - `NOTES_STATUS`
+
+  > valeur par défaut : `()`
+
+  >> Valeurs possible pour l’accès à une note. <br>
+  >>
+  >> ```
+  >> NOTES_STATUS = ( 
+  >>     ("0", _("Private (me only)")), 
+  >>     ("1", _("Shared with video owner")), 
+  >>     ("2", _("Public")), 
+  >> ) 
+  >>
+  >> ```
+
+ - `OEMBED`
+
+  > valeur par défaut : `False`
+
+  >> Permettre l’usage du oembed, partage dans Moodle, Facebook, Twitter etc. <br>
+
+ - `ORGANIZE_BY_THEME`
+
+  > valeur par défaut : `False`
+
+  >> Affichage uniquement des vidéos de la chaîne ou du thème actuel(le). <br>
+  >> Affichage des sous-thèmes directs de la chaîne ou du thème actuel(le) <br>
+
+ - `RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY`
+
+  > valeur par défaut : `False`
+
+  >> Si True, seule les personnes "Staff" peuvent déposer des vidéos <br>
+
+ - `THEME_FORM_FIELDS_HELP_TEXT`
+
+  > valeur par défaut : `""`
+
+  >> Ensemble des textes d’aide affichés avec le formulaire d’édition de theme. <br>
+  >> voir pod/video/forms.py <br>
+  >>
+  >> ```
+  >> THEME_FORM_FIELDS_HELP_TEXT = OrderedDict( 
+  >>     [ 
+  >>         ( 
+  >>             "{0}".format(_("Title field")), 
+  >>             [ 
+  >>                 _( 
+  >>                     "Please choose a title as short and accurate as possible, " 
+  >>                     "reflecting the main subject / context of the content." 
+  >>                 ), 
+  >>                 _( 
+  >>                     "You can use the “Description” field below for all " 
+  >>                     "additional information." 
+  >>                 ), 
+  >>             ], 
+  >>         ), 
+  >>         ( 
+  >>             "{0}".format(_("Description")), 
+  >>             [ 
+  >>                 _( 
+  >>                     "In this field you can describe your content, add all needed " 
+  >>                     "related information, and format the result " 
+  >>                     "using the toolbar." 
+  >>                 ) 
+  >>             ], 
+  >>         ), 
+  >>     ] 
+  >> ) 
+  >>
+  >> ```
+
+ - `USER_VIDEO_CATEGORY`
+
+  > valeur par défaut : `False`
+
+  >> Permet d’activer le fonctionnement de categorie au niveau de ses vidéos. <br>
+  >> Vous pouvez créer des catégories pour pouvoir ranger vos propres vidéos. <br>
+  >> Les catégories sont liées à l’utilisateur. <br>
+
+ - `USE_OBSOLESCENCE`
+
+  > valeur par défaut : `False`
+
+  >> Activation de l’obsolescence des video. Permet d’afficher la date de suppression de la video <br>
+  >> dans le formulaire d’edition et dans la partie admin. <br>
+
+ - `USE_STATS_VIEW`
+
+  > valeur par défaut : `False`
+
+  >> Permet d’activer la possibilité de voir en details le nombre de visualisation d’une vidéo durant un jour donné ou mois, <br>
+  >> année ou encore le nombre de vue total depuis la création de la vidéo. <br>
+  >> Un lien est rajouté dans la partie info lors de la lecture d’une vidéo, un lien est rajouté dans la page de visualisation d’une chaîne ou un theme <br>
+  >> ou encore toutes les vidéos présentes sur la plateforme. <br>
+
+ - `USE_VIDEO_EVENT_TRACKING`
+
+  > valeur par défaut : `False`
+
+  >> Ce paramètre permet d’activer l’envoi d’évènements sur le lecteur vidéo à Matomo. <br>
+  >> N’est utile que si le code piwik / matomo est présent dans l’instance de Esup-Pod. <br>
+  >> Les évènements envoyés sont : <br>
+  >>    play, pause, seeked, ended, ratechange, fullscreen, error, loadmetadata <br>
+  >> Pour rajouter le code Piwik/Matomo dans votre instance de Pod, il suffit de créer un fichier `pod/custom/templates/custom/tracking.html` <br>
+  >> Il faut ensuite y insérer le code javascript puis dans votre fichier settings_local.py, <br>
+  >> de préciser dans la variable `TEMPLATE_VISIBLE_SETTINGS`: `'TRACKING_TEMPLATE': 'custom/tracking.html' <br>
+
+ - `USE_XAPI_VIDEO`
+
+  > valeur par défaut : `False`
+
+
+  >> Active l‘envoi d’instructions xAPI pour le lecteur vidéo. <br>
+  >> Attention, il faut mettre USE_XAPI à True pour que les instructions soient envoyées. <br>
+
+ - `VIDEO_ALLOWED_EXTENSIONS`
+
+  > valeur par défaut : `()`
+
+  >> Extension autorisée pour le téléversement sur la plateforme <br>
+  >>
+  >> ```
+  >> VIDEO_ALLOWED_EXTENSIONS = ( 
+  >>     "3gp", 
+  >>     "avi", 
+  >>     "divx", 
+  >>     "flv", 
+  >>     "m2p", 
+  >>     "m4v", 
+  >>     "mkv", 
+  >>     "mov", 
+  >>     "mp4", 
+  >>     "mpeg", 
+  >>     "mpg", 
+  >>     "mts", 
+  >>     "wmv", 
+  >>     "mp3", 
+  >>     "ogg", 
+  >>     "wav", 
+  >>     "wma", 
+  >>     "webm", 
+  >>     "ts", 
+  >> ) 
+  >>
+  >> ```
+
+ - `VIDEO_FORM_FIELDS`
+
+  > valeur par défaut : `__all__`
+
+  >> Liste des champs du formulaire d’édition de vidéos affichées. <br>
+
+ - `VIDEO_FORM_FIELDS_HELP_TEXT`
+
+  > valeur par défaut : ``
+
+  >> Ensemble des textes d’aide affichés avec le formulaire d’envoi de vidéo. <br>
+  >>
+  >> ```
+  >> VIDEO_FORM_FIELDS_HELP_TEXT = OrderedDict( 
+  >>     [ 
+  >>         ( 
+  >>             "{0}".format(_("File field")), 
+  >>             [ 
+  >>                 _("You can send an audio or video file."), 
+  >>                 _("The following formats are supported: %s") 
+  >>                 % ", ".join(map(str, VIDEO_ALLOWED_EXTENSIONS)), 
+  >>             ], 
+  >>         ), 
+  >>         ( 
+  >>             "{0}".format(_("Title field")), 
+  >>             [ 
+  >>                 _( 
+  >>                     "Please choose a title as short and accurate as possible, " 
+  >>                     "reflecting the main subject / context of the content." 
+  >>                 ), 
+  >>                 _( 
+  >>                     "You can use the “Description” field below for all " 
+  >>                     "additional information." 
+  >>                 ), 
+  >>                 _( 
+  >>                     "You may add contributors later using the second button of " 
+  >>                     "the content edition toolbar: they will appear in the “Info” " 
+  >>                     "tab at the bottom of the audio / video player." 
+  >>                 ), 
+  >>             ], 
+  >>         ), 
+  >>         ( 
+  >>             "{0}".format(_("Type")), 
+  >>             [ 
+  >>                 _( 
+  >>                     "Select the type of your content. If the type you wish does " 
+  >>                     "not appear in the list, please temporary select “Other” " 
+  >>                     "and contact us to explain your needs." 
+  >>                 ) 
+  >>             ], 
+  >>         ), 
+  >>         ( 
+  >>             "{0}".format(_("Additional owners")), 
+  >>             [ 
+  >>                 _( 
+  >>                     "In this field you can select and add additional owners to the " 
+  >>                     "video. These additional owners will have the same rights as " 
+  >>                     "you except that they can't delete this video." 
+  >>                 ) 
+  >>             ], 
+  >>         ), 
+  >>         ( 
+  >>             "{0}".format(_("Description")), 
+  >>             [ 
+  >>                 _( 
+  >>                     "In this field you can describe your content, add all needed " 
+  >>                     "related information, and format the result " 
+  >>                     "using the toolbar." 
+  >>                 ) 
+  >>             ], 
+  >>         ), 
+  >>         ( 
+  >>             "{0}".format(_("Date of the event field")), 
+  >>             [ 
+  >>                 _( 
+  >>                     "Enter the date of the event, if applicable, in the " 
+  >>                     "AAAA-MM-JJ format." 
+  >>                 ) 
+  >>             ], 
+  >>         ), 
+  >>         ( 
+  >>             "{0}".format(_("University course")), 
+  >>             [ 
+  >>                 _( 
+  >>                     "Select an university course as audience target of " 
+  >>                     "the content." 
+  >>                 ), 
+  >>                 _( 
+  >>                     "Choose “None / All” if it does not apply or if all are " 
+  >>                     "concerned, or “Other” for an audience outside " 
+  >>                     "the european LMD scheme." 
+  >>                 ), 
+  >>             ], 
+  >>         ), 
+  >>         ( 
+  >>             "{0}".format(_("Main language")), 
+  >>             [_("Select the main language used in the content.")], 
+  >>         ), 
+  >>         ( 
+  >>             "{0}".format(_("Tags")), 
+  >>             [ 
+  >>                 _( 
+  >>                     "Please try to add only relevant keywords that can be " 
+  >>                     "useful to other users." 
+  >>                 ) 
+  >>             ], 
+  >>         ), 
+  >>         ( 
+  >>             "{0}".format(_("Disciplines")), 
+  >>             [ 
+  >>                 _( 
+  >>                     "Select the discipline to which your content belongs. " 
+  >>                     "If the discipline you wish does not appear in the list, " 
+  >>                     "please select nothing and contact us to explain your needs." 
+  >>                 ), 
+  >>                 _( 
+  >>                     'Hold down "Control", or "Command" on a Mac, ' 
+  >>                     "to select more than one." 
+  >>                 ), 
+  >>             ], 
+  >>         ), 
+  >>         ( 
+  >>             "{0}".format(_("Licence")), 
+  >>             [ 
+  >>                 ( 
+  >>                     '<a href="https://creativecommons.org/licenses/by/4.0/" ' 
+  >>                     'title="%(lic)s" target="_blank">%(lic)s</a>' 
+  >>                 ) 
+  >>                 % {"lic": _("Attribution 4.0 International (CC BY 4.0)")}, 
+  >>                 ( 
+  >>                     '<a href="https://creativecommons.org/licenses/by-nd/4.0/" ' 
+  >>                     'title="%(lic)s" target="_blank">%(lic)s</a>' 
+  >>                 ) 
+  >>                 % { 
+  >>                     "lic": _( 
+  >>                         "Attribution-NoDerivatives 4.0 " 
+  >>                         "International (CC BY-ND 4.0)" 
+  >>                     ) 
+  >>                 }, 
+  >>                 ( 
+  >>                     '<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" ' 
+  >>                     'title="%(lic)s" target="_blank">%(lic)s</a>' 
+  >>                 ) 
+  >>                 % { 
+  >>                     "lic": _( 
+  >>                         "Attribution-NonCommercial-NoDerivatives 4.0 " 
+  >>                         "International (CC BY-NC-ND 4.0)" 
+  >>                     ) 
+  >>                 }, 
+  >>                 ( 
+  >>                     '<a href="https://creativecommons.org/licenses/by-nc/4.0/" ' 
+  >>                     'title="%(lic)s" target="_blank">%(lic)s</a>' 
+  >>                 ) 
+  >>                 % { 
+  >>                     "lic": _( 
+  >>                         "Attribution-NonCommercial 4.0 " 
+  >>                         "International (CC BY-NC 4.0)" 
+  >>                     ) 
+  >>                 }, 
+  >>                 ( 
+  >>                     '<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" ' 
+  >>                     'title="%(lic)s" target="_blank">%(lic)s</a>' 
+  >>                 ) 
+  >>                 % { 
+  >>                     "lic": _( 
+  >>                         "Attribution-NonCommercial-ShareAlike 4.0 " 
+  >>                         "International (CC BY-NC-SA 4.0)" 
+  >>                     ) 
+  >>                 }, 
+  >>                 ( 
+  >>                     '<a href="https://creativecommons.org/licenses/by-sa/4.0/" ' 
+  >>                     'title="%(lic)s" target="_blank">%(lic)s</a>' 
+  >>                 ) 
+  >>                 % { 
+  >>                     "lic": _( 
+  >>                         "Attribution-ShareAlike 4.0 " "International (CC BY-SA 4.0)" 
+  >>                     ) 
+  >>                 }, 
+  >>             ], 
+  >>         ), 
+  >>         ( 
+  >>             "{0} / {1}".format(_("Channels"), _("Themes")), 
+  >>             [ 
+  >>                 _("Select the channel in which you want your content to appear."), 
+  >>                 _( 
+  >>                     "Themes related to this channel will " 
+  >>                     "appear in the “Themes” list below." 
+  >>                 ), 
+  >>                 _( 
+  >>                     'Hold down "Control", or "Command" on a Mac, ' 
+  >>                     "to select more than one." 
+  >>                 ), 
+  >>                 _( 
+  >>                     "If the channel or Themes you wish does not appear " 
+  >>                     "in the list, please select nothing and contact " 
+  >>                     "us to explain your needs." 
+  >>                 ), 
+  >>             ], 
+  >>         ), 
+  >>         ( 
+  >>             "{0}".format(_("Draft")), 
+  >>             [ 
+  >>                 _( 
+  >>                     "In “Draft mode”, the content shows nowhere and nobody " 
+  >>                     "else but you can see it." 
+  >>                 ) 
+  >>             ], 
+  >>         ), 
+  >>         ( 
+  >>             "{0}".format(_("Restricted access")), 
+  >>             [ 
+  >>                 _( 
+  >>                     "If you don't select “Draft mode”, you can restrict " 
+  >>                     "the content access to only people who can log in" 
+  >>                 ) 
+  >>             ], 
+  >>         ), 
+  >>         ( 
+  >>             "{0}".format(_("Password")), 
+  >>             [ 
+  >>                 _( 
+  >>                     "If you don't select “Draft mode”, you can add a password " 
+  >>                     "which will be asked to anybody willing to watch " 
+  >>                     "your content." 
+  >>                 ), 
+  >>                 _( 
+  >>                     "If your video is in a playlist the password of your " 
+  >>                     "video will be removed automatically." 
+  >>                 ), 
+  >>             ], 
+  >>         ), 
+  >>     ] 
+  >> ) 
+  >>
+  >> ```
+
+ - `VIDEO_MAX_UPLOAD_SIZE`
+
+  > valeur par défaut : `1`
+
+  >> Taille maximum en Go des fichiers téléversés sur la plateforme. <br>
+
+ - `VIDEO_PLAYBACKRATES`
+
+  > valeur par défaut : `[0.5, 1, 1.5, 2]`
+
+  >> Configuration des choix de vitesse de lecture pour le lecteur vidéo. <br>
+
+ - `VIDEO_RECENT_VIEWCOUNT`
+
+  > valeur par défaut : `180`
+
+  >> Durée (en nombre de jours) sur laquelle on souhaite compter le nombre de vues récentes. <br>
+
+ - `VIDEO_RENDITIONS`
+
+  > valeur par défaut : `[]`
+
+  >> Rendu serializé pour l’encodage des videos. <br>
+  >> Cela permet de pouvoir encoder les vidéos sans l’environnement de Pod. <br>
+  >>
+  >> ```
+  >> VIDEO_RENDITIONS = [ 
+  >>     { 
+  >>         "resolution": "640x360", 
+  >>         "minrate": "500k", 
+  >>         "video_bitrate": "750k", 
+  >>         "maxrate": "1000k", 
+  >>         "audio_bitrate": "96k", 
+  >>         "encode_mp4": True, 
+  >>         "sites": [1], 
+  >>     }, 
+  >>     { 
+  >>         "resolution": "1280x720", 
+  >>         "minrate": "1000k", 
+  >>         "video_bitrate": "2000k", 
+  >>         "maxrate": "3000k", 
+  >>         "audio_bitrate": "128k", 
+  >>         "encode_mp4": True, 
+  >>         "sites": [1], 
+  >>     }, 
+  >>     { 
+  >>         "resolution": "1920x1080", 
+  >>         "minrate": "2000k", 
+  >>         "video_bitrate": "3000k", 
+  >>         "maxrate": "4500k", 
+  >>         "audio_bitrate": "192k", 
+  >>         "encode_mp4": False, 
+  >>         "sites": [1], 
+  >>     }, 
+  >> ] 
+  >>
+  >> ```
+
+ - `VIDEO_REQUIRED_FIELDS`
+
+  > valeur par défaut : `[]`
+
+  >> Permet d’ajouter l’attribut obligatoire dans le formulaire d’edition et d’ajout d’une video : <br>
+  >> Exemple de valeur : ["discipline", "tags"] <br>
+  >> NB : les champs cachés et suivant ne sont pas pris en compte : <br>
+  >> (video, title, type, owner, date_added, cursus, main_lang) <br>
+
+ - `VIEW_STATS_AUTH`
+
+  > valeur par défaut : `False`
+
+  >> Réserve l’accès aux statistiques des vidéos aux personnes authentifiées. <br>
 
 ### Configuration application search
 
- - `ES_INDEX` 
-> default value : pod <br>
+ - `ES_INDEX`
 
->> Valeur pour l’index de ElasticSearch <br>
+  > valeur par défaut : `pod`
 
- - `ES_MAX_RETRIES` 
-> default value : 10 <br>
+  >> Valeur pour l’index de ElasticSearch <br>
 
->> Valeur max essai pour configuration de ElasticSearch <br>
+ - `ES_MAX_RETRIES`
 
- - `ES_TIMEOUT` 
-> default value : 30 <br>
+  > valeur par défaut : `10`
 
->> Valeur timeout pour configuration de ElasticSearch <br>
+  >> Valeur max de tentatives pour ElasticSearch. <br>
 
- - `ES_URL` 
-> default value : ["http://127.0.0.1:9200/"] <br>
+ - `ES_TIMEOUT`
 
->> adresse du ou des instances d'Elasticsearch utilisées pour l'indexation et la recherche de vidéo. <br>
+  > valeur par défaut : `30`
 
- - `ES_VERSION` 
-> default value : 6 <br>
+  >> Valeur de timeout pour ElasticSearch. <br>
 
->> Version d'ElasticSearch <br>
->> valeurs possibles 6 ou 7 (pour indiquer utiliser ElasticSearch 6 ou 7) <br>
->> pour utiliser la version 7, faire une mise à jour du paquet elasticsearch-py  <br>
->> pip3 install elasticsearch==7.10.1 <br>
->> https://elasticsearch-py.readthedocs.io/en/v7.10.1/ <br>
+ - `ES_URL`
+
+  > valeur par défaut : `["http://127.0.0.1:9200/"]`
+
+  >> Adresse du ou des instances d’Elasticsearch utilisées pour l’indexation et la recherche de vidéo. <br>
+
+ - `ES_VERSION`
+
+  > valeur par défaut : `6`
+
+  >> Version d’ElasticSearch. <br>
+  >> valeurs possibles 6 ou 7 (pour indiquer utiliser ElasticSearch 6 ou 7) <br>
+  >> pour utiliser la version 7, faire une mise à jour du paquet elasticsearch-py  <br>
+  >>
+  >> `pip3 install elasticsearch==7.10.1`
+  >> [https://elasticsearch-py.readthedocs.io/en/v7.10.1/]() 
+
+### Configuration application xapi
+
+Application pour l’envoi d‘instructions xAPI à un LRS.<br/>
+Aucune instruction ne persiste dans Pod, elles sont toutes envoyées au LRS paramétré.<br/>
+Attention, il faut configurer Celery pour l’envoi des instructions.<br/>
+
+ - `USE_XAPI`
+
+  > valeur par défaut : `False`
+
+
+  >> Activation de l'application xAPI <br>
+
+ - `XAPI_ANONYMIZE_ACTOR`
+
+  > valeur par défaut : `True`
+
+
+  >> Si False, le nom de l'utilisateur sera stocké en clair dans les statements xAPI, si True, son nom d'utilisateur sera anonymisé <br>
+
+ - `XAPI_LRS_LOGIN`
+
+  > valeur par défaut : ``
+
+
+  >> identifiant de connexion du LRS pour l'envoi des statements <br>
+
+ - `XAPI_LRS_PWD`
+
+  > valeur par défaut : ``
+
+
+  >> mot de passe de connexion du LRS pour l'envoi des statements <br>
+
+ - `XAPI_LRS_URL`
+
+  > valeur par défaut : ``
+
+
+  >> URL de destination pour l'envoi des statements. I.E. : https://ralph.univ.fr/xAPI/statements <br>

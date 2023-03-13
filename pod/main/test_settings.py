@@ -65,3 +65,11 @@ USE_MEETING = True
 BBB_API_URL = "http://test-install.blindsidenetworks.com/bigbluebutton/api/"
 BBB_SECRET_KEY = "8cd8ef52e8e101574e400365b55e11a6"
 MEETING_DISABLE_RECORD = False
+
+# xAPI settings
+USE_XAPI = True
+USE_XAPI_VIDEO = True
+XAPI_ANONYMIZE_ACTOR = False
+XAPI_LRS_URL = ""
+XAPI_LRS_LOGIN = ""
+XAPI_LRS_PWD = ""
