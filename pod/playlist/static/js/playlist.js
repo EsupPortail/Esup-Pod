@@ -135,15 +135,21 @@ document.addEventListener("DOMContentLoaded", function () {
             );
           } else {
             if (response.status == 200) {
-              showalert(response.success, "alert-success");
-              window.location.reload();
+             response.json().then((data) => {
+              if (data.success) {
+                showalert(data.success, "alert-success");
+                window.location.reload(); // hide link playlist
+              } else {
+                showalert(data.fail, "alert-danger");
+              }
+            })
             } else {
               showalert(response.statusText, "alert-danger");
             }
           }
         })
-
         .catch((error) => {
+          alert(error)
           showalert(
             gettext(
               "Error deleting video from playlist. The video could not be deleted."
@@ -246,25 +252,31 @@ document.addEventListener("DOMContentLoaded", function () {
           },
           body: form_data,
         })
-          .then((response) => {
-            if (response.status != 200) {
-              showalert(
-                gettext(
-                  "You are no longer authenticated. Please log in again."
-                ),
-                "alert-danger",
-                "alert-danger"
-              );
-            } else {
-              if (response.status == 200) {
-                showalert(gettext("Video add to playlist"), "alert-success");
+        .then((response) => {
+          if (response.status == 200) {
+            response.json().then((data) => {
+              if (data.success) {
+                showalert(data.success, "alert-success");
+                //window.location.reload(); // hide link playlist
                 link.classList.add("disabled");
                 link.classList.remove("playlist-item");
                 link.append("");
+              } else {
+                showalert(data.fail, "alert-danger");
               }
-            }
-          })
-          .catch((error) => {
+            })
+          } else {
+            showalert(
+              gettext(
+                "You are no longer authenticated. Please log in again."
+              ),
+              "alert-danger",
+              "alert-danger"
+            );
+          }
+        })
+        .catch((error) => {
+            console.log(error)
             showalert(
               gettext(
                 "Error getting video information. The video information could not be retrieved."
