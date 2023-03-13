@@ -134,7 +134,6 @@ document.addEventListener("DOMContentLoaded", function () {
               "alert-danger"
             );
           } else {
-            if (response.status == 200) {
              response.json().then((data) => {
               if (data.success) {
                 showalert(data.success, "alert-success");
@@ -143,13 +142,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 showalert(data.fail, "alert-danger");
               }
             })
-            } else {
-              showalert(response.statusText, "alert-danger");
-            }
           }
         })
         .catch((error) => {
-          alert(error)
           showalert(
             gettext(
               "Error deleting video from playlist. The video could not be deleted."
@@ -270,13 +265,11 @@ document.addEventListener("DOMContentLoaded", function () {
               gettext(
                 "You are no longer authenticated. Please log in again."
               ),
-              "alert-danger",
               "alert-danger"
             );
           }
         })
         .catch((error) => {
-            console.log(error)
             showalert(
               gettext(
                 "Error getting video information. The video information could not be retrieved."
