@@ -963,17 +963,20 @@ if (ownerbox) {
     let thisE = e.target;
     if (thisE.value && thisE.value.length > 2) {
       var searchTerm = thisE.value;
-      var url = "/ajax_calls/search_user?term=" + searchTerm;
-
-      await fetch(url, {
-        method: "GET",
+      let data = new FormData();
+      data.append("term", searchTerm);
+      data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
+      url = "/ajax_calls/search_user/";
+      fetch(url, {
+        method: "POST",
+        body: data,
         headers: {
+          Accept: "application/json",
           "X-Requested-With": "XMLHttpRequest",
         },
       })
-        .then((response) => response.text())
-        .then((data) => {
-          data = JSON.parse(data);
+      .then((response) => response.json())
+      .then((data) => {
           if (data.length > 0) {
             document
               .querySelectorAll("#collapseFilterOwner .added")
@@ -1013,7 +1016,6 @@ if (ownerbox) {
             });
           }
         })
-
         .catch((error) => {
           /*
           showalert(
