@@ -1,7 +1,9 @@
+var url;
 var infinite;
 var formCheckedInputs = [];
 var regExGetOnlyChars = /([\D])/g;
-
+var sortDirectionAsc = false;
+var sortDirectionChars = ["8600","8599"];
 // Return Waypoint Infinite object to init/refresh the infinite scroll
 let infinite_loading = document.querySelector(".infinite-loading");
 
@@ -35,7 +37,9 @@ onAfterPageLoad = function () {
 };
 
 function refreshInfiniteLoader(url, nextPage) {
-  infinite.removeLoader();
+  if(infinite !== undefined){
+    infinite.removeLoader();
+  }
   infinite = null;
   infinite = new InfiniteLoader(
     url,
@@ -52,15 +56,14 @@ function replaceCountVideos(newCount) {
     newCount + " " + gettext(transVideoCount);
 }
 
-function refreshVideosSearch(formCheckedInputs) {
+function refreshVideosSearch() {
+  url = getUrlForRefresh();
   // Ajax request to refresh view with filtered video list
-  url = urlVideos;
-  data = formCheckedInputs;
-  url = url + "?";
-  data.forEach((input) => {
-    url += input.name + "=" + input.value + "&";
-  });
-  url = url.slice(0, -1);
+  if (getNextPage()) {
+    pageNext = document
+        .querySelector("a.infinite-more-link")
+        .getAttribute("nextPageNumber");
+  }
 
   fetch(url, {
     method: "GET",
@@ -73,37 +76,20 @@ function refreshVideosSearch(formCheckedInputs) {
     .then((response) => response.text())
     .then((data) => {
       // parse data into html and replace videos list
-      // destroy waypoint id exists
       let parser = new DOMParser();
       let html = parser.parseFromString(data, "text/html").body;
-      document.getElementById("videos_list").outerHTML = html.innerHTML;
+      document.getElementById("videos_list").outerHTML = html.outerHTML;
       //document.querySelector(".infiniteloading").style.display = "none";
       //document.querySelector(".infinite-more-link").style.display = "none";
-      let nextPage = document
-        .getElementById("videos_list")
-        .getAttribute("nextPage");
-
       replaceCountVideos(
         document.getElementById("videos_list").dataset.countvideos
       );
       window.history.pushState({}, "", this.url);
       hideInfiniteloading();
-      if (nextPage != "False") {
+      if (getNextPage()) {
         pageNext = document
           .querySelector("a.infinite-more-link")
           .getAttribute("nextPageNumber");
-
-        url = urlVideos + "?";
-        data = formCheckedInputs;
-        if (data.length > 0) {
-          data.forEach((input) => {
-            url += input.name + "=" + input.value + "&";
-          });
-          url = url.slice(0, -1);
-          url = url + "&page=";
-        } else {
-          url += "page=";
-        }
         refreshInfiniteLoader(url, pageNext);
       }
     })
@@ -113,41 +99,79 @@ function refreshVideosSearch(formCheckedInputs) {
       );
     });
 }
+
+function getUrlForRefresh(){
+    url = window.location.pathname;
+    data = formCheckedInputs;
+    url += "?sort="+document.getElementById('sort').value+"&";
+    if(sortDirectionAsc){
+        url += "sort_direction="+document.getElementById('sort_direction').value+"&";
+    }
+    data.forEach((input) => {
+        url += input.name + "=" + input.value + "&";
+    });
+    url += "page=";
+    return url;
+}
+
+function getNextPage(){
+    let nextPage = document
+        .getElementById("videos_list")
+        .getAttribute("nextPage");
+    return nextPage;
+}
+
 hideInfiniteloading = function () {
-  //document.querySelector(".infiniteloading").style.display = "none";
   // get waypoint object
   document
-    .querySelectorAll(".form-check-input input[type=checkbox]")
+    .querySelectorAll("input[type=checkbox][class=form-check-input]")
     .forEach((checkbox) => {
       checkbox.removeAttribute("disabled");
     });
 };
 
-document.addEventListener("change", (e) => {
-  if (!e.target.matches(".form-check-input")) return;
-  formCheckedInputs = [];
-  document.querySelector(".infinite-loading").display = "block";
-  document
-    .querySelectorAll(".form-check-input input[type=checkbox]")
-    .forEach((checkbox) => {
-      checkbox.setAttribute("disabled", "true");
+document.querySelectorAll('.form-check-input,#sort,#sort_direction').forEach(el =>{
+    el.addEventListener('change', e => {
+        formCheckedInputs = [];
+        document.querySelector(".infinite-loading").display = "block";
+        document
+            .querySelectorAll("input[type=checkbox][class=form-check-input]")
+            .forEach((checkbox) => {
+              checkbox.setAttribute("disabled", "true");
+            });
+        document.querySelectorAll(
+            "input[type=checkbox]:checked[class=form-check-input]"
+        ).forEach((e) => {
+            formCheckedInputs.push(e);
+        });
+        document.getElementById("videos_list").innerHTML = "";
+        this.refreshVideosSearch();
     });
-  document.getElementById("videos_list").innerHTML = "";
-  document.querySelectorAll("input[type=checkbox]:checked").forEach((e) => {
-    formCheckedInputs.push(e);
-  });
-  refreshVideosSearch(formCheckedInputs);
 });
 
+document.getElementById("sort_direction_label").addEventListener('click', function(e) {
+    e.preventDefault();
+    toggleSortDirection();
+    refreshVideosSearch();
+});
+
+// Update arrow char of ascending or descending sort order
+function updateSortDirectionChar(){
+  document.getElementById("sort_direction_label").innerHTML = "&#"+(sortDirectionChars[+ sortDirectionAsc]).toString();
+}
+
+// Toggle direction of sort and refresh videos list
+function toggleSortDirection(){
+  sortDirectionAsc = !sortDirectionAsc;
+  document.getElementById("sort_direction").checked = !document.getElementById("sort_direction").checked;
+  updateSortDirectionChar();
+}
+
 // First launch of the infinite scroll
-//infinite_waypoint = getInfiniteScrollWaypoint();
-if (next_page) {
-  url = "/videos/?page=";
-  infinite = new InfiniteLoader(
-    url,
+infinite = new InfiniteLoader(
+    getUrlForRefresh(),
     onBeforePageLoad,
     onAfterPageLoad,
-    next_page,
+    nextPage,
     (page = 2)
-  );
-}
+);

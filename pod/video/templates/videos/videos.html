@@ -60,14 +60,13 @@
 
 <script>
   var page = 1
-  next_page = false
+  var nextPage;
+  nextPage = false;
 
-  
   {% if videos.has_next %}
     page = parseInt("{{videos.next_page_number}}")
-    next_page = true
+    nextPage = true
   {% endif %}
-
 
 </script>
 <script src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
