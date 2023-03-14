@@ -83,10 +83,12 @@ function refreshVideosSearch(formCheckedInputs) {
         .getElementById("videos_list")
         .getAttribute("nextPage");
 
-      replaceCountVideos(document.getElementById("videos_list").dataset.countvideos);
+      replaceCountVideos(
+        document.getElementById("videos_list").dataset.countvideos
+      );
       window.history.pushState({}, "", this.url);
       hideInfiniteloading();
-      if (nextPage != "False"){
+      if (nextPage != "False") {
         pageNext = document
           .querySelector("a.infinite-more-link")
           .getAttribute("nextPageNumber");
