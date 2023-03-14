@@ -955,20 +955,23 @@ function show_list_theme(data) {
 let ownerbox = document.getElementById("ownerbox");
 if (ownerbox) {
   ownerbox.addEventListener("keyup", async (e) => {
-    let thisE = e.target;
-    if (thisE.value && thisE.value.length > 2) {
-      var searchTerm = thisE.value;
-      var url = "/ajax_calls/search_user?term=" + searchTerm;
-
-      await fetch(url, {
-        method: "GET",
+    //let thisE = e.target;
+    if (ownerbox.value && ownerbox.value.length > 2) {
+      var searchTerm = ownerbox.value;
+      let data = new FormData();
+      data.append("term", searchTerm);
+      data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
+      url = "/ajax_calls/search_user/";
+      fetch(url, {
+        method: "POST",
+        body: data,
         headers: {
+          Accept: "application/json",
           "X-Requested-With": "XMLHttpRequest",
         },
       })
-        .then((response) => response.text())
+        .then((response) => response.json())
         .then((data) => {
-          data = JSON.parse(data);
           if (data.length > 0) {
             document
               .querySelectorAll("#collapseFilterOwner .added")
