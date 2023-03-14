@@ -1031,11 +1031,9 @@ if (ownerbox) {
         });
     }
   });
-  /****** VIDEOS EDIT ******/
-  /** channel **/
 }
-
-
+/****** VIDEOS EDIT ******/
+/** channel **/
 let id_channel = document.getElementById("id_channel");
 if (id_channel) {
   let tab_initial = new Array();
@@ -1251,7 +1249,7 @@ restricted_access();
 /*** VIDEOCHECK FORM ***/
 var videocheck = function (form, event) {
   var fileInput = document.getElementById("id_video");
-  if (fileInput.files.length) {
+  if (fileInput && fileInput.files.length) {
     var fileSize = fileInput.get(0).files[0].size;
     var fileName = fileInput.get(0).files[0].name;
     var extension = fileName
