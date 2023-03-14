@@ -358,36 +358,31 @@ var get_list = function (
 
 document.querySelectorAll(".collapsibleThemes").forEach((cl) => {
   cl.addEventListener("show.bs.collapse", function () {
-    var str = get_list(
-      listTheme["channel_" + cl.dataset.id],
-      0,
-      [],
-      (tag_type = "li"),
-      (li_class = "list-inline-item"),
-      (attrs = ""),
-      (add_link = true),
-      (current = ""),
-      (channel = ""),
-      (show_only_parent_themes = show_only_parent_themes)
-    );
-    cl.innerHTML = '<ul class="list-inline p-1 border">' + str + "</ul>";
-    //$(this).parents("li").addClass('list-group-item-light');
-    cl.parentNode.querySelectorAll("li").forEach((li) =>
-      li.querySelectorAll(".chevron-down").forEach((el) => {
-        el.setAttribute("style", "transform: rotate(180deg);");
-      })
-    );
+    if(listTheme["channel_" + cl.dataset.id]) {
+      var str = get_list(
+        listTheme["channel_" + cl.dataset.id],
+        0,
+        [],
+        (tag_type = "li"),
+        (li_class = "list-inline-item"),
+        (attrs = ""),
+        (add_link = true),
+        (current = ""),
+        (channel = ""),
+        (show_only_parent_themes = show_only_parent_themes)
+      );
+      cl.innerHTML = '<ul class="list-inline p-1 border">' + str + "</ul>";
+      //$(this).parents("li").addClass('list-group-item-light');
+      if(cl.parentNode.querySelector(".bi-chevron-down"))
+        cl.parentNode.querySelector(".bi-chevron-down").classList.add("bi-chevron-up");
+        //cl.parentNode.querySelector(".bi-chevron-down").setAttribute("style", "transform: rotate(180deg);"); //doesn't work
+    }
   });
 });
 document.querySelectorAll(".collapsibleThemes").forEach((cl) => {
   cl.addEventListener("hidden.bs.collapse", function () {
-    // do something…
-    //$(this).parents("li").removeClass('list-group-item-light');
-    cl.parentNode.querySelectorAll("li").forEach((li) => {
-      li.querySelectorAll(".chevron-down").forEach((el) => {
-        el.setAttribute("style", "");
-      });
-    });
+    if(cl.parentNode.querySelector(".bi-chevron-down"))
+      cl.parentNode.querySelector(".bi-chevron-down").classList.remove("bi-chevron-up");
   });
 });
 
@@ -1063,43 +1058,56 @@ if (id_channel) {
       if (mutation.type === "childList") {
         update_theme();
         var new_themes = [];
-        for(i = 0; i < id_channel.options.length; i++) {
-          new_themes.push(get_list(
-            listTheme["channel_" + id_channel.options[i].value],
-            0,
-            tab_initial,
-            (tag_type = "option"),
-            (li_class = ""),
-            (attrs = ""),
-            (add_link = false),
-            (current = ""),
-            (channel = id_channel.options[i].text + ": ")
-          ));
+        var channels = id_channel.parentElement.querySelectorAll(".select2-selection__choice")
+        for(i = 0; i < channels.length; i++) {
+          for(j=0; j < id_channel.options.length; j++) {
+            if(channels[i].title === id_channel.options[j].text) {
+              if(listTheme["channel_" + id_channel.options[j].value]) {
+                new_themes.push(get_list(
+                  listTheme["channel_" + id_channel.options[j].value],
+                  0,
+                  tab_initial,
+                  (tag_type = "option"),
+                  (li_class = ""),
+                  (attrs = ""),
+                  (add_link = false),
+                  (current = ""),
+                  (channel = id_channel.options[j].text + ": ")
+                ));
+              }
+            }
+          }
         }
         id_theme.innerHTML = new_themes.join('\n');
-        let last_theme_id = listTheme["channel_" + id_channel.options[id_channel.options.length-1].value][0].id;
-        if(last_theme_id && document.getElementById("theme_"+last_theme_id)) document.getElementById("theme_"+last_theme_id).scrollIntoView()
+        if(listTheme["channel_" + id_channel.options[id_channel.options.length-1].value]) {
+          let last_theme_id = listTheme["channel_" + id_channel.options[id_channel.options.length-1].value][0].id;
+          if(last_theme_id && document.getElementById("theme_"+last_theme_id)) document.getElementById("theme_"+last_theme_id).scrollIntoView()
+        }
       }
     }
   };
   // Create an observer instance linked to the callback function
   const id_channel_observer = new MutationObserver(id_channel_callback);
   // Start observing the target node for configured mutations
-  id_channel_observer.observe(id_channel, id_channel_config);
+  window.addEventListener("load", (event) => {
+    id_channel_observer.observe(id_channel.parentElement.querySelector(".select2-selection__rendered"), id_channel_config);
+  });
 
   var initial_themes = [];
   for(i = 0; i < id_channel.options.length; i++) {
-    initial_themes.push(get_list(
-      listTheme["channel_" + id_channel.options[i].value],
-      0,
-      tab_initial,
-      (tag_type = "option"),
-      (li_class = ""),
-      (attrs = ""),
-      (add_link = false),
-      (current = ""),
-      (channel = id_channel.options[i].text + ": ")
-    ));
+    if(listTheme["channel_" + id_channel.options[i].value]) {
+      initial_themes.push(get_list(
+        listTheme["channel_" + id_channel.options[i].value],
+        0,
+        tab_initial,
+        (tag_type = "option"),
+        (li_class = ""),
+        (attrs = ""),
+        (add_link = false),
+        (current = ""),
+        (channel = id_channel.options[i].text + ": ")
+      ));
+    }
   }
   id_theme.innerHTML = initial_themes.join('\n');
 }
