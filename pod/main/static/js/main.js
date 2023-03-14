@@ -1050,8 +1050,6 @@ if (id_channel) {
     }
   }
   update_theme()
-  
-  const id_channel_config = { attributes: false, childList: true, subtree: false };
   // Callback function to execute when mutations are observed
   const id_channel_callback = (mutationList, observer) => {
     for (const mutation of mutationList) {
@@ -1087,10 +1085,17 @@ if (id_channel) {
     }
   };
   // Create an observer instance linked to the callback function
+  const id_channel_config = { attributes: false, childList: true, subtree: false };
   const id_channel_observer = new MutationObserver(id_channel_callback);
-  // Start observing the target node for configured mutations
-  window.addEventListener("load", (event) => {
-    id_channel_observer.observe(id_channel.parentElement.querySelector(".select2-selection__rendered"), id_channel_config);
+  var select_channel_observer = new MutationObserver(function(mutations) {
+      if(id_channel.parentElement.querySelector(".select2-selection__rendered")) {
+        id_channel_observer.observe(id_channel.parentElement.querySelector(".select2-selection__rendered"), id_channel_config);
+        select_channel_observer.disconnect(); 
+      }
+  });
+  select_channel_observer.observe(id_channel.parentElement, { //document.body is node target to observe
+      childList: true, //This is a must have for the observer with subtree
+      subtree: true //Set to true if changes must also be observed in descendants.
   });
 
   var initial_themes = [];
