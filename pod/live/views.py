@@ -779,6 +779,11 @@ def event_stoprecord(event_id, broadcaster_id):
     current_record_info = get_info_current_record(broadcaster)
 
     if stop_record(broadcaster):
+        # change auto_start property so the recording does not start again
+        curr_event = Event.objects.get(pk=event_id)
+        curr_event.is_auto_start = False
+        curr_event.save()
+
         return event_video_transform(
             event_id,
             current_record_info.get("currentFile", None),
