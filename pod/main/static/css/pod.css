@@ -720,6 +720,12 @@ div.card a img {
   z-index: 1000;
 }
 
+.flashing_field {
+  border-color: var(--pod-primary);
+  box-shadow: inset 0 2px 2px var(--pod-primary);
+  transition: box-shadow .5s, border-color .5s;
+}
+
 /** channel form **/
 
 #channel_form .selector,

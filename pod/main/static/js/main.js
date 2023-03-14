@@ -1078,10 +1078,13 @@ if (id_channel) {
           }
         }
         id_theme.innerHTML = new_themes.join('\n');
+        /*
         if(listTheme["channel_" + id_channel.options[id_channel.options.length-1].value]) {
           let last_theme_id = listTheme["channel_" + id_channel.options[id_channel.options.length-1].value][0].id;
           if(last_theme_id && document.getElementById("theme_"+last_theme_id)) document.getElementById("theme_"+last_theme_id).scrollIntoView()
-        }
+        }*/
+        id_theme.classList.add('flashing_field');
+        setTimeout(function() { id_theme.classList.remove('flashing_field'); }, 1000);
       }
     }
   };
