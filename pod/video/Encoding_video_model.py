@@ -233,12 +233,11 @@ class Encoding_video_model(Encoding_video):
         for sub in list_subtitle_files:
             if not check_file(list_subtitle_files[sub]):
                 continue
-            # home = UserFolder.objects.get(name="Home", owner=video_to_encode.owner)
-            home, created = UserFolder.objects.get_or_create(
-                name="home", owner=video_to_encode.owner
-            )
-
             if __FILEPICKER__:
+                # home = UserFolder.objects.get(name="Home", owner=video_to_encode.owner)
+                home, created = UserFolder.objects.get_or_create(
+                    name="home", owner=video_to_encode.owner
+                )
                 podfile, created = CustomFileModel.objects.get_or_create(
                     file=self.get_true_path(list_subtitle_files[sub][1]),
                     name=list_subtitle_files[sub][1],
@@ -272,14 +271,13 @@ class Encoding_video_model(Encoding_video):
         list_thumbnail_files = info_video["list_thumbnail_files"]
         first = True
 
-        videodir, created = UserFolder.objects.get_or_create(
-            name="%s" % video_to_encode.slug,
-            owner=video_to_encode.owner,
-        )
-
         for thumbnail_path in list_thumbnail_files:
             if check_file(list_thumbnail_files[thumbnail_path]):
                 if __FILEPICKER__:
+                    videodir, created = UserFolder.objects.get_or_create(
+                        name="%s" % video_to_encode.slug,
+                        owner=video_to_encode.owner,
+                    )
                     thumbnail = CustomImageModel(
                         folder=videodir, created_by=video_to_encode.owner
                     )
