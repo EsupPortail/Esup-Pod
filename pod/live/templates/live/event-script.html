@@ -162,6 +162,8 @@
     })
 
     $(document).on('click', '#stoprecord', function () {
+        $("#stoprecord").prop('disabled', true)
+        $("#splitrecord").prop('disabled', true)
         $.ajax({
             url: "{% url 'live:ajax_event_stoprecord' %}",
             method: 'POST',
@@ -188,6 +190,10 @@
                 const err = JSON.parse(xhr.responseText)
                 $("#recordingduration").addClass("d-none")
                 console.error('Error calling stop record : ' + err.error)
+            },
+            complete: function () {
+                $("#stoprecord").prop('disabled', false)
+                $("#splitrecord").prop('disabled', false)
             }
         })
     })
