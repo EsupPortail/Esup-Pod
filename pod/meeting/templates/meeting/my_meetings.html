@@ -3,6 +3,10 @@
 {% load static %}
 {% load thumbnail %}
 
+{% block more_style %}
+  <link href="{% static 'css/meeting.css' %}?ver={{ VERSION }}" rel="stylesheet"/>
+{% endblock more_style %}
+
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My meetings" %}</li>{% endblock %}
 
 {% block page_content %}
@@ -11,107 +15,39 @@
   <i class="bi bi-info-circle"></i>&nbsp;{% trans "Access to adding meeting has been restricted. If you want to add meetings on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
 </p>
 {% else %}
-<div class="d-grid gap-2 d-md-flex justify-content-md-end mb-2">
+  {% if meetings|length != 0 %}
+  <h2 class="h4">
+    {% if request.GET.all == "true" %}
+      {% blocktrans count counter=meetings|length %}{{ counter }} meeting found{% plural %}{{ counter }} meetings found{% endblocktrans %}
+    {% else %}
+      {% blocktrans count counter=meetings|length %}{{ counter }} active meeting found{% plural %}{{ counter }} active meetings found{% endblocktrans %}
+    {% endif %}
+  </h2>
+  {% else %}
+  <h2 class="h4">{% trans "No meetings found"%}</h2>
+  <p class="alert alert-info">
+    {% if request.GET.all == "true" %}
+      {% trans 'You haven\'t got any meeting yet, please use the "Add a meeting" button to add one'%}
+    {% else %}
+      {% trans 'You haven\'t got any active meeting yet, please use the "Add a meeting" button to add one or use the filter at the right side'%}
+    {% endif %}
+  </p>
+  {% endif %}
+
+<div class="d-grid gap-2 d-md-flex justify-content-md mb-2">
   <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{% url 'meeting:add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a meeting' %}">
     <i class="bi bi-plus pod-add"></i><span>{% trans "Add a meeting" %}</span>
   </a>
 </div>
-<table class="table table-striped align-middle table-sm table-bordered caption-top">
-  <caption>{% if request.GET.all == "true" %}{% trans "All my meetings" %} {% else %} {% trans "My active meetings" %} {% endif %}</caption>
-  <thead>
-    <tr>
-      <th scope="col">{% trans "Name" %}</th>
-      <th scope="col">{% trans "Start" %}</th>
-      <th scope="col">{% trans "Join link" %}</th>
-      <th scope="col">{% trans "Attendee password" %}</th>
-      <th scope="col">{% trans "Direct Join link" %}</th>
-      <th scope="col">{% trans "Manage" %}</th>
-      <th scope="col">{% trans "Status" %}</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for meeting in meetings %}
-    <tr {% if request.GET.all == "true" and meeting.is_active %}class="table-primary"{% endif %}>
-      <th scope="row">
-        {{meeting.name|capfirst}}
-        {% if meeting.is_restricted %}
-        <span class="btn pod-btn-social btn-sm p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Acces to this meeting is restricted' %}">
-          <i class="bi bi-lock"></i>
-        </span>
-        {% endif %}
-      </th>
-      {% if meeting.recurrence %}
-      <td>{{meeting.next_occurrence_from_today}} {% localize on %}{{ meeting.start_at|time }}{% endlocalize %}</td>
-      {% else %}
-      <td>{% localize on %}{{ meeting.start_at }}{% endlocalize %}</td>
-      {% endif %}
-      <td>
-        <div class="d-grid gap-2 d-md-flex">
-          <input class="form-control form-control-sm" id="join-link-{{meeting.meeting_id}}" type="text" value="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id %}">
-          <button type="button" class="btn pod-btn-social p-1 m-0 ms-1 pod-btn-copy" data-bs-target="join-link-{{meeting.meeting_id}}" role="alert"
-          data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Copy the join link' %}">
-            <i class="bi bi-clipboard-check"></i>
-          </button>
-          <a href="{% url 'meeting:join' meeting.meeting_id %}" title="{% trans 'Join the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Join the meeting' %}">
-            <i class="bi bi-link-45deg" aria-hidden="true"></i>
-          </a>
-        </div>
-      </td>
-      <td>{{meeting.attendee_password}}</td>
-      <td>
-        <div class="d-grid gap-2 d-md-flex">
-          <input class="form-control form-control-sm" id="join-direct-link-{{meeting.meeting_id}}" type="text" value="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}">
-          <button type="button" class="btn pod-btn-social p-1 m-0 ms-1 pod-btn-copy" data-bs-target="join-direct-link-{{meeting.meeting_id}}" role="alert"
-          data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Copy the direct join link' %}">
-            <i class="bi bi-clipboard-check"></i>
-          </button>
-          <a href="{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}" title="{% trans 'Join the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1" target="_blank"  data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Join the meeting' %}">
-            <i class="bi bi-link-45deg" aria-hidden="true"></i>
-          </a>
-        </div>
-      </td>
-      <td>
-        <a href="{% url 'meeting:edit' meeting.meeting_id %}" title="{% trans 'Edit the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-pencil-square" aria-hidden="true"></i></a>
-        <a href="{% url 'meeting:invite' meeting.meeting_id %}" title="{% trans 'Invite to the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-envelope" aria-hidden="true"></i></a>
-        <a href="{% url 'meeting:delete' meeting.meeting_id %}" title="{% trans 'Delete the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-trash3" aria-hidden="true"></i></a>
-        {% if not meeting_disable_record %}
-        <a href="{% url 'meeting:recordings' meeting.meeting_id %}" title="{% trans 'Get the recordings of the meeting'%}" class="btn pod-btn-social p-1 m-0 ms-1"><i class="bi bi-collection-play" aria-hidden="true"></i></a>
-        {% endif %}
-      </td>
-      <td>
-        {% if meeting.get_is_meeting_running %}
-        <button type="button" class="alert alert-primary btn pod-btn-social p-1 m-0 ms-1" data-bs-toggle="modal" data-bs-toggle="tooltip" data-bs-target="#meetingModal"
-          data-bs-meeting-id="{{meeting.meeting_id}}" data-bs-meeting-title="{{meeting.name}}"
-          data-bs-meeting-end-url="{% url 'meeting:end' meeting.meeting_id %}" data-bs-meeting-info-url="{% url 'meeting:get_meeting_info' meeting.meeting_id %}"
-          data-bs-placement="top" title="{% trans 'Show meeting informations' %}"
-          role="alert" >
-          <i class="bi bi-person-video2"></i>
-        </button>
-        {% else %}
-        <span class="alert alert-danger btn pod-btn-social p-1 m-0 ms-1" role="alert"><i class="bi bi-person-x"></i></span>
-        {% endif %}
-      </td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="7" class="text-center">{% trans "No meetings found" %}</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% if meetings or request.user.owner_meeting.all %}
-  {% if request.GET.all == "true" %}
-  <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-2">
-    <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a meeting' %}">
-      <i class="bi bi-eye pod-add"></i> <span>{% trans "See my active meetings" %}</span>
-    </a>
-  </div>
-  {% else %}
-  <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-2">
-    <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}?all=true" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a meeting' %}">
-      <i class="bi bi-eye pod-add"></i> <span>{% trans "See all my meetings" %}</span>
-    </a>
-  </div>
-  {% endif %}
-{% endif %}
+
+<div class="infinite-container pod-infinite-container" id="meetings_list">
+  {% for meeting in meetings %}
+    <div class="infinite-item card-group">
+      {% include "meeting/meeting_card.html" %}
+    </div>
+  {% endfor %}
+</div>
+
 <!-- Modal -->
 <div class="modal fade" id="meetingModal" tabindex="-1" aria-labelledby="meetingModal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -131,9 +67,11 @@
 {% endblock page_content %}
 
 {% block collapse_page_aside %}
+  {{ block.super }}
 {% endblock collapse_page_aside %}
 
 {% block page_aside %}
+  {% include 'meeting/filter_aside.html' %}
 {% endblock page_aside %}
 
 {% block more_script %}
@@ -158,7 +96,7 @@ meetingModal.addEventListener('show.bs.modal', function (event) {
         modalBody.innerHTML = "{% trans 'Unable to find information about the meeting' %}"
         console.log(msg)
       } else {
-        const modalendlink = '<p><a href="'+ endurl +'" title="{% trans 'End the meeting'%}" class="btn btn-primary endlink" >{% trans 'End the meeting'%}</a></p>';
+        const modalendlink = '<p><a href="'+ endurl +'" title="{% trans 'End the meeting'%}" class="btn btn-danger endlink" >{% trans 'End the meeting'%}</a></p>';
         modalBody.innerHTML = generateHtml(data.info) + modalendlink
       }
   }).catch((error) => {
@@ -209,27 +147,24 @@ function copyInputValue(id) {
   navigator.clipboard
       .writeText(copyText.value)
       .then(() => {
-        //alert("successfully copied");
-        document.body.append(`
-          <div class="alert alert-primary d-flex align-items-center" role="alert">
-            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
-            <div>
-              {% trans "Text copied" %}
-            </div>
+        let div = document.createElement('div');
+        div.innerHTML = `
+          <div class="alert alert-primary d-flex align-items-center meeting-text-copied" role="alert">
+            <i class="bi bi-info-circle-fill fs-3"></i><span class="p-2">{% trans "Text copied" %}</span>
           </div>
-        `);
+        `;
+        document.body.append(div);
         setInterval(function() {
           var elems = document.querySelectorAll(".alert");
           elems.forEach(function(el) {
             el.remove();
           });
-        }, 10000)
+        }, 5000)
       })
       .catch(() => {
         //alert("something went wrong");
       });
 }
 </script>
-
 
 {% endblock more_script %}

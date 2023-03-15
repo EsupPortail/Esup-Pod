@@ -1,0 +1,59 @@
+{% load i18n l10n %}
+{% spaceless %}
+<div class="card box-shadow pod-card--video meeting-card {% if not meeting.is_active %}meeting-card-inactive{% endif %}">
+  <!-- meeting_card.html -->
+  <div class="card-header">
+    <div class="d-flex justify-content-between align-items-center">
+      <input class="form-control form-control-sm d-none" id="join-direct-link-{{meeting.meeting_id}}" type="text" value="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}">
+      <small class="text-muted time">
+        <b>{{meeting.name|capfirst|truncatechars:43}}</b><br/>
+        {% if meeting.recurrence %}
+          {{meeting.next_occurrence_from_today}} {% localize on %}{{ meeting.start_at|time }}{% endlocalize %}
+        {% else %}
+          {% localize on %}{{ meeting.start_at }}{% endlocalize %}
+        {% endif %}
+      </small>
+      <span class="text-muted small d-flex">
+        {% if meeting.is_restricted %}
+          <span data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Acces to this meeting is restricted' %}">
+            <i class="bi bi-lock" aria-hidden="true"></i>
+          </span>
+        {% endif %}
+        {% if not meeting.is_active %}
+          <span data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'This meeting is inactive' %}">
+            <i class="bi bi-archive" aria-hidden="true"></i>
+          </span>
+        {% endif %}
+      </span>
+    </div>
+  </div>
+  <div class="card-thumbnail">
+    <a class="link-center-pod" href="{% url 'meeting:join' meeting.meeting_id %}" title="{{ meeting.name }}" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top"></a>
+      <img class="card-img-top" src="{{ DEFAULT_MEETING_THUMBNAIL }}" alt="" loading="lazy">
+    </a>
+  </div>
+  <div class="card-body px-3 py-2">
+    {% if meeting.owner == request.user or request.user.is_superuser or perms.meeting.change_meeting or request.user in meeting.additional_owners.all %}
+      <footer class="card-footer card-footer-pod p-0 m-0 link-center-pod link-meeting">
+        {% include "meeting/link_meeting.html" %}
+      </footer>
+    {% endif %}
+
+    {% if meeting.get_is_meeting_running %}
+      <a class="btn btn-primary btn-sm float-start meeting-infos" href="{% url 'meeting:join' meeting.meeting_id %}" data-bs-toggle="modal" data-bs-target="#meetingModal" 
+      data-bs-meeting-id="{{meeting.meeting_id}}" data-bs-meeting-title="{{meeting.name}}"
+      data-bs-meeting-end-url="{% url 'meeting:end' meeting.meeting_id %}" data-bs-meeting-info-url="{% url 'meeting:get_meeting_info' meeting.meeting_id %}" role="alert">
+        <span data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Show meeting informations' %}"><i class="bi bi-person-video2 pod-add"></i></span>
+      </a>
+      
+      <a class="btn btn-primary btn-sm float-end" href="{% url 'meeting:join' meeting.meeting_id %}" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Join the meeting' %}">
+        <i class="bi bi-play pod-add"></i><span>{% trans "Join the meeting" %}</span>
+      </a>
+    {% else %}
+      <a class="btn btn-primary btn-sm link-center-pod" href="{% url 'meeting:join' meeting.meeting_id %}" onClick="setTimeout(function(){ location.reload(); }, 4000);" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Start the meeting' %}">
+        <i class="bi bi-play-fill pod-add"></i><span>{% trans "Start the meeting" %}</span>
+      </a>
+    {% endif %}
+  </div>
+</div>
+{% endspaceless %}

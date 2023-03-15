@@ -1,0 +1,30 @@
+{% load i18n %}
+
+{% spaceless %}
+{% if meeting.owner == request.user or request.user.is_superuser or request.user in meeting.additional_owners.all or perms.meeting.change_meeting %}
+  <a href="{% url 'meeting:edit' meeting.meeting_id %}" title="{% trans 'Edit the meeting'%}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
+    <i class="bi bi-pencil-square" aria-hidden="true"></i>
+  </a>
+
+  <a href="#" class="btn btn-lg pod-btn-social p-1 m-0 ms-1 pod-btn-copy" data-bs-target="join-direct-link-{{meeting.meeting_id}}" role="alert"
+  data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Copy the direct join link' %}">
+    <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+  </button>
+
+  <a href="{% url 'meeting:invite' meeting.meeting_id %}" title="{% trans 'Invite to the meeting'%}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
+    <i class="bi bi-envelope" aria-hidden="true"></i>
+  </a>
+  
+  {% if not meeting_disable_record %}
+    <a href="{% url 'meeting:recordings' meeting.meeting_id %}" title="{% trans 'Get the recordings of the meeting'%}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
+      <i class="bi bi-collection-play" aria-hidden="true"></i>
+    </a>
+  {% endif %}  
+{% endif %}
+
+{% if meeting.owner == request.user or request.user.is_superuser or perms.meeting.delete_meeting %}
+  <a href="{% url 'meeting:delete' meeting.meeting_id %}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1" title="{% trans 'Delete the meeting'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+    <i class="bi bi-trash" aria-hidden="true"></i></a>
+{% endif %}
+
+{%endspaceless%}

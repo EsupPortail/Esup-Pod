@@ -7710,3 +7710,48 @@ msgstr "Résultats de la recherche"
 
 #~ msgid "Hide advanced options"
 #~ msgstr "Cacher les options avancées"
+
+msgid "%(counter)s meeting found"
+msgid_plural "%(counter)s meetings found"
+msgstr[0] "%(counter)s réunion trouvée"
+msgstr[1] "%(counter)s réunions trouvées"
+
+msgid "%(counter)s active meeting found"
+msgid_plural "%(counter)s active meetings found"
+msgstr[0] "%(counter)s réunion active trouvée"
+msgstr[1] "%(counter)s réunions actives trouvées"
+
+msgid ""
+"You haven't got any meeting yet, please use the \"Add a meeting\" "
+"button to add one"
+msgstr ""
+"Vous n'avez pas encore de réunion, veuillez utiliser le bouton "
+"\"Ajouter une réunion\" bouton pour en ajouter une"
+
+msgid ""
+"You haven't got any active meeting yet, please use the \"Add a meeting\" "
+"button to add one or use the filter at the right side"
+msgstr ""
+"Vous n'avez pas encore de réunion active, veuillez utiliser le bouton "
+"\"Ajouter une réunion\" pour en ajouter une ou utiliser le filtre à droite"
+
+msgid "This meeting is inactive"
+msgstr "Cette réunion est inactive"
+
+msgid "Start the meeting"
+msgstr "Démarrer la réunion"
+
+msgid "Type at least 3 chars to filter"
+msgstr "Tapez au moins 3 lettres pour filtrer"
+
+msgid "Display the recording in presentation format"
+msgstr "Afficher l'enregistrement au format Présentation Web"
+
+msgid "Display the recording in video format"
+msgstr "Afficher l'enregistrement au format vidéo"
+
+msgid "Delete the recording"
+msgstr "Supprimer l'enregistrement"
+
+msgid "published"
+msgstr "publié"
