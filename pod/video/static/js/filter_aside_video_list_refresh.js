@@ -59,12 +59,6 @@ function replaceCountVideos(newCount) {
 function refreshVideosSearch() {
   url = getUrlForRefresh();
   // Ajax request to refresh view with filtered video list
-  if (getNextPage()) {
-    pageNext = document
-        .querySelector("a.infinite-more-link")
-        .getAttribute("nextPageNumber");
-  }
-
   fetch(url, {
     method: "GET",
     headers: {
@@ -78,15 +72,14 @@ function refreshVideosSearch() {
       // parse data into html and replace videos list
       let parser = new DOMParser();
       let html = parser.parseFromString(data, "text/html").body;
-      document.getElementById("videos_list").outerHTML = html.outerHTML;
+      document.getElementById("videos_list").outerHTML = html.innerHTML;
       //document.querySelector(".infiniteloading").style.display = "none";
       //document.querySelector(".infinite-more-link").style.display = "none";
-      replaceCountVideos(
-        document.getElementById("videos_list").dataset.countvideos
-      );
+      this.replaceCountVideos(document.getElementById("videos_list").dataset.countvideos);
+      nextPage = (document.getElementById("videos_list").getAttribute("nextPage") === 'true');
       window.history.pushState({}, "", this.url);
       hideInfiniteloading();
-      if (getNextPage()) {
+      if (nextPage) {
         pageNext = document
           .querySelector("a.infinite-more-link")
           .getAttribute("nextPageNumber");
@@ -114,13 +107,6 @@ function getUrlForRefresh(){
     return url;
 }
 
-function getNextPage(){
-    let nextPage = document
-        .getElementById("videos_list")
-        .getAttribute("nextPage");
-    return nextPage;
-}
-
 hideInfiniteloading = function () {
   // get waypoint object
   document
@@ -144,7 +130,6 @@ document.querySelectorAll('.form-check-input,#sort,#sort_direction').forEach(el 
         ).forEach((e) => {
             formCheckedInputs.push(e);
         });
-        document.getElementById("videos_list").innerHTML = "";
         this.refreshVideosSearch();
     });
 });

@@ -607,10 +607,10 @@ def get_owners_has_instances(owners):
 def videos(request):
     """Render the main list of videos."""
     videos_list = get_videos_list()
-    count_videos = len(videos_list)
-
     videos_list = get_filtered_videos_list(request, videos_list)
     videos_list = sort_videos_list(request, videos_list)
+
+    count_videos = len(videos_list)
 
     page = request.GET.get("page", 1)
     full_path = ""
