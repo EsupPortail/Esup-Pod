@@ -722,7 +722,7 @@ div.card a img {
 
 .flashing_field {
   border-color: var(--pod-primary);
-  box-shadow: inset 0 2px 2px var(--pod-primary);
+  box-shadow: 0 0 4px var(--pod-primary);
   transition: box-shadow .5s, border-color .5s;
 }
 
