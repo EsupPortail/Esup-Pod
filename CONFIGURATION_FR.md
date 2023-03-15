@@ -1704,6 +1704,13 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
 
   >> Seuls les utilisateurs "staff" pourront éditer les réunions <br>
 
+ - `DEFAULT_MEETING_THUMBNAIL`
+
+  > valeur par défaut : `/img/default-meeting.svg`
+
+  >> Image par défaut affichée comme poster ou vignette, utilisée pour présenter la réunion. <br>
+  >> Cette image doit se situer dans le répertoire `static`. <br>
+
  - `USE_MEETING`
 
   > valeur par défaut : `False`
