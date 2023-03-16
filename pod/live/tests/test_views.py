@@ -1,4 +1,5 @@
 """Unit tests for live views."""
+import json
 from http import HTTPStatus
 
 import httmock
@@ -1138,7 +1139,8 @@ class LiveViewsTestCase(TestCase):
 
         response = self.client.post(
             url,
-            {"idbroadcaster": 1, "idevent": 1},
+            content_type='application/json',
+            data=json.dumps({"idbroadcaster": 1, "idevent": 1}),
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertEqual(response.status_code, 200)
@@ -1163,7 +1165,8 @@ class LiveViewsTestCase(TestCase):
 
         response = self.client.post(
             url,
-            {"idbroadcaster": 1, "idevent": 1},
+            content_type='application/json',
+            data=json.dumps({"idbroadcaster": 1, "idevent": 1}),
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertEqual(response.status_code, 200)
@@ -1186,7 +1189,8 @@ class LiveViewsTestCase(TestCase):
 
         response = self.client.post(
             url,
-            {"idbroadcaster": 1, "idevent": 1},
+            content_type='application/json',
+            data=json.dumps({"idbroadcaster": 1, "idevent": 1}),
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertEqual(response.status_code, 200)
@@ -1209,7 +1213,8 @@ class LiveViewsTestCase(TestCase):
 
         response = self.client.post(
             url,
-            {"idbroadcaster": 1, "idevent": 1},
+            content_type='application/json',
+            data=json.dumps({"idbroadcaster": 1, "idevent": 1}),
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertEqual(response.status_code, 200)
@@ -1240,7 +1245,8 @@ class LiveViewsTestCase(TestCase):
         with HTTMock(response_is_recording_ko):
             response = self.client.post(
                 url,
-                {"idbroadcaster": 2, "idevent": 1},
+                content_type='application/json',
+                data=json.dumps({"idbroadcaster": 2, "idevent": 1},),
                 HTTP_X_REQUESTED_WITH="XMLHttpRequest",
             )
         self.assertEqual(
@@ -1252,7 +1258,8 @@ class LiveViewsTestCase(TestCase):
         with HTTMock(response_is_recording_ok):
             response = self.client.post(
                 url,
-                {"idbroadcaster": 2, "idevent": 1},
+                content_type='application/json',
+                data=json.dumps({"idbroadcaster": 2, "idevent": 1}),
                 HTTP_X_REQUESTED_WITH="XMLHttpRequest",
             )
         self.assertEqual(response.json(), {"success": True, "duration": 3})
