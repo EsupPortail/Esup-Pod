@@ -74,21 +74,21 @@ function refreshVideosSearch(formCheckedInputs) {
     .then((data) => {
       // parse data into html and replace videos list
       // destroy waypoint id exists
-
-      let html = new DOMParser().parseFromString(data, "text/html").body;
-
+      let parser = new DOMParser();
+      let html = parser.parseFromString(data, "text/html").body;
+      document.getElementById("videos_list").outerHTML = html.innerHTML;
       //document.querySelector(".infiniteloading").style.display = "none";
       //document.querySelector(".infinite-more-link").style.display = "none";
-      document.getElementById("videos_list").outerHTML =
-        html.getElementById("videos_list").outerHTML;
       let nextPage = document
         .getElementById("videos_list")
         .getAttribute("nextPage");
 
-      replaceCountVideos(countVideos);
+      replaceCountVideos(
+        document.getElementById("videos_list").dataset.countvideos
+      );
       window.history.pushState({}, "", this.url);
       hideInfiniteloading();
-      if (nextPage) {
+      if (nextPage != "False") {
         pageNext = document
           .querySelector("a.infinite-more-link")
           .getAttribute("nextPageNumber");

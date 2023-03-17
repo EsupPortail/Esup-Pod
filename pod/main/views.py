@@ -311,6 +311,7 @@ def contact_us(request):
     )
 
 
+@csrf_protect
 @login_required(redirect_field_name="referrer")
 def user_autocomplete(request):
     """Search for users with partial names, for autocompletion."""
@@ -324,7 +325,7 @@ def user_autocomplete(request):
         if MENUBAR_SHOW_STAFF_OWNERS_ONLY:
             additional_filters["is_staff"] = True
         VALUES_LIST = ["username", "first_name", "last_name", "video_count"]
-        q = remove_accents(request.GET.get("term", "").lower())
+        q = remove_accents(request.POST.get("term", "").lower())
         users = (
             User.objects.filter(**additional_filters)
             .filter(
@@ -337,7 +338,7 @@ def user_autocomplete(request):
             .annotate(
                 video_count=Count("video", sites=get_current_site(request), distinct=True)
             )
-            .values(*list(VALUES_LIST))
+            .values(*list(VALUES_LIST))[:100]
         )
 
         data = json.dumps(list(users))

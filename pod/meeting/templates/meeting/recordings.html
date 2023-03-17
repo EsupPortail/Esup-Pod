@@ -3,50 +3,97 @@
 {% load static %}
 {% load thumbnail %}
 
+{% block more_style %}
+  <link href="{% static 'css/meeting.css' %}?ver={{ VERSION }}" rel="stylesheet"/>
+{% endblock more_style %}
+
+
 {% block breadcrumbs %}{{ block.super }} 
-<li class="breadcrumb-item"><a href="{% url 'meeting:my_meetings' %}">{% trans "My meetings" %}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{% trans "Meeting recordings" %}</li>
+  <li class="breadcrumb-item"><a href="{% url 'meeting:my_meetings' %}">{% trans "My meetings" %}</a></li>
+  <li class="breadcrumb-item active" aria-current="page">{% trans "Meeting recordings" %}</li>
 {% endblock %}
 
 {% block page_content %}
-<table class="table table-striped align-middle table-sm table-bordered caption-top">
+  <table class="table table-striped align-middle table-sm table-bordered caption-top">
     <thead>
       <tr>
-        <th scope="col">{% trans "Playback" %}</th>
         <th scope="col">{% trans "Name" %}</th>
         <th scope="col">{% trans "State" %}</th>
         <th scope="col">{% trans "Date" %}</th>
         <th scope="col">{% trans "Duration" %}</th>
+        <th scope="col">{% trans "Playback" %}</th>
         <th scope="col">{% trans "Toolbar" %}</th>
       </tr>
     </thead>
     <tbody>
         {% for record in recordings %}
-        <tr>
-            <td> {% for type, url in record.playback.items %}<a class="initials btn btn-primary pod-btn-primary btn-sm" href="{{url}}" target="_blank">{{type}}</a> {% endfor %}</td>
-            <td> {{ record.name }}</td>
-            <td> {{ record.state }}</td>
+        <tr class="recordings_list_item">
+            <td class="recording_name"> {{ record.name }}</td>
+            <td> {% trans record.state|title %}</td>
             <td> {{ record.get_start_time }}</td>
             <td> {{ record.get_duration }} </td>
-            <td> 
-                <form method="post" action="{% url "meeting:delete_recording" meeting_id=meeting.meeting_id recording_id=record.recordID %}" onsubmit="return confirm('{% trans "Please confirm you want to delete the recording" %}');">
+            <td>
+              {% for type, url in record.playback.items %}
+                {% if type == "presentation" %}
+                  <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{{url}}" target="_blank" title="{% trans 'Display the recording in presentation format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+                    <i class="bi bi-file-earmark-play"></i>
+                  </a>
+                {% elif type == "video" %}
+                  <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{{url}}" target="_blank" title="{% trans 'Display the recording in video format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+                    <i class="bi bi-camera-video"></i>
+                  </a>
+                {% endif %}
+              {% endfor %}
+            </td>
+            <td>
+                {% trans "Please confirm you want to delete the recording" as confirm %}
+                <form method="post" action="{% url "meeting:delete_recording" meeting_id=meeting.meeting_id recording_id=record.recordID %}" onsubmit="return confirm('{{ confirm|escapejs }}');">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-primary pod-btn-primary btn-sm"><i class="bi bi-trash3 pod-add"></i></button>
+                    <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the recording'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-trash3 pod-add"></i></button>
                 </form>
             </td>
         </tr>
         {%endfor%}
     </tbody>
-</table>
+  </table>
 
 {% endblock page_content %}
 
 {% block collapse_page_aside %}
+  {{ block.super }}
 {% endblock collapse_page_aside %}
 
 {% block page_aside %}
+  {% include 'meeting/filter_aside_recording.html' %}
 {% endblock page_aside %}
 
 {% block more_script %}
-
+<script>
+  // Filter recordings
+  let searchRecInput = document.querySelector(
+    "#recordings_filter #searchrecordings"
+  );
+  let searchRecHandler = (s) => {
+    let recs = document.querySelectorAll(
+      ".recordings_list_item"
+    );
+    if (s.length >= 3) {
+      // Display only recordings matching the filter
+      recs.forEach((rec) => {
+        if (!rec.innerHTML.trim().toLowerCase().includes(s)) {
+          rec.parentNode.style.visibility = 'collapse';
+        }
+        else rec.parentNode.style.visibility = 'visible';
+      });
+    } else {
+      // Display all recordings
+      recs.forEach((rec) => {
+        rec.parentNode.style.visibility = 'visible';
+      });
+    }
+  };
+  searchRecInput.addEventListener("input", (e) => {
+    searchRecHandler(searchRecInput.value.trim());
+  });
+</script>
 {% endblock more_script %}

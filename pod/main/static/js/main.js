@@ -305,8 +305,8 @@ var get_list = function (
   var prefix = "";
   for (i = 0; i < level; i++) prefix += "&nbsp;&nbsp;";
   if (level != 0) prefix += "|-";
-
-  tab.forEach((val) => {
+  for (var i = 0; i < tab.length; i++) {
+    var val = tab[i];
     var title = add_link
       ? '<a href="' + val.url + '">' + channel + " " + val.title + "</a>"
       : channel + " " + val.title;
@@ -350,7 +350,7 @@ var get_list = function (
         channel
       );
     }
-  });
+  }
   return list;
 };
 
@@ -358,36 +358,35 @@ var get_list = function (
 
 document.querySelectorAll(".collapsibleThemes").forEach((cl) => {
   cl.addEventListener("show.bs.collapse", function () {
-    var str = get_list(
-      listTheme["channel_" + cl.dataset.id],
-      0,
-      [],
-      (tag_type = "li"),
-      (li_class = "list-inline-item"),
-      (attrs = ""),
-      (add_link = true),
-      (current = ""),
-      (channel = ""),
-      (show_only_parent_themes = show_only_parent_themes)
-    );
-    cl.innerHTML = '<ul class="list-inline p-1 border">' + str + "</ul>";
-    //$(this).parents("li").addClass('list-group-item-light');
-    cl.parentNode.querySelectorAll("li").forEach((li) =>
-      li.querySelectorAll(".chevron-down").forEach((el) => {
-        el.setAttribute("style", "transform: rotate(180deg);");
-      })
-    );
+    if (listTheme["channel_" + cl.dataset.id]) {
+      var str = get_list(
+        listTheme["channel_" + cl.dataset.id],
+        0,
+        [],
+        (tag_type = "li"),
+        (li_class = "list-inline-item"),
+        (attrs = ""),
+        (add_link = true),
+        (current = ""),
+        (channel = ""),
+        (show_only_parent_themes = show_only_parent_themes)
+      );
+      cl.innerHTML = '<ul class="list-inline p-1 border">' + str + "</ul>";
+      //$(this).parents("li").addClass('list-group-item-light');
+      if (cl.parentNode.querySelector(".bi-chevron-down"))
+        cl.parentNode
+          .querySelector(".bi-chevron-down")
+          .classList.add("bi-chevron-up");
+      //cl.parentNode.querySelector(".bi-chevron-down").setAttribute("style", "transform: rotate(180deg);"); //doesn't work
+    }
   });
 });
 document.querySelectorAll(".collapsibleThemes").forEach((cl) => {
   cl.addEventListener("hidden.bs.collapse", function () {
-    // do something…
-    //$(this).parents("li").removeClass('list-group-item-light');
-    cl.parentNode.querySelectorAll("li").forEach((li) => {
-      li.querySelectorAll(".chevron-down").forEach((el) => {
-        el.setAttribute("style", "");
-      });
-    });
+    if (cl.parentNode.querySelector(".bi-chevron-down"))
+      cl.parentNode
+        .querySelector(".bi-chevron-down")
+        .classList.remove("bi-chevron-up");
   });
 });
 
@@ -960,20 +959,23 @@ function show_list_theme(data) {
 let ownerbox = document.getElementById("ownerbox");
 if (ownerbox) {
   ownerbox.addEventListener("keyup", async (e) => {
-    let thisE = e.target;
-    if (thisE.value && thisE.value.length > 2) {
-      var searchTerm = thisE.value;
-      var url = "/ajax_calls/search_user?term=" + searchTerm;
-
-      await fetch(url, {
-        method: "GET",
+    //let thisE = e.target;
+    if (ownerbox.value && ownerbox.value.length > 2) {
+      var searchTerm = ownerbox.value;
+      let data = new FormData();
+      data.append("term", searchTerm);
+      data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
+      url = "/ajax_calls/search_user/";
+      fetch(url, {
+        method: "POST",
+        body: data,
         headers: {
+          Accept: "application/json",
           "X-Requested-With": "XMLHttpRequest",
         },
       })
-        .then((response) => response.text())
+        .then((response) => response.json())
         .then((data) => {
-          data = JSON.parse(data);
           if (data.length > 0) {
             document
               .querySelectorAll("#collapseFilterOwner .added")
@@ -1033,78 +1035,107 @@ if (ownerbox) {
         });
     }
   });
-  /****** VIDEOS EDIT ******/
-  /** channel **/
 }
-var tab_initial = new Array();
-
-let select = document.getElementById("id_theme select");
-if (select) {
-  select.options.forEach((option) => {
-    if (option.selected) {
-      tab_initial.push(option.value);
-    }
-  });
-
-  select.options.forEach((option) => {
-    option.remove();
-  });
-}
+/****** VIDEOS EDIT ******/
+/** channel **/
 let id_channel = document.getElementById("id_channel");
 if (id_channel) {
-  id_channel.addEventListener("change", function () {
-    /*
-    $('#id_channel').on('select2:select', function (e) {
-      alert('change 2');
-    });
-    */
-    // use click instead of change due to select2 usage : https://github.com/theatlantic/django-select2-forms/blob/master/select2/static/select2/js/select2.js#L1502
-    //$("#id_channel").on("click", function (e) {
-    //alert('change 3');
-    document.querySelector("#id_theme option").remove();
-    var tab_channel_selected = this.value;
-    var str = "";
-    for (var id in tab_channel_selected) {
-      var chan = document
-        .querySelector(
-          "#id_channel option[value=" + tab_channel_selected[id] + "]"
-        )
-        .text();
-      str += get_list(
-        listTheme["channel_" + tab_channel_selected[id]],
-        0,
-        [],
-        (tag_type = "option"),
-        (li_class = ""),
-        (attrs = ""),
-        (add_link = false),
-        (current = ""),
-        (channel = chan + ": ")
-      );
+  let tab_initial = new Array();
+  let id_theme = document.getElementById("id_theme");
+  const update_theme = function () {
+    tab_initial = [];
+    if (id_theme) {
+      for (i = 0; i < id_theme.options.length; i++) {
+        if (id_theme.options[i].selected) {
+          tab_initial.push(id_theme.options[i].value);
+        }
+      }
+      //remove all options
+      for (option in id_theme.options) {
+        id_theme.options.remove(0);
+      }
     }
-    document.getElementById("id_theme").append(str);
+  };
+  update_theme();
+  // Callback function to execute when mutations are observed
+  const id_channel_callback = (mutationList, observer) => {
+    for (const mutation of mutationList) {
+      if (mutation.type === "childList") {
+        update_theme();
+        var new_themes = [];
+        var channels = id_channel.parentElement.querySelectorAll(
+          ".select2-selection__choice"
+        );
+        for (i = 0; i < channels.length; i++) {
+          for (j = 0; j < id_channel.options.length; j++) {
+            if (channels[i].title === id_channel.options[j].text) {
+              if (listTheme["channel_" + id_channel.options[j].value]) {
+                new_themes.push(
+                  get_list(
+                    listTheme["channel_" + id_channel.options[j].value],
+                    0,
+                    tab_initial,
+                    (tag_type = "option"),
+                    (li_class = ""),
+                    (attrs = ""),
+                    (add_link = false),
+                    (current = ""),
+                    (channel = id_channel.options[j].text + ": ")
+                  )
+                );
+              }
+            }
+          }
+        }
+        id_theme.innerHTML = new_themes.join("\n");
+        flashing(id_theme, 1000);
+      }
+    }
+  };
+  // Create an observer instance linked to the callback function
+  const id_channel_config = {
+    attributes: false,
+    childList: true,
+    subtree: false,
+  };
+  const id_channel_observer = new MutationObserver(id_channel_callback);
+  var select_channel_observer = new MutationObserver(function (mutations) {
+    if (
+      id_channel.parentElement.querySelector(".select2-selection__rendered")
+    ) {
+      id_channel_observer.observe(
+        id_channel.parentElement.querySelector(".select2-selection__rendered"),
+        id_channel_config
+      );
+      select_channel_observer.disconnect();
+    }
   });
-}
+  select_channel_observer.observe(id_channel.parentElement, {
+    //document.body is node target to observe
+    childList: true, //This is a must have for the observer with subtree
+    subtree: true, //Set to true if changes must also be observed in descendants.
+  });
 
-document.querySelectorAll("#id_channel select").forEach((select) => {
-  if (select) {
-    select.options.forEach((option) => {
-      if (option.selected) {
-        var str = get_list(
-          listTheme["channel_" + option.value],
+  var initial_themes = [];
+  for (i = 0; i < id_channel.options.length; i++) {
+    if (listTheme["channel_" + id_channel.options[i].value]) {
+      initial_themes.push(
+        get_list(
+          listTheme["channel_" + id_channel.options[i].value],
           0,
           tab_initial,
           (tag_type = "option"),
           (li_class = ""),
           (attrs = ""),
           (add_link = false),
-          (current = "")
-        );
-        document.getElementById("id_theme").append(str);
-      }
-    });
+          (current = ""),
+          (channel = id_channel.options[i].text + ": ")
+        )
+      );
+    }
   }
-});
+  id_theme.innerHTML = initial_themes.join("\n");
+}
 
 /** end channel **/
 /*** Copy to clipboard ***/
@@ -1235,7 +1266,7 @@ restricted_access();
 /*** VIDEOCHECK FORM ***/
 var videocheck = function (form, event) {
   var fileInput = document.getElementById("id_video");
-  if (fileInput.files.length) {
+  if (fileInput && fileInput.files.length) {
     var fileSize = fileInput.get(0).files[0].size;
     var fileName = fileInput.get(0).files[0].name;
     var extension = fileName
@@ -1340,4 +1371,10 @@ function show_messages(msgText, msgClass, loadUrl) {
       $msgBox.remove();
     }, 3000);
   }
+}
+function flashing(elem, duration) {
+  elem.classList.add("flashing_field");
+  setTimeout(function () {
+    elem.classList.remove("flashing_field");
+  }, duration);
 }

@@ -34,19 +34,17 @@
             }
             if (started && player.readyState() <= 2) {
                 // Check if .m3u8 exists, to be sure that live is stopped
-                $.ajax({
-                    url: '{{event.broadcaster.url}}',
-                    type: 'GET',
-                    crossDomain: true,
-                    dataType: 'html',
-                    success: function (html, status) {
-                        stopped = false;
-                    },
-                    error: function (result, status, error) {
-                        stopped = true;
-                    },
-                    complete: function (result, status) {
+                fetch("{{event.broadcaster.url}}", {
+                    method: "GET",
+                    {#crossDomain: true,#}
+                    headers: {
+                        'Accept': 'text/html',
+                        'Content-Type': 'text/html; charset=utf-8',
                     }
+                }).then((response) => {
+                  stopped = !response.ok;
+                }).catch(() => {
+                    stopped = true;
                 });
                 if (stopped) {
                     nbLoop = nbLoop + 1;

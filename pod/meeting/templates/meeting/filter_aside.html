@@ -1,0 +1,30 @@
+{% load i18n %}
+{% load custom_tags %}
+
+{% spaceless %}
+<div class="card card-body" id="my_meetings_filter">
+  <h2 class="h3 card-title pod-card__title">
+    <i class="bi bi-sliders2-vertical"></i>&nbsp;{% trans "Filters"%}
+  </h2>
+
+  <div class="filters" id="filters">
+    <fieldset class="border-right border-bottom mt-2">
+      <legend class="h5">
+        <i class="bi bi-tv"></i>&nbsp;{% trans "Status"%}
+      </legend>
+    </fieldset>
+    <div id="filterType">
+      <div class="form-group collapse" id="collapseFilterType">
+        <div class="form-check">
+          <input onChange="window.location = `{% url 'meeting:my_meetings' %}`;" class="form-check-input" type="radio" name="type" value="active" id="idactive_type" {% if request.GET.all != "true" %}checked="true"{% endif %}>
+          <label class="form-check-label" for="idactive_type">&nbsp;{% trans "See my active meetings"%}</label>
+        </div>
+        <div class="form-check">
+          <input onChange="window.location = `{% url 'meeting:my_meetings' %}?all=true`;" class="form-check-input" type="radio" name="type" value="all" id="idall_type" {% if request.GET.all == "true" %}checked="true"{% endif %}>
+          <label class="form-check-label" for="idall_type">&nbsp;{% trans "See all my meetings"%}</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endspaceless %}
