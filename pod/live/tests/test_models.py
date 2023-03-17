@@ -98,20 +98,12 @@ class BroadcasterTestCase(TestCase):
             main_lang="fr",
             transcription_file="testfile.vtt",
         )
-        # Test with a video on hold
-        video_on_hold = Video.objects.create(
-            title="VideoOnHold",
-            owner=user,
-            video="test.mp4",
-            type=Type.objects.get(id=1),
-        )
         Broadcaster.objects.create(
             name="broadcaster2",
             poster=poster,
             url="http://test2.live",
             status=True,
             is_restricted=False,
-            video_on_hold=video_on_hold,
             building=building,
             main_lang="en",
         )
@@ -146,9 +138,8 @@ class BroadcasterTestCase(TestCase):
         self.assertEqual(broadcaster.main_lang, "fr")
         self.assertEqual(broadcaster.transcription_file.url, "/media/testfile.vtt")
         broadcaster2 = Broadcaster.objects.get(id=2)
-        self.assertEqual(broadcaster2.video_on_hold.id, 1)
-        print("   --->  test_attributs of BroadcasterTestCase: OK!")
         self.assertEqual(broadcaster2.main_lang, "en")
+        print("   --->  test_attributs of BroadcasterTestCase: OK!")
 
     """
         test delete object
@@ -163,7 +154,6 @@ class BroadcasterTestCase(TestCase):
 
     def test_is_recording_admin(self):
         html = Broadcaster.objects.get(id=1).is_recording_admin()
-        print(html)
         expected_html = '<img src="/static/admin/img/icon-no.svg" alt="No">'
         self.assertEqual(html, expected_html)
 
@@ -304,7 +294,7 @@ class EventTestCase(TestCase):
         )
         event.id = None
         self.assertEqual(event.__str__(), "None")
-        self.assertEqual(event.get_thumbnail_url(), "/static/img/default-event.svg")
+        self.assertEqual(event.get_thumbnail_card(), "/static/img/default-event.svg")
         self.assertEqual(event.get_full_url(), "//localhost:9090/live/event/0001-event1/")
         print(" --->  test_attributs of EventTestCase: OK!")
 
@@ -324,6 +314,15 @@ class EventTestCase(TestCase):
         event.save()
         self.assertTrue("blabla" in event.thumbnail.name)
         print(" --->  test_add_thumbnail of EventTestCase: OK!")
+
+    def test_add_video_on_hold(self):
+        # Test with a video on hold
+        video = Video.objects.get(id=1)
+        event = Event.objects.get(id=1)
+        event.video_on_hold = video
+        event.save()
+        self.assertEquals(event.video_on_hold.id, video.id)
+        print(" --->  test_add_video_on_hold of EventTestCase: OK!")
 
     def test_add_video(self):
         event = Event.objects.get(id=1)

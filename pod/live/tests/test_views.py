@@ -56,12 +56,6 @@ class LiveViewsTestCase(TestCase):
             is_restricted=True,
             building=building,
         )
-        video_on_hold = Video.objects.create(
-            title="VideoOnHold",
-            owner=user,
-            video="test.mp4",
-            type=Type.objects.get(id=1),
-        )
         Broadcaster.objects.create(
             name="broadcaster2",
             poster=poster,
@@ -69,11 +63,16 @@ class LiveViewsTestCase(TestCase):
             status=True,
             enable_add_event=True,
             is_restricted=False,
-            video_on_hold=video_on_hold,
             building=building,
             piloting_implementation="wowza",
             piloting_conf='{"server_url": "http://mock_api.fr", \
                 "application": "mock_name", "livestream": "mock_livestream"}',
+        )
+        Video.objects.create(
+            title="VideoOnHold",
+            owner=user,
+            video="test.mp4",
+            type=Type.objects.get(id=1),
         )
         Event.objects.create(
             title="event1",
