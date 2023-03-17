@@ -269,16 +269,15 @@ def live_publish_chat_if_authenticated(user):
 @csrf_protect
 @user_passes_test(live_publish_chat_if_authenticated, redirect_field_name="referrer")
 def live_publish_chat(request, id=None):
-
-    if request.method != 'POST':
+    if request.method != "POST":
         return HttpResponseNotAllowed(["POST"])
 
     """Allow an authenticated user to send chat question to BBB."""
     who_sent = "(%s %s) " % (request.user.first_name, request.user.last_name)
 
-    body_unicode = request.body.decode('utf-8')
+    body_unicode = request.body.decode("utf-8")
     body_data = json.loads(body_unicode)
-    message = body_data['message']
+    message = body_data["message"]
 
     livestreams_list = Livestream.objects.filter(broadcaster_id=id)
 

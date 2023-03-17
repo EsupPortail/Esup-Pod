@@ -695,7 +695,7 @@ def event_isstreamavailabletorecord(request):
 @login_required(redirect_field_name="referrer")
 def ajax_event_startrecord(request):
     if request.method == "POST" and request.is_ajax():
-        body_unicode = request.body.decode('utf-8')
+        body_unicode = request.body.decode("utf-8")
         body_data = json.loads(body_unicode)
         event_id = body_data.get("idevent", None)
         broadcaster_id = body_data.get("idbroadcaster", None)
@@ -724,7 +724,7 @@ def event_startrecord(event_id, broadcaster_id):
 @login_required(redirect_field_name="referrer")
 def ajax_event_splitrecord(request):
     if request.method == "POST" and request.is_ajax():
-        body_unicode = request.body.decode('utf-8')
+        body_unicode = request.body.decode("utf-8")
         body_data = json.loads(body_unicode)
         event_id = body_data.get("idevent", None)
         broadcaster_id = body_data.get("idbroadcaster", None)
@@ -762,7 +762,7 @@ def event_splitrecord(event_id, broadcaster_id):
 @login_required(redirect_field_name="referrer")
 def ajax_event_stoprecord(request):
     if request.method == "POST" and request.is_ajax():
-        body_unicode = request.body.decode('utf-8')
+        body_unicode = request.body.decode("utf-8")
         body_data = json.loads(body_unicode)
         event_id = body_data.get("idevent", None)
         broadcaster_id = body_data.get("idbroadcaster", None)
@@ -802,7 +802,7 @@ def event_stoprecord(event_id, broadcaster_id):
 @login_required(redirect_field_name="referrer")
 def ajax_event_info_record(request):
     if request.method == "POST" and request.is_ajax():
-        body_unicode = request.body.decode('utf-8')
+        body_unicode = request.body.decode("utf-8")
         body_data = json.loads(body_unicode)
         event_id = body_data.get("idevent", None)
         broadcaster_id = body_data.get("idbroadcaster", None)
