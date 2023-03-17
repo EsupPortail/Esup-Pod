@@ -2,6 +2,7 @@
 
 <div id="container" style="float:center; width:100%">
     <form method="post" action="" id="live_bbb_chat_form">
+    {% csrf_token %}
         <div class="form-group">
             <h2>{% trans 'Send message' %}</h2>
             {% if user.is_authenticated %}
@@ -16,7 +17,7 @@
         <div id="message_return" style="float:right; width:30%">
         </div>
         {% if user.is_authenticated %}
-            <button type="submit" class="btn btn-primary send-message">{% trans 'Submit' %}</button>
+            <button type="submit" id="bbb-send-message" class="btn btn-primary">{% trans 'Submit' %}</button>
         {% endif %}
     </form>
 </div>

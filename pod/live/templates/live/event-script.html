@@ -34,19 +34,17 @@
             }
             if (started && player.readyState() <= 2) {
                 // Check if .m3u8 exists, to be sure that live is stopped
-                $.ajax({
-                    url: '{{event.broadcaster.url}}',
-                    type: 'GET',
-                    crossDomain: true,
-                    dataType: 'html',
-                    success: function (html, status) {
-                        stopped = false;
-                    },
-                    error: function (result, status, error) {
-                        stopped = true;
-                    },
-                    complete: function (result, status) {
+                fetch("{{event.broadcaster.url}}", {
+                    method: "GET",
+                    {#crossDomain: true,#}
+                    headers: {
+                        'Accept': 'text/html',
+                        'Content-Type': 'text/html; charset=utf-8',
                     }
+                }).then((response) => {
+                  stopped = !response.ok;
+                }).catch(() => {
+                    stopped = true;
                 });
                 if (stopped) {
                     nbLoop = nbLoop + 1;
@@ -86,7 +84,7 @@
             modalOnHold.close();
         }, 10000);
 
-        $("#divvideoonhold").css("display", "block");
+        document.getElementById("divvideoonhold").style.display = "block";
     {% endif %}
 
     // Management of the streaming live
@@ -126,105 +124,123 @@
         }
         // Display the streaming live
         started = true;
-        $("#divvideoonhold").css("display", "none");
-        $("#divvideoplayer").css("display", "block");
+        document.getElementById("divvideoonhold").style.display = "none";
+        document.getElementById("divvideoplayer").style.display = "block";
      })
 
     // Recording actions on the stream
-    $(document).on('click', '#startrecord', function () {
-        $.ajax({
-            url: "{% url 'live:ajax_event_startrecord' %}",
-            method: 'POST',
-            dataType: 'json',
+    document.getElementById('startrecord').onclick = () => {
+        document.getElementById("startrecord").setAttribute("disabled", "");
+        fetch("{% url 'live:ajax_event_startrecord' %}", {
+            method: "POST",
             headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
                 "X-CSRFToken": '{{ csrf_token }}'
             },
-            data: {
+            body: JSON.stringify({
                 "idevent": "{{ event.id }}",
                 "idbroadcaster": "{{ event.broadcaster.id }}",
-            },
-            success: function (data) {
-                if (data.success) {
-                    $("#startrecord").addClass("d-none")
-                    $("#stoprecord").removeClass("d-none")
-                    $("#splitrecord").removeClass("d-none")
-                    recordingduration = 0
-                    $("#recordingduration").html('').removeClass("d-none")
-                } else {
-                    console.warn('Start not done : ' + data.message)
-                }
-            },
-            error: function (data) {
-                $("#recordingduration").addClass("d-none")
-                console.error('Error calling startrecord')
+            }),
+        }).then((response) => {
+            document.getElementById("startrecord").removeAttribute("disabled");
+            if (response.ok)
+                return response.json();
+            else
+                return Promise.reject(response);
+        }).then((data) => {
+            if (data.success) {
+                document.getElementById("startrecord").classList.add("d-none");
+                document.getElementById("stoprecord").classList.remove("d-none");
+                document.getElementById("splitrecord").classList.remove("d-none");
+                recordingduration = 0
+                const recordingElement = document.getElementById("recordingduration");
+                recordingElement.innerHTML = '';
+                recordingElement.classList.remove("d-none");
+            } else {
+                console.warn('Start not done : ' + data.error);
             }
-        })
-    })
+        }).catch((error) => {
+            document.getElementById("recordingduration").classList.add("d-none");
+            console.error('Error calling startrecord'+ error.statusText);
+        });
+    }
 
-    $(document).on('click', '#stoprecord', function () {
-        $.ajax({
-            url: "{% url 'live:ajax_event_stoprecord' %}",
-            method: 'POST',
+    document.getElementById('stoprecord').onclick = () => {
+        document.getElementById("stoprecord").setAttribute("disabled", "");
+        document.getElementById("splitrecord").setAttribute("disabled", "");
+        fetch("{% url 'live:ajax_event_stoprecord' %}", {
+            method: "POST",
             headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
                 "X-CSRFToken": '{{ csrf_token }}'
             },
-            data: {
+            body: JSON.stringify({
                 "idevent": "{{ event.id }}",
                 "idbroadcaster": "{{ event.broadcaster.id }}",
-            },
-            success: function (data) {
-                if (data.success) {
-                    $("#startrecord").removeClass("d-none")
-                    $("#stoprecord").addClass("d-none")
-                    $("#splitrecord").addClass("d-none")
-                    $("#recordingduration").addClass("d-none")
-                    getEventVideos();
-                } else {
-                    console.warn('Stop not done ')
-                    $("#recordingduration").addClass("d-none")
-                }
-            },
-            error: function (xhr) {
-                const err = JSON.parse(xhr.responseText)
-                $("#recordingduration").addClass("d-none")
-                console.error('Error calling stop record : ' + err.error)
+            }),
+        }).then((response) => {
+            document.getElementById("stoprecord").removeAttribute("disabled");
+            document.getElementById("splitrecord").removeAttribute("disabled");
+            if (response.ok)
+                return response.json();
+            else
+                return Promise.reject(response);
+        }).then((data) => {
+            if (data.success) {
+                document.getElementById("startrecord").classList.remove("d-none");
+                document.getElementById("stoprecord").classList.add("d-none");
+                document.getElementById("splitrecord").classList.add("d-none");
+                document.getElementById("recordingduration").classList.add("d-none");
+                getEventVideos();
+            } else {
+                document.getElementById("recordingduration").classList.add("d-none");
+                console.warn('Stop not done ' + data.errored)
             }
-        })
-    })
+        }).catch((error) => {
+            document.getElementById("recordingduration").classList.add("d-none");
+            console.error('Error calling stop record : ' + error.statusText);
+        });
+    }
 
-    $(document).on('click', '#splitrecord', function () {
-        $("#stoprecord").prop('disabled', true)
-        $("#splitrecord").prop('disabled', true)
-        $.ajax({
-            url: "{% url 'live:ajax_event_splitrecord' %}",
-            method: 'POST',
+    document.getElementById('splitrecord').onclick = () => {
+        document.getElementById("stoprecord").setAttribute("disabled", "");
+        document.getElementById("splitrecord").setAttribute("disabled", "");
+        fetch("{% url 'live:ajax_event_splitrecord' %}", {
+            method: "POST",
             headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
                 "X-CSRFToken": '{{ csrf_token }}'
             },
-            data: {
+            body: JSON.stringify({
                 "idevent": "{{ event.id }}",
                 "idbroadcaster": "{{ event.broadcaster.id }}",
-            },
-            success: function (data) {
+            }),
+        }).then((response) => {
+            document.getElementById("stoprecord").removeAttribute("disabled");
+            document.getElementById("splitrecord").removeAttribute("disabled");
+            if (response.ok)
+                return response.json();
+            else
+                return Promise.reject(response);
+        }).then((data) => {
                 if (data.success) {
                     recordingduration = 0;
                     getEventVideos();
                 } else {
-                    console.warn('Split not done ')
-                    $("#recordingduration").addClass("d-none")
+                    console.warn('Split not done : ' + data.error)
+                    document.getElementById("recordingduration").classList.add("d-none");
                 }
-            },
-            error: function (xhr) {
-                const err = JSON.parse(xhr.responseText)
-                console.error('Error calling splitrecord : ' + err.error)
-                $("#recordingduration").addClass("d-none")
-            },
-            complete: function () {
-                $("#stoprecord").prop('disabled', false)
-                $("#splitrecord").prop('disabled', false)
-            }
-        })
-    })
+        }).catch((error) => {
+            document.getElementById("recordingduration").classList.add("d-none");
+            console.error('Error calling splitrecord : ' + error.statusText);
+        });
+    }
 
     // display the event's videos
     function getEventVideos() {
@@ -240,12 +256,13 @@
             },
             success: function (data) {
                 if (data.content !== "") {
-                    $("#list_videos_of_event").removeClass('d-none')
-                    $("#event_videos_list").html(data.content)
+                    const videosElement = document.getElementById("list_videos_of_event");
+                    videosElement.classList.remove("d-none");
+                    videosElement.innerHTML = data.content;
                 }
             },
             error: function () {
-                $("#list_videos_of_event").addClass('d-none')
+                document.getElementById("list_videos_of_event").classList.add("d-none");
                 console.error('error calling event_get_video_cards')
             },
         })
@@ -253,38 +270,41 @@
 
     // Status of the stream + display action buttons
     function updateStreamStatus() {
-        $.ajax({
-            url: "{% url 'live:event_isstreamavailabletorecord' %}",
-            method: 'GET',
-            dataType: 'json',
+
+        const url = "{% url 'live:event_isstreamavailabletorecord' %}" + '?idbroadcaster={{ event.broadcaster.id }}';
+        fetch(url, {
+            method: "GET",
             headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
                 "X-CSRFToken": '{{ csrf_token }}'
-            },
-            data: {
-                "idbroadcaster": "{{ event.broadcaster.id }}",
-            },
-            success: function (data) {
-                if (data.recording) {
-                    $("#startrecord").addClass("d-none")
-                    $("#stoprecord").removeClass("d-none")
-                    $("#splitrecord").removeClass("d-none")
-                    getInfoCurrentRecord()
-                } else {
-                    if (data.available) {
-                        $("#startrecord").removeClass("d-none")
-                    }
-                    $("#stoprecord").addClass("d-none")
-                    $("#splitrecord").addClass("d-none")
-                    $("#recordingduration").addClass("d-none")
+             },
+        }).then((response) => {
+          if (response.ok)
+              return response.json();
+          else
+              return Promise.reject(response);
+        }).then((data) => {
+            if (data.recording) {
+                document.getElementById("startrecord").classList.add("d-none");
+                document.getElementById("stoprecord").classList.remove("d-none");
+                document.getElementById("splitrecord").classList.remove("d-none");
+                getInfoCurrentRecord()
+            } else {
+                if (data.available) {
+                    document.getElementById("startrecord").classList.remove("d-none");
                 }
-            },
-            error: function (data) {
-                $("#startrecord").addClass("d-none")
-                $("#stoprecord").addClass("d-none")
-                $("#splitrecord").addClass("d-none")
-                $("#recordingduration").addClass("d-none")
-                console.error('error calling isstreamavailabletorecord')
-            },
+                document.getElementById("stoprecord").classList.add("d-none");
+                document.getElementById("splitrecord").classList.add("d-none");
+                document.getElementById("recordingduration").classList.add("d-none");
+            }
+        }).catch((error) => {
+            console.error('error calling isstreamavailabletorecord : ' + error.statusText);
+            document.getElementById("startrecord").classList.add("d-none");
+            document.getElementById("stoprecord").classList.add("d-none");
+            document.getElementById("splitrecord").classList.add("d-none");
+            document.getElementById("recordingduration").classList.add("d-none");
         })
     }
 
@@ -295,35 +315,40 @@
         let seconds = recordingduration - minutes * 60
         minutes = minutes<10 ? "0"+minutes : minutes
         seconds = seconds<10 ? "0"+seconds : seconds
-        $("#recordingduration").html('{% trans "Recording duration" %} : ' + minutes + ':' + seconds)
+        document.getElementById("recordingduration").innerHTML = '{% trans "Recording duration" %} : ' + minutes + ':' + seconds;
         recordingduration++
     }
 
     function getInfoCurrentRecord() {
-        $.ajax({
-            url: "{% url 'live:ajax_event_info_record' %}",
-            method: 'POST',
+        fetch("{% url 'live:ajax_event_info_record' %}", {
+            method: "POST",
             headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
                 "X-CSRFToken": '{{ csrf_token }}'
             },
-            data: {
+            dataType: 'json',
+            body: JSON.stringify({
                 "idevent": "{{ event.id }}",
                 "idbroadcaster": "{{ event.broadcaster.id }}",
-            },
-            success: function (data) {
-                if (data.success && data.duration) {
-                    recordingduration = data.duration
-                    $("#recordingduration").removeClass("d-none")
-                } else {
-                    $("#recordingduration").addClass("d-none")
-                    console.error('Recording Info not done')
-                }
-            },
-            error: function (xhr) {
-                const err = JSON.parse(xhr.responseText)
-                console.error('Error calling info record : ' + err.error)
-            },
-        })
+            }),
+        }).then((response) => {
+            if (response.ok)
+                return response.json();
+            else
+                return Promise.reject(response);
+        }).then((data) => {
+            if (data.success && data.duration) {
+                recordingduration = data.duration
+                document.getElementById("recordingduration").classList.remove("d-none");
+            } else {
+                document.getElementById("recordingduration").classList.add("d-none");
+                console.error('Recording Info not done : ' + data.error)
+            }
+        }).catch((error) => {
+            console.error('Error calling info record : ' + error.statusText)
+        });
     }
 
     // if event has started or ended while viewing, the page is reloaded
@@ -350,11 +375,13 @@
     {% if USE_BBB and USE_BBB_LIVE and display_chat %}
         function displayReturnMessage(level, returnCode) {
             let toReturn = "";
-            let returnElement = $("#message_return");
+            let returnElement = document.getElementById("message_return");
             if (level === "info") {
-                returnElement.attr('class', 'alert alert-info');
+                returnElement.classList.add('alert');
+                returnElement.classList.add('alert-info');
             } else {
-                returnElement.attr('class', 'alert alert-warning');
+                returnElement.classList.add('alert');
+                returnElement.classList.add('alert-warning');
             }
             if (returnCode === "message_sent") {
                 toReturn = "{% trans 'Message sent' %}";
@@ -365,36 +392,53 @@
             if (returnCode === "error_no_connection") {
                 toReturn = "{% trans 'Message not sent: connection problem (REDIS)' %}";
             }
-            returnElement.html(toReturn).show("slow").delay(3000).hide("slow");
+
+            returnElement.innerHTML = toReturn;
+            returnElement.style.display = "block";
+            setTimeout(function() {
+                returnElement.style.display = "none";
+            }, 3000)
         }
 
         function sendBBBMessage(e) {
             e.preventDefault();
-            let message = $('#message').val();
-            $.ajax
-            ({
-                type: "GET",
-                url: "{% url 'bbb:live_publish_chat' id=event.broadcaster.id %}",
-                data: {"message": message},
-                success: function (data) {
-                    $('#live_bbb_chat_form')[0].reset();
-                    if (data.is_sent) {
-                        // message_sent
-                        displayReturnMessage("info", data.message_return);
-                    } else {
-                        // error_no_broadcaster_found : Message not sent : no broadcaster found
-                        // error_no_connection : Message not sent : no connection to REDIS
-                        displayReturnMessage("error", data.message_return);
-                    }
+            let message = document.getElementById("message").value;
+            fetch("{% url 'bbb:live_publish_chat' id=event.broadcaster.id %}", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    "X-CSRFToken": '{{ csrf_token }}'
+                },
+                body: JSON.stringify({"message": message}),
+            }).then((response) => {
+                if (response.ok)
+                    return response.json();
+                else
+                    return Promise.reject(response);
+            }).then((data) => {
+                document.getElementById('live_bbb_chat_form').reset();
+                if (data.is_sent) {
+                    // message_sent
+                    displayReturnMessage("info", data.message_return);
+                } else {
+                    // error_no_broadcaster_found : Message not sent : no broadcaster found
+                    // error_no_connection : Message not sent : no connection to REDIS
+                    displayReturnMessage("error", data.message_return);
                 }
+            }).catch((error) => {
+                console.log('Error calling sendBBBMessage ' + error);
             });
         }
 
-        $(document).on('click', '.send-message', sendBBBMessage);
+        document.getElementById('bbb-send-message').onclick = function ($this) {
+            sendBBBMessage($this);
+        };
+
     {% endif %}
 
     // On load
-    $(function () {
+    document.addEventListener("DOMContentLoaded", () => {
         getEventVideos()
 
         {% if event.is_current %}

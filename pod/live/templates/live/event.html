@@ -124,7 +124,7 @@
         {% endif %}
 
         {% if not request.GET.is_iframe %}
-            <div id="list_videos_of_event" {% if event.videos.count == 0 %} class="d-none" {% endif %}>
+            <div id="list_videos_of_event" {% if event.videos.count == 0 %} class="d-none" {% else %} class="mt-3" {% endif %}>
                 <div class="pl-0" id="event_videos">
                     <h4>{% trans "Current event videos" %}</h4>
                     <div id="event_videos_list"></div>
