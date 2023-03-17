@@ -1,7 +1,7 @@
 function makeid(length) {
   let result = "";
   const characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const charactersLength = characters.length;
   for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
   podplayer.ready(function () {
     let secret = makeid(24);
     let live_element = document.getElementById("livename");
-    let param = '';
+    let param = "";
 
     if (live_element.dataset.broadcasterid !== undefined)
       param = "&broadcasterid=" + live_element.dataset.broadcasterid;
@@ -58,7 +58,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             viewers_list.innerHTML = names;
           }
-
         })
         .catch((error) => {
           console.log("Impossible to get viewers list. ", error.message);
@@ -83,10 +82,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   (function (window, videojs) {
     let videoJsViewerCount,
-        defaults = {
-          ui: true,
-          innerHTML: "test",
-        };
+      defaults = {
+        ui: true,
+        innerHTML: "test",
+      };
 
     const MenuButton = videojs.getComponent("Button");
 
@@ -98,11 +97,11 @@ document.addEventListener("DOMContentLoaded", function () {
         // videojs.dom.addClass(this.el(), "vjs-info-button");
         this.controlText("Viewers");
         let eyeSVG =
-            '<svg id="view-counter-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="align-bottom"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+          '<svg id="view-counter-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="align-bottom"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
         this.el().innerHTML =
-            '<span style="line-height:1.7">' +
-            eyeSVG +
-            '<span style="padding-left:4px" id="viewcount">?</div></span></span>';
+          '<span style="line-height:1.7">' +
+          eyeSVG +
+          '<span style="padding-left:4px" id="viewcount">?</div></span></span>';
       },
     });
 
@@ -112,8 +111,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (viewer_list_el !== null) {
         if (
-            viewer_list_el.style.display === "none" &&
-            document.getElementById("viewers-ul").children.length > 0
+          viewer_list_el.style.display === "none" &&
+          document.getElementById("viewers-ul").children.length > 0
         ) {
           viewer_list_el.style.display = "block";
         } else {
@@ -126,12 +125,15 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     };
 
-    MenuButton.registerComponent("ViewerCountMenuButton", ViewerCountMenuButton);
+    MenuButton.registerComponent(
+      "ViewerCountMenuButton",
+      ViewerCountMenuButton
+    );
 
     // Initialize the plugin
     videoJsViewerCount = function (options) {
       const settings = videojs.mergeOptions(defaults, options),
-          player = this;
+        player = this;
       player.ready(function () {
         if (settings.ui) {
           const menuButton = new ViewerCountMenuButton(player, settings);
