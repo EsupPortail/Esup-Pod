@@ -443,11 +443,12 @@
                             },
                             false
                         );
-                        lastModTime = 0
+                        lastModTime = 0;
                     }
                     return
                 }
-                lastMod = current_mod
+                lastModTime = 0;
+                lastMod = current_mod;
                 if(track_live) player.removeRemoteTextTrack(track_live);
                 let newTrack = player.addRemoteTextTrack(
                     {
