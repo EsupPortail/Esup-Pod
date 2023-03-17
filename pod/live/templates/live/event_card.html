@@ -31,7 +31,14 @@
     </div>
     <div class="card-thumbnail">
       <a class="link-center-pod" href="{{ event.get_absolute_url }}" title="{{ event.title }}">
-        <img src="{{ event.get_thumbnail_card }}" alt="{{ event.title }}" style="max-width: 100px;" >
+          {% if event.thumbnail %}
+              <img src="{{ event.get_thumbnail_card }}" alt="{{ event.title }}" style="max-width: 100px;">
+          {% elif event.broadcaster.poster %}
+              <img src="{{ event.broadcaster.get_poster_url }}" alt="{{ event.title }}" style="max-width: 100px;">
+          {% else %}
+              {# default thumbnail #}
+              <img src="{{ event.get_thumbnail_card }}" alt="{{ event.title }}" style="max-width: 100px;">
+          {% endif %}
       </a>
     </div>
     <div class="card-body px-3 py-2">
