@@ -77,7 +77,7 @@
 
         {% elif event.is_current %}
 
-            <div id="divvideoplayer" style="display:block">
+             <div id="divvideoplayer" style="display:block">
                 <div class="row">
                     <div class="col">
                         <video id="podvideoplayer"
@@ -101,27 +101,35 @@
                 </div>
             </div>
 
-            {# waiting video #}
-            {% if event.video_on_hold.is_video %}
-                <div id="divvideoonhold" style="display:none">
+            <div id="divvideoonhold" style="display:none">
+                {# waiting video #}
+                {% if event.video_on_hold.is_video %}
                     <video id="podvideoonholdplayer"
                            class="video-js vjs-default-skin vjs-big-play-centered"
                            controls height="360" muted autoplay>
                     </video>
-                </div>
-            {# event thumbnail  #}
-            {% elif event.thumbnail %}
-                <div id="divvideoonhold" style="display:none"></div>
-                <img src="{{ event.get_thumbnail_card }}" alt="{{ event.title }}" style="max-height: 360px;">
-            {# broadcaster thumbnail  #}
-            {% elif event.broadcaster.poster %}
-                <div id="divvideoonhold" style="display:none"></div>
-                <img src="{{ event.broadcaster.get_poster_url }}" alt="{{ event.title }}" style="max-height: 360px;">
-            {% else %}
-                <div id="divvideoonhold" style="display:none">
-                    <video id="podvideoonholdplayer"></video>
-                </div>
-            {% endif %}
+
+                    {# event thumbnail  #}
+                {% elif event.thumbnail %}
+                    <video id="podvideoonholdplayer"
+                           class="video-js vjs-default-skin vjs-big-play-centered"
+                           poster="{{ event.get_thumbnail_card }}"
+                           controls height="360" muted autoplay>
+                    </video>
+                    {# broadcaster thumbnail  #}
+                {% elif event.broadcaster.poster %}
+                    <video id="podvideoonholdplayer"
+                           class="video-js vjs-default-skin vjs-big-play-centered"
+                           poster="{{ event.broadcaster.get_poster_url }}"
+                           controls height="360" muted autoplay>
+                    </video>
+                {% else %}
+                    <video id="podvideoonholdplayer"
+                           class="video-js vjs-default-skin vjs-big-play-centered"
+                           controls height="360" muted autoplay>
+                    </video>
+                {% endif %}
+            </div>
 
             {% if event.iframe_url != "" and event.iframe_url != None %}
                 <iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"

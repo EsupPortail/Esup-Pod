@@ -14,7 +14,6 @@
     let stopped = false;
     let video_on_hold_is_displayed = false;
 
-
     let options = {
         notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
         language: "fr", //en or nl
@@ -69,6 +68,7 @@
     }
 
     {% if event.is_current %}
+
             // Management of the streaming live
             let player = videojs('podvideoplayer', options, function () {
             })
@@ -109,12 +109,12 @@
                     console.info("Streaming live starts.");
                 }
 
+                // remove onHold resources
+                $("#divvideoonhold").css("display", "none");
+                video_on_hold_is_displayed = false;
+
                 // Affichage du flux direct
                 started = true;
-                if (video_on_hold_is_displayed) {
-                    $("#divvideoonhold").css("display", "none");
-                    video_on_hold_is_displayed = false;
-                }
                 $("#divvideoplayer").css("display", "block");
 
                 // Affichage du nombre de spectateurs
@@ -427,15 +427,20 @@
     // On page load
     $(function () {
 
-        {% if not event.is_past %}
+        {% if event.is_past or event.is_current %}
             {% if not request.GET.is_iframe %}
                 getEventVideos()
             {% endif %}
+        {% endif %}
 
-        {% elif event.is_coming %}
+        {% if event.is_coming %}
             {% if event.video_on_hold.is_video %}
                 showWaitingVideo(false);
             {% endif %}
+        {% endif %}
+
+        {% if event.is_current %}
+            showWaitingVideo(true);
         {% endif %}
 
         reloadIfNeeded();

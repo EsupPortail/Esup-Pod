@@ -44,20 +44,10 @@
                     {% trans "Event is finished at:" %} {{ event.end_date }}
                     <br>
                 </div>
-{#                <div id="divvideoplayer" style="display:none">#}
-{#                    <video id="podvideoplayer" style="display:none"></video>#}
-{#                </div>#}
-{#                <div id="divvideoonhold" style="display:none">#}
-{#                    <video id="podvideoonholdplayer" style="display:none"></video>#}
-{#                </div>#}
             {% elif event.is_coming %}
                 <div class="p-3 mb-2 bg-warning text-dark position-absolute" style="z-index: 1; left:0; right: 0">
                     {% trans "The event is scheduled from:" %} {{ event.start_date }} {% trans 'to' %} {{ event.end_date }}
                 </div>
-{#                <div id="divvideoplayer" style="display:none">#}
-{#                    <video id="podvideoplayer" style="display:none"></video>#}
-{#                </div>#}
-                {# waiting video #}
                 {% if event.video_on_hold.is_video %}
                     <div id="divvideoonhold" style="display:block">
                         <video id="podvideoonholdplayer"
@@ -78,20 +68,10 @@
                     </div>
                 {# event thumbnail  #}
                 {% elif event.thumbnail  %}
-{#                    <div id="divvideoonhold" style="display:none">#}
-{#                        <video id="podvideoonholdplayer" style="display:none"></video>#}
-{#                    </div>#}
                     <img src="{{ event.get_thumbnail_card }}" height="360" alt="{{ event.title }}">
                 {# broadcaster thumbnail  #}
                 {% elif event.broadcaster.poster %}
-{#                    <div id="divvideoonhold" style="display:none">#}
-{#                        <video id="podvideoonholdplayer" style="display:none"></video>#}
-{#                    </div>#}
                     <img src="{{ event.broadcaster.get_poster_url }}" height="360" alt="{{ event.title }}">
-{#                {% else %}#}
-{#                    <div id="divvideoonhold" style="display:none">#}
-{#                        <video id="podvideoonholdplayer" style="display:none"></video>#}
-{#                    </div>#}
                 {% endif %}
 
             {% elif event.is_current %}
@@ -109,6 +89,37 @@
                     </div>
                 </div>
                 {# ajouter ici l' event.iframe_url si nécessaire #}
+
+                <div id="divvideoonhold" style="display:none">
+                    {# waiting video #}
+                    {% if event.video_on_hold.is_video %}
+                        <video id="podvideoonholdplayer"
+                               class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
+                               controls height="360" muted autoplay>
+                        </video>
+
+                        {# event thumbnail  #}
+                    {% elif event.thumbnail %}
+                        <video id="podvideoonholdplayer"
+                               class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
+                               poster="{{ event.get_thumbnail_card }}"
+                               controls height="360" muted autoplay>
+                        </video>
+                        {# broadcaster thumbnail  #}
+                    {% elif event.broadcaster.poster %}
+                        <video id="podvideoonholdplayer"
+                               class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
+                               poster="{{ event.broadcaster.get_poster_url }}"
+                               controls height="360" muted autoplay>
+                        </video>
+                    {% else %}
+                        <video id="podvideoonholdplayer"
+                               class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
+                               controls height="360" muted autoplay>
+                        </video>
+                    {% endif %}
+                </div>
+
                 <div id="info-video-wrapper">
                     <div class="iframe-header bg-dark text-white">
                         <h2 class="video-title">{{ event.title }}</h2>
@@ -118,26 +129,6 @@
                     </div>
                     <div id="info-video">
                         {% include 'live/event-info.html' %}
-                    </div>
-                </div>
-{#                <div id="divvideoonhold" style="display:none">#}
-{#                    <video id="podvideoonholdplayer" style="display:none"></video>#}
-{#                </div>#}
-                <div id="divvideoonhold" style="display:none">
-                    <video id="podvideoonholdplayer"
-                           class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
-                           controls height="360" muted autoplay>
-                    </video>
-                    <div id="info-video-wrapper">
-                        <div class="iframe-header bg-dark text-white">
-                            <h2 class="video-title">{{ event.title }}</h2>
-                            <button type="button" class="close" aria-label="{% trans 'Close' %}">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div id="info-video">
-                            {% include 'live/event-info.html' %}
-                        </div>
                     </div>
                 </div>
             {% endif %}
