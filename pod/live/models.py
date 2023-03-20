@@ -3,6 +3,7 @@ import base64
 import hashlib
 import io
 import qrcode
+import os
 
 from ckeditor.fields import RichTextField
 from django.conf import settings
@@ -56,6 +57,7 @@ MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
 LIVE_TRANSCRIPTIONS_FOLDER = getattr(
     settings, "LIVE_TRANSCRIPTIONS_FOLDER", "live_transcripts"
 )
+MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", None)
 
 
 class Building(models.Model):
@@ -226,6 +228,8 @@ class Broadcaster(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
+        filename = self.slug + ".vtt"
+        self.set_broadcaster_file(filename)
         super(Broadcaster, self).save(*args, **kwargs)
 
     class Meta:
@@ -281,8 +285,23 @@ class Broadcaster(models.Model):
         img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
         alt = _("QR code to record immediately an event")
         return mark_safe(
-            f'<img src="data:image/png;base64, {img_str}" width="300px" height="300px" alt={alt}>'
+            f'<img src="data:image/png;base64, {img_str}" '
+            + f'width="300px" height="300px" alt={alt}>'
         )
+
+    def set_broadcaster_file(self, filename):
+        trans_folder = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER)
+        trans_file = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER, filename)
+        empty_trans_file = os.path.join(
+            MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER, "%s_empty.vtt" % filename
+        )
+        if not os.path.exists(trans_folder):
+            os.makedirs(trans_folder)
+        if not os.path.exists(trans_file):
+            open(trans_file, "a").close()
+        if not os.path.exists(empty_trans_file):
+            open(empty_trans_file, "a").close()
+        self.transcription_file = os.path.join(LIVE_TRANSCRIPTIONS_FOLDER, filename)
 
 
 def current_time():
