@@ -1,4 +1,5 @@
 """Unit tests for live views."""
+import json
 from http import HTTPStatus
 
 import httmock
@@ -55,12 +56,6 @@ class LiveViewsTestCase(TestCase):
             is_restricted=True,
             building=building,
         )
-        video_on_hold = Video.objects.create(
-            title="VideoOnHold",
-            owner=user,
-            video="test.mp4",
-            type=Type.objects.get(id=1),
-        )
         Broadcaster.objects.create(
             name="broadcaster2",
             poster=poster,
@@ -68,11 +63,16 @@ class LiveViewsTestCase(TestCase):
             status=True,
             enable_add_event=True,
             is_restricted=False,
-            video_on_hold=video_on_hold,
             building=building,
             piloting_implementation="wowza",
             piloting_conf='{"server_url": "http://mock_api.fr", \
                 "application": "mock_name", "livestream": "mock_livestream"}',
+        )
+        Video.objects.create(
+            title="VideoOnHold",
+            owner=user,
+            video="test.mp4",
+            type=Type.objects.get(id=1),
         )
         Event.objects.create(
             title="event1",
@@ -1138,7 +1138,8 @@ class LiveViewsTestCase(TestCase):
 
         response = self.client.post(
             url,
-            {"idbroadcaster": 1, "idevent": 1},
+            content_type="application/json",
+            data=json.dumps({"idbroadcaster": 1, "idevent": 1}),
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertEqual(response.status_code, 200)
@@ -1163,7 +1164,8 @@ class LiveViewsTestCase(TestCase):
 
         response = self.client.post(
             url,
-            {"idbroadcaster": 1, "idevent": 1},
+            content_type="application/json",
+            data=json.dumps({"idbroadcaster": 1, "idevent": 1}),
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertEqual(response.status_code, 200)
@@ -1186,7 +1188,8 @@ class LiveViewsTestCase(TestCase):
 
         response = self.client.post(
             url,
-            {"idbroadcaster": 1, "idevent": 1},
+            content_type="application/json",
+            data=json.dumps({"idbroadcaster": 1, "idevent": 1}),
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertEqual(response.status_code, 200)
@@ -1209,7 +1212,8 @@ class LiveViewsTestCase(TestCase):
 
         response = self.client.post(
             url,
-            {"idbroadcaster": 1, "idevent": 1},
+            content_type="application/json",
+            data=json.dumps({"idbroadcaster": 1, "idevent": 1}),
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertEqual(response.status_code, 200)
@@ -1240,7 +1244,10 @@ class LiveViewsTestCase(TestCase):
         with HTTMock(response_is_recording_ko):
             response = self.client.post(
                 url,
-                {"idbroadcaster": 2, "idevent": 1},
+                content_type="application/json",
+                data=json.dumps(
+                    {"idbroadcaster": 2, "idevent": 1},
+                ),
                 HTTP_X_REQUESTED_WITH="XMLHttpRequest",
             )
         self.assertEqual(
@@ -1252,7 +1259,8 @@ class LiveViewsTestCase(TestCase):
         with HTTMock(response_is_recording_ok):
             response = self.client.post(
                 url,
-                {"idbroadcaster": 2, "idevent": 1},
+                content_type="application/json",
+                data=json.dumps({"idbroadcaster": 2, "idevent": 1}),
                 HTTP_X_REQUESTED_WITH="XMLHttpRequest",
             )
         self.assertEqual(response.json(), {"success": True, "duration": 3})

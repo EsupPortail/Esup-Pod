@@ -10,6 +10,7 @@ from pod.live.models import (
 )
 from pod.live.models import Building, Event, one_hour_hence
 from pod.main.forms_utils import add_placeholder_and_asterisk, MyAdminSplitDateTime
+from pod.video.models import Video
 from django_select2 import forms as s2forms
 from django.utils import timezone
 from datetime import datetime
@@ -39,6 +40,12 @@ class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
     search_fields = [
         "username__icontains",
         "email__icontains",
+    ]
+
+
+class AddVideoHoldWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "slug__icontains",
     ]
 
 
@@ -250,6 +257,7 @@ class EventForm(forms.ModelForm):
                     "iframe_height",
                     "aside_iframe_url",
                     "thumbnail",
+                    "video_on_hold",
                     "enable_transcription",
                 ],
             },
@@ -318,6 +326,10 @@ class EventForm(forms.ModelForm):
                 ].queryset = get_available_broadcasters_of_building(
                     self.user, query_buildings.first()
                 )
+        query_videos = Video.objects.filter(is_video=True).filter(
+            Q(owner=self.user) | Q(additional_owners__in=[self.user])
+        )
+        self.fields["video_on_hold"].queryset = query_videos.all()
 
     def editing(self):
         broadcaster = self.instance.broadcaster
@@ -328,6 +340,10 @@ class EventForm(forms.ModelForm):
             self.user, broadcaster.building.id
         )
         self.initial["building"] = broadcaster.building.name
+        query_videos = Video.objects.filter(is_video=True).filter(
+            Q(owner=self.user) | Q(additional_owners__in=[self.user])
+        )
+        self.fields["video_on_hold"].queryset = query_videos.all()
 
     def saving(self):
         try:
@@ -377,6 +393,7 @@ class EventForm(forms.ModelForm):
             self.remove_field("broadcaster")
             self.remove_field("owner")
             self.remove_field("thumbnail")
+            self.remove_field("video_on_hold")
             self.remove_field("enable_transcription")
 
     def remove_field(self, field):
@@ -412,6 +429,7 @@ class EventForm(forms.ModelForm):
             "iframe_url",
             "iframe_height",
             "aside_iframe_url",
+            "video_on_hold",
         ]
         if EVENT_ACTIVE_AUTO_START:
             fields.append("is_auto_start")
@@ -419,6 +437,7 @@ class EventForm(forms.ModelForm):
             "owner": OwnerWidget,
             "additional_owners": AddOwnerWidget,
             "end_time": widgets.AdminTimeWidget,
+            "video_on_hold": AddVideoHoldWidget,
         }
         if __FILEPICKER__:
             fields.append("thumbnail")
