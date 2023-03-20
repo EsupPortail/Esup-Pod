@@ -26,11 +26,7 @@
   {% else %}
   <h2 class="h4">{% trans "No meetings found"%}</h2>
   <p class="alert alert-info">
-    {% if request.GET.all == "true" %}
-      {% trans 'You haven\'t got any meeting yet, please use the "Add a meeting" button to add one'%}
-    {% else %}
-      {% trans 'You haven\'t got any active meeting yet, please use the "Add a meeting" button to add one or use the filter at the right side'%}
-    {% endif %}
+      {% blocktrans %}You haven't got any meeting yet, please use the "Add a meeting" button to add one.{% endblocktrans %}
   </p>
   {% endif %}
 
