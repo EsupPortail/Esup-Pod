@@ -128,9 +128,11 @@
                         setInterval(displayRecordingDuration, 1000) // every sec
                     {% endif %}
                 {% endif %}
+                {% if  event.enable_transcription %}
+                show_transcription();
+                {% endif %}
             })
     {% endif %}
-
 
     // Recording actions on the stream
     document.getElementById('startrecord').onclick = () => {
@@ -491,4 +493,67 @@
 
     })
 
+    // display the event's videos
+    function show_transcription() {
+        var lastMod = null;
+        var lastModTime = 0;
+        setInterval(function () {
+            let tracks = player.textTracks();
+            var track_live;
+            for (var i = 0; i < tracks.length; i++) {
+                var track = tracks[i];
+                if (track.kind === "subtitles" && track.language === "{{ event.broadcaster.main_lang }}") {
+                    track_live = tracks[i];
+                }
+            }
+            let current_mod = null;
+            const currentDate = new Date();
+            const timestamp = currentDate. getTime();
+            let vtt_url ="{{ event.broadcaster.transcription_file.url }}?d="; // + timestamp;
+            fetch(vtt_url).then(r => {
+                current_mod = r.headers.get('Last-Modified');
+                if (lastMod && current_mod && lastMod === current_mod){
+                    lastModTime += 1;
+                    if(lastModTime == 10) {
+                        if(track_live) player.removeRemoteTextTrack(track_live);
+                        let newTrack = player.addRemoteTextTrack(
+                            {
+                            kind: "subtitles",
+                            language: "{{ event.broadcaster.main_lang }}",
+                            src: "{{ event.broadcaster.transcription_file.url }}_empty.vtt",
+                            default: true,
+                            },
+                            false
+                        );
+                        lastModTime = 0;
+                    }
+                    return
+                }
+                lastModTime = 0;
+                lastMod = current_mod;
+                if(track_live) player.removeRemoteTextTrack(track_live);
+                let newTrack = player.addRemoteTextTrack(
+                    {
+                        kind: "subtitles",
+                        language: "{{ event.broadcaster.main_lang }}",
+                        src: vtt_url,
+                        default: true,
+                    },
+                    false
+                );
+                newTrack.addEventListener('load', (e)=>{
+                    newTrack.mode = 'showing';
+                });
+                // show all tracks
+                for (var i = 0; i < tracks.length; i++) {
+                    if (tracks[i].kind === "subtitles" && tracks[i].language === "{{ event.broadcaster.main_lang }}") {
+                        tracks[i].mode = "showing";
+                    }
+                }
+            
+            }).catch(e => {
+                  // console.log(e)
+            })
+        }, 1000);
+    }
 </script>

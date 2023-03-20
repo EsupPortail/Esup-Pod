@@ -123,9 +123,16 @@ class EventViewSet(viewsets.ModelViewSet):
 def set_broadcaster_file(broadcaster, filename):
     trans_folder = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER)
     trans_file = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER, filename)
+    empty_trans_file = os.path.join(
+        MEDIA_ROOT,
+        LIVE_TRANSCRIPTIONS_FOLDER,
+        "%s_empty.vtt" % filename
+    )
     if not os.path.exists(trans_folder):
         os.makedirs(trans_folder)
     if not os.path.exists(trans_file):
         open(trans_file, "a").close()
+    if not os.path.exists(empty_trans_file):
+        open(empty_trans_file, "a").close()
     broadcaster.transcription_file = os.path.join(LIVE_TRANSCRIPTIONS_FOLDER, filename)
     broadcaster.save()
