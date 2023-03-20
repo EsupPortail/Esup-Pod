@@ -1,4 +1,3 @@
-import os
 from .models import Building, Broadcaster, Event
 from rest_framework import serializers, viewsets
 
@@ -8,11 +7,6 @@ from django.conf import settings
 USE_LIVE_TRANSCRIPTION = getattr(settings, "USE_LIVE_TRANSCRIPTION", False)
 if USE_LIVE_TRANSCRIPTION:
     from pod.live.live_transcript import transcribe_live
-
-    LIVE_TRANSCRIPTIONS_FOLDER = getattr(
-        settings, "LIVE_TRANSCRIPTIONS_FOLDER", "live_transcripts"
-    )
-    MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", None)
 
 
 class BuildingSerializer(serializers.HyperlinkedModelSerializer):
@@ -75,6 +69,7 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
             "is_auto_start",
             "videos",
             "thumbnail",
+            "video_on_hold",
             "enable_transcription",
         )
 
@@ -102,8 +97,6 @@ class BroadcasterViewSet(viewsets.ModelViewSet):
                 broadcaster=broadcaster, enable_transcription=True
             )
             if events:
-                filename = broadcaster.slug + ".vtt"
-                set_broadcaster_file(broadcaster, filename)
                 transcribe_live(
                     broadcaster.url,
                     broadcaster.slug,
@@ -117,14 +110,3 @@ class BroadcasterViewSet(viewsets.ModelViewSet):
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all().order_by("start_date")
     serializer_class = EventSerializer
-
-
-def set_broadcaster_file(broadcaster, filename):
-    trans_folder = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER)
-    trans_file = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER, filename)
-    if not os.path.exists(trans_folder):
-        os.makedirs(trans_folder)
-    if not os.path.exists(trans_file):
-        open(trans_file, "a").close()
-    broadcaster.transcription_file = os.path.join(LIVE_TRANSCRIPTIONS_FOLDER, filename)
-    broadcaster.save()

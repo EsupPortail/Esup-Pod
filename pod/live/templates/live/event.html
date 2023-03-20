@@ -5,9 +5,17 @@
 
 {% block page_extra_head %}
 {% include 'videos/video-header.html' %}
-{% if event.broadcaster.enable_viewer_count %}
+{% if event.is_current and event.broadcaster.enable_viewer_count %}
     <script>let heartbeat_delay = {{ heartbeat_delay }}</script>
-    <script src="{% static 'js/viewcounter.js' %}?ver={{ VERSION }}"></script>
+    <script src="{% static 'js/viewcounter.js' %}?ver={{ VERSION }}">
+    </script>
+{% endif %}
+{% if event.is_current and event.enable_transcription and event.broadcaster.status and event.broadcaster.transcription_file %}
+    <script id="tr_script"
+            src="{% static 'js/transcription.js' %}?ver={{ VERSION }}"
+            data-url="{{ event.broadcaster.transcription_file.url }}?d={% now "U" %}"
+            data-language="{{ event.broadcaster.main_lang }}">
+    </script>
 {% endif %}
 {% endblock %}
 
@@ -30,47 +38,52 @@
 
 {% block page_content %}
     {% csrf_token %}
-    <h3 id="livename" data-eventid="{{ event.id }}"><i class="bi bi-broadcast" aria-hidden="true"></i>&nbsp;{{ event.title|title }}</h3>
+    <h3 id="livename" data-eventid="{{ event.id }}"><i class="bi bi-broadcast pe-2" aria-hidden="true"></i>{{ event.title|title }}</h3>
 
     {% if form %}
       {% include 'live/event-form.html' %}
     {% else %}
         {% if event.is_past %}
-            <div class="p-3 mb-2 bg-warning text-dark">
+            <div class="p-3 mb-2 bg-warning text-dark" style="width:fit-content">
                 {% trans "Event is finished at:" %} {{ event.end_date }}
                 <br>
             </div>
         {% elif event.is_coming %}
-            <div class="p-3 mb-2 bg-warning text-dark">
+            <div class="p-3 mb-2 bg-warning text-dark" style="width:fit-content">
                 {% trans "The event is scheduled from:" %} {{ event.start_date }} {% trans 'to' %} {{ event.end_date }}
             </div>
-        {% endif %}
 
-        {# waiting video #}
-        {% if event.broadcaster.video_on_hold.is_video and not event.is_past %}
-            <div id="divvideoonhold" style="display: none;">
-                <video id="podvideoonholdplayer"
-                       class="video-js vjs-default-skin vjs-big-play-centered"
-                       controls height="360" muted autoplay>
-                </video>
+            {# waiting video #}
+            {% if event.video_on_hold.is_video %}
+                <div id="divvideoonhold" style="display:block">
+                    <video id="podvideoonholdplayer"
+                           class="video-js vjs-default-skin vjs-big-play-centered"
+                           controls height="360" muted autoplay>
+                    </video>
+                </div>
+            {# event thumbnail  #}
+            {% elif event.thumbnail  %}
+                <div id="divvideoonhold" style="display:none"></div>
+                <img src="{{ event.get_thumbnail_card }}" alt="{{ event.title }}" style="max-height: 360px;">
+            {# broadcaster thumbnail  #}
+            {% elif event.broadcaster.poster %}
+                <div id="divvideoonhold" style="display:none"></div>
+                <img src="{{ event.broadcaster.get_poster_url }}" alt="{{ event.title }}" style="max-height: 360px;">
+            {% else %}
+                <div id="divvideoonhold" style="display:none">
+                    <video id="podvideoonholdplayer"></video>
+                </div>
+            {% endif %}
 
-            </div>
-        {% else %}
-            <div id="divvideoonhold" style="display: none;">
-                <video id="podvideoonholdplayer"></video>
-            </div>
-        {% endif %}
-        {% if event.is_current %}
-            <div id="divvideoplayer" style="display: none;">
+        {% elif event.is_current %}
+
+             <div id="divvideoplayer" style="display:block">
                 <div class="row">
                     <div class="col">
                         <video id="podvideoplayer"
                                class="video-js vjs-default-skin vjs-big-play-centered"
                                controls height="360" muted autoplay>
                             <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
-                            {% if event.broadcaster.status and event.enable_transcription and event.broadcaster.transcription_file %}
-                              <track kind="captions" src="{{ event.broadcaster.transcription_file.url }}?d={% now "U" %}" srclang="{{event.broadcaster.main_lang}}">
-                            {% endif %}
                         </video>
                     </div>
                     {% if event.aside_iframe_url %}
@@ -85,12 +98,42 @@
                 </div>
             </div>
 
+            <div id="divvideoonhold" style="display:none">
+                {# waiting video #}
+                {% if event.video_on_hold.is_video %}
+                    <video id="podvideoonholdplayer"
+                           class="video-js vjs-default-skin vjs-big-play-centered"
+                           controls height="360" muted autoplay>
+                    </video>
+
+                    {# event thumbnail  #}
+                {% elif event.thumbnail %}
+                    <video id="podvideoonholdplayer"
+                           class="video-js vjs-default-skin vjs-big-play-centered"
+                           poster="{{ event.get_thumbnail_card }}"
+                           controls height="360" muted autoplay>
+                    </video>
+                    {# broadcaster thumbnail  #}
+                {% elif event.broadcaster.poster %}
+                    <video id="podvideoonholdplayer"
+                           class="video-js vjs-default-skin vjs-big-play-centered"
+                           poster="{{ event.broadcaster.get_poster_url }}"
+                           controls height="360" muted autoplay>
+                    </video>
+                {% else %}
+                    <video id="podvideoonholdplayer"
+                           class="video-js vjs-default-skin vjs-big-play-centered"
+                           controls height="360" muted autoplay>
+                    </video>
+                {% endif %}
+            </div>
+
             {% if event.iframe_url != "" and event.iframe_url != None %}
-              <iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"
-                      title="Inline Frame Example" loading="lazy"
-                      height="{{ event.iframe_height }}"
-                      src="{{ event.iframe_url }}">
-              </iframe>
+                <iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"
+                        title="Inline Frame Example" loading="lazy"
+                        height="{{ event.iframe_height }}"
+                        src="{{ event.iframe_url }}">
+                </iframe>
             {% endif %}
 
             <div id="recordingduration"></div>
@@ -109,118 +152,54 @@
               {% include "bbb/bbb_form.html" %}
             {% endif %}
 
-            <div id="info-video" style="display:none">
-              <button type="button" class="close" aria-label="{% trans 'Close' %}">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-
             <div id="viewers-list"><ul id="viewers-ul"></ul></div>
 
-        {% else %}
-          <div id="divvideoplayer" style="display: none;">
-            <video id="podvideoplayer"></video>
-          </div>
+{#        {% else %}#}
+{#            <div id="divvideoonhold" style="display:none"></div>#}
+{#            <div id="divvideoplayer" style="display:none">#}
+{#                <video id="podvideoplayer"></video>#}
+{#            </div>#}
         {% endif %}
 
         {% if not request.GET.is_iframe %}
-            <div id="list_videos_of_event" {% if event.videos.count == 0 %} class="d-none" {% endif %}>
+            <div id="list_videos_of_event" {% if event.videos.count == 0 %} class="d-none" {% else %} class="mt-3" {% endif %}>
                 <div class="pl-0" id="event_videos">
                     <h4>{% trans "Current event videos" %}</h4>
                     <div id="event_videos_list"></div>
                 </div>
             </div>
 
-            <div id="info-video">{% include 'live/event-all-info.html' %}</div>
-        {% endif %}
+            <div id="info-video-all">{% include 'live/event-all-info.html' %}</div>
 
+        {% endif %}
     {% endif %}
 
 {% endblock %}
 
-{% if not request.GET.is_iframe %}
-    {% block page_aside %}
+{% block page_aside %}
 
-        {% include 'aside.html' with HIDE_DISCIPLINES=True HIDE_TAGS=True %}
+    {% include 'aside.html' with HIDE_DISCIPLINES=True HIDE_TAGS=True %}
 
-        {% if event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser or perms.live.delete_event or perms.live.change_event %}
-            <div class="card mt-1" id="card-managevideo">
-                <h2 class="h4 card-header card-title pl-2"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage event" %}
-                </h2>
-                <div class="card-body card-text text-center">
-                    <a href="{% url 'live:event_edit' slug=event.slug %}" title="{% trans 'Edit the event' %}"
-                       class="btn btn-lg pod-btn-social p-1">
-                       <i class="bi bi-pencil-square" aria-hidden="true"></i>
-                    </a>
-                    <a href="{% url 'live:event_delete' slug=event.slug %}"
-                       class="btn btn-lg pod-btn-social p-1"
-                       title="{% trans 'Delete the event' %}">
-                       <i class="bi bi-trash" aria-hidden="true"></i>
-                    </a>
-                </div>
+    {% if event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser or perms.live.delete_event or perms.live.change_event %}
+        <div class="card mt-1" id="card-managevideo">
+            <h2 class="h4 card-header card-title pl-2"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage event" %}
+            </h2>
+            <div class="card-body card-text text-center">
+                <a href="{% url 'live:event_edit' slug=event.slug %}" title="{% trans 'Edit the event' %}"
+                   class="btn btn-lg pod-btn-social p-1">
+                   <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                </a>
+                <a href="{% url 'live:event_delete' slug=event.slug %}"
+                   class="btn btn-lg pod-btn-social p-1"
+                   title="{% trans 'Delete the event' %}">
+                   <i class="bi bi-trash" aria-hidden="true"></i>
+                </a>
             </div>
-        {% endif %}
+        </div>
+    {% endif %}
 
-    {% endblock page_aside %}
-{% endif %}
+{% endblock page_aside %}
 
 {% block more_script %}
-
-{% if  event.broadcaster.status and event.enable_transcription and event.broadcaster.transcription_file %}
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-      let player = videojs("podvideoplayer");
-      player.ready(function () {
-        var lastMod = null;
-        setInterval(function () {
-          let tracks = player.textTracks();
-          for (var i = 0; i < tracks.length; i++) {
-            var track = tracks[i];
-            if (track.kind === "captions") {
-                let current_mod = null
-                let vtt_url ="{{ event.broadcaster.transcription_file.url }}?d={% now "U" %}"
-                fetch(vtt_url).then(r => {
-                  current_mod = r.headers.get('Last-Modified');
-                  if (lastMod && current_mod && lastMod === current_mod){
-                    return
-                  }
-                  lastMod = current_mod
-                  let newTrack = player.addRemoteTextTrack(
-                    {
-                      kind: "captions",
-                      language: "{{ event.broadcaster.main_lang }}",
-                      src: vtt_url,
-                      default: true,
-                    },
-                    false
-                  );
-                
-                  player.removeRemoteTextTrack(track);
-
-                  newTrack.addEventListener('load', (e)=>{
-                    newTrack.mode = 'showing';
-                  })
-                  // show all tracks
-                  for (var i = 0; i < tracks.length; i++) {
-                    if (tracks[i].kind === "captions") {
-                    tracks[i].mode = "showing";
-        
-                    }
-                  }
-                }).catch(e => {
-                  // console.log(e)
-                })
-            }
-          }
-          
-        }, 1000);
-      });
-    });
-    
-</script>
-{% endif %}
-
-
-
 {% include 'live/event-script.html' %}
 {% endblock more_script %}

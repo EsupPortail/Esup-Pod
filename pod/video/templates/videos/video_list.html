@@ -1,6 +1,6 @@
 {% load i18n %}
 {% spaceless %}
-<div class="pod-infinite-container infinite-container" id="videos_list" nextPage = "{{ videos.has_next }}">
+<div class="pod-infinite-container infinite-container" id="videos_list" nextPage = "{{ videos.has_next }}" data-countvideos="{{ count_videos }}">
   {% for video in videos %}
     <div class="infinite-item card-group" {% if categories %}data-slug={{video.slug}}{% endif %} >
       {% include "videos/card.html" %}
@@ -23,6 +23,3 @@
   {% trans "Loading…" %}
 </div>
 {% endspaceless %}
-<script>
-var countVideos = "{{ count_videos }}";
-</script>

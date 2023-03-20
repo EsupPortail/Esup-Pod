@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """Pod BBB views."""
+import json
+
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
 from django.conf import settings
@@ -15,7 +17,7 @@ from .forms import MeetingForm, LivestreamForm
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseNotAllowed
 from django.contrib.auth.decorators import login_required, user_passes_test
 import redis
 
@@ -267,9 +269,15 @@ def live_publish_chat_if_authenticated(user):
 @csrf_protect
 @user_passes_test(live_publish_chat_if_authenticated, redirect_field_name="referrer")
 def live_publish_chat(request, id=None):
+    if request.method != "POST":
+        return HttpResponseNotAllowed(["POST"])
+
     """Allow an authenticated user to send chat question to BBB."""
     who_sent = "(%s %s) " % (request.user.first_name, request.user.last_name)
-    message = request.GET.get("message", None)
+
+    body_unicode = request.body.decode("utf-8")
+    body_data = json.loads(body_unicode)
+    message = body_data["message"]
 
     livestreams_list = Livestream.objects.filter(broadcaster_id=id)
 

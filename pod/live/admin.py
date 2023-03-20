@@ -92,7 +92,6 @@ class BroadcasterAdmin(admin.ModelAdmin):
             "description",
             "poster",
             "url",
-            "video_on_hold",
             "status",
             "enable_add_event",
             "enable_viewer_count",
@@ -116,7 +115,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
         return ["slug", "qrcode", "transcription_file"]
 
     def get_autocomplete_fields(self, request):
-        return ["building", "video_on_hold"]
+        return ["building"]
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs["widgets"] = {
@@ -139,8 +138,6 @@ class BroadcasterAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "building":
             kwargs["queryset"] = Building.objects.filter(sites=Site.objects.get_current())
-        if db_field.name == "video_on_hold":
-            kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def qrcode(self, obj):
@@ -209,6 +206,11 @@ class EventAdmin(admin.ModelAdmin):
     is_auto_start_admin.short_description = _("Auto start admin")
     is_auto_start_admin.boolean = True
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "video_on_hold":
+            kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
     def get_thumbnail_admin(self, instance):
         if instance.thumbnail and instance.thumbnail.file_exist():
             im = get_thumbnail(
@@ -260,6 +262,7 @@ class EventAdmin(admin.ModelAdmin):
         "is_restricted",
         "restrict_access_to_groups",
         "is_auto_start",
+        "video_on_hold",
         "enable_transcription",
     ]
     search_fields = [
@@ -275,6 +278,7 @@ class EventAdmin(admin.ModelAdmin):
         PasswordFilter,
         ("broadcaster__building", admin.RelatedOnlyFieldListFilter),
     ]
+    autocomplete_fields = ["video_on_hold"]
 
     get_broadcaster_admin.admin_order_field = "broadcaster"
     is_auto_start_admin.admin_order_field = "is_auto_start"

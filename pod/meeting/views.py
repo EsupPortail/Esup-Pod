@@ -4,6 +4,7 @@ from django.shortcuts import render
 
 from django.http import JsonResponse, HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
+from django.templatetags.static import static
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
@@ -29,6 +30,9 @@ RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
 )
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
+DEFAULT_MEETING_THUMBNAIL = getattr(
+    settings, "DEFAULT_MEETING_THUMBNAIL", "img/default-meeting.svg"
+)
 BBB_MEETING_INFO = getattr(
     settings,
     "BBB_MEETING_INFO",
@@ -74,6 +78,7 @@ def my_meetings(request):
         {
             "meetings": meetings,
             "page_title": _("My meetings"),
+            "DEFAULT_MEETING_THUMBNAIL": static(DEFAULT_MEETING_THUMBNAIL),
             "meeting_disable_record": MEETING_DISABLE_RECORD,
         },
     )

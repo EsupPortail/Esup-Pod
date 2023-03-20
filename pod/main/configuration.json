@@ -1439,6 +1439,21 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "DEFAULT_MEETING_THUMBNAIL": {
+                            "default_value": "/img/default-meeting.svg",
+                            "description": {
+                                "en": [
+                                    "Default image displayed as a poster or thumbnail, used to present the meeting.",
+                                    "This image must be located in the `static` directory."
+                                ],
+                                "fr": [
+                                    "Image par défaut affichée comme poster ou vignette, utilisée pour présenter la réunion.",
+                                    "Cette image doit se situer dans le répertoire `static`."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
+                        },
                         "USE_MEETING": {
                             "default_value": false,
                             "description": {

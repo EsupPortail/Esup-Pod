@@ -134,15 +134,16 @@ document.addEventListener("DOMContentLoaded", function () {
               "alert-danger"
             );
           } else {
-            if (response.status == 200) {
-              showalert(response.success, "alert-success");
-              window.location.reload();
-            } else {
-              showalert(response.statusText, "alert-danger");
-            }
+            response.json().then((data) => {
+              if (data.success) {
+                showalert(data.success, "alert-success");
+                window.location.reload(); // hide link playlist
+              } else {
+                showalert(data.fail, "alert-danger");
+              }
+            });
           }
         })
-
         .catch((error) => {
           showalert(
             gettext(
@@ -247,21 +248,25 @@ document.addEventListener("DOMContentLoaded", function () {
           body: form_data,
         })
           .then((response) => {
-            if (response.status != 200) {
+            if (response.status == 200) {
+              response.json().then((data) => {
+                if (data.success) {
+                  showalert(data.success, "alert-success");
+                  //window.location.reload(); // hide link playlist
+                  link.classList.add("disabled");
+                  link.classList.remove("playlist-item");
+                  link.append("");
+                } else {
+                  showalert(data.fail, "alert-danger");
+                }
+              });
+            } else {
               showalert(
                 gettext(
                   "You are no longer authenticated. Please log in again."
                 ),
-                "alert-danger",
                 "alert-danger"
               );
-            } else {
-              if (response.status == 200) {
-                showalert(gettext("Video add to playlist"), "alert-success");
-                link.classList.add("disabled");
-                link.classList.remove("playlist-item");
-                link.append("");
-              }
             }
           })
           .catch((error) => {

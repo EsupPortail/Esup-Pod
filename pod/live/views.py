@@ -695,8 +695,10 @@ def event_isstreamavailabletorecord(request):
 @login_required(redirect_field_name="referrer")
 def ajax_event_startrecord(request):
     if request.method == "POST" and request.is_ajax():
-        event_id = request.POST.get("idevent", None)
-        broadcaster_id = request.POST.get("idbroadcaster", None)
+        body_unicode = request.body.decode("utf-8")
+        body_data = json.loads(body_unicode)
+        event_id = body_data.get("idevent", None)
+        broadcaster_id = body_data.get("idbroadcaster", None)
         return event_startrecord(event_id, broadcaster_id)
 
     return HttpResponseNotAllowed(["POST"])
@@ -705,25 +707,27 @@ def ajax_event_startrecord(request):
 def event_startrecord(event_id, broadcaster_id):
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
     if not check_piloting_conf(broadcaster):
-        return JsonResponse({"success": False, "message": "implementation error"})
+        return JsonResponse({"success": False, "error": "implementation error"})
 
     if is_recording(broadcaster):
         return JsonResponse(
-            {"success": False, "message": "the broadcaster is already recording"}
+            {"success": False, "error": "the broadcaster is already recording"}
         )
 
     if start_record(broadcaster, event_id):
         return JsonResponse({"success": True})
 
-    return JsonResponse({"success": False, "message": ""})
+    return JsonResponse({"success": False, "error": ""})
 
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_splitrecord(request):
     if request.method == "POST" and request.is_ajax():
-        event_id = request.POST.get("idevent", None)
-        broadcaster_id = request.POST.get("idbroadcaster", None)
+        body_unicode = request.body.decode("utf-8")
+        body_data = json.loads(body_unicode)
+        event_id = body_data.get("idevent", None)
+        broadcaster_id = body_data.get("idbroadcaster", None)
 
         return event_splitrecord(event_id, broadcaster_id)
 
@@ -758,8 +762,10 @@ def event_splitrecord(event_id, broadcaster_id):
 @login_required(redirect_field_name="referrer")
 def ajax_event_stoprecord(request):
     if request.method == "POST" and request.is_ajax():
-        event_id = request.POST.get("idevent", None)
-        broadcaster_id = request.POST.get("idbroadcaster", None)
+        body_unicode = request.body.decode("utf-8")
+        body_data = json.loads(body_unicode)
+        event_id = body_data.get("idevent", None)
+        broadcaster_id = body_data.get("idbroadcaster", None)
         return event_stoprecord(event_id, broadcaster_id)
 
     return HttpResponseNotAllowed(["POST"])
@@ -779,6 +785,11 @@ def event_stoprecord(event_id, broadcaster_id):
     current_record_info = get_info_current_record(broadcaster)
 
     if stop_record(broadcaster):
+        # change auto_start property so the recording does not start again
+        curr_event = Event.objects.get(pk=event_id)
+        curr_event.is_auto_start = False
+        curr_event.save()
+
         return event_video_transform(
             event_id,
             current_record_info.get("currentFile", None),
@@ -791,8 +802,10 @@ def event_stoprecord(event_id, broadcaster_id):
 @login_required(redirect_field_name="referrer")
 def ajax_event_info_record(request):
     if request.method == "POST" and request.is_ajax():
-        event_id = request.POST.get("idevent", None)
-        broadcaster_id = request.POST.get("idbroadcaster", None)
+        body_unicode = request.body.decode("utf-8")
+        body_data = json.loads(body_unicode)
+        event_id = body_data.get("idevent", None)
+        broadcaster_id = body_data.get("idbroadcaster", None)
         return event_info_record(event_id, broadcaster_id)
 
     return HttpResponseNotAllowed(["POST"])

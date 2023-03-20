@@ -24,8 +24,8 @@ def timestring(seconds):
 
 
 def transcribe(url, slug, model, filepath):  # noqa: C901
-    if url.endswith(".m3u8"):
-        url = url.split(".m3u8")[0] + "_low/index.m3u8"
+    # if url.endswith(".m3u8"):
+    #    url = url.split(".m3u8")[0] + "_mid/index.m3u8"
     trans_model = Model(model)
     rec = KaldiRecognizer(trans_model, __SAMPLE_RATE__)
     rec.SetWords(True)
@@ -116,6 +116,8 @@ def transcribe(url, slug, model, filepath):  # noqa: C901
             time.sleep(5 - now)
     # print("stopped transcription")
     threads_to_stop.remove(thread_id)
+    vtt = WebVTT()
+    vtt.save(filepath)
 
 
 def transcribe_live(url, slug, status, lang, filepath):
@@ -125,6 +127,8 @@ def transcribe_live(url, slug, status, lang, filepath):
             if status:
                 task_start_live_transcription.delay(url, slug, model, filepath)
             else:
+                vtt = WebVTT()
+                vtt.save(filepath)
                 task_end_live_transcription.delay(slug)
         else:
             if status:
@@ -136,6 +140,8 @@ def transcribe_live(url, slug, status, lang, filepath):
                 threads[slug] = t.ident
 
             else:
+                vtt = WebVTT()
+                vtt.save(filepath)
                 stop_thread = threads.get(slug, None)
                 if stop_thread:
                     threads_to_stop.append(stop_thread)
