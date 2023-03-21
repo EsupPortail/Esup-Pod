@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+"""Pod BBB views."""
+import json
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
@@ -16,7 +17,7 @@ from .forms import MeetingForm, LivestreamForm
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseNotAllowed
 from django.contrib.auth.decorators import login_required, user_passes_test
 import redis
 
@@ -29,7 +30,7 @@ BBB_NUMBER_MAX_LIVES = getattr(settings, "BBB_NUMBER_MAX_LIVES", 1)
 @login_required(redirect_field_name="referrer")
 @staff_member_required(redirect_field_name="referrer")
 def list_meeting(request):
-    # Get meetings list, which recordings are available, ordered by date
+    """Get meetings list, which recordings are available, ordered by date."""
     meetings_list = Meeting.objects.filter(
         attendee__user_id=request.user.id, recording_available=True
     )
@@ -71,8 +72,7 @@ def list_meeting(request):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def publish_meeting(request, id=None):
-    # Allows you to create a video from a BigBlueButton presentation
-
+    """Allow you to create a video from a BigBlueButton presentation."""
     record = get_object_or_404(Meeting, id=id)
 
     initial = {
@@ -134,7 +134,7 @@ def publish_meeting(request, id=None):
 @login_required(redirect_field_name="referrer")
 @staff_member_required(redirect_field_name="referrer")
 def live_list_meeting(request):
-    # Get meetings list in progress
+    """Get a list of live meetings in progress."""
     dateSince10Min = timezone.now() - timezone.timedelta(minutes=10)
     meetings_list = Meeting.objects.filter(
         attendee__user_id=request.user.id,
@@ -193,7 +193,7 @@ def live_list_meeting(request):
 
 
 def check_meetings_have_live_in_progress(meetings_list, request):
-    # Check if these meetings have a live in progress
+    """Check if these meetings have a live in progress."""
     dateToday = timezone.now() - timezone.timedelta(days=1)
     if len(meetings_list) > 0:
         for meeting in meetings_list:
@@ -215,15 +215,14 @@ def check_meetings_have_live_in_progress(meetings_list, request):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def live_publish_meeting(request, id=None):
-    # Allows you to create a live streaming from a BigBlueButton presentation
-
+    """Allow you to create a live streaming from a BigBlueButton presentation."""
     record = get_object_or_404(Meeting, id=id)
 
     initial = {"meeting": record, "status": 0, "end_date": None, "server": None}
 
     form = LivestreamForm(request, initial=initial)
 
-    # Check security : a normal user can publish only a meeting
+    # Check security: a normal user can publish only a meeting
     # where he was moderator
     meetings_list = Meeting.objects.filter(attendee__user_id=request.user.id, id=id)
     if not meetings_list and not request.user.is_superuser:
@@ -270,9 +269,15 @@ def live_publish_chat_if_authenticated(user):
 @csrf_protect
 @user_passes_test(live_publish_chat_if_authenticated, redirect_field_name="referrer")
 def live_publish_chat(request, id=None):
-    # Allows an authenticated user to send chat question to BBB
+    if request.method != "POST":
+        return HttpResponseNotAllowed(["POST"])
+
+    """Allow an authenticated user to send chat question to BBB."""
     who_sent = "(%s %s) " % (request.user.first_name, request.user.last_name)
-    message = request.GET.get("message", None)
+
+    body_unicode = request.body.decode("utf-8")
+    body_data = json.loads(body_unicode)
+    message = body_data["message"]
 
     livestreams_list = Livestream.objects.filter(broadcaster_id=id)
 

@@ -26,6 +26,7 @@ from django.db.models import Sum, Min
 
 from dateutil.parser import parse
 import concurrent.futures as futures
+from pod.main.utils import is_ajax
 
 from pod.main.views import in_maintenance
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
@@ -46,7 +47,7 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
-from pod.video.utils import pagination_data, get_headband, change_owner
+from .utils import pagination_data, get_headband, change_owner, get_available_videos
 
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.exceptions import ObjectDoesNotExist
@@ -61,23 +62,11 @@ from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 from django.db import transaction
 from django.db import IntegrityError
 
-VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False).defer(
-    "video", "slug", "owner", "additional_owners", "description"
-)
-
-# for clean install, produces errors
-try:
-    VIDEOS = VIDEOS.exclude(pk__in=[vid.id for vid in VIDEOS if not vid.encoded]).filter(
-        sites=get_current_site(None)
-    )
-except Exception:
-    pass
-
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
 )
-THEME_ACTION = ["new", "modify", "delete", "save"]
-NOTE_ACTION = ["get", "save", "remove", "form", "download"]
+__THEME_ACTION__ = ["new", "modify", "delete", "save"]
+__NOTE_ACTION__ = ["get", "save", "remove", "form", "download"]
 
 TEMPLATE_VISIBLE_SETTINGS = getattr(
     settings,
@@ -100,7 +89,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     },
 )
 
-TITLE_SITE = (
+__TITLE_SITE__ = (
     TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
     if (TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"))
     else "Pod"
@@ -152,12 +141,14 @@ CURSUS_CODES = getattr(
     ),
 )
 
-TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
+USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 VIEW_STATS_AUTH = getattr(settings, "VIEW_STATS_AUTH", False)
 ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
-USE_CATEGORY = getattr(settings, "USER_VIDEO_CATEGORY", False)
+USER_VIDEO_CATEGORY = getattr(settings, "USER_VIDEO_CATEGORY", False)
 DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
-DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
+ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
+
+__VIDEOS__ = get_available_videos()
 
 # ############################################################################
 # CHANNEL
@@ -172,7 +163,6 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         videos (List[Video]): list of video filter by channel
         channel (Channel): current channel
         theme (Theme, optional): current theme. Defaults to None.
-
     Returns:
         Dict[str, Any]: json data
     """
@@ -286,7 +276,7 @@ def paginator(videos_list, page):
 def channel(request, slug_c, slug_t=None):
     channel = get_object_or_404(Channel, slug=slug_c, site=get_current_site(request))
 
-    videos_list = VIDEOS.filter(channel=channel)
+    videos_list = __VIDEOS__.filter(channel=channel)
     channel.video_count = videos_list.count()
 
     theme = None
@@ -295,7 +285,7 @@ def channel(request, slug_c, slug_t=None):
         list_theme = theme.get_all_children_flat()
         videos_list = videos_list.filter(theme__in=list_theme)
 
-    if getattr(settings, "ORGANIZE_BY_THEME", False):
+    if ORGANIZE_BY_THEME:
         return _regroup_videos_by_theme(request, videos_list, channel, theme)
 
     page = request.GET.get("page", 1)
@@ -393,8 +383,8 @@ def theme_edit(request, slug):
         messages.add_message(request, messages.ERROR, _("You cannot edit this channel."))
         raise PermissionDenied
 
-    if request.POST and request.is_ajax():
-        if request.POST["action"] in THEME_ACTION:
+    if is_ajax(request):
+        if request.POST["action"] in __THEME_ACTION__:
             return eval("theme_edit_{0}(request, channel)".format(request.POST["action"]))
 
     form_theme = FrontThemeForm(initial={"channel": channel})
@@ -497,7 +487,7 @@ def my_videos(request):
 
     cats = []
     videos_without_cat = []
-    if USE_CATEGORY:
+    if USER_VIDEO_CATEGORY:
         """
         " user's videos categories format =>
         " [{
@@ -537,7 +527,7 @@ def my_videos(request):
             "videos/video_list.html",
             {"videos": videos, "full_path": full_path},
         )
-    data_context["use_category"] = USE_CATEGORY
+    data_context["use_category"] = USER_VIDEO_CATEGORY
     data_context["videos"] = videos
     data_context["full_path"] = full_path
     data_context["page_title"] = _("My videos")
@@ -546,7 +536,7 @@ def my_videos(request):
 
 
 def get_videos_list(request):
-    videos_list = VIDEOS
+    videos_list = __VIDEOS__
 
     if request.GET.getlist("type"):
         videos_list = videos_list.filter(type__slug__in=request.GET.getlist("type"))
@@ -822,7 +812,6 @@ def render_video(
     # Do it only for video --> move code in video definition
     app_name = request.resolver_match.namespace.capitalize()[0] \
         if request.resolver_match.namespace else 'O'
-
     if (
         video.get_version != app_name and
         request.GET.get('redirect') != "false"
@@ -1046,7 +1035,6 @@ def get_adv_note_list(request, video):
 def get_adv_note_com_list(request, id):
     """
     Return the list of coms which are direct sons of the AdvancedNote id.
-
         ...that can be seen by the current user
     """
     if id:
@@ -1072,7 +1060,6 @@ def get_adv_note_com_list(request, id):
 def get_com_coms_dict(request, listComs):
     """
     Return the list of the direct sons of a com.
-
       for each encountered com
     Starting from the coms present in listComs
     Example, having the next tree of coms :
@@ -1108,7 +1095,6 @@ def get_com_coms_dict(request, listComs):
 def get_com_tree(com):
     """
     Return the list of the successive parents of com.
-
       including com from bottom to top
     """
     tree, c = [], com
@@ -1122,7 +1108,6 @@ def get_com_tree(com):
 def can_edit_or_remove_note_or_com(request, nc, action):
     """
     Check if the current user can apply action to the note or comment nc.
-
     Typically action is in ['edit', 'delete']
     If not raise PermissionDenied
     """
@@ -1146,7 +1131,6 @@ def can_edit_or_remove_note_or_com(request, nc, action):
 def can_see_note_or_com(request, nc):
     """
     Check if the current user can view the note or comment nc.
-
     If not raise PermissionDenied
     """
     if isinstance(nc, AdvancedNotes):
@@ -1181,7 +1165,7 @@ def video_notes(request, slug):
         action = request.POST.get("action").split("_")[0]
     elif request.method == "GET" and request.GET.get("action"):
         action = request.GET.get("action").split("_")[0]
-    if action in NOTE_ACTION:
+    if action in __NOTE_ACTION__:
         return eval("video_note_{0}(request, slug)".format(action))
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     listNotes = get_adv_note_list(request, video)
@@ -1782,7 +1766,7 @@ def video_oembed(request):
     data = {}
     data["type"] = "video"
     data["version"] = "1.0"
-    data["provider_name"] = TITLE_SITE
+    data["provider_name"] = __TITLE_SITE__
     protocole = "https" if request.is_secure() else "http"
     data["provider_url"] = "%s://%s" % (
         protocole,
@@ -1899,7 +1883,6 @@ def get_all_views_count(v_id, date_filter=date.today()):
 
 def get_videos(p_slug, target, p_slug_t=None):
     """Retourne une ou plusieurs videos selon le slug donné.
-
     Renvoi vidéo/s et titre de
     (theme, ou video ou channel ou videos pour toutes)
     selon la réference du slug donnée
@@ -1919,14 +1902,14 @@ def get_videos(p_slug, target, p_slug_t=None):
 
     elif target.lower() == "channel":
         title = _("Video viewing statistics for the channel %s") % p_slug
-        videos = VIDEOS.filter(channel__slug__istartswith=p_slug)
+        videos = __VIDEOS__.filter(channel__slug__istartswith=p_slug)
 
     elif target.lower() == "theme" and p_slug_t:
         title = _("Video viewing statistics for the theme %s") % p_slug_t
-        videos = VIDEOS.filter(theme__slug__istartswith=p_slug_t)
+        videos = __VIDEOS__.filter(theme__slug__istartswith=p_slug_t)
 
     elif target == "videos":
-        return (VIDEOS, title)
+        return (__VIDEOS__, title)
 
     return (videos, title)
 
@@ -1968,7 +1951,6 @@ def manage_access_rights_stats_video(request, video, page_title):
 def stats_view(request, slug=None, slug_t=None):
     """
     View for statistics.
-
     " slug reference video's slug or channel's slug
     " t_slug reference theme's slug
     " from defined the source of the request such as
@@ -2019,7 +2001,7 @@ def stats_view(request, slug=None, slug_t=None):
             )
         )
 
-        min_date = VIDEOS.aggregate(Min("date_added"))["date_added__min"].date()
+        min_date = __VIDEOS__.aggregate(Min("date_added"))["date_added__min"].date()
         data.append({"min_date": min_date})
 
         return JsonResponse(data, safe=False)
@@ -2066,7 +2048,7 @@ def video_add(request):
             "allow_extension": allow_extension,
             "allowed_text": allowed_text,
             "restricted_to_staff": RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY,
-            "TRANSCRIPT": TRANSCRIPT,
+            "TRANSCRIPT": USE_TRANSCRIPTION,
             "page_title": _("Media upload"),
         },
     )
@@ -2172,7 +2154,6 @@ def add_comment(request, video_slug, comment_id=None):
 def get_parent_comments(request, video):
     """
     Return only comments without parent.
-
     (direct comments to video) which contains
     number of votes and children
     """
@@ -2306,11 +2287,9 @@ def get_comments(request, video_slug):
 @csrf_protect
 def delete_comment(request, video_slug, comment_id):
     """Delete the comment `comment_id` associated to `video_slug`.
-
     Args:
         video_slug (string): the video associated to this comment
         comment_id (): id of the comment to be deleted
-
     Returns:
         HttpResponse
     """
@@ -2740,7 +2719,7 @@ def video_collaborate(request, slug):
         action = request.POST.get('action').split('_')[0]
     elif (request.method == 'GET' and request.GET.get('action')):
         action = request.GET.get('action').split('_')[0]
-    if action in NOTE_ACTION:
+    if action in __NOTE_ACTION__:
         return eval('video_note_{0}(request, slug)'.format(action))
     video = get_object_or_404(
         Video, slug=slug, sites=get_current_site(request))

@@ -40,6 +40,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Configuration
 from honeypot.decorators import check_honeypot
 
+
 ##
 # Settings exposed in templates
 #
@@ -64,7 +65,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     },
 )
 
-TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, "TITLE_SITE", "Pod")
+__TITLE_SITE__ = getattr(TEMPLATE_VISIBLE_SETTINGS, "TITLE_SITE", "Pod")
 CONTACT_US_EMAIL = getattr(
     settings,
     "CONTACT_US_EMAIL",
@@ -74,13 +75,12 @@ DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
 USER_CONTACT_EMAIL_CASE = getattr(settings, "USER_CONTACT_EMAIL_CASE", [])
 CUSTOM_CONTACT_US = getattr(settings, "CUSTOM_CONTACT_US", False)
 MANAGERS = getattr(settings, "MANAGERS", [])
-USE_ESTABLISHMENT = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
+USE_ESTABLISHMENT_FIELD = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
 USER_CONTACT_EMAIL_CASE = getattr(settings, "USER_CONTACT_EMAIL_CASE", [])
-CUSTOM_CONTACT_US = getattr(settings, "CUSTOM_CONTACT_US", False)
-SUPPORT_EMAIL = getattr(settings, "SUPPORT_EMAIL", [])
-USE_SUPPORT_EMAIL = getattr(settings, "USE_SUPPORT_EMAIL", False)
+
+SUPPORT_EMAIL = getattr(settings, "SUPPORT_EMAIL", None)
 HIDE_USERNAME = getattr(settings, "HIDE_USERNAME", False)
-MENUBAR_HIDE_INACTIVE_OWNERS = getattr(settings, "HIDE_USERNAME", True)
+MENUBAR_HIDE_INACTIVE_OWNERS = getattr(settings, "MENUBAR_HIDE_INACTIVE_OWNERS", True)
 MENUBAR_SHOW_STAFF_OWNERS_ONLY = getattr(
     settings, "MENUBAR_SHOW_STAFF_OWNERS_ONLY", False
 )
@@ -119,7 +119,7 @@ def get_manager_email(owner):
     else return all managers emails
     """
     # Si la fonctionnalité des etablissements est activée
-    if USE_ESTABLISHMENT and owner:
+    if USE_ESTABLISHMENT_FIELD and owner:
         v_estab = owner.owner.establishment.lower()
         # vérifier si le mail du manager (de l'etablissement
         # du propriétaire de la vidéo) est renseigné
@@ -144,7 +144,7 @@ def get_dest_email(owner, video, form_subject, request):
             return get_manager_email(request.user)
         # Autrement le destinataire du mail sera le(s) manager(s)
         # ou le support dans le cas de Grenoble
-        return SUPPORT_EMAIL if (USE_SUPPORT_EMAIL) else CONTACT_US_EMAIL
+        return SUPPORT_EMAIL if SUPPORT_EMAIL else CONTACT_US_EMAIL
 
     # Si activation de la fonctionnalité de mail custom
     if CUSTOM_CONTACT_US:
@@ -233,7 +233,7 @@ def contact_us(request):
                 else send_subject
             )
             subject = "[ %s ] %s" % (
-                TITLE_SITE,
+                __TITLE_SITE__,
                 dict(SUBJECT_CHOICES)[form_subject],
             )
             email = form.cleaned_data["email"]
@@ -247,7 +247,7 @@ def contact_us(request):
                 {
                     "name": name,
                     "email": email,
-                    "TITLE_SITE": TITLE_SITE,
+                    "TITLE_SITE": __TITLE_SITE__,
                     "message": message,
                     "url_referrer": form.cleaned_data["url_referrer"],
                 }
@@ -256,7 +256,7 @@ def contact_us(request):
                 {
                     "name": name,
                     "email": email,
-                    "TITLE_SITE": TITLE_SITE,
+                    "TITLE_SITE": __TITLE_SITE__,
                     "message": message.replace("\n", "<br/>"),
                     "url_referrer": form.cleaned_data["url_referrer"],
                 }
@@ -273,17 +273,17 @@ def contact_us(request):
 
             # EMAIL TO SENDER
             subject = "[ %s ] %s %s" % (
-                TITLE_SITE,
+                __TITLE_SITE__,
                 _("your message untitled"),
                 dict(SUBJECT_CHOICES)[form_subject],
             )
 
             text_content = loader.get_template("mail/mail_sender.txt").render(
-                {"TITLE_SITE": TITLE_SITE, "message": message}
+                {"TITLE_SITE": __TITLE_SITE__, "message": message}
             )
             html_content = loader.get_template("mail/mail_sender.html").render(
                 {
-                    "TITLE_SITE": TITLE_SITE,
+                    "TITLE_SITE": __TITLE_SITE__,
                     "message": message.replace("\n", "<br/>"),
                 }
             )
@@ -311,6 +311,7 @@ def contact_us(request):
     )
 
 
+@csrf_protect
 @login_required(redirect_field_name="referrer")
 def user_autocomplete(request):
     """Search for users with partial names, for autocompletion."""
@@ -324,7 +325,7 @@ def user_autocomplete(request):
         if MENUBAR_SHOW_STAFF_OWNERS_ONLY:
             additional_filters["is_staff"] = True
         VALUES_LIST = ["username", "first_name", "last_name", "video_count"]
-        q = remove_accents(request.GET.get("term", "").lower())
+        q = remove_accents(request.POST.get("term", "").lower())
         users = (
             User.objects.filter(**additional_filters)
             .filter(
@@ -337,7 +338,7 @@ def user_autocomplete(request):
             .annotate(
                 video_count=Count("video", sites=get_current_site(request), distinct=True)
             )
-            .values(*list(VALUES_LIST))
+            .values(*list(VALUES_LIST))[:100]
         )
 
         data = json.dumps(list(users))

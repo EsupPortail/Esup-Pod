@@ -1,3 +1,4 @@
+"""Tests for Video views."""
 from django.test import Client
 from django.test import TestCase, override_settings, TransactionTestCase
 from django.urls import reverse
@@ -12,18 +13,23 @@ from ..models import Video
 from ..models import Channel
 from ..models import Discipline
 from ..models import AdvancedNotes
+from .. import views
 
 import re
 import json
 from http import HTTPStatus
+from importlib import reload
 
 
 class ChannelTestView(TestCase):
+    """Test case for Channel views."""
+
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
+        """Set up some test channels."""
         site = Site.objects.get(id=1)
         self.c = Channel.objects.create(title="ChannelTest1")
         self.c2 = Channel.objects.create(title="ChannelTest2")
@@ -47,6 +53,7 @@ class ChannelTestView(TestCase):
 
     @override_settings(ORGANIZE_BY_THEME=False)
     def test_get_channel_view(self):
+        reload(views)
         self.client = Client()
         response = self.client.get("/%s/" % self.c.slug)
         self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -64,7 +71,9 @@ class ChannelTestView(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         print("   --->  test_channel_with_theme_in_argument of ChannelTestView: OK!")
 
+    @override_settings(ORGANIZE_BY_THEME=True)
     def test_regroup_videos_by_theme(self):
+        reload(views)
         # Test get videos and theme from channel view
         self.client = Client()
         response = self.client.get("/%s/" % self.c.slug)
@@ -1084,7 +1093,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
             video="test3.mp4",
             type=Type.objects.get(id=1),
         )
-        print(" --->  SetUp of VideoTestUpdateOwner : OK !")
+        print(" --->  SetUp of VideoTestUpdateOwner: OK!")
 
     def test_update_video_owner(self):
         url = reverse("video:update_video_owner", kwargs={"user_id": self.admin.id})
@@ -1100,9 +1109,9 @@ class VideoTestUpdateOwner(TransactionTestCase):
         # Access Denied: user is not admin
         self.client.force_login(self.simple_user)
         access_url = reverse("admin:video_updateowner_changelist")
-        response = self.client.get(access_url, follow=True)
+        response = self.client.get(access_url)  # remove follow=True
         # A VERIFIER !
-        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.status_code, 302)  # HTTPStatus.OK
 
         # Method not allowed
         self.client.force_login(self.admin)
@@ -1177,7 +1186,7 @@ class VideoTestFiltersViews(TestCase):
             video="test3.mp4",
             type=Type.objects.get(id=1),
         )
-        print(" --->  SetUp of VideoTestFiltersViews : OK !")
+        print(" --->  SetUp of VideoTestFiltersViews: OK!")
 
     def test_filter_owners(self):
         url = reverse("video:filter_owners")

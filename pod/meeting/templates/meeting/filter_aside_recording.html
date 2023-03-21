@@ -1,0 +1,26 @@
+{% load i18n %}
+{% load custom_tags %}
+
+{% spaceless %}
+<div class="card card-body" id="recordings_filter">
+  <h2 class="h3 card-title pod-card__title">
+    <i class="bi bi-sliders2-vertical"></i>&nbsp;{% trans "Filters"%}
+  </h2>
+
+  <form action="{% url 'meeting:recordings' meeting.meeting_id %}" method="get" id="filters"></form>
+    <div class="filters" id="filters">
+      <fieldset class="border-right border-bottom mt-2">
+        <legend class="h5">
+          <i class="bi bi-tv"></i>&nbsp;{% trans "Tags"%}
+        </legend>
+      </fieldset>
+      <div id="filterType">
+        <div class="form-group my-3">
+          <label for="searchrecordings" class="form-label">{% trans "Search" %}</label>
+          <input id="searchrecordings" type="text" class="form-control" placeholder="{% trans 'Type at least 3 chars to filter' %}">
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endspaceless %}

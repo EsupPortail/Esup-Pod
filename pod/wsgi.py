@@ -17,5 +17,4 @@ proxy_port = getattr(settings, "PROXY_PORT", None)
 if proxy_host and proxy_port:
     os.environ["http_proxy"] = os.environ["https_proxy"] = f"{proxy_host}:{proxy_port}"
 
-
 application = get_wsgi_application()

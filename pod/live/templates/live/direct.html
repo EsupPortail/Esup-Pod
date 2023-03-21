@@ -1,30 +1,32 @@
 {% extends 'base.html' %}
-{% load i18n event_tags%}
+{% load i18n event_tags %}
 {% load static %}
 
 {% block page_extra_head %}
-{% include 'videos/video-header.html' %}
-{% if broadcaster.enable_viewer_count%}
-<script>let heartbeat_delay = {{heartbeat_delay}}</script>
-<script src="{% static 'js/viewcounter.js' %}?ver={{VERSION}}"></script>
-{% endif %}
+    {% include 'videos/video-header.html' %}
+    {% if broadcaster.enable_viewer_count %}
+        <script>let heartbeat_delay = {{ heartbeat_delay }}</script>
+        <script src="{% static 'js/viewcounter.js' %}?ver={{ VERSION }}"></script>
+    {% endif %}
 {% endblock %}
 
 
 {% block breadcrumbs %}
-  {{ block.super }}
-  <li class="breadcrumb-item" ><a href="{% url 'live:directs_all'%}" >{% trans "Lives" %}</a></li>
-  <li class="breadcrumb-item active" aria-current="page">{{broadcaster.name}}</li>
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'live:directs_all' %}">{% trans "Lives" %}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ broadcaster.name }}</li>
 {% endblock %}
 
 {% block page_title %}{% trans "Live" %} {{broadcaster.name}}{% endblock %}
 
 {% block page_content %}
+  {% csrf_token %}
 
   {% if form %}
     {% include 'live/event-form.html' %}
   {% else %}
-    <h3 id="livename" data-liveid="{{broadcaster.id}}"><i class="bi bi-cast"></i>&nbsp;{% trans "Live" %} {{broadcaster.name}}</h3>
+      <h3 id="livename" data-broadcasterid={{ broadcaster.id }}><i
+              class="bi bi-cast pe-2"></i> {% trans "Live" %} {{ broadcaster.name }}</h3>
 
       {% if display_event_btn %}
           <div class="d-flex infinite-container mb-2" id="event_add">
@@ -37,125 +39,122 @@
           </div>
       {% endif %}
 
-  {% if broadcaster.video_on_hold.is_video %}
-    <div id="divvideoonhold" style="display: block;">
-      <video id="podvideoonholdplayer" class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" muted autoplay>
-      </video>
-    </div>
-    <div id="divvideoplayer" style="display: none;">
       <div class="row">
-        <div class="col">
-          <video id="podvideoplayer" class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" poster="{{broadcaster.get_poster_url}}" muted autoplay>
-            <source
-             src="{{broadcaster.url}}"
-             type="application/x-mpegURL">
-          </video>
+          <div class="col">
+              <video id="podvideoplayer"
+                     class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered"
+                     controls height="360" poster="{{ broadcaster.get_poster_url }}" muted autoplay>
+                  <source src="{{ broadcaster.url }}" type="application/x-mpegURL">
+              </video>
 
-        </div>
-      </div>
-
-    </div>
-  {% else %}
-  <div class="row">
-    <div class="col">
-      <video id="podvideoplayer" class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" poster="{{broadcaster.get_poster_url}}" muted autoplay>
-        <source
-         src="{{broadcaster.url}}"
-         type="application/x-mpegURL">
-      </video>
-
-    </div>
-  </div>
-    <div id="viewers-list"><ul id="viewers-ul"></ul></div>
-  {% endif %}
-
-  <p>{{ broadcaster.description|safe }}</p>
-
-  {% if USE_BBB and USE_BBB_LIVE and display_chat %}
-    {% include "bbb/bbb_form.html" %}
-  {% endif %}
-
-  {% endif %}
-
-  <div id="info-video" style="display:none" class="pod-info-video">
-    <button type="button" class="btn-close" aria-label="{% trans 'Close' %}"></button>
-  </div>
-    {% if broadcaster.is_recording %}
-      <div class="card text-white bg-danger mb-3">
-          <div class="card-body">
-            <i class="bi bi-exclamation-octagon"></i>{% blocktrans %}Recording in progress{% endblocktrans %}
           </div>
       </div>
-    {% else %}
-        <div class="card  mb-3">
-          <div class="card-body">
-        {% blocktrans %}No recording in progress{% endblocktrans %}
-        </div>
+      <div id="viewers-list">
+          <ul id="viewers-ul"></ul>
       </div>
-    {% endif %}
 
-    {% get_next_events broadcaster.id 8 as NEXT_EVENTS %}
+      <p>{{ broadcaster.description|safe }}</p>
 
-    {% if NEXT_EVENTS %}
-      <div id="last_videos">
-        <h3>{% trans "Next events" %}</h3>
-        {% include "live/events_list.html" with events=NEXT_EVENTS %}
+      {% if display_chat %}
+          {% include "bbb/bbb_form.html" %}
+      {% endif %}
+
+      <div id="info-video" style="display:none" class="pod-info-video">
+          <button type="button" class="btn-close" aria-label="{% trans 'Close' %}"></button>
       </div>
-    {% endif %}
+      {% if broadcaster.is_recording %}
+          <div class="card text-white bg-danger mb-3">
+              <div class="card-body">
+                  <i class="bi bi-exclamation-octagon"></i>{% blocktrans %}Recording in progress{% endblocktrans %}
+              </div>
+          </div>
+      {% else %}
+          <div class="card  mb-3">
+              <div class="card-body">
+                  {% blocktrans %}No recording in progress{% endblocktrans %}
+              </div>
+          </div>
+      {% endif %}
+
+      {% get_next_events broadcaster.id 8 as NEXT_EVENTS %}
+
+      {% if NEXT_EVENTS %}
+          <div id="last_videos">
+              <h3>{% trans "Next events" %}</h3>
+              {% include "live/events_list.html" with events=NEXT_EVENTS %}
+          </div>
+      {% endif %}
+  {% endif %}
 
 {% endblock page_content %}
 
 <!--Bloc aside-->
-
 {% block page_aside %}
-  {% if request.user.is_superuser %}
-    <div class="card" id="card-managevideo">
-      <h2 class="card-header card-title pod-card__title h4">
-        <i class="bi bi-gear"></i>&nbsp;{% trans "Manage live"%}
-      </h2>
-      <div class="card-body card-text text-center">
-        <a href="{% url 'admin:live_broadcaster_change' broadcaster.id %}" title="{% trans 'Edit the live' %}" class="btn pod-btn-social p1 m-0 ms-1">
-          <i class="bi bi-pencil-square"></i></a>
-      </div>
-    </div>
-  {% endif %}
-
-  <div class="card card-body p-2 mt-1" id="card-livebuilding">
-    <h2 class="card-title pod-card__title h4">
-      <i class="bi bi-broadcast"></i>
-      <span class="ms-1 broadcaster-name">
-        {{broadcaster.building.name}}
-      </span>
-    </h2>
-  </div>
-
-  <div class="card-text">
-    {% if broadcaster.building.headband %}
-    <p class="card-text broadcaster-headband">
-        <img src="{{ broadcaster.building.headband.file.url }}" alt="{% trans 'Headband' %} {{ broadcaster.building.name }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy"/>
-      </p>
+    {% if request.user.is_superuser %}
+        <div class="card" id="card-managevideo">
+            <h2 class="card-header card-title pod-card__title h4">
+                <i class="bi bi-gear"></i>{% trans "Manage broadcaster" %}
+            </h2>
+            <div class="card-body card-text text-center">
+                <a href="{% url 'admin:live_broadcaster_change' broadcaster.id %}" title="{% trans 'Edit' %}"
+                   class="btn pod-btn-social p1 m-0 ms-1">
+                    <i class="bi bi-pencil-square"></i>
+                </a>
+            </div>
+        </div>
     {% endif %}
-    {% for otherbroadcaster in broadcaster.building.broadcaster_set.all%}
-      {% if otherbroadcaster != broadcaster and otherbroadcaster.public %}
-        <p class="card-text broadcaster-status">
-          {% if otherbroadcaster.status %}<a href="{% url 'live:direct' slug=otherbroadcaster.slug %}" class="live_on"><i class="bi bi-cast"></i>&nbsp;{{otherbroadcaster.name}}</a>
-          {% else %}<span class="live_off"><i class="bi bi-cast"></i>&nbsp;{{otherbroadcaster.name}} ({% trans "no broadcast in progress" %})</span>{% endif %}
-        </p>
-      {% endif %}
-    {% empty %}
-      <p class="card-text not-found">{% trans "Sorry, no lives found." %}</p>
-    {% endfor %}
-      {% if broadcaster.building.gmapurl %}
-        <p class="card-text">
-          <small class="text-muted"><a href='{{broadcaster.building.gmapurl}}' title="{% trans 'access map' %}" target="_blank"><i class="bi bi-gear"></i>
-            <span class="ms-1 access-map">{% trans "access map" %}</span>
-          </a></small>
-        </p>
-      {% endif %}
-  </div>
 
+    <div class="card card-body p-2 mt-1" id="card-livebuilding">
+        <h2 class="card-title pod-card__title h4">
+            <i class="bi bi-broadcast"></i>
+            <span class="ms-1 broadcaster-name">
+                {{ broadcaster.building.name }}
+            </span>
+        </h2>
+    </div>
 
-  {% include 'aside.html'%}
+    <div class="card-text">
+        {% if broadcaster.building.headband %}
+            <p class="card-text broadcaster-headband">
+                <img src="{{ broadcaster.building.headband.file.url }}"
+                     alt="{% trans 'Headband' %} {{ broadcaster.building.name }}"
+                     class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail"
+                     loading="lazy"/>
+            </p>
+        {% endif %}
+        {% for otherbroadcaster in broadcaster.building.broadcaster_set.all %}
+            {% if otherbroadcaster != broadcaster and otherbroadcaster.public %}
+                <p class="card-text broadcaster-status">
+                    {% if otherbroadcaster.status %}
+                        <a href="{% url 'live:direct' slug=otherbroadcaster.slug %}" class="live_on">
+                            <i class="bi bi-cast pe-2"></i>
+                            {{ otherbroadcaster.name }}
+                        </a>
+                    {% else %}
+                        <span class="live_off">
+                          <i class="bi bi-cast pe-2"></i>
+                          {{ otherbroadcaster.name }} ({% trans "no broadcast in progress" %})
+                        </span>
+                    {% endif %}
+                </p>
+            {% endif %}
+        {% empty %}
+            <p class="card-text not-found">{% trans "Sorry, no lives found." %}</p>
+        {% endfor %}
+
+        {% if broadcaster.building.gmapurl %}
+            <p class="card-text">
+                <small class="text-muted">
+                    <a href='{{ broadcaster.building.gmapurl }}' title="{% trans 'access map' %}" target="_blank">
+                        <i class="bi bi-gear pe-2"></i>
+                        <span class="access-map">{% trans "access map" %}</span>
+                    </a>
+                </small>
+            </p>
+        {% endif %}
+    </div>
+
+    {% include 'aside.html' %}
 {% endblock page_aside %}
 
 {% block more_script %}
@@ -221,19 +220,6 @@
     return options;
   }
 
-  // Management of the video on hold
-  {% if broadcaster.video_on_hold.is_video %}
-    // In this case, loop is necessary
-    options["loop"] = true;
-    var playerOnHold = videojs('podvideoonholdplayer', options, function(){});
-
-    playerOnHold.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
-    var mp4_sources = {{broadcaster.video_on_hold.get_video_mp4_json|safe}};
-    playerOnHold.src(mp4_sources);
-    let modalOnHold = playerOnHold.createModal('{% trans "Live not found, displaying the video on hold, retry every 10 seconds" %}');
-    setTimeout(function(){ modalOnHold.close(); }, 10000);
-  {% endif %}
-
   // Management of the streaming live
   var player = videojs('podvideoplayer', options, function(){});
 
@@ -258,6 +244,7 @@
     }
   })
 
+
   // Fire this event when live started
   player.on('loadedmetadata', function() {
     if(debug) { console.info("Streaming live starts."); }
@@ -267,7 +254,7 @@
     if ($("#divvideoplayer")) { $("#divvideoplayer").css("display", "block"); }
   })
 </script>
-{% if USE_BBB and USE_BBB_LIVE and display_chat %}
+{% if display_chat %}
   <script>
   // Send question for BBB live
   $(document).ready(function () {

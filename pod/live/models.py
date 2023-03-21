@@ -1,5 +1,9 @@
 """Esup-Pod "live" models."""
+import base64
 import hashlib
+import io
+import qrcode
+import os
 
 from ckeditor.fields import RichTextField
 from django.conf import settings
@@ -17,19 +21,21 @@ from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from sorl.thumbnail import get_thumbnail
 
+from pod.main.lang_settings import ALL_LANG_CHOICES as __ALL_LANG_CHOICES__
+from pod.main.lang_settings import PREF_LANG_CHOICES as __PREF_LANG_CHOICES__
+from django.utils.translation import get_language
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 from pod.video.models import Video, Type
 
+SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
+
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomImageModel
-
-    FILEPICKER = True
 else:
-    FILEPICKER = False
     from pod.main.models import CustomImageModel
 
 DEFAULT_THUMBNAIL = getattr(settings, "DEFAULT_THUMBNAIL", "img/default.svg")
@@ -41,6 +47,17 @@ AFFILIATION_EVENT = getattr(
     settings, "AFFILIATION_EVENT", ("faculty", "employee", "staff")
 )
 SECRET_KEY = getattr(settings, "SECRET_KEY", "")
+
+LANG_CHOICES = getattr(
+    settings,
+    "LANG_CHOICES",
+    ((" ", __PREF_LANG_CHOICES__), ("----------", __ALL_LANG_CHOICES__)),
+)
+MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
+LIVE_TRANSCRIPTIONS_FOLDER = getattr(
+    settings, "LIVE_TRANSCRIPTIONS_FOLDER", "live_transcripts"
+)
+MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", None)
 
 
 class Building(models.Model):
@@ -133,14 +150,6 @@ class Broadcaster(models.Model):
         CustomImageModel, models.SET_NULL, blank=True, null=True, verbose_name=_("Poster")
     )
     url = models.URLField(_("URL"), help_text=_("Url of the stream"), unique=True)
-    video_on_hold = models.ForeignKey(
-        Video,
-        help_text=_("This video will be displayed when there is no live stream."),
-        blank=True,
-        null=True,
-        verbose_name=_("Video on hold"),
-        on_delete=models.CASCADE,
-    )
     status = models.BooleanField(
         default=0,
         help_text=_("Check if the broadcaster is currently sending stream."),
@@ -165,8 +174,6 @@ class Broadcaster(models.Model):
         help_text=_("Live is accessible from the Live tab"),
         default=True,
     )
-    viewcount = models.IntegerField(_("Number of viewers"), default=0, editable=False)
-    viewers = models.ManyToManyField(User, editable=False)
 
     manage_groups = models.ManyToManyField(
         Group,
@@ -192,6 +199,19 @@ class Broadcaster(models.Model):
         verbose_name=_("Piloting configuration parameters"),
         help_text=_("Add piloting configuration parameters in Json format."),
     )
+    main_lang = models.CharField(
+        _("Main language"),
+        max_length=2,
+        choices=LANG_CHOICES,
+        default=get_language(),
+        help_text=_("Select the main language used in the content."),
+    )
+    transcription_file = models.FileField(
+        upload_to="media/" + LIVE_TRANSCRIPTIONS_FOLDER,
+        max_length=255,
+        null=True,
+        editable=False,
+    )
 
     def get_absolute_url(self):
         return reverse("live:direct", args=[str(self.slug)])
@@ -208,6 +228,8 @@ class Broadcaster(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
+        filename = self.slug + ".vtt"
+        self.set_broadcaster_file(filename)
         super(Broadcaster, self).save(*args, **kwargs)
 
     class Meta:
@@ -245,21 +267,41 @@ class Broadcaster(models.Model):
 
     is_recording_admin.short_description = _("Is recording?")
 
+    @property
+    def qrcode(self, request=None):
+        url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
+        url_immediate_event = reverse("live:event_immediate_edit", args={self.id})
+        data = "".join(
+            [
+                url_scheme,
+                "://",
+                get_current_site(request).domain,
+                url_immediate_event,
+            ]
+        )
+        img = qrcode.make(data)
+        buffer = io.BytesIO()
+        img.save(buffer, format="PNG")
+        img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
+        alt = _("QR code to record immediately an event")
+        return mark_safe(
+            f'<img src="data:image/png;base64, {img_str}" '
+            + f'width="300px" height="300px" alt={alt}>'
+        )
 
-class HeartBeat(models.Model):
-    user = models.ForeignKey(
-        User, null=True, verbose_name=_("Viewer"), on_delete=models.CASCADE
-    )
-    viewkey = models.CharField(_("Viewkey"), max_length=200, unique=True)
-    broadcaster = models.ForeignKey(
-        Broadcaster, null=False, verbose_name=_("Broadcaster"), on_delete=models.CASCADE
-    )
-    last_heartbeat = models.DateTimeField(_("Last heartbeat"), default=timezone.now)
-
-    class Meta:
-        verbose_name = _("Heartbeat")
-        verbose_name_plural = _("Heartbeats")
-        ordering = ["broadcaster"]
+    def set_broadcaster_file(self, filename):
+        trans_folder = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER)
+        trans_file = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER, filename)
+        empty_trans_file = os.path.join(
+            MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER, "%s_empty.vtt" % filename
+        )
+        if not os.path.exists(trans_folder):
+            os.makedirs(trans_folder)
+        if not os.path.exists(trans_file):
+            open(trans_file, "a").close()
+        if not os.path.exists(empty_trans_file):
+            open(empty_trans_file, "a").close()
+        self.transcription_file = os.path.join(LIVE_TRANSCRIPTIONS_FOLDER, filename)
 
 
 def current_time():
@@ -295,7 +337,6 @@ class Event(models.Model):
         max_length=255,
         editable=False,
     )
-
     title = models.CharField(
         _("Title"),
         max_length=250,
@@ -305,7 +346,6 @@ class Event(models.Model):
             "of the content. (max length: 250 characters)"
         ),
     )
-
     description = RichTextField(
         _("Description"),
         config_name="complete",
@@ -316,9 +356,7 @@ class Event(models.Model):
             "format the result using the toolbar."
         ),
     )
-
     owner = models.ForeignKey(User, verbose_name=_("Owner"), on_delete=models.CASCADE)
-
     additional_owners = models.ManyToManyField(
         User,
         blank=True,
@@ -342,14 +380,12 @@ class Event(models.Model):
         help_text=_("Broadcaster name."),
         on_delete=models.CASCADE,
     )
-
     type = models.ForeignKey(
         Type,
         default=DEFAULT_EVENT_TYPE_ID,
         verbose_name=_("Type"),
         on_delete=models.CASCADE,
     )
-
     iframe_url = models.URLField(
         _("Embedded Site URL"),
         help_text=_("Url of the embedded site to display"),
@@ -368,7 +404,6 @@ class Event(models.Model):
         null=True,
         blank=True,
     )
-
     is_draft = models.BooleanField(
         verbose_name=_("Draft"),
         help_text=_(
@@ -386,20 +421,25 @@ class Event(models.Model):
         ),
         default=False,
     )
-
     restrict_access_to_groups = models.ManyToManyField(
         AccessGroup,
         blank=True,
         verbose_name=_("Groups"),
         help_text=_("Select one or more groups who can access to this event"),
     )
-
     is_auto_start = models.BooleanField(
         verbose_name=_("Auto start"),
         help_text=_("If this box is checked, " "the record will start automatically."),
         default=False,
     )
-
+    video_on_hold = models.ForeignKey(
+        Video,
+        help_text=_("This video will be displayed when there is no live stream."),
+        blank=True,
+        null=True,
+        verbose_name=_("Video on hold"),
+        on_delete=models.CASCADE,
+    )
     thumbnail = models.ForeignKey(
         CustomImageModel,
         models.SET_NULL,
@@ -407,7 +447,6 @@ class Event(models.Model):
         null=True,
         verbose_name=_("Thumbnails"),
     )
-
     password = models.CharField(
         _("password"),
         help_text=_("Viewing this event will not be possible without this password."),
@@ -415,10 +454,22 @@ class Event(models.Model):
         blank=True,
         null=True,
     )
-
+    max_viewers = models.IntegerField(
+        _("Max viewers"),
+        null=False,
+        default=0,
+        help_text=_("Maximum of distinct viewers"),
+    )
+    viewers = models.ManyToManyField(User, related_name="viewers_events", editable=False)
     videos = models.ManyToManyField(
         Video,
         editable=False,
+        related_name="event_videos",
+    )
+    enable_transcription = models.BooleanField(
+        verbose_name=_("Enable transcription"),
+        help_text=_("If this box is checked, the transcription will be enabled."),
+        default=False,
     )
 
     class Meta:
@@ -463,33 +514,12 @@ class Event(models.Model):
             ("%s-%s" % (SECRET_KEY, self.id)).encode("utf-8")
         ).hexdigest()
 
-    def get_thumbnail_url(self):
-        """Get a thumbnail url for the event."""
-        request = None
-        if self.thumbnail and self.thumbnail.file_exist():
-            thumbnail_url = "".join(
-                [
-                    "//",
-                    get_current_site(request).domain,
-                    self.thumbnail.file.url,
-                ]
-            )
-        else:
-            thumbnail_url = static(DEFAULT_EVENT_THUMBNAIL)
-        return thumbnail_url
-
     def get_thumbnail_card(self):
-        """Return thumbnail image card of current event."""
-        if self.thumbnail and self.thumbnail.file_exist():
-            im = get_thumbnail(self.thumbnail.file, "x170", crop="center", quality=72)
-            thumbnail_url = im.url
+        if self.thumbnail:
+            return self.thumbnail.file.url
         else:
             thumbnail_url = static(DEFAULT_EVENT_THUMBNAIL)
-        return (
-            '<img class="card-img-top" src="%s" alt="%s"\
-            loading="lazy"/>'
-            % (thumbnail_url, self.title)
-        )
+            return thumbnail_url
 
     def is_current(self):
         """Test if event is currently open."""
@@ -509,21 +539,50 @@ class Event(models.Model):
         00:35:00
         """
         if self.end_date and self.start_date:
-            return self.start_date <= timezone.now() <= self.end_date
+            return self.start_date <= timezone.localtime(timezone.now()) <= self.end_date
         else:
             return False
 
     def is_past(self):
         """Test if event has happened in past."""
         if self.end_date:
-            return self.end_date <= timezone.now()
+            return self.end_date <= timezone.localtime(timezone.now())
         else:
             return False
 
     def is_coming(self):
         """Test if event will happen in future."""
-        print(self.start_date, timezone.now(), self.start_date < timezone.now())
         if self.start_date:
-            return timezone.now() < self.start_date
+            return timezone.localtime(timezone.now()) < self.start_date
         else:
             return False
+
+
+class LiveTranscriptRunningTask(models.Model):
+    task_id = models.CharField(max_length=255, unique=True)
+    broadcaster = models.ForeignKey(
+        Broadcaster,
+        verbose_name=_("Broadcaster"),
+        help_text=_("Broadcaster name."),
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        verbose_name = _("Running task")
+        verbose_name_plural = _("Running tasks")
+
+
+class HeartBeat(models.Model):
+    user = models.ForeignKey(
+        User, null=True, verbose_name=_("Viewer"), on_delete=models.CASCADE
+    )
+    viewkey = models.CharField(_("Viewkey"), max_length=200, unique=True)
+    event = models.ForeignKey(
+        Event, null=True, verbose_name=_("Event"), on_delete=models.CASCADE
+    )
+    last_heartbeat = models.DateTimeField(_("Last heartbeat"), default=timezone.now)
+
+    class Meta:
+        verbose_name = _("Heartbeat")
+        verbose_name_plural = _("Heartbeats")
+        ordering = ["event"]

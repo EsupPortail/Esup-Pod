@@ -1,3 +1,4 @@
+"""Settings for an Esup-Pod tenant."""
 # Cette ligne va importer les settings déjà présents dans votre application,
 # vous pourrez les surchager par site
 from pod.settings import *
@@ -46,7 +47,7 @@ DEFAULT_DC_RIGHTS = "BY-NC-SA"
 CELERY_BROKER_URL = CELERY_BROKER_URL + "-__NAME__"  # Define a broker
 
 
-########################################################## A LAISSER EN DERNIER !!!!!!!!!!!!!
+# !!!!!!!! A LAISSER EN DERNIER !!!!!!!!!!!!!
 the_update_settings = update_settings(locals())
 for variable in the_update_settings:
     locals()[variable] = the_update_settings[variable]
