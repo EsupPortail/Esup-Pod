@@ -4,7 +4,8 @@ var formCheckedInputs = [];
 var regExGetOnlyChars = /([\D])/g;
 var sortDirectionAsc = false;
 var sortDirectionChars = ["8600","8599"];
-// Return Waypoint Infinite object to init/refresh the infinite scroll
+
+let loader = document.querySelector(".loader_wrapper");
 let infinite_loading = document.querySelector(".infinite-loading");
 
 onBeforePageLoad = function () {
@@ -49,16 +50,18 @@ function refreshInfiniteLoader(url, nextPage) {
   );
 }
 
+// Replace count videos label (h1) with translation and plural
 function replaceCountVideos(newCount) {
-  // Replace count videos label (h1) with translation and plural
   var transVideoCount = newCount > 1 ? "videos found" : "video found";
   document.getElementById("video_count").innerHTML =
     newCount + " " + gettext(transVideoCount);
 }
 
+// Async request to refresh view with filtered and sorted video list
 function refreshVideosSearch() {
+  loader.classList.add("show");
   url = getUrlForRefresh();
-  // Ajax request to refresh view with filtered video list
+
   fetch(url, {
     method: "GET",
     headers: {
@@ -73,8 +76,6 @@ function refreshVideosSearch() {
       let parser = new DOMParser();
       let html = parser.parseFromString(data, "text/html").body;
       document.getElementById("videos_list").outerHTML = html.innerHTML;
-      //document.querySelector(".infiniteloading").style.display = "none";
-      //document.querySelector(".infinite-more-link").style.display = "none";
       this.replaceCountVideos(document.getElementById("videos_list").dataset.countvideos);
       nextPage = (document.getElementById("videos_list").getAttribute("nextPage") === 'true');
       window.history.pushState({}, "", this.url);
@@ -90,9 +91,13 @@ function refreshVideosSearch() {
       document.getElementById("videos_list").innerHTML = gettext(
         "An Error occurred while processing."
       );
+    })
+    .finally(() => {
+      loader.classList.remove("show");
     });
 }
 
+// Return url with filter and sort parameters
 function getUrlForRefresh(){
     url = window.location.pathname;
     data = formCheckedInputs;
@@ -107,8 +112,8 @@ function getUrlForRefresh(){
     return url;
 }
 
+// Get waypoint object
 hideInfiniteloading = function () {
-  // get waypoint object
   document
     .querySelectorAll("input[type=checkbox][class=form-check-input]")
     .forEach((checkbox) => {
@@ -116,10 +121,10 @@ hideInfiniteloading = function () {
     });
 };
 
+// Add trigger event on change on inputs (filters, sort column and sort direction)
 document.querySelectorAll('.form-check-input,#sort,#sort_direction').forEach(el =>{
     el.addEventListener('change', e => {
         formCheckedInputs = [];
-        document.querySelector(".infinite-loading").display = "block";
         document
             .querySelectorAll("input[type=checkbox][class=form-check-input]")
             .forEach((checkbox) => {
@@ -134,6 +139,7 @@ document.querySelectorAll('.form-check-input,#sort,#sort_direction').forEach(el 
     });
 });
 
+// Add trigger event to manage sort direction
 document.getElementById("sort_direction_label").addEventListener('click', function(e) {
     e.preventDefault();
     toggleSortDirection();
