@@ -502,6 +502,10 @@ def my_videos(request):
         " 'slug': cat_slug,
         " 'videos': [v_slug, v_slug...] },]
         """
+        if request.GET.get("category") is not None:
+            category_checked = request.GET.get("category")
+            videos_list = get_object_or_404(Category, title=category_checked, owner=request.user).video.all()
+
         cats = Category.objects.prefetch_related("video").filter(owner=request.user)
         videos_without_cat = videos_list.exclude(category__in=cats)
         cats = list(
@@ -520,23 +524,27 @@ def my_videos(request):
         data_context["categories"] = cats
         data_context["videos_without_cat"] = videos_without_cat
 
+    videos_list = get_filtered_videos_list(request, videos_list)
+    videos_list = sort_videos_list(request, videos_list)
+    count_videos = len(videos_list)
+
     paginator = Paginator(videos_list, 12)
-    try:
-        videos = paginator.page(page)
-    except PageNotAnInteger:
-        videos = paginator.page(1)
-    except EmptyPage:
-        videos = paginator.page(paginator.num_pages)
+    videos = get_paginated_videos(paginator, page)
 
     if request.is_ajax():
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path},
+            {
+                "videos": videos,
+                "full_path": full_path,
+                "count_videos": count_videos
+            },
         )
     data_context["use_category"] = USER_VIDEO_CATEGORY
     data_context["videos"] = videos
     data_context["full_path"] = full_path
+    data_context["count_videos"] = count_videos
     data_context["page_title"] = _("My videos")
 
     return render(request, "videos/my_videos.html", data_context)
