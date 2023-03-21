@@ -11,10 +11,8 @@ from pod.main.models import get_nextautoincrement
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 
 if getattr(settings, "USE_PODFILE", False):
-    FILEPICKER = True
     from pod.podfile.models import CustomFileModel
 else:
-    FILEPICKER = False
     from pod.main.models import CustomFileModel
 
 ROLE_CHOICES = getattr(
@@ -49,7 +47,9 @@ LANG_CHOICES = getattr(
     "LANG_CHOICES",
     ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),
 )
-LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]}
+__LANG_CHOICES_DICT__ = {
+    key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]
+}
 DEFAULT_LANG_TRACK = getattr(settings, "DEFAULT_LANG_TRACK", "fr")
 
 
@@ -181,7 +181,7 @@ class EnrichModelQueue(models.Model):
     in_treatment = models.BooleanField(_("In Treatment"), default=False)
 
     def get_label_lang(self):
-        return "%s" % LANG_CHOICES_DICT[self.lang]
+        return "%s" % __LANG_CHOICES_DICT__[self.lang]
 
     class Meta:
         verbose_name = _("EnrichModelQueue")
@@ -223,7 +223,7 @@ class Track(models.Model):
         return self.video.sites
 
     def get_label_lang(self):
-        return "%s" % LANG_CHOICES_DICT[self.lang]
+        return "%s" % __LANG_CHOICES_DICT__[self.lang]
 
     class Meta:
         verbose_name = _("Track")

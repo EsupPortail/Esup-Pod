@@ -1,4 +1,4 @@
-from __future__ import absolute_import, unicode_literals
+"""Esup-Pod Celery app."""
 import os
 from celery import Celery
 

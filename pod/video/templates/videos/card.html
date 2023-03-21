@@ -60,16 +60,16 @@
     <span class="small video-title">
       {% if channel %}
         {% if theme %}
-          <a href="{% url 'channel-video:video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}">
+          <a href="{% url 'channel-video:video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>
             {{video.title|capfirst|truncatechars:43}}
           </a>
         {% else %}
-          <a href="{% url 'channel-video:video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}">
+          <a href="{% url 'channel-video:video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>
             {{video.title|capfirst|truncatechars:43}}
           </a>
         {% endif %}
       {% else %}
-        <a href="{{video.get_absolute_url}}{% if video.is_draft and fromEvent %}{{ video.get_hashkey }}{% endif %}">{{video.title|capfirst|truncatechars:43}}</a>
+        <a href="{{video.get_absolute_url}}{% if video.is_draft and fromEvent %}{{ video.get_hashkey }}{% endif %}" {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>{{video.title|capfirst|truncatechars:43}}</a>
       {% endif %}
     </span>
   </div>

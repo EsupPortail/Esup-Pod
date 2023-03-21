@@ -8,11 +8,11 @@ from pod.chapter.utils import vtt_to_chapter
 from pod.main.forms_utils import add_placeholder_and_asterisk
 
 if getattr(settings, "USE_PODFILE", False):
-    FILEPICKER = True
+    __FILEPICKER__ = True
     from pod.podfile.models import CustomFileModel
     from pod.podfile.widgets import CustomFileWidget
 else:
-    FILEPICKER = False
+    __FILEPICKER__ = False
     from pod.main.models import CustomFileModel
 
 
@@ -41,7 +41,7 @@ class ChapterImportForm(forms.Form):
         self.user = kwargs.pop("user")
         self.video = kwargs.pop("video")
         super(ChapterImportForm, self).__init__(*args, **kwargs)
-        if FILEPICKER:
+        if __FILEPICKER__:
             self.fields["file"].widget = CustomFileWidget(type="file")
             self.fields["file"].queryset = CustomFileModel.objects.filter(
                 created_by=self.user

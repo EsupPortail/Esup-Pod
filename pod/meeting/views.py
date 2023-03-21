@@ -4,6 +4,7 @@ from django.shortcuts import render
 
 from django.http import JsonResponse, HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
+from django.templatetags.static import static
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
@@ -20,15 +21,18 @@ from django.core.mail import EmailMultiAlternatives
 from django.utils import timezone
 from datetime import datetime
 
-from .models import Meeting
+from .models import Meeting, Recording
 from .utils import get_nth_week_number
 from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm, MeetingInviteForm
-from pod.main.views import in_maintenance
+from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
 
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
 )
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
+DEFAULT_MEETING_THUMBNAIL = getattr(
+    settings, "DEFAULT_MEETING_THUMBNAIL", "img/default-meeting.svg"
+)
 BBB_MEETING_INFO = getattr(
     settings,
     "BBB_MEETING_INFO",
@@ -45,28 +49,9 @@ BBB_MEETING_INFO = getattr(
         "role": _("Role"),
     },
 )
-TEMPLATE_VISIBLE_SETTINGS = getattr(
-    settings,
-    "TEMPLATE_VISIBLE_SETTINGS",
-    {
-        "TITLE_SITE": "Pod",
-        "DESC_SITE": "The purpose of Esup-Pod is to facilitate the provision of video and\
-        thereby encourage its use in teaching and research.",
-        "TITLE_ETB": "University name",
-        "LOGO_SITE": "img/logoPod.svg",
-        "LOGO_ETB": "img/logo_etb.svg",
-        "LOGO_PLAYER": "img/pod_favicon.svg",
-        "LINK_PLAYER": "",
-        "FOOTER_TEXT": ("",),
-        "FAVICON": "img/pod_favicon.svg",
-        "CSS_OVERRIDE": "",
-        "PRE_HEADER_TEMPLATE": "",
-        "POST_FOOTER_TEMPLATE": "",
-        "TRACKING_TEMPLATE": "",
-    },
-)
+MEETING_DISABLE_RECORD = getattr(settings, "MEETING_DISABLE_RECORD", True)
 
-TITLE_SITE = (
+__TITLE_SITE__ = (
     TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
     if (TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"))
     else "Pod"
@@ -90,7 +75,12 @@ def my_meetings(request):
     return render(
         request,
         "meeting/my_meetings.html",
-        {"meetings": meetings, "page_title": _("My meetings")},
+        {
+            "meetings": meetings,
+            "page_title": _("My meetings"),
+            "DEFAULT_MEETING_THUMBNAIL": static(DEFAULT_MEETING_THUMBNAIL),
+            "meeting_disable_record": MEETING_DISABLE_RECORD,
+        },
     )
 
 
@@ -485,6 +475,85 @@ def get_meeting_info(request, meeting_id):
         return JsonResponse({"info": info, "msg": msg}, safe=False)
 
 
+@login_required(redirect_field_name="referrer")
+def recordings(request, meeting_id):
+    meeting = get_object_or_404(
+        Meeting, meeting_id=meeting_id, site=get_current_site(request)
+    )
+
+    if request.user != meeting.owner and not (
+        request.user.is_superuser or request.user.has_perm("meeting.delete_meeting")
+    ):
+        messages.add_message(
+            request, messages.ERROR, _("You cannot delete this meeting.")
+        )
+        raise PermissionDenied
+
+    meeting_recordings = meeting.get_recordings()
+    recordings = []
+    if type(meeting_recordings.get("recordings")) is dict:
+        for data in meeting_recordings["recordings"].values():
+            recording = Recording(data["recordID"], data["name"], data["state"])
+            recording.startTime = data["startTime"]
+            recording.endTime = data["endTime"]
+            for playback in data["playback"]:
+                recording.add_playback(
+                    data["playback"][playback]["type"], data["playback"][playback]["url"]
+                )
+            recordings.append(recording)
+
+    return render(
+        request,
+        "meeting/recordings.html",
+        {
+            "meeting": meeting,
+            "recordings": recordings,
+            "page_title": _("Meeting recordings"),
+        },
+    )
+
+
+@csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
+def delete_recording(request, meeting_id, recording_id):
+    meeting = get_object_or_404(
+        Meeting, meeting_id=meeting_id, site=get_current_site(request)
+    )
+
+    if request.user != meeting.owner and not (
+        request.user.is_superuser or request.user.has_perm("meeting.delete_meeting")
+    ):
+        messages.add_message(
+            request, messages.ERROR, _("You cannot delete this recording.")
+        )
+        raise PermissionDenied
+
+    if request.method == "POST":
+        msg = ""
+        delete = False
+        try:
+            delete = meeting.delete_recording(recording_id)
+        except ValueError as ve:
+            args = ve.args[0]
+            msg = ""
+            for key in args:
+                msg += "<b>%s:</b> %s<br/>" % (key, args[key])
+            msg = mark_safe(msg)
+        if delete and msg == "":
+            messages.add_message(
+                request, messages.INFO, _("The recording has been deleted.")
+            )
+        else:
+            messages.add_message(request, messages.ERROR, msg)
+        return redirect(reverse("meeting:recordings", args=(meeting.meeting_id,)))
+    else:
+        messages.add_message(
+            request, messages.INFO, _("This view cannot be accessed directly.")
+        )
+        return redirect(reverse("meeting:recordings", args=(meeting.meeting_id,)))
+
+
 def get_meeting_info_json(info):
     response = {}
     for key in info:
@@ -746,7 +815,7 @@ def create_ics(request, meeting):
     END:VEVENT
     END:VCALENDAR
     """ % {
-        "prodid": TITLE_SITE + " - " + request.scheme + "://" + request.get_host(),
+        "prodid": __TITLE_SITE__ + " - " + request.scheme + "://" + request.get_host(),
         "summary": event_name,
         "description": event_description,
         "duration": duration,

@@ -919,7 +919,7 @@
           loader.classList.remove("show"); // hide loader
         })
         .catch((err) => {
-          alert(err);
+          //alert(err);
           showAlertMessage(msg_error_duplicate, false, (delay = 30000));
         });
       document.querySelector("#manageCategoryModal #cancelDialog").click();

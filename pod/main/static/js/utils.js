@@ -10,7 +10,7 @@ Utils.prototype = {
   isElementInView: function (element, fullyInView) {
     const pageTop = $(window).scrollTop();
     const pageBottom = pageTop + $(window).height();
-    const elementTop = $(element).offset().top;
+    const elementTop = $(element).offsetTop;
     const elementBottom = elementTop + $(element).height();
 
     if (fullyInView === true)

@@ -1,3 +1,4 @@
+"""Model for video encoding."""
 import os
 from django.conf import settings
 from .models import EncodingVideo
@@ -10,14 +11,15 @@ from pod.completion.models import Track
 from django.core.files import File
 from .Encoding_video import (
     Encoding_video,
-    NB_THUMBNAIL,
-    CREATE_THUMBNAIL,
+    FFMPEG_NB_THUMBNAIL,
+    FFMPEG_CREATE_THUMBNAIL,
     FFMPEG_CMD,
     FFMPEG_INPUT,
     FFMPEG_NB_THREADS,
 )
+from .models import LANG_CHOICES
 import json
-from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
+
 from .encoding_utils import (
     launch_cmd,
     check_file,
@@ -35,28 +37,28 @@ ENCODING_CHOICES = getattr(
         ("playlist", "playlist"),
     ),
 )
-LANG_CHOICES = getattr(
-    settings,
-    "LANG_CHOICES",
-    ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),
-)
-LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]}
+
+__LANG_CHOICES_DICT__ = {
+    key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]
+}
 DEFAULT_LANG_TRACK = getattr(settings, "DEFAULT_LANG_TRACK", "fr")
 
 if getattr(settings, "USE_PODFILE", False):
-    FILEPICKER = True
+    __FILEPICKER__ = True
     from pod.podfile.models import CustomImageModel
     from pod.podfile.models import UserFolder
     from pod.podfile.models import CustomFileModel
 else:
-    FILEPICKER = False
+    __FILEPICKER__ = False
     from pod.main.models import CustomImageModel
     from pod.main.models import CustomFileModel
 
 
 class Encoding_video_model(Encoding_video):
+    """Encoding video model."""
+
     def remove_old_data(self):
-        """Remove old data."""
+        """Remove data from previous encoding."""
         video_to_encode = Video.objects.get(id=self.id)
         video_to_encode.thumbnail = None
         if video_to_encode.overview:
@@ -77,7 +79,7 @@ class Encoding_video_model(Encoding_video):
         self.add_encoding_log("remove_old_data", "", True, encoding_log_msg)
 
     def remove_previous_encoding_log(self, video_to_encode):
-        """Remove previously logs"""
+        """Remove previous logs."""
         msg = "\n"
         log_json = self.get_output_dir() + "/info_video.json"
         if os.path.exists(log_json):
@@ -227,22 +229,22 @@ class Encoding_video_model(Encoding_video):
 
     def store_json_list_subtitle_files(self, info_video, video_to_encode):
         list_subtitle_files = info_video["list_subtitle_files"]
+        if __FILEPICKER__:
+            videodir, created = UserFolder.objects.get_or_create(
+                name="%s" % video_to_encode.slug,
+                owner=video_to_encode.owner,
+            )
 
         for sub in list_subtitle_files:
             if not check_file(list_subtitle_files[sub]):
                 continue
-            # home = UserFolder.objects.get(name="Home", owner=video_to_encode.owner)
-            home, created = UserFolder.objects.get_or_create(
-                name="home", owner=video_to_encode.owner
-            )
-
-            if FILEPICKER:
+            if __FILEPICKER__:
                 podfile, created = CustomFileModel.objects.get_or_create(
                     file=self.get_true_path(list_subtitle_files[sub][1]),
                     name=list_subtitle_files[sub][1],
                     description="A subtitle file",
                     created_by=video_to_encode.owner,
-                    folder=home,
+                    folder=videodir,
                 )
             else:
                 podfile = CustomFileModel()
@@ -253,7 +255,7 @@ class Encoding_video_model(Encoding_video):
             sub_lang = list_subtitle_files[sub][0]
             track_lang = (
                 sub_lang[:2]
-                if (LANG_CHOICES_DICT.get(sub_lang[:2]))
+                if (__LANG_CHOICES_DICT__.get(sub_lang[:2]))
                 else DEFAULT_LANG_TRACK
             )
 
@@ -266,17 +268,18 @@ class Encoding_video_model(Encoding_video):
             )
 
     def store_json_list_thumbnail_files(self, info_video, video_to_encode):
+        """store_json_list_thumbnail_files."""
         list_thumbnail_files = info_video["list_thumbnail_files"]
         first = True
-
-        videodir, created = UserFolder.objects.get_or_create(
-            name="%s" % video_to_encode.slug,
-            owner=video_to_encode.owner,
-        )
+        if __FILEPICKER__:
+            videodir, created = UserFolder.objects.get_or_create(
+                name="%s" % video_to_encode.slug,
+                owner=video_to_encode.owner,
+            )
 
         for thumbnail_path in list_thumbnail_files:
             if check_file(list_thumbnail_files[thumbnail_path]):
-                if FILEPICKER:
+                if __FILEPICKER__:
                     thumbnail = CustomImageModel(
                         folder=videodir, created_by=video_to_encode.owner
                     )
@@ -313,6 +316,7 @@ class Encoding_video_model(Encoding_video):
             video_to_encode.save()
 
     def store_json_info(self):
+        """Open json file and store its data in current instance."""
         video_to_encode = Video.objects.get(id=self.id)
 
         with open(self.get_output_dir() + "/info_video.json") as json_file:
@@ -332,6 +336,7 @@ class Encoding_video_model(Encoding_video):
             # TODO : Without podfile
 
     def get_create_thumbnail_command_from_video(self, video_to_encode):
+        """Create command line to generate thumbnails from video."""
         thumbnail_command = "%s " % FFMPEG_CMD
         ev = EncodingVideo.objects.filter(
             video=video_to_encode, encoding_format="video/mp4"
@@ -351,12 +356,12 @@ class Encoding_video_model(Encoding_video):
             "nb_threads": FFMPEG_NB_THREADS,
         }
         output_file = os.path.join(self.output_dir, "thumbnail")
-        thumbnail_command += CREATE_THUMBNAIL % {
+        thumbnail_command += FFMPEG_CREATE_THUMBNAIL % {
             "duration": self.duration,
-            "nb_thumbnail": NB_THUMBNAIL,
+            "nb_thumbnail": FFMPEG_NB_THUMBNAIL,
             "output": output_file,
         }
-        for nb in range(0, NB_THUMBNAIL):
+        for nb in range(0, FFMPEG_NB_THUMBNAIL):
             num_thumb = str(nb + 1)
             self.list_thumbnail_files[num_thumb] = "%s_000%s.png" % (
                 output_file,
@@ -401,4 +406,5 @@ class Encoding_video_model(Encoding_video):
             self.store_json_list_thumbnail_files(info_video, video_to_encode)
 
     def encode_video(self):
+        """Start video encoding."""
         self.start_encode()

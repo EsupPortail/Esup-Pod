@@ -1,0 +1,19 @@
+.meeting-card-inactive{
+  border: 1px solid #f5a391;
+}
+
+.link-meeting {
+  right: 1rem;
+}
+
+.meeting-text-copied {
+  position: absolute;
+  top: 50%; 
+  left: 50%;
+  width: 170px;
+}
+
+.meeting-infos {
+  background-color: #CFE2FF ;
+  border: 1px solid #000000;
+}

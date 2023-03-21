@@ -1,5 +1,13 @@
 [
   {
+    "model": "sites.site",
+    "pk": 1,
+    "fields": {
+      "domain": "localhost:9090",
+      "name": "localhost:9090"
+    }
+  },
+  {
     "pk": 1,
     "model": "flatpages.flatpage",
     "fields": {
@@ -43,7 +51,7 @@
     "fields": {
         "key" : "maintenance_text_welcome",
         "value": "La plateforme Pod est actuellement en maintenance",
-        "description_fr" : "Texte qui sera affiché sur la page d'accueil pendant une maintenance",
+        "description_fr" : "Texte qui sera affiché sur la page d’accueil pendant une maintenance",
         "description_en" : "Text that will be displayed on the home page during maintenance"
     }
   },
