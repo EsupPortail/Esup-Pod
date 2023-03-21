@@ -510,6 +510,11 @@ button.nav-link {
   border-color: #CCC;
 }
 
+/*** Videos list header ***/
+.videos-list-header{
+   align-items: center;
+}
+
 /*** CARD ***/
 .infinite-item .card-body {
   padding: .9rem;

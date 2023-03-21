@@ -19,8 +19,9 @@
 {% block page_title %}{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}{% endblock %}
 
 {% block main_page_title %}
-  <h1 id="video_count" class="page_title">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h1>
-  <span class="pod-float-end">
+<div class="row videos-list-header">
+  <h1 id="video_count" class="page_title col-xl-4 col-sm-12 mb-2">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h1>
+  <span class="pod-float-end col-xl-4 col-md-8 col-xs-12 mb-2">
     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
       <i class="bi bi-rss"></i>&nbsp;Audio</a>
     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
@@ -29,9 +30,10 @@
       <a href="{% url 'video:video_stats_view' 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm"><i class="bi bi-graph-up"></i> {% trans "Statistics views" %}</a>
     {% endif %}
   </span>
-  <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms col-4">
+  <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms col-xl-4 col-md-4 col-xs-12 mb-2">
     {% include "videos/video_sort_select.html" %}
   </form>
+</div>
 {% endblock main_page_title %}
 
 {% block page_content %}
