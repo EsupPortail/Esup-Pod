@@ -105,6 +105,10 @@ function getUrlForRefresh(){
     if(sortDirectionAsc){
         url += "sort_direction="+document.getElementById('sort_direction').value+"&";
     }
+    if(document.querySelectorAll(".categories_list_item.active").length !== 0){
+        categoryChecked = document.querySelector(".categories_list_item.active").firstChild["dataset"]["slug"].split("-")[1];
+        url += "category="+categoryChecked+"&";
+    }
     data.forEach((input) => {
         url += input.name + "=" + input.value + "&";
     });
