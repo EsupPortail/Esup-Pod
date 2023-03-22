@@ -11,6 +11,7 @@
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My videos" %}</li>{% endblock %}
 
 {% block page_content %}
+  <h2 id="video_count" class="page_title col-xl-4 col-sm-12 mb-2">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
   {% if use_category %}
     {% include "videos/category_modal.html" %}
   {% endif %}
