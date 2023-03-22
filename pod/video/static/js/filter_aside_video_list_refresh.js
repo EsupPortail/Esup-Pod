@@ -1,7 +1,6 @@
 var url;
 var infinite;
 var formCheckedInputs = [];
-var regExGetOnlyChars = /([\D])/g;
 var sortDirectionAsc = false;
 var sortDirectionChars = ["8600","8599"];
 
@@ -61,7 +60,7 @@ function replaceCountVideos(newCount) {
 function refreshVideosSearch() {
   loader.classList.add("show");
   url = getUrlForRefresh();
-
+  // Async GET request wth parameters by fetch method
   fetch(url, {
     method: "GET",
     headers: {
@@ -92,6 +91,7 @@ function refreshVideosSearch() {
       );
     })
     .finally(() => {
+      // Finally re-enable inputs and dismiss loader
       this.disabledInputs(false);
       loader.classList.remove("show");
     });
@@ -101,14 +101,17 @@ function refreshVideosSearch() {
 function getUrlForRefresh(){
     url = window.location.pathname;
     data = formCheckedInputs;
+    // Add sort-related parameters
     url += "?sort="+document.getElementById('sort').value+"&";
     if(sortDirectionAsc){
         url += "sort_direction="+document.getElementById('sort_direction').value+"&";
     }
+    // Add category checked if exists
     if(document.querySelectorAll(".categories_list_item.active").length !== 0){
         categoryChecked = document.querySelector(".categories_list_item.active").firstChild["dataset"]["slug"].split("-")[1];
         url += "category="+categoryChecked+"&";
     }
+    // Add all other parameters (filters)
     data.forEach((input) => {
         url += input.name + "=" + input.value + "&";
     });
