@@ -11,6 +11,9 @@
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My videos" %}</li>{% endblock %}
 
 {% block page_content %}
+  {% if use_category %}
+    {% include "videos/category_modal.html" %}
+  {% endif %}
   <div class="row videos-list-header">
   {% if videos.paginator.count == 0 %}
     <p class="alert alert-info">{% trans 'You have not uploaded any videos yet, please use the "Add a new video" button to add one'%}</p>
@@ -23,9 +26,6 @@
   </form>
   </div>
   {% include "videos/video_list.html" %}
-  {% if use_category %}
-    {% include "videos/category_modal.html" %}
-  {% endif %}
 {% endblock page_content %}
 
 {% block page_aside %}
