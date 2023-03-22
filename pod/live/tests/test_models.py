@@ -127,7 +127,7 @@ class BroadcasterTestCase(TestCase):
         none_qrcode = '"data:image/png;base64, None"'
         self.assertNotIn(none_qrcode, broadcaster.qrcode)
         self.assertEqual(broadcaster.main_lang, "fr")
-        self.assertEqual(broadcaster.transcription_file.url, "/media/broadcaster1.vtt")
+        self.assertEqual(broadcaster.transcription_file.url, "/media/live_transcripts/broadcaster1.vtt")
         broadcaster2 = Broadcaster.objects.get(id=2)
         self.assertEqual(broadcaster2.main_lang, "en")
         print("   --->  test_attributs of BroadcasterTestCase: OK!")
