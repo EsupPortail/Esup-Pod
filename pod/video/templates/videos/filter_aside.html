@@ -6,6 +6,7 @@
 <div class="card card-body">
   <h2 class="card-title pod-card__title h4">
     <i class="bi bi-sliders2-vertical"></i>&nbsp;{% trans "Filters"%}
+    <button type="button" id="resetFilters" class="btn btn-outline-primary">{% trans 'Reset' %}</button>
   </h2>
 
 <form action="{% url 'videos:videos' %}" method="get" id="filters">

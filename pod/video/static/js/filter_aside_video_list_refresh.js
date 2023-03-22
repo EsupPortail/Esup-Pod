@@ -1,6 +1,5 @@
-var url;
 var infinite;
-var formCheckedInputs = [];
+var checkedInputs = [];
 var sortDirectionAsc = false;
 var sortDirectionChars = ["8600","8599"];
 
@@ -77,7 +76,7 @@ function refreshVideosSearch() {
       document.getElementById("videos_list").outerHTML = html.innerHTML;
       this.replaceCountVideos(document.getElementById("videos_list").dataset.countvideos);
       nextPage = (document.getElementById("videos_list").getAttribute("nextPage") === 'true');
-      window.history.pushState({}, "", this.url);
+      window.history.pushState({}, "", url);
       if (nextPage) {
         pageNext = document
           .querySelector("a.infinite-more-link")
@@ -99,38 +98,51 @@ function refreshVideosSearch() {
 
 // Return url with filter and sort parameters
 function getUrlForRefresh(){
-    url = window.location.pathname;
-    data = formCheckedInputs;
+    let newUrl = window.location.pathname;
     // Add sort-related parameters
-    url += "?sort="+document.getElementById('sort').value+"&";
+    newUrl += "?sort="+document.getElementById('sort').value+"&";
     if(sortDirectionAsc){
-        url += "sort_direction="+document.getElementById('sort_direction').value+"&";
+        newUrl += "sort_direction="+document.getElementById('sort_direction').value+"&";
     }
     // Add category checked if exists
     if(document.querySelectorAll(".categories_list_item.active").length !== 0){
-        categoryChecked = document.querySelector(".categories_list_item.active").firstChild["dataset"]["slug"].split("-")[1];
-        url += "category="+categoryChecked+"&";
+        checkedCategory = document.querySelector(".categories_list_item.active").firstChild["dataset"]["slug"].split("-")[1];
+        newUrl += "category="+checkedCategory+"&";
     }
     // Add all other parameters (filters)
-    data.forEach((input) => {
-        url += input.name + "=" + input.value + "&";
+    checkedInputs.forEach((input) => {
+        newUrl += input.name + "=" + input.value + "&";
     });
-    url += "page=";
-    return url;
+    // Add page parameter
+    newUrl += "page=";
+    return newUrl;
 }
 
 // Add trigger event on change on inputs (filters, sort column and sort direction)
 document.querySelectorAll('.form-check-input,#sort,#sort_direction').forEach(el =>{
     el.addEventListener('change', e => {
-        formCheckedInputs = [];
+        checkedInputs = [];
         this.disabledInputs(true);
         document.querySelectorAll(
             "input[type=checkbox]:checked[class=form-check-input]"
         ).forEach((e) => {
-            formCheckedInputs.push(e);
+            checkedInputs.push(e);
         });
-        this.refreshVideosSearch();
+        refreshVideosSearch();
     });
+});
+
+// Add trigger event to manage reset of filters
+document.getElementById("resetFilters").addEventListener('click', function() {
+    checkedInputs = [];
+    document.querySelectorAll("input[type=checkbox]:checked[class=form-check-input]").forEach((checkBox) => {
+        checkBox.checked = false;
+    });
+    document.querySelectorAll("#filters .categories_list_item").forEach((c_p) => {
+        c_p.classList.remove("active");
+    });
+    window.history.pushState("", "", window.location.pathname);
+    refreshVideosSearch();
 });
 
 // Add trigger event to manage sort direction
