@@ -713,7 +713,7 @@
 
   // Add onclick event to edit a category
   let cats_edit = document.querySelectorAll(
-    "#my_videos_filter .categories_list_item .edit_category"
+    ".categories_list_item .edit_category"
   );
   cats_edit.forEach((c_e) => {
     editHandler(c_e);
@@ -763,7 +763,7 @@
 
   // Add onclick event to delete a category
   let cats_del = document.querySelectorAll(
-    "#my_videos_filter .categories_list_item .remove_category"
+    ".categories_list_item .remove_category"
   );
   cats_del.forEach((c_d) => {
     deleteHandler(c_d);
@@ -808,7 +808,7 @@
               ];
             });
             document
-              .querySelector("#my_videos_filter .categories_list")
+              .querySelector(".categories_list")
               .removeChild(CAT_TO_DELETE.html);
             let filtered_container = getVideosFilteredContainer();
             if (
@@ -911,7 +911,7 @@
             data.category.id
           );
           document
-            .querySelector("#my_videos_filter .categories_list")
+            .querySelector(".categories_list")
             .appendChild(li);
           let msg_create = gettext("Category created successfully");
           showAlertMessage(msg_create);
@@ -944,7 +944,7 @@
 
   // Add click event on category in filter bar to filter videos in my_videos vue
   let cats = document.querySelectorAll(
-    "#my_videos_filter .categories_list_item .cat_title"
+    ".categories_list_item .cat_title"
   );
   cats.forEach((c) => {
     manageFilterVideos(c);
