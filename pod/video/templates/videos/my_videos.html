@@ -11,13 +11,15 @@
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My videos" %}</li>{% endblock %}
 
 {% block page_content %}
-  <h2 id="video_count" class="page_title col-xl-4 col-sm-12 mb-2">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
-  {% if use_category %}
-    {% include "videos/category_modal.html" %}
-  {% endif %}
-  <form id="sortForm" action="{% url 'video:my_videos' %}" method="get" class="filterSortForms col-xl-4 col-md-4 col-xs-12 mb-2">
-    {% include "videos/video_sort_select.html" %}
-  </form>
+  <div class="row videos-list-header">
+    <h2 id="video_count" class="page_title col-8">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
+    {% if use_category %}
+      {% include "videos/category_modal.html" %}
+    {% endif %}
+    <form id="sortForm" action="{% url 'video:my_videos' %}" method="get" class="filterSortForms col-4 mb-2">
+      {% include "videos/video_sort_select.html" %}
+    </form>
+  </div>
   {% if videos.paginator.count == 0 %}
     <h2 class="h4">{% trans "No video found"%}</h2>
     <p class="alert alert-info">{% trans 'You have not uploaded any videos yet, please use the "Add a new video" button to add one'%}</p>
