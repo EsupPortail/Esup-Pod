@@ -61,17 +61,16 @@
 </script>
 
 <script>
-  var page = 1
+  var page = 1;
   var nextPage;
   nextPage = false;
 
   {% if videos.has_next %}
-    page = parseInt("{{videos.next_page_number}}")
-    nextPage = true
+    page = parseInt("{{videos.next_page_number}}");
+    nextPage = true;
   {% endif %}
 
 </script>
-<script src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
-
+<script src="{% static 'js/infinite.js' %}"></script>
+<script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
 {% endblock more_script %}

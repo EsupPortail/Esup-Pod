@@ -541,10 +541,12 @@ def my_videos(request):
                 "count_videos": count_videos
             },
         )
+
     data_context["use_category"] = USER_VIDEO_CATEGORY
     data_context["videos"] = videos
     data_context["full_path"] = full_path
     data_context["count_videos"] = count_videos
+    data_context["owners"] = request.GET.getlist("owner")
     data_context["page_title"] = _("My videos")
 
     return render(request, "videos/my_videos.html", data_context)

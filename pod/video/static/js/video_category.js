@@ -163,7 +163,7 @@
 
   // Search categery
   let searchCatInput = document.querySelector(
-    "#my_videos_filter #searchcategories"
+    "#searchcategories"
   );
   let searchCatHandler = (s) => {
     let cats = document.querySelectorAll(
