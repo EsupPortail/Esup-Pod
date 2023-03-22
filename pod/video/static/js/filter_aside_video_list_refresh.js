@@ -79,7 +79,6 @@ function refreshVideosSearch() {
       this.replaceCountVideos(document.getElementById("videos_list").dataset.countvideos);
       nextPage = (document.getElementById("videos_list").getAttribute("nextPage") === 'true');
       window.history.pushState({}, "", this.url);
-      hideInfiniteloading();
       if (nextPage) {
         pageNext = document
           .querySelector("a.infinite-more-link")
@@ -93,6 +92,7 @@ function refreshVideosSearch() {
       );
     })
     .finally(() => {
+      this.disabledInputs(false);
       loader.classList.remove("show");
     });
 }
@@ -112,24 +112,11 @@ function getUrlForRefresh(){
     return url;
 }
 
-// Get waypoint object
-hideInfiniteloading = function () {
-  document
-    .querySelectorAll("input[type=checkbox][class=form-check-input]")
-    .forEach((checkbox) => {
-      checkbox.removeAttribute("disabled");
-    });
-};
-
 // Add trigger event on change on inputs (filters, sort column and sort direction)
 document.querySelectorAll('.form-check-input,#sort,#sort_direction').forEach(el =>{
     el.addEventListener('change', e => {
         formCheckedInputs = [];
-        document
-            .querySelectorAll("input[type=checkbox][class=form-check-input]")
-            .forEach((checkbox) => {
-              checkbox.setAttribute("disabled", "true");
-            });
+        this.disabledInputs(true);
         document.querySelectorAll(
             "input[type=checkbox]:checked[class=form-check-input]"
         ).forEach((e) => {
@@ -156,6 +143,15 @@ function toggleSortDirection(){
   sortDirectionAsc = !sortDirectionAsc;
   document.getElementById("sort_direction").checked = !document.getElementById("sort_direction").checked;
   updateSortDirectionChar();
+}
+
+// Enable / Disable toggle inputs to prevent user actions during loading
+function disabledInputs(value){
+    document
+        .querySelectorAll("input[type=checkbox][class=form-check-input]")
+        .forEach((checkbox) => {
+            checkbox.disabled = value;
+        });
 }
 
 // First launch of the infinite scroll
