@@ -33,11 +33,8 @@ class BuildingTestCase(TestCase):
         Building.objects.create(name="building1")
         print(" --->  SetUp of BuildingTestCase: OK!")
 
-    """
-        test attributs
-    """
-
     def test_attributs(self):
+        """Test attributs."""
         building = Building.objects.get(id=1)
         self.assertEqual(building.name, "building1")
         building.gmapurl = "b"
@@ -56,11 +53,8 @@ class BuildingTestCase(TestCase):
         self.assertTrue("blabla" in building.headband.name)
         print("   --->  test_attributs of BuildingTestCase: OK!")
 
-    """
-        test delete object
-    """
-
     def test_delete_object(self):
+        """Test delete object."""
         Building.objects.get(id=1).delete()
         self.assertEqual(Building.objects.all().count(), 0)
 
@@ -109,11 +103,8 @@ class BroadcasterTestCase(TestCase):
         )
         print(" --->  SetUp of BroadcasterTestCase: OK!")
 
-    """
-        test attributs
-    """
-
     def test_attributs(self):
+        """Test attributs."""
         broadcaster = Broadcaster.objects.get(id=1)
         self.assertEqual(broadcaster.name, "broadcaster1")
         self.assertTrue("blabla" in broadcaster.poster.name)
@@ -136,16 +127,13 @@ class BroadcasterTestCase(TestCase):
         none_qrcode = '"data:image/png;base64, None"'
         self.assertNotIn(none_qrcode, broadcaster.qrcode)
         self.assertEqual(broadcaster.main_lang, "fr")
-        self.assertEqual(broadcaster.transcription_file.url, "/media/testfile.vtt")
+        self.assertEqual(broadcaster.transcription_file.url, "/media/broadcaster1.vtt")
         broadcaster2 = Broadcaster.objects.get(id=2)
         self.assertEqual(broadcaster2.main_lang, "en")
         print("   --->  test_attributs of BroadcasterTestCase: OK!")
 
-    """
-        test delete object
-    """
-
     def test_delete_object(self):
+        """Test delete object."""
         Broadcaster.objects.get(id=1).delete()
         Broadcaster.objects.get(id=2).delete()
         self.assertEqual(Broadcaster.objects.all().count(), 0)
@@ -182,11 +170,8 @@ class HeartbeatTestCase(TestCase):
         )
         print(" --->  SetUp of HeartbeatTestCase: OK!")
 
-    """
-        test attributs
-    """
-
     def test_attributs(self):
+        """Test attributs."""
         hb = HeartBeat.objects.get(id=1)
         self.assertEqual(hb.user.username, "pod")
         self.assertEqual(hb.viewkey, "testkey")
@@ -316,7 +301,7 @@ class EventTestCase(TestCase):
         print(" --->  test_add_thumbnail of EventTestCase: OK!")
 
     def test_add_video_on_hold(self):
-        # Test with a video on hold
+        """Test with a video on hold."""
         video = Video.objects.get(id=1)
         event = Event.objects.get(id=1)
         event.video_on_hold = video
