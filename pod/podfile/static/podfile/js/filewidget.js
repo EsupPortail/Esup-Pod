@@ -800,7 +800,7 @@ if (typeof loaded == "undefined") {
         if (nextPage != -1) {
           document
             .getElementById("list_folders_sub")
-            .append(
+            .innerHTML += (
               seeMoreElement(nextPage, data.current_page + 1, data.total_pages)
             );
         }
