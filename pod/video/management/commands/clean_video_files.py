@@ -25,11 +25,14 @@ class Command(BaseCommand):
             default="video",
             help="Type of objects to be deleted.",
             choices=["userfolder", "video", "all"],
-            type=str)
+            type=str,
+        )
         parser.add_argument(
             "--dry",
             help="Simulate what would be deleted.",
-            action='store_true', default=False)
+            action="store_true",
+            default=False,
+        )
 
     def handle(self, *args, **options):
         """Handle the clean_video_files command call."""
@@ -62,8 +65,7 @@ class Command(BaseCommand):
                         Video.objects.get(id=vid_id)
                     except Video.DoesNotExist:
                         folder_content = folder.get_all_files()
-                        print("%s;%s;%s" % (
-                            folder, folder_content, len(folder_content)))
+                        print("%s;%s;%s" % (folder, folder_content, len(folder_content)))
                         folder_deleted += 1
                         files_deleted += len(folder_content)
                         if not dry_run:
@@ -96,17 +98,23 @@ class Command(BaseCommand):
         if clean_type in ["userfolder", "all"]:
             if USE_PODFILE:
                 if dry_run:
-                    print("[DRY RUN] %i useless user folders would have been deleted." % (
-                        self.nb_deleted["userfolder"]))
+                    print(
+                        "[DRY RUN] %i useless user folders would have been deleted."
+                        % (self.nb_deleted["userfolder"])
+                    )
                 else:
-                    print("%i useless video folders deleted." % (
-                        self.nb_deleted["userfolder"]))
+                    print(
+                        "%i useless video folders deleted."
+                        % (self.nb_deleted["userfolder"])
+                    )
             else:
                 print("No need to clean User Folders, as USE_PODFILE = False...")
         if clean_type in ["video", "all"]:
             if dry_run:
-                print("[DRY RUN] %i useless video files would have been deleted." % (
-                    self.nb_deleted["video"]))
+                print(
+                    "[DRY RUN] %i useless video files would have been deleted."
+                    % (self.nb_deleted["video"])
+                )
             else:
                 print("%i useless video files deleted." % self.nb_deleted["video"])
         print("Have a nice day ;)")

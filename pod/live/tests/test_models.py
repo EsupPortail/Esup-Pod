@@ -134,7 +134,8 @@ class BroadcasterTestCase(TestCase):
         self.assertNotIn(none_qrcode, broadcaster.qrcode)
         self.assertEqual(broadcaster.main_lang, "fr")
         trans_file = os.path.join(
-            MEDIA_URL, LIVE_TRANSCRIPTIONS_FOLDER, "broadcaster1.vtt")
+            MEDIA_URL, LIVE_TRANSCRIPTIONS_FOLDER, "broadcaster1.vtt"
+        )
         self.assertEqual(broadcaster.transcription_file.url, trans_file)
         broadcaster2 = Broadcaster.objects.get(id=2)
         self.assertEqual(broadcaster2.main_lang, "en")
