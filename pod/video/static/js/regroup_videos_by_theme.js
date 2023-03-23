@@ -153,7 +153,8 @@ function run(has_more_themes, Helper) {
     );
     li.setAttribute("title", theme.title);
     const link = document.createElement("A");
-    link.setAttribute("href", `${URLPathName}${theme.slug}/`);
+    let hrefUrl = "/"+channel_slug+"/"+theme.slug+"/";
+    link.setAttribute("href", hrefUrl);
     link.setAttribute("class", "text-truncate");
     link.innerText = theme.title;
 
