@@ -218,7 +218,7 @@ def case_manager_exist(
             file=source_file,
         ).update(file_size=file_size, email_sent=True, date_email_sent=timezone.now())
         print_if_debug(
-            "- Information saved in the " "recorder_recordingfiletreatment table."
+            "- Information saved in the recorder_recordingfiletreatment table."
         )
     else:
         # Email wasn't sent, due to an error

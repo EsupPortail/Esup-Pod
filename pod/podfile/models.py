@@ -31,7 +31,7 @@ class UserFolder(models.Model):
         blank=True,
         verbose_name=_("Groups"),
         help_text=_(
-            "Select one or more groups who" " can access in read only to this folder"
+            "Select one or more groups who can access in read only to this folder"
         ),
     )
     users = models.ManyToManyField(
@@ -40,7 +40,7 @@ class UserFolder(models.Model):
         verbose_name=_("Users"),
         related_name="shared_files",
         help_text=_(
-            "Select one or more users who" " can access in read only to this folder"
+            "Select one or more users who can access in read only to this folder"
         ),
     )
 

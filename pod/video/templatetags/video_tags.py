@@ -196,7 +196,7 @@ def do_tag_cloud_for_model(parser, token):
     len_bits = len(bits)
     if len_bits != 4 and len_bits not in range(6, 9):
         raise TemplateSyntaxError(
-            _("%s tag requires either three or between five " "and seven arguments")
+            _("%s tag requires either three or between five and seven arguments")
             % bits[0]
         )
     if bits[2] != "as":
@@ -220,7 +220,7 @@ def get_kwargs_for_cloud(len_bits, bits):
                 kwargs = update_kwargs_from_bits(kwargs, name, value, bits)
             else:
                 raise TemplateSyntaxError(
-                    _("%(tag)s tag was given an " "invalid option: '%(option)s'")
+                    _("%(tag)s tag was given an invalid option: '%(option)s'")
                     % {
                         "tag": bits[0],
                         "option": name,
@@ -228,7 +228,7 @@ def get_kwargs_for_cloud(len_bits, bits):
                 )
         except ValueError:
             raise TemplateSyntaxError(
-                _("%(tag)s tag was given a badly " "formatted option: '%(option)s'")
+                _("%(tag)s tag was given a badly formatted option: '%(option)s'")
                 % {
                     "tag": bits[0],
                     "option": bits[i],

@@ -7,7 +7,6 @@ from django.db.models.signals import post_save, pre_delete
 
 import threading
 
-TEST_SETTINGS = getattr(settings, "TEST_SETTINGS", False)
 ES_URL = getattr(settings, "ES_URL", ["http://127.0.0.1:9200/"])
 
 # do it with contributor, overlay, chapter etc.
@@ -18,7 +17,7 @@ def update_video_index(
     sender, instance=None, created=False, **kwargs
 ):  # pragma: no cover
     """Start index_video as daemon thread."""
-    if TEST_SETTINGS or ES_URL is None:
+    if ES_URL is None:
         return
     t = threading.Thread(target=index_video, args=[instance])
     t.setDaemon(True)
@@ -38,7 +37,7 @@ def delete_video_index(
     sender, instance=None, created=False, **kwargs
 ):  # pragma: no cover
     """Start delete_es as daemon thread."""
-    if TEST_SETTINGS or ES_URL is None:
+    if ES_URL is None:
         return
     # delete_es(instance)
     t = threading.Thread(target=delete_es, args=[instance])

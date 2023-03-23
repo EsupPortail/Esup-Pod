@@ -1951,6 +1951,7 @@ def manage_access_rights_stats_video(request, video, page_title):
 def stats_view(request, slug=None, slug_t=None):
     """
     View for statistics.
+
     " slug reference video's slug or channel's slug
     " t_slug reference theme's slug
     " from defined the source of the request such as
@@ -1959,7 +1960,7 @@ def stats_view(request, slug=None, slug_t=None):
     target = request.GET.get("from", "videos")
     videos, title = get_videos(slug, target, slug_t)
     error_message = (
-        "The following %(target)s does not " "exist or contain any videos: %(slug)s"
+        "The following %(target)s does not exist or contain any videos: %(slug)s"
     )
     if request.method == "GET" and target == "video" and videos:
         return manage_access_rights_stats_video(request, videos[0], title)

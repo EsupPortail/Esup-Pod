@@ -291,7 +291,7 @@ class Encoding_video_model(Encoding_video):
                 else:
                     thumbnail = CustomImageModel()
                     thumbnail.file.save(
-                        "%d_%s.png" % (video_to_encode.slug, thumbnail_path),
+                        "%s_%s.png" % (video_to_encode.slug, thumbnail_path),
                         File(open(list_thumbnail_files[thumbnail_path], "rb")),
                         save=True,
                     )

@@ -42,7 +42,7 @@ class BBB_Meeting(models.Model):
         _("Encoding step"),
         choices=ENCODING_STEP,
         help_text=_(
-            "Encoding step for conversion of the " "BBB presentation to video file."
+            "Encoding step for conversion of the BBB presentation to video file."
         ),
         default=0,
     )

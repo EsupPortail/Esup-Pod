@@ -52,10 +52,13 @@ settings_local.py
 scripts/bbb-pod-live/docker-compose.yml
 transcription/*
 
+# Unit test utilities #
+#######################
+chromedriver
+
 ## Others
 pod/static/
 *.bak
-*.pem
 .coverage
 htmlcov
 compile-model
@@ -69,6 +72,7 @@ compile-model
 ################
 *.crt
 *.key
+*.pem
 
 # NPM stuffs #
 ################
@@ -82,7 +86,4 @@ tmp-local/
 portainer-data
 v8-compile-cache-0
 pod/db_migrations
-pod/log
-pod/media
-pod/node_modules/*
 tmp/
