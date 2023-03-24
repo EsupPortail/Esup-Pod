@@ -275,9 +275,7 @@ class PopulatedCASTestCase(TestCase):
                 ]
             ).exists()
         )
-        print(
-            " --->  test_delete_synchronized_access_group of PopulatedCASTestCase: OK!"
-        )
+        print(" --->  test_delete_synchronized_access_group of PopulatedCASTestCase: OK!")
 
 
 class PopulatedLDAPTestCase(TestCase):

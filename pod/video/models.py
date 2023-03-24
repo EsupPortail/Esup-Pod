@@ -716,9 +716,7 @@ class Video(models.Model):
     transcript = models.BooleanField(
         _("Transcript"),
         default=False,
-        help_text=_(
-            "Check this box if you want to transcript the audio. (beta version)"
-        ),
+        help_text=_("Check this box if you want to transcript the audio. (beta version)"),
     )
     tags = TagField(
         help_text=_(
