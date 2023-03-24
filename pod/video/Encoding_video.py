@@ -453,6 +453,11 @@ class Encoding_video:
     def get_create_thumbnail_command(self):
         thumbnail_command = "%s " % FFMPEG_CMD
         list_rendition = get_list_rendition()
+        for rend in list_rendition.copy():
+            if list_rendition[rend]["encode_mp4"] is False:
+                list_rendition.pop(rend)
+        if len(list_rendition) == 0:
+            return ""
         first_item = list_rendition.popitem(last=False)
         input_file = self.list_mp4_files[first_item[0]]
         thumbnail_command += FFMPEG_INPUT % {
