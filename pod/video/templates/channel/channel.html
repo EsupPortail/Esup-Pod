@@ -210,7 +210,7 @@
     
     <script  src="{% static 'js/infinite.js' %}?ver={{VERSION}}" ></script>
    <script>
-        var channel_slug = "{{channel.slug}}";
+        var channel_url ="{% url 'channel-video:channel' slug_c=channel.slug %}"
         url = "/{{channel.slug}}/?page="
             onBeforePageLoad =  function() {
                 document.querySelector('.infinite-loading').style.display = 'block';
