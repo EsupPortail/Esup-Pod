@@ -480,6 +480,11 @@ class Encoding_video:
 
     def create_overview(self):
         list_rendition = get_list_rendition()
+        for rend in list_rendition.copy():
+            if list_rendition[rend]["encode_mp4"] is False:
+                list_rendition.pop(rend)
+        if len(list_rendition) == 0:
+            return ""
         first_item = list_rendition.popitem(last=False)
         image_width = int(
             int(first_item[1]["resolution"].split("x")[0]) / 4
