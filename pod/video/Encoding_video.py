@@ -472,7 +472,6 @@ class Encoding_video:
             )
         return thumbnail_command
     
-
     def get_first_item(self):
         list_rendition = get_list_rendition()
         for rend in list_rendition.copy():
