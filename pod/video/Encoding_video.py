@@ -473,6 +473,7 @@ class Encoding_video:
         return thumbnail_command
 
     def get_first_item(self):
+        """get the first mp4 render from setting"""
         list_rendition = get_list_rendition()
         for rend in list_rendition.copy():
             if list_rendition[rend]["encode_mp4"] is False:
