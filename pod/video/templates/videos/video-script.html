@@ -145,7 +145,7 @@ player.on('firstplay', function(){
   {% if video.overview %}
     //add overview
     player.vttThumbnails({
-      src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}'
+      src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}?{% now 'U' %}'
     });
   {% endif %}
 
