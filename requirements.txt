@@ -27,7 +27,7 @@ django-redis
 requests==2.25.1
 chardet==4.0.0
 django-static-compress>=1.2.1
-redis==3.5.3
+redis==4.5.3
 mozilla_django_oidc==3.0.0
 ics==0.7.2
 django-honeypot==1.0.3
