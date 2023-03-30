@@ -18,6 +18,7 @@ from ..models import Video
 from ..utils import check_file
 
 import importlib
+import os
 
 register = template.Library()
 
@@ -29,6 +30,16 @@ HOMEPAGE_NB_VIDEOS = getattr(django_settings, "HOMEPAGE_NB_VIDEOS", 12)
 @register.filter(name="file_exists")
 def file_exists(filepath):
     return check_file(filepath.path)
+
+
+@register.filter(name="file_date_created")
+def file_date_created(filepath):
+    return os.path.getctime(filepath.path)
+
+
+@register.filter(name="file_date_modified")
+def file_date_modified(filepath):
+    return os.path.getmtime(filepath.path)
 
 
 @register.simple_tag
