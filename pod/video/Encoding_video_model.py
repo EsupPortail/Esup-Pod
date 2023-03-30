@@ -271,14 +271,12 @@ class Encoding_video_model(Encoding_video):
         """store_json_list_thumbnail_files."""
         video = Video.objects.get(id=self.id)
         list_thumbnail_files = info_video["list_thumbnail_files"]
-        first = True
         if __FILEPICKER__:
             videodir, created = UserFolder.objects.get_or_create(
                 name="%s" % video.slug,
                 owner=video.owner,
             )
-
-        for thumbnail_path in list_thumbnail_files:
+        for index, thumbnail_path in enumerate(list_thumbnail_files):
             if check_file(list_thumbnail_files[thumbnail_path]):
                 if __FILEPICKER__:
                     thumbnail = CustomImageModel(
@@ -289,6 +287,7 @@ class Encoding_video_model(Encoding_video):
                         File(open(list_thumbnail_files[thumbnail_path], "rb")),
                         save=True,
                     )
+                    thumbnail.save()
                 else:
                     thumbnail = CustomImageModel()
                     thumbnail.file.save(
@@ -297,13 +296,11 @@ class Encoding_video_model(Encoding_video):
                         save=True,
                     )
                     thumbnail.save()
-                # rm temp location
-                os.remove(list_thumbnail_files[thumbnail_path])
-                if first:
+                if index == 1 and thumbnail.id:
                     video.thumbnail = thumbnail
                     video.save()
-                    first = False
-
+                # rm temp location
+                os.remove(list_thumbnail_files[thumbnail_path])
         return video
 
     def store_json_list_overview_files(self, info_video):
@@ -332,7 +329,7 @@ class Encoding_video_model(Encoding_video):
             self.store_json_encoding_log(info_video, video_to_encode)
             self.store_json_list_subtitle_files(info_video, video_to_encode)
             # update and create new video to be sur that thumbnail and overview be present
-            video = self.store_json_list_thumbnail_files(info_video)
+            self.store_json_list_thumbnail_files(info_video)
             video = self.store_json_list_overview_files(info_video)
 
             return video
