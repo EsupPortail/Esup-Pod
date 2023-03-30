@@ -488,7 +488,7 @@ class Encoding_video:
         # overview combine for 160x90
         in_height = list(self.list_video_track.items())[0][1]["height"]
         in_width = list(self.list_video_track.items())[0][1]["width"]
-        image_height = 75 # decrease to 75 px instead of 90 dur to montage overflow
+        image_height = 75  # decrease to 75 px instead of 90 due to montage overflow
         coef = in_height / image_height
         image_width = int(in_width / coef)
         input_file = self.list_mp4_files[first_item[0]]
