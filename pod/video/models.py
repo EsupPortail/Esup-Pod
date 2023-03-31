@@ -983,7 +983,7 @@ class Video(models.Model):
         """Get the encoded status of a video."""
         return (
             self.get_playlist_master() is not None
-            or self.get_video_mp4() is not None
+            or self.get_video_mp4().exists()
             or self.get_video_m4a() is not None
         )
 

@@ -23,9 +23,11 @@
   <a href="{% url 'video:chapter:video_chapter' slug=video.slug %}" title="{% trans 'Chapter the video'%}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
     <i class="bi bi-card-list" aria-hidden="true"></i></a>
 {% endif %}
+{% if video.encoded and video.encoding_in_progress is False %}
 {% if video.owner == request.user or request.user.is_superuser or perms.video.delete_video %}
   <a href="{% url 'video:video_delete' slug=video.slug %}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1" title="{% trans 'Delete the video'%}">
     <i class="bi bi-trash" aria-hidden="true"></i></a>
+{% endif %}
 {% endif %}
 
 {% if "edit" in request.resolver_match.url_name %}
