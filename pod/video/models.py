@@ -23,7 +23,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.templatetags.static import static
 from django.dispatch import receiver
 from django.utils.html import format_html
-from django.db.models.signals import pre_delete
+from django.db.models.signals import pre_delete, post_delete
 from tagging.models import Tag
 from datetime import date
 from django.utils import timezone
@@ -784,10 +784,11 @@ class Video(models.Model):
 
     thumbnail = models.ForeignKey(
         CustomImageModel,
-        models.SET_NULL,
+        on_delete=models.SET_NULL,
         blank=True,
         null=True,
         verbose_name=_("Thumbnails"),
+        related_name='videos',
     )
     duration = models.IntegerField(_("Duration"), default=0, editable=False, blank=True)
     overview = models.ImageField(
@@ -1066,24 +1067,9 @@ class Video(models.Model):
 
     def delete(self):
         """Delete the current video file and db object."""
-        if self.video:
-            if os.path.isfile(self.video.path):
-                os.remove(self.video.path)
-        if self.overview:
-            if os.path.isfile(self.overview.path):
-                os.remove(self.overview.path)
-        self.delete_video_folder()
+        # use pre delete and post delete signal to remove file used by video
+        # see above
         super(Video, self).delete()
-
-    def delete_video_folder(self):
-        """Delete UserFolder associated to current video."""
-        if USE_PODFILE:
-            video_folder = UserFolder.objects.filter(
-                name=self.slug,
-                owner=self.owner,
-            )
-            if video_folder:
-                video_folder[0].delete()
 
     def get_playlist_master(self):
         try:
@@ -1347,22 +1333,6 @@ class UpdateOwner(models.Model):
         verbose_name_plural = _("Update Owners")
 
 
-def remove_video_file(video):
-    if video.video:
-        log_file = os.path.join(
-            os.path.dirname(video.video.path), "%04d" % video.id, "info_video.json"
-        )
-        if os.path.isfile(log_file):
-            os.remove(log_file)
-    if video.overview:
-        image_overview = os.path.join(
-            os.path.dirname(video.overview.path), "overview.png"
-        )
-        if os.path.isfile(image_overview):
-            os.remove(image_overview)
-        video.overview.delete()
-
-
 @receiver(post_save, sender=Video)
 def default_site(sender, instance, created, **kwargs):
     if len(instance.sites.all()) == 0:
@@ -1371,8 +1341,6 @@ def default_site(sender, instance, created, **kwargs):
 
 @receiver(pre_delete, sender=Video, dispatch_uid="pre_delete-video_files_removal")
 def video_files_removal(sender, instance, using, **kwargs):
-    remove_video_file(instance)
-
     previous_encoding_video = EncodingVideo.objects.filter(video=instance)
     if len(previous_encoding_video) > 0:
         for encoding in previous_encoding_video:
@@ -1387,6 +1355,37 @@ def video_files_removal(sender, instance, using, **kwargs):
     if len(previous_encoding_playlist) > 0:
         for encoding in previous_encoding_playlist:
             encoding.delete()
+
+
+def remove_video_file(video):
+    if video.video:
+        if os.path.isfile(video.video.path):
+            os.remove(video.video.path)
+        log_file = os.path.join(
+            os.path.dirname(video.video.path), "%04d" % video.id, "info_video.json"
+        )
+        if os.path.isfile(log_file):
+            os.remove(log_file)
+    if video.overview:
+        image_overview = os.path.join(
+            os.path.dirname(video.overview.path), "overview.png"
+        )
+        if os.path.isfile(image_overview):
+            os.remove(image_overview)
+        video.overview.delete()
+
+
+@receiver(post_delete, sender=Video, dispatch_uid="post_delete-video_podfiles_removal")
+def video_podfiles_removal(sender, instance, using, **kwargs):
+    """Delete UserFolder associated to current video."""
+    remove_video_file(instance)
+    if USE_PODFILE:
+        video_folder = UserFolder.objects.filter(
+            name=instance.slug,
+            owner=instance.owner,
+        )
+        if video_folder:
+            video_folder[0].delete()
 
 
 class ViewCount(models.Model):

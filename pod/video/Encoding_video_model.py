@@ -271,7 +271,7 @@ class Encoding_video_model(Encoding_video):
         """store_json_list_thumbnail_files."""
         video = Video.objects.get(id=self.id)
         list_thumbnail_files = info_video["list_thumbnail_files"]
-        thumbnail = CustomImageModel() 
+        thumbnail = CustomImageModel()
         if __FILEPICKER__:
             videodir, created = UserFolder.objects.get_or_create(
                 name="%s" % video.slug,
