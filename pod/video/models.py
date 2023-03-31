@@ -1065,11 +1065,11 @@ class Video(models.Model):
             ("%s-%s" % (SECRET_KEY, self.id)).encode("utf-8")
         ).hexdigest()
 
-    def delete(self):
+    def delete(self, *args, **kwargs):
         """Delete the current video file and db object."""
         # use pre delete and post delete signal to remove file used by video
         # see above
-        super(Video, self).delete()
+        super(Video, self).delete(*args, **kwargs)
 
     def get_playlist_master(self):
         try:
@@ -1341,6 +1341,9 @@ def default_site(sender, instance, created, **kwargs):
 
 @receiver(pre_delete, sender=Video, dispatch_uid="pre_delete-video_files_removal")
 def video_files_removal(sender, instance, using, **kwargs):
+    """remove files created after encoding """
+    remove_video_file(instance)
+
     previous_encoding_video = EncodingVideo.objects.filter(video=instance)
     if len(previous_encoding_video) > 0:
         for encoding in previous_encoding_video:
@@ -1358,14 +1361,7 @@ def video_files_removal(sender, instance, using, **kwargs):
 
 
 def remove_video_file(video):
-    if video.video:
-        if os.path.isfile(video.video.path):
-            os.remove(video.video.path)
-        log_file = os.path.join(
-            os.path.dirname(video.video.path), "%04d" % video.id, "info_video.json"
-        )
-        if os.path.isfile(log_file):
-            os.remove(log_file)
+    """remove video file linked to video"""
     if video.overview:
         image_overview = os.path.join(
             os.path.dirname(video.overview.path), "overview.png"
@@ -1374,11 +1370,18 @@ def remove_video_file(video):
             os.remove(image_overview)
         video.overview.delete()
 
+    log_file = os.path.join(
+        os.path.dirname(video.video.path), "%04d" % video.id, "info_video.json"
+    )
+    if os.path.isfile(log_file):
+        os.remove(log_file)
+
 
 @receiver(post_delete, sender=Video, dispatch_uid="post_delete-video_podfiles_removal")
-def video_podfiles_removal(sender, instance, using, **kwargs):
+def video_podfiles_removal(sender, instance, **kwargs):
     """Delete UserFolder associated to current video."""
-    remove_video_file(instance)
+    if instance.video and os.path.isfile(instance.video.path):
+        os.remove(instance.video.path)
     if USE_PODFILE:
         video_folder = UserFolder.objects.filter(
             name=instance.slug,
