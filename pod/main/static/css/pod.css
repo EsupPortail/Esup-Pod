@@ -950,6 +950,12 @@ body {
   color: inherit;
 }*/
 
+.accordion{
+  --bs-accordion-active-color: var(--pod-link-color);
+  --bs-accordion-active-bg: rgba(var(--bs-primary-rgb),.1);
+  --bs-accordion-btn-focus-border-color: var(--pod-primary);
+}
+
 .timecode{
   font-size: 12px;
 }
