@@ -271,31 +271,23 @@ class Encoding_video_model(Encoding_video):
         """store_json_list_thumbnail_files."""
         video = Video.objects.get(id=self.id)
         list_thumbnail_files = info_video["list_thumbnail_files"]
+        thumbnail = CustomImageModel() 
         if __FILEPICKER__:
             videodir, created = UserFolder.objects.get_or_create(
                 name="%s" % video.slug,
                 owner=video.owner,
             )
+            thumbnail = CustomImageModel(
+                folder=videodir, created_by=video.owner
+            )
         for index, thumbnail_path in enumerate(list_thumbnail_files):
             if check_file(list_thumbnail_files[thumbnail_path]):
-                if __FILEPICKER__:
-                    thumbnail = CustomImageModel(
-                        folder=videodir, created_by=video.owner
-                    )
-                    thumbnail.file.save(
-                        "%s_%s.png" % (video.slug, thumbnail_path),
-                        File(open(list_thumbnail_files[thumbnail_path], "rb")),
-                        save=True,
-                    )
-                    thumbnail.save()
-                else:
-                    thumbnail = CustomImageModel()
-                    thumbnail.file.save(
-                        "%s_%s.png" % (video.slug, thumbnail_path),
-                        File(open(list_thumbnail_files[thumbnail_path], "rb")),
-                        save=True,
-                    )
-                    thumbnail.save()
+                thumbnail.file.save(
+                    "%s_%s.png" % (video.slug, thumbnail_path),
+                    File(open(list_thumbnail_files[thumbnail_path], "rb")),
+                    save=True,
+                )
+                thumbnail.save()
                 if index == 1 and thumbnail.id:
                     video.thumbnail = thumbnail
                     video.save()
