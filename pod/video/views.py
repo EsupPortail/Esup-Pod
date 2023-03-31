@@ -996,7 +996,7 @@ def video_delete(request, slug=None):
         messages.add_message(
             request,
             messages.ERROR,
-            _("you cannot delete a video that is encoding in progress.")
+            _("You cannot delete a video that is encoding in progress.")
         )
         return redirect(reverse("video:my_videos"))
 
