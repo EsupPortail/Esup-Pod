@@ -707,6 +707,15 @@ class VideoEditTestView(TestCase):
             video="test1.mp4",
             type=Type.objects.get(id=1),
         )
+        rendition = VideoRendition.objects.get(resolution__contains="x360")
+        # add encoding to change file in test !
+        encoding, created = EncodingVideo.objects.get_or_create(
+            name="360p",
+            video=video0,
+            rendition=rendition,
+            encoding_format="video/mp4",
+            source_file="360p.mp4",
+        )
         video = Video.objects.create(
             title="VideoWithAdditionalOwners",
             owner=user,
