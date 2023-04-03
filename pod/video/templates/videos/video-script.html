@@ -1,5 +1,5 @@
 
-{% load static custom_tags %}
+{% load static custom_tags video_tags %}
 {% load i18n %}
 {% get_setting "VIDEO_PLAYBACKRATES" '[0.5, 1, 1.5, 2]' as video_playbackrates %}
 {% get_setting "USE_VIDEO_EVENT_TRACKING" False as video_event_tracking %}
@@ -145,7 +145,7 @@ player.on('firstplay', function(){
   {% if video.overview %}
     //add overview
     player.vttThumbnails({
-      src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}'
+      src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}?date={{video.overview|file_date_created}}'
     });
   {% endif %}
 
