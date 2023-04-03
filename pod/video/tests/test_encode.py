@@ -175,7 +175,7 @@ class EncodeTestCase(TestCase):
         audio.delete()
         self.assertTrue(not os.path.exists(audio_video_path))
         self.assertTrue(not os.path.exists(audio_log_file))
-         # check audio folder remove
+        # check audio folder remove
         self.assertFalse(os.path.isdir(audio_dir))
 
         print("   --->  test_delete_object of EncodeTestCase: OK!")
