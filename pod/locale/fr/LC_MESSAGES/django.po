@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-03 16:34+0200\n"
+"POT-Creation-Date: 2023-04-03 14:56+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -90,7 +90,7 @@ msgid "registered-reader"
 msgstr "lecteur enregistré"
 
 #: pod/authentication/models.py:84 pod/recorder/models.py:249
-#: pod/video/models.py:1952 pod/video/models.py:2005 pod/video/views.py:1656
+#: pod/video/models.py:1950 pod/video/models.py:2003 pod/video/views.py:1654
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -249,7 +249,7 @@ msgstr "Fermer"
 #: pod/video/templates/videos/video_note_display.html:42
 #: pod/video/templates/videos/video_notes.html:70
 #: pod/video/templates/videos/video_notes.html:105 pod/video/views.py:366
-#: pod/video/views.py:960 pod/video/views.py:1015 pod/video/views.py:1563
+#: pod/video/views.py:960 pod/video/views.py:1013 pod/video/views.py:1561
 #: pod/video_search/templates/search/search.html:46
 msgid "One or more errors have been found in the form."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
@@ -350,7 +350,7 @@ msgstr "Encodage en cours"
 msgid "Already published"
 msgstr "Déjà publié"
 
-#: pod/bbb/models.py:42 pod/video/models.py:903 pod/video/models.py:1853
+#: pod/bbb/models.py:42 pod/video/models.py:903 pod/video/models.py:1851
 msgid "Encoding step"
 msgstr "Étape de l’encodage"
 
@@ -872,7 +872,7 @@ msgstr "titre court"
 #: pod/enrichment/models.py:117 pod/live/models.py:139
 #: pod/playlist/models.py:17 pod/video/models.py:280 pod/video/models.py:430
 #: pod/video/models.py:563 pod/video/models.py:604 pod/video/models.py:663
-#: pod/video/models.py:2081
+#: pod/video/models.py:2079
 msgid ""
 "Used to access this instance, the \"slug\" is a short label containing only "
 "letters, numbers, underscore or dash top."
@@ -1087,7 +1087,7 @@ msgstr "Ajouter un nouveau chapitre"
 #: pod/chapter/templates/video_chapter.html:59
 #: pod/completion/templates/video_completion.html:128
 #: pod/enrichment/templates/enrichment/group_enrichment.html:71
-#: pod/video/templates/videos/video.html:155
+#: pod/video/templates/videos/video.html:198
 #: pod/video/templates/videos/video_edit.html:152
 msgid "Manage video"
 msgstr "Gérer la vidéo"
@@ -1240,9 +1240,9 @@ msgstr ""
 #: pod/completion/models.py:123 pod/completion/models.py:205
 #: pod/completion/models.py:288 pod/enrichment/models.py:325
 #: pod/enrichment/models.py:361 pod/playlist/models.py:84
-#: pod/recorder/models.py:41 pod/video/models.py:644 pod/video/models.py:1401
-#: pod/video/models.py:1583 pod/video/models.py:1660 pod/video/models.py:1725
-#: pod/video/models.py:1782 pod/video/models.py:1806 pod/video/models.py:1838
+#: pod/recorder/models.py:41 pod/video/models.py:644 pod/video/models.py:1399
+#: pod/video/models.py:1581 pod/video/models.py:1658 pod/video/models.py:1723
+#: pod/video/models.py:1780 pod/video/models.py:1804 pod/video/models.py:1836
 msgid "Video"
 msgstr "Vidéo"
 
@@ -1380,7 +1380,7 @@ msgstr "gauche"
 
 #: pod/completion/models.py:291 pod/live/models.py:135 pod/live/models.py:335
 #: pod/playlist/models.py:13 pod/video/models.py:276 pod/video/models.py:427
-#: pod/video/models.py:559 pod/video/models.py:659 pod/video/models.py:2077
+#: pod/video/models.py:559 pod/video/models.py:659 pod/video/models.py:2075
 msgid "Slug"
 msgstr "Titre court"
 
@@ -1396,7 +1396,7 @@ msgstr "Heure de fin"
 msgid "End time of the overlay, in seconds."
 msgstr "Fin de la superposition, en secondes."
 
-#: pod/completion/models.py:311 pod/video/views.py:1706
+#: pod/completion/models.py:311 pod/video/views.py:1704
 msgid "Content"
 msgstr "Contenu"
 
@@ -1795,8 +1795,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html:151
 msgid "Subtitles and/or caption(s) files must be in \".vtt\" format."
 msgstr ""
-"Les fichiers de sous-titres et/ou de légendes doivent être au format \".vtt"
-"\"."
+"Les fichiers de sous-titres et/ou de légendes doivent être au format \"."
+"vtt\"."
 
 #: pod/completion/templates/video_completion.html:152
 msgid "You can use"
@@ -1874,7 +1874,7 @@ msgstr "Compléments de la vidéo"
 
 #: pod/completion/views.py:344 pod/completion/views.py:538
 #: pod/completion/views.py:987 pod/podfile/views.py:454
-#: pod/podfile/views.py:502 pod/video/views.py:457 pod/video/views.py:1760
+#: pod/podfile/views.py:502 pod/video/views.py:457 pod/video/views.py:1758
 msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs"
 
@@ -1942,7 +1942,7 @@ msgstr "Temps de fin de l’affichage de l’enrichissement en secondes."
 #: pod/enrichment/models.py:139
 #: pod/enrichment/templates/enrichment/list_enrichment.html:11
 #: pod/live/models.py:386 pod/video/forms.py:116 pod/video/models.py:587
-#: pod/video/models.py:672 pod/video/views.py:1698
+#: pod/video/models.py:672 pod/video/views.py:1696
 #: pod/video_search/templates/search/search.html:84
 msgid "Type"
 msgstr "Type"
@@ -2078,8 +2078,8 @@ msgid ""
 msgstr ""
 "Les champs \"Début\" et \"Fin\" doivent contenir des valeurs en secondes. "
 "Lancez la lecture de la vidéo, mettez sur pause et cliquez sur \"Récupérer "
-"le temps depuis le lecteur\" pour renseigner automatiquement le champ \"Début"
-"\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
+"le temps depuis le lecteur\" pour renseigner automatiquement le champ "
+"\"Début\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:97
 msgid "You cannot overlap enrichments."
@@ -2100,7 +2100,7 @@ msgid "Editing group for the enrichment of the video"
 msgstr "Spécifier les groupes qui peuvent enrichir la vidéo"
 
 #: pod/enrichment/templates/enrichment/group_enrichment.html:34
-#: pod/video/templates/videos/video.html:130
+#: pod/video/templates/videos/video.html:173
 #: pod/video/templates/videos/video_edit.html:76
 msgid "The video is currently being encoded."
 msgstr "La vidéo est en cours d’encodage."
@@ -2265,8 +2265,8 @@ msgstr "nom"
 #: pod/video/templates/channel/channel.html:180
 #: pod/video/templates/channel/channel_edit.html:40
 #: pod/video/templates/channel/list_theme.html:12
-#: pod/video/templates/videos/video.html:105
-#: pod/video/templates/videos/video.html:114
+#: pod/video/templates/videos/video.html:106
+#: pod/video/templates/videos/video.html:137
 msgid "Headband"
 msgstr "Bannière"
 
@@ -3192,7 +3192,7 @@ msgstr "Autre (spécifiez)"
 #: pod/main/forms.py:26 pod/meeting/forms.py:388
 #: pod/meeting/templates/meeting/recordings.html:20 pod/podfile/models.py:24
 #: pod/podfile/models.py:116 pod/podfile/templates/podfile/home_content.html:35
-#: pod/video/models.py:1576 pod/video/models.py:1653 pod/video/models.py:1718
+#: pod/video/models.py:1574 pod/video/models.py:1651 pod/video/models.py:1716
 msgid "Name"
 msgstr "Nom"
 
@@ -4226,7 +4226,7 @@ msgid "join"
 msgstr "rejoindre"
 
 #: pod/meeting/admin.py:133 pod/meeting/templates/meeting/recordings.html:22
-#: pod/video/models.py:1403
+#: pod/video/models.py:1401
 msgid "Date"
 msgstr "Date"
 
@@ -4610,7 +4610,7 @@ msgid "To delete the meeting, please check the box in and click delete."
 msgstr ""
 "Pour supprimer la réunion, veuillez cocher la case et cliquer sur supprimer."
 
-#: pod/meeting/templates/meeting/filter_aside.html:13 pod/video/views.py:1700
+#: pod/meeting/templates/meeting/filter_aside.html:13 pod/video/views.py:1698
 msgid "Status"
 msgstr "Statut"
 
@@ -4748,7 +4748,7 @@ msgid ""
 "add one."
 msgstr ""
 "Vous n’avez pas encore planifié de réunion, veuillez utiliser le bouton "
-"\"Ajouter une réunion\" pour en créer une"
+"\"Ajouter une réunion\" pour en créer une."
 
 #: pod/meeting/templates/meeting/my_meetings.html:34
 #: pod/meeting/templates/meeting/my_meetings.html:35
@@ -4951,16 +4951,16 @@ msgid ""
 msgstr ""
 "\n"
 "        <p>Bonjour,\n"
-"        <p>%(owner)s vous invite à une réunion récurrente <b>"
-"%(meeting_title)s</b>.</p>\n"
+"        <p>%(owner)s vous invite à une réunion récurrente "
+"<b>%(meeting_title)s</b>.</p>\n"
 "        <p>Date de début : %(start_date_time)s </p>\n"
 "        <p>Récurrent jusqu'à la date : %(end_date)s </p>\n"
 "        <p>La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s </"
 "p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
-"%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : "
+"<b>%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -4986,8 +4986,8 @@ msgstr ""
 "        <p>Date de fin : %(end_date)s </p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
-"%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : "
+"<b>%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -5064,8 +5064,8 @@ msgstr "Aucune liste de lecture trouvée"
 
 #: pod/playlist/templates/my_playlists.html:19
 msgid ""
-"You have not created any playlists yet, please use the \"Add a new playlist"
-"\" button to add one."
+"You have not created any playlists yet, please use the \"Add a new "
+"playlist\" button to add one."
 msgstr ""
 "Vous n’avez pas encore créé de liste de lecture, veuillez cliquer sur le "
 "bouton « Ajouter une nouvelle liste de lecture » pour en ajouter une."
@@ -5573,7 +5573,7 @@ msgid "Themes"
 msgstr "Thèmes"
 
 #: pod/recorder/models.py:172 pod/video/forms.py:190 pod/video/forms.py:263
-#: pod/video/models.py:740 pod/video/models.py:2073
+#: pod/video/models.py:740 pod/video/models.py:2071
 msgid ""
 "Hold down \"Control\", or \"Command\" on a Mac, to select more than one."
 msgstr ""
@@ -5661,8 +5661,8 @@ msgstr "Fichier source de la vidéo publiée."
 msgid "File size"
 msgstr "Taille du fichier"
 
-#: pod/recorder/models.py:308 pod/video/models.py:698 pod/video/models.py:1894
-#: pod/video/models.py:1953
+#: pod/recorder/models.py:308 pod/video/models.py:698 pod/video/models.py:1892
+#: pod/video/models.py:1951
 msgid "Date added"
 msgstr "Date d’ajout"
 
@@ -5727,8 +5727,8 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html:13
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
 "passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
@@ -5840,9 +5840,10 @@ msgid ""
 msgstr ""
 "Bonjour, <p>un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur \"%(recorder)s\".<br/>Pour "
-"l’ajouter, cliquez sur le lien ci dessous.</p><a href=\"%(link_url)s\">"
-"%(link_url)s</a><br/><i>Si le lien n’est pas actif, il faut le copier-coller "
-"dans la barre d’adresse de votre navigateur.</i><p><p>Cordialement</p>"
+"l’ajouter, cliquez sur le lien ci dessous.</p><a "
+"href=\"%(link_url)s\">%(link_url)s</a><br/><i>Si le lien n’est pas actif, il "
+"faut le copier-coller dans la barre d’adresse de votre navigateur.</"
+"i><p><p>Cordialement</p>"
 
 #: pod/recorder/views.py:266
 msgid "New recording added."
@@ -5877,7 +5878,7 @@ msgstr "Fichier"
 msgid "You can send an audio or video file."
 msgstr "Vous pouvez envoyer un fichier audio ou vidéo."
 
-#: pod/video/forms.py:93 pod/video/views.py:2048
+#: pod/video/forms.py:93 pod/video/views.py:2046
 #, python-format
 msgid "The following formats are supported: %s"
 msgstr "Les formats suivants sont supportés : %s"
@@ -6145,7 +6146,7 @@ msgid ""
 "Your video intitled <a href=\"//%(url)s\">\"%(title)s\"</a> will soon arrive "
 "at the deletion deadline."
 msgstr ""
-"Votre vidéo intitulée <a href=\"//%(url)s\">\"%(title)s\"</a> arrive bientôt "
+"Votre vidéo intitulée « <a href=\"//%(url)s\">%(title)s</a> » arrive bientôt "
 "à la date limite de suppression."
 
 #: pod/video/management/commands/check_obsolete_videos.py:209
@@ -6422,23 +6423,23 @@ msgstr "Mettre à jour le propriétaire"
 msgid "Update Owners"
 msgstr "Mettre à jour les propriétaires"
 
-#: pod/video/models.py:1404
+#: pod/video/models.py:1402
 msgid "Number of view"
 msgstr "Nombre de vues"
 
-#: pod/video/models.py:1412
+#: pod/video/models.py:1410
 msgid "View count"
 msgstr "Nombre de vues"
 
-#: pod/video/models.py:1413
+#: pod/video/models.py:1411
 msgid "View counts"
 msgstr "Statistiques"
 
-#: pod/video/models.py:1418
+#: pod/video/models.py:1416
 msgid "resolution"
 msgstr "résolution"
 
-#: pod/video/models.py:1422
+#: pod/video/models.py:1420
 msgid ""
 "Please use the only format x. i.e.: <em>640x360</em> or <em>1280x720</em> or "
 "<em>1920x1080</em>."
@@ -6446,12 +6447,12 @@ msgstr ""
 "Veuillez utiliser le format LxH. soit: <em>640x360</em> ou <em>1280x720</em> "
 "ou <em>1920x1080</em>."
 
-#: pod/video/models.py:1428 pod/video/models.py:1522 pod/video/models.py:1529
+#: pod/video/models.py:1426 pod/video/models.py:1520 pod/video/models.py:1527
 msgid "minrate"
 msgstr "débit minimum"
 
-#: pod/video/models.py:1431 pod/video/models.py:1440 pod/video/models.py:1449
-#: pod/video/models.py:1461
+#: pod/video/models.py:1429 pod/video/models.py:1438 pod/video/models.py:1447
+#: pod/video/models.py:1459
 msgid ""
 "Please use the only format k. i.e.: <em>300k</em> or <em>600k</em> or "
 "<em>1000k</em>."
@@ -6459,179 +6460,179 @@ msgstr ""
 "Veuillez utiliser le format XXk soit: <em>300k</em> ou <em>600k</em> ou "
 "<em>1000k</em>."
 
-#: pod/video/models.py:1437 pod/video/models.py:1490 pod/video/models.py:1501
+#: pod/video/models.py:1435 pod/video/models.py:1488 pod/video/models.py:1499
 msgid "bitrate video"
 msgstr "débit binaire de la vidéo"
 
-#: pod/video/models.py:1446 pod/video/models.py:1510 pod/video/models.py:1517
+#: pod/video/models.py:1444 pod/video/models.py:1508 pod/video/models.py:1515
 msgid "maxrate"
 msgstr "débit maximum"
 
-#: pod/video/models.py:1455
+#: pod/video/models.py:1453
 msgid "encoding resolution threshold"
 msgstr "seuil de résolution de l'encodage"
 
-#: pod/video/models.py:1458 pod/video/models.py:1547 pod/video/models.py:1558
+#: pod/video/models.py:1456 pod/video/models.py:1545 pod/video/models.py:1556
 msgid "bitrate audio"
 msgstr "débit binaire de l’audio"
 
-#: pod/video/models.py:1466
+#: pod/video/models.py:1464
 msgid "Make a MP4 version"
 msgstr "Faire une version MP4"
 
-#: pod/video/models.py:1479 pod/video/models.py:1585
+#: pod/video/models.py:1477 pod/video/models.py:1583
 msgid "rendition"
 msgstr "rendu"
 
-#: pod/video/models.py:1480
+#: pod/video/models.py:1478
 msgid "renditions"
 msgstr "rendus"
 
-#: pod/video/models.py:1580 pod/video/models.py:1657 pod/video/models.py:1722
+#: pod/video/models.py:1578 pod/video/models.py:1655 pod/video/models.py:1720
 msgid "Please use the only format in encoding choices:"
 msgstr "Merci de sélectionner un format d’encodage valide :"
 
-#: pod/video/models.py:1588 pod/video/models.py:1662 pod/video/models.py:1727
+#: pod/video/models.py:1586 pod/video/models.py:1660 pod/video/models.py:1725
 msgid "Format"
 msgstr "Format"
 
-#: pod/video/models.py:1592 pod/video/models.py:1666 pod/video/models.py:1731
+#: pod/video/models.py:1590 pod/video/models.py:1664 pod/video/models.py:1729
 msgid "Please use the only format in format choices:"
 msgstr "Merci de sélectionner un format valide :"
 
-#: pod/video/models.py:1596 pod/video/models.py:1670 pod/video/models.py:1735
+#: pod/video/models.py:1594 pod/video/models.py:1668 pod/video/models.py:1733
 msgid "encoding source file"
 msgstr "fichier source d’encodage"
 
-#: pod/video/models.py:1621
+#: pod/video/models.py:1619
 msgid "Encoding video"
 msgstr "Encodage vidéo"
 
-#: pod/video/models.py:1622
+#: pod/video/models.py:1620
 msgid "Encoding videos"
 msgstr "Encodage des vidéos"
 
-#: pod/video/models.py:1685
+#: pod/video/models.py:1683
 msgid "Encoding audio"
 msgstr "Encodage audio"
 
-#: pod/video/models.py:1686
+#: pod/video/models.py:1684
 msgid "Encoding audios"
 msgstr "Encodage des audios"
 
-#: pod/video/models.py:1741
+#: pod/video/models.py:1739
 msgid "Video Playlist"
 msgstr "Liste de lecture"
 
-#: pod/video/models.py:1742
+#: pod/video/models.py:1740
 msgid "Video Playlists"
 msgstr "Listes de lecture"
 
-#: pod/video/models.py:1797
+#: pod/video/models.py:1795
 msgid "Encoding log"
 msgstr "Journal de l’encodage"
 
-#: pod/video/models.py:1798
+#: pod/video/models.py:1796
 msgid "Encoding logs"
 msgstr "Journaux des encodages"
 
-#: pod/video/models.py:1809 pod/video/models.py:1818
+#: pod/video/models.py:1807 pod/video/models.py:1816
 msgid "Video version"
 msgstr "Version de la video"
 
-#: pod/video/models.py:1814
+#: pod/video/models.py:1812
 msgid "Video default version."
 msgstr "Version par défaut de la vidéo."
 
-#: pod/video/models.py:1819
+#: pod/video/models.py:1817
 msgid "Video versions"
 msgstr "Versions de la video"
 
-#: pod/video/models.py:1854
+#: pod/video/models.py:1852
 msgid "Encoding steps"
 msgstr "Étapes de l’encodage"
 
-#: pod/video/models.py:1863 pod/video/models.py:1874 pod/video/models.py:1892
-#: pod/video/views.py:1670
+#: pod/video/models.py:1861 pod/video/models.py:1872 pod/video/models.py:1890
+#: pod/video/views.py:1668
 msgid "Note"
 msgstr "Note"
 
-#: pod/video/models.py:1875
+#: pod/video/models.py:1873
 msgid "Notes"
 msgstr "Notes"
 
-#: pod/video/models.py:1886 pod/video/models.py:1946
+#: pod/video/models.py:1884 pod/video/models.py:1944
 msgid "Availability level"
 msgstr "Niveau de disponibilité"
 
-#: pod/video/models.py:1890
+#: pod/video/models.py:1888
 msgid "Select an availability level for the note."
 msgstr "Sélectionner le niveau de disponibilité de la note."
 
-#: pod/video/models.py:1893
+#: pod/video/models.py:1891
 msgid "Timestamp"
 msgstr "Horodatage"
 
-#: pod/video/models.py:1895 pod/video/models.py:1954
+#: pod/video/models.py:1893 pod/video/models.py:1952
 msgid "Date modified"
 msgstr "Date de modification"
 
-#: pod/video/models.py:1898
+#: pod/video/models.py:1896
 msgid "Advanced Note"
 msgstr "Note avancée"
 
-#: pod/video/models.py:1899
+#: pod/video/models.py:1897
 msgid "Advanced Notes"
 msgstr "Notes avancées"
 
-#: pod/video/models.py:1950
+#: pod/video/models.py:1948
 msgid "Select an availability level for the comment."
 msgstr "Sélectionnez un niveau de disponibilité pour le commentaire."
 
-#: pod/video/models.py:1957
+#: pod/video/models.py:1955
 msgid "Note comment"
 msgstr "Commentaire de la note"
 
-#: pod/video/models.py:1958
+#: pod/video/models.py:1956
 msgid "Note comments"
 msgstr "Commentaires de notes"
 
-#: pod/video/models.py:1972
+#: pod/video/models.py:1970
 msgid "Date for deletion"
 msgstr "Date pour la suppression"
 
-#: pod/video/models.py:1974 pod/video/models.py:2070
+#: pod/video/models.py:1972 pod/video/models.py:2068
 #: pod/video/templates/videos/video.html:81
 #: pod/video/templates/videos/videos.html:8
 #: pod/video/templates/videos/videos.html:17
 msgid "Videos"
 msgstr "Vidéos"
 
-#: pod/video/models.py:1977
+#: pod/video/models.py:1975
 msgid "Video to delete"
 msgstr "Vidéo à supprimer"
 
-#: pod/video/models.py:1978
+#: pod/video/models.py:1976
 msgid "Videos to delete"
 msgstr "Vidéos à supprimer"
 
-#: pod/video/models.py:2006
+#: pod/video/models.py:2004
 msgid "Comments"
 msgstr "Commentaires"
 
-#: pod/video/models.py:2050
+#: pod/video/models.py:2048
 msgid "Vote"
 msgstr "Vote"
 
-#: pod/video/models.py:2051
+#: pod/video/models.py:2049
 msgid "Votes"
 msgstr "Votes"
 
-#: pod/video/models.py:2059 pod/video/templates/videos/category_modal.html:13
+#: pod/video/models.py:2057 pod/video/templates/videos/category_modal.html:13
 msgid "Category title"
 msgstr "Titre de la catégorie"
 
-#: pod/video/models.py:2062
+#: pod/video/models.py:2060
 msgid ""
 "Please choose a title as short and accurate as possible, reflecting the main "
 "subject / context of the content. (max length: 100 characters)"
@@ -6640,11 +6641,11 @@ msgstr ""
 "sujet principal / le contexte de votre contenu. (taille maximale : 100 "
 "caractères)"
 
-#: pod/video/models.py:2096 pod/video/templates/videos/category_modal.html:7
+#: pod/video/models.py:2094 pod/video/templates/videos/category_modal.html:7
 msgid "Category"
 msgstr "Catégorie"
 
-#: pod/video/models.py:2097
+#: pod/video/models.py:2095
 #: pod/video/templates/videos/filter_aside_category.html:14
 msgid "Categories"
 msgstr "Catégories"
@@ -6683,7 +6684,7 @@ msgstr "souscrire au flux audio"
 #: pod/video/templates/channel/channel.html:161
 #: pod/video/templates/channel/my_channels.html:19
 #: pod/video/templates/channel/theme_edit.html:34
-#: pod/video/templates/videos/video.html:103
+#: pod/video/templates/videos/video.html:110
 msgid "Edit the channel"
 msgstr "Éditer la chaîne"
 
@@ -7029,8 +7030,8 @@ msgid ""
 "This video is chaptered. Click the chapter button <span class=\"vjs-icon-"
 "chapters\"></span> on the video player to view them."
 msgstr ""
-"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span class="
-"\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
+"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span "
+"class=\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
 
 #: pod/video/templates/videos/video-all-info.html:26
 #: pod/video/templates/videos/video-all-info.html:41
@@ -7053,7 +7054,7 @@ msgstr "Les commentaires ont été désactivés pour cette vidéo."
 msgid "Comment(s)"
 msgstr "Commentaire(s)"
 
-#: pod/video/templates/videos/video-comment.html:14 pod/video/views.py:2123
+#: pod/video/templates/videos/video-comment.html:14 pod/video/views.py:2121
 msgid "Sorry, you can't comment while the server is under maintenance."
 msgstr ""
 "Désolé, vous ne pouvez pas commenter pendant que le serveur est en "
@@ -7239,12 +7240,20 @@ msgstr ""
 "Utilisez ces liens dans une conférence BigBlueButton ou une activité vidéo "
 "interactive H5P :"
 
-#: pod/video/templates/videos/video.html:124
+#: pod/video/templates/videos/video.html:117
+msgid "Channel description"
+msgstr "Description de la chaîne"
+
+#: pod/video/templates/videos/video.html:147
+msgid "Theme description"
+msgstr "Description du thème"
+
+#: pod/video/templates/videos/video.html:167
 #: pod/video/templates/videos/video_edit.html:70
 msgid "The video is currently waiting for encoding."
 msgstr "La vidéo est actuellement en attente d’encodage."
 
-#: pod/video/templates/videos/video.html:136
+#: pod/video/templates/videos/video.html:179
 #: pod/video/templates/videos/video_edit.html:82
 msgid "The video is currently being transcripted."
 msgstr "La vidéo est en cours de transcription."
@@ -7538,169 +7547,169 @@ msgstr "Vous ne pouvez pas éditer cette vidéo."
 msgid "You cannot delete this video."
 msgstr "Vous ne pouvez pas supprimer cette vidéo."
 
-#: pod/video/views.py:999
+#: pod/video/views.py:997
 msgid "You cannot delete a video that is being encoded."
-msgstr "Vous ne pouvez pas supprimer une vidéo en cours d'encodage."
+msgstr "Vous ne pouvez pas supprimer une vidéo en cours d’encodage."
 
-#: pod/video/views.py:1009
+#: pod/video/views.py:1007
 msgid "The video has been deleted."
 msgstr "La vidéo a été supprimée."
 
-#: pod/video/views.py:1017
+#: pod/video/views.py:1015
 #, python-format
 msgid "Deleting the video \"%(vtitle)s\""
 msgstr "Supprimer la vidéo « %(vtitle)s »"
 
-#: pod/video/views.py:1134
+#: pod/video/views.py:1132
 #, python-format
 msgid "You cannot %s this note or comment."
 msgstr "Vous ne pouvez pas %s cette note ou ce commentaire."
 
-#: pod/video/views.py:1163
+#: pod/video/views.py:1161
 msgid "You cannot see this note or comment."
 msgstr "Vous ne pouvez pas voir cette note ou ce commentaire."
 
-#: pod/video/views.py:1479
+#: pod/video/views.py:1477
 msgid "The comment has been modified."
 msgstr "Votre commentaire a été modifié."
 
-#: pod/video/views.py:1496
+#: pod/video/views.py:1494
 msgid "The comment has been saved."
 msgstr "Le commentaire a été enregistré."
 
-#: pod/video/views.py:1509
+#: pod/video/views.py:1507
 msgid "Your note has been modified."
 msgstr "Votre note a été modifiée."
 
-#: pod/video/views.py:1520
+#: pod/video/views.py:1518
 msgid "Your comment has been saved."
 msgstr "Votre commentaire a été enregistré."
 
-#: pod/video/views.py:1534
+#: pod/video/views.py:1532
 msgid "The note has been saved."
 msgstr "La note a été sauvegardée."
 
-#: pod/video/views.py:1539
+#: pod/video/views.py:1537
 #, python-format
 msgid "Your note at %(timestamp)s has been modified."
 msgstr "Votre note pour le marqueur %(timestamp)s a été modifiée."
 
-#: pod/video/views.py:1596
+#: pod/video/views.py:1594
 msgid "The note has been deleted."
 msgstr "La note a été supprimée."
 
-#: pod/video/views.py:1603
+#: pod/video/views.py:1601
 msgid "The comment has been deleted."
 msgstr "Le commentaire a été supprimé."
 
-#: pod/video/views.py:1660 pod/video/views.py:1663 pod/video/views.py:1673
-#: pod/video/views.py:1674
+#: pod/video/views.py:1658 pod/video/views.py:1661 pod/video/views.py:1671
+#: pod/video/views.py:1672
 msgid "None"
 msgstr "Aucun"
 
-#: pod/video/views.py:1699
+#: pod/video/views.py:1697
 msgid "ID"
 msgstr "ID"
 
-#: pod/video/views.py:1701
+#: pod/video/views.py:1699
 msgid "Parent note id"
 msgstr "Identifiant de note parent"
 
-#: pod/video/views.py:1702
+#: pod/video/views.py:1700
 msgid "Parent comment id"
 msgstr "ID du commentaire parent"
 
-#: pod/video/views.py:1703
+#: pod/video/views.py:1701
 msgid "Created on"
 msgstr "Créé le"
 
-#: pod/video/views.py:1704
+#: pod/video/views.py:1702
 msgid "Modified on"
 msgstr "Modifié le"
 
-#: pod/video/views.py:1705
+#: pod/video/views.py:1703
 msgid "Note timestamp"
 msgstr "Horodatage de la note"
 
-#: pod/video/views.py:1740 pod/video/views.py:1765
+#: pod/video/views.py:1738 pod/video/views.py:1763
 msgid "You cannot access to this view."
 msgstr "Vous ne pouvez pas accéder à cette vue."
 
-#: pod/video/views.py:1900
+#: pod/video/views.py:1898
 msgid "Pod video viewing statistics"
 msgstr "Statistiques de visualisation des vidéos"
 
-#: pod/video/views.py:1908
+#: pod/video/views.py:1906
 #, python-format
 msgid "Video viewing statistics for %s"
 msgstr "Statistiques de visualisation de la vidéo %s"
 
-#: pod/video/views.py:1912
+#: pod/video/views.py:1910
 #, python-format
 msgid "Video viewing statistics for the channel %s"
 msgstr "Statistiques de visualisation des vidéos de la chaîne %s"
 
-#: pod/video/views.py:1916
+#: pod/video/views.py:1914
 #, python-format
 msgid "Video viewing statistics for the theme %s"
 msgstr "Statistiques de visualisation des vidéos du thème %s"
 
-#: pod/video/views.py:1954
+#: pod/video/views.py:1952
 #, python-format
 msgid "You do not have access rights to this video: %s "
 msgstr "Vous n’avez pas les droits d’accès à cette vidéo : %s "
 
-#: pod/video/views.py:1977
+#: pod/video/views.py:1975
 #, python-format
 msgid "The following video does not exist: %s"
 msgstr "La video suivante n’existe pas : %s"
 
-#: pod/video/views.py:2061
+#: pod/video/views.py:2059
 msgid "Media upload"
 msgstr "Téléverser un média"
 
-#: pod/video/views.py:2092
+#: pod/video/views.py:2090
 msgid "Sorry, you can't vote a comment while the server is under maintenance."
 msgstr ""
 "Désolé, vous ne pouvez pas voter pour un commentaire pendant que le serveur "
 "est en maintenance."
 
-#: pod/video/views.py:2314
+#: pod/video/views.py:2312
 msgid ""
 "Sorry, you can't delete a comment while the server is under maintenance."
 msgstr ""
 "Désolé, vous ne pouvez pas supprimer un commentaire pendant que le serveur "
 "est en maintenance."
 
-#: pod/video/views.py:2323
+#: pod/video/views.py:2321
 msgid "You do not have rights to delete this comment"
 msgstr "Vous n’avez pas les droits pour supprimer ce commentaire"
 
-#: pod/video/views.py:2423 pod/video/views.py:2492
+#: pod/video/views.py:2421 pod/video/views.py:2490
 msgid "One or many videos already have a category."
 msgstr "Une ou plusieurs vidéos possèdent déjà une catégorie."
 
-#: pod/video/views.py:2465 pod/video/views.py:2537
+#: pod/video/views.py:2463 pod/video/views.py:2535
 msgid "Title field is required"
 msgstr "Champ de titre est requis"
 
-#: pod/video/views.py:2471 pod/video/views.py:2543 pod/video/views.py:2589
+#: pod/video/views.py:2469 pod/video/views.py:2541 pod/video/views.py:2587
 msgid "Method Not Allowed"
 msgstr "Méthode non autorisée"
 
-#: pod/video/views.py:2508
+#: pod/video/views.py:2506
 msgid "Category updated successfully."
 msgstr "Catégorie mise à jour avec succès."
 
-#: pod/video/views.py:2531
+#: pod/video/views.py:2529
 msgid "You do not have rights to edit this category"
 msgstr "Vous n’avez pas les droits pour éditer cette catégorie"
 
-#: pod/video/views.py:2582
+#: pod/video/views.py:2580
 msgid "You do not have rights to delete this category"
 msgstr "Vous n’avez pas les droits pour supprimer cette catégorie"
 
-#: pod/video/views.py:2654
+#: pod/video/views.py:2652
 msgid "Update successfully"
 msgstr "Mise à jour réussie"
 
@@ -7723,6 +7732,16 @@ msgstr "Désolé, la recherche de vidéos est limitée à 500 pages maximum."
 #: pod/video_search/views.py:262
 msgid "Search results"
 msgstr "Résultats de la recherche"
+
+#, fuzzy
+#~| msgid "Description of the configuration"
+#~ msgid "Description de la chaine"
+#~ msgstr "Description de la configuration"
+
+#, fuzzy
+#~| msgid "Description"
+#~ msgid "Description du thème"
+#~ msgstr "Description"
 
 #~ msgid "Check this box if you want to transcript the audio.(beta version)"
 #~ msgstr ""
