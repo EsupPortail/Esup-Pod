@@ -994,9 +994,7 @@ def video_delete(request, slug=None):
 
     if not video.encoded or video.encoding_in_progress is True:
         messages.add_message(
-            request,
-            messages.ERROR,
-            _("You cannot delete a video that is being encoded.")
+            request, messages.ERROR, _("You cannot delete a video that is being encoded.")
         )
         return redirect(reverse("video:my_videos"))
 

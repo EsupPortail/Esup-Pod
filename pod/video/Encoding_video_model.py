@@ -277,9 +277,7 @@ class Encoding_video_model(Encoding_video):
                 name="%s" % video.slug,
                 owner=video.owner,
             )
-            thumbnail = CustomImageModel(
-                folder=videodir, created_by=video.owner
-            )
+            thumbnail = CustomImageModel(folder=videodir, created_by=video.owner)
         for index, thumbnail_path in enumerate(list_thumbnail_files):
             if check_file(list_thumbnail_files[thumbnail_path]):
                 thumbnail.file.save(

@@ -503,9 +503,11 @@ class Encoding_video:
         webvtt = WebVTT()
         for i in range(0, nb_img, step):
             # create overviewimagefilename for first pass
-            output_file = os.path.join(
-                self.output_dir, "thumbnail_%s.png" % i
-            ) if i > 0 else overviewimagefilename
+            output_file = (
+                os.path.join(self.output_dir, "thumbnail_%s.png" % i)
+                if i > 0
+                else overviewimagefilename
+            )
             cmd_ffmpegthumbnailer = (
                 'ffmpegthumbnailer -t "%(stamp)s" '
                 + '-s "%(image_width)s" -i %(source)s -c png '
