@@ -3481,7 +3481,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que `FILE_UPLOAD_MAX_MEMORY_SIZE) lors des téléversements de fichiers.<br>",
+                                    "Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que `FILE_UPLOAD_MAX_MEMORY_SIZE`) lors des téléversements de fichiers.<br>",
                                     "_ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir]()_"
                                 ]
                             },
