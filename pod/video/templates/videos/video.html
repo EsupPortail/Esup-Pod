@@ -110,7 +110,7 @@
     {% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{% endif %}
   </h2>
   {% if channel.description %}
-    {% if channel.description|length > 40 %}
+    {% if channel.description|length > 140 %}
       <div class="accordion accordion-flush mb-2" id="channel_block">
         <div class="accordion-item">
           <h3 class="accordion-header" id="channel_desc_title">
@@ -140,7 +140,7 @@
         </a>
       </h3>
       {% if theme.description %}
-        {% if theme.description|length > 40 %}
+        {% if theme.description|length > 140 %}
           <div class="accordion accordion-flush mb-2" id="theme_block">
             <div class="accordion-item">
               <h4 class="accordion-header theme_title" id="theme_desc_title">
