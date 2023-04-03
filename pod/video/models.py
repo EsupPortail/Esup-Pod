@@ -1382,6 +1382,11 @@ def video_podfiles_removal(sender, instance, **kwargs):
     """Delete UserFolder associated to current video."""
     if instance.video and os.path.isfile(instance.video.path):
         os.remove(instance.video.path)
+    video_dir = os.path.join(
+        os.path.dirname(instance.video.path), "%04d" % instance.id
+    )
+    if os.path.isdir(video_dir) and not os.listdir(video_dir):
+        os.rmdir(video_dir)
     if USE_PODFILE:
         video_folder = UserFolder.objects.filter(
             name=instance.slug,
