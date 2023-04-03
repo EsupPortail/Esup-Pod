@@ -4,36 +4,42 @@
 # Lancer via `make $cmd`
 # (en remplacant $cmd par une commande ci-dessous)
 
+
+# Affiche la liste des commandes disponibles
+help:
+	echo "Syntax: [make target] where target is in this list:"
+	@awk '/^#/{c=substr($$0,3);next}c&&/^[[:alpha:]][[:alnum:]_-]+:/{print substr($$1,1,index($$1,":")),c}1{c=0}' $(MAKEFILE_LIST) | column -s: -t
+
+# Démarre le serveur de test
 start:
-	# Démarre le serveur de test
 	(sleep 15 ; open http://localhost:9090) &
 	python3 manage.py runserver localhost:9090 --insecure
 	# --insecure let serve static files even when DEBUG=False
 
+# Démarre le serveur de test en https auto-signé
 starts:
-	# Démarre le serveur de test en https auto-signé
 	# nécessite les django-extensions
 	# cf https://timonweb.com/django/https-django-development-server-ssl-certificate/
 	(sleep 15 ; open https://localhost:8000) &
 	python3 manage.py runserver_plus --cert-file cert.pem --key-file key.pem
 
+# Première installation de pod (BDD SQLite intégrée)
 install:
-	# Première installation de pod (BDD SQLite intégrée)
 	npm install -g yarn
 	cd pod; yarn
 	make upgrade
 	make createDB
 
+# Mise à jour de Pod
 upgrade:
-	# Mise à jour de Pod
 	git pull origin master
 	python3 -m pip install -r requirements.txt
 	make updatedb
 	make migrate
 	make statics
 
+# Création des données initiales dans la BDD SQLite intégrée
 createDB:
-	# Création des données initiales dans la BDD SQLite intégrée
 	find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
 	find . -path "*/migrations/*.pyc" -delete
 	make updatedb
@@ -41,36 +47,37 @@ createDB:
 	python3 manage.py loaddata pod/video/fixtures/initial_data.json
 	python3 manage.py loaddata pod/main/fixtures/initial_data.json
 
+# Mise à jour des fichiers de langue
 lang:
-	# Mise à jour des fichiers de langue
 	echo "Processing python files..."
 	python3 manage.py makemessages --all -i "opencast-studio/*" -i "pod/custom/settings_local.py"
 	echo "Processing javascript files..."
 	django-admin makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/node_modules/*"
 
+# Look for changes to apply in DB
 updatedb:
-	# Look for changes to apply in DB
 	python3 manage.py makemigrations
 
+# Apply all changes in DB
 migrate:
-	# Apply all changes in DB
 	python3 manage.py migrate
 
+# Launch all unit tests.
 tests:
-	# Launch all unit tests.
 	coverage run --source='.' manage.py test --settings=pod.main.test_settings
 	coverage html
 
+# Ensure coherence of all code style
 pystyle:
-	# Ensure coherence of all code style
 	flake8
 
+# Collects all static files inside all apps and put a copy inside the static directory declared in settings.py
 statics:
 	cd pod; yarn upgrade
-	# Collects all static files inside all apps and put a copy inside the static directory declared in settings.py
 	# --clear Clear the existing files before trying to copy or link the original file.
 	python3 manage.py collectstatic --clear
 
+# Generate configuration docs in .MD format
 createconfigs:
 	python3 manage.py createconfiguration fr
 	python3 manage.py createconfiguration en
@@ -89,15 +96,17 @@ DOCKER_LOGS = docker logs -f
 #	# Vous devriez obtenir ce message une fois esup-pod lancé
 #	# $ pod-dev-with-volumes        | Superuser created successfully.
 
-docker-logs: ## display app logs (follow mode)
+# Display app logs (follow mode)
+docker-logs:
 	@$(DOCKER_LOGS) pod-dev-with-volumes
 
+# Display environment variables for docker
 echo-env:
 	@echo ELASTICSEARCH_TAG=$(ELASTICSEARCH_TAG)
 	@echo PYTHON_TAG=$(PYTHON_TAG)
 
+# Démarre le serveur de test en recompilant les conteneurs de la stack
 docker-build:
-	# Démarre le serveur de test en recompilant les conteneurs de la stack
 	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
 	# N'oubliez pas de supprimer :
 	# sudo rm -rf ./pod/log
@@ -111,19 +120,19 @@ docker-build:
 	# Vous devriez obtenir ce message une fois esup-pod lancé
 	# $ pod-dev-with-volumes        | Superuser created successfully.
 
+# Démarre le serveur de test
 docker-start:
-	# Démarre le serveur de test en recompilant les conteneurs de la stack
 	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
 	@$(COMPOSE) up
 	# Vous devriez obtenir ce message une fois esup-pod lancé
 	# $ pod-dev-with-volumes        | Superuser created successfully.
 
+# Arrête le serveur de test
 docker-stop:
-	# Arrête le serveur de test
 	@$(COMPOSE) down -v
 
+# Arrête le serveur de test et supprime les fichiers générés
 docker-reset:
-	# Arrête le serveur de test
 	@$(COMPOSE) down -v
 	# sudo rm -rf ./pod/log
 	sudo rm -rf ./pod/log
