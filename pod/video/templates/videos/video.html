@@ -108,18 +108,24 @@
     {% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{% endif %}
   </h2>
   {% if channel.description %}
-    <div class="accordion accordion-flush mb-2" id="channel_block">
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="channel_desc_title">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#channel_desc" aria-expanded="true" aria-controls="channel_desc">{% trans "Channel description" %}</button>
-        </h3>
-        <div id="channel_desc" class="accordion-collapse collapse" aria-labelledby="channel_desc_title" data-bs-parent="#channel_block">
-          <div class="accordion-body">
-              {{ channel.description|safe }}
+    {% if channel.description|length > 40 %}
+      <div class="accordion accordion-flush mb-2" id="channel_block">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="channel_desc_title">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#channel_desc" aria-expanded="true" aria-controls="channel_desc">{% trans "Channel description" %}</button>
+          </h3>
+          <div id="channel_desc" class="accordion-collapse collapse" aria-labelledby="channel_desc_title" data-bs-parent="#channel_block">
+            <div class="accordion-body">
+                {{ channel.description|safe }}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    {% else %}
+      <div id="channel_desc" class="m-2">
+        {{ channel.description|safe }}
+      </div>
+    {% endif %}
   {% endif %}
   {% if theme %}
     <div class="channel_theme ms-3">
@@ -130,18 +136,24 @@
         {{theme.title}}
       </h3>
       {% if theme.description %}
-        <div class="accordion accordion-flush mb-2" id="theme_block">
-          <div class="accordion-item">
-            <h4 class="accordion-header theme_title" id="theme_desc_title">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#theme_desc" aria-expanded="true" aria-controls="theme_desc">{% trans "Theme description" %}</button>
-            </h4>
-            <div id="theme_desc" class="accordion-collapse collapse" aria-labelledby="theme_desc_title" data-bs-parent="#theme_block">
-              <div class="accordion-body">
-                {{ theme.description|safe }}
+        {% if theme.description|length > 40 %}
+          <div class="accordion accordion-flush mb-2" id="theme_block">
+            <div class="accordion-item">
+              <h4 class="accordion-header theme_title" id="theme_desc_title">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#theme_desc" aria-expanded="true" aria-controls="theme_desc">{% trans "Theme description" %}</button>
+              </h4>
+              <div id="theme_desc" class="accordion-collapse collapse" aria-labelledby="theme_desc_title" data-bs-parent="#theme_block">
+                <div class="accordion-body">
+                  {{ theme.description|safe }}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        {% else %}
+          <div id="theme_desc" class="m-2">
+            {{ channel.description|safe }}
+          </div>
+        {% endif %}
       {% endif %}
     </div>
   {% endif %}
