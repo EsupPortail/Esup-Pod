@@ -267,60 +267,50 @@ class Encoding_video_model(Encoding_video):
                 enrich_ready=True,
             )
 
-    def store_json_list_thumbnail_files(self, info_video, video_to_encode):
+    def store_json_list_thumbnail_files(self, info_video):
         """store_json_list_thumbnail_files."""
+        video = Video.objects.get(id=self.id)
         list_thumbnail_files = info_video["list_thumbnail_files"]
-        first = True
+        thumbnail = CustomImageModel()
         if __FILEPICKER__:
             videodir, created = UserFolder.objects.get_or_create(
-                name="%s" % video_to_encode.slug,
-                owner=video_to_encode.owner,
+                name="%s" % video.slug,
+                owner=video.owner,
             )
-
-        for thumbnail_path in list_thumbnail_files:
+            thumbnail = CustomImageModel(folder=videodir, created_by=video.owner)
+        for index, thumbnail_path in enumerate(list_thumbnail_files):
             if check_file(list_thumbnail_files[thumbnail_path]):
-                if __FILEPICKER__:
-                    thumbnail = CustomImageModel(
-                        folder=videodir, created_by=video_to_encode.owner
-                    )
-                    thumbnail.file.save(
-                        "%s_%s.png" % (video_to_encode.slug, thumbnail_path),
-                        File(open(list_thumbnail_files[thumbnail_path], "rb")),
-                        save=True,
-                    )
-                else:
-                    thumbnail = CustomImageModel()
-                    thumbnail.file.save(
-                        "%s_%s.png" % (video_to_encode.slug, thumbnail_path),
-                        File(open(list_thumbnail_files[thumbnail_path], "rb")),
-                        save=True,
-                    )
-                    thumbnail.save()
+                thumbnail.file.save(
+                    "%s_%s.png" % (video.slug, thumbnail_path),
+                    File(open(list_thumbnail_files[thumbnail_path], "rb")),
+                    save=True,
+                )
+                thumbnail.save()
+                if index == 1 and thumbnail.id:
+                    video.thumbnail = thumbnail
+                    video.save()
                 # rm temp location
                 os.remove(list_thumbnail_files[thumbnail_path])
-                if first:
-                    video_to_encode.thumbnail = thumbnail
-                    video_to_encode.save()
-                    first = False
+        return video
 
-    def store_json_list_overview_files(self, info_video, video_to_encode):
+    def store_json_list_overview_files(self, info_video):
         list_overview_files = info_video["list_overview_files"]
-
+        video = Video.objects.get(id=self.id)
         if len(list_overview_files) > 0:
             vtt_file = (
                 list_overview_files["0"]
                 if ".vtt" in list_overview_files["0"]
                 else list_overview_files["1"]
             )
-            video_to_encode.overview = self.get_true_path(vtt_file)
-            video_to_encode.save()
+            video.overview = self.get_true_path(vtt_file)
+            video.save()
+        return video
 
     def store_json_info(self):
         """Open json file and store its data in current instance."""
-        video_to_encode = Video.objects.get(id=self.id)
-
         with open(self.get_output_dir() + "/info_video.json") as json_file:
             info_video = json.load(json_file)
+            video_to_encode = Video.objects.get(id=self.id)
             video_to_encode.duration = info_video["duration"]
             video_to_encode.save()
 
@@ -328,12 +318,11 @@ class Encoding_video_model(Encoding_video):
             self.store_json_list_mp4_hls_files(info_video, video_to_encode)
             self.store_json_encoding_log(info_video, video_to_encode)
             self.store_json_list_subtitle_files(info_video, video_to_encode)
-            self.store_json_list_thumbnail_files(info_video, video_to_encode)
-            self.store_json_list_overview_files(info_video, video_to_encode)
+            # update and create new video to be sur that thumbnail and overview be present
+            self.store_json_list_thumbnail_files(info_video)
+            video = self.store_json_list_overview_files(info_video)
 
-            return video_to_encode
-
-            # TODO : Without podfile
+            return video
 
     def get_create_thumbnail_command_from_video(self, video_to_encode):
         """Create command line to generate thumbnails from video."""

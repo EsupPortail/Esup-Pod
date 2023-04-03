@@ -992,6 +992,12 @@ def video_delete(request, slug=None):
         messages.add_message(request, messages.ERROR, _("You cannot delete this video."))
         raise PermissionDenied
 
+    if not video.encoded or video.encoding_in_progress is True:
+        messages.add_message(
+            request, messages.ERROR, _("You cannot delete a video that is being encoded.")
+        )
+        return redirect(reverse("video:my_videos"))
+
     form = VideoDeleteForm()
 
     if request.method == "POST":
