@@ -101,10 +101,12 @@
 
 {% if channel %}
   <h2 class="channel_title">
-    {% if channel.headband %}
-      <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded" loading="lazy" height="34"/>
-    {% endif %}
-    {{channel.title}}
+    <a href="{% url 'channel-video:channel' slug_c=channel.slug%}">
+      {% if channel.headband %}
+        <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded" loading="lazy" height="34"/>
+      {% endif %}
+      {{channel.title}}
+    </a>
     {% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{% endif %}
   </h2>
   {% if channel.description %}
@@ -130,10 +132,12 @@
   {% if theme %}
     <div class="channel_theme ms-3">
       <h3 class="theme_title">
-        {% if theme.headband %}
-          <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="rounded" loading="lazy" height="34"/>
-        {% endif %}
-        {{theme.title}}
+        <a href="{% url 'channel-video:theme' slug_c=channel.slug slug_t=theme.slug%}">
+          {% if theme.headband %}
+            <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="rounded" loading="lazy" height="34"/>
+          {% endif %}
+          {{theme.title}}
+        </a>
       </h3>
       {% if theme.description %}
         {% if theme.description|length > 40 %}
