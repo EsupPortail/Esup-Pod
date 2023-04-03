@@ -388,7 +388,7 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br/>
 
   > valeur par défaut : `/var/tmp`
 
-  >> Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que `FILE_UPLOAD_MAX_MEMORY_SIZE) lors des téléversements de fichiers.<br> <br>
+  >> Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que `FILE_UPLOAD_MAX_MEMORY_SIZE`) lors des téléversements de fichiers.<br> <br>
   >> _ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir]()_ <br>
 
  - `MEDIA_ROOT`
