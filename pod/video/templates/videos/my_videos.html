@@ -11,6 +11,15 @@
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My videos" %}</li>{% endblock %}
 
 {% block page_content %}
+  {% comment %}
+  <p>
+    "types": request.GET.getlist('type'),
+    "owners": request.GET.getlist('owner'),
+    "disciplines": request.GET.getlist('discipline'),
+    "tags_slug": request.GET.getlist('tag'),
+  </p>
+  {% endcomment %}
+
   {% if use_category %}
     {% include "videos/category_modal.html" %}
   {% endif %}
@@ -19,8 +28,8 @@
     <p class="alert alert-info">{% trans 'You have not uploaded any videos yet, please use the "Add a new video" button to add one'%}</p>
   {% else %}
     <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the video on which you want to work with." %}</p>
-    <h2 id="video_count" class="page_title col-8">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
   {% endif %}
+  <h2 id="video_count" class="page_title col-8">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
   <form id="sortForm" action="{% url 'video:my_videos' %}" method="get" class="filterSortForms col-4 mb-2">
     {% include "videos/video_sort_select.html" %}
   </form>

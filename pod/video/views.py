@@ -542,11 +542,16 @@ def my_videos(request):
             },
         )
 
-    data_context["use_category"] = USER_VIDEO_CATEGORY
     data_context["videos"] = videos
-    data_context["full_path"] = full_path
     data_context["count_videos"] = count_videos
+    data_context["types"] = request.GET.getlist("type")
     data_context["owners"] = request.GET.getlist("owner")
+    data_context["disciplines"] = request.GET.getlist("discipline")
+    data_context["tags_slug"] = request.GET.getlist("tag")
+    data_context["cursus_selected"] = request.GET.getlist("cursus")
+    data_context["full_path"] = full_path
+    data_context["cursus_list"] = CURSUS_CODES
+    data_context["use_category"] = USER_VIDEO_CATEGORY
     data_context["page_title"] = _("My videos")
 
     return render(request, "videos/my_videos.html", data_context)
@@ -634,7 +639,8 @@ def videos(request):
     paginator = Paginator(videos_list, 12)
     videos = get_paginated_videos(paginator, page)
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
-
+    print(request.GET.getlist("owner"))
+    print(ownersInstances)
     if request.is_ajax():
         return render(
             request,
