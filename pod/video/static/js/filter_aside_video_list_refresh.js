@@ -77,7 +77,7 @@ function refreshVideosSearch() {
       let parser = new DOMParser();
       let html = parser.parseFromString(data, "text/html").body;
       document.getElementById("videos_list").outerHTML = html.innerHTML;
-      this.replaceCountVideos(document.getElementById("videos_list").dataset.countvideos);
+      replaceCountVideos(document.getElementById("videos_list").dataset.countvideos);
       nextPage = (document.getElementById("videos_list").getAttribute("nextPage") === 'true');
       window.history.pushState({}, "", url);
       if (nextPage) {
@@ -94,7 +94,7 @@ function refreshVideosSearch() {
     })
     .finally(() => {
       // Finally re-enable inputs and dismiss loader
-      this.disabledInputs(false);
+      disabledInputs(false);
       loader.classList.remove("show");
     });
 }
@@ -122,10 +122,10 @@ function getUrlForRefresh(){
 }
 
 // Add trigger event on change on inputs (filters, sort column and sort direction)
-document.querySelectorAll('.form-check-input,#sort,#sort_direction').forEach(el =>{
+function setListenerChangeInputs(el){
     el.addEventListener('change', e => {
         checkedInputs = [];
-        this.disabledInputs(true);
+        disabledInputs(true);
         document.querySelectorAll(
             "input[type=checkbox]:checked[class=form-check-input]"
         ).forEach((e) => {
@@ -133,7 +133,7 @@ document.querySelectorAll('.form-check-input,#sort,#sort_direction').forEach(el 
         });
         refreshVideosSearch();
     });
-});
+}
 
 // Add event listener to search user input to create checkboxes
 if (ownerBox) {
@@ -144,6 +144,7 @@ if (ownerBox) {
       filterOwnerContainer.innerHTML = "";
         users.forEach((user) => {
             filterOwnerContainer.appendChild(createUserCheckBox(user));
+            setListenerChangeInputs(document.getElementById("id"+user.username));
         });
       });
     }else{
@@ -220,3 +221,8 @@ infinite = new InfiniteLoader(
     nextPage,
     (page = 2)
 );
+
+// Add event listener on inputs on launch
+document.querySelectorAll('.form-check-input,#sort,#sort_direction').forEach(el => {
+    setListenerChangeInputs(el);
+});
