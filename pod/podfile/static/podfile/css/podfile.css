@@ -214,14 +214,14 @@ button.close {
   height: auto;
   overflow: hidden;
 }
-#podfile .list_folders .folder_name{
+/*#podfile .list_folders .folder_name{
   max-width: 600px;
   display: inline-block;
   overflow: hidden;
   -o-text-overflow: ellipsis;
      text-overflow: ellipsis;
   white-space: nowrap;
-}
+}*/
 #podfile #listfiles{
   max-height:600px;
   overflow: auto;
@@ -382,17 +382,17 @@ button.close {
 #podfile .list_folders_sub .folder_container{padding: .4em;}
 #podfile .list_folders .folder,
 #podfile .list_folders_sub .folder,
-#podfile #dirs .dirs-nav a.folder{
+/*#podfile #dirs .dirs-nav a.folder*/{
   display: flex;
   align-items: flex-end;
   margin-right: 1em;
 }
 #podfile .list_folders .folder,
 #podfile .list_folders_sub .folder{ -webkit-box-align: center; -ms-flex-align: center; align-items: center;}
-#podfile .list_folders_sub .folder > *,
-#podfile .list_folders .folder > *{-webkit-box-flex: 0;-ms-flex: none;flex: none;}
-#podfile #dirs .dirs-nav-container .add-folder-btn{ color: var(--secondary); -webkit-transition: .3s transform; -o-transition: .3s transform; transition: .3s transform; }
-#podfile #dirs .dirs-nav-container .add-folder-btn:hover{ text-decoration: none; -webkit-transform: scale(1.1); -ms-transform: scale(1.1); transform: scale(1.1);}
+/*#podfile .list_folders_sub .folder > *,
+#podfile .list_folders .folder > *{-webkit-box-flex: 0;-ms-flex: none;flex: none;}*/
+/*#podfile #dirs .dirs-nav-container .add-folder-btn{ color: var(--secondary); -webkit-transition: .3s transform; -o-transition: .3s transform; transition: .3s transform; }
+#podfile #dirs .dirs-nav-container .add-folder-btn:hover{ text-decoration: none; -webkit-transform: scale(1.1); -ms-transform: scale(1.1); transform: scale(1.1);}*/
 
 #podfile .share-folders{ padding-top: .4em; border-top: 2px dotted var(--pod-primary); }
 #podfile .share-folders,
@@ -404,8 +404,7 @@ button.close {
 #podfile a.folder-opened .folder-close
 { display: none;}
 
-#podfile .bi
-{
+#podfile .bi {
   margin-right: 3px;
 }
 #podfile #dirs .dirs-nav + *{
@@ -838,8 +837,8 @@ button.close {
     -ms-flex-align: start;
       align-items: flex-start;
   }
-  #podfile #dirs .dirs-nav .dirs-nav-container .add-folder-btn{
+  /*#podfile #dirs .dirs-nav .dirs-nav-container .add-folder-btn{
     padding-left: 0;
     margin-left: 0;
-  }
+  }*/
 }

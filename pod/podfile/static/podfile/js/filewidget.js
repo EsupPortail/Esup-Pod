@@ -115,7 +115,8 @@ if (typeof loaded == "undefined") {
       e.target.id != "close-folder-icon"
     )
       return;
-    document.getElementById("dirs").classList.remove("open");
+    var bsdirs = new bootstrap.Collapse(document.getElementById("dirs"));
+    bsdirs.hide();
   });
 
   /*document.querySelectorAll("#open-folder-icon > *").forEach((el) => {
@@ -526,7 +527,7 @@ if (typeof loaded == "undefined") {
 
           data.folders.forEach((elt) => {
             let string_html =
-              '<div class="folder_container">' +
+              '<div class="folder_container text-truncate">' +
               createFolder(
                 elt.id,
                 elt.name,
@@ -588,7 +589,7 @@ if (typeof loaded == "undefined") {
         let type = document.getElementById("list_folders_sub").dataset.type;
 
         let string_html =
-          '<div class="folder_container">' +
+          '<div class="folder_container text-truncate">' +
           createFolder(
             data.folder_id,
             data.folder_name,
@@ -612,7 +613,7 @@ if (typeof loaded == "undefined") {
 
       if (data.folder_name) {
         document.getElementById("folder-name-" + folder_id).textContent =
-          "  " + data.folder_name;
+          data.folder_name;
       }
 
       if (data.deleted) {
@@ -721,7 +722,7 @@ if (typeof loaded == "undefined") {
   }
 
   var folder_open_icon = `<i class="folder-open bi bi-folder2-open" id="folder-open-icon"></i>`;
-  var folder_icon = `<i class="folder-close bi bi-folder2" id="folder-icon"></i>`;
+  var folder_icon = `<i class="folder-close bi bi-folder2"></i>`;
 
   function createFolder(foldid, foldname, isCurrent, type, owner = undefined) {
     let construct = "";
@@ -745,7 +746,7 @@ if (typeof loaded == "undefined") {
       foldname =
         '<span class="folder_name" id="folder-name-' +
         foldid +
-        '">  ' +
+        '">' +
         foldname +
         "</span> <span><b>(" +
         owner +
@@ -754,7 +755,7 @@ if (typeof loaded == "undefined") {
       foldname =
         '<span class="folder_name" id="folder-name-' +
         foldid +
-        '">  ' +
+        '">' +
         foldname +
         "</span>";
     }
@@ -782,7 +783,7 @@ if (typeof loaded == "undefined") {
         let nextPage = data.next_page;
         data.folders.forEach((elt) => {
           let string_html =
-            '<div class="folder_container">' +
+            '<div class="folder_container text-truncate">' +
             createFolder(
               elt.id,
               elt.name,
@@ -856,7 +857,7 @@ if (typeof loaded == "undefined") {
         let nextPage = data.next_page;
         data.folders.forEach((elt) => {
           let string_html =
-            '<div class="folder_container">' +
+            '<div class="folder_container text-truncate">' +
             createFolder(
               elt.id,
               elt.name,

@@ -4,7 +4,7 @@
         <a
             href="#"
             id="folder_{{user_home_folder.id}}"
-            class="{% if user_home_folder == current_session_folder%}font-weight-bold{% endif %} folder"
+            class="{% if user_home_folder == current_session_folder%}font-weight-bold{% endif %} folder btn btn-link"
             data-id="{{user_home_folder.id}}"
             data-target="{% if type %}{% url 'podfile:get_folder_files' id=user_home_folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=user_home_folder.id %}{% endif %}"
         >
@@ -23,7 +23,8 @@
             {% trans "Add new folder" %}
         </button>
     </div>
-    <button id="close-folder-icon" type="button" class="btn-close" aria-label="{% trans 'Close' %}"></button>
+    <button id="close-folder-icon" type="button"
+            class="btn-close" aria-label="{% trans 'Close' %}"></button>
 </div>
   <label class="visually-hidden" for="folder-search">{% trans 'Filter files' %}</label>
   <input
@@ -66,7 +67,7 @@
         </span>
         <div class="list_folders">
             {% for folder in share_folder %}
-            <div class="folder_container">
+            <div class="folder_container text-truncate">
                 <a
                     href="#"
                     id="folder_{{folder.id}}"
@@ -91,7 +92,7 @@
                         </svg>
                     </span>
                     {% else %}
-                    <span class="folder" id="folder-icon">
+                    <span class="folder">
                         <svg
                             aria-hidden="true"
                             focusable="false"
@@ -114,7 +115,7 @@
             </div>
             {% endfor %}
             {% for folder in share_folder_user %}
-            <div class="folder_container">
+            <div class="folder_container text-truncate">
                 <a
                     href="#"
                     id="folder_{{folder.id}}"
@@ -139,7 +140,7 @@
                         </svg>
                     </span>
                     {% else %}
-                    <span class="folder" id="folder-icon">
+                    <span class="folder">
                         <svg
                             aria-hidden="true"
                             focusable="false"
