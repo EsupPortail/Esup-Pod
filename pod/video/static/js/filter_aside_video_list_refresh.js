@@ -1,10 +1,13 @@
 var infinite;
 var checkedInputs = [];
+var listUser;
 var sortDirectionAsc = false;
 var sortDirectionChars = ["8600","8599"];
 
 let loader = document.querySelector(".loader_wrapper");
 let infinite_loading = document.querySelector(".infinite-loading");
+let ownerBox = document.getElementById("ownerbox");
+let filterOwnerContainer = document.getElementById("collapseFilterOwner");
 
 onBeforePageLoad = function () {
   infinite_loading.style.display = "block";
@@ -131,6 +134,42 @@ document.querySelectorAll('.form-check-input,#sort,#sort_direction').forEach(el 
         refreshVideosSearch();
     });
 });
+
+// Add event listener to search user input to create checkboxes
+if (ownerBox) {
+  ownerBox.addEventListener("input", (e) => {
+    if (ownerBox.value && ownerBox.value.length > 2) {
+      var searchTerm = ownerBox.value;
+      getSearchListUsers(searchTerm).then((users) => {
+      filterOwnerContainer.innerHTML = "";
+        users.forEach((user) => {
+            filterOwnerContainer.appendChild(createUserCheckBox(user));
+        });
+      });
+    }else{
+        filterOwnerContainer.innerHTML = "";
+    }
+  });
+}
+
+// Create checkbox for user search
+function createUserCheckBox(user){
+    let div = document.createElement("div");
+    div.classList.add("form-check");
+    let checkbox = document.createElement("input");
+    checkbox.classList.add("form-check-input");
+    checkbox.type = "checkbox";
+    checkbox.name = "owner";
+    checkbox.value = user.username;
+    checkbox.id = "id"+user.username;
+    let label = document.createElement("label");
+    label.classList.add("form-check-label");
+    label.setAttribute("for","id"+user.username);
+    label.innerHTML = user.first_name+" "+user.last_name;
+    div.appendChild(checkbox);
+    div.appendChild(label);
+    return div;
+}
 
 // Add trigger event to manage reset of filters
 document.getElementById("resetFilters").addEventListener('click', function() {

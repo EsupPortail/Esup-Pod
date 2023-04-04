@@ -639,8 +639,7 @@ def videos(request):
     paginator = Paginator(videos_list, 12)
     videos = get_paginated_videos(paginator, page)
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
-    print(request.GET.getlist("owner"))
-    print(ownersInstances)
+
     if request.is_ajax():
         return render(
             request,
