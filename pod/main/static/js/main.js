@@ -390,46 +390,34 @@ document.querySelectorAll(".collapsibleThemes").forEach((cl) => {
   });
 });
 
-let ownerboxnavbar = document.getElementById("ownerboxnavbar");
-if (ownerboxnavbar) {
-  ownerboxnavbar.addEventListener("keyup", function () {
-    if (ownerboxnavbar.value && ownerboxnavbar.value.length > 2) {
-      var searchTerm = ownerboxnavbar.value;
-      let data = new FormData();
-      data.append("term", searchTerm);
-      data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
-      url = "/ajax_calls/search_user/";
-      fetch(url, {
-        method: "POST",
-        body: data,
-        headers: {
-          Accept: "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          let accordion = document.getElementById("accordion");
-          accordion.innerHTML = "";
-          data.forEach((elt) => {
-            accordion.innerHTML +=
-              '<li><a href="' +
-              urlvideos +
-              "?owner=" +
-              elt.username +
-              '">' +
-              elt.first_name +
-              " " +
-              elt.last_name +
-              (!HIDE_USERNAME
-                ? " (" + elt.username + ")</a></li>"
-                : "</a></li>");
-          });
+/* USERS IN NAVBAR */
+let ownerBoxNavBar = document.getElementById("ownerboxnavbar");
+if (ownerBoxNavBar) {
+  let accordion = document.getElementById("accordion");
+  ownerBoxNavBar.addEventListener("input", (e) => {
+    if (ownerBoxNavBar.value && ownerBoxNavBar.value.length > 2) {
+      var searchTerm = ownerBoxNavBar.value;
+      getSearchListUsers(searchTerm).then((users) => {
+      accordion.innerHTML = "";
+        users.forEach((user) => {
+            accordion.appendChild(createUserLink(user));
         });
-    } else {
-      document.getElementById("accordion").innerHTML = "";
+      });
+    }else{
+        accordion.innerHTML = "";
     }
   });
+}
+
+// Create link for user search
+function createUserLink(user){
+    let li = document.createElement("li");
+    let a = document.createElement("a");
+    a.setAttribute("href","/videos/?owner="+user.username);
+    a.setAttribute("title",user.first_name+" "+user.last_name);
+    a.innerHTML = user.first_name+" "+user.last_name+" ("+user.username+")";
+    li.appendChild(a);
+    return li;
 }
 
 /** COOKIE DIALOG **/
