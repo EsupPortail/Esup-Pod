@@ -341,10 +341,9 @@ button.close {
    justify-content: space-between;
 
 }
-#podfile #dirs{
+/*#podfile #dirs{
   position: absolute;
   left: 0;
-  /*width: calc(100% - 10em);*/
   max-width: 100%;
   height: 100%;
   display: -ms-grid;
@@ -360,31 +359,20 @@ button.close {
 #podfile #dirs.open{
   opacity: 1;
   z-index: 9;
-}
+}*/
 /*#podfile #dirs .close-folder, #podfile #dirs .close-folder svg{
   width: 30px;
   color: var(--secondary);
   cursor: pointer;
 }*/
 #podfile #dirs .dirs-nav{
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: justify;
-     -ms-flex-pack: justify;
-   justify-content: space-between;
-  -webkit-box-align: center;
-     -ms-flex-align: center;
-        align-items: center;
+  justify-content: space-between;
+  align-items: center;
   padding-left: 0;
 }
 #podfile #dirs .dirs-nav .dirs-nav-container{
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: center;
-     -ms-flex-align: center;
-        align-items: center;
 }
 #podfile .list_folders .folder_container:nth-child(2n),
 #podfile .list_folders_sub .folder_container:nth-child(2n) {
@@ -395,12 +383,8 @@ button.close {
 #podfile .list_folders .folder,
 #podfile .list_folders_sub .folder,
 #podfile #dirs .dirs-nav a.folder{
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: end;
-    -ms-flex-align: end;
-      align-items: flex-end;
+  align-items: flex-end;
   margin-right: 1em;
 }
 #podfile .list_folders .folder,
@@ -577,14 +561,14 @@ button.close {
       transform: translateY(-2px);
   margin-right: 8px;
 }*/
-#podfile .open-folder{
+/*#podfile .open-folder{
   min-height: 400px;
   width: 30px;
   margin-left: -1em;
-  /*cursor: pointer;
+  cursor: pointer;
   -webkit-transform: translateX(-10px);
     -ms-transform: translateX(-10px);
-      transform: translateX(-10px);*/
+      transform: translateX(-10px);
   color: var(--pod-primary);
 }
 #podfile #files{
@@ -595,7 +579,7 @@ button.close {
       flex: none;
   border-top-right-radius: 4px;
   padding: 0;
-}
+}*/
 #podfile #files .navbar{
   position: relative;
   display: flex;
