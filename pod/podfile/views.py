@@ -687,6 +687,7 @@ def user_folders(request):
         "current_page": int(page),
         "next_page": (-1 if ((int(page) + 1) > paginator.num_pages) else (int(page) + 1)),
         "total_pages": paginator.num_pages,
+        "search": search,
     }
     data = json.dumps(json_resp)
     mimetype = "application/json"

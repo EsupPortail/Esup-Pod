@@ -23,8 +23,7 @@
             {% trans "Add new folder" %}
         </button>
     </div>
-    <button id="close-folder-icon" type="button"
-            class="btn-close" aria-label="{% trans 'Close' %}"></button>
+    <button id="close-folder-icon" type="button" class="btn-close" aria-label="{% trans 'Close' %}"></button>
 </div>
   <label class="visually-hidden" for="folder-search">{% trans 'Search folder' %}</label>
   <input
@@ -44,6 +43,7 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button>
   </div>
 {% endif %}
+
 <div class="flex display-vertical">
     <div class="list_folders" id="list_folders_sub" data-type="{{type}}">&nbsp;</div>
 </div>
