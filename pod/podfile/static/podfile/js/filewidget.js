@@ -65,7 +65,7 @@ if (typeof loaded == "undefined") {
     }
   });
 
-  
+
   /*********** OPEN/CLOSE FOLDER MENU ************/
   document.addEventListener("click", (e) => {
     if (
@@ -411,7 +411,11 @@ if (typeof loaded == "undefined") {
   });
 
   document.addEventListener("click", (e) => {
-    if (e.target.id == "currentfolderdelete" || document.getElementById("currentfolderdelete").contains(e.target)) {
+    var contain_target = false;
+    if (document.getElementById("currentfolderdelete")){
+      contain_target = document.getElementById("currentfolderdelete").contains(e.target);
+    }
+    if (e.target.id == "currentfolderdelete" || contain_target) {
       var deleteConfirm = confirm(
         gettext("Are you sure you want to delete this folder?")
       );
@@ -729,7 +733,7 @@ var folder_searching = false;
         showalert(gettext("Server error") + "<br/>" + error, "alert-danger");
       });
   }
-  
+
   // The new observer with a callback to execute upon change
   var list_folders_sub = document.getElementById("list_folders_sub");
   var folder_observer = new MutationObserver((mutationsList) => {
@@ -826,11 +830,11 @@ var folder_searching = false;
       folder_searching = false
     });
   }
-  
+
   function showfiles(e) {
     let cible = e.target
     if (e.target.nodeName !== "a") {
-      console.log(e.target.textContent)
+      //console.log(e.target.textContent)
       cible = e.target.parentNode
     }
     document
@@ -839,11 +843,11 @@ var folder_searching = false;
         el.classList.remove("folder-opened");
       });
     cible.classList.add("folder-opened");
-    
+
 
     document.getElementById("files").classList.add("loading");
     let id = cible.dataset.id;
-    
+
     let loader = `
        <div class="container-loader">
            <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
