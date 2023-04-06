@@ -659,9 +659,9 @@ def filter_folders_with_truly_files(folders):
 
 @staff_member_required(redirect_field_name="referrer")
 def user_folders(request):
-    VALUES_LIST = ["id", "name"]
-    if request.user.is_superuser:
-        VALUES_LIST.append("owner")
+    VALUES_LIST = ["id", "name", "owner"]
+    # if request.user.is_superuser:
+    #    VALUES_LIST.append("owner")
 
     folder_list = UserFolder.objects.exclude(name="home").filter(
         Q(access_groups__in=request.user.owner.accessgroup_set.all())
