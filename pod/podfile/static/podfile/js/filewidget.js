@@ -115,10 +115,7 @@ if (typeof loaded == "undefined") {
       e.target.id != "close-folder-icon"
     )
       return;
-<<<<<<< HEAD
-=======
     //document.getElementById("dirs").classList.remove("open");
->>>>>>> ptitloup/fix_podfile
     var bsdirs = new bootstrap.Collapse(document.getElementById("dirs"));
     bsdirs.hide();
   });
@@ -505,70 +502,10 @@ if (typeof loaded == "undefined") {
     var text = e.target.value.toLowerCase();
     if (folder_searching === true ) {
       return;
-<<<<<<< HEAD
-    }
-    if (text.length > 2 || text.length == 0) {
-      lock = true;
-      document.getElementById("list_folders_sub").innerHTML = "";
-      let type = document.getElementById("list_folders_sub").dataset.type;
-      let currentFolder = getCurrentSessionFolder();
-      let url = "/podfile/ajax_calls/user_folders?search=" + text;
-      let token = document.querySelector(
-        'input[name="csrfmiddlewaretoken"]'
-      ).value;
-      fetch(url, {
-        method: "GET",
-        headers: {
-          "X-CSRFToken": token,
-          Authorization: "Bearer " + token,
-          "X-Requested-With": "XMLHttpRequest",
-        },
-        cache: "no-cache",
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          let nextPage = data.next_page;
-
-          data.folders.forEach((elt) => {
-            let string_html =
-              '<div class="folder_container text-truncate">' +
-              createFolder(
-                elt.id,
-                elt.name,
-                currentFolder == elt.name,
-                type,
-                elt.owner
-              ) +
-              "</div>";
-            let parsedHTML = new DOMParser().parseFromString(
-              string_html,
-              "text/html"
-            ).body.firstChild;
-            document.getElementById("list_folders_sub").appendChild(parsedHTML);
-          });
-          if (nextPage != -1) {
-            document
-              .getElementById("list_folders_sub")
-              .append(
-                seeMoreElement(
-                  nextPage,
-                  data.current_page + 1,
-                  data.total_pages,
-                  text
-                )
-              );
-          }
-          lock = false;
-        })
-        .catch((error) => {
-          showalert(gettext("Server error") + "<br/>" + error, "alert-danger");
-        });
-=======
     } else {
       if (text.length > 2 || text.length == 0) {
         getFolders(text)
       }
->>>>>>> ptitloup/fix_podfile
     }
   });
 
@@ -622,12 +559,7 @@ if (typeof loaded == "undefined") {
       }
 
       if (data.folder_name) {
-<<<<<<< HEAD
-        document.getElementById("folder-name-" + folder_id).textContent =
-          data.folder_name;
-=======
         document.getElementById("folder-name-" + folder_id).textContent = data.folder_name;
->>>>>>> ptitloup/fix_podfile
       }
 
       if (data.deleted) {
