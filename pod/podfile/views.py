@@ -638,22 +638,22 @@ def get_current_session_folder_ajax(request):
 
 
 def fetch_owners(request, folders_list):
-    if request.user.is_superuser:
-        for fold in folders_list:
-            if fold["owner"] != request.user.id:
-                fold["owner"] = User.objects.get(id=fold["owner"]).username
-            else:
-                del fold["owner"]
+    # if request.user.is_superuser:
+    for fold in folders_list:
+        if fold["owner"] != request.user.id:
+            fold["owner"] = User.objects.get(id=fold["owner"]).username
+        else:
+            del fold["owner"]
     return folders_list
 
-
+'''
 def filter_folders_with_truly_files(folders):
     return (
         folders.annotate(nbr_image=Count("customimagemodel", distinct=True))
         .annotate(nbr_file=Count("customfilemodel", distinct=True))
         .filter(Q(nbr_image__gt=0) | Q(nbr_file__gt=0))
     )
-
+'''
 
 @staff_member_required(redirect_field_name="referrer")
 def user_folders(request):
