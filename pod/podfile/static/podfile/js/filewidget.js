@@ -115,6 +115,10 @@ if (typeof loaded == "undefined") {
       e.target.id != "close-folder-icon"
     )
       return;
+<<<<<<< HEAD
+=======
+    //document.getElementById("dirs").classList.remove("open");
+>>>>>>> ptitloup/fix_podfile
     var bsdirs = new bootstrap.Collapse(document.getElementById("dirs"));
     bsdirs.hide();
   });
@@ -496,12 +500,12 @@ if (typeof loaded == "undefined") {
     send_form_data(form.getAttribute("action"), data_form, "reloadFolder");
   });
 
-  var lock = false;
   document.addEventListener("input", (e) => {
     if (e.target.id != "folder-search") return;
     var text = e.target.value.toLowerCase();
-    if (lock && text.length > 0) {
+    if (folder_searching === true ) {
       return;
+<<<<<<< HEAD
     }
     if (text.length > 2 || text.length == 0) {
       lock = true;
@@ -559,6 +563,12 @@ if (typeof loaded == "undefined") {
         .catch((error) => {
           showalert(gettext("Server error") + "<br/>" + error, "alert-danger");
         });
+=======
+    } else {
+      if (text.length > 2 || text.length == 0) {
+        getFolders(text)
+      }
+>>>>>>> ptitloup/fix_podfile
     }
   });
 
@@ -612,8 +622,12 @@ if (typeof loaded == "undefined") {
       }
 
       if (data.folder_name) {
+<<<<<<< HEAD
         document.getElementById("folder-name-" + folder_id).textContent =
           data.folder_name;
+=======
+        document.getElementById("folder-name-" + folder_id).textContent = data.folder_name;
+>>>>>>> ptitloup/fix_podfile
       }
 
       if (data.deleted) {
@@ -762,14 +776,22 @@ if (typeof loaded == "undefined") {
     construct += `${folder_open_icon} ${folder_icon} ${foldname}</a>`;
     return construct;
   }
+// **********************************************************************
+var folder_searching = false;
 
-  function initFolders() {
+  function getFolders(search = "") {
+    console.log("getFolders");
+    document.getElementById("list_folders_sub").innerHTML = "";
     let type = document.getElementById("list_folders_sub").dataset.type;
     let currentFolder = getCurrentSessionFolder();
     let url = "/podfile/ajax_calls/user_folders";
+    if(search !== ""){
+      url += "?search=" + search
+    }
     let token = document.querySelector(
       'input[name="csrfmiddlewaretoken"]'
     ).value;
+    folder_searching = true
     fetch(url, {
       method: "GET",
       headers: {
@@ -805,11 +827,14 @@ if (typeof loaded == "undefined") {
               seeMoreElement(nextPage, data.current_page + 1, data.total_pages)
             );
         }
+        folder_searching = false
+      }).catch((error) => {
+        showalert(gettext("Server error") + "<br/>" + error, "alert-danger");
       });
   }
   document.addEventListener("DOMContentLoaded", (e) => {
     if (typeof myFilesView !== "undefined") {
-      initFolders();
+      getFolders("");
     }
   });
 
@@ -891,7 +916,7 @@ if (typeof loaded == "undefined") {
     if (!event.target.matches(".podfilemodal")) return;
     event.stopPropagation();
     setTimeout(function () {
-      //initFolders();
+      //getFolders("");
     }, 500);
   });
 }

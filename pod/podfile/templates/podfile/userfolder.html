@@ -9,7 +9,7 @@
             data-target="{% if type %}{% url 'podfile:get_folder_files' id=user_home_folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=user_home_folder.id %}{% endif %}"
         >
             <i class="home-directory bi bi-house-door-fill"></i>
-            {% trans "My folders"%}
+            {% trans "Home folder" %}
         </a>
         <button
             type="button"
@@ -26,16 +26,16 @@
     <button id="close-folder-icon" type="button"
             class="btn-close" aria-label="{% trans 'Close' %}"></button>
 </div>
-  <label class="visually-hidden" for="folder-search">{% trans 'Filter files' %}</label>
+  <label class="visually-hidden" for="folder-search">{% trans 'Search folder' %}</label>
   <input
     class="folder-search form-control"
-    placeholder="{% trans 'Filter files' %}"
+    placeholder="{% trans 'Search folder' %}"
     type="search"
     id="folder-search"
     name="q"
   >
 
-{% if user.is_superuser %}
+{% if request.user.is_superuser %}
   <div class="alert alert-warning alert-dismissible fade show" role="alert">
     <p>
       <i class="bi bi-exclamation-triangle-fill warning-icon" aria-hidden="true"></i>
@@ -45,6 +45,7 @@
   </div>
 {% endif %}
 <div class="flex display-vertical">
+<<<<<<< HEAD
     <div class="list_folders" id="list_folders_sub" data-type="{{type}}"></div>
     {% if share_folder.count > 0 or share_folder_user.count > 0 %}
     <div class="share-folders" style="padding-left: 0px">
@@ -165,6 +166,9 @@
         </div>
     </div>
     {% endif %}
+=======
+    <div class="list_folders" id="list_folders_sub" data-type="{{type}}">&nbsp;</div>
+>>>>>>> ptitloup/fix_podfile
 </div>
 <style>
     #formalertdiv{
