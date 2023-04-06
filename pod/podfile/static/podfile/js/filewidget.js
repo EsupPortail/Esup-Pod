@@ -115,7 +115,9 @@ if (typeof loaded == "undefined") {
       e.target.id != "close-folder-icon"
     )
       return;
-    document.getElementById("dirs").classList.remove("open");
+    //document.getElementById("dirs").classList.remove("open");
+    var bsdirs = new bootstrap.Collapse(document.getElementById("dirs"));
+    bsdirs.hide();
   });
 
   document.querySelectorAll("#open-folder-icon > *").forEach((el) => {
@@ -495,14 +497,17 @@ if (typeof loaded == "undefined") {
     send_form_data(form.getAttribute("action"), data_form, "reloadFolder");
   });
 
-  var lock = false;
   document.addEventListener("input", (e) => {
     if (e.target.id != "folder-search") return;
     var text = e.target.value.toLowerCase();
-    if (lock && text.length > 0) {
+    if (folder_searching === true ) {
       return;
+    } else {
+      if (text.length > 2 || text.length == 0) {
+        initFolders(text)
+      }
     }
-    if (text.length > 2 || text.length == 0) {
+    /*
       lock = true;
       document.getElementById("list_folders_sub").innerHTML = "";
       let type = document.getElementById("list_folders_sub").dataset.type;
@@ -526,7 +531,7 @@ if (typeof loaded == "undefined") {
 
           data.folders.forEach((elt) => {
             let string_html =
-              '<div class="folder_container">' +
+              '<div class="folder_container text-truncate">' +
               createFolder(
                 elt.id,
                 elt.name,
@@ -558,7 +563,7 @@ if (typeof loaded == "undefined") {
         .catch((error) => {
           showalert(gettext("Server error") + "<br/>" + error, "alert-danger");
         });
-    }
+    }*/
   });
 
   document.addEventListener("input", (e) => {
@@ -588,7 +593,7 @@ if (typeof loaded == "undefined") {
         let type = document.getElementById("list_folders_sub").dataset.type;
 
         let string_html =
-          '<div class="folder_container">' +
+          '<div class="folder_container text-truncate">' +
           createFolder(
             data.folder_id,
             data.folder_name,
@@ -611,8 +616,7 @@ if (typeof loaded == "undefined") {
       }
 
       if (data.folder_name) {
-        document.getElementById("folder-name-" + folder_id).textContent =
-          "  " + data.folder_name;
+        document.getElementById("folder-name-" + folder_id).textContent = data.folder_name;
       }
 
       if (data.deleted) {
@@ -721,7 +725,7 @@ if (typeof loaded == "undefined") {
   }
 
   var folder_open_icon = `<i class="folder-open bi bi-folder2-open" id="folder-open-icon"></i>`;
-  var folder_icon = `<i class="folder-close bi bi-folder2" id="folder-icon"></i>`;
+  var folder_icon = `<i class="folder-close bi bi-folder2"></i>`;
 
   function createFolder(foldid, foldname, isCurrent, type, owner = undefined) {
     let construct = "";
@@ -745,7 +749,7 @@ if (typeof loaded == "undefined") {
       foldname =
         '<span class="folder_name" id="folder-name-' +
         foldid +
-        '">  ' +
+        '">' +
         foldname +
         "</span> <span><b>(" +
         owner +
@@ -761,14 +765,22 @@ if (typeof loaded == "undefined") {
     construct += `${folder_open_icon} ${folder_icon} ${foldname}</a>`;
     return construct;
   }
+// **********************************************************************
+var folder_searching = false;
 
-  function initFolders() {
+  function initFolders(search = "") {
+    console.log("initFolders");
+    document.getElementById("list_folders_sub").innerHTML = "";
     let type = document.getElementById("list_folders_sub").dataset.type;
     let currentFolder = getCurrentSessionFolder();
     let url = "/podfile/ajax_calls/user_folders";
+    if(search !== ""){
+      url += "?search=" + search
+    }
     let token = document.querySelector(
       'input[name="csrfmiddlewaretoken"]'
     ).value;
+    folder_searching = true
     fetch(url, {
       method: "GET",
       headers: {
@@ -782,7 +794,7 @@ if (typeof loaded == "undefined") {
         let nextPage = data.next_page;
         data.folders.forEach((elt) => {
           let string_html =
-            '<div class="folder_container">' +
+            '<div class="folder_container text-truncate">' +
             createFolder(
               elt.id,
               elt.name,
@@ -804,11 +816,14 @@ if (typeof loaded == "undefined") {
               seeMoreElement(nextPage, data.current_page + 1, data.total_pages)
             );
         }
+        folder_searching = false
+      }).catch((error) => {
+        showalert(gettext("Server error") + "<br/>" + error, "alert-danger");
       });
   }
   document.addEventListener("DOMContentLoaded", (e) => {
     if (typeof myFilesView !== "undefined") {
-      initFolders();
+      initFolders("");
     }
   });
 
@@ -856,7 +871,7 @@ if (typeof loaded == "undefined") {
         let nextPage = data.next_page;
         data.folders.forEach((elt) => {
           let string_html =
-            '<div class="folder_container">' +
+            '<div class="folder_container text-truncate">' +
             createFolder(
               elt.id,
               elt.name,
