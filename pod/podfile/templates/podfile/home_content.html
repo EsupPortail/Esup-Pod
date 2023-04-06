@@ -1,19 +1,23 @@
 {% load i18n %}
 
 <div class="container-fluid h-100" id="podfile">
+  <div class="open-folder p-0" id="open-folder-icon">
+    <button class="navbar-toggler pod-navbar__button-toggler"
+            type="button"
+            aria-controls="dirs"
+            aria-expanded="false"
+            data-bs-toggle="collapse"
+            data-bs-target="#dirs"
+            title="{% trans 'Toggle folders menu' %}">
+      <i class="bi bi-list" aria-hidden="true"></i>
+    </button>
+  </div>
   <div class="row">
-    <div class="col col-4" id="dirs">
+    <div class="col col-4 collapse collapse-horizontal" id="dirs">
       {% include 'podfile/userfolder.html' %}
     </div>
-    <div class="open-folder p-0" id="open-folder-icon">
-	    <button class="navbar-toggler pod-navbar__button-toggler"
-              aria-controls="dirs"
-              data-bs-target="#dirs"
-              title="{% trans 'Toggle folders menu' %}">
-        <i class="bi bi-list" aria-hidden="true"></i>
-      </button>
-    </div>
-    <div class="col col-8 col-md-offset-1" id="files">
+
+    <div class="col" id="files">
       {% include 'podfile/list_folder_files.html' with folder=current_session_folder %}
   </div>
 </div>

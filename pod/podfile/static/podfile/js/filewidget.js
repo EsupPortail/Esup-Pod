@@ -120,14 +120,14 @@ if (typeof loaded == "undefined") {
     bsdirs.hide();
   });
 
-  document.querySelectorAll("#open-folder-icon > *").forEach((el) => {
+  /*document.querySelectorAll("#open-folder-icon > *").forEach((el) => {
     el.style = "pointer-events: none; cursor : pointer;";
   });
   if (document.getElementById("open-folder-icon")) {
     document.getElementById("open-folder-icon").style.cursor = "pointer";
-  }
+  }*/
 
-  document.addEventListener("click", (e) => {
+  /*document.addEventListener("click", (e) => {
     if (
       e.target.id != "open-folder-icon" &&
       !e.target.matches("open-folder-icon i")
@@ -141,7 +141,7 @@ if (typeof loaded == "undefined") {
 
     e.preventDefault();
     document.getElementById("dirs").classList.add("open");
-  });
+  });*/
 
   document.addEventListener("change", (e) => {
     if (e.target.id != "ufile") return;
@@ -167,7 +167,7 @@ if (typeof loaded == "undefined") {
     var data_form = new FormData(e.target);
 
     var url = e.target.getAttribute("action");
-    
+
     fetch(url, {
       method: "POST",
       body: data_form,
@@ -701,7 +701,7 @@ if (typeof loaded == "undefined") {
       foldname =
         '<span class="folder_name" id="folder-name-' +
         foldid +
-        '">  ' +
+        '">' +
         foldname +
         "</span>";
     }
