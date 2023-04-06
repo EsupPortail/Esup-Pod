@@ -10,7 +10,7 @@ from django.core.exceptions import PermissionDenied
 from django.template.loader import render_to_string
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import SuspiciousOperation
-from django.db.models import Count, Q
+from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from .models import UserFolder
@@ -646,6 +646,7 @@ def fetch_owners(request, folders_list):
             del fold["owner"]
     return folders_list
 
+
 '''
 def filter_folders_with_truly_files(folders):
     return (
@@ -655,13 +656,14 @@ def filter_folders_with_truly_files(folders):
     )
 '''
 
+
 @staff_member_required(redirect_field_name="referrer")
 def user_folders(request):
     VALUES_LIST = ["id", "name"]
     if request.user.is_superuser:
         VALUES_LIST.append("owner")
 
-    folder_list = UserFolder.objects.filter(
+    folder_list = UserFolder.objects.exclude(name="home").filter(
         Q(access_groups__in=request.user.owner.accessgroup_set.all())
         | Q(owner=request.user)
         | Q(users=request.user)

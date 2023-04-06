@@ -501,6 +501,7 @@ button.close {
         align-items: center;
   overflow: hidden;
 }
+/*
 #podfile #list_folders_sub .view-more-container a#more:hover{
   background: var(--secondary);
   color: #fff !important;
@@ -509,6 +510,7 @@ button.close {
   background: white;
   color: var(--secondary);
 }
+*/
 #podfile #list_folders_sub .view-more-container a#more .text{
   -ms-flex-item-align: center;
    -ms-grid-row-align: center;
