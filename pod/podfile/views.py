@@ -697,6 +697,8 @@ def user_folders(request):
 
 
 def get_filter_user_folder(request, folder_list, search):
+    """for user, search inside folder list and for superuser,
+    search folder in all folder. Returns found folders"""
     if not request.user.is_superuser:
         return folder_list.filter(
             Q(name__icontains=search)
