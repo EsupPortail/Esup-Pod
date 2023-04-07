@@ -68,6 +68,7 @@ class FolderViewTestCase(TestCase):
                 "next_page": -1,
                 "total_pages": 1,
                 "folders": [{"name": "Child", "id": 2}],
+                'search': '',
             },
         )
 
