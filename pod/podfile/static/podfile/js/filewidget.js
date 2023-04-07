@@ -609,6 +609,9 @@ if (typeof loaded == "undefined") {
 
   function append_folder_html_in_modal(data) {
     document.getElementById("modal-folder_" + id_input).innerHTML = data;
+    getFolders("");
+    folder_observer = add_folder_observer()
+    folder_observer.observe(list_folders_sub, { childList: true, subtree: true });
   }
 
   function getCurrentSessionFolder() {
@@ -675,8 +678,31 @@ if (typeof loaded == "undefined") {
     construct += `${folder_open_icon} ${folder_icon} ${foldname}</a>`;
     return construct;
   }
-// **********************************************************************
-var folder_searching = false;
+  // **********************************************************************
+  var folder_searching = false;
+  function add_folder_observer() {
+    // The new observer with a callback to execute upon change
+    var list_folders_sub = document.getElementById("list_folders_sub");
+    var folder_observer = new MutationObserver((mutationsList) => {
+      if(document.getElementById("more")) {
+        document.getElementById("more").addEventListener("click", (event) => {
+          event.preventDefault();
+          seemore(event);
+        });
+      }
+      document
+        .querySelectorAll("a.folder")
+        .forEach(el => {
+          el.addEventListener("click", (event) => {
+            //alert("show files");
+            event.preventDefault();
+            showfiles(event);
+          });
+        });
+    });
+    return folder_observer;
+  }
+  
 
   function getFolders(search = "") {
     //console.log("getFolders");
@@ -702,7 +728,6 @@ var folder_searching = false;
       .then((response) => response.json())
       .then((data) => {
         let nextPage = data.next_page;
-        console.log(nextPage);
         data.folders.forEach((elt) => {
           let string_html =
             '<div class="folder_container text-truncate">' +
@@ -734,29 +759,11 @@ var folder_searching = false;
       });
   }
 
-  // The new observer with a callback to execute upon change
-  var list_folders_sub = document.getElementById("list_folders_sub");
-  var folder_observer = new MutationObserver((mutationsList) => {
-    if(document.getElementById("more")) {
-      document.getElementById("more").addEventListener("click", (event) => {
-        event.preventDefault();
-        seemore(event);
-      });
-    }
-    document
-      .querySelectorAll("a.folder")
-      .forEach(el => {
-        el.addEventListener("click", (event) => {
-          //alert("show files");
-          event.preventDefault();
-          showfiles(event);
-        });
-      });
-  });
   /*** load folder after dom charged and check for changing **** */
   document.addEventListener("DOMContentLoaded", (e) => {
     if (typeof myFilesView !== "undefined") {
       getFolders("");
+      folder_observer = add_folder_observer()
       folder_observer.observe(list_folders_sub, { childList: true, subtree: true });
     }
   });
@@ -833,7 +840,7 @@ var folder_searching = false;
 
   function showfiles(e) {
     let cible = e.target
-    if (e.target.nodeName !== "a") {
+    if (e.target.nodeName.toLowerCase() !== "a" ) {
       //console.log(e.target.textContent)
       cible = e.target.parentNode
     }
@@ -880,12 +887,13 @@ var folder_searching = false;
       error_func
     );
   }
-
+/*
   document.addEventListener("show.bs.modal", (event) => {
     if (!event.target.matches(".podfilemodal")) return;
     event.stopPropagation();
-    /*setTimeout(function () {
-      //getFolders("");
-    }, 500);*/
+    setTimeout(function () {
+      getFolders("");
+    }, 500);
   });
+*/
 }

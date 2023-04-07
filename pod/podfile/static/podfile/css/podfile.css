@@ -182,7 +182,7 @@ button.close {
  **********************************/
 @media only screen and (min-width: 950px)
 {
-  .modal-dialog{ width: 850px; }
+  /*.modal-dialog{ width: 850px; }*/
 }
 #podfile .row{
   margin: 10px 10px 5px 10px;
