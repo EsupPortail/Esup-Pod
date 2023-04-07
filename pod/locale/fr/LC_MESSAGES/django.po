@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-03 14:56+0000\n"
+"POT-Creation-Date: 2023-04-07 11:56+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -201,10 +201,10 @@ msgstr "Changer votre image de profil"
 #: pod/playlist/templates/playlist_player-iframe.html:26
 #: pod/podfile/templates/podfile/customfilewidget.html:61
 #: pod/podfile/templates/podfile/customfilewidget.html:65
-#: pod/podfile/templates/podfile/home_content.html:27
-#: pod/podfile/templates/podfile/home_content.html:63
-#: pod/podfile/templates/podfile/home_content.html:77
-#: pod/podfile/templates/podfile/home_content.html:96
+#: pod/podfile/templates/podfile/home_content.html:31
+#: pod/podfile/templates/podfile/home_content.html:67
+#: pod/podfile/templates/podfile/home_content.html:81
+#: pod/podfile/templates/podfile/home_content.html:100
 #: pod/podfile/templates/podfile/userfolder.html:26
 #: pod/podfile/templates/podfile/userfolder.html:43
 #: pod/recorder/templates/recorder/claim_record.html:34
@@ -285,7 +285,7 @@ msgid "Please provide a valid value for this field."
 msgstr "Veuillez renseigner une valeur valide pour ce champ."
 
 #: pod/authentication/templates/userpicture/userpicture.html:52
-#: pod/podfile/templates/podfile/home_content.html:64
+#: pod/podfile/templates/podfile/home_content.html:68
 msgid "Save changes"
 msgstr "Sauvegarder"
 
@@ -798,7 +798,7 @@ msgstr "Plus"
 #: pod/bbb/templates/bbb/record_list.html:18
 #: pod/live/templates/live/events_list.html:42
 #: pod/playlist/templates/playlist/playlist_list.html:40
-#: pod/podfile/templates/podfile/home_content.html:56
+#: pod/podfile/templates/podfile/home_content.html:60
 #: pod/podfile/templates/podfile/list_folder_files.html:114
 #: pod/recorder/templates/recorder/record_list.html:18
 #: pod/video/templates/videos/video-comment.html:28
@@ -1795,8 +1795,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html:151
 msgid "Subtitles and/or caption(s) files must be in \".vtt\" format."
 msgstr ""
-"Les fichiers de sous-titres et/ou de légendes doivent être au format \"."
-"vtt\"."
+"Les fichiers de sous-titres et/ou de légendes doivent être au format \".vtt"
+"\"."
 
 #: pod/completion/templates/video_completion.html:152
 msgid "You can use"
@@ -1873,8 +1873,8 @@ msgid "Video additions"
 msgstr "Compléments de la vidéo"
 
 #: pod/completion/views.py:344 pod/completion/views.py:538
-#: pod/completion/views.py:987 pod/podfile/views.py:454
-#: pod/podfile/views.py:502 pod/video/views.py:457 pod/video/views.py:1758
+#: pod/completion/views.py:987 pod/podfile/views.py:439
+#: pod/podfile/views.py:487 pod/video/views.py:457 pod/video/views.py:1758
 msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs"
 
@@ -2078,8 +2078,8 @@ msgid ""
 msgstr ""
 "Les champs \"Début\" et \"Fin\" doivent contenir des valeurs en secondes. "
 "Lancez la lecture de la vidéo, mettez sur pause et cliquez sur \"Récupérer "
-"le temps depuis le lecteur\" pour renseigner automatiquement le champ "
-"\"Début\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
+"le temps depuis le lecteur\" pour renseigner automatiquement le champ \"Début"
+"\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:97
 msgid "You cannot overlap enrichments."
@@ -3191,7 +3191,7 @@ msgstr "Autre (spécifiez)"
 
 #: pod/main/forms.py:26 pod/meeting/forms.py:388
 #: pod/meeting/templates/meeting/recordings.html:20 pod/podfile/models.py:24
-#: pod/podfile/models.py:116 pod/podfile/templates/podfile/home_content.html:35
+#: pod/podfile/models.py:116 pod/podfile/templates/podfile/home_content.html:39
 #: pod/video/models.py:1574 pod/video/models.py:1651 pod/video/models.py:1716
 msgid "Name"
 msgstr "Nom"
@@ -4153,7 +4153,7 @@ msgid "My playlists"
 msgstr "Mes listes de lecture"
 
 #: pod/main/templates/navbar.html:203 pod/podfile/templates/podfile/home.html:6
-#: pod/podfile/templates/podfile/home.html:10 pod/podfile/views.py:71
+#: pod/podfile/templates/podfile/home.html:10 pod/podfile/views.py:56
 msgid "My files"
 msgstr "Mes fichiers"
 
@@ -4951,16 +4951,16 @@ msgid ""
 msgstr ""
 "\n"
 "        <p>Bonjour,\n"
-"        <p>%(owner)s vous invite à une réunion récurrente "
-"<b>%(meeting_title)s</b>.</p>\n"
+"        <p>%(owner)s vous invite à une réunion récurrente <b>"
+"%(meeting_title)s</b>.</p>\n"
 "        <p>Date de début : %(start_date_time)s </p>\n"
 "        <p>Récurrent jusqu'à la date : %(end_date)s </p>\n"
 "        <p>La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s </"
 "p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<b>%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
+"%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -4986,8 +4986,8 @@ msgstr ""
 "        <p>Date de fin : %(end_date)s </p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<b>%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
+"%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -5064,8 +5064,8 @@ msgstr "Aucune liste de lecture trouvée"
 
 #: pod/playlist/templates/my_playlists.html:19
 msgid ""
-"You have not created any playlists yet, please use the \"Add a new "
-"playlist\" button to add one."
+"You have not created any playlists yet, please use the \"Add a new playlist"
+"\" button to add one."
 msgstr ""
 "Vous n’avez pas encore créé de liste de lecture, veuillez cliquer sur le "
 "bouton « Ajouter une nouvelle liste de lecture » pour en ajouter une."
@@ -5279,50 +5279,50 @@ msgstr "Changer de fichier"
 
 #: pod/podfile/templates/podfile/customfilewidget.html:30
 #: pod/podfile/templates/podfile/customfilewidget.html:46
-#: pod/podfile/templates/podfile/customfilewidget.html:114
+#: pod/podfile/templates/podfile/customfilewidget.html:116
 msgid "Remove image"
 msgstr "Retirer l’image"
 
 #: pod/podfile/templates/podfile/customfilewidget.html:32
 #: pod/podfile/templates/podfile/customfilewidget.html:48
-#: pod/podfile/templates/podfile/customfilewidget.html:116
+#: pod/podfile/templates/podfile/customfilewidget.html:118
 msgid "Remove file"
 msgstr "Retirer le fichier"
 
 #: pod/podfile/templates/podfile/customfilewidget.html:39
 #: pod/podfile/templates/podfile/customfilewidget.html:60
-#: pod/podfile/templates/podfile/customfilewidget.html:107
+#: pod/podfile/templates/podfile/customfilewidget.html:109
 msgid "Select an image"
 msgstr "Sélectionner une image"
 
 #: pod/podfile/templates/podfile/customfilewidget.html:41
 #: pod/podfile/templates/podfile/customfilewidget.html:60
-#: pod/podfile/templates/podfile/customfilewidget.html:109
+#: pod/podfile/templates/podfile/customfilewidget.html:111
 msgid "Select a file"
 msgstr "Sélectionner un fichier"
 
-#: pod/podfile/templates/podfile/home_content.html:12
+#: pod/podfile/templates/podfile/home_content.html:11
 msgid "Toggle folders menu"
 msgstr "Afficher/masquer le menu des dossiers"
 
-#: pod/podfile/templates/podfile/home_content.html:26
-#: pod/podfile/templates/podfile/home_content.html:36
+#: pod/podfile/templates/podfile/home_content.html:30
+#: pod/podfile/templates/podfile/home_content.html:40
 msgid "Enter new name of folder"
 msgstr "Indiquer un nouveau nom à ce dossier"
 
-#: pod/podfile/templates/podfile/home_content.html:75
+#: pod/podfile/templates/podfile/home_content.html:79
 msgid "Share with someone"
 msgstr "Partager avec quelqu’un"
 
-#: pod/podfile/templates/podfile/home_content.html:80
+#: pod/podfile/templates/podfile/home_content.html:84
 msgid "Already shared with:"
 msgstr "Déjà partagé avec :"
 
-#: pod/podfile/templates/podfile/home_content.html:88
+#: pod/podfile/templates/podfile/home_content.html:92
 msgid "Username"
 msgstr "Nom d’utilisateur"
 
-#: pod/podfile/templates/podfile/home_content.html:89
+#: pod/podfile/templates/podfile/home_content.html:93
 msgid "Enter new username"
 msgstr "Entrer un nom d’utilisateur"
 
@@ -5361,8 +5361,8 @@ msgid "Delete file"
 msgstr "Supprimer le fichier"
 
 #: pod/podfile/templates/podfile/userfolder.html:12
-msgid "My folders"
-msgstr "Mes dossiers"
+msgid "Home folder"
+msgstr "Dossier d'accueil"
 
 #: pod/podfile/templates/podfile/userfolder.html:23
 msgid "Add new folder"
@@ -5370,8 +5370,8 @@ msgstr "Ajouter un nouveau dossier"
 
 #: pod/podfile/templates/podfile/userfolder.html:28
 #: pod/podfile/templates/podfile/userfolder.html:31
-msgid "Filter files"
-msgstr "Filtrer les fichiers"
+msgid "Search folder"
+msgstr "Chercher un dossier"
 
 #: pod/podfile/templates/podfile/userfolder.html:41
 msgid ""
@@ -5381,49 +5381,45 @@ msgstr ""
 "Mode SuperUtilisateur : les dossiers de tous les utilisateurs vous sont "
 "listés (le propriétaire est noté entre parenthèses)"
 
-#: pod/podfile/templates/podfile/userfolder.html:65
-msgid "Shared folders"
-msgstr "Dossiers partagés"
-
-#: pod/podfile/views.py:132 pod/podfile/views.py:536
+#: pod/podfile/views.py:117 pod/podfile/views.py:521
 msgid "You cannot see this folder."
 msgstr "Vous ne pouvez pas voir ce dossier."
 
-#: pod/podfile/views.py:211
+#: pod/podfile/views.py:196
 msgid "You cannot edit this folder."
 msgstr "Vous ne pouvez pas éditer ce dossier."
 
-#: pod/podfile/views.py:228
+#: pod/podfile/views.py:213
 msgid "Two folders cannot have the same name."
 msgstr "Deux dossiers ne peuvent pas avoir le même nom."
 
-#: pod/podfile/views.py:260
+#: pod/podfile/views.py:245
 msgid "You cannot delete home folder."
 msgstr "Vous ne pouvez pas supprimer le fichier racine."
 
-#: pod/podfile/views.py:293
+#: pod/podfile/views.py:278
 msgid "You cannot delete this file."
 msgstr "Vous ne pouvez pas supprimer ce fichier."
 
-#: pod/podfile/views.py:328
+#: pod/podfile/views.py:313
 msgid "You cannot edit file on this folder."
 msgstr "Vous ne pouvez pas éditer de fichier dans ce dossier."
 
-#: pod/podfile/views.py:376
+#: pod/podfile/views.py:361
 #, python-format
 msgid "The file %(fname)s has not allowed format"
 msgstr "Le format du fichier %(fname)s n’est pas autorisé"
 
-#: pod/podfile/views.py:391
+#: pod/podfile/views.py:376
 #, python-format
 msgid "The file %(fname)s is not valid (%(form_error)s)"
 msgstr "Le fichier %(fname)s n’est pas valide (%(form_error)s)"
 
-#: pod/podfile/views.py:410
+#: pod/podfile/views.py:395
 msgid "You cannot access this folder."
 msgstr "Vous ne pouvez pas voir ce dossier."
 
-#: pod/podfile/views.py:423
+#: pod/podfile/views.py:408
 msgid "You cannot edit this file."
 msgstr "Vous ne pouvez pas éditer ce fichier."
 
@@ -5727,8 +5723,8 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html:13
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
 "passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
@@ -5840,10 +5836,9 @@ msgid ""
 msgstr ""
 "Bonjour, <p>un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur \"%(recorder)s\".<br/>Pour "
-"l’ajouter, cliquez sur le lien ci dessous.</p><a "
-"href=\"%(link_url)s\">%(link_url)s</a><br/><i>Si le lien n’est pas actif, il "
-"faut le copier-coller dans la barre d’adresse de votre navigateur.</"
-"i><p><p>Cordialement</p>"
+"l’ajouter, cliquez sur le lien ci dessous.</p><a href=\"%(link_url)s\">"
+"%(link_url)s</a><br/><i>Si le lien n’est pas actif, il faut le copier-coller "
+"dans la barre d’adresse de votre navigateur.</i><p><p>Cordialement</p>"
 
 #: pod/recorder/views.py:266
 msgid "New recording added."
@@ -7030,8 +7025,8 @@ msgid ""
 "This video is chaptered. Click the chapter button <span class=\"vjs-icon-"
 "chapters\"></span> on the video player to view them."
 msgstr ""
-"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span "
-"class=\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
+"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span class="
+"\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
 
 #: pod/video/templates/videos/video-all-info.html:26
 #: pod/video/templates/videos/video-all-info.html:41
@@ -7732,18 +7727,3 @@ msgstr "Désolé, la recherche de vidéos est limitée à 500 pages maximum."
 #: pod/video_search/views.py:262
 msgid "Search results"
 msgstr "Résultats de la recherche"
-
-#, fuzzy
-#~| msgid "Description of the configuration"
-#~ msgid "Description de la chaine"
-#~ msgstr "Description de la configuration"
-
-#, fuzzy
-#~| msgid "Description"
-#~ msgid "Description du thème"
-#~ msgstr "Description"
-
-#~ msgid "Check this box if you want to transcript the audio.(beta version)"
-#~ msgstr ""
-#~ "Cochez cette case si vous voulez transcrire l’audio (version bêta, voir "
-#~ "aide dans la colonne de droite)"
