@@ -212,8 +212,12 @@
 {% block more_script %}
     
     <script  src="{% static 'js/infinite.js' %}?ver={{VERSION}}" ></script>
-   <script>
-        url = "/{{channel.slug}}/?page="
+    <script>
+        {% if theme %}
+        url = "{% url 'channel-video:theme' slug_c=channel.slug slug_t=theme.slug %}?page="
+        {% else %}
+        url = "{% url 'channel-video:channel' slug_c=channel.slug %}?page="
+        {% endif %}
             onBeforePageLoad =  function() {
                 document.querySelector('.infinite-loading').style.display = 'block';
             },
@@ -233,7 +237,7 @@
                     document.offsetHeight
                   );
                 window.addEventListener("scroll", function () {
-                    if (window.innerHeight + window.scrollTop() === docHeight) {
+                    if (window.innerHeight + window.scrollY === docHeight) {
                       document.querySelector("footer.static-pod .hidden-pod").style.display =
                         "block";
                       footer.setAttribute("style", "height:auto;");
@@ -241,8 +245,6 @@
                     }
              });
             }
-
-
         {% if videos.has_next %}
             page = parseInt("{{videos.next_page_number}}")
             next_page = true
@@ -250,7 +252,6 @@
         {% endif %}
     </script>
     <script>
-
         var str = get_list(listTheme["channel_" + "{{channel.id}}"], 0, [], tag_type = "li", li_class = "list-group-item", attrs = '', add_link = true, current = "{{theme.slug}}", channel = "");
         document.getElementById("ultreeview").innerHTML = str;
         setTimeout(function() {
