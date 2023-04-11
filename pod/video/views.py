@@ -175,7 +175,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
 
     if target in ("", "themes"):
         theme_children = Theme.objects.filter(parentId=theme, channel=channel)
-        videos = videos.filter(theme=theme, channel=channel)
+        videos = videos.filter(theme=theme, channel=channel).distinct()
 
         if theme is not None and theme.parentId is not None:
             parent_title = theme.parentId.title
@@ -183,7 +183,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
             parent_title = channel.title
 
     if target in ("", "videos"):
-        videos = videos.filter(theme=theme, channel=channel)
+        videos = videos.filter(theme=theme, channel=channel).distinct()
         response["next_videos"], *_ = pagination_data(
             request.path, offset, limit, videos.count()
         )

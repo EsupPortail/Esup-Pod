@@ -14,7 +14,7 @@ function run(has_more_themes, Helper) {
   const next_btn = document.querySelector(".paginator .next_content");
   const PAGE_INFO_SEPARATOR = "/";
 
-  const limit = 8;
+  const limit = 12;
   let current_video_offset = limit;
   let current_theme_offset = limit;
   let current_position = 0;
