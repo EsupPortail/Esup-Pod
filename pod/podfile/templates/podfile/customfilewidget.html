@@ -93,10 +93,8 @@ document.addEventListener('hide.bs.modal',   (event) => {
 
 document.addEventListener('show.bs.modal',  (event) => {
   if (!event.target.matches('#fileModal_{{id}}')) return;
-  //console.log("coucou");
   event.stopPropagation();
   id_input = event.target.dataset.id;
-  //console.log("id_input : " + id_input);
   send_form_data("{% if type %}{% url "podfile:home" type=type %}{% else %}{% url "podfile:home" %}{% endif %}", {}, "append_folder_html_in_modal", "get");
 });
 
