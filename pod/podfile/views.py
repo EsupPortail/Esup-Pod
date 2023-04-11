@@ -647,14 +647,14 @@ def fetch_owners(request, folders_list):
     return folders_list
 
 
-'''
+"""
 def filter_folders_with_truly_files(folders):
     return (
         folders.annotate(nbr_image=Count("customimagemodel", distinct=True))
         .annotate(nbr_file=Count("customfilemodel", distinct=True))
         .filter(Q(nbr_image__gt=0) | Q(nbr_file__gt=0))
     )
-'''
+"""
 
 
 @staff_member_required(redirect_field_name="referrer")
@@ -663,11 +663,16 @@ def user_folders(request):
     # if request.user.is_superuser:
     #    VALUES_LIST.append("owner")
 
-    folder_list = UserFolder.objects.exclude(name="home").filter(
-        Q(access_groups__in=request.user.owner.accessgroup_set.all())
-        | Q(owner=request.user)
-        | Q(users=request.user)
-    ).distinct().order_by("owner", "id")
+    folder_list = (
+        UserFolder.objects.exclude(name="home")
+        .filter(
+            Q(access_groups__in=request.user.owner.accessgroup_set.all())
+            | Q(owner=request.user)
+            | Q(users=request.user)
+        )
+        .distinct()
+        .order_by("owner", "id")
+    )
     search = request.GET.get("search", "")
     if search != "":
         folder_list = get_filter_user_folder(request, folder_list, search)
