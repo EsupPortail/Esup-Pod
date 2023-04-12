@@ -34,12 +34,14 @@ def file_exists(filepath):
 
 @register.filter(name="file_date_created")
 def file_date_created(filepath):
-    return os.path.getctime(filepath.path)
+    if check_file(filepath.path):
+        return os.path.getctime(filepath.path)
 
 
 @register.filter(name="file_date_modified")
 def file_date_modified(filepath):
-    return os.path.getmtime(filepath.path)
+    if check_file(filepath.path):
+        return os.path.getmtime(filepath.path)
 
 
 @register.simple_tag
