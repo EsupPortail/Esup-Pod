@@ -1,4 +1,5 @@
 import os
+import bleach
 
 from django.shortcuts import render
 
@@ -617,9 +618,9 @@ def send_invite(request, meeting, emails):
         "meeting_title": meeting.name,
     }
     from_email = meeting.owner.email  # DEFAULT_FROM_EMAIL
-    text_content = get_text_content(request, meeting)
+    # text_content = get_text_content(request, meeting)
     html_content = get_html_content(request, meeting)
-
+    text_content = bleach.clean(html_content)
     msg = EmailMultiAlternatives(subject, text_content, from_email, emails)
     msg.attach_alternative(html_content, "text/html")
     # ics calendar
@@ -633,7 +634,7 @@ def send_invite(request, meeting, emails):
     msg.send()
     os.remove(filename_event)
 
-
+'''
 def get_text_content(request, meeting):
     join_link = request.build_absolute_uri(
         reverse("meeting:join", args=(meeting.meeting_id,))
@@ -696,6 +697,7 @@ def get_text_content(request, meeting):
             }
         )
     return text_content
+'''
 
 
 def get_html_content(request, meeting):
