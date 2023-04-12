@@ -1333,6 +1333,19 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
   >> Ajouter le modèle dans les sous-dossier de la langue correspondante <br>
   >> Exemple pour le français : `/path/of/project/Esup-Pod/compile-model/fr/` <br>
 
+ - `PREF_LANG_CHOICES`
+
+  > valeur par défaut : ``
+
+  >> liste des langues à afficher en premier dans la liste des toutes les langues <br>
+  >> voir le fichier `pod/main/lang_settings.py` <br>
+
+ - `ROLE_CHOICES`
+
+  > valeur par défaut : ``
+
+  >> Liste de rôles possibles pour un contributeur. <br>
+
  - `TRANSCRIPTION_MODEL_PARAM`
 
   > valeur par défaut : ``
@@ -1360,19 +1373,6 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
   >> } 
   >>
   >> ```
-
- - `PREF_LANG_CHOICES`
-
-  > valeur par défaut : ``
-
-  >> liste des langues à afficher en premier dans la liste des toutes les langues <br>
-  >> voir le fichier `pod/main/lang_settings.py` <br>
-
- - `ROLE_CHOICES`
-
-  > valeur par défaut : ``
-
-  >> Liste de rôles possibles pour un contributeur. <br>
 
  - `TRANSCRIPTION_TYPE`
 
@@ -1404,13 +1404,6 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
   >> Actuellement disponible Wowza. Il faut préciser cette valeur pour l’activer `['Wowza', ]` <br>
   >> Si vous utilisez une autre logiciel, <br>
   >> il faut développer une interface dans `pod/live/pilotingInterface.py` <br>
-
- - `LIVE_CELERY_TRANSCRIPTION `
-
-  > valeur par défaut : `False`
-
-
-  >> Activer la transcription déportée sur une machine distante. <br>
 
  - `DEFAULT_EVENT_PATH`
 
@@ -1463,6 +1456,20 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
   >> Temps (en secondes) entre deux envois d’un signal au serveur, pour signaler la présence sur un live. <br>
   >> Peut être augmenté en cas de perte de performance, mais au détriment de la qualité du comptage des valeurs. <br>
 
+ - `LIVE_CELERY_TRANSCRIPTION `
+
+  > valeur par défaut : `False`
+
+
+  >> Activer la transcription déportée sur une machine distante. <br>
+
+ - `LIVE_TRANSCRIPTIONS_FOLDER`
+
+  > valeur par défaut : ``
+
+
+  >> Dossier contenat les fichiers de sous-titre au format vtt pour les directs <br>
+
  - `LIVE_VOSK_MODEL`
 
   > valeur par défaut : `{}`
@@ -1480,13 +1487,6 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
   >> } 
   >>
   >> ```
-
- - `LIVE_TRANSCRIPTIONS_FOLDER`
-
-  > valeur par défaut : ``
-
-
-  >> Dossier contenat les fichiers de sous-titre au format vtt pour les directs <br>
 
  - `USE_BBB`
 
@@ -1619,6 +1619,13 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
   >> Clé de votre serveur BBB. <br>
   >> Vous pouvez récupérer cette clé à l’aide de la commande `bbb-conf --secret` sur le serveur BBB. <br>
 
+ - `DEFAULT_MEETING_THUMBNAIL`
+
+  > valeur par défaut : `/img/default-meeting.svg`
+
+  >> Image par défaut affichée comme poster ou vignette, utilisée pour présenter la réunion. <br>
+  >> Cette image doit se situer dans le répertoire `static`. <br>
+
  - `MEETING_DATE_FIELDS`
 
   > valeur par défaut : `()`
@@ -1707,13 +1714,6 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
   > valeur par défaut : `False`
 
   >> Seuls les utilisateurs "staff" pourront éditer les réunions <br>
-
- - `DEFAULT_MEETING_THUMBNAIL`
-
-  > valeur par défaut : `/img/default-meeting.svg`
-
-  >> Image par défaut affichée comme poster ou vignette, utilisée pour présenter la réunion. <br>
-  >> Cette image doit se situer dans le répertoire `static`. <br>
 
  - `USE_MEETING`
 
@@ -2230,6 +2230,13 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
   >> ) 
   >>
   >> ```
+
+ - `VIDEO_FEED_NB_ITEMS`
+
+  > valeur par défaut : `100`
+
+
+  >> nombre d'item renvoyé par le flux rss <br>
 
  - `VIDEO_FORM_FIELDS`
 
