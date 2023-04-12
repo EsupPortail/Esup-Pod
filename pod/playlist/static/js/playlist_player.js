@@ -80,7 +80,6 @@ let PlaylistPlayer = {
               var new_href_value = href_value.replace(/(.*)\/([^/]*)\/([^/])*$/, function (str, g0, g1, g2) {
                 return g0 + "/" + json.slug + "/" + (g2 ? g2 : "");
               })
-              console.log(href_value + " - " + new_href_value);
               el.setAttribute("href", new_href_value);
             });
             // Update note form
