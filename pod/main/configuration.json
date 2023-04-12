@@ -747,6 +747,33 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "PREF_LANG_CHOICES": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "liste des langues à afficher en premier dans la liste des toutes les langues",
+                                    "voir le fichier `pod/main/lang_settings.py`"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
+                        },
+                        "ROLE_CHOICES": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Liste de rôles possibles pour un contributeur."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
+                        },
                         "TRANSCRIPTION_MODEL_PARAM": {
                             "default_value": "",
                             "description": {
@@ -775,33 +802,6 @@
                                     "    }",
                                     "}",
                                     "```"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1"
-                        },
-                        "PREF_LANG_CHOICES": {
-                            "default_value": "",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "liste des langues à afficher en premier dans la liste des toutes les langues",
-                                    "voir le fichier `pod/main/lang_settings.py`"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1"
-                        },
-                        "ROLE_CHOICES": {
-                            "default_value": "",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "Liste de rôles possibles pour un contributeur."
                                 ]
                             },
                             "pod_version_end": "",
@@ -874,20 +874,6 @@
                                     "Actuellement disponible Wowza. Il faut préciser cette valeur pour l’activer `['Wowza', ]`",
                                     "Si vous utilisez une autre logiciel,",
                                     "il faut développer une interface dans `pod/live/pilotingInterface.py`"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
-                        },
-                        "LIVE_CELERY_TRANSCRIPTION ": {
-                            "default_value": false,
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "",
-                                    "Activer la transcription déportée sur une machine distante."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1000,6 +986,34 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "LIVE_CELERY_TRANSCRIPTION ": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Activer la transcription déportée sur une machine distante."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "LIVE_TRANSCRIPTIONS_FOLDER": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Dossier contenat les fichiers de sous-titre au format vtt pour les directs"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "LIVE_VOSK_MODEL": {
                             "default_value": "{}",
                             "description": {
@@ -1018,20 +1032,6 @@
                                     "    }",
                                     "}",
                                     "```"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
-                        },
-                        "LIVE_TRANSCRIPTIONS_FOLDER": {
-                            "default_value": "",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "",
-                                    "Dossier contenat les fichiers de sous-titre au format vtt pour les directs"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1306,6 +1306,21 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "DEFAULT_MEETING_THUMBNAIL": {
+                            "default_value": "/img/default-meeting.svg",
+                            "description": {
+                                "en": [
+                                    "Default image displayed as a poster or thumbnail, used to present the meeting.",
+                                    "This image must be located in the `static` directory."
+                                ],
+                                "fr": [
+                                    "Image par défaut affichée comme poster ou vignette, utilisée pour présenter la réunion.",
+                                    "Cette image doit se situer dans le répertoire `static`."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
+                        },
                         "MEETING_DATE_FIELDS": {
                             "default_value": "()",
                             "description": {
@@ -1434,21 +1449,6 @@
                                 ],
                                 "fr": [
                                     "Seuls les utilisateurs \"staff\" pourront éditer les réunions"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1"
-                        },
-                        "DEFAULT_MEETING_THUMBNAIL": {
-                            "default_value": "/img/default-meeting.svg",
-                            "description": {
-                                "en": [
-                                    "Default image displayed as a poster or thumbnail, used to present the meeting.",
-                                    "This image must be located in the `static` directory."
-                                ],
-                                "fr": [
-                                    "Image par défaut affichée comme poster ou vignette, utilisée pour présenter la réunion.",
-                                    "Cette image doit se situer dans le répertoire `static`."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2386,6 +2386,20 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "VIDEO_FEED_NB_ITEMS": {
+                            "default_value": 100,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "nombre d'item renvoyé par le flux rss"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.1"
                         },
                         "VIDEO_FORM_FIELDS": {
                             "default_value": "__all__",
@@ -3403,9 +3417,7 @@
                             "pod_version_init": "3.1.0"
                         },
                         "FFMPEG_STUDIO_COMMAND": {
-                            "default_value":
-                                " -hide_banner -threads %(nb_threads)s %(input)s %(subtime)s -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf %(crf)s -sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -max_muxing_queue_size 4000 -deinterlace "
-                            ,
+                            "default_value": " -hide_banner -threads %(nb_threads)s %(input)s %(subtime)s -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf %(crf)s -sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -max_muxing_queue_size 4000 -deinterlace ",
                             "description": {
                                 "en": [
                                     ""
