@@ -224,7 +224,7 @@ def get_bbb_meetings_by_xml(html_message_error, message_error):
         urlToRequest += "bigbluebutton/api/getMeetings?checksum=" + checksum
         addr = requests.get(urlToRequest)
         print_if_debug(
-            "Request on URL: " + urlToRequest + "" ", status: " + str(addr.status_code)
+            "Request on URL: " + urlToRequest + ", status: " + str(addr.status_code)
         )
         # XML result to parse
         xmldoc = minidom.parseString(addr.text)
@@ -622,7 +622,7 @@ def convert_format(recording_url, internal_meeting_id, html_message_error, messa
                 "New recording_url : " + recording_url
             )
     except Exception as e:
-        err = "Problem to convert format : " + str(e) + ". " "" + traceback.format_exc()
+        err = "Problem to convert format : " + str(e) + ". " + traceback.format_exc()
         message_error += err + "\n"
         html_message_error += "<li>" + err + "</li>"
         print_if_debug(err)

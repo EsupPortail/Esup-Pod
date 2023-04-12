@@ -13,9 +13,9 @@
 {%endif%}{%if theme %}{{theme.title}} - {%endif%}({% trans 'Enriched' %})
 {{video.title}}{% endblock %} {% block page_content %}
 <div class="overlay playlist" id="div-video-wrapper">
-  {% include 'playlist/playlist_video_list.html' with is_iframe=True %} 
-  {% block video-element %} 
-  {% if form %} 
+  {% include 'playlist/playlist_video_list.html' with is_iframe=True %}
+  {% block video-element %}
+  {% if form %}
     {% include 'videos/video-form.html' %} {% else%}
     <video id="podvideoplayer"></video>
   {%endif%} {% endblock video-element %}
@@ -34,8 +34,8 @@
   </div>
 </div>
 
-{% block more_script %} 
-{% if not form %} 
+{% block more_script %}
+{% if not form %}
 {% include 'videos/video-script.html'%}
 <script>
   player.videoJsInfo();
@@ -98,7 +98,7 @@
       , pw = ph * hdres//$('#podvideoplayer .vjs-poster').width()
     document.querySelector('#card-playlist > div.card-body').style.top = ihead.offsetHeight + 'px';
     //console.log('MTop: '+player.el().style.top+'\nleft: '+player.el().offsetLeft+'\nwidth: '+player.el().offsetWidth+'\nheight: '+player.el().offsetHeight+' /// '+pb)
-    document.getElementById('card-playlist').style = "top: " + player.el().style.top+ "; left: 50%" "; width: " + pw + "px; height: " + (ph-30) + "px;"+ 'margin-left': -(pw / 2) + 'px';
+    document.getElementById('card-playlist').style = "top: " + player.el().style.top + "; left: 50%; width: " + pw + "px; height: " + (ph-30) + "px;" + "margin-left:" + -(pw / 2) + 'px';
     document.getElementById('overlay-footer').style = "top : " +pb + "px"
   }
   document.querySelectorAll('#card-playlist .link-center-pod, #card-playlist .card-body > span > a')
@@ -128,7 +128,7 @@
       , pw = ph * hdres//$('#podvideoplayer .vjs-poster').width()
     document.getElementById('info-video').style.top = ihead.offsetHeight + 'px'
     //console.log('MTop: '+player.el().style.top+'\nleft: '+player.el().offsetLeft+'\nwidth: '+player.el().offsetWidth+'\nheight: '+player.el().offsetHeight+' /// '+pb)
-    document.getElementById('info-video-wrapper').style = "top: " + player.el().style.top+ "; left: 50%" "; width: " + pw + "px; height: " + (ph-30) + "px;"+ 'margin-left': -(pw / 2) + 'px';
+    document.getElementById('info-video-wrapper').style = "top: " + player.el().style.top+ "; left: 50%; width: " + pw + "px; height: " + (ph-30) + "px;" + "margin-left:" + -(pw / 2) + "px";
     document.getElementById('overlay-footer').style.top = pb + "px"
   }
   function resizeVideoJs() {
@@ -173,5 +173,5 @@
   document.querySelector('#video-meta .tab-pane').classList.add('show');
   document.querySelector('#video-meta .tab-pane').style.display = 'block';
 </script>
-{% endblock more_script %} 
+{% endblock more_script %}
 {% endblock page_content %}

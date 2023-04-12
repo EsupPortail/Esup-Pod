@@ -14,7 +14,7 @@ function run(has_more_themes, Helper) {
   const next_btn = document.querySelector(".paginator .next_content");
   const PAGE_INFO_SEPARATOR = "/";
 
-  const limit = 8;
+  const limit = 12;
   let current_video_offset = limit;
   let current_theme_offset = limit;
   let current_position = 0;
@@ -153,7 +153,9 @@ function run(has_more_themes, Helper) {
     );
     li.setAttribute("title", theme.title);
     const link = document.createElement("A");
-    link.setAttribute("href", `${URLPathName}${theme.slug}/`);
+    let hrefUrl =
+      document.querySelector(".themes-videos").dataset.channelurl + theme.slug;
+    link.setAttribute("href", hrefUrl);
     link.setAttribute("class", "text-truncate");
     link.innerText = theme.title;
 

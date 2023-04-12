@@ -201,9 +201,9 @@ class Command(BaseCommand):
             msg_html = _("Hello %(name)s,") % {"name": name}
             msg_html += "<br/>\n"
             msg_html += "<p>" + _(
-                'Your video intitled "%(title)s" will soon arrive '
-                + "at the deletion deadline."
-            ) % {"title": video.title}
+                'Your video intitled <a href="//%(url)s">"%(title)s"</a> will soon arrive'
+                + " at the deletion deadline."
+            ) % {"url": video.get_full_url(), "title": video.title}
             msg_html += "<br/>\n"
             msg_html += _(
                 "It will be deleted on %(date_delete)s.<br/>\n"

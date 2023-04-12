@@ -62,6 +62,7 @@ DEFAULT_DC_COVERAGE = getattr(
     settings, "DEFAULT_DC_COVERAGE", __TITLE_ETB__ + " - Town - Country"
 )
 DEFAULT_DC_RIGHTS = getattr(settings, "DEFAULT_DC_RIGHT", "BY-NC-SA")
+VIDEO_FEED_NB_ITEMS = getattr(settings, "VIDEO_FEED_NB_ITEMS", 100)
 
 
 class RssFeedGenerator(Rss201rev2Feed):
@@ -181,7 +182,7 @@ class RssSiteVideosFeed(Feed):
         return videos_list
 
     def items(self, obj):
-        return obj.order_by("-date_added")[:30]
+        return obj.order_by("-date_added")[:VIDEO_FEED_NB_ITEMS]
 
     def item_title(self, item):
         sub = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", item.title)

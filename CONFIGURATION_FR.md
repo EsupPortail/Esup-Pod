@@ -109,7 +109,7 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br/>
 
   > valeur par défaut :
 
-  >```python
+  ```python
   {
       'default': {
           'ENGINE': 'django.db.backends.sqlite3',
@@ -222,8 +222,8 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br/>
   >> sera seul destinataire plutôt que le(s) manager(s). <br>
   >> Si la liste est vide, les mails de contact seront envoyés au(x) manager(s). <br>
   >> Valeurs possibles : <br>
-  >>  'info', 'contribute', 'request_password', <br>
-  >>  'inapropriate_content', 'bug', 'other' <br>
+  >>  `info`, `contribute`, `request_password`, <br>
+  >>  `inapropriate_content`, `bug`, `other <br>
 
  - `USE_ESTABLISHMENT_FIELD`
 
@@ -388,7 +388,7 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br/>
 
   > valeur par défaut : `/var/tmp`
 
-  >> Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que FILE_UPLOAD_MAX_MEMORY_SIZE) lors des téléversements de fichiers.<br> <br>
+  >> Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que `FILE_UPLOAD_MAX_MEMORY_SIZE`) lors des téléversements de fichiers.<br> <br>
   >> _ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir]()_ <br>
 
  - `MEDIA_ROOT`
@@ -486,27 +486,31 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   > valeur par défaut : `{}`
 
-  >> CACHES = { <br>
-  >>     # … default cache config and others <br>
-  >>     # "default": { <br>
-  >>     #     "BACKEND": "django.core.cache.backends.locmem.LocMemCache", <br>
-  >>     # }, <br>
-  >>     "default": { <br>
-  >>         "BACKEND": "django_redis.cache.RedisCache", <br>
-  >>         "LOCATION": "redis://127.0.0.1:6379/1", <br>
-  >>         "OPTIONS": { <br>
-  >>             "CLIENT_CLASS": "django_redis.client.DefaultClient", <br>
-  >>         }, <br>
-  >>     }, <br>
-  >>     # Persistent cache setup for select2 (NOT DummyCache or LocMemCache). <br>
-  >>     "select2": { <br>
-  >>         "BACKEND": "django_redis.cache.RedisCache", <br>
-  >>         "LOCATION": "redis://127.0.0.1:6379/2", <br>
-  >>         "OPTIONS": { <br>
-  >>             "CLIENT_CLASS": "django_redis.client.DefaultClient", <br>
-  >>         }, <br>
-  >>     }, <br>
-  >> } <br>
+  >>
+  >> ```python
+  >> CACHES = { 
+  >>     # … default cache config and others 
+  >>     # "default": { 
+  >>     #     "BACKEND": "django.core.cache.backends.locmem.LocMemCache", 
+  >>     # }, 
+  >>     "default": { 
+  >>         "BACKEND": "django_redis.cache.RedisCache", 
+  >>         "LOCATION": "redis://127.0.0.1:6379/1", 
+  >>         "OPTIONS": { 
+  >>             "CLIENT_CLASS": "django_redis.client.DefaultClient", 
+  >>         }, 
+  >>     }, 
+  >>     # Persistent cache setup for select2 (NOT DummyCache or LocMemCache). 
+  >>     "select2": { 
+  >>         "BACKEND": "django_redis.cache.RedisCache", 
+  >>         "LOCATION": "redis://127.0.0.1:6379/2", 
+  >>         "OPTIONS": { 
+  >>             "CLIENT_CLASS": "django_redis.client.DefaultClient", 
+  >>         }, 
+  >>     }, 
+  >> } 
+  >>
+  >> ```
 
  - `CSRF_COOKIE_SECURE`
 
@@ -604,7 +608,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   > valeur par défaut : `False`
 
-  >> permet de vérifier si la configuration de la plateforme est en mode test <br>
+  >> Permet de vérifier si la configuration de la plateforme est en mode test. <br>
 
  - `THIRD_PARTY_APPS`
 
@@ -687,7 +691,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   >> Ce paramètre permet d’afficher un lien "En savoir plus" <br>
   >> sur la boite de dialogue d’information sur l’usage des cookies dans Pod. <br>
-  >> On peut préciser un lien vers les mentions légales ou page dpo <br>
+  >> On peut préciser un lien vers les mentions légales ou page DPO. <br>
 
  - `DARKMODE_ENABLED`
 
@@ -749,7 +753,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   >> Voir description dans authentification <br>
   >> Si valeur vaut 'True', le username de l’utilisateur ne sera pas visible sur la plate-forme Pod et <br>
-  >> si la valeur vaut 'False' le username sera affichés aux utilisateurs authentifiés. (par soucis du respect du RGPD) <br>
+  >> si la valeur vaut 'False' le username sera affiché aux utilisateurs authentifiés. (pour respecter le RGPD) <br>
 
  - `HIDE_USER_FILTER`
 
@@ -757,7 +761,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   >> Si 'True', le filtre des vidéos par utilisateur ne sera plus visible <br>
   >> si 'False' le filtre sera visible qu’aux personnes authentifiées. <br>
-  >> (par soucis du respect du RGPD) <br>
+  >> (pour respecter le RGPD) <br>
 
  - `HIDE_USER_TAB`
 
@@ -766,7 +770,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
   >> Si valeur vaut 'True', l’onglet Utilisateur ne sera pas visible <br>
   >> et si la valeur vaut 'False' l’onglet Utilisateur ne sera visible <br>
   >> qu’aux personnes authentifiées. <br>
-  >> (par soucis du respect du RGPD) <br>
+  >> (pour respecter le RGPD) <br>
 
  - `HOMEPAGE_NB_VIDEOS`
 
@@ -803,7 +807,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
   > valeur par défaut : `Identify Federation`
 
   >> Nom de la fédération d’identité utilisée <br>
-  >> Affiché sur le bouton de connexion si l’authentification shibboleth est utilisée. <br>
+  >> Affiché sur le bouton de connexion si l’authentification Shibboleth est utilisée. <br>
 
  - `SHOW_EVENTS_ON_HOMEPAGE`
 
@@ -1099,7 +1103,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   > valeur par défaut : `False`
 
-  >> Si valeur vaut `True`, le username de l’utilisateur ne sera pas visible sur la plate-forme Pod et si la valeur vaut `False` le username sera affiché aux utilisateurs authentifiés. (par soucis du respect du RGPD) <br>
+  >> Si valeur vaut `True`, le username de l’utilisateur ne sera pas visible sur la plate-forme Pod et si la valeur vaut `False` le username sera affiché aux utilisateurs authentifiés. (pour respecter le RGPD) <br>
 
  - `LDAP`
 
@@ -1219,7 +1223,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   > valeur par défaut : ``
 
-  >> Mapping des attributs entre shibboleth et la classe utilisateur <br>
+  >> Mapping des attributs entre Shibboleth et la classe utilisateur <br>
 
  - `SHIBBOLETH_STAFF_ALLOWED_DOMAINS`
 
@@ -1324,10 +1328,23 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   > valeur par défaut : `/path/of/project/Esup-Pod/compile-model`
 
-  >> paramétrage des chemin du model pour la compilation <br>
+  >> Paramétrage des chemins du modèle pour la compilation <br>
   >> Pour télécharger les modèles : [https://alphacephei.com/vosk/lm#update-process]() <br>
-  >> Ajouter le model dans les sous-dossier de la lang correspondants <br>
-  >> Exemple pour le français: `/path/of/project/Esup-Pod/compile-model/fr/` <br>
+  >> Ajouter le modèle dans les sous-dossier de la langue correspondante <br>
+  >> Exemple pour le français : `/path/of/project/Esup-Pod/compile-model/fr/` <br>
+
+ - `PREF_LANG_CHOICES`
+
+  > valeur par défaut : ``
+
+  >> liste des langues à afficher en premier dans la liste des toutes les langues <br>
+  >> voir le fichier `pod/main/lang_settings.py` <br>
+
+ - `ROLE_CHOICES`
+
+  > valeur par défaut : ``
+
+  >> Liste de rôles possibles pour un contributeur. <br>
 
  - `TRANSCRIPTION_MODEL_PARAM`
 
@@ -1338,7 +1355,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
   >>  [https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3]() <br>
   >> Pour télécharger les modèles Vosk : [https://alphacephei.com/vosk/models]() <br>
   >>
-  >> ```
+  >> ```python
   >> TRANSCRIPTION_MODEL_PARAM = { 
   >>     # le modèle stt 
   >>     'STT': { 
@@ -1357,19 +1374,6 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
   >>
   >> ```
 
- - `PREF_LANG_CHOICES`
-
-  > valeur par défaut : ``
-
-  >> liste des langues à afficher en premier dans la liste des toutes les langues <br>
-  >> voir le fichier `pod/main/lang_settings.py` <br>
-
- - `ROLE_CHOICES`
-
-  > valeur par défaut : ``
-
-  >> Liste de rôles possibles pour un contributeur. <br>
-
  - `TRANSCRIPTION_TYPE`
 
   > valeur par défaut : `STT`
@@ -1380,7 +1384,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   > valeur par défaut : `False `
 
-  >> voir ACTIVE_MODEL_ENRICH <br>
+  >> voir `ACTIVE_MODEL_ENRICH` <br>
 
 ### Configuration application enrichment
 
@@ -1390,23 +1394,16 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   > valeur par défaut : `['faculty', 'employee', 'staff']`
 
-  >> Groupes ou affiliations des personnes autorisées à créer un évènement <br>
+  >> Groupes ou affiliations des personnes autorisées à créer un évènement. <br>
 
  - `BROADCASTER_PILOTING_SOFTWARE`
 
   > valeur par défaut : `[]`
 
   >> Types de logiciel de serveur de streaming utilisés. <br>
-  >> Actuellement disponible Wowza. Il faut préciser cette valeur pour l’activer ['Wowza', ] <br>
+  >> Actuellement disponible Wowza. Il faut préciser cette valeur pour l’activer `['Wowza', ]` <br>
   >> Si vous utilisez une autre logiciel, <br>
   >> il faut développer une interface dans `pod/live/pilotingInterface.py` <br>
-
- - `LIVE_CELERY_TRANSCRIPTION `
-
-  > valeur par défaut : `False`
-
-
-  >> Activer la transcription déportée sur une machine distante. <br>
 
  - `DEFAULT_EVENT_PATH`
 
@@ -1459,6 +1456,20 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
   >> Temps (en secondes) entre deux envois d’un signal au serveur, pour signaler la présence sur un live. <br>
   >> Peut être augmenté en cas de perte de performance, mais au détriment de la qualité du comptage des valeurs. <br>
 
+ - `LIVE_CELERY_TRANSCRIPTION `
+
+  > valeur par défaut : `False`
+
+
+  >> Activer la transcription déportée sur une machine distante. <br>
+
+ - `LIVE_TRANSCRIPTIONS_FOLDER`
+
+  > valeur par défaut : ``
+
+
+  >> Dossier contenat les fichiers de sous-titre au format vtt pour les directs <br>
+
  - `LIVE_VOSK_MODEL`
 
   > valeur par défaut : `{}`
@@ -1466,7 +1477,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   >> Paramétrage des modèles pour la transcription des directs <br>
   >> La documentation sera présente prochaînement <br>
-  >> Pour télécharger les Modèles Vosk : https://alphacephei.com/vosk/models <br>
+  >> Pour télécharger les Modèles Vosk : [https://alphacephei.com/vosk/models]() <br>
   >>
   >> ```
   >> LIVE_VOSK_MODEL = { 
@@ -1477,24 +1488,17 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
   >>
   >> ```
 
- - `LIVE_TRANSCRIPTIONS_FOLDER`
-
-  > valeur par défaut : ``
-
-
-  >> Dossier contenat les fichiers de sous-titre au format vtt pour les directs <br>
-
  - `USE_BBB`
 
   > valeur par défaut : `True`
 
-  >> Utilisation de BigBlueButton - A retirer dans les futures versions de Pod <br>
+  >> Utilisation de BigBlueButton - [TODO] À retirer dans les futures versions de Pod <br>
 
  - `USE_BBB_LIVE`
 
   > valeur par défaut : `False `
 
-  >> Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - A retirer dans les futures versions de Pod <br>
+  >> Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - [TODO] À retirer dans les futures versions de Pod <br>
 
  - `USE_LIVE_TRANSCRIPTION`
 
@@ -1558,7 +1562,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   > valeur par défaut : `False`
 
-  >> Activation du studio opencast <br>
+  >> Activation du studio [https://opencast.org/](Opencast) <br>
 
  - `VERSION`
 
@@ -1614,6 +1618,13 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
 
   >> Clé de votre serveur BBB. <br>
   >> Vous pouvez récupérer cette clé à l’aide de la commande `bbb-conf --secret` sur le serveur BBB. <br>
+
+ - `DEFAULT_MEETING_THUMBNAIL`
+
+  > valeur par défaut : `/img/default-meeting.svg`
+
+  >> Image par défaut affichée comme poster ou vignette, utilisée pour présenter la réunion. <br>
+  >> Cette image doit se situer dans le répertoire `static`. <br>
 
  - `MEETING_DATE_FIELDS`
 
@@ -1671,7 +1682,7 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
 
   > valeur par défaut : `()`
 
-  >> ensemble des champs qui serotn cachés si MEETING_DISABLE_RECORD est défini à true <br>
+  >> ensemble des champs qui seront cachés si `MEETING_DISABLE_RECORD` est défini à true. <br>
   >>
   >> ```
   >> MEETING_RECORD_FIELDS: ("record", "auto_start_recording", "allow_start_stop_recording") 
@@ -1682,7 +1693,7 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
 
   > valeur par défaut : `()`
 
-  >> permet de définir la liste de tous les champs permettant de définir la récurrence d’une reunion <br>
+  >> Liste de tous les champs permettant de définir la récurrence d’une reunion <br>
   >> tous ces champs sont regroupés dans un ensemble de champs affichés dans une modale <br>
   >>
   >> ```
@@ -1703,13 +1714,6 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
   > valeur par défaut : `False`
 
   >> Seuls les utilisateurs "staff" pourront éditer les réunions <br>
-
- - `DEFAULT_MEETING_THUMBNAIL`
-
-  > valeur par défaut : `/img/default-meeting.svg`
-
-  >> Image par défaut affichée comme poster ou vignette, utilisée pour présenter la réunion. <br>
-  >> Cette image doit se situer dans le répertoire `static`. <br>
 
  - `USE_MEETING`
 
@@ -1828,7 +1832,7 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
 
   > valeur par défaut : `records`
 
-  >> Chemin d’accès web (public) au répertoire de dépot des enregistrements (DEFAULT_RECORDER_PATH). <br>
+  >> Chemin d’accès web (public) au répertoire de dépot des enregistrements (`DEFAULT_RECORDER_PATH`). <br>
   >> Attention : penser à modifier la conf de NGINX. <br>
 
  - `RECORDER_ADDITIONAL_FIELDS`
@@ -2185,8 +2189,8 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
   >> Les évènements envoyés sont : <br>
   >>    play, pause, seeked, ended, ratechange, fullscreen, error, loadmetadata <br>
   >> Pour rajouter le code Piwik/Matomo dans votre instance de Pod, il suffit de créer un fichier `pod/custom/templates/custom/tracking.html` <br>
-  >> Il faut ensuite y insérer le code javascript puis dans votre fichier settings_local.py, <br>
-  >> de préciser dans la variable `TEMPLATE_VISIBLE_SETTINGS`: `'TRACKING_TEMPLATE': 'custom/tracking.html' <br>
+  >> Il faut ensuite y insérer le code javascript puis dans votre fichier `settings_local.py`, <br>
+  >> de préciser dans la variable `TEMPLATE_VISIBLE_SETTINGS`: `'TRACKING_TEMPLATE': 'custom/tracking.html'` <br>
 
  - `USE_XAPI_VIDEO`
 
@@ -2200,7 +2204,7 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
 
   > valeur par défaut : `()`
 
-  >> Extension autorisée pour le téléversement sur la plateforme <br>
+  >> Extensions autorisées pour le téléversement vidéo sur la plateforme <br>
   >>
   >> ```
   >> VIDEO_ALLOWED_EXTENSIONS = ( 
@@ -2226,6 +2230,13 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
   >> ) 
   >>
   >> ```
+
+ - `VIDEO_FEED_NB_ITEMS`
+
+  > valeur par défaut : `100`
+
+
+  >> nombre d'item renvoyé par le flux rss <br>
 
  - `VIDEO_FORM_FIELDS`
 
@@ -2498,8 +2509,7 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
   >>         "audio_bitrate": "96k", 
   >>         "encode_mp4": True, 
   >>         "sites": [1], 
-  >>     }, 
-  >>     { 
+  >>     },{ 
   >>         "resolution": "1280x720", 
   >>         "minrate": "1000k", 
   >>         "video_bitrate": "2000k", 
@@ -2507,8 +2517,7 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
   >>         "audio_bitrate": "128k", 
   >>         "encode_mp4": True, 
   >>         "sites": [1], 
-  >>     }, 
-  >>     { 
+  >>     },{ 
   >>         "resolution": "1920x1080", 
   >>         "minrate": "2000k", 
   >>         "video_bitrate": "3000k", 
@@ -2528,7 +2537,8 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
   >> Permet d’ajouter l’attribut obligatoire dans le formulaire d’edition et d’ajout d’une video : <br>
   >> Exemple de valeur : ["discipline", "tags"] <br>
   >> NB : les champs cachés et suivant ne sont pas pris en compte : <br>
-  >> (video, title, type, owner, date_added, cursus, main_lang) <br>
+  >>
+  >> `(video, title, type, owner, date_added, cursus, main_lang)`
 
  - `VIEW_STATS_AUTH`
 

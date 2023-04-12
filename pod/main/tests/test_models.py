@@ -45,7 +45,7 @@ class FlatepageTestCase(TestCase):
         self.assertEqual(flatPage.title, "Home")
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
-        print("   --->  test_Flatepage_null_attribut" " of FlatepageTestCase: OK!")
+        print("   --->  test_Flatepage_null_attribut of FlatepageTestCase: OK!")
 
     """
         test attributs when a channel have many attributs
@@ -66,7 +66,7 @@ class FlatepageTestCase(TestCase):
         self.assertEqual(flatPage.content_fr, "<p>Bienvenue</p>\r\n")
         response = self.client.get("/home/")
         self.assertEqual(response.status_code, 200)
-        print("   --->  test_Flatepage_with_attributs" " of FlatepageTestCase: OK!")
+        print("   --->  test_Flatepage_with_attributs of FlatepageTestCase: OK!")
 
     """
         test delete object
@@ -112,7 +112,7 @@ class ConfigurationTestCase(TestCase):
     def test_delete_object(self):
         Configuration.objects.filter(key="maintenance_mode").delete()
         self.assertEquals(Configuration.objects.filter(key="maintenance_mode").count(), 0)
-        print("--->  test_delete_object of ConfigurationTestCase : OK " "!")
+        print("--->  test_delete_object of ConfigurationTestCase: OK !")
 
 
 class AdditionalChannelTabTestCase(TestCase):
@@ -143,4 +143,4 @@ class AdditionalChannelTabTestCase(TestCase):
         AdditionalChannelTab.objects.filter(name="Tab0").delete()
         self.assertEquals(AdditionalChannelTab.objects.filter(name="Tab0").count(), 0)
 
-        print("--->  test_delete_object of AdditionalChannelTabTestCase : OK " "!")
+        print("--->  test_delete_object of AdditionalChannelTabTestCase: OK!")

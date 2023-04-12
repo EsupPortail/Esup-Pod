@@ -32,7 +32,7 @@ def video_chapter(request, slug):
     ):
         messages.add_message(request, messages.ERROR, _("You cannot chapter this video."))
         return HttpResponseForbidden(
-            "Only the owner and additional owners " "can add chapter."
+            "Only the owner and additional owners can add chapter."
         )
 
     list_chapter = video.chapter_set.all()

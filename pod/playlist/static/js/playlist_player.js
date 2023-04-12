@@ -65,28 +65,30 @@ let PlaylistPlayer = {
           _this.setPlayer(json);
           document.getElementById("info-video").innerHTML =
             json.html_video_info;
+          // Update aside (Enrichement info, Managment links, Notes)
           if (!_this.is_iframe) {
+            // Show / Hide enrichment info block
             let card = document.getElementById("card-enrichmentinformations");
-
             if (json.version == "E") {
               card.classList.remove("off");
             } else {
               card.classList.add("off");
             }
-
-            document
-              .querySelectorAll("#card-managevideo .card-body a")
-              .forEach((element) => {
-                element.setAttribute(
-                  "href",
-                  element
-                    .getAttribute("href")
-                    .replace(/(.*)\/([^/]*)\/([^/])*$/),
-                  function (str, g0, g1, g2) {
-                    return g0 + "/" + json.slug + "/" + (g2 ? g2 : "");
-                  }
-                );
-              });
+            // Update managment links
+            let manageLinks = document.querySelectorAll(
+              "#card-managevideo .card-body a"
+            );
+            manageLinks.forEach(function (el) {
+              var href_value = el.getAttribute("href");
+              var new_href_value = href_value.replace(
+                /(.*)\/([^/]*)\/([^/])*$/,
+                function (str, g0, g1, g2) {
+                  return g0 + "/" + json.slug + "/" + (g2 ? g2 : "");
+                }
+              );
+              el.setAttribute("href", new_href_value);
+            });
+            // Update note form
             document.getElementById("card-takenote").innerHTML =
               json.html_video_note;
           }

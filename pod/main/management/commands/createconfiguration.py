@@ -82,7 +82,7 @@ class Command(BaseCommand):
             # Ensure that multi line code will properly be displayed
             if str(value["default_value"]).startswith("```"):
                 formatted = value["default_value"].replace("\n", "\n  ")
-                value["default_value"] = "\n\n  >%s" % formatted
+                value["default_value"] = "\n\n  %s" % formatted
             else:
                 value["default_value"] = " `%s`" % value["default_value"]
             msg += "\n\n  > %s%s\n" % (_("default value:"), value["default_value"])

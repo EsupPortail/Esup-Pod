@@ -950,6 +950,12 @@ body {
   color: inherit;
 }*/
 
+.accordion{
+  --bs-accordion-active-color: var(--pod-link-color);
+  --bs-accordion-active-bg: rgba(var(--bs-primary-rgb),.1);
+  --bs-accordion-btn-focus-border-color: var(--pod-primary);
+}
+
 .timecode{
   font-size: 12px;
 }
@@ -1220,6 +1226,7 @@ body {
 .pod-btn-share i,
 .pod-info-video__signal i {
   transition: all 0.2s ease-in;
+  display: inline-block;
 }
 
 .pod-btn-share:hover i,
@@ -1227,12 +1234,15 @@ body {
 .pod-info-video__signal:focus i,
 .pod-info-video__signal:hover i {
   transform: rotate(15deg);
-  color: var(--pod-primary);
-  display: inline-block;
 }
 
 .pod-info-video__signal {
-  font-size: 2rem;
+  color: var(--bs-danger);
+  font-size: 1.5rem;
+}
+.pod-info-video__signal:focus i,
+.pod-info-video__signal:hover i {
+  color: var(--bs-danger);
 }
 
 .pod-navbar__container {

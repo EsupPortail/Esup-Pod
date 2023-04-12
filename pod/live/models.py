@@ -429,7 +429,7 @@ class Event(models.Model):
     )
     is_auto_start = models.BooleanField(
         verbose_name=_("Auto start"),
-        help_text=_("If this box is checked, " "the record will start automatically."),
+        help_text=_("If this box is checked, the record will start automatically."),
         default=False,
     )
     video_on_hold = models.ForeignKey(

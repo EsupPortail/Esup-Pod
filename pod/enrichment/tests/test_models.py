@@ -50,7 +50,7 @@ class EnrichmentGroupModelTestCase(TestCase):
         self.assertTrue(video.enrichmentgroup)
         with self.assertRaises(IntegrityError):
             EnrichmentGroup.objects.create(video=video)
-        print(" ---> test_create_enrichmentGroup: OK!" " --- EnrichmentGroupModel")
+        print(" ---> test_create_enrichmentGroup: OK! --- EnrichmentGroupModel")
 
     def test_modify_enrichmentGroup(self):
         video = Video.objects.get(id=1)
@@ -66,7 +66,7 @@ class EnrichmentGroupModelTestCase(TestCase):
         self.assertEqual(video.enrichmentgroup.groups.all().count(), 2)
         Group.objects.get(id=2).delete()
         self.assertEqual(video.enrichmentgroup.groups.all().count(), 1)
-        print(" ---> test_modify_enrichmentGroup: OK!" " --- EnrichmentGroupModel")
+        print(" ---> test_modify_enrichmentGroup: OK! --- EnrichmentGroupModel")
 
     def test_delete_enrichmentGroup(self):
         video = Video.objects.get(id=1)
@@ -80,7 +80,7 @@ class EnrichmentGroupModelTestCase(TestCase):
         self.assertTrue(Video.objects.filter(id=1).exists())
         self.assertTrue(Group.objects.filter(id=1).exists())
         self.assertTrue(Group.objects.filter(id=2).exists())
-        print(" ---> test_delete_enrichmentGroup: OK!" " --- EnrichmentGroupModel")
+        print(" ---> test_delete_enrichmentGroup: OK! --- EnrichmentGroupModel")
 
 
 class EnrichmentModelTestCase(TestCase):

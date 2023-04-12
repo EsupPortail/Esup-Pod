@@ -246,7 +246,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                     )
                     % {
                         "lic": _(
-                            "Attribution-ShareAlike 4.0 " "International (CC BY-SA 4.0)"
+                            "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"
                         )
                     },
                 ],
@@ -714,7 +714,7 @@ class VideoForm(forms.ModelForm):
             self.fields["video"].validators = [valid_ext, FileSizeValidator]
             self.fields["video"].widget.attrs["class"] = self.videoattrs["class"]
             self.fields["video"].widget.attrs["accept"] = self.videoattrs["accept"]
-        if self.instance.encoding_in_progress:
+        if self.instance.encoding_in_progress or not self.instance.encoded:
             self.remove_field("owner")
             self.remove_field("video")  # .widget = forms.HiddenInput()
         # remove required=True for videofield if instance

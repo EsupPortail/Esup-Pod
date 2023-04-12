@@ -84,12 +84,9 @@ def start_studio_remote_encode(recording_id, video_output, videos, subtime, pres
     t.start()
 """
 
-# ##########################################################################
-# ENCODE VIDEO: MAIN FUNCTION
-# ##########################################################################
-
 
 def encode_video(video_id):
+    """ENCODE VIDEO: MAIN FUNCTION."""
     start = "Start at: %s" % time.ctime()
 
     video_to_encode = Video.objects.get(id=video_id)

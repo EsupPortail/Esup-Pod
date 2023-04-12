@@ -13,6 +13,8 @@ from ..models import Video
 from ..models import Channel
 from ..models import Discipline
 from ..models import AdvancedNotes
+from ..models import VideoRendition
+from ..models import EncodingVideo
 from .. import views
 
 import re
@@ -41,6 +43,14 @@ class ChannelTestView(TestCase):
             video="test.mp4",
             is_draft=False,
             type=Type.objects.get(id=1),
+        )
+        rendition = VideoRendition.objects.get(resolution__contains="x360")
+        encoding, created = EncodingVideo.objects.get_or_create(
+            name="360p",
+            video=self.v,
+            rendition=rendition,
+            encoding_format="video/mp4",
+            source_file="360p.mp4",
         )
         self.v.channel.add(self.c)
         self.v.save()
@@ -499,6 +509,15 @@ class VideosTestView(TestCase):
             is_draft=False,
         )
         v.discipline.add(d2)
+        rendition = VideoRendition.objects.get(resolution__contains="x360")
+        for vid in Video.objects.all():
+            encoding, created = EncodingVideo.objects.get_or_create(
+                name="360p",
+                video=vid,
+                rendition=rendition,
+                encoding_format="video/mp4",
+                source_file="360p.mp4",
+            )
         print(" --->  SetUp of VideosTestView: OK!")
 
     def test_get_videos_view(self):
@@ -687,6 +706,15 @@ class VideoEditTestView(TestCase):
             owner=user,
             video="test1.mp4",
             type=Type.objects.get(id=1),
+        )
+        rendition = VideoRendition.objects.get(resolution__contains="x360")
+        # add encoding to change file in test !
+        encoding, created = EncodingVideo.objects.get_or_create(
+            name="360p",
+            video=video0,
+            rendition=rendition,
+            encoding_format="video/mp4",
+            source_file="360p.mp4",
         )
         video = Video.objects.create(
             title="VideoWithAdditionalOwners",
@@ -878,7 +906,15 @@ class video_deleteTestView(TestCase):
             type=Type.objects.get(id=1),
             id=2,
         )
-
+        rendition = VideoRendition.objects.get(resolution__contains="x360")
+        for vid in Video.objects.all():
+            encoding, created = EncodingVideo.objects.get_or_create(
+                name="360p",
+                video=vid,
+                rendition=rendition,
+                encoding_format="video/mp4",
+                source_file="360p.mp4",
+            )
         video0.sites.add(site)
         video.sites.add(site)
         video.additional_owners.add(user2)
