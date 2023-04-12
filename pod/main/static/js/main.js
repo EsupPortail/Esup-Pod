@@ -658,9 +658,6 @@ var send_form_data = async function (
   callbackSuccess = undefined,
   callbackFail = undefined
 ) {
-  console.log(
-    "[Deprecation Warning] send_form_data function will soon be deprecated. Replace it by send_form_data_vanilla."
-  );
   callbackSuccess =
     typeof callbackSuccess === "function"
       ? callbackSuccess

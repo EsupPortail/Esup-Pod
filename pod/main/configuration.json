@@ -272,7 +272,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Si valeur vaut `True`, le username de l’utilisateur ne sera pas visible sur la plate-forme Pod et si la valeur vaut `False` le username sera affiché aux utilisateurs authentifiés. (par soucis du respect du RGPD)"
+                                    "Si valeur vaut `True`, le username de l’utilisateur ne sera pas visible sur la plate-forme Pod et si la valeur vaut `False` le username sera affiché aux utilisateurs authentifiés. (pour respecter le RGPD)"
                                 ]
                             },
                             "pod_version_end": "",
@@ -508,7 +508,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Mapping des attributs entre shibboleth et la classe utilisateur"
+                                    "Mapping des attributs entre Shibboleth et la classe utilisateur"
                                 ]
                             },
                             "pod_version_end": "",
@@ -738,43 +738,10 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "paramétrage des chemin du model pour la compilation",
+                                    "Paramétrage des chemins du modèle pour la compilation",
                                     "Pour télécharger les modèles : [https://alphacephei.com/vosk/lm#update-process]()",
-                                    "Ajouter le model dans les sous-dossier de la lang correspondants",
-                                    "Exemple pour le français: `/path/of/project/Esup-Pod/compile-model/fr/`"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1"
-                        },
-                        "TRANSCRIPTION_MODEL_PARAM": {
-                            "default_value": "",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "Paramétrage des modèles pour la transcription",
-                                    "Voir la documentation à cette adresse :",
-                                    " [https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3]()",
-                                    "Pour télécharger les modèles Vosk : [https://alphacephei.com/vosk/models]()",
-                                    "```",
-                                    "TRANSCRIPTION_MODEL_PARAM = {",
-                                    "    # le modèle stt",
-                                    "    'STT': {",
-                                    "        'fr': {",
-                                    "            'model': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite\",",
-                                    "            'scorer': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer\",",
-                                    "        }",
-                                    "    },",
-                                    "    # le modèle vosk",
-                                    "    'VOSK': {",
-                                    "        'fr': {",
-                                    "            'model': \"/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0\",",
-                                    "        }",
-                                    "    }",
-                                    "}",
-                                    "```"
+                                    "Ajouter le modèle dans les sous-dossier de la langue correspondante",
+                                    "Exemple pour le français : `/path/of/project/Esup-Pod/compile-model/fr/`"
                                 ]
                             },
                             "pod_version_end": "",
@@ -807,6 +774,39 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "TRANSCRIPTION_MODEL_PARAM": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Paramétrage des modèles pour la transcription",
+                                    "Voir la documentation à cette adresse :",
+                                    " [https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3]()",
+                                    "Pour télécharger les modèles Vosk : [https://alphacephei.com/vosk/models]()",
+                                    "```python",
+                                    "TRANSCRIPTION_MODEL_PARAM = {",
+                                    "    # le modèle stt",
+                                    "    'STT': {",
+                                    "        'fr': {",
+                                    "            'model': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite\",",
+                                    "            'scorer': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer\",",
+                                    "        }",
+                                    "    },",
+                                    "    # le modèle vosk",
+                                    "    'VOSK': {",
+                                    "        'fr': {",
+                                    "            'model': \"/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0\",",
+                                    "        }",
+                                    "    }",
+                                    "}",
+                                    "```"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
+                        },
                         "TRANSCRIPTION_TYPE": {
                             "default_value": "STT",
                             "description": {
@@ -827,7 +827,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "voir ACTIVE_MODEL_ENRICH"
+                                    "voir `ACTIVE_MODEL_ENRICH`"
                                 ]
                             },
                             "pod_version_end": "",
@@ -857,7 +857,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Groupes ou affiliations des personnes autorisées à créer un évènement"
+                                    "Groupes ou affiliations des personnes autorisées à créer un évènement."
                                 ]
                             },
                             "pod_version_end": "",
@@ -871,23 +871,9 @@
                                 ],
                                 "fr": [
                                     "Types de logiciel de serveur de streaming utilisés.",
-                                    "Actuellement disponible Wowza. Il faut préciser cette valeur pour l’activer ['Wowza', ]",
+                                    "Actuellement disponible Wowza. Il faut préciser cette valeur pour l’activer `['Wowza', ]`",
                                     "Si vous utilisez une autre logiciel,",
                                     "il faut développer une interface dans `pod/live/pilotingInterface.py`"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
-                        },
-                        "LIVE_CELERY_TRANSCRIPTION ": {
-                            "default_value": false,
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "",
-                                    "Activer la transcription déportée sur une machine distante."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1000,24 +986,15 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
-                        "LIVE_VOSK_MODEL": {
-                            "default_value": "{}",
+                        "LIVE_CELERY_TRANSCRIPTION ": {
+                            "default_value": false,
                             "description": {
                                 "en": [
                                     ""
                                 ],
                                 "fr": [
                                     "",
-                                    "Paramétrage des modèles pour la transcription des directs",
-                                    "La documentation sera présente prochaînement",
-                                    "Pour télécharger les Modèles Vosk : https://alphacephei.com/vosk/models",
-                                    "```",
-                                    "LIVE_VOSK_MODEL = {",
-                                    "   'fr': {",
-                                    "       'model': \"/path/of/project/django_projects/transcription/live/fr/vosk-model-small-fr-0.22\",",
-                                    "    }",
-                                    "}",
-                                    "```"
+                                    "Activer la transcription déportée sur une machine distante."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1037,6 +1014,29 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "LIVE_VOSK_MODEL": {
+                            "default_value": "{}",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Paramétrage des modèles pour la transcription des directs",
+                                    "La documentation sera présente prochaînement",
+                                    "Pour télécharger les Modèles Vosk : [https://alphacephei.com/vosk/models]()",
+                                    "```",
+                                    "LIVE_VOSK_MODEL = {",
+                                    "   'fr': {",
+                                    "       'model': \"/path/of/project/django_projects/transcription/live/fr/vosk-model-small-fr-0.22\",",
+                                    "    }",
+                                    "}",
+                                    "```"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "USE_BBB": {
                             "default_value": true,
                             "description": {
@@ -1044,7 +1044,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Utilisation de BigBlueButton - A retirer dans les futures versions de Pod"
+                                    "Utilisation de BigBlueButton - [TODO] À retirer dans les futures versions de Pod"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1057,7 +1057,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - A retirer dans les futures versions de Pod"
+                                    "Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - [TODO] À retirer dans les futures versions de Pod"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1196,10 +1196,10 @@
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    "Activate the opencast studio"
+                                    "Activate the [https://opencast.org/](Opencast) studio."
                                 ],
                                 "fr": [
-                                    "Activation du studio opencast"
+                                    "Activation du studio [https://opencast.org/](Opencast)"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1306,6 +1306,21 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "DEFAULT_MEETING_THUMBNAIL": {
+                            "default_value": "/img/default-meeting.svg",
+                            "description": {
+                                "en": [
+                                    "Default image displayed as a poster or thumbnail, used to present the meeting.",
+                                    "This image must be located in the `static` directory."
+                                ],
+                                "fr": [
+                                    "Image par défaut affichée comme poster ou vignette, utilisée pour présenter la réunion.",
+                                    "Cette image doit se situer dans le répertoire `static`."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
+                        },
                         "MEETING_DATE_FIELDS": {
                             "default_value": "()",
                             "description": {
@@ -1388,10 +1403,10 @@
                             "default_value": "()",
                             "description": {
                                 "en": [
-                                    "list of all fields that will be hidden if MEETING_DISABLE_RECORD is set to True"
+                                    "list of all fields that will be hidden if `MEETING_DISABLE_RECORD` is set to True."
                                 ],
                                 "fr": [
-                                    "ensemble des champs qui serotn cachés si MEETING_DISABLE_RECORD est défini à true",
+                                    "ensemble des champs qui seront cachés si `MEETING_DISABLE_RECORD` est défini à true.",
                                     "```",
                                     "MEETING_RECORD_FIELDS: (\"record\", \"auto_start_recording\", \"allow_start_stop_recording\")",
                                     "```"
@@ -1404,11 +1419,11 @@
                             "default_value": "()",
                             "description": {
                                 "en": [
-                                    "list of all fields involved by the recurring of a meeting",
+                                    "List of all fields involved by the recurring of a meeting",
                                     "In this case, all this fields are grouped in a fieldset shown in modal"
                                 ],
                                 "fr": [
-                                    "permet de définir la liste de tous les champs permettant de définir la récurrence d’une reunion",
+                                    "Liste de tous les champs permettant de définir la récurrence d’une reunion",
                                     "tous ces champs sont regroupés dans un ensemble de champs affichés dans une modale",
                                     "```",
                                     "MEETING_RECURRING_FIELDS:",
@@ -1434,21 +1449,6 @@
                                 ],
                                 "fr": [
                                     "Seuls les utilisateurs \"staff\" pourront éditer les réunions"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1"
-                        },
-                        "DEFAULT_MEETING_THUMBNAIL": {
-                            "default_value": "/img/default-meeting.svg",
-                            "description": {
-                                "en": [
-                                    "Default image displayed as a poster or thumbnail, used to present the meeting.",
-                                    "This image must be located in the `static` directory."
-                                ],
-                                "fr": [
-                                    "Image par défaut affichée comme poster ou vignette, utilisée pour présenter la réunion.",
-                                    "Cette image doit se situer dans le répertoire `static`."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1687,10 +1687,11 @@
                             "default_value": "records",
                             "description": {
                                 "en": [
-                                    "Web access path (public) to the recording repository directory (DEFAULT_RECORDER_PATH). Warning: remember to modify the NGINX conf"
+                                    "Web access path (public) to the recording repository directory (`DEFAULT_RECORDER_PATH`).",
+                                    "Warning: remember to modify the NGINX conf"
                                 ],
                                 "fr": [
-                                    "Chemin d’accès web (public) au répertoire de dépot des enregistrements (DEFAULT_RECORDER_PATH).",
+                                    "Chemin d’accès web (public) au répertoire de dépot des enregistrements (`DEFAULT_RECORDER_PATH`).",
                                     "Attention : penser à modifier la conf de NGINX."
                                 ]
                             },
@@ -2326,8 +2327,8 @@
                                     "Les évènements envoyés sont :",
                                     "   play, pause, seeked, ended, ratechange, fullscreen, error, loadmetadata",
                                     "Pour rajouter le code Piwik/Matomo dans votre instance de Pod, il suffit de créer un fichier `pod/custom/templates/custom/tracking.html`",
-                                    "Il faut ensuite y insérer le code javascript puis dans votre fichier settings_local.py,",
-                                    "de préciser dans la variable `TEMPLATE_VISIBLE_SETTINGS`: `'TRACKING_TEMPLATE': 'custom/tracking.html'"
+                                    "Il faut ensuite y insérer le code javascript puis dans votre fichier `settings_local.py`,",
+                                    "de préciser dans la variable `TEMPLATE_VISIBLE_SETTINGS`: `'TRACKING_TEMPLATE': 'custom/tracking.html'`"
                                 ]
                             },
                             "pod_version_end": "",
@@ -2357,7 +2358,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Extension autorisée pour le téléversement sur la plateforme",
+                                    "Extensions autorisées pour le téléversement vidéo sur la plateforme",
                                     "```",
                                     "VIDEO_ALLOWED_EXTENSIONS = (",
                                     "    \"3gp\",",
@@ -2385,6 +2386,20 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "VIDEO_FEED_NB_ITEMS": {
+                            "default_value": 100,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "nombre d'item renvoyé par le flux rss"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.1"
                         },
                         "VIDEO_FORM_FIELDS": {
                             "default_value": "__all__",
@@ -2692,8 +2707,7 @@
                                     "        \"audio_bitrate\": \"96k\",",
                                     "        \"encode_mp4\": True,",
                                     "        \"sites\": [1],",
-                                    "    },",
-                                    "    {",
+                                    "    },{",
                                     "        \"resolution\": \"1280x720\",",
                                     "        \"minrate\": \"1000k\",",
                                     "        \"video_bitrate\": \"2000k\",",
@@ -2701,8 +2715,7 @@
                                     "        \"audio_bitrate\": \"128k\",",
                                     "        \"encode_mp4\": True,",
                                     "        \"sites\": [1],",
-                                    "    },",
-                                    "    {",
+                                    "    },{",
                                     "        \"resolution\": \"1920x1080\",",
                                     "        \"minrate\": \"2000k\",",
                                     "        \"video_bitrate\": \"3000k\",",
@@ -2728,7 +2741,7 @@
                                     "Permet d’ajouter l’attribut obligatoire dans le formulaire d’edition et d’ajout d’une video :",
                                     "Exemple de valeur : [\"discipline\", \"tags\"]",
                                     "NB : les champs cachés et suivant ne sont pas pris en compte :",
-                                    "(video, title, type, owner, date_added, cursus, main_lang)"
+                                    "`(video, title, type, owner, date_added, cursus, main_lang)`"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3119,8 +3132,8 @@
                                     "sera seul destinataire plutôt que le(s) manager(s).",
                                     "Si la liste est vide, les mails de contact seront envoyés au(x) manager(s).",
                                     "Valeurs possibles :",
-                                    " 'info', 'contribute', 'request_password',",
-                                    " 'inapropriate_content', 'bug', 'other'"
+                                    " `info`, `contribute`, `request_password`,",
+                                    " `inapropriate_content`, `bug`, `other"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3404,9 +3417,7 @@
                             "pod_version_init": "3.1.0"
                         },
                         "FFMPEG_STUDIO_COMMAND": {
-                            "default_value":
-                                " -hide_banner -threads %(nb_threads)s %(input)s %(subtime)s -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf %(crf)s -sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -max_muxing_queue_size 4000 -deinterlace "
-                            ,
+                            "default_value": " -hide_banner -threads %(nb_threads)s %(input)s %(subtime)s -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf %(crf)s -sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -max_muxing_queue_size 4000 -deinterlace ",
                             "description": {
                                 "en": [
                                     ""
@@ -3482,7 +3493,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que FILE_UPLOAD_MAX_MEMORY_SIZE) lors des téléversements de fichiers.<br>",
+                                    "Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que `FILE_UPLOAD_MAX_MEMORY_SIZE`) lors des téléversements de fichiers.<br>",
                                     "_ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir]()_"
                                 ]
                             },
@@ -3691,6 +3702,7 @@
                                     ""
                                 ],
                                 "fr": [
+                                    "```python",
                                     "CACHES = {",
                                     "    # … default cache config and others",
                                     "    # \"default\": {",
@@ -3711,7 +3723,8 @@
                                     "            \"CLIENT_CLASS\": \"django_redis.client.DefaultClient\",",
                                     "        },",
                                     "    },",
-                                    "}"
+                                    "}",
+                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3904,10 +3917,10 @@
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    "Use to check if gloabls settings are in test mode or not"
+                                    "Use to check if globals settings are in test mode or not."
                                 ],
                                 "fr": [
-                                    "permet de vérifier si la configuration de la plateforme est en mode test"
+                                    "Permet de vérifier si la configuration de la plateforme est en mode test."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4047,7 +4060,7 @@
                                 "fr": [
                                     "Ce paramètre permet d’afficher un lien \"En savoir plus\"",
                                     "sur la boite de dialogue d’information sur l’usage des cookies dans Pod.",
-                                    "On peut préciser un lien vers les mentions légales ou page dpo"
+                                    "On peut préciser un lien vers les mentions légales ou page DPO."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4179,7 +4192,7 @@
                                 "fr": [
                                     "Voir description dans authentification",
                                     "Si valeur vaut 'True', le username de l’utilisateur ne sera pas visible sur la plate-forme Pod et",
-                                    "si la valeur vaut 'False' le username sera affichés aux utilisateurs authentifiés. (par soucis du respect du RGPD)"
+                                    "si la valeur vaut 'False' le username sera affiché aux utilisateurs authentifiés. (pour respecter le RGPD)"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4194,7 +4207,7 @@
                                 "fr": [
                                     "Si 'True', le filtre des vidéos par utilisateur ne sera plus visible",
                                     "si 'False' le filtre sera visible qu’aux personnes authentifiées.",
-                                    "(par soucis du respect du RGPD)"
+                                    "(pour respecter le RGPD)"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4210,7 +4223,7 @@
                                     "Si valeur vaut 'True', l’onglet Utilisateur ne sera pas visible",
                                     "et si la valeur vaut 'False' l’onglet Utilisateur ne sera visible",
                                     "qu’aux personnes authentifiées.",
-                                    "(par soucis du respect du RGPD)"
+                                    "(pour respecter le RGPD)"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4289,7 +4302,7 @@
                                 ],
                                 "fr": [
                                     "Nom de la fédération d’identité utilisée",
-                                    "Affiché sur le bouton de connexion si l’authentification shibboleth est utilisée."
+                                    "Affiché sur le bouton de connexion si l’authentification Shibboleth est utilisée."
                                 ]
                             },
                             "pod_version_end": "",

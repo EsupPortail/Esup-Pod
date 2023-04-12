@@ -1,4 +1,4 @@
-from django.conf import settings
+"""Esup-Pod podfile views."""
 from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -10,7 +10,7 @@ from django.core.exceptions import PermissionDenied
 from django.template.loader import render_to_string
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import SuspiciousOperation
-from django.db.models import Count, Q
+from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from .models import UserFolder
@@ -29,7 +29,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from pod.main.utils import is_ajax
 
 
-TEST_SETTINGS = getattr(settings, "TEST_SETTINGS", False)
 __FOLDER_FILE_TYPE__ = ["image", "file"]
 
 
@@ -39,19 +38,7 @@ def home(request, type=None):
     if type is not None and type not in __FOLDER_FILE_TYPE__:
         raise SuspiciousOperation("--> Invalid type")
     user_home_folder = get_object_or_404(UserFolder, name="home", owner=request.user)
-    share_folder = (
-        UserFolder.objects.filter(access_groups=request.user.owner.accessgroup_set.all())
-        .exclude(owner=request.user)
-        .order_by("owner", "id")
-    )
-
-    share_folder_user = (
-        UserFolder.objects.filter(users=request.user)
-        .exclude(owner=request.user)
-        .order_by("owner", "id")
-    )
     current_session_folder = get_current_session_folder(request)
-
     # Here we send  home.html if current page is My Files,
     # else we send the iframe page
     # home_content.html
@@ -62,9 +49,6 @@ def home(request, type=None):
         template,
         {
             "user_home_folder": user_home_folder,
-            "user_folder": [],
-            "share_folder": share_folder,
-            "share_folder_user": share_folder_user,
             "current_session_folder": current_session_folder,
             "form_file": CustomFileModelForm(),
             "form_image": CustomImageModelForm(),
@@ -399,10 +383,6 @@ def manage_form_file(request, upload_errors, fname, form_file):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def changefile(request):
-    # did it only for flake !
-    file = CustomFileModel()
-    file = CustomImageModel()
-
     if request.POST and is_ajax(request):
         folder = get_object_or_404(UserFolder, id=request.POST.get("folder"))
         if request.user != folder.owner and not (
@@ -661,48 +641,48 @@ def get_current_session_folder_ajax(request):
 
 
 def fetch_owners(request, folders_list):
-    if request.user.is_superuser:
-        for fold in folders_list:
-            if fold["owner"] != request.user.id:
-                fold["owner"] = User.objects.get(id=fold["owner"]).username
-            else:
-                del fold["owner"]
+    # if request.user.is_superuser:
+    for fold in folders_list:
+        if fold["owner"] != request.user.id:
+            fold["owner"] = User.objects.get(id=fold["owner"]).username
+        else:
+            del fold["owner"]
     return folders_list
 
 
+"""
 def filter_folders_with_truly_files(folders):
-    if not TEST_SETTINGS:
-        return (
-            folders.annotate(nbr_image=Count("customimagemodel", distinct=True))
-            .annotate(nbr_file=Count("customfilemodel", distinct=True))
-            .filter(Q(nbr_image__gt=0) | Q(nbr_file__gt=0))
-        )
-    return folders
+    return (
+        folders.annotate(nbr_image=Count("customimagemodel", distinct=True))
+        .annotate(nbr_file=Count("customfilemodel", distinct=True))
+        .filter(Q(nbr_image__gt=0) | Q(nbr_file__gt=0))
+    )
+"""
 
 
 @staff_member_required(redirect_field_name="referrer")
 def user_folders(request):
-    VALUES_LIST = ["id", "name"]
-    if request.user.is_superuser:
-        VALUES_LIST.append("owner")
+    VALUES_LIST = ["id", "name", "owner"]
+    # if request.user.is_superuser:
+    #    VALUES_LIST.append("owner")
 
-    user_folder = UserFolder.objects.exclude(owner=request.user, name="home")
-
-    if not request.user.is_superuser:
-        user_folder = user_folder.filter(owner=request.user)
-
-    # filter folders to keep only those that have files
-    user_folder = filter_folders_with_truly_files(user_folder)
-
-    user_folder = user_folder.values(*VALUES_LIST)
-
+    folder_list = (
+        UserFolder.objects.exclude(name="home")
+        .filter(
+            Q(access_groups__in=request.user.owner.accessgroup_set.all())
+            | Q(owner=request.user)
+            | Q(users=request.user)
+        )
+        .distinct()
+        .order_by("owner", "id")
+    )
     search = request.GET.get("search", "")
     if search != "":
-        user_folder = get_filter_user_folder(request, user_folder, search)
+        folder_list = get_filter_user_folder(request, folder_list, search)
 
+    folder_list = folder_list.values(*VALUES_LIST)
     page = request.GET.get("page", 1)
-    user_folder = user_folder.order_by("owner", "name")
-    paginator = Paginator(user_folder, 10)
+    paginator = Paginator(folder_list, 10)
     try:
         folders = paginator.page(page)
     except PageNotAnInteger:
@@ -717,26 +697,25 @@ def user_folders(request):
         "current_page": int(page),
         "next_page": (-1 if ((int(page) + 1) > paginator.num_pages) else (int(page) + 1)),
         "total_pages": paginator.num_pages,
+        "search": search,
     }
     data = json.dumps(json_resp)
     mimetype = "application/json"
     return HttpResponse(data, mimetype)
 
 
-def get_filter_user_folder(request, user_folder, search):
-    # current_fold = json.loads(
-    #     get_current_session_folder_ajax(request).content.decode("utf-8")
-    # )["folder"]
+def get_filter_user_folder(request, folder_list, search):
+    """for user, search inside folder list and for superuser,
+    search folder in all folder. Returns found folders"""
     if not request.user.is_superuser:
-        user_folder = user_folder.filter(
+        return folder_list.filter(
             Q(name__icontains=search)
             # | (Q(name=current_fold) & ~Q(owner=request.user, name="home"))
         )
     else:
-        user_folder = user_folder.filter(
+        return UserFolder.objects.filter(
             Q(name__icontains=search)
             | (Q(owner__username__icontains=search))
             | (Q(owner__first_name__icontains=search))
             | (Q(owner__last_name__icontains=search))
         ).distinct()
-    return user_folder

@@ -20,7 +20,8 @@ OIDC_NAME = getattr(settings, "OIDC_NAME", "OpenID Connect")
 if CAS_GATEWAY:
 
     @gateway()
-    def authentication_login_gateway(request):
+    def authentication_login_gateway(request):  # pragma: no cover
+        """Login gateway when CAS_GATEWAY is defined."""
         next = request.GET["next"] if request.GET.get("next") else "/"
         host = (
             "https://%s" % request.get_host()

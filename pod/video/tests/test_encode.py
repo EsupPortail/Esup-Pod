@@ -59,6 +59,19 @@ class EncodeTestCase(TestCase):
 
         print(" --->  SetUp of EncodeTestCase: OK!")
 
+    def test_encoding_wrong_file(self):
+        """Test if a try to encode a wrong file ends well."""
+        video = Video.objects.create(
+            title="Video2",
+            owner=User.objects.get(id=1),
+            video="test.txt",
+            type=Type.objects.get(id=1),
+        )
+        print("\n ---> Try to Encode video 2")
+        encode.encode_video(video.id)
+        el = EncodingLog.objects.get(video=video)
+        self.assertTrue("Wrong file or path:" in el.log)
+
     def test_result_encoding_video(self):
         """Test if video encoding worked properly."""
         # video id=1 et audio id=2
@@ -105,9 +118,8 @@ class EncodeTestCase(TestCase):
         """Tester la suppression de la video et la suppression en cascade."""
         video_to_encode = Video.objects.get(id=1)
         video = video_to_encode.video.path
-        log_file = os.path.join(
-            os.path.dirname(video), "%04d" % video_to_encode.id, "info_video.json"
-        )
+        video_dir = os.path.join(os.path.dirname(video), "%04d" % video_to_encode.id)
+        log_file = os.path.join(video_dir, "info_video.json")
 
         list_mp2t = EncodingVideo.objects.filter(
             video=video_to_encode, encoding_format="video/mp2t"
@@ -145,16 +157,17 @@ class EncodeTestCase(TestCase):
         self.assertEqual(list_mp4.count(), 0)
 
         self.assertEqual(EncodingLog.objects.filter(video__id=1).count(), 0)
-        self.assertEqual(len(os.listdir(os.path.dirname(log_file))), 0)
+        # check video folder remove
+        self.assertFalse(os.path.isdir(video_dir))
 
         audio = Video.objects.get(id=2)
         audio_video_path = audio.video.path
-        audio_log_file = os.path.join(
-            os.path.dirname(video), "%04d" % audio.id, "info_video.json"
-        )
+        audio_dir = os.path.join(os.path.dirname(audio_video_path), "%04d" % audio.id)
+        audio_log_file = os.path.join(audio_dir, "info_video.json")
         audio.delete()
         self.assertTrue(not os.path.exists(audio_video_path))
         self.assertTrue(not os.path.exists(audio_log_file))
-        self.assertEqual(len(os.listdir(os.path.dirname(audio_log_file))), 0)
+        # check audio folder remove
+        self.assertFalse(os.path.isdir(audio_dir))
 
         print("   --->  test_delete_object of EncodeTestCase: OK!")

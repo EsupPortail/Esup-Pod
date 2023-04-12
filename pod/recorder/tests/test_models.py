@@ -200,7 +200,7 @@ class RecordingFileTreatmentTestCase(TestCase):
         RecordingFileTreatment.objects.filter(file=filepath).delete()
         self.assertEqual(RecordingFileTreatment.objects.all().count(), 0)
 
-        print("--->  test_delete_object of RecordingFileTreatmentTestCase : OK " "!")
+        print("--->  test_delete_object of RecordingFileTreatmentTestCase: OK!")
 
 
 class RecordingFileTestCase(TestCase):

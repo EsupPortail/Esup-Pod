@@ -175,7 +175,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
 
     if target in ("", "themes"):
         theme_children = Theme.objects.filter(parentId=theme, channel=channel)
-        videos = videos.filter(theme=theme, channel=channel)
+        videos = videos.filter(theme=theme, channel=channel).distinct()
 
         if theme is not None and theme.parentId is not None:
             parent_title = theme.parentId.title
@@ -183,7 +183,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
             parent_title = channel.title
 
     if target in ("", "videos"):
-        videos = videos.filter(theme=theme, channel=channel)
+        videos = videos.filter(theme=theme, channel=channel).distinct()
         response["next_videos"], *_ = pagination_data(
             request.path, offset, limit, videos.count()
         )
@@ -991,6 +991,12 @@ def video_delete(request, slug=None):
     ):
         messages.add_message(request, messages.ERROR, _("You cannot delete this video."))
         raise PermissionDenied
+
+    if not video.encoded or video.encoding_in_progress is True:
+        messages.add_message(
+            request, messages.ERROR, _("You cannot delete a video that is being encoded.")
+        )
+        return redirect(reverse("video:my_videos"))
 
     form = VideoDeleteForm()
 
@@ -1951,6 +1957,7 @@ def manage_access_rights_stats_video(request, video, page_title):
 def stats_view(request, slug=None, slug_t=None):
     """
     View for statistics.
+
     " slug reference video's slug or channel's slug
     " t_slug reference theme's slug
     " from defined the source of the request such as
@@ -1959,7 +1966,7 @@ def stats_view(request, slug=None, slug_t=None):
     target = request.GET.get("from", "videos")
     videos, title = get_videos(slug, target, slug_t)
     error_message = (
-        "The following %(target)s does not " "exist or contain any videos: %(slug)s"
+        "The following %(target)s does not exist or contain any videos: %(slug)s"
     )
     if request.method == "GET" and target == "video" and videos:
         return manage_access_rights_stats_video(request, videos[0], title)
