@@ -4,6 +4,7 @@ import os
 import datetime
 import uuid
 import re
+import bleach
 
 # import urllib
 from urllib.parse import unquote
@@ -229,20 +230,6 @@ def recorder_notify(request):
             )
             # link_url = reformat_url_if_use_cas_or_shib(request, link_url)
 
-            text_msg = _(
-                "Hello, \n\na new recording has just be added on the video "
-                'website "%(title_site)s" from the recorder "%('
-                'recorder)s". '
-                "\nTo add it, just click on link below.\n\n%(link_url)s\nif "
-                "you cannot click on link, just copy-paste it in your "
-                "browser. "
-                "\n\nRegards"
-            ) % {
-                "title_site": __TITLE_SITE__,
-                "recorder": recorder.name,
-                "link_url": link_url,
-            }
-
             html_msg = _(
                 "Hello, <p>a new recording has just be added on %("
                 'title_site)s from the recorder "%(recorder)s". '
@@ -255,6 +242,8 @@ def recorder_notify(request):
                 "recorder": recorder.name,
                 "link_url": link_url,
             }
+            
+            text_msg = bleach.clean(html_msg,tags=[], strip = True)
             # Sending the mail to the managers defined in the administration
             # for the concerned recorder
             if recorder.user:

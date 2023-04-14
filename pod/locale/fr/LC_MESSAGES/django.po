@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-07 11:56+0200\n"
+"POT-Creation-Date: 2023-04-14 08:49+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -235,11 +235,11 @@ msgstr "Fermer"
 #: pod/meeting/templates/meeting/add_or_edit.html:29
 #: pod/meeting/templates/meeting/delete.html:32
 #: pod/meeting/templates/meeting/invite.html:26
-#: pod/meeting/templates/meeting/join.html:25 pod/meeting/views.py:143
-#: pod/meeting/views.py:204 pod/meeting/views.py:356 pod/playlist/views.py:232
+#: pod/meeting/templates/meeting/join.html:25 pod/meeting/views.py:144
+#: pod/meeting/views.py:205 pod/meeting/views.py:357 pod/playlist/views.py:232
 #: pod/recorder/templates/recorder/add_recording.html:34
 #: pod/recorder/templates/recorder/record_delete.html:31
-#: pod/recorder/views.py:155 pod/recorder/views.py:355
+#: pod/recorder/views.py:156 pod/recorder/views.py:344
 #: pod/video/templates/channel/channel_edit.html:47
 #: pod/video/templates/videos/video-form.html:11
 #: pod/video/templates/videos/video_delete.html:27
@@ -321,7 +321,7 @@ msgstr "Identifiant interne de la session"
 msgid "Internal id of the BBB meeting."
 msgstr "Identifiant interne de la session BBB."
 
-#: pod/bbb/models.py:28 pod/meeting/views.py:40
+#: pod/bbb/models.py:28 pod/meeting/views.py:41
 msgid "Meeting name"
 msgstr "Nom de la session"
 
@@ -418,7 +418,7 @@ msgstr "Session"
 msgid "Meetings"
 msgstr "Sessions"
 
-#: pod/bbb/models.py:122 pod/meeting/views.py:48
+#: pod/bbb/models.py:122 pod/meeting/views.py:49
 msgid "Full name"
 msgstr "Nom complet"
 
@@ -449,11 +449,11 @@ msgid "User from the Pod database, if user found."
 msgstr ""
 "Utilisateur dans la base de données de Pod, si l’utilisateur est trouvé."
 
-#: pod/bbb/models.py:161 pod/meeting/views.py:47
+#: pod/bbb/models.py:161 pod/meeting/views.py:48
 msgid "Attendee"
 msgstr "Participant"
 
-#: pod/bbb/models.py:162 pod/meeting/views.py:46
+#: pod/bbb/models.py:162 pod/meeting/views.py:47
 msgid "Attendees"
 msgstr "Participants"
 
@@ -1474,7 +1474,7 @@ msgid "Mail"
 msgstr "Courriel"
 
 #: pod/completion/templates/contributor/list_contributor.html:12
-#: pod/meeting/views.py:49
+#: pod/meeting/views.py:50
 msgid "Role"
 msgstr "Rôle"
 
@@ -2261,8 +2261,8 @@ msgstr "nom"
 #: pod/live/models.py:70 pod/live/templates/live/direct.html:120
 #: pod/video/models.py:300 pod/video/models.py:451
 #: pod/video/templates/channel/channel.html:85
-#: pod/video/templates/channel/channel.html:170
-#: pod/video/templates/channel/channel.html:180
+#: pod/video/templates/channel/channel.html:173
+#: pod/video/templates/channel/channel.html:183
 #: pod/video/templates/channel/channel_edit.html:40
 #: pod/video/templates/channel/list_theme.html:12
 #: pod/video/templates/videos/video.html:106
@@ -3076,8 +3076,8 @@ msgstr "Évènements passés"
 msgid "Registration of event #%(content_id)s"
 msgstr "Programmation de l’évènement #%(content_id)s"
 
-#: pod/live/utils.py:58 pod/live/utils.py:80 pod/video/utils.py:159
-#: pod/video/utils.py:184 pod/video/utils.py:252 pod/video/utils.py:277
+#: pod/live/utils.py:58 pod/live/utils.py:80 pod/video/utils.py:166
+#: pod/video/utils.py:246
 msgid "Hello,"
 msgstr "Bonjour,"
 
@@ -3095,13 +3095,13 @@ msgstr ""
 
 #: pod/live/utils.py:71 pod/live/utils.py:93
 #: pod/main/templates/mail/mail.html:7 pod/main/templates/mail/mail.txt:7
-#: pod/main/templates/mail/mail_sender.txt:6 pod/video/utils.py:167
-#: pod/video/utils.py:196 pod/video/utils.py:260 pod/video/utils.py:289
+#: pod/main/templates/mail/mail_sender.txt:6 pod/video/utils.py:178
+#: pod/video/utils.py:258
 msgid "Regards."
 msgstr "Cordialement."
 
-#: pod/live/utils.py:75 pod/live/utils.py:148 pod/video/utils.py:170
-#: pod/video/utils.py:200 pod/video/utils.py:263 pod/video/utils.py:293
+#: pod/live/utils.py:75 pod/live/utils.py:148 pod/video/utils.py:182
+#: pod/video/utils.py:262
 msgid "Post by:"
 msgstr "Posté par :"
 
@@ -3123,7 +3123,7 @@ msgstr "Le mot de passe est incorrect."
 msgid "Editing the event"
 msgstr "Éditer l’évènement"
 
-#: pod/live/views.py:517 pod/meeting/views.py:136 pod/video/views.py:360
+#: pod/live/views.py:517 pod/meeting/views.py:137 pod/video/views.py:360
 #: pod/video/views.py:950
 msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
@@ -3997,7 +3997,7 @@ msgstr "ESUP-Portail"
 msgid "Pod Project"
 msgstr "Projet Pod"
 
-#: pod/main/templates/footer.html:34 pod/video/feeds.py:114
+#: pod/main/templates/footer.html:34 pod/video/feeds.py:115
 msgid "video platform of"
 msgstr "plateforme vidéos de"
 
@@ -4098,7 +4098,7 @@ msgstr "Ajouter une vidéo"
 #: pod/meeting/templates/meeting/invite.html:8
 #: pod/meeting/templates/meeting/join.html:9
 #: pod/meeting/templates/meeting/my_meetings.html:10
-#: pod/meeting/templates/meeting/recordings.html:12 pod/meeting/views.py:80
+#: pod/meeting/templates/meeting/recordings.html:12 pod/meeting/views.py:81
 msgid "My meetings"
 msgstr "Mes réunions"
 
@@ -4189,7 +4189,7 @@ msgstr[1] "%(counter)s Thèmes"
 #: pod/playlist/templates/playlist/playlist_list.html:16
 #: pod/playlist/templates/playlist/playlist_video_list.html:11
 #: pod/playlist/templates/playlist/playlist_video_list.html:23
-#: pod/video/templates/channel/channel.html:100
+#: pod/video/templates/channel/channel.html:103
 #, python-format
 msgid "%(counter)s video"
 msgid_plural "%(counter)s videos"
@@ -4236,7 +4236,7 @@ msgstr "Récurrence"
 
 #: pod/meeting/forms.py:159 pod/meeting/templates/meeting/recordings.html:23
 #: pod/playlist/templates/playlist/playlist_element_list.html:11
-#: pod/video/feeds.py:225 pod/video/models.py:793 pod/video/models.py:979
+#: pod/video/feeds.py:226 pod/video/models.py:793 pod/video/models.py:979
 msgid "Duration"
 msgstr "Durée"
 
@@ -4575,11 +4575,11 @@ msgid "Unable to delete recording!"
 msgstr "Impossible de supprimer l'enregistrement !"
 
 #: pod/meeting/templates/meeting/add_or_edit.html:9
-#: pod/meeting/templates/meeting/link_meeting.html:5 pod/meeting/views.py:146
+#: pod/meeting/templates/meeting/link_meeting.html:5 pod/meeting/views.py:147
 msgid "Edit the meeting"
 msgstr "Éditer la réunion"
 
-#: pod/meeting/templates/meeting/add_or_edit.html:11 pod/meeting/views.py:148
+#: pod/meeting/templates/meeting/add_or_edit.html:11 pod/meeting/views.py:149
 msgid "Add a new meeting"
 msgstr "Ajouter une nouvelle réunion"
 
@@ -4767,7 +4767,7 @@ msgstr "Terminer la réunion"
 msgid "Text copied"
 msgstr "Texte copié"
 
-#: pod/meeting/templates/meeting/recordings.html:13 pod/meeting/views.py:511
+#: pod/meeting/templates/meeting/recordings.html:13 pod/meeting/views.py:512
 msgid "Meeting recordings"
 msgstr "Enregistrements de réunion"
 
@@ -4819,121 +4819,73 @@ msgstr "Ou après"
 msgid "occurrences"
 msgstr "occurrences"
 
-#: pod/meeting/views.py:41
+#: pod/meeting/views.py:42
 msgid "Has user joined?"
 msgstr "Utilisateurs connectés ?"
 
-#: pod/meeting/views.py:42 pod/recorder/models.py:260
+#: pod/meeting/views.py:43 pod/recorder/models.py:260
 msgid "Recording"
 msgstr "Enregistrement"
 
-#: pod/meeting/views.py:43
+#: pod/meeting/views.py:44
 msgid "Participant count"
 msgstr "Nombre de participants"
 
-#: pod/meeting/views.py:44
+#: pod/meeting/views.py:45
 msgid "Listener count"
 msgstr "Nombre d’auditeurs"
 
-#: pod/meeting/views.py:45
+#: pod/meeting/views.py:46
 msgid "Moderator count"
 msgstr "Nombre de modérateurs"
 
-#: pod/meeting/views.py:109
+#: pod/meeting/views.py:110
 msgid "You cannot edit this meeting."
 msgstr "Vous ne pouvez pas éditer cette réunion."
 
-#: pod/meeting/views.py:186 pod/meeting/views.py:424 pod/meeting/views.py:456
-#: pod/meeting/views.py:488
+#: pod/meeting/views.py:187 pod/meeting/views.py:425 pod/meeting/views.py:457
+#: pod/meeting/views.py:489
 msgid "You cannot delete this meeting."
 msgstr "Vous ne pouvez pas supprimer cette réunion."
 
-#: pod/meeting/views.py:197
+#: pod/meeting/views.py:198
 msgid "The meeting has been deleted."
 msgstr "La réunion a été supprimée."
 
-#: pod/meeting/views.py:303
+#: pod/meeting/views.py:304
 msgid "You cannot access to this meeting."
 msgstr "Vous ne pouvez pas accéder à cette réunion."
 
-#: pod/meeting/views.py:350
+#: pod/meeting/views.py:351
 msgid "Password given is not correct."
 msgstr "Le mot de passe est incorrect."
 
-#: pod/meeting/views.py:528
+#: pod/meeting/views.py:529
 msgid "You cannot delete this recording."
 msgstr "Vous ne pouvez pas supprimer cette réunion."
 
-#: pod/meeting/views.py:545
+#: pod/meeting/views.py:546
 msgid "The recording has been deleted."
 msgstr "L'enregistrement a été supprimé."
 
-#: pod/meeting/views.py:552
+#: pod/meeting/views.py:553
 msgid "This view cannot be accessed directly."
 msgstr "Cette vue n'est pas accessible directement."
 
-#: pod/meeting/views.py:593
+#: pod/meeting/views.py:594
 msgid "You cannot invite for this meeting."
 msgstr "Vous ne pouvez pas inviter à cette réunion."
 
-#: pod/meeting/views.py:604
+#: pod/meeting/views.py:605
 msgid "Invitations send to recipients."
 msgstr "Invitations envoyées aux destinataires."
 
-#: pod/meeting/views.py:615 pod/meeting/views.py:770
+#: pod/meeting/views.py:616 pod/meeting/views.py:707
 #, python-format
 msgid "%(owner)s invites you to the meeting %(meeting_title)s"
 msgstr "%(owner)s vous invite à la réunion %(meeting_title)s"
 
-#: pod/meeting/views.py:652
-#, python-format
-msgid ""
-"\n"
-"            Hello,\n"
-"            %(owner)s invites you to a recurring meeting %(meeting_title)s.\n"
-"            Start date: %(start_date_time)s\n"
-"            Recurring until date: %(end_date)s\n"
-"            The meeting will be occur each %(frequency)s %(recurrence)s\n"
-"            Here is the link to join the meeting: %(join_link)s\n"
-"            You need this password to enter: %(password)s\n"
-"            Regards\n"
-"        "
-msgstr ""
-"\n"
-"        Bonjour,\n"
-"        %(owner)s vous invite à une réunion récurrente %(meeting_title)s.\n"
-"        Date de début: %(start_date_time)s\n"
-"        Récurrent jusqu'à la date: %(end_date)s\n"
-"        La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s\n"
-"        Voici le lien pour rejoindre la réunion : %(join_link)s\n"
-"        Vous avez besoin de ce mot de passe pour entrer : %(password)s\n"
-"        Cordialement\n"
-"    "
-
-#: pod/meeting/views.py:677
-#, python-format
-msgid ""
-"\n"
-"            Hello,\n"
-"            %(owner)s invites you to the meeting %(meeting_title)s.\n"
-"            Start date: %(start_date_time)s\n"
-"            End date: %(end_date)s\n"
-"            Here is the link to join the meeting: %(join_link)s\n"
-"            You need this password to enter: %(password)s\n"
-"            Regards\n"
-"        "
-msgstr ""
-"\n"
-"        Bonjour,\n"
-"        %(owner)s vous invite à la réunion %(meeting_title)s.\n"
-"        Date de début : %(start_date_time)s\n"
-"        Date de fin : %(end_date)s\n"
-"        Voici le lien pour rejoindre la réunion : %(join_link)s\n"
-"        Vous avez besoin de ce mot de passe pour entrer : %(password)s\n"
-"        Cordialement\n"
-"    "
-
-#: pod/meeting/views.py:716
+#: pod/meeting/views.py:653
 #, python-format
 msgid ""
 "\n"
@@ -4964,7 +4916,7 @@ msgstr ""
 "        <p>Cordialement</p>\n"
 "    "
 
-#: pod/meeting/views.py:741
+#: pod/meeting/views.py:678
 #, python-format
 msgid ""
 "\n"
@@ -4991,7 +4943,7 @@ msgstr ""
 "        <p>Cordialement</p>\n"
 "    "
 
-#: pod/meeting/views.py:776
+#: pod/meeting/views.py:713
 #, python-format
 msgid ""
 "\n"
@@ -5279,25 +5231,25 @@ msgstr "Changer de fichier"
 
 #: pod/podfile/templates/podfile/customfilewidget.html:30
 #: pod/podfile/templates/podfile/customfilewidget.html:46
-#: pod/podfile/templates/podfile/customfilewidget.html:116
+#: pod/podfile/templates/podfile/customfilewidget.html:114
 msgid "Remove image"
 msgstr "Retirer l’image"
 
 #: pod/podfile/templates/podfile/customfilewidget.html:32
 #: pod/podfile/templates/podfile/customfilewidget.html:48
-#: pod/podfile/templates/podfile/customfilewidget.html:118
+#: pod/podfile/templates/podfile/customfilewidget.html:116
 msgid "Remove file"
 msgstr "Retirer le fichier"
 
 #: pod/podfile/templates/podfile/customfilewidget.html:39
 #: pod/podfile/templates/podfile/customfilewidget.html:60
-#: pod/podfile/templates/podfile/customfilewidget.html:109
+#: pod/podfile/templates/podfile/customfilewidget.html:107
 msgid "Select an image"
 msgstr "Sélectionner une image"
 
 #: pod/podfile/templates/podfile/customfilewidget.html:41
 #: pod/podfile/templates/podfile/customfilewidget.html:60
-#: pod/podfile/templates/podfile/customfilewidget.html:111
+#: pod/podfile/templates/podfile/customfilewidget.html:109
 msgid "Select a file"
 msgstr "Sélectionner un fichier"
 
@@ -5778,55 +5730,30 @@ msgstr "Retour aux réclamations d’enregistrement"
 msgid "To delete the record, please checked in and click send."
 msgstr "Pour supprimer la vidéo, veuillez cocher et cliquer sur envoyer."
 
-#: pod/recorder/views.py:73
+#: pod/recorder/views.py:74
 msgid "Recorder should be indicated."
 msgstr "L’enregistreur doit être indiqué."
 
-#: pod/recorder/views.py:78
+#: pod/recorder/views.py:79
 msgid "Recorder not found."
 msgstr "Enregistreur non trouvé."
 
-#: pod/recorder/views.py:92
+#: pod/recorder/views.py:93
 msgid "The selected record has been deleted."
 msgstr "L’enregistrement a été supprimé."
 
-#: pod/recorder/views.py:126
+#: pod/recorder/views.py:127
 msgid "Mediapath should be indicated."
 msgstr "La source du fichier doit être indiquée."
 
-#: pod/recorder/views.py:148
+#: pod/recorder/views.py:149
 msgid ""
 "Your publication is saved. Adding it to your videos will be in a few minutes."
 msgstr ""
 "Votre publication est sauvegardée, elle sera ajoutée à vos vidéos dans "
 "quelques minutes."
 
-#: pod/recorder/views.py:233
-#, python-format
-msgid ""
-"Hello, \n"
-"\n"
-"a new recording has just be added on the video website \"%(title_site)s\" "
-"from the recorder \"%(recorder)s\". \n"
-"To add it, just click on link below.\n"
-"\n"
-"%(link_url)s\n"
-"if you cannot click on link, just copy-paste it in your browser. \n"
-"\n"
-"Regards"
-msgstr ""
-"Bonjour, \n"
-"\n"
-"un nouvel enregistrement a été ajouté sur la plateforme %(title_site)s à "
-"partir de l’enregistreur « %(recorder)s ».\n"
-"Pour l’ajouter, cliquez sur le lien ci dessous.\n"
-"%(link_url)s\n"
-"Si le lien n’est pas actif, il faut le copier-coller dans la barre d’adresse "
-"de votre navigateur.\n"
-"\n"
-"Cordialement"
-
-#: pod/recorder/views.py:247
+#: pod/recorder/views.py:234
 #, python-format
 msgid ""
 "Hello, <p>a new recording has just be added on %(title_site)s from the "
@@ -5840,15 +5767,15 @@ msgstr ""
 "%(link_url)s</a><br/><i>Si le lien n’est pas actif, il faut le copier-coller "
 "dans la barre d’adresse de votre navigateur.</i><p><p>Cordialement</p>"
 
-#: pod/recorder/views.py:266
+#: pod/recorder/views.py:255
 msgid "New recording added."
 msgstr "Nouvel enregistrement ajouté."
 
-#: pod/recorder/views.py:348
+#: pod/recorder/views.py:337
 msgid "The record has been deleted."
 msgstr "L’enregistrement a été supprimé."
 
-#: pod/recorder/views.py:823
+#: pod/recorder/views.py:812
 msgid "Recorder for Studio not found."
 msgstr "Enregistreur studio non trouvé."
 
@@ -6647,43 +6574,43 @@ msgstr "Catégories"
 
 #: pod/video/templates/channel/channel.html:61
 #: pod/video/templates/channel/channel.html:63
-#: pod/video/templates/channel/channel.html:147
+#: pod/video/templates/channel/channel.html:150
 msgid "Show view statistics for all videos in this theme"
 msgstr "Afficher les statistiques de vue pour toutes les vidéos de ce thème"
 
 #: pod/video/templates/channel/channel.html:61
 #: pod/video/templates/channel/channel.html:63
-#: pod/video/templates/channel/channel.html:147
-#: pod/video/templates/channel/channel.html:153
+#: pod/video/templates/channel/channel.html:150
+#: pod/video/templates/channel/channel.html:156
 #: pod/video/templates/videos/videos.html:29
 msgid "Statistics views"
 msgstr "Statistiques de vues"
 
 #: pod/video/templates/channel/channel.html:67
 #: pod/video/templates/channel/channel.html:70
-#: pod/video/templates/channel/channel.html:149
-#: pod/video/templates/channel/channel.html:155
+#: pod/video/templates/channel/channel.html:152
+#: pod/video/templates/channel/channel.html:158
 #: pod/video/templates/videos/videos.html:26
 msgid "subscribe to the video feed"
 msgstr "souscrire au flux vidéo"
 
 #: pod/video/templates/channel/channel.html:68
 #: pod/video/templates/channel/channel.html:71
-#: pod/video/templates/channel/channel.html:150
-#: pod/video/templates/channel/channel.html:156
+#: pod/video/templates/channel/channel.html:153
+#: pod/video/templates/channel/channel.html:159
 #: pod/video/templates/videos/videos.html:24
 msgid "subscribe to the audio feed"
 msgstr "souscrire au flux audio"
 
 #: pod/video/templates/channel/channel.html:75
-#: pod/video/templates/channel/channel.html:161
+#: pod/video/templates/channel/channel.html:164
 #: pod/video/templates/channel/my_channels.html:19
 #: pod/video/templates/channel/theme_edit.html:34
 #: pod/video/templates/videos/video.html:110
 msgid "Edit the channel"
 msgstr "Éditer la chaîne"
 
-#: pod/video/templates/channel/channel.html:99
+#: pod/video/templates/channel/channel.html:100
 #, python-format
 msgid "%(counter)s theme found for this channel"
 msgid_plural "%(counter)s themes found for this channel"
@@ -6691,34 +6618,34 @@ msgstr[0] "%(counter)s thème trouvé dans cette chaine"
 msgstr[1] "%(counter)s thèmes trouvés dans cette chaine"
 
 #  python-format
-#: pod/video/templates/channel/channel.html:123
+#: pod/video/templates/channel/channel.html:126
 #, python-format
 msgid "%(counter)s video found for this theme"
 msgid_plural "%(counter)s videos found for this theme"
 msgstr[0] "%(counter)s vidéo trouvée dans ce thème"
 msgstr[1] "%(counter)s vidéos trouvées dans ce thème"
 
-#: pod/video/templates/channel/channel.html:125
+#: pod/video/templates/channel/channel.html:128
 #, python-format
 msgid "%(counter)s video found without theme"
 msgid_plural "%(counter)s videos found without theme"
 msgstr[0] "%(counter)s vidéo trouvée sans thème"
 msgstr[1] "%(counter)s vidéos trouvées sans thème"
 
-#: pod/video/templates/channel/channel.html:131
+#: pod/video/templates/channel/channel.html:134
 msgid "Load more videos"
 msgstr "Charger plus de vidéos"
 
-#: pod/video/templates/channel/channel.html:153
+#: pod/video/templates/channel/channel.html:156
 msgid "Show view statistics for all videos in this channel"
 msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne"
 
-#: pod/video/templates/channel/channel.html:176
+#: pod/video/templates/channel/channel.html:179
 #: pod/video/templates/channel/channel_edit.html:35
 msgid "Edit the themes"
 msgstr "Éditer les thèmes"
 
-#: pod/video/templates/channel/channel.html:188
+#: pod/video/templates/channel/channel.html:191
 #: pod/video/templates/videos/my_videos.html:28
 #: pod/video/templates/videos/videos.html:6
 #: pod/video/templates/videos/videos.html:12
@@ -6731,7 +6658,7 @@ msgid_plural "%(counter)s videos found"
 msgstr[0] "%(counter)s vidéo trouvée"
 msgstr[1] "%(counter)s vidéos trouvées"
 
-#: pod/video/templates/channel/channel.html:198
+#: pod/video/templates/channel/channel.html:201
 msgid "Themes of"
 msgstr "Thèmes de"
 
@@ -7426,57 +7353,57 @@ msgstr "Modifier la période de visualisation"
 msgid "Show view statistics for all videos"
 msgstr "Afficher les statistiques de visualisation de toutes les vidéos"
 
-#: pod/video/templatetags/video_tags.py:110
+#: pod/video/templatetags/video_tags.py:112
 #, python-format
 msgid "tags_for_model tag was given an invalid model: %s"
 msgstr "la balise tags_for_model a reçu un modèle invalide : %s"
 
-#: pod/video/templatetags/video_tags.py:150
+#: pod/video/templatetags/video_tags.py:152
 #, python-format
 msgid "%s tag requires either three or five arguments"
 msgstr "la balise %s requiert trois ou cinq arguments"
 
-#: pod/video/templatetags/video_tags.py:153
-#: pod/video/templatetags/video_tags.py:214
+#: pod/video/templatetags/video_tags.py:155
+#: pod/video/templatetags/video_tags.py:216
 #, python-format
 msgid "second argument to %s tag must be 'as'"
 msgstr "le deuxième argument de la balise %s doit être 'as'"
 
-#: pod/video/templatetags/video_tags.py:157
-#: pod/video/templatetags/video_tags.py:219
+#: pod/video/templatetags/video_tags.py:159
+#: pod/video/templatetags/video_tags.py:221
 #, python-format
 msgid "if given, fourth argument to %s tag must be 'with'"
 msgstr ""
 "si il est donné, le quatrième argument de la balise %s doit être 'with'"
 
-#: pod/video/templatetags/video_tags.py:161
+#: pod/video/templatetags/video_tags.py:163
 #, python-format
 msgid "if given, fifth argument to %s tag must be 'counts'"
 msgstr "si donné, le 5e argument de la balise %s doit être ‘counts’"
 
-#: pod/video/templatetags/video_tags.py:210
+#: pod/video/templatetags/video_tags.py:212
 #, python-format
 msgid "%s tag requires either three or between five and seven arguments"
 msgstr "la balise %s requiert soit trois, soit entre cinq et sept arguments"
 
-#: pod/video/templatetags/video_tags.py:234
+#: pod/video/templatetags/video_tags.py:236
 #, python-format
 msgid "%(tag)s tag was given an invalid option: '%(option)s'"
 msgstr "l’option ‘%(option)s’ est invalide pour la balise %(tag)s"
 
-#: pod/video/templatetags/video_tags.py:242
+#: pod/video/templatetags/video_tags.py:244
 #, python-format
 msgid "%(tag)s tag was given a badly formatted option: '%(option)s'"
 msgstr "l’option ‘%(option)s’ n’est pas au bon format pour la balise %(tag)s"
 
-#: pod/video/templatetags/video_tags.py:260
+#: pod/video/templatetags/video_tags.py:262
 #, python-format
 msgid "%(tag)s tag's '%(option)s' option was not a valid integer: '%(value)s'"
 msgstr ""
 "l’option ‘%(option)s’ de la balise %(tag)s n’est pas un entier valide : "
 "’%(value)s’"
 
-#: pod/video/templatetags/video_tags.py:275
+#: pod/video/templatetags/video_tags.py:277
 #, python-format
 msgid "%(tag)s tag's '%(option)s' option was not a valid choice: '%(value)s'"
 msgstr ""
@@ -7488,12 +7415,12 @@ msgstr ""
 msgid "-- sorry, no translation provided --"
 msgstr "-- désolé, aucune traduction fournie --"
 
-#: pod/video/utils.py:156
+#: pod/video/utils.py:157
 #, python-format
 msgid "Transcripting #%(content_id)s completed"
 msgstr "La transcription du #%(content_id)s est terminée"
 
-#: pod/video/utils.py:161 pod/video/utils.py:186
+#: pod/video/utils.py:168
 #, python-format
 msgid ""
 "The content “%(content_title)s” has been automatically transcript, and is "
@@ -7502,22 +7429,20 @@ msgstr ""
 "Le contenu \"%(content_title)s\" a été automatiquement transcrit, et est "
 "maintenant disponible sur %(site_title)s."
 
-#: pod/video/utils.py:165 pod/video/utils.py:193 pod/video/utils.py:258
-#: pod/video/utils.py:286
+#: pod/video/utils.py:175 pod/video/utils.py:255
 msgid "You will find it here:"
 msgstr "Vous la/le retrouverez ici :"
 
-#: pod/video/utils.py:172 pod/video/utils.py:202 pod/video/utils.py:265
-#: pod/video/utils.py:295
+#: pod/video/utils.py:184 pod/video/utils.py:264
 msgid "the:"
 msgstr "le :"
 
-#: pod/video/utils.py:249
+#: pod/video/utils.py:238
 #, python-format
 msgid "Encoding #%(content_id)s completed"
 msgstr "L’encodage #%(content_id)s est terminé"
 
-#: pod/video/utils.py:254 pod/video/utils.py:279
+#: pod/video/utils.py:248
 #, python-format
 msgid ""
 "The video “%(content_title)s” has been encoded to Web formats, and is now "
@@ -7727,3 +7652,72 @@ msgstr "Désolé, la recherche de vidéos est limitée à 500 pages maximum."
 #: pod/video_search/views.py:262
 msgid "Search results"
 msgstr "Résultats de la recherche"
+
+#~ msgid ""
+#~ "\n"
+#~ "            Hello,\n"
+#~ "            %(owner)s invites you to a recurring meeting "
+#~ "%(meeting_title)s.\n"
+#~ "            Start date: %(start_date_time)s\n"
+#~ "            Recurring until date: %(end_date)s\n"
+#~ "            The meeting will be occur each %(frequency)s %(recurrence)s\n"
+#~ "            Here is the link to join the meeting: %(join_link)s\n"
+#~ "            You need this password to enter: %(password)s\n"
+#~ "            Regards\n"
+#~ "        "
+#~ msgstr ""
+#~ "\n"
+#~ "        Bonjour,\n"
+#~ "        %(owner)s vous invite à une réunion récurrente "
+#~ "%(meeting_title)s.\n"
+#~ "        Date de début: %(start_date_time)s\n"
+#~ "        Récurrent jusqu'à la date: %(end_date)s\n"
+#~ "        La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s\n"
+#~ "        Voici le lien pour rejoindre la réunion : %(join_link)s\n"
+#~ "        Vous avez besoin de ce mot de passe pour entrer : %(password)s\n"
+#~ "        Cordialement\n"
+#~ "    "
+
+#~ msgid ""
+#~ "\n"
+#~ "            Hello,\n"
+#~ "            %(owner)s invites you to the meeting %(meeting_title)s.\n"
+#~ "            Start date: %(start_date_time)s\n"
+#~ "            End date: %(end_date)s\n"
+#~ "            Here is the link to join the meeting: %(join_link)s\n"
+#~ "            You need this password to enter: %(password)s\n"
+#~ "            Regards\n"
+#~ "        "
+#~ msgstr ""
+#~ "\n"
+#~ "        Bonjour,\n"
+#~ "        %(owner)s vous invite à la réunion %(meeting_title)s.\n"
+#~ "        Date de début : %(start_date_time)s\n"
+#~ "        Date de fin : %(end_date)s\n"
+#~ "        Voici le lien pour rejoindre la réunion : %(join_link)s\n"
+#~ "        Vous avez besoin de ce mot de passe pour entrer : %(password)s\n"
+#~ "        Cordialement\n"
+#~ "    "
+
+#~ msgid ""
+#~ "Hello, \n"
+#~ "\n"
+#~ "a new recording has just be added on the video website \"%(title_site)s\" "
+#~ "from the recorder \"%(recorder)s\". \n"
+#~ "To add it, just click on link below.\n"
+#~ "\n"
+#~ "%(link_url)s\n"
+#~ "if you cannot click on link, just copy-paste it in your browser. \n"
+#~ "\n"
+#~ "Regards"
+#~ msgstr ""
+#~ "Bonjour, \n"
+#~ "\n"
+#~ "un nouvel enregistrement a été ajouté sur la plateforme %(title_site)s à "
+#~ "partir de l’enregistreur « %(recorder)s ».\n"
+#~ "Pour l’ajouter, cliquez sur le lien ci dessous.\n"
+#~ "%(link_url)s\n"
+#~ "Si le lien n’est pas actif, il faut le copier-coller dans la barre "
+#~ "d’adresse de votre navigateur.\n"
+#~ "\n"
+#~ "Cordialement"
