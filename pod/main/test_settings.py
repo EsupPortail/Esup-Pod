@@ -32,7 +32,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": "db-test.sqlite",
         "OPTIONS": {
-            'timeout': 5,
+            'timeout': 20,
         }
     }
 }
