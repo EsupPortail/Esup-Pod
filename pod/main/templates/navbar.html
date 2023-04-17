@@ -75,16 +75,34 @@
             <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
           </li>
         {% else %}
-          <li class="nav-item pod-navbar__nav-item mx-1" id="nav-addvideo">
-            <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "Add a video" %}</span></a>
-          </li>
-          <li class="nav-item pod-navbar__nav-item mx-1" id="nav-addvideo">
-            <a class="btn btn-primary btn-sm" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1"></i><span class="ms-1 d-none d-md-inline">{% trans "My videos" %}</span></a>
-          </li>
-          {% if USE_MEETING %}
-          <li class="nav-item pod-navbar__nav-item mx-1" id="nav-mymeetings">
-            <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "My meetings" %}</span></a>
-          </li>
+          {% if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY %}
+            {% if request.user.is_staff %}
+              <li class="nav-item pod-navbar__nav-item mx-1" id="nav-addvideo">
+                <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "Add a video" %}</span></a>
+              </li>
+              <li class="nav-item pod-navbar__nav-item mx-1" id="nav-myvideos">
+                <a class="btn btn-primary btn-sm" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1"></i><span class="ms-1 d-none d-md-inline">{% trans "My videos" %}</span></a>
+              </li>
+            {% endif %}
+          {% else %}
+            <li class="nav-item pod-navbar__nav-item mx-1" id="nav-addvideo">
+              <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "Add a video" %}</span></a>
+            </li>
+            <li class="nav-item pod-navbar__nav-item mx-1" id="nav-myvideos">
+              <a class="btn btn-primary btn-sm" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1"></i><span class="ms-1 d-none d-md-inline">{% trans "My videos" %}</span></a>
+            </li>
+          {% endif %}
+
+          {% if USE_MEETING and RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY %}
+            {% if request.user.is_staff %}
+              <li class="nav-item pod-navbar__nav-item mx-1" id="nav-mymeetings">
+                <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "My meetings" %}</span></a>
+              </li>  
+            {% endif %}
+          {% elif USE_MEETING %}
+            <li class="nav-item pod-navbar__nav-item mx-1" id="nav-mymeetings">
+              <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "My meetings" %}</span></a>
+            </li>
           {% endif %}
         {% endif %}
     {% endif %}

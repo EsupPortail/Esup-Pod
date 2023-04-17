@@ -1,3 +1,4 @@
+from hmac import new
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Count, Sum
@@ -80,6 +81,9 @@ USE_OPENCAST_STUDIO = getattr(django_settings, "USE_OPENCAST_STUDIO", False)
 
 USE_MEETING = getattr(django_settings, "USE_MEETING", False)
 
+RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(django_settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False)
+
+RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(django_settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False)
 
 def context_settings(request):
     """Return all context settings."""
@@ -133,6 +137,8 @@ def context_settings(request):
     new_settings["COOKIE_LEARN_MORE"] = COOKIE_LEARN_MORE
     new_settings["SHOW_EVENTS_ON_HOMEPAGE"] = SHOW_EVENTS_ON_HOMEPAGE
     new_settings["USE_MEETING"] = USE_MEETING
+    new_settings["RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY"] = RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
+    new_settings["RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY"] = RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY
     return new_settings
 
 
