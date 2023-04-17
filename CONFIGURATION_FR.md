@@ -1737,7 +1737,7 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
 
   > valeur par défaut : `('doc', 'docx', 'odt', 'pdf', 'xls', 'xlsx', 'ods', 'ppt', 'pptx', 'txt', 'html', 'htm', 'vtt', 'srt')`
 
-  >> Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier <br>
+  >> Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier ((en minuscules). <br>
 
  - `FILE_MAX_UPLOAD_SIZE`
 
@@ -1749,7 +1749,7 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
 
   > valeur par défaut : `('jpg', 'jpeg', 'bmp', 'png', 'gif', 'tiff', 'webp')`
 
-  >> Extensions autorisées pour les images téléversées dans le gestionnaire de fichier <br>
+  >> Extensions autorisées pour les images téléversées dans le gestionnaire de fichier. (en minuscules) <br>
 
 ### Configuration application recorder
 
@@ -2204,7 +2204,7 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
 
   > valeur par défaut : `()`
 
-  >> Extensions autorisées pour le téléversement vidéo sur la plateforme <br>
+  >> Extensions autorisées pour le téléversement vidéo sur la plateforme (en minuscules). <br>
   >>
   >> ```
   >> VIDEO_ALLOWED_EXTENSIONS = ( 

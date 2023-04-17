@@ -350,10 +350,10 @@ def save_uploaded_files(request, folder, files):
     for file in files:
         # Check if file is image
         fname, dot, extension = file.name.rpartition(".")
-        if "image" in file.content_type and extension in IMAGE_ALLOWED_EXTENSIONS:
+        if "image" in file.content_type and extension.lower() in IMAGE_ALLOWED_EXTENSIONS:
             form_file = CustomImageModelForm({"folder": folder.id}, {"file": file})
             upload_errors = manage_form_file(request, upload_errors, fname, form_file)
-        elif extension in FILE_ALLOWED_EXTENSIONS:
+        elif extension.lower() in FILE_ALLOWED_EXTENSIONS:
             form_file = CustomFileModelForm({"folder": folder.id}, {"file": file})
             upload_errors = manage_form_file(request, upload_errors, fname, form_file)
         else:
