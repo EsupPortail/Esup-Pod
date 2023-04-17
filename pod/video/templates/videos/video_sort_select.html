@@ -1,10 +1,13 @@
+{% load i18n %}
 <div class="input-group">
-  <span class="input-group-text" for="sort">Tri</span>
+  <span class="input-group-text" for="sort">{% trans 'Sort' %}</span>
   <button id="sort_direction_label" class="btn btn-primary" style="cursor:pointer">&#8600;</button>
+  <label for="sort_direction" class="visually-hidden" aria-label="{% trans 'Sort Direction' %}"></label>
   <input id="sort_direction" type="checkbox" name="sort_direction" class="form-control" style="display:none;">
+  <label for="sort" class="visually-hidden" aria-label="{% trans 'Sort' %}">{% trans 'Sort' %}</label>
   <select id="sort" name="sort" class="form-select sort-select">
-    <option value="title">Titre</option>
-    <option selected value="date_added">Date d'ajout</option>
-    <option value="duration">Durée</option>
+    <option value="title">{% trans 'Title' %}</option>
+    <option selected value="date_added">{% trans 'Date_added' %}</option>
+    <option value="duration">{% trans 'Duration' %}</option>
   </select>
 </div>
