@@ -210,9 +210,9 @@ class TestShowVideoButton(TestCase):
             RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
 
         # On se connecte
-        self.user.is_staff = True
         self.client = Client()
         self.user = User.objects.get(username="admin")
+        self.user.is_staff = True
         self.client.force_login(self.user)
 
         # On envoie la requête
