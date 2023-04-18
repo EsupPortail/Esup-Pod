@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-18 14:21+0200\n"
+"POT-Creation-Date: 2023-04-18 15:34+0200\n"
 "PO-Revision-Date: 2023-02-15 16:55+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -938,7 +938,7 @@ msgstr ""
 #: pod/playlist/templates/playlist/playlist_element_list.html:9
 #: pod/video/models.py:266 pod/video/models.py:418 pod/video/models.py:557
 #: pod/video/models.py:650 pod/video/templates/channel/list_theme.html:10
-#: pod/video/templates/videos/video_sort_select.html:9
+#: pod/video/templates/videos/video_sort_select.html:8
 msgid "Title"
 msgstr "Titel"
 
@@ -4090,7 +4090,7 @@ msgstr ""
 #: pod/meeting/forms.py:159 pod/meeting/templates/meeting/recordings.html:23
 #: pod/playlist/templates/playlist/playlist_element_list.html:11
 #: pod/video/feeds.py:226 pod/video/models.py:793 pod/video/models.py:979
-#: pod/video/templates/videos/video_sort_select.html:11
+#: pod/video/templates/videos/video_sort_select.html:10
 msgid "Duration"
 msgstr ""
 
@@ -5405,8 +5405,7 @@ msgid "File size"
 msgstr ""
 
 #: pod/recorder/models.py:308 pod/video/models.py:698 pod/video/models.py:1892
-#: pod/video/models.py:1951
-#: pod/video/templates/videos/video_sort_select.html:10
+#: pod/video/models.py:1951 pod/video/templates/videos/video_sort_select.html:9
 msgid "Date added"
 msgstr ""
 
@@ -7018,7 +7017,6 @@ msgid "New note"
 msgstr ""
 
 #: pod/video/templates/videos/video_sort_select.html:3
-#: pod/video/templates/videos/video_sort_select.html:7
 msgid "Sort"
 msgstr ""
 
