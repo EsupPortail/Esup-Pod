@@ -2,7 +2,9 @@
 
 *  run with 'python manage.py test pod.main.tests.test_views'
 """
-from django.test import override_settings
+from django.conf import settings as django_settings
+
+from django.test import RequestFactory, override_settings
 from django.test import TestCase
 from django.test import Client
 from django.urls import reverse
@@ -11,9 +13,11 @@ from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from captcha.models import CaptchaStore
 from http import HTTPStatus
+from pod.main.context_processors import context_settings
 from pod.main.models import Configuration
 import tempfile
 import os
+from django.template import Context
 
 
 class MainViewsTestCase(TestCase):
@@ -185,3 +189,64 @@ class XSSTests(TestCase):
 
             self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertFalse(self.XSS_detect in response.content)
+
+
+class TestShowVideoButton(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.context = Context()
+        User.objects.create(username="admin", password="admin", is_staff=False)
+
+    def test_show_video_button_for_staff_user(self):
+        RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
+            django_settings,
+            "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY",
+            True
+        )
+        # On met en place la restriction
+        request = self.factory.get('/')
+        settings = context_settings(request)
+        settings["RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY"] = \
+            RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
+
+        # On se connecte
+        self.user.is_staff = True
+        self.client = Client()
+        self.user = User.objects.get(username="admin")
+        self.client.force_login(self.user)
+
+        # On envoie la requête
+        response = self.client.get('/', context=settings)
+
+        # On vérifie
+        self.assertContains(response, 'id="nav-addvideo"')
+        self.assertContains(response, 'id="nav-myvideos"')
+
+        """template = Template("{% load navbar %}{% show_video_button user %}")
+        rendered = template.render(self.context.flatten())
+        self.assertInHTML('id="nav-addvideo"', rendered)
+        self.assertInHTML('id="nav-myvideos"', rendered)"""
+
+    """
+    def test_show_video_button_for_non_staff_user(self):
+        self.user.is_staff = False
+        self.client = Client()
+        self.user = User.objects.get(username="admin")
+        self.client.force_login(self.user)
+
+        template = Template("{% load navbar %}{% show_video_button user %}")
+        rendered = template.render(self.context.flatten())
+        self.assertNotContains(rendered, '<li id="nav-addvideo">')
+        self.assertNotContains(rendered, '<li id="nav-myvideos">')
+
+    def test_show_video_button_for_non_staff_user_not_in_restrict(self):
+        self.user.is_staff = False
+        self.client = Client()
+        self.user = User.objects.get(username="admin")
+        self.client.force_login(self.user)
+
+        template = Template("{% load navbar %}{% show_video_button user %}")
+        rendered = template.render(self.context.flatten())
+        self.assertNotInHTML('id="nav-addvideo"', rendered)
+        self.assertNotInHTML('id="nav-myvideos"', rendered)
+    """
