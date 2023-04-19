@@ -119,7 +119,7 @@ if getattr(settings, "USE_PODFILE", False):
 
 for apps in settings.THIRD_PARTY_APPS:
     urlpatterns += [
-        url(r"^" + apps + "/", include("pod.%s.urls" % apps)),
+        url(r"^" + apps + "/", include("pod.%s.urls" % apps, namespace=apps)),
     ]
 
 # CHANNELS

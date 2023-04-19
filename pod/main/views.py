@@ -14,6 +14,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Esup-Pod. If not, see <https://www.gnu.org/licenses/>.
+import bleach
 
 from .forms import ContactUsForm, SUBJECT_CHOICES
 from django.shortcuts import render
@@ -243,21 +244,23 @@ def contact_us(request):
             if valid_human:
                 return redirect(form.cleaned_data["url_referrer"])
 
-            text_content = loader.get_template("mail/mail.txt").render(
-                {
-                    "name": name,
-                    "email": email,
-                    "TITLE_SITE": __TITLE_SITE__,
-                    "message": message,
-                    "url_referrer": form.cleaned_data["url_referrer"],
-                }
-            )
             html_content = loader.get_template("mail/mail.html").render(
                 {
                     "name": name,
                     "email": email,
                     "TITLE_SITE": __TITLE_SITE__,
                     "message": message.replace("\n", "<br/>"),
+                    "url_referrer": form.cleaned_data["url_referrer"],
+                }
+            )
+
+            text_content = loader.get_template("mail/mail.txt").render(
+                {
+                    "name": name,
+                    "email": email,
+                    "TITLE_SITE": __TITLE_SITE__,
+                    "message": bleach.clean(message, tags=['br'], strip=True)
+                    .replace('<br>', '\n'),
                     "url_referrer": form.cleaned_data["url_referrer"],
                 }
             )

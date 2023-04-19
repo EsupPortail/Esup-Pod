@@ -1,3 +1,5 @@
+import bleach
+
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.core.mail import EmailMultiAlternatives, mail_managers
@@ -54,28 +56,6 @@ def send_email_confirmation(event):
 
     to_email = [event.owner.email]
 
-    message = "%s\n%s\n\n%s\n" % (
-        _("Hello,"),
-        _(
-            "You have just scheduled a new event called “%(content_title)s” "
-            + "from %(start_date)s to %(end_date)s "
-            + "on video server: %(url_event)s)."
-            + " You can find the other sharing options in the dedicated tab."
-        )
-        % {
-            "content_title": event.title,
-            "start_date": event.start_date,
-            "end_date": event.end_date,
-            "url_event": url_event,
-        },
-        _("Regards."),
-    )
-
-    full_message = message + "\n%s%s" % (
-        _("Post by:"),
-        event.owner,
-    )
-
     html_message = "<p>%s</p><p>%s</p><p>%s</p>" % (
         _("Hello,"),
         _(
@@ -91,6 +71,12 @@ def send_email_confirmation(event):
             "url_event": url_event,
         },
         _("Regards."),
+    )
+
+    message = bleach.clean(html_message, tags=[], strip=True)
+    full_message = message + "\n%s%s" % (
+        _("Post by:"),
+        event.owner,
     )
 
     # email establishment

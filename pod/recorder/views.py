@@ -242,8 +242,8 @@ def recorder_notify(request):
                 "recorder": recorder.name,
                 "link_url": link_url,
             }
-            
-            text_msg = bleach.clean(html_msg,tags=[], strip = True)
+
+            text_msg = bleach.clean(html_msg, tags=[], strip=True)
             # Sending the mail to the managers defined in the administration
             # for the concerned recorder
             if recorder.user:

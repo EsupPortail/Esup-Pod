@@ -156,7 +156,7 @@ def send_email_transcript(video_to_encode):
         __TITLE_SITE__,
         _("Transcripting #%(content_id)s completed") % {"content_id": video_to_encode.id},
     )
-    
+
     html_message = ""
 
     html_message = (
@@ -185,13 +185,13 @@ def send_email_transcript(video_to_encode):
         video_to_encode.date_added,
     )
 
-    message = bleach.clean(html_message,tags=[],strip=True)
-    full_message = bleach.clean(full_html_message,tags=[],strip=True)
-    
+    message = bleach.clean(html_message, tags=[], strip=True)
+    full_message = bleach.clean(full_html_message, tags=[], strip=True)
+
     from_email = DEFAULT_FROM_EMAIL
     to_email = []
     to_email.append(video_to_encode.owner.email)
-   
+
     if (
         USE_ESTABLISHMENT_FIELD
         and MANAGERS
@@ -237,7 +237,7 @@ def send_email_encoding(video_to_encode):
         __TITLE_SITE__,
         _("Encoding #%(content_id)s completed") % {"content_id": video_to_encode.id},
     )
-    
+
     html_message = ""
     html_message = (
         '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
@@ -264,14 +264,13 @@ def send_email_encoding(video_to_encode):
         _("the:"),
         video_to_encode.date_added,
     )
-    
+
     message = bleach.clean(html_message, tags=[], strip=True)
-    
-    full_message = bleach.clean(full_html_message,tags=[],strip=True)
+    full_message = bleach.clean(full_html_message, tags=[], strip=True)
+
     from_email = DEFAULT_FROM_EMAIL
     to_email = []
     to_email.append(video_to_encode.owner.email)
-
 
     if (
         USE_ESTABLISHMENT_FIELD

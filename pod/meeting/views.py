@@ -620,7 +620,6 @@ def send_invite(request, meeting, emails):
     from_email = meeting.owner.email  # DEFAULT_FROM_EMAIL
     html_content = get_html_content(request, meeting)
     text_content = bleach.clean(html_content, tags=[], strip=True)
-
     msg = EmailMultiAlternatives(subject, text_content, from_email, emails)
     msg.attach_alternative(html_content, "text/html")
     # ics calendar
