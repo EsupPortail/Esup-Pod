@@ -195,7 +195,10 @@ class TestShowVideoButton(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.context = Context()
-        User.objects.create(username="admin", password="admin", is_staff=False)
+        User.objects.create(username="admin", password="admin",
+                            is_staff=True, is_superuser=True)
+        User.objects.create(username="staff", password="staff", is_staff=True)
+        User.objects.create(username="student", password="student", is_staff=False)
 
     def test_show_video_button_for_staff_user(self):
         RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
@@ -212,41 +215,14 @@ class TestShowVideoButton(TestCase):
         # On se connecte
         self.client = Client()
         self.user = User.objects.get(username="admin")
-        self.user.is_staff = True
         self.client.force_login(self.user)
 
         # On envoie la requête
         response = self.client.get('/', context=settings)
 
         # On vérifie
-        self.assertContains(response, 'id="nav-addvideo"')
-        self.assertContains(response, 'id="nav-myvideos"')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response.content, 'id="nav-addvideo"')
+        self.assertContains(response.content, 'id="nav-myvideos"')
 
-        """template = Template("{% load navbar %}{% show_video_button user %}")
-        rendered = template.render(self.context.flatten())
-        self.assertInHTML('id="nav-addvideo"', rendered)
-        self.assertInHTML('id="nav-myvideos"', rendered)"""
-
-    """
-    def test_show_video_button_for_non_staff_user(self):
-        self.user.is_staff = False
-        self.client = Client()
-        self.user = User.objects.get(username="admin")
-        self.client.force_login(self.user)
-
-        template = Template("{% load navbar %}{% show_video_button user %}")
-        rendered = template.render(self.context.flatten())
-        self.assertNotContains(rendered, '<li id="nav-addvideo">')
-        self.assertNotContains(rendered, '<li id="nav-myvideos">')
-
-    def test_show_video_button_for_non_staff_user_not_in_restrict(self):
-        self.user.is_staff = False
-        self.client = Client()
-        self.user = User.objects.get(username="admin")
-        self.client.force_login(self.user)
-
-        template = Template("{% load navbar %}{% show_video_button user %}")
-        rendered = template.render(self.context.flatten())
-        self.assertNotInHTML('id="nav-addvideo"', rendered)
-        self.assertNotInHTML('id="nav-myvideos"', rendered)
-    """
+        self.client.logout()
