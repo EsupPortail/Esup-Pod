@@ -37,7 +37,7 @@
 {% endblock main_page_title %}
 
 {% block page_content %}
-  {{ block.super }}
+  {% include 'loader.html' %}
   {% comment %}
   <p>
     "types": request.GET.getlist('type'),

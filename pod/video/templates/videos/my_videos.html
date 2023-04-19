@@ -33,7 +33,7 @@
     {% include "videos/video_sort_select.html" %}
   </form>
   </div>
-  {{ block.super }}
+  {% include 'loader.html' %}
   {% include "videos/video_list.html" %}
 {% endblock page_content %}
 
