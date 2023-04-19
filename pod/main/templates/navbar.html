@@ -76,7 +76,7 @@
             <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
           </li>
         {% else %}
-          {% show_video_buttons request.user as video_buttons %}
+          {% show_video_buttons as video_buttons %}
           {% if video_buttons %}
             <li class="nav-item pod-navbar__nav-item mx-1" id="nav-addvideo">
               <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "Add a video" %}</span></a>
@@ -85,7 +85,7 @@
               <a class="btn btn-primary btn-sm" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1"></i><span class="ms-1 d-none d-md-inline">{% trans "My videos" %}</span></a>
             </li>
           {% endif %}
-          {% show_meeting_button request.user as meeting_button %}
+          {% show_meeting_button as meeting_button %}
           {% if meeting_button %}
             <li class="nav-item pod-navbar__nav-item mx-1" id="nav-mymeetings">
               <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "My meetings" %}</span></a>
