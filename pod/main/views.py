@@ -365,11 +365,11 @@ def robots_txt(request):
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")
 
+
 # Restrict to only GET requests
 @require_GET
 def info_pod(request):
     """Render a json response to give information about Pod instance."""
-    version = settings.VERSION
     data = {
         "TITLE_SITE": __TITLE_SITE__,
         "VERSION": settings.VERSION,
