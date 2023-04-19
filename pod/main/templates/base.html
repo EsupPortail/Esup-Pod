@@ -96,7 +96,7 @@
               {% endif %}
             {% endblock main_page_title %}
             {% block page_content %}
-            <p> Contenu block page_content </p>
+              {% include 'loader.html' %}
             {% endblock page_content %}
           </div>
           <!-- fin contenu page statique -->
@@ -117,7 +117,6 @@
       </div> <!-- fin div pod-grid-content -->
     </main>
   </div> <!-- fin container -->
-  {% include 'loader.html' %}
   {% endblock content %}
   {% if not request.GET.is_iframe %}
     <footer class="container-fluid pod-footer-container">
@@ -252,3 +251,4 @@
 </body>
 
 </html>
+

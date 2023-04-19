@@ -1612,32 +1612,17 @@ table .alert.alert-danger.btn.pod-btn-social {
 }
 
 /* Pure css loader */
-.loader_wrapper{
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    display: none;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
-    -webkit-box-pack: center;
-        -ms-flex-pack: center;
-            justify-content: center;
-    background: rgba(0,0,0,.3);
-    z-index: 9999;
-}
-.loader_wrapper.show{display:
- -webkit-box;
- display: -ms-flexbox;
- display: flex;
-}
 .lds-ring {
-  display: inline-block;
+  display: none;
   position: relative;
   width: 80px;
   height: 80px;
+  margin: 0 auto;
+  z-index: 9999;
+}
+.lds-ring.show{
+  display: flex;
+  align-items: center;
 }
 .lds-ring div {
   box-sizing: border-box;

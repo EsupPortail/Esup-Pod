@@ -9,7 +9,7 @@ let all_comment = null;
 const lang_btn = document.querySelector(".btn-lang.btn-lang-active");
 const comment_title = document.querySelector(".comment_title");
 // Loader Element
-const loader = document.querySelector(".comment_content > .lds-ring");
+const loader = document.querySelector(".lds-ring");
 let VOTED_COMMENTS = [];
 const COLORS = [
   "rgb(15,166,2)",
@@ -605,7 +605,10 @@ function save_comment(
     .catch((error) => {
       showalert(error.message, "alert-danger");
       //console.log(raw_response.text())
-    });
+    })
+    .finally(() => {
+      loader.classList.remove("show");
+    })
 }
 
 /**
@@ -965,6 +968,7 @@ function fetch_comment_children(
                 scrollToComment(comment_child_html);
             });
           }
+          loader.classList.remove("show");
           return parent_comment;
         });
       });
@@ -1176,9 +1180,9 @@ function set_comments_number() {
 
 /************  Get vote from the server  **************
  ******************************************************/
+loader.classList.add("show");
 fetch(base_vote_url)
   .then((response) => {
-    loader.classList.add("show"); // show loader
     response.json().then((data) => {
       VOTED_COMMENTS = data.comments_votes;
     });
@@ -1189,7 +1193,6 @@ fetch(base_vote_url)
     let url = `${base_url}?only=parents`;
     fetch(url).then((response) => {
       response.json().then((data) => {
-        loader.classList.remove("show"); // hide loader
         all_comment = [];
         data.forEach((comment_data) => {
           comment_data.children = []; // init children to empty array
@@ -1227,4 +1230,5 @@ fetch(base_vote_url)
         set_comments_number(); // update number of comments from comment label
       });
     });
+  loader.classList.remove("show");
   });

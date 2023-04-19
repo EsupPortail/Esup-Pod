@@ -19,7 +19,6 @@
     "tags_slug": request.GET.getlist('tag'),
   </p>
   {% endcomment %}
-
   {% if use_category %}
     {% include "videos/category_modal.html" %}
   {% endif %}
@@ -34,6 +33,7 @@
     {% include "videos/video_sort_select.html" %}
   </form>
   </div>
+  {{ block.super }}
   {% include "videos/video_list.html" %}
 {% endblock page_content %}
 

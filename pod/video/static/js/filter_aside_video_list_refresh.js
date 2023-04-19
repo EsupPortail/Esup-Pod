@@ -4,7 +4,7 @@ var listUser;
 var sortDirectionAsc = false;
 var sortDirectionChars = ["8600","8599"];
 
-let loader = document.querySelector(".loader_wrapper");
+let loader = document.querySelector(".lds-ring");
 let infinite_loading = document.querySelector(".infinite-loading");
 let ownerBox = document.getElementById("ownerbox");
 let filterOwnerContainer = document.getElementById("collapseFilterOwner");
@@ -60,6 +60,8 @@ function replaceCountVideos(newCount) {
 
 // Async request to refresh view with filtered and sorted video list
 function refreshVideosSearch() {
+  // Erase list and enable loader
+  document.getElementById("videos_list").innerHTML = "";
   loader.classList.add("show");
   url = getUrlForRefresh();
   // Async GET request wth parameters by fetch method
