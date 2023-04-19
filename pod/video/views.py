@@ -39,6 +39,7 @@ from pod.video.models import Theme
 from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
 from pod.video.models import ViewCount, VideoVersion
 from pod.video.models import Comment, Vote, Category
+from pod.video.models import get_transcription_choices
 from tagging.models import TaggedItem
 
 from pod.video.forms import VideoForm, VideoVersionForm
@@ -141,7 +142,6 @@ CURSUS_CODES = getattr(
     ),
 )
 
-USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 VIEW_STATS_AUTH = getattr(settings, "VIEW_STATS_AUTH", False)
 ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
 USER_VIDEO_CATEGORY = getattr(settings, "USER_VIDEO_CATEGORY", False)
@@ -2055,7 +2055,7 @@ def video_add(request):
             "allow_extension": allow_extension,
             "allowed_text": allowed_text,
             "restricted_to_staff": RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY,
-            "TRANSCRIPT": USE_TRANSCRIPTION,
+            "TRANSCRIPT": get_transcription_choices(),
             "page_title": _("Media upload"),
         },
     )

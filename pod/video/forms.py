@@ -313,9 +313,9 @@ if USE_TRANSCRIPTION:
                 "{0}".format(_("Transcript")),
                 [
                     _(
-                        "Available only in French and English, transcription is a speech"
+                        "Transcription is a speech"
                         " recognition technology that transforms an oral speech into "
-                        "text in an automated way. By checking this box, it will "
+                        "text in an automated way. By selecting a lang, it will "
                         "generate a subtitle file automatically when encoding the video."
                     ),
                     _(
