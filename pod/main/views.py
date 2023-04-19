@@ -253,18 +253,7 @@ def contact_us(request):
                     "url_referrer": form.cleaned_data["url_referrer"],
                 }
             )
-
-            text_content = loader.get_template("mail/mail.txt").render(
-                {
-                    "name": name,
-                    "email": email,
-                    "TITLE_SITE": __TITLE_SITE__,
-                    "message": bleach.clean(message, tags=['br'], strip=True)
-                    .replace('<br>', '\n'),
-                    "url_referrer": form.cleaned_data["url_referrer"],
-                }
-            )
-
+            text_content = bleach.clean(html_content, tags=[], strip=True)
             dest_email = []
             dest_email = get_dest_email(owner, video, form_subject, request)
 

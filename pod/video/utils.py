@@ -238,7 +238,6 @@ def send_email_encoding(video_to_encode):
         _("Encoding #%(content_id)s completed") % {"content_id": video_to_encode.id},
     )
 
-    html_message = ""
     html_message = (
         '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
                 </p><p>%s</p>'

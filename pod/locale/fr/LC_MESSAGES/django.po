@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-14 08:49+0000\n"
+"POT-Creation-Date: 2023-04-19 11:25+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -231,7 +231,7 @@ msgstr "Fermer"
 #: pod/live/templates/live/event_immediate_edit.html:41 pod/live/views.py:524
 #: pod/live/views.py:575 pod/live/views.py:629
 #: pod/main/templates/contact_us.html:18 pod/main/tests/test_views.py:102
-#: pod/main/views.py:304 pod/main/views.py:382
+#: pod/main/views.py:296 pod/main/views.py:374
 #: pod/meeting/templates/meeting/add_or_edit.html:29
 #: pod/meeting/templates/meeting/delete.html:32
 #: pod/meeting/templates/meeting/invite.html:26
@@ -990,7 +990,7 @@ msgstr "Liste des chapitres"
 #: pod/completion/models.py:173 pod/completion/models.py:289
 #: pod/completion/templates/overlay/list_overlay.html:10
 #: pod/enrichment/templates/enrichment/list_enrichment.html:10
-#: pod/live/models.py:341 pod/main/models.py:124 pod/main/views.py:192
+#: pod/live/models.py:341 pod/main/models.py:124 pod/main/views.py:193
 #: pod/playlist/models.py:11
 #: pod/playlist/templates/playlist/playlist_element_list.html:9
 #: pod/video/models.py:266 pod/video/models.py:418 pod/video/models.py:557
@@ -3071,17 +3071,16 @@ msgstr "Évènements à venir"
 msgid "Past events"
 msgstr "Évènements passés"
 
-#: pod/live/utils.py:50
+#: pod/live/utils.py:52
 #, python-format
 msgid "Registration of event #%(content_id)s"
 msgstr "Programmation de l’évènement #%(content_id)s"
 
-#: pod/live/utils.py:58 pod/live/utils.py:80 pod/video/utils.py:166
-#: pod/video/utils.py:246
+#: pod/live/utils.py:60 pod/video/utils.py:166 pod/video/utils.py:246
 msgid "Hello,"
 msgstr "Bonjour,"
 
-#: pod/live/utils.py:60 pod/live/utils.py:82
+#: pod/live/utils.py:62
 #, python-format
 msgid ""
 "You have just scheduled a new event called “%(content_title)s” from "
@@ -3093,14 +3092,13 @@ msgstr ""
 "%(url_event)s). Vous pouvez retrouver les autres options de partage dans "
 "l’onglet dédié."
 
-#: pod/live/utils.py:71 pod/live/utils.py:93
-#: pod/main/templates/mail/mail.html:7 pod/main/templates/mail/mail.txt:7
-#: pod/main/templates/mail/mail_sender.txt:6 pod/video/utils.py:178
-#: pod/video/utils.py:258
+#: pod/live/utils.py:73 pod/main/templates/mail/mail.html:7
+#: pod/main/templates/mail/mail.txt:7 pod/main/templates/mail/mail_sender.txt:6
+#: pod/video/utils.py:178 pod/video/utils.py:258
 msgid "Regards."
 msgstr "Cordialement."
 
-#: pod/live/utils.py:75 pod/live/utils.py:148 pod/video/utils.py:182
+#: pod/live/utils.py:78 pod/live/utils.py:134 pod/video/utils.py:182
 #: pod/video/utils.py:262
 msgid "Post by:"
 msgstr "Posté par :"
@@ -4059,7 +4057,7 @@ msgstr ""
 msgid "Return to homepage"
 msgstr "Revenir à la page d’accueil"
 
-#: pod/main/templates/maintenance.html:17 pod/main/views.py:310
+#: pod/main/templates/maintenance.html:17 pod/main/views.py:302
 msgid "Contact us"
 msgstr "Contactez nous"
 
@@ -4209,15 +4207,15 @@ msgstr "Types de vidéos"
 msgid "Use the input to filter user by last name."
 msgstr "Utiliser le champ pour filtrer les utilisateurs par nom de famille."
 
-#: pod/main/tests/test_views.py:82 pod/main/views.py:296
+#: pod/main/tests/test_views.py:82 pod/main/views.py:288
 msgid "Your message has been sent."
 msgstr "Votre message a été envoyé."
 
-#: pod/main/views.py:194
+#: pod/main/views.py:195
 msgid "Link"
 msgstr "Lien"
 
-#: pod/main/views.py:277
+#: pod/main/views.py:269
 msgid "your message untitled"
 msgstr "votre message intitulé"
 
@@ -4880,12 +4878,12 @@ msgstr "Vous ne pouvez pas inviter à cette réunion."
 msgid "Invitations send to recipients."
 msgstr "Invitations envoyées aux destinataires."
 
-#: pod/meeting/views.py:616 pod/meeting/views.py:707
+#: pod/meeting/views.py:616 pod/meeting/views.py:706
 #, python-format
 msgid "%(owner)s invites you to the meeting %(meeting_title)s"
 msgstr "%(owner)s vous invite à la réunion %(meeting_title)s"
 
-#: pod/meeting/views.py:653
+#: pod/meeting/views.py:652
 #, python-format
 msgid ""
 "\n"
@@ -4916,7 +4914,7 @@ msgstr ""
 "        <p>Cordialement</p>\n"
 "    "
 
-#: pod/meeting/views.py:678
+#: pod/meeting/views.py:677
 #, python-format
 msgid ""
 "\n"
@@ -4943,7 +4941,7 @@ msgstr ""
 "        <p>Cordialement</p>\n"
 "    "
 
-#: pod/meeting/views.py:713
+#: pod/meeting/views.py:712
 #, python-format
 msgid ""
 "\n"
@@ -5150,19 +5148,14 @@ msgstr[1] "%(title)s (%(count)d vidéos)"
 msgid "The playlist has been saved!"
 msgstr "La liste de lecture a été sauvegardée !"
 
-#: pod/playlist/views.py:190 pod/playlist/views.py:212
-#: pod/playlist/views.py:265
+#: pod/playlist/views.py:190 pod/playlist/views.py:265
 msgid "The request is wrong. No video given."
 msgstr "La requête est erronée. Aucune vidéo envoyée."
 
-#: pod/playlist/views.py:194 pod/playlist/views.py:216
-#: pod/playlist/views.py:269 pod/playlist/views.py:281
+#: pod/playlist/views.py:194 pod/playlist/views.py:269
+#: pod/playlist/views.py:281
 msgid "Only ajax request are accepted for this action."
 msgstr "Uniquement les requêtes ajax sont autorisées pour cette action."
-
-#: pod/playlist/views.py:207
-msgid "This video has been removed from your playlist."
-msgstr "Cette vidéo a été retirée de votre liste de lecture."
 
 #: pod/playlist/views.py:227
 msgid "The playlist have been saved."
@@ -7652,3 +7645,6 @@ msgstr "Désolé, la recherche de vidéos est limitée à 500 pages maximum."
 #: pod/video_search/views.py:262
 msgid "Search results"
 msgstr "Résultats de la recherche"
+
+#~ msgid "This video has been removed from your playlist."
+#~ msgstr "Cette vidéo a été retirée de votre liste de lecture."
