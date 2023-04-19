@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-18 15:34+0200\n"
+"POT-Creation-Date: 2023-04-19 17:02+0200\n"
 "PO-Revision-Date: 2023-02-15 16:55+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -180,7 +180,7 @@ msgstr ""
 #: pod/live/templates/live/direct.html:63
 #: pod/live/templates/live/event-iframe.html:60
 #: pod/live/templates/live/event-iframe.html:126
-#: pod/live/templates/live/event-info.html:66 pod/main/templates/base.html:135
+#: pod/live/templates/live/event-info.html:66 pod/main/templates/base.html:133
 #: pod/main/templates/navbar.html:26 pod/main/templates/navbar.html:98
 #: pod/main/templates/navbar.html:172
 #: pod/main/templates/navbar_collapse.html:14
@@ -755,7 +755,6 @@ msgstr ""
 #: pod/podfile/templates/podfile/home_content.html:60
 #: pod/podfile/templates/podfile/list_folder_files.html:114
 #: pod/recorder/templates/recorder/record_list.html:18
-#: pod/video/templates/videos/video-comment.html:28
 #: pod/video/templates/videos/video_edit.html:127
 #: pod/video/templates/videos/video_list.html:23
 msgid "Loading…"
@@ -1788,55 +1787,6 @@ msgstr ""
 #: pod/completion/views.py:987 pod/podfile/views.py:439
 #: pod/podfile/views.py:487 pod/video/views.py:457 pod/video/views.py:1801
 msgid "Please correct errors"
-msgstr ""
-
-#: pod/custom/templates/custom/layouts/base_custom.html:60
-#: pod/main/templates/base.html:86
-#: pod/playlist/templates/playlist_player.html:16
-msgid "Home"
-msgstr ""
-
-#: pod/custom/templates/custom/layouts/partials/_channel_list.html:25
-#: pod/main/templates/navbar.html:33 pod/recorder/models.py:166
-#: pod/video/forms.py:255 pod/video/models.py:356 pod/video/models.py:734
-msgid "Channels"
-msgstr ""
-
-#: pod/custom/templates/custom/layouts/partials/_channel_list.html:43
-#: pod/custom/templates/custom/layouts/partials/_channel_list.html:45
-msgid "edit"
-msgstr ""
-
-#: pod/custom/templates/custom/layouts/partials/_footer.html:27
-#: pod/custom/templates/custom/layouts/partials/_footer.html:28
-#: pod/main/templates/maintenance.html:17 pod/main/views.py:310
-msgid "Contact us"
-msgstr ""
-
-#: pod/custom/templates/custom/layouts/partials/_footer.html:30
-#: pod/custom/templates/custom/layouts/partials/_footer.html:31
-msgid "FAQ"
-msgstr ""
-
-#: pod/custom/templates/custom/layouts/partials/_footer.html:70
-#: pod/main/templates/footer.html:30
-msgid "Pod Project"
-msgstr ""
-
-#: pod/custom/templates/custom/layouts/partials/_footer.html:73
-#: pod/main/templates/footer.html:34 pod/video/feeds.py:115
-msgid "video platform of"
-msgstr ""
-
-#: pod/custom/templates/custom/layouts/partials/_footer.html:73
-#: pod/main/templates/footer.html:34
-msgid "videos availables"
-msgstr ""
-
-#: pod/custom/templates/flatpages/custom/accueil.html:58
-#: pod/main/templates/base.html:150
-#: pod/video/templates/videos/add_video.html:38
-msgid "Learn more"
 msgstr ""
 
 #: pod/enrichment/apps.py:7
@@ -3837,13 +3787,23 @@ msgstr ""
 msgid "Breadcrumb"
 msgstr ""
 
-#: pod/main/templates/base.html:148
+#: pod/main/templates/base.html:86
+#: pod/playlist/templates/playlist_player.html:16
+msgid "Home"
+msgstr ""
+
+#: pod/main/templates/base.html:146
 msgid ""
 "We use third party cookies to personalize content, manage session and "
 "analyze site traffic."
 msgstr ""
 
-#: pod/main/templates/base.html:152
+#: pod/main/templates/base.html:148
+#: pod/video/templates/videos/add_video.html:38
+msgid "Learn more"
+msgstr ""
+
+#: pod/main/templates/base.html:150
 msgid "I understand"
 msgstr ""
 
@@ -3869,8 +3829,20 @@ msgstr ""
 msgid "Esup Portal"
 msgstr ""
 
+#: pod/main/templates/footer.html:30
+msgid "Pod Project"
+msgstr ""
+
+#: pod/main/templates/footer.html:34 pod/video/feeds.py:115
+msgid "video platform of"
+msgstr ""
+
 #: pod/main/templates/footer.html:34
 msgid "Release"
+msgstr ""
+
+#: pod/main/templates/footer.html:34
+msgid "videos availables"
 msgstr ""
 
 #: pod/main/templates/mail/mail.html:2 pod/main/templates/mail/mail.txt:2
@@ -3921,8 +3893,17 @@ msgstr ""
 msgid "Return to homepage"
 msgstr ""
 
+#: pod/main/templates/maintenance.html:17 pod/main/views.py:310
+msgid "Contact us"
+msgstr ""
+
 #: pod/main/templates/navbar.html:16
 msgid "Toggle navigation"
+msgstr ""
+
+#: pod/main/templates/navbar.html:33 pod/recorder/models.py:166
+#: pod/video/forms.py:255 pod/video/models.py:356 pod/video/models.py:734
+msgid "Channels"
 msgstr ""
 
 #: pod/main/templates/navbar.html:62 pod/main/templates/navbar.html:65
@@ -6354,7 +6335,7 @@ msgid "Edit the themes"
 msgstr ""
 
 #: pod/video/templates/channel/channel.html:191
-#: pod/video/templates/videos/my_videos.html:33
+#: pod/video/templates/videos/my_videos.html:32
 #: pod/video/templates/videos/videos.html:6
 #: pod/video/templates/videos/videos.html:12
 #: pod/video/templates/videos/videos.html:19
@@ -6625,13 +6606,13 @@ msgstr ""
 msgid "Original version"
 msgstr ""
 
-#: pod/video/templates/videos/my_videos.html:29
+#: pod/video/templates/videos/my_videos.html:28
 msgid ""
 "You have not uploaded any videos yet, please use the \"Add a new video\" "
 "button to add one"
 msgstr ""
 
-#: pod/video/templates/videos/my_videos.html:31
+#: pod/video/templates/videos/my_videos.html:30
 msgid ""
 "Please use the thumbnails toolbar which is located under the video on which "
 "you want to work with."

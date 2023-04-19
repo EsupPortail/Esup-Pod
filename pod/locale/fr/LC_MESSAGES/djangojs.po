@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-18 15:34+0200\n"
+"POT-Creation-Date: 2023-04-19 17:07+0200\n"
 "PO-Revision-Date: 2023-01-30 11:30+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -203,7 +203,7 @@ msgstr "Ajouter"
 
 #: pod/completion/static/js/caption_maker.js:567
 #: pod/video/static/js/comment-script.js:98
-#: pod/video/static/js/comment-script.js:254
+#: pod/video/static/js/comment-script.js:247
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -433,7 +433,7 @@ msgstr "Une erreur s’est produite lors du chargement des diffuseurs…"
 #, fuzzy
 #| msgid "video found"
 msgid "User not found"
-msgstr "vidéo trouvée"
+msgstr "Utilisateur non trouvé"
 
 #: pod/main/static/js/main.js:613
 msgid "Are you sure you want to delete this element?"
@@ -569,7 +569,6 @@ msgid "No element found"
 msgstr "Aucun élément trouvé"
 
 #: pod/video/static/js/change_video_owner.js:125
-#: pod/video/static/js/comment-script.js:212
 msgid "Loading…"
 msgstr "Chargement en cours…"
 
@@ -594,7 +593,7 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: pod/video/static/js/comment-script.js:190
-#: pod/video/static/js/comment-script.js:487
+#: pod/video/static/js/comment-script.js:480
 #, javascript-format
 msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
 msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
@@ -605,60 +604,60 @@ msgstr[1] "%s <span class=\"d-none d-md-inline\">votes</span>"
 msgid "Agree with the comment"
 msgstr "D’accord avec ce commentaire"
 
-#: pod/video/static/js/comment-script.js:230
+#: pod/video/static/js/comment-script.js:223
 msgid "Reply to comment"
 msgstr "Répondre au commentaire"
 
-#: pod/video/static/js/comment-script.js:233
+#: pod/video/static/js/comment-script.js:226
 msgid "Reply"
 msgstr "Répondre"
 
-#: pod/video/static/js/comment-script.js:251
+#: pod/video/static/js/comment-script.js:244
 msgid "Remove this comment"
 msgstr "Supprimer ce commentaire"
 
-#: pod/video/static/js/comment-script.js:274
+#: pod/video/static/js/comment-script.js:267
 msgid "Add a public comment"
 msgstr "Ajouter un commentaire public"
 
-#: pod/video/static/js/comment-script.js:276
+#: pod/video/static/js/comment-script.js:269
 msgid "Send"
 msgstr "Envoyer"
 
-#: pod/video/static/js/comment-script.js:401
+#: pod/video/static/js/comment-script.js:394
 msgid "Show answers"
 msgstr "Afficher les réponses"
 
-#: pod/video/static/js/comment-script.js:459
-#: pod/video/static/js/comment-script.js:552
-#: pod/video/static/js/comment-script.js:687
+#: pod/video/static/js/comment-script.js:452
+#: pod/video/static/js/comment-script.js:542
+#: pod/video/static/js/comment-script.js:680
 msgid "Bad response from the server."
 msgstr "Mauvaise réponse du serveur."
 
-#: pod/video/static/js/comment-script.js:461
+#: pod/video/static/js/comment-script.js:454
 msgid "Sorry, you're not allowed to vote by now."
 msgstr "Désolé, vous n’êtes pas autorisé à voter maintenant."
 
-#: pod/video/static/js/comment-script.js:554
+#: pod/video/static/js/comment-script.js:544
 msgid "Sorry, you can't comment this video by now."
 msgstr "Désolé, vous ne pouvez pas commenter cette vidéo maintenant."
 
-#: pod/video/static/js/comment-script.js:657
+#: pod/video/static/js/comment-script.js:650
 msgid "The comment has been deleted successfully."
 msgstr "Le commentaire a été supprimé avec succès."
 
-#: pod/video/static/js/comment-script.js:689
+#: pod/video/static/js/comment-script.js:682
 msgid "Sorry, you can't delete this comment by now."
 msgstr "Désolé, vous ne pouvez pas supprimer ce commentaire maintenant."
 
-#: pod/video/static/js/comment-script.js:1189
+#: pod/video/static/js/comment-script.js:1176
 #, javascript-format
 msgid "%s comment"
 msgid_plural "%s comments"
 msgstr[0] "%s commentaire"
 msgstr[1] "%s commentaires"
 
-#: pod/video/static/js/filter_aside_video_list_refresh.js:92
+#: pod/video/static/js/filter_aside_video_list_refresh.js:94
 msgid "An Error occurred while processing."
 msgstr "Une erreur est survenue durant l’exécution du processus."
 

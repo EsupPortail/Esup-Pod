@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-18 15:34+0200\n"
+"POT-Creation-Date: 2023-04-19 17:07+0200\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -190,7 +190,7 @@ msgstr ""
 
 #: pod/completion/static/js/caption_maker.js:567
 #: pod/video/static/js/comment-script.js:98
-#: pod/video/static/js/comment-script.js:254
+#: pod/video/static/js/comment-script.js:247
 msgid "Delete"
 msgstr ""
 
@@ -541,7 +541,6 @@ msgid "No element found"
 msgstr ""
 
 #: pod/video/static/js/change_video_owner.js:125
-#: pod/video/static/js/comment-script.js:212
 msgid "Loading…"
 msgstr ""
 
@@ -566,7 +565,7 @@ msgid "Cancel"
 msgstr ""
 
 #: pod/video/static/js/comment-script.js:190
-#: pod/video/static/js/comment-script.js:487
+#: pod/video/static/js/comment-script.js:480
 #, javascript-format
 msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
 msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
@@ -577,60 +576,60 @@ msgstr[1] ""
 msgid "Agree with the comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:230
+#: pod/video/static/js/comment-script.js:223
 msgid "Reply to comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:233
+#: pod/video/static/js/comment-script.js:226
 msgid "Reply"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:251
+#: pod/video/static/js/comment-script.js:244
 msgid "Remove this comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:274
+#: pod/video/static/js/comment-script.js:267
 msgid "Add a public comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:276
+#: pod/video/static/js/comment-script.js:269
 msgid "Send"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:401
+#: pod/video/static/js/comment-script.js:394
 msgid "Show answers"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:459
-#: pod/video/static/js/comment-script.js:552
-#: pod/video/static/js/comment-script.js:687
+#: pod/video/static/js/comment-script.js:452
+#: pod/video/static/js/comment-script.js:542
+#: pod/video/static/js/comment-script.js:680
 msgid "Bad response from the server."
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:461
+#: pod/video/static/js/comment-script.js:454
 msgid "Sorry, you're not allowed to vote by now."
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:554
+#: pod/video/static/js/comment-script.js:544
 msgid "Sorry, you can't comment this video by now."
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:657
+#: pod/video/static/js/comment-script.js:650
 msgid "The comment has been deleted successfully."
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:689
+#: pod/video/static/js/comment-script.js:682
 msgid "Sorry, you can't delete this comment by now."
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:1189
+#: pod/video/static/js/comment-script.js:1176
 #, javascript-format
 msgid "%s comment"
 msgid_plural "%s comments"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pod/video/static/js/filter_aside_video_list_refresh.js:92
+#: pod/video/static/js/filter_aside_video_list_refresh.js:94
 msgid "An Error occurred while processing."
 msgstr ""
 
