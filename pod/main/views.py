@@ -270,15 +270,13 @@ def contact_us(request):
                 dict(SUBJECT_CHOICES)[form_subject],
             )
 
-            text_content = loader.get_template("mail/mail_sender.txt").render(
-                {"TITLE_SITE": __TITLE_SITE__, "message": message}
-            )
             html_content = loader.get_template("mail/mail_sender.html").render(
                 {
                     "TITLE_SITE": __TITLE_SITE__,
                     "message": message.replace("\n", "<br/>"),
                 }
             )
+            text_content = bleach.clean(html_content, tags=[], strip=True)
             msg = EmailMultiAlternatives(
                 subject, text_content, DEFAULT_FROM_EMAIL, [email]
             )
