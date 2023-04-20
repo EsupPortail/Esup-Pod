@@ -2613,18 +2613,19 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
     def on_completion(self, uploaded_file, request):
         """Triggered when a chunked upload is complete."""
         edit_slug = request.POST.get("slug")
-        transcript = request.POST.get("transcript")
+        transcript = request.POST.get("transcript", "")
         if edit_slug == "":
             video = Video.objects.create(
                 video=uploaded_file,
                 owner=request.user,
                 type=Type.objects.get(id=DEFAULT_TYPE_ID),
                 title=uploaded_file.name,
-                transcript=(True if (transcript == "true") else False),
+                transcript=transcript,
             )
         else:
             video = Video.objects.get(slug=edit_slug)
             video.video = uploaded_file
+            video.transcript = transcript
         video.launch_encode = True
         video.save()
         self.slug = video.slug

@@ -49,13 +49,13 @@
 
   {% if TRANSCRIPT|length > 0 %}
   <div class="hide-on-processing">
-    <select class="form-select" aria-label="Default select example">
-      <option selected>{% trans "Transcript" %}</option>
+    <select class="form-select" aria-label="{% trans "Transcript" %}" id="select-transcript-lang">
+      <option selected value="">{% trans "Transcript" %}</option>
       {% for lang in TRANSCRIPT %}
       <option value="{{lang|first}}">{{lang|last}}</option>
       {% endfor %}
     </select>
-    <small class="form-text">{% trans "Select a lang if you want to transcript the audio." %}</small>
+    <small class="form-text">{% trans "Select an available lang if you want to transcript the audio." %}</small>
   </div>
   {% endif %}
 
@@ -194,7 +194,7 @@
           upload_id: data.result.upload_id,
           md5: md5,
           slug: slug,
-          transcript: $("#transcript-box").val()
+          transcript: $("#select-transcript-lang").val()
         },
         dataType: "json",
         success: function (data) {

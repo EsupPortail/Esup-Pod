@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-19 14:55+0000\n"
+"POT-Creation-Date: 2023-04-20 09:01+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -5539,6 +5539,7 @@ msgstr ""
 "Sélectionner un cursus universitaire qui convient à l’audience de ce contenu."
 
 #: pod/recorder/models.py:149 pod/video/forms.py:313 pod/video/models.py:733
+#: pod/video/templates/videos/add_video.html:52
 #: pod/video/templates/videos/add_video.html:53
 #: pod/video/templates/videos/add_video.html:102
 msgid "Transcript"
@@ -6048,10 +6049,9 @@ msgid ""
 "speech into text in an automated way. By selecting a lang, it will generate "
 "a subtitle file automatically when encoding the video."
 msgstr ""
-"La transcription est une "
-"technologie de reconnaissance vocale qui transforme un discours en texte "
-"automatiquement. En cochant cette case, cela va générer un fichier de sous-"
-"titre durant l’encodage de la vidéo."
+"La transcription est une technologie de reconnaissance vocale qui transforme "
+"un discours en texte automatiquement. En cochant cette case, cela va générer "
+"un fichier de sous-titre durant l’encodage de la vidéo."
 
 #: pod/video/forms.py:322 pod/video/templates/videos/add_video.html:106
 msgid ""
@@ -6380,8 +6380,8 @@ msgid "Date of event"
 msgstr "Date de l'évènement"
 
 #: pod/video/models.py:737
-msgid "Select the language to transcript the audio."
-msgstr "Sélectionner la langue pour transcrire l'audio."
+msgid "Select an available lang to transcript the audio."
+msgstr "Sélectionner une langue disponible pour transcrire l'audio."
 
 #: pod/video/models.py:813
 msgid "Overview"
@@ -6837,9 +6837,8 @@ msgid "Upload progress:"
 msgstr "Progression du téléversement :"
 
 #: pod/video/templates/videos/add_video.html:58
-msgid "Select a lang if you want to transcript the audio."
-msgstr ""
-"Sélectionner une langue si vous souahitez transcrire l'audio."
+msgid "Select an available lang if you want to transcript the audio."
+msgstr "Sélectionner une langue disponible si vous souhaitez transcrire l'audio."
 
 #: pod/video/templates/videos/add_video.html:62
 msgid ""
@@ -7711,7 +7710,7 @@ msgstr "Vous n’avez pas les droits pour éditer cette catégorie"
 msgid "You do not have rights to delete this category"
 msgstr "Vous n’avez pas les droits pour supprimer cette catégorie"
 
-#: pod/video/views.py:2652
+#: pod/video/views.py:2653
 msgid "Update successfully"
 msgstr "Mise à jour réussie"
 
