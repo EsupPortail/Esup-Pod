@@ -195,14 +195,13 @@ class TestShowVideoButtons(TestCase):
 
     def setUp(self):
         self.factory = RequestFactory()
-        User.objects.create(username="admin", password="admin",
-                            is_staff=True, is_superuser=True)
+        User.objects.create(
+            username="admin", password="admin", is_staff=True, is_superuser=True
+        )
         User.objects.create(username="staff", password="staff", is_staff=True)
         User.objects.create(username="student", password="student", is_staff=False)
 
-    @override_settings(
-        RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True
-    )
+    @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
     def test_show_video_buttons_admin_restrict(self):
         """Test if video buttons present in header for admin if restrict access to staff only."""
         importlib.reload(context_processors)
@@ -214,9 +213,7 @@ class TestShowVideoButtons(TestCase):
         self.assertTrue('id="nav-addvideo"' in response.content.decode())
         self.client.logout()
 
-    @override_settings(
-        RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True
-    )
+    @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
     def test_show_video_buttons_staff_restrict(self):
         """Test if video buttons present in header for staff if restrict access to staff only."""
         importlib.reload(context_processors)
@@ -228,9 +225,7 @@ class TestShowVideoButtons(TestCase):
         self.assertTrue('id="nav-addvideo"' in response.content.decode())
         self.client.logout()
 
-    @override_settings(
-        RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True
-    )
+    @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
     def test_show_video_buttons_student_restrict(self):
         """Test if video buttons not present in header for student if restrict access to staff only."""
         importlib.reload(context_processors)
@@ -242,9 +237,7 @@ class TestShowVideoButtons(TestCase):
         self.assertFalse('id="nav-addvideo"' in response.content.decode())
         self.client.logout()
 
-    @override_settings(
-        RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=False
-    )
+    @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=False)
     def test_show_video_buttons_admin_not_restrict(self):
         """Test if video buttons present in header for admin if not restrict access to staff only."""
         importlib.reload(context_processors)
@@ -256,9 +249,7 @@ class TestShowVideoButtons(TestCase):
         self.assertTrue('id="nav-addvideo"' in response.content.decode())
         self.client.logout()
 
-    @override_settings(
-        RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=False
-    )
+    @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=False)
     def test_show_video_buttons_staff_not_restrict(self):
         """Test if video buttons present in header for staff if not restrict access to staff only."""
         importlib.reload(context_processors)
@@ -270,9 +261,7 @@ class TestShowVideoButtons(TestCase):
         self.assertTrue('id="nav-addvideo"' in response.content.decode())
         self.client.logout()
 
-    @override_settings(
-        RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=False
-    )
+    @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=False)
     def test_show_video_buttons_student_not_restrict(self):
         """Test if video buttons present in header for student if not restrict access to staff only."""
         importlib.reload(context_processors)
@@ -290,15 +279,13 @@ class TestShowMeetingButton(TestCase):
 
     def setUp(self):
         self.factory = RequestFactory()
-        User.objects.create(username="admin", password="admin",
-                            is_staff=True, is_superuser=True)
+        User.objects.create(
+            username="admin", password="admin", is_staff=True, is_superuser=True
+        )
         User.objects.create(username="staff", password="staff", is_staff=True)
         User.objects.create(username="student", password="student", is_staff=False)
 
-    @override_settings(
-        RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=True,
-        USE_MEETING=True
-    )
+    @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=True, USE_MEETING=True)
     def test_show_meeting_button_admin_restrict(self):
         """Test if meeting button present in header for admin if restrict access to staff only."""
         importlib.reload(context_processors)
@@ -309,10 +296,7 @@ class TestShowMeetingButton(TestCase):
         self.assertTrue('id="nav-mymeetings"' in response.content.decode())
         self.client.logout()
 
-    @override_settings(
-        RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=True,
-        USE_MEETING=True
-    )
+    @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=True, USE_MEETING=True)
     def test_show_meeting_button_staff_restrict(self):
         """Test if meeting button present in header for staff if restrict access to staff only."""
         importlib.reload(context_processors)
@@ -323,10 +307,7 @@ class TestShowMeetingButton(TestCase):
         self.assertTrue('id="nav-mymeetings"' in response.content.decode())
         self.client.logout()
 
-    @override_settings(
-        RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=True,
-        USE_MEETING=True
-    )
+    @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=True, USE_MEETING=True)
     def test_show_meeting_button_student_restrict(self):
         """Test if meeting button not present in header for student if restrict access to staff only."""
         importlib.reload(context_processors)
@@ -337,10 +318,7 @@ class TestShowMeetingButton(TestCase):
         self.assertFalse('id="nav-mymeetings"' in response.content.decode())
         self.client.logout()
 
-    @override_settings(
-        RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=False,
-        USE_MEETING=True
-    )
+    @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=False, USE_MEETING=True)
     def test_show_meeting_button_admin_not_restrict(self):
         """Test if meeting button present in header for admin if not restrict access to staff only."""
         importlib.reload(context_processors)
@@ -351,10 +329,7 @@ class TestShowMeetingButton(TestCase):
         self.assertTrue('id="nav-mymeetings"' in response.content.decode())
         self.client.logout()
 
-    @override_settings(
-        RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=False,
-        USE_MEETING=True
-    )
+    @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=False, USE_MEETING=True)
     def test_show_meeting_button_staff_not_restrict(self):
         """Test if meeting button present in header for staff if not restrict access to staff only."""
         importlib.reload(context_processors)
@@ -365,10 +340,7 @@ class TestShowMeetingButton(TestCase):
         self.assertTrue('id="nav-mymeetings"' in response.content.decode())
         self.client.logout()
 
-    @override_settings(
-        RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=False,
-        USE_MEETING=True
-    )
+    @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=False, USE_MEETING=True)
     def test_show_meeting_button_student_not_restrict(self):
         """Test if meeting button not present in header for student if not restrict access to staff only."""
         importlib.reload(context_processors)
