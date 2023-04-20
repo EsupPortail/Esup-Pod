@@ -74,13 +74,12 @@ def cut_video(request, slug):  # noqa: C901
             messages.add_message(
                 request, messages.INFO, _("The cut was made.")
             )
-            
             return redirect(reverse("video:my_videos"))
 
         else:
             messages.add_message(
-                    request, messages.ERROR, _("Please select values between 00:00:00 and ") 
+                request, messages.ERROR, _("Please select values between 00:00:00 and ")
                 + str(duration) + "."
-                )
+            )
 
     return render(request, "video_cut.html", {"cutting": cutting, "video": video, "form_cut": form_cut},)

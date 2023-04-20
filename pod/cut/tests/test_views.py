@@ -1,23 +1,12 @@
 """
 Unit tests for CutVideo views
 """
-from django.conf import settings
 from django.test import TestCase
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from pod.video.models import Video, Type
-from ..models import CutVideo
 from django.contrib.sites.models import Site
 from django.urls import reverse
-
-if getattr(settings, "USE_PODFILE", False):
-    from pod.podfile.models import CustomFileModel
-    from pod.podfile.models import UserFolder
-
-    FILEPICKER = True
-else:
-    FILEPICKER = False
-    from pod.main.models import CustomFileModel
 
 
 class CutVideoViewsTestCase(TestCase):
