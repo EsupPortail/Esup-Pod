@@ -374,7 +374,9 @@ def info_pod(request):
         "TITLE_SITE": __TITLE_SITE__,
         "VERSION": settings.VERSION,
         "COUNT_VIDEO": Video.objects.all().count(),
-        "DURATION_VIDEO": Video.objects.aggregate(Sum('duration')).get("duration__sum", 0),
+        "DURATION_VIDEO": Video.objects.aggregate(Sum("duration")).get(
+            "duration__sum", 0
+        ),
     }
     return JsonResponse(data)
 
