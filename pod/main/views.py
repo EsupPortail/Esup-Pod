@@ -14,6 +14,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Esup-Pod. If not, see <https://www.gnu.org/licenses/>.
+import bleach
 
 from .forms import ContactUsForm, SUBJECT_CHOICES
 from django.shortcuts import render
@@ -245,15 +246,6 @@ def contact_us(request):
             if valid_human:
                 return redirect(form.cleaned_data["url_referrer"])
 
-            text_content = loader.get_template("mail/mail.txt").render(
-                {
-                    "name": name,
-                    "email": email,
-                    "TITLE_SITE": __TITLE_SITE__,
-                    "message": message,
-                    "url_referrer": form.cleaned_data["url_referrer"],
-                }
-            )
             html_content = loader.get_template("mail/mail.html").render(
                 {
                     "name": name,
@@ -263,7 +255,7 @@ def contact_us(request):
                     "url_referrer": form.cleaned_data["url_referrer"],
                 }
             )
-
+            text_content = bleach.clean(html_content, tags=[], strip=True)
             dest_email = []
             dest_email = get_dest_email(owner, video, form_subject, request)
 
@@ -280,15 +272,13 @@ def contact_us(request):
                 dict(SUBJECT_CHOICES)[form_subject],
             )
 
-            text_content = loader.get_template("mail/mail_sender.txt").render(
-                {"TITLE_SITE": __TITLE_SITE__, "message": message}
-            )
             html_content = loader.get_template("mail/mail_sender.html").render(
                 {
                     "TITLE_SITE": __TITLE_SITE__,
                     "message": message.replace("\n", "<br/>"),
                 }
             )
+            text_content = bleach.clean(html_content, tags=[], strip=True)
             msg = EmailMultiAlternatives(
                 subject, text_content, DEFAULT_FROM_EMAIL, [email]
             )

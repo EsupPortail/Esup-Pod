@@ -2,6 +2,7 @@
 import os
 import re
 import shutil
+import bleach
 from math import ceil
 
 from django.urls import reverse
@@ -155,26 +156,7 @@ def send_email_transcript(video_to_encode):
         __TITLE_SITE__,
         _("Transcripting #%(content_id)s completed") % {"content_id": video_to_encode.id},
     )
-    message = "%s\n%s\n\n%s\n%s\n%s\n" % (
-        _("Hello,"),
-        _(
-            "The content “%(content_title)s” has been automatically"
-            + " transcript, and is now available on %(site_title)s."
-        )
-        % {"content_title": video_to_encode.title, "site_title": __TITLE_SITE__},
-        _("You will find it here:"),
-        content_url,
-        _("Regards."),
-    )
-    full_message = message + "\n%s%s\n%s%s" % (
-        _("Post by:"),
-        video_to_encode.owner,
-        _("the:"),
-        video_to_encode.date_added,
-    )
-    from_email = DEFAULT_FROM_EMAIL
-    to_email = []
-    to_email.append(video_to_encode.owner.email)
+
     html_message = ""
 
     html_message = (
@@ -202,6 +184,13 @@ def send_email_transcript(video_to_encode):
         _("the:"),
         video_to_encode.date_added,
     )
+
+    message = bleach.clean(html_message, tags=[], strip=True)
+    full_message = bleach.clean(full_html_message, tags=[], strip=True)
+
+    from_email = DEFAULT_FROM_EMAIL
+    to_email = []
+    to_email.append(video_to_encode.owner.email)
 
     if (
         USE_ESTABLISHMENT_FIELD
@@ -248,27 +237,6 @@ def send_email_encoding(video_to_encode):
         __TITLE_SITE__,
         _("Encoding #%(content_id)s completed") % {"content_id": video_to_encode.id},
     )
-    message = "%s\n%s\n\n%s\n%s\n%s\n" % (
-        _("Hello,"),
-        _(
-            "The video “%(content_title)s” has been encoded to Web "
-            + "formats, and is now available on %(site_title)s."
-        )
-        % {"content_title": video_to_encode.title, "site_title": __TITLE_SITE__},
-        _("You will find it here:"),
-        content_url,
-        _("Regards."),
-    )
-    full_message = message + "\n%s%s\n%s%s" % (
-        _("Post by:"),
-        video_to_encode.owner,
-        _("the:"),
-        video_to_encode.date_added,
-    )
-    from_email = DEFAULT_FROM_EMAIL
-    to_email = []
-    to_email.append(video_to_encode.owner.email)
-    html_message = ""
 
     html_message = (
         '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
@@ -295,6 +263,13 @@ def send_email_encoding(video_to_encode):
         _("the:"),
         video_to_encode.date_added,
     )
+
+    message = bleach.clean(html_message, tags=[], strip=True)
+    full_message = bleach.clean(full_html_message, tags=[], strip=True)
+
+    from_email = DEFAULT_FROM_EMAIL
+    to_email = []
+    to_email.append(video_to_encode.owner.email)
 
     if (
         USE_ESTABLISHMENT_FIELD
