@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-19 11:25+0000\n"
+"POT-Creation-Date: 2023-04-20 09:49+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -231,7 +231,7 @@ msgstr "Fermer"
 #: pod/live/templates/live/event_immediate_edit.html:41 pod/live/views.py:524
 #: pod/live/views.py:575 pod/live/views.py:629
 #: pod/main/templates/contact_us.html:18 pod/main/tests/test_views.py:102
-#: pod/main/views.py:296 pod/main/views.py:374
+#: pod/main/views.py:294 pod/main/views.py:372
 #: pod/meeting/templates/meeting/add_or_edit.html:29
 #: pod/meeting/templates/meeting/delete.html:32
 #: pod/meeting/templates/meeting/invite.html:26
@@ -3076,7 +3076,7 @@ msgstr "Évènements passés"
 msgid "Registration of event #%(content_id)s"
 msgstr "Programmation de l’évènement #%(content_id)s"
 
-#: pod/live/utils.py:60 pod/video/utils.py:166 pod/video/utils.py:246
+#: pod/live/utils.py:60 pod/video/utils.py:166 pod/video/utils.py:245
 msgid "Hello,"
 msgstr "Bonjour,"
 
@@ -3093,13 +3093,12 @@ msgstr ""
 "l’onglet dédié."
 
 #: pod/live/utils.py:73 pod/main/templates/mail/mail.html:7
-#: pod/main/templates/mail/mail.txt:7 pod/main/templates/mail/mail_sender.txt:6
-#: pod/video/utils.py:178 pod/video/utils.py:258
+#: pod/video/utils.py:178 pod/video/utils.py:257
 msgid "Regards."
 msgstr "Cordialement."
 
 #: pod/live/utils.py:78 pod/live/utils.py:134 pod/video/utils.py:182
-#: pod/video/utils.py:262
+#: pod/video/utils.py:261
 msgid "Post by:"
 msgstr "Posté par :"
 
@@ -4007,32 +4006,29 @@ msgstr "Version"
 msgid "videos availables"
 msgstr "vidéos disponibles"
 
-#: pod/main/templates/mail/mail.html:2 pod/main/templates/mail/mail.txt:2
+#: pod/main/templates/mail/mail.html:2
 #: pod/main/templates/mail/mail_sender.html:2
-#: pod/main/templates/mail/mail_sender.txt:2
 msgid "Hello"
 msgstr "Bonjour"
 
-#: pod/main/templates/mail/mail.html:3 pod/main/templates/mail/mail.txt:3
+#: pod/main/templates/mail/mail.html:3
 msgid "The user"
 msgstr "L’utilisateur"
 
-#: pod/main/templates/mail/mail.html:3 pod/main/templates/mail/mail.txt:3
+#: pod/main/templates/mail/mail.html:3
 msgid "sends a message from"
 msgstr "envoie un message depuis"
 
-#: pod/main/templates/mail/mail.html:4 pod/main/templates/mail/mail.txt:4
+#: pod/main/templates/mail/mail.html:4
 #: pod/main/templates/mail/mail_sender.html:4
-#: pod/main/templates/mail/mail_sender.txt:4
 msgid "Here is the message sent:"
 msgstr "Voici le message envoyé :"
 
-#: pod/main/templates/mail/mail.html:6 pod/main/templates/mail/mail.txt:6
+#: pod/main/templates/mail/mail.html:6
 msgid "Referrer page:"
 msgstr "Page de référence :"
 
 #: pod/main/templates/mail/mail_sender.html:3
-#: pod/main/templates/mail/mail_sender.txt:3
 msgid "You just sent a message from"
 msgstr "Vous venez d’envoyer un message depuis"
 
@@ -4057,7 +4053,7 @@ msgstr ""
 msgid "Return to homepage"
 msgstr "Revenir à la page d’accueil"
 
-#: pod/main/templates/maintenance.html:17 pod/main/views.py:302
+#: pod/main/templates/maintenance.html:17 pod/main/views.py:300
 msgid "Contact us"
 msgstr "Contactez nous"
 
@@ -4207,7 +4203,7 @@ msgstr "Types de vidéos"
 msgid "Use the input to filter user by last name."
 msgstr "Utiliser le champ pour filtrer les utilisateurs par nom de famille."
 
-#: pod/main/tests/test_views.py:82 pod/main/views.py:288
+#: pod/main/tests/test_views.py:82 pod/main/views.py:286
 msgid "Your message has been sent."
 msgstr "Votre message a été envoyé."
 
@@ -5148,14 +5144,19 @@ msgstr[1] "%(title)s (%(count)d vidéos)"
 msgid "The playlist has been saved!"
 msgstr "La liste de lecture a été sauvegardée !"
 
-#: pod/playlist/views.py:190 pod/playlist/views.py:265
+#: pod/playlist/views.py:190 pod/playlist/views.py:212
+#: pod/playlist/views.py:265
 msgid "The request is wrong. No video given."
 msgstr "La requête est erronée. Aucune vidéo envoyée."
 
-#: pod/playlist/views.py:194 pod/playlist/views.py:269
-#: pod/playlist/views.py:281
+#: pod/playlist/views.py:194 pod/playlist/views.py:216
+#: pod/playlist/views.py:269 pod/playlist/views.py:281
 msgid "Only ajax request are accepted for this action."
 msgstr "Uniquement les requêtes ajax sont autorisées pour cette action."
+
+#: pod/playlist/views.py:207
+msgid "This video has been removed from your playlist."
+msgstr "Cette vidéo a été retirée de votre liste de lecture."
 
 #: pod/playlist/views.py:227
 msgid "The playlist have been saved."
@@ -7422,11 +7423,11 @@ msgstr ""
 "Le contenu \"%(content_title)s\" a été automatiquement transcrit, et est "
 "maintenant disponible sur %(site_title)s."
 
-#: pod/video/utils.py:175 pod/video/utils.py:255
+#: pod/video/utils.py:175 pod/video/utils.py:254
 msgid "You will find it here:"
 msgstr "Vous la/le retrouverez ici :"
 
-#: pod/video/utils.py:184 pod/video/utils.py:264
+#: pod/video/utils.py:184 pod/video/utils.py:263
 msgid "the:"
 msgstr "le :"
 
@@ -7435,7 +7436,7 @@ msgstr "le :"
 msgid "Encoding #%(content_id)s completed"
 msgstr "L’encodage #%(content_id)s est terminé"
 
-#: pod/video/utils.py:248
+#: pod/video/utils.py:247
 #, python-format
 msgid ""
 "The video “%(content_title)s” has been encoded to Web formats, and is now "
@@ -7645,6 +7646,3 @@ msgstr "Désolé, la recherche de vidéos est limitée à 500 pages maximum."
 #: pod/video_search/views.py:262
 msgid "Search results"
 msgstr "Résultats de la recherche"
-
-#~ msgid "This video has been removed from your playlist."
-#~ msgstr "Cette vidéo a été retirée de votre liste de lecture."
