@@ -148,6 +148,12 @@ USER_VIDEO_CATEGORY = getattr(settings, "USER_VIDEO_CATEGORY", False)
 DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
 ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
 
+USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
+
+if USE_TRANSCRIPTION:
+    from . import transcript
+    TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
+
 __VIDEOS__ = get_available_videos()
 
 # ############################################################################
@@ -1018,6 +1024,47 @@ def video_delete(request, slug=None):
         "videos/video_delete.html",
         {"video": video, "form": form, "page_title": page_title},
     )
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def video_transcript(request, slug=None):
+    video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
+
+    if not USE_TRANSCRIPTION:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("Transcription not enable on this platform.")
+        )
+        raise PermissionDenied
+
+    if request.user != video.owner and not (
+        request.user.is_superuser or request.user.has_perm("video.change_video")
+    ):
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("You cannot manage this video.")
+        )
+        raise PermissionDenied
+
+    if not video.encoded or video.encoding_in_progress is True:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("You cannot launch transcript for a video that is being encoded.")
+        )
+        return redirect(reverse("video:video_edit", args=(video.slug,)))
+
+    if video.get_video_mp3():
+        transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
+        transcript_video(video.id)
+        messages.add_message(
+            request, messages.INFO, _("The video transcript has been restarted.")
+        )
+
+    return redirect(reverse("video:video_edit", args=(video.slug,)))
 
 
 def get_adv_note_list(request, video):
