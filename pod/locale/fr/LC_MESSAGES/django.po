@@ -231,15 +231,15 @@ msgstr "Fermer"
 #: pod/live/templates/live/event_immediate_edit.html:41 pod/live/views.py:524
 #: pod/live/views.py:575 pod/live/views.py:629
 #: pod/main/templates/contact_us.html:18 pod/main/tests/test_views.py:102
-#: pod/main/views.py:304 pod/main/views.py:382
+#: pod/main/views.py:294 pod/main/views.py:372
 #: pod/meeting/templates/meeting/add_or_edit.html:29
 #: pod/meeting/templates/meeting/delete.html:32
 #: pod/meeting/templates/meeting/invite.html:26
-#: pod/meeting/templates/meeting/join.html:25 pod/meeting/views.py:143
-#: pod/meeting/views.py:204 pod/meeting/views.py:356 pod/playlist/views.py:232
+#: pod/meeting/templates/meeting/join.html:25 pod/meeting/views.py:144
+#: pod/meeting/views.py:205 pod/meeting/views.py:357 pod/playlist/views.py:232
 #: pod/recorder/templates/recorder/add_recording.html:34
 #: pod/recorder/templates/recorder/record_delete.html:31
-#: pod/recorder/views.py:155 pod/recorder/views.py:355
+#: pod/recorder/views.py:156 pod/recorder/views.py:344
 #: pod/video/templates/channel/channel_edit.html:47
 #: pod/video/templates/videos/video-form.html:11
 #: pod/video/templates/videos/video_delete.html:27
@@ -321,7 +321,7 @@ msgstr "Identifiant interne de la session"
 msgid "Internal id of the BBB meeting."
 msgstr "Identifiant interne de la session BBB."
 
-#: pod/bbb/models.py:28 pod/meeting/views.py:40
+#: pod/bbb/models.py:28 pod/meeting/views.py:41
 msgid "Meeting name"
 msgstr "Nom de la session"
 
@@ -418,7 +418,7 @@ msgstr "Session"
 msgid "Meetings"
 msgstr "Sessions"
 
-#: pod/bbb/models.py:122 pod/meeting/views.py:48
+#: pod/bbb/models.py:122 pod/meeting/views.py:49
 msgid "Full name"
 msgstr "Nom complet"
 
@@ -449,11 +449,11 @@ msgid "User from the Pod database, if user found."
 msgstr ""
 "Utilisateur dans la base de données de Pod, si l’utilisateur est trouvé."
 
-#: pod/bbb/models.py:161 pod/meeting/views.py:47
+#: pod/bbb/models.py:161 pod/meeting/views.py:48
 msgid "Attendee"
 msgstr "Participant"
 
-#: pod/bbb/models.py:162 pod/meeting/views.py:46
+#: pod/bbb/models.py:162 pod/meeting/views.py:47
 msgid "Attendees"
 msgstr "Participants"
 
@@ -990,7 +990,7 @@ msgstr "Liste des chapitres"
 #: pod/completion/models.py:173 pod/completion/models.py:289
 #: pod/completion/templates/overlay/list_overlay.html:10
 #: pod/enrichment/templates/enrichment/list_enrichment.html:10
-#: pod/live/models.py:341 pod/main/models.py:124 pod/main/views.py:192
+#: pod/live/models.py:341 pod/main/models.py:124 pod/main/views.py:193
 #: pod/playlist/models.py:11
 #: pod/playlist/templates/playlist/playlist_element_list.html:9
 #: pod/video/models.py:282 pod/video/models.py:434 pod/video/models.py:573
@@ -1478,7 +1478,7 @@ msgid "Mail"
 msgstr "Courriel"
 
 #: pod/completion/templates/contributor/list_contributor.html:12
-#: pod/meeting/views.py:49
+#: pod/meeting/views.py:50
 msgid "Role"
 msgstr "Rôle"
 
@@ -3164,17 +3164,16 @@ msgstr "Évènements à venir"
 msgid "Past events"
 msgstr "Évènements passés"
 
-#: pod/live/utils.py:50
+#: pod/live/utils.py:52
 #, python-format
 msgid "Registration of event #%(content_id)s"
 msgstr "Programmation de l’évènement #%(content_id)s"
 
-#: pod/live/utils.py:58 pod/live/utils.py:80 pod/video/utils.py:160
-#: pod/video/utils.py:185 pod/video/utils.py:253 pod/video/utils.py:278
+#: pod/live/utils.py:60 pod/video/utils.py:166 pod/video/utils.py:245
 msgid "Hello,"
 msgstr "Bonjour,"
 
-#: pod/live/utils.py:60 pod/live/utils.py:82
+#: pod/live/utils.py:62
 #, python-format
 msgid ""
 "You have just scheduled a new event called “%(content_title)s” from "
@@ -3186,15 +3185,13 @@ msgstr ""
 "%(url_event)s). Vous pouvez retrouver les autres options de partage dans "
 "l’onglet dédié."
 
-#: pod/live/utils.py:71 pod/live/utils.py:93
-#: pod/main/templates/mail/mail.html:7 pod/main/templates/mail/mail.txt:7
-#: pod/main/templates/mail/mail_sender.txt:6 pod/video/utils.py:168
-#: pod/video/utils.py:197 pod/video/utils.py:261 pod/video/utils.py:290
+#: pod/live/utils.py:73 pod/main/templates/mail/mail.html:7
+#: pod/video/utils.py:178 pod/video/utils.py:257
 msgid "Regards."
 msgstr "Cordialement."
 
-#: pod/live/utils.py:75 pod/live/utils.py:148 pod/video/utils.py:171
-#: pod/video/utils.py:201 pod/video/utils.py:264 pod/video/utils.py:294
+#: pod/live/utils.py:78 pod/live/utils.py:134 pod/video/utils.py:182
+#: pod/video/utils.py:261
 msgid "Post by:"
 msgstr "Posté par :"
 
@@ -3216,7 +3213,7 @@ msgstr "Le mot de passe est incorrect."
 msgid "Editing the event"
 msgstr "Éditer l’évènement"
 
-#: pod/live/views.py:517 pod/meeting/views.py:136 pod/video/views.py:366
+#: pod/live/views.py:517 pod/meeting/views.py:137 pod/video/views.py:366
 #: pod/video/views.py:956
 msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
@@ -4102,32 +4099,29 @@ msgstr "Version"
 msgid "videos availables"
 msgstr "vidéos disponibles"
 
-#: pod/main/templates/mail/mail.html:2 pod/main/templates/mail/mail.txt:2
+#: pod/main/templates/mail/mail.html:2
 #: pod/main/templates/mail/mail_sender.html:2
-#: pod/main/templates/mail/mail_sender.txt:2
 msgid "Hello"
 msgstr "Bonjour"
 
-#: pod/main/templates/mail/mail.html:3 pod/main/templates/mail/mail.txt:3
+#: pod/main/templates/mail/mail.html:3
 msgid "The user"
 msgstr "L’utilisateur"
 
-#: pod/main/templates/mail/mail.html:3 pod/main/templates/mail/mail.txt:3
+#: pod/main/templates/mail/mail.html:3
 msgid "sends a message from"
 msgstr "envoie un message depuis"
 
-#: pod/main/templates/mail/mail.html:4 pod/main/templates/mail/mail.txt:4
+#: pod/main/templates/mail/mail.html:4
 #: pod/main/templates/mail/mail_sender.html:4
-#: pod/main/templates/mail/mail_sender.txt:4
 msgid "Here is the message sent:"
 msgstr "Voici le message envoyé :"
 
-#: pod/main/templates/mail/mail.html:6 pod/main/templates/mail/mail.txt:6
+#: pod/main/templates/mail/mail.html:6
 msgid "Referrer page:"
 msgstr "Page de référence :"
 
 #: pod/main/templates/mail/mail_sender.html:3
-#: pod/main/templates/mail/mail_sender.txt:3
 msgid "You just sent a message from"
 msgstr "Vous venez d’envoyer un message depuis"
 
@@ -4152,7 +4146,7 @@ msgstr ""
 msgid "Return to homepage"
 msgstr "Revenir à la page d’accueil"
 
-#: pod/main/templates/maintenance.html:17 pod/main/views.py:310
+#: pod/main/templates/maintenance.html:17 pod/main/views.py:300
 msgid "Contact us"
 msgstr "Contactez nous"
 
@@ -4191,7 +4185,7 @@ msgstr "Ajouter une vidéo"
 #: pod/meeting/templates/meeting/invite.html:8
 #: pod/meeting/templates/meeting/join.html:9
 #: pod/meeting/templates/meeting/my_meetings.html:10
-#: pod/meeting/templates/meeting/recordings.html:12 pod/meeting/views.py:80
+#: pod/meeting/templates/meeting/recordings.html:12 pod/meeting/views.py:81
 msgid "My meetings"
 msgstr "Mes réunions"
 
@@ -4302,15 +4296,15 @@ msgstr "Types de vidéos"
 msgid "Use the input to filter user by last name."
 msgstr "Utiliser le champ pour filtrer les utilisateurs par nom de famille."
 
-#: pod/main/tests/test_views.py:82 pod/main/views.py:296
+#: pod/main/tests/test_views.py:82 pod/main/views.py:286
 msgid "Your message has been sent."
 msgstr "Votre message a été envoyé."
 
-#: pod/main/views.py:194
+#: pod/main/views.py:195
 msgid "Link"
 msgstr "Lien"
 
-#: pod/main/views.py:277
+#: pod/main/views.py:269
 msgid "your message untitled"
 msgstr "votre message intitulé"
 
@@ -4668,11 +4662,11 @@ msgid "Unable to delete recording!"
 msgstr "Impossible de supprimer l'enregistrement !"
 
 #: pod/meeting/templates/meeting/add_or_edit.html:9
-#: pod/meeting/templates/meeting/link_meeting.html:5 pod/meeting/views.py:146
+#: pod/meeting/templates/meeting/link_meeting.html:5 pod/meeting/views.py:147
 msgid "Edit the meeting"
 msgstr "Éditer la réunion"
 
-#: pod/meeting/templates/meeting/add_or_edit.html:11 pod/meeting/views.py:148
+#: pod/meeting/templates/meeting/add_or_edit.html:11 pod/meeting/views.py:149
 msgid "Add a new meeting"
 msgstr "Ajouter une nouvelle réunion"
 
@@ -4860,7 +4854,7 @@ msgstr "Terminer la réunion"
 msgid "Text copied"
 msgstr "Texte copié"
 
-#: pod/meeting/templates/meeting/recordings.html:13 pod/meeting/views.py:511
+#: pod/meeting/templates/meeting/recordings.html:13 pod/meeting/views.py:512
 msgid "Meeting recordings"
 msgstr "Enregistrements de réunion"
 
@@ -4912,121 +4906,73 @@ msgstr "Ou après"
 msgid "occurrences"
 msgstr "occurrences"
 
-#: pod/meeting/views.py:41
+#: pod/meeting/views.py:42
 msgid "Has user joined?"
 msgstr "Utilisateurs connectés ?"
 
-#: pod/meeting/views.py:42 pod/recorder/models.py:260
+#: pod/meeting/views.py:43 pod/recorder/models.py:260
 msgid "Recording"
 msgstr "Enregistrement"
 
-#: pod/meeting/views.py:43
+#: pod/meeting/views.py:44
 msgid "Participant count"
 msgstr "Nombre de participants"
 
-#: pod/meeting/views.py:44
+#: pod/meeting/views.py:45
 msgid "Listener count"
 msgstr "Nombre d’auditeurs"
 
-#: pod/meeting/views.py:45
+#: pod/meeting/views.py:46
 msgid "Moderator count"
 msgstr "Nombre de modérateurs"
 
-#: pod/meeting/views.py:109
+#: pod/meeting/views.py:110
 msgid "You cannot edit this meeting."
 msgstr "Vous ne pouvez pas éditer cette réunion."
 
-#: pod/meeting/views.py:186 pod/meeting/views.py:424 pod/meeting/views.py:456
-#: pod/meeting/views.py:488
+#: pod/meeting/views.py:187 pod/meeting/views.py:425 pod/meeting/views.py:457
+#: pod/meeting/views.py:489
 msgid "You cannot delete this meeting."
 msgstr "Vous ne pouvez pas supprimer cette réunion."
 
-#: pod/meeting/views.py:197
+#: pod/meeting/views.py:198
 msgid "The meeting has been deleted."
 msgstr "La réunion a été supprimée."
 
-#: pod/meeting/views.py:303
+#: pod/meeting/views.py:304
 msgid "You cannot access to this meeting."
 msgstr "Vous ne pouvez pas accéder à cette réunion."
 
-#: pod/meeting/views.py:350
+#: pod/meeting/views.py:351
 msgid "Password given is not correct."
 msgstr "Le mot de passe est incorrect."
 
-#: pod/meeting/views.py:528
+#: pod/meeting/views.py:529
 msgid "You cannot delete this recording."
 msgstr "Vous ne pouvez pas supprimer cette réunion."
 
-#: pod/meeting/views.py:545
+#: pod/meeting/views.py:546
 msgid "The recording has been deleted."
 msgstr "L'enregistrement a été supprimé."
 
-#: pod/meeting/views.py:552
+#: pod/meeting/views.py:553
 msgid "This view cannot be accessed directly."
 msgstr "Cette vue n'est pas accessible directement."
 
-#: pod/meeting/views.py:593
+#: pod/meeting/views.py:594
 msgid "You cannot invite for this meeting."
 msgstr "Vous ne pouvez pas inviter à cette réunion."
 
-#: pod/meeting/views.py:604
+#: pod/meeting/views.py:605
 msgid "Invitations send to recipients."
 msgstr "Invitations envoyées aux destinataires."
 
-#: pod/meeting/views.py:615 pod/meeting/views.py:770
+#: pod/meeting/views.py:616 pod/meeting/views.py:706
 #, python-format
 msgid "%(owner)s invites you to the meeting %(meeting_title)s"
 msgstr "%(owner)s vous invite à la réunion %(meeting_title)s"
 
 #: pod/meeting/views.py:652
-#, python-format
-msgid ""
-"\n"
-"            Hello,\n"
-"            %(owner)s invites you to a recurring meeting %(meeting_title)s.\n"
-"            Start date: %(start_date_time)s\n"
-"            Recurring until date: %(end_date)s\n"
-"            The meeting will be occur each %(frequency)s %(recurrence)s\n"
-"            Here is the link to join the meeting: %(join_link)s\n"
-"            You need this password to enter: %(password)s\n"
-"            Regards\n"
-"        "
-msgstr ""
-"\n"
-"        Bonjour,\n"
-"        %(owner)s vous invite à une réunion récurrente %(meeting_title)s.\n"
-"        Date de début: %(start_date_time)s\n"
-"        Récurrent jusqu'à la date: %(end_date)s\n"
-"        La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s\n"
-"        Voici le lien pour rejoindre la réunion : %(join_link)s\n"
-"        Vous avez besoin de ce mot de passe pour entrer : %(password)s\n"
-"        Cordialement\n"
-"    "
-
-#: pod/meeting/views.py:677
-#, python-format
-msgid ""
-"\n"
-"            Hello,\n"
-"            %(owner)s invites you to the meeting %(meeting_title)s.\n"
-"            Start date: %(start_date_time)s\n"
-"            End date: %(end_date)s\n"
-"            Here is the link to join the meeting: %(join_link)s\n"
-"            You need this password to enter: %(password)s\n"
-"            Regards\n"
-"        "
-msgstr ""
-"\n"
-"        Bonjour,\n"
-"        %(owner)s vous invite à la réunion %(meeting_title)s.\n"
-"        Date de début : %(start_date_time)s\n"
-"        Date de fin : %(end_date)s\n"
-"        Voici le lien pour rejoindre la réunion : %(join_link)s\n"
-"        Vous avez besoin de ce mot de passe pour entrer : %(password)s\n"
-"        Cordialement\n"
-"    "
-
-#: pod/meeting/views.py:716
 #, python-format
 msgid ""
 "\n"
@@ -5057,7 +5003,7 @@ msgstr ""
 "        <p>Cordialement</p>\n"
 "    "
 
-#: pod/meeting/views.py:741
+#: pod/meeting/views.py:677
 #, python-format
 msgid ""
 "\n"
@@ -5084,7 +5030,7 @@ msgstr ""
 "        <p>Cordialement</p>\n"
 "    "
 
-#: pod/meeting/views.py:776
+#: pod/meeting/views.py:712
 #, python-format
 msgid ""
 "\n"
@@ -5871,55 +5817,30 @@ msgstr "Retour aux réclamations d’enregistrement"
 msgid "To delete the record, please checked in and click send."
 msgstr "Pour supprimer la vidéo, veuillez cocher et cliquer sur envoyer."
 
-#: pod/recorder/views.py:73
+#: pod/recorder/views.py:74
 msgid "Recorder should be indicated."
 msgstr "L’enregistreur doit être indiqué."
 
-#: pod/recorder/views.py:78
+#: pod/recorder/views.py:79
 msgid "Recorder not found."
 msgstr "Enregistreur non trouvé."
 
-#: pod/recorder/views.py:92
+#: pod/recorder/views.py:93
 msgid "The selected record has been deleted."
 msgstr "L’enregistrement a été supprimé."
 
-#: pod/recorder/views.py:126
+#: pod/recorder/views.py:127
 msgid "Mediapath should be indicated."
 msgstr "La source du fichier doit être indiquée."
 
-#: pod/recorder/views.py:148
+#: pod/recorder/views.py:149
 msgid ""
 "Your publication is saved. Adding it to your videos will be in a few minutes."
 msgstr ""
 "Votre publication est sauvegardée, elle sera ajoutée à vos vidéos dans "
 "quelques minutes."
 
-#: pod/recorder/views.py:233
-#, python-format
-msgid ""
-"Hello, \n"
-"\n"
-"a new recording has just be added on the video website \"%(title_site)s\" "
-"from the recorder \"%(recorder)s\". \n"
-"To add it, just click on link below.\n"
-"\n"
-"%(link_url)s\n"
-"if you cannot click on link, just copy-paste it in your browser. \n"
-"\n"
-"Regards"
-msgstr ""
-"Bonjour, \n"
-"\n"
-"un nouvel enregistrement a été ajouté sur la plateforme %(title_site)s à "
-"partir de l’enregistreur « %(recorder)s ».\n"
-"Pour l’ajouter, cliquez sur le lien ci dessous.\n"
-"%(link_url)s\n"
-"Si le lien n’est pas actif, il faut le copier-coller dans la barre d’adresse "
-"de votre navigateur.\n"
-"\n"
-"Cordialement"
-
-#: pod/recorder/views.py:247
+#: pod/recorder/views.py:234
 #, python-format
 msgid ""
 "Hello, <p>a new recording has just be added on %(title_site)s from the "
@@ -5934,15 +5855,15 @@ msgstr ""
 "faut le copier-coller dans la barre d’adresse de votre navigateur.</"
 "i><p><p>Cordialement</p>"
 
-#: pod/recorder/views.py:266
+#: pod/recorder/views.py:255
 msgid "New recording added."
 msgstr "Nouvel enregistrement ajouté."
 
-#: pod/recorder/views.py:348
+#: pod/recorder/views.py:337
 msgid "The record has been deleted."
 msgstr "L’enregistrement a été supprimé."
 
-#: pod/recorder/views.py:823
+#: pod/recorder/views.py:812
 msgid "Recorder for Studio not found."
 msgstr "Enregistreur studio non trouvé."
 
@@ -7598,7 +7519,7 @@ msgstr "-- désolé, aucune traduction fournie --"
 msgid "Transcripting #%(content_id)s completed"
 msgstr "La transcription du #%(content_id)s est terminée"
 
-#: pod/video/utils.py:162 pod/video/utils.py:187
+#: pod/video/utils.py:168
 #, python-format
 msgid ""
 "The content “%(content_title)s” has been automatically transcript, and is "
@@ -7607,22 +7528,20 @@ msgstr ""
 "Le contenu \"%(content_title)s\" a été automatiquement transcrit, et est "
 "maintenant disponible sur %(site_title)s."
 
-#: pod/video/utils.py:166 pod/video/utils.py:194 pod/video/utils.py:259
-#: pod/video/utils.py:287
+#: pod/video/utils.py:175 pod/video/utils.py:254
 msgid "You will find it here:"
 msgstr "Vous la/le retrouverez ici :"
 
-#: pod/video/utils.py:173 pod/video/utils.py:203 pod/video/utils.py:266
-#: pod/video/utils.py:296
+#: pod/video/utils.py:184 pod/video/utils.py:263
 msgid "the:"
 msgstr "le :"
 
-#: pod/video/utils.py:250
+#: pod/video/utils.py:238
 #, python-format
 msgid "Encoding #%(content_id)s completed"
 msgstr "L’encodage #%(content_id)s est terminé"
 
-#: pod/video/utils.py:255 pod/video/utils.py:280
+#: pod/video/utils.py:247
 #, python-format
 msgid ""
 "The video “%(content_title)s” has been encoded to Web formats, and is now "

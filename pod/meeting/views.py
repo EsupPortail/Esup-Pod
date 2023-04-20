@@ -1,4 +1,5 @@
 import os
+import bleach
 
 from django.shortcuts import render
 
@@ -617,9 +618,8 @@ def send_invite(request, meeting, emails):
         "meeting_title": meeting.name,
     }
     from_email = meeting.owner.email  # DEFAULT_FROM_EMAIL
-    text_content = get_text_content(request, meeting)
     html_content = get_html_content(request, meeting)
-
+    text_content = bleach.clean(html_content, tags=[], strip=True)
     msg = EmailMultiAlternatives(subject, text_content, from_email, emails)
     msg.attach_alternative(html_content, "text/html")
     # ics calendar
@@ -632,70 +632,6 @@ def send_invite(request, meeting, emails):
     msg.attach_file(filename_event, "text/calendar")
     msg.send()
     os.remove(filename_event)
-
-
-def get_text_content(request, meeting):
-    join_link = request.build_absolute_uri(
-        reverse("meeting:join", args=(meeting.meeting_id,))
-    )
-    meeting_start_datetime = timezone.localtime(meeting.start_at).strftime(
-        "%d/%m/%Y %H:%M"
-    )
-    full_name = (
-        meeting.owner.get_full_name()
-        if (meeting.owner.get_full_name() != "")
-        else meeting.owner.username
-    )
-    if meeting.recurrence:
-        text_content = (
-            _(
-                """
-            Hello,
-            %(owner)s invites you to a recurring meeting %(meeting_title)s.
-            Start date: %(start_date_time)s
-            Recurring until date: %(end_date)s
-            The meeting will be occur each %(frequency)s %(recurrence)s
-            Here is the link to join the meeting: %(join_link)s
-            You need this password to enter: %(password)s
-            Regards
-        """
-            )
-            % {
-                "owner": full_name,
-                "meeting_title": meeting.name,
-                "start_date_time": meeting_start_datetime,
-                "end_date": meeting.recurring_until.strftime("%d/%m/%Y"),
-                "frequency": meeting.frequency,
-                "recurrence": meeting.get_recurrence_display().lower(),
-                "join_link": join_link,
-                "password": meeting.attendee_password,
-            }
-        )
-    else:
-        text_content = (
-            _(
-                """
-            Hello,
-            %(owner)s invites you to the meeting %(meeting_title)s.
-            Start date: %(start_date_time)s
-            End date: %(end_date)s
-            Here is the link to join the meeting: %(join_link)s
-            You need this password to enter: %(password)s
-            Regards
-        """
-            )
-            % {
-                "owner": full_name,
-                "meeting_title": meeting.name,
-                "start_date_time": meeting_start_datetime,
-                "end_date": timezone.localtime(
-                    meeting.start_at + meeting.expected_duration
-                ).strftime("%d/%m/%Y %H:%M"),
-                "join_link": join_link,
-                "password": meeting.attendee_password,
-            }
-        )
-    return text_content
 
 
 def get_html_content(request, meeting):
