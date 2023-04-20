@@ -24,7 +24,7 @@ class CutVideo(models.Model):
             )
 
     def verify_time(self):
-        # Vérifier si ce sont les mêmes valeurs (pour éviter un réencodage inutile)
+        """Vérifier si ce sont les mêmes valeurs (pour éviter un réencodage inutile)"""
         if CutVideo.objects.filter(video=self.video.id).exists():
             previous_cut = CutVideo.objects.get(video=self.video.id)
             if previous_cut.start == self.start and previous_cut.end == self.end:
