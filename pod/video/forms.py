@@ -315,7 +315,7 @@ if USE_TRANSCRIPTION:
                     _(
                         "Transcription is a speech"
                         " recognition technology that transforms an oral speech into "
-                        "text in an automated way. By selecting a lang, it will "
+                        "text in an automated way. By selecting language, it will "
                         "generate a subtitle file automatically when encoding the video."
                     ),
                     _(

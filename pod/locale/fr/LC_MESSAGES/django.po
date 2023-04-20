@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-20 10:19+0000\n"
+"POT-Creation-Date: 2023-04-20 12:07+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -6046,12 +6046,12 @@ msgstr ""
 #: pod/video/forms.py:316 pod/video/templates/videos/add_video.html:105
 msgid ""
 "Transcription is a speech recognition technology that transforms an oral "
-"speech into text in an automated way. By selecting a lang, it will generate "
-"a subtitle file automatically when encoding the video."
+"speech into text in an automated way. By selecting language, it will "
+"generate a subtitle file automatically when encoding the video."
 msgstr ""
 "La transcription est une technologie de reconnaissance vocale qui transforme "
-"un discours en texte automatiquement. En cochant cette case, cela va générer "
-"un fichier de sous-titre durant l’encodage de la vidéo."
+"un discours en texte automatiquement. En sélectionnant une langue, cela va "
+"générer un fichier de sous-titre durant l’encodage de la vidéo."
 
 #: pod/video/forms.py:322 pod/video/templates/videos/add_video.html:106
 msgid ""
@@ -6380,7 +6380,7 @@ msgid "Date of event"
 msgstr "Date de l'évènement"
 
 #: pod/video/models.py:737
-msgid "Select an available lang to transcript the audio."
+msgid "Select an available language to transcribe the audio."
 msgstr "Sélectionner une langue disponible pour transcrire l'audio."
 
 #: pod/video/models.py:813
@@ -6837,7 +6837,7 @@ msgid "Upload progress:"
 msgstr "Progression du téléversement :"
 
 #: pod/video/templates/videos/add_video.html:58
-msgid "Select an available lang if you want to transcript the audio."
+msgid "Select an available language if you want to transcribe the audio."
 msgstr ""
 "Sélectionner une langue disponible si vous souhaitez transcrire l'audio."
 
@@ -7567,8 +7567,8 @@ msgid "Deleting the video \"%(vtitle)s\""
 msgstr "Supprimer la vidéo « %(vtitle)s »"
 
 #: pod/video/views.py:1038
-msgid "Transcription not enable on this platform."
-msgstr ""
+msgid "Transcription not enabled on this platform."
+msgstr "Transcription non activée sur cette plateforme."
 
 #: pod/video/views.py:1048
 msgid "You cannot manage this video."

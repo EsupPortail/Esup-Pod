@@ -1035,7 +1035,7 @@ def video_transcript(request, slug=None):
         messages.add_message(
             request,
             messages.ERROR,
-            _("Transcription not enable on this platform.")
+            _("Transcription not enabled on this platform.")
         )
         raise PermissionDenied
 

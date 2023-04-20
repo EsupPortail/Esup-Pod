@@ -55,7 +55,7 @@
       <option value="{{lang|first}}">{{lang|last}}</option>
       {% endfor %}
     </select>
-    <small class="form-text">{% trans "Select an available lang if you want to transcript the audio." %}</small>
+    <small class="form-text">{% trans "Select an available language if you want to transcribe the audio." %}</small>
   </div>
   {% endif %}
 
@@ -102,10 +102,9 @@
           {% trans "Transcript" %}
           </button>
           <div id="collapse-2" class="card-body collapse hide card-text small" aria-labelledby="heading-2" data-bs-parent="#formfields">
-            <p> {% trans "Transcription is a speech recognition technology that transforms an oral speech into text in an automated way. By selecting a lang, it will generate a subtitle file automatically when encoding the video." %}</p>
+            <p> {% trans "Transcription is a speech recognition technology that transforms an oral speech into text in an automated way. By selecting language, it will generate a subtitle file automatically when encoding the video." %}</p>
             <p> {% trans "You will probably have to modify this file using the captioning tool in the completion page to improve it." %} </p>
           </div>
-        -->
       </div>
     {% endif %}
   </div>

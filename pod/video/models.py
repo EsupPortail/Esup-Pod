@@ -734,7 +734,7 @@ class Video(models.Model):
         max_length=2,
         choices=get_transcription_choices(),
         blank=True,
-        help_text=_("Select an available lang to transcript the audio."),
+        help_text=_("Select an available language to transcribe the audio."),
     )
     tags = TagField(
         help_text=_(
