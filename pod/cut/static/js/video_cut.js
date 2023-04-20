@@ -4,7 +4,6 @@ let displayValOne = document.getElementById("range1");
 let displayValTwo = document.getElementById("range2");
 let minGap = 0;
 let sliderTrack = document.querySelector(".slider-track");
-sliderTrack.style.background = "#1f8389";
 start_time = parseInt(sliderOne.value);
 button_reset = document.getElementById("reset");
 initialStart = sliderOne.value;
@@ -17,7 +16,7 @@ let sliderMaxValue = sliderOne.max;
 let sliderMinValue = sliderOne.min;
 
 
-function doChangeForRange1() {
+function doChangeForRange1() { // Do change for the start value with the "time range"
   let value = timeToInt(this.value);
   if (value >= 0 && value <= sliderMaxValue) {
     sliderOne.value = value;
@@ -26,7 +25,7 @@ function doChangeForRange1() {
   }
 }
 
-function doChangeForRange2() {
+function doChangeForRange2() { // Do change for the end value with the "time range"
   let value = timeToInt(this.value);
   if (value >= 0 && value <= sliderMaxValue) {
     sliderTwo.value = value;
@@ -44,7 +43,7 @@ window.onload = function () {
 displayValOne.addEventListener("change", doChangeForRange1);
 displayValTwo.addEventListener("change", doChangeForRange2);
 
-function slideOne() {
+function slideOne() { // Do change for the start value with the slider
   if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
     sliderOne.value = parseInt(sliderTwo.value) - minGap;
   }
@@ -53,7 +52,7 @@ function slideOne() {
   changeCurrentTimePlayer(sliderOne.value);
 }
 
-function slideTwo() {
+function slideTwo() { // Do change for the end value with the slider
   if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
     sliderTwo.value = parseInt(sliderOne.value) + minGap;
   }
@@ -62,14 +61,14 @@ function slideTwo() {
   changeCurrentTimePlayer(sliderTwo.value);
 }
 
-function fillColor() {
+function fillColor() { // Apply the changes
   percent1 = (sliderOne.value / sliderMaxValue) * 100;
   percent2 = (sliderTwo.value / sliderMaxValue) * 100;
   sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent1}% , #1f8389 ${percent1}% , #1f8389 ${percent2}%, #dadae5 ${percent2}%)`;
   calculation_total_time();
 }
 
-function intToTime(time) {
+function intToTime(time) { // Convert an integer to a time
   var sec_num = parseInt(time, 10); // don't forget the second param
   var hours = Math.floor(sec_num / 3600);
   var minutes = Math.floor((sec_num - hours * 3600) / 60);
@@ -87,7 +86,7 @@ function intToTime(time) {
   return hours + ":" + minutes + ":" + seconds;
 }
 
-function timeToInt(date) {
+function timeToInt(date) { // Convert time to an integer
   var a = date.split(":"); // split it at the colons
 
   // minutes are worth 60 seconds. Hours are worth 60 minutes.
@@ -95,7 +94,7 @@ function timeToInt(date) {
   return seconds;
 }
 
-function calculation_total_time() {
+function calculation_total_time() { // Calculate the total duration of the video 
   var total_time = sliderTwo.value - sliderOne.value;
   if (total_time >= 0 && total_time <= sliderMaxValue) {
     document.getElementById("total_time").innerText = intToTime(total_time);
@@ -158,7 +157,7 @@ button_reset.addEventListener("click", event => {
   player.currentTime(0);
 });
 
-function changeCurrentTimePlayer(value) {
+function changeCurrentTimePlayer(value) { // Move the player along with the cursor
   if (value - initialStart >= 0) {
     player.currentTime(value - initialStart)
   }

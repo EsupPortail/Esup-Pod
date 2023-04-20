@@ -4,6 +4,7 @@ from pod.completion.models import Overlay, Track
 
 
 def clean_database(video_id):
+    """Clean database when cutting video"""
     # Delete chapter(s)
     if Chapter.objects.filter(video=video_id).exists():
         chapter = Chapter.objects.filter(video=video_id)

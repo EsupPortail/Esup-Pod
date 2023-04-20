@@ -33,8 +33,8 @@
   {% include 'videos/video-element.html' %}
 </span>
 
-<div class="wrapper">
-  <div class="values">
+<div id="wrapper_cut">
+  <div id="values_cut">
     <form action="{% url 'video:cut:video_cut' slug=video.slug %}" method="POST" id="time_for_cut" accept-charset="utf-8" enctype="multipart/form-data">
       {% csrf_token %}
 
@@ -47,7 +47,7 @@
       {{ form_cut.end }}
       <i id="button_end" class="bi bi-scissors" aria-hidden="true" title="{% trans 'Get the video player time' %}"></i>
     </div>
-  <div class="container">
+  <div id="container_cut">
       <div class="slider-track"></div>
       <input type="range" class="pod-multi-range" name="start_slider" id="slider-1" min="0" max="{% firstof cutting.duration_in_int video.duration %}" value="{% firstof cutting.start_in_int '0' %}" oninput="slideOne()" title="{% trans 'Start' %}">
       <input type="range" class="pod-multi-range" name="end_slider" id="slider-2" min="0" max="{% firstof cutting.duration_in_int video.duration %}" value="{% firstof cutting.end_in_int video.duration %}" oninput="slideTwo()" title="{% trans 'End' %}">
