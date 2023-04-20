@@ -183,7 +183,9 @@
               {% if MAINTENANCE_MODE %}
                 <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle "></i> {% trans "Some features are unavailable" %}</span>
               {% else %}
-                <a class="mx-3 mb-2 btn btn-primary" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
+                {% if video_buttons %}
+                  <a class="mx-3 mb-2 btn btn-primary" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
+                {% endif %}
               {% endif %}
               {% if request.user.is_superuser or user.owner.is_manager %}
                 <a class="nav-item nav-link" href="{% url 'admin:index' %}"><i class="bi bi-cpu pod-nav-link-icon mx-1"></i>Administration</a>
@@ -193,7 +195,9 @@
                   <i class="bi bi-card-image pod-nav-link-icon mx-1"></i>{% if request.user.owner.userpicture %}{% trans 'Change your picture' %}{% else %}{% trans 'Add your picture' %}{% endif %}
                 </button></div>
               {% endif %}
-              <a class="nav-item nav-link" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My videos' %}</a>
+              {% if video_buttons %}
+                <a class="nav-item nav-link" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My videos' %}</a>
+              {% endif %}
               {% if USE_OPENCAST_STUDIO %}
                 <a class="nav-item nav-link" href="{% url 'recorder:studio_pod'%}"><i class="bi bi-camera-video pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans "Video Record" %}</a>
               {% endif %}
