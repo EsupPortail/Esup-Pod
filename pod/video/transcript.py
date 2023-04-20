@@ -164,7 +164,7 @@ def main_threaded_transcript(video_to_encode_id):
     video_to_encode = Video.objects.get(id=video_to_encode_id)
 
     msg = ""
-    lang = video_to_encode.main_lang
+    lang = video_to_encode.transcript
     # check if TRANSCRIPTION_MODEL_PARAM [lang] exist
     if not TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE].get(lang):
         msg += "\n no stt model found for lang:%s." % lang
