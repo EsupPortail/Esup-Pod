@@ -329,3 +329,6 @@ input:checked+.slider:before {
   transform: translateX(26px);
 }
 
+[data-theme="dark"] input.pod-multi-range {
+  background-color: transparent;
+}

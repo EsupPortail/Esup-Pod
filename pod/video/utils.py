@@ -1,8 +1,8 @@
-"""Esup-Pod video utilities."""
 import os
 import re
 import shutil
 from math import ceil
+import time
 
 from django.urls import reverse
 from django.conf import settings
@@ -56,8 +56,12 @@ MANAGERS = getattr(settings, "MANAGERS", {})
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
 
+# ##########################################################################
+# get all videos available
+# ##########################################################################
+
+
 def get_available_videos():
-    """Get all videos available."""
     videos = Video.objects.filter(encoding_in_progress=False, is_draft=False).defer(
         "video", "slug", "owner", "additional_owners", "description"
     )
@@ -72,7 +76,7 @@ def get_available_videos():
 
 
 # ##########################################################################
-# ENCODE VIDEO : GENERIC FUNCTIONS
+# ENCODE VIDEO : GENERIC FUNCTION
 # ##########################################################################
 
 
@@ -89,28 +93,25 @@ def change_encoding_step(video_id, num_step, desc):
 
 
 def add_encoding_log(video_id, log):
-    """Add message in video_id encoding log."""
-    encoding_log, created = EncodingLog.objects.get_or_create(
-        video=Video.objects.get(id=video_id)
-    )
-    if created:
-        encoding_log.log = log
-    else:
-        encoding_log.log += "\n\n%s" % log
+    encoding_log = EncodingLog.objects.get(video=Video.objects.get(id=video_id))
+    encoding_log.log += "\n\n%s" % (log)
     encoding_log.save()
     if DEBUG:
         print(log)
 
 
 def check_file(path_file):
-    """Check if path_file is accessible and is not null."""
     if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
         return True
     return False
 
 
+# ##########################################################################
+# ENCODE VIDEO : CREATE OUTPUT DIR
+# ##########################################################################
+
+
 def create_outputdir(video_id, video_path):
-    """ENCODE VIDEO: CREATE OUTPUT DIR."""
     dirname = os.path.dirname(video_path)
     output_dir = os.path.join(dirname, "%04d" % video_id)
     if not os.path.exists(output_dir):
@@ -124,7 +125,6 @@ def create_outputdir(video_id, video_path):
 
 
 def send_email(msg, video_id):
-    """Send email notification when video encoding failed."""
     subject = "[" + __TITLE_SITE__ + "] Error Encoding Video id:%s" % video_id
     message = "Error Encoding  video id : %s\n%s" % (video_id, msg)
     html_message = "<p>Error Encoding video id : %s</p><p>%s</p>" % (
@@ -135,7 +135,6 @@ def send_email(msg, video_id):
 
 
 def send_email_recording(msg, recording_id):
-    """Send email notification when recording encoding failed."""
     subject = "[" + __TITLE_SITE__ + "] Error Encoding Recording id:%s" % recording_id
     message = "Error Encoding  recording id : %s\n%s" % (recording_id, msg)
     html_message = "<p>Error Encoding recording id : %s</p><p>%s</p>" % (
@@ -146,7 +145,6 @@ def send_email_recording(msg, recording_id):
 
 
 def send_email_transcript(video_to_encode):
-    """Send email on transcripting completion."""
     if DEBUG:
         print("SEND EMAIL ON TRANSCRIPTING COMPLETION")
     url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
@@ -332,14 +330,17 @@ def send_email_encoding(video_to_encode):
 
 
 def pagination_data(request_path, offset, limit, total_count):
-    """Get next, previous url and info about max number of page and current page.
+    """Get next, previous url and info about
+    max number of page and current page\n
 
-    :param request_path: str: current request path
-    :param offset:       int: data offset
-    :param limit:        int: data max number
-    :param total_count:  int: total data count
+    Args:\n
+        request_path (str): current request path
+        offset (int): data offset\n
+        limit (int): data max number\n
+        total_count (int): total data count\n
 
-    :return: Tuple[str]: next, previous url and current page info
+    Returns:\n
+        Tuple[str]: next, previous url and current page info\n
     """
     next_url = previous_url = None
     pages_info = "0/0"
@@ -357,12 +358,14 @@ def pagination_data(request_path, offset, limit, total_count):
 
 
 def get_headband(channel, theme=None):
-    """Get headband with priority to theme headband.
+    """Get headband with priority to theme headband\n
 
-    :param channel: (Channel): channel
-    :param theme: (Theme, optional): theme, Defaults to None.
+    Args:\n
+        channel (Channel): channel\n
+        theme (Theme, optional): theme, Defaults to None.\n
 
-    :return: dict: type(theme, channel) and headband path
+    Returns:\n
+        dict: type(theme, channel) and headband path\n
     """
     result = {
         "type": "channel" if theme is None else "theme",
@@ -377,7 +380,6 @@ def get_headband(channel, theme=None):
 
 
 def change_owner(video_id, new_owner):
-    """Replace current video_id owner by new_owner."""
     if video_id is None:
         return False
 
@@ -390,8 +392,7 @@ def change_owner(video_id, new_owner):
     return True
 
 
-def move_video_file(video, new_owner):
-    """Move video files in new_owner folder."""
+def move_video_file(video, new_owner):  # pragma: no cover
     # overview and encoding video folder name
     encod_folder_pattern = "%04d" % video.id
     old_dest = os.path.join(os.path.dirname(video.video.path), encod_folder_pattern)
@@ -469,3 +470,9 @@ def get_videos(title, user_id, search=None, limit=12, offset=0):
         "results": results,
     }
     return JsonResponse(response, safe=False)
+
+
+def time_to_seconds(a_time):
+    seconds = time.strptime(str(a_time), '%H:%M:%S')
+    seconds = seconds.tm_sec + seconds.tm_min * 60 + seconds.tm_hour * 3600
+    return seconds

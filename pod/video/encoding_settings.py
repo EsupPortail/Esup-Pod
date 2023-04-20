@@ -23,7 +23,7 @@ FFMPEG_STUDIO_COMMAND = (
 
 FFMPEG_LIBX = "libx264"
 FFMPEG_MP4_ENCODE = (
-    '-map 0:v:0 %(map_audio)s -c:v %(libx)s  -vf "scale=-2:%(height)s" '
+    '%(cut)s -map 0:v:0 %(map_audio)s -c:v %(libx)s  -vf "scale=-2:%(height)s" '
     + "-preset %(preset)s -profile:v %(profile)s "
     + "-pix_fmt yuv420p -level %(level)s -crf %(crf)s "
     + "-maxrate %(maxrate)s -bufsize %(bufsize)s "
@@ -33,7 +33,8 @@ FFMPEG_MP4_ENCODE = (
 )
 # https://gist.github.com/Andrey2G/78d42b5c87850f8fbadd0b670b0e6924
 FFMPEG_HLS_COMMON_PARAMS = (
-    "-c:v %(libx)s -preset %(preset)s -profile:v %(profile)s -pix_fmt yuv420p "
+    '%(cut)s '
+    + "-c:v %(libx)s -preset %(preset)s -profile:v %(profile)s -pix_fmt yuv420p "
     + "-level %(level)s -crf %(crf)s -sc_threshold 0 "
     + '-force_key_frames "expr:gte(t,n_forced*1)" '
     + "-c:a aac -ar 48000 -max_muxing_queue_size 4000 "
@@ -46,10 +47,10 @@ FFMPEG_HLS_ENCODE_PARAMS = (
 )
 
 # FFMPEG_MP3_ENCODE = '-vn -b:a %(audio_bitrate)s -f mp3 -y "%(output)s" '
-FFMPEG_MP3_ENCODE = '-vn -codec:a libmp3lame -qscale:a 2 -y "%(output)s" '
+FFMPEG_MP3_ENCODE = '%(cut)s -vn -codec:a libmp3lame -qscale:a 2 -y "%(output)s" '
 # In our example above, we selected -qscale:a 2, meaning we used LAME's option -V 2,
 # which gives us a VBR MP3 audio stream with an average stereo bitrate of 170-210 kBit/s.
-FFMPEG_M4A_ENCODE = '-vn -c:a aac -b:a %(audio_bitrate)s "%(output)s" '
+FFMPEG_M4A_ENCODE = '%(cut)s -vn -c:a aac -b:a %(audio_bitrate)s "%(output)s" '
 FFMPEG_NB_THREADS = 0
 FFMPEG_AUDIO_BITRATE = "192k"
 

@@ -1,0 +1,165 @@
+let sliderOne = document.getElementById("slider-1");
+let sliderTwo = document.getElementById("slider-2");
+let displayValOne = document.getElementById("range1");
+let displayValTwo = document.getElementById("range2");
+let minGap = 0;
+let sliderTrack = document.querySelector(".slider-track");
+sliderTrack.style.background = "#1f8389";
+start_time = parseInt(sliderOne.value);
+button_reset = document.getElementById("reset");
+initialStart = sliderOne.value;
+initialEnd = sliderTwo.value;
+
+
+// Définition du temps maximum
+let sliderMaxValue = sliderOne.max;
+// Définition du temps minimum
+let sliderMinValue = sliderOne.min;
+
+
+function doChangeForRange1() {
+  let value = timeToInt(this.value);
+  if (value >= 0 && value <= sliderMaxValue) {
+    sliderOne.value = value;
+    fillColor();
+    changeCurrentTimePlayer(value);
+  }
+}
+
+function doChangeForRange2() {
+  let value = timeToInt(this.value);
+  if (value >= 0 && value <= sliderMaxValue) {
+    sliderTwo.value = value;
+    fillColor();
+    changeCurrentTimePlayer(value);
+  }
+}
+
+window.onload = function () {
+  slideOne();
+  slideTwo();
+  player.currentTime(0);
+};
+
+displayValOne.addEventListener("change", doChangeForRange1);
+displayValTwo.addEventListener("change", doChangeForRange2);
+
+function slideOne() {
+  if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
+    sliderOne.value = parseInt(sliderTwo.value) - minGap;
+  }
+  displayValOne.value = intToTime(sliderOne.value);
+  fillColor();
+  changeCurrentTimePlayer(sliderOne.value);
+}
+
+function slideTwo() {
+  if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
+    sliderTwo.value = parseInt(sliderOne.value) + minGap;
+  }
+  displayValTwo.value = intToTime(sliderTwo.value);
+  fillColor();
+  changeCurrentTimePlayer(sliderTwo.value);
+}
+
+function fillColor() {
+  percent1 = (sliderOne.value / sliderMaxValue) * 100;
+  percent2 = (sliderTwo.value / sliderMaxValue) * 100;
+  sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent1}% , #1f8389 ${percent1}% , #1f8389 ${percent2}%, #dadae5 ${percent2}%)`;
+  calculation_total_time();
+}
+
+function intToTime(time) {
+  var sec_num = parseInt(time, 10); // don't forget the second param
+  var hours = Math.floor(sec_num / 3600);
+  var minutes = Math.floor((sec_num - hours * 3600) / 60);
+  var seconds = sec_num - hours * 3600 - minutes * 60;
+
+  if (hours < 10) {
+    hours = "0" + hours;
+  }
+  if (minutes < 10) {
+    minutes = "0" + minutes;
+  }
+  if (seconds < 10) {
+    seconds = "0" + seconds;
+  }
+  return hours + ":" + minutes + ":" + seconds;
+}
+
+function timeToInt(date) {
+  var a = date.split(":"); // split it at the colons
+
+  // minutes are worth 60 seconds. Hours are worth 60 minutes.
+  var seconds = +a[0] * 60 * 60 + +a[1] * 60 + +a[2];
+  return seconds;
+}
+
+function calculation_total_time() {
+  var total_time = sliderTwo.value - sliderOne.value;
+  if (total_time >= 0 && total_time <= sliderMaxValue) {
+    document.getElementById("total_time").innerText = intToTime(total_time);
+  } else {
+    document.getElementById("total_time").innerText = "--:--:--";
+  }
+}
+
+// Empêche de valider le formulaire sans confirmation avec la touche Entrée
+(function(n) {
+  var f = function(e) {
+    var c = e.which || e.keyCode;
+    if (c == 13) {
+      e.preventDefault();
+      $('#ConfirmationModal').modal('show');
+      return false;
+    }
+  };
+  window.noPressEnter = function(a, b) {
+    b = (typeof b === 'boolean') ? b : true;
+    if (b) {
+      a.addEventListener(n, f);
+    } else {
+      a.removeEventListener(n, f);
+    }
+    return a;
+  };
+})('keydown');
+
+noPressEnter(displayValOne);
+noPressEnter(displayValTwo);
+noPressEnter(sliderOne);
+noPressEnter(sliderTwo);
+
+// Boutons pour récupérer le temps du lecteur
+let button_start = document.getElementById("button_start");
+let button_end = document.getElementById("button_end");
+
+button_start.addEventListener("click", event => {
+  time = Math.trunc(player.currentTime()) + start_time;
+  displayValOne.value = intToTime(time);
+  sliderOne.value = time;
+  fillColor();
+});
+
+button_end.addEventListener("click", event => {
+  time = Math.trunc(player.currentTime()) + start_time;
+  displayValTwo.value = intToTime(time);
+  sliderTwo.value = Math.trunc(time);
+  fillColor();
+});
+
+// Bouton reset
+button_reset.addEventListener("click", event => {
+  displayValOne.value = intToTime(initialStart);
+  sliderOne.value = initialStart;
+  displayValTwo.value = intToTime(initialEnd);
+  sliderTwo.value = initialEnd;
+  fillColor();
+  player.currentTime(0);
+});
+
+function changeCurrentTimePlayer(value) {
+  if (value - initialStart >= 0) {
+    player.currentTime(value - initialStart)
+  }
+}

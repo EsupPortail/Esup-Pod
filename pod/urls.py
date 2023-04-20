@@ -73,6 +73,8 @@ urlpatterns = [
     url(r"^download/$", download_file, name="download_file"),
     # custom
     url(r"^custom/", include("pod.custom.urls")),
+    # cut
+    url(r"^cut/", include("pod.cut.urls")),
 ]
 # PLAYLIST
 urlpatterns += [
