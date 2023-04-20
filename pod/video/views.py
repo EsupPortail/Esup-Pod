@@ -152,6 +152,7 @@ USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
 if USE_TRANSCRIPTION:
     from . import transcript
+
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
 __VIDEOS__ = get_available_videos()
@@ -1035,27 +1036,21 @@ def video_transcript(request, slug=None):
 
     if not USE_TRANSCRIPTION:
         messages.add_message(
-            request,
-            messages.ERROR,
-            _("Transcription not enabled on this platform.")
+            request, messages.ERROR, _("Transcription not enabled on this platform.")
         )
         raise PermissionDenied
 
     if request.user != video.owner and not (
         request.user.is_superuser or request.user.has_perm("video.change_video")
     ):
-        messages.add_message(
-            request,
-            messages.ERROR,
-            _("You cannot manage this video.")
-        )
+        messages.add_message(request, messages.ERROR, _("You cannot manage this video."))
         raise PermissionDenied
 
     if not video.encoded or video.encoding_in_progress is True:
         messages.add_message(
             request,
             messages.ERROR,
-            _("You cannot launch transcript for a video that is being encoded.")
+            _("You cannot launch transcript for a video that is being encoded."),
         )
         return redirect(reverse("video:video_edit", args=(video.slug,)))
 
