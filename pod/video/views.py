@@ -39,6 +39,7 @@ from pod.video.models import Theme
 from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
 from pod.video.models import ViewCount, VideoVersion
 from pod.video.models import Comment, Vote, Category
+from pod.video.models import get_transcription_choices
 from tagging.models import TaggedItem
 
 from pod.video.forms import VideoForm, VideoVersionForm
@@ -141,12 +142,18 @@ CURSUS_CODES = getattr(
     ),
 )
 
-USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 VIEW_STATS_AUTH = getattr(settings, "VIEW_STATS_AUTH", False)
 ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
 USER_VIDEO_CATEGORY = getattr(settings, "USER_VIDEO_CATEGORY", False)
 DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
 ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
+
+USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
+
+if USE_TRANSCRIPTION:
+    from . import transcript
+
+    TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
 __VIDEOS__ = get_available_videos()
 
@@ -984,6 +991,7 @@ def save_video_form(request, form):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_delete(request, slug=None):
+    """View to delete video. Show form to approve deletion and do it if sent"""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
 
     if request.user != video.owner and not (
@@ -1018,6 +1026,42 @@ def video_delete(request, slug=None):
         "videos/video_delete.html",
         {"video": video, "form": form, "page_title": page_title},
     )
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def video_transcript(request, slug=None):
+    """View to restart transcription of a video."""
+    video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
+
+    if not USE_TRANSCRIPTION:
+        messages.add_message(
+            request, messages.ERROR, _("Transcription not enabled on this platform.")
+        )
+        raise PermissionDenied
+
+    if request.user != video.owner and not (
+        request.user.is_superuser or request.user.has_perm("video.change_video")
+    ):
+        messages.add_message(request, messages.ERROR, _("You cannot manage this video."))
+        raise PermissionDenied
+
+    if not video.encoded or video.encoding_in_progress is True:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("You cannot launch transcript for a video that is being encoded."),
+        )
+        return redirect(reverse("video:video_edit", args=(video.slug,)))
+
+    if video.get_video_mp3():
+        transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
+        transcript_video(video.id)
+        messages.add_message(
+            request, messages.INFO, _("The video transcript has been restarted.")
+        )
+
+    return redirect(reverse("video:video_edit", args=(video.slug,)))
 
 
 def get_adv_note_list(request, video):
@@ -2055,7 +2099,7 @@ def video_add(request):
             "allow_extension": allow_extension,
             "allowed_text": allowed_text,
             "restricted_to_staff": RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY,
-            "TRANSCRIPT": USE_TRANSCRIPTION,
+            "TRANSCRIPT": get_transcription_choices(),
             "page_title": _("Media upload"),
         },
     )
@@ -2613,18 +2657,19 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
     def on_completion(self, uploaded_file, request):
         """Triggered when a chunked upload is complete."""
         edit_slug = request.POST.get("slug")
-        transcript = request.POST.get("transcript")
+        transcript = request.POST.get("transcript", "")
         if edit_slug == "":
             video = Video.objects.create(
                 video=uploaded_file,
                 owner=request.user,
                 type=Type.objects.get(id=DEFAULT_TYPE_ID),
                 title=uploaded_file.name,
-                transcript=(True if (transcript == "true") else False),
+                transcript=transcript,
             )
         else:
             video = Video.objects.get(slug=edit_slug)
             video.video = uploaded_file
+            video.transcript = transcript
         video.launch_encode = True
         video.save()
         self.slug = video.slug

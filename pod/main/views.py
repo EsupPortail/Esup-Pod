@@ -30,10 +30,12 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import JsonResponse
 from wsgiref.util import FileWrapper
 from django.db.models import Q, Count
 from pod.video.models import Video, remove_accents
 from pod.authentication.forms import FrontOwnerForm
+from django.db.models import Sum
 import os
 import mimetypes
 import json
@@ -352,6 +354,21 @@ def robots_txt(request):
         "Disallow: %s" % LOGIN_URL,
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")
+
+
+# Restrict to only GET requests
+@require_GET
+def info_pod(request):
+    """Render a json response to give information about Pod instance."""
+    data = {
+        "TITLE_SITE": __TITLE_SITE__,
+        "VERSION": settings.VERSION,
+        "COUNT_VIDEO": Video.objects.all().count(),
+        "DURATION_VIDEO": Video.objects.aggregate(Sum("duration")).get(
+            "duration__sum", 0
+        ),
+    }
+    return JsonResponse(data)
 
 
 @csrf_protect

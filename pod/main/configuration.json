@@ -1503,10 +1503,10 @@
                             "default_value": "('doc', 'docx', 'odt', 'pdf', 'xls', 'xlsx', 'ods', 'ppt', 'pptx', 'txt', 'html', 'htm', 'vtt', 'srt')",
                             "description": {
                                 "en": [
-                                    "Extensions allowed for documents uploaded in the file manager"
+                                    "Extensions allowed for documents uploaded in the file manager (lowercase)."
                                 ],
                                 "fr": [
-                                    "Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier"
+                                    "Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier ((en minuscules)."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1529,10 +1529,10 @@
                             "default_value": "('jpg', 'jpeg', 'bmp', 'png', 'gif', 'tiff', 'webp')",
                             "description": {
                                 "en": [
-                                    "Extensions allowed for images uploaded in the file manager"
+                                    "Allowed extensions for images uploaded in the file manager (must be lowercase)."
                                 ],
                                 "fr": [
-                                    "Extensions autorisées pour les images téléversées dans le gestionnaire de fichier"
+                                    "Extensions autorisées pour les images téléversées dans le gestionnaire de fichier. (en minuscules)"
                                 ]
                             },
                             "pod_version_end": "",
@@ -2355,10 +2355,10 @@
                             "default_value": "()",
                             "description": {
                                 "en": [
-                                    ""
+                                    "Allowed extensions for video upload on the platform (lowercase)."
                                 ],
                                 "fr": [
-                                    "Extensions autorisées pour le téléversement vidéo sur la plateforme",
+                                    "Extensions autorisées pour le téléversement vidéo sur la plateforme (en minuscules).",
                                     "```",
                                     "VIDEO_ALLOWED_EXTENSIONS = (",
                                     "    \"3gp\",",

@@ -16,6 +16,7 @@ from pod.main.views import (
     user_autocomplete,
     maintenance,
     robots_txt,
+    info_pod,
     userpicture,
 )
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
@@ -31,6 +32,7 @@ if USE_CAS:
 urlpatterns = [
     url("select2/", include("django_select2.urls")),
     url("robots.txt", robots_txt),
+    url("info_pod.json", info_pod),
     url(r"^admin/", admin.site.urls),
     # Translation
     url(r"^i18n/", include("django.conf.urls.i18n")),
