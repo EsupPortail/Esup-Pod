@@ -7581,7 +7581,7 @@ msgstr ""
 
 #: pod/video/views.py:1064
 msgid "The video transcript has been restarted."
-msgstr "La transcription de la vidéo a été relancé."
+msgstr "La transcription de la vidéo a été relancée."
 
 #: pod/video/views.py:1179
 #, python-format

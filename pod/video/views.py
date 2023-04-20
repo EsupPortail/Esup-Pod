@@ -990,6 +990,7 @@ def save_video_form(request, form):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_delete(request, slug=None):
+    """View to delete video. Show form to approve deletion and do it if sent"""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
 
     if request.user != video.owner and not (
@@ -1029,6 +1030,7 @@ def video_delete(request, slug=None):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_transcript(request, slug=None):
+    """View to restart transcription of a video."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
 
     if not USE_TRANSCRIPTION:
