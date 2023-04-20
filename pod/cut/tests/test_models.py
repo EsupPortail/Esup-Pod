@@ -27,15 +27,15 @@ class CutVideoModelTestCase(TestCase):
         CutVideo.objects.create(video=video, start="00:00:00", end="00:00:20")
 
     def test_bad_time(self):
-            video = Video.objects.get(id=1)
-            cut = CutVideo()
-            cut.duration = video.duration_in_time
-            cut.video = video
-            cut.start = "00:00:21"
-            cut.end = "00:00:25"
-            self.assertRaises(ValidationError, cut.clean)
-            cut.start = "00:00:12"
-            cut.end = "00:00:08"
-            self.assertRaises(ValidationError, cut.clean)
+        video = Video.objects.get(id=1)
+        cut = CutVideo()
+        cut.duration = video.duration_in_time
+        cut.video = video
+        cut.start = "00:00:21"
+        cut.end = "00:00:25"
+        self.assertRaises(ValidationError, cut.clean)
+        cut.start = "00:00:12"
+        cut.end = "00:00:08"
+        self.assertRaises(ValidationError, cut.clean)
 
-            print(" ---> test_bad_time : OK ! --- CutVideoModel")
+        print(" ---> test_bad_time : OK ! --- CutVideoModel")
