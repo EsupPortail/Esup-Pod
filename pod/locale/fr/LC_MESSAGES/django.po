@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-21 14:12+0200\n"
+"POT-Creation-Date: 2023-04-20 12:58+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -1056,6 +1056,7 @@ msgstr "Chapitre vidéo"
 #: pod/chapter/templates/video_chapter.html:16
 #: pod/completion/templates/video_caption_maker.html:12
 #: pod/completion/templates/video_completion.html:14
+#: pod/cut/templates/video_cut.html:18
 #: pod/enrichment/templates/enrichment/group_enrichment.html:10
 #: pod/main/templates/navbar.html:86 pod/main/templates/navbar.html:200
 #: pod/video/templates/videos/add_video.html:12
@@ -1067,6 +1068,7 @@ msgid "My videos"
 msgstr "Mes vidéos"
 
 #: pod/chapter/templates/video_chapter.html:42
+#: pod/cut/templates/video_cut.html:63
 #: pod/video/templates/videos/video_collaborate.html:64
 #: pod/video/templates/videos/video_delete.html:16
 #: pod/video/templates/videos/video_edit.html:38
@@ -1074,6 +1076,7 @@ msgid "View the video"
 msgstr "Voir la vidéo"
 
 #: pod/chapter/templates/video_chapter.html:43
+#: pod/cut/templates/video_cut.html:64
 #: pod/video/templates/videos/video_collaborate.html:65
 #: pod/video/templates/videos/video_delete.html:17
 #: pod/video/templates/videos/video_delete.html:56
@@ -1086,6 +1089,7 @@ msgstr "Ajouter un nouveau chapitre"
 
 #: pod/chapter/templates/video_chapter.html:59
 #: pod/completion/templates/video_completion.html:128
+#: pod/cut/templates/video_cut.html:97
 #: pod/enrichment/templates/enrichment/group_enrichment.html:71
 #: pod/video/templates/videos/video.html:198
 #: pod/video/templates/videos/video_edit.html:164
@@ -1503,13 +1507,13 @@ msgid "List of overlays"
 msgstr "Liste des superpositions"
 
 #: pod/completion/templates/overlay/list_overlay.html:11
-#: pod/enrichment/models.py:129
+#: pod/cut/templates/video_cut.html:52 pod/enrichment/models.py:129
 #: pod/enrichment/templates/enrichment/list_enrichment.html:12
 msgid "Start"
 msgstr "Début"
 
 #: pod/completion/templates/overlay/list_overlay.html:12
-#: pod/enrichment/models.py:134
+#: pod/cut/templates/video_cut.html:53 pod/enrichment/models.py:134
 #: pod/enrichment/templates/enrichment/list_enrichment.html:13
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html:34
 msgid "End"
@@ -1795,8 +1799,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html:151
 msgid "Subtitles and/or caption(s) files must be in \".vtt\" format."
 msgstr ""
-"Les fichiers de sous-titres et/ou de légendes doivent être au format \".vtt"
-"\"."
+"Les fichiers de sous-titres et/ou de légendes doivent être au format \"."
+"vtt\"."
 
 #: pod/completion/templates/video_completion.html:152
 msgid "You can use"
@@ -1877,6 +1881,79 @@ msgstr "Compléments de la vidéo"
 #: pod/podfile/views.py:487 pod/video/views.py:464 pod/video/views.py:1847
 msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs"
+
+#: pod/cut/models.py:16
+msgid "video cut"
+msgstr "Découpe"
+
+#: pod/cut/models.py:17
+msgid "video cuts"
+msgstr "Découpes"
+
+#: pod/cut/models.py:22 pod/cut/views.py:81
+msgid "Please select values between 00:00:00 and "
+msgstr ""
+"Veuillez renseigner des valeurs comprises entre 00:00:00 et "
+
+#: pod/cut/templates/video_cut.html:8 pod/cut/templates/video_cut.html:26
+#: pod/video/templates/videos/link_video.html:23
+msgid "Cut the video"
+msgstr "Découper la vidéo"
+
+#: pod/cut/templates/video_cut.html:41 pod/cut/templates/video_cut.html:48
+msgid "Get the video player time"
+msgstr "Obtenir le temps du lecteur"
+
+#: pod/cut/templates/video_cut.html:45
+msgid "Total video duration"
+msgstr "Durée totale de la vidéo"
+
+#: pod/cut/templates/video_cut.html:55
+msgid "Reset"
+msgstr "Réinitialiser"
+
+#: pod/cut/templates/video_cut.html:62 pod/cut/templates/video_cut.html:105
+msgid "Cut"
+msgstr "Découper"
+
+#: pod/cut/templates/video_cut.html:75
+msgid "Are you sure you want to apply these changes?"
+msgstr "Voulez-vous vraiment appliquer ces changements ?"
+
+#: pod/cut/templates/video_cut.html:79
+msgid ""
+"Chapters, subtitles and captions, overlays and notes will not be retained."
+msgstr "Les chapitres, sous-titres et légendes, superpositions et notes ne seront pas conservés."
+
+#: pod/cut/templates/video_cut.html:82
+msgid "Back"
+msgstr "Retour"
+
+#: pod/cut/templates/video_cut.html:83
+msgid "Confirm the cut"
+msgstr "Confirmer la découpe"
+
+#: pod/cut/templates/video_cut.html:108
+msgid "The video cut allows you to set a start and an end to trim your video."
+msgstr "La découpe vidéo vous permet de définir un début et une fin pour découper votre vidéo."
+
+#: pod/cut/templates/video_cut.html:109
+msgid ""
+"Your original video is kept and you can therefore modify your changes at any "
+"time"
+msgstr "Votre vidéo d'origine est conservée et vous pouvez donc modifier vos modifications à tout moment"
+
+#: pod/cut/templates/video_cut.html:110
+msgid "When saving your cut, an encoding is restarted to replace the old one."
+msgstr "Lors de la sauvegarde de votre découpe, un encodage est relancé pour remplacer l'ancien."
+
+#: pod/cut/views.py:50
+msgid "You cannot cut this video."
+msgstr "Vous ne pouvez pas découper cette vidéo."
+
+#: pod/cut/views.py:75
+msgid "The cut was made."
+msgstr "Découpe effectuée"
 
 #: pod/enrichment/apps.py:7
 msgid "Enrichment version"
@@ -2078,8 +2155,8 @@ msgid ""
 msgstr ""
 "Les champs \"Début\" et \"Fin\" doivent contenir des valeurs en secondes. "
 "Lancez la lecture de la vidéo, mettez sur pause et cliquez sur \"Récupérer "
-"le temps depuis le lecteur\" pour renseigner automatiquement le champ \"Début"
-"\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
+"le temps depuis le lecteur\" pour renseigner automatiquement le champ "
+"\"Début\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:97
 msgid "You cannot overlap enrichments."
@@ -3075,7 +3152,8 @@ msgstr "Évènements passés"
 msgid "Registration of event #%(content_id)s"
 msgstr "Programmation de l’évènement #%(content_id)s"
 
-#: pod/live/utils.py:60 pod/video/utils.py:166 pod/video/utils.py:245
+#: pod/live/utils.py:58 pod/live/utils.py:80 pod/video/utils.py:157
+#: pod/video/utils.py:182 pod/video/utils.py:250 pod/video/utils.py:275
 msgid "Hello,"
 msgstr "Bonjour,"
 
@@ -3091,13 +3169,15 @@ msgstr ""
 "%(url_event)s). Vous pouvez retrouver les autres options de partage dans "
 "l’onglet dédié."
 
-#: pod/live/utils.py:73 pod/main/templates/mail/mail.html:7
-#: pod/video/utils.py:178 pod/video/utils.py:257
+#: pod/live/utils.py:71 pod/live/utils.py:93
+#: pod/main/templates/mail/mail.html:7 pod/main/templates/mail/mail.txt:7
+#: pod/main/templates/mail/mail_sender.txt:6 pod/video/utils.py:165
+#: pod/video/utils.py:194 pod/video/utils.py:258 pod/video/utils.py:287
 msgid "Regards."
 msgstr "Cordialement."
 
-#: pod/live/utils.py:78 pod/live/utils.py:134 pod/video/utils.py:182
-#: pod/video/utils.py:261
+#: pod/live/utils.py:75 pod/live/utils.py:148 pod/video/utils.py:168
+#: pod/video/utils.py:198 pod/video/utils.py:261 pod/video/utils.py:291
 msgid "Post by:"
 msgstr "Posté par :"
 
@@ -4230,8 +4310,7 @@ msgstr "Récurrence"
 
 #: pod/meeting/forms.py:159 pod/meeting/templates/meeting/recordings.html:23
 #: pod/playlist/templates/playlist/playlist_element_list.html:11
-#: pod/video/feeds.py:226 pod/video/models.py:811 pod/video/models.py:997
-#: pod/video/templates/videos/video_sort_select.html:10
+#: pod/video/feeds.py:226 pod/video/models.py:793 pod/video/models.py:979
 msgid "Duration"
 msgstr "Durée"
 
@@ -4898,16 +4977,16 @@ msgid ""
 msgstr ""
 "\n"
 "        <p>Bonjour,\n"
-"        <p>%(owner)s vous invite à une réunion récurrente <b>"
-"%(meeting_title)s</b>.</p>\n"
+"        <p>%(owner)s vous invite à une réunion récurrente "
+"<b>%(meeting_title)s</b>.</p>\n"
 "        <p>Date de début : %(start_date_time)s </p>\n"
 "        <p>Récurrent jusqu'à la date : %(end_date)s </p>\n"
 "        <p>La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s </"
 "p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
-"%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : "
+"<b>%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -4933,8 +5012,8 @@ msgstr ""
 "        <p>Date de fin : %(end_date)s </p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
-"%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : "
+"<b>%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -5011,8 +5090,8 @@ msgstr "Aucune liste de lecture trouvée"
 
 #: pod/playlist/templates/my_playlists.html:19
 msgid ""
-"You have not created any playlists yet, please use the \"Add a new playlist"
-"\" button to add one."
+"You have not created any playlists yet, please use the \"Add a new "
+"playlist\" button to add one."
 msgstr ""
 "Vous n’avez pas encore créé de liste de lecture, veuillez cliquer sur le "
 "bouton « Ajouter une nouvelle liste de lecture » pour en ajouter une."
@@ -5670,8 +5749,8 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html:13
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
 "passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
@@ -5758,9 +5837,10 @@ msgid ""
 msgstr ""
 "Bonjour, <p>un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur \"%(recorder)s\".<br/>Pour "
-"l’ajouter, cliquez sur le lien ci dessous.</p><a href=\"%(link_url)s\">"
-"%(link_url)s</a><br/><i>Si le lien n’est pas actif, il faut le copier-coller "
-"dans la barre d’adresse de votre navigateur.</i><p><p>Cordialement</p>"
+"l’ajouter, cliquez sur le lien ci dessous.</p><a "
+"href=\"%(link_url)s\">%(link_url)s</a><br/><i>Si le lien n’est pas actif, il "
+"faut le copier-coller dans la barre d’adresse de votre navigateur.</"
+"i><p><p>Cordialement</p>"
 
 #: pod/recorder/views.py:255
 msgid "New recording added."
@@ -6579,7 +6659,7 @@ msgstr "Afficher les statistiques de vue pour toutes les vidéos de ce thème"
 #: pod/video/templates/channel/channel.html:63
 #: pod/video/templates/channel/channel.html:150
 #: pod/video/templates/channel/channel.html:156
-#: pod/video/templates/videos/videos.html:30
+#: pod/video/templates/videos/videos.html:29
 msgid "Statistics views"
 msgstr "Statistiques de vues"
 
@@ -6587,7 +6667,7 @@ msgstr "Statistiques de vues"
 #: pod/video/templates/channel/channel.html:70
 #: pod/video/templates/channel/channel.html:152
 #: pod/video/templates/channel/channel.html:158
-#: pod/video/templates/videos/videos.html:27
+#: pod/video/templates/videos/videos.html:26
 msgid "subscribe to the video feed"
 msgstr "souscrire au flux vidéo"
 
@@ -6595,7 +6675,7 @@ msgstr "souscrire au flux vidéo"
 #: pod/video/templates/channel/channel.html:71
 #: pod/video/templates/channel/channel.html:153
 #: pod/video/templates/channel/channel.html:159
-#: pod/video/templates/videos/videos.html:25
+#: pod/video/templates/videos/videos.html:24
 msgid "subscribe to the audio feed"
 msgstr "souscrire au flux audio"
 
@@ -6643,7 +6723,7 @@ msgid "Edit the themes"
 msgstr "Éditer les thèmes"
 
 #: pod/video/templates/channel/channel.html:191
-#: pod/video/templates/videos/my_videos.html:32
+#: pod/video/templates/videos/my_videos.html:28
 #: pod/video/templates/videos/videos.html:6
 #: pod/video/templates/videos/videos.html:12
 #: pod/video/templates/videos/videos.html:19
@@ -6914,20 +6994,20 @@ msgstr "Éditer la vidéo"
 msgid "Complete the video"
 msgstr "Compléter la vidéo"
 
-#: pod/video/templates/videos/link_video.html:23
+#: pod/video/templates/videos/link_video.html:28
 msgid "Chapter the video"
 msgstr "Chapitrer la vidéo"
 
-#: pod/video/templates/videos/link_video.html:28
+#: pod/video/templates/videos/link_video.html:32
 #: pod/video/templates/videos/video_edit.html:42
 msgid "Delete the video"
 msgstr "Supprimer la vidéo"
 
-#: pod/video/templates/videos/link_video.html:39
+#: pod/video/templates/videos/link_video.html:42
 msgid "Video default version"
 msgstr "Version par défaut de la vidéo"
 
-#: pod/video/templates/videos/link_video.html:44
+#: pod/video/templates/videos/link_video.html:47
 #: pod/video/templates/videos/video-all-info.html:31
 #: pod/video/templates/videos/video-all-info.html:33
 msgid "Original version"
@@ -6954,8 +7034,8 @@ msgid ""
 "This video is chaptered. Click the chapter button <span class=\"vjs-icon-"
 "chapters\"></span> on the video player to view them."
 msgstr ""
-"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span class="
-"\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
+"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span "
+"class=\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
 
 #: pod/video/templates/videos/video-all-info.html:26
 #: pod/video/templates/videos/video-all-info.html:41
@@ -7433,12 +7513,12 @@ msgstr ""
 msgid "-- sorry, no translation provided --"
 msgstr "-- désolé, aucune traduction fournie --"
 
-#: pod/video/utils.py:157
+#: pod/video/utils.py:154
 #, python-format
 msgid "Transcripting #%(content_id)s completed"
 msgstr "La transcription du #%(content_id)s est terminée"
 
-#: pod/video/utils.py:168
+#: pod/video/utils.py:159 pod/video/utils.py:184
 #, python-format
 msgid ""
 "The content “%(content_title)s” has been automatically transcript, and is "
@@ -7447,20 +7527,22 @@ msgstr ""
 "Le contenu \"%(content_title)s\" a été automatiquement transcrit, et est "
 "maintenant disponible sur %(site_title)s."
 
-#: pod/video/utils.py:175 pod/video/utils.py:254
+#: pod/video/utils.py:163 pod/video/utils.py:191 pod/video/utils.py:256
+#: pod/video/utils.py:284
 msgid "You will find it here:"
 msgstr "Vous la/le retrouverez ici :"
 
-#: pod/video/utils.py:184 pod/video/utils.py:263
+#: pod/video/utils.py:170 pod/video/utils.py:200 pod/video/utils.py:263
+#: pod/video/utils.py:293
 msgid "the:"
 msgstr "le :"
 
-#: pod/video/utils.py:238
+#: pod/video/utils.py:247
 #, python-format
 msgid "Encoding #%(content_id)s completed"
 msgstr "L’encodage #%(content_id)s est terminé"
 
-#: pod/video/utils.py:247
+#: pod/video/utils.py:252 pod/video/utils.py:277
 #, python-format
 msgid ""
 "The video “%(content_title)s” has been encoded to Web formats, and is now "
