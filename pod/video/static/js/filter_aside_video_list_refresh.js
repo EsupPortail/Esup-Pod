@@ -3,6 +3,7 @@ var checkedInputs = [];
 var listUser;
 var sortDirectionAsc = false;
 var sortDirectionChars = ["8600","8599"];
+var sortDirectionTitle = ["Descending sort","Ascending sort"];
 
 let loader = document.querySelector(".lds-ring");
 let infinite_loading = document.querySelector(".infinite-loading");
@@ -200,11 +201,18 @@ function updateSortDirectionChar(){
   document.getElementById("sort_direction_label").innerHTML = "&#"+(sortDirectionChars[+ sortDirectionAsc]).toString();
 }
 
-// Toggle direction of sort and refresh videos list
+// Update title for input sort direction
+function updateSortDirectionTitle(){
+  let newTitle = (sortDirectionTitle[+ sortDirectionAsc]);
+  document.getElementById("sort_direction").setAttribute('title',gettext(newTitle));
+}
+
+// Toggle direction of sort
 function toggleSortDirection(){
   sortDirectionAsc = !sortDirectionAsc;
   document.getElementById("sort_direction").checked = !document.getElementById("sort_direction").checked;
   updateSortDirectionChar();
+  updateSortDirectionTitle();
 }
 
 // Enable / Disable toggle inputs to prevent user actions during loading
