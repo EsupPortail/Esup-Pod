@@ -44,8 +44,7 @@
 {% block more_script %}
 <script>
 var page = 1;
-var nextPage;
-nextPage = false;
+var nextPage = false;
 
 {% if videos.has_next %}
   page = parseInt("{{videos.next_page_number}}")
