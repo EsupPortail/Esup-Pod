@@ -72,6 +72,7 @@ function refreshVideosSearch() {
       "X-Requested-With": "XMLHttpRequest",
     },
     dataType: "html",
+    cache: "no-store",
   })
     .then((response) => response.text())
     .then((data) => {
