@@ -7363,9 +7363,6 @@ msgstr "Direction de tri"
 msgid "Descending sort"
 msgstr "Tri descendant"
 
-msgid "Ascending sort"
-msgstr "Tri ascendant"
-
 #: pod/video/templates/videos/video_stats_view.html:22
 msgid "Change the date"
 msgstr "Modifier la période de visualisation"
