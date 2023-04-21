@@ -6872,7 +6872,7 @@ msgstr "Soumettre les changements"
 
 #: pod/video/templates/videos/filter_aside.html:9
 msgid "Reset"
-msgstr ""
+msgstr "Réinitialiser"
 
 #: pod/video/templates/videos/filter_aside.html:21
 msgid "Filter by user"
