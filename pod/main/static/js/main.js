@@ -393,18 +393,18 @@ document.querySelectorAll(".collapsibleThemes").forEach((cl) => {
 /* USERS IN NAVBAR */
 let ownerBoxNavBar = document.getElementById("ownerboxnavbar");
 if (ownerBoxNavBar) {
-  let accordion = document.getElementById("accordion");
+  let pod_users_list = document.getElementById("pod_users_list");
   ownerBoxNavBar.addEventListener("input", (e) => {
     if (ownerBoxNavBar.value && ownerBoxNavBar.value.length > 2) {
       var searchTerm = ownerBoxNavBar.value;
       getSearchListUsers(searchTerm).then((users) => {
-      accordion.innerHTML = "";
+      pod_users_list.innerHTML = "";
         users.forEach((user) => {
-            accordion.appendChild(createUserLink(user));
+            pod_users_list.appendChild(createUserLink(user));
         });
       });
     }else{
-        accordion.innerHTML = "";
+        pod_users_list.innerHTML = "";
     }
   });
 }
