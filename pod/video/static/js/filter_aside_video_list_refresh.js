@@ -3,7 +3,7 @@ var checkedInputs = [];
 var listUser;
 var sortDirectionAsc = false;
 var sortDirectionChars = ["8600","8599"];
-var sortDirectionTitle = ["Descending sort","Ascending sort"];
+var sortDirectionTitle = [gettext("Descending sort"),gettext("Ascending sort")];
 
 let loader = document.querySelector(".lds-ring");
 let infinite_loading = document.querySelector(".infinite-loading");
@@ -204,7 +204,7 @@ function updateSortDirectionChar(){
 // Update title for input sort direction
 function updateSortDirectionTitle(){
   let newTitle = (sortDirectionTitle[+ sortDirectionAsc]);
-  document.getElementById("sort_direction").setAttribute('title',gettext(newTitle));
+  document.getElementById("sort_direction_label").setAttribute('title',newTitle);
 }
 
 // Toggle direction of sort
