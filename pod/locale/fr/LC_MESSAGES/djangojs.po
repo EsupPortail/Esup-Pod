@@ -659,7 +659,7 @@ msgstr[1] "%s commentaires"
 
 #: pod/video/static/js/filter_aside_video_list_refresh.js:6
 msgid "Descending sort"
-msgstr ""
+msgstr "Tri descendant"
 
 #: pod/video/static/js/filter_aside_video_list_refresh.js:6
 msgid "Ascending sort"
