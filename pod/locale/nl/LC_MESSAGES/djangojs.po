@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-19 17:07+0200\n"
+"POT-Creation-Date: 2023-04-21 14:12+0200\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -629,7 +629,7 @@ msgid_plural "%s comments"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pod/video/static/js/filter_aside_video_list_refresh.js:94
+#: pod/video/static/js/filter_aside_video_list_refresh.js:96
 msgid "An Error occurred while processing."
 msgstr ""
 
