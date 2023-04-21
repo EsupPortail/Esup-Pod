@@ -162,8 +162,8 @@
   });
 
   // Search categery
-  let searchCatInput = document.querySelector(
-    "#searchcategories"
+  let searchCatInput = document.getElementById(
+    "searchcategories"
   );
   let searchCatHandler = (s) => {
     let cats = document.querySelectorAll(
