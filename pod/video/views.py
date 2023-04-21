@@ -475,6 +475,7 @@ def theme_edit_save(request, channel):
 
 @login_required(redirect_field_name="referrer")
 def my_videos(request):
+    """Render the logged user's videos list"""
     data_context = {}
     site = get_current_site(request)
     # Videos list which user is the owner + which user is an additional owner
@@ -563,6 +564,7 @@ def get_videos_list():
 
 
 def get_paginated_videos(paginator, page):
+    """Return paginated videos in paginator object"""
     try:
         return paginator.page(page)
     except PageNotAnInteger:
@@ -572,7 +574,7 @@ def get_paginated_videos(paginator, page):
 
 
 def sort_videos_list(request, videos_list):
-    # sort Videos by specific column (select html) and ascending or descending direction (boolean)
+    """Return sorted videos list by specific column name and ascending or descending direction (boolean)"""
     if request.GET.get('sort'):
         sort = request.GET.get('sort')
     else:
@@ -586,7 +588,7 @@ def sort_videos_list(request, videos_list):
 
 
 def get_filtered_videos_list(request, videos_list):
-
+    """Return filtered videos list by get parameters"""
     if request.GET.getlist("type"):
         videos_list = videos_list.filter(type__slug__in=request.GET.getlist("type"))
     if request.GET.getlist("discipline"):
