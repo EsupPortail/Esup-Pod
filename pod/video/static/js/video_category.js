@@ -37,7 +37,7 @@
   let CURR_CATEGORY = {}; // current editing category (js object)
   let DOMCurrentEditCat = null; // current editing category (html DOM)
   // show loader
-  let loader = document.querySelector(".loader_wrapper");
+  let loader = document.querySelector(".lds-ring");
 
   const SAVED_DATA = {}; // To prevent too many requests to the server
   const CURR_FILTER = { slug: null, id: null }; // the category currently filtering
