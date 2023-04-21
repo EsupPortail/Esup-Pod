@@ -559,6 +559,7 @@ def my_videos(request):
 
 
 def get_videos_list():
+    """Render the main list of videos."""
     videos_list = __VIDEOS__
     return videos_list.distinct()
 
