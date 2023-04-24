@@ -1,0 +1,82 @@
+"""Unit tests for Esup-Pod favorite video utilities"""
+
+from django.test import TestCase
+from django.contrib.auth.models import User
+
+from pod.favorite.models import Favorite
+from pod.favorite.utils import get_next_rank, user_add_or_remove_favorite_video
+from pod.favorite.utils import user_has_favorite_video
+from pod.video.models import Type, Video
+
+
+class FavoriteTestUtils(TestCase):
+    """TestCase for Esup-Pod favorite video utilities"""
+
+    fixtures = ["initial_data.json"]
+
+    def setUp(self) -> None:
+        """Set up required objects for next tests."""
+        self.user = User.objects.create(username="pod", password="pod1234pod")
+        self.user2 = User.objects.create(username="pod2", password="pod1234pod2")
+        self.video = Video.objects.create(
+            title="Video1",
+            owner=self.user,
+            video="test.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+
+    def test_next_rank(self) -> None:
+        Favorite.objects.create(
+            owner=self.user,
+            video=self.video,
+            rank=1,
+        )
+        self.assertEqual(
+            2,
+            get_next_rank(self.user),
+            "Test if user with favorite can generate the next rank",
+        )
+        self.assertEqual(
+            1,
+            get_next_rank(self.user2),
+            "Test if user without favorite can generate the next rank",
+        )
+        print(" --->  test_next_rank ok")
+
+    def test_user_add_or_remove_favorite_video(self) -> None:
+        user_add_or_remove_favorite_video(self.user, self.video)
+        favorite_tuple_exists = Favorite.objects.filter(
+            owner=self.user,
+            video=self.video
+        ).exists()
+        self.assertTrue(
+            favorite_tuple_exists,
+            "Test if tuple has been correctly inserted",
+        )
+        user_add_or_remove_favorite_video(self.user, self.video)
+        favorite_tuple_not_exists = Favorite.objects.filter(
+            owner=self.user,
+            video=self.video
+        ).exists()
+        self.assertFalse(
+            favorite_tuple_not_exists,
+            "Test if tuple has been correctly deleted",
+        )
+        print(" --->  test_user_add_or_remove_favorite_video ok")
+
+    def test_user_has_favorite_video(self) -> None:
+        Favorite.objects.create(
+            owner=self.user,
+            video=self.video,
+            rank=1,
+        )
+        self.assertTrue(
+            user_has_favorite_video(self.user, self.video),
+            "Test if user has a favorite video",
+        )
+        self.assertFalse(
+            user_has_favorite_video(self.user2, self.video),
+            "Test if user hasn't a favorite video",
+        )
+        print(" --->  test_user_has_favorite_video ok")
