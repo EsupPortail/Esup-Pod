@@ -38,15 +38,15 @@
     <form action="{% url 'video:cut:video_cut' slug=video.slug %}" method="POST" id="time_for_cut" accept-charset="utf-8" enctype="multipart/form-data">
       {% csrf_token %}
 
-      <i id="button_start" class="bi bi-scissors" aria-hidden="true" title="{% trans 'Get the video player time' %}"></i>
+      <i id="button_start" class="bi bi-align-start" aria-hidden="true" title="{% trans 'Get the video player time' %}"></i>
       {{ form_cut.video }}
       {{ form_cut.start }}
-      <i class="bi bi-caret-right-fill"></i>
+      <i class="bi bi-caret-right-fill" aria-hidden="true"></i>
       <p id="total_time" title="{% trans 'Total video duration' %}">{{ video.duration_in_time }}</p>
-      <i class="bi bi-caret-left-fill"></i>
+      <i class="bi bi-caret-left-fill" aria-hidden="true"></i>
       {{ form_cut.end }}
-      <i id="button_end" class="bi bi-scissors" aria-hidden="true" title="{% trans 'Get the video player time' %}"></i>
-    </div>
+      <i id="button_end" class="bi bi-align-end" aria-hidden="true" title="{% trans 'Get the video player time' %}"></i>
+  </div>
   <div id="container_cut">
       <div class="slider-track"></div>
       <input type="range" class="pod-multi-range" name="start_slider" id="slider-1" min="0" max="{% firstof cutting.duration_in_int video.duration %}" value="{% firstof cutting.start_in_int '0' %}" oninput="slideOne()" title="{% trans 'Start' %}">
@@ -66,13 +66,13 @@
     </span>
   </div>
 </div>
-</form>
+    </form>
 <!-- modal confirmation -->
 <div class="modal fade" id="ConfirmationModal" tabindex="-1" aria-labelledby="ConfirmationModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="ConfirmationModal">{% trans 'Are you sure you want to apply these changes?' %}</h1>
+        <h1 class="modal-title fs-5" id="ConfirmationModalLabel">{% trans 'Are you sure you want to apply these changes?' %}</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -85,8 +85,6 @@
     </div>
   </div>
 </div>
-
-
 
 {% endblock page_content %}
 
@@ -108,6 +106,23 @@
     <p>{% trans 'The video cut allows you to set a start and an end to trim your video.' %}</p>
     <p>{% trans 'Your original video is kept and you can therefore modify your changes at any time' %}</p>
     <p>{% trans 'When saving your cut, an encoding is restarted to replace the old one.' %}</p>
+  </div>
+</div>
+<div class="card" id="card-helpfields">
+  <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans "Help for form fields" %}</h2>
+  <div class="card-body" id="formfields">
+    {% for title, values in form.VIDEO_FORM_FIELDS_HELP_TEXT.items %}
+    <div class="card">
+      <button class="btn btn-link" id="heading-{{forloop.counter}}" data-bs-toggle="collapse" data-bs-target="#collapse-{{forloop.counter}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter}}">
+        {% trans title %}
+      </button>
+      <div id="collapse-{{forloop.counter}}" class="card-body collapse hide card-text small" aria-labelledby="heading-{{forloop.counter}}" data-parent="#formfields">
+        {% for value in values %}
+        <p>{{value|safe}}</p>
+        {%endfor%}
+      </div>
+    </div>
+    {% endfor %}
   </div>
 </div>
 {% endblock page_aside %}
