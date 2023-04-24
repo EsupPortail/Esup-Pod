@@ -18,9 +18,7 @@ from .models import CutVideo
 from .forms import CutVideoForm
 from .utils import clean_database
 
-RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
-    settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
-)
+from pod.video.models import RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
 
 
 @csrf_protect

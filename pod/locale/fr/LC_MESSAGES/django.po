@@ -1884,11 +1884,11 @@ msgstr "Veuillez corriger les erreurs"
 
 #: pod/cut/models.py:16
 msgid "video cut"
-msgstr "Découpe"
+msgstr "Découpe de vidéo"
 
 #: pod/cut/models.py:17
 msgid "video cuts"
-msgstr "Découpes"
+msgstr "Découpes de vidéo"
 
 #: pod/cut/models.py:22 pod/cut/views.py:81
 msgid "Please select values between 00:00:00 and "
@@ -1940,8 +1940,8 @@ msgstr "La découpe vidéo vous permet de définir un début et une fin pour dé
 #: pod/cut/templates/video_cut.html:109
 msgid ""
 "Your original video is kept and you can therefore modify your changes at any "
-"time"
-msgstr "Votre vidéo d'origine est conservée et vous pouvez donc modifier vos modifications à tout moment"
+"time."
+msgstr "Votre vidéo d'origine est conservée et vous pouvez donc modifier vos changements à tout moment."
 
 #: pod/cut/templates/video_cut.html:110
 msgid "When saving your cut, an encoding is restarted to replace the old one."

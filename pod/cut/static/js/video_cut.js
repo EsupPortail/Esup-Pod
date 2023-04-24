@@ -10,9 +10,9 @@ initialStart = sliderOne.value;
 initialEnd = sliderTwo.value;
 
 
-// Définition du temps maximum
+// Set max value
 let sliderMaxValue = sliderOne.max;
-// Définition du temps minimum
+// Set min value
 let sliderMinValue = sliderOne.min;
 
 
@@ -103,13 +103,15 @@ function calculation_total_time() { // Calculate the total duration of the video
   }
 }
 
-// Empêche de valider le formulaire sans confirmation avec la touche Entrée
+// Prevents validating only with the Enter key without going through confirmation
 (function(n) {
   var f = function(e) {
     var c = e.which || e.keyCode;
     if (c == 13) {
       e.preventDefault();
-      $('#ConfirmationModal').modal('show');
+      let ConfirmationModalID = document.getElementById("ConfirmationModal");
+      let ConfirmationModal = bootstrap.Modal.getOrCreateInstance(ConfirmationModalID);
+      ConfirmationModal.show();
       return false;
     }
   };
@@ -129,7 +131,7 @@ noPressEnter(displayValTwo);
 noPressEnter(sliderOne);
 noPressEnter(sliderTwo);
 
-// Boutons pour récupérer le temps du lecteur
+// Buttons to get the time of the video player 
 let button_start = document.getElementById("button_start");
 let button_end = document.getElementById("button_end");
 
@@ -147,7 +149,7 @@ button_end.addEventListener("click", event => {
   fillColor();
 });
 
-// Bouton reset
+// Button reset
 button_reset.addEventListener("click", event => {
   displayValOne.value = intToTime(initialStart);
   sliderOne.value = initialStart;
