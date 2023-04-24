@@ -185,6 +185,10 @@ document.getElementById("resetFilters").addEventListener('click', function() {
     document.querySelectorAll("#filters .categories_list_item").forEach((c_p) => {
         c_p.classList.remove("active");
     });
+    if(filterOwnerContainer && ownerBox){
+        filterOwnerContainer.innerHTML = "";
+        ownerBox.value = "";
+    }
     window.history.pushState("", "", window.location.pathname);
     refreshVideosSearch();
 });
