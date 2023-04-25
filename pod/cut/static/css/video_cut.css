@@ -133,7 +133,7 @@ input[type="time"],
     font-size: 34px;
     transition-duration: 0.4s;
     cursor: pointer;
-    vertical-align: -.100em;
+    margin-top: -6px; 
 }
 
 #button_start:hover, #button_end:hover {
@@ -141,8 +141,31 @@ input[type="time"],
     transition-duration: 0.4s;
 }
 
+#button_start {
+    margin-right: 15px;
+}
+
+#button_end {
+    margin-left: 15px;
+}
+
 #cut_video {
     display: block;
     width: 60%;
     margin: auto;
+}
+
+.time_input {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.time_input label {
+    font-size: 20px;
+}
+
+#time_for_cut {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }

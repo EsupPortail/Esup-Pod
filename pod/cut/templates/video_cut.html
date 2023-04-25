@@ -29,6 +29,12 @@
 {% endblock %}
 {% block page_content %}
 
+{% if video.encoding_in_progress %}
+<div class="alert alert-warning" role="alert">
+  {% trans "The video is currently being encoded." %}
+</div>
+{% endif %}
+
 <span id="cut_video">
   {% include 'videos/video-element.html' %}
 </span>
@@ -40,11 +46,17 @@
 
       <i id="button_start" class="bi bi-align-start" aria-hidden="true" title="{% trans 'Get the video player time' %}"></i>
       {{ form_cut.video }}
-      {{ form_cut.start }}
+      <div class="time_input">
+        <label for="range1">{% trans "Start" %}</label>
+        {{ form_cut.start }}
+      </div>
       <i class="bi bi-caret-right-fill" aria-hidden="true"></i>
       <p id="total_time" title="{% trans 'Total video duration' %}">{{ video.duration_in_time }}</p>
       <i class="bi bi-caret-left-fill" aria-hidden="true"></i>
-      {{ form_cut.end }}
+      <div class="time_input">
+        <label for="range2">{% trans "End" %}</label>
+        {{ form_cut.end }}
+      </div>
       <i id="button_end" class="bi bi-align-end" aria-hidden="true" title="{% trans 'Get the video player time' %}"></i>
   </div>
   <div id="container_cut">
