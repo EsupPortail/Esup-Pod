@@ -45,3 +45,20 @@ def get_next_rank(user: User) -> int:
     """
     last_rank = Favorite.objects.filter(owner=user).aggregate(Max('rank'))['rank__max']
     return last_rank + 1 if last_rank is not None else 1
+
+
+def get_all_favorite_videos_for_user(user: User) -> list:
+    """
+    Get all favorite videos for a specific user.
+
+    Args:
+        user (:class:`django.contrib.auth.models.User`): The user entity
+
+    Returns:
+        list(:class:`pod.video.models.Video`): The video list
+    """
+    favorite_links = Favorite.objects.filter(owner=user)
+    list_video = []
+    for i in range(len(favorite_links)):
+        list_video.append(favorite_links[i].video)
+    return list_video
