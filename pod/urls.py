@@ -124,6 +124,11 @@ for apps in settings.THIRD_PARTY_APPS:
         url(r"^" + apps + "/", include("pod.%s.urls" % apps, namespace=apps)),
     ]
 
+# FAVORITE
+urlpatterns += [
+    path("favorite/", include("pod.favorite.urls", namespace="favorite")),
+]
+
 # CHANNELS
 urlpatterns += [
     url(r"^", include("pod.video.urls-channels-video")),
