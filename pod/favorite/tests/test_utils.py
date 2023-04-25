@@ -27,6 +27,7 @@ class FavoriteTestUtils(TestCase):
         )
 
     def test_next_rank(self) -> None:
+        """Test if get_next_rank works correctly"""
         Favorite.objects.create(
             owner=self.user,
             video=self.video,
@@ -45,6 +46,7 @@ class FavoriteTestUtils(TestCase):
         print(" --->  test_next_rank ok")
 
     def test_user_add_or_remove_favorite_video(self) -> None:
+        """Test if test_user_add_or_remove_favorite_video works correctly"""
         user_add_or_remove_favorite_video(self.user, self.video)
         favorite_tuple_exists = Favorite.objects.filter(
             owner=self.user,
@@ -66,6 +68,7 @@ class FavoriteTestUtils(TestCase):
         print(" --->  test_user_add_or_remove_favorite_video ok")
 
     def test_user_has_favorite_video(self) -> None:
+        """Test if test_user_has_favorite_video works correctly"""
         Favorite.objects.create(
             owner=self.user,
             video=self.video,

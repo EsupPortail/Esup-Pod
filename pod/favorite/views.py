@@ -1,5 +1,5 @@
 from django.contrib.sites.shortcuts import get_current_site
-from django.http import HttpResponseNotFound
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect
@@ -25,4 +25,4 @@ def favorite_button_in_video_info(request):
         #     {"video": video},
         # )
     else:
-        raise HttpResponseNotFound()
+        raise Http404()
