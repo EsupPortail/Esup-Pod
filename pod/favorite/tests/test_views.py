@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
+from pod import video
 
 from pod.favorite.models import Favorite
 from pod.video.models import Type, Video
@@ -70,7 +72,7 @@ class TestShowStarTestCase(TestCase):
             "Test if status code equal 200 when the user is disconnected",
         )
         self.assertFalse(
-            'bi-star' in response.content.decode(),
+            'id="star_btn"' in response.content.decode(),
             "Test if the star is hidden when the user is disconnected",
         )
         print(" --->  test_show_star_hidden ok")
@@ -87,3 +89,32 @@ class TestShowStarTestCase(TestCase):
             ''',
         )
         print(" --->  test_show_star_404_error ok")
+
+class TestShowStarInfoTestCase(TestCase):
+    fixtures = ["initial_data.json"]
+    
+    def setUp(self) -> None:
+        """Set up required objects for next tests."""
+        self.user = User.objects.create(
+            username="pod", password="pod1234pod")
+        self.video = Video.objects.create(
+            title="Video1",
+            owner=self.user,
+            video="test.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.url = reverse("video:video", args=[self.video.slug])
+
+    def test_favorites_count(self):
+        response = self.client.get(self.url)
+        self.assertEqual(
+            response.status_code,
+            200,
+            "Test if status code equal 200 when the user is disconnected",
+        )
+        self.assertTrue(
+            str(_("Number of favorites")) in response.content.decode(),
+            "Test if the counter is in video_info",
+        )
+        print(" --->  test_favorites_count ok")

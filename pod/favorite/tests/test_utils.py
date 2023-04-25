@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 from pod.favorite.models import Favorite
 from pod.favorite.utils import get_next_rank, user_add_or_remove_favorite_video
-from pod.favorite.utils import user_has_favorite_video
+from pod.favorite.utils import user_has_favorite_video, get_number_favorites
 from pod.video.models import Type, Video
 
 
@@ -83,3 +83,28 @@ class FavoriteTestUtils(TestCase):
             "Test if user hasn't a favorite video",
         )
         print(" --->  test_user_has_favorite_video ok")
+
+    def test_get_number_favorites(self) -> None:
+        """Test if test_get_number_favorites works correctly"""
+        self.assertEqual(
+            get_number_favorites(self.video),
+            0,
+            "Test if there's no favorites in the video"
+        )
+        Favorite.objects.create(
+            owner=self.user,
+            video=self.video,
+            rank=1,
+        )
+        Favorite.objects.create(
+            owner=self.user2,
+            video=self.video,
+            rank=1,
+        )
+        self.assertEqual(
+            get_number_favorites(self.video),
+            2,
+            "Test if there is 2 favorites in the video"
+        )
+
+        print(" --->  test_get_number_favorites ok")
