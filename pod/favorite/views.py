@@ -21,12 +21,7 @@ def favorite_button_in_video_info(request):
             sites=get_current_site(request)
         )
         user_add_or_remove_favorite_video(request.user, video)
-        return redirect(reverse("video:video", args=[video.slug]))
-        # return render(
-        #     request,
-        #     "videos/video.html",
-        #     {"video": video},
-        # )
+        return redirect(request.META["HTTP_REFERER"])
     else:
         raise Http404()
 
