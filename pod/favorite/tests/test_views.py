@@ -174,3 +174,4 @@ class TestShowStarInfoTestCase(TestCase):
             str(_("Number of favorites")) in response.content.decode(),
             "Test if the counter is in video_info",
         )
+        print(" --->  test_favorites_count ok")
