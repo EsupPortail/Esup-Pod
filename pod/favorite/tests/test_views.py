@@ -145,6 +145,22 @@ class TestFavoriteVideoListTestCase(TestCase):
         )
         self.client.logout()
         print(" --->  test_favorite_video_list_empty ok")
+    
+    def test_favorite_video_list_link_in_navbar(self) -> None:
+        """Test if the favorite video list link is present in the navbar"""
+        self.client.force_login(self.user_with_favorite)
+        response = self.client.get("/")
+        self.assertEqual(
+            response.status_code,
+            200,
+            "Test if status code equal 200 in test_favorite_video_list_link_in_navbar",
+        )
+        self.assertTrue(
+            str(_("My favorite videos")) in response.content.decode(),
+            "Test if the favorite video list link is present in the navbar",
+        )
+        self.client.logout()
+        print(" --->  test_favorite_video_list_link_in_navbar ok")
 
 
 class TestShowStarInfoTestCase(TestCase):
