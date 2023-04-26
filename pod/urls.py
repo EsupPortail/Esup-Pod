@@ -125,9 +125,10 @@ for apps in settings.THIRD_PARTY_APPS:
     ]
 
 # FAVORITE
-urlpatterns += [
-    path("favorite/", include("pod.favorite.urls", namespace="favorite")),
-]
+if getattr(settings, "USE_FAVORITES", False):
+    urlpatterns += [
+        path("favorite/", include("pod.favorite.urls", namespace="favorite")),
+    ]
 
 # CHANNELS
 urlpatterns += [

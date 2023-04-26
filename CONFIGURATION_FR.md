@@ -2164,6 +2164,12 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
   >> Vous pouvez créer des catégories pour pouvoir ranger vos propres vidéos. <br>
   >> Les catégories sont liées à l’utilisateur. <br>
 
+  - `USE_FAVORITES`
+
+  > valeur par défaut : `True`
+
+  >> Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans ses favoris. <br>
+
  - `USE_OBSOLESCENCE`
 
   > valeur par défaut : `False`

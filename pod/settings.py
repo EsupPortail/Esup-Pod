@@ -115,6 +115,7 @@ TEMPLATES = [
                 "pod.video.context_processors.context_video_settings",
                 "pod.authentication.context_processors.context_authentication_settings",
                 "pod.recorder.context_processors.context_recorder_settings",
+                "pod.favorite.context_processors.context_settings"
             ],
         },
     },

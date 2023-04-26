@@ -29,13 +29,15 @@
   <div class="pod-info-video__buttons">
     {% if user.is_authenticated %}
       {% is_favorite video as is_fav %}
-      <form method="post" action="{% url 'favorite:add-or-remove' %}" id="favorite-button-form" class="btn m-0 p-0" role="add-or-remove-favorite">
-        {% csrf_token %}
-        <input type="hidden" name="video" value="{{ video.id }}"/>
-        <button type="button submit" id="star_btn" class="btn btn-link btn-lg pod-btn-share">
-          <i class="bi {% if is_fav %}bi-star-fill{% else %}bi-star{% endif %}" aria-hidden="true"></i><span class="visually-hidden">{% trans 'Favorite' %}</span>
-        </button>
-      </form>
+      {% if USE_FAVORITES %}
+        <form method="post" action="{% url 'favorite:add-or-remove' %}" id="favorite-button-form" class="btn m-0 p-0" role="add-or-remove-favorite">
+          {% csrf_token %}
+          <input type="hidden" name="video" value="{{ video.id }}"/>
+          <button type="button submit" id="star_btn" class="btn btn-link btn-lg pod-btn-share">
+            <i class="bi {% if is_fav %}bi-star-fill{% else %}bi-star{% endif %}" aria-hidden="true"></i><span class="visually-hidden">{% trans 'Favorite' %}</span>
+          </button>
+        </form>
+      {% endif %}
     {% endif %}
     {% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all %}
       <button type="button" class="btn btn-link btn-lg pod-btn-share" data-bs-toggle="modal" data-bs-target="#share">
