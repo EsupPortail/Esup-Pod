@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.contrib.sites.shortcuts import get_current_site
-from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
@@ -22,6 +22,7 @@ from pod.video.models import RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
 
 
 @csrf_protect
+@login_required(redirect_field_name="referrer")
 def cut_video(request, slug):  # noqa: C901
     """View for video cutting"""
     if in_maintenance():
