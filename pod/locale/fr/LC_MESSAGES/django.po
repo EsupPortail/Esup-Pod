@@ -1950,10 +1950,6 @@ msgstr ""
 "votre vidéo."
 
 #: pod/cut/templates/video_cut.html:119
-#, fuzzy
-#| msgid ""
-#| "Your original video is kept and you can therefore modify your changes at "
-#| "any time."
 msgid ""
 "Your original video is kept and you can therefore modify your changes at any "
 "time"
