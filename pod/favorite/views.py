@@ -53,13 +53,13 @@ def favorite_list(request):
     if request.is_ajax():
         return render(
             request,
-            "videos/video_list.html",
+            "favorite/favorite_videos_list.html",
             {"videos": videos, "full_path": full_path, "count_videos": count_videos},
         )
 
     return render(
         request,
-        "videos/videos.html",
+        "favorite/favorite_videos.html",
         {
             "videos": videos,
             "count_videos": count_videos,
