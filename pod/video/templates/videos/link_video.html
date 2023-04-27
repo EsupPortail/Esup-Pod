@@ -4,7 +4,7 @@
 {% spaceless %}
 {% is_favorite video as is_fav %}
 {% if is_fav and USE_FAVORITES %}
-  <form method="post" action="{% url 'favorite:add-or-remove' %}" id="favorite-button-form" class="btn btn-link m-0 p-1 ms-1" role="add-or-remove-favorite">
+  <form method="post" action="{% url 'favorite:add-or-remove' %}" class="btn btn-link favorite-button-form-card m-0 p-1 ms-1" role="add-or-remove-favorite">
     {% csrf_token %}
     <input type="hidden" name="video" value="{{ video.id }}"/>
     <button type="button submit" id="star_btn" class="btn btn-lg pod-btn-social btn-link p-0">
