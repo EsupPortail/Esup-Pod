@@ -5,7 +5,7 @@
 {% block opengraph %}{% load video_filters %}
   <meta name="description" content="{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}" />
   <!-- Open Graph data -->
-  <meta property="og:title" content="{% trans 'Videos' %}" />
+  <meta property="og:title" content="{% trans 'My favorite videos' %}" />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="{{ request.build_absolute_uri }}" />
   <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
@@ -14,7 +14,7 @@
 {% endblock %}
 
 
-{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Videos" %}</li>{% endblock %}
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My favorite videos" %}</li>{% endblock %}
 
 {% block page_title %}{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}{% endblock %}
 
@@ -42,7 +42,7 @@
   </p>
   {% endcomment %}
 
-  {% include "videos/video_list.html" %}
+  {% include "favorite/favorite_video_list.html" %}
 
 {% endblock page_content %}
 
