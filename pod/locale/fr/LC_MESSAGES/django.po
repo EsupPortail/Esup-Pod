@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-26 07:44+0000\n"
+"POT-Creation-Date: 2023-04-27 09:04+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -1885,14 +1885,14 @@ msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs"
 
 #: pod/cut/models.py:16
-msgid "video cut"
+msgid "Video cut"
 msgstr "Découpe de vidéo"
 
 #: pod/cut/models.py:17
-msgid "video cuts"
+msgid "Video cuts"
 msgstr "Découpes de vidéo"
 
-#: pod/cut/models.py:22 pod/cut/views.py:80
+#: pod/cut/models.py:22 pod/cut/views.py:81
 msgid "Please select values between 00:00:00 and "
 msgstr "Veuillez renseigner des valeurs comprises entre 00:00:00 et "
 
@@ -1969,11 +1969,11 @@ msgstr ""
 msgid "Help for form fields"
 msgstr "Aide pour les champs de formulaire"
 
-#: pod/cut/views.py:49
+#: pod/cut/views.py:50
 msgid "You cannot cut this video."
 msgstr "Vous ne pouvez pas découper cette vidéo."
 
-#: pod/cut/views.py:74
+#: pod/cut/views.py:75
 msgid "The cut was made."
 msgstr "Découpe effectuée"
 

@@ -13,8 +13,8 @@ class CutVideo(models.Model):
     duration = models.CharField(max_length=10)
 
     class Meta:
-        verbose_name = _("video cut")
-        verbose_name_plural = _("video cuts")
+        verbose_name = _("Video cut")
+        verbose_name_plural = _("Video cuts")
 
     def clean(self):
         if not self.verify_time():
