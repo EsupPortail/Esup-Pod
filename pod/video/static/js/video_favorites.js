@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const button = document.querySelector("#star_btn > i")
                 button.replaceWith(updatedButton);
             })
-            .catch(alert("L'ajout en favoris n'a pas pu se faire..."));
+            .catch(error => {
+                alert("L'ajout en favoris n'a pas pu se faire...")
+            });
     });
 });

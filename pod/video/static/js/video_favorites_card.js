@@ -13,7 +13,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     response.text(); // On récupère le contenu HTML de la réponse
                     form.remove();
                 })
-                .catch(alert("La suppression n'a pas pu se faire..."));
+                .catch(error => {
+                    alert("La suppression n'a pas pu se faire...")
+                });
         });
     }
 });
