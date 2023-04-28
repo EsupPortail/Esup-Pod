@@ -20,9 +20,10 @@
 
 {% block main_page_title %}
   <h1 id="video_count" class="page_title">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
-    <form action="" method="post" class="btn">
+    <form action="{% url 'favorite:save-reorganisation' %}" method="post" class="btn">
+      {% csrf_token %}
       <span class="pod-float-end">
-        <button id="reorganize-button" href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm">
+        <button id="reorganize-button" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm">
           <i class="bi bi-arrows-move"></i>&nbsp;<span>{% trans "Reorganize" %}</span>
         </button>
       </span>
