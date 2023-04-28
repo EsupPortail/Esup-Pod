@@ -14,6 +14,6 @@ document.getElementById('reorganize-button').addEventListener('click', function 
 /**
  * Activate the drap and drop in the page
  */
-function activateDragAndDrop() {
-    // TODO A completer
+function activateDragAndDrop(parent) {
+    const draggableElements = document.querySelectorAll('.draggable');
 }
