@@ -55,6 +55,7 @@ function activateDragAndDrop(parent) {
         draggableElement.addEventListener('drop', onDrop);
         draggableElement.classList.add('shake-effect');
     });
+    document.getElementById('cancel_btn_favorites_list').style.visibility = "visible"
 }
 
 function convert2DTableToJson(table) {
