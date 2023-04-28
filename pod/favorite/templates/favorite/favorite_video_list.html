@@ -24,4 +24,6 @@
   {% trans "Loading…" %}
 </div>
 {% endspaceless %}
-<script src="{% static 'js/video_favorites_card_delete.js' %}?ver={{VERSION}}"></script>
+{% block more_script %}
+<script src="{% static 'js/video-favorites-card-delete.js' %}?ver={{VERSION}}"></script>
+{% endblock %}
