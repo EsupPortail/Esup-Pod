@@ -4,6 +4,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.decorators import login_required
 
 from pod.video.models import Video
 from pod.video.views import CURSUS_CODES, get_owners_has_instances
@@ -25,7 +26,7 @@ def favorite_button_in_video_info(request):
     else:
         raise Http404()
 
-
+@login_required(redirect_field_name="referrer")
 def favorite_list(request):
     """Render the main list of favorite videos."""
     videos_list = get_all_favorite_videos_for_user(request.user)
