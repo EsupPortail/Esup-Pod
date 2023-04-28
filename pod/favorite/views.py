@@ -1,10 +1,12 @@
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.http import Http404, JsonResponse
+from django.db import transaction
+from django.http import Http404, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
+from pod.favorite.models import Favorite
 from pod.meeting.views import status
 
 from pod.video.models import Video
@@ -84,6 +86,26 @@ def favorite_list(request):
 @csrf_protect
 def favorites_save_reorganisation(request):
     if request.method == "POST":
-        ...
+        json_data = request.POST.get("json-data")
+        try:
+            dict_data = json.loads(json_data)
+        except json.JSONDecodeError:
+            return HttpResponseBadRequest("JSON au mauvais format")
+        with transaction.atomic():
+            for videos_tuple in dict_data.values():
+                fav_video_1 = Favorite.objects.filter(
+                    owner_id=request.user.id,
+                    video_id=Video.objects.only('id').get(slug=videos_tuple[0]).id
+                )
+                fav_video_2 = Favorite.objects.filter(
+                    owner_id=request.user.id,
+                    video_id=Video.objects.only('id').get(slug=videos_tuple[1]).id
+                )
+                video_1_rank = fav_video_1[0].rank
+                video_2_rank = fav_video_2[0].rank
+                fav_video_1.update(rank=video_2_rank)
+                fav_video_2.update(rank=video_1_rank)
+
+        return redirect(request.META["HTTP_REFERER"])
     else:
         raise Http404()
