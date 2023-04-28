@@ -23,12 +23,17 @@
     <form action="{% url 'favorite:save-reorganisation' %}" method="post" class="btn">
       {% csrf_token %}
       <span class="pod-float-end">
-        <input type="hidden" name="json-data" value='{"1": ["slug-video", "slug-video-2"], "2": ["slug-video-3", "slug-video-2"], "3": ["slug-video-8", "slug-video-36"]}'>
+        <input id="json-data" type="hidden" name="json-data" value='{"1": ["slug-video", "slug-video-2"], "2": ["slug-video-3", "slug-video-2"], "3": ["slug-video-8", "slug-video-36"]}'>
         <button id="reorganize-button" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm">
           <i class="bi bi-arrows-move"></i>&nbsp;<span>{% trans "Reorganize" %}</span>
         </button>
       </span>
     </form>
+    <style>
+      .draggable {
+        pointer-events: none;
+      }
+    </style>
   </h1>
 {% endblock main_page_title %}
 
