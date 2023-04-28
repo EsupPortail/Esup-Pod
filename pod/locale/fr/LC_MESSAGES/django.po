@@ -7692,3 +7692,11 @@ msgstr "Favoris"
 #: pod/video/templates/videos/video-info.html:22
 msgid "Number of favorites"
 msgstr "Nombre de favoris"
+
+#: pod/favorite/templates/favorite/favorite_videos.html:25
+msgid "Reorganize"
+msgstr "Réorganiser"
+
+#: pod/favorite/templates/favorite/favorite_videos.html:24
+msgid "Reorganize your favorite videos"
+msgstr "Réorganiser vos vidéos favorites"

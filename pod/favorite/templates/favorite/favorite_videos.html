@@ -20,6 +20,11 @@
 
 {% block main_page_title %}
   <h1 id="video_count" class="page_title">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
+    <span class="pod-float-end">
+      <a id="reorganize-button" href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-arrows-move"></i>&nbsp;{% trans "Reorganize" %}
+      </a>
+    </span>
   </h1>
 {% endblock main_page_title %}
 
@@ -61,5 +66,6 @@
 </script>
 <script src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/favorite-reorganize.js' %}?ver={{VERSION}}"></script>
 
 {% endblock more_script %}
