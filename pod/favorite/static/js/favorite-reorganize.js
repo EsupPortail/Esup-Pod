@@ -48,6 +48,7 @@ function onDrop(event) {
  */
 function activateDragAndDrop(parent) {
     const draggableElements = document.querySelectorAll('.draggable-container');
+    const cardFooterElements = document.querySelectorAll('.card-footer');
     draggableElements.forEach(draggableElement => {
         draggableElement.setAttribute('draggable', true);
         draggableElement.addEventListener('dragstart', onDragStart);
@@ -55,6 +56,9 @@ function activateDragAndDrop(parent) {
         draggableElement.addEventListener('drop', onDrop);
         draggableElement.classList.add('shake-effect');
         draggableElement.children[0].classList.add('no-click');
+    });
+    cardFooterElements.forEach(cardFooterElement => {
+        cardFooterElement.style.visibility = 'hidden';
     });
     document.getElementById('cancel_btn_favorites_list').style.visibility = "visible"
 }
