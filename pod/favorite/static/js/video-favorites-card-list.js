@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: formData
             })
                 .then(response => {
-                    response.text(); // On récupère le contenu HTML de la réponse
+                    response.text(); // We take the HTML content of the response
                     form.remove();
                 })
                 .catch(error => {

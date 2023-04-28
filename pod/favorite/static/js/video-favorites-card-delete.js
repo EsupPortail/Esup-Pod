@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 method: form.method,
                 body: formData
             })
-                .then(response => response.text()) // On récupère le contenu HTML de la réponse
+                .then(response => response.text()) // We take the HTML content of the response
                 .then(data => {
                     const parser = new DOMParser();
                     const html = parser.parseFromString(data, 'text/html');
