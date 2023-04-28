@@ -13,6 +13,9 @@
   <meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock %}
 
+{% block page_extra_head %}
+<link rel="stylesheet" href="{% static 'css/favorites-list.css' %}?ver={{VERSION}}">
+{% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My favorite videos" %}</li>{% endblock %}
 
@@ -31,12 +34,6 @@
     </form>
     <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-primary btn-sm" style="visibility:hidden">
       <i class="bi bi-x-circle"></i>&nbsp;Annuler</a>
-
-    <style>
-      .no-click {
-        pointer-events: none;
-      }
-    </style>
   </h1>
 {% endblock main_page_title %}
 
