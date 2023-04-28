@@ -11,7 +11,6 @@ document.getElementById('reorganize-button').addEventListener('click', function 
         iconElement.classList.replace('bi-arrows-move', 'bi-save');
         spanElement.textContent = gettext('Save');
     } else if (this.id == 'save-button') {
-        alert(exchangedValues);
         console.log(convert2DTableToJson(exchangedValues));
         document.getElementById('json-data').value = convert2DTableToJson(exchangedValues);
     }
