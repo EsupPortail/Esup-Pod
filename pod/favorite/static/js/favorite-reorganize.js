@@ -54,6 +54,7 @@ function activateDragAndDrop(parent) {
         draggableElement.addEventListener('dragover', onDragOver);
         draggableElement.addEventListener('drop', onDrop);
         draggableElement.classList.add('shake-effect');
+        draggableElement.children[0].classList.add('no-click');
     });
 }
 
