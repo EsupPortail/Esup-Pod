@@ -20,7 +20,7 @@ function onDragStart(event) {
     event.dataTransfer.clearData();
     event.dataTransfer.setData('text/plain', event.target.id); // TODO Mettre "text" à la place de "text/plain" pour IE 9 à 11
     event.currentTarget.style.backgroundColor = "yellow";
-  }
+}
 
 function onDragOver(event) {
     event.preventDefault();
@@ -53,6 +53,7 @@ function activateDragAndDrop(parent) {
         draggableElement.addEventListener('dragstart', onDragStart);
         draggableElement.addEventListener('dragover', onDragOver);
         draggableElement.addEventListener('drop', onDrop);
+        draggableElement.classList.add('shake-effect');
     });
 }
 
