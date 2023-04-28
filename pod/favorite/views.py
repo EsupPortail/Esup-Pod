@@ -1,16 +1,20 @@
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
+from pod.meeting.views import status
 
 from pod.video.models import Video
 from pod.video.views import CURSUS_CODES, get_owners_has_instances
 
 from .utils import user_add_or_remove_favorite_video
 from .utils import get_all_favorite_videos_for_user
+
+import json
+import requests
 
 
 @csrf_protect
@@ -25,6 +29,7 @@ def favorite_button_in_video_info(request):
         return redirect(request.META["HTTP_REFERER"])
     else:
         raise Http404()
+
 
 @login_required(redirect_field_name="referrer")
 def favorite_list(request):
@@ -74,3 +79,11 @@ def favorite_list(request):
             "cursus_list": CURSUS_CODES,
         },
     )
+
+
+@csrf_protect
+def favorites_save_reorganisation(request):
+    if request.method == "POST":
+        ...
+    else:
+        raise Http404()
