@@ -162,9 +162,7 @@
   });
 
   // Search categery
-  let searchCatInput = document.getElementById(
-    "searchcategories"
-  );
+  let searchCatInput = document.getElementById("searchcategories");
   let searchCatHandler = (s) => {
     let cats = document.querySelectorAll(
       ".categories_list .cat_title:not(.hidden)"
@@ -847,9 +845,7 @@
             data.category.slug,
             data.category.id
           );
-          document
-            .querySelector(".categories_list")
-            .appendChild(li);
+          document.querySelector(".categories_list").appendChild(li);
           let msg_create = gettext("Category created successfully");
           showAlertMessage(msg_create);
           saveCategoryData(data.category); // saving cat localy to prevent more request to the server
@@ -880,9 +876,7 @@
   });
 
   // Add click event on category in filter bar to filter videos in my_videos vue
-  let cats = document.querySelectorAll(
-    ".categories_list_item .cat_title"
-  );
+  let cats = document.querySelectorAll(".categories_list_item .cat_title");
   cats.forEach((c) => {
     manageFilterVideos(c);
   });
