@@ -36,6 +36,11 @@ from .utils import (
 )
 from dateutil.relativedelta import relativedelta
 
+if getattr(settings, "USE_PODFILE", False):
+    from pod.podfile.models import CustomFileModel
+else:
+    from pod.main.models import CustomFileModel
+
 SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 BBB_API_URL = getattr(settings, "BBB_API_URL", "")
 BBB_SECRET_KEY = getattr(settings, "BBB_SECRET_KEY", "")
@@ -241,6 +246,13 @@ class Meeting(models.Model):
         verbose_name=_("Is running"),
         help_text=_("Indicates whether this meeting is running in BigBlueButton or not!"),
         editable=False,
+    )
+    slides = models.ForeignKey(
+        CustomFileModel,
+        null=True,
+        blank=True,
+        verbose_name=_("Slides"),
+        on_delete=models.CASCADE,
     )
     site = models.ForeignKey(Site, verbose_name=_("Site"), on_delete=models.CASCADE)
 

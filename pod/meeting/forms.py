@@ -19,6 +19,11 @@ from django.core.validators import validate_email
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from .models import Meeting
 
+__FILEPICKER__ = False
+if getattr(settings, "USE_PODFILE", False):
+    __FILEPICKER__ = True
+    from pod.podfile.widgets import CustomFileWidget
+
 MEETING_MAX_DURATION = getattr(settings, "MEETING_MAX_DURATION", 5)
 
 MEETING_MAIN_FIELDS = getattr(
@@ -31,6 +36,7 @@ MEETING_MAIN_FIELDS = getattr(
         "attendee_password",
         "is_restricted",
         "restrict_access_to_groups",
+        "slides",
     ),
 )
 MEETING_DATE_FIELDS = getattr(
@@ -324,10 +330,9 @@ class MeetingForm(forms.ModelForm):
         self.date_time_duration()
         # Manage required fields html
         self.fields = add_placeholder_and_asterisk(self.fields)
-        if self.fields.get("owner"):
-            self.fields["owner"].queryset = self.fields["owner"].queryset.filter(
-                owner__sites=Site.objects.get_current()
-            )
+
+        if __FILEPICKER__ and self.fields.get("slides"):
+            self.fields["slides"].widget = CustomFileWidget(type="file")
         if not self.initial.get("attendee_password"):
             self.initial["attendee_password"] = get_random_string(8)
 
@@ -356,6 +361,10 @@ class MeetingForm(forms.ModelForm):
     def set_queryset(self):
         # if self.current_user is not None:
         #    users_groups = self.current_user.owner.accessgroup_set.all()
+        if self.fields.get("owner"):
+            self.fields["owner"].queryset = self.fields["owner"].queryset.filter(
+                owner__sites=Site.objects.get_current()
+            )
         self.fields["restrict_access_to_groups"].queryset = self.fields[
             "restrict_access_to_groups"
         ].queryset.filter(sites=Site.objects.get_current())
