@@ -608,7 +608,7 @@ function save_comment(
     })
     .finally(() => {
       loader.classList.remove("show");
-    })
+    });
 }
 
 /**
@@ -1230,5 +1230,5 @@ fetch(base_vote_url)
         set_comments_number(); // update number of comments from comment label
       });
     });
-  loader.classList.remove("show");
+    loader.classList.remove("show");
   });

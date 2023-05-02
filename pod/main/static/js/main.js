@@ -398,26 +398,27 @@ if (ownerBoxNavBar) {
     if (ownerBoxNavBar.value && ownerBoxNavBar.value.length > 2) {
       var searchTerm = ownerBoxNavBar.value;
       getSearchListUsers(searchTerm).then((users) => {
-      pod_users_list.innerHTML = "";
+        pod_users_list.innerHTML = "";
         users.forEach((user) => {
-            pod_users_list.appendChild(createUserLink(user));
+          pod_users_list.appendChild(createUserLink(user));
         });
       });
-    }else{
-        pod_users_list.innerHTML = "";
+    } else {
+      pod_users_list.innerHTML = "";
     }
   });
 }
 
 // Create link for user search
-function createUserLink(user){
-    let li = document.createElement("li");
-    let a = document.createElement("a");
-    a.setAttribute("href","/videos/?owner="+user.username);
-    a.setAttribute("title",user.first_name+" "+user.last_name);
-    a.innerHTML = user.first_name+" "+user.last_name+" ("+user.username+")";
-    li.appendChild(a);
-    return li;
+function createUserLink(user) {
+  let li = document.createElement("li");
+  let a = document.createElement("a");
+  a.setAttribute("href", "/videos/?owner=" + user.username);
+  a.setAttribute("title", user.first_name + " " + user.last_name);
+  a.innerHTML =
+    user.first_name + " " + user.last_name + " (" + user.username + ")";
+  li.appendChild(a);
+  return li;
 }
 
 /** COOKIE DIALOG **/
@@ -532,28 +533,24 @@ function TriggerAlertClose() {
   }, 5000);
 }
 /** SEARCH USER **/
-async function getSearchListUsers(searchTerm){
-    try{
-        let data = new FormData();
-        data.append("term", searchTerm);
-        data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
-        const response = await fetch("/ajax_calls/search_user/",
-            {
-                method: "POST",
-                body: data,
-                headers: {
-                    Accept: "application/json","X-Requested-With": "XMLHttpRequest",
-                },
-            })
-        const users = await response.json();
-        return users;
-    }
-    catch(error){
-        showalert(
-            gettext("User not found"),
-            "alert-danger"
-          );
-    }
+async function getSearchListUsers(searchTerm) {
+  try {
+    let data = new FormData();
+    data.append("term", searchTerm);
+    data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
+    const response = await fetch("/ajax_calls/search_user/", {
+      method: "POST",
+      body: data,
+      headers: {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    });
+    const users = await response.json();
+    return users;
+  } catch (error) {
+    showalert(gettext("User not found"), "alert-danger");
+  }
 }
 
 /*** FORM THEME USER PICTURE ***/
