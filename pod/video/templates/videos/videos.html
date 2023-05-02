@@ -19,22 +19,27 @@
 {% block page_title %}{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}{% endblock %}
 
 {% block main_page_title %}
-  <h1 id="video_count" class="page_title">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
-    <span class="pod-float-end">
-      <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
-        <i class="bi bi-rss"></i>&nbsp;Audio</a>
-      <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
-        <i class="bi bi-rss"></i>&nbsp;Video</a>
-      {% if USE_STATS_VIEW %}
-        <a href="{% url 'video:video_stats_view' 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm"><i class="bi bi-graph-up"></i> {% trans "Statistics views" %}</a>
-      {% endif %}
-    </span>
-  </h1>
+<div class="row videos-list-header">
+  <h1 id="video_count" class="page_title col-xxl-4 mb-2">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h1>
+  <span class="col-xxl-4 col-md-6 mb-2">
+    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
+      <i class="bi bi-rss"></i>&nbsp;Audio</a>
+    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
+      <i class="bi bi-rss"></i>&nbsp;Video</a>
+    {% if USE_STATS_VIEW %}
+      <a href="{% url 'video:video_stats_view' 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm"><i class="bi bi-graph-up"></i> {% trans "Statistics views" %}</a>
+    {% endif %}
+  </span>
+  <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2">
+    {% include "videos/video_sort_select.html" %}
+  </form>
+</div>
 {% endblock main_page_title %}
 
 {% block page_content %}
+  {% include 'loader.html' %}
   {% comment %}
-  <p>
+  <p class="debug">
     "types": request.GET.getlist('type'),
     "owners": request.GET.getlist('owner'),
     "disciplines": request.GET.getlist('discipline'),
@@ -57,18 +62,15 @@
 </script>
 
 <script>
-  var page = 1
-  next_page = false
+  var page = 1;
+  var nextPage = false;
 
-  
   {% if videos.has_next %}
-    page = parseInt("{{videos.next_page_number}}")
-    next_page = true
+    page = parseInt("{{videos.next_page_number}}");
+    nextPage = true;
   {% endif %}
 
-
 </script>
-<script src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
-
+<script src="{% static 'js/infinite.js' %}"></script>
+<script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
 {% endblock more_script %}

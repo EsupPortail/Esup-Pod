@@ -475,6 +475,7 @@ def theme_edit_save(request, channel):
 
 @login_required(redirect_field_name="referrer")
 def my_videos(request):
+    """Render the logged user's videos list"""
     data_context = {}
     site = get_current_site(request)
     # Videos list which user is the owner + which user is an additional owner
@@ -502,6 +503,10 @@ def my_videos(request):
         " 'slug': cat_slug,
         " 'videos': [v_slug, v_slug...] },]
         """
+        if request.GET.get("category") is not None:
+            category_checked = request.GET.get("category")
+            videos_list = get_object_or_404(Category, title=category_checked, owner=request.user).video.all()
+
         cats = Category.objects.prefetch_related("video").filter(owner=request.user)
         videos_without_cat = videos_list.exclude(category__in=cats)
         cats = list(
@@ -520,31 +525,71 @@ def my_videos(request):
         data_context["categories"] = cats
         data_context["videos_without_cat"] = videos_without_cat
 
+    videos_list = get_filtered_videos_list(request, videos_list)
+    videos_list = sort_videos_list(request, videos_list)
+    count_videos = len(videos_list)
+
     paginator = Paginator(videos_list, 12)
-    try:
-        videos = paginator.page(page)
-    except PageNotAnInteger:
-        videos = paginator.page(1)
-    except EmptyPage:
-        videos = paginator.page(paginator.num_pages)
+    videos = get_paginated_videos(paginator, page)
 
     if request.is_ajax():
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path},
+            {
+                "videos": videos,
+                "full_path": full_path,
+                "count_videos": count_videos
+            },
         )
-    data_context["use_category"] = USER_VIDEO_CATEGORY
+
     data_context["videos"] = videos
+    data_context["count_videos"] = count_videos
+    data_context["types"] = request.GET.getlist("type")
+    data_context["owners"] = request.GET.getlist("owner")
+    data_context["disciplines"] = request.GET.getlist("discipline")
+    data_context["tags_slug"] = request.GET.getlist("tag")
+    data_context["cursus_selected"] = request.GET.getlist("cursus")
     data_context["full_path"] = full_path
+    data_context["cursus_list"] = CURSUS_CODES
+    data_context["use_category"] = USER_VIDEO_CATEGORY
     data_context["page_title"] = _("My videos")
 
     return render(request, "videos/my_videos.html", data_context)
 
 
-def get_videos_list(request):
+def get_videos_list():
+    """Render the main list of videos."""
     videos_list = __VIDEOS__
+    return videos_list.distinct()
 
+
+def get_paginated_videos(paginator, page):
+    """Return paginated videos in paginator object"""
+    try:
+        return paginator.page(page)
+    except PageNotAnInteger:
+        return paginator.page(1)
+    except EmptyPage:
+        return paginator.page(paginator.num_pages)
+
+
+def sort_videos_list(request, videos_list):
+    """Return sorted videos list by specific column name and ascending or descending direction (boolean)"""
+    if request.GET.get('sort'):
+        sort = request.GET.get('sort')
+    else:
+        sort = "date_added"
+    if not request.GET.get('sort_direction'):
+        sort = '-' + sort
+
+    videos_list = videos_list.order_by(sort)
+
+    return videos_list.distinct()
+
+
+def get_filtered_videos_list(request, videos_list):
+    """Return filtered videos list by get parameters"""
     if request.GET.getlist("type"):
         videos_list = videos_list.filter(type__slug__in=request.GET.getlist("type"))
     if request.GET.getlist("discipline"):
@@ -579,7 +624,10 @@ def get_owners_has_instances(owners):
 
 def videos(request):
     """Render the main list of videos."""
-    videos_list = get_videos_list(request)
+    videos_list = get_videos_list()
+    videos_list = get_filtered_videos_list(request, videos_list)
+    videos_list = sort_videos_list(request, videos_list)
+
     count_videos = len(videos_list)
 
     page = request.GET.get("page", 1)
@@ -592,20 +640,18 @@ def videos(request):
         )
 
     paginator = Paginator(videos_list, 12)
-    try:
-        videos = paginator.page(page)
-    except PageNotAnInteger:
-        videos = paginator.page(1)
-    except EmptyPage:
-        videos = paginator.page(paginator.num_pages)
-
+    videos = get_paginated_videos(paginator, page)
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
 
     if request.is_ajax():
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
+            {
+                "videos": videos,
+                "full_path": full_path,
+                "count_videos": count_videos
+            },
         )
 
     return render(

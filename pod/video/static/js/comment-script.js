@@ -9,7 +9,7 @@ let all_comment = null;
 const lang_btn = document.querySelector(".btn-lang.btn-lang-active");
 const comment_title = document.querySelector(".comment_title");
 // Loader Element
-const loader = document.querySelector(".comment_content > .comment-loader");
+const loader = document.querySelector(".lds-ring");
 let VOTED_COMMENTS = [];
 const COLORS = [
   "rgb(15,166,2)",
@@ -205,13 +205,6 @@ class Comment extends HTMLElement {
       id
     );
     if (is_authenticated) {
-      const vote_loader = document.createElement("DIV");
-      vote_loader.setAttribute("class", "comment-loader d-none");
-
-      vote_loader.innerHTML = `<div class="spinner-border text-primary" role="status"><span class="visually-hidden">${gettext(
-        "Loading…"
-      )}</span></div>`;
-      vote_action.prepend(vote_loader);
       vote_action.addEventListener("click", () => {
         vote_action.classList.add("voting");
         let comment_id = get_comment_attribute(document.getElementById(id));
@@ -520,9 +513,7 @@ function save_comment(
   textarea.setAttribute("readonly", true);
 
   // show loader
-  const current_loader = loader.cloneNode(true);
-  current_loader.classList.remove("d-none"); // waiting for charging child
-  comment_container_html.appendChild(current_loader);
+  loader.classList.add("show");
 
   let post_url = base_url.replace("comment", "comment/add");
   let top_parent_id = null;
@@ -543,7 +534,6 @@ function save_comment(
     },
   })
     .then((response) => {
-      comment_container_html.removeChild(current_loader);
       textarea.removeAttribute("readonly");
       //raw_response = response.clone();
       if (response.ok) {
@@ -615,7 +605,10 @@ function save_comment(
     .catch((error) => {
       showalert(error.message, "alert-danger");
       //console.log(raw_response.text())
-    });
+    })
+    .finally(() => {
+      loader.classList.remove("show");
+    })
 }
 
 /**
@@ -914,11 +907,7 @@ function fetch_comment_children(
   if (
     all_comment.find((c) => c.id === parent_comment_id).children.length === 0
   ) {
-    const children_loader = loader.cloneNode(true);
-    children_loader.classList.remove("d-none"); // waiting for charging children
-    parent_comment_html
-      .querySelector(".comments_children_container")
-      .appendChild(children_loader);
+    loader.classList.add("show"); // waiting for charging children
 
     let url = base_url.replace("/comment/", `/comment/${parent_comment_id}/`);
     fetch(url).then((response) => {
@@ -926,9 +915,6 @@ function fetch_comment_children(
         // Saving children in all_comment
         all_comment = all_comment.map((parent_comment) => {
           if (parent_comment.id === parent_comment_id) {
-            parent_comment_html
-              .querySelector(".comments_children_container")
-              .removeChild(children_loader);
             parent_comment.children = data.children;
             // Update DOM with children comments
             parent_comment.children.forEach((comment_child, index) => {
@@ -982,6 +968,7 @@ function fetch_comment_children(
                 scrollToComment(comment_child_html);
             });
           }
+          loader.classList.remove("show");
           return parent_comment;
         });
       });
@@ -1193,9 +1180,9 @@ function set_comments_number() {
 
 /************  Get vote from the server  **************
  ******************************************************/
+loader.classList.add("show");
 fetch(base_vote_url)
   .then((response) => {
-    loader.classList.remove("d-none"); // show loader
     response.json().then((data) => {
       VOTED_COMMENTS = data.comments_votes;
     });
@@ -1206,7 +1193,6 @@ fetch(base_vote_url)
     let url = `${base_url}?only=parents`;
     fetch(url).then((response) => {
       response.json().then((data) => {
-        loader.classList.add("d-none"); // hide loader
         all_comment = [];
         data.forEach((comment_data) => {
           comment_data.children = []; // init children to empty array
@@ -1244,4 +1230,5 @@ fetch(base_vote_url)
         set_comments_number(); // update number of comments from comment label
       });
     });
+  loader.classList.remove("show");
   });
