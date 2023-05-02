@@ -1,6 +1,6 @@
 {% load i18n %}
 {% load video_filters %}
-<div id="manageCategoryModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="manageCategoryModal" style="display: none;" aria-hidden="true">
+<div id="manageCategoryModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal_title" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -19,7 +19,6 @@
           <p class="form-label">{% trans "Check the videos to add in the category" %}</p>
 
           <div class="row infinite-modal-container category_modal_videos_list" id="cat_mod_vid_list">
-            <span class="alert alert-info">videos_without_cat={{videos_without_cat}}</span>
             {% for video in videos_without_cat %}
               <div data-slug="{{ video.slug }}" class="infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group">
                 <div class="checked_overlay">

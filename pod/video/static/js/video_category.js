@@ -37,7 +37,7 @@
   let CURR_CATEGORY = {}; // current editing category (js object)
   let DOMCurrentEditCat = null; // current editing category (html DOM)
   // show loader
-  let loader = document.querySelector(".loader_wrapper");
+  let loader = document.querySelector(".lds-ring");
 
   const SAVED_DATA = {}; // To prevent too many requests to the server
   const CURR_FILTER = { slug: null, id: null }; // the category currently filtering
@@ -162,8 +162,8 @@
   });
 
   // Search categery
-  let searchCatInput = document.querySelector(
-    "#my_videos_filter #searchcategories"
+  let searchCatInput = document.getElementById(
+    "searchcategories"
   );
   let searchCatHandler = (s) => {
     let cats = document.querySelectorAll(
@@ -224,10 +224,6 @@
           "class",
           "pod-infinite-container infinite-container"
         );
-        let more_btn = videos_list.parentNode.querySelector(
-          ".infinite-more-link"
-        );
-        if (more_btn) more_btn.setAttribute("class", "infinite-more-link");
       }
     } else {
       // filter
@@ -243,11 +239,6 @@
           "class",
           "pod-infinite-container infinite-container hidden"
         );
-        let more_btn = videos_list.parentNode.querySelector(
-          ".infinite-more-link"
-        );
-        if (more_btn)
-          more_btn.setAttribute("class", "infinite-more-link hidden");
       }
     }
   };
@@ -315,38 +306,12 @@
   let manageFilterVideos = (c) => {
     c.addEventListener("click", (e) => {
       e.stopPropagation();
-      loader.classList.add("show");
       let cat_filter_slug = c.dataset.slug.trim();
       let cat_filter_id = c.parentNode
         .querySelector(".category_actions .remove_category")
         .dataset.del.trim();
-      videos_list_filtered = getVideosFilteredContainer();
       manageCssActiveClass(c.parentNode); // manage active css class
-      let jsonData = getSavedData(cat_filter_id);
-      if (Object.keys(jsonData).length) {
-        let videos_nb =
-          !CURR_FILTER.slug && !CURR_FILTER.id
-            ? CATEGORIES_DATA[0]
-            : jsonData.videos.length;
-        manageNumberVideoFoundText(videos_nb); // update text 'video found'
-        loader.classList.remove("show");
-        if (CURR_FILTER.slug && CURR_FILTER.id)
-          jsonData.videos.forEach((v) => {
-            videos_list_filtered.appendChild(getVideoElement(v));
-          });
-      } else {
-        jsonData = fetchCategoryData(cat_filter_slug);
-        jsonData.then((data) => {
-          manageNumberVideoFoundText(data.videos.length); // update text 'video found'
-          if (CURR_FILTER.slug && CURR_FILTER.id)
-            data.videos.forEach((v) => {
-              videos_list_filtered.appendChild(getVideoElement(v));
-            });
-          // save data
-          saveCategoryData(data);
-          loader.classList.remove("show");
-        });
-      }
+      refreshVideosSearch();
     });
   };
 
@@ -713,39 +678,11 @@
 
   // Add onclick event to edit a category
   let cats_edit = document.querySelectorAll(
-    "#my_videos_filter .categories_list_item .edit_category"
+    ".categories_list_item .edit_category"
   );
   cats_edit.forEach((c_e) => {
     editHandler(c_e);
   });
-
-  /*
-  // listener on close modal btn
-  let closeBtn = document.querySelector(".modal-footer #cancelDialog");
-  closeBtn.addEventListener("click", (e) => {
-    window.setTimeout(function () {
-      refreshDialog();
-    }, 50);
-  });
-  let closeCrossBtn =
-    document.querySelector("#manageCategoryModal .modal-header .close") ||
-    document.querySelector("#manageCategoryModal .modal-header button");
-  closeCrossBtn.addEventListener("click", (e) => {
-    if (
-      e.target.getAttribute("class") === "close" ||
-      e.target.parentNode.classList.contains("close")
-    )
-      window.setTimeout(function () {
-        refreshDialog();
-      }, 50);
-  });
-  let modalContainer = document.querySelector("#manageCategoryModal");
-  modalContainer.addEventListener("mousedown", (e) => {
-    if (e.target.getAttribute("id") === "manageCategoryModal")
-      window.setTimeout(function () {
-        refreshDialog();
-      }, 50);
-  });*/
 
   // Handler to delete category, c_d=current category to delete
   // Temporarily save the category to delete
@@ -763,7 +700,7 @@
 
   // Add onclick event to delete a category
   let cats_del = document.querySelectorAll(
-    "#my_videos_filter .categories_list_item .remove_category"
+    ".categories_list_item .remove_category"
   );
   cats_del.forEach((c_d) => {
     deleteHandler(c_d);
@@ -808,7 +745,7 @@
               ];
             });
             document
-              .querySelector("#my_videos_filter .categories_list")
+              .querySelector(".categories_list")
               .removeChild(CAT_TO_DELETE.html);
             let filtered_container = getVideosFilteredContainer();
             if (
@@ -911,7 +848,7 @@
             data.category.id
           );
           document
-            .querySelector("#my_videos_filter .categories_list")
+            .querySelector(".categories_list")
             .appendChild(li);
           let msg_create = gettext("Category created successfully");
           showAlertMessage(msg_create);
@@ -944,7 +881,7 @@
 
   // Add click event on category in filter bar to filter videos in my_videos vue
   let cats = document.querySelectorAll(
-    "#my_videos_filter .categories_list_item .cat_title"
+    ".categories_list_item .cat_title"
   );
   cats.forEach((c) => {
     manageFilterVideos(c);

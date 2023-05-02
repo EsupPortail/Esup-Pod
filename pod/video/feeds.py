@@ -153,7 +153,7 @@ class RssSiteVideosFeed(Feed):
         )
         self.feed_url = request.build_absolute_uri()
 
-        videos_list = get_videos_list(request)
+        videos_list = get_videos_list()
 
         if slug_c:
             channel = get_object_or_404(

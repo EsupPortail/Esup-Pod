@@ -390,46 +390,34 @@ document.querySelectorAll(".collapsibleThemes").forEach((cl) => {
   });
 });
 
-let ownerboxnavbar = document.getElementById("ownerboxnavbar");
-if (ownerboxnavbar) {
-  ownerboxnavbar.addEventListener("keyup", function () {
-    if (ownerboxnavbar.value && ownerboxnavbar.value.length > 2) {
-      var searchTerm = ownerboxnavbar.value;
-      let data = new FormData();
-      data.append("term", searchTerm);
-      data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
-      url = "/ajax_calls/search_user/";
-      fetch(url, {
-        method: "POST",
-        body: data,
-        headers: {
-          Accept: "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          let accordion = document.getElementById("accordion");
-          accordion.innerHTML = "";
-          data.forEach((elt) => {
-            accordion.innerHTML +=
-              '<li><a href="' +
-              urlvideos +
-              "?owner=" +
-              elt.username +
-              '">' +
-              elt.first_name +
-              " " +
-              elt.last_name +
-              (!HIDE_USERNAME
-                ? " (" + elt.username + ")</a></li>"
-                : "</a></li>");
-          });
+/* USERS IN NAVBAR */
+let ownerBoxNavBar = document.getElementById("ownerboxnavbar");
+if (ownerBoxNavBar) {
+  let pod_users_list = document.getElementById("pod_users_list");
+  ownerBoxNavBar.addEventListener("input", (e) => {
+    if (ownerBoxNavBar.value && ownerBoxNavBar.value.length > 2) {
+      var searchTerm = ownerBoxNavBar.value;
+      getSearchListUsers(searchTerm).then((users) => {
+      pod_users_list.innerHTML = "";
+        users.forEach((user) => {
+            pod_users_list.appendChild(createUserLink(user));
         });
-    } else {
-      document.getElementById("accordion").innerHTML = "";
+      });
+    }else{
+        pod_users_list.innerHTML = "";
     }
   });
+}
+
+// Create link for user search
+function createUserLink(user){
+    let li = document.createElement("li");
+    let a = document.createElement("a");
+    a.setAttribute("href","/videos/?owner="+user.username);
+    a.setAttribute("title",user.first_name+" "+user.last_name);
+    a.innerHTML = user.first_name+" "+user.last_name+" ("+user.username+")";
+    li.appendChild(a);
+    return li;
 }
 
 /** COOKIE DIALOG **/
@@ -543,6 +531,31 @@ function TriggerAlertClose() {
       });
   }, 5000);
 }
+/** SEARCH USER **/
+async function getSearchListUsers(searchTerm){
+    try{
+        let data = new FormData();
+        data.append("term", searchTerm);
+        data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
+        const response = await fetch("/ajax_calls/search_user/",
+            {
+                method: "POST",
+                body: data,
+                headers: {
+                    Accept: "application/json","X-Requested-With": "XMLHttpRequest",
+                },
+            })
+        const users = await response.json();
+        return users;
+    }
+    catch(error){
+        showalert(
+            gettext("User not found"),
+            "alert-danger"
+          );
+    }
+}
+
 /*** FORM THEME USER PICTURE ***/
 /** PICTURE **/
 document.addEventListener("click", (e) => {
@@ -951,88 +964,7 @@ function show_list_theme(data) {
     behavior: "smooth",
   });
 }
-/***** VIDEOS *****/
 
-let ownerbox = document.getElementById("ownerbox");
-if (ownerbox) {
-  ownerbox.addEventListener("keyup", async (e) => {
-    //let thisE = e.target;
-    if (ownerbox.value && ownerbox.value.length > 2) {
-      var searchTerm = ownerbox.value;
-      let data = new FormData();
-      data.append("term", searchTerm);
-      data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
-      url = "/ajax_calls/search_user/";
-      fetch(url, {
-        method: "POST",
-        body: data,
-        headers: {
-          Accept: "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.length > 0) {
-            document
-              .querySelectorAll("#collapseFilterOwner .added")
-              .forEach((index) => {
-                var c = index.querySelector("input");
-                if (!c.checked) {
-                  index.remove();
-                }
-              });
-            data.forEach((elt) => {
-              if (
-                listUserChecked.indexOf(elt.username) == -1 &&
-                (document.querySelector(
-                  "#collapseFilterOwner #id" + elt.username
-                ) == null ||
-                  document.querySelector(
-                    "#collapseFilterOwner #id" + elt.username
-                  ).length == 0)
-              ) {
-                let username = HIDE_USERNAME ? "" : " (" + elt.username + ")";
-                var chekboxhtml =
-                  '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="' +
-                  elt.username +
-                  '" id="id' +
-                  elt.username +
-                  '"><label class="form-check-label" for="id' +
-                  elt.username +
-                  '">' +
-                  elt.first_name +
-                  " " +
-                  elt.last_name +
-                  username +
-                  "</label></div>";
-                document.getElementById("collapseFilterOwner").innerHTML +=
-                  chekboxhtml;
-              }
-            });
-          }
-        })
-
-        .catch((error) => {
-          /*
-          showalert(
-            gettext("User not found"),
-            "alert-danger"
-          );
-          */
-        });
-    } else {
-      document
-        .querySelectorAll("#collapseFilterOwner .added")
-        .forEach((index) => {
-          var c = index.querySelector("input");
-          if (!c.checked) {
-            index.remove();
-          }
-        });
-    }
-  });
-}
 /****** VIDEOS EDIT ******/
 /** channel **/
 let id_channel = document.getElementById("id_channel");
