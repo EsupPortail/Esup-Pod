@@ -505,7 +505,9 @@ def my_videos(request):
         """
         if request.GET.get("category") is not None:
             category_checked = request.GET.get("category")
-            videos_list = get_object_or_404(Category, title=category_checked, owner=request.user).video.all()
+            videos_list = get_object_or_404(
+                Category, title=category_checked, owner=request.user
+            ).video.all()
 
         cats = Category.objects.prefetch_related("video").filter(owner=request.user)
         videos_without_cat = videos_list.exclude(category__in=cats)
@@ -536,11 +538,7 @@ def my_videos(request):
         return render(
             request,
             "videos/video_list.html",
-            {
-                "videos": videos,
-                "full_path": full_path,
-                "count_videos": count_videos
-            },
+            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
         )
 
     data_context["videos"] = videos
@@ -576,12 +574,12 @@ def get_paginated_videos(paginator, page):
 
 def sort_videos_list(request, videos_list):
     """Return sorted videos list by specific column name and ascending or descending direction (boolean)"""
-    if request.GET.get('sort'):
-        sort = request.GET.get('sort')
+    if request.GET.get("sort"):
+        sort = request.GET.get("sort")
     else:
         sort = "date_added"
-    if not request.GET.get('sort_direction'):
-        sort = '-' + sort
+    if not request.GET.get("sort_direction"):
+        sort = "-" + sort
 
     videos_list = videos_list.order_by(sort)
 
@@ -647,11 +645,7 @@ def videos(request):
         return render(
             request,
             "videos/video_list.html",
-            {
-                "videos": videos,
-                "full_path": full_path,
-                "count_videos": count_videos
-            },
+            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
         )
 
     return render(
