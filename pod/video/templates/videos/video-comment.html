@@ -25,8 +25,8 @@
           </form>
         {% endif %}
       {% endif %}
-      <div class="comment-loader text-center d-none"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">{% trans "Loading…" %}</span></div></div>
-    </div>
+      {% include 'loader.html' %}
+      </div>
     <confirm-modal id="custom_element_confirm_modal" confirm_title='{% trans "Delete comment" %}' message='{% trans "Permanently delete your comment?" %}'></confirm-modal>
   </div>
 </div>
