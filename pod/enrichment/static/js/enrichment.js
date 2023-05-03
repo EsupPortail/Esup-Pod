@@ -367,18 +367,14 @@ function enrich_type() {
     });
   }
 }
-document.addEventListener("change", (e) => {
-  if (e.target.id != "id_start") return;
-  e.target.parentNode.querySelector(
-    "div.getfromvideo span.timecode"
-  ).innerHTML = " " + parseInt(e.target.value).toHHMMSS();
-});
-document.addEventListener("change", (e) => {
-  if (e.target.id != "id_end") return;
-  e.target.parentNode.querySelector(
-    "div.getfromvideo span.timecode"
-  ).innerHTML = " " + parseInt(e.target.value).toHHMMSS();
-});
+const setTimecode = (e) => {
+  if (e.target.id !== "id_start" && e.target.id !== "id_end") return;
+  const parentNode = e.target.parentNode;
+  const timecodeSpan = parentNode.querySelector("div.getfromvideo span.timecode");
+  timecodeSpan.innerHTML = " " + parseInt(e.target.value).toHHMMSS();
+};
+document.addEventListener("change", setTimecode);
+
 document.addEventListener("click", (e) => {
   if (!e.target.matches("#page-video .getfromvideo a")) return;
   e.preventDefault();
