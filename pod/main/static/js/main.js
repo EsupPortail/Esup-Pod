@@ -1,3 +1,4 @@
+// cette fonction (appendHTML) n'est pas utilisée ailleurs, même dans cette fichier
 function appendHTML(node, html) {
   var temp = document.createElement("div");
   temp.innerHTML = html;
@@ -90,7 +91,7 @@ var slideDown = (target, duration = 500) => {
   }, duration);
 };
 
-/* SLIDE TOOGLE */
+/* SLIDE TOGGLE */
 var slideToggle = (target, duration = 500) => {
   if (window.getComputedStyle(target).display === "none") {
     return slideDown(target, duration);
@@ -801,6 +802,7 @@ var send_form_data_vanilla = function (
     });
 };
 
+// ces fonction n'est pas utilisée ailleurs (show_form_theme_new)
 var show_form_theme_new = function (data) {
   if (data.indexOf("form_theme") == -1) {
     showalert(
@@ -811,6 +813,7 @@ var show_form_theme_new = function (data) {
     show_form_theme(data);
   }
 };
+//cette fonction(show_form_theme_modify) n'est pas utilisée ailleurs
 var show_form_theme_modify = function (data) {
   if (data.indexOf("theme") == -1) {
     showalert(
@@ -824,6 +827,8 @@ var show_form_theme_modify = function (data) {
     document.getElementById("theme_" + id).classList.add("table-primary");
   }
 };
+
+// cette fonction(show_form_theme_delete) n'est pas utilisée ailleurs
 var show_form_theme_delete = function (data) {
   if (!isJson(data)) {
     data = JSON.parse(data);
@@ -1329,6 +1334,7 @@ var showalert = function (message, alerttype) {
   }, 5000);
 };
 
+// cette fonction (show_messages) n'est pas utilisée ailleurs, il n'y a pas id "show_messages"
 function show_messages(msgText, msgClass, loadUrl) {
   var $msgContainer = document.getElementById("show_messages");
   var close_button = "";
