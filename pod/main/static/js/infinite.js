@@ -1,3 +1,4 @@
+// cette fonction (isFooterInView) n'est pas utilisée ailleurs
 function isFooterInView() {
   var footer = document.querySelector(
     "footer.container-fluid.pod-footer-container"
