@@ -650,7 +650,7 @@ class Meeting(models.Model):
         if self.slides:
             slides_url = "".join(
                 [
-                    "//",
+                    "https://",
                     get_current_site(None).domain,
                     self.slides.file.url,
                 ]
@@ -658,7 +658,7 @@ class Meeting(models.Model):
         elif MEETING_PRE_UPLOAD_SLIDES != "":
             slides_url = "".join(
                 [
-                    "//",
+                    "https://",
                     get_current_site(None).domain,
                     static(MEETING_PRE_UPLOAD_SLIDES),
                 ]
