@@ -9,14 +9,13 @@ button_reset = document.getElementById("reset");
 initialStart = sliderOne.value;
 initialEnd = sliderTwo.value;
 
-
 // Set max value
 let sliderMaxValue = sliderOne.max;
 // Set min value
 let sliderMinValue = sliderOne.min;
 
-
-function doChangeForRange1() { // Do change for the start value with the "time range"
+function doChangeForRange1() {
+  // Do change for the start value with the "time range"
   let value = timeToInt(this.value);
   if (value >= 0 && value <= sliderMaxValue) {
     sliderOne.value = value;
@@ -25,7 +24,8 @@ function doChangeForRange1() { // Do change for the start value with the "time r
   }
 }
 
-function doChangeForRange2() { // Do change for the end value with the "time range"
+function doChangeForRange2() {
+  // Do change for the end value with the "time range"
   let value = timeToInt(this.value);
   if (value >= 0 && value <= sliderMaxValue) {
     sliderTwo.value = value;
@@ -43,7 +43,8 @@ window.onload = function () {
 displayValOne.addEventListener("change", doChangeForRange1);
 displayValTwo.addEventListener("change", doChangeForRange2);
 
-function slideOne() { // Do change for the start value with the slider
+function slideOne() {
+  // Do change for the start value with the slider
   if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
     sliderOne.value = parseInt(sliderTwo.value) - minGap;
   }
@@ -52,7 +53,8 @@ function slideOne() { // Do change for the start value with the slider
   changeCurrentTimePlayer(sliderOne.value);
 }
 
-function slideTwo() { // Do change for the end value with the slider
+function slideTwo() {
+  // Do change for the end value with the slider
   if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
     sliderTwo.value = parseInt(sliderOne.value) + minGap;
   }
@@ -61,14 +63,16 @@ function slideTwo() { // Do change for the end value with the slider
   changeCurrentTimePlayer(sliderTwo.value);
 }
 
-function fillColor() { // Apply the changes
+function fillColor() {
+  // Apply the changes
   percent1 = (sliderOne.value / sliderMaxValue) * 100;
   percent2 = (sliderTwo.value / sliderMaxValue) * 100;
   sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent1}% , #1f8389 ${percent1}% , #1f8389 ${percent2}%, #dadae5 ${percent2}%)`;
   calculation_total_time();
 }
 
-function intToTime(time) { // Convert an integer to a time
+function intToTime(time) {
+  // Convert an integer to a time
   var sec_num = parseInt(time, 10); // don't forget the second param
   var hours = Math.floor(sec_num / 3600);
   var minutes = Math.floor((sec_num - hours * 3600) / 60);
@@ -86,7 +90,8 @@ function intToTime(time) { // Convert an integer to a time
   return hours + ":" + minutes + ":" + seconds;
 }
 
-function timeToInt(date) { // Convert time to an integer
+function timeToInt(date) {
+  // Convert time to an integer
   var a = date.split(":"); // split it at the colons
 
   // minutes are worth 60 seconds. Hours are worth 60 minutes.
@@ -94,7 +99,8 @@ function timeToInt(date) { // Convert time to an integer
   return seconds;
 }
 
-function calculation_total_time() { // Calculate the total duration of the video 
+function calculation_total_time() {
+  // Calculate the total duration of the video
   var total_time = sliderTwo.value - sliderOne.value;
   if (total_time >= 0 && total_time <= sliderMaxValue) {
     document.getElementById("total_time").innerText = intToTime(total_time);
@@ -104,19 +110,20 @@ function calculation_total_time() { // Calculate the total duration of the video
 }
 
 // Prevents validating only with the Enter key without going through confirmation
-(function(n) {
-  var f = function(e) {
+(function (n) {
+  var f = function (e) {
     var c = e.which || e.keyCode;
     if (c == 13) {
       e.preventDefault();
       let ConfirmationModalID = document.getElementById("ConfirmationModal");
-      let ConfirmationModal = bootstrap.Modal.getOrCreateInstance(ConfirmationModalID);
+      let ConfirmationModal =
+        bootstrap.Modal.getOrCreateInstance(ConfirmationModalID);
       ConfirmationModal.show();
       return false;
     }
   };
-  window.noPressEnter = function(a, b) {
-    b = (typeof b === 'boolean') ? b : true;
+  window.noPressEnter = function (a, b) {
+    b = typeof b === "boolean" ? b : true;
     if (b) {
       a.addEventListener(n, f);
     } else {
@@ -124,25 +131,25 @@ function calculation_total_time() { // Calculate the total duration of the video
     }
     return a;
   };
-})('keydown');
+})("keydown");
 
 noPressEnter(displayValOne);
 noPressEnter(displayValTwo);
 noPressEnter(sliderOne);
 noPressEnter(sliderTwo);
 
-// Buttons to get the time of the video player 
+// Buttons to get the time of the video player
 let button_start = document.getElementById("button_start");
 let button_end = document.getElementById("button_end");
 
-button_start.addEventListener("click", event => {
+button_start.addEventListener("click", (event) => {
   time = Math.trunc(player.currentTime()) + start_time;
   displayValOne.value = intToTime(time);
   sliderOne.value = time;
   fillColor();
 });
 
-button_end.addEventListener("click", event => {
+button_end.addEventListener("click", (event) => {
   time = Math.trunc(player.currentTime()) + start_time;
   displayValTwo.value = intToTime(time);
   sliderTwo.value = Math.trunc(time);
@@ -150,7 +157,7 @@ button_end.addEventListener("click", event => {
 });
 
 // Button reset
-button_reset.addEventListener("click", event => {
+button_reset.addEventListener("click", (event) => {
   displayValOne.value = intToTime(initialStart);
   sliderOne.value = initialStart;
   displayValTwo.value = intToTime(initialEnd);
@@ -159,8 +166,9 @@ button_reset.addEventListener("click", event => {
   player.currentTime(0);
 });
 
-function changeCurrentTimePlayer(value) { // Move the player along with the cursor
+function changeCurrentTimePlayer(value) {
+  // Move the player along with the cursor
   if (value - initialStart >= 0) {
-    player.currentTime(value - initialStart)
+    player.currentTime(value - initialStart);
   }
 }
