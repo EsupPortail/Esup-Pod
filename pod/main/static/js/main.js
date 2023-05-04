@@ -693,63 +693,45 @@ var send_form_data = async function (
     form_data = data_form;
   }
 
-  if (method == "post") {
-    await fetch(url, {
-      method: "POST",
-      headers: {
-        "X-CSRFToken": token,
-        "X-Requested-With": "XMLHttpRequest",
-      },
-      body: form_data,
-    })
-      .then((response) => response.text())
-      .then(($data) => {
-        $data = callbackSuccess($data);
-        window[fct]($data);
-      })
+  const options = {
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+    },
+  };
 
-      .catch((error) => {
-        showalert(
-          gettext("Error during exchange") +
-            "(" +
-            error +
-            ")<br/>" +
-            gettext("No data could be stored."),
-          "alert-danger"
-        );
-
-        callbackFail(error);
-      });
+  if (method === "post") {
+    options.method = "POST";
+    options.headers["X-CSRFToken"] = token;
+    options.body = form_data;
   } else {
-    await fetch(url, {
-      method: "GET",
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    })
-      .then((response) => response.text())
-      .then(($data) => {
-        $data = callbackSuccess($data);
-        if (typeof window[fct] === "function") {
-          window[fct]($data);
-        }
-      })
+    options.method = "GET";
+  }
 
-      .catch((error) => {
-        showalert(
-          gettext("Error during exchange") +
-            "(" +
-            error +
-            ")<br/>" +
-            gettext("No data could be stored."),
-          "alert-danger"
-        );
+  try {
+    const response = await fetch(url, options);
+    const data = await response.text();
+    const processedData = callbackSuccess(data);
+    if (method === "post"){
+      window[fct](processedData);
+    }
+    else {
+      if (typeof window[fct] === "function") {
+        window[fct](processedData);
+      }
+   }
+  } catch (error) {
+    showalert(
+      gettext("Error during exchange") +
+        "(" +
+        error +
+        ")<br/>" +
+        gettext("No data could be stored."),
+      "alert-danger"
+    );
 
-        callbackFail(error);
-      });
+    callbackFail(error);
   }
 };
-
 /**
  * AJAX call function (usually send form data)
  *
