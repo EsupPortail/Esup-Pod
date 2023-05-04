@@ -236,7 +236,7 @@ class Encoding_video_model(Encoding_video):
             )
 
         for sub in list_subtitle_files:
-            if not check_file(list_subtitle_files[sub]):
+            if not check_file(list_subtitle_files[sub][1]):
                 continue
             if __FILEPICKER__:
                 podfile, created = CustomFileModel.objects.get_or_create(
