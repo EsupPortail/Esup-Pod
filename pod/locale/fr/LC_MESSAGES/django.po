@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-03 09:17+0000\n"
+"POT-Creation-Date: 2023-05-04 07:39+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -6897,6 +6897,11 @@ msgid "An email will be sent to you when all encoding tasks are completed."
 msgstr ""
 "Un courriel vous sera envoyé quand toutes les tâches d’encodage seront "
 "complétées."
+
+#: pod/video/templates/videos/add_video.html:88
+#: pod/video/templates/videos/video_edit.html:217
+msgid "Help for form fields"
+msgstr "Aide pour les champs de formulaire"
 
 #: pod/video/templates/videos/category_modal.html:16
 msgid "category title"
