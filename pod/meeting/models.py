@@ -51,7 +51,7 @@ TEST_SETTINGS = getattr(settings, "TEST_SETTINGS", False)
 
 __MEETING_SLIDES_DOCUMENT__ = """<modules>
    <module name="presentation">
-      <document name="presentation.pdf">%(file)s</document>
+      %(document)s
    </module>
 </modules>
 """
@@ -252,6 +252,12 @@ class Meeting(models.Model):
         null=True,
         blank=True,
         verbose_name=_("Slides"),
+        help_text=_("""
+        BigBlueButton will accept Office documents (.doc .docx .pptx),
+        text documents(.txt), images (.png ,.jpg) and Adobe Acrobat documents (.pdf);
+        we recommend converting documents to .pdf prior to uploading for best results.
+        Maximum size is 30 MB or 150 pages per document.
+        """),
         on_delete=models.CASCADE,
     )
     site = models.ForeignKey(Site, verbose_name=_("Site"), on_delete=models.CASCADE)
@@ -608,22 +614,41 @@ class Meeting(models.Model):
             return True
 
     def get_create_response(self, url):
-        if MEETING_PRE_UPLOAD_SLIDES != "":
+        """call BBB server in POST or GET"""
+        if self.slides:
+            slides_path = self.slides.file.path
+        elif MEETING_PRE_UPLOAD_SLIDES != "":
             slides_path = os.path.join(STATIC_ROOT, MEETING_PRE_UPLOAD_SLIDES)
+        else:
+            return requests.get(url)
+        doc_str = ""
+        if os.path.getsize(slides_path) > 2000000:  # more than 2MO - 
+            doc_url = self.get_doc_url()
+            doc_str = "<document url=\"%(url)s\" filename=\"presentation.pdf\"/>" % {"url": doc_url}
+        else:
             base64_str = ""
             with open(slides_path, "rb") as slides_file:
                 encoded_string = base64.b64encode(slides_file.read())
                 base64_str = encoded_string.decode('utf-8')
-            headers = {'Content-Type': 'application/xml'}
-            response = requests.post(
-                url,
-                data=__MEETING_SLIDES_DOCUMENT__ % {"file": base64_str},
-                headers=headers
-            )
-            return response
-        else:
-            response = requests.get(url)
-            return response
+            doc_str = "<document name=\"presentation.pdf\">%(file)s</document>" % {"file": base64_str}
+        headers = {'Content-Type': 'application/xml'}
+        response = requests.post(
+            url,
+            data=__MEETING_SLIDES_DOCUMENT__ % {"document": doc_str},
+            headers=headers
+        )
+        return response
+    
+    def get_doc_url(self):
+        """return the url of slides to preload"""
+        slides_url = ""
+        if self.slides:
+            slides_path = self.slides.file
+            slides_url = ""
+        elif MEETING_PRE_UPLOAD_SLIDES != "":
+            slides_path = os.path.join(STATIC_ROOT, MEETING_PRE_UPLOAD_SLIDES)
+            slides_url = ""
+        return slides_url
 
     def get_join_url(self, fullname, role, userID=""):
         """
