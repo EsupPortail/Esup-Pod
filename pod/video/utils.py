@@ -4,6 +4,7 @@ import re
 import shutil
 import bleach
 from math import ceil
+import time
 
 from django.urls import reverse
 from django.conf import settings
@@ -444,3 +445,10 @@ def get_videos(title, user_id, search=None, limit=12, offset=0):
         "results": results,
     }
     return JsonResponse(response, safe=False)
+
+
+def time_to_seconds(a_time):
+    """Convert a time to seconds."""
+    seconds = time.strptime(str(a_time), '%H:%M:%S')
+    seconds = seconds.tm_sec + seconds.tm_min * 60 + seconds.tm_hour * 3600
+    return seconds

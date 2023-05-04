@@ -3,10 +3,11 @@
 from django.conf import settings
 from .models import Video
 from .utils import change_encoding_step, check_file, add_encoding_log
-from .utils import send_email, send_email_encoding
+from .utils import send_email, send_email_encoding, time_to_seconds
 from .Encoding_video_model import Encoding_video_model
 from .encoding_studio import encode_video_studio
 
+from pod.cut.models import CutVideo
 from pod.main.tasks import task_start_encode, task_start_encode_studio
 
 import logging
@@ -102,7 +103,13 @@ def encode_video(video_id):
 
     change_encoding_step(video_id, 0, "start")
     # start and stop cut ?
-    encoding_video = Encoding_video_model(video_id, video_to_encode.video.path)
+    if CutVideo.objects.filter(video=video_id).exists():
+        cut = CutVideo.objects.get(video=video_id)
+        cut_start = time_to_seconds(cut.start)
+        cut_end = time_to_seconds(cut.end)
+        encoding_video = Encoding_video_model(video_id, video_to_encode.video.path, cut_start, cut_end)
+    else:
+        encoding_video = Encoding_video_model(video_id, video_to_encode.video.path)
     encoding_video.add_encoding_log("start_time", "", True, start)
     # change_encoding_step(video_id, 1, "get video data")
     # encoding_video.get_video_data()
