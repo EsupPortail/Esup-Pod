@@ -18,6 +18,7 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from django.contrib.sites.shortcuts import get_current_site
+from django.templatetags.static import static
 from django.urls import reverse
 
 from django.core.exceptions import ValidationError
@@ -622,15 +623,19 @@ class Meeting(models.Model):
         else:
             return requests.get(url)
         doc_str = ""
-        if os.path.getsize(slides_path) > 2000000:  # more than 2MO - 
+        if os.path.getsize(slides_path) > 2000000:  # more than 2MO
             doc_url = self.get_doc_url()
-            doc_str = "<document url=\"%(url)s\" filename=\"presentation.pdf\"/>" % {"url": doc_url}
+            doc_str = "<document url=\"%(url)s\" filename=\"presentation.pdf\"/>" % {
+                "url": doc_url
+            }
         else:
             base64_str = ""
             with open(slides_path, "rb") as slides_file:
                 encoded_string = base64.b64encode(slides_file.read())
                 base64_str = encoded_string.decode('utf-8')
-            doc_str = "<document name=\"presentation.pdf\">%(file)s</document>" % {"file": base64_str}
+            doc_str = "<document name=\"presentation.pdf\">%(file)s</document>" % {
+                "file": base64_str
+            }
         headers = {'Content-Type': 'application/xml'}
         response = requests.post(
             url,
@@ -638,16 +643,26 @@ class Meeting(models.Model):
             headers=headers
         )
         return response
-    
+
     def get_doc_url(self):
         """return the url of slides to preload"""
         slides_url = ""
         if self.slides:
-            slides_path = self.slides.file
-            slides_url = ""
+            slides_url = "".join(
+                [
+                    "//",
+                    get_current_site(None).domain,
+                    self.slides.file.url,
+                ]
+            )
         elif MEETING_PRE_UPLOAD_SLIDES != "":
-            slides_path = os.path.join(STATIC_ROOT, MEETING_PRE_UPLOAD_SLIDES)
-            slides_url = ""
+            slides_url = "".join(
+                [
+                    "//",
+                    get_current_site(None).domain,
+                    static(MEETING_PRE_UPLOAD_SLIDES),
+                ]
+            )
         return slides_url
 
     def get_join_url(self, fullname, role, userID=""):
