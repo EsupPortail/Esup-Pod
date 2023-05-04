@@ -1,6 +1,8 @@
 import hashlib
 import random
 import requests
+import os
+import base64
 from datetime import timedelta, datetime as dt
 
 from urllib.parse import urlencode
@@ -38,8 +40,16 @@ SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 BBB_API_URL = getattr(settings, "BBB_API_URL", "")
 BBB_SECRET_KEY = getattr(settings, "BBB_SECRET_KEY", "")
 BBB_LOGOUT_URL = getattr(settings, "BBB_LOGOUT_URL", "")
+MEETING_PRE_UPLOAD_SLIDES = getattr(settings, "MEETING_PRE_UPLOAD_SLIDES", "")
+STATIC_ROOT = getattr(settings, "STATIC_ROOT", "")
 TEST_SETTINGS = getattr(settings, "TEST_SETTINGS", False)
 
+__MEETING_SLIDES_DOCUMENT__ = """<modules>
+   <module name="presentation">
+      <document name="presentation.pdf">%(file)s</document>
+   </module>
+</modules>
+"""
 
 meeting_to_bbb = {
     "name": "name",
@@ -562,7 +572,7 @@ class Meeting(models.Model):
         query = urlencode(parameters)
         hashed = api_call(query, action)
         url = slash_join(BBB_API_URL, action, "?%s" % hashed)
-        response = requests.get(url)
+        response = self.get_create_response(url)
         if response.status_code != 200:
             msg = {}
             msg["error"] = "Unable to call BBB server."
@@ -584,6 +594,24 @@ class Meeting(models.Model):
         else:
             self.update_data_from_bbb(meeting_json)
             return True
+
+    def get_create_response(self, url):
+        if MEETING_PRE_UPLOAD_SLIDES != "":
+            slides_path = os.path.join(STATIC_ROOT, MEETING_PRE_UPLOAD_SLIDES)
+            base64_str = ""
+            with open(slides_path, "rb") as slides_file:
+                encoded_string = base64.b64encode(slides_file.read())
+                base64_str = encoded_string.decode('utf-8')
+            headers = {'Content-Type': 'application/xml'}
+            response = requests.post(
+                url,
+                data=__MEETING_SLIDES_DOCUMENT__ % {"file": base64_str},
+                headers=headers
+            )
+            return response
+        else:
+            response = requests.get(url)
+            return response
 
     def get_join_url(self, fullname, role, userID=""):
         """

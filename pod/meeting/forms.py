@@ -59,8 +59,9 @@ MEETING_DISABLE_RECORD = getattr(settings, "MEETING_DISABLE_RECORD", True)
 MEETING_RECORD_FIELDS = getattr(
     settings,
     "MEETING_RECORD_FIELDS",
-    ("record", "auto_start_recording"), # , "allow_start_stop_recording"
+    ("record", "auto_start_recording"),  # , "allow_start_stop_recording"
 )
+
 __MEETING_EXCLUDE_FIELDS__ = (
     MEETING_MAIN_FIELDS
     + MEETING_DATE_FIELDS
@@ -68,23 +69,8 @@ __MEETING_EXCLUDE_FIELDS__ = (
     + ("id", "start_at")
     + MEETING_RECORD_FIELDS
 )
-'''
-if MEETING_DISABLE_RECORD:
-    __MEETING_EXCLUDE_FIELDS__ = (
-        MEETING_MAIN_FIELDS
-        + MEETING_DATE_FIELDS
-        + MEETING_RECURRING_FIELDS
-        + ("id", "start_at")
-        + MEETING_RECORD_FIELDS
-    )
-else:
-    __MEETING_EXCLUDE_FIELDS__ = (
-        MEETING_MAIN_FIELDS
-        + MEETING_DATE_FIELDS
-        + MEETING_RECURRING_FIELDS
-        + ("id", "start_at")
-    )
-'''
+
+
 for field in Meeting._meta.fields:
     # print(field.name, field.editable)
     if field.editable is False:
@@ -223,7 +209,8 @@ class MeetingForm(forms.ModelForm):
                 },
             ),
         )
-    fieldsets += (   
+
+    fieldsets += (
         (
             "modal",
             {
