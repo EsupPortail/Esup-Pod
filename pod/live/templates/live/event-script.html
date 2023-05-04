@@ -14,8 +14,6 @@
     let stopped = false;
     let video_on_hold_is_displayed = false;
 
-    let playerOnHold;
-
     let options = {
         notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
         language: "fr", //en or nl
@@ -109,10 +107,9 @@
           console.info("Streaming live starts.");
         }
 
-        // remove onHold resources
-        document.getElementById("divvideoonhold").style.display = "none";
+        // dispose onHold resources
         video_on_hold_is_displayed = false;
-        playerOnHold.volume(0);
+        videojs(document.getElementById("divvideoonhold")).dispose();
 
         // Affichage du flux direct
         started = true;
@@ -375,7 +372,7 @@
         }
 
         options["loop"] = true;
-        playerOnHold = videojs('podvideoonholdplayer', options, function () {
+        let playerOnHold = videojs('podvideoonholdplayer', options, function () {
          });
 
         if (withModal)
