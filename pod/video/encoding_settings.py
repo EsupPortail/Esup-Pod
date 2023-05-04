@@ -33,7 +33,7 @@ FFMPEG_MP4_ENCODE = (
 )
 # https://gist.github.com/Andrey2G/78d42b5c87850f8fbadd0b670b0e6924
 FFMPEG_HLS_COMMON_PARAMS = (
-    '%(cut)s '
+    "%(cut)s "
     + "-c:v %(libx)s -preset %(preset)s -profile:v %(profile)s -pix_fmt yuv420p "
     + "-level %(level)s -crf %(crf)s -sc_threshold 0 "
     + '-force_key_frames "expr:gte(t,n_forced*1)" '

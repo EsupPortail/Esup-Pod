@@ -19,8 +19,7 @@ class CutVideo(models.Model):
     def clean(self):
         if not self.verify_time():
             raise ValidationError(
-                _("Please select values between 00:00:00 and ")
-                + str(self.duration) + "."
+                _("Please select values between 00:00:00 and ") + str(self.duration) + "."
             )
 
     def verify_time(self):
@@ -34,13 +33,7 @@ class CutVideo(models.Model):
         start = time_to_seconds(self.start)
         end = time_to_seconds(self.end)
         duration = time_to_seconds(self.duration)
-        if (
-            start < 0
-            or start >= end
-            or end is None
-            or start is None
-            or end > duration
-        ):
+        if start < 0 or start >= end or end is None or start is None or end > duration:
             return False
         else:
             return True

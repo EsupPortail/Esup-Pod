@@ -107,7 +107,9 @@ def encode_video(video_id):
         cut = CutVideo.objects.get(video=video_id)
         cut_start = time_to_seconds(cut.start)
         cut_end = time_to_seconds(cut.end)
-        encoding_video = Encoding_video_model(video_id, video_to_encode.video.path, cut_start, cut_end)
+        encoding_video = Encoding_video_model(
+            video_id, video_to_encode.video.path, cut_start, cut_end
+        )
     else:
         encoding_video = Encoding_video_model(video_id, video_to_encode.video.path)
     encoding_video.add_encoding_log("start_time", "", True, start)

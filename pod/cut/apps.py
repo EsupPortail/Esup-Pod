@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class CutConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'pod.cut'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "pod.cut"

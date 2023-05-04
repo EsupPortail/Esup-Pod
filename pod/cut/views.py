@@ -27,7 +27,7 @@ def cut_video(request, slug):  # noqa: C901
     """View for video cutting"""
     if in_maintenance():
         return redirect(reverse("maintenance"))
-    video = (get_object_or_404(Video, slug=slug, sites=get_current_site(request)))
+    video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     cutting = ""
 
     # Get the full duration
@@ -71,15 +71,18 @@ def cut_video(request, slug):  # noqa: C901
 
             start_encode(video.id)
 
-            messages.add_message(
-                request, messages.INFO, _("The cut was made.")
-            )
+            messages.add_message(request, messages.INFO, _("The cut was made."))
             return redirect(reverse("video:my_videos"))
 
         else:
             messages.add_message(
-                request, messages.ERROR, _("Please select values between 00:00:00 and ")
-                + str(duration) + "."
+                request,
+                messages.ERROR,
+                _("Please select values between 00:00:00 and ") + str(duration) + ".",
             )
 
-    return render(request, "video_cut.html", {"cutting": cutting, "video": video, "form_cut": form_cut},)
+    return render(
+        request,
+        "video_cut.html",
+        {"cutting": cutting, "video": video, "form_cut": form_cut},
+    )
