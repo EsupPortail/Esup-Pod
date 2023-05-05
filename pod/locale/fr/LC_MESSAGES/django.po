@@ -7775,3 +7775,98 @@ msgstr "Résultats de la recherche"
 
 #~ msgid "No video found"
 #~ msgstr "Aucune vidéo trouvée"
+
+msgid "published"
+msgstr "publié"
+
+msgid "Video file already uploaded to Pod"
+msgstr "Fichier vidéo déjà téléversé sur Pod"
+
+msgid "Upload to Pod as a video"
+msgstr "Téléverser sur Pod en tant que vidéo"
+
+msgid "Please confirm you want to upload the recording To Pod"
+msgstr "Veuillez confirmer que vous souhaitez téléverser l’enregistrement sur Pod"
+
+msgid "You cannot upload this recording."
+msgstr "Vous ne pouvez pas téléverser cet enregistrement."
+
+msgid ""
+"The recording has been uploaded to Pod."
+"You can see the video directly in My videos."
+msgstr ""
+"L’enregistrement a été téléversé sur Pod."
+"Vous pouvez voir la vidéo directement dans Mes vidéos."
+
+msgid "Recording name"
+msgstr "Nom de l’enregistrement"
+
+msgid "Is this an internal recording ?"
+msgstr "S’agit-il d’un enregistrement interne ?"
+
+msgid "Duration of recording"
+msgstr "Durée de l'enregistrement"
+
+msgid "User who uploaded to Pod the video file"
+msgstr "Utilisateur qui a téléversé le fichier vidéo sur Pod"
+
+msgid "Recording ID"
+msgstr "Identifiant de l’enregistrement"
+
+msgid "External recording URL"
+msgstr "URL d’enregistrement externe"
+
+msgid "Upload automatically to Pod as a video"
+msgstr "Téléverser automatiquement sur Pod en tant que vidéo"
+
+msgid ""
+"A video will be created from this external recording"
+"and will be available on this platform automatically."
+msgstr ""
+"Une vidéo sera créée à partir de cet enregistrement externe"
+"et sera disponible automatiquement sur cette plateforme."
+
+msgid "User who create this external recording"
+msgstr "Utilisateur qui crée cet enregistrement externe"
+
+msgid "You can add additional owners to this external recording."
+msgstr ""
+"Vous pouvez ajouter des propriétaires supplémentaires"
+" à cet enregistrement externe."
+
+msgid "The HTML file for this recording was not found on the BBB server."
+msgstr "Le fichier HTML de cet enregistrement est introuvable sur le serveur BBB."
+
+msgid "No video file found"
+msgstr "Aucun fichier vidéo trouvé"
+
+msgid ""
+"The video file for this recording "
+"was not found on the BBB server."
+msgstr ""
+"Le fichier vidéo pour cet enregistrement"
+"n’a pas été trouvé sur le serveur BBB."
+
+msgid "Impossible to download the video file from the BBB server."
+msgstr "Impossible de télécharger le fichier vidéo à partir du serveur BBB."
+
+msgid "This video was uploaded to Pod from Big Blue Button server."
+msgstr "Cette vidéo a été téléchargée sur Pod à partir du serveur Big Blue Button."
+
+msgid "Impossible to create the Pod video"
+msgstr "Impossible de créer la vidéo Pod"
+
+msgid "Impossible to create the recording"
+msgstr "Impossible de créer l’enregistrement"
+
+msgid "Impossible to upload to Pod the video"
+msgstr "Impossible de téléverser la vidéo sur Pod"
+
+msgid "No URL found"
+msgstr "Aucune URL trouvée"
+
+msgid "Do not leave the page until the video upload to Pod is complete."
+msgstr "Ne quittez pas la page tant que le téléchargement de la vidéo sur Pod n’est pas terminé."
+
+msgid "The found file is not a valid video."
+msgstr "Le fichier trouvé n'est pas une vidéo valide."
