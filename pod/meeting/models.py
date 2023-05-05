@@ -623,7 +623,7 @@ class Meeting(models.Model):
         else:
             return requests.get(url)
         doc_str = ""
-        if os.path.getsize(slides_path) > 2000000:  # more than 2MO
+        if os.path.getsize(slides_path) > 1000000:  # more than 1MO
             doc_url = self.get_doc_url()
             doc_str = "<document url=\"%(url)s\" filename=\"presentation.pdf\"/>" % {
                 "url": doc_url
