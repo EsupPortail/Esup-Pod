@@ -236,7 +236,7 @@ class VideoAdmin(admin.ModelAdmin):
             item.is_draft = True
             item.save()
 
-    draft_video.short_description = _("Selected videos as draft")
+    draft_video.short_description = _("Set as draft")
 
     def encode_video(self, request, queryset):
         for item in queryset:
