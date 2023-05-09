@@ -733,7 +733,7 @@ class RecordingTestCase(TestCase):
             name="test recording1",
             is_internal=True,
             recording_id="c057c39d3dc59d9e9516d95f76eb",
-            meeting=meeting1
+            meeting=meeting1,
         )
         Recording.objects.create(
             id=2,
@@ -742,7 +742,7 @@ class RecordingTestCase(TestCase):
             recording_id="d058c39d3dc59d9e9516d95f76eb",
             meeting=meeting2,
             start_at=datetime(2022, 4, 24, 14, 0, 0),
-            uploaded_to_pod_by=user2
+            uploaded_to_pod_by=user2,
         )
 
     def test_default_attributs(self):

@@ -521,13 +521,13 @@ class Meeting(models.Model):
             # Parse the BBB video HTML file
             parser = video_parser()
             # Manage the encoding
-            if (response.encoding == "ISO-8859-1"):
+            if response.encoding == "ISO-8859-1":
                 parser.feed(response.text.encode("ISO-8859-1").decode("utf-8"))
             else:
                 parser.feed(response.text)
 
             # Video file found
-            if (parser.video_check):
+            if parser.video_check:
                 # Security check about extensions
                 extension = parser.video_file.split(".")[-1].lower()
                 if extension not in VIDEO_ALLOWED_EXTENSIONS:
@@ -561,9 +561,8 @@ class Meeting(models.Model):
         # Check if video file exists
         try:
             with requests.get(
-                    source_video_url,
-                    timeout=(10, 180),
-                    stream=True) as response:
+                source_video_url, timeout=(10, 180), stream=True
+            ) as response:
                 if response.status_code != 200:
                     msg = {}
                     msg["error"] = _(
@@ -575,7 +574,7 @@ class Meeting(models.Model):
                     msg["message"] = "Error number : %s" % response.status_code
                     raise ValueError(msg)
 
-                with open(dest_file, 'wb+') as file:
+                with open(dest_file, "wb+") as file:
                     # Total size, in bytes, from response header
                     # total_size = int(response.headers.get('content-length', 0))
                     # Other possible methods
@@ -626,7 +625,7 @@ class Meeting(models.Model):
             start_dt = dt.fromtimestamp(float(start_timestamp) / 1000)
             end_dt = dt.fromtimestamp(float(end_timestamp) / 1000)
             # Format datetime and not timestamp
-            start_at = start_dt.strftime('%Y-%m-%d %H:%M:%S')
+            start_at = start_dt.strftime("%Y-%m-%d %H:%M:%S")
             # Management of the duration
             duration = str(end_dt - start_dt).split(".")[0]
             # Save the recording as an internal recording
@@ -638,7 +637,7 @@ class Meeting(models.Model):
                 start_at=start_at,
                 duration=parse_duration(duration),
                 # Create a new line if uploaded by another user
-                defaults={"uploaded_to_pod_by": request.user}
+                defaults={"uploaded_to_pod_by": request.user},
             )
         except Exception as exc:
             msg = {}
@@ -692,7 +691,7 @@ class Meeting(models.Model):
         except Exception as exc:
             msg = {}
             msg["error"] = _("Impossible to upload to Pod the video")
-            try :
+            try:
                 # Management of error messages from sub-functions
                 message = "%s (%s)" % (exc.args[0]["error"], exc.args[0]["message"])
             except Exception:
@@ -1195,7 +1194,7 @@ class Recording(models.Model):
     # User who uploaded to Pod the video file
     uploaded_to_pod_by = models.ForeignKey(
         User,
-        related_name='uploader_recording',
+        related_name="uploader_recording",
         on_delete=models.CASCADE,
         limit_choices_to={"is_staff": True},
         verbose_name=_("User"),
@@ -1215,7 +1214,9 @@ class Recording(models.Model):
 
     # Existant meeting
     meeting = models.ForeignKey(
-        Meeting, on_delete=models.CASCADE, verbose_name=_("Meeting"),
+        Meeting,
+        on_delete=models.CASCADE,
+        verbose_name=_("Meeting"),
         null=True,
         blank=True,
     )
@@ -1227,7 +1228,7 @@ class Recording(models.Model):
         default="",
         null=True,
         blank=True,
-        verbose_name=_("External recording URL")
+        verbose_name=_("External recording URL"),
     )
 
     upload_automatically = models.BooleanField(
@@ -1244,7 +1245,7 @@ class Recording(models.Model):
     # User who create this external recording
     created_by = models.ForeignKey(
         User,
-        related_name='creator_recording',
+        related_name="creator_recording",
         on_delete=models.CASCADE,
         limit_choices_to={"is_staff": True},
         verbose_name=_("User"),
@@ -1280,7 +1281,7 @@ class Recording(models.Model):
         get_latest_by = "start_at"
 
 
-class StatelessRecording():
+class StatelessRecording:
     """Recording model, not saved in database.
     Useful to manage BBB recordings.
     """
@@ -1322,9 +1323,10 @@ class StatelessRecording():
 
 
 class video_parser(HTMLParser):
-    """ Useful to parse the BBB Web page and search for video file
+    """Useful to parse the BBB Web page and search for video file
     Used to parse BBB 2.6 URL for video recordings.
     """
+
     def __init__(self):
         super().__init__()
         self.reset()
@@ -1339,7 +1341,7 @@ class video_parser(HTMLParser):
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
         # Search for source tag
-        if tag == 'source' :
+        if tag == "source":
             # Found the line. Managed format :
             # attrs = {'src': 'video-0.m4v', 'type': 'video/mp4'}
             # print("video line : %s" % attrs)
@@ -1347,13 +1349,13 @@ class video_parser(HTMLParser):
             self.video_file = attrs.get("src", "")
             self.video_type = attrs.get("type", "")
         # Search for title tag
-        if tag == 'title' :
+        if tag == "title":
             # Found the title line
             self.title_check = True
 
     def handle_data(self, data):
         # Search for title tag
-        if self.title_check :
+        if self.title_check:
             # Get the title that corresponds to recording's name
             self.title = data
             self.title_check = False

@@ -162,13 +162,7 @@ class MeetingAdmin(admin.ModelAdmin):
 
 @admin.register(Recording)
 class RecordingAdmin(admin.ModelAdmin):
-    list_display = (
-        "recording_id",
-        "name",
-        "meeting",
-        "start_at",
-        "uploaded_to_pod_by"
-    )
+    list_display = ("recording_id", "name", "meeting", "start_at", "uploaded_to_pod_by")
     search_fields = [
         "name",
         "meeting",

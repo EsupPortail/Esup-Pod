@@ -485,9 +485,13 @@ def recordings(request, meeting_id):
         Meeting, meeting_id=meeting_id, site=get_current_site(request)
     )
 
-    if request.user != meeting.owner and not (
-        request.user.is_superuser or request.user.has_perm("meeting.view_meeting")
-    ) and (request.user not in meeting.additional_owners.all()):
+    if (
+        request.user != meeting.owner
+        and not (
+            request.user.is_superuser or request.user.has_perm("meeting.view_meeting")
+        )
+        and (request.user not in meeting.additional_owners.all())
+    ):
         messages.add_message(
             request, messages.ERROR, _("You cannot view the recordings of this meeting.")
         )
@@ -521,8 +525,7 @@ def recordings(request, meeting_id):
             bbb_recording.canDelete = can_delete
             # Search for more informations from database (if already uploaded to Pod)
             recording = Recording.objects.filter(
-                recording_id=data["recordID"],
-                is_internal=True
+                recording_id=data["recordID"], is_internal=True
             ).first()
             if recording:
                 bbb_recording.uploadedToPodBy = recording.uploaded_to_pod_by
@@ -544,9 +547,10 @@ def get_can_delete_recordings(request, meeting):
     can_delete = False
 
     # Additional owners can't delete these recordings
-    if request.user == meeting.owner or (
-        request.user.is_superuser) or (
-        request.user.has_perm("meeting.delete_meeting")
+    if (
+        request.user == meeting.owner
+        or (request.user.is_superuser)
+        or (request.user.has_perm("meeting.delete_meeting"))
     ):
         can_delete = True
     return can_delete
@@ -872,10 +876,12 @@ def upload_recording_to_pod(request, meeting_id, recording_id):
             msg = mark_safe(msg)
         if upload and msg == "":
             messages.add_message(
-                request, messages.INFO, _(
+                request,
+                messages.INFO,
+                _(
                     "The recording has been uploaded to Pod."
                     "You can see the video directly in My videos."
-                )
+                ),
             )
         else:
             messages.add_message(request, messages.ERROR, msg)

@@ -755,7 +755,7 @@ class RecordingDeleteTestView(TestCase):
             name="test recording1",
             is_internal=True,
             recording_id="d058c39d3dc59d9e9516d95f76eb",
-            meeting=meeting
+            meeting=meeting,
         )
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
@@ -786,16 +786,18 @@ class RecordingDeleteTestView(TestCase):
     def test_recording_delete_get_request(self):
         self.client = Client()
         # check auth
-        url = reverse("meeting:delete_recording", kwargs={
-            "meeting_id": "slugauhasard", "recording_id": "idauhasard"}
+        url = reverse(
+            "meeting:delete_recording",
+            kwargs={"meeting_id": "slugauhasard", "recording_id": "idauhasard"},
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)  # not auth
         # check meeting / recording
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
-        url = reverse("meeting:delete_recording", kwargs={
-            "meeting_id": "slugauhasard", "recording_id": "idauhasard"}
+        url = reverse(
+            "meeting:delete_recording",
+            kwargs={"meeting_id": "slugauhasard", "recording_id": "idauhasard"},
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
@@ -803,8 +805,12 @@ class RecordingDeleteTestView(TestCase):
         # check access right
         meeting = Meeting.objects.get(name="test")
         recording = Recording.objects.get(name="test recording1")
-        url = reverse("meeting:delete_recording", kwargs={
-            "meeting_id": meeting.meeting_id, "recording_id": recording.recording_id}
+        url = reverse(
+            "meeting:delete_recording",
+            kwargs={
+                "meeting_id": meeting.meeting_id,
+                "recording_id": recording.recording_id,
+            },
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
@@ -830,7 +836,7 @@ class RecordingUploadTestView(TestCase):
             name="test recording1",
             is_internal=True,
             recording_id="d058c39d3dc59d9e9516d95f76eb",
-            meeting=meeting
+            meeting=meeting,
         )
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
@@ -841,16 +847,18 @@ class RecordingUploadTestView(TestCase):
     def test_recording_upload_get_request(self):
         self.client = Client()
         # check auth
-        url = reverse("meeting:upload_recording_to_pod", kwargs={
-            "meeting_id": "slugauhasard", "recording_id": "idauhasard"}
+        url = reverse(
+            "meeting:upload_recording_to_pod",
+            kwargs={"meeting_id": "slugauhasard", "recording_id": "idauhasard"},
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)  # not auth
         # check meeting / recording
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
-        url = reverse("meeting:upload_recording_to_pod", kwargs={
-            "meeting_id": "slugauhasard", "recording_id": "idauhasard"}
+        url = reverse(
+            "meeting:upload_recording_to_pod",
+            kwargs={"meeting_id": "slugauhasard", "recording_id": "idauhasard"},
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
@@ -858,9 +866,12 @@ class RecordingUploadTestView(TestCase):
         # check access right
         meeting = Meeting.objects.get(name="test")
         recording = Recording.objects.get(name="test recording1")
-        url = reverse("meeting:upload_recording_to_pod", kwargs={
-            "meeting_id": meeting.meeting_id,
-            "recording_id": recording.recording_id}
+        url = reverse(
+            "meeting:upload_recording_to_pod",
+            kwargs={
+                "meeting_id": meeting.meeting_id,
+                "recording_id": recording.recording_id,
+            },
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
@@ -875,9 +886,12 @@ class RecordingUploadTestView(TestCase):
         self.client.force_login(self.user)
         meeting = Meeting.objects.get(name="test")
         recording = Recording.objects.get(name="test recording1")
-        url = reverse("meeting:upload_recording_to_pod", kwargs={
-            "meeting_id": meeting.meeting_id,
-            "recording_id": recording.recording_id}
+        url = reverse(
+            "meeting:upload_recording_to_pod",
+            kwargs={
+                "meeting_id": meeting.meeting_id,
+                "recording_id": recording.recording_id,
+            },
         )
 
         # Check upload to Pod
@@ -887,7 +901,7 @@ class RecordingUploadTestView(TestCase):
                 "recording_name": "test recording1",
                 "source_url": "pod.mp4",
                 "start_timestamp": 1683188442479,
-                "end_timestamp" : 1683188474112
+                "end_timestamp": 1683188474112,
             },
             follow=True,
         )
