@@ -1399,6 +1399,25 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "MEETING_PRE_UPLOAD_SLIDES": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Pre-loaded slideshow for virtual meetings.",
+                                    "A user can override this value by choosing a slideshow when creating a virtual meeting.",
+                                    "Must be in the static directory."
+                                ],
+                                "fr": [
+                                    "",
+                                    "Diaporama préchargé pour les réunions virtuelles.",
+                                    "Un utilisateur peut remplacer cette valeur en choisissant un diaporama lors de la création d'une réunion virtuelle.",
+                                    "Doit se trouver dans le répertoire statique."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.2.0"
+                        },
                         "MEETING_RECORD_FIELDS": {
                             "default_value": "()",
                             "description": {
