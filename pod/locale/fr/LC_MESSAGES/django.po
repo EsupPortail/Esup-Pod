@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-09 08:55+0000\n"
+"POT-Creation-Date: 2023-05-09 10:27+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -7458,6 +7458,63 @@ msgstr "Modifier la période de visualisation"
 msgid "Show view statistics for all videos"
 msgstr "Afficher les statistiques de visualisation de toutes les vidéos"
 
+#: pod/video/templatetags/video_tags.py:112
+#, python-format
+msgid "tags_for_model tag was given an invalid model: %s"
+msgstr "la balise tags_for_model a reçu un modèle invalide : %s"
+
+#: pod/video/templatetags/video_tags.py:152
+#, python-format
+msgid "%s tag requires either three or five arguments"
+msgstr "la balise %s requiert trois ou cinq arguments"
+
+#: pod/video/templatetags/video_tags.py:155
+#: pod/video/templatetags/video_tags.py:216
+#, python-format
+msgid "second argument to %s tag must be 'as'"
+msgstr "le deuxième argument de la balise %s doit être 'as'"
+
+#: pod/video/templatetags/video_tags.py:159
+#: pod/video/templatetags/video_tags.py:221
+#, python-format
+msgid "if given, fourth argument to %s tag must be 'with'"
+msgstr ""
+"si il est donné, le quatrième argument de la balise %s doit être 'with'"
+
+#: pod/video/templatetags/video_tags.py:163
+#, python-format
+msgid "if given, fifth argument to %s tag must be 'counts'"
+msgstr "si donné, le 5e argument de la balise %s doit être ‘counts’"
+
+#: pod/video/templatetags/video_tags.py:212
+#, python-format
+msgid "%s tag requires either three or between five and seven arguments"
+msgstr "la balise %s requiert soit trois, soit entre cinq et sept arguments"
+
+#: pod/video/templatetags/video_tags.py:236
+#, python-format
+msgid "%(tag)s tag was given an invalid option: '%(option)s'"
+msgstr "l’option ‘%(option)s’ est invalide pour la balise %(tag)s"
+
+#: pod/video/templatetags/video_tags.py:244
+#, python-format
+msgid "%(tag)s tag was given a badly formatted option: '%(option)s'"
+msgstr "l’option ‘%(option)s’ n’est pas au bon format pour la balise %(tag)s"
+
+#: pod/video/templatetags/video_tags.py:262
+#, python-format
+msgid "%(tag)s tag's '%(option)s' option was not a valid integer: '%(value)s'"
+msgstr ""
+"l’option ‘%(option)s’ de la balise %(tag)s n’est pas un entier valide : "
+"’%(value)s’"
+
+#: pod/video/templatetags/video_tags.py:277
+#, python-format
+msgid "%(tag)s tag's '%(option)s' option was not a valid choice: '%(value)s'"
+msgstr ""
+"l’option ‘%(option)s’ de la balise %(tag)s n’est pas un choix valide : "
+"’%(value)s’"
+
 #: pod/video/tests/test_models.py:202 pod/video/tests/test_models.py:247
 #: pod/video/translation.py:12 pod/video/translation.py:17
 msgid "-- sorry, no translation provided --"
@@ -7717,44 +7774,6 @@ msgstr "Désolé, la recherche de vidéos est limitée à 500 pages maximum."
 #: pod/video_search/views.py:262
 msgid "Search results"
 msgstr "Résultats de la recherche"
-
-#~ msgid "tags_for_model tag was given an invalid model: %s"
-#~ msgstr "la balise tags_for_model a reçu un modèle invalide : %s"
-
-#~ msgid "%s tag requires either three or five arguments"
-#~ msgstr "la balise %s requiert trois ou cinq arguments"
-
-#~ msgid "second argument to %s tag must be 'as'"
-#~ msgstr "le deuxième argument de la balise %s doit être 'as'"
-
-#~ msgid "if given, fourth argument to %s tag must be 'with'"
-#~ msgstr ""
-#~ "si il est donné, le quatrième argument de la balise %s doit être 'with'"
-
-#~ msgid "if given, fifth argument to %s tag must be 'counts'"
-#~ msgstr "si donné, le 5e argument de la balise %s doit être ‘counts’"
-
-#~ msgid "%s tag requires either three or between five and seven arguments"
-#~ msgstr "la balise %s requiert soit trois, soit entre cinq et sept arguments"
-
-#~ msgid "%(tag)s tag was given an invalid option: '%(option)s'"
-#~ msgstr "l’option ‘%(option)s’ est invalide pour la balise %(tag)s"
-
-#~ msgid "%(tag)s tag was given a badly formatted option: '%(option)s'"
-#~ msgstr ""
-#~ "l’option ‘%(option)s’ n’est pas au bon format pour la balise %(tag)s"
-
-#~ msgid ""
-#~ "%(tag)s tag's '%(option)s' option was not a valid integer: '%(value)s'"
-#~ msgstr ""
-#~ "l’option ‘%(option)s’ de la balise %(tag)s n’est pas un entier valide : "
-#~ "’%(value)s’"
-
-#~ msgid ""
-#~ "%(tag)s tag's '%(option)s' option was not a valid choice: '%(value)s'"
-#~ msgstr ""
-#~ "l’option ‘%(option)s’ de la balise %(tag)s n’est pas un choix valide : "
-#~ "’%(value)s’"
 
 #~ msgid "No video found"
 #~ msgstr "Aucune vidéo trouvée"
