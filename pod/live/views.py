@@ -347,7 +347,7 @@ def render_event_template(request, evemnt, user_owns_event):
         {
             "event": evemnt,
             "display_chat": display_chat,
-            "need_piloting_buttons": user_owns_event,
+            "need_piloting_buttons": user_owns_event and not request.GET.get("is_iframe"),
             "heartbeat_delay": HEARTBEAT_DELAY,
         },
     )
