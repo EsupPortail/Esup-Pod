@@ -2,6 +2,8 @@ import hashlib
 import random
 import requests
 from django.utils.dateparse import parse_duration
+import os
+import base64
 
 from datetime import timedelta, datetime as dt
 
@@ -18,15 +20,16 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from django.contrib.sites.shortcuts import get_current_site
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.html import mark_safe
 from django.shortcuts import get_object_or_404
 
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
+from django.core.validators import MinLengthValidator
 from django.db.models import F, Q
 
-import os
 from html.parser import HTMLParser
 import shutil
 from pod.video.models import Video
@@ -44,10 +47,17 @@ from .utils import (
 )
 from dateutil.relativedelta import relativedelta
 
+if getattr(settings, "USE_PODFILE", False):
+    from pod.podfile.models import CustomFileModel
+else:
+    from pod.main.models import CustomFileModel
+
 SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 BBB_API_URL = getattr(settings, "BBB_API_URL", "")
 BBB_SECRET_KEY = getattr(settings, "BBB_SECRET_KEY", "")
 BBB_LOGOUT_URL = getattr(settings, "BBB_LOGOUT_URL", "")
+MEETING_PRE_UPLOAD_SLIDES = getattr(settings, "MEETING_PRE_UPLOAD_SLIDES", "")
+STATIC_ROOT = getattr(settings, "STATIC_ROOT", "")
 TEST_SETTINGS = getattr(settings, "TEST_SETTINGS", False)
 
 DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
@@ -77,6 +87,13 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
         "ts",
     ),
 )
+
+__MEETING_SLIDES_DOCUMENT__ = """<modules>
+   <module name="presentation">
+      %(document)s
+   </module>
+</modules>
+"""
 
 
 meeting_to_bbb = {
@@ -174,7 +191,9 @@ class Meeting(models.Model):
         message=_("Weekdays must contain the numbers of the active days."),
     )
 
-    name = models.CharField(max_length=250, verbose_name=_("Meeting Name"))
+    name = models.CharField(
+        max_length=250, verbose_name=_("Meeting Name"), validators=[MinLengthValidator(2)]
+    )
     meeting_id = models.SlugField(
         max_length=255,
         verbose_name=_("Meeting ID"),
@@ -269,6 +288,21 @@ class Meeting(models.Model):
         verbose_name=_("Is running"),
         help_text=_("Indicates whether this meeting is running in BigBlueButton or not!"),
         editable=False,
+    )
+    slides = models.ForeignKey(
+        CustomFileModel,
+        null=True,
+        blank=True,
+        verbose_name=_("Slides"),
+        help_text=_(
+            """
+        BigBlueButton will accept Office documents (.doc .docx .pptx),
+        text documents(.txt), images (.png ,.jpg) and Adobe Acrobat documents (.pdf);
+        we recommend converting documents to .pdf prior to uploading for best results.
+        Maximum size is 30 MB or 150 pages per document.
+        """
+        ),
+        on_delete=models.CASCADE,
     )
     site = models.ForeignKey(Site, verbose_name=_("Site"), on_delete=models.CASCADE)
 
@@ -803,7 +837,7 @@ class Meeting(models.Model):
         query = urlencode(parameters)
         hashed = api_call(query, action)
         url = slash_join(BBB_API_URL, action, "?%s" % hashed)
-        response = requests.get(url)
+        response = self.get_create_response(url)
         if response.status_code != 200:
             msg = {}
             msg["error"] = "Unable to call BBB server."
@@ -825,6 +859,55 @@ class Meeting(models.Model):
         else:
             self.update_data_from_bbb(meeting_json)
             return True
+
+    def get_create_response(self, url):
+        """call BBB server in POST or GET"""
+        if self.slides:
+            slides_path = self.slides.file.path
+        elif MEETING_PRE_UPLOAD_SLIDES != "":
+            slides_path = os.path.join(STATIC_ROOT, MEETING_PRE_UPLOAD_SLIDES)
+        else:
+            return requests.get(url)
+        doc_str = ""
+        if os.path.getsize(slides_path) > 1000000:  # more than 1MO
+            doc_url = self.get_doc_url()
+            doc_str = '<document url="%(url)s" filename="presentation.pdf"/>' % {
+                "url": doc_url
+            }
+        else:
+            base64_str = ""
+            with open(slides_path, "rb") as slides_file:
+                encoded_string = base64.b64encode(slides_file.read())
+                base64_str = encoded_string.decode("utf-8")
+            doc_str = '<document name="presentation.pdf">%(file)s</document>' % {
+                "file": base64_str
+            }
+        headers = {"Content-Type": "application/xml"}
+        response = requests.post(
+            url, data=__MEETING_SLIDES_DOCUMENT__ % {"document": doc_str}, headers=headers
+        )
+        return response
+
+    def get_doc_url(self):
+        """return the url of slides to preload"""
+        slides_url = ""
+        if self.slides:
+            slides_url = "".join(
+                [
+                    "https://",
+                    get_current_site(None).domain,
+                    self.slides.file.url,
+                ]
+            )
+        elif MEETING_PRE_UPLOAD_SLIDES != "":
+            slides_url = "".join(
+                [
+                    "https://",
+                    get_current_site(None).domain,
+                    static(MEETING_PRE_UPLOAD_SLIDES),
+                ]
+            )
+        return slides_url
 
     def get_join_url(self, fullname, role, userID=""):
         """
