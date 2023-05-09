@@ -154,9 +154,7 @@ class Meeting(models.Model):
     )
 
     name = models.CharField(
-        max_length=250,
-        verbose_name=_("Meeting Name"),
-        validators=[MinLengthValidator(2)]
+        max_length=250, verbose_name=_("Meeting Name"), validators=[MinLengthValidator(2)]
     )
     meeting_id = models.SlugField(
         max_length=255,
@@ -258,12 +256,14 @@ class Meeting(models.Model):
         null=True,
         blank=True,
         verbose_name=_("Slides"),
-        help_text=_("""
+        help_text=_(
+            """
         BigBlueButton will accept Office documents (.doc .docx .pptx),
         text documents(.txt), images (.png ,.jpg) and Adobe Acrobat documents (.pdf);
         we recommend converting documents to .pdf prior to uploading for best results.
         Maximum size is 30 MB or 150 pages per document.
-        """),
+        """
+        ),
         on_delete=models.CASCADE,
     )
     site = models.ForeignKey(Site, verbose_name=_("Site"), on_delete=models.CASCADE)
@@ -630,22 +630,20 @@ class Meeting(models.Model):
         doc_str = ""
         if os.path.getsize(slides_path) > 1000000:  # more than 1MO
             doc_url = self.get_doc_url()
-            doc_str = "<document url=\"%(url)s\" filename=\"presentation.pdf\"/>" % {
+            doc_str = '<document url="%(url)s" filename="presentation.pdf"/>' % {
                 "url": doc_url
             }
         else:
             base64_str = ""
             with open(slides_path, "rb") as slides_file:
                 encoded_string = base64.b64encode(slides_file.read())
-                base64_str = encoded_string.decode('utf-8')
-            doc_str = "<document name=\"presentation.pdf\">%(file)s</document>" % {
+                base64_str = encoded_string.decode("utf-8")
+            doc_str = '<document name="presentation.pdf">%(file)s</document>' % {
                 "file": base64_str
             }
-        headers = {'Content-Type': 'application/xml'}
+        headers = {"Content-Type": "application/xml"}
         response = requests.post(
-            url,
-            data=__MEETING_SLIDES_DOCUMENT__ % {"document": doc_str},
-            headers=headers
+            url, data=__MEETING_SLIDES_DOCUMENT__ % {"document": doc_str}, headers=headers
         )
         return response
 

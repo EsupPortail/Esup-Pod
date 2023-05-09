@@ -211,7 +211,7 @@ class MeetingForm(forms.ModelForm):
                         '<i class="bi bi-record-circle"></i>'
                         + " %s" % _("Record session")
                     ),
-                    "fields": MEETING_RECORD_FIELDS
+                    "fields": MEETING_RECORD_FIELDS,
                 },
             ),
         )
