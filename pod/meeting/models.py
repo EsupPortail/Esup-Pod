@@ -534,7 +534,7 @@ class Meeting(models.Model):
                     msg = {}
                     msg["error"] = _(
                         "The video file for this recording was not"
-                        "found in the HTML file."
+                        " found in the HTML file."
                     )
                     msg["message"] = _("The found file is not a valid video.")
                     raise ValueError(msg)

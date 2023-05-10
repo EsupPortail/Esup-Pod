@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-03 13:52+0000\n"
+"POT-Creation-Date: 2023-05-10 05:44+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -99,7 +99,7 @@ msgid "Picture"
 msgstr "Image"
 
 #: pod/authentication/models.py:104 pod/live/models.py:359
-#: pod/meeting/models.py:162 pod/playlist/models.py:21
+#: pod/meeting/models.py:204 pod/playlist/models.py:21
 #: pod/playlist/templates/playlist/playlist_element_list.html:10
 #: pod/podfile/models.py:27 pod/video/admin.py:205 pod/video/models.py:692
 #: pod/video_search/templates/search/search.html:72
@@ -235,8 +235,8 @@ msgstr "Fermer"
 #: pod/meeting/templates/meeting/add_or_edit.html:29
 #: pod/meeting/templates/meeting/delete.html:32
 #: pod/meeting/templates/meeting/invite.html:26
-#: pod/meeting/templates/meeting/join.html:25 pod/meeting/views.py:144
-#: pod/meeting/views.py:205 pod/meeting/views.py:357 pod/playlist/views.py:232
+#: pod/meeting/templates/meeting/join.html:25 pod/meeting/views.py:147
+#: pod/meeting/views.py:208 pod/meeting/views.py:360 pod/playlist/views.py:232
 #: pod/recorder/templates/recorder/add_recording.html:34
 #: pod/recorder/templates/recorder/record_delete.html:31
 #: pod/recorder/views.py:156 pod/recorder/views.py:344
@@ -393,6 +393,7 @@ msgstr ""
 "URL de la vignette correspondant à l’enregistrement de la présentation BBB."
 
 #: pod/bbb/models.py:76 pod/bbb/models.py:145 pod/bbb/models.py:206
+#: pod/meeting/models.py:1200 pod/meeting/models.py:1251
 #: pod/recorder/models.py:83
 msgid "User"
 msgstr "Utilisateur"
@@ -410,7 +411,7 @@ msgid "Last date where BBB session was in progress."
 msgstr "Dernière date à laquelle la session BBB était en cours."
 
 #: pod/bbb/models.py:98 pod/bbb/models.py:118 pod/bbb/models.py:171
-#: pod/meeting/models.py:878
+#: pod/meeting/models.py:1140 pod/meeting/models.py:1219
 msgid "Meeting"
 msgstr "Session"
 
@@ -458,8 +459,8 @@ msgid "Attendees"
 msgstr "Participants"
 
 #: pod/bbb/models.py:175 pod/live/forms.py:100 pod/live/forms.py:214
-#: pod/live/models.py:372 pod/meeting/forms.py:152 pod/meeting/models.py:180
-#: pod/video_search/forms.py:18
+#: pod/live/models.py:372 pod/meeting/forms.py:152 pod/meeting/models.py:222
+#: pod/meeting/models.py:1186 pod/video_search/forms.py:18
 msgid "Start date"
 msgstr "Date de début"
 
@@ -506,7 +507,7 @@ msgstr ""
 "Nom d’utilisateur / ID d’utilisateur, qui souhaite effectuer le direct."
 
 #: pod/bbb/models.py:213 pod/live/models.py:168 pod/live/models.py:417
-#: pod/live/templates/live/event_card.html:20 pod/meeting/models.py:231
+#: pod/live/templates/live/event_card.html:20 pod/meeting/models.py:273
 #: pod/recorder/models.py:114 pod/video/forms.py:283 pod/video/models.py:782
 msgid "Restricted access"
 msgstr "Accès restreint"
@@ -604,6 +605,7 @@ msgid "Publish this presentation"
 msgstr "Publier cette présentation"
 
 #: pod/bbb/templates/bbb/card.html:32
+#: pod/meeting/templates/meeting/recordings.html:44
 msgid "by"
 msgstr "par"
 
@@ -1991,7 +1993,7 @@ msgid "Edit the enrichment"
 msgstr "Éditer l’enrichissement"
 
 #: pod/enrichment/forms.py:34 pod/enrichment/models.py:365
-#: pod/live/models.py:181 pod/live/models.py:427 pod/meeting/models.py:241
+#: pod/live/models.py:181 pod/live/models.py:427 pod/meeting/models.py:283
 #: pod/podfile/models.py:32 pod/recorder/models.py:124 pod/video/models.py:357
 #: pod/video/models.py:792
 msgid "Groups"
@@ -2474,8 +2476,8 @@ msgstr ""
 "informations nécessaires, et mettre en forme le résultat en utilisant la "
 "barre d’outils."
 
-#: pod/live/models.py:363 pod/meeting/models.py:169 pod/video/forms.py:126
-#: pod/video/models.py:696
+#: pod/live/models.py:363 pod/meeting/models.py:211 pod/meeting/models.py:1262
+#: pod/video/forms.py:126 pod/video/models.py:696
 msgid "Additional owners"
 msgstr "Propriétaires additionels"
 
@@ -2737,24 +2739,24 @@ msgstr ""
 
 #: pod/live/templates/live/direct.html:234
 #: pod/live/templates/live/event-script.html:84
-#: pod/live/templates/live/event-script.html:370
+#: pod/live/templates/live/event-script.html:379
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
 "Le direct n’a pas encore commencé, nouvelle tentative de lecture dans 10 "
 "secondes"
 
 #: pod/live/templates/live/direct.html:291
-#: pod/live/templates/live/event-script.html:420
+#: pod/live/templates/live/event-script.html:430
 msgid "Message sent"
 msgstr "Message envoyé"
 
 #: pod/live/templates/live/direct.html:292
-#: pod/live/templates/live/event-script.html:423
+#: pod/live/templates/live/event-script.html:433
 msgid "Message not sent: no broadcaster found"
 msgstr "Message non envoyé: aucun diffuseur trouvé"
 
 #: pod/live/templates/live/direct.html:293
-#: pod/live/templates/live/event-script.html:426
+#: pod/live/templates/live/event-script.html:436
 msgid "Message not sent: connection problem (REDIS)"
 msgstr "Message non envoyé: problème de connexion (REDIS)"
 
@@ -2906,7 +2908,7 @@ msgstr "QR code pour le lien :"
 msgid "Warning, it use google API"
 msgstr "Attention, utilise une API Google"
 
-#: pod/live/templates/live/event-script.html:324
+#: pod/live/templates/live/event-script.html:302
 msgid "Recording duration"
 msgstr "Temps d’enregistrement"
 
@@ -3207,7 +3209,7 @@ msgstr "Le mot de passe est incorrect."
 msgid "Editing the event"
 msgstr "Éditer l’évènement"
 
-#: pod/live/views.py:517 pod/meeting/views.py:137 pod/video/views.py:367
+#: pod/live/views.py:517 pod/meeting/views.py:140 pod/video/views.py:367
 #: pod/video/views.py:997
 msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
@@ -3274,7 +3276,7 @@ msgid "Other (please specify)"
 msgstr "Autre (spécifiez)"
 
 #: pod/main/forms.py:26 pod/meeting/forms.py:406
-#: pod/meeting/templates/meeting/recordings.html:20 pod/podfile/models.py:24
+#: pod/meeting/templates/meeting/recordings.html:25 pod/podfile/models.py:24
 #: pod/podfile/models.py:116 pod/podfile/templates/podfile/home_content.html:39
 #: pod/video/models.py:1592 pod/video/models.py:1669 pod/video/models.py:1734
 msgid "Name"
@@ -4179,7 +4181,7 @@ msgstr "Ajouter une vidéo"
 #: pod/meeting/templates/meeting/invite.html:8
 #: pod/meeting/templates/meeting/join.html:9
 #: pod/meeting/templates/meeting/my_meetings.html:10
-#: pod/meeting/templates/meeting/recordings.html:12 pod/meeting/views.py:81
+#: pod/meeting/templates/meeting/recordings.html:12 pod/meeting/views.py:84
 msgid "My meetings"
 msgstr "Mes réunions"
 
@@ -4302,20 +4304,20 @@ msgstr "Lien"
 msgid "your message untitled"
 msgstr "votre message intitulé"
 
-#: pod/meeting/admin.py:117
+#: pod/meeting/admin.py:120
 msgid "join"
 msgstr "rejoindre"
 
-#: pod/meeting/admin.py:133 pod/meeting/templates/meeting/recordings.html:22
+#: pod/meeting/admin.py:136 pod/meeting/templates/meeting/recordings.html:27
 #: pod/video/models.py:1419
 msgid "Date"
 msgstr "Date"
 
-#: pod/meeting/admin.py:134
+#: pod/meeting/admin.py:137
 msgid "Recurring"
 msgstr "Récurrence"
 
-#: pod/meeting/forms.py:158 pod/meeting/templates/meeting/recordings.html:23
+#: pod/meeting/forms.py:158 pod/meeting/templates/meeting/recordings.html:28
 #: pod/playlist/templates/playlist/playlist_element_list.html:11
 #: pod/video/feeds.py:226 pod/video/models.py:811 pod/video/models.py:997
 #: pod/video/templates/videos/video_sort_select.html:10
@@ -4373,7 +4375,7 @@ msgstr ""
 "Le propriétaire de la video ne peut pas être propriétaire additionnel en "
 "même temps"
 
-#: pod/meeting/forms.py:290 pod/meeting/models.py:904
+#: pod/meeting/forms.py:290 pod/meeting/models.py:1166
 msgid "Start date must be less than recurring until date"
 msgstr "La date de début doit être antérieure à la date de fin récurrente"
 
@@ -4398,78 +4400,78 @@ msgstr "Courriels"
 msgid "You can fill one email adress per line"
 msgstr "Vous pouvez renseigner une adresse électronique par ligne"
 
-#: pod/meeting/models.py:136
+#: pod/meeting/models.py:176
 msgid "Daily"
 msgstr "Jours"
 
-#: pod/meeting/models.py:137
+#: pod/meeting/models.py:177
 msgid "Weekly"
 msgstr "Semaine"
 
-#: pod/meeting/models.py:138
+#: pod/meeting/models.py:178
 msgid "Monthly"
 msgstr "Mois"
 
-#: pod/meeting/models.py:139
+#: pod/meeting/models.py:179
 msgid "Yearly"
 msgstr "Année"
 
-#: pod/meeting/models.py:144
+#: pod/meeting/models.py:184
 msgid "Every month on this date"
 msgstr "Tous les mois à cette date"
 
-#: pod/meeting/models.py:145
+#: pod/meeting/models.py:185
 msgid "Every month on the nth week, the same day of week"
 msgstr "Chaque mois la nième semaine, le même jour de la semaine"
 
-#: pod/meeting/models.py:151
+#: pod/meeting/models.py:191
 msgid "Weekdays must contain the numbers of the active days."
 msgstr "Les jours de la semaine doivent contenir les numéros des jours actifs."
 
-#: pod/meeting/models.py:154
+#: pod/meeting/models.py:195
 msgid "Meeting Name"
 msgstr "Nom de la réunion"
 
-#: pod/meeting/models.py:157
+#: pod/meeting/models.py:199
 msgid "Meeting ID"
 msgstr "Identifiant de réunion"
 
-#: pod/meeting/models.py:171
+#: pod/meeting/models.py:213
 msgid "You can add additional owners to the meeting."
 msgstr "Vous pouvez ajouter des propriétaires additionnels à la réunion."
 
-#: pod/meeting/models.py:174
+#: pod/meeting/models.py:216
 msgid "Attendee Password"
 msgstr "Mot de passe des participants"
 
-#: pod/meeting/models.py:177
+#: pod/meeting/models.py:219
 msgid "Moderator Password"
 msgstr "Mot de passe des modérateurs"
 
-#: pod/meeting/models.py:182
+#: pod/meeting/models.py:224
 msgid "Meeting duration"
 msgstr "Durée de la réunion"
 
-#: pod/meeting/models.py:183
+#: pod/meeting/models.py:225
 msgid "Specify the duration of the meeting."
 msgstr "Précisez la durée de la réunion."
 
-#: pod/meeting/models.py:189
+#: pod/meeting/models.py:231
 msgid "Custom recurrence"
 msgstr "Récurrence personnalisée"
 
-#: pod/meeting/models.py:191
+#: pod/meeting/models.py:233
 msgid ""
 "Specify the recurrence of the meeting : daily, weekly, monthly or yearly"
 msgstr ""
 "Précisez la récurrence de la réunion : quotidienne, hebdomadaire, mensuelle "
 "ou annuelle"
 
-#: pod/meeting/models.py:199
+#: pod/meeting/models.py:241
 msgid "Repeat each time"
 msgstr "Répétez à chaque fois"
 
-#: pod/meeting/models.py:202
+#: pod/meeting/models.py:244
 msgid ""
 "The meeting will be repeat each time of value specify. i.e: each 3 days if "
 "recurring daily"
@@ -4477,31 +4479,31 @@ msgstr ""
 "La séance sera répétée à chaque fois de valeur précise. c'est-à-dire : tous "
 "les 3 jours si récurrent en jour"
 
-#: pod/meeting/models.py:207
+#: pod/meeting/models.py:249
 msgid "End date of recurring meeting"
 msgstr "Date de fin de la réunion récurrente"
 
-#: pod/meeting/models.py:208
+#: pod/meeting/models.py:250
 msgid "Recurring meeting until the specified date"
 msgstr "Réunion récurrente jusqu'à la date spécifiée"
 
-#: pod/meeting/models.py:213
+#: pod/meeting/models.py:255
 msgid "Number of occurrences"
 msgstr "Nombre d'occurrences"
 
-#: pod/meeting/models.py:214
+#: pod/meeting/models.py:256
 msgid "Recurring meeting until the specified number of occurrences"
 msgstr "Réunion récurrente jusqu'au nombre d'occurrences spécifié"
 
-#: pod/meeting/models.py:219
+#: pod/meeting/models.py:261
 msgid "Day(s) of week for the meeting"
 msgstr "Jour(s) de la semaine pour la réunion"
 
-#: pod/meeting/models.py:220
+#: pod/meeting/models.py:262
 msgid "Recurring meeting each day(s) specified"
 msgstr "Réunion récurrente chaque jour spécifié"
 
-#: pod/meeting/models.py:233
+#: pod/meeting/models.py:275
 msgid ""
 "If this box is checked, the meeting will only be accessible to authenticated "
 "users."
@@ -4509,24 +4511,24 @@ msgstr ""
 "Si cette case est cochée, la réunion sera uniquement accessible aux "
 "utilisateurs authentifiés."
 
-#: pod/meeting/models.py:242
+#: pod/meeting/models.py:284
 msgid "Select one or more groups who can access to this meeting"
 msgstr "Sélectionner un ou plusieurs groupes qui auront accès à cette réunion"
 
-#: pod/meeting/models.py:246
+#: pod/meeting/models.py:288
 msgid "Is running"
 msgstr "En cours d’exécution"
 
-#: pod/meeting/models.py:247
+#: pod/meeting/models.py:289
 msgid "Indicates whether this meeting is running in BigBlueButton or not!"
 msgstr ""
 "Indique si cette réunion est en cours d’exécution dans BigBlueButton ou non !"
 
-#: pod/meeting/models.py:254
+#: pod/meeting/models.py:296
 msgid "Slides"
-msgstr ""
+msgstr "Diapositives"
 
-#: pod/meeting/models.py:255
+#: pod/meeting/models.py:298
 msgid ""
 "\n"
 "        BigBlueButton will accept Office documents (.doc .docx .pptx),\n"
@@ -4539,36 +4541,38 @@ msgid ""
 msgstr ""
 "\n"
 "        BigBlueButton acceptera les documents Office (.doc .docx .pptx), \n"
-"        les documents texte (.txt), les images (.png ,.jpg) et les documents Adobe Acrobat (.pdf); \n"
-"        nous vous recommandons de convertir les documents en .pdf avant de les télécharger pour de meilleurs résultats.\n"
+"        les documents texte (.txt), les images (.png ,.jpg) et les documents "
+"Adobe Acrobat (.pdf); \n"
+"        nous vous recommandons de convertir les documents en .pdf avant de "
+"les télécharger pour de meilleurs résultats.\n"
 "        La taille maximale est de 30 Mo ou 150 pages par document.\n"
 "        "
 
-#: pod/meeting/models.py:263 pod/video/models.py:364 pod/video/models.py:633
+#: pod/meeting/models.py:307 pod/video/models.py:364 pod/video/models.py:633
 msgid "Site"
 msgstr "Site"
 
-#: pod/meeting/models.py:267
+#: pod/meeting/models.py:311
 msgid "Max Participants"
 msgstr "Nombre maximum de participant"
 
-#: pod/meeting/models.py:270
+#: pod/meeting/models.py:314
 msgid "Welcome!"
 msgstr "Bienvenue !"
 
-#: pod/meeting/models.py:270
+#: pod/meeting/models.py:314
 msgid "Meeting Text in Bigbluebutton"
 msgstr "Message affiché dans BigBlueButton"
 
-#: pod/meeting/models.py:277
+#: pod/meeting/models.py:321
 msgid "URL to visit after user logged out"
 msgstr "URL de redirection après déconnexion à la réunion"
 
-#: pod/meeting/models.py:281
+#: pod/meeting/models.py:325
 msgid "Webcam Only for moderators?"
 msgstr "Webcam seulement pour les modérateurs ?"
 
-#: pod/meeting/models.py:283
+#: pod/meeting/models.py:327
 msgid ""
 "Will cause all webcams shared by viewers during this meeting to only appear "
 "for moderators."
@@ -4576,93 +4580,93 @@ msgstr ""
 "Aura pour conséquence que les webcams des utilisateurs ne seront vues que "
 "par les modérateurs."
 
-#: pod/meeting/models.py:291
+#: pod/meeting/models.py:335
 msgid "Active record"
 msgstr "Activer l’enregistrement"
 
-#: pod/meeting/models.py:292
+#: pod/meeting/models.py:336
 msgid "Will active the recording of the meeting"
 msgstr "Activera l'enregistrement de la réunion"
 
-#: pod/meeting/models.py:295
+#: pod/meeting/models.py:339
 msgid "Auto Start Recording"
 msgstr "Démarrage automatique de l’enregistrement"
 
-#: pod/meeting/models.py:299
+#: pod/meeting/models.py:343
 msgid "Allow Stop/Start Recording"
 msgstr "Autoriser l’arrêt/le démarrage de l’enregistrement"
 
-#: pod/meeting/models.py:300
+#: pod/meeting/models.py:344
 msgid "Allow the user to start/stop recording. (default true)"
 msgstr ""
 "Autoriser l’utilisateur à arrêter/démarrer l’enregistrement. (vrai par "
 "défaut)"
 
-#: pod/meeting/models.py:306
+#: pod/meeting/models.py:350
 msgid "Disable Camera"
 msgstr "Désactiver les caméras"
 
-#: pod/meeting/models.py:307
+#: pod/meeting/models.py:351
 msgid "Will prevent users from sharing their camera in the meeting."
 msgstr "Empêchera les utilisateurs de partager leur caméra dans la réunion."
 
-#: pod/meeting/models.py:311
+#: pod/meeting/models.py:355
 msgid "Disable Mic"
 msgstr "Désactiver les micros"
 
-#: pod/meeting/models.py:312
+#: pod/meeting/models.py:356
 msgid "Will only allow user to join listen only."
 msgstr "Autorisera l’utilisateur à rejoindre l’écoute uniquement."
 
-#: pod/meeting/models.py:316
+#: pod/meeting/models.py:360
 msgid "Disable Private chat"
 msgstr "Désactiver les discussions privées"
 
-#: pod/meeting/models.py:317
+#: pod/meeting/models.py:361
 msgid "If True, will disable private chats in the meeting."
 msgstr "Si vrai, désactivera les discussions privées dans la réunion."
 
-#: pod/meeting/models.py:321
+#: pod/meeting/models.py:365
 msgid "Disable public chat"
 msgstr "Désactiver les discussions publiques"
 
-#: pod/meeting/models.py:322
+#: pod/meeting/models.py:366
 msgid "If True, will disable public chat in the meeting."
 msgstr "Si vrai, désactivera les discussions publiques dans la réunion."
 
-#: pod/meeting/models.py:326
+#: pod/meeting/models.py:370
 msgid "Disable Note"
 msgstr "Désactiver les notes"
 
-#: pod/meeting/models.py:327
+#: pod/meeting/models.py:371
 msgid "If True, will disable notes in the meeting."
 msgstr "Si vrai, désactivera les notes dans la réunion."
 
-#: pod/meeting/models.py:331
+#: pod/meeting/models.py:375
 msgid "Locked Layout"
 msgstr "Mise en page verrouillée"
 
-#: pod/meeting/models.py:332
+#: pod/meeting/models.py:376
 msgid "Will lock the layout in the meeting."
 msgstr "Verrouillera la mise en page dans la réunion."
 
-#: pod/meeting/models.py:340
+#: pod/meeting/models.py:384
 msgid "Parent Meeting ID"
 msgstr "Identifiant de la réunion parente"
 
-#: pod/meeting/models.py:346
+#: pod/meeting/models.py:390
 msgid "Internal Meeting ID"
 msgstr "Identifiant interne de la réunion"
 
-#: pod/meeting/models.py:352
+#: pod/meeting/models.py:396
 msgid "Voice Bridge"
 msgstr "Pont vocal"
 
-#: pod/meeting/models.py:359
+#: pod/meeting/models.py:403
 msgid "BBB Create Time"
 msgstr "date de création dans BBB"
 
-#: pod/meeting/models.py:402
+#: pod/meeting/models.py:446
 msgid ""
 "The day of the start date of the meeting must be included in the recurrence "
 "weekdays."
@@ -4670,24 +4674,120 @@ msgstr ""
 "Le jour de la date de début de la réunion doit être inclus dans les jours de "
 "semaine de récurrence."
 
-#: pod/meeting/models.py:784
+#: pod/meeting/models.py:514
+msgid "The HTML file for this recording was not found on the BBB server."
+msgstr ""
+"Le fichier HTML de cet enregistrement est introuvable sur le serveur BBB."
+
+#: pod/meeting/models.py:536 pod/meeting/models.py:547
+#: pod/meeting/models.py:554
+msgid "The video file for this recording was not found in the HTML file."
+msgstr ""
+"Le fichier vidéo de cet enregistrement est introuvable dans le fichier HTML"
+
+#: pod/meeting/models.py:539
+msgid "The found file is not a valid video."
+msgstr "Le fichier trouvé n'est pas une vidéo valide."
+
+#: pod/meeting/models.py:569
+msgid "The video file for this recording was not found on the BBB server."
+msgstr ""
+"Le fichier vidéo pour cet enregistrementn’a pas été trouvé sur le serveur "
+"BBB."
+
+#: pod/meeting/models.py:590
+msgid "Impossible to download the video file from the BBB server."
+msgstr "Impossible de télécharger le fichier vidéo à partir du serveur BBB."
+
+#: pod/meeting/models.py:602
+msgid "This video was uploaded to Pod from Big Blue Button server."
+msgstr ""
+"Cette vidéo a été téléchargée sur Pod à partir du serveur Big Blue Button."
+
+#: pod/meeting/models.py:612
+msgid "Impossible to create the Pod video"
+msgstr "Impossible de créer la vidéo Pod"
+
+#: pod/meeting/models.py:644
+msgid "Impossible to create the recording"
+msgstr "Impossible de créer l’enregistrement"
+
+#: pod/meeting/models.py:688 pod/meeting/models.py:693
+msgid "Impossible to upload to Pod the video"
+msgstr "Impossible de téléverser la vidéo sur Pod"
+
+#: pod/meeting/models.py:689
+msgid "No URL found"
+msgstr "Aucune URL trouvée"
+
+#: pod/meeting/models.py:1046
 msgid "Unable to end meeting!"
 msgstr "Impossible de terminer la réunion !"
 
-#: pod/meeting/models.py:811 pod/meeting/models.py:867
+#: pod/meeting/models.py:1073 pod/meeting/models.py:1129
 msgid "Unable to get meeting recordings!"
 msgstr "Impossible d'obtenir les enregistrements de la réunion !"
 
-#: pod/meeting/models.py:840
+#: pod/meeting/models.py:1102
 msgid "Unable to delete recording!"
 msgstr "Impossible de supprimer l'enregistrement !"
 
+#: pod/meeting/models.py:1178
+msgid "Recording name"
+msgstr "Nom de l’enregistrement"
+
+#: pod/meeting/models.py:1182
+msgid "Is this an internal recording ?"
+msgstr "S’agit-il d’un enregistrement interne ?"
+
+#: pod/meeting/models.py:1189
+msgid "Duration of recording"
+msgstr "Durée de l'enregistrement"
+
+#: pod/meeting/models.py:1203
+msgid "User who uploaded to Pod the video file"
+msgstr "Utilisateur qui a téléversé le fichier vidéo sur Pod"
+
+#: pod/meeting/models.py:1210
+msgid "Recording ID"
+msgstr "Identifiant de l’enregistrement"
+
+#: pod/meeting/models.py:1231
+msgid "External recording URL"
+msgstr "URL d’enregistrement externe"
+
+#: pod/meeting/models.py:1238
+msgid "Upload automatically to Pod as a video"
+msgstr "Téléverser automatiquement sur Pod en tant que vidéo"
+
+#: pod/meeting/models.py:1240
+msgid ""
+"A video will be created from this external recordingand will be available on "
+"this platform automatically."
+msgstr ""
+"Une vidéo sera créée à partir de cet enregistrement externeet sera "
+"disponible automatiquement sur cette plateforme."
+
+#: pod/meeting/models.py:1254
+msgid "User who create this external recording"
+msgstr "Utilisateur qui crée cet enregistrement externe"
+
+#: pod/meeting/models.py:1264
+msgid "You can add additional owners to this external recording."
+msgstr ""
+"Vous pouvez ajouter des propriétaires supplémentaires à cet enregistrement "
+"externe."
+
+#: pod/meeting/models.py:1279 pod/recorder/models.py:261
+msgid "Recordings"
+msgstr "Enregistrements"
+
 #: pod/meeting/templates/meeting/add_or_edit.html:9
-#: pod/meeting/templates/meeting/link_meeting.html:5 pod/meeting/views.py:147
+#: pod/meeting/templates/meeting/link_meeting.html:5 pod/meeting/views.py:150
 msgid "Edit the meeting"
 msgstr "Éditer la réunion"
 
-#: pod/meeting/templates/meeting/add_or_edit.html:11 pod/meeting/views.py:149
+#: pod/meeting/templates/meeting/add_or_edit.html:11 pod/meeting/views.py:152
 msgid "Add a new meeting"
 msgstr "Ajouter une nouvelle réunion"
 
@@ -4875,35 +4975,58 @@ msgstr "Terminer la réunion"
 msgid "Text copied"
 msgstr "Texte copié"
 
-#: pod/meeting/templates/meeting/recordings.html:13 pod/meeting/views.py:512
+#: pod/meeting/templates/meeting/recordings.html:13 pod/meeting/views.py:540
 msgid "Meeting recordings"
 msgstr "Enregistrements de réunion"
 
-#: pod/meeting/templates/meeting/recordings.html:21
+#: pod/meeting/templates/meeting/recordings.html:19
+msgid "Do not leave the page until the video upload to Pod is complete."
+msgstr ""
+"Ne quittez pas la page tant que le téléchargement de la vidéo sur Pod n’est "
+"pas terminé."
+
+#: pod/meeting/templates/meeting/recordings.html:26
 msgid "State"
 msgstr "Statut"
 
-#: pod/meeting/templates/meeting/recordings.html:24
+#: pod/meeting/templates/meeting/recordings.html:29
 msgid "Playback"
 msgstr "Lecture"
 
-#: pod/meeting/templates/meeting/recordings.html:25
+#: pod/meeting/templates/meeting/recordings.html:30
 msgid "Toolbar"
 msgstr "Barre d'outils"
 
-#: pod/meeting/templates/meeting/recordings.html:38
+#: pod/meeting/templates/meeting/recordings.html:40
+msgid "Video file not uploaded to Pod"
+msgstr "Le fichier vidéo n'a pas été téléversé sur Pod"
+
+#: pod/meeting/templates/meeting/recordings.html:42
+msgid "Video file already uploaded to Pod"
+msgstr "Fichier vidéo déjà téléversé sur Pod"
+
+#: pod/meeting/templates/meeting/recordings.html:53
 msgid "Display the recording in presentation format"
 msgstr "Afficher l'enregistrement au format Présentation Web"
 
-#: pod/meeting/templates/meeting/recordings.html:42
+#: pod/meeting/templates/meeting/recordings.html:57
 msgid "Display the recording in video format"
 msgstr "Afficher l'enregistrement au format vidéo"
 
-#: pod/meeting/templates/meeting/recordings.html:49
+#: pod/meeting/templates/meeting/recordings.html:65
+msgid "Please confirm you want to upload the recording To Pod"
+msgstr ""
+"Veuillez confirmer que vous souhaitez téléverser l’enregistrement sur Pod"
+
+#: pod/meeting/templates/meeting/recordings.html:72
+msgid "Upload to Pod as a video"
+msgstr "Téléverser sur Pod en tant que vidéo"
+
+#: pod/meeting/templates/meeting/recordings.html:76
 msgid "Please confirm you want to delete the recording"
 msgstr "Veuillez confirmer que vous souhaitez supprimer l'enregistrement"
 
-#: pod/meeting/templates/meeting/recordings.html:52
+#: pod/meeting/templates/meeting/recordings.html:79
 msgid "Delete the recording"
 msgstr "Supprimer l'enregistrement"
 
@@ -4947,53 +5070,56 @@ msgstr "Nombre d’auditeurs"
 msgid "Moderator count"
 msgstr "Nombre de modérateurs"
 
-#: pod/meeting/views.py:110
+#: pod/meeting/views.py:113
 msgid "You cannot edit this meeting."
 msgstr "Vous ne pouvez pas éditer cette réunion."
 
-#: pod/meeting/views.py:187 pod/meeting/views.py:425 pod/meeting/views.py:457
-#: pod/meeting/views.py:489
+#: pod/meeting/views.py:190 pod/meeting/views.py:428 pod/meeting/views.py:460
 msgid "You cannot delete this meeting."
 msgstr "Vous ne pouvez pas supprimer cette réunion."
 
-#: pod/meeting/views.py:198
+#: pod/meeting/views.py:201
 msgid "The meeting has been deleted."
 msgstr "La réunion a été supprimée."
 
-#: pod/meeting/views.py:304
+#: pod/meeting/views.py:307
 msgid "You cannot access to this meeting."
 msgstr "Vous ne pouvez pas accéder à cette réunion."
 
-#: pod/meeting/views.py:351
+#: pod/meeting/views.py:354
 msgid "Password given is not correct."
 msgstr "Le mot de passe est incorrect."
 
-#: pod/meeting/views.py:529
+#: pod/meeting/views.py:496
+msgid "You cannot view the recordings of this meeting."
+msgstr "Vous ne pouvez pas voir les enregistrements de cette réunion."
+
+#: pod/meeting/views.py:571
 msgid "You cannot delete this recording."
 msgstr "Vous ne pouvez pas supprimer cette réunion."
 
-#: pod/meeting/views.py:546
+#: pod/meeting/views.py:588
 msgid "The recording has been deleted."
 msgstr "L'enregistrement a été supprimé."
 
-#: pod/meeting/views.py:553
+#: pod/meeting/views.py:595 pod/meeting/views.py:891
 msgid "This view cannot be accessed directly."
 msgstr "Cette vue n'est pas accessible directement."
 
-#: pod/meeting/views.py:594
+#: pod/meeting/views.py:636
 msgid "You cannot invite for this meeting."
 msgstr "Vous ne pouvez pas inviter à cette réunion."
 
-#: pod/meeting/views.py:605
+#: pod/meeting/views.py:647
 msgid "Invitations send to recipients."
 msgstr "Invitations envoyées aux destinataires."
 
-#: pod/meeting/views.py:616 pod/meeting/views.py:706
+#: pod/meeting/views.py:658 pod/meeting/views.py:748
 #, python-format
 msgid "%(owner)s invites you to the meeting %(meeting_title)s"
 msgstr "%(owner)s vous invite à la réunion %(meeting_title)s"
 
-#: pod/meeting/views.py:652
+#: pod/meeting/views.py:694
 #, python-format
 msgid ""
 "\n"
@@ -5024,7 +5150,7 @@ msgstr ""
 "        <p>Cordialement</p>\n"
 "    "
 
-#: pod/meeting/views.py:677
+#: pod/meeting/views.py:719
 #, python-format
 msgid ""
 "\n"
@@ -5051,7 +5177,7 @@ msgstr ""
 "        <p>Cordialement</p>\n"
 "    "
 
-#: pod/meeting/views.py:712
+#: pod/meeting/views.py:754
 #, python-format
 msgid ""
 "\n"
@@ -5063,6 +5189,18 @@ msgstr ""
 "        Voici le lien pour rejoindre la réunion : %(join_link)s\n"
 "        Vous avez besoin de ce mot de passe pour entrer : %(password)s\n"
 "    "
+
+#: pod/meeting/views.py:862
+msgid "You cannot upload this recording."
+msgstr "Vous ne pouvez pas téléverser cet enregistrement."
+
+#: pod/meeting/views.py:882
+msgid ""
+"The recording has been uploaded to Pod.You can see the video directly in My "
+"videos."
+msgstr ""
+"L’enregistrement a été téléversé sur Pod.Vous pouvez voir la vidéo "
+"directement dans Mes vidéos."
 
 #: pod/playlist/models.py:27
 msgid "Short description of the playlist."
@@ -5688,10 +5826,6 @@ msgstr "Enregistreur qui a fait cet enregistrement."
 #: pod/recorder/models.py:237
 msgid "User who has made the recording"
 msgstr "Utilisateur qui a fait l’enregisrement"
-
-#: pod/recorder/models.py:261
-msgid "Recordings"
-msgstr "Enregistrements"
 
 #: pod/recorder/models.py:275
 msgid "Please specify a type."
@@ -7797,11 +7931,16 @@ msgstr "Désolé, la recherche de vidéos est limitée à 500 pages maximum."
 msgid "Search results"
 msgstr "Résultats de la recherche"
 
+#~ msgid "The video file for this recording was notfound in the HTML file."
+#~ msgstr ""
+#~ "Le fichier vidéo de cet enregistrement est introuvable dans le fichier "
+#~ "HTML."
+
 #~ msgid "No video found"
 #~ msgstr "Aucune vidéo trouvée"
 
-msgid "published"
-msgstr "publié"
+#~ msgid "published"
+#~ msgstr "publié"
 
 msgid "Video file already uploaded to Pod"
 msgstr "Fichier vidéo déjà téléversé sur Pod"
@@ -7894,3 +8033,5 @@ msgstr "Ne quittez pas la page tant que le téléchargement de la vidéo sur Pod
 
 msgid "The found file is not a valid video."
 msgstr "Le fichier trouvé n'est pas une vidéo valide."
+#~ msgid "No video file found"
+#~ msgstr "Aucun fichier vidéo trouvé"
