@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     const cards = document.getElementsByClassName("card-group");
-    const title = document.getElementById("video_count")
     for (let card of cards) {
         const form = card.querySelector(".favorite-button-form-card");
         form.addEventListener('submit', function (e) {
@@ -15,7 +14,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     const parser = new DOMParser();
                     const html = parser.parseFromString(data, 'text/html');
                     card.remove();
-                    title.textContent = html.getElementById("video_count").textContent;
+                    const title = document.getElementById("video_count");
+                    title.replaceWith(html.getElementById("video_count"));
                     document.title = html.title;
                 })
                 .catch(error => {
