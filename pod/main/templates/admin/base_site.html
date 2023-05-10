@@ -2,6 +2,16 @@
 {% load i18n static %}
 {% block extrastyle %}
   {{ block.super }}
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'bootstrap-icons/font/bootstrap-icons.css' %}?ver={{VERSION}}" crossorigin="anonymous">
+  <!-- pod.css -->
+  <link rel="stylesheet" href="{% static 'css/pod.css' %}?ver={{VERSION}}" media="screen">
+  <link rel="stylesheet" href="{% static 'css/dark.css' %}?ver={{VERSION}}" media="screen">
+  <!-- JS -->
+  <script src="{% static 'js-cookie/dist/js.cookie.min.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
+  
   <link rel="stylesheet" href="{% static 'css/pod-admin.css' %}?ver={{VERSION}}" media="screen">
   {% if max_duration_date_delete %}
     <script> var max_duration_date_delete = {{max_duration_date_delete}};</script>
