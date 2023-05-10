@@ -1,20 +1,24 @@
 const exchangedValues = [];
 
-document.getElementById('reorganize-button').addEventListener('click', function (event) {
-    if (this.id == 'reorganize-button') {
-        event.preventDefault();
-        activateDragAndDrop();
-        this.id = 'save-button';
-        this.title = gettext('Save your reorganization');
-        const iconElement = this.querySelector('i');
-        const spanElement = this.querySelector('span');
-        iconElement.classList.replace('bi-arrows-move', 'bi-save');
-        spanElement.textContent = gettext('Save');
-    } else if (this.id == 'save-button') {
-        console.log(convert2DTableToJson(exchangedValues));
-        document.getElementById('json-data').value = convert2DTableToJson(exchangedValues);
-    }
-});
+addEventForReorganizedButton();
+
+function addEventForReorganizedButton() {
+    document.getElementById('reorganize-button').addEventListener('click', function (event) {
+        if (this.id == 'reorganize-button') {
+            event.preventDefault();
+            activateDragAndDrop();
+            this.id = 'save-button';
+            this.title = gettext('Save your reorganization');
+            const iconElement = this.querySelector('i');
+            const spanElement = this.querySelector('span');
+            iconElement.classList.replace('bi-arrows-move', 'bi-save');
+            spanElement.textContent = gettext('Save');
+        } else if (this.id == 'save-button') {
+            console.log(convert2DTableToJson(exchangedValues));
+            document.getElementById('json-data').value = convert2DTableToJson(exchangedValues);
+        }
+    });
+}
 
 function onDragStart(event) {
     event.dataTransfer.clearData();

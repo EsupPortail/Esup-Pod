@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const title = document.getElementById("video_count");
                     title.replaceWith(html.getElementById("video_count"));
                     document.title = html.title;
+                    addEventForReorganizedButton()
                 })
                 .catch(error => {
                     alert("La suppression n'a pas pu se faire...");
