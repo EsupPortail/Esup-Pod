@@ -11,11 +11,23 @@
   <!-- JS -->
   <script src="{% static 'js-cookie/dist/js.cookie.min.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
-  
+
   <link rel="stylesheet" href="{% static 'css/pod-admin.css' %}?ver={{VERSION}}" media="screen">
   {% if max_duration_date_delete %}
     <script> var max_duration_date_delete = {{max_duration_date_delete}};</script>
   {% endif %}
+
+  {% if DARKMODE_ENABLED == True %}
+    <script>
+      // Get the current theme from local storage
+      const currentTheme = localStorage.getItem("theme");
+      // If the current local storage item can be found
+
+      // Set the body data-theme attribute to match the local storage item
+      document.documentElement.dataset.theme = currentTheme?currentTheme:"light";
+    </script>
+  {% endif %}
+
 {% endblock %}
 
 {% block title %}
