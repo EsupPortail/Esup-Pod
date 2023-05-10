@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-09 12:34+0200\n"
+"POT-Creation-Date: 2023-04-21 16:52+0200\n"
 "PO-Revision-Date: 2023-01-30 11:30+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -25,7 +25,7 @@ msgid "Get time from the player"
 msgstr "Obtenir le temps du lecteur"
 
 #: pod/chapter/static/js/chapters.js:46
-#: pod/enrichment/static/js/enrichment.js:49 pod/main/static/js/main.js:1248
+#: pod/enrichment/static/js/enrichment.js:49 pod/main/static/js/main.js:1251
 #: pod/video/static/js/comment-script.js:78
 msgid "Close"
 msgstr "Fermer"
@@ -55,9 +55,9 @@ msgstr "Le formulaire ne peut pas être récupéré."
 #: pod/enrichment/static/js/enrichment.js:148
 #: pod/enrichment/static/js/enrichment.js:177
 #: pod/enrichment/static/js/enrichment.js:226
-#: pod/enrichment/static/js/enrichment.js:267 pod/main/static/js/main.js:817
-#: pod/main/static/js/main.js:827 pod/main/static/js/main.js:844
-#: pod/main/static/js/main.js:865 pod/playlist/static/js/playlist.js:87
+#: pod/enrichment/static/js/enrichment.js:267 pod/main/static/js/main.js:820
+#: pod/main/static/js/main.js:830 pod/main/static/js/main.js:847
+#: pod/main/static/js/main.js:868 pod/playlist/static/js/playlist.js:87
 #: pod/playlist/static/js/playlist.js:133
 #: pod/playlist/static/js/playlist.js:183
 #: pod/playlist/static/js/playlist.js:266
@@ -75,8 +75,8 @@ msgstr ""
 "une autre heure de début de chapitre."
 
 #: pod/chapter/static/js/chapters.js:244
-#: pod/enrichment/static/js/enrichment.js:241 pod/main/static/js/main.js:652
-#: pod/main/static/js/main.js:854
+#: pod/enrichment/static/js/enrichment.js:241 pod/main/static/js/main.js:655
+#: pod/main/static/js/main.js:857
 msgid "One or more errors have been found in the form."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 
@@ -429,58 +429,58 @@ msgstr "Pas de diffuseur pour ce bâtiment"
 msgid "An error occurred during broadcasters loading..."
 msgstr "Une erreur s’est produite lors du chargement des diffuseurs…"
 
-#: pod/main/static/js/main.js:552
+#: pod/main/static/js/main.js:553
 #, fuzzy
 #| msgid "video found"
 msgid "User not found"
 msgstr "Utilisateur non trouvé"
 
-#: pod/main/static/js/main.js:610
+#: pod/main/static/js/main.js:613
 msgid "Are you sure you want to delete this element?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer cet élément ?"
 
-#: pod/main/static/js/main.js:656
+#: pod/main/static/js/main.js:659
 msgid "Changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
 
-#: pod/main/static/js/main.js:712 pod/main/static/js/main.js:739
-#: pod/main/static/js/main.js:803
+#: pod/main/static/js/main.js:715 pod/main/static/js/main.js:742
+#: pod/main/static/js/main.js:806
 #: pod/podfile/static/podfile/js/filewidget.js:154
 #: pod/podfile/static/podfile/js/filewidget.js:594
 msgid "Error during exchange"
 msgstr "Erreur durant le téléversement"
 
-#: pod/main/static/js/main.js:716 pod/main/static/js/main.js:743
-#: pod/main/static/js/main.js:807
+#: pod/main/static/js/main.js:719 pod/main/static/js/main.js:746
+#: pod/main/static/js/main.js:810
 #: pod/podfile/static/podfile/js/filewidget.js:158
 msgid "No data could be stored."
 msgstr "Aucune donnée ne peut être stockée."
 
-#: pod/main/static/js/main.js:897
+#: pod/main/static/js/main.js:900
 msgid "Change your picture"
 msgstr "Changer votre image"
 
-#: pod/main/static/js/main.js:909
+#: pod/main/static/js/main.js:912
 msgid "Add your picture"
 msgstr "Ajouter votre image"
 
-#: pod/main/static/js/main.js:1075
+#: pod/main/static/js/main.js:1078
 msgid "text copied"
 msgstr "texte copié"
 
-#: pod/main/static/js/main.js:1173
+#: pod/main/static/js/main.js:1176
 msgid "Errors appear in the form, please correct them"
 msgstr "Des erreurs sont présentes dans le formulaire, veuillez les corriger"
 
-#: pod/main/static/js/main.js:1205
+#: pod/main/static/js/main.js:1208
 msgid "The file size exceeds the maximum allowed value:"
 msgstr "Le fichier dépasse la taille maximum autorisée :"
 
-#: pod/main/static/js/main.js:1208
+#: pod/main/static/js/main.js:1211
 msgid " GB."
 msgstr " Go."
 
-#: pod/main/static/js/main.js:1228
+#: pod/main/static/js/main.js:1231
 msgid "The file extension not in the allowed extension:"
 msgstr ""
 "Cette extension de fichier n’est pas présente dans les extensions "
@@ -657,62 +657,62 @@ msgid_plural "%s comments"
 msgstr[0] "%s commentaire"
 msgstr[1] "%s commentaires"
 
-#: pod/video/static/js/filter_aside_video_list_refresh.js:7
+#: pod/video/static/js/filter_aside_video_list_refresh.js:6
 msgid "Descending sort"
 msgstr "Tri descendant"
 
-#: pod/video/static/js/filter_aside_video_list_refresh.js:8
+#: pod/video/static/js/filter_aside_video_list_refresh.js:6
 msgid "Ascending sort"
 msgstr "Tri ascendant"
 
-#: pod/video/static/js/filter_aside_video_list_refresh.js:103
+#: pod/video/static/js/filter_aside_video_list_refresh.js:96
 msgid "An Error occurred while processing."
 msgstr "Une erreur est survenue durant l’exécution du processus."
 
 #: pod/video/static/js/regroup_videos_by_theme.js:53
-#: pod/video/static/js/video_category.js:490
+#: pod/video/static/js/video_category.js:492
 msgid "This content is password protected."
 msgstr "Ce contenu est protégé par mot de passe."
 
 #: pod/video/static/js/regroup_videos_by_theme.js:61
-#: pod/video/static/js/video_category.js:498
+#: pod/video/static/js/video_category.js:500
 msgid "This content is chaptered."
 msgstr "Ce contenu est chapitré."
 
 #: pod/video/static/js/regroup_videos_by_theme.js:69
-#: pod/video/static/js/video_category.js:506
+#: pod/video/static/js/video_category.js:508
 msgid "This content is in draft."
 msgstr "Ce contenu est en brouillon."
 
 #: pod/video/static/js/regroup_videos_by_theme.js:78
-#: pod/video/static/js/video_category.js:411
-#: pod/video/static/js/video_category.js:515
+#: pod/video/static/js/video_category.js:413
+#: pod/video/static/js/video_category.js:517
 msgid "Video content."
 msgstr "Contenu vidéo."
 
 #: pod/video/static/js/regroup_videos_by_theme.js:83
-#: pod/video/static/js/video_category.js:412
-#: pod/video/static/js/video_category.js:520
+#: pod/video/static/js/video_category.js:414
+#: pod/video/static/js/video_category.js:522
 msgid "Audio content."
 msgstr "Contenu audio."
 
 #: pod/video/static/js/regroup_videos_by_theme.js:88
-#: pod/video/static/js/video_category.js:525
+#: pod/video/static/js/video_category.js:527
 msgid "Edit the video"
 msgstr "Éditer la vidéo"
 
 #: pod/video/static/js/regroup_videos_by_theme.js:89
-#: pod/video/static/js/video_category.js:526
+#: pod/video/static/js/video_category.js:528
 msgid "Complete the video"
 msgstr "Compléter la vidéo"
 
 #: pod/video/static/js/regroup_videos_by_theme.js:90
-#: pod/video/static/js/video_category.js:527
+#: pod/video/static/js/video_category.js:529
 msgid "Chapter the video"
 msgstr "Chapitrer la vidéo"
 
 #: pod/video/static/js/regroup_videos_by_theme.js:91
-#: pod/video/static/js/video_category.js:528
+#: pod/video/static/js/video_category.js:530
 msgid "Delete the video"
 msgstr "Supprimer la vidéo"
 
@@ -753,43 +753,43 @@ msgstr "Sauvegarder catégorie"
 msgid "You have no content without a category."
 msgstr "Vous n’avez aucun contenu sans catégorie."
 
-#: pod/video/static/js/video_category.js:189
+#: pod/video/static/js/video_category.js:191
 msgid "videos found"
 msgstr "vidéos trouvées"
 
-#: pod/video/static/js/video_category.js:189
+#: pod/video/static/js/video_category.js:191
 msgid "video found"
 msgstr "vidéo trouvée"
 
-#: pod/video/static/js/video_category.js:193
+#: pod/video/static/js/video_category.js:195
 msgid "Sorry, no video found"
 msgstr "Désolé, aucune vidéo trouvée"
 
-#: pod/video/static/js/video_category.js:422
+#: pod/video/static/js/video_category.js:424
 msgid "Edit the category"
 msgstr "Éditer la catégorie"
 
-#: pod/video/static/js/video_category.js:432
+#: pod/video/static/js/video_category.js:434
 msgid "Delete the category"
 msgstr "Supprimer la catégorie"
 
-#: pod/video/static/js/video_category.js:589
+#: pod/video/static/js/video_category.js:591
 msgid "Success!"
 msgstr "Succès !"
 
-#: pod/video/static/js/video_category.js:590
+#: pod/video/static/js/video_category.js:592
 msgid "Error..."
 msgstr "Erreur…"
 
-#: pod/video/static/js/video_category.js:849
+#: pod/video/static/js/video_category.js:853
 msgid "Category created successfully"
 msgstr "Catégorie créée avec succès"
 
-#: pod/video/static/js/video_category.js:867
+#: pod/video/static/js/video_category.js:871
 msgid "Add new category"
 msgstr "Ajouter une catégorie"
 
-#: pod/video/static/js/video_category.js:870
+#: pod/video/static/js/video_category.js:874
 msgid "Create category"
 msgstr "Créer catégorie"
 
@@ -821,18 +821,8 @@ msgstr "Vue totale depuis création"
 msgid "Slug"
 msgstr "Titre court"
 
-#, fuzzy
-#~| msgid "Remove"
-#~ msgid "Remove all"
-#~ msgstr "Retirer"
-
 #~ msgid "Video add to playlist"
 #~ msgstr "Ajouter une vidéo à une playlist"
-
-#, fuzzy
-#~| msgid "section"
-#~ msgid "function"
-#~ msgstr "section"
 
 #~ msgid "Do you want to delete this playlist?"
 #~ msgstr "Êtes-vous sûr(e) de vouloir supprimer cette liste de lecture ?"
