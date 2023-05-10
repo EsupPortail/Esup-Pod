@@ -187,8 +187,11 @@ LOGGING = {
     "handlers": {
         "file": {
             # 'level': 'DEBUG',
-            "class": "logging.FileHandler",
+            "class": "logging.handlers.RotatingFileHandler",
             "filename": "pod/log/django.log",
+            "maxBytes": 15728640,  # 1024 * 1024 * 15B = 15MB
+            "backupCount": 10,
+            "formatter": "verbose",
         },
         "console": {
             "class": "logging.StreamHandler",
