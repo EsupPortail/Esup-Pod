@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "3.1.2"
+VERSION = "3.2.0"
 
 ##
 # Installed applications list
@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "pod.lti",
     "pod.bbb",
     "pod.meeting",
+    "pod.cut",
     "pod.xapi",
     "pod.custom",
     "pod.favorite",
@@ -188,8 +189,11 @@ LOGGING = {
     "handlers": {
         "file": {
             # 'level': 'DEBUG',
-            "class": "logging.FileHandler",
+            "class": "logging.handlers.RotatingFileHandler",
             "filename": "pod/log/django.log",
+            "maxBytes": 15728640,  # 1024 * 1024 * 15B = 15MB
+            "backupCount": 10,
+            "formatter": "verbose",
         },
         "console": {
             "class": "logging.StreamHandler",

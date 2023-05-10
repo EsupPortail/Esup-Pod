@@ -1678,6 +1678,15 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
   >> permet de définir la durée maximum pour une reunion <br>
   >> (en heure) <br>
 
+ - `MEETING_PRE_UPLOAD_SLIDES`
+
+  > valeur par défaut : ``
+
+
+  >> Diaporama préchargé pour les réunions virtuelles. <br>
+  >> Un utilisateur peut remplacer cette valeur en choisissant un diaporama lors de la création d'une réunion virtuelle. <br>
+  >> Doit se trouver dans le répertoire statique. <br>
+
  - `MEETING_RECORD_FIELDS`
 
   > valeur par défaut : `()`
@@ -1737,7 +1746,7 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
 
   > valeur par défaut : `('doc', 'docx', 'odt', 'pdf', 'xls', 'xlsx', 'ods', 'ppt', 'pptx', 'txt', 'html', 'htm', 'vtt', 'srt')`
 
-  >> Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier ((en minuscules). <br>
+  >> Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier (en minuscules). <br>
 
  - `FILE_MAX_UPLOAD_SIZE`
 

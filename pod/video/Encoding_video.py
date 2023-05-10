@@ -173,10 +173,8 @@ class Encoding_video:
 
     def get_subtime(self, clip_begin, clip_end):
         subtime = ""
-        if clip_begin:
-            subtime += "-ss %s " % str(clip_begin)
-        if clip_end:
-            subtime += "-to %s " % str(clip_end)
+        if clip_begin != 0 or clip_end != 0:
+            subtime += "-ss %s " % str(clip_begin) + "-to %s " % str(clip_end)
         return subtime
 
     def get_video_data(self):
@@ -199,6 +197,8 @@ class Encoding_video:
         except (RuntimeError, KeyError, AttributeError, ValueError, TypeError) as err:
             msg = "\nUnexpected error: {0}".format(err)
             self.add_encoding_log("duration", "", True, msg)
+        if self.cutting_start != 0 or self.cutting_stop != 0:
+            duration = self.cutting_stop - self.cutting_start
         self.duration = duration
         streams = info.get("streams", [])
         for stream in streams:
@@ -221,6 +221,8 @@ class Encoding_video:
         except (RuntimeError, KeyError, AttributeError, ValueError, TypeError) as err:
             msg += "\nUnexpected error: {0}".format(err)
         self.add_encoding_log("fix_duration", "", True, msg)
+        if self.cutting_start != 0 or self.cutting_stop != 0:
+            duration = self.cutting_stop - self.cutting_start
         self.duration = duration
 
     def add_stream(self, stream):
@@ -277,6 +279,7 @@ class Encoding_video:
         }
         output_file = os.path.join(self.output_dir, "%sp.mp4" % first_item[0])
         mp4_command += FFMPEG_MP4_ENCODE % {
+            "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
             "map_audio": "-map 0:a:0" if len(self.list_audio_track) > 0 else "",
             "libx": FFMPEG_LIBX,
             "height": first_item[0],
@@ -305,6 +308,7 @@ class Encoding_video:
             if in_height >= resolution_threshold:
                 output_file = os.path.join(self.output_dir, "%sp.mp4" % rend)
                 mp4_command += FFMPEG_MP4_ENCODE % {
+                    "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
                     "map_audio": "-map 0:a:0" if len(self.list_audio_track) > 0 else "",
                     "libx": FFMPEG_LIBX,
                     "height": min(rend, in_height),
@@ -318,10 +322,6 @@ class Encoding_video:
                     "output": output_file,
                 }
                 self.list_mp4_files[rend] = output_file
-        if self.cutting_stop != 0:
-            mp4_command = mp4_command + self.get_subtime(
-                self.cutting_start, self.cutting_stop
-            )
         return mp4_command
 
     def get_hls_command(self):
@@ -332,6 +332,7 @@ class Encoding_video:
             "nb_threads": FFMPEG_NB_THREADS,
         }
         hls_common_params = FFMPEG_HLS_COMMON_PARAMS % {
+            "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
             "libx": FFMPEG_LIBX,
             "preset": FFMPEG_PRESET,
             "profile": FFMPEG_PROFILE,
@@ -404,6 +405,7 @@ class Encoding_video:
         output_file = os.path.join(self.output_dir, "audio_%s.mp3" % FFMPEG_AUDIO_BITRATE)
         mp3_command += FFMPEG_MP3_ENCODE % {
             # "audio_bitrate": AUDIO_BITRATE,
+            "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
             "output": output_file,
         }
         self.list_mp3_files[FFMPEG_AUDIO_BITRATE] = output_file
@@ -417,6 +419,7 @@ class Encoding_video:
         }
         output_file = os.path.join(self.output_dir, "audio_%s.m4a" % FFMPEG_AUDIO_BITRATE)
         m4a_command += FFMPEG_M4A_ENCODE % {
+            "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
             "audio_bitrate": FFMPEG_AUDIO_BITRATE,
             "output": output_file,
         }

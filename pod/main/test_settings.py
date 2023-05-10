@@ -31,6 +31,9 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": "db-test.sqlite",
+        "OPTIONS": {
+            "timeout": 20,
+        },
     }
 }
 LANGUAGES = (("fr", "Français"), ("en", "English"))
