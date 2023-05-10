@@ -1,4 +1,4 @@
-// cette fonction n'est pas utilisée ailleurs
+// this function (appendHTML) is not used elsewhere
 function appendHTML(node, html) {
   var temp = document.createElement("div");
   temp.innerHTML = html;

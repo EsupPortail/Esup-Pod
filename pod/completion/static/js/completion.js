@@ -175,7 +175,7 @@ var sendandgetform = async function (elt, action, name, form, list) {
     const formClasses = ["form_new", "form_change", "form_modif", "form_delete"];
     formClasses.forEach((formClass) => {
       document.querySelectorAll(`form.${formClass}`).forEach((form) => {
-        form.style.display = "none";
+        if (form) form.style.display = "none";
       });
     });
 
