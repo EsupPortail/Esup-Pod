@@ -70,7 +70,7 @@ document.addEventListener("click", (e) => {
     form.style.display = "block";
   });
   show_form("");
-  document.getElementById("fileModal_id_file")?.remove(); // il y a pas id "fileModal_id_file"
+  // document.getElementById("fileModal_id_file")?.remove(); // there is no id "fileModal_id_file"
 });
 
 document.addEventListener("submit", (e) => {
