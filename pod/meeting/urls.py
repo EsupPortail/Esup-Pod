@@ -24,6 +24,11 @@ if not views.MEETING_DISABLE_RECORD:
     urlpatterns += [
         path("recordings/<slug:meeting_id>/", views.recordings, name="recordings"),
         path(
+            "upload_recording_to_pod/<slug:meeting_id>/<slug:recording_id>/",
+            views.upload_recording_to_pod,
+            name="upload_recording_to_pod",
+        ),
+        path(
             "delete_recording/<slug:meeting_id>/<slug:recording_id>/",
             views.delete_recording,
             name="delete_recording",
