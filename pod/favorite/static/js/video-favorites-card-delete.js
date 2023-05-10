@@ -18,10 +18,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     const title = document.getElementById("video_count");
                     title.replaceWith(html.getElementById("video_count"));
                     document.title = html.title;
-                    addEventForReorganizedButton()
+                    addEventForReorganizedButton();
                 })
                 .catch(error => {
-                    alert("La suppression n'a pas pu se faire...");
+                    if (!(error instanceof TypeError))
+                        alert("La suppression n'a pas pu se faire...");
                 });
         });
     }
