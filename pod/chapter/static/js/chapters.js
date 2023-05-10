@@ -113,12 +113,12 @@ var sendandgetform = async function (elt) {
       return;
     }
 
-    if (action == "new") {
+    if (action === "new") {
       show_form(data);
-    } else if (action == "modify") {
+    } else if (action === "modify") {
       show_form(data);
       elt.classList.add("info");
-    } else if (action == "delete") {
+    } else if (action === "delete") {
       if (data.indexOf("list_chapter") == -1) {
         showalert(
           gettext("You are no longer authenticated. Please log in again."),
@@ -129,7 +129,7 @@ var sendandgetform = async function (elt) {
       const data2 = JSON.parse(data);
       updateDom(data2);
       manageDelete();
-      document.getElementById("list_chapter").innerHTML = parsedData.list_chapter;
+      document.getElementById("list_chapter").innerHTML = data2.list_chapter;
       show_form("");
       document.querySelector("form.get_form").style.display = "block";
     }
@@ -162,16 +162,20 @@ var sendform = async function (elt, action) {
     }
     
   } else if (action === "import") {
-    form_data = new FormData(elt);
+    data_form = new FormData(elt);
     validationMessage =
       gettext("Make sure you added a file and that it is a valid file.");
 
+  } else {
+    // if action is neither "save" nor "import", show an error and return
+    showalert(gettext("Invalid action."), "alert-danger");
+    return;
   }
   try {
     const response = await fetch(url, {
       method: "POST",
       headers: headers,
-      body: action === "save" ? data_form : form_data,
+      body: data_form,
       dataType: "html",
     });
     const data = await response.text();

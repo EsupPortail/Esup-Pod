@@ -92,9 +92,8 @@ document.addEventListener("submit", (e) => {
   sendform(e.target, action);
 });
 
-var sendandgetform = async function (elt) {
+var sendandgetform = async function (elt,action) {
   const token = elt.csrfmiddlewaretoken.value;
-  const action = elt.action.value;
   const url = window.location.href;
   const headers = {
     "X-CSRFToken": token,
@@ -118,12 +117,12 @@ var sendandgetform = async function (elt) {
       return;
     }
 
-    if (action == "new") {
+    if (action === "new") {
       show_form(data);
-    } else if (action == "modify") {
+    } else if (action === "modify") {
       show_form(data);
       elt.classList.add("info");
-    } else if (action == "delete") {
+    } else if (action === "delete") {
       if (data.indexOf("list_enrichment") == -1) {
         showalert(
           gettext("You are no longer authenticated. Please log in again."),
