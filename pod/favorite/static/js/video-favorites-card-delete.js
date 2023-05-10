@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const cards = document.getElementsByClassName("card-group");
+    const cards = document.getElementsByClassName("draggable-container");
+    const title = document.getElementById("video_count")
     for (let card of cards) {
         const form = card.querySelector(".favorite-button-form-card");
         form.addEventListener('submit', function (e) {
