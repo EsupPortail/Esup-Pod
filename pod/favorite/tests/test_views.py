@@ -2,7 +2,6 @@ from django.test import override_settings, TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-from pod import video
 
 from pod.favorite import context_processors
 from pod.favorite.models import Favorite
@@ -99,7 +98,7 @@ class TestShowStarTestCase(TestCase):
             ''',
         )
         print(" --->  test_show_star_404_error ok")
-        
+
     @override_settings(USE_FAVORITES=False)
     def test_show_star_when_use_favorites_equal_false(self) -> None:
         """Test if the star isn't present when USE_FAVORITES equal False"""
@@ -178,7 +177,7 @@ class TestFavoriteVideoListTestCase(TestCase):
         self.client.logout()
         print(" --->  test_favorite_video_list_empty ok")
 
-    @override_settings(USE_FAVORITES=True)    
+    @override_settings(USE_FAVORITES=True)
     def test_favorite_video_list_link_in_navbar(self) -> None:
         """Test if the favorite video list link is present in the navbar"""
         importlib.reload(context_processors)
@@ -196,8 +195,8 @@ class TestFavoriteVideoListTestCase(TestCase):
         self.client.logout()
         print(" --->  test_favorite_video_list_link_in_navbar ok")
 
-    @override_settings(USE_FAVORITES=False)    
-    def test_favorite_video_list_link_in_navbar_when_use_favorites_equal_false(self) -> None:
+    @override_settings(USE_FAVORITES=False)
+    def test_favorite_video_list_link_in_navbar_when_use_favorites_is_false(self) -> None:
         """Test if the favorite video list link is present in the navbar"""
         importlib.reload(context_processors)
         self.client.force_login(self.user_with_favorite)
@@ -205,19 +204,25 @@ class TestFavoriteVideoListTestCase(TestCase):
         self.assertEqual(
             response.status_code,
             200,
-            "Test if status code equal 200 in test_favorite_video_list_link_in_navbar_when_use_favorites_equal_false",
+            '''
+            Test if status code equal 200 in
+             test_favorite_video_list_link_in_navbar_when_use_favorites_equal_false
+            ''',
         )
         self.assertFalse(
             str(_("My favorite videos")) in response.content.decode(),
             "Test if the favorite video list link is present in the navbar",
         )
         self.client.logout()
-        print(" --->  test_favorite_video_list_link_in_navbar_when_use_favorites_equal_false ok")
+        print('''
+              --->  test_favorite_video_list_link_in_navbar_when_use_favorites_equal_false
+              ok
+              ''')
 
 
 class TestShowStarInfoTestCase(TestCase):
     fixtures = ["initial_data.json"]
-    
+
     def setUp(self) -> None:
         """Set up required objects for next tests."""
         self.user = User.objects.create(
