@@ -92,7 +92,7 @@ document.addEventListener("submit", (e) => {
   sendform(e.target, action);
 });
 
-var sendandgetform = async function (elt,action) {
+var sendandgetform = async function (elt, action) {
   const token = elt.csrfmiddlewaretoken.value;
   const url = window.location.href;
   const headers = {
@@ -100,7 +100,7 @@ var sendandgetform = async function (elt,action) {
     "X-Requested-With": "XMLHttpRequest",
   };
   const form_data = new FormData(elt);
-  
+
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -109,7 +109,10 @@ var sendandgetform = async function (elt,action) {
       dataType: "html",
     });
     const data = await response.text();
-    if (data.indexOf(id_form) == -1 && (action === "new" || action === "modify")) {
+    if (
+      data.indexOf(id_form) == -1 &&
+      (action === "new" || action === "modify")
+    ) {
       showalert(
         gettext("You are no longer authenticated. Please log in again."),
         "alert-danger"
@@ -131,7 +134,6 @@ var sendandgetform = async function (elt,action) {
         return;
       }
       location.reload();
-
     }
   } catch (error) {
     ajaxfail(error);
@@ -321,7 +323,9 @@ function enrich_type() {
 const setTimecode = (e) => {
   if (e.target.id !== "id_start" && e.target.id !== "id_end") return;
   const parentNode = e.target.parentNode;
-  const timecodeSpan = parentNode.querySelector("div.getfromvideo span.timecode");
+  const timecodeSpan = parentNode.querySelector(
+    "div.getfromvideo span.timecode"
+  );
   timecodeSpan.innerHTML = " " + parseInt(e.target.value).toHHMMSS();
 };
 document.addEventListener("change", setTimecode);

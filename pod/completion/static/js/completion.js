@@ -171,8 +171,13 @@ var sendandgetform = async function (elt, action, name, form, list) {
         document.querySelector("form.form_new").style.display = "block";
         document.getElementById(form).innerHTML = "";
       });
-      
-    const formClasses = ["form_new", "form_change", "form_modif", "form_delete"];
+
+    const formClasses = [
+      "form_new",
+      "form_change",
+      "form_modif",
+      "form_delete",
+    ];
     formClasses.forEach((formClass) => {
       document.querySelectorAll(`form.${formClass}`).forEach((form) => {
         if (form) form.style.display = "none";

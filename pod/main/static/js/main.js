@@ -712,14 +712,13 @@ var send_form_data = async function (
     const response = await fetch(url, options);
     const data = await response.text();
     const processedData = callbackSuccess(data);
-    if (method === "post"){
+    if (method === "post") {
       window[fct](processedData);
-    }
-    else {
+    } else {
       if (typeof window[fct] === "function") {
         window[fct](processedData);
       }
-   }
+    }
   } catch (error) {
     showalert(
       gettext("Error during exchange") +

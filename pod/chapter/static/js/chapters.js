@@ -96,7 +96,7 @@ var sendandgetform = async function (elt) {
     "X-Requested-With": "XMLHttpRequest",
   };
   const form_data = new FormData(elt);
-  
+
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -105,7 +105,10 @@ var sendandgetform = async function (elt) {
       dataType: "html",
     });
     const data = await response.text();
-    if (data.indexOf(id_form) == -1 && (action === "new" || action === "modify")) {
+    if (
+      data.indexOf(id_form) == -1 &&
+      (action === "new" || action === "modify")
+    ) {
       showalert(
         gettext("You are no longer authenticated. Please log in again."),
         "alert-danger"
@@ -153,19 +156,21 @@ var sendform = async function (elt, action) {
       form_save = document.getElementById("form_chapter").querySelector("form");
       form_save.style.display = "none";
       data_form = new FormData(form_save);
-      validationMessage =
-        gettext("Make sure your chapter start time is not 0 or equal to another chapter start time.");
-  
+      validationMessage = gettext(
+        "Make sure your chapter start time is not 0 or equal to another chapter start time."
+      );
     } else {
-      showalert(gettext("One or more errors have been found in the form."), "alert-danger");
+      showalert(
+        gettext("One or more errors have been found in the form."),
+        "alert-danger"
+      );
       return;
     }
-    
   } else if (action === "import") {
     data_form = new FormData(elt);
-    validationMessage =
-      gettext("Make sure you added a file and that it is a valid file.");
-
+    validationMessage = gettext(
+      "Make sure you added a file and that it is a valid file."
+    );
   } else {
     // if action is neither "save" nor "import", show an error and return
     showalert(gettext("Invalid action."), "alert-danger");
@@ -188,14 +193,12 @@ var sendform = async function (elt, action) {
       const jsonData = JSON.parse(data);
       if (jsonData.errors) {
         document.getElementById("form_chapter").style.display = "block";
-        showalert(
-          jsonData.errors + " "+ validationMessage,
-          "alert-danger"
-        );
+        showalert(jsonData.errors + " " + validationMessage, "alert-danger");
       } else {
         updateDom(jsonData);
         manageSave();
-        document.getElementById("list_chapter").innerHTML = jsonData.list_chapter;
+        document.getElementById("list_chapter").innerHTML =
+          jsonData.list_chapter;
         show_form("");
         document.querySelector("form.get_form").style.display = "block";
       }
@@ -204,7 +207,6 @@ var sendform = async function (elt, action) {
     ajaxfail(error);
   }
 };
-
 
 /*** Verify if value of field respect form field ***/
 function verify_start_title_items() {
