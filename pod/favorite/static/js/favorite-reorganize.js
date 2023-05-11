@@ -62,9 +62,11 @@ function activateDragAndDrop(parent) {
         draggableElement.children[0].classList.add('no-click');
     });
     cardFooterElements.forEach(cardFooterElement => {
-        cardFooterElement.style.visibility = 'hidden';
+        //cardFooterElement.style.visibility = 'hidden';
+        cardFooterElement.style.opacity = '0';
+        cardFooterElement.style.transition = 'opacity 0.9s ease';
     });
-    document.getElementById('cancel_btn_favorites_list').style.visibility = "visible"
+    document.getElementById('cancel_btn_favorites_list').style.visibility = 'visible';
 }
 
 function convert2DTableToJson(table) {

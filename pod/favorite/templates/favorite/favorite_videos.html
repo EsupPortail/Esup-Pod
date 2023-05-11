@@ -23,17 +23,19 @@
 
 {% block main_page_title %}
   <h1 id="video_count" class="page_title">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
-    <form action="{% url 'favorite:save-reorganisation' %}" method="post" class="btn">
-      {% csrf_token %}
-      <span class="pod-float-end">
-        <input id="json-data" type="hidden" name="json-data">
-        <button id="reorganize-button" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm">
-          <i class="bi bi-arrows-move"></i>&nbsp;<span>{% trans "Reorganize" %}</span>
-        </button>
-      </span>
-    </form>
-    <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-primary btn-sm" style="visibility:hidden">
-      <i class="bi bi-x-circle"></i>&nbsp;Annuler</a>
+    {% if count_videos > 1 %}
+      <form action="{% url 'favorite:save-reorganisation' %}" method="post" class="btn">
+        {% csrf_token %}
+        <span class="pod-float-end">
+          <input id="json-data" type="hidden" name="json-data">
+          <button id="reorganize-button" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-arrows-move"></i>&nbsp;<span>{% trans "Reorganize" %}</span>
+          </button>
+        </span>
+      </form>
+      <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-primary btn-sm" style="visibility:hidden">
+        <i class="bi bi-x-circle"></i>&nbsp;Annuler</a>
+    {% endif %}
   </h1>
   <form id="sortForm" action="{% url 'favorite:list' %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2">
     {% include "videos/video_sort_select.html" %}

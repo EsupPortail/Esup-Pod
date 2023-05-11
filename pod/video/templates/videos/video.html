@@ -257,6 +257,10 @@
       <script type="module" defer src="{% static 'js/comment-script.js' %}?ver={{VERSION}}"></script>
     {% endif %}
   {% endif %}
+  <script>
+    const favoriteHiddenButton = document.getElementById('fav-button');
+    favoriteHiddenButton.remove();
+  </script>
   {% get_setting "USE_XAPI_VIDEO" False as USE_XAPI_VIDEO %}
   {% if USE_XAPI_VIDEO %}
     {% include 'xapi/xapi_video.html' %}
