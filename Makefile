@@ -56,7 +56,7 @@ lang:
 
 #compilation des fichiers de langue
 compilelang:
-    python3 manage.py compilemessages -l fr -l nl
+	python3 manage.py compilemessages -l fr -l nl
 
 # Look for changes to apply in DB
 updatedb:
