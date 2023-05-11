@@ -50,9 +50,13 @@ createDB:
 # Mise à jour des fichiers de langue
 lang:
 	echo "Processing python files..."
-	python3 manage.py makemessages --all -i "opencast-studio/*" -i "pod/custom/settings_local.py"
+	python3 manage.py makemessages --all -i "opencast-studio/*" -i "pod/custom/settings_local.py" --add-location=file
 	echo "Processing javascript files..."
-	django-admin makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/node_modules/*"
+	python3 manage.py makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/node_modules/*" --add-location=file
+
+#comilation des fichiers de langue
+compilelang:
+    python3 manage.py compilemessages -l fr -l nl
 
 # Look for changes to apply in DB
 updatedb:
