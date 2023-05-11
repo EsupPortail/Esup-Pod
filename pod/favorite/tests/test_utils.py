@@ -117,5 +117,7 @@ class FavoriteTestUtils(TestCase):
             video=self.video,
             rank=1,
         )
-        self.assertEqual([self.video], get_all_favorite_videos_for_user(self.user))
+        video_list = get_all_favorite_videos_for_user(self.user)
+        self.assertEqual(video_list.count(), 1)
+        self.assertEqual(video_list.first(), self.video)
         print(" --->  get_all_favorite_videos_for_user ok")
