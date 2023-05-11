@@ -31,6 +31,7 @@ from pod.main.utils import is_ajax
 from pod.main.views import in_maintenance
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
+from pod.favorite.models import Favorite
 from pod.video.utils import get_videos as video_get_videos
 from pod.video.models import Video
 from pod.video.models import Type
@@ -40,6 +41,7 @@ from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
 from pod.video.models import ViewCount, VideoVersion
 from pod.video.models import Comment, Vote, Category
 from pod.video.models import get_transcription_choices
+
 from tagging.models import TaggedItem
 
 from pod.video.forms import VideoForm, VideoVersionForm
@@ -1967,6 +1969,29 @@ def get_all_views_count(v_id, date_filter=date.today()):
     # view count since video was created
     count = ViewCount.objects.filter(video_id=v_id).aggregate(Sum("count"))["count__sum"]
     all_views["since_created"] = count if count else 0
+    
+    # favorite addition in day
+    count = Favorite.objects.filter(video_id=v_id, date_added=date_filter).count()
+    all_views["fav_day"] = count if count else 0
+    
+    # favorite addition in month
+    count = Favorite.objects.filter(
+        video_id=v_id,
+        date_added__year=date_filter.year,
+        date_added__month=date_filter.month,
+    ).count()
+    all_views["fav_month"] = count if count else 0
+    
+    # favorite addition in year
+    count = Favorite.objects.filter(
+        video_id=v_id,
+        date_added__year=date_filter.year,
+    ).count()
+    all_views["fav_year"] = count if count else 0
+    
+    # favorite addition since video was created
+    count = Favorite.objects.filter(video_id=v_id).count()
+    all_views["fav_since_created"] = count if count else 0
 
     return all_views
 

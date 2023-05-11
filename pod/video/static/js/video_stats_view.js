@@ -23,6 +23,10 @@ $(() => {
       gettext("View during the month"),
       gettext("View during the year"),
       gettext("Total view from creation"),
+      gettext("Favorite addition during the day"),
+      gettext("Favorite addition during the month"),
+      gettext("Favorite addition during the year"),
+      gettext("Total favorite addition from creation"),
       gettext("Slug"),
     ],
     colModel: [
@@ -38,6 +42,15 @@ $(() => {
       { name: "year", align: "center", sortable: true, sorttype: "int" },
       {
         name: "since_created",
+        align: "center",
+        sortable: true,
+        sorttype: "int",
+      },
+      { name: "fav_day", align: "center", sortable: true, sorttype: "int" },
+      { name: "fav_month", align: "center", sortable: true, sorttype: "int" },
+      { name: "fav_year", align: "center", sortable: true, sorttype: "int" },
+      {
+        name: "fav_since_created",
         align: "center",
         sortable: true,
         sorttype: "int",
