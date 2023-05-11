@@ -4,14 +4,23 @@ addEventForReorganizedButton();
 
 const sortSelectElement = document.getElementById('sort');
 const reorganizeButtonsSpanElement = document.getElementById('reorganize-buttons-span');
+const collapseAsideElement = document.getElementById('collapseAside');
 sortSelectElement.addEventListener('change', () => {
-  const selectedOptionElement = sortSelectElement.options[sortSelectElement.selectedIndex];
-  if (selectedOptionElement.value === 'rank') {
-    reorganizeButtonsSpanElement.style.visibility = 'visible';
-  } else {
-    reorganizeButtonsSpanElement.style.visibility = 'hidden';
-  }
+    changeButtonIntoRefresh();
 });
+collapseAsideElement.addEventListener('click', () => {
+    changeButtonIntoRefresh();
+});
+
+function changeButtonIntoRefresh() {
+    const reorganizeButton = document.getElementById('reorganize-button');
+    reorganizeButton.id = 'refresh-button';
+    reorganizeButton.title = gettext('Refresh your page to can reorganize');
+    const iconElement = reorganizeButton.querySelector('i');
+    const spanElement = reorganizeButton.querySelector('span');
+    iconElement.classList.replace('bi-arrows-move', 'bi-arrow-clockwise');
+    spanElement.textContent = gettext('Refresh');
+}
 
 function addEventForReorganizedButton() {
     document.getElementById('reorganize-button').addEventListener('click', function (event) {
@@ -27,6 +36,9 @@ function addEventForReorganizedButton() {
         } else if (this.id == 'save-button') {
             console.log(convert2DTableToJson(exchangedValues));
             document.getElementById('json-data').value = convert2DTableToJson(exchangedValues);
+        } else if (this.id == 'refresh-button') {
+            event.preventDefault();
+            window.location.assign(window.location.href.split('?')[0]);
         }
     });
 }
