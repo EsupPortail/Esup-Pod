@@ -109,7 +109,7 @@ var sendandgetform = async function (elt,action) {
       dataType: "html",
     });
     const data = await response.text();
-    if (data.indexOf(id_form) == -1) {
+    if (data.indexOf(id_form) == -1 && (action === "new" || action === "modify")) {
       showalert(
         gettext("You are no longer authenticated. Please log in again."),
         "alert-danger"
