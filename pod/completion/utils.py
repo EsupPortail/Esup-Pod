@@ -1,12 +1,14 @@
-def get_video_completion_context(video,
-                                 list_contributor=None,
-                                 list_document=None,
-                                 list_track=None,
-                                 list_overlay=None,
-                                 form_contributor=None,
-                                 form_document=None,
-                                 form_track=None,
-                                 form_overlay=None):
+def get_video_completion_context(
+    video,
+    list_contributor=None,
+    list_document=None,
+    list_track=None,
+    list_overlay=None,
+    form_contributor=None,
+    form_document=None,
+    form_track=None,
+    form_overlay=None,
+):
     """
     Returns a dictionary containing information extracted from the video
     and its associated objects
@@ -31,7 +33,7 @@ def get_video_completion_context(video,
         "form_contributor": form_contributor,
         "form_document": form_document,
         "form_track": form_track,
-        "form_overlay": form_overlay
+        "form_overlay": form_overlay,
     }
 
     return context

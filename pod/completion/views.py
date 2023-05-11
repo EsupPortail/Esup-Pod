@@ -312,8 +312,9 @@ def video_completion_contributor_save(request, video):
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type="application/json")
         else:
-            context = get_video_completion_context(video,
-                                                   list_contributor=list_contributor)
+            context = get_video_completion_context(
+                video, list_contributor=list_contributor
+            )
             return render(
                 request,
                 "video_completion.html",
@@ -628,9 +629,9 @@ def video_completion_track_save(request, video):
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type="application/json")
         else:
-            context = get_video_completion_context(video,
-                                                   list_track=list_track,
-                                                   form_track=form_track)
+            context = get_video_completion_context(
+                video, list_track=list_track, form_track=form_track
+            )
             return render(
                 request,
                 "video_completion.html",
@@ -776,7 +777,6 @@ def video_completion_overlay_new(request, video):
 
 
 def video_completion_overlay_save(request, video):
-
     if LINK_SUPERPOSITION:
         request.POST._mutable = True
         request.POST["content"] = transform_url_to_link(request.POST["content"])
@@ -820,8 +820,9 @@ def video_completion_overlay_save(request, video):
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type="application/json")
-        context = get_video_completion_context(video, list_overlay=list_overlay,
-                                               form_overlay=form_overlay)
+        context = get_video_completion_context(
+            video, list_overlay=list_overlay, form_overlay=form_overlay
+        )
         return render(
             request,
             "video_completion.html",
@@ -830,7 +831,6 @@ def video_completion_overlay_save(request, video):
 
 
 def video_completion_overlay_modify(request, video):
-
     overlay = get_object_or_404(Overlay, id=request.POST["id"])
 
     if LINK_SUPERPOSITION:
@@ -852,7 +852,6 @@ def video_completion_overlay_modify(request, video):
 
 
 def video_completion_overlay_delete(request, video):
-
     overlay = get_object_or_404(Overlay, id=request.POST["id"])
     overlay.delete()
     list_overlay = video.overlay_set.all()
