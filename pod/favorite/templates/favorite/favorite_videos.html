@@ -36,7 +36,7 @@
         </span>
       </form>
       <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-primary btn-sm" style="visibility:hidden">
-        <i class="bi bi-x-circle"></i>&nbsp;Annuler</a>
+        <i class="bi bi-x-circle"></i>&nbsp;{% trans "Cancel" %}</a>
       {% endif %}
     </span>
     <form id="sortForm" action="{% url 'favorite:list' %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2">

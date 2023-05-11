@@ -904,6 +904,7 @@ msgstr "Sauvegarder"
 #: pod/video/templates/videos/video_note_comments_display.html
 #: pod/video/templates/videos/video_note_display.html
 #: pod/video/templates/videos/video_notes.html
+#: pod/favorite/templates/favorite/favorite_videos.html
 msgid "Cancel"
 msgstr "Annuler"
 
