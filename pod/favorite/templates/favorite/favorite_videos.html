@@ -24,7 +24,7 @@
 {% block main_page_title %}
   <div class="row videos-list-header">
     <h1 id="video_count" class="page_title col-xxl-4 mb-2">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h1>
-    <span class="col-xxl-4 col-md-6 mb-2">
+    <span class="col-xxl-4 col-md-6 mb-2" id="reorganize-buttons-span">
       {% if count_videos > 1 %}
       <form action="{% url 'favorite:save-reorganisation' %}" method="post" class="btn">
         {% csrf_token %}
@@ -42,6 +42,18 @@
     <form id="sortForm" action="{% url 'favorite:list' %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2">
       {% include "favorite/favorite_video_sort_select.html" %}
     </form>
+    <script>
+      const sortSelectElement = document.getElementById('sort');
+      const reorganizeButtonsSpanElement = document.getElementById('reorganize-buttons-span');
+      sortSelectElement.addEventListener('change', () => {
+        const selectedOptionElement = sortSelectElement.options[sortSelectElement.selectedIndex];
+        if (selectedOptionElement.value === 'rank') {
+          reorganizeButtonsSpanElement.style.visibility = 'visible';
+        } else {
+          reorganizeButtonsSpanElement.style.visibility = 'hidden';
+        }
+      });
+    </script>
   </div>
 {% endblock main_page_title %}
 
