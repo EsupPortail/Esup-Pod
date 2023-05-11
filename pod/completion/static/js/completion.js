@@ -171,22 +171,14 @@ var sendandgetform = async function (elt, action, name, form, list) {
         document.querySelector("form.form_new").style.display = "block";
         document.getElementById(form).innerHTML = "";
       });
-
-    document.querySelectorAll("form.form_new").forEach((form) => {
-      if (form) form.style.display = "none";
+      
+    const formClasses = ["form_new", "form_change", "form_modif", "form_delete"];
+    formClasses.forEach((formClass) => {
+      document.querySelectorAll(`form.${formClass}`).forEach((form) => {
+        if (form) form.style.display = "none";
+      });
     });
 
-    document.querySelectorAll("form.form_change").forEach((form) => {
-      if (form) form.style.display = "none";
-    });
-
-    document.querySelectorAll("form.form_modif").forEach((form) => {
-      if (form) form.style.display = "none";
-    });
-
-    document.querySelectorAll("form.form_delete").forEach((form) => {
-      if (form) form.style.display = "none";
-    });
     document.querySelectorAll("a.title").forEach(function (element) {
       element.style.display = "none";
     });
