@@ -2,6 +2,17 @@ const exchangedValues = [];
 
 addEventForReorganizedButton();
 
+const sortSelectElement = document.getElementById('sort');
+const reorganizeButtonsSpanElement = document.getElementById('reorganize-buttons-span');
+sortSelectElement.addEventListener('change', () => {
+  const selectedOptionElement = sortSelectElement.options[sortSelectElement.selectedIndex];
+  if (selectedOptionElement.value === 'rank') {
+    reorganizeButtonsSpanElement.style.visibility = 'visible';
+  } else {
+    reorganizeButtonsSpanElement.style.visibility = 'hidden';
+  }
+});
+
 function addEventForReorganizedButton() {
     document.getElementById('reorganize-button').addEventListener('click', function (event) {
         if (this.id == 'reorganize-button') {
