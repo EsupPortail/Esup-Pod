@@ -1,15 +1,38 @@
 {% extends "admin/base.html" %}
 {% load i18n static %}
 {% block extrastyle %}
-  <link rel="stylesheet" href="{% static 'css/pod-admin.css' %}?ver={{VERSION}}" media="screen">
-  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+  {{ block.super }}
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'bootstrap-icons/font/bootstrap-icons.css' %}?ver={{VERSION}}" crossorigin="anonymous">
+  <!-- pod.css -->
+  <link rel="stylesheet" href="{% static 'css/pod.css' %}?ver={{VERSION}}" media="screen">
+  <link rel="stylesheet" href="{% static 'css/dark.css' %}?ver={{VERSION}}" media="screen">
+  <!-- JS -->
   <script src="{% static 'js-cookie/dist/js.cookie.min.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
+
+  <link rel="stylesheet" href="{% static 'css/pod-admin.css' %}?ver={{VERSION}}" media="screen">
   {% if max_duration_date_delete %}
     <script> var max_duration_date_delete = {{max_duration_date_delete}};</script>
   {% endif %}
+
+  {% if DARKMODE_ENABLED == True %}
+    <script>
+      // Get the current theme from local storage
+      const currentTheme = localStorage.getItem("theme");
+      // If the current local storage item can be found
+
+      // Set the body data-theme attribute to match the local storage item
+      document.documentElement.dataset.theme = currentTheme?currentTheme:"light";
+    </script>
+  {% endif %}
+
 {% endblock %}
 
-{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+{% block title %}
+{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}
+{% endblock %}
 
 {% block branding %}
 <h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a></h1>

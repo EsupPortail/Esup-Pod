@@ -575,7 +575,8 @@ def get_paginated_videos(paginator, page):
 
 
 def sort_videos_list(request, videos_list):
-    """Return sorted videos list by specific column name and ascending or descending direction (boolean)"""
+    """Return sorted videos list by specific column name and
+    ascending or descending direction (boolean)"""
     if request.GET.get("sort"):
         sort = request.GET.get("sort")
     else:

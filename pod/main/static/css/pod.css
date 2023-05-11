@@ -879,6 +879,7 @@ body[data-admin-utc-offset] {
   --primary: var(--pod-primary);
   --breadcrumbs-bg: var(--pod-primary);
   --button-bg: var(--pod-primary);
+  background-color: var(--body-bg);
 }
 
 body[data-admin-utc-offset] textarea.cke_source {
