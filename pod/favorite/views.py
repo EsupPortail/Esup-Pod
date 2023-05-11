@@ -34,6 +34,7 @@ def favorite_button_in_video_info(request):
 def favorite_list(request):
     """Render the main list of favorite videos."""
     videos_list = get_all_favorite_videos_for_user(request.user)
+    videos_list = sort_videos_list(request, videos_list)
     count_videos = len(videos_list)
 
     page = request.GET.get("page", 1)
@@ -106,3 +107,17 @@ def favorites_save_reorganisation(request):
         return redirect(request.META["HTTP_REFERER"])
     else:
         raise Http404()
+
+
+def sort_videos_list(request, videos_list):
+    """Return sorted videos list by specific column name and ascending or descending direction (boolean)"""
+    if request.GET.get('sort'):
+        sort = request.GET.get('sort')
+    else:
+        sort = "rank"
+    if not request.GET.get('sort_direction'):
+        sort = '-' + sort
+
+    videos_list = videos_list.order_by(sort)
+
+    return videos_list.distinct()
