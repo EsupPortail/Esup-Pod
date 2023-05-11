@@ -38,7 +38,7 @@
     {% endif %}
   </h1>
   <form id="sortForm" action="{% url 'favorite:list' %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2">
-    {% include "videos/video_sort_select.html" %}
+    {% include "favorite/favorite_video_sort_select.html" %}
   </form>
 {% endblock main_page_title %}
 

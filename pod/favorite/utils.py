@@ -1,3 +1,4 @@
+from venv import logger
 from django.contrib.auth.models import User
 from django.db.models import Max
 
@@ -46,8 +47,10 @@ def get_next_rank(user: User) -> int:
     last_rank = Favorite.objects.filter(owner=user).aggregate(Max('rank'))['rank__max']
     return last_rank + 1 if last_rank is not None else 1
 
+
 def get_number_favorites(video: Video):
     return Favorite.objects.filter(video=video).count()
+
 
 def get_all_favorite_videos_for_user(user: User) -> list:
     """
@@ -60,5 +63,10 @@ def get_all_favorite_videos_for_user(user: User) -> list:
         list(:class:`pod.video.models.Video`): The video list
     """
     favorite_id = Favorite.objects.filter(owner=user).values_list('video_id', flat=True)
-    video_list = Video.objects.filter(id__in=favorite_id)
+    # video_list = Video.objects.filter(id__in=favorite_id).annotate(rank=Favorite("favorite__rank"))
+    video_list = Video.objects.filter(id__in=favorite_id).extra(
+        select={'rank': 'favorite_favorite.rank'},
+        tables=['favorite_favorite'],
+        where=['favorite_favorite.video_id=video_video.id']
+    )
     return video_list

@@ -116,7 +116,7 @@ def sort_videos_list(request, videos_list):
     if request.GET.get('sort'):
         sort = request.GET.get('sort')
     else:
-        sort = "date_added"
+        sort = "rank"
     if not request.GET.get('sort_direction'):
         sort = '-' + sort
 
