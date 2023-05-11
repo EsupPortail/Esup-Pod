@@ -214,7 +214,7 @@ class VideoAdmin(admin.ModelAdmin):
         if not getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
             exclude += ("disable_comment",)
 
-        if obj and obj.encoding_in_progress:
+        if obj and (obj.encoding_in_progress or not obj.encoded):
             exclude += (
                 "video",
                 "owner",
