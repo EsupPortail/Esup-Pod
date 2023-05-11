@@ -108,6 +108,7 @@ def favorites_save_reorganisation(request):
     else:
         raise Http404()
 
+
 def sort_videos_list(request, videos_list):
     """Return sorted videos list by specific column name and ascending or descending direction (boolean)"""
     if request.GET.get('sort'):

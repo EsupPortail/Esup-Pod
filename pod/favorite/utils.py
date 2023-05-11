@@ -1,4 +1,3 @@
-from venv import logger
 from django.contrib.auth.models import User
 from django.db.models import Max
 
@@ -63,7 +62,6 @@ def get_all_favorite_videos_for_user(user: User) -> list:
         list(:class:`pod.video.models.Video`): The video list
     """
     favorite_id = Favorite.objects.filter(owner=user).values_list('video_id', flat=True)
-    # video_list = Video.objects.filter(id__in=favorite_id).annotate(rank=Favorite("favorite__rank"))
     video_list = Video.objects.filter(id__in=favorite_id).extra(
         select={'rank': 'favorite_favorite.rank'},
         tables=['favorite_favorite'],
