@@ -1,13 +1,11 @@
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import transaction
-from django.http import Http404, HttpResponseBadRequest, JsonResponse
+from django.http import Http404, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
 from pod.favorite.models import Favorite
-from pod.meeting.views import status
 
 from pod.video.models import Video
 from pod.video.views import CURSUS_CODES, get_owners_has_instances
@@ -16,7 +14,6 @@ from .utils import user_add_or_remove_favorite_video
 from .utils import get_all_favorite_videos_for_user
 
 import json
-import requests
 
 
 @csrf_protect
