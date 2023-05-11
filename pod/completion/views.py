@@ -27,6 +27,7 @@ from pod.main.settings import LANGUAGE_CODE
 import re
 import json
 from django.contrib.sites.shortcuts import get_current_site
+from .utils import get_video_completion_context
 
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTIVE_MODEL_ENRICH = getattr(settings, "ACTIVE_MODEL_ENRICH", False)
@@ -273,12 +274,8 @@ def video_completion_contributor(request, slug):
 
 def video_completion_contributor_new(request, video):
     """View to add new contributor to a video."""
-    list_contributor = video.contributor_set.all()
-    list_track = video.track_set.all()
-    list_document = video.document_set.all()
-    list_overlay = video.overlay_set.all()
-
     form_contributor = ContributorForm(initial={"video": video})
+    context = get_video_completion_context(video, form_contributor=form_contributor)
     if request.is_ajax():
         return render(
             request,
@@ -289,24 +286,12 @@ def video_completion_contributor_new(request, video):
         return render(
             request,
             "video_completion.html",
-            {
-                "video": video,
-                "list_contributor": list_contributor,
-                "form_contributor": form_contributor,
-                "list_track": list_track,
-                "list_document": list_document,
-                "list_overlay": list_overlay,
-            },
+            context,
         )
 
 
 def video_completion_contributor_save(request, video):
     """View to save contributors of a video."""
-    list_contributor = video.contributor_set.all()
-    list_track = video.track_set.all()
-    list_document = video.document_set.all()
-    list_overlay = video.overlay_set.all()
-
     form_contributor = None
     if request.POST.get("contributor_id") and request.POST["contributor_id"] != "None":
         contributor = get_object_or_404(Contributor, id=request.POST["contributor_id"])
@@ -327,16 +312,12 @@ def video_completion_contributor_save(request, video):
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type="application/json")
         else:
+            context = get_video_completion_context(video,
+                                                   list_contributor=list_contributor)
             return render(
                 request,
                 "video_completion.html",
-                {
-                    "video": video,
-                    "list_contributor": list_contributor,
-                    "list_document": list_document,
-                    "list_track": list_track,
-                    "list_overlay": list_overlay,
-                },
+                context,
             )
     else:
         if request.is_ajax():
@@ -350,27 +331,16 @@ def video_completion_contributor_save(request, video):
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type="application/json")
+        context = get_video_completion_context(video, form_contributor=form_contributor)
         return render(
             request,
             "video_completion.html",
-            {
-                "video": video,
-                "list_contributor": list_contributor,
-                "form_contributor": form_contributor,
-                "list_document": list_document,
-                "list_track": list_track,
-                "list_overlay": list_overlay,
-            },
+            context,
         )
 
 
 def video_completion_contributor_modify(request, video):
     """View to modify a video contributor."""
-    list_contributor = video.contributor_set.all()
-    list_track = video.track_set.all()
-    list_document = video.document_set.all()
-    list_overlay = video.overlay_set.all()
-
     contributor = get_object_or_404(Contributor, id=request.POST["id"])
     form_contributor = ContributorForm(instance=contributor)
     if request.is_ajax():
@@ -379,17 +349,11 @@ def video_completion_contributor_modify(request, video):
             "contributor/form_contributor.html",
             {"form_contributor": form_contributor, "video": video},
         )
+    context = get_video_completion_context(video, form_contributor=form_contributor)
     return render(
         request,
         "video_completion.html",
-        {
-            "video": video,
-            "list_contributor": list_contributor,
-            "form_contributor": form_contributor,
-            "list_document": list_document,
-            "list_track": list_track,
-            "list_overlay": list_overlay,
-        },
+        context,
     )
 
 
@@ -440,11 +404,6 @@ def video_completion_document(request, slug):
         )
         raise PermissionDenied
 
-    list_contributor = video.contributor_set.all()
-    list_document = video.document_set.all()
-    list_track = video.track_set.all()
-    list_overlay = video.overlay_set.all()
-
     if request.POST and request.POST.get("action"):
         if request.POST["action"] in __AVAILABLE_ACTIONS__:
             return eval(
@@ -453,27 +412,18 @@ def video_completion_document(request, slug):
                 )
             )
     else:
+        context = get_video_completion_context(video)
         return render(
             request,
             "video_completion.html",
-            {
-                "video": video,
-                "list_contributor": list_contributor,
-                "list_document": list_document,
-                "list_track": list_track,
-                "list_overlay": list_overlay,
-            },
+            context,
         )
 
 
 def video_completion_document_new(request, video):
     """View to add new document to a video."""
-    list_contributor = video.contributor_set.all()
-    list_document = video.document_set.all()
-    list_track = video.track_set.all()
-    list_overlay = video.overlay_set.all()
-
     form_document = DocumentForm(initial={"video": video})
+    context = get_video_completion_context(video, form_document=form_document)
     if request.is_ajax():
         return render(
             request,
@@ -484,29 +434,19 @@ def video_completion_document_new(request, video):
         return render(
             request,
             "video_completion.html",
-            {
-                "video": video,
-                "list_contributor": list_contributor,
-                "list_document": list_document,
-                "form_document": form_document,
-                "list_track": list_track,
-                "list_overlay": list_overlay,
-            },
+            context,
         )
 
 
 def video_completion_document_save(request, video):
     """View to save document associated to a video."""
-    list_contributor = video.contributor_set.all()
-    list_document = video.document_set.all()
-    list_track = video.track_set.all()
-    list_overlay = video.overlay_set.all()
     form_document = DocumentForm(request.POST)
     if request.POST.get("document_id") and request.POST["document_id"] != "None":
         document = get_object_or_404(Document, id=request.POST["document_id"])
         form_document = DocumentForm(request.POST, instance=document)
     else:
         form_document = DocumentForm(request.POST)
+    context = get_video_completion_context(video, form_document=form_document)
     if form_document.is_valid():
         form_document.save()
         list_document = video.document_set.all()
@@ -524,13 +464,7 @@ def video_completion_document_save(request, video):
             return render(
                 request,
                 "video_completion.html",
-                {
-                    "video": video,
-                    "list_contributor": list_contributor,
-                    "list_document": list_document,
-                    "list_track": list_track,
-                    "list_overlay": list_overlay,
-                },
+                context,
             )
     else:
         if request.is_ajax():
@@ -548,23 +482,12 @@ def video_completion_document_save(request, video):
             return render(
                 request,
                 "video_completion.html",
-                {
-                    "video": video,
-                    "list_contributor": list_contributor,
-                    "list_document": list_document,
-                    "list_track": list_track,
-                    "list_overlay": list_overlay,
-                },
+                context,
             )
 
 
 def video_completion_document_modify(request, video):
     """View to modify a document associated to a video."""
-    list_contributor = video.contributor_set.all()
-    list_document = video.document_set.all()
-    list_track = video.track_set.all()
-    list_overlay = video.overlay_set.all()
-
     document = get_object_or_404(Document, id=request.POST["id"])
     form_document = DocumentForm(instance=document)
     if request.is_ajax():
@@ -574,26 +497,16 @@ def video_completion_document_modify(request, video):
             {"form_document": form_document, "video": video},
         )
     else:
+        context = get_video_completion_context(video, form_document=form_document)
         return render(
             request,
             "video_completion.html",
-            {
-                "video": video,
-                "list_contributor": list_contributor,
-                "list_document": list_document,
-                "form_document": form_document,
-                "list_track": list_track,
-                "list_overlay": list_overlay,
-            },
+            context,
         )
 
 
 def video_completion_document_delete(request, video):
     """View to delete a document associated to a video."""
-    list_contributor = video.contributor_set.all()
-    list_document = video.document_set.all()
-    list_track = video.track_set.all()
-    list_overlay = video.overlay_set.all()
 
     document = get_object_or_404(Document, id=request.POST["id"])
     document.delete()
@@ -609,16 +522,11 @@ def video_completion_document_delete(request, video):
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type="application/json")
     else:
+        context = get_video_completion_context(video, list_document=list_document)
         return render(
             request,
             "video_completion.html",
-            {
-                "video": video,
-                "list_contributor": list_contributor,
-                "list_document": list_document,
-                "list_track": list_track,
-                "list_overlay": list_overlay,
-            },
+            context,
         )
 
 
@@ -637,11 +545,6 @@ def video_completion_track(request, slug):
         )
         raise PermissionDenied
 
-    list_contributor = video.contributor_set.all()
-    list_track = video.track_set.all()
-    list_document = video.document_set.all()
-    list_overlay = video.overlay_set.all()
-
     if request.POST and request.POST.get("action"):
         if request.POST["action"] in __AVAILABLE_ACTIONS__:
             return eval(
@@ -650,27 +553,18 @@ def video_completion_track(request, slug):
                 )
             )
     else:
+        context = get_video_completion_context(video)
         return render(
             request,
             "video_completion.html",
-            {
-                "video": video,
-                "list_contributor": list_contributor,
-                "list_document": list_document,
-                "list_track": list_track,
-                "list_overlay": list_overlay,
-            },
+            context,
         )
 
 
 def video_completion_track_new(request, video):
     """View to add new track to a video."""
-    list_contributor = video.contributor_set.all()
-    list_track = video.track_set.all()
-    list_document = video.document_set.all()
-    list_overlay = video.overlay_set.all()
-
     form_track = TrackForm(initial={"video": video})
+    context = get_video_completion_context(video, form_track=form_track)
     if request.is_ajax():
         return render(
             request,
@@ -681,14 +575,7 @@ def video_completion_track_new(request, video):
         return render(
             request,
             "video_completion.html",
-            {
-                "video": video,
-                "list_contributor": list_contributor,
-                "list_document": list_document,
-                "list_track": list_track,
-                "form_track": form_track,
-                "list_overlay": list_overlay,
-            },
+            context,
         )
 
 
@@ -705,10 +592,6 @@ def video_completion_get_form_track(request):
 
 def video_completion_track_save(request, video):
     """View to save a track associated to a video."""
-    list_contributor = video.contributor_set.all()
-    list_track = video.track_set.all()
-    list_document = video.document_set.all()
-    list_overlay = video.overlay_set.all()
 
     form_track = video_completion_get_form_track(request)
 
@@ -726,16 +609,11 @@ def video_completion_track_save(request, video):
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type="application/json")
         else:
+            context = get_video_completion_context(video, list_track=list_track)
             return render(
                 request,
                 "video_completion.html",
-                {
-                    "video": video,
-                    "list_contributor": list_contributor,
-                    "list_document": list_document,
-                    "list_track": list_track,
-                    "list_overlay": list_overlay,
-                },
+                context,
             )
     else:
         if request.is_ajax():
@@ -750,26 +628,18 @@ def video_completion_track_save(request, video):
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type="application/json")
         else:
+            context = get_video_completion_context(video,
+                                                   list_track=list_track,
+                                                   form_track=form_track)
             return render(
                 request,
                 "video_completion.html",
-                {
-                    "video": video,
-                    "list_contributor": list_contributor,
-                    "list_document": list_document,
-                    "list_track": list_track,
-                    "form_track": form_track,
-                    "list_overlay": list_overlay,
-                },
+                context,
             )
 
 
 def video_completion_track_modify(request, video):
     """View to modify a track associated to a video."""
-    list_contributor = video.contributor_set.all()
-    list_track = video.track_set.all()
-    list_document = video.document_set.all()
-    list_overlay = video.overlay_set.all()
 
     track = get_object_or_404(Track, id=request.POST["id"])
     form_track = TrackForm(instance=track)
@@ -780,26 +650,16 @@ def video_completion_track_modify(request, video):
             {"form_track": form_track, "video": video},
         )
     else:
+        context = get_video_completion_context(video, form_track=form_track)
         return render(
             request,
             "video_completion.html",
-            {
-                "video": video,
-                "list_contributor": list_contributor,
-                "list_document": list_document,
-                "list_track": list_track,
-                "form_track": form_track,
-                "list_overlay": list_overlay,
-            },
+            context,
         )
 
 
 def video_completion_track_delete(request, video):
     """View to delete a track associated to a video."""
-    list_contributor = video.contributor_set.all()
-    list_track = video.track_set.all()
-    list_document = video.document_set.all()
-    list_overlay = video.overlay_set.all()
 
     track = get_object_or_404(Track, id=request.POST["id"])
     track.delete()
@@ -816,16 +676,11 @@ def video_completion_track_delete(request, video):
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type="application/json")
     else:
+        context = get_video_completion_context(video, list_track=list_track)
         return render(
             request,
             "video_completion.html",
-            {
-                "video": video,
-                "list_contributor": list_contributor,
-                "list_document": list_document,
-                "list_track": list_track,
-                "list_overlay": list_overlay,
-            },
+            context,
         )
 
 
@@ -887,10 +742,6 @@ def video_completion_overlay(request, slug):
         )
         raise PermissionDenied
 
-    list_contributor = video.contributor_set.all()
-    list_document = video.document_set.all()
-    list_track = video.track_set.all()
-    list_overlay = video.overlay_set.all()
     if request.POST and request.POST.get("action"):
         if request.POST["action"] in __AVAILABLE_ACTIONS__:
             return eval(
@@ -899,27 +750,18 @@ def video_completion_overlay(request, slug):
                 )
             )
     else:
+        context = get_video_completion_context(video)
         return render(
             request,
             "video_completion.html",
-            {
-                "video": video,
-                "list_contributor": list_contributor,
-                "list_document": list_document,
-                "list_track": list_track,
-                "list_overlay": list_overlay,
-            },
+            context,
         )
 
 
 def video_completion_overlay_new(request, video):
     """Form to create a new completion overlay."""
-    list_contributor = video.contributor_set.all()
-    list_document = video.document_set.all()
-    list_track = video.track_set.all()
-    list_overlay = video.overlay_set.all()
-
     form_overlay = OverlayForm(initial={"video": video})
+    context = get_video_completion_context(video, form_overlay=form_overlay)
     if request.is_ajax():
         return render(
             request,
@@ -929,22 +771,11 @@ def video_completion_overlay_new(request, video):
     return render(
         request,
         "video_completion.html",
-        {
-            "video": video,
-            "list_contributor": list_contributor,
-            "list_document": list_document,
-            "list_track": list_track,
-            "list_overlay": list_overlay,
-            "form_overlay": form_overlay,
-        },
+        context,
     )
 
 
 def video_completion_overlay_save(request, video):
-    list_contributor = video.contributor_set.all()
-    list_document = video.document_set.all()
-    list_track = video.track_set.all()
-    list_overlay = video.overlay_set.all()
 
     if LINK_SUPERPOSITION:
         request.POST._mutable = True
@@ -970,16 +801,12 @@ def video_completion_overlay_save(request, video):
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type="application/json")
+
+        context = get_video_completion_context(video, list_overlay=list_overlay)
         return render(
             request,
             "video_completion.html",
-            {
-                "video": video,
-                "list_contributor": list_contributor,
-                "list_document": list_document,
-                "list_track": list_track,
-                "list_overlay": list_overlay,
-            },
+            context,
         )
     else:
         if request.is_ajax():
@@ -993,25 +820,16 @@ def video_completion_overlay_save(request, video):
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type="application/json")
+        context = get_video_completion_context(video, list_overlay=list_overlay,
+                                               form_overlay=form_overlay)
         return render(
             request,
             "video_completion.html",
-            {
-                "video": video,
-                "list_contributor": list_contributor,
-                "list_document": list_document,
-                "list_track": list_track,
-                "list_overlay": list_overlay,
-                "form_overlay": form_overlay,
-            },
+            context,
         )
 
 
 def video_completion_overlay_modify(request, video):
-    list_contributor = video.contributor_set.all()
-    list_document = video.document_set.all()
-    list_track = video.track_set.all()
-    list_overlay = video.overlay_set.all()
 
     overlay = get_object_or_404(Overlay, id=request.POST["id"])
 
@@ -1025,25 +843,15 @@ def video_completion_overlay_modify(request, video):
             "overlay/form_overlay.html",
             {"form_overlay": form_overlay, "video": video},
         )
+    context = get_video_completion_context(video, form_overlay=form_overlay)
     return render(
         request,
         "video_completion.html",
-        {
-            "video": video,
-            "list_contributor": list_contributor,
-            "list_document": list_document,
-            "list_track": list_track,
-            "list_overlay": list_overlay,
-            "form_overlay": form_overlay,
-        },
+        context,
     )
 
 
 def video_completion_overlay_delete(request, video):
-    list_contributor = video.contributor_set.all()
-    list_document = video.document_set.all()
-    list_track = video.track_set.all()
-    list_overlay = video.overlay_set.all()
 
     overlay = get_object_or_404(Overlay, id=request.POST["id"])
     overlay.delete()
@@ -1059,14 +867,9 @@ def video_completion_overlay_delete(request, video):
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type="application/json")
     else:
+        context = get_video_completion_context(video, list_overlay=list_overlay)
         return render(
             request,
             "video_completion.html",
-            {
-                "video": video,
-                "list_contributor": list_contributor,
-                "list_document": list_document,
-                "list_track": list_track,
-                "list_overlay": list_overlay,
-            },
+            context,
         )
