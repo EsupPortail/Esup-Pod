@@ -54,7 +54,7 @@ lang:
 	echo "Processing javascript files..."
 	python3 manage.py makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/node_modules/*" --add-location=file
 
-#comilation des fichiers de langue
+#compilation des fichiers de langue
 compilelang:
     python3 manage.py compilemessages -l fr -l nl
 
