@@ -7666,6 +7666,10 @@ msgstr "Réorganiser"
 msgid "Reorganize your favorite videos"
 msgstr "Réorganiser vos vidéos favorites"
 
+#: pod/favorite/templates/favorite/favorite_video_sort_select.html:8
+msgid "Rank"
+msgstr "Rang"
+
 #~ msgid "The video file for this recording was notfound in the HTML file."
 #~ msgstr ""
 #~ "Le fichier vidéo de cet enregistrement est introuvable dans le fichier "
