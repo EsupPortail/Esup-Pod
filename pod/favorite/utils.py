@@ -65,6 +65,7 @@ def get_all_favorite_videos_for_user(user: User) -> list:
     video_list = Video.objects.filter(id__in=favorite_id).extra(
         select={'rank': 'favorite_favorite.rank'},
         tables=['favorite_favorite'],
-        where=['favorite_favorite.video_id=video_video.id']
+        where=['favorite_favorite.video_id=video_video.id', 'favorite_favorite.owner_id=%s'],
+        params=[user.id]
     )
     return video_list
