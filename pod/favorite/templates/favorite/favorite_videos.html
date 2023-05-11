@@ -35,9 +35,13 @@
     <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-primary btn-sm" style="visibility:hidden">
       <i class="bi bi-x-circle"></i>&nbsp;Annuler</a>
   </h1>
+  <form id="sortForm" action="{% url 'favorite:list' %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2">
+    {% include "videos/video_sort_select.html" %}
+  </form>
 {% endblock main_page_title %}
 
 {% block page_content %}
+  {% include 'loader.html' %}
   {% comment %}
   <p>
     "types": request.GET.getlist('type'),
@@ -58,21 +62,20 @@
 
 {% block more_script %}
 <script>
-  const urlVideos = "{% url 'videos:videos' %}";
+  const urlVideos = "{% url 'favorite:list' %}";
 </script>
 
 <script>
-  var page = 1
-  next_page = false
+  var page = 1;
+  nextPage = false;
 
   
   {% if videos.has_next %}
-    page = parseInt("{{videos.next_page_number}}")
-    next_page = true
+    page = parseInt("{{videos.next_page_number}}");
+    nextPage = true;
   {% endif %}
-
-
 </script>
+
 <script src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/favorite-reorganize.js' %}?ver={{VERSION}}"></script>

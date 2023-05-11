@@ -59,8 +59,7 @@ def get_all_favorite_videos_for_user(user: User) -> list:
     Returns:
         list(:class:`pod.video.models.Video`): The video list
     """
-    favorite_links = Favorite.objects.filter(owner=user)
-    list_video = []
-    for i in range(len(favorite_links)):
-        list_video.append(favorite_links[i].video)
-    return list_video
+    favorite_links = Favorite.objects.filter(owner=user).values_list('video_id', flat=True)
+    print(favorite_links)
+    video_list = Video.objects.filter(id in favorite_links)
+    return video_list
