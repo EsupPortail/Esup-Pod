@@ -106,7 +106,7 @@ msgstr "Image"
 msgid "Owner"
 msgstr "Propriétaire"
 
-#: pod/authentication/models.py:105 pod/video/admin.py:380
+#: pod/authentication/models.py:105 pod/video/admin.py:387
 #: pod/video/forms.py:372 pod/video/models.py:337
 msgid "Owners"
 msgstr "Propriétaires"
@@ -293,7 +293,7 @@ msgstr "Sauvegarder"
 msgid "Authentication"
 msgstr "Authentification"
 
-#: pod/bbb/admin.py:47 pod/video/admin.py:239
+#: pod/bbb/admin.py:47 pod/video/admin.py:246
 msgid "Encode selected"
 msgstr "(Ré)encoder la sélection"
 
@@ -6029,7 +6029,11 @@ msgstr "Administration de Pod"
 msgid "Encoded?"
 msgstr "Encodé ?"
 
-#: pod/video/admin.py:247
+#: pod/video/admin.py:239
+msgid "Set as draft"
+msgstr "Définir comme brouillon"
+
+#: pod/video/admin.py:254
 msgid "Transcript selected"
 msgstr "Transcription selectionnée"
 
