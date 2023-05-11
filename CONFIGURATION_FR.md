@@ -1900,7 +1900,7 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
 
  - `ACTIVE_VIDEO_COMMENT`
 
-  > valeur par défaut : `True`
+  > valeur par défaut : `False`
 
   >> Activer les commentaires au niveau de la plateforme <br>
 
