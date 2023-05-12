@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-11 08:46+0000\n"
+"POT-Creation-Date: 2023-05-12 12:19+0000\n"
 "PO-Revision-Date: 2023-02-15 16:55+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -347,7 +347,8 @@ msgstr ""
 msgid "URL of the recording thumbnail of the BBB presentation."
 msgstr ""
 
-#: pod/bbb/models.py pod/meeting/models.py pod/recorder/models.py
+#: pod/bbb/models.py pod/favorite/models.py pod/meeting/models.py
+#: pod/recorder/models.py
 msgid "User"
 msgstr ""
 
@@ -693,6 +694,8 @@ msgstr ""
 
 #: pod/bbb/templates/bbb/live_record_list.html
 #: pod/bbb/templates/bbb/record_list.html
+#: pod/favorite/templates/favorite/favorite_video_list.html
+#: pod/favorite/templates/favorite/favorite_videos_list.html
 #: pod/playlist/templates/playlist/playlist_list.html
 #: pod/recorder/templates/recorder/record_list.html
 #: pod/video/templates/videos/video_list.html
@@ -701,6 +704,8 @@ msgstr ""
 
 #: pod/bbb/templates/bbb/live_record_list.html
 #: pod/bbb/templates/bbb/record_list.html
+#: pod/favorite/templates/favorite/favorite_video_list.html
+#: pod/favorite/templates/favorite/favorite_videos_list.html
 #: pod/live/templates/live/events_list.html pod/main/templates/loader.html
 #: pod/playlist/templates/playlist/playlist_list.html
 #: pod/podfile/templates/podfile/home_content.html
@@ -842,6 +847,7 @@ msgstr ""
 #: pod/completion/templates/overlay/form_overlay.html
 #: pod/completion/templates/track/form_track.html
 #: pod/enrichment/templates/enrichment/form_enrichment.html
+#: pod/favorite/templates/favorite/favorite_videos.html
 #: pod/video/templates/channel/form_theme.html
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/video_note_comments_display.html
@@ -865,8 +871,10 @@ msgstr ""
 
 #: pod/chapter/templates/chapter/list_chapter.html pod/completion/models.py
 #: pod/completion/templates/overlay/list_overlay.html
-#: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
-#: pod/main/models.py pod/main/views.py pod/playlist/models.py
+#: pod/enrichment/templates/enrichment/list_enrichment.html
+#: pod/favorite/templates/favorite/favorite_video_sort_select.html
+#: pod/live/models.py pod/main/models.py pod/main/views.py
+#: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_element_list.html
 #: pod/video/models.py pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_sort_select.html
@@ -1095,8 +1103,8 @@ msgstr ""
 msgid "There is already a contributor with the same name and role in the list."
 msgstr ""
 
-#: pod/completion/models.py pod/enrichment/models.py pod/playlist/models.py
-#: pod/recorder/models.py pod/video/models.py
+#: pod/completion/models.py pod/enrichment/models.py pod/favorite/models.py
+#: pod/playlist/models.py pod/recorder/models.py pod/video/models.py
 msgid "Video"
 msgstr ""
 
@@ -2021,6 +2029,84 @@ msgstr ""
 
 #: pod/enrichment/views.py
 msgid "You cannot enrich this video."
+msgstr ""
+
+#: pod/favorite/models.py
+#: pod/favorite/templates/favorite/favorite_video_sort_select.html
+#: pod/recorder/models.py pod/video/models.py
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Date added"
+msgstr ""
+
+#: pod/favorite/models.py
+#: pod/favorite/templates/favorite/favorite_video_sort_select.html
+msgid "Rank"
+msgstr ""
+
+#: pod/favorite/models.py pod/video/templates/videos/link_video.html
+#: pod/video/templates/videos/video-info.html
+msgid "Favorite"
+msgstr ""
+
+#: pod/favorite/models.py
+msgid "Favorites"
+msgstr ""
+
+#: pod/favorite/templates/favorite/favorite_video_list.html
+#: pod/favorite/templates/favorite/favorite_videos_list.html
+#: pod/video/templates/videos/video_list.html
+msgid "Sorry, no video found."
+msgstr ""
+
+#: pod/favorite/templates/favorite/favorite_video_sort_select.html
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Sort"
+msgstr ""
+
+#: pod/favorite/templates/favorite/favorite_video_sort_select.html
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Descending sort"
+msgstr ""
+
+#: pod/favorite/templates/favorite/favorite_video_sort_select.html
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Sort Direction"
+msgstr ""
+
+#: pod/favorite/templates/favorite/favorite_video_sort_select.html
+#: pod/meeting/forms.py pod/meeting/templates/meeting/recordings.html
+#: pod/playlist/templates/playlist/playlist_element_list.html
+#: pod/video/feeds.py pod/video/models.py
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Duration"
+msgstr ""
+
+#: pod/favorite/templates/favorite/favorite_videos.html
+#: pod/video/templates/channel/channel.html
+#: pod/video/templates/videos/my_videos.html
+#: pod/video/templates/videos/videos.html
+#: pod/video_search/templates/search/search.html
+#, python-format
+msgid "%(counter)s video found"
+msgid_plural "%(counter)s videos found"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/favorite/templates/favorite/favorite_videos.html
+#: pod/favorite/tests/test_views.py pod/main/templates/navbar.html
+msgid "My favorite videos"
+msgstr ""
+
+#: pod/favorite/templates/favorite/favorite_videos.html
+msgid "Reorganize your favorite videos"
+msgstr ""
+
+#: pod/favorite/templates/favorite/favorite_videos.html
+msgid "Reorganize"
+msgstr ""
+
+#: pod/favorite/tests/test_views.py pod/video/templates/videos/video-info.html
+msgid "Number of favorites"
 msgstr ""
 
 #: pod/live/admin.py pod/live/models.py
@@ -3944,13 +4030,6 @@ msgstr ""
 msgid "Recurring"
 msgstr ""
 
-#: pod/meeting/forms.py pod/meeting/templates/meeting/recordings.html
-#: pod/playlist/templates/playlist/playlist_element_list.html
-#: pod/video/feeds.py pod/video/models.py
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Duration"
-msgstr ""
-
 #: pod/meeting/forms.py
 #, python-format
 msgid "Specify a duration in hour between 1 and %(max_duration)s hours"
@@ -5328,11 +5407,6 @@ msgstr ""
 msgid "File size"
 msgstr ""
 
-#: pod/recorder/models.py pod/video/models.py
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Date added"
-msgstr ""
-
 #: pod/recorder/models.py
 msgid "Require manual claim?"
 msgstr ""
@@ -6236,16 +6310,6 @@ msgid "Edit the themes"
 msgstr ""
 
 #: pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/my_videos.html
-#: pod/video/templates/videos/videos.html
-#: pod/video_search/templates/search/search.html
-#, python-format
-msgid "%(counter)s video found"
-msgid_plural "%(counter)s videos found"
-msgstr[0] ""
-msgstr[1] ""
-
-#: pod/video/templates/channel/channel.html
 msgid "Themes of"
 msgstr ""
 
@@ -6812,10 +6876,6 @@ msgstr ""
 msgid "Creative Commons license"
 msgstr ""
 
-#: pod/video/templates/videos/video_list.html
-msgid "Sorry, no video found."
-msgstr ""
-
 #: pod/video/templates/videos/video_note_comments_display.html
 #: pod/video/templates/videos/video_note_display.html
 #, python-format
@@ -6881,18 +6941,6 @@ msgstr ""
 
 #: pod/video/templates/videos/video_notes.html
 msgid "New note"
-msgstr ""
-
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Sort"
-msgstr ""
-
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Descending sort"
-msgstr ""
-
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Sort Direction"
 msgstr ""
 
 #: pod/video/templates/videos/video_stats_view.html

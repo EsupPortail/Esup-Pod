@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
+"POT-Creation-Date: 2023-05-12 12:19+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -374,6 +374,31 @@ msgstr "Ouvrir le gestionnaire de diapositives"
 msgid "Enrich mode"
 msgstr "Mode enrichi"
 
+#: pod/favorite/static/js/favorite-reorganize.js
+msgid "Refresh your page so you can rearrange"
+msgstr "Actualisez votre page pour pouvoir réorganiser"
+
+#: pod/favorite/static/js/favorite-reorganize.js
+msgid "Refresh"
+msgstr "Actualiser"
+
+#: pod/favorite/static/js/favorite-reorganize.js
+msgid "Save your reorganization"
+msgstr "Sauvegarder votre réorganisation"
+
+#: pod/favorite/static/js/favorite-reorganize.js
+msgid "Save"
+msgstr "Sauvegarder"
+
+#: pod/favorite/static/js/video-favorites-card-delete.js
+#: pod/favorite/static/js/video-favorites-card-list.js
+msgid "The deletion couldn't be completed..."
+msgstr "La suppression n'a pas pu se faire..."
+
+#: pod/favorite/static/js/video-favorites.js
+msgid "The addition couldn't be completed..."
+msgstr "L'ajout n'a pas pu se faire..."
+
 #: pod/live/static/js/broadcaster_from_building.js
 msgid "Restricted because the broadcaster is restricted"
 msgstr "Obligatoirement restreint car le diffuseur est restreint"
@@ -720,49 +745,24 @@ msgid "Total view from creation"
 msgstr "Vue totale depuis création"
 
 #: pod/video/static/js/video_stats_view.js
-msgid "Slug"
-msgstr "Titre court"
-
-#: pod/favorite/static/favorite-reorganize.js:10
-msgid "Save"
-msgstr "Sauvegarder"
-
-#: pod/favorite/static/favorite-reorganize.js:6
-msgid "Save your reorganization"
-msgstr "Sauvegarder votre réorganisation"
-
-#: pod/video/static/js/video_stats_view.js:26
 msgid "Favorite additions during the day"
 msgstr "Ajouts en favoris de la journée"
 
-#: pod/video/static/js/video_stats_view.js:27
+#: pod/video/static/js/video_stats_view.js
 msgid "Favorite additions during the month"
 msgstr "Ajouts en favoris du mois"
 
-#: pod/video/static/js/video_stats_view.js:28
+#: pod/video/static/js/video_stats_view.js
 msgid "Favorite additions during the year"
 msgstr "Ajouts en favoris de l'année"
 
-#: pod/video/static/js/video_stats_view.js:29
+#: pod/video/static/js/video_stats_view.js
 msgid "Total favorite additions from creation"
 msgstr "Ajouts en favoris total depuis la création"
 
-#: pod/favorite/static/js/favorite-reorganize.js:18
-msgid "Refresh your page so you can rearrange"
-msgstr "Actualisez votre page pour pouvoir réorganiser"
-
-#: pod/favorite/static/js/favorite-reorganize.js:22
-msgid "Refresh"
-msgstr "Actualiser"
-
-#: pod/favorite/static/js/video-favorites-card-list.js:17
-#: pod/favorite/static/js/video-favorites-card-delete.js:25
-msgid "The deletion couldn't be completed..."
-msgstr "La suppression n'a pas pu se faire..."
-
-#: pod/favorite/static/js/video-favorites.js:19
-msgid "The addition couldn't be completed..."
-msgstr "L'ajout n'a pas pu se faire..."
+#: pod/video/static/js/video_stats_view.js
+msgid "Slug"
+msgstr "Titre court"
 
 #~ msgid "Position saved"
 #~ msgstr "Position enregistrée"

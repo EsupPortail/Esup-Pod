@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-11 08:49+0000\n"
+"POT-Creation-Date: 2023-05-12 12:19+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -355,6 +355,31 @@ msgstr ""
 msgid "Enrich mode"
 msgstr ""
 
+#: pod/favorite/static/js/favorite-reorganize.js
+msgid "Refresh your page so you can rearrange"
+msgstr ""
+
+#: pod/favorite/static/js/favorite-reorganize.js
+msgid "Refresh"
+msgstr ""
+
+#: pod/favorite/static/js/favorite-reorganize.js
+msgid "Save your reorganization"
+msgstr ""
+
+#: pod/favorite/static/js/favorite-reorganize.js
+msgid "Save"
+msgstr ""
+
+#: pod/favorite/static/js/video-favorites-card-delete.js
+#: pod/favorite/static/js/video-favorites-card-list.js
+msgid "The deletion couldn't be completed..."
+msgstr ""
+
+#: pod/favorite/static/js/video-favorites.js
+msgid "The addition couldn't be completed..."
+msgstr ""
+
 #: pod/live/static/js/broadcaster_from_building.js
 msgid "Restricted because the broadcaster is restricted"
 msgstr ""
@@ -691,6 +716,22 @@ msgstr ""
 
 #: pod/video/static/js/video_stats_view.js
 msgid "Total view from creation"
+msgstr ""
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Favorite additions during the day"
+msgstr ""
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Favorite additions during the month"
+msgstr ""
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Favorite additions during the year"
+msgstr ""
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Total favorite additions from creation"
 msgstr ""
 
 #: pod/video/static/js/video_stats_view.js
