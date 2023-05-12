@@ -1,12 +1,13 @@
 """Unit tests for Esup-Pod favorite video utilities"""
 
-from django.test import TestCase
 from django.contrib.auth.models import User
+from django.http import HttpRequest
+from django.test import TestCase
 
 from pod.favorite.models import Favorite
 from pod.favorite.utils import get_next_rank, user_add_or_remove_favorite_video
 from pod.favorite.utils import user_has_favorite_video, get_number_favorites
-from pod.favorite.utils import get_all_favorite_videos_for_user
+from pod.favorite.utils import get_all_favorite_videos_for_user, sort_videos_list
 from pod.video.models import Type, Video
 
 
@@ -23,6 +24,20 @@ class FavoriteTestUtils(TestCase):
             title="Video1",
             owner=self.user,
             video="test.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.video2 = Video.objects.create(
+            title="Video2",
+            owner=self.user,
+            video="test2.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.video3 = Video.objects.create(
+            title="Video3",
+            owner=self.user2,
+            video="test3.mp4",
             is_draft=False,
             type=Type.objects.get(id=1),
         )
@@ -121,3 +136,32 @@ class FavoriteTestUtils(TestCase):
         self.assertEqual(video_list.count(), 1)
         self.assertEqual(video_list.first(), self.video)
         print(" --->  get_all_favorite_videos_for_user ok")
+
+    def test_sort_videos_list_1(self) -> None:
+        """Test if sort_videos_list works correctly"""
+        request = HttpRequest()
+        Favorite.objects.create(
+            owner=self.user,
+            video=self.video,
+            rank=1,
+        )
+        Favorite.objects.create(
+            owner=self.user,
+            video=self.video2,
+            rank=2,
+        )
+        Favorite.objects.create(
+            owner=self.user,
+            video=self.video3,
+            rank=3,
+        )
+        sorted_videos = [self.video3, self.video2, self.video]
+        test_sorted_videos = sort_videos_list(request, get_all_favorite_videos_for_user(self.user))
+        self.assertEqual(list(test_sorted_videos), sorted_videos)
+        request.GET["sort"] = "rank"
+        request.GET["sort_direction"] = "desc"
+        sorted_videos = [self.video, self.video2, self.video3]
+        test_sorted_videos = sort_videos_list(request, get_all_favorite_videos_for_user(self.user))
+        self.assertEqual(list(test_sorted_videos), sorted_videos)
+        print(" --->  sort_videos_list ok")
+

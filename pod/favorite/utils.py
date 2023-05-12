@@ -85,7 +85,5 @@ def sort_videos_list(request, videos_list):
         sort = "rank"
     if not request.GET.get('sort_direction'):
         sort = '-' + sort
-
     videos_list = videos_list.order_by(sort)
-
     return videos_list.distinct()

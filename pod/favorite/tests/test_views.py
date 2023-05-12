@@ -238,6 +238,7 @@ class TestShowStarInfoTestCase(TestCase):
 
     @override_settings(USE_FAVORITES=True)
     def test_favorites_count(self) -> None:
+        """Test favorite count."""
         importlib.reload(context_processors)
         response = self.client.get(self.url)
         self.assertEqual(
