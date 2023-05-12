@@ -19,7 +19,7 @@
     {% endif %}
   </div>
   {% if USE_FAVORITES %}
-    <div class="pod-info-video__favorites">  
+    <div class="pod-info-video__favorites">
       <i class="bi bi-stars"></i> {% trans 'Number of favorites' %} 
       {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.slug %}?from=video">
         <span>{% number_favorites video %}</span></a>
@@ -29,7 +29,7 @@
     </div>
   {% endif %}
   <div class="pod-info-video__buttons">
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and not video.is_draft %}
       {% is_favorite video as is_fav %}
       {% if USE_FAVORITES %}
         <form method="post" action="{% url 'favorite:add-or-remove' %}" id="favorite-button-form" class="btn m-0 p-0" role="add-or-remove-favorite">
