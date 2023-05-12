@@ -47,17 +47,7 @@
 
 {% block page_content %}
   {% include 'loader.html' %}
-  {% comment %}
-  <p>
-    "types": request.GET.getlist('type'),
-    "owners": request.GET.getlist('owner'),
-    "disciplines": request.GET.getlist('discipline'),
-    "tags_slug": request.GET.getlist('tag'),
-  </p>
-  {% endcomment %}
-
   {% include "favorite/favorite_video_list.html" %}
-
 {% endblock page_content %}
 
 {% block page_aside %}
