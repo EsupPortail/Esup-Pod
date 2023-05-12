@@ -62,8 +62,8 @@ INSTALLED_APPS = [
     "pod.meeting",
     "pod.cut",
     "pod.xapi",
-    "pod.custom",
     "pod.favorite",
+    "pod.custom",
 ]
 
 ##
