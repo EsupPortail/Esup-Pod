@@ -15,7 +15,7 @@ collapseAsideElement.addEventListener('click', () => {
 function changeButtonIntoRefresh() {
     const reorganizeButton = document.getElementById('reorganize-button');
     reorganizeButton.id = 'refresh-button';
-    reorganizeButton.title = gettext('Refresh your page to can reorganize');
+    reorganizeButton.title = gettext('Refresh your page so you can rearrange');
     const iconElement = reorganizeButton.querySelector('i');
     const spanElement = reorganizeButton.querySelector('span');
     iconElement.classList.replace('bi-arrows-move', 'bi-arrow-clockwise');
@@ -45,7 +45,7 @@ function addEventForReorganizedButton() {
 
 function onDragStart(event) {
     event.dataTransfer.clearData();
-    event.dataTransfer.setData('text/plain', event.target.id); // TODO Mettre "text" à la place de "text/plain" pour IE 9 à 11
+    event.dataTransfer.setData('text/plain', event.target.id);
     event.currentTarget.style.backgroundColor = "yellow";
 }
 

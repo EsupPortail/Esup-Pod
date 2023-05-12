@@ -14,7 +14,7 @@ class Favorite(models.Model):
         default=timezone.now,
         editable=False
     )
-    rank = models.IntegerField(verbose_name=_("Rang"), editable=False)
+    rank = models.IntegerField(verbose_name=_("Rank"), editable=False)
 
     class Meta:
         constraints = [

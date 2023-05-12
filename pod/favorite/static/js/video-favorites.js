@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 button.replaceWith(updatedButton);
             })
             .catch(error => {
-                alert("L'ajout en favoris n'a pas pu se faire...")
+                alert(gettext("The addition couldn't be completed..."));
             });
     });
 });

@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch(error => {
                     if (!(error instanceof TypeError))
-                        alert("La suppression n'a pas pu se faire...");
+                        alert(gettext('The deletion couldn\'t be completed...'));
                 });
         });
     }

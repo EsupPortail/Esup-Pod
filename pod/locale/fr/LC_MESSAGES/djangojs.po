@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.3\n"
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
 msgid "Get time from the player"
@@ -732,20 +732,37 @@ msgid "Save your reorganization"
 msgstr "Sauvegarder votre réorganisation"
 
 #: pod/video/static/js/video_stats_view.js:26
-msgid "Favorite addition during the day"
-msgstr "Ajout en favoris de la journée"
+msgid "Favorite additions during the day"
+msgstr "Ajouts en favoris de la journée"
 
 #: pod/video/static/js/video_stats_view.js:27
-msgid "Favorite addition during the month"
-msgstr "Ajout en favoris du mois"
+msgid "Favorite additions during the month"
+msgstr "Ajouts en favoris du mois"
 
 #: pod/video/static/js/video_stats_view.js:28
-msgid "Favorite addition during the year"
-msgstr "Ajout en favoris de l'année"
+msgid "Favorite additions during the year"
+msgstr "Ajouts en favoris de l'année"
 
 #: pod/video/static/js/video_stats_view.js:29
-msgid "Total favorite addition from creation"
-msgstr "Ajout en favoris total depuis la création"
+msgid "Total favorite additions from creation"
+msgstr "Ajouts en favoris total depuis la création"
+
+#: pod/favorite/static/js/favorite-reorganize.js:18
+msgid "Refresh your page so you can rearrange"
+msgstr "Actualisez votre page pour pouvoir réorganiser"
+
+#: pod/favorite/static/js/favorite-reorganize.js:22
+msgid "Refresh"
+msgstr "Actualiser"
+
+#: pod/favorite/static/js/video-favorites-card-list.js:17
+#: pod/favorite/static/js/video-favorites-card-delete.js:25
+msgid "The deletion couldn't be completed..."
+msgstr "La suppression n'a pas pu se faire..."
+
+#: pod/favorite/static/js/video-favorites.js:19
+msgid "The addition couldn't be completed..."
+msgstr "L'ajout n'a pas pu se faire..."
 
 #~ msgid "Position saved"
 #~ msgstr "Position enregistrée"

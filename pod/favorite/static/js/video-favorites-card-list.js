@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     form.remove();
                 })
                 .catch(error => {
-                    alert("La suppression n'a pas pu se faire...")
+                    alert(gettext('The deletion couldn\'t be completed...'));
                 });
         });
     }
