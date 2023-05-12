@@ -156,12 +156,17 @@ class FavoriteTestUtils(TestCase):
             rank=3,
         )
         sorted_videos = [self.video3, self.video2, self.video]
-        test_sorted_videos = sort_videos_list(request, get_all_favorite_videos_for_user(self.user))
+        test_sorted_videos = sort_videos_list(
+            request,
+            get_all_favorite_videos_for_user(self.user)
+        )
         self.assertEqual(list(test_sorted_videos), sorted_videos)
         request.GET["sort"] = "rank"
         request.GET["sort_direction"] = "desc"
         sorted_videos = [self.video, self.video2, self.video3]
-        test_sorted_videos = sort_videos_list(request, get_all_favorite_videos_for_user(self.user))
+        test_sorted_videos = sort_videos_list(
+            request,
+            get_all_favorite_videos_for_user(self.user)
+        )
         self.assertEqual(list(test_sorted_videos), sorted_videos)
         print(" --->  sort_videos_list ok")
-
