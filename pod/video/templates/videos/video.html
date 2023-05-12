@@ -259,7 +259,7 @@
   {% endif %}
   <script>
     const favoriteHiddenButton = document.getElementById('fav-button');
-    favoriteHiddenButton.remove();
+    if (favoriteHiddenButton) favoriteHiddenButton.remove();
   </script>
   {% get_setting "USE_XAPI_VIDEO" False as USE_XAPI_VIDEO %}
   {% if USE_XAPI_VIDEO %}

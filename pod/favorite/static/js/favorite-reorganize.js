@@ -14,12 +14,14 @@ collapseAsideElement.addEventListener('click', () => {
 
 function changeButtonIntoRefresh() {
     const reorganizeButton = document.getElementById('reorganize-button');
-    reorganizeButton.id = 'refresh-button';
-    reorganizeButton.title = gettext('Refresh your page so you can rearrange');
-    const iconElement = reorganizeButton.querySelector('i');
-    const spanElement = reorganizeButton.querySelector('span');
-    iconElement.classList.replace('bi-arrows-move', 'bi-arrow-clockwise');
-    spanElement.textContent = gettext('Refresh');
+    if (reorganizeButton) {
+        reorganizeButton.id = 'refresh-button';
+        reorganizeButton.title = gettext('Refresh your page so you can rearrange');
+        const iconElement = reorganizeButton.querySelector('i');
+        const spanElement = reorganizeButton.querySelector('span');
+        iconElement.classList.replace('bi-arrows-move', 'bi-arrow-clockwise');
+        spanElement.textContent = gettext('Refresh');
+    }
 }
 
 function addEventForReorganizedButton() {
@@ -34,7 +36,6 @@ function addEventForReorganizedButton() {
             iconElement.classList.replace('bi-arrows-move', 'bi-save');
             spanElement.textContent = gettext('Save');
         } else if (this.id == 'save-button') {
-            console.log(convert2DTableToJson(exchangedValues));
             document.getElementById('json-data').value = convert2DTableToJson(exchangedValues);
         } else if (this.id == 'refresh-button') {
             event.preventDefault();

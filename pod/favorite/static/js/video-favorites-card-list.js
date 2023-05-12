@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     const forms = document.getElementsByClassName("favorite-button-form-card");
-    console.log(forms)
     for (let form of forms) {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
