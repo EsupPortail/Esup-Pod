@@ -19,6 +19,7 @@ import json
 
 @csrf_protect
 def favorite_button_in_video_info(request):
+    """Add or remove favorite video when the user click on star button."""
     if request.method == "POST":
         video = get_object_or_404(
             Video,
@@ -86,6 +87,7 @@ def favorite_list(request):
 
 @csrf_protect
 def favorites_save_reorganisation(request):
+    """Save reorganization when the user click on save button."""
     if request.method == "POST":
         json_data = request.POST.get("json-data")
         try:
