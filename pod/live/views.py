@@ -131,6 +131,13 @@ def direct(request, slug):  # affichage du flux d'un diffuseur
 
 
 def check_permission(request):
+    """Checks whether the current user has permission to view a page.
+    Args:
+        request: An HTTP request object.
+    Raises:
+        PermissionDenied: If the user is not a superuser
+        and does not have the 'live.acces_live_pages' permission.
+    """
     if not (request.user.is_superuser or request.user.has_perm("live.acces_live_pages")):
         messages.add_message(request, messages.ERROR, _("You cannot view this page."))
         raise PermissionDenied
@@ -809,6 +816,7 @@ def event_info_record(event_id, broadcaster_id):
 
 
 def check_event_record(broadcaster, with_file_check=False):
+    """Checks whether the given broadcaster is recording an event."""
     if not check_piloting_conf(broadcaster):
         return False, JsonResponse({"success": False, "error": "implementation error"})
 
@@ -960,14 +968,17 @@ def checkFileSize(full_file_name, max_attempt=6):
 
 
 def checkDirExists(dest_dir_name, max_attempt=6):
+    """Checks a directory exists."""
     return check_exists(dest_dir_name, os.path.isdir, "Dir", max_attempt)
 
 
 def checkFileExists(full_file_name, max_attempt=6):
+    """Checks a file exists."""
     return check_exists(full_file_name, os.path.exists, "File", max_attempt)
 
 
 def check_exists(dest_dir_name, fct, type, max_attempt=6):
+    """ Checks whether a file or directory exists."""
     attempt_number = 1
     while not fct(dest_dir_name) and attempt_number <= max_attempt:
         logger.warning(f"{type} does not exists, attempt number {attempt_number} ")

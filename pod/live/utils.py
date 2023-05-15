@@ -159,6 +159,14 @@ def send_email(subject, message, from_email, to_email, cc_email, html_message):
 
 
 def get_event_id_and_broadcaster_id(request):
+    """
+    Extracts the event ID and broadcaster ID from the given HTTP request.
+    Args:
+        request: An HTTP request object.
+    Returns:
+        A tuple containing the event ID
+        and broadcaster ID extracted from the request body.
+    """
     body_unicode = request.body.decode("utf-8")
     body_data = json.loads(body_unicode)
     event_id = body_data.get("idevent", None)
