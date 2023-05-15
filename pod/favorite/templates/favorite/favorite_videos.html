@@ -35,7 +35,7 @@
           </button>
         </span>
       </form>
-      <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-primary btn-sm" style="visibility:hidden">
+      <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-secondary btn-sm" style="visibility:hidden">
         <i class="bi bi-x-circle"></i>&nbsp;{% trans "Cancel" %}</a>
       {% endif %}
     </span>
@@ -52,6 +52,16 @@
 
 {% block page_aside %}
   {% include 'videos/filter_aside.html' %}
+  <div class="card card-hidden" id="card-sharedraftversion">
+    <h2 class="card-header card-title pod-card__title h4">Aide - Drag & Drop</h2>
+    <div class="card-body card-text">
+      <ol>
+        <li>Sélectionnez la vidéo que vous souhaitez en cliquant et maintenant le bouton de la souris.</li>
+        <li>Tout en maintenant le bouton de la souris enfoncé, faites-la glisser à l'endroit que vous le souhaitez.</li>
+        <li>Relâchez le bouton de la souris.</li>
+      </ol>
+    </div>
+  </div>
 {% endblock page_aside %}
 
 
@@ -61,7 +71,6 @@
   var page = 1;
   nextPage = false;
 
-  
   {% if videos.has_next %}
     page = parseInt("{{videos.next_page_number}}");
     nextPage = true;
