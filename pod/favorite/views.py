@@ -26,7 +26,8 @@ def favorite_button_in_video_info(request):
             pk=request.POST.get("video"),
             sites=get_current_site(request)
         )
-        if video.is_draft: return False
+        if video.is_draft:
+            return False
         user_add_or_remove_favorite_video(request.user, video)
         return redirect(request.META["HTTP_REFERER"])
     else:
