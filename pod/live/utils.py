@@ -1,4 +1,5 @@
 import bleach
+import json
 
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -155,3 +156,11 @@ def send_email(subject, message, from_email, to_email, cc_email, html_message):
 
     if not DEBUG:
         msg.send()
+
+
+def get_event_id_and_broadcaster_id(request):
+    body_unicode = request.body.decode("utf-8")
+    body_data = json.loads(body_unicode)
+    event_id = body_data.get("idevent", None)
+    broadcaster_id = body_data.get("idbroadcaster", None)
+    return event_id, broadcaster_id
