@@ -40,7 +40,12 @@ from .models import (
     Event,
     get_available_broadcasters_of_building,
 )
-from .utils import send_email_confirmation, get_event_id_and_broadcaster_id
+from .utils import (
+    send_email_confirmation,
+    get_event_id_and_broadcaster_id,
+    check_exists,
+    check_permission,
+)
 from ..main.views import in_maintenance
 from ..video.models import Video
 
@@ -128,19 +133,6 @@ def direct(request, slug):  # affichage du flux d'un diffuseur
             "heartbeat_delay": HEARTBEAT_DELAY,
         },
     )
-
-
-def check_permission(request):
-    """Checks whether the current user has permission to view a page.
-    Args:
-        request: An HTTP request object.
-    Raises:
-        PermissionDenied: If the user is not a superuser
-        and does not have the 'live.acces_live_pages' permission.
-    """
-    if not (request.user.is_superuser or request.user.has_perm("live.acces_live_pages")):
-        messages.add_message(request, messages.ERROR, _("You cannot view this page."))
-        raise PermissionDenied
 
 
 def get_broadcaster_by_slug(slug, site):
@@ -975,23 +967,6 @@ def checkDirExists(dest_dir_name, max_attempt=6):
 def checkFileExists(full_file_name, max_attempt=6):
     """Checks a file exists."""
     return check_exists(full_file_name, is_dir=False, max_attempt=max_attempt)
-
-
-def check_exists(dest_dir_name, is_dir, max_attempt=6):
-    """ Checks whether a file or directory exists."""
-    fct = os.path.isdir if is_dir else os.path.exists
-    type = "Dir" if is_dir else "File"
-    attempt_number = 1
-    while not fct(dest_dir_name) and attempt_number <= max_attempt:
-        logger.warning(f"{type} does not exists, attempt number {attempt_number} ")
-
-        if attempt_number == max_attempt:
-            logger.error(f"Impossible to create dir {dest_dir_name}")
-            raise Exception(
-                f"{type}: {dest_dir_name} does not exists and can't be created")
-
-        attempt_number = attempt_number + 1
-        sleep(1)
 
 
 def check_piloting_conf(broadcaster: Broadcaster) -> bool:

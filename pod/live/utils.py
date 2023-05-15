@@ -1,9 +1,14 @@
 import bleach
 import json
+import logging
+import os.path
 
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.core.mail import EmailMultiAlternatives, mail_managers
+from time import sleep
+from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
@@ -39,6 +44,8 @@ USE_ESTABLISHMENT_FIELD = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
 MANAGERS = getattr(settings, "MANAGERS", {})
 
 DEBUG = getattr(settings, "DEBUG", True)
+
+logger = logging.getLogger("pod.live")
 
 
 def send_email_confirmation(event):
@@ -172,3 +179,33 @@ def get_event_id_and_broadcaster_id(request):
     event_id = body_data.get("idevent", None)
     broadcaster_id = body_data.get("idbroadcaster", None)
     return event_id, broadcaster_id
+
+
+def check_exists(dest_dir_name, is_dir, max_attempt=6):
+    """ Checks whether a file or directory exists."""
+    fct = os.path.isdir if is_dir else os.path.exists
+    type = "Dir" if is_dir else "File"
+    attempt_number = 1
+    while not fct(dest_dir_name) and attempt_number <= max_attempt:
+        logger.warning(f"{type} does not exists, attempt number {attempt_number} ")
+
+        if attempt_number == max_attempt:
+            logger.error(f"Impossible to create dir {dest_dir_name}")
+            raise Exception(
+                f"{type}: {dest_dir_name} does not exists and can't be created")
+
+        attempt_number = attempt_number + 1
+        sleep(1)
+
+
+def check_permission(request):
+    """Checks whether the current user has permission to view a page.
+    Args:
+        request: An HTTP request object.
+    Raises:
+        PermissionDenied: If the user is not a superuser
+        and does not have the 'live.acces_live_pages' permission.
+    """
+    if not (request.user.is_superuser or request.user.has_perm("live.acces_live_pages")):
+        messages.add_message(request, messages.ERROR, _("You cannot view this page."))
+        raise PermissionDenied
