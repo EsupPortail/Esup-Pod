@@ -435,7 +435,7 @@ if (typeof loaded == "undefined") {
 
   document.addEventListener("click", (e) => {
     //if (!e.target.classList.contains("btn-delete-file")) return;
-    if (e.target.classList.contains("btn-delete-file") || e.target.parentNode.classList.contains("btn-delete-file")) {
+    if (e.target.classList.contains("btn-delete-file") || (e.target.parentNode && e.target.parentNode.classList.contains("btn-delete-file"))) {
       var deleteConfirm = confirm(
         gettext("Are you sure you want to delete this file?")
       );

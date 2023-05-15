@@ -1,18 +1,28 @@
 var id_form = "form_enrich";
+
+function removeLoadedScript(lib) {
+  document.querySelectorAll('[src="' + lib + '"]').forEach((item) => {
+    item.remove();
+  });
+}
+
+// Load library
+function loadScript(lib) {
+  var script = document.createElement("script");
+  script.setAttribute("src", lib);
+  document.getElementsByTagName("head")[0].appendChild(script);
+  return script;
+}
+
 function show_form(data) {
   var form = document.getElementById(id_form);
   form.style.display = "none";
-  //form.innerHTML = data;
-
   form.innerHTML = data;
   form.querySelectorAll("script").forEach((item) => {
-    // run script tags of filewidget.js and custom_filewidget.js
-
+    // run script tags
     if (item.src) {
-      let script = document.createElement("script");
-      script.src = item.src;
-      if (script.src.includes("filewidget.js"))
-        document.body.appendChild(script);
+      removeLoadedScript(item.getAttribute("src"));
+      loadScript(item.src);
     } else {
       if (item.id == "filewidget_script") (0, eval)(item.innerHTML);
     }
