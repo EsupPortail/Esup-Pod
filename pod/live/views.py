@@ -960,21 +960,22 @@ def checkFileSize(full_file_name, max_attempt=6):
 
 
 def checkDirExists(dest_dir_name, max_attempt=6):
-    return check_exists(dest_dir_name, os.path.isdir, max_attempt)
+    return check_exists(dest_dir_name, os.path.isdir, "Dir", max_attempt)
 
 
 def checkFileExists(full_file_name, max_attempt=6):
-    return check_exists(full_file_name, os.path.exists, max_attempt)
+    return check_exists(full_file_name, os.path.exists, "File", max_attempt)
 
 
-def check_exists(dest_dir_name, fct, max_attempt=6):
+def check_exists(dest_dir_name, fct, type, max_attempt=6):
     attempt_number = 1
     while not fct(dest_dir_name) and attempt_number <= max_attempt:
-        logger.warning(f"Dir does not exists, attempt number {attempt_number} ")
+        logger.warning(f"{type} does not exists, attempt number {attempt_number} ")
 
         if attempt_number == max_attempt:
             logger.error(f"Impossible to create dir {dest_dir_name}")
-            raise Exception(f"Dir: {dest_dir_name} does not exists and can't be created")
+            raise Exception(
+                f"{type}: {dest_dir_name} does not exists and can't be created")
 
         attempt_number = attempt_number + 1
         sleep(1)
