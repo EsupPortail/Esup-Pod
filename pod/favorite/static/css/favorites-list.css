@@ -29,7 +29,11 @@
     pointer-events: none;
 }
 
-#sortForm.no-click, #collapseAside.no-click, #collapse-button.no-click {
+#sortForm.no-click, #collapse-button.no-click {
     opacity: 0;
     transition: opacity .9s ease;
+}
+
+.card-hidden {
+    display: none;
 }

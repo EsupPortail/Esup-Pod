@@ -102,8 +102,6 @@ function activateDragAndDrop(parent) {
     const draggableElements = document.querySelectorAll('.draggable-container');
     const cardFooterElements = document.querySelectorAll('.card-footer');
     const sortForm = document.getElementById('sortForm');
-    const collapseAside = document.getElementById('collapseAside');
-    const collapseButton = document.getElementById('collapse-button');
     draggableElements.forEach(draggableElement => {
         draggableElement.setAttribute('draggable', true);
         draggableElement.addEventListener('dragstart', onDragStart);
@@ -116,9 +114,8 @@ function activateDragAndDrop(parent) {
         cardFooterElement.style.opacity = '0';
         cardFooterElement.style.transition = 'opacity 0.9s ease';
     });
-    for (let element of [sortForm, collapseAside, collapseButton]) {
-        element.classList.add('no-click');
-    }
+    sortForm.classList.add('no-click');
+    updateCollapseAside();
     infinite.removeLoader()
     document.getElementById('cancel_btn_favorites_list').style.visibility = 'visible';
 }
@@ -135,4 +132,15 @@ function convert2DTableToJson(table) {
         jsonObject[i] = table[i];
     }
     return JSON.stringify(jsonObject);
+}
+
+
+/**
+ * Update collapse aside to help user.
+*/
+function updateCollapseAside() {
+    const collapseAside = document.querySelector("#collapseAside > div.card.card-body");
+    collapseAside.remove();
+    const helpInformations = document.querySelector("#card-sharedraftversion");
+    helpInformations.classList.remove('card-hidden');
 }
