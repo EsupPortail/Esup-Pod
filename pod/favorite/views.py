@@ -5,8 +5,9 @@ from django.http import Http404, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
-from pod.favorite.models import Favorite
 
+from pod.favorite.models import Favorite
+from pod.main.utils import is_ajax
 from pod.video.models import Video
 from pod.video.views import CURSUS_CODES, get_owners_has_instances
 
@@ -62,7 +63,7 @@ def favorite_list(request):
 
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
 
-    if request.is_ajax():
+    if is_ajax(request):
         return render(
             request,
             "favorite/favorite_video_list.html",
