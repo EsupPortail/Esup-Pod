@@ -1,5 +1,4 @@
 {% load i18n %}
-{% load favorite_info %}
 {% spaceless %}
 <div class="card box-shadow pod-card--video video-card">
   <!-- card.html -->
@@ -51,8 +50,7 @@
   </div>
   <div class="card-body px-3 py-2">
     {# TODO: replace test below by "if video.is_editable" ? #}
-    {% is_favorite video as is_fav %}
-    {% if video.owner == request.user or request.user.is_superuser or perms.video.change_video or request.user in video.additional_owners.all or is_fav %}
+    {% if request.user.is_authenticated %}
       <footer class="card-footer card-footer-pod p-0 m-0">
         {% include "videos/link_video.html" %}
       </footer>

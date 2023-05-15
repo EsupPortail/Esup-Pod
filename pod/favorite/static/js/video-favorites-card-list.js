@@ -10,7 +10,9 @@ document.addEventListener('DOMContentLoaded', function () {
             })
                 .then(response => {
                     response.text(); // We take the HTML content of the response
-                    form.remove();
+                    const button = form.querySelector("#star_btn > i");
+                    button.classList.toggle("bi-star-fill");
+                    button.classList.toggle("bi-star");
                 })
                 .catch(error => {
                     alert(gettext('The deletion couldn\'t be completed...'));
