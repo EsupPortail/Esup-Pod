@@ -702,9 +702,13 @@ def ajax_event_startrecord(request):
 
 def event_startrecord(event_id, broadcaster_id):
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
-    valid, res = check_event_record(broadcaster)
-    if not valid:
-        return res
+    if not check_piloting_conf(broadcaster):
+        return JsonResponse({"success": False, "error": "implementation error"})
+
+    if is_recording(broadcaster):
+        return JsonResponse(
+            {"success": False, "error": "the broadcaster is already recording"}
+        )
 
     if start_record(broadcaster, event_id):
         return JsonResponse({"success": True})

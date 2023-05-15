@@ -181,18 +181,18 @@ def get_event_id_and_broadcaster_id(request):
     return event_id, broadcaster_id
 
 
-def check_exists(dest_dir_name, is_dir, max_attempt=6):
+def check_exists(resource_name, is_dir, max_attempt=6):
     """ Checks whether a file or directory exists."""
     fct = os.path.isdir if is_dir else os.path.exists
     type = "Dir" if is_dir else "File"
     attempt_number = 1
-    while not fct(dest_dir_name) and attempt_number <= max_attempt:
+    while not fct(resource_name) and attempt_number <= max_attempt:
         logger.warning(f"{type} does not exists, attempt number {attempt_number} ")
 
         if attempt_number == max_attempt:
-            logger.error(f"Impossible to create dir {dest_dir_name}")
+            logger.error(f"Impossible to get {type}: {resource_name}")
             raise Exception(
-                f"{type}: {dest_dir_name} does not exists and can't be created")
+                f"{type}: {resource_name} does not exists")
 
         attempt_number = attempt_number + 1
         sleep(1)
