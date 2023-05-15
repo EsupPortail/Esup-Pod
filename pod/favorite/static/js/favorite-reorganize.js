@@ -13,6 +13,33 @@ collapseAsideElement.addEventListener('click', () => {
     changeButtonIntoRefresh();
 });
 
+/**
+ * Add or remove the CSS class to make drop zone hover.
+ * @param {string} state State of style (`add` or `remove`).
+ * @param {Element} element Element to add CSS class.
+ */
+function addOrRemoveDropZoneHoverStyleClass(state, element) {
+    const className = 'dropzone-hover';
+    if (state === 'add') {
+        element.classList.add(className);
+    } else {
+        element.classList.remove(className);
+    }
+}
+
+const draggableElements = document.querySelectorAll('.draggable-container');
+draggableElements.forEach(draggableElement => {
+    draggableElement.addEventListener('dragenter', (event) => {
+        addOrRemoveDropZoneHoverStyleClass('add', event.target);
+    });
+    draggableElement.addEventListener('dragleave', (event) => {
+        addOrRemoveDropZoneHoverStyleClass('remove', event.target);
+    });
+    draggableElement.addEventListener('drop', (event) => {
+        addOrRemoveDropZoneHoverStyleClass('remove', event.target);
+    });
+});
+
 
 /**
  * Change the 'reorganize-button' into a 'refresh-button'.

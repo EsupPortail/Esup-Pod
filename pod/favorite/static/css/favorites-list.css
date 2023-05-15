@@ -37,3 +37,7 @@
 .card-hidden {
     display: none;
 }
+
+.dropzone-hover {
+    border: 0.2rem solid #1F7C85;
+}
