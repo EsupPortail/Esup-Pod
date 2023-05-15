@@ -1,5 +1,5 @@
 .shake-effect {
-    animation: shake 1.3s ease-in-out;
+    animation: shake 2.3s ease-in-out;
     animation-iteration-count: infinite;
 }
 
@@ -14,7 +14,7 @@
     70% { transform: translate(3px, 1px) rotate(-1deg); }
     80% { transform: translate(-1px, -1px) rotate(1deg); }
     90% { transform: translate(1px, 2px) rotate(0deg); }
-    100% { transform: translate(2px, 1px) rotate(-1deg); }
+    100% { transform: translate(1px, 2px) rotate(0deg); }
 }
 
 .no-click {
