@@ -965,12 +965,12 @@ def checkFileSize(full_file_name, max_attempt=6):
 
 def checkDirExists(dest_dir_name, max_attempt=6):
     """Checks a directory exists."""
-    return check_exists(dest_dir_name, is_dir=True, max_attempt=max_attempt)
+    return check_exists(dest_dir_name, True, max_attempt)
 
 
 def checkFileExists(full_file_name, max_attempt=6):
     """Checks a file exists."""
-    return check_exists(full_file_name, is_dir=False, max_attempt=max_attempt)
+    return check_exists(full_file_name, False, max_attempt)
 
 
 def check_piloting_conf(broadcaster: Broadcaster) -> bool:
