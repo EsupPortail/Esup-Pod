@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-12 12:55+0000\n"
+"POT-Creation-Date: 2023-05-15 14:28+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -394,6 +394,14 @@ msgstr "Sauvegarder"
 #: pod/favorite/static/js/video-favorites-card-list.js
 msgid "The deletion couldn't be completed..."
 msgstr "La suppression n'a pas pu se faire..."
+
+#: pod/favorite/static/js/video-favorites-card-list.js
+msgid "Remove from favorite"
+msgstr "Retirer des favoris"
+
+#: pod/favorite/static/js/video-favorites-card-list.js
+msgid "Add in favorite"
+msgstr "Ajouter aux favoris"
 
 #: pod/favorite/static/js/video-favorites.js
 msgid "The addition couldn't be completed..."

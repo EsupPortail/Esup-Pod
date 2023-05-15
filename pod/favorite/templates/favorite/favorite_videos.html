@@ -53,12 +53,12 @@
 {% block page_aside %}
   {% include 'videos/filter_aside.html' %}
   <div class="card card-hidden" id="card-sharedraftversion">
-    <h2 class="card-header card-title pod-card__title h4">Aide - Drag & Drop</h2>
+    <h2 class="card-header card-title pod-card__title h4">{% trans "Help - Drag & Drop" %}</h2>
     <div class="card-body card-text">
       <ol>
-        <li>Sélectionnez la vidéo que vous souhaitez en cliquant et maintenant le bouton de la souris.</li>
-        <li>Tout en maintenant le bouton de la souris enfoncé, faites-la glisser à l'endroit que vous le souhaitez.</li>
-        <li>Relâchez le bouton de la souris.</li>
+        <li>{% trans "Select the video you want by clicking and holding the mouse button." %}</li>
+        <li> {% trans "While holding down the mouse button, drag it to the desired location." %}</li>
+        <li> {% trans "Drop the mouse button." %}</li>
       </ol>
     </div>
   </div>

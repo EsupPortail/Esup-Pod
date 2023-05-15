@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-12 12:55+0000\n"
+"POT-Creation-Date: 2023-05-15 14:28+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ptitloup <nicolas.can@univ-lille.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -741,7 +741,6 @@ msgstr "Désolé, aucune session BigBlueButton en cours n’a été trouvée"
 #: pod/bbb/templates/bbb/live_record_list.html
 #: pod/bbb/templates/bbb/record_list.html
 #: pod/favorite/templates/favorite/favorite_video_list.html
-#: pod/favorite/templates/favorite/favorite_videos_list.html
 #: pod/playlist/templates/playlist/playlist_list.html
 #: pod/recorder/templates/recorder/record_list.html
 #: pod/video/templates/videos/video_list.html
@@ -751,7 +750,6 @@ msgstr "Plus"
 #: pod/bbb/templates/bbb/live_record_list.html
 #: pod/bbb/templates/bbb/record_list.html
 #: pod/favorite/templates/favorite/favorite_video_list.html
-#: pod/favorite/templates/favorite/favorite_videos_list.html
 #: pod/live/templates/live/events_list.html pod/main/templates/loader.html
 #: pod/playlist/templates/playlist/playlist_list.html
 #: pod/podfile/templates/podfile/home_content.html
@@ -2152,8 +2150,7 @@ msgstr "Date d’ajout"
 msgid "Rank"
 msgstr "Rang"
 
-#: pod/favorite/models.py pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video-info.html
+#: pod/favorite/models.py
 msgid "Favorite"
 msgstr "Favori"
 
@@ -2162,7 +2159,6 @@ msgid "Favorites"
 msgstr "Favoris"
 
 #: pod/favorite/templates/favorite/favorite_video_list.html
-#: pod/favorite/templates/favorite/favorite_videos_list.html
 #: pod/video/templates/videos/video_list.html
 msgid "Sorry, no video found."
 msgstr "Désolé, aucune vidéo trouvée."
@@ -2213,6 +2209,22 @@ msgstr "Réorganiser vos vidéos favorites"
 #: pod/favorite/templates/favorite/favorite_videos.html
 msgid "Reorganize"
 msgstr "Réorganiser"
+
+#: pod/favorite/templates/favorite/favorite_videos.html
+msgid "Help - Drag & Drop"
+msgstr "Aide - Glisser & Déposer"
+
+#: pod/favorite/templates/favorite/favorite_videos.html
+msgid "Select the video you want by clicking and holding the mouse button."
+msgstr "Sélectionnez la vidéo que vous souhaitez en cliquant et maintenant le bouton de la souris."
+
+#: pod/favorite/templates/favorite/favorite_videos.html
+msgid "While holding down the mouse button, drag it to the desired location."
+msgstr "Tout en maintenant le bouton de la souris enfoncé, faites-la glisser à l'endroit que vous le souhaitez."
+
+#: pod/favorite/templates/favorite/favorite_videos.html
+msgid "Drop the mouse button."
+msgstr "Relâchez le bouton de la souris."
 
 #: pod/favorite/tests/test_views.py pod/video/templates/videos/video-info.html
 msgid "Number of favorites"
@@ -6931,6 +6943,16 @@ msgstr "Dernières vidéos"
 #: pod/video/templates/videos/last_videos.html
 msgid "Show all videos"
 msgstr "Afficher toutes les vidéos"
+
+#: pod/video/templates/videos/link_video.html
+#: pod/video/templates/videos/video-info.html
+msgid "Remove from favorite"
+msgstr "Retirer des favoris"
+
+#: pod/video/templates/videos/link_video.html
+#: pod/video/templates/videos/video-info.html
+msgid "Add in favorite"
+msgstr "Ajouter aux favoris"
 
 #: pod/video/templates/videos/link_video.html
 msgid "Edit the video"

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-12 12:55+0000\n"
+"POT-Creation-Date: 2023-05-15 14:28+0000\n"
 "PO-Revision-Date: 2023-02-15 16:55+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -695,7 +695,6 @@ msgstr ""
 #: pod/bbb/templates/bbb/live_record_list.html
 #: pod/bbb/templates/bbb/record_list.html
 #: pod/favorite/templates/favorite/favorite_video_list.html
-#: pod/favorite/templates/favorite/favorite_videos_list.html
 #: pod/playlist/templates/playlist/playlist_list.html
 #: pod/recorder/templates/recorder/record_list.html
 #: pod/video/templates/videos/video_list.html
@@ -705,7 +704,6 @@ msgstr ""
 #: pod/bbb/templates/bbb/live_record_list.html
 #: pod/bbb/templates/bbb/record_list.html
 #: pod/favorite/templates/favorite/favorite_video_list.html
-#: pod/favorite/templates/favorite/favorite_videos_list.html
 #: pod/live/templates/live/events_list.html pod/main/templates/loader.html
 #: pod/playlist/templates/playlist/playlist_list.html
 #: pod/podfile/templates/podfile/home_content.html
@@ -2043,8 +2041,7 @@ msgstr ""
 msgid "Rank"
 msgstr ""
 
-#: pod/favorite/models.py pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video-info.html
+#: pod/favorite/models.py
 msgid "Favorite"
 msgstr ""
 
@@ -2053,7 +2050,6 @@ msgid "Favorites"
 msgstr ""
 
 #: pod/favorite/templates/favorite/favorite_video_list.html
-#: pod/favorite/templates/favorite/favorite_videos_list.html
 #: pod/video/templates/videos/video_list.html
 msgid "Sorry, no video found."
 msgstr ""
@@ -2103,6 +2099,22 @@ msgstr ""
 
 #: pod/favorite/templates/favorite/favorite_videos.html
 msgid "Reorganize"
+msgstr ""
+
+#: pod/favorite/templates/favorite/favorite_videos.html
+msgid "Help - Drag & Drop"
+msgstr ""
+
+#: pod/favorite/templates/favorite/favorite_videos.html
+msgid "Select the video you want by clicking and holding the mouse button."
+msgstr ""
+
+#: pod/favorite/templates/favorite/favorite_videos.html
+msgid "While holding down the mouse button, drag it to the desired location."
+msgstr ""
+
+#: pod/favorite/templates/favorite/favorite_videos.html
+msgid "Drop the mouse button."
 msgstr ""
 
 #: pod/favorite/tests/test_views.py pod/video/templates/videos/video-info.html
@@ -6530,6 +6542,16 @@ msgstr ""
 
 #: pod/video/templates/videos/last_videos.html
 msgid "Show all videos"
+msgstr ""
+
+#: pod/video/templates/videos/link_video.html
+#: pod/video/templates/videos/video-info.html
+msgid "Remove from favorite"
+msgstr ""
+
+#: pod/video/templates/videos/link_video.html
+#: pod/video/templates/videos/video-info.html
+msgid "Add in favorite"
 msgstr ""
 
 #: pod/video/templates/videos/link_video.html
