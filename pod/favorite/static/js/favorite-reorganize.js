@@ -1,4 +1,5 @@
 const exchangedValues = [];
+var infinite;
 
 addEventForReorganizedButton();
 
@@ -70,6 +71,7 @@ function onDrop(event) {
     exchangedValues.push([child1.id, child2.id]);
 }
 
+
 /**
  * Activate the drap and drop in the page
  */
@@ -94,6 +96,7 @@ function activateDragAndDrop(parent) {
     for (let element of [sortForm, collapseAside, collapseButton]) {
         element.classList.add('no-click');
     }
+    infinite.removeLoader()
     document.getElementById('cancel_btn_favorites_list').style.visibility = 'visible';
 }
 
