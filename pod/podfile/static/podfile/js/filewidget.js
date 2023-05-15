@@ -440,9 +440,10 @@ if (typeof loaded == "undefined") {
         gettext("Are you sure you want to delete this file?")
       );
       if (deleteConfirm) {
-        let id = e.target.dataset.fileid;
-        let classname = e.target.dataset.filetype;
-        let csrfmiddlewaretoken = e.target.querySelector("input").value;
+        const buttonElement = e.target.closest("button.btn-delete-file");
+        let id = buttonElement.dataset.fileid;
+        let classname = buttonElement.dataset.filetype;
+        let csrfmiddlewaretoken = buttonElement.querySelector("input").value;
         send_form_data(
           deletefile_url,
           {
