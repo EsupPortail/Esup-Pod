@@ -13,6 +13,10 @@ collapseAsideElement.addEventListener('click', () => {
     changeButtonIntoRefresh();
 });
 
+
+/**
+ * Change the 'reorganize-button' into a 'refresh-button'.
+ */
 function changeButtonIntoRefresh() {
     const reorganizeButton = document.getElementById('reorganize-button');
     if (reorganizeButton) {
@@ -25,6 +29,10 @@ function changeButtonIntoRefresh() {
     }
 }
 
+
+/**
+ * Add an event listener to the 'reorganize-button' element.
+ */
 function addEventForReorganizedButton() {
     document.getElementById('reorganize-button').addEventListener('click', function (event) {
         if (this.id == 'reorganize-button') {
@@ -45,15 +53,30 @@ function addEventForReorganizedButton() {
     });
 }
 
+
+/**
+ * Clear and transfer data when drag event starts.
+ * @param {Event} event The name of the event.
+ */
 function onDragStart(event) {
     event.dataTransfer.clearData();
     event.dataTransfer.setData('text/plain', event.target.id);
 }
 
+
+/**
+ * Prevent the default behavior of the element during the event.
+ * @param {Event} event The name of the event.
+ */
 function onDragOver(event) {
     event.preventDefault();
 }
 
+
+/**
+ * Performs a swap between the dragged elements when dropping.
+ * @param {Event} event The name of the event.
+ */
 function onDrop(event) {
     event.preventDefault();
     const id = event.dataTransfer.getData('text');
@@ -100,6 +123,12 @@ function activateDragAndDrop(parent) {
     document.getElementById('cancel_btn_favorites_list').style.visibility = 'visible';
 }
 
+
+/**
+ * Convert a 2D table into a JSON string representation.
+ * @param {Array} table The 2D table to convert.
+ * @returns {String} The JSON string representation.
+ */
 function convert2DTableToJson(table) {
     const jsonObject = {};
     for (let i = 0; i < table.length; i++) {
