@@ -20,7 +20,7 @@
   </div>
   {% if USE_FAVORITES %}
     <div class="pod-info-video__favorites">
-      <i class="bi bi-stars"></i> {% trans 'Number of favorites' %} 
+      <i class="bi bi-stars"></i> {% trans 'Number of favorites' %}
       {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.slug %}?from=video">
         <span>{% number_favorites video %}</span></a>
       {% else %}
@@ -35,7 +35,7 @@
         <form method="post" action="{% url 'favorite:add-or-remove' %}" id="favorite-button-form" class="btn m-0 p-0" role="add-or-remove-favorite">
           {% csrf_token %}
           <input type="hidden" name="video" value="{{ video.id }}"/>
-          <button type="button submit" id="star_btn" title="{% trans 'Favorite' %}" class="btn btn-link btn-lg pod-btn-share">
+          <button type="button submit" id="star_btn" title="{% if is_fav %}{% trans 'Remove from favorite' %}{% else %}{% trans 'Add in favorite' %}{% endif %}" class="btn btn-link btn-lg pod-btn-share">
             <i class="bi {% if is_fav %}bi-star-fill{% else %}bi-star{% endif %}" aria-hidden="true"></i>
           </button>
         </form>

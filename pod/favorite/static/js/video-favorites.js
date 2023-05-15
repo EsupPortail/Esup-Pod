@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 const parser = new DOMParser();
                 const html = parser.parseFromString(data, 'text/html');
-                const updatedButton = html.querySelector("#star_btn > i")
-                const button = document.querySelector("#star_btn > i")
+                const updatedButton = html.querySelector("#star_btn");
+                const button = document.querySelector("#star_btn");
                 button.replaceWith(updatedButton);
             })
             .catch(error => {

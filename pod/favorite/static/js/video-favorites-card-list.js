@@ -10,9 +10,14 @@ document.addEventListener('DOMContentLoaded', function () {
             })
                 .then(response => {
                     response.text(); // We take the HTML content of the response
-                    const button = form.querySelector("#star_btn > i");
-                    button.classList.toggle("bi-star-fill");
-                    button.classList.toggle("bi-star");
+                    const button = form.querySelector('#star_btn > i');
+                    button.classList.toggle('bi-star-fill');
+                    button.classList.toggle('bi-star');
+                    if (button.classList.contains('bi-star-fill')) {
+                        button.title = gettext('Remove from favorite');
+                    } else {
+                        button.title = gettext('Add in favorite');
+                    }
                 })
                 .catch(error => {
                     alert(gettext('The deletion couldn\'t be completed...'));
