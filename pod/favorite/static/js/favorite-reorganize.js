@@ -87,6 +87,7 @@ function addEventForReorganizedButton() {
 function onDragStart(event) {
     event.dataTransfer.clearData();
     event.dataTransfer.setData('text/plain', event.target.id);
+    event.target.classList.toggle("shake-effect-active");
 }
 
 
@@ -117,6 +118,7 @@ function onDrop(event) {
     dropzone.appendChild(child1copy);
     child1.remove();
     child2.remove();
+    draggableElement.classList.toggle("shake-effect-active");
     exchangedValues.push([child1.id, child2.id]);
 }
 

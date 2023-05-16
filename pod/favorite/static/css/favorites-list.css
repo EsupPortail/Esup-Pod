@@ -7,7 +7,7 @@
     cursor: grab;
 }
 
-.shake-effect:active {
+.shake-effect-active {
     cursor: grabbing;
 }
 
