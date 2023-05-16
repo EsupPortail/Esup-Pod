@@ -25,7 +25,6 @@
         <th scope="col">{% trans "Name" %}</th>
         <th scope="col">{% trans "State" %}</th>
         <th scope="col">{% trans "Date" %}</th>
-        <th scope="col">{% trans "Duration" %}</th>
         <th scope="col">{% trans "Playback" %}</th>
         <th scope="col">{% trans "Toolbar" %}</th>
       </tr>
@@ -46,7 +45,6 @@
               {% endif %}
             </td>
             <td> {{ record.get_start_time }} </td>
-            <td> {{ record.get_duration }} </td>
             <td>
               {% for type, url in record.playback.items %}
                 {% if type == "presentation" %}
