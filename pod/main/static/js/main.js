@@ -1297,10 +1297,3 @@ function flashing(elem, duration) {
     elem.classList.remove("flashing_field");
   }, duration);
 }
-
-// Favorites
-
-const favoriteButtonManage = document.querySelector("#card-managevideo #fav-button");
-if (favoriteButtonManage !== null) {
-  favoriteButtonManage.remove();
-}
