@@ -5,16 +5,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-11 08:49+0000\n"
-"PO-Revision-Date: 2023-01-30 11:30+0100\n"
-"Last-Translator: obado <bado@unice.fr>\n"
+"POT-Creation-Date: 2023-05-16 07:13+0000\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3\n"
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
 msgid "Get time from the player"
@@ -374,6 +374,42 @@ msgstr "Ouvrir le gestionnaire de diapositives"
 msgid "Enrich mode"
 msgstr "Mode enrichi"
 
+#: pod/favorite/static/js/favorite-reorganize.js
+msgid "Refresh your page so you can rearrange"
+msgstr "Actualisez votre page pour pouvoir réorganiser"
+
+#: pod/favorite/static/js/favorite-reorganize.js
+msgid "Refresh"
+msgstr "Actualiser"
+
+#: pod/favorite/static/js/favorite-reorganize.js
+msgid "Save your reorganization"
+msgstr "Sauvegarder votre réorganisation"
+
+#: pod/favorite/static/js/favorite-reorganize.js
+msgid "Save"
+msgstr "Sauvegarder"
+
+#: pod/favorite/static/js/video-favorites-card-delete.js
+msgid "The video could not be removed from favorites..."
+msgstr "Le formulaire ne peut pas être récupéré."
+
+#: pod/favorite/static/js/video-favorites-card-list.js
+msgid "Remove from favorite"
+msgstr "Retirer des favoris"
+
+#: pod/favorite/static/js/video-favorites-card-list.js
+msgid "Add in favorite"
+msgstr "Ajouter aux favoris"
+
+#: pod/favorite/static/js/video-favorites-card-list.js
+msgid "The deletion couldn't be completed..."
+msgstr "La suppression n'a pas pu se faire..."
+
+#: pod/favorite/static/js/video-favorites.js
+msgid "The addition couldn't be completed..."
+msgstr "L'ajout n'a pas pu se faire..."
+
 #: pod/live/static/js/broadcaster_from_building.js
 msgid "Restricted because the broadcaster is restricted"
 msgstr "Obligatoirement restreint car le diffuseur est restreint"
@@ -718,6 +754,22 @@ msgstr "Vue de l’année"
 #: pod/video/static/js/video_stats_view.js
 msgid "Total view from creation"
 msgstr "Vue totale depuis création"
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Favorite additions during the day"
+msgstr "Ajouts en favoris de la journée"
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Favorite additions during the month"
+msgstr "Ajouts en favoris du mois"
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Favorite additions during the year"
+msgstr "Ajouts en favoris de l'année"
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Total favorite additions from creation"
+msgstr "Ajouts en favoris total depuis la création"
 
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
