@@ -97,6 +97,7 @@ function onDragStart(event) {
  */
 function onDragOver(event) {
     event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
 }
 
 
@@ -111,6 +112,7 @@ function onDrop(event) {
     const dropzone = event.target;
     const child1 = draggableElement.children[0];
     const child2 = dropzone.children[0];
+    draggableElement.classList.toggle("shake-effect-active");
     if (child1.id == child2.id) return;
     const child1copy = child1.cloneNode(true);
     const child2copy = child2.cloneNode(true);
@@ -118,7 +120,6 @@ function onDrop(event) {
     dropzone.appendChild(child1copy);
     child1.remove();
     child2.remove();
-    draggableElement.classList.toggle("shake-effect-active");
     exchangedValues.push([child1.id, child2.id]);
 }
 
