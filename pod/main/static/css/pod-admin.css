@@ -50,3 +50,7 @@
 #user-tools a:hover {
   color: #000;
 }
+
+.deletelink, .cancel-link {
+  box-sizing: revert;
+}
