@@ -843,7 +843,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
   >>   
   >> # Logo affiché dans le footer sur toutes les pages. 
   >> # Doit se situer dans le répertoire static 
-  >> 'LOGO_ETB': 'img/logo_etb.svg', 
+  >> 'LOGO_ETB': 'img/esup-pod.svg', 
   >>   
   >> # Logo affiché sur le player video. 
   >> # Doit se situer dans le répertoire static 
@@ -2179,6 +2179,12 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
 
   >> Activation de l’obsolescence des video. Permet d’afficher la date de suppression de la video <br>
   >> dans le formulaire d’edition et dans la partie admin. <br>
+
+ - `USE_FAVORITES`
+
+  > valeur par défaut : `True`
+
+  >> Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans leurs favoris. <br>
 
  - `USE_STATS_VIEW`
 
