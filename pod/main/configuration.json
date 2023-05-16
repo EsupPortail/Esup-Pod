@@ -4388,7 +4388,7 @@
                                     " ",
                                     "# Logo affiché dans le footer sur toutes les pages.",
                                     "# Doit se situer dans le répertoire static",
-                                    "'LOGO_ETB': 'img/logo_etb.svg',",
+                                    "'LOGO_ETB': 'img/esup-pod.svg',",
                                     " ",
                                     "# Logo affiché sur le player video.",
                                     "# Doit se situer dans le répertoire static",
