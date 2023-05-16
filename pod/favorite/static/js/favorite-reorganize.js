@@ -27,19 +27,6 @@ function addOrRemoveDropZoneHoverStyleClass(state, element) {
     }
 }
 
-const draggableElements = document.querySelectorAll('.draggable-container');
-draggableElements.forEach(draggableElement => {
-    draggableElement.addEventListener('dragenter', (event) => {
-        addOrRemoveDropZoneHoverStyleClass('add', event.target);
-    });
-    draggableElement.addEventListener('dragleave', (event) => {
-        addOrRemoveDropZoneHoverStyleClass('remove', event.target);
-    });
-    draggableElement.addEventListener('drop', (event) => {
-        addOrRemoveDropZoneHoverStyleClass('remove', event.target);
-    });
-});
-
 
 /**
  * Change the 'reorganize-button' into a 'refresh-button'.
@@ -62,6 +49,18 @@ function changeButtonIntoRefresh() {
  */
 function addEventForReorganizedButton() {
     document.getElementById('reorganize-button').addEventListener('click', function (event) {
+        const draggableElements = document.querySelectorAll('.draggable-container');
+        draggableElements.forEach(draggableElement => {
+            draggableElement.addEventListener('dragenter', (event) => {
+                addOrRemoveDropZoneHoverStyleClass('add', event.target);
+            });
+            draggableElement.addEventListener('dragleave', (event) => {
+                addOrRemoveDropZoneHoverStyleClass('remove', event.target);
+            });
+            draggableElement.addEventListener('drop', (event) => {
+                addOrRemoveDropZoneHoverStyleClass('remove', event.target);
+            });
+        });
         if (this.id == 'reorganize-button') {
             event.preventDefault();
             activateDragAndDrop();
