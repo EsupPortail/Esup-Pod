@@ -219,7 +219,7 @@ function verify_start_title_items() {
     if (typeof lengthErrorSpan === 'undefined') {
       lengthErrorSpan = document.createElement('span');
       lengthErrorSpan.className = 'form-help-inline';
-      lengthErrorSpan.innerHTML = '&nbsp;&nbsp;' + gettext("Please enter a title from 2 to 100 characters.") + "</span>";
+      lengthErrorSpan.innerHTML = '&nbsp;&nbsp;' + gettext("Please enter a title from 2 to 100 characters.");
       inputTitle.insertAdjacentHTML(
         "beforebegin", lengthErrorSpan.outerHTML);
       inputTitle.parentNode.parentNode
