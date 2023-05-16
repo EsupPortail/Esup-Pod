@@ -40,7 +40,12 @@ from .models import (
     Event,
     get_available_broadcasters_of_building,
 )
-from .utils import send_email_confirmation
+from .utils import (
+    send_email_confirmation,
+    get_event_id_and_broadcaster_id,
+    check_exists,
+    check_permission,
+)
 from ..main.views import in_maintenance
 from ..video.models import Video
 
@@ -66,9 +71,7 @@ EMAIL_ON_EVENT_SCHEDULING = getattr(settings, "EMAIL_ON_EVENT_SCHEDULING", False
 
 @login_required(redirect_field_name="referrer")
 def directs_all(request):  # affichage des directs
-    if not (request.user.is_superuser or request.user.has_perm("live.acces_live_pages")):
-        messages.add_message(request, messages.ERROR, _("You cannot view this page."))
-        raise PermissionDenied
+    check_permission(request)
 
     site = get_current_site(request)
     buildings = (
@@ -92,9 +95,7 @@ def directs_all(request):  # affichage des directs
 
 @login_required(redirect_field_name="referrer")
 def directs(request, building_id):  # affichage des directs d'un batiment
-    if not (request.user.is_superuser or request.user.has_perm("live.acces_live_pages")):
-        messages.add_message(request, messages.ERROR, _("You cannot view this page."))
-        raise PermissionDenied
+    check_permission(request)
     building = get_object_or_404(Building, id=building_id)
     return render(
         request,
@@ -105,9 +106,7 @@ def directs(request, building_id):  # affichage des directs d'un batiment
 
 @login_required(redirect_field_name="referrer")
 def direct(request, slug):  # affichage du flux d'un diffuseur
-    if not (request.user.is_superuser or request.user.has_perm("live.acces_live_pages")):
-        messages.add_message(request, messages.ERROR, _("You cannot view this page."))
-        raise PermissionDenied
+    check_permission(request)
 
     site = get_current_site(request)
     broadcaster = get_broadcaster_by_slug(slug, site)
@@ -695,10 +694,7 @@ def event_isstreamavailabletorecord(request):
 @login_required(redirect_field_name="referrer")
 def ajax_event_startrecord(request):
     if request.method == "POST" and request.is_ajax():
-        body_unicode = request.body.decode("utf-8")
-        body_data = json.loads(body_unicode)
-        event_id = body_data.get("idevent", None)
-        broadcaster_id = body_data.get("idbroadcaster", None)
+        event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         return event_startrecord(event_id, broadcaster_id)
 
     return HttpResponseNotAllowed(["POST"])
@@ -724,10 +720,7 @@ def event_startrecord(event_id, broadcaster_id):
 @login_required(redirect_field_name="referrer")
 def ajax_event_splitrecord(request):
     if request.method == "POST" and request.is_ajax():
-        body_unicode = request.body.decode("utf-8")
-        body_data = json.loads(body_unicode)
-        event_id = body_data.get("idevent", None)
-        broadcaster_id = body_data.get("idbroadcaster", None)
+        event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
 
         return event_splitrecord(event_id, broadcaster_id)
 
@@ -737,13 +730,9 @@ def ajax_event_splitrecord(request):
 def event_splitrecord(event_id, broadcaster_id):
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
 
-    if not check_piloting_conf(broadcaster):
-        return JsonResponse({"success": False, "error": "implementation error"})
-
-    if not is_recording(broadcaster, True):
-        return JsonResponse(
-            {"success": False, "error": "the broadcaster is not recording"}
-        )
+    valid, res = check_event_record(broadcaster, with_file_check=True)
+    if not valid:
+        return res
 
     # file infos before split is done
     current_record_info = get_info_current_record(broadcaster)
@@ -762,10 +751,7 @@ def event_splitrecord(event_id, broadcaster_id):
 @login_required(redirect_field_name="referrer")
 def ajax_event_stoprecord(request):
     if request.method == "POST" and request.is_ajax():
-        body_unicode = request.body.decode("utf-8")
-        body_data = json.loads(body_unicode)
-        event_id = body_data.get("idevent", None)
-        broadcaster_id = body_data.get("idbroadcaster", None)
+        event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         return event_stoprecord(event_id, broadcaster_id)
 
     return HttpResponseNotAllowed(["POST"])
@@ -774,14 +760,9 @@ def ajax_event_stoprecord(request):
 def event_stoprecord(event_id, broadcaster_id):
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
 
-    if not check_piloting_conf(broadcaster):
-        return JsonResponse({"success": False, "error": "implementation error"})
-
-    if not is_recording(broadcaster, True):
-        return JsonResponse(
-            {"success": False, "error": "the broadcaster is not recording"}
-        )
-
+    valid, res = check_event_record(broadcaster, with_file_check=True)
+    if not valid:
+        return res
     current_record_info = get_info_current_record(broadcaster)
 
     if stop_record(broadcaster):
@@ -802,10 +783,7 @@ def event_stoprecord(event_id, broadcaster_id):
 @login_required(redirect_field_name="referrer")
 def ajax_event_info_record(request):
     if request.method == "POST" and request.is_ajax():
-        body_unicode = request.body.decode("utf-8")
-        body_data = json.loads(body_unicode)
-        event_id = body_data.get("idevent", None)
-        broadcaster_id = body_data.get("idbroadcaster", None)
+        event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         return event_info_record(event_id, broadcaster_id)
 
     return HttpResponseNotAllowed(["POST"])
@@ -813,15 +791,9 @@ def ajax_event_info_record(request):
 
 def event_info_record(event_id, broadcaster_id):
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
-
-    if not check_piloting_conf(broadcaster):
-        return JsonResponse({"success": False, "error": "implementation error"})
-
-    if not is_recording(broadcaster):
-        return JsonResponse(
-            {"success": False, "error": "the broadcaster is not recording"}
-        )
-
+    valid, res = check_event_record(broadcaster)
+    if not valid:
+        return res
     current_record_info = get_info_current_record(broadcaster)
 
     if current_record_info.get("segmentDuration") != "":
@@ -837,6 +809,18 @@ def event_info_record(event_id, broadcaster_id):
         )
 
     return JsonResponse({"success": False, "error": ""})
+
+
+def check_event_record(broadcaster, with_file_check=False):
+    """Checks whether the given broadcaster is recording an event."""
+    if not check_piloting_conf(broadcaster):
+        return False, JsonResponse({"success": False, "error": "implementation error"})
+
+    if not is_recording(broadcaster, with_file_check):
+        return False, JsonResponse(
+            {"success": False, "error": "the broadcaster is not recording"})
+
+    return True, None
 
 
 @csrf_protect
@@ -980,29 +964,13 @@ def checkFileSize(full_file_name, max_attempt=6):
 
 
 def checkDirExists(dest_dir_name, max_attempt=6):
-    attempt_number = 1
-    while not os.path.isdir(dest_dir_name) and attempt_number <= max_attempt:
-        logger.warning(f"Dir does not exists, attempt number {attempt_number} ")
-
-        if attempt_number == max_attempt:
-            logger.error(f"Impossible to create dir {dest_dir_name}")
-            raise Exception(f"Dir: {dest_dir_name} does not exists and can't be created")
-
-        attempt_number = attempt_number + 1
-        sleep(1)
+    """Checks a directory exists."""
+    return check_exists(dest_dir_name, True, max_attempt)
 
 
 def checkFileExists(full_file_name, max_attempt=6):
-    attempt_number = 1
-    while not os.path.exists(full_file_name) and attempt_number <= max_attempt:
-        logger.warning(f"File does not exists, attempt number {attempt_number} ")
-
-        if attempt_number == max_attempt:
-            logger.error(f"Impossible to get file {full_file_name}")
-            raise Exception(f"File: {full_file_name} does not exists")
-
-        attempt_number = attempt_number + 1
-        sleep(1)
+    """Checks a file exists."""
+    return check_exists(full_file_name, False, max_attempt)
 
 
 def check_piloting_conf(broadcaster: Broadcaster) -> bool:
