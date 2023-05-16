@@ -211,47 +211,46 @@ var sendform = async function (elt, action) {
 /*** Verify if value of field respect form field ***/
 function verify_start_title_items() {
   let inputTitle = document.getElementById("id_title");
-
   if (
-    inputTitle.value == "" ||
+    inputTitle.value === "" ||
     inputTitle.value.length < 2 ||
     inputTitle.value.length > 100
   ) {
-    inputTitle.insertAdjacentElement(
-      "beforebegin",
-      "<span class='form-help-inline'>&nbsp;&nbsp;" +
-        gettext("Please enter a title from 2 to 100 characters.") +
-        "</span>"
-    );
-    inputTitle.parentNode.parentNode
-      .querySelectorAll("div.form-group")
-      .forEach(function (elt) {
-        elt.classList.add("has-error");
-      });
-
+    if (typeof lengthErrorSpan === 'undefined') {
+      lengthErrorSpan = document.createElement('span');
+      lengthErrorSpan.className = 'form-help-inline';
+      lengthErrorSpan.innerHTML = '&nbsp;&nbsp;' + gettext("Please enter a title from 2 to 100 characters.");
+      inputTitle.insertAdjacentHTML(
+        "beforebegin", lengthErrorSpan.outerHTML);
+      inputTitle.parentNode.parentNode
+        .querySelectorAll("div.form-group")
+        .forEach(function (elt) {
+          elt.classList.add("has-error");
+        });
+    }
     return false;
   }
   let inputStart = document.getElementById("id_time_start");
   if (
-    inputStart.value == "" ||
+    inputStart.value === "" ||
     inputStart.value < 0 ||
     inputStart.value >= video_duration
   ) {
-    inputStart.insertAdjacentHTML(
-      "beforebegin",
-      "<span class='form-help-inline'>&nbsp;&nbsp;" +
-        gettext("Please enter a correct start field between 0 and") +
-        " " +
-        (video_duration - 1) +
-        "</span>"
-    );
-    inputStart.parentNode.parentNode
-      .querySelectorAll("div.form-group")
-      .forEach(function (elt) {
-        elt.classList.add("has-error");
-      });
+    if (typeof timeErrorSpan === 'undefined') {
+      timeErrorSpan = document.createElement('span');
+      timeErrorSpan.className = 'form-help-inline';
+      timeErrorSpan.innerHTML = '&nbsp;&nbsp;' + gettext("Please enter a correct start field between 0 and") + " " + (video_duration - 1);
+      inputStart.insertAdjacentHTML("beforebegin", timeErrorSpan.outerHTML);
+      inputStart.parentNode.parentNode
+        .querySelectorAll("div.form-group")
+        .forEach(function (elt) {
+          elt.classList.add("has-error");
+        });
+    }
     return false;
   }
+  timeErrorSpan = undefined;
+  lengthErrorSpan = undefined;
   return true;
 }
 
