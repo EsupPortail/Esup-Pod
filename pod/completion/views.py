@@ -360,10 +360,6 @@ def video_completion_contributor_modify(request, video):
 
 def video_completion_contributor_delete(request, video):
     """View to delete a video contributor."""
-    list_contributor = video.contributor_set.all()
-    list_track = video.track_set.all()
-    list_document = video.document_set.all()
-    list_overlay = video.overlay_set.all()
 
     contributor = get_object_or_404(Contributor, id=request.POST["id"])
     contributor.delete()
@@ -378,15 +374,11 @@ def video_completion_contributor_delete(request, video):
         }
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type="application/json")
+    context = get_video_completion_context(video)
     return render(
         request,
         "video_completion.html",
-        {
-            "video": video,
-            "list_document": list_document,
-            "list_track": list_track,
-            "list_overlay": list_overlay,
-        },
+        context,
     )
 
 
