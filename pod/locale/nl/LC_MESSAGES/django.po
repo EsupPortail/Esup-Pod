@@ -2118,7 +2118,7 @@ msgstr "Sélectionnez la vidéo à déplacer en cliquant et en maintenant."
 #: pod/favorite/templates/favorite/favorite_videos.html
 msgid "While holding down the video, drag it to the desired location."
 msgstr ""
-"Tout en maitenant la vidéo, faites-la glisser vers l'emplacement souhaité."
+"Tout en maintenant la vidéo, faites-la glisser vers l'emplacement souhaité."
 
 #: pod/favorite/templates/favorite/favorite_videos.html
 msgid "Drop the video on another to swap their position."
