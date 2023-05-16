@@ -65,8 +65,7 @@ class FavoriteTestUtils(TestCase):
         """Test if test_user_add_or_remove_favorite_video works correctly"""
         user_add_or_remove_favorite_video(self.user, self.video)
         favorite_tuple_exists = Favorite.objects.filter(
-            owner=self.user,
-            video=self.video
+            owner=self.user, video=self.video
         ).exists()
         self.assertTrue(
             favorite_tuple_exists,
@@ -74,8 +73,7 @@ class FavoriteTestUtils(TestCase):
         )
         user_add_or_remove_favorite_video(self.user, self.video)
         favorite_tuple_not_exists = Favorite.objects.filter(
-            owner=self.user,
-            video=self.video
+            owner=self.user, video=self.video
         ).exists()
         self.assertFalse(
             favorite_tuple_not_exists,
@@ -105,7 +103,7 @@ class FavoriteTestUtils(TestCase):
         self.assertEqual(
             get_number_favorites(self.video),
             0,
-            "Test if there's no favorites in the video"
+            "Test if there's no favorites in the video",
         )
         Favorite.objects.create(
             owner=self.user,
@@ -120,7 +118,7 @@ class FavoriteTestUtils(TestCase):
         self.assertEqual(
             get_number_favorites(self.video),
             2,
-            "Test if there is 2 favorites in the video"
+            "Test if there is 2 favorites in the video",
         )
 
         print(" --->  test_get_number_favorites ok")
@@ -157,16 +155,14 @@ class FavoriteTestUtils(TestCase):
         )
         sorted_videos = [self.video3, self.video2, self.video]
         test_sorted_videos = sort_videos_list(
-            request,
-            get_all_favorite_videos_for_user(self.user)
+            request, get_all_favorite_videos_for_user(self.user)
         )
         self.assertEqual(list(test_sorted_videos), sorted_videos)
         request.GET["sort"] = "rank"
         request.GET["sort_direction"] = "desc"
         sorted_videos = [self.video, self.video2, self.video3]
         test_sorted_videos = sort_videos_list(
-            request,
-            get_all_favorite_videos_for_user(self.user)
+            request, get_all_favorite_videos_for_user(self.user)
         )
         self.assertEqual(list(test_sorted_videos), sorted_videos)
         print(" --->  sort_videos_list ok")

@@ -23,9 +23,7 @@ def favorite_button_in_video_info(request):
     """Add or remove favorite video when the user click on star button."""
     if request.method == "POST":
         video = get_object_or_404(
-            Video,
-            pk=request.POST.get("video"),
-            sites=get_current_site(request)
+            Video, pk=request.POST.get("video"), sites=get_current_site(request)
         )
         if video.is_draft:
             return False
@@ -39,8 +37,7 @@ def favorite_button_in_video_info(request):
 def favorite_list(request):
     """Render the main list of favorite videos."""
     videos_list = sort_videos_list(
-        request,
-        get_all_favorite_videos_for_user(request.user)
+        request, get_all_favorite_videos_for_user(request.user)
     )
     count_videos = len(videos_list)
 
@@ -101,11 +98,11 @@ def favorites_save_reorganisation(request):
             for videos_tuple in dict_data.values():
                 fav_video_1 = Favorite.objects.filter(
                     owner_id=request.user.id,
-                    video_id=Video.objects.only('id').get(slug=videos_tuple[0]).id
+                    video_id=Video.objects.only("id").get(slug=videos_tuple[0]).id,
                 )
                 fav_video_2 = Favorite.objects.filter(
                     owner_id=request.user.id,
-                    video_id=Video.objects.only('id').get(slug=videos_tuple[1]).id
+                    video_id=Video.objects.only("id").get(slug=videos_tuple[1]).id,
                 )
                 video_1_rank = fav_video_1[0].rank
                 video_2_rank = fav_video_2[0].rank

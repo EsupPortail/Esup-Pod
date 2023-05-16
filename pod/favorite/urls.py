@@ -9,8 +9,6 @@ urlpatterns = [
     path("", favorite_button_in_video_info, name="add-or-remove"),
     path("list/", favorite_list, name="list"),
     path(
-        "save-reorganisation/",
-        favorites_save_reorganisation,
-        name="save-reorganisation"
+        "save-reorganisation/", favorites_save_reorganisation, name="save-reorganisation"
     ),
 ]

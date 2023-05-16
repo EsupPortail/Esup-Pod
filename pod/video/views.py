@@ -1972,10 +1972,7 @@ def get_all_views_count(v_id, date_filter=date.today()):
     all_views["since_created"] = count if count else 0
 
     # favorite addition in day
-    count = Favorite.objects.filter(
-        video_id=v_id,
-        date_added__date=date_filter
-    ).count()
+    count = Favorite.objects.filter(video_id=v_id, date_added__date=date_filter).count()
     all_views["fav_day"] = count if count else 0
 
     # favorite addition in month

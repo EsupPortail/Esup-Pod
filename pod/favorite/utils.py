@@ -43,7 +43,7 @@ def get_next_rank(user: User) -> int:
     Returns:
         int: The next rank
     """
-    last_rank = Favorite.objects.filter(owner=user).aggregate(Max('rank'))['rank__max']
+    last_rank = Favorite.objects.filter(owner=user).aggregate(Max("rank"))["rank__max"]
     return last_rank + 1 if last_rank is not None else 1
 
 
@@ -61,15 +61,15 @@ def get_all_favorite_videos_for_user(user: User) -> list:
     Returns:
         list(:class:`pod.video.models.Video`): The video list
     """
-    favorite_id = Favorite.objects.filter(owner=user).values_list('video_id', flat=True)
+    favorite_id = Favorite.objects.filter(owner=user).values_list("video_id", flat=True)
     video_list = Video.objects.filter(id__in=favorite_id).extra(
-        select={'rank': 'favorite_favorite.rank'},
-        tables=['favorite_favorite'],
+        select={"rank": "favorite_favorite.rank"},
+        tables=["favorite_favorite"],
         where=[
-            'favorite_favorite.video_id=video_video.id',
-            'favorite_favorite.owner_id=%s'
+            "favorite_favorite.video_id=video_video.id",
+            "favorite_favorite.owner_id=%s",
         ],
-        params=[user.id]
+        params=[user.id],
     )
     return video_list
 
@@ -80,6 +80,6 @@ def sort_videos_list(request, videos_list):
     direction
     """
     sort = request.GET.get("sort", "rank")
-    sort = sort if request.GET.get('sort_direction') else '-' + sort
+    sort = sort if request.GET.get("sort_direction") else "-" + sort
     videos_list = videos_list.order_by(sort)
     return videos_list.distinct()

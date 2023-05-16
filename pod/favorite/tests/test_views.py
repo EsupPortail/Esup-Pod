@@ -16,9 +16,11 @@ class TestShowStarTestCase(TestCase):
     def setUp(self) -> None:
         """Set up required objects for next tests."""
         self.user_with_favorite = User.objects.create(
-            username="pod", password="pod1234pod")
+            username="pod", password="pod1234pod"
+        )
         self.user_without_favorite = User.objects.create(
-            username="pod2", password="pod1234pod2")
+            username="pod2", password="pod1234pod2"
+        )
         self.video = Video.objects.create(
             title="Video1",
             owner=self.user_without_favorite,
@@ -45,7 +47,7 @@ class TestShowStarTestCase(TestCase):
             "Test if status code equal 200 when the video isn't favorite",
         )
         self.assertTrue(
-            'bi-star' in response.content.decode(),
+            "bi-star" in response.content.decode(),
             "Test if the star is correctly present when the video isn't favorite",
         )
         self.client.logout()
@@ -63,7 +65,7 @@ class TestShowStarTestCase(TestCase):
             "Test if status code equal 200 when the video is favorite",
         )
         self.assertTrue(
-            'bi-star-fill' in response.content.decode(),
+            "bi-star-fill" in response.content.decode(),
             "Test if the star is correctly present when the video is favorite",
         )
         self.client.logout()
@@ -92,10 +94,10 @@ class TestShowStarTestCase(TestCase):
         self.assertEqual(
             response.status_code,
             404,
-            '''
+            """
             Test if status code equal 404 when we try to navigate in
              the `favorite/` route with GET method
-            ''',
+            """,
         )
         print(" --->  test_show_star_404_error ok")
 
@@ -111,7 +113,7 @@ class TestShowStarTestCase(TestCase):
             "Test if status code equal 200 when USE_FAVORITES equal False",
         )
         self.assertFalse(
-            'bi-star' in response.content.decode(),
+            "bi-star" in response.content.decode(),
             "Test if the star isn't present when USE_FAVORITES equal False",
         )
         self.client.logout()
@@ -124,9 +126,11 @@ class TestFavoriteVideoListTestCase(TestCase):
     def setUp(self) -> None:
         """Set up required objects for next tests."""
         self.user_with_favorite = User.objects.create(
-            username="pod", password="pod1234pod")
+            username="pod", password="pod1234pod"
+        )
         self.user_without_favorite = User.objects.create(
-            username="pod2", password="pod1234pod2")
+            username="pod2", password="pod1234pod2"
+        )
         self.video = Video.objects.create(
             title="Video1",
             owner=self.user_without_favorite,
@@ -204,20 +208,22 @@ class TestFavoriteVideoListTestCase(TestCase):
         self.assertEqual(
             response.status_code,
             200,
-            '''
+            """
             Test if status code equal 200 in
              test_favorite_video_list_link_in_navbar_when_use_favorites_equal_false
-            ''',
+            """,
         )
         self.assertFalse(
             str(_("My favorite videos")) in response.content.decode(),
             "Test if the favorite video list link is present in the navbar",
         )
         self.client.logout()
-        print('''
+        print(
+            """
               --->  test_favorite_video_list_link_in_navbar_when_use_favorites_equal_false
               ok
-              ''')
+              """
+        )
 
 
 class TestShowStarInfoTestCase(TestCase):
@@ -225,8 +231,7 @@ class TestShowStarInfoTestCase(TestCase):
 
     def setUp(self) -> None:
         """Set up required objects for next tests."""
-        self.user = User.objects.create(
-            username="pod", password="pod1234pod")
+        self.user = User.objects.create(username="pod", password="pod1234pod")
         self.video = Video.objects.create(
             title="Video1",
             owner=self.user,

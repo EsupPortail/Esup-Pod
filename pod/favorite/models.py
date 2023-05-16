@@ -10,17 +10,14 @@ class Favorite(models.Model):
     video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
     owner = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
     date_added = models.DateTimeField(
-        verbose_name=_("Date added"),
-        default=timezone.now,
-        editable=False
+        verbose_name=_("Date added"), default=timezone.now, editable=False
     )
     rank = models.IntegerField(verbose_name=_("Rank"), editable=False)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["video", "owner"],
-                name="unique_favorite_video_owner"
+                fields=["video", "owner"], name="unique_favorite_video_owner"
             )
         ]
         ordering = ["id", "date_added"]
