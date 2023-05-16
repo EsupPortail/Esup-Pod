@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 07:13+0000\n"
+"POT-Creation-Date: 2023-05-16 14:51+0000\n"
 "PO-Revision-Date: 2023-02-15 16:55+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -965,6 +965,12 @@ msgstr ""
 #: pod/video/templates/videos/video.html
 #: pod/video/templates/videos/video_edit.html
 msgid "Manage video"
+msgstr ""
+
+#: pod/chapter/templates/video_chapter.html
+#: pod/completion/templates/video_completion.html
+#: pod/cut/templates/video_cut.html
+msgid "Help"
 msgstr ""
 
 #: pod/chapter/templates/video_chapter.html
@@ -2111,7 +2117,8 @@ msgstr "Sélectionnez la vidéo à déplacer en cliquant et en maintenant."
 
 #: pod/favorite/templates/favorite/favorite_videos.html
 msgid "While holding down the video, drag it to the desired location."
-msgstr "Tout en maitenant la vidéo, faites-la glisser vers l'emplacement souhaité."
+msgstr ""
+"Tout en maitenant la vidéo, faites-la glisser vers l'emplacement souhaité."
 
 #: pod/favorite/templates/favorite/favorite_videos.html
 msgid "Drop the video on another to swap their position."
@@ -2950,7 +2957,7 @@ msgstr ""
 msgid "Post by:"
 msgstr ""
 
-#: pod/live/views.py
+#: pod/live/utils.py
 msgid "You cannot view this page."
 msgstr ""
 

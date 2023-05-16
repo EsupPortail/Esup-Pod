@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 07:13+0000\n"
+"POT-Creation-Date: 2023-05-16 14:51+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ptitloup <nicolas.can@univ-lille.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -1023,6 +1023,12 @@ msgstr "Ajouter un nouveau chapitre"
 #: pod/video/templates/videos/video_edit.html
 msgid "Manage video"
 msgstr "Gérer la vidéo"
+
+#: pod/chapter/templates/video_chapter.html
+#: pod/completion/templates/video_completion.html
+#: pod/cut/templates/video_cut.html
+msgid "Help"
+msgstr "Aide"
 
 #: pod/chapter/templates/video_chapter.html
 msgid ""
@@ -3121,7 +3127,7 @@ msgstr "Cordialement."
 msgid "Post by:"
 msgstr "Posté par :"
 
-#: pod/live/views.py
+#: pod/live/utils.py
 msgid "You cannot view this page."
 msgstr "Vous ne pouvez pas accèder à cette page."
 
