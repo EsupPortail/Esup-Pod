@@ -58,7 +58,7 @@
 <div class="card" id="card-managevideo">
   <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
   <div class="card-body card-text text-center">
-    {% include "videos/link_video.html" %}
+    {% include "videos/link_video.html" with hide_favorite_link=True %}
   </div>
 </div>
 {% endif %}
