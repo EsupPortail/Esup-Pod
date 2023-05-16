@@ -818,7 +818,8 @@ def check_event_record(broadcaster, with_file_check=False):
 
     if not is_recording(broadcaster, with_file_check):
         return False, JsonResponse(
-            {"success": False, "error": "the broadcaster is not recording"})
+            {"success": False, "error": "the broadcaster is not recording"}
+        )
 
     return True, None
 

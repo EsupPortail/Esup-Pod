@@ -182,7 +182,7 @@ def get_event_id_and_broadcaster_id(request):
 
 
 def check_exists(resource_name, is_dir, max_attempt=6):
-    """ Checks whether a file or directory exists."""
+    """Checks whether a file or directory exists."""
     fct = os.path.isdir if is_dir else os.path.exists
     type = "Dir" if is_dir else "File"
     attempt_number = 1
@@ -191,8 +191,7 @@ def check_exists(resource_name, is_dir, max_attempt=6):
 
         if attempt_number == max_attempt:
             logger.error(f"Impossible to get {type}: {resource_name}")
-            raise Exception(
-                f"{type}: {resource_name} does not exists")
+            raise Exception(f"{type}: {resource_name} does not exists")
 
         attempt_number = attempt_number + 1
         sleep(1)
