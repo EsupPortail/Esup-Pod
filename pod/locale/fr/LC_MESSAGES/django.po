@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-15 14:28+0000\n"
+"POT-Creation-Date: 2023-05-16 07:13+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ptitloup <nicolas.can@univ-lille.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -2215,16 +2215,20 @@ msgid "Help - Drag & Drop"
 msgstr "Aide - Glisser & Déposer"
 
 #: pod/favorite/templates/favorite/favorite_videos.html
-msgid "Select the video you want by clicking and holding the mouse button."
-msgstr "Sélectionnez la vidéo que vous souhaitez en cliquant et maintenant le bouton de la souris."
+msgid "Select the video to move by clicking and holding."
+msgstr ""
+"Sélectionnez la vidéo que vous souhaitez en cliquant et maintenant le bouton "
+"de la souris."
 
 #: pod/favorite/templates/favorite/favorite_videos.html
-msgid "While holding down the mouse button, drag it to the desired location."
-msgstr "Tout en maintenant le bouton de la souris enfoncé, faites-la glisser à l'endroit que vous le souhaitez."
+msgid "While holding down the video, drag it to the desired location."
+msgstr ""
+"Tout en maintenant le bouton de la souris enfoncé, faites-la glisser à "
+"l'endroit que vous le souhaitez."
 
 #: pod/favorite/templates/favorite/favorite_videos.html
-msgid "Drop the mouse button."
-msgstr "Relâchez le bouton de la souris."
+msgid "Drop the video on another to swap their position."
+msgstr "Déposez la vidéo sur une autre pour échanger leur position."
 
 #: pod/favorite/tests/test_views.py pod/video/templates/videos/video-info.html
 msgid "Number of favorites"

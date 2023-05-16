@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch(error => {
                     if (!(error instanceof TypeError))
-                        alert(gettext('The deletion couldn\'t be completed...'));
+                        alert(gettext('The video could not be removed from favorites...'));
                 });
         });
     }

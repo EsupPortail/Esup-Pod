@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-15 14:28+0000\n"
+"POT-Creation-Date: 2023-05-16 07:13+0000\n"
 "PO-Revision-Date: 2023-02-15 16:55+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2106,16 +2106,16 @@ msgid "Help - Drag & Drop"
 msgstr ""
 
 #: pod/favorite/templates/favorite/favorite_videos.html
-msgid "Select the video you want by clicking and holding the mouse button."
-msgstr ""
+msgid "Select the video to move by clicking and holding."
+msgstr "Sélectionnez la vidéo à déplacer en cliquant et en maintenant."
 
 #: pod/favorite/templates/favorite/favorite_videos.html
-msgid "While holding down the mouse button, drag it to the desired location."
-msgstr ""
+msgid "While holding down the video, drag it to the desired location."
+msgstr "Tout en maitenant la vidéo, faites-la glisser vers l'emplacement souhaité."
 
 #: pod/favorite/templates/favorite/favorite_videos.html
-msgid "Drop the mouse button."
-msgstr ""
+msgid "Drop the video on another to swap their position."
+msgstr "Déposez la vidéo sur une autre pour échanger leur position."
 
 #: pod/favorite/tests/test_views.py pod/video/templates/videos/video-info.html
 msgid "Number of favorites"
