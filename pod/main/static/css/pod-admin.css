@@ -9,6 +9,9 @@
   .select2-search__field {
     color: white !important;
   }
+  :root {
+    --pod-font-color : white;
+  }
 }
 
 /** Set the Django-admin auto dark mode
