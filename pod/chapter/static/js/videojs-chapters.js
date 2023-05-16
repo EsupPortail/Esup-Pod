@@ -92,6 +92,7 @@
               false
             );
           }
+          /* What is the purpose of this code ??
           var oldList = document.getElementById("chapters");
           var newList = document.getElementsByClassName(
             "chapters-list inactive"
@@ -100,6 +101,8 @@
 
           let podPlayer = document.getElementById(player.id());
           podPlayer.append(newList);
+          **/
+
         };
 
         /**
