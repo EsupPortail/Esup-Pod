@@ -212,7 +212,7 @@ var sendform = async function (elt, action) {
 function verify_start_title_items() {
   let inputTitle = document.getElementById("id_title");
   if (
-    inputTitle.value == "" ||
+    inputTitle.value === "" ||
     inputTitle.value.length < 2 ||
     inputTitle.value.length > 100
   ) {
@@ -232,7 +232,7 @@ function verify_start_title_items() {
   }
   let inputStart = document.getElementById("id_time_start");
   if (
-    inputStart.value == "" ||
+    inputStart.value === "" ||
     inputStart.value < 0 ||
     inputStart.value >= video_duration
   ) {
