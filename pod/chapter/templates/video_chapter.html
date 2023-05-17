@@ -27,7 +27,7 @@
 <span id="chapter_player">
   {% include 'videos/video-element.html' %}
 </span>
-<hr />
+<hr>
 <div id="info_video">
   <div>
     <div id="list_chapter">
@@ -46,8 +46,8 @@
     {% if not form_chapter %}
     <form id="form_new" class="get_form" action="{% url 'video:chapter:video_chapter' slug=video.slug %}" method="POST">
       {% csrf_token %}
-      <input type="hidden" name="action" value="new" />
-      <input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-primary btn-sm" />
+      <input type="hidden" name="action" value="new">
+      <input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-primary btn-sm">
     </form>
     {% endif %}
   </div>

@@ -5,9 +5,9 @@
 		{% csrf_token %}
 		<div id="form_content" class="container">
 			{% if form_contributor.errors or form_contributor.non_field_errors %}
-				{% trans 'Your form contains errors:' %}<br />
+				{% trans 'Your form contains errors:' %}<br>
 				{% for error in form_contributor.non_field_errors %}
-					- {{error}}<br />
+					- {{error}}<br>
 				{% endfor %}
 			{% endif %}
 			{% for field_hidden in form_contributor.hidden_fields %}
@@ -22,10 +22,10 @@
 			{% if form_contributor.instance %}
 				<input type="hidden" id="id_contributor" name="contributor_id" value="{{form_contributor.instance.id}}">
 			{% endif %}
-			<input type="hidden" name="action" value="save"/>
+			<input type="hidden" name="action" value="save">
 			<div class="mt-3">
-				<input type="submit" id="save_contributor" value="{% trans 'Save' %}" class="btn btn-primary"/>
-				<input type="reset" action="cancel" id="cancel_contributor" value="{% trans 'Cancel' %}" class="btn btn-secondary"/>
+				<input type="submit" id="save_contributor" value="{% trans 'Save' %}" class="btn btn-primary">
+				<input type="reset" action="cancel" id="cancel_contributor" value="{% trans 'Cancel' %}" class="btn btn-secondary">
 			</div>
 		</div>
 	</form>

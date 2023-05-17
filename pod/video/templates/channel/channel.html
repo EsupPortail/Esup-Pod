@@ -4,14 +4,14 @@
 {% load video_filters %}
 {% load filters %}
 {% block opengraph %}
-    <meta name="description" content="{{channel.description|metaformat|safe|striptags|truncatechars:150}}" />
+    <meta name="description" content="{{channel.description|metaformat|safe|striptags|truncatechars:150}}">
     <!-- Open Graph data -->
-    <meta property="og:title" content="{{ channel.title }}" />
-    <meta property="og:type" content="article" />
-    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-    <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
-    <meta property="og:description" content="{{channel.description|metaformat|safe|striptags|truncatechars:250}}" />
-    <meta property="og:site_name" content="{{ TITLE_SITE }}" />
+    <meta property="og:title" content="{{ channel.title }}">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}">
+    <meta property="og:description" content="{{channel.description|metaformat|safe|striptags|truncatechars:250}}">
+    <meta property="og:site_name" content="{{ TITLE_SITE }}">
 {% endblock %}
 {% block page_extra_head %}
     <style>
@@ -26,8 +26,8 @@
         {% endif %}
     </style>
     {% if organize_theme %}
-        <link rel="stylesheet" type="text/css" href="{% static 'css/regroup_videos_by_theme.css' %}?ver={{VERSION}}" />
-        <link rel="stylesheet" type="text/css" href="{% static 'css/paginator.css' %}?ver={{VERSION}}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/regroup_videos_by_theme.css' %}?ver={{VERSION}}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/paginator.css' %}?ver={{VERSION}}">
     {% endif %}
 {% endblock %}
 {% block breadcrumbs %}
@@ -82,7 +82,7 @@
             {% endif %}
             {% if headband %}
                 <div class="channelheader">
-                    <img src="{{ headband }}" alt="{% trans 'Headband' %} {{ title }}" class="img-fluid rounded mx-auto d-block" loading="lazy" />
+                    <img src="{{ headband }}" alt="{% trans 'Headband' %} {{ title }}" class="img-fluid rounded mx-auto d-block" loading="lazy">
                 </div>
             {% endif %}
             {% if description %}
@@ -98,7 +98,7 @@
                 <p class="theme-count">
                     {% if count_themes > 0 %}
                     {% blocktrans count counter=count_themes %}{{ counter }} theme found for this channel{% plural %}{{ counter }} themes found for this channel{% endblocktrans %}
-                    - 
+                    -
                     {% endif %}
                     {% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}
                 </p>
@@ -170,7 +170,7 @@
             </h1>
         {% endif %}
         {% if channel.headband %}
-            <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy" />
+            <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy">
         {% endif %}
         {% if channel.description %}
             {{ channel.description|safe }}
@@ -180,7 +180,7 @@
             <h1 class="theme_title h2">{{theme.title}}</h1>
             {% if theme.headband %}
                 <div class="channelheader">
-                    <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" loading="lazy" />
+                    <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" loading="lazy">
                 </div>
             {% endif %}
             {% if theme.description %}
@@ -210,7 +210,7 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-    
+
     <script  src="{% static 'js/infinite.js' %}?ver={{VERSION}}" ></script>
     <script>
         {% if theme %}

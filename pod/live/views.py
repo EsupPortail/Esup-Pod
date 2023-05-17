@@ -914,7 +914,7 @@ def event_video_transform(event_id, current_file, segment_number):
         video=dest_path,
         title=live_event.title + segment,
         owner=live_event.owner,
-        description=live_event.description + "<br/>" + adding_description,
+        description=live_event.description + "<br>" + adding_description,
         is_draft=live_event.is_draft,
         type=live_event.type,
     )

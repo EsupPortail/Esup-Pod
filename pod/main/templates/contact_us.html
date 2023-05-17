@@ -34,7 +34,7 @@
                 </div>
               {% else %}
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br/>{% endif %}
+                {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br>{% endif %}
                 {{ field }}
               {% endif %}
               {% if field.help_text %}

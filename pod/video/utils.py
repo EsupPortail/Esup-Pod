@@ -131,7 +131,7 @@ def send_email(msg, video_id):
     message = "Error Encoding  video id : %s\n%s" % (video_id, msg)
     html_message = "<p>Error Encoding video id : %s</p><p>%s</p>" % (
         video_id,
-        msg.replace("\n", "<br/>"),
+        msg.replace("\n", "<br>"),
     )
     mail_admins(subject, message, fail_silently=False, html_message=html_message)
 
@@ -142,7 +142,7 @@ def send_email_recording(msg, recording_id):
     message = "Error Encoding  recording id : %s\n%s" % (recording_id, msg)
     html_message = "<p>Error Encoding recording id : %s</p><p>%s</p>" % (
         recording_id,
-        msg.replace("\n", "<br/>"),
+        msg.replace("\n", "<br>"),
     )
     mail_admins(subject, message, fail_silently=False, html_message=html_message)
 
@@ -179,7 +179,7 @@ def send_email_transcript(video_to_encode):
             _("Regards."),
         )
     )
-    full_html_message = html_message + "<br/>%s%s<br/>%s%s" % (
+    full_html_message = html_message + "<br>%s%s<br>%s%s" % (
         _("Post by:"),
         video_to_encode.owner,
         _("the:"),
@@ -258,7 +258,7 @@ def send_email_encoding(video_to_encode):
             _("Regards."),
         )
     )
-    full_html_message = html_message + "<br/>%s%s<br/>%s%s" % (
+    full_html_message = html_message + "<br>%s%s<br>%s%s" % (
         _("Post by:"),
         video_to_encode.owner,
         _("the:"),
