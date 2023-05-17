@@ -183,10 +183,9 @@ function createUserCheckBox(user) {
   label.classList.add("form-check-label");
   label.setAttribute("for", "id" + user.username);
   if (user.first_name !== "" && user.last_name !== "") {
-    label.innerHTML = user.first_name + " " + user.last_name;
-  } else {
-    label.innerHTML = user.username
+    label.innerHTML = user.first_name + " " + user.last_name + " ";
   }
+    label.innerHTML += "(" + user.username + ")";
   div.appendChild(checkbox);
   div.appendChild(label);
   return div;
