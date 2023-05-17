@@ -212,7 +212,6 @@
               {% if request.user.owners_channels.all %}
                 <a class="nav-item nav-link" href="{% url 'channels:my_channels' %}"><i class="bi bi-play-btn pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My channels' %}</a>
               {% endif %}
-              <a class="nav-item nav-link" href="{% url 'playlist:my_playlists' %}"><i class="bi bi-cast pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
               {% if request.user.is_staff and USE_PODFILE %}
                 <a class="nav-item nav-link" href="{% url 'podfile:home' %}"><i class="bi bi-folder pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My files' %}</a>
               {% endif %}

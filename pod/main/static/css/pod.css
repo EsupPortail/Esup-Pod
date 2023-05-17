@@ -527,8 +527,7 @@ button.nav-link {
   margin: .1rem;
 }
 
-#videos_list .card-header,
-.playlist-videos .card-header {
+#videos_list .card-header {
   /*position: absolute;
   width: 100%;
   background: var(--color-black-alpha);

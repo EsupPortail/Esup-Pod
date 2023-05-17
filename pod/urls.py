@@ -78,10 +78,6 @@ urlpatterns = [
     # cut
     url(r"^cut/", include("pod.cut.urls")),
 ]
-# PLAYLIST
-urlpatterns += [
-    path("playlist/", include("pod.playlist.urls", namespace="playlist")),
-]
 
 # CAS
 if USE_CAS:
