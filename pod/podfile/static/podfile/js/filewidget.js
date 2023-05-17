@@ -428,16 +428,17 @@ if (typeof loaded == "undefined") {
         "X-CSRFToken": token,
         Authorization: "Bearer " + token,
         "X-Requested-With": "XMLHttpRequest",
+        "Content-Type": "application/json",
       },
       cache: "no-cache",
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status == "ok") {
+      .then((response) => {
+        console.log(response);
+        if (response.status == 201) {
           reloadRemoveBtn();
         } else {
           showalert(
-            gettext("Server error") + "<br/>" + data.message,
+            gettext("Server error") + "<br/>" + response.statusText,
             "alert-danger"
           );
         }
@@ -464,17 +465,17 @@ if (typeof loaded == "undefined") {
         "X-CSRFToken": token,
         Authorization: "Bearer " + token,
         "X-Requested-With": "XMLHttpRequest",
+        "Content-Type": "application/json",
       },
       cache: "no-cache",
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status == "ok") {
+      .then((response) => {
+        if (response.status == 201) {
           reloadAddBtn(document.getElementById("userInputName").value);
           reloadRemoveBtn();
         } else {
           showalert(
-            gettext("Server error") + "<br/>" + data.message,
+            gettext("Server error") + "<br/>" + response.statusText,
             "alert-danger"
           );
         }
