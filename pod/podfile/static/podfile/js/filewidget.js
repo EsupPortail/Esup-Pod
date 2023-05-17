@@ -224,19 +224,6 @@ if (typeof loaded == "undefined") {
   });
 
   function user_li(text, elt, type) {
-    /*
-    let cls =
-      type.toLowerCase() === "add"
-        ? "btn-success btn-add"
-        : "btn-danger btn-remove";
-    return `<li class="list-group-item"><span class="username">${
-      elt.first_name
-    } ${elt.last_name} ${
-      !HIDE_USERNAME ? "(" + elt.username + ")" : ""
-    }</span><a href="#" type="button" data-userid="${
-      elt.id
-    }" class="btn btn-share ${cls}">${text}</a></li>`;
-    */
     let cls =
     type.toLowerCase() === "add"
       ? "btn-success btn-add"
@@ -262,38 +249,6 @@ if (typeof loaded == "undefined") {
   }
 
   function reloadRemoveBtn() {
-    /*
-    let remove = gettext("Remove");
-    document.getElementById("shared-people").innerHTML = "";
-    url =
-      "/podfile/ajax_calls/folder_shared_with?foldid=" +
-      document.getElementById("formuserid").value;
-    let token = document.querySelector(
-      'input[name="csrfmiddlewaretoken"]'
-    ).value;
-
-    fetch(url, {
-      method: "GET",
-      headers: {
-        "X-CSRFToken": token,
-        "X-Requested-With": "XMLHttpRequest",
-        Authorization: "Bearer " + token,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.length > 0) {
-          data.forEach((elt) => {
-            document
-              .getElementById("shared-people")
-              .append(user_li(remove, elt, "remove"));
-          });
-        }
-      })
-      .catch((error) => {
-        showalert(gettext("Server error") + "<br/>" + error, "alert-danger");
-      });
-    */
       let remove = gettext("Remove");
       const sharedPeopleContainer = document.getElementById("shared-people");
       sharedPeopleContainer.innerHTML = "";
@@ -324,41 +279,6 @@ if (typeof loaded == "undefined") {
   }
 
   function reloadAddBtn(searchTerm) {
-    /*
-    if (!document.getElementById("formuserid")) return;
-    let folderid = Number.parseInt(document.getElementById("formuserid").value);
-    let add = gettext("Add");
-    let url =
-      "/podfile/ajax_calls/search_share_user?term=" +
-      searchTerm +
-      "&foldid=" +
-      folderid;
-    let token = document.querySelector(
-      'input[name="csrfmiddlewaretoken"]'
-    ).value;
-    fetch(url, {
-      method: "GET",
-      headers: {
-        "X-CSRFToken": token,
-        "X-Requested-With": "XMLHttpRequest",
-        Authorization: "Bearer " + token,
-      },
-      cache: "no-cache",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        document.getElementById("user-search").innerHTML = "";
-        data.forEach((elt) => {
-          document
-            .getElementById("user-search")
-            .append(user_li(add, elt, "add"));
-        });
-        fadeIn(document.getElementById("user-search"));
-      })
-      .catch((error) => {
-        showalert(gettext("Server error") + "<br/>" + error, "alert-danger");
-      });
-  */
       const formUserId = document.getElementById("formuserid");
       if (!formUserId) return;
 
@@ -378,7 +298,6 @@ if (typeof loaded == "undefined") {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data)
           const userSearchContainer = document.getElementById("user-search");
           userSearchContainer.innerHTML = "";
           data.forEach((elt) => {
@@ -433,7 +352,6 @@ if (typeof loaded == "undefined") {
       cache: "no-cache",
     })
       .then((response) => {
-        console.log(response);
         if (response.status == 201) {
           reloadRemoveBtn();
         } else {
@@ -793,7 +711,6 @@ if (typeof loaded == "undefined") {
   
 
   function getFolders(search = "") {
-    //console.log("getFolders");
     document.getElementById("list_folders_sub").innerHTML = "";
     let type = document.getElementById("list_folders_sub").dataset.type;
     let currentFolder = getCurrentSessionFolder();
@@ -929,7 +846,6 @@ if (typeof loaded == "undefined") {
   function showfiles(e) {
     let cible = e.target
     if (e.target.nodeName.toLowerCase() !== "a" ) {
-      //console.log(e.target.textContent)
       cible = e.target.parentNode
     }
     document
