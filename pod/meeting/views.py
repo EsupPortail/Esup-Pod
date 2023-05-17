@@ -1,4 +1,5 @@
 import os
+import bleach
 
 from django.shortcuts import render
 
@@ -21,7 +22,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.utils import timezone
 from datetime import datetime
 
-from .models import Meeting, Recording
+from .models import Meeting, StatelessRecording, Recording
 from .utils import get_nth_week_number
 from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm, MeetingInviteForm
 from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
@@ -64,7 +65,10 @@ def my_meetings(request):
     if RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
         return render(request, "meeting/my_meetings.html", {"access_not_allowed": True})
     if request.GET and request.GET.get("all") == "true":
-        meetings = request.user.owner_meeting.all().filter(site=site)
+        meetings = request.user.owner_meeting.all().filter(
+            site=site
+        ) | request.user.owners_meetings.all().filter(site=site)
+        meetings = meetings.distinct()
     else:
         # remove past meeting
         meetings = [
@@ -481,26 +485,51 @@ def recordings(request, meeting_id):
         Meeting, meeting_id=meeting_id, site=get_current_site(request)
     )
 
-    if request.user != meeting.owner and not (
-        request.user.is_superuser or request.user.has_perm("meeting.delete_meeting")
+    if (
+        request.user != meeting.owner
+        and not (
+            request.user.is_superuser or request.user.has_perm("meeting.view_meeting")
+        )
+        and (request.user not in meeting.additional_owners.all())
     ):
         messages.add_message(
-            request, messages.ERROR, _("You cannot delete this meeting.")
+            request, messages.ERROR, _("You cannot view the recordings of this meeting.")
         )
         raise PermissionDenied
+
+    # Additional owners can't delete these recordings
+    can_delete = get_can_delete_recordings(request, meeting)
 
     meeting_recordings = meeting.get_recordings()
     recordings = []
     if type(meeting_recordings.get("recordings")) is dict:
         for data in meeting_recordings["recordings"].values():
-            recording = Recording(data["recordID"], data["name"], data["state"])
-            recording.startTime = data["startTime"]
-            recording.endTime = data["endTime"]
+            # Management of the BBB recording
+            bbb_recording = StatelessRecording(
+                data["recordID"], data["name"], data["state"]
+            )
+            # Init rights
+            bbb_recording.canUpload = False
+
+            bbb_recording.startTime = data["startTime"]
+            bbb_recording.endTime = data["endTime"]
             for playback in data["playback"]:
-                recording.add_playback(
+                bbb_recording.add_playback(
                     data["playback"][playback]["type"], data["playback"][playback]["url"]
                 )
-            recordings.append(recording)
+                # Uploading to Pod is possible only for video playback
+                if data["playback"][playback]["type"] == "video":
+                    bbb_recording.canUpload = True
+
+            # Only the owner can delete their recordings
+            bbb_recording.canDelete = can_delete
+            # Search for more informations from database (if already uploaded to Pod)
+            recording = Recording.objects.filter(
+                recording_id=data["recordID"], is_internal=True
+            ).first()
+            if recording:
+                bbb_recording.uploadedToPodBy = recording.uploaded_to_pod_by
+            recordings.append(bbb_recording)
 
     return render(
         request,
@@ -511,6 +540,20 @@ def recordings(request, meeting_id):
             "page_title": _("Meeting recordings"),
         },
     )
+
+
+def get_can_delete_recordings(request, meeting):
+    """Return True if current user can delete recordings."""
+    can_delete = False
+
+    # Additional owners can't delete these recordings
+    if (
+        request.user == meeting.owner
+        or (request.user.is_superuser)
+        or (request.user.has_perm("meeting.delete_meeting"))
+    ):
+        can_delete = True
+    return can_delete
 
 
 @csrf_protect
@@ -617,9 +660,8 @@ def send_invite(request, meeting, emails):
         "meeting_title": meeting.name,
     }
     from_email = meeting.owner.email  # DEFAULT_FROM_EMAIL
-    text_content = get_text_content(request, meeting)
     html_content = get_html_content(request, meeting)
-
+    text_content = bleach.clean(html_content, tags=[], strip=True)
     msg = EmailMultiAlternatives(subject, text_content, from_email, emails)
     msg.attach_alternative(html_content, "text/html")
     # ics calendar
@@ -632,70 +674,6 @@ def send_invite(request, meeting, emails):
     msg.attach_file(filename_event, "text/calendar")
     msg.send()
     os.remove(filename_event)
-
-
-def get_text_content(request, meeting):
-    join_link = request.build_absolute_uri(
-        reverse("meeting:join", args=(meeting.meeting_id,))
-    )
-    meeting_start_datetime = timezone.localtime(meeting.start_at).strftime(
-        "%d/%m/%Y %H:%M"
-    )
-    full_name = (
-        meeting.owner.get_full_name()
-        if (meeting.owner.get_full_name() != "")
-        else meeting.owner.username
-    )
-    if meeting.recurrence:
-        text_content = (
-            _(
-                """
-            Hello,
-            %(owner)s invites you to a recurring meeting %(meeting_title)s.
-            Start date: %(start_date_time)s
-            Recurring until date: %(end_date)s
-            The meeting will be occur each %(frequency)s %(recurrence)s
-            Here is the link to join the meeting: %(join_link)s
-            You need this password to enter: %(password)s
-            Regards
-        """
-            )
-            % {
-                "owner": full_name,
-                "meeting_title": meeting.name,
-                "start_date_time": meeting_start_datetime,
-                "end_date": meeting.recurring_until.strftime("%d/%m/%Y"),
-                "frequency": meeting.frequency,
-                "recurrence": meeting.get_recurrence_display().lower(),
-                "join_link": join_link,
-                "password": meeting.attendee_password,
-            }
-        )
-    else:
-        text_content = (
-            _(
-                """
-            Hello,
-            %(owner)s invites you to the meeting %(meeting_title)s.
-            Start date: %(start_date_time)s
-            End date: %(end_date)s
-            Here is the link to join the meeting: %(join_link)s
-            You need this password to enter: %(password)s
-            Regards
-        """
-            )
-            % {
-                "owner": full_name,
-                "meeting_title": meeting.name,
-                "start_date_time": meeting_start_datetime,
-                "end_date": timezone.localtime(
-                    meeting.start_at + meeting.expected_duration
-                ).strftime("%d/%m/%Y %H:%M"),
-                "join_link": join_link,
-                "password": meeting.attendee_password,
-            }
-        )
-    return text_content
 
 
 def get_html_content(request, meeting):
@@ -860,3 +838,56 @@ def get_rrule(meeting):
         end_date_time = timezone.make_aware(end)
         rrule += "UNTIL=%s" % end_date_time.strftime("%Y%m%dT%H%M%S%z")
     return rrule
+
+
+@csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
+def upload_recording_to_pod(request, meeting_id, recording_id):
+    meeting = get_object_or_404(
+        Meeting, meeting_id=meeting_id, site=get_current_site(request)
+    )
+    if (
+        meeting
+        and request.user != meeting.owner
+        and (
+            not (
+                request.user.is_superuser
+                or request.user.has_perm("meeting.upload_recording_to_pod")
+            )
+        )
+        and (request.user not in meeting.additional_owners.all())
+    ):
+        messages.add_message(
+            request, messages.ERROR, _("You cannot upload this recording.")
+        )
+        raise PermissionDenied
+
+    if request.method == "POST":
+        msg = ""
+        upload = False
+        try:
+            upload = meeting.upload_recording_to_pod(request, meeting_id, recording_id)
+        except ValueError as ve:
+            args = ve.args[0]
+            msg = ""
+            for key in args:
+                msg += "<b>%s:</b> %s<br/>" % (key, args[key])
+            msg = mark_safe(msg)
+        if upload and msg == "":
+            messages.add_message(
+                request,
+                messages.INFO,
+                _(
+                    "The recording has been uploaded to Pod."
+                    "You can see the video directly in My videos."
+                ),
+            )
+        else:
+            messages.add_message(request, messages.ERROR, msg)
+        return redirect(reverse("meeting:recordings", args=(meeting.meeting_id,)))
+    else:
+        messages.add_message(
+            request, messages.INFO, _("This view cannot be accessed directly.")
+        )
+        return redirect(reverse("meeting:recordings", args=(meeting.meeting_id,)))

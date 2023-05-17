@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "3.1.1"
+VERSION = "3.2.0"
 
 ##
 # Installed applications list
@@ -60,7 +60,9 @@ INSTALLED_APPS = [
     "pod.lti",
     "pod.bbb",
     "pod.meeting",
+    "pod.cut",
     "pod.xapi",
+    "pod.favorite",
     "pod.custom",
 ]
 
@@ -114,6 +116,7 @@ TEMPLATES = [
                 "pod.video.context_processors.context_video_settings",
                 "pod.authentication.context_processors.context_authentication_settings",
                 "pod.recorder.context_processors.context_recorder_settings",
+                "pod.favorite.context_processors.context_settings",
             ],
         },
     },
@@ -186,8 +189,11 @@ LOGGING = {
     "handlers": {
         "file": {
             # 'level': 'DEBUG',
-            "class": "logging.FileHandler",
+            "class": "logging.handlers.RotatingFileHandler",
             "filename": "pod/log/django.log",
+            "maxBytes": 15728640,  # 1024 * 1024 * 15B = 15MB
+            "backupCount": 10,
+            "formatter": "verbose",
         },
         "console": {
             "class": "logging.StreamHandler",

@@ -1,3 +1,5 @@
+// this function (isFooterInView) is not used elsewhere
+/*
 function isFooterInView() {
   var footer = document.querySelector(
     "footer.container-fluid.pod-footer-container"
@@ -11,7 +13,7 @@ function isFooterInView() {
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
-
+*/
 /* Another way to detect the footer 
 function detect_visibility() {
   var element = document.querySelector(

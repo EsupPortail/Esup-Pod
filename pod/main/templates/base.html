@@ -70,7 +70,7 @@
       <div class="pod-grid-content">
         <div class="pod-mainContent mt-2" id="pod-mainContent">
           {% if not request.GET.is_iframe %}
-            <div class="pod-aside-collapse">
+            <div class="pod-aside-collapse" id="collapse-button">
               {% block collapse_page_aside %}
                 <a class="btn btn-outline-primary collapseAside pod-aside-collapse__button" data-bs-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" aria-label="{% trans 'Toggle side Menu' %}">
                   <i class="bi bi-three-dots-vertical"></i>
@@ -96,7 +96,6 @@
               {% endif %}
             {% endblock main_page_title %}
             {% block page_content %}
-            <p> Contenu block page_content </p>
             {% endblock page_content %}
           </div>
           <!-- fin contenu page statique -->
@@ -251,3 +250,4 @@
 </body>
 
 </html>
+

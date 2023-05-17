@@ -1,6 +1,14 @@
+import bleach
+import json
+import logging
+import os.path
+
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.core.mail import EmailMultiAlternatives, mail_managers
+from time import sleep
+from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
@@ -11,7 +19,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         "TITLE_SITE": "Pod",
         "TITLE_ETB": "University name",
         "LOGO_SITE": "img/logoPod.svg",
-        "LOGO_ETB": "img/logo_etb.svg",
+        "LOGO_ETB": "img/esup-pod.svg",
         "LOGO_PLAYER": "img/pod_favicon.svg",
         "LINK_PLAYER": "",
         "FOOTER_TEXT": ("",),
@@ -37,6 +45,8 @@ MANAGERS = getattr(settings, "MANAGERS", {})
 
 DEBUG = getattr(settings, "DEBUG", True)
 
+logger = logging.getLogger("pod.live")
+
 
 def send_email_confirmation(event):
     """Send an email on creation/modification event."""
@@ -54,28 +64,6 @@ def send_email_confirmation(event):
 
     to_email = [event.owner.email]
 
-    message = "%s\n%s\n\n%s\n" % (
-        _("Hello,"),
-        _(
-            "You have just scheduled a new event called “%(content_title)s” "
-            + "from %(start_date)s to %(end_date)s "
-            + "on video server: %(url_event)s)."
-            + " You can find the other sharing options in the dedicated tab."
-        )
-        % {
-            "content_title": event.title,
-            "start_date": event.start_date,
-            "end_date": event.end_date,
-            "url_event": url_event,
-        },
-        _("Regards."),
-    )
-
-    full_message = message + "\n%s%s" % (
-        _("Post by:"),
-        event.owner,
-    )
-
     html_message = "<p>%s</p><p>%s</p><p>%s</p>" % (
         _("Hello,"),
         _(
@@ -91,6 +79,12 @@ def send_email_confirmation(event):
             "url_event": url_event,
         },
         _("Regards."),
+    )
+
+    message = bleach.clean(html_message, tags=[], strip=True)
+    full_message = message + "\n%s%s" % (
+        _("Post by:"),
+        event.owner,
     )
 
     # email establishment
@@ -169,3 +163,48 @@ def send_email(subject, message, from_email, to_email, cc_email, html_message):
 
     if not DEBUG:
         msg.send()
+
+
+def get_event_id_and_broadcaster_id(request):
+    """
+    Extracts the event ID and broadcaster ID from the given HTTP request.
+    Args:
+        request: An HTTP request object.
+    Returns:
+        A tuple containing the event ID
+        and broadcaster ID extracted from the request body.
+    """
+    body_unicode = request.body.decode("utf-8")
+    body_data = json.loads(body_unicode)
+    event_id = body_data.get("idevent", None)
+    broadcaster_id = body_data.get("idbroadcaster", None)
+    return event_id, broadcaster_id
+
+
+def check_exists(resource_name, is_dir, max_attempt=6):
+    """Checks whether a file or directory exists."""
+    fct = os.path.isdir if is_dir else os.path.exists
+    type = "Dir" if is_dir else "File"
+    attempt_number = 1
+    while not fct(resource_name) and attempt_number <= max_attempt:
+        logger.warning(f"{type} does not exists, attempt number {attempt_number} ")
+
+        if attempt_number == max_attempt:
+            logger.error(f"Impossible to get {type}: {resource_name}")
+            raise Exception(f"{type}: {resource_name} does not exists")
+
+        attempt_number = attempt_number + 1
+        sleep(1)
+
+
+def check_permission(request):
+    """Checks whether the current user has permission to view a page.
+    Args:
+        request: An HTTP request object.
+    Raises:
+        PermissionDenied: If the user is not a superuser
+        and does not have the 'live.acces_live_pages' permission.
+    """
+    if not (request.user.is_superuser or request.user.has_perm("live.acces_live_pages")):
+        messages.add_message(request, messages.ERROR, _("You cannot view this page."))
+        raise PermissionDenied

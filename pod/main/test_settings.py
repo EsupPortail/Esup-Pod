@@ -1,16 +1,16 @@
 """Esup-Pod "test mode" settings."""
 # test_settings.py
 # from ..settings import *
+from ..settings import BASE_DIR as settings_base_dir
+from ..settings import USE_TZ, REST_FRAMEWORK, LOG_DIRECTORY, LOGGING
+from ..settings import LOCALE_PATHS, STATICFILES_DIRS, DEFAULT_AUTO_FIELD
+from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N, USE_L10N
+from ..settings import ROOT_URLCONF, WSGI_APPLICATION, TEMPLATES
+from ..settings import INSTALLED_APPS, MIDDLEWARE, AUTHENTICATION_BACKENDS
 import os
 
 USE_OPENCAST_STUDIO = True
 
-from ..settings import INSTALLED_APPS, MIDDLEWARE, AUTHENTICATION_BACKENDS
-from ..settings import ROOT_URLCONF, WSGI_APPLICATION, TEMPLATES
-from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N, USE_L10N
-from ..settings import LOCALE_PATHS, STATICFILES_DIRS, DEFAULT_AUTO_FIELD
-from ..settings import USE_TZ, REST_FRAMEWORK, LOG_DIRECTORY, LOGGING
-from ..settings import BASE_DIR as settings_base_dir
 
 TEST_SETTINGS = True
 TEMPLATES[0]["DIRS"].append(
@@ -31,12 +31,16 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": "db-test.sqlite",
+        "OPTIONS": {
+            "timeout": 20,
+        },
     }
 }
 LANGUAGES = (("fr", "Français"), ("en", "English"))
 LANGUAGE_CODE = "en"
 THIRD_PARTY_APPS = ["enrichment", "live"]
 USE_PODFILE = True
+USE_FAVORITES = True
 USE_STATS_VIEW = True
 ACCOMMODATION_YEARS = {"faculty": 1}
 USE_OBSOLESCENCE = True

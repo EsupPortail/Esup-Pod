@@ -178,7 +178,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         "TITLE_SITE": "Pod",
         "TITLE_ETB": "University name",
         "LOGO_SITE": "img/logoPod.svg",
-        "LOGO_ETB": "img/logo_etb.svg",
+        "LOGO_ETB": "img/esup-pod.svg",
         "LOGO_PLAYER": "img/pod_favicon.svg",
         "LINK_PLAYER": "",
         "FOOTER_TEXT": ("",),
@@ -202,7 +202,23 @@ DEFAULT_DC_RIGHTS = getattr(settings, "DEFAULT_DC_RIGHT", "BY-NC-SA")
 DEFAULT_YEAR_DATE_DELETE = getattr(settings, "DEFAULT_YEAR_DATE_DELETE", 2)
 
 
+USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
+if USE_TRANSCRIPTION:
+    TRANSCRIPTION_MODEL_PARAM = getattr(settings, "TRANSCRIPTION_MODEL_PARAM", {})
+    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "STT")
+
 # FUNCTIONS
+
+
+def get_transcription_choices():
+    if USE_TRANSCRIPTION:
+        transcript_lang = TRANSCRIPTION_MODEL_PARAM.get(TRANSCRIPTION_TYPE, {}).keys()
+        transcript_choices_lang = []
+        for lang in transcript_lang:
+            transcript_choices_lang.append((lang, __LANG_CHOICES_DICT__[lang]))
+        return transcript_choices_lang
+    else:
+        return []
 
 
 def default_date_delete():
@@ -713,10 +729,12 @@ class Video(models.Model):
         default=get_language(),
         help_text=_("Select the main language used in the content."),
     )
-    transcript = models.BooleanField(
+    transcript = models.CharField(
         _("Transcript"),
-        default=False,
-        help_text=_("Check this box if you want to transcript the audio. (beta version)"),
+        max_length=2,
+        choices=get_transcription_choices(),
+        blank=True,
+        help_text=_("Select an available language to transcribe the audio."),
     )
     tags = TagField(
         help_text=_(

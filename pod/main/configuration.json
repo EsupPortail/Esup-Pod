@@ -1399,6 +1399,25 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "MEETING_PRE_UPLOAD_SLIDES": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Pre-loaded slideshow for virtual meetings.",
+                                    "A user can override this value by choosing a slideshow when creating a virtual meeting.",
+                                    "Must be in the static directory."
+                                ],
+                                "fr": [
+                                    "",
+                                    "Diaporama préchargé pour les réunions virtuelles.",
+                                    "Un utilisateur peut remplacer cette valeur en choisissant un diaporama lors de la création d'une réunion virtuelle.",
+                                    "Doit se trouver dans le répertoire statique."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.2.0"
+                        },
                         "MEETING_RECORD_FIELDS": {
                             "default_value": "()",
                             "description": {
@@ -1503,10 +1522,10 @@
                             "default_value": "('doc', 'docx', 'odt', 'pdf', 'xls', 'xlsx', 'ods', 'ppt', 'pptx', 'txt', 'html', 'htm', 'vtt', 'srt')",
                             "description": {
                                 "en": [
-                                    "Extensions allowed for documents uploaded in the file manager"
+                                    "Extensions allowed for documents uploaded in the file manager (lowercase)."
                                 ],
                                 "fr": [
-                                    "Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier"
+                                    "Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier (en minuscules)."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1529,10 +1548,10 @@
                             "default_value": "('jpg', 'jpeg', 'bmp', 'png', 'gif', 'tiff', 'webp')",
                             "description": {
                                 "en": [
-                                    "Extensions allowed for images uploaded in the file manager"
+                                    "Allowed extensions for images uploaded in the file manager (must be lowercase)."
                                 ],
                                 "fr": [
-                                    "Extensions autorisées pour les images téléversées dans le gestionnaire de fichier"
+                                    "Extensions autorisées pour les images téléversées dans le gestionnaire de fichier. (en minuscules)"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1820,7 +1839,7 @@
                     "description": {},
                     "settings": {
                         "ACTIVE_VIDEO_COMMENT": {
-                            "default_value": true,
+                            "default_value": false,
                             "description": {
                                 "en": [
                                     ""
@@ -2299,6 +2318,17 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "USE_FAVORITES": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of favorite videos. Allows users to add videos to their favorites."
+                                ],
+                                "fr": [
+                                    "Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans leurs favoris."
+                                ]
+                            }
+                        },
                         "USE_STATS_VIEW": {
                             "default_value": false,
                             "description": {
@@ -2355,10 +2385,10 @@
                             "default_value": "()",
                             "description": {
                                 "en": [
-                                    ""
+                                    "Allowed extensions for video upload on the platform (lowercase)."
                                 ],
                                 "fr": [
-                                    "Extensions autorisées pour le téléversement vidéo sur la plateforme",
+                                    "Extensions autorisées pour le téléversement vidéo sur la plateforme (en minuscules).",
                                     "```",
                                     "VIDEO_ALLOWED_EXTENSIONS = (",
                                     "    \"3gp\",",
@@ -4358,7 +4388,7 @@
                                     " ",
                                     "# Logo affiché dans le footer sur toutes les pages.",
                                     "# Doit se situer dans le répertoire static",
-                                    "'LOGO_ETB': 'img/logo_etb.svg',",
+                                    "'LOGO_ETB': 'img/esup-pod.svg',",
                                     " ",
                                     "# Logo affiché sur le player video.",
                                     "# Doit se situer dans le répertoire static",

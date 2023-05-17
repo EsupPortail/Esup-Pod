@@ -6,6 +6,7 @@ from .views import video
 from .views import video_edit
 from .views import video_add
 from .views import video_delete
+from .views import video_transcript
 
 from .views import my_videos
 from .views import video_notes
@@ -45,6 +46,11 @@ urlpatterns = [
         video_delete,
         name="video_delete",
     ),
+    url(
+        r"^transcript/(?P<slug>[\-\d\w]+)/$",
+        video_transcript,
+        name="video_transcript",
+    ),
     url(r"^notes/(?P<slug>[\-\d\w]+)/$", video_notes, name="video_notes"),
     url(r"^count/(?P<id>[\d]+)/$", video_count, name="video_count"),
     url(r"^version/(?P<id>[\d]+)/$", video_version, name="video_version"),
@@ -73,6 +79,11 @@ urlpatterns += [
 # CHAPTER
 urlpatterns += [
     path("chapter/", include("pod.chapter.urls", namespace="chapter")),
+]
+
+# CUT
+urlpatterns += [
+    path("cut/", include("pod.cut.urls", namespace="video_cut")),
 ]
 
 ##

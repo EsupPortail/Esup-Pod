@@ -29,7 +29,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         "TITLE_SITE": "Pod",
         "TITLE_ETB": "University name",
         "LOGO_SITE": "img/logoPod.svg",
-        "LOGO_ETB": "img/logo_etb.svg",
+        "LOGO_ETB": "img/esup-pod.svg",
         "LOGO_PLAYER": "img/pod_favicon.svg",
         "LINK_PLAYER": "",
         "FOOTER_TEXT": ("",),
@@ -153,7 +153,7 @@ class RssSiteVideosFeed(Feed):
         )
         self.feed_url = request.build_absolute_uri()
 
-        videos_list = get_videos_list(request)
+        videos_list = get_videos_list()
 
         if slug_c:
             channel = get_object_or_404(

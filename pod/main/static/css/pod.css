@@ -204,7 +204,7 @@ tr,
   margin-bottom: 1.5rem;
 }
 
-:not(footer)>.pod-btn-social {
+:not(footer)>.pod-btn-social:not(#star_btn) {
   font-size: 2rem;
 }
 .btn.pod-btn-social {
@@ -510,6 +510,11 @@ button.nav-link {
   border-color: #CCC;
 }
 
+/*** Videos list header ***/
+.videos-list-header{
+   align-items: center;
+}
+
 /*** CARD ***/
 .infinite-item .card-body {
   padding: .9rem;
@@ -592,7 +597,7 @@ div.card a img {
   background: #00000095;
 }
 
-.card-footer-pod a.btn {
+.card-footer-pod a.btn, .card-footer-pod #star_btn  {
   border: none;
   color: white;
   background: none;
@@ -647,6 +652,22 @@ div.card a img {
 }*/
 
 /** aside list video **/
+#collapseAside .card-body .card-title{
+    position: relative;
+    padding-bottom: 0.8em;
+}
+#collapseAside .card-body .card-title::after{
+    content: "";
+    border-top: 1px solid #ccc !important;
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+#resetFilters{
+    margin-left: auto !important;
+}
 #filterType div.collapse:not(.show),
 #filterDiscipline div.collapse:not(.show),
 #filterCursus div.collapse:not(.show),
@@ -858,6 +879,7 @@ body[data-admin-utc-offset] {
   --primary: var(--pod-primary);
   --breadcrumbs-bg: var(--pod-primary);
   --button-bg: var(--pod-primary);
+  background-color: var(--body-bg);
 }
 
 body[data-admin-utc-offset] textarea.cke_source {
@@ -1446,7 +1468,7 @@ body {
   font-size: 1.8rem;
   margin: 0;
   border: 0;
-  margin-right: 1.5rem;
+  margin-right: .3rem;
   background: none;
   width:2.5rem;
   height: 2.5rem;
@@ -1588,6 +1610,50 @@ table .alert.alert-danger.btn.pod-btn-social {
 }
 .pod-callout-info {
   border-left-color: var(--bs-info);
+}
+
+/* Pure css loader */
+.lds-ring {
+  display: none;
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+  z-index: 9999;
+}
+.lds-ring.show{
+  display: flex;
+  align-items: center;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 51px;
+  height: 51px;
+  margin: 6px;
+  border: 6px solid var(--pod-font-color);
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: var(--pod-font-color) transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* *** fix for calendar choice widget in modal dialog *** */

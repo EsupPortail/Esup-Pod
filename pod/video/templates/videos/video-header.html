@@ -46,6 +46,10 @@
   </style>
 {% endif %}
 
+<!-- cut video -->
+<link rel="stylesheet" href="{% static 'css/video_cut.css' %}?ver={{VERSION}}">
+
+
 <!-- quality selector -->
 <link href="{% static 'videojs-hls-quality-selector/dist/videojs-hls-quality-selector.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js' %}?ver={{VERSION}}"></script>
@@ -58,6 +62,8 @@
 <!-- notes -->
 <link href="{% static 'css/video_notes.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'js/video_notes.js' %}?ver={{VERSION}}"></script>
+<!-- favorites -->
+<script src="{% static 'js/video-favorites.js' %}?ver={{VERSION}}"></script>
 <!-- logo -->
 <link href="{% static 'css/videojs-controlbar.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'js/videojs-logo-controlbar.js' %}?ver={{VERSION}}"></script>

@@ -41,6 +41,18 @@
   */
 }
 
+[data-theme="dark"] .table{
+  /* copied from .table-dark class */
+  --bs-table-color: #fff;
+  --bs-table-bg: #212529;
+  --bs-table-border-color: #373b3e;
+  --bs-table-striped-bg: #2c3034;
+  --bs-table-striped-color: #fff;
+  --bs-table-active-bg: #373b3e;
+  --bs-table-active-color: #fff;
+  --bs-table-hover-bg: #323539;
+  --bs-table-hover-color: #fff;
+}
 
 /***** Auto DARK MODE (use browser setting) *****/
 /*
@@ -329,3 +341,6 @@ input:checked+.slider:before {
   transform: translateX(26px);
 }
 
+[data-theme="dark"] input.pod-multi-range {
+  background-color: transparent;
+}

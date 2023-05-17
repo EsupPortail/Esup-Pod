@@ -1,3 +1,5 @@
+// this function (appendHTML) is not used elsewhere
+/*
 function appendHTML(node, html) {
   var temp = document.createElement("div");
   temp.innerHTML = html;
@@ -14,7 +16,7 @@ function appendHTML(node, html) {
     node.appendChild(s);
   }
 }
-
+*/
 function getParents(el, parentSelector) {
   if (parentSelector === undefined) {
     parentSelector = document;
@@ -90,7 +92,7 @@ var slideDown = (target, duration = 500) => {
   }, duration);
 };
 
-/* SLIDE TOOGLE */
+/* SLIDE TOGGLE */
 var slideToggle = (target, duration = 500) => {
   if (window.getComputedStyle(target).display === "none") {
     return slideDown(target, duration);
@@ -390,46 +392,35 @@ document.querySelectorAll(".collapsibleThemes").forEach((cl) => {
   });
 });
 
-let ownerboxnavbar = document.getElementById("ownerboxnavbar");
-if (ownerboxnavbar) {
-  ownerboxnavbar.addEventListener("keyup", function () {
-    if (ownerboxnavbar.value && ownerboxnavbar.value.length > 2) {
-      var searchTerm = ownerboxnavbar.value;
-      let data = new FormData();
-      data.append("term", searchTerm);
-      data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
-      url = "/ajax_calls/search_user/";
-      fetch(url, {
-        method: "POST",
-        body: data,
-        headers: {
-          Accept: "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          let accordion = document.getElementById("accordion");
-          accordion.innerHTML = "";
-          data.forEach((elt) => {
-            accordion.innerHTML +=
-              '<li><a href="' +
-              urlvideos +
-              "?owner=" +
-              elt.username +
-              '">' +
-              elt.first_name +
-              " " +
-              elt.last_name +
-              (!HIDE_USERNAME
-                ? " (" + elt.username + ")</a></li>"
-                : "</a></li>");
-          });
+/* USERS IN NAVBAR */
+let ownerBoxNavBar = document.getElementById("ownerboxnavbar");
+if (ownerBoxNavBar) {
+  let pod_users_list = document.getElementById("pod_users_list");
+  ownerBoxNavBar.addEventListener("input", (e) => {
+    if (ownerBoxNavBar.value && ownerBoxNavBar.value.length > 2) {
+      var searchTerm = ownerBoxNavBar.value;
+      getSearchListUsers(searchTerm).then((users) => {
+        pod_users_list.innerHTML = "";
+        users.forEach((user) => {
+          pod_users_list.appendChild(createUserLink(user));
         });
+      });
     } else {
-      document.getElementById("accordion").innerHTML = "";
+      pod_users_list.innerHTML = "";
     }
   });
+}
+
+// Create link for user search
+function createUserLink(user) {
+  let li = document.createElement("li");
+  let a = document.createElement("a");
+  a.setAttribute("href", "/videos/?owner=" + user.username);
+  a.setAttribute("title", user.first_name + " " + user.last_name);
+  a.innerHTML =
+    user.first_name + " " + user.last_name + " (" + user.username + ")";
+  li.appendChild(a);
+  return li;
 }
 
 /** COOKIE DIALOG **/
@@ -543,6 +534,27 @@ function TriggerAlertClose() {
       });
   }, 5000);
 }
+/** SEARCH USER **/
+async function getSearchListUsers(searchTerm) {
+  try {
+    let data = new FormData();
+    data.append("term", searchTerm);
+    data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
+    const response = await fetch("/ajax_calls/search_user/", {
+      method: "POST",
+      body: data,
+      headers: {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    });
+    const users = await response.json();
+    return users;
+  } catch (error) {
+    showalert(gettext("User not found"), "alert-danger");
+  }
+}
+
 /*** FORM THEME USER PICTURE ***/
 /** PICTURE **/
 document.addEventListener("click", (e) => {
@@ -682,63 +694,44 @@ var send_form_data = async function (
     form_data = data_form;
   }
 
-  if (method == "post") {
-    await fetch(url, {
-      method: "POST",
-      headers: {
-        "X-CSRFToken": token,
-        "X-Requested-With": "XMLHttpRequest",
-      },
-      body: form_data,
-    })
-      .then((response) => response.text())
-      .then(($data) => {
-        $data = callbackSuccess($data);
-        window[fct]($data);
-      })
+  const options = {
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+    },
+  };
 
-      .catch((error) => {
-        showalert(
-          gettext("Error during exchange") +
-            "(" +
-            error +
-            ")<br/>" +
-            gettext("No data could be stored."),
-          "alert-danger"
-        );
-
-        callbackFail(error);
-      });
+  if (method === "post") {
+    options.method = "POST";
+    options.headers["X-CSRFToken"] = token;
+    options.body = form_data;
   } else {
-    await fetch(url, {
-      method: "GET",
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    })
-      .then((response) => response.text())
-      .then(($data) => {
-        $data = callbackSuccess($data);
-        if (typeof window[fct] === "function") {
-          window[fct]($data);
-        }
-      })
+    options.method = "GET";
+  }
 
-      .catch((error) => {
-        showalert(
-          gettext("Error during exchange") +
-            "(" +
-            error +
-            ")<br/>" +
-            gettext("No data could be stored."),
-          "alert-danger"
-        );
+  try {
+    const response = await fetch(url, options);
+    const data = await response.text();
+    const processedData = callbackSuccess(data);
+    if (method === "post") {
+      window[fct](processedData);
+    } else {
+      if (typeof window[fct] === "function") {
+        window[fct](processedData);
+      }
+    }
+  } catch (error) {
+    showalert(
+      gettext("Error during exchange") +
+        "(" +
+        error +
+        ")<br/>" +
+        gettext("No data could be stored."),
+      "alert-danger"
+    );
 
-        callbackFail(error);
-      });
+    callbackFail(error);
   }
 };
-
 /**
  * AJAX call function (usually send form data)
  *
@@ -800,7 +793,8 @@ var send_form_data_vanilla = function (
       callbackFail(err);
     });
 };
-
+// this function (show_form_theme_new) is not used elsewhere
+/*
 var show_form_theme_new = function (data) {
   if (data.indexOf("form_theme") == -1) {
     showalert(
@@ -811,6 +805,9 @@ var show_form_theme_new = function (data) {
     show_form_theme(data);
   }
 };
+*/
+// this function (show_form_theme_modify) is not used elsewhere
+/*
 var show_form_theme_modify = function (data) {
   if (data.indexOf("theme") == -1) {
     showalert(
@@ -824,6 +821,9 @@ var show_form_theme_modify = function (data) {
     document.getElementById("theme_" + id).classList.add("table-primary");
   }
 };
+*/
+// // this function (show_form_theme_delete) is not used elsewhere
+/*
 var show_form_theme_delete = function (data) {
   if (!isJson(data)) {
     data = JSON.parse(data);
@@ -834,6 +834,7 @@ var show_form_theme_delete = function (data) {
     showalert(gettext("You are no longer authenticated. Please log in again."));
   }
 };
+*/
 var show_theme_form = function (data) {
   if (!isJson(data)) {
     data = JSON.parse(data);
@@ -951,88 +952,7 @@ function show_list_theme(data) {
     behavior: "smooth",
   });
 }
-/***** VIDEOS *****/
 
-let ownerbox = document.getElementById("ownerbox");
-if (ownerbox) {
-  ownerbox.addEventListener("keyup", async (e) => {
-    //let thisE = e.target;
-    if (ownerbox.value && ownerbox.value.length > 2) {
-      var searchTerm = ownerbox.value;
-      let data = new FormData();
-      data.append("term", searchTerm);
-      data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
-      url = "/ajax_calls/search_user/";
-      fetch(url, {
-        method: "POST",
-        body: data,
-        headers: {
-          Accept: "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.length > 0) {
-            document
-              .querySelectorAll("#collapseFilterOwner .added")
-              .forEach((index) => {
-                var c = index.querySelector("input");
-                if (!c.checked) {
-                  index.remove();
-                }
-              });
-            data.forEach((elt) => {
-              if (
-                listUserChecked.indexOf(elt.username) == -1 &&
-                (document.querySelector(
-                  "#collapseFilterOwner #id" + elt.username
-                ) == null ||
-                  document.querySelector(
-                    "#collapseFilterOwner #id" + elt.username
-                  ).length == 0)
-              ) {
-                let username = HIDE_USERNAME ? "" : " (" + elt.username + ")";
-                var chekboxhtml =
-                  '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="' +
-                  elt.username +
-                  '" id="id' +
-                  elt.username +
-                  '"><label class="form-check-label" for="id' +
-                  elt.username +
-                  '">' +
-                  elt.first_name +
-                  " " +
-                  elt.last_name +
-                  username +
-                  "</label></div>";
-                document.getElementById("collapseFilterOwner").innerHTML +=
-                  chekboxhtml;
-              }
-            });
-          }
-        })
-
-        .catch((error) => {
-          /*
-          showalert(
-            gettext("User not found"),
-            "alert-danger"
-          );
-          */
-        });
-    } else {
-      document
-        .querySelectorAll("#collapseFilterOwner .added")
-        .forEach((index) => {
-          var c = index.querySelector("input");
-          if (!c.checked) {
-            index.remove();
-          }
-        });
-    }
-  });
-}
 /****** VIDEOS EDIT ******/
 /** channel **/
 let id_channel = document.getElementById("id_channel");
@@ -1328,7 +1248,8 @@ var showalert = function (message, alerttype) {
     formalertdiv?.remove();
   }, 5000);
 };
-
+// this function (show_messages) is not used elsewhere, there is no id "show_messages"
+/*
 function show_messages(msgText, msgClass, loadUrl) {
   var $msgContainer = document.getElementById("show_messages");
   var close_button = "";
@@ -1369,6 +1290,7 @@ function show_messages(msgText, msgClass, loadUrl) {
     }, 3000);
   }
 }
+*/
 function flashing(elem, duration) {
   elem.classList.add("flashing_field");
   setTimeout(function () {

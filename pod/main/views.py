@@ -14,6 +14,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Esup-Pod. If not, see <https://www.gnu.org/licenses/>.
+import bleach
 
 from .forms import ContactUsForm, SUBJECT_CHOICES
 from django.shortcuts import render
@@ -29,10 +30,12 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import JsonResponse
 from wsgiref.util import FileWrapper
 from django.db.models import Q, Count
 from pod.video.models import Video, remove_accents
 from pod.authentication.forms import FrontOwnerForm
+from django.db.models import Sum
 import os
 import mimetypes
 import json
@@ -53,7 +56,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         thereby encourage its use in teaching and research.",
         "TITLE_ETB": "University name",
         "LOGO_SITE": "img/logoPod.svg",
-        "LOGO_ETB": "img/logo_etb.svg",
+        "LOGO_ETB": "img/esup-pod.svg",
         "LOGO_PLAYER": "img/pod_favicon.svg",
         "LINK_PLAYER": "",
         "FOOTER_TEXT": ("",),
@@ -243,15 +246,6 @@ def contact_us(request):
             if valid_human:
                 return redirect(form.cleaned_data["url_referrer"])
 
-            text_content = loader.get_template("mail/mail.txt").render(
-                {
-                    "name": name,
-                    "email": email,
-                    "TITLE_SITE": __TITLE_SITE__,
-                    "message": message,
-                    "url_referrer": form.cleaned_data["url_referrer"],
-                }
-            )
             html_content = loader.get_template("mail/mail.html").render(
                 {
                     "name": name,
@@ -261,7 +255,7 @@ def contact_us(request):
                     "url_referrer": form.cleaned_data["url_referrer"],
                 }
             )
-
+            text_content = bleach.clean(html_content, tags=[], strip=True)
             dest_email = []
             dest_email = get_dest_email(owner, video, form_subject, request)
 
@@ -278,15 +272,13 @@ def contact_us(request):
                 dict(SUBJECT_CHOICES)[form_subject],
             )
 
-            text_content = loader.get_template("mail/mail_sender.txt").render(
-                {"TITLE_SITE": __TITLE_SITE__, "message": message}
-            )
             html_content = loader.get_template("mail/mail_sender.html").render(
                 {
                     "TITLE_SITE": __TITLE_SITE__,
                     "message": message.replace("\n", "<br/>"),
                 }
             )
+            text_content = bleach.clean(html_content, tags=[], strip=True)
             msg = EmailMultiAlternatives(
                 subject, text_content, DEFAULT_FROM_EMAIL, [email]
             )
@@ -362,6 +354,21 @@ def robots_txt(request):
         "Disallow: %s" % LOGIN_URL,
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")
+
+
+# Restrict to only GET requests
+@require_GET
+def info_pod(request):
+    """Render a json response to give information about Pod instance."""
+    data = {
+        "TITLE_SITE": __TITLE_SITE__,
+        "VERSION": settings.VERSION,
+        "COUNT_VIDEO": Video.objects.all().count(),
+        "DURATION_VIDEO": Video.objects.aggregate(Sum("duration")).get(
+            "duration__sum", 0
+        ),
+    }
+    return JsonResponse(data)
 
 
 @csrf_protect

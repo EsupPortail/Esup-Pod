@@ -4,6 +4,7 @@
 {% get_available_languages as LANGUAGES %}
 {% get_language_info_list for LANGUAGES as languages %}
 {% load thumbnail %}
+{% load navbar %}
 
 <div class="container-fluid pod-container pod-navbar__container" id="nav-mainbar">
   {% comment %}<!--
@@ -75,19 +76,26 @@
             <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
           </li>
         {% else %}
-          <li class="nav-item pod-navbar__nav-item mx-2" id="nav-addvideo">
-            <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "Add a video" %}</span></a>
-          </li>
-          {% if USE_MEETING %}
-          <li class="nav-item pod-navbar__nav-item mx-2" id="nav-mymeetings">
-            <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "My meetings" %}</span></a>
-          </li>
+          {% show_video_buttons as video_buttons %}
+          {% if video_buttons %}
+            <li class="nav-item pod-navbar__nav-item mx-1" id="nav-addvideo">
+              <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "Add a video" %}</span></a>
+            </li>
+            <li class="nav-item pod-navbar__nav-item mx-1" id="nav-myvideos">
+              <a class="btn btn-primary btn-sm" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1"></i><span class="ms-1 d-none d-md-inline">{% trans "My videos" %}</span></a>
+            </li>
+          {% endif %}
+          {% show_meeting_button as meeting_button %}
+          {% if meeting_button %}
+            <li class="nav-item pod-navbar__nav-item mx-1" id="nav-mymeetings">
+              <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "My meetings" %}</span></a>
+            </li>
           {% endif %}
         {% endif %}
     {% endif %}
     <!--  Ajout Params Buttons -->
     <li class="nav-item pod-params pod-navbar__nav-item" id="pod-param-buttons">
-      <button class="btn bi bi-gear pod-params-button" type="button"
+      <button class="btn bi bi-gear pod-params-button px-1" type="button"
         id="pod-param-buttons__button" title="{% trans 'Toggle configuration panel'%}"
         data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menusettings">
       </button>
@@ -175,7 +183,9 @@
               {% if MAINTENANCE_MODE %}
                 <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle "></i> {% trans "Some features are unavailable" %}</span>
               {% else %}
-                <a class="mx-3 mb-2 btn btn-primary" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
+                {% if video_buttons %}
+                  <a class="mx-3 mb-2 btn btn-primary" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
+                {% endif %}
               {% endif %}
               {% if request.user.is_superuser or user.owner.is_manager %}
                 <a class="nav-item nav-link" href="{% url 'admin:index' %}"><i class="bi bi-cpu pod-nav-link-icon mx-1"></i>Administration</a>
@@ -185,7 +195,12 @@
                   <i class="bi bi-card-image pod-nav-link-icon mx-1"></i>{% if request.user.owner.userpicture %}{% trans 'Change your picture' %}{% else %}{% trans 'Add your picture' %}{% endif %}
                 </button></div>
               {% endif %}
-              <a class="nav-item nav-link" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My videos' %}</a>
+              {% if video_buttons %}
+                <a class="nav-item nav-link" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My videos' %}</a>
+              {% endif %}
+              {% if USE_FAVORITES %}
+                <a class="nav-item nav-link" href="{% url 'favorite:list' %}"><i class="bi bi-star pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My favorite videos' %}</a>
+              {% endif %}
               {% if USE_OPENCAST_STUDIO %}
                 <a class="nav-item nav-link" href="{% url 'recorder:studio_pod'%}"><i class="bi bi-camera-video pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans "Video Record" %}</a>
               {% endif %}

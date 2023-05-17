@@ -2,23 +2,15 @@
 {% load custom_tags %}
 
 {% spaceless %}
-<div class="card card-body" id="my_videos_filter">
-  <h2 class="h3 card-title pod-card__title">
-    <i class="bi bi-sliders2-vertical"></i>&nbsp;{% trans "Filters"%}
-  </h2>
-
-  <div class="filters" id="filters">
-    <div class="align_flex">
-      <h3 class="h4">
-        <i class="bi bi-collection-fill"></i>
-        {% trans "Categories" %}
-      </h3>
-    </div>
-    <button class="btn btn-outline-primary align_flex add_category_btn" data-bs-toggle="modal" data-bs-target="#manageCategoryModal" id="add_category_btn">
+<fieldset class="category_fieldset">
+  <legend class="h5"><i class="bi bi-collection-fill"></i> {% trans "Categories" %}</legend>
+  <div class="align_flex">
+    <button type="button" class="btn btn-outline-primary align_flex add_category_btn" data-bs-toggle="modal" data-bs-target="#manageCategoryModal" id="add_category_btn">
       <i class="bi bi-plus-lg"></i>
       {% trans "Add new category" %}
     </button>
-
+  </div>
+  <div>
     {% str_to_dict categories as categories %}
     <div class="form-group my-3 {% if not categories|slice:'1:' %}hidden{% endif %}">
       <label for="searchcategories" class="form-label">{% trans "Search" %}</label>
@@ -28,12 +20,12 @@
       <ul class="categories_list">
         {% for category in categories|slice:"1:"%}
           <li class="categories_list_item">
-            <button class="btn btn-link cat_title" data-slug="{{ category.slug}}">{{ category.title }}</button>
+            <button type="button" class="btn btn-link cat_title" data-slug="{{ category.slug}}">{{ category.title }}</button>
             <div class="category_actions">
-              <button title="{% trans 'Edit the category' %}" data-bs-toggle="modal" data-bs-target="#manageCategoryModal" data-slug="{{category.slug}}" data-title="{{category.title}}" class="btn btn-link edit_category">
+              <button type="button" title="{% trans 'Edit the category' %}" data-bs-toggle="modal" data-bs-target="#manageCategoryModal" data-slug="{{category.slug}}" data-title="{{category.title}}" class="btn btn-link edit_category">
                 <i class="bi bi-pencil-square"></i>
               </button>
-              <button title="{% trans 'Delete the category' %}" data-bs-toggle="modal" data-del="{{category.id}}" data-bs-target="#deleteCategoryModal" data-title="{{category.title}}" data-slug="{{category.slug}}" class="btn btn-link remove_category">
+              <button type="button" title="{% trans 'Delete the category' %}" data-bs-toggle="modal" data-del="{{category.id}}" data-bs-target="#deleteCategoryModal" data-title="{{category.title}}" data-slug="{{category.slug}}" class="btn btn-link remove_category">
                 <i class="bi bi-trash"></i>
               </button>
             </div>
@@ -42,5 +34,5 @@
       </ul>
     </div>
   </div>
-</div>
+</fieldset>
 {% endspaceless %}

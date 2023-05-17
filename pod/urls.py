@@ -16,6 +16,7 @@ from pod.main.views import (
     user_autocomplete,
     maintenance,
     robots_txt,
+    info_pod,
     userpicture,
 )
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
@@ -31,6 +32,7 @@ if USE_CAS:
 urlpatterns = [
     url("select2/", include("django_select2.urls")),
     url("robots.txt", robots_txt),
+    url("info_pod.json", info_pod),
     url(r"^admin/", admin.site.urls),
     # Translation
     url(r"^i18n/", include("django.conf.urls.i18n")),
@@ -73,6 +75,8 @@ urlpatterns = [
     url(r"^download/$", download_file, name="download_file"),
     # custom
     url(r"^custom/", include("pod.custom.urls")),
+    # cut
+    url(r"^cut/", include("pod.cut.urls")),
 ]
 # PLAYLIST
 urlpatterns += [
@@ -119,7 +123,13 @@ if getattr(settings, "USE_PODFILE", False):
 
 for apps in settings.THIRD_PARTY_APPS:
     urlpatterns += [
-        url(r"^" + apps + "/", include("pod.%s.urls" % apps)),
+        url(r"^" + apps + "/", include("pod.%s.urls" % apps, namespace=apps)),
+    ]
+
+# FAVORITE
+if getattr(settings, "USE_FAVORITES", True):
+    urlpatterns += [
+        path("favorite/", include("pod.favorite.urls", namespace="favorite")),
     ]
 
 # CHANNELS

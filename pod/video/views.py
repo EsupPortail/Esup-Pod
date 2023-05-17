@@ -31,6 +31,7 @@ from pod.main.utils import is_ajax
 from pod.main.views import in_maintenance
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
+from pod.favorite.models import Favorite
 from pod.video.utils import get_videos as video_get_videos
 from pod.video.models import Video
 from pod.video.models import Type
@@ -39,6 +40,8 @@ from pod.video.models import Theme
 from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
 from pod.video.models import ViewCount, VideoVersion
 from pod.video.models import Comment, Vote, Category
+from pod.video.models import get_transcription_choices
+
 from tagging.models import TaggedItem
 
 from pod.video.forms import VideoForm, VideoVersionForm
@@ -77,7 +80,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         thereby encourage its use in teaching and research.",
         "TITLE_ETB": "University name",
         "LOGO_SITE": "img/logoPod.svg",
-        "LOGO_ETB": "img/logo_etb.svg",
+        "LOGO_ETB": "img/esup-pod.svg",
         "LOGO_PLAYER": "img/pod_favicon.svg",
         "LINK_PLAYER": "",
         "FOOTER_TEXT": ("",),
@@ -141,12 +144,18 @@ CURSUS_CODES = getattr(
     ),
 )
 
-USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 VIEW_STATS_AUTH = getattr(settings, "VIEW_STATS_AUTH", False)
 ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
 USER_VIDEO_CATEGORY = getattr(settings, "USER_VIDEO_CATEGORY", False)
 DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
 ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
+
+USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
+
+if USE_TRANSCRIPTION:
+    from . import transcript
+
+    TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
 __VIDEOS__ = get_available_videos()
 
@@ -468,6 +477,7 @@ def theme_edit_save(request, channel):
 
 @login_required(redirect_field_name="referrer")
 def my_videos(request):
+    """Render the logged user's videos list"""
     data_context = {}
     site = get_current_site(request)
     # Videos list which user is the owner + which user is an additional owner
@@ -495,6 +505,12 @@ def my_videos(request):
         " 'slug': cat_slug,
         " 'videos': [v_slug, v_slug...] },]
         """
+        if request.GET.get("category") is not None:
+            category_checked = request.GET.get("category")
+            videos_list = get_object_or_404(
+                Category, title=category_checked, owner=request.user
+            ).video.all()
+
         cats = Category.objects.prefetch_related("video").filter(owner=request.user)
         videos_without_cat = videos_list.exclude(category__in=cats)
         cats = list(
@@ -513,31 +529,68 @@ def my_videos(request):
         data_context["categories"] = cats
         data_context["videos_without_cat"] = videos_without_cat
 
+    videos_list = get_filtered_videos_list(request, videos_list)
+    videos_list = sort_videos_list(request, videos_list)
+    count_videos = len(videos_list)
+
     paginator = Paginator(videos_list, 12)
-    try:
-        videos = paginator.page(page)
-    except PageNotAnInteger:
-        videos = paginator.page(1)
-    except EmptyPage:
-        videos = paginator.page(paginator.num_pages)
+    videos = get_paginated_videos(paginator, page)
 
     if request.is_ajax():
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path},
+            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
         )
-    data_context["use_category"] = USER_VIDEO_CATEGORY
+
     data_context["videos"] = videos
+    data_context["count_videos"] = count_videos
+    data_context["types"] = request.GET.getlist("type")
+    data_context["owners"] = request.GET.getlist("owner")
+    data_context["disciplines"] = request.GET.getlist("discipline")
+    data_context["tags_slug"] = request.GET.getlist("tag")
+    data_context["cursus_selected"] = request.GET.getlist("cursus")
     data_context["full_path"] = full_path
+    data_context["cursus_list"] = CURSUS_CODES
+    data_context["use_category"] = USER_VIDEO_CATEGORY
     data_context["page_title"] = _("My videos")
 
     return render(request, "videos/my_videos.html", data_context)
 
 
-def get_videos_list(request):
+def get_videos_list():
+    """Render the main list of videos."""
     videos_list = __VIDEOS__
+    return videos_list.distinct()
 
+
+def get_paginated_videos(paginator, page):
+    """Return paginated videos in paginator object"""
+    try:
+        return paginator.page(page)
+    except PageNotAnInteger:
+        return paginator.page(1)
+    except EmptyPage:
+        return paginator.page(paginator.num_pages)
+
+
+def sort_videos_list(request, videos_list):
+    """Return sorted videos list by specific column name and
+    ascending or descending direction (boolean)"""
+    if request.GET.get("sort"):
+        sort = request.GET.get("sort")
+    else:
+        sort = "date_added"
+    if not request.GET.get("sort_direction"):
+        sort = "-" + sort
+
+    videos_list = videos_list.order_by(sort)
+
+    return videos_list.distinct()
+
+
+def get_filtered_videos_list(request, videos_list):
+    """Return filtered videos list by get parameters"""
     if request.GET.getlist("type"):
         videos_list = videos_list.filter(type__slug__in=request.GET.getlist("type"))
     if request.GET.getlist("discipline"):
@@ -572,7 +625,10 @@ def get_owners_has_instances(owners):
 
 def videos(request):
     """Render the main list of videos."""
-    videos_list = get_videos_list(request)
+    videos_list = get_videos_list()
+    videos_list = get_filtered_videos_list(request, videos_list)
+    videos_list = sort_videos_list(request, videos_list)
+
     count_videos = len(videos_list)
 
     page = request.GET.get("page", 1)
@@ -585,13 +641,7 @@ def videos(request):
         )
 
     paginator = Paginator(videos_list, 12)
-    try:
-        videos = paginator.page(page)
-    except PageNotAnInteger:
-        videos = paginator.page(1)
-    except EmptyPage:
-        videos = paginator.page(paginator.num_pages)
-
+    videos = get_paginated_videos(paginator, page)
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
 
     if request.is_ajax():
@@ -984,6 +1034,7 @@ def save_video_form(request, form):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_delete(request, slug=None):
+    """View to delete video. Show form to approve deletion and do it if sent"""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
 
     if request.user != video.owner and not (
@@ -1018,6 +1069,42 @@ def video_delete(request, slug=None):
         "videos/video_delete.html",
         {"video": video, "form": form, "page_title": page_title},
     )
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def video_transcript(request, slug=None):
+    """View to restart transcription of a video."""
+    video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
+
+    if not USE_TRANSCRIPTION:
+        messages.add_message(
+            request, messages.ERROR, _("Transcription not enabled on this platform.")
+        )
+        raise PermissionDenied
+
+    if request.user != video.owner and not (
+        request.user.is_superuser or request.user.has_perm("video.change_video")
+    ):
+        messages.add_message(request, messages.ERROR, _("You cannot manage this video."))
+        raise PermissionDenied
+
+    if not video.encoded or video.encoding_in_progress is True:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("You cannot launch transcript for a video that is being encoded."),
+        )
+        return redirect(reverse("video:video_edit", args=(video.slug,)))
+
+    if video.get_video_mp3():
+        transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
+        transcript_video(video.id)
+        messages.add_message(
+            request, messages.INFO, _("The video transcript has been restarted.")
+        )
+
+    return redirect(reverse("video:video_edit", args=(video.slug,)))
 
 
 def get_adv_note_list(request, video):
@@ -1884,6 +1971,29 @@ def get_all_views_count(v_id, date_filter=date.today()):
     count = ViewCount.objects.filter(video_id=v_id).aggregate(Sum("count"))["count__sum"]
     all_views["since_created"] = count if count else 0
 
+    # favorite addition in day
+    count = Favorite.objects.filter(video_id=v_id, date_added__date=date_filter).count()
+    all_views["fav_day"] = count if count else 0
+
+    # favorite addition in month
+    count = Favorite.objects.filter(
+        video_id=v_id,
+        date_added__year=date_filter.year,
+        date_added__month=date_filter.month,
+    ).count()
+    all_views["fav_month"] = count if count else 0
+
+    # favorite addition in year
+    count = Favorite.objects.filter(
+        video_id=v_id,
+        date_added__year=date_filter.year,
+    ).count()
+    all_views["fav_year"] = count if count else 0
+
+    # favorite addition since video was created
+    count = Favorite.objects.filter(video_id=v_id).count()
+    all_views["fav_since_created"] = count if count else 0
+
     return all_views
 
 
@@ -2055,7 +2165,7 @@ def video_add(request):
             "allow_extension": allow_extension,
             "allowed_text": allowed_text,
             "restricted_to_staff": RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY,
-            "TRANSCRIPT": USE_TRANSCRIPTION,
+            "TRANSCRIPT": get_transcription_choices(),
             "page_title": _("Media upload"),
         },
     )
@@ -2613,18 +2723,19 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
     def on_completion(self, uploaded_file, request):
         """Triggered when a chunked upload is complete."""
         edit_slug = request.POST.get("slug")
-        transcript = request.POST.get("transcript")
+        transcript = request.POST.get("transcript", "")
         if edit_slug == "":
             video = Video.objects.create(
                 video=uploaded_file,
                 owner=request.user,
                 type=Type.objects.get(id=DEFAULT_TYPE_ID),
                 title=uploaded_file.name,
-                transcript=(True if (transcript == "true") else False),
+                transcript=transcript,
             )
         else:
             video = Video.objects.get(slug=edit_slug)
             video.video = uploaded_file
+            video.transcript = transcript
         video.launch_encode = True
         video.save()
         self.slug = video.slug

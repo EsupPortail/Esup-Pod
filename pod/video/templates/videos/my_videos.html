@@ -11,81 +11,50 @@
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My videos" %}</li>{% endblock %}
 
 {% block page_content %}
+  {% comment %}
+  <p class="debug">
+    "types": request.GET.getlist('type'),
+    "owners": request.GET.getlist('owner'),
+    "disciplines": request.GET.getlist('discipline'),
+    "tags_slug": request.GET.getlist('tag'),
+  </p>
+  {% endcomment %}
   {% if use_category %}
-    <!-- Loader -->
-    <div class="loader_wrapper">
-      <div id="my_videos" class="lds-roller">
-        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-      </div>
-    </div>
-    <!-- End Loader -->
     {% include "videos/category_modal.html" %}
   {% endif %}
+  <div class="row videos-list-header">
   {% if videos.paginator.count == 0 %}
-    <h2 class="h4">{% trans "No video found"%}</h2>
     <p class="alert alert-info">{% trans 'You have not uploaded any videos yet, please use the "Add a new video" button to add one'%}</p>
   {% else %}
-    <h2 class="h4">{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
     <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the video on which you want to work with." %}</p>
-    {% include "videos/video_list.html" %}
   {% endif %}
+  <h2 id="video_count" class="page_title col-8">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
+  <form id="sortForm" action="{% url 'video:my_videos' %}" method="get" class="filterSortForms col-4 mb-2">
+    {% include "videos/video_sort_select.html" %}
+  </form>
+  </div>
+  {% include 'loader.html' %}
+  {% include "videos/video_list.html" %}
 {% endblock page_content %}
 
-{% block collapse_page_aside %}
-  {% if use_category %}
-    {{ block.super }}
-  {% endif %}
-{% endblock collapse_page_aside %}
-
 {% block page_aside %}
-  {% if use_category %}
-    {% include 'videos/filter_aside_category.html' %}
-  {% endif %}
+  {% include 'videos/filter_aside.html' %}
 {% endblock page_aside %}
 
 {% block more_script %}
-
-<script  src="{% static 'js/infinite.js' %}?ver={{VERSION}}" ></script>
 <script>
+var page = 1;
+var nextPage = false;
 
-
-  function onBeforePageLoad() {
-      this.infinite_loading.style.display = "block";
-    }
-  function onAfterPageLoad() {
-      this.infinite_loading.style.display = "none";
-      let footer = document.querySelector("footer.static-pod");
-      if (!footer) return;
-      footer.classList.add("small");
-      footer.classList.add("fixed-bottom");
-      footer.setAttribute("style", "height:80px; overflow-y:auto");
-      var docHeight = Math.max(
-        document.body.scrollHeight,
-        document.body.offsetHeight,
-        document.clientHeight,
-        document.scrollHeight,
-        document.offsetHeight
-      );
-      window.addEventListener("scroll", function () {
-        if (window.innerHeight + window.scrollTop() === docHeight) {
-          document.querySelector("footer.static-pod .hidden-pod").style.display =
-            "block";
-          footer.setAttribute("style", "height:auto;");
-          footer.classList.remove("fixed-bottom");
-        }
-      });
-    }
-    
-  var page = 0;
-  {% if videos.has_next %}
-    url = "/video/my/?page="
-    page = parseInt("{{videos.next_page_number}}")
-    next_page = true
-    var infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad, nextPage = true  ,page = page);
-  {% endif %}
-
-
+{% if videos.has_next %}
+  page = parseInt("{{videos.next_page_number}}")
+  nextPage = true
+{% endif %}
+</script>
+<script src="{% static 'js/infinite.js' %}?ver={{VERSION}}" ></script>
+<script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
 {% if use_category %}
+<script>
   const CATEGORIES_DATA = {{ categories | safe }};
   const BASE_URL = `${window.location.origin}${window.location.pathname}categories/`;
   {# create base url link for video management #}
@@ -98,9 +67,7 @@
   {% url 'video:video_delete' slug="abcd" as video_delete %}
   const DELETE_URL = `{{ video_delete|slice:"-5" }}`;
   const VIDEO_URL = `${window.location.origin}/video/`;
-  </script>
- <script defer src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
-{% else %}
-  </script>
+</script>
+<script defer src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
 {% endif %}
 {% endblock more_script %}

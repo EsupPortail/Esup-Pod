@@ -106,6 +106,17 @@
             {% endif %}
             {% if field.help_text %}
               <small id="{{field.id_for_label}}Help" class="form-text"> {{ field.help_text|safe }}</small>
+              {% if field.name == "transcript"  %}
+              {% if form.instance.id and form.instance.get_encoding_step == ""  or form.instance.encoding_in_progress %}
+              {% else %}
+                {% if form.instance.slug != '' and form.instance.get_encoding_step == '0 : end of encoding' %}
+                  <a class="btn btn-primary btn-sm ps-2 pe-2 m-1" type="button" href="{% url 'video:video_transcript' form.instance.slug %}">
+                    <i class="bi bi-translate" aria-hidden="true"></i>
+                    {% trans "Restart transcription" %}
+                  </a>
+                {% endif %}
+              {% endif %}
+            {% endif %}
             {% endif %}
             {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
             {% if field.name in "description,title" %}
@@ -116,6 +127,7 @@
                 </button>
               </div>
             {% endif %}
+            
           </div>
         </div>
       {% endfor %}
@@ -151,7 +163,7 @@
     <div class="card" id="card-managevideo">
       <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video" %}</h2>
       <div class="card-body card-text text-center">
-        {% include "videos/link_video.html" with video=form.instance %}
+        {% include "videos/link_video.html" with video=form.instance hide_favorite_link=True %}
       </div>
     </div>
     {% if form.instance.slug != '' and request.user.is_staff or request.user.is_superuser or perms.video.change_video %}
@@ -226,7 +238,6 @@
   <script src="/admin/jsi18n/"></script>
   <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
   <script defer src="{% static 'js/video_edit.js' %}?ver={{VERSION}}"></script>
-
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}" />
   {{form.media}}
 
@@ -239,10 +250,6 @@
         event.preventDefault();
       });
     }
-   
-
-  
-   
     var VIDEO_MAX_UPLOAD_SIZE = {{ form.VIDEO_MAX_UPLOAD_SIZE }};
     var video_max_upload_size = VIDEO_MAX_UPLOAD_SIZE * 1024 * 1024 * 1024;
     var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfor%}";
