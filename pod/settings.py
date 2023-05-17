@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "pod.authentication",
     "pod.video",
     "pod.podfile",
+    "pod.playlist",
     "pod.completion",
     "pod.chapter",
     "pod.enrichment",
