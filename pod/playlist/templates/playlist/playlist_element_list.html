@@ -9,7 +9,6 @@
 				<th scope="col">{% trans 'Title' %}</th>
 				<th scope="col">{% trans 'Owner' %}</th>
 				<th scope="col">{% trans 'Duration' %}</th>
-				<th scope="col">{% trans 'Position' %}</th>
 				<th scope="col">{% trans 'Actions' %}</th>
 			</tr>
 		</thead>
@@ -24,7 +23,6 @@
 					<td class="video-title" data-slug="{{element.video.slug}}">{{element.video.title}}</td>
 					<td class="video-owner">{{element.video.owner.get_full_name}}</td>
 					<td class="video-duration">{{element.video.duration_in_time}}</td>
-					<td class="video-position">{{element.position}}</td>
 					<td>
 						<button class="btn btn-link position-up" title="{% trans 'Move up'%}">
 							<i class="bi bi-arrow-up-circle" aria-hidden="true"></i>
