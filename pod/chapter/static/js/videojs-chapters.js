@@ -102,7 +102,6 @@
           let podPlayer = document.getElementById(player.id());
           podPlayer.append(newList);
           **/
-
         };
 
         /**
