@@ -214,7 +214,7 @@ class VideoAdmin(admin.ModelAdmin):
         if not getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
             exclude += ("disable_comment",)
 
-        if obj and obj.encoding_in_progress:
+        if obj and (obj.encoding_in_progress or not obj.encoded):
             exclude += (
                 "video",
                 "owner",
@@ -229,7 +229,14 @@ class VideoAdmin(admin.ModelAdmin):
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
         return form
 
-    actions = ["encode_video", "transcript_video"]
+    actions = ["encode_video", "transcript_video", "draft_video"]
+
+    def draft_video(self, request, queryset):
+        for item in queryset:
+            item.is_draft = True
+            item.save()
+
+    draft_video.short_description = _("Set as draft")
 
     def encode_video(self, request, queryset):
         for item in queryset:

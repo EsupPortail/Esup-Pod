@@ -843,7 +843,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
   >>   
   >> # Logo affiché dans le footer sur toutes les pages. 
   >> # Doit se situer dans le répertoire static 
-  >> 'LOGO_ETB': 'img/logo_etb.svg', 
+  >> 'LOGO_ETB': 'img/esup-pod.svg', 
   >>   
   >> # Logo affiché sur le player video. 
   >> # Doit se situer dans le répertoire static 
@@ -1678,6 +1678,15 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
   >> permet de définir la durée maximum pour une reunion <br>
   >> (en heure) <br>
 
+ - `MEETING_PRE_UPLOAD_SLIDES`
+
+  > valeur par défaut : ``
+
+
+  >> Diaporama préchargé pour les réunions virtuelles. <br>
+  >> Un utilisateur peut remplacer cette valeur en choisissant un diaporama lors de la création d'une réunion virtuelle. <br>
+  >> Doit se trouver dans le répertoire statique. <br>
+
  - `MEETING_RECORD_FIELDS`
 
   > valeur par défaut : `()`
@@ -1891,7 +1900,7 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
 
  - `ACTIVE_VIDEO_COMMENT`
 
-  > valeur par défaut : `True`
+  > valeur par défaut : `False`
 
   >> Activer les commentaires au niveau de la plateforme <br>
 
@@ -2170,6 +2179,12 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
 
   >> Activation de l’obsolescence des video. Permet d’afficher la date de suppression de la video <br>
   >> dans le formulaire d’edition et dans la partie admin. <br>
+
+ - `USE_FAVORITES`
+
+  > valeur par défaut : `True`
+
+  >> Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans leurs favoris. <br>
 
  - `USE_STATS_VIEW`
 

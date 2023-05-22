@@ -1,18 +1,28 @@
 var id_form = "form_enrich";
+
+function removeLoadedScript(lib) {
+  document.querySelectorAll('[src="' + lib + '"]').forEach((item) => {
+    item.remove();
+  });
+}
+
+// Load library
+function loadScript(lib) {
+  var script = document.createElement("script");
+  script.setAttribute("src", lib);
+  document.getElementsByTagName("head")[0].appendChild(script);
+  return script;
+}
+
 function show_form(data) {
   var form = document.getElementById(id_form);
   form.style.display = "none";
-  //form.innerHTML = data;
-
   form.innerHTML = data;
   form.querySelectorAll("script").forEach((item) => {
-    // run script tags of filewidget.js and custom_filewidget.js
-
+    // run script tags
     if (item.src) {
-      let script = document.createElement("script");
-      script.src = item.src;
-      if (script.src.includes("filewidget.js"))
-        document.body.appendChild(script);
+      removeLoadedScript(item.getAttribute("src"));
+      loadScript(item.src);
     } else {
       if (item.id == "filewidget_script") (0, eval)(item.innerHTML);
     }
@@ -81,7 +91,6 @@ document.addEventListener("click", (e) => {
 document.addEventListener("submit", (e) => {
   if (!e.target.classList.contains("get_form")) return;
   e.preventDefault();
-  var jqxhr = "";
   var action = e.target.querySelector("input[name=action]").value;
 
   sendandgetform(e.target, action);
@@ -89,101 +98,55 @@ document.addEventListener("submit", (e) => {
 document.addEventListener("submit", (e) => {
   if (!e.target.classList.contains("form_save")) return;
   e.preventDefault();
-  var jqxhr = "";
-
   var action = e.target.querySelector("input[name=action]").value;
   sendform(e.target, action);
 });
 
 var sendandgetform = async function (elt, action) {
-  // document.querySelector("form.get_form").style.display = "none";
   const token = elt.csrfmiddlewaretoken.value;
   const url = window.location.href;
-  if (action == "new") {
-    headers = {
-      "X-CSRFToken": token,
-      "X-Requested-With": "XMLHttpRequest",
-    };
+  const headers = {
+    "X-CSRFToken": token,
+    "X-Requested-With": "XMLHttpRequest",
+  };
+  const form_data = new FormData(elt);
 
-    let form_data = new FormData(elt);
-    await fetch(url, {
+  try {
+    const response = await fetch(url, {
       method: "POST",
       headers: headers,
       body: form_data,
       dataType: "html",
-    })
-      .then((response) => response.text())
-      .then((data) => {
-        if (data.indexOf(id_form) == -1) {
-          showalert(
-            gettext("You are no longer authenticated. Please log in again."),
-            "alert-danger"
-          );
-        } else {
-          show_form(data);
-        }
-      })
-      .catch((error) => {
-        ajaxfail(error);
-      });
-  }
-  if (action == "modify") {
-    headers = {
-      "X-CSRFToken": token,
-      "X-Requested-With": "XMLHttpRequest",
-    };
+    });
+    const data = await response.text();
+    if (
+      data.indexOf(id_form) == -1 &&
+      (action === "new" || action === "modify")
+    ) {
+      showalert(
+        gettext("You are no longer authenticated. Please log in again."),
+        "alert-danger"
+      );
+      return;
+    }
 
-    form_data = new FormData(elt);
-
-    await fetch(url, {
-      method: "POST",
-      headers: headers,
-      body: form_data,
-      dataType: "html",
-    })
-      .then((response) => response.text())
-      .then((data) => {
-        if (data.indexOf(id_form) == -1) {
-          showalert(
-            gettext("You are no longer authenticated. Please log in again."),
-            "alert-danger"
-          );
-        } else {
-          show_form(data);
-          elt.classList.add("info");
-        }
-      })
-      .catch((error) => {
-        ajaxfail(error);
-      });
-  }
-
-  if (action == "delete") {
-    headers = {
-      "X-CSRFToken": token,
-      "X-Requested-With": "XMLHttpRequest",
-    };
-    form_data = new FormData(elt);
-    await fetch(url, {
-      method: "POST",
-      headers: headers,
-      body: form_data,
-      dataType: "html",
-    })
-      .then((response) => response.text())
-      .then((data) => {
-        if (data.indexOf("list_enrichment") == -1) {
-          showalert(
-            gettext("You are no longer authenticated. Please log in again."),
-            "alert-danger"
-          );
-        } else {
-          location.reload();
-        }
-      })
-      .catch((error) => {
-        ajaxfail(error);
-      });
+    if (action === "new") {
+      show_form(data);
+    } else if (action === "modify") {
+      show_form(data);
+      elt.classList.add("info");
+    } else if (action === "delete") {
+      if (data.indexOf("list_enrichment") == -1) {
+        showalert(
+          gettext("You are no longer authenticated. Please log in again."),
+          "alert-danger"
+        );
+        return;
+      }
+      location.reload();
+    }
+  } catch (error) {
+    ajaxfail(error);
   }
 };
 
@@ -367,18 +330,16 @@ function enrich_type() {
     });
   }
 }
-document.addEventListener("change", (e) => {
-  if (e.target.id != "id_start") return;
-  e.target.parentNode.querySelector(
+const setTimecode = (e) => {
+  if (e.target.id !== "id_start" && e.target.id !== "id_end") return;
+  const parentNode = e.target.parentNode;
+  const timecodeSpan = parentNode.querySelector(
     "div.getfromvideo span.timecode"
-  ).innerHTML = " " + parseInt(e.target.value).toHHMMSS();
-});
-document.addEventListener("change", (e) => {
-  if (e.target.id != "id_end") return;
-  e.target.parentNode.querySelector(
-    "div.getfromvideo span.timecode"
-  ).innerHTML = " " + parseInt(e.target.value).toHHMMSS();
-});
+  );
+  timecodeSpan.innerHTML = " " + parseInt(e.target.value).toHHMMSS();
+};
+document.addEventListener("change", setTimecode);
+
 document.addEventListener("click", (e) => {
   if (!e.target.matches("#page-video .getfromvideo a")) return;
   e.preventDefault();

@@ -29,7 +29,7 @@
     "pk": 2,
     "model": "flatpages.flatpage",
     "fields": {
-        "content_fr": "<h1>Mentions légales</h1><div class=\"alert alert-warning\">Le texte ci-dessous sert de modèle de base et est à modifier par l'établissement hébergeur.</div><h2>Description du site</h2>\r\n<p>Esup-Pod est une plateforme de gestion de documents audio et vidéo à vocation culturelle, scientifique et pédagogique.</p><h2>Hébergement</h2><p>La plateforme «&nbsp;Pod&nbsp;» ainsi que les sauvegardes sont hébergées par## À COMPLÉTER##.</p><h2>Droit d&#39;auteur et respect de la propri&eacute;t&eacute; intellectuelle</h2>\r\n<p>L&#39;ensemble de ce site rel&egrave;ve de la l&eacute;gislation fran&ccedil;aise et internationale sur le droit d&#39;auteur et la propri&eacute;t&eacute; intellectuelle. Les contenus disponibles sur ce site sont la propri&eacute;t&eacute; exclusive de leurs auteurs.</p>\r\n<h2>Protection de la vie priv&eacute;e et des donn&eacute;es &agrave; caract&egrave;re personnel</h2>\r\n<p >Dans le cadre de la diffusion des podcasts, certaines donn&eacute;es personnelles peuvent &ecirc;tre communiqu&eacute;es aux utilisateurs de la plateforme.</p>\r\n",
+        "content_fr": "<h1>Mentions légales</h1><div class=\"alert alert-warning\">Le texte ci-dessous sert de modèle de base et est à modifier par l'établissement hébergeur.</div><h2>Description du site</h2>\r\n<p>Esup-Pod est une plateforme de gestion de documents audio et vidéo à vocation culturelle, scientifique et pédagogique.</p><h2>Hébergement</h2><p>La plateforme «&nbsp;Pod&nbsp;» ainsi que les sauvegardes sont hébergées par## À COMPLÉTER##.</p><h2>Droit d&#39;auteur et respect de la propri&eacute;t&eacute; intellectuelle</h2>\r\n<p>L&#39;ensemble de ce site rel&egrave;ve de la l&eacute;gislation fran&ccedil;aise et internationale sur le droit d&#39;auteur et la propri&eacute;t&eacute; intellectuelle. Tous les droits de reproduction sont réservés.</p>\r\n<p>La reproduction de tout ou partie d’un document de cette plateforme sur un support électronique quel qu'il soit est formellement interdite sauf autorisation expresse de l’auteur de ce document.</p>\r\n<h2>Avertissement concernant les documents publiés</h2>\r\n<p>Préalablement à toute mise en ligne d’un document sur le service «&nbsp;Pod&nbsp;» l’usager est tenu de vérifier qu’il respecte bien la législation en vigueur.</p>\r\n<p>Chaque usager est responsable du contenu qu’il publie sur le service «&nbsp;Pod&nbsp;».</p>\r\n<ul><li>Droit d’exploitation&nbsp;: L’usager doit vérifier qu’il dispose des droits de diffusion du document ou qu’il utilise le document dans le cadre de «&nbsp;l’exception pédagogique&nbsp;» telle qu’elle est légalement définie.<br>→ «&nbsp;<a href=\"http://www.sup-numerique.gouv.fr/cid94535/guide-du-droit-d-auteur.html\" target=\"_blank\">Guide du droit d’auteur&nbsp;élaboré par le Ministère de l’Enseignement Supérieur, de la Recherche et de l’Innovation</a> »</li><li>Droit à l’image &nbsp;: L’usager s’engage à obtenir les autorisations des personnes identifiables sur le document audio ou vidéo. Si la personne identifiable est mineure, le consentement des représentants légaux est nécessaire avant toute diffusion.</li></ul>\r\n<h2>Protection de la vie priv&eacute;e et des donn&eacute;es &agrave; caract&egrave;re personnel</h2>\r\n<p >Dans le cadre de la diffusion des podcasts, certaines donn&eacute;es personnelles peuvent &ecirc;tre communiqu&eacute;es aux utilisateurs de la plateforme.</p>\r\n",
         "registration_required": false,
         "content_en": "<h1>Legal Notice</h1><div class=\"alert alert-warning\">This page serves as a basic template and is to be modified.</div>",
         "title": "Legal Notice",
@@ -61,20 +61,20 @@
     "pk": 1,
     "model": "main.configuration",
     "fields": {
-        "key" : "maintenance_mode",
+        "key": "maintenance_mode",
         "value": "0",
-        "description_fr" : "Activation du mode maintenance ou non",
-        "description_en" : "Activation of maintenance mode or not"
+        "description_fr": "Activation du mode maintenance ou non",
+        "description_en": "Activation of maintenance mode or not"
     }
   },
   {
     "pk": 2,
     "model": "main.configuration",
     "fields": {
-        "key" : "maintenance_text_short",
+        "key": "maintenance_text_short",
         "value": "Maintenance en cours",
-        "description_fr" : "Texte qui sera affiché sur la barre de navigation pendant la maintenance",
-        "description_en" : "Text that will be displayed on the navigation bar during maintenance"
+        "description_fr": "Texte qui sera affiché sur la barre de navigation pendant la maintenance",
+        "description_en": "Text that will be displayed on the navigation bar during maintenance"
     }
   },
   {
@@ -83,8 +83,8 @@
     "fields": {
         "key" : "maintenance_text_welcome",
         "value": "La plateforme Pod est actuellement en maintenance",
-        "description_fr" : "Texte qui sera affiché sur la page d’accueil pendant une maintenance",
-        "description_en" : "Text that will be displayed on the home page during maintenance"
+        "description_fr": "Texte qui sera affiché sur la page d’accueil pendant une maintenance",
+        "description_en": "Text that will be displayed on the home page during maintenance"
     }
   },
   {
@@ -93,28 +93,28 @@
     "fields": {
         "key" : "maintenance_text_disabled",
         "value": "Pod est en maintenance, cette fonctionnalité est donc désactivée pour le moment",
-        "description_fr" : "Texte qui sera affiché sur les pages qui sont désactivées pendant la maintenance",
-        "description_en" : "Text that will be displayed on pages that are disabled during maintenance"
+        "description_fr": "Texte qui sera affiché sur les pages qui sont désactivées pendant la maintenance",
+        "description_en": "Text that will be displayed on pages that are disabled during maintenance"
     }
   },
   {
     "pk": 5,
     "model": "main.configuration",
     "fields": {
-        "key" : "maintenance_sheduled",
+        "key": "maintenance_sheduled",
         "value": "0",
-        "description_fr" : "Affichage d'une maintenance programmée (1) ou non (0).",
-        "description_en" : "Display a sheduled maintenance message (1) or not (0)."
+        "description_fr": "Affichage d'une maintenance programmée (1) ou non (0).",
+        "description_en": "Display a sheduled maintenance message (1) or not (0)."
     }
   },
   {
     "pk": 6,
     "model": "main.configuration",
     "fields": {
-        "key" : "maintenance_text_sheduled",
+        "key": "maintenance_text_sheduled",
         "value": "Pod sera en maintenance <strong>le _/_/_</strong>. Évitez tout transfert de contenu à cette date.",
-        "description_fr" : "Texte annoncant une maintenance.",
-        "description_en" : "Text announcing a sheduled maintenance."
+        "description_fr": "Texte annoncant une maintenance.",
+        "description_en": "Text announcing a sheduled maintenance."
     }
   }
 ]
