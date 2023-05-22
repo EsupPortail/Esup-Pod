@@ -14,7 +14,6 @@ from tagging.utils import LINEAR
 from tagging.utils import LOGARITHMIC
 
 from ..forms import VideoVersionForm
-from ..models import Video
 from ..utils import check_file, get_available_videos
 
 import importlib
