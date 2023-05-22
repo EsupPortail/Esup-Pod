@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">Dashboard</li>{% endblock %}
+
+  <div class="row">
+    {% block page_title %}
+      Dashboard
+    {% endblock %}
+  </div>
+
+{% block page_content %}
+  <!-- End Loader -->
+  {% if use_category %}
+    {% include "videos/category_modal.html" %}
+  {% endif %}
+
+<div class="modal fade" id="modalConfirmBulkUpdate" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Do you really want to edit these <span id="countSelectedVideosModal">0</span> videos ?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button id="confirmBulkUpdateBtn" type="button" class="btn btn-primary">Apply</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p id="bulkUpdateInstructions">Select below an action, check the videos you want to modify and press Apply.</p>
+
+  <!--<div class="container">-->
+  <div id="bulk_update_container" class="row">
+    <div id="bulk_update_form">
+
+        <select id="bulkUpdateActionSelect" name="action" class="form-select mb-2" aria-label="Default select example">
+          <option value="" selected>Choose an action</option>
+          <option value="fieldUpdate">Edit a field</option>
+          <option value="is_draft">Draft mode</option>
+          <option value="is_restricted">Restrict access</option>
+          <option value="password">Add a password</option>
+          <option value="additionalOwner">Add an additional owner</option>
+          <option value="thumbnail">Edit the thumbnail</option>
+          <option value="delete">Delete</option>
+        </select>
+        <select id="fieldUpdateSelect" name="fieldUpdate" class="form-select mb-2 actionsMultiplesForm collapse" aria-label="Default select example">
+          <option value="" selected>Choose a field</option>
+          <option value="title">Title</option>
+          <option value="date_added">Date added</option>
+          <option value="date_delete">Date to delete</option>
+          <option value="date_evt">Date of the event field</option>
+          <option value="type">Type</option>
+          <option value="cursus">Cursus</option>
+          <option value="main_lang">Main lang</option>
+          <option value="discipline">Discipline</option>
+        </select>
+      </div>
+      <div id="generatedFormContainer"></div>
+
+      <button id="ApplyBulkUpdateBtn" type="button" class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#modalConfirmBulkUpdate" disabled>
+        Appliquer <span id="countSelectedVideosBadge" class="badge">0 vidéos</span></button>
+    </div>
+  <div>
+  {% if videos.paginator.count == 0 %}
+    <h2 class="h4">{% trans "No video found"%}</h2>
+    <p class="alert alert-info">{% trans 'You have not uploaded any videos yet, please use the "Add a new video" button to add one'%}</p>
+  {% else %}
+    <div class="row">
+    <h2 id="video_count" class="col-12">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
+    <h2 id="video_selected" class="col-12">0 video selected</h2>
+    <div class="col-12"></div>
+      <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms col-4 mb-2">
+        {% include "videos/video_sort_select.html" %}
+      </form>
+    </div>
+
+    <div id="video_list_content">
+    {% include 'loader.html' %}
+    {% include "videos/video_list.html" %}
+    </div>
+  {% endif %}
+  </div>
+  </div>
+  <!--</div>-->
+{% endblock page_content %}
+
+{% block page_aside %}
+  {% include 'videos/filter_aside.html' %}
+{% endblock page_aside %}
+
+{% block more_script %}
+<script>
+  var urlVideos = "{% url 'video:dashboard' %}";
+  var page = 1;
+  var nextPage = false;
+  var update_fields = true;
+</script>
+<script src="{% static 'js/infinite.js' %}"></script>
+<script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
+<script>
+{% if use_category %}
+  const USE_CATEGORY = true;
+  const CATEGORIES_DATA = {{ categories | safe }};
+  </script>
+  <script defer src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
+{% else %}
+  const USE_CATEGORY = false;
+</script>
+{% endif %}
+{% endblock more_script %}

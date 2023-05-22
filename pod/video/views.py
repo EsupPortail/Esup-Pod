@@ -488,6 +488,91 @@ def theme_edit_save(request, channel):
 # VIDEOS
 # ############################################################################
 
+@login_required(redirect_field_name="referrer")
+def videos_dashboard(request):
+    """Render the logged user's dashboard (videos list/bulk update)"""
+    data_context = {}
+    site = get_current_site(request)
+    # Videos list which user is the owner + which user is an additional owner
+    videos_list = request.user.video_set.all().filter(
+        sites=site
+    ) | request.user.owners_videos.all().filter(sites=site)
+    videos_list = videos_list.distinct()
+
+    if USER_VIDEO_CATEGORY:
+        cats = Category.objects.prefetch_related("video").filter(owner=request.user)
+        """
+        " user's videos categories format =>
+        " [{
+        " 'title': cat_title,
+        " 'slug': cat_slug,
+        " 'videos': [v_slug, v_slug...] },]
+        """
+        if request.GET.get("category") is not None:
+            category_checked = request.GET.get("category")
+            videos_list = get_object_or_404(Category, title=category_checked).video.all()
+
+        videos_without_cat = videos_list.exclude(category__in=cats)
+        cats = list(
+            map(
+                lambda c: {
+                    "id": c.id,
+                    "title": c.title,
+                    "slug": c.slug,
+                    "videos": list(c.video.values_list("slug", flat=True)),
+                },
+                cats,
+            )
+        )
+        cats.insert(0, len(videos_list))
+        cats = json.dumps(cats, ensure_ascii=False)
+        data_context["categories"] = cats
+        data_context["videos_without_cat"] = videos_without_cat
+
+    videos_list = get_filtered_videos_list(request, videos_list)
+    videos_list = sort_videos_list(request, videos_list)
+
+    count_videos = len(videos_list)
+
+    page = request.GET.get("page", 1)
+    full_path = ""
+    if page:
+        full_path = (
+            request.get_full_path()
+                .replace("?page=%s" % page, "")
+                .replace("&page=%s" % page, "")
+        )
+
+    paginator = Paginator(videos_list, 12)
+    videos = get_paginated_videos(paginator, page)
+
+    videos_next_page_number = videos.next_page_number() if videos.has_next() else None
+    owners_instances = get_owners_has_instances(request.GET.getlist("owner"))
+
+    # default_owner = request.user.pk
+    videoss = Video.objects.all()
+
+    if request.is_ajax():
+        return render(
+            request,
+            "videos/video_list.html",
+            {
+                "videos": videos,
+                "full_path": full_path,
+                "count_videos": count_videos,
+                "cursus_codes": CURSUS_CODES,
+            },
+        )
+    data_context["use_category"] = USER_VIDEO_CATEGORY
+    data_context["videos"] = videos
+    data_context["count_videos"] = count_videos
+    data_context["cursus_codes"] = CURSUS_CODES
+    data_context["full_path"] = full_path
+    data_context["owners"] = request.GET.getlist("owner")
+    data_context["page_title"] = "Dashboard"
+
+    return render(request, "videos/dashboard.html", data_context)
+
 
 @login_required(redirect_field_name="referrer")
 def my_videos(request):
