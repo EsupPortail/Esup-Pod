@@ -30,6 +30,7 @@ class LiveTestUtils(TestCase):
         )
 
     def test_send_email(self):
+        """Teste l'envoi d'email et les paramètres d'envoi."""
         from pod.live.utils import send_email_confirmation, get_bcc, get_cc
 
         event = Event.objects.get(id=1)
@@ -62,6 +63,7 @@ class LiveTestUtils(TestCase):
         print(" --->  test_utils send_email_confirmation ok")
 
     def test_date_string_to_second(self):
+        """Teste la conversion d'une chaine de caractère en nombre de secondes."""
         from pod.live.utils import date_string_to_second
 
         self.assertEquals(0, date_string_to_second("a"))
@@ -78,6 +80,7 @@ class LiveTestUtils(TestCase):
         print(" --->  test_utils date_string_to_second ok")
 
     def test_get_event_id_and_broadcaster_id(self):
+        """Teste la récupération et le renvoi des éléments 'idevent' et 'idbroadcaster' de la requête."""
         from pod.live.utils import get_event_id_and_broadcaster_id
 
         rf = RequestFactory()
@@ -107,6 +110,7 @@ class LiveTestUtils(TestCase):
         print(" --->  test_utils test_get_event_id_and_broadcaster_id ok")
 
     def test_check_size_not_changing(self):
+        """Teste que la taille d'une ressource sur le filesystem ne change pas."""
         import threading
         from pod.live.utils import check_size_not_changing
         from time import sleep
@@ -145,6 +149,7 @@ class LiveTestUtils(TestCase):
         self.assertEqual(str(cm.exception), "checkFileSize aborted")
 
     def test_check_exists(self):
+        """Teste qu'une ressource existe sur le filesystem."""
         from pod.live.utils import check_exists, check_size_not_changing
 
         with self.assertRaises(Exception):
