@@ -21,9 +21,9 @@
 
 {% block page_title %}{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}{% endblock %}
 
-{% block main_page_title %}
+{% block page_content %}
   <div class="row videos-list-header">
-    <h1 id="video_count" class="page_title col-xxl-4 mb-2">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h1>
+    <h2 id="video_count" class="page_title col-xxl-4 mb-2">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
     <span class="col-xxl-4 col-md-6 mb-2" id="reorganize-buttons-span">
       {% if count_videos > 1 %}
       <form action="{% url 'favorite:save-reorganisation' %}" method="post" class="btn">
@@ -43,9 +43,6 @@
       {% include "videos/video_sort_select.html" with favorite=True %}
     </form>
   </div>
-{% endblock main_page_title %}
-
-{% block page_content %}
   {% include 'loader.html' %}
   {% include "favorite/favorite_video_list.html" %}
 {% endblock page_content %}

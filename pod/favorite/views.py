@@ -5,6 +5,7 @@ from django.http import Http404, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import ugettext_lazy as _
 
 from pod.favorite.models import Favorite
 from pod.main.utils import is_ajax
@@ -37,9 +38,10 @@ def favorite_button_in_video_info(request):
 def favorite_list(request):
     """Render the main list of favorite videos."""
     sort_field = request.GET.get("sort", "rank")
+    sort_direction = request.GET.get("sort_direction", "")
     videos_list = sort_videos_list(
-        request, get_all_favorite_videos_for_user(request.user),
-        sort_field
+        get_all_favorite_videos_for_user(request.user),
+        sort_field, sort_direction
     )
     count_videos = len(videos_list)
 
@@ -75,8 +77,8 @@ def favorite_list(request):
         request,
         "favorite/favorite_videos.html",
         {
+            "page_title": _("My favorite videos"),
             "videos": videos,
-            "sort_field": sort_field,
             "count_videos": count_videos,
             "types": request.GET.getlist("type"),
             "owners": request.GET.getlist("owner"),
@@ -87,7 +89,7 @@ def favorite_list(request):
             "ownersInstances": ownersInstances,
             "cursus_list": CURSUS_CODES,
             "sort_field": sort_field,
-            "sort_direction": request.GET.get("sort_direction", "")
+            "sort_direction": sort_direction
         },
     )
 

@@ -532,7 +532,8 @@ def my_videos(request):
 
     videos_list = get_filtered_videos_list(request, videos_list)
     sort_field = request.GET.get("sort", "date_added")
-    videos_list = sort_videos_list(request, videos_list, sort_field)
+    sort_direction = request.GET.get("sort_direction", "")
+    videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
     count_videos = len(videos_list)
 
     paginator = Paginator(videos_list, 12)
@@ -559,7 +560,7 @@ def my_videos(request):
     data_context["use_category"] = USER_VIDEO_CATEGORY
     data_context["page_title"] = _("My videos")
     data_context["sort_field"] = sort_field
-    data_context["sort_direction"] = request.GET.get("sort_direction", "")
+    data_context["sort_direction"] = sort_direction
 
     return render(request, "videos/my_videos.html", data_context)
 
@@ -619,8 +620,9 @@ def videos(request):
     videos_list = get_videos_list()
     videos_list = get_filtered_videos_list(request, videos_list)
     sort_field = request.GET.get("sort", "date_added")
+    sort_direction = request.GET.get("sort_direction", "")
 
-    videos_list = sort_videos_list(request, videos_list, sort_field)
+    videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
 
     count_videos = len(videos_list)
 
