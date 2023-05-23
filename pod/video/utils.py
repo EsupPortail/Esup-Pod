@@ -452,9 +452,10 @@ def sort_videos_list(videos_list, sort_field, sort_direction=""):
 
     Sorted by specific column name and ascending or descending direction
     """
-    if not sort_direction:
-        sort_field = "-" + sort_field
-    videos_list = videos_list.order_by(sort_field)
+    if sort_field:
+        if not sort_direction:
+            sort_field = "-" + sort_field
+        videos_list = videos_list.order_by(sort_field)
     return videos_list.distinct()
 
 
