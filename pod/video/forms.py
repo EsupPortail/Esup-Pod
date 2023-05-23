@@ -649,7 +649,7 @@ class VideoForm(forms.ModelForm):
 
         user_channels.filter(site=get_current_site(None))
 
-        channels_to_keep = (Video.objects.get(pk=self.instance.id)).channel.exclude(
+        channels_to_keep = Video.objects.get(pk=self.instance.id).channel.exclude(
             pk__in=[c.id for c in user_channels]
         )
         self.cleaned_data["channel"] = self.cleaned_data["channel"].union(channels_to_keep)
