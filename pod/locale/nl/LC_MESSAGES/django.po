@@ -6968,6 +6968,10 @@ msgstr ""
 msgid "Sort Direction"
 msgstr ""
 
+#: pod/video/templates/videos/video_sort_select.html pod/video/views.py
+msgid "None"
+msgstr ""
+
 #: pod/video/templates/videos/video_stats_view.html
 msgid "Change the date"
 msgstr ""
@@ -7147,10 +7151,6 @@ msgstr ""
 
 #: pod/video/views.py
 msgid "The comment has been deleted."
-msgstr ""
-
-#: pod/video/views.py
-msgid "None"
 msgstr ""
 
 #: pod/video/views.py

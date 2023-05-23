@@ -7394,6 +7394,10 @@ msgstr "Tri descendant"
 msgid "Sort Direction"
 msgstr "Direction de tri"
 
+#: pod/video/templates/videos/video_sort_select.html pod/video/views.py
+msgid "None"
+msgstr "Aucun"
+
 #: pod/video/templates/videos/video_stats_view.html
 msgid "Change the date"
 msgstr "Modifier la période de visualisation"
@@ -7584,10 +7588,6 @@ msgstr "La note a été supprimée."
 #: pod/video/views.py
 msgid "The comment has been deleted."
 msgstr "Le commentaire a été supprimé."
-
-#: pod/video/views.py
-msgid "None"
-msgstr "Aucun"
 
 #: pod/video/views.py
 msgid "ID"
