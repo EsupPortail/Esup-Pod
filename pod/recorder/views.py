@@ -43,6 +43,8 @@ from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
 from django.views.decorators.csrf import csrf_exempt
 from xml.dom import minidom
 
+from .utils import get_id_media, handle_upload_file
+
 DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/")
 
 # USE_CAS = getattr(settings, "USE_CAS", False)
@@ -507,6 +509,7 @@ def ingest_addDCCatalog(request):
 
         if request.POST.get("flavor") and request.POST.get("flavor") != "":
             typeCatalog = request.POST.get("flavor")
+        
         if request.POST.get("dublinCore") and request.POST.get("dublinCore") != "":
             dublinCore = request.POST.get("dublinCore")
 
@@ -570,84 +573,6 @@ def ingest_addAttachment(request):
     ):
         return handle_upload_file(request, "attachment", "text/xml", "attachments")
     return HttpResponseBadRequest()
-
-
-def handle_upload_file(request, element_name, mimetype, tag_name):
-    idMedia = ""
-    type_name = ""
-    # tags = "" # not use actually
-    if (
-        request.POST.get("mediaPackage") != ""
-        and request.POST.get("mediaPackage") != "{}"
-    ):
-        mediaPackage = request.POST.get("mediaPackage")
-        # XML result to parse
-        xmldoc = minidom.parseString(mediaPackage)
-        # Get the good id and start date
-        idMedia = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("id")
-    if request.POST.get("flavor") and request.POST.get("flavor") != "":
-        type_name = request.POST.get("flavor")
-
-    mediaPackage_dir = os.path.join(
-        settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
-    )
-    mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
-    mediaPackage_content = minidom.parse(mediaPackage_file)  # parse an open file
-    mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
-    if mediapackage.getAttribute("id") != idMedia:
-        raise PermissionDenied
-
-    if (element_name == "attachment"):
-        if (element_name == "track"):
-            opencast_filename, ext = os.path.splitext(request.FILES["BODY"].name)
-            filename = "%s%s" % (type_name.replace("/", "_").replace(" ", ""), ext)
-        elif (element_name == "catalog"):
-            filename = request.FILES["BODY"].name
-
-        opencastMediaFile = os.path.join(mediaPackage_dir, filename)
-        with open(opencastMediaFile, "wb+") as destination:
-            for chunk in request.FILES["BODY"].chunks():
-                destination.write(chunk)
-
-    element = mediaPackage_content.createElement(element_name)
-    element.setAttributeNode(mediaPackage_content.createAttribute("id"))
-    element.setAttributeNode(mediaPackage_content.createAttribute("type"))
-    element.setAttribute("id", "%s" % uuid.uuid4())
-    element.setAttribute("type", type_name)
-    if (element_name == "track"):
-        element.setAttributeNode(mediaPackage_content.createAttribute("filename"))
-        element.setAttribute("filename", opencast_filename)
-
-    mimetype_element = mediaPackage_content.createElement("mimetype")
-    mimetype_element.appendChild(mediaPackage_content.createTextNode(mimetype))
-    element.appendChild(mimetype_element)
-
-    if (element_name != "attachment"):
-        url_text = "%(http)s://%(host)s%(media)sopencast-files/%(idMedia)s/%(fn)s" % {
-            "http": "https" if request.is_secure() else "http",
-            "host": request.get_host(),
-            "media": MEDIA_URL,
-            "idMedia": "%s" % idMedia,
-            "fn": filename,
-        }
-    else:
-        url_text = ""
-
-    url = mediaPackage_content.createElement("url")
-    url.appendChild(mediaPackage_content.createTextNode(url_text))
-    element.appendChild(url)
-
-    if (element_name == "track"):
-        live = mediaPackage_content.createElement("live")
-        live.appendChild(mediaPackage_content.createTextNode("false"))
-        element.appendChild(live)
-    media = mediaPackage_content.getElementsByTagName(tag_name)[0]
-    media.appendChild(element)
-
-    with open(mediaPackage_file, "w+") as f:
-        f.write(mediaPackage_content.toxml())
-
-    return HttpResponse(mediaPackage_content.toxml(), content_type="application/xml")
 
 
 @csrf_exempt
