@@ -14,8 +14,7 @@ from tagging.utils import LINEAR
 from tagging.utils import LOGARITHMIC
 
 from ..forms import VideoVersionForm
-from ..models import Video
-from ..utils import check_file
+from ..utils import check_file, get_available_videos
 
 import importlib
 import os
@@ -25,6 +24,7 @@ register = template.Library()
 HOMEPAGE_SHOWS_PASSWORDED = getattr(django_settings, "HOMEPAGE_SHOWS_PASSWORDED", True)
 HOMEPAGE_SHOWS_RESTRICTED = getattr(django_settings, "HOMEPAGE_SHOWS_RESTRICTED", True)
 HOMEPAGE_NB_VIDEOS = getattr(django_settings, "HOMEPAGE_NB_VIDEOS", 12)
+HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS = getattr(django_settings, "HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS", False)
 
 
 @register.filter(name="file_exists")
@@ -78,11 +78,12 @@ def get_version_form(video):
 @register.simple_tag(takes_context=True)
 def get_last_videos(context):
     request = context["request"]
-    videos = Video.objects.filter(
-        encoding_in_progress=False,
-        is_draft=False,
+    videos = get_available_videos().filter(
         sites=get_current_site(request),
-    ).exclude(channel__visible=0)
+    )
+
+    if not HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS:
+        videos = videos.exclude(channel__visible=0)
 
     if not HOMEPAGE_SHOWS_PASSWORDED:
         videos = videos.filter(Q(password="") | Q(password__isnull=True))
