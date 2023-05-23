@@ -592,40 +592,36 @@ def user_share_autocomplete(request):
     return HttpResponse(data, mimetype)
 
 
+def update_shared_user(request, action):
+    foldid = request.GET.get("foldid", 0)
+    userid = request.GET.get("userid", 0)
+    if foldid == 0 or userid == 0:
+        return HttpResponseBadRequest()
+    folder = UserFolder.objects.get(id=foldid)
+    user = User.objects.get(id=userid)
+    if folder.owner == request.user or request.user.is_superuser:
+        if action == "add":
+            folder.users.add(user)
+        elif action == "remove":
+            folder.users.remove(user)
+        folder.save()
+        return HttpResponse(status=201)
+    else:
+        return HttpResponseBadRequest()
+
+
 @login_required(redirect_field_name="referrer")
 def remove_shared_user(request):
-    if is_ajax(request):
-        foldid = request.GET.get("foldid", 0)
-        userid = request.GET.get("userid", 0)
-        if foldid == 0 or userid == 0:
-            return HttpResponseBadRequest()
-        folder = UserFolder.objects.get(id=foldid)
-        user = User.objects.get(id=userid)
-        if folder.owner == request.user or request.user.is_superuser:
-            folder.users.remove(user)
-            folder.save()
-            return HttpResponse(status=201)
-        else:
-            return HttpResponseBadRequest()
+    if request.is_ajax:
+        return update_shared_user(request, "remove")
     else:
         return HttpResponseBadRequest()
 
 
 @login_required(redirect_field_name="referrer")
 def add_shared_user(request):
-    if is_ajax(request):
-        foldid = request.GET.get("foldid", 0)
-        userid = request.GET.get("userid", 0)
-        if foldid == 0 or userid == 0:
-            return HttpResponseBadRequest()
-        folder = UserFolder.objects.get(id=foldid)
-        user = User.objects.get(id=userid)
-        if folder.owner == request.user or request.user.is_superuser:
-            folder.users.add(user)
-            folder.save()
-            return HttpResponse(status=201)
-        else:
-            return HttpResponseBadRequest()
+    if request.is_ajax:
+        return update_shared_user(request, "add")
     else:
         return HttpResponseBadRequest()
 
