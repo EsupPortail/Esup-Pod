@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-23 09:48+0000\n"
+"POT-Creation-Date: 2023-05-23 14:30+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -385,12 +385,20 @@ msgid "Enrich mode"
 msgstr "Mode enrichi"
 
 #: pod/favorite/static/js/favorite-reorganize.js
-msgid "Refresh your page so you can rearrange"
-msgstr "Actualisez votre page pour pouvoir réorganiser"
+msgid "Sort by rank so you can rearrange"
+msgstr "Trier par rang pour pouvoir réorganiser"
 
 #: pod/favorite/static/js/favorite-reorganize.js
-msgid "Refresh"
-msgstr "Actualiser"
+msgid "Sort by rank"
+msgstr "Trier par rang"
+
+#: pod/favorite/static/js/favorite-reorganize.js
+msgid "Reorganize your favorite videos"
+msgstr "Réorganiser vos vidéos favorites"
+
+#: pod/favorite/static/js/favorite-reorganize.js
+msgid "Reorganize"
+msgstr "Réorganiser"
 
 #: pod/favorite/static/js/favorite-reorganize.js
 msgid "Save your reorganization"
@@ -832,6 +840,9 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "Refresh"
+#~ msgstr "Actualiser"
 
 #~ msgid "Video add to playlist"
 #~ msgstr "Ajouter une vidéo à une playlist"

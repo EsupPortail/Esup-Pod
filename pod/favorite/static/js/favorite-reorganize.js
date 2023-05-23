@@ -4,15 +4,24 @@ var infinite;
 addEventForReorganizedButton();
 
 const sortSelectElement = document.getElementById("sort");
+const sortDirectionElement = document.getElementById("sort_direction");
 const reorganizeButtonsSpanElement = document.getElementById(
   "reorganize-buttons-span"
 );
 const collapseAsideElement = document.getElementById("collapseAside");
 sortSelectElement.addEventListener("change", () => {
-  changeButtonIntoRefresh();
+  if(sortSelectElement.value === "rank" && !sortDirectionElement.checked) {
+    changeButtonIntoReorganize();
+  } else {
+    changeButtonIntoRefresh();
+  }
 });
 collapseAsideElement.addEventListener("click", () => {
-  changeButtonIntoRefresh();
+  if(sortSelectElement.value === "rank" && !sortDirectionElement.checked) {
+    changeButtonIntoRefresh();
+  } else {
+    changeButtonIntoReorganize();
+  }
 });
 
 /**
@@ -30,17 +39,32 @@ function addOrRemoveDropZoneHoverStyleClass(state, element) {
 }
 
 /**
- * Change the 'reorganize-button' into a 'refresh-button'.
+ * Change the 'reorganize-button' into a 'sort by rank'.
  */
 function changeButtonIntoRefresh() {
   const reorganizeButton = document.getElementById("reorganize-button");
   if (reorganizeButton) {
     reorganizeButton.id = "refresh-button";
-    reorganizeButton.title = gettext("Refresh your page so you can rearrange");
+    reorganizeButton.title = gettext("Sort by rank so you can rearrange");
     const iconElement = reorganizeButton.querySelector("i");
     const spanElement = reorganizeButton.querySelector("span");
     iconElement.classList.replace("bi-arrows-move", "bi-arrow-clockwise");
-    spanElement.textContent = gettext("Refresh");
+    spanElement.textContent = gettext("Sort by rank");
+  }
+}
+
+/**
+ * Change the 'sort by rank' button into a 'reorganize-button.
+ */
+function changeButtonIntoReorganize() {
+  const refreshButton = document.getElementById("refresh-button");
+  if (refreshButton) {
+    refreshButton.id = "reorganize-button";
+    refreshButton.title = gettext("Reorganize your favorite videos");
+    const iconElement = refreshButton.querySelector("i");
+    const spanElement = refreshButton.querySelector("span");
+    iconElement.classList.replace("bi-arrows-clockwise", "bi-arrow-move");
+    spanElement.textContent = gettext("Reorganize");
   }
 }
 
