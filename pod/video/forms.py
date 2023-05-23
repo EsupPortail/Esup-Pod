@@ -637,15 +637,16 @@ class VideoForm(forms.ModelForm):
         cleaned_data = super(VideoForm, self).clean()
 
         users_groups = self.current_user.owner.accessgroup_set.all()
-        user_channels = (
-            Channel.objects.all()
-            if self.is_superuser
-            else (
+
+        if not self.is_superuser:
+            user_channels = (
                     self.current_user.owners_channels.all()
                     | self.current_user.users_channels.all()
                     | Channel.objects.filter(allow_to_groups__in=users_groups)
             ).distinct()
-        )
+        else:
+            user_channels = Channel.objects.all()
+
         user_channels.filter(site=get_current_site(None))
 
         channelsBefore = (Video.objects.get(pk=self.instance.id)).channel.exclude(
