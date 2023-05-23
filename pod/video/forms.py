@@ -649,10 +649,10 @@ class VideoForm(forms.ModelForm):
 
         user_channels.filter(site=get_current_site(None))
 
-        channelsBefore = (Video.objects.get(pk=self.instance.id)).channel.exclude(
+        channels_to_keep = (Video.objects.get(pk=self.instance.id)).channel.exclude(
             pk__in=[c.id for c in user_channels]
         )
-        self.cleaned_data["channel"] = self.cleaned_data["channel"].union(channelsBefore)
+        self.cleaned_data["channel"] = self.cleaned_data["channel"].union(channels_to_keep)
 
         if "additional_owners" in cleaned_data.keys() and isinstance(
             self.cleaned_data["additional_owners"], QuerySet
