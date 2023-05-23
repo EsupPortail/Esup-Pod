@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 14:51+0000\n"
+"POT-Creation-Date: 2023-05-23 09:48+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: ptitloup <nicolas.can@univ-lille.fr>\n"
+"Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -926,10 +926,8 @@ msgstr "Liste des chapitres"
 
 #: pod/chapter/templates/chapter/list_chapter.html pod/completion/models.py
 #: pod/completion/templates/overlay/list_overlay.html
-#: pod/enrichment/templates/enrichment/list_enrichment.html
-#: pod/favorite/templates/favorite/favorite_video_sort_select.html
-#: pod/live/models.py pod/main/models.py pod/main/views.py
-#: pod/playlist/models.py
+#: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
+#: pod/main/models.py pod/main/views.py pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_element_list.html
 #: pod/video/models.py pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_sort_select.html
@@ -1855,7 +1853,7 @@ msgstr ""
 #: pod/cut/templates/video_cut.html
 msgid ""
 "Your original video is kept and you can therefore modify your changes at any "
-"time"
+"time."
 msgstr ""
 "Votre vidéo d'origine est conservée et vous pouvez donc modifier vos "
 "changements à tout moment."
@@ -1872,7 +1870,7 @@ msgstr "Vous ne pouvez pas découper cette vidéo."
 
 #: pod/cut/views.py
 msgid "The cut was made."
-msgstr "Découpe effectuée"
+msgstr "Découpe effectuée."
 
 #: pod/enrichment/apps.py
 msgid "Enrichment version"
@@ -2144,15 +2142,12 @@ msgstr "Ils sont visibles sur la barre de lecture de la vidéo."
 msgid "You cannot enrich this video."
 msgstr "Vous ne pouvez pas enrichir cette vidéo."
 
-#: pod/favorite/models.py
-#: pod/favorite/templates/favorite/favorite_video_sort_select.html
-#: pod/recorder/models.py pod/video/models.py
+#: pod/favorite/models.py pod/recorder/models.py pod/video/models.py
 #: pod/video/templates/videos/video_sort_select.html
 msgid "Date added"
 msgstr "Date d’ajout"
 
-#: pod/favorite/models.py
-#: pod/favorite/templates/favorite/favorite_video_sort_select.html
+#: pod/favorite/models.py pod/video/templates/videos/video_sort_select.html
 msgid "Rank"
 msgstr "Rang"
 
@@ -2169,29 +2164,6 @@ msgstr "Favoris"
 msgid "Sorry, no video found."
 msgstr "Désolé, aucune vidéo trouvée."
 
-#: pod/favorite/templates/favorite/favorite_video_sort_select.html
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Sort"
-msgstr "Tri"
-
-#: pod/favorite/templates/favorite/favorite_video_sort_select.html
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Descending sort"
-msgstr "Tri descendant"
-
-#: pod/favorite/templates/favorite/favorite_video_sort_select.html
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Sort Direction"
-msgstr "Direction de tri"
-
-#: pod/favorite/templates/favorite/favorite_video_sort_select.html
-#: pod/meeting/forms.py pod/meeting/templates/meeting/recordings.html
-#: pod/playlist/templates/playlist/playlist_element_list.html
-#: pod/video/feeds.py pod/video/models.py
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Duration"
-msgstr "Durée"
-
 #: pod/favorite/templates/favorite/favorite_videos.html
 #: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/my_videos.html
@@ -2204,7 +2176,8 @@ msgstr[0] "%(counter)s vidéo trouvée"
 msgstr[1] "%(counter)s vidéos trouvées"
 
 #: pod/favorite/templates/favorite/favorite_videos.html
-#: pod/favorite/tests/test_views.py pod/main/templates/navbar.html
+#: pod/favorite/tests/test_views.py pod/favorite/views.py
+#: pod/main/templates/navbar.html
 msgid "My favorite videos"
 msgstr "Mes vidéos favorites"
 
@@ -4227,6 +4200,13 @@ msgid "Recurring"
 msgstr "Récurrence"
 
 #: pod/meeting/forms.py
+#: pod/playlist/templates/playlist/playlist_element_list.html
+#: pod/video/feeds.py pod/video/models.py
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Duration"
+msgstr "Durée"
+
+#: pod/meeting/forms.py
 #, python-format
 msgid "Specify a duration in hour between 1 and %(max_duration)s hours"
 msgstr "Spécifiez une durée en heure entre 1 et %(max_duration)s heures"
@@ -4584,7 +4564,7 @@ msgstr ""
 #: pod/meeting/models.py
 msgid "The video file for this recording was not found in the HTML file."
 msgstr ""
-"Le fichier vidéo de cet enregistrement est introuvable dans le fichier HTML"
+"Le fichier vidéo de cet enregistrement est introuvable dans le fichier HTML."
 
 #: pod/meeting/models.py
 msgid "The found file is not a valid video."
@@ -7397,6 +7377,22 @@ msgstr "Télécharger les notes"
 #: pod/video/templates/videos/video_notes.html
 msgid "New note"
 msgstr "Nouvelle note"
+
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Sort"
+msgstr "Tri"
+
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Ascending sort"
+msgstr "Tri ascendant"
+
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Descending sort"
+msgstr "Tri descendant"
+
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Sort Direction"
+msgstr "Direction de tri"
 
 #: pod/video/templates/videos/video_stats_view.html
 msgid "Change the date"

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 14:51+0000\n"
+"POT-Creation-Date: 2023-05-23 09:48+0000\n"
 "PO-Revision-Date: 2023-02-15 16:55+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -869,10 +869,8 @@ msgstr ""
 
 #: pod/chapter/templates/chapter/list_chapter.html pod/completion/models.py
 #: pod/completion/templates/overlay/list_overlay.html
-#: pod/enrichment/templates/enrichment/list_enrichment.html
-#: pod/favorite/templates/favorite/favorite_video_sort_select.html
-#: pod/live/models.py pod/main/models.py pod/main/views.py
-#: pod/playlist/models.py
+#: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
+#: pod/main/models.py pod/main/views.py pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_element_list.html
 #: pod/video/models.py pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_sort_select.html
@@ -1762,7 +1760,7 @@ msgstr ""
 #: pod/cut/templates/video_cut.html
 msgid ""
 "Your original video is kept and you can therefore modify your changes at any "
-"time"
+"time."
 msgstr ""
 
 #: pod/cut/templates/video_cut.html
@@ -2035,15 +2033,12 @@ msgstr ""
 msgid "You cannot enrich this video."
 msgstr ""
 
-#: pod/favorite/models.py
-#: pod/favorite/templates/favorite/favorite_video_sort_select.html
-#: pod/recorder/models.py pod/video/models.py
+#: pod/favorite/models.py pod/recorder/models.py pod/video/models.py
 #: pod/video/templates/videos/video_sort_select.html
 msgid "Date added"
 msgstr ""
 
-#: pod/favorite/models.py
-#: pod/favorite/templates/favorite/favorite_video_sort_select.html
+#: pod/favorite/models.py pod/video/templates/videos/video_sort_select.html
 msgid "Rank"
 msgstr ""
 
@@ -2060,29 +2055,6 @@ msgstr ""
 msgid "Sorry, no video found."
 msgstr ""
 
-#: pod/favorite/templates/favorite/favorite_video_sort_select.html
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Sort"
-msgstr ""
-
-#: pod/favorite/templates/favorite/favorite_video_sort_select.html
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Descending sort"
-msgstr ""
-
-#: pod/favorite/templates/favorite/favorite_video_sort_select.html
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Sort Direction"
-msgstr ""
-
-#: pod/favorite/templates/favorite/favorite_video_sort_select.html
-#: pod/meeting/forms.py pod/meeting/templates/meeting/recordings.html
-#: pod/playlist/templates/playlist/playlist_element_list.html
-#: pod/video/feeds.py pod/video/models.py
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Duration"
-msgstr ""
-
 #: pod/favorite/templates/favorite/favorite_videos.html
 #: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/my_videos.html
@@ -2095,7 +2067,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: pod/favorite/templates/favorite/favorite_videos.html
-#: pod/favorite/tests/test_views.py pod/main/templates/navbar.html
+#: pod/favorite/tests/test_views.py pod/favorite/views.py
+#: pod/main/templates/navbar.html
 msgid "My favorite videos"
 msgstr ""
 
@@ -4050,6 +4023,13 @@ msgid "Recurring"
 msgstr ""
 
 #: pod/meeting/forms.py
+#: pod/playlist/templates/playlist/playlist_element_list.html
+#: pod/video/feeds.py pod/video/models.py
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Duration"
+msgstr ""
+
+#: pod/meeting/forms.py
 #, python-format
 msgid "Specify a duration in hour between 1 and %(max_duration)s hours"
 msgstr ""
@@ -4896,8 +4876,8 @@ msgstr ""
 
 #: pod/playlist/templates/my_playlists.html
 msgid ""
-"You have not created any playlists yet, please use the \"Add a new playlist"
-"\" button to add one."
+"You have not created any playlists yet, please use the \"Add a new "
+"playlist\" button to add one."
 msgstr ""
 
 #: pod/playlist/templates/my_playlists.html
@@ -5482,8 +5462,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -6970,6 +6950,22 @@ msgstr ""
 
 #: pod/video/templates/videos/video_notes.html
 msgid "New note"
+msgstr ""
+
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Sort"
+msgstr ""
+
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Ascending sort"
+msgstr ""
+
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Descending sort"
+msgstr ""
+
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Sort Direction"
 msgstr ""
 
 #: pod/video/templates/videos/video_stats_view.html
