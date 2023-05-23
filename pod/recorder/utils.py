@@ -28,6 +28,52 @@ def studio_clean_old_files():
                 os.remove(f)
 
 
+def handle_upload_file(request, element_name, mimetype, tag_name):
+    idMedia = ""
+    type_name = ""
+    opencast_filename = None
+    # tags = "" # not use actually
+    idMedia = get_id_media(request)
+    if request.POST.get("flavor") and request.POST.get("flavor") != "":
+        type_name = request.POST.get("flavor")
+    mediaPackage_dir = os.path.join(
+        settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
+    )
+
+    mediaPackage_content, mediaPackage_file = get_media_package_content(
+        mediaPackage_dir, idMedia)
+
+    if (element_name != "attachment"):
+        if (element_name == "track"):
+            opencast_filename, ext = os.path.splitext(request.FILES["BODY"].name)
+            filename = "%s%s" % (type_name.replace("/", "_").replace(" ", ""), ext)
+        elif (element_name == "catalog"):
+            filename = request.FILES["BODY"].name
+
+        opencastMediaFile = os.path.join(mediaPackage_dir, filename)
+        with open(opencastMediaFile, "wb+") as destination:
+            for chunk in request.FILES["BODY"].chunks():
+                destination.write(chunk)
+        url_text = "%(http)s://%(host)s%(media)sopencast-files/%(idMedia)s/%(fn)s" % {
+            "http": "https" if request.is_secure() else "http",
+            "host": request.get_host(),
+            "media": MEDIA_URL,
+            "idMedia": "%s" % idMedia,
+            "fn": filename,
+        }
+    else:
+        url_text = ""
+    element = create_xml_element(mediaPackage_content, element_name,
+                                 type_name, mimetype, url_text, opencast_filename,)
+    media = mediaPackage_content.getElementsByTagName(tag_name)[0]
+    media.appendChild(element)
+
+    with open(mediaPackage_file, "w+") as f:
+        f.write(mediaPackage_content.toxml())
+
+    return HttpResponse(mediaPackage_content.toxml(), content_type="application/xml")
+
+
 def get_id_media(request):
     """
     Extracts and returns idMedia from the mediaPackage in the request.
@@ -47,7 +93,7 @@ def get_id_media(request):
 
 def get_media_package_content(mediaPackage_dir, idMedia):
     """
-    Retrieve the media package content by parsing an XML file.
+    Retrieve the media package content and the media package file by parsing an XML file.
     """
 
     mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
@@ -59,50 +105,12 @@ def get_media_package_content(mediaPackage_dir, idMedia):
     return mediaPackage_content, mediaPackage_file
 
 
-def handle_upload_file(request, element_name, mimetype, tag_name):
-    idMedia = ""
-    type_name = ""
-    # tags = "" # not use actually
-    idMedia = get_id_media(request)
-
-    mediaPackage_dir = os.path.join(
-        settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
-    )
-
-    mediaPackage_content, mediaPackage_file = get_media_package_content(
-        mediaPackage_dir, idMedia)
-
-    if (element_name != "attachment"):
-        if (element_name == "track"):
-            opencast_filename, ext = os.path.splitext(request.FILES["BODY"].name)
-            filename = "%s%s" % (type_name.replace("/", "_").replace(" ", ""), ext)
-        elif (element_name == "catalog"):
-            filename = request.FILES["BODY"].name
-
-        opencastMediaFile = os.path.join(mediaPackage_dir, filename)
-        with open(opencastMediaFile, "wb+") as destination:
-            for chunk in request.FILES["BODY"].chunks():
-                destination.write(chunk)
-
-    element = create_xml_element(request, idMedia, mediaPackage_content, element_name,
-                                 type_name, opencast_filename, mimetype, filename)
-    media = mediaPackage_content.getElementsByTagName(tag_name)[0]
-    media.appendChild(element)
-
-    with open(mediaPackage_file, "w+") as f:
-        f.write(mediaPackage_content.toxml())
-
-    return HttpResponse(mediaPackage_content.toxml(), content_type="application/xml")
-
-
-def create_xml_element(request,
-                       idMedia,
-                       mediaPackage_content,
+def create_xml_element(mediaPackage_content,
                        element_name,
                        type_name,
-                       opencast_filename,
                        mimetype,
-                       filename
+                       url_text,
+                       opencast_filename=None
                        ):
     """Create an XML element with the specified attributes."""
 
@@ -117,16 +125,6 @@ def create_xml_element(request,
     mimetype_element = mediaPackage_content.createElement("mimetype")
     mimetype_element.appendChild(mediaPackage_content.createTextNode(mimetype))
     element.appendChild(mimetype_element)
-    if (element_name != "attachment"):
-        url_text = "%(http)s://%(host)s%(media)sopencast-files/%(idMedia)s/%(fn)s" % {
-            "http": "https" if request.is_secure() else "http",
-            "host": request.get_host(),
-            "media": MEDIA_URL,
-            "idMedia": "%s" % idMedia,
-            "fn": filename,
-        }
-    else:
-        url_text = ""
     url = mediaPackage_content.createElement("url")
     url.appendChild(mediaPackage_content.createTextNode(url_text))
     element.appendChild(url)

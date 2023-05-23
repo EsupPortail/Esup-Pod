@@ -43,7 +43,12 @@ from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
 from django.views.decorators.csrf import csrf_exempt
 from xml.dom import minidom
 
-from .utils import get_id_media, handle_upload_file
+from .utils import (
+    get_id_media,
+    handle_upload_file,
+    create_xml_element,
+    get_media_package_content
+)
 
 DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/")
 
@@ -492,31 +497,20 @@ def ingest_addDCCatalog(request):
     ):
         typeCatalog = "dublincore/episode"
         # Id catalog. Example format: 798017b1-2c45-42b1-85b0-41ce804fa527
-        idCatalog = uuid.uuid4()
+        # idCatalog = uuid.uuid4()
         # Id media package
         idMedia = ""
         # dublinCore
         dublinCore = ""
-        if (
-            request.POST.get("mediaPackage") != ""
-            and request.POST.get("mediaPackage") != "{}"
-        ):
-            mediaPackage = request.POST.get("mediaPackage")
-            # XML result to parse
-            xmldoc = minidom.parseString(mediaPackage)
-            # Get the good id and start date
-            idMedia = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("id")
-
+        idMedia = get_id_media(request)
         if request.POST.get("flavor") and request.POST.get("flavor") != "":
             typeCatalog = request.POST.get("flavor")
-        
         if request.POST.get("dublinCore") and request.POST.get("dublinCore") != "":
             dublinCore = request.POST.get("dublinCore")
 
         mediaPackage_dir = os.path.join(
             settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
         )
-        mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
         # create directory to store the dublincore file.
         os.makedirs(mediaPackage_dir, exist_ok=True)
         # store the dublin core file
@@ -524,10 +518,8 @@ def ingest_addDCCatalog(request):
         with open(dublinCore_file, "w+") as f:
             f.write(unquote(dublinCore))
 
-        mediaPackage_content = minidom.parse(mediaPackage_file)  # parse an open file
-        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
-        if mediapackage.getAttribute("id") != idMedia:
-            raise PermissionDenied
+        mediaPackage_content, mediaPackage_file = get_media_package_content(
+            mediaPackage_dir, idMedia)
 
         dc_url = str(
             "%(http)s://%(host)s%(media)sopencast-files/%(idMedia)s/dublincore.xml"
@@ -538,17 +530,8 @@ def ingest_addDCCatalog(request):
                 "idMedia": "%s" % idMedia,
             }
         )
-        catalog = mediaPackage_content.createElement("catalog")
-        catalog.setAttributeNode(mediaPackage_content.createAttribute("type"))
-        catalog.setAttributeNode(mediaPackage_content.createAttribute("id"))
-        catalog.setAttribute("id", "%s" % idCatalog)
-        catalog.setAttribute("type", typeCatalog)
-        mimetype = mediaPackage_content.createElement("mimetype")
-        mimetype.appendChild(mediaPackage_content.createTextNode("text/xml"))
-        catalog.appendChild(mimetype)
-        url = mediaPackage_content.createElement("url")
-        url.appendChild(mediaPackage_content.createTextNode(dc_url))
-        catalog.appendChild(url)
+        catalog = create_xml_element(mediaPackage_content, "catalog", typeCatalog,
+                                     "text/xml", dc_url)
 
         metadata = mediaPackage_content.getElementsByTagName("metadata")[0]
         metadata.appendChild(catalog)
@@ -610,25 +593,13 @@ def ingest_ingest(request):
     # URI ingest useful for OpenCast Studio
     # Form management with 1 parameter : mediaPackage
     # Management of the mediaPackage (XML)
-    if (
-        request.POST.get("mediaPackage")
-        and request.POST.get("mediaPackage") != ""
-        and request.POST.get("mediaPackage") != "{}"
-    ):
-        mediaPackage = request.POST.get("mediaPackage")
-        # XML result to parse
-        xmldoc = minidom.parseString(mediaPackage)
-        idMedia = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("id")
+    if request.POST.get("mediaPackage"):
+        idMedia = get_id_media(request)
         mediaPackage_dir = os.path.join(
             settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
         )
-        mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
-        mediaPackage_content = minidom.parse(mediaPackage_file)  # parse an open file
-        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
-
-        if mediapackage.getAttribute("id") != idMedia:
-            raise PermissionDenied
-
+        mediaPackage_content, mediaPackage_file = get_media_package_content(
+            mediaPackage_dir, idMedia)
         # Create the recording
         # Search for the recorder corresponding to the Studio
         recorder = Recorder.objects.filter(
