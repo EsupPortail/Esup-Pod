@@ -1570,6 +1570,12 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   >> Version courante du projet <br>
 
+ - `HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS`
+
+  > valeur par défaut : `False`
+
+  >> Affiche les vidéos de chaines non visibles sur la page d'accueil <br>
+
 ### Configuration application meeting
 
 Application Meeting pour la gestion de reunion avec BBB.<br>
@@ -2173,18 +2179,18 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
   >> Vous pouvez créer des catégories pour pouvoir ranger vos propres vidéos. <br>
   >> Les catégories sont liées à l’utilisateur. <br>
 
+ - `USE_FAVORITES`
+
+  > valeur par défaut : `True`
+
+  >> Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans leurs favoris. <br>
+
  - `USE_OBSOLESCENCE`
 
   > valeur par défaut : `False`
 
   >> Activation de l’obsolescence des video. Permet d’afficher la date de suppression de la video <br>
   >> dans le formulaire d’edition et dans la partie admin. <br>
-
- - `USE_FAVORITES`
-
-  > valeur par défaut : `True`
-
-  >> Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans leurs favoris. <br>
 
  - `USE_STATS_VIEW`
 
