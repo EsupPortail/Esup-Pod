@@ -27,6 +27,7 @@ import re
 import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from pod.main.utils import is_ajax
+from .utils import update_shared_user
 
 
 __FOLDER_FILE_TYPE__ = ["image", "file"]
@@ -590,24 +591,6 @@ def user_share_autocomplete(request):
         return HttpResponseBadRequest()
     mimetype = "application/json"
     return HttpResponse(data, mimetype)
-
-
-def update_shared_user(request, action):
-    foldid = request.GET.get("foldid", 0)
-    userid = request.GET.get("userid", 0)
-    if foldid == 0 or userid == 0:
-        return HttpResponseBadRequest()
-    folder = UserFolder.objects.get(id=foldid)
-    user = User.objects.get(id=userid)
-    if folder.owner == request.user or request.user.is_superuser:
-        if action == "add":
-            folder.users.add(user)
-        elif action == "remove":
-            folder.users.remove(user)
-        folder.save()
-        return HttpResponse(status=201)
-    else:
-        return HttpResponseBadRequest()
 
 
 @login_required(redirect_field_name="referrer")
