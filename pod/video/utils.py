@@ -447,6 +447,17 @@ def get_videos(title, user_id, search=None, limit=12, offset=0):
     return JsonResponse(response, safe=False)
 
 
+def sort_videos_list(request, videos_list, sort_field):
+    """Return videos list sorted by sort_field.
+
+    Sorted by specific column name and ascending or descending direction (boolean)
+    """
+    if not request.GET.get("sort_direction"):
+        sort_field = "-" + sort_field
+    videos_list = videos_list.order_by(sort_field)
+    return videos_list.distinct()
+
+
 def time_to_seconds(a_time):
     """Convert a time to seconds."""
     seconds = time.strptime(str(a_time), "%H:%M:%S")

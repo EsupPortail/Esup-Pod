@@ -1,7 +1,6 @@
 var infinite;
 var checkedInputs = [];
 var listUser;
-var sortDirectionAsc = false;
 var sortDirectionChars = ["8600", "8599"];
 var sortDirectionTitle = [
   gettext("Descending sort"),
@@ -115,6 +114,8 @@ function getUrlForRefresh() {
   let newUrl = window.location.pathname;
   // Add sort-related parameters
   newUrl += "?sort=" + document.getElementById("sort").value + "&";
+  var sortDirectionAsc = document.getElementById("sort_direction").checked;
+
   if (sortDirectionAsc) {
     newUrl +=
       "sort_direction=" + document.getElementById("sort_direction").value + "&";
@@ -217,13 +218,13 @@ document
   });
 
 // Update arrow char of ascending or descending sort order
-function updateSortDirectionChar() {
+function updateSortDirectionChar(sortDirectionAsc) {
   document.getElementById("sort_direction_label").innerHTML =
     "&#" + sortDirectionChars[+sortDirectionAsc].toString();
 }
 
 // Update title for input sort direction
-function updateSortDirectionTitle() {
+function updateSortDirectionTitle(sortDirectionAsc) {
   let newTitle = sortDirectionTitle[+sortDirectionAsc];
   document
     .getElementById("sort_direction_label")
@@ -232,11 +233,11 @@ function updateSortDirectionTitle() {
 
 // Toggle direction of sort
 function toggleSortDirection() {
-  sortDirectionAsc = !sortDirectionAsc;
   document.getElementById("sort_direction").checked =
     !document.getElementById("sort_direction").checked;
-  updateSortDirectionChar();
-  updateSortDirectionTitle();
+  const direction = document.getElementById("sort_direction").checked;
+  updateSortDirectionChar(direction);
+  updateSortDirectionTitle(direction);
 }
 
 // Enable / Disable toggle inputs to prevent user actions during loading

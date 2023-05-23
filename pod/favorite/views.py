@@ -10,10 +10,10 @@ from pod.favorite.models import Favorite
 from pod.main.utils import is_ajax
 from pod.video.models import Video
 from pod.video.views import CURSUS_CODES, get_owners_has_instances
+from pod.video.utils import sort_videos_list
 
 from .utils import user_add_or_remove_favorite_video
 from .utils import get_all_favorite_videos_for_user
-from .utils import sort_videos_list
 
 import json
 
@@ -36,8 +36,10 @@ def favorite_button_in_video_info(request):
 @login_required(redirect_field_name="referrer")
 def favorite_list(request):
     """Render the main list of favorite videos."""
+    sort_field = request.GET.get("sort", "rank")
     videos_list = sort_videos_list(
-        request, get_all_favorite_videos_for_user(request.user)
+        request, get_all_favorite_videos_for_user(request.user),
+        sort_field
     )
     count_videos = len(videos_list)
 
@@ -64,7 +66,9 @@ def favorite_list(request):
         return render(
             request,
             "favorite/favorite_video_list.html",
-            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
+            {"videos": videos,
+             "full_path": full_path,
+             "count_videos": count_videos}
         )
 
     return render(
@@ -72,6 +76,7 @@ def favorite_list(request):
         "favorite/favorite_videos.html",
         {
             "videos": videos,
+            "sort_field": sort_field,
             "count_videos": count_videos,
             "types": request.GET.getlist("type"),
             "owners": request.GET.getlist("owner"),
@@ -81,6 +86,8 @@ def favorite_list(request):
             "full_path": full_path,
             "ownersInstances": ownersInstances,
             "cursus_list": CURSUS_CODES,
+            "sort_field": sort_field,
+            "sort_direction": request.GET.get("sort_direction", "")
         },
     )
 
