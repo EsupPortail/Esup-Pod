@@ -452,7 +452,12 @@ def sort_videos_list(videos_list, sort_field, sort_direction=""):
 
     Sorted by specific column name and ascending or descending direction
     """
-    if sort_field:
+    if sort_field and sort_field in ["category", "channel", "cursus",
+                                     "date_added", "date_evt", "discipline",
+                                     "duration", "id", "is_360", "is_restricted",
+                                     "is_video", "licence", "main_lang", "owner",
+                                     "sites", "theme", "title", "title_en", "title_fr",
+                                     "type", "viewcount", "rank"]:
         if not sort_direction:
             sort_field = "-" + sort_field
         videos_list = videos_list.order_by(sort_field)
