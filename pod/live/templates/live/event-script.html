@@ -13,7 +13,7 @@
     // Live seems stopped
     let stopped = false;
     let video_on_hold_is_displayed = false;
-
+    let recordingDuration = 0;
     let options = {
         notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
         language: "fr", //en or nl
@@ -139,7 +139,6 @@
         const stopButton = document.getElementById("stoprecord");
         const splitButton = document.getElementById("splitrecord");
         const durationClock = document.getElementById("recordingduration");
-        let recordingDuration = 0;
 
         // Recording actions on the stream
         startButton.onclick = () => {
@@ -295,12 +294,14 @@
 
         // Display elapsed record time
         function displayRecordingDuration() {
-          let minutes = parseInt(recordingDuration / 60, 10);
-          let seconds = recordingDuration - minutes * 60;
-          minutes = minutes < 10 ? "0" + minutes : minutes;
-          seconds = seconds < 10 ? "0" + seconds : seconds;
-          durationClock.innerHTML = '{% trans "Recording duration" %} : ' + minutes + ":" + seconds;
-          recordingDuration++;
+          let hours = Math.floor(recordingDuration / 3600)
+          let minutes = Math.floor(recordingDuration / 60 - (hours * 60))
+          let seconds = recordingDuration - minutes * 60 - hours * 3600
+          hours = hours === 0 ? "" : hours + ":"
+          minutes = minutes < 10 ? "0" + minutes : minutes
+          seconds = seconds < 10 ? "0" + seconds : seconds
+          durationClock.innerHTML = '{% trans "Recording duration" %} : ' + hours + minutes + ':' + seconds;
+          recordingDuration++
         }
 
         function getInfoCurrentRecord() {
@@ -312,7 +313,6 @@
               "Content-Type": "application/json",
               "X-CSRFToken": '{{ csrf_token }}'
             },
-            dataType: "json",
             body: JSON.stringify({
               "idevent": "{{ event.id }}",
               "idbroadcaster": "{{ event.broadcaster.id }}"
@@ -505,13 +505,13 @@
 
     // display the event's videos
     function show_transcription() {
-        var lastMod = null;
-        var lastModTime = 0;
+        let lastMod = null;
+        let lastModTime = 0;
         setInterval(function () {
             let tracks = player.textTracks();
-            var track_live;
-            for (var i = 0; i < tracks.length; i++) {
-                var track = tracks[i];
+            let track_live;
+            for (let i = 0; i < tracks.length; i++) {
+                let track = tracks[i];
                 if (track.kind === "subtitles" && track.language === "{{ event.broadcaster.main_lang }}") {
                     track_live = tracks[i];
                 }
@@ -555,7 +555,7 @@
                     newTrack.mode = 'showing';
                 });
                 // show all tracks
-                for (var i = 0; i < tracks.length; i++) {
+                for (let i = 0; i < tracks.length; i++) {
                     if (tracks[i].kind === "subtitles" && tracks[i].language === "{{ event.broadcaster.main_lang }}") {
                         tracks[i].mode = "showing";
                     }
