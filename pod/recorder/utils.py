@@ -29,6 +29,18 @@ def studio_clean_old_files():
 
 
 def handle_upload_file(request, element_name, mimetype, tag_name):
+    """
+    Handle file upload and create XML element in the media package.
+
+    Args:
+        request : The HTTP request object.
+        element_name (str): The name of the XML element.
+        mimetype (str): The mimetype of the uploaded file.
+        tag_name (str): The tag name of the media package element.
+
+    Returns:
+        HttpResponse: The HTTP response containing the generated XML content.
+    """
     idMedia = ""
     type_name = ""
     opencast_filename = None
@@ -54,6 +66,7 @@ def handle_upload_file(request, element_name, mimetype, tag_name):
         with open(opencastMediaFile, "wb+") as destination:
             for chunk in request.FILES["BODY"].chunks():
                 destination.write(chunk)
+
         url_text = "%(http)s://%(host)s%(media)sopencast-files/%(idMedia)s/%(fn)s" % {
             "http": "https" if request.is_secure() else "http",
             "host": request.get_host(),
@@ -112,8 +125,20 @@ def create_xml_element(mediaPackage_content,
                        url_text,
                        opencast_filename=None
                        ):
-    """Create an XML element with the specified attributes."""
+    """
+    Create an XML element with the specified attributes.
 
+    Args:
+        mediaPackage_content: The media package content.
+        element_name (str): The name of the XML element.
+        type_name (str): The type of the XML element.
+        mimetype (str): The mimetype of the XML element.
+        url_text (str): The URL text of the XML element.
+        opencast_filename : defaults to None.
+
+    Returns:
+        element : The created XML element.
+    """
     element = mediaPackage_content.createElement(element_name)
     element.setAttributeNode(mediaPackage_content.createAttribute("id"))
     element.setAttributeNode(mediaPackage_content.createAttribute("type"))
