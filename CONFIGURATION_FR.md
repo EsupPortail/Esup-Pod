@@ -5,15 +5,15 @@
 ## Information générale 
 
 
-La plateforme Esup-Pod se base sur le framework Django écrit en Python.<br/>
-Elle supporte les versions 3.7, 3.8 et 3.9 de Python.<br/>
+La plateforme Esup-Pod se base sur le framework Django écrit en Python.<br>
+Elle supporte les versions 3.7, 3.8 et 3.9 de Python.<br>
 
-**Django Version : 3.2 LTS**<br/>
+**Django Version : 3.2 LTS**<br>
 
-> La documentation complète du framework : [https://docs.djangoproject.com/fr/3.2/]() (ou [https://docs.djangoproject.com/en/3.2/]())<br><br/>
-> L’ensemble des variables de configuration du framework est accessible à cette adresse : [https://docs.djangoproject.com/fr/3.2/ref/settings/]()<br/>
+> La documentation complète du framework : [https://docs.djangoproject.com/fr/3.2/]() (ou [https://docs.djangoproject.com/en/3.2/]())<br><br>
+> L’ensemble des variables de configuration du framework est accessible à cette adresse : [https://docs.djangoproject.com/fr/3.2/ref/settings/]()<br>
 
-Voici les configurations des applications tierces utilisées par Esup-Pod.<br/>
+Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
 
 
  - `CAS`
@@ -440,8 +440,8 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br/>
   >> Répertoire par défaut pour le téléversement des vidéos. <br>
 
 ### Langue
-Par défaut, Esup-Pod est fournie en Francais et en anglais.<br/>
-Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br/>
+Par défaut, Esup-Pod est fournie en Francais et en anglais.<br>
+Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
 
  - `LANGUAGES`
 
@@ -1572,9 +1572,9 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
 ### Configuration application meeting
 
-Application Meeting pour la gestion de reunion avec BBB.<br/>
-Mettre `USE_MEETING` à True pour activer cette application.<br/>
-`BBB_API_URL` et `BBB_SECRET_KEY` sont obligatoires pour faire fonctionner l’application<br/>
+Application Meeting pour la gestion de reunion avec BBB.<br>
+Mettre `USE_MEETING` à True pour activer cette application.<br>
+`BBB_API_URL` et `BBB_SECRET_KEY` sont obligatoires pour faire fonctionner l’application<br>
 
  - `BBB_API_URL`
 
@@ -2600,9 +2600,9 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
 
 ### Configuration application xapi
 
-Application pour l’envoi d‘instructions xAPI à un LRS.<br/>
-Aucune instruction ne persiste dans Pod, elles sont toutes envoyées au LRS paramétré.<br/>
-Attention, il faut configurer Celery pour l’envoi des instructions.<br/>
+Application pour l’envoi d‘instructions xAPI à un LRS.<br>
+Aucune instruction ne persiste dans Pod, elles sont toutes envoyées au LRS paramétré.<br>
+Attention, il faut configurer Celery pour l’envoi des instructions.<br>
 
  - `USE_XAPI`
 
