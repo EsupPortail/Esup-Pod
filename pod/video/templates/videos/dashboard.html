@@ -98,12 +98,15 @@
 {% block more_script %}
 <script>
   var urlVideos = "{% url 'video:dashboard' %}";
+  var urlVideosUpdate = "{% url 'video:bulk_update' %}";
+  var csrftoken = "{{ csrf_token }}";
   var page = 1;
   var nextPage = false;
   var update_fields = true;
 </script>
 <script src="{% static 'js/infinite.js' %}"></script>
 <script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
 <script>
 {% if use_category %}
   const USE_CATEGORY = true;
