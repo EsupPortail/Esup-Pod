@@ -3,14 +3,14 @@
 {% load static %}
 
 {% block opengraph %}{% load video_filters %}
-  <meta name="description" content="{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}" />
+  <meta name="description" content="{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}">
   <!-- Open Graph data -->
-  <meta property="og:title" content="{% trans 'My favorite videos' %}" />
-  <meta property="og:type" content="article" />
-  <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-  <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
-  <meta property="og:description" content="{{ DESC_SITE }} - {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}" />
-  <meta property="og:site_name" content="{{ TITLE_SITE }}" />
+  <meta property="og:title" content="{% trans 'My favorite videos' %}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}">
+  <meta property="og:description" content="{{ DESC_SITE }} - {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}">
+  <meta property="og:site_name" content="{{ TITLE_SITE }}">
 {% endblock %}
 
 {% block page_extra_head %}
@@ -26,14 +26,12 @@
     <h1 id="video_count" class="page_title col-xxl-4 mb-2">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h1>
     <span class="col-xxl-4 col-md-6 mb-2" id="reorganize-buttons-span">
       {% if count_videos > 1 %}
-      <form action="{% url 'favorite:save-reorganisation' %}" method="post" class="btn">
+      <form action="{% url 'favorite:save-reorganisation' %}" method="post">
         {% csrf_token %}
-        <span class="pod-float-end">
-          <input id="json-data" type="hidden" name="json-data">
-          <button id="reorganize-button" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm">
-            <i class="bi bi-arrows-move"></i>&nbsp;<span>{% trans "Reorganize" %}</span>
-          </button>
-        </span>
+        <input id="json-data" type="hidden" name="json-data">
+        <button id="reorganize-button" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-arrows-move"></i>&nbsp;<span>{% trans "Reorganize" %}</span>
+        </button>
       </form>
       <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-secondary btn-sm" style="visibility:hidden">
         <i class="bi bi-x-circle"></i>&nbsp;{% trans "Cancel" %}</a>

@@ -724,7 +724,7 @@ var send_form_data = async function (
       gettext("Error during exchange") +
         "(" +
         error +
-        ")<br/>" +
+        ")<br>" +
         gettext("No data could be stored."),
       "alert-danger"
     );
@@ -786,7 +786,7 @@ var send_form_data_vanilla = function (
         gettext("Error during exchange") +
           " (" +
           err +
-          ")<br/>" +
+          ")<br>" +
           gettext("No data could be stored."),
         "alert-danger"
       );

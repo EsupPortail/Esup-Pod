@@ -43,15 +43,15 @@
     <p>{{course_title}}</p>
     <p>Assignment #{{number}}</p>
     <p>video: {{iframe_url}}</p>
-    <hr />
+    <hr>
 
     {% if not is_student %}
         <p>Instructors cannot submit an assignment</p>
     {% else %}
         <form action="{% url 'lti-post-grade' %}" method="post">
-            <input type="input" name="score" value=".55" />
-            <input type="hidden" name="next" value="% url 'assignment-success' %" />
-            <input type="submit" value="submit" />
+            <input type="input" name="score" value=".55">
+            <input type="hidden" name="next" value="% url 'assignment-success' %">
+            <input type="submit" value="submit">
         </form>
     {% endif %}
 </div>

@@ -138,7 +138,7 @@ def send_establishment(event, subject, message, from_email, to_email, html_messa
 
 
 def send_managers(owner, subject, full_message, fail, html_message):
-    full_html_message = html_message + "<br/>%s%s" % (
+    full_html_message = html_message + "<br>%s%s" % (
         _("Post by:"),
         owner,
     )

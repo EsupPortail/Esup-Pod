@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block page_extra_head %}
-  <link rel="stylesheet" href="{% static 'css/bbb.css' %}?ver={{VERSION}}"/>
+  <link rel="stylesheet" href="{% static 'css/bbb.css' %}?ver={{VERSION}}">
   <script>
     window.setInterval("location.reload(true)",30000);
   </script>
@@ -26,9 +26,9 @@
   {% endif %}
 
   {% trans "This is the list of current BigBlueButton sessions for which you are moderator. This module allows you to make a live stream from this BigBlueButton session (<i>useful if there are more than 100 users</i>)." %}
-  {% trans "<b>Remember to not use breakout rooms in this case and end the meeting once it is over.</b>" %}<br/>
-  {% trans 'Shortly after clicking the "Perform a BigBlueButton live" button, and select the desired options, the live stream will be available to users on the <i class=\"bi bi-broadcast\"></i> <b>Lives</b> page.' %}<br/>
-  <br/>
+  {% trans "<b>Remember to not use breakout rooms in this case and end the meeting once it is over.</b>" %}<br>
+  {% trans 'Shortly after clicking the "Perform a BigBlueButton live" button, and select the desired options, the live stream will be available to users on the <i class=\"bi bi-broadcast\"></i> <b>Lives</b> page.' %}<br>
+  <br>
 
   {% if records.paginator.count == 0 %}
     <p class="alert alert-info">{% trans 'There are no BigBlueButton sessions in progress.'%}</p>

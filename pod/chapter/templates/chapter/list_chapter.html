@@ -22,15 +22,15 @@
 							<div class="btn-group">
 							<form class="get_form" action="{% url 'video:chapter:video_chapter' slug=video.slug %}" method="POST">
 								{% csrf_token %}
-								<input type="hidden" name="action" value="modify"/>
-								<input type="hidden" name="id" value="{{chapter.id}}"/>
-								<input type="submit" title="{% trans 'Edit the chapter' %}" value="{% trans 'Modify' %}" class="btn btn-primary btn-sm m-1"/>
+								<input type="hidden" name="action" value="modify">
+								<input type="hidden" name="id" value="{{chapter.id}}">
+								<input type="submit" title="{% trans 'Edit the chapter' %}" value="{% trans 'Modify' %}" class="btn btn-primary btn-sm m-1">
 							</form>
 							<form class="get_form" action="{% url 'video:chapter:video_chapter' slug=video.slug %}" method="POST">
 								{% csrf_token %}
-								<input type="hidden" name="action" value="delete"/>
-								<input type="hidden" name="id" value="{{chapter.id}}"/>
-								<input type="submit" title="{% trans 'Delete the chapter' %}" value="{% trans 'Delete' %}" class="btn btn-danger btn-sm m-1"/>
+								<input type="hidden" name="action" value="delete">
+								<input type="hidden" name="id" value="{{chapter.id}}">
+								<input type="submit" title="{% trans 'Delete the chapter' %}" value="{% trans 'Delete' %}" class="btn btn-danger btn-sm m-1">
 							</form>
 						</div>
 						</td>

@@ -964,7 +964,7 @@ class Video(models.Model):
             thumbnail_url = static(DEFAULT_THUMBNAIL)
         return format_html(
             '<img style="max-width:100px" '
-            'src="%s" alt="%s" loading="lazy"/>'
+            'src="%s" alt="%s" loading="lazy">'
             % (
                 thumbnail_url,
                 title.replace("{", "").replace("}", "").replace('"', "'"),
@@ -985,7 +985,7 @@ class Video(models.Model):
             thumbnail_url = static(DEFAULT_THUMBNAIL)
         return (
             '<img class="pod-thumbnail" src="%s" alt="%s"\
-            loading="lazy"/>'
+            loading="lazy">'
             % (thumbnail_url, self.title)
         )
 
