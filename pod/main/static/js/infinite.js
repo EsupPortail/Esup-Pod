@@ -94,9 +94,7 @@ class InfiniteLoader {
     this.getData(url, this.next_page_number).then((data) => {
       const html = new DOMParser().parseFromString(data, "text/html");
 
-      if (
-        html.getElementById("videos_list").dataset.nextPage !== "True"
-      ) {
+      if (html.getElementById("videos_list").dataset.nextPage !== "True") {
         this.nextPage = false;
       }
 
