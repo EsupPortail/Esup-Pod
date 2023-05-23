@@ -106,11 +106,9 @@ def fetch_user(request, form):
 def add_recording(request):
     if in_maintenance():
         return redirect(reverse("maintenance"))
-    mediapath = request.GET.get("mediapath") if (request.GET.get("mediapath")) else ""
-    course_title = (
-        request.GET.get("course_title") if request.GET.get("course_title") else ""
-    )
-    recorder = request.GET.get("recorder") or None
+    mediapath = request.GET.get("mediapath", "")
+    course_title = request.GET.get("course_title", "")
+    recorder = request.GET.get("recorder", None)
 
     recorder = check_recorder(recorder, request)
 
@@ -570,51 +568,86 @@ def ingest_addAttachment(request):
         and request.POST.get("flavor")
         and request.FILES.get("BODY")
     ):
-        idMedia = ""
-        typeAttachment = ""
-        if (
-            request.POST.get("mediaPackage") != ""
-            and request.POST.get("mediaPackage") != "{}"
-        ):
-            mediaPackage = request.POST.get("mediaPackage")
-            # XML result to parse
-            xmldoc = minidom.parseString(mediaPackage)
-            # Get the good id and start date
-            idMedia = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("id")
-        if request.POST.get("flavor") and request.POST.get("flavor") != "":
-            typeAttachment = request.POST.get("flavor")
-        # save the ACLFile ???
-
-        mediaPackage_dir = os.path.join(
-            settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
-        )
-        mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
-        mediaPackage_content = minidom.parse(mediaPackage_file)  # parse an open file
-        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
-        if mediapackage.getAttribute("id") != idMedia:
-            raise PermissionDenied
-
-        attachment = mediaPackage_content.createElement("attachment")
-        attachment.setAttributeNode(mediaPackage_content.createAttribute("type"))
-        attachment.setAttributeNode(mediaPackage_content.createAttribute("id"))
-        attachment.setAttribute("id", "%s" % uuid.uuid4())
-        attachment.setAttribute("type", typeAttachment)
-        mimetype = mediaPackage_content.createElement("mimetype")
-        mimetype.appendChild(mediaPackage_content.createTextNode("text/xml"))
-        attachment.appendChild(mimetype)
-        url = mediaPackage_content.createElement("url")
-        url.appendChild(mediaPackage_content.createTextNode(""))
-        attachment.appendChild(url)
-
-        attachments = mediaPackage_content.getElementsByTagName("attachments")[0]
-        attachments.appendChild(attachment)
-
-        with open(mediaPackage_file, "w+") as f:
-            f.write(mediaPackage_content.toxml())
-
-        return HttpResponse(mediaPackage_content.toxml(), content_type="application/xml")
-
+        return handle_upload_file(request, "attachment", "text/xml", "attachments")
     return HttpResponseBadRequest()
+
+
+def handle_upload_file(request, element_name, mimetype, tag_name):
+    idMedia = ""
+    type_name = ""
+    # tags = "" # not use actually
+    if (
+        request.POST.get("mediaPackage") != ""
+        and request.POST.get("mediaPackage") != "{}"
+    ):
+        mediaPackage = request.POST.get("mediaPackage")
+        # XML result to parse
+        xmldoc = minidom.parseString(mediaPackage)
+        # Get the good id and start date
+        idMedia = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("id")
+    if request.POST.get("flavor") and request.POST.get("flavor") != "":
+        type_name = request.POST.get("flavor")
+
+    mediaPackage_dir = os.path.join(
+        settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
+    )
+    mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
+    mediaPackage_content = minidom.parse(mediaPackage_file)  # parse an open file
+    mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
+    if mediapackage.getAttribute("id") != idMedia:
+        raise PermissionDenied
+
+    if (element_name == "attachment"):
+        if (element_name == "track"):
+            opencast_filename, ext = os.path.splitext(request.FILES["BODY"].name)
+            filename = "%s%s" % (type_name.replace("/", "_").replace(" ", ""), ext)
+        elif (element_name == "catalog"):
+            filename = request.FILES["BODY"].name
+
+        opencastMediaFile = os.path.join(mediaPackage_dir, filename)
+        with open(opencastMediaFile, "wb+") as destination:
+            for chunk in request.FILES["BODY"].chunks():
+                destination.write(chunk)
+
+    element = mediaPackage_content.createElement(element_name)
+    element.setAttributeNode(mediaPackage_content.createAttribute("id"))
+    element.setAttributeNode(mediaPackage_content.createAttribute("type"))
+    element.setAttribute("id", "%s" % uuid.uuid4())
+    element.setAttribute("type", type_name)
+    if (element_name == "track"):
+        element.setAttributeNode(mediaPackage_content.createAttribute("filename"))
+        element.setAttribute("filename", opencast_filename)
+
+    mimetype_element = mediaPackage_content.createElement("mimetype")
+    mimetype_element.appendChild(mediaPackage_content.createTextNode(mimetype))
+    element.appendChild(mimetype_element)
+
+    if (element_name != "attachment"):
+        url_text = "%(http)s://%(host)s%(media)sopencast-files/%(idMedia)s/%(fn)s" % {
+            "http": "https" if request.is_secure() else "http",
+            "host": request.get_host(),
+            "media": MEDIA_URL,
+            "idMedia": "%s" % idMedia,
+            "fn": filename,
+        }
+    else:
+        url_text = ""
+
+    url = mediaPackage_content.createElement("url")
+    url.appendChild(mediaPackage_content.createTextNode(url_text))
+    element.appendChild(url)
+
+    if (element_name == "track"):
+        live = mediaPackage_content.createElement("live")
+        live.appendChild(mediaPackage_content.createTextNode("false"))
+        element.appendChild(live)
+    media = mediaPackage_content.getElementsByTagName(tag_name)[0]
+    media.appendChild(element)
+
+    with open(mediaPackage_file, "w+") as f:
+        f.write(mediaPackage_content.toxml())
+
+    return HttpResponse(mediaPackage_content.toxml(), content_type="application/xml")
 
 
 @csrf_exempt
@@ -628,73 +661,7 @@ def ingest_addTrack(request):
         # and request.POST.get("tags") # unused tags
         and request.FILES.get("BODY")
     ):
-        idMedia = ""
-        typeTrack = ""
-        # tags = "" # not use actually
-        if (
-            request.POST.get("mediaPackage") != ""
-            and request.POST.get("mediaPackage") != "{}"
-        ):
-            mediaPackage = request.POST.get("mediaPackage")
-            # XML result to parse
-            xmldoc = minidom.parseString(mediaPackage)
-            # Get the good id and start date
-            idMedia = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("id")
-        if request.POST.get("flavor") and request.POST.get("flavor") != "":
-            typeTrack = request.POST.get("flavor")
-        # if request.POST.get("tags") and request.POST.get("tags") != "":
-        #    tags = request.POST.get("tags")
-
-        mediaPackage_dir = os.path.join(
-            settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
-        )
-        mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
-        mediaPackage_content = minidom.parse(mediaPackage_file)  # parse an open file
-        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
-
-        if mediapackage.getAttribute("id") != idMedia:
-            raise PermissionDenied
-
-        opencast_filename, ext = os.path.splitext(request.FILES["BODY"].name)
-
-        dest_filename = "%s%s" % (typeTrack.replace("/", "_").replace(" ", ""), ext)
-        # Upload the video file
-        opencastMediaFile = os.path.join(mediaPackage_dir, dest_filename)
-        with open(opencastMediaFile, "wb+") as destination:
-            for chunk in request.FILES["BODY"].chunks():
-                destination.write(chunk)
-
-        track = mediaPackage_content.createElement("track")
-        track.setAttributeNode(mediaPackage_content.createAttribute("id"))
-        track.setAttributeNode(mediaPackage_content.createAttribute("type"))
-        track.setAttributeNode(mediaPackage_content.createAttribute("filename"))
-        track.setAttribute("id", "%s" % uuid.uuid4())
-        track.setAttribute("type", typeTrack)
-        track.setAttribute("filename", opencast_filename)
-        mimetype = mediaPackage_content.createElement("mimetype")
-        mimetype.appendChild(mediaPackage_content.createTextNode("video/webm"))
-        track.appendChild(mimetype)
-        track_url = "%(http)s://%(host)s%(media)sopencast-files/%(idMedia)s/%(fn)s" % {
-            "http": "https" if request.is_secure() else "http",
-            "host": request.get_host(),
-            "media": MEDIA_URL,
-            "idMedia": "%s" % idMedia,
-            "fn": dest_filename,
-        }
-        url = mediaPackage_content.createElement("url")
-        url.appendChild(mediaPackage_content.createTextNode(track_url))
-        track.appendChild(url)
-        live = mediaPackage_content.createElement("live")
-        live.appendChild(mediaPackage_content.createTextNode("false"))
-        track.appendChild(live)
-
-        media = mediaPackage_content.getElementsByTagName("media")[0]
-        media.appendChild(track)
-
-        with open(mediaPackage_file, "w+") as f:
-            f.write(mediaPackage_content.toxml())
-
-        return HttpResponse(mediaPackage_content.toxml(), content_type="application/xml")
+        return handle_upload_file(request, "track", "video/webm", "media")
     return HttpResponseBadRequest()
 
 
@@ -708,62 +675,7 @@ def ingest_addCatalog(request):
         and request.POST.get("flavor")
         and request.FILES.get("BODY")
     ):
-        idMedia = ""
-        typeCatalog = ""
-        # tags = "" # not use actually
-        if (
-            request.POST.get("mediaPackage") != ""
-            and request.POST.get("mediaPackage") != "{}"
-        ):
-            mediaPackage = request.POST.get("mediaPackage")
-            # XML result to parse
-            xmldoc = minidom.parseString(mediaPackage)
-            # Get the good id and start date
-            idMedia = xmldoc.getElementsByTagName("mediapackage")[0].getAttribute("id")
-        if request.POST.get("flavor") and request.POST.get("flavor") != "":
-            typeCatalog = request.POST.get("flavor")
-
-        mediaPackage_dir = os.path.join(
-            settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
-        )
-        mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
-        mediaPackage_content = minidom.parse(mediaPackage_file)  # parse an open file
-        mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
-
-        if mediapackage.getAttribute("id") != idMedia:
-            raise PermissionDenied
-
-        opencast_filename = request.FILES["BODY"].name
-        # Upload the cutting file
-        opencastMediaFile = os.path.join(mediaPackage_dir, opencast_filename)
-        with open(opencastMediaFile, "wb+") as destination:
-            for chunk in request.FILES["BODY"].chunks():
-                destination.write(chunk)
-
-        catalog_url = "%(http)s://%(host)s%(media)sopencast-files/%(idMedia)s/%(fn)s" % {
-            "http": "https" if request.is_secure() else "http",
-            "host": request.get_host(),
-            "media": MEDIA_URL,
-            "idMedia": "%s" % idMedia,
-            "fn": opencast_filename,
-        }
-        catalog = mediaPackage_content.createElement("catalog")
-        catalog.setAttributeNode(mediaPackage_content.createAttribute("type"))
-        catalog.setAttributeNode(mediaPackage_content.createAttribute("id"))
-        catalog.setAttribute("id", "%s" % uuid.uuid4())
-        catalog.setAttribute("type", typeCatalog)
-        mimetype = mediaPackage_content.createElement("mimetype")
-        mimetype.appendChild(mediaPackage_content.createTextNode("text/xml"))
-        catalog.appendChild(mimetype)
-        url = mediaPackage_content.createElement("url")
-        url.appendChild(mediaPackage_content.createTextNode(catalog_url))
-        catalog.appendChild(url)
-
-        metadata = mediaPackage_content.getElementsByTagName("metadata")[0]
-        metadata.appendChild(catalog)
-        with open(mediaPackage_file, "w+") as f:
-            f.write(mediaPackage_content.toxml())
-        return HttpResponse(mediaPackage_content.toxml(), content_type="application/xml")
+        return handle_upload_file(request, "catalog", "text/xml", "metadata")
     return HttpResponseBadRequest()
 
 
