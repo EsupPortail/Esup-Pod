@@ -636,6 +636,23 @@ class VideoForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(VideoForm, self).clean()
 
+        users_groups = self.current_user.owner.accessgroup_set.all()
+        user_channels = (
+            Channel.objects.all()
+            if self.is_superuser
+            else (
+                    self.current_user.owners_channels.all()
+                    | self.current_user.users_channels.all()
+                    | Channel.objects.filter(allow_to_groups__in=users_groups)
+            ).distinct()
+        )
+        user_channels.filter(site=get_current_site(None))
+
+        channelsBefore = (Video.objects.get(pk=self.instance.id)).channel.exclude(
+            pk__in=[c.id for c in user_channels]
+        )
+        self.cleaned_data["channel"] = self.cleaned_data["channel"].union(channelsBefore)
+
         if "additional_owners" in cleaned_data.keys() and isinstance(
             self.cleaned_data["additional_owners"], QuerySet
         ):
