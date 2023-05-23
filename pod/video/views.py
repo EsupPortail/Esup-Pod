@@ -574,6 +574,19 @@ def videos_dashboard(request):
     return render(request, "videos/dashboard.html", data_context)
 
 
+@ajax_required
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def bulk_update(request):
+    """Bulk update of a video list"""
+    if request.method == "POST":
+        data = json.loads(request.body.decode("utf-8"))
+
+        videos = Video.objects.filter(slug__in=data["selectedVideos"])
+        videos.update(title="test_bulk_update")
+        return HttpResponse(json.dumps("OK"), content_type="application/json")
+
+
 @login_required(redirect_field_name="referrer")
 def my_videos(request):
     """Render the logged user's videos list."""
