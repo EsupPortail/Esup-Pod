@@ -50,7 +50,7 @@ class Command(BaseCommand):
         msg += "\n## %s \n" % self.data[0]["information"]["title"][self.language]
         for line in self.data[0]["information"]["description"][self.language]:
             if line != "":
-                msg += "\n%s<br/>" % line
+                msg += "\n%s<br>" % line
             else:
                 msg += "\n"
         msg += self.get_settings(self.data[0]["information"]["settings"])
@@ -66,7 +66,7 @@ class Command(BaseCommand):
             msg += "\n\n### %s" % desc["title"][self.language]
             for line in desc["description"].get(self.language, []):
                 if line != "":
-                    msg += "\n%s<br/>" % line
+                    msg += "\n%s<br>" % line
                 else:
                     msg += "\n"
             msg += self.get_settings(desc["settings"])

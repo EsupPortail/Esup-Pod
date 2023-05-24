@@ -16,7 +16,7 @@
   {% if noteToDisplay and note == noteToDisplay and note != noteToEdit %}
     <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_notes_form">
       {% csrf_token %}
-      <input type="hidden" name="action" value="get"/>
+      <input type="hidden" name="action" value="get">
       <div class="pod-note-header js-note-toggle">
         {% if note.notecomments_set.all.count > 0 %}
           <i class="bi bi-chevron-double-down"></i>
@@ -35,7 +35,7 @@
   {% elif note_form and noteToEdit and note == noteToEdit %}
     <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_notes_form d-none">
       {% csrf_token %}
-      <input type="hidden" name="action" value="get"/>
+      <input type="hidden" name="action" value="get">
     </form>
     <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" id="video_notes_form">
     {% csrf_token %}
@@ -52,8 +52,8 @@
         </div>
         {% endspaceless %}
       {% endfor %}
-      <input type="hidden" name="idNote" value="{{ note.id }}"/>
-      <input type="hidden" name="action" value="save_note"/>
+      <input type="hidden" name="idNote" value="{{ note.id }}">
+      <input type="hidden" name="action" value="save_note">
 
       <div class="mt-3">
         <input type="submit" name="submit" value="{% trans 'Save' %}" class="btn btn-sm btn-primary">
@@ -65,8 +65,8 @@
   {% else %}
     <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_notes_form">
       {% csrf_token %}
-      <input type="hidden" name="action" value="get"/>
-      <input type="hidden" name="idNote" value="{{ note.id }}"/>
+      <input type="hidden" name="action" value="get">
+      <input type="hidden" name="idNote" value="{{ note.id }}">
       <div class="pod-note-header js-note-toggle">
         {% if note.notecomments_set.all.count > 0 %}
           <i class="bi bi-chevron-double-right"></i>
@@ -88,23 +88,23 @@
           {# Button to edit the note in three dots menu #}
           <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="edit_video_notes_form" role="menuitem">
             {% csrf_token %}
-            <input type="hidden" name="action" value="form_note"/>
-            <input type="hidden" name="idNote" value="{{ note.id }}"/>
+            <input type="hidden" name="action" value="form_note">
+            <input type="hidden" name="idNote" value="{{ note.id }}">
             <button class="btn btn-outline-primary dropdown-item" type="submit" action="edit" title="{% trans 'Edit the note' %}"> <i class="bi bi-pencil"></i> </button>
           </form>
           {# Button to remove the note in three dots menu #}
           <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="remove_video_notes_form" role="menuitem">
             {% csrf_token %}
-            <input type="hidden" name="action" value="remove_note"/>
-            <input type="hidden" name="idNote" value="{{ note.id }}"/>
+            <input type="hidden" name="action" value="remove_note">
+            <input type="hidden" name="idNote" value="{{ note.id }}">
             <button class="btn btn-outline-danger dropdown-item" type="submit" action="remove" title="{% trans 'Remove the note' %}"> <i class="bi bi-trash"></i></button>
           </form>
         {% endif %}
         {# Button to comment the note in three dots menu #}
         <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="comment_video_notes_form" role="menuitem">
           {% csrf_token %}
-          <input type="hidden" name="action" value="form_com"/>
-          <input type="hidden" name="idNote" value="{{ note.id }}"/>
+          <input type="hidden" name="action" value="form_com">
+          <input type="hidden" name="idNote" value="{{ note.id }}">
           <button class="btn btn-outline-primary dropdown-item" type="submit" title="{% trans 'Comment the note' %}"> <i class="bi bi-chat"></i></button>
         </form>
 

@@ -88,13 +88,11 @@ function refreshVideosSearch() {
         document.getElementById("videos_list").dataset.countvideos
       );
       nextPage =
-        document.getElementById("videos_list").getAttribute("nextPage") ===
-        "true";
+        document.getElementById("videos_list").dataset.nextPage === "true";
       window.history.pushState({}, "", url);
       if (nextPage) {
-        pageNext = document
-          .querySelector("a.infinite-more-link")
-          .getAttribute("nextPageNumber");
+        pageNext = document.querySelector("a.infinite-more-link").dataset
+          .nextPageNumber;
         refreshInfiniteLoader(url, pageNext);
       }
     })

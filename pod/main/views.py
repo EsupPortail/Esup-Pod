@@ -251,7 +251,7 @@ def contact_us(request):
                     "name": name,
                     "email": email,
                     "TITLE_SITE": __TITLE_SITE__,
-                    "message": message.replace("\n", "<br/>"),
+                    "message": message.replace("\n", "<br>"),
                     "url_referrer": form.cleaned_data["url_referrer"],
                 }
             )
@@ -275,7 +275,7 @@ def contact_us(request):
             html_content = loader.get_template("mail/mail_sender.html").render(
                 {
                     "TITLE_SITE": __TITLE_SITE__,
-                    "message": message.replace("\n", "<br/>"),
+                    "message": message.replace("\n", "<br>"),
                 }
             )
             text_content = bleach.clean(html_content, tags=[], strip=True)
