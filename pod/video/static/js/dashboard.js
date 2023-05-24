@@ -1,4 +1,4 @@
-var selectedVideos = ["0011-melancholymp4", "0017-melancholymp4"];
+var selectedVideos = ["0011-0", "0017-0"];
 
 function bulk_update() {
   // Async POST request to bulk update
@@ -12,7 +12,8 @@ function bulk_update() {
     },
     body: JSON.stringify({
         "selectedVideos" : selectedVideos,
-        "action" : "action"
+        "action" : "title",
+        "value" : 1
     })
   })
     .then((response) => response.json())

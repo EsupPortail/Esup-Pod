@@ -582,8 +582,23 @@ def bulk_update(request):
     if request.method == "POST":
         data = json.loads(request.body.decode("utf-8"))
 
-        videos = Video.objects.filter(slug__in=data["selectedVideos"])
-        videos.update(title="test_bulk_update")
+        selectedVideos = data["selectedVideos"]
+        action = data["action"]
+        value = data["value"]
+
+        videos = Video.objects.filter(slug__in=selectedVideos)
+        if videos.exists():
+
+            if action == "delete":
+                for video in videos:
+                    print("video delete")
+                    #video.delete()
+            else:
+                for video in videos:
+                    setattr(video, action, value)
+                    video.full_clean(exclude=['transcript'])
+                    video.save(force_update=True)
+
         return HttpResponse(json.dumps("OK"), content_type="application/json")
 
 
