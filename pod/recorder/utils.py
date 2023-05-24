@@ -59,13 +59,14 @@ def handle_upload_file(request, element_name, mimetype, tag_name):
     )
 
     mediaPackage_content, mediaPackage_file = get_media_package_content(
-        mediaPackage_dir, idMedia)
+        mediaPackage_dir, idMedia
+    )
 
-    if (element_name != "attachment"):
-        if (element_name == "track"):
+    if element_name != "attachment":
+        if element_name == "track":
             opencast_filename, ext = os.path.splitext(request.FILES["BODY"].name)
             filename = "%s%s" % (type_name.replace("/", "_").replace(" ", ""), ext)
-        elif (element_name == "catalog"):
+        elif element_name == "catalog":
             filename = request.FILES["BODY"].name
 
         opencastMediaFile = os.path.join(mediaPackage_dir, filename)
@@ -82,8 +83,14 @@ def handle_upload_file(request, element_name, mimetype, tag_name):
         }
     else:
         url_text = ""
-    element = create_xml_element(mediaPackage_content, element_name,
-                                 type_name, mimetype, url_text, opencast_filename,)
+    element = create_xml_element(
+        mediaPackage_content,
+        element_name,
+        type_name,
+        mimetype,
+        url_text,
+        opencast_filename,
+    )
     media = mediaPackage_content.getElementsByTagName(tag_name)[0]
     media.appendChild(element)
 
@@ -123,13 +130,14 @@ def get_media_package_content(mediaPackage_dir, idMedia):
     return mediaPackage_content, mediaPackage_file
 
 
-def create_xml_element(mediaPackage_content,
-                       element_name,
-                       type_name,
-                       mimetype,
-                       url_text,
-                       opencast_filename=None
-                       ):
+def create_xml_element(
+    mediaPackage_content,
+    element_name,
+    type_name,
+    mimetype,
+    url_text,
+    opencast_filename=None,
+):
     """
     Create an XML element with the specified attributes.
 
@@ -149,7 +157,7 @@ def create_xml_element(mediaPackage_content,
     element.setAttributeNode(mediaPackage_content.createAttribute("type"))
     element.setAttribute("id", "%s" % uuid.uuid4())
     element.setAttribute("type", type_name)
-    if (element_name == "track"):
+    if element_name == "track":
         element.setAttributeNode(mediaPackage_content.createAttribute("filename"))
         element.setAttribute("filename", opencast_filename)
     mimetype_element = mediaPackage_content.createElement("mimetype")
@@ -158,7 +166,7 @@ def create_xml_element(mediaPackage_content,
     url = mediaPackage_content.createElement("url")
     url.appendChild(mediaPackage_content.createTextNode(url_text))
     element.appendChild(url)
-    if (element_name == "track"):
+    if element_name == "track":
         live = mediaPackage_content.createElement("live")
         live.appendChild(mediaPackage_content.createTextNode("false"))
         element.appendChild(live)

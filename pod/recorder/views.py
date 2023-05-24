@@ -47,7 +47,7 @@ from .utils import (
     get_id_media,
     handle_upload_file,
     create_xml_element,
-    get_media_package_content
+    get_media_package_content,
 )
 
 DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/")
@@ -111,7 +111,7 @@ def fetch_user(request, form):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def add_recording(request):
-    """ Adds a recording to the system."""
+    """Adds a recording to the system."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
     mediapath = request.GET.get("mediapath", "")
@@ -520,7 +520,8 @@ def ingest_addDCCatalog(request):
             f.write(unquote(dublinCore))
 
         mediaPackage_content, mediaPackage_file = get_media_package_content(
-            mediaPackage_dir, idMedia)
+            mediaPackage_dir, idMedia
+        )
 
         dc_url = str(
             "%(http)s://%(host)s%(media)sopencast-files/%(idMedia)s/dublincore.xml"
@@ -531,8 +532,9 @@ def ingest_addDCCatalog(request):
                 "idMedia": "%s" % idMedia,
             }
         )
-        catalog = create_xml_element(mediaPackage_content, "catalog", typeCatalog,
-                                     "text/xml", dc_url)
+        catalog = create_xml_element(
+            mediaPackage_content, "catalog", typeCatalog, "text/xml", dc_url
+        )
 
         metadata = mediaPackage_content.getElementsByTagName("metadata")[0]
         metadata.appendChild(catalog)
@@ -600,7 +602,8 @@ def ingest_ingest(request):
             settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
         )
         mediaPackage_content, mediaPackage_file = get_media_package_content(
-            mediaPackage_dir, idMedia)
+            mediaPackage_dir, idMedia
+        )
         # Create the recording
         # Search for the recorder corresponding to the Studio
         recorder = Recorder.objects.filter(
