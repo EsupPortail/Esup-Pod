@@ -12,12 +12,18 @@ MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
 
 
 def add_comment(recording_id, comment):
+    """Adds a comment to a recording."""
     recording = Recording.objects.get(id=recording_id)
     recording.comment = "%s\n%s" % (recording.comment, comment)
     recording.save()
 
 
 def studio_clean_old_files():
+    """
+    Cleans up old files in the "opencast-files" folder.
+    The function removes files that are older than 7 days 
+    from the "opencast-files" folder in the media root.
+    """
     folder_to_clean = os.path.join(settings.MEDIA_ROOT, "opencast-files")
     now = time.time()
 
@@ -108,7 +114,6 @@ def get_media_package_content(mediaPackage_dir, idMedia):
     """
     Retrieve the media package content and the media package file by parsing an XML file.
     """
-
     mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
     mediaPackage_content = minidom.parse(mediaPackage_file)  # parse an open file
     mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]

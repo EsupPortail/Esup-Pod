@@ -111,6 +111,7 @@ def fetch_user(request, form):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def add_recording(request):
+    """ Adds a recording to the system."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
     mediapath = request.GET.get("mediapath", "")

@@ -595,7 +595,8 @@ def user_share_autocomplete(request):
 
 @login_required(redirect_field_name="referrer")
 def remove_shared_user(request):
-    if request.is_ajax:
+    """Removes a shared user from the system."""
+    if is_ajax(request):
         return update_shared_user(request, "remove")
     else:
         return HttpResponseBadRequest()
@@ -603,7 +604,8 @@ def remove_shared_user(request):
 
 @login_required(redirect_field_name="referrer")
 def add_shared_user(request):
-    if request.is_ajax:
+    """Add a shared user from the system."""
+    if is_ajax(request):
         return update_shared_user(request, "add")
     else:
         return HttpResponseBadRequest()
