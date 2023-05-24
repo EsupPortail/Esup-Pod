@@ -26,7 +26,6 @@
       {% if count_videos > 1 %}
       <form action="{% url 'favorite:save-reorganisation' %}" method="post">
         {% csrf_token %}
-<<<<<<< HEAD
         <span class="pod-float-end">
           <input id="json-data" type="hidden" name="json-data">
           <button id="reorganize-button" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm {% if sort_field != 'rank' or sort_direction == 'on' %}d-none{% endif %}">
@@ -36,12 +35,6 @@
             <i class="bi bi-arrow-clockwise"></i>&nbsp;<span>{% trans "Sort by descending rank" %}</span>
           </button>
         </span>
-=======
-        <input id="json-data" type="hidden" name="json-data">
-        <button id="reorganize-button" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm">
-          <i class="bi bi-arrows-move"></i>&nbsp;<span>{% trans "Reorganize" %}</span>
-        </button>
->>>>>>> develop
       </form>
       <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-secondary btn-sm d-none">
         <i class="bi bi-x-circle"></i>&nbsp;{% trans "Cancel" %}</a>

@@ -1168,13 +1168,14 @@ def default_site_meeting(sender, instance, **kwargs):
 
 class Recording(models.Model):
     """This model hold information about Big Blue Button recordings.
+
     This model is for internal or external recordings.
     For internal recordings : only BBB recordings that have been uploaded to
     Pod are saved in the database.
     For external recordings : all recordings are saved in the database.
     """
 
-    """ For all recording """
+    """For all recording."""
     name = models.CharField(max_length=250, verbose_name=_("Recording name"))
 
     # Type of recording : Internal / External
@@ -1203,7 +1204,7 @@ class Recording(models.Model):
         help_text=_("User who uploaded to Pod the video file"),
     )
 
-    """ For internal recording """
+    """For internal recording."""
     # Recording id (BBB format)
     recording_id = models.SlugField(
         max_length=255,
@@ -1221,7 +1222,7 @@ class Recording(models.Model):
         blank=True,
     )
 
-    """ For external recording """
+    """For external recording."""
     # External URL (source video URL)
     external_url = models.CharField(
         max_length=500,
