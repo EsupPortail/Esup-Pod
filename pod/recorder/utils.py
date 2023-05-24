@@ -21,7 +21,7 @@ def add_comment(recording_id, comment):
 def studio_clean_old_files():
     """
     Cleans up old files in the "opencast-files" folder.
-    The function removes files that are older than 7 days 
+    The function removes files that are older than 7 days
     from the "opencast-files" folder in the media root.
     """
     folder_to_clean = os.path.join(settings.MEDIA_ROOT, "opencast-files")
