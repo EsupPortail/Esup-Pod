@@ -167,7 +167,8 @@ class FavoriteTestUtils(TestCase):
         sorted_videos = [self.video, self.video2, self.video3]
         test_sorted_videos = sort_videos_list(
             get_all_favorite_videos_for_user(self.user),
-            request.GET.get("sort", "rank")
+            request.GET.get("sort", "rank"),
+            request.GET.get("sort_direction")
         )
         self.assertEqual(list(test_sorted_videos), sorted_videos)
 
