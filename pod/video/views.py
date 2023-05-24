@@ -82,7 +82,7 @@ from datetime import date
 from chunked_upload.models import ChunkedUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 
-from django.db import transaction
+from django.db import transaction, models
 from django.db import IntegrityError
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
@@ -582,22 +582,36 @@ def bulk_update(request):
     if request.method == "POST":
         data = json.loads(request.body.decode("utf-8"))
 
-        selectedVideos = data["selectedVideos"]
+        selected_videos = data["selectedVideos"]
         action = data["action"]
         value = data["value"]
 
-        videos = Video.objects.filter(slug__in=selectedVideos)
+        videos = Video.objects.filter(slug__in=selected_videos)
         if videos.exists():
 
             if action == "delete":
                 for video in videos:
-                    print("video delete")
-                    #video.delete()
+                    video.delete()
             else:
-                for video in videos:
-                    setattr(video, action, value)
-                    video.full_clean(exclude=['transcript'])
-                    video.save(force_update=True)
+                field = Video._meta.get_field(action)
+                field_model = field.remote_field.model
+
+                if field.__class__ is models.ManyToManyField:
+                    # Gestion des collections d'objets
+                    objects = field_model.objects.filter(pk__in=value)
+                    for video in videos:
+                        video.__getattribute__(action).set(objects)
+
+                else:
+                    if field.__class__ is models.ForeignKey:
+                        # Gestion des objets simples liés
+                        pk = value
+                        value = field_model.objects.get(pk=pk)
+
+                    for video in videos:
+                        setattr(video, action, value)
+                        video.full_clean(exclude=['transcript'])
+                        video.save(force_update=True)
 
         return HttpResponse(json.dumps("OK"), content_type="application/json")
 
