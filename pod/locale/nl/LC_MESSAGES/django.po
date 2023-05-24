@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-23 09:48+0000\n"
+"POT-Creation-Date: 2023-05-24 16:19+0000\n"
 "PO-Revision-Date: 2023-02-15 16:55+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -22,6 +22,10 @@ msgstr "E-mail"
 
 #: pod/authentication/admin.py pod/authentication/models.py pod/video/admin.py
 msgid "Establishment"
+msgstr ""
+
+#: pod/authentication/apps.py pod/authentication/views.py
+msgid "Authentication"
 msgstr ""
 
 #: pod/authentication/forms.py pod/main/templates/navbar.html
@@ -249,10 +253,6 @@ msgstr ""
 msgid "Save changes"
 msgstr ""
 
-#: pod/authentication/views.py
-msgid "Authentication"
-msgstr ""
-
 #: pod/bbb/admin.py pod/video/admin.py
 msgid "Encode selected"
 msgstr ""
@@ -368,7 +368,7 @@ msgstr ""
 msgid "Meeting"
 msgstr ""
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/apps.py
 msgid "Meetings"
 msgstr ""
 
@@ -751,6 +751,12 @@ msgstr ""
 msgid "The BigBlueButton live has been performed."
 msgstr ""
 
+#: pod/chapter/apps.py pod/chapter/models.py
+#: pod/chapter/templates/video_chapter.html
+#: pod/video/templates/videos/video-element.html
+msgid "Chapters"
+msgstr ""
+
 #: pod/chapter/forms.py
 msgid "File to import"
 msgstr ""
@@ -787,11 +793,6 @@ msgstr ""
 
 #: pod/chapter/models.py
 msgid "Chapter"
-msgstr ""
-
-#: pod/chapter/models.py pod/chapter/templates/video_chapter.html
-#: pod/video/templates/videos/video-element.html
-msgid "Chapters"
 msgstr ""
 
 #: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
@@ -1001,6 +1002,11 @@ msgstr ""
 
 #: pod/completion/admin.py
 msgid "Enrich with selected subtitles"
+msgstr ""
+
+#: pod/completion/apps.py pod/completion/templates/video_completion.html
+#: pod/completion/views.py
+msgid "Video additions"
 msgstr ""
 
 #: pod/completion/models.py
@@ -1543,10 +1549,6 @@ msgid "Override"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "Complements of the video"
-msgstr ""
-
-#: pod/completion/templates/video_completion.html
 msgid "Completion video"
 msgstr ""
 
@@ -1688,20 +1690,16 @@ msgstr ""
 msgid "The file has not been saved."
 msgstr ""
 
-#: pod/completion/views.py
-msgid "Video additions"
-msgstr ""
-
 #: pod/completion/views.py pod/podfile/views.py pod/video/views.py
 msgid "Please correct errors"
 msgstr ""
 
-#: pod/cut/models.py
-msgid "Video cut"
+#: pod/cut/apps.py pod/cut/models.py
+msgid "Video cuts"
 msgstr ""
 
 #: pod/cut/models.py
-msgid "Video cuts"
+msgid "Video cut"
 msgstr ""
 
 #: pod/cut/models.py pod/cut/views.py
@@ -1773,6 +1771,10 @@ msgstr ""
 
 #: pod/cut/views.py
 msgid "The cut was made."
+msgstr ""
+
+#: pod/enrichment/apps.py pod/enrichment/models.py
+msgid "Enrichments"
 msgstr ""
 
 #: pod/enrichment/apps.py
@@ -1863,10 +1865,6 @@ msgstr ""
 
 #: pod/enrichment/models.py
 msgid "Paste here a code from an external source to embed it."
-msgstr ""
-
-#: pod/enrichment/models.py
-msgid "Enrichments"
 msgstr ""
 
 #: pod/enrichment/models.py
@@ -2033,6 +2031,10 @@ msgstr ""
 msgid "You cannot enrich this video."
 msgstr ""
 
+#: pod/favorite/apps.py pod/favorite/models.py
+msgid "Favorite videos"
+msgstr ""
+
 #: pod/favorite/models.py pod/recorder/models.py pod/video/models.py
 #: pod/video/templates/videos/video_sort_select.html
 msgid "Date added"
@@ -2043,11 +2045,7 @@ msgid "Rank"
 msgstr ""
 
 #: pod/favorite/models.py
-msgid "Favorite"
-msgstr ""
-
-#: pod/favorite/models.py
-msgid "Favorites"
+msgid "Favorite video"
 msgstr ""
 
 #: pod/favorite/templates/favorite/favorite_video_list.html
@@ -2078,6 +2076,14 @@ msgstr ""
 
 #: pod/favorite/templates/favorite/favorite_videos.html
 msgid "Reorganize"
+msgstr ""
+
+#: pod/favorite/templates/favorite/favorite_videos.html
+msgid "Sort by descending rank before you can rearrange"
+msgstr ""
+
+#: pod/favorite/templates/favorite/favorite_videos.html
+msgid "Sort by descending rank"
 msgstr ""
 
 #: pod/favorite/templates/favorite/favorite_videos.html
@@ -2128,6 +2134,12 @@ msgstr ""
 
 #: pod/live/admin.py pod/live/models.py pod/video/models.py
 msgid "Thumbnails"
+msgstr ""
+
+#: pod/live/apps.py pod/live/templates/live/direct.html
+#: pod/live/templates/live/directs.html
+#: pod/live/templates/live/directs_all.html pod/main/templates/navbar.html
+msgid "Lives"
 msgstr ""
 
 #: pod/live/forms.py pod/live/models.py
@@ -2463,11 +2475,6 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
-#: pod/live/templates/live/direct.html pod/live/templates/live/directs.html
-#: pod/live/templates/live/directs_all.html pod/main/templates/navbar.html
-msgid "Lives"
-msgstr ""
-
 #: pod/live/templates/live/direct.html
 msgid "Live"
 msgstr ""
@@ -2617,6 +2624,7 @@ msgstr ""
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video.html
 msgid "Added by:"
 msgstr ""
 
@@ -2633,8 +2641,8 @@ msgstr ""
 
 #: pod/live/templates/live/event-info.html
 msgid ""
-"Please note that your event is in draft mode.<br/>The following links "
-"contain a key allowing access. Anyone with this links can access it."
+"Please note that your event is in draft mode.<br>The following links contain "
+"a key allowing access. Anyone with this links can access it."
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
@@ -2972,6 +2980,10 @@ msgstr ""
 msgid "on %(start_date)s from %(start_time)s to %(end_time)s"
 msgstr ""
 
+#: pod/lti/apps.py
+msgid "LTI provider"
+msgstr ""
+
 #: pod/lti/templates/lti_provider/assignment.html
 msgid "Your browser does not support iframes."
 msgstr ""
@@ -2986,6 +2998,10 @@ msgstr ""
 
 #: pod/main/admin.py pod/meeting/forms.py
 msgid "Advanced options"
+msgstr ""
+
+#: pod/main/apps.py
+msgid "Main configurations"
 msgstr ""
 
 #: pod/main/forms.py
@@ -4821,6 +4837,10 @@ msgid ""
 "videos."
 msgstr ""
 
+#: pod/playlist/apps.py pod/playlist/models.py
+msgid "Playlists"
+msgstr ""
+
 #: pod/playlist/models.py
 msgid "Short description of the playlist."
 msgstr ""
@@ -4837,10 +4857,6 @@ msgstr ""
 #: pod/playlist/templates/playlist/playlist_video_list.html
 #: pod/playlist/templates/playlist_player.html
 msgid "Playlist"
-msgstr ""
-
-#: pod/playlist/models.py
-msgid "Playlists"
 msgstr ""
 
 #: pod/playlist/models.py
@@ -5021,6 +5037,10 @@ msgstr ""
 
 #: pod/playlist/views.py
 msgid "This playlist has been deleted."
+msgstr ""
+
+#: pod/podfile/apps.py
+msgid "Pod files"
 msgstr ""
 
 #: pod/podfile/forms.py pod/video/forms.py
@@ -5210,6 +5230,10 @@ msgstr ""
 msgid "Delete selected Recording file treatments + source files"
 msgstr ""
 
+#: pod/recorder/apps.py pod/recorder/models.py
+msgid "Recorders"
+msgstr ""
+
 #: pod/recorder/forms.py
 msgid "source_file"
 msgstr ""
@@ -5371,10 +5395,6 @@ msgid "Recorder"
 msgstr ""
 
 #: pod/recorder/models.py
-msgid "Recorders"
-msgstr ""
-
-#: pod/recorder/models.py
 msgid "Recorder that made this recording."
 msgstr ""
 
@@ -5531,8 +5551,8 @@ msgstr ""
 #, python-format
 msgid ""
 "Hello, <p>a new recording has just be added on %(title_site)s from the "
-"recorder \"%(recorder)s\". <br/>To add it, just click on link below.</p><a "
-"href=\"%(link_url)s\">%(link_url)s</a><br/><i>if you cannot click on link, "
+"recorder \"%(recorder)s\". <br>To add it, just click on link below.</p><a "
+"href=\"%(link_url)s\">%(link_url)s</a><br><i>if you cannot click on link, "
 "just copy-paste it in your browser.</i> <p><p>Regards</p>"
 msgstr ""
 
@@ -5562,6 +5582,11 @@ msgstr ""
 
 #: pod/video/admin.py
 msgid "Transcript selected"
+msgstr ""
+
+#: pod/video/apps.py pod/video/models.py pod/video/templates/videos/video.html
+#: pod/video/templates/videos/videos.html
+msgid "Videos"
 msgstr ""
 
 #: pod/video/forms.py
@@ -5794,7 +5819,7 @@ msgstr ""
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
 msgid ""
-"It will be deleted on %(date_delete)s.<br/>\n"
+"It will be deleted on %(date_delete)s.<br>\n"
 "If you want to keep it, "
 msgstr ""
 
@@ -5988,7 +6013,7 @@ msgid ""
 "as you except that they can't delete this video."
 msgstr ""
 
-#: pod/video/models.py
+#: pod/video/models.py pod/video/templates/videos/video_sort_select.html
 msgid "Date of event"
 msgstr ""
 
@@ -6203,11 +6228,6 @@ msgstr ""
 
 #: pod/video/models.py
 msgid "Date for deletion"
-msgstr ""
-
-#: pod/video/models.py pod/video/templates/videos/video.html
-#: pod/video/templates/videos/videos.html
-msgid "Videos"
 msgstr ""
 
 #: pod/video/models.py
@@ -6731,7 +6751,7 @@ msgstr ""
 
 #: pod/video/templates/videos/video-info.html
 msgid ""
-"Please note that your video is in draft mode.<br />\n"
+"Please note that your video is in draft mode.<br>\n"
 "The following links contain a key allowing access.\n"
 "Anyone with this links can access it."
 msgstr ""
@@ -6968,10 +6988,6 @@ msgstr ""
 msgid "Sort Direction"
 msgstr ""
 
-#: pod/video/templates/videos/video_sort_select.html pod/video/views.py
-msgid "None"
-msgstr ""
-
 #: pod/video/templates/videos/video_stats_view.html
 msgid "Change the date"
 msgstr ""
@@ -7154,6 +7170,10 @@ msgid "The comment has been deleted."
 msgstr ""
 
 #: pod/video/views.py
+msgid "None"
+msgstr ""
+
+#: pod/video/views.py
 msgid "ID"
 msgstr ""
 
@@ -7255,6 +7275,10 @@ msgstr ""
 msgid "Update successfully"
 msgstr ""
 
+#: pod/video_search/apps.py
+msgid "Video search"
+msgstr ""
+
 #: pod/video_search/templates/search/search.html
 msgid "Active filters (click to unfilter):"
 msgstr ""
@@ -7273,4 +7297,8 @@ msgstr ""
 
 #: pod/video_search/views.py
 msgid "Search results"
+msgstr ""
+
+#: pod/xapi/apps.py
+msgid "Esup-Pod xAPI"
 msgstr ""
