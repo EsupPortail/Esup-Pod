@@ -12,8 +12,8 @@ function bulk_update() {
     },
     body: JSON.stringify({
         "selectedVideos" : selectedVideos,
-        "action" : "title",
-        "value" : 1
+        "action" : "type",
+        "value" : 2
     })
   })
     .then((response) => response.json())
