@@ -5,12 +5,12 @@
 {% block opengraph %}
   <meta name="description" content="{{ query }}">
   <!-- Open Graph data -->
-  <meta property="og:title" content="{% trans 'Search' %}" />
-  <meta property="og:type" content="article" />
-  <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-  <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
-  <meta property="og:description" content="{{ query }}" />
-  <meta property="og:site_name" content="{{ TITLE_SITE }}" />
+  <meta property="og:title" content="{% trans 'Search' %}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}">
+  <meta property="og:description" content="{{ query }}">
+  <meta property="og:site_name" content="{{ TITLE_SITE }}">
 {% endblock opengraph %}
 
 
@@ -192,7 +192,7 @@
 <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}" />
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
 
 {{ form.media }}
 

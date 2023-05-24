@@ -6,8 +6,8 @@
 {% block opengraph %}
 
 {% if OEMBED %}
-  <link rel="alternate" type="application/json+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&amp;format=json&amp;version=enrichment" />
-  <link rel="alternate" type="text/xml+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&amp;format=xml&amp;version=enrichment" />
+  <link rel="alternate" type="application/json+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&amp;format=json&amp;version=enrichment">
+  <link rel="alternate" type="text/xml+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&amp;format=xml&amp;version=enrichment">
 {% endif %}
 
 <meta property="og:site_name" content="{{ TITLE_SITE }}">
@@ -16,8 +16,8 @@
 <meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
 <meta property="og:image:secure_url" content="https:{{ video.get_thumbnail_url }}">
 <meta property="og:image:alt" content="{{ video.title }}">
-<meta property="og:image:width" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.width}}{% else %}640{% endif %}" />
-<meta property="og:image:height" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.height}}{% else %}360{% endif %}" />
+<meta property="og:image:width" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.width}}{% else %}640{% endif %}">
+<meta property="og:image:height" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.height}}{% else %}360{% endif %}">
 
 <meta property="og:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% endif %} {% trans 'Added by' %}: {{ video.owner.get_full_name }}">
 

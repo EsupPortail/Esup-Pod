@@ -1217,6 +1217,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Display videos from non visible channels on the homepage"
+                                ],
+                                "fr": [
+                                    "Affiche les vidéos de chaines non visibles sur la page d'accueil"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.2.0"
                         }
                     },
                     "title": {
@@ -2304,6 +2317,17 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "USE_FAVORITES": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of favorite videos. Allows users to add videos to their favorites."
+                                ],
+                                "fr": [
+                                    "Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans leurs favoris."
+                                ]
+                            }
+                        },
                         "USE_OBSOLESCENCE": {
                             "default_value": false,
                             "description": {
@@ -2317,17 +2341,6 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
-                        },
-                        "USE_FAVORITES": {
-                            "default_value": true,
-                            "description": {
-                                "en": [
-                                    "Activation of favorite videos. Allows users to add videos to their favorites."
-                                ],
-                                "fr": [
-                                    "Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans leurs favoris."
-                                ]
-                            }
                         },
                         "USE_STATS_VIEW": {
                             "default_value": false,

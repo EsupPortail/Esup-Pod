@@ -39,7 +39,7 @@ if (typeof loaded == "undefined") {
           file.getAttribute("href") +
           '" height="34" alt="' +
           file.getAttribute("title") +
-          '" loading="lazy"/>&nbsp;';
+          '" loading="lazy">&nbsp;';
       } else {
         html +=
           '<img style="height: 26px;vertical-align: middle;" src="' +
@@ -154,7 +154,7 @@ if (typeof loaded == "undefined") {
           gettext("Error during exchange") +
             "(" +
             data +
-            ")<br/>" +
+            ")<br>" +
             gettext("No data could be stored."),
           "alert-danger"
         );
@@ -266,7 +266,7 @@ if (typeof loaded == "undefined") {
         }
       })
       .catch((error) => {
-        showalert(gettext("Server error") + "<br/>" + error, "alert-danger");
+        showalert(gettext("Server error") + "<br>" + error, "alert-danger");
       });
   }
 
@@ -302,7 +302,7 @@ if (typeof loaded == "undefined") {
         fadeIn(document.getElementById("user-search"));
       })
       .catch((error) => {
-        showalert(gettext("Server error") + "<br/>" + error, "alert-danger");
+        showalert(gettext("Server error") + "<br>" + error, "alert-danger");
       });
   }
 
@@ -351,13 +351,13 @@ if (typeof loaded == "undefined") {
           reloadRemoveBtn();
         } else {
           showalert(
-            gettext("Server error") + "<br/>" + data.message,
+            gettext("Server error") + "<br>" + data.message,
             "alert-danger"
           );
         }
       })
       .catch((error) => {
-        showalert(gettext("Server error") + "<br/>" + error, "alert-danger");
+        showalert(gettext("Server error") + "<br>" + error, "alert-danger");
       });
   });
 
@@ -388,13 +388,13 @@ if (typeof loaded == "undefined") {
           reloadRemoveBtn();
         } else {
           showalert(
-            gettext("Server error") + "<br/>" + data.message,
+            gettext("Server error") + "<br>" + data.message,
             "alert-danger"
           );
         }
       })
       .catch((error) => {
-        showalert(gettext("Server error") + "<br/>" + error, "alert-danger");
+        showalert(gettext("Server error") + "<br>" + error, "alert-danger");
       });
   });
 
@@ -590,15 +590,15 @@ if (typeof loaded == "undefined") {
       center_modal.querySelector("#formfolderid").value = "";
 
       if (data.upload_errors && data.upload_errors != "") {
-        const str = data.upload_errors.split("\n").join("<br/>");
+        const str = data.upload_errors.split("\n").join("<br>");
         showalert(
-          gettext("Error during exchange") + "<br/>" + str,
+          gettext("Error during exchange") + "<br>" + str,
           "alert-danger"
         );
       }
     } else {
       if (data.errors) {
-        showalert(data.errors + "<br/>" + data.form_error, "alert-danger");
+        showalert(data.errors + "<br>" + data.form_error, "alert-danger");
       } else {
         showalert(
           gettext("You are no longer authenticated. Please log in again."),
@@ -703,7 +703,7 @@ if (typeof loaded == "undefined") {
     });
     return folder_observer;
   }
-  
+
 
   function getFolders(search = "") {
     //console.log("getFolders");
@@ -756,7 +756,7 @@ if (typeof loaded == "undefined") {
         }
         folder_searching = false
       }).catch((error) => {
-        showalert(gettext("Server error") + "<br/>" + error, "alert-danger");
+        showalert(gettext("Server error") + "<br>" + error, "alert-danger");
       });
   }
 
