@@ -1,3 +1,4 @@
+"""Esup-Pod favorite video utilities."""
 from django.contrib.auth.models import User
 from django.db.models import Max
 
@@ -48,6 +49,7 @@ def get_next_rank(user: User) -> int:
 
 
 def get_number_favorites(video: Video):
+    """Return how much a video has been favorited."""
     return Favorite.objects.filter(video=video).count()
 
 

@@ -1,3 +1,4 @@
+"""Esup-Pod favorite video Views."""
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import transaction
@@ -38,7 +39,7 @@ def favorite_button_in_video_info(request):
 def favorite_list(request):
     """Render the main list of favorite videos."""
     sort_field = request.GET.get("sort", "rank")
-    sort_direction = request.GET.get("sort_direction", "")
+    sort_direction = request.GET.get("sort_direction")
     videos_list = sort_videos_list(
         get_all_favorite_videos_for_user(request.user),
         sort_field, sort_direction

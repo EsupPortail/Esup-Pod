@@ -19,8 +19,6 @@
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My favorite videos" %}</li>{% endblock %}
 
-{% block page_title %}{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}{% endblock %}
-
 {% block page_content %}
   <div class="row videos-list-header">
     <h2 id="video_count" class="page_title col-xxl-4 mb-2">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
@@ -30,12 +28,15 @@
         {% csrf_token %}
         <span class="pod-float-end">
           <input id="json-data" type="hidden" name="json-data">
-          <button id="reorganize-button" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm">
+          <button id="reorganize-button" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm {% if sort_field != 'rank' or sort_direction == 'on' %}d-none{% endif %}">
             <i class="bi bi-arrows-move"></i>&nbsp;<span>{% trans "Reorganize" %}</span>
+          </button>
+          <button id="refresh-button" title="{% trans 'Sort by descending rank before you can rearrange'%}" class="btn btn-outline-primary btn-sm {% if sort_field == 'rank' and sort_direction != 'on' %}d-none{% endif %}">
+            <i class="bi bi-arrow-clockwise"></i>&nbsp;<span>{% trans "Sort by descending rank" %}</span>
           </button>
         </span>
       </form>
-      <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-secondary btn-sm" style="visibility:hidden">
+      <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-secondary btn-sm d-none">
         <i class="bi bi-x-circle"></i>&nbsp;{% trans "Cancel" %}</a>
       {% endif %}
     </span>

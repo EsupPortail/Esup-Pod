@@ -531,9 +531,13 @@ def my_videos(request):
         data_context["videos_without_cat"] = videos_without_cat
 
     videos_list = get_filtered_videos_list(request, videos_list)
-    sort_field = request.GET.get("sort", "date_added")
-    sort_direction = request.GET.get("sort_direction", "")
+    sort_field = request.GET.get("sort")
+    sort_direction = request.GET.get("sort_direction")
     videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
+
+    if not sort_field:
+        # Get the default Video ordering
+        sort_field = Video._meta.ordering[0].lstrip('-')
     count_videos = len(videos_list)
 
     paginator = Paginator(videos_list, 12)
@@ -619,11 +623,14 @@ def videos(request):
     """Render the main list of videos."""
     videos_list = get_videos_list()
     videos_list = get_filtered_videos_list(request, videos_list)
-    sort_field = request.GET.get("sort", "date_added")
-    sort_direction = request.GET.get("sort_direction", "")
+    sort_field = request.GET.get("sort")
+    sort_direction = request.GET.get("sort_direction")
 
     videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
 
+    if not sort_field:
+        # Get the default Video ordering
+        sort_field = Video._meta.ordering[0].lstrip('-')
     count_videos = len(videos_list)
 
     page = request.GET.get("page", 1)
@@ -661,7 +668,7 @@ def videos(request):
             "ownersInstances": ownersInstances,
             "cursus_list": CURSUS_CODES,
             "sort_field": sort_field,
-            "sort_direction": request.GET.get("sort_direction", "")
+            "sort_direction": request.GET.get("sort_direction")
         },
     )
 
@@ -1031,7 +1038,7 @@ def save_video_form(request, form):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_delete(request, slug=None):
-    """View to delete video. Show form to approve deletion and do it if sent"""
+    """View to delete video. Show form to approve deletion and do it if sent."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
 
     if request.user != video.owner and not (

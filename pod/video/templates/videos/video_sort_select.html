@@ -15,6 +15,7 @@
     {% endif %}
     <option value="title" {% if sort_field == 'title' %} selected {% endif %}>{% trans 'Title' %}</option>
     <option value="date_added" {% if sort_field == 'date_added' %} selected {% endif %}>{% trans 'Date added' %}</option>
+    <option value="date_evt" {% if sort_field == 'date_evt' %} selected {% endif %}>{% trans 'Date of event' %}</option>
     <option value="duration" {% if sort_field == 'duration' %} selected {% endif %}>{% trans 'Duration' %}</option>
   </select>
 </div>
