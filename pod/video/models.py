@@ -1359,27 +1359,18 @@ def default_site(sender, instance, created, **kwargs):
 
 @receiver(pre_delete, sender=Video, dispatch_uid="pre_delete-video_files_removal")
 def video_files_removal(sender, instance, using, **kwargs):
-    """remove files created after encoding"""
+    """Remove files created after encodin."""
     remove_video_file(instance)
-
-    previous_encoding_video = EncodingVideo.objects.filter(video=instance)
-    if len(previous_encoding_video) > 0:
-        for encoding in previous_encoding_video:
-            encoding.delete()
-
-    previous_encoding_audio = EncodingAudio.objects.filter(video=instance)
-    if len(previous_encoding_audio) > 0:
-        for encoding in previous_encoding_audio:
-            encoding.delete()
-
-    previous_encoding_playlist = PlaylistVideo.objects.filter(video=instance)
-    if len(previous_encoding_playlist) > 0:
-        for encoding in previous_encoding_playlist:
-            encoding.delete()
+    models_to_delete = [EncodingVideo, EncodingAudio, PlaylistVideo]
+    for model in models_to_delete:
+        previous_encoding_video = model.objects.filter(video=instance)
+        if len(previous_encoding_video) > 0:
+            for encoding in previous_encoding_video:
+                encoding.delete()
 
 
 def remove_video_file(video):
-    """remove video file linked to video"""
+    """Remove video file linked to video."""
     if video.overview:
         image_overview = os.path.join(
             os.path.dirname(video.overview.path), "overview.png"
@@ -1501,53 +1492,31 @@ class VideoRendition(models.Model):
             self.resolution,
         )
 
-    def clean_bitrate(self):
-        if self.video_bitrate and "k" not in self.video_bitrate:
-            msg = "Error in %s: " % _("bitrate video")
+    def bitrate(self, field_value, field_name, name=None):
+        """Validate the bitrate field value."""
+        if name is None:
+            name = field_name
+        if field_value and "k" not in field_value:
+            msg = "Error in %s: " % _(name)
             raise ValidationError(
-                "%s %s"
-                % (
-                    msg,
-                    VideoRendition._meta.get_field("video_bitrate").help_text,
-                )
+                "%s %s" % (msg, VideoRendition._meta.get_field(field_name).help_text)
             )
         else:
-            vb = self.video_bitrate.replace("k", "")
+            vb = field_value.replace("k", "")
             if not vb.isdigit():
-                msg = "Error in %s: " % _("bitrate video")
+                msg = "Error in %s: " % _(name)
                 raise ValidationError(
-                    "%s %s"
-                    % (
-                        msg,
-                        VideoRendition._meta.get_field("video_bitrate").help_text,
-                    )
-                )
-        if self.maxrate and "k" not in self.maxrate:
-            msg = "Error in %s: " % _("maxrate")
-            raise ValidationError(
-                "%s %s" % (msg, VideoRendition._meta.get_field("maxrate").help_text)
-            )
-        else:
-            vb = self.video_bitrate.replace("k", "")
-            if not vb.isdigit():
-                msg = "Error in %s: " % _("maxrate")
-                raise ValidationError(
-                    "%s %s" % (msg, VideoRendition._meta.get_field("maxrate").help_text)
-                )
-        if self.minrate and "k" not in self.minrate:
-            msg = "Error in %s: " % _("minrate")
-            raise ValidationError(
-                "%s %s" % (msg, VideoRendition._meta.get_field("minrate").help_text)
-            )
-        else:
-            vb = self.video_bitrate.replace("k", "")
-            if not vb.isdigit():
-                msg = "Error in %s: " % _("minrate")
-                raise ValidationError(
-                    "%s %s" % (msg, VideoRendition._meta.get_field("minrate").help_text)
+                    "%s %s" % (msg, VideoRendition._meta.get_field(field_name).help_text)
                 )
 
+    def clean_bitrate(self):
+        """Clean the bitrate-related fields."""
+        self.bitrate(self.video_bitrate, "video_bitrate", "bitrate video")
+        self.bitrate(self.maxrate, "maxrate")
+        self.bitrate(self.minrate, "minrate")
+
     def clean(self):
+        """Clean the fields of the VideoRendition model."""
         if self.resolution and "x" not in self.resolution:
             raise ValidationError(VideoRendition._meta.get_field("resolution").help_text)
         else:
@@ -1558,27 +1527,7 @@ class VideoRendition(models.Model):
                 )
 
         self.clean_bitrate()
-
-        if self.audio_bitrate and "k" not in self.audio_bitrate:
-            msg = "Error in %s: " % _("bitrate audio")
-            raise ValidationError(
-                "%s %s"
-                % (
-                    msg,
-                    VideoRendition._meta.get_field("audio_bitrate").help_text,
-                )
-            )
-        else:
-            vb = self.audio_bitrate.replace("k", "")
-            if not vb.isdigit():
-                msg = "Error in %s: " % _("bitrate audio")
-                raise ValidationError(
-                    "%s %s"
-                    % (
-                        msg,
-                        VideoRendition._meta.get_field("audio_bitrate").help_text,
-                    )
-                )
+        self.bitrate(self.audio_bitrate, "audio_bitrate", "bitrate audio")
 
 
 @receiver(post_save, sender=VideoRendition)
