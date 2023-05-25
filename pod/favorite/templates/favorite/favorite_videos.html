@@ -22,24 +22,22 @@
 {% block page_content %}
   <div class="row videos-list-header">
     <h2 id="video_count" class="page_title col-xxl-4 mb-2">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
-    <span class="col-xxl-4 col-md-6 mb-2" id="reorganize-buttons-span">
+    <div class="col-xxl-4 col-md-6 mb-2" id="reorganize-buttons">
       {% if count_videos > 1 %}
-      <form action="{% url 'favorite:save-reorganisation' %}" method="post">
-        {% csrf_token %}
-        <span class="pod-float-end">
+        <form action="{% url 'favorite:save-reorganisation' %}" method="post">
+          {% csrf_token %}
           <input id="json-data" type="hidden" name="json-data">
           <button id="reorganize-button" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm {% if sort_field != 'rank' or sort_direction == 'on' %}d-none{% endif %}">
             <i class="bi bi-arrows-move"></i>&nbsp;<span>{% trans "Reorganize" %}</span>
           </button>
+          <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-secondary btn-sm d-none">
+          <i class="bi bi-x-circle"></i>&nbsp;{% trans "Cancel" %}</a>
           <button id="refresh-button" title="{% trans 'Sort by descending rank before you can rearrange'%}" class="btn btn-outline-primary btn-sm {% if sort_field == 'rank' and sort_direction != 'on' %}d-none{% endif %}">
             <i class="bi bi-arrow-clockwise"></i>&nbsp;<span>{% trans "Sort by descending rank" %}</span>
           </button>
-        </span>
-      </form>
-      <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-secondary btn-sm d-none">
-        <i class="bi bi-x-circle"></i>&nbsp;{% trans "Cancel" %}</a>
+        </form>
       {% endif %}
-    </span>
+    </div>
     <form id="sortForm" action="{% url 'favorite:list' %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2">
       {% include "videos/video_sort_select.html" with favorite=True %}
     </form>

@@ -7,7 +7,7 @@ const sortSelectElement = document.getElementById("sort");
 const sortDirectionElement = document.getElementById("sort_direction");
 
 const reorganizeButtonsSpanElement = document.getElementById(
-  "reorganize-buttons-span"
+  "reorganize-buttons"
 );
 const collapseAsideElement = document.getElementById("collapseAside");
 const reorganizeButton = document.getElementById("reorganize-button");
@@ -141,7 +141,6 @@ function activateDragAndDrop(parent) {
     draggableElement.classList.add("shake-effect");
     draggableElement.children[0].classList.add("no-click");
   });
-  console.log("activateDragAndDrop");
   sortForm.classList.add("no-click");
   updateCollapseAside();
   infinite.removeLoader();
