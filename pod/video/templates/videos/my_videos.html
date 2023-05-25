@@ -23,15 +23,17 @@
     {% include "videos/category_modal.html" %}
   {% endif %}
   <div class="row videos-list-header">
-  {% if videos.paginator.count == 0 %}
-    <p class="alert alert-info">{% trans 'You have not uploaded any videos yet, please use the "Add a new video" button to add one'%}</p>
-  {% else %}
-    <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the video on which you want to work with." %}</p>
-  {% endif %}
-  <h2 id="video_count" class="page_title col-8">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
-  <form id="sortForm" action="{% url 'video:my_videos' %}" method="get" class="filterSortForms col-4 mb-2">
-    {% include "videos/video_sort_select.html" %}
-  </form>
+    {% if videos.paginator.count == 0 %}
+      <p class="alert alert-info">{% trans 'You have not uploaded any videos yet, please use the "Add a new video" button to add one'%}</p>
+    {% else %}
+      <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the video on which you want to work with." %}</p>
+    {% endif %}
+    <h2 id="video_count" class="page_title col-8">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
+    {% if count_videos > 1 %}
+      <form id="sortForm" action="{% url 'video:my_videos' %}" method="get" class="filterSortForms col-4 mb-2">
+        {% include "videos/video_sort_select.html" %}
+      </form>
+    {% endif %}
   </div>
   {% include 'loader.html' %}
   {% include "videos/video_list.html" %}

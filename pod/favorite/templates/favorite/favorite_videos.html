@@ -22,8 +22,8 @@
 {% block page_content %}
   <div class="row videos-list-header">
     <h2 id="video_count" class="page_title col-xxl-4 mb-2">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
-    <div class="col-xxl-4 col-md-6 mb-2" id="reorganize-buttons">
-      {% if count_videos > 1 %}
+    {% if count_videos > 1 %}
+      <div class="col-xxl-4 col-md-6 mb-2" id="reorganize-buttons">
         <form action="{% url 'favorite:save-reorganisation' %}" method="post">
           {% csrf_token %}
           <input id="json-data" type="hidden" name="json-data">
@@ -36,11 +36,11 @@
             <i class="bi bi-arrow-clockwise"></i>&nbsp;<span>{% trans "Sort by descending rank" %}</span>
           </button>
         </form>
-      {% endif %}
-    </div>
-    <form id="sortForm" action="{% url 'favorite:list' %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2">
-      {% include "videos/video_sort_select.html" with favorite=True %}
-    </form>
+      </div>
+      <form id="sortForm" action="{% url 'favorite:list' %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2">
+        {% include "videos/video_sort_select.html" with favorite=True %}
+      </form>
+    {% endif %}
   </div>
   {% include 'loader.html' %}
   {% include "favorite/favorite_video_list.html" %}
