@@ -89,12 +89,12 @@ class Encoding_video_model(Encoding_video):
             msg += "Audio: Nothing to delete"
         return msg
 
-    def remove_previous_encoding_video(self, video_to_encode):
-        """Remove previously encoded video."""
+    def remove_previous_encoding_objects(self, model_class, video_to_encode, object_type):
+        """Remove previously encoded objects of the given model."""
         msg = "\n"
-        previous_encoding_video = EncodingVideo.objects.filter(video=video_to_encode)
+        previous_encoding_video = model_class.objects.filter(video=video_to_encode)
         if len(previous_encoding_video) > 0:
-            msg += "\nDELETE PREVIOUS ENCODING VIDEO"
+            msg += "DELETE PREVIOUS {}".format(object_type)
             # previous_encoding.delete()
             for encoding in previous_encoding_video:
                 encoding.delete()
@@ -102,36 +102,30 @@ class Encoding_video_model(Encoding_video):
             msg += "Video: Nothing to delete"
         return msg
 
+    def remove_previous_encoding_video(self, video_to_encode):
+        """Remove previously encoded video."""
+        print("remove_previous_encoding_video0000000000000")
+        return self.remove_previous_encoding_objects(
+            EncodingVideo, video_to_encode, "ENCODING VIDEO")
+
     def remove_previous_encoding_audio(self, video_to_encode):
         """Remove previously encoded audio."""
-        msg = "\n"
-        previous_encoding_audio = EncodingAudio.objects.filter(video=video_to_encode)
-        if len(previous_encoding_audio) > 0:
-            msg += "\nDELETE PREVIOUS ENCODING AUDIO"
-            # previous_encoding.delete()
-            for encoding in previous_encoding_audio:
-                encoding.delete()
-        else:
-            msg += "Audio: Nothing to delete"
-        return msg
+        print("remove_previous_encoding_audio000000")
+        return self.remove_previous_encoding_objects(
+            EncodingAudio, video_to_encode, "ENCODING AUDIO")
 
     def remove_previous_encoding_playlist(self, video_to_encode):
         """Remove previously encoded playlist."""
-        msg = "\n"
-        previous_playlist = PlaylistVideo.objects.filter(video=video_to_encode)
-        if len(previous_playlist) > 0:
-            msg += "DELETE PREVIOUS PLAYLIST M3U8"
-            # previous_encoding.delete()
-            for encoding in previous_playlist:
-                encoding.delete()
-        else:
-            msg += "Playlist: Nothing to delete"
-        return msg
+        print("remove_previous_encoding_playlist000000y")
+        return self.remove_previous_encoding_objects(
+            PlaylistVideo, video_to_encode, "PLAYLIST M3U8")
 
     def get_true_path(self, original):
+        """Get the true path by replacing the MEDIA_ROOT from the original path."""
         return original.replace(os.path.join(settings.MEDIA_ROOT, ""), "")
 
     def store_json_list_mp3_m4a_files(self, info_video, video_to_encode):
+        """Store JSON list of MP3 and M4A files for encoding."""
         encoding_list = ["list_m4a_files", "list_mp3_files"]
         for encode_item in encoding_list:
             mp3_files = info_video[encode_item]

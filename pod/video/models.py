@@ -1359,7 +1359,7 @@ def default_site(sender, instance, created, **kwargs):
 
 @receiver(pre_delete, sender=Video, dispatch_uid="pre_delete-video_files_removal")
 def video_files_removal(sender, instance, using, **kwargs):
-    """Remove files created after encodin."""
+    """Remove files created after encoding."""
     remove_video_file(instance)
     models_to_delete = [EncodingVideo, EncodingAudio, PlaylistVideo]
     for model in models_to_delete:

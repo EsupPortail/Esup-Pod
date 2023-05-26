@@ -2471,7 +2471,7 @@ def get_categories(request, c_slug=None):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def add_category(request):
-    """add category"""
+    """Add category."""
     response = {"success": False}
     c_user = request.user  # connected user
 
@@ -2529,7 +2529,7 @@ def add_category(request):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def edit_category(request, c_slug):
-    """Edit category"""
+    """Edit category."""
     response = {"success": False}
     c_user = request.user  # connected user
 
