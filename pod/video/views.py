@@ -31,7 +31,6 @@ from pod.main.utils import is_ajax
 from pod.main.views import in_maintenance
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
-from pod.favorite.models import Favorite
 from pod.video.utils import get_videos as video_get_videos
 from pod.video.models import Video
 from pod.video.models import Type
@@ -41,7 +40,6 @@ from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
 from pod.video.models import ViewCount, VideoVersion
 from pod.video.models import Comment, Vote, Category
 from pod.video.models import get_transcription_choices
-
 from tagging.models import TaggedItem
 
 from pod.video.forms import VideoForm, VideoVersionForm
@@ -50,14 +48,7 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
-from .utils import (
-    pagination_data,
-    get_headband,
-    change_owner,
-    get_available_videos,
-    get_video_data,
-    get_id_from_request
-)
+from .utils import pagination_data, get_headband, change_owner, get_available_videos
 
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.exceptions import ObjectDoesNotExist
@@ -87,7 +78,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         thereby encourage its use in teaching and research.",
         "TITLE_ETB": "University name",
         "LOGO_SITE": "img/logoPod.svg",
-        "LOGO_ETB": "img/esup-pod.svg",
+        "LOGO_ETB": "img/logo_etb.svg",
         "LOGO_PLAYER": "img/pod_favicon.svg",
         "LINK_PLAYER": "",
         "FOOTER_TEXT": ("",),
@@ -247,7 +238,15 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         videos = list(
             map(
                 lambda v: {
-                    **get_video_data(v),
+                    "slug": v.slug,
+                    "title": v.title,
+                    "duration": v.duration_in_time,
+                    "thumbnail": v.get_thumbnail_card(),
+                    "is_video": v.is_video,
+                    "has_password": bool(v.password),
+                    "is_restricted": v.is_restricted,
+                    "has_chapter": v.chapter_set.all().count() > 0,
+                    "is_draft": v.is_draft,
                     "is_editable": v.is_editable(request.user),
                 },
                 videos,
@@ -1272,8 +1271,15 @@ def video_notes(request, slug):
 def video_note_get(request, slug):
     """Get video notes."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
-    idCom = get_id_from_request(request, "idCom")
-    idNote = get_id_from_request(request, "idNote")
+    idCom = idNote = None
+    if request.method == "POST" and request.POST.get("idCom"):
+        idCom = request.POST.get("idCom")
+    elif request.method == "GET" and request.GET.get("idCom"):
+        idCom = request.GET.get("idCom")
+    if request.method == "POST" and request.POST.get("idNote"):
+        idNote = request.POST.get("idNote")
+    elif request.method == "GET" and request.GET.get("idNote"):
+        idCom = request.GET.get("idNote")
 
     if idNote is None:
         listNotes = get_adv_note_list(request, video)
@@ -1316,8 +1322,14 @@ def video_note_form(request, slug):
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     idNote, idCom = None, None
     note, com = None, None
-    idCom = get_id_from_request(request, "idCom")
-    idNote = get_id_from_request(request, "idNote")
+    if request.method == "POST" and request.POST.get("idCom"):
+        idCom = request.POST.get("idCom")
+    elif request.method == "GET" and request.GET.get("idCom"):
+        idCom = request.GET.get("idCom")
+    if request.method == "POST" and request.POST.get("idNote"):
+        idNote = request.POST.get("idNote")
+    elif request.method == "GET" and request.GET.get("idNote"):
+        idCom = request.GET.get("idNote")
 
     if idCom is not None:
         com = get_object_or_404(NoteComments, id=idCom)
@@ -1359,9 +1371,6 @@ def video_note_form(request, slug):
 def video_note_form_case(request, params):
     """Editing/creating a note."""
     (idNote, idCom, note, com) = params
-    noteToDisplay, comToDisplay = None, None
-    listNotesCom, dictComments = None, None
-    comToEdit, noteToEdit = None, None
     # Editing a note comment
     if (
         idCom is not None
@@ -1376,7 +1385,7 @@ def video_note_form_case(request, params):
         noteToDisplay, comToDisplay = note, get_com_tree(com)
         listNotesCom = get_adv_note_com_list(request, idNote)
         dictComments = get_com_coms_dict(request, listNotesCom)
-        comToEdit = com
+        comToEdit, noteToEdit = com, None
         # Creating a comment answer
     elif (
         idCom is not None
@@ -1390,6 +1399,7 @@ def video_note_form_case(request, params):
         noteToDisplay, comToDisplay = note, get_com_tree(com)
         listNotesCom = get_adv_note_com_list(request, idNote)
         dictComments = get_com_coms_dict(request, listNotesCom)
+        comToEdit, noteToEdit = None, None
     # Editing a note
     elif (
         idCom is None
@@ -1407,7 +1417,9 @@ def video_note_form_case(request, params):
                 "status": note.status,
             }
         )
-        noteToEdit = note
+        noteToDisplay, comToDisplay = None, None
+        listNotesCom, dictComments = None, None
+        comToEdit, noteToEdit = None, note
     # Creating a note comment
     elif (
         idCom is None
@@ -1420,9 +1432,14 @@ def video_note_form_case(request, params):
         form = NoteCommentsForm()
         noteToDisplay, comToDisplay = note, None
         listNotesCom = get_adv_note_com_list(request, idNote)
+        dictComments = None
+        comToEdit, noteToEdit = None, None
     # Creating a note
     elif idCom is None and idNote is None:
         form = AdvancedNotesForm()
+        noteToDisplay, comToDisplay = None, None
+        listNotesCom, dictComments = None, None
+        comToEdit, noteToEdit = None, None
 
     return (
         note,
@@ -1449,8 +1466,12 @@ def video_note_save(request, slug):
     listNotesCom, dictComments = None, None
     form = None
 
-    idCom = get_id_from_request(request, "idCom")
-    idNote = get_id_from_request(request, "idNote")
+    if request.method == "POST" and request.POST.get("idCom"):
+        idCom = request.POST.get("idCom")
+        com = get_object_or_404(NoteComments, id=idCom)
+    if request.method == "POST" and request.POST.get("idNote"):
+        idNote = request.POST.get("idNote")
+        note = get_object_or_404(AdvancedNotes, id=idNote)
 
     if request.method == "POST" and request.POST.get("action") == "save_note":
         q = QueryDict(mutable=True)
@@ -1948,29 +1969,6 @@ def get_all_views_count(v_id, date_filter=date.today()):
     count = ViewCount.objects.filter(video_id=v_id).aggregate(Sum("count"))["count__sum"]
     all_views["since_created"] = count if count else 0
 
-    # favorite addition in day
-    count = Favorite.objects.filter(video_id=v_id, date_added__date=date_filter).count()
-    all_views["fav_day"] = count if count else 0
-
-    # favorite addition in month
-    count = Favorite.objects.filter(
-        video_id=v_id,
-        date_added__year=date_filter.year,
-        date_added__month=date_filter.month,
-    ).count()
-    all_views["fav_month"] = count if count else 0
-
-    # favorite addition in year
-    count = Favorite.objects.filter(
-        video_id=v_id,
-        date_added__year=date_filter.year,
-    ).count()
-    all_views["fav_year"] = count if count else 0
-
-    # favorite addition since video was created
-    count = Favorite.objects.filter(video_id=v_id).count()
-    all_views["fav_since_created"] = count if count else 0
-
     return all_views
 
 
@@ -2415,7 +2413,6 @@ def delete_comment(request, video_slug, comment_id):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def get_categories(request, c_slug=None):
-    """Get categories."""
     response = {"success": False}
     c_user = request.user  # connected user
 
@@ -2430,7 +2427,19 @@ def get_categories(request, c_slug=None):
         response["videos"] = []
         for v in cat.video.all():
             if v.owner == cat.owner or cat.owner in v.additional_owners.all():
-                response["videos"].append(get_video_data(v))
+                response["videos"].append(
+                    {
+                        "slug": v.slug,
+                        "title": v.title,
+                        "duration": v.duration_in_time,
+                        "thumbnail": v.get_thumbnail_card(),
+                        "is_video": v.is_video,
+                        "has_password": bool(v.password),
+                        "is_restricted": v.is_restricted,
+                        "has_chapter": v.chapter_set.all().count() > 0,
+                        "is_draft": v.is_draft,
+                    }
+                )
             else:
                 # delete if user is no longer owner
                 # or additional owner of the video
@@ -2450,7 +2459,17 @@ def get_categories(request, c_slug=None):
                     "slug": c.slug,
                     "videos": list(
                         map(
-                            lambda v: get_video_data(v),
+                            lambda v: {
+                                "slug": v.slug,
+                                "title": v.title,
+                                "duration": v.duration_in_time,
+                                "thumbnail": v.get_thumbnail_card(),
+                                "is_video": v.is_video,
+                                "has_password": bool(v.password),
+                                "is_restricted": v.is_restricted,
+                                "has_chapter": v.chapter_set.all().count() > 0,
+                                "is_draft": v.is_draft,
+                            },
                             c.video.all(),
                         )
                     ),
@@ -2471,7 +2490,6 @@ def get_categories(request, c_slug=None):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def add_category(request):
-    """Add category."""
     response = {"success": False}
     c_user = request.user  # connected user
 
@@ -2507,7 +2525,17 @@ def add_category(request):
             response["success"] = True
             response["category"]["videos"] = list(
                 map(
-                    lambda v: get_video_data(v),
+                    lambda v: {
+                        "slug": v.slug,
+                        "title": v.title,
+                        "duration": v.duration_in_time,
+                        "thumbnail": v.get_thumbnail_card(),
+                        "is_video": v.is_video,
+                        "has_password": bool(v.password),
+                        "is_restricted": v.is_restricted,
+                        "has_chapter": v.chapter_set.all().count() > 0,
+                        "is_draft": v.is_draft,
+                    },
                     cat.video.all(),
                 )
             )
@@ -2529,7 +2557,6 @@ def add_category(request):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def edit_category(request, c_slug):
-    """Edit category."""
     response = {"success": False}
     c_user = request.user  # connected user
 
@@ -2564,7 +2591,17 @@ def edit_category(request, c_slug):
                 response["message"] = _("Category updated successfully.")
                 response["videos"] = list(
                     map(
-                        lambda v: get_video_data(v),
+                        lambda v: {
+                            "slug": v.slug,
+                            "title": v.title,
+                            "duration": v.duration_in_time,
+                            "thumbnail": v.get_thumbnail_card(),
+                            "is_video": v.is_video,
+                            "has_password": bool(v.password),
+                            "is_restricted": v.is_restricted,
+                            "has_chapter": v.chapter_set.all().count() > 0,
+                            "is_draft": v.is_draft,
+                        },
                         cat.video.all(),
                     )
                 )
