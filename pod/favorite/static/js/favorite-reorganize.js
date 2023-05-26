@@ -6,15 +6,16 @@ addEventForReorganizedButton();
 const sortSelectElement = document.getElementById("sort");
 const sortDirectionElement = document.getElementById("sort_direction");
 
-const reorganizeButtonsSpanElement = document.getElementById(
-  "reorganize-buttons"
-);
+const reorganizeButtonsSpanElement =
+  document.getElementById("reorganize-buttons");
 const collapseAsideElement = document.getElementById("collapseAside");
 const reorganizeButton = document.getElementById("reorganize-button");
 const refreshButton = document.getElementById("refresh-button");
 
-document.getElementById("sort_direction_label").addEventListener('click', changeReorganizeButtons);
-sortSelectElement.addEventListener('change', changeReorganizeButtons);
+document
+  .getElementById("sort_direction_label")
+  .addEventListener("click", changeReorganizeButtons);
+sortSelectElement.addEventListener("change", changeReorganizeButtons);
 
 /**
  * Add or remove the CSS class to make drop zone hover.
@@ -34,13 +35,13 @@ function addOrRemoveDropZoneHoverStyleClass(state, element) {
  * Switch the 'reorganize' and 'sort by rank' buttons.
  */
 function changeReorganizeButtons() {
-  if(sortSelectElement.value === "rank" && !sortDirectionElement.checked) {
-      reorganizeButton.classList.remove('d-none');
-      refreshButton.classList.add('d-none');
-    } else {
-      reorganizeButton.classList.add('d-none');
-      refreshButton.classList.remove('d-none');
-    }
+  if (sortSelectElement.value === "rank" && !sortDirectionElement.checked) {
+    reorganizeButton.classList.remove("d-none");
+    refreshButton.classList.add("d-none");
+  } else {
+    reorganizeButton.classList.add("d-none");
+    refreshButton.classList.remove("d-none");
+  }
 }
 
 /**
@@ -78,10 +79,11 @@ function addEventForReorganizedButton() {
           convert2DTableToJson(exchangedValues);
       }
     });
-  document.getElementById("refresh-button")
+  document
+    .getElementById("refresh-button")
     .addEventListener("click", function (event) {
       event.preventDefault();
-        window.location.assign(window.location.href.split("?")[0]);
+      window.location.assign(window.location.href.split("?")[0]);
     });
 }
 
@@ -144,7 +146,9 @@ function activateDragAndDrop(parent) {
   sortForm.classList.add("no-click");
   updateCollapseAside();
   infinite.removeLoader();
-  document.getElementById("cancel_btn_favorites_list").classList.remove("d-none");
+  document
+    .getElementById("cancel_btn_favorites_list")
+    .classList.remove("d-none");
 }
 
 /**
