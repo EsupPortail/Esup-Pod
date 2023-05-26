@@ -537,7 +537,7 @@ def my_videos(request):
 
     if not sort_field:
         # Get the default Video ordering
-        sort_field = Video._meta.ordering[0].lstrip('-')
+        sort_field = Video._meta.ordering[0].lstrip("-")
     count_videos = len(videos_list)
 
     paginator = Paginator(videos_list, 12)
@@ -547,9 +547,7 @@ def my_videos(request):
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos,
-             "full_path": full_path,
-             "count_videos": count_videos},
+            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
         )
 
     data_context["videos"] = videos
@@ -630,7 +628,7 @@ def videos(request):
 
     if not sort_field:
         # Get the default Video ordering
-        sort_field = Video._meta.ordering[0].lstrip('-')
+        sort_field = Video._meta.ordering[0].lstrip("-")
     count_videos = len(videos_list)
 
     page = request.GET.get("page", 1)
@@ -668,7 +666,7 @@ def videos(request):
             "ownersInstances": ownersInstances,
             "cursus_list": CURSUS_CODES,
             "sort_field": sort_field,
-            "sort_direction": request.GET.get("sort_direction")
+            "sort_direction": request.GET.get("sort_direction"),
         },
     )
 

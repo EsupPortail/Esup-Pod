@@ -41,8 +41,7 @@ def favorite_list(request):
     sort_field = request.GET.get("sort", "rank")
     sort_direction = request.GET.get("sort_direction")
     videos_list = sort_videos_list(
-        get_all_favorite_videos_for_user(request.user),
-        sort_field, sort_direction
+        get_all_favorite_videos_for_user(request.user), sort_field, sort_direction
     )
     count_videos = len(videos_list)
 
@@ -69,9 +68,7 @@ def favorite_list(request):
         return render(
             request,
             "favorite/favorite_video_list.html",
-            {"videos": videos,
-             "full_path": full_path,
-             "count_videos": count_videos}
+            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
         )
 
     return render(
@@ -90,7 +87,7 @@ def favorite_list(request):
             "ownersInstances": ownersInstances,
             "cursus_list": CURSUS_CODES,
             "sort_field": sort_field,
-            "sort_direction": sort_direction
+            "sort_direction": sort_direction,
         },
     )
 

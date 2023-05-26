@@ -28,7 +28,7 @@ class Favorite(models.Model):
             # There mustn't be duplicated ranks for one owner
             models.UniqueConstraint(
                 fields=["owner", "rank"], name="unique_favorite_owner_rank"
-            )
+            ),
         ]
         # Default ordering for Favorites items (not for Favorite video list)
         ordering = ["owner", "rank"]
