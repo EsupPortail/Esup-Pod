@@ -1,3 +1,4 @@
+"""Esup-Pod favorite video utilities."""
 from django.contrib.auth.models import User
 from django.db.models import Max
 
@@ -48,6 +49,7 @@ def get_next_rank(user: User) -> int:
 
 
 def get_number_favorites(video: Video):
+    """Return how much a video has been favorited."""
     return Favorite.objects.filter(video=video).count()
 
 
@@ -72,14 +74,3 @@ def get_all_favorite_videos_for_user(user: User) -> list:
         params=[user.id],
     )
     return video_list
-
-
-def sort_videos_list(request, videos_list):
-    """
-    Return sorted videos list by specific column name and ascending or descending
-    direction
-    """
-    sort = request.GET.get("sort", "rank")
-    sort = sort if request.GET.get("sort_direction") else "-" + sort
-    videos_list = videos_list.order_by(sort)
-    return videos_list.distinct()

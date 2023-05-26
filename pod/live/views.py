@@ -142,7 +142,7 @@ def get_broadcaster_by_slug(slug, site):
         return get_object_or_404(Broadcaster, slug=slug, building__sites=site)
 
 
-""" use rest api to change status
+"""use rest api to change status
 def change_status(request, slug):
     broadcaster = get_object_or_404(Broadcaster, slug=slug)
     if request.GET.get("online") == "1":
@@ -352,7 +352,8 @@ def render_event_template(request, evemnt, user_owns_event):
     )
 
 
-def events(request):  # affichage des events
+def events(request):
+    """Affichage des events."""
     # Tous les events à venir (sauf les drafts sont affichés)
     queryset = Event.objects.filter(end_date__gt=timezone.now(), is_draft=False)
     events_list = queryset.all().order_by("start_date", "end_date")

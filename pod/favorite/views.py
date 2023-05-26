@@ -1,3 +1,4 @@
+"""Esup-Pod favorite video Views."""
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import transaction
@@ -5,15 +6,16 @@ from django.http import Http404, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import ugettext_lazy as _
 
 from pod.favorite.models import Favorite
 from pod.main.utils import is_ajax
 from pod.video.models import Video
 from pod.video.views import CURSUS_CODES, get_owners_has_instances
+from pod.video.utils import sort_videos_list
 
 from .utils import user_add_or_remove_favorite_video
 from .utils import get_all_favorite_videos_for_user
-from .utils import sort_videos_list
 
 import json
 
@@ -36,8 +38,10 @@ def favorite_button_in_video_info(request):
 @login_required(redirect_field_name="referrer")
 def favorite_list(request):
     """Render the main list of favorite videos."""
+    sort_field = request.GET.get("sort", "rank")
+    sort_direction = request.GET.get("sort_direction")
     videos_list = sort_videos_list(
-        request, get_all_favorite_videos_for_user(request.user)
+        get_all_favorite_videos_for_user(request.user), sort_field, sort_direction
     )
     count_videos = len(videos_list)
 
@@ -71,6 +75,7 @@ def favorite_list(request):
         request,
         "favorite/favorite_videos.html",
         {
+            "page_title": _("My favorite videos"),
             "videos": videos,
             "count_videos": count_videos,
             "types": request.GET.getlist("type"),
@@ -81,6 +86,8 @@ def favorite_list(request):
             "full_path": full_path,
             "ownersInstances": ownersInstances,
             "cursus_list": CURSUS_CODES,
+            "sort_field": sort_field,
+            "sort_direction": sort_direction,
         },
     )
 
