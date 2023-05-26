@@ -104,19 +104,16 @@ class Encoding_video_model(Encoding_video):
 
     def remove_previous_encoding_video(self, video_to_encode):
         """Remove previously encoded video."""
-        print("remove_previous_encoding_video0000000000000")
         return self.remove_previous_encoding_objects(
             EncodingVideo, video_to_encode, "ENCODING VIDEO")
 
     def remove_previous_encoding_audio(self, video_to_encode):
         """Remove previously encoded audio."""
-        print("remove_previous_encoding_audio000000")
         return self.remove_previous_encoding_objects(
             EncodingAudio, video_to_encode, "ENCODING AUDIO")
 
     def remove_previous_encoding_playlist(self, video_to_encode):
         """Remove previously encoded playlist."""
-        print("remove_previous_encoding_playlist000000y")
         return self.remove_previous_encoding_objects(
             PlaylistVideo, video_to_encode, "PLAYLIST M3U8")
 
