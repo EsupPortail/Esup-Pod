@@ -146,20 +146,20 @@ def send_email_recording(msg, recording_id):
     send_email_item(msg, "Recording", recording_id)
 
 
-def send_notification_email(video_to_encode, subject_pre):
+def send_notification_email(video_to_encode, subject_prefix):
     """Send email notification on video encoding or transcripting completion."""
     if DEBUG:
-        print("SEND EMAIL ON %s COMPLETION" % subject_pre.upper())
+        print("SEND EMAIL ON %s COMPLETION" % subject_prefix.upper())
     url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
     content_url = "%s:%s" % (url_scheme, video_to_encode.get_full_url())
     subject = "[%s] %s" % (
         __TITLE_SITE__,
         _("%(subject)s #%(content_id)s completed")
-        % {"subject": subject_pre, "content_id": video_to_encode.id},
+        % {"subject": subject_prefix, "content_id": video_to_encode.id},
     )
 
     html_message = (
-        '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
+        '</p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
                 </p><p>%s</p>'
         % (
             _("Hello,"),
@@ -168,11 +168,13 @@ def send_notification_email(video_to_encode, subject_pre):
                 + ", and is now available on %(site_title)s."
             )
             % {
-                "content_type": "content" if (subject_pre == "Transcripting")
-                else "video",
+                "content_type": ("content"
+                                 if subject_prefix == "Transcripting"
+                                 else "video"),
                 "content_title": "<b>%s</b>" % video_to_encode.title,
-                "action": "automatically transcript" if (subject_pre == "Transcripting")
-                else "encoded to Web formats",
+                "action": ("automatically transcript"
+                           if (subject_prefix == "Transcripting")
+                           else "encoded to Web formats"),
                 "site_title": __TITLE_SITE__,
             },
             _("You will find it here:"),
