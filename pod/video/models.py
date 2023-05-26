@@ -599,6 +599,8 @@ class Type(models.Model):
         super(Type, self).save(*args, **kwargs)
 
     class Meta:
+        """Metadata subclass of Type object."""
+
         ordering = ["title"]
         verbose_name = _("Type")
         verbose_name_plural = _("Types")
@@ -642,6 +644,8 @@ class Discipline(models.Model):
         super(Discipline, self).save(*args, **kwargs)
 
     class Meta:
+        """Metadata subclass of Discipline object."""
+
         ordering = ["title"]
         verbose_name = _("Discipline")
         verbose_name_plural = _("Disciplines")

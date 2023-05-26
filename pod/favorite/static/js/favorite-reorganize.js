@@ -4,16 +4,17 @@ var infinite;
 addEventForReorganizedButton();
 
 const sortSelectElement = document.getElementById("sort");
+const sortDirectionElement = document.getElementById("sort_direction");
+
 const reorganizeButtonsSpanElement = document.getElementById(
-  "reorganize-buttons-span"
+  "reorganize-buttons"
 );
 const collapseAsideElement = document.getElementById("collapseAside");
-sortSelectElement.addEventListener("change", () => {
-  changeButtonIntoRefresh();
-});
-collapseAsideElement.addEventListener("click", () => {
-  changeButtonIntoRefresh();
-});
+const reorganizeButton = document.getElementById("reorganize-button");
+const refreshButton = document.getElementById("refresh-button");
+
+document.getElementById("sort_direction_label").addEventListener('click', changeReorganizeButtons);
+sortSelectElement.addEventListener('change', changeReorganizeButtons);
 
 /**
  * Add or remove the CSS class to make drop zone hover.
@@ -30,18 +31,16 @@ function addOrRemoveDropZoneHoverStyleClass(state, element) {
 }
 
 /**
- * Change the 'reorganize-button' into a 'refresh-button'.
+ * Switch the 'reorganize' and 'sort by rank' buttons.
  */
-function changeButtonIntoRefresh() {
-  const reorganizeButton = document.getElementById("reorganize-button");
-  if (reorganizeButton) {
-    reorganizeButton.id = "refresh-button";
-    reorganizeButton.title = gettext("Refresh your page so you can rearrange");
-    const iconElement = reorganizeButton.querySelector("i");
-    const spanElement = reorganizeButton.querySelector("span");
-    iconElement.classList.replace("bi-arrows-move", "bi-arrow-clockwise");
-    spanElement.textContent = gettext("Refresh");
-  }
+function changeReorganizeButtons() {
+  if(sortSelectElement.value === "rank" && !sortDirectionElement.checked) {
+      reorganizeButton.classList.remove('d-none');
+      refreshButton.classList.add('d-none');
+    } else {
+      reorganizeButton.classList.add('d-none');
+      refreshButton.classList.remove('d-none');
+    }
 }
 
 /**
@@ -77,10 +76,12 @@ function addEventForReorganizedButton() {
       } else if (this.id == "save-button") {
         document.getElementById("json-data").value =
           convert2DTableToJson(exchangedValues);
-      } else if (this.id == "refresh-button") {
-        event.preventDefault();
-        window.location.assign(window.location.href.split("?")[0]);
       }
+    });
+  document.getElementById("refresh-button")
+    .addEventListener("click", function (event) {
+      event.preventDefault();
+        window.location.assign(window.location.href.split("?")[0]);
     });
 }
 
@@ -126,7 +127,7 @@ function onDrop(event) {
 }
 
 /**
- * Activate the drap and drop in the page
+ * Activate the drag and drop in the page
  */
 function activateDragAndDrop(parent) {
   const draggableElements = document.querySelectorAll(".draggable-container");
@@ -140,15 +141,10 @@ function activateDragAndDrop(parent) {
     draggableElement.classList.add("shake-effect");
     draggableElement.children[0].classList.add("no-click");
   });
-  cardFooterElements.forEach((cardFooterElement) => {
-    cardFooterElement.style.opacity = "0";
-    cardFooterElement.style.transition = "opacity 0.9s ease";
-  });
   sortForm.classList.add("no-click");
   updateCollapseAside();
   infinite.removeLoader();
-  document.getElementById("cancel_btn_favorites_list").style.visibility =
-    "visible";
+  document.getElementById("cancel_btn_favorites_list").classList.remove("d-none");
 }
 
 /**

@@ -47,7 +47,7 @@
       </button>
     {% endif %}
     {% if video.allow_downloading or video.document_set.all %}
-      <button type="button" class="btn btn-link btn-lg pod-btn-share" title"{% trans 'Downloads' %}" data-bs-toggle="modal" data-bs-target="#downloads">
+      <button type="button" class="btn btn-link btn-lg pod-btn-share" title="{% trans 'Downloads' %}" data-bs-toggle="modal" data-bs-target="#downloads">
         <i class="bi bi-download" aria-hidden="true"></i>
       </button>
     {% endif %}
