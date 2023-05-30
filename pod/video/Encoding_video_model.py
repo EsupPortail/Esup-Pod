@@ -94,7 +94,7 @@ class Encoding_video_model(Encoding_video):
         """Remove previously encoded objects of the given model."""
         msg = "\n"
         object_type = model_class.__name__
-        object_type = re.sub(r'([A-Z])', r' \1', object_type).upper()
+        object_type = re.sub(r"([A-Z])", r" \1", object_type).upper()
         previous_encoding_video = model_class.objects.filter(video=video_to_encode)
         if len(previous_encoding_video) > 0:
             msg += "DELETE PREVIOUS{}".format(object_type)
@@ -107,18 +107,15 @@ class Encoding_video_model(Encoding_video):
 
     def remove_previous_encoding_video(self, video_to_encode):
         """Remove previously encoded video."""
-        return self.remove_previous_encoding_objects(
-            EncodingVideo, video_to_encode)
+        return self.remove_previous_encoding_objects(EncodingVideo, video_to_encode)
 
     def remove_previous_encoding_audio(self, video_to_encode):
         """Remove previously encoded audio."""
-        return self.remove_previous_encoding_objects(
-            EncodingAudio, video_to_encode)
+        return self.remove_previous_encoding_objects(EncodingAudio, video_to_encode)
 
     def remove_previous_encoding_playlist(self, video_to_encode):
         """Remove previously encoded playlist."""
-        return self.remove_previous_encoding_objects(
-            PlaylistVideo, video_to_encode)
+        return self.remove_previous_encoding_objects(PlaylistVideo, video_to_encode)
 
     def get_true_path(self, original):
         """Get the true path by replacing the MEDIA_ROOT from the original path."""

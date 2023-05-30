@@ -56,7 +56,7 @@ from .utils import (
     change_owner,
     get_available_videos,
     get_video_data,
-    get_id_from_request
+    get_id_from_request,
 )
 from .utils import sort_videos_list
 
