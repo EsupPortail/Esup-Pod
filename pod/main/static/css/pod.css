@@ -673,9 +673,11 @@ div.card a img {
 #filterCursus div.collapse:not(.show),
 #filterTag div.collapse:not(.show) {
   height: 148px !important;
-  overflow: hidden;
-
+  /* overflow: hidden; */
   display: -webkit-box;
+  display: flex;
+  flex-direction: column;
+  display: -ms-flexbox;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
