@@ -223,6 +223,14 @@ if (typeof loaded == "undefined") {
     }
   });
 
+  /**
+   * Creates a user list item elements
+   *
+   * @param {string} text The text content of the button.
+   * @param {User} elt The user object.
+   * @param {string} type The type of action ("Add" or "Remove").
+   * @returns {HTMLElement} The list item.
+   */
   function user_li(text, elt, type) {
     let cls =
     type.toLowerCase() === "add"
@@ -237,7 +245,7 @@ if (typeof loaded == "undefined") {
 
     const a  = document.createElement("a");
     a.href = "#";
-    a.type = "button";
+    a.role = "button";
     a.dataset.userid = elt.id;
     a.classList.add("btn", "btn-share");
     a.classList.add(...cls.split(" "))
