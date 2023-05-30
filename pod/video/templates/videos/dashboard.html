@@ -64,8 +64,8 @@
       </div>
       <div id="generatedFormContainer"></div>
 
-      <button id="ApplyBulkUpdateBtn" type="button" class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#modalConfirmBulkUpdate" disabled>
-        Appliquer <span id="countSelectedVideosBadge" class="badge">0 vidéos</span></button>
+      <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalConfirmBulkUpdate" disabled>
+        Appliquer <span id="countSelectedVideosBadge" class="badge bg-secondary">0 vidéos</span></button>
     </div>
   <div>
   {% if videos.paginator.count == 0 %}
@@ -74,7 +74,6 @@
   {% else %}
     <div class="row">
     <h2 id="video_count" class="col-12">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
-    <h2 id="video_selected" class="col-12">0 video selected</h2>
     <div class="col-12"></div>
       <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms col-4 mb-2">
         {% include "videos/video_sort_select.html" %}
@@ -83,7 +82,7 @@
 
     <div id="video_list_content">
     {% include 'loader.html' %}
-    {% include "videos/video_list.html" %}
+    {% include "videos/video_list_selectable.html" %}
     </div>
   {% endif %}
   </div>

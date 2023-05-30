@@ -658,6 +658,139 @@ div.card a img {
   width: 100%;
 }
 
+/* Dashboard */
+#mutliple_actions{
+    position: absolute;
+    top: 27px;
+    right:4em;
+}
+.infinite-container-selectable .infinite-item{
+    position: relative;
+}
+.infinite-item.selected{
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+}
+.infinite-item>.checked_overlay{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    position: absolute;
+    -o-transition: opacity .3s;
+    transition: opacity .3s;
+}
+.infinite-item .card_selected{
+    display: block;
+    width: 25%;
+    color: var(--primary);
+    transition: all .3s;
+}
+.infinite-item:not(.selected):hover,
+.infinite-item .checked_overlay:hover .card_selected,
+.infinite-item:not(.selected):hover,
+.infinite-item .checked_overlay:hover .card_selected{
+    -webkit-transform: scale(1.04);
+        -ms-transform: scale(1.04);
+            transform: scale(1.04);
+}
+.category_modal_videos_list .infinite-item.selected .checked_overlay,
+.infinite-item.selected .checked_overlay{
+    display: flex;
+    opacity: 1;
+}
+[data-theme="dark"]
+.infinite-item.selected .checked_overlay{
+    background-color: var(--dark-select-category-video-color) !important;
+}
+
+.infinite-item.selected .checked_overlay .card-selected i{
+    font-size:3rem;
+    color: var(--pod-link-color);
+}
+.infinite-container.infinite-container-selectable{
+    grid-template-columns: repeat(auto-fill,minmax(10rem,1fr));
+}
+
+.infinite-container.infinite-container-selectable .infinite-item{
+    cursor: pointer;
+}
+
+.infinite-container.infinite-container-selectable .infinite-item .video-card .card-header{
+    background-color: var(--pod-link-color);
+}
+
+.infinite-container.infinite-container-selectable .infinite-item .video-card .card-header .text-muted{
+    color: var(--light) !important;
+}
+
+#collapseActionsMultiples{
+    padding: 20px;
+    margin-left: calc(var(--bs-gutter-x) * .5);
+    margin-right: calc(var(--bs-gutter-x) * .5);
+    background: var(--pod-background-neutre2-bloc);
+    width: calc(100% - var(--bs-gutter-x))
+}
+
+#countVideosSelectedBadge{
+    background-color: var(--pod-link-color);
+    margin-left: 5px;
+}
+
+.infinite-item .checked_overlay {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: none;
+    position: absolute;
+    /*margin: .2em .4em;*/
+    background-color: rgba(255, 255, 255, .8);
+    outline: 2px solid var(--pod-link-color);
+    border-radius: var(--bs-border-radius-sm);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    z-index: 9;
+    cursor: pointer;
+    opacity: 0;
+    -webkit-transition: opacity .3s;
+    -o-transition: opacity .3s;
+    transition: opacity .3s;
+}
+/*
+.infinite-item .card_selected{
+    display: block;
+    width: 25%;
+    font-size: 2em;
+    color: var(--pod-primary);
+    transition: all .3s;
+}*/
+#multiple_actions_container{
+    position: relative;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 5px;
+    background: rgba(150,150,150,0.2);
+}
+
+#multiple_actions_instructions{
+    position: relative;
+    padding: 20px;
+    border-radius: 5px;
+    color: #055160;
+    background: #cff4fc;
+    border-color: #b6effb;
+}
+
+#applyMultipleActionsBtn{
+    width: auto;
+}
+
 /** video form **/
 
 /* as video filename can be very long,

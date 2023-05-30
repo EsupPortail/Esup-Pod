@@ -555,7 +555,7 @@ def videos_dashboard(request):
     if request.is_ajax():
         return render(
             request,
-            "videos/video_list.html",
+            "videos/video_list_selectable.html",
             {
                 "videos": videos,
                 "full_path": full_path,
