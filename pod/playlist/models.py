@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext as _
+from django.template.defaultfilters import slugify
 
 from pod.video.models import Video
 
@@ -51,10 +52,9 @@ class Playlist(models.Model):
             + " label containing only letters, numbers, underscore"
             + " or dash top."
         ),
-        editable=False
+        editable=False,
     )
     owner = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
-
     date_created = models.DateTimeField(
         verbose_name=_("Date created"), default=timezone.now, editable=False
     )
@@ -73,6 +73,7 @@ class Playlist(models.Model):
     def save(self) -> None:
         if self.visibility == "protected" and self.password == "" :
             raise ValueError("password cannot be empty when the visibility is 'protected'")
+        self.slug = "{0}-{1}".format(self.id, slugify(self.name))
 
     def __str__(self) -> str:
         """Display a playlist as string."""
