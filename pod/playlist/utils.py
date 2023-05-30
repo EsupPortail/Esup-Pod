@@ -125,4 +125,4 @@ def get_number_video_added_in_playlist(video: Video) -> int:
     Returns:
         int: The number of times a video has been added to a playlist
     """
-    return 0 #TODO
+    return PlaylistContent.objects.filter(video=video).count()
