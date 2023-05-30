@@ -273,15 +273,16 @@ class Wowza(PilotingInterface):
 
         return False
 
-    def split(self) -> bool:
-        logger.debug("Wowza - Split record")
+    def execute_action(self, action) -> bool:
+        """Execute a Wowza action."""
+        logger.debug("Wowza - %s" % action)
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)
         url_split_record = (
             self.url
             + "/instances/_definst_/streamrecorders/"
             + conf["livestream"]
-            + "/actions/splitRecording"
+            + "/actions/%s" % action
         )
         response = requests.put(
             url_split_record,
@@ -294,28 +295,16 @@ class Wowza(PilotingInterface):
 
         return False
 
+    def split(self) -> bool:
+        """Split the recording."""
+        return self.execute_action("splitRecording")
+
     def stop(self) -> bool:
-        logger.debug("Wowza - Stop_record")
-        json_conf = self.broadcaster.piloting_conf
-        conf = json.loads(json_conf)
-        url_stop_record = (
-            self.url
-            + "/instances/_definst_/streamrecorders/"
-            + conf["livestream"]
-            + "/actions/stopRecording"
-        )
-        response = requests.put(
-            url_stop_record,
-            headers={"Accept": "application/json", "Content-Type": "application/json"},
-        )
-
-        if response.status_code == http.HTTPStatus.OK:
-            if response.json().get("success"):
-                return True
-
-        return False
+        """Stop the recording."""
+        return self.execute_action("stopRecording")
 
     def get_info_current_record(self):
+        """Get information about the current recording."""
         logger.debug("Wowza - Get info from current record")
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)

@@ -223,87 +223,100 @@ if (typeof loaded == "undefined") {
     }
   });
 
+  /**
+   * Creates a user list item elements
+   *
+   * @param {string} text The text content of the button.
+   * @param {User} elt The user object.
+   * @param {string} type The type of action ("Add" or "Remove").
+   * @returns {HTMLElement} The list item.
+   */
   function user_li(text, elt, type) {
     let cls =
-      type.toLowerCase() === "add"
-        ? "btn-success btn-add"
-        : "btn-danger btn-remove";
-    return `<li class="list-group-item"><span class="username">${
-      elt.first_name
-    } ${elt.last_name} ${
-      !HIDE_USERNAME ? "(" + elt.username + ")" : ""
-    }</span><a href="#" type="button" data-userid="${
-      elt.id
-    }" class="btn btn-share ${cls}">${text}</a></li>`;
+    type.toLowerCase() === "add"
+      ? "btn-success btn-add"
+      : "btn-danger btn-remove";
+    const li = document.createElement("li");
+    li.classList.add("list-group-item");
+
+    const span = document.createElement("span");
+    span.classList.add("username");
+    span.textContent = `${elt.first_name} ${elt.last_name} ${!HIDE_USERNAME ? "(" + elt.username + ")" : ""}`;
+
+    const a  = document.createElement("a");
+    a.href = "#";
+    a.role = "button";
+    a.dataset.userid = elt.id;
+    a.classList.add("btn", "btn-share");
+    a.classList.add(...cls.split(" "))
+    a.textContent = text;
+
+    li.appendChild(span);
+    li.appendChild(a);
+    return li;
   }
 
   function reloadRemoveBtn() {
-    let remove = gettext("Remove");
-    document.getElementById("shared-people").innerHTML = "";
-    url =
-      "/podfile/ajax_calls/folder_shared_with?foldid=" +
-      document.getElementById("formuserid").value;
-    let token = document.querySelector(
-      'input[name="csrfmiddlewaretoken"]'
-    ).value;
+      let remove = gettext("Remove");
+      const sharedPeopleContainer = document.getElementById("shared-people");
+      sharedPeopleContainer.innerHTML = "";
+      const foldId = document.getElementById("formuserid").value;
+      const url = "/podfile/ajax_calls/folder_shared_with?foldid=" + foldId;
+      const token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
-    fetch(url, {
-      method: "GET",
-      headers: {
-        "X-CSRFToken": token,
-        "X-Requested-With": "XMLHttpRequest",
-        Authorization: "Bearer " + token,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.length > 0) {
-          data.forEach((elt) => {
-            document
-              .getElementById("shared-people")
-              .append(user_li(remove, elt, "remove"));
-          });
-        }
+      fetch(url, {
+        method: "GET",
+        headers: {
+          "X-CSRFToken": token,
+          "X-Requested-With": "XMLHttpRequest",
+          Authorization: "Bearer " + token,
+        },
       })
-      .catch((error) => {
-        showalert(gettext("Server error") + "<br>" + error, "alert-danger");
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.length > 0) {
+            data.forEach((elt) => {
+              const listItem = user_li(remove, elt, "remove");
+              sharedPeopleContainer.appendChild(listItem);
+            });
+          }
+        })
+        .catch((error) => {
+          showalert(gettext("Server error") + "<br>" + error, "alert-danger");
+        });
   }
 
   function reloadAddBtn(searchTerm) {
-    if (!document.getElementById("formuserid")) return;
-    let folderid = Number.parseInt(document.getElementById("formuserid").value);
-    let add = gettext("Add");
-    let url =
-      "/podfile/ajax_calls/search_share_user?term=" +
-      searchTerm +
-      "&foldid=" +
-      folderid;
-    let token = document.querySelector(
-      'input[name="csrfmiddlewaretoken"]'
-    ).value;
-    fetch(url, {
-      method: "GET",
-      headers: {
-        "X-CSRFToken": token,
-        "X-Requested-With": "XMLHttpRequest",
-        Authorization: "Bearer " + token,
-      },
-      cache: "no-cache",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        document.getElementById("user-search").innerHTML = "";
-        data.forEach((elt) => {
-          document
-            .getElementById("user-search")
-            .append(user_li(add, elt, "add"));
-        });
-        fadeIn(document.getElementById("user-search"));
+      const formUserId = document.getElementById("formuserid");
+      if (!formUserId) return;
+
+      const folderId = Number.parseInt(formUserId.value);
+      const add = gettext("Add");
+      const url = "/podfile/ajax_calls/search_share_user?term=" + searchTerm + "&foldid=" + folderId;
+      const token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+      fetch(url, {
+        method: "GET",
+        headers: {
+          "X-CSRFToken": token,
+          "X-Requested-With": "XMLHttpRequest",
+          Authorization: "Bearer " + token,
+        },
+        cache: "no-cache",
       })
-      .catch((error) => {
-        showalert(gettext("Server error") + "<br>" + error, "alert-danger");
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          const userSearchContainer = document.getElementById("user-search");
+          userSearchContainer.innerHTML = "";
+          data.forEach((elt) => {
+            const listItem = user_li(add, elt, "add");
+            userSearchContainer.appendChild(listItem);
+          });
+          fadeIn(userSearchContainer);
+        })
+        .catch((error) => {
+          showalert(gettext("Server error") + "<br>" + error, "alert-danger");
+        });
   }
 
   //$(document).on('click', '#currentfoldershare', function(e){
@@ -342,16 +355,16 @@ if (typeof loaded == "undefined") {
         "X-CSRFToken": token,
         Authorization: "Bearer " + token,
         "X-Requested-With": "XMLHttpRequest",
+        "Content-Type": "application/json",
       },
       cache: "no-cache",
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status == "ok") {
+      .then((response) => {
+        if (response.status == 201) {
           reloadRemoveBtn();
         } else {
           showalert(
-            gettext("Server error") + "<br>" + data.message,
+            gettext("Server error") + "<br>" + response.statusText,
             "alert-danger"
           );
         }
@@ -378,17 +391,17 @@ if (typeof loaded == "undefined") {
         "X-CSRFToken": token,
         Authorization: "Bearer " + token,
         "X-Requested-With": "XMLHttpRequest",
+        "Content-Type": "application/json",
       },
       cache: "no-cache",
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status == "ok") {
+      .then((response) => {
+        if (response.status == 201) {
           reloadAddBtn(document.getElementById("userInputName").value);
           reloadRemoveBtn();
         } else {
           showalert(
-            gettext("Server error") + "<br>" + data.message,
+            gettext("Server error") + "<br>" + response.statusText,
             "alert-danger"
           );
         }
@@ -706,7 +719,6 @@ if (typeof loaded == "undefined") {
 
 
   function getFolders(search = "") {
-    //console.log("getFolders");
     document.getElementById("list_folders_sub").innerHTML = "";
     let type = document.getElementById("list_folders_sub").dataset.type;
     let currentFolder = getCurrentSessionFolder();
@@ -842,7 +854,6 @@ if (typeof loaded == "undefined") {
   function showfiles(e) {
     let cible = e.target
     if (e.target.nodeName.toLowerCase() !== "a" ) {
-      //console.log(e.target.textContent)
       cible = e.target.parentNode
     }
     document
