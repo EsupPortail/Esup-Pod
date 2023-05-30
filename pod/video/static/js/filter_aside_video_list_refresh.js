@@ -184,7 +184,7 @@ function createUserCheckBox(user) {
   if (user.first_name !== "" && user.last_name !== "") {
     label.innerHTML = user.first_name + " " + user.last_name + " ";
   }
-    label.innerHTML += "(" + user.username + ")";
+  label.innerHTML += "(" + user.username + ")";
   div.appendChild(checkbox);
   div.appendChild(label);
   return div;
