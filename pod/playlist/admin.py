@@ -3,6 +3,7 @@ from django.contrib import admin
 
 from .models import Playlist, PlaylistContent
 
+
 @admin.register(Playlist)
 class PlaylistAdmin(admin.ModelAdmin):
     """Playlist admin page."""
@@ -25,6 +26,7 @@ class PlaylistAdmin(admin.ModelAdmin):
         "autoplay",
         "owner",
     )
+
 
 @admin.register(PlaylistContent)
 class PlaylistContentAdmin(admin.ModelAdmin):
