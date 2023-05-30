@@ -441,7 +441,7 @@ class PopulatedShibTestCase(TestCase):
         print(" --->  SetUp of PopulatedShibTestCase: OK!")
 
     def _authenticate_shib_user(self, u):
-        """Simulate shibboleth header"""
+        """Simulate shibboleth header."""
         fake_shib_header = {
             "REMOTE_USER": u["username"],
             self.hmap["username"]: u["username"],
@@ -455,13 +455,13 @@ class PopulatedShibTestCase(TestCase):
             fake_shib_header[self.hmap["affiliation"]] = u["affiliations"].split(";")[0]
             fake_shib_header[self.hmap["affiliations"]] = u["affiliations"]
 
-        """ Get valid shib_meta from simulated shibboleth header """
+        """Get valid shib_meta from simulated shibboleth header """
         request = RequestFactory().get("/", REMOTE_USER=u["username"])
         request.META.update(**fake_shib_header)
         shib_meta, error = shibmiddleware.ShibbMiddleware.parse_attributes(request)
         self.assertFalse(error, "Generating shibboleth attribute mapping contains errors")
 
-        """ Check user authentication """
+        """Check user authentication """
         user = ShibbBackend.authenticate(
             ShibbBackend(),
             request=request,
@@ -489,7 +489,7 @@ class PopulatedShibTestCase(TestCase):
         self.assertEqual(user.first_name, "John")
         self.assertEqual(user.last_name, "Do")
 
-        """ Test if user can be staff if SHIBBOLETH_STAFF_ALLOWED_DOMAINS is None """
+        """Test if user can be staff if SHIBBOLETH_STAFF_ALLOWED_DOMAINS is None """
         settings.SHIBBOLETH_STAFF_ALLOWED_DOMAINS = None
         reload(shibmiddleware)
         shibmiddleware.ShibbMiddleware.make_profile(
@@ -500,7 +500,7 @@ class PopulatedShibTestCase(TestCase):
         owner = Owner.objects.get(user__username="jdo@univ.fr")
         self.assertEqual(owner.affiliation, "teacher")
 
-        """ Test if user can be staff when SHIBBOLETH_STAFF_ALLOWED_DOMAINS
+        """Test if user can be staff when SHIBBOLETH_STAFF_ALLOWED_DOMAINS
         is restricted """
         settings.SHIBBOLETH_STAFF_ALLOWED_DOMAINS = (
             "univ-a.fr",
@@ -514,7 +514,7 @@ class PopulatedShibTestCase(TestCase):
         )
         self.assertFalse(user.is_staff)
 
-        """ Test if user become staff when SHIBBOLETH_STAFF_ALLOWED_DOMAINS
+        """Test if user become staff when SHIBBOLETH_STAFF_ALLOWED_DOMAINS
         is restrict and contains his domain """
         settings.SHIBBOLETH_STAFF_ALLOWED_DOMAINS = ("univ.fr",)
         reload(shibmiddleware)
@@ -523,7 +523,7 @@ class PopulatedShibTestCase(TestCase):
         )
         self.assertTrue(user.is_staff)
 
-        """ Test if same user with new unstaffable affiliation keep his staff status """
+        """Test if same user with new unstaffable affiliation keep his staff status """
         for a in UNSTAFFABLE_AFFILIATIONS:
             self.assertFalse(a in AFFILIATION_STAFF)
         user, shib_meta = self._authenticate_shib_user(
@@ -540,12 +540,12 @@ class PopulatedShibTestCase(TestCase):
         )
         self.assertTrue(user.is_staff)  # Staff status is not remove
 
-        """ Test if the main affiliation of this same user
+        """Test if the main affiliation of this same user
         with new unstaffable affiliation has changed """
         owner = Owner.objects.get(user__username="jdo@univ.fr")
         self.assertEqual(owner.affiliation, "member")
 
-        """ Test if a new user with same unstaffable affiliations has no staff status"""
+        """Test if a new user with same unstaffable affiliations has no staff status"""
         user, shib_meta = self._authenticate_shib_user(
             {
                 "username": "ada@univ.fr",

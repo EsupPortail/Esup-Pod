@@ -1,3 +1,7 @@
+"""Esup-Pod favorite views tests.
+
+*  run with 'python manage.py test pod.favorite.tests.test_views'
+"""
 from django.test import override_settings, TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -11,6 +15,8 @@ import importlib
 
 
 class TestShowStarTestCase(TestCase):
+    """Favorite star icon test case."""
+
     fixtures = ["initial_data.json"]
 
     def setUp(self) -> None:
@@ -37,7 +43,7 @@ class TestShowStarTestCase(TestCase):
 
     @override_settings(USE_FAVORITES=True)
     def test_show_star_unfill(self) -> None:
-        """Test if the star is unfill when the video isn't favorite"""
+        """Test if the star is unfill when the video isn't favorite."""
         importlib.reload(context_processors)
         self.client.force_login(self.user_without_favorite)
         response = self.client.get(self.url)
@@ -55,7 +61,7 @@ class TestShowStarTestCase(TestCase):
 
     @override_settings(USE_FAVORITES=True)
     def test_show_star_fill(self) -> None:
-        """Test if the star is fill when the video is favorite"""
+        """Test if the star is filled when the video is favorite."""
         importlib.reload(context_processors)
         self.client.force_login(self.user_with_favorite)
         response = self.client.get(self.url)
@@ -72,8 +78,8 @@ class TestShowStarTestCase(TestCase):
         print(" --->  test_show_star_fill ok")
 
     @override_settings(USE_FAVORITES=True)
-    def test_show_star_hidden(self) -> None:
-        """Test if the star is hidden when the user is disconnected"""
+    def test_favorite_star_hidden(self) -> None:
+        """Test if the favorite star is hidden when the user is disconnected."""
         importlib.reload(context_processors)
         response = self.client.get(self.url)
         self.assertEqual(
@@ -82,13 +88,13 @@ class TestShowStarTestCase(TestCase):
             "Test if status code equal 200 when the user is disconnected",
         )
         self.assertFalse(
-            'id="star_btn"' in response.content.decode(),
-            "Test if the star is hidden when the user is disconnected",
+            'class="btn btn-lg btn-link p-1 star_btn"' in response.content.decode(),
+            "Test if the star does not appear when the user is disconnected",
         )
-        print(" --->  test_show_star_hidden ok")
+        print(" --->  test_favorite_star_hidden ok")
 
     def test_show_star_404_error(self) -> None:
-        """Test if we can't navigate in the `favorite/` route with GET method"""
+        """Test if we can't navigate in the `favorite/` route with GET method."""
         importlib.reload(context_processors)
         response = self.client.get(reverse("favorite:add-or-remove"))
         self.assertEqual(
@@ -103,7 +109,7 @@ class TestShowStarTestCase(TestCase):
 
     @override_settings(USE_FAVORITES=False)
     def test_show_star_when_use_favorites_equal_false(self) -> None:
-        """Test if the star isn't present when USE_FAVORITES equal False"""
+        """Test if the star isn't present when USE_FAVORITES equal False."""
         importlib.reload(context_processors)
         self.client.force_login(self.user_without_favorite)
         response = self.client.get(self.url)
@@ -121,6 +127,8 @@ class TestShowStarTestCase(TestCase):
 
 
 class TestFavoriteVideoListTestCase(TestCase):
+    """Favorite video list test case."""
+
     fixtures = ["initial_data.json"]
 
     def setUp(self) -> None:
@@ -147,7 +155,7 @@ class TestFavoriteVideoListTestCase(TestCase):
 
     @override_settings(USE_FAVORITES=True)
     def test_favorite_video_list_not_empty(self) -> None:
-        """Test if the favorite video list isn't empty when the user has favorites"""
+        """Test if the favorite video list isn't empty when the user has favorites."""
         importlib.reload(context_processors)
         self.client.force_login(self.user_with_favorite)
         response = self.client.get(self.url)
@@ -165,7 +173,7 @@ class TestFavoriteVideoListTestCase(TestCase):
 
     @override_settings(USE_FAVORITES=True)
     def test_favorite_video_list_empty(self) -> None:
-        """Test if the favorite video list is empty when the user has favorites"""
+        """Test if the favorite video list is empty when the user has favorites."""
         importlib.reload(context_processors)
         self.client.force_login(self.user_without_favorite)
         response = self.client.get(self.url)
@@ -183,7 +191,7 @@ class TestFavoriteVideoListTestCase(TestCase):
 
     @override_settings(USE_FAVORITES=True)
     def test_favorite_video_list_link_in_navbar(self) -> None:
-        """Test if the favorite video list link is present in the navbar"""
+        """Test if the favorite video list link is present in the navbar."""
         importlib.reload(context_processors)
         self.client.force_login(self.user_with_favorite)
         response = self.client.get("/")
@@ -201,7 +209,7 @@ class TestFavoriteVideoListTestCase(TestCase):
 
     @override_settings(USE_FAVORITES=False)
     def test_favorite_video_list_link_in_navbar_when_use_favorites_is_false(self) -> None:
-        """Test if the favorite video list link is present in the navbar"""
+        """Test if the favorite video list link is present in the navbar."""
         importlib.reload(context_processors)
         self.client.force_login(self.user_with_favorite)
         response = self.client.get("/")
@@ -227,6 +235,8 @@ class TestFavoriteVideoListTestCase(TestCase):
 
 
 class TestShowStarInfoTestCase(TestCase):
+    """Favorite star info test case."""
+
     fixtures = ["initial_data.json"]
 
     def setUp(self) -> None:

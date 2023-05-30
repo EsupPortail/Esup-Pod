@@ -4,11 +4,11 @@
 {% load thumbnail %}
 
 {% block more_style %}
-  <link href="{% static 'css/meeting.css' %}?ver={{ VERSION }}" rel="stylesheet"/>
+  <link href="{% static 'css/meeting.css' %}?ver={{ VERSION }}" rel="stylesheet">
 {% endblock more_style %}
 
 
-{% block breadcrumbs %}{{ block.super }} 
+{% block breadcrumbs %}{{ block.super }}
   <li class="breadcrumb-item"><a href="{% url 'meeting:my_meetings' %}">{% trans "My meetings" %}</a></li>
   <li class="breadcrumb-item active" aria-current="page">{% trans "Meeting recordings" %}</li>
 {% endblock %}
@@ -62,10 +62,10 @@
                 {% if record.canUpload %}
                   {% trans "Please confirm you want to upload the recording To Pod" as confirmUpload %}
                   <form method="post" action="{% url "meeting:upload_recording_to_pod" meeting_id=meeting.meeting_id recording_id=record.recordID %}" onsubmit="return confirmUploadToPod('{{ confirmUpload|escapejs }}');" style="display: inline;">
-                    <input type="hidden" name="recording_name" value="{{ record.name }}" />
-                    <input type="hidden" name="start_timestamp" value="{{ record.startTime }}" />
-                    <input type="hidden" name="end_timestamp" value="{{ record.endTime }}" />
-                    <input type="hidden" name="source_url" value="{{ record.sourceURL }}" />
+                    <input type="hidden" name="recording_name" value="{{ record.name }}">
+                    <input type="hidden" name="start_timestamp" value="{{ record.startTime }}">
+                    <input type="hidden" name="end_timestamp" value="{{ record.endTime }}">
+                    <input type="hidden" name="source_url" value="{{ record.sourceURL }}">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-secondary pod-btn-secondary btn-sm" title="{% trans 'Upload to Pod as a video'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-upload pod-add"></i></button>
                   </form>

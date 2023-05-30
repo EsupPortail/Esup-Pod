@@ -1,5 +1,7 @@
+"""Esup-Pod Video App."""
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate
+from django.utils.translation import gettext_lazy as _
 
 
 def apply_default_site(obj, site):
@@ -38,6 +40,7 @@ def set_default_site(sender, **kwargs):
 class VideoConfig(AppConfig):
     name = "pod.video"
     default_auto_field = "django.db.models.BigAutoField"
+    verbose_name = _("Videos")
 
     def ready(self):
         post_migrate.connect(set_default_site, sender=self)
