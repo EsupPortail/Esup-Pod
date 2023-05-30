@@ -73,7 +73,7 @@ class FavoriteTestUtils(TestCase):
 
     def test_user_remove_video_from_playlist(self) -> None:
         """Test if test_user_remove_video_from_playlist works correctly"""
-
+        user_add_video_in_playlist(self.playlist, self.video)
         status_msg = user_remove_video_from_playlist(self.playlist, self.video)
         video_in_playlist = PlaylistContent.objects.filter(
             playlist=self.playlist,
@@ -141,12 +141,12 @@ class FavoriteTestUtils(TestCase):
     def test_get_number_video_in_playlist(self) -> None:
         """Test if test_get_number_video_in_playlist works correctly"""
         self.assertEqual(
-            1,
+            0,
             get_number_video_in_playlist(self.playlist)
         )
-        user_remove_video_from_playlist(self.playlist, self.video)
+        user_add_video_in_playlist(self.playlist, self.video)
         self.assertEqual(
-            0,
+            1,
             get_number_video_in_playlist(self.playlist)
         )
         print(" --->  test_get_number_video_in_playlist ok")
@@ -154,7 +154,7 @@ class FavoriteTestUtils(TestCase):
     def test_get_number_video_added_in_playlist(self) -> None:
         """Test if test_get_number_video_in_playlist works correctly"""
         self.assertEqual(
-            1,
+            0,
             get_number_video_added_in_playlist(self.video)
         )
         playlist2 = Playlist.objects.create(
@@ -171,6 +171,7 @@ class FavoriteTestUtils(TestCase):
             autoplay=True,
             owner=self.user
         )
+        user_add_video_in_playlist(self.playlist, self.video)
         user_add_video_in_playlist(playlist2, self.video)
         user_add_video_in_playlist(playlist3, self.video)
         self.assertEqual(
