@@ -1,3 +1,4 @@
+from typing import Iterable, Optional
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
@@ -24,9 +25,15 @@ class Playlist(models.Model):
         default="",
         help_text=_("Please choose a description. This description is empty by default.")
     )
-    password = models.TextField(verbose_name=_("Password"))
+    password = models.TextField(
+        verbose_name=_("Password"),
+        blank=True,
+        default="",
+        help_text=_("Please choose a password if this playlist is protected."),
+    )
     visibility = models.CharField(
         verbose_name=_("Visibility"),
+        max_length=9,
         choices=VISIBILITY_CHOICES,
         help_text=_("Please chosse an visibility among 'public', 'protected', 'private'.")
     )
@@ -62,6 +69,10 @@ class Playlist(models.Model):
         get_latest_by = "date_updated"
         verbose_name = _("Playlist")
         verbose_name_plural = _("Playlists")
+
+    def save(self) -> None:
+        if self.visibility == "protected" and self.password == "" :
+            raise ValueError("password cannot be empty when the visibility is 'protected'")
 
     def __str__(self) -> str:
         """Display a playlist as string."""
