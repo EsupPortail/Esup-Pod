@@ -633,7 +633,7 @@ class VideoForm(forms.ModelForm):
             )
         return self.cleaned_data["date_delete"]
 
-    def clean(self): # NOQA
+    def clean(self): # noqa: C901
         cleaned_data = super(VideoForm, self).clean()
 
         users_groups = self.current_user.owner.accessgroup_set.all()
