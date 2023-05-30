@@ -51,6 +51,7 @@ from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
 from .utils import pagination_data, get_headband, change_owner, get_available_videos
+from .utils import sort_videos_list
 
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.exceptions import ObjectDoesNotExist
@@ -477,7 +478,7 @@ def theme_edit_save(request, channel):
 
 @login_required(redirect_field_name="referrer")
 def my_videos(request):
-    """Render the logged user's videos list"""
+    """Render the logged user's videos list."""
     data_context = {}
     site = get_current_site(request)
     # Videos list which user is the owner + which user is an additional owner
@@ -530,7 +531,13 @@ def my_videos(request):
         data_context["videos_without_cat"] = videos_without_cat
 
     videos_list = get_filtered_videos_list(request, videos_list)
-    videos_list = sort_videos_list(request, videos_list)
+    sort_field = request.GET.get("sort")
+    sort_direction = request.GET.get("sort_direction")
+    videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
+
+    if not sort_field:
+        # Get the default Video ordering
+        sort_field = Video._meta.ordering[0].lstrip("-")
     count_videos = len(videos_list)
 
     paginator = Paginator(videos_list, 12)
@@ -554,6 +561,8 @@ def my_videos(request):
     data_context["cursus_list"] = CURSUS_CODES
     data_context["use_category"] = USER_VIDEO_CATEGORY
     data_context["page_title"] = _("My videos")
+    data_context["sort_field"] = sort_field
+    data_context["sort_direction"] = sort_direction
 
     return render(request, "videos/my_videos.html", data_context)
 
@@ -565,7 +574,7 @@ def get_videos_list():
 
 
 def get_paginated_videos(paginator, page):
-    """Return paginated videos in paginator object"""
+    """Return paginated videos in paginator object."""
     try:
         return paginator.page(page)
     except PageNotAnInteger:
@@ -574,23 +583,8 @@ def get_paginated_videos(paginator, page):
         return paginator.page(paginator.num_pages)
 
 
-def sort_videos_list(request, videos_list):
-    """Return sorted videos list by specific column name and
-    ascending or descending direction (boolean)"""
-    if request.GET.get("sort"):
-        sort = request.GET.get("sort")
-    else:
-        sort = "date_added"
-    if not request.GET.get("sort_direction"):
-        sort = "-" + sort
-
-    videos_list = videos_list.order_by(sort)
-
-    return videos_list.distinct()
-
-
 def get_filtered_videos_list(request, videos_list):
-    """Return filtered videos list by get parameters"""
+    """Return filtered videos list by get parameters."""
     if request.GET.getlist("type"):
         videos_list = videos_list.filter(type__slug__in=request.GET.getlist("type"))
     if request.GET.getlist("discipline"):
@@ -627,8 +621,14 @@ def videos(request):
     """Render the main list of videos."""
     videos_list = get_videos_list()
     videos_list = get_filtered_videos_list(request, videos_list)
-    videos_list = sort_videos_list(request, videos_list)
+    sort_field = request.GET.get("sort")
+    sort_direction = request.GET.get("sort_direction")
 
+    videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
+
+    if not sort_field:
+        # Get the default Video ordering
+        sort_field = Video._meta.ordering[0].lstrip("-")
     count_videos = len(videos_list)
 
     page = request.GET.get("page", 1)
@@ -665,6 +665,8 @@ def videos(request):
             "full_path": full_path,
             "ownersInstances": ownersInstances,
             "cursus_list": CURSUS_CODES,
+            "sort_field": sort_field,
+            "sort_direction": request.GET.get("sort_direction"),
         },
     )
 
@@ -1034,7 +1036,7 @@ def save_video_form(request, form):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_delete(request, slug=None):
-    """View to delete video. Show form to approve deletion and do it if sent"""
+    """View to delete video. Show form to approve deletion and do it if sent."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
 
     if request.user != video.owner and not (

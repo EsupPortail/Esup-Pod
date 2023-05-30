@@ -12,12 +12,13 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((data) => {
           const parser = new DOMParser();
           const html = parser.parseFromString(data, "text/html");
-          const updatedButton = html.querySelector("#star_btn");
-          const button = document.querySelector("#star_btn");
+          const updatedButton = html.querySelector(".star_btn");
+          const button = document.querySelector(".star_btn");
           button.replaceWith(updatedButton);
         })
         .catch((error) => {
-          alert(gettext("The addition couldn't be completed..."));
+          console.log(error);
+          alert(gettext("The favorite couldn’t be completed…"));
         });
     });
   }

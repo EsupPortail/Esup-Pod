@@ -292,7 +292,7 @@ def join_as_moderator(request, meeting):
         args = ve.args[0]
         msg = ""
         for key in args:
-            msg += "<b>%s:</b> %s<br/>" % (key, args[key])
+            msg += "<b>%s:</b> %s<br>" % (key, args[key])
         messages.add_message(request, messages.ERROR, mark_safe(msg))
         return render(
             request,
@@ -435,7 +435,7 @@ def end(request, meeting_id):
         args = ve.args[0]
         msg = ""
         for key in args:
-            msg += "<b>%s:</b> %s<br/>" % (key, args[key])
+            msg += "<b>%s:</b> %s<br>" % (key, args[key])
         msg = mark_safe(msg)
     if request.is_ajax():
         return JsonResponse({"end": meeting.end(), "msg": msg}, safe=False)
@@ -469,7 +469,7 @@ def get_meeting_info(request, meeting_id):
         args = ve.args[0]
         msg = ""
         for key in args:
-            msg += "<b>%s:</b> %s<br/>" % (key, args[key])
+            msg += "<b>%s:</b> %s<br>" % (key, args[key])
         msg = mark_safe(msg)
     if request.is_ajax():
         return JsonResponse({"info": info, "msg": msg}, safe=False)
@@ -581,7 +581,7 @@ def delete_recording(request, meeting_id, recording_id):
             args = ve.args[0]
             msg = ""
             for key in args:
-                msg += "<b>%s:</b> %s<br/>" % (key, args[key])
+                msg += "<b>%s:</b> %s<br>" % (key, args[key])
             msg = mark_safe(msg)
         if delete and msg == "":
             messages.add_message(
@@ -872,7 +872,7 @@ def upload_recording_to_pod(request, meeting_id, recording_id):
             args = ve.args[0]
             msg = ""
             for key in args:
-                msg += "<b>%s:</b> %s<br/>" % (key, args[key])
+                msg += "<b>%s:</b> %s<br>" % (key, args[key])
             msg = mark_safe(msg)
         if upload and msg == "":
             messages.add_message(

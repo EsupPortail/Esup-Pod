@@ -10,12 +10,12 @@
         {% if form_theme.instance.title %}{% trans "Editing the theme" %} {{form_theme.instance.title}}{% else %}{% trans "Add a new theme" %}{% endif %}
       </legend>
       {% if form_theme.errors or form_theme.non_field_errors %}
-        <div class="alert alert-danger">{% trans 'One or more errors have been found in the form:' %}<br />
+        <div class="alert alert-danger">{% trans 'One or more errors have been found in the form:' %}<br>
           {% for error in form_theme.non_field_errors %}
-            - {{error}}<br />
+            - {{error}}<br>
           {% endfor %}
           {% for field in form %}
-            - {{ field.errors }}<br />
+            - {{ field.errors }}<br>
           {% endfor %}
         </div>
       {% endif %}
@@ -51,13 +51,13 @@
         {% endspaceless %}
       {% endfor %}
       {% if form_theme.instance %}
-        <input type="hidden" id="id_theme" name="theme_id" value="{{form_theme.instance.id}}"/>
+        <input type="hidden" id="id_theme" name="theme_id" value="{{form_theme.instance.id}}">
       {% endif %}
     </fieldset>
-    <input type="hidden" name="action" value="save"/>
+    <input type="hidden" name="action" value="save">
     <div class="mt-2">
-      <input type="submit" id="save_theme" value="{% trans 'Save' %}" class="btn btn-primary"/>
-      <input type="reset" action="cancel" id="cancel_theme" value="{% trans 'Cancel' %}" class="btn btn-secondary" />
+      <input type="submit" id="save_theme" value="{% trans 'Save' %}" class="btn btn-primary">
+      <input type="reset" action="cancel" id="cancel_theme" value="{% trans 'Cancel' %}" class="btn btn-secondary">
     </div>
   </div>
 </form>

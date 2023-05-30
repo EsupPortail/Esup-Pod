@@ -40,27 +40,27 @@
         {# Button to edit the comment in three dots menu #}
         <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="edit_video_notes_com_form" role="menuitem">
           {% csrf_token %}
-          <input type="hidden" name="idNote" value="{{ note.id }}"/>
-          <input type="hidden" name="idCom" value="{{ com.id }}"/>
-          <input type="hidden" name="action" value="form_com_edit"/>
+          <input type="hidden" name="idNote" value="{{ note.id }}">
+          <input type="hidden" name="idCom" value="{{ com.id }}">
+          <input type="hidden" name="action" value="form_com_edit">
           <button class="btn btn-outline-primary dropdown-item" type="submit" action="edit" title="{% trans 'Edit the comment' %}"> <i class="bi bi-pencil"></i></button>
         </form>
 
         {# Button to comment the comment in three dots menu #}
         <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="comment_video_notes_form" role="menuitem">
           {% csrf_token %}
-          <input type="hidden" name="idNote" value="{{ note.id }}"/>
-          <input type="hidden" name="idCom" value="{{ com.id }}"/>
-          <input type="hidden" name="action" value="form_com_new"/>
+          <input type="hidden" name="idNote" value="{{ note.id }}">
+          <input type="hidden" name="idCom" value="{{ com.id }}">
+          <input type="hidden" name="action" value="form_com_new">
           <button class="btn btn-outline-primary dropdown-item" type="submit" title="{% trans 'Comment the note' %}"> <i class="bi bi-chat"></i></button>
         </form>
 
         {# Button to remove the comment in three dots menu #}
         <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="remove_video_notes_com_form" role="menuitem">
           {% csrf_token %}
-          <input type="hidden" name="idNote" value="{{ note.id }}"/>
-          <input type="hidden" name="idCom" value="{{ com.id }}"/>
-          <input type="hidden" name="action" value="remove_com"/>
+          <input type="hidden" name="idNote" value="{{ note.id }}">
+          <input type="hidden" name="idCom" value="{{ com.id }}">
+          <input type="hidden" name="action" value="remove_com">
           <button class="btn btn-outline-danger dropdown-item" type="submit" action="remove" title="{% trans 'Remove the comment' %}"> <i class="bi bi-trash"></i></button>
         </form>
       </div>
@@ -71,9 +71,9 @@
   {% if comToDisplay and com in comToDisplay and com != comToEdit %}
     <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_note_coms_form">
       {% csrf_token %}
-      <input type="hidden" name="idNote" value="{{ note.id }}"/>
-      <input type="hidden" name="idCom" value="{{ com.parentCom.id }}"/>
-      <input type="hidden" name="action" value="get"/>
+      <input type="hidden" name="idNote" value="{{ note.id }}">
+      <input type="hidden" name="idCom" value="{{ com.parentCom.id }}">
+      <input type="hidden" name="action" value="get">
       <div class="pod-comment-content pod-callout pod-callout-info m-0 py-1">{{ com.comment }}</div>
     </form>
 
@@ -81,9 +81,9 @@
   {% elif note_form and comToEdit and com == comToEdit %}
     <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_note_coms_form d-none">
       {% csrf_token %}
-      <input type="hidden" name="idNote" value="{{ note.id }}"/>
-      <input type="hidden" name="idCom" value="{{ com.id }}"/>
-      <input type="hidden" name="action" value="get"/>
+      <input type="hidden" name="idNote" value="{{ note.id }}">
+      <input type="hidden" name="idCom" value="{{ com.id }}">
+      <input type="hidden" name="action" value="get">
     </form>
     <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" id="video_notes_form">
       {% csrf_token %}
@@ -100,9 +100,9 @@
         </div>
         {% endspaceless %}
       {% endfor %}
-      <input type="hidden" name="idNote" value="{{ note.id }}"/>
-      <input type="hidden" name="idCom" value="{{ com.id }}"/>
-      <input type="hidden" name="action" value="save_com_edit"/>
+      <input type="hidden" name="idNote" value="{{ note.id }}">
+      <input type="hidden" name="idCom" value="{{ com.id }}">
+      <input type="hidden" name="action" value="save_com_edit">
 
       <div class="mt-3">
         <input type="submit" name="submit" value="{% trans 'Save' %}" class="btn btn-sm btn-primary">
@@ -114,9 +114,9 @@
   {% else %}
     <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_note_coms_form">
       {% csrf_token %}
-      <input type="hidden" name="idCom" value="{{ com.id }}"/>
-      <input type="hidden" name="idNote" value="{{ note.id }}"/>
-      <input type="hidden" name="action" value="get"/>
+      <input type="hidden" name="idCom" value="{{ com.id }}">
+      <input type="hidden" name="idNote" value="{{ note.id }}">
+      <input type="hidden" name="action" value="get">
 
       <div class="pod-comment-content pod-note-truncated m-0 py-1">{{ com.comment }}</div>
     </form>
@@ -142,9 +142,9 @@
 {% if note_form and noteToDisplay and com == comToDisplay.0 and not noteToEdit and not comToEdit %}
   <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_note_coms_form d-none">
     {% csrf_token %}
-    <input type="hidden" name="action" value="get"/>
-    <input type="hidden" name="idNote" value="{{ note.id }}"/>
-    <input type="hidden" name="idCom" value="{{ com.id }}"/>
+    <input type="hidden" name="action" value="get">
+    <input type="hidden" name="idNote" value="{{ note.id }}">
+    <input type="hidden" name="idCom" value="{{ com.id }}">
   </form>
   <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" id="video_notes_form" class="m-2">
   {% csrf_token %}
@@ -161,9 +161,9 @@
       </div>
       {% endspaceless %}
     {% endfor %}
-    <input type="hidden" name="idCom" value="{{ com.id }}"/>
-    <input type="hidden" name="idNote" value="{{ note.id }}"/>
-    <input type="hidden" name="action" value="save_com_new"/>
+    <input type="hidden" name="idCom" value="{{ com.id }}">
+    <input type="hidden" name="idNote" value="{{ note.id }}">
+    <input type="hidden" name="action" value="save_com_new">
     <div class="mt-3">
       <input type="submit" name="submit" value="{% trans 'Save' %}" class="btn btn-sm btn-primary">
       <input type="button" name="cancel" id="cancel_save_com" value="{% trans 'Cancel' %}" class="btn btn-sm btn-secondary">

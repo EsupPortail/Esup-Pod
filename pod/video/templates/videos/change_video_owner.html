@@ -2,11 +2,11 @@
 
 {% block opengraph %}
  {{block.super }}
-  <link rel="stylesheet" href="{% static 'css/change_video_owner.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/change_video_owner.css' %}">
   <link
     rel="stylesheet"
     href="{% static 'css/paginator.css' %}?ver={{VERSION}}"
-  />
+ >
 {% endblock opengraph %}
 
 {% block page_title %}
@@ -33,7 +33,7 @@
             class="form-control"
             placeholder="{% trans 'FirstName/LastName' %}"
             required
-          />
+         >
           <div class="oldlogin suggestions"></div>
         </div>
 
@@ -47,7 +47,7 @@
             class="form-control"
             placeholder="{% trans 'FirstName/LastName' %}"
             required
-          />
+         >
           <div class="newlogin suggestions"></div>
         </div>
 
@@ -59,7 +59,7 @@
             type="text"
             id="list_videos__search"
             class="form-control"
-          />
+         >
           <div class="filter suggestions semi-width"></div>
         </div>
 
@@ -78,7 +78,7 @@
                 type="checkbox"
                 id="select_all"
                 class="select_all form-check-input"
-              />
+             >
             </div>
         </div>
         <div class="form-wrapper__control select-videos form-control"></div>

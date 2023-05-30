@@ -1,6 +1,8 @@
 from django.apps import AppConfig
+from django.utils.translation import gettext_lazy as _
 
 
 class PlaylistConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'pod.playlist'
+    name = "pod.playlist"
+    default_auto_field = "django.db.models.BigAutoField"
+    verbose_name = _("Playlists")
