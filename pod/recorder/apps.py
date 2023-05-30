@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate
+from django.utils.translation import gettext_lazy as _
 
 
 def set_default_site(sender, **kwargs):
@@ -15,6 +16,7 @@ def set_default_site(sender, **kwargs):
 class RecorderConfig(AppConfig):
     name = "pod.recorder"
     default_auto_field = "django.db.models.BigAutoField"
+    verbose_name = _("Recorders")
 
     def ready(self):
         post_migrate.connect(set_default_site, sender=self)

@@ -1444,7 +1444,7 @@ class LiveViewsTestCase(TestCase):
                     "currentFile": "file_10.mp3",
                     "segmentNumber": "23",
                     "outputPath": "aa",
-                    "segmentDuration": "60",
+                    "segmentDuration": "60000",
                 },
             )
 
@@ -1452,7 +1452,7 @@ class LiveViewsTestCase(TestCase):
             "currentFile": "",
             "segmentNumber": "",
             "outputPath": "",
-            "segmentDuration": "",
+            "durationInSeconds": "",
         }
         response = get_info_current_record(broadcaster)
         self.assertEqual(response, expected_on_error)
@@ -1471,7 +1471,7 @@ class LiveViewsTestCase(TestCase):
                 "currentFile": "file_10.mp3",
                 "segmentNumber": "10",
                 "outputPath": "aa",
-                "segmentDuration": "60",
+                "durationInSeconds": 60,
             },
         )
         print("   --->  test misc_broadcaster get_info_current_record ok: OK!")
@@ -1501,17 +1501,6 @@ class LiveViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(response.json(), {"content": ""})
         print("   --->  test event_video_cards with videos: OK!")
-
-    def test_event_dir_exists(self):
-        from pod.live.views import checkDirExists, checkFileExists
-
-        with self.assertRaises(Exception):
-            checkDirExists("dirname", 2)
-            print("   --->  test checkDirExists exception: OK!")
-
-        with self.assertRaises(Exception):
-            checkFileExists("filename", 2)
-            print("   --->  test checkFileExists exception: OK!")
 
     def test_immediate_event(self):
         self.client = Client()

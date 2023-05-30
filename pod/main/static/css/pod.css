@@ -204,7 +204,7 @@ tr,
   margin-bottom: 1.5rem;
 }
 
-:not(footer)>.pod-btn-social:not(#star_btn) {
+:not(footer)>.pod-btn-social {
   font-size: 2rem;
 }
 .btn.pod-btn-social {
@@ -597,7 +597,8 @@ div.card a img {
   background: #00000095;
 }
 
-.card-footer-pod a.btn, .card-footer-pod #star_btn  {
+.card-footer-pod a.btn,
+.card-footer-pod button {
   border: none;
   color: white;
   background: none;

@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
       })
         .then((response) => {
           response.text(); // We take the HTML content of the response
-          const button = form.querySelector("#star_btn > i");
+          const button = form.querySelector(".star_btn > i");
           button.classList.toggle("bi-star-fill");
           button.classList.toggle("bi-star");
           if (button.classList.contains("bi-star-fill")) {

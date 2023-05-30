@@ -599,6 +599,8 @@ class Type(models.Model):
         super(Type, self).save(*args, **kwargs)
 
     class Meta:
+        """Metadata subclass of Type object."""
+
         ordering = ["title"]
         verbose_name = _("Type")
         verbose_name_plural = _("Types")
@@ -642,6 +644,8 @@ class Discipline(models.Model):
         super(Discipline, self).save(*args, **kwargs)
 
     class Meta:
+        """Metadata subclass of Discipline object."""
+
         ordering = ["title"]
         verbose_name = _("Discipline")
         verbose_name_plural = _("Disciplines")
@@ -964,7 +968,7 @@ class Video(models.Model):
             thumbnail_url = static(DEFAULT_THUMBNAIL)
         return format_html(
             '<img style="max-width:100px" '
-            'src="%s" alt="%s" loading="lazy"/>'
+            'src="%s" alt="%s" loading="lazy">'
             % (
                 thumbnail_url,
                 title.replace("{", "").replace("}", "").replace('"', "'"),
@@ -985,7 +989,7 @@ class Video(models.Model):
             thumbnail_url = static(DEFAULT_THUMBNAIL)
         return (
             '<img class="pod-thumbnail" src="%s" alt="%s"\
-            loading="lazy"/>'
+            loading="lazy">'
             % (thumbnail_url, self.title)
         )
 

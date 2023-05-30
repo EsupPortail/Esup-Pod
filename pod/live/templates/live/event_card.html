@@ -68,7 +68,7 @@
           {% blocktrans with start_date=event.start_date end_date=event.end_date %}from {{start_date}} to {{end_date}}{% endblocktrans %}
         {% endif %}
         {% if display_broadcaster_name %}
-          <br/>{{event.broadcaster.name|capfirst|truncatechars:20}}
+          <br>{{event.broadcaster.name|capfirst|truncatechars:20}}
         {% endif %}
       </p>
     </div>

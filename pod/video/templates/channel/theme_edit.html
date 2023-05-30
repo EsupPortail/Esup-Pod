@@ -39,7 +39,7 @@
   {% include 'channel/list_theme.html' with list_theme=channel.themes.all %}
 </div>
 <p>
-  <hr />
+  <hr>
 </p>
 <div id="div_form_theme">
   {% if form_theme %}
@@ -47,15 +47,15 @@
   {% else %}
   <form id="theme_form_new" class="get_form_theme" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="POST">
     {% csrf_token %}
-    <input type="hidden" name="action" value="new" />
-    <input type="submit" value="{% trans 'Add a new theme' %}" class="btn btn-primary" />
+    <input type="hidden" name="action" value="new">
+    <input type="submit" value="{% trans 'Add a new theme' %}" class="btn btn-primary">
   </form>
   {% endif %}
 </div>
 <form id="theme_form_new" class="get_form_theme" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="POST" {% if form_theme %}style="display:none;" {% endif %}>
   {% csrf_token %}
-  <input type="hidden" name="action" value="new" />
-  <input type="submit" value="{% trans 'Add a new theme' %}" class="btn btn-primary" />
+  <input type="hidden" name="action" value="new">
+  <input type="submit" value="{% trans 'Add a new theme' %}" class="btn btn-primary">
 </form>
 {% endblock page_content %}
 

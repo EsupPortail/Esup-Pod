@@ -274,7 +274,7 @@ let PlaylistPlayer = {
                 p +
                 '_style_id" href="' +
                 this.plugins[p].css +
-                '" rel="stylesheet" />'
+                '" rel="stylesheet" >'
             );
         }
         if (document.querySelectorAll("#" + p + "_style_id").length == 0) {
@@ -362,7 +362,7 @@ let PlaylistPlayer = {
           .append(
             '<track kind="metadata" src="' +
               json.enrichtracksrc +
-              '" label="enrichment" />'
+              '" label="enrichment">'
           );
         _this.headFiles.getOrLoad("enrichment", function () {
           var tracks = player.el().getElementsByTagName("TRACK");

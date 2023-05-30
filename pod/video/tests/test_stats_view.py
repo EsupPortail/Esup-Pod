@@ -292,17 +292,16 @@ class TestStatsView(TestCase):
 
     @skipUnless(USE_STATS_VIEW, "Require URL video_stats_view")
     def test_stats_view_GET_request_video_access_rights(self):
-        # **************************************************** #
+        """Test video restrictions (by password, by group, or private video)."""
         # *********** Test restricted by password ************ #
-        # **************************************************** #
-        password = "ThisVideoRequiredAPassword"
+        password = "ThisVideoRequireAPassword"
         self.video3.password = password
         self.video3.save()
         url = reverse("video:video_stats_view", kwargs={"slug": self.video3.slug})
         response = self.client.get(url, {"from": "video"})
         input_expected = '<input type="password" name="password" \
                 placeholder="Password" id="id_password" class="required form-control" \
-                required />'
+                required>'
         # Test that the response is 200 Ok
         self.assertEqual(response.status_code, 200)
         # Test thant the response content contains "password input"
@@ -330,9 +329,7 @@ class TestStatsView(TestCase):
         response = self.client.get(url, {"from": "video"})
         self.assertContains(response, title_expected.encode(), status_code=200)
 
-        # **************************************************** #
         # ************ Test restricted by group ************** #
-        # **************************************************** #
         group1 = AccessGroup.objects.create(code_name="group1")
         self.video3.password = None
         self.video3.is_restricted = True
@@ -367,9 +364,8 @@ class TestStatsView(TestCase):
         self.client.force_login(self.superuser)
         response = self.client.get(url, {"from": "video"})
         self.assertContains(response, title_expected.encode(), status_code=200)
-        # ***************************************************** #
+
         # *************** Test private video ****************** #
-        # ***************************************************** #
         self.video3.is_draft = True
         self.video3.is_restricted = False
         self.video3.restrict_access_to_groups.remove(group1)

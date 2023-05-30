@@ -46,7 +46,7 @@
           <input class="form-check-input" type="checkbox" name="type"
             value="{{type.slug}}" id="id{{type.slug.split|join:'-'}}_type" {% if type.slug in types %}checked{% endif %}>
           <label class="form-check-label" for="id{{type.slug.split|join:'-'}}_type">
-            {% if type.icon %}<img src="{{type.icon.file.url}}" alt="{{type.title}}" style="max-height:32px; max-width:32px;" loading="lazy"/>{% else %}<i class="bi bi-fonts" aria-hidden="true"></i>{% endif %}&nbsp;{{type}}
+            {% if type.icon %}<img src="{{type.icon.file.url}}" alt="{{type.title}}" style="max-height:32px; max-width:32px;" loading="lazy">{% else %}<i class="bi bi-fonts" aria-hidden="true"></i>{% endif %}&nbsp;{{type}}
           </label>
         </div>
       {%endfor%}
@@ -66,7 +66,7 @@
           <input class="form-check-input" type="checkbox" name="discipline"
             value="{{discipline.slug}}" id="id{{discipline.slug.split|join:'-'}}_disc" {% if discipline.slug in disciplines %}checked{% endif %}>
           <label class="form-check-label" for="id{{discipline.slug.split|join:'-'}}_disc">
-            {% if discipline.icon %}<img src="{{discipline.icon.file.url}}" alt="{{discipline.title}}" style="max-height:32px; max-width:32px;" loading="lazy"/>{% endif %}&nbsp;{{discipline}}
+            {% if discipline.icon %}<img src="{{discipline.icon.file.url}}" alt="{{discipline.title}}" style="max-height:32px; max-width:32px;" loading="lazy">{% endif %}&nbsp;{{discipline}}
           </label>
         </div>
       {%endfor%}
