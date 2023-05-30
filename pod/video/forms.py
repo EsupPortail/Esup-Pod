@@ -638,21 +638,22 @@ class VideoForm(forms.ModelForm):
 
         users_groups = self.current_user.owner.accessgroup_set.all()
 
-        if self.is_superuser:
-            user_channels = Channel.objects.all()
-        else:
-            user_channels = (
-                self.current_user.owners_channels.all()
-                | self.current_user.users_channels.all()
-                | Channel.objects.filter(allow_to_groups__in=users_groups)
-            ).distinct()
+        if "channel" in cleaned_data.keys():
+            if self.is_superuser:
+                user_channels = Channel.objects.all()
+            else:
+                user_channels = (
+                    self.current_user.owners_channels.all()
+                    | self.current_user.users_channels.all()
+                    | Channel.objects.filter(allow_to_groups__in=users_groups)
+                ).distinct()
 
-        user_channels.filter(site=get_current_site(None))
+            user_channels.filter(site=get_current_site(None))
 
-        channels_to_keep = Video.objects.get(pk=self.instance.id).channel.exclude(
-            pk__in=[c.id for c in user_channels]
-        )
-        self.cleaned_data["channel"] = self.cleaned_data["channel"].union(channels_to_keep)
+            channels_to_keep = Video.objects.get(pk=self.instance.id).channel.exclude(
+                pk__in=[c.id for c in user_channels]
+            )
+            self.cleaned_data["channel"] = self.cleaned_data["channel"].union(channels_to_keep)
 
         if "additional_owners" in cleaned_data.keys() and isinstance(
             self.cleaned_data["additional_owners"], QuerySet
