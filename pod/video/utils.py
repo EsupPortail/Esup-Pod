@@ -487,3 +487,27 @@ def time_to_seconds(a_time):
     seconds = time.strptime(str(a_time), "%H:%M:%S")
     seconds = seconds.tm_sec + seconds.tm_min * 60 + seconds.tm_hour * 3600
     return seconds
+
+
+def get_id_from_request(request, key):
+    """Get the value of a specified key from the request object."""
+    if request.method == "POST" and request.POST.get(key):
+        return request.POST.get(key)
+    elif request.method == "GET" and request.GET.get(key):
+        return request.GET.get(key)
+    return None
+
+
+def get_video_data(video):
+    """Get a dictionary containing data from a video object."""
+    return {
+        "slug": video.slug,
+        "title": video.title,
+        "duration": video.duration_in_time,
+        "thumbnail": video.get_thumbnail_card(),
+        "is_video": video.is_video,
+        "has_password": bool(video.password),
+        "is_restricted": video.is_restricted,
+        "has_chapter": video.chapter_set.all().count() > 0,
+        "is_draft": video.is_draft,
+    }
