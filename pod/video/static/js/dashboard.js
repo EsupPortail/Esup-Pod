@@ -1,4 +1,4 @@
-var selectedVideos = ["0011-0", "0017-0"];
+var confirmBulkUpdateBtn = document.getElementById("confirmBulkUpdateBtn");
 
 function bulk_update() {
   // Async POST request to bulk update
@@ -11,9 +11,9 @@ function bulk_update() {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-        "selectedVideos" : selectedVideos,
+        "selectedVideos" : getListSelectedVideos(),
         "action" : "type",
-        "value" : 2
+        "value" : 4
     })
   })
     .then((response) => response.json())
@@ -24,4 +24,7 @@ function bulk_update() {
     });
 }
 
-bulk_update();
+confirmBulkUpdateBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    bulk_update();
+});
