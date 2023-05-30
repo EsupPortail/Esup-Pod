@@ -530,7 +530,9 @@ def videos_dashboard(request):
         data_context["videos_without_cat"] = videos_without_cat
 
     videos_list = get_filtered_videos_list(request, videos_list)
-    videos_list = sort_videos_list(request, videos_list)
+    sort_field = request.GET.get("sort")
+    sort_direction = request.GET.get("sort_direction")
+    videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
 
     count_videos = len(videos_list)
 
