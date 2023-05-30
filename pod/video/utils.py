@@ -170,11 +170,11 @@ def send_notification_email(video_to_encode, subject_prefix):
             )
             % {
                 "content_type": (_("content")
-                                 if subject_prefix == "Transcripting"
+                                 if subject_prefix == _("Transcripting")
                                  else _("video")),
                 "content_title": "<b>%s</b>" % video_to_encode.title,
                 "action": (_("automatically transcript")
-                           if (subject_prefix == "Transcripting")
+                           if (subject_prefix == _("Transcripting"))
                            else _("encoded to Web formats")),
                 "site_title": __TITLE_SITE__,
             },
