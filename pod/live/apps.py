@@ -5,6 +5,7 @@ from django.db import connection
 # from django.db.utils import OperationalError
 from django.utils import timezone
 from datetime import datetime
+from django.utils.translation import gettext_lazy as _
 
 __EVENT_DATA__ = {}
 
@@ -23,6 +24,7 @@ class LiveConfig(AppConfig):
     name = "pod.live"
     default_auto_field = "django.db.models.BigAutoField"
     event_data = {}
+    verbose_name = _("Lives")
 
     def ready(self):
         post_migrate.connect(set_default_site, sender=self)

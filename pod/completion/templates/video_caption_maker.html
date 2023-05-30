@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block page_extra_head %}
-  <link rel="stylesheet" href="{% static 'css/caption_maker.css' %}?ver={{VERSION}}"/>
+  <link rel="stylesheet" href="{% static 'css/caption_maker.css' %}?ver={{VERSION}}">
   {% include 'videos/video-header.html' %}
 {% endblock page_extra_head %}
 
@@ -32,7 +32,7 @@
     <div class="col-auto">
       <label class="col-form-label" for="captionFilename">{% trans "File" %}</label>
     </div><div class="col-auto">
-      <input class="form-control" id="captionFilename" name="file_name" type="text" form="form_save_captions"/>
+      <input class="form-control" id="captionFilename" name="file_name" type="text" form="form_save_captions">
     </div><div class="col-auto">
       <label class="col-form-label" for="captionKindSelect">{% trans "Kind" %}</label>
     </div><div class="col-auto">
@@ -134,23 +134,23 @@
             {% endspaceless %}
             {% endif %}
           {% endfor %}
-          {% if form_make_caption.instance.id %} <input type="hidden" id="user_id" name="user_id" value="{{form_make_caption.instance.id}}"/> {% endif %}
+          {% if form_make_caption.instance.id %} <input type="hidden" id="user_id" name="user_id" value="{{form_make_caption.instance.id}}"> {% endif %}
         </div>
         {{form_make_caption.media}}
       </form>
 
       <form class="form_save completion float-start" id="form_save_captions" action="{% url 'video:completion:video_caption_maker' slug=video.slug %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <input type="hidden" name="action" value="save"/>
-        <input type="hidden" name="file_id"/>
+        <input type="hidden" name="action" value="save">
+        <input type="hidden" name="file_id">
         <div class="m-2">
-          <input type="submit" value="{% trans 'Save Captions' %}" id="save_captions" class="btn btn-primary btn-sm"/>
+          <input type="submit" value="{% trans 'Save Captions' %}" id="save_captions" class="btn btn-primary btn-sm">
           <button id="clearAllCaptions" class="btn btn-primary btn-sm">
             <i class="bi bi-eraser-fill"></i>
             {% trans "Clear All" %}
           </button>
         </div>
-        {% if active_model_enrich %}<input type="checkbox" value="true" name="enrich_ready"/> {% trans 'Enrich Model' %} {% endif %}
+        {% if active_model_enrich %}<input type="checkbox" value="true" name="enrich_ready"> {% trans 'Enrich Model' %} {% endif %}
       </form>
 
     </div>

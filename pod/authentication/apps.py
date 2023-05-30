@@ -1,6 +1,7 @@
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.translation import gettext_lazy as _
 
 
 def create_groupsite_if_not_exists(g):
@@ -33,6 +34,7 @@ def set_default_site(sender, **kwargs):
 class AuthConfig(AppConfig):
     name = "pod.authentication"
     default_auto_field = "django.db.models.BigAutoField"
+    verbose_name = _("Authentication")
 
     def ready(self):
         post_migrate.connect(set_default_site, sender=self)

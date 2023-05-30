@@ -161,7 +161,7 @@ const send_form_save_captions = function () {
         gettext("error during exchange") +
           "(" +
           error +
-          ")<br/>" +
+          ")<br>" +
           gettext("no data could be stored."),
         "alert-danger"
       );
