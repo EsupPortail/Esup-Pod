@@ -1,6 +1,8 @@
+from typing import Iterable, Optional
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Max
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.template.defaultfilters import slugify
@@ -96,14 +98,7 @@ class Playlist(models.Model):
 
     def __str__(self) -> str:
         """Display a playlist as string."""
-        a = self.visibility == ("protected", _("Protected"))
-        return f"Name : {self.name} \
-            - Description : {self.description} \
-            - Visibility : {self.visibility} \
-            - Autoplay : {self.autoplay} \
-            - Slug : {self.slug} \
-            - Owner : {self.owner} \
-            - ee : {a}"
+        return self.slug
 
 
 class PlaylistContent(models.Model):
@@ -115,7 +110,7 @@ class PlaylistContent(models.Model):
     date_added = models.DateTimeField(
         verbose_name=_("Date added"), default=timezone.now, editable=False
     )
-    rank = models.IntegerField(verbose_name=_("Rank"), editable=False)
+    rank = models.IntegerField(verbose_name=_("Rank"), editable=False, default=1)
 
     class Meta:
         """Metadata for PlaylistContent model."""
@@ -135,6 +130,15 @@ class PlaylistContent(models.Model):
         get_latest_by = "rank"
         verbose_name = _("Playlist content")
         verbose_name_plural = _("Playlist contents")
+
+    def save(self, *args, **kwargs) -> None:
+        try:
+            last_rank = PlaylistContent.objects.filter(
+                playlist=self.playlist).aggregate(Max("rank"))["rank__max"]
+            self.rank = last_rank + 1 if last_rank is not None else 1
+        except Exception:
+            ...
+        return super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         """Display a playlist content as string."""
