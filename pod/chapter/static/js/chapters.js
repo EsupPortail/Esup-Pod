@@ -274,7 +274,7 @@ function overlaptest() {
         li.getAttribute("data-title") +
         '" ' +
         gettext("starts at the same time.");
-      msg += "<br/>" + text;
+      msg += "<br>" + text;
     }
   });
   return msg;

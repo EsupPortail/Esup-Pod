@@ -24,7 +24,7 @@ django-chunked-upload==2.0.0
 django-select2
 django_select2_forms
 django-redis
-requests==2.25.1
+requests==2.31.0
 chardet==4.0.0
 django-static-compress>=1.2.1
 redis==4.5.4
@@ -32,5 +32,5 @@ mozilla_django_oidc==3.0.0
 ics==0.7.2
 django-honeypot==1.0.3
 qrcode
-ralph-malph==3.3.0
+ralph-malph==3.6.0
 bleach==6.0.0

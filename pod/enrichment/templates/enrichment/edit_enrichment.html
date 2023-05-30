@@ -4,7 +4,7 @@
 <link
   rel="stylesheet"
   href="{% static 'css/enrichment.css' %}?ver={{VERSION}}"
-/>
+>
 <script src="{% static 'js/enrichment.js' %}?ver={{VERSION}}"></script>
 
 <script>
@@ -30,7 +30,7 @@
 {% endblock page_extra_head %} {% block video-element %}
 <div id="page-video">
   {% include 'enrichment/video-element-enrichment.html' %}
-  <hr />
+  <hr>
 
   <div id="info_video">
     <div id="list_enrich">{% include 'enrichment/list_enrichment.html' %}</div>
@@ -46,16 +46,16 @@
       method="POST"
     >
       {% csrf_token %}
-      <input type="hidden" name="action" value="new" />
+      <input type="hidden" name="action" value="new">
       <input
         type="submit"
         id="add_new_enrichment"
         value="{% trans 'Add a new enrichment' %}"
         class="btn btn-primary btn-sm"
-      />
+      >
     </form>
     {% endif %}
-    <hr />
+    <hr>
     <div class="d-flex justify-content-between">
       <a
         href="{% url 'video:video_edit' slug=video.slug %}"

@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block page_extra_head %}
-  <link rel="stylesheet" href="{% static 'css/bbb.css' %}?ver={{VERSION}}"/>
+  <link rel="stylesheet" href="{% static 'css/bbb.css' %}?ver={{VERSION}}">
   <script>
   window.setInterval("location.reload(true)",30000);
   </script>
@@ -26,15 +26,15 @@
     <p class="alert alert-info">{% trans 'There are no BigBlueButton records.'%}</p>
   {% else %}
     <h4>{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}</h4>
-    {% trans "This is the list of the recorded BigBlueButton sessions for which you were moderator. This module allows you to create a video from a BigBlueButton presentation." %}<br/>
-    {% trans "Shortly after the presentation is published, the corresponding video will appear in your videos." %}<br/>
+    {% trans "This is the list of the recorded BigBlueButton sessions for which you were moderator. This module allows you to create a video from a BigBlueButton presentation." %}<br>
+    {% trans "Shortly after the presentation is published, the corresponding video will appear in your videos." %}<br>
     <small class="form-text">
       <i>
         {% trans "Please note: a BigBlueButton presentation can be encoded by another moderator." %}
         {% trans "If such a case occurs, this information will be displayed directly in the list. You can then contact this user directly to ask him/her to share the video with you, or even to put you as additional owner of the video." %}
       </i>
     </small>
-    <br/>
+    <br>
     {% include "bbb/record_list.html" %}
   {% endif %}
 

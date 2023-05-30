@@ -7,7 +7,7 @@
   {% if event.description %}
     <div class="tab-pane fade active show" id="summary" role="tabpanel" aria-labelledby="summary-tab">
       <h2 class="tab-title"><i class="bi bi-justify"></i>&nbsp;{% trans 'Summary' %}</h2>
-      <hr/>
+      <hr>
       <p>{{ event.description|safe }}</p>
     </div>
   {% endif %}
@@ -20,7 +20,7 @@
     {% endif %}
   >
 
-    <!-- <hr/> -->
+    <!-- <hr> -->
     <ul class="list-inline d-flex flex-wrap">
       <li class="col-6 col-md-4">
         <h3 class="meta-title">{% trans 'Broadcasted on:' %}</h3>
@@ -70,7 +70,7 @@
               {% if event.is_draft %}
                 <div class="card text-white bg-danger mb-3">
                   <div class="card-body">
-                  {% blocktrans %}Please note that your event is in draft mode.<br/>The following links contain a key allowing access. Anyone with this links can access it.{% endblocktrans %}
+                  {% blocktrans %}Please note that your event is in draft mode.<br>The following links contain a key allowing access. Anyone with this links can access it.{% endblocktrans %}
                   </div>
                 </div>
                {% endif %}
@@ -94,14 +94,14 @@
                     </ul>
                   </dd>
                 </dl>
-                <hr />
+                <hr>
               {% endif %}
 
               <fieldset class="pod-share-fieldset">
                 <legend><i class="bi bi-link-45deg"></i>&nbsp;{% trans 'Share the link' %}</legend>
                   <div class="form-group">
                     <label for="txtpartage">{% trans 'Use this link to share the video:' %}</label>
-                    <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'live:event' slug=event.slug %}{% if event.is_draft == True %}{{ event.get_hashkey }}/{% endif %}" />
+                    <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'live:event' slug=event.slug %}{% if event.is_draft == True %}{{ event.get_hashkey }}/{% endif %}">
                   </div>
                 <div class="form-group">
                   <label>{% trans 'QR code for this link:' %}&nbsp;
@@ -109,12 +109,12 @@
                       <i class="bi bi-eye"></i>
                     </a>
                   </label>
-                  <img src="//chart.apis.google.com/chart?cht=qr&amp;chs=200x200&amp;chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'live:event' slug=event.slug %}{% if event.is_draft == True %}{{ event.get_hashkey }}/{% endif %}" alt="qrcode" id="qrcode" loading="lazy"/>
+                  <img src="//chart.apis.google.com/chart?cht=qr&amp;chs=200x200&amp;chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'live:event' slug=event.slug %}{% if event.is_draft == True %}{{ event.get_hashkey }}/{% endif %}" alt="qrcode" id="qrcode" loading="lazy">
                 </div>
               </fieldset>
-            </div> <!-- Fin modal body-->
-        </div> <!-- Fin modal content-->
-      </div> <!-- Fin modal dialog-->
-    </div> <!-- Fin modal -->
+            </div> <!-- End modal body-->
+        </div> <!-- End modal content-->
+      </div> <!-- End modal dialog-->
+    </div> <!-- End modal -->
   {% endif %}
 </div>
