@@ -1,11 +1,14 @@
-from typing import Iterable, Optional
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.template.defaultfilters import slugify
 
+from pod.main.models import get_nextautoincrement
 from pod.video.models import Video
+
+import hashlib
 
 
 class Playlist(models.Model):
@@ -70,19 +73,37 @@ class Playlist(models.Model):
         verbose_name = _("Playlist")
         verbose_name_plural = _("Playlists")
 
-    def save(self) -> None:
-        if self.visibility == "protected" and self.password == "" :
-            raise ValueError("password cannot be empty when the visibility is 'protected'")
-        self.slug = "{0}-{1}".format(self.id, slugify(self.name))
+    def save(self, *args, **kwargs) -> None:
+        newid = -1
+        if not self.id:
+            try:
+                newid = get_nextautoincrement(Playlist)
+            except Exception:
+                try:
+                    newid = Playlist.objects.latest("id").id
+                    newid += 1
+                except Exception:
+                    newid = 1
+        else:
+            newid = self.id
+        self.slug = f"{newid}-{slugify(self.name)}"
+        self.password = hashlib.sha256(self.password.encode("utf-8")).hexdigest()
+        super().save(*args, **kwargs)
+
+    def clean(self) -> None:
+        if self.visibility == "protected" and not self.password:
+            raise ValidationError("Password is required for a protected playlist.")
 
     def __str__(self) -> str:
         """Display a playlist as string."""
+        a = self.visibility == ("protected", _("Protected"))
         return f"Name : {self.name} \
             - Description : {self.description} \
             - Visibility : {self.visibility} \
             - Autoplay : {self.autoplay} \
             - Slug : {self.slug} \
-            - Owner : {self.owner}"
+            - Owner : {self.owner} \
+            - ee : {a}"
 
 
 class PlaylistContent(models.Model):
