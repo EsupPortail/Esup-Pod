@@ -364,7 +364,7 @@ if (typeof loaded == "undefined") {
           reloadRemoveBtn();
         } else {
           showalert(
-            gettext("Server error") + "<br/>" + response.statusText,
+            gettext("Server error") + "<br>" + response.statusText,
             "alert-danger"
           );
         }
@@ -401,7 +401,7 @@ if (typeof loaded == "undefined") {
           reloadRemoveBtn();
         } else {
           showalert(
-            gettext("Server error") + "<br/>" + response.statusText,
+            gettext("Server error") + "<br>" + response.statusText,
             "alert-danger"
           );
         }
