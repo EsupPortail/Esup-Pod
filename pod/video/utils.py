@@ -125,186 +125,123 @@ def create_outputdir(video_id, video_path):
 ###############################################################
 
 
-def send_email(msg, video_id):
-    """Send email notification when video encoding failed."""
-    subject = "[" + __TITLE_SITE__ + "] Error Encoding Video id:%s" % video_id
-    message = "Error Encoding  video id : %s\n%s" % (video_id, msg)
-    html_message = "<p>Error Encoding video id : %s</p><p>%s</p>" % (
-        video_id,
+def send_email_item(msg, item, item_id):
+    """Send email notification when encoding fails for a specific item."""
+    subject = "[" + __TITLE_SITE__ + "] Error Encoding %s id:%s" % (item, item_id)
+    message = "Error Encoding  %s id : %s\n%s" % (item, item_id, msg)
+    html_message = "<p>Error Encoding %s id : %s</p><p>%s</p>" % (
+        item,
+        item_id,
         msg.replace("\n", "<br>"),
     )
     mail_admins(subject, message, fail_silently=False, html_message=html_message)
+
+
+def send_email(msg, video_id):
+    """Send email notification when video encoding failed."""
+    send_email_item(msg, "Video", video_id)
 
 
 def send_email_recording(msg, recording_id):
     """Send email notification when recording encoding failed."""
-    subject = "[" + __TITLE_SITE__ + "] Error Encoding Recording id:%s" % recording_id
-    message = "Error Encoding  recording id : %s\n%s" % (recording_id, msg)
-    html_message = "<p>Error Encoding recording id : %s</p><p>%s</p>" % (
-        recording_id,
-        msg.replace("\n", "<br>"),
+    send_email_item(msg, "Recording", recording_id)
+
+
+def send_notification_email(video_to_encode, subject_pre):
+    """Send email notification on video encoding or transcripting completion."""
+    if DEBUG:
+        print("SEND EMAIL ON %s COMPLETION" % subject_pre.upper())
+    url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
+    content_url = "%s:%s" % (url_scheme, video_to_encode.get_full_url())
+    subject = "[%s] %s" % (
+        __TITLE_SITE__,
+        _("%(subject)s #%(content_id)s completed")
+        % {"subject": subject_pre, "content_id": video_to_encode.id},
     )
-    mail_admins(subject, message, fail_silently=False, html_message=html_message)
+
+    html_message = (
+        '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
+                </p><p>%s</p>'
+        % (
+            _("Hello,"),
+            _(
+                "The %(content_type)s “%(content_title)s” has been %(action)s"
+                + ", and is now available on %(site_title)s."
+            )
+            % {
+                "content_type": "content" if (subject_pre == "Transcripting")
+                else "video",
+                "content_title": "<b>%s</b>" % video_to_encode.title,
+                "action": "automatically transcript" if (subject_pre == "Transcripting")
+                else "encoded to Web formats",
+                "site_title": __TITLE_SITE__,
+            },
+            _("You will find it here:"),
+            content_url,
+            content_url,
+            _("Regards."),
+        )
+    )
+
+    full_html_message = html_message + "<br>%s%s<br>%s%s" % (
+        _("Post by:"),
+        video_to_encode.owner,
+        _("the:"),
+        video_to_encode.date_added,
+    )
+
+    message = bleach.clean(html_message, tags=[], strip=True)
+    full_message = bleach.clean(full_html_message, tags=[], strip=True)
+
+    from_email = DEFAULT_FROM_EMAIL
+    to_email = []
+    to_email.append(video_to_encode.owner.email)
+
+    if (
+        USE_ESTABLISHMENT_FIELD
+        and MANAGERS
+        and video_to_encode.owner.owner.establishment.lower() in dict(MANAGERS)
+    ):
+        bcc_email = []
+        video_estab = video_to_encode.owner.owner.establishment.lower()
+        manager = dict(MANAGERS)[video_estab]
+        if type(manager) in (list, tuple):
+            bcc_email = manager
+        elif type(manager) == str:
+            bcc_email.append(manager)
+        msg = EmailMultiAlternatives(
+            subject, message, from_email, to_email, bcc=bcc_email
+        )
+        msg.attach_alternative(html_message, "text/html")
+        msg.send()
+    else:
+        mail_managers(
+            subject,
+            full_message,
+            fail_silently=False,
+            html_message=full_html_message,
+        )
+        if not DEBUG:
+            send_mail(
+                subject,
+                message,
+                from_email,
+                to_email,
+                fail_silently=False,
+                html_message=html_message,
+            )
 
 
 def send_email_transcript(video_to_encode):
     """Send email on transcripting completion."""
-    if DEBUG:
-        print("SEND EMAIL ON TRANSCRIPTING COMPLETION")
-    url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
-    content_url = "%s:%s" % (url_scheme, video_to_encode.get_full_url())
-    subject = "[%s] %s" % (
-        __TITLE_SITE__,
-        _("Transcripting #%(content_id)s completed") % {"content_id": video_to_encode.id},
-    )
-
-    html_message = ""
-
-    html_message = (
-        '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
-                </p><p>%s</p>'
-        % (
-            _("Hello,"),
-            _(
-                "The content “%(content_title)s” has been automatically"
-                + " transcript, and is now available on %(site_title)s."
-            )
-            % {
-                "content_title": "<b>%s</b>" % video_to_encode.title,
-                "site_title": __TITLE_SITE__,
-            },
-            _("You will find it here:"),
-            content_url,
-            content_url,
-            _("Regards."),
-        )
-    )
-    full_html_message = html_message + "<br>%s%s<br>%s%s" % (
-        _("Post by:"),
-        video_to_encode.owner,
-        _("the:"),
-        video_to_encode.date_added,
-    )
-
-    message = bleach.clean(html_message, tags=[], strip=True)
-    full_message = bleach.clean(full_html_message, tags=[], strip=True)
-
-    from_email = DEFAULT_FROM_EMAIL
-    to_email = []
-    to_email.append(video_to_encode.owner.email)
-
-    if (
-        USE_ESTABLISHMENT_FIELD
-        and MANAGERS
-        and video_to_encode.owner.owner.establishment.lower() in dict(MANAGERS)
-    ):
-        bcc_email = []
-        video_estab = video_to_encode.owner.owner.establishment.lower()
-        manager = dict(MANAGERS)[video_estab]
-        if type(manager) in (list, tuple):
-            bcc_email = manager
-        elif type(manager) == str:
-            bcc_email.append(manager)
-        msg = EmailMultiAlternatives(
-            subject, message, from_email, to_email, bcc=bcc_email
-        )
-        msg.attach_alternative(html_message, "text/html")
-        msg.send()
-    else:
-        mail_managers(
-            subject,
-            full_message,
-            fail_silently=False,
-            html_message=full_html_message,
-        )
-        if not DEBUG:
-            send_mail(
-                subject,
-                message,
-                from_email,
-                to_email,
-                fail_silently=False,
-                html_message=html_message,
-            )
+    subject_prefix = _("Transcripting")
+    send_notification_email(video_to_encode, subject_prefix)
 
 
 def send_email_encoding(video_to_encode):
-    """Send an email on encoding completion."""
-    if DEBUG:
-        print("SEND EMAIL ON ENCODING COMPLETION")
-    url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
-    content_url = "%s:%s" % (url_scheme, video_to_encode.get_full_url())
-    subject = "[%s] %s" % (
-        __TITLE_SITE__,
-        _("Encoding #%(content_id)s completed") % {"content_id": video_to_encode.id},
-    )
-
-    html_message = (
-        '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
-                </p><p>%s</p>'
-        % (
-            _("Hello,"),
-            _(
-                "The video “%(content_title)s” has been encoded to Web "
-                + "formats, and is now available on %(site_title)s."
-            )
-            % {
-                "content_title": "<b>%s</b>" % video_to_encode.title,
-                "site_title": __TITLE_SITE__,
-            },
-            _("You will find it here:"),
-            content_url,
-            content_url,
-            _("Regards."),
-        )
-    )
-    full_html_message = html_message + "<br>%s%s<br>%s%s" % (
-        _("Post by:"),
-        video_to_encode.owner,
-        _("the:"),
-        video_to_encode.date_added,
-    )
-
-    message = bleach.clean(html_message, tags=[], strip=True)
-    full_message = bleach.clean(full_html_message, tags=[], strip=True)
-
-    from_email = DEFAULT_FROM_EMAIL
-    to_email = []
-    to_email.append(video_to_encode.owner.email)
-
-    if (
-        USE_ESTABLISHMENT_FIELD
-        and MANAGERS
-        and video_to_encode.owner.owner.establishment.lower() in dict(MANAGERS)
-    ):
-        bcc_email = []
-        video_estab = video_to_encode.owner.owner.establishment.lower()
-        manager = dict(MANAGERS)[video_estab]
-        if type(manager) in (list, tuple):
-            bcc_email = manager
-        elif type(manager) == str:
-            bcc_email.append(manager)
-        msg = EmailMultiAlternatives(
-            subject, message, from_email, to_email, bcc=bcc_email
-        )
-        msg.attach_alternative(html_message, "text/html")
-        msg.send()
-    else:
-        mail_managers(
-            subject,
-            full_message,
-            fail_silently=False,
-            html_message=full_html_message,
-        )
-        if not DEBUG:
-            send_mail(
-                subject,
-                message,
-                from_email,
-                to_email,
-                fail_silently=False,
-                html_message=html_message,
-            )
+    """Send email on encoding completion."""
+    subject_prefix = _("Encoding")
+    send_notification_email(video_to_encode, subject_prefix)
 
 
 def pagination_data(request_path, offset, limit, total_count):
