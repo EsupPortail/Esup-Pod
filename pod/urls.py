@@ -128,6 +128,11 @@ if getattr(settings, "USE_FAVORITES", True):
         path("favorite/", include("pod.favorite.urls", namespace="favorite")),
     ]
 
+# PLAYLIST
+urlpatterns += [
+    path("playlist/", include("pod.playlist.urls", namespace="playlist")),
+]
+
 # CHANNELS
 urlpatterns += [
     url(r"^", include("pod.video.urls-channels-video")),
