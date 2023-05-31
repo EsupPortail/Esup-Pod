@@ -169,7 +169,7 @@ def get_video_list_for_playlist(playlist: Playlist) -> list:
         tables=["playlist_playlistcontent"],
         where=[
             "playlist_playlistcontent.video_id=video_video.id",
-            "playlist_playlistcontent.id=%s"
+            "playlist_playlistcontent.playlist_id=%s"
         ],
         params=[playlist.id]
     )

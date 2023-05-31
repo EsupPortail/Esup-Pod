@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render
+from pod import playlist
 from pod.playlist.models import Playlist
 from django.utils.translation import ugettext_lazy as _
 
@@ -31,7 +32,8 @@ def playlist_content(request, slug):
     """Render the videos list of a playlist."""
     sort_field = request.GET.get("sort", "rank")
     sort_direction = request.GET.get("sort_direction")
-    videos_list = get_video_list_for_playlist(get_playlist(slug))
+    playlist = get_playlist(slug)
+    videos_list = get_video_list_for_playlist(playlist)
 
     count_videos = len(videos_list)
 
@@ -65,8 +67,9 @@ def playlist_content(request, slug):
         request,
         "playlist/playlist.html",
         {
-            "page_title": _("Videos"),
+            "page_title": _("Playlist") + " : " + playlist.name,
             "videos": videos,
+            "playlist": playlist,
             "count_videos": count_videos,
             "types": request.GET.getlist("type"),
             "owners": request.GET.getlist("owner"),

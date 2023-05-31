@@ -1,0 +1,32 @@
+.card-link, .card-link:link, .card-link:hover {
+    text-decoration: none;
+    color: black;
+}
+
+.videos-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 3rem;
+}
+
+.draggable-container {
+    border: 1px solid black;
+    width: 90%;
+}
+
+.playlist-video-card h2 {
+    text-align: center;
+}
+
+.playlist-card-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+
+.playlist-video-card .thumbnail-image {
+    height: auto;
+}
