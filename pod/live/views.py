@@ -2,6 +2,7 @@ import json
 import logging
 import os.path
 import re
+import threading
 from datetime import datetime
 
 from django.conf import settings
@@ -30,7 +31,6 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from rest_framework import status
 
 from pod.bbb.models import Livestream
-from . import pilotingInterface
 from .forms import EventPasswordForm, EventForm, EventDeleteForm, EventImmediateForm
 from .models import (
     Building,
@@ -39,6 +39,7 @@ from .models import (
     Event,
     get_available_broadcasters_of_building,
 )
+from .pilotingInterface import get_piloting_implementation
 from .utils import (
     send_email_confirmation,
     get_event_id_and_broadcaster_id,
@@ -239,37 +240,37 @@ def can_manage_event(user):
     )
 
 
-def is_in_event_groups(user, event):
+def is_in_event_groups(user, evt):
     return user.owner.accessgroup_set.filter(
         code_name__in=[
-            name[0] for name in event.restrict_access_to_groups.values_list("code_name")
+            name[0] for name in evt.restrict_access_to_groups.values_list("code_name")
         ]
     ).exists()
 
 
-def get_event_access(request, event, slug_private, is_owner):
+def get_event_access(request, evt, slug_private, is_owner):
     """Return True if access is granted to current user."""
 
     if is_owner:
         return True
 
-    if event.is_draft:
-        if slug_private or slug_private == event.get_hashkey():
+    if evt.is_draft:
+        if slug_private or slug_private == evt.get_hashkey():
             can_access_draft = True
         else:
             can_access_draft = (
-                request.user == event.owner
-                or request.user in event.additional_owners.all()
+                request.user == evt.owner
+                or request.user in evt.additional_owners.all()
                 or request.user.is_superuser
             )
         if not can_access_draft:
             return False
 
-    if event.is_restricted and not request.user.is_authenticated:
+    if evt.is_restricted and not request.user.is_authenticated:
         return False
 
-    if event.restrict_access_to_groups.all().exists() and (
-        not request.user.is_authenticated or not is_in_event_groups(request.user, event)
+    if evt.restrict_access_to_groups.all().exists() and (
+        not request.user.is_authenticated or not is_in_event_groups(request.user, evt)
     ):
         return False
 
@@ -282,11 +283,11 @@ def event(request, slug, slug_private=None):  # affichage d'un event
     request.resolver_match.namespace = ""
 
     try:
-        id = int(slug[: slug.find("-")])
+        event_id = int(slug[: slug.find("-")])
     except ValueError:
         raise SuspiciousOperation("Invalid event id")
 
-    evemnt = get_object_or_404(Event, id=id)
+    evemnt = get_object_or_404(Event, id=event_id)
 
     if (
         evemnt.is_restricted or evemnt.restrict_access_to_groups.all().exists()
@@ -346,7 +347,12 @@ def render_event_template(request, evemnt, user_owns_event):
         {
             "event": evemnt,
             "display_chat": display_chat,
-            "need_piloting_buttons": user_owns_event and not request.GET.get("is_iframe"),
+            "need_piloting_buttons": (
+                user_owns_event
+                and evemnt.broadcaster.piloting_implementation
+                and not request.GET.get("is_iframe")
+            ),
+            "use_split": use_split(evemnt.broadcaster),
             "heartbeat_delay": HEARTBEAT_DELAY,
         },
     )
@@ -456,14 +462,14 @@ def my_events(request):
     )
 
 
-def get_event_edition_access(request, event):
+def get_event_edition_access(request, evt):
     # creation
-    if event is None:
+    if evt is None:
         return can_manage_event(request.user)
     # edition
     return (
-        request.user == event.owner
-        or request.user in event.additional_owners.all()
+        request.user == evt.owner
+        or request.user in evt.additional_owners.all()
         or request.user.is_superuser
     )
 
@@ -476,14 +482,14 @@ def event_edit(request, slug=None):
     if in_maintenance():
         return redirect(reverse("maintenance"))
 
-    event = get_object_or_404(Event, slug=slug) if slug else None
+    evt = get_object_or_404(Event, slug=slug) if slug else None
 
-    if event:
+    if evt:
         page_title = _("Editing the event")
     else:
         page_title = _("Plan an event")
 
-    if not get_event_edition_access(request, event):
+    if not get_event_edition_access(request, evt):
         return render(
             request,
             "live/event_edit.html",
@@ -495,9 +501,9 @@ def event_edit(request, slug=None):
 
     form = EventForm(
         request.POST or None,
-        instance=event,
+        instance=evt,
         user=request.user,
-        is_current_event=event.is_current() if slug else None,
+        is_current_event=evt.is_current() if slug else None,
         broadcaster_id=request.GET.get("broadcaster_id"),
         building_id=request.GET.get("building_id"),
     )
@@ -505,14 +511,14 @@ def event_edit(request, slug=None):
     if request.POST:
         form = EventForm(
             request.POST,
-            instance=event,
+            instance=evt,
             user=request.user,
-            is_current_event=event.is_current() if slug else None,
+            is_current_event=evt.is_current() if slug else None,
         )
         if form.is_valid():
-            event = update_event(form)
+            evt = update_event(form)
             if EMAIL_ON_EVENT_SCHEDULING:
-                send_email_confirmation(event)
+                send_email_confirmation(evt)
             messages.add_message(
                 request, messages.INFO, _("The changes have been saved.")
             )
@@ -532,29 +538,29 @@ def event_edit(request, slug=None):
 def update_event(form):
     """Update an event with received form fields."""
     if form.cleaned_data.get("end_date"):
-        event = form.save()
-        return event
+        evt = form.save()
+        return evt
     else:
         if form.cleaned_data.get("start_date"):
             d_debut = form.cleaned_data["start_date"].date()
         else:
             d_debut = datetime.now()
 
-        event = form.save(commit=False)
+        evt = form.save(commit=False)
         d_fin = datetime.combine(d_debut, form.cleaned_data["end_time"])
         d_fin = timezone.make_aware(d_fin)
-        event.end_date = d_fin
-        event.save()
-        return event
+        evt.end_date = d_fin
+        evt.save()
+        return evt
 
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def event_delete(request, slug=None):
     """Delete the event identified by 'slug'."""
-    event = get_object_or_404(Event, slug=slug)
+    evt = get_object_or_404(Event, slug=slug)
 
-    if request.user != event.owner and not (
+    if request.user != evt.owner and not (
         request.user.is_superuser or request.user.has_perm("live.delete_event")
     ):
         messages.add_message(request, messages.ERROR, _("You cannot delete this event."))
@@ -565,7 +571,7 @@ def event_delete(request, slug=None):
     if request.method == "POST":
         form = EventDeleteForm(request.POST)
         if form.is_valid():
-            event.delete()
+            evt.delete()
             messages.add_message(request, messages.INFO, _("The event has been deleted."))
             return redirect(reverse("live:my_events"))
         else:
@@ -578,7 +584,7 @@ def event_delete(request, slug=None):
     return render(
         request,
         "live/event_delete.html",
-        {"event": event, "form": form},
+        {"event": evt, "form": form},
     )
 
 
@@ -668,7 +674,7 @@ def broadcaster_restriction(request):
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-def event_isstreamavailabletorecord(request):
+def ajax_is_stream_available_to_record(request):
     if request.method == "GET" and request.is_ajax():
         broadcaster_id = request.GET.get("idbroadcaster", None)
         broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
@@ -741,10 +747,10 @@ def event_splitrecord(event_id, broadcaster_id):
     if not split_record(broadcaster):
         return JsonResponse({"success": False, "error": ""})
 
-    return event_video_transform(
+    return transform_to_video(
+        broadcaster,
         event_id,
-        current_record_info.get("currentFile", None),
-        current_record_info.get("segmentNumber", None),
+        current_record_info,
     )
 
 
@@ -774,10 +780,10 @@ def event_stoprecord(event_id, broadcaster_id):
     curr_event.is_auto_start = False
     curr_event.save()
 
-    return event_video_transform(
+    return transform_to_video(
+        broadcaster,
         event_id,
-        current_record_info.get("currentFile", None),
-        current_record_info.get("segmentNumber", None),
+        current_record_info,
     )
 
 
@@ -823,22 +829,24 @@ def check_event_record(broadcaster, with_file_check=False):
 
 @csrf_protect
 def event_get_video_cards(request):
+    """Returns the template with the videos link to the event."""
     if request.is_ajax():
         event_id = request.GET.get("idevent", None)
-        event = Event.objects.get(pk=event_id)
+        evt = Event.objects.get(pk=event_id)
 
         html = ""
-        if event.videos.count() > 0:
+        if evt.videos.count() > 0:
             request.resolver_match.namespace = ""
             html = render_to_string(
-                "live/event_videos.html", {"event": event}, request=request
+                "live/event_videos.html", {"event": evt}, request=request
             )
         return JsonResponse({"content": html})
 
     return HttpResponseBadRequest()
 
 
-def event_video_transform(event_id, current_file, segment_number):
+def create_video(event_id, current_file, segment_number):
+    """Creates a video from the file_path given in the parameters."""
     live_event = Event.objects.get(pk=event_id)
     filename = os.path.basename(current_file)
 
@@ -926,7 +934,7 @@ def event_video_transform(event_id, current_file, segment_number):
     live_event.videos.add(video)
     live_event.save()
 
-    return JsonResponse({"success": True})
+    return JsonResponse({"success": True, "error": ""})
 
 
 def check_dir_exists(dest_dir_name, max_attempt=6):
@@ -940,35 +948,46 @@ def check_file_exists(full_file_name, max_attempt=6):
 
 
 def check_piloting_conf(broadcaster: Broadcaster) -> bool:
-    impl_class = pilotingInterface.get_piloting_implementation(broadcaster)
+    """Returns if the piloting configuration of the broadcaster is correct."""
+    impl_class = get_piloting_implementation(broadcaster)
     if not impl_class:
         return False
     return impl_class.check_piloting_conf()
 
 
 def start_record(broadcaster: Broadcaster, event_id) -> bool:
-    impl_class = pilotingInterface.get_piloting_implementation(broadcaster)
+    """Starts the recording and return if successfully done."""
+    impl_class = get_piloting_implementation(broadcaster)
     if not impl_class:
         return False
     return impl_class.start(event_id)
 
 
 def split_record(broadcaster: Broadcaster) -> bool:
-    impl_class = pilotingInterface.get_piloting_implementation(broadcaster)
-    if not impl_class:
+    """Split the recording and return if successfully done."""
+    impl_class = get_piloting_implementation(broadcaster)
+    if not impl_class or not impl_class.can_split():
         return False
     return impl_class.split()
 
 
 def stop_record(broadcaster: Broadcaster) -> bool:
-    impl_class = pilotingInterface.get_piloting_implementation(broadcaster)
+    """Stops the recording and return if successfully done."""
+    impl_class = get_piloting_implementation(broadcaster)
     if not impl_class:
         return False
     return impl_class.stop()
 
 
+def use_split(broadcaster: Broadcaster) -> bool:
+    """Returns if the implementation allows to split the current recording."""
+    impl_class = get_piloting_implementation(broadcaster)
+    return impl_class is not None and impl_class.can_split()
+
+
 def get_info_current_record(broadcaster: Broadcaster) -> dict:
-    impl_class = pilotingInterface.get_piloting_implementation(broadcaster)
+    """Returns the infos of the current recording."""
+    impl_class = get_piloting_implementation(broadcaster)
     if not impl_class:
         return {
             "currentFile": "",
@@ -980,14 +999,71 @@ def get_info_current_record(broadcaster: Broadcaster) -> dict:
 
 
 def is_available_to_record(broadcaster: Broadcaster) -> bool:
-    impl_class = pilotingInterface.get_piloting_implementation(broadcaster)
+    """Returns the broadcaster is ready to record."""
+    impl_class = get_piloting_implementation(broadcaster)
     if not impl_class:
         return False
     return impl_class.is_available_to_record()
 
 
 def is_recording(broadcaster: Broadcaster, with_file_check=False) -> bool:
-    impl_class = pilotingInterface.get_piloting_implementation(broadcaster)
+    """Returns the broadcaster is actually recording."""
+    impl_class = get_piloting_implementation(broadcaster)
     if not impl_class:
         return False
     return impl_class.is_recording(with_file_check)
+
+
+def transform_to_video(broadcaster, event_id, current_record_info):
+    """
+    Args:
+        broadcaster (Broadcaster): the broadcaster
+        event_id (int): event's id
+        current_record_info(dict): infos
+
+    Returns:
+        JsonResponse: with success and error keys
+
+    """
+    impl_class = get_piloting_implementation(broadcaster)
+    if not impl_class:
+        return JsonResponse({"success": False, "error": "implementation error"})
+
+    if impl_class.copy_file_needed():
+        # Copie + transform faite dans un thread
+        t = threading.Thread(
+            target=copy_and_transform,
+            args=[impl_class, event_id, current_record_info],
+            daemon=True,
+        )
+        t.start()
+        return JsonResponse({"success": True, "error": ""})
+
+    return create_video(
+        event_id,
+        current_record_info.get("currentFile", None),
+        current_record_info.get("segmentNumber", None),
+    )
+
+
+def copy_and_transform(impl_class, event_id, current_record_info):
+    """
+    Copies the file from remote to Pod and creates the video
+    Args:
+        impl_class (PilotingInterface): the piloting interface of the broadcaster
+        event_id (int): event's id
+        current_record_info(dict): infos
+
+    Returns:
+        bool: if successfully done
+
+    """
+    filename = current_record_info.get("currentFile", None)
+    if impl_class.copy_file_to_pod_dir(filename):
+        json_response = create_video(
+            event_id,
+            filename,
+            current_record_info.get("segmentNumber", None),
+        )
+        return json_response.status_code == 200
+    return False

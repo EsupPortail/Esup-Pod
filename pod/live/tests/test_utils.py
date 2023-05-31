@@ -136,17 +136,17 @@ class LiveTestUtils(TestCase):
             # remove the temporary file
             os.unlink(resource_path)
 
-        # Start modifying the file in a separate thread
+        # Modify the file in a thread during 8 seconds
         thread = threading.Thread(target=modify_file)
         thread.start()
 
-        # Call the function being tested
+        # Check the size (should raise an exception)
         with self.assertRaises(Exception) as cm:
             check_size_not_changing(resource_path)
-            print(" --->  test_utils test_check_size_not_changing Exception Ok")
 
         # Verify that the exception was raised
         self.assertEqual(str(cm.exception), "checkFileSize aborted")
+        print(" --->  test_utils test_check_size_not_changing Exception Ok")
 
     def test_check_exists(self):
         """Teste qu'une ressource existe sur le filesystem."""

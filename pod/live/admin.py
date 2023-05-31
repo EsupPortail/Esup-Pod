@@ -2,7 +2,6 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.sites.models import Site
 from django.contrib.sites.shortcuts import get_current_site
-from django.forms import Textarea
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from js_asset import static
@@ -118,14 +117,6 @@ class BroadcasterAdmin(admin.ModelAdmin):
         return ["building"]
 
     def get_form(self, request, obj=None, **kwargs):
-        kwargs["widgets"] = {
-            "piloting_conf": Textarea(
-                attrs={
-                    "placeholder": "{\n 'server_url':'...',\n \
-                        'application':'...',\n 'livestream':'...',\n}"
-                }
-            )
-        }
         kwargs["help_texts"] = {"qrcode": _("QR code to record immediately an event")}
         return super().get_form(request, obj, **kwargs)
 
@@ -156,6 +147,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
         }
         js = (
             "js/main.js",
+            "js/admin_broadcaster.js",
             "podfile/js/filewidget.js",
             "bootstrap/dist/js/bootstrap.min.js",
         )

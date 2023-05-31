@@ -20,24 +20,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     "TEMPLATE_VISIBLE_SETTINGS",
     {
         "TITLE_SITE": "Pod",
-        "TITLE_ETB": "University name",
-        "LOGO_SITE": "img/logoPod.svg",
-        "LOGO_ETB": "img/esup-pod.svg",
-        "LOGO_PLAYER": "img/pod_favicon.svg",
-        "LINK_PLAYER": "",
-        "FOOTER_TEXT": ("",),
-        "FAVICON": "img/pod_favicon.svg",
-        "CSS_OVERRIDE": "",
-        "PRE_HEADER_TEMPLATE": "",
-        "POST_FOOTER_TEMPLATE": "",
-        "TRACKING_TEMPLATE": "",
     },
-)
-
-__TITLE_SITE__ = (
-    TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
-    if (TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"))
-    else "Pod"
 )
 
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
@@ -59,7 +42,7 @@ def send_email_confirmation(event):
     url_event = get_event_url(event)
 
     subject = "[%s] %s" % (
-        __TITLE_SITE__,
+        TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"),
         _("Registration of event #%(content_id)s") % {"content_id": event.id},
     )
 

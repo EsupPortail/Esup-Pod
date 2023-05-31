@@ -217,6 +217,7 @@
           });
         };
 
+      {% if use_split %}
         splitButton.onclick = () => {
           stopButton.setAttribute("disabled", "");
           splitButton.setAttribute("disabled", "");
@@ -252,10 +253,13 @@
             console.error("Error calling splitrecord : " + error.statusText);
           });
         };
+      {% else %}
+        splitButton.classList.add("invisible");
+      {% endif %}
 
         // Status of the stream + display action buttons
         function updateStreamStatus() {
-          const url = "{% url 'live:event_isstreamavailabletorecord' %}" + '?idbroadcaster={{ event.broadcaster.id }}';
+          const url = "{% url 'live:ajax_is_stream_available_to_record' %}" + '?idbroadcaster={{ event.broadcaster.id }}';
           fetch(url, {
             method: "GET",
             headers: {

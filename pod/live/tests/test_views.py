@@ -21,6 +21,7 @@ from pod.main.models import Configuration
 from pod.video.models import Type
 from pod.video.models import Video
 
+DEFAULT_EVENT_PATH = getattr(settings, "DEFAULT_EVENT_PATH", "")
 if getattr(settings, "USE_PODFILE", False):
     FILEPICKER = True
     from pod.podfile.models import CustomImageModel
@@ -39,7 +40,7 @@ class LiveViewsTestCase(TestCase):
 
     def setUp(self):
         user = User.objects.create(username="pod", password="podv3")
-        building = Building.objects.create(name="bulding1")
+        building = Building.objects.create(name="building1")
         if FILEPICKER:
             homedir, created = UserFolder.objects.get_or_create(name="Home", owner=user)
             poster = CustomImageModel.objects.create(
@@ -65,8 +66,25 @@ class LiveViewsTestCase(TestCase):
             is_restricted=False,
             building=building,
             piloting_implementation="wowza",
-            piloting_conf='{"server_url": "http://mock_api.fr", \
-                "application": "mock_name", "livestream": "mock_livestream"}',
+            piloting_conf='{"server_url": "http://mock_api.fr", '
+            '"application": "mock_name", '
+            '"livestream": "mock_livestream"}',
+        )
+        Broadcaster.objects.create(
+            name="broadcaster3",
+            poster=poster,
+            url="http://test3.live",
+            status=True,
+            enable_add_event=True,
+            is_restricted=False,
+            building=building,
+            piloting_implementation="smp",
+            piloting_conf='{"server_url": "https://mock_api.fr", '
+            '"smp_version": "351", '
+            '"sftp_port": "22022", '
+            '"user": "username", '
+            '"password": "mdp", '
+            '"record_dir_path": "/recording"}',
         )
         Video.objects.create(
             title="VideoOnHold",
@@ -124,7 +142,7 @@ class LiveViewsTestCase(TestCase):
             "myuser", "myemail@test.com", password
         )
 
-        self.building = Building.objects.get(name="bulding1")
+        self.building = Building.objects.get(name="building1")
         response = self.client.get("/live/directs/%s/" % self.building.id)
 
         self.assertRedirects(
@@ -329,7 +347,7 @@ class LiveViewsTestCase(TestCase):
         )
         self.client.force_login(self.superuser)
 
-        # event edition for super user
+        # event edition for superuser
         url = reverse("live:event_edit", kwargs={})
         response = self.client.get(url)
         self.assertTemplateUsed(response, "live/event_edit.html")
@@ -353,7 +371,7 @@ class LiveViewsTestCase(TestCase):
         ag1 = AccessGroup.objects.get(code_name="group1")
         ag2 = AccessGroup.objects.get(code_name="employee")
 
-        self.user.owner.accessgroup_set.add(ag1)
+        self.user.owner.accessgroup_set.add(ag1, through_defaults={"site": 1})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)  # show message to contact us
         self.assertFalse(response.context.get("form", False))  # no form
@@ -361,7 +379,7 @@ class LiveViewsTestCase(TestCase):
             "   --->  test_events edit event for "
             + "logged user but without good accessgroup: OK!"
         )
-        self.user.owner.accessgroup_set.add(ag2)
+        self.user.owner.accessgroup_set.add(ag2, through_defaults={"site": 1})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)  # show message to contact us
         self.assertIsInstance(response.context["form"], EventForm)
@@ -382,8 +400,7 @@ class LiveViewsTestCase(TestCase):
         )
         nb_event = Event.objects.all().count()
         # form = response.context['form']
-        data = {}
-        data["title"] = "my event"
+        data = {"title": "my event"}
         response = self.client.post(
             url,
             data,
@@ -395,7 +412,7 @@ class LiveViewsTestCase(TestCase):
         data["end_time"] = end_time
         data["start_date_0"] = start_date.date()
         data["start_date_1"] = start_date.time()
-        data["building"] = "bulding1"
+        data["building"] = "building1"
         response = self.client.post(
             url,
             data,
@@ -435,15 +452,16 @@ class LiveViewsTestCase(TestCase):
         start_date = response.context["form"]["start_date"].value()
         start_date = timezone.localtime(start_date + timezone.timedelta(days=1))
         end_date = timezone.localtime(start_date + timezone.timedelta(days=3))
-        data = {}
-        data["title"] = "my multi days event"
-        data["broadcaster"] = 1  # Broadcaster.objects.get(id=1)
-        data["type"] = 1  # Type.objects.get(id=1)
-        data["start_date_0"] = start_date.date()
-        data["start_date_1"] = start_date.time()
-        data["end_date_0"] = end_date.date()
-        data["end_date_1"] = end_date.time()
-        data["building"] = "bulding1"
+        data = {
+            "title": "my multi days event",
+            "broadcaster": 1,
+            "type": 1,
+            "start_date_0": start_date.date(),
+            "start_date_1": start_date.time(),
+            "end_date_0": end_date.date(),
+            "end_date_1": end_date.time(),
+            "building": "building1",
+        }
         response = self.client.post(
             url,
             data,
@@ -470,7 +488,7 @@ class LiveViewsTestCase(TestCase):
         print("  --->  test_crossing_events with end_time")
         self.user = User.objects.get(username="pod")
         ag2 = AccessGroup.objects.get(code_name="employee")
-        self.user.owner.accessgroup_set.add(ag2)
+        self.user.owner.accessgroup_set.add(ag2, through_defaults={"site": 1})
 
         # event after previous event and in the futur : OK
         data = {}
@@ -482,7 +500,7 @@ class LiveViewsTestCase(TestCase):
         data["start_date_0"] = sd.date()
         data["start_date_1"] = sd.time()
         data["end_time"] = ed.time()
-        data["building"] = "bulding1"
+        data["building"] = "building1"
         form = EventForm(
             data,
             user=self.user,
@@ -500,7 +518,7 @@ class LiveViewsTestCase(TestCase):
         data["start_date_0"] = sd.date()
         data["start_date_1"] = sd.time()
         data["end_time"] = ed.time()
-        data["building"] = "bulding1"
+        data["building"] = "building1"
         form = EventForm(
             data,
             user=self.user,
@@ -520,7 +538,7 @@ class LiveViewsTestCase(TestCase):
         data["start_date_0"] = sd.date()
         data["start_date_1"] = sd.time()
         data["end_time"] = ed.time()
-        data["building"] = "bulding1"
+        data["building"] = "building1"
         form = EventForm(
             data,
             user=self.user,
@@ -553,7 +571,7 @@ class LiveViewsTestCase(TestCase):
         data["start_date_0"] = sd.date()
         data["start_date_1"] = sd.time()
         data["end_time"] = ed.time()
-        data["building"] = "bulding1"
+        data["building"] = "building1"
         form = EventForm(
             data,
             user=self.user,
@@ -576,7 +594,7 @@ class LiveViewsTestCase(TestCase):
         data["start_date_0"] = sd.date()
         data["start_date_1"] = sd.time()
         data["end_time"] = ed.time()
-        data["building"] = "bulding1"
+        data["building"] = "building1"
         form = EventForm(
             data,
             user=self.user,
@@ -599,7 +617,7 @@ class LiveViewsTestCase(TestCase):
         data["start_date_0"] = sd.date()
         data["start_date_1"] = sd.time()
         data["end_time"] = ed.time()
-        data["building"] = "bulding1"
+        data["building"] = "building1"
         form = EventForm(
             data,
             user=self.user,
@@ -630,7 +648,7 @@ class LiveViewsTestCase(TestCase):
         data["start_date_1"] = sd.time()
         data["end_date_0"] = ed.date()
         data["end_date_1"] = ed.time()
-        data["building"] = "bulding1"
+        data["building"] = "building1"
         form = EventForm(
             data,
             user=self.user,
@@ -649,7 +667,7 @@ class LiveViewsTestCase(TestCase):
         data["start_date_1"] = sd.time()
         data["end_date_0"] = ed.date()
         data["end_date_1"] = ed.time()
-        data["building"] = "bulding1"
+        data["building"] = "building1"
         form = EventForm(
             data,
             user=self.user,
@@ -672,7 +690,7 @@ class LiveViewsTestCase(TestCase):
         data["start_date_1"] = sd.time()
         data["end_date_0"] = ed.date()
         data["end_date_1"] = ed.time()
-        data["building"] = "bulding1"
+        data["building"] = "building1"
         form = EventForm(
             data,
             user=self.user,
@@ -696,7 +714,7 @@ class LiveViewsTestCase(TestCase):
         data["start_date_1"] = sd.time()
         data["end_date_0"] = ed.date()
         data["end_date_1"] = ed.time()
-        data["building"] = "bulding1"
+        data["building"] = "building1"
         form = EventForm(
             data,
             user=self.user,
@@ -720,7 +738,7 @@ class LiveViewsTestCase(TestCase):
         data["start_date_1"] = sd.time()
         data["end_date_0"] = ed.date()
         data["end_date_1"] = ed.time()
-        data["building"] = "bulding1"
+        data["building"] = "building1"
         form = EventForm(
             data,
             user=self.user,
@@ -744,7 +762,7 @@ class LiveViewsTestCase(TestCase):
         data["start_date_1"] = sd.time()
         data["end_date_0"] = ed.date()
         data["end_date_1"] = ed.time()
-        data["building"] = "bulding1"
+        data["building"] = "building1"
         form = EventForm(
             data,
             user=self.user,
@@ -927,7 +945,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test_events restricted access_group prevent: OK!")
 
         # event restricted with access_groups (user is in group)
-        self.user.owner.accessgroup_set.add(access_group)
+        self.user.owner.accessgroup_set.add(access_group, through_defaults={"site": 1})
         response = self.client.get("/live/event/%s/" % self.event.slug)
         self.assertEqual(200, response.status_code)
         print("   --->  test_events restricted access group match: OK !")
@@ -1005,8 +1023,20 @@ class LiveViewsTestCase(TestCase):
         # piloting buttons
         response = self.client.get("/live/event/%s/" % self.event.slug)
         self.assertTemplateUsed(response, "live/event.html")
+        self.assertFalse(response.context["need_piloting_buttons"])
+        print(
+            "   --->  test_events need_piloting_buttons event for owner no impl broadcaster: OK !"
+        )
+
+        br2 = Broadcaster.objects.get(id=2)
+        self.event.broadcaster = br2
+        self.event.save()
+        response = self.client.get("/live/event/%s/" % self.event.slug)
+        self.assertTemplateUsed(response, "live/event.html")
         self.assertTrue(response.context["need_piloting_buttons"])
-        print("   --->  test_events need_piloting_buttons event for owner: OK !")
+        print(
+            "   --->  test_events need_piloting_buttons event for owner with impl broadcaster: OK !"
+        )
 
         # Superuser logged in
         self.superuser = User.objects.create_superuser(
@@ -1064,7 +1094,7 @@ class LiveViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 404)
         print("   --->  test broadcasters_from_building HttpResponseBadRequest: OK!")
 
-        response = self.client.get(url, {"building": "bulding1"})
+        response = self.client.get(url, {"building": "building1"})
         self.assertEqual(response.status_code, 200)
         print("   --->  test broadcasters_from_building: OK!")
 
@@ -1074,11 +1104,12 @@ class LiveViewsTestCase(TestCase):
         )
         self.client.force_login(self.superuser)
 
-        response = self.client.get(url, {"building": "bulding1"})
+        response = self.client.get(url, {"building": "building1"})
         self.assertEqual(response.status_code, 200)
         expected = {
             "1": {"id": 1, "name": "broadcaster1", "restricted": True},
             "2": {"id": 2, "name": "broadcaster2", "restricted": False},
+            "3": {"id": 3, "name": "broadcaster3", "restricted": False},
         }
         self.assertEqual(response.json(), expected)
         print("   --->  test broadcasters_from_building all: OK!")
@@ -1098,8 +1129,19 @@ class LiveViewsTestCase(TestCase):
         self.assertEqual(response.json(), {"restricted": True})
         print("   --->  test broadcaster_restriction: OK!")
 
+    def checkAjaxPostImplementationError(self, url):
+        response = self.client.post(
+            url,
+            content_type="application/json",
+            data=json.dumps({"idbroadcaster": 1, "idevent": 1}),
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("error" in response.json())
+        self.assertEqual(response.json()["error"], "implementation error")
+
     def test_isstreamavailabletorecord(self):
-        url = "/live/event_isstreamavailabletorecord/"
+        url = reverse("live:ajax_is_stream_available_to_record")
         # not logged
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
@@ -1109,117 +1151,105 @@ class LiveViewsTestCase(TestCase):
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
 
+        # http method unauthorized
         response = self.client.post(url)
         self.assertEqual(response.status_code, 405)
         print("   --->  test isstreamavailabletorecord HttpResponseNotAllowed: OK!")
 
+        # implementation error
         response = self.client.get(
             url, {"idbroadcaster": 1}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
         )
         self.assertEqual(response.status_code, 200)
-        # self.assertEqual(response.json(),
-        # {'available': False, 'recording': False, 'message': 'implementation error'})
+        self.assertTrue("message" in response.json())
+        self.assertEqual(response.json()["message"], "implementation error")
         print("   --->  test isstreamavailabletorecord implementation error: OK!")
 
     def test_start_record(self):
-        url = "/live/ajax_calls/event_startrecord/"
+        url = reverse("live:ajax_event_startrecord")
 
         # not logged
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
         print("   --->  test startrecord user not logged: OK!")
 
+        # user logged
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
 
+        # http method unauthorized
         response = self.client.get(url)
         self.assertEqual(response.status_code, 405)
         print("   --->  test startrecord HttpResponseNotAllowed: OK!")
 
-        response = self.client.post(
-            url,
-            content_type="application/json",
-            data=json.dumps({"idbroadcaster": 1, "idevent": 1}),
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-        )
-        self.assertEqual(response.status_code, 200)
-        # self.assertEqual(response.json(),
-        # {'success': False, 'message': 'implementation error'})
+        # implementation error
+        self.checkAjaxPostImplementationError(url)
         print("   --->  test startrecord implementation error: OK!")
 
     def test_split_record(self):
-        url = "/live/ajax_calls/event_splitrecord/"
+        url = reverse("live:ajax_event_splitrecord")
 
         # not logged
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
         print("   --->  test splitrecord user not logged: OK!")
 
+        # user logged
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
 
+        # http method unauthorized
         response = self.client.get(url)
         self.assertEqual(response.status_code, 405)
         print("   --->  test splitrecord HttpResponseNotAllowed: OK!")
 
-        response = self.client.post(
-            url,
-            content_type="application/json",
-            data=json.dumps({"idbroadcaster": 1, "idevent": 1}),
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-        )
-        self.assertEqual(response.status_code, 200)
+        # implementation error
+        self.checkAjaxPostImplementationError(url)
         print("   --->  test splitrecord implementation error: OK!")
 
     def test_stop_record(self):
-        url = "/live/ajax_calls/event_stoprecord/"
+        url = reverse("live:ajax_event_stoprecord")
 
         # not logged
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
         print("   --->  test stoprecord user not logged: OK!")
 
+        # user logged
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
 
+        # http method unauthorized
         response = self.client.get(url)
         self.assertEqual(response.status_code, 405)
         print("   --->  test stoprecord HttpResponseNotAllowed: OK!")
 
-        response = self.client.post(
-            url,
-            content_type="application/json",
-            data=json.dumps({"idbroadcaster": 1, "idevent": 1}),
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-        )
-        self.assertEqual(response.status_code, 200)
+        # implementation error
+        self.checkAjaxPostImplementationError(url)
         print("   --->  test stoprecord implementation error: OK!")
 
     def test_event_info_record(self):
-        url = "/live/ajax_calls/geteventinforcurrentecord/"
+        url = reverse("live:ajax_event_info_record")
 
         # not logged
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
         print("   --->  test event_info_record user not logged: OK!")
 
+        # user logged
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
 
+        # http method unauthorized
         response = self.client.get(url)
         self.assertEqual(response.status_code, 405)
         print("   --->  test event_info_record HttpResponseNotAllowed: OK!")
 
-        response = self.client.post(
-            url,
-            content_type="application/json",
-            data=json.dumps({"idbroadcaster": 1, "idevent": 1}),
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-        )
-        self.assertEqual(response.status_code, 200)
+        # implementation error
+        self.checkAjaxPostImplementationError(url)
         print("   --->  test event_info_record implementation error: OK!")
 
-        # Brodacaster with implementation parameters
+        # Broadcaster with implementation parameters
         @all_requests
         def response_is_recording_ko(url, request):
             return httmock.response(
@@ -1608,3 +1638,40 @@ class LiveViewsTestCase(TestCase):
             target_status_code=200,
         )
         print("   --->  test test_immediate_event in maintenance OK !")
+
+    def test_transform_to_video(self):
+        from pod.live.views import transform_to_video
+
+        video_file_name = "test_video.mp4"
+        infos = {
+            "currentFile": video_file_name,
+        }
+
+        broad_no_imp = Broadcaster.objects.get(id=1)
+        response = transform_to_video(broad_no_imp, 1, infos)
+        json_response = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("error" in json_response)
+        self.assertEqual(json_response["error"], "implementation error")
+        print("   --->  test test_transform_to_video no impl OK !")
+
+        # FIXME: this leads to the following error "database table is locked: video_video"
+        # # Create a temporary file for testing
+        # video_file_path = os.path.join(DEFAULT_EVENT_PATH, video_file_name)
+        # with open(video_file_path, "w") as file:
+        #     file.write("some content")
+        # broad_wowza = Broadcaster.objects.get(id=2)
+        # # This should create the video
+        # response = transform_to_video(broad_wowza, 1, infos)
+        # self.assertEqual(response.status_code, 200)
+        # print("   --->  test test_transform_to_video wowza OK !")
+        # # remove the temporary file
+        # os.unlink(video_file_path)
+
+        # should send the response when the thread is started
+        broad_smp = Broadcaster.objects.get(id=3)
+        response = transform_to_video(broad_smp, 1, infos)
+        json_response = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(json_response["success"])
+        print("   --->  test test_transform_to_video smp OK !")
