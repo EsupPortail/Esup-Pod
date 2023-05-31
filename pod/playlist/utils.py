@@ -4,7 +4,6 @@ from django.db.models import Max
 
 
 from pod.playlist.models import Playlist, PlaylistContent
-from pod.playlist.views import playlist_list
 from pod.video.models import Video
 
 
