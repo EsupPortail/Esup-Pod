@@ -4,6 +4,7 @@ from django.db.models import Max
 
 
 from pod.playlist.models import Playlist, PlaylistContent
+from pod.playlist.views import playlist_list
 from pod.video.models import Video
 
 
@@ -126,3 +127,26 @@ def get_number_video_added_in_playlist(video: Video) -> int:
         int: The number of times a video has been added to a playlist
     """
     return PlaylistContent.objects.filter(video=video).count()
+
+
+def get_public_playlist() -> list:
+    """
+    Get all public playlist in the application.
+
+    Returns:
+        list(:class:`pod.playlist.models.Playlist`): The public playlist list
+    """
+    return Playlist.objects.filter(visibility="public")
+
+
+def get_playlist_list_for_user(user: User) -> list:
+    """
+    Get all playlist for a user.
+
+    Args:
+        user (:class:`django.contrib.auth.models.User`): The user object
+
+    Returns:
+        list(:class:`pod.playlist.models.Playlist`): The playlist list for a user
+    """
+    return Playlist.objects.filter(owner=user)
