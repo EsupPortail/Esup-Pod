@@ -66,3 +66,7 @@
     color: white;
     font-size: 2em;
 }
+
+.playlist-link:hover {
+    text-decoration: underline;
+}

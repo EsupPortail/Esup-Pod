@@ -20,6 +20,14 @@
       TODO Ajouter un if count playlist = 0 ... pour expliquer comment créer une playlist
     {% endcomment %}
   </div>
+  <ul class="nav nav-pills nav-justified">
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="#">{% trans "My playlists" %}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">{% trans "Public playlists" %}</a>
+    </li>
+  </ul>
   {% include "playlist/playlist_list.html" %}
 {% endblock page_content %}
 
