@@ -2,9 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render
-from pod import playlist
-from pod.playlist.models import Playlist
-from django.utils.translation import ugettext_lazy as _
 
 from pod.playlist.utils import get_playlist, get_video_list_for_playlist
 from pod.main.utils import is_ajax
@@ -12,17 +9,18 @@ from pod.main.utils import is_ajax
 from pod.video.views import CURSUS_CODES, get_owners_has_instances
 
 
-from .models import Playlist
+from .utils import get_playlist_list_for_user
 
 @login_required(redirect_field_name="referrer")
 def playlist_list(request):
     """Render my playlists page."""
+    playlists = get_playlist_list_for_user(request.user)
     return render(
         request,
         "playlist/playlists.html",
         {
             "page_title": _("Playlists"),
-            "playlists": ['lol', 'lol2'],
+            "playlists": playlists,
         }
     )
 
