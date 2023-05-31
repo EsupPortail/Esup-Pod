@@ -36,13 +36,21 @@
 
 <p id="bulkUpdateInstructions">Select below an action, check the videos you want to modify and press Apply.</p>
 
-  <!--<div class="container">-->
   <div id="bulk_update_container" class="row">
     <div id="bulk_update_form">
 
         <select id="bulkUpdateActionSelect" name="action" class="form-select mb-2" aria-label="Default select example">
           <option value="" selected>Choose an action</option>
-          <option value="fieldUpdate">Edit a field</option>
+          <optgroup label="Edit a field">
+            <option value="title">Title</option>
+            <option value="date_added">Date added</option>
+            <option value="date_delete">Date to delete</option>
+            <option value="date_evt">Date of the event field</option>
+            <option value="type">Type</option>
+            <option value="cursus">Cursus</option>
+            <option value="main_lang">Main lang</option>
+            <option value="discipline">Discipline</option>
+          </optgroup>
           <option value="is_draft">Draft mode</option>
           <option value="is_restricted">Restrict access</option>
           <option value="password">Add a password</option>
@@ -50,19 +58,8 @@
           <option value="thumbnail">Edit the thumbnail</option>
           <option value="delete">Delete</option>
         </select>
-        <select id="fieldUpdateSelect" name="fieldUpdate" class="form-select mb-2 actionsMultiplesForm collapse" aria-label="Default select example">
-          <option value="" selected>Choose a field</option>
-          <option value="title">Title</option>
-          <option value="date_added">Date added</option>
-          <option value="date_delete">Date to delete</option>
-          <option value="date_evt">Date of the event field</option>
-          <option value="type">Type</option>
-          <option value="cursus">Cursus</option>
-          <option value="main_lang">Main lang</option>
-          <option value="discipline">Discipline</option>
-        </select>
-      </div>
-      <div id="generatedFormContainer"></div>
+
+      <div id="dashboardFormContainer"></div>
 
       <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalConfirmBulkUpdate" disabled>
         Appliquer <span id="countSelectedVideosBadge" class="badge bg-secondary">0 vidéos</span></button>
@@ -87,7 +84,7 @@
   {% endif %}
   </div>
   </div>
-  <!--</div>-->
+
 {% endblock page_content %}
 
 {% block page_aside %}
@@ -97,6 +94,7 @@
 {% block more_script %}
 <script>
   var urlVideos = "{% url 'video:dashboard' %}";
+  var urlDashboardForm = "{% url 'video:dashboard_form' %}";
   var urlVideosUpdate = "{% url 'video:bulk_update' %}";
   var csrftoken = "{{ csrf_token }}";
   var page = 1;
