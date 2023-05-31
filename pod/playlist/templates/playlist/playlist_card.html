@@ -1,6 +1,18 @@
 {% load i18n %}
 {% spaceless %}
-<div class="playlist-card">
-    playlist
-</div>
+<a href="#">
+    <div class="playlist-card box-shadow">
+        <div class="flex-row d-flex align-items-center">
+            <i class="bi bi-play-fill"></i>
+            <div class="playlist-card-header">
+                <span class="playlist-card-title">{{ playlist.name }}</span>
+                <span>{{ playlist.description }}</span>
+            </div>
+        </div>
+        <div class="playlist-card-buttons flex-row d-flex align-items-center">
+            <i class="bi bi-pencil-square"></i>
+            <i class="bi bi-trash-fill"></i>
+        </div>
+    </div>
+</a>
 {% endspaceless %}
