@@ -7507,11 +7507,11 @@ msgstr "Transcrire"
 
 #: pod/video/utils.py
 msgid "automatically transcript"
-msgstr "automatiquement transcript"
+msgstr "automatiquement transcrit"
 
 #: pod/video/utils.py
 msgid "encoded to Web formats"
-msgstr ""
+msgstr "encodé aux formats Web"
 
 #: pod/video/utils.py
 msgid "You will find it here:"
