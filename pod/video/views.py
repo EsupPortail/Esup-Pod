@@ -489,7 +489,7 @@ def theme_edit_save(request, channel):
 # ############################################################################
 
 @login_required(redirect_field_name="referrer")
-def videos_dashboard(request):
+def dashboard(request):
     """Render the logged user's dashboard (videos list/bulk update)"""
     data_context = {}
     site = get_current_site(request)
@@ -548,12 +548,6 @@ def videos_dashboard(request):
     paginator = Paginator(videos_list, 12)
     videos = get_paginated_videos(paginator, page)
 
-    videos_next_page_number = videos.next_page_number() if videos.has_next() else None
-    owners_instances = get_owners_has_instances(request.GET.getlist("owner"))
-
-    # default_owner = request.user.pk
-    videoss = Video.objects.all()
-
     if request.is_ajax():
         return render(
             request,
@@ -574,6 +568,26 @@ def videos_dashboard(request):
     data_context["page_title"] = "Dashboard"
 
     return render(request, "videos/dashboard.html", data_context)
+
+
+@ajax_required
+@login_required(redirect_field_name="referrer")
+def dashboard_form(request):
+    body = json.loads(request.body)
+    action = body["action"]
+
+    default_owner = request.user.pk
+    form = VideoForm(
+        is_staff=request.user.is_staff,
+        is_superuser=request.user.is_superuser,
+        current_user=request.user,
+        initial={"owner": default_owner},
+    )
+    form.create_with_fields(action)
+
+    return render(request, "videos/form_dashboard.html", {
+        'form': form,
+    })
 
 
 @ajax_required

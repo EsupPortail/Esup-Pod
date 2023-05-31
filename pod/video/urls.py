@@ -8,7 +8,8 @@ from .views import (
     video_add,
     video_delete,
     video_transcript,
-    videos_dashboard,
+    dashboard,
+    dashboard_form,
     bulk_update,
     my_videos,
     video_notes,
@@ -87,7 +88,8 @@ urlpatterns = [
         name="api_chunked_upload",
     ),
     url(r"^my/$", my_videos, name="my_videos"),
-    url(r"^dashboard/$", videos_dashboard, name="dashboard"),
+    url(r"^dashboard/$", dashboard, name="dashboard"),
+    url(r"^dashboard_form/$", dashboard_form, name="dashboard_form"),
 ]
 # COMPLETION
 urlpatterns += [

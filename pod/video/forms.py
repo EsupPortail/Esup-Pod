@@ -933,6 +933,11 @@ class VideoForm(forms.ModelForm):
                 channel__site=Site.objects.get_current()
             )
 
+    def create_with_fields(self, fields):
+        for field in list(self.fields):
+            if field not in fields:
+                del self.fields[field]
+
     class Meta(object):
         """Define the VideoForm metadata."""
 
