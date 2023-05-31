@@ -1,0 +1,15 @@
+{% load i18n %}
+{% load static %}
+{% spaceless %}
+<div class="container">
+  {% for playlist in playlists %}
+    {% include "playlist/playlist_card.html" %}
+  {% empty %}
+    <div>
+      <p>{% trans "Sorry, no playlist found." %}</p>
+    </div>
+  {% endfor %}
+</div>
+{% endspaceless %}
+{% block more_script %}
+{% endblock %}

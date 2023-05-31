@@ -5,8 +5,10 @@
 {% block opengraph %}
 {% endblock %}
 
+{% block page_title %}{{page_title|striptags|capfirst}}{% endblock %}
+
 {% block page_extra_head %}
-<link rel="stylesheet" href="{% static 'css/favorites-list.css' %}?ver={{VERSION}}">
+<link rel="stylesheet" href="{% static 'css/playlist.css' %}?ver={{VERSION}}">
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My playlists" %}</li>{% endblock %}
@@ -14,9 +16,11 @@
 {% block page_content %}
   <div class="row videos-list-header">
     <h2 class="page_title col-xxl-4 mb-2">{% trans "My playlists" %}</h2>
-    {% comment "" %}TODO Ajouter un if count playlist = 0 ...{% endcomment %}
+    {% comment "" %}
+      TODO Ajouter un if count playlist = 0 ... pour expliquer comment créer une playlist
+    {% endcomment %}
   </div>
-  {% include "favorite/favorite_video_list.html" %}
+  {% include "playlist/playlist_list.html" %}
 {% endblock page_content %}
 
 {% block page_aside %}
