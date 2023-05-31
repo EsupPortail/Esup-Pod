@@ -1,4 +1,5 @@
 """Esup-Pod playlist utilities."""
+from os import name
 from django.contrib.auth.models import User
 from django.db.models import Max
 
@@ -149,3 +150,40 @@ def get_playlist_list_for_user(user: User) -> list:
         list(:class:`pod.playlist.models.Playlist`): The playlist list for a user
     """
     return Playlist.objects.filter(owner=user)
+
+
+def get_video_list_for_playlist(playlist: Playlist) -> list:
+    """
+    Get all videos for a playlist.
+
+    Args:
+        playlist (:class:`pod.playlist.models.Playlist`): The playlist object
+
+    Returns:
+        list(:class:`pod.video.models.Video`): The video list for a playlist
+    """
+    playlist_content = PlaylistContent.objects.filter(playlist=playlist)
+    videos_id = playlist_content.values_list("video_id", flat=True)
+    video_list = Video.objects.filter(id__in=videos_id).extra(
+        select={"rank": "playlist_playlistcontent.rank"},
+        tables=["playlist_playlistcontent"],
+        where=[
+            "playlist_playlistcontent.video_id=video_video.id",
+            "playlist_playlistcontent.id=%s"
+        ],
+        params=[playlist.id]
+    )
+    return video_list
+
+
+def get_playlist(slug: str) -> Playlist:
+    """
+    Get a playlist with a slug
+
+    Args:
+        slug (str): The slug of the playlist
+
+    Returns:
+        Playlist(:class:`pod.playlist.models.Playlist`): The playlist object
+    """
+    return Playlist.objects.get(slug=slug)

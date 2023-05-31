@@ -1,6 +1,6 @@
 {% load i18n %}
 {% spaceless %}
-<a href="#">
+<a href="{% url 'playlist:content' playlist.slug %}">
     <div class="playlist-card box-shadow">
         <div class="flex-row d-flex align-items-center">
             <i class="bi bi-play-fill"></i>
