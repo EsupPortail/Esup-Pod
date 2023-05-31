@@ -455,4 +455,4 @@ class MeetingInviteForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(MeetingInviteForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
-        self.fields['owner_copy'].widget.attrs.update({'class': 'me-1'})
+        self.fields["owner_copy"].widget.attrs.update({"class": "me-1"})
