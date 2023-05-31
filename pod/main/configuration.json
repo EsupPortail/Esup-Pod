@@ -2342,6 +2342,17 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "USE_PLAYLIST": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of playlist. Allows users to add videos in a playlist."
+                                ],
+                                "fr": [
+                                    "Activation des playlist. Permet aux utilisateurs d'ajouter des vidéos dans une playlist."
+                                ]
+                            }
+                        },
                         "USE_STATS_VIEW": {
                             "default_value": false,
                             "description": {

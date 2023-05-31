@@ -129,9 +129,10 @@ if getattr(settings, "USE_FAVORITES", True):
     ]
 
 # PLAYLIST
-urlpatterns += [
-    path("playlist/", include("pod.playlist.urls", namespace="playlist")),
-]
+if getattr(settings, "USE_PLAYLIST", True):
+    urlpatterns += [
+        path("playlist/", include("pod.playlist.urls", namespace="playlist")),
+    ]
 
 # CHANNELS
 urlpatterns += [
