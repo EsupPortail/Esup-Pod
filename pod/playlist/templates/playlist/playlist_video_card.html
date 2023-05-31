@@ -1,6 +1,16 @@
 {% load i18n %}
 {% spaceless %}
-<div class="card box-shadow pod-card--video video-card">
-    
+<div class="playlist-video-card">
+    <h2>{{ video.title }}</h2>
+    <div class="playlist-card-content">
+        <i class="bi bi-grip-vertical"></i>
+        <div class="">
+            {{ video.get_thumbnail_card|safe }}
+        </div>
+        <p>{{ video.description }}</p>
+        <p>{{ video.owner }} - <small class="text-muted time">{{video.duration_in_time}}</small>
+        </p>
+        <i class="bi bi-trash-fill"></i>
+    </div>
 </div>
-{% endspaceless %}
+ {% endspaceless %}

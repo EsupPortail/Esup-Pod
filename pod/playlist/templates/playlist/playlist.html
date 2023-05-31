@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block opengraph %}{% load video_filters %}
+  <meta name="description" content="{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}">
+  <!-- Open Graph data -->
+  <meta property="og:title" content="{% trans 'Playlist videos' %}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}">
+  <meta property="og:description" content="{{ DESC_SITE }} - {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}">
+  <meta property="og:site_name" content="{{ TITLE_SITE }}">
+{% endblock %}
+
+{% block page_extra_head %}
+<link rel="stylesheet" href="{% static 'css/playlist-content.css' %}?ver={{VERSION}}">
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page"> {{ playlist.name }} </li>{% endblock %}
+
+
+{% block page_content %}
+  <div class="row videos-list-header">
+    <h2 id="video_count" class="page_title col-xxl-4 mb-2">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
+  </div>
+  {% include 'loader.html' %}
+
+  {# VIDEOS IN PLAYLIST #}
+  <div class="videos-container" id="videos_list" data-nextPage="{{ videos.has_next|yesno:'true,false' }}" data-countvideos="{{ count_videos }}">
+    {% for video in videos %}
+    <div class="draggable-container" id="{{ video.id }}">
+        <a class="card-link" href="#">
+        <div class="infinite-item draggable position-relative" id="{{ video.slug }}" {% if categories %}data-slug="{{video.slug}}"{% endif %}>
+          {% include "playlist/playlist_video_card.html" %}
+        </div>
+      </a>
+      </div>
+    {% empty %}
+      <div>
+        <p>{% trans "Sorry, no video found." %}</p>
+      </div>
+    {% endfor %}
+  </div>
+
+{% endblock page_content %}
+
+{% block page_aside %}
+  {% include 'videos/filter_aside.html' %}
+  <div class="card card-hidden" id="card-sharedraftversion">
+    <h2 class="card-header card-title pod-card__title h4">{% trans "Help - Drag & Drop" %}</h2>
+    <div class="card-body card-text">
+      <ol>
+        <li>{% trans "Select the video to move by clicking and holding." %}</li>
+        <li> {% trans "While holding down the video, drag it to the desired location." %}</li>
+        <li> {% trans "Drop the video on another to swap their position." %}</li>
+      </ol>
+    </div>
+  </div>
+{% endblock page_aside %}
+
+{% block more_script %}
+
+{% endblock more_script %}
