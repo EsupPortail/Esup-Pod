@@ -6,5 +6,5 @@ app_name = "playlist"
 
 urlpatterns = [
     path("", playlist_list, name="list"),
-    path("<slug:name>", playlist_content, name="playlist_content"),
+    path("<slug:slug>", playlist_content, name="playlist_content"),
 ]

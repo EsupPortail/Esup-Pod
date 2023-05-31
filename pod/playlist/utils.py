@@ -165,11 +165,11 @@ def get_video_list_for_playlist(playlist: Playlist) -> list:
     playlist_content = PlaylistContent.objects.filter(playlist=playlist)
     videos_id = playlist_content.values_list("video_id", flat=True)
     video_list = Video.objects.filter(id__in=videos_id).extra(
-        select={"rank": "playlist_playlist.rank"},
-        tables=["playlist_playlist"],
+        select={"rank": "playlist_playlistcontent.rank"},
+        tables=["playlist_playlistcontent"],
         where=[
-            "playlist_playlist.video_id=video_video.id",
-            "playlist_playlist.id=%s"
+            "playlist_playlistcontent.video_id=video_video.id",
+            "playlist_playlistcontent.id=%s"
         ],
         params=[playlist.id]
     )
