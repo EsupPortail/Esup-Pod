@@ -99,6 +99,10 @@ class Playlist(models.Model):
         """Display a playlist as string."""
         return self.slug
 
+    def get_number_video(self) -> int:
+        from .utils import get_number_video_in_playlist
+        return get_number_video_in_playlist(self)
+
 
 class PlaylistContent(models.Model):
     """PlaylistContent model."""

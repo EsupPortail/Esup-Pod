@@ -1,28 +1,51 @@
-{% load i18n %}
+{% load i18n l10n %}
 {% load playlist_buttons %}
 {% spaceless %}
     {% user_can_edit_or_remove playlist as can_edit_or_remove %}
-    <div class="playlist-card box-shadow">
-        <div class="flex-row d-flex align-items-center">
-            <a href="#" title="{% trans "Start the first video of the playlist" %}">
-                <i class="bi bi-play-fill"></i>
-            </a>
-            <a class="playlist-link" href="{% url 'playlist:content' playlist.slug %}">
-                <div class="playlist-card-header">
-                    <span class="playlist-card-title">{{ playlist.name }}</span>
-                    <span>{{ playlist.description }}</span>
-                </div>
+    <div class="card box-shadow pod-card--video meeting-card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <a class="link" href="{% url 'playlist:content' playlist.slug %}">
+                    <small class="text-muted time">
+                        <b>{{ playlist.name|capfirst|truncatechars:43 }}</b>
+                        <br>
+                        {{ playlist.get_number_video }}
+                        {% if playlist.get_number_video > 0 %}
+                            {% trans "videos" %}
+                        {% else %}
+                            {% trans "video" %}
+                        {% endif %}
+                    </small>
+                </a>
+                {% if playlist.visibility == "protected" %}
+                    <span>
+                        <i class="bi bi-lock" aria-hidden="true"></i>
+                    </span>
+                {% elif playlist.visibility == "private" %}
+                    <span>
+                        <i class="bi bi-incognito" aria-hidden="true"></i>
+                    </span>
+                    {% elif playlist.visibility == "public" %}
+                    <span>
+                        <i class="bi bi-globe-americas" aria-hidden="true"></i>
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-thumbnail">
+            <a class="link-center-pod" href="#" title="{{ playlist.name }}"></a>
+                <img class="card-img-top" src="{{ DEFAULT_PLAYLIST_THUMBNAIL }}" alt="A faire" loading="lazy">
             </a>
         </div>
-        <div class="playlist-card-buttons flex-row d-flex align-items-center">
+        <div class="card-body px-3 py-2">
             {% if can_edit_or_remove %}
-                <a href="#" title="{% trans "Edit the playlist" %}">
-                    <i class="bi bi-pencil-square"></i>
-                </a>
-                <a href="#" title="{% trans "Remove the playlist" %}">
-                    <i class="bi bi-trash-fill"></i>
-                </a>
-            {% endif %}
+            <footer class="card-footer card-footer-pod p-0 m-0 link-center-pod link-meeting">
+              {% include "playlist/playlist_link.html" %}
+            </footer>
+          {% endif %}
+            <a class="btn btn-primary btn-sm link-center-pod" href="#">
+                <i class="bi bi-play-fill pod-add"></i><span>{% trans "Start the playlist" %}</span>
+              </a>
         </div>
     </div>
 {% endspaceless %}

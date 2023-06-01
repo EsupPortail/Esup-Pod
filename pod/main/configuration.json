@@ -1506,10 +1506,35 @@
                     }
                 },
                 "playlist": {
-                    "description": {},
-                    "settings": {},
+                    "description": {
+                        "en": [
+                            "Playlist app for the playlist management.",
+                            "Set `USE_PLAYLIST` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Playlist pour la gestion des playlists.",
+                            "Mettre `USE_PLAYLIST` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "DEFAULT_PLAYLIST_THUMBNAIL": {
+                            "default_value": "/img/default-playlist.svg",
+                            "description": {
+                                "en": [
+                                    "Default image displayed as a poster or thumbnail, used to present the playlist.",
+                                    "This image must be located in the `static` directory."
+                                ],
+                                "fr": [
+                                    "Image par défaut affichée comme poster ou vignette, utilisée pour présenter la playlist.",
+                                    "Cette image doit se situer dans le répertoire `static`."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
+                        },
+                    },
                     "title": {
-                        "en": "",
+                        "en": "Playlist application configuration",
                         "fr": "Configuration application playlist"
                     }
                 },
