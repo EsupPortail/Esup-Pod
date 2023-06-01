@@ -30,6 +30,11 @@
   {% endif %}
   <div class="pod-info-video__buttons">
     {% if user.is_authenticated and not video.is_draft %}
+      <button type="button" class="btn btn-link btn-lg pod-btn-share" title="{% trans 'Add the video to a playlist'%}" data-bs-toggle="modal" data-bs-target="#playlist-list">
+        <i class="bi bi-folder-fill" aria-hidden="true"></i>
+      </button>
+      {% include "playlist/playlist-list-modal.html" %}
+
       {% is_favorite video as is_fav %}
       {% if USE_FAVORITES %}
         <form method="post" action="{% url 'favorite:add-or-remove' %}" id="favorite-button-form" class="btn m-0 p-0" role="add-or-remove-favorite">
@@ -268,7 +273,7 @@
     </div>
   </div>
 </div>
-{% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all%} <!-- Début modale-->
+{% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all%} <!-- Début modale PARTAGE-->
 <div class="modal fade" id="share" tabindex="-1" aria-labelledby="shareLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

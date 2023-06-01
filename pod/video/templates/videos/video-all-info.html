@@ -54,28 +54,6 @@
         {% endif %}
         {% endwith %}
       {% endif %}
-
-      {% if request.user.playlist_set.all and video.is_draft == False %}
-      <li class="nav-item dropdown dropright" id="dropmenu-playlist">
-        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Add the video to a playlist'%}" id="toggle-playlist">
-          <i class="bi bi-play-circle" aria-hidden="true"></i>
-        </a>
-        {% csrf_token %}
-        <ul class="dropdown-menu" aria-labelledby="toggle-playlist">
-          {% for playlist in request.user.playlist_set.all %}
-            <li><a href="#" data-slug="{{playlist.slug}}"
-              {% if video in playlist.videos %}
-                class="dropdown-item disabled selected"
-              {% else %}
-                class="dropdown-item playlist-item"
-                title="{% trans 'Add current video to this playlist' %}"
-              {% endif %}
-              >{{playlist.title}}
-            </a></li>
-          {% endfor %}
-        </ul>
-      </li>
-      {% endif %}
     </ul>
   </div>
   {% include 'videos/video-info.html' %}
