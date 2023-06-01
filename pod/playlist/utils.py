@@ -52,9 +52,6 @@ def user_add_video_in_playlist(playlist: Playlist, video: Video) -> str:
             video=video,
             rank=get_next_rank(playlist)
         )
-        return f"Video successfully added to the playlist : {playlist.name}"
-    else:
-        return f"This video is already in the playlist : {playlist.name}"
 
 
 def user_remove_video_from_playlist(playlist: Playlist, video: Video) -> str:
@@ -70,9 +67,6 @@ def user_remove_video_from_playlist(playlist: Playlist, video: Video) -> str:
     """
     if check_video_in_playlist(playlist, video):
         PlaylistContent.objects.filter(playlist=playlist, video=video).delete()
-        return f"Video successfully removed from the playlist : {playlist.name}"
-    else:
-        return f"This video is not in the playlist : {playlist.name}"
 
 
 def get_next_rank(playlist: Playlist) -> int:

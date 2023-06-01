@@ -2,6 +2,15 @@
 {% load favorite_info %}
 
 {% spaceless %}
+
+<form method="post" action="{% url 'playlist:remove-video' %}" class="playlist-remove-button-form-card pod-btn-social m-0 ms-1">
+  {% csrf_token %}
+  <input type="hidden" name="video" value="{{ video.id }}">
+  <button type="submit" title="{% trans 'Remove from playlist' %}" class="btn btn-lg btn-link p-1 star_btn">
+    <i class="bi bi-folder-minus"></i>
+  </button>
+</form>
+
 {% is_favorite video as is_fav %}
 {% if USE_FAVORITES and video.is_draft is False and not hide_favorite_link is True %}
   <form method="post" action="{% url 'favorite:add-or-remove' %}" class="favorite-button-form-card pod-btn-social m-0 ms-1">
