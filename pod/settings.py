@@ -219,18 +219,29 @@ LOGGING = {
 }
 
 CACHES = {
-    # … default cache config and others
-    "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+  'default': {
+    'BACKEND': 'django_redis.cache.RedisCache',
+    'LOCATION': 'redis://127.0.0.1:6379/5',
+    'OPTIONS': {
+      'CLIENT_CLASS': 'django_redis.client.DefaultClient',
     },
-    # Persistent cache setup for select2 (NOT DummyCache or LocMemCache).
-    "select2": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/2",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        },
+  },
+  'select2': {
+    'BACKEND': 'django_redis.cache.RedisCache',
+    'LOCATION': 'redis://127.0.0.1:6379/2',
+    'OPTIONS': {
+      'CLIENT_CLASS': 'django_redis.client.DefaultClient',
     },
+  },
+}
+SESSION_ENGINE = 'redis_sessions.session'
+SESSION_REDIS = {
+  'host': '127.0.0.1',
+  'port': 6379,
+  'db': 3,
+  'prefix': 'session',
+  'socket_timeout': 1,
+  'retry_on_timeout': False
 }
 
 # Tell select2 which cache configuration to use:
