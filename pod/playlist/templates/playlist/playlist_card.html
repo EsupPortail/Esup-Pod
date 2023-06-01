@@ -13,12 +13,14 @@
             </a>
         </div>
         <div class="playlist-card-buttons flex-row d-flex align-items-center">
-            <a href="#" title="{% trans "Edit the playlist" %}">
-                <i class="bi bi-pencil-square"></i>
-            </a>
-            <a href="#" title="{% trans "Remove the playlist" %}">
-                <i class="bi bi-trash-fill"></i>
-            </a>
+            {% if playlist.owner == request.user or request.user.is_staff %}
+                <a href="#" title="{% trans "Edit the playlist" %}">
+                    <i class="bi bi-pencil-square"></i>
+                </a>
+                <a href="#" title="{% trans "Remove the playlist" %}">
+                    <i class="bi bi-trash-fill"></i>
+                </a>
+            {% endif %}
         </div>
     </div>
 {% endspaceless %}
