@@ -8,5 +8,5 @@ urlpatterns = [
     path("", playlist_list, name="list"),
     path("<slug:slug>", playlist_content, name="content"),
     path("remove/<slug:slug>", playlist_content, name="remove"),
-    path("remove/<slug:slug>/<slug:video-slug>", remove_video_in_playlist, name="remove-video"),
+    path("remove/<slug:slug>/<slug:video_slug>", remove_video_in_playlist, name="remove-video"),
 ]

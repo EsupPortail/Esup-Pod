@@ -92,19 +92,12 @@ def playlist_content(request, slug):
     )
 
 
-@csrf_protect
-def remove_video_in_playlist(request):
+def remove_video_in_playlist(request, slug, video_slug):
     """Remove a video when the user click on folder minus button."""
-    if request.method == "POST":
-        video = get_object_or_404(
-            Video, pk=request.POST.get("video"), sites=get_current_site(request)
-        )
-        if video.is_draft:
-            return False
-        user_remove_video_from_playlist(playlist, video)
-        return redirect(request.META["HTTP_REFERER"])
-    else:
-        raise Http404()
+    playlist = get_playlist(slug)
+    video = Video.objects.get(slug=video_slug)
+    user_remove_video_from_playlist(playlist, video)
+    return redirect(request.META["HTTP_REFERER"])
 
 
 @login_required(redirect_field_name="referrer")
