@@ -1,44 +1,13 @@
 a.link {
     text-decoration: none;
 }
+
 a.link:hover {
     text-decoration: underline;
 }
 
-.tabs-menu {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.tabs-menu > li {
-    background-color: var(--pod-background-neutre2-bloc);
-    border-top: 1px solid var(--pod-primary);
-    border-left: 1px solid var(--pod-primary);
-    border-radius: 20px 20px 0 0;
-}
-
-.tabs-menu > li:last-child {
-    border-right: 1px solid var(--pod-primary);
-}
-
-.tabs-menu > li#is-active {
-    background: var(--pod-background);
-    margin-bottom: -1px;
-}
-
-.tabs-menu  a {
-    display: inline-flex;
-    padding: 1rem;
-    color: var(--pod-font-color);
-    text-decoration: none;
-}
-
-.tab-content {
-    padding: 0 10px;
-    border: 1px solid var(--pod-primary);
-    border-radius: 0 20px 20px 20px;
+.link-playlist {
+    right: 1rem;
 }
 
 #playlist-list {
