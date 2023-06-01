@@ -8,7 +8,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from pod.video.models import Video
 
 
-from .utils import get_playlist, get_video_list_for_playlist, get_number_video_in_playlist
+from .utils import get_playlist, get_video_list_for_playlist, get_number_video_in_playlist, user_add_video_in_playlist
 from .utils import remove_playlist
 from pod.main.utils import is_ajax
 
@@ -96,10 +96,17 @@ def playlist_content(request, slug):
 
 
 def remove_video_in_playlist(request, slug, video_slug):
-    """Remove a video when the user click on folder minus button."""
+    """Remove a video in playlist."""
     playlist = get_playlist(slug)
     video = Video.objects.get(slug=video_slug)
     user_remove_video_from_playlist(playlist, video)
+    return redirect(request.META["HTTP_REFERER"])
+
+def add_video_in_playlist(request, slug, video_slug):
+    """Add a video in playlist."""
+    playlist = get_playlist(slug)
+    video = Video.objects.get(slug=video_slug)
+    user_add_video_in_playlist(playlist, video)
     return redirect(request.META["HTTP_REFERER"])
 
 
