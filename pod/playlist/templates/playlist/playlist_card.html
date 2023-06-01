@@ -1,5 +1,7 @@
 {% load i18n %}
+{% load playlist_buttons %}
 {% spaceless %}
+    {% user_can_edit_or_remove playlist as can_edit_or_remove %}
     <div class="playlist-card box-shadow">
         <div class="flex-row d-flex align-items-center">
             <a href="#" title="{% trans "Start the first video of the playlist" %}">
@@ -13,7 +15,7 @@
             </a>
         </div>
         <div class="playlist-card-buttons flex-row d-flex align-items-center">
-            {% if playlist.owner == request.user or request.user.is_staff %}
+            {% if can_edit_or_remove %}
                 <a href="#" title="{% trans "Edit the playlist" %}">
                     <i class="bi bi-pencil-square"></i>
                 </a>
