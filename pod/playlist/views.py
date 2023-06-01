@@ -1,9 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.utils.translation import ugettext_lazy as _
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
-from pod.playlist.utils import get_playlist, get_video_list_for_playlist
+from .utils import get_playlist, get_video_list_for_playlist, remove_playlist
 from pod.main.utils import is_ajax
 
 from pod.video.views import CURSUS_CODES, get_owners_has_instances
@@ -84,3 +84,10 @@ def playlist_content(request, slug):
             "sort_direction": sort_direction,
         },
     )
+
+
+@login_required(redirect_field_name="referrer")
+def reove_playlist(request, slug: str):
+    """Remove playlist"""
+    remove_playlist(request.user, get_playlist(slug))
+    return redirect(request.META["HTTP_REFERER"])
