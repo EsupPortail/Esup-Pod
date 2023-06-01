@@ -1,0 +1,39 @@
+{% load i18n %}
+{% load static %}
+{% load playlist_list_modal %}
+
+{% block page_extra_head %}
+<link rel="stylesheet" href="{% static 'css/playlist.css' %}?ver={{VERSION}}">
+{% endblock page_extra_head %}
+
+<!-- DEBUT modal PLAYLIST -->
+<div class="modal fade" id="playlist-list" tabindex="-1" aria-labelledby="playlist-list-label" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title h3" id="shareLabel">
+            <i class="bi bi-folder-fill"></i>&nbsp;{% trans "Your playlists" %}
+          </h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+        </div>
+        <div class="modal-body">
+            {% get_user_playlists request.user as playlists %}
+            {% for playlist in playlists %}
+                <div class="d-flex flex-row justify-content-start align-items-center mb-3 gap-4">
+                    {% video_in_playlist playlist video as video_in_playlist %}
+                    {% if video_in_playlist %}
+                    <a href="#" id="remove-video-from-playlist">
+                        <i class="bi bi-dash"></i>
+                    </a>
+                    {% else %}
+                    <a href="#" id="add-video-from-playlist">
+                        <i class="bi bi-plus"></i>
+                    </a>
+                    {% endif %}
+                    <a class="playlist-title" href="#">{{ playlist.name }}</a>
+                </div>
+            {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div> <!-- modal end PLAYLIST -->
