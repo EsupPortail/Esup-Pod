@@ -14,21 +14,32 @@
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My playlists" %}</li>{% endblock %}
 
 {% block page_content %}
-  <div class="row videos-list-header">
-    <h2 class="page_title col-xxl-4 mb-2">{% trans "My playlists" %}</h2>
-    {% comment "" %}
-      TODO Ajouter un if count playlist = 0 ... pour expliquer comment créer une playlist
-    {% endcomment %}
+  <div class="tabs">
+    <ul class="tabs-menu" role="tablist">
+      <li id="is-active" data-target="tab-my-playlists" role="tab">
+        <a href="#my-playlists">{% trans "My playlists" %}</a>
+      </li>
+      <li data-target="tab-public-playlists" role="tab">
+        <a href="#public-playlists">{% trans "Public playlists" %}</a>
+      </li>
+      <li data-target="tab-add-playlist" role="tab">
+        <a href="#add-playlist">{% trans "Add playlist" %}</a>
+      </li>
+    </ul>
   </div>
-  <ul class="nav nav-pills nav-justified">
-    <li class="nav-item">
-      <a class="nav-link active" aria-current="page" href="#">{% trans "My playlists" %}</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">{% trans "Public playlists" %}</a>
-    </li>
-  </ul>
-  {% include "playlist/playlist_list.html" %}
+  <div class="tab-content" aria-labelledby="tab-my-playlists" role="tabpanel" id="tab-my-playlists">
+    {% with my_playlists as playlists %}
+      {% include "playlist/playlist_list.html" %}
+    {% endwith %}
+  </div>
+  <div class="tab-content" aria-labelledby="tab-public-playlists" role="tabpanel" id="tab-public-playlists">
+    {% with public_playlists as playlists %}
+      {% include "playlist/playlist_list.html" %}
+    {% endwith %}  </div>
+  <div class="tab-content" aria-labelledby="tab-add-playlist" role="tabpanel" id="tab-add-playlist">
+    {% with my_playlists as playlists %}
+      {% include "playlist/playlist_list.html" %}
+    {% endwith %}  </div>
 {% endblock page_content %}
 
 {% block page_aside %}
@@ -36,4 +47,5 @@
 
 
 {% block more_script %}
+  <script src="{% static 'js/tabs.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}

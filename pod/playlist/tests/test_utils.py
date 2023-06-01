@@ -1,14 +1,17 @@
 """Unit tests for Esup-Pod playlist utilities."""
-from os import name, remove
 from django.test import TestCase
 from django.contrib.auth.models import User
 from pod.playlist.models import Playlist, PlaylistContent
-from pod.playlist.utils import check_video_in_playlist, get_next_rank, get_number_playlist, get_number_video_added_in_playlist, get_number_video_in_playlist, user_add_video_in_playlist, user_has_playlist, user_remove_video_from_playlist
+from pod.playlist.utils import check_video_in_playlist, get_next_rank, get_number_playlist
+from pod.playlist.utils import get_number_video_added_in_playlist
+from pod.playlist.utils import get_number_video_in_playlist, user_add_video_in_playlist
+from pod.playlist.utils import user_has_playlist, user_remove_video_from_playlist
+from pod.playlist.utils import remove_playlist
 from pod.video.models import Type, Video
 
 
-class FavoriteTestUtils(TestCase):
-    """TestCase for Esup-Pod favorite video utilities."""
+class PlaylistTestUtils(TestCase):
+    """TestCase for Esup-Pod playlist utilities."""
 
     fixtures = ["initial_data.json"]
 
@@ -179,3 +182,8 @@ class FavoriteTestUtils(TestCase):
             get_number_video_added_in_playlist(self.video)
         )
         print(" --->  test_get_number_video_added_in_playlist ok")
+
+    def test_remove_playlist(self) -> None:
+        """Test if remove_playlist works correctly"""
+        remove_playlist(self.user, self.playlist)
+        self.assertEqual(0, get_number_playlist(self.user))

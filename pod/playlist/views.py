@@ -8,25 +8,28 @@ from django.contrib.sites.shortcuts import get_current_site
 from pod.video.models import Video
 
 
-from pod.playlist.utils import get_playlist, get_video_list_for_playlist
+from .utils import get_playlist, get_video_list_for_playlist, remove_playlist
 from pod.main.utils import is_ajax
 
 from pod.video.views import CURSUS_CODES, get_owners_has_instances
 
 
 from .utils import get_playlist_list_for_user, user_remove_video_from_playlist
+from .utils import get_public_playlist
 
 
 @login_required(redirect_field_name="referrer")
 def playlist_list(request):
     """Render my playlists page."""
-    playlists = get_playlist_list_for_user(request.user)
+    my_playlists = get_playlist_list_for_user(request.user)
+    public_playlists = get_public_playlist()
     return render(
         request,
         "playlist/playlists.html",
         {
             "page_title": _("Playlists"),
-            "playlists": playlists,
+            "my_playlists": my_playlists,
+            "public_playlists": public_playlists,
         }
     )
 
@@ -102,3 +105,10 @@ def remove_video_in_playlist(request):
         return redirect(request.META["HTTP_REFERER"])
     else:
         raise Http404()
+
+
+@login_required(redirect_field_name="referrer")
+def reove_playlist(request, slug: str):
+    """Remove playlist"""
+    remove_playlist(request.user, get_playlist(slug))
+    return redirect(request.META["HTTP_REFERER"])

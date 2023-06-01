@@ -1,5 +1,4 @@
 """Esup-Pod playlist utilities."""
-from os import name
 from django.contrib.auth.models import User
 from django.db.models import Max
 
@@ -181,3 +180,15 @@ def get_playlist(slug: str) -> Playlist:
         Playlist(:class:`pod.playlist.models.Playlist`): The playlist object
     """
     return Playlist.objects.get(slug=slug)
+
+
+def remove_playlist(user: User, playlist: Playlist) -> None:
+    """
+    Remove playlist if the user has right to do it.
+
+    Args:
+        user (:class:`django.contrib.auth.models.User`): The user object
+        playlist (:class:`pod.playlist.models.Playlist`): The playlist objet
+    """
+    if playlist.owner == user or user.is_staff:
+        playlist.delete()
