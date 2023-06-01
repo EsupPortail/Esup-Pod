@@ -23,16 +23,12 @@ from .utils import get_public_playlist
 def playlist_list(request):
     """Render my playlists page."""
     playlists = get_playlist_list_for_user(request.user) | get_public_playlist()
-    video_count_dict = {}
-    for playlist in playlists:
-        video_count_dict[playlist] = get_number_video_in_playlist(playlist)
     return render(
         request,
         "playlist/playlists.html",
         {
             "page_title": _("Playlists"),
             "playlists": playlists,
-            "video_count_dict": video_count_dict,
         }
     )
 
