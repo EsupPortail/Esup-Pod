@@ -16,9 +16,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.http import JsonResponse
 from django.db.models import Q
 from django.contrib.sites.shortcuts import get_current_site
+from django.template.defaultfilters import slugify
 
-from .models import EncodingStep
-from .models import EncodingLog
 from .models import Video
 
 
@@ -56,6 +55,7 @@ USE_ESTABLISHMENT_FIELD = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
 MANAGERS = getattr(settings, "MANAGERS", {})
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
+VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
 
 
 def get_available_videos():
@@ -71,53 +71,6 @@ def get_available_videos():
     except Exception:
         pass
     return videos
-
-
-# ##########################################################################
-# ENCODE VIDEO : GENERIC FUNCTIONS
-# ##########################################################################
-
-
-def change_encoding_step(video_id, num_step, desc):
-    """Change encoding step."""
-    encoding_step, created = EncodingStep.objects.get_or_create(
-        video=Video.objects.get(id=video_id)
-    )
-    encoding_step.num_step = num_step
-    encoding_step.desc_step = desc[:255]
-    encoding_step.save()
-    if DEBUG:
-        print("step: %d - desc: %s" % (num_step, desc))
-
-
-def add_encoding_log(video_id, log):
-    """Add message in video_id encoding log."""
-    encoding_log, created = EncodingLog.objects.get_or_create(
-        video=Video.objects.get(id=video_id)
-    )
-    if created:
-        encoding_log.log = log
-    else:
-        encoding_log.log += "\n\n%s" % log
-    encoding_log.save()
-    if DEBUG:
-        print(log)
-
-
-def check_file(path_file):
-    """Check if path_file is accessible and is not null."""
-    if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
-        return True
-    return False
-
-
-def create_outputdir(video_id, video_path):
-    """ENCODE VIDEO: CREATE OUTPUT DIR."""
-    dirname = os.path.dirname(video_path)
-    output_dir = os.path.join(dirname, "%04d" % video_id)
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    return output_dir
 
 
 ###############################################################
@@ -452,3 +405,29 @@ def get_video_data(video):
         "has_chapter": video.chapter_set.all().count() > 0,
         "is_draft": video.is_draft,
     }
+
+
+def get_storage_path_video(instance, filename):
+    """Get the video storage path.
+
+    Instance needs to implement owner
+    """
+    fname, dot, extension = filename.rpartition(".")
+    try:
+        fname.index("/")
+        return os.path.join(
+            VIDEOS_DIR,
+            instance.owner.owner.hashkey,
+            "%s/%s.%s"
+            % (
+                os.path.dirname(fname),
+                slugify(os.path.basename(fname)),
+                extension,
+            ),
+        )
+    except ValueError:
+        return os.path.join(
+            VIDEOS_DIR,
+            instance.owner.owner.hashkey,
+            "%s.%s" % (slugify(fname), extension),
+        )

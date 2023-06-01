@@ -36,6 +36,9 @@ DATABASES = {
         },
     }
 }
+# Uniquement lors d'environnement conteneurisé
+MIGRATION_MODULES = {'flatpages': 'pod.db_migrations'}
+
 LANGUAGES = (("fr", "Français"), ("en", "English"))
 LANGUAGE_CODE = "en"
 THIRD_PARTY_APPS = ["enrichment", "live"]

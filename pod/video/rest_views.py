@@ -12,8 +12,8 @@ from django.shortcuts import get_object_or_404
 
 from .models import Channel, Theme
 from .models import Type, Discipline, Video
-from .models import VideoRendition, EncodingVideo, EncodingAudio
-from .models import PlaylistVideo, ViewCount
+from pod.video_encode.models import EncodingVideo, EncodingAudio
+from .models import PlaylistVideo, ViewCount, VideoRendition
 from .utils import get_available_videos
 
 # commented for v3

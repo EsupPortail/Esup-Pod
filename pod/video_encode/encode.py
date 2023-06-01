@@ -2,8 +2,8 @@
 
 from django.conf import settings
 from pod.video.models import Video
-from video.utils import change_encoding_step, check_file, add_encoding_log
-from video.utils import send_email, send_email_encoding, time_to_seconds
+from .utils import change_encoding_step, check_file, add_encoding_log
+from pod.video.utils import send_email, send_email_encoding, time_to_seconds
 from .Encoding_video_model import Encoding_video_model
 from .encoding_studio import encode_video_studio
 

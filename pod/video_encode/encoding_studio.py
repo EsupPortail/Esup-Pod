@@ -1,7 +1,7 @@
 """This module handles studio encoding with CPU."""
 from django.conf import settings
-from video.utils import send_email_recording
-from video.utils import check_file
+from pod.video.utils import send_email_recording
+from .utils import check_file
 from . import encode
 
 import time
