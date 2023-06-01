@@ -1,25 +1,156 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n l10n %}
 {% load static %}
+{% load thumbnail %}
 
-{% block opengraph %}
-{% endblock %}
+{% block more_style %}
+  <link href="{% static 'css/playlist.css' %}?ver={{ VERSION }}" rel="stylesheet">
+{% endblock more_style %}
 
-{% block page_title %}{{page_title|striptags|capfirst}}{% endblock %}
-
-{% block page_extra_head %}
-<link rel="stylesheet" href="{% static 'css/playlist.css' %}?ver={{VERSION}}">
-{% endblock page_extra_head %}
-
-{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My playlists" %}</li>{% endblock %}
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Playlists" %}</li>{% endblock %}
 
 {% block page_content %}
-  {% include "playlist/playlist_list.html" %}
+  {% if playlists|length != 0 %}
+  <h2 class="h4">
+    {% blocktrans count counter=playlists|length %}{{ counter }} playlist found{% plural %}{{ counter }} playlists found{% endblocktrans %}
+  </h2>
+  {% else %}
+  <h2 class="h4">{% trans "No playlists found"%}</h2>
+  <p class="alert alert-info">
+      {% blocktrans %}You haven't got any playlist yet, please use the "Add a playlist" button to add one.{% endblocktrans %}
+  </p>
+  {% endif %}
+
+<div class="d-grid gap-2 d-md-flex justify-content-md mb-2">
+  <a class="initials btn btn-primary pod-btn-primary btn-sm" href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a playlist' %}">
+    <i class="bi bi-plus pod-add"></i><span>{% trans "Add a playlist" %}</span>
+  </a>
+</div>
+
+<div class="infinite-container pod-infinite-container" id="meetings_list">
+  {% for playlist in playlists %}
+    <div class="infinite-item card-group">
+      {% include "playlist/playlist_card.html" %}
+    </div>
+  {% endfor %}
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="meetingModal" tabindex="-1" aria-labelledby="meetingModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+      </div>
+      <div class="modal-body">
+
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock page_content %}
 
+{% block collapse_page_aside %}
+  {{ block.super }}
+{% endblock collapse_page_aside %}
+
 {% block page_aside %}
+  {% include 'meeting/filter_aside.html' %}
 {% endblock page_aside %}
 
-
 {% block more_script %}
+<script>
+var meetingModal = document.getElementById('meetingModal')
+meetingModal.addEventListener('show.bs.modal', function (event) {
+  // Button that triggered the modal
+  const button = event.relatedTarget
+  // Extract info from data-bs-* attributes
+  const meeting_id = button.getAttribute('data-bs-meeting-id')
+  const title = button.getAttribute('data-bs-meeting-title')
+  const endurl = button.getAttribute('data-bs-meeting-end-url')
+  const modalHref = button.getAttribute('data-bs-meeting-info-url');
+
+  fetch(modalHref, {
+      method: 'GET',
+  }).then((response) => {
+      if (!response.ok) throw Error(response.statusText);
+      return response.json();
+  }).then(function(data){
+      if(data.msg != "") {
+        modalBody.innerHTML = "{% trans 'Unable to find information about the meeting' %}"
+        console.log(msg)
+      } else {
+        const modalendlink = '<p><a href="'+ endurl +'" title="{% trans 'End the meeting'%}" class="btn btn-danger endlink" >{% trans 'End the meeting'%}</a></p>';
+        modalBody.innerHTML = generateHtml(data.info) + modalendlink
+      }
+  }).catch((error) => {
+      console.error(error);
+  });
+
+  //
+  // Update the modal's content.
+  const modalTitle = meetingModal.querySelector('.modal-title')
+  const modalBody = meetingModal.querySelector('.modal-body')
+  //const modalFooterEndLink = meetingModal.querySelector('.modal-footer a.endlink')
+
+  modalTitle.textContent = title
+  modalBody.textContent = meeting_id
+  //modalFooterEndLink.setAttribute("href", endurl)
+
+})
+
+function generateHtml(data, level=0) {
+  html = "<ul>"
+  for (let k in data) {
+    if (typeof data[k] === "object") {
+      html += "<li><b>" + k + " :</b> " + generateHtml(data[k], level++) + "</li>";
+    } else {
+      html += "<li><b>" + k + " :</b> " + data[k] + "</li>";
+    }
+  }
+  html += "</ul>"
+  return html
+}
+
+var copyButtons = document.querySelectorAll('.pod-btn-copy')
+copyButtons.forEach(function (elt) {
+  elt.addEventListener('click', function (event) {
+    // Extract info from data-bs-* attributes
+    const input_id = this.getAttribute('data-bs-target')
+    copyInputValue(input_id)
+  });
+});
+
+function copyInputValue(id) {
+  /* Get the text field */
+  var copyText = document.getElementById(id);
+  /* Select the text field */
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /* For mobile devices */
+   /* Copy the text inside the text field */
+  navigator.clipboard
+      .writeText(copyText.value)
+      .then(() => {
+        let div = document.createElement('div');
+        div.innerHTML = `
+          <div class="alert alert-primary d-flex align-items-center meeting-text-copied" role="alert">
+            <i class="bi bi-info-circle-fill fs-3"></i><span class="p-2">{% trans "Text copied" %}</span>
+          </div>
+        `;
+        document.body.append(div);
+        setInterval(function() {
+          var elems = document.querySelectorAll(".alert");
+          elems.forEach(function(el) {
+            el.remove();
+          });
+        }, 5000)
+      })
+      .catch(() => {
+        //alert("something went wrong");
+      });
+}
+</script>
+
 {% endblock more_script %}
