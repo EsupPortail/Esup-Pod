@@ -11,6 +11,7 @@ from pod.video.views import CURSUS_CODES, get_owners_has_instances
 
 from .utils import get_playlist_list_for_user, get_public_playlist
 
+
 @login_required(redirect_field_name="referrer")
 def playlist_list(request):
     """Render my playlists page."""
