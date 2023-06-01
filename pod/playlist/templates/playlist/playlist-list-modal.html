@@ -22,18 +22,21 @@
                 <div class="d-flex flex-row justify-content-start align-items-center mb-3 gap-4">
                     {% video_in_playlist playlist video as video_in_playlist %}
                     {% if video_in_playlist %}
-                    <a href="#" id="remove-video-from-playlist">
+                    <a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" class="remove-video-from-playlist">
                         <i class="bi bi-dash"></i>
                     </a>
                     {% else %}
-                    <a href="#" id="add-video-from-playlist">
+                    <a href="{% url 'playlist:add-video' playlist.slug video.slug %}" class="add-video-from-playlist">
                         <i class="bi bi-plus"></i>
                     </a>
                     {% endif %}
-                    <a class="playlist-title" href="#">{{ playlist.name }}</a>
+                    <a class="playlist-title" href="{% url 'playlist:content' playlist.slug %}" target="_blank">{{ playlist.name }}</a>
                 </div>
             {% endfor %}
         </div>
       </div>
     </div>
   </div> <!-- modal end PLAYLIST -->
+  {% block more_script %}
+  <script src="{% static 'js/playlist-modal.js' %}?ver={{VERSION}}"></script>
+  {% endblock %}

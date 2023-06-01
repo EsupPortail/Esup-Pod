@@ -55,7 +55,7 @@ a.link:hover {
     text-decoration: underline;
 }
 
-#remove-video-from-playlist, #add-video-from-playlist {
+.remove-video-from-playlist, .add-video-from-playlist {
     font-weight: 700;
     display: flex;
     align-items: center;
@@ -66,20 +66,20 @@ a.link:hover {
     height: 40px;
 }
 
-#remove-video-from-playlist {
+.remove-video-from-playlist {
     background-color: #CC3434;
 }
 
-#remove-video-from-playlist:hover {
+.remove-video-from-playlist:hover {
     background-color: #AA3434;
     color: var(--pod-background);
 }
 
-#add-video-from-playlist {
+.add-video-from-playlist {
     background-color: rgb(45, 168, 45);
 }
 
-#add-video-from-playlist:hover {
+.add-video-from-playlist:hover {
     background-color: rgb(35, 133, 35);
     color: var(--pod-background);
 }
