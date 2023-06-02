@@ -1,7 +1,7 @@
+"""Models for the Meeting module."""
 import hashlib
 import random
 import requests
-from django.utils.dateparse import parse_duration
 import os
 import base64
 
@@ -22,18 +22,12 @@ from django.template.defaultfilters import slugify
 from django.contrib.sites.shortcuts import get_current_site
 from django.templatetags.static import static
 from django.urls import reverse
-from django.utils.html import mark_safe
-from django.shortcuts import get_object_or_404
 
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.core.validators import MinLengthValidator
 from django.db.models import F, Q
 
-from html.parser import HTMLParser
-import shutil
-from pod.video.models import Video
-from pod.video.models import Type
 
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
@@ -60,33 +54,7 @@ MEETING_PRE_UPLOAD_SLIDES = getattr(settings, "MEETING_PRE_UPLOAD_SLIDES", "")
 STATIC_ROOT = getattr(settings, "STATIC_ROOT", "")
 TEST_SETTINGS = getattr(settings, "TEST_SETTINGS", False)
 
-DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
-
-VIDEO_ALLOWED_EXTENSIONS = getattr(
-    settings,
-    "VIDEO_ALLOWED_EXTENSIONS",
-    (
-        "3gp",
-        "avi",
-        "divx",
-        "flv",
-        "m2p",
-        "m4v",
-        "mkv",
-        "mov",
-        "mp4",
-        "mpeg",
-        "mpg",
-        "mts",
-        "wmv",
-        "mp3",
-        "ogg",
-        "wav",
-        "wma",
-        "webm",
-        "ts",
-    ),
-)
+SITE_ID = getattr(settings, "SITE_ID", 1)
 
 __MEETING_SLIDES_DOCUMENT__ = """<modules>
    <module name="presentation">
@@ -422,6 +390,7 @@ class Meeting(models.Model):
     def reset_recurrence(self):
         """
         Reset recurrence so everything indicates that the event occurs only once.
+
         Saving is left up to the caller.
         """
         self.recurrence = None
@@ -431,7 +400,8 @@ class Meeting(models.Model):
 
     def check_recurrence(self):  # noqa: C901
         """
-        Compute the `recurring_until` field
+        Compute the `recurring_until` field.
+
         which is the date at which the recurrence ends.
         """
         if self.start and self.frequency:
@@ -500,208 +470,6 @@ class Meeting(models.Model):
             ("%s-%s-%s" % (SECRET_KEY, self.id, self.attendee_password)).encode("utf-8")
         ).hexdigest()
 
-    # ##############################    Upload BBB recordings to Pod
-    def parse_remote_file(self, source_html_url):
-        """Parse the remote HTML file on the BBB server.
-        In this HTML page, we found a reference to the video recording.
-        This function returns the name of the video and of the recording.
-        If not, an exception is raised."""
-        try:
-            response = requests.get(source_html_url)
-            if response.status_code != 200:
-                msg = {}
-                msg["error"] = _(
-                    "The HTML file for this recording was not found on the BBB server."
-                )
-                # If we want to display the 404/500... page to the user
-                # msg["message"] = response.content.decode("utf-8")
-                msg["message"] = "Error number : %s" % response.status_code
-                raise ValueError(msg)
-
-            # Parse the BBB video HTML file
-            parser = video_parser()
-            # Manage the encoding
-            if response.encoding == "ISO-8859-1":
-                parser.feed(response.text.encode("ISO-8859-1").decode("utf-8"))
-            else:
-                parser.feed(response.text)
-
-            # Video file found
-            if parser.video_check:
-                # Security check about extensions
-                extension = parser.video_file.split(".")[-1].lower()
-                if extension not in VIDEO_ALLOWED_EXTENSIONS:
-                    msg = {}
-                    msg["error"] = _(
-                        "The video file for this recording was not"
-                        "found in the HTML file."
-                    )
-                    msg["message"] = _("The found file is not a valid video.")
-                    raise ValueError(msg)
-
-                # Returns the name of the video (if necessary, title is parser.title)
-                return parser.video_file
-            else:
-                msg = {}
-                msg["error"] = _(
-                    "The video file for this recording was not found in the HTML file."
-                )
-                msg["message"] = "No video file found"
-                raise ValueError(msg)
-        except Exception as exc:
-            msg = {}
-            msg["error"] = _(
-                "The video file for this recording was not found in the HTML file."
-            )
-            msg["message"] = exc
-            raise ValueError(msg)
-
-    def download_video_file(self, source_video_url, dest_file):
-        """Download BBB video file"""
-        # Check if video file exists
-        try:
-            with requests.get(
-                source_video_url, timeout=(10, 180), stream=True
-            ) as response:
-                if response.status_code != 200:
-                    msg = {}
-                    msg["error"] = _(
-                        "The video file for this recording "
-                        "was not found on the BBB server."
-                    )
-                    # If we want to display the 404/500... page to the user
-                    # msg["message"] = response.content.decode("utf-8")
-                    msg["message"] = "Error number : %s" % response.status_code
-                    raise ValueError(msg)
-
-                with open(dest_file, "wb+") as file:
-                    # Total size, in bytes, from response header
-                    # total_size = int(response.headers.get('content-length', 0))
-                    # Other possible methods
-                    # Method 1 : iterate over every chunk and calculate % of total
-                    # for chunk in response.iter_content(chunk_size=1024*1024):
-                    #    file.write(chunk)
-                    # Method 2 : Binary download
-                    # file.write(response.content)
-                    # Method 3 : The fastest
-                    shutil.copyfileobj(response.raw, file)
-        except Exception as exc:
-            msg = {}
-            msg["error"] = _("Impossible to download the video file from the BBB server.")
-            msg["message"] = exc
-            raise ValueError(msg)
-
-    def save_video(self, request, dest_file, recording_name):
-        """Save and encode the Pod video file"""
-        try:
-            video = Video.objects.create(
-                video=dest_file,
-                title=recording_name,
-                owner=request.user,
-                description=_(
-                    "This video was uploaded to Pod from Big Blue Button server."
-                ),
-                is_draft=True,
-                type=Type.objects.get(id=DEFAULT_TYPE_ID),
-            )
-
-            video.launch_encode = True
-            video.save()
-        except Exception as exc:
-            msg = {}
-            msg["error"] = _("Impossible to create the Pod video")
-            msg["message"] = exc
-            raise ValueError(msg)
-
-    def save_recording(self, request, meeting_id, recording_id, recording_name):
-        """Save the recording in database"""
-        try:
-            meeting = get_object_or_404(
-                Meeting, meeting_id=meeting_id, site=get_current_site(request)
-            )
-            # Convert timestamp to datetime
-            start_timestamp = request.POST.get("start_timestamp")
-            end_timestamp = request.POST.get("end_timestamp")
-            start_dt = dt.fromtimestamp(float(start_timestamp) / 1000)
-            end_dt = dt.fromtimestamp(float(end_timestamp) / 1000)
-            # Format datetime and not timestamp
-            start_at = start_dt.strftime("%Y-%m-%d %H:%M:%S")
-            # Management of the duration
-            duration = str(end_dt - start_dt).split(".")[0]
-            # Save the recording as an internal recording
-            recording, created = Recording.objects.update_or_create(
-                name=recording_name,
-                is_internal=True,
-                recording_id=recording_id,
-                meeting=meeting,
-                start_at=start_at,
-                duration=parse_duration(duration),
-                # Create a new line if uploaded by another user
-                defaults={"uploaded_to_pod_by": request.user},
-            )
-        except Exception as exc:
-            msg = {}
-            msg["error"] = _("Impossible to create the recording")
-            msg["message"] = exc
-            raise ValueError(msg)
-
-    def upload_recording_to_pod(self, request, meeting_id, recording_id):
-        """Upload recording to Pod (main function)"""
-        try:
-            # Manage source URL from video playback
-            source_url = request.POST.get("source_url")
-            if source_url != "":
-                # Step 1 : Download and parse the remote HTML file if necessary
-                # Check if extension is a video extension
-                extension = source_url.split(".")[-1].lower()
-                if extension in VIDEO_ALLOWED_EXTENSIONS:
-                    # URL corresponds to a video file
-                    source_video_url = source_url
-                else:
-                    # Download and parse the remote HTML file
-                    video_file = self.parse_remote_file(source_url)
-                    source_video_url = source_url + video_file
-
-                # Step 2 : Define destination source file
-                extension = source_video_url.split(".")[-1].lower()
-                dest_file = os.path.join(
-                    settings.MEDIA_ROOT,
-                    "videos",
-                    request.user.owner.hashkey,
-                    os.path.basename(recording_id + "." + extension),
-                )
-                os.makedirs(os.path.dirname(dest_file), exist_ok=True)
-
-                # Step 3 : Download the video file
-                self.download_video_file(source_video_url, dest_file)
-
-                # Step 4 : Save and encode Pod video
-                recording_title = request.POST.get("recording_name")
-                self.save_video(request, dest_file, recording_title)
-
-                # Step 5 : Save informations about the recording
-                self.save_recording(request, meeting_id, recording_id, recording_title)
-
-                return True
-            else:
-                msg = {}
-                msg["error"] = _("Impossible to upload to Pod the video")
-                msg["message"] = _("No URL found")
-                raise ValueError(msg)
-        except Exception as exc:
-            msg = {}
-            msg["error"] = _("Impossible to upload to Pod the video")
-            try:
-                # Management of error messages from sub-functions
-                message = "%s (%s)" % (exc.args[0]["error"], exc.args[0]["message"])
-            except Exception:
-                # Management of error messages in all cases
-                message = exc
-
-            message = mark_safe(message)
-            msg["message"] = message
-            raise ValueError(msg)
-
     # ##############################    Meeting occurences
     def next_occurrence_from_today(self):
         if self.start == timezone.now().date():
@@ -717,8 +485,9 @@ class Meeting(models.Model):
 
     def next_occurrence(self, current_date):  # noqa: C901
         """
-        This method takes as assumption that the current date passed in argument
-        IS a valid occurrence. If it is not the case, it will return an irrelevant date.
+        Take as assumption that the current date passed in argument IS valid occurrence.
+
+        If it is not the case, it will return an irrelevant date.
         Returns the next occurrence without consideration for the end of the recurrence.
         """
         if self.recurrence == Meeting.DAILY:
@@ -772,8 +541,9 @@ class Meeting(models.Model):
 
     def get_occurrences(self, start, end=None):
         """
-        Returns a list of occurrences for this meeting between start and end dates passed
-        as arguments.
+        Returns a list of occurrences for this meeting.
+
+        List of occurences between start and end dates passed as arguments.
         """
         real_end = end or start
         if self.recurrence:
@@ -796,9 +566,7 @@ class Meeting(models.Model):
 
     @property
     def is_active(self):
-        """
-        Compute meeting to know if it is past or not.
-        """
+        """Compute meeting to know if it is past or not."""
         start_datetime = self.start_at + self.expected_duration
         if self.recurrence is None and start_datetime > timezone.now():
             return True
@@ -860,7 +628,7 @@ class Meeting(models.Model):
             return True
 
     def get_create_response(self, url):
-        """call BBB server in POST or GET"""
+        """Call BBB server in POST or GET."""
         if self.slides:
             slides_path = self.slides.file.path
         elif MEETING_PRE_UPLOAD_SLIDES != "":
@@ -888,7 +656,7 @@ class Meeting(models.Model):
         return response
 
     def get_doc_url(self):
-        """return the url of slides to preload"""
+        """Return the url of slides to preload."""
         slides_url = ""
         if self.slides:
             slides_url = "".join(
@@ -910,6 +678,8 @@ class Meeting(models.Model):
 
     def get_join_url(self, fullname, role, userID=""):
         """
+        Returns join URL.
+
         fullName  (required)
         meetingID  (required)
         password  (required)
@@ -1168,14 +938,21 @@ def default_site_meeting(sender, instance, **kwargs):
 
 class Recording(models.Model):
     """This model hold information about Big Blue Button recordings.
+
     This model is for internal or external recordings.
     For internal recordings : only BBB recordings that have been uploaded to
     Pod are saved in the database.
     For external recordings : all recordings are saved in the database.
     """
 
-    """ For all recording """
-    name = models.CharField(max_length=250, verbose_name=_("Recording name"))
+    # Name
+    name = models.CharField(
+        max_length=250,
+        verbose_name=_("Recording name"),
+        help_text=_(
+            "Please enter a name that will allow you to easily find this recording."
+        ),
+    )
 
     # Type of recording : Internal / External
     is_internal = models.BooleanField(
@@ -1183,12 +960,73 @@ class Recording(models.Model):
         default=True,
     )
 
+    # Start date
     start_at = models.DateTimeField(_("Start date"), default=timezone.now)
 
-    duration = models.DurationField(
-        verbose_name=_("Duration of recording"),
-        null=True,
+    # User who create this recording
+    owner = models.ForeignKey(
+        User,
+        related_name="owner_recording",
+        on_delete=models.CASCADE,
+        limit_choices_to={"is_staff": True},
+        verbose_name=_("User"),
         blank=True,
+        null=True,
+        help_text=_("User who create this recording"),
+    )
+
+    # Additional owners for this recording
+    additional_owners = models.ManyToManyField(
+        User,
+        related_name="owners_recordings",
+        limit_choices_to={"is_staff": True},
+        verbose_name=_("Additional owners"),
+        blank=True,
+        help_text=_(
+            "You can add additional owners to this recording. "
+            "They will have the same rights as you except that "
+            "they cannot delete this recording."
+        ),
+    )
+
+    # Recording's site
+    site = models.ForeignKey(
+        Site,
+        verbose_name=_("Site"),
+        on_delete=models.CASCADE,
+        default=SITE_ID
+    )
+
+    # Type of external recording
+    # Possibles choices
+    types = [
+        ("bigbluebutton", _("Big Blue Button")),
+        ("peertube", _("PeerTube")),
+        ("video", _("Video file")),
+        ("youtube", _("Youtube")),
+    ]
+
+    default_type = types[0][0]
+    type = models.CharField(
+        max_length=50,
+        choices=types,
+        default=default_type,
+        verbose_name=_("External record type"),
+        help_text=_(
+            "It is possible to manage recordings from "
+            "Big Blue Button or another source delivering video files."
+        ),
+    )
+
+    # Source video URL
+    source_url = models.CharField(
+        max_length=500,
+        default="",
+        verbose_name=_("Address of the recording to download"),
+        help_text=_(
+            "Please enter the address of the recording to download. "
+            "This address must match the record type selected."
+        ),
     )
 
     # User who uploaded to Pod the video file
@@ -1203,8 +1041,7 @@ class Recording(models.Model):
         help_text=_("User who uploaded to Pod the video file"),
     )
 
-    """ For internal recording """
-    # Recording id (BBB format)
+    # Recording id (BBB format), for internal recording
     recording_id = models.SlugField(
         max_length=255,
         verbose_name=_("Recording ID"),
@@ -1212,7 +1049,7 @@ class Recording(models.Model):
         blank=True,
     )
 
-    # Existant meeting
+    # Existant meeting, for internal recording
     meeting = models.ForeignKey(
         Meeting,
         on_delete=models.CASCADE,
@@ -1221,47 +1058,11 @@ class Recording(models.Model):
         blank=True,
     )
 
-    """ For external recording """
-    # External URL (source video URL)
-    external_url = models.CharField(
-        max_length=500,
-        default="",
+    # Duration (if useful)
+    duration = models.DurationField(
+        verbose_name=_("Duration of recording"),
         null=True,
         blank=True,
-        verbose_name=_("External recording URL"),
-    )
-
-    upload_automatically = models.BooleanField(
-        default=False,
-        null=True,
-        blank=True,
-        verbose_name=_("Upload automatically to Pod as a video"),
-        help_text=_(
-            "A video will be created from this external recording"
-            "and will be available on this platform automatically."
-        ),
-    )
-
-    # User who create this external recording
-    created_by = models.ForeignKey(
-        User,
-        related_name="creator_recording",
-        on_delete=models.CASCADE,
-        limit_choices_to={"is_staff": True},
-        verbose_name=_("User"),
-        null=True,
-        blank=True,
-        help_text=_("User who create this external recording"),
-    )
-
-    # Additional owners for this external recording
-    additional_owners = models.ManyToManyField(
-        User,
-        related_name="owners_recordings",
-        limit_choices_to={"is_staff": True},
-        verbose_name=_("Additional owners"),
-        blank=True,
-        help_text=_("You can add additional owners to this external recording."),
     )
 
     def __unicode__(self):
@@ -1274,41 +1075,45 @@ class Recording(models.Model):
         super(Recording, self).save(*args, **kwargs)
 
     class Meta:
-        db_table = "recording"
         verbose_name = "Recording"
         verbose_name_plural = _("Recordings")
         ordering = ("-start_at",)
         get_latest_by = "start_at"
 
 
+@receiver(pre_save, sender=Recording)
+def default_site_recording(sender, instance, **kwargs):
+    if not hasattr(instance, "site"):
+        instance.site = Site.objects.get_current()
+
+
 class StatelessRecording:
     """Recording model, not saved in database.
-    Useful to manage BBB recordings.
+
+    Useful to manage internal/external recordings, for the view.
     """
 
-    recordID = ""
-    playback = {}
+    id = ""
     name = ""
     state = ""
     startTime = ""
     endTime = ""
-    # Source URL for the video presentation
-    sourceURL = ""
+    # Type
+    type = ""
     # Rights
     canUpload = False
     canDelete = False
     # User that has uploaded this recording to Pod
     uploadedToPodBy = ""
+    # Presentation playback URL
+    presentationUrl = ""
+    # Video playback URL, used as the source URL for the video file
+    videoUrl = ""
 
-    def __init__(self, recordID, name, state):
-        self.recordID = recordID
+    def __init__(self, id, name, state):
+        self.id = id
         self.name = name
         self.state = state
-
-    def add_playback(self, type, url):
-        self.playback[type] = url
-        if type == "video":
-            self.sourceURL = url
 
     def get_start_time(self):
         # BBB epoch in milliseconds
@@ -1320,42 +1125,3 @@ class StatelessRecording:
 
     def get_duration(self):
         return str(self.get_end_time() - self.get_start_time()).split(".")[0]
-
-
-class video_parser(HTMLParser):
-    """Useful to parse the BBB Web page and search for video file
-    Used to parse BBB 2.6 URL for video recordings.
-    """
-
-    def __init__(self):
-        super().__init__()
-        self.reset()
-        # Variables for title
-        self.title_check = False
-        self.title = ""
-        # Variables for video file
-        self.video_check = False
-        self.video_file = ""
-        self.video_type = ""
-
-    def handle_starttag(self, tag, attrs):
-        attrs = dict(attrs)
-        # Search for source tag
-        if tag == "source":
-            # Found the line. Managed format :
-            # attrs = {'src': 'video-0.m4v', 'type': 'video/mp4'}
-            # print("video line : %s" % attrs)
-            self.video_check = True
-            self.video_file = attrs.get("src", "")
-            self.video_type = attrs.get("type", "")
-        # Search for title tag
-        if tag == "title":
-            # Found the title line
-            self.title_check = True
-
-    def handle_data(self, data):
-        # Search for title tag
-        if self.title_check:
-            # Get the title that corresponds to recording's name
-            self.title = data
-            self.title_check = False
