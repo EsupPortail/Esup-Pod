@@ -13,10 +13,10 @@ from .models import Theme
 from .models import Type
 from .models import Discipline
 from .models import Notes, AdvancedNotes, NoteComments
-from pod.video_encode import encode
 from .utils import get_storage_path_video
-from pod.video_encode.models import EncodingVideo, EncodingAudio
 from .models import PlaylistVideo
+from pod.video_encode import encode
+from pod.video_encode.models import EncodingVideo, EncodingAudio
 from django.contrib.sites.models import Site
 from django.db.models.query import QuerySet
 
