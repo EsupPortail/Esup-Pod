@@ -4,7 +4,6 @@
 """
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
 from django.test import override_settings, TestCase
 
 from pod.video.models import Type, Video
@@ -81,22 +80,22 @@ class TestPlaylistsPageTestCase(TestCase):
         )
         self.playlist_content_1 = PlaylistContent.objects.create(
             playlist=self.public_playlist,
-            video = self.first_video,
+            video=self.first_video,
             rank=1,
         )
         self.playlist_content_2 = PlaylistContent.objects.create(
             playlist=self.public_playlist,
-            video = self.second_video,
+            video=self.second_video,
             rank=2,
         )
         self.playlist_content_3 = PlaylistContent.objects.create(
             playlist=self.public_playlist,
-            video = self.third_video,
+            video=self.third_video,
             rank=3,
         )
         self.playlist_content_4 = PlaylistContent.objects.create(
             playlist=self.public_playlist,
-            video = self.fourth_video,
+            video=self.fourth_video,
             rank=4,
         )
         self.url = reverse("playlist:list")
