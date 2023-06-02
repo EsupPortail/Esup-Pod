@@ -30,7 +30,7 @@
   {% endif %}
   <div class="pod-info-video__buttons">
     {% if user.is_authenticated and not video.is_draft %}
-      <button type="button" class="btn btn-link btn-lg pod-btn-share" title="{% trans 'Add the video to a playlist'%}" data-bs-toggle="modal" data-bs-target="#playlist-list">
+      <button type="button" class="btn btn-link btn-lg pod-btn-share" title="{% trans 'Add the video to a playlist'%}" data-bs-toggle="modal" data-bs-target="#playlist-modal">
         <i class="bi bi-folder-fill" aria-hidden="true"></i>
       </button>
       {% include "playlist/playlist-list-modal.html" %}

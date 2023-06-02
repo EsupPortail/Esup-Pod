@@ -7,7 +7,7 @@
 {% endblock page_extra_head %}
 
 <!-- DEBUT modal PLAYLIST -->
-<div class="modal fade" id="playlist-list" tabindex="-1" aria-labelledby="playlist-list-label" aria-hidden="true">
+<div class="modal fade" id="playlist-modal" tabindex="-1" aria-labelledby="playlist-list-label" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -16,23 +16,30 @@
           </h2>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" id="playlist-list">
             {% get_user_playlists request.user as playlists %}
             {% for playlist in playlists %}
                 <div class="d-flex flex-row justify-content-start align-items-center mb-3 gap-4">
                     {% video_in_playlist playlist video as video_in_playlist %}
                     {% if video_in_playlist %}
-                    <a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" class="remove-video-from-playlist">
+                    <a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" class="action-btn remove-video-from-playlist" id="{{ playlist.slug }}-btn">
                         <i class="bi bi-dash"></i>
                     </a>
                     {% else %}
-                    <a href="{% url 'playlist:add-video' playlist.slug video.slug %}" class="add-video-from-playlist">
+                    <a href="{% url 'playlist:add-video' playlist.slug video.slug %}" class="action-btn add-video-from-playlist" id="{{ playlist.slug }}-btn">
                         <i class="bi bi-plus"></i>
                     </a>
                     {% endif %}
+
+                    {% include "playlist/playlist_visibility_icon.html" with playlist=playlist %}
+
                     <a class="playlist-title" href="{% url 'playlist:content' playlist.slug %}" target="_blank">{{ playlist.name }}</a>
                 </div>
             {% endfor %}
+            <a class="btn btn-primary mt-4 w-100" href="#">
+              <i class="bi bi-plus pod-add"></i>
+              <span>{% trans "Add a playlist" %}</span>
+            </a>
         </div>
       </div>
     </div>

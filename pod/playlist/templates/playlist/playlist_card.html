@@ -17,19 +17,7 @@
                         {% endif %}
                     </small>
                 </a>
-                {% if playlist.visibility == "protected" %}
-                    <span title="{% trans "Protected with a password" %}">
-                        <i class="bi bi-lock" aria-hidden="true"></i>
-                    </span>
-                {% elif playlist.visibility == "private" %}
-                    <span title={% trans "Private" %}>
-                        <i class="bi bi-incognito" aria-hidden="true"></i>
-                    </span>
-                    {% elif playlist.visibility == "public" %}
-                    <span title="Public">
-                        <i class="bi bi-globe-americas" aria-hidden="true"></i>
-                    </span>
-                {% endif %}
+                {% include "playlist/playlist_visibility_icon.html" with playlist=playlist %}
             </div>
         </div>
         <div class="card-thumbnail">
