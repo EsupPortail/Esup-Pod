@@ -1,14 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.utils.translation import ugettext_lazy as _
-from django.views.decorators.csrf import csrf_protect
-from django.http import Http404, HttpResponseBadRequest
-from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib.sites.shortcuts import get_current_site
+from django.shortcuts import redirect, render
 from pod.video.models import Video
 
 
-from .utils import get_playlist, get_video_list_for_playlist, get_number_video_in_playlist, user_add_video_in_playlist
+from .utils import get_playlist, get_video_list_for_playlist, user_add_video_in_playlist
 from .utils import remove_playlist
 from pod.main.utils import is_ajax
 
@@ -21,18 +18,20 @@ from .utils import get_public_playlist
 
 @login_required(redirect_field_name="referrer")
 def playlist_list(request):
-    """Render my playlists page."""
-    playlists = get_playlist_list_for_user(request.user) | get_public_playlist()
-    video_count_dict = {}
-    for playlist in playlists:
-        video_count_dict[playlist] = get_number_video_in_playlist(playlist)
+    """Render playlists page."""
+    visibility = request.GET.get("visibility", "all")
+    if visibility in ["private", "protected", "public"]:
+        playlists = get_playlist_list_for_user(request.user).filter(visibility=visibility)
+    elif visibility == "allpublic":
+        playlists = get_public_playlist()
+    elif visibility == "all":
+        playlists = (get_playlist_list_for_user(request.user) | get_public_playlist())
     return render(
         request,
         "playlist/playlists.html",
         {
             "page_title": _("Playlists"),
             "playlists": playlists,
-            "video_count_dict": video_count_dict,
         }
     )
 
@@ -102,6 +101,7 @@ def remove_video_in_playlist(request, slug, video_slug):
     user_remove_video_from_playlist(playlist, video)
     return redirect(request.META["HTTP_REFERER"])
 
+
 def add_video_in_playlist(request, slug, video_slug):
     """Add a video in playlist."""
     playlist = get_playlist(slug)
@@ -111,7 +111,7 @@ def add_video_in_playlist(request, slug, video_slug):
 
 
 @login_required(redirect_field_name="referrer")
-def remove_playlist(request, slug: str):
+def remove_playlist_view(request, slug: str):
     """Remove playlist"""
     remove_playlist(request.user, get_playlist(slug))
     return redirect(request.META["HTTP_REFERER"])

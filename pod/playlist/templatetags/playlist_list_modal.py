@@ -11,7 +11,7 @@ register = Library()
 def get_user_playlists(user):
     return get_playlist_list_for_user(user)
 
+
 @register.simple_tag(name="video_in_playlist")
 def video_in_playlist(playlist: Playlist, video: Video):
     return check_video_in_playlist(playlist, video)
-

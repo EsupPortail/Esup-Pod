@@ -60,10 +60,15 @@ class Playlist(models.Model):
     )
     owner = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
     date_created = models.DateTimeField(
-        verbose_name=_("Date created"), default=timezone.now, editable=False
+        verbose_name=_("Date created"),
+        default=timezone.now,
+        editable=False,
+        auto_created=True,
     )
     date_updated = models.DateTimeField(
-        verbose_name=_("Date updated"), default=timezone.now, editable=False
+        verbose_name=_("Date updated"),
+        editable=False,
+        auto_now=True,
     )
 
     class Meta:
@@ -100,8 +105,14 @@ class Playlist(models.Model):
         return self.slug
 
     def get_number_video(self) -> int:
+        """Get the video number."""
         from .utils import get_number_video_in_playlist
         return get_number_video_in_playlist(self)
+
+    def get_first_video(self) -> Video:
+        """Get the first video."""
+        from .utils import get_video_list_for_playlist
+        return get_video_list_for_playlist(self).first()
 
 
 class PlaylistContent(models.Model):
