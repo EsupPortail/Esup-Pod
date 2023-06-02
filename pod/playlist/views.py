@@ -1,14 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.utils.translation import ugettext_lazy as _
-from django.views.decorators.csrf import csrf_protect
-from django.http import Http404, HttpResponseBadRequest
-from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib.sites.shortcuts import get_current_site
+from django.shortcuts import redirect, render
 from pod.video.models import Video
 
 
-from .utils import get_playlist, get_video_list_for_playlist, get_number_video_in_playlist, user_add_video_in_playlist
+from .utils import get_playlist, get_video_list_for_playlist, user_add_video_in_playlist
 from .utils import remove_playlist
 from pod.main.utils import is_ajax
 
@@ -103,6 +100,7 @@ def remove_video_in_playlist(request, slug, video_slug):
     video = Video.objects.get(slug=video_slug)
     user_remove_video_from_playlist(playlist, video)
     return redirect(request.META["HTTP_REFERER"])
+
 
 def add_video_in_playlist(request, slug, video_slug):
     """Add a video in playlist."""
