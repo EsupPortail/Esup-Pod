@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from datetime import datetime, date
 from django.core.exceptions import ValidationError
+from django.contrib.sites.models import Site
 
 import random
 
@@ -732,17 +733,30 @@ class RecordingTestCase(TestCase):
             id=1,
             name="test recording1",
             is_internal=True,
+            owner=user,
             recording_id="c057c39d3dc59d9e9516d95f76eb",
             meeting=meeting1,
+            site=Site.objects.get(id=1),
         )
         Recording.objects.create(
             id=2,
             name="test recording2",
             is_internal=True,
+            owner=user,
             recording_id="d058c39d3dc59d9e9516d95f76eb",
             meeting=meeting2,
             start_at=datetime(2022, 4, 24, 14, 0, 0),
             uploaded_to_pod_by=user2,
+            site=Site.objects.get(id=1),
+        )
+        Recording.objects.create(
+            id=3,
+            name="test recording3",
+            is_internal=False,
+            owner=user,
+            start_at=datetime(2022, 4, 24, 14, 0, 0),
+            site=Site.objects.get(id=1),
+            type="bigbluebutton"
         )
 
     def test_default_attributs(self):
@@ -777,4 +791,4 @@ class RecordingTestCase(TestCase):
     def test_delete_object(self):
         """Delete a recording."""
         Recording.objects.filter(name="test recording2").delete()
-        self.assertEqual(Recording.objects.all().count(), 1)
+        self.assertEqual(Recording.objects.all().count(), 2)
