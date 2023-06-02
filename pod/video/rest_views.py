@@ -12,7 +12,6 @@ from django.shortcuts import get_object_or_404
 
 from .models import Channel, Theme
 from .models import Type, Discipline, Video
-from pod.video_encode.models import EncodingVideo, EncodingAudio
 from .models import PlaylistVideo, ViewCount, VideoRendition
 from .utils import get_available_videos
 
@@ -181,35 +180,6 @@ class VideoRenditionSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
-class EncodingVideoSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = EncodingVideo
-        fields = (
-            "id",
-            "url",
-            "name",
-            "video",
-            "rendition",
-            "encoding_format",
-            "source_file",
-            "sites_all",
-        )
-
-
-class EncodingAudioSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = EncodingAudio
-        fields = (
-            "id",
-            "url",
-            "name",
-            "video",
-            "encoding_format",
-            "source_file",
-            "sites_all",
-        )
-
-
 class PlaylistVideoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = PlaylistVideo
@@ -300,50 +270,6 @@ class VideoViewSet(viewsets.ModelViewSet):
 class VideoRenditionViewSet(viewsets.ModelViewSet):
     queryset = VideoRendition.objects.all()
     serializer_class = VideoRenditionSerializer
-
-
-class EncodingVideoViewSet(viewsets.ModelViewSet):
-    queryset = EncodingVideo.objects.all()
-    serializer_class = EncodingVideoSerializer
-    filter_fields = ("video",)
-
-    @action(detail=False, methods=["get"])
-    def video_encodedfiles(self, request):
-        encoded_videos = EncodingVideoViewSet.filter_encoded_medias(
-            self.queryset, request
-        )
-        encoded_videos = sorted(encoded_videos, key=lambda x: x.height)
-        serializer = EncodingVideoSerializer(
-            encoded_videos, many=True, context={"request": request}
-        )
-        return Response(serializer.data)
-
-    @staticmethod
-    def filter_encoded_medias(queryset, request):
-        encoded_audios = queryset
-        if request.GET.get("video"):
-            encoded_audios = encoded_audios.filter(video__id=request.GET.get("video"))
-        if request.GET.get("extension"):
-            encoded_audios = encoded_audios.filter(
-                source_file__iendswith=request.GET.get("extension")
-            )
-        return encoded_audios
-
-
-class EncodingAudioViewSet(viewsets.ModelViewSet):
-    queryset = EncodingAudio.objects.all()
-    serializer_class = EncodingAudioSerializer
-    filter_fields = ("video",)
-
-    @action(detail=False, methods=["get"])
-    def audio_encodedfiles(self, request):
-        encoded_audios = EncodingVideoViewSet.filter_encoded_medias(
-            self.queryset, request
-        )
-        serializer = EncodingAudioSerializer(
-            encoded_audios, many=True, context={"request": request}
-        )
-        return Response(serializer.data)
 
 
 class PlaylistVideoViewSet(viewsets.ModelViewSet):
