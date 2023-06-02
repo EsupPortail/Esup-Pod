@@ -572,18 +572,13 @@ class VideoForm(forms.ModelForm):
             self.instance.overview = self.instance.overview.name.replace(old_dir, new_dir)
 
     def change_encoded_path(self, video, new_dir, old_dir):
-        encoding_video = EncodingVideo.objects.filter(video=video)
-        for encoding in encoding_video:
-            encoding.source_file = encoding.source_file.name.replace(old_dir, new_dir)
-            encoding.save()
-        encoding_audio = EncodingAudio.objects.filter(video=video)
-        for encoding in encoding_audio:
-            encoding.source_file = encoding.source_file.name.replace(old_dir, new_dir)
-            encoding.save()
-        playlist = PlaylistVideo.objects.filter(video=video)
-        for encoding in playlist:
-            encoding.source_file = encoding.source_file.name.replace(old_dir, new_dir)
-            encoding.save()
+        """Change the path of encodings related to a video."""
+        models_to_update = [EncodingVideo, EncodingAudio, PlaylistVideo]
+        for model in models_to_update:
+            encodings = model.objects.filter(video=video)
+            for encoding in encodings:
+                encoding.source_file = encoding.source_file.name.replace(old_dir, new_dir)
+                encoding.save()
 
     def save(self, commit=True, *args, **kwargs):
         old_dir = ""
