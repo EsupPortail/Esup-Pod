@@ -225,3 +225,34 @@ class TestPlaylistsPageTestCase(TestCase):
         )
         self.client.logout()
         print(" --->  test_public_filter ok")
+
+
+class TestPlaylistsPageLinkTestCase(TestCase):
+    """Playlists page link test case."""
+
+    fixtures = ["initial_data.json"]
+
+    def setUp(self) -> None:
+        """Set up required objects for next tests."""
+        self.user = User.objects.create(
+            username="first.user",
+            password="first1234first",
+        )
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_icon_visible(self) -> None:
+        """Test if the icon is visible."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        response = self.client.get("/")
+        self.assertEqual(
+            response.status_code,
+            200,
+            "Test if status code equal 200",
+        )
+        self.assertTrue(
+            "bi-list-ul" in response.content.decode(),
+            "Test if playlist icon is visible"
+        )
+        self.client.logout()
+        print(" --->  test_icon_visible ok")

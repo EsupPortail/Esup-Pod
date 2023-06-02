@@ -199,7 +199,7 @@
                 <a class="nav-item nav-link" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My videos' %}</a>
               {% endif %}
               {% if USE_PLAYLIST %}
-                <a class="nav-item nav-link" href="{% url 'playlist:list' %}"><i class="bi bi-folder-fill pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
+                <a class="nav-item nav-link" href="{% url 'playlist:list' %}"><i class="bi bi-list-ul pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
               {% endif %}
               {% if USE_FAVORITES %}
                 <a class="nav-item nav-link" href="{% url 'favorite:list' %}"><i class="bi bi-star pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My favorite videos' %}</a>
