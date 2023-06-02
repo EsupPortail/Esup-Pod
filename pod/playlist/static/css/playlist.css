@@ -10,17 +10,17 @@ a.link:hover {
     right: 1rem;
 }
 
-#playlist-list {
+#playlist-modal {
     font-size: 1.7em;
     gap: 1rem;
 }
 
-#playlist-list .playlist-title {
+#playlist-modal .playlist-title {
     text-decoration: none;
     color: var(--pod-font-color);
 }
 
-#playlist-list .playlist-title:hover {
+#playlist-modal .playlist-title:hover {
     text-decoration: underline;
 }
 
