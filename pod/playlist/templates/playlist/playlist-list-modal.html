@@ -36,6 +36,10 @@
                     <a class="playlist-title" href="{% url 'playlist:content' playlist.slug %}" target="_blank">{{ playlist.name }}</a>
                 </div>
             {% endfor %}
+            <a class="btn btn-primary mt-4 w-100" href="#">
+              <i class="bi bi-plus pod-add"></i>
+              <span>{% trans "Add a playlist" %}</span>
+            </a>
         </div>
       </div>
     </div>
