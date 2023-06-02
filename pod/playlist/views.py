@@ -21,8 +21,14 @@ from .utils import get_public_playlist
 
 @login_required(redirect_field_name="referrer")
 def playlist_list(request):
-    """Render my playlists page."""
-    playlists = get_playlist_list_for_user(request.user) | get_public_playlist()
+    """Render playlists page."""
+    visibility = request.GET.get("visibility", "all")
+    if visibility in ["private", "protected", "public"]:
+        playlists = get_playlist_list_for_user(request.user).filter(visibility=visibility)
+    elif visibility == "allpublic":
+        playlists = get_public_playlist()
+    elif visibility == "all":
+        playlists = (get_playlist_list_for_user(request.user) | get_public_playlist())
     return render(
         request,
         "playlist/playlists.html",
