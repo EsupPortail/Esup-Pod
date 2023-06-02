@@ -60,10 +60,15 @@ class Playlist(models.Model):
     )
     owner = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
     date_created = models.DateTimeField(
-        verbose_name=_("Date created"), default=timezone.now, editable=False
+        verbose_name=_("Date created"),
+        default=timezone.now,
+        editable=False,
+        auto_created=True,
     )
     date_updated = models.DateTimeField(
-        verbose_name=_("Date updated"), default=timezone.now, editable=False
+        verbose_name=_("Date updated"),
+        editable=False,
+        auto_now=True,
     )
 
     class Meta:
