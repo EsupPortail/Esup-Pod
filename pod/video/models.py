@@ -44,7 +44,6 @@ from pod.main.lang_settings import PREF_LANG_CHOICES as __PREF_LANG_CHOICES__
 from django.db.models import Count, Case, When, Value, BooleanField, Q
 from django.db.models.functions import Concat
 from os.path import splitext
-# from pod.video_encode.models import EncodingVideo, EncodingAudio, EncodingStep
 
 USE_PODFILE = getattr(settings, "USE_PODFILE", False)
 if USE_PODFILE:
@@ -916,8 +915,8 @@ class Video(models.Model):
 
     @property
     def get_encoding_step(self):
-        from pod.video_encode.models import EncodingStep
         """Get the current encoding step of a video."""
+        from pod.video_encode.models import EncodingStep
         try:
             es = EncodingStep.objects.get(video=self)
         except ObjectDoesNotExist:

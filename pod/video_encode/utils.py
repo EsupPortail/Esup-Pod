@@ -1,9 +1,9 @@
 import os
 
 from django.conf import settings
-from pod.video_encode.models import EncodingStep
-from pod.video_encode.models import EncodingLog
 from pod.video.models import Video
+from .models import EncodingStep
+from .models import EncodingLog
 
 
 DEBUG = getattr(settings, "DEBUG", True)
@@ -50,12 +50,16 @@ VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
 
 def change_encoding_step(video_id, num_step, desc):
     """Change encoding step."""
+    print("change_encoding_step")
     encoding_step, created = EncodingStep.objects.get_or_create(
         video=Video.objects.get(id=video_id)
     )
     encoding_step.num_step = num_step
     encoding_step.desc_step = desc[:255]
     encoding_step.save()
+    print("list :")
+    encoding_steps = EncodingStep.objects.all()
+    print(encoding_steps)
     if DEBUG:
         print("step: %d - desc: %s" % (num_step, desc))
 
@@ -88,4 +92,3 @@ def create_outputdir(video_id, video_path):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     return output_dir
-

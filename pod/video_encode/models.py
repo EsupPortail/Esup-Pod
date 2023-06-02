@@ -5,6 +5,7 @@ from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
+from pod.video.models import Video, VideoRendition
 from pod.video.utils import get_storage_path_video
 
 ENCODING_CHOICES = getattr(
@@ -35,8 +36,6 @@ FORMAT_CHOICES = getattr(
 
 
 class EncodingVideo(models.Model):
-    from pod.video.models import Video
-    from pod.video.models import VideoRendition
     name = models.CharField(
         _("Name"),
         max_length=10,
@@ -114,8 +113,6 @@ class EncodingVideo(models.Model):
 
 
 class EncodingAudio(models.Model):
-    from pod.video.models import Video
-    from pod.video.models import VideoRendition
     name = models.CharField(
         _("Name"),
         max_length=10,
@@ -182,7 +179,6 @@ class EncodingAudio(models.Model):
 
 
 class EncodingLog(models.Model):
-    from pod.video.models import Video
     video = models.OneToOneField(
         Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
     )
@@ -207,7 +203,6 @@ class EncodingLog(models.Model):
 
 
 class EncodingStep(models.Model):
-    from pod.video.models import Video
     video = models.OneToOneField(
         Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
     )

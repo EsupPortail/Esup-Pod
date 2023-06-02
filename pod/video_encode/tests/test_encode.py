@@ -6,10 +6,10 @@ from django.contrib.auth.models import User
 
 
 from pod.video.models import Video, Type
-from pod.video import encode
-from pod.video.models import EncodingVideo
-from pod.video.models import EncodingAudio
-from pod.video.models import EncodingLog
+from pod.video_encode import encode
+from pod.video_encode.models import EncodingVideo
+from pod.video_encode.models import EncodingAudio
+from pod.video_encode.models import EncodingLog
 from pod.video.models import PlaylistVideo
 
 import shutil
