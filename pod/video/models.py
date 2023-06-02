@@ -1882,4 +1882,3 @@ class Category(models.Model):
         ordering = ["title", "id"]
         verbose_name = _("Category")
         verbose_name_plural = _("Categories")
-        
