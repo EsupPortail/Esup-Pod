@@ -107,7 +107,7 @@ def add_video_in_playlist(request, slug, video_slug):
 
 
 @login_required(redirect_field_name="referrer")
-def remove_playlist(request, slug: str):
+def remove_playlist_view(request, slug: str):
     """Remove playlist"""
     remove_playlist(request.user, get_playlist(slug))
     return redirect(request.META["HTTP_REFERER"])

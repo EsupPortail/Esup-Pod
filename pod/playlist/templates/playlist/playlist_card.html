@@ -33,7 +33,7 @@
             </div>
         </div>
         <div class="card-thumbnail">
-            <a class="link-center-pod" href="#" title="{{ playlist.name }}"></a>
+            <a class="link-center-pod" href="{% url 'playlist:content' playlist.slug %}" title="{{ playlist.name }}">
                 {% if playlist.get_number_video > 0 %}
                     <span class="card-img-top">
                         <img class="card-img-top" src="{{ playlist.get_first_video.get_thumbnail_url }}" alt="{% trans "Playlist image" %}" loading="lazy">
@@ -46,7 +46,7 @@
         <div class="card-body px-3 py-2">
             {% if can_edit_or_remove %}
                 <footer class="card-footer card-footer-pod p-0 m-0 link-center-pod link-playlist">
-                {% include "playlist/playlist_link.html" %}
+                    {% include "playlist/playlist_link.html" %}
                 </footer>
             {% endif %}
             <a class="btn btn-primary btn-sm link-center-pod" href="#">
