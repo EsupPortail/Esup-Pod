@@ -21,6 +21,12 @@ ROOT_URLCONF = getattr(settings, "ROOT_URLCONF", "http://testserver")
 
 
 class meeting_TestView(TestCase):
+    """List of Meetings list View tests.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
         Meeting.objects.create(id=1, name="test", owner=user)
@@ -69,6 +75,12 @@ class meeting_TestView(TestCase):
 
 
 class MeetingAddEditTestView(TestCase):
+    """List of tests for editing views of a meeting.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -186,6 +198,12 @@ class MeetingAddEditTestView(TestCase):
 
 
 class MeetingDeleteTestView(TestCase):
+    """List of tests for deleting views from a meeting.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -257,6 +275,12 @@ class MeetingDeleteTestView(TestCase):
 
 
 class MeetingJoinTestView(TestCase):
+    """List of view tests for joining a meeting.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -426,6 +450,12 @@ class MeetingJoinTestView(TestCase):
 
 
 class MeetingStatusTestView(TestCase):
+    """List of meeting status view tests.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -458,6 +488,12 @@ class MeetingStatusTestView(TestCase):
 
 
 class MeetingEndTestView(TestCase):
+    """List of meeting end view tests.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -504,6 +540,12 @@ class MeetingEndTestView(TestCase):
 
 
 class MeetingRecordingTestView(TestCase):
+    """List of tests of the views of the internal recordings of a meeting.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -618,6 +660,12 @@ class MeetingRecordingTestView(TestCase):
 
 
 class MeetingGetInfoTestView(TestCase):
+    """List of tests for views to get information from a meeting.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -659,6 +707,12 @@ class MeetingGetInfoTestView(TestCase):
 
 
 class MeetingEndCallbackTestView(TestCase):
+    """List of tests for views to end callback from a meeting.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -691,6 +745,12 @@ class MeetingEndCallbackTestView(TestCase):
 
 
 class MeetingInviteTestView(TestCase):
+    """List of tests for views to invite users to a meeting.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -762,6 +822,12 @@ class MeetingInviteTestView(TestCase):
 
 
 class RecordingDeleteTestView(TestCase):
+    """List of view tests for deleting an externbal or internal recording.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -854,6 +920,12 @@ class RecordingDeleteTestView(TestCase):
 
 
 class RecordingUploadTestView(TestCase):
+    """List of view tests for upload to Pod an external or internal recording.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
