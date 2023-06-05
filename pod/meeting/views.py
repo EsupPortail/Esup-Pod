@@ -338,7 +338,7 @@ def join_as_moderator(request, meeting):
         args = ve.args[0]
         msg = ""
         for key in args:
-            msg += "<b>%s:</b> %s<br/>" % (key, args[key])
+            msg += "<b>%s:</b> %s<br>" % (key, args[key])
         display_message_with_icon(request, messages.ERROR, mark_safe(msg))
         return render(
             request,
@@ -744,7 +744,7 @@ def delete_internal_recording(request, meeting_id, recording_id):
         args = ve.args[0]
         msg = ""
         for key in args:
-            msg += "<b>%s:</b> %s<br/>" % (key, args[key])
+            msg += "<b>%s:</b> %s<br>" % (key, args[key])
         msg = mark_safe(msg)
     if delete and msg == "":
         display_message_with_icon(
@@ -1054,11 +1054,11 @@ def upload_internal_recording_to_pod(request, recording_id, meeting_id):
         args = ve.args[0]
         msg = ""
         if (args.get('error')):
-            msg += "<strong>%s</strong><br/>" % (args['error'])
+            msg += "<strong>%s</strong><br>" % (args['error'])
         if (args.get('message')):
             msg += args['message']
         if (args.get('proposition')):
-            msg += "<br/><span class='proposition'>%s</span>" % (args['proposition'])
+            msg += "<br><span class='proposition'>%s</span>" % (args['proposition'])
     if upload and msg == "":
         msg += _(
             "The recording has been uploaded to Pod. "
@@ -1104,11 +1104,11 @@ def upload_external_recording_to_pod(request, record_id):
         args = ve.args[0]
         msg = ""
         if (args.get('error')):
-            msg += "<strong>%s</strong><br/>" % (args['error'])
+            msg += "<strong>%s</strong><br>" % (args['error'])
         if (args.get('message')):
             msg += args['message']
         if (args.get('proposition')):
-            msg += "<br/><span class='proposition'>%s</span>" % (args['proposition'])
+            msg += "<br><span class='proposition'>%s</span>" % (args['proposition'])
     if upload and msg == "":
         msg += _(
             "The recording has been uploaded to Pod. "
@@ -1309,7 +1309,7 @@ def delete_external_recording(request, id):
         args = ve.args[0]
         msg = ""
         if (args['error']):
-            msg += "<strong>%s</strong><br/>" % (args['error'])
+            msg += "<strong>%s</strong><br>" % (args['error'])
         if (args['message']):
             msg += args['message']
     if delete and msg == "":
@@ -1895,7 +1895,7 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
                 if pt_video_description is None:
                     pt_video_description = ""
                 else:
-                    pt_video_description = pt_video_description.replace("\r\n", "<br/>")
+                    pt_video_description = pt_video_description.replace("\r\n", "<br>")
                 # Creation date (format : 2023-05-23T08:16:34.690Z)
                 pt_video_created_at = pt_video_json['createdAt']
                 # Evant date (format : 2023-05-23)
@@ -1929,7 +1929,7 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
             "name": pt_video_name,
             "url": pt_video_url
         }
-        description = ("%s<br/>%s") % (description, pt_video_description)
+        description = ("%s<br>%s") % (description, pt_video_description)
         save_video(request, dest_file, recording_title, description, recording, date_evt)
 
         return True
@@ -1959,6 +1959,7 @@ class video_parser(HTMLParser):
     """
 
     def __init__(self):
+        """Initialize video parser."""
         super().__init__()
         self.reset()
         # Variables for title
@@ -1970,6 +1971,7 @@ class video_parser(HTMLParser):
         self.video_type = ""
 
     def handle_starttag(self, tag, attrs):
+        """Parse BBB Web page and search video file."""
         attrs = dict(attrs)
         # Search for source tag
         if tag == "source":
@@ -1985,7 +1987,7 @@ class video_parser(HTMLParser):
             self.title_check = True
 
     def handle_data(self, data):
-        # Search for title tag
+        """Search for title tag."""
         if self.title_check:
             # Get the title that corresponds to recording's name
             self.title = data
