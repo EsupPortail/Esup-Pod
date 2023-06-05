@@ -212,12 +212,11 @@ def get_entry_value(entry, attribute, default):
         USER_LDAP_MAPPING_ATTRIBUTES.get(attribute)
         and entry[USER_LDAP_MAPPING_ATTRIBUTES[attribute]]
     ):
-        if (
-            attribute == "last_name"
-            and isinstance(entry[USER_LDAP_MAPPING_ATTRIBUTES[attribute]].value, list)
+        if attribute == "last_name" and isinstance(
+            entry[USER_LDAP_MAPPING_ATTRIBUTES[attribute]].value, list
         ):
             return entry[USER_LDAP_MAPPING_ATTRIBUTES[attribute]].value[0]
-        elif (attribute == "affiliations"):
+        elif attribute == "affiliations":
             return entry[USER_LDAP_MAPPING_ATTRIBUTES[attribute]].values
         else:
             return entry[USER_LDAP_MAPPING_ATTRIBUTES[attribute]].value

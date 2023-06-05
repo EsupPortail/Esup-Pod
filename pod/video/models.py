@@ -917,6 +917,7 @@ class Video(models.Model):
     def get_encoding_step(self):
         """Get the current encoding step of a video."""
         from pod.video_encode.models import EncodingStep
+
         try:
             es = EncodingStep.objects.get(video=self)
         except ObjectDoesNotExist:
@@ -1107,6 +1108,7 @@ class Video(models.Model):
     def get_video_m4a(self):
         """Get the audio (m4a) version of the video."""
         from pod.video_encode.models import EncodingAudio
+
         try:
             return EncodingAudio.objects.get(
                 name="audio", video=self, encoding_format="video/mp4"
@@ -1117,6 +1119,7 @@ class Video(models.Model):
     def get_video_mp3(self):
         """Get the audio (mp3) version of the video."""
         from pod.video_encode.models import EncodingAudio
+
         try:
             return EncodingAudio.objects.get(
                 name="audio", video=self, encoding_format="audio/mp3"
@@ -1127,10 +1130,12 @@ class Video(models.Model):
     def get_video_mp4(self):
         """Get the mp4 version of the video."""
         from pod.video_encode.models import EncodingVideo
+
         return EncodingVideo.objects.filter(video=self, encoding_format="video/mp4")
 
     def get_video_json(self, extensions):
         from pod.video_encode.models import EncodingVideo
+
         extension_list = extensions.split(",") if extensions else []
         list_video = EncodingVideo.objects.filter(video=self)
         dict_src = Video.get_media_json(extension_list, list_video)
@@ -1145,6 +1150,7 @@ class Video(models.Model):
 
     def get_audio_json(self, extensions):
         from pod.video_encode.models import EncodingAudio
+
         extension_list = extensions.split(",") if extensions else []
         list_audio = EncodingAudio.objects.filter(name="audio", video=self)
         dict_src = Video.get_media_json(extension_list, list_audio)
@@ -1371,6 +1377,7 @@ def default_site(sender, instance, created, **kwargs):
 def video_files_removal(sender, instance, using, **kwargs):
     """Remove files created after encoding."""
     from pod.video_encode.models import EncodingVideo, EncodingAudio
+
     remove_video_file(instance)
 
     models_to_delete = [EncodingVideo, EncodingAudio, PlaylistVideo]
