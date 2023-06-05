@@ -40,6 +40,7 @@ class EncodingVideoViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"])
     def video_encodedfiles(self, request):
+        """Retrieve encoded video files."""
         encoded_videos = EncodingVideoViewSet.filter_encoded_medias(
             self.queryset, request
         )
@@ -51,6 +52,7 @@ class EncodingVideoViewSet(viewsets.ModelViewSet):
 
     @staticmethod
     def filter_encoded_medias(queryset, request):
+        """Filter encoded media files."""
         encoded_audios = queryset
         if request.GET.get("video"):
             encoded_audios = encoded_audios.filter(video__id=request.GET.get("video"))
@@ -68,6 +70,7 @@ class EncodingAudioViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"])
     def audio_encodedfiles(self, request):
+        """Retrieve encoded audio files."""
         encoded_audios = EncodingVideoViewSet.filter_encoded_medias(
             self.queryset, request
         )
