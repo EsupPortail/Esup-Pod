@@ -10,7 +10,7 @@
                         <b>{{ playlist.name|capfirst|truncatechars:20 }}</b>
                         <br>
                         {{ playlist.get_number_video }}
-                        {% if playlist.get_number_video > 0 %}
+                        {% if playlist.get_number_video > 1 %}
                             {% trans "videos" %}
                         {% else %}
                             {% trans "video" %}
