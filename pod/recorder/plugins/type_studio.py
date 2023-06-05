@@ -11,7 +11,7 @@ from django.conf import settings
 from ..utils import add_comment, studio_clean_old_files
 from ..models import Recording
 from pod.video.models import Video, get_storage_path_video
-from pod.video import encode
+from pod.video_encode import encode
 from django.template.defaultfilters import slugify
 
 DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
