@@ -64,13 +64,16 @@ class EncodingVideo(models.Model):
 
     @property
     def sites(self):
+        """Property representing the sites associated with the video."""
         return self.video.sites
 
     @property
     def sites_all(self):
+        """Property representing all the sites associated with the video."""
         return self.video.sites_set.all()
 
     def clean(self):
+        """Validate the encoding video model."""
         if self.name:
             if self.name not in dict(ENCODING_CHOICES):
                 raise ValidationError(EncodingVideo._meta.get_field("name").help_text)
@@ -95,17 +98,21 @@ class EncodingVideo(models.Model):
 
     @property
     def owner(self):
+        """Property representing the owner of the video."""
         return self.video.owner
 
     @property
     def height(self):
+        """Property representing the height of the video rendition."""
         return int(self.rendition.resolution.split("x")[1])
 
     @property
     def width(self):
+        """Property representing the width of the video rendition."""
         return int(self.rendition.resolution.split("x")[0])
 
     def delete(self):
+        """Delete the encoding video."""
         if self.source_file:
             if os.path.isfile(self.source_file.path):
                 os.remove(self.source_file.path)
@@ -139,10 +146,12 @@ class EncodingAudio(models.Model):
 
     @property
     def sites(self):
+        """Property representing the sites associated with the video."""
         return self.video.sites
 
     @property
     def sites_all(self):
+        """Property representing all the sites associated with the video."""
         return self.video.sites_set.all()
 
     class Meta:
@@ -151,6 +160,7 @@ class EncodingAudio(models.Model):
         verbose_name_plural = _("Encoding audios")
 
     def clean(self):
+        """Validate the encoding audio model."""
         if self.name:
             if self.name not in dict(ENCODING_CHOICES):
                 raise ValidationError(EncodingAudio._meta.get_field("name").help_text)
@@ -169,9 +179,11 @@ class EncodingAudio(models.Model):
 
     @property
     def owner(self):
+        """Property representing the owner of the video."""
         return self.video.owner
 
     def delete(self):
+        """Delete the encoding audio, including the source file if it exists."""
         if self.source_file:
             if os.path.isfile(self.source_file.path):
                 os.remove(self.source_file.path)
@@ -187,10 +199,12 @@ class EncodingLog(models.Model):
 
     @property
     def sites(self):
+        """Property representing the sites associated with the video."""
         return self.video.sites
 
     @property
     def sites_all(self):
+        """Property representing all the sites associated with the video."""
         return self.video.sites_set.all()
 
     class Meta:
@@ -211,10 +225,12 @@ class EncodingStep(models.Model):
 
     @property
     def sites(self):
+        """Property representing the sites associated with the video."""
         return self.video.sites
 
     @property
     def sites_all(self):
+        """Property representing all the sites associated with the video."""
         return self.video.sites_set.all()
 
     class Meta:
