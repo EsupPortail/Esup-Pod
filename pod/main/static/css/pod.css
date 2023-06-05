@@ -84,7 +84,7 @@
   --bs-body-font-family: var(--pod-font-family-dyslexie);
 }
 
-.pod-card--video a {
+.pod-card--video a:not(.btn) {
   color: inherit;
 }
 
