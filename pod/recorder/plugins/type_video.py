@@ -6,7 +6,7 @@ import os
 
 from django.conf import settings
 from pod.video.models import Video, get_storage_path_video
-from pod.video import encode
+from pod.video_encode import encode
 
 DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")

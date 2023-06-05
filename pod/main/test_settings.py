@@ -36,6 +36,7 @@ DATABASES = {
         },
     }
 }
+
 LANGUAGES = (("fr", "Français"), ("en", "English"))
 LANGUAGE_CODE = "en"
 THIRD_PARTY_APPS = ["enrichment", "live"]

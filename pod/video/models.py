@@ -916,6 +916,7 @@ class Video(models.Model):
     @property
     def get_encoding_step(self):
         """Get the current encoding step of a video."""
+        from pod.video_encode.models import EncodingStep
         try:
             es = EncodingStep.objects.get(video=self)
         except ObjectDoesNotExist:
@@ -1105,6 +1106,7 @@ class Video(models.Model):
 
     def get_video_m4a(self):
         """Get the audio (m4a) version of the video."""
+        from pod.video_encode.models import EncodingAudio
         try:
             return EncodingAudio.objects.get(
                 name="audio", video=self, encoding_format="video/mp4"
@@ -1114,6 +1116,7 @@ class Video(models.Model):
 
     def get_video_mp3(self):
         """Get the audio (mp3) version of the video."""
+        from pod.video_encode.models import EncodingAudio
         try:
             return EncodingAudio.objects.get(
                 name="audio", video=self, encoding_format="audio/mp3"
@@ -1123,9 +1126,11 @@ class Video(models.Model):
 
     def get_video_mp4(self):
         """Get the mp4 version of the video."""
+        from pod.video_encode.models import EncodingVideo
         return EncodingVideo.objects.filter(video=self, encoding_format="video/mp4")
 
     def get_video_json(self, extensions):
+        from pod.video_encode.models import EncodingVideo
         extension_list = extensions.split(",") if extensions else []
         list_video = EncodingVideo.objects.filter(video=self)
         dict_src = Video.get_media_json(extension_list, list_video)
@@ -1139,6 +1144,7 @@ class Video(models.Model):
         return list_mp4["mp4"] if list_mp4.get("mp4") else []
 
     def get_audio_json(self, extensions):
+        from pod.video_encode.models import EncodingAudio
         extension_list = extensions.split(",") if extensions else []
         list_audio = EncodingAudio.objects.filter(name="audio", video=self)
         dict_src = Video.get_media_json(extension_list, list_audio)
@@ -1364,6 +1370,7 @@ def default_site(sender, instance, created, **kwargs):
 @receiver(pre_delete, sender=Video, dispatch_uid="pre_delete-video_files_removal")
 def video_files_removal(sender, instance, using, **kwargs):
     """Remove files created after encoding."""
+    from pod.video_encode.models import EncodingVideo, EncodingAudio
     remove_video_file(instance)
 
     models_to_delete = [EncodingVideo, EncodingAudio, PlaylistVideo]
@@ -1541,148 +1548,6 @@ def default_site_videorendition(sender, instance, created, **kwargs):
         instance.sites.add(Site.objects.get_current())
 
 
-class EncodingVideo(models.Model):
-    name = models.CharField(
-        _("Name"),
-        max_length=10,
-        choices=ENCODING_CHOICES,
-        default="360p",
-        help_text=_("Please use the only format in encoding choices:")
-        + " %s" % " ".join(str(key) for key, value in ENCODING_CHOICES),
-    )
-    video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
-    rendition = models.ForeignKey(
-        VideoRendition, verbose_name=_("rendition"), on_delete=models.CASCADE
-    )
-    encoding_format = models.CharField(
-        _("Format"),
-        max_length=22,
-        choices=FORMAT_CHOICES,
-        default="video/mp4",
-        help_text=_("Please use the only format in format choices:")
-        + " %s" % " ".join(str(key) for key, value in FORMAT_CHOICES),
-    )
-    source_file = models.FileField(
-        _("encoding source file"),
-        upload_to=get_storage_path_video,
-        max_length=255,
-    )
-
-    @property
-    def sites(self):
-        return self.video.sites
-
-    @property
-    def sites_all(self):
-        return self.video.sites_set.all()
-
-    def clean(self):
-        if self.name:
-            if self.name not in dict(ENCODING_CHOICES):
-                raise ValidationError(EncodingVideo._meta.get_field("name").help_text)
-        if self.encoding_format:
-            if self.encoding_format not in dict(FORMAT_CHOICES):
-                raise ValidationError(
-                    EncodingVideo._meta.get_field("encoding_format").help_text
-                )
-
-    class Meta:
-        ordering = ["name"]
-        verbose_name = _("Encoding video")
-        verbose_name_plural = _("Encoding videos")
-
-    def __str__(self):
-        return "EncodingVideo num: %s with resolution %s for video %s in %s" % (
-            "%04d" % self.id,
-            self.name,
-            self.video.id,
-            self.encoding_format,
-        )
-
-    @property
-    def owner(self):
-        return self.video.owner
-
-    @property
-    def height(self):
-        return int(self.rendition.resolution.split("x")[1])
-
-    @property
-    def width(self):
-        return int(self.rendition.resolution.split("x")[0])
-
-    def delete(self):
-        if self.source_file:
-            if os.path.isfile(self.source_file.path):
-                os.remove(self.source_file.path)
-        super(EncodingVideo, self).delete()
-
-
-class EncodingAudio(models.Model):
-    name = models.CharField(
-        _("Name"),
-        max_length=10,
-        choices=ENCODING_CHOICES,
-        default="audio",
-        help_text=_("Please use the only format in encoding choices:")
-        + " %s" % " ".join(str(key) for key, value in ENCODING_CHOICES),
-    )
-    video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
-    encoding_format = models.CharField(
-        _("Format"),
-        max_length=22,
-        choices=FORMAT_CHOICES,
-        default="audio/mp3",
-        help_text=_("Please use the only format in format choices:")
-        + " %s" % " ".join(str(key) for key, value in FORMAT_CHOICES),
-    )
-    source_file = models.FileField(
-        _("encoding source file"),
-        upload_to=get_storage_path_video,
-        max_length=255,
-    )
-
-    @property
-    def sites(self):
-        return self.video.sites
-
-    @property
-    def sites_all(self):
-        return self.video.sites_set.all()
-
-    class Meta:
-        ordering = ["name"]
-        verbose_name = _("Encoding audio")
-        verbose_name_plural = _("Encoding audios")
-
-    def clean(self):
-        if self.name:
-            if self.name not in dict(ENCODING_CHOICES):
-                raise ValidationError(EncodingAudio._meta.get_field("name").help_text)
-        if self.encoding_format:
-            if self.encoding_format not in dict(FORMAT_CHOICES):
-                raise ValidationError(
-                    EncodingAudio._meta.get_field("encoding_format").help_text
-                )
-
-    def __str__(self):
-        return "EncodingAudio num: %s for video %s in %s" % (
-            "%04d" % self.id,
-            self.video.id,
-            self.encoding_format,
-        )
-
-    @property
-    def owner(self):
-        return self.video.owner
-
-    def delete(self):
-        if self.source_file:
-            if os.path.isfile(self.source_file.path):
-                os.remove(self.source_file.path)
-        super(EncodingAudio, self).delete()
-
-
 class PlaylistVideo(models.Model):
     name = models.CharField(
         _("Name"),
@@ -1747,30 +1612,6 @@ class PlaylistVideo(models.Model):
         super(PlaylistVideo, self).delete()
 
 
-class EncodingLog(models.Model):
-    video = models.OneToOneField(
-        Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
-    )
-    log = models.TextField(null=True, blank=True, editable=False)
-    logfile = models.FileField(max_length=255, blank=True, null=True)
-
-    @property
-    def sites(self):
-        return self.video.sites
-
-    @property
-    def sites_all(self):
-        return self.video.sites_set.all()
-
-    class Meta:
-        ordering = ["video"]
-        verbose_name = _("Encoding log")
-        verbose_name_plural = _("Encoding logs")
-
-    def __str__(self):
-        return "Log for encoding video %s" % (self.video.id)
-
-
 class VideoVersion(models.Model):
     video = models.OneToOneField(
         Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
@@ -1801,30 +1642,6 @@ class VideoVersion(models.Model):
             self.video.id,
             self.version,
         )
-
-
-class EncodingStep(models.Model):
-    video = models.OneToOneField(
-        Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
-    )
-    num_step = models.IntegerField(default=0, editable=False)
-    desc_step = models.CharField(null=True, max_length=255, blank=True, editable=False)
-
-    @property
-    def sites(self):
-        return self.video.sites
-
-    @property
-    def sites_all(self):
-        return self.video.sites_set.all()
-
-    class Meta:
-        ordering = ["video"]
-        verbose_name = _("Encoding step")
-        verbose_name_plural = _("Encoding steps")
-
-    def __str__(self):
-        return "Step for encoding video %s" % (self.video.id)
 
 
 class Notes(models.Model):
