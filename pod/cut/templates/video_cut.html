@@ -22,7 +22,7 @@
   </a>
 </li>
 
-<li class="breadcrumb-item active" aria-current="page">        
+<li class="breadcrumb-item active" aria-current="page">
     {% trans 'Cut the video' %}
 </li>
 
@@ -67,7 +67,7 @@
   <a id="reset" class="btn btn btn-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i>&nbsp;{% trans 'Reset' %}</a>
 </div>
 
-<hr />
+<hr>
 <div id="info_video">
   <div>
     <span class="float-end">
@@ -106,17 +106,18 @@
     <div class="card" id="card-managevideo">
       <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video" %}</h2>
       <div class="card-body card-text text-center">
-        {% include "videos/link_video.html" %}
+        {% include "videos/link_video.html" with hide_favorite_link=True %}
       </div>
     </div>
   {% endif %}
   <div id="cut-info" class="card">
+  <h2 class="card-header card-title pod-card__title h4">{% trans "Help"%}</h2>
   <button class="btn rounded-0 pod-btn" id="heading-0" data-bs-toggle="collapse" data-bs-target="#collapse-0" aria-expanded="true" aria-controls="collapse-0">
     {% trans 'Cut' %}
   </button>
   <div id="collapse-0" class="card-body collapse hide card-text small">
     <p>{% trans 'The video cut allows you to set a start and an end to trim your video.' %}</p>
-    <p>{% trans 'Your original video is kept and you can therefore modify your changes at any time' %}</p>
+    <p>{% trans 'Your original video is kept and you can therefore modify your changes at any time.' %}</p>
     <p>{% trans 'When saving your cut, an encoding is restarted to replace the old one.' %}</p>
   </div>
 </div>

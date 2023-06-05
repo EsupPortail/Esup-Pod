@@ -40,7 +40,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         "TITLE_SITE": "Pod",
         "TITLE_ETB": "University name",
         "LOGO_SITE": "img/logoPod.svg",
-        "LOGO_ETB": "img/logo_etb.svg",
+        "LOGO_ETB": "img/esup-pod.svg",
         "LOGO_PLAYER": "img/pod_favicon.svg",
         "LINK_PLAYER": "",
         "FOOTER_TEXT": ("",),
@@ -199,14 +199,14 @@ class Command(BaseCommand):
         name = video.owner.last_name + " " + video.owner.first_name
         if video.owner.is_staff:
             msg_html = _("Hello %(name)s,") % {"name": name}
-            msg_html += "<br/>\n"
+            msg_html += "<br>\n"
             msg_html += "<p>" + _(
                 'Your video intitled <a href="//%(url)s">"%(title)s"</a> will soon arrive'
                 + " at the deletion deadline."
             ) % {"url": video.get_full_url(), "title": video.title}
-            msg_html += "<br/>\n"
+            msg_html += "<br>\n"
             msg_html += _(
-                "It will be deleted on %(date_delete)s.<br/>\n"
+                "It will be deleted on %(date_delete)s.<br>\n"
                 + "If you want to keep it, "
             ) % {"date_delete": video.date_delete}
             msg_html += _(
@@ -219,14 +219,14 @@ class Command(BaseCommand):
             msg_html += "<p>" + _("Regards") + "</p>\n"
         else:
             msg_html = _("Hello %(name)s,") % {"name": name}
-            msg_html += "<br/>\n"
+            msg_html += "<br>\n"
             msg_html += "<p>" + _(
                 'Your video intitled "%(title)s" will soon arrive '
                 + "at the deletion deadline."
             ) % {"title": video.title}
-            msg_html += "<br/>\n"
+            msg_html += "<br>\n"
             msg_html += _(
-                "It will be deleted on %(date_delete)s.<br/>\n"
+                "It will be deleted on %(date_delete)s.<br>\n"
                 + "If you want to keep it, "
             ) % {"date_delete": video.date_delete}
             msg_html += _(
@@ -265,7 +265,7 @@ class Command(BaseCommand):
                         "site_title": __TITLE_SITE__
                     }
                 msg_html += (
-                    "<br/>\n<p>"
+                    "<br>\n<p>"
                     + _(
                         "For information, "
                         + "you will find below the list of video will soon arrive "
@@ -326,7 +326,7 @@ class Command(BaseCommand):
                         "site_title": __TITLE_SITE__
                     }
                 msg_html += (
-                    "<br/>\n<p>"
+                    "<br>\n<p>"
                     + _(
                         "For information, "
                         + "you will find below the list of deleted video."
@@ -383,7 +383,7 @@ class Command(BaseCommand):
                         "site_title": __TITLE_SITE__
                     }
                 msg_html += (
-                    "<br/>\n<p>"
+                    "<br>\n<p>"
                     + _(
                         "For information, "
                         + "you will find below the list of archived video."

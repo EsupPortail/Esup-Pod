@@ -477,7 +477,7 @@ def end(request, meeting_id):
         args = ve.args[0]
         msg = ""
         for key in args:
-            msg += "<b>%s:</b> %s<br/>" % (key, args[key])
+            msg += "<b>%s:</b> %s<br>" % (key, args[key])
         msg = mark_safe(msg)
     if request.is_ajax():
         return JsonResponse({"end": meeting.end(), "msg": msg}, safe=False)
@@ -511,7 +511,7 @@ def get_meeting_info(request, meeting_id):
         args = ve.args[0]
         msg = ""
         for key in args:
-            msg += "<b>%s:</b> %s<br/>" % (key, args[key])
+            msg += "<b>%s:</b> %s<br>" % (key, args[key])
         msg = mark_safe(msg)
     if request.is_ajax():
         return JsonResponse({"info": info, "msg": msg}, safe=False)
@@ -798,7 +798,7 @@ def invite(request, meeting_id):
         form = MeetingInviteForm(request.POST)
 
         if form.is_valid():
-            emails = form.cleaned_data["emails"]
+            emails = get_dest_emails(meeting, form)
             send_invite(request, meeting, emails)
             display_message_with_icon(
                 request, messages.INFO, _("Invitations send to recipients.")
@@ -809,6 +809,15 @@ def invite(request, meeting_id):
         "meeting/invite.html",
         {"meeting": meeting, "form": form},
     )
+
+
+def get_dest_emails(meeting, form):
+    emails = form.cleaned_data["emails"]
+    if form.cleaned_data["owner_copy"] is True:
+        emails.append(meeting.owner.email)
+        for add_owner in meeting.additional_owners.all():
+            emails.append(add_owner.email)
+    return emails
 
 
 def send_invite(request, meeting, emails):

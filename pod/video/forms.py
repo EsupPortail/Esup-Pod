@@ -714,9 +714,12 @@ class VideoForm(forms.ModelForm):
             self.fields["video"].validators = [valid_ext, FileSizeValidator]
             self.fields["video"].widget.attrs["class"] = self.videoattrs["class"]
             self.fields["video"].widget.attrs["accept"] = self.videoattrs["accept"]
-        if self.instance.encoding_in_progress or not self.instance.encoded:
-            self.remove_field("owner")
-            self.remove_field("video")  # .widget = forms.HiddenInput()
+
+        if self.instance and self.instance.video:
+            if self.instance.encoding_in_progress or not self.instance.encoded:
+                self.remove_field("owner")
+                self.remove_field("video")  # .widget = forms.HiddenInput()
+
         # remove required=True for videofield if instance
         if self.fields.get("video") and self.instance and self.instance.video:
             del self.fields["video"].widget.attrs["required"]

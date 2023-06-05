@@ -597,7 +597,8 @@ div.card a img {
   background: #00000095;
 }
 
-.card-footer-pod a.btn {
+.card-footer-pod a.btn,
+.card-footer-pod button {
   border: none;
   color: white;
   background: none;
@@ -673,9 +674,11 @@ div.card a img {
 #filterCursus div.collapse:not(.show),
 #filterTag div.collapse:not(.show) {
   height: 148px !important;
-  overflow: hidden;
-
+  /* overflow: hidden; */
   display: -webkit-box;
+  display: flex;
+  flex-direction: column;
+  display: -ms-flexbox;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
@@ -879,6 +882,7 @@ body[data-admin-utc-offset] {
   --primary: var(--pod-primary);
   --breadcrumbs-bg: var(--pod-primary);
   --button-bg: var(--pod-primary);
+  background-color: var(--body-bg);
 }
 
 body[data-admin-utc-offset] textarea.cke_source {

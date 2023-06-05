@@ -1,3 +1,5 @@
+// this function (isFooterInView) is not used elsewhere
+/*
 function isFooterInView() {
   var footer = document.querySelector(
     "footer.container-fluid.pod-footer-container"
@@ -11,8 +13,8 @@ function isFooterInView() {
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
-
-/* Another way to detect the footer 
+*/
+/* Another way to detect the footer
 function detect_visibility() {
   var element = document.querySelector(
     "footer.container-fluid.pod-footer-container"
@@ -88,13 +90,11 @@ class InfiniteLoader {
     let url = this.url;
     this.callBackBeforeLoad();
 
-    //UPDATE DOM
+    // UPDATE DOM
     this.getData(url, this.next_page_number).then((data) => {
       const html = new DOMParser().parseFromString(data, "text/html");
 
-      if (
-        html.getElementById("videos_list").getAttribute("nextPage") != "True"
-      ) {
+      if (html.getElementById("videos_list").dataset.nextPage !== "True") {
         this.nextPage = false;
       }
 

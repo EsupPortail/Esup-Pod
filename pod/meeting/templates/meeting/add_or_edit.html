@@ -26,9 +26,9 @@
     {% csrf_token %}
     <div class="list-group">
       {% if form.errors %}
-        <p class="text-danger">{% trans "One or more errors have been found in the form." %}<br/>
+        <p class="text-danger">{% trans "One or more errors have been found in the form." %}<br>
           {% for error in form.non_field_errors %}
-          <span> - {{ error }}</span> <br/>
+          <span> - {{ error }}</span> <br>
           {% endfor %}
         </p>
       {% endif %}
@@ -159,11 +159,11 @@
 {% block more_script %}
 <script src="/admin/jsi18n/"></script>
 <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
-<!-- 
+<!--
 <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>
 -->
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}" />
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
 {{form.media}}
 <script>
   /** Restrict access **/

@@ -5,17 +5,17 @@
 <head>{% spaceless %}
   <!-- Required meta tags -->
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   {% block opengraph %}
     <meta name="description" content="{{ DESC_SITE }}">
     <!-- Open Graph data -->
-    <meta property="og:title" content="{{ TITLE_SITE }}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-    <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
-    <meta property="og:description" content="{{ DESC_SITE }}" />
-    <meta property="og:site_name" content="{{ TITLE_SITE }}" />
+    <meta property="og:title" content="{{ TITLE_SITE }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}">
+    <meta property="og:description" content="{{ DESC_SITE }}">
+    <meta property="og:site_name" content="{{ TITLE_SITE }}">
   {% endblock %}
   {% if FAVICON %}
     <link rel="shortcut icon" href="{% static FAVICON %}?ver={{VERSION}}" sizes="any" >
@@ -35,7 +35,7 @@
     <link rel="stylesheet" href="{% static CSS_OVERRIDE %}?ver={{VERSION}}" media="screen">
   {% endif %}
   {% if SHOW_EVENTS_ON_HOMEPAGE and "live" in THIRD_PARTY_APPS %}
-    <link href="{% static 'css/event.css' %}?ver={{ VERSION }}" rel="stylesheet"/>
+    <link href="{% static 'css/event.css' %}?ver={{ VERSION }}" rel="stylesheet">
   {% endif %}
   <!-- more styles for each App -->
   {% block more_style %}
@@ -70,7 +70,7 @@
       <div class="pod-grid-content">
         <div class="pod-mainContent mt-2" id="pod-mainContent">
           {% if not request.GET.is_iframe %}
-            <div class="pod-aside-collapse">
+            <div class="pod-aside-collapse" id="collapse-button">
               {% block collapse_page_aside %}
                 <a class="btn btn-outline-primary collapseAside pod-aside-collapse__button" data-bs-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" aria-label="{% trans 'Toggle side Menu' %}">
                   <i class="bi bi-three-dots-vertical"></i>
@@ -142,7 +142,7 @@
       <div class="modal-content">
         <div class="modal-body">
           <div class="d-flex align-items-center align-self-center card p-3 text-center cookies">
-            <img src="{% static 'img/cookie.svg' %}" alt="" width="50" />
+            <img src="{% static 'img/cookie.svg' %}" alt="" width="50">
             <span class="mt-2">{% trans 'We use third party cookies to personalize content, manage session and analyze site traffic.' %}</span>
             {% if COOKIE_LEARN_MORE != "" %}
               <a class="d-flex align-items-center" href="{{COOKIE_LEARN_MORE}}">{% trans 'Learn more' %}<i class="bi bi-caret-right ms-2"></i></a>

@@ -2,11 +2,11 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block page_title %}{% trans 'Complements of the video' %} "{{video.title}}"{% endblock page_title %}
+{% block page_title %}{% trans 'Video additions' %} "{{video.title}}"{% endblock page_title %}
 
 {% block page_extra_head %}
 <!-- media -->
-<link rel="stylesheet" href="{% static 'css/completion.css' %}?ver={{VERSION}}" />
+<link rel="stylesheet" href="{% static 'css/completion.css' %}?ver={{VERSION}}">
 
 {% endblock page_extra_head %}
 {% block breadcrumbs %}
@@ -41,8 +41,8 @@
     </span>
     <form class="form_new completion" id="form_new_contributor" action="{% url 'video:completion:video_completion_contributor' slug=video.slug %}" method="POST">
       {% csrf_token %}
-      <input type="hidden" name="action" value="new" />
-      <input type="submit" value="{% trans 'Add a new contributor' %}" class="new_contributor btn btn-primary" />
+      <input type="hidden" name="action" value="new">
+      <input type="submit" value="{% trans 'Add a new contributor' %}" class="new_contributor btn btn-primary">
     </form>
   </li>
   &nbsp;
@@ -66,8 +66,8 @@
       </span>
       <form class="form_new completion" id="form_new_track" action="{% url 'video:completion:video_completion_track' slug=video.slug %}" method="POST">
         {% csrf_token %}
-        <input type="hidden" name="action" value="new" />
-        <input type="submit" value="{% trans 'Add a new subtitle or caption file' %}" class="new_track btn btn-primary" />
+        <input type="hidden" name="action" value="new">
+        <input type="submit" value="{% trans 'Add a new subtitle or caption file' %}" class="new_track btn btn-primary">
         <span>{% trans 'The file must be in VTT format.' %}</span>
       </form>
     </div>
@@ -90,8 +90,8 @@
     </span>
     <form class="form_new completion" id="form_new_document" action="{% url 'video:completion:video_completion_document' slug=video.slug %}" method="POST">
       {% csrf_token %}
-      <input type="hidden" name="action" value="new" />
-      <input type="submit" value="{% trans 'Add a new additional resource' %}" class="new_document btn btn-primary" />
+      <input type="hidden" name="action" value="new">
+      <input type="submit" value="{% trans 'Add a new additional resource' %}" class="new_document btn btn-primary">
     </form>
   </li>
   &nbsp;
@@ -112,8 +112,8 @@
     </span>
     <form class="form_new completion" id="form_new_overlay" action="{% url 'video:completion:video_completion_overlay' slug=video.slug %}" method="POST">
       {% csrf_token %}
-      <input type="hidden" name="action" value="new" />
-      <input type="submit" value="{% trans 'Add a new overlay' %}" class="new_overlay btn btn-primary" />
+      <input type="hidden" name="action" value="new">
+      <input type="submit" value="{% trans 'Add a new overlay' %}" class="new_overlay btn btn-primary">
     </form>
   </li>
   &nbsp;
@@ -127,11 +127,12 @@
 <div class="card mb-2" id="card-managevideo">
   <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
   <div class="card-body card-text text-center">
-    {% include "videos/link_video.html" %}
+    {% include "videos/link_video.html" with hide_favorite_link=True %}
   </div>
 </div>
 {% endif %}
 <div id="contributor-info" class="card">
+  <h2 class="card-header card-title pod-card__title h4">{% trans "Help"%}</h2>
   <button class="btn rounded-0 pod-btn" id="heading-1" data-bs-toggle="collapse" data-bs-target="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
     {% trans 'Contributor(s)' %}
   </button>
@@ -153,10 +154,10 @@
     <p>{% trans 'You will need the URL of this video to make subtitles and/or captions. This URL is a direct access to this video. Please do not communicate it outside of this site to avoid any misuse.' %}</p>
     <ul class="list-group">
       {% for vid in video.get_video_mp4 %}
-      <li class="list-group-item">{{vid.name}} : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly /></li>
+      <li class="list-group-item">{{vid.name}} : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly></li>
       {% endfor %}
       {% if video.is_video == False and video.get_video_mp3 %}
-      <li class="list-group-item">{{video.get_video_mp3.name}} : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly /></li>
+      <li class="list-group-item">{{video.get_video_mp3.name}} : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly></li>
       {% endif %}
     </ul>
   </div>

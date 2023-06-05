@@ -31,14 +31,14 @@
         {% endcomment %}
         <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="add_video_notes_form mt-1" role="menuitem">
           {% csrf_token %}
-          <input type="hidden" name="action" value="form_note"/>
+          <input type="hidden" name="action" value="form_note">
           <button class="btn pod-btn-social p-0 m-0" type="submit" action="create" title="{% trans 'Create a note' %}"> <i class="bi bi-journal-plus"></i> </button>
         </form>
       {% endif %}
       {% if listNotes %}
         <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="download_video_notes_form  mt-1" role="menuitem">
           {% csrf_token %}
-          <input type="hidden" name="action" value="download"/>
+          <input type="hidden" name="action" value="download">
           <button class="btn pod-btn-social p-0 m-0" type="submit" action="download" title="{% trans 'Download the notes' %}"> <i class="bi bi-download"></i></button>
         </form>
       {% endif %}
@@ -61,8 +61,8 @@
             {% if note_form and noteToDisplay and not comToDisplay and not noteToEdit and not comToEdit %}
               <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_note_coms_form d-none">
                 {% csrf_token %}
-                <input type="hidden" name="action" value="get"/>
-                <input type="hidden" name="idNote" value="{{ note.id }}"/>
+                <input type="hidden" name="action" value="get">
+                <input type="hidden" name="idNote" value="{{ note.id }}">
               </form>
               <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" id="video_notes_form">
               {% csrf_token %}
@@ -79,8 +79,8 @@
                   </div>
                   {% endspaceless %}
                 {% endfor %}
-                <input type="hidden" name="idNote" value="{{ note.id }}"/>
-                <input type="hidden" name="action" value="save_com"/>
+                <input type="hidden" name="idNote" value="{{ note.id }}">
+                <input type="hidden" name="action" value="save_com">
 
                 <div class="mt-3">
                   <input type="submit" name="submit" value="{% trans 'Save' %}" class="btn btn-sm btn-primary">
@@ -97,7 +97,7 @@
     {% if request.user.is_authenticated and note_form and not noteToDisplay and not noteToEdit and not comToEdit %}
       <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_notes_form d-none">
         {% csrf_token %}
-        <input type="hidden" name="action" value="get"/>
+        <input type="hidden" name="action" value="get">
       </form>
       <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" id="video_notes_form">
       {% csrf_token %}
@@ -117,7 +117,7 @@
           {% endspaceless %}
         {% endfor %}
         </fieldset>
-        <input type="hidden" name="action" value="save_note"/>
+        <input type="hidden" name="action" value="save_note">
         <div class="mt-2">
           <input type="submit" value="{% trans 'Save' %}" class="btn btn-sm btn-primary" id="video_notes_form_save">
           <input type="button" name="cancel" id="cancel_save" value="{% trans 'Cancel' %}" class="btn btn-sm btn-secondary">

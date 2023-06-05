@@ -1,3 +1,5 @@
+// this function (appendHTML) is not used elsewhere
+/*
 function appendHTML(node, html) {
   var temp = document.createElement("div");
   temp.innerHTML = html;
@@ -14,7 +16,7 @@ function appendHTML(node, html) {
     node.appendChild(s);
   }
 }
-
+*/
 function getParents(el, parentSelector) {
   if (parentSelector === undefined) {
     parentSelector = document;
@@ -90,7 +92,7 @@ var slideDown = (target, duration = 500) => {
   }, duration);
 };
 
-/* SLIDE TOOGLE */
+/* SLIDE TOGGLE */
 var slideToggle = (target, duration = 500) => {
   if (window.getComputedStyle(target).display === "none") {
     return slideDown(target, duration);
@@ -692,63 +694,44 @@ var send_form_data = async function (
     form_data = data_form;
   }
 
-  if (method == "post") {
-    await fetch(url, {
-      method: "POST",
-      headers: {
-        "X-CSRFToken": token,
-        "X-Requested-With": "XMLHttpRequest",
-      },
-      body: form_data,
-    })
-      .then((response) => response.text())
-      .then(($data) => {
-        $data = callbackSuccess($data);
-        window[fct]($data);
-      })
+  const options = {
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+    },
+  };
 
-      .catch((error) => {
-        showalert(
-          gettext("Error during exchange") +
-            "(" +
-            error +
-            ")<br/>" +
-            gettext("No data could be stored."),
-          "alert-danger"
-        );
-
-        callbackFail(error);
-      });
+  if (method === "post") {
+    options.method = "POST";
+    options.headers["X-CSRFToken"] = token;
+    options.body = form_data;
   } else {
-    await fetch(url, {
-      method: "GET",
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    })
-      .then((response) => response.text())
-      .then(($data) => {
-        $data = callbackSuccess($data);
-        if (typeof window[fct] === "function") {
-          window[fct]($data);
-        }
-      })
+    options.method = "GET";
+  }
 
-      .catch((error) => {
-        showalert(
-          gettext("Error during exchange") +
-            "(" +
-            error +
-            ")<br/>" +
-            gettext("No data could be stored."),
-          "alert-danger"
-        );
+  try {
+    const response = await fetch(url, options);
+    const data = await response.text();
+    const processedData = callbackSuccess(data);
+    if (method === "post") {
+      window[fct](processedData);
+    } else {
+      if (typeof window[fct] === "function") {
+        window[fct](processedData);
+      }
+    }
+  } catch (error) {
+    showalert(
+      gettext("Error during exchange") +
+        "(" +
+        error +
+        ")<br>" +
+        gettext("No data could be stored."),
+      "alert-danger"
+    );
 
-        callbackFail(error);
-      });
+    callbackFail(error);
   }
 };
-
 /**
  * AJAX call function (usually send form data)
  *
@@ -803,14 +786,15 @@ var send_form_data_vanilla = function (
         gettext("Error during exchange") +
           " (" +
           err +
-          ")<br/>" +
+          ")<br>" +
           gettext("No data could be stored."),
         "alert-danger"
       );
       callbackFail(err);
     });
 };
-
+// this function (show_form_theme_new) is not used elsewhere
+/*
 var show_form_theme_new = function (data) {
   if (data.indexOf("form_theme") == -1) {
     showalert(
@@ -821,6 +805,9 @@ var show_form_theme_new = function (data) {
     show_form_theme(data);
   }
 };
+*/
+// this function (show_form_theme_modify) is not used elsewhere
+/*
 var show_form_theme_modify = function (data) {
   if (data.indexOf("theme") == -1) {
     showalert(
@@ -834,6 +821,9 @@ var show_form_theme_modify = function (data) {
     document.getElementById("theme_" + id).classList.add("table-primary");
   }
 };
+*/
+// // this function (show_form_theme_delete) is not used elsewhere
+/*
 var show_form_theme_delete = function (data) {
   if (!isJson(data)) {
     data = JSON.parse(data);
@@ -844,6 +834,7 @@ var show_form_theme_delete = function (data) {
     showalert(gettext("You are no longer authenticated. Please log in again."));
   }
 };
+*/
 var show_theme_form = function (data) {
   if (!isJson(data)) {
     data = JSON.parse(data);
@@ -1257,7 +1248,8 @@ var showalert = function (message, alerttype) {
     formalertdiv?.remove();
   }, 5000);
 };
-
+// this function (show_messages) is not used elsewhere, there is no id "show_messages"
+/*
 function show_messages(msgText, msgClass, loadUrl) {
   var $msgContainer = document.getElementById("show_messages");
   var close_button = "";
@@ -1298,6 +1290,7 @@ function show_messages(msgText, msgClass, loadUrl) {
     }, 3000);
   }
 }
+*/
 function flashing(elem, duration) {
   elem.classList.add("flashing_field");
   setTimeout(function () {

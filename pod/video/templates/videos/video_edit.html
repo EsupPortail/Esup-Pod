@@ -101,7 +101,7 @@
               {% else %}
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
               {% endif %}
-              {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br />{% endif %}
+              {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br>{% endif %}
               {{ field }}
             {% endif %}
             {% if field.help_text %}
@@ -127,7 +127,7 @@
                 </button>
               </div>
             {% endif %}
-            
+
           </div>
         </div>
       {% endfor %}
@@ -163,7 +163,7 @@
     <div class="card" id="card-managevideo">
       <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video" %}</h2>
       <div class="card-body card-text text-center">
-        {% include "videos/link_video.html" with video=form.instance %}
+        {% include "videos/link_video.html" with video=form.instance hide_favorite_link=True %}
       </div>
     </div>
     {% if form.instance.slug != '' and request.user.is_staff or request.user.is_superuser or perms.video.change_video %}
@@ -183,7 +183,7 @@
         <div class="card-body card-text">
           <label class="form-label" for="txtpartageprive">{% trans 'Use this link to share the video in draft mode' %}</label>
           <div class="input-group">
-            <input class="form-control form-control-sm form-control-plaintext" type="text" name="txtpartageprive" id="txtpartageprive" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video/{{ form.instance.slug }}/{{ form.instance.get_hashkey }}/" readonly />
+            <input class="form-control form-control-sm form-control-plaintext" type="text" name="txtpartageprive" id="txtpartageprive" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video/{{ form.instance.slug }}/{{ form.instance.get_hashkey }}/" readonly>
             <div class="input-group-button">
               <clipboard-copy aria-label="Copy to clipboard" class="btn pod-btn-social" tabindex="0" role="button" id="btnpartageprive">
                 <i class="bi bi-clipboard"></i>
@@ -238,7 +238,7 @@
   <script src="/admin/jsi18n/"></script>
   <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
   <script defer src="{% static 'js/video_edit.js' %}?ver={{VERSION}}"></script>
-  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
   {{form.media}}
 
   <script>

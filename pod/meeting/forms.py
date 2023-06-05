@@ -447,6 +447,11 @@ class MeetingInviteForm(forms.Form):
         label=_("Emails"),
         help_text=_("You can fill one email adress per line"),
     )
+    owner_copy = forms.BooleanField(
+        label="",
+        required=False,
+        help_text=_("Send invite to owner and additional owners"),
+    )
 
     def __init__(self, *args, **kwargs):
         super(MeetingInviteForm, self).__init__(*args, **kwargs)

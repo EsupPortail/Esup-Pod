@@ -56,7 +56,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         thereby encourage its use in teaching and research.",
         "TITLE_ETB": "University name",
         "LOGO_SITE": "img/logoPod.svg",
-        "LOGO_ETB": "img/logo_etb.svg",
+        "LOGO_ETB": "img/esup-pod.svg",
         "LOGO_PLAYER": "img/pod_favicon.svg",
         "LINK_PLAYER": "",
         "FOOTER_TEXT": ("",),
@@ -251,7 +251,7 @@ def contact_us(request):
                     "name": name,
                     "email": email,
                     "TITLE_SITE": __TITLE_SITE__,
-                    "message": message.replace("\n", "<br/>"),
+                    "message": message.replace("\n", "<br>"),
                     "url_referrer": form.cleaned_data["url_referrer"],
                 }
             )
@@ -275,7 +275,7 @@ def contact_us(request):
             html_content = loader.get_template("mail/mail_sender.html").render(
                 {
                     "TITLE_SITE": __TITLE_SITE__,
-                    "message": message.replace("\n", "<br/>"),
+                    "message": message.replace("\n", "<br>"),
                 }
             )
             text_content = bleach.clean(html_content, tags=[], strip=True)

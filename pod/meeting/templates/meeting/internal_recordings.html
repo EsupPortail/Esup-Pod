@@ -4,11 +4,11 @@
 {% load thumbnail %}
 
 {% block more_style %}
-  <link href="{% static 'css/meeting.css' %}?ver={{ VERSION }}" rel="stylesheet"/>
+  <link href="{% static 'css/meeting.css' %}?ver={{ VERSION }}" rel="stylesheet">
 {% endblock more_style %}
 
 
-{% block breadcrumbs %}{{ block.super }} 
+{% block breadcrumbs %}{{ block.super }}
   <li class="breadcrumb-item"><a href="{% url 'meeting:my_meetings' %}">{% trans "My meetings" %}</a></li>
   <li class="breadcrumb-item active" aria-current="page">{% trans "Meeting recordings" %}</li>
 {% endblock %}

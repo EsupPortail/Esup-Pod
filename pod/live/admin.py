@@ -221,7 +221,7 @@ class EventAdmin(admin.ModelAdmin):
             thumbnail_url = static(DEFAULT_EVENT_THUMBNAIL)
         return format_html(
             '<img style="max-width:100px" '
-            'src="%s" alt="%s" loading="lazy"/>'
+            'src="%s" alt="%s" loading="lazy">'
             % (
                 thumbnail_url,
                 instance.title.replace("{", "").replace("}", "").replace('"', "'"),

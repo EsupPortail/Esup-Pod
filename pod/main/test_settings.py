@@ -40,6 +40,7 @@ LANGUAGES = (("fr", "Français"), ("en", "English"))
 LANGUAGE_CODE = "en"
 THIRD_PARTY_APPS = ["enrichment", "live"]
 USE_PODFILE = True
+USE_FAVORITES = True
 USE_STATS_VIEW = True
 ACCOMMODATION_YEARS = {"faculty": 1}
 USE_OBSOLESCENCE = True

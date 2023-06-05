@@ -2,15 +2,14 @@ import json
 import logging
 import os.path
 import re
-from datetime import datetime, timedelta
-from time import sleep
+from datetime import datetime
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.exceptions import SuspiciousOperation
 from django.core.exceptions import PermissionDenied
+from django.core.exceptions import SuspiciousOperation
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Prefetch
 from django.http import (
@@ -40,7 +39,13 @@ from .models import (
     Event,
     get_available_broadcasters_of_building,
 )
-from .utils import send_email_confirmation
+from .utils import (
+    send_email_confirmation,
+    get_event_id_and_broadcaster_id,
+    check_exists,
+    check_size_not_changing,
+    check_permission,
+)
 from ..main.views import in_maintenance
 from ..video.models import Video
 
@@ -66,9 +71,7 @@ EMAIL_ON_EVENT_SCHEDULING = getattr(settings, "EMAIL_ON_EVENT_SCHEDULING", False
 
 @login_required(redirect_field_name="referrer")
 def directs_all(request):  # affichage des directs
-    if not (request.user.is_superuser or request.user.has_perm("live.acces_live_pages")):
-        messages.add_message(request, messages.ERROR, _("You cannot view this page."))
-        raise PermissionDenied
+    check_permission(request)
 
     site = get_current_site(request)
     buildings = (
@@ -92,9 +95,7 @@ def directs_all(request):  # affichage des directs
 
 @login_required(redirect_field_name="referrer")
 def directs(request, building_id):  # affichage des directs d'un batiment
-    if not (request.user.is_superuser or request.user.has_perm("live.acces_live_pages")):
-        messages.add_message(request, messages.ERROR, _("You cannot view this page."))
-        raise PermissionDenied
+    check_permission(request)
     building = get_object_or_404(Building, id=building_id)
     return render(
         request,
@@ -105,9 +106,7 @@ def directs(request, building_id):  # affichage des directs d'un batiment
 
 @login_required(redirect_field_name="referrer")
 def direct(request, slug):  # affichage du flux d'un diffuseur
-    if not (request.user.is_superuser or request.user.has_perm("live.acces_live_pages")):
-        messages.add_message(request, messages.ERROR, _("You cannot view this page."))
-        raise PermissionDenied
+    check_permission(request)
 
     site = get_current_site(request)
     broadcaster = get_broadcaster_by_slug(slug, site)
@@ -143,7 +142,7 @@ def get_broadcaster_by_slug(slug, site):
         return get_object_or_404(Broadcaster, slug=slug, building__sites=site)
 
 
-""" use rest api to change status
+"""use rest api to change status
 def change_status(request, slug):
     broadcaster = get_object_or_404(Broadcaster, slug=slug)
     if request.GET.get("online") == "1":
@@ -353,7 +352,8 @@ def render_event_template(request, evemnt, user_owns_event):
     )
 
 
-def events(request):  # affichage des events
+def events(request):
+    """Affichage des events."""
     # Tous les events à venir (sauf les drafts sont affichés)
     queryset = Event.objects.filter(end_date__gt=timezone.now(), is_draft=False)
     events_list = queryset.all().order_by("start_date", "end_date")
@@ -401,7 +401,7 @@ def my_events(request):
     )
 
     past_events = [evt for evt in queryset if evt.is_past()]
-    past_events = sorted(past_events, key=lambda evt: (evt.start_date), reverse=True)
+    past_events = sorted(past_events, key=lambda evt: evt.start_date, reverse=True)
 
     coming_events = [evt for evt in queryset if not evt.is_past()]
     coming_events = sorted(coming_events, key=lambda evt: (evt.start_date, evt.end_date))
@@ -695,10 +695,7 @@ def event_isstreamavailabletorecord(request):
 @login_required(redirect_field_name="referrer")
 def ajax_event_startrecord(request):
     if request.method == "POST" and request.is_ajax():
-        body_unicode = request.body.decode("utf-8")
-        body_data = json.loads(body_unicode)
-        event_id = body_data.get("idevent", None)
-        broadcaster_id = body_data.get("idbroadcaster", None)
+        event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         return event_startrecord(event_id, broadcaster_id)
 
     return HttpResponseNotAllowed(["POST"])
@@ -714,20 +711,17 @@ def event_startrecord(event_id, broadcaster_id):
             {"success": False, "error": "the broadcaster is already recording"}
         )
 
-    if start_record(broadcaster, event_id):
-        return JsonResponse({"success": True})
+    if not start_record(broadcaster, event_id):
+        return JsonResponse({"success": False, "error": ""})
 
-    return JsonResponse({"success": False, "error": ""})
+    return JsonResponse({"success": True})
 
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_splitrecord(request):
     if request.method == "POST" and request.is_ajax():
-        body_unicode = request.body.decode("utf-8")
-        body_data = json.loads(body_unicode)
-        event_id = body_data.get("idevent", None)
-        broadcaster_id = body_data.get("idbroadcaster", None)
+        event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
 
         return event_splitrecord(event_id, broadcaster_id)
 
@@ -737,35 +731,28 @@ def ajax_event_splitrecord(request):
 def event_splitrecord(event_id, broadcaster_id):
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
 
-    if not check_piloting_conf(broadcaster):
-        return JsonResponse({"success": False, "error": "implementation error"})
-
-    if not is_recording(broadcaster, True):
-        return JsonResponse(
-            {"success": False, "error": "the broadcaster is not recording"}
-        )
+    valid, res = check_event_record(broadcaster, with_file_check=True)
+    if not valid:
+        return res
 
     # file infos before split is done
     current_record_info = get_info_current_record(broadcaster)
 
-    if split_record(broadcaster):
-        return event_video_transform(
-            event_id,
-            current_record_info.get("currentFile", None),
-            current_record_info.get("segmentNumber", None),
-        )
+    if not split_record(broadcaster):
+        return JsonResponse({"success": False, "error": ""})
 
-    return JsonResponse({"success": False, "error": ""})
+    return event_video_transform(
+        event_id,
+        current_record_info.get("currentFile", None),
+        current_record_info.get("segmentNumber", None),
+    )
 
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_stoprecord(request):
     if request.method == "POST" and request.is_ajax():
-        body_unicode = request.body.decode("utf-8")
-        body_data = json.loads(body_unicode)
-        event_id = body_data.get("idevent", None)
-        broadcaster_id = body_data.get("idbroadcaster", None)
+        event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         return event_stoprecord(event_id, broadcaster_id)
 
     return HttpResponseNotAllowed(["POST"])
@@ -774,38 +761,30 @@ def ajax_event_stoprecord(request):
 def event_stoprecord(event_id, broadcaster_id):
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
 
-    if not check_piloting_conf(broadcaster):
-        return JsonResponse({"success": False, "error": "implementation error"})
-
-    if not is_recording(broadcaster, True):
-        return JsonResponse(
-            {"success": False, "error": "the broadcaster is not recording"}
-        )
-
+    valid, res = check_event_record(broadcaster, with_file_check=True)
+    if not valid:
+        return res
     current_record_info = get_info_current_record(broadcaster)
 
-    if stop_record(broadcaster):
-        # change auto_start property so the recording does not start again
-        curr_event = Event.objects.get(pk=event_id)
-        curr_event.is_auto_start = False
-        curr_event.save()
+    if not stop_record(broadcaster):
+        return JsonResponse({"success": False, "error": ""})
 
-        return event_video_transform(
-            event_id,
-            current_record_info.get("currentFile", None),
-            current_record_info.get("segmentNumber", None),
-        )
+    # change auto_start property so the recording does not start again
+    curr_event = Event.objects.get(pk=event_id)
+    curr_event.is_auto_start = False
+    curr_event.save()
 
-    return JsonResponse({"success": False, "error": ""})
+    return event_video_transform(
+        event_id,
+        current_record_info.get("currentFile", None),
+        current_record_info.get("segmentNumber", None),
+    )
 
 
 @login_required(redirect_field_name="referrer")
 def ajax_event_info_record(request):
     if request.method == "POST" and request.is_ajax():
-        body_unicode = request.body.decode("utf-8")
-        body_data = json.loads(body_unicode)
-        event_id = body_data.get("idevent", None)
-        broadcaster_id = body_data.get("idbroadcaster", None)
+        event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         return event_info_record(event_id, broadcaster_id)
 
     return HttpResponseNotAllowed(["POST"])
@@ -813,30 +792,33 @@ def ajax_event_info_record(request):
 
 def event_info_record(event_id, broadcaster_id):
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
-
-    if not check_piloting_conf(broadcaster):
-        return JsonResponse({"success": False, "error": "implementation error"})
-
-    if not is_recording(broadcaster):
-        return JsonResponse(
-            {"success": False, "error": "the broadcaster is not recording"}
-        )
-
+    valid, res = check_event_record(broadcaster)
+    if not valid:
+        return res
     current_record_info = get_info_current_record(broadcaster)
 
-    if current_record_info.get("segmentDuration") != "":
+    if current_record_info.get("durationInSeconds") != "":
         return JsonResponse(
             {
                 "success": True,
-                "duration": int(
-                    (
-                        timedelta(milliseconds=current_record_info.get("segmentDuration"))
-                    ).total_seconds()
-                ),
+                "duration": int(current_record_info.get("durationInSeconds")),
             }
         )
 
     return JsonResponse({"success": False, "error": ""})
+
+
+def check_event_record(broadcaster, with_file_check=False):
+    """Checks whether the given broadcaster is recording an event."""
+    if not check_piloting_conf(broadcaster):
+        return False, JsonResponse({"success": False, "error": "implementation error"})
+
+    if not is_recording(broadcaster, with_file_check):
+        return False, JsonResponse(
+            {"success": False, "error": "the broadcaster is not recording"}
+        )
+
+    return True, None
 
 
 @csrf_protect
@@ -878,14 +860,14 @@ def event_video_transform(event_id, current_file, segment_number):
     os.makedirs(dest_dir_name, exist_ok=True)
 
     try:
-        checkDirExists(dest_dir_name)
+        check_dir_exists(dest_dir_name)
 
         # file creation if not exists
         full_file_name = os.path.join(DEFAULT_EVENT_PATH, filename)
-        checkFileExists(full_file_name)
+        check_file_exists(full_file_name)
 
         # verif si la taille du fichier d'origine ne bouge plus
-        checkFileSize(full_file_name)
+        check_size_not_changing(full_file_name)
 
         # moving the file
         os.rename(
@@ -894,7 +876,7 @@ def event_video_transform(event_id, current_file, segment_number):
         )
 
         # verif si la taille du fichier copié ne bouge plus
-        checkFileSize(dest_file)
+        check_size_not_changing(dest_file)
 
     except Exception as exc:
         return JsonResponse(
@@ -929,7 +911,7 @@ def event_video_transform(event_id, current_file, segment_number):
         video=dest_path,
         title=live_event.title + segment,
         owner=live_event.owner,
-        description=live_event.description + "<br/>" + adding_description,
+        description=live_event.description + "<br>" + adding_description,
         is_draft=live_event.is_draft,
         type=live_event.type,
     )
@@ -944,65 +926,17 @@ def event_video_transform(event_id, current_file, segment_number):
     live_event.videos.add(video)
     live_event.save()
 
-    videos = live_event.videos.all()
-    video_list = {}
-    for video in videos:
-        video_list[video.id] = {
-            "id": video.id,
-            "slug": video.slug,
-            "title": video.title,
-            "get_absolute_url": video.get_absolute_url(),
-        }
-    return JsonResponse({"success": True, "videos": video_list})
+    return JsonResponse({"success": True})
 
 
-def checkFileSize(full_file_name, max_attempt=6):
-    file_size = os.path.getsize(full_file_name)
-    size_match = False
-
-    attempt_number = 1
-    while not size_match and attempt_number <= max_attempt:
-        sleep(2)
-        new_size = os.path.getsize(full_file_name)
-        if file_size != new_size:
-            logger.warning(
-                f"File size of {full_file_name} changing from"
-                f"{file_size} to {new_size}, attempt number {attempt_number} "
-            )
-            file_size = new_size
-            attempt_number = attempt_number + 1
-            if attempt_number == max_attempt:
-                logger.error(f"File: {full_file_name} is still changing")
-                raise Exception("checkFileSize aborted")
-        else:
-            logger.info(f"Size checked for {full_file_name} : {new_size}")
-            size_match = True
+def check_dir_exists(dest_dir_name, max_attempt=6):
+    """Checks a directory exists."""
+    return check_exists(dest_dir_name, True, max_attempt)
 
 
-def checkDirExists(dest_dir_name, max_attempt=6):
-    attempt_number = 1
-    while not os.path.isdir(dest_dir_name) and attempt_number <= max_attempt:
-        logger.warning(f"Dir does not exists, attempt number {attempt_number} ")
-
-        if attempt_number == max_attempt:
-            logger.error(f"Impossible to create dir {dest_dir_name}")
-            raise Exception(f"Dir: {dest_dir_name} does not exists and can't be created")
-
-        attempt_number = attempt_number + 1
-        sleep(1)
-
-
-def checkFileExists(full_file_name, max_attempt=6):
-    attempt_number = 1
-    while not os.path.exists(full_file_name) and attempt_number <= max_attempt:
-        logger.warning(f"File does not exists, attempt number {attempt_number} ")
-
-        if attempt_number == max_attempt:
-            logger.error(f"Impossible to get file {full_file_name}")
-            raise Exception(f"File: {full_file_name} does not exists")
-
-        attempt_number = attempt_number + 1
-        sleep(1)
+def check_file_exists(full_file_name, max_attempt=6):
+    """Checks a file exists."""
+    return check_exists(full_file_name, False, max_attempt)
 
 
 def check_piloting_conf(broadcaster: Broadcaster) -> bool:
@@ -1040,7 +974,7 @@ def get_info_current_record(broadcaster: Broadcaster) -> dict:
             "currentFile": "",
             "segmentNumber": "",
             "outputPath": "",
-            "segmentDuration": "",
+            "durationInSeconds": "",
         }
     return impl_class.get_info_current_record()
 

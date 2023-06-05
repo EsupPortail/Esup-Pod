@@ -1,8 +1,17 @@
-import bleach
+import json
+import logging
+import os
+import os.path
+import re
+from datetime import datetime
+from time import sleep
 
+import bleach
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMultiAlternatives, mail_managers
+from django.utils.translation import ugettext_lazy as _
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
@@ -13,7 +22,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         "TITLE_SITE": "Pod",
         "TITLE_ETB": "University name",
         "LOGO_SITE": "img/logoPod.svg",
-        "LOGO_ETB": "img/logo_etb.svg",
+        "LOGO_ETB": "img/esup-pod.svg",
         "LOGO_PLAYER": "img/pod_favicon.svg",
         "LINK_PLAYER": "",
         "FOOTER_TEXT": ("",),
@@ -38,6 +47,8 @@ USE_ESTABLISHMENT_FIELD = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
 MANAGERS = getattr(settings, "MANAGERS", {})
 
 DEBUG = getattr(settings, "DEBUG", True)
+
+logger = logging.getLogger(__name__)
 
 
 def send_email_confirmation(event):
@@ -130,7 +141,7 @@ def send_establishment(event, subject, message, from_email, to_email, html_messa
 
 
 def send_managers(owner, subject, full_message, fail, html_message):
-    full_html_message = html_message + "<br/>%s%s" % (
+    full_html_message = html_message + "<br>%s%s" % (
         _("Post by:"),
         owner,
     )
@@ -155,3 +166,109 @@ def send_email(subject, message, from_email, to_email, cc_email, html_message):
 
     if not DEBUG:
         msg.send()
+
+
+def date_string_to_second(date_string):
+    """
+    Calcul the number of seconds from a date string.
+    Args:
+        date_string: the format must be like "hh:mm:ss".
+    Returns:
+        number of seconds of 0 if format error.
+    """
+    seconds = 0
+    pattern = re.compile(r"^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$")
+    if pattern.match(date_string):
+        elapsed_time = datetime.strptime(date_string, "%H:%M:%S").time()
+        seconds = (
+            (elapsed_time.hour * 3600) + (elapsed_time.minute * 60) + elapsed_time.second
+        )
+    elif DEBUG:
+        print('Error date_string_to_second : Excepted format : "hh:mm:ss"')
+    return seconds
+
+
+def get_event_id_and_broadcaster_id(request):
+    """
+    Extracts the event ID and broadcaster ID from the given HTTP request.
+    Args:
+        request: An HTTP request object.
+    Returns:
+        A tuple containing the event ID
+        and broadcaster ID extracted from the request body.
+    """
+    body_unicode = request.body.decode("utf-8")
+    body_data = json.loads(body_unicode)
+    event_id = body_data.get("idevent", None)
+    broadcaster_id = body_data.get("idbroadcaster", None)
+    return event_id, broadcaster_id
+
+
+def check_size_not_changing(resource_path, max_attempt=6):
+    """
+    Checks  if the size of a resource remains unchanged over a specified number of attempts.
+    Args:
+        resource_path: resource path and name.
+        max_attempt: number of attempt before aborting if the resource size still changes.
+    Raises:
+        Exception: if the number of attempt if reached.
+        OSError: if resource does not exist or is inaccessible.
+    """
+    file_size = os.path.getsize(resource_path)
+    size_match = False
+
+    attempt_number = 0
+    while not size_match and attempt_number <= max_attempt:
+        sleep(1)
+        new_size = os.path.getsize(resource_path)
+        if file_size != new_size:
+            logger.warning(
+                f"File size of {resource_path} changing from "
+                f"{file_size} to {new_size}, attempt number {attempt_number} "
+            )
+            file_size = new_size
+            attempt_number += 1
+            if attempt_number == max_attempt:
+                logger.error(f"File: {resource_path} is still changing")
+                raise Exception("checkFileSize aborted")
+        else:
+            logger.info(f"Size checked for {resource_path} : {new_size}")
+            size_match = True
+
+
+def check_exists(resource_path, is_dir, max_attempt=6):
+    """
+    Checks whether a file or directory exists.
+    Args:
+        resource_path: resource path and name.
+        is_dir(bool): True for a dir, False for a file .
+        max_attempt: number of attempt.
+    Raises:
+        Exception: if the number of attempt if reached.
+    """
+    fct = os.path.isdir if is_dir else os.path.exists
+    r_type = "Dir" if is_dir else "File"
+    attempt_number = 1
+    while not fct(resource_path) and attempt_number <= max_attempt:
+        logger.warning(f"{r_type} does not exists, attempt number {attempt_number} ")
+
+        if attempt_number == max_attempt:
+            logger.error(f"Impossible to get {r_type}: {resource_path}")
+            raise Exception(f"{r_type}: {resource_path} does not exists")
+
+        attempt_number = attempt_number + 1
+        sleep(1)
+
+
+def check_permission(request):
+    """
+    Checks whether the current user has permission to view a page.
+    Args:
+        request: An HTTP request object.
+    Raises:
+        PermissionDenied: If the user is not a superuser
+        and does not have the 'live.acces_live_pages' permission.
+    """
+    if not (request.user.is_superuser or request.user.has_perm("live.acces_live_pages")):
+        messages.add_message(request, messages.ERROR, _("You cannot view this page."))
+        raise PermissionDenied

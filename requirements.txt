@@ -1,4 +1,4 @@
-Django==3.2.18
+Django==3.2.19
 django-ckeditor==6.3.0
 Pillow==9.3.0
 django-tagging==0.5.0
@@ -8,7 +8,7 @@ django-cas-client==1.5.3
 ldap3==2.9
 django-simple-captcha==0.5.17
 urllib3==1.26.5
-elasticsearch==7.17.8
+elasticsearch==6.3.1
 djangorestframework==3.14.0
 django-filter==22.1
 markdown==3.4.1
@@ -24,7 +24,7 @@ django-chunked-upload==2.0.0
 django-select2
 django_select2_forms
 django-redis
-requests==2.25.1
+requests==2.31.0
 chardet==4.0.0
 django-static-compress>=1.2.1
 redis==4.5.4
@@ -32,6 +32,6 @@ mozilla_django_oidc==3.0.0
 ics==0.7.2
 django-honeypot==1.0.3
 qrcode
-ralph-malph==3.3.0
+ralph-malph==3.6.0
 bleach==6.0.0
 pytube==15.0.0
