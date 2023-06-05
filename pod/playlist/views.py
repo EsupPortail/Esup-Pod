@@ -3,6 +3,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import redirect, render
 from pod.video.models import Video
+from pod.video.utils import sort_videos_list
 
 
 from .utils import get_playlist, get_video_list_for_playlist, user_add_video_in_playlist
@@ -42,7 +43,9 @@ def playlist_content(request, slug):
     sort_field = request.GET.get("sort", "rank")
     sort_direction = request.GET.get("sort_direction")
     playlist = get_playlist(slug)
-    videos_list = get_video_list_for_playlist(playlist)
+    videos_list = sort_videos_list(
+        get_video_list_for_playlist(playlist), sort_field, sort_direction
+    )
 
     count_videos = len(videos_list)
 
