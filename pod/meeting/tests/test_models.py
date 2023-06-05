@@ -12,6 +12,12 @@ from pod.authentication.models import AccessGroup
 
 
 class MeetingTestCase(TestCase):
+    """Meetings model tests list.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         user = User.objects.create(username="pod")
         user1 = User.objects.create(username="pod1")
@@ -133,6 +139,12 @@ class MeetingTestCase(TestCase):
 
 
 class OccurencesMeetingTestCase(TestCase):
+    """List of tests for the recurring meetings model.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         user = User.objects.create(username="pod")
         user1 = User.objects.create(username="pod1")
@@ -714,6 +726,12 @@ class OccurencesMeetingTestCase(TestCase):
 
 
 class RecordingTestCase(TestCase):
+    """List of recordings model tests, internal or external.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         user = User.objects.create(username="pod")
         user1 = User.objects.create(username="pod1")
