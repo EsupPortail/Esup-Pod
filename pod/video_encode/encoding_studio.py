@@ -1,6 +1,6 @@
 """This module handles studio encoding with CPU."""
 from django.conf import settings
-from .utils import send_email_recording
+from pod.video.utils import send_email_recording
 from .utils import check_file
 from . import encode
 
@@ -151,6 +151,7 @@ def get_sub_cmd(height_presentation_video, height_presenter_video, presenter):
 
 
 def get_height(info):
+    """Get the height value from the given video information dictionary."""
     in_height = 0
     if len(info["streams"]) > 0 and info["streams"][0].get("height"):
         in_height = info["streams"][0]["height"]
