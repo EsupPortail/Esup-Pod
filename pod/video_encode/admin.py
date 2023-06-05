@@ -9,6 +9,8 @@ from .models import EncodingStep
 
 
 class EncodingVideoAdmin(admin.ModelAdmin):
+    """Admin model for EncodingVideo."""
+
     list_display = ("video", "get_resolution", "encoding_format")
     list_filter = ["encoding_format", "rendition"]
     search_fields = ["id", "video__id", "video__title"]
@@ -38,6 +40,8 @@ class EncodingVideoAdmin(admin.ModelAdmin):
 
 
 class EncodingAudioAdmin(admin.ModelAdmin):
+    """Admin model for EncodingAudio."""
+
     list_display = ("video", "encoding_format")
     list_filter = ["encoding_format"]
     search_fields = ["id", "video__id", "video__title"]
@@ -57,6 +61,8 @@ class EncodingAudioAdmin(admin.ModelAdmin):
 
 
 class EncodingLogAdmin(admin.ModelAdmin):
+    """Admin model for EncodingLog."""
+
     def video_id(self, obj):
         """Get the video ID."""
         return obj.video.id
@@ -78,6 +84,8 @@ class EncodingLogAdmin(admin.ModelAdmin):
 
 
 class EncodingStepAdmin(admin.ModelAdmin):
+    """Admin model for EncodingStep."""
+
     list_display = ("video", "num_step", "desc_step")
     readonly_fields = ("video", "num_step", "desc_step")
     search_fields = ["id", "video__id", "video__title"]

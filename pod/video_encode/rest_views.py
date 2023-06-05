@@ -5,6 +5,8 @@ from rest_framework.response import Response
 
 
 class EncodingVideoSerializer(serializers.HyperlinkedModelSerializer):
+    """Serializer for the EncodingVideo model."""
+
     class Meta:
         model = EncodingVideo
         fields = (
@@ -20,6 +22,8 @@ class EncodingVideoSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class EncodingAudioSerializer(serializers.HyperlinkedModelSerializer):
+    """Serializer for the EncodingAudio model."""
+
     class Meta:
         model = EncodingAudio
         fields = (
@@ -34,6 +38,8 @@ class EncodingAudioSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class EncodingVideoViewSet(viewsets.ModelViewSet):
+    """Viewset for EncodingVideo model."""
+
     queryset = EncodingVideo.objects.all()
     serializer_class = EncodingVideoSerializer
     filter_fields = ("video",)
@@ -64,6 +70,8 @@ class EncodingVideoViewSet(viewsets.ModelViewSet):
 
 
 class EncodingAudioViewSet(viewsets.ModelViewSet):
+    """Viewset for EncodingAudio model."""
+
     queryset = EncodingAudio.objects.all()
     serializer_class = EncodingAudioSerializer
     filter_fields = ("video",)
