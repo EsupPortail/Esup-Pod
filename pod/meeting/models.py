@@ -541,7 +541,7 @@ class Meeting(models.Model):
 
     def get_occurrences(self, start, end=None):
         """
-        Returns a list of occurrences for this meeting.
+        Return a list of occurrences for this meeting.
 
         List of occurences between start and end dates passed as arguments.
         """
@@ -570,8 +570,11 @@ class Meeting(models.Model):
         start_datetime = self.start_at + self.expected_duration
         if self.recurrence is None and start_datetime > timezone.now():
             return True
-        end_datetime = dt.combine(self.recurring_until, self.start_time)
-        end_datetime = timezone.make_aware(end_datetime)
+        if not self.recurring_until:
+            end_datetime = timezone.now()
+        else:
+            end_datetime = dt.combine(self.recurring_until, self.start_time)
+            end_datetime = timezone.make_aware(end_datetime)
         end_datetime = end_datetime + self.expected_duration
         if self.recurrence and end_datetime > timezone.now():
             return True
