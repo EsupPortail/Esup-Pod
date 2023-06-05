@@ -36,6 +36,8 @@ FORMAT_CHOICES = getattr(
 
 
 class EncodingVideo(models.Model):
+    """Model representing the encoding video for a video."""
+
     name = models.CharField(
         _("Name"),
         max_length=10,
@@ -120,6 +122,8 @@ class EncodingVideo(models.Model):
 
 
 class EncodingAudio(models.Model):
+    """Model representing the encoding audio for a video."""
+
     name = models.CharField(
         _("Name"),
         max_length=10,
@@ -191,6 +195,8 @@ class EncodingAudio(models.Model):
 
 
 class EncodingLog(models.Model):
+    """Model representing the encoding log for a video."""
+
     video = models.OneToOneField(
         Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
     )
@@ -217,6 +223,8 @@ class EncodingLog(models.Model):
 
 
 class EncodingStep(models.Model):
+    """Model representing an encoding step for a video."""
+
     video = models.OneToOneField(
         Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
     )
