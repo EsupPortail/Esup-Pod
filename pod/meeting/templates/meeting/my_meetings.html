@@ -34,9 +34,11 @@
   <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{% url 'meeting:add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a meeting' %}">
     <i class="bi bi-plus pod-add"></i><span>{% trans "Add a meeting" %}</span>
   </a>
-  <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{% url 'meeting:external_recordings' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'External recordings' %}">
-    <i class="bi bi-collection-play-fill pod-add"></i><span> {% trans "External recordings" %}</span>
-  </a>
+  {% if not meeting_disable_record %}
+    <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{% url 'meeting:external_recordings' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'External recordings' %}">
+      <i class="bi bi-collection-play-fill pod-add"></i><span> {% trans "External recordings" %}</span>
+    </a>
+    {% endif %}
 </div>
 
 <div class="infinite-container pod-infinite-container" id="meetings_list">
