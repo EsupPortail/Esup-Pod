@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "pod.cut",
     "pod.xapi",
     "pod.favorite",
+    "pod.video_encode",
     "pod.custom",
 ]
 
@@ -176,54 +177,180 @@ if not os.path.exists(LOG_DIRECTORY):
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": "{asctime} {levelname} [{module}] {message}",
-            "style": "{",
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
         },
-        "simple": {
-            "format": "{asctime} {levelname} - {message}",
-            "style": "{",
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+    },
+    "formatters": {
+        "general": {
+            "format": "[%(asctime)s] %(levelname)s [%(name)s - %(filename)s:%(lineno)s] %(message)s "
+            "(EXCEPTION: %(exc_info)s)",
+            "datefmt": "%d/%b/%Y %H:%M:%S",
+        },
+        "request": {
+            "format": "[%(asctime)s] %(levelname)s [%(name)s - %(filename)s:%(lineno)s] %(message)s "
+            "(STATUS: %(status_code)s; REQUEST: %(request)s; EXCEPTION: %(exc_info)s)",
+            "datefmt": "%d/%b/%Y %H:%M:%S",
+        },
+        "db": {
+            "format": "[%(asctime)s] %(levelname)s [%(name)s - %(filename)s:%(lineno)s] %(message)s "
+            "(DURATION: %(duration)s; SQL: %(sql)s; PARAMS: %(params)s; EXCEPTION: %(exc_info)s)",
+            "datefmt": "%d/%b/%Y %H:%M:%S",
         },
     },
     "handlers": {
-        "file": {
-            # 'level': 'DEBUG',
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": "pod/log/django.log",
-            "maxBytes": 15728640,  # 1024 * 1024 * 15B = 15MB
-            "backupCount": 10,
-            "formatter": "verbose",
+        "null": {
+            "class": "logging.NullHandler",
         },
         "console": {
+            "level": "DEBUG",
+            "filters": ["require_debug_true"],
             "class": "logging.StreamHandler",
-            "formatter": "verbose",
+            "formatter": "general",
         },
         "mail_admins": {
             "level": "ERROR",
+            "filters": ["require_debug_false"],
             "class": "django.utils.log.AdminEmailHandler",
+            "include_html": True,
+        },
+        "django": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "django.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "general",
+        },
+        "security": {
+            "level": "WARNING",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "security.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "general",
+        },
+        "db": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "db.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "db",
+        },
+        "request": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "request.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "request",
+        },
+        "celery": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "celery.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "general",
+        },
+        "delayed_tasks": {
+            "level": "INFO",
+            # 'filters': ['require_debug_false'],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "delayed_tasks.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "general",
+        },
+        "apps": {
+            "level": "WARNING",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "apps.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "general",
+        },
+        "api": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "api.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "general",
         },
     },
     "loggers": {
         "django": {
-            "handlers": ["file", "console", "mail_admins"],
-            "level": "WARNING",
-            "propagate": True,
+            "handlers": ["django"],
+            "level": "ERROR",
+            "propagate": False,
         },
-        "pod.*": {
-            "handlers": ["file", "console", "mail_admins"],
+        "django.request": {
+            "handlers": ["request", "mail_admins"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "django.security": {
+            "handlers": ["security", "mail_admins"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        "django.db.backends": {
+            "handlers": ["db", "mail_admins"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "celery": {
+            "handlers": ["celery"],
+            "level": "ERROR",
+        },
+        "celery.task": {
+            "handlers": ["delayed_tasks"],
             "level": "INFO",
-            "propagate": True,
+        },
+        "apps": {
+            "handlers": ["apps"],
+            "level": "WARNING",
+        },
+        "common": {
+            "handlers": ["apps"],
+            "level": "WARNING",
+        },
+        "api": {
+            "handlers": ["api"],
+            "level": "ERROR",
+        },
+        "py.warnings": {
+            "handlers": ["console"],
+            "propagate": False,
+        },
+        "": {
+            "handlers": ["console"],
+            "level": "DEBUG",
         },
     },
 }
 
 CACHES = {
-    # … default cache config and others
     "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/5",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
     },
-    # Persistent cache setup for select2 (NOT DummyCache or LocMemCache).
     "select2": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/2",
@@ -231,6 +358,15 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
     },
+}
+SESSION_ENGINE = "redis_sessions.session"
+SESSION_REDIS = {
+    "host": "127.0.0.1",
+    "port": 6379,
+    "db": 3,
+    "prefix": "session",
+    "socket_timeout": 1,
+    "retry_on_timeout": False,
 }
 
 # Tell select2 which cache configuration to use:

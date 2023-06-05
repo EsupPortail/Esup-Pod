@@ -14,7 +14,8 @@ from tagging.utils import LINEAR
 from tagging.utils import LOGARITHMIC
 
 from ..forms import VideoVersionForm
-from ..utils import check_file, get_available_videos
+from ..utils import get_available_videos
+from pod.video_encode.utils import check_file
 
 import importlib
 import os
