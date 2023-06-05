@@ -61,10 +61,10 @@
                 {% if record.canUpload %}
                   {% trans "Please confirm you want to upload the recording To Pod" as confirmUpload %}
                   <form method="post" action="{% url "meeting:upload_internal_recording_to_pod" recording_id=record.id meeting_id=meeting.meeting_id %}" onsubmit="return confirmUploadToPod('{{ confirmUpload|escapejs }}');" style="display: inline;">
-                    <input type="hidden" name="recording_name" value="{{ record.name }}" />
-                    <input type="hidden" name="start_timestamp" value="{{ record.startTime }}" />
-                    <input type="hidden" name="end_timestamp" value="{{ record.endTime }}" />
-                    <input type="hidden" name="source_url" value="{{ record.videoUrl }}" />
+                    <input type="hidden" name="recording_name" value="{{ record.name }}" >
+                    <input type="hidden" name="start_timestamp" value="{{ record.startTime }}" >
+                    <input type="hidden" name="end_timestamp" value="{{ record.endTime }}" >
+                    <input type="hidden" name="source_url" value="{{ record.videoUrl }}" >
                     {% csrf_token %}
                     <button type="submit" class="btn btn-secondary pod-btn-secondary btn-sm" title="{% trans 'Upload to Pod as a video'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-upload pod-add"></i></button>
                   </form>
