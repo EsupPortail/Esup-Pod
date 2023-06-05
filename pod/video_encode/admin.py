@@ -14,17 +14,20 @@ class EncodingVideoAdmin(admin.ModelAdmin):
     search_fields = ["id", "video__id", "video__title"]
 
     def get_resolution(self, obj):
+        """Get the resolution of the video rendition."""
         return obj.rendition.resolution
 
     get_resolution.short_description = "resolution"
 
     def get_queryset(self, request):
+        """Get the queryset based on the request."""
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
             qs = qs.filter(video__sites=get_current_site(request))
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """Customize the form field for foreign keys."""
         if (db_field.name) == "video":
             kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
         if (db_field.name) == "rendition":
@@ -40,12 +43,14 @@ class EncodingAudioAdmin(admin.ModelAdmin):
     search_fields = ["id", "video__id", "video__title"]
 
     def get_queryset(self, request):
+        """Get the queryset based on the request."""
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
             qs = qs.filter(video__sites=get_current_site(request))
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """Customize the form field for foreign keys."""
         if (db_field.name) == "video":
             kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
@@ -53,6 +58,7 @@ class EncodingAudioAdmin(admin.ModelAdmin):
 
 class EncodingLogAdmin(admin.ModelAdmin):
     def video_id(self, obj):
+        """Get the video ID."""
         return obj.video.id
 
     list_display = (
@@ -64,6 +70,7 @@ class EncodingLogAdmin(admin.ModelAdmin):
     search_fields = ["id", "video__id", "video__title"]
 
     def get_queryset(self, request):
+        """Get the queryset based on the request."""
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
             qs = qs.filter(video__sites=get_current_site(request))
@@ -76,6 +83,7 @@ class EncodingStepAdmin(admin.ModelAdmin):
     search_fields = ["id", "video__id", "video__title"]
 
     def get_queryset(self, request):
+        """Get the queryset based on the request."""
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
             qs = qs.filter(video__sites=get_current_site(request))
