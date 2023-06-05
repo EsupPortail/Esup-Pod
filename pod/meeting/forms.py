@@ -456,9 +456,19 @@ class MeetingInviteForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(MeetingInviteForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
+        self.fields["owner_copy"].widget.attrs.update({"class": "me-1"})
 
 
 class RecordingForm(forms.ModelForm):
+    """External recording form.
+
+    Args:
+        forms (ModelForm): model form
+
+    Raises:
+        ValidationError: owner of the recording cannot be an additional owner too
+    """
+
     site = forms.ModelChoiceField(Site.objects.all(), required=False)
     is_admin = False
     is_superuser = False
