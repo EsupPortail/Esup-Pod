@@ -488,11 +488,13 @@ class RecordingForm(forms.ModelForm):
     )
 
     def filter_fields_admin(form):
+        """List fields, depends on user right."""
         if form.is_superuser is False and form.is_admin is False:
             form.remove_field("owner")
             form.remove_field("site")
 
     def clean_add_owner(self, cleaned_data):
+        """Clean method for additional owners."""
         if "additional_owners" in cleaned_data.keys() and isinstance(
             self.cleaned_data["additional_owners"], QuerySet
         ):
@@ -512,6 +514,7 @@ class RecordingForm(forms.ModelForm):
                 )
 
     def clean(self):
+        """Clean method."""
         cleaned_data = super(RecordingForm, self).clean()
         try:
             validator = URLValidator()
@@ -521,6 +524,7 @@ class RecordingForm(forms.ModelForm):
         self.clean_add_owner(cleaned_data)
 
     def __init__(self, *args, **kwargs):
+        """Initialize recording form."""
         self.is_staff = (
             kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
         )
@@ -548,16 +552,24 @@ class RecordingForm(forms.ModelForm):
                 self.fields[field].widget = forms.HiddenInput()
 
     def remove_field(self, field):
+        """Remove a field from the form."""
         if self.fields.get(field):
             del self.fields[field]
 
     def set_queryset(self):
+        """Filter on owner."""
         if self.fields.get("owner"):
             self.fields["owner"].queryset = self.fields["owner"].queryset.filter(
                 owner__sites=Site.objects.get_current()
             )
 
     class Meta(object):
+        """Metadata options.
+
+        Args:
+            object (class): internal class
+        """
+
         model = Recording
         fields = "__all__"
         widgets = {
