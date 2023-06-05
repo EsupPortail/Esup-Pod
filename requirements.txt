@@ -34,3 +34,4 @@ django-honeypot==1.0.3
 qrcode
 ralph-malph==3.6.0
 bleach==6.0.0
+django-redis-sessions
