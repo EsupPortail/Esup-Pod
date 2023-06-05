@@ -35,6 +35,7 @@ from .utils import get_nth_week_number
 from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm
 from .forms import MeetingInviteForm, RecordingForm
 from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
+from pod.main.utils import display_message_with_icon
 
 # For Youtube download
 from pytube import YouTube
@@ -1947,32 +1948,6 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
             "Try changing the record type or address for this recording."
         )
         raise ValueError(msg)
-
-
-def display_message_with_icon(request, type, message):
-    """Procedure that allows to display a message with icon to the user.
-
-    Return message with icon, depending on message type.
-    Args:
-        request (Request): HTTP request
-        type (String): message type
-        message (String): message without icon
-    """
-    msg = ""
-    if type == messages.ERROR:
-        msg += "<div class='icon'><i class='bi bi-exclamation-circle'></i></div>"
-    elif type == messages.WARNING:
-        msg += "<div class='icon'><i class='bi bi-exclamation-triangle'></i></div>"
-    elif type == messages.SUCCESS:
-        msg += "<div class='icon'><i class='bi bi-check-circle'></i></div>"
-    elif type == messages.INFO:
-        msg += "<div class='icon'><i class='bi bi-info-circle'></i></div>"
-    elif type == messages.DEBUG:
-        msg += "<div class='icon'><i class='bi bi-code'></i></div>"
-    else:
-        msg += "<div class='icon'><i class='bi bi-info-circle'></i></div>"
-    msg += message
-    messages.add_message(request, type, mark_safe(msg))
 
 
 class video_parser(HTMLParser):
