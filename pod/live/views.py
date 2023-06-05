@@ -675,6 +675,10 @@ def broadcaster_restriction(request):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_is_stream_available_to_record(request):
+    """Check if the broadcaster is available to record and if is recording.
+
+     Returns: a JsonResponse with available state and recording state of the broadcaster.
+     """
     if request.method == "GET" and request.is_ajax():
         broadcaster_id = request.GET.get("idbroadcaster", None)
         broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
@@ -708,6 +712,10 @@ def ajax_event_startrecord(request):
 
 
 def event_startrecord(event_id, broadcaster_id):
+    """Calls the start method of the broadcaster's implementation
+
+     Returns: a JsonResponse with success state and the error (in case of failure).
+     """
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
     if not check_piloting_conf(broadcaster):
         return JsonResponse({"success": False, "error": "implementation error"})
@@ -735,6 +743,11 @@ def ajax_event_splitrecord(request):
 
 
 def event_splitrecord(event_id, broadcaster_id):
+    """Calls the split method of the broadcaster's implementation
+    and converts the file to a Pod video (linked to the event).
+
+     Returns: a JsonResponse with success state and the error (in case of failure).
+     """
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
 
     valid, res = check_event_record(broadcaster, with_file_check=True)
@@ -765,6 +778,11 @@ def ajax_event_stoprecord(request):
 
 
 def event_stoprecord(event_id, broadcaster_id):
+    """Calls the stop method of the broadcaster's implementation
+    and converts the file to a Pod video (linked to the event).
+
+     Returns: a JsonResponse with success state and the error (in case of failure).
+     """
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
 
     valid, res = check_event_record(broadcaster, with_file_check=True)
@@ -797,6 +815,11 @@ def ajax_event_info_record(request):
 
 
 def event_info_record(event_id, broadcaster_id):
+    """Returns a JsonResponse with success state and :
+
+     * the duration of the recording in seconds
+     * or the error (in case of failure).
+     """
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
     valid, res = check_event_record(broadcaster)
     if not valid:

@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function() {
-
   const implementation_select = document.getElementById("id_piloting_implementation");
   const implementation_config = document.getElementById("id_piloting_conf");
 
@@ -8,11 +7,17 @@ document.addEventListener("DOMContentLoaded", function() {
     implementation_select.addEventListener("change", changeImplPlaceholder);
   }
 
+  /**
+   * Change the placeholder in the broadcaster admin view.
+   *
+   * When selecting a 'piloting_implementation' it fetches and display the mandatory parameters as a placeholder in the piloting_conf field.
+   */
   function changeImplPlaceholder() {
-    const selected_impl = implementation_select.value
+
+    const selected_impl = implementation_select.value;
 
     if (selected_impl === "")
-      return
+      return;
 
     // find mandatory param
     let url =

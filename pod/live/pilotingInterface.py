@@ -35,6 +35,8 @@ __MANDATORY_PARAMETERS__ = {
 
 
 class PilotingInterface(__ABC__):
+    """Class to be implemented for any device (with an Api) we want to control in the event's page."""
+
     @abstractmethod
     def __init__(self, broadcaster: Broadcaster):
         """Initialize the PilotingInterface

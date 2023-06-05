@@ -257,7 +257,9 @@
         splitButton.classList.add("invisible");
       {% endif %}
 
-        // Status of the stream + display action buttons
+        /**
+         * Updates the status of the stream and display the action buttons.
+         */
         function updateStreamStatus() {
           const url = "{% url 'live:ajax_is_stream_available_to_record' %}" + '?idbroadcaster={{ event.broadcaster.id }}';
           fetch(url, {
@@ -296,7 +298,9 @@
           });
         }
 
-        // Display elapsed record time
+        /**
+         * Displays elapsed record time.
+         */
         function displayRecordingDuration() {
           let hours = Math.floor(recordingDuration / 3600)
           let minutes = Math.floor(recordingDuration / 60 - (hours * 60))
@@ -343,7 +347,9 @@
 
     {% endif %}
 
-    // display the event's videos
+    /**
+     * Displays the event's videos.
+     */
     function getEventVideos() {
         const url = "{% url 'live:event_get_video_cards' %}" + '?idevent={{ event.id }}';
         fetch(url, {
@@ -398,7 +404,9 @@
         video_on_hold_is_displayed = true;
     }
 
-    // if event has started or ended while viewing, the page is reloaded
+    /**
+     * Reloads the page if the event has started or ended while viewing.
+     */
     function reloadIfNeeded() {
         const start = new Date("{{ event.start_date }}")
         const end = new Date("{{ event.end_date }}")
@@ -507,7 +515,9 @@
 
     })
 
-    // display the event's videos
+    /**
+     * Displays the event's transcription.
+     */
     function show_transcription() {
         let lastMod = null;
         let lastModTime = 0;
