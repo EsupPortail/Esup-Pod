@@ -230,7 +230,7 @@ class Meeting(models.Model):
     recurrence = models.CharField(
         verbose_name=_("Custom recurrence"),
         help_text=_(
-            "Specify the recurrence of the meeting : daily, weekly, monthly or yearly"
+            "Specify the recurrence of the meeting: daily, weekly, monthly or yearly"
         ),
         max_length=10,
         choices=INTERVAL_CHOICES,
@@ -913,7 +913,7 @@ class Meeting(models.Model):
         fullName  (required)
         meetingID  (required)
         password  (required)
-        role  (required) : MODERATOR or VIEWER
+        role  (required): MODERATOR or VIEWER
         createTime
         userID
         """
@@ -1170,15 +1170,15 @@ class Recording(models.Model):
     """This model hold information about Big Blue Button recordings.
 
     This model is for internal or external recordings.
-    For internal recordings : only BBB recordings that have been uploaded to
+    For internal recordings: only BBB recordings that have been uploaded to
     Pod are saved in the database.
-    For external recordings : all recordings are saved in the database.
+    For external recordings: all recordings are saved in the database.
     """
 
     """For all recording."""
     name = models.CharField(max_length=250, verbose_name=_("Recording name"))
 
-    # Type of recording : Internal / External
+    # Type of recording: Internal / External
     is_internal = models.BooleanField(
         verbose_name=_("Is this an internal recording ?"),
         default=True,

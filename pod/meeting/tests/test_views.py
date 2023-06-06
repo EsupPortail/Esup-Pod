@@ -322,7 +322,7 @@ class MeetingJoinTestView(TestCase):
         self.client.logout()
         url = reverse("meeting:join", kwargs={"meeting_id": newmeeting.meeting_id})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)  # OK : NOT redirect
+        self.assertEqual(response.status_code, 200)  # OK: NOT redirect
         self.assertTrue("form" in response.context)
         self.assertTrue("name" in response.context["form"].fields)
         self.assertTrue("password" in response.context["form"].fields)
@@ -346,7 +346,7 @@ class MeetingJoinTestView(TestCase):
         self.client.force_login(self.user2)
         url = reverse("meeting:join", kwargs={"meeting_id": newmeeting.meeting_id})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)  # OK : NOT redirect
+        self.assertEqual(response.status_code, 200)  # OK: NOT redirect
         self.assertTrue("form" in response.context)
         self.assertFalse("name" in response.context["form"].fields)
         self.assertTrue("password" in response.context["form"].fields)
@@ -402,7 +402,7 @@ class MeetingJoinTestView(TestCase):
         self.client.force_login(self.user2)
         url = reverse("meeting:join", kwargs={"meeting_id": newmeeting.meeting_id})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)  # OK : NOT redirect
+        self.assertEqual(response.status_code, 200)  # OK: NOT redirect
         self.assertTrue("form" in response.context)
         self.assertFalse("name" in response.context["form"].fields)
         self.assertTrue("password" in response.context["form"].fields)
@@ -417,7 +417,7 @@ class MeetingJoinTestView(TestCase):
 
         self.user2.owner.accessgroup_set.add(ag)
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)  # OK : NOT redirect
+        self.assertEqual(response.status_code, 200)  # OK: NOT redirect
         self.assertTrue("form" in response.context)
         self.assertFalse("name" in response.context["form"].fields)
         self.assertTrue("password" in response.context["form"].fields)
