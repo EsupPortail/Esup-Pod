@@ -138,7 +138,9 @@ def add_or_edit(request, slug=None):
             new_playlist = form.save(commit=False)
             new_playlist.owner = request.user
             new_playlist.save()
-            return HttpResponseRedirect(reverse("playlist:content", kwargs={"slug": new_playlist.slug}))
+            return HttpResponseRedirect(
+                reverse("playlist:content", kwargs={"slug": new_playlist.slug})
+            )
     elif request.method == "GET":
         playlist = get_object_or_404(Playlist, slug=slug) if slug else None
         if playlist:

@@ -1,9 +1,4 @@
-from typing import Any, Dict, Mapping, Optional, Type, Union
 from django import forms
-from django.contrib.sites.models import Site
-from django.core.files.base import File
-from django.db.models.base import Model
-from django.forms.utils import ErrorList
 from django.utils.translation import ugettext_lazy as _
 
 from pod.main.forms_utils import add_placeholder_and_asterisk
@@ -34,14 +29,16 @@ class PlaylistForm(forms.ModelForm):
         (
             "general information",
             {
-                "legend": f"<i class='bi bi-info-lg'></i>&nbsp;{_('General information')}",
+                "legend": f"<i class='bi bi-info-lg'></i>&nbsp;\
+                    {_('General information')}",
                 "fields": ["name", "description", "autoplay"],
             },
         ),
         (
             "security information",
             {
-                "legend": f"<i class='bi bi-shield-lock'></i>&nbsp;{_('Security information')}",
+                "legend": f"<i class='bi bi-shield-lock'></i>&nbsp;\
+                    {_('Security information')}",
                 "fields": ["visibility", "password"],
             },
         ),
