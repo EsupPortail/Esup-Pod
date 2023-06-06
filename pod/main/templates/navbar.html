@@ -178,7 +178,7 @@
             <h5 id="pod-navbar__menuuserLabel">{% if user.get_full_name != '' %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="{% trans 'Close' %}"></button>
           </div>
-          <div class="offcanvas-body">
+          <div class="offcanvas-body d-flex flex-column justify-content-between">
             <nav class="nav flex-column">
               {% if MAINTENANCE_MODE %}
                 <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br><i class="bi bi-exclamation-triangle "></i> {% trans "Some features are unavailable" %}</span>
@@ -233,6 +233,21 @@
               <a class="nav-item nav-link" href="{% url 'authentication:authentication_logout' %}">
                 <i class="bi bi-box-arrow-right pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Log out' %}</a>
             </nav>
+            {% show_stats user as show_stats %}
+            {% if show_stats %}
+              <div id="stats-usermenu" class="nav flex-column">
+                {% get_number_video_user user as number_videos %}
+                {% get_number_playlist_user user as number_playlists %}
+                <h5 class="offcanvas-title text-center" id="pod-navbar__menuLabel">{% trans "Your statistics" %}</h5>
+                <hr>
+                {% if number_videos > 0 %}
+                  <p id="stats-usermenu-video-count">{% trans "Number of videos" %} : {{ number_videos }}</p>
+                {% endif %}
+                {% if number_playlists > 0 %}
+                  <p id="stats-usermenu-playlist-count">{% trans "Number of playlists" %} : {{ number_playlists }}</p>
+                {% endif %}
+              </div>
+            {% endif %}
           </div>
         </div>
         <!-- end offcanvas -->
