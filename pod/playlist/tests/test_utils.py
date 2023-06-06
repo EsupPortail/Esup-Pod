@@ -73,7 +73,7 @@ class PlaylistTestUtils(TestCase):
             1,
             get_number_video_in_playlist(self.playlist)
         )
-        print(" --->  test_user_add_video_in_playlist ok.")
+        print(" --->  test_user_add_video_in_playlist ok")
 
     def test_user_remove_video_from_playlist(self) -> None:
         """Test if test_user_remove_video_from_playlist works correctly."""
@@ -87,13 +87,13 @@ class PlaylistTestUtils(TestCase):
             video_in_playlist,
             "Test if tuple has been correctly removed."
         )
-        print(" --->  test_user_remove_video_from_playlist ok.")
+        print(" --->  test_user_remove_video_from_playlist ok")
 
     def test_user_has_playlist(self) -> None:
         """Test if test_user_has_playlist works correctly."""
         self.assertTrue(user_has_playlist(self.user))
         self.assertFalse(user_has_playlist(self.user2))
-        print(" --->  test_user_has_playlist ok.")
+        print(" --->  test_user_has_playlist ok")
 
     def test_check_video_in_playlist(self) -> None:
         """Test if test_check_video_in_playlist works correctly."""
@@ -104,7 +104,7 @@ class PlaylistTestUtils(TestCase):
         self.assertTrue(
             check_video_in_playlist(self.playlist, self.video)
         )
-        print(" --->  test_check_video_in_playlist ok.")
+        print(" --->  test_check_video_in_playlist ok")
 
     def test_get_next_rank(self) -> None:
         """Test if test_get_next_rank works correctly."""
@@ -118,7 +118,7 @@ class PlaylistTestUtils(TestCase):
             3,
             get_next_rank(self.playlist)
         )
-        print(" --->  test_get_next_rank ok.")
+        print(" --->  test_get_next_rank ok")
 
     def test_get_number_playlist(self) -> None:
         """Test if test_get_number_playlist works correctly."""
@@ -130,7 +130,7 @@ class PlaylistTestUtils(TestCase):
             0,
             get_number_playlist(self.user2)
         )
-        print(" --->  test_get_number_playlist ok.")
+        print(" --->  test_get_number_playlist ok")
 
     def test_get_number_video_in_playlist(self) -> None:
         """Test if test_get_number_video_in_playlist works correctly."""
@@ -143,7 +143,7 @@ class PlaylistTestUtils(TestCase):
             1,
             get_number_video_in_playlist(self.playlist)
         )
-        print(" --->  test_get_number_video_in_playlist ok.")
+        print(" --->  test_get_number_video_in_playlist ok")
 
     def test_get_number_video_added_in_playlist(self) -> None:
         """Test if test_get_number_video_in_playlist works correctly."""
@@ -172,13 +172,13 @@ class PlaylistTestUtils(TestCase):
             3,
             get_number_video_added_in_playlist(self.video)
         )
-        print(" --->  test_get_number_video_added_in_playlist ok.")
+        print(" --->  test_get_number_video_added_in_playlist ok")
 
     def test_remove_playlist(self) -> None:
         """Test if remove_playlist works correctly."""
         remove_playlist(self.user, self.playlist)
         self.assertEqual(0, get_number_playlist(self.user))
-        print(" --->  test_remove_playlist ok.")
+        print(" --->  test_remove_playlist ok")
 
     def test_get_public_playlist(self) -> None:
         """Test if test_get_public_playlist works correctly."""
@@ -208,7 +208,7 @@ class PlaylistTestUtils(TestCase):
         )
 
         self.assertEqual(2, len(get_public_playlist()))
-        print(" --->  test_get_public_playlist ok.")
+        print(" --->  test_get_public_playlist ok")
 
     def test_get_playlist_list_for_user(self) -> None:
         """Test if test_get_playlist_list_for_user works correctly."""
@@ -239,7 +239,7 @@ class PlaylistTestUtils(TestCase):
             playlist_user2 in get_playlist_list_for_user(self.user),
             "The user2 playlist is not present in the user list."
         )
-        print(" --->  test_get_playlist_list_for_user ok.")
+        print(" --->  test_get_playlist_list_for_user ok")
 
     def test_get_video_list_for_playlist(self) -> None:
         """Test if test_get_video_list_for_playlist works correctly."""
@@ -273,4 +273,4 @@ class PlaylistTestUtils(TestCase):
             get_playlist(new_playlist.slug),
             new_playlist
         )
-        print(" --->  test_get_playlist ok.")
+        print(" --->  test_get_playlist ok")

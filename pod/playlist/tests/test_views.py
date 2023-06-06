@@ -4,7 +4,9 @@
 """
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.utils.translation import ugettext as _
 from django.test import override_settings, TestCase
+
 from pod.playlist.utils import user_add_video_in_playlist
 from pod.video.models import Type, Video
 
@@ -116,7 +118,7 @@ class TestPlaylistsPageTestCase(TestCase):
             "Test if '4' is visible."
         )
         self.client.logout()
-        print(" --->  test_video_counter ok.")
+        print(" --->  test_video_counter ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_playlist_counter(self) -> None:
@@ -134,7 +136,7 @@ class TestPlaylistsPageTestCase(TestCase):
             "Test if '4' is visible."
         )
         self.client.logout()
-        print(" --->  test_playlist_counter ok.")
+        print(" --->  test_playlist_counter ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_card_titles(self) -> None:
@@ -152,7 +154,7 @@ class TestPlaylistsPageTestCase(TestCase):
             "Test if playlist title is visible."
         )
         self.client.logout()
-        print(" --->  test_card_titles ok.")
+        print(" --->  test_card_titles ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_private_filter(self) -> None:
@@ -176,7 +178,7 @@ class TestPlaylistsPageTestCase(TestCase):
             "Test if public icon isn't visible."
         )
         self.client.logout()
-        print(" --->  test_private_filter ok.")
+        print(" --->  test_private_filter ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_protected_filter(self) -> None:
@@ -200,7 +202,7 @@ class TestPlaylistsPageTestCase(TestCase):
             "Test if public icon isn't visible."
         )
         self.client.logout()
-        print(" --->  test_protected_filter ok.")
+        print(" --->  test_protected_filter ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_public_filter(self) -> None:
@@ -221,10 +223,10 @@ class TestPlaylistsPageTestCase(TestCase):
         )
         self.assertFalse(
             "bi-lock" in response.content.decode(),
-            "Test if protected icon isn't visible."
+            "Test if protected icon isn't visible"
         )
         self.client.logout()
-        print(" --->  test_public_filter ok.")
+        print(" --->  test_public_filter ok")
 
 
 class TestPlaylistsPageLinkTestCase(TestCase):
@@ -255,7 +257,7 @@ class TestPlaylistsPageLinkTestCase(TestCase):
             "Test if playlist icon is visible."
         )
         self.client.logout()
-        print(" --->  test_icon_visible ok.")
+        print(" --->  test_icon_visible ok")
 
 
 class TestModalVideoPlaylist(TestCase):
@@ -305,18 +307,18 @@ class TestModalVideoPlaylist(TestCase):
         response = self.client.get(self.url)
         self.assertTrue(
             f'id="{self.public_playlist_user.slug}-btn"' in response.content.decode(),
-            "test if the first playlist is present."
+            "Test if the first playlist is present."
         )
         self.assertTrue(
             f'id="{self.private_playlist_user.slug}-btn"' in response.content.decode(),
-            "test if the second playlist is present."
+            "Test if the second playlist is present."
         )
         self.assertFalse(
             f'id="{self.public_playlist_user2.slug}-btn"' in response.content.decode(),
-            "test if the user2 playlist is not present."
+            "Test if the user2 playlist is not present."
         )
         self.client.logout()
-        print(" --->  test_list_playlist_in_modal ok.")
+        print(" --->  test_list_playlist_in_modal ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_buttons_actions_playlist_in_modal(self) -> None:
@@ -337,15 +339,15 @@ class TestModalVideoPlaylist(TestCase):
         )
         self.assertTrue(
             f'<a href="{url_remove_button}"' in response.content.decode(),
-            "test if public playlist show a delete button."
+            "Test if public playlist show a delete button."
         )
         self.assertTrue(
             f'<a href="{url_add_button}"' in response.content.decode(),
-            "test if private playlist show an add button."
+            "Test if private playlist show an add button."
         )
 
         self.client.logout()
-        print(" --->  test_buttons_actions_playlist_in_modal ok.")
+        print(" --->  test_buttons_actions_playlist_in_modal ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_buttons_link(self) -> None:
@@ -366,12 +368,69 @@ class TestModalVideoPlaylist(TestCase):
         )
         self.assertTrue(
             f'<a href="{url_remove_button}"' in response.content.decode(),
-            "test if public playlist show a delete button."
+            "Test if public playlist show a delete button"
         )
         self.assertTrue(
             f'<a href="{url_add_button}"' in response.content.decode(),
-            "test if private playlist show an add button."
+            "Test if private playlist show an add button"
         )
 
         self.client.logout()
-        print(" --->  test_buttons_actions_playlist_in_modal ok.")
+        print(" --->  test_buttons_actions_playlist_in_modal ok")
+
+
+class TestAddOrRemoveFormTestCase(TestCase):
+    """Add or remove form test case."""
+
+    fixtures = ["initial_data.json"]
+
+    def setUp(self) -> None:
+        """Set up required objects for next tests."""
+        self.user = User.objects.create(
+            username="simple.user",
+            password="user1234user",
+        )
+        self.simple_playlist = Playlist.objects.create(
+            name="My simple playlist",
+            visibility="public",
+            owner=self.user,
+        )
+        self.addUrl = reverse("playlist:add")
+        self.editUrl = reverse("playlist:edit", kwargs={"slug": self.simple_playlist.slug})
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_add_form_page(self) -> None:
+        """Test if the form to add a new playlist is present."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        response = self.client.get(self.addUrl)
+        self.assertEqual(
+            response.status_code,
+            200,
+            "Test if status code equal 200.",
+        )
+        self.assertTrue(
+            _("Add a playlist") in response.content.decode(),
+            "Test of 'Add a playlist' is visible in the page.",
+        )
+        self.client.logout()
+        print(" --->  test_add_form_page ok")
+
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_edit_form_page(self) -> None:
+        """Test if the form to edit a playlist is present."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        response = self.client.get(self.editUrl)
+        self.assertEqual(
+            response.status_code,
+            200,
+            "Test if status code equal 200.",
+        )
+        self.assertTrue(
+            _("Edit the playlist") in response.content.decode(),
+            "Test of 'Edit the playlist' is visible in the page.",
+        )
+        self.client.logout()
+        print(" --->  test_edit_form_page ok")
