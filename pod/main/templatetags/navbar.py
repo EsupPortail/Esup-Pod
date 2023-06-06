@@ -1,6 +1,7 @@
 from django.template import Library
 
 from pod.main.utils import get_number_playlist_for_user, get_number_video_for_user
+from pod.playlist.context_processors import USE_PLAYLIST
 
 # from django.utils.safestring import mark_safe
 register = Library()
@@ -28,7 +29,9 @@ def show_meeting_button(context):
 
 @register.simple_tag(name="show_stats")
 def show_stats(user):
-    return (get_number_video_for_user(user) > 0) and (get_number_playlist_for_user(user) > 0)
+    return (get_number_video_for_user(user) > 0) \
+        and (get_number_playlist_for_user(user) > 0) \
+        and USE_PLAYLIST
 
 
 @register.simple_tag(name="get_number_video_user")

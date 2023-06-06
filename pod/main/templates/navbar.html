@@ -235,16 +235,16 @@
             </nav>
             {% show_stats user as show_stats %}
             {% if show_stats %}
-              <div class="nav flex-column">
+              <div id="stats-usermenu" class="nav flex-column">
                 {% get_number_video_user user as number_videos %}
                 {% get_number_playlist_user user as number_playlists %}
-                <h5 class="offcanvas-title text-center" id="pod-navbar__menuLabel">Vos statistiques</h5>
+                <h5 class="offcanvas-title text-center" id="pod-navbar__menuLabel">{% trans "Your statistics" %}</h5>
                 <hr>
                 {% if number_videos > 0 %}
-                  <p>Nombre de vidéos : {{ number_videos }}</p>
+                  <p id="stats-usermenu-video-count">{% trans "Number of videos" %} : {{ number_videos }}</p>
                 {% endif %}
                 {% if number_playlists > 0 %}
-                  <p>Nombre de playlist : {{ number_playlists }}</p>
+                  <p id="stats-usermenu-playlist-count">{% trans "Number of playlists" %} : {{ number_playlists }}</p>
                 {% endif %}
               </div>
             {% endif %}
