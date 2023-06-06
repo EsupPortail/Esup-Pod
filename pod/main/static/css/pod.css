@@ -13,7 +13,8 @@
    ***/
   /*** Theme primary color ***/
   --pod-primary: #1F7C85;
-  --bs-primary-rgb: 31, 131, 137;
+  --pod-primary-rgb: 31, 124, 133;
+
   /* a light variant of primary color, used for button hover */
   --pod-primary-lighten: #08b0a0;
   /* a dark variant of primary color, used for active links and disabled buttons */
@@ -49,6 +50,7 @@
 
   /**** couleur des liens *****/
   --pod-link-color: var(--pod-primary);
+  --pod-link-color-rgb: var(--pod-primary-rgb);
   --pod-activelink-color: var(--pod-primary-darken);
 
   /* couleur d'un élément actif (ex. : survol de bouton) */
@@ -67,9 +69,11 @@
   font-size: var(--bs-body-font-size);
 
   /* BOOTSTRAP COLORS */
+  --bs-primary-rgb: var(--pod-primary-rgb);
   --bs-light: #f8f9fa;
   --bs-dark: #343a40;
   --bs-link-color: var(--pod-link-color);
+  --bs-link-color-rgb: var(--pod-link-color-rgb);
   --bs-link-hover-color: var(--pod-activelink-color);
 
   /* Use system font (faster load) */
