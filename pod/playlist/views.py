@@ -1,18 +1,23 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+
+from pod.main.utils import is_ajax
+from pod.main.views import in_maintenance
 from pod.video.models import Video
 from pod.video.utils import sort_videos_list
 
-
 from .utils import get_playlist, get_video_list_for_playlist, user_add_video_in_playlist
 from .utils import remove_playlist
-from pod.main.utils import is_ajax
 
 from pod.video.views import CURSUS_CODES, get_owners_has_instances
 
-
+from .models import Playlist
+from .forms import PlaylistForm
 from .utils import get_playlist_list_for_user, user_remove_video_from_playlist
 from .utils import get_public_playlist
 
@@ -118,3 +123,32 @@ def remove_playlist_view(request, slug: str):
     """Remove playlist"""
     remove_playlist(request.user, get_playlist(slug))
     return redirect(request.META["HTTP_REFERER"])
+
+
+@csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
+def add_or_edit(request, slug=None):
+    """Add or edit view with form."""
+    if in_maintenance():
+        return redirect(reverse("maintenance"))
+    elif request.method == "POST":
+        form = PlaylistForm(request.POST)
+        if form.is_valid():
+            new_playlist = form.save(commit=False)
+            new_playlist.owner = request.user
+            new_playlist.save()
+            return HttpResponseRedirect(reverse("playlist:content", kwargs={"slug": new_playlist.slug}))
+    elif request.method == "GET":
+        playlist = get_object_or_404(Playlist, slug=slug) if slug else None
+        if playlist:
+            if request.user == playlist.owner or request.user.is_staff:
+                form = PlaylistForm(instance=playlist)
+                page_title = _("Edit the playlist") + f" \"{playlist.name}\""
+        else:
+            form = PlaylistForm()
+            page_title = _("Add a playlist")
+    return render(request, "playlist/add_or_edit.html", {
+        "form": form,
+        "page_title": page_title,
+    })
