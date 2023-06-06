@@ -52,11 +52,3 @@ class MainConfig(AppConfig):
 
     def ready(self):
         post_migrate.connect(create_missing_conf, sender=self)
-
-
-class PlaylistConfig(AppConfig):
-    name = "pod.playlist"
-    default_auto_field = "django.db.models.BigAutoField"
-
-    def ready(self) -> None:
-        import pod.playlist.signals
