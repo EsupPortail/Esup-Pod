@@ -406,9 +406,9 @@ class TestNavbar(TestCase):
 
         self.assertFalse(
             'id="stats-usermenu"' in response.content.decode(),
-            "test if statistics section is correctly hidden."
+            "test if statistics section is correctly hidden"
         )
-        print(" --->  test_statistics_category_hidden ok.")
+        print(" --->  test_statistics_category_hidden ok")
 
     def test_statistics_videos(self):
         """Test if videos statistics are correctly shown."""
@@ -425,7 +425,7 @@ class TestNavbar(TestCase):
         response = self.client.get("/")
         self.assertFalse(
             'id="stats-usermenu-video-count"' in response.content.decode(),
-            "test if video count paragraph is correctly hidden."
+            "test if video count paragraph is correctly hidden"
         )
 
         Video.objects.create(
@@ -445,9 +445,9 @@ class TestNavbar(TestCase):
         response = self.client.get("/")
         self.assertTrue(
             f'{_("Number of videos")} : 2' in response.content.decode(),
-            "test if number of videos is correct."
+            "test if number of videos is correct"
         )
-        print(" --->  test_statistics_videos ok.")
+        print(" --->  test_statistics_videos ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_statistics_playlists(self):
@@ -467,7 +467,7 @@ class TestNavbar(TestCase):
         response = self.client.get("/")
         self.assertFalse(
             'id="stats-usermenu-playlist-count"' in response.content.decode(),
-            "test if video count paragraph is correctly hidden."
+            "test if video count paragraph is correctly hidden"
         )
 
         Playlist.objects.create(
@@ -490,4 +490,4 @@ class TestNavbar(TestCase):
             "test if number of playlists is correct."
         )
 
-        print(" --->  test_statistics_playlists ok.")
+        print(" --->  test_statistics_playlists ok")

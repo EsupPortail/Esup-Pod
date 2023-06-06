@@ -116,7 +116,7 @@ class TestPlaylistsPageTestCase(TestCase):
             "Test if '4' is visible."
         )
         self.client.logout()
-        print(" --->  test_video_counter ok.")
+        print(" --->  test_video_counter ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_playlist_counter(self) -> None:
@@ -134,7 +134,7 @@ class TestPlaylistsPageTestCase(TestCase):
             "Test if '4' is visible."
         )
         self.client.logout()
-        print(" --->  test_playlist_counter ok.")
+        print(" --->  test_playlist_counter ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_card_titles(self) -> None:
@@ -152,7 +152,7 @@ class TestPlaylistsPageTestCase(TestCase):
             "Test if playlist title is visible."
         )
         self.client.logout()
-        print(" --->  test_card_titles ok.")
+        print(" --->  test_card_titles ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_private_filter(self) -> None:
@@ -176,7 +176,7 @@ class TestPlaylistsPageTestCase(TestCase):
             "Test if public icon isn't visible."
         )
         self.client.logout()
-        print(" --->  test_private_filter ok.")
+        print(" --->  test_private_filter ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_protected_filter(self) -> None:
@@ -200,7 +200,7 @@ class TestPlaylistsPageTestCase(TestCase):
             "Test if public icon isn't visible."
         )
         self.client.logout()
-        print(" --->  test_protected_filter ok.")
+        print(" --->  test_protected_filter ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_public_filter(self) -> None:
@@ -221,10 +221,10 @@ class TestPlaylistsPageTestCase(TestCase):
         )
         self.assertFalse(
             "bi-lock" in response.content.decode(),
-            "Test if protected icon isn't visible."
+            "Test if protected icon isn't visible"
         )
         self.client.logout()
-        print(" --->  test_public_filter ok.")
+        print(" --->  test_public_filter ok")
 
 
 class TestPlaylistsPageLinkTestCase(TestCase):
@@ -255,7 +255,7 @@ class TestPlaylistsPageLinkTestCase(TestCase):
             "Test if playlist icon is visible."
         )
         self.client.logout()
-        print(" --->  test_icon_visible ok.")
+        print(" --->  test_icon_visible ok")
 
 
 class TestModalVideoPlaylist(TestCase):
@@ -305,18 +305,18 @@ class TestModalVideoPlaylist(TestCase):
         response = self.client.get(self.url)
         self.assertTrue(
             f'id="{self.public_playlist_user.slug}-btn"' in response.content.decode(),
-            "test if the first playlist is present."
+            "Test if the first playlist is present."
         )
         self.assertTrue(
             f'id="{self.private_playlist_user.slug}-btn"' in response.content.decode(),
-            "test if the second playlist is present."
+            "Test if the second playlist is present."
         )
         self.assertFalse(
             f'id="{self.public_playlist_user2.slug}-btn"' in response.content.decode(),
-            "test if the user2 playlist is not present."
+            "Test if the user2 playlist is not present."
         )
         self.client.logout()
-        print(" --->  test_list_playlist_in_modal ok.")
+        print(" --->  test_list_playlist_in_modal ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_buttons_actions_playlist_in_modal(self) -> None:
@@ -337,15 +337,15 @@ class TestModalVideoPlaylist(TestCase):
         )
         self.assertTrue(
             f'<a href="{url_remove_button}"' in response.content.decode(),
-            "test if public playlist show a delete button."
+            "Test if public playlist show a delete button."
         )
         self.assertTrue(
             f'<a href="{url_add_button}"' in response.content.decode(),
-            "test if private playlist show an add button."
+            "Test if private playlist show an add button."
         )
 
         self.client.logout()
-        print(" --->  test_buttons_actions_playlist_in_modal ok.")
+        print(" --->  test_buttons_actions_playlist_in_modal ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_buttons_link(self) -> None:
@@ -366,12 +366,12 @@ class TestModalVideoPlaylist(TestCase):
         )
         self.assertTrue(
             f'<a href="{url_remove_button}"' in response.content.decode(),
-            "test if public playlist show a delete button."
+            "Test if public playlist show a delete button"
         )
         self.assertTrue(
             f'<a href="{url_add_button}"' in response.content.decode(),
-            "test if private playlist show an add button."
+            "Test if private playlist show an add button"
         )
 
         self.client.logout()
-        print(" --->  test_buttons_actions_playlist_in_modal ok.")
+        print(" --->  test_buttons_actions_playlist_in_modal ok")
