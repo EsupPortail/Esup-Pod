@@ -106,6 +106,7 @@ class LiveViewsTestCase(TestCase):
         print(" --->  SetUp of liveViewsTestCase: OK!")
 
     def test_directs(self):
+        """Test if directs works correctly."""
         # User not logged in
         self.client = Client()
         self.user = User.objects.get(username="pod")
@@ -132,6 +133,7 @@ class LiveViewsTestCase(TestCase):
         self.assertTemplateUsed(response, "live/directs_all.html")
 
     def test_directs_building(self):
+        """Test if direct building works correctly."""
         self.client = Client()
         self.user = User.objects.create(
             username="randomviewer", first_name="Jean", last_name="Viewer"
@@ -169,6 +171,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test_directs_building of liveViewsTestCase: OK!")
 
     def test_direct(self):
+        """Test if direct works correctly."""
         self.client = Client()
         self.user = User.objects.get(username="pod")
 
@@ -201,6 +204,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test_direct of liveViewsTestCase: OK!")
 
     def test_heartbeat(self):
+        """Test if heartbeat works correctly."""
         self.client = Client()
         self.user = User.objects.create(
             username="randomviewer", first_name="Jean", last_name="Viewer"
@@ -339,6 +343,7 @@ class LiveViewsTestCase(TestCase):
         print(" --->  test_heartbeat number of logged viewers after command: OK!")
 
     def test_edit_events(self):
+        """Test if event edit works correctly."""
         self.client = Client()
         self.event = Event.objects.get(title="event1")
         # Superuser logged in
@@ -479,6 +484,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test_edit_events of liveViewsTestCase: OK!")
 
     def test_crossing_events(self):
+        """Test if events do not cross."""
         e = Event.objects.get(title="event1")
         delta = e.end_date.replace(second=0, microsecond=0) - e.start_date.replace(
             second=0, microsecond=0
@@ -777,6 +783,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test_crossing_events of liveViewsTestCase: OK!")
 
     def test_events(self):
+        """Test if events works correctly."""
         self.client = Client()
         access_group = AccessGroup.objects.get(code_name="group1")
         # User not logged in
@@ -1059,6 +1066,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test_events delete event for superuser: OK!")
 
     def test_get_broadcaster_by_slug(self):
+        """Test if get broadcaster works correctly."""
         from pod.live.views import get_broadcaster_by_slug
 
         broadcaster = Broadcaster.objects.get(id=1)
@@ -1085,6 +1093,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test get_broadcaster_by_slug Http404: OK!")
 
     def test_broadcasters_from_building(self):
+        """Test if broadcaster from building works correctly."""
         url = "/live/ajax_calls/getbroadcastersfrombuiding/"
         response = self.client.get(url, {})
         self.assertEqual(response.status_code, 400)
@@ -1115,6 +1124,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test broadcasters_from_building all: OK!")
 
     def test_broadcaster_restriction(self):
+        """Test if broadcaster restriction works correctly."""
         url = "/live/ajax_calls/getbroadcasterrestriction/"
         response = self.client.post(url)
         self.assertEqual(response.status_code, 405)
@@ -1130,6 +1140,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test broadcaster_restriction: OK!")
 
     def checkAjaxPostImplementationError(self, url):
+        """Test implementation error."""
         response = self.client.post(
             url,
             content_type="application/json",
@@ -1141,6 +1152,7 @@ class LiveViewsTestCase(TestCase):
         self.assertEqual(response.json()["error"], "implementation error")
 
     def test_isstreamavailabletorecord(self):
+        """Test is stream is available to record."""
         url = reverse("live:ajax_is_stream_available_to_record")
         # not logged
         response = self.client.get(url)
@@ -1166,6 +1178,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test isstreamavailabletorecord implementation error: OK!")
 
     def test_start_record(self):
+        """Test record start."""
         url = reverse("live:ajax_event_startrecord")
 
         # not logged
@@ -1187,6 +1200,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test startrecord implementation error: OK!")
 
     def test_split_record(self):
+        """Test record split."""
         url = reverse("live:ajax_event_splitrecord")
 
         # not logged
@@ -1208,6 +1222,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test splitrecord implementation error: OK!")
 
     def test_stop_record(self):
+        """Test record stop."""
         url = reverse("live:ajax_event_stoprecord")
 
         # not logged
@@ -1229,6 +1244,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test stoprecord implementation error: OK!")
 
     def test_event_info_record(self):
+        """Test record event infos."""
         url = reverse("live:ajax_event_info_record")
 
         # not logged
@@ -1297,6 +1313,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test event_info_record recording: OK!")
 
     def test_is_recording(self):
+        """Test is stream is recording."""
         from pod.live.views import is_recording
 
         broadcaster = Broadcaster.objects.get(id=1)
@@ -1338,6 +1355,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test misc_broadcaster is_recording yes: OK!")
 
     def test_is_available_to_record(self):
+        """Test stream is available to record."""
         from pod.live.views import is_available_to_record
 
         broadcaster = Broadcaster.objects.get(id=1)
@@ -1373,6 +1391,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test misc_broadcaster is_available_to_record yes: OK!")
 
     def test_method_start_record(self):
+        """Test start record."""
         from pod.live.views import start_record
 
         broadcaster = Broadcaster.objects.get(id=1)
@@ -1401,6 +1420,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test misc_broadcaster start_record yes : OK!")
 
     def test_method_split_record(self):
+        """Test split record."""
         from pod.live.views import split_record
 
         broadcaster = Broadcaster.objects.get(id=1)
@@ -1429,6 +1449,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test misc_broadcaster split_record yes: OK!")
 
     def test_method_stop_record(self):
+        """Test stop record."""
         from pod.live.views import stop_record
 
         broadcaster = Broadcaster.objects.get(id=1)
@@ -1457,6 +1478,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test misc_broadcaster stop_record yes: OK!")
 
     def test_method_info_current_record(self):
+        """Test record event infos."""
         from pod.live.views import get_info_current_record
 
         broadcaster = Broadcaster.objects.get(id=1)
@@ -1507,6 +1529,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test misc_broadcaster get_info_current_record ok: OK!")
 
     def test_event_video_cards(self):
+        """Test event video cards."""
         url = "/live/ajax_calls/geteventvideocards/"
 
         # not ajax
@@ -1533,6 +1556,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test event_video_cards with videos: OK!")
 
     def test_immediate_event(self):
+        """Test immediate event."""
         self.client = Client()
 
         self.user = User.objects.get(username="pod")
@@ -1583,6 +1607,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test test_immediate_event logged event existant OK !")
 
     def test_immediate_event_form_post(self):
+        """Test immediate event form."""
         self.user = User.objects.get(username="pod")
         self.broadcaster = Broadcaster.objects.get(id=1)
 
@@ -1620,6 +1645,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test test_immediate_event_form_post not valid OK !")
 
     def test_immediate_event_maintenance(self):
+        """Test immediate event maintenance."""
         Configuration.objects.get(key="maintenance_mode").delete()
         Configuration.objects.create(key="maintenance_mode", value=1)
 
@@ -1640,6 +1666,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test test_immediate_event in maintenance OK !")
 
     def test_transform_to_video(self):
+        """Test transform event to video."""
         from pod.live.views import transform_to_video
 
         video_file_name = "test_video.mp4"

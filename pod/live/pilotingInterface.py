@@ -248,16 +248,20 @@ class Wowza(PilotingInterface):
             )
 
     def copy_file_needed(self) -> bool:
+        """Implement copy_file_needed from PilotingInterface."""
         return False
 
     def can_split(self) -> bool:
+        """Implement can_split from PilotingInterface."""
         return True
 
     def check_piloting_conf(self) -> bool:
+        """Implement check_piloting_conf from PilotingInterface."""
         logger.debug("Wowza - Check piloting conf")
         return validate_json_implementation(self.broadcaster)
 
     def is_available_to_record(self) -> bool:
+        """Implement is_available_to_record from PilotingInterface."""
         logger.debug("Wowza - Check availability")
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)
@@ -280,6 +284,7 @@ class Wowza(PilotingInterface):
         return False
 
     def is_recording(self, with_file_check=False) -> bool:
+        """Implement is_recording from PilotingInterface."""
         logger.debug("Wowza - Check if is being recorded")
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)
@@ -305,6 +310,7 @@ class Wowza(PilotingInterface):
             return True
 
     def start(self, event_id, login=None) -> bool:
+        """Implement start from PilotingInterface."""
         logger.debug("Wowza - Start record")
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)
@@ -432,6 +438,7 @@ class Wowza(PilotingInterface):
         }
 
     def copy_file_to_pod_dir(self, filename):
+        """Implement copy_file_to_pod_dir from PilotingInterface."""
         return False
 
 
@@ -448,16 +455,20 @@ class Smp(PilotingInterface):
             )
 
     def copy_file_needed(self) -> bool:
+        """Implement copy_file_needed from PilotingInterface."""
         return True
 
     def can_split(self) -> bool:
+        """Implement can_split from PilotingInterface."""
         return False
 
     def check_piloting_conf(self) -> bool:
+        """Implement check_piloting_conf from PilotingInterface."""
         logger.debug("SMP - Check piloting conf")
         return validate_json_implementation(self.broadcaster)
 
     def is_available_to_record(self) -> bool:
+        """Implement is_available_to_record from PilotingInterface."""
         logger.debug("Smp - Check availability")
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)
@@ -472,6 +483,7 @@ class Smp(PilotingInterface):
         return self.verify_smp_response(response, "result", "stopped")
 
     def is_recording(self, with_file_check=False) -> bool:
+        """Implement is_recording from PilotingInterface."""
         logger.debug("Smp - Check if is being recorded")
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)
@@ -486,6 +498,7 @@ class Smp(PilotingInterface):
         return self.verify_smp_response(response, "result", "recording")
 
     def start(self, event_id, login=None) -> bool:
+        """Implement start from PilotingInterface."""
         logger.debug("Smp - Start record")
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)
@@ -520,10 +533,12 @@ class Smp(PilotingInterface):
         return self.verify_smp_response(response, "recording", "record")
 
     def split(self) -> bool:
+        """Implement split from PilotingInterface."""
         logger.error("Smp - Split record - should not be called")
         return False
 
     def stop(self) -> bool:
+        """Implement stop from PilotingInterface."""
         logger.debug("Smp - Stop_record")
 
         json_conf = self.broadcaster.piloting_conf
@@ -538,6 +553,7 @@ class Smp(PilotingInterface):
         return self.verify_smp_response(response, "result", "stop")
 
     def get_info_current_record(self):
+        """Implement get_info_current_record from PilotingInterface."""
         logger.debug("Smp - Get info from current record")
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)
@@ -572,6 +588,7 @@ class Smp(PilotingInterface):
         }
 
     def copy_file_to_pod_dir(self, filename):
+        """Implement copy_file_to_pod_dir from PilotingInterface."""
         logger.debug("Smp - Copy file to Pod dir")
 
         json_conf = self.broadcaster.piloting_conf
@@ -625,6 +642,7 @@ class Smp(PilotingInterface):
 
     @staticmethod
     def verify_smp_response(response: requests.Response, key, value) -> bool:
+        """Verify SMP response is Ok and has key and value in it."""
         if response.status_code != http.HTTPStatus.OK:
             return False
         if not response.json():
