@@ -4,7 +4,9 @@
 """
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.utils.translation import ugettext as _
 from django.test import override_settings, TestCase
+
 from pod.playlist.utils import user_add_video_in_playlist
 from pod.video.models import Type, Video
 
@@ -375,3 +377,60 @@ class TestModalVideoPlaylist(TestCase):
 
         self.client.logout()
         print(" --->  test_buttons_actions_playlist_in_modal ok")
+
+
+class TestAddOrRemoveFormTestCase(TestCase):
+    """Add or remove form test case."""
+
+    fixtures = ["initial_data.json"]
+
+    def setUp(self) -> None:
+        """Set up required objects for next tests."""
+        self.user = User.objects.create(
+            username="simple.user",
+            password="user1234user",
+        )
+        self.simple_playlist = Playlist.objects.create(
+            name="My simple playlist",
+            visibility="public",
+            owner=self.user,
+        )
+        self.addUrl = reverse("playlist:add")
+        self.editUrl = reverse("playlist:edit", kwargs={"slug": self.simple_playlist.slug})
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_add_form_page(self) -> None:
+        """Test if the form to add a new playlist is present."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        response = self.client.get(self.addUrl)
+        self.assertEqual(
+            response.status_code,
+            200,
+            "Test if status code equal 200.",
+        )
+        self.assertTrue(
+            _("Add a playlist") in response.content.decode(),
+            "Test of 'Add a playlist' is visible in the page.",
+        )
+        self.client.logout()
+        print(" --->  test_add_form_page ok")
+
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_edit_form_page(self) -> None:
+        """Test if the form to edit a playlist is present."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        response = self.client.get(self.editUrl)
+        self.assertEqual(
+            response.status_code,
+            200,
+            "Test if status code equal 200.",
+        )
+        self.assertTrue(
+            _("Edit the playlist") in response.content.decode(),
+            "Test of 'Edit the playlist' is visible in the page.",
+        )
+        self.client.logout()
+        print(" --->  test_edit_form_page ok")
