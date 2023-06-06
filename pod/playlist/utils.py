@@ -122,6 +122,19 @@ def get_number_video_added_in_playlist(video: Video) -> int:
     return PlaylistContent.objects.filter(video=video).count()
 
 
+def get_number_video_added_in_specific_playlist(playlist: Playlist) -> int:
+    """
+    Get the number of times a video has been added to a specific playlist
+
+    Args:
+        playlist (:class:`pod.playlist.models.Playlist`): The playlist object
+
+    Returns:
+        int: The number of times a video has been added to the specific playlist
+    """
+    return PlaylistContent.objects.filter(playlist=playlist).count()
+
+
 def get_public_playlist() -> list:
     """
     Get all public playlist in the application.
