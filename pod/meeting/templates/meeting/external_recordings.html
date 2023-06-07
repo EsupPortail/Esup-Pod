@@ -17,7 +17,7 @@
 
 <div class="pod-first-content">
   <p>
-    {% trans "If you have achieved Big Blue Button meetings via another interface (typically via Moodle), or if you wish to centralize PeerTube, Youtube or other videos on Pod, it is possible to retrieve these recordings and be able to convert them into video in this platform (under certain conditions)." %}<br/>
+    {% trans "If you have achieved Big Blue Button meetings via another interface (typically via Moodle), or if you wish to centralize PeerTube, Youtube or other videos on Pod, it is possible to retrieve these recordings and be able to convert them into video in this platform (under certain conditions)." %}<br>
     {% trans "Please use the button below to add such a recording." %}
   </p>
 </div>
@@ -77,10 +77,10 @@
               {% if record.canUpload %}
                 {% trans "Please confirm you want to upload the recording To Pod" as confirmUpload %}
                 <form method="post" action="{% url "meeting:upload_external_recording_to_pod" record_id=record.id %}" onsubmit="return confirmUploadToPod('{{ confirmUpload|escapejs }}');" style="display: inline;">
-                  <input type="hidden" name="recording_name" value="{{ record.name }}" />
-                  <!-- <input type="hidden" name="start_timestamp" value="{{ record.startTime }}" />
-                  <input type="hidden" name="end_timestamp" value="{{ record.endTime }}" /> -->
-                  <input type="hidden" name="source_url" value="{{ record.videoUrl }}" />
+                  <input type="hidden" name="recording_name" value="{{ record.name }}">
+                  <!-- <input type="hidden" name="start_timestamp" value="{{ record.startTime }}">
+                  <input type="hidden" name="end_timestamp" value="{{ record.endTime }}"> -->
+                  <input type="hidden" name="source_url" value="{{ record.videoUrl }}">
                   {% csrf_token %}
                   <a href="{% url 'meeting:edit_external_recording' record.id %}" class="btn btn-primary pod-btn-primary btn-sm" title="{% trans 'Edit the external recording'%}" data-bs-toggle="tooltip" data-bs-placement="top">
                     <i class="bi bi-pencil-square pod-add"></i>
@@ -139,7 +139,9 @@
     searchRecHandler(searchRecInput.value.trim());
   });
 
-  // Manage the upload To Pod : confirm and loader
+  /**
+   *  Manage the upload To Pod : confirm and loader
+   */
   function confirmUploadToPod(message) {
     var answer=confirm(message);
     if(answer){

@@ -23,7 +23,7 @@
 {% else %}
   <div class="pod-first-content">
     <p>
-      {% trans "To centralize Big Blue Button, PeerTube, video file, Youtube recordings on this platform, first, please enter the information below." %}<br/>
+      {% trans "To centralize Big Blue Button, PeerTube, video file, Youtube recordings on this platform, first, please enter the information below." %}<br>
       {% trans "Then, you will be able to upload this recording to Pod." %}
     </p>
   </div>
@@ -37,9 +37,9 @@
     {% csrf_token %}
     <div class="list-group">
       {% if form.errors %}
-        <p class="text-danger">{% trans "One or more errors have been found in the form." %}<br/>
+        <p class="text-danger">{% trans "One or more errors have been found in the form." %}<br>
           {% for error in form.non_field_errors %}
-          <span> - {{ error }}</span> <br/>
+          <span> - {{ error }}</span> <br>
           {% endfor %}
         </p>
       {% endif %}
