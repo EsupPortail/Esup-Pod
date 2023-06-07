@@ -28,6 +28,10 @@
             <label class="form-check-label" for="idpublic_type">&nbsp;{% trans "See my public playlists"%}</label>
         </div>
         <div class="form-check">
+          <input onChange="window.location = `{% url 'playlist:list' %}?visibility=allmy`;" class="form-check-input" type="radio" name="type" value="allmy" id="idallmy_type" {% if request.GET.visibility == "allmy" %}checked="true"{% endif %}>
+          <label class="form-check-label" for="idallmy_type">&nbsp;{% trans "See my playlists"%}</label>
+      </div>
+        <div class="form-check">
             <input onChange="window.location = `{% url 'playlist:list' %}?visibility=allpublic`;" class="form-check-input" type="radio" name="type" value="allpublic" id="idallpublic_type" {% if request.GET.visibility == "allpublic" %}checked="true"{% endif %}>
             <label class="form-check-label" for="idallpublic_type">&nbsp;{% trans "See all public playlists"%}</label>
         </div>
@@ -39,4 +43,18 @@
     </div>
   </div>
 </div>
+<script>
+  function redirectToAllPlaylists() {
+    const urlWithoutGetOptions = window.location.origin + window.location.pathname
+    document.location.href = urlWithoutGetOptions + "?visibility=allmy";
+  }
+
+  const visibilityValue = new URL(window.location).searchParams.get("visibility");
+  if (visibilityValue) {
+    if (!visibilityValue in ["private", "portected", "public", "allmy", "allpublic", "all"])
+      redirectToAllPlaylists();
+  } else {
+    redirectToAllPlaylists();
+  }
+</script>
 {% endspaceless %}
