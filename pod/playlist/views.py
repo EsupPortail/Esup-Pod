@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponseRedirect
@@ -24,7 +25,7 @@ from .utils import (
 from pod.video.views import CURSUS_CODES, get_owners_has_instances
 
 from .models import Playlist
-from .forms import PlaylistForm
+from .forms import PlaylistForm, PlaylistRemoveForm
 
 
 @login_required(redirect_field_name="referrer")
@@ -113,7 +114,7 @@ def playlist_content(request, slug):
 
 def remove_video_in_playlist(request, slug, video_slug):
     """Remove a video in playlist."""
-    playlist = get_playlist(slug)
+    playlist = get_object_or_404(Playlist, slug=slug)
     video = Video.objects.get(slug=video_slug)
     user_remove_video_from_playlist(playlist, video)
     return redirect(request.META["HTTP_REFERER"])
@@ -129,7 +130,33 @@ def add_video_in_playlist(request, slug, video_slug):
 
 @login_required(redirect_field_name="referrer")
 def remove_playlist_view(request, slug: str):
-    """Remove playlist"""
+    """Remove playlist with form."""
+    playlist = get_object_or_404(Playlist, slug=slug)
+    if in_maintenance():
+        return redirect(reverse("maintenance"))
+    elif request.method == "POST":
+        form = PlaylistRemoveForm(request.POST)
+        if form.is_valid():
+            playlist.delete()
+            messages.add_message(
+                request,
+                messages.INFO,
+                _("The playlist has been deleted."),
+            )
+            return redirect(reverse("playlist:list"))
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                _("One or more errors have been found in the form."),
+            )
+    else:
+        form = PlaylistRemoveForm()
+    return render(
+        request,
+        "playlist/delete.html",
+        {"playlist": playlist, "form": form, "page_title": f"{_('Delete the playlist')} \"{playlist.name}\""}
+    )
     remove_playlist(request.user, get_playlist(slug))
     return redirect(request.META["HTTP_REFERER"])
 
@@ -137,7 +164,7 @@ def remove_playlist_view(request, slug: str):
 @csrf_protect
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
-def add_or_edit(request, slug=None):
+def add_or_edit(request, slug: str=None):
     """Add or edit view with form."""
     if in_maintenance():
         return redirect(reverse("maintenance"))

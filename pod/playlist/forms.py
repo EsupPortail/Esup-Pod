@@ -1,4 +1,7 @@
+"""Forms used in playlist application."""
+from typing import Any, Mapping, Optional, Type, Union
 from django import forms
+from django.forms.utils import ErrorList
 from django.utils.translation import ugettext_lazy as _
 
 from pod.main.forms_utils import add_placeholder_and_asterisk
@@ -7,7 +10,10 @@ from .models import Playlist
 
 
 class PlaylistForm(forms.ModelForm):
+    """Form to add or edit a playlist."""
+
     class Meta:
+        """Meta class."""
         model = Playlist
         fields = [
             "name",
@@ -45,5 +51,20 @@ class PlaylistForm(forms.ModelForm):
     ]
 
     def __init__(self, *args, **kwargs) -> None:
+        """Init method."""
         super(PlaylistForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)
+
+
+class PlaylistRemoveForm(forms.Form):
+    """Form to remove a playlist."""
+    agree = forms.BooleanField(
+        label=_("I agree"),
+        help_text=_("Remove playlist cannot be undone"),
+        widget=forms.CheckboxInput(),
+    )
+
+    def __init__(self, *args, **kwargs) -> None:
+        """Init method."""
+        super(PlaylistRemoveForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
