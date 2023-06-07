@@ -75,6 +75,7 @@
   --bs-link-color: var(--pod-link-color);
   --bs-link-color-rgb: var(--pod-link-color-rgb);
   --bs-link-hover-color: var(--pod-activelink-color);
+  --bs-card-color: var(--pod-font-color);
 
   /* Use system font (faster load) */
   --font-family-sans-serif: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Verdana, sans-serif;
@@ -112,10 +113,10 @@
   transition: background-color .5s;
 }
 
-.table-hover tbody tr:hover {
+/*.table-hover tbody tr:hover {
   color: var(--pod-font-color);
   background-color: var(--pod-background);
-}
+}*/
 
 .navbar-toggler:focus,
 .navbar-toggler:hover {
@@ -566,8 +567,8 @@ button.nav-link {
   grid-template-columns: 200px 1fr;
 }
 
-a:hover,
-a:focus {
+a:not(.btn):hover,
+a:not(.btn):focus {
   color: var(--pod-activelink-color);
   text-decoration: underline;
 }
@@ -1539,15 +1540,15 @@ th + td + td + td + td {
   color: var(--pod-font-color);
 } */
 
-.table-hover > tbody > tr > * {
+/*.table-hover > tbody > tr > * {
   --bs-table-accent-bg: var(--bs-table-hover-bg) !important;
   color: var(--pod-font-color) !important;
-}
+}*/
 
-.table-hover > tbody > tr:hover > * {
+/*.table-hover > tbody > tr:hover > * {
   --bs-table-accent-bg: var(--bs-table-hover-bg) !important;
   color: var(--pod-font-color) !important;
-  }
+}*/
 
 table .alert.alert-danger.btn.pod-btn-social {
   background-color: var(--pod-alert) !important;
