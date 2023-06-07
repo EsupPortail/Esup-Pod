@@ -138,10 +138,6 @@ class PlaylistContent(models.Model):
             models.UniqueConstraint(
                 fields=["playlist", "video"], name="unique_playlist_video"
             ),
-            # A rank cannot be twice in a playlist.
-            models.UniqueConstraint(
-                fields=["playlist", "rank"], name="unique_playlist_rank"
-            )
         ]
 
         ordering = ["playlist", "rank"]

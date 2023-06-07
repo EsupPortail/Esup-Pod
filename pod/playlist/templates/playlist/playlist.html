@@ -34,8 +34,8 @@
 <div class="row videos-list-header">
   <h2 id="video_count" class="page_title col-xxl-4 mb-2">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
   {% if count_videos > 1 %}
-    <div class="col-xxl-4 col-md-6 mb-2" id="reorganize-buttons">
-      <form action="{% url 'favorite:save-reorganisation' %}" method="post">
+  <div class="col-xxl-4 col-md-6 mb-2" id="reorganize-buttons">
+      <form action="{% url 'playlist:save-reorganisation' slug=playlist.slug %}" method="post">
         {% csrf_token %}
         <input id="json-data" type="hidden" name="json-data">
         <button id="reorganize-button" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm {% if sort_field != 'rank' or sort_direction == 'on' %}d-none{% endif %}">
@@ -49,7 +49,7 @@
       </form>
     </div>
     <form id="sortForm" action="{% url 'playlist:content' slug=playlist.slug %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2">
-      {% include "videos/video_sort_select.html" %}
+      {% include "videos/video_sort_select.html" with video_rank=True %}
     </form>
   {% endif %}
 </div>
@@ -86,4 +86,5 @@
 
 <script src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/playlist-reorganize.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}

@@ -5,6 +5,7 @@
 {% get_language_info_list for LANGUAGES as languages %}
 {% load thumbnail %}
 {% load navbar %}
+{% load favorites_playlist %}
 
 <div class="container-fluid pod-container pod-navbar__container" id="nav-mainbar">
   {% comment %}<!--
@@ -202,7 +203,8 @@
                 <a class="nav-item nav-link" href="{% url 'playlist:list' %}"><i class="bi bi-list-ul pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
               {% endif %}
               {% if USE_FAVORITES %}
-                <a class="nav-item nav-link" href="{% url 'favorite:list' %}"><i class="bi bi-star pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My favorite videos' %}</a>
+                {% get_favorite_playlist user as playlist %}
+                <a class="nav-item nav-link" href="{% url 'playlist:content' slug=playlist.slug %}"><i class="bi bi-star pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My favorite videos' %}</a>
               {% endif %}
               {% if USE_OPENCAST_STUDIO %}
                 <a class="nav-item nav-link" href="{% url 'recorder:studio_pod'%}"><i class="bi bi-camera-video pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans "Video Record" %}</a>

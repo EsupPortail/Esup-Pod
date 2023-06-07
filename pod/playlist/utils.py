@@ -1,4 +1,5 @@
 """Esup-Pod playlist utilities."""
+from os import name
 from django.contrib.auth.models import User
 from django.db.models import Max
 
@@ -193,6 +194,19 @@ def get_playlist(slug: str) -> Playlist:
         Playlist(:class:`pod.playlist.models.Playlist`): The playlist object
     """
     return Playlist.objects.get(slug=slug)
+
+
+def get_favorite_playlist_for_user(user: User) -> Playlist:
+    """
+    Get the favorite playlist of a user;
+
+    Args:
+        user (:class:`django.contrib.auth.models.User`): The user object
+
+    Returns:
+        Playlist: The favorite playlist
+    """
+    return Playlist.objects.get(name="Favorites", owner=user)
 
 
 def remove_playlist(user: User, playlist: Playlist) -> None:
