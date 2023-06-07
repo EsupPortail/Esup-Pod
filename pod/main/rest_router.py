@@ -7,6 +7,7 @@ from pod.video import rest_views as video_views
 from pod.playlist import rest_views as playlist_views
 from pod.main import rest_views as main_views
 from pod.authentication import rest_views as auth_views
+from pod.video_encode import rest_views as encode_views
 
 from pod.chapter import rest_views as chapter_views
 from pod.completion import rest_views as completion_views
@@ -39,8 +40,8 @@ router.register(r"types", video_views.TypeViewSet)
 router.register(r"discipline", video_views.DisciplineViewSet)
 router.register(r"videos", video_views.VideoViewSet)
 router.register(r"renditions", video_views.VideoRenditionViewSet)
-router.register(r"encodings_video", video_views.EncodingVideoViewSet)
-router.register(r"encodings_audio", video_views.EncodingAudioViewSet)
+router.register(r"encodings_video", encode_views.EncodingVideoViewSet)
+router.register(r"encodings_audio", encode_views.EncodingAudioViewSet)
 router.register(r"playlist_videos", video_views.PlaylistVideoViewSet)
 router.register(r"view_count", video_views.ViewCountViewSet)
 

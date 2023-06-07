@@ -5,7 +5,7 @@ from pod.live.models import LiveTranscriptRunningTask, Broadcaster
 @shared_task(bind=True)
 def task_start_encode(self, video_id):
     print("CELERY START ENCODE VIDEO ID %s" % video_id)
-    from pod.video.encode import encode_video
+    from pod.video_encode.encode import encode_video
 
     encode_video(video_id)
 
@@ -31,7 +31,7 @@ def task_start_encode_studio(
     self, recording_id, video_output, videos, subtime, presenter
 ):
     print("CELERY START ENCODE VIDEOS FROM STUDIO RECORDING ID %s" % recording_id)
-    from pod.video.encode import encode_video_studio
+    from pod.video_encode.encode import encode_video_studio
 
     encode_video_studio(recording_id, video_output, videos, subtime, presenter)
 

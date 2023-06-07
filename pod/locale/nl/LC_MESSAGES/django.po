@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-24 16:19+0000\n"
+"POT-Creation-Date: 2023-05-31 08:00+0000\n"
 "PO-Revision-Date: 2023-02-15 16:55+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -762,7 +762,7 @@ msgid "File to import"
 msgstr ""
 
 #: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
-#: pod/video/models.py
+#: pod/video/models.py pod/video/utils.py
 msgid "video"
 msgstr ""
 
@@ -4118,6 +4118,10 @@ msgstr ""
 msgid "You can fill one email adress per line"
 msgstr ""
 
+#: pod/meeting/forms.py
+msgid "Send invite to owner and additional owners"
+msgstr ""
+
 #: pod/meeting/models.py
 msgid "Daily"
 msgstr ""
@@ -4892,8 +4896,8 @@ msgstr ""
 
 #: pod/playlist/templates/my_playlists.html
 msgid ""
-"You have not created any playlists yet, please use the \"Add a new "
-"playlist\" button to add one."
+"You have not created any playlists yet, please use the \"Add a new playlist"
+"\" button to add one."
 msgstr ""
 
 #: pod/playlist/templates/my_playlists.html
@@ -5482,8 +5486,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -7052,14 +7056,30 @@ msgstr ""
 
 #: pod/video/utils.py
 #, python-format
-msgid "Transcripting #%(content_id)s completed"
+msgid "%(subject)s #%(content_id)s completed"
 msgstr ""
 
 #: pod/video/utils.py
 #, python-format
 msgid ""
-"The content “%(content_title)s” has been automatically transcript, and is "
-"now available on %(site_title)s."
+"The %(content_type)s “%(content_title)s” has been %(action)s, and is now "
+"available on %(site_title)s."
+msgstr ""
+
+#: pod/video/utils.py
+msgid "content"
+msgstr ""
+
+#: pod/video/utils.py
+msgid "Transcripting"
+msgstr ""
+
+#: pod/video/utils.py
+msgid "automatically transcript"
+msgstr ""
+
+#: pod/video/utils.py
+msgid "encoded to Web formats"
 msgstr ""
 
 #: pod/video/utils.py
@@ -7071,16 +7091,10 @@ msgid "the:"
 msgstr ""
 
 #: pod/video/utils.py
-#, python-format
-msgid "Encoding #%(content_id)s completed"
-msgstr ""
-
-#: pod/video/utils.py
-#, python-format
-msgid ""
-"The video “%(content_title)s” has been encoded to Web formats, and is now "
-"available on %(site_title)s."
-msgstr ""
+#, fuzzy
+#| msgid "Encoding log"
+msgid "Encoding"
+msgstr "Codering logboek"
 
 #: pod/video/views.py
 msgid "You cannot edit this channel."
