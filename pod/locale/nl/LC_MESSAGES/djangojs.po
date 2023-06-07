@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-31 08:00+0000\n"
+"POT-Creation-Date: 2023-06-07 13:03+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -37,7 +37,6 @@ msgstr ""
 
 #: pod/chapter/static/js/chapters.js pod/completion/static/js/completion.js
 #: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
-#: pod/playlist/static/js/playlist.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "You are no longer authenticated. Please log in again."
 msgstr ""
@@ -451,20 +450,6 @@ msgstr ""
 
 #: pod/main/static/js/main.js
 msgid "The file extension not in the allowed extension:"
-msgstr ""
-
-#: pod/playlist/static/js/playlist.js
-msgid "The video can not be added from this page."
-msgstr ""
-
-#: pod/playlist/static/js/playlist.js
-msgid "The video slug not found."
-msgstr ""
-
-#: pod/playlist/static/js/playlist.js
-msgid ""
-"Error getting video information. The video information could not be "
-"retrieved."
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js

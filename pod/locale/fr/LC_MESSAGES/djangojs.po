@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-31 08:00+0000\n"
+"POT-Creation-Date: 2023-06-07 13:03+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -37,7 +37,6 @@ msgstr "Le formulaire ne peut pas être récupéré."
 
 #: pod/chapter/static/js/chapters.js pod/completion/static/js/completion.js
 #: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
-#: pod/playlist/static/js/playlist.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "You are no longer authenticated. Please log in again."
 msgstr "Vous n’êtes plus authentifié. Veuillez vous reconnecter."
@@ -476,22 +475,6 @@ msgstr ""
 "Cette extension de fichier n’est pas présente dans les extensions "
 "autorisées :"
 
-#: pod/playlist/static/js/playlist.js
-msgid "The video can not be added from this page."
-msgstr "La vidéo ne peut être ajoutée depuis cette page."
-
-#: pod/playlist/static/js/playlist.js
-msgid "The video slug not found."
-msgstr "La trace (slug) de la vidéo est introuvable."
-
-#: pod/playlist/static/js/playlist.js
-msgid ""
-"Error getting video information. The video information could not be "
-"retrieved."
-msgstr ""
-"Erreur lors de l’obtention des informations sur la vidéo. Les informations "
-"vidéo n’ont pas pu être récupérées."
-
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change image"
 msgstr "Changer d’image"
@@ -770,6 +753,19 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "The video can not be added from this page."
+#~ msgstr "La vidéo ne peut être ajoutée depuis cette page."
+
+#~ msgid "The video slug not found."
+#~ msgstr "La trace (slug) de la vidéo est introuvable."
+
+#~ msgid ""
+#~ "Error getting video information. The video information could not be "
+#~ "retrieved."
+#~ msgstr ""
+#~ "Erreur lors de l’obtention des informations sur la vidéo. Les "
+#~ "informations vidéo n’ont pas pu être récupérées."
 
 #~ msgid "Position saved"
 #~ msgstr "Position enregistrée"
