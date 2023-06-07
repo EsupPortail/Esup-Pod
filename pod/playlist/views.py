@@ -77,7 +77,7 @@ def playlist_content(request, slug):
         return render(
             request,
             "playlist/playlist.html",
-            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
+            {"videos": videos, "playlist": playlist, "full_path": full_path, "count_videos": count_videos},
         )
 
     return render(
@@ -144,9 +144,11 @@ def add_or_edit(request, slug=None):
     elif request.method == "GET":
         playlist = get_object_or_404(Playlist, slug=slug) if slug else None
         if playlist:
-            if request.user == playlist.owner or request.user.is_staff:
+            if (request.user == playlist.owner or request.user.is_staff) and playlist.editable:
                 form = PlaylistForm(instance=playlist)
                 page_title = _("Edit the playlist") + f" \"{playlist.name}\""
+            else:
+                return redirect(reverse("playlist:list"))
         else:
             form = PlaylistForm()
             page_title = _("Add a playlist")

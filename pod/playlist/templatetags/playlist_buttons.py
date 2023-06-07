@@ -10,4 +10,4 @@ def user_can_edit_or_remove(context: dict, playlist: Playlist) -> bool:
     request = context["request"]
     if not request.user.is_authenticated:
         return False
-    return request.user == playlist.owner or request.user.is_staff
+    return playlist.editable and (request.user == playlist.owner or request.user.is_staff)

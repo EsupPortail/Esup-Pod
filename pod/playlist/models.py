@@ -47,6 +47,10 @@ class Playlist(models.Model):
         default=True,
         help_text=_("Please choose if this playlist is an autoplay playlist or not.")
     )
+    editable = models.BooleanField(
+        verbose_name=_("Editable"),
+        default=True
+    )
     slug = models.SlugField(
         _("slug"),
         unique=True,
