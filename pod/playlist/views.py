@@ -11,15 +11,20 @@ from pod.main.views import in_maintenance
 from pod.video.models import Video
 from pod.video.utils import sort_videos_list
 
-from .utils import get_playlist, get_video_list_for_playlist, user_add_video_in_playlist
-from .utils import remove_playlist
+from .utils import (
+    get_playlist,
+    get_playlist_list_for_user,
+    get_public_playlist,
+    get_video_list_for_playlist,
+    remove_playlist,
+    user_add_video_in_playlist,
+    user_remove_video_from_playlist,
+)
 
 from pod.video.views import CURSUS_CODES, get_owners_has_instances
 
 from .models import Playlist
 from .forms import PlaylistForm
-from .utils import get_playlist_list_for_user, user_remove_video_from_playlist
-from .utils import get_public_playlist
 
 
 @login_required(redirect_field_name="referrer")
@@ -30,8 +35,12 @@ def playlist_list(request):
         playlists = get_playlist_list_for_user(request.user).filter(visibility=visibility)
     elif visibility == "allpublic":
         playlists = get_public_playlist()
+    elif visibility == "allmy":
+        playlists = get_playlist_list_for_user(request.user)
     elif visibility == "all":
         playlists = (get_playlist_list_for_user(request.user) | get_public_playlist())
+    else:
+        return redirect(reverse('playlist:list'))
     return render(
         request,
         "playlist/playlists.html",
