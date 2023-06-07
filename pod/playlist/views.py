@@ -141,7 +141,7 @@ def remove_playlist_view(request, slug: str):
     elif request.method == "POST":
         form = PlaylistRemoveForm(request.POST)
         if form.is_valid():
-            remove_playlist(playlist)
+            remove_playlist(request.user, playlist)
             messages.add_message(
                 request,
                 messages.INFO,
@@ -169,10 +169,11 @@ def remove_playlist_view(request, slug: str):
 def add_or_edit(request, slug: str=None):
     """Add or edit view with form."""
     options = ""
+    playlist = get_object_or_404(Playlist, slug=slug) if slug else None
     if in_maintenance():
         return redirect(reverse("maintenance"))
     elif request.method == "POST":
-        form = PlaylistForm(request.POST)
+        form = PlaylistForm(request.POST, instance=playlist) if playlist else PlaylistForm(request.POST)
         if form.is_valid():
             new_playlist = form.save(commit=False)
             new_playlist.owner = request.user

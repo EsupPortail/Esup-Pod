@@ -22,13 +22,13 @@ class Playlist(models.Model):
     name = models.CharField(
         verbose_name=_("Name"),
         max_length=250,
-        help_text=_("Please choose a name between 1 and 250 characters.")
+        help_text=_("Please choose a name between 1 and 250 characters."),
     )
     description = models.TextField(
         verbose_name=_("Description"),
         blank=True,
         default="",
-        help_text=_("Please choose a description. This description is empty by default.")
+        help_text=_("Please choose a description. This description is empty by default."),
     )
     password = models.TextField(
         verbose_name=_("Password"),
@@ -40,16 +40,17 @@ class Playlist(models.Model):
         verbose_name=_("Visibility"),
         max_length=9,
         choices=VISIBILITY_CHOICES,
-        help_text=_("Please chosse an visibility among 'public', 'protected', 'private'.")
+        help_text=_("Please chosse an visibility among 'public', 'protected', 'private'."),
     )
     autoplay = models.BooleanField(
         verbose_name=_("Autoplay"),
         default=True,
-        help_text=_("Please choose if this playlist is an autoplay playlist or not.")
+        help_text=_("Please choose if this playlist is an autoplay playlist or not."),
     )
     editable = models.BooleanField(
         verbose_name=_("Editable"),
-        default=True
+        default=True,
+        help_text=_("Please choose if this playlist is editable or not."),
     )
     slug = models.SlugField(
         _("slug"),
@@ -63,6 +64,13 @@ class Playlist(models.Model):
         editable=False,
     )
     owner = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
+    additional_owners = models.ManyToManyField(
+        User,
+        blank=True,
+        verbose_name=_("Additional owners"),
+        related_name="owners_playlists",
+        help_text=_("You can add additional owners to the playlist."),
+    )
     date_created = models.DateTimeField(
         verbose_name=_("Date created"),
         default=timezone.now,
