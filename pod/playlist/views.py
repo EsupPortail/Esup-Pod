@@ -5,6 +5,8 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from django.http import Http404, HttpResponseBadRequest
+from django.db import transaction
 
 from pod.main.utils import is_ajax
 from pod.main.views import in_maintenance
@@ -23,9 +25,9 @@ from .utils import (
 
 from pod.video.views import CURSUS_CODES, get_owners_has_instances
 
-from .models import Playlist
+from .models import Playlist, PlaylistContent
 from .forms import PlaylistForm
-
+import json
 
 @login_required(redirect_field_name="referrer")
 def playlist_list(request):
@@ -165,3 +167,35 @@ def add_or_edit(request, slug=None):
         "form": form,
         "page_title": page_title,
     })
+
+# FAVORITES
+
+@csrf_protect
+def favorites_save_reorganisation(request, slug: str):
+    """Save reorganization when the user click on save button."""
+    if request.method == "POST":
+        json_data = request.POST.get("json-data")
+        try:
+            dict_data = json.loads(json_data)
+        except json.JSONDecodeError:
+            return HttpResponseBadRequest("JSON au mauvais format")
+        with transaction.atomic():
+            for videos_tuple in dict_data.values():
+                playlist_video_1 = PlaylistContent.objects.filter(
+                    playlist=get_playlist(slug),
+                    video_id=Video.objects.only("id").get(slug=videos_tuple[0]).id,
+                )
+                playlist_video_2 = PlaylistContent.objects.filter(
+                    playlist=get_playlist(slug),
+                    video_id=Video.objects.only("id").get(slug=videos_tuple[1]).id,
+                )
+
+                with transaction.atomic():
+                    video_1_rank = playlist_video_1[0].rank
+                    video_2_rank = playlist_video_2[0].rank
+                    playlist_video_1.update(rank=video_2_rank)
+                    playlist_video_2.update(rank=video_1_rank)
+
+        return redirect(request.META["HTTP_REFERER"])
+    else:
+        raise Http404()
