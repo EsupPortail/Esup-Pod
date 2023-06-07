@@ -1086,6 +1086,7 @@ class Recording(models.Model):
 
 @receiver(pre_save, sender=Recording)
 def default_site_recording(sender, instance, **kwargs):
+    """Save default site for this recording."""
     if not hasattr(instance, "site"):
         instance.site = Site.objects.get_current()
 
