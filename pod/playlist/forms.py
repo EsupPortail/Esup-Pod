@@ -79,6 +79,12 @@ class PlaylistForm(forms.ModelForm):
         super(PlaylistForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
 
+    def clean_name(self):
+        name = self.cleaned_data["name"]
+        if name == "Favorites":
+            raise forms.ValidationError(_('You cannot create a playlist named "Favorites"'))
+        return name
+
 
 class PlaylistRemoveForm(forms.Form):
     """Form to remove a playlist."""

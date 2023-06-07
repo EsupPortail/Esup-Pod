@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-07 13:03+0000\n"
+"POT-Creation-Date: 2023-06-07 13:29+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -5124,6 +5124,10 @@ msgid "Autoplay"
 msgstr "Lecture automatique"
 
 #: pod/playlist/forms.py
+msgid "You cannot create a playlist named \"Favorites\""
+msgstr "Vous ne pouvez pas créer une liste de lecture nommée \"Favorites\""
+
+#: pod/playlist/forms.py
 msgid "Remove playlist cannot be undone"
 msgstr "La suppression d'une playlist est définitive"
 
@@ -7825,9 +7829,6 @@ msgstr "Esup-Pod xAPI"
 
 #~ msgid "Sorry, no playlist found"
 #~ msgstr "Désolé, aucune liste de lecture trouvée"
-
-#~ msgid "You cannot edit this playlist."
-#~ msgstr "Vous ne pouvez éditer cette liste de lecture."
 
 #~ msgid "You don't have access to this playlist."
 #~ msgstr "Vous n’avez pas les droits d’accès à cette liste de lecture."

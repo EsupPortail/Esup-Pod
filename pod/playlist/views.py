@@ -169,6 +169,7 @@ def remove_playlist_view(request, slug: str):
 def add_or_edit(request, slug: str=None):
     """Add or edit view with form."""
     options = ""
+    page_title = ""
     playlist = get_object_or_404(Playlist, slug=slug) if slug else None
     if in_maintenance():
         return redirect(reverse("maintenance"))
