@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-07 13:03+0000\n"
+"POT-Creation-Date: 2023-06-07 13:29+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -374,10 +374,12 @@ msgid "Enrich mode"
 msgstr "Mode enrichi"
 
 #: pod/favorite/static/js/favorite-reorganize.js
+#: pod/playlist/static/js/playlist-reorganize.js
 msgid "Save your reorganization"
 msgstr "Sauvegarder votre réorganisation"
 
 #: pod/favorite/static/js/favorite-reorganize.js
+#: pod/playlist/static/js/playlist-reorganize.js
 msgid "Save"
 msgstr "Sauvegarder"
 

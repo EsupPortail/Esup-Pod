@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-07 13:03+0000\n"
+"POT-Creation-Date: 2023-06-07 13:29+0000\n"
 "PO-Revision-Date: 2023-02-15 16:55+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -4868,6 +4868,10 @@ msgstr ""
 #: pod/playlist/forms.py pod/playlist/models.py
 #: pod/video/templates/videos/video-info.html
 msgid "Autoplay"
+msgstr ""
+
+#: pod/playlist/forms.py
+msgid "You cannot create a playlist named \"Favorites\""
 msgstr ""
 
 #: pod/playlist/forms.py

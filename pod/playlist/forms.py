@@ -58,7 +58,7 @@ class PlaylistForm(forms.ModelForm):
     def clean_name(self):
         name = self.cleaned_data["name"]
         if name == "Favorites":
-            raise forms.ValidationError(_('You cannot create a playlist named "Favorites'))
+            raise forms.ValidationError(_('You cannot create a playlist named "Favorites"'))
         return name
 
 
