@@ -11,6 +11,7 @@
   --pod-btn-text: var(--pod-btn-text-dark);
   --pod-alert: var(--pod-alert-dark);
   --pod-link-color: var(--pod-primary-lighten-dark);
+  --pod-link-color-rgb: var(--pod-primary-lighten-dark-rgb);
   --pod-activelink-color: var(--pod-primary);
 }
 

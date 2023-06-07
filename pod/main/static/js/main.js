@@ -17,6 +17,12 @@ function appendHTML(node, html) {
   }
 }
 */
+/**
+ * [getParents description]
+ * @param  {[type]} el             [description]
+ * @param  {[type]} parentSelector [description]
+ * @return {[type]}                [description]
+ */
 function getParents(el, parentSelector) {
   if (parentSelector === undefined) {
     parentSelector = document;
@@ -32,7 +38,13 @@ function getParents(el, parentSelector) {
   return parents;
 }
 
-/* SLIDE UP */
+/**
+ * [slideUp description]
+ * @param  {[type]}   target   [description]
+ * @param  {Number}   duration [description]
+ * @param  {Function} callback [description]
+ * @return {[type]}            [description]
+ */
 function slideUp(target, duration = 500, callback = null) {
   target.style.transitionProperty = "height, margin, padding";
   target.style.transitionDuration = duration + "ms";
@@ -92,7 +104,12 @@ var slideDown = (target, duration = 500) => {
   }, duration);
 };
 
-/* SLIDE TOGGLE */
+/**
+ * [slideToggle description]
+ * @param  {[type]} target   [description]
+ * @param  {Number} duration [description]
+ * @return {[type]}          [description]
+ */
 var slideToggle = (target, duration = 500) => {
   if (window.getComputedStyle(target).display === "none") {
     return slideDown(target, duration);
@@ -101,7 +118,12 @@ var slideToggle = (target, duration = 500) => {
   }
 };
 
-/* FADE IN */
+/**
+ * [fadeIn description]
+ * @param  {[type]} el      [description]
+ * @param  {[type]} display [description]
+ * @return {[type]}         [description]
+ */
 function fadeIn(el, display) {
   el.style.opacity = 0;
   el.style.display = display || "block";
@@ -114,7 +136,12 @@ function fadeIn(el, display) {
   })();
 }
 
-/* FADE OUT */
+/**
+ * [fadeOut description]
+ * @param  {[type]} elem  [description]
+ * @param  {[type]} speed [description]
+ * @return {[type]}       [description]
+ */
 function fadeOut(elem, speed) {
   if (!elem.style.opacity) {
     elem.style.opacity = 1;
@@ -131,6 +158,11 @@ function fadeOut(elem, speed) {
     } // end if
   }, speed / 50);
 }
+/**
+ * [isJson description]
+ * @param  {[type]}  str [description]
+ * @return {Boolean}     [description]
+ */
 function isJson(str) {
   try {
     JSON.parse(str);
@@ -140,10 +172,19 @@ function isJson(str) {
   return false;
 }
 
+/**
+ * [linkTo_UnCryptMailto description]
+ * @param  {[type]} s [description]
+ * @return {[type]}   [description]
+ */
 function linkTo_UnCryptMailto(s) {
   location.href = "mailto:" + window.atob(s);
 }
 
+/**
+ * [toHHMMSS description]
+ * @return {[type]} [description]
+ */
 Number.prototype.toHHMMSS = function () {
   var seconds = Math.floor(this),
     hours = Math.floor(seconds / 3600);
@@ -163,7 +204,10 @@ Number.prototype.toHHMMSS = function () {
   return hours + ":" + minutes + ":" + seconds;
 };
 
-// Edit the iframe and share link code
+/**
+ * Edit the iframe and share link code
+ * @return {[type]} [description]
+ */
 function writeInFrame() {
   // Iframe
   var txtintegration = document.getElementById("txtintegration");
@@ -411,7 +455,11 @@ if (ownerBoxNavBar) {
   });
 }
 
-// Create link for user search
+/**
+ * Create link for user search
+ * @param  {[type]} user [description]
+ * @return {[type]}      [description]
+ */
 function createUserLink(user) {
   let li = document.createElement("li");
   let a = document.createElement("a");
@@ -513,8 +561,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
+/**
+ * Automatically hide success ans info type alerts
+ */
 function TriggerAlertClose() {
-  // Automatically hide success type alerts
   // (alert-warning and alert-danger will remain on screen)
   window.setTimeout(function () {
     document
@@ -534,7 +584,12 @@ function TriggerAlertClose() {
       });
   }, 5000);
 }
-/** SEARCH USER **/
+
+/**
+ * SEARCH USER
+ * @param  {[type]} searchTerm [description]
+ * @return {[type]}            [description]
+ */
 async function getSearchListUsers(searchTerm) {
   try {
     let data = new FormData();
@@ -579,6 +634,7 @@ document.addEventListener("submit", (e) => {
     "show_picture_form"
   );
 });
+
 /** THEME **/
 document.addEventListener("submit", (e) => {
   if (e.target.id != "form_theme") return;
@@ -588,7 +644,7 @@ document.addEventListener("submit", (e) => {
   send_form_data(form.getAttribute("action"), data_form, "show_theme_form");
 });
 document.addEventListener("click", (e) => {
-  if (e.target != "cancel_theme") return;
+  if (e.target.id != "cancel_theme") return;
   document.querySelector("form.get_form_theme").style.display = "block";
   show_form_theme("");
   document.querySelectorAll("table_list_theme tr").forEach((el) => {
@@ -603,20 +659,24 @@ document.addEventListener("click", (e) => {
 document.addEventListener("submit", (e) => {
   if (!e.target.classList.contains("get_form_theme")) return;
   e.preventDefault();
-  var action = e.target.querySelector("input[name=action]").value; // new, modify and delete
 
   let form = e.target;
+  // Action can be new, modify or delete
+  var action = form.querySelector("input[name=action]").value;
   let data_form = new FormData(form);
-  if (action == "delete") {
+  if (action === "delete") {
     var deleteConfirm = confirm(
-      gettext("Are you sure you want to delete this element?")
+      interpolate(
+        gettext("Are you sure you want to delete theme '%(title)s'?"),
+        {title: form.dataset.title}, true
+      )
     );
 
     if (deleteConfirm) {
       send_form_data(
         window.location.href,
         data_form,
-        "show_form_theme_" + action
+        "show_form_theme_delete"
       );
     }
   } else {
@@ -679,6 +739,7 @@ var send_form_data = async function (
   callbackFail =
     typeof callbackFail === "function" ? callbackFail : function ($xhr) {};
 
+  // console.log("send_form_data. fct=" + fct);
   method = method || "post";
 
   let token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
@@ -793,8 +854,12 @@ var send_form_data_vanilla = function (
       callbackFail(err);
     });
 };
-// this function (show_form_theme_new) is not used elsewhere
-/*
+
+/**
+ * Called when creating a new theme
+ * @param  {Array} data Theme data obtained from ajax call
+ * @return {void}
+ */
 var show_form_theme_new = function (data) {
   if (data.indexOf("form_theme") == -1) {
     showalert(
@@ -805,9 +870,13 @@ var show_form_theme_new = function (data) {
     show_form_theme(data);
   }
 };
-*/
-// this function (show_form_theme_modify) is not used elsewhere
-/*
+
+
+/**
+ * Called when starting a modify action on existing theme
+ * @param  {Array} data Theme data obtained from ajax call
+ * @return {void}
+ */
 var show_form_theme_modify = function (data) {
   if (data.indexOf("theme") == -1) {
     showalert(
@@ -815,15 +884,21 @@ var show_form_theme_modify = function (data) {
       "alert-danger"
     );
   } else {
+    document.querySelectorAll("#table_list_theme tr").forEach(function(trItem) {
+      trItem.classList.remove("table-primary");
+    });
     show_form_theme(data);
     data = new DOMParser().parseFromString(data, "text/html").body;
-    var id = data.getElementById("id_theme").value;
+    var id = data.querySelector("#id_theme").value;
     document.getElementById("theme_" + id).classList.add("table-primary");
   }
 };
-*/
-// // this function (show_form_theme_delete) is not used elsewhere
-/*
+
+/**
+ * Called when deleting a theme
+ * @param  {Array} data Theme data obtained from ajax call
+ * @return {void}
+ */
 var show_form_theme_delete = function (data) {
   if (!isJson(data)) {
     data = JSON.parse(data);
@@ -834,7 +909,12 @@ var show_form_theme_delete = function (data) {
     showalert(gettext("You are no longer authenticated. Please log in again."));
   }
 };
-*/
+
+/**
+ * Display a form associated to the theme in data
+ * @param  {Array} data Theme data obtained from ajax call
+ * @return {void}
+ */
 var show_theme_form = function (data) {
   if (!isJson(data)) {
     data = JSON.parse(data);
@@ -859,6 +939,11 @@ var show_theme_form = function (data) {
   }
 };
 
+/**
+ * [show_picture_form description]
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
 var show_picture_form = function (data) {
   let htmlData = new DOMParser().parseFromString(data, "text/html");
   document.getElementById("userpicture_form").innerHTML =
@@ -929,6 +1014,11 @@ var append_picture_form = async function (data) {
     userPictureModal.show();
   }
 };
+/**
+ * [show_form_theme description]
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
 function show_form_theme(data) {
   let div_form = document.getElementById("div_form_theme");
   div_form.style.display = "none";
@@ -941,6 +1031,11 @@ function show_form_theme(data) {
     behavior: "smooth",
   });
 }
+/**
+ * [show_list_theme description]
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
 function show_list_theme(data) {
   let list_theme = document.getElementById("list_theme");
   list_theme.style.display = "none";
@@ -954,104 +1049,108 @@ function show_list_theme(data) {
 }
 
 /****** VIDEOS EDIT ******/
-/** channel **/
-let id_channel = document.getElementById("id_channel");
-if (id_channel) {
-  let tab_initial = new Array();
-  let id_theme = document.getElementById("id_theme");
-  const update_theme = function () {
-    tab_initial = [];
-    if (id_theme) {
-      for (i = 0; i < id_theme.options.length; i++) {
-        if (id_theme.options[i].selected) {
-          tab_initial.push(id_theme.options[i].value);
+// Test if we are on video Edit form
+if (document.getElementById("video_form")) {
+  /** Channel **/
+  let id_channel = document.getElementById("id_channel");
+  if (id_channel) {
+    alert(id_channel);
+    let tab_initial = new Array();
+    let id_theme = document.getElementById("id_theme");
+    const update_theme = function () {
+      tab_initial = [];
+      if (id_theme) {
+        for (i = 0; i < id_theme.options.length; i++) {
+          if (id_theme.options[i].selected) {
+            tab_initial.push(id_theme.options[i].value);
+          }
+        }
+        //remove all options
+        for (option in id_theme.options) {
+          id_theme.options.remove(0);
         }
       }
-      //remove all options
-      for (option in id_theme.options) {
-        id_theme.options.remove(0);
-      }
-    }
-  };
-  update_theme();
-  // Callback function to execute when mutations are observed
-  const id_channel_callback = (mutationList, observer) => {
-    for (const mutation of mutationList) {
-      if (mutation.type === "childList") {
-        update_theme();
-        var new_themes = [];
-        var channels = id_channel.parentElement.querySelectorAll(
-          ".select2-selection__choice"
-        );
-        for (i = 0; i < channels.length; i++) {
-          for (j = 0; j < id_channel.options.length; j++) {
-            if (channels[i].title === id_channel.options[j].text) {
-              if (listTheme["channel_" + id_channel.options[j].value]) {
-                new_themes.push(
-                  get_list(
-                    listTheme["channel_" + id_channel.options[j].value],
-                    0,
-                    tab_initial,
-                    (tag_type = "option"),
-                    (li_class = ""),
-                    (attrs = ""),
-                    (add_link = false),
-                    (current = ""),
-                    (channel = id_channel.options[j].text + ": ")
-                  )
-                );
+    };
+    update_theme();
+    // Callback function to execute when mutations are observed
+    const id_channel_callback = (mutationList, observer) => {
+      for (const mutation of mutationList) {
+        if (mutation.type === "childList") {
+          update_theme();
+          var new_themes = [];
+          var channels = id_channel.parentElement.querySelectorAll(
+            ".select2-selection__choice"
+          );
+          for (i = 0; i < channels.length; i++) {
+            for (j = 0; j < id_channel.options.length; j++) {
+              if (channels[i].title === id_channel.options[j].text) {
+                if (listTheme["channel_" + id_channel.options[j].value]) {
+                  new_themes.push(
+                    get_list(
+                      listTheme["channel_" + id_channel.options[j].value],
+                      0,
+                      tab_initial,
+                      (tag_type = "option"),
+                      (li_class = ""),
+                      (attrs = ""),
+                      (add_link = false),
+                      (current = ""),
+                      (channel = id_channel.options[j].text + ": ")
+                    )
+                  );
+                }
               }
             }
           }
+          id_theme.innerHTML = new_themes.join("\n");
+          flashing(id_theme, 1000);
         }
-        id_theme.innerHTML = new_themes.join("\n");
-        flashing(id_theme, 1000);
+      }
+    };
+    // Create an observer instance linked to the callback function
+    const id_channel_config = {
+      attributes: false,
+      childList: true,
+      subtree: false,
+    };
+    const id_channel_observer = new MutationObserver(id_channel_callback);
+    var select_channel_observer = new MutationObserver(function (mutations) {
+      if (
+        id_channel.parentElement.querySelector(".select2-selection__rendered")
+      ) {
+        id_channel_observer.observe(
+          id_channel.parentElement.querySelector(".select2-selection__rendered"),
+          id_channel_config
+        );
+        select_channel_observer.disconnect();
+      }
+    });
+    select_channel_observer.observe(id_channel.parentElement, {
+      //document.body is node target to observe
+      childList: true, //This is a must have for the observer with subtree
+      subtree: true, //Set to true if changes must also be observed in descendants.
+    });
+
+    var initial_themes = [];
+    for (i = 0; i < id_channel.options.length; i++) {
+      if (listTheme["channel_" + id_channel.options[i].value]) {
+        initial_themes.push(
+          get_list(
+            listTheme["channel_" + id_channel.options[i].value],
+            0,
+            tab_initial,
+            (tag_type = "option"),
+            (li_class = ""),
+            (attrs = ""),
+            (add_link = false),
+            (current = ""),
+            (channel = id_channel.options[i].text + ": ")
+          )
+        );
       }
     }
-  };
-  // Create an observer instance linked to the callback function
-  const id_channel_config = {
-    attributes: false,
-    childList: true,
-    subtree: false,
-  };
-  const id_channel_observer = new MutationObserver(id_channel_callback);
-  var select_channel_observer = new MutationObserver(function (mutations) {
-    if (
-      id_channel.parentElement.querySelector(".select2-selection__rendered")
-    ) {
-      id_channel_observer.observe(
-        id_channel.parentElement.querySelector(".select2-selection__rendered"),
-        id_channel_config
-      );
-      select_channel_observer.disconnect();
-    }
-  });
-  select_channel_observer.observe(id_channel.parentElement, {
-    //document.body is node target to observe
-    childList: true, //This is a must have for the observer with subtree
-    subtree: true, //Set to true if changes must also be observed in descendants.
-  });
-
-  var initial_themes = [];
-  for (i = 0; i < id_channel.options.length; i++) {
-    if (listTheme["channel_" + id_channel.options[i].value]) {
-      initial_themes.push(
-        get_list(
-          listTheme["channel_" + id_channel.options[i].value],
-          0,
-          tab_initial,
-          (tag_type = "option"),
-          (li_class = ""),
-          (attrs = ""),
-          (add_link = false),
-          (current = ""),
-          (channel = id_channel.options[i].text + ": ")
-        )
-      );
-    }
+    id_theme.innerHTML = initial_themes.join("\n");
   }
-  id_theme.innerHTML = initial_themes.join("\n");
 }
 
 /** end channel **/
@@ -1291,6 +1390,12 @@ function show_messages(msgText, msgClass, loadUrl) {
   }
 }
 */
+/**
+ * [flashing description]
+ * @param  {[type]} elem     [description]
+ * @param  {[type]} duration [description]
+ * @return {[type]}          [description]
+ */
 function flashing(elem, duration) {
   elem.classList.add("flashing_field");
   setTimeout(function () {
