@@ -137,7 +137,7 @@ def remove_playlist_view(request, slug: str):
     elif request.method == "POST":
         form = PlaylistRemoveForm(request.POST)
         if form.is_valid():
-            playlist.delete()
+            remove_playlist(playlist)
             messages.add_message(
                 request,
                 messages.INFO,
@@ -157,8 +157,6 @@ def remove_playlist_view(request, slug: str):
         "playlist/delete.html",
         {"playlist": playlist, "form": form, "page_title": f"{_('Delete the playlist')} \"{playlist.name}\""}
     )
-    remove_playlist(request.user, get_playlist(slug))
-    return redirect(request.META["HTTP_REFERER"])
 
 
 @csrf_protect
@@ -166,6 +164,7 @@ def remove_playlist_view(request, slug: str):
 @login_required(redirect_field_name="referrer")
 def add_or_edit(request, slug: str=None):
     """Add or edit view with form."""
+    options = ""
     if in_maintenance():
         return redirect(reverse("maintenance"))
     elif request.method == "POST":
@@ -174,10 +173,22 @@ def add_or_edit(request, slug: str=None):
             new_playlist = form.save(commit=False)
             new_playlist.owner = request.user
             new_playlist.save()
-            return HttpResponseRedirect(
-                reverse("playlist:content", kwargs={"slug": new_playlist.slug})
-            )
+            if request.GET.get("next"):
+                video_slug = request.GET.get("next").split("/")[2]
+                user_add_video_in_playlist(new_playlist, Video.objects.get(slug=video_slug))
+                messages.add_message(
+                    request,
+                    messages.INFO,
+                    _("The playlist has been created and the video has been added in it."),
+                )
+                return redirect(request.GET.get("next"))
+            else:
+                return HttpResponseRedirect(
+                    reverse("playlist:content", kwargs={"slug": new_playlist.slug})
+                )
     elif request.method == "GET":
+        if request.GET.get("next"):
+            options = f"?next={request.GET.get('next')}"
         playlist = get_object_or_404(Playlist, slug=slug) if slug else None
         if playlist:
             if (request.user == playlist.owner or request.user.is_staff) and playlist.editable:
@@ -191,4 +202,5 @@ def add_or_edit(request, slug: str=None):
     return render(request, "playlist/add_or_edit.html", {
         "form": form,
         "page_title": page_title,
+        "options": options,
     })
