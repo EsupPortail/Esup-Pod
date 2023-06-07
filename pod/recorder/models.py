@@ -43,6 +43,7 @@ if USE_TRANSCRIPTION:
 
 
 def get_transcription_choices():
+    """Manage the transcription language choice table."""
     if USE_TRANSCRIPTION:
         transcript_lang = TRANSCRIPTION_MODEL_PARAM.get(TRANSCRIPTION_TYPE, {}).keys()
         transcript_choices_lang = []
