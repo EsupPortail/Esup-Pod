@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load favorite_info %}
+{% load favorites_playlist %}
 
 {% spaceless %}
 
@@ -9,7 +9,7 @@
   </a>
 {% endif %}
 
-{% is_favorite video as is_fav %}
+{% is_favorite user video as is_fav %}
 {% if USE_FAVORITES and video.is_draft is False and not hide_favorite_link is True %}
   <form method="post" action="{% url 'favorite:add-or-remove' %}" class="favorite-button-form-card pod-btn-social m-0 ms-1">
     {% csrf_token %}
