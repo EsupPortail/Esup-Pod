@@ -849,6 +849,7 @@ class RecordingDeleteTestView(TestCase):
         print(" --->  SetUp of RecordingDeleteTestView: OK!")
 
     def test_recording_TestView_get_request_restrict(self):
+        """Test the list of internal recordings."""
         self.client = Client()
         meeting = Meeting.objects.get(id=1)
         url = reverse(
@@ -872,6 +873,7 @@ class RecordingDeleteTestView(TestCase):
         )
 
     def test_recording_delete_get_request(self):
+        """Test recording delete with Get request."""
         self.client = Client()
         # check auth
         url = reverse(
@@ -927,6 +929,7 @@ class RecordingUploadTestView(TestCase):
     """
 
     def setUp(self):
+        """Setup for tests views."""
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user.save()
@@ -986,6 +989,7 @@ class RecordingUploadTestView(TestCase):
         print(" --->  SetUp of RecordingUploadTestView: OK!")
 
     def test_recording_upload_get_request(self):
+        """Test recording upload with Get request."""
         self.client = Client()
         # check auth
         url = reverse(
@@ -1019,6 +1023,7 @@ class RecordingUploadTestView(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_recording_upload_post_request(self):
+        """Test recording upload with Post request."""
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         meeting = Meeting.objects.get(name="test")

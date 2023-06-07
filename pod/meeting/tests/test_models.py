@@ -733,6 +733,7 @@ class RecordingTestCase(TestCase):
     """
 
     def setUp(self):
+        """Setup for the recordings."""
         user = User.objects.create(username="pod")
         user1 = User.objects.create(username="pod1")
         user2 = User.objects.create(username="pod2")
@@ -778,14 +779,14 @@ class RecordingTestCase(TestCase):
         )
 
     def test_default_attributs(self):
-        """Check all default attributs values when creating a recording"""
+        """Check all default attributs values when creating a recording."""
         recordings = Recording.objects.all()
         self.assertGreaterEqual(
             recordings[0].start_at.date(), recordings[1].start_at.date()
         )
 
     def test_with_attributs(self):
-        """Check all attributs values passed when creating a recording"""
+        """Check all attributs values passed when creating a recording."""
         meeting2 = Meeting.objects.get(id=2)
         recording2 = Recording.objects.get(id=2)
         self.assertEqual(recording2.name, "test recording2")
@@ -795,7 +796,7 @@ class RecordingTestCase(TestCase):
         self.assertEqual(recording2.meeting, meeting2)
 
     def test_change_attributs(self):
-        """Change attributs values in a recording and save it"""
+        """Change attributs values in a recording and save it."""
         recording1 = Recording.objects.get(id=1)
         self.assertEqual(recording1.name, "test recording1")
         self.assertEqual(recording1.recording_id, "c057c39d3dc59d9e9516d95f76eb")
