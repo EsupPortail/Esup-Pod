@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404
 
 from .models import Channel, Theme
 from .models import Type, Discipline, Video
-from .models import PlaylistVideo, ViewCount, VideoRendition
+from .models import PlaylistVideo, ViewCount
 from .utils import get_available_videos
 
 # commented for v3
@@ -166,20 +166,6 @@ class VideoUserSerializer(serializers.ModelSerializer):
         )
 
 
-class VideoRenditionSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = VideoRendition
-        fields = (
-            "id",
-            "url",
-            "resolution",
-            "video_bitrate",
-            "audio_bitrate",
-            "encode_mp4",
-            "sites",
-        )
-
-
 class PlaylistVideoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = PlaylistVideo
@@ -265,11 +251,6 @@ class VideoViewSet(viewsets.ModelViewSet):
             user_videos, many=True, context={"request": request}
         )
         return Response(serializer.data)
-
-
-class VideoRenditionViewSet(viewsets.ModelViewSet):
-    queryset = VideoRendition.objects.all()
-    serializer_class = VideoRenditionSerializer
 
 
 class PlaylistVideoViewSet(viewsets.ModelViewSet):

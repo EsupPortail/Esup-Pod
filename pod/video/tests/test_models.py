@@ -16,7 +16,7 @@ from ..models import Video
 from ..models import ViewCount
 from ..models import get_storage_path_video
 from ..models import VIDEOS_DIR
-from ..models import VideoRendition
+from pod.video_encode.models import VideoRendition
 from pod.video_encode.models import EncodingVideo
 from pod.video_encode.models import EncodingAudio
 from ..models import PlaylistVideo

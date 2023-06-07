@@ -20,7 +20,7 @@ def set_default_site(sender, **kwargs):
     from pod.video.models import Video
     from pod.video.models import Channel
     from pod.video.models import Discipline
-    from pod.video.models import VideoRendition
+    from pod.video_encode.models import VideoRendition
     from pod.video.models import Type
     from django.contrib.sites.models import Site
 

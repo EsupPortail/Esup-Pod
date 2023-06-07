@@ -15,7 +15,6 @@ from .models import Channel
 from .models import Theme
 from .models import Type
 from .models import Discipline
-from .models import VideoRendition
 from .models import PlaylistVideo
 from .models import Notes, AdvancedNotes, NoteComments
 from .models import ViewCount
@@ -575,35 +574,6 @@ class PlaylistVideoAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
-class VideoRenditionAdmin(admin.ModelAdmin):
-    list_display = (
-        "resolution",
-        "video_bitrate",
-        "audio_bitrate",
-        "encode_mp4",
-    )
-
-    def get_form(self, request, obj=None, **kwargs):
-        if not request.user.is_superuser:
-            exclude = ()
-            exclude += ("sites",)
-            self.exclude = exclude
-        form = super(VideoRenditionAdmin, self).get_form(request, obj, **kwargs)
-        return form
-
-    def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)
-        if not change:
-            obj.sites.add(get_current_site(request))
-            obj.save()
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if not request.user.is_superuser:
-            qs = qs.filter(sites=get_current_site(request))
-        return qs
-
-
 class NotesAdmin(admin.ModelAdmin):
     list_display = ("video", "user")
     autocomplete_fields = ["video", "user"]
@@ -722,7 +692,6 @@ admin.site.register(Discipline, DisciplineAdmin)
 admin.site.register(Theme, ThemeAdmin)
 admin.site.register(Video, VideoAdmin)
 admin.site.register(UpdateOwner, updateOwnerAdmin)
-admin.site.register(VideoRendition, VideoRenditionAdmin)
 admin.site.register(PlaylistVideo, PlaylistVideoAdmin)
 admin.site.register(Notes, NotesAdmin)
 admin.site.register(AdvancedNotes, AdvancedNotesAdmin)

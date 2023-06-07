@@ -18,7 +18,6 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.validators import MaxValueValidator
 from django.contrib.sites.shortcuts import get_current_site
 from django.templatetags.static import static
 from django.dispatch import receiver
@@ -1437,122 +1436,6 @@ class ViewCount(models.Model):
         unique_together = ("video", "date")
         verbose_name = _("View count")
         verbose_name_plural = _("View counts")
-
-
-class VideoRendition(models.Model):
-    resolution = models.CharField(
-        _("resolution"),
-        max_length=50,
-        unique=True,
-        help_text=_(
-            "Please use the only format x. i.e.: "
-            + "<em>640x360</em> or <em>1280x720</em>"
-            + " or <em>1920x1080</em>."
-        ),
-    )
-    minrate = models.CharField(
-        _("minrate"),
-        max_length=50,
-        help_text=_(
-            "Please use the only format k. i.e.: "
-            + "<em>300k</em> or <em>600k</em>"
-            + " or <em>1000k</em>."
-        ),
-    )
-    video_bitrate = models.CharField(
-        _("bitrate video"),
-        max_length=50,
-        help_text=_(
-            "Please use the only format k. i.e.: "
-            + "<em>300k</em> or <em>600k</em>"
-            + " or <em>1000k</em>."
-        ),
-    )
-    maxrate = models.CharField(
-        _("maxrate"),
-        max_length=50,
-        help_text=_(
-            "Please use the only format k. i.e.: "
-            + "<em>300k</em> or <em>600k</em>"
-            + " or <em>1000k</em>."
-        ),
-    )
-    encoding_resolution_threshold = models.PositiveIntegerField(
-        _("encoding resolution threshold"), default=0, validators=[MaxValueValidator(100)]
-    )
-    audio_bitrate = models.CharField(
-        _("bitrate audio"),
-        max_length=50,
-        help_text=_(
-            "Please use the only format k. i.e.: "
-            + "<em>300k</em> or <em>600k</em>"
-            + " or <em>1000k</em>."
-        ),
-    )
-    encode_mp4 = models.BooleanField(_("Make a MP4 version"), default=False)
-    sites = models.ManyToManyField(Site)
-
-    @property
-    def height(self):
-        return int(self.resolution.split("x")[1])
-
-    @property
-    def width(self):
-        return int(self.resolution.split("x")[0])
-
-    class Meta:
-        # ordering = ['height'] # Not work
-        verbose_name = _("rendition")
-        verbose_name_plural = _("renditions")
-
-    def __str__(self):
-        return "VideoRendition num %s with resolution %s" % (
-            "%04d" % self.id,
-            self.resolution,
-        )
-
-    def bitrate(self, field_value, field_name, name=None):
-        """Validate the bitrate field value."""
-        if name is None:
-            name = field_name
-        if field_value and "k" not in field_value:
-            msg = "Error in %s: " % _(name)
-            raise ValidationError(
-                "%s %s" % (msg, VideoRendition._meta.get_field(field_name).help_text)
-            )
-        else:
-            vb = field_value.replace("k", "")
-            if not vb.isdigit():
-                msg = "Error in %s: " % _(name)
-                raise ValidationError(
-                    "%s %s" % (msg, VideoRendition._meta.get_field(field_name).help_text)
-                )
-
-    def clean_bitrate(self):
-        """Clean the bitrate-related fields."""
-        self.bitrate(self.video_bitrate, "video_bitrate", "bitrate video")
-        self.bitrate(self.maxrate, "maxrate")
-        self.bitrate(self.minrate, "minrate")
-
-    def clean(self):
-        """Clean the fields of the VideoRendition model."""
-        if self.resolution and "x" not in self.resolution:
-            raise ValidationError(VideoRendition._meta.get_field("resolution").help_text)
-        else:
-            res = self.resolution.replace("x", "")
-            if not res.isdigit():
-                raise ValidationError(
-                    VideoRendition._meta.get_field("resolution").help_text
-                )
-
-        self.clean_bitrate()
-        self.bitrate(self.audio_bitrate, "audio_bitrate", "bitrate audio")
-
-
-@receiver(post_save, sender=VideoRendition)
-def default_site_videorendition(sender, instance, created, **kwargs):
-    if len(instance.sites.all()) == 0:
-        instance.sites.add(Site.objects.get_current())
 
 
 class PlaylistVideo(models.Model):

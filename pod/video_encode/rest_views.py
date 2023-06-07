@@ -1,7 +1,21 @@
 from rest_framework import serializers, viewsets
-from .models import EncodingVideo, EncodingAudio
+from .models import EncodingVideo, EncodingAudio, VideoRendition
 from rest_framework.decorators import action
 from rest_framework.response import Response
+
+
+class VideoRenditionSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = VideoRendition
+        fields = (
+            "id",
+            "url",
+            "resolution",
+            "video_bitrate",
+            "audio_bitrate",
+            "encode_mp4",
+            "sites",
+        )
 
 
 class EncodingVideoSerializer(serializers.HyperlinkedModelSerializer):
@@ -86,3 +100,8 @@ class EncodingAudioViewSet(viewsets.ModelViewSet):
             encoded_audios, many=True, context={"request": request}
         )
         return Response(serializer.data)
+
+
+class VideoRenditionViewSet(viewsets.ModelViewSet):
+    queryset = VideoRendition.objects.all()
+    serializer_class = VideoRenditionSerializer
