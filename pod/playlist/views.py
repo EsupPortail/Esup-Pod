@@ -169,6 +169,7 @@ def remove_playlist_view(request, slug: str):
 def add_or_edit(request, slug: str=None):
     """Add or edit view with form."""
     options = ""
+    page_title = ""
     if in_maintenance():
         return redirect(reverse("maintenance"))
     elif request.method == "POST":
