@@ -47,12 +47,12 @@
             <td> {{ record.get_start_time }} </td>
             <td>
                 {% if record.presentationUrl != "" %}
-                  <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{{ record.presentationUrl }}" target="_blank" title="{% trans 'Display the recording in presentation format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+                  <a class="btn btn-primary pod-btn-primary btn-sm" href="{{ record.presentationUrl }}" target="_blank" title="{% trans 'Display the recording in presentation format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
                     <i class="bi bi-file-earmark-play"></i>
                   </a>
                 {% endif %}
                 {% if record.videoUrl != "" %}  
-                  <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{{ record.videoUrl }}" target="_blank" title="{% trans 'Display the recording in video format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+                  <a class="btn btn-primary pod-btn-primary btn-sm" href="{{ record.videoUrl }}" target="_blank" title="{% trans 'Display the recording in video format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
                     <i class="bi bi-camera-video"></i>
                   </a>
                 {% endif %}
