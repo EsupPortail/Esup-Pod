@@ -217,7 +217,7 @@ def get_piloting_implementation(broadcaster) -> Optional[PilotingInterface]:
 
 def is_recording_launched_by_pod(self) -> bool:
     """Returns if the current recording has been launched by Pod."""
-    # Récupération du fichier associé à l'enregistrement du diffuseur
+    # Fetch file name of current recording
     current_record_info = self.get_info_current_record()
     filename = current_record_info.get("currentFile", None)
     if not filename:
@@ -226,7 +226,7 @@ def is_recording_launched_by_pod(self) -> bool:
 
     full_file_name = os.path.join(DEFAULT_EVENT_PATH, filename)
 
-    # Vérification qu'il existe dans le filesystem de Pod
+    # Check if this file exists in Pod filesystem
     if not os.path.exists(full_file_name):
         logger.debug(" ...  is not on this POD recording filesystem : " + full_file_name)
         return False
