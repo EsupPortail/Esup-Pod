@@ -85,7 +85,7 @@ def playlist_content(request, slug):
     if is_ajax(request):
         return render(
             request,
-            "playlist/playlist.html",
+            "playlist/playlist-videos-list.html",
             {"videos": videos, "playlist": playlist, "full_path": full_path, "count_videos": count_videos},
         )
 
