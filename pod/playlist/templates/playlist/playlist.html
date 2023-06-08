@@ -63,13 +63,8 @@
     </ol>
   </div>
 </div>
-  <div class="card">
-    <h2 class="card-header card-title pod-card__title h4">{% trans "Informations about your playlist" %}</h2>
-    <div class="card-body card-text">
-      <p>{% trans "Description" %} : {{ playlist.description }}</p>
-    </div>
-  </div>
-
+{% include "playlist/playlist-management-card.html" %}
+{% include "playlist/playlist-informations-card.html" %}
 {% endblock page_aside %}
 
 {% block more_script %}

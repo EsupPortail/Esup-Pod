@@ -1,0 +1,29 @@
+{% load i18n %}
+<div class="card" id="card-informations-playlist">
+  <h2 class="card-header card-title pod-card__title h4">
+    <i class="bi bi-info-circle"></i>
+    {% trans "Informations about your playlist" %}
+  </h2>
+  <div class="card-body card-text">
+    <p class="playlist-description">
+      {{ playlist.description }}
+    </p>
+
+    <p class="playlist-visibility">
+      <b>{% trans "Visibility" %}</b> : {% include "playlist/playlist_visibility_icon.html" with playlist=playlist %}
+    </p>
+    <p class="playlist-owner">
+      <b>{% trans "Playlist owner" %}</b> : <a class="btn btn-link" href="{% url 'videos:videos' %}?owner={{ playlist.owner.username }}">{{ playlist.owner }}</a>
+    </p>
+
+    <!-- IF len additionalOwners > 0-->
+    <p class="playlist-additional-owners">
+      <b>{% trans "Additional owners" %}</b> : <!--TODO-->
+      <ul>
+        <!-- FOREACH additionals owners in playlist-->
+        <li></li>
+      </ul>
+    </p>
+    <!--ENDIF-->
+  </div>
+</div>
