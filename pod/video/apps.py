@@ -37,6 +37,17 @@ def set_default_site(sender, **kwargs):
         apply_default_site(vr, site)
 
 
+def fix_transcript(sender, **kwargs):
+    from pod.video.models import Video
+    for vid in Video.objects.all():
+        if vid.transcript == '1':
+            vid.transcript = vid.main_lang
+            vid.save()
+        elif vid.transcript == '0':
+            vid.transcript = ''
+            vid.save()
+
+
 class VideoConfig(AppConfig):
     name = "pod.video"
     default_auto_field = "django.db.models.BigAutoField"
@@ -44,3 +55,4 @@ class VideoConfig(AppConfig):
 
     def ready(self):
         post_migrate.connect(set_default_site, sender=self)
+        post_migrate.connect(fix_transcript, sender=self)
