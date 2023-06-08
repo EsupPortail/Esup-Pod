@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 def set_default_site(sender, **kwargs):
+    """Set the default site value if None."""
     from pod.recorder.models import Recorder
     from django.contrib.sites.models import Site
 
@@ -14,6 +15,10 @@ def set_default_site(sender, **kwargs):
 
 
 def fix_transcript(sender, **kwargs):
+    """
+    Transcript field change from boolean to charfield since the version 3.2.0.
+    This fix change value to set the default lang value if necessary.
+    """
     from pod.recorder.models import Recorder
     for rec in Recorder.objects.all():
         if rec.transcript == '1':
