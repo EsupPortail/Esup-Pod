@@ -27,11 +27,7 @@ To test with celery :
 """
 XAPI_ANONYMIZE_ACTOR = getattr(settings, "XAPI_ANONYMIZE_ACTOR", True)
 XAPI_LRS_URL = getattr(settings, "XAPI_LRS_URL", "")
-XAPI_AUTHENTICATED_NAME = getattr(
-    settings,
-    "XAPI_AUTHENTICATED_NAME",
-    "username"
-)
+XAPI_AUTHENTICATED_NAME = getattr(settings, "XAPI_AUTHENTICATED_NAME", "username")
 
 
 @csrf_protect
@@ -43,10 +39,10 @@ def statement(request, app: str = None):
         statement = {
             "actor": {
                 "account": {
-                    "homePage": request.build_absolute_uri('/'),
+                    "homePage": request.build_absolute_uri("/"),
                     "name": "%s" % get_actor_name(request),
                 },
-                "objectType": "Agent"
+                "objectType": "Agent",
             },
             "id": str(uuid.uuid4()),
         }
