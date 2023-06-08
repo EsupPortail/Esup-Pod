@@ -108,6 +108,7 @@ class VideoRenditionAdmin(admin.ModelAdmin):
     )
 
     def get_form(self, request, obj=None, **kwargs):
+        """Get the form to be used in the admin."""
         if not request.user.is_superuser:
             exclude = ()
             exclude += ("sites",)
@@ -116,6 +117,7 @@ class VideoRenditionAdmin(admin.ModelAdmin):
         return form
 
     def save_model(self, request, obj, form, change):
+        """Save the VideoRendition model."""
         super().save_model(request, obj, form, change)
         if not change:
             obj.sites.add(get_current_site(request))
