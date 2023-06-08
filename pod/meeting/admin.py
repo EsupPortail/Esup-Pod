@@ -96,6 +96,12 @@ class IsPaidFilter(admin.SimpleListFilter):
 
 @admin.register(Meeting)
 class MeetingAdmin(admin.ModelAdmin):
+    """Meeting administration module.
+
+    Args:
+        admin (ModelAdmin): admin model
+    """
+
     date_hierarchy = "updated_at"
     list_display = (
         "name",
@@ -162,8 +168,23 @@ class MeetingAdmin(admin.ModelAdmin):
 
 @admin.register(Recording)
 class RecordingAdmin(admin.ModelAdmin):
-    list_display = ("recording_id", "name", "meeting", "start_at", "uploaded_to_pod_by")
+    """Administration for internal and external recordings.
+
+    Args:
+        admin (ModelAdmin): admin model
+    """
+
+    list_display = (
+        "name",
+        "start_at",
+        "is_internal",
+        "recording_id",
+        "meeting",
+        "type",
+        "owner")
     search_fields = [
         "name",
         "meeting",
+        "source_url",
+        "owner",
     ]
