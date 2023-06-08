@@ -1,6 +1,6 @@
 [
   {
-    "model": "video_encode.videorendition",
+    "model": "video_encode_transcript.videorendition",
     "pk": 1,
     "fields": {
       "resolution": "640x360",
@@ -15,7 +15,7 @@
     }
   },
   {
-    "model": "video_encode.videorendition",
+    "model": "video_encode_transcript.videorendition",
     "pk": 2,
     "fields": {
       "resolution": "1280x720",
@@ -30,7 +30,7 @@
     }
   },
   {
-    "model": "video_encode.videorendition",
+    "model": "video_encode_transcript.videorendition",
     "pk": 3,
     "fields": {
       "resolution": "1920x1080",

@@ -63,7 +63,7 @@ INSTALLED_APPS = [
     "pod.cut",
     "pod.xapi",
     "pod.favorite",
-    "pod.video_encode",
+    "pod.video_encode_transcript",
     "pod.custom",
 ]
 

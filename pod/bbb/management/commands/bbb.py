@@ -60,7 +60,7 @@ from xml.dom import minidom
 import urllib.parse
 
 from pod.video.models import Video, Type, get_storage_path_video
-from pod.video_encode import encode
+from pod.video_encode_transcript import encode
 from django.contrib.auth.models import User
 
 from django.db.models import Value

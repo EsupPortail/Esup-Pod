@@ -13,8 +13,8 @@ from ..models import Video
 from ..models import Channel
 from ..models import Discipline
 from ..models import AdvancedNotes
-from pod.video_encode.models import VideoRendition
-from pod.video_encode.models import EncodingVideo
+from pod.video_encode_transcript.models import VideoRendition
+from pod.video_encode_transcript.models import EncodingVideo
 from .. import views
 
 import re

@@ -5,4 +5,4 @@ class VideoEncodeConfig(AppConfig):
     """Video encode configuration app."""
 
     default_auto_field = "django.db.models.BigAutoField"
-    name = "pod.video_encode"
+    name = "pod.video_encode_transcript"

@@ -7,7 +7,7 @@ from pod.video import rest_views as video_views
 from pod.playlist import rest_views as playlist_views
 from pod.main import rest_views as main_views
 from pod.authentication import rest_views as auth_views
-from pod.video_encode import rest_views as encode_views
+from pod.video_encode_transcript import rest_views as encode_views
 
 from pod.chapter import rest_views as chapter_views
 from pod.completion import rest_views as completion_views

@@ -7,7 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from pod.video.transcript import start_transcript
+from pod.video_encode_transcript.transcript import start_transcript
 
 
 class VideoRenditionSerializer(serializers.HyperlinkedModelSerializer):
