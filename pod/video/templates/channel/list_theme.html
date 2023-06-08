@@ -19,7 +19,7 @@
             <td class="theme_title">{{theme.title}}</td>
             <td class="theme_description">{{theme.description|truncatewords:6 }}</td>
             <td class="theme_headband">{{theme.headband}}</td>
-            <td>
+            <td class="text-center">
               <form class="get_form_theme d-inline-block" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="modify">

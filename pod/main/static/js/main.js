@@ -326,7 +326,20 @@ document.addEventListener("change", (e) => {
     "//chart.apis.google.com/chart?cht=qr&chs=200x200&chl=" + txtpartage.value;
 });
 
-/*** USE TO SHOW THEME FROM CHANNELS ***/
+/**
+ * USE TO SHOW THEME FROM CHANNELS
+ * @param  {[type]}  tab                     [description]
+ * @param  {[type]}  level                   [description]
+ * @param  {[type]}  tab_selected            [description]
+ * @param  {[type]}  tag_type                [description]
+ * @param  {[type]}  li_class                [description]
+ * @param  {[type]}  attrs                   [description]
+ * @param  {[type]}  add_link                [description]
+ * @param  {[type]}  current                 [description]
+ * @param  {[type]}  channel                 [description]
+ * @param  {Boolean} show_only_parent_themes [description]
+ * @return {[type]}                          [description]
+ */
 var get_list = function (
   tab,
   level,
@@ -582,7 +595,7 @@ function TriggerAlertClose() {
           el.remove();
         });
       });
-  }, 5000);
+  }, 8000);
 }
 
 /**
@@ -708,6 +721,12 @@ document.addEventListener("submit", (e) => {
   let data_form = new FormData(form);
   send_form_data(form.getAttribute("action"), data_form, "result_video_form");
 });
+
+/**
+ * [result_video_form description]
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
 var result_video_form = function (data) {
   if (data.errors) {
     showalert(
@@ -905,8 +924,9 @@ var show_form_theme_delete = function (data) {
   }
   if (data.list_element) {
     show_list_theme(data.list_element);
+    showalert(gettext("Theme sucessfully deleted."), "alert-success");
   } else {
-    showalert(gettext("You are no longer authenticated. Please log in again."));
+    showalert(gettext("You are no longer authenticated. Please log in again."), "alert-warning");
   }
 };
 
@@ -930,6 +950,10 @@ var show_theme_form = function (data) {
       show_form_theme("");
       document.querySelector("form.get_form_theme").style.display = "block";
       show_list_theme(data.list_element);
+      showalert(
+        gettext("Action performed successfully."),
+        "alert-success"
+      );
     }
   } else {
     showalert(
@@ -1054,9 +1078,13 @@ if (document.getElementById("video_form")) {
   /** Channel **/
   let id_channel = document.getElementById("id_channel");
   if (id_channel) {
-    alert(id_channel);
     let tab_initial = new Array();
     let id_theme = document.getElementById("id_theme");
+
+    /**
+     * [update_theme description]
+     * @return {[type]} [description]
+     */
     const update_theme = function () {
       tab_initial = [];
       if (id_theme) {
@@ -1152,10 +1180,9 @@ if (document.getElementById("video_form")) {
     id_theme.innerHTML = initial_themes.join("\n");
   }
 }
-
 /** end channel **/
-/*** Copy to clipboard ***/
 
+/*** Copy to clipboard ***/
 let btnpartageprive = document.getElementById("btnpartageprive");
 if (btnpartageprive) {
   btnpartageprive.addEventListener("click", function () {
@@ -1165,6 +1192,7 @@ if (btnpartageprive) {
     showalert(gettext("text copied"), "alert-info");
   });
 }
+
 /** Restrict access **/
 /** restrict access to group */
 let id_is_restricted = document.getElementById("id_is_restricted");
@@ -1173,6 +1201,10 @@ if (id_is_restricted) {
     restrict_access_to_groups();
   });
 }
+/**
+ * [restrict_access_to_groups description]
+ * @return {[type]} [description]
+ */
 var restrict_access_to_groups = function () {
   if (document.getElementById("id_is_restricted").checked) {
     let id_restricted_to_groups = document.getElementById(
@@ -1210,6 +1242,10 @@ if (id_is_draft) {
   });
 }
 
+/**
+ * [restricted_access description]
+ * @return {[type]} [description]
+ */
 var restricted_access = function () {
   document
     .querySelectorAll(".restricted_access")
@@ -1279,7 +1315,13 @@ restricted_access();
     false
   );
 })();
-/*** VIDEOCHECK FORM ***/
+
+/**
+ * VIDEOCHECK FORM
+ * @param  {[type]} form  [description]
+ * @param  {[type]} event [description]
+ * @return {[type]}       [description]
+ */
 var videocheck = function (form, event) {
   var fileInput = document.getElementById("id_video");
   if (fileInput && fileInput.files.length) {
@@ -1328,12 +1370,26 @@ var videocheck = function (form, event) {
 };
 
 /***** SHOW ALERT *****/
+/**
+ * [Display an alert message]
+ * @param  {[type]} message   [The message to be displayed]
+ * @param  {[type]} alerttype Type of alert (info, success, danger, warning...)
+ * @return {void}
+ */
 var showalert = function (message, alerttype) {
+  const icon_types = {
+    "alert-success": "check2-circle",
+    "alert-info": "info-circle",
+    "alert-warning": "exclamation-triangle",
+    "alert-danger": "bug",
+  }
+
   let textHtml =
     '<div id="formalertdiv" class="alert ' +
     alerttype +
-    ' alert-dismissible fade show"  role="alert">' +
-    message +
+    ' alert-dismissible fade show" role="alert">' +
+    '<i class="bi bi-' + icon_types[alerttype] + ' me-2"></i>' +
+    '<span class="alert-message">' + message + "</span>" +
     '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="' +
     gettext("Close") +
     '"></button></div>';
@@ -1345,7 +1401,7 @@ var showalert = function (message, alerttype) {
   setTimeout(function () {
     let formalertdiv = document.getElementById("formalertdiv");
     formalertdiv?.remove();
-  }, 5000);
+  }, 8000);
 };
 // this function (show_messages) is not used elsewhere, there is no id "show_messages"
 /*
