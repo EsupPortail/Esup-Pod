@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-08 10:04+0000\n"
-"PO-Revision-Date: 2023-02-15 16:55+0100\n"
+"POT-Creation-Date: 2023-06-08 13:16+0000\n"
+"PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3\n"
 
 #: pod/authentication/admin.py pod/main/forms.py
 msgid "Email"
@@ -4093,10 +4093,8 @@ msgid "Sunday"
 msgstr ""
 
 #: pod/meeting/forms.py
-#, fuzzy
-#| msgid "Title field"
 msgid "Main fields"
-msgstr "Titel veld"
+msgstr "Belangrijkste velden"
 
 #: pod/meeting/forms.py
 msgid "Date and time options"
@@ -4147,10 +4145,8 @@ msgid "Owner of the recording cannot be an additional owner too"
 msgstr ""
 
 #: pod/meeting/forms.py
-#, fuzzy
-#| msgid "Please enter a title."
 msgid "Please enter a valid address"
-msgstr "Voer een titel in."
+msgstr "Vul alstublieft een geldig adres in"
 
 #: pod/meeting/models.py
 msgid "Daily"
@@ -4850,10 +4846,6 @@ msgstr ""
 
 #: pod/meeting/templates/meeting/my_meetings.html
 msgid "End the meeting"
-msgstr ""
-
-#: pod/meeting/templates/meeting/my_meetings.html
-msgid "Text copied"
 msgstr ""
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
@@ -7369,10 +7361,8 @@ msgid "the:"
 msgstr ""
 
 #: pod/video/utils.py
-#, fuzzy
-#| msgid "Encoding log"
 msgid "Encoding"
-msgstr "Codering logboek"
+msgstr "Videocodering"
 
 #: pod/video/views.py
 msgid "You cannot edit this channel."

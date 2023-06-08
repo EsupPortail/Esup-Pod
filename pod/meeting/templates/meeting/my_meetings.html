@@ -113,10 +113,12 @@ meetingModal.addEventListener('show.bs.modal', function (event) {
   //modalFooterEndLink.setAttribute("href", endurl)
 
 })
+
+/* TODO: check if level parameter can be removed. */
 /**
- * Recursively generate an
- * @param  {Array} data  [description]
- * @param  {Number} level [description]
+ * Recursively generate an HTML unordered list version of data
+ * @param  {Array} data   Data to be displayed
+ * @param  {Number} level level of recursion (useless?)
  * @return {string}       Generated HTML
  */
 function generateHtml(data, level=0) {
@@ -147,26 +149,13 @@ copyButtons.forEach(function (elt) {
  */
 function copyValue(value) {
   navigator.clipboard
-      .writeText(value)
-      .then(() => {
-        let div = document.createElement('div');
-        div.innerHTML = `
-          <div class="alert alert-primary d-flex align-items-center meeting-text-copied" role="alert">
-            <i class="bi bi-info-circle-fill fs-3"></i>
-            <span class="p-2">{% trans "Text copied" %}</span>
-          </div>
-        `;
-        document.body.append(div);
-        setInterval(function() {
-          var elems = document.querySelectorAll(".alert");
-          elems.forEach(function(el) {
-            el.remove();
-          });
-        }, 5000)
-      })
-      .catch(() => {
-        alert(gettext("something went wrong"));
-      });
+    .writeText(value)
+    .then(() => {
+      showalert(gettext("Text copied."), "alert-success");
+    })
+    .catch(() => {
+      showalert(gettext("Something went wrong."), "alert-danger");
+    });
 }
 </script>
 

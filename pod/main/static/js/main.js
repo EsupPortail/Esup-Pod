@@ -575,7 +575,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /**
- * Automatically hide success ans info type alerts
+ * Automatically hide success and info type alerts
  */
 function TriggerAlertClose() {
   // (alert-warning and alert-danger will remain on screen)
@@ -1371,7 +1371,7 @@ var videocheck = function (form, event) {
 
 /***** SHOW ALERT *****/
 /**
- * [Display an alert message]
+ * Display an alert message
  * @param  {[type]} message   [The message to be displayed]
  * @param  {[type]} alerttype Type of alert (info, success, danger, warning...)
  * @return {void}
@@ -1398,10 +1398,13 @@ var showalert = function (message, alerttype) {
     .firstChild;
 
   document.body.appendChild(parsedHTML);
-  setTimeout(function () {
-    let formalertdiv = document.getElementById("formalertdiv");
-    formalertdiv?.remove();
-  }, 8000);
+  // Auto dismiss success and info types
+  if (['alert-success', 'alert-info'].includes(alerttype)) {
+    setTimeout(function () {
+      let formalertdiv = document.getElementById("formalertdiv");
+      formalertdiv?.remove();
+    }, 8000);
+  }
 };
 // this function (show_messages) is not used elsewhere, there is no id "show_messages"
 /*

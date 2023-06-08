@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-08 10:04+0000\n"
+"POT-Creation-Date: 2023-06-08 13:16+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -58,7 +58,7 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 #: pod/chapter/static/js/chapters.js
 msgid "Make sure you added a file and that it is a valid file."
 msgstr ""
-"Assurez-vous que vous avez ajouté un fichier et qu'il s'agit d'un fichier "
+"Assurez-vous que vous avez ajouté un fichier et qu’il s’agit d’un fichier "
 "valide."
 
 #: pod/chapter/static/js/chapters.js
@@ -406,7 +406,7 @@ msgstr "Ajouter aux favoris"
 
 #: pod/favorite/static/js/video-favorites-card-list.js
 msgid "The deletion couldn't be completed..."
-msgstr "La suppression n'a pas pu se faire..."
+msgstr "La suppression n’a pas pu se faire..."
 
 #: pod/favorite/static/js/video-favorites.js
 msgid "The favorite couldn’t be completed…"
@@ -442,7 +442,7 @@ msgstr "Utilisateur non trouvé"
 
 #: pod/main/static/js/main.js
 msgid "Are you sure you want to delete theme '%(title)s'?"
-msgstr "Êtes-vous sûr(e) de vouloir supprimer ce fichier ?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer le thème « %(title)s » ?"
 
 #: pod/main/static/js/main.js
 msgid "Changes have been saved."
@@ -778,7 +778,7 @@ msgid "Success!"
 msgstr "Succès !"
 
 #: pod/video/static/js/video_category.js
-msgid "Error..."
+msgid "Error…"
 msgstr "Erreur…"
 
 #: pod/video/static/js/video_category.js
@@ -827,7 +827,7 @@ msgstr "Ajouts en favoris du mois"
 
 #: pod/video/static/js/video_stats_view.js
 msgid "Favorite additions during the year"
-msgstr "Ajouts en favoris de l'année"
+msgstr "Ajouts en favoris de l’année"
 
 #: pod/video/static/js/video_stats_view.js
 msgid "Total favorite additions from creation"
