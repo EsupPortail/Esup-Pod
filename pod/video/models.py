@@ -857,6 +857,8 @@ class Video(models.Model):
     def save(self, *args, **kwargs):
         """Store a video object in db."""
         newid = -1
+
+        # In case of creating new Video
         if not self.id:
             try:
                 newid = get_nextautoincrement(Video)
@@ -875,6 +877,7 @@ class Video(models.Model):
                     date.today().month,
                     date.today().day,
                 )
+        # Modifying existing Video
         else:
             newid = self.id
         newid = "%04d" % newid
@@ -1731,6 +1734,7 @@ class AdvancedNotes(models.Model):
         return "%s-%s-%s" % (self.user.username, self.video, self.timestamp)
 
     def clean(self):
+        """Validate AdvancedNotes fields."""
         if not self.note:
             raise ValidationError(
                 AdvancedNotes._meta.get_field("note").help_text,
@@ -1787,6 +1791,7 @@ class NoteComments(models.Model):
         return "%s-%s-%s" % (self.user.username, self.parentNote, self.comment)
 
     def clean(self):
+        """Validate NoteComments fields."""
         if not self.comment:
             raise ValidationError(
                 NoteComments._meta.get_field("comment").help_text,
