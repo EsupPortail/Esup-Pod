@@ -3,13 +3,24 @@ from typing import Any, Mapping, Optional, Type, Union
 from django import forms
 from django.contrib import admin
 from django.contrib.admin import widgets
+from django.core.exceptions import ValidationError
+from django.db.models.query import QuerySet
 from django.forms.utils import ErrorList
 from django.utils.translation import ugettext_lazy as _
+from django_select2 import forms as s2forms
 
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from pod.meeting.forms import AddOwnerWidget
 
 from .models import Playlist
+
+
+class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
+    """Widget to make the autocomplete field to choose the additional owners."""
+    search_fields = [
+        "username__icontains",
+        "email__icontains",
+    ]
 
 
 class PlaylistForm(forms.ModelForm):
@@ -26,6 +37,9 @@ class PlaylistForm(forms.ModelForm):
             "autoplay",
             "additional_owners",
         ]
+        widgets = {
+            "additional_owners": AddOwnerWidget,
+        }
 
     name = forms.CharField(
         label=_("Name"),
@@ -80,10 +94,31 @@ class PlaylistForm(forms.ModelForm):
         self.fields = add_placeholder_and_asterisk(self.fields)
 
     def clean_name(self):
+        """Method to check if the playlist name asked is correct."""
         name = self.cleaned_data["name"]
         if name == "Favorites":
             raise forms.ValidationError(_('You cannot create a playlist named "Favorites"'))
         return name
+
+    def clean_add_owner(self, cleaned_data):
+        """Method to check if the owner is correct."""
+        if "additional_owners" in cleaned_data.keys() and isinstance(
+            self.cleaned_data["additional_owners"], QuerySet
+        ):
+            playlist_owner = (
+                self.instance.owner
+                if hasattr(self.instance, "owner")
+                else cleaned_data["owner"]
+                if "owner" in cleaned_data.keys()
+                else self.current_user
+            )
+            if (
+                playlist_owner
+                and playlist_owner in self.cleaned_data["additional_owners"].all()
+            ):
+                raise ValidationError(
+                    _("Owner of the video cannot be an additional owner too")
+                )
 
 
 class PlaylistRemoveForm(forms.Form):

@@ -219,3 +219,16 @@ def remove_playlist(user: User, playlist: Playlist) -> None:
     """
     if playlist.owner == user or user.is_staff:
         playlist.delete()
+
+
+def get_playlists_for_additional_owner(user: User) -> list:
+    """
+    Get playlist list for a specific additional owner.
+
+    Args:
+        user (:class:`django.contrib.auth.models.User`): The specific onwer.
+
+    Returns:
+        list (:class:`list(pod.playlist.models.Playlist)`): The list of playlist.
+    """
+    return Playlist.objects.filter(additional_owners=user)

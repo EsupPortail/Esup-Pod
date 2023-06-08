@@ -84,5 +84,9 @@
 {% endblock page_aside %}
 
 {% block more_script %}
+    <script src="/admin/jsi18n/"></script>
+    <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
     <script src="/static/js/add-or-remove.js?ver={{VERSION}}"></script>
+    {{ form.media }}
 {% endblock more_script %}

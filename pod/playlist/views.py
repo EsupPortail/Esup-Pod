@@ -21,6 +21,7 @@ from .utils import (
     get_favorite_playlist_for_user,
     get_playlist,
     get_playlist_list_for_user,
+    get_playlists_for_additional_owner,
     get_public_playlist,
     get_video_list_for_playlist,
     remove_playlist,
@@ -39,12 +40,14 @@ def playlist_list(request):
     visibility = request.GET.get("visibility", "all")
     if visibility in ["private", "protected", "public"]:
         playlists = get_playlist_list_for_user(request.user).filter(visibility=visibility)
+    elif visibility == "additional":
+        playlists = get_playlists_for_additional_owner(request.user)
     elif visibility == "allpublic":
         playlists = get_public_playlist()
     elif visibility == "allmy":
         playlists = get_playlist_list_for_user(request.user)
     elif visibility == "all":
-        playlists = (get_playlist_list_for_user(request.user) | get_public_playlist())
+        playlists = (get_playlist_list_for_user(request.user) | get_public_playlist() | get_playlists_for_additional_owner(request.user))
     else:
         return redirect(reverse('playlist:list'))
     return render(
@@ -173,9 +176,16 @@ def add_or_edit(request, slug: str=None):
     elif request.method == "POST":
         form = PlaylistForm(request.POST, instance=playlist) if playlist else PlaylistForm(request.POST)
         if form.is_valid():
-            new_playlist = form.save(commit=False)
+            # raise Exception(f"request.POST.get('additional_owners'): {request.POST.get('additional_owners')} [{type(request.POST.get('additional_owners'))}]")
+            new_playlist = form.save(commit=False) if playlist == None else playlist
             new_playlist.owner = request.user
             new_playlist.save()
+            new_playlist.additional_owners.clear()
+            new_playlist.save()
+            if (request.POST.get("additional_owners")):
+                for o in request.POST.get("additional_owners"):
+                    new_playlist.additional_owners.add(o)
+                new_playlist.save()
             if request.GET.get("next"):
                 video_slug = request.GET.get("next").split("/")[2]
                 user_add_video_in_playlist(new_playlist, Video.objects.get(slug=video_slug))
