@@ -7,7 +7,9 @@
     <p class="playlist-description">
       {{ playlist.description }}
     </p>
-
+    <p class="playlist-last-updated">
+      {% trans "Last updated on" %} {{ playlist.date_updated.date }} {% trans "at" %} {{ playlist.date_updated.time }}
+    </p>
     <p class="playlist-visibility">
       <b>{% trans "Visibility" %}</b> : {% include "playlist/playlist_visibility_icon.html" with playlist=playlist %}
     </p>

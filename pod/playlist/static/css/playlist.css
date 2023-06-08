@@ -148,3 +148,7 @@ a.link:hover {
 .dropzone-hover {
     border: .2rem solid #1F7C85;
 }
+
+p.playlist-last-updated {
+    font-style: italic;
+}
