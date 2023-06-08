@@ -21,6 +21,7 @@ from .utils import (
     get_favorite_playlist_for_user,
     get_playlist,
     get_playlist_list_for_user,
+    get_playlists_for_additional_owner,
     get_public_playlist,
     get_video_list_for_playlist,
     remove_playlist,
@@ -39,12 +40,14 @@ def playlist_list(request):
     visibility = request.GET.get("visibility", "all")
     if visibility in ["private", "protected", "public"]:
         playlists = get_playlist_list_for_user(request.user).filter(visibility=visibility)
+    elif visibility == "additional":
+        playlists = get_playlists_for_additional_owner(request.user)
     elif visibility == "allpublic":
         playlists = get_public_playlist()
     elif visibility == "allmy":
         playlists = get_playlist_list_for_user(request.user)
     elif visibility == "all":
-        playlists = (get_playlist_list_for_user(request.user) | get_public_playlist())
+        playlists = (get_playlist_list_for_user(request.user) | get_public_playlist() | get_playlists_for_additional_owner(request.user))
     else:
         return redirect(reverse('playlist:list'))
     return render(
