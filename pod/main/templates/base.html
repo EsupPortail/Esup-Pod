@@ -188,6 +188,7 @@
 
       // Set the body data-theme attribute to match the local storage item
       document.documentElement.dataset.theme = currentTheme?currentTheme:"light";
+      document.documentElement.dataset.bsTheme = currentTheme?currentTheme:"light";
       // If the current theme is dark, check the theme toggle
       if (currentTheme === "dark") {
         themeToggle.checked = true;
@@ -197,9 +198,11 @@
       function switchTheme(e) {
         if (e.target.checked) {
           document.documentElement.dataset.theme = "dark";
+          document.documentElement.dataset.bsTheme = "dark";
           localStorage.setItem("theme", "dark");
         } else {
           document.documentElement.dataset.theme = "light";
+          document.documentElement.dataset.bsTheme = "light";
           localStorage.setItem("theme", "light");
         }
       }

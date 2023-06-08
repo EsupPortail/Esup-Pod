@@ -46,7 +46,7 @@
     {% else %}{% trans "Add a new video" %}{% endif %}
   </h1>
   {% if access_not_allowed == True %}
-    <p class="text-info">
+    <p class="text-info-emphasis">
       <i class="bi bi-info-circle"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
     </p>
   {% else %}
@@ -80,7 +80,7 @@
       {% endif %}
 
       {% if form.instance.get_encoding_step == "5 : transcripting audio" %}
-        <p class="text-info">
+        <p class="text-info-emphasis">
           {% trans "The video is currently being transcripted." %}
         </p>
       {% endif %}
