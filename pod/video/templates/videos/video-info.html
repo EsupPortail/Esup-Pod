@@ -4,6 +4,8 @@
 {% load thumbnail %}
 {% load video_tags %}
 {% load favorite_info %}
+{% load favorites_playlist %}
+
 <div class="video-info_duration-view-share">
   <div class="video-info__duration">
     <i class="bi bi-clock"></i>
@@ -35,15 +37,19 @@
       </button>
       {% include "playlist/playlist-list-modal.html" %}
 
-      {% is_favorite video as is_fav %}
-      {% if USE_FAVORITES %}
-        <form method="post" action="{% url 'favorite:add-or-remove' %}" id="favorite-button-form" class="btn m-0 p-0" role="add-or-remove-favorite">
-          {% csrf_token %}
-          <input type="hidden" name="video" value="{{ video.id }}">
-          <button type="submit" id="star_btn" title="{% if is_fav %}{% trans 'Remove from favorite' %}{% else %}{% trans 'Add in favorite' %}{% endif %}" class="btn btn-link btn-lg pod-btn-share">
-            <i class="bi {% if is_fav %}bi-star-fill{% else %}bi-star{% endif %}" aria-hidden="true"></i>
-          </button>
-        </form>
+      {% is_favorite user video as is_favorite %}
+      {% get_favorite_playlist user as fav_playlist %}
+      {% if USE_FAVORITES and video.is_draft is False and not hide_favorite_link is True %}
+        {% if is_favorite %}
+        <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}" title="{% trans "Remove from favorite" %}" class="btn btn-link btn-lg pod-btn-share">
+          <i class="bi-star-fill" aria-hidden="true"></i>
+        </a>
+        {% else %}
+        <a href="{% url 'playlist:add-video' fav_playlist.slug video.slug %}" title="{% trans "Add in favorite" %}" class="btn btn-link btn-lg pod-btn-share">
+          <i class="bi-star" aria-hidden="true"></i>
+        </a>
+        {% endif %}
+
       {% endif %}
     {% endif %}
     {% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all %}

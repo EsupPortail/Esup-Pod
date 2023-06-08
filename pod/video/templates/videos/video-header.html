@@ -83,7 +83,6 @@
 
 {% if request.user.playlist_set.all %}
   <link href="{% static 'css/playlist.css' %}?ver={{VERSION}}" rel="stylesheet">
-  <script src="{% static 'js/playlist.js' %}?ver={{VERSION}}"></script>
 {% endif %}
 
 {% if video.is_360 %}
