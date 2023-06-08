@@ -1,10 +1,13 @@
 """Forms used in playlist application."""
 from typing import Any, Mapping, Optional, Type, Union
 from django import forms
+from django.contrib import admin
+from django.contrib.admin import widgets
 from django.forms.utils import ErrorList
 from django.utils.translation import ugettext_lazy as _
 
 from pod.main.forms_utils import add_placeholder_and_asterisk
+from pod.meeting.forms import AddOwnerWidget
 
 from .models import Playlist
 
@@ -21,16 +24,37 @@ class PlaylistForm(forms.ModelForm):
             "visibility",
             "password",
             "autoplay",
+            "additional_owners",
         ]
 
-    name = forms.CharField(label=_("Name"), max_length=100)
-    description = forms.CharField(label=_("Description"),
-                                  widget=forms.Textarea, required=False)
+    name = forms.CharField(
+        label=_("Name"),
+        max_length=250,
+        help_text=_("Please choose a name between 1 and 250 characters."),
+    )
+    description = forms.CharField(
+        label=_("Description"),
+        widget=forms.Textarea,
+        required=False,
+        help_text=_("Please choose a description. This description is empty by default."),
+    )
     visibility = forms.ChoiceField(
-        label=_("Visibility"), choices=Playlist.VISIBILITY_CHOICES)
+        label=_("Visibility"),
+        choices=Playlist.VISIBILITY_CHOICES,
+        help_text=_("Please chosse an visibility among 'public', 'protected', 'private'."),
+    )
     password = forms.CharField(
-        label=_("Password"), widget=forms.PasswordInput, required=False)
-    autoplay = forms.BooleanField(label=_("Autoplay"), required=False, initial=True)
+        label=_("Password"),
+        widget=forms.PasswordInput,
+        required=False,
+        help_text=_("Please choose a password if this playlist is protected."),
+    )
+    autoplay = forms.BooleanField(
+        label=_("Autoplay"),
+        required=False,
+        initial=True,
+        help_text=_("Please choose if this playlist is an autoplay playlist or not."),
+    )
     fieldsets = [
         (
             "general information",
@@ -45,7 +69,7 @@ class PlaylistForm(forms.ModelForm):
             {
                 "legend": f"<i class='bi bi-shield-lock'></i>&nbsp;\
                     {_('Security information')}",
-                "fields": ["visibility", "password"],
+                "fields": ["additional_owners", "visibility", "password"],
             },
         ),
     ]
