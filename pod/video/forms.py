@@ -630,11 +630,13 @@ class VideoForm(forms.ModelForm):
                 _(
                     "The date must be before or equal to %(date)s."
                     % {"date": __MAX_D__.strftime("%d-%m-%Y")}
-                ), code="date_too_far")
+                ),
+                code="date_too_far",
+            )
         if date_delete < __TODAY__:
             raise ValidationError(
                 _("The deletion date can’t be earlier than today."),
-                code="date_before_today"
+                code="date_before_today",
             )
         return self.cleaned_data["date_delete"]
 
