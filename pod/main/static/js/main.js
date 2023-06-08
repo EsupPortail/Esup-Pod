@@ -681,16 +681,13 @@ document.addEventListener("submit", (e) => {
     var deleteConfirm = confirm(
       interpolate(
         gettext("Are you sure you want to delete theme '%(title)s'?"),
-        {title: form.dataset.title}, true
+        { title: form.dataset.title },
+        true
       )
     );
 
     if (deleteConfirm) {
-      send_form_data(
-        window.location.href,
-        data_form,
-        "show_form_theme_delete"
-      );
+      send_form_data(window.location.href, data_form, "show_form_theme_delete");
     }
   } else {
     send_form_data(
@@ -890,7 +887,6 @@ var show_form_theme_new = function (data) {
   }
 };
 
-
 /**
  * Called when starting a modify action on existing theme
  * @param  {Array} data Theme data obtained from ajax call
@@ -903,9 +899,11 @@ var show_form_theme_modify = function (data) {
       "alert-danger"
     );
   } else {
-    document.querySelectorAll("#table_list_theme tr").forEach(function(trItem) {
-      trItem.classList.remove("table-primary");
-    });
+    document
+      .querySelectorAll("#table_list_theme tr")
+      .forEach(function (trItem) {
+        trItem.classList.remove("table-primary");
+      });
     show_form_theme(data);
     data = new DOMParser().parseFromString(data, "text/html").body;
     // data.getElementById doesn't work here. Use data.querySelector()
@@ -927,7 +925,10 @@ var show_form_theme_delete = function (data) {
     show_list_theme(data.list_element);
     showalert(gettext("Theme sucessfully deleted."), "alert-success");
   } else {
-    showalert(gettext("You are no longer authenticated. Please log in again."), "alert-warning");
+    showalert(
+      gettext("You are no longer authenticated. Please log in again."),
+      "alert-warning"
+    );
   }
 };
 
@@ -951,10 +952,7 @@ var show_theme_form = function (data) {
       show_form_theme("");
       document.querySelector("form.get_form_theme").style.display = "block";
       show_list_theme(data.list_element);
-      showalert(
-        gettext("Action performed successfully."),
-        "alert-success"
-      );
+      showalert(gettext("Action performed successfully."), "alert-success");
     }
   } else {
     showalert(
@@ -1148,7 +1146,9 @@ if (document.getElementById("video_form")) {
         id_channel.parentElement.querySelector(".select2-selection__rendered")
       ) {
         id_channel_observer.observe(
-          id_channel.parentElement.querySelector(".select2-selection__rendered"),
+          id_channel.parentElement.querySelector(
+            ".select2-selection__rendered"
+          ),
           id_channel_config
         );
         select_channel_observer.disconnect();
@@ -1383,14 +1383,18 @@ var showalert = function (message, alerttype) {
     "alert-info": "info-circle",
     "alert-warning": "exclamation-triangle",
     "alert-danger": "bug",
-  }
+  };
 
   let textHtml =
     '<div id="formalertdiv" class="alert ' +
     alerttype +
     ' alert-dismissible fade show" role="alert">' +
-    '<i class="bi bi-' + icon_types[alerttype] + ' me-2"></i>' +
-    '<span class="alert-message">' + message + "</span>" +
+    '<i class="bi bi-' +
+    icon_types[alerttype] +
+    ' me-2"></i>' +
+    '<span class="alert-message">' +
+    message +
+    "</span>" +
     '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="' +
     gettext("Close") +
     '"></button></div>';
@@ -1400,7 +1404,7 @@ var showalert = function (message, alerttype) {
 
   document.body.appendChild(parsedHTML);
   // Auto dismiss success and info types
-  if (['alert-success', 'alert-info'].includes(alerttype)) {
+  if (["alert-success", "alert-info"].includes(alerttype)) {
     setTimeout(function () {
       let formalertdiv = document.getElementById("formalertdiv");
       formalertdiv?.remove();

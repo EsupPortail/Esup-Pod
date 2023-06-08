@@ -36,14 +36,13 @@ window.onload = function () {
       given = new Date(input.value);
       list_errors = [];
       if (given > limite) {
-          msg = gettext("The date must be before or equal to");
-          add_error_message(
-            `${msg} ${dtf.format(limite)}`,
-            "date_too_far");
-      } else if(given < today) {
-          add_error_message(
-            gettext("The deletion date can’t be earlier than today."),
-            "date_before_today");
+        msg = gettext("The date must be before or equal to");
+        add_error_message(`${msg} ${dtf.format(limite)}`, "date_too_far");
+      } else if (given < today) {
+        add_error_message(
+          gettext("The deletion date can’t be earlier than today."),
+          "date_before_today"
+        );
       } else {
         input.parentNode.classList.remove("errors");
       }
@@ -58,7 +57,6 @@ window.onload = function () {
             );
           }
         }
-
       }
     };
 
@@ -74,7 +72,7 @@ window.onload = function () {
    * @param {String} msg  message to be displayed
    * @param {String} type error code (added as css class)
    */
-  function add_error_message(msg, type){
+  function add_error_message(msg, type) {
     let error_message = document.createElement("li");
     // Add errors class to the input container
     input.parentNode.classList.add("errors");
@@ -83,9 +81,7 @@ window.onload = function () {
 
     list_errors.push(type);
     // Insert the message at the last position in parentElement
-    if (!input.parentElement.querySelector("."+type))
+    if (!input.parentElement.querySelector("." + type))
       errorlist.appendChild(error_message);
   }
 };
-
-
