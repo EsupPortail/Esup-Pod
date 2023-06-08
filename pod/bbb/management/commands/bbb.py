@@ -724,7 +724,7 @@ class Command(BaseCommand):
                     print_if_debug(
                         "\n\n*** Error(s) encountered but no email sent "
                         "\n\n*** (USE_BBB = false) "
-                        "***\n\nMessage " + message_error
+                        "***\n\nMessage: " + message_error
                     )
         else:
             print("*** Warning: you must give some arguments: %s ***" % self.valid_args)

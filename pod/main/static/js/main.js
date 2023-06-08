@@ -908,6 +908,7 @@ var show_form_theme_modify = function (data) {
     });
     show_form_theme(data);
     data = new DOMParser().parseFromString(data, "text/html").body;
+    // data.getElementById doesn't work here. Use data.querySelector()
     var id = data.querySelector("#id_theme").value;
     document.getElementById("theme_" + id).classList.add("table-primary");
   }
