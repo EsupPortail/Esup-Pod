@@ -3,6 +3,7 @@ from django.apps import AppConfig
 from django.db.models.signals import post_migrate, pre_migrate
 from django.utils.translation import gettext_lazy as _
 from django.core import serializers
+from django.db import connection
 
 
 def apply_default_site(obj, site):
@@ -57,15 +58,27 @@ class VideoConfig(AppConfig):
 
     def save_previous_data(self, sender, **kwargs):
         global VIDEO_RENDITION
+        results = []
         try:
-            from pod.video.models import VideoRendition as old_video_rendition
-            VIDEO_RENDITION = serializers.serialize(
-                "json",
-                old_video_rendition.objects.all()
-            )
+            with connection.cursor() as c:
+                c.execute('SELECT "video_videorendition"."id", "video_videorendition"."resolution", "video_videorendition"."minrate", "video_videorendition"."video_bitrate", "video_videorendition"."maxrate", "video_videorendition"."encoding_resolution_threshold", "video_videorendition"."audio_bitrate", "video_videorendition"."encode_mp4" FROM "video_videorendition"')
+                results = c.fetchall()
+                for res in results:
+                    VIDEO_RENDITION["%s" % res[0]] = [res[1], res[2], res[3], res[4], res[5], res[6], res[7]]
         except Exception:  # OperationalError or MySQLdb.ProgrammingError
             pass  # print('OperationalError : ', oe)
 
     def send_previous_data(self, sender, **kwargs):
-        for rendition_object in serializers.deserialize("json", VIDEO_RENDITION):
-            rendition_object.save()
+        from pod.video_encode_transcript.models import VideoRendition
+        for id in VIDEO_RENDITION:
+            vr = VideoRendition.objects.create(
+                id=id,
+                resolution = VIDEO_RENDITION[id][0],
+                minrate = VIDEO_RENDITION[id][1],
+                video_bitrate = VIDEO_RENDITION[id][2],
+                maxrate = VIDEO_RENDITION[id][3],
+                encoding_resolution_threshold = VIDEO_RENDITION[id][4],
+                audio_bitrate = VIDEO_RENDITION[id][5],
+                encode_mp4 = VIDEO_RENDITION[id][6],
+            )
+            vr.save()
