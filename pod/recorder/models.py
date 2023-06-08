@@ -13,6 +13,8 @@ from django.db.models import Q
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.contrib.sites.models import Site
+from pod.main.lang_settings import ALL_LANG_CHOICES as __ALL_LANG_CHOICES__
+from pod.main.lang_settings import PREF_LANG_CHOICES as __PREF_LANG_CHOICES__
 from pod.video.models import Type
 from pod.video.models import Discipline, Channel, Theme
 from pod.video.models import LANG_CHOICES as __LANG_CHOICES__
@@ -21,6 +23,35 @@ from pod.video.models import LICENCE_CHOICES as __LICENCE_CHOICES__
 from pod.video.models import RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY as __REVATSO__
 from tagging.fields import TagField
 from django.utils.translation import get_language
+
+LANG_CHOICES = getattr(
+    settings,
+    "LANG_CHOICES",
+    ((" ", __PREF_LANG_CHOICES__), ("----------", __ALL_LANG_CHOICES__)),
+)
+
+__LANG_CHOICES_DICT__ = {
+    key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]
+}
+
+USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
+if USE_TRANSCRIPTION:
+    TRANSCRIPTION_MODEL_PARAM = getattr(settings, "TRANSCRIPTION_MODEL_PARAM", {})
+    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "STT")
+
+# FUNCTIONS
+
+
+def get_transcription_choices():
+    """Manage the transcription language choice table."""
+    if USE_TRANSCRIPTION:
+        transcript_lang = TRANSCRIPTION_MODEL_PARAM.get(TRANSCRIPTION_TYPE, {}).keys()
+        transcript_choices_lang = []
+        for lang in transcript_lang:
+            transcript_choices_lang.append((lang, __LANG_CHOICES_DICT__[lang]))
+        return transcript_choices_lang
+    else:
+        return []
 
 
 def select_recorder_user():
@@ -145,10 +176,12 @@ class Recorder(models.Model):
         default=get_language(),
         help_text=_("Select the main language used in the content."),
     )
-    transcript = models.BooleanField(
+    transcript = models.CharField(
         _("Transcript"),
-        default=False,
-        help_text=_("Check this box if you want to transcript the audio. (beta version)"),
+        max_length=2,
+        choices=get_transcription_choices(),
+        blank=True,
+        help_text=_("Select an available language to transcribe the audio."),
     )
     tags = TagField(
         help_text=_(

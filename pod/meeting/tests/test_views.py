@@ -21,6 +21,12 @@ ROOT_URLCONF = getattr(settings, "ROOT_URLCONF", "http://testserver")
 
 
 class meeting_TestView(TestCase):
+    """List of Meetings list View tests.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
         Meeting.objects.create(id=1, name="test", owner=user)
@@ -69,6 +75,12 @@ class meeting_TestView(TestCase):
 
 
 class MeetingAddEditTestView(TestCase):
+    """List of tests for editing views of a meeting.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -186,6 +198,12 @@ class MeetingAddEditTestView(TestCase):
 
 
 class MeetingDeleteTestView(TestCase):
+    """List of tests for deleting views from a meeting.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -257,6 +275,12 @@ class MeetingDeleteTestView(TestCase):
 
 
 class MeetingJoinTestView(TestCase):
+    """List of view tests for joining a meeting.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -426,6 +450,12 @@ class MeetingJoinTestView(TestCase):
 
 
 class MeetingStatusTestView(TestCase):
+    """List of meeting status view tests.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -458,6 +488,12 @@ class MeetingStatusTestView(TestCase):
 
 
 class MeetingEndTestView(TestCase):
+    """List of meeting end view tests.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -504,33 +540,54 @@ class MeetingEndTestView(TestCase):
 
 
 class MeetingRecordingTestView(TestCase):
+    """List of tests of the views of the internal recordings of a meeting.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
-        Meeting.objects.create(id=1, name="test", owner=user, site=site)
+        meeting = Meeting.objects.create(id=1, name="test", owner=user, site=site)
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
+        Recording.objects.create(
+            id=1,
+            name="test recording1",
+            is_internal=True,
+            recording_id="d058c39d3dc59d9e9516d95f76eb",
+            meeting=meeting,
+            site=site,
+            owner=user,
+        )
         print(" --->  SetUp of MeetingEndTestView: OK!")
 
     def test_meeting_recordings_get_request(self):
         self.client = Client()
         # check auth
-        url = reverse("meeting:recordings", kwargs={"meeting_id": "slugauhasard"})
+        url = reverse(
+            "meeting:internal_recordings", kwargs={"meeting_id": "slugauhasard"}
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)  # not auth
         # check meeting
         self.user2 = User.objects.get(username="pod2")
         self.client.force_login(self.user2)
-        url = reverse("meeting:recordings", kwargs={"meeting_id": "slugauhasard"})
+        url = reverse(
+            "meeting:internal_recordings", kwargs={"meeting_id": "slugauhasard"}
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
 
         # check access right with user2
         meeting = Meeting.objects.get(name="test")
-        url = reverse("meeting:recordings", kwargs={"meeting_id": meeting.meeting_id})
+        url = reverse(
+            "meeting:internal_recordings", kwargs={"meeting_id": meeting.meeting_id}
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)  # permission denied
 
@@ -543,11 +600,11 @@ class MeetingRecordingTestView(TestCase):
 
         print(" --->  test_meeting_recordings_get_request of MeetingEndTestView: OK!")
 
-    def test_meeting_delete_recordings_get_request(self):
+    def test_meeting_delete_internal_recordings_get_request(self):
         self.client = Client()
         # check auth
         url = reverse(
-            "meeting:delete_recording",
+            "meeting:delete_internal_recording",
             kwargs={
                 "meeting_id": "slugauhasard",
                 "recording_id": "slugauhasard",
@@ -565,7 +622,7 @@ class MeetingRecordingTestView(TestCase):
         # check access right with user2
         meeting = Meeting.objects.get(name="test")
         url = reverse(
-            "meeting:delete_recording",
+            "meeting:delete_internal_recording",
             kwargs={
                 "meeting_id": meeting.meeting_id,
                 "recording_id": "slugauhasard",
@@ -576,16 +633,15 @@ class MeetingRecordingTestView(TestCase):
 
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        response = self.client.get(url)
-
-        self.assertRedirects(
-            response,
-            reverse("meeting:recordings", kwargs={"meeting_id": meeting.meeting_id}),
-            status_code=302,
-            target_status_code=200,
-            msg_prefix="",
-            fetch_redirect_response=True,
-        )  # view cannot be accessed directly
+        recording = Recording.objects.get(id=1)
+        url = reverse(
+            "meeting:delete_internal_recording",
+            kwargs={
+                "meeting_id": meeting.meeting_id,
+                "recording_id": recording.recording_id,
+            },
+        )
+        # response = self.client.get(url)
 
         response = self.client.post(
             url,
@@ -595,12 +651,18 @@ class MeetingRecordingTestView(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
         print(
-            " --->  test_meeting_delete_recordings_get_request",
+            " --->  test_meeting_delete_internal_recordings_get_request",
             " of MeetingEndTestView: OK!",
         )
 
 
 class MeetingGetInfoTestView(TestCase):
+    """List of tests for views to get information from a meeting.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -642,6 +704,12 @@ class MeetingGetInfoTestView(TestCase):
 
 
 class MeetingEndCallbackTestView(TestCase):
+    """List of tests for views to end callback from a meeting.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -674,6 +742,12 @@ class MeetingEndCallbackTestView(TestCase):
 
 
 class MeetingInviteTestView(TestCase):
+    """List of tests for views to invite users to a meeting.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -745,6 +819,12 @@ class MeetingInviteTestView(TestCase):
 
 
 class RecordingDeleteTestView(TestCase):
+    """List of view tests for deleting an externbal or internal recording.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -756,6 +836,8 @@ class RecordingDeleteTestView(TestCase):
             is_internal=True,
             recording_id="d058c39d3dc59d9e9516d95f76eb",
             meeting=meeting,
+            site=site,
+            owner=user,
         )
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
@@ -764,9 +846,12 @@ class RecordingDeleteTestView(TestCase):
         print(" --->  SetUp of RecordingDeleteTestView: OK!")
 
     def test_recording_TestView_get_request_restrict(self):
+        """Test the list of internal recordings."""
         self.client = Client()
         meeting = Meeting.objects.get(id=1)
-        url = reverse("meeting:recordings", kwargs={"meeting_id": meeting.meeting_id})
+        url = reverse(
+            "meeting:internal_recordings", kwargs={"meeting_id": meeting.meeting_id}
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.user = User.objects.get(username="pod2")
@@ -784,10 +869,11 @@ class RecordingDeleteTestView(TestCase):
         )
 
     def test_recording_delete_get_request(self):
+        """Test recording delete with Get request."""
         self.client = Client()
         # check auth
         url = reverse(
-            "meeting:delete_recording",
+            "meeting:delete_internal_recording",
             kwargs={"meeting_id": "slugauhasard", "recording_id": "idauhasard"},
         )
         response = self.client.get(url)
@@ -796,7 +882,7 @@ class RecordingDeleteTestView(TestCase):
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
         url = reverse(
-            "meeting:delete_recording",
+            "meeting:delete_internal_recording",
             kwargs={"meeting_id": "slugauhasard", "recording_id": "idauhasard"},
         )
         response = self.client.get(url)
@@ -806,7 +892,7 @@ class RecordingDeleteTestView(TestCase):
         meeting = Meeting.objects.get(name="test")
         recording = Recording.objects.get(name="test recording1")
         url = reverse(
-            "meeting:delete_recording",
+            "meeting:delete_internal_recording",
             kwargs={
                 "meeting_id": meeting.meeting_id,
                 "recording_id": recording.recording_id,
@@ -818,13 +904,28 @@ class RecordingDeleteTestView(TestCase):
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         response = self.client.get(url)
-        self.assertTrue(response.status_code == 302 or response.status_code == 200)
+        # No POST request
+        self.assertEqual(response.status_code, 403)
+
+        # With POST, good user, good URL
+        response = self.client.post(
+            url,
+            follow=True,
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
 
         print(" --->  test_recording_delete_get_request of RecordingDeleteTestView: OK!")
 
 
 class RecordingUploadTestView(TestCase):
+    """List of view tests for upload to Pod an external or internal recording.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
+        """Setup for tests views."""
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user.save()
@@ -837,6 +938,45 @@ class RecordingUploadTestView(TestCase):
             is_internal=True,
             recording_id="d058c39d3dc59d9e9516d95f76eb",
             meeting=meeting,
+            site=site,
+            owner=user,
+            type="bigbluebutton",
+        )
+        Recording.objects.create(
+            id=2,
+            name="test youtube recording1",
+            is_internal=False,
+            site=site,
+            owner=user2,
+            type="youtube",
+            source_url="https://youtube.url",
+        )
+        Recording.objects.create(
+            id=3,
+            name="test peertube recording1",
+            is_internal=False,
+            site=site,
+            owner=user2,
+            type="peertube",
+            source_url="https://peertube.url",
+        )
+        Recording.objects.create(
+            id=4,
+            name="test external bbb recording1",
+            is_internal=False,
+            site=site,
+            owner=user2,
+            type="bigbluebutton",
+            source_url="https://bbb.url",
+        )
+        Recording.objects.create(
+            id=5,
+            name="test direct video recording1",
+            is_internal=False,
+            site=site,
+            owner=user2,
+            type="video",
+            source_url="https://video.url",
         )
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
@@ -845,10 +985,11 @@ class RecordingUploadTestView(TestCase):
         print(" --->  SetUp of RecordingUploadTestView: OK!")
 
     def test_recording_upload_get_request(self):
+        """Test recording upload with Get request."""
         self.client = Client()
         # check auth
         url = reverse(
-            "meeting:upload_recording_to_pod",
+            "meeting:upload_internal_recording_to_pod",
             kwargs={"meeting_id": "slugauhasard", "recording_id": "idauhasard"},
         )
         response = self.client.get(url)
@@ -857,7 +998,7 @@ class RecordingUploadTestView(TestCase):
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
         url = reverse(
-            "meeting:upload_recording_to_pod",
+            "meeting:upload_internal_recording_to_pod",
             kwargs={"meeting_id": "slugauhasard", "recording_id": "idauhasard"},
         )
         response = self.client.get(url)
@@ -867,44 +1008,116 @@ class RecordingUploadTestView(TestCase):
         meeting = Meeting.objects.get(name="test")
         recording = Recording.objects.get(name="test recording1")
         url = reverse(
-            "meeting:upload_recording_to_pod",
+            "meeting:upload_internal_recording_to_pod",
             kwargs={
                 "meeting_id": meeting.meeting_id,
                 "recording_id": recording.recording_id,
             },
         )
+        # Get Request
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
-        self.user = User.objects.get(username="pod")
-        self.client.force_login(self.user)
-        response = self.client.get(url)
-        self.assertTrue(response.status_code == 302 or response.status_code == 200)
-
     def test_recording_upload_post_request(self):
+        """Test recording upload with Post request."""
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         meeting = Meeting.objects.get(name="test")
-        recording = Recording.objects.get(name="test recording1")
         url = reverse(
-            "meeting:upload_recording_to_pod",
+            "meeting:upload_internal_recording_to_pod",
             kwargs={
                 "meeting_id": meeting.meeting_id,
-                "recording_id": recording.recording_id,
+                "recording_id": "e058c39d3dc59d9e9516d95f76eb",
             },
         )
 
-        # Check upload to Pod
+        # Check upload to Pod for internal recording
+        response = self.client.post(
+            url,
+            {"recording_name": "test recording2", "source_url": "pod.mp4"},
+            follow=True,
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+
+        # Check upload for external recording
+        # Youtube type
+        recordingYt = Recording.objects.get(name="test youtube recording1")
+        self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        url = reverse(
+            "meeting:upload_external_recording_to_pod",
+            kwargs={"record_id": recordingYt.id},
+        )
         response = self.client.post(
             url,
             {
-                "recording_name": "test recording1",
-                "source_url": "pod.mp4",
-                "start_timestamp": 1683188442479,
-                "end_timestamp": 1683188474112,
+                "recording_name": "test youtube recording1",
+                "source_url": "https://youtube.url",
             },
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
+        # Message for a bad URL
+        self.assertTrue(b"YouTube content is inaccessible" in response.content)
+
+        # Peertube type
+        recordingPt = Recording.objects.get(name="test peertube recording1")
+        self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        url = reverse(
+            "meeting:upload_external_recording_to_pod",
+            kwargs={"record_id": recordingPt.id},
+        )
+        response = self.client.post(
+            url,
+            {
+                "recording_name": "test peertube recording1",
+                "source_url": "https://peertube.url",
+            },
+            follow=True,
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        # Message for a bad URL
+        self.assertTrue(b"Impossible to upload to Pod the PeerTube" in response.content)
+
+        # External BBB type
+        recordingBBB = Recording.objects.get(name="test external bbb recording1")
+        self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        url = reverse(
+            "meeting:upload_external_recording_to_pod",
+            kwargs={"record_id": recordingBBB.id},
+        )
+        response = self.client.post(
+            url,
+            {
+                "recording_name": "test external bbb recording1",
+                "source_url": "https://bbb.url",
+            },
+            follow=True,
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        # Message for a bad URL
+        self.assertTrue(b"Impossible to upload to Pod the video" in response.content)
+
+        # Video type
+        recordingVideo = Recording.objects.get(name="test direct video recording1")
+        self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        url = reverse(
+            "meeting:upload_external_recording_to_pod",
+            kwargs={"record_id": recordingVideo.id},
+        )
+        response = self.client.post(
+            url,
+            {
+                "recording_name": "test video recording1",
+                "source_url": "https://video.url",
+            },
+            follow=True,
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        # Message for a bad URL
+        self.assertTrue(b"Impossible to upload to Pod the video" in response.content)
 
         print(" --->  test_recording_upload_get_request of RecordingUploadTestView: OK!")

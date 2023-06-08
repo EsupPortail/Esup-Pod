@@ -17,7 +17,7 @@
   </a>
 
   {% if not meeting_disable_record %}
-    <a href="{% url 'meeting:recordings' meeting.meeting_id %}" title="{% trans 'Get the recordings of the meeting'%}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
+    <a href="{% url 'meeting:internal_recordings' meeting.meeting_id %}" title="{% trans 'Get the recordings of the meeting'%}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
       <i class="bi bi-collection-play" aria-hidden="true"></i>
     </a>
   {% endif %}

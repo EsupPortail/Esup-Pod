@@ -19,7 +19,7 @@
     {% trans "Do not leave the page until the video upload to Pod is complete." %}
   </div>
 
-  <table class="table align-middle table-sm table-bordered caption-top" id="recordings">
+  <table class="table align-middle table-sm table-bordered table-striped caption-top" id="recordings">
     <thead>
       <tr>
         <th scope="col">{% trans "Name" %}</th>
@@ -46,33 +46,32 @@
             </td>
             <td> {{ record.get_start_time }} </td>
             <td>
-              {% for type, url in record.playback.items %}
-                {% if type == "presentation" %}
-                  <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{{url}}" target="_blank" title="{% trans 'Display the recording in presentation format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+                {% if record.presentationUrl != "" %}
+                  <a class="btn btn-primary pod-btn-primary btn-sm" href="{{ record.presentationUrl }}" target="_blank" title="{% trans 'Display the recording in presentation format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
                     <i class="bi bi-file-earmark-play"></i>
                   </a>
-                {% elif type == "video" %}
-                  <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{{url}}" target="_blank" title="{% trans 'Display the recording in video format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+                {% endif %}
+                {% if record.videoUrl != "" %}  
+                  <a class="btn btn-primary pod-btn-primary btn-sm" href="{{ record.videoUrl }}" target="_blank" title="{% trans 'Display the recording in video format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
                     <i class="bi bi-camera-video"></i>
                   </a>
                 {% endif %}
-              {% endfor %}
             </td>
             <td>
                 {% if record.canUpload %}
                   {% trans "Please confirm you want to upload the recording To Pod" as confirmUpload %}
-                  <form method="post" action="{% url "meeting:upload_recording_to_pod" meeting_id=meeting.meeting_id recording_id=record.recordID %}" onsubmit="return confirmUploadToPod('{{ confirmUpload|escapejs }}');" style="display: inline;">
-                    <input type="hidden" name="recording_name" value="{{ record.name }}">
-                    <input type="hidden" name="start_timestamp" value="{{ record.startTime }}">
-                    <input type="hidden" name="end_timestamp" value="{{ record.endTime }}">
-                    <input type="hidden" name="source_url" value="{{ record.sourceURL }}">
+                  <form method="post" action="{% url "meeting:upload_internal_recording_to_pod" recording_id=record.id meeting_id=meeting.meeting_id %}" onsubmit="return confirmUploadToPod('{{ confirmUpload|escapejs }}');" style="display: inline;">
+                    <input type="hidden" name="recording_name" value="{{ record.name }}" >
+                    <input type="hidden" name="start_timestamp" value="{{ record.startTime }}" >
+                    <input type="hidden" name="end_timestamp" value="{{ record.endTime }}" >
+                    <input type="hidden" name="source_url" value="{{ record.videoUrl }}" >
                     {% csrf_token %}
                     <button type="submit" class="btn btn-secondary pod-btn-secondary btn-sm" title="{% trans 'Upload to Pod as a video'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-upload pod-add"></i></button>
                   </form>
                 {% endif %}
                 {% if record.canDelete %}
                   {% trans "Please confirm you want to delete the recording" as confirmDelete %}
-                  <form method="post" action="{% url "meeting:delete_recording" meeting_id=meeting.meeting_id recording_id=record.recordID %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" style="display: inline;">
+                  <form method="post" action="{% url "meeting:delete_internal_recording" meeting_id=meeting.meeting_id recording_id=record.id %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" style="display: inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the recording'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-trash3 pod-add"></i></button>
                   </form>
@@ -107,14 +106,14 @@
       // Display only recordings matching the filter
       recs.forEach((rec) => {
         if (!rec.innerHTML.trim().toLowerCase().includes(s)) {
-          rec.parentNode.style.visibility = 'collapse';
+          rec.style.visibility = 'collapse';
         }
-        else rec.parentNode.style.visibility = 'visible';
+        else rec.style.visibility = 'visible';
       });
     } else {
       // Display all recordings
       recs.forEach((rec) => {
-        rec.parentNode.style.visibility = 'visible';
+        rec.style.visibility = 'visible';
       });
     }
   };
@@ -124,7 +123,7 @@
 
   // Manage the upload To Pod: confirm and loader
   function confirmUploadToPod(message) {
-    var answer=confirm(message);
+    const answer=confirm(message);
     if(answer){
      document.getElementById("recording-loader").style.display = "block";
     }
