@@ -44,7 +44,7 @@ createDB:
 	find . -path "*/migrations/*.pyc" -delete
 	make updatedb
 	make migrate
-	python manage.py loaddata initial_data
+	python3 manage.py loaddata initial_data
 
 # Mise à jour des fichiers de langue
 lang:

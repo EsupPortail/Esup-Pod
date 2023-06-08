@@ -1,7 +1,13 @@
 from rest_framework import serializers, viewsets
 from .models import EncodingVideo, EncodingAudio, VideoRendition
+from pod.video.models import Video
+from pod.video.rest_views import VideoSerializer
+
 from rest_framework.decorators import action
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from pod.video.transcript import start_transcript
 
 
 class VideoRenditionSerializer(serializers.HyperlinkedModelSerializer):
@@ -105,3 +111,34 @@ class EncodingAudioViewSet(viewsets.ModelViewSet):
 class VideoRenditionViewSet(viewsets.ModelViewSet):
     queryset = VideoRendition.objects.all()
     serializer_class = VideoRenditionSerializer
+
+
+@api_view(["GET"])
+def launch_encode_view(request):
+    video = get_object_or_404(Video, slug=request.GET.get("slug"))
+    if (
+        video is not None
+        and (
+            not hasattr(video, "launch_encode") or getattr(video, "launch_encode") is True
+        )
+        and video.encoding_in_progress is False
+    ):
+        video.launch_encode = True
+        video.save()
+    return Response(VideoSerializer(instance=video, context={"request": request}).data)
+
+
+@api_view(["GET"])
+def launch_transcript_view(request):
+    video = get_object_or_404(Video, slug=request.GET.get("slug"))
+    if video is not None and video.get_video_mp3():
+        start_transcript(video.id, threaded=True)
+    return Response(VideoSerializer(instance=video, context={"request": request}).data)
+
+
+@api_view(["GET"])
+def store_remote_encoded_video(request):
+    video_id = request.GET.get("id", 0)
+    video = get_object_or_404(Video, id=video_id)
+    # start_store_remote_encoding_video(video_id)
+    return Response(VideoSerializer(instance=video, context={"request": request}).data)

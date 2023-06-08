@@ -76,17 +76,17 @@ urlpatterns = [
     url(r"dublincore/$", video_views.DublinCoreView.as_view(), name="dublincore"),
     url(
         r"launch_encode_view/$",
-        video_views.launch_encode_view,
+        encode_views.launch_encode_view,
         name="launch_encode_view",
     ),
     url(
         r"launch_transcript_view/$",
-        video_views.launch_transcript_view,
+        encode_views.launch_transcript_view,
         name="launch_transcript_view",
     ),
     url(
         r"store_remote_encoded_video/$",
-        video_views.store_remote_encoded_video,
+        encode_views.store_remote_encoded_video,
         name="store_remote_encoded_video",
     ),
     url(

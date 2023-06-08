@@ -4,11 +4,9 @@ from rest_framework.response import Response
 
 # from rest_framework import authentication, permissions
 from rest_framework import renderers
-from rest_framework.decorators import api_view
 from rest_framework.decorators import action
 
 from django.template.loader import render_to_string
-from django.shortcuts import get_object_or_404
 
 from .models import Channel, Theme
 from .models import Type, Discipline, Video
@@ -17,7 +15,6 @@ from .utils import get_available_videos
 
 # commented for v3
 # from .remote_encode import start_store_remote_encoding_video
-from .transcript import start_transcript
 
 import json
 
@@ -312,34 +309,3 @@ class DublinCoreView(APIView):
             xmlcontent += rendered
         xmlcontent += "</rdf:RDF>"
         return Response(xmlcontent)
-
-
-@api_view(["GET"])
-def launch_encode_view(request):
-    video = get_object_or_404(Video, slug=request.GET.get("slug"))
-    if (
-        video is not None
-        and (
-            not hasattr(video, "launch_encode") or getattr(video, "launch_encode") is True
-        )
-        and video.encoding_in_progress is False
-    ):
-        video.launch_encode = True
-        video.save()
-    return Response(VideoSerializer(instance=video, context={"request": request}).data)
-
-
-@api_view(["GET"])
-def launch_transcript_view(request):
-    video = get_object_or_404(Video, slug=request.GET.get("slug"))
-    if video is not None and video.get_video_mp3():
-        start_transcript(video.id, threaded=True)
-    return Response(VideoSerializer(instance=video, context={"request": request}).data)
-
-
-@api_view(["GET"])
-def store_remote_encoded_video(request):
-    video_id = request.GET.get("id", 0)
-    video = get_object_or_404(Video, id=video_id)
-    # start_store_remote_encoding_video(video_id)
-    return Response(VideoSerializer(instance=video, context={"request": request}).data)
