@@ -14,7 +14,7 @@ def set_default_site(sender, **kwargs):
 
 
 def fix_transcript(sender, **kwargs):
-     from pod.recorder.models import Recorder
+    from pod.recorder.models import Recorder
     for rec in Recorder.objects.all():
         if rec.transcript == '1':
             rec.transcript = vid.main_lang

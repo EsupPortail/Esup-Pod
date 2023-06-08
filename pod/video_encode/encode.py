@@ -141,7 +141,7 @@ def encode_video(video_id):
 def transcript_video(video_id):
     """Transcript video audio to text."""
     video = Video.objects.get(id=video_id)
-    if USE_TRANSCRIPTION and video.transcript != '':
+    if USE_TRANSCRIPTION and video.transcript not in ['', '0', '1']:
         change_encoding_step(video_id, 4, "transcript video")
         start_transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
         start_transcript_video(video_id, False)
