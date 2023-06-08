@@ -56,9 +56,13 @@ class VideoConfig(AppConfig):
         post_migrate.connect(self.send_previous_data, sender=self)
 
     def save_previous_data(self, sender, **kwargs):
+        global VIDEO_RENDITION
         try:
             from pod.video.models import VideoRendition as old_video_rendition
-            VIDEO_RENDITION = serializers.serialize("json", old_video_rendition.objects.all())
+            VIDEO_RENDITION = serializers.serialize(
+                "json",
+                old_video_rendition.objects.all()
+            )
         except Exception:  # OperationalError or MySQLdb.ProgrammingError
             pass  # print('OperationalError : ', oe)
 
