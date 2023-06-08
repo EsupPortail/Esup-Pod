@@ -5,7 +5,7 @@ import logging
 from requests.auth import HTTPBasicAuth
 # call local settings directly
 # no need to load pod application to send statement
-from pod.custom import settings_local
+from ..custom import settings_local
 
 logger = logging.getLogger(__name__)
 
