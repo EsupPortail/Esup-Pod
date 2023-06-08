@@ -115,6 +115,7 @@ class VideoRenditionViewSet(viewsets.ModelViewSet):
 
 @api_view(["GET"])
 def launch_encode_view(request):
+    """API view for launching video encoding."""
     video = get_object_or_404(Video, slug=request.GET.get("slug"))
     if (
         video is not None
@@ -130,6 +131,7 @@ def launch_encode_view(request):
 
 @api_view(["GET"])
 def launch_transcript_view(request):
+    """API view for launching transcript."""
     video = get_object_or_404(Video, slug=request.GET.get("slug"))
     if video is not None and video.get_video_mp3():
         start_transcript(video.id, threaded=True)
@@ -138,6 +140,7 @@ def launch_transcript_view(request):
 
 @api_view(["GET"])
 def store_remote_encoded_video(request):
+    """API view for storing remote encoded videos."""
     video_id = request.GET.get("id", 0)
     video = get_object_or_404(Video, id=video_id)
     # start_store_remote_encoding_video(video_id)
