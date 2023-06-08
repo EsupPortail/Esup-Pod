@@ -89,12 +89,6 @@ def playlist_content(request, slug):
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
     playlist_url = reverse("playlist:content", kwargs={"slug": get_favorite_playlist_for_user(request.user).slug})
     in_favorites_playlist = (playlist_url == request.path)
-    if is_ajax(request):
-        return render(
-            request,
-            "playlist/playlist-videos-list.html",
-            {"videos": videos, "playlist": playlist, "in_favorites_playlist": in_favorites_playlist, "full_path": full_path, "count_videos": count_videos},
-        )
 
     return render(
         request,
