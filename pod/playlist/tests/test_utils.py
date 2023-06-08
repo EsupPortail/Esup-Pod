@@ -9,6 +9,7 @@ from pod.playlist.utils import (
     get_number_playlist,
     get_playlist,
     get_playlist_list_for_user,
+    get_playlists_for_additional_owner,
     get_public_playlist,
     get_video_list_for_playlist,
     get_number_video_added_in_playlist,
@@ -274,3 +275,20 @@ class PlaylistTestUtils(TestCase):
             new_playlist
         )
         print(" --->  test_get_playlist ok")
+
+    def test_get_playlists_for_additional_owner(self) -> None:
+        """Test if get_playlists_for_additional_owner works correctly."""
+        new_playlist = Playlist.objects.create(
+            name="new_playlist",
+            description="Ma description",
+            visibility="public",
+            autoplay=True,
+            owner=self.user
+        )
+        new_playlist.additional_owners.add(self.user2)
+        new_playlist.save()
+        self.assertTrue(
+            new_playlist in get_playlists_for_additional_owner(self.user2),
+            "The playlist is present on additional playlist list."
+        )
+        print(" --->  test_get_playlists_for_additional_owner ok")
