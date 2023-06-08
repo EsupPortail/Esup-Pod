@@ -9,10 +9,10 @@ from .. import settings
 
 logger = logging.getLogger(__name__)
 
-XAPI_LRS_URL = getattr(settings_local, "XAPI_LRS_URL", "")
-XAPI_LRS_LOGIN = getattr(settings_local, "XAPI_LRS_LOGIN", "")
-XAPI_LRS_PWD = getattr(settings_local, "XAPI_LRS_PWD", "")
-CELERY_BROKER_URL = getattr(settings_local, "CELERY_BROKER_URL", "")
+XAPI_LRS_URL = getattr(settings, "XAPI_LRS_URL", "")
+XAPI_LRS_LOGIN = getattr(settings, "XAPI_LRS_LOGIN", "")
+XAPI_LRS_PWD = getattr(settings, "XAPI_LRS_PWD", "")
+CELERY_BROKER_URL = getattr(settings, "CELERY_BROKER_URL", "")
 
 app = Celery('xapi_tasks', broker=CELERY_BROKER_URL)
 
