@@ -278,7 +278,7 @@ def get_event_access(request, event, slug_private, is_owner):
 
 def event(request, slug, slug_private=None):  # affichage d'un event
     # modif de l'url d'appel pour compatibilité
-    # avec le template link_video.html (variable : urleditapp)
+    # avec le template link_video.html (variable: urleditapp)
     request.resolver_match.namespace = ""
 
     try:

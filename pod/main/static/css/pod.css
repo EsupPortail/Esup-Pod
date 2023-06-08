@@ -13,7 +13,8 @@
    ***/
   /*** Theme primary color ***/
   --pod-primary: #1F7C85;
-  --bs-primary-rgb: 31, 131, 137;
+  --pod-primary-rgb: 31, 124, 133;
+
   /* a light variant of primary color, used for button hover */
   --pod-primary-lighten: #08b0a0;
   /* a dark variant of primary color, used for active links and disabled buttons */
@@ -21,6 +22,7 @@
   /* les valeurs '...-dark' ci-dessous sont pour le mode sombre.*/
   --pod-primary-dark: #1F7C85;
   --pod-primary-lighten-dark: #08b0a0;
+  --pod-primary-lighten-dark-rgb: 8, 176, 160;
   --pod-primary-darken-dark: #18575D;
 
   /***
@@ -49,6 +51,7 @@
 
   /**** couleur des liens *****/
   --pod-link-color: var(--pod-primary);
+  --pod-link-color-rgb: var(--pod-primary-rgb);
   --pod-activelink-color: var(--pod-primary-darken);
 
   /* couleur d'un élément actif (ex. : survol de bouton) */
@@ -67,10 +70,13 @@
   font-size: var(--bs-body-font-size);
 
   /* BOOTSTRAP COLORS */
+  --bs-primary-rgb: var(--pod-primary-rgb);
   --bs-light: #f8f9fa;
   --bs-dark: #343a40;
   --bs-link-color: var(--pod-link-color);
+  --bs-link-color-rgb: var(--pod-link-color-rgb);
   --bs-link-hover-color: var(--pod-activelink-color);
+  --bs-card-color: var(--pod-font-color);
 
   /* Use system font (faster load) */
   --font-family-sans-serif: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Verdana, sans-serif;
@@ -108,10 +114,10 @@
   transition: background-color .5s;
 }
 
-.table-hover tbody tr:hover {
+/*.table-hover tbody tr:hover {
   color: var(--pod-font-color);
   background-color: var(--pod-background);
-}
+}*/
 
 .navbar-toggler:focus,
 .navbar-toggler:hover {
@@ -160,7 +166,7 @@
 
 .btn-link {
   /*font-weight: 400;*/
-  color: var(--pod-link-color);
+  /*color: var(--pod-link-color);*/
   text-decoration: none;
 }
 
@@ -562,8 +568,8 @@ button.nav-link {
   grid-template-columns: 200px 1fr;
 }
 
-a:hover,
-a:focus {
+a:not(.btn):hover,
+a:not(.btn):focus {
   color: var(--pod-activelink-color);
   text-decoration: underline;
 }
@@ -724,9 +730,21 @@ div.card a img {
   font-size: 1.3rem;
 }
 
+.errors>.form-control:focus{
+  box-shadow: 0 0 0 .25rem rgba(var(--bs-danger-rgb),.25);
+  border-color: var(--bs-danger);
+}
+
+.errors input,
+.errors select,
+.errors textarea{
+  border: 1px solid var(--bs-danger);
+}
+
 .form-group-required .errors,
 .form-group .errorlist {
-  background-color: rgba(var(--bs-danger-rgb),.2);
+  /*background-color: rgba(var(--bs-danger-rgb),.2);*/
+  color: var(--bs-danger);
 }
 
 .form-group .errorlist {
@@ -1535,15 +1553,15 @@ th + td + td + td + td {
   color: var(--pod-font-color);
 } */
 
-.table-hover > tbody > tr > * {
+/*.table-hover > tbody > tr > * {
   --bs-table-accent-bg: var(--bs-table-hover-bg) !important;
   color: var(--pod-font-color) !important;
-}
+}*/
 
-.table-hover > tbody > tr:hover > * {
+/*.table-hover > tbody > tr:hover > * {
   --bs-table-accent-bg: var(--bs-table-hover-bg) !important;
   color: var(--pod-font-color) !important;
-  }
+}*/
 
 table .alert.alert-danger.btn.pod-btn-social {
   background-color: var(--pod-alert) !important;

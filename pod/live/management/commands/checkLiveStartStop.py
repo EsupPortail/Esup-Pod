@@ -48,7 +48,7 @@ class Command(BaseCommand):
         self.stdout.write("- End -")
 
     def stop_finished(self):
-        self.stdout.write("-- Stopping finished events (if started with Pod) :")
+        self.stdout.write("-- Stopping finished events (if started with Pod):")
 
         zero_now = timezone.now().replace(second=0, microsecond=0)
         # events ending now
@@ -59,7 +59,7 @@ class Command(BaseCommand):
                 continue
 
             self.stdout.write(
-                f"Broadcaster {event.broadcaster.name} should be stopped : ", ending=""
+                f"Broadcaster {event.broadcaster.name} should be stopped: ", ending=""
             )
 
             if self.debug_mode:
@@ -73,7 +73,7 @@ class Command(BaseCommand):
                 self.stderr.write(" ... fail to stop recording")
 
     def start_new(self):
-        self.stdout.write("-- Starting new events :")
+        self.stdout.write("-- Starting new events:")
 
         events = Event.objects.filter(
             Q(is_auto_start=True)
@@ -89,7 +89,7 @@ class Command(BaseCommand):
                 continue
 
             self.stdout.write(
-                f"Broadcaster {event.broadcaster.name} should be started : ", ending=""
+                f"Broadcaster {event.broadcaster.name} should be started: ", ending=""
             )
 
             if self.debug_mode:

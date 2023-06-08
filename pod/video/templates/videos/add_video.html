@@ -25,7 +25,7 @@
 {% block page_content %}
 
 {% if restricted_to_staff and not user.is_staff %}
-<p class="text-info">
+<p class="text-info-emphasis">
   <i class="bi bi-broadcast"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
 </p>
 {% else %}

@@ -368,7 +368,7 @@ var VideoSlides = function (items) {
         this.setAttribute("aria-checked", true);
         this.addClass("vjs-selected");
         current_slide_mode = this.el().getAttribute("data-mode");
-        // console.log("click current_slide_mode : " + current_slide_mode);
+        // console.log("click current_slide_mode: " + current_slide_mode);
         player.trigger("changemode", current_slide_mode);
 
         var available = document.getElementsByClassName("vjs-slide-mode");

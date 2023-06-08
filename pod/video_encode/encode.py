@@ -20,7 +20,7 @@ log = logging.getLogger(__name__)
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
 if USE_TRANSCRIPTION:
-    from . import transcript
+    from pod.video import transcript
 
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
