@@ -44,8 +44,7 @@ createDB:
 	find . -path "*/migrations/*.pyc" -delete
 	make updatedb
 	make migrate
-	python3 manage.py loaddata pod/video/fixtures/initial_data.json
-	python3 manage.py loaddata pod/main/fixtures/initial_data.json
+	python manage.py loaddata initial_data
 
 # Mise à jour des fichiers de langue
 lang:
