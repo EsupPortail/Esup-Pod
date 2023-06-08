@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-07 13:29+0000\n"
+"POT-Creation-Date: 2023-06-08 11:55+0000\n"
 "PO-Revision-Date: 2023-02-15 16:55+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2076,12 +2076,10 @@ msgid "Reorganize"
 msgstr ""
 
 #: pod/favorite/templates/favorite/favorite_videos.html
-#: pod/playlist/templates/playlist/playlist.html
 msgid "Sort by descending rank before you can rearrange"
 msgstr ""
 
 #: pod/favorite/templates/favorite/favorite_videos.html
-#: pod/playlist/templates/playlist/playlist.html
 msgid "Sort by descending rank"
 msgstr ""
 
@@ -2316,8 +2314,9 @@ msgid ""
 "information, and format the result using the toolbar."
 msgstr ""
 
-#: pod/live/models.py pod/meeting/models.py pod/video/forms.py
-#: pod/video/models.py
+#: pod/live/models.py pod/meeting/models.py pod/playlist/models.py
+#: pod/playlist/templates/playlist/playlist-informations-card.html
+#: pod/video/forms.py pod/video/models.py
 msgid "Additional owners"
 msgstr ""
 
@@ -4101,7 +4100,7 @@ msgstr ""
 msgid "Record session"
 msgstr ""
 
-#: pod/meeting/forms.py pod/video/forms.py
+#: pod/meeting/forms.py pod/playlist/forms.py pod/video/forms.py
 msgid "Owner of the video cannot be an additional owner too"
 msgstr ""
 
@@ -4861,13 +4860,34 @@ msgid "Playlists"
 msgstr ""
 
 #: pod/playlist/forms.py pod/playlist/models.py
+msgid "Please choose a name between 1 and 250 characters."
+msgstr ""
+
+#: pod/playlist/forms.py pod/playlist/models.py
+msgid "Please choose a description. This description is empty by default."
+msgstr ""
+
+#: pod/playlist/forms.py pod/playlist/models.py
 #: pod/playlist/templates/playlist/filter_aside.html
+#: pod/playlist/templates/playlist/playlist-informations-card.html
 msgid "Visibility"
+msgstr ""
+
+#: pod/playlist/forms.py pod/playlist/models.py
+msgid "Please chosse an visibility among 'public', 'protected', 'private'."
+msgstr ""
+
+#: pod/playlist/forms.py pod/playlist/models.py
+msgid "Please choose a password if this playlist is protected."
 msgstr ""
 
 #: pod/playlist/forms.py pod/playlist/models.py
 #: pod/video/templates/videos/video-info.html
 msgid "Autoplay"
+msgstr ""
+
+#: pod/playlist/forms.py pod/playlist/models.py
+msgid "Please choose if this playlist is an autoplay playlist or not."
 msgstr ""
 
 #: pod/playlist/forms.py
@@ -4894,27 +4914,15 @@ msgid "Private"
 msgstr ""
 
 #: pod/playlist/models.py
-msgid "Please choose a name between 1 and 250 characters."
-msgstr ""
-
-#: pod/playlist/models.py
-msgid "Please choose a description. This description is empty by default."
-msgstr ""
-
-#: pod/playlist/models.py
-msgid "Please choose a password if this playlist is protected."
-msgstr ""
-
-#: pod/playlist/models.py
-msgid "Please chosse an visibility among 'public', 'protected', 'private'."
-msgstr ""
-
-#: pod/playlist/models.py
-msgid "Please choose if this playlist is an autoplay playlist or not."
-msgstr ""
-
-#: pod/playlist/models.py
 msgid "Editable"
+msgstr ""
+
+#: pod/playlist/models.py
+msgid "Please choose if this playlist is editable or not."
+msgstr ""
+
+#: pod/playlist/models.py
+msgid "You can add additional owners to the playlist."
 msgstr ""
 
 #: pod/playlist/models.py
@@ -4983,11 +4991,23 @@ msgid "See my playlists"
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
+msgid "See playlists I can contribute"
+msgstr ""
+
+#: pod/playlist/templates/playlist/filter_aside.html
 msgid "See all public playlists"
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
 msgid "See all playlists"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist-informations-card.html
+msgid "Informations about the playlist"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist-informations-card.html
+msgid "Playlist owner"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist-list-modal.html
@@ -4996,6 +5016,10 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/playlist-list-modal.html
 msgid "Add the video in a new playlist"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist-management-card.html
+msgid "Manage playlist"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist.html

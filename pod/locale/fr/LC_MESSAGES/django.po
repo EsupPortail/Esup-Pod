@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-07 13:29+0000\n"
+"POT-Creation-Date: 2023-06-08 11:55+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -2185,12 +2185,10 @@ msgid "Reorganize"
 msgstr "Réorganiser"
 
 #: pod/favorite/templates/favorite/favorite_videos.html
-#: pod/playlist/templates/playlist/playlist.html
 msgid "Sort by descending rank before you can rearrange"
 msgstr "Trier par ordre décroissant avant de pouvoir réorganiser"
 
 #: pod/favorite/templates/favorite/favorite_videos.html
-#: pod/playlist/templates/playlist/playlist.html
 msgid "Sort by descending rank"
 msgstr "Trier par ordre décroissant"
 
@@ -2443,8 +2441,9 @@ msgstr ""
 "informations nécessaires, et mettre en forme le résultat en utilisant la "
 "barre d’outils."
 
-#: pod/live/models.py pod/meeting/models.py pod/video/forms.py
-#: pod/video/models.py
+#: pod/live/models.py pod/meeting/models.py pod/playlist/models.py
+#: pod/playlist/templates/playlist/playlist-informations-card.html
+#: pod/video/forms.py pod/video/models.py
 msgid "Additional owners"
 msgstr "Propriétaires additionels"
 
@@ -4278,7 +4277,7 @@ msgstr "Récurrence"
 msgid "Record session"
 msgstr "Enregistrement"
 
-#: pod/meeting/forms.py pod/video/forms.py
+#: pod/meeting/forms.py pod/playlist/forms.py pod/video/forms.py
 msgid "Owner of the video cannot be an additional owner too"
 msgstr ""
 "Le propriétaire de la video ne peut pas être propriétaire additionnel en "
@@ -5114,14 +5113,36 @@ msgid "Playlists"
 msgstr "Listes de lecture"
 
 #: pod/playlist/forms.py pod/playlist/models.py
+msgid "Please choose a name between 1 and 250 characters."
+msgstr "Veuillez choisir un nom entre 1 et 250 caractères."
+
+#: pod/playlist/forms.py pod/playlist/models.py
+msgid "Please choose a description. This description is empty by default."
+msgstr "Veuillez choisir une description. Celle-ci est vide par défaut."
+
+#: pod/playlist/forms.py pod/playlist/models.py
 #: pod/playlist/templates/playlist/filter_aside.html
+#: pod/playlist/templates/playlist/playlist-informations-card.html
 msgid "Visibility"
 msgstr "Visibilité"
+
+#: pod/playlist/forms.py pod/playlist/models.py
+msgid "Please chosse an visibility among 'public', 'protected', 'private'."
+msgstr ""
+"Veuillez choisir une visibilité entre 'publique', 'protégée', 'privée'."
+
+#: pod/playlist/forms.py pod/playlist/models.py
+msgid "Please choose a password if this playlist is protected."
+msgstr "Veuillez choisir un mot de passe si votre playlist est protégée."
 
 #: pod/playlist/forms.py pod/playlist/models.py
 #: pod/video/templates/videos/video-info.html
 msgid "Autoplay"
 msgstr "Lecture automatique"
+
+#: pod/playlist/forms.py pod/playlist/models.py
+msgid "Please choose if this playlist is an autoplay playlist or not."
+msgstr "Veuillez choisir si cette playlist est en lecteur automatique ou non."
 
 #: pod/playlist/forms.py
 msgid "You cannot create a playlist named \"Favorites\""
@@ -5147,29 +5168,16 @@ msgid "Private"
 msgstr "Privée"
 
 #: pod/playlist/models.py
-msgid "Please choose a name between 1 and 250 characters."
-msgstr "Veuillez choisir un nom entre 1 et 250 caractères."
+msgid "Editable"
+msgstr "Modifiable"
 
 #: pod/playlist/models.py
-msgid "Please choose a description. This description is empty by default."
-msgstr "Veuillez choisir une description. Celle-ci est vide par défaut."
-
-#: pod/playlist/models.py
-msgid "Please choose a password if this playlist is protected."
-msgstr "Veuillez choisir un mot de passe si votre playlist est protégée."
-
-#: pod/playlist/models.py
-msgid "Please chosse an visibility among 'public', 'protected', 'private'."
-msgstr ""
-"Veuillez choisir une visibilité entre 'publique', 'protégée', 'privée'."
-
-#: pod/playlist/models.py
-msgid "Please choose if this playlist is an autoplay playlist or not."
+msgid "Please choose if this playlist is editable or not."
 msgstr "Veuillez choisir si cette playlist est en lecteur automatique ou non."
 
 #: pod/playlist/models.py
-msgid "Editable"
-msgstr "Modifiable"
+msgid "You can add additional owners to the playlist."
+msgstr "Vous pouvez ajouter des propriétaires additionnels à la réunion."
 
 #: pod/playlist/models.py
 msgid "Date created"
@@ -5238,12 +5246,24 @@ msgid "See my playlists"
 msgstr "Voir mes listes de lecture"
 
 #: pod/playlist/templates/playlist/filter_aside.html
+msgid "See playlists I can contribute"
+msgstr "Voir les listes de lecture auquelles je peux contribuer"
+
+#: pod/playlist/templates/playlist/filter_aside.html
 msgid "See all public playlists"
 msgstr "Voir toutes les listes de lecture publiques"
 
 #: pod/playlist/templates/playlist/filter_aside.html
 msgid "See all playlists"
 msgstr "Voir toutes les playlists"
+
+#: pod/playlist/templates/playlist/playlist-informations-card.html
+msgid "Informations about the playlist"
+msgstr "Informations de la liste de lecture"
+
+#: pod/playlist/templates/playlist/playlist-informations-card.html
+msgid "Playlist owner"
+msgstr "Propriétaire de la liste de lecture"
 
 #: pod/playlist/templates/playlist/playlist-list-modal.html
 msgid "Your playlists"
@@ -5252,6 +5272,10 @@ msgstr "Vos playlists"
 #: pod/playlist/templates/playlist/playlist-list-modal.html
 msgid "Add the video in a new playlist"
 msgstr "Ajouter une vidéo à une nouvelle liste de lecture"
+
+#: pod/playlist/templates/playlist/playlist-management-card.html
+msgid "Manage playlist"
+msgstr "Gérer la liste de lecture"
 
 #: pod/playlist/templates/playlist/playlist.html
 msgid "Playlist videos"
