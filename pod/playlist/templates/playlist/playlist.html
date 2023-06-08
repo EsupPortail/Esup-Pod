@@ -43,14 +43,8 @@
         </button>
         <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-secondary btn-sm d-none">
         <i class="bi bi-x-circle"></i>&nbsp;{% trans "Cancel" %}</a>
-        <button id="refresh-button" title="{% trans 'Sort by descending rank before you can rearrange'%}" class="btn btn-outline-primary btn-sm {% if sort_field == 'rank' and sort_direction != 'on' %}d-none{% endif %}">
-          <i class="bi bi-arrow-clockwise"></i>&nbsp;<span>{% trans "Sort by descending rank" %}</span>
-        </button>
       </form>
     </div>
-    <form id="sortForm" action="{% url 'playlist:content' slug=playlist.slug %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2">
-      {% include "videos/video_sort_select.html" with video_rank=True %}
-    </form>
   {% endif %}
 </div>
 {% include 'loader.html' %}
@@ -59,7 +53,13 @@
 {% endblock page_content %}
 
 {% block page_aside %}
-  {% include 'videos/filter_aside.html' %}
+  <div class="card">
+    <h2 class="card-header card-title pod-card__title h4">{% trans "Informations about your playlist" %}</h2>
+    <div class="card-body card-text">
+      <p>{% trans "Description" %} : {{ playlist.description }}</p>
+    </div>
+  </div>
+
   <div class="card card-hidden" id="card-sharedraftversion">
     <h2 class="card-header card-title pod-card__title h4">{% trans "Help - Drag & Drop" %}</h2>
     <div class="card-body card-text">
@@ -85,6 +85,5 @@
 </script>
 
 <script src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/playlist-reorganize.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}

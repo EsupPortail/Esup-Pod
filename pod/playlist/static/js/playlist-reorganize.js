@@ -3,19 +3,11 @@ var infinite;
 
 addEventForReorganizedButton();
 
-const sortSelectElement = document.getElementById("sort");
-const sortDirectionElement = document.getElementById("sort_direction");
-
 const reorganizeButtonsSpanElement =
   document.getElementById("reorganize-buttons");
 const collapseAsideElement = document.getElementById("collapseAside");
 const reorganizeButton = document.getElementById("reorganize-button");
-const refreshButton = document.getElementById("refresh-button");
 
-document
-  .getElementById("sort_direction_label")
-  .addEventListener("click", changeReorganizeButtons);
-sortSelectElement.addEventListener("change", changeReorganizeButtons);
 
 /**
  * Add or remove the CSS class to make drop zone hover.
@@ -31,18 +23,6 @@ function addOrRemoveDropZoneHoverStyleClass(state, element) {
   }
 }
 
-/**
- * Switch the 'reorganize' and 'sort by rank' buttons.
- */
-function changeReorganizeButtons() {
-  if (sortSelectElement.value === "rank" && !sortDirectionElement.checked) {
-    reorganizeButton.classList.remove("d-none");
-    refreshButton.classList.add("d-none");
-  } else {
-    reorganizeButton.classList.add("d-none");
-    refreshButton.classList.remove("d-none");
-  }
-}
 
 /**
  * Add an event listener to the 'reorganize-button' element.
@@ -68,6 +48,7 @@ function addEventForReorganizedButton() {
       if (this.id == "reorganize-button") {
         event.preventDefault();
         activateDragAndDrop();
+        console.log(this.id)
         this.id = "save-button";
         this.title = gettext("Save your reorganization");
         const iconElement = this.querySelector("i");
@@ -78,12 +59,6 @@ function addEventForReorganizedButton() {
         document.getElementById("json-data").value =
           convert2DTableToJson(exchangedValues);
       }
-    });
-  document
-    .getElementById("refresh-button")
-    .addEventListener("click", function (event) {
-      event.preventDefault();
-      window.location.assign(window.location.href.split("?")[0]);
     });
 }
 
@@ -134,7 +109,6 @@ function onDrop(event) {
 function activateDragAndDrop(parent) {
   const draggableElements = document.querySelectorAll(".draggable-container");
   const cardFooterElements = document.querySelectorAll(".card-footer");
-  const sortForm = document.getElementById("sortForm");
   draggableElements.forEach((draggableElement) => {
     draggableElement.setAttribute("draggable", true);
     draggableElement.addEventListener("dragstart", onDragStart);
@@ -143,9 +117,8 @@ function activateDragAndDrop(parent) {
     draggableElement.classList.add("shake-effect");
     draggableElement.children[0].classList.add("no-click");
   });
-  sortForm.classList.add("no-click");
   updateCollapseAside();
-  infinite.removeLoader();
+  // infinite.removeLoader();
   document
     .getElementById("cancel_btn_favorites_list")
     .classList.remove("d-none");
@@ -168,10 +141,6 @@ function convert2DTableToJson(table) {
  * Update collapse aside to help user.
  */
 function updateCollapseAside() {
-  const collapseAside = document.querySelector(
-    "#collapseAside > div.card.card-body"
-  );
-  collapseAside.remove();
   const helpInformations = document.querySelector("#card-sharedraftversion");
   helpInformations.classList.remove("card-hidden");
 }

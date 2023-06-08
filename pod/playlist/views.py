@@ -18,6 +18,7 @@ from .forms import PlaylistForm, PlaylistRemoveForm
 import json
 
 from .utils import (
+    get_favorite_playlist_for_user,
     get_playlist,
     get_playlist_list_for_user,
     get_public_playlist,
@@ -86,13 +87,8 @@ def playlist_content(request, slug):
         videos = paginator.page(paginator.num_pages)
 
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
-
-    if is_ajax(request):
-        return render(
-            request,
-            "playlist/playlist-videos-list.html",
-            {"videos": videos, "playlist": playlist, "full_path": full_path, "count_videos": count_videos},
-        )
+    playlist_url = reverse("playlist:content", kwargs={"slug": get_favorite_playlist_for_user(request.user).slug})
+    in_favorites_playlist = (playlist_url == request.path)
 
     return render(
         request,
@@ -101,6 +97,7 @@ def playlist_content(request, slug):
             "page_title": _("Playlist") + " : " + playlist.name,
             "videos": videos,
             "playlist": playlist,
+            "in_favorites_playlist": in_favorites_playlist,
             "count_videos": count_videos,
             "types": request.GET.getlist("type"),
             "owners": request.GET.getlist("owner"),

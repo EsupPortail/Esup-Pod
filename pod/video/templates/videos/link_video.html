@@ -1,23 +1,27 @@
 {% load i18n %}
-{% load favorite_info %}
+{% load favorites_playlist %}
 
 {% spaceless %}
 
-{% if playlist %}
+{% if playlist and not in_favorites_playlist%}
   <a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" title="{% trans "Remove from playlist" %}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
-      <i class="bi bi-folder-minus"></i>
+      <i class="bi bi-folder-minus" aria-hidden="true"></i>
   </a>
 {% endif %}
 
-{% is_favorite video as is_fav %}
+{% is_favorite user video as is_favorite %}
+{% get_favorite_playlist user as fav_playlist %}
 {% if USE_FAVORITES and video.is_draft is False and not hide_favorite_link is True %}
-  <form method="post" action="{% url 'favorite:add-or-remove' %}" class="favorite-button-form-card pod-btn-social m-0 ms-1">
-    {% csrf_token %}
-    <input type="hidden" name="video" value="{{ video.id }}">
-    <button type="submit" title="{% if is_fav %}{% trans 'Remove from favorite' %}{% else %}{% trans 'Add in favorite' %}{% endif %}" class="btn btn-lg btn-link p-1 star_btn">
-      <i class="bi {% if is_fav %}bi-star-fill{% else %}bi-star{% endif %}" aria-hidden="true"></i>
-    </button>
-  </form>
+  {% if is_favorite %}
+  <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}" title="{% trans "Remove from favorite" %}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
+    <i class="bi-star-fill" aria-hidden="true"></i>
+  </a>
+  {% else %}
+  <a href="{% url 'playlist:add-video' fav_playlist.slug video.slug %}" title="{% trans "Add in favorite" %}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
+    <i class="bi-star" aria-hidden="true"></i>
+  </a>
+  {% endif %}
+
 {% endif %}
 {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video %}
   <a href="{% url 'video:video_edit' slug=video.slug %}" title="{% trans 'Edit the video'%}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
