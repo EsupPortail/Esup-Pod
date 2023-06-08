@@ -17,7 +17,7 @@ def fix_transcript(sender, **kwargs):
     from pod.recorder.models import Recorder
     for rec in Recorder.objects.all():
         if rec.transcript == '1':
-            rec.transcript = vid.main_lang
+            rec.transcript = rec.main_lang
             rec.save()
         elif rec.transcript == '0':
             rec.transcript = ''
