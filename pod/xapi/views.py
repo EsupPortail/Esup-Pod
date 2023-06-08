@@ -61,6 +61,7 @@ def statement(request, app: str = None):
 
 
 def get_actor_name(request):
+    """Return a name for the actor's statement."""
     if request.user.is_authenticated:
         if XAPI_ANONYMIZE_ACTOR:
             name = request.user.owner.hashkey
@@ -74,7 +75,7 @@ def get_actor_name(request):
 
 
 def get_authenticated_name(user):
-    """return the actor's name of the statement according to configuration"""
+    """Return the authenticated actor's name value."""
     name = str(user)
     if XAPI_AUTHENTICATED_NAME == "uuid":
         name = uuid.uuid3(uuid.NAMESPACE_DNS, user.username)
@@ -86,6 +87,7 @@ def get_authenticated_name(user):
 
 
 def validate_statement(statement):
+    """Validate the statement with Ralph Lib."""
     try:
         validator = Validator(ModelSelector("ralph.models.xapi"))
         """
