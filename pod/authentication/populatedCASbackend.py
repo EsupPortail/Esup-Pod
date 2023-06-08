@@ -140,7 +140,7 @@ def get_ldap_conn():
         logger.error("LDAPBindError, credentials incorrect: {0}".format(err))
         return None
     except LDAPSocketOpenError as err:
-        logger.error("LDAPSocketOpenError : %s" % err)
+        logger.error("LDAPSocketOpenError: %s" % err)
         return None
 
 

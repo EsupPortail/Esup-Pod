@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-07 13:24+0200\n"
+"POT-Creation-Date: 2023-06-08 10:04+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -1448,7 +1448,6 @@ msgstr "Début"
 #: pod/completion/templates/overlay/list_overlay.html
 #: pod/cut/templates/video_cut.html pod/enrichment/models.py
 #: pod/enrichment/templates/enrichment/list_enrichment.html
-#: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "End"
 msgstr "Fin"
 
@@ -1715,8 +1714,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html
 msgid "Subtitles and/or caption(s) files must be in \".vtt\" format."
 msgstr ""
-"Les fichiers de sous-titres et/ou de légendes doivent être au format \".vtt"
-"\"."
+"Les fichiers de sous-titres et/ou de légendes doivent être au format \"."
+"vtt\"."
 
 #: pod/completion/templates/video_completion.html
 msgid "You can use"
@@ -2073,8 +2072,8 @@ msgid ""
 msgstr ""
 "Les champs \"Début\" et \"Fin\" doivent contenir des valeurs en secondes. "
 "Lancez la lecture de la vidéo, mettez sur pause et cliquez sur \"Récupérer "
-"le temps depuis le lecteur\" pour renseigner automatiquement le champ \"Début"
-"\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
+"le temps depuis le lecteur\" pour renseigner automatiquement le champ "
+"\"Début\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html
 msgid "You cannot overlap enrichments."
@@ -4271,6 +4270,10 @@ msgid "Sunday"
 msgstr "Dimanche"
 
 #: pod/meeting/forms.py
+msgid "Main fields"
+msgstr "Champs principaux"
+
+#: pod/meeting/forms.py
 msgid "Date and time options"
 msgstr "Date et heure"
 
@@ -4389,8 +4392,7 @@ msgid "Custom recurrence"
 msgstr "Récurrence personnalisée"
 
 #: pod/meeting/models.py
-msgid ""
-"Specify the recurrence of the meeting : daily, weekly, monthly or yearly"
+msgid "Specify the recurrence of the meeting: daily, weekly, monthly or yearly"
 msgstr ""
 "Précisez la récurrence de la réunion : quotidienne, hebdomadaire, mensuelle "
 "ou annuelle"
@@ -5113,12 +5115,24 @@ msgid "Repeat every"
 msgstr "Répéter tou(te)s les"
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
-msgid "Repeat the"
-msgstr "Répéter le"
+msgid "Recurrence unit"
+msgstr "Unité des occurrences"
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
-msgid "The"
-msgstr "Le"
+msgid "Repeat the:"
+msgstr "Répéter le :"
+
+#: pod/meeting/templates/meeting/recurring_options_modal_form.html
+msgid "Type of monthly recurrence"
+msgstr "Type de récurrence mensuelle"
+
+#: pod/meeting/templates/meeting/recurring_options_modal_form.html
+msgid "End:"
+msgstr "Fin :"
+
+#: pod/meeting/templates/meeting/recurring_options_modal_form.html
+msgid "The:"
+msgstr "Le :"
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "Or after"
@@ -5229,16 +5243,16 @@ msgid ""
 msgstr ""
 "\n"
 "        <p>Bonjour,\n"
-"        <p>%(owner)s vous invite à une réunion récurrente <b>"
-"%(meeting_title)s</b>.</p>\n"
+"        <p>%(owner)s vous invite à une réunion récurrente "
+"<b>%(meeting_title)s</b>.</p>\n"
 "        <p>Date de début : %(start_date_time)s </p>\n"
 "        <p>Récurrent jusqu'à la date : %(end_date)s </p>\n"
 "        <p>La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s </"
 "p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
-"%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : "
+"<b>%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -5264,8 +5278,8 @@ msgstr ""
 "        <p>Date de fin : %(end_date)s </p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
-"%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : "
+"<b>%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -5344,8 +5358,8 @@ msgid ""
 "This video was uploaded to Pod; its origin is %(type)s : <a href=\"%(url)s\" "
 "target=\"_blank\">%(url)s</a>"
 msgstr ""
-"Cette vidéo a été téléchargée sur Pod; son origine est %(type)s : <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"Cette vidéo a été téléchargée sur Pod; son origine est %(type)s : <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 
 #: pod/meeting/views.py
 msgid "Try changing the record type or address for this recording."
@@ -5356,8 +5370,8 @@ msgstr ""
 #: pod/meeting/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 "Cette vidéo '%(name)s' a été téléchargée sur Pod; son origine est Youtube : "
 "<a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
@@ -5486,8 +5500,8 @@ msgstr "Aucune liste de lecture trouvée"
 
 #: pod/playlist/templates/my_playlists.html
 msgid ""
-"You have not created any playlists yet, please use the \"Add a new playlist"
-"\" button to add one."
+"You have not created any playlists yet, please use the \"Add a new "
+"playlist\" button to add one."
 msgstr ""
 "Vous n’avez pas encore créé de liste de lecture, veuillez cliquer sur le "
 "bouton « Ajouter une nouvelle liste de lecture » pour en ajouter une."
@@ -5952,11 +5966,9 @@ msgstr ""
 msgid "Transcript"
 msgstr "Transcrire"
 
-#: pod/recorder/models.py
-msgid "Check this box if you want to transcript the audio. (beta version)"
-msgstr ""
-"Cocher cette case si vous voulez transcrire l’audio (version bêta, voir aide "
-"dans la colonne de droite)"
+#: pod/recorder/models.py pod/video/models.py
+msgid "Select an available language to transcribe the audio."
+msgstr "Sélectionner une langue disponible pour transcrire l'audio."
 
 #: pod/recorder/models.py pod/video/models.py
 msgid ""
@@ -6111,8 +6123,8 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
 "passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
@@ -6191,9 +6203,10 @@ msgid ""
 msgstr ""
 "Bonjour, <p>un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur \"%(recorder)s\".<br>Pour "
-"l’ajouter, cliquez sur le lien ci dessous.</p><a href=\"%(link_url)s\">"
-"%(link_url)s</a><br><i>Si le lien n’est pas actif, il faut le copier-coller "
-"dans la barre d’adresse de votre navigateur.</i><p><p>Cordialement</p>"
+"l’ajouter, cliquez sur le lien ci dessous.</p><a "
+"href=\"%(link_url)s\">%(link_url)s</a><br><i>Si le lien n’est pas actif, il "
+"faut le copier-coller dans la barre d’adresse de votre navigateur.</"
+"i><p><p>Cordialement</p>"
 
 #: pod/recorder/views.py
 msgid "New recording added."
@@ -6456,6 +6469,10 @@ msgid "The date must be before or equal to %(date)s."
 msgstr "La date doit être antérieure ou égale au %(date)s."
 
 #: pod/video/forms.py
+msgid "The deletion date can’t be earlier than today."
+msgstr "La date de suppression ne peut pas être antérieure à aujourd’hui."
+
+#: pod/video/forms.py
 msgid "Delete video cannot be undo"
 msgstr "La suppression est définitive"
 
@@ -6709,6 +6726,19 @@ msgid "Theme parent"
 msgstr "Thème parent"
 
 #: pod/video/models.py
+msgid "A theme with this name already exists in this channel."
+msgstr "Un thème portant ce nom existe déjà dans ce canal."
+
+#: pod/video/models.py
+msgid "A theme can't have itself or one of it's children as parent."
+msgstr ""
+"Un thème ne peut pas avoir pour parent lui-même ou l’un de ses enfants."
+
+#: pod/video/models.py
+msgid "A theme must be in the same channel as its parent."
+msgstr "Un thème doit se trouver dans la même chaîne que son parent."
+
+#: pod/video/models.py
 msgid "Theme"
 msgstr "Thème"
 
@@ -6735,10 +6765,6 @@ msgstr ""
 #: pod/video/models.py pod/video/templates/videos/video_sort_select.html
 msgid "Date of event"
 msgstr "Date de l'évènement"
-
-#: pod/video/models.py
-msgid "Select an available language to transcribe the audio."
-msgstr "Sélectionner une langue disponible pour transcrire l'audio."
 
 #: pod/video/models.py
 msgid "Overview"
@@ -6840,6 +6866,11 @@ msgstr "rendu"
 #: pod/video/models.py
 msgid "renditions"
 msgstr "rendus"
+
+#: pod/video/models.py
+#, python-format
+msgid "Error in %s: "
+msgstr "Erreur sur %s : "
 
 #: pod/video/models.py pod/video_encode/models.py
 msgid "Please use the only format in encoding choices:"
@@ -7074,6 +7105,10 @@ msgstr "Éditer le thème"
 #: pod/video/templates/channel/list_theme.html
 msgid "Delete the theme"
 msgstr "Supprimer le thème"
+
+#: pod/video/templates/channel/list_theme.html
+msgid "Add new theme"
+msgstr "Ajouter un nouveau thème"
 
 #: pod/video/templates/channel/my_channels.html
 msgid "Number of video inside the channel"
@@ -7310,8 +7345,8 @@ msgid ""
 "This video is chaptered. Click the chapter button <span class=\"vjs-icon-"
 "chapters\"></span> on the video player to view them."
 msgstr ""
-"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span class="
-"\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
+"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span "
+"class=\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
 
 #: pod/video/templates/videos/video-all-info.html
 msgid "Other versions"
@@ -8075,6 +8110,14 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "The"
+#~ msgstr "Le"
+
+#~ msgid "Check this box if you want to transcript the audio. (beta version)"
+#~ msgstr ""
+#~ "Cocher cette case si vous voulez transcrire l’audio (version bêta, voir "
+#~ "aide dans la colonne de droite)"
 
 #~ msgid "published"
 #~ msgstr "publié"

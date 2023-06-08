@@ -58,7 +58,7 @@ def bbb_encode_meeting(id):
     command = ""
     # Put on the bbb-recorder plugin directory
     command += "cd %s; " % (DEFAULT_BBB_PLUGIN)
-    # The command looks like :
+    # The command looks like:
     # node export.js https://bbb.univ.fr/playback/presentation/2.0/
     # playback.html?meetingId=INTERNAL_MEETING_ID INTERNAL_MEETING_ID.webm
     # > /data/www/USERPOD/bbb-recorder/logs/INTERNAL_MEETING_ID.log
@@ -72,13 +72,13 @@ def bbb_encode_meeting(id):
     command += str(meeting_to_encode.internal_meeting_id)
     command += ".log 2>&1 < /dev/null"
 
-    # if you want to reuse the command : print(command)
-    msg = "\nBBBEncodeCommand :\n%s" % command
-    msg += "\n- Encoding : %s" % time.ctime()
+    # if you want to reuse the command: print(command)
+    msg = "\nBBBEncodeCommand:\n%s" % command
+    msg += "\n- Encoding: %s" % time.ctime()
     # Execute the process
     subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    msg += "\n- meeting_to_encode : %s" % meeting_to_encode
-    msg += "\n- End Encoding : %s" % time.ctime()
+    msg += "\n- meeting_to_encode: %s" % meeting_to_encode
+    msg += "\n- End Encoding: %s" % time.ctime()
 
     # Update this meeting and put
     # encoding_step to 3 (Encoded)

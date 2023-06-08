@@ -67,7 +67,7 @@ class ChapterViewsTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)  # forbidden
 
-        print(" ---> test_video_chapter_owner : OK!")
+        print(" ---> test_video_chapter_owner: OK!")
         print(" [ END CHAPTER VIEWS ] ")
 
     def test_video_chapter(self):
@@ -85,7 +85,7 @@ class ChapterViewsTestCase(TestCase):
         self.assertContains(response, "list_chapter")
 
         print(" [ BEGIN CHAPTER VIEWS ] ")
-        print(" ---> test_video_chapter : OK!")
+        print(" ---> test_video_chapter: OK!")
 
     def test_video_chapter_new(self):
         video = Video.objects.get(id=1)
@@ -117,7 +117,7 @@ class ChapterViewsTestCase(TestCase):
         self.assertContains(response, "list_chapter")
         self.assertContains(response, "testchapter")
 
-        print(" ---> test_video_chapter_new : OK!")
+        print(" ---> test_video_chapter_new: OK!")
 
     def test_video_chapter_edit(self):
         video = Video.objects.get(id=1)
@@ -156,7 +156,7 @@ class ChapterViewsTestCase(TestCase):
         self.assertContains(response, "list_chapter")
         self.assertContains(response, "testchapter2")
 
-        print(" ---> test_video_chapter_edit : OK!")
+        print(" ---> test_video_chapter_edit: OK!")
 
     def test_video_chapter_delete(self):
         video = Video.objects.get(id=1)
@@ -186,7 +186,7 @@ class ChapterViewsTestCase(TestCase):
         result = Chapter.objects.all()
         self.assertFalse(result)
 
-        print(" ---> test_video_chapter_delete : OK!")
+        print(" ---> test_video_chapter_delete: OK!")
 
     def test_video_chapter_import(self):
         video = Video.objects.get(id=1)
@@ -217,4 +217,4 @@ class ChapterViewsTestCase(TestCase):
         result = Chapter.objects.get(id=1)
         self.assertEqual(result.title, "Testchapter")
 
-        print(" ---> test_video_chapter_import : OK!")
+        print(" ---> test_video_chapter_import: OK!")

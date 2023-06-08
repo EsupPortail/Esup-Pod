@@ -62,7 +62,7 @@ class MeetingViewsTestCase(TestCase):
         self.user.save()
 
         response = self.client.post("/bbb/publish_meeting/1")
-        # Possible status : 200 or 301
+        # Possible status: 200 or 301
         if response.status_code == 200:
             self.assertEqual(response.status_code, 200)
         else:
@@ -129,7 +129,7 @@ class LivestreamViewsTestCase(TestCase):
         self.user.save()
 
         response = self.client.post("/bbb/live_publish_meeting/1")
-        # Possible status : 200 or 301
+        # Possible status: 200 or 301
         if response.status_code == 200:
             self.assertEqual(response.status_code, 200)
         else:

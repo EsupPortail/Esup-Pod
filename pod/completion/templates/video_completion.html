@@ -154,10 +154,10 @@
     <p>{% trans 'You will need the URL of this video to make subtitles and/or captions. This URL is a direct access to this video. Please do not communicate it outside of this site to avoid any misuse.' %}</p>
     <ul class="list-group">
       {% for vid in video.get_video_mp4 %}
-      <li class="list-group-item">{{vid.name}} : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly></li>
+      <li class="list-group-item">{{vid.name}}: <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly></li>
       {% endfor %}
       {% if video.is_video == False and video.get_video_mp3 %}
-      <li class="list-group-item">{{video.get_video_mp3.name}} : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly></li>
+      <li class="list-group-item">{{video.get_video_mp3.name}}: <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly></li>
       {% endif %}
     </ul>
   </div>
