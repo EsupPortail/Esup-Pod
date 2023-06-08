@@ -1045,7 +1045,7 @@ def upload_internal_recording_to_pod(request, recording_id, meeting_id):
             recording_id=recording_id,
             meeting_id=meeting.id,
             site=get_current_site(request),
-            is_internal=True
+            is_internal=True,
         )
 
         # Upload this recording
@@ -1053,12 +1053,12 @@ def upload_internal_recording_to_pod(request, recording_id, meeting_id):
     except ValueError as ve:
         args = ve.args[0]
         msg = ""
-        if (args.get('error')):
-            msg += "<strong>%s</strong><br>" % (args['error'])
-        if (args.get('message')):
-            msg += args['message']
-        if (args.get('proposition')):
-            msg += "<br><span class='proposition'>%s</span>" % (args['proposition'])
+        if args.get("error"):
+            msg += "<strong>%s</strong><br>" % (args["error"])
+        if args.get("message"):
+            msg += args["message"]
+        if args.get("proposition"):
+            msg += "<br><span class='proposition'>%s</span>" % (args["proposition"])
     if upload and msg == "":
         msg += _(
             "The recording has been uploaded to Pod. "
@@ -1086,9 +1086,7 @@ def upload_external_recording_to_pod(request, record_id):
     Returns:
         HTTP Response: Redirect to the external recordings list
     """
-    recording = get_object_or_404(
-        Recording, id=record_id, site=get_current_site(request)
-    )
+    recording = get_object_or_404(Recording, id=record_id, site=get_current_site(request))
 
     # Secure this external recording
     secure_external_recording(request, recording)
@@ -1103,12 +1101,12 @@ def upload_external_recording_to_pod(request, record_id):
     except ValueError as ve:
         args = ve.args[0]
         msg = ""
-        if (args.get('error')):
-            msg += "<strong>%s</strong><br>" % (args['error'])
-        if (args.get('message')):
-            msg += args['message']
-        if (args.get('proposition')):
-            msg += "<br><span class='proposition'>%s</span>" % (args['proposition'])
+        if args.get("error"):
+            msg += "<strong>%s</strong><br>" % (args["error"])
+        if args.get("message"):
+            msg += args["message"]
+        if args.get("proposition"):
+            msg += "<br><span class='proposition'>%s</span>" % (args["proposition"])
     if upload and msg == "":
         msg += _(
             "The recording has been uploaded to Pod. "
@@ -1134,9 +1132,7 @@ def external_recordings(request):
 
     if RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
         return render(
-            request,
-            "meeting/external_recordings.html",
-            {"access_not_allowed": True}
+            request, "meeting/external_recordings.html", {"access_not_allowed": True}
         )
 
     site = get_current_site(request)
@@ -1150,9 +1146,7 @@ def external_recordings(request):
     recordings = []
     for data in external_recordings:
         # Management of the stateless recording
-        recording = StatelessRecording(
-            data.id, data.name, "published"
-        )
+        recording = StatelessRecording(data.id, data.name, "published")
         # Upload to Pod is always possible in such a case
         recording.canUpload = True
         # Only owner can delete this external recording
@@ -1229,7 +1223,7 @@ def add_or_edit_external_recording(request, id=None):
         return render(
             request,
             "meeting/add_or_edit_external_recording.html",
-            {"access_not_allowed": True}
+            {"access_not_allowed": True},
         )
 
     default_owner = recording.owner.pk if recording else request.user.pk
@@ -1291,9 +1285,7 @@ def delete_external_recording(request, id):
     Returns:
         HTTP Response: Redirect to the recordings list
     """
-    recording = get_object_or_404(
-        Recording, id=id, site=get_current_site(request)
-    )
+    recording = get_object_or_404(Recording, id=id, site=get_current_site(request))
 
     # Secure external recording
     secure_external_recording(request, recording)
@@ -1308,10 +1300,10 @@ def delete_external_recording(request, id):
     except ValueError as ve:
         args = ve.args[0]
         msg = ""
-        if (args['error']):
-            msg += "<strong>%s</strong><br>" % (args['error'])
-        if (args['message']):
-            msg += args['message']
+        if args["error"]:
+            msg += "<strong>%s</strong><br>" % (args["error"])
+        if args["message"]:
+            msg += args["message"]
     if delete and msg == "":
         msg += _("The external recording has been deleted.")
         display_message_with_icon(request, messages.INFO, msg)
@@ -1386,8 +1378,7 @@ def parse_remote_file(source_html_url):
             if extension not in VIDEO_ALLOWED_EXTENSIONS:
                 msg = {}
                 msg["error"] = _(
-                    "The video file for this recording was not "
-                    "found in the HTML file."
+                    "The video file for this recording was not " "found in the HTML file."
                 )
                 msg["message"] = _("The found file is not a valid video.")
                 raise ValueError(msg)
@@ -1422,9 +1413,7 @@ def download_video_file(source_video_url, dest_file):
     """
     # Check if video file exists
     try:
-        with requests.get(
-            source_video_url, timeout=(10, 180), stream=True
-        ) as response:
+        with requests.get(source_video_url, timeout=(10, 180), stream=True) as response:
             if response.status_code != 200:
                 msg = {}
                 msg["error"] = _(
@@ -1454,13 +1443,7 @@ def download_video_file(source_video_url, dest_file):
         raise ValueError(msg)
 
 
-def save_video(
-        request,
-        dest_file,
-        recording_name,
-        description,
-        recording,
-        date_evt=None):
+def save_video(request, dest_file, recording_name, description, recording, date_evt=None):
     """Save and encode the Pod video file.
 
     Args:
@@ -1497,11 +1480,8 @@ def save_video(
 
 
 def save_internal_recording(
-        request,
-        recording_id,
-        recording_name,
-        meeting_id,
-        source_url=None):
+    request, recording_id, recording_name, meeting_id, source_url=None
+):
     """Save an internal recording in database.
 
     Args:
@@ -1531,7 +1511,7 @@ def save_internal_recording(
         duration = str(end_dt - start_dt).split(".")[0]
         """
 
-        if (source_url is None):
+        if source_url is None:
             source_url = ""
         # Save the recording as an internal recording
         recording, created = Recording.objects.update_or_create(
@@ -1597,9 +1577,9 @@ def upload_recording_to_pod(request, record_id, meeting_id=None):
         secure_request_for_upload(request)
 
         # Manage differents source types
-        if (recording.type == "youtube"):
+        if recording.type == "youtube":
             return upload_youtube_recording_to_pod(request, record_id)
-        elif (recording.type == "peertube"):
+        elif recording.type == "peertube":
             return upload_peertube_recording_to_pod(request, record_id)
         else:
             return upload_bbb_recording_to_pod(request, record_id, meeting_id)
@@ -1610,7 +1590,7 @@ def upload_recording_to_pod(request, record_id, meeting_id=None):
         try:
             # Management of error messages from sub-functions
             message = "%s (%s)" % (exc.args[0]["error"], exc.args[0]["message"])
-            proposition = exc.args[0].get('proposition')
+            proposition = exc.args[0].get("proposition")
         except Exception:
             # Management of error messages in all cases
             message = str(exc)
@@ -1672,7 +1652,7 @@ def upload_bbb_recording_to_pod(request, record_id, meeting_id=None):
                 recording.recording_id,
                 recording_title,
                 meeting_id,
-                source_video_url
+                source_video_url,
             )
         else:
             save_external_recording(request, record_id)
@@ -1680,11 +1660,8 @@ def upload_bbb_recording_to_pod(request, record_id, meeting_id=None):
         # Step 5 : Save and encode Pod video
         description = _(
             "This video was uploaded to Pod; its origin is %(type)s : "
-            "<a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
-        ) % {
-            "type": recording.get_type_display(),
-            "url": source_video_url
-        }
+            '<a href="%(url)s" target="_blank">%(url)s</a>'
+        ) % {"type": recording.get_type_display(), "url": source_video_url}
 
         save_video(request, dest_file, recording_title, description, recording)
 
@@ -1758,10 +1735,7 @@ def upload_youtube_recording_to_pod(request, record_id):
         )
 
         # Download video
-        yt_stream.download(
-            dest_dir,
-            filename=filename
-        )
+        yt_stream.download(dest_dir, filename=filename)
 
         # Step 4 : Save informations about the recording
         save_external_recording(request, record_id)
@@ -1769,11 +1743,8 @@ def upload_youtube_recording_to_pod(request, record_id):
         # Step 5 : Save and encode Pod video
         description = _(
             "This video '%(name)s' was uploaded to Pod; "
-            "its origin is Youtube : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
-        ) % {
-            "name": yt_video.title,
-            "url": source_url
-        }
+            'its origin is Youtube : <a href="%(url)s" target="_blank">%(url)s</a>'
+        ) % {"name": yt_video.title, "url": source_url}
         recording_title = request.POST.get("recording_name")
         save_video(request, dest_file, recording_title, description, recording, date_evt)
         return True
@@ -1796,9 +1767,7 @@ def upload_youtube_recording_to_pod(request, record_id):
             "YouTube content is inaccessible. "
             "This content does not appear to be publicly available."
         )
-        msg["proposition"] = _(
-            "Try changing the address of this recording."
-        )
+        msg["proposition"] = _("Try changing the address of this recording.")
         raise ValueError(msg)
     except Exception as exc:
         msg = {}
@@ -1849,8 +1818,7 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
             pos_pt = source_url.rfind("-")
             if pos_pt != -1:
                 url_api_video = source_url[0:pos_pt].replace(
-                    "/download/videos/",
-                    "/api/v1/videos/"
+                    "/download/videos/", "/api/v1/videos/"
                 )
             else:
                 msg = {}
@@ -1870,9 +1838,7 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
             url_api_video = source_url.replace("/w/", "/api/v1/videos/")
             url_api_video = url_api_video.replace("/videos/watch/", "/api/v1/videos/")
 
-        with requests.get(
-            url_api_video, timeout=(10, 180), stream=True
-        ) as response:
+        with requests.get(url_api_video, timeout=(10, 180), stream=True) as response:
             if response.status_code != 200:
                 msg = {}
                 msg["error"] = _("PeerTube error")
@@ -1887,21 +1853,21 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
             else:
                 pt_video_json = json.loads(response.content.decode("utf-8"))
                 # URL
-                pt_video_url = pt_video_json['url']
+                pt_video_url = pt_video_json["url"]
                 # UUID, useful for the filename
-                pt_video_uuid = pt_video_json['uuid']
-                pt_video_name = pt_video_json['name']
-                pt_video_description = pt_video_json['description']
+                pt_video_uuid = pt_video_json["uuid"]
+                pt_video_name = pt_video_json["name"]
+                pt_video_description = pt_video_json["description"]
                 if pt_video_description is None:
                     pt_video_description = ""
                 else:
                     pt_video_description = pt_video_description.replace("\r\n", "<br>")
                 # Creation date (format : 2023-05-23T08:16:34.690Z)
-                pt_video_created_at = pt_video_json['createdAt']
+                pt_video_created_at = pt_video_json["createdAt"]
                 # Evant date (format : 2023-05-23)
                 date_evt = pt_video_created_at[0:10]
                 # Source video file
-                source_video_url = pt_video_json['files'][0]['fileDownloadUrl']
+                source_video_url = pt_video_json["files"][0]["fileDownloadUrl"]
 
         # Step 2 : Define destination source file
         discrim = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -1925,10 +1891,7 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
         description = _(
             "This video '%(name)s' was uploaded to Pod; its origin is PeerTube : "
             "<a href='%(url)s' target='blank'>%(url)s</a>."
-        ) % {
-            "name": pt_video_name,
-            "url": pt_video_url
-        }
+        ) % {"name": pt_video_name, "url": pt_video_url}
         description = ("%s<br>%s") % (description, pt_video_description)
         save_video(request, dest_file, recording_title, description, recording, date_evt)
 

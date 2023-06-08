@@ -181,7 +181,8 @@ class RecordingAdmin(admin.ModelAdmin):
         "recording_id",
         "meeting",
         "type",
-        "owner")
+        "owner",
+    )
     search_fields = [
         "name",
         "meeting",

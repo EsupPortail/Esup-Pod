@@ -775,7 +775,7 @@ class RecordingTestCase(TestCase):
             owner=user,
             start_at=datetime(2022, 4, 24, 14, 0, 0),
             site=Site.objects.get(id=1),
-            type="bigbluebutton"
+            type="bigbluebutton",
         )
 
     def test_default_attributs(self):

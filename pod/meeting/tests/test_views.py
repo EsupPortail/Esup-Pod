@@ -562,7 +562,7 @@ class MeetingRecordingTestView(TestCase):
             recording_id="d058c39d3dc59d9e9516d95f76eb",
             meeting=meeting,
             site=site,
-            owner=user
+            owner=user,
         )
         print(" --->  SetUp of MeetingEndTestView: OK!")
 
@@ -570,8 +570,7 @@ class MeetingRecordingTestView(TestCase):
         self.client = Client()
         # check auth
         url = reverse(
-            "meeting:internal_recordings",
-            kwargs={"meeting_id": "slugauhasard"}
+            "meeting:internal_recordings", kwargs={"meeting_id": "slugauhasard"}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)  # not auth
@@ -579,8 +578,7 @@ class MeetingRecordingTestView(TestCase):
         self.user2 = User.objects.get(username="pod2")
         self.client.force_login(self.user2)
         url = reverse(
-            "meeting:internal_recordings",
-            kwargs={"meeting_id": "slugauhasard"}
+            "meeting:internal_recordings", kwargs={"meeting_id": "slugauhasard"}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
@@ -588,8 +586,7 @@ class MeetingRecordingTestView(TestCase):
         # check access right with user2
         meeting = Meeting.objects.get(name="test")
         url = reverse(
-            "meeting:internal_recordings",
-            kwargs={"meeting_id": meeting.meeting_id}
+            "meeting:internal_recordings", kwargs={"meeting_id": meeting.meeting_id}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)  # permission denied
@@ -840,7 +837,7 @@ class RecordingDeleteTestView(TestCase):
             recording_id="d058c39d3dc59d9e9516d95f76eb",
             meeting=meeting,
             site=site,
-            owner=user
+            owner=user,
         )
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
@@ -853,8 +850,7 @@ class RecordingDeleteTestView(TestCase):
         self.client = Client()
         meeting = Meeting.objects.get(id=1)
         url = reverse(
-            "meeting:internal_recordings",
-            kwargs={"meeting_id": meeting.meeting_id}
+            "meeting:internal_recordings", kwargs={"meeting_id": meeting.meeting_id}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
@@ -944,7 +940,7 @@ class RecordingUploadTestView(TestCase):
             meeting=meeting,
             site=site,
             owner=user,
-            type="bigbluebutton"
+            type="bigbluebutton",
         )
         Recording.objects.create(
             id=2,
@@ -953,7 +949,7 @@ class RecordingUploadTestView(TestCase):
             site=site,
             owner=user2,
             type="youtube",
-            source_url="https://youtube.url"
+            source_url="https://youtube.url",
         )
         Recording.objects.create(
             id=3,
@@ -962,7 +958,7 @@ class RecordingUploadTestView(TestCase):
             site=site,
             owner=user2,
             type="peertube",
-            source_url="https://peertube.url"
+            source_url="https://peertube.url",
         )
         Recording.objects.create(
             id=4,
@@ -971,7 +967,7 @@ class RecordingUploadTestView(TestCase):
             site=site,
             owner=user2,
             type="bigbluebutton",
-            source_url="https://bbb.url"
+            source_url="https://bbb.url",
         )
         Recording.objects.create(
             id=5,
@@ -980,7 +976,7 @@ class RecordingUploadTestView(TestCase):
             site=site,
             owner=user2,
             type="video",
-            source_url="https://video.url"
+            source_url="https://video.url",
         )
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
@@ -1031,17 +1027,14 @@ class RecordingUploadTestView(TestCase):
             "meeting:upload_internal_recording_to_pod",
             kwargs={
                 "meeting_id": meeting.meeting_id,
-                "recording_id": "e058c39d3dc59d9e9516d95f76eb"
+                "recording_id": "e058c39d3dc59d9e9516d95f76eb",
             },
         )
 
         # Check upload to Pod for internal recording
         response = self.client.post(
             url,
-            {
-                "recording_name": "test recording2",
-                "source_url": "pod.mp4"
-            },
+            {"recording_name": "test recording2", "source_url": "pod.mp4"},
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -1053,15 +1046,13 @@ class RecordingUploadTestView(TestCase):
         self.client.force_login(self.user)
         url = reverse(
             "meeting:upload_external_recording_to_pod",
-            kwargs={
-                "record_id": recordingYt.id
-            },
+            kwargs={"record_id": recordingYt.id},
         )
         response = self.client.post(
             url,
             {
                 "recording_name": "test youtube recording1",
-                "source_url": "https://youtube.url"
+                "source_url": "https://youtube.url",
             },
             follow=True,
         )
@@ -1075,15 +1066,13 @@ class RecordingUploadTestView(TestCase):
         self.client.force_login(self.user)
         url = reverse(
             "meeting:upload_external_recording_to_pod",
-            kwargs={
-                "record_id": recordingPt.id
-            },
+            kwargs={"record_id": recordingPt.id},
         )
         response = self.client.post(
             url,
             {
                 "recording_name": "test peertube recording1",
-                "source_url": "https://peertube.url"
+                "source_url": "https://peertube.url",
             },
             follow=True,
         )
@@ -1097,15 +1086,13 @@ class RecordingUploadTestView(TestCase):
         self.client.force_login(self.user)
         url = reverse(
             "meeting:upload_external_recording_to_pod",
-            kwargs={
-                "record_id": recordingBBB.id
-            },
+            kwargs={"record_id": recordingBBB.id},
         )
         response = self.client.post(
             url,
             {
                 "recording_name": "test external bbb recording1",
-                "source_url": "https://bbb.url"
+                "source_url": "https://bbb.url",
             },
             follow=True,
         )
@@ -1119,15 +1106,13 @@ class RecordingUploadTestView(TestCase):
         self.client.force_login(self.user)
         url = reverse(
             "meeting:upload_external_recording_to_pod",
-            kwargs={
-                "record_id": recordingVideo.id
-            },
+            kwargs={"record_id": recordingVideo.id},
         )
         response = self.client.post(
             url,
             {
                 "recording_name": "test video recording1",
-                "source_url": "https://video.url"
+                "source_url": "https://video.url",
             },
             follow=True,
         )

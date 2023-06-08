@@ -18,13 +18,13 @@ def display_message_with_icon(request, type, message):
         message (String): message without icon
     """
     mapp = {
-        messages.ERROR: 'exclamation-circle',
-        messages.WARNING: 'exclamation-triangle',
-        messages.SUCCESS: 'check-circle',
-        messages.INFO: 'info-circle',
-        messages.DEBUG: 'code'
+        messages.ERROR: "exclamation-circle",
+        messages.WARNING: "exclamation-triangle",
+        messages.SUCCESS: "check-circle",
+        messages.INFO: "info-circle",
+        messages.DEBUG: "code",
     }
-    icon = mapp.get(type, 'info-circle')
+    icon = mapp.get(type, "info-circle")
     msg = "<div class='icon'><i class='bi bi-" + icon + "'></i></div>"
     msg += message
     messages.add_message(request, type, mark_safe(msg))

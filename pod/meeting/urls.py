@@ -43,24 +43,22 @@ if not views.MEETING_DISABLE_RECORD:
             name="delete_internal_recording",
         ),
         path(
-            "external_recordings/",
-            views.external_recordings,
-            name="external_recordings"
+            "external_recordings/", views.external_recordings, name="external_recordings"
         ),
         path(
             "external_recording/add",
             views.add_or_edit_external_recording,
-            name="add_external_recording"
+            name="add_external_recording",
         ),
         path(
             "external_recording/edit/<slug:id>/",
             views.add_or_edit_external_recording,
-            name="edit_external_recording"
+            name="edit_external_recording",
         ),
         path(
             "external_recording/delete/<slug:id>/",
             views.delete_external_recording,
-            name="delete_external_recording"
+            name="delete_external_recording",
         ),
     ]
 

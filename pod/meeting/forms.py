@@ -474,8 +474,10 @@ class RecordingForm(forms.ModelForm):
     is_superuser = False
 
     fieldsets = (
-        (None, {"fields":
-                (
+        (
+            None,
+            {
+                "fields": (
                     "name",
                     "type",
                     "source_url",
@@ -484,7 +486,8 @@ class RecordingForm(forms.ModelForm):
                     "additional_owners",
                     "site",
                 )
-                }),
+            },
+        ),
     )
 
     def filter_fields_admin(form):
@@ -520,7 +523,7 @@ class RecordingForm(forms.ModelForm):
             validator = URLValidator()
             validator(cleaned_data["source_url"])
         except ValidationError:
-            self.add_error('source_url', _('Please enter a valid address'))
+            self.add_error("source_url", _("Please enter a valid address"))
         self.clean_add_owner(cleaned_data)
 
     def __init__(self, *args, **kwargs):
@@ -544,9 +547,7 @@ class RecordingForm(forms.ModelForm):
         self.fields = add_placeholder_and_asterisk(self.fields)
 
         # We don't change the user who uploaded the record
-        hidden_fields = (
-            "uploaded_to_pod_by",
-        )
+        hidden_fields = ("uploaded_to_pod_by",)
         for field in hidden_fields:
             if self.fields.get(field, None):
                 self.fields[field].widget = forms.HiddenInput()

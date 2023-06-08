@@ -994,10 +994,7 @@ class Recording(models.Model):
 
     # Recording's site
     site = models.ForeignKey(
-        Site,
-        verbose_name=_("Site"),
-        on_delete=models.CASCADE,
-        default=SITE_ID
+        Site, verbose_name=_("Site"), on_delete=models.CASCADE, default=SITE_ID
     )
 
     # Type of external recording
