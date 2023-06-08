@@ -2,7 +2,6 @@
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate, pre_migrate
 from django.utils.translation import gettext_lazy as _
-from django.core import serializers
 from django.db import connection
 
 
@@ -58,25 +57,33 @@ class VideoConfig(AppConfig):
 
     def save_previous_data(self, sender, **kwargs):
         global VIDEO_RENDITION
-        results = []
+        query_tables = [
+            (VIDEO_RENDITION, 'SELECT "video_videorendition"."id", "video_videorendition"."resolution", "video_videorendition"."minrate", "video_videorendition"."video_bitrate", "video_videorendition"."maxrate", "video_videorendition"."encoding_resolution_threshold", "video_videorendition"."audio_bitrate", "video_videorendition"."encode_mp4" FROM "video_videorendition"'),
+            (ENCODING_VIDEO, 'SELECT "video_encodingvideo"."id", "video_encodingvideo"."name", "video_encodingvideo"."video_id", "video_encodingvideo"."rendition_id", "video_encodingvideo"."encoding_format", "video_encodingvideo"."source_file" FROM "video_encodingvideo" ORDER BY "video_encodingvideo"."name" ASC'),
+            (ENCODING_STEP, 'SELECT "video_encodingstep"."id", "video_encodingstep"."video_id", "video_encodingstep"."num_step", "video_encodingstep"."desc_step" FROM "video_encodingstep" INNER JOIN "video_video" ON ("video_encodingstep"."video_id" = "video_video"."id") ORDER BY "video_video"."date_added" DESC, "video_video"."id" DESC'),
+            (ENCODING_LOG, 'SELECT "video_encodinglog"."id", "video_encodinglog"."video_id", "video_encodinglog"."log", "video_encodinglog"."logfile" FROM "video_encodinglog" INNER JOIN "video_video" ON ("video_encodinglog"."video_id" = "video_video"."id") ORDER BY "video_video"."date_added" DESC, "video_video"."id" DESC'),
+            (ENCODING_AUDIO, 'SELECT "video_encodingaudio"."id", "video_encodingaudio"."name", "video_encodingaudio"."video_id", "video_encodingaudio"."encoding_format", "video_encodingaudio"."source_file" FROM "video_encodingaudio" ORDER BY "video_encodingaudio"."name" ASC')
+        ]
+
         try:
             with connection.cursor() as c:
-                c.execute('SELECT "video_videorendition"."id","video_videorendition"."resolution", "video_videorendition"."minrate", "video_videorendition"."video_bitrate", "video_videorendition"."maxrate", "video_videorendition"."encoding_resolution_threshold", "video_videorendition"."audio_bitrate", "video_videorendition"."encode_mp4" FROM "video_videorendition"')
-                results = c.fetchall()
-                for res in results:
-                    VIDEO_RENDITION["%s" % res[0]] = [res[1], res[2], res[3], res[4], res[5], res[6], res[7]]
-                
-                # Query for ENCODING_VIDEO
-                c.execute('SELECT "video_encodingvideo"."id", "video_encodingvideo"."name", "video_encodingvideo"."video_id", "video_encodingvideo"."rendition_id", "video_encodingvideo"."encoding_format", "video_encodingvideo"."source_file" FROM "video_encodingvideo" ORDER BY "video_encodingvideo"."name" ASC')
-                results = c.fetchall()
-                for res in results:
-                    ENCODING_VIDEO["%s" % res[0]] = [res[1], res[2], res[3], res[4], res[5]]
-            
+                for data, query in query_tables:
+                    c.execute(query)
+                    results = c.fetchall()
+                    for res in results:
+                        data["%s" % res[0]] = list(res[1:])
         except Exception:  # OperationalError or MySQLdb.ProgrammingError
             pass  # print('OperationalError : ', oe)
 
     def send_previous_data(self, sender, **kwargs):
-        from pod.video_encode_transcript.models import VideoRendition, EncodingVideo
+        from pod.video_encode_transcript.models import (
+            VideoRendition,
+            EncodingVideo,
+            EncodingStep,
+            EncodingLog,
+            EncodingAudio,
+        )
+
         for id in VIDEO_RENDITION:
             vr = VideoRendition.objects.create(
                 id=id,
@@ -98,7 +105,29 @@ class VideoConfig(AppConfig):
                 encoding_format=ENCODING_VIDEO[id][3],
                 source_file=ENCODING_VIDEO[id][4],
             )
-            
-        # for id in ENCODING_AUDIO:
-        # for id in ENCODING_LOG:
-        # for id in ENCODING_STEP:
+            ev.save()
+        for id in ENCODING_STEP:
+            ea = EncodingStep.objects.creat(
+                id=id,
+                video_id=ENCODING_STEP[id][0],
+                num_step=ENCODING_STEP[id][1],
+                desc_step=ENCODING_STEP[id][2],
+            )
+            ea.save()
+        for id in ENCODING_LOG:
+            el = EncodingLog.objects.creat(
+                id=id,
+                video_id=ENCODING_LOG[id][0],
+                log=ENCODING_LOG[id][1],
+                logfile=ENCODING_LOG[id][2],
+            )
+            el.save()
+        for id in ENCODING_AUDIO:
+            es = EncodingAudio.objects.creat(
+                id=id,
+                name=ENCODING_AUDIO[id][0],
+                video_id=ENCODING_AUDIO[id][1],
+                encoding_format=ENCODING_AUDIO[id][2],
+                source_file=ENCODING_AUDIO[id][3],
+            )
+            es.save()
