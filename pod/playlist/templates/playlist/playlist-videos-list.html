@@ -27,5 +27,11 @@
     {% trans "Loading…" %}
   </div>{% endspaceless %}
 {% block more_script %}
-
+{% if in_favorites_playlist %}
+  <script src="{% static 'js/video-favorites-remove-card.js' %}?ver={{VERSION}}"></script>
+{% else %}
+  <script src="{% static 'js/utils-playlist.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/video-list-favorites-card.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/video-playlists-remove-card.js' %}?ver={{VERSION}}"></script>
+{% endif %}
 {% endblock %}

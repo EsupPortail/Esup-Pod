@@ -4,7 +4,7 @@
 {% spaceless %}
 
 {% if playlist and not in_favorites_playlist%}
-  <a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" title="{% trans "Remove from playlist" %}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
+  <a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" title="{% trans "Remove from playlist" %}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1 remove-from-playlist-btn-link" id="remove-from-playlist-btn-{{ video.id }}">
       <i class="bi bi-folder-minus" aria-hidden="true"></i>
   </a>
 {% endif %}
@@ -13,11 +13,11 @@
 {% get_favorite_playlist user as fav_playlist %}
 {% if USE_FAVORITES and video.is_draft is False and not hide_favorite_link is True %}
   {% if is_favorite %}
-  <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}" title="{% trans "Remove from favorite" %}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
+  <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}" title="{% trans "Remove from favorite" %}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1 favorite-btn-link" id="favorite-btn-{{ video.id }}">
     <i class="bi-star-fill" aria-hidden="true"></i>
   </a>
   {% else %}
-  <a href="{% url 'playlist:add-video' fav_playlist.slug video.slug %}" title="{% trans "Add in favorite" %}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
+  <a href="{% url 'playlist:add-video' fav_playlist.slug video.slug %}" title="{% trans "Add in favorite" %}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1 favorite-btn-link" id="favorite-btn-{{ video.id }}">
     <i class="bi-star" aria-hidden="true"></i>
   </a>
   {% endif %}

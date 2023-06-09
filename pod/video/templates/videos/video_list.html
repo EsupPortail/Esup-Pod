@@ -25,5 +25,6 @@ data-nextPageNumber = "{% if videos.has_next %}{{ videos.next_page_number }}{% e
 </div>
 {% endspaceless %}
 {% block more_script %}
-
+<script src="{% static 'js/utils-playlist.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/video-list-favorites-card.js' %}?ver={{VERSION}}"></script>
 {% endblock %}

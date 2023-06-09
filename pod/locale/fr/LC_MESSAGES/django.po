@@ -6968,7 +6968,7 @@ msgstr "Afficher toutes les vidéos"
 
 #: pod/video/templates/videos/link_video.html
 msgid "Remove from playlist"
-msgstr "Retirer des favoris"
+msgstr "Retirer de la liste de lecture"
 
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video-info.html
