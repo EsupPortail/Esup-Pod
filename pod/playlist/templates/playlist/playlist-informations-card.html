@@ -21,8 +21,9 @@
     <p class="playlist-additional-owners">
       <b>{% trans "Additional owners" %}</b> : <!--TODO-->
       <ul>
-        <!-- FOREACH additionals owners in playlist-->
-        <li></li>
+        {% for additional_owner in additional_owners %}
+          <li><a class="btn btn-link" href="{% url 'videos:videos' %}?owner={{ additional_owner.username }}">{{ additional_owner }}</a></li>
+        {% endfor %}
       </ul>
     </p>
     <!--ENDIF-->

@@ -18,6 +18,7 @@ from .forms import PlaylistForm, PlaylistRemoveForm
 import json
 
 from .utils import (
+    get_additional_owners,
     get_favorite_playlist_for_user,
     get_playlist,
     get_playlist_list_for_user,
@@ -90,9 +91,9 @@ def playlist_content(request, slug):
         videos = paginator.page(paginator.num_pages)
 
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
+    additional_owners = get_additional_owners(playlist)
     playlist_url = reverse("playlist:content", kwargs={"slug": get_favorite_playlist_for_user(request.user).slug})
     in_favorites_playlist = (playlist_url == request.path)
-
     return render(
         request,
         "playlist/playlist.html",
@@ -104,6 +105,7 @@ def playlist_content(request, slug):
             "count_videos": count_videos,
             "types": request.GET.getlist("type"),
             "owners": request.GET.getlist("owner"),
+            "additional_owners": additional_owners,
             "disciplines": request.GET.getlist("discipline"),
             "tags_slug": request.GET.getlist("tag"),
             "cursus_selected": request.GET.getlist("cursus"),
