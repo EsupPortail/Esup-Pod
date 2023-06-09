@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-08 11:55+0000\n"
+"POT-Creation-Date: 2023-06-09 12:44+0000\n"
 "PO-Revision-Date: 2023-02-15 16:55+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -5007,6 +5007,14 @@ msgid "Informations about the playlist"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist-informations-card.html
+msgid "Last updated on"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist-informations-card.html
+msgid "at"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist-informations-card.html
 msgid "Playlist owner"
 msgstr ""
 
@@ -5061,6 +5069,10 @@ msgstr ""
 msgid ""
 "You haven't got any playlist yet, please use the \"Add a playlist\" button "
 "to add one."
+msgstr ""
+
+#: pod/playlist/views.py
+msgid "Favorites"
 msgstr ""
 
 #: pod/playlist/views.py

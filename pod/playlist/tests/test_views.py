@@ -479,7 +479,7 @@ class TestStartupPlaylistParamTestCase(TestCase):
             "Test if status code equal 200.",
         )
         self.assertTrue(
-            _(f"/video/{self.video.slug}/?playlist={self.simple_playlist.slug}") in response.content.decode(),
+            "/video/{self.video.slug}/?playlist={self.simple_playlist.slug}" in response.content.decode(),
             "Test if the link is present into the playlists page.",
         )
         self.client.logout()
@@ -497,7 +497,7 @@ class TestStartupPlaylistParamTestCase(TestCase):
             "Test if status code equal 200.",
         )
         self.assertTrue(
-            _("disabled") in response.content.decode(),
+            "disabled" in response.content.decode(),
             "Test if the disabled is present into the playlists page.",
         )
         self.client.logout()

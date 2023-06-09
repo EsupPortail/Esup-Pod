@@ -93,21 +93,21 @@ def playlist_content(request, slug):
     playlist_url = reverse("playlist:content", kwargs={
                            "slug": get_favorite_playlist_for_user(request.user).slug})
     in_favorites_playlist = (playlist_url == request.path)
+    if in_favorites_playlist:
+        page_title = _("Playlist") + " : " + _("Favorites")
+    else:
+        page_title = _("Playlist") + " : " + playlist.name
     return render(
         request,
         "playlist/playlist.html",
         {
-            "page_title": _("Playlist") + " : " + playlist.name,
+            "page_title": page_title,
             "videos": videos,
             "playlist": playlist,
             "in_favorites_playlist": in_favorites_playlist,
             "count_videos": count_videos,
-            "types": request.GET.getlist("type"),
             "owners": request.GET.getlist("owner"),
             "additional_owners": additional_owners,
-            "disciplines": request.GET.getlist("discipline"),
-            "tags_slug": request.GET.getlist("tag"),
-            "cursus_selected": request.GET.getlist("cursus"),
             "full_path": full_path,
             "ownersInstances": ownersInstances,
             "cursus_list": CURSUS_CODES,
