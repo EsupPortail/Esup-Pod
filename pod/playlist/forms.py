@@ -1,11 +1,7 @@
 """Forms used in playlist application."""
-from typing import Any, Mapping, Optional, Type, Union
 from django import forms
-from django.contrib import admin
-from django.contrib.admin import widgets
 from django.core.exceptions import ValidationError
 from django.db.models.query import QuerySet
-from django.forms.utils import ErrorList
 from django.utils.translation import ugettext_lazy as _
 from django_select2 import forms as s2forms
 

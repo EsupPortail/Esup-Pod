@@ -3,7 +3,6 @@ from django.template import Library
 from pod.playlist.utils import check_video_in_playlist, get_favorite_playlist_for_user
 from pod.video.models import Video
 
-from ..models import Playlist
 
 register = Library()
 

@@ -396,7 +396,8 @@ class TestAddOrRemoveFormTestCase(TestCase):
             owner=self.user,
         )
         self.addUrl = reverse("playlist:add")
-        self.editUrl = reverse("playlist:edit", kwargs={"slug": self.simple_playlist.slug})
+        self.editUrl = reverse("playlist:edit", kwargs={
+                               "slug": self.simple_playlist.slug})
 
     @override_settings(USE_PLAYLIST=True)
     def test_add_form_page(self) -> None:
@@ -415,7 +416,6 @@ class TestAddOrRemoveFormTestCase(TestCase):
         )
         self.client.logout()
         print(" --->  test_add_form_page ok")
-
 
     @override_settings(USE_PLAYLIST=True)
     def test_edit_form_page(self) -> None:
@@ -479,7 +479,7 @@ class TestStartupPlaylistParamTestCase(TestCase):
             "Test if status code equal 200.",
         )
         self.assertTrue(
-            _(f"/video/{self.video.slug}/?playlist={self.simple_playlist.slug}") in response.content.decode(),
+            "/video/{self.video.slug}/?playlist={self.simple_playlist.slug}" in response.content.decode(),
             "Test if the link is present into the playlists page.",
         )
         self.client.logout()
@@ -497,7 +497,7 @@ class TestStartupPlaylistParamTestCase(TestCase):
             "Test if status code equal 200.",
         )
         self.assertTrue(
-            _(f"disabled") in response.content.decode(),
+            "disabled" in response.content.decode(),
             "Test if the disabled is present into the playlists page.",
         )
         self.client.logout()

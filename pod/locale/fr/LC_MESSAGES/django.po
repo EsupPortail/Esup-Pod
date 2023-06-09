@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-08 11:55+0000\n"
+"POT-Creation-Date: 2023-06-09 12:44+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -5262,6 +5262,14 @@ msgid "Informations about the playlist"
 msgstr "Informations de la liste de lecture"
 
 #: pod/playlist/templates/playlist/playlist-informations-card.html
+msgid "Last updated on"
+msgstr "Mis à jour le"
+
+#: pod/playlist/templates/playlist/playlist-informations-card.html
+msgid "at"
+msgstr "à"
+
+#: pod/playlist/templates/playlist/playlist-informations-card.html
 msgid "Playlist owner"
 msgstr "Propriétaire de la liste de lecture"
 
@@ -5319,6 +5327,11 @@ msgid ""
 msgstr ""
 "Vous n’avez pas encore créé de liste de lecture, veuillez cliquer sur le "
 "bouton « Ajouter une nouvelle liste de lecture » pour en ajouter une."
+
+#: pod/playlist/views.py
+#| msgid "Favorite videos"
+msgid "Favorites"
+msgstr "Favoris"
 
 #: pod/playlist/views.py
 msgid "The playlist has been deleted."

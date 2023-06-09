@@ -1,5 +1,4 @@
 """Esup-Pod playlist utilities."""
-from os import name
 from django.contrib.auth.models import User
 from django.db.models import Max
 from django.urls import reverse
@@ -198,7 +197,7 @@ def get_playlist(slug: str) -> Playlist:
 
 def get_favorite_playlist_for_user(user: User) -> Playlist:
     """
-    Get the favorite playlist of a user;
+    Get the favorite playlist of a user.
 
     Args:
         user (:class:`django.contrib.auth.models.User`): The user object
@@ -232,6 +231,20 @@ def get_playlists_for_additional_owner(user: User) -> list:
         list (:class:`list(pod.playlist.models.Playlist)`): The list of playlist.
     """
     return Playlist.objects.filter(additional_owners=user)
+
+
+def get_additional_owners(playlist: Playlist) -> list:
+    """
+    Get additional owners list.
+
+    Args:
+        playlist (:class:`pod.playlist.models.Playlist`): The playlist objet
+
+    Returns:
+        list (:class:`list(pod.authentication.models.Owner)`): The list of additional owners.
+    """
+    return playlist.additional_owners.all()
+
 
 def get_link_to_start_playlist(user: User, playlist: Playlist) -> str:
     """
