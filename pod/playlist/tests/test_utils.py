@@ -5,15 +5,16 @@ from pod.video.models import Type, Video
 from pod.playlist.models import Playlist, PlaylistContent
 from pod.playlist.utils import (
     check_video_in_playlist,
+    get_link_to_start_playlist,
     get_next_rank,
     get_number_playlist,
+    get_number_video_added_in_playlist,
+    get_number_video_in_playlist,
     get_playlist,
     get_playlist_list_for_user,
     get_playlists_for_additional_owner,
     get_public_playlist,
     get_video_list_for_playlist,
-    get_number_video_added_in_playlist,
-    get_number_video_in_playlist,
     user_add_video_in_playlist,
     user_has_playlist,
     user_remove_video_from_playlist,
@@ -292,3 +293,12 @@ class PlaylistTestUtils(TestCase):
             "The playlist is present on additional playlist list."
         )
         print(" --->  test_get_playlists_for_additional_owner ok")
+
+    def test_get_link_to_start_playlist(self) -> None:
+        """Test if get_link_to_start_playlist works correctly."""
+        user_add_video_in_playlist(self.playlist, self.video)
+        self.assertEqual(
+            get_link_to_start_playlist(self.user, self.playlist),
+            f"/video/{self.video.slug}/?playlist={self.playlist.slug}"
+        )
+        print(" --->  test_get_link_to_start_playlist ok")

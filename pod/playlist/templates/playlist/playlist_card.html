@@ -2,6 +2,7 @@
 {% load playlist_buttons %}
 {% spaceless %}
     {% user_can_edit_or_remove playlist as can_edit_or_remove %}
+    {% get_link_to_start_playlist playlist as link_to_start %}
     <div class="card box-shadow pod-card--video meeting-card">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
@@ -37,7 +38,7 @@
                     {% include "playlist/playlist_link.html" %}
                 </footer>
             {% endif %}
-            <a class="btn btn-primary btn-sm link-center-pod text-white" href="#">
+            <a class="btn btn-primary btn-sm link-center-pod text-white {% if link_to_start == "" %}disabled{% endif %}" href="{{ link_to_start }}" title="{% trans "Start the playlist" %}">
                 <i class="bi bi-play-fill pod-add"></i><span>{% trans "Start the playlist" %}</span>
               </a>
         </div>

@@ -9,7 +9,6 @@ from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.http import Http404, HttpResponseBadRequest
 from django.db import transaction
 
-from pod.main.utils import is_ajax
 from pod.main.views import in_maintenance
 from pod.video.models import Video
 from .models import Playlist, PlaylistContent
@@ -33,8 +32,6 @@ from .utils import (
 from pod.video.views import CURSUS_CODES, get_owners_has_instances
 
 
-
-
 @login_required(redirect_field_name="referrer")
 def playlist_list(request):
     """Render playlists page."""
@@ -48,7 +45,8 @@ def playlist_list(request):
     elif visibility == "allmy":
         playlists = get_playlist_list_for_user(request.user)
     elif visibility == "all":
-        playlists = (get_playlist_list_for_user(request.user) | get_public_playlist() | get_playlists_for_additional_owner(request.user))
+        playlists = (get_playlist_list_for_user(request.user) | get_public_playlist(
+        ) | get_playlists_for_additional_owner(request.user))
     else:
         return redirect(reverse('playlist:list'))
     return render(
@@ -92,7 +90,8 @@ def playlist_content(request, slug):
 
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
     additional_owners = get_additional_owners(playlist)
-    playlist_url = reverse("playlist:content", kwargs={"slug": get_favorite_playlist_for_user(request.user).slug})
+    playlist_url = reverse("playlist:content", kwargs={
+                           "slug": get_favorite_playlist_for_user(request.user).slug})
     in_favorites_playlist = (playlist_url == request.path)
     return render(
         request,
@@ -161,14 +160,15 @@ def remove_playlist_view(request, slug: str):
     return render(
         request,
         "playlist/delete.html",
-        {"playlist": playlist, "form": form, "page_title": f"{_('Delete the playlist')} \"{playlist.name}\""}
+        {"playlist": playlist, "form": form,
+            "page_title": f"{_('Delete the playlist')} \"{playlist.name}\""}
     )
 
 
 @csrf_protect
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
-def add_or_edit(request, slug: str=None):
+def add_or_edit(request, slug: str = None):
     """Add or edit view with form."""
     options = ""
     page_title = ""
@@ -176,10 +176,10 @@ def add_or_edit(request, slug: str=None):
     if in_maintenance():
         return redirect(reverse("maintenance"))
     elif request.method == "POST":
-        form = PlaylistForm(request.POST, instance=playlist) if playlist else PlaylistForm(request.POST)
+        form = PlaylistForm(
+            request.POST, instance=playlist) if playlist else PlaylistForm(request.POST)
         if form.is_valid():
-            # raise Exception(f"request.POST.get('additional_owners'): {request.POST.get('additional_owners')} [{type(request.POST.get('additional_owners'))}]")
-            new_playlist = form.save(commit=False) if playlist == None else playlist
+            new_playlist = form.save(commit=False) if playlist is None else playlist
             new_playlist.owner = request.user
             new_playlist.save()
             new_playlist.additional_owners.clear()
@@ -190,7 +190,8 @@ def add_or_edit(request, slug: str=None):
                 new_playlist.save()
             if request.GET.get("next"):
                 video_slug = request.GET.get("next").split("/")[2]
-                user_add_video_in_playlist(new_playlist, Video.objects.get(slug=video_slug))
+                user_add_video_in_playlist(
+                    new_playlist, Video.objects.get(slug=video_slug))
                 messages.add_message(
                     request,
                     messages.INFO,
@@ -221,6 +222,7 @@ def add_or_edit(request, slug: str=None):
     })
 
 # FAVORITES
+
 
 @csrf_protect
 def favorites_save_reorganisation(request, slug: str):
