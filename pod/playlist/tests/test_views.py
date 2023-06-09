@@ -7,11 +7,11 @@ from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.test import override_settings, TestCase
 
-from pod.playlist.utils import user_add_video_in_playlist
 from pod.video.models import Type, Video
 
 from ...playlist import context_processors
 from ..models import Playlist, PlaylistContent
+from ..utils import user_add_video_in_playlist
 
 import importlib
 
@@ -434,3 +434,71 @@ class TestAddOrRemoveFormTestCase(TestCase):
         )
         self.client.logout()
         print(" --->  test_edit_form_page ok")
+
+
+class TestStartupPlaylistParamTestCase(TestCase):
+    """Add or remove form test case."""
+
+    fixtures = ["initial_data.json"]
+
+    def setUp(self) -> None:
+        """Set up required objects for next tests."""
+        self.user = User.objects.create(
+            username="simple.user",
+            password="user1234user",
+        )
+        self.simple_playlist = Playlist.objects.create(
+            name="My simple playlist",
+            visibility="public",
+            owner=self.user,
+        )
+        self.playlist_without_videos = Playlist.objects.create(
+            name="My playlist without videos",
+            visibility="public",
+            owner=self.user,
+        )
+        self.video = Video.objects.create(
+            title="First video",
+            owner=self.user,
+            video="first_video.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        user_add_video_in_playlist(self.simple_playlist, self.video)
+        self.url = reverse("playlist:list")
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_link_in_playlists_page(self) -> None:
+        """Test if the link is present into the playlists page."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(
+            response.status_code,
+            200,
+            "Test if status code equal 200.",
+        )
+        self.assertTrue(
+            _(f"/video/{self.video.slug}/?playlist={self.simple_playlist.slug}") in response.content.decode(),
+            "Test if the link is present into the playlists page.",
+        )
+        self.client.logout()
+        print(" --->  test_link_in_playlists_page ok")
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_disabled_in_playlists_page(self) -> None:
+        """Test if the disabled is present into the playlists page."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(
+            response.status_code,
+            200,
+            "Test if status code equal 200.",
+        )
+        self.assertTrue(
+            _(f"disabled") in response.content.decode(),
+            "Test if the disabled is present into the playlists page.",
+        )
+        self.client.logout()
+        print(" --->  test_disabled_in_playlists_page ok")

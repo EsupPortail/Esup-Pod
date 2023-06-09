@@ -2,7 +2,7 @@
 from os import name
 from django.contrib.auth.models import User
 from django.db.models import Max
-
+from django.urls import reverse
 
 from pod.playlist.models import Playlist, PlaylistContent
 from pod.video.models import Video
@@ -232,3 +232,20 @@ def get_playlists_for_additional_owner(user: User) -> list:
         list (:class:`list(pod.playlist.models.Playlist)`): The list of playlist.
     """
     return Playlist.objects.filter(additional_owners=user)
+
+def get_link_to_start_playlist(user: User, playlist: Playlist) -> str:
+    """
+    Get the link to start a specific playlist.
+
+    Args:
+        user (:class:`django.contrib.auth.models.User`): The user.
+        playlist (:class:`pod.playlist.models.Playlist`): The specific playlist.
+
+    Returns:
+        str: Link to start the playlist.
+    """
+    first_video = playlist.get_first_video()
+    if first_video:
+        return f"{reverse('video:video', kwargs={'slug': first_video.slug})}?playlist={playlist.slug}"
+    else:
+        return ""
