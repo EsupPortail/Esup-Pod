@@ -58,7 +58,18 @@ class VideoConfig(AppConfig):
     def save_previous_data(self, sender, **kwargs):
         try:
             with connection.cursor() as c:
-                c.execute('SELECT "video_videorendition"."id","video_videorendition"."resolution", "video_videorendition"."minrate", "video_videorendition"."video_bitrate", "video_videorendition"."maxrate", "video_videorendition"."encoding_resolution_threshold", "video_videorendition"."audio_bitrate", "video_videorendition"."encode_mp4" FROM "video_videorendition" ORDER BY "video_videorendition"."name" ASC')
+                c.execute('''
+                          SELECT "video_videorendition"."id",
+                          "video_videorendition"."resolution",
+                          "video_videorendition"."minrate",
+                          "video_videorendition"."video_bitrate",
+                          "video_videorendition"."maxrate",
+                          "video_videorendition"."encoding_resolution_threshold",
+                          "video_videorendition"."audio_bitrate",
+                          "video_videorendition"."encode_mp4"
+                          FROM "video_videorendition"
+                          ORDER BY "video_videorendition"."name" ASC'
+                          ''')
                 results = c.fetchall()
                 for res in results:
                     VIDEO_RENDITION["%s" % res[0]] = [res[1], res[2], res[3], res[4], res[5], res[6], res[7]]
