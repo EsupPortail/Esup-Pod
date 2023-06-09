@@ -1,4 +1,6 @@
 from django.template import Library
+from pod.playlist.models import Playlist
+from django.utils.translation import ugettext_lazy as _
 
 from pod.playlist.utils import check_video_in_playlist, get_favorite_playlist_for_user
 from pod.video.models import Video
@@ -25,3 +27,19 @@ def is_favorite(user, video: Video) -> bool:
         bool: True if the user has the video as favorite, False otherwise
     """
     return check_video_in_playlist(get_favorite_playlist_for_user(user), video)
+
+@register.simple_tag(name="get_playlist_name")
+def get_playlist_name(playlist: Playlist) -> str:
+    """
+    Get the playlist name.
+
+    Args:
+        playlist (:class:`pod.playlist.models.Playlist`): The specific playlist
+
+    Returns:
+        str: The favorites playlist name
+    """
+    if playlist.name == "Favorites":
+        return _("Favorites")
+    else:
+        return playlist.name
