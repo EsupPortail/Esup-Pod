@@ -56,7 +56,6 @@ class VideoConfig(AppConfig):
         post_migrate.connect(self.send_previous_data, sender=self)
 
     def save_previous_data(self, sender, **kwargs):
-        global VIDEO_RENDITION
         query_tables = [
             (VIDEO_RENDITION, 'SELECT "video_videorendition"."id", "video_videorendition"."resolution", "video_videorendition"."minrate", "video_videorendition"."video_bitrate", "video_videorendition"."maxrate", "video_videorendition"."encoding_resolution_threshold", "video_videorendition"."audio_bitrate", "video_videorendition"."encode_mp4" FROM "video_videorendition"'),
             (ENCODING_VIDEO, 'SELECT "video_encodingvideo"."id", "video_encodingvideo"."name", "video_encodingvideo"."video_id", "video_encodingvideo"."rendition_id", "video_encodingvideo"."encoding_format", "video_encodingvideo"."source_file" FROM "video_encodingvideo" ORDER BY "video_encodingvideo"."name" ASC'),
@@ -97,7 +96,7 @@ class VideoConfig(AppConfig):
             )
             vr.save()
         for id in ENCODING_VIDEO:
-            ev = EncodingVideo.objects.creat(
+            ev = EncodingVideo.objects.create(
                 id=id,
                 name=ENCODING_VIDEO[id][0],
                 video_id=ENCODING_VIDEO[id][1],
@@ -107,7 +106,7 @@ class VideoConfig(AppConfig):
             )
             ev.save()
         for id in ENCODING_STEP:
-            ea = EncodingStep.objects.creat(
+            ea = EncodingStep.objects.create(
                 id=id,
                 video_id=ENCODING_STEP[id][0],
                 num_step=ENCODING_STEP[id][1],
@@ -115,7 +114,7 @@ class VideoConfig(AppConfig):
             )
             ea.save()
         for id in ENCODING_LOG:
-            el = EncodingLog.objects.creat(
+            el = EncodingLog.objects.create(
                 id=id,
                 video_id=ENCODING_LOG[id][0],
                 log=ENCODING_LOG[id][1],
@@ -123,7 +122,7 @@ class VideoConfig(AppConfig):
             )
             el.save()
         for id in ENCODING_AUDIO:
-            es = EncodingAudio.objects.creat(
+            es = EncodingAudio.objects.create(
                 id=id,
                 name=ENCODING_AUDIO[id][0],
                 video_id=ENCODING_AUDIO[id][1],
