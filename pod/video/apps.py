@@ -44,6 +44,21 @@ ENCODING_AUDIO = {}
 ENCODING_LOG = {}
 ENCODING_STEP = {}
 
+def fix_transcript(sender, **kwargs):
+    """
+    Transcript field change from boolean to charfield since the version 3.2.0
+    This fix change value to set the default lang value if necessary
+    """
+    from pod.video.models import Video
+
+    for vid in Video.objects.all():
+        if vid.transcript == "1":
+            vid.transcript = vid.main_lang
+            vid.save()
+        elif vid.transcript == "0":
+            vid.transcript = ""
+            vid.save()
+
 
 class VideoConfig(AppConfig):
     name = "pod.video"
@@ -54,6 +69,7 @@ class VideoConfig(AppConfig):
         post_migrate.connect(set_default_site, sender=self)
         pre_migrate.connect(self.save_previous_data, sender=self)
         post_migrate.connect(self.send_previous_data, sender=self)
+        post_migrate.connect(fix_transcript, sender=self)
 
     def save_previous_data(self, sender, **kwargs):
         try:

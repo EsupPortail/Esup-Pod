@@ -184,7 +184,7 @@ def date_string_to_second(date_string):
             (elapsed_time.hour * 3600) + (elapsed_time.minute * 60) + elapsed_time.second
         )
     elif DEBUG:
-        print('Error date_string_to_second : Excepted format : "hh:mm:ss"')
+        print('Error date_string_to_second: Excepted format: "hh:mm:ss"')
     return seconds
 
 
@@ -232,7 +232,7 @@ def check_size_not_changing(resource_path, max_attempt=6):
                 logger.error(f"File: {resource_path} is still changing")
                 raise Exception("checkFileSize aborted")
         else:
-            logger.info(f"Size checked for {resource_path} : {new_size}")
+            logger.info(f"Size checked for {resource_path}: {new_size}")
             size_match = True
 
 

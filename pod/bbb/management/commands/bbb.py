@@ -619,10 +619,10 @@ def convert_format(recording_url, internal_meeting_id, html_message_error, messa
             print_if_debug(
                 "   + Converting recording_url "
                 "from 2.0 format to 2.3 format. "
-                "New recording_url : " + recording_url
+                "New recording_url: " + recording_url
             )
     except Exception as e:
-        err = "Problem to convert format : " + str(e) + ". " + traceback.format_exc()
+        err = "Problem to convert format: " + str(e) + ". " + traceback.format_exc()
         message_error += err + "\n"
         html_message_error += "<li>" + err + "</li>"
         print_if_debug(err)
@@ -711,7 +711,7 @@ class Command(BaseCommand):
                 if USE_BBB:
                     print_if_debug(
                         "\n\n*** An email BBB job [Error(s) "
-                        "encountered] was sent to Pod admins, with message : "
+                        "encountered] was sent to Pod admins, with message: "
                         "***\n\n" + message_error
                     )
                     mail_admins(
@@ -724,7 +724,7 @@ class Command(BaseCommand):
                     print_if_debug(
                         "\n\n*** Error(s) encountered but no email sent "
                         "\n\n*** (USE_BBB = false) "
-                        "***\n\nMessage :" + message_error
+                        "***\n\nMessage: " + message_error
                     )
         else:
             print("*** Warning: you must give some arguments: %s ***" % self.valid_args)

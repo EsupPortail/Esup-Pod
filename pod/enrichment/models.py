@@ -301,7 +301,7 @@ class Enrichment(models.Model):
         super(Enrichment, self).save(*args, **kwargs)
 
     def __str__(self):
-        return "Media : {0} - Video: {1}".format(self.title, self.video)
+        return "Media: {0} - Video: {1}".format(self.title, self.video)
 
 
 @receiver(post_save, sender=Enrichment)

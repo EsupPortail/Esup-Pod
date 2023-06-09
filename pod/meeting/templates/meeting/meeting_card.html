@@ -4,7 +4,6 @@
   <!-- meeting_card.html -->
   <div class="card-header">
     <div class="d-flex justify-content-between align-items-center">
-      <input class="form-control form-control-sm d-none" id="join-direct-link-{{meeting.meeting_id}}" type="text" value="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}">
       <small class="text-muted time">
         <b>{{meeting.name|capfirst|truncatechars:43}}</b><br>
         {% if meeting.recurrence %}

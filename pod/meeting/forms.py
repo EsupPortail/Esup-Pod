@@ -178,7 +178,13 @@ class MeetingForm(forms.ModelForm):
         required=False, widget=forms.CheckboxSelectMultiple, choices=DAYS_OF_WEEK
     )
     fieldsets = (
-        (None, {"fields": MEETING_MAIN_FIELDS}),
+        (
+            "main_fields",
+            {
+                "legend": ('<i class="bi bi-gear"></i> %s' % _("Main fields")),
+                "fields": MEETING_MAIN_FIELDS,
+            },
+        ),
         (
             "input-group",
             {

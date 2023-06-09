@@ -536,6 +536,7 @@ class Theme(models.Model):
         return parents
 
     def clean(self):
+        """Validate Theme fields."""
         # Dans le cas où on modifie un theme
         if (
             Theme.objects.filter(channel=self.channel, slug=slugify(self.title))
@@ -543,18 +544,31 @@ class Theme(models.Model):
             .exists()
         ):
             raise ValidationError(
-                "A theme with this name\
-                    already exists in this channel."
+                {
+                    "title": ValidationError(
+                        _("A theme with this name already exists in this channel."),
+                        code="invalid_title",
+                    )
+                }
             )
 
         if self.parentId in self.get_all_children_flat():
             raise ValidationError(
-                "A theme cannot have itself \
-                    or one of it's children as parent."
+                {
+                    "parentId": ValidationError(
+                        _("A theme can't have itself or one of it's children as parent."),
+                        code="invalid_parent",
+                    )
+                }
             )
         if self.parentId and self.parentId not in self.channel.themes.all():
             raise ValidationError(
-                "A theme have to be in the same channel that his parent"
+                {
+                    "parentId": ValidationError(
+                        _("A theme must be in the same channel as its parent."),
+                        code="invalid_channel",
+                    )
+                }
             )
 
     class Meta:
@@ -845,6 +859,8 @@ class Video(models.Model):
     def save(self, *args, **kwargs):
         """Store a video object in db."""
         newid = -1
+
+        # In case of creating new Video
         if not self.id:
             try:
                 newid = get_nextautoincrement(Video)
@@ -863,6 +879,7 @@ class Video(models.Model):
                     date.today().month,
                     date.today().day,
                 )
+        # Modifying existing Video
         else:
             newid = self.id
         newid = "%04d" % newid
@@ -1475,13 +1492,17 @@ class PlaylistVideo(models.Model):
         return self.video.sites_set.all()
 
     def clean(self):
+        """Validate some PlaylistVideomodels fields."""
         if self.name:
             if self.name not in dict(ENCODING_CHOICES):
-                raise ValidationError(PlaylistVideo._meta.get_field("name").help_text)
+                raise ValidationError(
+                    PlaylistVideo._meta.get_field("name").help_text, code="invalid_name"
+                )
         if self.encoding_format:
             if self.encoding_format not in dict(FORMAT_CHOICES):
                 raise ValidationError(
-                    PlaylistVideo._meta.get_field("encoding_format").help_text
+                    PlaylistVideo._meta.get_field("encoding_format").help_text,
+                    code="invalid_encoding",
                 )
 
     def __str__(self):
@@ -1588,16 +1609,24 @@ class AdvancedNotes(models.Model):
         return "%s-%s-%s" % (self.user.username, self.video, self.timestamp)
 
     def clean(self):
+        """Validate AdvancedNotes fields."""
         if not self.note:
-            raise ValidationError(AdvancedNotes._meta.get_field("note").help_text)
+            raise ValidationError(
+                AdvancedNotes._meta.get_field("note").help_text, code="invalid_note"
+            )
         if not self.status or self.status not in dict(NOTES_STATUS):
-            raise ValidationError(AdvancedNotes._meta.get_field("status").help_text)
+            raise ValidationError(
+                AdvancedNotes._meta.get_field("status").help_text, code="invalid_status"
+            )
         if (
             self.timestamp is None
             or self.timestamp < 0
             or (self.video.duration and self.timestamp > self.video.duration)
         ):
-            raise ValidationError(AdvancedNotes._meta.get_field("timestamp").help_text)
+            raise ValidationError(
+                AdvancedNotes._meta.get_field("timestamp").help_text,
+                code="invalid_timestamp",
+            )
 
     def timestampstr(self):
         if self.timestamp is None:
@@ -1638,10 +1667,15 @@ class NoteComments(models.Model):
         return "%s-%s-%s" % (self.user.username, self.parentNote, self.comment)
 
     def clean(self):
+        """Validate NoteComments fields."""
         if not self.comment:
-            raise ValidationError(NoteComments._meta.get_field("comment").help_text)
+            raise ValidationError(
+                NoteComments._meta.get_field("comment").help_text, code="invalid_comment"
+            )
         if not self.status or self.status not in dict(NOTES_STATUS):
-            raise ValidationError(NoteComments._meta.get_field("status").help_text)
+            raise ValidationError(
+                NoteComments._meta.get_field("status").help_text, code="invalid_status"
+            )
 
 
 class VideoToDelete(models.Model):

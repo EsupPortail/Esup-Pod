@@ -534,6 +534,8 @@ def launch_encode(sender, instance, created, **kwargs):
 
 
 class VideoForm(forms.ModelForm):
+    """Form class for Video editing."""
+
     required_css_class = "required"
     videoattrs = {
         "class": "form-control-file",
@@ -544,6 +546,7 @@ class VideoForm(forms.ModelForm):
     user = User.objects.all()
 
     def filter_fields_admin(form):
+        """Hide fields reserved for admins."""
         if form.is_superuser is False and form.is_admin is False:
             form.remove_field("date_added")
             form.remove_field("owner")
@@ -581,6 +584,7 @@ class VideoForm(forms.ModelForm):
                 encoding.save()
 
     def save(self, commit=True, *args, **kwargs):
+        """Save video and launch encoding if relevant."""
         old_dir = ""
         new_dir = ""
         if hasattr(self, "change_user") and self.change_user is True:
@@ -615,7 +619,8 @@ class VideoForm(forms.ModelForm):
     def clean_date_delete(self):
         """Validate 'date_delete' field."""
         mddd = MAX_DURATION_DATE_DELETE
-        in_dt = relativedelta(self.cleaned_data["date_delete"], __TODAY__)
+        date_delete = self.cleaned_data["date_delete"]
+        in_dt = relativedelta(date_delete, __TODAY__)
         if (
             (in_dt.years > mddd)
             or (in_dt.years == mddd and in_dt.months > 0)
@@ -625,11 +630,18 @@ class VideoForm(forms.ModelForm):
                 _(
                     "The date must be before or equal to %(date)s."
                     % {"date": __MAX_D__.strftime("%d-%m-%Y")}
-                )
+                ),
+                code="date_too_far",
+            )
+        if date_delete < __TODAY__:
+            raise ValidationError(
+                _("The deletion date can’t be earlier than today."),
+                code="date_before_today",
             )
         return self.cleaned_data["date_delete"]
 
     def clean(self):
+        """Validate Video form fields."""
         cleaned_data = super(VideoForm, self).clean()
 
         if "additional_owners" in cleaned_data.keys() and isinstance(

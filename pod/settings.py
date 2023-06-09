@@ -428,7 +428,7 @@ def update_settings(local_settings):
         )
         local_settings["LOGIN_REDIRECT_URL"] = "/"
     ##
-    # Authentication backend : add lti backend if use
+    # Authentication backend: add lti backend if use
     #
     if local_settings.get("LTI_ENABLED", False):
         local_settings["AUTHENTICATION_BACKENDS"] += ("lti_provider.auth.LTIBackend",)
@@ -436,7 +436,7 @@ def update_settings(local_settings):
     ##
     # Opencast studio
     if local_settings.get("USE_OPENCAST_STUDIO", False):
-        # add dir to opencast studio static files i.e : pod/custom/static/opencast/
+        # add dir to opencast studio static files i.e: pod/custom/static/opencast/
         local_settings["TEMPLATES"][0]["DIRS"].append(
             os.path.join(BASE_DIR, "custom", "static", "opencast")
         )

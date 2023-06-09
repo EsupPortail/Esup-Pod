@@ -53,5 +53,5 @@ class CutVideoViewsTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)  # forbidden
 
-        print(" ---> test_video_cut_owner : OK!")
+        print(" ---> test_video_cut_owner: OK!")
         print(" [ END CUT VIEWS ] ")
