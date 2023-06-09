@@ -72,7 +72,7 @@ class VideoConfig(AppConfig):
         post_migrate.connect(self.send_previous_data, sender=self)
         post_migrate.connect(fix_transcript, sender=self)
 
-    def execute_query(query, mapping_dict):
+    def execute_query(self, query, mapping_dict):
         """
         Execute the given query and populate the mapping dictionary with the results.
 
