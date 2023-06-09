@@ -165,61 +165,76 @@ def remove_playlist_view(request, slug: str):
     )
 
 
-@csrf_protect
-@ensure_csrf_cookie
-@login_required(redirect_field_name="referrer")
-def add_or_edit(request, slug: str = None):
-    """Add or edit view with form."""
-    options = ""
+def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) -> None:
+    """Handle post request for add_or_edit function."""
     page_title = ""
-    playlist = get_object_or_404(Playlist, slug=slug) if slug else None
-    if in_maintenance():
-        return redirect(reverse("maintenance"))
-    elif request.method == "POST":
-        form = PlaylistForm(
-            request.POST, instance=playlist) if playlist else PlaylistForm(request.POST)
-        if form.is_valid():
-            new_playlist = form.save(commit=False) if playlist is None else playlist
-            new_playlist.owner = request.user
+    form = PlaylistForm(
+        request.POST, instance=playlist) if playlist else PlaylistForm(request.POST)
+    if form.is_valid():
+        new_playlist = form.save(commit=False) if playlist is None else playlist
+        new_playlist.owner = request.user
+        new_playlist.save()
+        new_playlist.additional_owners.clear()
+        new_playlist.save()
+        if (request.POST.get("additional_owners")):
+            for o in request.POST.get("additional_owners"):
+                new_playlist.additional_owners.add(o)
             new_playlist.save()
-            new_playlist.additional_owners.clear()
-            new_playlist.save()
-            if (request.POST.get("additional_owners")):
-                for o in request.POST.get("additional_owners"):
-                    new_playlist.additional_owners.add(o)
-                new_playlist.save()
-            if request.GET.get("next"):
-                video_slug = request.GET.get("next").split("/")[2]
-                user_add_video_in_playlist(
-                    new_playlist, Video.objects.get(slug=video_slug))
-                messages.add_message(
-                    request,
-                    messages.INFO,
-                    _("The playlist has been created and the video has been added in it."),
-                )
-                return redirect(request.GET.get("next"))
-            else:
-                return HttpResponseRedirect(
-                    reverse("playlist:content", kwargs={"slug": new_playlist.slug})
-                )
-    elif request.method == "GET":
         if request.GET.get("next"):
-            options = f"?next={request.GET.get('next')}"
-        playlist = get_object_or_404(Playlist, slug=slug) if slug else None
-        if playlist:
-            if (request.user == playlist.owner or request.user.is_staff) and playlist.editable:
-                form = PlaylistForm(instance=playlist)
-                page_title = _("Edit the playlist") + f" \"{playlist.name}\""
-            else:
-                return redirect(reverse("playlist:list"))
+            video_slug = request.GET.get("next").split("/")[2]
+            user_add_video_in_playlist(
+                new_playlist, Video.objects.get(slug=video_slug))
+            messages.add_message(
+                request,
+                messages.INFO,
+                _("The playlist has been created and the video has been added in it."),
+            )
+            return redirect(request.GET.get("next"))
+        return HttpResponseRedirect(
+            reverse("playlist:content", kwargs={"slug": new_playlist.slug})
+        )
+    return render(request, "playlist/add_or_edit.html", {
+        "form": form,
+        "page_title": page_title,
+        "options": "",
+    })
+
+
+def handle_get_request_for_add_or_edit_function(request, slug: str) -> None:
+    """Handle get request for add_or_edit function."""
+    if request.GET.get("next"):
+        options = f"?next={request.GET.get('next')}"
+    else :
+        options = ""
+    playlist = get_object_or_404(Playlist, slug=slug) if slug else None
+    if playlist:
+        if (request.user == playlist.owner or request.user.is_staff) and playlist.editable:
+            form = PlaylistForm(instance=playlist)
+            page_title = _("Edit the playlist") + f" \"{playlist.name}\""
         else:
-            form = PlaylistForm()
-            page_title = _("Add a playlist")
+            return redirect(reverse("playlist:list"))
+    else:
+        form = PlaylistForm()
+        page_title = _("Add a playlist")
     return render(request, "playlist/add_or_edit.html", {
         "form": form,
         "page_title": page_title,
         "options": options,
     })
+
+
+@csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
+def add_or_edit(request, slug: str = None):
+    """Add or edit view with form."""
+    playlist = get_object_or_404(Playlist, slug=slug) if slug else None
+    if in_maintenance():
+        return redirect(reverse("maintenance"))
+    elif request.method == "POST":
+        return handle_post_request_for_add_or_edit_function(request, playlist)
+    elif request.method == "GET":
+        return handle_get_request_for_add_or_edit_function(request, slug)
 
 # FAVORITES
 

@@ -24,5 +24,9 @@ urlpatterns = [
     ),
     path("add/<slug:slug>/<slug:video_slug>/", add_video_in_playlist, name="add-video"),
     path("<slug:slug>/", playlist_content, name="content"),
-    path("<slug:slug>/save-reorganisation/", favorites_save_reorganisation, name="save-reorganisation"),
+    path(
+        "<slug:slug>/save-reorganisation/",
+        favorites_save_reorganisation,
+        name="save-reorganisation"
+    ),
 ]
