@@ -44,6 +44,7 @@ ENCODING_AUDIO = {}
 ENCODING_LOG = {}
 ENCODING_STEP = {}
 
+
 def fix_transcript(sender, **kwargs):
     """
     Transcript field change from boolean to charfield since the version 3.2.0
@@ -131,10 +132,10 @@ class VideoConfig(AppConfig):
                     "video_encodinglog"."video_id",
                     "video_encodinglog"."log",
                     "video_encodinglog"."logfile"
-                    FROM "video_encodinglog" 
-                    INNER JOIN "video_video" 
+                    FROM "video_encodinglog"
+                    INNER JOIN "video_video"
                     ON ("video_encodinglog"."video_id" = "video_video"."id")
-                    ORDER BY "video_video"."date_added" 
+                    ORDER BY "video_video"."date_added"
                     DESC, "video_video"."id" DESC
                     ''', ENCODING_LOG)
 
