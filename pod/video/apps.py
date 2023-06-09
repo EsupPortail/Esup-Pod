@@ -37,6 +37,21 @@ def set_default_site(sender, **kwargs):
         apply_default_site(vr, site)
 
 
+def fix_transcript(sender, **kwargs):
+    """
+    Transcript field change from boolean to charfield since the version 3.2.0
+    This fix change value to set the default lang value if necessary
+    """
+    from pod.video.models import Video
+    for vid in Video.objects.all():
+        if vid.transcript == '1':
+            vid.transcript = vid.main_lang
+            vid.save()
+        elif vid.transcript == '0':
+            vid.transcript = ''
+            vid.save()
+
+
 class VideoConfig(AppConfig):
     name = "pod.video"
     default_auto_field = "django.db.models.BigAutoField"
@@ -44,3 +59,4 @@ class VideoConfig(AppConfig):
 
     def ready(self):
         post_migrate.connect(set_default_site, sender=self)
+        post_migrate.connect(fix_transcript, sender=self)
