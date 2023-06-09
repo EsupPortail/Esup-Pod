@@ -56,23 +56,52 @@ class VideoConfig(AppConfig):
         post_migrate.connect(self.send_previous_data, sender=self)
 
     def save_previous_data(self, sender, **kwargs):
-        query_tables = [
-            (VIDEO_RENDITION, 'SELECT "video_videorendition"."id", "video_videorendition"."resolution", "video_videorendition"."minrate", "video_videorendition"."video_bitrate", "video_videorendition"."maxrate", "video_videorendition"."encoding_resolution_threshold", "video_videorendition"."audio_bitrate", "video_videorendition"."encode_mp4" FROM "video_videorendition"'),
-            (ENCODING_VIDEO, 'SELECT "video_encodingvideo"."id", "video_encodingvideo"."name", "video_encodingvideo"."video_id", "video_encodingvideo"."rendition_id", "video_encodingvideo"."encoding_format", "video_encodingvideo"."source_file" FROM "video_encodingvideo" ORDER BY "video_encodingvideo"."name" ASC'),
-            (ENCODING_STEP, 'SELECT "video_encodingstep"."id", "video_encodingstep"."video_id", "video_encodingstep"."num_step", "video_encodingstep"."desc_step" FROM "video_encodingstep" INNER JOIN "video_video" ON ("video_encodingstep"."video_id" = "video_video"."id") ORDER BY "video_video"."date_added" DESC, "video_video"."id" DESC'),
-            (ENCODING_LOG, 'SELECT "video_encodinglog"."id", "video_encodinglog"."video_id", "video_encodinglog"."log", "video_encodinglog"."logfile" FROM "video_encodinglog" INNER JOIN "video_video" ON ("video_encodinglog"."video_id" = "video_video"."id") ORDER BY "video_video"."date_added" DESC, "video_video"."id" DESC'),
-            (ENCODING_AUDIO, 'SELECT "video_encodingaudio"."id", "video_encodingaudio"."name", "video_encodingaudio"."video_id", "video_encodingaudio"."encoding_format", "video_encodingaudio"."source_file" FROM "video_encodingaudio" ORDER BY "video_encodingaudio"."name" ASC')
-        ]
+        try:
+            with connection.cursor() as c:
+                c.execute('SELECT "video_videorendition"."id","video_videorendition"."resolution", "video_videorendition"."minrate", "video_videorendition"."video_bitrate", "video_videorendition"."maxrate", "video_videorendition"."encoding_resolution_threshold", "video_videorendition"."audio_bitrate", "video_videorendition"."encode_mp4" FROM "video_videorendition" ORDER BY "video_videorendition"."name" ASC')
+                results = c.fetchall()
+                for res in results:
+                    VIDEO_RENDITION["%s" % res[0]] = [res[1], res[2], res[3], res[4], res[5], res[6], res[7]]
+        except Exception:
+            pass
 
         try:
             with connection.cursor() as c:
-                for data, query in query_tables:
-                    c.execute(query)
-                    results = c.fetchall()
-                    for res in results:
-                        data["%s" % res[0]] = list(res[1:])
-        except Exception:  # OperationalError or MySQLdb.ProgrammingError
-            pass  # print('OperationalError : ', oe)
+                c.execute('SELECT "video_encodingvideo"."id", "video_encodingvideo"."name", "video_encodingvideo"."video_id", "video_encodingvideo"."rendition_id", "video_encodingvideo"."encoding_format", "video_encodingvideo"."source_file" FROM "video_encodingvideo" ORDER BY "video_encodingvideo"."name" ASC')
+                results = c.fetchall()
+                for res in results:
+                    ENCODING_VIDEO["%s" % res[0]] = [res[1], res[2], res[3], res[4], res[5]]
+        except Exception:
+            pass
+        
+        try:
+            with connection.cursor() as c:
+                c.execute('SELECT "video_encodingstep"."id", "video_encodingstep"."video_id", "video_encodingstep"."num_step", "video_encodingstep"."desc_step" FROM "video_encodingstep" INNER JOIN "video_video" ON ("video_encodingstep"."video_id" = "video_video"."id") ORDER BY "video_video"."date_added" DESC, "video_video"."id" DESC')
+                results = c.fetchall()
+                for res in results:
+                    ENCODING_STEP["%s" % res[0]] = [res[1], res[2], res[3]]
+        except Exception:
+            pass
+        
+        try:
+            with connection.cursor() as c:
+                c.execute('SELECT "video_encodinglog"."id", "video_encodinglog"."video_id", "video_encodinglog"."log", "video_encodinglog"."logfile" FROM "video_encodinglog" INNER JOIN "video_video" ON ("video_encodinglog"."video_id" = "video_video"."id") ORDER BY "video_video"."date_added" DESC, "video_video"."id" DESC')
+                results = c.fetchall()
+                for res in results:
+                    ENCODING_LOG["%s" % res[0]] = [res[1], res[2], res[3]]
+        except Exception:
+            pass
+        
+        try:
+            with connection.cursor() as c:
+                c.execute('SELECT "video_encodingaudio"."id", "video_encodingaudio"."name", "video_encodingaudio"."video_id", "video_encodingaudio"."encoding_format", "video_encodingaudio"."source_file" FROM "video_encodingaudio" ORDER BY "video_encodingaudio"."name" ASC')
+                results = c.fetchall()
+                for res in results:
+                    ENCODING_AUDIO["%s" % res[0]] = [res[1], res[2], res[3], res[4]]
+        except Exception:
+            pass
+        
+
 
     def send_previous_data(self, sender, **kwargs):
         from pod.video_encode_transcript.models import (
