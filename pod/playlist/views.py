@@ -10,6 +10,7 @@ from django.http import Http404, HttpResponseBadRequest
 from django.db import transaction
 
 from pod.main.views import in_maintenance
+from pod.playlist.templatetags.favorites_playlist import get_playlist_name
 from pod.video.models import Video
 from .models import Playlist, PlaylistContent
 from pod.video.utils import sort_videos_list
@@ -93,15 +94,11 @@ def playlist_content(request, slug):
     playlist_url = reverse("playlist:content", kwargs={
                            "slug": get_favorite_playlist_for_user(request.user).slug})
     in_favorites_playlist = (playlist_url == request.path)
-    if in_favorites_playlist:
-        page_title = _("Playlist") + " : " + _("Favorites")
-    else:
-        page_title = _("Playlist") + " : " + playlist.name
     return render(
         request,
         "playlist/playlist.html",
         {
-            "page_title": page_title,
+            "page_title": _("Playlist") + " : " + get_playlist_name(playlist),
             "videos": videos,
             "playlist": playlist,
             "in_favorites_playlist": in_favorites_playlist,
