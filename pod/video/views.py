@@ -32,6 +32,7 @@ from pod.main.views import in_maintenance
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
 from pod.favorite.models import Favorite
+from pod.playlist.models import Playlist
 from pod.video.utils import get_videos as video_get_videos
 from pod.video.models import Video
 from pod.video.models import Type
@@ -846,6 +847,8 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     if request.GET.get("is_iframe"):
         params = {"page_title": video.title}
         template_video = "videos/video-iframe.html"
+    elif request.GET.get("playlist"):
+        params = {"playlist_in_get": get_object_or_404(Playlist, slug=request.GET.get("playlist"))}
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
 
