@@ -20,12 +20,13 @@ def fix_transcript(sender, **kwargs):
     This fix change value to set the default lang value if necessary.
     """
     from pod.recorder.models import Recorder
+
     for rec in Recorder.objects.all():
-        if rec.transcript == '1':
+        if rec.transcript == "1":
             rec.transcript = rec.main_lang
             rec.save()
-        elif rec.transcript == '0':
-            rec.transcript = ''
+        elif rec.transcript == "0":
+            rec.transcript = ""
             rec.save()
 
 

@@ -43,12 +43,13 @@ def fix_transcript(sender, **kwargs):
     This fix change value to set the default lang value if necessary
     """
     from pod.video.models import Video
+
     for vid in Video.objects.all():
-        if vid.transcript == '1':
+        if vid.transcript == "1":
             vid.transcript = vid.main_lang
             vid.save()
-        elif vid.transcript == '0':
-            vid.transcript = ''
+        elif vid.transcript == "0":
+            vid.transcript = ""
             vid.save()
 
 
