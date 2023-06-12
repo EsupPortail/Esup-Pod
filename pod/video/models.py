@@ -932,13 +932,10 @@ class Video(models.Model):
     @property
     def get_encoding_step(self):
         """Get the current encoding step of a video."""
-        from pod.video_encode_transcript.models import EncodingStep
-
-        try:
-            es = EncodingStep.objects.get(video=self)
-        except ObjectDoesNotExist:
+        encoding_step = self.encodingstep_set.all().first()
+        if encoding_step is None:
             return ""
-        return "%s : %s" % (es.num_step, es.desc_step)
+        return "%s : %s" % (encoding_step.num_step, encoding_step.desc_step)
 
     get_encoding_step.fget.short_description = _("Encoding step")
 
@@ -1123,37 +1120,26 @@ class Video(models.Model):
 
     def get_video_m4a(self):
         """Get the audio (m4a) version of the video."""
-        from pod.video_encode_transcript.models import EncodingAudio
-
-        try:
-            return EncodingAudio.objects.get(
-                name="audio", video=self, encoding_format="video/mp4"
-            )
-        except EncodingAudio.DoesNotExist:
-            return None
+        encoding_audio = self.encodingaudio_set.filter(
+            name="audio", encoding_format="video/mp4"
+        ).first()
+        return encoding_audio
 
     def get_video_mp3(self):
         """Get the audio (mp3) version of the video."""
-        from pod.video_encode_transcript.models import EncodingAudio
-
-        try:
-            return EncodingAudio.objects.get(
-                name="audio", video=self, encoding_format="audio/mp3"
-            )
-        except EncodingAudio.DoesNotExist:
-            return None
+        encoding_audio = self.encodingaudio_set.filter(
+            name="audio", encoding_format="audio/mp3"
+        ).first()
+        return encoding_audio
 
     def get_video_mp4(self):
         """Get the mp4 version of the video."""
-        from pod.video_encode_transcript.models import EncodingVideo
-
-        return EncodingVideo.objects.filter(video=self, encoding_format="video/mp4")
+        return self.encodingvideo_set.filter(encoding_format="video/mp4")
 
     def get_video_json(self, extensions):
-        from pod.video_encode_transcript.models import EncodingVideo
-
+        """Get the JSON representation of the video."""
         extension_list = extensions.split(",") if extensions else []
-        list_video = EncodingVideo.objects.filter(video=self)
+        list_video = self.encodingvideo_set.all()
         dict_src = Video.get_media_json(extension_list, list_video)
         sorted_dict_src = {
             x: sorted(dict_src[x], key=lambda i: i["height"]) for x in dict_src.keys()
@@ -1161,18 +1147,19 @@ class Video(models.Model):
         return sorted_dict_src
 
     def get_video_mp4_json(self):
+        """Get the JSON representation of the MP4 video."""
         list_mp4 = self.get_video_json(extensions="mp4")
         return list_mp4["mp4"] if list_mp4.get("mp4") else []
 
     def get_audio_json(self, extensions):
-        from pod.video_encode_transcript.models import EncodingAudio
-
+        """Get the JSON representation of the audio."""
         extension_list = extensions.split(",") if extensions else []
-        list_audio = EncodingAudio.objects.filter(name="audio", video=self)
+        list_audio = self.encodingaudio_set.filter(name="audio")
         dict_src = Video.get_media_json(extension_list, list_audio)
         return dict_src
 
     def get_audio_and_video_json(self, extensions):
+        """Get the JSON representation of the video and audio."""
         return {
             **self.get_video_json(extensions),
             **self.get_audio_json(extensions),
@@ -1392,11 +1379,13 @@ def default_site(sender, instance, created, **kwargs):
 @receiver(pre_delete, sender=Video, dispatch_uid="pre_delete-video_files_removal")
 def video_files_removal(sender, instance, using, **kwargs):
     """Remove files created after encoding."""
-    from pod.video_encode_transcript.models import EncodingVideo, EncodingAudio
-
     remove_video_file(instance)
 
-    models_to_delete = [EncodingVideo, EncodingAudio, PlaylistVideo]
+    models_to_delete = [
+        instance.encodingvideo_set.model,
+        instance.encodingaudio_set.model,
+        PlaylistVideo
+    ]
     for model in models_to_delete:
         previous_encoding_video = model.objects.filter(video=instance)
         if len(previous_encoding_video) > 0:

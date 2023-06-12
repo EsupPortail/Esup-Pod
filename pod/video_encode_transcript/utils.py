@@ -50,16 +50,13 @@ VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
 
 def change_encoding_step(video_id, num_step, desc):
     """Change encoding step."""
-    print("change_encoding_step")
     encoding_step, created = EncodingStep.objects.get_or_create(
         video=Video.objects.get(id=video_id)
     )
     encoding_step.num_step = num_step
     encoding_step.desc_step = desc[:255]
     encoding_step.save()
-    print("list :")
-    encoding_steps = EncodingStep.objects.all()
-    print(encoding_steps)
+
     if DEBUG:
         print("step: %d - desc: %s" % (num_step, desc))
 
