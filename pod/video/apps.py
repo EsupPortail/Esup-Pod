@@ -91,7 +91,8 @@ class VideoConfig(AppConfig):
 
     def save_previous_data(self, sender, **kwargs):
         """Save previous data from various database tables."""
-        self.execute_query('''
+        self.execute_query(
+            """
                     SELECT "video_videorendition"."id",
                     "video_videorendition"."resolution",
                     "video_videorendition"."minrate",
@@ -102,9 +103,12 @@ class VideoConfig(AppConfig):
                     "video_videorendition"."encode_mp4"
                     FROM "video_videorendition"
                     ORDER BY "video_videorendition"."name" ASC
-                    ''', VIDEO_RENDITION)
+                    """,
+            VIDEO_RENDITION,
+        )
 
-        self.execute_query('''
+        self.execute_query(
+            """
                     SELECT "video_encodingvideo"."id",
                     "video_encodingvideo"."name",
                     "video_encodingvideo"."video_id",
@@ -113,9 +117,12 @@ class VideoConfig(AppConfig):
                     "video_encodingvideo"."source_file"
                     FROM "video_encodingvideo"
                     ORDER BY "video_encodingvideo"."name" ASC
-                    ''', ENCODING_VIDEO)
+                    """,
+            ENCODING_VIDEO,
+        )
 
-        self.execute_query('''
+        self.execute_query(
+            """
                     SELECT "video_encodingstep"."id",
                     "video_encodingstep"."video_id",
                     "video_encodingstep"."num_step",
@@ -125,9 +132,12 @@ class VideoConfig(AppConfig):
                     ON ("video_encodingstep"."video_id" = "video_video"."id")
                     ORDER BY "video_video"."date_added"
                     DESC, "video_video"."id" DESC
-                    ''', ENCODING_STEP)
+                    """,
+            ENCODING_STEP,
+        )
 
-        self.execute_query('''
+        self.execute_query(
+            """
                     SELECT "video_encodinglog"."id",
                     "video_encodinglog"."video_id",
                     "video_encodinglog"."log",
@@ -137,9 +147,12 @@ class VideoConfig(AppConfig):
                     ON ("video_encodinglog"."video_id" = "video_video"."id")
                     ORDER BY "video_video"."date_added"
                     DESC, "video_video"."id" DESC
-                    ''', ENCODING_LOG)
+                    """,
+            ENCODING_LOG,
+        )
 
-        self.execute_query('''
+        self.execute_query(
+            """
                     SELECT "video_encodingaudio"."id",
                     "video_encodingaudio"."name",
                     "video_encodingaudio"."video_id",
@@ -147,7 +160,9 @@ class VideoConfig(AppConfig):
                     "video_encodingaudio"."source_file"
                     FROM "video_encodingaudio"
                     ORDER BY "video_encodingaudio"."name" ASC
-                    ''', ENCODING_AUDIO)
+                    """,
+            ENCODING_AUDIO,
+        )
 
     def send_previous_data(self, sender, **kwargs):
         """Send previous data from various database tables."""

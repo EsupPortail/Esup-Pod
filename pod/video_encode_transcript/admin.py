@@ -100,6 +100,7 @@ class EncodingStepAdmin(admin.ModelAdmin):
 
 class VideoRenditionAdmin(admin.ModelAdmin):
     """Admin model for VideoRendition."""
+
     list_display = (
         "resolution",
         "video_bitrate",

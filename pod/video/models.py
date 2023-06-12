@@ -1384,7 +1384,7 @@ def video_files_removal(sender, instance, using, **kwargs):
     models_to_delete = [
         instance.encodingvideo_set.model,
         instance.encodingaudio_set.model,
-        PlaylistVideo
+        PlaylistVideo,
     ]
     for model in models_to_delete:
         previous_encoding_video = model.objects.filter(video=instance)
