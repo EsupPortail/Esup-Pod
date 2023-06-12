@@ -2,7 +2,6 @@
 
 from django.conf import settings
 from pod.video.models import Video
-from pod.video.utils import time_to_seconds
 from .Encoding_video_model import Encoding_video_model
 from .encoding_studio import encode_video_studio
 
@@ -14,6 +13,7 @@ from .utils import (
     add_encoding_log,
     send_email,
     send_email_encoding,
+    time_to_seconds,
 )
 import logging
 import time

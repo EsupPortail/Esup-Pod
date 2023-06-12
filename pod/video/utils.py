@@ -3,11 +3,9 @@ import os
 import re
 import shutil
 from math import ceil
-import time
 
 from django.urls import reverse
 from django.conf import settings
-from django.core.mail import mail_admins
 from django.http import JsonResponse
 from django.db.models import Q
 from django.contrib.sites.shortcuts import get_current_site
@@ -71,23 +69,6 @@ def get_available_videos():
 ###############################################################
 # EMAIL
 ###############################################################
-
-
-def send_email_item(msg, item, item_id):
-    """Send email notification when encoding fails for a specific item."""
-    subject = "[" + __TITLE_SITE__ + "] Error Encoding %s id:%s" % (item, item_id)
-    message = "Error Encoding  %s id : %s\n%s" % (item, item_id, msg)
-    html_message = "<p>Error Encoding %s id : %s</p><p>%s</p>" % (
-        item,
-        item_id,
-        msg.replace("\n", "<br>"),
-    )
-    mail_admins(subject, message, fail_silently=False, html_message=html_message)
-
-
-def send_email_recording(msg, recording_id):
-    """Send email notification when recording encoding failed."""
-    send_email_item(msg, "Recording", recording_id)
 
 
 def pagination_data(request_path, offset, limit, total_count):
@@ -263,13 +244,6 @@ def sort_videos_list(videos_list, sort_field, sort_direction=""):
             sort_field = "-" + sort_field
         videos_list = videos_list.order_by(sort_field)
     return videos_list.distinct()
-
-
-def time_to_seconds(a_time):
-    """Convert a time to seconds."""
-    seconds = time.strptime(str(a_time), "%H:%M:%S")
-    seconds = seconds.tm_sec + seconds.tm_min * 60 + seconds.tm_hour * 3600
-    return seconds
 
 
 def get_id_from_request(request, key):

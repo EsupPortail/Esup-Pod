@@ -1,15 +1,16 @@
 import os
 import bleach
+import time
 
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.core.mail import mail_admins
 from django.core.mail import send_mail
 from django.core.mail import mail_managers
 from django.core.mail import EmailMultiAlternatives
 from pod.video.models import Video
 from .models import EncodingStep
 from .models import EncodingLog
-from pod.video.utils import send_email_item
 
 DEBUG = getattr(settings, "DEBUG", True)
 
@@ -94,6 +95,27 @@ def create_outputdir(video_id, video_path):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     return output_dir
+
+
+###############################################################
+# EMAIL
+###############################################################
+
+def send_email_item(msg, item, item_id):
+    """Send email notification when encoding fails for a specific item."""
+    subject = "[" + __TITLE_SITE__ + "] Error Encoding %s id:%s" % (item, item_id)
+    message = "Error Encoding  %s id : %s\n%s" % (item, item_id, msg)
+    html_message = "<p>Error Encoding %s id : %s</p><p>%s</p>" % (
+        item,
+        item_id,
+        msg.replace("\n", "<br>"),
+    )
+    mail_admins(subject, message, fail_silently=False, html_message=html_message)
+
+
+def send_email_recording(msg, recording_id):
+    """Send email notification when recording encoding failed."""
+    send_email_item(msg, "Recording", recording_id)
 
 
 def send_email_encoding(video_to_encode):
@@ -200,3 +222,10 @@ def send_notification_email(video_to_encode, subject_prefix):
                 fail_silently=False,
                 html_message=html_message,
             )
+
+
+def time_to_seconds(a_time):
+    """Convert a time to seconds."""
+    seconds = time.strptime(str(a_time), "%H:%M:%S")
+    seconds = seconds.tm_sec + seconds.tm_min * 60 + seconds.tm_hour * 3600
+    return seconds
