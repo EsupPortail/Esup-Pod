@@ -3,8 +3,12 @@ from django.core.files import File
 from pod.completion.models import Track
 from pod.main.tasks import task_start_transcript
 
-from pod.video_encode_transcript.utils import change_encoding_step, add_encoding_log
-from .utils import send_email, send_email_transcript
+from .utils import (
+    send_email,
+    send_email_transcript,
+    change_encoding_step,
+    add_encoding_log,
+)
 from ..video.models import Video
 
 import numpy as np
