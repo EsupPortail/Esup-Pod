@@ -6,7 +6,10 @@ from .views import (
     ajax_event_startrecord,
     ajax_event_stoprecord,
     ajax_event_splitrecord,
+    ajax_event_startstreaming,
+    ajax_event_stopstreaming,
     ajax_is_stream_available_to_record,
+    ajax_event_get_rtmp_config,
     broadcaster_restriction,
     broadcasters_from_building,
     direct,
@@ -42,6 +45,21 @@ urlpatterns += [
         r"^ajax_calls/event_splitrecord/$",
         ajax_event_splitrecord,
         name="ajax_event_splitrecord",
+    ),
+    url(
+        r"^ajax_calls/event_startstreaming/$",
+        ajax_event_startstreaming,
+        name="ajax_event_startstreaming",
+    ),
+    url(
+        r"^ajax_calls/event_stopstreaming/$",
+        ajax_event_stopstreaming,
+        name="ajax_event_stopstreaming",
+    ),
+    url(
+        r"^ajax_calls/event_get_rtmp_config/$",
+        ajax_event_get_rtmp_config,
+        name="ajax_event_get_rtmp_config",
     ),
     url(
         r"^ajax_calls/getbroadcastersfrombuiding/$",

@@ -957,11 +957,11 @@ class LiveViewsTestCase(TestCase):
         self.assertEqual(200, response.status_code)
         print("   --->  test_events restricted access group match: OK !")
 
-        # piloting buttons (only for owner)
+        # recording buttons (only for owner)
         response = self.client.get("/live/event/%s/" % self.event.slug)
         self.assertTemplateUsed(response, "live/event.html")
-        self.assertFalse(response.context["need_piloting_buttons"])
-        print("   --->  test_events need_piloting_buttons event for not owner: OK !")
+        self.assertFalse(response.context["can_record"])
+        print("   --->  test_events can_record event for not owner: OK !")
 
         # wrong event id
         response = self.client.get("/live/event/what-ever/")
@@ -1027,22 +1027,20 @@ class LiveViewsTestCase(TestCase):
         self.assertIsInstance(response.context["form"], EventForm)
         print("   --->  test_events edit event for owner: OK!")
 
-        # piloting buttons
+        # recording buttons
         response = self.client.get("/live/event/%s/" % self.event.slug)
         self.assertTemplateUsed(response, "live/event.html")
-        self.assertFalse(response.context["need_piloting_buttons"])
-        print(
-            "   --->  test_events need_piloting_buttons event for owner no impl broadcaster: OK !"
-        )
+        self.assertFalse(response.context["can_record"])
+        print("   --->  test_events can_record event for owner no impl broadcaster: OK !")
 
         br2 = Broadcaster.objects.get(id=2)
         self.event.broadcaster = br2
         self.event.save()
         response = self.client.get("/live/event/%s/" % self.event.slug)
         self.assertTemplateUsed(response, "live/event.html")
-        self.assertTrue(response.context["need_piloting_buttons"])
+        self.assertTrue(response.context["can_record"])
         print(
-            "   --->  test_events need_piloting_buttons event for owner with impl broadcaster: OK !"
+            "   --->  test_events can_record event for owner with impl broadcaster: OK !"
         )
 
         # Superuser logged in

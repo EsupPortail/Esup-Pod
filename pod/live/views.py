@@ -47,6 +47,7 @@ from .utils import (
     check_size_not_changing,
     check_permission,
 )
+from ..main.utils import is_ajax
 from ..main.views import in_maintenance
 from ..video.models import Video
 
@@ -156,7 +157,7 @@ def change_status(request, slug):
 
 
 def heartbeat(request):
-    if request.is_ajax() and request.method == "GET":
+    if is_ajax(request) and request.method == "GET":
         broadcasterid = request.GET.get("broadcasterid")
         eventid = request.GET.get("eventid")
         if broadcasterid is None and eventid is None:
@@ -347,12 +348,13 @@ def render_event_template(request, evemnt, user_owns_event):
         {
             "event": evemnt,
             "display_chat": display_chat,
-            "need_piloting_buttons": (
+            "can_record": (
                 user_owns_event
                 and evemnt.broadcaster.piloting_implementation
                 and not request.GET.get("is_iframe")
             ),
             "use_split": use_split(evemnt.broadcaster),
+            "can_manage_stream": can_manage_stream(evemnt.broadcaster),
             "heartbeat_delay": HEARTBEAT_DELAY,
         },
     )
@@ -677,9 +679,9 @@ def broadcaster_restriction(request):
 def ajax_is_stream_available_to_record(request):
     """Check if the broadcaster is available to record and if is recording.
 
-     Returns: a JsonResponse with available state and recording state of the broadcaster.
-     """
-    if request.method == "GET" and request.is_ajax():
+    Returns: a JsonResponse with available state and recording state of the broadcaster.
+    """
+    if request.method == "GET" and is_ajax(request):
         broadcaster_id = request.GET.get("idbroadcaster", None)
         broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
 
@@ -704,7 +706,7 @@ def ajax_is_stream_available_to_record(request):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_startrecord(request):
-    if request.method == "POST" and request.is_ajax():
+    if request.method == "POST" and is_ajax(request):
         event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         return event_startrecord(event_id, broadcaster_id)
 
@@ -714,8 +716,8 @@ def ajax_event_startrecord(request):
 def event_startrecord(event_id, broadcaster_id):
     """Calls the start method of the broadcaster's implementation
 
-     Returns: a JsonResponse with success state and the error (in case of failure).
-     """
+    Returns: a JsonResponse with success state and the error (in case of failure).
+    """
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
     if not check_piloting_conf(broadcaster):
         return JsonResponse({"success": False, "error": "implementation error"})
@@ -734,7 +736,7 @@ def event_startrecord(event_id, broadcaster_id):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_splitrecord(request):
-    if request.method == "POST" and request.is_ajax():
+    if request.method == "POST" and is_ajax(request):
         event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
 
         return event_splitrecord(event_id, broadcaster_id)
@@ -747,7 +749,7 @@ def event_splitrecord(event_id, broadcaster_id):
     and converts the file to a Pod video (linked to the event).
 
      Returns: a JsonResponse with success state and the error (in case of failure).
-     """
+    """
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
 
     valid, res = check_event_record(broadcaster, with_file_check=True)
@@ -770,7 +772,7 @@ def event_splitrecord(event_id, broadcaster_id):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_stoprecord(request):
-    if request.method == "POST" and request.is_ajax():
+    if request.method == "POST" and is_ajax(request):
         event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         return event_stoprecord(event_id, broadcaster_id)
 
@@ -782,7 +784,7 @@ def event_stoprecord(event_id, broadcaster_id):
     and converts the file to a Pod video (linked to the event).
 
      Returns: a JsonResponse with success state and the error (in case of failure).
-     """
+    """
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
 
     valid, res = check_event_record(broadcaster, with_file_check=True)
@@ -807,7 +809,7 @@ def event_stoprecord(event_id, broadcaster_id):
 
 @login_required(redirect_field_name="referrer")
 def ajax_event_info_record(request):
-    if request.method == "POST" and request.is_ajax():
+    if request.method == "POST" and is_ajax(request):
         event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         return event_info_record(event_id, broadcaster_id)
 
@@ -817,9 +819,9 @@ def ajax_event_info_record(request):
 def event_info_record(event_id, broadcaster_id):
     """Returns a JsonResponse with success state and :
 
-     * the duration of the recording in seconds
-     * or the error (in case of failure).
-     """
+    * the duration of the recording in seconds
+    * or the error (in case of failure).
+    """
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
     valid, res = check_event_record(broadcaster)
     if not valid:
@@ -851,9 +853,73 @@ def check_event_record(broadcaster, with_file_check=False):
 
 
 @csrf_protect
+@login_required(redirect_field_name="referrer")
+def ajax_event_startstreaming(request):
+    return ajax_event_change_streaming(request, "start")
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def ajax_event_stopstreaming(request):
+    return ajax_event_change_streaming(request, "stop")
+
+
+def ajax_event_change_streaming(request, action):
+    if request.method != "POST" and not is_ajax(request):
+        return HttpResponseNotAllowed(["POST"])
+
+    if action not in ["start", "stop"]:
+        return JsonResponse(
+            {"success": False, "error": "can only start or stop"}, status=500
+        )
+
+    body_unicode = request.body.decode("utf-8")
+    body_data = json.loads(body_unicode)
+    streamer_id = body_data.get("idstreamer", None)
+    broadcaster_id = body_data.get("idbroadcaster", None)
+
+    broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
+    impl_class = get_piloting_implementation(broadcaster)
+
+    if impl_class is None:
+        return JsonResponse({"success": False, "error": "implementation error"})
+
+    to_exe = (
+        impl_class.start_stream(streamer_id)
+        if action == "start"
+        else impl_class.stop_stream(streamer_id)
+    )
+
+    if to_exe:
+        return JsonResponse({"success": True})
+
+    return JsonResponse({"success": False, "error": f"{action} not done"})
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def ajax_event_get_rtmp_config(request):
+    if request.method != "GET" and not is_ajax(request):
+        return HttpResponseNotAllowed(["GET"])
+
+    broadcaster_id = request.GET.get("idbroadcaster", None)
+    broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
+    impl_class = get_piloting_implementation(broadcaster)
+
+    if impl_class is None:
+        return JsonResponse({"success": False, "error": "implementation error"})
+
+    infos = impl_class.get_stream_rtmp_infos()
+    if infos.get("error", ""):
+        return JsonResponse({"success": False, "error": infos["error"]})
+
+    return JsonResponse({"success": True, "data": infos})
+
+
+@csrf_protect
 def event_get_video_cards(request):
     """Returns the template with the videos link to the event."""
-    if request.is_ajax():
+    if is_ajax(request):
         event_id = request.GET.get("idevent", None)
         evt = Event.objects.get(pk=event_id)
 
@@ -973,33 +1039,25 @@ def check_file_exists(full_file_name, max_attempt=6):
 def check_piloting_conf(broadcaster: Broadcaster) -> bool:
     """Returns if the piloting configuration of the broadcaster is correct."""
     impl_class = get_piloting_implementation(broadcaster)
-    if not impl_class:
-        return False
-    return impl_class.check_piloting_conf()
+    return impl_class.check_piloting_conf() if impl_class else False
 
 
 def start_record(broadcaster: Broadcaster, event_id) -> bool:
     """Starts the recording and return if successfully done."""
     impl_class = get_piloting_implementation(broadcaster)
-    if not impl_class:
-        return False
-    return impl_class.start(event_id)
+    return impl_class.start_recording(event_id) if impl_class else False
 
 
 def split_record(broadcaster: Broadcaster) -> bool:
     """Split the recording and return if successfully done."""
     impl_class = get_piloting_implementation(broadcaster)
-    if not impl_class or not impl_class.can_split():
-        return False
-    return impl_class.split()
+    return impl_class.split_recording() if impl_class else False
 
 
 def stop_record(broadcaster: Broadcaster) -> bool:
     """Stops the recording and return if successfully done."""
     impl_class = get_piloting_implementation(broadcaster)
-    if not impl_class:
-        return False
-    return impl_class.stop()
+    return impl_class.stop_recording() if impl_class else False
 
 
 def use_split(broadcaster: Broadcaster) -> bool:
@@ -1024,17 +1082,13 @@ def get_info_current_record(broadcaster: Broadcaster) -> dict:
 def is_available_to_record(broadcaster: Broadcaster) -> bool:
     """Returns the broadcaster is ready to record."""
     impl_class = get_piloting_implementation(broadcaster)
-    if not impl_class:
-        return False
-    return impl_class.is_available_to_record()
+    return impl_class.is_available_to_record() if impl_class else False
 
 
 def is_recording(broadcaster: Broadcaster, with_file_check=False) -> bool:
     """Returns the broadcaster is actually recording."""
     impl_class = get_piloting_implementation(broadcaster)
-    if not impl_class:
-        return False
-    return impl_class.is_recording(with_file_check)
+    return impl_class.is_recording(with_file_check) if impl_class else False
 
 
 def transform_to_video(broadcaster, event_id, current_record_info):
@@ -1090,3 +1144,9 @@ def copy_and_transform(impl_class, event_id, current_record_info):
         )
         return json_response.status_code == 200
     return False
+
+
+def can_manage_stream(broadcaster: Broadcaster) -> bool:
+    """Returns if the implementation allows to manage the stream."""
+    impl_class = get_piloting_implementation(broadcaster)
+    return impl_class is not None and impl_class.can_manage_stream()

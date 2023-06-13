@@ -75,17 +75,17 @@ class PilotingInterface(__ABC__):
         raise NotImplementedError
 
     @abstractmethod
-    def start(self, event_id, login=None) -> bool:
+    def start_recording(self, event_id, login=None) -> bool:
         """Start the recording."""
         raise NotImplementedError
 
     @abstractmethod
-    def split(self) -> bool:
+    def split_recording(self) -> bool:
         """Split the current record."""
         raise NotImplementedError
 
     @abstractmethod
-    def stop(self) -> bool:
+    def stop_recording(self) -> bool:
         """Stop the recording."""
         raise NotImplementedError
 
@@ -97,6 +97,26 @@ class PilotingInterface(__ABC__):
     @abstractmethod
     def copy_file_to_pod_dir(self, filename) -> bool:
         """Copy the file from remote server to pod server."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def can_manage_stream(self) -> bool:
+        """If the stream can be started and stopped."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def start_stream(self, streamer_id) -> bool:
+        """Starts the stream."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def stop_stream(self, streamer_id) -> bool:
+        """Stops the streams."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_stream_rtmp_infos(self) -> dict:
+        """Checks if SMP is configured for Rtmp and gets infos."""
         raise NotImplementedError
 
 
@@ -162,13 +182,11 @@ def validate_json_implementation(broadcaster: Broadcaster) -> bool:
         )
         return False
 
-    logger.debug("->piloting conf OK")
     return True
 
 
 def get_piloting_implementation(broadcaster) -> Optional[PilotingInterface]:
     """Returns the class inheriting from PilotingInterface according to the broadcaster configuration (or None)."""
-    logger.debug("get_piloting_implementation")
     piloting_impl = broadcaster.piloting_implementation
     if not piloting_impl:
         logger.info(
@@ -257,7 +275,6 @@ class Wowza(PilotingInterface):
 
     def check_piloting_conf(self) -> bool:
         """Implement check_piloting_conf from PilotingInterface."""
-        logger.debug("Wowza - Check piloting conf")
         return validate_json_implementation(self.broadcaster)
 
     def is_available_to_record(self) -> bool:
@@ -309,8 +326,8 @@ class Wowza(PilotingInterface):
         else:
             return True
 
-    def start(self, event_id, login=None) -> bool:
-        """Implement start from PilotingInterface."""
+    def start_recording(self, event_id, login=None) -> bool:
+        """Implement start_recording from PilotingInterface."""
         logger.debug("Wowza - Start record")
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)
@@ -385,11 +402,13 @@ class Wowza(PilotingInterface):
 
         return False
 
-    def split(self) -> bool:
+    def split_recording(self) -> bool:
         """Split the recording."""
-        return self.execute_action("splitRecording")
+        if self.can_split():
+            return self.execute_action("splitRecording")
+        return False
 
-    def stop(self) -> bool:
+    def stop_recording(self) -> bool:
         """Stop the recording."""
         return self.execute_action("stopRecording")
 
@@ -441,6 +460,22 @@ class Wowza(PilotingInterface):
         """Implement copy_file_to_pod_dir from PilotingInterface."""
         return False
 
+    def can_manage_stream(self) -> bool:
+        """Implement can_manage_stream from PilotingInterface."""
+        return False
+
+    def start_stream(self, streamer_id) -> bool:
+        """Implement start_stream from PilotingInterface."""
+        return False
+
+    def stop_stream(self, streamer_id) -> bool:
+        """Implement stop_stream from PilotingInterface."""
+        return False
+
+    def get_stream_rtmp_infos(self) -> dict:
+        """Implement get_stream_rtmp_infos from PilotingInterface."""
+        return {}
+
 
 class Smp(PilotingInterface):
     def __init__(self, broadcaster: Broadcaster):
@@ -464,7 +499,6 @@ class Smp(PilotingInterface):
 
     def check_piloting_conf(self) -> bool:
         """Implement check_piloting_conf from PilotingInterface."""
-        logger.debug("SMP - Check piloting conf")
         return validate_json_implementation(self.broadcaster)
 
     def is_available_to_record(self) -> bool:
@@ -497,8 +531,8 @@ class Smp(PilotingInterface):
 
         return self.verify_smp_response(response, "result", "recording")
 
-    def start(self, event_id, login=None) -> bool:
-        """Implement start from PilotingInterface."""
+    def start_recording(self, event_id, login=None) -> bool:
+        """Implement start_recordingfrom PilotingInterface."""
         logger.debug("Smp - Start record")
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)
@@ -532,13 +566,13 @@ class Smp(PilotingInterface):
         )
         return self.verify_smp_response(response, "recording", "record")
 
-    def split(self) -> bool:
-        """Implement split from PilotingInterface."""
+    def split_recording(self) -> bool:
+        """Implement split_recording from PilotingInterface."""
         logger.error("Smp - Split record - should not be called")
         return False
 
-    def stop(self) -> bool:
-        """Implement stop from PilotingInterface."""
+    def stop_recording(self) -> bool:
+        """Implement stop_recording from PilotingInterface."""
         logger.debug("Smp - Stop_record")
 
         json_conf = self.broadcaster.piloting_conf
@@ -634,11 +668,72 @@ class Smp(PilotingInterface):
             logger.debug("-- closing connection")
             sftp.close()
             return True
-        except paramiko.ssh_exception as e:
-            logger.error("Failed to connect server over SFTP : " + str(e))
         except OSError as e:
-            logger.error("Failed to copy file : " + str(e))
+            logger.error("Failed to copy file over SFTP : " + str(e))
         return False
+
+    def can_manage_stream(self) -> bool:
+        """Implement can_manage_stream from PilotingInterface."""
+        return True
+
+    def start_stream(self, streamer_id) -> bool:
+        """Implement start_stream from PilotingInterface."""
+        return self.set_stream_status(streamer_id, 1)
+
+    def stop_stream(self, streamer_id) -> bool:
+        """Implement stop_stream from PilotingInterface."""
+        return self.set_stream_status(streamer_id, 0)
+
+    def get_stream_rtmp_infos(self) -> dict:
+        """Implement get_stream_rtmp_infos from PilotingInterface."""
+        json_conf = self.broadcaster.piloting_conf
+        conf = json.loads(json_conf)
+        url = (
+            self.url
+            + "?uri=/streamer/rtmp/1&uri=/streamer/rtmp/2&uri=/streamer/rtmp/3&uri=/streamer/rtmp/4"
+        )
+        response = requests.get(
+            url,
+            headers={"Accept": "application/json", "Content-Type": "application/json"},
+            auth=(conf["user"], conf["password"]),
+        )
+
+        if response.status_code != http.HTTPStatus.OK or not response.json():
+            return {"error": "fail to fetch infos rtmp"}
+
+        # Verify all infos are present in any streamer
+        for streamer in response.json():
+            if (
+                streamer.get("result", "")
+                and streamer["result"].get("pub_url", "")
+                and "pub_control" in streamer["result"]
+                and "pub_while_record" in streamer["result"]
+                and streamer.get("meta", "")
+                and streamer["meta"].get("uri", "")
+            ):
+                return {
+                    "auto_start_on_record": bool(streamer["result"]["pub_while_record"]),
+                    "streamer_id": int(streamer["meta"]["uri"][-1]),
+                    "is_streaming": bool(streamer["result"]["pub_control"]),
+                }
+        return {}
+
+    def set_stream_status(self, streamer_id, value) -> bool:
+        """Set the RTMP stream status and return if successfully done."""
+        if not self.can_manage_stream:
+            return False
+
+        json_conf = self.broadcaster.piloting_conf
+        conf = json.loads(json_conf)
+        response = requests.put(
+            self.url,
+            headers={"Accept": "application/json", "Content-Type": "application/json"},
+            auth=(conf["user"], conf["password"]),
+            data=json.dumps(
+                [{"uri": f"/streamer/rtmp/{streamer_id}/pub_control", "value": value}]
+            ),
+        )
+        return self.verify_smp_response(response, "result", value)
 
     @staticmethod
     def verify_smp_response(response: requests.Response, key, value) -> bool:

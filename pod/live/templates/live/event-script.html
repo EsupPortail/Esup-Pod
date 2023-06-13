@@ -23,6 +23,38 @@
         loop: false
     }
 
+    /**
+     * Add a BS5 alert message in current view.
+     * @param msg
+     * @param type
+     */
+    function show_alert(msg, type) {
+      let icon = "info-circle-fill";
+      if (type === "success")
+        icon = "check-circle-fill";
+      else if (type === "warning")
+        icon = "exclamation-circle-fill";
+      else
+        type = "info";
+
+      document.getElementById("user_message").innerHTML =
+        `<div id="user-msg" class="alert alert-${type} alert-dismissible fade show" role="alert">
+            <button id="user-msg-btn" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              <i class="bi bi-${icon}" style="font-size: 1.5em"></i> ${msg}
+            </div>`;
+
+      const user_msg = document.getElementById("user-msg");
+      setTimeout(() => {
+        user_msg.animate(
+          { opacity: 0 },
+          { duration: 1000 }
+        );
+        slideUp(user_msg, 1000, function() {
+          user_msg.remove();
+        });
+      }, 4000);
+    }
+
     // Management of the end of the stream (for Firefox, Chrome... not working for Edge, Safari)
     videojs.Hls.xhr.beforeRequest = function (options) {
 
@@ -120,8 +152,9 @@
           player.videoJsViewerCount();
         {% endif %}
 
-        // Affichage des boutons de contrôle
-        {% if need_piloting_buttons %}
+        // Affichage des boutons de contrôle de l'enregistrement
+        {% if can_record %}
+          document.getElementById("recording_btns").classList.remove("d-none")
           updateStreamStatus();
           setInterval(updateStreamStatus, 60000); // every 60 sec
           setInterval(displayRecordingDuration, 1000); // every sec
@@ -133,16 +166,28 @@
         {% endif %}
       });
 
-      {% if need_piloting_buttons %}
+      {% if can_record %}
 
-        const startButton = document.getElementById("startrecord");
-        const stopButton = document.getElementById("stoprecord");
-        const splitButton = document.getElementById("splitrecord");
+        const startRecordBtn = document.getElementById("startrecord");
+        const stopRecordBtn = document.getElementById("stoprecord");
+        const splitRecordBtn = document.getElementById("splitrecord");
         const durationClock = document.getElementById("recordingduration");
+        const streamControl = document.getElementById("stream_btns");
+        const startStreamBtn = document.getElementById("startstream");
+        const stopStreamBtn = document.getElementById("stopstream");
+        const startAndRecord = document.getElementById("startandrecord");
 
-        // Recording actions on the stream
-        startButton.onclick = () => {
-          startButton.setAttribute("disabled", "");
+        // variables set in get_rtmp_infos()
+        let rtmp_streamer_id;
+        let is_streaming;
+        let is_auto_start_on_record;
+
+        /**
+         * Starts the recording.
+         * @returns {boolean} success state
+         */
+        startRecordAction = function() {
+          startRecordBtn.setAttribute("disabled", "");
           fetch("{% url 'live:ajax_event_startrecord' %}", {
             method: "POST",
             headers: {
@@ -156,31 +201,41 @@
               "idbroadcaster": "{{ event.broadcaster.id }}"
             })
           }).then((response) => {
-            startButton.removeAttribute("disabled");
+            startRecordBtn.removeAttribute("disabled");
             if (response.ok)
               return response.json();
             else
               return Promise.reject(response);
           }).then((data) => {
             if (data.success) {
-              startButton.classList.add("d-none");
-              stopButton.classList.remove("d-none");
-              splitButton.classList.remove("d-none");
+              startRecordBtn.setAttribute("disabled", "");
+              stopRecordBtn.removeAttribute("disabled");
+              splitRecordBtn.removeAttribute("disabled");
               recordingDuration = 0;
               durationClock.innerHTML = "";
               durationClock.classList.remove("d-none");
+              show_alert("{% trans 'Recording in progress' %}", "success");
+              return true;
             } else {
-              console.warn("Start not done: " + data.error);
+              console.warn("{% trans 'Recording not done: ' %}" + data.error);
+              show_alert("{% trans 'Recording not done: ' %}" + data.error, "warning");
+              return false;
             }
           }).catch((error) => {
             durationClock.classList.add("d-none");
-            console.error("Error calling startrecord" + error.statusText);
+            console.error("{% trans 'Error calling' %}" + " startrecord" + error.statusText);
+            show_alert("{% trans 'Error calling' %}" + " startrecord", "warning");
+            return false;
           });
         };
 
-        stopButton.onclick = () => {
-          stopButton.setAttribute("disabled", "");
-          splitButton.setAttribute("disabled", "");
+        /**
+         * Stops the recording.
+         * @returns {boolean} success state
+         */
+        stopRecordAction = function() {
+          stopRecordBtn.setAttribute("disabled", "");
+          splitRecordBtn.setAttribute("disabled", "");
           fetch("{% url 'live:ajax_event_stoprecord' %}", {
             method: "POST",
             headers: {
@@ -194,33 +249,42 @@
               "idbroadcaster": "{{ event.broadcaster.id }}"
             })
           }).then((response) => {
-            stopButton.removeAttribute("disabled");
-            splitButton.removeAttribute("disabled");
+            stopRecordBtn.removeAttribute("disabled");
+            splitRecordBtn.removeAttribute("disabled");
             if (response.ok)
               return response.json();
             else
               return Promise.reject(response);
           }).then((data) => {
             if (data.success) {
-              startButton.classList.remove("d-none");
-              stopButton.classList.add("d-none");
-              splitButton.classList.add("d-none");
+              startRecordBtn.removeAttribute("disabled");
+              stopRecordBtn.setAttribute("disabled", "");
+              splitRecordBtn.setAttribute("disabled", "");
               durationClock.classList.add("d-none");
               getEventVideos();
+              show_alert("{% trans 'Recording stopped' %}", "success");
+              return true;
             } else {
               durationClock.classList.add("d-none");
-              console.warn("Stop not done " + data.errored);
+              console.warn("{% trans 'Recording not stopped: ' %}" + data.errored);
+              show_alert("{% trans 'Recording not stopped: ' %}" + data.error, "warning");
+              return false;
             }
           }).catch((error) => {
             durationClock.classList.add("d-none");
-            console.error("Error calling stop record: " + error.statusText);
+            console.error("{% trans 'Error calling' %}" + " stop record" + error.statusText);
+            show_alert("{% trans 'Error calling' %}" + " stop record", "warning");
+            return false;
           });
         };
 
-      {% if use_split %}
-        splitButton.onclick = () => {
-          stopButton.setAttribute("disabled", "");
-          splitButton.setAttribute("disabled", "");
+        /**
+         * Splits the recording.
+         * @returns {boolean} success state
+         */
+        splitRecordAction = function() {
+          stopRecordBtn.setAttribute("disabled", "");
+          splitRecordBtn.setAttribute("disabled", "");
           fetch("{% url 'live:ajax_event_splitrecord' %}", {
             method: "POST",
             headers: {
@@ -234,8 +298,8 @@
               "idbroadcaster": "{{ event.broadcaster.id }}"
             })
           }).then((response) => {
-            stopButton.removeAttribute("disabled");
-            splitButton.removeAttribute("disabled");
+            stopRecordBtn.removeAttribute("disabled");
+            splitRecordBtn.removeAttribute("disabled");
             if (response.ok)
               return response.json();
             else
@@ -244,18 +308,192 @@
             if (data.success) {
               recordingDuration = 0;
               getEventVideos();
+              show_alert("{% trans 'Recording split done' %}", "success");
+              return true;
             } else {
-              console.warn("Split not done: " + data.error);
               durationClock.classList.add("d-none");
+              console.warn("{% trans 'Recording not split: ' %}" + data.error);
+              show_alert("{% trans 'Recording not split: ' %}" + data.error, "warning");
+              return false;
             }
           }).catch((error) => {
             durationClock.classList.add("d-none");
-            console.error("Error calling splitrecord: " + error.statusText);
+            console.error("{% trans 'Error calling' %}" + " splitrecord" + error.statusText);
+            show_alert("{% trans 'Error calling' %}" + " splitrecord", "warning");
+            return false;
           });
         };
-      {% else %}
-        splitButton.classList.add("invisible");
-      {% endif %}
+
+        startRecordBtn.onclick = startRecordAction;
+        stopRecordBtn.onclick = stopRecordAction;
+        {% if use_split %}
+          splitRecordBtn.onclick = splitRecordAction;
+        {% else %}
+          splitRecordBtn.classList.add("d-none");
+        {% endif %}
+
+        {% if can_manage_stream %}
+
+          /**
+           * Stops the stream
+           * @returns {boolean} success state
+           */
+          startStreamAction = function() {
+            if (!rtmp_streamer_id)
+              return false;
+
+            startStreamBtn.setAttribute("disabled", "");
+            fetch("{% url 'live:ajax_event_startstreaming' %}", {
+              method: "POST",
+              headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "X-CSRFToken": '{{ csrf_token }}'
+              },
+              body: JSON.stringify({
+                "idbroadcaster": "{{ event.broadcaster.id }}",
+                "idstreamer": rtmp_streamer_id,
+              })
+            }).then((response) => {
+              if (response.ok)
+                return response.json();
+              else
+                return Promise.reject(response);
+            }).then((data) => {
+              if (data.success) {
+                stopStreamBtn.removeAttribute("disabled");
+                show_alert("{% trans 'Video stream started (please wait a moment)' %}", "success");
+                return true;
+              } else {
+                console.warn("{% trans 'Video stream can not be started' %}");
+                show_alert("{% trans 'Video stream can not be started' %}", "warning");
+                return false;
+              }
+            }).catch((error) => {
+              disableStreamControl();
+              console.error("{% trans 'Error calling' %}" + " startstream " + error.statusText);
+              show_alert("{% trans 'Error calling' %}" + " startstream ", "warning");
+              return false;
+            });
+          };
+
+          /**
+           * Starts the stream
+           * @returns {boolean} success state
+           */
+          stopStreamAction = function() {
+            if (!rtmp_streamer_id)
+              return false;
+
+            stopStreamBtn.setAttribute("disabled", "");
+            fetch("{% url 'live:ajax_event_stopstreaming' %}", {
+              method: "POST",
+              headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "X-CSRFToken": '{{ csrf_token }}'
+              },
+              body: JSON.stringify({
+                "idbroadcaster": "{{ event.broadcaster.id }}",
+                "idstreamer": rtmp_streamer_id,
+              })
+            }).then((response) => {
+              if (response.ok)
+                return response.json();
+              else
+                return Promise.reject(response);
+            }).then((data) => {
+              if (data.success) {
+                // stops the recording (if stream is currently recoding)
+                stopRecordBtn.click()
+                startStreamBtn.removeAttribute("disabled");
+                show_alert("{% trans 'Video stream stopped (please wait a moment)' %}", "success");
+                return true;
+              } else {
+                console.error("{% trans 'Video stream can not be stop' %}");
+                show_alert("{% trans 'Video stream can not be stop' %}", "warning");
+                return false;
+              }
+            }).catch((error) => {
+              disableStreamControl();
+              console.error("{% trans 'Error calling' %}"  + "stopstream" + error.statusText);
+              show_alert("{% trans 'Error calling' %}" + "stopstream", "warning");
+              return false;
+            });
+          };
+
+          /**
+           * Starts the stream and starts recording.
+           */
+          startAndRecordStreamAction = function() {
+            if (is_auto_start_on_record)
+              return startRecordAction();
+
+            if (startStreamAction() === true) {
+                return startRecordAction();
+            }
+          };
+
+          /**
+           * Checks if the broadcaster is configured for rtmp and gets infos.
+           */
+          function get_rtmp_infos() {
+            const url = "{% url 'live:ajax_event_get_rtmp_config' %}" + '?idbroadcaster={{ event.broadcaster.id }}';
+            fetch(url, {
+              method: "GET",
+              headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "X-CSRFToken": '{{ csrf_token }}'
+              }
+            }).then((response) => {
+              if (response.ok)
+                return response.json();
+              else
+                return Promise.reject(response);
+            }).then((body) => {
+              if (body.success && body.data) {
+                streamControl.classList.remove("d-none");
+
+                is_streaming = body.data["is_streaming"];
+                is_auto_start_on_record = body.data["auto_start_on_record"];
+                rtmp_streamer_id = body.data["streamer_id"];
+
+                if (is_streaming) {
+                  startStreamBtn.setAttribute("disabled", "");
+                  startAndRecord.setAttribute("disabled", "");
+                  stopStreamBtn.removeAttribute("disabled");
+                } else {
+                  startStreamBtn.removeAttribute("disabled");
+                  startAndRecord.removeAttribute("disabled");
+                  stopStreamBtn.setAttribute("disabled", "");
+                }
+
+                startStreamBtn.onclick = startStreamAction;
+                stopStreamBtn.onclick = stopStreamAction;
+                startAndRecord.onclick = startAndRecordStreamAction;
+              }
+            }).catch((error) => {
+              disableStreamControl();
+              console.error("Error calling get_stream_rtmp_infos" + error);
+            });
+          }
+
+          /**
+           * Disable all the stream control boutons.
+           */
+          function disableStreamControl(){
+            startStreamBtn.setAttribute("disabled", "");
+            stopStreamBtn.setAttribute("disabled", "");
+            startAndRecord.setAttribute("disabled", "");
+          }
+
+          get_rtmp_infos();
+
+        {% endif %}
 
         /**
          * Updates the status of the stream and display the action buttons.
@@ -277,23 +515,23 @@
               return Promise.reject(response);
           }).then((data) => {
             if (data.recording) {
-              startButton.classList.add("d-none");
-              stopButton.classList.remove("d-none");
-              splitButton.classList.remove("d-none");
+              startRecordBtn.setAttribute("disabled", "");
+              stopRecordBtn.removeAttribute("disabled");
+              splitRecordBtn.removeAttribute("disabled");
               getInfoCurrentRecord();
             } else {
               if (data.available) {
-                startButton.classList.remove("d-none");
+                startRecordBtn.removeAttribute("disabled");
               }
-              stopButton.classList.add("d-none");
-              splitButton.classList.add("d-none");
+              stopRecordBtn.setAttribute("disabled", "");
+              splitRecordBtn.setAttribute("disabled", "");
               durationClock.classList.add("d-none");
             }
           }).catch((error) => {
             console.error("error calling isstreamavailabletorecord: " + error.statusText);
-            startButton.classList.add("d-none");
-            stopButton.classList.add("d-none");
-            splitButton.classList.add("d-none");
+            startRecordBtn.setAttribute("disabled", "");
+            stopRecordBtn.setAttribute("disabled", "");
+            splitRecordBtn.setAttribute("disabled", "");
             durationClock.classList.add("d-none");
           });
         }
@@ -312,6 +550,9 @@
           recordingDuration++
         }
 
+        /**
+         * Gets the current recording infos.
+         */
         function getInfoCurrentRecord() {
           fetch("{% url 'live:ajax_event_info_record' %}", {
             method: "POST",
@@ -376,6 +617,10 @@
         })
     }
 
+    /**
+     * Displays the waiting video (if any).
+     * @param withModal: if modal should be added on top.
+     */
     function showWaitingVideo(withModal){
         if (video_on_hold_is_displayed) {
             return;
@@ -580,4 +825,5 @@
             })
         }, 1000);
     }
+
 </script>
