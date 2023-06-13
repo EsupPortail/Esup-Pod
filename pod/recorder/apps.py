@@ -21,8 +21,9 @@ def fix_transcript(sender, **kwargs):
     """
     from pod.recorder.models import Recorder
     from django.db.models import F
-    Recorder.objects.filter(transcript="1").update(transcript=F('main_lang'))
-    Recorder.objects.filter(transcript="0").update(transcript='')
+
+    Recorder.objects.filter(transcript="1").update(transcript=F("main_lang"))
+    Recorder.objects.filter(transcript="0").update(transcript="")
 
 
 class RecorderConfig(AppConfig):

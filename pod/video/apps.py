@@ -52,8 +52,9 @@ def fix_transcript(sender, **kwargs):
     """
     from pod.video.models import Video
     from django.db.models import F
-    Video.objects.filter(transcript="1").update(transcript=F('main_lang'))
-    Video.objects.filter(transcript="0").update(transcript='')
+
+    Video.objects.filter(transcript="1").update(transcript=F("main_lang"))
+    Video.objects.filter(transcript="0").update(transcript="")
 
 
 class VideoConfig(AppConfig):
@@ -172,23 +173,24 @@ class VideoConfig(AppConfig):
         else:
             return
 
-        if len(VIDEO_RENDITION) > 0 :
+        if len(VIDEO_RENDITION) > 0:
             self.import_video_rendition(nb_batch)
 
-        if len(ENCODING_VIDEO) > 0 :
+        if len(ENCODING_VIDEO) > 0:
             self.import_encoding_video(nb_batch)
 
-        if len(ENCODING_STEP) > 0 :
+        if len(ENCODING_STEP) > 0:
             self.import_encoding_step(nb_batch)
 
-        if len(ENCODING_LOG) > 0 :
+        if len(ENCODING_LOG) > 0:
             self.import_encoding_log(nb_batch)
 
-        if len(ENCODING_AUDIO) > 0 :
+        if len(ENCODING_AUDIO) > 0:
             self.import_encoding_audio(nb_batch)
 
     def import_video_rendition(self, nb_batch):
         from pod.video_encode_transcript.models import VideoRendition
+
         print("pushing %s VIDEO_RENDITION" % len(VIDEO_RENDITION))
         print("Start at: %s" % time.ctime())
         video_renditions = []
@@ -208,6 +210,7 @@ class VideoConfig(AppConfig):
 
     def import_encoding_video(self, nb_batch):
         from pod.video_encode_transcript.models import EncodingVideo
+
         print("pushing %s ENCODING_VIDEO" % len(ENCODING_VIDEO))
         print("Start at: %s" % time.ctime())
         encoding_videos = []
@@ -225,6 +228,7 @@ class VideoConfig(AppConfig):
 
     def import_encoding_step(self, nb_batch):
         from pod.video_encode_transcript.models import EncodingStep
+
         print("pushing %s ENCODING_STEP" % len(ENCODING_STEP))
         print("Start at: %s" % time.ctime())
         encoding_steps = []
@@ -240,6 +244,7 @@ class VideoConfig(AppConfig):
 
     def import_encoding_log(self, nb_batch):
         from pod.video_encode_transcript.models import EncodingLog
+
         print("pushing %s ENCODING_LOG" % len(ENCODING_LOG))
         print("Start at: %s" % time.ctime())
         encoding_logs = []
@@ -255,6 +260,7 @@ class VideoConfig(AppConfig):
 
     def import_encoding_audio(self, nb_batch):
         from pod.video_encode_transcript.models import EncodingAudio
+
         print("pushing %s ENCODING_AUDIO" % len(ENCODING_AUDIO))
         print("Start at: %s" % time.ctime())
         encoding_audios = []
