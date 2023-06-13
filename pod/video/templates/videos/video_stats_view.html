@@ -25,15 +25,14 @@
       </div>
     </div>
     <div class="table-responsive-md mb-4">
-      <table id="grid"></table>
+      <canvas id="myChart"></canvas>
     </div>
     <div id="pager"></div>
   {% endif %}
 </div>
 {% endblock content %}
 
-{% block more_script %}
-  <script src="{% static 'jqGrid/js/i18n/grid.locale-'|add:LANGUAGE_CODE|add:'.js' %}?ver={{VERSION}}" charset="utf-8"></script>
-  <script src="{% static 'jqGrid/js/jquery.jqGrid.min.js' %}?ver={{VERSION}}" charset="utf-8"></script>
-  <script src="{% static 'js/video_stats_view.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+{% block more_script %} 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="{% static 'js/video_stats_view2.js' %}?ver={{VERSION}}" charset="utf-8"></script>
 {% endblock %}
