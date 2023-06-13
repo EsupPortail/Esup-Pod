@@ -23,7 +23,7 @@ def set_default_site(sender, **kwargs):
 class LiveConfig(AppConfig):
     name = "pod.live"
     default_auto_field = "django.db.models.BigAutoField"
-    event_data = {}
+    # event_data = {}
     verbose_name = _("Lives")
 
     def ready(self):

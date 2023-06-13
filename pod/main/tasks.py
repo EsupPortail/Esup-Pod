@@ -21,7 +21,7 @@ def task_start_transcript(self, video_id):
 @shared_task(bind=True)
 def task_start_bbb_encode(self, meeting_id):
     print("CELERY START BBB ENCODE MEETING ID %s" % meeting_id)
-    from pod.video.bbb import bbb_encode_meeting
+    from pod.bbb.bbb import bbb_encode_meeting
 
     bbb_encode_meeting(meeting_id)
 

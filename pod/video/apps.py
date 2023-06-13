@@ -3,6 +3,13 @@ from django.apps import AppConfig
 from django.db.models.signals import post_migrate, pre_migrate
 from django.utils.translation import gettext_lazy as _
 from django.db import connection
+import time
+
+VIDEO_RENDITION = {}
+ENCODING_VIDEO = {}
+ENCODING_AUDIO = {}
+ENCODING_LOG = {}
+ENCODING_STEP = {}
 
 
 def apply_default_site(obj, site):
@@ -26,23 +33,16 @@ def set_default_site(sender, **kwargs):
     from django.contrib.sites.models import Site
 
     site = Site.objects.get_current()
-    for vid in Video.objects.all():
+    for vid in Video.objects.filter(sites__isnull=True):
         apply_default_site(vid, site)
-    for chan in Channel.objects.all():
+    for chan in Channel.objects.filter(site=None):
         apply_default_site_fk(chan, site)
-    for dis in Discipline.objects.all():
-        apply_default_site_fk(chan, site)
-    for typ in Type.objects.all():
+    for dis in Discipline.objects.filter(site=None):
+        apply_default_site_fk(dis, site)
+    for typ in Type.objects.filter(sites__isnull=True):
         apply_default_site(typ, site)
-    for vr in VideoRendition.objects.all():
+    for vr in VideoRendition.objects.filter(sites__isnull=True):
         apply_default_site(vr, site)
-
-
-VIDEO_RENDITION = {}
-ENCODING_VIDEO = {}
-ENCODING_AUDIO = {}
-ENCODING_LOG = {}
-ENCODING_STEP = {}
 
 
 def fix_transcript(sender, **kwargs):
@@ -51,14 +51,10 @@ def fix_transcript(sender, **kwargs):
     This fix change value to set the default lang value if necessary
     """
     from pod.video.models import Video
+    from django.db.models import F
 
-    for vid in Video.objects.all():
-        if vid.transcript == "1":
-            vid.transcript = vid.main_lang
-            vid.save()
-        elif vid.transcript == "0":
-            vid.transcript = ""
-            vid.save()
+    Video.objects.filter(transcript="1").update(transcript=F("main_lang"))
+    Video.objects.filter(transcript="0").update(transcript="")
 
 
 class VideoConfig(AppConfig):
@@ -67,8 +63,8 @@ class VideoConfig(AppConfig):
     verbose_name = _("Videos")
 
     def ready(self):
-        post_migrate.connect(set_default_site, sender=self)
         pre_migrate.connect(self.save_previous_data, sender=self)
+        post_migrate.connect(set_default_site, sender=self)
         post_migrate.connect(self.send_previous_data, sender=self)
         post_migrate.connect(fix_transcript, sender=self)
 
@@ -86,96 +82,120 @@ class VideoConfig(AppConfig):
                 results = c.fetchall()
                 for res in results:
                     mapping_dict["%s" % res[0]] = [res[i] for i in range(1, len(res))]
-        except Exception:
+        except Exception as e:
+            print(e)
             pass
 
     def save_previous_data(self, sender, **kwargs):
         """Save previous data from various database tables."""
         self.execute_query(
             """
-                    SELECT "video_videorendition"."id",
-                    "video_videorendition"."resolution",
-                    "video_videorendition"."minrate",
-                    "video_videorendition"."video_bitrate",
-                    "video_videorendition"."maxrate",
-                    "video_videorendition"."encoding_resolution_threshold",
-                    "video_videorendition"."audio_bitrate",
-                    "video_videorendition"."encode_mp4"
-                    FROM "video_videorendition"
-                    ORDER BY "video_videorendition"."name" ASC
-                    """,
+            SELECT id,
+            resolution,
+            minrate,
+            video_bitrate,
+            maxrate,
+            encoding_resolution_threshold,
+            audio_bitrate,
+            encode_mp4
+            FROM video_videorendition
+            ORDER BY resolution ASC
+            """,
             VIDEO_RENDITION,
         )
-
+        if len(VIDEO_RENDITION) > 0:
+            print("%s VIDEO_RENDITION saved" % len(VIDEO_RENDITION))
         self.execute_query(
             """
-                    SELECT "video_encodingvideo"."id",
-                    "video_encodingvideo"."name",
-                    "video_encodingvideo"."video_id",
-                    "video_encodingvideo"."rendition_id",
-                    "video_encodingvideo"."encoding_format",
-                    "video_encodingvideo"."source_file"
-                    FROM "video_encodingvideo"
-                    ORDER BY "video_encodingvideo"."name" ASC
-                    """,
+            SELECT id,
+            name,
+            video_id,
+            rendition_id,
+            encoding_format,
+            source_file
+            FROM video_encodingvideo
+            ORDER BY name ASC
+            """,
             ENCODING_VIDEO,
         )
-
+        if len(ENCODING_VIDEO) > 0:
+            print("%s ENCODING_VIDEO saved" % len(ENCODING_VIDEO))
         self.execute_query(
             """
-                    SELECT "video_encodingstep"."id",
-                    "video_encodingstep"."video_id",
-                    "video_encodingstep"."num_step",
-                    "video_encodingstep"."desc_step"
-                    FROM "video_encodingstep"
-                    INNER JOIN "video_video"
-                    ON ("video_encodingstep"."video_id" = "video_video"."id")
-                    ORDER BY "video_video"."date_added"
-                    DESC, "video_video"."id" DESC
-                    """,
+            SELECT id,
+            video_id,
+            num_step,
+            desc_step
+            FROM video_encodingstep
+            """,
             ENCODING_STEP,
         )
-
+        if len(ENCODING_STEP) > 0:
+            print("%s ENCODING_STEP saved" % len(ENCODING_STEP))
         self.execute_query(
             """
-                    SELECT "video_encodinglog"."id",
-                    "video_encodinglog"."video_id",
-                    "video_encodinglog"."log",
-                    "video_encodinglog"."logfile"
-                    FROM "video_encodinglog"
-                    INNER JOIN "video_video"
-                    ON ("video_encodinglog"."video_id" = "video_video"."id")
-                    ORDER BY "video_video"."date_added"
-                    DESC, "video_video"."id" DESC
-                    """,
+            SELECT id,
+            video_id,
+            log,
+            logfile
+            FROM video_encodinglog
+            """,
             ENCODING_LOG,
         )
-
+        if len(ENCODING_LOG) > 0:
+            print("%s ENCODING_LOG saved" % len(ENCODING_LOG))
         self.execute_query(
             """
-                    SELECT "video_encodingaudio"."id",
-                    "video_encodingaudio"."name",
-                    "video_encodingaudio"."video_id",
-                    "video_encodingaudio"."encoding_format",
-                    "video_encodingaudio"."source_file"
-                    FROM "video_encodingaudio"
-                    ORDER BY "video_encodingaudio"."name" ASC
-                    """,
+            SELECT id,
+            name,
+            video_id,
+            encoding_format,
+            source_file
+            FROM video_encodingaudio
+            ORDER BY name ASC
+            """,
             ENCODING_AUDIO,
         )
+        if len(ENCODING_AUDIO) > 0:
+            print("%s ENCODING_AUDIO saved" % len(ENCODING_AUDIO))
 
     def send_previous_data(self, sender, **kwargs):
         """Send previous data from various database tables."""
-        from pod.video_encode_transcript.models import (
-            VideoRendition,
-            EncodingVideo,
-            EncodingStep,
-            EncodingLog,
-            EncodingAudio,
-        )
+        nb_batch = 1000
+        if (
+            len(VIDEO_RENDITION) > 0
+            or len(ENCODING_VIDEO) > 0
+            or len(ENCODING_AUDIO) > 0
+            or len(ENCODING_LOG) > 0
+            or len(ENCODING_STEP) > 0
+        ):
+            print("send_previous_data : batch size = %s" % nb_batch)
+        else:
+            return
 
+        if len(VIDEO_RENDITION) > 0:
+            self.import_video_rendition(nb_batch)
+
+        if len(ENCODING_VIDEO) > 0:
+            self.import_encoding_video(nb_batch)
+
+        if len(ENCODING_STEP) > 0:
+            self.import_encoding_step(nb_batch)
+
+        if len(ENCODING_LOG) > 0:
+            self.import_encoding_log(nb_batch)
+
+        if len(ENCODING_AUDIO) > 0:
+            self.import_encoding_audio(nb_batch)
+
+    def import_video_rendition(self, nb_batch):
+        from pod.video_encode_transcript.models import VideoRendition
+
+        print("pushing %s VIDEO_RENDITION" % len(VIDEO_RENDITION))
+        print("Start at: %s" % time.ctime())
+        video_renditions = []
         for id in VIDEO_RENDITION:
-            vr = VideoRendition.objects.create(
+            vr = VideoRendition(
                 id=id,
                 resolution=VIDEO_RENDITION[id][0],
                 minrate=VIDEO_RENDITION[id][1],
@@ -185,9 +205,17 @@ class VideoConfig(AppConfig):
                 audio_bitrate=VIDEO_RENDITION[id][5],
                 encode_mp4=VIDEO_RENDITION[id][6],
             )
-            vr.save()
+            video_renditions.append(vr)
+        VideoRendition.objects.bulk_create(video_renditions, batch_size=nb_batch)
+
+    def import_encoding_video(self, nb_batch):
+        from pod.video_encode_transcript.models import EncodingVideo
+
+        print("pushing %s ENCODING_VIDEO" % len(ENCODING_VIDEO))
+        print("Start at: %s" % time.ctime())
+        encoding_videos = []
         for id in ENCODING_VIDEO:
-            ev = EncodingVideo.objects.create(
+            ev = EncodingVideo(
                 id=id,
                 name=ENCODING_VIDEO[id][0],
                 video_id=ENCODING_VIDEO[id][1],
@@ -195,29 +223,54 @@ class VideoConfig(AppConfig):
                 encoding_format=ENCODING_VIDEO[id][3],
                 source_file=ENCODING_VIDEO[id][4],
             )
-            ev.save()
+            encoding_videos.append(ev)
+        EncodingVideo.objects.bulk_create(encoding_videos, batch_size=nb_batch)
+
+    def import_encoding_step(self, nb_batch):
+        from pod.video_encode_transcript.models import EncodingStep
+
+        print("pushing %s ENCODING_STEP" % len(ENCODING_STEP))
+        print("Start at: %s" % time.ctime())
+        encoding_steps = []
         for id in ENCODING_STEP:
-            ea = EncodingStep.objects.create(
+            ea = EncodingStep(
                 id=id,
                 video_id=ENCODING_STEP[id][0],
                 num_step=ENCODING_STEP[id][1],
                 desc_step=ENCODING_STEP[id][2],
             )
-            ea.save()
+            encoding_steps.append(ea)
+        EncodingStep.objects.bulk_create(encoding_steps, batch_size=nb_batch)
+
+    def import_encoding_log(self, nb_batch):
+        from pod.video_encode_transcript.models import EncodingLog
+
+        print("pushing %s ENCODING_LOG" % len(ENCODING_LOG))
+        print("Start at: %s" % time.ctime())
+        encoding_logs = []
         for id in ENCODING_LOG:
-            el = EncodingLog.objects.create(
+            el = EncodingLog(
                 id=id,
                 video_id=ENCODING_LOG[id][0],
                 log=ENCODING_LOG[id][1],
                 logfile=ENCODING_LOG[id][2],
             )
-            el.save()
+            encoding_logs.append(el)
+        EncodingLog.objects.bulk_create(encoding_logs, batch_size=nb_batch)
+
+    def import_encoding_audio(self, nb_batch):
+        from pod.video_encode_transcript.models import EncodingAudio
+
+        print("pushing %s ENCODING_AUDIO" % len(ENCODING_AUDIO))
+        print("Start at: %s" % time.ctime())
+        encoding_audios = []
         for id in ENCODING_AUDIO:
-            es = EncodingAudio.objects.create(
+            es = EncodingAudio(
                 id=id,
                 name=ENCODING_AUDIO[id][0],
                 video_id=ENCODING_AUDIO[id][1],
                 encoding_format=ENCODING_AUDIO[id][2],
                 source_file=ENCODING_AUDIO[id][3],
             )
-            es.save()
+            encoding_audios.append(es)
+        EncodingAudio.objects.bulk_create(encoding_audios, batch_size=nb_batch)
