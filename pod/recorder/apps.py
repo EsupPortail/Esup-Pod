@@ -9,7 +9,7 @@ def set_default_site(sender, **kwargs):
     from django.contrib.sites.models import Site
 
     for rec in Recorder.objects.filter(sites__isnull=True):
-        if len(rec.sites.all()) == 0: # pas forcement utile
+        if len(rec.sites.all()) == 0:  # pas forcement utile
             rec.sites.add(Site.objects.get_current())
             rec.save()
 
@@ -21,8 +21,9 @@ def fix_transcript(sender, **kwargs):
     """
     from pod.recorder.models import Recorder
     from django.db.models import F
-    Recorder.objects.filter(transcript="1").update(transcript=F('main_lang'))
-    Recorder.objects.filter(transcript="0").update(transcript='')
+
+    Recorder.objects.filter(transcript="1").update(transcript=F("main_lang"))
+    Recorder.objects.filter(transcript="0").update(transcript="")
 
 
 class RecorderConfig(AppConfig):

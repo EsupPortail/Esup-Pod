@@ -11,7 +11,7 @@ def create_missing_conf(sender, **kwargs):
 
     print("---> Creating missing configurations...")
     json_data = []
-    with open("./pod/main/fixtures/initial_data.json", encoding='utf-8') as data_file:
+    with open("./pod/main/fixtures/initial_data.json", encoding="utf-8") as data_file:
         json_data = json.loads(data_file.read())
 
     updated_count = 0
