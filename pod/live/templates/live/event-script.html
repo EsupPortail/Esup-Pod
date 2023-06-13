@@ -170,7 +170,7 @@
               durationClock.innerHTML = "";
               durationClock.classList.remove("d-none");
             } else {
-              console.warn("Start not done : " + data.error);
+              console.warn("Start not done: " + data.error);
             }
           }).catch((error) => {
             durationClock.classList.add("d-none");
@@ -213,7 +213,7 @@
             }
           }).catch((error) => {
             durationClock.classList.add("d-none");
-            console.error("Error calling stop record : " + error.statusText);
+            console.error("Error calling stop record: " + error.statusText);
           });
         };
 
@@ -245,12 +245,12 @@
               recordingDuration = 0;
               getEventVideos();
             } else {
-              console.warn("Split not done : " + data.error);
+              console.warn("Split not done: " + data.error);
               durationClock.classList.add("d-none");
             }
           }).catch((error) => {
             durationClock.classList.add("d-none");
-            console.error("Error calling splitrecord : " + error.statusText);
+            console.error("Error calling splitrecord: " + error.statusText);
           });
         };
       {% else %}
@@ -290,7 +290,7 @@
               durationClock.classList.add("d-none");
             }
           }).catch((error) => {
-            console.error("error calling isstreamavailabletorecord : " + error.statusText);
+            console.error("error calling isstreamavailabletorecord: " + error.statusText);
             startButton.classList.add("d-none");
             stopButton.classList.add("d-none");
             splitButton.classList.add("d-none");
@@ -308,7 +308,7 @@
           hours = hours === 0 ? "" : hours + ":"
           minutes = minutes < 10 ? "0" + minutes : minutes
           seconds = seconds < 10 ? "0" + seconds : seconds
-          durationClock.innerHTML = '{% trans "Recording duration" %} : ' + hours + minutes + ':' + seconds;
+          durationClock.innerHTML = '{% trans "Recording duration" %}: ' + hours + minutes + ':' + seconds;
           recordingDuration++
         }
 
@@ -336,10 +336,10 @@
               durationClock.classList.remove("d-none");
             } else {
               durationClock.classList.add("d-none");
-              console.error("Recording Info not done : " + data.error);
+              console.error("Recording Info not done: " + data.error);
             }
           }).catch((error) => {
-            console.error("Error calling info record : " + error.statusText);
+            console.error("Error calling info record: " + error.statusText);
           });
         }
 
@@ -372,7 +372,7 @@
             }
         }).catch((error) => {
             document.getElementById("list_videos_of_event").classList.add("d-none");
-            console.error('error calling event_get_video_cards : ' + error.statusText);
+            console.error('error calling event_get_video_cards: ' + error.statusText);
         })
     }
 
@@ -477,8 +477,8 @@
                     // message_sent
                     displayReturnMessage("info", data.message_return);
                 } else {
-                    // error_no_broadcaster_found : Message not sent : no broadcaster found
-                    // error_no_connection : Message not sent : no connection to REDIS
+                    // error_no_broadcaster_found: Message not sent: no broadcaster found
+                    // error_no_connection: Message not sent: no connection to REDIS
                     displayReturnMessage("error", data.message_return);
                 }
             }).catch((error) => {
@@ -574,7 +574,7 @@
                         tracks[i].mode = "showing";
                     }
                 }
-            
+
             }).catch(e => {
                   // console.log(e)
             })

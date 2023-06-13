@@ -18,7 +18,6 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.validators import MaxValueValidator
 from django.contrib.sites.shortcuts import get_current_site
 from django.templatetags.static import static
 from django.dispatch import receiver
@@ -537,6 +536,7 @@ class Theme(models.Model):
         return parents
 
     def clean(self):
+        """Validate Theme fields."""
         # Dans le cas où on modifie un theme
         if (
             Theme.objects.filter(channel=self.channel, slug=slugify(self.title))
@@ -544,18 +544,31 @@ class Theme(models.Model):
             .exists()
         ):
             raise ValidationError(
-                "A theme with this name\
-                    already exists in this channel."
+                {
+                    "title": ValidationError(
+                        _("A theme with this name already exists in this channel."),
+                        code="invalid_title",
+                    )
+                }
             )
 
         if self.parentId in self.get_all_children_flat():
             raise ValidationError(
-                "A theme cannot have itself \
-                    or one of it's children as parent."
+                {
+                    "parentId": ValidationError(
+                        _("A theme can't have itself or one of it's children as parent."),
+                        code="invalid_parent",
+                    )
+                }
             )
         if self.parentId and self.parentId not in self.channel.themes.all():
             raise ValidationError(
-                "A theme have to be in the same channel that his parent"
+                {
+                    "parentId": ValidationError(
+                        _("A theme must be in the same channel as its parent."),
+                        code="invalid_channel",
+                    )
+                }
             )
 
     class Meta:
@@ -846,6 +859,8 @@ class Video(models.Model):
     def save(self, *args, **kwargs):
         """Store a video object in db."""
         newid = -1
+
+        # In case of creating new Video
         if not self.id:
             try:
                 newid = get_nextautoincrement(Video)
@@ -864,6 +879,7 @@ class Video(models.Model):
                     date.today().month,
                     date.today().day,
                 )
+        # Modifying existing Video
         else:
             newid = self.id
         newid = "%04d" % newid
@@ -916,13 +932,10 @@ class Video(models.Model):
     @property
     def get_encoding_step(self):
         """Get the current encoding step of a video."""
-        from pod.video_encode.models import EncodingStep
-
-        try:
-            es = EncodingStep.objects.get(video=self)
-        except ObjectDoesNotExist:
+        encoding_step = self.encodingstep_set.all().first()
+        if encoding_step is None:
             return ""
-        return "%s : %s" % (es.num_step, es.desc_step)
+        return "%s : %s" % (encoding_step.num_step, encoding_step.desc_step)
 
     get_encoding_step.fget.short_description = _("Encoding step")
 
@@ -1107,37 +1120,26 @@ class Video(models.Model):
 
     def get_video_m4a(self):
         """Get the audio (m4a) version of the video."""
-        from pod.video_encode.models import EncodingAudio
-
-        try:
-            return EncodingAudio.objects.get(
-                name="audio", video=self, encoding_format="video/mp4"
-            )
-        except EncodingAudio.DoesNotExist:
-            return None
+        encoding_audio = self.encodingaudio_set.filter(
+            name="audio", encoding_format="video/mp4"
+        ).first()
+        return encoding_audio
 
     def get_video_mp3(self):
         """Get the audio (mp3) version of the video."""
-        from pod.video_encode.models import EncodingAudio
-
-        try:
-            return EncodingAudio.objects.get(
-                name="audio", video=self, encoding_format="audio/mp3"
-            )
-        except EncodingAudio.DoesNotExist:
-            return None
+        encoding_audio = self.encodingaudio_set.filter(
+            name="audio", encoding_format="audio/mp3"
+        ).first()
+        return encoding_audio
 
     def get_video_mp4(self):
         """Get the mp4 version of the video."""
-        from pod.video_encode.models import EncodingVideo
-
-        return EncodingVideo.objects.filter(video=self, encoding_format="video/mp4")
+        return self.encodingvideo_set.filter(encoding_format="video/mp4")
 
     def get_video_json(self, extensions):
-        from pod.video_encode.models import EncodingVideo
-
+        """Get the JSON representation of the video."""
         extension_list = extensions.split(",") if extensions else []
-        list_video = EncodingVideo.objects.filter(video=self)
+        list_video = self.encodingvideo_set.all()
         dict_src = Video.get_media_json(extension_list, list_video)
         sorted_dict_src = {
             x: sorted(dict_src[x], key=lambda i: i["height"]) for x in dict_src.keys()
@@ -1145,18 +1147,19 @@ class Video(models.Model):
         return sorted_dict_src
 
     def get_video_mp4_json(self):
+        """Get the JSON representation of the MP4 video."""
         list_mp4 = self.get_video_json(extensions="mp4")
         return list_mp4["mp4"] if list_mp4.get("mp4") else []
 
     def get_audio_json(self, extensions):
-        from pod.video_encode.models import EncodingAudio
-
+        """Get the JSON representation of the audio."""
         extension_list = extensions.split(",") if extensions else []
-        list_audio = EncodingAudio.objects.filter(name="audio", video=self)
+        list_audio = self.encodingaudio_set.filter(name="audio")
         dict_src = Video.get_media_json(extension_list, list_audio)
         return dict_src
 
     def get_audio_and_video_json(self, extensions):
+        """Get the JSON representation of the video and audio."""
         return {
             **self.get_video_json(extensions),
             **self.get_audio_json(extensions),
@@ -1376,11 +1379,13 @@ def default_site(sender, instance, created, **kwargs):
 @receiver(pre_delete, sender=Video, dispatch_uid="pre_delete-video_files_removal")
 def video_files_removal(sender, instance, using, **kwargs):
     """Remove files created after encoding."""
-    from pod.video_encode.models import EncodingVideo, EncodingAudio
-
     remove_video_file(instance)
 
-    models_to_delete = [EncodingVideo, EncodingAudio, PlaylistVideo]
+    models_to_delete = [
+        instance.encodingvideo_set.model,
+        instance.encodingaudio_set.model,
+        PlaylistVideo,
+    ]
     for model in models_to_delete:
         previous_encoding_video = model.objects.filter(video=instance)
         if len(previous_encoding_video) > 0:
@@ -1439,122 +1444,6 @@ class ViewCount(models.Model):
         verbose_name_plural = _("View counts")
 
 
-class VideoRendition(models.Model):
-    resolution = models.CharField(
-        _("resolution"),
-        max_length=50,
-        unique=True,
-        help_text=_(
-            "Please use the only format x. i.e.: "
-            + "<em>640x360</em> or <em>1280x720</em>"
-            + " or <em>1920x1080</em>."
-        ),
-    )
-    minrate = models.CharField(
-        _("minrate"),
-        max_length=50,
-        help_text=_(
-            "Please use the only format k. i.e.: "
-            + "<em>300k</em> or <em>600k</em>"
-            + " or <em>1000k</em>."
-        ),
-    )
-    video_bitrate = models.CharField(
-        _("bitrate video"),
-        max_length=50,
-        help_text=_(
-            "Please use the only format k. i.e.: "
-            + "<em>300k</em> or <em>600k</em>"
-            + " or <em>1000k</em>."
-        ),
-    )
-    maxrate = models.CharField(
-        _("maxrate"),
-        max_length=50,
-        help_text=_(
-            "Please use the only format k. i.e.: "
-            + "<em>300k</em> or <em>600k</em>"
-            + " or <em>1000k</em>."
-        ),
-    )
-    encoding_resolution_threshold = models.PositiveIntegerField(
-        _("encoding resolution threshold"), default=0, validators=[MaxValueValidator(100)]
-    )
-    audio_bitrate = models.CharField(
-        _("bitrate audio"),
-        max_length=50,
-        help_text=_(
-            "Please use the only format k. i.e.: "
-            + "<em>300k</em> or <em>600k</em>"
-            + " or <em>1000k</em>."
-        ),
-    )
-    encode_mp4 = models.BooleanField(_("Make a MP4 version"), default=False)
-    sites = models.ManyToManyField(Site)
-
-    @property
-    def height(self):
-        return int(self.resolution.split("x")[1])
-
-    @property
-    def width(self):
-        return int(self.resolution.split("x")[0])
-
-    class Meta:
-        # ordering = ['height'] # Not work
-        verbose_name = _("rendition")
-        verbose_name_plural = _("renditions")
-
-    def __str__(self):
-        return "VideoRendition num %s with resolution %s" % (
-            "%04d" % self.id,
-            self.resolution,
-        )
-
-    def bitrate(self, field_value, field_name, name=None):
-        """Validate the bitrate field value."""
-        if name is None:
-            name = field_name
-        if field_value and "k" not in field_value:
-            msg = "Error in %s: " % _(name)
-            raise ValidationError(
-                "%s %s" % (msg, VideoRendition._meta.get_field(field_name).help_text)
-            )
-        else:
-            vb = field_value.replace("k", "")
-            if not vb.isdigit():
-                msg = "Error in %s: " % _(name)
-                raise ValidationError(
-                    "%s %s" % (msg, VideoRendition._meta.get_field(field_name).help_text)
-                )
-
-    def clean_bitrate(self):
-        """Clean the bitrate-related fields."""
-        self.bitrate(self.video_bitrate, "video_bitrate", "bitrate video")
-        self.bitrate(self.maxrate, "maxrate")
-        self.bitrate(self.minrate, "minrate")
-
-    def clean(self):
-        """Clean the fields of the VideoRendition model."""
-        if self.resolution and "x" not in self.resolution:
-            raise ValidationError(VideoRendition._meta.get_field("resolution").help_text)
-        else:
-            res = self.resolution.replace("x", "")
-            if not res.isdigit():
-                raise ValidationError(
-                    VideoRendition._meta.get_field("resolution").help_text
-                )
-
-        self.clean_bitrate()
-        self.bitrate(self.audio_bitrate, "audio_bitrate", "bitrate audio")
-
-
-@receiver(post_save, sender=VideoRendition)
-def default_site_videorendition(sender, instance, created, **kwargs):
-    if len(instance.sites.all()) == 0:
-        instance.sites.add(Site.objects.get_current())
-
-
 class PlaylistVideo(models.Model):
     name = models.CharField(
         _("Name"),
@@ -1592,13 +1481,17 @@ class PlaylistVideo(models.Model):
         return self.video.sites_set.all()
 
     def clean(self):
+        """Validate some PlaylistVideomodels fields."""
         if self.name:
             if self.name not in dict(ENCODING_CHOICES):
-                raise ValidationError(PlaylistVideo._meta.get_field("name").help_text)
+                raise ValidationError(
+                    PlaylistVideo._meta.get_field("name").help_text, code="invalid_name"
+                )
         if self.encoding_format:
             if self.encoding_format not in dict(FORMAT_CHOICES):
                 raise ValidationError(
-                    PlaylistVideo._meta.get_field("encoding_format").help_text
+                    PlaylistVideo._meta.get_field("encoding_format").help_text,
+                    code="invalid_encoding",
                 )
 
     def __str__(self):
@@ -1705,16 +1598,24 @@ class AdvancedNotes(models.Model):
         return "%s-%s-%s" % (self.user.username, self.video, self.timestamp)
 
     def clean(self):
+        """Validate AdvancedNotes fields."""
         if not self.note:
-            raise ValidationError(AdvancedNotes._meta.get_field("note").help_text)
+            raise ValidationError(
+                AdvancedNotes._meta.get_field("note").help_text, code="invalid_note"
+            )
         if not self.status or self.status not in dict(NOTES_STATUS):
-            raise ValidationError(AdvancedNotes._meta.get_field("status").help_text)
+            raise ValidationError(
+                AdvancedNotes._meta.get_field("status").help_text, code="invalid_status"
+            )
         if (
             self.timestamp is None
             or self.timestamp < 0
             or (self.video.duration and self.timestamp > self.video.duration)
         ):
-            raise ValidationError(AdvancedNotes._meta.get_field("timestamp").help_text)
+            raise ValidationError(
+                AdvancedNotes._meta.get_field("timestamp").help_text,
+                code="invalid_timestamp",
+            )
 
     def timestampstr(self):
         if self.timestamp is None:
@@ -1755,10 +1656,15 @@ class NoteComments(models.Model):
         return "%s-%s-%s" % (self.user.username, self.parentNote, self.comment)
 
     def clean(self):
+        """Validate NoteComments fields."""
         if not self.comment:
-            raise ValidationError(NoteComments._meta.get_field("comment").help_text)
+            raise ValidationError(
+                NoteComments._meta.get_field("comment").help_text, code="invalid_comment"
+            )
         if not self.status or self.status not in dict(NOTES_STATUS):
-            raise ValidationError(NoteComments._meta.get_field("status").help_text)
+            raise ValidationError(
+                NoteComments._meta.get_field("status").help_text, code="invalid_status"
+            )
 
 
 class VideoToDelete(models.Model):

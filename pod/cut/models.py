@@ -3,7 +3,7 @@ from django.forms import ValidationError
 
 from django.utils.translation import ugettext_lazy as _
 from pod.video.models import Video
-from pod.video.utils import time_to_seconds
+from pod.video_encode_transcript.utils import time_to_seconds
 
 
 class CutVideo(models.Model):

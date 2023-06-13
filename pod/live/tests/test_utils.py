@@ -157,7 +157,7 @@ class LiveTestUtils(TestCase):
             print("   --->  test_exists checkDirExists exception: OK!")
 
         self.assertIsNone(check_exists(MEDIA_ROOT, True, 1))
-        print("   --->  test_exists checkDirExists : OK!")
+        print("   --->  test_exists checkDirExists: OK!")
 
         test_file = os.path.join(MEDIA_ROOT, "test.log")
         with self.assertRaises(Exception):
@@ -166,10 +166,10 @@ class LiveTestUtils(TestCase):
 
         open(test_file, "a").close()
         self.assertIsNone(check_exists(test_file, False, 1))
-        print("   --->  test_exists checkFileExists : OK!")
+        print("   --->  test_exists checkFileExists: OK!")
 
         self.assertIsNone(check_size_not_changing(test_file, 2))
-        print("   --->  test_exists checkFileSize : OK!")
+        print("   --->  test_exists checkFileSize: OK!")
 
         os.unlink(test_file)
 

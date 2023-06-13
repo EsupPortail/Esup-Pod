@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from datetime import datetime, date
 from django.core.exceptions import ValidationError
+from django.contrib.sites.models import Site
 
 import random
 
@@ -11,6 +12,12 @@ from pod.authentication.models import AccessGroup
 
 
 class MeetingTestCase(TestCase):
+    """Meetings model tests list.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         user = User.objects.create(username="pod")
         user1 = User.objects.create(username="pod1")
@@ -132,6 +139,12 @@ class MeetingTestCase(TestCase):
 
 
 class OccurencesMeetingTestCase(TestCase):
+    """List of tests for the recurring meetings model.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
         user = User.objects.create(username="pod")
         user1 = User.objects.create(username="pod1")
@@ -713,7 +726,14 @@ class OccurencesMeetingTestCase(TestCase):
 
 
 class RecordingTestCase(TestCase):
+    """List of recordings model tests, internal or external.
+
+    Args:
+        TestCase (class): test case
+    """
+
     def setUp(self):
+        """Setup for the recordings."""
         user = User.objects.create(username="pod")
         user1 = User.objects.create(username="pod1")
         user2 = User.objects.create(username="pod2")
@@ -732,28 +752,41 @@ class RecordingTestCase(TestCase):
             id=1,
             name="test recording1",
             is_internal=True,
+            owner=user,
             recording_id="c057c39d3dc59d9e9516d95f76eb",
             meeting=meeting1,
+            site=Site.objects.get(id=1),
         )
         Recording.objects.create(
             id=2,
             name="test recording2",
             is_internal=True,
+            owner=user,
             recording_id="d058c39d3dc59d9e9516d95f76eb",
             meeting=meeting2,
             start_at=datetime(2022, 4, 24, 14, 0, 0),
             uploaded_to_pod_by=user2,
+            site=Site.objects.get(id=1),
+        )
+        Recording.objects.create(
+            id=3,
+            name="test recording3",
+            is_internal=False,
+            owner=user,
+            start_at=datetime(2022, 4, 24, 14, 0, 0),
+            site=Site.objects.get(id=1),
+            type="bigbluebutton",
         )
 
     def test_default_attributs(self):
-        """Check all default attributs values when creating a recording"""
+        """Check all default attributs values when creating a recording."""
         recordings = Recording.objects.all()
         self.assertGreaterEqual(
             recordings[0].start_at.date(), recordings[1].start_at.date()
         )
 
     def test_with_attributs(self):
-        """Check all attributs values passed when creating a recording"""
+        """Check all attributs values passed when creating a recording."""
         meeting2 = Meeting.objects.get(id=2)
         recording2 = Recording.objects.get(id=2)
         self.assertEqual(recording2.name, "test recording2")
@@ -763,7 +796,7 @@ class RecordingTestCase(TestCase):
         self.assertEqual(recording2.meeting, meeting2)
 
     def test_change_attributs(self):
-        """Change attributs values in a recording and save it"""
+        """Change attributs values in a recording and save it."""
         recording1 = Recording.objects.get(id=1)
         self.assertEqual(recording1.name, "test recording1")
         self.assertEqual(recording1.recording_id, "c057c39d3dc59d9e9516d95f76eb")
@@ -777,4 +810,4 @@ class RecordingTestCase(TestCase):
     def test_delete_object(self):
         """Delete a recording."""
         Recording.objects.filter(name="test recording2").delete()
-        self.assertEqual(Recording.objects.all().count(), 1)
+        self.assertEqual(Recording.objects.all().count(), 2)

@@ -10,10 +10,10 @@ import os
 import json
 import re
 
-from .models import VideoRendition
-from .models import EncodingVideo
-from .models import EncodingAudio
-from .models import EncodingLog
+from pod.video_encode.models import VideoRendition
+from pod.video_encode.models import EncodingVideo
+from pod.video_encode.models import EncodingAudio
+from pod.video_encode.models import EncodingLog
 from .models import PlaylistVideo
 from .models import Video
 

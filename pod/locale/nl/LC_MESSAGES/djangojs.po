@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-31 08:00+0000\n"
+"POT-Creation-Date: 2023-06-12 13:57+0200\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -410,7 +410,7 @@ msgid "User not found"
 msgstr ""
 
 #: pod/main/static/js/main.js
-msgid "Are you sure you want to delete this element?"
+msgid "Are you sure you want to delete theme '%(title)s'?"
 msgstr ""
 
 #: pod/main/static/js/main.js
@@ -423,6 +423,14 @@ msgstr ""
 
 #: pod/main/static/js/main.js pod/podfile/static/podfile/js/filewidget.js
 msgid "No data could be stored."
+msgstr ""
+
+#: pod/main/static/js/main.js
+msgid "Theme sucessfully deleted."
+msgstr ""
+
+#: pod/main/static/js/main.js
+msgid "Action performed successfully."
 msgstr ""
 
 #: pod/main/static/js/main.js
@@ -643,6 +651,10 @@ msgstr ""
 
 #: pod/video/static/js/validate-date_delete-field.js
 msgid "The date must be before or equal to"
+msgstr ""
+
+#: pod/video/static/js/validate-date_delete-field.js
+msgid "The deletion date can’t be earlier than today."
 msgstr ""
 
 #: pod/video/static/js/video_category.js
