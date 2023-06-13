@@ -5,6 +5,7 @@ from django.contrib.sites.models import Site
 from .models import EncodingAudio, EncodingVideo, VideoRendition
 from .models import EncodingLog
 from .models import EncodingStep
+from .models import PlaylistVideo
 from pod.video.models import Video
 
 
@@ -132,8 +133,28 @@ class VideoRenditionAdmin(admin.ModelAdmin):
         return qs
 
 
+class PlaylistVideoAdmin(admin.ModelAdmin):
+    autocomplete_fields = ["video"]
+    list_display = ("name", "video", "encoding_format")
+    search_fields = ["id", "video__id", "video__title"]
+    list_filter = ["encoding_format"]
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(video__sites=get_current_site(request))
+        return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "video":
+            kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
+
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
 admin.site.register(EncodingVideo, EncodingVideoAdmin)
 admin.site.register(EncodingAudio, EncodingAudioAdmin)
 admin.site.register(EncodingLog, EncodingLogAdmin)
 admin.site.register(EncodingStep, EncodingStepAdmin)
 admin.site.register(VideoRendition, VideoRenditionAdmin)
+admin.site.register(PlaylistVideo, PlaylistVideoAdmin)
