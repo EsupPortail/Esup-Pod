@@ -932,10 +932,10 @@ class Video(models.Model):
     @property
     def get_encoding_step(self):
         """Get the current encoding step of a video."""
-        encoding_step = self.encodingstep_set.all().first()
-        if encoding_step is None:
+        if hasattr(self, 'encodingstep'):
+            return "%s : %s" % (self.encodingstep.num_step, self.encodingstep.desc_step)
+        else:
             return ""
-        return "%s : %s" % (encoding_step.num_step, encoding_step.desc_step)
 
     get_encoding_step.fget.short_description = _("Encoding step")
 
