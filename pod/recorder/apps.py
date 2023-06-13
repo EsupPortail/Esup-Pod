@@ -9,7 +9,7 @@ def set_default_site(sender, **kwargs):
     from django.contrib.sites.models import Site
 
     for rec in Recorder.objects.filter(sites__isnull=True):
-        if len(rec.sites.all()) == 0: # pas forcement utile
+        if len(rec.sites.all()) == 0:  # pas forcement utile
             rec.sites.add(Site.objects.get_current())
             rec.save()
 
