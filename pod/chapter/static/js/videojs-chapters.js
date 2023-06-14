@@ -37,14 +37,14 @@
           .querySelector(".chapters-list.inactive")
           .setAttribute("class", "chapters-list active");
         document.querySelector(".vjs-chapters-button button").style =
-          "text-shadow : 0 0 1em #fff";
+          "text-shadow: 0 0 1em #fff";
       } else {
         document
           .querySelector(".chapters-list.active")
           .setAttribute("class", "chapters-list inactive");
 
         document.querySelector(".vjs-chapters-button button").style =
-          "text-shadow : '' ";
+          "text-shadow: '' ";
       }
     };
     MenuButton.registerComponent("ChapterMenuButton", ChapterMenuButton);

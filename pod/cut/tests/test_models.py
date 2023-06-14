@@ -38,4 +38,4 @@ class CutVideoModelTestCase(TestCase):
         cut.end = "00:00:08"
         self.assertRaises(ValidationError, cut.clean)
 
-        print(" ---> test_bad_time : OK ! --- CutVideoModel")
+        print(" ---> test_bad_time: OK ! --- CutVideoModel")

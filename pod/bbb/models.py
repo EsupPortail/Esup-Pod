@@ -103,7 +103,7 @@ class BBB_Meeting(models.Model):
 @receiver(post_save, sender=BBB_Meeting)
 def process_recording(sender, instance, created, **kwargs):
     # Convert the BBB presentation only one time
-    # Be careful : this is the condition to create a video of the
+    # Be careful: this is the condition to create a video of the
     # BigBlueButton presentation only one time.
     if instance.encoding_step == 1 and instance.encoded_by is not None:
         mod = importlib.import_module("%s.plugins.type_%s" % (__package__, "bbb"))

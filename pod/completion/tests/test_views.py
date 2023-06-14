@@ -72,7 +72,7 @@ class CompletionViewsTestCase(TestCase):
         self.assertContains(response, "videotest")
         self.assertContains(response, "list_contributor")
 
-        print(" ---> test_video_completion_user : OK!")
+        print(" ---> test_video_completion_user: OK!")
 
     def test_video_completion_staff(self):
         video = Video.objects.get(id=2)
@@ -91,7 +91,7 @@ class CompletionViewsTestCase(TestCase):
         self.assertContains(response, "list_document")
         self.assertContains(response, "list_overlay")
 
-        print(" ---> test_video_completion_staff : OK!")
+        print(" ---> test_video_completion_staff: OK!")
 
 
 class CompletionContributorViewsTestCase(TestCase):
@@ -134,7 +134,7 @@ class CompletionContributorViewsTestCase(TestCase):
         self.assertContains(response, "list_overlay")
 
         print(" [ BEGIN COMPLETION_CONTRIBUTOR VIEWS ] ")
-        print(" ---> test_video_completion_contributor : OK!")
+        print(" ---> test_video_completion_contributor: OK!")
 
     def test_video_completion_contributor_new(self):
         video = Video.objects.get(id=1)
@@ -170,7 +170,7 @@ class CompletionContributorViewsTestCase(TestCase):
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, "testcontributor")
 
-        print(" ---> test_video_completion_contributor_new : OK!")
+        print(" ---> test_video_completion_contributor_new: OK!")
         print(" [ END COMPLETION_CONTRIBUTOR VIEWS ] ")
 
     def test_video_completion_contributor_edit(self):
@@ -227,7 +227,7 @@ class CompletionContributorViewsTestCase(TestCase):
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, "testcontributor2")
 
-        print(" ---> test_video_completion_contributor_edit : OK!")
+        print(" ---> test_video_completion_contributor_edit: OK!")
 
     def test_video_completion_contributor_delete(self):
         video = Video.objects.get(id=1)
@@ -267,7 +267,7 @@ class CompletionContributorViewsTestCase(TestCase):
         result = Contributor.objects.all()
         self.assertFalse(result)
 
-        print(" ---> test_video_completion_contributor_delete : OK!")
+        print(" ---> test_video_completion_contributor_delete: OK!")
 
 
 class CompletionTrackViewsTestCase(TestCase):
@@ -312,7 +312,7 @@ class CompletionTrackViewsTestCase(TestCase):
         self.assertContains(response, "list_overlay")
 
         print(" [ BEGIN COMPLETION_TRACK VIEWS ] ")
-        print(" ---> test_video_completion_track : OK!")
+        print(" ---> test_video_completion_track: OK!")
 
     def test_video_completion_track_new(self):
         video = Video.objects.get(id=1)
@@ -362,7 +362,7 @@ class CompletionTrackViewsTestCase(TestCase):
         self.assertTrue("testfile" in result.src.name)
         # self.assertEqual(result.src.name, 'testfile')
 
-        print(" ---> test_video_completion_track_new : OK!")
+        print(" ---> test_video_completion_track_new: OK!")
         print(" [ END COMPLETION_TRACK VIEWS ] ")
 
     def test_video_completion_track_edit(self):
@@ -433,7 +433,7 @@ class CompletionTrackViewsTestCase(TestCase):
         self.assertEqual(result.kind, "captions")
         self.assertEqual(result.lang, "de")
 
-        print(" ---> test_video_completion_track_edit : OK!")
+        print(" ---> test_video_completion_track_edit: OK!")
 
     def test_video_completion_track_delete(self):
         video = Video.objects.get(id=1)
@@ -488,7 +488,7 @@ class CompletionTrackViewsTestCase(TestCase):
         result = Track.objects.all()
         self.assertFalse(result)
 
-        print(" ---> test_video_completion_track_delete : OK!")
+        print(" ---> test_video_completion_track_delete: OK!")
 
 
 class CompletionDocumentViewsTestCase(TestCase):
@@ -533,7 +533,7 @@ class CompletionDocumentViewsTestCase(TestCase):
         self.assertContains(response, "list_overlay")
 
         print(" [ BEGIN COMPLETION_DOCUMENT VIEWS ] ")
-        print(" ---> test_video_completion_document : OK!")
+        print(" ---> test_video_completion_document: OK!")
 
     def test_video_completion_document_new(self):
         video = Video.objects.get(id=1)
@@ -581,7 +581,7 @@ class CompletionDocumentViewsTestCase(TestCase):
         # self.assertEqual(result.document.name, 'testfile')
         self.assertTrue("testfile" in result.document.name)
 
-        print(" ---> test_video_completion_document_new : OK!")
+        print(" ---> test_video_completion_document_new: OK!")
         print(" [ END COMPLETION_DOCUMENT VIEWS ] ")
 
     def test_video_completion_document_edit(self):
@@ -665,7 +665,7 @@ class CompletionDocumentViewsTestCase(TestCase):
         result = Document.objects.get(id=1)
         # self.assertEqual(result.document.name, 'testfile2')
         self.assertTrue("testfile2" in result.document.name)
-        print(" ---> test_video_completion_document_edit : OK!")
+        print(" ---> test_video_completion_document_edit: OK!")
 
     def test_video_completion_document_delete(self):
         video = Video.objects.get(id=1)
@@ -718,7 +718,7 @@ class CompletionDocumentViewsTestCase(TestCase):
         result = Document.objects.all()
         self.assertFalse(result)
 
-        print(" ---> test_video_completion_document_delete : OK!")
+        print(" ---> test_video_completion_document_delete: OK!")
 
 
 class CompletionOverlayViewsTestCase(TestCase):
@@ -760,7 +760,7 @@ class CompletionOverlayViewsTestCase(TestCase):
         self.assertContains(response, "list_overlay")
 
         print(" [ BEGIN COMPLETION_OVERLAY VIEWS ] ")
-        print(" ---> test_video_completion_overlay : OK!")
+        print(" ---> test_video_completion_overlay: OK!")
 
     def test_video_completion_overlay_new(self):
         video = Video.objects.get(id=1)
@@ -794,7 +794,7 @@ class CompletionOverlayViewsTestCase(TestCase):
         self.assertEqual(result.title, "testoverlay")
         self.assertEqual(result.content, "testoverlay")
 
-        print(" ---> test_video_completion_overlay_new : OK!")
+        print(" ---> test_video_completion_overlay_new: OK!")
         print(" [ END COMPLETION_OVERLAY VIEWS ] ")
 
     def test_video_completion_overlay_edit(self):
@@ -853,7 +853,7 @@ class CompletionOverlayViewsTestCase(TestCase):
         self.assertEqual(result.time_end, 3)
         self.assertEqual(result.position, "bottom-left")
 
-        print(" ---> test_video_completion_overlay_edit : OK!")
+        print(" ---> test_video_completion_overlay_edit: OK!")
 
     def test_video_completion_overlay_delete(self):
         video = Video.objects.get(id=1)
@@ -894,4 +894,4 @@ class CompletionOverlayViewsTestCase(TestCase):
         result = Overlay.objects.all()
         self.assertFalse(result)
 
-        print(" ---> test_video_completion_overlay_delete : OK!")
+        print(" ---> test_video_completion_overlay_delete: OK!")

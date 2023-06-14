@@ -11,6 +11,7 @@
   --pod-btn-text: var(--pod-btn-text-dark);
   --pod-alert: var(--pod-alert-dark);
   --pod-link-color: var(--pod-primary-lighten-dark);
+  --pod-link-color-rgb: var(--pod-primary-lighten-dark-rgb);
   --pod-activelink-color: var(--pod-primary);
 }
 
@@ -41,7 +42,7 @@
   */
 }
 
-[data-theme="dark"] .table{
+[data-theme="dark"] .table {
   /* copied from .table-dark class */
   --bs-table-color: #fff;
   --bs-table-bg: #212529;
@@ -52,6 +53,10 @@
   --bs-table-active-color: #fff;
   --bs-table-hover-bg: #323539;
   --bs-table-hover-color: #fff;
+}
+
+[data-theme="dark"] .offcanvas {
+  --bs-offcanvas-color: var(--pod-font-color);
 }
 
 /***** Auto DARK MODE (use browser setting) *****/
@@ -134,11 +139,11 @@
   opacity: .7;
 }
 
-[data-theme="dark"] .btn:hover,
+/*[data-theme="dark"] .btn:hover,
 [data-theme="dark"] .btn:active,
 [data-theme="dark"] .btn:focus {
   color: inherit;
-}
+}*/
 
 [data-theme="dark"] .btn-link:focus,
 [data-theme="dark"] .btn-link:active,
@@ -181,11 +186,11 @@
   color: var(--bs-white);
 }
 
-/*
 [data-theme="dark"] .card {
-  background-color: var(--bs-dark);
-  border-color: var(--bs-dark);
-} */
+  /*background-color: var(--bs-dark);
+  border-color: var(--bs-dark);*/
+  color: var(--pod-font-color);
+}
 
 [data-theme="dark"] .card-header {
   border-bottom-color: var(--color-formfields);

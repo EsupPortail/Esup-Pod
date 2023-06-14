@@ -472,7 +472,7 @@ class LiveViewsTestCase(TestCase):
         ag2 = AccessGroup.objects.get(code_name="employee")
         self.user.owner.accessgroup_set.add(ag2)
 
-        # event after previous event and in the futur : OK
+        # event after previous event and in the futur: OK
         data = {}
         sd = e.end_date
         ed = sd + timezone.timedelta(hours=1)
@@ -507,7 +507,7 @@ class LiveViewsTestCase(TestCase):
         )
         self.assertFalse(form.is_valid())
         self.assertIn("An event cannot be planned in the past", form.errors["__all__"])
-        print("   --->  test_crossing_events in the past : NOK !")
+        print("   --->  test_crossing_events in the past: NOK !")
 
         # event 1 hour before the previous and half an hour after starting
         # crossing the start
@@ -530,7 +530,7 @@ class LiveViewsTestCase(TestCase):
             "An event is already planned at these dates", form.errors["start_date"]
         )
         self.assertIn("Planification error.", form.errors["__all__"])
-        print("   --->  test_crossing_events in the futur and crossing the start : NOK !")
+        print("   --->  test_crossing_events in the futur and crossing the start: NOK !")
         # test changing broadcaster
         data["broadcaster"] = 2
         form = EventForm(
@@ -563,7 +563,7 @@ class LiveViewsTestCase(TestCase):
             "An event is already planned at these dates", form.errors["start_date"]
         )
         self.assertIn("Planification error.", form.errors["__all__"])
-        print("   --->  test_crossing_events in the futur and crossing the start : NOK !")
+        print("   --->  test_crossing_events in the futur and crossing the start: NOK !")
 
         # event start during the previous and finish before
         # crossing inside
@@ -586,7 +586,7 @@ class LiveViewsTestCase(TestCase):
             "An event is already planned at these dates", form.errors["start_date"]
         )
         self.assertIn("Planification error.", form.errors["__all__"])
-        print("   --->  test_crossing_events crossing inside : NOK !")
+        print("   --->  test_crossing_events crossing inside: NOK !")
 
         # event start before the previous and finish after
         # crossing outside
@@ -609,7 +609,7 @@ class LiveViewsTestCase(TestCase):
             "An event is already planned at these dates", form.errors["start_date"]
         )
         self.assertIn("Planification error.", form.errors["__all__"])
-        print("   --->  test_crossing_events crossing outside : NOK !")
+        print("   --->  test_crossing_events crossing outside: NOK !")
 
         # --------------------------------------------------------------------------
         print(20 * "/")
@@ -619,7 +619,7 @@ class LiveViewsTestCase(TestCase):
         g1 = Group.objects.get(name="event admin")
         self.user.groups.add(g1)
 
-        # event after previous event and in the futur : OK
+        # event after previous event and in the futur: OK
         data = {}
         sd = e.end_date
         ed = sd + timezone.timedelta(hours=1)
@@ -658,7 +658,7 @@ class LiveViewsTestCase(TestCase):
         # for err in form.errors:
         #     print("- ", err, form.errors[err])
         self.assertIn("An event cannot be planned in the past", form.errors["__all__"])
-        print("   --->  test_crossing_events in the past : NOK !")
+        print("   --->  test_crossing_events in the past: NOK !")
 
         # event 1 hour before the previous and half an hour after starting
         # crossing the start
@@ -682,7 +682,7 @@ class LiveViewsTestCase(TestCase):
             "An event is already planned at these dates", form.errors["start_date"]
         )
         self.assertIn("Planification error.", form.errors["__all__"])
-        print("   --->  test_crossing_events in the futur and crossing the start : NOK !")
+        print("   --->  test_crossing_events in the futur and crossing the start: NOK !")
 
         # event start during the previous and finish after
         # crossing the end
@@ -706,7 +706,7 @@ class LiveViewsTestCase(TestCase):
             "An event is already planned at these dates", form.errors["start_date"]
         )
         self.assertIn("Planification error.", form.errors["__all__"])
-        print("   --->  test_crossing_events in the futur and crossing the start : NOK !")
+        print("   --->  test_crossing_events in the futur and crossing the start: NOK !")
 
         # event start during the previous and finish before
         # crossing inside
@@ -730,7 +730,7 @@ class LiveViewsTestCase(TestCase):
             "An event is already planned at these dates", form.errors["start_date"]
         )
         self.assertIn("Planification error.", form.errors["__all__"])
-        print("   --->  test_crossing_events crossing inside : NOK !")
+        print("   --->  test_crossing_events crossing inside: NOK !")
 
         # event start before the previous and finish after
         # crossing outside
@@ -754,7 +754,7 @@ class LiveViewsTestCase(TestCase):
             "An event is already planned at these dates", form.errors["start_date"]
         )
         self.assertIn("Planification error.", form.errors["__all__"])
-        print("   --->  test_crossing_events crossing outside : NOK !")
+        print("   --->  test_crossing_events crossing outside: NOK !")
 
         print("   --->  test_crossing_events of liveViewsTestCase: OK!")
 
@@ -1368,7 +1368,7 @@ class LiveViewsTestCase(TestCase):
         with HTTMock(response_created_ok):
             response = start_record(broad_with_impl, 1)
         self.assertTrue(response)
-        print("   --->  test misc_broadcaster start_record yes : OK!")
+        print("   --->  test misc_broadcaster start_record yes: OK!")
 
     def test_method_split_record(self):
         from pod.live.views import split_record

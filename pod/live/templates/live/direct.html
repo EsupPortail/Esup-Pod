@@ -194,16 +194,16 @@
     if (started && player.readyState() <= 2) {
       // Check if .m3u8 exists, to be sure that live is stopped
       $.ajax({ url: '{{broadcaster.url}}',
-        type : 'GET',
+        type: 'GET',
         crossDomain: true,
-        dataType : 'html',
+        dataType: 'html',
         success: function(html, status){
           stopped = false;
         },
-        error : function(result, status, error){
+        error: function(result, status, error){
           stopped = true;
         },
-        complete : function(result, status){
+        complete: function(result, status){
         }
       });
       if (stopped) {
@@ -273,8 +273,8 @@
         displayReturnMessage("info", data.message_return);
       }
       else {
-        // error_no_broadcaster_found : Message not sent : no broadcaster found
-        // error_no_connection : Message not sent : no connection to REDIS
+        // error_no_broadcaster_found: Message not sent: no broadcaster found
+        // error_no_connection: Message not sent: no connection to REDIS
         displayReturnMessage("error", data.message_return);
       }
       }

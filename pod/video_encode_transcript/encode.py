@@ -1,15 +1,20 @@
 """This module handles video encoding with CPU."""
 
 from django.conf import settings
-from .models import Video
-from .utils import change_encoding_step, check_file, add_encoding_log
-from .utils import send_email, send_email_encoding, time_to_seconds
+from pod.video.models import Video
 from .Encoding_video_model import Encoding_video_model
 from .encoding_studio import encode_video_studio
 
 from pod.cut.models import CutVideo
 from pod.main.tasks import task_start_encode, task_start_encode_studio
-
+from .utils import (
+    change_encoding_step,
+    check_file,
+    add_encoding_log,
+    send_email,
+    send_email_encoding,
+    time_to_seconds,
+)
 import logging
 import time
 import threading
@@ -141,7 +146,7 @@ def encode_video(video_id):
 def transcript_video(video_id):
     """Transcript video audio to text."""
     video = Video.objects.get(id=video_id)
-    if USE_TRANSCRIPTION and video.transcript:
+    if USE_TRANSCRIPTION and video.transcript not in ["", "0", "1"]:
         change_encoding_step(video_id, 4, "transcript video")
         start_transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
         start_transcript_video(video_id, False)

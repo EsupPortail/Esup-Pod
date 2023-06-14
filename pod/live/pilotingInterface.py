@@ -85,7 +85,7 @@ def get_piloting_implementation(broadcaster) -> Optional[PilotingInterface]:
     map_interface = map(str.lower, __EXISTING_BROADCASTER_IMPLEMENTATIONS__)
     if not piloting_impl.lower() in map_interface:
         logger.warning(
-            "'piloting_implementation' : "
+            "'piloting_implementation': "
             + piloting_impl
             + " is not know for '"
             + broadcaster.name
@@ -97,7 +97,7 @@ def get_piloting_implementation(broadcaster) -> Optional[PilotingInterface]:
 
     if piloting_impl.lower() == "wowza":
         logger.debug(
-            "'piloting_implementation' found : "
+            "'piloting_implementation' found: "
             + piloting_impl.lower()
             + " for '"
             + broadcaster.name
@@ -121,7 +121,7 @@ def is_recording_launched_by_pod(self) -> bool:
 
     # Vérification qu'il existe bien pour cette instance ce Pod
     if not os.path.exists(full_file_name):
-        logger.debug(" ...  is not on this POD recording filesystem : " + full_file_name)
+        logger.debug(" ...  is not on this POD recording filesystem: " + full_file_name)
         return False
 
     return True
@@ -163,7 +163,7 @@ class Wowza(PilotingInterface):
             logger.error(
                 "'piloting_conf' format value for '"
                 + self.broadcaster.name
-                + "' broadcaster must be like : "
+                + "' broadcaster must be like: "
                 "{'server_url':'...','application':'...','livestream':'...'}"
             )
             return False

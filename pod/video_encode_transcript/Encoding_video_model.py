@@ -5,9 +5,9 @@ from django.conf import settings
 from .models import EncodingVideo
 from .models import EncodingAudio
 from .models import VideoRendition
-from .models import PlaylistVideo
+from pod.video.models import PlaylistVideo
 from .models import EncodingLog
-from .models import Video
+from pod.video.models import Video
 from pod.completion.models import Track
 from django.core.files import File
 from .Encoding_video import (
@@ -18,7 +18,7 @@ from .Encoding_video import (
     FFMPEG_INPUT,
     FFMPEG_NB_THREADS,
 )
-from .models import LANG_CHOICES
+from pod.video.models import LANG_CHOICES
 import json
 
 from .encoding_utils import (
