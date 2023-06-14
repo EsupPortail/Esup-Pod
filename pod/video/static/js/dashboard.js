@@ -1,15 +1,27 @@
 var dashboardFormContainer = document.getElementById("dashboardFormContainer");
+var dashboardForm = document.getElementById("dashboardForm");
 var bulkUpdateActionSelect = document.getElementById("bulkUpdateActionSelect");
 var confirmBulkUpdateBtn = document.getElementById("confirmBulkUpdateBtn");
+var action;
+var value;
 
-// Add event listener on change Action Select
 bulkUpdateActionSelect.addEventListener("change", function() {
-    let action = bulkUpdateActionSelect.value;
-    appendDynamicForm(action);
+    // Add event listener on change Action Select
+    action = bulkUpdateActionSelect.value;
+    if(action !== "delete" && action != ""){
+        appendDynamicForm(action);
+    }
 });
 
 function bulk_update() {
-  // Async POST request to bulk update
+  // Async POST request to bulk update videos
+  let element = document.getElementById("id_"+action);
+  if(element.hasAttribute("multiple")){
+    value = Array.from(element.querySelectorAll("option:checked"),e => e.value);
+  }else{
+    value = document.getElementById("id_"+action).value;
+  }
+
   fetch(urlVideosUpdate, {
     method: "POST",
     headers: {
@@ -20,44 +32,32 @@ function bulk_update() {
     },
     body: JSON.stringify({
         "selectedVideos" : getListSelectedVideos(),
-        "action" : "type",
-        "value" : 4
+        "action" : action,
+        "value" : value
     })
   })
     .then((response) => response.json())
     .then((data) => {
     })
     .catch((error) => {
-      console.log(error);
-    });
-}
-
-function appendDynamicForm(action){
-    // Async request to get specific field to batch update
-    fetch(urlDashboardForm, {
-    method: 'POST',
-    headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
-      "X-Requested-With": "XMLHttpRequest",
-    },
-    dataType: "html",
-    cache: "no-store",
-    body: JSON.stringify({action:action}),
-    })
-    .then((response) => response.text())
-    .then((data) => {
-        let parser = new DOMParser();
-        let html = parser.parseFromString(data, "text/html");
-        dashboardFormContainer.innerHTML = data;
-    })
-    .catch((error) => {
-        document.getElementById("videos_list").innerHTML = gettext(
+      document.getElementById("videos_list").innerHTML = gettext(
             "An Error occurred while processing."
       );
     });
 }
 
+function appendDynamicForm(action){
+    // Append form group selected action
+    let form_groups = document.querySelectorAll('.form-group');
+    Array.from(form_groups).forEach((form_group) => {
+        form_group.classList.add("d-none");
+    });
+    let input = document.getElementById('id_'+action);
+    input.closest(".form-group").classList.remove("d-none");
+}
+
 confirmBulkUpdateBtn.addEventListener("click", (e) => {
+    // Add event listener to perform bulk update after confirmation modal
     e.preventDefault();
     bulk_update();
 });

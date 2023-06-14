@@ -950,8 +950,9 @@ class VideoForm(forms.ModelForm):
             "channel": ChannelWidget,
             "discipline": DisciplineWidget,
             "date_evt": widgets.AdminDateWidget,
-            "video": CustomClearableFileInput
-            # "restrict_access_to_groups": AddAccessGroupWidget
+            "restrict_access_to_groups": AddAccessGroupWidget,
+            "video": CustomClearableFileInput,
+            "restrict_access_to_groups": AddAccessGroupWidget
         }
         initial = {
             "date_added": __TODAY__,

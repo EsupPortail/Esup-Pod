@@ -59,7 +59,20 @@
           <option value="delete">Delete</option>
         </select>
 
-      <div id="dashboardFormContainer"></div>
+      <div id="dashboardFormContainer">
+        <form id="dashboardForm" method="get" action="#" accept-charset="utf-8">
+          {% csrf_token %}
+          {% if form.errors %}
+            <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+              {{form.errors}}
+          {% endif %}
+          {% for field in form %}
+          <div class="form-group d-none">
+            {{field}}
+          </div>
+          {% endfor %}
+        </form>
+      </div>
 
       <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalConfirmBulkUpdate" disabled>
         Appliquer <span id="countSelectedVideosBadge" class="badge bg-secondary">0 vidéos</span></button>
@@ -94,7 +107,6 @@
 {% block more_script %}
 <script>
   var urlVideos = "{% url 'video:dashboard' %}";
-  var urlDashboardForm = "{% url 'video:dashboard_form' %}";
   var urlVideosUpdate = "{% url 'video:bulk_update' %}";
   var csrftoken = "{{ csrf_token }}";
   var page = 1;
@@ -104,6 +116,7 @@
 <script src="{% static 'js/infinite.js' %}"></script>
 <script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
 <script src="{% static 'js/dashboard.js' %}"></script>
+{{form.media}}
 <script>
 {% if use_category %}
   const USE_CATEGORY = true;

@@ -559,6 +559,16 @@ def dashboard(request):
                 "cursus_codes": CURSUS_CODES,
             },
         )
+
+    default_owner = request.user.pk
+    form = VideoForm(
+        is_staff=request.user.is_staff,
+        is_superuser=request.user.is_superuser,
+        current_user=request.user,
+        initial={"owner": default_owner},
+    )
+
+    data_context["form"] = form
     data_context["use_category"] = USER_VIDEO_CATEGORY
     data_context["videos"] = videos
     data_context["count_videos"] = count_videos
@@ -568,26 +578,6 @@ def dashboard(request):
     data_context["page_title"] = "Dashboard"
 
     return render(request, "videos/dashboard.html", data_context)
-
-
-@ajax_required
-@login_required(redirect_field_name="referrer")
-def dashboard_form(request):
-    body = json.loads(request.body)
-    action = body["action"]
-
-    default_owner = request.user.pk
-    form = VideoForm(
-        is_staff=request.user.is_staff,
-        is_superuser=request.user.is_superuser,
-        current_user=request.user,
-        initial={"owner": default_owner},
-    )
-    form.create_with_fields(action)
-
-    return render(request, "videos/form_dashboard.html", {
-        'form': form,
-    })
 
 
 @ajax_required
@@ -610,10 +600,10 @@ def bulk_update(request):
                     video.delete()
             else:
                 field = Video._meta.get_field(action)
-                field_model = field.remote_field.model
 
                 if field.__class__ is models.ManyToManyField:
                     # Gestion des collections d'objets
+                    field_model = field.remote_field.model
                     objects = field_model.objects.filter(pk__in=value)
                     for video in videos:
                         video.__getattribute__(action).set(objects)
@@ -622,6 +612,7 @@ def bulk_update(request):
                     if field.__class__ is models.ForeignKey:
                         # Gestion des objets simples liés
                         pk = value
+                        field_model = field.remote_field.model
                         value = field_model.objects.get(pk=pk)
 
                     for video in videos:

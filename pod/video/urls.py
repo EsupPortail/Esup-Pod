@@ -9,7 +9,6 @@ from .views import (
     video_delete,
     video_transcript,
     dashboard,
-    dashboard_form,
     bulk_update,
     my_videos,
     video_notes,
@@ -89,7 +88,6 @@ urlpatterns = [
     ),
     url(r"^my/$", my_videos, name="my_videos"),
     url(r"^dashboard/$", dashboard, name="dashboard"),
-    url(r"^dashboard_form/$", dashboard_form, name="dashboard_form"),
 ]
 # COMPLETION
 urlpatterns += [
