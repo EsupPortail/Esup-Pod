@@ -173,7 +173,7 @@ REST_FRAMEWORK = {
 LOG_DIRECTORY = os.path.join(BASE_DIR, "pod", "log")
 if not os.path.exists(LOG_DIRECTORY):
     os.mkdir(LOG_DIRECTORY)
-"""
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -342,7 +342,7 @@ LOGGING = {
         },
     },
 }
-"""
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",

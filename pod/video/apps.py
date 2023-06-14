@@ -192,6 +192,7 @@ class VideoConfig(AppConfig):
             return
 
     def import_data(self, nb_batch):
+        """Call method to put data if data saved."""
         if len(VIDEO_RENDITION) > 0:
             self.import_video_rendition(nb_batch)
 
@@ -211,6 +212,7 @@ class VideoConfig(AppConfig):
             self.import_playlist_video(nb_batch)
 
     def import_video_rendition(self, nb_batch):
+        """Import video rendition data in BDD."""
         from pod.video_encode_transcript.models import VideoRendition
 
         print("pushing %s VIDEO_RENDITION" % len(VIDEO_RENDITION))
@@ -231,6 +233,7 @@ class VideoConfig(AppConfig):
         VideoRendition.objects.bulk_create(video_renditions, batch_size=nb_batch)
 
     def import_encoding_video(self, nb_batch):
+        """Import encoding video data in BDD."""
         from pod.video_encode_transcript.models import EncodingVideo
 
         print("pushing %s ENCODING_VIDEO" % len(ENCODING_VIDEO))
@@ -249,6 +252,7 @@ class VideoConfig(AppConfig):
         EncodingVideo.objects.bulk_create(encoding_videos, batch_size=nb_batch)
 
     def import_encoding_step(self, nb_batch):
+        """Import encoding step data in BDD."""
         from pod.video_encode_transcript.models import EncodingStep
 
         print("pushing %s ENCODING_STEP" % len(ENCODING_STEP))
@@ -265,6 +269,7 @@ class VideoConfig(AppConfig):
         EncodingStep.objects.bulk_create(encoding_steps, batch_size=nb_batch)
 
     def import_encoding_log(self, nb_batch):
+        """Import encoding log data in BDD."""
         from pod.video_encode_transcript.models import EncodingLog
 
         print("pushing %s ENCODING_LOG" % len(ENCODING_LOG))
@@ -281,6 +286,7 @@ class VideoConfig(AppConfig):
         EncodingLog.objects.bulk_create(encoding_logs, batch_size=nb_batch)
 
     def import_encoding_audio(self, nb_batch):
+        """Import encoding audio data in BDD."""
         from pod.video_encode_transcript.models import EncodingAudio
 
         print("pushing %s ENCODING_AUDIO" % len(ENCODING_AUDIO))
@@ -298,6 +304,7 @@ class VideoConfig(AppConfig):
         EncodingAudio.objects.bulk_create(encoding_audios, batch_size=nb_batch)
 
     def import_playlist_video(self, nb_batch):
+        """Import playlist video data in BDD."""
         from pod.video_encode_transcript.models import PlaylistVideo
 
         print("pushing %s PLAYLIST_VIDEO" % len(PLAYLIST_VIDEO))
