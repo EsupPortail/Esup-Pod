@@ -18,6 +18,7 @@ XAPI_CELERY_BROKER_URL = getattr(settings, "XAPI_CELERY_BROKER_URL", "")
 xapi_app = Celery("xapi_tasks", broker=XAPI_CELERY_BROKER_URL)
 xapi_app.conf.task_routes = {'pod.xapi.xapi_tasks.*': {'queue': 'xapi'}}
 
+
 @xapi_app.task
 def send_xapi_statement_task(statement):
     """Sends the xapi statement to the specified LRS."""
