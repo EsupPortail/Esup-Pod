@@ -13,12 +13,12 @@ logger = logging.getLogger(__name__)
 XAPI_LRS_URL = getattr(settings, "XAPI_LRS_URL", "")
 XAPI_LRS_LOGIN = getattr(settings, "XAPI_LRS_LOGIN", "")
 XAPI_LRS_PWD = getattr(settings, "XAPI_LRS_PWD", "")
-CELERY_BROKER_URL = getattr(settings, "CELERY_BROKER_URL", "")
+XAPI_CELERY_BROKER_URL = getattr(settings, "XAPI_CELERY_BROKER_URL", "")
 
-app = Celery("xapi_tasks", broker=CELERY_BROKER_URL)
+xapi_app = Celery("xapi_tasks", broker=XAPI_CELERY_BROKER_URL)
+xapi_app.conf.task_routes = {'pod.xapi.xapi_tasks.*': {'queue': 'xapi'}}
 
-
-@app.task
+@xapi_app.task
 def send_xapi_statement_task(statement):
     """Sends the xapi statement to the specified LRS."""
     x = requests.post(
