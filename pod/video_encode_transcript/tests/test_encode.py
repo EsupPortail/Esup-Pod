@@ -10,7 +10,7 @@ from pod.video_encode_transcript import encode
 from pod.video_encode_transcript.models import EncodingVideo
 from pod.video_encode_transcript.models import EncodingAudio
 from pod.video_encode_transcript.models import EncodingLog
-from pod.video.models import PlaylistVideo
+from pod.video_encode_transcript.models import PlaylistVideo
 
 import shutil
 import os

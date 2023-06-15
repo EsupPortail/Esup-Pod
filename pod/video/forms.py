@@ -14,7 +14,7 @@ from .models import Type
 from .models import Discipline
 from .models import Notes, AdvancedNotes, NoteComments
 from .utils import get_storage_path_video
-from .models import PlaylistVideo
+from pod.video_encode_transcript.models import PlaylistVideo
 from pod.video_encode_transcript import encode
 from pod.video_encode_transcript.models import EncodingVideo, EncodingAudio
 from django.contrib.sites.models import Site

@@ -10,6 +10,7 @@ ENCODING_VIDEO = {}
 ENCODING_AUDIO = {}
 ENCODING_LOG = {}
 ENCODING_STEP = {}
+PLAYLIST_VIDEO = {}
 
 
 def apply_default_site(obj, site):
@@ -158,6 +159,21 @@ class VideoConfig(AppConfig):
         )
         if len(ENCODING_AUDIO) > 0:
             print("%s ENCODING_AUDIO saved" % len(ENCODING_AUDIO))
+        # PLAYLIST_VIDEO
+        self.execute_query(
+            """
+            SELECT id,
+            name,
+            video_id,
+            encoding_format,
+            source_file
+            FROM video_playlistvideo
+            ORDER BY name ASC
+            """,
+            PLAYLIST_VIDEO,
+        )
+        if len(PLAYLIST_VIDEO) > 0:
+            print("%s PLAYLIST_VIDEO saved" % len(PLAYLIST_VIDEO))
 
     def send_previous_data(self, sender, **kwargs):
         """Send previous data from various database tables."""
@@ -168,11 +184,15 @@ class VideoConfig(AppConfig):
             or len(ENCODING_AUDIO) > 0
             or len(ENCODING_LOG) > 0
             or len(ENCODING_STEP) > 0
+            or len(PLAYLIST_VIDEO) > 0
         ):
             print("send_previous_data : batch size = %s" % nb_batch)
+            self.import_data(nb_batch)
         else:
             return
 
+    def import_data(self, nb_batch):
+        """Call method to put data if data saved."""
         if len(VIDEO_RENDITION) > 0:
             self.import_video_rendition(nb_batch)
 
@@ -188,7 +208,11 @@ class VideoConfig(AppConfig):
         if len(ENCODING_AUDIO) > 0:
             self.import_encoding_audio(nb_batch)
 
+        if len(PLAYLIST_VIDEO) > 0:
+            self.import_playlist_video(nb_batch)
+
     def import_video_rendition(self, nb_batch):
+        """Import video rendition data in DB."""
         from pod.video_encode_transcript.models import VideoRendition
 
         print("pushing %s VIDEO_RENDITION" % len(VIDEO_RENDITION))
@@ -209,6 +233,7 @@ class VideoConfig(AppConfig):
         VideoRendition.objects.bulk_create(video_renditions, batch_size=nb_batch)
 
     def import_encoding_video(self, nb_batch):
+        """Import encoding video data in DB."""
         from pod.video_encode_transcript.models import EncodingVideo
 
         print("pushing %s ENCODING_VIDEO" % len(ENCODING_VIDEO))
@@ -227,6 +252,7 @@ class VideoConfig(AppConfig):
         EncodingVideo.objects.bulk_create(encoding_videos, batch_size=nb_batch)
 
     def import_encoding_step(self, nb_batch):
+        """Import encoding step data in DB."""
         from pod.video_encode_transcript.models import EncodingStep
 
         print("pushing %s ENCODING_STEP" % len(ENCODING_STEP))
@@ -243,6 +269,7 @@ class VideoConfig(AppConfig):
         EncodingStep.objects.bulk_create(encoding_steps, batch_size=nb_batch)
 
     def import_encoding_log(self, nb_batch):
+        """Import encoding log data in DB."""
         from pod.video_encode_transcript.models import EncodingLog
 
         print("pushing %s ENCODING_LOG" % len(ENCODING_LOG))
@@ -259,6 +286,7 @@ class VideoConfig(AppConfig):
         EncodingLog.objects.bulk_create(encoding_logs, batch_size=nb_batch)
 
     def import_encoding_audio(self, nb_batch):
+        """Import encoding audio data in DB."""
         from pod.video_encode_transcript.models import EncodingAudio
 
         print("pushing %s ENCODING_AUDIO" % len(ENCODING_AUDIO))
@@ -274,3 +302,21 @@ class VideoConfig(AppConfig):
             )
             encoding_audios.append(es)
         EncodingAudio.objects.bulk_create(encoding_audios, batch_size=nb_batch)
+
+    def import_playlist_video(self, nb_batch):
+        """Import playlist video data in DB."""
+        from pod.video_encode_transcript.models import PlaylistVideo
+
+        print("pushing %s PLAYLIST_VIDEO" % len(PLAYLIST_VIDEO))
+        print("Start at: %s" % time.ctime())
+        playlist_videos = []
+        for id in PLAYLIST_VIDEO:
+            es = PlaylistVideo(
+                id=id,
+                name=PLAYLIST_VIDEO[id][0],
+                video_id=PLAYLIST_VIDEO[id][1],
+                encoding_format=PLAYLIST_VIDEO[id][2],
+                source_file=PLAYLIST_VIDEO[id][3],
+            )
+            playlist_videos.append(es)
+        PlaylistVideo.objects.bulk_create(playlist_videos, batch_size=nb_batch)
