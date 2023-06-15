@@ -234,6 +234,7 @@ class EventAdmin(admin.ModelAdmin):
         "is_restricted",
         "password",
         "is_auto_start_admin",
+        "is_recording_stopped",
         "get_thumbnail_admin",
         "enable_transcription",
     ]

@@ -80,10 +80,10 @@ class LiveViewsTestCase(TestCase):
             building=building,
             piloting_implementation="smp",
             piloting_conf='{"server_url": "https://mock_api.fr", '
-            '"smp_version": "351", '
             '"sftp_port": "22022", '
             '"user": "username", '
             '"password": "mdp", '
+            '"rtmp_streamer_id": "", '
             '"record_dir_path": "/recording"}',
         )
         Video.objects.create(

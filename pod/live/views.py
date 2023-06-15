@@ -714,7 +714,7 @@ def ajax_event_startrecord(request):
 
 
 def event_startrecord(event_id, broadcaster_id):
-    """Calls the start method of the broadcaster's implementation
+    """Calls the start method of the broadcaster's implementation.
 
     Returns: a JsonResponse with success state and the error (in case of failure).
     """
@@ -729,6 +729,9 @@ def event_startrecord(event_id, broadcaster_id):
 
     if not start_record(broadcaster, event_id):
         return JsonResponse({"success": False, "error": ""})
+
+    curr_event = Event.objects.get(pk=event_id)
+    curr_event.is_recording_stopped = False
 
     return JsonResponse({"success": True})
 
@@ -795,9 +798,9 @@ def event_stoprecord(event_id, broadcaster_id):
     if not stop_record(broadcaster):
         return JsonResponse({"success": False, "error": ""})
 
-    # change auto_start property so the recording does not start again
+    # change is_recording_stopped property so the recording does not start again
     curr_event = Event.objects.get(pk=event_id)
-    curr_event.is_auto_start = False
+    curr_event.is_recording_stopped = True
     curr_event.save()
 
     return transform_to_video(
@@ -1147,3 +1150,35 @@ def can_manage_stream(broadcaster: Broadcaster) -> bool:
     """Returns if the implementation allows to manage the stream."""
     impl_class = get_piloting_implementation(broadcaster)
     return impl_class is not None and impl_class.can_manage_stream()
+
+
+def start_stream(broadcaster: Broadcaster) -> bool:
+    """Starts the streaming and return if successfully done."""
+    impl_class = get_piloting_implementation(broadcaster)
+    if impl_class is None or not impl_class.can_manage_stream():
+        return False
+
+    rtmp_infos = impl_class.get_stream_rtmp_infos()
+    if not rtmp_infos:
+        return False
+
+    if rtmp_infos["is_streaming"]:
+        return True
+
+    return impl_class.start_stream()
+
+
+def stop_stream(broadcaster: Broadcaster) -> bool:
+    """Stops the streaming and return if successfully done."""
+    impl_class = get_piloting_implementation(broadcaster)
+    if impl_class is None or not impl_class.can_manage_stream():
+        return False
+
+    rtmp_infos = impl_class.get_stream_rtmp_infos()
+    if not rtmp_infos:
+        return False
+
+    if not rtmp_infos["is_streaming"]:
+        return True
+
+    return impl_class.stop_stream()

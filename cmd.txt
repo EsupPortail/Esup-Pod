@@ -1,0 +1,5 @@
+== Beginning at 10:35:45 IN DEBUG MODE ==
+- Stopping finished events (if started with Pod) -
+- Starting new events -
+== End at 10:35:45 ==
+...

@@ -84,7 +84,9 @@ class LiveTestUtils(TestCase):
         from pod.live.utils import get_event_id_and_broadcaster_id
 
         rf = RequestFactory()
+        # TODO faire les mm tests en GET
 
+        # POST
         request = rf.post("/", data={}, content_type="application/json")
         result = get_event_id_and_broadcaster_id(request)
         self.assertEqual(result, (None, None))

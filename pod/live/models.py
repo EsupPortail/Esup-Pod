@@ -432,6 +432,9 @@ class Event(models.Model):
         help_text=_("If this box is checked, the record will start automatically."),
         default=False,
     )
+    is_recording_stopped = models.BooleanField(
+        default=False,
+    )
     video_on_hold = models.ForeignKey(
         Video,
         help_text=_("This video will be displayed when there is no live stream."),
