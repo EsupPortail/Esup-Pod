@@ -693,8 +693,7 @@ class VideoForm(forms.ModelForm):
             pk__in=[c.id for c in user_channels]
         )
         return self.cleaned_data["channel"].union(channels_to_keep)
-        
-
+    
     def __init__(self, *args, **kwargs):
         self.is_staff = (
             kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
