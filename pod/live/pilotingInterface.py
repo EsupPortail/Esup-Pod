@@ -25,11 +25,11 @@ __MANDATORY_PARAMETERS__ = {
     "Wowza": {"server_url", "application", "livestream"},
     "SMP": {
         "server_url",
-        "smp_version",
         "sftp_port",
         "user",
         "password",
         "record_dir_path",
+        "rtmp_streamer_id",
     },
 }
 
@@ -105,12 +105,12 @@ class PilotingInterface(__ABC__):
         raise NotImplementedError
 
     @abstractmethod
-    def start_stream(self, streamer_id) -> bool:
+    def start_stream(self) -> bool:
         """Starts the stream."""
         raise NotImplementedError
 
     @abstractmethod
-    def stop_stream(self, streamer_id) -> bool:
+    def stop_stream(self) -> bool:
         """Stops the streams."""
         raise NotImplementedError
 
@@ -464,11 +464,11 @@ class Wowza(PilotingInterface):
         """Implement can_manage_stream from PilotingInterface."""
         return False
 
-    def start_stream(self, streamer_id) -> bool:
+    def start_stream(self) -> bool:
         """Implement start_stream from PilotingInterface."""
         return False
 
-    def stop_stream(self, streamer_id) -> bool:
+    def stop_stream(self) -> bool:
         """Implement stop_stream from PilotingInterface."""
         return False
 
@@ -532,7 +532,7 @@ class Smp(PilotingInterface):
         return self.verify_smp_response(response, "result", "recording")
 
     def start_recording(self, event_id, login=None) -> bool:
-        """Implement start_recordingfrom PilotingInterface."""
+        """Implement start_recording from PilotingInterface."""
         logger.debug("Smp - Start record")
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)
@@ -676,24 +676,21 @@ class Smp(PilotingInterface):
         """Implement can_manage_stream from PilotingInterface."""
         return True
 
-    def start_stream(self, streamer_id) -> bool:
+    def start_stream(self) -> bool:
         """Implement start_stream from PilotingInterface."""
-        return self.set_stream_status(streamer_id, 1)
+        return self.set_stream_status(1)
 
-    def stop_stream(self, streamer_id) -> bool:
+    def stop_stream(self) -> bool:
         """Implement stop_stream from PilotingInterface."""
-        return self.set_stream_status(streamer_id, 0)
+        return self.set_stream_status(0)
 
     def get_stream_rtmp_infos(self) -> dict:
         """Implement get_stream_rtmp_infos from PilotingInterface."""
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)
-        url = (
-            self.url
-            + "?uri=/streamer/rtmp/1&uri=/streamer/rtmp/2&uri=/streamer/rtmp/3&uri=/streamer/rtmp/4"
-        )
+
         response = requests.get(
-            url,
+            url=f"{self.url}?uri=/streamer/rtmp/{conf['rtmp_streamer_id']}",
             headers={"Accept": "application/json", "Content-Type": "application/json"},
             auth=(conf["user"], conf["password"]),
         )
@@ -701,24 +698,24 @@ class Smp(PilotingInterface):
         if response.status_code != http.HTTPStatus.OK or not response.json():
             return {"error": "fail to fetch infos rtmp"}
 
-        # Verify all infos are present in any streamer
-        for streamer in response.json():
-            if (
-                streamer.get("result", "")
-                and streamer["result"].get("pub_url", "")
-                and "pub_control" in streamer["result"]
-                and "pub_while_record" in streamer["result"]
-                and streamer.get("meta", "")
-                and streamer["meta"].get("uri", "")
-            ):
-                return {
-                    "auto_start_on_record": bool(streamer["result"]["pub_while_record"]),
-                    "streamer_id": int(streamer["meta"]["uri"][-1]),
-                    "is_streaming": bool(streamer["result"]["pub_control"]),
-                }
+        # Verify all infos are present in the streamer
+        streamer = response.json()[0]
+        if (
+            streamer.get("result", "")
+            and streamer["result"].get("pub_url", "")
+            and "pub_control" in streamer["result"]
+            and "pub_while_record" in streamer["result"]
+            and streamer.get("meta", "")
+            and streamer["meta"].get("uri", "")
+        ):
+            return {
+                "streamer_id": int(conf['rtmp_streamer_id']),
+                "auto_start_on_record": bool(streamer["result"]["pub_while_record"]),
+                "is_streaming": bool(streamer["result"]["pub_control"]),
+            }
         return {}
 
-    def set_stream_status(self, streamer_id, value) -> bool:
+    def set_stream_status(self, value) -> bool:
         """Set the RTMP stream status and return if successfully done."""
         if not self.can_manage_stream:
             return False
@@ -730,7 +727,7 @@ class Smp(PilotingInterface):
             headers={"Accept": "application/json", "Content-Type": "application/json"},
             auth=(conf["user"], conf["password"]),
             data=json.dumps(
-                [{"uri": f"/streamer/rtmp/{streamer_id}/pub_control", "value": value}]
+                [{"uri": f"/streamer/rtmp/{conf['rtmp_streamer_id']}/pub_control", "value": value}]
             ),
         )
         return self.verify_smp_response(response, "result", value)

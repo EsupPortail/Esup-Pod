@@ -180,10 +180,17 @@ def get_event_id_and_broadcaster_id(request):
         A tuple containing the event ID
         and broadcaster ID extracted from the request body.
     """
+    event_id = broadcaster_id = None
     body_unicode = request.body.decode("utf-8")
-    body_data = json.loads(body_unicode)
-    event_id = body_data.get("idevent", None)
-    broadcaster_id = body_data.get("idbroadcaster", None)
+    if request.method == "GET":
+        event_id = request.GET.get("idevent", None)
+        broadcaster_id = request.GET.get("idbroadcaster", None)
+
+    if request.method == "POST":
+        body_data = json.loads(body_unicode)
+        event_id = body_data.get("idevent", None)
+        broadcaster_id = body_data.get("idbroadcaster", None)
+
     return event_id, broadcaster_id
 
 

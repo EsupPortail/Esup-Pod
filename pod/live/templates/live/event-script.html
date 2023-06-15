@@ -353,7 +353,6 @@
               },
               body: JSON.stringify({
                 "idbroadcaster": "{{ event.broadcaster.id }}",
-                "idstreamer": rtmp_streamer_id,
               })
             }).then((response) => {
               if (response.ok)
@@ -397,7 +396,6 @@
               },
               body: JSON.stringify({
                 "idbroadcaster": "{{ event.broadcaster.id }}",
-                "idstreamer": rtmp_streamer_id,
               })
             }).then((response) => {
               if (response.ok)

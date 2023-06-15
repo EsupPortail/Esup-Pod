@@ -665,7 +665,7 @@ def broadcasters_from_building(request):
 
 def broadcaster_restriction(request):
     if request.method == "GET":
-        broadcaster_id = request.GET.get("idbroadcaster")
+        event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         if not broadcaster_id:
             return HttpResponseBadRequest()
         broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
@@ -682,7 +682,7 @@ def ajax_is_stream_available_to_record(request):
     Returns: a JsonResponse with available state and recording state of the broadcaster.
     """
     if request.method == "GET" and is_ajax(request):
-        broadcaster_id = request.GET.get("idbroadcaster", None)
+        event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
 
         if not check_piloting_conf(broadcaster):
@@ -873,11 +873,7 @@ def ajax_event_change_streaming(request, action):
             {"success": False, "error": "can only start or stop"}, status=500
         )
 
-    body_unicode = request.body.decode("utf-8")
-    body_data = json.loads(body_unicode)
-    streamer_id = body_data.get("idstreamer", None)
-    broadcaster_id = body_data.get("idbroadcaster", None)
-
+    event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
     impl_class = get_piloting_implementation(broadcaster)
 
@@ -885,9 +881,9 @@ def ajax_event_change_streaming(request, action):
         return JsonResponse({"success": False, "error": "implementation error"})
 
     to_exe = (
-        impl_class.start_stream(streamer_id)
+        impl_class.start_stream()
         if action == "start"
-        else impl_class.stop_stream(streamer_id)
+        else impl_class.stop_stream()
     )
 
     if to_exe:
@@ -902,7 +898,8 @@ def ajax_event_get_rtmp_config(request):
     if request.method != "GET" and not is_ajax(request):
         return HttpResponseNotAllowed(["GET"])
 
-    broadcaster_id = request.GET.get("idbroadcaster", None)
+    event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
+
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
     impl_class = get_piloting_implementation(broadcaster)
 
@@ -920,7 +917,7 @@ def ajax_event_get_rtmp_config(request):
 def event_get_video_cards(request):
     """Returns the template with the videos link to the event."""
     if is_ajax(request):
-        event_id = request.GET.get("idevent", None)
+        event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         evt = Event.objects.get(pk=event_id)
 
         html = ""
