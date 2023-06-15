@@ -680,7 +680,7 @@ div.card a img {
 #filterCursus div.collapse:not(.show),
 #filterTag div.collapse:not(.show) {
   height: 148px !important;
-  /* overflow: hidden; */
+  overflow: hidden;
   display: -webkit-box;
   display: flex;
   flex-direction: column;
