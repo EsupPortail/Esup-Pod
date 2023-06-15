@@ -932,7 +932,7 @@ class Video(models.Model):
     @property
     def get_encoding_step(self):
         """Get the current encoding step of a video."""
-        if hasattr(self, 'encodingstep'):
+        if hasattr(self, "encodingstep"):
             return "%s : %s" % (self.encodingstep.num_step, self.encodingstep.desc_step)
         else:
             return ""
@@ -1380,7 +1380,7 @@ def video_files_removal(sender, instance, using, **kwargs):
     models_to_delete = [
         instance.encodingvideo_set.model,
         instance.encodingaudio_set.model,
-        instance.playlistvideo_set.model
+        instance.playlistvideo_set.model,
     ]
     for model in models_to_delete:
         previous_encoding_video = model.objects.filter(video=instance)

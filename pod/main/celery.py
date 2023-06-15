@@ -16,8 +16,8 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
 app.conf.task_routes = {
-    'pod.main.tasks.*': {'queue': 'celery'},
-    'pod.main.celery.*': {'queue': 'celery'}
+    "pod.main.tasks.*": {"queue": "celery"},
+    "pod.main.celery.*": {"queue": "celery"},
 }
 
 

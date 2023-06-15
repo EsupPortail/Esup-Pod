@@ -16,7 +16,7 @@ XAPI_LRS_PWD = getattr(settings, "XAPI_LRS_PWD", "")
 XAPI_CELERY_BROKER_URL = getattr(settings, "XAPI_CELERY_BROKER_URL", "")
 
 xapi_app = Celery("xapi_tasks", broker=XAPI_CELERY_BROKER_URL)
-xapi_app.conf.task_routes = {'pod.xapi.xapi_tasks.*': {'queue': 'xapi'}}
+xapi_app.conf.task_routes = {"pod.xapi.xapi_tasks.*": {"queue": "xapi"}}
 
 
 @xapi_app.task
