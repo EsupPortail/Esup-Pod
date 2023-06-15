@@ -692,9 +692,9 @@ class VideoForm(forms.ModelForm):
         channels_to_keep = Video.objects.get(pk=self.instance.id).channel.exclude(
             pk__in=[c.id for c in user_channels]
         )
-        self.cleaned_data["channel"] = self.cleaned_data["channel"].union(
-            channels_to_keep
-        )
+
+        self.cleaned_data["channel"] = self.cleaned_data["channel"].union(channels_to_keep)
+        
         return self.cleaned_data["channel"]
 
     def __init__(self, *args, **kwargs):
