@@ -709,7 +709,7 @@ class Smp(PilotingInterface):
             and streamer["meta"].get("uri", "")
         ):
             return {
-                "streamer_id": int(conf['rtmp_streamer_id']),
+                "streamer_id": int(conf["rtmp_streamer_id"]),
                 "auto_start_on_record": bool(streamer["result"]["pub_while_record"]),
                 "is_streaming": bool(streamer["result"]["pub_control"]),
             }
@@ -727,7 +727,12 @@ class Smp(PilotingInterface):
             headers={"Accept": "application/json", "Content-Type": "application/json"},
             auth=(conf["user"], conf["password"]),
             data=json.dumps(
-                [{"uri": f"/streamer/rtmp/{conf['rtmp_streamer_id']}/pub_control", "value": value}]
+                [
+                    {
+                        "uri": f"/streamer/rtmp/{conf['rtmp_streamer_id']}/pub_control",
+                        "value": value,
+                    }
+                ]
             ),
         )
         return self.verify_smp_response(response, "result", value)

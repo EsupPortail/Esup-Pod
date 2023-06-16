@@ -65,13 +65,12 @@ class Command(BaseCommand):
             Q(end_date__gte=today)
             & Q(end_date__lte=zero_now)
             & Q(is_recording_stopped=False)
-        ).order_by('end_date')
+        ).order_by("end_date")
 
         for event in events:
             self.stdout.write(
-                f"Event : '{event.slug}', "
-                f"on Broadcaster '{event.broadcaster_id}' "
-                , ending=""
+                f"Event : '{event.slug}', " f"on Broadcaster '{event.broadcaster_id}' ",
+                ending="",
             )
 
             if not is_recording(event.broadcaster, True):
@@ -110,8 +109,8 @@ class Command(BaseCommand):
 
         for event in events:
             self.stdout.write(
-                f"Event : '{event.slug}', "
-                f"on Broadcaster '{event.broadcaster_id}'", ending=""
+                f"Event : '{event.slug}', " f"on Broadcaster '{event.broadcaster_id}'",
+                ending="",
             )
 
             if is_recording(event.broadcaster):

@@ -883,11 +883,7 @@ def ajax_event_change_streaming(request, action):
     if impl_class is None:
         return JsonResponse({"success": False, "error": "implementation error"})
 
-    to_exe = (
-        impl_class.start_stream()
-        if action == "start"
-        else impl_class.stop_stream()
-    )
+    to_exe = impl_class.start_stream() if action == "start" else impl_class.stop_stream()
 
     if to_exe:
         return JsonResponse({"success": True})
