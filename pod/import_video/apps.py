@@ -12,4 +12,4 @@ class ImportVideoConfig(AppConfig):
 
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'pod.import_video'
-    verbose_name = _("Import video")
+    verbose_name = _("Import External Video")

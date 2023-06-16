@@ -2,36 +2,15 @@
 from django import forms
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.utils.translation import ugettext_lazy as _
-from django_select2 import forms as s2forms
-
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
-
+from django.utils.translation import ugettext_lazy as _
+from pod.import_video.models import ExternalRecording
 from pod.main.forms_utils import add_placeholder_and_asterisk
-# from pod.meeting.models import Meeting
-from pod.import_video.models import Recording
+from pod.main.forms_utils import OwnerWidget, AddOwnerWidget
 
 
-class OwnerWidget(s2forms.ModelSelect2Widget):
-    """Class OwnerWidget."""
-
-    search_fields = [
-        "username__icontains",
-        "email__icontains",
-    ]
-
-
-class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
-    """Class AddOwnerWidget."""
-
-    search_fields = [
-        "username__icontains",
-        "email__icontains",
-    ]
-
-
-class RecordingForm(forms.ModelForm):
+class ExternalRecordingForm(forms.ModelForm):
     """External recording form.
 
     Args:
@@ -69,7 +48,7 @@ class RecordingForm(forms.ModelForm):
 
     def clean(self):
         """Clean method."""
-        cleaned_data = super(RecordingForm, self).clean()
+        cleaned_data = super(ExternalRecordingForm, self).clean()
         try:
             validator = URLValidator()
             validator(cleaned_data["source_url"])
@@ -90,7 +69,7 @@ class RecordingForm(forms.ModelForm):
         self.current_lang = kwargs.pop("current_lang", settings.LANGUAGE_CODE)
         self.current_user = kwargs.pop("current_user", None)
 
-        super(RecordingForm, self).__init__(*args, **kwargs)
+        super(ExternalRecordingForm, self).__init__(*args, **kwargs)
 
         self.set_queryset()
         self.filter_fields_admin()
@@ -121,7 +100,7 @@ class RecordingForm(forms.ModelForm):
             object (class): internal class
         """
 
-        model = Recording
+        model = ExternalRecording
         fields = "__all__"
         widgets = {
             "owner": OwnerWidget,

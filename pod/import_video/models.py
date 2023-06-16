@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 SITE_ID = getattr(settings, "SITE_ID", 1)
 
 
-class Recording(models.Model):
+class ExternalRecording(models.Model):
     """This model hold information about external recordings.
 
     This model is for external recordings.
@@ -120,7 +120,7 @@ class Recording(models.Model):
         return "%s - %s" % (self.id, self.name)
 
     def save(self, *args, **kwargs):
-        super(Recording, self).save(*args, **kwargs)
+        super(ExternalRecording, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Recording"
@@ -129,7 +129,7 @@ class Recording(models.Model):
         get_latest_by = "start_at"
 
 
-@receiver(pre_save, sender=Recording)
+@receiver(pre_save, sender=ExternalRecording)
 def default_site_recording(sender, instance, **kwargs):
     """Save default site for this recording."""
     if not hasattr(instance, "site"):

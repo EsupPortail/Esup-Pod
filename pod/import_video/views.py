@@ -4,8 +4,11 @@ import requests
 # For PeerTube download
 import json
 
-from .models import Recording
-from .forms import RecordingForm
+from .models import ExternalRecording
+from .forms import ExternalRecordingForm
+from .utils import download_video_file, save_video
+from .utils import secure_request_for_upload, parse_remote_file
+from .utils import StatelessRecording
 from datetime import datetime
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
@@ -22,16 +25,13 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import ensure_csrf_cookie
 from pod.main.views import in_maintenance
 from pod.main.utils import secure_post_request, display_message_with_icon
-from pod.meeting.utils import secure_request_for_upload, parse_remote_file
-from pod.meeting.utils import download_video_file, save_video
-from pod.meeting.utils import StatelessRecording
 # For Youtube download
 from pytube import YouTube
 from pytube.exceptions import PytubeError, VideoUnavailable
 
 
 RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
-    settings, "RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY", False
+    settings, "RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY", True
 )
 
 DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
@@ -68,7 +68,7 @@ def secure_external_recording(request, recording):
 
     Args:
         request (Request): HTTP request
-        recording (Recording): Recording instance
+        recording (ExternalRecording): ExternalRecording instance
 
     Raises:
         PermissionDenied: if user not allowed
@@ -117,7 +117,11 @@ def upload_external_recording_to_pod(request, record_id):
     Returns:
         HTTP Response: Redirect to the external recordings list
     """
-    recording = get_object_or_404(Recording, id=record_id, site=get_current_site(request))
+    recording = get_object_or_404(
+        ExternalRecording,
+        id=record_id,
+        site=get_current_site(request)
+    )
 
     # Secure this external recording
     secure_external_recording(request, recording)
@@ -169,7 +173,7 @@ def external_recordings(request):
     site = get_current_site(request)
 
     # List of the external recordings from the database
-    external_recordings = Recording.objects.filter(
+    external_recordings = ExternalRecording.objects.filter(
         owner__id=request.user.id, site=site
     )
     # | request.user.owners_external_recordings.all().filter(site=site)
@@ -242,7 +246,7 @@ def add_or_edit_external_recording(request, id=None):
         return redirect(reverse("maintenance"))
 
     recording = (
-        get_object_or_404(Recording, id=id, site=get_current_site(request))
+        get_object_or_404(ExternalRecording, id=id, site=get_current_site(request))
         if id
         else None
     )
@@ -258,7 +262,7 @@ def add_or_edit_external_recording(request, id=None):
         )
 
     default_owner = recording.owner.pk if recording else request.user.pk
-    form = RecordingForm(
+    form = ExternalRecordingForm(
         instance=recording,
         is_staff=request.user.is_staff,
         is_superuser=request.user.is_superuser,
@@ -267,7 +271,7 @@ def add_or_edit_external_recording(request, id=None):
     )
 
     if request.method == "POST":
-        form = RecordingForm(
+        form = ExternalRecordingForm(
             request.POST,
             instance=recording,
             is_staff=request.user.is_staff,
@@ -316,7 +320,11 @@ def delete_external_recording(request, id):
     Returns:
         HTTP Response: Redirect to the recordings list
     """
-    recording = get_object_or_404(Recording, id=id, site=get_current_site(request))
+    recording = get_object_or_404(
+        ExternalRecording,
+        id=id,
+        site=get_current_site(request)
+    )
 
     # Secure external recording
     secure_external_recording(request, recording)
@@ -351,7 +359,7 @@ def save_recording_form(request, form):
         form (Form): recording form
 
     Returns:
-        Recording: recording saved in database
+        ExternalRecording: recording saved in database
     """
     recording = form.save(commit=False)
     recording.site = get_current_site(request)
@@ -382,7 +390,7 @@ def save_external_recording(request, record_id):
     """
     try:
         # Update the external recording
-        recording, created = Recording.objects.update_or_create(
+        recording, created = ExternalRecording.objects.update_or_create(
             id=record_id,
             defaults={"uploaded_to_pod_by": request.user},
         )
@@ -408,7 +416,7 @@ def upload_recording_to_pod(request, record_id):
     """
     try:
         # Management by type of recording
-        recording = Recording.objects.get(id=record_id)
+        recording = ExternalRecording.objects.get(id=record_id)
 
         # Check that request is correct for upload
         secure_request_for_upload(request)
@@ -451,7 +459,7 @@ def upload_bbb_recording_to_pod(request, record_id):
         Boolean: True if upload achieved
     """
     try:
-        recording = Recording.objects.get(id=record_id)
+        recording = ExternalRecording.objects.get(id=record_id)
         source_url = request.POST.get("source_url")
 
         # Step 1 : Download and parse the remote HTML file if necessary

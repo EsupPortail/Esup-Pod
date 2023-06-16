@@ -1,5 +1,5 @@
 """Tests the views for import_video module."""
-from ..models import Recording
+from ..models import ExternalRecording
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.test import TestCase
@@ -8,7 +8,7 @@ from django.urls import reverse
 from http import HTTPStatus
 
 
-class RecordingDeleteTestView(TestCase):
+class ExternalRecordingDeleteTestView(TestCase):
     """List of view tests for deleting an external recording.
 
     Args:
@@ -19,7 +19,7 @@ class RecordingDeleteTestView(TestCase):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
-        Recording.objects.create(
+        ExternalRecording.objects.create(
             id=1,
             name="test recording1",
             site=site,
@@ -71,7 +71,7 @@ class RecordingDeleteTestView(TestCase):
         self.assertEqual(response.status_code, 404)
 
         # check access right
-        recording = Recording.objects.get(name="test recording1")
+        recording = ExternalRecording.objects.get(name="test recording1")
         url = reverse(
             "import_video:delete_external_recording",
             kwargs={
@@ -97,7 +97,7 @@ class RecordingDeleteTestView(TestCase):
         print(" --->  test_recording_delete_get_request of RecordingDeleteTestView: OK!")
 
 
-class RecordingUploadTestView(TestCase):
+class ExternalRecordingUploadTestView(TestCase):
     """List of view tests for upload to Pod an external recording.
 
     Args:
@@ -111,7 +111,7 @@ class RecordingUploadTestView(TestCase):
         user.save()
         user2 = User.objects.create(username="pod2", password="pod1234pod")
         user2.save()
-        Recording.objects.create(
+        ExternalRecording.objects.create(
             id=2,
             name="test youtube recording1",
             site=site,
@@ -119,7 +119,7 @@ class RecordingUploadTestView(TestCase):
             type="youtube",
             source_url="https://youtube.url",
         )
-        Recording.objects.create(
+        ExternalRecording.objects.create(
             id=3,
             name="test peertube recording1",
             site=site,
@@ -127,7 +127,7 @@ class RecordingUploadTestView(TestCase):
             type="peertube",
             source_url="https://peertube.url",
         )
-        Recording.objects.create(
+        ExternalRecording.objects.create(
             id=4,
             name="test external bbb recording1",
             site=site,
@@ -135,7 +135,7 @@ class RecordingUploadTestView(TestCase):
             type="bigbluebutton",
             source_url="https://bbb.url",
         )
-        Recording.objects.create(
+        ExternalRecording.objects.create(
             id=5,
             name="test direct video recording1",
             site=site,
@@ -147,7 +147,7 @@ class RecordingUploadTestView(TestCase):
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
-        print(" --->  SetUp of RecordingUploadTestView: OK!")
+        print(" --->  SetUp of ExternalRecordingUploadTestView: OK!")
 
     def test_recording_upload_get_request(self):
         """Test recording upload with Get request."""
@@ -170,7 +170,7 @@ class RecordingUploadTestView(TestCase):
         self.assertEqual(response.status_code, 404)
 
         # check access right
-        recording = Recording.objects.get(name="test youtube recording1")
+        recording = ExternalRecording.objects.get(name="test youtube recording1")
         url = reverse(
             "import_video:upload_external_recording_to_pod",
             kwargs={
@@ -188,7 +188,7 @@ class RecordingUploadTestView(TestCase):
 
         # Check upload for external recording
         # Youtube type
-        recordingYt = Recording.objects.get(name="test youtube recording1")
+        recordingYt = ExternalRecording.objects.get(name="test youtube recording1")
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
         url = reverse(
@@ -208,7 +208,7 @@ class RecordingUploadTestView(TestCase):
         self.assertTrue(b"YouTube content is inaccessible" in response.content)
 
         # Peertube type
-        recordingPt = Recording.objects.get(name="test peertube recording1")
+        recordingPt = ExternalRecording.objects.get(name="test peertube recording1")
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
         url = reverse(
@@ -228,7 +228,7 @@ class RecordingUploadTestView(TestCase):
         self.assertTrue(b"Impossible to upload to Pod the PeerTube" in response.content)
 
         # External BBB type
-        recordingBBB = Recording.objects.get(name="test external bbb recording1")
+        recordingBBB = ExternalRecording.objects.get(name="test external bbb recording1")
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
         url = reverse(
@@ -248,7 +248,9 @@ class RecordingUploadTestView(TestCase):
         self.assertTrue(b"Impossible to upload to Pod the video" in response.content)
 
         # Video type
-        recordingVideo = Recording.objects.get(name="test direct video recording1")
+        recordingVideo = ExternalRecording.objects.get(
+            name="test direct video recording1"
+        )
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
         url = reverse(

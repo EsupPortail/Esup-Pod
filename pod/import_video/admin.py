@@ -1,10 +1,10 @@
 """Admin for the Import video module."""
 from django.contrib import admin
-from .models import Recording
+from .models import ExternalRecording
 
 
-@admin.register(Recording)
-class RecordingAdmin(admin.ModelAdmin):
+@admin.register(ExternalRecording)
+class ExternalRecordingAdmin(admin.ModelAdmin):
     """Administration for external recordings.
 
     Args:
