@@ -1,4 +1,4 @@
-"""Utils for Meeting and Import_video module."""
+"""Utils for Meeting module."""
 from datetime import date, timedelta
 from django.conf import settings
 from hashlib import sha1
