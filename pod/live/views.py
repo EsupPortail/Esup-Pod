@@ -868,7 +868,7 @@ def ajax_event_stopstreaming(request):
 
 
 def ajax_event_change_streaming(request, action):
-    if request.method != "POST" and not is_ajax(request):
+    if request.method != "POST" or not is_ajax(request):
         return HttpResponseNotAllowed(["POST"])
 
     if action not in ["start", "stop"]:
@@ -877,7 +877,7 @@ def ajax_event_change_streaming(request, action):
         )
 
     event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
-    broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
+    broadcaster = Broadcaster.objects.filter(pk=broadcaster_id).first()
     impl_class = get_piloting_implementation(broadcaster)
 
     if impl_class is None:
@@ -894,7 +894,7 @@ def ajax_event_change_streaming(request, action):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_get_rtmp_config(request):
-    if request.method != "GET" and not is_ajax(request):
+    if request.method != "GET" or not is_ajax(request):
         return HttpResponseNotAllowed(["GET"])
 
     event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)

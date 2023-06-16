@@ -187,6 +187,9 @@ def validate_json_implementation(broadcaster: Broadcaster) -> bool:
 
 def get_piloting_implementation(broadcaster) -> Optional[PilotingInterface]:
     """Returns the class inheriting from PilotingInterface according to the broadcaster configuration (or None)."""
+    if broadcaster is None:
+        return None
+
     piloting_impl = broadcaster.piloting_implementation
     if not piloting_impl:
         logger.info(
@@ -695,7 +698,11 @@ class Smp(PilotingInterface):
             auth=(conf["user"], conf["password"]),
         )
 
-        if response.status_code != http.HTTPStatus.OK or not response.json():
+        if (
+            response.status_code != http.HTTPStatus.OK
+            or not response.json()
+            or not type(response.json()) is list
+        ):
             return {"error": "fail to fetch infos rtmp"}
 
         # Verify all infos are present in the streamer
