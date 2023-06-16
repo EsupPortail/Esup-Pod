@@ -941,7 +941,7 @@ def default_site_meeting(sender, instance, **kwargs):
         raise ValueError(_("Start date must be less than recurring until date"))
 
 
-class Recording(models.Model):
+class InternalRecording(models.Model):
     """This model hold information about Big Blue Button recordings.
 
     This model is for internal recordings.
@@ -1041,7 +1041,7 @@ class Recording(models.Model):
         return "%s - %s" % (self.recording_id, self.name)
 
     def save(self, *args, **kwargs):
-        super(Recording, self).save(*args, **kwargs)
+        super(InternalRecording, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Recording"
@@ -1050,7 +1050,7 @@ class Recording(models.Model):
         get_latest_by = "start_at"
 
 
-@receiver(pre_save, sender=Recording)
+@receiver(pre_save, sender=InternalRecording)
 def default_site_recording(sender, instance, **kwargs):
     """Save default site for this recording."""
     if not hasattr(instance, "site"):

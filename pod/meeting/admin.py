@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
 from django.contrib.admin import widgets
 
-from .models import Meeting, Recording
+from .models import Meeting, InternalRecording
 from .forms import (
     MeetingForm,
     MEETING_MAIN_FIELDS,
@@ -167,8 +167,8 @@ class MeetingAdmin(admin.ModelAdmin):
         return qs
 
 
-@admin.register(Recording)
-class RecordingAdmin(admin.ModelAdmin):
+@admin.register(InternalRecording)
+class InternalRecordingAdmin(admin.ModelAdmin):
     """Administration for BBB internal recordings.
 
     Args:

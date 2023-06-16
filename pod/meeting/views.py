@@ -4,10 +4,8 @@ import bleach
 
 from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm
 from .forms import MeetingInviteForm
-from .models import Meeting, Recording
+from .models import Meeting, InternalRecording
 from .utils import get_nth_week_number
-from .utils import secure_request_for_upload, parse_remote_file
-from .utils import download_video_file, save_video
 from datetime import datetime
 from django.conf import settings
 from django.contrib import messages
@@ -26,9 +24,11 @@ from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import ensure_csrf_cookie
+from pod.import_video.utils import StatelessRecording
+from pod.import_video.utils import secure_request_for_upload, parse_remote_file
+from pod.import_video.utils import download_video_file, save_video
 from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
 from pod.main.utils import secure_post_request, display_message_with_icon
-from pod.meeting.utils import StatelessRecording
 
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
@@ -568,7 +568,7 @@ def internal_recordings(request, meeting_id):
             # Only the owner can delete their recordings
             bbb_recording.canDelete = can_delete
             # Search for more informations from database (if already uploaded to Pod)
-            recording = Recording.objects.filter(
+            recording = InternalRecording.objects.filter(
                 recording_id=data["recordID"]
             ).first()
             if recording:
@@ -970,7 +970,7 @@ def upload_internal_recording_to_pod(request, recording_id, meeting_id):
         save_internal_recording(request, recording_id, recording_title, meeting_id)
         # Get it
         recording = get_object_or_404(
-            Recording,
+            InternalRecording,
             recording_id=recording_id,
             meeting_id=meeting.id,
             site=get_current_site(request),
@@ -1034,7 +1034,7 @@ def save_internal_recording(
         if source_url is None:
             source_url = ""
         # Save the recording as an internal recording
-        recording, created = Recording.objects.update_or_create(
+        recording, created = InternalRecording.objects.update_or_create(
             name=recording_name,
             recording_id=recording_id,
             meeting=meeting,
@@ -1101,7 +1101,7 @@ def upload_bbb_recording_to_pod(request, record_id, meeting_id):
         Boolean: True if upload achieved
     """
     try:
-        recording = Recording.objects.get(id=record_id)
+        recording = InternalRecording.objects.get(id=record_id)
         source_url = request.POST.get("source_url")
 
         # Step 1 : Download and parse the remote HTML file if necessary

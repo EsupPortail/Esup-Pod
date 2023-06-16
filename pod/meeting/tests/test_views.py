@@ -3,7 +3,7 @@ import random
 import requests
 
 from .. import views
-from ..models import Meeting, Recording
+from ..models import Meeting, InternalRecording
 from datetime import datetime
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -556,7 +556,7 @@ class MeetingRecordingTestView(TestCase):
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
-        Recording.objects.create(
+        InternalRecording.objects.create(
             id=1,
             name="test recording1",
             recording_id="d058c39d3dc59d9e9516d95f76eb",
@@ -633,7 +633,7 @@ class MeetingRecordingTestView(TestCase):
 
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        recording = Recording.objects.get(id=1)
+        recording = InternalRecording.objects.get(id=1)
         url = reverse(
             "meeting:delete_internal_recording",
             kwargs={
@@ -818,7 +818,7 @@ class MeetingInviteTestView(TestCase):
         print(msg)
 
 
-class RecordingDeleteTestView(TestCase):
+class InternalRecordingDeleteTestView(TestCase):
     """List of view tests for deleting an internal recording.
 
     Args:
@@ -830,7 +830,7 @@ class RecordingDeleteTestView(TestCase):
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
         meeting = Meeting.objects.create(id=1, name="test", owner=user, site=site)
-        Recording.objects.create(
+        InternalRecording.objects.create(
             id=1,
             name="test recording1",
             recording_id="d058c39d3dc59d9e9516d95f76eb",
@@ -842,7 +842,7 @@ class RecordingDeleteTestView(TestCase):
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
-        print(" --->  SetUp of RecordingDeleteTestView: OK!")
+        print(" --->  SetUp of InternalRecordingDeleteTestView: OK!")
 
     def test_recording_TestView_get_request_restrict(self):
         """Test the list of internal recordings."""
@@ -889,7 +889,7 @@ class RecordingDeleteTestView(TestCase):
 
         # check access right
         meeting = Meeting.objects.get(name="test")
-        recording = Recording.objects.get(name="test recording1")
+        recording = InternalRecording.objects.get(name="test recording1")
         url = reverse(
             "meeting:delete_internal_recording",
             kwargs={
@@ -916,7 +916,7 @@ class RecordingDeleteTestView(TestCase):
         print(" --->  test_recording_delete_get_request of RecordingDeleteTestView: OK!")
 
 
-class RecordingUploadTestView(TestCase):
+class InternalRecordingUploadTestView(TestCase):
     """List of view tests for upload to Pod an internal recording.
 
     Args:
@@ -931,7 +931,7 @@ class RecordingUploadTestView(TestCase):
         user2 = User.objects.create(username="pod2", password="pod1234pod")
         user2.save()
         meeting = Meeting.objects.create(id=1, name="test", owner=user, site=site)
-        Recording.objects.create(
+        InternalRecording.objects.create(
             id=1,
             name="test recording1",
             recording_id="d058c39d3dc59d9e9516d95f76eb",
@@ -943,7 +943,7 @@ class RecordingUploadTestView(TestCase):
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
-        print(" --->  SetUp of RecordingUploadTestView: OK!")
+        print(" --->  SetUp of InternalRecordingUploadTestView: OK!")
 
     def test_recording_upload_get_request(self):
         """Test recording upload with Get request."""
@@ -967,7 +967,7 @@ class RecordingUploadTestView(TestCase):
 
         # check access right
         meeting = Meeting.objects.get(name="test")
-        recording = Recording.objects.get(name="test recording1")
+        recording = InternalRecording.objects.get(name="test recording1")
         url = reverse(
             "meeting:upload_internal_recording_to_pod",
             kwargs={
