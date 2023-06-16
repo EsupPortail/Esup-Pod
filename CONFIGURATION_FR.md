@@ -1388,6 +1388,22 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
 ### Configuration application enrichment
 
+### Configuration application d'import vidéo
+Application Import_video permettant d'importer des vidéos externes dans Pod.<br>
+Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
+
+ - `RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY`
+
+  > valeur par défaut : `False`
+
+  >> Seuls les utilisateurs "staff" pourront importer des vidéos <br>
+
+ - `USE_IMPORT_VIDEO`
+
+  > valeur par défaut : `False`
+
+  >> Activation de l’application d'import des vidéos <br>
+
 ### Configuration application live
 
  - `AFFILIATION_EVENT`
@@ -1551,6 +1567,12 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
   > valeur par défaut : `False `
 
   >> Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - [TODO] À retirer dans les futures versions de Pod <br>
+
+ - `USE_IMPORT_VIDEO`
+
+  > valeur par défaut : `False`
+
+  >> Activation de l’application d'import des vidéos <br>
 
  - `USE_MEETING`
 

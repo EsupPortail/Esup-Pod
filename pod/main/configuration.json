@@ -847,6 +847,50 @@
                         "fr": "Configuration application enrichment"
                     }
                 },
+                "import_video": {
+                    "description": {
+                        "en": [
+							"Import_video app to import external videos into Pod.",
+                            "Set `USE_IMPORT_VIDEO` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Import_video permettant d'importer des vidéos externes dans Pod.",
+                            "Mettre `USE_IMPORT_VIDEO` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Only \"staff\" users will be able to import videos"
+                                ],
+                                "fr": [
+                                    "Seuls les utilisateurs \"staff\" pourront importer des vidéos"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.3.0"
+                        },
+                        "USE_IMPORT_VIDEO": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Activation of the video import application"
+                                ],
+                                "fr": [
+                                    "Activation de l’application d'import des vidéos"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.3.0"
+                        }
+                    },
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application d'import vidéo"
+                    }
+                },
                 "live": {
                     "description": {},
                     "settings": {
@@ -1178,6 +1222,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "USE_IMPORT_VIDEO": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Activation of the video import application"
+                                ],
+                                "fr": [
+                                    "Activation de l’application d'import des vidéos"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.3.0"
                         },
                         "USE_MEETING": {
                             "default_value": false,
