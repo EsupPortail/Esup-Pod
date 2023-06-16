@@ -8,6 +8,8 @@ from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N, USE_L10N
 from ..settings import ROOT_URLCONF, WSGI_APPLICATION, TEMPLATES
 from ..settings import INSTALLED_APPS, MIDDLEWARE, AUTHENTICATION_BACKENDS
 import os
+from bs4 import BeautifulSoup
+import requests
 
 USE_OPENCAST_STUDIO = True
 
@@ -68,10 +70,12 @@ AFFILIATION_EVENT = ["employee"]
 USE_MEETING = True
 
 
-# found on https://bigbluebutton.org/api-mate/
 def get_shared_secret():
     api_mate_url = "https://bigbluebutton.org/api-mate/"
-    return "8cd8ef52e8e101574e400365b55e11a6"
+    response = requests.get(api_mate_url)
+    soup = BeautifulSoup(response.text)
+    input_val = soup.body.find('input', attrs={'id':'input-custom-server-salt'})
+    return input_val.get('value')
 
 
 BBB_API_URL = "http://test-install.blindsidenetworks.com/bigbluebutton/api/"
