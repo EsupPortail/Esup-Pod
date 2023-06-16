@@ -860,7 +860,7 @@
                     },
                     "settings": {
                         "RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY": {
-                            "default_value": false,
+                            "default_value": true,
                             "description": {
                                 "en": [
                                     "Only \"staff\" users will be able to import videos"
@@ -873,7 +873,7 @@
                             "pod_version_init": "3.3.0"
                         },
                         "USE_IMPORT_VIDEO": {
-                            "default_value": false,
+                            "default_value": true,
                             "description": {
                                 "en": [
                                     "Activation of the video import application"
@@ -1224,7 +1224,7 @@
                             "pod_version_init": "3.1"
                         },
                         "USE_IMPORT_VIDEO": {
-                            "default_value": false,
+                            "default_value": true,
                             "description": {
                                 "en": [
                                     "Activation of the video import application"

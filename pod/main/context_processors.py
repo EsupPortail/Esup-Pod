@@ -80,7 +80,7 @@ USE_OPENCAST_STUDIO = getattr(django_settings, "USE_OPENCAST_STUDIO", False)
 
 USE_MEETING = getattr(django_settings, "USE_MEETING", False)
 
-USE_IMPORT_VIDEO = getattr(django_settings, "USE_IMPORT_VIDEO", False)
+USE_IMPORT_VIDEO = getattr(django_settings, "USE_IMPORT_VIDEO", True)
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     django_settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
@@ -91,7 +91,7 @@ RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
 )
 
 RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
-    django_settings, "RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY", False
+    django_settings, "RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY", True
 )
 
 

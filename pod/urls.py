@@ -133,7 +133,7 @@ if getattr(settings, "USE_FAVORITES", True):
     ]
 
 # IMPORT_VIDEO
-if getattr(settings, "USE_IMPORT_VIDEO", False):
+if getattr(settings, "USE_IMPORT_VIDEO", True):
     urlpatterns += [
         url(
             r"^import_video/",
