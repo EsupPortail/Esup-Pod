@@ -1,3 +1,4 @@
+"""Admin for Meeting module."""
 from django.contrib import admin
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
@@ -168,7 +169,7 @@ class MeetingAdmin(admin.ModelAdmin):
 
 @admin.register(Recording)
 class RecordingAdmin(admin.ModelAdmin):
-    """Administration for internal and external recordings.
+    """Administration for BBB internal recordings.
 
     Args:
         admin (ModelAdmin): admin model
@@ -177,10 +178,8 @@ class RecordingAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "start_at",
-        "is_internal",
         "recording_id",
         "meeting",
-        "type",
         "owner",
     )
     search_fields = [

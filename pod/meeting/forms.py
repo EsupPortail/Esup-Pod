@@ -466,13 +466,10 @@ class MeetingInviteForm(forms.Form):
 
 
 class RecordingForm(forms.ModelForm):
-    """External recording form.
+    """Internal recording form.
 
     Args:
         forms (ModelForm): model form
-
-    Raises:
-        ValidationError: owner of the recording cannot be an additional owner too
     """
 
     site = forms.ModelChoiceField(Site.objects.all(), required=False)
@@ -485,11 +482,9 @@ class RecordingForm(forms.ModelForm):
             {
                 "fields": (
                     "name",
-                    "type",
                     "source_url",
                     "start_at",
                     "owner",
-                    "additional_owners",
                     "site",
                 )
             },
@@ -502,26 +497,6 @@ class RecordingForm(forms.ModelForm):
             form.remove_field("owner")
             form.remove_field("site")
 
-    def clean_add_owner(self, cleaned_data):
-        """Clean method for additional owners."""
-        if "additional_owners" in cleaned_data.keys() and isinstance(
-            self.cleaned_data["additional_owners"], QuerySet
-        ):
-            recordingowner = (
-                self.instance.owner
-                if hasattr(self.instance, "owner")
-                else cleaned_data["owner"]
-                if "owner" in cleaned_data.keys()
-                else self.current_user
-            )
-            if (
-                recordingowner
-                and recordingowner in self.cleaned_data["additional_owners"].all()
-            ):
-                raise ValidationError(
-                    _("Owner of the recording cannot be an additional owner too")
-                )
-
     def clean(self):
         """Clean method."""
         cleaned_data = super(RecordingForm, self).clean()
@@ -530,7 +505,6 @@ class RecordingForm(forms.ModelForm):
             validator(cleaned_data["source_url"])
         except ValidationError:
             self.add_error("source_url", _("Please enter a valid address"))
-        self.clean_add_owner(cleaned_data)
 
     def __init__(self, *args, **kwargs):
         """Initialize recording form."""
