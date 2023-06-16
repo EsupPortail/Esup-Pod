@@ -546,6 +546,7 @@ button.nav-link {
 .pod-card--video .video-title {
   line-height: 1.2;
   display: inline-block;
+  max-width: 100%;
 }
 
 #videos_list .video-title a {
@@ -555,6 +556,12 @@ button.nav-link {
 #videos_list .video-title a:hover,
 #videos_list .video-title a:focus {
   text-decoration: underline;
+}
+
+/* prevent default thumbnail to be too small on some screens */
+.video-card>.card-thumbnail{
+  min-height: 146px;
+  background-color: #000;
 }
 
 .video-card .d-flex {
