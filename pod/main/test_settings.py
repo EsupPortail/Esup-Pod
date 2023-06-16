@@ -66,9 +66,16 @@ EXISTING_BROADCASTER_IMPLEMENTATIONS = ["Wowza", "Test"]
 AFFILIATION_EVENT = ["employee"]
 
 USE_MEETING = True
+
+
 # found on https://bigbluebutton.org/api-mate/
+def get_shared_secret():
+    api_mate_url = "https://bigbluebutton.org/api-mate/"
+    return "8cd8ef52e8e101574e400365b55e11a6"
+
+
 BBB_API_URL = "http://test-install.blindsidenetworks.com/bigbluebutton/api/"
-BBB_SECRET_KEY = "8cd8ef52e8e101574e400365b55e11a6"
+BBB_SECRET_KEY = get_shared_secret()
 MEETING_DISABLE_RECORD = False
 
 USE_IMPORT_VIDEO = True
