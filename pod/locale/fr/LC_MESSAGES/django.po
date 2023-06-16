@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-16 11:53+0200\n"
+"POT-Creation-Date: 2023-06-16 16:36+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -2230,8 +2230,8 @@ msgid "Number of favorites"
 msgstr "Nombre de favoris"
 
 #: pod/import_video/apps.py
-msgid "Import video"
-msgstr "Import video"
+msgid "Import External Video"
+msgstr "Importer une vidéo externe"
 
 #: pod/import_video/forms.py pod/meeting/forms.py
 msgid "Please enter a valid address"
@@ -2561,9 +2561,12 @@ msgid "Playback"
 msgstr "Lecture"
 
 #: pod/import_video/templates/import_video/list.html
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Toolbar"
-msgstr "Barre d’outils"
+msgid "Import"
+msgstr "Importer"
+
+#: pod/import_video/templates/import_video/list.html
+msgid "Manage"
+msgstr "Gérer"
 
 #: pod/import_video/templates/import_video/list.html
 #: pod/meeting/templates/meeting/internal_recordings.html
@@ -2592,10 +2595,6 @@ msgstr ""
 "Veuillez confirmer que vous souhaitez téléverser l’enregistrement sur Pod"
 
 #: pod/import_video/templates/import_video/list.html
-msgid "Edit the external recording"
-msgstr "Modifier l’enregistrement externe"
-
-#: pod/import_video/templates/import_video/list.html
 #: pod/meeting/templates/meeting/internal_recordings.html
 msgid "Upload to Pod as a video"
 msgstr "Téléverser sur Pod en tant que vidéo"
@@ -2606,8 +2605,58 @@ msgstr ""
 "Veuillez confirmer que vous souhaitez supprimer l’enregistrement externe"
 
 #: pod/import_video/templates/import_video/list.html
+msgid "Edit the external recording"
+msgstr "Modifier l’enregistrement externe"
+
+#: pod/import_video/templates/import_video/list.html
 msgid "Delete the external recording"
 msgstr "Supprimer l’enregistrement externe"
+
+#: pod/import_video/utils.py pod/import_video/views.py pod/meeting/views.py
+msgid "Impossible to upload to Pod the video"
+msgstr "Impossible de téléverser la vidéo sur Pod"
+
+#: pod/import_video/utils.py
+msgid "No URL found / No recording name"
+msgstr "Aucune URL trouvée / Aucun nom d’enregistrement"
+
+#: pod/import_video/utils.py
+msgid "Try changing the record type or address for this recording"
+msgstr ""
+"Essayez de modifier le type d’enregistrement ou l’adresse de cet "
+"enregistrement"
+
+#: pod/import_video/utils.py
+msgid "The HTML file for this recording was not found on the BBB server."
+msgstr ""
+"Le fichier HTML de cet enregistrement est introuvable sur le serveur BBB."
+
+#: pod/import_video/utils.py
+msgid "The video file for this recording was not found in the HTML file."
+msgstr ""
+"Le fichier vidéo de cet enregistrement est introuvable dans le fichier HTML."
+
+#: pod/import_video/utils.py
+msgid "The found file is not a valid video."
+msgstr "Le fichier trouvé n’est pas une vidéo valide."
+
+#: pod/import_video/utils.py
+msgid "No video file found"
+msgstr "Aucun fichier vidéo trouvé"
+
+#: pod/import_video/utils.py
+msgid "The video file for this recording was not found on the BBB server."
+msgstr ""
+"Le fichier vidéo pour cet enregistrement n’a pas été trouvé sur le serveur "
+"BBB."
+
+#: pod/import_video/utils.py
+msgid "Impossible to download the video file from the server."
+msgstr "Impossible de télécharger le fichier vidéo depuis le serveur."
+
+#: pod/import_video/utils.py
+msgid "Impossible to create the Pod video"
+msgstr "Impossible de créer la vidéo Pod"
 
 #: pod/import_video/views.py
 msgid "You cannot view this recording."
@@ -2633,10 +2682,6 @@ msgstr "L’enregistrement externe a été supprimé."
 #: pod/import_video/views.py
 msgid "Impossible to create the external recording"
 msgstr "Impossible de créer l’enregistrement externe"
-
-#: pod/import_video/views.py pod/meeting/utils.py pod/meeting/views.py
-msgid "Impossible to upload to Pod the video"
-msgstr "Impossible de téléverser la vidéo sur Pod"
 
 #: pod/import_video/views.py pod/meeting/views.py
 #, python-format
@@ -5078,6 +5123,10 @@ msgid "Meeting recordings"
 msgstr "Enregistrements de réunion"
 
 #: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Toolbar"
+msgstr "Barre d’outils"
+
+#: pod/meeting/templates/meeting/internal_recordings.html
 msgid "Please confirm you want to delete the recording"
 msgstr "Veuillez confirmer que vous souhaitez supprimer l’enregistrement"
 
@@ -5248,48 +5297,6 @@ msgstr "Ou après"
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "occurrences"
 msgstr "occurrences"
-
-#: pod/meeting/utils.py
-msgid "No URL found / No recording name"
-msgstr "Aucune URL trouvée / Aucun nom d’enregistrement"
-
-#: pod/meeting/utils.py
-msgid "Try changing the record type or address for this recording"
-msgstr ""
-"Essayez de modifier le type d’enregistrement ou l’adresse de cet "
-"enregistrement"
-
-#: pod/meeting/utils.py
-msgid "The HTML file for this recording was not found on the BBB server."
-msgstr ""
-"Le fichier HTML de cet enregistrement est introuvable sur le serveur BBB."
-
-#: pod/meeting/utils.py
-msgid "The video file for this recording was not found in the HTML file."
-msgstr ""
-"Le fichier vidéo de cet enregistrement est introuvable dans le fichier HTML."
-
-#: pod/meeting/utils.py
-msgid "The found file is not a valid video."
-msgstr "Le fichier trouvé n’est pas une vidéo valide."
-
-#: pod/meeting/utils.py
-msgid "No video file found"
-msgstr "Aucun fichier vidéo trouvé"
-
-#: pod/meeting/utils.py
-msgid "The video file for this recording was not found on the BBB server."
-msgstr ""
-"Le fichier vidéo pour cet enregistrement n’a pas été trouvé sur le serveur "
-"BBB."
-
-#: pod/meeting/utils.py
-msgid "Impossible to download the video file from the server."
-msgstr "Impossible de télécharger le fichier vidéo depuis le serveur."
-
-#: pod/meeting/utils.py
-msgid "Impossible to create the Pod video"
-msgstr "Impossible de créer la vidéo Pod"
 
 #: pod/meeting/views.py
 msgid "Has user joined?"
