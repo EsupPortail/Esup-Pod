@@ -1164,6 +1164,7 @@ body {
   justify-content: space-around;
   gap: .5rem;
   font-weight: 600;
+  flex-wrap: wrap;
 }
 
 .pod-footer a {
