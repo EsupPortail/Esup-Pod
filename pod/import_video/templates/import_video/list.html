@@ -75,7 +75,7 @@
             </td>
             <td>
               {% if record.canUpload %}
-                {% trans "Please confirm you want to upload the recording To Pod" as confirmUpload %}
+                {% trans "Please confirm you want to upload the recording to Pod" as confirmUpload %}
                 <form method="post" action="{% url "import_video:upload_external_recording_to_pod" record_id=record.id %}" onsubmit="return confirmUploadToPod('{{ confirmUpload|escapejs }}');" style="display: inline;">
                   <input type="hidden" name="recording_name" value="{{ record.name }}">
                   <input type="hidden" name="source_url" value="{{ record.videoUrl }}">
