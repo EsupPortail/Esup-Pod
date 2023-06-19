@@ -123,8 +123,8 @@ class ExternalRecording(models.Model):
         super(ExternalRecording, self).save(*args, **kwargs)
 
     class Meta:
-        verbose_name = "Recording"
-        verbose_name_plural = _("Recordings")
+        verbose_name = "External recording"
+        verbose_name_plural = _("External recordings")
         ordering = ("-start_at",)
         get_latest_by = "start_at"
 
