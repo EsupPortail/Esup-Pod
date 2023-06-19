@@ -122,7 +122,7 @@ function getUrlForRefresh() {
   if (document.querySelectorAll(".categories_list_item.active").length !== 0) {
     checkedCategory = document
       .querySelector(".categories_list_item.active")
-      .firstChild["dataset"]["slug"].split("-")[1];
+      .firstChild["dataset"]["slug"];
     newUrl += "category=" + checkedCategory + "&";
   }
   // Add all other parameters (filters)
