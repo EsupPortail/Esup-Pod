@@ -1,5 +1,5 @@
 from rest_framework import serializers, viewsets
-from .models import EncodingVideo, EncodingAudio, VideoRendition
+from .models import EncodingVideo, EncodingAudio, VideoRendition, PlaylistVideo
 from pod.video.models import Video
 from pod.video.rest_views import VideoSerializer
 
@@ -111,6 +111,25 @@ class EncodingAudioViewSet(viewsets.ModelViewSet):
 class VideoRenditionViewSet(viewsets.ModelViewSet):
     queryset = VideoRendition.objects.all()
     serializer_class = VideoRenditionSerializer
+
+
+class PlaylistVideoSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = PlaylistVideo
+        fields = (
+            "id",
+            "url",
+            "name",
+            "video",
+            "encoding_format",
+            "source_file",
+            "sites_all",
+        )
+
+
+class PlaylistVideoViewSet(viewsets.ModelViewSet):
+    queryset = PlaylistVideo.objects.all()
+    serializer_class = PlaylistVideoSerializer
 
 
 @api_view(["GET"])

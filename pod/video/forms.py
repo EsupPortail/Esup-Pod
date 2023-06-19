@@ -14,7 +14,7 @@ from .models import Type
 from .models import Discipline
 from .models import Notes, AdvancedNotes, NoteComments
 from .utils import get_storage_path_video
-from .models import PlaylistVideo
+from pod.video_encode_transcript.models import PlaylistVideo
 from pod.video_encode_transcript import encode
 from pod.video_encode_transcript.models import EncodingVideo, EncodingAudio
 from django.contrib.sites.models import Site
@@ -684,6 +684,23 @@ class VideoForm(forms.ModelForm):
             and len(cleaned_data["restrict_access_to_groups"]) > 0
         ):
             cleaned_data["is_restricted"] = True
+
+    def clean_channel(self):
+        """Merge channels of a video."""
+        users_groups = self.current_user.owner.accessgroup_set.all()
+        if self.is_superuser:
+            user_channels = Channel.objects.all()
+        else:
+            user_channels = (
+                self.current_user.owners_channels.all()
+                | self.current_user.users_channels.all()
+                | Channel.objects.filter(allow_to_groups__in=users_groups)
+            ).distinct()
+        user_channels.filter(site=get_current_site(None))
+        channels_to_keep = Video.objects.get(pk=self.instance.id).channel.exclude(
+            pk__in=[c.id for c in user_channels]
+        )
+        return self.cleaned_data["channel"].union(channels_to_keep)
 
     def __init__(self, *args, **kwargs):
         self.is_staff = (

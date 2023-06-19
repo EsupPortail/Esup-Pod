@@ -372,3 +372,71 @@ class EncodingStep(models.Model):
 
     def __str__(self):
         return "Step for encoding video %s" % (self.video.id)
+
+
+class PlaylistVideo(models.Model):
+    name = models.CharField(
+        _("Name"),
+        max_length=10,
+        choices=ENCODING_CHOICES,
+        default="360p",
+        help_text=_("Please use the only format in encoding choices:")
+        + " %s" % " ".join(str(key) for key, value in ENCODING_CHOICES),
+    )
+    video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
+    encoding_format = models.CharField(
+        _("Format"),
+        max_length=22,
+        choices=FORMAT_CHOICES,
+        default="application/x-mpegURL",
+        help_text=_("Please use the only format in format choices:")
+        + " %s" % " ".join(str(key) for key, value in FORMAT_CHOICES),
+    )
+    source_file = models.FileField(
+        _("encoding source file"),
+        upload_to=get_storage_path_video,
+        max_length=255,
+    )
+
+    class Meta:
+        verbose_name = _("Video Playlist")
+        verbose_name_plural = _("Video Playlists")
+
+    @property
+    def sites(self):
+        return self.video.sites
+
+    @property
+    def sites_all(self):
+        return self.video.sites_set.all()
+
+    def clean(self):
+        """Validate some PlaylistVideomodels fields."""
+        if self.name:
+            if self.name not in dict(ENCODING_CHOICES):
+                raise ValidationError(
+                    PlaylistVideo._meta.get_field("name").help_text, code="invalid_name"
+                )
+        if self.encoding_format:
+            if self.encoding_format not in dict(FORMAT_CHOICES):
+                raise ValidationError(
+                    PlaylistVideo._meta.get_field("encoding_format").help_text,
+                    code="invalid_encoding",
+                )
+
+    def __str__(self):
+        return "Playlist num: %s for video %s in %s" % (
+            "%04d" % self.id,
+            self.video.id,
+            self.encoding_format,
+        )
+
+    @property
+    def owner(self):
+        return self.video.owner
+
+    def delete(self):
+        if self.source_file:
+            if os.path.isfile(self.source_file.path):
+                os.remove(self.source_file.path)
+        super(PlaylistVideo, self).delete()

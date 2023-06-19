@@ -3,7 +3,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
-from .tasks import send_xapi_statement_task
+from .xapi_tasks import send_xapi_statement_task
 import json
 import uuid
 

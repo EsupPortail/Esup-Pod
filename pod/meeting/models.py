@@ -299,7 +299,7 @@ class Meeting(models.Model):
 
     # #################### RECORD PART
     record = models.BooleanField(
-        default=False,
+        default=True,
         verbose_name=_("Active record"),
         help_text=_("Will active the recording of the meeting"),
     )
