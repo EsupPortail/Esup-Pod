@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class ImportVideoConfig(AppConfig):
-    """Import vide config.
+    """Import video config.
 
     Args:
         AppConfig (Config): Config
