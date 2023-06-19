@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-16 16:36+0200\n"
+"POT-Creation-Date: 2023-06-19 09:33+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -2301,13 +2301,12 @@ msgstr ""
 msgid "User who uploaded to Pod the video file"
 msgstr "Utilisateur qui a téléversé le fichier vidéo sur Pod"
 
-#: pod/import_video/models.py pod/meeting/models.py pod/recorder/models.py
-msgid "Recordings"
-msgstr "Enregistrements"
+#: pod/import_video/models.py
+msgid "External recordings"
+msgstr "Enregistrements externes"
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/import_video/templates/import_video/list.html pod/import_video/views.py
-#: pod/main/templates/navbar.html
 msgid "My external videos"
 msgstr "Mes vidéos externes"
 
@@ -4625,6 +4624,10 @@ msgstr "Ajouter votre image de profil"
 msgid "Video Record"
 msgstr "Enregistreur"
 
+#: pod/main/templates/navbar.html
+msgid "Import an external video"
+msgstr "Importer une vidéo externe"
+
 #: pod/main/templates/navbar.html pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/channel/my_channels.html
 #: pod/video/templates/channel/theme_edit.html pod/video/views.py
@@ -5087,6 +5090,10 @@ msgstr "Impossible de supprimer l’enregistrement !"
 #: pod/meeting/models.py
 msgid "Recording ID"
 msgstr "Identifiant de l’enregistrement"
+
+#: pod/meeting/models.py pod/recorder/models.py
+msgid "Recordings"
+msgstr "Enregistrements"
 
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/meeting/templates/meeting/link_meeting.html pod/meeting/views.py
@@ -8100,46 +8107,8 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
-#~ msgid "Owner of the recording cannot be an additional owner too"
-#~ msgstr ""
-#~ "Le propriétaire de l’enregistrement ne peut pas être un propriétaire "
-#~ "additionnel dans le même temps"
-
-#~ msgid "Is this an internal recording ?"
-#~ msgstr "S’agit-il d’un enregistrement interne ?"
-
-#~ msgid ""
-#~ "You can add additional owners to this recording. They will have the same "
-#~ "rights as you except that they cannot delete this recording."
-#~ msgstr ""
-#~ "Vous pouvez ajouter des propriétaires additionnels à cet enregistrement. "
-#~ "Ils auront les mêmes droits que vous sauf qu’ils ne peuvent pas supprimer "
-#~ "cet enregistrement."
-
-#~ msgid "Duration of recording"
-#~ msgstr "Durée de l’enregistrement"
-
-#~ msgid "External recordings"
-#~ msgstr "Enregistrements externes"
-
-#~ msgid "Add an external recording"
-#~ msgstr "Ajouter un enregistrement externe"
-
-#~ msgid "Then, you will be able to upload this recording to Pod."
-#~ msgstr "Ensuite, vous pourrez téléverser cet enregistrement sur Pod."
-
-#~ msgid "Please use the button below to add such a recording."
-#~ msgstr ""
-#~ "Veuillez utiliser le bouton ci-dessous pour ajouter un tel enregistrement."
-
-#~ msgid "Add a new external recording"
-#~ msgstr "Ajouter un nouvel enregistrement externe"
-
 #~ msgid "Error in %s: "
 #~ msgstr "Erreur sur %s : "
-
-#~ msgid "Text copied"
-#~ msgstr "Texte copié"
 
 #~ msgid "The"
 #~ msgstr "Le"
