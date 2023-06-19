@@ -1394,13 +1394,13 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 
  - `RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY`
 
-  > valeur par défaut : `False`
+  > valeur par défaut : `True`
 
   >> Seuls les utilisateurs "staff" pourront importer des vidéos <br>
 
  - `USE_IMPORT_VIDEO`
 
-  > valeur par défaut : `False`
+  > valeur par défaut : `True`
 
   >> Activation de l’application d'import des vidéos <br>
 
@@ -1570,7 +1570,7 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 
  - `USE_IMPORT_VIDEO`
 
-  > valeur par défaut : `False`
+  > valeur par défaut : `True`
 
   >> Activation de l’application d'import des vidéos <br>
 
