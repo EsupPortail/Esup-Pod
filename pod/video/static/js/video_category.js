@@ -303,6 +303,7 @@
   // Add click event to manage filter video on click category
   let manageFilterVideos = (c) => {
     c.addEventListener("click", (e) => {
+      e.preventDefault();
       e.stopPropagation();
       let cat_filter_slug = c.dataset.slug.trim();
       let cat_filter_id = c.parentNode
@@ -614,6 +615,7 @@
   // Handler to edit category, c_e=current category to edit
   let editHandler = (c_e) => {
     c_e.addEventListener("click", (e) => {
+      e.preventDefault();
       loader.classList.add("show");
       cat_edit_title = c_e.dataset.title.trim();
       cat_edit_slug = c_e.dataset.slug.trim();
@@ -686,6 +688,7 @@
   // Temporarily save the category to delete
   let deleteHandler = (c_d) => {
     c_d.addEventListener("click", (e) => {
+      e.preventDefault();
       // Show confirm modal => manage by boostrap
       CAT_TO_DELETE.html = c_d.parentNode.parentNode;
       CAT_TO_DELETE.id = c_d.dataset.del;
