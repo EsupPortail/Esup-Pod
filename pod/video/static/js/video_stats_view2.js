@@ -115,4 +115,11 @@ $(function () {
         console.log(error);
       });
   });
+  let today = new Date();
+  let startDateDefault = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+  $("#start-date").val(startDateDefault); // set date input value to today - 7 days
+  document.querySelector("#start-date").max = today.toISOString().split("T")[0];
+  $("#end-date").val(today.toISOString().split("T")[0]); // set date input value to today
+  document.querySelector("#end-date").max = today.toISOString().split("T")[0];
+
 });
