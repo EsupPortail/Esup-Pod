@@ -1,6 +1,7 @@
 """Views of the Import_video module."""
 import os
 import requests
+
 # For PeerTube download
 import json
 
@@ -25,6 +26,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import ensure_csrf_cookie
 from pod.main.views import in_maintenance
 from pod.main.utils import secure_post_request, display_message_with_icon
+
 # For Youtube download
 from pytube import YouTube
 from pytube.exceptions import PytubeError, VideoUnavailable
@@ -118,9 +120,7 @@ def upload_external_recording_to_pod(request, record_id):
         HTTP Response: Redirect to the external recordings list
     """
     recording = get_object_or_404(
-        ExternalRecording,
-        id=record_id,
-        site=get_current_site(request)
+        ExternalRecording, id=record_id, site=get_current_site(request)
     )
 
     # Secure this external recording
@@ -166,9 +166,7 @@ def external_recordings(request):
     # print(timezone.localtime().strftime("%y%m%d-%H%M%S"))
 
     if RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
-        return render(
-            request, "import_video/list.html", {"access_not_allowed": True}
-        )
+        return render(request, "import_video/list.html", {"access_not_allowed": True})
 
     site = get_current_site(request)
 
@@ -321,9 +319,7 @@ def delete_external_recording(request, id):
         HTTP Response: Redirect to the recordings list
     """
     recording = get_object_or_404(
-        ExternalRecording,
-        id=id,
-        site=get_current_site(request)
+        ExternalRecording, id=id, site=get_current_site(request)
     )
 
     # Secure external recording

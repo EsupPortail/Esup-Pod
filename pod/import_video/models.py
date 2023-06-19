@@ -66,7 +66,7 @@ class ExternalRecording(models.Model):
         related_name="site_external_recording",
         verbose_name=_("Site"),
         on_delete=models.CASCADE,
-        default=SITE_ID
+        default=SITE_ID,
     )
 
     # Type of external recording

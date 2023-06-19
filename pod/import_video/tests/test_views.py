@@ -36,9 +36,7 @@ class ExternalRecordingDeleteTestView(TestCase):
     def test_recording_TestView_get_request_restrict(self):
         """Test the list of recordings."""
         self.client = Client()
-        url = reverse(
-            "import_video:external_recordings", kwargs={}
-        )
+        url = reverse("import_video:external_recordings", kwargs={})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
 

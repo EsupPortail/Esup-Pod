@@ -74,8 +74,8 @@ def get_shared_secret():
     api_mate_url = "https://bigbluebutton.org/api-mate/"
     response = requests.get(api_mate_url)
     soup = BeautifulSoup(response.text)
-    input_val = soup.body.find('input', attrs={'id':'input-custom-server-salt'})
-    return input_val.get('value')
+    input_val = soup.body.find("input", attrs={"id": "input-custom-server-salt"})
+    return input_val.get("value")
 
 
 BBB_API_URL = "http://test-install.blindsidenetworks.com/bigbluebutton/api/"

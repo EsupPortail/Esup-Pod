@@ -136,8 +136,7 @@ if getattr(settings, "USE_FAVORITES", True):
 if getattr(settings, "USE_IMPORT_VIDEO", True):
     urlpatterns += [
         url(
-            r"^import_video/",
-            include("pod.import_video.urls", namespace="import_video")
+            r"^import_video/", include("pod.import_video.urls", namespace="import_video")
         ),
     ]
 

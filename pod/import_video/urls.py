@@ -6,9 +6,7 @@ from . import views
 app_name = "import_video"
 
 urlpatterns = [
-    path(
-        "", views.external_recordings, name="external_recordings"
-    ),
+    path("", views.external_recordings, name="external_recordings"),
     path(
         "add",
         views.add_or_edit_external_recording,
