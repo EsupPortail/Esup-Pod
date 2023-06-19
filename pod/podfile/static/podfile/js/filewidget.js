@@ -131,6 +131,9 @@ if (typeof loaded == "undefined") {
       body: data_form,
       processData: false,
       contentType: false,
+      headers:{
+        'X-Requested-With': 'XMLHttpRequest', //Necessary to work with is_ajax
+      },
     })
       .then((response) => response.json())
       .then((data) => {

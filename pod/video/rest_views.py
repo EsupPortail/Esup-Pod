@@ -4,20 +4,17 @@ from rest_framework.response import Response
 
 # from rest_framework import authentication, permissions
 from rest_framework import renderers
-from rest_framework.decorators import api_view
 from rest_framework.decorators import action
 
 from django.template.loader import render_to_string
-from django.shortcuts import get_object_or_404
 
 from .models import Channel, Theme
 from .models import Type, Discipline, Video
-from .models import PlaylistVideo, ViewCount, VideoRendition
+from .models import ViewCount
 from .utils import get_available_videos
 
 # commented for v3
 # from .remote_encode import start_store_remote_encoding_video
-from .transcript import start_transcript
 
 import json
 
@@ -166,34 +163,6 @@ class VideoUserSerializer(serializers.ModelSerializer):
         )
 
 
-class VideoRenditionSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = VideoRendition
-        fields = (
-            "id",
-            "url",
-            "resolution",
-            "video_bitrate",
-            "audio_bitrate",
-            "encode_mp4",
-            "sites",
-        )
-
-
-class PlaylistVideoSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = PlaylistVideo
-        fields = (
-            "id",
-            "url",
-            "name",
-            "video",
-            "encoding_format",
-            "source_file",
-            "sites_all",
-        )
-
-
 class ViewCountSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ViewCount
@@ -267,16 +236,6 @@ class VideoViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class VideoRenditionViewSet(viewsets.ModelViewSet):
-    queryset = VideoRendition.objects.all()
-    serializer_class = VideoRenditionSerializer
-
-
-class PlaylistVideoViewSet(viewsets.ModelViewSet):
-    queryset = PlaylistVideo.objects.all()
-    serializer_class = PlaylistVideoSerializer
-
-
 class ViewCountViewSet(viewsets.ModelViewSet):
     queryset = ViewCount.objects.all()
     serializer_class = ViewCountSerializer
@@ -331,34 +290,3 @@ class DublinCoreView(APIView):
             xmlcontent += rendered
         xmlcontent += "</rdf:RDF>"
         return Response(xmlcontent)
-
-
-@api_view(["GET"])
-def launch_encode_view(request):
-    video = get_object_or_404(Video, slug=request.GET.get("slug"))
-    if (
-        video is not None
-        and (
-            not hasattr(video, "launch_encode") or getattr(video, "launch_encode") is True
-        )
-        and video.encoding_in_progress is False
-    ):
-        video.launch_encode = True
-        video.save()
-    return Response(VideoSerializer(instance=video, context={"request": request}).data)
-
-
-@api_view(["GET"])
-def launch_transcript_view(request):
-    video = get_object_or_404(Video, slug=request.GET.get("slug"))
-    if video is not None and video.get_video_mp3():
-        start_transcript(video.id, threaded=True)
-    return Response(VideoSerializer(instance=video, context={"request": request}).data)
-
-
-@api_view(["GET"])
-def store_remote_encoded_video(request):
-    video_id = request.GET.get("id", 0)
-    video = get_object_or_404(Video, id=video_id)
-    # start_store_remote_encoding_video(video_id)
-    return Response(VideoSerializer(instance=video, context={"request": request}).data)

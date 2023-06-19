@@ -341,7 +341,7 @@ Anyone with this links can access it.{% endblocktrans %}
               <legend><i class="bi bi-code"></i>&nbsp;{% trans 'Embed in a web page' %}</legend>
               <div class="form-group ">
                 <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page:'%}</label>
-                <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4" readonly>&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{% else %}{% url 'video:video' slug=video.slug %}{% endif %}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+                <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4" readonly>&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{% else %}{% url 'video:video' slug=video.slug %}{% endif %}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen title="{{ video.title }}" &gt;&lt;/iframe&gt;</textarea>
               </div>
             </fieldset>
 

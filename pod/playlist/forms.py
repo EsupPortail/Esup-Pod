@@ -3,20 +3,11 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.db.models.query import QuerySet
 from django.utils.translation import ugettext_lazy as _
-from django_select2 import forms as s2forms
 
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from pod.meeting.forms import AddOwnerWidget
 
 from .models import Playlist
-
-
-class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
-    """Widget to make the autocomplete field to choose the additional owners."""
-    search_fields = [
-        "username__icontains",
-        "email__icontains",
-    ]
 
 
 class PlaylistForm(forms.ModelForm):

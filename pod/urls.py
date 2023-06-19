@@ -93,7 +93,7 @@ if USE_OIDC:
         url(r"^oidc/", include("mozilla_django_oidc.urls")),
     ]
 
-# BBB : TODO REPLACE BBB BY MEETING
+# BBB: TODO REPLACE BBB BY MEETING
 if getattr(settings, "USE_MEETING", False):
     urlpatterns += [
         url(r"^meeting/", include("pod.meeting.urls")),

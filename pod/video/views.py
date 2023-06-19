@@ -162,7 +162,7 @@ ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
 if USE_TRANSCRIPTION:
-    from . import transcript
+    from ..video_encode_transcript import transcript
 
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 

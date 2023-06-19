@@ -10,8 +10,10 @@ def create_missing_conf(sender, **kwargs):
     from django.core.exceptions import ObjectDoesNotExist
 
     print("---> Creating missing configurations...")
-    json_data = open("./pod/main/fixtures/initial_data.json")
-    json_data = json.load(json_data)
+    json_data = []
+    with open("./pod/main/fixtures/initial_data.json", encoding="utf-8") as data_file:
+        json_data = json.loads(data_file.read())
+
     updated_count = 0
     for fixture in json_data:
         if fixture["model"] == "main.configuration":

@@ -14,9 +14,9 @@ from .models import Type
 from .models import Discipline
 from .models import Notes, AdvancedNotes, NoteComments
 from .utils import get_storage_path_video
-from .models import PlaylistVideo
-from pod.video_encode import encode
-from pod.video_encode.models import EncodingVideo, EncodingAudio
+from pod.video_encode_transcript.models import PlaylistVideo
+from pod.video_encode_transcript import encode
+from pod.video_encode_transcript.models import EncodingVideo, EncodingAudio
 from django.contrib.sites.models import Site
 from django.db.models.query import QuerySet
 
@@ -534,6 +534,8 @@ def launch_encode(sender, instance, created, **kwargs):
 
 
 class VideoForm(forms.ModelForm):
+    """Form class for Video editing."""
+
     required_css_class = "required"
     videoattrs = {
         "class": "form-control-file",
@@ -544,6 +546,7 @@ class VideoForm(forms.ModelForm):
     user = User.objects.all()
 
     def filter_fields_admin(form):
+        """Hide fields reserved for admins."""
         if form.is_superuser is False and form.is_admin is False:
             form.remove_field("date_added")
             form.remove_field("owner")
@@ -581,6 +584,7 @@ class VideoForm(forms.ModelForm):
                 encoding.save()
 
     def save(self, commit=True, *args, **kwargs):
+        """Save video and launch encoding if relevant."""
         old_dir = ""
         new_dir = ""
         if hasattr(self, "change_user") and self.change_user is True:
@@ -615,7 +619,8 @@ class VideoForm(forms.ModelForm):
     def clean_date_delete(self):
         """Validate 'date_delete' field."""
         mddd = MAX_DURATION_DATE_DELETE
-        in_dt = relativedelta(self.cleaned_data["date_delete"], __TODAY__)
+        date_delete = self.cleaned_data["date_delete"]
+        in_dt = relativedelta(date_delete, __TODAY__)
         if (
             (in_dt.years > mddd)
             or (in_dt.years == mddd and in_dt.months > 0)
@@ -625,11 +630,18 @@ class VideoForm(forms.ModelForm):
                 _(
                     "The date must be before or equal to %(date)s."
                     % {"date": __MAX_D__.strftime("%d-%m-%Y")}
-                )
+                ),
+                code="date_too_far",
+            )
+        if date_delete < __TODAY__:
+            raise ValidationError(
+                _("The deletion date can’t be earlier than today."),
+                code="date_before_today",
             )
         return self.cleaned_data["date_delete"]
 
     def clean(self):
+        """Validate Video form fields."""
         cleaned_data = super(VideoForm, self).clean()
 
         if "additional_owners" in cleaned_data.keys() and isinstance(
@@ -672,6 +684,23 @@ class VideoForm(forms.ModelForm):
             and len(cleaned_data["restrict_access_to_groups"]) > 0
         ):
             cleaned_data["is_restricted"] = True
+
+    def clean_channel(self):
+        """Merge channels of a video."""
+        users_groups = self.current_user.owner.accessgroup_set.all()
+        if self.is_superuser:
+            user_channels = Channel.objects.all()
+        else:
+            user_channels = (
+                self.current_user.owners_channels.all()
+                | self.current_user.users_channels.all()
+                | Channel.objects.filter(allow_to_groups__in=users_groups)
+            ).distinct()
+        user_channels.filter(site=get_current_site(None))
+        channels_to_keep = Video.objects.get(pk=self.instance.id).channel.exclude(
+            pk__in=[c.id for c in user_channels]
+        )
+        return self.cleaned_data["channel"].union(channels_to_keep)
 
     def __init__(self, *args, **kwargs):
         self.is_staff = (

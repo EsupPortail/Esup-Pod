@@ -13,7 +13,7 @@ except (ImportError, ValueError):
 
 def get_renditions():
     try:
-        from pod.video.models import VideoRendition
+        from .models import VideoRendition
         from django.core import serializers
 
         renditions = json.loads(

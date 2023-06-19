@@ -1,18 +1,25 @@
 # xapi/tasks.py
-from django.conf import settings
-from celery import shared_task
-import logging
+from celery import Celery
 import requests
+import logging
 from requests.auth import HTTPBasicAuth
+
+# call local settings directly
+# no need to load pod application to send statement
+from .. import settings
 
 logger = logging.getLogger(__name__)
 
 XAPI_LRS_URL = getattr(settings, "XAPI_LRS_URL", "")
 XAPI_LRS_LOGIN = getattr(settings, "XAPI_LRS_LOGIN", "")
 XAPI_LRS_PWD = getattr(settings, "XAPI_LRS_PWD", "")
+XAPI_CELERY_BROKER_URL = getattr(settings, "XAPI_CELERY_BROKER_URL", "")
+
+xapi_app = Celery("xapi_tasks", broker=XAPI_CELERY_BROKER_URL)
+xapi_app.conf.task_routes = {"pod.xapi.xapi_tasks.*": {"queue": "xapi"}}
 
 
-@shared_task()
+@xapi_app.task
 def send_xapi_statement_task(statement):
     """Sends the xapi statement to the specified LRS."""
     x = requests.post(

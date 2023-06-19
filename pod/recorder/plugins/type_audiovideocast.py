@@ -11,7 +11,7 @@ from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.core.files.base import ContentFile
 from pod.video.models import Video
-from pod.video_encode import encode
+from pod.video_encode_transcript import encode
 from pod.enrichment.models import Enrichment
 from ..utils import add_comment
 

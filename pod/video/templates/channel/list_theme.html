@@ -17,16 +17,17 @@
         {% for theme in list_theme %}
           <tr id="theme_{{theme.id}}">
             <td class="theme_title">{{theme.title}}</td>
-            <td class="theme_description">{{theme.description}}</td>
+            <td class="theme_description">{{theme.description|truncatewords:6 }}</td>
             <td class="theme_headband">{{theme.headband}}</td>
-            <td>
+            <td class="text-center">
               <form class="get_form_theme d-inline-block" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="modify">
                 <input type="hidden" name="id" value="{{theme.id}}">
                 <input type="submit" title="{% trans 'Edit the theme' %}" value="{% trans 'Modify' %}" class="btn btn-primary btn-sm my-1">
               </form>
-              <form class="get_form_theme d-inline-block" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="POST">
+              <form class="get_form_theme d-inline-block" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="POST"
+              data-title="{{theme.title}}">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="delete">
                 <input type="hidden" name="id" value="{{theme.id}}">
@@ -36,6 +37,18 @@
           </tr>
         {% endfor %}
       </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4" class="text-center">
+              <form class="get_form_theme d-inline-block" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="new">
+                <input type="hidden" name="id" value="{{theme.id}}">
+                <button type="submit" class="btn btn-primary btn-sm my-1"><i class="bi bi-plus pod-add"></i>{% trans 'Add new theme' %}</button>
+              </form>
+          </td>
+        </tr>
+      </tfoot>
     </table>
   </div>
 </div>

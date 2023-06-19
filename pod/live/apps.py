@@ -23,7 +23,7 @@ def set_default_site(sender, **kwargs):
 class LiveConfig(AppConfig):
     name = "pod.live"
     default_auto_field = "django.db.models.BigAutoField"
-    event_data = {}
+    # event_data = {}
     verbose_name = _("Lives")
 
     def ready(self):
@@ -40,7 +40,7 @@ class LiveConfig(AppConfig):
                 for res in results:
                     __EVENT_DATA__["%s" % res[0]] = [res[1], res[2], res[3]]
         except Exception:  # OperationalError or MySQLdb.ProgrammingError
-            pass  # print('OperationalError : ', oe)
+            pass  # print('OperationalError: ', oe)
 
     def send_previous_data(self, sender, **kwargs):
         from .models import Event
@@ -56,4 +56,4 @@ class LiveConfig(AppConfig):
                 evt.end_date = d_fin
                 evt.save()
             except Event.DoesNotExist:
-                print("Event not found : %s" % id)
+                print("Event not found: %s" % id)

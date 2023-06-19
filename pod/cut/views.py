@@ -11,7 +11,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import QueryDict
 from django.views.decorators.csrf import csrf_protect
 
-from pod.video_encode.encode import start_encode
+from pod.video_encode_transcript.encode import start_encode
 from pod.video.models import Video
 
 from .models import CutVideo

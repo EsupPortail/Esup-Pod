@@ -4,8 +4,8 @@ import re
 from django.conf import settings
 from .models import EncodingVideo
 from .models import EncodingAudio
-from pod.video.models import VideoRendition
-from pod.video.models import PlaylistVideo
+from .models import VideoRendition
+from .models import PlaylistVideo
 from .models import EncodingLog
 from pod.video.models import Video
 from pod.completion.models import Track

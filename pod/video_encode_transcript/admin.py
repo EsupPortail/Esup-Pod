@@ -1,11 +1,12 @@
 from django.contrib import admin
 
-from pod.video.models import Video, VideoRendition
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.sites.models import Site
-from .models import EncodingAudio, EncodingVideo
+from .models import EncodingAudio, EncodingVideo, VideoRendition
 from .models import EncodingLog
 from .models import EncodingStep
+from .models import PlaylistVideo
+from pod.video.models import Video
 
 
 class EncodingVideoAdmin(admin.ModelAdmin):
@@ -98,7 +99,62 @@ class EncodingStepAdmin(admin.ModelAdmin):
         return qs
 
 
+class VideoRenditionAdmin(admin.ModelAdmin):
+    """Admin model for VideoRendition."""
+
+    list_display = (
+        "resolution",
+        "video_bitrate",
+        "audio_bitrate",
+        "encode_mp4",
+    )
+
+    def get_form(self, request, obj=None, **kwargs):
+        """Get the form to be used in the admin."""
+        if not request.user.is_superuser:
+            exclude = ()
+            exclude += ("sites",)
+            self.exclude = exclude
+        form = super(VideoRenditionAdmin, self).get_form(request, obj, **kwargs)
+        return form
+
+    def save_model(self, request, obj, form, change):
+        """Save the VideoRendition model."""
+        super().save_model(request, obj, form, change)
+        if not change:
+            obj.sites.add(get_current_site(request))
+            obj.save()
+
+    def get_queryset(self, request):
+        """Get the queryset based on the request."""
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(sites=get_current_site(request))
+        return qs
+
+
+class PlaylistVideoAdmin(admin.ModelAdmin):
+    autocomplete_fields = ["video"]
+    list_display = ("name", "video", "encoding_format")
+    search_fields = ["id", "video__id", "video__title"]
+    list_filter = ["encoding_format"]
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(video__sites=get_current_site(request))
+        return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "video":
+            kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
+
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
 admin.site.register(EncodingVideo, EncodingVideoAdmin)
 admin.site.register(EncodingAudio, EncodingAudioAdmin)
 admin.site.register(EncodingLog, EncodingLogAdmin)
 admin.site.register(EncodingStep, EncodingStepAdmin)
+admin.site.register(VideoRendition, VideoRenditionAdmin)
+admin.site.register(PlaylistVideo, PlaylistVideoAdmin)

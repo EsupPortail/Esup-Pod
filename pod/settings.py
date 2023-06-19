@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "3.2.0"
+VERSION = "3.3.0"
 
 ##
 # Installed applications list
@@ -63,7 +63,7 @@ INSTALLED_APPS = [
     "pod.cut",
     "pod.xapi",
     "pod.favorite",
-    "pod.video_encode",
+    "pod.video_encode_transcript",
     "pod.custom",
 ]
 
@@ -347,7 +347,7 @@ LOGGING = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/5",
+        "LOCATION": "redis://127.0.0.1:6379/3",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -364,7 +364,7 @@ SESSION_ENGINE = "redis_sessions.session"
 SESSION_REDIS = {
     "host": "127.0.0.1",
     "port": 6379,
-    "db": 3,
+    "db": 4,
     "prefix": "session",
     "socket_timeout": 1,
     "retry_on_timeout": False,
@@ -429,7 +429,7 @@ def update_settings(local_settings):
         )
         local_settings["LOGIN_REDIRECT_URL"] = "/"
     ##
-    # Authentication backend : add lti backend if use
+    # Authentication backend: add lti backend if use
     #
     if local_settings.get("LTI_ENABLED", False):
         local_settings["AUTHENTICATION_BACKENDS"] += ("lti_provider.auth.LTIBackend",)
@@ -437,7 +437,7 @@ def update_settings(local_settings):
     ##
     # Opencast studio
     if local_settings.get("USE_OPENCAST_STUDIO", False):
-        # add dir to opencast studio static files i.e : pod/custom/static/opencast/
+        # add dir to opencast studio static files i.e: pod/custom/static/opencast/
         local_settings["TEMPLATES"][0]["DIRS"].append(
             os.path.join(BASE_DIR, "custom", "static", "opencast")
         )

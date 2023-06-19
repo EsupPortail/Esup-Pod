@@ -22,16 +22,43 @@ urlpatterns = [
 
 if not views.MEETING_DISABLE_RECORD:
     urlpatterns += [
-        path("recordings/<slug:meeting_id>/", views.recordings, name="recordings"),
+        path(
+            "recordings/<slug:meeting_id>/",
+            views.internal_recordings,
+            name="internal_recordings",
+        ),
         path(
             "upload_recording_to_pod/<slug:meeting_id>/<slug:recording_id>/",
-            views.upload_recording_to_pod,
-            name="upload_recording_to_pod",
+            views.upload_internal_recording_to_pod,
+            name="upload_internal_recording_to_pod",
+        ),
+        path(
+            "upload_recording_to_pod/<slug:record_id>/",
+            views.upload_external_recording_to_pod,
+            name="upload_external_recording_to_pod",
         ),
         path(
             "delete_recording/<slug:meeting_id>/<slug:recording_id>/",
-            views.delete_recording,
-            name="delete_recording",
+            views.delete_internal_recording,
+            name="delete_internal_recording",
+        ),
+        path(
+            "external_recordings/", views.external_recordings, name="external_recordings"
+        ),
+        path(
+            "external_recording/add",
+            views.add_or_edit_external_recording,
+            name="add_external_recording",
+        ),
+        path(
+            "external_recording/edit/<slug:id>/",
+            views.add_or_edit_external_recording,
+            name="edit_external_recording",
+        ),
+        path(
+            "external_recording/delete/<slug:id>/",
+            views.delete_external_recording,
+            name="delete_external_recording",
         ),
     ]
 

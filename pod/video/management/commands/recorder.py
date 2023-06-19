@@ -43,7 +43,7 @@ from django.core.mail import mail_admins
 from django.utils import timezone
 from django.contrib.sites.shortcuts import get_current_site
 from pod.video.models import Video, get_storage_path_video
-from pod.video_encode import encode
+from pod.video_encode_transcript import encode
 import datetime
 
 LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")

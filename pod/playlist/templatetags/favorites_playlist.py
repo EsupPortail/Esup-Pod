@@ -28,6 +28,7 @@ def is_favorite(user, video: Video) -> bool:
     """
     return check_video_in_playlist(get_favorite_playlist_for_user(user), video)
 
+
 @register.simple_tag(name="get_playlist_name")
 def get_playlist_name(playlist: Playlist) -> str:
     """
