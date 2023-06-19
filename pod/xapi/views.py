@@ -57,19 +57,14 @@ def get_actor_mail(request):
     """Return a email adress for the actor's statement."""
     if request.user.is_authenticated:
         if XAPI_ANONYMIZE_ACTOR:
-            dns_mail = request.user.email.split('@')[1]
-            mail = "%s@%s" % (
-                request.user.owner.hashkey,
-                dns_mail
-            )
+            dns_mail = request.user.email.split("@")[1]
+            mail = "%s@%s" % (request.user.owner.hashkey, dns_mail)
         else:
             mail = request.user.email
     else:
         if not request.session or not request.session.session_key:
             request.session.save()
-        mail = "%s@%s" % (
-            request.session.session_key, request.get_host()
-        )
+        mail = "%s@%s" % (request.session.session_key, request.get_host())
     return mail
 
 
