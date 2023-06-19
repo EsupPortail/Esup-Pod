@@ -1924,7 +1924,8 @@ def video_oembed(request):
 
 def get_all_views_count(v_id, date_filter=date.today()):
     all_views = {}
-
+    # date
+    all_views["date"] = date_filter
     # view count in day
     count = ViewCount.objects.filter(video_id=v_id, date=date_filter).aggregate(
         Sum("count")
@@ -2057,14 +2058,17 @@ def stats_view(request, slug=None, slug_t=None):
         "The following %(target)s does not exist or contain any videos: %(slug)s"
     )
     if request.method == "GET" and target == "video" and videos:
+        print("if1")
         return manage_access_rights_stats_video(request, videos[0], title)
 
     elif request.method == "GET" and target == "video" and not videos:
+        print("if2")
         return HttpResponseNotFound(_("The following video does not exist: %s") % slug)
 
     if request.method == "GET" and (
         not videos and target in ("channel", "theme", "videos")
     ):
+        print("if3")
         slug = slug if not slug_t else slug_t
         target = "Pod" if target == "videos" else target
         return HttpResponseNotFound(_(error_message) % {"target": target, "slug": slug})
@@ -2079,9 +2083,12 @@ def stats_view(request, slug=None, slug_t=None):
     ) or (
         request.method == "GET" and videos and target in ("videos", "channel", "theme")
     ):
+        print("if4")
         return render(request, "videos/video_stats_view.html", {"title": title})
     else:
+        print("else")
         date_filter = request.POST.get("periode", date.today())
+        print("date_filter : ", date_filter)
         if isinstance(date_filter, str):
             date_filter = parse(date_filter).date()
 

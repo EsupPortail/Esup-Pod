@@ -19,10 +19,16 @@
   {% else %}
     <h1 class="page_title h2">{{ title }}</h1>
     <div class="form-group row stat-form-group mb-1">
-      <label for="jsperiode" class="col-7 col-form-label">{% trans "Change the date" %}</label>
+      {% comment %} <label for="jsperiode" class="col-7 col-form-label">{% trans "Change the date" %}</label>
       <div class="col-5 col-date">
         <input class="form-control" type="date" name="periode" id="jsperiode">
-      </div>
+      </div> {% endcomment %}
+      <label for="start-date">date commence:</label>
+      <input type="date" id="start-date" name="start-date">
+
+      <label for="end-date">date fini:</label>
+      <input type="date" id="end-date" name="end-date">
+      <button id="validate-btn">Valider</button>
     </div>
     <div class="table-responsive-md mb-4">
       <canvas id="myChart" width="1200px" height="700px"></canvas>

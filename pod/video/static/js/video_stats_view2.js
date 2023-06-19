@@ -1,75 +1,107 @@
 $(function () {
-  let data_url = window.location.href;
+  $("#validate-btn").click(function () {
+    var startDate = document.getElementById("start-date").value;
+    var endDate = document.getElementById("end-date").value;
+    console.log("date commence:", startDate);
+    console.log("date fini:", endDate);
 
-  // Khởi tạo mảng dữ liệu cho biểu đồ
-  let chartData = [];
+    let data_url = window.location.href;
+    let daily = [];
+    let dailyviews = [];
+    let dailyfavo = [];
 
-  // Lấy dữ liệu từ URL
-  $.ajax({
-    url: data_url,
-    method: "POST",
-    dataType: "json",
-    data: {
-      csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
-    },
-    success: function (data) {
-      // Tạo dữ liệu cho biểu đồ từ dữ liệu trả về
-      for (let i = 0; i < data.length; i++) {
-        let rowData = data[i];
-        chartData.push(rowData);
-      }
+    function fetchData(date) {
+      return new Promise(function (resolve, reject) {
+        $.ajax({
+          url: data_url,
+          method: "POST",
+          dataType: "json",
+          data: {
+            csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
+            periode: date,
+          },
+          success: function (data) {
+            var date = data.map((row) => row.date);
+            var day = data.map((row) => row.day);
+            var fav_day = data.map((row) => row.fav_day);
+            daily.push(date[0]);
+            dailyviews.push(day[0]);
+            dailyfavo.push(fav_day[0]);
+            resolve();
+          },
+          error: function (error) {
+            reject(error);
+          },
+        });
+      });
+    }
 
-      // Khởi tạo biểu đồ bằng Chart.js
-      var ctx = document.getElementById("myChart").getContext("2d");
-      var day = chartData.map((row) => row.day);
-      var month = chartData.map((row) => row.month);
-      var year = chartData.map((row) => row.year);
-      var since_created = chartData.map((row) => row.since_created);
-      var fav_day = chartData.map((row) => row.fav_day);
-      var fav_month = chartData.map((row) => row.fav_month);
-      var fav_year = chartData.map((row) => row.fav_year);
-      var fav_since_created = chartData.map((row) => row.fav_since_created);
-      var myChart = new Chart(ctx, {
-        type: "line",
-        data: {
-          // labels: chartData.map((row) => row.title),
-          labels: [
-            gettext("During the day"),
-            gettext("During the month"),
-            gettext("During the year"),
-            gettext("Total from creation"),
-          ],
-          datasets: [
-            {
-              label: gettext("View"),
-              backgroundColor: "#DC143C",
-              borderColor: "#DC143C",
-              borderWidth: 1,
-              data: [day[0], month[0], year[0], since_created[0]],
-              tension: 0.5,
-            },
-            {
-              label: gettext("Favorite"),
-              backgroundColor: "#1F7C85",
-              borderColor: "#1F7C85",
-              borderWidth: 1,
-              data: [fav_day[0], fav_month[0], fav_year[0], fav_since_created[0]],
-              tension: 0.5,
-            },
-            // Thêm các dataset khác tương tự
-          ],
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true,
+    var currentDate = new Date(startDate);
+    var targetDate = new Date(endDate);
+
+    var requests = [];
+    while (currentDate <= targetDate) {
+      requests.push(fetchData(currentDate.toISOString().split("T")[0]));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    Promise.all(requests)
+      .then(function () {
+        console.log("date", daily);
+        console.log("views :", dailyviews);
+        console.log("favorite : ", dailyfavo);
+
+        var ctx = document.getElementById("myChart").getContext("2d");
+
+        var myChart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: daily,
+            datasets: [
+              {
+                label: gettext("View"),
+                animations: {
+                  y: {
+                    duration: 2000,
+                    delay: 500
+                  }
+                },
+                backgroundColor: "#DC143C",
+                borderColor: "#DC143C",
+                borderWidth: 1,
+                data: dailyviews,
+                tension: 0.5,
+              },
+              {
+                label: gettext("Favorite"),
+                backgroundColor: "#1F7C85",
+                borderColor: "#1F7C85",
+                borderWidth: 1,
+                data: dailyfavo,
+                tension: 0.5,
+                fill: 1,
+              },
+            ],
+          },
+          options: {
+            animations: {
+              y: {
+                easing: 'easeInOutElastic',
+                from: (ctx) => {
+                  if (ctx.type === 'data') {
+                    if (ctx.mode === 'default' && !ctx.dropped) {
+                      ctx.dropped = true;
+                      return 0;
+                    }
+                  }
+                }
+              }
             },
           },
-        },
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
       });
-    },
-    error: function (error) {
-      console.log(error);
-    },
   });
 });
