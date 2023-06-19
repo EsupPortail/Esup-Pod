@@ -1,17 +1,16 @@
 $(function () {
+  var myChart;
+
   $("#validate-btn").click(function () {
     var startDate = document.getElementById("start-date").value;
     var endDate = document.getElementById("end-date").value;
-    console.log("date commence:", startDate);
-    console.log("date fini:", endDate);
 
     let data_url = window.location.href;
-    let daily = [];
+    let d = [];
     let dailyviews = [];
     let dailyfavo = [];
 
     function fetchData(da) {
-      console.log(" DATA :", da);
       return new Promise(function (resolve, reject) {
         $.ajax({
           url: data_url,
@@ -22,12 +21,10 @@ $(function () {
             periode: da,
           },
           success: function (data) {
-            console.log(" DATA succes :", da);
             var date = data.map((row) => row.date);
             var day = data.map((row) => row.day);
             var fav_day = data.map((row) => row.fav_day);
-            daily.push(date[0]);
-            // console.log("daily :", daily);
+            d.push(date[0]);
             dailyviews.push(day[0]);
             dailyfavo.push(fav_day[0]);
             resolve();
@@ -45,14 +42,14 @@ $(function () {
     var requests = [];
     while (currentDate <= targetDate) {
       let da = currentDate.toISOString().split("T")[0];
-      console.log("date 1 : ",da);
       requests.push(fetchData(da));
       currentDate.setDate(currentDate.getDate() + 1);
     }
-
+   
+    
     Promise.all(requests)
       .then(function () {
-        let sortedData = daily.map((item, index) => {
+        let sortedData = d.map((item, index) => {
           return {
             date: item,
             views: dailyviews[index],
@@ -62,14 +59,12 @@ $(function () {
         daily = sortedData.map(item => item.date);
         dailyviews = sortedData.map(item => item.views);
         dailyfavo = sortedData.map(item => item.favo);
-        
-        console.log("date", daily);
-        console.log("views :", dailyviews);
-        console.log("favorite : ", dailyfavo);
 
         var ctx = document.getElementById("myChart").getContext("2d");
-
-        var myChart = new Chart(ctx, {
+        if (myChart) {
+          myChart.destroy();
+        }
+        myChart = new Chart(ctx, {
           type: "line",
           data: {
             labels: daily,
