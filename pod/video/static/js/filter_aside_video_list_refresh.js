@@ -120,8 +120,7 @@ function getUrlForRefresh() {
   }
   // Add category checked if exists
   if (document.querySelectorAll(".categories_list_item.active").length !== 0) {
-    checkedCategory = document
-      .querySelector(".categories_list_item.active")
+    checkedCategory = document.querySelector(".categories_list_item.active")
       .firstChild["dataset"]["slug"];
     newUrl += "category=" + checkedCategory + "&";
   }
