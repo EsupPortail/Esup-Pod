@@ -2589,7 +2589,7 @@ msgstr "Afficher l’enregistrement au format vidéo"
 
 #: pod/import_video/templates/import_video/list.html
 #: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Please confirm you want to upload the recording To Pod"
+msgid "Please confirm you want to upload the recording to Pod"
 msgstr ""
 "Veuillez confirmer que vous souhaitez téléverser l’enregistrement sur Pod"
 
