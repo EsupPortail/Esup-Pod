@@ -25,7 +25,8 @@
   {% endif %}
   <div class="infinite-loading" style="display: none;">
     {% trans "Loading…" %}
-  </div>{% endspaceless %}
+  </div>
+{% endspaceless %}
 {% block more_script %}
 {% if in_favorites_playlist %}
   <script src="{% static 'js/video-favorites-remove-card.js' %}?ver={{VERSION}}"></script>
