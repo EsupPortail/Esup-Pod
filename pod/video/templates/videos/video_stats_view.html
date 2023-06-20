@@ -21,8 +21,8 @@
     {% include "videos/video-form.html" %}
   {% else %}
     <h1 class="page_title h2">{{ title }}</h1>
-    {% if slug %}
     <div class="form-group row stat-form-group mb-1">
+    {% if slug %}
       <label for="start-date">{% trans "Start date" %}</label>
       <input type="date" id="start-date" name="start-date">
       <label for="end-date">{% trans "End date" %}</label>
@@ -30,11 +30,8 @@
     </div>
     <div class="table-responsive-md mb-4">
       <canvas id="myChart"></canvas>
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-      <script src="{% static 'js/video_stats_view2.js' %}?ver={{VERSION}}" charset="utf-8"></script>
     </div>
     {% else %}
-    <div class="form-group row stat-form-group mb-1">
       <label for="jsperiode" class="col-7 col-form-label">{% trans "Change the date" %}</label>
       <div class="col-5 col-date">
         <input class="form-control" type="date" name="periode" id="jsperiode">
@@ -42,9 +39,6 @@
     </div>
     <div class="table-responsive-md mb-4">
       <table id="grid"></table>
-      <script src="{% static 'jqGrid/js/i18n/grid.locale-'|add:LANGUAGE_CODE|add:'.js' %}?ver={{VERSION}}" charset="utf-8"></script>
-      <script src="{% static 'jqGrid/js/jquery.jqGrid.min.js' %}?ver={{VERSION}}" charset="utf-8"></script>
-      <script src="{% static 'js/video_stats_view.js' %}?ver={{VERSION}}" charset="utf-8"></script>
     </div>
       
     {% endif %}
@@ -53,7 +47,10 @@
 </div>
 {% endblock content %}
 
-{% comment %} {% block more_script %} 
+{% block more_script %} 
+  <script src="{% static 'jqGrid/js/i18n/grid.locale-'|add:LANGUAGE_CODE|add:'.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+  <script src="{% static 'jqGrid/js/jquery.jqGrid.min.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+  <script src="{% static 'js/video_stats_view.js' %}?ver={{VERSION}}" charset="utf-8"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="{% static 'js/video_stats_view2.js' %}?ver={{VERSION}}" charset="utf-8"></script>
-{% endblock %} {% endcomment %}
+{% endblock %}

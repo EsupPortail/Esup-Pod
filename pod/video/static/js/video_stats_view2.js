@@ -118,7 +118,6 @@ $(function () {
                   borderWidth: 2,
                   data: dailyfavo,
                   tension: 0.5,
-                  // fill: 0.5,
                 },
               ],
             },

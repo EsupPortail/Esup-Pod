@@ -1925,7 +1925,7 @@ def video_oembed(request):
 def get_all_views_count(v_id, date_filter=date.today()):
     all_views = {}
     # date
-    all_views["date"] = date_filter
+    all_views["date"] = str(date_filter)
     # view count in day
     count = ViewCount.objects.filter(video_id=v_id, date=date_filter).aggregate(
         Sum("count")
