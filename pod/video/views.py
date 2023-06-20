@@ -1923,6 +1923,7 @@ def video_oembed(request):
 
 
 def get_all_views_count(v_id, date_filter=date.today()):
+    """Retrieve the view count and favorite count for a video."""
     all_views = {}
     # date
     all_views["date"] = str(date_filter)
