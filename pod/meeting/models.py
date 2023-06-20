@@ -299,7 +299,7 @@ class Meeting(models.Model):
 
     # #################### RECORD PART
     record = models.BooleanField(
-        default=False,
+        default=True,
         verbose_name=_("Active record"),
         help_text=_("Will active the recording of the meeting"),
     )
@@ -852,6 +852,7 @@ class Meeting(models.Model):
             return meeting_json
 
     def delete_recording(self, record_id):
+        """Delete a BBB recording."""
         action = "deleteRecordings"
         parameters = {}
         parameters["recordID"] = record_id
@@ -882,6 +883,7 @@ class Meeting(models.Model):
 
     @staticmethod
     def get_all_meetings():
+        """Get all meetings, in JSON format."""
         action = "getMeetings"
         parameters = {}
         query = urlencode(parameters)
@@ -939,13 +941,12 @@ def default_site_meeting(sender, instance, **kwargs):
         raise ValueError(_("Start date must be less than recurring until date"))
 
 
-class Recording(models.Model):
+class InternalRecording(models.Model):
     """This model hold information about Big Blue Button recordings.
 
-    This model is for internal or external recordings.
+    This model is for internal recordings.
     For internal recordings: only BBB recordings that have been uploaded to
     Pod are saved in the database.
-    For external recordings: all recordings are saved in the database.
     """
 
     # Name
@@ -957,19 +958,13 @@ class Recording(models.Model):
         ),
     )
 
-    # Type of recording: Internal / External
-    is_internal = models.BooleanField(
-        verbose_name=_("Is this an internal recording ?"),
-        default=True,
-    )
-
     # Start date
-    start_at = models.DateTimeField(_("Start date"), default=timezone.now)
+    start_at = models.DateTimeField(_("Start date"), default=timezone.now, editable=False)
 
     # User who create this recording
     owner = models.ForeignKey(
         User,
-        related_name="owner_recording",
+        related_name="owner_internal_recording",
         on_delete=models.CASCADE,
         limit_choices_to={"is_staff": True},
         verbose_name=_("User"),
@@ -978,6 +973,7 @@ class Recording(models.Model):
         help_text=_("User who create this recording"),
     )
 
+    """ Useless for the moment
     # Additional owners for this recording
     additional_owners = models.ManyToManyField(
         User,
@@ -991,31 +987,11 @@ class Recording(models.Model):
             "they cannot delete this recording."
         ),
     )
+    """
 
     # Recording's site
     site = models.ForeignKey(
         Site, verbose_name=_("Site"), on_delete=models.CASCADE, default=SITE_ID
-    )
-
-    # Type of external recording
-    # Possibles choices
-    types = [
-        ("bigbluebutton", _("Big Blue Button")),
-        ("peertube", _("PeerTube")),
-        ("video", _("Video file")),
-        ("youtube", _("Youtube")),
-    ]
-
-    default_type = types[0][0]
-    type = models.CharField(
-        max_length=50,
-        choices=types,
-        default=default_type,
-        verbose_name=_("External record type"),
-        help_text=_(
-            "It is possible to manage recordings from "
-            "Big Blue Button or another source delivering video files."
-        ),
     )
 
     # Source video URL
@@ -1032,7 +1008,7 @@ class Recording(models.Model):
     # User who uploaded to Pod the video file
     uploaded_to_pod_by = models.ForeignKey(
         User,
-        related_name="uploader_recording",
+        related_name="uploader_internal_recording",
         on_delete=models.CASCADE,
         limit_choices_to={"is_staff": True},
         verbose_name=_("User"),
@@ -1058,13 +1034,6 @@ class Recording(models.Model):
         blank=True,
     )
 
-    # Duration (if useful)
-    duration = models.DurationField(
-        verbose_name=_("Duration of recording"),
-        null=True,
-        blank=True,
-    )
-
     def __unicode__(self):
         return "%s - %s" % (self.recording_id, self.name)
 
@@ -1072,7 +1041,7 @@ class Recording(models.Model):
         return "%s - %s" % (self.recording_id, self.name)
 
     def save(self, *args, **kwargs):
-        super(Recording, self).save(*args, **kwargs)
+        super(InternalRecording, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Recording"
@@ -1081,48 +1050,8 @@ class Recording(models.Model):
         get_latest_by = "start_at"
 
 
-@receiver(pre_save, sender=Recording)
+@receiver(pre_save, sender=InternalRecording)
 def default_site_recording(sender, instance, **kwargs):
     """Save default site for this recording."""
     if not hasattr(instance, "site"):
         instance.site = Site.objects.get_current()
-
-
-class StatelessRecording:
-    """Recording model, not saved in database.
-
-    Useful to manage internal/external recordings, for the view.
-    """
-
-    id = ""
-    name = ""
-    state = ""
-    startTime = ""
-    endTime = ""
-    # Type
-    type = ""
-    # Rights
-    canUpload = False
-    canDelete = False
-    # User that has uploaded this recording to Pod
-    uploadedToPodBy = ""
-    # Presentation playback URL
-    presentationUrl = ""
-    # Video playback URL, used as the source URL for the video file
-    videoUrl = ""
-
-    def __init__(self, id, name, state):
-        self.id = id
-        self.name = name
-        self.state = state
-
-    def get_start_time(self):
-        # BBB epoch in milliseconds
-        return dt.fromtimestamp(float(self.startTime) / 1000)
-
-    def get_end_time(self):
-        # BBB epoch in milliseconds
-        return dt.fromtimestamp(float(self.endTime) / 1000)
-
-    def get_duration(self):
-        return str(self.get_end_time() - self.get_start_time()).split(".")[0]
