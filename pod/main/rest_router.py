@@ -42,7 +42,7 @@ router.register(r"videos", video_views.VideoViewSet)
 router.register(r"renditions", encode_views.VideoRenditionViewSet)
 router.register(r"encodings_video", encode_views.EncodingVideoViewSet)
 router.register(r"encodings_audio", encode_views.EncodingAudioViewSet)
-router.register(r"playlist_videos", video_views.PlaylistVideoViewSet)
+router.register(r"playlist_videos", encode_views.PlaylistVideoViewSet)
 router.register(r"view_count", video_views.ViewCountViewSet)
 
 router.register(r"playlist", playlist_views.PlaylistViewSet)

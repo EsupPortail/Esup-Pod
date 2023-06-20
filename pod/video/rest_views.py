@@ -10,7 +10,7 @@ from django.template.loader import render_to_string
 
 from .models import Channel, Theme
 from .models import Type, Discipline, Video
-from .models import PlaylistVideo, ViewCount
+from .models import ViewCount
 from .utils import get_available_videos
 
 # commented for v3
@@ -163,20 +163,6 @@ class VideoUserSerializer(serializers.ModelSerializer):
         )
 
 
-class PlaylistVideoSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = PlaylistVideo
-        fields = (
-            "id",
-            "url",
-            "name",
-            "video",
-            "encoding_format",
-            "source_file",
-            "sites_all",
-        )
-
-
 class ViewCountSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ViewCount
@@ -248,11 +234,6 @@ class VideoViewSet(viewsets.ModelViewSet):
             user_videos, many=True, context={"request": request}
         )
         return Response(serializer.data)
-
-
-class PlaylistVideoViewSet(viewsets.ModelViewSet):
-    queryset = PlaylistVideo.objects.all()
-    serializer_class = PlaylistVideoSerializer
 
 
 class ViewCountViewSet(viewsets.ModelViewSet):

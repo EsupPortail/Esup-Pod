@@ -15,7 +15,6 @@ from .models import Channel
 from .models import Theme
 from .models import Type
 from .models import Discipline
-from .models import PlaylistVideo
 from .models import Notes, AdvancedNotes, NoteComments
 from .models import ViewCount
 from .models import VideoToDelete
@@ -555,25 +554,6 @@ class DisciplineAdmin(TranslationAdmin):
         return qs
 
 
-class PlaylistVideoAdmin(admin.ModelAdmin):
-    autocomplete_fields = ["video"]
-    list_display = ("name", "video", "encoding_format")
-    search_fields = ["id", "video__id", "video__title"]
-    list_filter = ["encoding_format"]
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if not request.user.is_superuser:
-            qs = qs.filter(video__sites=get_current_site(request))
-        return qs
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if (db_field.name) == "video":
-            kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
-
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
-
 class NotesAdmin(admin.ModelAdmin):
     list_display = ("video", "user")
     autocomplete_fields = ["video", "user"]
@@ -692,7 +672,6 @@ admin.site.register(Discipline, DisciplineAdmin)
 admin.site.register(Theme, ThemeAdmin)
 admin.site.register(Video, VideoAdmin)
 admin.site.register(UpdateOwner, updateOwnerAdmin)
-admin.site.register(PlaylistVideo, PlaylistVideoAdmin)
 admin.site.register(Notes, NotesAdmin)
 admin.site.register(AdvancedNotes, AdvancedNotesAdmin)
 admin.site.register(NoteComments, NoteCommentsAdmin)

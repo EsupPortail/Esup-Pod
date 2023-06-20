@@ -508,7 +508,7 @@ def my_videos(request):
         if request.GET.get("category") is not None:
             category_checked = request.GET.get("category")
             videos_list = get_object_or_404(
-                Category, title=category_checked, owner=request.user
+                Category, slug=category_checked, owner=request.user
             ).video.all()
 
         cats = Category.objects.prefetch_related("video").filter(owner=request.user)

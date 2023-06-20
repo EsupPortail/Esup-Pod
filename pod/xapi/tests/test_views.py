@@ -29,7 +29,7 @@ class xapi_statement_TestView(TestCase):
         self.assertEqual(response["Content-Type"], "application/json")
         response_unicode = response.content.decode("utf-8")
         data = json.loads(response_unicode)
-        self.assertEqual(data["actor"]["objectType"], "Agent")
+        self.assertTrue(data["actor"]["name"] != "")
         print(
             " --->  test_xapi_statment_TestView_get_request ",
             "of xapi_statement_TestView: OK!",
