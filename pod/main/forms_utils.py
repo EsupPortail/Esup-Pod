@@ -1,5 +1,6 @@
 """A set of utilities for forms."""
 
+from django_select2 import forms as s2forms
 from django import forms
 from django.contrib.admin import widgets
 from django.forms.utils import to_current_timezone
@@ -79,3 +80,21 @@ def add_placeholder_and_asterisk(fields):
             myField.widget.attrs["class"] = bsClass
 
     return fields
+
+
+class OwnerWidget(s2forms.ModelSelect2Widget):
+    """Class OwnerWidget."""
+
+    search_fields = [
+        "username__icontains",
+        "email__icontains",
+    ]
+
+
+class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
+    """Class AddOwnerWidget."""
+
+    search_fields = [
+        "username__icontains",
+        "email__icontains",
+    ]

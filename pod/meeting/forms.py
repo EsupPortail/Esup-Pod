@@ -1,24 +1,22 @@
 """Forms for the Meeting module."""
-import random
-import string
 import datetime
+import random
 import re
+import string
 
+from .models import Meeting, InternalRecording
 from django import forms
 from django.conf import settings
-from django.contrib.sites.models import Site
-from django.db.models.query import QuerySet
-from django.utils.translation import ugettext_lazy as _
-from django_select2 import forms as s2forms
 from django.contrib.admin import widgets as admin_widgets
-from django.utils import timezone
-
-from django.forms import CharField, Textarea
+from django.contrib.sites.models import Site
 from django.core.validators import validate_email, URLValidator
 from django.core.exceptions import ValidationError
-
+from django.db.models.query import QuerySet
+from django.forms import CharField, Textarea
+from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 from pod.main.forms_utils import add_placeholder_and_asterisk
-from .models import Meeting, Recording
+from pod.main.forms_utils import OwnerWidget, AddOwnerWidget
 
 __FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
@@ -97,20 +95,6 @@ def get_random_string(length):
     letters = string.ascii_lowercase
     result_str = "".join(random.choice(letters) for i in range(length))
     return result_str
-
-
-class OwnerWidget(s2forms.ModelSelect2Widget):
-    search_fields = [
-        "username__icontains",
-        "email__icontains",
-    ]
-
-
-class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
-    search_fields = [
-        "username__icontains",
-        "email__icontains",
-    ]
 
 
 class MeetingForm(forms.ModelForm):
@@ -465,14 +449,11 @@ class MeetingInviteForm(forms.Form):
         self.fields["owner_copy"].widget.attrs.update({"class": "me-1"})
 
 
-class RecordingForm(forms.ModelForm):
-    """External recording form.
+class InternalRecordingForm(forms.ModelForm):
+    """Internal recording form.
 
     Args:
         forms (ModelForm): model form
-
-    Raises:
-        ValidationError: owner of the recording cannot be an additional owner too
     """
 
     site = forms.ModelChoiceField(Site.objects.all(), required=False)
@@ -485,11 +466,9 @@ class RecordingForm(forms.ModelForm):
             {
                 "fields": (
                     "name",
-                    "type",
                     "source_url",
                     "start_at",
                     "owner",
-                    "additional_owners",
                     "site",
                 )
             },
@@ -502,35 +481,14 @@ class RecordingForm(forms.ModelForm):
             form.remove_field("owner")
             form.remove_field("site")
 
-    def clean_add_owner(self, cleaned_data):
-        """Clean method for additional owners."""
-        if "additional_owners" in cleaned_data.keys() and isinstance(
-            self.cleaned_data["additional_owners"], QuerySet
-        ):
-            recordingowner = (
-                self.instance.owner
-                if hasattr(self.instance, "owner")
-                else cleaned_data["owner"]
-                if "owner" in cleaned_data.keys()
-                else self.current_user
-            )
-            if (
-                recordingowner
-                and recordingowner in self.cleaned_data["additional_owners"].all()
-            ):
-                raise ValidationError(
-                    _("Owner of the recording cannot be an additional owner too")
-                )
-
     def clean(self):
         """Clean method."""
-        cleaned_data = super(RecordingForm, self).clean()
+        cleaned_data = super(InternalRecordingForm, self).clean()
         try:
             validator = URLValidator()
             validator(cleaned_data["source_url"])
         except ValidationError:
             self.add_error("source_url", _("Please enter a valid address"))
-        self.clean_add_owner(cleaned_data)
 
     def __init__(self, *args, **kwargs):
         """Initialize recording form."""
@@ -546,7 +504,7 @@ class RecordingForm(forms.ModelForm):
         self.current_lang = kwargs.pop("current_lang", settings.LANGUAGE_CODE)
         self.current_user = kwargs.pop("current_user", None)
 
-        super(RecordingForm, self).__init__(*args, **kwargs)
+        super(InternalRecordingForm, self).__init__(*args, **kwargs)
 
         self.set_queryset()
         self.filter_fields_admin()
@@ -577,7 +535,7 @@ class RecordingForm(forms.ModelForm):
             object (class): internal class
         """
 
-        model = Recording
+        model = InternalRecording
         fields = "__all__"
         widgets = {
             "owner": OwnerWidget,
