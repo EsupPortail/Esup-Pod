@@ -1,23 +1,22 @@
-import random
-import string
+"""Forms for the Meeting module."""
 import datetime
+import random
 import re
+import string
 
+from .models import Meeting, InternalRecording
 from django import forms
 from django.conf import settings
-from django.contrib.sites.models import Site
-from django.db.models.query import QuerySet
-from django.utils.translation import ugettext_lazy as _
-from django.core.exceptions import ValidationError
-from django_select2 import forms as s2forms
 from django.contrib.admin import widgets as admin_widgets
-from django.utils import timezone
-
+from django.contrib.sites.models import Site
+from django.core.validators import validate_email, URLValidator
+from django.core.exceptions import ValidationError
+from django.db.models.query import QuerySet
 from django.forms import CharField, Textarea
-from django.core.validators import validate_email
-
+from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 from pod.main.forms_utils import add_placeholder_and_asterisk
-from .models import Meeting
+from pod.main.forms_utils import OwnerWidget, AddOwnerWidget
 
 __FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
@@ -98,20 +97,6 @@ def get_random_string(length):
     return result_str
 
 
-class OwnerWidget(s2forms.ModelSelect2Widget):
-    search_fields = [
-        "username__icontains",
-        "email__icontains",
-    ]
-
-
-class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
-    search_fields = [
-        "username__icontains",
-        "email__icontains",
-    ]
-
-
 class MeetingForm(forms.ModelForm):
     site = forms.ModelChoiceField(Site.objects.all(), required=False)
     required_css_class = "required"
@@ -177,7 +162,13 @@ class MeetingForm(forms.ModelForm):
         required=False, widget=forms.CheckboxSelectMultiple, choices=DAYS_OF_WEEK
     )
     fieldsets = (
-        (None, {"fields": MEETING_MAIN_FIELDS}),
+        (
+            "main_fields",
+            {
+                "legend": ('<i class="bi bi-gear"></i> %s' % _("Main fields")),
+                "fields": MEETING_MAIN_FIELDS,
+            },
+        ),
         (
             "input-group",
             {
@@ -446,7 +437,107 @@ class MeetingInviteForm(forms.Form):
         label=_("Emails"),
         help_text=_("You can fill one email adress per line"),
     )
+    owner_copy = forms.BooleanField(
+        label="",
+        required=False,
+        help_text=_("Send invite to owner and additional owners"),
+    )
 
     def __init__(self, *args, **kwargs):
         super(MeetingInviteForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
+        self.fields["owner_copy"].widget.attrs.update({"class": "me-1"})
+
+
+class InternalRecordingForm(forms.ModelForm):
+    """Internal recording form.
+
+    Args:
+        forms (ModelForm): model form
+    """
+
+    site = forms.ModelChoiceField(Site.objects.all(), required=False)
+    is_admin = False
+    is_superuser = False
+
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "name",
+                    "source_url",
+                    "start_at",
+                    "owner",
+                    "site",
+                )
+            },
+        ),
+    )
+
+    def filter_fields_admin(form):
+        """List fields, depends on user right."""
+        if form.is_superuser is False and form.is_admin is False:
+            form.remove_field("owner")
+            form.remove_field("site")
+
+    def clean(self):
+        """Clean method."""
+        cleaned_data = super(InternalRecordingForm, self).clean()
+        try:
+            validator = URLValidator()
+            validator(cleaned_data["source_url"])
+        except ValidationError:
+            self.add_error("source_url", _("Please enter a valid address"))
+
+    def __init__(self, *args, **kwargs):
+        """Initialize recording form."""
+        self.is_staff = (
+            kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
+        )
+
+        self.is_superuser = (
+            kwargs.pop("is_superuser")
+            if ("is_superuser" in kwargs.keys())
+            else self.is_superuser
+        )
+        self.current_lang = kwargs.pop("current_lang", settings.LANGUAGE_CODE)
+        self.current_user = kwargs.pop("current_user", None)
+
+        super(InternalRecordingForm, self).__init__(*args, **kwargs)
+
+        self.set_queryset()
+        self.filter_fields_admin()
+        self.fields = add_placeholder_and_asterisk(self.fields)
+
+        # We don't change the user who uploaded the record
+        hidden_fields = ("uploaded_to_pod_by",)
+        for field in hidden_fields:
+            if self.fields.get(field, None):
+                self.fields[field].widget = forms.HiddenInput()
+
+    def remove_field(self, field):
+        """Remove a field from the form."""
+        if self.fields.get(field):
+            del self.fields[field]
+
+    def set_queryset(self):
+        """Filter on owner."""
+        if self.fields.get("owner"):
+            self.fields["owner"].queryset = self.fields["owner"].queryset.filter(
+                owner__sites=Site.objects.get_current()
+            )
+
+    class Meta(object):
+        """Metadata options.
+
+        Args:
+            object (class): internal class
+        """
+
+        model = InternalRecording
+        fields = "__all__"
+        widgets = {
+            "owner": OwnerWidget,
+            "additional_owners": AddOwnerWidget,
+        }

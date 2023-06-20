@@ -4,10 +4,10 @@
 {% spaceless %}
 {% is_favorite video as is_fav %}
 {% if USE_FAVORITES and video.is_draft is False and not hide_favorite_link is True %}
-  <form method="post" action="{% url 'favorite:add-or-remove' %}" class="btn btn-link favorite-button-form-card m-0 p-1 ms-1" id="fav-button">
+  <form method="post" action="{% url 'favorite:add-or-remove' %}" class="favorite-button-form-card pod-btn-social m-0 ms-1">
     {% csrf_token %}
-    <input type="hidden" name="video" value="{{ video.id }}"/>
-    <button type="button submit" id="star_btn" title="{% if is_fav %}{% trans 'Remove from favorite' %}{% else %}{% trans 'Add in favorite' %}{% endif %}" class="btn btn-lg pod-btn-social btn-link p-0">
+    <input type="hidden" name="video" value="{{ video.id }}">
+    <button type="submit" title="{% if is_fav %}{% trans 'Remove from favorite' %}{% else %}{% trans 'Add in favorite' %}{% endif %}" class="btn btn-lg btn-link p-1 star_btn">
       <i class="bi {% if is_fav %}bi-star-fill{% else %}bi-star{% endif %}" aria-hidden="true"></i>
     </button>
   </form>

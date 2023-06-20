@@ -140,7 +140,7 @@ def get_ldap_conn():
         logger.error("LDAPBindError, credentials incorrect: {0}".format(err))
         return None
     except LDAPSocketOpenError as err:
-        logger.error("LDAPSocketOpenError : %s" % err)
+        logger.error("LDAPSocketOpenError: %s" % err)
         return None
 
 
@@ -206,61 +206,36 @@ def create_accessgroups(user, tree_or_entry, auth_type):
     assign_accessgroups(groups_element, user)
 
 
+def get_entry_value(entry, attribute, default):
+    """Retrieve the value of the given attribute from the LDAP entry."""
+    if (
+        USER_LDAP_MAPPING_ATTRIBUTES.get(attribute)
+        and entry[USER_LDAP_MAPPING_ATTRIBUTES[attribute]]
+    ):
+        if attribute == "last_name" and isinstance(
+            entry[USER_LDAP_MAPPING_ATTRIBUTES[attribute]].value, list
+        ):
+            return entry[USER_LDAP_MAPPING_ATTRIBUTES[attribute]].value[0]
+        elif attribute == "affiliations":
+            return entry[USER_LDAP_MAPPING_ATTRIBUTES[attribute]].values
+        else:
+            return entry[USER_LDAP_MAPPING_ATTRIBUTES[attribute]].value
+    else:
+        return default
+
+
 def populate_user_from_entry(user, owner, entry):
+    """Populate user and owner objects from the LDAP entry."""
     if DEBUG:
         print(entry)
-    user.email = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES["mail"]].value
-        if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get("mail")
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES["mail"]]
-        )
-        else ""
-    )
-    user.first_name = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES["first_name"]].value
-        if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get("first_name")
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES["first_name"]]
-        )
-        else ""
-    )
-    user.last_name = ""
-    if (
-        USER_LDAP_MAPPING_ATTRIBUTES.get("last_name")
-        and entry[USER_LDAP_MAPPING_ATTRIBUTES["last_name"]]
-    ):
-        user.last_name = (
-            entry[USER_LDAP_MAPPING_ATTRIBUTES["last_name"]].value[0]
-            if (isinstance(entry[USER_LDAP_MAPPING_ATTRIBUTES["last_name"]].value, list))
-            else entry[USER_LDAP_MAPPING_ATTRIBUTES["last_name"]].value
-        )
+    user.email = get_entry_value(entry, "mail", "")
+    user.first_name = get_entry_value(entry, "first_name", "")
+    user.last_name = get_entry_value(entry, "last_name", "")
     user.save()
-    owner.affiliation = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES["primaryAffiliation"]].value
-        if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get("primaryAffiliation")
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES["primaryAffiliation"]]
-        )
-        else DEFAULT_AFFILIATION
-    )
-    owner.establishment = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES["establishment"]].value
-        if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get("establishment")
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES["establishment"]]
-        )
-        else ""
-    )
+    owner.affiliation = get_entry_value(entry, "primaryAffiliation", DEFAULT_AFFILIATION)
+    owner.establishment = get_entry_value(entry, "establishment", "")
     owner.save()
-    affiliations = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES["affiliations"]].values
-        if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get("affiliations")
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES["affiliations"]]
-        )
-        else []
-    )
+    affiliations = get_entry_value(entry, attribute="affiliations", default=[])
     for affiliation in affiliations:
         if affiliation in AFFILIATION_STAFF:
             user.is_staff = True

@@ -523,7 +523,7 @@ class Event(models.Model):
 
     def is_current(self):
         """Test if event is currently open."""
-        # TODO : FIX this to have possibility to run test between 2 days
+        # TODO: FIX this to have possibility to run test between 2 days
         """
         print("IS CURRENT")
         print(self.start_date)

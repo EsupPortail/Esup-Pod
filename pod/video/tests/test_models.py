@@ -16,13 +16,14 @@ from ..models import Video
 from ..models import ViewCount
 from ..models import get_storage_path_video
 from ..models import VIDEOS_DIR
-from ..models import VideoRendition
-from ..models import EncodingVideo
-from ..models import EncodingAudio
-from ..models import PlaylistVideo
-from ..models import EncodingLog
-from ..models import EncodingStep
 from ..models import Notes, AdvancedNotes
+
+from pod.video_encode_transcript.models import VideoRendition
+from pod.video_encode_transcript.models import EncodingVideo
+from pod.video_encode_transcript.models import EncodingAudio
+from pod.video_encode_transcript.models import PlaylistVideo
+from pod.video_encode_transcript.models import EncodingLog
+from pod.video_encode_transcript.models import EncodingStep
 
 from datetime import datetime
 from datetime import timedelta

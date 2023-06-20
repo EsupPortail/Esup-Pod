@@ -6,9 +6,9 @@
 	{% csrf_token %}
 	<div id="form_content" class="form-container">
 		{% if form_track.errors or form_track.non_field_errors %}
-			{% trans 'Your form contains errors:' %}<br />
+			{% trans 'Your form contains errors:' %}<br>
 			{% for error in form_track.non_field_errors %}
-				- {{error}}<br />
+				- {{error}}<br>
 			{% endfor %}
 		{% endif %}
 		{% for field_hidden in form_track.hidden_fields %}
@@ -23,9 +23,9 @@
 		{% if form_track.instance %}
 			<input type="hidden" id="id_track" name="track_id" value="{{form_track.instance.id}}">
 		{% endif %}
-		<input type="hidden" name="action" value="save"/>
-		<input type="submit" id="save_track" value="{% trans 'Save' %}" class="btn btn-primary"/>
-		<input type="reset" action="cancel" id="cancel_track" value="{% trans 'Cancel' %}" class="btn btn-secondary"/>
+		<input type="hidden" name="action" value="save">
+		<input type="submit" id="save_track" value="{% trans 'Save' %}" class="btn btn-primary">
+		<input type="reset" action="cancel" id="cancel_track" value="{% trans 'Cancel' %}" class="btn btn-secondary">
 	</div>
 </form>
 {{form_track.media}}

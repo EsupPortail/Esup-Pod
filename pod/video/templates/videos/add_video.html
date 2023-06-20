@@ -25,7 +25,7 @@
 {% block page_content %}
 
 {% if restricted_to_staff and not user.is_staff %}
-<p class="text-info">
+<p class="text-info-emphasis">
   <i class="bi bi-broadcast"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
 </p>
 {% else %}
@@ -39,7 +39,7 @@
 
   <h2><i class="bi bi-upload"></i>&nbsp;{% trans "Uploading" %}</h2>
   <div class="form-group hide-on-processing">
-    <label for="chunked_upload">{% trans "Choose an audio or video file to upload" %}</label><br />
+    <label for="chunked_upload">{% trans "Choose an audio or video file to upload" %}</label><br>
     <input id="chunked_upload" accept="{{allow_extension}}" type="file" name="the_file" class="form-control-file">
   </div>
   <div class="show-on-processing">
@@ -125,7 +125,7 @@
 <script src="{% static 'blueimp-file-upload/js/jquery.fileupload-ui.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'spark-md5/spark-md5.min.js' %}?ver={{VERSION}}"></script>
 
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}" />
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
 
 
 <script>

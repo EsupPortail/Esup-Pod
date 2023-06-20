@@ -5,15 +5,15 @@
 ## Information générale 
 
 
-La plateforme Esup-Pod se base sur le framework Django écrit en Python.<br/>
-Elle supporte les versions 3.7, 3.8 et 3.9 de Python.<br/>
+La plateforme Esup-Pod se base sur le framework Django écrit en Python.<br>
+Elle supporte les versions 3.7, 3.8 et 3.9 de Python.<br>
 
-**Django Version : 3.2 LTS**<br/>
+**Django Version : 3.2 LTS**<br>
 
-> La documentation complète du framework : [https://docs.djangoproject.com/fr/3.2/]() (ou [https://docs.djangoproject.com/en/3.2/]())<br><br/>
-> L’ensemble des variables de configuration du framework est accessible à cette adresse : [https://docs.djangoproject.com/fr/3.2/ref/settings/]()<br/>
+> La documentation complète du framework : [https://docs.djangoproject.com/fr/3.2/]() (ou [https://docs.djangoproject.com/en/3.2/]())<br><br>
+> L’ensemble des variables de configuration du framework est accessible à cette adresse : [https://docs.djangoproject.com/fr/3.2/ref/settings/]()<br>
 
-Voici les configurations des applications tierces utilisées par Esup-Pod.<br/>
+Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
 
 
  - `CAS`
@@ -440,8 +440,8 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br/>
   >> Répertoire par défaut pour le téléversement des vidéos. <br>
 
 ### Langue
-Par défaut, Esup-Pod est fournie en Francais et en anglais.<br/>
-Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br/>
+Par défaut, Esup-Pod est fournie en Francais et en anglais.<br>
+Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
 
  - `LANGUAGES`
 
@@ -1388,6 +1388,22 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
 ### Configuration application enrichment
 
+### Configuration application d'import vidéo
+Application Import_video permettant d'importer des vidéos externes dans Pod.<br>
+Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
+
+ - `RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY`
+
+  > valeur par défaut : `True`
+
+  >> Seuls les utilisateurs "staff" pourront importer des vidéos <br>
+
+ - `USE_IMPORT_VIDEO`
+
+  > valeur par défaut : `True`
+
+  >> Activation de l’application d'import des vidéos <br>
+
 ### Configuration application live
 
  - `AFFILIATION_EVENT`
@@ -1552,6 +1568,12 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   >> Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - [TODO] À retirer dans les futures versions de Pod <br>
 
+ - `USE_IMPORT_VIDEO`
+
+  > valeur par défaut : `True`
+
+  >> Activation de l’application d'import des vidéos <br>
+
  - `USE_MEETING`
 
   > valeur par défaut : `False`
@@ -1570,11 +1592,17 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   >> Version courante du projet <br>
 
+ - `HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS`
+
+  > valeur par défaut : `False`
+
+  >> Affiche les vidéos de chaines non visibles sur la page d'accueil <br>
+
 ### Configuration application meeting
 
-Application Meeting pour la gestion de reunion avec BBB.<br/>
-Mettre `USE_MEETING` à True pour activer cette application.<br/>
-`BBB_API_URL` et `BBB_SECRET_KEY` sont obligatoires pour faire fonctionner l’application<br/>
+Application Meeting pour la gestion de reunion avec BBB.<br>
+Mettre `USE_MEETING` à True pour activer cette application.<br>
+`BBB_API_URL` et `BBB_SECRET_KEY` sont obligatoires pour faire fonctionner l’application<br>
 
  - `BBB_API_URL`
 
@@ -2173,18 +2201,18 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
   >> Vous pouvez créer des catégories pour pouvoir ranger vos propres vidéos. <br>
   >> Les catégories sont liées à l’utilisateur. <br>
 
+ - `USE_FAVORITES`
+
+  > valeur par défaut : `True`
+
+  >> Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans leurs favoris. <br>
+
  - `USE_OBSOLESCENCE`
 
   > valeur par défaut : `False`
 
   >> Activation de l’obsolescence des video. Permet d’afficher la date de suppression de la video <br>
   >> dans le formulaire d’edition et dans la partie admin. <br>
-
- - `USE_FAVORITES`
-
-  > valeur par défaut : `True`
-
-  >> Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans leurs favoris. <br>
 
  - `USE_STATS_VIEW`
 
@@ -2600,9 +2628,9 @@ Mettre `USE_MEETING` à True pour activer cette application.<br/>
 
 ### Configuration application xapi
 
-Application pour l’envoi d‘instructions xAPI à un LRS.<br/>
-Aucune instruction ne persiste dans Pod, elles sont toutes envoyées au LRS paramétré.<br/>
-Attention, il faut configurer Celery pour l’envoi des instructions.<br/>
+Application pour l’envoi d‘instructions xAPI à un LRS.<br>
+Aucune instruction ne persiste dans Pod, elles sont toutes envoyées au LRS paramétré.<br>
+Attention, il faut configurer Celery pour l’envoi des instructions.<br>
 
  - `USE_XAPI`
 

@@ -1,3 +1,4 @@
+"""Admin for Meeting module."""
 from django.contrib import admin
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
@@ -5,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
 from django.contrib.admin import widgets
 
-from .models import Meeting, Recording
+from .models import Meeting, InternalRecording
 from .forms import (
     MeetingForm,
     MEETING_MAIN_FIELDS,
@@ -96,6 +97,12 @@ class IsPaidFilter(admin.SimpleListFilter):
 
 @admin.register(Meeting)
 class MeetingAdmin(admin.ModelAdmin):
+    """Meeting administration module.
+
+    Args:
+        admin (ModelAdmin): admin model
+    """
+
     date_hierarchy = "updated_at"
     list_display = (
         "name",
@@ -160,10 +167,24 @@ class MeetingAdmin(admin.ModelAdmin):
         return qs
 
 
-@admin.register(Recording)
-class RecordingAdmin(admin.ModelAdmin):
-    list_display = ("recording_id", "name", "meeting", "start_at", "uploaded_to_pod_by")
+@admin.register(InternalRecording)
+class InternalRecordingAdmin(admin.ModelAdmin):
+    """Administration for BBB internal recordings.
+
+    Args:
+        admin (ModelAdmin): admin model
+    """
+
+    list_display = (
+        "name",
+        "start_at",
+        "recording_id",
+        "meeting",
+        "owner",
+    )
     search_fields = [
         "name",
         "meeting",
+        "source_url",
+        "owner",
     ]

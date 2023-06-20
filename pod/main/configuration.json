@@ -847,6 +847,50 @@
                         "fr": "Configuration application enrichment"
                     }
                 },
+                "import_video": {
+                    "description": {
+                        "en": [
+							"Import_video app to import external videos into Pod.",
+                            "Set `USE_IMPORT_VIDEO` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Import_video permettant d'importer des vidéos externes dans Pod.",
+                            "Mettre `USE_IMPORT_VIDEO` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Only \"staff\" users will be able to import videos"
+                                ],
+                                "fr": [
+                                    "Seuls les utilisateurs \"staff\" pourront importer des vidéos"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.3.0"
+                        },
+                        "USE_IMPORT_VIDEO": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of the video import application"
+                                ],
+                                "fr": [
+                                    "Activation de l’application d'import des vidéos"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.3.0"
+                        }
+                    },
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application d'import vidéo"
+                    }
+                },
                 "live": {
                     "description": {},
                     "settings": {
@@ -1179,6 +1223,19 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "USE_IMPORT_VIDEO": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of the video import application"
+                                ],
+                                "fr": [
+                                    "Activation de l’application d'import des vidéos"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.3.0"
+                        },
                         "USE_MEETING": {
                             "default_value": false,
                             "description": {
@@ -1217,6 +1274,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Display videos from non visible channels on the homepage"
+                                ],
+                                "fr": [
+                                    "Affiche les vidéos de chaines non visibles sur la page d'accueil"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.2.0"
                         }
                     },
                     "title": {
@@ -2304,6 +2374,17 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "USE_FAVORITES": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of favorite videos. Allows users to add videos to their favorites."
+                                ],
+                                "fr": [
+                                    "Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans leurs favoris."
+                                ]
+                            }
+                        },
                         "USE_OBSOLESCENCE": {
                             "default_value": false,
                             "description": {
@@ -2317,17 +2398,6 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
-                        },
-                        "USE_FAVORITES": {
-                            "default_value": true,
-                            "description": {
-                                "en": [
-                                    "Activation of favorite videos. Allows users to add videos to their favorites."
-                                ],
-                                "fr": [
-                                    "Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans leurs favoris."
-                                ]
-                            }
                         },
                         "USE_STATS_VIEW": {
                             "default_value": false,

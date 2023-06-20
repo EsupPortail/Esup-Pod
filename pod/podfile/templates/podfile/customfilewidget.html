@@ -7,7 +7,7 @@
   <span>
   {% if value %}
     <span id="fileinput_{{id}}" class="m-1" style="line-height:44px">
-      {% if document.class_name == "CustomImageModel" and document.file_exist %}<img src="{{document.file.url}}" height="34" alt="{{document.name}}" loading="lazy"/>&nbsp;
+      {% if document.class_name == "CustomImageModel" and document.file_exist %}<img src="{{document.file.url}}" height="34" alt="{{document.name}}" loading="lazy">&nbsp;
       {% else %}
         <img style="height: 26px;vertical-align: middle;" src="{% static 'podfile/images/icons/default.svg' %}" alt="" loading="lazy">&nbsp;
       {% endif %}
@@ -86,7 +86,7 @@ document.addEventListener('click',   (event) => {
 document.body.append(document.getElementById('fileModal_{{id}}'));
 
 document.addEventListener('hide.bs.modal',   (event) => {
-  if (!event.target.matches('#fileModal_{{id}}')) return; 
+  if (!event.target.matches('#fileModal_{{id}}')) return;
   event.stopPropagation();
   document.getElementById("modal-folder_"+event.target.dataset.id).innerHTML = "";
 });

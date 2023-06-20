@@ -3,18 +3,20 @@ import json
 import logging
 import os
 import re
-from abc import ABC as __ABC__, abstractmethod
-from typing import Optional
-
 import requests
+
+from abc import ABC as __ABC__, abstractmethod
+from datetime import timedelta
+from typing import Optional
 from django.conf import settings
 
 from .models import Broadcaster
 
 __EXISTING_BROADCASTER_IMPLEMENTATIONS__ = ["Wowza"]
+
 DEFAULT_EVENT_PATH = getattr(settings, "DEFAULT_EVENT_PATH", "")
 
-logger = logging.getLogger("pod.live")
+logger = logging.getLogger(__name__)
 
 
 class PilotingInterface(__ABC__):
@@ -64,6 +66,11 @@ class PilotingInterface(__ABC__):
         """Get info of current record"""
         raise NotImplementedError
 
+    @abstractmethod
+    def copy_file_to_pod_dir(self, filename) -> bool:
+        """Copy the file from remote server to pod server"""
+        raise NotImplementedError
+
 
 def get_piloting_implementation(broadcaster) -> Optional[PilotingInterface]:
     logger.debug("get_piloting_implementation")
@@ -78,7 +85,7 @@ def get_piloting_implementation(broadcaster) -> Optional[PilotingInterface]:
     map_interface = map(str.lower, __EXISTING_BROADCASTER_IMPLEMENTATIONS__)
     if not piloting_impl.lower() in map_interface:
         logger.warning(
-            "'piloting_implementation' : "
+            "'piloting_implementation': "
             + piloting_impl
             + " is not know for '"
             + broadcaster.name
@@ -90,7 +97,7 @@ def get_piloting_implementation(broadcaster) -> Optional[PilotingInterface]:
 
     if piloting_impl.lower() == "wowza":
         logger.debug(
-            "'piloting_implementation' found : "
+            "'piloting_implementation' found: "
             + piloting_impl.lower()
             + " for '"
             + broadcaster.name
@@ -103,10 +110,10 @@ def get_piloting_implementation(broadcaster) -> Optional[PilotingInterface]:
 
 
 def is_recording_launched_by_pod(self) -> bool:
-    # Récupération du fichier associé à l'enregistrement du broadcaster
+    # Récupération du fichier associé à l'enregistrement
     current_record_info = self.get_info_current_record()
     if not current_record_info.get("currentFile"):
-        logging.error(" ... impossible to get recording file name")
+        logger.error(" ... impossible to get recording file name")
         return False
 
     filename = current_record_info.get("currentFile")
@@ -114,7 +121,7 @@ def is_recording_launched_by_pod(self) -> bool:
 
     # Vérification qu'il existe bien pour cette instance ce Pod
     if not os.path.exists(full_file_name):
-        logging.debug(" ...  is not on this POD recording filesystem : " + full_file_name)
+        logger.debug(" ...  is not on this POD recording filesystem: " + full_file_name)
         return False
 
     return True
@@ -134,10 +141,10 @@ class Wowza(PilotingInterface):
             )
 
     def check_piloting_conf(self) -> bool:
-        logging.debug("Wowza - Check piloting conf")
+        logger.debug("Wowza - Check piloting conf")
         conf = self.broadcaster.piloting_conf
         if not conf:
-            logging.error(
+            logger.error(
                 "'piloting_conf' value is not set for '"
                 + self.broadcaster.name
                 + "' broadcaster."
@@ -146,26 +153,26 @@ class Wowza(PilotingInterface):
         try:
             decoded = json.loads(conf)
         except Exception:
-            logging.error(
+            logger.error(
                 "'piloting_conf' has not a valid Json format for '"
                 + self.broadcaster.name
                 + "' broadcaster."
             )
             return False
         if not {"server_url", "application", "livestream"} <= decoded.keys():
-            logging.error(
+            logger.error(
                 "'piloting_conf' format value for '"
                 + self.broadcaster.name
-                + "' broadcaster must be like : "
+                + "' broadcaster must be like: "
                 "{'server_url':'...','application':'...','livestream':'...'}"
             )
             return False
 
-        logging.debug("->piloting conf OK")
+        logger.debug("->piloting conf OK")
         return True
 
     def is_available_to_record(self) -> bool:
-        logging.debug("Wowza - Check availability")
+        logger.debug("Wowza - Check availability")
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)
         url_state_live_stream_recording = (
@@ -187,7 +194,7 @@ class Wowza(PilotingInterface):
         return False
 
     def is_recording(self, with_file_check=False) -> bool:
-        logging.debug("Wowza - Check if is being recorded")
+        logger.debug("Wowza - Check if is being recorded")
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)
         url_state_live_stream_recording = (
@@ -212,7 +219,7 @@ class Wowza(PilotingInterface):
             return True
 
     def start(self, event_id=None, login=None) -> bool:
-        logging.debug("Wowza - Start record")
+        logger.debug("Wowza - Start record")
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)
         url_start_record = (
@@ -266,15 +273,16 @@ class Wowza(PilotingInterface):
 
         return False
 
-    def split(self) -> bool:
-        logging.debug("Wowza - Split record")
+    def execute_action(self, action) -> bool:
+        """Execute a Wowza action."""
+        logger.debug("Wowza - %s" % action)
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)
         url_split_record = (
             self.url
             + "/instances/_definst_/streamrecorders/"
             + conf["livestream"]
-            + "/actions/splitRecording"
+            + "/actions/%s" % action
         )
         response = requests.put(
             url_split_record,
@@ -287,29 +295,17 @@ class Wowza(PilotingInterface):
 
         return False
 
+    def split(self) -> bool:
+        """Split the recording."""
+        return self.execute_action("splitRecording")
+
     def stop(self) -> bool:
-        logging.debug("Wowza - Stop_record")
-        json_conf = self.broadcaster.piloting_conf
-        conf = json.loads(json_conf)
-        url_stop_record = (
-            self.url
-            + "/instances/_definst_/streamrecorders/"
-            + conf["livestream"]
-            + "/actions/stopRecording"
-        )
-        response = requests.put(
-            url_stop_record,
-            headers={"Accept": "application/json", "Content-Type": "application/json"},
-        )
-
-        if response.status_code == http.HTTPStatus.OK:
-            if response.json().get("success"):
-                return True
-
-        return False
+        """Stop the recording."""
+        return self.execute_action("stopRecording")
 
     def get_info_current_record(self):
-        logging.debug("Wowza - Get info from current record")
+        """Get information about the current recording."""
+        logger.debug("Wowza - Get info from current record")
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)
         url_state_live_stream_recording = (
@@ -327,7 +323,7 @@ class Wowza(PilotingInterface):
                 "currentFile": "",
                 "segmentNumber": "",
                 "outputPath": "",
-                "segmentDuration": "",
+                "durationInSeconds": "",
             }
 
         segment_number = ""
@@ -342,9 +338,14 @@ class Wowza(PilotingInterface):
         except Exception:
             pass
 
+        segment_duration = response.json().get("segmentDuration", 0)
+        elapsed_time = timedelta(milliseconds=int(segment_duration)).total_seconds()
         return {
             "currentFile": current_file,
             "segmentNumber": segment_number,
             "outputPath": response.json().get("outputPath"),
-            "segmentDuration": response.json().get("segmentDuration"),
+            "durationInSeconds": int(elapsed_time),
         }
+
+    def copy_file_to_pod_dir(self, filename):
+        return False

@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load i18n l10n %}
+{% load static %}
+{% load thumbnail %}
+
+{% block more_style %}
+  <link href="{% static 'css/import_video.css' %}?ver={{ VERSION }}" rel="stylesheet">
+{% endblock more_style %}
+
+
+{% block breadcrumbs %}{{ block.super }} 
+  <li class="breadcrumb-item active" aria-current="page">{% trans "My external videos" %}</li>
+{% endblock %}
+
+{% block page_content %}
+
+<div class="pod-first-content">
+  <p>
+    {% trans "If you have achieved Big Blue Button meetings via another interface (typically via Moodle), or if you wish to centralize PeerTube, Youtube or other videos on Pod, it is possible to retrieve these recordings and be able to convert them into video in this platform (under certain conditions)." %}<br>
+    {% trans "You need to create an external video before you can import it." %}
+  </p>
+</div>
+
+<div class="d-grid gap-2 d-md-flex justify-content-md mb-2">
+    <a class="btn btn-primary pod-btn-primary btn-sm" href="{% url 'import_video:add_external_recording' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Create an external video' %}">
+      <i class="bi bi-plus pod-add"></i><span>{% trans "Create an external video" %}</span>
+    </a>
+</div>
+
+<div id="recording-loader" class="recording-loader">
+  <div class="recording-loading"></div>
+  {% trans "Do not leave the page until the video upload to Pod is complete." %}
+</div>
+<table class="table align-middle table-sm table-bordered table-striped caption-top" id="recordings">
+    <thead>
+      <tr>
+        <th scope="col">{% trans "Name" %}</th>
+        <th scope="col">{% trans "State" %}</th>
+        <th scope="col">{% trans "Date" %}</th>
+        <th scope="col">{% trans "Type" %}</th>
+        <th scope="col">{% trans "Playback" %}</th>
+        <th scope="col">{% trans "Import" %}</th>
+        <th scope="col">{% trans "Manage" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for record in recordings %}
+        <tr class="recordings_list_item">
+            <td class="recording_name">{{ record.name }}</td>
+            <td>
+              {% if not record.uploadedToPodBy %}
+                {% trans "Video file not uploaded to Pod" %}
+              {% else %}
+                {% trans "Video file already uploaded to Pod" %}
+                {% if request.user != record.uploadedToPodBy %}
+                  {% trans "by"%} {{ record.uploadedToPodBy.first_name }} {{ record.uploadedToPodBy.last_name }}
+                {% endif %}
+              {% endif %}
+            </td>
+            <td> {{ record.startTime }}</td>
+            <td>
+              {{ record.type }}
+            </td>
+            <td>
+                {% if record.presentationUrl != "" %}
+                  <a class="btn btn-primary pod-btn-primary btn-sm" href="{{ record.presentationUrl }}" target="_blank" title="{% trans 'Display the recording in presentation format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+                    <i class="bi bi-file-earmark-play"></i>
+                  </a>
+                {% endif %}
+                {% if record.videoUrl != "" %}
+                  <a class="btn btn-primary pod-btn-primary btn-sm" href="{{ record.videoUrl }}" target="_blank" title="{% trans 'Display the recording in video format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+                    <i class="bi bi-camera-video"></i>
+                  </a>
+                {% endif %}
+            </td>
+            <td>
+              {% if record.canUpload %}
+                {% trans "Please confirm you want to upload the recording to Pod" as confirmUpload %}
+                <form method="post" action="{% url "import_video:upload_external_recording_to_pod" record_id=record.id %}" onsubmit="return confirmUploadToPod('{{ confirmUpload|escapejs }}');" style="display: inline;">
+                  <input type="hidden" name="recording_name" value="{{ record.name }}">
+                  <input type="hidden" name="source_url" value="{{ record.videoUrl }}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-secondary pod-btn-secondary btn-sm" title="{% trans 'Upload to Pod as a video'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-upload pod-add"></i></button>
+                </form>
+              {% endif %}
+            </td>
+            <td>
+              {% if record.canDelete %}
+                {% trans "Please confirm you want to delete the external recording" as confirmDelete %}
+                <a href="{% url 'import_video:edit_external_recording' record.id %}" class="btn btn-primary pod-btn-primary btn-sm" title="{% trans 'Edit the external recording'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+                  <i class="bi bi-pencil-square pod-add"></i>
+                </a>
+                <form method="post" action="{% url "import_video:delete_external_recording" id=record.id %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the external recording'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-trash3 pod-add"></i></button>
+                </form>
+              {% endif %}
+            </td>
+        </tr>
+        {%endfor%}
+    </tbody>
+</table>
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+  {{ block.super }}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+  {% include 'import_video/filter_aside.html' %}
+{% endblock page_aside %}
+
+{% block more_script %}
+<script>
+  // Filter recordings
+  let searchRecInput = document.querySelector(
+    "#external_recordings_filter #searchrecordings"
+  );
+  let searchRecHandler = (s) => {
+    let recs = document.querySelectorAll(
+      ".recordings_list_item"
+    );
+    if (s.length >= 3) {
+      // Display only recordings matching the filter
+      recs.forEach((rec) => {
+        if (!rec.innerHTML.trim().toLowerCase().includes(s)) {
+          rec.style.visibility = 'collapse';
+        }
+        else rec.style.visibility = 'visible';
+      });
+    } else {
+      // Display all recordings
+      recs.forEach((rec) => {
+        rec.style.visibility = 'visible';
+      });
+    }
+  };
+  searchRecInput.addEventListener("input", (e) => {
+    searchRecHandler(searchRecInput.value.trim());
+  });
+
+  /**
+   *  Manage the upload To Pod : confirm and loader
+   */
+  function confirmUploadToPod(message) {
+    const answer=confirm(message);
+    if(answer){
+     document.getElementById("recording-loader").style.display = "block";
+    }
+    return answer;
+  }
+</script>
+{% endblock more_script %}

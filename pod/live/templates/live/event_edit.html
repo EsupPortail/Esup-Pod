@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block more_style %}
-  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{ VERSION }}"/>
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{ VERSION }}">
   <style>
     .select2-container {
       display: block !important;
@@ -30,7 +30,7 @@
 {% block page_content %}
 
   {% if access_not_allowed == True %}
-    <p class="text-info">
+    <p class="text-info-emphasis">
       <i class="bi bi-info-circle"></i>&nbsp;{% trans "Access to adding event has been restricted. If you want to add events on the platform, please" %}
       <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
     </p>
@@ -170,7 +170,7 @@
   {{ form.media }}
 
   <script>
-    
+
     if (document.getElementById("event_is_draft")){
       document.getElementById("event_is_draft").addEventListener("click", () => showRestrictions());
     }
@@ -189,7 +189,7 @@
           showGroups();
         }
       })
-    
+
     };
 
     {# groups field available only if restricted #}
@@ -203,7 +203,7 @@
           gp_access.classList.add("hide");
         }
       })
-   
+
     };
 
     document.addEventListener("DOMContentLoaded",function () {

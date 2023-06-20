@@ -1,31 +1,34 @@
+"""Views of the Meeting module."""
 import os
 import bleach
 
-from django.shortcuts import render
-
-from django.http import JsonResponse, HttpResponse
-from django.contrib.sites.shortcuts import get_current_site
-from django.templatetags.static import static
-from django.contrib.auth.decorators import login_required
-from django.utils.translation import ugettext_lazy as _
-from django.utils.html import mark_safe
-from django.shortcuts import get_object_or_404
-from django.core.exceptions import SuspiciousOperation
-from django.views.decorators.csrf import csrf_protect
-from django.core.exceptions import PermissionDenied
-from django.contrib import messages
-from django.shortcuts import redirect
-from django.urls import reverse
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
-from django.utils import timezone
-from datetime import datetime
-
-from .models import Meeting, StatelessRecording, Recording
+from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm
+from .forms import MeetingInviteForm
+from .models import Meeting, InternalRecording
 from .utils import get_nth_week_number
-from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm, MeetingInviteForm
+from datetime import datetime
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import SuspiciousOperation
+from django.core.exceptions import PermissionDenied
+from django.core.mail import EmailMultiAlternatives
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render, redirect
+from django.templatetags.static import static
+from django.urls import reverse
+from django.utils import timezone
+from django.utils.html import mark_safe
+from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import ensure_csrf_cookie
+from pod.import_video.utils import StatelessRecording
+from pod.import_video.utils import secure_request_for_upload, parse_remote_file
+from pod.import_video.utils import download_video_file, save_video
 from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
+from pod.main.utils import secure_post_request, display_message_with_icon
 
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
@@ -52,6 +55,32 @@ BBB_MEETING_INFO = getattr(
 )
 MEETING_DISABLE_RECORD = getattr(settings, "MEETING_DISABLE_RECORD", True)
 
+VIDEO_ALLOWED_EXTENSIONS = getattr(
+    settings,
+    "VIDEO_ALLOWED_EXTENSIONS",
+    (
+        "3gp",
+        "avi",
+        "divx",
+        "flv",
+        "m2p",
+        "m4v",
+        "mkv",
+        "mov",
+        "mp4",
+        "mpeg",
+        "mpg",
+        "mts",
+        "wmv",
+        "mp3",
+        "ogg",
+        "wav",
+        "wma",
+        "webm",
+        "ts",
+    ),
+)
+
 __TITLE_SITE__ = (
     TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
     if (TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"))
@@ -61,6 +90,7 @@ __TITLE_SITE__ = (
 
 @login_required(redirect_field_name="referrer")
 def my_meetings(request):
+    """List the meetings."""
     site = get_current_site(request)
     if RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
         return render(request, "meeting/my_meetings.html", {"access_not_allowed": True})
@@ -92,6 +122,7 @@ def my_meetings(request):
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
 def add_or_edit(request, meeting_id=None):
+    """Add or edit a meeting."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
     meeting = (
@@ -110,7 +141,9 @@ def add_or_edit(request, meeting_id=None):
         )
         and (request.user not in meeting.additional_owners.all())
     ):
-        messages.add_message(request, messages.ERROR, _("You cannot edit this meeting."))
+        display_message_with_icon(
+            request, messages.ERROR, _("You cannot edit this meeting.")
+        )
         raise PermissionDenied
 
     if RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
@@ -136,12 +169,12 @@ def add_or_edit(request, meeting_id=None):
         )
         if form.is_valid():
             meeting = save_meeting_form(request, form)
-            messages.add_message(
+            display_message_with_icon(
                 request, messages.INFO, _("The changes have been saved.")
             )
             return redirect(reverse("meeting:my_meetings"))
         else:
-            messages.add_message(
+            display_message_with_icon(
                 request,
                 messages.ERROR,
                 _("One or more errors have been found in the form."),
@@ -159,6 +192,7 @@ def add_or_edit(request, meeting_id=None):
 
 
 def save_meeting_form(request, form):
+    """Save a meeting form."""
     meeting = form.save(commit=False)
     meeting.site = get_current_site(request)
     if (
@@ -179,6 +213,7 @@ def save_meeting_form(request, form):
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
 def delete(request, meeting_id):
+    """Delete a meeting."""
     meeting = get_object_or_404(
         Meeting, meeting_id=meeting_id, site=get_current_site(request)
     )
@@ -186,7 +221,7 @@ def delete(request, meeting_id):
     if request.user != meeting.owner and not (
         request.user.is_superuser or request.user.has_perm("meeting.delete_meeting")
     ):
-        messages.add_message(
+        display_message_with_icon(
             request, messages.ERROR, _("You cannot delete this meeting.")
         )
         raise PermissionDenied
@@ -197,12 +232,12 @@ def delete(request, meeting_id):
         form = MeetingDeleteForm(request.POST)
         if form.is_valid():
             meeting.delete()
-            messages.add_message(
+            display_message_with_icon(
                 request, messages.INFO, _("The meeting has been deleted.")
             )
             return redirect(reverse("meeting:my_meetings"))
         else:
-            messages.add_message(
+            display_message_with_icon(
                 request,
                 messages.ERROR,
                 _("One or more errors have been found in the form."),
@@ -214,6 +249,7 @@ def delete(request, meeting_id):
 @csrf_protect
 @ensure_csrf_cookie
 def join(request, meeting_id, direct_access=None):
+    """Join a meeting."""
     try:
         id = int(meeting_id[: meeting_id.find("-")])
     except ValueError:
@@ -241,6 +277,7 @@ def join(request, meeting_id, direct_access=None):
 
 
 def render_show_page(request, meeting, show_page, direct_access):
+    """Render show page."""
     if show_page and direct_access and request.user.is_authenticated:
         # join as attendee
         # get user name and redirect to BBB
@@ -266,7 +303,7 @@ def render_show_page(request, meeting, show_page, direct_access):
 
 
 def join_as_moderator(request, meeting):
-    # messages.add_message(request, messages.INFO, _("Join as moderator !"))
+    """Join as a moderator."""
     try:
         created = meeting.create(request)
         if created:
@@ -282,7 +319,7 @@ def join_as_moderator(request, meeting):
             return redirect(join_url)
         else:
             msg = "Unable to create meeting ! "
-            messages.add_message(request, messages.ERROR, msg)
+            display_message_with_icon(request, messages.ERROR, msg)
             return render(
                 request,
                 "meeting/join.html",
@@ -292,8 +329,8 @@ def join_as_moderator(request, meeting):
         args = ve.args[0]
         msg = ""
         for key in args:
-            msg += "<b>%s:</b> %s<br/>" % (key, args[key])
-        messages.add_message(request, messages.ERROR, mark_safe(msg))
+            msg += "<b>%s:</b> %s<br>" % (key, args[key])
+        display_message_with_icon(request, messages.ERROR, mark_safe(msg))
         return render(
             request,
             "meeting/join.html",
@@ -302,8 +339,9 @@ def join_as_moderator(request, meeting):
 
 
 def check_user(request):
+    """Check user."""
     if request.user.is_authenticated:
-        messages.add_message(
+        display_message_with_icon(
             request, messages.ERROR, _("You cannot access to this meeting.")
         )
         raise PermissionDenied
@@ -312,6 +350,7 @@ def check_user(request):
 
 
 def check_form(request, meeting, remove_password_in_form):
+    """Check form."""
     current_user = request.user if request.user.is_authenticated else None
     form = MeetingPasswordForm(
         current_user=current_user,
@@ -329,9 +368,6 @@ def check_form(request, meeting, remove_password_in_form):
                 and form.cleaned_data["password"] == meeting.attendee_password
             )
             if access_granted:
-                # messages.add_message(
-                #     request, messages.INFO, _("Join as attendee !")
-                # )
                 # get user name from form and redirect to BBB
                 join_url = ""
                 if current_user:
@@ -348,13 +384,13 @@ def check_form(request, meeting, remove_password_in_form):
                     join_url = meeting.get_join_url(fullname, "VIEWER")
                 return redirect(join_url)
             else:
-                messages.add_message(
+                display_message_with_icon(
                     request,
                     messages.ERROR,
                     _("Password given is not correct."),
                 )
         else:
-            messages.add_message(
+            display_message_with_icon(
                 request,
                 messages.ERROR,
                 _("One or more errors have been found in the form."),
@@ -367,6 +403,7 @@ def check_form(request, meeting, remove_password_in_form):
 
 
 def is_in_meeting_groups(user, meeting):
+    """Return if user in the meeting."""
     return user.owner.accessgroup_set.filter(
         code_name__in=[
             name[0] for name in meeting.restrict_access_to_groups.values_list("code_name")
@@ -397,6 +434,7 @@ def get_meeting_access(request, meeting):
 @ensure_csrf_cookie
 # @login_required(redirect_field_name="referrer")
 def status(request, meeting_id):
+    """Status of a meeting, in JSON format."""
     meeting = get_object_or_404(
         Meeting, meeting_id=meeting_id, site=get_current_site(request)
     )
@@ -417,6 +455,7 @@ def status(request, meeting_id):
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
 def end(request, meeting_id):
+    """End meeting, in JSON format.."""
     meeting = get_object_or_404(
         Meeting, meeting_id=meeting_id, site=get_current_site(request)
     )
@@ -424,7 +463,7 @@ def end(request, meeting_id):
     if request.user != meeting.owner and not (
         request.user.is_superuser or request.user.has_perm("meeting.delete_meeting")
     ):
-        messages.add_message(
+        display_message_with_icon(
             request, messages.ERROR, _("You cannot delete this meeting.")
         )
         raise PermissionDenied
@@ -435,13 +474,13 @@ def end(request, meeting_id):
         args = ve.args[0]
         msg = ""
         for key in args:
-            msg += "<b>%s:</b> %s<br/>" % (key, args[key])
+            msg += "<b>%s:</b> %s<br>" % (key, args[key])
         msg = mark_safe(msg)
     if request.is_ajax():
         return JsonResponse({"end": meeting.end(), "msg": msg}, safe=False)
     else:
         if msg != "":
-            messages.add_message(request, messages.ERROR, msg)
+            display_message_with_icon(request, messages.ERROR, msg)
         return redirect(reverse("meeting:my_meetings"))
 
 
@@ -449,6 +488,7 @@ def end(request, meeting_id):
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
 def get_meeting_info(request, meeting_id):
+    """Get meeting info, in JSON format."""
     meeting = get_object_or_404(
         Meeting, meeting_id=meeting_id, site=get_current_site(request)
     )
@@ -456,7 +496,7 @@ def get_meeting_info(request, meeting_id):
     if request.user != meeting.owner and not (
         request.user.is_superuser or request.user.has_perm("meeting.delete_meeting")
     ):
-        messages.add_message(
+        display_message_with_icon(
             request, messages.ERROR, _("You cannot delete this meeting.")
         )
         raise PermissionDenied
@@ -469,35 +509,38 @@ def get_meeting_info(request, meeting_id):
         args = ve.args[0]
         msg = ""
         for key in args:
-            msg += "<b>%s:</b> %s<br/>" % (key, args[key])
+            msg += "<b>%s:</b> %s<br>" % (key, args[key])
         msg = mark_safe(msg)
     if request.is_ajax():
         return JsonResponse({"info": info, "msg": msg}, safe=False)
     else:
         if msg != "":
-            messages.add_message(request, messages.ERROR, msg)
+            display_message_with_icon(request, messages.ERROR, msg)
         return JsonResponse({"info": info, "msg": msg}, safe=False)
 
 
 @login_required(redirect_field_name="referrer")
-def recordings(request, meeting_id):
+def internal_recordings(request, meeting_id):
+    """List the internal recordings.
+
+    Args:
+        request (Request): HTTP request
+        meeting_id (String): meeting id (BBB format)
+
+    Raises:
+        PermissionDenied: if user not allowed
+
+    Returns:
+        HTTPResponse: internal recordings list
+    """
     meeting = get_object_or_404(
         Meeting, meeting_id=meeting_id, site=get_current_site(request)
     )
 
-    if (
-        request.user != meeting.owner
-        and not (
-            request.user.is_superuser or request.user.has_perm("meeting.view_meeting")
-        )
-        and (request.user not in meeting.additional_owners.all())
-    ):
-        messages.add_message(
-            request, messages.ERROR, _("You cannot view the recordings of this meeting.")
-        )
-        raise PermissionDenied
+    # Secure the list of internal recordings
+    secure_internal_recordings(request, meeting)
 
-    # Additional owners can't delete these recordings
+    # The user can delete this recording ?
     can_delete = get_can_delete_recordings(request, meeting)
 
     meeting_recordings = meeting.get_recordings()
@@ -514,18 +557,19 @@ def recordings(request, meeting_id):
             bbb_recording.startTime = data["startTime"]
             bbb_recording.endTime = data["endTime"]
             for playback in data["playback"]:
-                bbb_recording.add_playback(
-                    data["playback"][playback]["type"], data["playback"][playback]["url"]
-                )
+                if data["playback"][playback]["type"] == "presentation":
+                    bbb_recording.presentationUrl = data["playback"][playback]["url"]
+
                 # Uploading to Pod is possible only for video playback
                 if data["playback"][playback]["type"] == "video":
                     bbb_recording.canUpload = True
+                    bbb_recording.videoUrl = data["playback"][playback]["url"]
 
             # Only the owner can delete their recordings
             bbb_recording.canDelete = can_delete
             # Search for more informations from database (if already uploaded to Pod)
-            recording = Recording.objects.filter(
-                recording_id=data["recordID"], is_internal=True
+            recording = InternalRecording.objects.filter(
+                recording_id=data["recordID"]
             ).first()
             if recording:
                 bbb_recording.uploadedToPodBy = recording.uploaded_to_pod_by
@@ -533,7 +577,7 @@ def recordings(request, meeting_id):
 
     return render(
         request,
-        "meeting/recordings.html",
+        "meeting/internal_recordings.html",
         {
             "meeting": meeting,
             "recordings": recordings,
@@ -542,11 +586,41 @@ def recordings(request, meeting_id):
     )
 
 
+def secure_internal_recordings(request, meeting):
+    """Secure the internal recordings of a meeting.
+
+    Args:
+        request (Request): HTTP request
+        meeting (Meeting): Meeting instance
+
+    Raises:
+        PermissionDenied: if user not allowed
+    """
+    if (
+        meeting
+        and request.user != meeting.owner
+        and not (
+            request.user.is_superuser or request.user.has_perm("meeting.view_meeting")
+        )
+    ):
+        display_message_with_icon(
+            request, messages.ERROR, _("You cannot view the recordings of this meeting.")
+        )
+        raise PermissionDenied
+
+
 def get_can_delete_recordings(request, meeting):
-    """Return True if current user can delete recordings."""
+    """Check if user can delete, or not, a recording of this meeting.
+
+    Args:
+        request (Request): HTTP request
+        meeting (Meeting): Meeting instance
+
+    Returns:
+        Boolean: True if current user can delete the recordings of this meeting.
+    """
     can_delete = False
 
-    # Additional owners can't delete these recordings
     if (
         request.user == meeting.owner
         or (request.user.is_superuser)
@@ -559,45 +633,51 @@ def get_can_delete_recordings(request, meeting):
 @csrf_protect
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
-def delete_recording(request, meeting_id, recording_id):
+def delete_internal_recording(request, meeting_id, recording_id):
+    """Delete an internal recording.
+
+    Args:
+        request (Request): HTTP request
+        meeting_id (String): meeting id (BBB format)
+        recording_id (String): recording id (BBB format)
+
+    Raises:
+        PermissionDenied: if user not allowed
+
+    Returns:
+        HTTP Response: Redirect to the recordings list
+    """
     meeting = get_object_or_404(
         Meeting, meeting_id=meeting_id, site=get_current_site(request)
     )
 
-    if request.user != meeting.owner and not (
-        request.user.is_superuser or request.user.has_perm("meeting.delete_meeting")
-    ):
-        messages.add_message(
-            request, messages.ERROR, _("You cannot delete this recording.")
-        )
-        raise PermissionDenied
+    # Secure internal recording
+    secure_internal_recordings(request, meeting)
 
-    if request.method == "POST":
+    # Only POST request
+    secure_post_request(request)
+
+    msg = ""
+    delete = False
+    try:
+        delete = meeting.delete_recording(recording_id)
+    except ValueError as ve:
+        args = ve.args[0]
         msg = ""
-        delete = False
-        try:
-            delete = meeting.delete_recording(recording_id)
-        except ValueError as ve:
-            args = ve.args[0]
-            msg = ""
-            for key in args:
-                msg += "<b>%s:</b> %s<br/>" % (key, args[key])
-            msg = mark_safe(msg)
-        if delete and msg == "":
-            messages.add_message(
-                request, messages.INFO, _("The recording has been deleted.")
-            )
-        else:
-            messages.add_message(request, messages.ERROR, msg)
-        return redirect(reverse("meeting:recordings", args=(meeting.meeting_id,)))
-    else:
-        messages.add_message(
-            request, messages.INFO, _("This view cannot be accessed directly.")
+        for key in args:
+            msg += "<b>%s:</b> %s<br>" % (key, args[key])
+        msg = mark_safe(msg)
+    if delete and msg == "":
+        display_message_with_icon(
+            request, messages.INFO, _("The recording has been deleted.")
         )
-        return redirect(reverse("meeting:recordings", args=(meeting.meeting_id,)))
+    else:
+        display_message_with_icon(request, messages.ERROR, msg)
+    return redirect(reverse("meeting:internal_recordings", args=(meeting.meeting_id,)))
 
 
 def get_meeting_info_json(info):
+    """Get meeting info in JSON format."""
     response = {}
     for key in info:
         temp_key = key.split("__")[0] if "__" in key else key
@@ -613,6 +693,7 @@ def get_meeting_info_json(info):
 
 
 def end_callback(request, meeting_id):
+    """End the BBB callback."""
     meeting = get_object_or_404(
         Meeting, meeting_id=meeting_id, site=get_current_site(request)
     )
@@ -625,6 +706,7 @@ def end_callback(request, meeting_id):
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
 def invite(request, meeting_id):
+    """Invite users to a BBB meeting."""
     meeting = get_object_or_404(
         Meeting, meeting_id=meeting_id, site=get_current_site(request)
     )
@@ -632,7 +714,7 @@ def invite(request, meeting_id):
     if request.user != meeting.owner and not (
         request.user.is_superuser or request.user.has_perm("meeting.delete_meeting")
     ):
-        messages.add_message(
+        display_message_with_icon(
             request, messages.ERROR, _("You cannot invite for this meeting.")
         )
         raise PermissionDenied
@@ -641,9 +723,9 @@ def invite(request, meeting_id):
         form = MeetingInviteForm(request.POST)
 
         if form.is_valid():
-            emails = form.cleaned_data["emails"]
+            emails = get_dest_emails(meeting, form)
             send_invite(request, meeting, emails)
-            messages.add_message(
+            display_message_with_icon(
                 request, messages.INFO, _("Invitations send to recipients.")
             )
             return redirect(reverse("meeting:my_meetings"))
@@ -654,7 +736,18 @@ def invite(request, meeting_id):
     )
 
 
+def get_dest_emails(meeting, form):
+    """Recipient emails."""
+    emails = form.cleaned_data["emails"]
+    if form.cleaned_data["owner_copy"] is True:
+        emails.append(meeting.owner.email)
+        for add_owner in meeting.additional_owners.all():
+            emails.append(add_owner.email)
+    return emails
+
+
 def send_invite(request, meeting, emails):
+    """Send invitations to users."""
     subject = _("%(owner)s invites you to the meeting %(meeting_title)s") % {
         "owner": meeting.owner.get_full_name(),
         "meeting_title": meeting.name,
@@ -677,6 +770,7 @@ def send_invite(request, meeting, emails):
 
 
 def get_html_content(request, meeting):
+    """Get HTML format content."""
     join_link = request.build_absolute_uri(
         reverse("meeting:join", args=(meeting.meeting_id,))
     )
@@ -742,6 +836,7 @@ def get_html_content(request, meeting):
 
 
 def create_ics(request, meeting):
+    """Create ICS format."""
     join_link = request.build_absolute_uri(
         reverse("meeting:join", args=(meeting.meeting_id,))
     )
@@ -808,7 +903,8 @@ def create_ics(request, meeting):
 
 
 def get_rrule(meeting):
-    """
+    """Get recurrence rule.
+
     i.e:
     RRULE:FREQ=DAILY;INTERVAL=2;COUNT=28
     RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,TU;UNTIL=20221011T100000Z
@@ -843,51 +939,228 @@ def get_rrule(meeting):
 @csrf_protect
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
-def upload_recording_to_pod(request, meeting_id, recording_id):
+def upload_internal_recording_to_pod(request, recording_id, meeting_id):
+    """Upload internal recording to Pod.
+
+    Args:
+        request (Request): HTTP request
+        recording_id (String): recording id (BBB format)
+        meeting_id (String): meeting id (BBB format)
+
+    Raises:
+        PermissionDenied: if user not allowed
+
+    Returns:
+        HTTP Response: Redirect to the recordings list
+    """
     meeting = get_object_or_404(
         Meeting, meeting_id=meeting_id, site=get_current_site(request)
     )
-    if (
-        meeting
-        and request.user != meeting.owner
-        and (
-            not (
-                request.user.is_superuser
-                or request.user.has_perm("meeting.upload_recording_to_pod")
-            )
-        )
-        and (request.user not in meeting.additional_owners.all())
-    ):
-        messages.add_message(
-            request, messages.ERROR, _("You cannot upload this recording.")
-        )
-        raise PermissionDenied
+    # Secure the internal recordings
+    secure_internal_recordings(request, meeting)
 
-    if request.method == "POST":
-        msg = ""
-        upload = False
-        try:
-            upload = meeting.upload_recording_to_pod(request, meeting_id, recording_id)
-        except ValueError as ve:
-            args = ve.args[0]
-            msg = ""
-            for key in args:
-                msg += "<b>%s:</b> %s<br/>" % (key, args[key])
-            msg = mark_safe(msg)
-        if upload and msg == "":
-            messages.add_message(
-                request,
-                messages.INFO,
-                _(
-                    "The recording has been uploaded to Pod."
-                    "You can see the video directly in My videos."
-                ),
-            )
-        else:
-            messages.add_message(request, messages.ERROR, msg)
-        return redirect(reverse("meeting:recordings", args=(meeting.meeting_id,)))
-    else:
-        messages.add_message(
-            request, messages.INFO, _("This view cannot be accessed directly.")
+    # Only POST request
+    secure_post_request(request)
+
+    msg = ""
+    upload = False
+    try:
+        # Save the internal recording, before the upload
+        recording_title = request.POST.get("recording_name")
+        save_internal_recording(request, recording_id, recording_title, meeting_id)
+        # Get it
+        recording = get_object_or_404(
+            InternalRecording,
+            recording_id=recording_id,
+            meeting_id=meeting.id,
+            site=get_current_site(request),
         )
-        return redirect(reverse("meeting:recordings", args=(meeting.meeting_id,)))
+
+        # Upload this recording
+        upload = upload_recording_to_pod(request, recording.id, meeting_id)
+    except ValueError as ve:
+        args = ve.args[0]
+        msg = ""
+        if args.get("error"):
+            msg += "<strong>%s</strong><br>" % (args["error"])
+        if args.get("message"):
+            msg += args["message"]
+        if args.get("proposition"):
+            msg += "<br><span class='proposition'>%s</span>" % (args["proposition"])
+    if upload and msg == "":
+        msg += _(
+            "The recording has been uploaded to Pod. "
+            "You can see the generated video in My videos."
+        )
+        display_message_with_icon(request, messages.INFO, msg)
+    else:
+        display_message_with_icon(request, messages.ERROR, msg)
+    return redirect(reverse("meeting:internal_recordings", args=(meeting.meeting_id,)))
+
+
+# ##############################    Upload recordings to Pod
+def save_internal_recording(
+    request, recording_id, recording_name, meeting_id, source_url=None
+):
+    """Save an internal recording in database.
+
+    Args:
+        request (Request): HTTP request
+        recording_id (String): recording id (BBB format)
+        recording_name (String): recording name
+        meeting_id (String): meeting id (BBB format)
+        source_url (String, optional): Video file URL. Defaults to None.
+
+    Raises:
+        ValueError: if impossible creation
+    """
+    try:
+        meeting = get_object_or_404(
+            Meeting, meeting_id=meeting_id, site=get_current_site(request)
+        )
+
+        """ Useless for the moment
+        # Convert timestamp to datetime
+        start_timestamp = request.POST.get("start_timestamp")
+        end_timestamp = request.POST.get("end_timestamp")
+        start_dt = dt.fromtimestamp(float(start_timestamp) / 1000)
+        end_dt = dt.fromtimestamp(float(end_timestamp) / 1000)
+        # Format datetime and not timestamp
+        start_at = start_dt.strftime("%Y-%m-%d %H:%M:%S")
+        # Management of the duration
+        duration = str(end_dt - start_dt).split(".")[0]
+        """
+
+        if source_url is None:
+            source_url = ""
+        # Save the recording as an internal recording
+        recording, created = InternalRecording.objects.update_or_create(
+            name=recording_name,
+            recording_id=recording_id,
+            meeting=meeting,
+            # start_at=start_at,
+            # duration=parse_duration(duration),
+            owner=meeting.owner,
+            defaults={"uploaded_to_pod_by": request.user, "source_url": source_url},
+        )
+    except Exception as exc:
+        msg = {}
+        msg["error"] = _("Impossible to create the internal recording")
+        msg["message"] = str(exc)
+        raise ValueError(msg)
+
+
+def upload_recording_to_pod(request, record_id, meeting_id=None):
+    """Upload recording to Pod (main function).
+
+    Args:
+        request (Request): HTTP request
+        record_id (Integer): id record in the database
+        meeting_id (String, optional): meeting id (BBB format) for internal recording.
+
+    Raises:
+        ValueError: exception raised if no URL found or other problem
+
+    Returns:
+        Boolean: True if upload achieved
+    """
+    try:
+        # Check that request is correct for upload
+        secure_request_for_upload(request)
+
+        return upload_bbb_recording_to_pod(request, record_id, meeting_id)
+    except Exception as exc:
+        msg = {}
+        proposition = ""
+        msg["error"] = _("Impossible to upload to Pod the video")
+        try:
+            # Management of error messages from sub-functions
+            message = "%s (%s)" % (exc.args[0]["error"], exc.args[0]["message"])
+            proposition = exc.args[0].get("proposition")
+        except Exception:
+            # Management of error messages in all cases
+            message = str(exc)
+
+        msg["message"] = mark_safe(message)
+        msg["proposition"] = proposition
+        raise ValueError(msg)
+
+
+def upload_bbb_recording_to_pod(request, record_id, meeting_id):
+    """Upload a BBB or video file recording to Pod.
+
+    Args:
+        request (Request): HTTP request
+        record_id (Integer): id record in the database
+        meeting_id (String, optional): meeting id (BBB format) for internal recording.
+
+    Raises:
+        ValueError: exception raised if no video found at this URL
+
+    Returns:
+        Boolean: True if upload achieved
+    """
+    try:
+        recording = InternalRecording.objects.get(id=record_id)
+        source_url = request.POST.get("source_url")
+
+        # Step 1 : Download and parse the remote HTML file if necessary
+        # Check if extension is a video extension
+        extension = source_url.split(".")[-1].lower()
+        if extension in VIDEO_ALLOWED_EXTENSIONS:
+            # URL corresponds to a video file
+            source_video_url = source_url
+        else:
+            # Download and parse the remote HTML file
+            video_file = parse_remote_file(source_url)
+            source_video_url = source_url + video_file
+
+        # Step 2 : Define destination source file
+        extension = source_video_url.split(".")[-1].lower()
+        discrim = datetime.now().strftime("%Y%m%d%H%M%S")
+        dest_file = os.path.join(
+            settings.MEDIA_ROOT,
+            "videos",
+            request.user.owner.hashkey,
+            os.path.basename("%s-%s.%s" % (discrim, recording.id, extension)),
+        )
+
+        os.makedirs(os.path.dirname(dest_file), exist_ok=True)
+
+        # Step 3 : Download the video file
+        download_video_file(source_video_url, dest_file)
+
+        # Step 4 : Save informations about the recording
+        recording_title = request.POST.get("recording_name")
+        save_internal_recording(
+            request,
+            recording.recording_id,
+            recording_title,
+            meeting_id,
+            source_video_url,
+        )
+
+        # Step 5 : Save and encode Pod video
+        description = _(
+            "This video was uploaded to Pod; its origin is %(type)s : "
+            '<a href="%(url)s" target="_blank">%(url)s</a>'
+        ) % {"type": "Big Blue Button", "url": source_video_url}
+
+        save_video(request, dest_file, recording_title, description)
+
+        return True
+    except Exception as exc:
+        msg = {}
+        msg["error"] = _("Impossible to upload to Pod the video")
+        try:
+            # Management of error messages from sub-functions
+            message = "%s (%s)" % (exc.args[0]["error"], exc.args[0]["message"])
+        except Exception:
+            # Management of error messages in all cases
+            message = str(exc)
+
+        msg["message"] = mark_safe(message)
+        msg["proposition"] = _(
+            "Try changing the record type or address for this recording."
+        )
+        raise ValueError(msg)

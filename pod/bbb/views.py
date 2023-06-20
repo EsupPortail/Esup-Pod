@@ -89,7 +89,7 @@ def publish_meeting(request, id=None):
 
     form = MeetingForm(request, initial=initial)
 
-    # Check security : a normal user can publish only a meeting
+    # Check security: a normal user can publish only a meeting
     # where he was moderator
     meetings_list = Meeting.objects.filter(attendee__user_id=request.user.id, id=id)
     if not meetings_list and not request.user.is_superuser:
@@ -105,7 +105,7 @@ def publish_meeting(request, id=None):
         if form.is_valid():
             meeting = form.save(commit=False)
             meeting.id = record.id
-            # The 2 parameters are very important in the publish process :
+            # The 2 parameters are very important in the publish process:
             # At this stage, we put encoding_step=1 (waiting for encoding)
             # and the encoded_by = user that convert this presentation.
             # See the impacts in the models.py, process_recording function.
@@ -204,7 +204,7 @@ def check_meetings_have_live_in_progress(meetings_list, request):
                 meeting_id=meeting.id,
             )
             if len(lives_list) > 0:
-                # Use case : only 1 live for a meeting
+                # Use case: only 1 live for a meeting
                 for live in lives_list:
                     # Add the information directly on the meeting
                     # on a specific property live

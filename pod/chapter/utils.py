@@ -19,7 +19,7 @@ def vtt_to_chapter(vtt, video):
         if time_start > video.duration or time_start < 0:
             return (
                 "The VTT file contains a chapter started at an "
-                + "incorrect time in the video : {0}".format(caption.text)
+                + "incorrect time in the video: {0}".format(caption.text)
             )
 
         new = Chapter()

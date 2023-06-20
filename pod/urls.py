@@ -97,7 +97,7 @@ if USE_OIDC:
         url(r"^oidc/", include("mozilla_django_oidc.urls")),
     ]
 
-# BBB : TODO REPLACE BBB BY MEETING
+# BBB: TODO REPLACE BBB BY MEETING
 if getattr(settings, "USE_MEETING", False):
     urlpatterns += [
         url(r"^meeting/", include("pod.meeting.urls")),
@@ -130,6 +130,14 @@ for apps in settings.THIRD_PARTY_APPS:
 if getattr(settings, "USE_FAVORITES", True):
     urlpatterns += [
         path("favorite/", include("pod.favorite.urls", namespace="favorite")),
+    ]
+
+# IMPORT_VIDEO
+if getattr(settings, "USE_IMPORT_VIDEO", True):
+    urlpatterns += [
+        url(
+            r"^import_video/", include("pod.import_video.urls", namespace="import_video")
+        ),
     ]
 
 # CHANNELS

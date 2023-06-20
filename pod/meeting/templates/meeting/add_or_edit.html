@@ -14,7 +14,7 @@
 
 {% block page_content %}
 {% if access_not_allowed == True %}
-<p class="text-info">
+<p class="text-info-emphasis">
   <i class="bi bi-info-circle"></i>&nbsp;{% trans "Access to adding meeting has been restricted. If you want to add meetings on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
 </p>
 {% else %}
@@ -26,9 +26,9 @@
     {% csrf_token %}
     <div class="list-group">
       {% if form.errors %}
-        <p class="text-danger">{% trans "One or more errors have been found in the form." %}<br/>
+        <p class="text-danger">{% trans "One or more errors have been found in the form." %}<br>
           {% for error in form.non_field_errors %}
-          <span> - {{ error }}</span> <br/>
+          <span> - {{ error }}</span> <br>
           {% endfor %}
         </p>
       {% endif %}
@@ -99,11 +99,11 @@
       </fieldset>
       {% endif %}
       {% if name == "modal" %}
-      <div class="modal fade" id="{{options.id}}" tabindex="-1" aria-labelledby="{{ options.legend|safe|striptags }}" aria-hidden="true">
+      <div class="modal fade" id="{{options.id}}" tabindex="-1" aria-labelledby="addEditLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">{{ options.legend|safe }}</h5>
+              <h2 class="modal-title h3" id="addEditLabel">{{ options.legend|safe }}</h2>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -159,11 +159,11 @@
 {% block more_script %}
 <script src="/admin/jsi18n/"></script>
 <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
-<!-- 
+<!--
 <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>
 -->
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}" />
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
 {{form.media}}
 <script>
   /** Restrict access **/

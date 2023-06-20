@@ -11,7 +11,7 @@ from django.utils.html import format_html
 
 from pod.video.views import get_videos_list
 
-from pod.video.models import EncodingAudio
+from pod.video_encode_transcript.models import EncodingAudio
 from pod.video.models import Channel
 from pod.video.models import Theme
 

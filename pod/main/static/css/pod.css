@@ -13,7 +13,8 @@
    ***/
   /*** Theme primary color ***/
   --pod-primary: #1F7C85;
-  --bs-primary-rgb: 31, 131, 137;
+  --pod-primary-rgb: 31, 124, 133;
+
   /* a light variant of primary color, used for button hover */
   --pod-primary-lighten: #08b0a0;
   /* a dark variant of primary color, used for active links and disabled buttons */
@@ -21,6 +22,7 @@
   /* les valeurs '...-dark' ci-dessous sont pour le mode sombre.*/
   --pod-primary-dark: #1F7C85;
   --pod-primary-lighten-dark: #08b0a0;
+  --pod-primary-lighten-dark-rgb: 8, 176, 160;
   --pod-primary-darken-dark: #18575D;
 
   /***
@@ -49,6 +51,7 @@
 
   /**** couleur des liens *****/
   --pod-link-color: var(--pod-primary);
+  --pod-link-color-rgb: var(--pod-primary-rgb);
   --pod-activelink-color: var(--pod-primary-darken);
 
   /* couleur d'un élément actif (ex. : survol de bouton) */
@@ -67,10 +70,13 @@
   font-size: var(--bs-body-font-size);
 
   /* BOOTSTRAP COLORS */
+  --bs-primary-rgb: var(--pod-primary-rgb);
   --bs-light: #f8f9fa;
   --bs-dark: #343a40;
   --bs-link-color: var(--pod-link-color);
+  --bs-link-color-rgb: var(--pod-link-color-rgb);
   --bs-link-hover-color: var(--pod-activelink-color);
+  --bs-card-color: var(--pod-font-color);
 
   /* Use system font (faster load) */
   --font-family-sans-serif: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Verdana, sans-serif;
@@ -84,7 +90,7 @@
   --bs-body-font-family: var(--pod-font-family-dyslexie);
 }
 
-.pod-card--video a {
+.pod-card--video a:not(.btn) {
   color: inherit;
 }
 
@@ -108,10 +114,10 @@
   transition: background-color .5s;
 }
 
-.table-hover tbody tr:hover {
+/*.table-hover tbody tr:hover {
   color: var(--pod-font-color);
   background-color: var(--pod-background);
-}
+}*/
 
 .navbar-toggler:focus,
 .navbar-toggler:hover {
@@ -160,7 +166,7 @@
 
 .btn-link {
   /*font-weight: 400;*/
-  color: var(--pod-link-color);
+  /*color: var(--pod-link-color);*/
   text-decoration: none;
 }
 
@@ -204,7 +210,7 @@ tr,
   margin-bottom: 1.5rem;
 }
 
-:not(footer)>.pod-btn-social:not(#star_btn) {
+:not(footer)>.pod-btn-social {
   font-size: 2rem;
 }
 .btn.pod-btn-social {
@@ -540,6 +546,7 @@ button.nav-link {
 .pod-card--video .video-title {
   line-height: 1.2;
   display: inline-block;
+  max-width: 100%;
 }
 
 #videos_list .video-title a {
@@ -549,6 +556,12 @@ button.nav-link {
 #videos_list .video-title a:hover,
 #videos_list .video-title a:focus {
   text-decoration: underline;
+}
+
+/* prevent default thumbnail to be too small on some screens */
+.video-card>.card-thumbnail{
+  min-height: 146px;
+  background-color: #000;
 }
 
 .video-card .d-flex {
@@ -562,8 +575,8 @@ button.nav-link {
   grid-template-columns: 200px 1fr;
 }
 
-a:hover,
-a:focus {
+a:not(.btn):hover,
+a:not(.btn):focus {
   color: var(--pod-activelink-color);
   text-decoration: underline;
 }
@@ -597,7 +610,8 @@ div.card a img {
   background: #00000095;
 }
 
-.card-footer-pod a.btn, .card-footer-pod #star_btn  {
+.card-footer-pod a.btn,
+.card-footer-pod button {
   border: none;
   color: white;
   background: none;
@@ -674,8 +688,10 @@ div.card a img {
 #filterTag div.collapse:not(.show) {
   height: 148px !important;
   overflow: hidden;
-
   display: -webkit-box;
+  display: flex;
+  flex-direction: column;
+  display: -ms-flexbox;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
@@ -721,9 +737,21 @@ div.card a img {
   font-size: 1.3rem;
 }
 
+.errors>.form-control:focus{
+  box-shadow: 0 0 0 .25rem rgba(var(--bs-danger-rgb),.25);
+  border-color: var(--bs-danger);
+}
+
+.errors input,
+.errors select,
+.errors textarea{
+  border: 1px solid var(--bs-danger);
+}
+
 .form-group-required .errors,
 .form-group .errorlist {
-  background-color: rgba(var(--bs-danger-rgb),.2);
+  /*background-color: rgba(var(--bs-danger-rgb),.2);*/
+  color: var(--bs-danger);
 }
 
 .form-group .errorlist {
@@ -1532,15 +1560,15 @@ th + td + td + td + td {
   color: var(--pod-font-color);
 } */
 
-.table-hover > tbody > tr > * {
+/*.table-hover > tbody > tr > * {
   --bs-table-accent-bg: var(--bs-table-hover-bg) !important;
   color: var(--pod-font-color) !important;
-}
+}*/
 
-.table-hover > tbody > tr:hover > * {
+/*.table-hover > tbody > tr:hover > * {
   --bs-table-accent-bg: var(--bs-table-hover-bg) !important;
   color: var(--pod-font-color) !important;
-  }
+}*/
 
 table .alert.alert-danger.btn.pod-btn-social {
   background-color: var(--pod-alert) !important;

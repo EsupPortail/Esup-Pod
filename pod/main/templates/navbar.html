@@ -17,7 +17,7 @@
     <i class="bi bi-list" aria-hidden="true"></i>
   </button>
   <a class="navbar-brand pod-navbar__brand me-0 me-sm-1" href="/">
-    <img src="{% static LOGO_SITE %}" height="25" alt="" loading="lazy" /><strong>{{ TITLE_SITE }}</strong>
+    <img src="{% static LOGO_SITE %}" height="25" alt="" loading="lazy"><strong>{{ TITLE_SITE }}</strong>
   </a>
   <!-- off canvas -->
   <div class="offcanvas offcanvas-start pod-offcanvas" tabindex="-1" id="pod-navbar__menu" aria-labelledby="pod-navbar__menuLabel">
@@ -73,7 +73,7 @@
     {% if user.is_authenticated %}
         {% if MAINTENANCE_MODE %}
           <li class="d-none d-md-block nav-item pod-navbar__nav-item mx-2" id="nav-addvideo">
-            <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
+            <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
           </li>
         {% else %}
           {% show_video_buttons as video_buttons %}
@@ -133,7 +133,7 @@
                 <label for="checkbox-darkmode">
                   <span class="form-label">{% trans 'Dark mode' %}</span>
                   <span class="theme-switch">
-                    <input type="checkbox" id="checkbox-darkmode" />
+                    <input type="checkbox" id="checkbox-darkmode">
                     <span class="slider">
                       <i class="bi bi-sun"></i>
                       <i class="bi bi-moon"></i>
@@ -146,7 +146,7 @@
                 <label for="checkbox-dyslexia">
                   <span class="form-label">{% trans 'Dyslexia mode' %}</span>
                   <span class="dyslexia-switch">
-                    <input type="checkbox" id="checkbox-dyslexia" />
+                    <input type="checkbox" id="checkbox-dyslexia">
                     <span class="slider">
                       <i class="bi bi-eye-slash"></i>
                       <i class="bi bi-eye"></i>
@@ -181,7 +181,7 @@
           <div class="offcanvas-body">
             <nav class="nav flex-column">
               {% if MAINTENANCE_MODE %}
-                <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br /><i class="bi bi-exclamation-triangle "></i> {% trans "Some features are unavailable" %}</span>
+                <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br><i class="bi bi-exclamation-triangle "></i> {% trans "Some features are unavailable" %}</span>
               {% else %}
                 {% if video_buttons %}
                   <a class="mx-3 mb-2 btn btn-primary" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
@@ -203,6 +203,10 @@
               {% endif %}
               {% if USE_OPENCAST_STUDIO %}
                 <a class="nav-item nav-link" href="{% url 'recorder:studio_pod'%}"><i class="bi bi-camera-video pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans "Video Record" %}</a>
+              {% endif %}
+              {% show_import_video_button as import_video_button %}
+              {% if import_video_button %}
+                <a class="nav-item nav-link" href="{% url 'import_video:external_recordings'%}"><i class="bi bi-collection-play-fill pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans "Import an external video" %}</a>
               {% endif %}
               {% if "live" in THIRD_PARTY_APPS and request.user|can_manage_event_filter %}
                 <a class="nav-item nav-link" href="{% url 'live:my_events' %}" title="{% trans 'My events' %}">

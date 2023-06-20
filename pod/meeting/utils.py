@@ -1,18 +1,21 @@
+"""Utils for Meeting module."""
+from datetime import date, timedelta
 from django.conf import settings
 from hashlib import sha1
-from datetime import date, timedelta
 
 BBB_API_URL = getattr(settings, "BBB_API_URL", "")
 BBB_SECRET_KEY = getattr(settings, "BBB_SECRET_KEY", "")
 
 
 def api_call(query, call):
+    """Generate checksum for BBB API call."""
     checksum_val = sha1(str(call + query + BBB_SECRET_KEY).encode("utf-8")).hexdigest()
     result = "%s&checksum=%s" % (query, checksum_val)
     return result
 
 
 def parseXmlToJson(xml, sub=False):
+    """Parse XML to JSON format."""
     response = {}
     counter = 1
     for child in list(xml):
@@ -33,12 +36,13 @@ def parseXmlToJson(xml, sub=False):
 
 
 def slash_join(*args):
+    """Add slash to arguments."""
     return "/".join(arg.strip("/") for arg in args)
 
 
 def get_weekday_in_nth_week(year, month, nth_week, week_day):
-    """
-    Returns the date corresponding to the nth weekday of a month.
+    """Return the date corresponding to the nth weekday of a month.
+
     e.g. 3rd Friday of July 2022 is July 15, 2002 so:
     > get_weekday_in_nth_week(2022, 7, 3, 4)
     date(2022, 7, 15)
@@ -51,8 +55,8 @@ def get_weekday_in_nth_week(year, month, nth_week, week_day):
 
 
 def get_nth_week_number(original_date):
-    """
-    Returns the number of the week within the month for the date passed in argment.
+    """Return the number of the week within the month for the date passed in argument.
+
     e.g. July 15, 2022 is the 3rd Friday of the month of Juy 2022 so:
     > get_nth_week_number(date(2022, 7, 15))
     3

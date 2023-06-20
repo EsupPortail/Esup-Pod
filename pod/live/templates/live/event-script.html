@@ -13,7 +13,7 @@
     // Live seems stopped
     let stopped = false;
     let video_on_hold_is_displayed = false;
-
+    let recordingDuration = 0;
     let options = {
         notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
         language: "fr", //en or nl
@@ -139,7 +139,6 @@
         const stopButton = document.getElementById("stoprecord");
         const splitButton = document.getElementById("splitrecord");
         const durationClock = document.getElementById("recordingduration");
-        let recordingDuration = 0;
 
         // Recording actions on the stream
         startButton.onclick = () => {
@@ -171,7 +170,7 @@
               durationClock.innerHTML = "";
               durationClock.classList.remove("d-none");
             } else {
-              console.warn("Start not done : " + data.error);
+              console.warn("Start not done: " + data.error);
             }
           }).catch((error) => {
             durationClock.classList.add("d-none");
@@ -214,7 +213,7 @@
             }
           }).catch((error) => {
             durationClock.classList.add("d-none");
-            console.error("Error calling stop record : " + error.statusText);
+            console.error("Error calling stop record: " + error.statusText);
           });
         };
 
@@ -245,12 +244,12 @@
               recordingDuration = 0;
               getEventVideos();
             } else {
-              console.warn("Split not done : " + data.error);
+              console.warn("Split not done: " + data.error);
               durationClock.classList.add("d-none");
             }
           }).catch((error) => {
             durationClock.classList.add("d-none");
-            console.error("Error calling splitrecord : " + error.statusText);
+            console.error("Error calling splitrecord: " + error.statusText);
           });
         };
 
@@ -285,7 +284,7 @@
               durationClock.classList.add("d-none");
             }
           }).catch((error) => {
-            console.error("error calling isstreamavailabletorecord : " + error.statusText);
+            console.error("error calling isstreamavailabletorecord: " + error.statusText);
             startButton.classList.add("d-none");
             stopButton.classList.add("d-none");
             splitButton.classList.add("d-none");
@@ -295,12 +294,14 @@
 
         // Display elapsed record time
         function displayRecordingDuration() {
-          let minutes = parseInt(recordingDuration / 60, 10);
-          let seconds = recordingDuration - minutes * 60;
-          minutes = minutes < 10 ? "0" + minutes : minutes;
-          seconds = seconds < 10 ? "0" + seconds : seconds;
-          durationClock.innerHTML = '{% trans "Recording duration" %} : ' + minutes + ":" + seconds;
-          recordingDuration++;
+          let hours = Math.floor(recordingDuration / 3600)
+          let minutes = Math.floor(recordingDuration / 60 - (hours * 60))
+          let seconds = recordingDuration - minutes * 60 - hours * 3600
+          hours = hours === 0 ? "" : hours + ":"
+          minutes = minutes < 10 ? "0" + minutes : minutes
+          seconds = seconds < 10 ? "0" + seconds : seconds
+          durationClock.innerHTML = '{% trans "Recording duration" %}: ' + hours + minutes + ':' + seconds;
+          recordingDuration++
         }
 
         function getInfoCurrentRecord() {
@@ -312,7 +313,6 @@
               "Content-Type": "application/json",
               "X-CSRFToken": '{{ csrf_token }}'
             },
-            dataType: "json",
             body: JSON.stringify({
               "idevent": "{{ event.id }}",
               "idbroadcaster": "{{ event.broadcaster.id }}"
@@ -328,10 +328,10 @@
               durationClock.classList.remove("d-none");
             } else {
               durationClock.classList.add("d-none");
-              console.error("Recording Info not done : " + data.error);
+              console.error("Recording Info not done: " + data.error);
             }
           }).catch((error) => {
-            console.error("Error calling info record : " + error.statusText);
+            console.error("Error calling info record: " + error.statusText);
           });
         }
 
@@ -362,7 +362,7 @@
             }
         }).catch((error) => {
             document.getElementById("list_videos_of_event").classList.add("d-none");
-            console.error('error calling event_get_video_cards : ' + error.statusText);
+            console.error('error calling event_get_video_cards: ' + error.statusText);
         })
     }
 
@@ -465,8 +465,8 @@
                     // message_sent
                     displayReturnMessage("info", data.message_return);
                 } else {
-                    // error_no_broadcaster_found : Message not sent : no broadcaster found
-                    // error_no_connection : Message not sent : no connection to REDIS
+                    // error_no_broadcaster_found: Message not sent: no broadcaster found
+                    // error_no_connection: Message not sent: no connection to REDIS
                     displayReturnMessage("error", data.message_return);
                 }
             }).catch((error) => {
@@ -505,13 +505,13 @@
 
     // display the event's videos
     function show_transcription() {
-        var lastMod = null;
-        var lastModTime = 0;
+        let lastMod = null;
+        let lastModTime = 0;
         setInterval(function () {
             let tracks = player.textTracks();
-            var track_live;
-            for (var i = 0; i < tracks.length; i++) {
-                var track = tracks[i];
+            let track_live;
+            for (let i = 0; i < tracks.length; i++) {
+                let track = tracks[i];
                 if (track.kind === "subtitles" && track.language === "{{ event.broadcaster.main_lang }}") {
                     track_live = tracks[i];
                 }
@@ -555,12 +555,12 @@
                     newTrack.mode = 'showing';
                 });
                 // show all tracks
-                for (var i = 0; i < tracks.length; i++) {
+                for (let i = 0; i < tracks.length; i++) {
                     if (tracks[i].kind === "subtitles" && tracks[i].language === "{{ event.broadcaster.main_lang }}") {
                         tracks[i].mode = "showing";
                     }
                 }
-            
+
             }).catch(e => {
                   // console.log(e)
             })

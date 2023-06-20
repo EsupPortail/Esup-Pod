@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 14:51+0000\n"
+"POT-Creation-Date: 2023-06-12 13:57+0200\n"
 "PO-Revision-Date: \n"
-"Last-Translator: \n"
+"Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -58,12 +58,12 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 #: pod/chapter/static/js/chapters.js
 msgid "Make sure you added a file and that it is a valid file."
 msgstr ""
-"Assurez-vous que vous avez ajouté un fichier et qu'il s'agit d'un fichier "
+"Assurez-vous que vous avez ajouté un fichier et qu’il s’agit d’un fichier "
 "valide."
 
 #: pod/chapter/static/js/chapters.js
 msgid "Invalid action."
-msgstr "Action non valide"
+msgstr "Action non valide."
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
 msgid "Please enter a title from 2 to 100 characters."
@@ -375,14 +375,6 @@ msgid "Enrich mode"
 msgstr "Mode enrichi"
 
 #: pod/favorite/static/js/favorite-reorganize.js
-msgid "Refresh your page so you can rearrange"
-msgstr "Actualisez votre page pour pouvoir réorganiser"
-
-#: pod/favorite/static/js/favorite-reorganize.js
-msgid "Refresh"
-msgstr "Actualiser"
-
-#: pod/favorite/static/js/favorite-reorganize.js
 msgid "Save your reorganization"
 msgstr "Sauvegarder votre réorganisation"
 
@@ -404,11 +396,11 @@ msgstr "Ajouter aux favoris"
 
 #: pod/favorite/static/js/video-favorites-card-list.js
 msgid "The deletion couldn't be completed..."
-msgstr "La suppression n'a pas pu se faire..."
+msgstr "La suppression n’a pas pu se faire..."
 
 #: pod/favorite/static/js/video-favorites.js
-msgid "The addition couldn't be completed..."
-msgstr "L'ajout n'a pas pu se faire..."
+msgid "The favorite couldn’t be completed…"
+msgstr "Le favori n’a pas pu être complété…"
 
 #: pod/live/static/js/broadcaster_from_building.js
 msgid "Restricted because the broadcaster is restricted"
@@ -439,8 +431,8 @@ msgid "User not found"
 msgstr "Utilisateur non trouvé"
 
 #: pod/main/static/js/main.js
-msgid "Are you sure you want to delete this element?"
-msgstr "Êtes-vous sûr(e) de vouloir supprimer cet élément ?"
+msgid "Are you sure you want to delete theme '%(title)s'?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer le thème « %(title)s » ?"
 
 #: pod/main/static/js/main.js
 msgid "Changes have been saved."
@@ -453,6 +445,14 @@ msgstr "Erreur durant le téléversement"
 #: pod/main/static/js/main.js pod/podfile/static/podfile/js/filewidget.js
 msgid "No data could be stored."
 msgstr "Aucune donnée ne peut être stockée."
+
+#: pod/main/static/js/main.js
+msgid "Theme sucessfully deleted."
+msgstr "Suppression du thème réussie."
+
+#: pod/main/static/js/main.js
+msgid "Action performed successfully."
+msgstr "Action réalisée avec succès."
 
 #: pod/main/static/js/main.js
 msgid "Change your picture"
@@ -519,6 +519,10 @@ msgstr "Changer"
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Enter new name of folder"
 msgstr "Indiquer un nouveau nom au dossier"
+
+#: pod/podfile/static/podfile/js/filewidget.js
+msgid "Remove"
+msgstr "Retirer"
 
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Server error"
@@ -674,6 +678,10 @@ msgstr "Chargement des vidéos…"
 msgid "The date must be before or equal to"
 msgstr "La date doit être anterieure ou égale à"
 
+#: pod/video/static/js/validate-date_delete-field.js
+msgid "The deletion date can’t be earlier than today."
+msgstr "La date de suppression ne peut pas être antérieure à aujourd’hui."
+
 #: pod/video/static/js/video_category.js
 msgid "Category changes saved successfully"
 msgstr "Les changements sur la catégorie ont été sauvegardés avec succès"
@@ -765,7 +773,7 @@ msgstr "Ajouts en favoris du mois"
 
 #: pod/video/static/js/video_stats_view.js
 msgid "Favorite additions during the year"
-msgstr "Ajouts en favoris de l'année"
+msgstr "Ajouts en favoris de l’année"
 
 #: pod/video/static/js/video_stats_view.js
 msgid "Total favorite additions from creation"
@@ -788,9 +796,6 @@ msgstr "Titre court"
 #~ "Erreur lors de la suppression. La liste de lecture n’a pas pu être "
 #~ "supprimée."
 
-#~ msgid "Remove"
-#~ msgstr "Retirer"
-
 #~ msgid "Reply to comment"
 #~ msgstr "Répondre au commentaire"
 
@@ -809,8 +814,14 @@ msgstr "Titre court"
 #~ msgid "Success!"
 #~ msgstr "Succès !"
 
-#~ msgid "Error..."
+#~ msgid "Error…"
 #~ msgstr "Erreur…"
+
+#~ msgid "Are you sure you want to delete this element?"
+#~ msgstr "Êtes-vous sûr(e) de vouloir supprimer cet élément ?"
+
+#~ msgid "Refresh"
+#~ msgstr "Actualiser"
 
 #~ msgid "Video add to playlist"
 #~ msgstr "Ajouter une vidéo à une playlist"

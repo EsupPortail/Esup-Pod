@@ -1,10 +1,10 @@
 {% load i18n %}
-<div class="modal fade" id="userpictureModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="userpictureModal" tabindex="-1" role="dialog" aria-labelledby="userpictureLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
     <form method="post" action="{% url 'userpicture' %}" id="userpicture_form">
       <div class="modal-header">
-        <h2 class="modal-title" id="exampleModalLabel">{% trans "Change your picture" %}</h2>
+        <h2 class="modal-title" id="userpictureLabel">{% trans "Change your picture" %}</h2>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
       </div>
       <div class="modal-body">
@@ -40,10 +40,10 @@
             {% endspaceless %}
           {% endfor %}
           {% if frontOwnerForm.instance.id %}
-            <input type="hidden" id="user_id" name="user_id" value="{{frontOwnerForm.instance.id}}"/>
+            <input type="hidden" id="user_id" name="user_id" value="{{frontOwnerForm.instance.id}}">
           {% endif %}
           {% if frontOwnerForm.instance.userpicture %}
-            <input type="hidden" id="userpictureurl" name="userpictureurl" value="{{frontOwnerForm.instance.userpicture.file.url}}"/>
+            <input type="hidden" id="userpictureurl" name="userpictureurl" value="{{frontOwnerForm.instance.userpicture.file.url}}">
           {% endif %}
         {{frontOwnerForm.media}}
       </div>

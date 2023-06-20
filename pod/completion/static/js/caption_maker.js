@@ -161,7 +161,7 @@ const send_form_save_captions = function () {
         gettext("error during exchange") +
           "(" +
           error +
-          ")<br/>" +
+          ")<br>" +
           gettext("no data could be stored."),
         "alert-danger"
       );
@@ -1217,14 +1217,14 @@ const onPlayerReady = function (player, options) {
     startKeyframe = `<svg class='keyframe keyframe-left' xmlns="http://www.w3.org/2000/svg" width="6" height="11" viewBox="0 0 6 11">
         <path id="Path_4" data-name="Path 4" d="M4.667,0H1.333A1.281,1.281,0,0,0,0,1.222V6.256L6,11V1.222A1.281,1.281,0,0,0,4.667,0Z" fill="#ad327a"/>
       </svg>`;
-    startKeyframe.style = "left : " + `${startPercent}%`;
+    startKeyframe.style = "left: " + `${startPercent}%`;
 
     let element = player.controlBar.progressControl.seekBar.playProgressBar.el_;
     element.parentNode.insertBefore(startKeyframe, element);
 
     regionHighlight = "<div class='regionHighligh'></div>";
-    regionHighlight.style = "left : " + `${startPercent}%`;
-    regionHighlight.style = "width :" + `${endPercent - startPercent}%`;
+    regionHighlight.style = "left: " + `${startPercent}%`;
+    regionHighlight.style = "width:" + `${endPercent - startPercent}%`;
 
     startKeyframe.after(regionHighlight);
 
