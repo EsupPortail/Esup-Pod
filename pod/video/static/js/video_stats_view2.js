@@ -2,11 +2,12 @@ $(function () {
   var myChart;
   var startDate;
   var endDate;
-  let data_url = window.location.href;
   let d = [];
   let dailyviews = [];
-        let dailyfavo = [];
+  let dailyfavo = [];
   let today = new Date();
+  let data_url = window.location.href;
+
   let startDateDefault = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
   $("#start-date").val(startDateDefault); // set date input value to today - 7 days
   document.querySelector("#start-date").max = today.toISOString().split("T")[0];
@@ -21,34 +22,18 @@ $(function () {
   }
 
   $("#start-date").change(function () {
-    if (startDate){
-      startDate = undefined;
-    }
     startDate = $(this).val();
-
-    // document.querySelector("#end-date").min = startDate;
-  console.log("start change start:", startDate);
-
-  console.log("fini change start :", endDate);
-  updateChart();
+    document.querySelector("#end-date").min = new Date(startDate).toISOString().split("T")[0];
+    updateChart();
   });
 
   $("#end-date").change(function () {
     endDate = $(this).val();
-  console.log("start change fini:", startDate);
-  console.log("fini change fini :", endDate);
-  updateChart();
+    document.querySelector("#start-date").max = new Date(endDate).toISOString().split("T")[0];
+    updateChart();
   });
 
-  console.log("start :", startDate);
-  console.log("fini :", endDate);
-
-  // if (startDate && endDate){
-  // updateChart();
-
-  // }
-
-  function fetchData(da) {
+  function fetchData(data) {
     return new Promise(function (resolve, reject) {
       $.ajax({
         url: data_url,
@@ -56,7 +41,7 @@ $(function () {
         dataType: "json",
         data: {
           csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
-          periode: da,
+          periode: data,
         },
         success: function (data) {
           var date = data.map((row) => row.date);
@@ -83,8 +68,8 @@ $(function () {
 
       let requests = [];
       while (currentDate <= targetDate) {
-        let da = currentDate.toISOString().split("T")[0];
-        requests.push(fetchData(da));
+        let data = currentDate.toISOString().split("T")[0];
+        requests.push(fetchData(data));
         currentDate.setDate(currentDate.getDate() + 1);
       }
 
@@ -122,7 +107,7 @@ $(function () {
                   },
                   backgroundColor: "#DC143C",
                   borderColor: "#DC143C",
-                  borderWidth: 1,
+                  borderWidth: 2,
                   data: dailyviews,
                   tension: 0.5,
                 },
@@ -130,10 +115,10 @@ $(function () {
                   label: gettext("Favorite"),
                   backgroundColor: "#1F7C85",
                   borderColor: "#1F7C85",
-                  borderWidth: 1,
+                  borderWidth: 2,
                   data: dailyfavo,
                   tension: 0.5,
-                  fill: 1,
+                  // fill: 0.5,
                 },
               ],
             },

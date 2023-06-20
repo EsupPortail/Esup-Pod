@@ -5,6 +5,10 @@
     flex-direction: column;
     min-height: calc(100vh - 255px);
 }
+#myChart{
+    width : 1200px;
+    height: 700px;
+}
 /*.grid-container h1.title{
     margin-bottom: 1em;
     font-size: 24px;
