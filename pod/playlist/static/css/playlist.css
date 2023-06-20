@@ -152,3 +152,12 @@ a.link:hover {
 p.playlist-last-updated {
     font-style: italic;
 }
+
+div.player-element:hover {
+    background-color: #F1F1F1;
+    border: var(--bs-border-width) solid var(--pod-primary) !important;
+}
+
+div.player-element#selected {
+    background-color: #D1D1D1;
+}

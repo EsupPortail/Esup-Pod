@@ -1,9 +1,46 @@
-{% load i18n l10n %}
+{% load i18n l10n static %}
+
+{% block page_extra_head %}
+    <link rel="stylesheet" href="{% static 'css/playlist.css' %}?ver={{VERSION}}">
+{% endblock page_extra_head %}
+
 <div class="card" id="card-managevideo">
     <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-list-ul"></i>&nbsp;{{ playlist_in_get.name }}</h2>
-    {% for video in videos %}
-        <div class="card-body card-text text-center">
-            {{ video.title }}
+    {% for video_in_playlist in videos %}
+        <div {% if video_in_playlist == video %}id="selected"{% endif %} class="player-element card-body card-text border mb-1 mt-4 d-flex flex-row">
+            <span class="rank d-flex align-self-center">{{ forloop.counter }}</span>
+            <span class="card-img d-flex">
+                <img class="card-img" src="{{ playlist_in_get.get_first_video.get_thumbnail_url }}" alt="{% trans "Playlist image" %}" loading="lazy">
+            </span>
+            <div class="card-content">
+                <div>
+                    <h5 class="title">{{ video_in_playlist.title|truncatechars:27 }}</h5>
+                </div>
+                <div class="d-flex flex-row justify-content-between">
+                    <div>
+                        {{ video_in_playlist.owner }}
+                    </div>
+                    <div>
+                        {{ video_in_playlist.date_added|date }}
+                    </div>
+                </div>
+            </div>
         </div>
     {% endfor %}
 </div>
+
+<style>
+    span.rank {
+        margin-right: 1rem;
+    }
+    span.card-img {
+        width: 20%;
+        margin-right: 2rem;
+    }
+    .card-content {
+        width: 100%;
+    }
+    img.card-img {
+        object-fit: cover;
+    }
+</style>
