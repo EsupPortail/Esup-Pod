@@ -5,7 +5,7 @@ $(function () {
   let data_url = window.location.href;
   let d = [];
   let dailyviews = [];
-  let dailyfavo = [];
+        let dailyfavo = [];
   let today = new Date();
   let startDateDefault = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
   $("#start-date").val(startDateDefault); // set date input value to today - 7 days
@@ -13,14 +13,20 @@ $(function () {
   $("#end-date").val(today.toISOString().split("T")[0]); // set date input value to today
   document.querySelector("#end-date").max = today.toISOString().split("T")[0];
 
-  if (startDate === undefined || endDate === undefined) {
+
+  if (startDate === undefined && endDate === undefined) {
     startDate = startDateDefault;
     endDate = today.toISOString().split("T")[0];
     updateChart();
   }
 
   $("#start-date").change(function () {
+    if (startDate){
+      startDate = undefined;
+    }
     startDate = $(this).val();
+
+    // document.querySelector("#end-date").min = startDate;
   console.log("start change start:", startDate);
 
   console.log("fini change start :", endDate);
@@ -37,7 +43,10 @@ $(function () {
   console.log("start :", startDate);
   console.log("fini :", endDate);
 
-  
+  // if (startDate && endDate){
+  // updateChart();
+
+  // }
 
   function fetchData(da) {
     return new Promise(function (resolve, reject) {
@@ -53,9 +62,9 @@ $(function () {
           var date = data.map((row) => row.date);
           var day = data.map((row) => row.day);
           var fav_day = data.map((row) => row.fav_day);
-          d.push(date[0]);
-          dailyviews.push(day[0]);
-          dailyfavo.push(fav_day[0]);
+            d.push(date[0]);
+            dailyviews.push(day[0]);
+            dailyfavo.push(fav_day[0]);
           resolve();
         },
         error: function (error) {
@@ -66,7 +75,9 @@ $(function () {
   }
 
   function updateChart() {
-    if (startDate && endDate) {
+      d = [];
+      dailyviews = [];
+      dailyfavo = [];
       let currentDate = new Date(startDate);
       let targetDate = new Date(endDate);
 
@@ -146,7 +157,7 @@ $(function () {
         .catch(function (error) {
           console.log(error);
         });
-    }
+      
   }
 
 });
