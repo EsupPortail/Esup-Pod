@@ -84,30 +84,51 @@ class LiveTestUtils(TestCase):
         from pod.live.utils import get_event_id_and_broadcaster_id
 
         rf = RequestFactory()
-        # TODO faire les mm tests en GET
+        # GET
+        request = rf.get("/", data={}, content_type="application/json")
+        result = get_event_id_and_broadcaster_id(request)
+        self.assertEqual(result, (None, None))
+
+        request = rf.get("/", data={"idevent": "12"}, content_type="application/json")
+        result = get_event_id_and_broadcaster_id(request)
+        self.assertEqual(result, ("12", None))
+
+        request = rf.get(
+            "/", data={"idbroadcaster": "34"}, content_type="application/json"
+        )
+        result = get_event_id_and_broadcaster_id(request)
+        self.assertEqual(result, (None, "34"))
+
+        request = rf.get(
+            "/",
+            data={"idevent": "12", "idbroadcaster": "34"},
+            content_type="application/json",
+        )
+        result = get_event_id_and_broadcaster_id(request)
+        self.assertEqual(result, ("12", "34"))
 
         # POST
         request = rf.post("/", data={}, content_type="application/json")
         result = get_event_id_and_broadcaster_id(request)
         self.assertEqual(result, (None, None))
 
-        request = rf.post("/", data={"idevent": 12}, content_type="application/json")
+        request = rf.post("/", data={"idevent": "12"}, content_type="application/json")
         result = get_event_id_and_broadcaster_id(request)
-        self.assertEqual(result, (12, None))
+        self.assertEqual(result, ("12", None))
 
         request = rf.post(
-            "/", data={"idbroadcaster": 34}, content_type="application/json"
+            "/", data={"idbroadcaster": "34"}, content_type="application/json"
         )
         result = get_event_id_and_broadcaster_id(request)
-        self.assertEqual(result, (None, 34))
+        self.assertEqual(result, (None, "34"))
 
         request = rf.post(
             "/",
-            data={"idevent": 12, "idbroadcaster": 34},
+            data={"idevent": "12", "idbroadcaster": "34"},
             content_type="application/json",
         )
         result = get_event_id_and_broadcaster_id(request)
-        self.assertEqual(result, (12, 34))
+        self.assertEqual(result, ("12", "34"))
 
         print(" --->  test_utils test_get_event_id_and_broadcaster_id ok")
 

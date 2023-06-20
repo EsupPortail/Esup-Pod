@@ -8,7 +8,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User, Group
 from django.core.management import call_command
 from django.http import Http404
-from django.test import Client
+from django.test import Client, RequestFactory
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -83,7 +83,7 @@ class LiveViewsTestCase(TestCase):
             '"sftp_port": "22022", '
             '"user": "username", '
             '"password": "mdp", '
-            '"rtmp_streamer_id": "", '
+            '"rtmp_streamer_id": "1", '
             '"record_dir_path": "/recording"}',
         )
         Video.objects.create(
@@ -1700,3 +1700,361 @@ class LiveViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(json_response["success"])
         print("   --->  test test_transform_to_video smp OK !")
+
+    def test_create_video(self):
+        """Test create_video."""
+        # FIXME: this leads to the following error "database table is locked: video_video"
+        # from pod.live.views import create_video
+        # video_file_name = "test_event_video.mp4"
+        # video_file_path = os.path.join(DEFAULT_EVENT_PATH, video_file_name)
+        #
+        # event = Event.objects.get(pk=1)
+        # nbr_videos = Video.objects.count()
+        # nbr_event_videos = event.videos.count()
+        # with open(video_file_path, "w") as file:
+        #     file.write("some content")
+        #
+        # create_video(1, video_file_name, "")
+        #
+        # self.assertEqual(Video.objects.count(), nbr_videos + 1)
+        # self.assertEqual(event.videos.count(), nbr_event_videos + 1)
+        # print("   --->  test test_create_video smp OK !")
+
+    def test_ajax_event_get_rtmp_config(self):
+        """Test ajax_event_get_rtmp_config."""
+        url = reverse("live:ajax_event_get_rtmp_config")
+        # not logged
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        print("   --->  test ajax_event_get_rtmp_config user not logged: OK!")
+
+        # user logged
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+
+        # http method unauthorized
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 405)
+        print("   --->  test ajax_event_get_rtmp_config HttpResponseNotAllowed: OK!")
+
+        # implementation error
+        response = self.client.get(
+            url, {"idbroadcaster": 1}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("error" in response.json())
+        self.assertEqual(response.json()["error"], "implementation error")
+        print("   --->  test ajax_event_get_rtmp_config implementation error: OK!")
+
+        # wowza
+        response = self.client.get(
+            url, {"idbroadcaster": 2}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"success": True, "data": {}})
+        print("   --->  test ajax_event_get_rtmp_config implementation error: OK!")
+
+        # smp
+        @all_requests
+        def rtmp_response_error(url, request):
+            return httmock.response(404, {})
+
+        with HTTMock(rtmp_response_error):
+            response = self.client.get(
+                url, {"idbroadcaster": 3}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), {"success": False, "error": "fail to fetch infos rtmp"}
+        )
+        print("   --->  test ajax_event_get_rtmp_config rtmp_response_error: OK!")
+
+        @all_requests
+        def rtmp_response_not_list(url, request):
+            return httmock.response(200, json.dumps({"key": "value"}))
+
+        with HTTMock(rtmp_response_not_list):
+            response = self.client.get(
+                url, {"idbroadcaster": 3}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), {"success": False, "error": "fail to fetch infos rtmp"}
+        )
+        print("   --->  test ajax_event_get_rtmp_config rtmp_response_not_list: OK!")
+
+        @all_requests
+        def rtmp_response_no_valid_record(url, request):
+            return httmock.response(200, json.dumps(({"key": "value"},)))
+
+        with HTTMock(rtmp_response_no_valid_record):
+            response = self.client.get(
+                url, {"idbroadcaster": 3}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"success": True, "data": {}})
+        print(
+            "   --->  test ajax_event_get_rtmp_config rtmp_response_no_valid_record: OK!"
+        )
+
+        @all_requests
+        def rtmp_response_data(url, request):
+            return httmock.response(
+                200,
+                json.dumps(
+                    (
+                        {
+                            "meta": {"uri": "/streamer/rtmp/3"},
+                            "result": {
+                                "pub_control": 0,
+                                "pub_url": "rtmp://stream.univ.fr:80/dir",
+                                "pub_while_record": 0,
+                            },
+                        },
+                    )
+                ),
+            )
+
+        with HTTMock(rtmp_response_data):
+            response = self.client.get(
+                url, {"idbroadcaster": 3}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+            )
+        self.assertEqual(response.status_code, 200)
+        expected = {
+            "data": {
+                "auto_start_on_record": False,
+                "is_streaming": False,
+                "streamer_id": 1,
+            },
+            "success": True,
+        }
+        self.assertEqual(response.json(), expected)
+        print("   --->  test ajax_event_get_rtmp_config rtmp_response_data : OK!")
+
+    def test_ajax_event_startstreaming(self):
+        """Test ajax_event_startstreaming."""
+        url = reverse("live:ajax_event_startstreaming")
+        # not logged
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        print("   --->  test ajax_event_startstreaming user not logged: OK!")
+
+        # user logged
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+
+        # http method unauthorized
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+        self.assertEqual(response.status_code, 405)
+        print("   --->  test ajax_event_startstreaming HttpResponseNotAllowed: OK!")
+
+        # not ajax
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 405)
+        print("   --->  test ajax_event_startstreaming not ajax: OK!")
+
+        self.client.post(
+            url,
+            data={},
+            content_type="application/json",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        print("   --->  test ajax_event_startstreaming: OK!")
+
+    def test_ajax_event_stopstreaming(self):
+        """Test ajax_event_stopstreaming."""
+        url = reverse("live:ajax_event_stopstreaming")
+        # not logged
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        print("   --->  test ajax_event_stopstreaming user not logged: OK!")
+
+        # user logged
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+
+        # http method unauthorized
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+        self.assertEqual(response.status_code, 405)
+        print("   --->  test ajax_event_stopstreaming HttpResponseNotAllowed: OK!")
+
+        # not ajax
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 405)
+        print("   --->  test ajax_event_stopstreaming not ajax: OK!")
+
+        self.client.post(
+            url,
+            data={},
+            content_type="application/json",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        print("   --->  test ajax_event_stopstreaming: OK!")
+
+    def test_ajax_event_change_streaming(self):
+        """Test ajax_event_change_streaming."""
+        from pod.live.views import ajax_event_change_streaming
+
+        # user logged
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+
+        # wrong action
+        rf = RequestFactory()
+        request = rf.post(
+            "/",
+            data={"idbroadcaster": "1"},
+            content_type="application/json",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        response = ajax_event_change_streaming(request, "")
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            json.loads(response.content),
+            {"success": False, "error": "can only start or stop"},
+        )
+        print("   --->  test ajax_event_change_streaming wrong action: OK!")
+
+        # no impl
+        request = rf.post(
+            "/",
+            data={"idbroadcaster": "1"},
+            content_type="application/json",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        response = ajax_event_change_streaming(request, "start")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content),
+            {"success": False, "error": "implementation error"},
+        )
+        print("   --->  test ajax_event_change_streaming no impl: OK!")
+
+        # wowza
+        request = rf.post(
+            "/",
+            data={"idbroadcaster": "2"},
+            content_type="application/json",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        response = ajax_event_change_streaming(request, "start")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content), {"success": False, "error": "start not done"}
+        )
+        print("   --->  test ajax_event_change_streaming wowza: OK!")
+
+        # smp
+        @all_requests
+        def rtmp_stop_stream(url, request):
+            return httmock.response(200, json.dumps(({"result": 0},)))
+
+        request = rf.post(
+            "/",
+            data={"idbroadcaster": "3"},
+            content_type="application/json",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        with HTTMock(rtmp_stop_stream):
+            response = ajax_event_change_streaming(request, "stop")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), {"success": True})
+        print("   --->  test ajax_event_change_streaming wowza: OK!")
+
+    def test_can_manage_stream(self):
+        """Test test_can_manage_stream."""
+        from pod.live.views import can_manage_stream
+
+        broad_no_impl = Broadcaster.objects.get(id=1)
+        response = can_manage_stream(broad_no_impl)
+        self.assertFalse(response)
+
+        broad_no_manage = Broadcaster.objects.get(id=2)
+        response = can_manage_stream(broad_no_manage)
+        self.assertFalse(response)
+
+        broad_manage = Broadcaster.objects.get(id=3)
+        response = can_manage_stream(broad_manage)
+        self.assertTrue(response)
+        print("   --->  test can_manage_stream: OK!")
+
+    def test_methodes_start_and_stop_stream(self):
+        """Test test_methode_start_stream."""
+        from pod.live.views import start_stream, stop_stream
+
+        broad_no_impl = Broadcaster.objects.get(id=1)
+        response = start_stream(broad_no_impl)
+        self.assertFalse(response)
+        print("   --->  test methode_start_stream no_impl: OK!")
+
+        broad_no_impl = Broadcaster.objects.get(id=1)
+        response = stop_stream(broad_no_impl)
+        self.assertFalse(response)
+        print("   --->  test methode_stop_stream no_impl: OK!")
+
+        broad_no_manage = Broadcaster.objects.get(id=2)
+        response = start_stream(broad_no_manage)
+        self.assertFalse(response)
+        print("   --->  test methode_start_stream cannot manage: OK!")
+
+        broad_no_manage = Broadcaster.objects.get(id=2)
+        response = stop_stream(broad_no_manage)
+        self.assertFalse(response)
+        print("   --->  test methode_stop_stream cannot manage: OK!")
+
+        @all_requests
+        def rtmp_response_no_valid_record(url, request):
+            return httmock.response(200, json.dumps(({"key": "value"},)))
+
+        with HTTMock(rtmp_response_no_valid_record):
+            broad_manage = Broadcaster.objects.get(id=3)
+            response = start_stream(broad_manage)
+            self.assertFalse(response)
+            print("   --->  test methode_start_stream: OK!")
+
+            broad_manage = Broadcaster.objects.get(id=3)
+            response = stop_stream(broad_manage)
+            self.assertFalse(response)
+            print("   --->  test methode_stop_stream: OK!")
+
+        def rtmp_response_body(value):
+            return json.dumps(
+                (
+                    {
+                        "meta": {"uri": "/streamer/rtmp/3"},
+                        "result": {
+                            "pub_control": value,
+                            "pub_url": "rtmp://stream.univ.fr:80/dir",
+                            "pub_while_record": 0,
+                        },
+                    },
+                )
+            )
+
+        @all_requests
+        def rtmp_response_data(url, request):
+            return httmock.response(200, rtmp_response_body(1))
+
+        with HTTMock(rtmp_response_data):
+            broad_manage = Broadcaster.objects.get(id=3)
+            response = start_stream(broad_manage)
+            self.assertTrue(response)
+            print("   --->  test methode_start_stream already started: OK!")
+            broad_manage = Broadcaster.objects.get(id=3)
+            response = stop_stream(broad_manage)
+            self.assertFalse(response)
+            print("   --->  test methode_stop_stream stops: OK!")
+
+        @all_requests
+        def rtmp_response_data(url, request):
+            return httmock.response(200, rtmp_response_body(0))
+
+        with HTTMock(rtmp_response_data):
+            broad_manage = Broadcaster.objects.get(id=3)
+            response = start_stream(broad_manage)
+            self.assertFalse(response)
+            print("   --->  test methode_start_stream starts: OK!")
+            broad_manage = Broadcaster.objects.get(id=3)
+            response = stop_stream(broad_manage)
+            self.assertTrue(response)
+            print("   --->  test methode_stop_stream already stopped: OK!")
