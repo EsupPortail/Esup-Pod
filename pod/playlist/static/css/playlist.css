@@ -158,6 +158,6 @@ div.player-element:hover {
     border: var(--bs-border-width) solid var(--pod-primary) !important;
 }
 
-div.player-element#selected {
+div.player-element.selected {
     background-color: #D1D1D1;
 }

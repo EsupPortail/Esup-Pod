@@ -850,7 +850,9 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         template_video = "videos/video-iframe.html"
     elif request.GET.get("playlist"):
         playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
-        videos = get_video_list_for_playlist(playlist)
+        videos = sort_videos_list(
+        get_video_list_for_playlist(playlist), "rank"
+        )
         params = {
             "playlist_in_get": playlist,
             "videos": videos,
