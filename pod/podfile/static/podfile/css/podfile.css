@@ -307,14 +307,6 @@ button.close {
   text-align: center;
 }
 
-#podfile #list_folders_sub .view-more-container a#more .text{
-  align-self: center;
-  flex-grow: 1;
-}
-#podfile #list_folders_sub .view-more-container.loading .loader{
-  display: flex;
-}
-
 #podfile #files #currentfolder{
   flex-grow: unset;
   flex-basis: auto;

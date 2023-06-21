@@ -8,7 +8,7 @@
 
 .meeting-text-copied {
   position: absolute;
-  top: 50%; 
+  top: 50%;
   left: 50%;
   width: 170px;
 }
@@ -46,7 +46,7 @@
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  animation: recording-spin 3s linear infinite;      
+  animation: recording-spin 3s linear infinite;
 }
 
 @-webkit-keyframes recording-spin {

@@ -3,6 +3,14 @@
 
 if (typeof loaded == "undefined") {
   loaded = true;
+
+  const loader = `
+    <div class="container-loader">
+      <div class="lds-ring" aria-label="{${gettext('Loading…')}">
+        <div></div><div></div><div></div><div></div>
+      </div>
+    </div>
+  `;
   document.addEventListener("click", (e) => {
     if (!e.target.parentNode) return;
     if (
@@ -793,17 +801,15 @@ if (typeof loaded == "undefined") {
         <a id="more" class="btn btn-light href="#" data-next="/podfile/ajax_calls/user_folders?page=${nextPage}${search}">
           <i class="bi bi-arrow-down-square" aria-hidden="true"></i>
           <span class="text">${seeMore} (${curr_page}/${tot_page})</span>
-          <div class="loader lds-ellipsis">
-            <div></div><div></div><div></div><div></div>
-          </div>
         </a>
+        ${loader}
       </div>
     `;
   };
 
   function seemore(e) {
     let parent_el = document.getElementById("more").parentNode;
-    parent_el.classList.add("loading");
+    parent_el.querySelector(".lds-ring").classList.add("show");
     let next = document.getElementById("more").dataset.next;
     let search = document.getElementById("more").dataset.search;
     let currentFolder = getCurrentSessionFolder();
@@ -871,11 +877,6 @@ if (typeof loaded == "undefined") {
     document.getElementById("files").classList.add("loading");
     let id = cible.dataset.id;
 
-    let loader = `
-       <div class="container-loader">
-           <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-       </div>
-       `;
     document.getElementById("files").innerHTML = loader;
 
     let success_func = function ($data) {
