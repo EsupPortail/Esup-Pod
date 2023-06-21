@@ -41,7 +41,7 @@ class PlaylistConfig(AppConfig):
             """
             SELECT id, date_added, rank, owner_id, video_id
             FROM favorite_favorite
-            GROUP BY owner_id ASC
+            GROUP BY owner_id
             """,
             FAVORITES_DATA
         )

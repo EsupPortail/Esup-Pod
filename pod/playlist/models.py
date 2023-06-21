@@ -22,6 +22,7 @@ class Playlist(models.Model):
     name = models.CharField(
         verbose_name=_("Name"),
         max_length=250,
+        default=_("Playlist"),
         help_text=_("Please choose a name between 1 and 250 characters."),
     )
     description = models.TextField(
@@ -40,6 +41,7 @@ class Playlist(models.Model):
         verbose_name=_("Visibility"),
         max_length=9,
         choices=VISIBILITY_CHOICES,
+        default="private",
         help_text=_("Please chosse an visibility among 'public', 'protected', 'private'."),
     )
     autoplay = models.BooleanField(
