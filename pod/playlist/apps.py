@@ -1,5 +1,4 @@
 from django.apps import AppConfig
-from django.utils.translation import gettext_lazy as _
 from django.db import connection
 from django.db.models.signals import pre_migrate, post_migrate
 
@@ -63,6 +62,7 @@ class PlaylistConfig(AppConfig):
 
     def create_new_favorites(self):
         from pod.playlist.models import Playlist, PlaylistContent
+        from django.utils.translation import gettext_lazy as _
         for data_lists in FAVORITES_DATA.values():
             new_favorites_playlist = Playlist.objects.create(
                 name="Favorites",
@@ -74,7 +74,7 @@ class PlaylistConfig(AppConfig):
             )
 
             for favorites_datas in data_lists:
-                date_added, rank, _, video_id = favorites_datas
+                date_added, rank, owner_id, video_id = favorites_datas
                 PlaylistContent.objects.create(
                     date_added=date_added,
                     rank=rank,
