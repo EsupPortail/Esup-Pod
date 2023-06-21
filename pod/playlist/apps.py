@@ -16,34 +16,24 @@ class PlaylistConfig(AppConfig):
         pre_migrate.connect(self.save_previous_data, sender=self)
         post_migrate.connect(self.send_previous_data, sender=self)
 
-    def execute_query(self, query, mapping_dict):
-        """
-        Execute the given query and populate the mapping dictionary with the results.
-
-        Args:
-            query (str): The given query to execute
-            mapping_dict (dict): The dictionary.
-        """
-        try:
-            with connection.cursor() as c:
-                c.execute(query)
-                results = c.fetchall()
-                for res in results:
-                    mapping_dict["%s" % res[0]] = [res[i] for i in range(1, len(res))]
-        except Exception as e:
-            print(e)
-            pass
-
     def save_previous_data(self, sender, **kwargs):
         """Save previous data from favorites table."""
-        self.execute_query(
-            """
-            SELECT id, date_added, rank, owner_id, video_id
-            FROM favorite_favorite
-            GROUP BY owner_id
-            """,
-            FAVORITES_DATA
-        )
+        try:
+            with connection.cursor() as c:
+                c.execute(
+                    """
+                    SELECT owner_id, date_added, rank, video_id
+                    FROM favorite_favorite
+                    ORDER BY owner_id
+                    """
+                )
+                results = c.fetchall()
+                for res in results:
+                    owner_id = res[0]
+                    data = [res[i] for i in range(1, len(res))]
+                    FAVORITES_DATA.setdefault(owner_id, []).append(data)
+        except Exception as e:
+            print(e)
 
         if len(FAVORITES_DATA) > 0:
             print("FAVORITES_DATA saved for %s persons" % len(FAVORITES_DATA))
@@ -63,18 +53,18 @@ class PlaylistConfig(AppConfig):
     def create_new_favorites(self):
         from pod.playlist.models import Playlist, PlaylistContent
         from django.utils.translation import gettext_lazy as _
-        for data_lists in FAVORITES_DATA.values():
+        for owner_id, data_lists in FAVORITES_DATA.items():
             new_favorites_playlist = Playlist.objects.create(
                 name="Favorites",
                 description=_("Your favorites videos."),
                 visibility="private",
                 autoplay=True,
-                owner=data_lists[0]["owner_id"],
+                owner_id=owner_id,
                 editable=False
             )
 
             for favorites_datas in data_lists:
-                date_added, rank, owner_id, video_id = favorites_datas
+                date_added, rank, video_id = favorites_datas
                 PlaylistContent.objects.create(
                     date_added=date_added,
                     rank=rank,
