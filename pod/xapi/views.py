@@ -38,11 +38,8 @@ def statement(request, app: str = None):
         body = json.loads(body_unicode)
         statement = {
             "actor": {
-                "account": {
-                    "homePage": request.build_absolute_uri("/"),
-                    "name": "%s" % get_actor_name(request),
-                },
-                "objectType": "Agent",
+                "name": "%s" % get_actor_name(request),
+                "mbox": "mailto:%s" % get_actor_mail(request),
             },
             "id": str(uuid.uuid4()),
         }
@@ -54,6 +51,21 @@ def statement(request, app: str = None):
     raise SuspiciousOperation(
         "none post data was sent and app parameter has to be equals to video"
     )
+
+
+def get_actor_mail(request):
+    """Return a email adress for the actor's statement."""
+    if request.user.is_authenticated:
+        if XAPI_ANONYMIZE_ACTOR:
+            dns_mail = request.user.email.split("@")[1]
+            mail = "%s@%s" % (request.user.owner.hashkey, dns_mail)
+        else:
+            mail = request.user.email
+    else:
+        if not request.session or not request.session.session_key:
+            request.session.save()
+        mail = "%s@%s" % (request.session.session_key, request.get_host())
+    return mail
 
 
 def get_actor_name(request):

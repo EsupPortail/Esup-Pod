@@ -132,6 +132,14 @@ if getattr(settings, "USE_FAVORITES", True):
         path("favorite/", include("pod.favorite.urls", namespace="favorite")),
     ]
 
+# IMPORT_VIDEO
+if getattr(settings, "USE_IMPORT_VIDEO", True):
+    urlpatterns += [
+        url(
+            r"^import_video/", include("pod.import_video.urls", namespace="import_video")
+        ),
+    ]
+
 # CHANNELS
 urlpatterns += [
     url(r"^", include("pod.video.urls-channels-video")),

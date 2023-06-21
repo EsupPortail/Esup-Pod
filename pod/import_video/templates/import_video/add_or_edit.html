@@ -4,13 +4,12 @@
 
 {% block breadcrumbs %}
 {{ block.super }}
-<li class="breadcrumb-item"><a href="{% url 'meeting:my_meetings' %}">{% trans 'My meetings' %}</a></li>
-<li class="breadcrumb-item"><a href="{% url 'meeting:external_recordings' %}">{% trans "External recordings" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'import_video:external_recordings' %}">{% trans "My external videos" %}</a></li>
 <li class="breadcrumb-item active" aria-current="page">
   {% if form.instance.id and form.instance.id != '' %}
-    {% trans "Edit the external recording" %} "{{form.instance.name}}"
+    {% trans "Edit the external video" %} "{{form.instance.name}}"
   {% else %}
-    {% trans "Add an external recording" %}
+    {% trans "Create an external video" %}
   {% endif %}
 </li>
 {% endblock %}
@@ -24,14 +23,14 @@
   <div class="pod-first-content">
     <p>
       {% trans "To centralize Big Blue Button, PeerTube, video file, Youtube recordings on this platform, first, please enter the information below." %}<br>
-      {% trans "Then, you will be able to upload this recording to Pod." %}
+      {% trans "Then you can import this video to Pod." %}
     </p>
   </div>
 
   {% if form.instance.id and form.instance.id != '' %}
-    <form id="external_recording_form" method="post" action="{% url 'meeting:edit_external_recording' form.instance.id %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
+    <form id="external_recording_form" method="post" action="{% url 'import_video:edit_external_recording' form.instance.id %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
   {% else %}
-    <form id="external_recording_form" method="post" action="{% url 'meeting:add_external_recording' %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
+    <form id="external_recording_form" method="post" action="{% url 'import_video:add_external_recording' %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
   {% endif %}
 
     {% csrf_token %}
@@ -52,14 +51,14 @@
       {% if "collapse" in options.classes %}
         <div class="mb-3">
           <div class="list-group-item">
-            <a class="btn btn-primary" data-bs-toggle="collapse" href="#meeting_form_{{fieldset|first}}_{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
+            <a class="btn btn-primary" data-bs-toggle="collapse" href="#import_video_form_{{fieldset|first}}_{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
               {{ options.legend|safe }}
             </a>
           </div>
         </div>
       {% endif %}
       {% if name != "modal" %}
-      <fieldset class="{{ options.classes }}" id="meeting_form_{{fieldset|first}}_{{forloop.counter}}" >
+      <fieldset class="{{ options.classes }}" id="import_video_form_{{fieldset|first}}_{{forloop.counter}}" >
         {% if options.legend %}
           <legend>{{ options.legend|safe }}</legend>
         {% endif %}
