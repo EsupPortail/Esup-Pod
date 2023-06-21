@@ -126,8 +126,8 @@
 .navbar-toggler:focus,
 .navbar-toggler:hover {
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-  color: var(--pod-primary);
-  border-color: var(--pod-primary);
+  color: var(--bs-link-color);
+  border-color: var(--bs-link-color);
 }
 
 .navbar-light .navbar-brand:focus,
@@ -1070,7 +1070,7 @@ body {
 
 .pod-params-button {
   color: var(--pod-font-color);
-  --bs-btn-hover-color: var(--pod-primary);
+  --bs-btn-hover-color: var(--bs-link-color);
   font-size: 1.4rem;
   display: flex;
 }
@@ -1156,7 +1156,7 @@ body {
 
 .pod-footer__credits {
   font-size: 85%;
-  opacity: .8;
+  /*opacity: .8;*/
 }
 
 .pod-footer__links {
