@@ -8,6 +8,7 @@ from django.template.defaultfilters import slugify
 
 from pod.main.models import get_nextautoincrement
 from pod.video.models import Video
+from pod.video.utils import sort_videos_list
 
 import hashlib
 
@@ -126,7 +127,7 @@ class Playlist(models.Model):
     def get_first_video(self) -> Video:
         """Get the first video."""
         from .utils import get_video_list_for_playlist
-        return get_video_list_for_playlist(self).first()
+        return sort_videos_list(get_video_list_for_playlist(self), "rank").first()
 
 
 class PlaylistContent(models.Model):
