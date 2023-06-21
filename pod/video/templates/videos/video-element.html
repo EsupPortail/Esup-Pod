@@ -6,6 +6,7 @@ poster="{{video.get_thumbnail_url}}" {% spaceless %}
 {% else %}
   controls
   {% if request.GET.autoplay and request.GET.autoplay == 'true' %} autoplay muted {% endif %}
+  {% if playlist_in_get %} autoplay {% endif %}
 {% endif %}
 {% if request.GET.loop and request.GET.loop == 'true' %} loop {% endif %} {% endspaceless %}
 >

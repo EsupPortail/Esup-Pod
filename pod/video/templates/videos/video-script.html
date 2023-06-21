@@ -97,6 +97,7 @@ const options = {
 var player = videojs('podvideoplayer', options, function(){});
 
 player.on('firstplay', function(){
+  console.log('ggg');
   var data_form = $( "#video_count_form" ).serializeArray();
   jqxhr = $.post(
     $( "#video_count_form" ).attr("action"),
@@ -120,6 +121,8 @@ player.on('firstplay', function(){
       {% endif %}
     });
     //Add source to player
+    console.log('On est ici là');
+    console.log(srcOptions);
     player.src(srcOptions);
     //add quality selector to player
     player.hlsQualitySelector({
@@ -132,6 +135,8 @@ player.on('firstplay', function(){
       if(error.code == 3 || error.code == 4) {
         //console.log('error!', error.code, error.type , error.message);
         if(player.src()=="" || player.src().indexOf("m3u8")!=-1){
+          console.log('eee');
+          console.log(player.src());
           player.src(mp4_sources);
           player.controlBar.addChild('QualitySelector');
           player.play();
@@ -139,6 +144,7 @@ player.on('firstplay', function(){
       }
     });
   {% else %}
+    console.log('eee');
     player.src(mp4_sources);
     player.controlBar.addChild('QualitySelector');
   {% endif %}
@@ -174,6 +180,7 @@ player.on('firstplay', function(){
   player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
 {% else %}
   {% if video.get_video_m4a %}
+    console.log('t sss');
     var srcOptions = {
       src: '{{video.get_video_m4a.source_file.url}}',
       type: '{{video.get_video_m4a.encoding_format}}',
@@ -198,6 +205,7 @@ player.on('firstplay', function(){
 {% endif %}
 
 {% if video_event_tracking %}
+  console.log('video_event_tracking');
   {# Be sure to define _paq in a tracking script in TEMPLATE_VISIBLE_SETTINGS:TRACKING_TEMPLATE pref. #}
   player.on('play', function() {
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'play', player.currentTime()]);
@@ -209,21 +217,33 @@ player.on('firstplay', function(){
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'seeked', player.currentTime()]);
   });
   player.on("ended", function (e) {
-    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ended', player.currentTime()]);
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ended', player.currentTime()]);$
+    console.log('Finish');
   });
   player.on("ratechange", function (e) {
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ratechange', player.playbackRate()]);
   });
   player.on("fullscreenchange", function (e) {
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'fullscreen :'+ player.isFullscreen(), player.currentTime()]);
+    console.log('Finish');
   });
   player.on("error", function (e) {
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'error', player.error()]);
   });
   player.on("loadedmetadata", function (e) {
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'loadedmetadata']);
+    console.log('loadedmetadata');
   });
 {% endif %}
+
+/* --- PLAYLIST --- */
+{% if playlist_in_get.autoplay %}
+  player.on("ended", function (e) {
+    switchToNextVideo();
+  });
+{% endif %}
+
+
 
 
 {% if not video.is_video and event is None %}
