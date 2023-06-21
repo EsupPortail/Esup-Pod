@@ -1,7 +1,9 @@
 """Useful functions for the entire Pod application."""
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
 from django.utils.html import mark_safe
+from django.utils.translation import gettext_lazy as _
 
 from pod.playlist.models import Playlist
 from pod.video.models import Video
@@ -58,3 +60,19 @@ def display_message_with_icon(request, type, message):
     msg = "<div class='icon'><i class='bi bi-" + icon + "'></i></div>"
     msg += message
     messages.add_message(request, type, mark_safe(msg))
+
+
+def secure_post_request(request):
+    """Secure that this request is POST type.
+
+    Args:
+        request (Request): HTTP request
+
+    Raises:
+        PermissionDenied: if method not POST
+    """
+    if request.method != "POST":
+        display_message_with_icon(
+            request, messages.WARNING, _("This view cannot be accessed directly.")
+        )
+        raise PermissionDenied
