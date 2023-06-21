@@ -118,7 +118,7 @@ function activateDragAndDrop(parent) {
     draggableElement.children[0].classList.add("no-click");
   });
   updateCollapseAside();
-  // infinite.removeLoader();
+  infinite.removeLoader();
   document
     .getElementById("cancel_btn_favorites_list")
     .classList.remove("d-none");

@@ -262,3 +262,32 @@ def get_link_to_start_playlist(user: User, playlist: Playlist) -> str:
         return f"{reverse('video:video', kwargs={'slug': first_video.slug})}?playlist={playlist.slug}"
     else:
         return ""
+
+
+def get_total_favorites_video(video: Video) -> int:
+    """
+    Get the number of videos added in favorites playlist.
+
+    Args:
+        video (:class:`pod.video.models.Video`): The video object
+
+    Returns:
+        int: The number of videos added in favorites playlist.
+    """
+    favorites_playlists = Playlist.objects.filter(name="Favorites")
+    favorite_contents = PlaylistContent.objects.filter(
+        playlist__in=favorites_playlists, video=video)
+    count = favorite_contents.count()
+    return count
+
+def get_count_video_added_in_playlist(video: Video) -> int:
+    """
+    Get the number of video added in any playlist (including favorites).
+
+    Args:
+        video (:class:`pod.video.models.Video`): The video object
+
+    Returns:
+        int: The number of videos added in playlists.
+    """
+    return PlaylistContent.objects.filter(video=video).count()

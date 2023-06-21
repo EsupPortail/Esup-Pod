@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.http import Http404, HttpResponseBadRequest
 from django.db import transaction
+from pod.main.utils import is_ajax
 
 from pod.main.views import in_maintenance
 from pod.playlist.templatetags.favorites_playlist import get_playlist_name
@@ -94,6 +95,20 @@ def playlist_content(request, slug):
     playlist_url = reverse("playlist:content", kwargs={
                            "slug": get_favorite_playlist_for_user(request.user).slug})
     in_favorites_playlist = (playlist_url == request.path)
+
+    if is_ajax(request):
+        return render(
+            request,
+            "playlist/playlist-videos-list.html",
+            {
+                "videos": videos,
+                "playlist": playlist,
+                "in_favorites_playlist": in_favorites_playlist,
+                "full_path": full_path,
+                "count_videos": count_videos
+            },
+        )
+
     return render(
         request,
         "playlist/playlist.html",
@@ -103,7 +118,11 @@ def playlist_content(request, slug):
             "playlist": playlist,
             "in_favorites_playlist": in_favorites_playlist,
             "count_videos": count_videos,
+            "types": request.GET.getlist("type"),
             "owners": request.GET.getlist("owner"),
+            "disciplines": request.GET.getlist("discipline"),
+            "tags_slug": request.GET.getlist("tag"),
+            "cursus_selected": request.GET.getlist("cursus"),
             "additional_owners": additional_owners,
             "full_path": full_path,
             "ownersInstances": ownersInstances,
