@@ -9,6 +9,10 @@
     width : 1200px;
     height: 700px;
 }
+.col-name {
+    white-space: normal;
+    word-wrap: break-word;
+}
 /*.grid-container h1.title{
     margin-bottom: 1em;
     font-size: 24px;
