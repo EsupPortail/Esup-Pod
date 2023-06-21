@@ -20,13 +20,13 @@ class PlaylistConfig(AppConfig):
 
     def save_previous_data(self, sender, **kwargs):
         """Save previous data from favorites table."""
-        self.save_favorites()
-        if len(FAVORITES_DATA) > 0:
-            print("FAVORITES_DATA saved for %s persons" % len(FAVORITES_DATA))
-
         self.save_playlists()
         if len(PLAYLIST_INFORMATIONS) > 0:
             print("PLAYLIST_INFORMATIONS saved %s playlists" % len(PLAYLIST_INFORMATIONS))
+
+        self.save_favorites()
+        if len(FAVORITES_DATA) > 0:
+            print("FAVORITES_DATA saved for %s persons" % len(FAVORITES_DATA))
 
     def save_favorites(self):
         try:
@@ -69,10 +69,12 @@ class PlaylistConfig(AppConfig):
     def send_previous_data(self, sender, **kwargs):
         """Send previous data from favorites table."""
         print("Sending datas")
-        self.create_new_favorites()
 
         if len(PLAYLIST_INFORMATIONS) > 0:
-            self.create_new_playlists()
+            print(PLAYLIST_INFORMATIONS)
+            self.update_playlists()
+
+        self.create_new_favorites()
 
     def create_new_favorites(self):
         from pod.playlist.models import Playlist, PlaylistContent
@@ -114,18 +116,26 @@ class PlaylistConfig(AppConfig):
 
         print("create_new_favorites --> OK")
 
-    def create_new_playlists(self):
+    def update_playlists(self):
         from pod.playlist.models import Playlist, PlaylistContent
         from django.utils.translation import gettext_lazy as _
         from django.contrib.auth.models import User
-        for playlist_datas in PLAYLIST_INFORMATIONS.values():
+        for playlist_id, playlist_datas in PLAYLIST_INFORMATIONS.items():
             title, description, visible, owner_id = playlist_datas
             visibility = "private" if visible == 0 else "public"
-            new_playlist = Playlist.objects.create(
-                name=title,
-                description=description,
-                visibility=visibility,
-                autoplay=True,
-                owner_id=owner_id,
-                editable=True
-            )
+            try:
+                playlist = Playlist.objects.get(id=playlist_id)
+            except Playlist.DoesNotExist:
+                print("playlist not exists")
+                continue
+
+            playlist.name = title
+            playlist.description = description
+            playlist.visibility = visibility
+            playlist.owner_id = owner_id
+            playlist.autoplay = True
+            playlist.editable = True
+            playlist.save()
+
+
+        print("update_playlists --> OK")
