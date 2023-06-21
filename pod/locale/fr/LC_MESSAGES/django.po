@@ -3350,7 +3350,7 @@ msgstr "Attention, utilise une API Google"
 
 #: pod/live/templates/live/event-script.html
 msgid "Recording not done: "
-msgstr "Impossible de commencer l'enregistrement: "
+msgstr "Impossible de commencer l'enregistrement : "
 
 #: pod/live/templates/live/event-script.html
 msgid "Error calling"
@@ -3362,7 +3362,7 @@ msgstr "Enregistrement arrêté"
 
 #: pod/live/templates/live/event-script.html
 msgid "Recording not stopped: "
-msgstr "Impossible d'arrêter l'enregistrement: "
+msgstr "Impossible d'arrêter l'enregistrement : "
 
 #: pod/live/templates/live/event-script.html
 msgid "Recording split done"
@@ -3370,7 +3370,7 @@ msgstr "Découpe de l'enregistrement effectué"
 
 #: pod/live/templates/live/event-script.html
 msgid "Recording not split: "
-msgstr "Impossible de découper l'enregistrement: "
+msgstr "Impossible de découper l'enregistrement : "
 
 #: pod/live/templates/live/event-script.html
 msgid "Video stream started (please wait a moment)"

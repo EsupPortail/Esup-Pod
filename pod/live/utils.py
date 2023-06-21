@@ -13,15 +13,9 @@ from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMultiAlternatives, mail_managers
 from django.utils.translation import ugettext_lazy as _
 
-SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
+from pod.main.views import TEMPLATE_VISIBLE_SETTINGS
 
-TEMPLATE_VISIBLE_SETTINGS = getattr(
-    settings,
-    "TEMPLATE_VISIBLE_SETTINGS",
-    {
-        "TITLE_SITE": "Pod",
-    },
-)
+SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
 

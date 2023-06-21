@@ -665,7 +665,7 @@ class Smp(PilotingInterface):
 
             # copy from remote to local
             sftp.get(smp_file_path, pod_file_path)
-            logger.debug("-- copied !")
+            logger.debug("-- copied!")
 
             # close the connection
             logger.debug("-- closing connection")

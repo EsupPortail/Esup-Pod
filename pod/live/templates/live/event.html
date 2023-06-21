@@ -38,7 +38,7 @@
 
 {% block page_content %}
     {% csrf_token %}
-    <h3 id="livename" data-eventid="{{ event.id }}"><i class="bi bi-broadcast pe-2" aria-hidden="true"></i>{{ event.title|title }}</h3>
+    <h3 id="livename" data-eventid="{{ event.id }}"><i class="bi bi-broadcast pe-2"></i>{{ event.title|title }}</h3>
 
     {% if form %}
       {% include 'live/event-form.html' %}
@@ -158,41 +158,41 @@
 
             <a id="report" class="col-auto pod-info-video__signal pt-3"
                href="{% url 'contact_us' %}?video={{ video.id }}&subject=inappropriate_content"
-               title="{% trans 'Report the event' %}" aria-hidden="true">
+               title="{% trans 'Report the event' %}">
               <i class="bi bi-exclamation-octagon"></i>
             </a>
 
             {% if event.is_current and can_record %}
               {% if can_manage_stream %}
                 <div id="stream_btns" class="col-auto border border-secondary rounded d-none" style="margin: 10px 10px 10px 0">
-                  <button type="button" class="btn btn-sm border-0" disabled
-                          id="startstream" title="{% trans "Start stream" %}" aria-hidden="true">
-                    <i class="bi bi-camera-video-fill text-primary" style="font-size: 2em"></i>
+                  <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
+                          id="startstream" title="{% trans "Start stream" %}" aria-label="{% trans "Start stream" %}">
+                    <i class="bi bi-camera-video-fill" style="font-size: 2em"></i>
                   </button>
-                  <button type="button" class="btn btn-sm border-0" disabled
-                          id="stopstream" title="{% trans "Stop stream" %}" aria-hidden="true">
-                    <i class="bi bi-camera-video-off-fill text-primary" style="font-size: 2em"></i>
+                  <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
+                          id="stopstream" title="{% trans "Stop stream" %}" aria-label="{% trans "Stop stream" %}">
+                    <i class="bi bi-camera-video-off-fill" style="font-size: 2em"></i>
                   </button>
                   </button>
-                  <button type="button" class="btn btn-sm border-0" disabled
-                          id="startandrecord" title="{% trans "Start stream and record" %}" aria-hidden="true">
-                    <i class="bi bi-camera-reels-fill text-primary" style="font-size: 1.5em"></i>
+                  <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
+                          id="startandrecord" title="{% trans "Start stream and record" %}" aria-label="{% trans "Start stream and record" %}">
+                    <i class="bi bi-camera-reels-fill" style="font-size: 2em"></i>
                   </button>
                 </div>
               {% endif %}
 
               <div id="recording_btns" class="col-auto border border-secondary rounded d-none" style="margin: 10px 0 10px 0">
-                <button type="button" class="btn btn-sm border-0" disabled
-                        id="startrecord" title="{% trans "Start record" %}" aria-hidden="true">
-                  <i class="bi bi-circle-fill text-danger" style="font-size: 2em"></i>
+                <button type="button" class="btn btn-outline-danger btn-sm border-0 m-1" disabled
+                        id="startrecord" title="{% trans "Start record" %}" aria-label="{% trans "Start record" %}">
+                  <i class="bi bi-circle-fill" style="font-size: 2em"></i>
                 </button>
-                <button type="button" class="btn btn-sm border-0" disabled
-                        id="stoprecord" title="{% trans "Stop record" %}" aria-hidden="true">
-                  <i class="bi bi-square-fill text-primary" style="font-size: 2em"></i>
+                <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
+                        id="stoprecord" title="{% trans "Stop record" %}" aria-label="{% trans "Stop record" %}">
+                  <i class="bi bi-square-fill" style="font-size: 2em"></i>
                 </button>
-                <button type="button" class="btn btn-sm border-0" disabled
-                        id="splitrecord" title="{% trans "Split record" %}"  aria-hidden="true">
-                  <i class="bi bi-slash-circle-fill text-primary" style="font-size: 2em"></i>
+                <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
+                        id="splitrecord" title="{% trans "Split record" %}" aria-label="{% trans "Split record" %}">
+                  <i class="bi bi-slash-circle-fill" style="font-size: 2em"></i>
                 </button>
               </div>
 

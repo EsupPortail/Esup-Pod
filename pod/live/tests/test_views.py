@@ -1831,13 +1831,13 @@ class LiveViewsTestCase(TestCase):
         self.assertEqual(response.json(), expected)
         print("   --->  test ajax_event_get_rtmp_config rtmp_response_data : OK!")
 
-    def test_ajax_event_startstreaming(self):
-        """Test ajax_event_startstreaming."""
-        url = reverse("live:ajax_event_startstreaming")
+    def test_ajax_event_start_streaming(self):
+        """Test ajax_event_start_streaming."""
+        url = reverse("live:ajax_event_start_streaming")
         # not logged
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        print("   --->  test ajax_event_startstreaming user not logged: OK!")
+        print("   --->  test ajax_event_start_streaming user not logged: OK!")
 
         # user logged
         self.user = User.objects.get(username="pod")
@@ -1846,12 +1846,12 @@ class LiveViewsTestCase(TestCase):
         # http method unauthorized
         response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.status_code, 405)
-        print("   --->  test ajax_event_startstreaming HttpResponseNotAllowed: OK!")
+        print("   --->  test ajax_event_start_streaming HttpResponseNotAllowed: OK!")
 
         # not ajax
         response = self.client.post(url)
         self.assertEqual(response.status_code, 405)
-        print("   --->  test ajax_event_startstreaming not ajax: OK!")
+        print("   --->  test ajax_event_start_streaming not ajax: OK!")
 
         self.client.post(
             url,
@@ -1859,15 +1859,15 @@ class LiveViewsTestCase(TestCase):
             content_type="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
-        print("   --->  test ajax_event_startstreaming: OK!")
+        print("   --->  test ajax_event_start_streaming: OK!")
 
-    def test_ajax_event_stopstreaming(self):
-        """Test ajax_event_stopstreaming."""
-        url = reverse("live:ajax_event_stopstreaming")
+    def test_ajax_event_stop_streaming(self):
+        """Test ajax_event_stop_streaming."""
+        url = reverse("live:ajax_event_stop_streaming")
         # not logged
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        print("   --->  test ajax_event_stopstreaming user not logged: OK!")
+        print("   --->  test ajax_event_stop_streaming user not logged: OK!")
 
         # user logged
         self.user = User.objects.get(username="pod")
@@ -1876,12 +1876,12 @@ class LiveViewsTestCase(TestCase):
         # http method unauthorized
         response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.status_code, 405)
-        print("   --->  test ajax_event_stopstreaming HttpResponseNotAllowed: OK!")
+        print("   --->  test ajax_event_stop_streaming HttpResponseNotAllowed: OK!")
 
         # not ajax
         response = self.client.post(url)
         self.assertEqual(response.status_code, 405)
-        print("   --->  test ajax_event_stopstreaming not ajax: OK!")
+        print("   --->  test ajax_event_stop_streaming not ajax: OK!")
 
         self.client.post(
             url,
@@ -1889,7 +1889,7 @@ class LiveViewsTestCase(TestCase):
             content_type="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
-        print("   --->  test ajax_event_stopstreaming: OK!")
+        print("   --->  test ajax_event_stop_streaming: OK!")
 
     def test_ajax_event_change_streaming(self):
         """Test ajax_event_change_streaming."""

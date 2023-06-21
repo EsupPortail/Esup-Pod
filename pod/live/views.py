@@ -857,17 +857,20 @@ def check_event_record(broadcaster, with_file_check=False):
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-def ajax_event_startstreaming(request):
+def ajax_event_start_streaming(request):
+    """Starts the stream."""
     return ajax_event_change_streaming(request, "start")
 
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-def ajax_event_stopstreaming(request):
+def ajax_event_stop_streaming(request):
+    """Stops the stream."""
     return ajax_event_change_streaming(request, "stop")
 
 
 def ajax_event_change_streaming(request, action):
+    """Starts or stops the stream."""
     if request.method != "POST" or not is_ajax(request):
         return HttpResponseNotAllowed(["POST"])
 
@@ -894,6 +897,7 @@ def ajax_event_change_streaming(request, action):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_get_rtmp_config(request):
+    """Checks if the broadcaster is configured for rtmp stream and return his config."""
     if request.method != "GET" or not is_ajax(request):
         return HttpResponseNotAllowed(["GET"])
 

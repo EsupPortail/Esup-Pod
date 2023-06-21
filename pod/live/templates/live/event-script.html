@@ -324,7 +324,7 @@
                 return resolve = false;
 
               changeStreamControlButtons();
-              fetch("{% url 'live:ajax_event_startstreaming' %}", {
+              fetch("{% url 'live:ajax_event_start_streaming' %}", {
                 method: "POST",
                 headers: {
                   "X-Requested-With": "XMLHttpRequest",
@@ -367,7 +367,7 @@
               return;
 
             changeStreamControlButtons();
-            fetch("{% url 'live:ajax_event_stopstreaming' %}", {
+            fetch("{% url 'live:ajax_event_stop_streaming' %}", {
               method: "POST",
               headers: {
                 "X-Requested-With": "XMLHttpRequest",
