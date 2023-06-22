@@ -21,19 +21,6 @@ def check_video_in_playlist(playlist: Playlist, video: Video) -> bool:
     return PlaylistContent.objects.filter(playlist=playlist, video=video).exists()
 
 
-def user_has_playlist(user: User) -> bool:
-    """
-    Check if a user has a playlist.
-
-    Args:
-        user (:class:`django.contrib.auth.models.User`): The user object
-
-    Returns:
-        bool: True if the user has a playlist, False otherwise
-    """
-    return get_number_playlist(user) > 0
-
-
 def user_add_video_in_playlist(playlist: Playlist, video: Video) -> str:
     """
     Add a video in playlist.

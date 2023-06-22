@@ -16,9 +16,13 @@ from pod.playlist.utils import (
     get_public_playlist,
     get_video_list_for_playlist,
     user_add_video_in_playlist,
-    user_has_playlist,
     user_remove_video_from_playlist,
     remove_playlist,
+    get_number_video_added_in_specific_playlist,
+    get_favorite_playlist_for_user,
+    get_additional_owners,
+    get_total_favorites_video,
+    get_count_video_added_in_playlist
 )
 
 
@@ -91,12 +95,6 @@ class PlaylistTestUtils(TestCase):
         )
         print(" --->  test_user_remove_video_from_playlist ok")
 
-    def test_user_has_playlist(self) -> None:
-        """Test if test_user_has_playlist works correctly."""
-        self.assertTrue(user_has_playlist(self.user))
-        self.assertFalse(user_has_playlist(self.user2))
-        print(" --->  test_user_has_playlist ok")
-
     def test_check_video_in_playlist(self) -> None:
         """Test if test_check_video_in_playlist works correctly."""
         self.assertFalse(
@@ -125,13 +123,13 @@ class PlaylistTestUtils(TestCase):
     def test_get_number_playlist(self) -> None:
         """Test if test_get_number_playlist works correctly."""
         self.assertEqual(
-            1,
+            2,
             get_number_playlist(self.user)
-        )
+        )  # Favorites + Playlist1
         self.assertEqual(
-            0,
+            1,
             get_number_playlist(self.user2)
-        )
+        )  # Favorites
         print(" --->  test_get_number_playlist ok")
 
     def test_get_number_video_in_playlist(self) -> None:
@@ -179,7 +177,7 @@ class PlaylistTestUtils(TestCase):
     def test_remove_playlist(self) -> None:
         """Test if remove_playlist works correctly."""
         remove_playlist(self.user, self.playlist)
-        self.assertEqual(0, get_number_playlist(self.user))
+        self.assertEqual(1, get_number_playlist(self.user))
         print(" --->  test_remove_playlist ok")
 
     def test_get_public_playlist(self) -> None:
@@ -230,7 +228,7 @@ class PlaylistTestUtils(TestCase):
         )
 
         self.assertEqual(
-            2,
+            3,
             get_number_playlist(self.user)
         )
         self.assertTrue(
@@ -302,3 +300,64 @@ class PlaylistTestUtils(TestCase):
             f"/video/{self.video.slug}/?playlist={self.playlist.slug}"
         )
         print(" --->  test_get_link_to_start_playlist ok")
+
+    def test_get_number_video_added_in_specific_playlist(self):
+        """Test if get_number_video_added_in_specific_playlist works correctly."""
+        user_add_video_in_playlist(self.playlist, self.video)
+        user_add_video_in_playlist(self.playlist, self.video2)
+
+        new_playlist = Playlist.objects.create(
+            name="new_playlist",
+            description="Ma description",
+            visibility="public",
+            autoplay=True,
+            owner=self.user
+        )
+        user_add_video_in_playlist(new_playlist, self.video3)
+        self.assertEqual(2, get_number_video_added_in_specific_playlist(self.playlist))
+        self.assertEqual(1, get_number_video_added_in_specific_playlist(new_playlist))
+
+        print(" --->  test_get_number_video_added_in_specific_playlist ok")
+
+    def test_get_favorite_playlist_for_user(self):
+        """Test if get_favorite_playlist_for_user works correctly."""
+        slug_user_1 = get_favorite_playlist_for_user(self.user)
+        user_add_video_in_playlist(slug_user_1, self.video)
+        user_add_video_in_playlist(slug_user_1, self.video2)
+        user_add_video_in_playlist(slug_user_1, self.video3)
+        self.assertEqual(3, get_number_video_added_in_specific_playlist(
+            get_favorite_playlist_for_user(self.user)))
+        self.assertEqual(0, get_number_video_added_in_specific_playlist(
+            get_favorite_playlist_for_user(self.user2)))
+
+        print(" --->  test_get_favorite_playlist_for_user ok")
+
+    def test_get_total_favorites_video(self):
+        """Test if get_total_favorites_video works correctly."""
+        fav_user_1 = get_favorite_playlist_for_user(self.user)
+        user_add_video_in_playlist(fav_user_1, self.video)
+        user_add_video_in_playlist(fav_user_1, self.video2)
+        fav_user_2 = get_favorite_playlist_for_user(self.user2)
+        user_add_video_in_playlist(fav_user_2, self.video)
+
+        self.assertEqual(2, get_total_favorites_video(self.video))
+        self.assertEqual(1, get_total_favorites_video(self.video2))
+        self.assertEqual(0, get_total_favorites_video(self.video3))
+
+        print(" --->  test_get_total_favorites_video ok")
+
+    def test_get_count_video_added_in_playlist(self):
+        """Test if get_count_video_added_in_playlist works correctly."""
+        fav_user_1 = get_favorite_playlist_for_user(self.user)
+        fav_user_2 = get_favorite_playlist_for_user(self.user2)
+
+        user_add_video_in_playlist(fav_user_1, self.video)
+        user_add_video_in_playlist(fav_user_2, self.video)
+        user_add_video_in_playlist(self.playlist, self.video)
+        user_add_video_in_playlist(self.playlist, self.video2)
+
+        self.assertEqual(3, get_count_video_added_in_playlist(self.video))
+        self.assertEqual(1, get_count_video_added_in_playlist(self.video2))
+        self.assertEqual(0, get_count_video_added_in_playlist(self.video3))
+
+        print(" --->  test_get_count_video_added_in_playlist ok")
