@@ -14,9 +14,14 @@
         <div id="{{ video_in_playlist.id }}" class="player-element card-body card-text border mb-1 mt-4 d-flex flex-row {% if video_in_playlist == video %}selected{% endif %} {% if can_see_video == False %}disabled{% endif %}" data-video-href="{% url 'video:video' video_in_playlist.slug %}">
             <span class="rank d-flex align-self-center">{{ forloop.counter }}</span>
             <span class="card-img d-flex">
-                <img class="card-img" src="{{ video_in_playlist.get_thumbnail_url }}" alt="{% trans "Playlist image" %}" loading="lazy">
+                <img class="card-img {% if can_see_video == False %}grayscale-image{% endif %}" src="{{ video_in_playlist.get_thumbnail_url }}" alt="{% trans "Playlist image" %}" loading="lazy">
+                {% if can_see_video == False %}
+                    <span class="lock-icon-container">
+                        <i class="bi bi-lock-fill"></i>
+                    </span>
+                {% endif %}
             </span>
-            <div class="card-content">
+            <div class="card-content d-flex flex-column align-self-center">
                 <div>
                     <h5 class="title">{{ video_in_playlist.title|truncatechars:27 }}</h5>
                 </div>
@@ -63,14 +68,35 @@
     span.rank {
         margin-right: 1rem;
     }
+
     span.card-img {
         width: 20%;
         margin-right: 2rem;
     }
+
     .card-content {
         width: 100%;
     }
+
     img.card-img {
         object-fit: cover;
+    }
+
+    .card-img {
+        position: relative;
+        display: inline-block;
+    }
+
+    .lock-icon-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 2em;
+        color: white;
+    }
+
+    .grayscale-image {
+        filter: grayscale(100%);
     }
 </style>

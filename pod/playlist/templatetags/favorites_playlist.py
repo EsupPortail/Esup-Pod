@@ -54,7 +54,7 @@ def get_playlist_name(playlist: Playlist) -> str:
 @register.simple_tag(takes_context=True, name="can_see_favorite_video")
 def can_see_favorite_video(context: dict, video: Video) -> bool:
     """
-    Template tag to check if the user can see a favorite video.
+    Template tag to check if the user can see a playlist video.
 
     Args:
         context (dict): The template context dictionary
@@ -64,10 +64,10 @@ def can_see_favorite_video(context: dict, video: Video) -> bool:
         bool: `True` if the user can, `False` otherwise
     """
     request = context["request"]
-    if not request.user.is_authenticated:
-        return False
     is_password_protected = video.password is not None and video.password != ""
     if is_password_protected or video.is_draft:
+        if not request.user.is_authenticated:
+            return False
         return (video.owner == request.user) or (request.user in video.additional_owners.all())
     else:
         return True
