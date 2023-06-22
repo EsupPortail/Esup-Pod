@@ -1,110 +1,17 @@
 {% load i18n l10n static %}
+{% load favorites_playlist %}
 
 {% block page_extra_head %}
     <link rel="stylesheet" href="{% static 'css/playlist.css' %}?ver={{VERSION}}">
 {% endblock page_extra_head %}
 
-<script>
-    const idList = [];
-    var idRun = 0;
-    const videoInformationsList = []
-
-    function getChildIds(element) {
-        const childIds = [];
-        for (let i = 0; i < element.children.length; i++) {
-            const child = element.children[i];
-            if (child.id) {
-                childIds.push(child.id);
-            }
-        }
-        return childIds;
-    }
-
-    function switchVideo(buttonPlaylistElement, informations) {
-        /* We change video source in the video player. */
-        // const videoElement = document.getElementById('podvideoplayer');
-        // videoElement.poster = '{{ video_in_playlist.get_thumbnail_url }}';
-        var srcOptions = {
-            src: informations.source_file_url,
-            type: informations.encoding_format,
-        };
-        player.src(srcOptions);
-        /*
-        const chapters = player.videoJsChapters();
-        for (let chapter of chapters) {
-            player.removeChapter(chapter);
-        }*/
-        /* We change video informations. */
-        const videoInfoDivElement = document.getElementById('info-video');
-        const manageVideoCardElement = document.getElementById('card-managevideo');
-        const takeNoteCardElement = document.getElementById('card-takenote');
-        const shareCardElement = document.getElementById('card-share');
-        const disciplinesCardElement = document.getElementById('card-disciplines');
-        const typesCardElement = document.getElementById('card-types');
-        const tagsCardElement = document.getElementById('card-tags');
-        const url = buttonPlaylistElement.getAttribute("data-video-href");
-        fetch(url, {
-            method: 'GET',
-        })
-            .then((response) => {
-                if (response.ok) {
-                    return response.text();
-                } else {
-                    throw new Error('Network response was not ok.');
-                }
-            })
-            .then((data) => {
-                const parser = new DOMParser();
-                const html = parser.parseFromString(data, 'text/html');
-                const elementToRefreshList = [
-                    videoInfoDivElement,
-                    manageVideoCardElement,
-                    takeNoteCardElement,
-                    shareCardElement,
-                    disciplinesCardElement,
-                    typesCardElement,
-                    tagsCardElement,
-                ];
-                for (let elementToRefresh of elementToRefreshList) {
-                    if (elementToRefresh) {
-                        elementToRefresh.replaceWith(html.getElementById(elementToRefresh.id));
-                    }
-                }
-            })
-            .catch(error => {
-                console.log('ERROR: ', error);
-            });
-        /* We change selected video in video list. */
-        const elements = document.querySelectorAll(".selected");
-        for (var i = 0; i < elements.length; i++) {
-            elements[i].classList.remove('selected');
-        }
-        buttonPlaylistElement.classList.add('selected');
-        idRun = idList.indexOf(buttonPlaylistElement.id);
-    }
-
-    function switchToNextVideo() {
-        if (idRun < idList.length - 1) {
-            switchVideo(
-                document.getElementById(idList[idRun + 1]),
-                videoInformationsList[idRun + 1],
-            );
-        }
-    }
-
-    function preventRefreshButtonPlaylist(buttonPlaylistElement, informations) {
-        if (buttonPlaylistElement) {
-            buttonPlaylistElement.addEventListener('click', (event) => {
-                switchVideo(buttonPlaylistElement, informations);
-            });
-        }
-    }
-</script>
+<script src="{% static 'js/playlist-player.js' %}?ver={{VERSION}}" ></script>
 
 <div class="card" id="card-playlistplayer">
     <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-list-ul"></i>&nbsp;{{ playlist_in_get.name }}</h2>
     {% for video_in_playlist in videos %}
-        <div id="{{ video_in_playlist.id }}" class="player-element card-body card-text border mb-1 mt-4 d-flex flex-row {% if video_in_playlist == video %}selected{% endif %}" data-video-href="{% url 'video:video' video_in_playlist.slug %}">
+        {% can_see_favorite_video video_in_playlist as can_see_video %}
+        <div id="{{ video_in_playlist.id }}" class="player-element card-body card-text border mb-1 mt-4 d-flex flex-row {% if video_in_playlist == video %}selected{% endif %} {% if can_see_video == False %}disabled{% endif %}" data-video-href="{% url 'video:video' video_in_playlist.slug %}">
             <span class="rank d-flex align-self-center">{{ forloop.counter }}</span>
             <span class="card-img d-flex">
                 <img class="card-img" src="{{ video_in_playlist.get_thumbnail_url }}" alt="{% trans "Playlist image" %}" loading="lazy">
@@ -123,22 +30,25 @@
                 </div>
             </div>
         </div>
-        <script>
-            idList.push('{{ video_in_playlist.id }}');
-            preventRefreshButtonPlaylist(
-                document.getElementById('{{ video_in_playlist.id }}'),
-                {
-                    source_file_url: '{{ video_in_playlist.get_playlist_master.source_file.url }}',
-                    encoding_format: '{{ video_in_playlist.get_playlist_master.encoding_format }}',
-                }
-            );
-            videoInformationsList.push(
-                {
-                    source_file_url: '{{ video_in_playlist.get_playlist_master.source_file.url }}',
-                    encoding_format: '{{ video_in_playlist.get_playlist_master.encoding_format }}',
-                }
-            );
-        </script>
+        {% if can_see_video %}
+            <script>
+                idList.push('{{ video_in_playlist.id }}');
+                preventRefreshButtonPlaylist(
+                    document.getElementById('{{ video_in_playlist.id }}'),
+                    {
+                        source_file_url: '{{ video_in_playlist.get_playlist_master.source_file.url }}',
+                        encoding_format: '{{ video_in_playlist.get_playlist_master.encoding_format }}',
+                        get_video_mp4_json: {{ video_in_playlist.get_video_mp4_json | safe }},
+                    }
+                );
+                videoInformationsList.push(
+                    {
+                        source_file_url: '{{ video_in_playlist.get_playlist_master.source_file.url }}',
+                        encoding_format: '{{ video_in_playlist.get_playlist_master.encoding_format }}',
+                    }
+                );
+            </script>
+        {% endif %}
     {% endfor %}
 </div>
 
