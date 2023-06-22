@@ -1,5 +1,5 @@
 $(function () {
-  var myChart;
+  var dateChart;
   var startDate;
   var endDate;
   let d = [];
@@ -47,9 +47,9 @@ $(function () {
           var date = data.map((row) => row.date);
           var day = data.map((row) => row.day);
           var fav_day = data.map((row) => row.fav_day);
-            d.push(date[0]);
-            dailyviews.push(day[0]);
-            dailyfavo.push(fav_day[0]);
+          d.push(date[0]);
+          dailyviews.push(day[0]);
+          dailyfavo.push(fav_day[0]);
           resolve();
         },
         error: function (error) {
@@ -60,88 +60,106 @@ $(function () {
   }
 
   function updateChart() {
-      d = [];
-      dailyviews = [];
-      dailyfavo = [];
-      let currentDate = new Date(startDate);
-      let targetDate = new Date(endDate);
+    d = [];
+    dailyviews = [];
+    dailyfavo = [];
+    let currentDate = new Date(startDate);
+    let targetDate = new Date(endDate);
 
-      let requests = [];
-      while (currentDate <= targetDate) {
-        let data = currentDate.toISOString().split("T")[0];
-        requests.push(fetchData(data));
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
+    let requests = [];
+    while (currentDate <= targetDate) {
+      let data = currentDate.toISOString().split("T")[0];
+      requests.push(fetchData(data));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
 
-      Promise.all(requests)
-        .then(function () {
-          let sortedData = d
-            .map((item, index) => {
-              return {
-                date: item,
-                views: dailyviews[index],
-                favo: dailyfavo[index],
-              };
-            })
-            .sort((a, b) => new Date(a.date) - new Date(b.date));
-          daily = sortedData.map((item) => item.date);
-          dailyviews = sortedData.map((item) => item.views);
-          dailyfavo = sortedData.map((item) => item.favo);
+    Promise.all(requests)
+      .then(function () {
+        let sortedData = d
+          .map((item, index) => {
+            return {
+              date: item,
+              views: dailyviews[index],
+              favo: dailyfavo[index],
+            };
+          })
+          .sort((a, b) => new Date(a.date) - new Date(b.date));
+        daily = sortedData.map((item) => item.date);
+        dailyviews = sortedData.map((item) => item.views);
+        dailyfavo = sortedData.map((item) => item.favo);
 
-          var ctx = document.getElementById("myChart").getContext("2d");
-          if (myChart) {
-            myChart.destroy();
-          }
-          myChart = new Chart(ctx, {
-            type: "line",
-            data: {
-              labels: daily,
-              datasets: [
-                {
-                  label: gettext("View"),
-                  animations: {
-                    y: {
-                      duration: 2000,
-                      delay: 500,
-                    },
+        var ctx = document.getElementById("dateChart").getContext("2d");
+        if (dateChart) {
+          dateChart.destroy();
+        }
+        dateChart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: daily,
+            datasets: [
+              {
+                label: gettext("View"),
+                animations: {
+                  y: {
+                    duration: 2000,
+                    delay: 500,
                   },
-                  backgroundColor: "#DC143C",
-                  borderColor: "#DC143C",
-                  borderWidth: 2,
-                  data: dailyviews,
-                  tension: 0.5,
                 },
-                {
-                  label: gettext("Favorite"),
-                  backgroundColor: "#1F7C85",
-                  borderColor: "#1F7C85",
-                  borderWidth: 2,
-                  data: dailyfavo,
-                  tension: 0.5,
-                },
-              ],
-            },
-            options: {
-              animations: {
-                y: {
-                  easing: "easeInOutElastic",
-                  from: (ctx) => {
-                    if (ctx.type === "data") {
-                      if (ctx.mode === "default" && !ctx.dropped) {
-                        ctx.dropped = true;
-                        return 0;
-                      }
+                backgroundColor: "#DC143C",
+                borderColor: "#DC143C",
+                borderWidth: 2,
+                data: dailyviews,
+                tension: 0.5,
+              },
+              {
+                label: gettext("Favorite"),
+                backgroundColor: "#1F7C85",
+                borderColor: "#1F7C85",
+                borderWidth: 2,
+                data: dailyfavo,
+                tension: 0.5,
+              },
+            ],
+          },
+          options: {
+            animations: {
+              y: {
+                easing: "easeInOutElastic",
+                from: (ctx) => {
+                  if (ctx.type === "data") {
+                    if (ctx.mode === "default" && !ctx.dropped) {
+                      ctx.dropped = true;
+                      return 0;
                     }
-                  },
+                  }
                 },
               },
             },
-          });
-        })
-        .catch(function (error) {
-          console.log(error);
+          },
         });
-      
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
+  // Function to export data in CSV format
+  function exportToCSV() {
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Date,Views,Favorites\n";
+    for (let i = 0; i < daily.length; i++) {
+      let row = daily[i] + "," + dailyviews[i] + "," + dailyfavo[i] + "\n";
+      csvContent += row;
+    }
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "data.csv");
+    document.body.appendChild(link);
+    link.click();
+  }
+
+  $("#export-btn").click(function () {
+    exportToCSV();
+  });
 });

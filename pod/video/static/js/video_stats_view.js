@@ -1,128 +1,161 @@
-function linkedCell(cellValue, options, rowObject) {
-  return (
-    "<a href='" +
-    window.location.origin +
-    "/video/" +
-    rowObject.slug +
-    "' target='_blank' rel='noopener'>" +
-    cellValue +
-    "</a>"
-  );
-}
-$(() => {
+$(function () {
+  var yearChart;
+  var startYear;
+  var endYear;
+  let y = [];
+  let yearlyviews = [];
+  let today = new Date();
   let data_url = window.location.href;
-  
-  function createTable() {
-    $("#grid").jqGrid({
-      url: data_url,
-      datatype: "json",
-      mtype: "POST",
-      styleUI: "Bootstrap5",
-      iconSet: "Bootstrap5",
-      width: 1700,
-      colNames: [
-        "<div class='col-name'>" + gettext("Title") + "</div>",
-        "<div class='col-name'>" + gettext("View during the day") + "</div>",
-        "<div class='col-name'>" + gettext("View during the month") + "</div>",
-        "<div class='col-name'>" + gettext("View during the year") + "</div>",
-        "<div class='col-name'>" + gettext("Total view from creation") + "</div>",
-        "<div class='col-name'>" + gettext("Favorite additions during the day")+ "</div>",
-        "<div class='col-name'>" + gettext("Favorite additions during the month")+ "</div>",
-        "<div class='col-name'>" + gettext("Favorite additions during the year") + "</div>",
-        "<div class='col-name'>" + gettext("Total favorite additions from creation")+ "</div>",
-        "<div class='col-name'>" + gettext("Slug") + "</div>",
-      ],
-      colModel: [
-        {
-          name: "title",
-          align: "center",
-          sortable: true,
-          sorttype: "text",
-          formatter: linkedCell,
-        },
-        { name: "day", align: "center", sortable: true, sorttype: "int" },
-        { name: "month", align: "center", sortable: true, sorttype: "int" },
-        { name: "year", align: "center", sortable: true, sorttype: "int" },
-        {
-          name: "since_created",
-          align: "center",
-          sortable: true,
-          sorttype: "int",
-        },
-        { name: "fav_day", align: "center", sortable: true, sorttype: "int" },
-        { name: "fav_month", align: "center", sortable: true, sorttype: "int" },
-        { name: "fav_year", align: "center", sortable: true, sorttype: "int" },
-        {
-          name: "fav_since_created",
-          align: "center",
-          sortable: true,
-          sorttype: "int",
-        },
-        {
-          name: "slug",
-          align: "center",
-          sortable: true,
-          sorttype: "text",
-          hidden: true,
-        },
 
-      ],
-      loadonce: true,
-      rowNum: 10,
-      rowList: [10, 15, 20, 25, 30, 50, 100],
-      gridview: true,
-      autoencode: true,
-      pager: "#pager",
-      sortorder: "asc",
-      beforeProcessing: function (data) {
-        // Set min date
-        let min_date = data.filter((obj) => obj.min_date !== undefined);
-        // remove date_min in data
-        data.pop();
-        document.querySelector("#jsperiode").min = min_date[0].min_date;
-      },
-      postData: {
-        csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
-      },
-    });
+  let startYearDefault = today.getFullYear() - 5;
+  $("#start-year").val(startYearDefault); // set year input value to current year - 5
+  document.querySelector("#start-year").max = today.getFullYear();
+  $("#end-year").val(today.getFullYear()); // set year input value to current year
+  document.querySelector("#end-year").max = today.getFullYear();
+
+  if (startYear === undefined && endYear === undefined) {
+      startYear = startYearDefault;
+      endYear = today.getFullYear();
+      updateChart();
   }
 
-  let today = new Date().toISOString().split("T")[0];
-  $("#jsperiode").val(today); // set date input value to today
-  document.querySelector("#jsperiode").max = today;
+  $("#start-year").change(function () {
+      startYear = parseInt($(this).val());
+      document.querySelector("#end-year").min = startYear;
+      updateChart();
+  });
 
-  $("#jsperiode").on("change paste keyup", function (e) {
-    if ($(this).val() != undefined && $(this).val().trim() !== "") {
-      try {
-        let data = { periode: $(this).val() };
-        $("#grid")
-          .jqGrid("setGridParam", { datatype: "json", postData: data })
-          .trigger("reloadGrid");
-      } catch (e) {
-        console.log(e);
+  $("#end-year").change(function () {
+      endYear = parseInt($(this).val());
+      document.querySelector("#start-year").max = endYear;
+      updateChart();
+  });
+
+  function fetchData(year) {
+      return new Promise(function (resolve, reject) {
+          $.ajax({
+              url: data_url,
+              method: "POST",
+              dataType: "json",
+              data: {
+                  csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
+                  periode: year,
+              },
+              success: function (data) {
+                  var year = data.map((row) => row.all_year);
+                  var all_view = data.map((row) => row.all_view_year);
+                  var year_favo = data.map((row) => row.all_fav_year);
+                  y.push(year[0]);
+                  yearlyviews.push(all_view[0]);
+                  yearlyfav.push(year_favo[0]);
+                  resolve();
+              },
+              error: function (error) {
+                  reject(error);
+              },
+          });
+      });
+  }
+
+  function updateChart() {
+      y = [];
+      yearlyviews = [];
+      yearlyfav = [];
+      let startYearInt = parseInt(startYear);
+      let endYearInt = parseInt(endYear);
+      let requests = [];
+      while (startYearInt <= endYearInt ) {
+          requests.push(fetchData(startYearInt));
+          startYearInt++;
       }
+
+      Promise.all(requests)
+          .then(function () {
+              let sortedData = y
+                  .map((item, index) => {
+                      return {
+                          year: item,
+                          views: yearlyviews[index],
+                          favorite : yearlyfav[index],
+                      };
+                  })
+                  .sort((a, b) => a.year - b.year);
+              year = sortedData.map((item) => item.year);
+              yearlyviews = sortedData.map((item) => item.views);
+              yearlyfavo = sortedData.map((item) => item.favorite);
+
+              var ctx = document.getElementById("yearChart").getContext("2d");
+              if (yearChart) {
+                  yearChart.destroy();
+              }
+              yearChart = new Chart(ctx, {
+                  type: "line",
+                  data: {
+                      labels: year,
+                      datasets: [
+                          {
+                            label: gettext("View"),
+                            animations: {
+                                y: {
+                                    duration: 2000,
+                                    delay: 500,
+                                },
+                            },
+                            backgroundColor: "#DC143C",
+                            borderColor: "#DC143C",
+                            borderWidth: 2,
+                            data: yearlyviews,
+                            tension: 0.5,
+                          },
+                          {
+                            label: gettext("Favorite"),
+                            backgroundColor: "#1F7C85",
+                            borderColor: "#1F7C85",
+                            borderWidth: 2,
+                            data: yearlyfavo,
+                            tension: 0.5,
+                          },
+                      ],
+                  },
+                  options: {
+                      animations: {
+                          y: {
+                              easing: "easeInOutElastic",
+                              from: (ctx) => {
+                                  if (ctx.type === "data") {
+                                      if (ctx.mode === "default" && !ctx.dropped) {
+                                          ctx.dropped = true;
+                                          return 0;
+                                      }
+                                  }
+                              },
+                          },
+                      },
+                  },
+              });
+          })
+          .catch(function (error) {
+              console.log(error);
+          });
+  }
+
+  // Function to export data in CSV format
+  function exportToCSV() {
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Date,Views,Favorites\n";
+    for (let i = 0; i < year.length; i++) {
+      let row = year[i] + "," + yearlyviews[i] + "," + yearlyfav[i] + "\n";
+      csvContent += row;
     }
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "data.csv");
+    document.body.appendChild(link);
+    link.click();
+  }
+
+  $("#export-btn").click(function () {
+    exportToCSV();
   });
-
-  $("#filtered").change(function () {
-    const selectedValue = $(this).val();
-    createTable();
-
-    if (selectedValue === "all") {
-      $('#grid').jqGrid('showCol',["title",'day','month','year','since_created','fav_day','fav_month','fav_year','fav_since_created'])
-      
-    } else if (selectedValue === "views") {
-      $('#grid').jqGrid('showCol',["title",'day','month','year','since_created']);
-      $("#grid").jqGrid('hideCol',['fav_day','fav_month','fav_year','fav_since_created']);
-      
-
-    } else {
-      $('#grid').jqGrid('showCol',["title",'fav_day','fav_month','fav_year','fav_since_created']);
-      $("#grid").jqGrid('hideCol',['day','month','year','since_created']);
-
-    }
-
-  });
-
-  $("#filtered").val("all").change();
 });

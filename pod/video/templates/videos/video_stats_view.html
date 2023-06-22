@@ -29,33 +29,26 @@
       <input type="date" id="end-date" name="end-date">
     </div>
     <div class="table-responsive-md mb-4">
-      <canvas id="myChart"></canvas>
+      <canvas id="dateChart"></canvas>
     </div>
     {% else %}
-      <label for="jsperiode" class="col-7 col-form-label">{% trans "Change the date" %}</label>
-      <div class="col-5 col-date">
-        <input class="form-control" type="date" name="periode" id="jsperiode">
-      </div>
-      <select id="filtered" name="filtered">
-        <option value="all">All</option>
-        <option value="views">Views</option>
-        <option value="favorites">Favorite</option>
-      </select>
+      <label for="start-year">{% trans "Start year" %}</label>
+      <input type="number" id="start-year" name="start-year">
+      <label for="end-year">{% trans "End year" %}</label>
+      <input type="number" id="end-year" name="end-year">
     </div>
     <div class="table-responsive-md mb-4">
-      <table id="grid"></table>
+      <canvas id="yearChart"></canvas>
     </div>
-      
     {% endif %}
+    <button id="export-btn">{% trans "Export to CSV" %}</button> <!-- Ajout du bouton d'exportation -->
     <div id="pager"></div>
   {% endif %}
 </div>
 {% endblock content %}
 
 {% block more_script %} 
-  <script src="{% static 'jqGrid/js/i18n/grid.locale-'|add:LANGUAGE_CODE|add:'.js' %}?ver={{VERSION}}" charset="utf-8"></script>
-  <script src="{% static 'jqGrid/js/jquery.jqGrid.min.js' %}?ver={{VERSION}}" charset="utf-8"></script>
-  <script src="{% static 'js/video_stats_view.js' %}?ver={{VERSION}}" charset="utf-8"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="{% static 'js/video_stats_view.js' %}?ver={{VERSION}}" charset="utf-8"></script>
   <script src="{% static 'js/video_stats_view2.js' %}?ver={{VERSION}}" charset="utf-8"></script>
 {% endblock %}
