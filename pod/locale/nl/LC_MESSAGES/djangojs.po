@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-12 13:57+0200\n"
+"POT-Creation-Date: 2023-06-22 14:23+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -718,41 +718,14 @@ msgid "Select the general type of the video."
 msgstr ""
 
 #: pod/video/static/js/video_stats_view.js
-msgid "Title"
-msgstr "Titel"
-
-#: pod/video/static/js/video_stats_view.js
-msgid "View during the day"
+#: pod/video/static/js/video_stats_view_global.js
+msgid "Views"
 msgstr ""
 
 #: pod/video/static/js/video_stats_view.js
-msgid "View during the month"
+#: pod/video/static/js/video_stats_view_global.js
+msgid "Favorites"
 msgstr ""
 
-#: pod/video/static/js/video_stats_view.js
-msgid "View during the year"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-msgid "Total view from creation"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-msgid "Favorite additions during the day"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-msgid "Favorite additions during the month"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-msgid "Favorite additions during the year"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-msgid "Total favorite additions from creation"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-msgid "Slug"
-msgstr ""
+#~ msgid "Title"
+#~ msgstr "Titel"

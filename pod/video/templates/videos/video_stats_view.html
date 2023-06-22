@@ -41,7 +41,7 @@
       <canvas id="yearChart"></canvas>
     </div>
     {% endif %}
-    <button id="export-btn">{% trans "Export to CSV" %}</button>
+    <button class="btn btn-primary btn-sm ps-2 pe-2 mb-3 d-flex" id="export-btn" type="button">{% trans "Export to CSV" %}</button>
     <div id="pager"></div>
   {% endif %}
 </div>
@@ -50,5 +50,5 @@
 {% block more_script %} 
   <script src="{% static 'chart.js/dist/chart.umd.js' %}?ver={{VERSION}}" charset="utf-8"></script>
   <script src="{% static 'js/video_stats_view.js' %}?ver={{VERSION}}" charset="utf-8"></script>
-  <script src="{% static 'js/video_stats_view2.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+  <script src="{% static 'js/video_stats_view_global.js' %}?ver={{VERSION}}" charset="utf-8"></script>
 {% endblock %}

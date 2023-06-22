@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-12 13:57+0200\n"
+"POT-Creation-Date: 2023-06-22 14:23+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -744,44 +744,44 @@ msgid "Select the general type of the video."
 msgstr "Sélectionnez le type général de vidéo."
 
 #: pod/video/static/js/video_stats_view.js
-msgid "Title"
-msgstr "Titre"
+#: pod/video/static/js/video_stats_view_global.js
+msgid "Views"
+msgstr "Vues"
 
 #: pod/video/static/js/video_stats_view.js
-msgid "View during the day"
-msgstr "Vue de la journée"
+#: pod/video/static/js/video_stats_view_global.js
+msgid "Favorites"
+msgstr "Favoris"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "View during the month"
-msgstr "Vue du mois"
+#~ msgid "Title"
+#~ msgstr "Titre"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "View during the year"
-msgstr "Vue de l’année"
+#~ msgid "View during the day"
+#~ msgstr "Vue de la journée"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Total view from creation"
-msgstr "Vue totale depuis création"
+#~ msgid "View during the month"
+#~ msgstr "Vue du mois"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Favorite additions during the day"
-msgstr "Ajouts en favoris de la journée"
+#~ msgid "View during the year"
+#~ msgstr "Vue de l’année"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Favorite additions during the month"
-msgstr "Ajouts en favoris du mois"
+#~ msgid "Total view from creation"
+#~ msgstr "Vue totale depuis création"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Favorite additions during the year"
-msgstr "Ajouts en favoris de l’année"
+#~ msgid "Favorite additions during the day"
+#~ msgstr "Ajouts en favoris de la journée"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Total favorite additions from creation"
-msgstr "Ajouts en favoris total depuis la création"
+#~ msgid "Favorite additions during the month"
+#~ msgstr "Ajouts en favoris du mois"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Slug"
-msgstr "Titre court"
+#~ msgid "Favorite additions during the year"
+#~ msgstr "Ajouts en favoris de l’année"
+
+#~ msgid "Total favorite additions from creation"
+#~ msgstr "Ajouts en favoris total depuis la création"
+
+#~ msgid "Slug"
+#~ msgstr "Titre court"
 
 #~ msgid "Position saved"
 #~ msgstr "Position enregistrée"
