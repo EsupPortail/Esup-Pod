@@ -17,7 +17,7 @@
 {% endblock breadcrumbs %}
 
 {% block page_content %}
-    <form method="POST" action="{% if form.instance.name %}{% url 'playlist:edit' form.instance.slug %}{% else %}{% url 'playlist:add' %}{{ options }}{% endif %}" accept-charset="utf-8" enctype="multipart/form" class="needs-validation" novalidate>
+    <form method="POST" action="{% if not form.instance.name %}{% url 'playlist:edit' form.instance.slug %}{% else %}{% url 'playlist:add' %}{{ options }}{% endif %}" accept-charset="utf-8" enctype="multipart/form" class="needs-validation" novalidate>
         {% csrf_token %}
         <div class="list-group">
             {% if form.errors %}
