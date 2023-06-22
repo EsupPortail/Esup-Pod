@@ -66,7 +66,7 @@ def can_see_favorite_video(context: dict, video: Video) -> bool:
     if not request.user.is_authenticated:
         return False
     is_password_protected = video.password is not None and video.password != ""
-    if is_password_protected:
-        return video in (get_playlist_list_for_user(request.user) | get_playlists_for_additional_owner(request.user))
+    if is_password_protected or video.is_draft:
+        return (video.owner == request.user) or (request.user in video.additional_owners.all())
     else:
-        return not video.is_draft;
+        return True

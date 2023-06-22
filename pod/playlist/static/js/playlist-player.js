@@ -48,7 +48,7 @@ function switchVideo(buttonPlaylistElement, informations) {
             console.log('ERROR: ', error);
         });
     const elements = document.querySelectorAll(".selected");
-    for (var i = 0; i < elements.length; i++) {
+    for (let i = 0; i < elements.length; i++) {
         elements[i].classList.remove('selected');
     }
     buttonPlaylistElement.classList.add('selected');
