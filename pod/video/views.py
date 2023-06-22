@@ -916,7 +916,7 @@ def render_video(
         or (request.user in video.additional_owners.all())
         or (request.GET.get("playlist"))
     ):
-        if (request.GET.get("playlist") and is_password_protected):
+        if (request.GET.get("playlist") and (is_password_protected or video.is_draft)):
             playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
             videos = sort_videos_list(
             get_video_list_for_playlist(playlist), "rank"
