@@ -852,6 +852,16 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         videos = sort_videos_list(
             get_video_list_for_playlist(playlist), "rank"
         )
+        """
+        if request.GET.get("first"):
+            ...
+        else:
+            for i in range(len(videos)):
+                is_password_protected = video.password is not None and video.password != ""
+                if is_password_protected or video.is_draft:
+                    if videos[i + 1]:
+                        first = videos[i + 1]
+        """
         params = {
             "playlist_in_get": playlist,
             "videos": videos,
@@ -904,7 +914,24 @@ def render_video(
         or request.user.is_superuser
         or request.user.has_perm("video.change_video")
         or (request.user in video.additional_owners.all())
+        or (request.GET.get("playlist"))
     ):
+        if (request.GET.get("playlist") and is_password_protected):
+            playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
+            videos = sort_videos_list(
+            get_video_list_for_playlist(playlist), "rank"
+            )
+            params = {
+                "playlist_in_get": playlist,
+                "videos": videos,
+            }
+            video = Video.objects.filter(
+                playlistcontent__playlist_id=playlist.id,
+                is_draft=False,
+                is_restricted=False,
+            ).first()
+            if not video:
+                return Http404();
         return render(
             request,
             template_video,
