@@ -14,7 +14,7 @@ class PlaylistConfig(AppConfig):
     verbose_name = _("Playlists")
 
     def ready(self) -> None:
-        from . import signals
+        from . import signals  # noqa: F401
         pre_migrate.connect(self.save_previous_data, sender=self)
         post_migrate.connect(self.send_previous_data, sender=self)
 
@@ -147,7 +147,6 @@ class PlaylistConfig(AppConfig):
     def update_playlists(self):
         """Update previous playlist table."""
         from pod.playlist.models import Playlist
-        from django.utils.translation import gettext_lazy as _
 
         playlists_to_update = []
 
@@ -182,7 +181,6 @@ class PlaylistConfig(AppConfig):
     def add_playlists_contents(self):
         """Add playlist content record from existing datas"""
         from pod.playlist.models import PlaylistContent
-        from django.utils.translation import gettext_lazy as _
         content_list_to_bulk = []
         for content_datas in PLAYLIST_CONTENTS.values():
             position, playlist_id, video_id = content_datas

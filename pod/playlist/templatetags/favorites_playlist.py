@@ -50,6 +50,7 @@ def get_playlist_name(playlist: Playlist) -> str:
     else:
         return playlist.name
 
+
 @register.simple_tag(takes_context=True, name="can_see_favorite_video")
 def can_see_favorite_video(context: dict, video: Video) -> bool:
     """

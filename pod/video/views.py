@@ -31,7 +31,6 @@ from pod.main.utils import is_ajax
 from pod.main.views import in_maintenance
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
-from pod.favorite.models import Favorite
 from pod.playlist.models import Playlist, PlaylistContent
 from pod.playlist.utils import get_video_list_for_playlist
 from pod.video.utils import get_videos as video_get_videos
@@ -851,7 +850,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     elif request.GET.get("playlist"):
         playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
         videos = sort_videos_list(
-        get_video_list_for_playlist(playlist), "rank"
+            get_video_list_for_playlist(playlist), "rank"
         )
         """
         if request.GET.get("first"):
@@ -1988,7 +1987,8 @@ def get_all_views_count(v_id, date_filter=date.today()):
     all_views["since_created"] = count if count else 0
 
     # playlist addition in day
-    count = PlaylistContent.objects.filter(video_id=v_id, date_added__date=date_filter).count()
+    count = PlaylistContent.objects.filter(
+        video_id=v_id, date_added__date=date_filter).count()
     all_views["playlist_day"] = count if count else 0
 
     # playlist addition in month
@@ -2009,7 +2009,6 @@ def get_all_views_count(v_id, date_filter=date.today()):
     # playlist addition since video was created
     count = PlaylistContent.objects.filter(video_id=v_id).count()
     all_views["playlist_since_created"] = count if count else 0
-
 
     favorites_playlists = Playlist.objects.filter(name="Favorites")
 
