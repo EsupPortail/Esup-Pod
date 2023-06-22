@@ -107,7 +107,9 @@ player.on('firstplay', function(){
 
 {% if video.is_video %}
   /** get all mp4 format **/
-  var mp4_sources = {{video.get_video_mp4_json|safe}};
+  var mp4_sources = {{ video.get_video_mp4_json|safe }};
+  {% if playlist_in_get %}
+  {% endif %}
 
   {% if video.get_playlist_master %}
     var srcOptions = {
@@ -128,14 +130,14 @@ player.on('firstplay', function(){
     player.hlsQualitySelector({
         displayCurrentQuality: true,
     });
-    player.on("error", function(e){
+    player.on("error", function(e) {
       e.stopImmediatePropagation();
       var error = player.error();
       //alert(error.code+" "+error.type+" "+error.message);
       if(error.code == 3 || error.code == 4) {
         //console.log('error!', error.code, error.type , error.message);
         if(player.src()=="" || player.src().indexOf("m3u8")!=-1){
-          console.log('eee');
+          console.log('On rentre dans le condition');
           console.log(player.src());
           player.src(mp4_sources);
           player.controlBar.addChild('QualitySelector');
@@ -238,7 +240,7 @@ player.on('firstplay', function(){
 
 /* --- PLAYLIST --- */
 {% if playlist_in_get.autoplay %}
-  player.on("ended", function (e) {
+  player.on('ended', function (e) {
     switchToNextVideo();
   });
 {% endif %}

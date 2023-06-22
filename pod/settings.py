@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "pod.xapi",
     "pod.favorite",
     "pod.video_encode_transcript",
+    "pod.import_video",
     "pod.custom",
 ]
 
@@ -118,7 +119,8 @@ TEMPLATES = [
                 "pod.authentication.context_processors.context_authentication_settings",
                 "pod.recorder.context_processors.context_recorder_settings",
                 "pod.favorite.context_processors.context_settings",
-                "pod.playlist.context_processors.context_settings"
+                "pod.playlist.context_processors.context_settings",
+                "pod.import_video.context_processors.context_settings",
             ],
         },
     },

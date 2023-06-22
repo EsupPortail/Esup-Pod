@@ -83,8 +83,8 @@ class VideoConfig(AppConfig):
                 results = c.fetchall()
                 for res in results:
                     mapping_dict["%s" % res[0]] = [res[i] for i in range(1, len(res))]
-        except Exception as e:
-            print(e)
+        except Exception:
+            # print(e)
             pass
 
     def save_previous_data(self, sender, **kwargs):

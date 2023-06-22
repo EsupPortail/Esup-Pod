@@ -1,0 +1,82 @@
+const idList = [];
+var idRun = 0;
+const videoInformationsList = []
+
+/**
+ * Switch to an other video in the playlist. This function is called when the user click on the video in playlist player or when the last video is ended.
+ *
+ * @param {HTMLElement} buttonPlaylistElement The card of the video to display.
+ * @param {{}} informations The informations of the video to display.
+ */
+function switchVideo(buttonPlaylistElement, informations) {
+    mp4_sources = informations.get_video_mp4_json;
+    var srcOptions = {
+        src: informations.source_file_url,
+        type: informations.encoding_format,
+    };
+    player.src(srcOptions);
+    const url = buttonPlaylistElement.getAttribute("data-video-href");
+    fetch(url, {
+        method: 'GET',
+    })
+        .then((response) => {
+            if (response.ok) {
+                return response.text();
+            } else {
+                throw new Error('Network response was not ok.');
+            }
+        })
+        .then((data) => {
+            const parser = new DOMParser();
+            const html = parser.parseFromString(data, 'text/html');
+            const elementToRefreshList = [
+                document.getElementById('info-video'),
+                document.getElementById('card-managevideo'),
+                document.getElementById('card-takenote'),
+                document.getElementById('card-share'),
+                document.getElementById('card-share'),
+                document.getElementById('card-types'),
+                document.getElementById('card-tags'),
+            ];
+            for (let elementToRefresh of elementToRefreshList) {
+                if (elementToRefresh) {
+                    elementToRefresh.replaceWith(html.getElementById(elementToRefresh.id));
+                }
+            }
+        })
+        .catch(error => {
+            console.log('ERROR: ', error);
+        });
+    const elements = document.querySelectorAll(".selected");
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].classList.remove('selected');
+    }
+    buttonPlaylistElement.classList.add('selected');
+    idRun = idList.indexOf(buttonPlaylistElement.id);
+}
+
+/**
+ * Switch to the next video when this exists.
+ */
+function switchToNextVideo() {
+    if (idRun < idList.length - 1) {
+        switchVideo(
+            document.getElementById(idList[idRun + 1]),
+            videoInformationsList[idRun + 1],
+        );
+    }
+}
+
+/**
+ * Add an EventListener to a video card. This function is called for all accessible card videos.
+ *
+ * @param {HTMLElement} buttonPlaylistElement The video card.
+ * @param {{}} informations The video informations.
+ */
+function preventRefreshButtonPlaylist(buttonPlaylistElement, informations) {
+    if (buttonPlaylistElement) {
+        buttonPlaylistElement.addEventListener('click', (event) => {
+            switchVideo(buttonPlaylistElement, informations);
+        });
+    }
+}

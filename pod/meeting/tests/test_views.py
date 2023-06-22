@@ -1,20 +1,21 @@
-from django.test import TestCase
-from django.contrib.auth.models import User
-from django.urls import reverse
-from django.test import Client, override_settings
-from django.contrib.sites.models import Site
-from django.conf import settings
-from django.utils import timezone
-from datetime import datetime
-
-from http import HTTPStatus
-from importlib import reload
+"""Tests the views for meeting module."""
 import random
 import requests
 
 from .. import views
-from ..models import Meeting, Recording
+from ..models import Meeting, InternalRecording
+from datetime import datetime
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
+from django.test import TestCase
+from django.test import Client, override_settings
+from django.urls import reverse
+from django.utils import timezone
+from http import HTTPStatus
+from importlib import reload
 from pod.authentication.models import AccessGroup
+
 
 VIDEO_TEST = getattr(settings, "VIDEO_TEST", "pod/main/static/video_test/pod.mp4")
 ROOT_URLCONF = getattr(settings, "ROOT_URLCONF", "http://testserver")
@@ -555,10 +556,9 @@ class MeetingRecordingTestView(TestCase):
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
-        Recording.objects.create(
+        InternalRecording.objects.create(
             id=1,
             name="test recording1",
-            is_internal=True,
             recording_id="d058c39d3dc59d9e9516d95f76eb",
             meeting=meeting,
             site=site,
@@ -633,7 +633,7 @@ class MeetingRecordingTestView(TestCase):
 
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        recording = Recording.objects.get(id=1)
+        recording = InternalRecording.objects.get(id=1)
         url = reverse(
             "meeting:delete_internal_recording",
             kwargs={
@@ -818,8 +818,8 @@ class MeetingInviteTestView(TestCase):
         print(msg)
 
 
-class RecordingDeleteTestView(TestCase):
-    """List of view tests for deleting an externbal or internal recording.
+class InternalRecordingDeleteTestView(TestCase):
+    """List of view tests for deleting an internal recording.
 
     Args:
         TestCase (class): test case
@@ -830,10 +830,9 @@ class RecordingDeleteTestView(TestCase):
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
         meeting = Meeting.objects.create(id=1, name="test", owner=user, site=site)
-        Recording.objects.create(
+        InternalRecording.objects.create(
             id=1,
             name="test recording1",
-            is_internal=True,
             recording_id="d058c39d3dc59d9e9516d95f76eb",
             meeting=meeting,
             site=site,
@@ -843,7 +842,7 @@ class RecordingDeleteTestView(TestCase):
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
-        print(" --->  SetUp of RecordingDeleteTestView: OK!")
+        print(" --->  SetUp of InternalRecordingDeleteTestView: OK!")
 
     def test_recording_TestView_get_request_restrict(self):
         """Test the list of internal recordings."""
@@ -890,7 +889,7 @@ class RecordingDeleteTestView(TestCase):
 
         # check access right
         meeting = Meeting.objects.get(name="test")
-        recording = Recording.objects.get(name="test recording1")
+        recording = InternalRecording.objects.get(name="test recording1")
         url = reverse(
             "meeting:delete_internal_recording",
             kwargs={
@@ -917,8 +916,8 @@ class RecordingDeleteTestView(TestCase):
         print(" --->  test_recording_delete_get_request of RecordingDeleteTestView: OK!")
 
 
-class RecordingUploadTestView(TestCase):
-    """List of view tests for upload to Pod an external or internal recording.
+class InternalRecordingUploadTestView(TestCase):
+    """List of view tests for upload to Pod an internal recording.
 
     Args:
         TestCase (class): test case
@@ -932,57 +931,19 @@ class RecordingUploadTestView(TestCase):
         user2 = User.objects.create(username="pod2", password="pod1234pod")
         user2.save()
         meeting = Meeting.objects.create(id=1, name="test", owner=user, site=site)
-        Recording.objects.create(
+        InternalRecording.objects.create(
             id=1,
             name="test recording1",
-            is_internal=True,
             recording_id="d058c39d3dc59d9e9516d95f76eb",
             meeting=meeting,
             site=site,
             owner=user,
-            type="bigbluebutton",
-        )
-        Recording.objects.create(
-            id=2,
-            name="test youtube recording1",
-            is_internal=False,
-            site=site,
-            owner=user2,
-            type="youtube",
-            source_url="https://youtube.url",
-        )
-        Recording.objects.create(
-            id=3,
-            name="test peertube recording1",
-            is_internal=False,
-            site=site,
-            owner=user2,
-            type="peertube",
-            source_url="https://peertube.url",
-        )
-        Recording.objects.create(
-            id=4,
-            name="test external bbb recording1",
-            is_internal=False,
-            site=site,
-            owner=user2,
-            type="bigbluebutton",
-            source_url="https://bbb.url",
-        )
-        Recording.objects.create(
-            id=5,
-            name="test direct video recording1",
-            is_internal=False,
-            site=site,
-            owner=user2,
-            type="video",
-            source_url="https://video.url",
         )
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
-        print(" --->  SetUp of RecordingUploadTestView: OK!")
+        print(" --->  SetUp of InternalRecordingUploadTestView: OK!")
 
     def test_recording_upload_get_request(self):
         """Test recording upload with Get request."""
@@ -1006,7 +967,7 @@ class RecordingUploadTestView(TestCase):
 
         # check access right
         meeting = Meeting.objects.get(name="test")
-        recording = Recording.objects.get(name="test recording1")
+        recording = InternalRecording.objects.get(name="test recording1")
         url = reverse(
             "meeting:upload_internal_recording_to_pod",
             kwargs={
@@ -1038,86 +999,5 @@ class RecordingUploadTestView(TestCase):
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-
-        # Check upload for external recording
-        # Youtube type
-        recordingYt = Recording.objects.get(name="test youtube recording1")
-        self.user = User.objects.get(username="pod2")
-        self.client.force_login(self.user)
-        url = reverse(
-            "meeting:upload_external_recording_to_pod",
-            kwargs={"record_id": recordingYt.id},
-        )
-        response = self.client.post(
-            url,
-            {
-                "recording_name": "test youtube recording1",
-                "source_url": "https://youtube.url",
-            },
-            follow=True,
-        )
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        # Message for a bad URL
-        self.assertTrue(b"YouTube content is inaccessible" in response.content)
-
-        # Peertube type
-        recordingPt = Recording.objects.get(name="test peertube recording1")
-        self.user = User.objects.get(username="pod2")
-        self.client.force_login(self.user)
-        url = reverse(
-            "meeting:upload_external_recording_to_pod",
-            kwargs={"record_id": recordingPt.id},
-        )
-        response = self.client.post(
-            url,
-            {
-                "recording_name": "test peertube recording1",
-                "source_url": "https://peertube.url",
-            },
-            follow=True,
-        )
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        # Message for a bad URL
-        self.assertTrue(b"Impossible to upload to Pod the PeerTube" in response.content)
-
-        # External BBB type
-        recordingBBB = Recording.objects.get(name="test external bbb recording1")
-        self.user = User.objects.get(username="pod2")
-        self.client.force_login(self.user)
-        url = reverse(
-            "meeting:upload_external_recording_to_pod",
-            kwargs={"record_id": recordingBBB.id},
-        )
-        response = self.client.post(
-            url,
-            {
-                "recording_name": "test external bbb recording1",
-                "source_url": "https://bbb.url",
-            },
-            follow=True,
-        )
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        # Message for a bad URL
-        self.assertTrue(b"Impossible to upload to Pod the video" in response.content)
-
-        # Video type
-        recordingVideo = Recording.objects.get(name="test direct video recording1")
-        self.user = User.objects.get(username="pod2")
-        self.client.force_login(self.user)
-        url = reverse(
-            "meeting:upload_external_recording_to_pod",
-            kwargs={"record_id": recordingVideo.id},
-        )
-        response = self.client.post(
-            url,
-            {
-                "recording_name": "test video recording1",
-                "source_url": "https://video.url",
-            },
-            follow=True,
-        )
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        # Message for a bad URL
-        self.assertTrue(b"Impossible to upload to Pod the video" in response.content)
 
         print(" --->  test_recording_upload_get_request of RecordingUploadTestView: OK!")
