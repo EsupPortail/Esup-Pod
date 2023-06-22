@@ -1,12 +1,16 @@
 {% load i18n %}
 {% load favorites_playlist %}
+{% load playlist_buttons %}
+
 
 {% spaceless %}
-
-{% if playlist and not in_favorites_playlist%}
-  <a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" title="{% trans "Remove from playlist" %}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1 remove-from-playlist-btn-link" id="remove-from-playlist-btn-{{ video.id }}">
+{% if playlist %}
+  {% user_can_edit_or_remove playlist as can_edit_or_remove %}
+  {% if not in_favorites_playlist and can_edit_or_remove%}
+    <a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" title="{% trans "Remove from playlist" %}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1 remove-from-playlist-btn-link" id="remove-from-playlist-btn-{{ video.id }}">
       <i class="bi bi-folder-minus" aria-hidden="true"></i>
-  </a>
+    </a>
+  {% endif %}
 {% endif %}
 
 {% is_favorite user video as is_favorite %}
