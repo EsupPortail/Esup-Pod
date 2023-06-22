@@ -280,6 +280,7 @@ def get_total_favorites_video(video: Video) -> int:
     count = favorite_contents.count()
     return count
 
+
 def get_count_video_added_in_playlist(video: Video) -> int:
     """
     Get the number of video added in any playlist (including favorites).

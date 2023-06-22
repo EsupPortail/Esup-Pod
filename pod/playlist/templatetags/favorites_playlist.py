@@ -50,6 +50,7 @@ def get_playlist_name(playlist: Playlist) -> str:
     else:
         return playlist.name
 
+
 @register.simple_tag(takes_context=True, name="can_see_favorite_video")
 def can_see_favorite_video(context: dict, video: Video) -> bool:
     """
@@ -69,4 +70,4 @@ def can_see_favorite_video(context: dict, video: Video) -> bool:
     if is_password_protected:
         return video in (get_playlist_list_for_user(request.user) | get_playlists_for_additional_owner(request.user))
     else:
-        return not video.is_draft;
+        return not video.is_draft
