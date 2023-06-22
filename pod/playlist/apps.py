@@ -24,6 +24,10 @@ class PlaylistConfig(AppConfig):
         if len(PLAYLIST_INFORMATIONS) > 0:
             print("PLAYLIST_INFORMATIONS saved %s playlists" % len(PLAYLIST_INFORMATIONS))
 
+        self.save_playlist_content()
+        if len(PLAYLIST_CONTENTS) > 0:
+            print("PLAYLIST_CONTENTS saved %s videos in playlists" % len(PLAYLIST_CONTENTS))
+
         self.save_favorites()
         if len(FAVORITES_DATA) > 0:
             print("FAVORITES_DATA saved for %s persons" % len(FAVORITES_DATA))
@@ -64,15 +68,31 @@ class PlaylistConfig(AppConfig):
             print(e)
 
     def save_playlist_content(self):
-        ...
+        try:
+            with connection.cursor() as c:
+                c.execute(
+                    """
+                    SELECT id, position, playlist_id, video_id
+                    FROM playlist_playlistelement
+                    ORDER BY id
+                    """
+                )
+                results = c.fetchall()
+                for res in results:
+                    id = res[0]
+                    PLAYLIST_CONTENTS[id] = [res[i] for i in range(1, len(res))]
+        except Exception as e:
+            print(e)
 
     def send_previous_data(self, sender, **kwargs):
         """Send previous data from favorites table."""
         print("Sending datas")
 
         if len(PLAYLIST_INFORMATIONS) > 0:
-            print(PLAYLIST_INFORMATIONS)
             self.update_playlists()
+
+        if len(PLAYLIST_CONTENTS) > 0:
+            self.add_playlists_contents()
 
         self.create_new_favorites()
 
@@ -137,5 +157,18 @@ class PlaylistConfig(AppConfig):
             playlist.editable = True
             playlist.save()
 
-
         print("update_playlists --> OK")
+
+    def add_playlists_contents(self):
+        from pod.playlist.models import Playlist, PlaylistContent
+        from django.utils.translation import gettext_lazy as _
+        from django.contrib.auth.models import User
+        for content_datas in PLAYLIST_CONTENTS.values():
+            position, playlist_id, video_id = content_datas
+
+            PlaylistContent.objects.create(
+                rank=position,
+                playlist_id=playlist_id,
+                video_id=video_id
+            )
+        print("add_playlists_contents --> OK")
