@@ -1929,7 +1929,7 @@ def get_all_views_count(v_id, date_filter=date.today()):
     # date
     all_views["date"] = str(date_filter)
 
-    # yyear
+    # year
     all_views["all_year"] = str(date_filter.year)
 
     # view count in day

@@ -41,14 +41,14 @@
       <canvas id="yearChart"></canvas>
     </div>
     {% endif %}
-    <button id="export-btn">{% trans "Export to CSV" %}</button> <!-- Ajout du bouton d'exportation -->
+    <button id="export-btn">{% trans "Export to CSV" %}</button>
     <div id="pager"></div>
   {% endif %}
 </div>
 {% endblock content %}
 
 {% block more_script %} 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="{% static 'chart.js/dist/chart.umd.js' %}?ver={{VERSION}}" charset="utf-8"></script>
   <script src="{% static 'js/video_stats_view.js' %}?ver={{VERSION}}" charset="utf-8"></script>
   <script src="{% static 'js/video_stats_view2.js' %}?ver={{VERSION}}" charset="utf-8"></script>
 {% endblock %}
