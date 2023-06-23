@@ -753,6 +753,11 @@ msgstr "Vues"
 msgid "Favorites"
 msgstr "Favoris"
 
+#: pod/video/static/js/video_stats_view.js
+#: pod/video/static/js/video_stats_view_global.js
+msgid "Date,Views,Favorites"
+msgstr "Date,Vues,Favoris"
+
 #~ msgid "Title"
 #~ msgstr "Titre"
 

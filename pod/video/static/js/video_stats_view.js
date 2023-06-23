@@ -146,7 +146,8 @@ $(function () {
   // Function to export data in CSV format
   function exportToCSV() {
     let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += "Date,Views,Favorites\n";
+    csvContent += gettext("Date,Views,Favorites");
+    csvContent += "\n";
     for (let i = 0; i < daily.length; i++) {
       let row = daily[i] + "," + dailyviews[i] + "," + dailyfavo[i] + "\n";
       csvContent += row;

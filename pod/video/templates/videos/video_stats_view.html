@@ -49,6 +49,9 @@
 
 {% block more_script %} 
   <script src="{% static 'chart.js/dist/chart.umd.js' %}?ver={{VERSION}}" charset="utf-8"></script>
-  <script src="{% static 'js/video_stats_view.js' %}?ver={{VERSION}}" charset="utf-8"></script>
-  <script src="{% static 'js/video_stats_view_global.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+  {% if slug %}
+    <script src="{% static 'js/video_stats_view.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+  {% else %}
+    <script src="{% static 'js/video_stats_view_global.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+  {% endif %}
 {% endblock %}
