@@ -167,3 +167,16 @@ div.player-element.disabled {
 div.player-element.selected {
     background-color: #D1D1D1;
 }
+
+.grayscale-image {
+    filter: grayscale(100%);
+}
+
+.lock-icon-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2em;
+    color: white;
+}

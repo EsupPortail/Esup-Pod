@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from django.http import Http404, HttpResponseBadRequest
+from django.http import Http404, HttpResponseBadRequest, HttpResponseNotFound
 from django.db import transaction
 from pod.main.utils import is_ajax
 
@@ -67,12 +67,19 @@ def playlist_content(request, slug):
     sort_field = request.GET.get("sort", "rank")
     sort_direction = request.GET.get("sort_direction")
     playlist = get_playlist(slug)
+    if playlist.visibility == "public" or (playlist.owner == request.user or playlist in get_playlists_for_additional_owner(request.user) or request.user.is_staff):
+        return render_playlist(request, playlist, sort_field, sort_direction)
+    else:
+        return HttpResponseRedirect(reverse('playlist:list'))
+
+
+@login_required(redirect_field_name="referrer")
+def render_playlist(request: dict, playlist: Playlist, sort_field: str, sort_direction: str):
+    """Render playlist page with the videos list of this."""
     videos_list = sort_videos_list(
         get_video_list_for_playlist(playlist), sort_field, sort_direction
     )
-
     count_videos = len(videos_list)
-
     page = request.GET.get("page", 1)
     full_path = ""
     if page:
@@ -81,7 +88,6 @@ def playlist_content(request, slug):
             .replace("?page=%s" % page, "")
             .replace("&page=%s" % page, "")
         )
-
     paginator = Paginator(videos_list, 12)
     try:
         videos = paginator.page(page)
@@ -92,10 +98,13 @@ def playlist_content(request, slug):
 
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
     additional_owners = get_additional_owners(playlist)
-    playlist_url = reverse("playlist:content", kwargs={
-                           "slug": get_favorite_playlist_for_user(request.user).slug})
+    playlist_url = reverse(
+        "playlist:content",
+        kwargs={
+            "slug": get_favorite_playlist_for_user(request.user).slug,
+        }
+    )
     in_favorites_playlist = (playlist_url == request.path)
-
     if is_ajax(request):
         return render(
             request,
@@ -108,7 +117,6 @@ def playlist_content(request, slug):
                 "count_videos": count_videos
             },
         )
-
     return render(
         request,
         "playlist/playlist.html",
@@ -133,6 +141,7 @@ def playlist_content(request, slug):
     )
 
 
+@login_required(redirect_field_name="referrer")
 def remove_video_in_playlist(request, slug, video_slug):
     """Remove a video in playlist."""
     playlist = get_object_or_404(Playlist, slug=slug)
@@ -141,6 +150,7 @@ def remove_video_in_playlist(request, slug, video_slug):
     return redirect(request.META["HTTP_REFERER"])
 
 
+@login_required(redirect_field_name="referrer")
 def add_video_in_playlist(request, slug, video_slug):
     """Add a video in playlist."""
     playlist = get_playlist(slug)
@@ -181,11 +191,11 @@ def remove_playlist_view(request, slug: str):
     )
 
 
+@login_required(redirect_field_name="referrer")
 def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) -> None:
     """Handle post request for add_or_edit function."""
     page_title = ""
-    form = PlaylistForm(
-        request.POST, instance=playlist) if playlist else PlaylistForm(request.POST)
+    form = PlaylistForm(request.POST, instance=playlist) if playlist else PlaylistForm(request.POST)
     if form.is_valid():
         new_playlist = form.save(commit=False) if playlist is None else playlist
         new_playlist.owner = request.user
@@ -216,11 +226,12 @@ def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) ->
     })
 
 
+@login_required(redirect_field_name="referrer")
 def handle_get_request_for_add_or_edit_function(request, slug: str) -> None:
     """Handle get request for add_or_edit function."""
     if request.GET.get("next"):
         options = f"?next={request.GET.get('next')}"
-    else :
+    else:
         options = ""
     playlist = get_object_or_404(Playlist, slug=slug) if slug else None
     if playlist:
@@ -256,6 +267,7 @@ def add_or_edit(request, slug: str = None):
 
 
 @csrf_protect
+@login_required(redirect_field_name="referrer")
 def favorites_save_reorganisation(request, slug: str):
     """Save reorganization when the user click on save button."""
     if request.method == "POST":
