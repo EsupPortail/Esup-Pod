@@ -279,3 +279,13 @@ def get_count_video_added_in_playlist(video: Video) -> int:
         int: The number of videos added in playlists.
     """
     return PlaylistContent.objects.filter(video=video).count()
+
+
+def user_can_see_playlist_video(request: dict, video: Video) -> bool:
+    is_password_protected = video.password is not None and video.password != ""
+    if is_password_protected or video.is_draft:
+        if not request.user.is_authenticated:
+            return False
+        return (video.owner == request.user) or (request.user in video.additional_owners.all()) or (request.user.is_staff)
+    else:
+        return True

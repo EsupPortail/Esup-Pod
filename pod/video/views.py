@@ -32,7 +32,7 @@ from pod.main.views import in_maintenance
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
 from pod.playlist.models import Playlist, PlaylistContent
-from pod.playlist.utils import get_video_list_for_playlist
+from pod.playlist.utils import get_video_list_for_playlist, user_can_see_playlist_video
 from pod.video.utils import get_videos as video_get_videos
 from pod.video.models import Video
 from pod.video.models import Type
@@ -852,16 +852,6 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         videos = sort_videos_list(
             get_video_list_for_playlist(playlist), "rank"
         )
-        """
-        if request.GET.get("first"):
-            ...
-        else:
-            for i in range(len(videos)):
-                is_password_protected = video.password is not None and video.password != ""
-                if is_password_protected or video.is_draft:
-                    if videos[i + 1]:
-                        first = videos[i + 1]
-        """
         params = {
             "playlist_in_get": playlist,
             "videos": videos,
@@ -916,22 +906,31 @@ def render_video(
         or (request.user in video.additional_owners.all())
         or (request.GET.get("playlist"))
     ):
-        if (request.GET.get("playlist") and (is_password_protected or video.is_draft)):
+        if (request.GET.get("playlist") and not user_can_see_playlist_video(request, video)):
             playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
             videos = sort_videos_list(
             get_video_list_for_playlist(playlist), "rank"
             )
-            params = {
-                "playlist_in_get": playlist,
-                "videos": videos,
-            }
-            video = Video.objects.filter(
-                playlistcontent__playlist_id=playlist.id,
-                is_draft=False,
-                is_restricted=False,
-            ).first()
+            if request.user.is_authenticated:
+                video = (
+                    Video.objects.filter(
+                        playlistcontent__playlist_id=playlist.id,
+                        is_draft=False,
+                        is_restricted=False,
+                    ) |
+                    Video.objects.filter(
+                        playlistcontent__playlist_id=playlist.id,
+                        owner=request.user,
+                    )
+                ).first()
+            else:
+                video = Video.objects.filter(
+                    playlistcontent__playlist_id=playlist.id,
+                    is_draft=False,
+                    is_restricted=False,
+                ).first()
             if not video:
-                return Http404();
+                return Http404()
         return render(
             request,
             template_video,

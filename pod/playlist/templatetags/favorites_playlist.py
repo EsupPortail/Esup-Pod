@@ -5,8 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from pod.playlist.utils import (
     check_video_in_playlist,
     get_favorite_playlist_for_user,
-    get_playlist_list_for_user,
-    get_playlists_for_additional_owner,
+    user_can_see_playlist_video,
 )
 from pod.video.models import Video
 
@@ -63,11 +62,4 @@ def can_see_favorite_video(context: dict, video: Video) -> bool:
     Returns:
         bool: `True` if the user can, `False` otherwise
     """
-    request = context["request"]
-    is_password_protected = video.password is not None and video.password != ""
-    if is_password_protected or video.is_draft:
-        if not request.user.is_authenticated:
-            return False
-        return (video.owner == request.user) or (request.user in video.additional_owners.all())
-    else:
-        return True
+    return user_can_see_playlist_video(context["request"], video)
