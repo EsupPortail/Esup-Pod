@@ -202,7 +202,7 @@
               {% if USE_PLAYLIST %}
                 <a class="nav-item nav-link" href="{% url 'playlist:list' %}"><i class="bi bi-list-ul pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
               {% endif %}
-              {% if USE_FAVORITES %}
+              {% if USE_PLAYLIST and USE_FAVORITES %}
                 {% get_favorite_playlist user as playlist %}
                 <a class="nav-item nav-link" href="{% url 'playlist:content' slug=playlist.slug %}"><i class="bi bi-star pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My favorite videos' %}</a>
               {% endif %}
@@ -247,10 +247,10 @@
                 <h5 class="offcanvas-title text-center" id="pod-navbar__menuLabel">{% trans "Your statistics" %}</h5>
                 <hr>
                 {% if number_videos > 0 %}
-                  <p id="stats-usermenu-video-count">{% trans "Number of videos" %} : {{ number_videos }}</p>
+                  <p class="stats-usermenu">{% trans "Number of videos" %} : <span id="stats-usermenu-video-count">{{ number_videos }}</span></p>
                 {% endif %}
                 {% if number_playlists > 0 %}
-                  <p id="stats-usermenu-playlist-count">{% trans "Number of playlists" %} : {{ number_playlists }}</p>
+                  <p class="stats-usermenu">{% trans "Number of playlists" %} : <span id="stats-usermenu-playlist-count">{{ number_playlists }}</span></p>
                 {% endif %}
               </div>
             {% endif %}
