@@ -332,6 +332,21 @@ class PlaylistTestUtils(TestCase):
 
         print(" --->  test_get_favorite_playlist_for_user ok")
 
+    def test_get_additional_owners(self):
+        """Test if get_additional_owners works correctly."""
+        new_playlist = Playlist.objects.create(
+            name="new_playlist",
+            description="Ma description",
+            visibility="public",
+            autoplay=True,
+            owner=self.user
+        )
+        self.assertEqual(0, len(get_additional_owners(new_playlist)))
+        new_playlist.additional_owners.add(self.user2)
+        self.assertEqual(1, len(get_additional_owners(new_playlist)))
+        self.assertIn(self.user2, get_additional_owners(new_playlist))
+        print(" --->  test_get_additional_owners ok")
+
     def test_get_total_favorites_video(self):
         """Test if get_total_favorites_video works correctly."""
         fav_user_1 = get_favorite_playlist_for_user(self.user)

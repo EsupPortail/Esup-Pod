@@ -11,7 +11,7 @@ from pod.video.models import Type, Video
 
 from ...playlist import context_processors
 from ..models import Playlist, PlaylistContent
-from ..utils import user_add_video_in_playlist
+from ..utils import get_favorite_playlist_for_user, user_add_video_in_playlist
 
 import importlib
 
@@ -502,3 +502,258 @@ class TestStartupPlaylistParamTestCase(TestCase):
         )
         self.client.logout()
         print(" --->  test_disabled_in_playlists_page ok")
+
+
+class TestPlaylistPage(TestCase):
+    """Playlist page test case."""
+    fixtures = ["initial_data.json"]
+
+    def setUp(self) -> None:
+        self.user = User.objects.create(username="pod", password="pod1234pod")
+        self.user2 = User.objects.create(username="pod2", password="pod1234pod2")
+        self.video = Video.objects.create(
+            title="Video1",
+            owner=self.user,
+            video="test.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.video2 = Video.objects.create(
+            title="Video2",
+            owner=self.user,
+            video="test2.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.video3 = Video.objects.create(
+            title="Video3",
+            owner=self.user2,
+            video="test3.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.playlist_user1 = Playlist.objects.create(
+            name="Playlist1",
+            description="Ma description",
+            visibility="public",
+            autoplay=True,
+            owner=self.user
+        )
+        self.playlist_user2 = Playlist.objects.create(
+            name="Playlist2",
+            description="Ma description",
+            visibility="public",
+            autoplay=True,
+            owner=self.user2
+        )
+
+        self.url_fav_user1 = reverse("playlist:content", kwargs={
+                                     'slug': get_favorite_playlist_for_user(self.user).slug})
+        self.url_fav_user2 = reverse("playlist:content", kwargs={
+                                     'slug': get_favorite_playlist_for_user(self.user2).slug})
+
+    @override_settings(USE_FAVORITES=True)
+    def test_playlist_video_list(self):
+        """Test if the favorite video list has a correct number of video in it."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        user_add_video_in_playlist(get_favorite_playlist_for_user(self.user), self.video)
+        user_add_video_in_playlist(get_favorite_playlist_for_user(self.user), self.video2)
+        response = self.client.get(self.url_fav_user1)
+        self.assertEqual(
+            response.status_code,
+            200,
+            "Test if status code equal 200 when the favorite video list isn't empty",
+        )
+        self.assertTrue(
+            'data-countvideos="2"' in response.content.decode(),
+            "Test if the playlist video list isn't empty",
+        )
+        self.client.logout()
+
+        self.client.force_login(self.user2)
+        user_add_video_in_playlist(self.playlist_user2, self.video3)
+        response = self.client.get(reverse("playlist:content", kwargs={
+                                   'slug': self.playlist_user2.slug}))
+        self.assertTrue(
+            'data-countvideos="1"' in response.content.decode(),
+            "Test if the playlist video list isn't empty",
+        )
+        print(" --->  test_playlist_video_list ok")
+
+    @override_settings(USE_FAVORITES=True)
+    def test_favorite_video_list_link_in_navbar(self) -> None:
+        """Test if the favorite video list link is present in the navbar."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        response = self.client.get("/")
+        self.assertEqual(
+            response.status_code,
+            200,
+            "Test if status code equal 200 in test_favorite_video_list_link_in_navbar",
+        )
+        self.assertTrue(
+            str(_("My favorite videos")) in response.content.decode(),
+            "Test if the favorite video list link is present in the navbar",
+        )
+        self.assertTrue(
+            self.url_fav_user1 in response.content.decode(),
+        )
+        self.client.logout()
+        print(" --->  test_favorite_video_list_link_in_navbar ok")
+
+    def test_folder_icon_in_video_links(self) -> None:
+        """Test if the differents icons appears correctly."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        user_add_video_in_playlist(self.playlist_user1, self.video)
+        user_add_video_in_playlist(get_favorite_playlist_for_user(self.user), self.video)
+        response = self.client.get(reverse("playlist:content", kwargs={
+                                   'slug': self.playlist_user1.slug}))
+        self.assertTrue(
+            'class="bi bi-folder-minus"' in response.content.decode()
+        )
+        response = self.client.get(self.url_fav_user1)
+        self.assertFalse(
+            'class="bi bi-folder-minus"' in response.content.decode()
+        )
+        self.client.logout()
+        print(" --->  test_folder_icon_in_video_links ok")
+
+    def test_manage_section_for_editable_playlists(self) -> None:
+        """Test if the manage section appears correctly for an editable playlist."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("playlist:content", kwargs={
+                                   'slug': self.playlist_user1.slug}))
+        self.assertTrue(
+            'id="card-manage-playlist"' in response.content.decode()
+        )
+        response = self.client.get(self.url_fav_user1)
+        self.assertFalse(
+            'id="card-manage-playlist"' in response.content.decode()
+        )
+        self.client.logout()
+        print(" --->  test_manage_section_for_editable_playlists ok")
+
+
+class TestStatsInfoTestCase(TestCase):
+    """Statistics informations test case."""
+
+    fixtures = ["initial_data.json"]
+
+    def setUp(self) -> None:
+        self.user = User.objects.create(username="pod", password="pod1234pod")
+        self.user2 = User.objects.create(username="pod2", password="pod1234pod2")
+        self.video = Video.objects.create(
+            title="Video1",
+            owner=self.user,
+            video="test.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.video2 = Video.objects.create(
+            title="Video2",
+            owner=self.user,
+            video="test2.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.video3 = Video.objects.create(
+            title="Video3",
+            owner=self.user2,
+            video="test3.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.playlist_user1 = Playlist.objects.create(
+            name="Playlist1",
+            description="Ma description",
+            visibility="public",
+            autoplay=True,
+            owner=self.user
+        )
+        self.playlist_user2 = Playlist.objects.create(
+            name="Playlist2",
+            description="Ma description",
+            visibility="public",
+            autoplay=True,
+            owner=self.user2
+        )
+        user_add_video_in_playlist(get_favorite_playlist_for_user(self.user), self.video)
+        user_add_video_in_playlist(get_favorite_playlist_for_user(self.user2), self.video)
+        user_add_video_in_playlist(self.playlist_user1, self.video)
+        user_add_video_in_playlist(self.playlist_user2, self.video)
+        user_add_video_in_playlist(get_favorite_playlist_for_user(self.user), self.video2)
+        # Video 1 -> 2 favorites and in 4 playlists (2 favs and playlist1, playlist2)
+        # Video 2 -> 1 favorite and in 1 playlists (1 fav)
+        # Video 3 -> 0
+
+        self.url_video1 = reverse("video:video", args=[self.video.slug])
+        self.url_video2 = reverse("video:video", args=[self.video2.slug])
+        self.url_video3 = reverse("video:video", args=[self.video3.slug])
+
+    def test_favorites_count(self) -> None:
+        """Test if the favorites counter works correctly."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        response = self.client.get(self.url_video1)
+        self.assertTrue(
+            '<span id="favorites_count">2</span>' in response.content.decode()
+        )
+        response = self.client.get(self.url_video2)
+        self.assertTrue(
+            '<span id="favorites_count">1</span>' in response.content.decode()
+        )
+        response = self.client.get(self.url_video3)
+        self.assertTrue(
+            '<span id="favorites_count">0</span>' in response.content.decode()
+        )
+        self.client.logout()
+        print(" --->  test_favorites_count ok")
+
+    def test_playlists_count(self) -> None:
+        """Test if the playlists counter works correctly."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        response = self.client.get(self.url_video1)
+        self.assertTrue(
+            '<span id="addition_playlists_count">4</span>' in response.content.decode()
+        )
+        response = self.client.get(self.url_video2)
+        self.assertTrue(
+            '<span id="addition_playlists_count">1</span>' in response.content.decode()
+        )
+        response = self.client.get(self.url_video3)
+        self.assertTrue(
+            '<span id="addition_playlists_count">0</span>' in response.content.decode()
+        )
+        self.client.logout()
+        print(" --->  test_playlists_count ok")
+
+    def test_navbar_user_menu_counters(self) -> None:
+        """Test test_navbar_user_menu_counters works correctly."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        response = self.client.get("/")
+
+        self.assertTrue(
+            '<span id="stats-usermenu-video-count">2</span>' in response.content.decode()
+        )
+        self.assertTrue(
+            '<span id="stats-usermenu-playlist-count">2</span>' in response.content.decode()
+        )
+        self.client.logout()
+
+        self.client.force_login(self.user2)
+        response = self.client.get("/")
+
+        self.assertTrue(
+            '<span id="stats-usermenu-video-count">1</span>' in response.content.decode()
+        )
+        self.assertTrue(
+            '<span id="stats-usermenu-playlist-count">2</span>' in response.content.decode()
+        )
+        self.client.logout()
+
+        print(" --->  test_navbar_user_menu_counters ok")
