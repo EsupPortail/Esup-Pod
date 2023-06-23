@@ -80,3 +80,11 @@ function preventRefreshButtonPlaylist(buttonPlaylistElement, informations) {
         });
     }
 }
+
+function checkFirstVideoInGet(informations) {
+    const selectedElement = document.querySelectorAll(".selected")[0];
+    console.log('selectedElement', selectedElement);
+    console.log('idRun (last)', idRun);
+    switchVideo(selectedElement, firstVideoInformations);
+    console.log('idRun (now)', idRun);
+}

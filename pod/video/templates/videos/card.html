@@ -41,6 +41,8 @@
         {% else %}
           {% url 'channel-video:video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}
         {% endif %}
+      {% elif playlist %}
+        {% url 'video:video' video.slug %}?playlist={{ playlist.slug }}
       {% else %}
         {{video.get_absolute_url}}{% if video.is_draft and fromEvent %}{{ video.get_hashkey }}{% endif %}
       {% endif %}
