@@ -8,7 +8,7 @@
         <a href="{% url 'playlist:list' %}">{% trans "Playlists" %}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-        {% if form.instance.name %}
+        {% if form.instance.slug %}
             {% trans "Edit the playlist" %} "{{ form.instance.name }}"
         {% else %}
             {% trans "Add a playlist" %}
@@ -17,7 +17,7 @@
 {% endblock breadcrumbs %}
 
 {% block page_content %}
-    <form method="POST" action="{% if not form.instance.name %}{% url 'playlist:edit' form.instance.slug %}{% else %}{% url 'playlist:add' %}{{ options }}{% endif %}" accept-charset="utf-8" enctype="multipart/form" class="needs-validation" novalidate>
+    <form method="POST" action="{% if form.instance.slug %}{% url 'playlist:edit' form.instance.slug %}{% else %}{% url 'playlist:add' %}{{ options }}{% endif %}" accept-charset="utf-8" enctype="multipart/form" class="needs-validation" novalidate>
         {% csrf_token %}
         <div class="list-group">
             {% if form.errors %}

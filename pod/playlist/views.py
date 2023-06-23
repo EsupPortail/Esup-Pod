@@ -184,8 +184,7 @@ def remove_playlist_view(request, slug: str):
 def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) -> None:
     """Handle post request for add_or_edit function."""
     page_title = ""
-    form = PlaylistForm(
-        request.POST, instance=playlist) if playlist else PlaylistForm(request.POST)
+    form = PlaylistForm(request.POST, instance=playlist) if playlist else PlaylistForm(request.POST)
     if form.is_valid():
         new_playlist = form.save(commit=False) if playlist is None else playlist
         new_playlist.owner = request.user
@@ -220,7 +219,7 @@ def handle_get_request_for_add_or_edit_function(request, slug: str) -> None:
     """Handle get request for add_or_edit function."""
     if request.GET.get("next"):
         options = f"?next={request.GET.get('next')}"
-    else :
+    else:
         options = ""
     playlist = get_object_or_404(Playlist, slug=slug) if slug else None
     if playlist:
