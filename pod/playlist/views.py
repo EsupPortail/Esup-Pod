@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from django.http import Http404, HttpResponseBadRequest, HttpResponseNotFound
+from django.http import Http404, HttpResponseBadRequest
 from django.db import transaction
 from pod.main.utils import is_ajax
 
@@ -67,14 +67,26 @@ def playlist_content(request, slug):
     sort_field = request.GET.get("sort", "rank")
     sort_direction = request.GET.get("sort_direction")
     playlist = get_playlist(slug)
-    if playlist.visibility == "public" or (playlist.owner == request.user or playlist in get_playlists_for_additional_owner(request.user) or request.user.is_staff):
+    if (
+        playlist.visibility == "public"
+        or (
+            playlist.owner == request.user
+            or playlist in get_playlists_for_additional_owner(request.user)
+            or request.user.is_staff
+        )
+    ):
         return render_playlist(request, playlist, sort_field, sort_direction)
     else:
         return HttpResponseRedirect(reverse('playlist:list'))
 
 
 @login_required(redirect_field_name="referrer")
-def render_playlist(request: dict, playlist: Playlist, sort_field: str, sort_direction: str):
+def render_playlist(
+    request: dict,
+    playlist: Playlist,
+    sort_field: str,
+    sort_direction: str
+):
     """Render playlist page with the videos list of this."""
     videos_list = sort_videos_list(
         get_video_list_for_playlist(playlist), sort_field, sort_direction
@@ -235,7 +247,10 @@ def handle_get_request_for_add_or_edit_function(request, slug: str) -> None:
         options = ""
     playlist = get_object_or_404(Playlist, slug=slug) if slug else None
     if playlist:
-        if (request.user == playlist.owner or request.user.is_staff) and playlist.editable:
+        if (
+            (request.user == playlist.owner or request.user.is_staff)
+            and playlist.editable
+        ):
             form = PlaylistForm(instance=playlist)
             page_title = _("Edit the playlist") + f" \"{playlist.name}\""
         else:

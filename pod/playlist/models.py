@@ -43,7 +43,11 @@ class Playlist(models.Model):
         max_length=9,
         choices=VISIBILITY_CHOICES,
         default="private",
-        help_text=_("Please chosse an visibility among 'public', 'protected', 'private'."),
+        help_text=_(
+            '''
+            Please chosse an visibility among 'public', 'protected', 'private'.
+            '''
+        ),
     )
     autoplay = models.BooleanField(
         verbose_name=_("Autoplay"),
