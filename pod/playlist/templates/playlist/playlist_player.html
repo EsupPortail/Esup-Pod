@@ -1,5 +1,5 @@
 {% load i18n l10n static %}
-{% load favorites_playlist %}
+{% load playlist_buttons %}
 
 {% block page_extra_head %}
     <link rel="stylesheet" href="{% static 'css/playlist.css' %}?ver={{VERSION}}">
@@ -10,7 +10,7 @@
 <div class="card" id="card-playlistplayer">
     <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-list-ul"></i>&nbsp;{{ playlist_in_get.name }}</h2>
     {% for video_in_playlist in videos %}
-        {% can_see_favorite_video video_in_playlist as can_see_video %}
+        {% can_see_playlist_video video_in_playlist as can_see_video %}
         <div id="{{ video_in_playlist.id }}" class="player-element card-body card-text border mb-1 mt-4 d-flex flex-row {% if video_in_playlist == video %}selected{% endif %} {% if can_see_video == False %}disabled{% endif %}" data-video-href="{% url 'video:video' video_in_playlist.slug %}">
             <span class="rank d-flex align-self-center">{{ forloop.counter }}</span>
             <span class="card-img d-flex">

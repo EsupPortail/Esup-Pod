@@ -2,8 +2,13 @@
 
 from django.template import Library
 
+from pod.video.models import Video
+
 from ..models import Playlist
-from ..utils import get_link_to_start_playlist as get_link_to_start_playlist_util
+from ..utils import (
+    get_link_to_start_playlist as get_link_to_start_playlist_util,
+    user_can_see_playlist_video,
+)
 
 register = Library()
 
@@ -40,3 +45,18 @@ def get_link_to_start_playlist(context: dict, playlist: Playlist) -> str:
     """
     request = context["request"]
     return get_link_to_start_playlist_util(request.user, playlist)
+
+
+@register.simple_tag(takes_context=True, name="can_see_playlist_video")
+def can_see_playlist_video(context: dict, video: Video) -> bool:
+    """
+    Template tag to check if the user can see a playlist video.
+
+    Args:
+        context (dict): The template context dictionary
+        video (:class:`pod.video.models.Video`): The video entity to check
+
+    Returns:
+        bool: `True` if the user can, `False` otherwise
+    """
+    return user_can_see_playlist_video(context["request"], video)
