@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-22 14:23+0000\n"
+"POT-Creation-Date: 2023-06-23 09:36+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -754,9 +754,12 @@ msgid "Favorites"
 msgstr "Favoris"
 
 #: pod/video/static/js/video_stats_view.js
-#: pod/video/static/js/video_stats_view_global.js
 msgid "Date,Views,Favorites"
 msgstr "Date,Vues,Favoris"
+
+#: pod/video/static/js/video_stats_view_global.js
+msgid "Years,Views,Favorites"
+msgstr "Années,Vues,Favoris"
 
 #~ msgid "Title"
 #~ msgstr "Titre"

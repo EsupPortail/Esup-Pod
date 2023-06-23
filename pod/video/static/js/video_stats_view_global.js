@@ -142,7 +142,7 @@ $(function () {
   // Function to export data in CSV format
   function exportToCSV() {
     let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += gettext("Date,Views,Favorites");
+    csvContent += gettext("Years,Views,Favorites");
     csvContent += "\n";
     for (let i = 0; i < year.length; i++) {
       let row = year[i] + "," + yearlyviews[i] + "," + yearlyfav[i] + "\n";
