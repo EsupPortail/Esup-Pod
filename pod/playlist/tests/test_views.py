@@ -620,6 +620,18 @@ class TestPlaylistPage(TestCase):
         self.client.logout()
         print(" --->  test_folder_icon_in_video_links ok")
 
+    def test_favorites_name_translate(self) -> None:
+        """Test if the favorites name is correctly translated."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        response = self.client.get(self.url_fav_user1)
+        self.assertTrue(
+            f'{_("Playlist")} : {_("Favorites")}' in response.content.decode()
+        )
+        self.client.logout()
+        print(" --->  test_folder_icon_in_video_links ok")
+
+
     def test_manage_section_for_editable_playlists(self) -> None:
         """Test if the manage section appears correctly for an editable playlist."""
         importlib.reload(context_processors)
