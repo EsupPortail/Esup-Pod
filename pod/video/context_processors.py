@@ -24,18 +24,17 @@ HIDE_USER_FILTER = getattr(django_settings, "HIDE_USER_FILTER", False)
 OEMBED = getattr(django_settings, "OEMBED", False)
 USE_STATS_VIEW = getattr(django_settings, "USE_STATS_VIEW", False)
 
-AVAILABLE_VIDEO_FILTER = {
+__AVAILABLE_VIDEO_FILTER__ = {
     'encoding_in_progress': False,
     'is_draft': False,
-    'sites': get_current_site(None),
+    'sites': 1,
 }
 
 
 def get_available_videos(request=None):
     """Get all videos available."""
-    if request is not None:
-        AVAILABLE_VIDEO_FILTER["site"] = get_current_site(request)
-    vids = Video.objects.filter(**AVAILABLE_VIDEO_FILTER).defer(
+    __AVAILABLE_VIDEO_FILTER__["sites"] = get_current_site(request)
+    vids = Video.objects.filter(**__AVAILABLE_VIDEO_FILTER__).defer(
         "video", "slug", "owner", "additional_owners", "description"
     ).filter(
         Q(Exists(
@@ -58,7 +57,7 @@ def get_available_videos(request=None):
                 encoding_format="video/mp4"
             )
         ))
-    )
+    ).distinct()
     return vids
 
 
@@ -139,7 +138,7 @@ def context_navbar(request):
         .annotate(video_count=Count("video", distinct=True))
     )
 
-    list_videos = get_available_videos()
+    list_videos = get_available_videos(request)
     VIDEOS_COUNT = list_videos.count()
     VIDEOS_DURATION = (
         str(timedelta(seconds=list_videos.aggregate(
