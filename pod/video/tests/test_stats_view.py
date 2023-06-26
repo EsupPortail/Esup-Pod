@@ -10,6 +10,9 @@ from pod.video.views import get_all_views_count, stats_view
 from django.contrib.sites.models import Site
 from pod.authentication.models import AccessGroup
 
+from pod.video_encode_transcript.models import EncodingVideo
+from pod.video_encode_transcript.models import VideoRendition
+
 import json
 import logging
 
@@ -74,6 +77,22 @@ class TestStatsView(TestCase):
             encoding_in_progress=False,
             video="teststatsviewthird.mp4",
             type=self.t1,
+        )
+        # add encoding to video
+        EncodingVideo.objects.create(
+            video=self.video,
+            encoding_format="video/mp4",
+            rendition=VideoRendition.objects.get(id=1)
+        )
+        EncodingVideo.objects.create(
+            video=self.video2,
+            encoding_format="video/mp4",
+            rendition=VideoRendition.objects.get(id=1)
+        )
+        EncodingVideo.objects.create(
+            video=self.video3,
+            encoding_format="video/mp4",
+            rendition=VideoRendition.objects.get(id=1)
         )
         self.video.channel.set([self.channel])
         self.video.theme.set([self.theme])
