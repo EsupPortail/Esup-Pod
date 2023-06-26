@@ -11,7 +11,7 @@ from django.template.loader import render_to_string
 from .models import Channel, Theme
 from .models import Type, Discipline, Video
 from .models import ViewCount
-from .utils import get_available_videos
+from .context_processors import get_available_videos
 
 # commented for v3
 # from .remote_encode import start_store_remote_encoding_video

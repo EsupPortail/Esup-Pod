@@ -115,7 +115,8 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 # Local contexts
                 "pod.main.context_processors.context_settings",
-                "pod.main.context_processors.context_navbar",
+                "pod.main.context_processors.context_footer",
+                "pod.video.context_processors.context_navbar",
                 "pod.video.context_processors.context_video_settings",
                 "pod.authentication.context_processors.context_authentication_settings",
                 "pod.recorder.context_processors.context_recorder_settings",
@@ -459,7 +460,7 @@ for variable in the_update_settings:
 TIME_INPUT_FORMATS = ["%H:%M", *django.conf.global_settings.TIME_INPUT_FORMATS]
 
 if (
-    locals()['DEBUG'] is True 
+    locals()['DEBUG'] is True
     and importlib.util.find_spec("debug_toolbar") is not None
 ):
     INSTALLED_APPS.append('debug_toolbar')

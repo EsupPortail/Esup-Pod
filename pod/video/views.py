@@ -54,10 +54,10 @@ from .utils import (
     pagination_data,
     get_headband,
     change_owner,
-    get_available_videos,
     get_video_data,
     get_id_from_request,
 )
+from .context_processors import get_available_videos
 from .utils import sort_videos_list
 
 from django.views.decorators.csrf import ensure_csrf_cookie
