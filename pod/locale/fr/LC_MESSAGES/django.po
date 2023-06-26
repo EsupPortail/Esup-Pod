@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-19 09:33+0200\n"
+"POT-Creation-Date: 2023-06-26 13:36+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -205,7 +205,6 @@ msgstr "Fermer"
 #: pod/completion/templates/video_caption_maker.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/import_video/templates/import_video/delete.html
 #: pod/import_video/views.py pod/live/templates/live/event-form.html
 #: pod/live/templates/live/event_delete.html
 #: pod/live/templates/live/event_edit.html
@@ -234,7 +233,6 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 #: pod/completion/templates/video_caption_maker.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/import_video/templates/import_video/delete.html
 #: pod/live/templates/live/event-form.html
 #: pod/live/templates/live/event_delete.html
 #: pod/live/templates/live/event_edit.html
@@ -568,7 +566,6 @@ msgid "Publish this presentation"
 msgstr "Publier cette présentation"
 
 #: pod/bbb/templates/bbb/card.html
-#: pod/import_video/templates/import_video/list.html
 #: pod/meeting/templates/meeting/internal_recordings.html
 msgid "by"
 msgstr "par"
@@ -978,7 +975,6 @@ msgstr "Supprimer le chapitre"
 #: pod/completion/templates/document/list_document.html
 #: pod/completion/templates/overlay/list_overlay.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html
-#: pod/import_video/templates/import_video/delete.html
 #: pod/live/templates/live/event_delete.html
 #: pod/meeting/templates/meeting/delete.html
 #: pod/playlist/templates/playlist.html
@@ -2446,42 +2442,6 @@ msgstr ""
 msgid "YouTube's Terms of Service"
 msgstr "Conditions d’utilisation de YouTube"
 
-#: pod/import_video/templates/import_video/delete.html
-#: pod/main/templates/navbar.html
-#: pod/meeting/templates/meeting/add_or_edit.html
-#: pod/meeting/templates/meeting/delete.html
-#: pod/meeting/templates/meeting/internal_recordings.html
-#: pod/meeting/templates/meeting/invite.html
-#: pod/meeting/templates/meeting/join.html
-#: pod/meeting/templates/meeting/my_meetings.html pod/meeting/views.py
-msgid "My meetings"
-msgstr "Mes réunions"
-
-#: pod/import_video/templates/import_video/delete.html
-#: pod/meeting/templates/meeting/delete.html
-#, python-format
-msgid "Delete the meeting <b>%(name)s</b>"
-msgstr "Supprimer la réunion <b>%(name)s</b>"
-
-#: pod/import_video/templates/import_video/delete.html
-#: pod/meeting/templates/meeting/delete.html
-msgid "Back to my meetings"
-msgstr "Retour à mes réunions"
-
-#: pod/import_video/templates/import_video/delete.html
-#: pod/meeting/templates/meeting/delete.html
-msgid "To delete the meeting, please check the box in and click delete."
-msgstr ""
-"Pour supprimer la réunion, veuillez cocher la case et cliquer sur supprimer."
-
-#: pod/import_video/templates/import_video/delete.html
-#: pod/live/templates/live/event_delete.html
-#: pod/meeting/templates/meeting/delete.html
-#: pod/recorder/templates/recorder/record_delete.html
-#: pod/video/templates/videos/video_delete.html
-msgid "Agree required"
-msgstr "Accord requis"
-
 #: pod/import_video/templates/import_video/filter_aside.html
 #: pod/live/templates/live/filter_aside.html
 #: pod/meeting/templates/meeting/filter_aside.html
@@ -2534,7 +2494,7 @@ msgstr "Vous devez créer une vidéo externe avant de pouvoir l'importer."
 #: pod/meeting/templates/meeting/internal_recordings.html
 msgid "Do not leave the page until the video upload to Pod is complete."
 msgstr ""
-"Ne quittez pas la page tant que le téléchargement de la vidéo sur Pod n’est "
+"Ne quittez pas la page tant que le téléversement de la vidéo sur Pod n’est "
 "pas terminé."
 
 #: pod/import_video/templates/import_video/list.html pod/main/forms.py
@@ -2569,16 +2529,6 @@ msgstr "Gérer"
 
 #: pod/import_video/templates/import_video/list.html
 #: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Video file not uploaded to Pod"
-msgstr "Le fichier vidéo n’a pas été téléversé sur Pod"
-
-#: pod/import_video/templates/import_video/list.html
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Video file already uploaded to Pod"
-msgstr "Fichier vidéo déjà téléversé sur Pod"
-
-#: pod/import_video/templates/import_video/list.html
-#: pod/meeting/templates/meeting/internal_recordings.html
 msgid "Display the recording in presentation format"
 msgstr "Afficher l’enregistrement au format Présentation Web"
 
@@ -2588,7 +2538,6 @@ msgid "Display the recording in video format"
 msgstr "Afficher l’enregistrement au format vidéo"
 
 #: pod/import_video/templates/import_video/list.html
-#: pod/meeting/templates/meeting/internal_recordings.html
 msgid "Please confirm you want to upload the recording to Pod"
 msgstr ""
 "Veuillez confirmer que vous souhaitez téléverser l’enregistrement sur Pod"
@@ -2724,6 +2673,10 @@ msgstr ""
 "Essayez de modifier les droits d’accès à la vidéo directement dans Youtube."
 
 #: pod/import_video/views.py
+msgid "YouTube error '%s'"
+msgstr "Erreur en lien avec Youtube '%s'"
+
+#: pod/import_video/views.py
 msgid ""
 "YouTube content is inaccessible. This content does not appear to be publicly "
 "available."
@@ -2772,6 +2725,22 @@ msgstr ""
 #: pod/import_video/views.py
 msgid "Impossible to upload to Pod the PeerTube video"
 msgstr "Impossible de téléverser la vidéo PeerTube sur Pod"
+
+#: pod/import_video/views.py
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Video file not uploaded to Pod"
+msgstr "Le fichier vidéo n’a pas été téléversé sur Pod"
+
+#: pod/import_video/views.py
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Video file already uploaded to Pod"
+msgstr "Fichier vidéo déjà téléversé sur Pod"
+
+#: pod/import_video/views.py
+msgid "No video file found. Upload to Pod as a video is not possible."
+msgstr ""
+"Aucun fichier vidéo trouvé. "
+"Le téléversement sur Pod en tant que vidéo n’est pas possible."
 
 #: pod/live/admin.py pod/live/models.py
 msgid "QR code to record immediately an event"
@@ -3472,6 +3441,13 @@ msgstr "L’évènement est actuellement en cours. La supression est impossible.
 #: pod/live/templates/live/event_delete.html
 msgid "To delete the event, please checked in and click send."
 msgstr "Pour supprimer l’évènement, veuillez cocher et cliquer sur envoyer."
+
+#: pod/live/templates/live/event_delete.html
+#: pod/meeting/templates/meeting/delete.html
+#: pod/recorder/templates/recorder/record_delete.html
+#: pod/video/templates/videos/video_delete.html
+msgid "Agree required"
+msgstr "Accord requis"
 
 #: pod/live/templates/live/event_edit.html
 #: pod/live/templates/live/event_immediate_edit.html
@@ -4589,6 +4565,16 @@ msgid "Add a video"
 msgstr "Ajouter une vidéo"
 
 #: pod/main/templates/navbar.html
+#: pod/meeting/templates/meeting/add_or_edit.html
+#: pod/meeting/templates/meeting/delete.html
+#: pod/meeting/templates/meeting/internal_recordings.html
+#: pod/meeting/templates/meeting/invite.html
+#: pod/meeting/templates/meeting/join.html
+#: pod/meeting/templates/meeting/my_meetings.html pod/meeting/views.py
+msgid "My meetings"
+msgstr "Mes réunions"
+
+#: pod/main/templates/navbar.html
 msgid "Toggle configuration panel"
 msgstr "Basculer le panneau de configuration"
 
@@ -5113,6 +5099,20 @@ msgstr ""
 "L’accès à l’ajout d’une réunion a été limité. Si vous souhaitez ajouter des "
 "réunions sur la plateforme, veuillez"
 
+#: pod/meeting/templates/meeting/delete.html
+#, python-format
+msgid "Delete the meeting <b>%(name)s</b>"
+msgstr "Supprimer la réunion <b>%(name)s</b>"
+
+#: pod/meeting/templates/meeting/delete.html
+msgid "Back to my meetings"
+msgstr "Retour à mes réunions"
+
+#: pod/meeting/templates/meeting/delete.html
+msgid "To delete the meeting, please check the box in and click delete."
+msgstr ""
+"Pour supprimer la réunion, veuillez cocher la case et cliquer sur supprimer."
+
 #: pod/meeting/templates/meeting/filter_aside.html pod/video/views.py
 msgid "Status"
 msgstr "Statut"
@@ -5132,6 +5132,11 @@ msgstr "Enregistrements de réunion"
 #: pod/meeting/templates/meeting/internal_recordings.html
 msgid "Toolbar"
 msgstr "Barre d’outils"
+
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Please confirm you want to upload the recording To Pod"
+msgstr ""
+"Veuillez confirmer que vous souhaitez téléverser l’enregistrement sur Pod"
 
 #: pod/meeting/templates/meeting/internal_recordings.html
 msgid "Please confirm you want to delete the recording"
