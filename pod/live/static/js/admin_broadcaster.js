@@ -20,9 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
       return;
 
     // find mandatory param
-    let url =
-      "/live/ajax_calls/getmandatoryparameters/?impl_name=" + selected_impl;
-
+    let url = implementation_config.dataset.url + selected_impl
     fetch(url, {
       method: "GET",
       headers: {
