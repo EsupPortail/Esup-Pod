@@ -213,7 +213,6 @@
               if (is_auto_start_on_record)
                 changeStreamControlButtons("opened");
             } else {
-              console.warn("{% trans 'Recording not done: ' %}" + data.error);
               show_alert("{% trans 'Recording not done: ' %}" + data.error, "warning");
             }
           }).catch((error) => {
@@ -255,7 +254,6 @@
               if (is_auto_start_on_record)
                 changeStreamControlButtons("closed");
             } else {
-              console.warn("{% trans 'Recording not stopped: ' %}" + data.errored);
               show_alert("{% trans 'Recording not stopped: ' %}" + data.error, "warning");
             }
           }).catch((error) => {
@@ -294,7 +292,6 @@
               show_alert("{% trans 'Recording split done' %}", "success");
             } else {
               durationClock.classList.add("d-none");
-              console.warn("{% trans 'Recording not split: ' %}" + data.error);
               show_alert("{% trans 'Recording not split: ' %}" + data.error, "warning");
             }
           }).catch((error) => {
@@ -346,7 +343,6 @@
                   show_alert("{% trans 'Video stream started (please wait a moment)' %}", "success");
                   resolve(true);
                 } else {
-                  console.warn("{% trans 'Video stream can not be started' %}");
                   show_alert("{% trans 'Video stream can not be started' %}", "warning");
                   resolve(false);
                 }
