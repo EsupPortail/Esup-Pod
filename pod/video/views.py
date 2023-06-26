@@ -165,7 +165,7 @@ if USE_TRANSCRIPTION:
 
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
-__VIDEOS__ = get_available_videos()
+# __VIDEOS__ = get_available_videos()
 
 # ############################################################################
 # CHANNEL
@@ -285,7 +285,7 @@ def paginator(videos_list, page):
 def channel(request, slug_c, slug_t=None):
     channel = get_object_or_404(Channel, slug=slug_c, site=get_current_site(request))
 
-    videos_list = __VIDEOS__.filter(channel=channel)
+    videos_list = get_available_videos().filter(channel=channel)
     channel.video_count = videos_list.count()
 
     theme = None
@@ -566,12 +566,6 @@ def my_videos(request):
     return render(request, "videos/my_videos.html", data_context)
 
 
-def get_videos_list():
-    """Render the main list of videos."""
-    videos_list = __VIDEOS__
-    return videos_list.distinct()
-
-
 def get_paginated_videos(paginator, page):
     """Return paginated videos in paginator object."""
     try:
@@ -618,7 +612,7 @@ def get_owners_has_instances(owners):
 
 def videos(request):
     """Render the main list of videos."""
-    videos_list = get_videos_list()
+    videos_list = get_available_videos()
     videos_list = get_filtered_videos_list(request, videos_list)
     sort_field = request.GET.get("sort")
     sort_direction = request.GET.get("sort_direction")
@@ -1984,7 +1978,7 @@ def get_videos(p_slug, target, p_slug_t=None):
     """
     videos = []
     title = _("Pod video viewing statistics")
-
+    available_videos = get_available_videos()
     if target.lower() == "video":
         video_founded = Video.objects.filter(slug=p_slug).first()
         # In case that the slug is a bad one
@@ -1996,14 +1990,14 @@ def get_videos(p_slug, target, p_slug_t=None):
 
     elif target.lower() == "channel":
         title = _("Video viewing statistics for the channel %s") % p_slug
-        videos = __VIDEOS__.filter(channel__slug__istartswith=p_slug)
+        videos = available_videos.filter(channel__slug__istartswith=p_slug)
 
     elif target.lower() == "theme" and p_slug_t:
         title = _("Video viewing statistics for the theme %s") % p_slug_t
-        videos = __VIDEOS__.filter(theme__slug__istartswith=p_slug_t)
+        videos = available_videos.filter(theme__slug__istartswith=p_slug_t)
 
     elif target == "videos":
-        return (__VIDEOS__, title)
+        return (available_videos, title)
 
     return (videos, title)
 
@@ -2096,7 +2090,9 @@ def stats_view(request, slug=None, slug_t=None):
             )
         )
 
-        min_date = __VIDEOS__.aggregate(Min("date_added"))["date_added__min"].date()
+        min_date = get_available_videos().aggregate(
+            Min("date_added")
+        )["date_added__min"].date()
         data.append({"min_date": min_date})
 
         return JsonResponse(data, safe=False)
