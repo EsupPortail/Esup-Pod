@@ -30,6 +30,7 @@ if USE_CAS:
 
 
 urlpatterns = [
+    path("__debug__/", include("debug_toolbar.urls")),
     url("select2/", include("django_select2.urls")),
     url("robots.txt", robots_txt),
     url("info_pod.json", info_pod),

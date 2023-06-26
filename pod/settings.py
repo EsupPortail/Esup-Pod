@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "mozilla_django_oidc",
     "honeypot",
     "lti_provider",
+    'debug_toolbar',
     # Pod Applications
     "pod.main",
     "django.contrib.admin",  # put it here for template override
@@ -456,3 +457,12 @@ for variable in the_update_settings:
     locals()[variable] = the_update_settings[variable]
 
 TIME_INPUT_FORMATS = ["%H:%M", *django.conf.global_settings.TIME_INPUT_FORMATS]
+
+if locals()['DEBUG']:
+    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware',] + MIDDLEWARE
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': 'pod.settings.show_toolbar'
+    }
+
+    def show_toolbar(request):
+        return True
