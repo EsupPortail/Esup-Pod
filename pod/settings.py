@@ -4,6 +4,7 @@ Django global settings for pod_project.
 Django version: 3.2.
 """
 import os
+import importlib.util
 import django.conf.global_settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -44,7 +45,6 @@ INSTALLED_APPS = [
     "mozilla_django_oidc",
     "honeypot",
     "lti_provider",
-    'debug_toolbar',
     # Pod Applications
     "pod.main",
     "django.contrib.admin",  # put it here for template override
@@ -458,8 +458,12 @@ for variable in the_update_settings:
 
 TIME_INPUT_FORMATS = ["%H:%M", *django.conf.global_settings.TIME_INPUT_FORMATS]
 
-if locals()['DEBUG']:
-    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware',] + MIDDLEWARE
+if (
+    locals()['DEBUG'] is True 
+    and importlib.util.find_spec("debug_toolbar") is not None
+):
+    INSTALLED_APPS.append('debug_toolbar')
+    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware', ] + MIDDLEWARE
     DEBUG_TOOLBAR_CONFIG = {
         'SHOW_TOOLBAR_CALLBACK': 'pod.settings.show_toolbar'
     }
