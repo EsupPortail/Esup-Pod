@@ -354,7 +354,7 @@ CACHES = {
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
-        "KEY_PREFIX": "pod"
+        "KEY_PREFIX": "pod",
     },
     "select2": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -459,15 +459,12 @@ for variable in the_update_settings:
 
 TIME_INPUT_FORMATS = ["%H:%M", *django.conf.global_settings.TIME_INPUT_FORMATS]
 
-if (
-    locals()['DEBUG'] is True
-    and importlib.util.find_spec("debug_toolbar") is not None
-):
-    INSTALLED_APPS.append('debug_toolbar')
-    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware', ] + MIDDLEWARE
-    DEBUG_TOOLBAR_CONFIG = {
-        'SHOW_TOOLBAR_CALLBACK': 'pod.settings.show_toolbar'
-    }
+if locals()["DEBUG"] is True and importlib.util.find_spec("debug_toolbar") is not None:
+    INSTALLED_APPS.append("debug_toolbar")
+    MIDDLEWARE = [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+    ] + MIDDLEWARE
+    DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": "pod.settings.show_toolbar"}
 
     def show_toolbar(request):
         return True

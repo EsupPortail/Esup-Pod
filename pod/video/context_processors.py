@@ -25,39 +25,45 @@ OEMBED = getattr(django_settings, "OEMBED", False)
 USE_STATS_VIEW = getattr(django_settings, "USE_STATS_VIEW", False)
 
 __AVAILABLE_VIDEO_FILTER__ = {
-    'encoding_in_progress': False,
-    'is_draft': False,
-    'sites': 1,
+    "encoding_in_progress": False,
+    "is_draft": False,
+    "sites": 1,
 }
 
 
 def get_available_videos(request=None):
     """Get all videos available."""
     __AVAILABLE_VIDEO_FILTER__["sites"] = get_current_site(request)
-    vids = Video.objects.filter(**__AVAILABLE_VIDEO_FILTER__).defer(
-        "video", "slug", "owner", "additional_owners", "description"
-    ).filter(
-        Q(Exists(
-            EncodingVideo.objects.filter(
-                video=OuterRef('pk'),
-                encoding_format="video/mp4"
+    vids = (
+        Video.objects.filter(**__AVAILABLE_VIDEO_FILTER__)
+        .defer("video", "slug", "owner", "additional_owners", "description")
+        .filter(
+            Q(
+                Exists(
+                    EncodingVideo.objects.filter(
+                        video=OuterRef("pk"), encoding_format="video/mp4"
+                    )
+                )
             )
-        ))
-        | Q(Exists(
-            PlaylistVideo.objects.filter(
-                video=OuterRef('pk'),
-                name="playlist",
-                encoding_format="application/x-mpegURL"
+            | Q(
+                Exists(
+                    PlaylistVideo.objects.filter(
+                        video=OuterRef("pk"),
+                        name="playlist",
+                        encoding_format="application/x-mpegURL",
+                    )
+                )
             )
-        ))
-        | Q(Exists(
-            EncodingAudio.objects.filter(
-                video=OuterRef('pk'),
-                name="audio",
-                encoding_format="video/mp4"
+            | Q(
+                Exists(
+                    EncodingAudio.objects.filter(
+                        video=OuterRef("pk"), name="audio", encoding_format="video/mp4"
+                    )
+                )
             )
-        ))
-    ).distinct()
+        )
+        .distinct()
+    )
     return vids
 
 
@@ -109,9 +115,7 @@ def context_navbar(request):
         .prefetch_related(
             Prefetch(
                 "themes",
-                queryset=Theme.objects.filter(
-                    channel__site=get_current_site(request)
-                )
+                queryset=Theme.objects.filter(channel__site=get_current_site(request))
                 .distinct()
                 .annotate(video_count=Count("video", distinct=True)),
             )
@@ -141,9 +145,7 @@ def context_navbar(request):
     list_videos = get_available_videos(request)
     VIDEOS_COUNT = list_videos.count()
     VIDEOS_DURATION = (
-        str(timedelta(seconds=list_videos.aggregate(
-            Sum("duration")
-        )["duration__sum"]))
+        str(timedelta(seconds=list_videos.aggregate(Sum("duration"))["duration__sum"]))
         if list_videos.aggregate(Sum("duration"))["duration__sum"]
         else 0
     )

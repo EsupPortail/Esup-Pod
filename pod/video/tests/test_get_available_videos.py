@@ -75,7 +75,7 @@ class VideoAvailableTestCase(TestCase):
         EncodingVideo.objects.create(
             video=vid1,
             encoding_format="video/mp4",
-            rendition=VideoRendition.objects.get(id=1)
+            rendition=VideoRendition.objects.get(id=1),
         )
         vids = get_available_videos()
         self.assertEqual(vids.count(), 1)
@@ -84,9 +84,7 @@ class VideoAvailableTestCase(TestCase):
         vids = get_available_videos()
         self.assertEqual(vids.count(), 0)
         plvid2 = PlaylistVideo.objects.create(
-            video=vid2,
-            name="playlist",
-            encoding_format="application/x-mpegURL"
+            video=vid2, name="playlist", encoding_format="application/x-mpegURL"
         )
         vids = get_available_videos()
         self.assertEqual(vids.count(), 0)
@@ -99,9 +97,7 @@ class VideoAvailableTestCase(TestCase):
         vids = get_available_videos()
         self.assertEqual(vids.count(), 2)
         eavid3 = EncodingAudio.objects.create(
-            video=vid3,
-            name="audio",
-            encoding_format="video/mp4"
+            video=vid3, name="audio", encoding_format="video/mp4"
         )
         vids = get_available_videos()
         self.assertEqual(vids.count(), 2)
@@ -110,9 +106,7 @@ class VideoAvailableTestCase(TestCase):
         vids = get_available_videos()
         self.assertEqual(vids.count(), 3)
         plvid1 = PlaylistVideo.objects.create(
-            video=vid1,
-            name="playlist",
-            encoding_format="application/x-mpegURL"
+            video=vid1, name="playlist", encoding_format="application/x-mpegURL"
         )
         vids = get_available_videos()
         self.assertEqual(vids.count(), 3)

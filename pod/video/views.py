@@ -2088,9 +2088,9 @@ def stats_view(request, slug=None, slug_t=None):
             )
         )
 
-        min_date = get_available_videos().aggregate(
-            Min("date_added")
-        )["date_added__min"].date()
+        min_date = (
+            get_available_videos().aggregate(Min("date_added"))["date_added__min"].date()
+        )
         data.append({"min_date": min_date})
 
         return JsonResponse(data, safe=False)

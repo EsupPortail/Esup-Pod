@@ -50,11 +50,7 @@ HIDE_CHANNEL_TAB = getattr(django_settings, "HIDE_CHANNEL_TAB", False)
 
 HIDE_TYPES_TAB = getattr(django_settings, "HIDE_TYPES_TAB", False)
 
-HIDE_LANGUAGE_SELECTOR = getattr(
-    django_settings,
-    "HIDE_LANGUAGE_SELECTOR",
-    False
-)
+HIDE_LANGUAGE_SELECTOR = getattr(django_settings, "HIDE_LANGUAGE_SELECTOR", False)
 
 HIDE_TAGS = getattr(django_settings, "HIDE_TAGS", False)
 
@@ -70,11 +66,7 @@ USE_BBB_LIVE = getattr(django_settings, "USE_BBB_LIVE", False)
 
 COOKIE_LEARN_MORE = getattr(django_settings, "COOKIE_LEARN_MORE", "")
 
-SHOW_EVENTS_ON_HOMEPAGE = getattr(
-    django_settings,
-    "SHOW_EVENTS_ON_HOMEPAGE",
-    False
-)
+SHOW_EVENTS_ON_HOMEPAGE = getattr(django_settings, "SHOW_EVENTS_ON_HOMEPAGE", False)
 
 USE_OPENCAST_STUDIO = getattr(django_settings, "USE_OPENCAST_STUDIO", False)
 
@@ -102,12 +94,8 @@ def context_settings(request):
             key="maintenance_text_short"
         ).value
 
-        maintenance_sheduled = Configuration.objects.get(
-            key="maintenance_sheduled"
-        )
-        maintenance_sheduled = True if (
-            maintenance_sheduled.value == "1"
-        ) else False
+        maintenance_sheduled = Configuration.objects.get(key="maintenance_sheduled")
+        maintenance_sheduled = True if (maintenance_sheduled.value == "1") else False
         maintenance_text_sheduled = Configuration.objects.get(
             key="maintenance_text_sheduled"
         ).value
@@ -155,9 +143,7 @@ def context_settings(request):
 
 
 def context_footer(request):
-    linkFooter = LinkFooter.objects.all().filter(
-        sites=get_current_site(request)
-    )
+    linkFooter = LinkFooter.objects.all().filter(sites=get_current_site(request))
     return {
         "LINK_FOOTER": linkFooter,
     }

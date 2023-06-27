@@ -82,17 +82,17 @@ class TestStatsView(TestCase):
         EncodingVideo.objects.create(
             video=self.video,
             encoding_format="video/mp4",
-            rendition=VideoRendition.objects.get(id=1)
+            rendition=VideoRendition.objects.get(id=1),
         )
         EncodingVideo.objects.create(
             video=self.video2,
             encoding_format="video/mp4",
-            rendition=VideoRendition.objects.get(id=1)
+            rendition=VideoRendition.objects.get(id=1),
         )
         EncodingVideo.objects.create(
             video=self.video3,
             encoding_format="video/mp4",
-            rendition=VideoRendition.objects.get(id=1)
+            rendition=VideoRendition.objects.get(id=1),
         )
         self.video.channel.set([self.channel])
         self.video.theme.set([self.theme])
