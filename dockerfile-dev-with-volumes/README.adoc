@@ -76,12 +76,16 @@ ES_VERSION = 7
 
 ES_URL = ['http://elasticsearch:9200/']
 
+
 CACHES = {
-    # … default cache config and others
     "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/3",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "KEY_PREFIX": "pod"
     },
-    # Persistent cache setup for select2 (NOT DummyCache or LocMemCache).
     "select2": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://redis:6379/2",
@@ -89,6 +93,15 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
     },
+}
+SESSION_ENGINE = "redis_sessions.session"
+SESSION_REDIS = {
+    "host": "redis",
+    "port": 6379,
+    "db": 4,
+    "prefix": "session",
+    "socket_timeout": 1,
+    "retry_on_timeout": False,
 }
 
 # Uniquement lors d’environnement conteneurisé
