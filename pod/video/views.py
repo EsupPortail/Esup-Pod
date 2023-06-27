@@ -165,7 +165,6 @@ if USE_TRANSCRIPTION:
 
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
-# __VIDEOS__ = get_available_videos()
 
 # ############################################################################
 # CHANNEL
@@ -612,8 +611,7 @@ def get_owners_has_instances(owners):
 
 def videos(request):
     """Render the main list of videos."""
-    videos_list = get_available_videos()
-    videos_list = get_filtered_videos_list(request, videos_list)
+    videos_list = get_filtered_videos_list(request, get_available_videos())
     sort_field = request.GET.get("sort")
     sort_direction = request.GET.get("sort_direction")
 
