@@ -10,6 +10,8 @@ from django.contrib.auth import views as auth_views
 from django.views.i18n import JavaScriptCatalog
 from django.utils.translation import ugettext_lazy as _
 
+import importlib.util
+
 from pod.main.views import (
     contact_us,
     download_file,
@@ -140,13 +142,17 @@ if getattr(settings, "USE_IMPORT_VIDEO", True):
         ),
     ]
 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    if importlib.util.find_spec("debug_toolbar") is not None:
+        urlpatterns += [
+            path("__debug__/", include("debug_toolbar.urls")),
+        ]
+
 # CHANNELS
 urlpatterns += [
     url(r"^", include("pod.video.urls-channels-video")),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Change admin site title
 admin.site.site_header = _("Pod Administration")
