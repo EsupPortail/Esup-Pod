@@ -153,7 +153,7 @@ def upload_external_recording_to_pod(request, record_id):
 
 
 @login_required(redirect_field_name="referrer")
-def external_recordings(request):  # noqa: C901
+def external_recordings(request):
     """List external recordings.
 
     Args:
