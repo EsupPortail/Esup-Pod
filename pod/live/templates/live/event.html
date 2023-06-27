@@ -166,11 +166,13 @@
               {% if can_manage_stream %}
                 <div id="stream_btns" class="col-auto border border-secondary rounded d-none" style="margin: 10px 10px 10px 0">
                   <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
-                          id="startstream" title="{% trans 'Start stream' %}" aria-label="{% trans 'Start stream' %}">
+                          id="startstream" title="{% trans 'Start stream' %}" aria-label="{% trans 'Start stream' %}"
+                          data-url="{% url 'live:ajax_event_start_streaming'%}">
                     <i class="bi bi-person-video" style="font-size: 2em"></i>
                   </button>
                   <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
-                          id="stopstream" title="{% trans 'Stop stream' %}" aria-label="{% trans 'Stop stream' %}">
+                          id="stopstream" title="{% trans 'Stop stream' %}" aria-label="{% trans 'Stop stream' %}"
+                          data-url="{% url 'live:ajax_event_stop_streaming'%}">
                     <i class="bi bi-stop-btn" style="font-size: 2em"></i>
                   </button>
                   </button>
@@ -183,15 +185,18 @@
 
               <div id="recording_btns" class="col-auto border border-secondary rounded d-none" style="margin: 10px 0 10px 0">
                 <button type="button" class="btn btn-outline-danger btn-sm border-0 m-1" disabled
-                        id="startrecord" title="{% trans 'Start record' %}" aria-label="{% trans 'Start record' %}">
+                        id="startrecord" title="{% trans 'Start record' %}" aria-label="{% trans 'Start record' %}"
+                        data-url="{% url 'live:ajax_event_startrecord'%}">
                   <i class="bi bi-circle-fill" style="font-size: 2em"></i>
                 </button>
                 <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
-                        id="stoprecord" title="{% trans 'Stop record' %}" aria-label="{% trans 'Stop record' %}">
+                        id="stoprecord" title="{% trans 'Stop record' %}" aria-label="{% trans 'Stop record' %}"
+                          data-url="{% url 'live:ajax_event_stoprecord'%}">
                   <i class="bi bi-square-fill" style="font-size: 2em"></i>
                 </button>
                 <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
-                        id="splitrecord" title="{% trans 'Split record' %}" aria-label="{% trans 'Split record' %}">
+                        id="splitrecord" title="{% trans 'Split record' %}" aria-label="{% trans 'Split record' %}"
+                          data-url="{% url 'live:ajax_event_splitrecord'%}">
                   <i class="bi bi-slash-circle-fill" style="font-size: 2em"></i>
                 </button>
               </div>

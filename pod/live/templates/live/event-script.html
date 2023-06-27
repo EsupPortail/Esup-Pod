@@ -186,7 +186,7 @@
          */
         startRecordAction = function() {
           changeRecordControlButtons();
-          fetch("{% url 'live:ajax_event_startrecord' %}", {
+          fetch(startRecordBtn.dataset.url, {
             method: "POST",
             headers: {
               "X-Requested-With": "XMLHttpRequest",
@@ -228,7 +228,7 @@
         stopRecordAction = function() {
           changeRecordControlButtons();
           durationClock.classList.add("d-none");
-          fetch("{% url 'live:ajax_event_stoprecord' %}", {
+          fetch(stopRecordBtn.dataset.url, {
             method: "POST",
             headers: {
               "X-Requested-With": "XMLHttpRequest",
@@ -267,7 +267,7 @@
          */
         splitRecordAction = function() {
           changeRecordControlButtons();
-          fetch("{% url 'live:ajax_event_splitrecord' %}", {
+          fetch(splitRecordBtn.dataset.url, {
             method: "POST",
             headers: {
               "X-Requested-With": "XMLHttpRequest",
@@ -321,7 +321,7 @@
                 return resolve = false;
 
               changeStreamControlButtons();
-              fetch("{% url 'live:ajax_event_start_streaming' %}", {
+              fetch(startStreamBtn.dataset.url, {
                 method: "POST",
                 headers: {
                   "X-Requested-With": "XMLHttpRequest",
@@ -363,7 +363,7 @@
               return;
 
             changeStreamControlButtons();
-            fetch("{% url 'live:ajax_event_stop_streaming' %}", {
+            fetch(stopStreamBtn.dataset.url, {
               method: "POST",
               headers: {
                 "X-Requested-With": "XMLHttpRequest",

@@ -119,8 +119,8 @@ class BroadcasterAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(BroadcasterAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields['piloting_conf'].widget.attrs.update(
-            {'data-url': reverse("live:ajax_get_mandatory_parameters") + "?impl_name="}
+        form.base_fields["piloting_conf"].widget.attrs.update(
+            {"data-url": reverse("live:ajax_get_mandatory_parameters") + "?impl_name="}
         )
         kwargs["help_texts"] = {"qrcode": _("QR code to record immediately an event")}
         return form
