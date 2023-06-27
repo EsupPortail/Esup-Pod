@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-26 13:36+0200\n"
+"POT-Creation-Date: 2023-06-27 09:34+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -2673,6 +2673,7 @@ msgstr ""
 "Essayez de modifier les droits d’accès à la vidéo directement dans Youtube."
 
 #: pod/import_video/views.py
+#, python-format
 msgid "YouTube error '%s'"
 msgstr "Erreur en lien avec Youtube '%s'"
 
@@ -2739,8 +2740,8 @@ msgstr "Fichier vidéo déjà téléversé sur Pod"
 #: pod/import_video/views.py
 msgid "No video file found. Upload to Pod as a video is not possible."
 msgstr ""
-"Aucun fichier vidéo trouvé. "
-"Le téléversement sur Pod en tant que vidéo n’est pas possible."
+"Aucun fichier vidéo trouvé. Le téléversement sur Pod en tant que vidéo n’est "
+"pas possible."
 
 #: pod/live/admin.py pod/live/models.py
 msgid "QR code to record immediately an event"
