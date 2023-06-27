@@ -29,12 +29,13 @@ WORKDIR /usr/src/app
 
 COPY ./requirements.txt .
 COPY ./requirements-conteneur.txt .
+COPY ./requirements-dev.txt .
 RUN mkdir /tmp/node_modules/
 
 COPY --from=source-build-js /tmp/pod/node_modules/ /tmp/node_modules/
 
-RUN pip3 install --no-cache-dir -r requirements.txt \
-    && pip3 install --no-cache-dir -r requirements-conteneur.txt
+RUN pip3 install --no-cache-dir -r requirements-conteneur.txt \
+    && pip3 install elasticsearch==7.17.7
 
 # ENTRYPOINT :
 COPY ./dockerfile-dev-with-volumes/pod/my-entrypoint.sh /tmp/my-entrypoint.sh
