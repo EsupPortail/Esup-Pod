@@ -61,6 +61,7 @@ class InfiniteLoader {
     nextPage = true,
     page = 2
   ) {
+    console.log('InfiniteLoader')
     this.infinite_loading = document.querySelector(".infinite-loading");
     this.videos_list = document.getElementById("videos_list");
     this.next_page_number = page;
@@ -93,11 +94,11 @@ class InfiniteLoader {
     // UPDATE DOM
     this.getData(url, this.next_page_number).then((data) => {
       const html = new DOMParser().parseFromString(data, "text/html");
-
-      if (html.getElementById("videos_list").dataset.nextPage !== "True") {
+      /*if (html.getElementById("videos_list").dataset.nextpage !== "True") {
         this.nextPage = false;
-      }
-
+      }*/
+      // data-nextpage="{{ videos.has_next|yesno:'true,false' }}"
+      this.nextPage = html.getElementById("videos_list").dataset.nextpage;
       let element = this.videos_list;
 
       element.innerHTML += html.getElementById("videos_list").innerHTML;
