@@ -752,8 +752,7 @@ def get_stateless_recording(request, data):
         # For old BBB or BBB 2.6+ without video playback
         if check_file_exists(recording.videoUrl) is False:
             recording.state = _(
-                "No video file found. "
-                "Upload to Pod as a video is not possible."
+                "No video file found. " "Upload to Pod as a video is not possible."
             )
             recording.canUpload = False
             recording.videoUrl = ""
