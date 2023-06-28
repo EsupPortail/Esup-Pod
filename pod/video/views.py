@@ -623,6 +623,8 @@ def videos(request):
     count_videos = len(videos_list)
 
     page = request.GET.get("page", 1)
+    if page == "" or page == None:
+        page = 1
     full_path = ""
     if page:
         full_path = (
@@ -641,7 +643,6 @@ def videos(request):
             "videos/video_list.html",
             {"videos": videos, "full_path": full_path, "count_videos": count_videos},
         )
-
     return render(
         request,
         "videos/videos.html",
