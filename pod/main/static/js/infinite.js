@@ -100,9 +100,9 @@ class InfiniteLoader {
         let element = this.videos_list;
 
         element.innerHTML += html.getElementById("videos_list").innerHTML;
-        this.callBackAfterLoad();
         this.next_page_number += 1;
       }
+      this.callBackAfterLoad();
     });
   }
 
