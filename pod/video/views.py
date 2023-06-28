@@ -623,7 +623,7 @@ def videos(request):
     count_videos = len(videos_list)
 
     page = request.GET.get("page", 1)
-    if page == "" or page == None:
+    if page == "" or page is None:
         page = 1
     full_path = ""
     if page:
