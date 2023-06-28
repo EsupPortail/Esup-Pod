@@ -8,7 +8,6 @@ from django.urls import reverse
 from django.conf import settings
 from django.http import JsonResponse
 from django.db.models import Q
-from django.contrib.sites.shortcuts import get_current_site
 from django.template.defaultfilters import slugify
 
 from .models import Video
@@ -49,22 +48,6 @@ MANAGERS = getattr(settings, "MANAGERS", {})
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
-
-
-def get_available_videos():
-    """Get all videos available."""
-    videos = Video.objects.filter(encoding_in_progress=False, is_draft=False).defer(
-        "video", "slug", "owner", "additional_owners", "description"
-    )
-    # for clean install, produces errors
-    try:
-        videos = videos.exclude(
-            pk__in=[vid.id for vid in videos if not vid.encoded]
-        ).filter(sites=get_current_site(None))
-    except Exception:
-        pass
-    return videos
-
 
 ###############################################################
 # EMAIL

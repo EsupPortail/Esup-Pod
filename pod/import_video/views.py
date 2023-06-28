@@ -7,9 +7,8 @@ import json
 
 from .models import ExternalRecording
 from .forms import ExternalRecordingForm
-from .utils import download_video_file, save_video
-from .utils import secure_request_for_upload, parse_remote_file
-from .utils import StatelessRecording
+from .utils import StatelessRecording, download_video_file, check_file_exists
+from .utils import save_video, secure_request_for_upload, parse_remote_file
 from datetime import datetime
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
@@ -163,8 +162,6 @@ def external_recordings(request):
     Returns:
         HTTPResponse: external recordings list
     """
-    # print(timezone.localtime().strftime("%y%m%d-%H%M%S"))
-
     if RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
         return render(request, "import_video/list.html", {"access_not_allowed": True})
 
@@ -179,38 +176,7 @@ def external_recordings(request):
 
     recordings = []
     for data in external_recordings:
-        # Management of the stateless recording
-        recording = StatelessRecording(data.id, data.name, "published")
-        # Upload to Pod is always possible in such a case
-        recording.canUpload = True
-        # Only owner can delete this external recording
-        recording.canDelete = get_can_delete_external_recording(request, data.owner)
-
-        recording.startTime = data.start_at
-
-        # Management of the external recording type
-        if data.type == "bigbluebutton":
-            # For BBB, external URL can be the video or presentation playback
-            if data.source_url.find("playback/video") != -1:
-                # Management for standards video URLs with BBB or Scalelite server
-                recording.videoUrl = data.source_url
-            elif data.source_url.find("playback/presentation/2.3") != -1:
-                # Management for standards presentation URLs with BBB or Scalelite server
-                # Add computed video playback
-                recording.videoUrl = data.source_url.replace(
-                    "playback/presentation/2.3", "playback/video"
-                )
-            else:
-                # Management of other situations, non standards URLs
-                recording.videoUrl = data.source_url
-        else:
-            # For PeerTube, Video file, Youtube
-            recording.videoUrl = data.source_url
-
-        # Display type label
-        recording.type = data.get_type_display
-
-        recording.uploadedToPodBy = data.uploaded_to_pod_by
+        recording = get_stateless_recording(request, data)
 
         recordings.append(recording)
 
@@ -589,9 +555,9 @@ def upload_youtube_recording_to_pod(request, record_id):
             "Try changing the access rights to the video directly in Youtube."
         )
         raise ValueError(msg)
-    except PytubeError:
+    except PytubeError as pterror:
         msg = {}
-        msg["error"] = _("YouTube error")
+        msg["error"] = _("YouTube error '%s'" % (mark_safe(pterror)))
         msg["message"] = _(
             "YouTube content is inaccessible. "
             "This content does not appear to be publicly available."
@@ -738,3 +704,63 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
             "Try changing the record type or address for this recording."
         )
         raise ValueError(msg)
+
+
+def get_stateless_recording(request, data):
+    """Return a stateless recording from an external recording.
+
+    Args:
+        request (Request): HTTP request
+        data (ExternalRecording): external recording
+
+    Returns:
+        StatelessRecording: stateless recording
+    """
+    recording = StatelessRecording(data.id, data.name, "published")
+    # By default, upload to Pod is possible
+    recording.canUpload = True
+    # Only owner can delete this external recording
+    recording.canDelete = get_can_delete_external_recording(request, data.owner)
+
+    recording.startTime = data.start_at
+
+    recording.uploadedToPodBy = data.uploaded_to_pod_by
+
+    # State management
+    if recording.uploadedToPodBy is None:
+        recording.state = _("Video file not uploaded to Pod")
+    else:
+        recording.state = _("Video file already uploaded to Pod")
+
+    # Management of the external recording type
+    if data.type == "bigbluebutton":
+        # For BBB, external URL can be the video or presentation playback
+        if data.source_url.find("playback/video") != -1:
+            # Management for standards video URLs with BBB or Scalelite server
+            recording.videoUrl = data.source_url
+        elif data.source_url.find("playback/presentation/2.3") != -1:
+            # Management for standards presentation URLs with BBB or Scalelite server
+            # Add computed video playback
+            recording.videoUrl = data.source_url.replace(
+                "playback/presentation/2.3", "playback/video"
+            )
+            recording.presentationUrl = data.source_url
+        else:
+            # Management of other situations, non standards URLs
+            recording.videoUrl = data.source_url
+
+        # For old BBB or BBB 2.6+ without video playback
+        if check_file_exists(recording.videoUrl) is False:
+            recording.state = _(
+                "No video file found. " "Upload to Pod as a video is not possible."
+            )
+            recording.canUpload = False
+            recording.videoUrl = ""
+    else:
+        # For PeerTube, Video file, Youtube
+        recording.videoUrl = data.source_url
+
+    # Display type label
+    recording.type = data.get_type_display
+
+    return recording
