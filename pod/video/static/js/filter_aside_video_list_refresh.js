@@ -257,10 +257,10 @@ document
   });
 //initiate checkedInputs
 document
-    .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
-    .forEach((e) => {
-      checkedInputs.push(e);
-    });
+  .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
+  .forEach((e) => {
+    checkedInputs.push(e);
+  });
 
 // First launch of the infinite scroll
 infinite = new InfiniteLoader(
