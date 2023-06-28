@@ -87,11 +87,11 @@ function refreshVideosSearch() {
         document.getElementById("videos_list").dataset.countvideos
       );
       nextPage =
-        document.getElementById("videos_list").dataset.nextPage === "true";
+        document.getElementById("videos_list").dataset.nextpage === "true";
       window.history.pushState({}, "", url);
       if (nextPage) {
         pageNext = document.querySelector("a.infinite-more-link").dataset
-          .nextPageNumber;
+          .nextpagenumber;
         refreshInfiniteLoader(url, pageNext);
       }
     })
@@ -249,6 +249,19 @@ function disabledInputs(value) {
     });
 }
 
+// Add event listener on inputs on launch
+document
+  .querySelectorAll(".form-check-input,#sort,#sort_direction")
+  .forEach((el) => {
+    setListenerChangeInputs(el);
+  });
+//initiate checkedInputs
+document
+    .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
+    .forEach((e) => {
+      checkedInputs.push(e);
+    });
+
 // First launch of the infinite scroll
 infinite = new InfiniteLoader(
   getUrlForRefresh(),
@@ -257,10 +270,3 @@ infinite = new InfiniteLoader(
   nextPage,
   (page = 2)
 );
-
-// Add event listener on inputs on launch
-document
-  .querySelectorAll(".form-check-input,#sort,#sort_direction")
-  .forEach((el) => {
-    setListenerChangeInputs(el);
-  });
