@@ -229,7 +229,7 @@ class Encoding_video_model(Encoding_video):
         list_subtitle_files = info_video["list_subtitle_files"]
 
         for sub in list_subtitle_files:
-            if not check_file(list_subtitle_files[sub]):
+            if not check_file(list_subtitle_files[sub][1]):
                 continue
             # home = UserFolder.objects.get(name="Home", owner=video_to_encode.owner)
             home, created = UserFolder.objects.get_or_create(
