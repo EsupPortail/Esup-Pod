@@ -22,6 +22,7 @@ encoding_app.conf.task_routes = {
     "pod.video_encode_transcript.encoding_tasks.*": {"queue": "encoding"}
 }
 
+
 # celery -A pod.video_encode_transcript.encoding_tasks worker -l INFO -Q encoding
 @encoding_app.task
 def start_encoding_task(video_id, video_path, cut_start, cut_end):
@@ -31,4 +32,11 @@ def start_encoding_task(video_id, video_path, cut_start, cut_end):
     encoding_video = Encoding_video(video_id, video_path, cut_start, cut_end)
     encoding_video.start_encode()
     print("End of the encoding of the video")
-    start_importing_task.delay(video_id, video_path)
+    start_importing_task.delay(
+        encoding_video.start,
+        video_id,
+        video_path,
+        cut_start,
+        cut_end,
+        encoding_video.stop
+    )

@@ -112,47 +112,53 @@ def encode_video(video_id):
 
     change_encoding_step(video_id, 0, "start")
     # start and stop cut ?
-    if CutVideo.objects.filter(video=video_id).exists():
-        cut = CutVideo.objects.get(video=video_id)
-        cut_start = time_to_seconds(cut.start)
-        cut_end = time_to_seconds(cut.end)
-        encoding_video = Encoding_video_model(
-            video_id, video_to_encode.video.path, cut_start, cut_end
-        )
-    else:
-        encoding_video = Encoding_video_model(video_id, video_to_encode.video.path)
+    encoding_video = get_encoding_video(video_to_encode)
     encoding_video.add_encoding_log("start_time", "", True, start)
-    # change_encoding_step(video_id, 1, "get video data")
-    # encoding_video.get_video_data()
     change_encoding_step(video_id, 1, "remove old data")
     encoding_video.remove_old_data()
-    # create video dir
-    # change_encoding_step(video_id, 3, "create output dir")
-    # encoding_video.create_output_dir()
 
     change_encoding_step(video_id, 2, "start encoding")
     if USE_DISTANT_ENCODING:
         start_encoding_task.delay(
             encoding_video.id,
             encoding_video.video_file,
-            encoding_video.start,
-            encoding_video.stop
+            encoding_video.cutting_start,
+            encoding_video.cutting_stop
         )
-        return
-    encoding_video.start_encode()
+    else:
+        encoding_video.start_encode()
+        final_video = store_encoding_info(video_id, encoding_video)
+        end_of_encoding(final_video)
 
+
+def store_encoding_info(video_id, encoding_video):
     change_encoding_step(video_id, 3, "store encoding info")
     final_video = encoding_video.store_json_info()
     final_video.is_video = final_video.get_video_m4a() is None
     final_video.encoding_in_progress = False
     final_video.save()
+    return final_video
 
+
+def get_encoding_video(video_to_encode):
+    if CutVideo.objects.filter(video=video_to_encode).exists():
+        cut = CutVideo.objects.get(video=video_to_encode)
+        cut_start = time_to_seconds(cut.start)
+        cut_end = time_to_seconds(cut.end)
+        encoding_video = Encoding_video_model(
+            video_to_encode.id, video_to_encode.video.path, cut_start, cut_end
+        )
+        return encoding_video
+    return Encoding_video_model(video_to_encode.id, video_to_encode.video.path)
+
+
+def end_of_encoding(video):
     # envois mail fin encodage
     if EMAIL_ON_ENCODING_COMPLETION:
-        send_email_encoding(video_to_encode)
+        send_email_encoding(video)
 
-    transcript_video(video_id)
-    change_encoding_step(video_id, 0, "end of encoding")
+    transcript_video(video.id)
+    change_encoding_step(video.id, 0, "end of encoding")
 
 
 def transcript_video(video_id):

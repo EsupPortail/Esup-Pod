@@ -5,7 +5,7 @@ import time
 from webvtt import WebVTT, Caption
 import argparse
 import unicodedata
-print("NAME : %s" % __name__)
+
 if __name__ == "__main__":
     from encoding_utils import (
         get_info_from_video,
