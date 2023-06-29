@@ -5,7 +5,7 @@ import time
 from webvtt import WebVTT, Caption
 import argparse
 import unicodedata
-
+print("NAME : %s" % __name__)
 if __name__ == "__main__":
     from encoding_utils import (
         get_info_from_video,
@@ -114,7 +114,7 @@ try:
     FFMPEG_EXTRACT_SUBTITLE = getattr(
         settings, "FFMPEG_EXTRACT_SUBTITLE", FFMPEG_EXTRACT_SUBTITLE
     )
-except ImportError:  # pragma: no cover
+except Exception:  # pragma: no cover
     pass
 
 
@@ -672,7 +672,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     print(args.start)
     filename = fix_input(args.input)
-    encoding_video = Encoding_video(args.id, filename)
+    encoding_video = Encoding_video(args.id, filename, args.start, args.stop)
     # error if uncommented
     # encoding_video.encoding_log += start
     # AttributeError: 'NoneType' object has no attribute 'get'

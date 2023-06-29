@@ -1,8 +1,10 @@
-# xapi/tasks.py
+# pip3 install celery==5.2.7
+# pip3 install webvtt-py
+# pip3 install redis==4.5.4
 from celery import Celery
-import requests
+from .Encoding_video import Encoding_video
+from .importing_tasks import start_importing_task
 import logging
-from requests.auth import HTTPBasicAuth
 
 # call local settings directly
 # no need to load pod application to send statement
@@ -12,19 +14,21 @@ logger = logging.getLogger(__name__)
 
 ENCODING_CELERY_BROKER_URL = getattr(settings, "ENCODING_CELERY_BROKER_URL", "")
 
-encoding_app = Celery("encoding_tasks", broker=ENCODING_CELERY_BROKER_URL)
-encoding_app.conf.task_routes = {"pod.video_encode_transcript.encoding_tasks.*": {"queue": "encoding"}}
+encoding_app = Celery(
+    "encoding_tasks",
+    broker=ENCODING_CELERY_BROKER_URL
+)
+encoding_app.conf.task_routes = {
+    "pod.video_encode_transcript.encoding_tasks.*": {"queue": "encoding"}
+}
 
-
+# celery -A pod.video_encode_transcript.encoding_tasks worker -l INFO -Q encoding
 @encoding_app.task
-def start_encoding_task(video_id):
+def start_encoding_task(video_id, video_path, cut_start, cut_end):
     """Start the encoding of the video."""
     print("Start the encoding of the video")
-    x = requests.post(
-        XAPI_LRS_URL, json=statement, auth=HTTPBasicAuth(XAPI_LRS_LOGIN, XAPI_LRS_PWD)
-    )
-    if x.status_code == 200:
-        print(x.text)
-        logger.info("statement id: %s" % x.text)
-    else:
-        logger.error("Error during sending statement: %s" % x.text)
+    print(video_id, video_path, cut_start, cut_end)
+    encoding_video = Encoding_video(video_id, video_path, cut_start, cut_end)
+    encoding_video.start_encode()
+    print("End of the encoding of the video")
+    start_importing_task.delay(video_id, video_path)

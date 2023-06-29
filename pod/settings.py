@@ -5,7 +5,7 @@ Django version: 3.2.
 """
 import os
 import importlib.util
-import django.conf.global_settings
+# import django.conf.global_settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # will be update in pod/main/settings.py
@@ -457,7 +457,7 @@ the_update_settings = update_settings(locals())
 for variable in the_update_settings:
     locals()[variable] = the_update_settings[variable]
 
-TIME_INPUT_FORMATS = ["%H:%M", *django.conf.global_settings.TIME_INPUT_FORMATS]
+# TIME_INPUT_FORMATS = ["%H:%M", *django.conf.global_settings.TIME_INPUT_FORMATS]
 
 if locals()["DEBUG"] is True and importlib.util.find_spec("debug_toolbar") is not None:
     INSTALLED_APPS.append("debug_toolbar")

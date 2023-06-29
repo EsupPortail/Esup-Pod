@@ -32,6 +32,10 @@ if USE_TRANSCRIPTION:
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 EMAIL_ON_ENCODING_COMPLETION = getattr(settings, "EMAIL_ON_ENCODING_COMPLETION", True)
 
+USE_DISTANT_ENCODING = getattr(settings, "USE_DISTANT_ENCODING", False)
+if USE_DISTANT_ENCODING:
+    from .encoding_tasks import start_encoding_task
+
 # ##########################################################################
 # ENCODE VIDEO: THREAD TO LAUNCH ENCODE
 # ##########################################################################
@@ -127,6 +131,14 @@ def encode_video(video_id):
     # encoding_video.create_output_dir()
 
     change_encoding_step(video_id, 2, "start encoding")
+    if USE_DISTANT_ENCODING:
+        start_encoding_task.delay(
+            encoding_video.id,
+            encoding_video.video_file,
+            encoding_video.start,
+            encoding_video.stop
+        )
+        return
     encoding_video.start_encode()
 
     change_encoding_step(video_id, 3, "store encoding info")
