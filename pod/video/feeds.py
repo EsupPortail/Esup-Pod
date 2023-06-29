@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.utils.html import format_html
 
-from pod.video.views import get_videos_list
+from .context_processors import get_available_videos
 
 from pod.video_encode_transcript.models import EncodingAudio
 from pod.video.models import Channel
@@ -153,7 +153,7 @@ class RssSiteVideosFeed(Feed):
         )
         self.feed_url = request.build_absolute_uri()
 
-        videos_list = get_videos_list()
+        videos_list = get_available_videos()
 
         if slug_c:
             channel = get_object_or_404(
