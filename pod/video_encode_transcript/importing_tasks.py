@@ -3,11 +3,15 @@ from .. import settings
 import logging
 logger = logging.getLogger(__name__)
 
-ENCODING_CELERY_BROKER_URL = getattr(settings, "ENCODING_CELERY_BROKER_URL", "")
+ENCODING_TRANSCODING_CELERY_BROKER_URL = getattr(
+    settings,
+    "ENCODING_TRANSCODING_CELERY_BROKER_URL",
+    ""
+)
 
 importing_app = Celery(
     "importing_tasks",
-    broker=ENCODING_CELERY_BROKER_URL
+    broker=ENCODING_TRANSCODING_CELERY_BROKER_URL
 )
 importing_app.conf.task_routes = {
     "pod.video_encode_transcript.importing_tasks.*": {"queue": "importing"}
