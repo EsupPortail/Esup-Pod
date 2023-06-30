@@ -26,11 +26,13 @@ transcripting_app.conf.task_routes = {
 }
 
 
-# celery -A pod.video_encode_transcript.encoding_tasks worker -l INFO -Q encoding
+# celery \
+# -A pod.video_encode_transcript.transcripting_tasks worker \
+# -l INFO -Q transcripting
 @transcripting_app.task
 def start_transcripting_task(video_id, mp3filepath, duration, lang):
     """Start the encoding of the video."""
     print("Start the transcripting of the video %s" % video_id)
     msg, webvtt = start_transcripting(mp3filepath, duration, lang)
     print("End of the transcripting of the video")
-    start_importing_transcript_task.delay(video_id, msg, webvtt)
+    start_importing_transcript_task.delay(video_id, msg, str(webvtt))

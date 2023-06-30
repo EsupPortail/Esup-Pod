@@ -105,7 +105,7 @@ def main_threaded_transcript(video_to_encode_id):
         else:
             mp3filepath = mp3file.path
             if USE_DISTANT_ENCODING_TRANSCODING:
-                start_transcripting_task(
+                start_transcripting_task.delay(
                     video_to_encode.id,
                     mp3filepath,
                     video_to_encode.duration,
