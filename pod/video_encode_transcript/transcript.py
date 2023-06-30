@@ -132,7 +132,7 @@ def save_vtt_and_notify(video_to_encode, msg, webvtt):
 
 def saveVTT(video, webvtt):
     msg = "\nSAVE TRANSCRIPT WEBVTT : %s" % time.ctime()
-    lang = video.main_lang
+    lang = video.transcript
     temp_vtt_file = NamedTemporaryFile(suffix=".vtt")
     webvtt.save(temp_vtt_file.name)
     if webvtt.captions:
