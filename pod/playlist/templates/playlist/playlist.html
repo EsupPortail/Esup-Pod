@@ -37,22 +37,19 @@
     {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
   </h2>
   {% if count_videos > 1 %}
-    {% user_can_edit_or_remove playlist as can_edit_or_remove %}
-    {% if can_edit_or_remove %}
-      <div class="col-xxl-4 col-md-6 mb-2" id="reorganize-buttons">
-        <form action="{% url 'playlist:save-reorganisation' slug=playlist.slug %}" method="post">
-          {% csrf_token %}
-          <input id="json-data" type="hidden" name="json-data">
-          <button id="reorganize-button" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm {% if sort_field != 'rank' or sort_direction == 'on' %}d-none{% endif %}">
-            <i class="bi bi-arrows-move"></i>&nbsp;<span>{% trans "Reorganize" %}</span>
-          </button>
-          <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-secondary btn-sm d-none">
-          <i class="bi bi-x-circle"></i>&nbsp;{% trans "Cancel" %}</a>
-        </form>
-      </div>
-    {% endif %}
+    <div class="col-xxl-4 col-md-6 mb-2" id="reorganize-buttons">
+      <form action="{% url 'playlist:save-reorganisation' slug=playlist.slug %}" method="post">
+        {% csrf_token %}
+        <input id="json-data" type="hidden" name="json-data">
+        <button id="reorganize-button" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm {% if sort_field != 'rank' or sort_direction == 'on' %}d-none{% endif %}">
+          <i class="bi bi-arrows-move"></i>&nbsp;<span>{% trans "Reorganize" %}</span>
+        </button>
+        <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-secondary btn-sm d-none">
+        <i class="bi bi-x-circle"></i>&nbsp;{% trans "Cancel" %}</a>
+      </form>
+    </div>
     <form id="sortForm" action="{% url 'favorite:list' %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2 d-none">
-      {% include "videos/video_sort_select.html" with favorite=True %}
+      {% include "videos/video_sort_select.html" with video_rank=True %}
     </form>
   {% endif %}
 </div>

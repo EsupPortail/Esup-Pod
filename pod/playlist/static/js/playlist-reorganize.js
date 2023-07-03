@@ -122,9 +122,11 @@ function activateDragAndDrop(parent) {
   document
     .getElementById("cancel_btn_favorites_list")
     .classList.remove("d-none");
-  document
-    .getElementById("card-manage-playlist")
-    .classList.add("d-none")
+  if (document.getElementById("card-manage-playlist")) {
+    document
+      .getElementById("card-manage-playlist")
+      .classList.add("d-none")
+  }
 }
 
 /**
