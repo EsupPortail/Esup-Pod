@@ -38,6 +38,8 @@ function switchVideo(buttonPlaylistElement, informations) {
                 document.getElementById('card-share'),
                 document.getElementById('card-types'),
                 document.getElementById('card-tags'),
+                document.getElementById('pod-first-content'),
+                document.getElementById('id_video_script'),
             ];
             document.title = html.title;
             for (let elementToRefresh of elementToRefreshList) {
@@ -56,6 +58,7 @@ function switchVideo(buttonPlaylistElement, informations) {
     }
     buttonPlaylistElement.classList.add('selected');
     idRun = idList.indexOf(buttonPlaylistElement.id);
+    player.play();
 }
 
 /**

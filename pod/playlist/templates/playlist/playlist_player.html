@@ -89,13 +89,6 @@
     videos.forEach(function(video) {
         new MutationObserver(scrollToSelectedVideo).observe(video, { attributes: true, attributeFilter: ['class'] });
     });
-
-    document.addEventListener('load', function () {
-        const selectedElement = document.querySelector('.selected');
-        selectedElement.classList.remove('selected');
-        selectedElement.classList.add('selected');
-        scrollToSelectedVideo();
-    });
 </script>
 
 <style>
