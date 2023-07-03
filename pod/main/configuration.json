@@ -850,7 +850,7 @@
                 "import_video": {
                     "description": {
                         "en": [
-							"Import_video app to import external videos into Pod.",
+                            "Import_video app to import external videos into Pod.",
                             "Set `USE_IMPORT_VIDEO` to True to activate this application."
                         ],
                         "fr": [
@@ -1197,6 +1197,19 @@
                 "main": {
                     "description": {},
                     "settings": {
+                        "HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Display videos from non visible channels on the homepage"
+                                ],
+                                "fr": [
+                                    "Affiche les vidéos de chaines non visibles sur la page d'accueil"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.2.0"
+                        },
                         "USE_BBB": {
                             "default_value": true,
                             "description": {
@@ -1274,19 +1287,6 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
-                        },
-                        "HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS": {
-                            "default_value": false,
-                            "description": {
-                                "en": [
-                                    "Display videos from non visible channels on the homepage"
-                                ],
-                                "fr": [
-                                    "Affiche les vidéos de chaines non visibles sur la page d'accueil"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.2.0"
                         }
                     },
                     "title": {
@@ -2864,6 +2864,54 @@
                     "title": {
                         "en": "",
                         "fr": "Configuration application vidéo."
+                    }
+                },
+                "video_encode_transcript": {
+                    "description": {
+                        "en": [
+                            ""
+                        ],
+                        "fr": [
+                            "",
+                            "Application pour l’encodage et la transcription de vidéo.",
+                            "Il est possible d'encoder en local ou en distant.",
+                            "Attention, il faut configurer Celery pour l’envoi des instructions pour l'encodage distant."
+                        ]
+                    },
+                    "settings": {
+                        "ENCODING_TRANSCODING_CELERY_BROKER_URL": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Il faut renseigner l'url du redis sur lequel Celery va chercher les ordres d'encodage et de transcription",
+                                    "par exemple : \"redis://redis:6379/7\""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.3.1"
+                        },
+                        "USE_DISTANT_ENCODING_TRANSCODING": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, active l'encodage et la transcription sur un environnement distant via redis+celery"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4.0"
+                        }
+                    },
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application video encodage et transcription"
                     }
                 },
                 "video_search": {
