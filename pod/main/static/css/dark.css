@@ -123,10 +123,10 @@
   border-color: var(--pod-background);
 }
 
-[data-theme="dark"] .navbar-nav .nav-link:focus,
+/*[data-theme="dark"] .navbar-nav .nav-link:focus,
 [data-theme="dark"] .navbar-nav .nav-link:hover {
   color: var(--pod-activelink-color);
-}
+}*/
 
 [data-theme="dark"] .btn-link.disabled,
 [data-theme="dark"] .dropdown-item,
@@ -145,11 +145,11 @@
   color: inherit;
 }*/
 
-[data-theme="dark"] .btn-link:focus,
+/*[data-theme="dark"] .btn-link:focus,
 [data-theme="dark"] .btn-link:active,
 [data-theme="dark"] .btn-link:hover {
   color: var(--pod-activelink-color);
-}
+}*/
 
 [data-theme="dark"] .btn-light {
   background-color: var(--bs-dark);

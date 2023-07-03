@@ -120,7 +120,7 @@
                           <form action="/i18n/setlang/" method="post">
                             {% csrf_token %}
                             <input name="language" value="{{ language.code }}" type="hidden">
-                            <input value="{{ language.name_local }} ({{ language.code }})" class="dropdown-item" type="submit">
+                            <input value="{{ language.name_local }} ({{ language.code }})" class="dropdown-item" type="submit" lang="{{ language.code }}">
                           </form>
                         {% endif %}
                       {% endfor %}
