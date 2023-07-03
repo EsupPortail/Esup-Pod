@@ -10,16 +10,26 @@
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Playlists" %}</li>{% endblock %}
 
 {% block page_content %}
+<div class="row videos-list-header">
   {% if playlists|length != 0 %}
-  <h2 class="h4">
-    {% blocktrans count counter=playlists|length %}{{ counter }} playlist found{% plural %}{{ counter }} playlists found{% endblocktrans %}
-  </h2>
+    <h2 id="playlist_count" class="page_title col-xxl-4 mb-2">
+      {% blocktrans count counter=playlists|length %}{{ counter }} playlist found{% plural %}{{ counter }} playlists found{% endblocktrans %}
+    </h2>
+    <div class="col-xxl-4 col-md-6 mb-2"></div>
+    {% comment "TODO" %}
+    {% if playlists|length > 1 %}
+      <form id="sortForm" action="{% url 'playlist:list' %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2">
+        {% include "playlist/playlist_sort_select.html" %}
+      </form>
+    {% endif %}
+    {% endcomment %}
   {% else %}
-  <h2 class="h4">{% trans "No playlists found"%}</h2>
-  <p class="alert alert-info">
+    <h2 class="page_title col-xxl-4 mb-2">{% trans "No playlists found"%}</h2>
+    <p class="alert alert-info">
       {% blocktrans %}You haven't got any playlist yet, please use the "Add a playlist" button to add one.{% endblocktrans %}
-  </p>
+    </p>
   {% endif %}
+</div>
 
 <div class="d-grid gap-2 d-md-flex justify-content-md mb-2">
   <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{% url 'playlist:add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a playlist' %}">

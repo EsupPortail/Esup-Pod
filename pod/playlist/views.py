@@ -27,11 +27,12 @@ from .utils import (
     get_public_playlist,
     get_video_list_for_playlist,
     remove_playlist,
+    sort_playlist_list,
     user_add_video_in_playlist,
     user_remove_video_from_playlist,
 )
 
-from pod.video.views import CURSUS_CODES, get_owners_has_instances
+from pod.video.views import CURSUS_CODES, get_owners_has_instances, get_paginated_videos
 
 
 @login_required(redirect_field_name="referrer")
@@ -51,12 +52,20 @@ def playlist_list(request):
         ) | get_playlists_for_additional_owner(request.user))
     else:
         return redirect(reverse('playlist:list'))
+
+    sort_field = request.GET.get("sort")
+    sort_direction = request.GET.get("sort_direction")
+
+    playlists = sort_playlist_list(playlists, sort_field, sort_direction)
+
     return render(
         request,
         "playlist/playlists.html",
         {
             "page_title": _("Playlists"),
             "playlists": playlists,
+            "sort_field": sort_field,
+            "sort_direction": sort_direction,
         }
     )
 

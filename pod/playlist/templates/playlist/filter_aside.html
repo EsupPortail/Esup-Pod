@@ -5,6 +5,7 @@
 <div class="card card-body" id="my_meetings_filter">
   <h2 class="h3 card-title pod-card__title">
     <i class="bi bi-sliders2-vertical"></i>&nbsp;{% trans "Filters"%}
+    <a id="resetFilters" href="{% url 'playlist:list' %}" class="btn btn-outline-primary">{% trans 'Reset' %}</a>
   </h2>
 
   <div class="filters" id="filters">

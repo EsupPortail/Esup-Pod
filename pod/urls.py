@@ -122,12 +122,6 @@ for apps in settings.THIRD_PARTY_APPS:
         url(r"^" + apps + "/", include("pod.%s.urls" % apps, namespace=apps)),
     ]
 
-# FAVORITE
-if getattr(settings, "USE_FAVORITES", True):
-    urlpatterns += [
-        path("favorite/", include("pod.favorite.urls", namespace="favorite")),
-    ]
-
 # PLAYLIST
 if getattr(settings, "USE_PLAYLIST", True):
     urlpatterns += [
