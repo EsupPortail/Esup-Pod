@@ -8,16 +8,9 @@ from rest_framework.decorators import action
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-import importlib.util
 
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
-if (
-    USE_TRANSCRIPTION
-    and (
-        importlib.util.find_spec("vosk") is not None
-        or importlib.util.find_spec("stt") is not None
-    )
-):
+if USE_TRANSCRIPTION:
     from pod.video_encode_transcript.transcript import start_transcript
 
 

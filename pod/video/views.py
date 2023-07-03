@@ -161,15 +161,8 @@ ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
 
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
-if (
-    USE_TRANSCRIPTION
-    and (
-        importlib.util.find_spec("vosk") is not None
-        or importlib.util.find_spec("stt") is not None
-    )
-):
+if USE_TRANSCRIPTION:
     from ..video_encode_transcript import transcript
-
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
 
