@@ -153,21 +153,6 @@ p.playlist-last-updated {
     font-style: italic;
 }
 
-div.player-element:not(.disabled):hover {
-    background-color: #F1F1F1;
-    border: var(--bs-border-width) solid var(--pod-primary) !important;
-}
-
-div.player-element.disabled {
-    background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.2) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2) 75%, transparent 75%, transparent);
-    background-size: 4px 4px;
-    background-repeat: repeat;
-}
-
-div.player-element.selected {
-    background-color: #D1D1D1;
-}
-
 .grayscale-image {
     filter: grayscale(100%);
 }
@@ -184,4 +169,24 @@ div.player-element.selected {
 .scroll-container {
     height: 40rem;
     overflow: auto;
+}
+
+a.player-element, a.player-element:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+a.player-element:not(.disabled):hover {
+    background-color: #F1F1F1;
+    border: var(--bs-border-width) solid var(--pod-primary) !important;
+}
+
+a.player-element.disabled {
+    background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.2) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2) 75%, transparent 75%, transparent);
+    background-size: 4px 4px;
+    background-repeat: repeat;
+}
+
+a.player-element.selected {
+    background-color: #D1D1D1;
 }

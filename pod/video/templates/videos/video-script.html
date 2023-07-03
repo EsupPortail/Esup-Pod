@@ -137,9 +137,6 @@ player.on('firstplay', function(){
       if(error.code == 3 || error.code == 4) {
         //console.log('error!', error.code, error.type , error.message);
         if(player.src()=="" || player.src().indexOf("m3u8")!=-1){
-          console.log('On rentre dans le condition');
-          console.log(player.src());
-          player.src(mp4_sources);
           player.controlBar.addChild('QualitySelector');
           player.play();
         }
