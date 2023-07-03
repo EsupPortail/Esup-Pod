@@ -180,3 +180,8 @@ div.player-element.selected {
     font-size: 2em;
     color: white;
 }
+
+.scroll-container {
+    height: 40rem;
+    overflow: auto;
+}

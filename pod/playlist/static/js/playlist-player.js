@@ -84,7 +84,7 @@ function preventRefreshButtonPlaylist(buttonPlaylistElement, informations) {
     }
 }
 
-function checkFirstVideoInGet(informations) {
+function checkFirstVideoInGet() {
     const selectedElement = document.querySelectorAll(".selected")[0];
     console.log('selectedElement', selectedElement);
     console.log('idRun (last)', idRun);
