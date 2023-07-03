@@ -7,11 +7,11 @@ x-elasticsearch-volumes: &elasticsearch-volumes
 version: '3.7'
 
 services:
-  pod-front:
-    container_name: pod-front-with-volumes
+  pod-back:
+    container_name: pod-back-with-volumes
     build:
       context: .
-      dockerfile: dockerfile-dev-with-volumes/pod-front/Dockerfile
+      dockerfile: dockerfile-dev-with-volumes/pod-back/Dockerfile
     depends_on:
       - elasticsearch
       - redis
@@ -27,7 +27,7 @@ services:
       context: .
       dockerfile: dockerfile-dev-with-volumes/pod-encode/Dockerfile
     depends_on:
-      - pod-front
+      - pod-back
     env_file:
       - ./.env.dev
     volumes: *pod-volumes
@@ -38,7 +38,7 @@ services:
       context: .
       dockerfile: dockerfile-dev-with-volumes/pod-transcript/Dockerfile
     depends_on:
-      - pod-front
+      - pod-back
     env_file:
       - ./.env.dev
     volumes: *pod-volumes
