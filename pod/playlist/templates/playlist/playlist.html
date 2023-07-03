@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% load playlist_buttons %}
+{% load favorites_playlist %}
 
 {% block opengraph %}{% load video_filters %}
   <meta name="description" content="{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}">
@@ -26,7 +27,7 @@
     </a>
   </li>
   <li class="breadcrumb-item active" aria-current="page">
-    {{ playlist.name }}
+    {% get_playlist_name playlist %}
   </li>
 {% endblock %}
 

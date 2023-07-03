@@ -29,6 +29,7 @@ function switchVideo(buttonPlaylistElement, informations) {
         .then((data) => {
             const parser = new DOMParser();
             const html = parser.parseFromString(data, 'text/html');
+            const currentPageToRefreshElement = document.querySelector('.active');
             const elementToRefreshList = [
                 document.getElementById('info-video'),
                 document.getElementById('card-managevideo'),
@@ -38,11 +39,13 @@ function switchVideo(buttonPlaylistElement, informations) {
                 document.getElementById('card-types'),
                 document.getElementById('card-tags'),
             ];
+            document.title = html.title;
             for (let elementToRefresh of elementToRefreshList) {
                 if (elementToRefresh) {
                     elementToRefresh.replaceWith(html.getElementById(elementToRefresh.id));
                 }
             }
+            currentPageToRefreshElement.textContent = document.getElementById('info-video').querySelector('.page_title').textContent;
         })
         .catch(error => {
             console.log('ERROR: ', error);
