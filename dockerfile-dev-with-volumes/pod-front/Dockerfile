@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y netcat
 WORKDIR /usr/src/app
 
 COPY ./requirements.txt .
+COPY ./requirements-encode.txt .
 COPY ./requirements-conteneur.txt .
 COPY ./requirements-dev.txt .
 RUN mkdir /tmp/node_modules/

@@ -65,6 +65,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import json
 import re
 import pandas
+import importlib.util
 from http import HTTPStatus
 from datetime import date
 from chunked_upload.models import ChunkedUpload
@@ -160,7 +161,13 @@ ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
 
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
-if USE_TRANSCRIPTION:
+if (
+    USE_TRANSCRIPTION
+    and (
+        importlib.util.find_spec("vosk") is not None
+        or importlib.util.find_spec("stt") is not None
+    )
+):
     from ..video_encode_transcript import transcript
 
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")

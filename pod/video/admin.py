@@ -36,6 +36,8 @@ from pod.completion.admin import TrackInline
 from django.contrib.sites.shortcuts import get_current_site
 from pod.chapter.admin import ChapterInline
 
+import importlib.util
+
 # Ordering user by username !
 User._meta.ordering = ["username"]
 # SET USE_ESTABLISHMENT_FIELD
@@ -43,7 +45,13 @@ USE_ESTABLISHMENT_FIELD = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
 
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
-if USE_TRANSCRIPTION:
+if (
+    USE_TRANSCRIPTION
+    and (
+        importlib.util.find_spec("vosk") is not None
+        or importlib.util.find_spec("stt") is not None
+    )
+):
     from ..video_encode_transcript import transcript
 
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")

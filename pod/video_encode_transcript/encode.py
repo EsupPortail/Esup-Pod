@@ -18,13 +18,20 @@ from .utils import (
 import logging
 import time
 import threading
+import importlib.util
 
 __license__ = "LGPL v3"
 log = logging.getLogger(__name__)
 
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
-if USE_TRANSCRIPTION:
+if (
+    USE_TRANSCRIPTION
+    and (
+        importlib.util.find_spec("vosk") is not None
+        or importlib.util.find_spec("stt") is not None
+    )
+):
     from . import transcript
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
