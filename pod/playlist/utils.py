@@ -293,3 +293,17 @@ def user_can_see_playlist_video(request: dict, video: Video) -> bool:
         )
     else:
         return True
+
+def sort_playlist_list(playlist_list, sort_field, sort_direction=""):
+    """Return playlists list sorted by sort_field.
+
+    Sorted by specific column name and ascending or descending direction
+    """
+    if sort_field and sort_field in [
+        "name",
+        "modification_date",
+    ]:
+        if not sort_direction:
+            sort_field = "-" + sort_field
+        playlist_list = playlist_list.order_by(sort_field)
+    return playlist_list.distinct()
