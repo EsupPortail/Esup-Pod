@@ -2,7 +2,9 @@ from django.template import Library
 
 from pod.playlist.utils import get_number_video_added_in_specific_playlist
 from pod.playlist.utils import get_total_favorites_video as total_favorites_utils
-from pod.playlist.utils import get_count_video_added_in_playlist as total_additions_playlist_utils
+from pod.playlist.utils import (
+    get_count_video_added_in_playlist as total_additions_playlist_utils,
+)
 from pod.video.models import Video
 
 from ..models import Playlist

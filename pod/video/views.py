@@ -853,7 +853,11 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         template_video = "videos/video-iframe.html"
     elif request.GET.get("playlist"):
         playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
-        if playlist.visibility == "public" or (playlist.owner == request.user or playlist in get_playlists_for_additional_owner(request.user) or request.user.is_staff):
+        if playlist.visibility == "public" or (
+            playlist.owner == request.user
+            or playlist in get_playlists_for_additional_owner(request.user)
+            or request.user.is_staff
+        ):
             videos = sort_videos_list(
                 get_video_list_for_playlist(playlist), "rank"
             )
@@ -913,20 +917,19 @@ def render_video(
         or (request.user in video.additional_owners.all())
         or (request.GET.get("playlist"))
     ):
-        if (request.GET.get("playlist") and not user_can_see_playlist_video(request, video)):
+        if (
+            request.GET.get("playlist")
+            and not user_can_see_playlist_video(request, video)
+        ):
             playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
             print(playlist.visibility)
-            videos = sort_videos_list(
-            get_video_list_for_playlist(playlist), "rank"
-            )
             if request.user.is_authenticated:
                 video = (
                     Video.objects.filter(
                         playlistcontent__playlist_id=playlist.id,
                         is_draft=False,
                         is_restricted=False,
-                    ) |
-                    Video.objects.filter(
+                    ) | Video.objects.filter(
                         playlistcontent__playlist_id=playlist.id,
                         owner=request.user,
                     )

@@ -42,7 +42,11 @@ class PlaylistForm(forms.ModelForm):
     visibility = forms.ChoiceField(
         label=_("Visibility"),
         choices=Playlist.VISIBILITY_CHOICES,
-        help_text=_("Please chosse an visibility among 'public', 'protected', 'private'."),
+        help_text=_(
+            '''
+            Please chosse an visibility among 'public', 'protected', 'private'.
+            '''
+        ),
     )
     password = forms.CharField(
         label=_("Password"),
@@ -84,7 +88,9 @@ class PlaylistForm(forms.ModelForm):
         """Method to check if the playlist name asked is correct."""
         name = self.cleaned_data["name"]
         if name == "Favorites":
-            raise forms.ValidationError(_('You cannot create a playlist named "Favorites"'))
+            raise forms.ValidationError(
+                _('You cannot create a playlist named "Favorites"')
+            )
         return name
 
     def clean_add_owner(self, cleaned_data):

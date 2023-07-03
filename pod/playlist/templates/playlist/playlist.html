@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% load playlist_buttons %}
+{% load favorites_playlist %}
 
 {% block opengraph %}{% load video_filters %}
   <meta name="description" content="{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}">
@@ -19,15 +20,15 @@
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}
-{{ block.super }}
-<li class="breadcrumb-item active" aria-current="page">
-  <a href="{% url 'playlist:list'%}">
-    {% trans "Playlists" %}
-  </a>
-</li>
-<li class="breadcrumb-item active" aria-current="page">
-  {{ playlist.name }}
-</li>
+  {{ block.super }}
+  <li class="breadcrumb-item active" aria-current="page">
+    <a href="{% url 'playlist:list'%}">
+      {% trans "Playlists" %}
+    </a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page">
+    {% get_playlist_name playlist %}
+  </li>
 {% endblock %}
 
 
@@ -58,41 +59,41 @@
 {% endblock page_content %}
 
 {% block page_aside %}
-<div class="d-none">
-  {% include 'videos/filter_aside.html' %}
-</div>
-<div class="card card-hidden" id="card-sharedraftversion">
-  <h2 class="card-header card-title pod-card__title h4">{% trans "Help - Drag & Drop" %}</h2>
-  <div class="card-body card-text">
-    <ol>
-      <li>{% trans "Select the video to move by clicking and holding." %}</li>
-      <li> {% trans "While holding down the video, drag it to the desired location." %}</li>
-      <li> {% trans "Drop the video on another to swap their position." %}</li>
-    </ol>
+  <div class="d-none">
+    {% include 'videos/filter_aside.html' %}
   </div>
-</div>
-{% include "playlist/playlist-management-card.html" %}
-<div class="card" id="card-start-button">
-  <div class="card-body">
-    {% include "playlist/button_start_playlist.html" %}
+  <div class="card card-hidden" id="card-sharedraftversion">
+    <h2 class="card-header card-title pod-card__title h4">{% trans "Help - Drag & Drop" %}</h2>
+    <div class="card-body card-text">
+      <ol>
+        <li>{% trans "Select the video to move by clicking and holding." %}</li>
+        <li> {% trans "While holding down the video, drag it to the desired location." %}</li>
+        <li> {% trans "Drop the video on another to swap their position." %}</li>
+      </ol>
+    </div>
   </div>
-</div>
-{% include "playlist/playlist-informations-card.html" %}
+  {% include "playlist/playlist-management-card.html" %}
+  <div class="card" id="card-start-button">
+    <div class="card-body">
+      {% include "playlist/button_start_playlist.html" %}
+    </div>
+  </div>
+  {% include "playlist/playlist-informations-card.html" %}
 {% endblock page_aside %}
 
 {% block more_script %}
-<script>
-  const urlVideos = "{% url 'playlist:content' slug=playlist.slug %}";
-  var page = 1;
-  nextPage = false;
+  <script>
+    const urlVideos = "{% url 'playlist:content' slug=playlist.slug %}";
+    var page = 1;
+    nextPage = false;
 
-  {% if videos.has_next %}
-    page = parseInt("{{videos.next_page_number}}");
-    nextPage = true;
-  {% endif %}
-</script>
+    {% if videos.has_next %}
+      page = parseInt("{{videos.next_page_number}}");
+      nextPage = true;
+    {% endif %}
+  </script>
 
-<script src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/playlist-reorganize.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/playlist-reorganize.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}

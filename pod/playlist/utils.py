@@ -286,6 +286,10 @@ def user_can_see_playlist_video(request: dict, video: Video) -> bool:
     if is_password_protected or video.is_draft:
         if not request.user.is_authenticated:
             return False
-        return (video.owner == request.user) or (request.user in video.additional_owners.all()) or (request.user.is_staff)
+        return (
+            (video.owner == request.user)
+            or (request.user in video.additional_owners.all())
+            or (request.user.is_staff)
+        )
     else:
         return True

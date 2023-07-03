@@ -5,7 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 from pod.playlist.utils import (
     check_video_in_playlist,
     get_favorite_playlist_for_user,
-    user_can_see_playlist_video,
 )
 from pod.video.models import Video
 

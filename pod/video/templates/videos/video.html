@@ -5,6 +5,7 @@
 {% load thumbnail %}
 {% load video_filters %}
 {% load video_tags %}
+{% load favorites_playlist %}
 
 {% block opengraph %}
 
@@ -77,8 +78,12 @@
       <li class="breadcrumb-item"><a href="{% url 'channel-video:channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
       <li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
     {% endif %}
+  {% elif playlist_in_get %}
+    <li class="breadcrumb-item"><a href="{% url 'playlist:list' %}">{% trans 'Playlist' %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'playlist:content' playlist_in_get.slug %}">{% get_playlist_name playlist_in_get %}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
   {% else %}
-    <li class="breadcrumb-item"><a href="{% url 'videos:videos' %}">{% trans 'Videos' %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'videos:videos' %}">{% trans 'Video' %}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
   {% endif %}
 {% endblock %}

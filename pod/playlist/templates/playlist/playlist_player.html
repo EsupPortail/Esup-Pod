@@ -52,6 +52,13 @@
                         encoding_format: '{{ video_in_playlist.get_playlist_master.encoding_format }}',
                     }
                 );
+                {% if video_in_playlist == video %}
+                    const firstVideoInformations = {
+                        source_file_url: '{{ video_in_playlist.get_playlist_master.source_file.url }}',
+                        encoding_format: '{{ video_in_playlist.get_playlist_master.encoding_format }}',
+                        get_video_mp4_json: {{ video_in_playlist.get_video_mp4_json | safe }},
+                    };
+                {% endif %}
             </script>
         {% endif %}
     {% endfor %}
@@ -60,7 +67,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         console.log('lolg.');
-        checkFirstVideo();
+        checkFirstVideoInGet();
     });
 </script>
 
