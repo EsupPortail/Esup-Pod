@@ -31,6 +31,17 @@ services:
     env_file:
       - ./.env.dev
     volumes: *pod-volumes
+  
+  pod-transcript:
+    container_name: pod-transcript-with-volumes
+    build:
+      context: .
+      dockerfile: dockerfile-dev-with-volumes/pod-transcript/Dockerfile
+    depends_on:
+      - pod-front
+    env_file:
+      - ./.env.dev
+    volumes: *pod-volumes
 
   elasticsearch:
     container_name: elasticsearch-with-volumes
