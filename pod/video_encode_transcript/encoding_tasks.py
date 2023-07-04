@@ -8,12 +8,12 @@ import logging
 
 # call local settings directly
 # no need to load pod application to send statement
-from .. import settings
+from ..custom import settings_local
 
 logger = logging.getLogger(__name__)
 
 ENCODING_TRANSCODING_CELERY_BROKER_URL = getattr(
-    settings,
+    settings_local,
     "ENCODING_TRANSCODING_CELERY_BROKER_URL",
     ""
 )

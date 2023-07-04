@@ -7,12 +7,12 @@ import logging
 import os
 # call local settings directly
 # no need to load pod application to send statement
-from .. import settings
+from ..custom import settings_local
 
 logger = logging.getLogger(__name__)
 
 ENCODING_TRANSCODING_CELERY_BROKER_URL = getattr(
-    settings,
+    settings_local,
     "ENCODING_TRANSCODING_CELERY_BROKER_URL",
     ""
 )
@@ -24,6 +24,7 @@ transcripting_app = Celery(
 transcripting_app.conf.task_routes = {
     "pod.video_encode_transcript.transcripting_tasks.*": {"queue": "transcripting"}
 }
+transcripting_app.autodiscover_tasks(packages=None, related_name='', force=False)
 
 
 # celery \
@@ -38,7 +39,8 @@ def start_transcripting_task(video_id, mp3filepath, duration, lang):
     print(video_id, mp3filepath, duration, lang)
     msg, text_webvtt = start_transcripting(mp3filepath, duration, lang)
     print("End of the transcripting of the video")
-    media_temp_dir = os.path.join(settings.MEDIA_ROOT, "temp")
+    from ..main.settings import MEDIA_ROOT
+    media_temp_dir = os.path.join(MEDIA_ROOT, "temp")
     if not os.path.exists(media_temp_dir):
         os.mkdir(media_temp_dir)
     temp_vtt_file = NamedTemporaryFile(

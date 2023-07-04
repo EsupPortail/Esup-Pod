@@ -25,7 +25,7 @@ fi
 # Le serveur de développement permet de tester vos futures modifications facilement.
 # N'hésitez pas à lancer le serveur de développement pour vérifier vos modifications au fur et à mesure.
 # À ce niveau, vous devriez avoir le site en français et en anglais et voir l'ensemble de la page d'accueil.
-celery -A pod.video_encode_transcript.importing_tasks worker -l INFO -Q importing --concurrency 1 --detach
-celery -A pod.video_encode_transcript.importing_transcript_tasks worker -l INFO -Q importing_transcript --concurrency 1 --detach
+celery -A pod.video_encode_transcript.importing_tasks worker -l INFO -Q importing --concurrency 1 --detach -n import_encode
+celery -A pod.video_encode_transcript.importing_transcript_tasks worker -l INFO -Q importing_transcript --concurrency 1 --detach -n import_transcript
 python3 manage.py runserver 0.0.0.0:8080 --insecure
 sleep infinity
