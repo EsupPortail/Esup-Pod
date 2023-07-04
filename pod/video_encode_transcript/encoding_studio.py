@@ -25,8 +25,7 @@ FFMPEG_STUDIO_COMMAND = getattr(settings, "FFMPEG_STUDIO_COMMAND", FFMPEG_STUDIO
 
 DEBUG = getattr(settings, "DEBUG", True)
 
-LAUNCH_ENCODE_VIDEO = getattr(settings, "LAUNCH_ENCODE_VIDEO", "encode_video")
-
+ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
 
 # ##########################################################################
 # ENCODE VIDEO STUDIO: MAIN ENCODE
@@ -88,10 +87,9 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
     recording.save()
     if check_file(video_output):
         from pod.recorder.plugins.type_studio import save_basic_video
-
         video = save_basic_video(recording, video_output)
-        encode_video = getattr(encode, LAUNCH_ENCODE_VIDEO)
-        encode_video(video.id)
+        encode_video = getattr(encode, ENCODE_VIDEO)
+        encode_video(video.id, False)
     else:
         msg = "Wrong file or path:" + "\n%s" % video_output
         send_email_recording(msg, recording_id)

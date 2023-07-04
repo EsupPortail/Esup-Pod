@@ -56,15 +56,18 @@ def start_remote_encode(video_id):
 """
 
 
-def start_encode(video_id):
+def start_encode(video_id, threaded=True):
     """Start local encoding."""
-    if CELERY_TO_ENCODE:
-        task_start_encode.delay(video_id)
+    if threaded:
+        if CELERY_TO_ENCODE:
+            task_start_encode.delay(video_id)
+        else:
+            log.info("START ENCODE VIDEO ID %s" % video_id)
+            t = threading.Thread(target=encode_video, args=[video_id])
+            t.setDaemon(True)
+            t.start()
     else:
-        log.info("START ENCODE VIDEO ID %s" % video_id)
-        t = threading.Thread(target=encode_video, args=[video_id])
-        t.setDaemon(True)
-        t.start()
+        encode_video(video_id)
 
 
 def start_encode_studio(recording_id, video_output, videos, subtime, presenter):
