@@ -32,7 +32,7 @@ from .utils import (
     user_remove_video_from_playlist,
 )
 
-from pod.video.views import CURSUS_CODES, get_owners_has_instances, get_paginated_videos
+from pod.video.views import CURSUS_CODES, get_owners_has_instances
 
 
 @login_required(redirect_field_name="referrer")

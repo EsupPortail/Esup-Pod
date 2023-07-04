@@ -631,7 +631,6 @@ class TestPlaylistPage(TestCase):
         self.client.logout()
         print(" --->  test_folder_icon_in_video_links ok")
 
-
     def test_manage_section_for_editable_playlists(self) -> None:
         """Test if the manage section appears correctly for an editable playlist."""
         importlib.reload(context_processors)

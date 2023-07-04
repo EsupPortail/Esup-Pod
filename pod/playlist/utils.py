@@ -294,6 +294,7 @@ def user_can_see_playlist_video(request: dict, video: Video) -> bool:
     else:
         return True
 
+
 def sort_playlist_list(playlist_list, sort_field, sort_direction=""):
     """Return playlists list sorted by sort_field.
 
