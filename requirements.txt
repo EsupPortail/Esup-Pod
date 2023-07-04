@@ -30,7 +30,7 @@ mozilla_django_oidc==3.0.0
 ics==0.7.2
 django-honeypot==1.0.3
 qrcode
-ralph-malph==3.6.0
+ralph-malph==3.8.0
 bleach==6.0.0
 pytube==15.0.0
 django-redis-sessions
