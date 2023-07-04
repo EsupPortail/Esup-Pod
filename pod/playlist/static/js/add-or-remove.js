@@ -17,7 +17,9 @@ function hidePasswordField(toHide) {
 const passwordInputElement = document.getElementById('id_password');
 const passwordDivElement = passwordInputElement.parentElement.parentElement;
 const visibilitySelectElement = document.getElementById('id_visibility');
-hidePasswordField(true);
+if (visibilitySelectElement.value !== 'protected') {
+    hidePasswordField(true);
+}
 visibilitySelectElement.addEventListener('change', (event) => {
     if (event.target.value == 'protected') {
         hidePasswordField(false);
