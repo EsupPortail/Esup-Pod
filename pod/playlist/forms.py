@@ -31,6 +31,9 @@ class PlaylistForm(forms.ModelForm):
     name = forms.CharField(
         label=_("Name"),
         max_length=250,
+        widget=forms.TextInput(
+            attrs={"autocomplete": "off"}
+        ),
         help_text=_("Please choose a name between 1 and 250 characters."),
     )
     description = forms.CharField(
@@ -50,7 +53,9 @@ class PlaylistForm(forms.ModelForm):
     )
     password = forms.CharField(
         label=_("Password"),
-        widget=forms.PasswordInput,
+        widget=forms.PasswordInput(
+            attrs={"autocomplete": "off"}
+        ),
         required=False,
         help_text=_("Please choose a password if this playlist is protected."),
     )
