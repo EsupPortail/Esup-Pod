@@ -126,7 +126,22 @@ def render_playlist(
             "slug": get_favorite_playlist_for_user(request.user).slug,
         }
     )
+    form = None
     in_favorites_playlist = (playlist_url == request.path)
+    if playlist.visibility == "protected":
+        form = PlaylistPasswordForm(
+            request.POST) if request.POST else PlaylistPasswordForm()
+        form_password = request.POST.get("password")
+        if (form_password):
+            hashed_form_password = hashlib.sha256(
+                form_password.encode("utf-8")).hexdigest()
+            if hashed_form_password != playlist.password:
+                messages.add_message(
+                    request, messages.ERROR, _("The password is incorrect.")
+                )
+            else:
+                form = None
+
     if is_ajax(request):
         return render(
             request,
@@ -159,6 +174,7 @@ def render_playlist(
             "cursus_list": CURSUS_CODES,
             "sort_field": sort_field,
             "sort_direction": sort_direction,
+            "form": form,
         },
     )
 
@@ -217,7 +233,8 @@ def remove_playlist_view(request, slug: str):
 def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) -> None:
     """Handle post request for add_or_edit function."""
     page_title = ""
-    form = PlaylistForm(request.POST, instance=playlist) if playlist else PlaylistForm(request.POST)
+    form = PlaylistForm(
+        request.POST, instance=playlist) if playlist else PlaylistForm(request.POST)
     if form.is_valid():
         new_playlist = form.save(commit=False) if playlist is None else playlist
         new_playlist.owner = request.user
