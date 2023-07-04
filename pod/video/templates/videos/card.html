@@ -34,19 +34,27 @@
     </div>
   </div>
   <div class="card-thumbnail">
-    <a class="link-center-pod" href="
-      {% if channel %}
-        {% if theme %}
-          {% url 'channel-video:video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}
-        {% else %}
-          {% url 'channel-video:video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}
-        {% endif %}
-      {% elif playlist %}
-        {% url 'video:video' video.slug %}?playlist={{ playlist.slug }}
-      {% else %}
-        {{video.get_absolute_url}}{% if video.is_draft and fromEvent %}{{ video.get_hashkey }}{% endif %}
+    <a class="link-center-pod"
+    {% if playlist %}
+      {% load playlist_buttons %}
+      {% can_see_playlist_video video as can_see_video %}
+      {% if can_see_video %}
+        href="{% url 'video:video' video.slug %}?playlist={{ playlist.slug }}"
       {% endif %}
-    ">
+    {% else %}
+      href="
+        {% if channel %}
+          {% if theme %}
+            {% url 'channel-video:video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}
+          {% else %}
+            {% url 'channel-video:video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}
+          {% endif %}
+        {% else %}
+          {{video.get_absolute_url}}{% if video.is_draft and fromEvent %}{{ video.get_hashkey }}{% endif %}
+        {% endif %}
+      "
+    {% endif %}
+    >
       {{video.get_thumbnail_card|safe}}
     </a>
   </div>
