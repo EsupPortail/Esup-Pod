@@ -2322,15 +2322,6 @@ msgid "Create an external video"
 msgstr "Créer une vidéo externe"
 
 #: pod/import_video/templates/import_video/add_or_edit.html
-msgid ""
-"Access to adding external recording has been restricted. If you want to add "
-"external recordings on the platform, please"
-msgstr ""
-"L’accès à l’ajout d’un enregistrement externe a été restreint. Si vous "
-"souhaitez ajouter des enregistrements externes sur la plateforme, s’il vous "
-"plaît"
-
-#: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/live/templates/live/event_edit.html
 #: pod/live/templates/live/event_immediate_edit.html
 #: pod/meeting/templates/meeting/add_or_edit.html
@@ -2341,23 +2332,8 @@ msgid "contact us"
 msgstr "nous contacter"
 
 #: pod/import_video/templates/import_video/add_or_edit.html
-msgid ""
-"To centralize Big Blue Button, PeerTube, video file, Youtube recordings on "
-"this platform, first, please enter the information below."
-msgstr ""
-"Pour centraliser des enregistrements Big Blue Button, PeerTube, Youtube ou "
-"autres fichiers vidéos sur cette plateforme, veuillez d’abord entrer les "
-"informations ci-dessous."
-
-#: pod/import_video/templates/import_video/add_or_edit.html
 msgid "Then you can import this video to Pod."
 msgstr "Ensuite, vous pouvez importer cette vidéo dans Pod."
-
-#: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/video/templates/videos/add_video.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Uploading"
-msgstr "Mise en ligne"
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid ""
@@ -2474,14 +2450,6 @@ msgstr "Retour à mes réunions"
 msgid "To delete the meeting, please check the box in and click delete."
 msgstr ""
 "Pour supprimer la réunion, veuillez cocher la case et cliquer sur supprimer."
-
-#: pod/import_video/templates/import_video/delete.html
-#: pod/live/templates/live/event_delete.html
-#: pod/meeting/templates/meeting/delete.html
-#: pod/recorder/templates/recorder/record_delete.html
-#: pod/video/templates/videos/video_delete.html
-msgid "Agree required"
-msgstr "Accord requis"
 
 #: pod/import_video/templates/import_video/filter_aside.html
 #: pod/live/templates/live/filter_aside.html
@@ -5145,12 +5113,6 @@ msgid ""
 msgstr ""
 "L’accès à l’ajout d’une réunion a été limité. Si vous souhaitez ajouter des "
 "réunions sur la plateforme, veuillez"
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-#: pod/meeting/templates/meeting/external_recordings.html
-#: pod/meeting/templates/meeting/my_meetings.html pod/meeting/views.py
-msgid "External recordings"
-msgstr "Enregistrements externes"
 
 #: pod/meeting/templates/meeting/add_or_edit_external_recording.html
 #: pod/meeting/templates/meeting/external_recordings.html pod/meeting/views.py
@@ -8575,9 +8537,6 @@ msgstr "xAPI Esup-Pod"
 
 #~ msgid "Add current video to this playlist"
 #~ msgstr "Ajouter la vidéo à cette liste de lecture"
-
-#~ msgid "Error in %s: "
-#~ msgstr "Erreur sur %s : "
 
 #~ msgid "The"
 #~ msgstr "Le"

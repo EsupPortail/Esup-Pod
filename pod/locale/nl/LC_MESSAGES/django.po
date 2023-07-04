@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-19 08:19+0000\n"
+"POT-Creation-Date: 2023-07-04 14:17+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -171,12 +171,12 @@ msgstr ""
 #: pod/authentication/templates/userpicture/userpicture.html
 #: pod/bbb/templates/bbb/list_meeting.html
 #: pod/completion/templates/video_caption_maker.html
+#: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/live/templates/live/direct.html
 #: pod/live/templates/live/event-iframe.html
 #: pod/live/templates/live/event-info.html pod/main/templates/base.html
 #: pod/main/templates/navbar.html pod/main/templates/navbar_collapse.html
 #: pod/meeting/templates/meeting/add_or_edit.html
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
 #: pod/meeting/templates/meeting/my_meetings.html
 #: pod/playlist/templates/playlist/playlist-list-modal.html
 #: pod/podfile/templates/podfile/customfilewidget.html
@@ -197,19 +197,20 @@ msgstr ""
 #: pod/bbb/templates/bbb/publish_meeting.html pod/bbb/views.py
 #: pod/completion/templates/video_caption_maker.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
-#: pod/live/templates/live/event-form.html
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/import_video/views.py pod/live/templates/live/event-form.html
 #: pod/live/templates/live/event_delete.html
 #: pod/live/templates/live/event_edit.html
 #: pod/live/templates/live/event_immediate_edit.html pod/live/views.py
 #: pod/main/templates/contact_us.html pod/main/tests/test_views.py
 #: pod/main/views.py pod/meeting/templates/meeting/add_or_edit.html
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
 #: pod/meeting/templates/meeting/delete.html
 #: pod/meeting/templates/meeting/invite.html
 #: pod/meeting/templates/meeting/join.html pod/meeting/views.py
 #: pod/playlist/templates/playlist/add_or_edit.html
-#: pod/playlist/templates/playlist/delete.html pod/playlist/views.py
-#: pod/recorder/templates/recorder/add_recording.html
+#: pod/playlist/templates/playlist/delete.html
+#: pod/playlist/templates/playlist/protected-playlist-form.html
+#: pod/playlist/views.py pod/recorder/templates/recorder/add_recording.html
 #: pod/recorder/templates/recorder/record_delete.html pod/recorder/views.py
 #: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/videos/video-form.html
@@ -227,18 +228,19 @@ msgstr ""
 #: pod/bbb/templates/bbb/publish_meeting.html
 #: pod/completion/templates/video_caption_maker.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
+#: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/live/templates/live/event-form.html
 #: pod/live/templates/live/event_delete.html
 #: pod/live/templates/live/event_edit.html
 #: pod/live/templates/live/event_immediate_edit.html
 #: pod/main/templates/contact_us.html
 #: pod/meeting/templates/meeting/add_or_edit.html
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
 #: pod/meeting/templates/meeting/delete.html
 #: pod/meeting/templates/meeting/invite.html
 #: pod/meeting/templates/meeting/join.html
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/playlist/templates/playlist/delete.html
+#: pod/playlist/templates/playlist/protected-playlist-form.html
 #: pod/recorder/templates/recorder/add_recording.html
 #: pod/recorder/templates/recorder/record_delete.html
 #: pod/video/templates/channel/channel_edit.html
@@ -350,7 +352,7 @@ msgstr ""
 msgid "URL of the recording thumbnail of the BBB presentation."
 msgstr ""
 
-#: pod/bbb/models.py pod/favorite/models.py pod/meeting/models.py
+#: pod/bbb/models.py pod/import_video/models.py pod/meeting/models.py
 #: pod/playlist/models.py pod/recorder/models.py
 msgid "User"
 msgstr ""
@@ -411,8 +413,9 @@ msgstr ""
 msgid "Attendees"
 msgstr ""
 
-#: pod/bbb/models.py pod/live/forms.py pod/live/models.py pod/meeting/forms.py
-#: pod/meeting/models.py pod/video_search/forms.py
+#: pod/bbb/models.py pod/import_video/models.py pod/live/forms.py
+#: pod/live/models.py pod/meeting/forms.py pod/meeting/models.py
+#: pod/video_search/forms.py
 msgid "Start date"
 msgstr ""
 
@@ -548,7 +551,7 @@ msgid "Publish this presentation"
 msgstr ""
 
 #: pod/bbb/templates/bbb/card.html
-#: pod/meeting/templates/meeting/external_recordings.html
+#: pod/import_video/templates/import_video/list.html
 #: pod/meeting/templates/meeting/internal_recordings.html
 msgid "by"
 msgstr ""
@@ -698,7 +701,6 @@ msgstr ""
 
 #: pod/bbb/templates/bbb/live_record_list.html
 #: pod/bbb/templates/bbb/record_list.html
-#: pod/favorite/templates/favorite/favorite_video_list.html
 #: pod/playlist/templates/playlist/playlist-videos-list.html
 #: pod/recorder/templates/recorder/record_list.html
 #: pod/video/templates/videos/video_list.html
@@ -707,7 +709,6 @@ msgstr ""
 
 #: pod/bbb/templates/bbb/live_record_list.html
 #: pod/bbb/templates/bbb/record_list.html
-#: pod/favorite/templates/favorite/favorite_video_list.html
 #: pod/live/templates/live/events_list.html pod/main/templates/loader.html
 #: pod/playlist/templates/playlist/playlist-videos-list.html
 #: pod/podfile/templates/podfile/home_content.html
@@ -835,8 +836,8 @@ msgstr ""
 #: pod/completion/templates/video_caption_maker.html
 #: pod/enrichment/templates/enrichment/form_enrichment.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
+#: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/meeting/templates/meeting/add_or_edit.html
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/recorder/templates/recorder/add_recording.html
 #: pod/video/templates/channel/channel_edit.html
@@ -853,7 +854,6 @@ msgstr ""
 #: pod/completion/templates/overlay/form_overlay.html
 #: pod/completion/templates/track/form_track.html
 #: pod/enrichment/templates/enrichment/form_enrichment.html
-#: pod/favorite/templates/favorite/favorite_videos.html
 #: pod/playlist/templates/playlist/playlist.html
 #: pod/video/templates/channel/form_theme.html
 #: pod/video/templates/videos/category_modal.html
@@ -1117,9 +1117,9 @@ msgstr ""
 msgid "There is already a contributor with the same name and role in the list."
 msgstr ""
 
-#: pod/completion/models.py pod/enrichment/models.py pod/favorite/models.py
-#: pod/playlist/models.py pod/recorder/models.py pod/video/models.py
-#: pod/video_encode_transcript/models.py
+#: pod/completion/models.py pod/enrichment/models.py pod/playlist/models.py
+#: pod/recorder/models.py pod/video/models.py
+#: pod/video/templates/videos/video.html pod/video_encode_transcript/models.py
 msgid "Video"
 msgstr ""
 
@@ -1728,6 +1728,7 @@ msgid "Total video duration"
 msgstr ""
 
 #: pod/cut/templates/video_cut.html
+#: pod/playlist/templates/playlist/filter_aside.html
 #: pod/video/templates/videos/filter_aside.html
 msgid "Reset"
 msgstr ""
@@ -1839,9 +1840,9 @@ msgid "End of enrichment display in seconds."
 msgstr ""
 
 #: pod/enrichment/models.py
-#: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
-#: pod/meeting/templates/meeting/external_recordings.html pod/video/forms.py
-#: pod/video/models.py pod/video/views.py
+#: pod/enrichment/templates/enrichment/list_enrichment.html
+#: pod/import_video/templates/import_video/list.html pod/live/models.py
+#: pod/video/forms.py pod/video/models.py pod/video/views.py
 #: pod/video_search/templates/search/search.html
 msgid "Type"
 msgstr ""
@@ -2026,91 +2027,449 @@ msgstr ""
 msgid "You cannot enrich this video."
 msgstr ""
 
-#: pod/favorite/apps.py pod/favorite/models.py
-msgid "Favorite videos"
+#: pod/import_video/apps.py
+msgid "Import External Video"
 msgstr ""
 
-#: pod/favorite/models.py pod/playlist/models.py pod/recorder/models.py
-#: pod/video/models.py pod/video/templates/videos/video_sort_select.html
-msgid "Date added"
+#: pod/import_video/forms.py pod/meeting/forms.py
+msgid "Please enter a valid address"
+msgstr "Vul alstublieft een geldig adres in"
+
+#: pod/import_video/models.py pod/meeting/models.py
+msgid "Recording name"
 msgstr ""
 
-#: pod/favorite/models.py pod/playlist/models.py
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Rank"
+#: pod/import_video/models.py pod/meeting/models.py
+msgid "Please enter a name that will allow you to easily find this recording."
 msgstr ""
 
-#: pod/favorite/models.py
-msgid "Favorite video"
+#: pod/import_video/models.py pod/meeting/models.py
+msgid "User who create this recording"
 msgstr ""
 
-#: pod/favorite/templates/favorite/favorite_video_list.html
-#: pod/playlist/templates/playlist/playlist-videos-list.html
-#: pod/video/templates/videos/video_list.html
-msgid "Sorry, no video found."
+#: pod/import_video/models.py pod/meeting/models.py pod/video/models.py
+msgid "Site"
 msgstr ""
 
-#: pod/favorite/templates/favorite/favorite_videos.html
-#: pod/playlist/templates/playlist/playlist.html
-#: pod/playlist/templates/playlist/playlist_content.html
-#: pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/my_videos.html
-#: pod/video/templates/videos/videos.html
+#: pod/import_video/models.py
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "Big Blue Button"
+msgstr ""
+
+#: pod/import_video/models.py
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "PeerTube"
+msgstr ""
+
+#: pod/import_video/models.py
+msgid "Video file"
+msgstr ""
+
+#: pod/import_video/models.py
+msgid "Youtube"
+msgstr ""
+
+#: pod/import_video/models.py
+msgid "External record type"
+msgstr ""
+
+#: pod/import_video/models.py
+msgid ""
+"It is possible to manage recordings from Big Blue Button or another source "
+"delivering video files."
+msgstr ""
+
+#: pod/import_video/models.py pod/meeting/models.py
+msgid "Address of the recording to download"
+msgstr ""
+
+#: pod/import_video/models.py pod/meeting/models.py
+msgid ""
+"Please enter the address of the recording to download. This address must "
+"match the record type selected."
+msgstr ""
+
+#: pod/import_video/models.py pod/meeting/models.py
+msgid "User who uploaded to Pod the video file"
+msgstr ""
+
+#: pod/import_video/models.py
+msgid "External recordings"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/import_video/templates/import_video/list.html pod/import_video/views.py
+msgid "My external videos"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/import_video/views.py
+msgid "Edit the external video"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/import_video/templates/import_video/list.html pod/import_video/views.py
+msgid "Create an external video"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"Access to adding external recording has been restricted. If you want to add "
+"external recordings on the platform, please"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/live/templates/live/event_edit.html
+#: pod/live/templates/live/event_immediate_edit.html
+#: pod/meeting/templates/meeting/add_or_edit.html
+#: pod/meeting/templates/meeting/my_meetings.html
+#: pod/video/templates/videos/add_video.html
+#: pod/video/templates/videos/video_edit.html
+msgid "contact us"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"To centralize Big Blue Button, PeerTube, video file, Youtube recordings on "
+"this platform, first, please enter the information below."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "Then you can import this video to Pod."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/video/templates/videos/add_video.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Uploading"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"To retrieve recordings from other interfaces, just copy the link to the Big "
+"Blue Button, PeerTube, Youtube or other video from the app."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"All you have to do is paste this link in the 'Address of the recording to "
+"download' field, and enter the additional information."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"Once the entry is made, you will be able - if the original application "
+"allows it and if the video is publicly available - to upload the video to "
+"this platform."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "To do this, please use the 'Upload to Pod as video' button in the list."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"You will then be able to find the encoded video directly in the My videos "
+"tab after a while."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/video/templates/videos/add_video.html
+#: pod/video/templates/videos/video_edit.html
+msgid "An email will be sent to you when all encoding tasks are completed."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "Terms of Service"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"It is necessary to respect the terms of use of the various services before "
+"being able to upload a video from their site to this platform."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "More infomations on Big Blue Button"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "More infomations on PeerTube"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "YouTube"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"Their terms of service state that you are not allowed to download any "
+"content unless permitted by YouTube or the person who owns the copyright to "
+"the content."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "YouTube's Terms of Service"
+msgstr ""
+
+#: pod/import_video/templates/import_video/filter_aside.html
+#: pod/live/templates/live/filter_aside.html
+#: pod/meeting/templates/meeting/filter_aside.html
+#: pod/meeting/templates/meeting/filter_aside_recording.html
+#: pod/playlist/templates/playlist/filter_aside.html
+#: pod/video/templates/videos/filter_aside.html
+msgid "Filters"
+msgstr ""
+
+#: pod/import_video/templates/import_video/filter_aside.html
+#: pod/main/templates/aside.html
+#: pod/meeting/templates/meeting/filter_aside_recording.html
+#: pod/recorder/models.py pod/video/forms.py pod/video/models.py
+#: pod/video/templates/videos/filter_aside.html
 #: pod/video_search/templates/search/search.html
+msgid "Tags"
+msgstr ""
+
+#: pod/import_video/templates/import_video/filter_aside.html
+#: pod/main/templates/navbar.html pod/main/templates/navbar_collapse.html
+#: pod/meeting/templates/meeting/filter_aside_recording.html
+#: pod/video/templates/videos/filter_aside.html
+#: pod/video/templates/videos/filter_aside_category.html
+#: pod/video_search/forms.py pod/video_search/templates/search/search.html
+msgid "Search"
+msgstr ""
+
+#: pod/import_video/templates/import_video/filter_aside.html
+#: pod/meeting/templates/meeting/filter_aside_recording.html
+msgid "Type at least 3 chars to filter"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+msgid ""
+"If you have achieved Big Blue Button meetings via another interface "
+"(typically via Moodle), or if you wish to centralize PeerTube, Youtube or "
+"other videos on Pod, it is possible to retrieve these recordings and be able "
+"to convert them into video in this platform (under certain conditions)."
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+msgid "You need to create an external video before you can import it."
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Do not leave the page until the video upload to Pod is complete."
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html pod/main/forms.py
+#: pod/meeting/forms.py pod/meeting/templates/meeting/internal_recordings.html
+#: pod/playlist/forms.py pod/playlist/models.py
+#: pod/playlist/templates/playlist/playlist_sort_select.html
+#: pod/podfile/models.py pod/podfile/templates/podfile/home_content.html
+#: pod/video_encode_transcript/models.py
+msgid "Name"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "State"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html pod/meeting/admin.py
+#: pod/meeting/templates/meeting/internal_recordings.html pod/video/models.py
+msgid "Date"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Playback"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+msgid "Import"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+msgid "Manage"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Video file not uploaded to Pod"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Video file already uploaded to Pod"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Display the recording in presentation format"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Display the recording in video format"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+msgid "Please confirm you want to upload the recording to Pod"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Upload to Pod as a video"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+msgid "Please confirm you want to delete the external recording"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+msgid "Edit the external recording"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+msgid "Delete the external recording"
+msgstr ""
+
+#: pod/import_video/utils.py pod/import_video/views.py pod/meeting/views.py
+msgid "Impossible to upload to Pod the video"
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "No URL found / No recording name"
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "Try changing the record type or address for this recording"
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "The HTML file for this recording was not found on the BBB server."
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "The video file for this recording was not found in the HTML file."
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "The found file is not a valid video."
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "No video file found"
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "The video file for this recording was not found on the BBB server."
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "Impossible to download the video file from the server."
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "Impossible to create the Pod video"
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "You cannot view this recording."
+msgstr ""
+
+#: pod/import_video/views.py pod/meeting/views.py
+msgid ""
+"The recording has been uploaded to Pod. You can see the generated video in "
+"My videos."
+msgstr ""
+
+#: pod/import_video/views.py pod/live/views.py pod/meeting/views.py
+#: pod/video/views.py
+msgid "The changes have been saved."
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "The external recording has been deleted."
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "Impossible to create the external recording"
+msgstr ""
+
+#: pod/import_video/views.py pod/meeting/views.py
 #, python-format
-msgid "%(counter)s video found"
-msgid_plural "%(counter)s videos found"
-msgstr[0] ""
-msgstr[1] ""
-
-#: pod/favorite/templates/favorite/favorite_videos.html
-#: pod/favorite/tests/test_views.py pod/favorite/views.py
-#: pod/main/templates/navbar.html
-#: pod/playlist/templates/playlist/playlist_content.html
-msgid "My favorite videos"
+msgid ""
+"This video was uploaded to Pod; its origin is %(type)s : <a href=\"%(url)s\" "
+"target=\"_blank\">%(url)s</a>"
 msgstr ""
 
-#: pod/favorite/templates/favorite/favorite_videos.html
-#: pod/playlist/templates/playlist/playlist.html
-msgid "Reorganize your favorite videos"
+#: pod/import_video/views.py pod/meeting/views.py
+msgid "Try changing the record type or address for this recording."
 msgstr ""
 
-#: pod/favorite/templates/favorite/favorite_videos.html
-#: pod/playlist/templates/playlist/playlist.html
-msgid "Reorganize"
+#: pod/import_video/views.py
+#, python-format
+msgid ""
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
-#: pod/favorite/templates/favorite/favorite_videos.html
-msgid "Sort by descending rank before you can rearrange"
+#: pod/import_video/views.py
+msgid "YouTube error"
 msgstr ""
 
-#: pod/favorite/templates/favorite/favorite_videos.html
-msgid "Sort by descending rank"
+#: pod/import_video/views.py
+msgid ""
+"YouTube content is unavailable. This content does not appear to be publicly "
+"available."
 msgstr ""
 
-#: pod/favorite/templates/favorite/favorite_videos.html
-#: pod/playlist/templates/playlist/playlist.html
-msgid "Help - Drag & Drop"
+#: pod/import_video/views.py
+msgid "Try changing the access rights to the video directly in Youtube."
 msgstr ""
 
-#: pod/favorite/templates/favorite/favorite_videos.html
-#: pod/playlist/templates/playlist/playlist.html
-msgid "Select the video to move by clicking and holding."
-msgstr "Sélectionnez la vidéo à déplacer en cliquant et en maintenant."
-
-#: pod/favorite/templates/favorite/favorite_videos.html
-#: pod/playlist/templates/playlist/playlist.html
-msgid "While holding down the video, drag it to the desired location."
+#: pod/import_video/views.py
+msgid ""
+"YouTube content is inaccessible. This content does not appear to be publicly "
+"available."
 msgstr ""
-"Tout en maintenant la vidéo, faites-la glisser vers l'emplacement souhaité."
 
-#: pod/favorite/templates/favorite/favorite_videos.html
-#: pod/playlist/templates/playlist/playlist.html
-msgid "Drop the video on another to swap their position."
-msgstr "Déposez la vidéo sur une autre pour échanger leur position."
+#: pod/import_video/views.py
+msgid "Try changing the address of this recording."
+msgstr ""
 
-#: pod/favorite/tests/test_views.py pod/video/templates/videos/video-info.html
-msgid "Number of favorites"
+#: pod/import_video/views.py
+msgid "PeerTube error"
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "The address entered does not appear to be a valid PeerTube address."
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "Try changing the address of the recording."
+msgstr ""
+
+#: pod/import_video/views.py
+msgid ""
+"The address entered does not appear to be a valid PeerTube address or the "
+"PeerTube server is not responding as expected."
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "Try changing the address of the recording or retry later."
+msgstr ""
+
+#: pod/import_video/views.py
+#, python-format
+msgid ""
+"This video '%(name)s' was uploaded to Pod; its origin is PeerTube : <a "
+"href='%(url)s' target='blank'>%(url)s</a>."
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "Impossible to upload to Pod the PeerTube video"
 msgstr ""
 
 #: pod/live/admin.py pod/live/models.py
@@ -2584,6 +2943,7 @@ msgid "This event is protected by password, please fill in and click send."
 msgstr ""
 
 #: pod/live/templates/live/event-form.html
+#: pod/playlist/templates/playlist/protected-playlist-form.html
 #: pod/video/templates/videos/video-form.html
 msgid "Password required"
 msgstr ""
@@ -2594,6 +2954,7 @@ msgstr ""
 #: pod/live/templates/live/filter_aside.html pod/main/templates/contact_us.html
 #: pod/meeting/templates/meeting/invite.html
 #: pod/meeting/templates/meeting/join.html
+#: pod/playlist/templates/playlist/protected-playlist-form.html
 #: pod/video/templates/videos/video-form.html
 #: pod/video_search/templates/search/search.html
 msgid "Send"
@@ -2787,16 +3148,6 @@ msgid ""
 msgstr ""
 
 #: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/meeting/templates/meeting/add_or_edit.html
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-#: pod/meeting/templates/meeting/my_meetings.html
-#: pod/video/templates/videos/add_video.html
-#: pod/video/templates/videos/video_edit.html
-msgid "contact us"
-msgstr ""
-
-#: pod/live/templates/live/event_edit.html
 msgid "The event is currently in progress. Editing options are limited."
 msgstr ""
 
@@ -2889,15 +3240,6 @@ msgstr ""
 msgid "Show all events"
 msgstr ""
 
-#: pod/live/templates/live/filter_aside.html
-#: pod/meeting/templates/meeting/filter_aside.html
-#: pod/meeting/templates/meeting/filter_aside_external_recording.html
-#: pod/meeting/templates/meeting/filter_aside_recording.html
-#: pod/playlist/templates/playlist/filter_aside.html
-#: pod/video/templates/videos/filter_aside.html
-msgid "Filters"
-msgstr ""
-
 #: pod/live/templates/live/filter_aside.html pod/main/templates/aside.html
 #: pod/main/templates/navbar.html pod/video/models.py
 #: pod/video/templates/videos/filter_aside.html
@@ -2956,16 +3298,12 @@ msgstr ""
 msgid "You cannot watch this event."
 msgstr ""
 
-#: pod/live/views.py pod/video/views.py
+#: pod/live/views.py pod/playlist/views.py pod/video/views.py
 msgid "The password is incorrect."
 msgstr ""
 
 #: pod/live/views.py
 msgid "Editing the event"
-msgstr ""
-
-#: pod/live/views.py pod/meeting/views.py pod/video/views.py
-msgid "The changes have been saved."
 msgstr ""
 
 #: pod/live/views.py
@@ -3035,15 +3373,6 @@ msgstr ""
 
 #: pod/main/forms.py
 msgid "Other (please specify)"
-msgstr ""
-
-#: pod/main/forms.py pod/meeting/forms.py
-#: pod/meeting/templates/meeting/external_recordings.html
-#: pod/meeting/templates/meeting/internal_recordings.html pod/playlist/forms.py
-#: pod/playlist/models.py pod/podfile/models.py
-#: pod/podfile/templates/podfile/home_content.html
-#: pod/video_encode_transcript/models.py
-msgid "Name"
 msgstr ""
 
 #: pod/main/forms.py
@@ -3777,15 +4106,6 @@ msgstr ""
 msgid "Disciplines"
 msgstr ""
 
-#: pod/main/templates/aside.html
-#: pod/meeting/templates/meeting/filter_aside_external_recording.html
-#: pod/meeting/templates/meeting/filter_aside_recording.html
-#: pod/recorder/models.py pod/video/forms.py pod/video/models.py
-#: pod/video/templates/videos/filter_aside.html
-#: pod/video_search/templates/search/search.html
-msgid "Tags"
-msgstr ""
-
 #: pod/main/templates/base.html
 msgid "Toggle side Menu"
 msgstr ""
@@ -3902,15 +4222,6 @@ msgstr ""
 msgid "Channels"
 msgstr ""
 
-#: pod/main/templates/navbar.html pod/main/templates/navbar_collapse.html
-#: pod/meeting/templates/meeting/filter_aside_external_recording.html
-#: pod/meeting/templates/meeting/filter_aside_recording.html
-#: pod/video/templates/videos/filter_aside.html
-#: pod/video/templates/videos/filter_aside_category.html
-#: pod/video_search/forms.py pod/video_search/templates/search/search.html
-msgid "Search"
-msgstr ""
-
 #: pod/main/templates/navbar.html
 msgid "Some features are unavailable"
 msgstr ""
@@ -3921,9 +4232,7 @@ msgstr ""
 
 #: pod/main/templates/navbar.html
 #: pod/meeting/templates/meeting/add_or_edit.html
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
 #: pod/meeting/templates/meeting/delete.html
-#: pod/meeting/templates/meeting/external_recordings.html
 #: pod/meeting/templates/meeting/internal_recordings.html
 #: pod/meeting/templates/meeting/invite.html
 #: pod/meeting/templates/meeting/join.html
@@ -3967,8 +4276,16 @@ msgstr ""
 msgid "My playlists"
 msgstr ""
 
+#: pod/main/templates/navbar.html pod/playlist/tests/test_views.py
+msgid "My favorite videos"
+msgstr ""
+
 #: pod/main/templates/navbar.html
 msgid "Video Record"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Import an external video"
 msgstr ""
 
 #: pod/main/templates/navbar.html pod/video/templates/channel/channel_edit.html
@@ -4042,6 +4359,10 @@ msgstr ""
 msgid "Your message has been sent."
 msgstr ""
 
+#: pod/main/utils.py
+msgid "This view cannot be accessed directly."
+msgstr ""
+
 #: pod/main/views.py
 msgid "Link"
 msgstr ""
@@ -4052,11 +4373,6 @@ msgstr ""
 
 #: pod/meeting/admin.py
 msgid "join"
-msgstr ""
-
-#: pod/meeting/admin.py pod/meeting/templates/meeting/external_recordings.html
-#: pod/meeting/templates/meeting/internal_recordings.html pod/video/models.py
-msgid "Date"
 msgstr ""
 
 #: pod/meeting/admin.py
@@ -4148,14 +4464,6 @@ msgstr ""
 #: pod/meeting/forms.py
 msgid "Send invite to owner and additional owners"
 msgstr ""
-
-#: pod/meeting/forms.py
-msgid "Owner of the recording cannot be an additional owner too"
-msgstr ""
-
-#: pod/meeting/forms.py
-msgid "Please enter a valid address"
-msgstr "Vul alstublieft een geldig adres in"
 
 #: pod/meeting/models.py
 msgid "Daily"
@@ -4289,10 +4597,6 @@ msgid ""
 "        "
 msgstr ""
 
-#: pod/meeting/models.py pod/video/models.py
-msgid "Site"
-msgstr ""
-
 #: pod/meeting/models.py
 msgid "Max Participants"
 msgstr ""
@@ -4422,75 +4726,7 @@ msgid "Unable to delete recording!"
 msgstr ""
 
 #: pod/meeting/models.py
-msgid "Recording name"
-msgstr ""
-
-#: pod/meeting/models.py
-msgid "Please enter a name that will allow you to easily find this recording."
-msgstr ""
-
-#: pod/meeting/models.py
-msgid "Is this an internal recording ?"
-msgstr ""
-
-#: pod/meeting/models.py
-msgid "User who create this recording"
-msgstr ""
-
-#: pod/meeting/models.py
-msgid ""
-"You can add additional owners to this recording. They will have the same "
-"rights as you except that they cannot delete this recording."
-msgstr ""
-
-#: pod/meeting/models.py
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-msgid "Big Blue Button"
-msgstr ""
-
-#: pod/meeting/models.py
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-msgid "PeerTube"
-msgstr ""
-
-#: pod/meeting/models.py
-msgid "Video file"
-msgstr ""
-
-#: pod/meeting/models.py
-msgid "Youtube"
-msgstr ""
-
-#: pod/meeting/models.py
-msgid "External record type"
-msgstr ""
-
-#: pod/meeting/models.py
-msgid ""
-"It is possible to manage recordings from Big Blue Button or another source "
-"delivering video files."
-msgstr ""
-
-#: pod/meeting/models.py
-msgid "Address of the recording to download"
-msgstr ""
-
-#: pod/meeting/models.py
-msgid ""
-"Please enter the address of the recording to download. This address must "
-"match the record type selected."
-msgstr ""
-
-#: pod/meeting/models.py
-msgid "User who uploaded to Pod the video file"
-msgstr ""
-
-#: pod/meeting/models.py
 msgid "Recording ID"
-msgstr ""
-
-#: pod/meeting/models.py
-msgid "Duration of recording"
 msgstr ""
 
 #: pod/meeting/models.py pod/recorder/models.py
@@ -4513,112 +4749,6 @@ msgid ""
 "the platform, please"
 msgstr ""
 
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-#: pod/meeting/templates/meeting/external_recordings.html
-#: pod/meeting/templates/meeting/my_meetings.html pod/meeting/views.py
-msgid "External recordings"
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-#: pod/meeting/templates/meeting/external_recordings.html pod/meeting/views.py
-msgid "Edit the external recording"
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-#: pod/meeting/templates/meeting/external_recordings.html
-msgid "Add an external recording"
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-msgid ""
-"Access to adding external recording has been restricted. If you want to add "
-"external recordings on the platform, please"
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-msgid ""
-"To centralize Big Blue Button, PeerTube, video file, Youtube recordings on "
-"this platform, first, please enter the information below."
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-msgid "Then, you will be able to upload this recording to Pod."
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-#: pod/video/templates/videos/add_video.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Uploading"
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-msgid ""
-"To retrieve recordings from other interfaces, just copy the link to the Big "
-"Blue Button, PeerTube, Youtube or other video from the app."
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-msgid ""
-"All you have to do is paste this link in the 'Address of the recording to "
-"download' field, and enter the additional information."
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-msgid ""
-"Once the entry is made, you will be able - if the original application "
-"allows it and if the video is publicly available - to upload the video to "
-"this platform."
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-msgid "To do this, please use the 'Upload to Pod as video' button in the list."
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-msgid ""
-"You will then be able to find the encoded video directly in the My videos "
-"tab after a while."
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-#: pod/video/templates/videos/add_video.html
-#: pod/video/templates/videos/video_edit.html
-msgid "An email will be sent to you when all encoding tasks are completed."
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-msgid "Terms of Service"
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-msgid ""
-"It is necessary to respect the terms of use of the various services before "
-"being able to upload a video from their site to this platform."
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-msgid "More infomations on Big Blue Button"
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-msgid "More infomations on PeerTube"
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-msgid "YouTube"
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-msgid ""
-"Their terms of service state that you are not allowed to download any "
-"content unless permitted by YouTube or the person who owns the copyright to "
-"the content."
-msgstr ""
-
-#: pod/meeting/templates/meeting/add_or_edit_external_recording.html
-msgid "YouTube's Terms of Service"
-msgstr ""
-
 #: pod/meeting/templates/meeting/delete.html
 #, python-format
 msgid "Delete the meeting <b>%(name)s</b>"
@@ -4630,76 +4760,6 @@ msgstr ""
 
 #: pod/meeting/templates/meeting/delete.html
 msgid "To delete the meeting, please check the box in and click delete."
-msgstr ""
-
-#: pod/meeting/templates/meeting/external_recordings.html
-msgid ""
-"If you have achieved Big Blue Button meetings via another interface "
-"(typically via Moodle), or if you wish to centralize PeerTube, Youtube or "
-"other videos on Pod, it is possible to retrieve these recordings and be able "
-"to convert them into video in this platform (under certain conditions)."
-msgstr ""
-
-#: pod/meeting/templates/meeting/external_recordings.html
-msgid "Please use the button below to add such a recording."
-msgstr ""
-
-#: pod/meeting/templates/meeting/external_recordings.html
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Do not leave the page until the video upload to Pod is complete."
-msgstr ""
-
-#: pod/meeting/templates/meeting/external_recordings.html
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "State"
-msgstr ""
-
-#: pod/meeting/templates/meeting/external_recordings.html
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Playback"
-msgstr ""
-
-#: pod/meeting/templates/meeting/external_recordings.html
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Toolbar"
-msgstr ""
-
-#: pod/meeting/templates/meeting/external_recordings.html
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Video file not uploaded to Pod"
-msgstr ""
-
-#: pod/meeting/templates/meeting/external_recordings.html
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Video file already uploaded to Pod"
-msgstr ""
-
-#: pod/meeting/templates/meeting/external_recordings.html
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Display the recording in presentation format"
-msgstr ""
-
-#: pod/meeting/templates/meeting/external_recordings.html
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Display the recording in video format"
-msgstr ""
-
-#: pod/meeting/templates/meeting/external_recordings.html
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Please confirm you want to upload the recording To Pod"
-msgstr ""
-
-#: pod/meeting/templates/meeting/external_recordings.html
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Upload to Pod as a video"
-msgstr ""
-
-#: pod/meeting/templates/meeting/external_recordings.html
-msgid "Please confirm you want to delete the external recording"
-msgstr ""
-
-#: pod/meeting/templates/meeting/external_recordings.html
-msgid "Delete the external recording"
 msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside.html pod/video/views.py
@@ -4714,13 +4774,16 @@ msgstr ""
 msgid "See all my meetings"
 msgstr ""
 
-#: pod/meeting/templates/meeting/filter_aside_external_recording.html
-#: pod/meeting/templates/meeting/filter_aside_recording.html
-msgid "Type at least 3 chars to filter"
-msgstr ""
-
 #: pod/meeting/templates/meeting/internal_recordings.html pod/meeting/views.py
 msgid "Meeting recordings"
+msgstr ""
+
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Toolbar"
+msgstr ""
+
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Please confirm you want to upload the recording To Pod"
 msgstr ""
 
 #: pod/meeting/templates/meeting/internal_recordings.html
@@ -4930,27 +4993,7 @@ msgid "Password given is not correct."
 msgstr ""
 
 #: pod/meeting/views.py
-msgid "This view cannot be accessed directly."
-msgstr ""
-
-#: pod/meeting/views.py
 msgid "You cannot view the recordings of this meeting."
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "You cannot view this recording."
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "Impossible to upload to Pod the video"
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "No URL found / No recording name"
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "Try changing the record type or address for this recording"
 msgstr ""
 
 #: pod/meeting/views.py
@@ -5013,128 +5056,7 @@ msgid ""
 msgstr ""
 
 #: pod/meeting/views.py
-msgid ""
-"The recording has been uploaded to Pod. You can see the generated video in "
-"My videos."
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "Add a new external recording"
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "The external recording has been deleted."
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "The HTML file for this recording was not found on the BBB server."
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "The video file for this recording was not found in the HTML file."
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "The found file is not a valid video."
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "No video file found"
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "The video file for this recording was not found on the BBB server."
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "Impossible to download the video file from the server."
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "Impossible to create the Pod video"
-msgstr ""
-
-#: pod/meeting/views.py
 msgid "Impossible to create the internal recording"
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "Impossible to create the external recording"
-msgstr ""
-
-#: pod/meeting/views.py
-#, python-format
-msgid ""
-"This video was uploaded to Pod; its origin is %(type)s : <a href=\"%(url)s\" "
-"target=\"_blank\">%(url)s</a>"
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "Try changing the record type or address for this recording."
-msgstr ""
-
-#: pod/meeting/views.py
-#, python-format
-msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "YouTube error"
-msgstr ""
-
-#: pod/meeting/views.py
-msgid ""
-"YouTube content is unavailable. This content does not appear to be publicly "
-"available."
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "Try changing the access rights to the video directly in Youtube."
-msgstr ""
-
-#: pod/meeting/views.py
-msgid ""
-"YouTube content is inaccessible. This content does not appear to be publicly "
-"available."
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "Try changing the address of this recording."
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "PeerTube error"
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "The address entered does not appear to be a valid PeerTube address."
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "Try changing the address of the recording."
-msgstr ""
-
-#: pod/meeting/views.py
-msgid ""
-"The address entered does not appear to be a valid PeerTube address or the "
-"PeerTube server is not responding as expected."
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "Try changing the address of the recording or retry later."
-msgstr ""
-
-#: pod/meeting/views.py
-#, python-format
-msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is PeerTube : <a "
-"href='%(url)s' target='blank'>%(url)s</a>."
-msgstr ""
-
-#: pod/meeting/views.py
-msgid "Impossible to upload to Pod the PeerTube video"
 msgstr ""
 
 #: pod/playlist/apps.py pod/playlist/models.py
@@ -5143,6 +5065,10 @@ msgstr ""
 #: pod/playlist/templates/playlist/playlist.html
 #: pod/playlist/templates/playlist/playlists.html pod/playlist/views.py
 msgid "Playlists"
+msgstr ""
+
+#: pod/playlist/apps.py pod/playlist/signals.py
+msgid "Your favorites videos."
 msgstr ""
 
 #: pod/playlist/forms.py pod/playlist/models.py
@@ -5160,7 +5086,11 @@ msgid "Visibility"
 msgstr ""
 
 #: pod/playlist/forms.py pod/playlist/models.py
-msgid "Please chosse an visibility among 'public', 'protected', 'private'."
+msgid ""
+"\n"
+"            Please chosse an visibility among 'public', 'protected', "
+"'private'.\n"
+"            "
 msgstr ""
 
 #: pod/playlist/forms.py pod/playlist/models.py
@@ -5199,6 +5129,11 @@ msgstr ""
 msgid "Private"
 msgstr ""
 
+#: pod/playlist/models.py pod/playlist/views.py
+#: pod/video/templates/videos/video.html
+msgid "Playlist"
+msgstr ""
+
 #: pod/playlist/models.py
 msgid "Editable"
 msgstr ""
@@ -5219,8 +5154,13 @@ msgstr ""
 msgid "Date updated"
 msgstr ""
 
-#: pod/playlist/models.py pod/playlist/views.py
-msgid "Playlist"
+#: pod/playlist/models.py pod/recorder/models.py pod/video/models.py
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Date added"
+msgstr ""
+
+#: pod/playlist/models.py pod/video/templates/videos/video_sort_select.html
+msgid "Rank"
 msgstr ""
 
 #: pod/playlist/models.py
@@ -5229,10 +5169,6 @@ msgstr ""
 
 #: pod/playlist/models.py
 msgid "Playlist contents"
-msgstr ""
-
-#: pod/playlist/signals.py
-msgid "Your favorites videos."
 msgstr ""
 
 #: pod/playlist/templates/playlist/add_or_edit.html
@@ -5245,6 +5181,11 @@ msgstr ""
 #: pod/playlist/templates/playlist/playlists.html
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "Add a playlist"
+msgstr ""
+
+#: pod/playlist/templates/playlist/button_start_playlist.html
+#: pod/playlist/tests/test_views.py
+msgid "Start the playlist"
 msgstr ""
 
 #: pod/playlist/templates/playlist/delete.html
@@ -5316,24 +5257,92 @@ msgstr ""
 msgid "Manage playlist"
 msgstr ""
 
+#: pod/playlist/templates/playlist/playlist-videos-list.html
+#: pod/video/templates/videos/video_list.html
+msgid "Sorry, no video found."
+msgstr ""
+
 #: pod/playlist/templates/playlist/playlist.html
+#: pod/playlist/templates/playlist/playlist_content.html
+#: pod/video/templates/channel/channel.html
+#: pod/video/templates/videos/my_videos.html
+#: pod/video/templates/videos/videos.html
+#: pod/video_search/templates/search/search.html
+#, python-format
+msgid "%(counter)s video found"
+msgid_plural "%(counter)s videos found"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/playlist/templates/playlist/playlist.html
+#: pod/playlist/templates/playlist/playlist_content.html
 msgid "Playlist videos"
 msgstr ""
+
+#: pod/playlist/templates/playlist/playlist.html
+msgid "Reorganize your favorite videos"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist.html
+msgid "Reorganize"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist.html
+msgid "Help - Drag & Drop"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist.html
+msgid "Select the video to move by clicking and holding."
+msgstr "Sélectionnez la vidéo à déplacer en cliquant et en maintenant."
+
+#: pod/playlist/templates/playlist/playlist.html
+msgid "While holding down the video, drag it to the desired location."
+msgstr ""
+"Tout en maintenant la vidéo, faites-la glisser vers l'emplacement souhaité."
+
+#: pod/playlist/templates/playlist/playlist.html
+msgid "Drop the video on another to swap their position."
+msgstr "Déposez la vidéo sur une autre pour échanger leur position."
 
 #: pod/playlist/templates/playlist/playlist_card.html pod/video/models.py
 msgid "videos"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_card.html
+#: pod/playlist/templates/playlist/playlist_player.html
 msgid "Playlist image"
-msgstr ""
-
-#: pod/playlist/templates/playlist/playlist_card.html
-msgid "Start the playlist"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_link.html
 msgid "Remove the playlist"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist_player.html
+msgid "Playlist:"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist_sort_select.html
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Sort"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist_sort_select.html
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Ascending sort"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist_sort_select.html
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Descending sort"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist_sort_select.html
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Sort Direction"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist_sort_select.html
+msgid "Modification date"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
@@ -5355,6 +5364,20 @@ msgstr ""
 msgid ""
 "You haven't got any playlist yet, please use the \"Add a playlist\" button "
 "to add one."
+msgstr ""
+
+#: pod/playlist/templates/playlist/protected-playlist-form.html
+msgid "This playlist is protected by password, please fill in and click send."
+msgstr ""
+
+#: pod/playlist/templates/playlist/protected-playlist-form.html
+#: pod/video/templates/videos/video-form.html
+msgid "If you do not have the password for this content, please"
+msgstr ""
+
+#: pod/playlist/templates/playlist/protected-playlist-form.html
+#: pod/video/templates/videos/video-form.html
+msgid "contact its owner"
 msgstr ""
 
 #: pod/playlist/templatetags/favorites_playlist.py
@@ -5914,8 +5937,7 @@ msgstr ""
 msgid "Transcript selected"
 msgstr ""
 
-#: pod/video/apps.py pod/video/models.py pod/video/templates/videos/video.html
-#: pod/video/templates/videos/videos.html
+#: pod/video/apps.py pod/video/models.py pod/video/templates/videos/videos.html
 msgid "Videos"
 msgstr ""
 
@@ -6897,14 +6919,6 @@ msgstr ""
 msgid "This video is protected by password, please fill in and click send."
 msgstr ""
 
-#: pod/video/templates/videos/video-form.html
-msgid "If you do not have the password for this content, please"
-msgstr ""
-
-#: pod/video/templates/videos/video-form.html
-msgid "contact its owner"
-msgstr ""
-
 #: pod/video/templates/videos/video-info.html
 msgid "Duration:"
 msgstr ""
@@ -6915,6 +6929,14 @@ msgstr ""
 
 #: pod/video/templates/videos/video-info.html
 msgid "Show details of view statistics"
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html
+msgid "Addition in a playlist"
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html
+msgid "Number of favorites"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
@@ -7214,22 +7236,6 @@ msgstr ""
 
 #: pod/video/templates/videos/video_notes.html
 msgid "New note"
-msgstr ""
-
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Sort"
-msgstr ""
-
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Ascending sort"
-msgstr ""
-
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Descending sort"
-msgstr ""
-
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Sort Direction"
 msgstr ""
 
 #: pod/video/templates/videos/video_stats_view.html
