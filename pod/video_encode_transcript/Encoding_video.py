@@ -114,7 +114,7 @@ try:
     FFMPEG_EXTRACT_SUBTITLE = getattr(
         settings, "FFMPEG_EXTRACT_SUBTITLE", FFMPEG_EXTRACT_SUBTITLE
     )
-except Exception:  # pragma: no cover
+except ImportError:  # pragma: no cover
     pass
 
 
