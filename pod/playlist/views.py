@@ -1,3 +1,4 @@
+import hashlib
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -15,7 +16,7 @@ from pod.playlist.templatetags.favorites_playlist import get_playlist_name
 from pod.video.models import Video
 from .models import Playlist, PlaylistContent
 from pod.video.utils import sort_videos_list
-from .forms import PlaylistForm, PlaylistRemoveForm
+from .forms import PlaylistForm, PlaylistPasswordForm, PlaylistRemoveForm
 import json
 
 from .utils import (
@@ -220,6 +221,11 @@ def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) ->
     if form.is_valid():
         new_playlist = form.save(commit=False) if playlist is None else playlist
         new_playlist.owner = request.user
+        password = request.POST.get("password")
+        if password:
+            hashed_password = hashlib.sha256(password.encode("utf-8")).hexdigest()
+            new_playlist.password = hashed_password
+
         new_playlist.save()
         new_playlist.additional_owners.clear()
         new_playlist.save()
