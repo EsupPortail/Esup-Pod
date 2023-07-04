@@ -127,9 +127,14 @@ class Playlist(models.Model):
         from .utils import get_number_video_in_playlist
         return get_number_video_in_playlist(self)
 
-    def get_first_video(self) -> Video:
+    def get_first_video(self, request=None) -> Video:
         """Get the first video."""
-        from .utils import get_video_list_for_playlist
+        from .utils import get_video_list_for_playlist, user_can_see_playlist_video
+        if request is not None:
+            videos = []
+            for video in sort_videos_list(get_video_list_for_playlist(self), "rank"):
+                if user_can_see_playlist_video(request, video):
+                    return video
         return sort_videos_list(get_video_list_for_playlist(self), "rank").first()
 
 

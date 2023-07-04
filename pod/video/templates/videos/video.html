@@ -185,12 +185,28 @@
       {% trans "The video is currently being transcripted." %}
     </p>
   {% endif %}
-
+  <style>
+    #countdown {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 72px;
+      color: white;
+      z-index: 99;
+    }
+    #video-container {
+      position: relative;
+    }
+  </style>
   {% block video-element %}
   {% if form %}
       {% include 'videos/video-form.html' %}
   {% else %}
-    {% include 'videos/video-element.html' %}
+    <div id="video-container">
+      <div id="countdown"></div>
+      {% include 'videos/video-element.html' %}
+    </div>
     <div id="info-video" class="pod-info-video">{% include 'videos/video-all-info.html' %}</div>
   {% endif %}
   {% endblock video-element %}

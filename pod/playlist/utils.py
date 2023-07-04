@@ -233,7 +233,7 @@ def get_additional_owners(playlist: Playlist) -> list:
     return playlist.additional_owners.all()
 
 
-def get_link_to_start_playlist(user: User, playlist: Playlist) -> str:
+def get_link_to_start_playlist(request, playlist: Playlist) -> str:
     """
     Get the link to start a specific playlist.
 
@@ -244,7 +244,7 @@ def get_link_to_start_playlist(user: User, playlist: Playlist) -> str:
     Returns:
         str: Link to start the playlist.
     """
-    first_video = playlist.get_first_video()
+    first_video = playlist.get_first_video(request)
     if first_video:
         return f"{reverse('video:video', kwargs={'slug': first_video.slug})}?playlist={playlist.slug}"
     else:
@@ -293,6 +293,7 @@ def user_can_see_playlist_video(request: dict, video: Video) -> bool:
         )
     else:
         return True
+
 
 def sort_playlist_list(playlist_list, sort_field, sort_direction=""):
     """Return playlists list sorted by sort_field.
