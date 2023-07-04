@@ -78,8 +78,8 @@ def playlist_content(request, slug):
     sort_direction = request.GET.get("sort_direction")
     playlist = get_playlist(slug)
     if (
-        playlist.visibility == "public"
-        or (
+        playlist.visibility == "public" or
+        playlist.visibility == "protected" or (
             playlist.owner == request.user
             or playlist in get_playlists_for_additional_owner(request.user)
             or request.user.is_staff
@@ -128,7 +128,7 @@ def render_playlist(
     )
     form = None
     in_favorites_playlist = (playlist_url == request.path)
-    if playlist.visibility == "protected":
+    if playlist.visibility == "protected" and playlist.owner != request.user:
         form = PlaylistPasswordForm(
             request.POST) if request.POST else PlaylistPasswordForm()
         form_password = request.POST.get("password")
