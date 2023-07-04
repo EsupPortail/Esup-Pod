@@ -72,6 +72,10 @@ print(webvtt)
 # TRANSCRIPT VIDEO: THREAD TO LAUNCH TRANSCRIPT
 # ##########################################################################
 def start_transcript(video_id, threaded=True):
+    """
+    Main function call to start transcript.
+    Will launch transcript mode depending on configuration.
+    """
     if threaded:
         if CELERY_TO_ENCODE:
             task_start_transcript.delay(video_id)
@@ -85,6 +89,10 @@ def start_transcript(video_id, threaded=True):
 
 
 def main_threaded_transcript(video_to_encode_id):
+    """
+    Main function to transcript.
+    Will check all configuration and file and launch transcript.
+    """
     change_encoding_step(video_to_encode_id, 5, "transcripting audio")
 
     video_to_encode = Video.objects.get(id=video_to_encode_id)
@@ -127,6 +135,7 @@ def main_threaded_transcript(video_to_encode_id):
 
 
 def save_vtt_and_notify(video_to_encode, msg, webvtt):
+    """Call save vtt file function and notify by mail at the end."""
     msg += saveVTT(video_to_encode, webvtt)
     change_encoding_step(video_to_encode.id, 0, "done")
     # envois mail fin transcription
@@ -136,6 +145,7 @@ def save_vtt_and_notify(video_to_encode, msg, webvtt):
 
 
 def saveVTT(video, webvtt):
+    """Save webvtt file with the video."""
     msg = "\nSAVE TRANSCRIPT WEBVTT : %s" % time.ctime()
     lang = video.transcript
     temp_vtt_file = NamedTemporaryFile(suffix=".vtt")

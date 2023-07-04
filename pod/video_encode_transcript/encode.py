@@ -135,6 +135,7 @@ def encode_video(video_id):
 
 
 def store_encoding_info(video_id, encoding_video):
+    """Store all encoding file and informations from encoding tasks."""
     change_encoding_step(video_id, 3, "store encoding info")
     final_video = encoding_video.store_json_info()
     final_video.is_video = final_video.get_video_m4a() is None
@@ -144,6 +145,7 @@ def store_encoding_info(video_id, encoding_video):
 
 
 def get_encoding_video(video_to_encode):
+    """Get the encoding video object from video."""
     if CutVideo.objects.filter(video=video_to_encode).exists():
         cut = CutVideo.objects.get(video=video_to_encode)
         cut_start = time_to_seconds(cut.start)
@@ -156,7 +158,7 @@ def get_encoding_video(video_to_encode):
 
 
 def end_of_encoding(video):
-    # envois mail fin encodage
+    """Send mail at the end of encoding, call transcription."""
     if EMAIL_ON_ENCODING_COMPLETION:
         send_email_encoding(video)
 

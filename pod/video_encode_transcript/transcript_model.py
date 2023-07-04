@@ -50,6 +50,7 @@ log = logging.getLogger(__name__)
 
 
 def get_model(lang):
+    """Get model for STT or Vosk software to transcript audio."""
     transript_model = Model(TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["model"])
     if TRANSCRIPTION_TYPE == "STT":
         if TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("beam_width"):
@@ -80,6 +81,9 @@ def get_model(lang):
 
 
 def start_transcripting(mp3filepath, duration, lang):
+    """
+    Normalize the audio if set, get the model according to the lang and start transcript.
+    """
     if TRANSCRIPTION_NORMALIZE:
         mp3filepath = normalize_mp3(mp3filepath)
     transript_model = get_model(lang)
@@ -95,6 +99,7 @@ def start_transcripting(mp3filepath, duration, lang):
 
 
 def start_main_transcript(mp3filepath, duration, transript_model):
+    """Call transcription depending software type."""
     if TRANSCRIPTION_TYPE == "STT":
         msg, webvtt, all_text = main_stt_transcript(
             mp3filepath, duration, transript_model
@@ -107,6 +112,7 @@ def start_main_transcript(mp3filepath, duration, transript_model):
 
 
 def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
+    """Convert audio to subaudio and add good sample rate."""
     sox_cmd = "sox {} --type raw --bits 16 --channels 1 --rate {} ".format(
         quote(audio_path), desired_sample_rate
     )
@@ -130,6 +136,7 @@ def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
 
 
 def normalize_mp3(mp3filepath):
+    """Normalize the audio to good format and sound level."""
     filename, file_extension = os.path.splitext(mp3filepath)
     mp3normfile = "{}{}{}".format(filename, "_norm", file_extension)
     normalize_cmd = "ffmpeg-normalize {} ".format(quote(mp3filepath))
@@ -158,6 +165,7 @@ def normalize_mp3(mp3filepath):
 
 
 def convert_vosk_samplerate(audio_path, desired_sample_rate, trim_start, duration):
+    """Convert audio to the good sample rate."""
     sox_cmd = "sox {} --type raw --bits 16 --channels 1 --rate {} ".format(
         quote(audio_path), desired_sample_rate
     )
@@ -180,6 +188,7 @@ def convert_vosk_samplerate(audio_path, desired_sample_rate, trim_start, duratio
 
 
 def get_word_result_from_data(results, audio, rec):
+    """Get subsound from audio and add transcription to result parameter."""
     while True:
         data = audio.stdout.read(4000)
         if len(data) == 0:
@@ -200,6 +209,7 @@ def words_to_vtt(
     all_text,
     webvtt,
 ):
+    """Convert word and time to webvtt captions."""
     for index, word in enumerate(words):
         start_key = "start_time"
         word_duration = word.get("duration", 0)
@@ -263,6 +273,7 @@ def words_to_vtt(
 
 
 def main_vosk_transcript(norm_mp3_file, duration, transript_model):
+    """Vosk transcription."""
     msg = ""
     inference_start = timer()
     msg += "\nInference start %0.3fs." % inference_start
@@ -318,6 +329,7 @@ def main_vosk_transcript(norm_mp3_file, duration, transript_model):
 
 
 def main_stt_transcript(norm_mp3_file, duration, transript_model):
+    """STT transcription."""
     msg = ""
     inference_start = timer()
     msg += "\nInference start %0.3fs." % inference_start
@@ -381,6 +393,7 @@ def main_stt_transcript(norm_mp3_file, duration, transript_model):
 
 
 def change_previous_end_caption(webvtt, start_caption):
+    """Change the end time for caption."""
     if len(webvtt.captions) > 0:
         prev_end = dt.datetime.strptime(webvtt.captions[-1].end, "%H:%M:%S.%f")
         td_prev_end = timedelta(
@@ -394,12 +407,14 @@ def change_previous_end_caption(webvtt, start_caption):
 
 
 def format_time_caption(time_caption):
+    """Format time for webvtt caption."""
     return (
         dt.datetime.utcfromtimestamp(0) + timedelta(seconds=float(time_caption))
     ).strftime("%H:%M:%S.%f")[:-3]
 
 
 def get_text_caption(text_caption, last_word_added):
+    """get the text for a caption."""
     try:
         first_index = text_caption.index(last_word_added)
         return text_caption[first_index + 1 :]
@@ -408,6 +423,7 @@ def get_text_caption(text_caption, last_word_added):
 
 
 def words_from_candidate_transcript(metadata):
+    """Get words list from transcription."""
     word = ""
     word_list = []
     word_start_time = 0
