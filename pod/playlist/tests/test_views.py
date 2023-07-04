@@ -479,7 +479,7 @@ class TestStartupPlaylistParamTestCase(TestCase):
             "Test if status code equal 200.",
         )
         self.assertTrue(
-            "/video/{self.video.slug}/?playlist={self.simple_playlist.slug}" in response.content.decode(),
+            f"/video/{self.video.slug}/?playlist={self.simple_playlist.slug}" in response.content.decode(),
             "Test if the link is present into the playlists page.",
         )
         self.client.logout()
@@ -768,3 +768,31 @@ class TestStatsInfoTestCase(TestCase):
         self.client.logout()
 
         print(" --->  test_navbar_user_menu_counters ok")
+
+
+class TestPrivatePlaylistTestCase(TestCase):
+    """Private playlist test case."""
+
+    fixtures = ["initial_data.json"]
+
+    @override_settings(USE_PLAYLIST=True, USE_FAVORITES=True)
+    def setUp(self) -> None:
+        """Set up tests."""
+        self.first_student = User.objects.create(username="student", password="student1234student")
+        self.second_student = User.objects.create(username="student2", password="student1234student")
+        self.url_private_playlist = reverse(
+            "playlist:content",
+            kwargs={
+                'slug': get_favorite_playlist_for_user(self.second_student).slug
+            },
+        )
+
+    @override_settings(USE_PLAYLIST=True, USE_FAVORITES=True)
+    def test_user_redirect_if_private_playlist_playlists(self) -> None:
+        """Test if when an user try to browse a private playlist, he is redirected to the playlists page."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.first_student)
+        response = self.client.get(self.url_private_playlist)
+        self.assertEqual(response.status_code, 302)
+        self.client.logout()
+        print(" --->  test_user_redirect_if_private_playlist_playlists ok")
