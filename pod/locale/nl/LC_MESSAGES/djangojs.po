@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-19 08:19+0000\n"
+"POT-Creation-Date: 2023-07-04 14:52+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -354,36 +354,6 @@ msgstr ""
 msgid "Enrich mode"
 msgstr ""
 
-#: pod/favorite/static/js/favorite-reorganize.js
-#: pod/playlist/static/js/playlist-reorganize.js
-msgid "Save your reorganization"
-msgstr ""
-
-#: pod/favorite/static/js/favorite-reorganize.js
-#: pod/playlist/static/js/playlist-reorganize.js
-msgid "Save"
-msgstr ""
-
-#: pod/favorite/static/js/video-favorites-card-delete.js
-msgid "The video could not be removed from favorites..."
-msgstr ""
-
-#: pod/favorite/static/js/video-favorites-card-list.js
-msgid "Remove from favorite"
-msgstr ""
-
-#: pod/favorite/static/js/video-favorites-card-list.js
-msgid "Add in favorite"
-msgstr ""
-
-#: pod/favorite/static/js/video-favorites-card-list.js
-msgid "The deletion couldn't be completed..."
-msgstr ""
-
-#: pod/favorite/static/js/video-favorites.js
-msgid "The favorite couldn’t be completed…"
-msgstr ""
-
 #: pod/live/static/js/broadcaster_from_building.js
 msgid "Restricted because the broadcaster is restricted"
 msgstr ""
@@ -460,6 +430,14 @@ msgstr ""
 
 #: pod/main/static/js/main.js
 msgid "The file extension not in the allowed extension:"
+msgstr ""
+
+#: pod/playlist/static/js/playlist-reorganize.js
+msgid "Save your reorganization"
+msgstr ""
+
+#: pod/playlist/static/js/playlist-reorganize.js
+msgid "Save"
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
@@ -722,6 +700,22 @@ msgstr ""
 
 #: pod/video/static/js/video_stats_view.js
 msgid "Total view from creation"
+msgstr ""
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Playlist additions during the day"
+msgstr ""
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Playlist additions during the month"
+msgstr ""
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Playlist additions during the year"
+msgstr ""
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Total Playlist additions from creation"
 msgstr ""
 
 #: pod/video/static/js/video_stats_view.js
