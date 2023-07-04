@@ -112,7 +112,6 @@ class Playlist(models.Model):
         else:
             newid = self.id
         self.slug = f"{newid}-{slugify(self.name)}"
-        self.password = hashlib.sha256(self.password.encode("utf-8")).hexdigest()
         super().save(*args, **kwargs)
 
     def clean(self) -> None:

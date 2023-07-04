@@ -126,3 +126,11 @@ class PlaylistRemoveForm(forms.Form):
         """Init method."""
         super(PlaylistRemoveForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
+
+
+class PlaylistPasswordForm(forms.Form):
+    password = forms.CharField(label=_("Password"), widget=forms.PasswordInput())
+
+    def __init__(self, *args, **kwargs):
+        super(PlaylistPasswordForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)

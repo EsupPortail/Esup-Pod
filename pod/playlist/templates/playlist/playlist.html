@@ -33,29 +33,31 @@
 
 
 {% block page_content %}
-<div class="row videos-list-header">
-  <h2 id="video_count" class="page_title col-xxl-4 mb-2">
-    {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
-  </h2>
-  {% if count_videos > 1 %}
-    <div class="col-xxl-4 col-md-6 mb-2" id="reorganize-buttons">
-      <form action="{% url 'playlist:save-reorganisation' slug=playlist.slug %}" method="post">
-        {% csrf_token %}
-        <input id="json-data" type="hidden" name="json-data">
-        <button id="reorganize-button" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm {% if sort_field != 'rank' or sort_direction == 'on' %}d-none{% endif %}">
-          <i class="bi bi-arrows-move"></i>&nbsp;<span>{% trans "Reorganize" %}</span>
-        </button>
-        <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-secondary btn-sm d-none">
-        <i class="bi bi-x-circle"></i>&nbsp;{% trans "Cancel" %}</a>
-      </form>
+  {% if form %}
+    {% include 'playlist/protected-playlist-form.html' %}
+  {% else %}
+    <div class="row videos-list-header">
+      <h2 id="video_count" class="page_title col-xxl-4 mb-2">
+        {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
+      </h2>
+        <div class="col-xxl-4 col-md-6 mb-2" id="reorganize-buttons">
+          <form action="{% url 'playlist:save-reorganisation' slug=playlist.slug %}" method="post" class="{% if count_videos < 2 %}d-none{% endif %}">
+            {% csrf_token %}
+            <input id="json-data" type="hidden" name="json-data">
+            <button id="reorganize-button" title="{% trans 'Reorganize your favorite videos'%}" class="btn btn-outline-primary btn-sm {% if sort_field != 'rank' or sort_direction == 'on' %}d-none{% endif %}">
+              <i class="bi bi-arrows-move"></i>&nbsp;<span>{% trans "Reorganize" %}</span>
+            </button>
+            <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-secondary btn-sm d-none">
+            <i class="bi bi-x-circle"></i>&nbsp;{% trans "Cancel" %}</a>
+          </form>
+        </div>
+        <form id="sortForm" action="{% url 'playlist:content' slug=playlist.slug %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2 d-none">
+          {% include "videos/video_sort_select.html" with video_rank=True %}
+        </form>
     </div>
-    <form id="sortForm" action="{% url 'playlist:content' slug=playlist.slug %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2 d-none">
-      {% include "videos/video_sort_select.html" with video_rank=True %}
-    </form>
+    {% include 'loader.html' %}
+    {% include "playlist/playlist-videos-list.html" %}
   {% endif %}
-</div>
-{% include 'loader.html' %}
-{% include "playlist/playlist-videos-list.html" %}
 {% endblock page_content %}
 
 {% block page_aside %}
@@ -72,28 +74,31 @@
       </ol>
     </div>
   </div>
-  {% include "playlist/playlist-management-card.html" %}
-  <div class="card" id="card-start-button">
-    <div class="card-body">
-      {% include "playlist/button_start_playlist.html" %}
+  {% if not form %}
+    {% include "playlist/playlist-management-card.html" %}
+    <div class="card" id="card-start-button">
+      <div class="card-body">
+        {% include "playlist/button_start_playlist.html" %}
+      </div>
     </div>
-  </div>
+  {% endif %}
   {% include "playlist/playlist-informations-card.html" %}
 {% endblock page_aside %}
 
 {% block more_script %}
-  <script>
-    const urlVideos = "{% url 'playlist:content' slug=playlist.slug %}";
-    var page = 1;
-    nextPage = false;
+  {% if not form %}
+    <script>
+      const urlVideos = "{% url 'playlist:content' slug=playlist.slug %}";
+      var page = 1;
+      nextPage = false;
 
-    {% if videos.has_next %}
-      page = parseInt("{{videos.next_page_number}}");
-      nextPage = true;
-    {% endif %}
-  </script>
-
-  <script src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
-  <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
-  <script src="{% static 'js/playlist-reorganize.js' %}?ver={{VERSION}}"></script>
+      {% if videos.has_next %}
+        page = parseInt("{{videos.next_page_number}}");
+        nextPage = true;
+      {% endif %}
+    </script>
+    <script src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'js/playlist-reorganize.js' %}?ver={{VERSION}}"></script>
+  {% endif %}
 {% endblock more_script %}
