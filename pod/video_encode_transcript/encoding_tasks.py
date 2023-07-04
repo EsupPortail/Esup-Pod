@@ -6,7 +6,10 @@ import logging
 
 # call local settings directly
 # no need to load pod application to send statement
-from ..custom import settings_local
+try:
+    from ..custom import settings_local
+except ImportError:
+    from .. import settings as settings_local
 
 logger = logging.getLogger(__name__)
 

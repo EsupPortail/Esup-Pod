@@ -1,5 +1,8 @@
 from celery import Celery
-from ..custom import settings_local
+try:
+    from ..custom import settings_local
+except ImportError:
+    from .. import settings as settings_local
 import logging
 logger = logging.getLogger(__name__)
 
