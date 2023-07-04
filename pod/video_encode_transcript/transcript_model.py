@@ -18,33 +18,33 @@ except ImportError:
 
 import logging
 
-from .. import settings
+from ..custom import settings_local
 
-DEBUG = getattr(settings, "DEBUG", False)
+DEBUG = getattr(settings_local, "DEBUG", False)
 
-TRANSCRIPTION_MODEL_PARAM = getattr(settings, "TRANSCRIPTION_MODEL_PARAM", False)
-USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
+TRANSCRIPTION_MODEL_PARAM = getattr(settings_local, "TRANSCRIPTION_MODEL_PARAM", False)
+USE_TRANSCRIPTION = getattr(settings_local, "USE_TRANSCRIPTION", False)
 if USE_TRANSCRIPTION:
-    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "VOSK")
+    TRANSCRIPTION_TYPE = getattr(settings_local, "TRANSCRIPTION_TYPE", "VOSK")
     if TRANSCRIPTION_TYPE == "VOSK":
         from vosk import Model, KaldiRecognizer
     elif TRANSCRIPTION_TYPE == "STT":
         from stt import Model
 
-TRANSCRIPTION_NORMALIZE = getattr(settings, "TRANSCRIPTION_NORMALIZE", False)
+TRANSCRIPTION_NORMALIZE = getattr(settings_local, "TRANSCRIPTION_NORMALIZE", False)
 TRANSCRIPTION_NORMALIZE_TARGET_LEVEL = getattr(
-    settings, "TRANSCRIPTION_NORMALIZE_TARGET_LEVEL", -16.0
+    settings_local, "TRANSCRIPTION_NORMALIZE_TARGET_LEVEL", -16.0
 )
 
 TRANSCRIPTION_AUDIO_SPLIT_TIME = getattr(
-    settings, "TRANSCRIPTION_AUDIO_SPLIT_TIME", 600
+    settings_local, "TRANSCRIPTION_AUDIO_SPLIT_TIME", 600
 )  # 10min
 # time in sec for phrase length
 TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH = getattr(
-    settings, "TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH", 3
+    settings_local, "TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH", 3
 )
 TRANSCRIPTION_STT_SENTENCE_BLANK_SPLIT_TIME = getattr(
-    settings, "TRANSCRIPTION_STT_SENTENCE_BLANK_SPLIT_TIME", 0.5
+    settings_local, "TRANSCRIPTION_STT_SENTENCE_BLANK_SPLIT_TIME", 0.5
 )
 log = logging.getLogger(__name__)
 
