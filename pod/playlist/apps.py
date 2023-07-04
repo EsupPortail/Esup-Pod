@@ -112,15 +112,19 @@ class PlaylistConfig(AppConfig):
         # Add Favorites playlist for users without favorites
         existing_users = User.objects.all()
         users_without_favorites = existing_users.exclude(id__in=FAVORITES_DATA.keys())
+        without_fav_to_bulk = []
         for user in users_without_favorites:
-            Playlist.objects.create(
-                name="Favorites",
-                description=_("Your favorites videos."),
-                visibility="private",
-                autoplay=True,
-                owner=user,
-                editable=False
+            without_fav_to_bulk.append(
+                Playlist(
+                    name="Favorites",
+                    description=_("Your favorites videos."),
+                    visibility="private",
+                    autoplay=True,
+                    owner=user,
+                    editable=False
+                )
             )
+        Playlist.objects.bulk_create(without_fav_to_bulk, batch_size=1000)
 
         # Converting previous favorites to new system
         for owner_id, data_lists in FAVORITES_DATA.items():
