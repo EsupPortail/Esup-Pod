@@ -33,3 +33,23 @@ document.addEventListener('DOMContentLoaded', function() {
         scrollToSelectedVideo();
     }, 500);
 });
+
+var countdownElement = document.getElementById('countdown');
+
+function asyncStartCountDown() {
+    return new Promise(function(resolve) {
+        startCountdown(resolve);
+    });
+}
+
+function startCountdown(callback) {
+    countdownElement.textContent = count;
+    if (count > 1) {
+        count--;
+        setTimeout(function () {
+            startCountdown(callback);
+        }, 1000);
+    } else if (typeof callback === 'function') {
+        callback();
+    }
+}

@@ -238,7 +238,18 @@ player.on('firstplay', function(){
 /* --- PLAYLIST --- */
 {% if playlist_in_get.autoplay %}
   player.on('ended', function (e) {
-    switchToNextVideo();
+    {% if COUNTDOWN_PLAYLIST_PLAYER >= 3 %}
+      const playButtonElement = document.querySelector('.vjs-big-play-button');
+      console.log(playButtonElement);
+      if (playButtonElement) {
+          playButtonElement.remove();
+      }
+      asyncStartCountDown().then(function () {
+        switchToNextVideo();
+      });
+    {% else %}
+      switchToNextVideo();
+    {% endif %}
   });
 {% endif %}
 

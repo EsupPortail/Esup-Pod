@@ -7,6 +7,7 @@ DEFAULT_PLAYLIST_THUMBNAIL = getattr(
     "DEFAULT_PLAYLIST_THUMBNAIL",
     "/static/img/default-playlist.svg"
 )
+COUNTDOWN_PLAYLIST_PLAYER = getattr(django_settings, "COUNTDOWN_PLAYLIST_PLAYER", 0)
 
 
 def context_settings(request):
@@ -15,4 +16,5 @@ def context_settings(request):
     new_settings["USE_PLAYLIST"] = USE_PLAYLIST
     new_settings["USE_FAVORITES"] = USE_FAVORITES
     new_settings["DEFAULT_PLAYLIST_THUMBNAIL"] = DEFAULT_PLAYLIST_THUMBNAIL
+    new_settings["COUNTDOWN_PLAYLIST_PLAYER"] = COUNTDOWN_PLAYLIST_PLAYER
     return new_settings
