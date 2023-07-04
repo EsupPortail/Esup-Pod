@@ -23,7 +23,6 @@ django-chunked-upload==2.0.0
 django-select2
 django_select2_forms
 django-redis
-requests==2.31.0
 chardet==4.0.0
 django-static-compress>=1.2.1
 mozilla_django_oidc==3.0.0

@@ -22,7 +22,7 @@ importing_app.conf.task_routes = {
 @importing_app.task
 def start_importing_task(start, video_id, video_path, cut_start, cut_end, stop):
     """Start the import of the encoding of the video."""
-    print("Start the importing of the video ID : %s" % video_id)
+    print("Start the importing of the video: %s" % video_id)
     from .Encoding_video_model import Encoding_video_model
     from .encode import store_encoding_info, end_of_encoding
     encoding_video = Encoding_video_model(video_id, video_path, cut_start, cut_end)

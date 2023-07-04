@@ -16,21 +16,16 @@ COPY ./pod/ .
 # TODO
 #FROM harbor.urba.univ-lille.fr/store/python:3.7-buster
 
-RUN apt-get clean && apt-get update \
-    && apt-get install -y netcat \
-                          sox \
-                          libsox-fmt-mp3
+RUN apt-get clean && apt-get update && apt-get install -y netcat
 
 WORKDIR /usr/src/app
 
 COPY ./requirements-encode.txt .
-COPY ./requirements-transcripts.txt .
 
-RUN pip3 install --no-cache-dir -r requirements-transcripts.txt \
-    && pip3 install --no-cache-dir -r requirements-encode.txt 
+RUN pip3 install --no-cache-dir -r requirements-encode.txt
 
 # ENTRYPOINT :
-COPY ./dockerfile-dev-with-volumes/pod-transcript/my-entrypoint-transcript.sh /tmp/my-entrypoint-transcript.sh
-RUN chmod 755 /tmp/my-entrypoint-transcript.sh
+COPY ./dockerfile-dev-with-volumes/pod-xapi/my-entrypoint-xapi.sh /tmp/my-entrypoint-xapi.sh
+RUN chmod 755 /tmp/my-entrypoint-xapi.sh
 
-ENTRYPOINT ["bash", "/tmp/my-entrypoint-transcript.sh"]
+ENTRYPOINT ["bash", "/tmp/my-entrypoint-xapi.sh"]

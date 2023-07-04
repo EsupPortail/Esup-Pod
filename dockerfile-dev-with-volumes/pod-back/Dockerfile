@@ -19,7 +19,7 @@ FROM $PYTHON_VERSION
 # TODO
 #FROM harbor.urba.univ-lille.fr/store/python:3.7-buster
 
-RUN apt-get update && apt-get install -y netcat
+RUN apt-get clean && apt-get update && apt-get install -y netcat
 
 WORKDIR /usr/src/app
 

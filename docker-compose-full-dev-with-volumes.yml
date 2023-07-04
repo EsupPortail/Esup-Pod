@@ -43,6 +43,17 @@ services:
       - ./.env.dev
     volumes: *pod-volumes
 
+  pod-xapi:
+    container_name: pod-xapi-with-volumes
+    build:
+      context: .
+      dockerfile: dockerfile-dev-with-volumes/pod-xapi/Dockerfile
+    depends_on:
+      - pod-back
+    env_file:
+      - ./.env.dev
+    volumes: *pod-volumes
+
   elasticsearch:
     container_name: elasticsearch-with-volumes
     build:

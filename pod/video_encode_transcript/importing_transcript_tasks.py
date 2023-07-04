@@ -32,7 +32,7 @@ def start_importing_transcript_task(video_id, msg, temp_vtt_file):
     from .transcript import save_vtt_and_notify
     from ..main.settings import MEDIA_ROOT
     print("Start the import of transcription of the video: %s" % video_id)
-    print("temp_vtt_file : %s" % temp_vtt_file)
+    print("temp_vtt_file: %s" % temp_vtt_file)
     video_to_encode = Video.objects.get(id=video_id)
     filename = os.path.basename(temp_vtt_file)
     media_temp_dir = os.path.join(MEDIA_ROOT, "temp")
