@@ -2,8 +2,6 @@
 # pip3 install webvtt-py
 # pip3 install redis==4.5.4
 from celery import Celery
-from .Encoding_video import Encoding_video
-from .importing_tasks import start_importing_task
 import logging
 
 # call local settings directly
@@ -32,6 +30,8 @@ encoding_app.conf.task_routes = {
 def start_encoding_task(video_id, video_path, cut_start, cut_end):
     """Start the encoding of the video."""
     print("Start the encoding of the video")
+    from .Encoding_video import Encoding_video
+    from .importing_tasks import start_importing_task
     print(video_id, video_path, cut_start, cut_end)
     encoding_video = Encoding_video(video_id, video_path, cut_start, cut_end)
     encoding_video.start_encode()

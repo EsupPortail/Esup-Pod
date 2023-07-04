@@ -32,14 +32,14 @@ transcripting_app.autodiscover_tasks(packages=None, related_name='', force=False
 # -l INFO -Q transcripting
 @transcripting_app.task
 def start_transcripting_task(video_id, mp3filepath, duration, lang):
-    """Start the encoding of the video."""
+    """Start the transcripting of the video."""
     from .transcript_model import start_transcripting
     from .importing_transcript_tasks import start_importing_transcript_task
+    from ..main.settings import MEDIA_ROOT
     print("Start the transcripting of the video %s" % video_id)
     print(video_id, mp3filepath, duration, lang)
     msg, text_webvtt = start_transcripting(mp3filepath, duration, lang)
     print("End of the transcripting of the video")
-    from ..main.settings import MEDIA_ROOT
     media_temp_dir = os.path.join(MEDIA_ROOT, "temp")
     if not os.path.exists(media_temp_dir):
         os.mkdir(media_temp_dir)
