@@ -16,10 +16,40 @@ function switchToNextVideo() {
     }
 }
 
+/**
+ * Scroll to the selected video.
+ */
 function scrollToSelectedVideo() {
     const selectedVideo = document.querySelector('.selected');
     if (selectedVideo) {
         selectedVideo.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+/**
+ * Get startCountDown() promise.
+ *
+ * @returns The promise.
+ */
+function asyncStartCountDown() {
+    return new Promise(function(resolve) {
+        startCountdown(resolve);
+    });
+}
+
+/**
+ * Start the count down.
+ * @param {function} callback The call back function.
+ */
+function startCountdown(callback) {
+    countdownElement.textContent = count;
+    if (count > 1) {
+        count--;
+        setTimeout(function () {
+            startCountdown(callback);
+        }, 1000);
+    } else if (typeof callback === 'function') {
+        callback();
     }
 }
 
@@ -35,21 +65,3 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 var countdownElement = document.getElementById('countdown');
-
-function asyncStartCountDown() {
-    return new Promise(function(resolve) {
-        startCountdown(resolve);
-    });
-}
-
-function startCountdown(callback) {
-    countdownElement.textContent = count;
-    if (count > 1) {
-        count--;
-        setTimeout(function () {
-            startCountdown(callback);
-        }, 1000);
-    } else if (typeof callback === 'function') {
-        callback();
-    }
-}

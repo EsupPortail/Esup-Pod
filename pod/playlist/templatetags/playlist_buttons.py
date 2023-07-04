@@ -44,7 +44,7 @@ def get_link_to_start_playlist(context: dict, playlist: Playlist) -> str:
         str: Link to start the playlist.
     """
     request = context["request"]
-    return get_link_to_start_playlist_util(request.user, playlist)
+    return get_link_to_start_playlist_util(request, playlist)
 
 
 @register.simple_tag(takes_context=True, name="can_see_playlist_video")
