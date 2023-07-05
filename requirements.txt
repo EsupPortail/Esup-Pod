@@ -30,7 +30,7 @@ ics==0.7.2
 django-honeypot==1.0.3
 qrcode
 ralph-malph==3.8.0
-pydentic==1.10
+pydantic==1.10.11
 bleach==6.0.0
 pytube==15.0.0
 django-redis-sessions
