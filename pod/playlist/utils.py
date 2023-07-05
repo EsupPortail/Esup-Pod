@@ -303,8 +303,13 @@ def sort_playlist_list(playlist_list, sort_field, sort_direction=""):
     Sorted by specific column name and ascending or descending direction
     """
     if sort_field and sort_field in [
+        "id",
         "name",
-        "modification_date",
+        "visibility",
+        "slug",
+        "owner",
+        "date_created",
+        "date_updated",
     ]:
         if not sort_direction:
             sort_field = "-" + sort_field
