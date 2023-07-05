@@ -195,6 +195,22 @@ def save_video(request, dest_file, recording_name, description, date_evt=None):
         raise ValueError(msg)
 
 
+def check_file_exists(source_url):
+    """Check that the URL exists.
+
+    Args:
+        source_url (String): Source URL
+
+    Returns:
+        Boolean: file exists (True) or not (False)
+    """
+    response = requests.head(source_url)
+    if response.status_code < 400:
+        return True
+    else:
+        return False
+
+
 class video_parser(HTMLParser):
     """Useful to parse the BBB Web page and search for video file.
 

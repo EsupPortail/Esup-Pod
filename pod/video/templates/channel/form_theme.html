@@ -24,7 +24,7 @@
       {% endfor %}
       {% for field in form_theme.visible_fields %}
         {% spaceless %}
-          <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{% endif %}{% if "title_" in field.name %} title{% endif %}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
+          <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse{% else %}{% endif %}{% if "description_" in field.name %} description{% endif %}{% if "title_" in field.name %} title{% endif %}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
             <div class="list-group-item">
               <div class="form-group row">
                 {{ field.errors }}

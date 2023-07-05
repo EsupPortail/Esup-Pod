@@ -4,6 +4,7 @@ Django global settings for pod_project.
 Django version: 3.2.
 """
 import os
+import importlib.util
 import django.conf.global_settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -12,7 +13,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "3.3.0"
+VERSION = "3.3.1"
 
 ##
 # Installed applications list
@@ -113,7 +114,8 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 # Local contexts
                 "pod.main.context_processors.context_settings",
-                "pod.main.context_processors.context_navbar",
+                "pod.main.context_processors.context_footer",
+                "pod.video.context_processors.context_navbar",
                 "pod.video.context_processors.context_video_settings",
                 "pod.authentication.context_processors.context_authentication_settings",
                 "pod.recorder.context_processors.context_recorder_settings",
@@ -351,6 +353,7 @@ CACHES = {
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
+        "KEY_PREFIX": "pod",
     },
     "select2": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -454,3 +457,13 @@ for variable in the_update_settings:
     locals()[variable] = the_update_settings[variable]
 
 TIME_INPUT_FORMATS = ["%H:%M", *django.conf.global_settings.TIME_INPUT_FORMATS]
+
+if locals()["DEBUG"] is True and importlib.util.find_spec("debug_toolbar") is not None:
+    INSTALLED_APPS.append("debug_toolbar")
+    MIDDLEWARE = [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+    ] + MIDDLEWARE
+    DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": "pod.settings.show_toolbar"}
+
+    def show_toolbar(request):
+        return True

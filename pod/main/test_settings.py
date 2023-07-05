@@ -75,7 +75,7 @@ USE_MEETING = True
 def get_shared_secret():
     api_mate_url = "https://bigbluebutton.org/api-mate/"
     response = requests.get(api_mate_url)
-    soup = BeautifulSoup(response.text)
+    soup = BeautifulSoup(response.text, features="html.parser")
     input_val = soup.body.find("input", attrs={"id": "input-custom-server-salt"})
     return input_val.get("value")
 

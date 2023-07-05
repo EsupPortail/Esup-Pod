@@ -568,7 +568,6 @@ msgid "Publish this presentation"
 msgstr "Publier cette présentation"
 
 #: pod/bbb/templates/bbb/card.html
-#: pod/import_video/templates/import_video/list.html
 #: pod/meeting/templates/meeting/internal_recordings.html
 msgid "by"
 msgstr "par"
@@ -2406,7 +2405,7 @@ msgstr "Vous devez créer une vidéo externe avant de pouvoir l'importer."
 #: pod/meeting/templates/meeting/internal_recordings.html
 msgid "Do not leave the page until the video upload to Pod is complete."
 msgstr ""
-"Ne quittez pas la page tant que le téléchargement de la vidéo sur Pod n’est "
+"Ne quittez pas la page tant que le téléversement de la vidéo sur Pod n’est "
 "pas terminé."
 
 #: pod/import_video/templates/import_video/list.html pod/main/forms.py
@@ -2440,16 +2439,6 @@ msgstr "Importer"
 #: pod/import_video/templates/import_video/list.html
 msgid "Manage"
 msgstr "Gérer"
-
-#: pod/import_video/templates/import_video/list.html
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Video file not uploaded to Pod"
-msgstr "Le fichier vidéo n’a pas été téléversé sur Pod"
-
-#: pod/import_video/templates/import_video/list.html
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Video file already uploaded to Pod"
-msgstr "Fichier vidéo déjà téléversé sur Pod"
 
 #: pod/import_video/templates/import_video/list.html
 #: pod/meeting/templates/meeting/internal_recordings.html
@@ -2597,6 +2586,11 @@ msgstr ""
 "Essayez de modifier les droits d’accès à la vidéo directement dans Youtube."
 
 #: pod/import_video/views.py
+#, python-format
+msgid "YouTube error '%s'"
+msgstr "Erreur en lien avec Youtube '%s'"
+
+#: pod/import_video/views.py
 msgid ""
 "YouTube content is inaccessible. This content does not appear to be publicly "
 "available."
@@ -2645,6 +2639,22 @@ msgstr ""
 #: pod/import_video/views.py
 msgid "Impossible to upload to Pod the PeerTube video"
 msgstr "Impossible de téléverser la vidéo PeerTube sur Pod"
+
+#: pod/import_video/views.py
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Video file not uploaded to Pod"
+msgstr "Le fichier vidéo n’a pas été téléversé sur Pod"
+
+#: pod/import_video/views.py
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Video file already uploaded to Pod"
+msgstr "Fichier vidéo déjà téléversé sur Pod"
+
+#: pod/import_video/views.py
+msgid "No video file found. Upload to Pod as a video is not possible."
+msgstr ""
+"Aucun fichier vidéo trouvé. Le téléversement sur Pod en tant que vidéo n’est "
+"pas possible."
 
 #: pod/live/admin.py pod/live/models.py
 msgid "QR code to record immediately an event"

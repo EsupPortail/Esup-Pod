@@ -89,7 +89,7 @@
         {{field_hidden}}
       {% endfor %}
       {% for field in form.visible_fields %}
-        <div class="mt-3 {% if 'description_' in field.name or 'title_'  in field.name %}collapse hide ms-4{% endif %}{% if 'description_' in field.name %} description{% endif %}{% if 'title_' in field.name %} title{% endif %}{% with 'is_restricted restrict_access_to_groups password' as res %} {% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
+        <div class="mt-3 {% if 'description_' in field.name or 'title_'  in field.name %}collapse ms-4{% endif %}{% if 'description_' in field.name %} description{% endif %}{% if 'title_' in field.name %} title{% endif %}{% with 'is_restricted restrict_access_to_groups password' as res %} {% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
           <div class="form-group{% if field.field.required %} form-group-required{% endif %}{% if field.errors %} errors{% endif %}"
           {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}style="max-width:44rem; overflow-x:hidden" {% endif %}>
             {% if "form-check-input" in field.field.widget.attrs.class %}
@@ -224,10 +224,10 @@
     <div class="card-body" id="formfields">
       {% for title, values in form.VIDEO_FORM_FIELDS_HELP_TEXT.items %}
       <div class="card">
-        <button class="btn btn-link" id="heading-{{forloop.counter}}" data-bs-toggle="collapse" data-bs-target="#collapse-{{forloop.counter}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter}}">
+        <button class="btn btn-link" id="heading-{{forloop.counter}}" data-bs-toggle="collapse" data-bs-target="#collapse-{{forloop.counter}}" aria-expanded="false" aria-controls="collapse-{{forloop.counter}}">
           {% trans title %}
         </button>
-        <div id="collapse-{{forloop.counter}}" class="card-body collapse hide card-text small" aria-labelledby="heading-{{forloop.counter}}" data-parent="#formfields">
+        <div id="collapse-{{forloop.counter}}" class="card-body collapse card-text small" aria-labelledby="heading-{{forloop.counter}}" data-parent="#formfields">
           {% for value in values %}
           <p>{{value|safe}}</p>
           {%endfor%}

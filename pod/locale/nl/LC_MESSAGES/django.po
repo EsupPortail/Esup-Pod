@@ -2472,6 +2472,457 @@ msgstr ""
 msgid "Impossible to upload to Pod the PeerTube video"
 msgstr ""
 
+#: pod/import_video/apps.py
+msgid "Import External Video"
+msgstr ""
+
+#: pod/import_video/forms.py pod/meeting/forms.py
+msgid "Please enter a valid address"
+msgstr "Vul alstublieft een geldig adres in"
+
+#: pod/import_video/models.py pod/meeting/models.py
+msgid "Recording name"
+msgstr ""
+
+#: pod/import_video/models.py pod/meeting/models.py
+msgid "Please enter a name that will allow you to easily find this recording."
+msgstr ""
+
+#: pod/import_video/models.py pod/meeting/models.py
+msgid "User who create this recording"
+msgstr ""
+
+#: pod/import_video/models.py pod/meeting/models.py pod/video/models.py
+msgid "Site"
+msgstr ""
+
+#: pod/import_video/models.py
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "Big Blue Button"
+msgstr ""
+
+#: pod/import_video/models.py
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "PeerTube"
+msgstr ""
+
+#: pod/import_video/models.py
+msgid "Video file"
+msgstr ""
+
+#: pod/import_video/models.py
+msgid "Youtube"
+msgstr ""
+
+#: pod/import_video/models.py
+msgid "External record type"
+msgstr ""
+
+#: pod/import_video/models.py
+msgid ""
+"It is possible to manage recordings from Big Blue Button or another source "
+"delivering video files."
+msgstr ""
+
+#: pod/import_video/models.py pod/meeting/models.py
+msgid "Address of the recording to download"
+msgstr ""
+
+#: pod/import_video/models.py pod/meeting/models.py
+msgid ""
+"Please enter the address of the recording to download. This address must "
+"match the record type selected."
+msgstr ""
+
+#: pod/import_video/models.py pod/meeting/models.py
+msgid "User who uploaded to Pod the video file"
+msgstr ""
+
+#: pod/import_video/models.py
+msgid "External recordings"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/import_video/templates/import_video/list.html pod/import_video/views.py
+msgid "My external videos"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/import_video/views.py
+msgid "Edit the external video"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/import_video/templates/import_video/list.html pod/import_video/views.py
+msgid "Create an external video"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"Access to adding external recording has been restricted. If you want to add "
+"external recordings on the platform, please"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/live/templates/live/event_edit.html
+#: pod/live/templates/live/event_immediate_edit.html
+#: pod/meeting/templates/meeting/add_or_edit.html
+#: pod/meeting/templates/meeting/my_meetings.html
+#: pod/video/templates/videos/add_video.html
+#: pod/video/templates/videos/video_edit.html
+msgid "contact us"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"To centralize Big Blue Button, PeerTube, video file, Youtube recordings on "
+"this platform, first, please enter the information below."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "Then you can import this video to Pod."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/video/templates/videos/add_video.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Uploading"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"To retrieve recordings from other interfaces, just copy the link to the Big "
+"Blue Button, PeerTube, Youtube or other video from the app."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"All you have to do is paste this link in the 'Address of the recording to "
+"download' field, and enter the additional information."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"Once the entry is made, you will be able - if the original application "
+"allows it and if the video is publicly available - to upload the video to "
+"this platform."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "To do this, please use the 'Upload to Pod as video' button in the list."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"You will then be able to find the encoded video directly in the My videos "
+"tab after a while."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/video/templates/videos/add_video.html
+#: pod/video/templates/videos/video_edit.html
+msgid "An email will be sent to you when all encoding tasks are completed."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "Terms of Service"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"It is necessary to respect the terms of use of the various services before "
+"being able to upload a video from their site to this platform."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "More infomations on Big Blue Button"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "More infomations on PeerTube"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "YouTube"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"Their terms of service state that you are not allowed to download any "
+"content unless permitted by YouTube or the person who owns the copyright to "
+"the content."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "YouTube's Terms of Service"
+msgstr ""
+
+#: pod/import_video/templates/import_video/filter_aside.html
+#: pod/live/templates/live/filter_aside.html
+#: pod/meeting/templates/meeting/filter_aside.html
+#: pod/meeting/templates/meeting/filter_aside_recording.html
+#: pod/video/templates/videos/filter_aside.html
+msgid "Filters"
+msgstr ""
+
+#: pod/import_video/templates/import_video/filter_aside.html
+#: pod/main/templates/aside.html
+#: pod/meeting/templates/meeting/filter_aside_recording.html
+#: pod/recorder/models.py pod/video/forms.py pod/video/models.py
+#: pod/video/templates/videos/filter_aside.html
+#: pod/video_search/templates/search/search.html
+msgid "Tags"
+msgstr ""
+
+#: pod/import_video/templates/import_video/filter_aside.html
+#: pod/main/templates/navbar.html pod/main/templates/navbar_collapse.html
+#: pod/meeting/templates/meeting/filter_aside_recording.html
+#: pod/video/templates/videos/filter_aside.html
+#: pod/video/templates/videos/filter_aside_category.html
+#: pod/video_search/forms.py pod/video_search/templates/search/search.html
+msgid "Search"
+msgstr ""
+
+#: pod/import_video/templates/import_video/filter_aside.html
+#: pod/meeting/templates/meeting/filter_aside_recording.html
+msgid "Type at least 3 chars to filter"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+msgid ""
+"If you have achieved Big Blue Button meetings via another interface "
+"(typically via Moodle), or if you wish to centralize PeerTube, Youtube or "
+"other videos on Pod, it is possible to retrieve these recordings and be able "
+"to convert them into video in this platform (under certain conditions)."
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+msgid "You need to create an external video before you can import it."
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Do not leave the page until the video upload to Pod is complete."
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html pod/main/forms.py
+#: pod/meeting/forms.py pod/meeting/templates/meeting/internal_recordings.html
+#: pod/podfile/models.py pod/podfile/templates/podfile/home_content.html
+#: pod/video_encode_transcript/models.py
+msgid "Name"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "State"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html pod/meeting/admin.py
+#: pod/meeting/templates/meeting/internal_recordings.html pod/video/models.py
+msgid "Date"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Playback"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+msgid "Import"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+msgid "Manage"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Display the recording in presentation format"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Display the recording in video format"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+msgid "Please confirm you want to upload the recording to Pod"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Upload to Pod as a video"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+msgid "Please confirm you want to delete the external recording"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+msgid "Edit the external recording"
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
+msgid "Delete the external recording"
+msgstr ""
+
+#: pod/import_video/utils.py pod/import_video/views.py pod/meeting/views.py
+msgid "Impossible to upload to Pod the video"
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "No URL found / No recording name"
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "Try changing the record type or address for this recording"
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "The HTML file for this recording was not found on the BBB server."
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "The video file for this recording was not found in the HTML file."
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "The found file is not a valid video."
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "No video file found"
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "The video file for this recording was not found on the BBB server."
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "Impossible to download the video file from the server."
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "Impossible to create the Pod video"
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "You cannot view this recording."
+msgstr ""
+
+#: pod/import_video/views.py pod/meeting/views.py
+msgid ""
+"The recording has been uploaded to Pod. You can see the generated video in "
+"My videos."
+msgstr ""
+
+#: pod/import_video/views.py pod/live/views.py pod/meeting/views.py
+#: pod/video/views.py
+msgid "The changes have been saved."
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "The external recording has been deleted."
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "Impossible to create the external recording"
+msgstr ""
+
+#: pod/import_video/views.py pod/meeting/views.py
+#, python-format
+msgid ""
+"This video was uploaded to Pod; its origin is %(type)s : <a href=\"%(url)s\" "
+"target=\"_blank\">%(url)s</a>"
+msgstr ""
+
+#: pod/import_video/views.py pod/meeting/views.py
+msgid "Try changing the record type or address for this recording."
+msgstr ""
+
+#: pod/import_video/views.py
+#, python-format
+msgid ""
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "YouTube error"
+msgstr ""
+
+#: pod/import_video/views.py
+msgid ""
+"YouTube content is unavailable. This content does not appear to be publicly "
+"available."
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "Try changing the access rights to the video directly in Youtube."
+msgstr ""
+
+#: pod/import_video/views.py
+#, python-format
+msgid "YouTube error '%s'"
+msgstr ""
+
+#: pod/import_video/views.py
+msgid ""
+"YouTube content is inaccessible. This content does not appear to be publicly "
+"available."
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "Try changing the address of this recording."
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "PeerTube error"
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "The address entered does not appear to be a valid PeerTube address."
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "Try changing the address of the recording."
+msgstr ""
+
+#: pod/import_video/views.py
+msgid ""
+"The address entered does not appear to be a valid PeerTube address or the "
+"PeerTube server is not responding as expected."
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "Try changing the address of the recording or retry later."
+msgstr ""
+
+#: pod/import_video/views.py
+#, python-format
+msgid ""
+"This video '%(name)s' was uploaded to Pod; its origin is PeerTube : <a "
+"href='%(url)s' target='blank'>%(url)s</a>."
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "Impossible to upload to Pod the PeerTube video"
+msgstr ""
+
+#: pod/import_video/views.py
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Video file not uploaded to Pod"
+msgstr ""
+
+#: pod/import_video/views.py
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Video file already uploaded to Pod"
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "No video file found. Upload to Pod as a video is not possible."
+msgstr ""
+
 #: pod/live/admin.py pod/live/models.py
 msgid "QR code to record immediately an event"
 msgstr ""
