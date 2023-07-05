@@ -127,19 +127,23 @@ def render_playlist(
             "slug": get_favorite_playlist_for_user(request.user).slug,
         }
     )
-    form = None
     in_favorites_playlist = (playlist_url == request.path)
     if playlist.visibility == "protected" and playlist.owner != request.user:
         if request.method == "POST":
             form = PlaylistPasswordForm(request.POST)
             form_password = request.POST.get("password")
             if (form_password):
-                hashed_form_password = hashlib.sha256(form_password.encode("utf-8")).hexdigest()
+                print(form_password)
+                hashed_form_password = hashlib.sha256(
+                    form_password.encode("utf-8")).hexdigest()
                 if hashed_form_password != playlist.password:
                     messages.add_message(
                         request, messages.ERROR, _("The password is incorrect.")
                     )
+                    print("non")
+                    return redirect(request.META["HTTP_REFERER"])
                 else:
+                    print("oui")
                     return render(
                         request,
                         "playlist/playlist.html",
@@ -164,13 +168,14 @@ def render_playlist(
                         },
                     )
         else:
+            print("PlaylistPasswordForm")
             form = PlaylistPasswordForm()
             return render(
                 request,
                 "playlist/protected-playlist-form.html",
                 {"form": form,
                  "playlist": playlist,
-                }
+                 }
             )
 
     if is_ajax(request):
@@ -185,6 +190,7 @@ def render_playlist(
                 "count_videos": count_videos
             },
         )
+    print("ici")
     return render(
         request,
         "playlist/playlist.html",
@@ -205,7 +211,6 @@ def render_playlist(
             "cursus_list": CURSUS_CODES,
             "sort_field": sort_field,
             "sort_direction": sort_direction,
-            "form": form,
         },
     )
 
@@ -375,6 +380,7 @@ def favorites_save_reorganisation(request, slug: str):
     else:
         raise Http404()
 
+
 def start_playlist(request, slug):
     playlist = get_object_or_404(Playlist, slug=slug)
 
@@ -386,11 +392,14 @@ def start_playlist(request, slug):
             form = PlaylistPasswordForm(request.POST)
             form_password = request.POST.get("password")
             if (form_password):
-                hashed_form_password = hashlib.sha256(form_password.encode("utf-8")).hexdigest()
+                hashed_form_password = hashlib.sha256(
+                    form_password.encode("utf-8")).hexdigest()
                 if hashed_form_password != playlist.password:
                     messages.add_message(
                         request, messages.ERROR, _("The password is incorrect.")
                     )
+                    print("ici")
+                    return redirect(request.META["HTTP_REFERER"])
                 else:
                     print("VALID")
                     return redirect(get_link_to_start_playlist(request, playlist))
@@ -401,7 +410,7 @@ def start_playlist(request, slug):
                 "playlist/protected-playlist-form.html",
                 {"form": form,
                  "playlist": playlist,
-                }
+                 }
             )
     else:
-        return HttpResponseRedirect('/')  # Exemple de redirection vers la page d'accueil
+        return redirect(reverse("playlist:list"))
