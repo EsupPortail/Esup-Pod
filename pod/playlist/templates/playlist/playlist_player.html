@@ -8,7 +8,7 @@
 <script src="{% static 'js/playlist-player.js' %}?ver={{VERSION}}" ></script>
 
 <div class="card" id="card-playlistplayer">
-    <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-list-ul"></i>&nbsp;{% trans "Playlist:" %} <a class="btn-link" href="{% url 'playlist:content' playlist_in_get.slug %}">{{ playlist_in_get.name }}</a></h2>
+    <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-list-ul"></i>&nbsp;{% trans "Playlist:" %} <a class="btn-link" href="{% url 'playlist:content' playlist_in_get.slug %}">{{ playlist_in_get.name|truncatechars:20 }}</a></h2>
     <div {% if videos|length > 5 %}class="scroll-container"{% endif %}>
         {% for video_in_playlist in videos %}
             {% can_see_playlist_video video_in_playlist as can_see_video %}
