@@ -846,7 +846,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         template_video = "videos/video-iframe.html"
     elif request.GET.get("playlist"):
         playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
-        if playlist.visibility == "public" or (
+        if playlist.visibility == "public" or playlist.visibility == "protected" or (
             playlist.owner == request.user
             or playlist in get_playlists_for_additional_owner(request.user)
             or request.user.is_staff
