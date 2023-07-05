@@ -15,7 +15,7 @@
       </legend>
     </fieldset>
     <div id="filterType">
-      <div class="form-group collapse" id="collapseFilterType">
+      <div id="collapseFilterType">
         <div class="form-check">
           <input onChange="window.location = `{% url 'playlist:list' %}?visibility=private`;" class="form-check-input" type="radio" name="type" value="private" id="idprivate_type" {% if request.GET.visibility == "private" %}checked="true"{% endif %}>
           <label class="form-check-label" for="idprivate_type">&nbsp;{% trans "See my private playlists"%}</label>
