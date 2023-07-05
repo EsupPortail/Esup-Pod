@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-05 13:15+0000\n"
+"POT-Creation-Date: 2023-07-05 14:44+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -5353,6 +5353,10 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_sort_select.html
 msgid "Modification date"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist_sort_select.html
+msgid "Creation date"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
