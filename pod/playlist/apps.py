@@ -108,12 +108,15 @@ class PlaylistConfig(AppConfig):
         from pod.playlist.models import Playlist, PlaylistContent
         from django.utils.translation import gettext_lazy as _
         from django.contrib.auth.models import User
+        from django.template.defaultfilters import slugify
+        from pod.main.models import get_nextautoincrement
 
         # Add Favorites playlist for users without favorites
         existing_users = User.objects.all()
         users_without_favorites = existing_users.exclude(id__in=FAVORITES_DATA.keys())
         without_fav_to_bulk = []
         for user in users_without_favorites:
+            new_id = get_nextautoincrement(Playlist)
             without_fav_to_bulk.append(
                 Playlist(
                     name="Favorites",
@@ -121,7 +124,8 @@ class PlaylistConfig(AppConfig):
                     visibility="private",
                     autoplay=True,
                     owner=user,
-                    editable=False
+                    editable=False,
+                    slug = f"{new_id}-{slugify(self.name)}"
                 )
             )
         Playlist.objects.bulk_create(without_fav_to_bulk, batch_size=1000)
