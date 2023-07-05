@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-21 09:01+0200\n"
+"POT-Creation-Date: 2023-07-05 15:50+0200\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -549,7 +549,6 @@ msgid "Publish this presentation"
 msgstr ""
 
 #: pod/bbb/templates/bbb/card.html
-#: pod/import_video/templates/import_video/list.html
 #: pod/meeting/templates/meeting/internal_recordings.html
 msgid "by"
 msgstr ""
@@ -1579,7 +1578,7 @@ msgid "Subtitle(s) and Caption(s)"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "to create your subtitles and/or caption(s) files"
+msgid "To create your subtitles and/or caption(s) files"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -2379,16 +2378,6 @@ msgstr ""
 
 #: pod/import_video/templates/import_video/list.html
 #: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Video file not uploaded to Pod"
-msgstr ""
-
-#: pod/import_video/templates/import_video/list.html
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Video file already uploaded to Pod"
-msgstr ""
-
-#: pod/import_video/templates/import_video/list.html
-#: pod/meeting/templates/meeting/internal_recordings.html
 msgid "Display the recording in presentation format"
 msgstr ""
 
@@ -2514,6 +2503,11 @@ msgid "Try changing the access rights to the video directly in Youtube."
 msgstr ""
 
 #: pod/import_video/views.py
+#, python-format
+msgid "YouTube error '%s'"
+msgstr ""
+
+#: pod/import_video/views.py
 msgid ""
 "YouTube content is inaccessible. This content does not appear to be publicly "
 "available."
@@ -2554,6 +2548,20 @@ msgstr ""
 
 #: pod/import_video/views.py
 msgid "Impossible to upload to Pod the PeerTube video"
+msgstr ""
+
+#: pod/import_video/views.py
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Video file not uploaded to Pod"
+msgstr ""
+
+#: pod/import_video/views.py
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Video file already uploaded to Pod"
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "No video file found. Upload to Pod as a video is not possible."
 msgstr ""
 
 #: pod/live/admin.py pod/live/models.py

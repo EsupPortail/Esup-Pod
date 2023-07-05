@@ -11,14 +11,12 @@ from django.template.loader import render_to_string
 from .models import Channel, Theme
 from .models import Type, Discipline, Video
 from .models import ViewCount
-from .utils import get_available_videos
+from .context_processors import get_available_videos
 
 # commented for v3
 # from .remote_encode import start_store_remote_encoding_video
 
 import json
-
-__VIDEOS__ = get_available_videos()
 
 # Serializers define the API representation.
 
@@ -218,7 +216,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         )
         if request.GET.get("encoded") and request.GET.get("encoded") == "true":
             user_videos = user_videos.exclude(
-                pk__in=[vid.id for vid in __VIDEOS__ if not vid.encoded]
+                pk__in=[vid.id for vid in user_videos if not vid.encoded]
             )
         if request.GET.get("search_title") and request.GET.get("search_title") != "":
             user_videos = user_videos.filter(
@@ -267,9 +265,9 @@ class DublinCoreView(APIView):
     max_page_size = 1000
 
     def get(self, request, format=None):
-        list_videos = __VIDEOS__
+        list_videos = get_available_videos(request)
         if request.GET:
-            list_videos = __VIDEOS__.filter(**request.GET.dict())
+            list_videos = list_videos.filter(**request.GET.dict())
         xmlcontent = '<?xml version="1.0" encoding="utf-8"?>\n'
         xmlcontent += (
             "<!DOCTYPE rdf:RDF PUBLIC " '"-//DUBLIN CORE//DCMES DTD 2002/07/31//EN" \n'

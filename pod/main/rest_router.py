@@ -80,11 +80,6 @@ urlpatterns = [
         name="launch_encode_view",
     ),
     url(
-        r"launch_transcript_view/$",
-        encode_views.launch_transcript_view,
-        name="launch_transcript_view",
-    ),
-    url(
         r"store_remote_encoded_video/$",
         encode_views.store_remote_encoded_video,
         name="store_remote_encoded_video",
@@ -110,6 +105,15 @@ urlpatterns = [
         name="accessgroups_remove_user_accessgroup ",
     ),
 ]
+USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
+if USE_TRANSCRIPTION:
+    urlpatterns += [
+        url(
+            r"launch_transcript_view/$",
+            encode_views.launch_transcript_view,
+            name="launch_transcript_view",
+        ),
+    ]
 
 for apps in settings.THIRD_PARTY_APPS:
     mod = importlib.import_module("pod.%s.rest_urls" % apps)

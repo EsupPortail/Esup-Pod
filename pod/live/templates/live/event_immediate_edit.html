@@ -51,7 +51,7 @@
                     {% endfor %}
                     {% for field in form.visible_fields %}
                         {% spaceless %}
-                            <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{% endif %}{% if "title_" in field.name %} title{% endif %}">
+                            <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse{% else %}{% endif %}{% if "description_" in field.name %} description{% endif %}{% if "title_" in field.name %} title{% endif %}">
                                 <div class="list-group-item">
                                     <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}">
                                         {{ field.errors }}

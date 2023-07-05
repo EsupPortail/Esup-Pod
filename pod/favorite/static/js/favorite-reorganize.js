@@ -52,7 +52,7 @@ function addEventForReorganizedButton() {
     .getElementById("reorganize-button")
     .addEventListener("click", function (event) {
       const draggableElements = document.querySelectorAll(
-        ".draggable-container"
+        ".draggable-container",
       );
       draggableElements.forEach((draggableElement) => {
         draggableElement.addEventListener("dragenter", (event) => {
@@ -169,7 +169,7 @@ function convert2DTableToJson(table) {
  */
 function updateCollapseAside() {
   const collapseAside = document.querySelector(
-    "#collapseAside > div.card.card-body"
+    "#collapseAside > div.card.card-body",
   );
   collapseAside.remove();
   const helpInformations = document.querySelector("#card-sharedraftversion");

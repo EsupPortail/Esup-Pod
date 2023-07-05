@@ -27,7 +27,7 @@ onAfterPageLoad = function () {
     document.body.offsetHeight,
     document.clientHeight,
     document.scrollHeight,
-    document.offsetHeight
+    document.offsetHeight,
   );
   document.querySelector("footer.static-pod .hidden-pod").style.display =
     "none";
@@ -50,7 +50,7 @@ function refreshInfiniteLoader(url, nextPage) {
     url,
     onBeforePageLoad,
     onAfterPageLoad,
-    (page = nextPage)
+    (page = nextPage),
   );
 }
 
@@ -84,20 +84,20 @@ function refreshVideosSearch() {
       let html = parser.parseFromString(data, "text/html").body;
       document.getElementById("videos_list").outerHTML = html.innerHTML;
       replaceCountVideos(
-        document.getElementById("videos_list").dataset.countvideos
+        document.getElementById("videos_list").dataset.countvideos,
       );
       nextPage =
-        document.getElementById("videos_list").dataset.nextPage === "true";
+        document.getElementById("videos_list").dataset.nextpage === "true";
       window.history.pushState({}, "", url);
       if (nextPage) {
         pageNext = document.querySelector("a.infinite-more-link").dataset
-          .nextPageNumber;
+          .nextpagenumber;
         refreshInfiniteLoader(url, pageNext);
       }
     })
     .catch((error) => {
       document.getElementById("videos_list").innerHTML = gettext(
-        "An Error occurred while processing."
+        "An Error occurred while processing.",
       );
     })
     .finally(() => {
@@ -157,7 +157,7 @@ if (ownerBox) {
         users.forEach((user) => {
           filterOwnerContainer.appendChild(createUserCheckBox(user));
           setListenerChangeInputs(
-            document.getElementById("id" + user.username)
+            document.getElementById("id" + user.username),
           );
         });
       });
@@ -249,18 +249,24 @@ function disabledInputs(value) {
     });
 }
 
-// First launch of the infinite scroll
-infinite = new InfiniteLoader(
-  getUrlForRefresh(),
-  onBeforePageLoad,
-  onAfterPageLoad,
-  nextPage,
-  (page = 2)
-);
-
 // Add event listener on inputs on launch
 document
   .querySelectorAll(".form-check-input,#sort,#sort_direction")
   .forEach((el) => {
     setListenerChangeInputs(el);
   });
+//initiate checkedInputs
+document
+  .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
+  .forEach((e) => {
+    checkedInputs.push(e);
+  });
+
+// First launch of the infinite scroll
+infinite = new InfiniteLoader(
+  getUrlForRefresh(),
+  onBeforePageLoad,
+  onAfterPageLoad,
+  nextPage,
+  (page = 2),
+);

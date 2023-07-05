@@ -1,19 +1,11 @@
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
-from django.db.models import Count, Sum
-from django.db.models import Prefetch
-from datetime import timedelta
 
 from pod.main.models import LinkFooter
 from django.core.exceptions import ObjectDoesNotExist
-from pod.video.models import Channel
-from pod.video.models import Theme
-from pod.video.models import Type
-from pod.video.models import Discipline
-from pod.video.models import Video
+
 from pod.main.models import Configuration
 from django.contrib.sites.shortcuts import get_current_site
-from pod.main.models import AdditionalChannelTab
 
 MENUBAR_HIDE_INACTIVE_OWNERS = getattr(
     django_settings, "MENUBAR_HIDE_INACTIVE_OWNERS", False
@@ -103,7 +95,7 @@ def context_settings(request):
         ).value
 
         maintenance_sheduled = Configuration.objects.get(key="maintenance_sheduled")
-        maintenance_sheduled = True if maintenance_sheduled.value == "1" else False
+        maintenance_sheduled = True if (maintenance_sheduled.value == "1") else False
         maintenance_text_sheduled = Configuration.objects.get(
             key="maintenance_text_sheduled"
         ).value
@@ -150,93 +142,8 @@ def context_settings(request):
     return new_settings
 
 
-def context_navbar(request):
-    channels = (
-        Channel.objects.filter(
-            visible=True,
-            video__is_draft=False,
-            add_channels_tab=None,
-            site=get_current_site(request),
-        )
-        .distinct()
-        .annotate(video_count=Count("video", distinct=True))
-        .prefetch_related(
-            Prefetch(
-                "themes",
-                queryset=Theme.objects.filter(
-                    parentId=None, channel__site=get_current_site(request)
-                )
-                .distinct()
-                .annotate(video_count=Count("video", distinct=True)),
-            )
-        )
-    )
-
-    add_channels_tab = AdditionalChannelTab.objects.all().prefetch_related(
-        Prefetch(
-            "channel_set",
-            queryset=Channel.objects.filter(site=get_current_site(request))
-            .distinct()
-            .annotate(video_count=Count("video", distinct=True)),
-        )
-    )
-
-    all_channels = (
-        Channel.objects.all()
-        .filter(site=get_current_site(request))
-        .distinct()
-        .annotate(video_count=Count("video", distinct=True))
-        .prefetch_related(
-            Prefetch(
-                "themes",
-                queryset=Theme.objects.filter(channel__site=get_current_site(request))
-                .distinct()
-                .annotate(video_count=Count("video", distinct=True)),
-            )
-        )
-    )
-
-    types = (
-        Type.objects.filter(
-            sites=get_current_site(request),
-            video__is_draft=False,
-            video__sites=get_current_site(request),
-        )
-        .distinct()
-        .annotate(video_count=Count("video", distinct=True))
-    )
-
-    disciplines = (
-        Discipline.objects.filter(
-            site=get_current_site(request),
-            video__is_draft=False,
-            video__sites=get_current_site(request),
-        )
-        .distinct()
-        .annotate(video_count=Count("video", distinct=True))
-    )
-
+def context_footer(request):
     linkFooter = LinkFooter.objects.all().filter(sites=get_current_site(request))
-
-    list_videos = Video.objects.filter(
-        encoding_in_progress=False,
-        is_draft=False,
-        sites=get_current_site(request),
-    )
-    VIDEOS_COUNT = list_videos.count()
-    VIDEOS_DURATION = (
-        str(timedelta(seconds=list_videos.aggregate(Sum("duration"))["duration__sum"]))
-        if list_videos.aggregate(Sum("duration"))["duration__sum"]
-        else 0
-    )
-
     return {
-        "ALL_CHANNELS": all_channels,
-        "ADD_CHANNELS_TAB": add_channels_tab,
-        "CHANNELS": channels,
-        "TYPES": types,
-        "DISCIPLINES": disciplines,
         "LINK_FOOTER": linkFooter,
-        "VIDEOS_COUNT": VIDEOS_COUNT,
-        "VIDEOS_DURATION": VIDEOS_DURATION,
     }
