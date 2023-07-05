@@ -43,7 +43,7 @@
         if (settings.ui) {
           var menuButton = new PlaylistMenuButton(player, settings);
           player.controlBar.info = player.controlBar.el_.appendChild(
-            menuButton.el_
+            menuButton.el_,
           );
           player.controlBar.info.dispose = function () {
             this.parentNode.removeChild(this);

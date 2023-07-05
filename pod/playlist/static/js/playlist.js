@@ -1,6 +1,6 @@
 var showalert = (message, alerttype) => {
   document.body.append(
-    `<div id="formalertdiv" class="alert ${alerttype} alert-dismissible fade show" role="alert">${message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
+    `<div id="formalertdiv" class="alert ${alerttype} alert-dismissible fade show" role="alert">${message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`,
   );
   setTimeout(() => {
     document.getElementById("formalertdiv").remove();
@@ -14,7 +14,7 @@ var ajaxfail = function (data) {
       data +
       ")" +
       gettext("The form could not be recovered."),
-    "alert-danger"
+    "alert-danger",
   );
 };
 
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (response.status !== 200) {
             showalert(
               gettext("You are no longer authenticated. Please log in again."),
-              "alert-danger"
+              "alert-danger",
             );
           } else {
             showalert(gettext("Position saved"), "alert-success");
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
             "Error moving videos. (" +
               error +
               ") The videos could not be moved.",
-            "alert-danger"
+            "alert-danger",
           );
         });
     });
@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (response.status != 200) {
             showalert(
               gettext("You are no longer authenticated. Please log in again."),
-              "alert-danger"
+              "alert-danger",
             );
           } else {
             response.json().then((data) => {
@@ -147,9 +147,9 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch((error) => {
           showalert(
             gettext(
-              "Error deleting video from playlist. The video could not be deleted."
+              "Error deleting video from playlist. The video could not be deleted.",
             ),
-            "alert-danger"
+            "alert-danger",
           );
         });
     });
@@ -180,9 +180,9 @@ document.addEventListener("DOMContentLoaded", function () {
             if (response.status != 200) {
               showalert(
                 gettext(
-                  "You are no longer authenticated. Please log in again."
+                  "You are no longer authenticated. Please log in again.",
                 ),
-                "alert-danger"
+                "alert-danger",
               );
             } else {
               if (response.status == 200) {
@@ -196,9 +196,9 @@ document.addEventListener("DOMContentLoaded", function () {
           .catch((error) => {
             showalert(
               gettext(
-                "Error deleting playlist. The playlist could not be deleted."
+                "Error deleting playlist. The playlist could not be deleted.",
               ),
-              "alert-danger"
+              "alert-danger",
             );
           });
       }
@@ -219,7 +219,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!checkslug) {
           showalert(
             gettext("The video can not be added from this page."),
-            "alert-danger"
+            "alert-danger",
           );
           return;
         }
@@ -263,18 +263,18 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
               showalert(
                 gettext(
-                  "You are no longer authenticated. Please log in again."
+                  "You are no longer authenticated. Please log in again.",
                 ),
-                "alert-danger"
+                "alert-danger",
               );
             }
           })
           .catch((error) => {
             showalert(
               gettext(
-                "Error getting video information. The video information could not be retrieved."
+                "Error getting video information. The video information could not be retrieved.",
               ),
-              "alert-danger"
+              "alert-danger",
             );
           });
       });

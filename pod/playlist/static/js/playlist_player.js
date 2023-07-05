@@ -76,7 +76,7 @@ let PlaylistPlayer = {
             }
             // Update managment links
             let manageLinks = document.querySelectorAll(
-              "#card-managevideo .card-body a"
+              "#card-managevideo .card-body a",
             );
             manageLinks.forEach(function (el) {
               var href_value = el.getAttribute("href");
@@ -84,7 +84,7 @@ let PlaylistPlayer = {
                 /(.*)\/([^/]*)\/([^/])*$/,
                 function (str, g0, g1, g2) {
                   return g0 + "/" + json.slug + "/" + (g2 ? g2 : "");
-                }
+                },
               );
               el.setAttribute("href", new_href_value);
             });
@@ -108,7 +108,7 @@ let PlaylistPlayer = {
               e.stopPropagation();
               const password = document.getElementById("id_password").value;
               let csrfmiddlewaretoken = document.querySelector(
-                '#video_password_form > input[name="csrfmiddlewaretoken"]'
+                '#video_password_form > input[name="csrfmiddlewaretoken"]',
               ).value;
               if (password == "") {
                 wrapper.querySelector(".invalid-feedback").innerHTML =
@@ -274,7 +274,7 @@ let PlaylistPlayer = {
                 p +
                 '_style_id" href="' +
                 this.plugins[p].css +
-                '" rel="stylesheet" >'
+                '" rel="stylesheet" >',
             );
         }
         if (document.querySelectorAll("#" + p + "_style_id").length == 0) {
@@ -292,7 +292,7 @@ let PlaylistPlayer = {
     },
     unload: function (p) {
       let unloadFile = document.querySelector(
-        "#" + p + "_style_id, #" + p + "_script_id"
+        "#" + p + "_style_id, #" + p + "_script_id",
       );
       if (unloadFile) {
         unloadFile.remove();
@@ -326,7 +326,7 @@ let PlaylistPlayer = {
     // Replace video_element
     document
       .querySelectorAll(
-        "form#video_count_form, ul.video-slides, ul#overlays, div.chapters-list"
+        "form#video_count_form, ul.video-slides, ul#overlays, div.chapters-list",
       )
       .forEach(function (e) {
         e.remove();
@@ -335,7 +335,7 @@ let PlaylistPlayer = {
     player.dispose();
 
     let infoWrapper = document.querySelectorAll(
-      "#info-video-wrapper, #info-video"
+      "#info-video-wrapper, #info-video",
     )[0];
     infoWrapper.insertAdjacentHTML("beforebegin", json.html_video_element);
     const _this = this;
@@ -362,7 +362,7 @@ let PlaylistPlayer = {
           .append(
             '<track kind="metadata" src="' +
               json.enrichtracksrc +
-              '" label="enrichment">'
+              '" label="enrichment">',
           );
         _this.headFiles.getOrLoad("enrichment", function () {
           var tracks = player.el().getElementsByTagName("TRACK");
@@ -393,7 +393,7 @@ let PlaylistPlayer = {
               for (i = 0; i < metadataTrack.cues.length; i++) {
                 // Replace tabs by spaces to prevent a "JSON.parse: bad control character in string literal" error.
                 data = JSON.parse(
-                  metadataTrack.cues[i].text.replace(/\t/g, " ")
+                  metadataTrack.cues[i].text.replace(/\t/g, " "),
                 );
                 slide.push({
                   title: data.title,

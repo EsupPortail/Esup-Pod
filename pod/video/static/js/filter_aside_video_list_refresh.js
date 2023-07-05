@@ -27,7 +27,7 @@ onAfterPageLoad = function () {
     document.body.offsetHeight,
     document.clientHeight,
     document.scrollHeight,
-    document.offsetHeight
+    document.offsetHeight,
   );
   document.querySelector("footer.static-pod .hidden-pod").style.display =
     "none";
@@ -50,7 +50,7 @@ function refreshInfiniteLoader(url, nextPage) {
     url,
     onBeforePageLoad,
     onAfterPageLoad,
-    (page = nextPage)
+    (page = nextPage),
   );
 }
 
@@ -84,7 +84,7 @@ function refreshVideosSearch() {
       let html = parser.parseFromString(data, "text/html").body;
       document.getElementById("videos_list").outerHTML = html.innerHTML;
       replaceCountVideos(
-        document.getElementById("videos_list").dataset.countvideos
+        document.getElementById("videos_list").dataset.countvideos,
       );
       nextPage =
         document.getElementById("videos_list").dataset.nextpage === "true";
@@ -97,7 +97,7 @@ function refreshVideosSearch() {
     })
     .catch((error) => {
       document.getElementById("videos_list").innerHTML = gettext(
-        "An Error occurred while processing."
+        "An Error occurred while processing.",
       );
     })
     .finally(() => {
@@ -157,7 +157,7 @@ if (ownerBox) {
         users.forEach((user) => {
           filterOwnerContainer.appendChild(createUserCheckBox(user));
           setListenerChangeInputs(
-            document.getElementById("id" + user.username)
+            document.getElementById("id" + user.username),
           );
         });
       });
@@ -268,5 +268,5 @@ infinite = new InfiniteLoader(
   onBeforePageLoad,
   onAfterPageLoad,
   nextPage,
-  (page = 2)
+  (page = 2),
 );

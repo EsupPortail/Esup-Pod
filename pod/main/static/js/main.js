@@ -299,7 +299,7 @@ document.addEventListener("change", (e) => {
       var valeur = txtinteg.value;
       txtinteg.value = valeur.replace(
         "/?",
-        "/?start=" + parseInt(player.currentTime()) + "&"
+        "/?start=" + parseInt(player.currentTime()) + "&",
       );
     }
     document.getElementById("txtposition").value = player
@@ -350,7 +350,7 @@ var get_list = function (
   add_link,
   current,
   channel,
-  show_only_parent_themes = false
+  show_only_parent_themes = false,
 ) {
   level = level || 0;
   tab_selected = tab_selected || [];
@@ -406,7 +406,7 @@ var get_list = function (
         attrs,
         add_link,
         current,
-        channel
+        channel,
       );
     }
   }
@@ -428,7 +428,7 @@ document.querySelectorAll(".collapsibleThemes").forEach((cl) => {
         (add_link = true),
         (current = ""),
         (channel = ""),
-        (show_only_parent_themes = show_only_parent_themes)
+        (show_only_parent_themes = show_only_parent_themes),
       );
       cl.innerHTML = '<ul class="list-inline p-1 border">' + str + "</ul>";
       //$(this).parents("li").addClass('list-group-item-light');
@@ -589,7 +589,7 @@ function TriggerAlertClose() {
           },
           {
             duration: 1000,
-          }
+          },
         );
         slideUp(el, 1000, function () {
           el.remove();
@@ -644,7 +644,7 @@ document.addEventListener("submit", (e) => {
   send_form_data(
     e.target.getAttribute("action"),
     data_form,
-    "show_picture_form"
+    "show_picture_form",
   );
 });
 
@@ -682,8 +682,8 @@ document.addEventListener("submit", (e) => {
       interpolate(
         gettext("Are you sure you want to delete theme '%(title)s'?"),
         { title: form.dataset.title },
-        true
-      )
+        true,
+      ),
     );
 
     if (deleteConfirm) {
@@ -693,7 +693,7 @@ document.addEventListener("submit", (e) => {
     send_form_data(
       window.location.href,
       data_form,
-      "show_form_theme_" + action
+      "show_form_theme_" + action,
     );
   }
 });
@@ -728,7 +728,7 @@ var result_video_form = function (data) {
   if (data.errors) {
     showalert(
       gettext("One or more errors have been found in the form."),
-      "alert-danger"
+      "alert-danger",
     );
   } else {
     showalert(gettext("Changes have been saved."), "alert-info");
@@ -744,7 +744,7 @@ var send_form_data = async function (
   fct,
   method,
   callbackSuccess = undefined,
-  callbackFail = undefined
+  callbackFail = undefined,
 ) {
   callbackSuccess =
     typeof callbackSuccess === "function"
@@ -803,7 +803,7 @@ var send_form_data = async function (
         error +
         ")<br>" +
         gettext("No data could be stored."),
-      "alert-danger"
+      "alert-danger",
     );
 
     callbackFail(error);
@@ -826,7 +826,7 @@ var send_form_data_vanilla = function (
   data_form = undefined,
   method = "post",
   callbackSuccess = undefined,
-  callbackFail = undefined
+  callbackFail = undefined,
 ) {
   callbackSuccess =
     typeof callbackSuccess === "function"
@@ -865,7 +865,7 @@ var send_form_data_vanilla = function (
           err +
           ")<br>" +
           gettext("No data could be stored."),
-        "alert-danger"
+        "alert-danger",
       );
       callbackFail(err);
     });
@@ -880,7 +880,7 @@ var show_form_theme_new = function (data) {
   if (data.indexOf("form_theme") == -1) {
     showalert(
       gettext("You are no longer authenticated. Please log in again."),
-      "alert-danger"
+      "alert-danger",
     );
   } else {
     show_form_theme(data);
@@ -896,7 +896,7 @@ var show_form_theme_modify = function (data) {
   if (data.indexOf("theme") == -1) {
     showalert(
       gettext("You are no longer authenticated. Please log in again."),
-      "alert-danger"
+      "alert-danger",
     );
   } else {
     document
@@ -927,7 +927,7 @@ var show_form_theme_delete = function (data) {
   } else {
     showalert(
       gettext("You are no longer authenticated. Please log in again."),
-      "alert-warning"
+      "alert-warning",
     );
   }
 };
@@ -945,7 +945,7 @@ var show_theme_form = function (data) {
     if (data.errors) {
       showalert(
         gettext("One or more errors have been found in the form."),
-        "alert-danger"
+        "alert-danger",
       );
       show_form_theme(data.form);
     } else {
@@ -957,7 +957,7 @@ var show_theme_form = function (data) {
   } else {
     showalert(
       gettext("You are no longer authenticated. Please log in again."),
-      "alert-danger"
+      "alert-danger",
     );
   }
 };
@@ -988,7 +988,7 @@ var show_picture_form = function (data) {
         "beforeend",
         '<img src="' +
           htmlData.querySelector("#userpictureurl").value +
-          '" class="userpicture rounded" alt="avatar" loading="lazy">'
+          '" class="userpicture rounded" alt="avatar" loading="lazy">',
       );
     //$(".get_form_userpicture").html($(".get_form_userpicture").children());
     document.querySelector(".get_form_userpicture").innerHTML =
@@ -1106,7 +1106,7 @@ if (document.getElementById("video_form")) {
           update_theme();
           var new_themes = [];
           var channels = id_channel.parentElement.querySelectorAll(
-            ".select2-selection__choice"
+            ".select2-selection__choice",
           );
           for (i = 0; i < channels.length; i++) {
             for (j = 0; j < id_channel.options.length; j++) {
@@ -1122,8 +1122,8 @@ if (document.getElementById("video_form")) {
                       (attrs = ""),
                       (add_link = false),
                       (current = ""),
-                      (channel = id_channel.options[j].text + ": ")
-                    )
+                      (channel = id_channel.options[j].text + ": "),
+                    ),
                   );
                 }
               }
@@ -1147,9 +1147,9 @@ if (document.getElementById("video_form")) {
       ) {
         id_channel_observer.observe(
           id_channel.parentElement.querySelector(
-            ".select2-selection__rendered"
+            ".select2-selection__rendered",
           ),
-          id_channel_config
+          id_channel_config,
         );
         select_channel_observer.disconnect();
       }
@@ -1173,8 +1173,8 @@ if (document.getElementById("video_form")) {
             (attrs = ""),
             (add_link = false),
             (current = ""),
-            (channel = id_channel.options[i].text + ": ")
-          )
+            (channel = id_channel.options[i].text + ": "),
+          ),
         );
       }
     }
@@ -1209,10 +1209,10 @@ if (id_is_restricted) {
 var restrict_access_to_groups = function () {
   if (document.getElementById("id_is_restricted").checked) {
     let id_restricted_to_groups = document.getElementById(
-      "id_restrict_access_to_groups"
+      "id_restrict_access_to_groups",
     );
     let div_restricted = id_restricted_to_groups.closest(
-      "div.restricted_access"
+      "div.restricted_access",
     );
     div_restricted.style.display = "block";
   } else {
@@ -1226,10 +1226,10 @@ var restrict_access_to_groups = function () {
         });
       });
     let id_restricted_to_groups = document.getElementById(
-      "id_restrict_access_to_groups"
+      "id_restrict_access_to_groups",
     );
     let div_restricted = id_restricted_to_groups.closest(
-      "div.restricted_access"
+      "div.restricted_access",
     );
 
     div_restricted.style.display = "none";
@@ -1298,7 +1298,7 @@ restricted_access();
               window.scrollTo($(form).scrollTop(), 0);
               showalert(
                 gettext("Errors appear in the form, please correct them"),
-                "alert-danger"
+                "alert-danger",
               );
               event.preventDefault();
               event.stopPropagation();
@@ -1309,11 +1309,11 @@ restricted_access();
             }
             form.classList.add("was-validated");
           },
-          false
+          false,
         );
       });
     },
-    false
+    false,
   );
 })();
 
@@ -1339,7 +1339,7 @@ var videocheck = function (form, event) {
             " " +
             VIDEO_MAX_UPLOAD_SIZE +
             gettext(" GB."),
-          "alert-danger"
+          "alert-danger",
         );
         event.preventDefault();
         event.stopPropagation();
@@ -1362,7 +1362,7 @@ var videocheck = function (form, event) {
           " " +
           listext +
           ".",
-        "alert-danger"
+        "alert-danger",
       );
       event.preventDefault();
       event.stopPropagation();
