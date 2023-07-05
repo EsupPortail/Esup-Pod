@@ -391,8 +391,7 @@ def start_playlist(request, slug, video=None):
     playlist = get_object_or_404(Playlist, slug=slug)
 
     if playlist.visibility == "public" or playlist.visibility == "private":
-        if video:
-            return redirect(get_link_to_start_playlist(request, playlist, video))
+        return redirect(get_link_to_start_playlist(request, playlist, video))
     elif playlist.visibility == "protected":
         if request.method == "POST":
             form = PlaylistPasswordForm(request.POST)
