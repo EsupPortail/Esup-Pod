@@ -174,17 +174,12 @@ p.playlist-last-updated {
 a.player-element, a.player-element:hover {
     color: inherit;
     text-decoration: none;
+    border: var(--bs-border-width) solid var(--color-alto) !important;
 }
 
 a.player-element:not(.disabled):hover {
     background-color: #F1F1F1;
     border: var(--bs-border-width) solid var(--pod-primary) !important;
-}
-
-a.player-element.disabled {
-    background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.2) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2) 75%, transparent 75%, transparent);
-    background-size: 4px 4px;
-    background-repeat: repeat;
 }
 
 a.player-element.selected {

@@ -404,6 +404,13 @@ def start_playlist(request, slug):
                 return redirect(request.META["HTTP_REFERER"])
         else:
             form = PlaylistPasswordForm()
-            return render(request, "playlist/protected-playlist-form.html", {"form": form, "playlist": playlist})
+            return render(
+                request,
+                "playlist/protected-playlist-form.html",
+                {
+                    "form": form,
+                    "playlist": playlist,
+                }
+            )
     else:
         return redirect(reverse("playlist:list"))

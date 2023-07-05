@@ -129,7 +129,6 @@ class Playlist(models.Model):
         """Get the first video."""
         from .utils import get_video_list_for_playlist, user_can_see_playlist_video
         if request is not None:
-            videos = []
             for video in sort_videos_list(get_video_list_for_playlist(self), "rank"):
                 if user_can_see_playlist_video(request, video):
                     return video

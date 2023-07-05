@@ -1,6 +1,10 @@
 {% load i18n %}
 {% spaceless %}
-<div class="card box-shadow pod-card--video video-card">
+{% if playlist %}
+  {% load playlist_buttons %}
+  {% can_see_playlist_video video as can_see_video %}
+{% endif %}
+<div class="card box-shadow pod-card--video video-card {% if playlist and can_see_video == False %}disabled{% endif %}">
   <!-- card.html -->
   <div class="card-header">
     <div class="d-flex justify-content-between align-items-center">
@@ -36,8 +40,6 @@
   <div class="card-thumbnail">
     <a class="link-center-pod"
     {% if playlist %}
-      {% load playlist_buttons %}
-      {% can_see_playlist_video video as can_see_video %}
       {% if can_see_video %}
         href="{% url 'video:video' video.slug %}?playlist={{ playlist.slug }}"
       {% endif %}
@@ -67,7 +69,17 @@
     {% endif %}
 
     <span class="small video-title">
-      {% if channel %}
+      {% if playlist %}
+         {% if can_see_video %}
+          <a href="{% url 'video:video' video.slug %}?playlist={{ playlist.slug }}" {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>
+            {{video.title|capfirst|truncatechars:43}}
+          </a>
+         {% else %}
+         <span {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>
+          {{video.title|capfirst|truncatechars:43}}
+         </span>
+         {% endif %}
+      {% elif channel %}
         {% if theme %}
           <a href="{% url 'channel-video:video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>
             {{video.title|capfirst|truncatechars:43}}
