@@ -78,10 +78,10 @@
   <div class="card-body" id="formfields">
     {% for title, values in form_theme.THEME_FORM_FIELDS_HELP_TEXT.items %}
     <div class="card">
-      <button class="btn rounded-0 pod-btn" id="heading-{{forloop.counter}}" data-bs-toggle="collapse" data-bs-target="#collapse-{{forloop.counter}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter}}">
+      <button class="btn rounded-0 pod-btn" id="heading-{{forloop.counter}}" data-bs-toggle="collapse" data-bs-target="#collapse-{{forloop.counter}}" aria-expanded="false" aria-controls="collapse-{{forloop.counter}}">
         {{title}}
       </button>
-      <div id="collapse-{{forloop.counter}}" class="card-body collapse hide card-text small" aria-labelledby="heading-{{forloop.counter}}" data-bs-parent="#formfields">
+      <div id="collapse-{{forloop.counter}}" class="card-body collapse card-text small" aria-labelledby="heading-{{forloop.counter}}" data-bs-parent="#formfields">
         {% for value in values %}
         <p>{{value}}</p>
         {%endfor%}

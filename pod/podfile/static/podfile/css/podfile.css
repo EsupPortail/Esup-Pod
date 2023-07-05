@@ -1,3 +1,4 @@
+
 button.close {
   padding: 0;
   background-color: transparent;
@@ -65,12 +66,7 @@ button.close {
 
 .modal-content {
   position: relative;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
   flex-direction: column;
   pointer-events: auto;
   background-color: #fff;
@@ -100,64 +96,6 @@ button.close {
   opacity: 0.5;
 }
 
-/*
-.modal-header {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: start;
-     -ms-flex-align: start;
-  align-items: flex-start;
-  -webkit-box-pack: justify;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
-  padding: 1rem;
-  border-bottom: 1px solid #e9ecef;
-  border-top-left-radius: 0.3rem;
-  border-top-right-radius: 0.3rem;
-}
-
-.modal-header .close {
-  padding: 1rem;
-  margin: -1rem -1rem -1rem auto;
-}
-
-.modal-title {
-  margin-bottom: 0;
-  line-height: 1.5;
-  font-size: 1.4rem;
-}
-
-.modal-body {
-  position: relative;
-  -webkit-box-flex: 1;
-  -ms-flex: 1 1 auto;
-  flex: 1 1 auto;
-  padding: 1rem;
-}
-
-.modal-footer {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-     -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: end;
-     -ms-flex-pack: end;
-   justify-content: flex-end;
-  padding: 1rem;
-  border-top: 1px solid #e9ecef;
-}
-
-.modal-footer > :not(:first-child) {
-  margin-left: .25rem;
-}
-
-.modal-footer > :not(:last-child) {
-  margin-right: .25rem;
-}*/
-
 .modal-scrollbar-measure {
   position: absolute;
   top: -9999px;
@@ -165,17 +103,6 @@ button.close {
   height: 50px;
   overflow: scroll;
 }
-/*
-.modal-dialog {
-  margin: 1.75rem auto;
-}
-.modal-dialog-centered {
-  min-height: calc(100% - (1.75rem * 2));
- }
-.modal-sm {
-  max-width: 300px;
-}
-*/
 
 /**********************************
  ********** Improve css ***********
@@ -199,29 +126,19 @@ button.close {
 #podfile .card-img-top {
   width: 100%;
   height: 26vh;
-  -o-object-fit: scale-down;
-     object-fit: scale-down;
+  object-fit: scale-down;
 }
 #podifle img.directory-image {
   height: 26px;
   vertical-align: middle;
 }
-/*#podfile a, #podifle .folder_title{
-  font-size: .8rem;
-}*/
+
 #podfile .list_folders{
   padding-left: 15px;
   height: auto;
   overflow: hidden;
 }
-/*#podfile .list_folders .folder_name{
-  max-width: 600px;
-  display: inline-block;
-  overflow: hidden;
-  -o-text-overflow: ellipsis;
-     text-overflow: ellipsis;
-  white-space: nowrap;
-}*/
+
 #podfile #listfiles{
   max-height:600px;
   overflow: auto;
@@ -255,16 +172,12 @@ button.close {
   font-weight: 700;
 }
 #shareModalCenter #shared-people.list-group .list-group-item .btn-share.btn-remove{
-  -webkit-box-ordinal-group: 2;
-    -ms-flex-order: 1;
-      order: 1;
+  order: 1;
   padding: .4em .8em;
   color: #fff !important;
   background-color: var(--bs-danger);
   line-height: 1;
-  -webkit-box-flex: 0;
-    -ms-flex: none;
-      flex: none;
+  flex: none;
 }
 #shareModalCenter #shareFormName .form-group{position: relative;}
 #shareModalCenter #shareFormName .form-group .form-control{ outline: none !important; -webkit-box-shadow: none !important; box-shadow: none !important;}
@@ -273,31 +186,22 @@ button.close {
   width: 400px;
   max-width: 100%;
   border: 1px solid rgba(0,0,0,.1);
-  -webkit-box-shadow: 0 8px 10px 4px rgba(0,0,0,.08);
-          box-shadow: 0 8px 10px 4px rgba(0,0,0,.08);
+  box-shadow: 0 8px 10px 4px rgba(0,0,0,.08);
   position: absolute;
   top: 100%;
 }
 #shareModalCenter #user-search.list-group .list-group-item{
   border: none !important;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: justify;
-     -ms-flex-pack: justify;
-   justify-content: space-between;
-  -webkit-box-align: center;
-     -ms-flex-align: center;
-        align-items: center;
+  justify-content: space-between;
+  align-items: center;
   padding: .8em;
   line-height: 1;
 }
 #shareModalCenter #user-search.list-group .list-group-item .btn-share.btn-add{
   padding: .4em .8em;
   line-height: 1;
-  -webkit-box-flex: 0;
-    -ms-flex: none;
-      flex: none;
+  flex: none;
 }
 #shareModalCenter #user-search.list-group .list-group-item .username{
   font-weight: 700;
@@ -305,15 +209,9 @@ button.close {
 }
 
 .modal-header {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: start;
-     -ms-flex-align: start;
-        align-items: flex-start;
-  -webkit-box-pack: justify;
-     -ms-flex-pack: justify;
-   justify-content: space-between;
+  align-items: flex-start;
+  justify-content: space-between;
 }
 .modal-header .modal-title{
   color: var(--pod-primary);
@@ -323,9 +221,7 @@ button.close {
   color: var(--pod-font-color);
   opacity: 1;
   padding: 0;
-  -webkit-transform: translate(10px, -15px);
-    -ms-transform: translate(10px, -15px);
-      transform: translate(10px, -15px);
+  transform: translate(10px, -15px);
 }
 .podfilemodal{
   padding: 0 !important;
@@ -336,35 +232,10 @@ button.close {
   overflow: hidden;
 }
 #podfile > .row{
-  -webkit-box-pack: justify;
-     -ms-flex-pack: justify;
-   justify-content: space-between;
+  justify-content: space-between;
 
 }
-/*#podfile #dirs{
-  position: absolute;
-  left: 0;
-  max-width: 100%;
-  height: 100%;
-  display: -ms-grid;
-  display: grid;
-  grid-row-gap: .4em;
-  opacity: 0;
-  z-index: -1;
-  transition: .5s opacity;
-  border: none;
-  border-top-right-radius: 4px;
-  box-shadow: 5px 0 5px -5px #ccc;
-}
-#podfile #dirs.open{
-  opacity: 1;
-  z-index: 9;
-}*/
-/*#podfile #dirs .close-folder, #podfile #dirs .close-folder svg{
-  width: 30px;
-  color: var(--secondary);
-  cursor: pointer;
-}*/
+
 #podfile #dirs .dirs-nav{
   display: flex;
   justify-content: space-between;
@@ -376,7 +247,7 @@ button.close {
 }
 #podfile .list_folders .folder_container:nth-child(2n),
 #podfile .list_folders_sub .folder_container:nth-child(2n) {
-  background-color: #ececec;
+  background-color: #F5F5F5;
 }
 #podfile .list_folders .folder_container,
 #podfile .list_folders_sub .folder_container{padding: .4em;}
@@ -389,10 +260,6 @@ button.close {
 }
 #podfile .list_folders .folder,
 #podfile .list_folders_sub .folder{ -webkit-box-align: center; -ms-flex-align: center; align-items: center;}
-/*#podfile .list_folders_sub .folder > *,
-#podfile .list_folders .folder > *{-webkit-box-flex: 0;-ms-flex: none;flex: none;}*/
-/*#podfile #dirs .dirs-nav-container .add-folder-btn{ color: var(--secondary); -webkit-transition: .3s transform; -o-transition: .3s transform; transition: .3s transform; }
-#podfile #dirs .dirs-nav-container .add-folder-btn:hover{ text-decoration: none; -webkit-transform: scale(1.1); -ms-transform: scale(1.1); transform: scale(1.1);}*/
 
 #podfile .share-folders{ padding-top: .4em; border-top: 2px dotted var(--pod-primary); }
 #podfile .share-folders,
@@ -434,234 +301,32 @@ button.close {
       -ms-flex: none;
           flex: none;
   height: 35px;
+}
 
-}
-#podfile #dirs .folder-search::-webkit-input-placeholder{
-  color: rgba(0,0,0,.5);
-  text-transform: capitalize;
-}
-#podfile #dirs .folder-search::-moz-placeholder{
-  color: rgba(0,0,0,.5);
-  text-transform: capitalize;
-}
-#podfile #dirs .folder-search:-ms-input-placeholder{
-  color: rgba(0,0,0,.5);
-  text-transform: capitalize;
-}
-#podfile #dirs .folder-search::-ms-input-placeholder{
-  color: rgba(0,0,0,.5);
-  text-transform: capitalize;
-}
-#podfile #dirs .folder-search::placeholder{
-  color: rgba(0,0,0,.5);
-  text-transform: capitalize;
-}
-#podfile #list_folders_sub .view-more-container{
-  position: relative;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-     -ms-flex-align: center;
-        align-items: center;
-  -webkit-box-pack: center;
-     -ms-flex-pack: center;
-   justify-content: center;
-  height: 40px;
-  margin-top: 1em;
-}
-#podfile #list_folders_sub .view-more-container::after{
-  content: "";
-  width: 100%;
-  -webkit-transform: translateY(50%);
-      -ms-transform: translateY(50%);
-          transform: translateY(50%);
-  height: 100%;
-  border-top: 1px solid var(--secondary);
-}
-#podfile #list_folders_sub .view-more-container a#more{
+#list_folders_sub .view-more-container {
   text-align: center;
-  padding: .4em 2em;
-  border: 1px solid var(--secondary);
-  width: 50%;
-  margin: 0 auto;
-  border-radius: 4em;
-  z-index: 9;
-  background: white;
-  position: absolute;
-  -webkit-transition: all .2s linear .0s;
-  -o-transition: all .2s linear .0s;
-  transition: all .2s linear .0s;
-  font-weight: 600;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-     -ms-flex-align: center;
-        align-items: center;
-  overflow: hidden;
 }
-/*
-#podfile #list_folders_sub .view-more-container a#more:hover{
-  background: var(--secondary);
-  color: #fff !important;
-}
-#podfile #list_folders_sub .view-more-container.loading a#more:hover{
-  background: white;
-  color: var(--secondary);
-}
-*/
-#podfile #list_folders_sub .view-more-container a#more .text{
-  -ms-flex-item-align: center;
-   -ms-grid-row-align: center;
-           align-self: center;
-  -webkit-box-flex: 1;
-  -ms-flex-positive: 1;
-          flex-grow: 1;
-}
-#podfile #list_folders_sub .view-more-container.loading .loader{
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-}
-#podfile #list_folders_sub .view-more-container .see-more{
-  display: block;
-  position: absolute;
-  width: 15px;
-  left: 15px;
-}
-/*#podfile .alert-warning{
-  position: relative;
-  color: #856404!important;
-  padding: .4em .8em;
-  padding-right: 25px;
-  text-align: center;
-  border-radius: 4px;
-  font-size: 14px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-    -ms-flex-align: center;
-      align-items: center;
-}
-#podfile .alert-warning .close{
-  position:absolute;
-  right: 5px;
-  top: 2px;
-  font-size: 20px;
-  font-weight: 900;
-  color: var(--bs-gray-dark);
-  cursor: pointer;
-}
-#podfile .alert-warning .warning-icon{
-  display: inline-block;
-  width: 20px;
-  -webkit-transform: translateY(-2px);
-    -ms-transform: translateY(-2px);
-      transform: translateY(-2px);
-  margin-right: 8px;
-}*/
-/*#podfile .open-folder{
-  min-height: 400px;
-  width: 30px;
-  margin-left: -1em;
-  cursor: pointer;
-  -webkit-transform: translateX(-10px);
-    -ms-transform: translateX(-10px);
-      transform: translateX(-10px);
-  color: var(--pod-primary);
-}
-#podfile #files{
-  width: calc(100% - 30px);
-  z-index: 1;
-  -webkit-box-flex: 0;
-    -ms-flex: none;
-      flex: none;
-  border-top-right-radius: 4px;
-  padding: 0;
-}*/
-#podfile #files .navbar{
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: nowrap;
-  background-color: var(--pod-primary);
-  color: var(--bs-white);
-  /*height: 35px;*/
-}
+
 #podfile #files #currentfolder{
-  -webkit-box-flex: unset;
-  -ms-flex-positive: unset;
-          flex-grow: unset;
-  -ms-flex-preferred-size: auto;
-               flex-basis: auto;
+  flex-grow: unset;
+  flex-basis: auto;
 }
-/*#podfile .current-folder-icon{
-  width: 25px;
-  display: inline-block;
-  -webkit-transform: translateY(-3px);
-    -ms-transform: translateY(-3px);
-      transform: translateY(-3px);
-}
-#podfile #files #currentfolder .delete-folder svg,
-#podfile #files #currentfolder .edit-folder svg,
-#podfile #files #currentfolder .download-file svg,
-#podfile #files #currentfolder .upload-file svg,
-#podfile #files #currentfolder .share-folder svg{
-  width: 20px;
-  display: inline-block;
-  -webkit-transition: .3s color;
-  -o-transition: .3s color;
-  transition: .3s color;
-  height: 20px;
-  color: #fff;
-}
-#podfile #files #currentfolder .share-folder:hover svg,
-#podfile #files #currentfolder .download-file:hover svg,
-#podfile #files #currentfolder .edit-folder:hover svg,
-#podfile #files #currentfolder .delete-folder:hover svg,
-#podfile #files #currentfolder .upload-file:hover svg{ color: var(--secondary); }
-#podfile #files .btn.navbar-toggler{
-  width: 15px;
-  color: #fff;
-  padding: 0;
-  color: #fff;
-  background: transparent !important;
-}
-#podfile #files .navbar-toggler svg{ height: 22px; }
-*/
 
 #podfile #currentfolder .nav-item:not(:last-child){margin-right: .8em}
-/*#podfile #files #currentfolder .edit-folder svg{width: 25px; height: 25px;}*/
-#podfile #currentfolder .nav-item{
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-    -ms-flex-align: center;
-      align-items: center;
-}
-#podfile #currentfolder .nav-item > form{ height: 26px;}
 
-#podfile #currentfolder .nav-item .btn{padding: 0;}
-/*#podfile .current-folder-name{
-  font-weight: 700;
-  text-transform: uppercase;
-  font-size: 16px;
-}*/
+#podfile #currentfolder .nav-item{
+  display: flex;
+  align-items: center;
+}
+
 #podfile .flex{
-  display: -ms-grid;
   display: grid;
-  -ms-grid-rows: minmax(.5fr, 1fr);
   grid-template-rows: minmax(.5fr, 1fr);
   grid-auto-rows: minmax(.5fr, 1fr);
   min-height: 100%;
 }
 
 #podfile #listfiles{
-  display: -ms-grid;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   grid-gap: 5px;
@@ -675,14 +340,11 @@ button.close {
 }
 #podfile #files.loading .lds-ellipsis{
   display: block;
-  -webkit-transform: translateX(-50%);
-    -ms-transform: translateX(-50%);
-      transform: translateX(-50%);
+  transform: translateX(-50%);
   width: 75px;
 }
 #podfile #listfiles .empty-folder-warning{
   grid-column: 1/-1;
-  -ms-grid-row: 10;
   grid-row: 10;
   text-align: center;
   background: #fff3cd;
@@ -696,22 +358,7 @@ button.close {
   max-width: unset;
 }
 #podfile #listfiles .navbar{
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: end;
-     -ms-flex-pack: end;
-   justify-content: flex-end;
-  -webkit-box-align: center;
-     -ms-flex-align: center;
-        align-items: center;
-}
-#podfile .navbar .btn-link{
-  color: var(--bs-white);
-}
-#podfile .navbar .btn-link:hover,
-#podfile .navbar .btn-link:focus{
-  color: var(--pod-primary-lighten-dark);
+  justify-content: flex-end;
 }
 
 
@@ -723,29 +370,16 @@ button.close {
   bottom: 4px;
   left: 0;
   right: 0;
-  -webkit-transform: translateY(100%);
-    -ms-transform: translateY(100%);
-      transform: translateY(100%);
-  background: var(--pod-primary);
+  transform: translateY(100%);
   padding: .4em;
-  -webkit-transition: .1s all;
-  -o-transition: .1s all;
   transition: .1s all;
 }
 #podfile #listfiles .file-navbar{
-  -ms-flex-pack: distribute;
   justify-content: space-around;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-     -ms-flex-direction: row;
-         flex-direction: row;
-  -webkit-box-align: end;
-     -ms-flex-align: end;
-        align-items: flex-end;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
+  flex-direction: row;
+  align-items: flex-end;
+  flex-wrap: wrap;
   overflow-y: auto;
-  max-height: 110px;
 }
 #podfile #listfiles .file-navbar .nav-item{
   width: 25px;
@@ -753,39 +387,6 @@ button.close {
   height: 25px;
   margin: 0 .4em .4em .4em !important;
 }
-/*#podfile #listfiles .file-navbar .nav-item .edit-file{
-  display: inline-block;
-  width: 24px; height: 24px;
-}
-#podfile #listfiles .file-navbar .nav-item .download-file{
-  display: inline-block;
-  width: 24px; height: 24px;
-}
-#podfile #listfiles .file-navbar .nav-item .delete-file{
-  display: inline-block;
-  width: 22px; height: 22px;
-}
-#podfile #listfiles .file-navbar .nav-item form{
-  height: 100%;
-  width: 100%;
-  margin: 0 !important;
-}
-
-#podfile #listfiles .navbar .btn{
-  background: none;
-  color: #fff;
-  width: 25px;
-  height: 100%;
-  border: none;
-  opacity: 1!important;
-}*/
-#podfile #listfiles .navbar{
-  background: var(--pod-primary);
-  position: relative;
-}
-/*#podfile #listfiles .navbar svg{
-  height: 100%;
-}*/
 
 #podfile #listfiles .card-body{
   overflow: hidden;
@@ -839,8 +440,4 @@ button.close {
     -ms-flex-align: start;
       align-items: flex-start;
   }
-  /*#podfile #dirs .dirs-nav .dirs-nav-container .add-folder-btn{
-    padding-left: 0;
-    margin-left: 0;
-  }*/
 }

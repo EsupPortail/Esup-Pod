@@ -1,112 +1,111 @@
 {% load i18n static podfile_filters %}
 <!-- Image and text -->
-<nav class="px-3 navbar navbar-expand-lg navbar-link">
-  <h2 class="text-truncate h3 m-0">
-    <span
-      class="current-folder-name"
-      data-bs-toggle="tooltip"
-      data-bs-placement="top"
+<nav class="px-3 navbar navbar-expand-lg navbar-link bg-primary" data-bs-theme="dark">
+  <div class="container-fluid">
+    <h2 class="text-truncate m-0 navbar-brand">
+      <span
+        class="current-folder-name"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+      >
+        <i class="current-folder-icon bi bi-folder-fill" aria-hidden="true"></i>{{folder.name}} - {{folder.get_all_files|length}} {% trans 'file' %}{{ folder.get_all_files|length|pluralize }}
+      </span>
+    </h2>
+    <button
+      class="navbar-toggler btn btn-outline-primary active"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#currentfolder"
+      aria-controls="currentfolder"
+      aria-expanded="false"
+      title="{% trans 'Toggle file actions menu' %}"
     >
-      <i class="current-folder-icon bi bi-folder-fill" aria-hidden="true"></i>{{folder.name}} - {{folder.get_all_files|length}} {% trans 'file' %}{{ folder.get_all_files|length|pluralize }}
-    </span>
-  </h2>
-  <button
-    class="navbar-toggler btn btn-outline-primary active"
-    type="button"
-    data-bs-toggle="collapse"
-    data-bs-target="#currentfolder"
-    aria-controls="currentfolder"
-    aria-expanded="false"
-    title="{% trans 'Toggle file actions menu' %}"
-  >
-    <i class="bi bi-three-dots-vertical"></i>
-  </button>
-  <div class="collapse navbar-collapse" id="currentfolder">
-    <ul class="navbar-nav me-auto">
-      {% if request.user == folder.owner or request.user.is_superuser or perms.podfile.change_userfolder or request.user in folder.users.all %}
-        {% if folder.name != "home" %}
-          <li class="nav-item">
-            <button
-              id="currentfolderrename"
-              type="button"
-              class="btn btn-link btn-lg nav-link"
-              data-bs-toggle="modal"
-              data-bs-target="#folderModalCenter"
-              data-oldname="{{folder.name}}"
-              data-folderid="{{folder.id}}"
-              title="{% trans 'Rename folder' %}"
-            >
-              <i class="bi bi-pencil-square" aria-hidden="true"></i>
-            </button>
-          </li>
-          {% if request.user == folder.owner or request.user.is_superuser or perms.podfile.change_userfolder %}
+      <i class="bi bi-three-dots-vertical"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="currentfolder">
+      <ul class="navbar-nav me-auto">
+        {% if request.user == folder.owner or request.user.is_superuser or perms.podfile.change_userfolder or request.user in folder.users.all %}
+          {% if folder.name != "home" %}
             <li class="nav-item">
               <button
-                id="currentfolderdelete"
+                id="currentfolderrename"
                 type="button"
-                class="btn btn-link btn-lg nav-link"
+                class="nav-link"
+                data-bs-toggle="modal"
+                data-bs-target="#folderModalCenter"
+                data-oldname="{{folder.name}}"
                 data-folderid="{{folder.id}}"
-                title="{% trans 'Delete folder' %}"
+                title="{% trans 'Rename folder' %}"
               >
-                {% csrf_token %}
-                <i class="bi bi-trash3-fill" aria-hidden="true"></i>
+                <i class="bi bi-pencil-square" aria-hidden="true"></i>
+              </button>
+            </li>
+            {% if request.user == folder.owner or request.user.is_superuser or perms.podfile.change_userfolder %}
+              <li class="nav-item">
+                <button
+                  id="currentfolderdelete"
+                  type="button"
+                  class="nav-link"
+                  data-folderid="{{folder.id}}"
+                  title="{% trans 'Delete folder' %}"
+                >
+                  {% csrf_token %}
+                  <i class="bi bi-trash3-fill" aria-hidden="true"></i>
+                </button>
+              </li>
+            {% endif %}
+          {% endif %}
+
+          {% if folder.owner == request.user or request.user.is_superuser %}
+            <li class="nav-item">
+              <button
+                id="currentfoldershare"
+                type="button"
+                class="nav-link"
+                data-bs-toggle="modal"
+                data-name="{{folder.name}}"
+                data-bs-target="#shareModalCenter"
+                data-folderid="{{folder.id}}"
+                title="{% trans 'Share this folder' %}"
+              >
+                <i class="bi bi-share" aria-hidden="true"></i>
               </button>
             </li>
           {% endif %}
         {% endif %}
 
-        {% if folder.owner == request.user or request.user.is_superuser %}
-          <li class="nav-item">
-            <button
-              id="currentfoldershare"
-              type="button"
-              class="btn btn-link btn-lg nav-link"
-              data-bs-toggle="modal"
-              data-name="{{folder.name}}"
-              data-bs-target="#shareModalCenter"
-              data-folderid="{{folder.id}}"
-              title="{% trans 'Share this folder' %}"
-            >
-              <i class="bi bi-share" aria-hidden="true"></i>
-            </button>
-          </li>
-        {% endif %}
-      {% endif %}
-
-      <li class="nav-item">
-        <form
-          class="form-inline my-2 my-lg-0"
-          method="POST"
-          id="formuploadfile"
-          enctype="multipart/form-data"
-          action="{% url 'podfile:uploadfiles' %}"
-          
-        >
-          {% csrf_token %}
-          <input type="hidden" name="folderid" value="{{folder.id}}">
-          {% if type %}
-          <input type="hidden" name="type" value="{{type}}">
-          {% endif %}
-          <div class="custom-file">
-            <input
-              type="file"
-              class="custom-file-input"
-              id="ufile"
-              name="ufile"
-              multiple
-              style="position:fixed;top:-100px"
-            >
-            <button id='podfile_submit_button' type = "submit" style = "display : none"></button>
-            <label for="ufile" class="btn btn-link btn-lg" title={% trans 'Upload Files' %}>
-              <span class="upload-file" id="upload-file-icon">
-                <i class="bi bi-file-earmark-arrow-up-fill" aria-hidden="true"></i>
-              </span>
-              <span class="visually-hidden">{% trans "Upload Files" %}</span>
-            </label>
-          </div>
-        </form>
-      </li>
-    </ul>
+        <li class="nav-item">
+          <form
+            method="POST"
+            id="formuploadfile"
+            enctype="multipart/form-data"
+            action="{% url 'podfile:uploadfiles' %}"
+          >
+            {% csrf_token %}
+            <input type="hidden" name="folderid" value="{{folder.id}}">
+            {% if type %}
+            <input type="hidden" name="type" value="{{type}}">
+            {% endif %}
+            <div class="custom-file">
+              <input
+                type="file"
+                class="d-none"
+                id="ufile"
+                name="ufile"
+                multiple
+              >
+              <button id='podfile_submit_button' type="submit" class="d-none"></button>
+              <label for="ufile" class="btn nav-link" title="{% trans 'Upload Files' %}">
+                <span class="upload-file" id="upload-file-icon">
+                  <i class="bi bi-file-earmark-arrow-up-fill" aria-hidden="true"></i>
+                </span>
+                <span class="visually-hidden">{% trans "Upload Files" %}</span>
+              </label>
+            </div>
+          </form>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>
 <div class="row loadingformfiles" style="display: none">
@@ -121,7 +120,7 @@
     <div class="card bg-light mb-3 m-1">
       <div class="card-header p-0 m-0" style="background: none">
         {% if request.user == file.created_by or request.user.is_superuser or perms.podfile.change_customfilemodel or perms.podfile.change_customimagemodel or request.user in folder.users.all %}
-        <nav class="navbar navbar-expand-lg navbar-light p-0 m-0">
+        <nav class="navbar p-0 m-0">
           <button
             class="btn btn-link btn-lg p-0 m-0"
             type="button"
@@ -136,7 +135,7 @@
               <i class="bi bi-three-dots-vertical"></i>
             </span>
           </button>
-          <div class="file collapse" id="currentfile{{file.id}}">
+          <div class="file collapse bg-primary" data-bs-theme="dark" id="currentfile{{file.id}}">
             <ul class="file-navbar navbar-nav me-auto p-0 m-0">
               <li class="nav-item p-0 m-0">
                 <button

@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load static %}
 {% spaceless %}
-<div class="pod-infinite-container infinite-container" id="videos_list" data-nextPage="{{ videos.has_next|yesno:'true,false' }}" data-countvideos="{{ count_videos }}">
+<div class="pod-infinite-container infinite-container" id="videos_list" data-nextpage="{{ videos.has_next|yesno:'true,false' }}" data-countvideos="{{ count_videos }}">
   {% for video in videos %}
   <div class="infinite-item card-group" {% if categories %}data-slug={{video.slug}}{% endif %} >
     {% include "videos/card.html" %}
@@ -13,17 +13,18 @@
   {% endfor %}
 </div>
 {% if videos.has_next %}
-<a
-style = "display:none"
-class="infinite-more-link"
-href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{% endif %}page={{ videos.next_page_number }}"
-data-nextPageNumber = "{% if videos.has_next %}{{ videos.next_page_number }}{% else %}null{% endif %}" >{% trans "More" %}
-</a>
+  <a
+    style = "display:none"
+    class="infinite-more-link"
+    href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{% endif %}page={{ videos.next_page_number }}"
+    data-nextpagenumber = "{% if videos.has_next %}{{ videos.next_page_number }}{% else %}null{% endif %}" >{% trans "More" %}
+  </a>
 {% endif %}
 <div class="infinite-loading" style="display: none;">
   {% trans "Loading…" %}
 </div>
 {% endspaceless %}
+
 {% block more_script %}
 <script src="{% static 'js/utils-playlist.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/video-list-favorites-card.js' %}?ver={{VERSION}}"></script>

@@ -1,4 +1,6 @@
+bs4
 flake8
 coveralls
 httmock
 beautifulsoup4
+django-debug-toolbar

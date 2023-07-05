@@ -7,6 +7,8 @@ from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.test import override_settings, TestCase
 
+from bs4 import BeautifulSoup
+
 from pod.video.models import Type, Video
 
 from ...playlist import context_processors
@@ -796,3 +798,173 @@ class TestPrivatePlaylistTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.client.logout()
         print(" --->  test_user_redirect_if_private_playlist_playlists ok")
+
+
+class TestPlaylistPlayerTestCase(TestCase):
+    """Playlist player test case."""
+
+    fixtures = ["initial_data.json"]
+
+    def setUp(self) -> None:
+        """Set up tests."""
+        self.first_student = User.objects.create(username="student", password="student1234student")
+        self.second_student = User.objects.create(username="student2", password="student1234student")
+        self.super_user = User.objects.create(username="admin", password="admin1234admin")
+        self.video_first_student = Video.objects.create(
+            title="Video First Student",
+            owner=self.first_student,
+            video="test.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.video_first_student_draft = Video.objects.create(
+            title="Video First Student Draft",
+            owner=self.first_student,
+            video="test.mp4",
+            is_draft=True,
+            type=Type.objects.get(id=1),
+        )
+        self.video_second_student = Video.objects.create(
+            title="Video Second Student",
+            owner=self.second_student,
+            video="test.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.video_second_student_draft = Video.objects.create(
+            title="Video Second Student Draft",
+            owner=self.second_student,
+            video="test.mp4",
+            is_draft=True,
+            type=Type.objects.get(id=1),
+        )
+        self.video_super_user = Video.objects.create(
+            title="Video Second Student Draft",
+            owner=self.super_user,
+            video="test.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.video_super_user = Video.objects.create(
+            title="Video Super User",
+            owner=self.super_user,
+            video="test.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.video_super_user_draft = Video.objects.create(
+            title="Video Super User Draft",
+            owner=self.super_user,
+            video="test.mp4",
+            is_draft=True,
+            type=Type.objects.get(id=1),
+        )
+        self.playlist_first_video_is_disabled = Playlist.objects.create(
+            name="Playlist first video is blocked",
+            description="The first video of this playlist is blocked.",
+            visibility="public",
+            autoplay=True,
+            owner=self.first_student,
+        )
+        self.simple_playlist = Playlist.objects.create(
+            name="Simple Playlist",
+            description="This playlist is simple.",
+            visibility="public",
+            autoplay=True,
+            owner=self.first_student
+        )
+        self.big_playlist = Playlist.objects.create(
+            name="Big Playlist",
+            description="This playlist is big.",
+            visibility="public",
+            autoplay=True,
+            owner=self.first_student,
+        )
+        # TODO Make a for boucle to don't repeat function call
+        tuples_to_link = [
+            (self.playlist_first_video_is_disabled, self.video_second_student_draft),
+            (self.playlist_first_video_is_disabled, self.video_first_student),
+            (self.simple_playlist, self.video_first_student),
+            (self.simple_playlist, self.video_first_student_draft),
+            (self.big_playlist, self.video_first_student),
+            (self.big_playlist, self.video_first_student_draft),
+            (self.big_playlist, self.video_second_student),
+            (self.big_playlist, self.video_second_student_draft),
+            (self.big_playlist, self.video_super_user),
+            (self.big_playlist, self.video_super_user_draft),
+        ]
+        for tuple in tuples_to_link:
+            user_add_video_in_playlist(tuple[0], tuple[1])
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_first_video_in_playlist_is_skip_when_it_is_disabled(self) -> None:
+        """Test if the first video in a playlist is skip when it is disabled for current user."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.first_student)
+        response = self.client.get(reverse("playlist:content", kwargs={
+            "slug": self.playlist_first_video_is_disabled.slug,
+        }))
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        play_playlist_button_html_element = soup.find_all(attrs={
+            "title": _("Start the playlist"),
+        })[0]
+        play_playlist_url = f'href="{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.playlist_first_video_is_disabled.slug}"'
+        self.assertIsNotNone(play_playlist_button_html_element)
+        self.assertTrue(play_playlist_url in str(play_playlist_button_html_element))
+        self.client.logout()
+        print(" --->  test_first_video_in_playlist_is_skip_when_it_is_disabled ok")
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_switch_video_in_playlist_player(self) -> None:
+        """Test if the video switch correctly when the user click on an other video."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.first_student)
+        response = self.client.get(f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.simple_playlist.slug}')
+        next_video_url = f'{reverse("video:video", kwargs={"slug": self.video_first_student_draft.slug})}?playlist={self.simple_playlist.slug}'
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        next_video_html_element = soup.find_all(attrs={
+            "href": next_video_url,
+        })
+        self.assertIsNotNone(next_video_html_element)
+        self.client.logout()
+        print(" --->  test_switch_video_in_playlist_player ok")
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_draft_videos_in_playlist_player(self) -> None:
+        """Test if the draft videos are correctly disabled in the playlist player."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.second_student)
+        next_video_url = f'{reverse("video:video", kwargs={"slug": self.video_first_student_draft.slug})}?playlist={self.simple_playlist.slug}'
+        response = self.client.get(f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.simple_playlist.slug}')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        next_video_html_elements = soup.find_all(attrs={
+            "href": next_video_url,
+        })
+        self.assertEqual(next_video_html_elements, [])
+        self.client.logout()
+        print(" --->  test_draft_videos_in_playlist_player ok")
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_scrollbar_is_present_in_playlist_player_box(self) -> None:
+        """Test if the scrollbar is correctly present in the playlist player box when it has more than 5 videos."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.first_student)
+        response = self.client.get(f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.big_playlist.slug}')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("scroll-container" in response.content.decode())
+        self.client.logout()
+        print(" --->  test_scrollbar_is_present_in_playlist_player_box ok")
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_scrollbar_is_not_present_in_playlist_player_box(self) -> None:
+        """Test if the scrollbar is not present in the playlist player box when it has less than 6 videos."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.first_student)
+        response = self.client.get(f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.simple_playlist.slug}')
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse("scroll-container" in response.content.decode())
+        self.client.logout()
+        print(" --->  test_scrollbar_is_not_present_in_playlist_player_box ok")

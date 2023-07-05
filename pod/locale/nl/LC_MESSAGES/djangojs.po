@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-19 08:19+0000\n"
+"POT-Creation-Date: 2023-07-04 14:52+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -26,12 +26,12 @@ msgid "Close"
 msgstr ""
 
 #: pod/chapter/static/js/chapters.js pod/completion/static/js/completion.js
-#: pod/enrichment/static/js/enrichment.js
+#: pod/enrichment/static/js/enrichment.js pod/playlist/static/js/playlist.js
 msgid "Error getting form."
 msgstr ""
 
 #: pod/chapter/static/js/chapters.js pod/completion/static/js/completion.js
-#: pod/enrichment/static/js/enrichment.js
+#: pod/enrichment/static/js/enrichment.js pod/playlist/static/js/playlist.js
 msgid "The form could not be recovered."
 msgstr ""
 
@@ -158,6 +158,16 @@ msgstr ""
 #: pod/completion/static/js/caption_maker.js
 #, javascript-format
 msgid "Pause to enter caption for segment from %s to %s."
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
+#: pod/podfile/static/podfile/js/filewidget.js
+msgid "Add"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
+#: pod/video/static/js/comment-script.js
+msgid "Delete"
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
@@ -354,36 +364,6 @@ msgstr ""
 msgid "Enrich mode"
 msgstr ""
 
-#: pod/favorite/static/js/favorite-reorganize.js
-#: pod/playlist/static/js/playlist-reorganize.js
-msgid "Save your reorganization"
-msgstr ""
-
-#: pod/favorite/static/js/favorite-reorganize.js
-#: pod/playlist/static/js/playlist-reorganize.js
-msgid "Save"
-msgstr ""
-
-#: pod/favorite/static/js/video-favorites-card-delete.js
-msgid "The video could not be removed from favorites..."
-msgstr ""
-
-#: pod/favorite/static/js/video-favorites-card-list.js
-msgid "Remove from favorite"
-msgstr ""
-
-#: pod/favorite/static/js/video-favorites-card-list.js
-msgid "Add in favorite"
-msgstr ""
-
-#: pod/favorite/static/js/video-favorites-card-list.js
-msgid "The deletion couldn't be completed..."
-msgstr ""
-
-#: pod/favorite/static/js/video-favorites.js
-msgid "The favorite couldn’t be completed…"
-msgstr ""
-
 #: pod/live/static/js/broadcaster_from_building.js
 msgid "Restricted because the broadcaster is restricted"
 msgstr ""
@@ -462,6 +442,14 @@ msgstr ""
 msgid "The file extension not in the allowed extension:"
 msgstr ""
 
+#: pod/playlist/static/js/playlist-reorganize.js
+msgid "Save your reorganization"
+msgstr ""
+
+#: pod/playlist/static/js/playlist-reorganize.js
+msgid "Save"
+msgstr ""
+
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change image"
 msgstr ""
@@ -488,10 +476,6 @@ msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Server error"
-msgstr ""
-
-#: pod/podfile/static/podfile/js/filewidget.js
-msgid "Add"
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
@@ -531,19 +515,38 @@ msgid "Answers"
 msgstr ""
 
 #: pod/video/static/js/comment-script.js
-msgid "Delete"
+msgid "Cancel"
 msgstr ""
 
 #: pod/video/static/js/comment-script.js
-msgid "Cancel"
-msgstr ""
+#, javascript-format
+msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
+msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
+msgstr[0] ""
+msgstr[1] ""
 
 #: pod/video/static/js/comment-script.js
 msgid "Agree with the comment"
 msgstr ""
 
 #: pod/video/static/js/comment-script.js
+msgid "Reply to comment"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js
+msgid "Reply"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js
 msgid "Remove this comment"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js
+msgid "Add a public comment"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js
+msgid "Send"
 msgstr ""
 
 #: pod/video/static/js/comment-script.js
@@ -557,13 +560,6 @@ msgstr ""
 #: pod/video/static/js/comment-script.js
 msgid "Sorry, you're not allowed to vote by now."
 msgstr ""
-
-#: pod/video/static/js/comment-script.js
-#, javascript-format
-msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
-msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
-msgstr[0] ""
-msgstr[1] ""
 
 #: pod/video/static/js/comment-script.js
 msgid "Sorry, you can't comment this video by now."
@@ -597,38 +593,47 @@ msgid "An Error occurred while processing."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "This content is password protected."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "This content is chaptered."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "This content is in draft."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "Video content."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "Audio content."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "Edit the video"
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "Complete the video"
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "Chapter the video"
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "Delete the video"
 msgstr ""
 
@@ -689,6 +694,18 @@ msgid "Edit the category"
 msgstr ""
 
 #: pod/video/static/js/video_category.js
+msgid "Delete the category"
+msgstr ""
+
+#: pod/video/static/js/video_category.js
+msgid "Success!"
+msgstr ""
+
+#: pod/video/static/js/video_category.js
+msgid "Error…"
+msgstr ""
+
+#: pod/video/static/js/video_category.js
 msgid "Category created successfully"
 msgstr ""
 
@@ -722,6 +739,22 @@ msgstr ""
 
 #: pod/video/static/js/video_stats_view.js
 msgid "Total view from creation"
+msgstr ""
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Playlist additions during the day"
+msgstr ""
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Playlist additions during the month"
+msgstr ""
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Playlist additions during the year"
+msgstr ""
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Total Playlist additions from creation"
 msgstr ""
 
 #: pod/video/static/js/video_stats_view.js
