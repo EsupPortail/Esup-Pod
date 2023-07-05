@@ -5,6 +5,7 @@ from celery import Celery
 from tempfile import NamedTemporaryFile
 import logging
 import os
+
 # call local settings directly
 # no need to load pod application to send statement
 try:
@@ -15,19 +16,16 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 ENCODING_TRANSCODING_CELERY_BROKER_URL = getattr(
-    settings_local,
-    "ENCODING_TRANSCODING_CELERY_BROKER_URL",
-    ""
+    settings_local, "ENCODING_TRANSCODING_CELERY_BROKER_URL", ""
 )
 
 transcripting_app = Celery(
-    "transcripting_tasks",
-    broker=ENCODING_TRANSCODING_CELERY_BROKER_URL
+    "transcripting_tasks", broker=ENCODING_TRANSCODING_CELERY_BROKER_URL
 )
 transcripting_app.conf.task_routes = {
     "pod.video_encode_transcript.transcripting_tasks.*": {"queue": "transcripting"}
 }
-transcripting_app.autodiscover_tasks(packages=None, related_name='', force=False)
+transcripting_app.autodiscover_tasks(packages=None, related_name="", force=False)
 
 
 # celery \
@@ -39,6 +37,7 @@ def start_transcripting_task(video_id, mp3filepath, duration, lang):
     from .transcript_model import start_transcripting
     from .importing_transcript_tasks import start_importing_transcript_task
     from ..main.settings import MEDIA_ROOT
+
     print("Start the transcripting of the video %s" % video_id)
     print(video_id, mp3filepath, duration, lang)
     msg, text_webvtt = start_transcripting(mp3filepath, duration, lang)
@@ -46,10 +45,6 @@ def start_transcripting_task(video_id, mp3filepath, duration, lang):
     media_temp_dir = os.path.join(MEDIA_ROOT, "temp")
     if not os.path.exists(media_temp_dir):
         os.mkdir(media_temp_dir)
-    temp_vtt_file = NamedTemporaryFile(
-        dir=media_temp_dir,
-        delete=False,
-        suffix=".vtt"
-    )
+    temp_vtt_file = NamedTemporaryFile(dir=media_temp_dir, delete=False, suffix=".vtt")
     text_webvtt.save(temp_vtt_file.name)
     start_importing_transcript_task.delay(video_id, msg, temp_vtt_file.name)

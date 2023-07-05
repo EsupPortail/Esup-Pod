@@ -14,15 +14,10 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 ENCODING_TRANSCODING_CELERY_BROKER_URL = getattr(
-    settings_local,
-    "ENCODING_TRANSCODING_CELERY_BROKER_URL",
-    ""
+    settings_local, "ENCODING_TRANSCODING_CELERY_BROKER_URL", ""
 )
 
-encoding_app = Celery(
-    "encoding_tasks",
-    broker=ENCODING_TRANSCODING_CELERY_BROKER_URL
-)
+encoding_app = Celery("encoding_tasks", broker=ENCODING_TRANSCODING_CELERY_BROKER_URL)
 encoding_app.conf.task_routes = {
     "pod.video_encode_transcript.encoding_tasks.*": {"queue": "encoding"}
 }
@@ -35,6 +30,7 @@ def start_encoding_task(video_id, video_path, cut_start, cut_end):
     print("Start the encoding of the video")
     from .Encoding_video import Encoding_video
     from .importing_tasks import start_importing_task
+
     print(video_id, video_path, cut_start, cut_end)
     encoding_video = Encoding_video(video_id, video_path, cut_start, cut_end)
     encoding_video.start_encode()
@@ -45,5 +41,5 @@ def start_encoding_task(video_id, video_path, cut_start, cut_end):
         video_path,
         cut_start,
         cut_end,
-        encoding_video.stop
+        encoding_video.stop,
     )

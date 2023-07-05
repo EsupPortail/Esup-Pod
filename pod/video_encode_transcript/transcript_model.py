@@ -87,9 +87,7 @@ def start_transcripting(mp3filepath, duration, lang):
     if TRANSCRIPTION_NORMALIZE:
         mp3filepath = normalize_mp3(mp3filepath)
     transript_model = get_model(lang)
-    msg, webvtt, all_text = start_main_transcript(
-        mp3filepath, duration, transript_model
-    )
+    msg, webvtt, all_text = start_main_transcript(mp3filepath, duration, transript_model)
     if DEBUG:
         print(msg)
         print(webvtt)

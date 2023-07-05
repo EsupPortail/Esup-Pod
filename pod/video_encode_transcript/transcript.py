@@ -11,6 +11,7 @@ from .utils import (
 )
 from ..video.models import Video
 import importlib.util
+
 if (
     importlib.util.find_spec("vosk") is not None
     or importlib.util.find_spec("stt") is not None
@@ -46,9 +47,7 @@ TRANSCRIPTION_NORMALIZE = getattr(settings, "TRANSCRIPTION_NORMALIZE", False)
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 
 USE_DISTANT_ENCODING_TRANSCODING = getattr(
-    settings,
-    "USE_DISTANT_ENCODING_TRANSCODING",
-    False
+    settings, "USE_DISTANT_ENCODING_TRANSCODING", False
 )
 if USE_DISTANT_ENCODING_TRANSCODING:
     from .transcripting_tasks import start_transcripting_task
@@ -119,16 +118,11 @@ def main_threaded_transcript(video_to_encode_id):
             mp3filepath = mp3file.path
             if USE_DISTANT_ENCODING_TRANSCODING:
                 start_transcripting_task.delay(
-                    video_to_encode.id,
-                    mp3filepath,
-                    video_to_encode.duration,
-                    lang
+                    video_to_encode.id, mp3filepath, video_to_encode.duration, lang
                 )
             else:
                 msg, webvtt = start_transcripting(
-                    mp3filepath,
-                    video_to_encode.duration,
-                    lang
+                    mp3filepath, video_to_encode.duration, lang
                 )
                 save_vtt_and_notify(video_to_encode, msg, webvtt)
     add_encoding_log(video_to_encode.id, msg)

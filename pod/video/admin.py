@@ -222,6 +222,7 @@ class VideoAdmin(admin.ModelAdmin):
         self.exclude = exclude
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
         return form
+
     if USE_TRANSCRIPTION:
         actions = ["encode_video", "transcript_video", "draft_video"]
     else:

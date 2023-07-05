@@ -26,15 +26,14 @@ USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
 if USE_TRANSCRIPTION:
     from . import transcript
+
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 EMAIL_ON_ENCODING_COMPLETION = getattr(settings, "EMAIL_ON_ENCODING_COMPLETION", True)
 
 USE_DISTANT_ENCODING_TRANSCODING = getattr(
-    settings,
-    "USE_DISTANT_ENCODING_TRANSCODING",
-    False
+    settings, "USE_DISTANT_ENCODING_TRANSCODING", False
 )
 if USE_DISTANT_ENCODING_TRANSCODING:
     from .encoding_tasks import start_encoding_task
@@ -129,7 +128,7 @@ def encode_video(video_id):
             encoding_video.id,
             encoding_video.video_file,
             encoding_video.cutting_start,
-            encoding_video.cutting_stop
+            encoding_video.cutting_stop,
         )
     else:
         encoding_video.start_encode()

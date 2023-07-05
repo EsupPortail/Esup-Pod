@@ -87,6 +87,7 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
     recording.save()
     if check_file(video_output):
         from pod.recorder.plugins.type_studio import save_basic_video
+
         video = save_basic_video(recording, video_output)
         encode_video = getattr(encode, ENCODE_VIDEO)
         encode_video(video.id, False)
