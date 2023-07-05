@@ -1,4 +1,6 @@
 {% load i18n %}
+{% load playlist_buttons %}
+
 {% spaceless %}
 {% if playlist %}
   {% load playlist_buttons %}
@@ -41,7 +43,7 @@
     <a class="link-center-pod"
     {% if playlist %}
       {% if can_see_video %}
-        href="{% url 'video:video' video.slug %}?playlist={{ playlist.slug }}"
+        href="{% url 'playlist:start-playlist' slug=playlist.slug video=video.slug %}"
       {% endif %}
     {% else %}
       href="
@@ -71,7 +73,7 @@
     <span class="small video-title">
       {% if playlist %}
          {% if can_see_video %}
-          <a href="{% url 'video:video' video.slug %}?playlist={{ playlist.slug }}" {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>
+          <a href="{% url 'playlist:start-playlist' slug=playlist.slug video=video.slug %}" {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>
             {{video.title|capfirst|truncatechars:43}}
           </a>
          {% else %}

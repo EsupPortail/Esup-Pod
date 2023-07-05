@@ -387,17 +387,18 @@ def favorites_save_reorganisation(request, slug: str):
         raise Http404()
 
 
-def start_playlist(request, slug):
+def start_playlist(request, slug, video=None):
     playlist = get_object_or_404(Playlist, slug=slug)
 
     if playlist.visibility == "public" or playlist.visibility == "private":
-        return redirect(get_link_to_start_playlist(request, playlist))
+        if video:
+            return redirect(get_link_to_start_playlist(request, playlist, video))
     elif playlist.visibility == "protected":
         if request.method == "POST":
             form = PlaylistPasswordForm(request.POST)
             form_password = request.POST.get("password")
             if form_password and check_password(form_password, playlist):
-                return redirect(get_link_to_start_playlist(request, playlist))
+                return redirect(get_link_to_start_playlist(request, playlist, video))
             else:
                 messages.add_message(request, messages.ERROR,
                                      _("The password is incorrect."))
