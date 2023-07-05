@@ -8,6 +8,7 @@ from .views import (
     remove_playlist_view,
     remove_video_in_playlist,
     favorites_save_reorganisation,
+    start_playlist,
 )
 
 app_name = "playlist"
@@ -29,4 +30,5 @@ urlpatterns = [
         favorites_save_reorganisation,
         name="save-reorganisation"
     ),
+    path("start-playlist:<slug:slug>", start_playlist, name="start-playlist"),
 ]
