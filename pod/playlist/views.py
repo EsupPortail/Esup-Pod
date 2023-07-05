@@ -20,6 +20,7 @@ from .forms import PlaylistForm, PlaylistPasswordForm, PlaylistRemoveForm
 import json
 
 from .utils import (
+    check_password,
     get_additional_owners,
     get_favorite_playlist_for_user,
     get_link_to_start_playlist,
@@ -91,6 +92,47 @@ def playlist_content(request, slug):
         return HttpResponseRedirect(reverse('playlist:list'))
 
 
+def render_playlist_page(request, playlist, videos, in_favorites_playlist, count_videos, sort_field, sort_direction, form=None):
+    """Render playlist page with the videos list of this."""
+    page_title = _("Playlist") + " : " + get_playlist_name(playlist)
+    types = request.GET.getlist("type")
+    owners = request.GET.getlist("owner")
+    disciplines = request.GET.getlist("discipline")
+    tags_slug = request.GET.getlist("tag")
+    cursus_selected = request.GET.getlist("cursus")
+    additional_owners = get_additional_owners(playlist)
+    full_path = (
+        request.get_full_path().replace("?page=%s" % request.GET.get("page", 1), "").replace(
+            "&page=%s" % request.GET.get("page", 1), "")
+    )
+    ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
+    cursus_list = CURSUS_CODES
+    sort_field = sort_field
+    sort_direction = sort_direction
+
+    context = {
+        "page_title": page_title,
+        "videos": videos,
+        "playlist": playlist,
+        "in_favorites_playlist": in_favorites_playlist,
+        "count_videos": count_videos,
+        "types": types,
+        "owners": owners,
+        "disciplines": disciplines,
+        "tags_slug": tags_slug,
+        "cursus_selected": cursus_selected,
+        "additional_owners": additional_owners,
+        "full_path": full_path,
+        "ownersInstances": ownersInstances,
+        "cursus_list": cursus_list,
+        "sort_field": sort_field,
+        "sort_direction": sort_direction,
+        "form": form
+    }
+
+    return render(request, "playlist/playlist.html", context)
+
+
 @login_required(redirect_field_name="referrer")
 def render_playlist(
     request: dict,
@@ -119,8 +161,6 @@ def render_playlist(
     except EmptyPage:
         videos = paginator.page(paginator.num_pages)
 
-    ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
-    additional_owners = get_additional_owners(playlist)
     playlist_url = reverse(
         "playlist:content",
         kwargs={
@@ -132,50 +172,30 @@ def render_playlist(
         if request.method == "POST":
             form = PlaylistPasswordForm(request.POST)
             form_password = request.POST.get("password")
-            if (form_password):
-                print(form_password)
-                hashed_form_password = hashlib.sha256(
-                    form_password.encode("utf-8")).hexdigest()
-                if hashed_form_password != playlist.password:
-                    messages.add_message(
-                        request, messages.ERROR, _("The password is incorrect.")
-                    )
-                    print("non")
-                    return redirect(request.META["HTTP_REFERER"])
-                else:
-                    print("oui")
-                    return render(
-                        request,
-                        "playlist/playlist.html",
-                        {
-                            "page_title": _("Playlist") + " : " + get_playlist_name(playlist),
-                            "videos": videos,
-                            "playlist": playlist,
-                            "in_favorites_playlist": in_favorites_playlist,
-                            "count_videos": count_videos,
-                            "types": request.GET.getlist("type"),
-                            "owners": request.GET.getlist("owner"),
-                            "disciplines": request.GET.getlist("discipline"),
-                            "tags_slug": request.GET.getlist("tag"),
-                            "cursus_selected": request.GET.getlist("cursus"),
-                            "additional_owners": additional_owners,
-                            "full_path": full_path,
-                            "ownersInstances": ownersInstances,
-                            "cursus_list": CURSUS_CODES,
-                            "sort_field": sort_field,
-                            "sort_direction": sort_direction,
-                            "form": form,
-                        },
-                    )
+            if form_password and check_password(form_password, playlist):
+                return render_playlist_page(
+                    request,
+                    playlist,
+                    videos,
+                    in_favorites_playlist,
+                    count_videos,
+                    sort_field,
+                    sort_direction,
+                    form
+                )
+            else:
+                messages.add_message(request, messages.ERROR,
+                                     _("The password is incorrect."))
+                return redirect(request.META["HTTP_REFERER"])
         else:
-            print("PlaylistPasswordForm")
             form = PlaylistPasswordForm()
             return render(
                 request,
                 "playlist/protected-playlist-form.html",
-                {"form": form,
-                 "playlist": playlist,
-                 }
+                {
+                    "form": form,
+                    "playlist": playlist,
+                }
             )
 
     if is_ajax(request):
@@ -190,28 +210,14 @@ def render_playlist(
                 "count_videos": count_videos
             },
         )
-    print("ici")
-    return render(
+    return render_playlist_page(
         request,
-        "playlist/playlist.html",
-        {
-            "page_title": _("Playlist") + " : " + get_playlist_name(playlist),
-            "videos": videos,
-            "playlist": playlist,
-            "in_favorites_playlist": in_favorites_playlist,
-            "count_videos": count_videos,
-            "types": request.GET.getlist("type"),
-            "owners": request.GET.getlist("owner"),
-            "disciplines": request.GET.getlist("discipline"),
-            "tags_slug": request.GET.getlist("tag"),
-            "cursus_selected": request.GET.getlist("cursus"),
-            "additional_owners": additional_owners,
-            "full_path": full_path,
-            "ownersInstances": ownersInstances,
-            "cursus_list": CURSUS_CODES,
-            "sort_field": sort_field,
-            "sort_direction": sort_direction,
-        },
+        playlist,
+        videos,
+        in_favorites_playlist,
+        count_videos,
+        sort_field,
+        sort_direction
     )
 
 
@@ -388,29 +394,16 @@ def start_playlist(request, slug):
         return redirect(get_link_to_start_playlist(request, playlist))
     elif playlist.visibility == "protected":
         if request.method == "POST":
-            print("Début POST")
             form = PlaylistPasswordForm(request.POST)
             form_password = request.POST.get("password")
-            if (form_password):
-                hashed_form_password = hashlib.sha256(
-                    form_password.encode("utf-8")).hexdigest()
-                if hashed_form_password != playlist.password:
-                    messages.add_message(
-                        request, messages.ERROR, _("The password is incorrect.")
-                    )
-                    print("ici")
-                    return redirect(request.META["HTTP_REFERER"])
-                else:
-                    print("VALID")
-                    return redirect(get_link_to_start_playlist(request, playlist))
+            if form_password and check_password(form_password, playlist):
+                return redirect(get_link_to_start_playlist(request, playlist))
+            else:
+                messages.add_message(request, messages.ERROR,
+                                     _("The password is incorrect."))
+                return redirect(request.META["HTTP_REFERER"])
         else:
             form = PlaylistPasswordForm()
-            return render(
-                request,
-                "playlist/protected-playlist-form.html",
-                {"form": form,
-                 "playlist": playlist,
-                 }
-            )
+            return render(request, "playlist/protected-playlist-form.html", {"form": form, "playlist": playlist})
     else:
         return redirect(reverse("playlist:list"))

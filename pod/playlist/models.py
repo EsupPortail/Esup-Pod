@@ -10,8 +10,6 @@ from pod.main.models import get_nextautoincrement
 from pod.video.models import Video
 from pod.video.utils import sort_videos_list
 
-import hashlib
-
 
 class Playlist(models.Model):
     """Playlist model."""

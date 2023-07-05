@@ -6,6 +6,8 @@ from django.urls import reverse
 from pod.playlist.models import Playlist, PlaylistContent
 from pod.video.models import Video
 
+import hashlib
+
 
 def check_video_in_playlist(playlist: Playlist, video: Video) -> bool:
     """
@@ -308,3 +310,19 @@ def sort_playlist_list(playlist_list, sort_field, sort_direction=""):
             sort_field = "-" + sort_field
         playlist_list = playlist_list.order_by(sort_field)
     return playlist_list.distinct()
+
+
+def check_password(form_password: str, playlist: Playlist) -> bool:
+    """
+    Check if the form password is correct for the playlist.
+
+    Args:
+        form_password (str): Password provided by user.
+        playlist (:class:`pod.playlist.models.Playlist`): The specific playlist.
+
+
+    Returns:
+        bool: True si le mot de passe fourni correspond au mot de passe de la playlist, False sinon.
+    """
+    hashed_password = hashlib.sha256(form_password.encode("utf-8")).hexdigest()
+    return hashed_password == playlist.password
