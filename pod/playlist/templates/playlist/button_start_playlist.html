@@ -2,6 +2,6 @@
 {% load playlist_buttons %}
 
 {% get_link_to_start_playlist playlist as link_to_start %}
-<a class="btn btn-primary btn-sm link-center-pod text-white {% if link_to_start == "" %}disabled{% endif %}" href="{{ link_to_start }}" title="{% trans "Start the playlist" %}">
+<a class="btn btn-primary btn-sm link-center-pod text-white {% if link_to_start == "" %}disabled{% endif %}" href="{% url 'playlist:start-playlist' playlist.slug %}" title="{% trans "Start the playlist" %}">
     <i class="bi bi-play-fill pod-add"></i><span>{% trans "Start the playlist" %}</span>
 </a>

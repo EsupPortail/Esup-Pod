@@ -22,6 +22,7 @@ import json
 from .utils import (
     get_additional_owners,
     get_favorite_playlist_for_user,
+    get_link_to_start_playlist,
     get_playlist,
     get_playlist_list_for_user,
     get_playlists_for_additional_owner,
@@ -78,8 +79,8 @@ def playlist_content(request, slug):
     sort_direction = request.GET.get("sort_direction")
     playlist = get_playlist(slug)
     if (
-        playlist.visibility == "public" or
-        playlist.visibility == "protected" or (
+        playlist.visibility == "public"
+        or playlist.visibility == "protected" or (
             playlist.owner == request.user
             or playlist in get_playlists_for_additional_owner(request.user)
             or request.user.is_staff
@@ -129,18 +130,48 @@ def render_playlist(
     form = None
     in_favorites_playlist = (playlist_url == request.path)
     if playlist.visibility == "protected" and playlist.owner != request.user:
-        form = PlaylistPasswordForm(
-            request.POST) if request.POST else PlaylistPasswordForm()
-        form_password = request.POST.get("password")
-        if (form_password):
-            hashed_form_password = hashlib.sha256(
-                form_password.encode("utf-8")).hexdigest()
-            if hashed_form_password != playlist.password:
-                messages.add_message(
-                    request, messages.ERROR, _("The password is incorrect.")
-                )
-            else:
-                form = None
+        if request.method == "POST":
+            form = PlaylistPasswordForm(request.POST)
+            form_password = request.POST.get("password")
+            if (form_password):
+                hashed_form_password = hashlib.sha256(form_password.encode("utf-8")).hexdigest()
+                if hashed_form_password != playlist.password:
+                    messages.add_message(
+                        request, messages.ERROR, _("The password is incorrect.")
+                    )
+                else:
+                    return render(
+                        request,
+                        "playlist/playlist.html",
+                        {
+                            "page_title": _("Playlist") + " : " + get_playlist_name(playlist),
+                            "videos": videos,
+                            "playlist": playlist,
+                            "in_favorites_playlist": in_favorites_playlist,
+                            "count_videos": count_videos,
+                            "types": request.GET.getlist("type"),
+                            "owners": request.GET.getlist("owner"),
+                            "disciplines": request.GET.getlist("discipline"),
+                            "tags_slug": request.GET.getlist("tag"),
+                            "cursus_selected": request.GET.getlist("cursus"),
+                            "additional_owners": additional_owners,
+                            "full_path": full_path,
+                            "ownersInstances": ownersInstances,
+                            "cursus_list": CURSUS_CODES,
+                            "sort_field": sort_field,
+                            "sort_direction": sort_direction,
+                            "form": form,
+                        },
+                    )
+        else:
+            form = PlaylistPasswordForm()
+            return render(
+                request,
+                "playlist/protected-playlist-form.html",
+                {"form": form,
+                 "playlist": playlist,
+                }
+            )
 
     if is_ajax(request):
         return render(
@@ -343,3 +374,34 @@ def favorites_save_reorganisation(request, slug: str):
         return redirect(request.META["HTTP_REFERER"])
     else:
         raise Http404()
+
+def start_playlist(request, slug):
+    playlist = get_object_or_404(Playlist, slug=slug)
+
+    if playlist.visibility == "public" or playlist.visibility == "private":
+        return redirect(get_link_to_start_playlist(request, playlist))
+    elif playlist.visibility == "protected":
+        if request.method == "POST":
+            print("Début POST")
+            form = PlaylistPasswordForm(request.POST)
+            form_password = request.POST.get("password")
+            if (form_password):
+                hashed_form_password = hashlib.sha256(form_password.encode("utf-8")).hexdigest()
+                if hashed_form_password != playlist.password:
+                    messages.add_message(
+                        request, messages.ERROR, _("The password is incorrect.")
+                    )
+                else:
+                    print("VALID")
+                    return redirect(get_link_to_start_playlist(request, playlist))
+        else:
+            form = PlaylistPasswordForm()
+            return render(
+                request,
+                "playlist/protected-playlist-form.html",
+                {"form": form,
+                 "playlist": playlist,
+                }
+            )
+    else:
+        return HttpResponseRedirect('/')  # Exemple de redirection vers la page d'accueil

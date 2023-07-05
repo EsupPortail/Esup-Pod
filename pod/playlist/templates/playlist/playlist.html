@@ -33,9 +33,6 @@
 
 
 {% block page_content %}
-  {% if form %}
-    {% include 'playlist/protected-playlist-form.html' %}
-  {% else %}
     <div class="row videos-list-header">
       <h2 id="video_count" class="page_title col-xxl-4 mb-2">
         {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
@@ -60,7 +57,6 @@
     </div>
     {% include 'loader.html' %}
     {% include "playlist/playlist-videos-list.html" %}
-  {% endif %}
 {% endblock page_content %}
 
 {% block page_aside %}
@@ -77,19 +73,16 @@
       </ol>
     </div>
   </div>
-  {% if not form %}
     {% include "playlist/playlist-management-card.html" %}
     <div class="card" id="card-start-button">
       <div class="card-body">
         {% include "playlist/button_start_playlist.html" %}
       </div>
     </div>
-  {% endif %}
   {% include "playlist/playlist-informations-card.html" %}
 {% endblock page_aside %}
 
 {% block more_script %}
-  {% if not form %}
     <script>
       const urlVideos = "{% url 'playlist:content' slug=playlist.slug %}";
       var page = 1;
@@ -103,5 +96,5 @@
     <script src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
     <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
     <script src="{% static 'js/playlist-reorganize.js' %}?ver={{VERSION}}"></script>
-  {% endif %}
+    <script src="{% static 'js/protected-playlist.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}
