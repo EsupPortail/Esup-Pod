@@ -105,57 +105,26 @@
     <meta itemprop="name" content="{{ video.title }}">
     <meta itemprop="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }} - {% trans 'Added by:' %} {{ video.owner.get_full_name }}">
 
-{% if channel %}
-  <h2 class="channel_title">
-    <a href="{% url 'channel-video:channel' slug_c=channel.slug%}">
-      {% if channel.headband %}
-        <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded" loading="lazy" height="34">
-      {% endif %}
-      {{channel.title}}
-    </a>
-    {% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{% endif %}
-  </h2>
-  {% if channel.description %}
-    {% if channel.description|length > 140 %}
-      <div class="accordion accordion-flush mb-2" id="channel_block">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="channel_desc_title">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#channel_desc" aria-expanded="false" aria-controls="channel_desc">{% trans "Channel description" %}</button>
-          </h3>
-          <div id="channel_desc" class="accordion-collapse collapse" aria-labelledby="channel_desc_title" data-bs-parent="#channel_block">
-            <div class="accordion-body clearfix">
-                {{ channel.description|safe }}
-            </div>
-          </div>
-        </div>
-      </div>
-    {% else %}
-      <div id="channel_desc" class="m-2 clearfix">
-        {{ channel.description|safe }}
-      </div>
-    {% endif %}
-  {% endif %}
-  {% if theme %}
-    <div class="channel_theme ms-3">
-      <h3 class="theme_title">
-        <a href="{% url 'channel-video:theme' slug_c=channel.slug slug_t=theme.slug%}">
-          {% if theme.headband %}
-            <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="rounded" loading="lazy" height="34">
-          {% endif %}
-          {{theme.title}}
-        </a>
-      </h3>
-      {% if theme.description %}
-        {% if theme.description|length > 140 %}
-          <div class="accordion accordion-flush mb-2" id="theme_block">
-            <div class="accordion-item">
-              <h4 class="accordion-header theme_title" id="theme_desc_title">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#theme_desc" aria-expanded="false" aria-controls="theme_desc">{% trans "Theme description" %}</button>
-              </h4>
-              <div id="theme_desc" class="accordion-collapse collapse" aria-labelledby="theme_desc_title" data-bs-parent="#theme_block">
-                <div class="accordion-body clearfix">
-                  {{ theme.description|safe }}
-                </div>
+  {% if channel %}
+    <h2 class="channel_title">
+      <a href="{% url 'channel-video:channel' slug_c=channel.slug%}">
+        {% if channel.headband %}
+          <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded" loading="lazy" height="34">
+        {% endif %}
+        {{channel.title}}
+      </a>
+      {% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{% endif %}
+    </h2>
+    {% if channel.description %}
+      {% if channel.description|length > 140 %}
+        <div class="accordion accordion-flush mb-2" id="channel_block">
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="channel_desc_title">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#channel_desc" aria-expanded="true" aria-controls="channel_desc">{% trans "Channel description" %}</button>
+            </h3>
+            <div id="channel_desc" class="accordion-collapse collapse" aria-labelledby="channel_desc_title" data-bs-parent="#channel_block">
+              <div class="accordion-body clearfix">
+                  {{ channel.description|safe }}
               </div>
             </div>
           </div>
