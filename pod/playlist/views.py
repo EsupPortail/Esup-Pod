@@ -168,8 +168,9 @@ def render_playlist(
             return render(
                 request,
                 "playlist/protected-playlist-form.html",
-                {"form": form,
-                 "playlist": playlist,
+                {
+                    "form": form,
+                    "playlist": playlist,
                 }
             )
 
@@ -375,6 +376,7 @@ def favorites_save_reorganisation(request, slug: str):
     else:
         raise Http404()
 
+
 def start_playlist(request, slug):
     playlist = get_object_or_404(Playlist, slug=slug)
 
@@ -399,8 +401,9 @@ def start_playlist(request, slug):
             return render(
                 request,
                 "playlist/protected-playlist-form.html",
-                {"form": form,
-                 "playlist": playlist,
+                {
+                    "form": form,
+                    "playlist": playlist,
                 }
             )
     else:

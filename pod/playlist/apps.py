@@ -125,7 +125,7 @@ class PlaylistConfig(AppConfig):
                     autoplay=True,
                     owner=user,
                     editable=False,
-                    slug = f"{new_id}-{slugify(self.name)}"
+                    slug=f"{new_id}-{slugify(self.name)}"
                 )
             )
         Playlist.objects.bulk_create(without_fav_to_bulk, batch_size=1000)

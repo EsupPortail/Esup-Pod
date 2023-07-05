@@ -863,6 +863,50 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
 
+def toggle_render_video_user_can_see_video(show_page, is_password_protected, request, slug_private, video) -> bool:
+    """Toogle condition for `render_video()`."""
+    return (
+        (show_page and not is_password_protected)
+        or (
+            show_page
+            and is_password_protected
+            and request.POST.get("password")
+            and request.POST.get("password") == video.password
+        )
+        or (slug_private and slug_private == video.get_hashkey())
+        or request.user == video.owner
+        or request.user.is_superuser
+        or request.user.has_perm("video.change_video")
+        or (request.user in video.additional_owners.all())
+        or (request.GET.get("playlist"))
+    )
+
+
+def toggle_render_video_when_is_playlist_player(request):
+    """Toggle `render_video()` when the user want to play a playlist."""
+    playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
+    print(playlist.visibility)
+    if request.user.is_authenticated:
+        video = (
+            Video.objects.filter(
+                playlistcontent__playlist_id=playlist.id,
+                is_draft=False,
+                is_restricted=False,
+            ) | Video.objects.filter(
+                playlistcontent__playlist_id=playlist.id,
+                owner=request.user,
+            )
+        ).first()
+    else:
+        video = Video.objects.filter(
+            playlistcontent__playlist_id=playlist.id,
+            is_draft=False,
+            is_restricted=False,
+        ).first()
+    if not video:
+        return Http404()
+
+
 def render_video(
     request,
     id,
@@ -872,6 +916,7 @@ def render_video(
     template_video="videos/video.html",
     more_data={},
 ):
+    """Render video."""
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
     """
     # Do it only for video --> move code in video definition
@@ -895,46 +940,12 @@ def render_video(
 
     show_page = get_video_access(request, video, slug_private)
 
-    if (
-        (show_page and not is_password_protected)
-        or (
-            show_page
-            and is_password_protected
-            and request.POST.get("password")
-            and request.POST.get("password") == video.password
-        )
-        or (slug_private and slug_private == video.get_hashkey())
-        or request.user == video.owner
-        or request.user.is_superuser
-        or request.user.has_perm("video.change_video")
-        or (request.user in video.additional_owners.all())
-        or (request.GET.get("playlist"))
-    ):
+    if toggle_render_video_user_can_see_video(show_page, is_password_protected, request, slug_private, video):
         if (
             request.GET.get("playlist")
             and not user_can_see_playlist_video(request, video)
         ):
-            playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
-            print(playlist.visibility)
-            if request.user.is_authenticated:
-                video = (
-                    Video.objects.filter(
-                        playlistcontent__playlist_id=playlist.id,
-                        is_draft=False,
-                        is_restricted=False,
-                    ) | Video.objects.filter(
-                        playlistcontent__playlist_id=playlist.id,
-                        owner=request.user,
-                    )
-                ).first()
-            else:
-                video = Video.objects.filter(
-                    playlistcontent__playlist_id=playlist.id,
-                    is_draft=False,
-                    is_restricted=False,
-                ).first()
-            if not video:
-                return Http404()
+            toggle_render_video_when_is_playlist_player(request)
         return render(
             request,
             template_video,
