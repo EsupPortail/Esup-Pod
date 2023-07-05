@@ -26,11 +26,18 @@ USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
 if USE_TRANSCRIPTION:
     from . import transcript
-
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 EMAIL_ON_ENCODING_COMPLETION = getattr(settings, "EMAIL_ON_ENCODING_COMPLETION", True)
+
+USE_DISTANT_ENCODING_TRANSCODING = getattr(
+    settings,
+    "USE_DISTANT_ENCODING_TRANSCODING",
+    False
+)
+if USE_DISTANT_ENCODING_TRANSCODING:
+    from .encoding_tasks import start_encoding_task
 
 # ##########################################################################
 # ENCODE VIDEO: THREAD TO LAUNCH ENCODE
@@ -49,15 +56,18 @@ def start_remote_encode(video_id):
 """
 
 
-def start_encode(video_id):
+def start_encode(video_id, threaded=True):
     """Start local encoding."""
-    if CELERY_TO_ENCODE:
-        task_start_encode.delay(video_id)
+    if threaded:
+        if CELERY_TO_ENCODE:
+            task_start_encode.delay(video_id)
+        else:
+            log.info("START ENCODE VIDEO ID %s" % video_id)
+            t = threading.Thread(target=encode_video, args=[video_id])
+            t.setDaemon(True)
+            t.start()
     else:
-        log.info("START ENCODE VIDEO ID %s" % video_id)
-        t = threading.Thread(target=encode_video, args=[video_id])
-        t.setDaemon(True)
-        t.start()
+        encode_video(video_id)
 
 
 def start_encode_studio(recording_id, video_output, videos, subtime, presenter):
@@ -108,39 +118,55 @@ def encode_video(video_id):
 
     change_encoding_step(video_id, 0, "start")
     # start and stop cut ?
-    if CutVideo.objects.filter(video=video_id).exists():
-        cut = CutVideo.objects.get(video=video_id)
-        cut_start = time_to_seconds(cut.start)
-        cut_end = time_to_seconds(cut.end)
-        encoding_video = Encoding_video_model(
-            video_id, video_to_encode.video.path, cut_start, cut_end
-        )
-    else:
-        encoding_video = Encoding_video_model(video_id, video_to_encode.video.path)
+    encoding_video = get_encoding_video(video_to_encode)
     encoding_video.add_encoding_log("start_time", "", True, start)
-    # change_encoding_step(video_id, 1, "get video data")
-    # encoding_video.get_video_data()
     change_encoding_step(video_id, 1, "remove old data")
     encoding_video.remove_old_data()
-    # create video dir
-    # change_encoding_step(video_id, 3, "create output dir")
-    # encoding_video.create_output_dir()
 
     change_encoding_step(video_id, 2, "start encoding")
-    encoding_video.start_encode()
+    if USE_DISTANT_ENCODING_TRANSCODING:
+        start_encoding_task.delay(
+            encoding_video.id,
+            encoding_video.video_file,
+            encoding_video.cutting_start,
+            encoding_video.cutting_stop
+        )
+    else:
+        encoding_video.start_encode()
+        final_video = store_encoding_info(video_id, encoding_video)
+        end_of_encoding(final_video)
 
+
+def store_encoding_info(video_id, encoding_video):
+    """Store all encoding file and informations from encoding tasks."""
     change_encoding_step(video_id, 3, "store encoding info")
     final_video = encoding_video.store_json_info()
     final_video.is_video = final_video.get_video_m4a() is None
     final_video.encoding_in_progress = False
     final_video.save()
+    return final_video
 
-    # envois mail fin encodage
+
+def get_encoding_video(video_to_encode):
+    """Get the encoding video object from video."""
+    if CutVideo.objects.filter(video=video_to_encode).exists():
+        cut = CutVideo.objects.get(video=video_to_encode)
+        cut_start = time_to_seconds(cut.start)
+        cut_end = time_to_seconds(cut.end)
+        encoding_video = Encoding_video_model(
+            video_to_encode.id, video_to_encode.video.path, cut_start, cut_end
+        )
+        return encoding_video
+    return Encoding_video_model(video_to_encode.id, video_to_encode.video.path)
+
+
+def end_of_encoding(video):
+    """Send mail at the end of encoding, call transcription."""
     if EMAIL_ON_ENCODING_COMPLETION:
-        send_email_encoding(video_to_encode)
+        send_email_encoding(video)
 
-    transcript_video(video_id)
-    change_encoding_step(video_id, 0, "end of encoding")
+    transcript_video(video.id)
+    change_encoding_step(video.id, 0, "end of encoding")
 
 
 def transcript_video(video_id):

@@ -850,7 +850,7 @@
                 "import_video": {
                     "description": {
                         "en": [
-							"Import_video app to import external videos into Pod.",
+                            "Import_video app to import external videos into Pod.",
                             "Set `USE_IMPORT_VIDEO` to True to activate this application."
                         ],
                         "fr": [
@@ -1197,6 +1197,19 @@
                 "main": {
                     "description": {},
                     "settings": {
+                        "HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Display videos from non visible channels on the homepage"
+                                ],
+                                "fr": [
+                                    "Affiche les vidéos de chaines non visibles sur la page d'accueil"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.2.0"
+                        },
                         "USE_BBB": {
                             "default_value": true,
                             "description": {
@@ -1274,19 +1287,6 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
-                        },
-                        "HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS": {
-                            "default_value": false,
-                            "description": {
-                                "en": [
-                                    "Display videos from non visible channels on the homepage"
-                                ],
-                                "fr": [
-                                    "Affiche les vidéos de chaines non visibles sur la page d'accueil"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.2.0"
                         }
                     },
                     "title": {
@@ -1921,32 +1921,6 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
-                        "CELERY_BROKER_URL": {
-                            "default_value": "amqp://pod:xxx@localhost/rabbitpod",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "URL de Celery pour la gestion des taches d’encodage."
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
-                        },
-                        "CELERY_TO_ENCODE": {
-                            "default_value": false,
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "Utilisation de Celery pour la gestion des taches d’encodage"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
-                        },
                         "CHANNEL_FORM_FIELDS_HELP_TEXT": {
                             "default_value": "",
                             "description": {
@@ -2064,81 +2038,6 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
-                        "EMAIL_ON_ENCODING_COMPLETION": {
-                            "default_value": true,
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "Si True, un courriel est envoyé aux managers et à l’auteur (si DEBUG est à False) à la fin de l’encodage."
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
-                        },
-                        "EMAIL_ON_TRANSCRIPTING_COMPLETION": {
-                            "default_value": true,
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "Si True, un courriel est envoyé aux managers et à l’auteur (si DEBUG est à False) à la fin de la transcription"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
-                        },
-                        "ENCODE_STUDIO": {
-                            "default_value": "start_encode_studio",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "Fonction appelée pour lancer l’encodage du studio (merge and cut)."
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
-                        },
-                        "ENCODE_VIDEO": {
-                            "default_value": "start_encode",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "Fonction appelée pour lancer l’encodage des vidéos direct par thread ou distant par celery"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
-                        },
-                        "ENCODING_CHOICES": {
-                            "default_value": "()",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "Encodage possible sur la plateforme. Associé à un rendu dans le cas d’une vidéo.",
-                                    "```",
-                                    "ENCODING_CHOICES = (",
-                                    "    (\"audio\", \"audio\"),",
-                                    "    (\"360p\", \"360p\"),",
-                                    "    (\"480p\", \"480p\"),",
-                                    "    (\"720p\", \"720p\"),",
-                                    "    (\"1080p\", \"1080p\"),",
-                                    "    (\"playlist\", \"playlist\")",
-                                    ")",
-                                    "```"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
-                        },
                         "FORCE_LOWERCASE_TAGS": {
                             "default_value": true,
                             "description": {
@@ -2147,29 +2046,6 @@
                                 ],
                                 "fr": [
                                     "Les mots clés saisis lors de l’ajout de vidéo sont convertis automatiquement en minuscule."
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
-                        },
-                        "FORMAT_CHOICES": {
-                            "default_value": "()",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "Format d’encodage réalisé sur la plateforme.",
-                                    "```",
-                                    "FORMAT_CHOICES = (",
-                                    "    (\"video/mp4\", \"video/mp4\"),",
-                                    "    (\"video/mp2t\", \"video/mp2t\"),",
-                                    "    (\"video/webm\", \"video/webm\"),",
-                                    "    (\"audio/mp3\", \"audio/mp3\"),",
-                                    "    (\"audio/wav\", \"audio/wav\"),",
-                                    "    (\"application/x-mpegURL\", \"application/x-mpegURL\"),",
-                                    ")",
-                                    "```"
                                 ]
                             },
                             "pod_version_end": "",
@@ -2188,19 +2064,6 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
-                        },
-                        "LAUNCH_ENCODE_VIDEO": {
-                            "default_value": "encode_video",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "Fonction appelée pour lancer l’encodage des vidéos directement (sans thread ni celery)."
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
                         },
                         "LICENCE_CHOICES": {
                             "default_value": "()",
@@ -2788,49 +2651,7 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
-                        "VIDEO_RENDITIONS": {
-                            "default_value": "[]",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "Rendu serializé pour l’encodage des videos.",
-                                    "Cela permet de pouvoir encoder les vidéos sans l’environnement de Pod.",
-                                    "```",
-                                    "VIDEO_RENDITIONS = [",
-                                    "    {",
-                                    "        \"resolution\": \"640x360\",",
-                                    "        \"minrate\": \"500k\",",
-                                    "        \"video_bitrate\": \"750k\",",
-                                    "        \"maxrate\": \"1000k\",",
-                                    "        \"audio_bitrate\": \"96k\",",
-                                    "        \"encode_mp4\": True,",
-                                    "        \"sites\": [1],",
-                                    "    },{",
-                                    "        \"resolution\": \"1280x720\",",
-                                    "        \"minrate\": \"1000k\",",
-                                    "        \"video_bitrate\": \"2000k\",",
-                                    "        \"maxrate\": \"3000k\",",
-                                    "        \"audio_bitrate\": \"128k\",",
-                                    "        \"encode_mp4\": True,",
-                                    "        \"sites\": [1],",
-                                    "    },{",
-                                    "        \"resolution\": \"1920x1080\",",
-                                    "        \"minrate\": \"2000k\",",
-                                    "        \"video_bitrate\": \"3000k\",",
-                                    "        \"maxrate\": \"4500k\",",
-                                    "        \"audio_bitrate\": \"192k\",",
-                                    "        \"encode_mp4\": False,",
-                                    "        \"sites\": [1],",
-                                    "    },",
-                                    "]",
-                                    "```"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
-                        },
+                        
                         "VIDEO_REQUIRED_FIELDS": {
                             "default_value": "[]",
                             "description": {
@@ -2864,6 +2685,237 @@
                     "title": {
                         "en": "",
                         "fr": "Configuration application vidéo."
+                    }
+                },
+                "video_encode_transcript": {
+                    "description": {
+                        "en": [
+                            ""
+                        ],
+                        "fr": [
+                            "",
+                            "Application pour l’encodage et la transcription de vidéo.",
+                            "Il est possible d'encoder en local ou en distant.",
+                            "Attention, il faut configurer Celery pour l’envoi des instructions pour l'encodage distant."
+                        ]
+                    },
+                    "settings": {
+                        "CELERY_BROKER_URL": {
+                            "default_value": "amqp://pod:xxx@localhost/rabbitpod",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "URL de Celery pour la gestion des taches d’encodage."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "CELERY_TO_ENCODE": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Utilisation de Celery pour la gestion des taches d’encodage"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "DEFAULT_LANG_TRACK": {
+                            "default_value": "fr",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "langue par défaut pour l’ajout de piste à une vidéo."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
+                        },
+                        "EMAIL_ON_ENCODING_COMPLETION": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Si True, un courriel est envoyé aux managers et à l’auteur (si DEBUG est à False) à la fin de l’encodage."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "EMAIL_ON_TRANSCRIPTING_COMPLETION": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Si True, un courriel est envoyé aux managers et à l’auteur (si DEBUG est à False) à la fin de la transcription"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "ENCODING_CHOICES": {
+                            "default_value": "()",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Encodage possible sur la plateforme. Associé à un rendu dans le cas d’une vidéo.",
+                                    "```",
+                                    "ENCODING_CHOICES = (",
+                                    "    (\"audio\", \"audio\"),",
+                                    "    (\"360p\", \"360p\"),",
+                                    "    (\"480p\", \"480p\"),",
+                                    "    (\"720p\", \"720p\"),",
+                                    "    (\"1080p\", \"1080p\"),",
+                                    "    (\"playlist\", \"playlist\")",
+                                    ")",
+                                    "```"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "FORMAT_CHOICES": {
+                            "default_value": "()",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Format d’encodage réalisé sur la plateforme.",
+                                    "```",
+                                    "FORMAT_CHOICES = (",
+                                    "    (\"video/mp4\", \"video/mp4\"),",
+                                    "    (\"video/mp2t\", \"video/mp2t\"),",
+                                    "    (\"video/webm\", \"video/webm\"),",
+                                    "    (\"audio/mp3\", \"audio/mp3\"),",
+                                    "    (\"audio/wav\", \"audio/wav\"),",
+                                    "    (\"application/x-mpegURL\", \"application/x-mpegURL\"),",
+                                    ")",
+                                    "```"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "ENCODE_STUDIO": {
+                            "default_value": "start_encode_studio",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Fonction appelée pour lancer l’encodage du studio (merge and cut)."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "ENCODE_VIDEO": {
+                            "default_value": "start_encode",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Fonction appelée pour lancer l’encodage des vidéos direct par thread ou distant par celery"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "VIDEO_RENDITIONS": {
+                            "default_value": "[]",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Rendu serializé pour l’encodage des videos.",
+                                    "Cela permet de pouvoir encoder les vidéos sans l’environnement de Pod.",
+                                    "```",
+                                    "VIDEO_RENDITIONS = [",
+                                    "    {",
+                                    "        \"resolution\": \"640x360\",",
+                                    "        \"minrate\": \"500k\",",
+                                    "        \"video_bitrate\": \"750k\",",
+                                    "        \"maxrate\": \"1000k\",",
+                                    "        \"audio_bitrate\": \"96k\",",
+                                    "        \"encoding_resolution_threshold\": 0,",
+                                    "        \"encode_mp4\": True,",
+                                    "        \"sites\": [1],",
+                                    "    },{",
+                                    "        \"resolution\": \"1280x720\",",
+                                    "        \"minrate\": \"1000k\",",
+                                    "        \"video_bitrate\": \"2000k\",",
+                                    "        \"maxrate\": \"3000k\",",
+                                    "        \"audio_bitrate\": \"128k\",",
+                                    "        \"encoding_resolution_threshold\": 0,",
+                                    "        \"encode_mp4\": True,",
+                                    "        \"sites\": [1],",
+                                    "    },{",
+                                    "        \"resolution\": \"1920x1080\",",
+                                    "        \"minrate\": \"2000k\",",
+                                    "        \"video_bitrate\": \"3000k\",",
+                                    "        \"maxrate\": \"4500k\",",
+                                    "        \"audio_bitrate\": \"192k\",",
+                                    "        \"encoding_resolution_threshold\": 0,",
+                                    "        \"encode_mp4\": False,",
+                                    "        \"sites\": [1],",
+                                    "    },",
+                                    "]",
+                                    "```"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "ENCODING_TRANSCODING_CELERY_BROKER_URL": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Il faut renseigner l'url du redis sur lequel Celery va chercher les ordres d'encodage et de transcription",
+                                    "par exemple : \"redis://redis:6379/7\""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.3.1"
+                        },
+                        "USE_DISTANT_ENCODING_TRANSCODING": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, active l'encodage et la transcription sur un environnement distant via redis+celery"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4.0"
+                        }
+                    },
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application video encodage et transcription"
                     }
                 },
                 "video_search": {
