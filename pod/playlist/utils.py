@@ -235,7 +235,7 @@ def get_additional_owners(playlist: Playlist) -> list:
     return playlist.additional_owners.all()
 
 
-def get_link_to_start_playlist(request, playlist: Playlist) -> str:
+def get_link_to_start_playlist(request, playlist: Playlist, video=None) -> str:
     """
     Get the link to start a specific playlist.
 
@@ -247,7 +247,9 @@ def get_link_to_start_playlist(request, playlist: Playlist) -> str:
         str: Link to start the playlist.
     """
     first_video = playlist.get_first_video(request)
-    if first_video:
+    if video:
+        return f"{reverse('video:video', kwargs={'slug': video})}?playlist={playlist.slug}"
+    elif first_video:
         return f"{reverse('video:video', kwargs={'slug': first_video.slug})}?playlist={playlist.slug}"
     else:
         return ""

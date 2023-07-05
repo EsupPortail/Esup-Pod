@@ -30,5 +30,6 @@ urlpatterns = [
         favorites_save_reorganisation,
         name="save-reorganisation"
     ),
-    path("start-playlist:<slug:slug>", start_playlist, name="start-playlist"),
+    path("start-playlist/<slug:slug>", start_playlist, name="start-playlist"),
+    path("start-playlist/<slug:slug>/<slug:video>", start_playlist, name="start-playlist"),
 ]
