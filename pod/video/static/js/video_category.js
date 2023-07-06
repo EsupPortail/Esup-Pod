@@ -16,20 +16,20 @@
     size: 12, // videos per page
   };
   const modal_video_list = document.querySelector(
-    ".category_modal_videos_list"
+    ".category_modal_videos_list",
   );
   const msg_saved = gettext("Category changes saved successfully");
   const msg_error_duplicate = gettext(
-    "You cannot add two categories with the same title."
+    "You cannot add two categories with the same title.",
   );
   const msg_deleted = gettext("Category deleted successfully");
   const msg_error = gettext(
-    "An error occured, please refresh the page and try again."
+    "An error occured, please refresh the page and try again.",
   );
   const msg_title_empty = gettext("Category title field is required.");
   const msg_save_cat = gettext("Save category");
   let videos_list = document.querySelector(
-    "#videos_list.infinite-container:not(.filtered)"
+    "#videos_list.infinite-container:not(.filtered)",
   );
   let saveCatBtn = document.querySelector("#manageCategoryModal #saveCategory"); // btn in dialog
   let modal_title = document.querySelector("#manageCategoryModal #modal_title");
@@ -62,10 +62,10 @@
       const cat_modal_alert = document.createElement("div");
       cat_modal_alert.setAttribute("class", "alert alert-warning");
       cat_modal_alert.innerHTML = gettext(
-        "You have no content without a category."
+        "You have no content without a category.",
       );
       const cat_modal_body = document.querySelector(
-        "#manageCategoryModal .modal-body"
+        "#manageCategoryModal .modal-body",
       );
       cat_modal_body.appendChild(cat_modal_alert);
     }
@@ -73,24 +73,24 @@
   // Chunk array
   const chunk = (arr, size) =>
     Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
-      arr.slice(i * size, i * size + size)
+      arr.slice(i * size, i * size + size),
     );
   const paginate = (cat_videos) => {
     VIDEOS_LIST_CHUNK.page_index = 0;
     prev.classList.add("disabled");
     const video_elements = Array.from(
       modal_video_list.querySelectorAll(
-        ".category_modal_videos_list .infinite-item"
-      )
+        ".category_modal_videos_list .infinite-item",
+      ),
     );
     VIDEOS_LIST_CHUNK.videos.selected = cat_videos.map((v) =>
-      getModalVideoCard(v)
+      getModalVideoCard(v),
     );
 
     // Saving unselected videos
     if (video_elements.length && !VIDEOS_LIST_CHUNK.videos.unselected.length) {
       VIDEOS_LIST_CHUNK.videos.unselected = video_elements.filter(
-        (html_v) => !html_v.classList.contains("selected")
+        (html_v) => !html_v.classList.contains("selected"),
       );
     }
     VIDEOS_LIST_CHUNK.videos.chunk = chunk(
@@ -98,7 +98,7 @@
         ...VIDEOS_LIST_CHUNK.videos.unselected,
         ...VIDEOS_LIST_CHUNK.videos.selected,
       ],
-      VIDEOS_LIST_CHUNK.size
+      VIDEOS_LIST_CHUNK.size,
     );
     pages_info.innerText = `${VIDEOS_LIST_CHUNK.page_index + 1}/${
       VIDEOS_LIST_CHUNK.videos.chunk.length
@@ -107,7 +107,7 @@
       "title",
       `${VIDEOS_LIST_CHUNK.page_index + 1}/${
         VIDEOS_LIST_CHUNK.videos.chunk.length
-      }`
+      }`,
     );
     if (VIDEOS_LIST_CHUNK.videos.chunk.length > 1) {
       modal_video_list.classList.add("show");
@@ -137,7 +137,7 @@
     }`;
     pages_info.setAttribute(
       "title",
-      `${VIDEOS_LIST_CHUNK.page_index + 1}/${nbr_pages + 1}`
+      `${VIDEOS_LIST_CHUNK.page_index + 1}/${nbr_pages + 1}`,
     );
     show_paginate_videos();
   });
@@ -156,7 +156,7 @@
     }`;
     pages_info.setAttribute(
       "title",
-      `${VIDEOS_LIST_CHUNK.page_index + 1}/${nbr_pages + 1}`
+      `${VIDEOS_LIST_CHUNK.page_index + 1}/${nbr_pages + 1}`,
     );
     show_paginate_videos();
   });
@@ -165,7 +165,7 @@
   let searchCatInput = document.getElementById("searchcategories");
   let searchCatHandler = (s) => {
     let cats = document.querySelectorAll(
-      ".categories_list .cat_title:not(.hidden)"
+      ".categories_list .cat_title:not(.hidden)",
     );
     if (s.length >= 3) {
       cats.forEach((cat) => {
@@ -195,7 +195,7 @@
     } else {
       // delete warning text videos found
       let warning = document.querySelector(
-        "#videos_list.filtered .alert-warning"
+        "#videos_list.filtered .alert-warning",
       );
       if (warning) warning.parentNode.removeChild(warning);
     }
@@ -220,7 +220,7 @@
       if (videos_list) {
         videos_list.setAttribute(
           "class",
-          "pod-infinite-container infinite-container"
+          "pod-infinite-container infinite-container",
         );
       }
     } else {
@@ -235,7 +235,7 @@
       if (videos_list) {
         videos_list.setAttribute(
           "class",
-          "pod-infinite-container infinite-container hidden"
+          "pod-infinite-container infinite-container hidden",
         );
       }
     }
@@ -244,7 +244,7 @@
   // Create filtered videos container (HtmlELement)
   let getVideosFilteredContainer = () => {
     let videos_list_filtered = document.querySelector(
-      ".pod-mainContent .filtered.infinite-container"
+      ".pod-mainContent .filtered.infinite-container",
     );
     if (videos_list_filtered) {
       return videos_list_filtered;
@@ -252,7 +252,7 @@
     videos_list_filtered = document.createElement("div");
     videos_list_filtered.setAttribute(
       "class",
-      "filtered infinite-container pod-infinite-container"
+      "filtered infinite-container pod-infinite-container",
     );
     videos_list_filtered.setAttribute("id", "videos_list");
     document
@@ -269,7 +269,7 @@
       CURR_CATEGORY.id === CURR_FILTER.id
     ) {
       let actual_videos = VIDEOS_LIST_CHUNK.videos.selected.map(
-        (v_html) => v_html.dataset.slug
+        (v_html) => v_html.dataset.slug,
       );
       let old_videos = getSavedData(CURR_FILTER.id).videos.map((v) => v.slug);
       let rm = old_videos.filter((v) => !actual_videos.includes(v));
@@ -282,8 +282,8 @@
         if (rm[i]) {
           container_filtered.removeChild(
             container_filtered.querySelector(
-              `.infinite-item[data-slug="${rm[i]}"`
-            )
+              `.infinite-item[data-slug="${rm[i]}"`,
+            ),
           );
         }
 
@@ -291,8 +291,8 @@
         if (added[i]) {
           container_filtered.appendChild(
             getVideoElement(
-              category_data.videos.find((v) => v.slug === added[i])
-            )
+              category_data.videos.find((v) => v.slug === added[i]),
+            ),
           );
         }
       }
@@ -317,7 +317,7 @@
   // remove all current selected videos in dialog
   let refreshDialog = () => {
     let videos = document.querySelectorAll(
-      ".category_modal_videos_list .selected"
+      ".category_modal_videos_list .selected",
     );
     videos.forEach((v) => {
       v.parentNode.removeChild(v);
@@ -360,7 +360,7 @@
         if (selected) {
           VIDEOS_LIST_CHUNK.videos.unselected =
             VIDEOS_LIST_CHUNK.videos.unselected.filter(
-              (v) => !v.classList.contains("selected")
+              (v) => !v.classList.contains("selected"),
             );
           VIDEOS_LIST_CHUNK.videos.selected = [
             ...VIDEOS_LIST_CHUNK.videos.selected,
@@ -369,7 +369,7 @@
         } else {
           VIDEOS_LIST_CHUNK.videos.selected =
             VIDEOS_LIST_CHUNK.videos.selected.filter((v) =>
-              v.classList.contains("selected")
+              v.classList.contains("selected"),
             );
           VIDEOS_LIST_CHUNK.videos.unselected = [
             ...VIDEOS_LIST_CHUNK.videos.unselected,
@@ -534,7 +534,7 @@
     let card = document.createElement("div");
     card.setAttribute(
       "class",
-      "card box-shadow pod-card--video video-card" // "card mb-4 box-shadow border-secondary video-card"
+      "card box-shadow pod-card--video video-card", // "card mb-4 box-shadow border-secondary video-card"
     );
     card.innerHTML = `
       <div class="card-header">
@@ -550,34 +550,36 @@
       </div>
       <div class="card-thumbnail">
         <a class="link-center-pod" href="${VIDEO_URL}${
-      video.slug
-    }" title="${video.title.charAt(0).toUpperCase()}${video.title.slice(1)}">
+          video.slug
+        }" title="${video.title.charAt(0).toUpperCase()}${video.title.slice(
+          1,
+        )}">
           ${video.thumbnail}
         </a>
       </div>
       <div class="card-body px-3 py-2">
         <footer class="card-footer card-footer-pod p-0 m-0">
           <a href="${EDIT_URL}${
-      video.slug
-    }" title="${edit_text}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
+            video.slug
+          }" title="${edit_text}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
     <i class="bi bi-pencil-square" aria-hidden="true"></i></a>
           <a href="${COMPLETION_URL}${
-      video.slug
-    }" title="${completion_text}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
+            video.slug
+          }" title="${completion_text}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
     <i class="bi bi-file-text" aria-hidden="true"></i></a>
           <a href="${CHAPTER_URL}${
-      video.slug
-    }" title="${chapter_text}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
+            video.slug
+          }" title="${chapter_text}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
     <i class="bi bi-card-list" aria-hidden="true"></i></a>
           <a href="${DELETE_URL}${
-      video.slug
-    }" title="${delete_text}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
+            video.slug
+          }" title="${delete_text}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1">
     <i class="bi bi-trash" aria-hidden="true"></i></a>
         </footer>
         <span class="small video-title">
           <a href="${VIDEO_URL}${video.slug}">${video.title
-      .charAt(0)
-      .toUpperCase()}${video.title.slice(1)}</a>
+            .charAt(0)
+            .toUpperCase()}${video.title.slice(1)}</a>
         </span>
       </div>
     `;
@@ -600,7 +602,7 @@
     let alert_message = document.createElement("div");
     alert_message.setAttribute(
       "class",
-      `category_alert alert alert-${class_suffix}`
+      `category_alert alert alert-${class_suffix}`,
     );
     alert_message.setAttribute("role", `alert`);
     alert_message.innerHTML = `<div class="alert_content"><span class="alert_icon">${icon}</span><span class="alert_title">${title}</span><span class="alert_text">${message}</span>`;
@@ -663,7 +665,7 @@
     let selectClass = selected ? "selected" : "";
     v_wrapper.setAttribute(
       "class",
-      "infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group " + selectClass
+      "infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group " + selectClass,
     );
     v_wrapper.innerHTML = videoCard;
     return v_wrapper;
@@ -671,14 +673,14 @@
   // Append video card in category modal
   let appendVideoCard = (v) => {
     let modalListVideo = document.querySelector(
-      "#manageCategoryModal .category_modal_videos_list"
+      "#manageCategoryModal .category_modal_videos_list",
     );
     modalListVideo.insertBefore(v, modalListVideo.querySelector(".paginator"));
   };
 
   // Add onclick event to edit a category
   let cats_edit = document.querySelectorAll(
-    ".categories_list_item .edit_category"
+    ".categories_list_item .edit_category",
   );
   cats_edit.forEach((c_e) => {
     editHandler(c_e);
@@ -694,14 +696,14 @@
       CAT_TO_DELETE.id = c_d.dataset.del;
       CAT_TO_DELETE.slug = c_d.dataset.slug;
       document.querySelector(
-        "#deleteCategoryModal .modal-body .category_title"
+        "#deleteCategoryModal .modal-body .category_title",
       ).textContent = c_d.dataset.title;
     });
   };
 
   // Add onclick event to delete a category
   let cats_del = document.querySelectorAll(
-    ".categories_list_item .remove_category"
+    ".categories_list_item .remove_category",
   );
   cats_del.forEach((c_d) => {
     deleteHandler(c_d);
@@ -715,7 +717,7 @@
       // Delete category
       let cat = findCategory(
         (slug = CAT_TO_DELETE.slug),
-        (id = CAT_TO_DELETE.id)
+        (id = CAT_TO_DELETE.id),
       );
       if (Object.keys(cat).length) {
         fetch(`${BASE_URL}delete/${cat.id}/`, {
@@ -730,7 +732,7 @@
 
             // Remove eventual alert message
             const cat_modal_alert = document.querySelector(
-              "#manageCategoryModal .modal-body .alert-warning"
+              "#manageCategoryModal .modal-body .alert-warning",
             );
             if (
               typeof cat_modal_alert != "undefined" &&
@@ -756,7 +758,7 @@
             ) {
               filtered_container.parentNode.removeChild(filtered_container);
               let my_videos_container = document.querySelector(
-                ".infinite-container.hidden"
+                ".infinite-container.hidden",
               );
               if (my_videos_container)
                 my_videos_container.classList.remove("hidden");
@@ -796,7 +798,7 @@
 
     //let videos = Array.from(document.querySelectorAll(".category_modal_videos_list .selected")).map(v_el => v_el.dataset.slug.trim());
     const videos = VIDEOS_LIST_CHUNK.videos.selected.map(
-      (html_v) => html_v.dataset.slug
+      (html_v) => html_v.dataset.slug,
     );
     let postData = {
       title: cat_input.value.trim(),
@@ -821,7 +823,7 @@
             data.title;
           DOMCurrentEditCat.querySelector(".cat_title").setAttribute(
             "title",
-            data.title
+            data.title,
           );
           DOMCurrentEditCat.querySelectorAll("span").forEach((sp) => {
             sp.setAttribute("data-slug", data.slug);
@@ -846,7 +848,7 @@
           let li = getCategoryLi(
             data.category.title,
             data.category.slug,
-            data.category.id
+            data.category.id,
           );
           document.querySelector(".categories_list").appendChild(li);
           let msg_create = gettext("Category created successfully");

@@ -288,7 +288,7 @@ var VideoSlides = function (items) {
    */
   this.slideBar = function () {
     const progressbar = document.getElementsByClassName(
-      "vjs-progress-holder"
+      "vjs-progress-holder",
     )[0];
     // Create the slidebar
     var slidebar = document.createElement("div");
@@ -316,7 +316,7 @@ var VideoSlides = function (items) {
           "%; width: " +
           slidebar_width +
           "%; background-color: " +
-          slide_color[type]
+          slide_color[type],
       );
       newslide.id = "slidebar_" + i;
       slidebar_holder.appendChild(newslide);
@@ -339,7 +339,7 @@ var VideoSlides = function (items) {
       }
       videoplayer.className = vclass;
       document.getElementsByClassName(
-        "vjs-slide-manager"
+        "vjs-slide-manager",
       )[0].firstChild.firstChild.innerHTML = slide_mode_list[mode];
     });
   };
@@ -412,7 +412,7 @@ var VideoSlides = function (items) {
               className: "vjs-menu-title vjs-slide-manager-title",
               innerHTML: gettext("Enrich mode"),
             }),
-          })
+          }),
         );
 
         for (let e in slide_mode_list) {
@@ -420,7 +420,7 @@ var VideoSlides = function (items) {
             new SlideMode(player, {
               label: slide_mode_list[e],
               mode: e,
-            })
+            }),
           );
         }
 
@@ -432,14 +432,14 @@ var VideoSlides = function (items) {
       document
         .getElementsByClassName("vjs-slide-manager")[0]
         .parentNode.removeChild(
-          document.getElementsByClassName("vjs-slide-manager")[0]
+          document.getElementsByClassName("vjs-slide-manager")[0],
         );
     }
     player.controlBar
       .el()
       .insertBefore(
         newbutton.el(),
-        document.getElementsByClassName("vjs-fullscreen-control")[0]
+        document.getElementsByClassName("vjs-fullscreen-control")[0],
       );
   };
   ////VideoSLide construction (need to be and the end in order to register called methods)

@@ -1,0 +1,4 @@
+webvtt-py==0.4.5
+celery==5.2.7
+redis==4.5.4
+requests==2.31.0

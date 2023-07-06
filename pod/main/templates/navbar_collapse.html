@@ -28,7 +28,7 @@
                   {{channel.title}}</a></span>
                 <span class="text-nowrap">
                   {% if channel.themes.all.count > 0 %}
-                    <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseThemes{{channel.id}}" aria-expanded="true" aria-controls="collapseThemes{{channel.id}}">
+                    <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseThemes{{channel.id}}" aria-expanded="false" aria-controls="collapseThemes{{channel.id}}">
                     {% blocktrans count counter=channel.themes.all.count %}{{counter}} Theme{% plural %}{{counter}} Themes{% endblocktrans %} <i class="bi bi-chevron-down"></i>
                     </button>
                   {% endif %}
@@ -71,7 +71,7 @@
                   {{channel.title}}</a></span>
                 <span class="text-nowrap">
                   {% if channel.themes.all.count > 0 %}
-                    <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseThemes{{channel.id}}" aria-expanded="true" aria-controls="collapseThemes{{channel.id}}">
+                    <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseThemes{{channel.id}}" aria-expanded="false" aria-controls="collapseThemes{{channel.id}}">
                     {% blocktrans count counter=channel.themes.all.count %}{{counter}} Theme{% plural %}{{counter}} Themes{% endblocktrans %} <i class="bi bi-chevron-down" class="chevron-down m-0 p-0"></i>
                     </button>
                   {% endif %}

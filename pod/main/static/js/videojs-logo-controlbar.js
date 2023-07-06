@@ -29,7 +29,7 @@
           "style",
           "background-image: url(" +
             options.imgsrc +
-            "); background-repeat: no-repeat;  background-position: center; "
+            "); background-repeat: no-repeat;  background-position: center; ",
         );
         this.link = options.link;
       },
@@ -51,7 +51,7 @@
         if (settings.ui) {
           var menuButton = new LogoMenuButton(player, settings);
           player.controlBar.logo = player.controlBar.el_.appendChild(
-            menuButton.el_
+            menuButton.el_,
           );
           player.controlBar.logo.dispose = function () {
             this.parentNode.removeChild(this);
