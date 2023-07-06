@@ -54,7 +54,8 @@ var nextPage = false;
 {% endif %}
 </script>
 <script src="{% static 'js/infinite.js' %}?ver={{VERSION}}" ></script>
-<script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
+<script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
 {% if use_category %}
 <script>
   const CATEGORIES_DATA = {{ categories | safe }};

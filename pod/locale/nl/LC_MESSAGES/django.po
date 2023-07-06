@@ -5360,6 +5360,10 @@ msgstr ""
 msgid "Modification date"
 msgstr ""
 
+#: pod/playlist/templates/playlist/playlist_sort_select.html
+msgid "Creation date"
+msgstr ""
+
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Protected with a password"
 msgstr ""

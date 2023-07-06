@@ -397,6 +397,14 @@ msgstr "Pas de diffuseur pour ce bâtiment"
 msgid "An error occurred during broadcasters loading..."
 msgstr "Une erreur s’est produite lors du chargement des diffuseurs…"
 
+#: pod/main/static/js/filter-aside-element-list-refresh.js
+msgid "Descending sort"
+msgstr "Tri descendant"
+
+#: pod/main/static/js/filter-aside-element-list-refresh.js
+msgid "Ascending sort"
+msgstr "Tri ascendant"
+
 #: pod/main/static/js/main.js
 msgid "User not found"
 msgstr "Utilisateur non trouvé"
@@ -454,6 +462,11 @@ msgid "The file extension not in the allowed extension:"
 msgstr ""
 "Cette extension de fichier n’est pas présente dans les extensions "
 "autorisées :"
+
+#: pod/playlist/static/js/filter-aside-playlist-list-refresh.js
+#: pod/video/static/js/filter_aside_video_list_refresh.js
+msgid "An Error occurred while processing."
+msgstr "Une erreur est survenue durant l’exécution du processus."
 
 #: pod/playlist/static/js/playlist-reorganize.js
 msgid "Save your reorganization"
@@ -584,18 +597,6 @@ msgid "%s comment"
 msgid_plural "%s comments"
 msgstr[0] "%s commentaire"
 msgstr[1] "%s commentaires"
-
-#: pod/video/static/js/filter_aside_video_list_refresh.js
-msgid "Descending sort"
-msgstr "Tri descendant"
-
-#: pod/video/static/js/filter_aside_video_list_refresh.js
-msgid "Ascending sort"
-msgstr "Tri ascendant"
-
-#: pod/video/static/js/filter_aside_video_list_refresh.js
-msgid "An Error occurred while processing."
-msgstr "Une erreur est survenue durant l’exécution du processus."
 
 #: pod/video/static/js/regroup_videos_by_theme.js
 msgid "This content is password protected."

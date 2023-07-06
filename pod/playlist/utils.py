@@ -324,8 +324,13 @@ def sort_playlist_list(playlist_list: list, sort_field: str, sort_direction="") 
         list (:class:`list(pod.playlist.models.Playlist)`): The list of playlist
     """
     if sort_field and sort_field in [
+        "id",
         "name",
-        "modification_date",
+        "visibility",
+        "slug",
+        "owner",
+        "date_created",
+        "date_updated",
     ]:
         if not sort_direction:
             sort_field = "-" + sort_field

@@ -11,6 +11,7 @@
 
   <select id="sort" name="sort" class="form-select sort-select">
     <option value="name" {% if sort_field == 'name' %} selected {% endif %}>{% trans 'Name' %}</option>
-    <option value="modification_date" {% if sort_field == 'modification_date' %} selected {% endif %}>{% trans 'Modification date' %}</option>
+    <option value="date_updated" {% if sort_field == 'date_updated' %} selected {% endif %}>{% trans 'Modification date' %}</option>
+    <option value="date_created" {% if sort_field == 'date_created' %} selected {% endif %}>{% trans 'Creation date' %}</option>
   </select>
 </div>
