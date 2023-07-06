@@ -1556,6 +1556,12 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 
 ### Configuration application main
 
+ - `HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS`
+
+  > valeur par défaut : `False`
+
+  >> Affiche les vidéos de chaines non visibles sur la page d'accueil <br>
+
  - `USE_BBB`
 
   > valeur par défaut : `True`
@@ -1591,12 +1597,6 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
   > valeur par défaut : ``
 
   >> Version courante du projet <br>
-
- - `HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS`
-
-  > valeur par défaut : `False`
-
-  >> Affiche les vidéos de chaines non visibles sur la page d'accueil <br>
 
 ### Configuration application meeting
 
@@ -1932,18 +1932,6 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
 
   >> Activer les commentaires au niveau de la plateforme <br>
 
- - `CELERY_BROKER_URL`
-
-  > valeur par défaut : `amqp://pod:xxx@localhost/rabbitpod`
-
-  >> URL de Celery pour la gestion des taches d’encodage. <br>
-
- - `CELERY_TO_ENCODE`
-
-  > valeur par défaut : `False`
-
-  >> Utilisation de Celery pour la gestion des taches d’encodage <br>
-
  - `CHANNEL_FORM_FIELDS_HELP_TEXT`
 
   > valeur par défaut : ``
@@ -2007,71 +1995,11 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
 
   >> Durée d’obsolescence par défaut (en années après la date d’ajout). <br>
 
- - `EMAIL_ON_ENCODING_COMPLETION`
-
-  > valeur par défaut : `True`
-
-  >> Si True, un courriel est envoyé aux managers et à l’auteur (si DEBUG est à False) à la fin de l’encodage. <br>
-
- - `EMAIL_ON_TRANSCRIPTING_COMPLETION`
-
-  > valeur par défaut : `True`
-
-  >> Si True, un courriel est envoyé aux managers et à l’auteur (si DEBUG est à False) à la fin de la transcription <br>
-
- - `ENCODE_STUDIO`
-
-  > valeur par défaut : `start_encode_studio`
-
-  >> Fonction appelée pour lancer l’encodage du studio (merge and cut). <br>
-
- - `ENCODE_VIDEO`
-
-  > valeur par défaut : `start_encode`
-
-  >> Fonction appelée pour lancer l’encodage des vidéos direct par thread ou distant par celery <br>
-
- - `ENCODING_CHOICES`
-
-  > valeur par défaut : `()`
-
-  >> Encodage possible sur la plateforme. Associé à un rendu dans le cas d’une vidéo. <br>
-  >>
-  >> ```
-  >> ENCODING_CHOICES = ( 
-  >>     ("audio", "audio"), 
-  >>     ("360p", "360p"), 
-  >>     ("480p", "480p"), 
-  >>     ("720p", "720p"), 
-  >>     ("1080p", "1080p"), 
-  >>     ("playlist", "playlist") 
-  >> ) 
-  >>
-  >> ```
-
  - `FORCE_LOWERCASE_TAGS`
 
   > valeur par défaut : `True`
 
   >> Les mots clés saisis lors de l’ajout de vidéo sont convertis automatiquement en minuscule. <br>
-
- - `FORMAT_CHOICES`
-
-  > valeur par défaut : `()`
-
-  >> Format d’encodage réalisé sur la plateforme. <br>
-  >>
-  >> ```
-  >> FORMAT_CHOICES = ( 
-  >>     ("video/mp4", "video/mp4"), 
-  >>     ("video/mp2t", "video/mp2t"), 
-  >>     ("video/webm", "video/webm"), 
-  >>     ("audio/mp3", "audio/mp3"), 
-  >>     ("audio/wav", "audio/wav"), 
-  >>     ("application/x-mpegURL", "application/x-mpegURL"), 
-  >> ) 
-  >>
-  >> ```
 
  - `LANG_CHOICES`
 
@@ -2079,12 +2007,6 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
 
   >> Liste des langues proposées lors de l’ajout des vidéos. <br>
   >> Affichés en dessous d’une vidéos, les choix sont aussi utilisés pour affiner la recherche. <br>
-
- - `LAUNCH_ENCODE_VIDEO`
-
-  > valeur par défaut : `encode_video`
-
-  >> Fonction appelée pour lancer l’encodage des vidéos directement (sans thread ni celery). <br>
 
  - `LICENCE_CHOICES`
 
@@ -2535,44 +2457,6 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
 
   >> Durée (en nombre de jours) sur laquelle on souhaite compter le nombre de vues récentes. <br>
 
- - `VIDEO_RENDITIONS`
-
-  > valeur par défaut : `[]`
-
-  >> Rendu serializé pour l’encodage des videos. <br>
-  >> Cela permet de pouvoir encoder les vidéos sans l’environnement de Pod. <br>
-  >>
-  >> ```
-  >> VIDEO_RENDITIONS = [ 
-  >>     { 
-  >>         "resolution": "640x360", 
-  >>         "minrate": "500k", 
-  >>         "video_bitrate": "750k", 
-  >>         "maxrate": "1000k", 
-  >>         "audio_bitrate": "96k", 
-  >>         "encode_mp4": True, 
-  >>         "sites": [1], 
-  >>     },{ 
-  >>         "resolution": "1280x720", 
-  >>         "minrate": "1000k", 
-  >>         "video_bitrate": "2000k", 
-  >>         "maxrate": "3000k", 
-  >>         "audio_bitrate": "128k", 
-  >>         "encode_mp4": True, 
-  >>         "sites": [1], 
-  >>     },{ 
-  >>         "resolution": "1920x1080", 
-  >>         "minrate": "2000k", 
-  >>         "video_bitrate": "3000k", 
-  >>         "maxrate": "4500k", 
-  >>         "audio_bitrate": "192k", 
-  >>         "encode_mp4": False, 
-  >>         "sites": [1], 
-  >>     }, 
-  >> ] 
-  >>
-  >> ```
-
  - `VIDEO_REQUIRED_FIELDS`
 
   > valeur par défaut : `[]`
@@ -2588,6 +2472,146 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
   > valeur par défaut : `False`
 
   >> Réserve l’accès aux statistiques des vidéos aux personnes authentifiées. <br>
+
+### Configuration application video encodage et transcription
+
+Application pour l’encodage et la transcription de vidéo.<br>
+Il est possible d'encoder en local ou en distant.<br>
+Attention, il faut configurer Celery pour l’envoi des instructions pour l'encodage distant.<br>
+
+ - `CELERY_BROKER_URL`
+
+  > valeur par défaut : `amqp://pod:xxx@localhost/rabbitpod`
+
+  >> URL de Celery pour la gestion des taches d’encodage. <br>
+
+ - `CELERY_TO_ENCODE`
+
+  > valeur par défaut : `False`
+
+  >> Utilisation de Celery pour la gestion des taches d’encodage <br>
+
+ - `DEFAULT_LANG_TRACK`
+
+  > valeur par défaut : `fr`
+
+  >> langue par défaut pour l’ajout de piste à une vidéo. <br>
+
+ - `EMAIL_ON_ENCODING_COMPLETION`
+
+  > valeur par défaut : `True`
+
+  >> Si True, un courriel est envoyé aux managers et à l’auteur (si DEBUG est à False) à la fin de l’encodage. <br>
+
+ - `EMAIL_ON_TRANSCRIPTING_COMPLETION`
+
+  > valeur par défaut : `True`
+
+  >> Si True, un courriel est envoyé aux managers et à l’auteur (si DEBUG est à False) à la fin de la transcription <br>
+
+ - `ENCODING_CHOICES`
+
+  > valeur par défaut : `()`
+
+  >> Encodage possible sur la plateforme. Associé à un rendu dans le cas d’une vidéo. <br>
+  >>
+  >> ```
+  >> ENCODING_CHOICES = ( 
+  >>     ("audio", "audio"), 
+  >>     ("360p", "360p"), 
+  >>     ("480p", "480p"), 
+  >>     ("720p", "720p"), 
+  >>     ("1080p", "1080p"), 
+  >>     ("playlist", "playlist") 
+  >> ) 
+  >>
+  >> ```
+
+ - `FORMAT_CHOICES`
+
+  > valeur par défaut : `()`
+
+  >> Format d’encodage réalisé sur la plateforme. <br>
+  >>
+  >> ```
+  >> FORMAT_CHOICES = ( 
+  >>     ("video/mp4", "video/mp4"), 
+  >>     ("video/mp2t", "video/mp2t"), 
+  >>     ("video/webm", "video/webm"), 
+  >>     ("audio/mp3", "audio/mp3"), 
+  >>     ("audio/wav", "audio/wav"), 
+  >>     ("application/x-mpegURL", "application/x-mpegURL"), 
+  >> ) 
+  >>
+  >> ```
+
+ - `ENCODE_STUDIO`
+
+  > valeur par défaut : `start_encode_studio`
+
+  >> Fonction appelée pour lancer l’encodage du studio (merge and cut). <br>
+
+ - `ENCODE_VIDEO`
+
+  > valeur par défaut : `start_encode`
+
+  >> Fonction appelée pour lancer l’encodage des vidéos direct par thread ou distant par celery <br>
+
+ - `VIDEO_RENDITIONS`
+
+  > valeur par défaut : `[]`
+
+  >> Rendu serializé pour l’encodage des videos. <br>
+  >> Cela permet de pouvoir encoder les vidéos sans l’environnement de Pod. <br>
+  >>
+  >> ```
+  >> VIDEO_RENDITIONS = [ 
+  >>     { 
+  >>         "resolution": "640x360", 
+  >>         "minrate": "500k", 
+  >>         "video_bitrate": "750k", 
+  >>         "maxrate": "1000k", 
+  >>         "audio_bitrate": "96k", 
+  >>         "encoding_resolution_threshold": 0, 
+  >>         "encode_mp4": True, 
+  >>         "sites": [1], 
+  >>     },{ 
+  >>         "resolution": "1280x720", 
+  >>         "minrate": "1000k", 
+  >>         "video_bitrate": "2000k", 
+  >>         "maxrate": "3000k", 
+  >>         "audio_bitrate": "128k", 
+  >>         "encoding_resolution_threshold": 0, 
+  >>         "encode_mp4": True, 
+  >>         "sites": [1], 
+  >>     },{ 
+  >>         "resolution": "1920x1080", 
+  >>         "minrate": "2000k", 
+  >>         "video_bitrate": "3000k", 
+  >>         "maxrate": "4500k", 
+  >>         "audio_bitrate": "192k", 
+  >>         "encoding_resolution_threshold": 0, 
+  >>         "encode_mp4": False, 
+  >>         "sites": [1], 
+  >>     }, 
+  >> ] 
+  >>
+  >> ```
+
+ - `ENCODING_TRANSCODING_CELERY_BROKER_URL`
+
+  > valeur par défaut : `False`
+
+
+  >> Il faut renseigner l'url du redis sur lequel Celery va chercher les ordres d'encodage et de transcription <br>
+  >> par exemple : "redis://redis:6379/7" <br>
+
+ - `USE_DISTANT_ENCODING_TRANSCODING`
+
+  > valeur par défaut : `False`
+
+
+  >> Si True, active l'encodage et la transcription sur un environnement distant via redis+celery <br>
 
 ### Configuration application search
 

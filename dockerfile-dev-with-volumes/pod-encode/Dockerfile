@@ -4,18 +4,15 @@
 #  (")_(")
 #------------------------------------------------------------------------------------------------------------------------------
 # Conteneur node
-ARG NODE_VERSION
 ARG PYTHON_VERSION
-FROM $NODE_VERSION as source-build-js
 # TODO
 #FROM harbor.urba.univ-lille.fr/store/node:19 as source-build-js
 
-WORKDIR /tmp/pod
-COPY ./pod/ .
-RUN yarn
 #------------------------------------------------------------------------------------------------------------------------------
 # Conteneur python
 FROM $PYTHON_VERSION
+WORKDIR /tmp/pod
+COPY ./pod/ .
 # TODO
 #FROM harbor.urba.univ-lille.fr/store/python:3.7-buster
 
@@ -27,18 +24,12 @@ RUN apt-get clean && apt-get update \
 
 WORKDIR /usr/src/app
 
-COPY ./requirements.txt .
-COPY ./requirements-conteneur.txt .
-COPY ./requirements-dev.txt .
-RUN mkdir /tmp/node_modules/
+COPY ./requirements-encode.txt .
 
-COPY --from=source-build-js /tmp/pod/node_modules/ /tmp/node_modules/
-
-RUN pip3 install --no-cache-dir -r requirements-conteneur.txt \
-    && pip3 install elasticsearch==7.17.7
+RUN pip3 install --no-cache-dir -r requirements-encode.txt
 
 # ENTRYPOINT :
-COPY ./dockerfile-dev-with-volumes/pod/my-entrypoint.sh /tmp/my-entrypoint.sh
-RUN chmod 755 /tmp/my-entrypoint.sh
+COPY ./dockerfile-dev-with-volumes/pod-encode/my-entrypoint-encode.sh /tmp/my-entrypoint-encode.sh
+RUN chmod 755 /tmp/my-entrypoint-encode.sh
 
-ENTRYPOINT ["bash", "/tmp/my-entrypoint.sh"]
+ENTRYPOINT ["bash", "/tmp/my-entrypoint-encode.sh"]

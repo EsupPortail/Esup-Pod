@@ -77,6 +77,10 @@
   --bs-link-color-rgb: var(--pod-link-color-rgb);
   --bs-link-hover-color: var(--pod-activelink-color);
   --bs-card-color: var(--pod-font-color);
+  /* better contrast on sidebar background */
+  --bs-danger: #DC2028;
+  /* better contrasts */
+  --bs-border-color: #8E969D;
 
   /* Use system font (faster load) */
   --font-family-sans-serif: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Verdana, sans-serif;
@@ -122,8 +126,8 @@
 .navbar-toggler:focus,
 .navbar-toggler:hover {
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-  color: var(--pod-primary);
-  border-color: var(--pod-primary);
+  color: var(--bs-link-color);
+  border-color: var(--bs-link-color);
 }
 
 .navbar-light .navbar-brand:focus,
@@ -502,10 +506,10 @@ tr,
   padding: .25rem .5rem;
 }*/
 
-button.nav-link {
+/*button.nav-link {
   background: none;
   border: none;
-}
+}*/
 
 .btn .userpicture {
   border: 1px solid transparent;
@@ -1010,14 +1014,14 @@ body {
   font-size: 12px;
 }
 
-.btn{
+/*.btn{
   --bs-btn-hover-color: #FFF;
 }
 
 .btn-link {
   --bs-btn-hover-color: var(--pod-activelink-color);
   --bs-btn-active-color: var(--pod-activelink-color);
-}
+}*/
 
 .btn-primary,
 .btn-outline-primary {
@@ -1033,6 +1037,17 @@ body {
   --bs-btn-bg: var(--pod-primary);
   --bs-btn-border-color: var(--pod-primary);
   --bs-btn-color: var(--pod-btn-text);
+}
+
+/* dark navbars (see in "my files") */
+.bg-primary {
+  --bs-link-color: #F5F5F5;
+}
+.bg-primary .nav-link {
+  --bs-nav-link-color : var(--bs-link-color);
+}
+.bg-primary .nav-link:focus-visible {
+  box-shadow: 0 0 0 .25rem rgba(255,255,255,.5);
 }
 
 /* used in badges (# of videos in channel) */
@@ -1055,7 +1070,7 @@ body {
 
 .pod-params-button {
   color: var(--pod-font-color);
-  --bs-btn-hover-color: var(--pod-primary);
+  --bs-btn-hover-color: var(--bs-link-color);
   font-size: 1.4rem;
   display: flex;
 }
@@ -1141,7 +1156,7 @@ body {
 
 .pod-footer__credits {
   font-size: 85%;
-  opacity: .8;
+  /*opacity: .8;*/
 }
 
 .pod-footer__links {
@@ -1149,6 +1164,7 @@ body {
   justify-content: space-around;
   gap: .5rem;
   font-weight: 600;
+  flex-wrap: wrap;
 }
 
 .pod-footer a {
@@ -1593,15 +1609,6 @@ table .alert.alert-danger.btn.pod-btn-social {
   font-size: 11px;
 }
 
-/* My Files font color fix */
-
-.navbar-brand {
-  color: var(--pod-font-color) !important;
-}
-
-.navbar-brand:focus, .navbar-brand:hover {
-  text-decoration: underline;
-}
 
 /* Upload page */
 

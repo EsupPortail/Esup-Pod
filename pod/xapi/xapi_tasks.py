@@ -6,14 +6,17 @@ from requests.auth import HTTPBasicAuth
 
 # call local settings directly
 # no need to load pod application to send statement
-from .. import settings
+try:
+    from ..custom import settings_local
+except ImportError:
+    from .. import settings as settings_local
 
 logger = logging.getLogger(__name__)
 
-XAPI_LRS_URL = getattr(settings, "XAPI_LRS_URL", "")
-XAPI_LRS_LOGIN = getattr(settings, "XAPI_LRS_LOGIN", "")
-XAPI_LRS_PWD = getattr(settings, "XAPI_LRS_PWD", "")
-XAPI_CELERY_BROKER_URL = getattr(settings, "XAPI_CELERY_BROKER_URL", "")
+XAPI_LRS_URL = getattr(settings_local, "XAPI_LRS_URL", "")
+XAPI_LRS_LOGIN = getattr(settings_local, "XAPI_LRS_LOGIN", "")
+XAPI_LRS_PWD = getattr(settings_local, "XAPI_LRS_PWD", "")
+XAPI_CELERY_BROKER_URL = getattr(settings_local, "XAPI_CELERY_BROKER_URL", "")
 
 xapi_app = Celery("xapi_tasks", broker=XAPI_CELERY_BROKER_URL)
 xapi_app.conf.task_routes = {"pod.xapi.xapi_tasks.*": {"queue": "xapi"}}
