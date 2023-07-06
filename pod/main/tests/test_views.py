@@ -20,7 +20,6 @@ import importlib
 from pod.playlist.models import Playlist
 
 from pod.video.models import Type, Video
-from bs4 import BeautifulSoup
 
 
 class MainViewsTestCase(TestCase):
@@ -449,7 +448,7 @@ class TestNavbar(TestCase):
         )
         response = self.client.get("/")
         self.assertTrue(
-            f'<span id="stats-usermenu-video-count">2' in response.content.decode(),
+            '<span id="stats-usermenu-video-count">2' in response.content.decode(),
             "test if number of videos is correct"
         )
         print(" --->  test_statistics_videos ok")
@@ -491,7 +490,7 @@ class TestNavbar(TestCase):
         )
         response = self.client.get("/")
         self.assertTrue(
-            f'<span id="stats-usermenu-playlist-count">2' in response.content.decode(),
+            '<span id="stats-usermenu-playlist-count">2' in response.content.decode(),
             "test if number of playlists is correct."
         )
 
