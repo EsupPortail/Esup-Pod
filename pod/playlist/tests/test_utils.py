@@ -1,9 +1,11 @@
 """Unit tests for Esup-Pod playlist utilities."""
+import hashlib
 from django.test import TestCase
 from django.contrib.auth.models import User
 from pod.video.models import Type, Video
 from pod.playlist.models import Playlist, PlaylistContent
 from pod.playlist.utils import (
+    check_password,
     check_video_in_playlist,
     get_link_to_start_playlist,
     get_next_rank,
@@ -376,3 +378,23 @@ class PlaylistTestUtils(TestCase):
         self.assertEqual(0, get_count_video_added_in_playlist(self.video3))
 
         print(" --->  test_get_count_video_added_in_playlist ok")
+
+    def test_check_password(self):
+        """Test if test_check_password works correctly."""
+        protected_playlist = Playlist.objects.create(
+            name="Playlist1",
+            description="Ma description",
+            visibility="protected",
+            autoplay=True,
+            owner=self.user,
+            # Encoding not made in create method.
+            password=hashlib.sha256("good_password".encode("utf-8")).hexdigest()
+        )
+        self.assertFalse(
+            check_password("wrong_password", protected_playlist)
+        )
+        self.assertTrue(
+            check_password("good_password", protected_playlist)
+        )
+
+        print(" --->  test_check_password ok")

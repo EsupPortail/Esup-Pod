@@ -1,4 +1,3 @@
-import hashlib
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -9,16 +8,16 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.http import Http404, HttpResponseBadRequest
 from django.db import transaction
+
 from pod.main.utils import is_ajax
-
 from pod.main.views import in_maintenance
-from pod.playlist.templatetags.favorites_playlist import get_playlist_name
+from pod.video.views import CURSUS_CODES, get_owners_has_instances
 from pod.video.models import Video
-from .models import Playlist, PlaylistContent
 from pod.video.utils import sort_videos_list
-from .forms import PlaylistForm, PlaylistPasswordForm, PlaylistRemoveForm
-import json
 
+from .models import Playlist, PlaylistContent
+from .forms import PlaylistForm, PlaylistPasswordForm, PlaylistRemoveForm
+from pod.playlist.templatetags.favorites_playlist import get_playlist_name
 from .utils import (
     check_password,
     get_additional_owners,
@@ -35,7 +34,8 @@ from .utils import (
     user_remove_video_from_playlist,
 )
 
-from pod.video.views import CURSUS_CODES, get_owners_has_instances
+import json
+import hashlib
 
 
 @login_required(redirect_field_name="referrer")
@@ -351,8 +351,6 @@ def add_or_edit(request, slug: str = None):
         return handle_post_request_for_add_or_edit_function(request, playlist)
     elif request.method == "GET":
         return handle_get_request_for_add_or_edit_function(request, slug)
-
-# FAVORITES
 
 
 @csrf_protect

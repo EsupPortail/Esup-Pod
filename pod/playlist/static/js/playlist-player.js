@@ -32,13 +32,14 @@ function scrollToSelectedVideo() {
  * @returns The promise.
  */
 function asyncStartCountDown() {
-    return new Promise(function(resolve) {
+    return new Promise(function (resolve) {
         startCountdown(resolve);
     });
 }
 
 /**
  * Start the count down.
+ *
  * @param {function} callback The call back function.
  */
 function startCountdown(callback) {
@@ -54,11 +55,11 @@ function startCountdown(callback) {
 }
 
 const videos = document.querySelectorAll('.player-element');
-videos.forEach(function(video) {
+videos.forEach(function (video) {
     new MutationObserver(scrollToSelectedVideo).observe(video, { attributes: true, attributeFilter: ['class'] });
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     setTimeout(function () {
         scrollToSelectedVideo();
     }, 500);

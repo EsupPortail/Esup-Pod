@@ -11,6 +11,7 @@ const reorganizeButton = document.getElementById("reorganize-button");
 
 /**
  * Add or remove the CSS class to make drop zone hover.
+ *
  * @param {string} state State of style (`add` or `remove`).
  * @param {Element} element Element to add CSS class.
  */
@@ -64,6 +65,7 @@ function addEventForReorganizedButton() {
 
 /**
  * Clear and transfer data when drag event starts.
+ *
  * @param {Event} event The name of the event.
  */
 function onDragStart(event) {
@@ -74,6 +76,7 @@ function onDragStart(event) {
 
 /**
  * Prevent the default behavior of the element during the event.
+ *
  * @param {Event} event The name of the event.
  */
 function onDragOver(event) {
@@ -83,6 +86,7 @@ function onDragOver(event) {
 
 /**
  * Performs a swap between the dragged elements when dropping.
+ *
  * @param {Event} event The name of the event.
  */
 function onDrop(event) {
@@ -131,7 +135,9 @@ function activateDragAndDrop(parent) {
 
 /**
  * Convert a 2D table into a JSON string representation.
+ *
  * @param {Array} table The 2D table to convert.
+ *
  * @returns {String} The JSON string representation.
  */
 function convert2DTableToJson(table) {
