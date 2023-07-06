@@ -58,6 +58,34 @@ def secure_request_for_upload(request):
         raise ValueError(msg)
 
 
+def manage_recording_url(video_url):
+    """Verify the video URL and change it, if necessary (for ESR URL).
+
+    Args:
+        video_url (String): URL to verify
+
+    Returns:
+        String: good URL of a BBB recording video
+    """
+    try:
+        pos_token = video_url.find("/video?token=")
+        if pos_token != -1:
+            # For ESR URL
+            # Ex: https://_site_/recording/_uid_/video?token=_token_
+            pos_recording = video_url.find("/recording/")
+            # Get site
+            site = video_url[0:pos_recording]
+            # Get recording unique identifier
+            uid = video_url[pos_recording + 11:pos_token]
+            # New video URL
+            # Ex: https://_site_/playback/video/_uid_/
+            return site + "/playback/video/" + uid + "/"
+        else:
+            return video_url
+    except Exception:
+        return video_url
+
+
 def parse_remote_file(source_html_url):
     """Parse the remote HTML file on the BBB server.
 
@@ -204,7 +232,7 @@ def check_file_exists(source_url):
     Returns:
         Boolean: file exists (True) or not (False)
     """
-    response = requests.head(source_url)
+    response = requests.head(source_url, timeout=2)
     if response.status_code < 400:
         return True
     else:
