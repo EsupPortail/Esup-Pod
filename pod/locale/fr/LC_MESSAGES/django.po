@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-06 08:18+0000\n"
+"POT-Creation-Date: 2023-07-06 10:53+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -4564,7 +4564,7 @@ msgstr "Vos statistiques"
 
 #: pod/main/templates/navbar.html
 msgid "Number of videos"
-msgstr "Nombre de vues"
+msgstr "Nombre de vidéos"
 
 #: pod/main/templates/navbar.html
 msgid "Number of playlists"
@@ -5426,6 +5426,14 @@ msgid "Please choose if this playlist is an autoplay playlist or not."
 msgstr "Veuillez choisir si cette playlist est en lecture automatique ou non."
 
 #: pod/playlist/forms.py
+msgid "general informations"
+msgstr "Informations générales"
+
+#: pod/playlist/forms.py
+msgid "security informations"
+msgstr "Informations de sécurité"
+
+#: pod/playlist/forms.py pod/playlist/tests/test_forms.py
 msgid "You cannot create a playlist named \"Favorites\""
 msgstr "Vous ne pouvez créer une liste de lecture nommé \"Favoris\""
 
@@ -5448,8 +5456,8 @@ msgstr "Protégée"
 msgid "Private"
 msgstr "Privée"
 
-#: pod/playlist/models.py pod/playlist/views.py
-#: pod/video/templates/videos/video.html
+#: pod/playlist/models.py pod/playlist/tests/test_models.py
+#: pod/playlist/views.py pod/video/templates/videos/video.html
 msgid "Playlist"
 msgstr "Liste de lecture"
 
@@ -5585,7 +5593,6 @@ msgstr "Désolé, aucune vidéo trouvée."
 
 #: pod/playlist/templates/playlist/playlist.html
 #: pod/playlist/templates/playlist/playlist_content.html
-#: pod/playlist/templates/playlist/protected-playlist-form.html
 #: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/my_videos.html
 #: pod/video/templates/videos/videos.html
@@ -5597,8 +5604,9 @@ msgstr[0] "%(counter)s vidéo trouvée"
 msgstr[1] "%(counter)s vidéos trouvées"
 
 #: pod/playlist/templates/playlist/playlist.html
-msgid "Protected playlist form"
-msgstr "Formulaire de liste de lecture protégée"
+#: pod/playlist/templates/playlist/playlist_content.html
+msgid "Playlist videos"
+msgstr "Vidéos de la playlist"
 
 #: pod/playlist/templates/playlist/playlist.html
 msgid "Reorganize your favorite videos"
@@ -5636,11 +5644,6 @@ msgstr "vidéos"
 #: pod/playlist/templates/playlist/playlist_player.html
 msgid "Playlist image"
 msgstr "Image de la playlist"
-
-#: pod/playlist/templates/playlist/playlist_content.html
-#: pod/playlist/templates/playlist/protected-playlist-form.html
-msgid "Playlist videos"
-msgstr "Vidéos de la playlist"
 
 #: pod/playlist/templates/playlist/playlist_link.html
 msgid "Remove the playlist"
@@ -5702,6 +5705,10 @@ msgstr ""
 "bouton « Ajouter une nouvelle liste de lecture » pour en ajouter une."
 
 #: pod/playlist/templates/playlist/protected-playlist-form.html
+msgid "Protected playlist form"
+msgstr "Formulaire de liste de lecture protégée"
+
+#: pod/playlist/templates/playlist/protected-playlist-form.html
 msgid "This playlist is protected by password, please fill in and click send."
 msgstr ""
 "Cet évènement est protégée par un mot de passe, veuillez remplir le "
@@ -5720,6 +5727,12 @@ msgstr "contacter son propriétaire"
 #: pod/playlist/templatetags/favorites_playlist.py
 msgid "Favorites"
 msgstr "Favoris"
+
+#: pod/playlist/tests/test_forms.py
+#, fuzzy
+#| msgid "Title field is required"
+msgid "This field is required."
+msgstr "Champ de titre est requis"
 
 #: pod/playlist/views.py
 msgid "The playlist has been deleted."
