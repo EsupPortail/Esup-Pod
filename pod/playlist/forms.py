@@ -67,18 +67,18 @@ class PlaylistForm(forms.ModelForm):
     )
     fieldsets = [
         (
-            "general information",
+            _("general informations"),
             {
                 "legend": f"<i class='bi bi-info-lg'></i>&nbsp;\
-                    {_('General information')}",
+                    {_('General informations')}",
                 "fields": ["name", "description", "autoplay"],
             },
         ),
         (
-            "security information",
+            _("security informations"),
             {
                 "legend": f"<i class='bi bi-shield-lock'></i>&nbsp;\
-                    {_('Security information')}",
+                    {_('Security informations')}",
                 "fields": ["additional_owners", "visibility", "password"],
             },
         ),
