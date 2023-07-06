@@ -8,6 +8,7 @@ from pod.video.models import Type, Video
 
 from ..models import Playlist, PlaylistContent
 
+
 # ggignore-start
 # gitguardian:ignore
 class PlaylistModelTests(TestCase):
@@ -142,12 +143,12 @@ class PlaylistContentModelTests(TestCase):
         """
         Test creating two playlist contents with the same playlist and video.
         """
-        playlist_content1 = PlaylistContent.objects.create(
+        PlaylistContent.objects.create(
             playlist=self.playlist,
             video=self.video
         )
         with self.assertRaises(Exception):
-            playlist_content2 = PlaylistContent.objects.create(
+            PlaylistContent.objects.create(
                 playlist=self.playlist,
                 video=self.video
             )

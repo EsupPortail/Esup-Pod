@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 from pod.video.models import Video
-from pod.video.models import Video
 
 from ..apps import FAVORITE_PLAYLIST_NAME
 from ..models import Playlist

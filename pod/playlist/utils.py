@@ -4,7 +4,6 @@ from django.db.models import Max
 from django.urls import reverse
 from django.core.handlers.wsgi import WSGIRequest
 
-from pod.playlist.models import Playlist, PlaylistContent
 from pod.video.models import Video
 
 from .apps import FAVORITE_PLAYLIST_NAME

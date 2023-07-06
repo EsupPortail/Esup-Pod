@@ -133,6 +133,49 @@ def render_playlist_page(request, playlist, videos, in_favorites_playlist, count
     return render(request, "playlist/playlist.html", context)
 
 
+def toggle_render_playlist_user_has_right(
+    request,
+    playlist,
+    videos,
+    in_favorites_playlist,
+    count_videos,
+    sort_field,
+    sort_direction,
+):
+    """Toggle render_playlist() when the user has right."""
+    if request.method == "POST":
+        form = PlaylistPasswordForm(request.POST)
+        form_password = request.POST.get("password")
+        if form_password and check_password(form_password, playlist):
+            return render_playlist_page(
+                request,
+                playlist,
+                videos,
+                in_favorites_playlist,
+                count_videos,
+                sort_field,
+                sort_direction,
+                form
+            )
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                _("The password is incorrect."),
+            )
+            return redirect(request.META["HTTP_REFERER"])
+    else:
+        form = PlaylistPasswordForm()
+        return render(
+            request,
+            "playlist/protected-playlist-form.html",
+            {
+                "form": form,
+                "playlist": playlist,
+            }
+        )
+
+
 @login_required(redirect_field_name="referrer")
 def render_playlist(
     request: dict,
@@ -169,34 +212,15 @@ def render_playlist(
     )
     in_favorites_playlist = (playlist_url == request.path)
     if playlist.visibility == "protected" and playlist.owner != request.user:
-        if request.method == "POST":
-            form = PlaylistPasswordForm(request.POST)
-            form_password = request.POST.get("password")
-            if form_password and check_password(form_password, playlist):
-                return render_playlist_page(
-                    request,
-                    playlist,
-                    videos,
-                    in_favorites_playlist,
-                    count_videos,
-                    sort_field,
-                    sort_direction,
-                    form
-                )
-            else:
-                messages.add_message(request, messages.ERROR,
-                                     _("The password is incorrect."))
-                return redirect(request.META["HTTP_REFERER"])
-        else:
-            form = PlaylistPasswordForm()
-            return render(
-                request,
-                "playlist/protected-playlist-form.html",
-                {
-                    "form": form,
-                    "playlist": playlist,
-                }
-            )
+        return toggle_render_playlist_user_has_right(
+            request,
+            playlist,
+            videos,
+            in_favorites_playlist,
+            count_videos,
+            sort_field,
+            sort_direction,
+        )
 
     if is_ajax(request):
         return render(
