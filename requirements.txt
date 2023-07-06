@@ -1,5 +1,5 @@
 -r requirements-encode.txt
-Django==3.2.19
+Django==3.2.20
 django-ckeditor==6.3.0
 Pillow==9.3.0
 django-tagging==0.5.0
