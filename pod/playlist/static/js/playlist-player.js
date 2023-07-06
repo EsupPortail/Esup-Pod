@@ -20,9 +20,16 @@ function switchToNextVideo() {
  * Scroll to the selected video.
  */
 function scrollToSelectedVideo() {
+    const scrollContainer = document.querySelector('.scroll-container');
     const selectedVideo = document.querySelector('.selected');
     if (selectedVideo) {
-        selectedVideo.scrollIntoView({ behavior: 'smooth' });
+        const containerRect = scrollContainer.getBoundingClientRect();
+        const selectedRect = selectedVideo.getBoundingClientRect();
+        const offsetTop = selectedRect.top - containerRect.top;
+        scrollContainer.scrollTo({
+            top: offsetTop,
+            behavior: 'smooth'
+        });
     }
 }
 
