@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-05 13:15+0000\n"
+"POT-Creation-Date: 2023-07-06 08:18+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -5274,6 +5274,7 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/playlist.html
 #: pod/playlist/templates/playlist/playlist_content.html
+#: pod/playlist/templates/playlist/protected-playlist-form.html
 #: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/my_videos.html
 #: pod/video/templates/videos/videos.html
@@ -5285,8 +5286,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: pod/playlist/templates/playlist/playlist.html
-#: pod/playlist/templates/playlist/playlist_content.html
-msgid "Playlist videos"
+msgid "Protected playlist form"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist.html
@@ -5321,6 +5321,11 @@ msgstr ""
 #: pod/playlist/templates/playlist/playlist_card.html
 #: pod/playlist/templates/playlist/playlist_player.html
 msgid "Playlist image"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist_content.html
+#: pod/playlist/templates/playlist/protected-playlist-form.html
+msgid "Playlist videos"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_link.html

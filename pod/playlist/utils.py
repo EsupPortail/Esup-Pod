@@ -2,9 +2,10 @@
 from django.contrib.auth.models import User
 from django.db.models import Max
 from django.urls import reverse
+from django.core.handlers.wsgi import WSGIRequest
 
-from pod.playlist.models import Playlist, PlaylistContent
 from pod.video.models import Video
+from .models import Playlist, PlaylistContent
 
 import hashlib
 
@@ -214,10 +215,10 @@ def get_playlists_for_additional_owner(user: User) -> list:
     Get playlist list for a specific additional owner.
 
     Args:
-        user (:class:`django.contrib.auth.models.User`): The specific onwer.
+        user (:class:`django.contrib.auth.models.User`): The specific onwer
 
     Returns:
-        list (:class:`list(pod.playlist.models.Playlist)`): The list of playlist.
+        list (:class:`list(pod.playlist.models.Playlist)`): The list of playlist
     """
     return Playlist.objects.filter(additional_owners=user)
 
@@ -230,18 +231,19 @@ def get_additional_owners(playlist: Playlist) -> list:
         playlist (:class:`pod.playlist.models.Playlist`): The playlist objet
 
     Returns:
-        list (:class:`list(pod.authentication.models.Owner)`): The list of additional owners.
+        list (:class:`list(pod.authentication.models.Owner)`): The list of additional owners
     """
     return playlist.additional_owners.all()
 
 
-def get_link_to_start_playlist(request, playlist: Playlist, video=None) -> str:
+def get_link_to_start_playlist(request: WSGIRequest, playlist: Playlist, video=None) -> str:
     """
     Get the link to start a specific playlist.
 
     Args:
-        user (:class:`django.contrib.auth.models.User`): The user.
-        playlist (:class:`pod.playlist.models.Playlist`): The specific playlist.
+        request (WSGIRequest): The WSGIRequest
+        playlist (:class:`pod.playlist.models.Playlist`): The specific playlist
+        video (:class:`pod.video.models.Video`): The video object, optionnal. Default to None
 
     Returns:
         str: Link to start the playlist.
@@ -285,7 +287,17 @@ def get_count_video_added_in_playlist(video: Video) -> int:
     return PlaylistContent.objects.filter(video=video).count()
 
 
-def user_can_see_playlist_video(request: dict, video: Video) -> bool:
+def user_can_see_playlist_video(request: WSGIRequest, video: Video) -> bool:
+    """
+    Check if the authenticated can see the playlist video.
+
+    Args:
+        request (WSGIRequest): The WSGIRequest
+        video (:class:`pod.video.models.Video`): The video object
+
+    Returns:
+        bool: True if the user can see the playlist video. False otherwise
+    """
     is_password_protected = video.password is not None and video.password != ""
     if is_password_protected or video.is_draft:
         if not request.user.is_authenticated:
@@ -299,10 +311,17 @@ def user_can_see_playlist_video(request: dict, video: Video) -> bool:
         return True
 
 
-def sort_playlist_list(playlist_list, sort_field, sort_direction=""):
-    """Return playlists list sorted by sort_field.
+def sort_playlist_list(playlist_list: list, sort_field: str, sort_direction="") -> list:
+    """
+    Return playlists list sorted by specific column name and ascending or descending direction.
 
-    Sorted by specific column name and ascending or descending direction
+    Args:
+        playlist_list (:class:`list(pod.playlist.models.Playlist)`): The list of playlist
+        sort_field (str): The specific column name to sort
+        sort_direction (str): The direction of sort (ascending or descending)
+
+    Returns:
+        list (:class:`list(pod.playlist.models.Playlist)`): The list of playlist
     """
     if sort_field and sort_field in [
         "name",
@@ -319,12 +338,12 @@ def check_password(form_password: str, playlist: Playlist) -> bool:
     Check if the form password is correct for the playlist.
 
     Args:
-        form_password (str): Password provided by user.
-        playlist (:class:`pod.playlist.models.Playlist`): The specific playlist.
+        form_password (str): Password provided by user
+        playlist (:class:`pod.playlist.models.Playlist`): The specific playlist
 
 
     Returns:
-        bool: True si le mot de passe fourni correspond au mot de passe de la playlist, False sinon.
+        bool: True if the password provided matches the playlist password, False otherwise.
     """
     hashed_password = hashlib.sha256(form_password.encode("utf-8")).hexdigest()
     return hashed_password == playlist.password

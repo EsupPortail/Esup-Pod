@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-05 13:15+0000\n"
+"POT-Creation-Date: 2023-07-06 08:18+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -5585,6 +5585,7 @@ msgstr "Désolé, aucune vidéo trouvée."
 
 #: pod/playlist/templates/playlist/playlist.html
 #: pod/playlist/templates/playlist/playlist_content.html
+#: pod/playlist/templates/playlist/protected-playlist-form.html
 #: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/my_videos.html
 #: pod/video/templates/videos/videos.html
@@ -5596,9 +5597,8 @@ msgstr[0] "%(counter)s vidéo trouvée"
 msgstr[1] "%(counter)s vidéos trouvées"
 
 #: pod/playlist/templates/playlist/playlist.html
-#: pod/playlist/templates/playlist/playlist_content.html
-msgid "Playlist videos"
-msgstr "Vidéos de la playlist"
+msgid "Protected playlist form"
+msgstr "Formulaire de liste de lecture protégée"
 
 #: pod/playlist/templates/playlist/playlist.html
 msgid "Reorganize your favorite videos"
@@ -5636,6 +5636,11 @@ msgstr "vidéos"
 #: pod/playlist/templates/playlist/playlist_player.html
 msgid "Playlist image"
 msgstr "Image de la playlist"
+
+#: pod/playlist/templates/playlist/playlist_content.html
+#: pod/playlist/templates/playlist/protected-playlist-form.html
+msgid "Playlist videos"
+msgstr "Vidéos de la playlist"
 
 #: pod/playlist/templates/playlist/playlist_link.html
 msgid "Remove the playlist"

@@ -3,7 +3,6 @@
 from django.template import Library
 
 from pod.video.models import Video
-
 from ..models import Playlist
 from ..utils import (
     get_link_to_start_playlist as get_link_to_start_playlist_util,
@@ -20,7 +19,7 @@ def user_can_edit_or_remove(context: dict, playlist: Playlist) -> bool:
 
     Args:
         context (dict): The context.
-        playlist (:class:`pod.playlist.models.Playlist`): The specific playlist;
+        playlist (:class:`pod.playlist.models.Playlist`): The specific playlist.
 
     Returns:
         bool: `True` if the user can do it. `False` otherwise.
