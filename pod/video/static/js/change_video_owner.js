@@ -12,12 +12,12 @@
   ];
   const list_videos__search = document.querySelector("#list_videos__search");
   const videos_container = document.querySelector(
-    ".form-wrapper__control.select-videos"
+    ".form-wrapper__control.select-videos",
   );
   const next_content = document.querySelector(".paginator #next_content");
   const pages_info = document.querySelector(".paginator #pages_infos");
   const previous_content = document.querySelector(
-    ".paginator #previous_content"
+    ".paginator #previous_content",
   );
 
   const submitBTN = document.querySelector("#submitChanges");
@@ -122,7 +122,7 @@
       loader = document.createElement("div");
       loader.setAttribute("class", "manage-video__loader text-center");
       loader.innerHTML = `<div class="spinner-border text-primary" role="status"><span class="visually-hidden">${gettext(
-        "Loading…"
+        "Loading…",
       )}</span></div>`;
     }
     if (remove) loader.remove();
@@ -183,7 +183,7 @@
       return;
     }
     const curr_offset = Number.parseInt(
-      getSearchParamFromURL(url, "offset", 0)
+      getSearchParamFromURL(url, "offset", 0),
     );
     const curr_page = curr_offset === 0 ? 1 : 1 + curr_offset / limit;
     const total_page = Math.ceil(DATA.count / limit);
@@ -265,7 +265,7 @@
     url,
     method = "GET",
     body = new FormData(),
-    csrf = null
+    csrf = null,
   ) => {
     let data = {
       method,
@@ -381,8 +381,8 @@
       refreshVideos(
         `${base}${url}`,
         DATA.results.filter((video) =>
-          video.title.toLowerCase().includes(title)
-        )
+          video.title.toLowerCase().includes(title),
+        ),
       );
       clearSuggestions(input.nextElementSibling);
     });
@@ -472,7 +472,7 @@
     input,
     cls,
     listenerCallback,
-    url = null
+    url = null,
   ) => {
     // add current search as option
     if (!input.nextElementSibling.querySelector("#current_search") && url) {
@@ -506,7 +506,7 @@
             user.id,
             input,
             "user_item",
-            addGetVideosListener
+            addGetVideosListener,
           );
         });
       });
@@ -547,11 +547,11 @@
               input,
               "user_item",
               filterVideosListener,
-              url
+              url,
             );
           });
         },
-        true
+        true,
       );
     } else if (
       !!previous_videos_url &&
@@ -621,8 +621,8 @@
               .appendChild(
                 new AlertMessage(
                   gettext(response.detail),
-                  (alert_class = "danger")
-                )
+                  (alert_class = "danger"),
+                ),
               );
           }
           reset(); // reset fields
@@ -633,8 +633,8 @@
             .appendChild(
               new AlertMessage(
                 gettext("An error occurred during the change of owner"),
-                (alert_class = "danger")
-              )
+                (alert_class = "danger"),
+              ),
             );
           console.error(error);
         });
@@ -644,8 +644,8 @@
         .appendChild(
           new AlertMessage(
             gettext("Please complete all fields correctly"),
-            (alert_class = "danger")
-          )
+            (alert_class = "danger"),
+          ),
         );
     }
   });

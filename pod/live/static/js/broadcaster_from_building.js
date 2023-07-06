@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let restrictedCheckBox = document.getElementById("event_is_restricted");
   let restrictedHelp = document.getElementById("event_is_restrictedHelp");
   let restrictedLabel = document.getElementsByClassName(
-    "field_is_restricted"
+    "field_is_restricted",
   )[0];
 
   let change_restriction = (restrict) => {
@@ -11,13 +11,13 @@ document.addEventListener("DOMContentLoaded", function () {
       restrictedCheckBox.checked = true;
       restrictedCheckBox.setAttribute("onclick", "return false");
       restrictedHelp.innerHTML = gettext(
-        "Restricted because the broadcaster is restricted"
+        "Restricted because the broadcaster is restricted",
       );
       restrictedLabel.style.opacity = "0.5";
     } else {
       restrictedCheckBox.removeAttribute("onclick");
       restrictedHelp.innerHTML = gettext(
-        "If this box is checked, the event will only be accessible to authenticated users."
+        "If this box is checked, the event will only be accessible to authenticated users.",
       );
       restrictedLabel.style.opacity = "";
     }
