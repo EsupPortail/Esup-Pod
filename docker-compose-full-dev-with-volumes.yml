@@ -7,11 +7,11 @@ x-elasticsearch-volumes: &elasticsearch-volumes
 version: '3.7'
 
 services:
-  pod:
-    container_name: pod-dev-with-volumes
+  pod-back:
+    container_name: pod-back-with-volumes
     build:
       context: .
-      dockerfile: dockerfile-dev-with-volumes/pod/Dockerfile
+      dockerfile: dockerfile-dev-with-volumes/pod-back/Dockerfile
     depends_on:
       - elasticsearch
       - redis
@@ -19,6 +19,39 @@ services:
       - ./.env.dev
     ports:
       - 9090:8080
+    volumes: *pod-volumes
+
+  pod-encode:
+    container_name: pod-encode-with-volumes
+    build:
+      context: .
+      dockerfile: dockerfile-dev-with-volumes/pod-encode/Dockerfile
+    depends_on:
+      - pod-back
+    env_file:
+      - ./.env.dev
+    volumes: *pod-volumes
+  
+  pod-transcript:
+    container_name: pod-transcript-with-volumes
+    build:
+      context: .
+      dockerfile: dockerfile-dev-with-volumes/pod-transcript/Dockerfile
+    depends_on:
+      - pod-back
+    env_file:
+      - ./.env.dev
+    volumes: *pod-volumes
+
+  pod-xapi:
+    container_name: pod-xapi-with-volumes
+    build:
+      context: .
+      dockerfile: dockerfile-dev-with-volumes/pod-xapi/Dockerfile
+    depends_on:
+      - pod-back
+    env_file:
+      - ./.env.dev
     volumes: *pod-volumes
 
   elasticsearch:

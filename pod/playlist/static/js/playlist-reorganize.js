@@ -33,7 +33,7 @@ function addEventForReorganizedButton() {
     .getElementById("reorganize-button")
     .addEventListener("click", function (event) {
       const draggableElements = document.querySelectorAll(
-        ".draggable-container"
+        ".draggable-container",
       );
       draggableElements.forEach((draggableElement) => {
         draggableElement.addEventListener("dragenter", (event) => {

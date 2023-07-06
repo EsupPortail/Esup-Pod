@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     MenuButton.registerComponent(
       "ViewerCountMenuButton",
-      ViewerCountMenuButton
+      ViewerCountMenuButton,
     );
 
     // Initialize the plugin
@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (settings.ui) {
           const menuButton = new ViewerCountMenuButton(player, settings);
           player.controlBar.info = player.controlBar.el_.appendChild(
-            menuButton.el_
+            menuButton.el_,
           );
           player.controlBar.info.dispose = function () {
             this.parentNode.removeChild(this);
