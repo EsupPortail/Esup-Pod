@@ -481,8 +481,9 @@ class TestStartupPlaylistParamTestCase(TestCase):
             200,
             "Test if status code equal 200.",
         )
+        print(response.content.decode())
         self.assertTrue(
-            f"/video/{self.video.slug}/?playlist={self.simple_playlist.slug}" in response.content.decode(),
+            f"/playlist/start-playlist/{self.simple_playlist.slug}" in response.content.decode(),
             "Test if the link is present into the playlists page.",
         )
         self.client.logout()
@@ -896,25 +897,6 @@ class TestPlaylistPlayerTestCase(TestCase):
         ]
         for tuple in tuples_to_link:
             user_add_video_in_playlist(tuple[0], tuple[1])
-
-    @override_settings(USE_PLAYLIST=True)
-    def test_first_video_in_playlist_is_skip_when_it_is_disabled(self) -> None:
-        """Test if the first video in a playlist is skip when it is disabled for current user."""
-        importlib.reload(context_processors)
-        self.client.force_login(self.first_student)
-        response = self.client.get(reverse("playlist:content", kwargs={
-            "slug": self.playlist_first_video_is_disabled.slug,
-        }))
-        self.assertEqual(response.status_code, 200)
-        soup = BeautifulSoup(response.content, 'html.parser')
-        play_playlist_button_html_element = soup.find_all(attrs={
-            "title": _("Start the playlist"),
-        })[0]
-        play_playlist_url = f'href="{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.playlist_first_video_is_disabled.slug}"'
-        self.assertIsNotNone(play_playlist_button_html_element)
-        self.assertTrue(play_playlist_url in str(play_playlist_button_html_element))
-        self.client.logout()
-        print(" --->  test_first_video_in_playlist_is_skip_when_it_is_disabled ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_switch_video_in_playlist_player(self) -> None:

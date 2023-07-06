@@ -4568,7 +4568,7 @@ msgstr "Nombre de vidéos"
 
 #: pod/main/templates/navbar.html
 msgid "Number of playlists"
-msgstr "Nombre de favoris"
+msgstr "Nombre de listes de lecture"
 
 #: pod/main/templates/navbar_collapse.html
 #, python-format
