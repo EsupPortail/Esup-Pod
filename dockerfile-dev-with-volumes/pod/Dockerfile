@@ -29,6 +29,7 @@ WORKDIR /usr/src/app
 
 COPY ./requirements.txt .
 COPY ./requirements-conteneur.txt .
+COPY ./requirements-encode.txt .
 COPY ./requirements-dev.txt .
 RUN mkdir /tmp/node_modules/
 
