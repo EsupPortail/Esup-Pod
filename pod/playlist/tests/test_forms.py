@@ -3,6 +3,7 @@ from django.utils.translation import ugettext as _
 from django.test import override_settings, TestCase
 
 from ...playlist.forms import PlaylistForm, PlaylistRemoveForm, PlaylistPasswordForm
+from ...playlist.apps import FAVORITE_PLAYLIST_NAME
 
 
 FIELD_REQUIRED_ERROR_MESSAGE = _("This field is required.")
@@ -95,7 +96,7 @@ class PlaylistFormTest(TestCase):
             "visibility": "public",
         })
         invalid_form = PlaylistForm(data={
-            "name": "Favorites",
+            "name": FAVORITE_PLAYLIST_NAME,
             "visibility": "public",
         })
         self.assertTrue(valid_form.is_valid())
@@ -113,7 +114,7 @@ class PlaylistFormTest(TestCase):
             "visibility": "private",
         })
         invalid_form = PlaylistForm(data={
-            "name": "Favorites",
+            "name": FAVORITE_PLAYLIST_NAME,
             "visibility": "private",
         })
         self.assertTrue(valid_form.is_valid())
@@ -132,7 +133,7 @@ class PlaylistFormTest(TestCase):
             "password": PWD,
         })
         invalid_form = PlaylistForm(data={
-            "name": "Favorites",
+            "name": FAVORITE_PLAYLIST_NAME,
             "visibility": "protected",
             "password": PWD,
         })

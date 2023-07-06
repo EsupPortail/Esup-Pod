@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from pod.meeting.forms import AddOwnerWidget
 
+from .apps import FAVORITE_PLAYLIST_NAME
 from .models import Playlist
 
 
@@ -92,9 +93,9 @@ class PlaylistForm(forms.ModelForm):
     def clean_name(self):
         """Method to check if the playlist name asked is correct."""
         name = self.cleaned_data["name"]
-        if name == "Favorites":
+        if name == FAVORITE_PLAYLIST_NAME:
             raise forms.ValidationError(
-                _('You cannot create a playlist named "Favorites"')
+                _(f'You cannot create a playlist named "{FAVORITE_PLAYLIST_NAME}"')
             )
         return name
 

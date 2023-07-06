@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 
 from pod.video.models import Type, Video
 
+from ..apps import FAVORITE_PLAYLIST_NAME
 from ...playlist import context_processors
 from ..models import Playlist, PlaylistContent
 from ..utils import get_favorite_playlist_for_user, user_add_video_in_playlist
@@ -628,7 +629,7 @@ class TestPlaylistPage(TestCase):
         self.client.force_login(self.user)
         response = self.client.get(self.url_fav_user1)
         self.assertTrue(
-            f'{_("Playlist")} : {_("Favorites")}' in response.content.decode()
+            f'{_("Playlist")} : {_(FAVORITE_PLAYLIST_NAME)}' in response.content.decode()
         )
         self.client.logout()
         print(" --->  test_folder_icon_in_video_links ok")

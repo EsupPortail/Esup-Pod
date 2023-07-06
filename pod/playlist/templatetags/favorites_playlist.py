@@ -8,6 +8,8 @@ from pod.playlist.utils import (
 )
 from pod.video.models import Video
 
+from ..apps import FAVORITE_PLAYLIST_NAME
+
 
 register = Library()
 
@@ -43,7 +45,7 @@ def get_playlist_name(playlist: Playlist) -> str:
     Returns:
         str: The favorites playlist name
     """
-    if playlist.name == "Favorites":
-        return _("Favorites")
+    if playlist.name == FAVORITE_PLAYLIST_NAME:
+        return _(FAVORITE_PLAYLIST_NAME)
     else:
         return playlist.name
