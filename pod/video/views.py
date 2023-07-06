@@ -31,6 +31,7 @@ from pod.main.utils import is_ajax
 from pod.main.views import in_maintenance
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
+from pod.playlist.apps import FAVORITE_PLAYLIST_NAME
 from pod.playlist.models import Playlist, PlaylistContent
 from pod.playlist.utils import (
     get_playlists_for_additional_owner,
@@ -2024,7 +2025,7 @@ def get_all_views_count(v_id, date_filter=date.today()):
     count = PlaylistContent.objects.filter(video_id=v_id).count()
     all_views["playlist_since_created"] = count if count else 0
 
-    favorites_playlists = Playlist.objects.filter(name="Favorites")
+    favorites_playlists = Playlist.objects.filter(name=FAVORITE_PLAYLIST_NAME)
 
     # favorite addition in day
     count = PlaylistContent.objects.filter(

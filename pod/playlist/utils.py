@@ -4,7 +4,10 @@ from django.db.models import Max
 from django.urls import reverse
 from django.core.handlers.wsgi import WSGIRequest
 
+from pod.playlist.models import Playlist, PlaylistContent
 from pod.video.models import Video
+
+from .apps import FAVORITE_PLAYLIST_NAME
 from .models import Playlist, PlaylistContent
 
 import hashlib
@@ -195,7 +198,7 @@ def get_favorite_playlist_for_user(user: User) -> Playlist:
     Returns:
         Playlist: The favorite playlist
     """
-    return Playlist.objects.get(name="Favorites", owner=user)
+    return Playlist.objects.get(name=FAVORITE_PLAYLIST_NAME, owner=user)
 
 
 def remove_playlist(user: User, playlist: Playlist) -> None:
@@ -267,7 +270,7 @@ def get_total_favorites_video(video: Video) -> int:
     Returns:
         int: The number of videos added in favorites playlist.
     """
-    favorites_playlists = Playlist.objects.filter(name="Favorites")
+    favorites_playlists = Playlist.objects.filter(name=FAVORITE_PLAYLIST_NAME)
     favorite_contents = PlaylistContent.objects.filter(
         playlist__in=favorites_playlists, video=video)
     count = favorite_contents.count()

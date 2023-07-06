@@ -1,6 +1,8 @@
 from django.template import Library
 
 from pod.video.models import Video
+
+from ..apps import FAVORITE_PLAYLIST_NAME
 from ..models import Playlist
 from ..utils import (
     get_count_video_added_in_playlist as total_additions_playlist_utils,
@@ -23,7 +25,7 @@ def get_number_favorites(context: dict) -> int:
         int: The number of times a video has been added to the specific playlist
     """
     user = context["request"].user
-    favorites_playlist = Playlist.objects.get(name="Favorites", owner=user)
+    favorites_playlist = Playlist.objects.get(name=FAVORITE_PLAYLIST_NAME, owner=user)
     return get_number_video_added_in_specific_playlist(favorites_playlist)
 
 

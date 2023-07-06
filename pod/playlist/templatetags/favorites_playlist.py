@@ -3,11 +3,15 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 from pod.video.models import Video
+from pod.video.models import Video
+
+from ..apps import FAVORITE_PLAYLIST_NAME
 from ..models import Playlist
 from ..utils import (
     check_video_in_playlist,
     get_favorite_playlist_for_user,
 )
+
 
 register = Library()
 
@@ -53,7 +57,7 @@ def get_playlist_name(playlist: Playlist) -> str:
     Returns:
         str: The favorites playlist name
     """
-    if playlist.name == "Favorites":
-        return _("Favorites")
+    if playlist.name == FAVORITE_PLAYLIST_NAME:
+        return _(FAVORITE_PLAYLIST_NAME)
     else:
         return playlist.name

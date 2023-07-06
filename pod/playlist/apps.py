@@ -3,6 +3,8 @@ from django.db import connection
 from django.db.models.signals import pre_migrate, post_migrate
 from django.utils.translation import gettext_lazy as _
 
+FAVORITE_PLAYLIST_NAME = "Favorites"
+
 FAVORITES_DATA = {}
 PLAYLIST_INFORMATIONS = {}
 PLAYLIST_CONTENTS = {}
@@ -114,7 +116,7 @@ class PlaylistConfig(AppConfig):
         users_without_favorites = existing_users.exclude(id__in=FAVORITES_DATA.keys())
         for user in users_without_favorites:
             Playlist.objects.create(
-                name="Favorites",
+                name=FAVORITE_PLAYLIST_NAME,
                 description=_("Your favorites videos."),
                 visibility="private",
                 autoplay=True,
@@ -125,7 +127,7 @@ class PlaylistConfig(AppConfig):
         # Converting previous favorites to new system
         for owner_id, data_lists in FAVORITES_DATA.items():
             new_favorites_playlist = Playlist.objects.create(
-                name="Favorites",
+                name=FAVORITE_PLAYLIST_NAME,
                 description=_("Your favorites videos."),
                 visibility="private",
                 autoplay=True,
