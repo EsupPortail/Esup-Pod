@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.core.handlers.wsgi import WSGIRequest
 
 from pod.video.models import Video
+from django.conf import settings
 
 from .apps import FAVORITE_PLAYLIST_NAME
 from .models import Playlist, PlaylistContent
@@ -147,7 +148,10 @@ def get_playlist_list_for_user(user: User) -> list:
     Returns:
         list(:class:`pod.playlist.models.Playlist`): The playlist list for a user
     """
-    return Playlist.objects.filter(owner=user)
+    if getattr(settings, "USE_FAVORITES", True):
+        return Playlist.objects.filter(owner=user)
+    else:
+        return Playlist.objects.filter(owner=user).exclude(name="Favorites")
 
 
 def get_video_list_for_playlist(playlist: Playlist) -> list:

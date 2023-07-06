@@ -5,7 +5,7 @@ from django.core.exceptions import PermissionDenied
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 
-from pod.playlist.models import Playlist
+from pod.playlist.utils import get_playlist_list_for_user
 from pod.video.models import Video
 
 
@@ -37,7 +37,7 @@ def get_number_playlist_for_user(user: User) -> int():
     Returns:
         int: The number of playlist.
     """
-    return Playlist.objects.filter(owner=user).count()
+    return get_playlist_list_for_user(user).count()
 
 
 def display_message_with_icon(request, type, message):

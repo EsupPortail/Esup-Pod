@@ -20,6 +20,7 @@ import importlib
 from pod.playlist.models import Playlist
 
 from pod.video.models import Type, Video
+from bs4 import BeautifulSoup
 
 
 class MainViewsTestCase(TestCase):
@@ -399,8 +400,10 @@ class TestNavbar(TestCase):
         """Set up required objects for next tests."""
         self.user = User.objects.create(username="pod", password="pod1234pod")
 
+    @override_settings(USE_FAVORITES=False)
     def test_statistics_category_hidden(self):
         """Test if statistics are hidden when we don't have stats."""
+        importlib.reload(context_processors)
         self.client.force_login(self.user)
         response = self.client.get("/")
 
@@ -410,8 +413,10 @@ class TestNavbar(TestCase):
         )
         print(" --->  test_statistics_category_hidden ok")
 
+    @override_settings(USE_FAVORITES=False)
     def test_statistics_videos(self):
         """Test if videos statistics are correctly shown."""
+        importlib.reload(context_processors)
         self.client.force_login(self.user)
         # We create a playlist to show statistics section in usermenu
         Playlist.objects.create(
@@ -444,12 +449,12 @@ class TestNavbar(TestCase):
         )
         response = self.client.get("/")
         self.assertTrue(
-            f'{_("Number of videos")} : 2' in response.content.decode(),
+            f'<span id="stats-usermenu-video-count">2' in response.content.decode(),
             "test if number of videos is correct"
         )
         print(" --->  test_statistics_videos ok")
 
-    @override_settings(USE_PLAYLIST=True)
+    @override_settings(USE_PLAYLIST=True, USE_FAVORITES=False)
     def test_statistics_playlists(self):
         """Test if playlists statistics are correctly shown."""
         importlib.reload(context_processors)
@@ -486,7 +491,7 @@ class TestNavbar(TestCase):
         )
         response = self.client.get("/")
         self.assertTrue(
-            f'{_("Number of playlists")} : 2' in response.content.decode(),
+            f'<span id="stats-usermenu-playlist-count">2' in response.content.decode(),
             "test if number of playlists is correct."
         )
 
