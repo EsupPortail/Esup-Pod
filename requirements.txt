@@ -34,3 +34,4 @@ pydantic==1.10.11
 bleach==6.0.0
 pytube==15.0.0
 django-redis-sessions
+paramiko~=3.1.0

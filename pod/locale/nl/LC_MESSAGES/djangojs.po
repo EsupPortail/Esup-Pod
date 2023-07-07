@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-27 09:35+0200\n"
+"POT-Creation-Date: 2023-07-05 15:50+0200\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -393,6 +393,10 @@ msgstr ""
 msgid "The favorite couldn’t be completed…"
 msgstr ""
 
+#: pod/live/static/js/admin_broadcaster.js
+msgid "An error occurred"
+msgstr ""
+
 #: pod/live/static/js/broadcaster_from_building.js
 msgid "Restricted because the broadcaster is restricted"
 msgstr ""
@@ -498,6 +502,11 @@ msgid ""
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
+#: pod/video/static/js/change_video_owner.js
+msgid "Loading…"
+msgstr ""
+
+#: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change image"
 msgstr ""
 
@@ -539,10 +548,6 @@ msgstr ""
 
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"
-msgstr ""
-
-#: pod/video/static/js/change_video_owner.js
-msgid "Loading…"
 msgstr ""
 
 #: pod/video/static/js/change_video_owner.js

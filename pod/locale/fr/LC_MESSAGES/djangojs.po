@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-27 09:35+0200\n"
+"POT-Creation-Date: 2023-07-05 15:50+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -412,6 +412,10 @@ msgstr "La suppression n’a pas pu se faire..."
 msgid "The favorite couldn’t be completed…"
 msgstr "Le favori n’a pas pu être complété…"
 
+#: pod/live/static/js/admin_broadcaster.js
+msgid "An error occurred"
+msgstr "Une erreur est survenue."
+
 #: pod/live/static/js/broadcaster_from_building.js
 msgid "Restricted because the broadcaster is restricted"
 msgstr "Obligatoirement restreint car le diffuseur est restreint"
@@ -526,6 +530,11 @@ msgstr ""
 "vidéo n’ont pas pu être récupérées."
 
 #: pod/podfile/static/podfile/js/filewidget.js
+#: pod/video/static/js/change_video_owner.js
+msgid "Loading…"
+msgstr "Chargement en cours…"
+
+#: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change image"
 msgstr "Changer d’image"
 
@@ -568,10 +577,6 @@ msgstr "Ce dossier est vide"
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"
 msgstr "Aucun élément trouvé"
-
-#: pod/video/static/js/change_video_owner.js
-msgid "Loading…"
-msgstr "Chargement en cours…"
 
 #: pod/video/static/js/change_video_owner.js
 msgid "An error occurred during the change of owner"

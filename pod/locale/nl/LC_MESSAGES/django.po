@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-27 09:34+0200\n"
+"POT-Creation-Date: 2023-07-05 15:50+0200\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1578,7 +1578,7 @@ msgid "Subtitle(s) and Caption(s)"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "to create your subtitles and/or caption(s) files"
+msgid "To create your subtitles and/or caption(s) files"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -2484,8 +2484,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -2942,6 +2942,7 @@ msgid "Plan an event"
 msgstr ""
 
 #: pod/live/templates/live/direct.html
+#: pod/live/templates/live/event-script.html
 msgid "Recording in progress"
 msgstr ""
 
@@ -3011,11 +3012,6 @@ msgstr ""
 
 #: pod/live/templates/live/directs_all.html
 msgid "Sorry, no buildings found."
-msgstr ""
-
-#: pod/live/templates/live/event-all-info.html
-#: pod/video/templates/videos/video-all-info.html
-msgid "Report the video"
 msgstr ""
 
 #: pod/live/templates/live/event-all-info.html
@@ -3143,6 +3139,46 @@ msgid "Warning, it use google API"
 msgstr ""
 
 #: pod/live/templates/live/event-script.html
+msgid "Recording not done: "
+msgstr ""
+
+#: pod/live/templates/live/event-script.html
+msgid "Error calling"
+msgstr ""
+
+#: pod/live/templates/live/event-script.html
+msgid "Recording stopped"
+msgstr ""
+
+#: pod/live/templates/live/event-script.html
+msgid "Recording not stopped: "
+msgstr ""
+
+#: pod/live/templates/live/event-script.html
+msgid "Recording split done"
+msgstr ""
+
+#: pod/live/templates/live/event-script.html
+msgid "Recording not split: "
+msgstr ""
+
+#: pod/live/templates/live/event-script.html
+msgid "Video stream started (please wait a moment)"
+msgstr ""
+
+#: pod/live/templates/live/event-script.html
+msgid "Video stream can not be started"
+msgstr ""
+
+#: pod/live/templates/live/event-script.html
+msgid "Video stream stopped (please wait a moment)"
+msgstr ""
+
+#: pod/live/templates/live/event-script.html
+msgid "Video stream can not be stopped"
+msgstr ""
+
+#: pod/live/templates/live/event-script.html
 msgid "Recording duration"
 msgstr ""
 
@@ -3152,6 +3188,22 @@ msgstr ""
 #: pod/live/templates/live/my_events.html pod/live/views.py
 #: pod/main/templates/navbar.html
 msgid "My events"
+msgstr ""
+
+#: pod/live/templates/live/event.html
+msgid "Report the event"
+msgstr ""
+
+#: pod/live/templates/live/event.html
+msgid "Start stream"
+msgstr ""
+
+#: pod/live/templates/live/event.html
+msgid "Stop stream"
+msgstr ""
+
+#: pod/live/templates/live/event.html
+msgid "Start stream and record"
 msgstr ""
 
 #: pod/live/templates/live/event.html
@@ -5194,8 +5246,8 @@ msgstr ""
 
 #: pod/playlist/templates/my_playlists.html
 msgid ""
-"You have not created any playlists yet, please use the \"Add a new playlist"
-"\" button to add one."
+"You have not created any playlists yet, please use the \"Add a new "
+"playlist\" button to add one."
 msgstr ""
 
 #: pod/playlist/templates/my_playlists.html
@@ -5784,8 +5836,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -6805,6 +6857,10 @@ msgstr ""
 msgid ""
 "Please use the thumbnails toolbar which is located under the video on which "
 "you want to work with."
+msgstr ""
+
+#: pod/video/templates/videos/video-all-info.html
+msgid "Report the video"
 msgstr ""
 
 #: pod/video/templates/videos/video-all-info.html

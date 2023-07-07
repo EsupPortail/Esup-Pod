@@ -8,9 +8,12 @@ from django.db.models import Q
 
 from pod.live.models import Event
 from pod.live.views import (
-    is_recording,
+    can_manage_stream,
     event_stoprecord,
     event_startrecord,
+    is_recording,
+    start_stream,
+    stop_stream,
 )
 
 DEFAULT_EVENT_PATH = getattr(settings, "DEFAULT_EVENT_PATH", "")
@@ -37,66 +40,114 @@ class Command(BaseCommand):
             self.debug_mode = False
 
         self.stdout.write(
-            f"- Beginning at {datetime.now().strftime('%H:%M:%S')}", ending=""
+            f"== Beginning at {datetime.now().strftime('%H:%M:%S')} ", ending=""
         )
-        self.stdout.write(" - IN DEBUG MODE -" if self.debug_mode else "")
+        self.stdout.write("IN DEBUG MODE ==" if self.debug_mode else "==")
 
         self.stop_finished()
 
         self.start_new()
 
-        self.stdout.write("- End -")
+        self.stdout.write(f"== End at {datetime.now().strftime('%H:%M:%S')} ==")
+        self.stdout.write("")
 
     def stop_finished(self):
-        self.stdout.write("-- Stopping finished events (if started with Pod):")
+        """
+        Stop all the recording of today's already finished events but yet not stopped.
+        Including the non auto-started events (to be sure they are not forgotten).
+        """
+        self.stdout.write("- Stopping finished events (if started with Pod) -")
 
+        today = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
         zero_now = timezone.now().replace(second=0, microsecond=0)
-        # events ending now
-        events = Event.objects.filter(end_date=zero_now)
+
+        events = Event.objects.filter(
+            Q(end_date__gte=today)
+            & Q(end_date__lte=zero_now)
+            & Q(is_recording_stopped=False)
+        ).order_by("end_date")
 
         for event in events:
-            if not is_recording(event.broadcaster, True):
-                continue
-
             self.stdout.write(
-                f"Broadcaster {event.broadcaster.name} should be stopped: ", ending=""
+                f"Event : '{event.slug}', " f"on Broadcaster '{event.broadcaster_id}' ",
+                ending="",
             )
 
-            if self.debug_mode:
-                self.stdout.write("... but not tried (debug mode) ")
+            if not is_recording(event.broadcaster, True):
+                event.is_recording_stopped = True
+                event.save()
+                self.stdout.write("is already stopped")
                 continue
+
+            if self.debug_mode:
+                self.stdout.write("should be stopped ... but not tried (debug mode) ")
+                continue
+
+            self.stdout.write("should be stopped")
 
             response = event_stoprecord(event.id, event.broadcaster.id)
             if json.loads(response.content)["success"]:
-                self.stdout.write(" ...  stopped ")
+                self.stdout.write(" -> Record stopped ")
             else:
-                self.stderr.write(" ... fail to stop recording")
+                self.stderr.write(" -> Fail to stop recording")
+
+            self.close_stream(event.broadcaster)
 
     def start_new(self):
-        self.stdout.write("-- Starting new events:")
+        """
+        Starts all recording of the current events
+        that are auto-started configured and not stopped by manager.
+        """
+        self.stdout.write("- Starting new events -")
 
         events = Event.objects.filter(
             Q(is_auto_start=True)
+            & Q(is_recording_stopped=False)
             & Q(start_date__lte=timezone.now())
             & Q(end_date__gt=timezone.now())
         )
 
         for event in events:
-            if is_recording(event.broadcaster):
-                self.stdout.write(
-                    f"Broadcaster {event.broadcaster.name} is already recording"
-                )
-                continue
-
             self.stdout.write(
-                f"Broadcaster {event.broadcaster.name} should be started: ", ending=""
+                f"Event : '{event.slug}', " f"on Broadcaster '{event.broadcaster_id}'",
+                ending="",
             )
 
-            if self.debug_mode:
-                self.stdout.write("... but not tried (debug mode) ")
+            if is_recording(event.broadcaster):
+                self.stdout.write("is already recording")
                 continue
 
-            if event_startrecord(event.id, event.broadcaster.id):
-                self.stdout.write(" ... successfully started")
+            if self.debug_mode:
+                self.stdout.write("should be started ... but not tried (debug mode) ")
+                continue
+
+            self.stdout.write("should be started")
+
+            self.open_stream(event.broadcaster)
+
+            response = event_startrecord(event.id, event.broadcaster.id)
+            if json.loads(response.content)["success"]:
+                self.stdout.write(" -> Record successfully started")
             else:
-                self.stderr.write(" ... fail to start")
+                self.stderr.write(" -> Fail to start record")
+
+    def open_stream(self, broadcaster):
+        """Try to open the broadcaster stream."""
+        if can_manage_stream(broadcaster):
+            if start_stream(broadcaster):
+                self.stdout.write("RTMP stream started")
+            else:
+                self.stderr.write("RTMP stream not started")
+        else:
+            self.stdout.write("Stream is not RTMP (will not try to start)")
+
+    def close_stream(self, broadcaster):
+        """Try to close the broadcaster stream."""
+        if can_manage_stream(broadcaster):
+            started = stop_stream(broadcaster)
+            if started:
+                self.stdout.write("RTMP stream stopped")
+            else:
+                self.stderr.write("RTMP stream not stopped")
+        else:
+            self.stdout.write("Stream is not RTMP (will not try to stop)")
