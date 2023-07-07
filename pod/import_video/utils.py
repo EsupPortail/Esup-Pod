@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from html.parser import HTMLParser
 from pod.video.models import Video
 from pod.video.models import Type
+from urllib.parse import parse_qs, urlparse
 
 DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
 
@@ -68,18 +69,21 @@ def manage_recording_url(video_url):
         String: good URL of a BBB recording video
     """
     try:
-        pos_token = video_url.find("/video?token=")
-        if pos_token != -1:
-            # For ESR URL
-            # Ex: https://_site_/recording/_uid_/video?token=_token_
-            pos_recording = video_url.find("/recording/")
-            # Get site
-            site = video_url[0:pos_recording]
-            # Get recording unique identifier
-            uid = video_url[pos_recording + 11:pos_token]
-            # New video URL
-            # Ex: https://_site_/playback/video/_uid_/
-            return site + "/playback/video/" + uid + "/"
+        bbb_playback_video = "/playback/video/"
+        url = urlparse(video_url)
+        print(url)
+        if url.query:
+            query = parse_qs(url.query, keep_blank_values=True)
+            if query['token'][0]:
+                # For ESR URL
+                # Ex: https://_site_/recording/_uid_/video?token=_token_
+                # Get recording unique identifier
+                uid = url.path.split('/')[2]
+                # New video URL
+                # Ex: https://_site_/playback/video/_uid_/
+                return url.scheme + "://" + url.netloc + bbb_playback_video + uid + "/"
+            else:
+                return video_url
         else:
             return video_url
     except Exception:
