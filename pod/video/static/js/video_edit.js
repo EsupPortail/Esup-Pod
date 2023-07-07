@@ -14,7 +14,7 @@ document.addEventListener(
       display_option_desc(this, helpContainer);
     });
   },
-  false
+  false,
 );
 
 function display_option_desc(selectBox, container) {

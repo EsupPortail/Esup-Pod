@@ -122,8 +122,10 @@ function run(has_more_themes, Helper) {
       </div>
       <div class="card-thumbnail">
         <a class="link-center-pod" href="${VIDEO_URL}${
-      video.slug
-    }" title="${video.title.charAt(0).toUpperCase()}${video.title.slice(1)}">
+          video.slug
+        }" title="${video.title.charAt(0).toUpperCase()}${video.title.slice(
+          1,
+        )}">
           ${video.thumbnail}
         </a>
       </div>
@@ -131,8 +133,8 @@ function run(has_more_themes, Helper) {
         ${footer}
         <span class="small video-title">
           <a href="${VIDEO_URL}${video.slug}">${video.title
-      .charAt(0)
-      .toUpperCase()}${video.title.slice(1)}</a>
+            .charAt(0)
+            .toUpperCase()}${video.title.slice(1)}</a>
         </span>
       </div>
     `;
@@ -149,7 +151,7 @@ function run(has_more_themes, Helper) {
     const li = document.createElement("LI");
     li.setAttribute(
       "class",
-      "btn btn-sm btn-outline-secondary text-truncate child-theme"
+      "btn btn-sm btn-outline-secondary text-truncate child-theme",
     );
     li.setAttribute("title", theme.title);
     const link = document.createElement("A");
@@ -201,14 +203,14 @@ function run(has_more_themes, Helper) {
     const [_, max_pages] = current_page.split(PAGE_INFO_SEPARATOR);
     if (this.classList.contains("disabled")) return;
     const themes_contents = scroll_wrapper.querySelectorAll(
-      ".list-children-theme"
+      ".list-children-theme",
     );
     if (this.isEqualNode(next_btn) && curr_page < Number.parseInt(max_pages)) {
       current_position -= 100;
       // swipe content on the right
       themes_contents.forEach(
         (theme_content) =>
-          (theme_content.style.transform = `translateX(${current_position}%)`)
+          (theme_content.style.transform = `translateX(${current_position}%)`),
       );
       previous_btn.classList.remove("disabled");
       loadNextListThemeElement();
@@ -219,7 +221,7 @@ function run(has_more_themes, Helper) {
       // swipe content on the left
       themes_contents.forEach(
         (theme_content) =>
-          (theme_content.style.transform = `translateX(${current_position}%)`)
+          (theme_content.style.transform = `translateX(${current_position}%)`),
       );
     }
     curr_page = Math.abs(current_position) / 100 + 1;
@@ -234,7 +236,7 @@ function run(has_more_themes, Helper) {
     current_page_info.innerText = `${curr_page}${PAGE_INFO_SEPARATOR}${max_pages}`;
     current_page_info.setAttribute(
       "title",
-      `${curr_page}${PAGE_INFO_SEPARATOR}${max_pages}`
+      `${curr_page}${PAGE_INFO_SEPARATOR}${max_pages}`,
     );
   };
 
@@ -270,7 +272,7 @@ function run(has_more_themes, Helper) {
     });
   };
   const video_loader_btn = document.querySelector(
-    ".video-section #load-more-videos"
+    ".video-section #load-more-videos",
   );
   if (!!video_loader_btn) {
     video_loader_btn.addEventListener("click", loadMoreVideos);

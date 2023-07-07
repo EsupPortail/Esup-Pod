@@ -45,7 +45,7 @@ var pod_note_submit = function (e) {
     send_form_data_vanilla(
       e.target.getAttribute("action"),
       "display_notes_place",
-      e.target
+      e.target,
     );
   }
 };
@@ -97,7 +97,7 @@ document.addEventListener(
       send_form_data_vanilla(
         form_data.getAttribute("action"),
         "display_notes_place",
-        form_data
+        form_data,
       );
     } else if (
       event.target.matches(".js-comment-toggle") ||
@@ -108,17 +108,17 @@ document.addEventListener(
        */
       if (event.target.matches(".js-comment-toggle")) {
         form_data = event.target.parentNode.querySelector(
-          ".view_video_note_coms_form"
+          ".view_video_note_coms_form",
         );
       } else {
         form_data = event.target.parentNode.parentNode.querySelector(
-          ".view_video_note_coms_form"
+          ".view_video_note_coms_form",
         );
       }
       send_form_data_vanilla(
         form_data.getAttribute("action"),
         "display_notes_place",
-        form_data
+        form_data,
       );
     } else if (
       document.getElementById("video_notes_form") &&
@@ -136,17 +136,17 @@ document.addEventListener(
 
       if (video_notes_parent.querySelector(".view_video_notes_form.d-none")) {
         data_form = video_notes_parent.querySelector(
-          ".view_video_notes_form.d-none"
+          ".view_video_notes_form.d-none",
         );
       } else {
         data_form = video_notes_parent.querySelector(
-          ".view_video_note_coms_form.d-none"
+          ".view_video_note_coms_form.d-none",
         );
       }
       send_form_data_vanilla(
         data_form.getAttribute("action"),
         "display_notes_place",
-        data_form
+        data_form,
       );
     } else if (event.target.matches("#cancel_save")) {
       let data_form = document
@@ -155,7 +155,7 @@ document.addEventListener(
       send_form_data_vanilla(
         data_form.getAttribute("action"),
         "display_notes_place",
-        data_form
+        data_form,
       );
     } else if (event.target.matches("#cancel_save_com")) {
       let data_form = document
@@ -164,9 +164,9 @@ document.addEventListener(
       send_form_data_vanilla(
         data_form.getAttribute("action"),
         "display_notes_place",
-        data_form
+        data_form,
       );
     }
   },
-  false
+  false,
 );

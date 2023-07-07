@@ -22,7 +22,7 @@ function show_form(data) {
       "beforebegin",
       "&nbsp;<span class='getfromvideo'><a id='getfromvideo_start' class='btn btn-primary btn-sm'>" +
         gettext("Get time from the player") +
-        "</a><span class='timecode'>&nbsp;</span></span>"
+        "</a><span class='timecode'>&nbsp;</span></span>",
     );
   }
   let inputEnd = document.getElementById("id_time_end");
@@ -31,7 +31,7 @@ function show_form(data) {
       "beforebegin",
       "&nbsp;<span class='getfromvideo'><a id='getfromvideo_end' class='btn btn-primary btn-sm'>" +
         gettext("Get time from the player") +
-        "</a><span class='timecode'>&nbsp;</span></span>"
+        "</a><span class='timecode'>&nbsp;</span></span>",
     );
   }
 }
@@ -42,9 +42,7 @@ var showalert = function (message, alerttype) {
       alerttype +
       ' alert-dismissible fade show" role="alert">' +
       message +
-      '<button type="button" class="close" data-dismiss="alert" aria-label="' +
-      gettext("Close") +
-      '"><span aria-hidden="true">&times;</span></button></div>'
+      '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>',
   );
   setTimeout(function () {
     document.getElementById("formalertdiv").remove();
@@ -58,7 +56,7 @@ var ajaxfail = function (data) {
       data +
       ") " +
       gettext("The form could not be recovered."),
-    "alert-danger"
+    "alert-danger",
   );
   show_form("");
 };
@@ -111,7 +109,7 @@ var sendandgetform = async function (elt) {
     ) {
       showalert(
         gettext("You are no longer authenticated. Please log in again."),
-        "alert-danger"
+        "alert-danger",
       );
       return;
     }
@@ -125,7 +123,7 @@ var sendandgetform = async function (elt) {
       if (data.indexOf("list_chapter") == -1) {
         showalert(
           gettext("You are no longer authenticated. Please log in again."),
-          "alert-danger"
+          "alert-danger",
         );
         return;
       }
@@ -157,19 +155,19 @@ var sendform = async function (elt, action) {
       form_save.style.display = "none";
       data_form = new FormData(form_save);
       validationMessage = gettext(
-        "Make sure your chapter start time is not 0 or equal to another chapter start time."
+        "Make sure your chapter start time is not 0 or equal to another chapter start time.",
       );
     } else {
       showalert(
         gettext("One or more errors have been found in the form."),
-        "alert-danger"
+        "alert-danger",
       );
       return;
     }
   } else if (action === "import") {
     data_form = new FormData(elt);
     validationMessage = gettext(
-      "Make sure you added a file and that it is a valid file."
+      "Make sure you added a file and that it is a valid file.",
     );
   } else {
     // if action is neither "save" nor "import", show an error and return
@@ -187,7 +185,7 @@ var sendform = async function (elt, action) {
     if (data.indexOf("list_chapter") == -1 && data.indexOf("form") == -1) {
       showalert(
         gettext("You are no longer authenticated. Please log in again."),
-        "alert-danger"
+        "alert-danger",
       );
     } else {
       const jsonData = JSON.parse(data);
@@ -318,7 +316,7 @@ document.addEventListener("click", (event) => {
   if (!(typeof player === "undefined")) {
     if (event.target.matches("#getfromvideo_start")) {
       document.getElementById("id_time_start").value = Math.floor(
-        player.currentTime()
+        player.currentTime(),
       );
       const event = new Event("change");
       const time_start = document.getElementById("id_time_start");

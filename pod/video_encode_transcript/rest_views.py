@@ -1,4 +1,5 @@
 from rest_framework import serializers, viewsets
+from django.conf import settings
 from .models import EncodingVideo, EncodingAudio, VideoRendition, PlaylistVideo
 from pod.video.models import Video
 from pod.video.rest_views import VideoSerializer
@@ -7,7 +8,10 @@ from rest_framework.decorators import action
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from pod.video_encode_transcript.transcript import start_transcript
+
+USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
+if USE_TRANSCRIPTION:
+    from pod.video_encode_transcript.transcript import start_transcript
 
 
 class VideoRenditionSerializer(serializers.HyperlinkedModelSerializer):
