@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-06 10:53+0000\n"
+"POT-Creation-Date: 2023-07-07 10:18+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -19,11 +19,6 @@ msgstr ""
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
 msgid "Get time from the player"
 msgstr "Obtenir le temps du lecteur"
-
-#: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
-#: pod/main/static/js/main.js pod/video/static/js/comment-script.js
-msgid "Close"
-msgstr "Fermer"
 
 #: pod/chapter/static/js/chapters.js pod/completion/static/js/completion.js
 #: pod/enrichment/static/js/enrichment.js
@@ -281,6 +276,11 @@ msgstr "Veuillez sélectionner un document"
 msgid "Iframe and Script tags are not allowed."
 msgstr "Les balises Iframe et Script ne sont pas autorisées."
 
+#: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
+#: pod/video/static/js/comment-script.js
+msgid "Close"
+msgstr "Fermer"
+
 #: pod/enrichment/static/js/enrichment.js
 msgid "Please enter a correct start from 0 to "
 msgstr "Veuillez entrer un correct temps de début compris entre 0 et "
@@ -372,6 +372,10 @@ msgstr "Ouvrir le gestionnaire de diapositives"
 #: pod/enrichment/static/js/videojs-slides.js
 msgid "Enrich mode"
 msgstr "Mode enrichi"
+
+#: pod/live/static/js/admin_broadcaster.js
+msgid "An error occurred"
+msgstr "Une erreur est survenue."
 
 #: pod/live/static/js/broadcaster_from_building.js
 msgid "Restricted because the broadcaster is restricted"

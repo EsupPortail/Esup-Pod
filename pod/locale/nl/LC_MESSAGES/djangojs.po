@@ -354,6 +354,10 @@ msgstr ""
 msgid "Enrich mode"
 msgstr ""
 
+#: pod/live/static/js/admin_broadcaster.js
+msgid "An error occurred"
+msgstr ""
+
 #: pod/live/static/js/broadcaster_from_building.js
 msgid "Restricted because the broadcaster is restricted"
 msgstr ""
@@ -454,6 +458,11 @@ msgid "Save"
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
+#: pod/video/static/js/change_video_owner.js
+msgid "Loading…"
+msgstr ""
+
+#: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change image"
 msgstr ""
 
@@ -499,10 +508,6 @@ msgstr ""
 
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"
-msgstr ""
-
-#: pod/video/static/js/change_video_owner.js
-msgid "Loading…"
 msgstr ""
 
 #: pod/video/static/js/change_video_owner.js

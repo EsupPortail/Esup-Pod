@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-06 10:53+0000\n"
+"POT-Creation-Date: 2023-07-07 10:18+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -1643,6 +1643,8 @@ msgid "Subtitle(s) and Caption(s)"
 msgstr "Sous-titres et légendes"
 
 #: pod/completion/templates/video_completion.html
+#, fuzzy
+#| msgid "to create your subtitles and/or caption(s) files"
 msgid "To create your subtitles and/or caption(s) files"
 msgstr "pour créer les fichiers de sous-titres ou de légendes"
 
@@ -3066,6 +3068,7 @@ msgid "Plan an event"
 msgstr "Programmer un évènement"
 
 #: pod/live/templates/live/direct.html
+#: pod/live/templates/live/event-script.html
 msgid "Recording in progress"
 msgstr "Enregistrement en cours"
 
@@ -3140,11 +3143,6 @@ msgstr "Message non envoyé: problème de connexion (REDIS)"
 #: pod/live/templates/live/directs_all.html
 msgid "Sorry, no buildings found."
 msgstr "Désolé, aucun bâtiment trouvé."
-
-#: pod/live/templates/live/event-all-info.html
-#: pod/video/templates/videos/video-all-info.html
-msgid "Report the video"
-msgstr "Signaler la vidéo"
 
 #: pod/live/templates/live/event-all-info.html
 #: pod/live/templates/live/event-info.html
@@ -3279,6 +3277,46 @@ msgid "Warning, it use google API"
 msgstr "Attention, utilise une API Google"
 
 #: pod/live/templates/live/event-script.html
+msgid "Recording not done: "
+msgstr "Impossible de commencer l'enregistrement : "
+
+#: pod/live/templates/live/event-script.html
+msgid "Error calling"
+msgstr "Erreur à l'appel de"
+
+#: pod/live/templates/live/event-script.html
+msgid "Recording stopped"
+msgstr "Enregistrement arrêté"
+
+#: pod/live/templates/live/event-script.html
+msgid "Recording not stopped: "
+msgstr "Impossible d'arrêter l'enregistrement : "
+
+#: pod/live/templates/live/event-script.html
+msgid "Recording split done"
+msgstr "Découpe de l'enregistrement effectué"
+
+#: pod/live/templates/live/event-script.html
+msgid "Recording not split: "
+msgstr "Impossible de découper l'enregistrement : "
+
+#: pod/live/templates/live/event-script.html
+msgid "Video stream started (please wait a moment)"
+msgstr "Flux vidéo ouvert (patienter pour le rafraichissement)"
+
+#: pod/live/templates/live/event-script.html
+msgid "Video stream can not be started"
+msgstr "Impossible d'ouvrir le flux vidéo"
+
+#: pod/live/templates/live/event-script.html
+msgid "Video stream stopped (please wait a moment)"
+msgstr "Flux vidéo fermé (patienter pour le rafraichissement)"
+
+#: pod/live/templates/live/event-script.html
+msgid "Video stream can not be stopped"
+msgstr "Impossible de fermer le flux vidéo"
+
+#: pod/live/templates/live/event-script.html
 msgid "Recording duration"
 msgstr "Temps d’enregistrement"
 
@@ -3289,6 +3327,22 @@ msgstr "Temps d’enregistrement"
 #: pod/main/templates/navbar.html
 msgid "My events"
 msgstr "Mes évènements"
+
+#: pod/live/templates/live/event.html
+msgid "Report the event"
+msgstr "Signaler l'évènement"
+
+#: pod/live/templates/live/event.html
+msgid "Start stream"
+msgstr "Ouvrir le flux vidéo"
+
+#: pod/live/templates/live/event.html
+msgid "Stop stream"
+msgstr "Fermer le flux vidéo"
+
+#: pod/live/templates/live/event.html
+msgid "Start stream and record"
+msgstr "Ouvrir le flux vidéo et enregistrer"
 
 #: pod/live/templates/live/event.html
 msgid "Start record"
@@ -5433,8 +5487,10 @@ msgstr "Informations générales"
 msgid "security informations"
 msgstr "Informations de sécurité"
 
-#: pod/playlist/forms.py pod/playlist/tests/test_forms.py
-msgid "You cannot create a playlist named \"Favorites\""
+#: pod/playlist/forms.py
+#, fuzzy, python-brace-format
+#| msgid "You cannot create a playlist named \"Favorites\""
+msgid "You cannot create a playlist named \"{FAVORITE_PLAYLIST_NAME}\""
 msgstr "Vous ne pouvez créer une liste de lecture nommé \"Favoris\""
 
 #: pod/playlist/forms.py
@@ -5511,7 +5567,6 @@ msgid "Add a playlist"
 msgstr "Ajouter une liste de lecture"
 
 #: pod/playlist/templates/playlist/button_start_playlist.html
-#: pod/playlist/tests/test_views.py
 msgid "Start the playlist"
 msgstr "Démarrer la liste de lecture"
 
@@ -5697,6 +5752,10 @@ msgid "No playlists found"
 msgstr "Aucune liste de lecture trouvée"
 
 #: pod/playlist/templates/playlist/playlists.html
+#, fuzzy
+#| msgid ""
+#| "You have not created any playlists yet, please use the \"Add a new "
+#| "playlist\" button to add one."
 msgid ""
 "You haven't got any playlist yet, please use the \"Add a playlist\" button "
 "to add one."
@@ -5724,15 +5783,15 @@ msgstr "Si vous n’avez pas le mot de passe pour ce contenu, veuillez"
 msgid "contact its owner"
 msgstr "contacter son propriétaire"
 
-#: pod/playlist/templatetags/favorites_playlist.py
-msgid "Favorites"
-msgstr "Favoris"
-
 #: pod/playlist/tests/test_forms.py
 #, fuzzy
 #| msgid "Title field is required"
 msgid "This field is required."
 msgstr "Champ de titre est requis"
+
+#: pod/playlist/tests/test_forms.py
+msgid "You cannot create a playlist named \"Favorites\""
+msgstr "Vous ne pouvez créer une liste de lecture nommé \"Favoris\""
 
 #: pod/playlist/views.py
 msgid "The playlist has been deleted."
@@ -7363,6 +7422,10 @@ msgstr ""
 "sur laquelle vous voulez travailler."
 
 #: pod/video/templates/videos/video-all-info.html
+msgid "Report the video"
+msgstr "Signaler la vidéo"
+
+#: pod/video/templates/videos/video-all-info.html
 msgid ""
 "This video is chaptered. Click the chapter button <span class=\"vjs-icon-"
 "chapters\"></span> on the video player to view them."
@@ -8188,6 +8251,9 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Favorites"
+#~ msgstr "Favoris"
 
 #~ msgid "Favorite video"
 #~ msgstr "Vidéo favorite"

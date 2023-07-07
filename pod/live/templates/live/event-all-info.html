@@ -1,16 +1,9 @@
 {% load i18n %}
 {% load tagging_tags %}
-<h1 class="page_title pt-2 h2">
-  {{event.title|capfirst}}
-  {% if event.start_date %}<small>[{{ event.start_date }}]</small>{% endif %}
-  <a class="pod-info-video__signal" href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans 'Report the video'%}">
-    <i class="bi bi-exclamation-octagon"></i>
-  </a>
-</h1>
 
 <div class="ps-0 pe-0">
   <div class="navbar d-flex flex-row-reverse p-0" >
-    <ul class="nav nav-tabs" id="pod-infos-tabs" role="tablist"> <!--Début du menu à onglets > remplacer par popup-->
+    <ul class="nav nav-tabs" id="pod-infos-tabs" role="tablist">
       {% if event.description %}
         <li class="nav-item dropdown" >
           <a class="nav-link active show" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-selected="true" title="{% trans 'Summary' %}">
@@ -19,9 +12,7 @@
         </li>
       {% endif %}
 
-
       {% if event.is_draft == False or event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser %}
-
         <button type="button" class="btn btn-link btn-lg pod-btn-share" data-bs-toggle="modal" data-bs-target="#share">
           <i class="bi bi-share" aria-hidden="true"></i><span class="visually-hidden">{% trans 'Embed/Share' %}</span>
         </button>

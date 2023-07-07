@@ -84,28 +84,51 @@ class LiveTestUtils(TestCase):
         from pod.live.utils import get_event_id_and_broadcaster_id
 
         rf = RequestFactory()
+        # GET
+        request = rf.get("/", data={}, content_type="application/json")
+        result = get_event_id_and_broadcaster_id(request)
+        self.assertEqual(result, (None, None))
 
+        request = rf.get("/", data={"idevent": "12"}, content_type="application/json")
+        result = get_event_id_and_broadcaster_id(request)
+        self.assertEqual(result, ("12", None))
+
+        request = rf.get(
+            "/", data={"idbroadcaster": "34"}, content_type="application/json"
+        )
+        result = get_event_id_and_broadcaster_id(request)
+        self.assertEqual(result, (None, "34"))
+
+        request = rf.get(
+            "/",
+            data={"idevent": "12", "idbroadcaster": "34"},
+            content_type="application/json",
+        )
+        result = get_event_id_and_broadcaster_id(request)
+        self.assertEqual(result, ("12", "34"))
+
+        # POST
         request = rf.post("/", data={}, content_type="application/json")
         result = get_event_id_and_broadcaster_id(request)
         self.assertEqual(result, (None, None))
 
-        request = rf.post("/", data={"idevent": 12}, content_type="application/json")
+        request = rf.post("/", data={"idevent": "12"}, content_type="application/json")
         result = get_event_id_and_broadcaster_id(request)
-        self.assertEqual(result, (12, None))
+        self.assertEqual(result, ("12", None))
 
         request = rf.post(
-            "/", data={"idbroadcaster": 34}, content_type="application/json"
+            "/", data={"idbroadcaster": "34"}, content_type="application/json"
         )
         result = get_event_id_and_broadcaster_id(request)
-        self.assertEqual(result, (None, 34))
+        self.assertEqual(result, (None, "34"))
 
         request = rf.post(
             "/",
-            data={"idevent": 12, "idbroadcaster": 34},
+            data={"idevent": "12", "idbroadcaster": "34"},
             content_type="application/json",
         )
         result = get_event_id_and_broadcaster_id(request)
-        self.assertEqual(result, (12, 34))
+        self.assertEqual(result, ("12", "34"))
 
         print(" --->  test_utils test_get_event_id_and_broadcaster_id ok")
 
@@ -136,17 +159,17 @@ class LiveTestUtils(TestCase):
             # remove the temporary file
             os.unlink(resource_path)
 
-        # Start modifying the file in a separate thread
+        # Modify the file in a thread during 8 seconds
         thread = threading.Thread(target=modify_file)
         thread.start()
 
-        # Call the function being tested
+        # Check the size (should raise an exception)
         with self.assertRaises(Exception) as cm:
             check_size_not_changing(resource_path)
-            print(" --->  test_utils test_check_size_not_changing Exception Ok")
 
         # Verify that the exception was raised
         self.assertEqual(str(cm.exception), "checkFileSize aborted")
+        print(" --->  test_utils test_check_size_not_changing Exception Ok")
 
     def test_check_exists(self):
         """Teste qu'une ressource existe sur le filesystem."""
