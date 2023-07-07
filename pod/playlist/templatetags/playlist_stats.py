@@ -2,31 +2,12 @@ from django.template import Library
 
 from pod.video.models import Video
 
-from ..apps import FAVORITE_PLAYLIST_NAME
-from ..models import Playlist
 from ..utils import (
     get_count_video_added_in_playlist as total_additions_playlist_utils,
     get_total_favorites_video as total_favorites_utils,
-    get_number_video_added_in_specific_playlist,
 )
 
 register = Library()
-
-
-@register.simple_tag(takes_context=True, name="get_number_favorites")
-def get_number_favorites(context: dict) -> int:
-    """
-    Get the number of times a video has been added to a specific playlist
-
-    Args:
-        playlist (:class:`pod.playlist.models.Playlist`): The playlist object
-
-    Returns:
-        int: The number of times a video has been added to the specific playlist
-    """
-    user = context["request"].user
-    favorites_playlist = Playlist.objects.get(name=FAVORITE_PLAYLIST_NAME, owner=user)
-    return get_number_video_added_in_specific_playlist(favorites_playlist)
 
 
 @register.simple_tag(name="get_total_favorites_video")

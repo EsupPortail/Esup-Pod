@@ -14,7 +14,7 @@ from pod.video.models import Type, Video
 from ..apps import FAVORITE_PLAYLIST_NAME
 from ...playlist import context_processors
 from ..models import Playlist, PlaylistContent
-from ..utils import get_favorite_playlist_for_user, user_add_video_in_playlist
+from ..utils import get_favorite_playlist_for_user, get_link_to_start_playlist, user_add_video_in_playlist
 
 import importlib
 
@@ -782,8 +782,10 @@ class TestPrivatePlaylistTestCase(TestCase):
     @override_settings(USE_PLAYLIST=True, USE_FAVORITES=True)
     def setUp(self) -> None:
         """Set up tests."""
-        self.first_student = User.objects.create(username="student", password="student1234student")
-        self.second_student = User.objects.create(username="student2", password="student1234student")
+        self.first_student = User.objects.create(
+            username="student", password="student1234student")
+        self.second_student = User.objects.create(
+            username="student2", password="student1234student")
         self.url_private_playlist = reverse(
             "playlist:content",
             kwargs={
@@ -809,8 +811,10 @@ class TestPlaylistPlayerTestCase(TestCase):
 
     def setUp(self) -> None:
         """Set up tests."""
-        self.first_student = User.objects.create(username="student", password="student1234student")
-        self.second_student = User.objects.create(username="student2", password="student1234student")
+        self.first_student = User.objects.create(
+            username="student", password="student1234student")
+        self.second_student = User.objects.create(
+            username="student2", password="student1234student")
         self.super_user = User.objects.create(username="admin", password="admin1234admin")
         self.video_first_student = Video.objects.create(
             title="Video First Student",
@@ -903,7 +907,8 @@ class TestPlaylistPlayerTestCase(TestCase):
         """Test if the video switch correctly when the user click on an other video."""
         importlib.reload(context_processors)
         self.client.force_login(self.first_student)
-        response = self.client.get(f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.simple_playlist.slug}')
+        response = self.client.get(
+            f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.simple_playlist.slug}')
         next_video_url = f'{reverse("video:video", kwargs={"slug": self.video_first_student_draft.slug})}?playlist={self.simple_playlist.slug}'
         self.assertEqual(response.status_code, 200)
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -920,7 +925,8 @@ class TestPlaylistPlayerTestCase(TestCase):
         importlib.reload(context_processors)
         self.client.force_login(self.second_student)
         next_video_url = f'{reverse("video:video", kwargs={"slug": self.video_first_student_draft.slug})}?playlist={self.simple_playlist.slug}'
-        response = self.client.get(f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.simple_playlist.slug}')
+        response = self.client.get(
+            f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.simple_playlist.slug}')
         self.assertEqual(response.status_code, 200)
         soup = BeautifulSoup(response.content, 'html.parser')
         next_video_html_elements = soup.find_all(attrs={
@@ -935,7 +941,8 @@ class TestPlaylistPlayerTestCase(TestCase):
         """Test if the scrollbar is correctly present in the playlist player box when it has more than 5 videos."""
         importlib.reload(context_processors)
         self.client.force_login(self.first_student)
-        response = self.client.get(f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.big_playlist.slug}')
+        response = self.client.get(
+            f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.big_playlist.slug}')
         self.assertEqual(response.status_code, 200)
         self.assertTrue("scroll-container" in response.content.decode())
         self.client.logout()
@@ -946,8 +953,129 @@ class TestPlaylistPlayerTestCase(TestCase):
         """Test if the scrollbar is not present in the playlist player box when it has less than 6 videos."""
         importlib.reload(context_processors)
         self.client.force_login(self.first_student)
-        response = self.client.get(f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.simple_playlist.slug}')
+        response = self.client.get(
+            f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.simple_playlist.slug}')
         self.assertEqual(response.status_code, 200)
         self.assertFalse("scroll-container" in response.content.decode())
         self.client.logout()
         print(" --->  test_scrollbar_is_not_present_in_playlist_player_box ok")
+
+
+class StartPlaylistViewTest(TestCase):
+    """Start playlist tests."""
+
+    fixtures = ["initial_data.json"]
+
+    def setUp(self):
+        self.user = User.objects.create(username="pod", password="pod1234pod")
+        self.user2 = User.objects.create(username="pod2", password="pod1234pod2")
+        self.video = Video.objects.create(
+            title="Video1",
+            owner=self.user,
+            video="test.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.video2 = Video.objects.create(
+            title="Video2",
+            owner=self.user,
+            video="test2.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.video3 = Video.objects.create(
+            title="Video3",
+            owner=self.user2,
+            video="test3.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.public_playlist_user1 = Playlist.objects.create(
+            name="Playlist1",
+            description="Ma description",
+            visibility="public",
+            autoplay=True,
+            owner=self.user
+        )
+        self.protected_playlist_user1 = Playlist.objects.create(
+            name="Playlist2",
+            description="Ma description",
+            visibility="protected",
+            password="password",
+            autoplay=True,
+            owner=self.user
+        )
+        self.private_playlist_user1 = Playlist.objects.create(
+            name="Playlist2",
+            description="Ma description",
+            visibility="private",
+            autoplay=True,
+            owner=self.user
+        )
+        user_add_video_in_playlist(self.public_playlist_user1, self.video)
+        user_add_video_in_playlist(self.public_playlist_user1, self.video2)
+        user_add_video_in_playlist(self.public_playlist_user1, self.video3)
+
+        user_add_video_in_playlist(self.protected_playlist_user1, self.video)
+        user_add_video_in_playlist(self.protected_playlist_user1, self.video2)
+        user_add_video_in_playlist(self.protected_playlist_user1, self.video3)
+
+        user_add_video_in_playlist(self.private_playlist_user1, self.video)
+        user_add_video_in_playlist(self.private_playlist_user1, self.video2)
+        user_add_video_in_playlist(self.private_playlist_user1, self.video3)
+
+    def test_start_playlist_public(self):
+        """Test if start a public playlist works."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse("playlist:start-playlist", kwargs={"slug": self.public_playlist_user1.slug}))
+        expected_url = get_link_to_start_playlist(
+            self.client.request, self.public_playlist_user1)
+        self.assertRedirects(response, expected_url)
+        self.client.logout()
+        print(" --->  test_start_playlist_public ok")
+
+    def test_start_playlist_private_owner(self):
+        """Test if start a private playlist when owner of it works."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse("playlist:start-playlist", kwargs={"slug": self.private_playlist_user1.slug}))
+        expected_url = get_link_to_start_playlist(
+            self.client.request, self.private_playlist_user1)
+        self.assertRedirects(response, expected_url)
+        self.client.logout()
+        print(" --->  test_start_playlist_private_owner ok")
+
+    def test_start_playlist_private_not_owner(self):
+        """Test if start a private playlist don't works if not owner of it."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user2)
+        response = self.client.get(
+            reverse("playlist:start-playlist", kwargs={"slug": self.private_playlist_user1.slug}))
+        expected_url = reverse("playlist:list")
+        self.assertRedirects(response, expected_url)
+        self.client.logout()
+        print(" --->  test_start_playlist_private_not_owner ok")
+
+    def test_start_playlist_protected_get_request_not_owner(self):
+        """Test if form password is present when not owner of a protected playlist"""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user2)
+        response = self.client.get(
+            reverse("playlist:start-playlist", kwargs={"slug": self.protected_playlist_user1.slug}))
+        self.assertTemplateUsed(response, "playlist/protected-playlist-form.html")
+        print(" --->  test_start_playlist_protected_get_request_not_owner ok")
+
+    def test_start_playlist_protected_get_request_owner(self):
+        """Test if form password is not present when owner of a protected playlist"""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse("playlist:start-playlist", kwargs={"slug": self.protected_playlist_user1.slug}))
+        expected_url = get_link_to_start_playlist(
+            self.client.request, self.protected_playlist_user1)
+        self.assertRedirects(response, expected_url)
+        self.assertTemplateNotUsed(response, "playlist/protected-playlist-form.html")
+        print(" --->  test_start_playlist_protected_get_request_owner ok")

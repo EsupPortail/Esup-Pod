@@ -412,7 +412,7 @@ def favorites_save_reorganisation(request, slug: str):
 def start_playlist(request, slug, video=None):
     playlist = get_object_or_404(Playlist, slug=slug)
 
-    if playlist.visibility == "public" or playlist.visibility == "private":
+    if playlist.visibility == "public" or playlist.owner == request.user:
         return redirect(get_link_to_start_playlist(request, playlist, video))
     elif playlist.visibility == "protected":
         if request.method == "POST":
