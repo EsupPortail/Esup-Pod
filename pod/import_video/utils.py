@@ -71,7 +71,6 @@ def manage_recording_url(video_url):
     try:
         bbb_playback_video = "/playback/video/"
         url = urlparse(video_url)
-        print(url)
         if url.query:
             query = parse_qs(url.query, keep_blank_values=True)
             if query['token'][0]:
