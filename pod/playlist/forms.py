@@ -17,41 +17,25 @@ class PlaylistForm(forms.ModelForm):
     class Meta:
         """Meta class."""
         model = Playlist
-        fields = [
-            "name",
-            "description",
-            "visibility",
-            "password",
-            "autoplay",
-            "additional_owners",
+        exclude = [
+            "editable",
+            "slug",
+            "owner",
+            "date_created",
+            "date_updated",
         ]
         widgets = {
             "additional_owners": AddOwnerWidget,
         }
 
-    name = forms.CharField(
-        label=_("Name"),
-        max_length=250,
-        widget=forms.TextInput(
-            attrs={"autocomplete": "off"}
-        ),
-        help_text=_("Please choose a name between 1 and 250 characters."),
-    )
-    description = forms.CharField(
-        label=_("Description"),
-        widget=forms.Textarea,
-        required=False,
-        help_text=_("Please choose a description. This description is empty by default."),
-    )
-    visibility = forms.ChoiceField(
-        label=_("Visibility"),
-        choices=Playlist.VISIBILITY_CHOICES,
-        help_text=_(
-            '''
-            Please chosse an visibility among 'public', 'protected', 'private'.
-            '''
-        ),
-    )
+    field_order = [
+        "name",
+        "description",
+        "visibility",
+        "password",
+        "autoplay",
+        "additional_owners",
+    ]
     password = forms.CharField(
         label=_("Password"),
         widget=forms.PasswordInput(
@@ -59,12 +43,6 @@ class PlaylistForm(forms.ModelForm):
         ),
         required=False,
         help_text=_("Please choose a password if this playlist is protected."),
-    )
-    autoplay = forms.BooleanField(
-        label=_("Autoplay"),
-        required=False,
-        initial=True,
-        help_text=_("Please choose if this playlist is an autoplay playlist or not."),
     )
     fieldsets = [
         (
