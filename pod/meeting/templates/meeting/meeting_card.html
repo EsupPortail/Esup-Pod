@@ -45,7 +45,7 @@
         <span data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Show meeting informations' %}"><i class="bi bi-person-video2 pod-add"></i></span>
       </a>
 
-      <a class="btn btn-primary btn-sm float-end text-white" href="{% url 'meeting:join' meeting.meeting_id %}" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Join the meeting' %}">
+      <a class="btn btn-primary btn-sm float-end" href="{% url 'meeting:join' meeting.meeting_id %}" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Join the meeting' %}">
         <i class="bi bi-play pod-add"></i><span>{% trans "Join the meeting" %}</span>
       </a>
     {% else %}
