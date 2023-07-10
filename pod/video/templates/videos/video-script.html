@@ -199,7 +199,6 @@ player.on('firstplay', function(){
 {% endif %}
 
 {% if video_event_tracking %}
-  console.log('video_event_tracking');
   {# Be sure to define _paq in a tracking script in TEMPLATE_VISIBLE_SETTINGS:TRACKING_TEMPLATE pref. #}
   player.on('play', function() {
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'play', player.currentTime()]);
@@ -211,22 +210,19 @@ player.on('firstplay', function(){
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'seeked', player.currentTime()]);
   });
   player.on("ended", function (e) {
-    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ended', player.currentTime()]);$
-    console.log('Finish');
+    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ended', player.currentTime()]);
   });
   player.on("ratechange", function (e) {
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ratechange', player.playbackRate()]);
   });
   player.on("fullscreenchange", function (e) {
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'fullscreen :'+ player.isFullscreen(), player.currentTime()]);
-    console.log('Finish');
   });
   player.on("error", function (e) {
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'error', player.error()]);
   });
   player.on("loadedmetadata", function (e) {
     _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'loadedmetadata']);
-    console.log('loadedmetadata');
   });
 {% endif %}
 
