@@ -73,11 +73,11 @@ def manage_recording_url(video_url):
         url = urlparse(video_url)
         if url.query:
             query = parse_qs(url.query, keep_blank_values=True)
-            if query['token'][0]:
+            if query["token"][0]:
                 # For ESR URL
                 # Ex: https://_site_/recording/_uid_/video?token=_token_
                 # Get recording unique identifier
-                uid = url.path.split('/')[2]
+                uid = url.path.split("/")[2]
                 # New video URL
                 # Ex: https://_site_/playback/video/_uid_/
                 return url.scheme + "://" + url.netloc + bbb_playback_video + uid + "/"
