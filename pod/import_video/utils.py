@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from html.parser import HTMLParser
 from pod.video.models import Video
 from pod.video.models import Type
+from urllib.parse import parse_qs, urlparse
 
 DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
 
@@ -56,6 +57,36 @@ def secure_request_for_upload(request):
             "Try changing the record type or address for this recording"
         )
         raise ValueError(msg)
+
+
+def manage_recording_url(video_url):
+    """Verify the video URL and change it, if necessary (for ESR URL).
+
+    Args:
+        video_url (String): URL to verify
+
+    Returns:
+        String: good URL of a BBB recording video
+    """
+    try:
+        bbb_playback_video = "/playback/video/"
+        url = urlparse(video_url)
+        if url.query:
+            query = parse_qs(url.query, keep_blank_values=True)
+            if query['token'][0]:
+                # For ESR URL
+                # Ex: https://_site_/recording/_uid_/video?token=_token_
+                # Get recording unique identifier
+                uid = url.path.split('/')[2]
+                # New video URL
+                # Ex: https://_site_/playback/video/_uid_/
+                return url.scheme + "://" + url.netloc + bbb_playback_video + uid + "/"
+            else:
+                return video_url
+        else:
+            return video_url
+    except Exception:
+        return video_url
 
 
 def parse_remote_file(source_html_url):
@@ -204,7 +235,7 @@ def check_file_exists(source_url):
     Returns:
         Boolean: file exists (True) or not (False)
     """
-    response = requests.head(source_url)
+    response = requests.head(source_url, timeout=2)
     if response.status_code < 400:
         return True
     else:

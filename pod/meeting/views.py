@@ -26,7 +26,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import ensure_csrf_cookie
 from pod.import_video.utils import StatelessRecording
 from pod.import_video.utils import secure_request_for_upload, parse_remote_file
-from pod.import_video.utils import download_video_file, save_video
+from pod.import_video.utils import download_video_file, manage_recording_url, save_video
 from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
 from pod.main.utils import secure_post_request, display_message_with_icon
 
@@ -563,7 +563,10 @@ def internal_recordings(request, meeting_id):
                 # Uploading to Pod is possible only for video playback
                 if data["playback"][playback]["type"] == "video":
                     bbb_recording.canUpload = True
-                    bbb_recording.videoUrl = data["playback"][playback]["url"]
+                    # Manage BBB recording URL, if necessary
+                    bbb_recording.videoUrl = manage_recording_url(
+                        data["playback"][playback]["url"]
+                    )
 
             # Only the owner can delete their recordings
             bbb_recording.canDelete = can_delete
