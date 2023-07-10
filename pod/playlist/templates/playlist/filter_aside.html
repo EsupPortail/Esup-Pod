@@ -53,12 +53,8 @@
     const urlWithoutGetOptions = window.location.origin + window.location.pathname
     document.location.href = urlWithoutGetOptions + "?visibility=allmy";
   }
-
   const visibilityValue = new URL(window.location).searchParams.get("visibility");
-  if (visibilityValue) {
-    if (!visibilityValue in ["private", "portected", "public", "allmy", "allpublic", "all"])
-      redirectToAllPlaylists();
-  } else {
+  if (!visibilityValue || !["private", "protected", "public", "allmy", "allpublic", "all"].includes(visibilityValue)) {
     redirectToAllPlaylists();
   }
 </script>
