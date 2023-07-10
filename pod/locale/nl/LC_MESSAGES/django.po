@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-10 10:02+0000\n"
+"POT-Creation-Date: 2023-07-10 13:40+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2262,7 +2262,7 @@ msgstr ""
 
 #: pod/import_video/templates/import_video/list.html pod/main/forms.py
 #: pod/meeting/forms.py pod/meeting/templates/meeting/internal_recordings.html
-#: pod/playlist/forms.py pod/playlist/models.py
+#: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_sort_select.html
 #: pod/podfile/models.py pod/podfile/templates/podfile/home_content.html
 #: pod/video_encode_transcript/models.py
@@ -2675,8 +2675,8 @@ msgid ""
 msgstr ""
 
 #: pod/live/models.py pod/main/forms.py pod/main/models.py
-#: pod/playlist/forms.py pod/playlist/models.py pod/video/forms.py
-#: pod/video/models.py pod/video/templates/channel/list_theme.html
+#: pod/playlist/models.py pod/video/forms.py pod/video/models.py
+#: pod/video/templates/channel/list_theme.html
 msgid "Description"
 msgstr ""
 
@@ -5134,38 +5134,7 @@ msgid "Your favorites videos."
 msgstr ""
 
 #: pod/playlist/forms.py pod/playlist/models.py
-msgid "Please choose a name between 1 and 250 characters."
-msgstr ""
-
-#: pod/playlist/forms.py pod/playlist/models.py
-msgid "Please choose a description. This description is empty by default."
-msgstr ""
-
-#: pod/playlist/forms.py pod/playlist/models.py
-#: pod/playlist/templates/playlist/filter_aside.html
-#: pod/playlist/templates/playlist/playlist-informations-card.html
-msgid "Visibility"
-msgstr ""
-
-#: pod/playlist/forms.py pod/playlist/models.py
-msgid ""
-"\n"
-"            Please chosse an visibility among 'public', 'protected', "
-"'private'.\n"
-"            "
-msgstr ""
-
-#: pod/playlist/forms.py pod/playlist/models.py
 msgid "Please choose a password if this playlist is protected."
-msgstr ""
-
-#: pod/playlist/forms.py pod/playlist/models.py
-#: pod/video/templates/videos/video-info.html
-msgid "Autoplay"
-msgstr ""
-
-#: pod/playlist/forms.py pod/playlist/models.py
-msgid "Please choose if this playlist is an autoplay playlist or not."
 msgstr ""
 
 #: pod/playlist/forms.py
@@ -5203,6 +5172,35 @@ msgstr ""
 #: pod/playlist/models.py pod/playlist/tests/test_models.py
 #: pod/playlist/views.py pod/video/templates/videos/video.html
 msgid "Playlist"
+msgstr ""
+
+#: pod/playlist/models.py
+msgid "Please choose a name between 1 and 250 characters."
+msgstr ""
+
+#: pod/playlist/models.py
+msgid "Please choose a description. This description is empty by default."
+msgstr ""
+
+#: pod/playlist/models.py pod/playlist/templates/playlist/filter_aside.html
+#: pod/playlist/templates/playlist/playlist-informations-card.html
+msgid "Visibility"
+msgstr ""
+
+#: pod/playlist/models.py
+msgid ""
+"\n"
+"            Please chosse an visibility among 'public', 'protected', "
+"'private'.\n"
+"            "
+msgstr ""
+
+#: pod/playlist/models.py pod/video/templates/videos/video-info.html
+msgid "Autoplay"
+msgstr ""
+
+#: pod/playlist/models.py
+msgid "Please choose if this playlist is an autoplay playlist or not."
 msgstr ""
 
 #: pod/playlist/models.py

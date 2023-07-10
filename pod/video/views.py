@@ -2049,7 +2049,7 @@ def get_all_views_count(v_id, date_filter=date.today()):
     all_views["fav_day"] = count if count else 0
 
     # favorite count of all videos for the year
-    count = Favorite.objects.filter(
+    count = PlaylistContent.objects.filter(
         date_added__year=date_filter.year,
     ).count()
     all_views["all_fav_year"] = count if count else 0
