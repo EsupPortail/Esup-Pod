@@ -40,7 +40,7 @@
 }
 /* */
 /* Message error */
-div.alert {
+div.alert.alert-dismissible {
   border-radius: 6px;
   display: table;
   width: 100%;
