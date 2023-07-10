@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from django.http import Http404, HttpResponseBadRequest
+from django.http import Http404, HttpResponseBadRequest, JsonResponse
 from django.db import transaction
 
 from pod.main.utils import is_ajax
@@ -251,6 +251,10 @@ def remove_video_in_playlist(request, slug, video_slug):
     playlist = get_object_or_404(Playlist, slug=slug)
     video = Video.objects.get(slug=video_slug)
     user_remove_video_from_playlist(playlist, video)
+    if request.GET.get('json'):
+        return JsonResponse({
+            'state': 'out-playlist',
+        })
     return redirect(request.META["HTTP_REFERER"])
 
 
@@ -260,6 +264,10 @@ def add_video_in_playlist(request, slug, video_slug):
     playlist = get_playlist(slug)
     video = Video.objects.get(slug=video_slug)
     user_add_video_in_playlist(playlist, video)
+    if request.GET.get('json'):
+        return JsonResponse({
+            'state': 'in-playlist',
+        })
     return redirect(request.META["HTTP_REFERER"])
 
 
