@@ -4,7 +4,7 @@
 {% load thumbnail %}
 
 {% block more_style %}
-  <link href="{% static 'css/playlist.css' %}?ver={{ VERSION }}" rel="stylesheet">
+  <link href="{% static 'playlist/css/playlist.css' %}?ver={{ VERSION }}" rel="stylesheet">
 {% endblock more_style %}
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Playlists" %}</li>{% endblock %}
@@ -55,5 +55,5 @@
 
 {% block more_script %}
   <script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
-  <script src="{% static 'js/filter-aside-playlist-list-refresh.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'playlist/js/filter-aside-playlist-list-refresh.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}

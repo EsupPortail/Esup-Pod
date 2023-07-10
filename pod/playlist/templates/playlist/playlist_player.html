@@ -3,10 +3,10 @@
 {% load favorites_playlist %}
 
 {% block page_extra_head %}
-    <link rel="stylesheet" href="{% static 'css/playlist.css' %}?ver={{VERSION}}">
+    <link rel="stylesheet" href="{% static 'playlist/css/playlist.css' %}?ver={{VERSION}}">
 {% endblock page_extra_head %}
 
-<script src="{% static 'js/playlist-player.js' %}?ver={{VERSION}}" ></script>
+<script src="{% static 'playlist/js/playlist-player.js' %}?ver={{VERSION}}" ></script>
 
 <div class="card" id="card-playlistplayer">
     {% get_playlist_name playlist_in_get as playlist_name %}

@@ -4,7 +4,7 @@
 {% load favorites_playlist %}
 
 {% block page_extra_head %}
-<link rel="stylesheet" href="{% static 'css/playlist.css' %}?ver={{VERSION}}">
+<link rel="stylesheet" href="{% static 'playlist/css/playlist.css' %}?ver={{VERSION}}">
 {% endblock page_extra_head %}
 
 <!-- DEBUT modal PLAYLIST -->
@@ -47,6 +47,6 @@
     </div>
   </div> <!-- modal end PLAYLIST -->
   {% block more_script %}
-  <script src="{% static 'js/utils-playlist.js' %}?ver={{VERSION}}"></script>
-  <script src="{% static 'js/playlist-modal.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'playlist/js/utils-playlist.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'playlist/js/playlist-modal.js' %}?ver={{VERSION}}"></script>
   {% endblock %}

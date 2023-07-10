@@ -1575,7 +1575,7 @@
                     },
                     "settings": {
                         "DEFAULT_PLAYLIST_THUMBNAIL": {
-                            "default_value": "/img/default-playlist.svg",
+                            "default_value": "/static/playlist/img/default-playlist.svg",
                             "description": {
                                 "en": [
                                     "Default image displayed as a poster or thumbnail, used to present the playlist.",
