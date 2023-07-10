@@ -24,8 +24,13 @@ class PlaylistAdmin(admin.ModelAdmin):
         "date_updated",
         "visibility",
         "autoplay",
-        "owner",
     )
+    search_fields = [
+        "name",
+        "owner__username",
+        "owner__first_name",
+        "owner__last_name",
+    ]
 
 
 @admin.register(PlaylistContent)
