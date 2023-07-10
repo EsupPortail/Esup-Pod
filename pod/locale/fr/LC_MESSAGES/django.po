@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-07 10:18+0000\n"
+"POT-Creation-Date: 2023-07-10 14:35+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -2412,7 +2412,7 @@ msgstr ""
 
 #: pod/import_video/templates/import_video/list.html pod/main/forms.py
 #: pod/meeting/forms.py pod/meeting/templates/meeting/internal_recordings.html
-#: pod/playlist/forms.py pod/playlist/models.py
+#: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_sort_select.html
 #: pod/podfile/models.py pod/podfile/templates/podfile/home_content.html
 #: pod/video_encode_transcript/models.py
@@ -2865,8 +2865,8 @@ msgstr ""
 "principal / le contexte de ce contenu. (taille maximale : 250 caractères)"
 
 #: pod/live/models.py pod/main/forms.py pod/main/models.py
-#: pod/playlist/forms.py pod/playlist/models.py pod/video/forms.py
-#: pod/video/models.py pod/video/templates/channel/list_theme.html
+#: pod/playlist/models.py pod/video/forms.py pod/video/models.py
+#: pod/video/templates/channel/list_theme.html
 msgid "Description"
 msgstr "Description"
 
@@ -5441,43 +5441,8 @@ msgid "Your favorites videos."
 msgstr "Vos vidéos favorites."
 
 #: pod/playlist/forms.py pod/playlist/models.py
-msgid "Please choose a name between 1 and 250 characters."
-msgstr "Veuillez entrer un nom entre 2 et 200 caractères."
-
-#: pod/playlist/forms.py pod/playlist/models.py
-msgid "Please choose a description. This description is empty by default."
-msgstr "Veuillez choisir une description. Celle-ci est vide par défaut."
-
-#: pod/playlist/forms.py pod/playlist/models.py
-#: pod/playlist/templates/playlist/filter_aside.html
-#: pod/playlist/templates/playlist/playlist-informations-card.html
-msgid "Visibility"
-msgstr "Visibilité"
-
-#: pod/playlist/forms.py pod/playlist/models.py
-msgid ""
-"\n"
-"            Please chosse an visibility among 'public', 'protected', "
-"'private'.\n"
-"            "
-msgstr ""
-"\n"
-"            Veuillez choisir une visibilité entre 'publique', 'protégée', "
-"'privée'.\n"
-"            "
-
-#: pod/playlist/forms.py pod/playlist/models.py
 msgid "Please choose a password if this playlist is protected."
 msgstr "Veuillez choisir un mot de passe si cette playlist est protégée."
-
-#: pod/playlist/forms.py pod/playlist/models.py
-#: pod/video/templates/videos/video-info.html
-msgid "Autoplay"
-msgstr "Lecture automatique"
-
-#: pod/playlist/forms.py pod/playlist/models.py
-msgid "Please choose if this playlist is an autoplay playlist or not."
-msgstr "Veuillez choisir si cette playlist est en lecture automatique ou non."
 
 #: pod/playlist/forms.py
 msgid "general informations"
@@ -5516,6 +5481,39 @@ msgstr "Privée"
 #: pod/playlist/views.py pod/video/templates/videos/video.html
 msgid "Playlist"
 msgstr "Liste de lecture"
+
+#: pod/playlist/models.py
+msgid "Please choose a name between 1 and 250 characters."
+msgstr "Veuillez entrer un nom entre 2 et 200 caractères."
+
+#: pod/playlist/models.py
+msgid "Please choose a description. This description is empty by default."
+msgstr "Veuillez choisir une description. Celle-ci est vide par défaut."
+
+#: pod/playlist/models.py pod/playlist/templates/playlist/filter_aside.html
+#: pod/playlist/templates/playlist/playlist-informations-card.html
+msgid "Visibility"
+msgstr "Visibilité"
+
+#: pod/playlist/models.py
+msgid ""
+"\n"
+"            Please chosse an visibility among 'public', 'protected', "
+"'private'.\n"
+"            "
+msgstr ""
+"\n"
+"            Veuillez choisir une visibilité entre 'publique', 'protégée', "
+"'privée'.\n"
+"            "
+
+#: pod/playlist/models.py pod/video/templates/videos/video-info.html
+msgid "Autoplay"
+msgstr "Lecture automatique"
+
+#: pod/playlist/models.py
+msgid "Please choose if this playlist is an autoplay playlist or not."
+msgstr "Veuillez choisir si cette playlist est en lecture automatique ou non."
 
 #: pod/playlist/models.py
 msgid "Editable"
@@ -5782,6 +5780,10 @@ msgstr "Si vous n’avez pas le mot de passe pour ce contenu, veuillez"
 #: pod/video/templates/videos/video-form.html
 msgid "contact its owner"
 msgstr "contacter son propriétaire"
+
+#: pod/playlist/templatetags/favorites_playlist.py
+msgid "Favorites"
+msgstr "Favoris"
 
 #: pod/playlist/tests/test_forms.py
 #, fuzzy
@@ -8251,9 +8253,6 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
-#~ msgid "Favorites"
-#~ msgstr "Favoris"
 
 #~ msgid "Favorite video"
 #~ msgstr "Vidéo favorite"

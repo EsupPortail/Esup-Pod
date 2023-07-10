@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-07 10:18+0000\n"
+"POT-Creation-Date: 2023-07-10 14:35+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -467,16 +467,16 @@ msgstr ""
 "Cette extension de fichier n’est pas présente dans les extensions "
 "autorisées :"
 
-#: pod/playlist/static/js/filter-aside-playlist-list-refresh.js
+#: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js
 #: pod/video/static/js/filter_aside_video_list_refresh.js
 msgid "An Error occurred while processing."
 msgstr "Une erreur est survenue durant l’exécution du processus."
 
-#: pod/playlist/static/js/playlist-reorganize.js
+#: pod/playlist/static/playlist/js/playlist-reorganize.js
 msgid "Save your reorganization"
 msgstr "Sauvegarder votre réorganisation"
 
-#: pod/playlist/static/js/playlist-reorganize.js
+#: pod/playlist/static/playlist/js/playlist-reorganize.js
 msgid "Save"
 msgstr "Sauvegarder"
 

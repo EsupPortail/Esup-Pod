@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-06 10:53+0000\n"
+"POT-Creation-Date: 2023-07-10 14:35+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -18,11 +18,6 @@ msgstr ""
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
 msgid "Get time from the player"
-msgstr ""
-
-#: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
-#: pod/main/static/js/main.js pod/video/static/js/comment-script.js
-msgid "Close"
 msgstr ""
 
 #: pod/chapter/static/js/chapters.js pod/completion/static/js/completion.js
@@ -262,6 +257,11 @@ msgstr ""
 msgid "Iframe and Script tags are not allowed."
 msgstr ""
 
+#: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
+#: pod/video/static/js/comment-script.js
+msgid "Close"
+msgstr ""
+
 #: pod/enrichment/static/js/enrichment.js
 msgid "Please enter a correct start from 0 to "
 msgstr ""
@@ -444,22 +444,17 @@ msgstr ""
 msgid "The file extension not in the allowed extension:"
 msgstr ""
 
-#: pod/playlist/static/js/filter-aside-playlist-list-refresh.js
+#: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js
 #: pod/video/static/js/filter_aside_video_list_refresh.js
 msgid "An Error occurred while processing."
 msgstr ""
 
-#: pod/playlist/static/js/playlist-reorganize.js
+#: pod/playlist/static/playlist/js/playlist-reorganize.js
 msgid "Save your reorganization"
 msgstr ""
 
-#: pod/playlist/static/js/playlist-reorganize.js
+#: pod/playlist/static/playlist/js/playlist-reorganize.js
 msgid "Save"
-msgstr ""
-
-#: pod/podfile/static/podfile/js/filewidget.js
-#: pod/video/static/js/change_video_owner.js
-msgid "Loading…"
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
@@ -508,6 +503,10 @@ msgstr ""
 
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"
+msgstr ""
+
+#: pod/video/static/js/change_video_owner.js
+msgid "Loading…"
 msgstr ""
 
 #: pod/video/static/js/change_video_owner.js
