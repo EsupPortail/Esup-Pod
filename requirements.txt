@@ -1,5 +1,4 @@
 -r requirements-encode.txt
-bs4==0.0.1
 Django==3.2.20
 django-ckeditor==6.3.0
 Pillow==9.3.0
