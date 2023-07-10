@@ -7491,7 +7491,7 @@ msgstr "Afficher les details des statistiques de visualisation"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Addition in a playlist"
-msgstr "Ajouter dans une liste de lecture"
+msgstr "Nombre d'ajouts dans une liste de lecture"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Number of favorites"
