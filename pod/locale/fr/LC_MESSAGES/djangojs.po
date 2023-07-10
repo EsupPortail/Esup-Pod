@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-07 10:18+0000\n"
+"POT-Creation-Date: 2023-07-10 10:02+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -712,60 +712,64 @@ msgid "Select the general type of the video."
 msgstr "Sélectionnez le type général de vidéo."
 
 #: pod/video/static/js/video_stats_view.js
-msgid "Title"
-msgstr "Titre"
+#: pod/video/static/js/video_stats_view_global.js
+msgid "Views"
+msgstr "Vues"
 
 #: pod/video/static/js/video_stats_view.js
-msgid "View during the day"
-msgstr "Vue de la journée"
+#: pod/video/static/js/video_stats_view_global.js
+msgid "Favorites"
+msgstr "Favoris"
 
 #: pod/video/static/js/video_stats_view.js
-msgid "View during the month"
-msgstr "Vue du mois"
+msgid "Date,Views,Favorites"
+msgstr "Date,Vues,Favoris"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "View during the year"
-msgstr "Vue de l’année"
+#: pod/video/static/js/video_stats_view_global.js
+msgid "Years,Views,Favorites"
+msgstr "Années,Vues,Favoris"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Total view from creation"
-msgstr "Vue totale depuis création"
+#~ msgid "Title"
+#~ msgstr "Titre"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Playlist additions during the day"
-msgstr "Ajouts dans une liste de lecture durant la journée"
+#~ msgid "Playlist additions during the day"
+#~ msgstr "Ajouts dans une liste de lecture durant la journée"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Playlist additions during the month"
-msgstr "Ajouts dans une liste de lecture durant le mois"
+#~ msgid "Playlist additions during the month"
+#~ msgstr "Ajouts dans une liste de lecture durant le mois"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Playlist additions during the year"
-msgstr "Ajouts dans une liste de lecture durant l’année"
+#~ msgid "Playlist additions during the year"
+#~ msgstr "Ajouts dans une liste de lecture durant l’année"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Total Playlist additions from creation"
-msgstr "Ajouts en liste de lecture total depuis la création"
+#~ msgid "Total Playlist additions from creation"
+#~ msgstr "Ajouts en liste de lecture total depuis la création"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Favorite additions during the day"
-msgstr "Ajouts en favoris de la journée"
+#~ msgid "Favorite additions during the day"
+#~ msgstr "Ajouts en favoris de la journée"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Favorite additions during the month"
-msgstr "Ajouts en favoris du mois"
+#~ msgid "View during the day"
+#~ msgstr "Vue de la journée"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Favorite additions during the year"
-msgstr "Ajouts en favoris de l’année"
+#~ msgid "View during the month"
+#~ msgstr "Vue du mois"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Total favorite additions from creation"
-msgstr "Ajouts en favoris total depuis la création"
+#~ msgid "View during the year"
+#~ msgstr "Vue de l’année"
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Slug"
-msgstr "Titre court"
+#~ msgid "Total view from creation"
+#~ msgstr "Vue totale depuis création"
+
+#~ msgid "Favorite additions during the month"
+#~ msgstr "Ajouts en favoris du mois"
+
+#~ msgid "Favorite additions during the year"
+#~ msgstr "Ajouts en favoris de l’année"
+
+#~ msgid "Total favorite additions from creation"
+#~ msgstr "Ajouts en favoris total depuis la création"
+
+#~ msgid "Slug"
+#~ msgstr "Titre court"
 
 #~ msgid "Reply to comment"
 #~ msgstr "Répondre au commentaire"

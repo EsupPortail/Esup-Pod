@@ -1975,13 +1975,26 @@ def video_oembed(request):
 
 
 def get_all_views_count(v_id, date_filter=date.today()):
+    """Retrieve the view count and favorite count for a video."""
     all_views = {}
+
+    # date
+    all_views["date"] = str(date_filter)
+
+    # year
+    all_views["all_year"] = str(date_filter.year)
 
     # view count in day
     count = ViewCount.objects.filter(video_id=v_id, date=date_filter).aggregate(
         Sum("count")
     )["count__sum"]
     all_views["day"] = count if count else 0
+
+    # view count of all videos for the year
+    count = ViewCount.objects.filter(
+        date__year=date_filter.year
+    ).aggregate(Sum("count"))["count__sum"]
+    all_views["all_view_year"] = count if count else 0
 
     # view count in month
     count = ViewCount.objects.filter(
@@ -2034,6 +2047,12 @@ def get_all_views_count(v_id, date_filter=date.today()):
         date_added__date=date_filter
     ).count()
     all_views["fav_day"] = count if count else 0
+
+    # favorite count of all videos for the year
+    count = Favorite.objects.filter(
+        date_added__year=date_filter.year,
+    ).count()
+    all_views["all_fav_year"] = count if count else 0
 
     # favorite addition in month
     count = PlaylistContent.objects.filter(
@@ -2122,7 +2141,11 @@ def manage_access_rights_stats_video(request, video, page_title):
         or (video_access_ok and not is_password_protected)
         or has_rights
     ):
-        return render(request, "videos/video_stats_view.html", {"title": page_title})
+        return render(
+            request,
+            "videos/video_stats_view.html",
+            {"title": page_title, "slug" : video.slug}
+        )
     return HttpResponseNotFound(
         _("You do not have access rights to this video: %s " % video.slug)
     )
@@ -2171,7 +2194,6 @@ def stats_view(request, slug=None, slug_t=None):
         date_filter = request.POST.get("periode", date.today())
         if isinstance(date_filter, str):
             date_filter = parse(date_filter).date()
-
         data = list(
             map(
                 lambda v: {

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-06 10:53+0000\n"
+"POT-Creation-Date: 2023-07-10 10:02+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -18,11 +18,6 @@ msgstr ""
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
 msgid "Get time from the player"
-msgstr ""
-
-#: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
-#: pod/main/static/js/main.js pod/video/static/js/comment-script.js
-msgid "Close"
 msgstr ""
 
 #: pod/chapter/static/js/chapters.js pod/completion/static/js/completion.js
@@ -262,6 +257,11 @@ msgstr ""
 msgid "Iframe and Script tags are not allowed."
 msgstr ""
 
+#: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
+#: pod/video/static/js/comment-script.js
+msgid "Close"
+msgstr ""
+
 #: pod/enrichment/static/js/enrichment.js
 msgid "Please enter a correct start from 0 to "
 msgstr ""
@@ -458,11 +458,6 @@ msgid "Save"
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
-#: pod/video/static/js/change_video_owner.js
-msgid "Loading…"
-msgstr ""
-
-#: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change image"
 msgstr ""
 
@@ -508,6 +503,10 @@ msgstr ""
 
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"
+msgstr ""
+
+#: pod/video/static/js/change_video_owner.js
+msgid "Loading…"
 msgstr ""
 
 #: pod/video/static/js/change_video_owner.js
@@ -689,57 +688,22 @@ msgid "Select the general type of the video."
 msgstr ""
 
 #: pod/video/static/js/video_stats_view.js
-msgid "Title"
-msgstr "Titel"
-
-#: pod/video/static/js/video_stats_view.js
-msgid "View during the day"
+#: pod/video/static/js/video_stats_view_global.js
+msgid "Views"
 msgstr ""
 
 #: pod/video/static/js/video_stats_view.js
-msgid "View during the month"
+#: pod/video/static/js/video_stats_view_global.js
+msgid "Favorites"
 msgstr ""
 
 #: pod/video/static/js/video_stats_view.js
-msgid "View during the year"
+msgid "Date,Views,Favorites"
 msgstr ""
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Total view from creation"
+#: pod/video/static/js/video_stats_view_global.js
+msgid "Years,Views,Favorites"
 msgstr ""
 
-#: pod/video/static/js/video_stats_view.js
-msgid "Playlist additions during the day"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-msgid "Playlist additions during the month"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-msgid "Playlist additions during the year"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-msgid "Total Playlist additions from creation"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-msgid "Favorite additions during the day"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-msgid "Favorite additions during the month"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-msgid "Favorite additions during the year"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-msgid "Total favorite additions from creation"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-msgid "Slug"
-msgstr ""
+#~ msgid "Title"
+#~ msgstr "Titel"

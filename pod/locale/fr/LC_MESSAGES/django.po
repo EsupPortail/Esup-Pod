@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-07 10:18+0000\n"
+"POT-Creation-Date: 2023-07-10 10:02+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -426,7 +426,7 @@ msgstr "Participants"
 
 #: pod/bbb/models.py pod/import_video/models.py pod/live/forms.py
 #: pod/live/models.py pod/meeting/forms.py pod/meeting/models.py
-#: pod/video_search/forms.py
+#: pod/video/templates/videos/video_stats_view.html pod/video_search/forms.py
 msgid "Start date"
 msgstr "Date de début"
 
@@ -435,7 +435,7 @@ msgid "Start date of the live."
 msgstr "Date de début du direct."
 
 #: pod/bbb/models.py pod/live/forms.py pod/live/models.py
-#: pod/video_search/forms.py
+#: pod/video/templates/videos/video_stats_view.html pod/video_search/forms.py
 msgid "End date"
 msgstr "Date de fin"
 
@@ -7810,8 +7810,16 @@ msgid "New note"
 msgstr "Nouvelle note"
 
 #: pod/video/templates/videos/video_stats_view.html
-msgid "Change the date"
-msgstr "Modifier la période de visualisation"
+msgid "Start year"
+msgstr "Année de début"
+
+#: pod/video/templates/videos/video_stats_view.html
+msgid "End year"
+msgstr "Année de fin"
+
+#: pod/video/templates/videos/video_stats_view.html
+msgid "Export to CSV"
+msgstr "Exporter au format CSV"
 
 #: pod/video/templates/videos/videos.html
 msgid "Show view statistics for all videos"
@@ -8358,6 +8366,9 @@ msgstr "xAPI Esup-Pod"
 
 #~ msgid "Add current video to this playlist"
 #~ msgstr "Ajouter la vidéo à cette liste de lecture"
+
+#~ msgid "Change the date"
+#~ msgstr "Modifier la période de visualisation"
 
 #~ msgid "Error in %s: "
 #~ msgstr "Erreur sur %s : "

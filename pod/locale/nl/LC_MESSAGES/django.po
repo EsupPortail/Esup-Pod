@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-07 10:18+0000\n"
+"POT-Creation-Date: 2023-07-10 10:02+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -415,7 +415,7 @@ msgstr ""
 
 #: pod/bbb/models.py pod/import_video/models.py pod/live/forms.py
 #: pod/live/models.py pod/meeting/forms.py pod/meeting/models.py
-#: pod/video_search/forms.py
+#: pod/video/templates/videos/video_stats_view.html pod/video_search/forms.py
 msgid "Start date"
 msgstr ""
 
@@ -424,7 +424,7 @@ msgid "Start date of the live."
 msgstr ""
 
 #: pod/bbb/models.py pod/live/forms.py pod/live/models.py
-#: pod/video_search/forms.py
+#: pod/video/templates/videos/video_stats_view.html pod/video_search/forms.py
 msgid "End date"
 msgstr ""
 
@@ -7327,7 +7327,15 @@ msgid "New note"
 msgstr ""
 
 #: pod/video/templates/videos/video_stats_view.html
-msgid "Change the date"
+msgid "Start year"
+msgstr ""
+
+#: pod/video/templates/videos/video_stats_view.html
+msgid "End year"
+msgstr ""
+
+#: pod/video/templates/videos/video_stats_view.html
+msgid "Export to CSV"
 msgstr ""
 
 #: pod/video/templates/videos/videos.html
