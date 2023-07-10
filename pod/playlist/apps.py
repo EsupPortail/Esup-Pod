@@ -19,6 +19,7 @@ class PlaylistConfig(AppConfig):
         from . import signals  # noqa: F401
         pre_migrate.connect(self.save_previous_data, sender=self)
         post_migrate.connect(self.send_previous_data, sender=self)
+        post_migrate.connect(self.remove_previous_favorites_table, sender=self)
 
     def save_previous_data(self, sender, **kwargs):
         """Save previous data from various database tables."""
@@ -196,3 +197,15 @@ class PlaylistConfig(AppConfig):
             )
         PlaylistContent.objects.bulk_create(content_list_to_bulk, batch_size=1000)
         print("add_playlists_contents --> OK")
+
+    def remove_previous_favorites_table(self, sender, **kwargs):
+        """Remove the previous favorites table."""
+        try:
+            with connection.cursor() as c:
+                c.execute(
+                    "DROP TABLE favorite_favorite"
+                )
+        except Exception as e:
+            print(e)
+            pass
+        print("Remove previous table : favorite_favorite --> OK")
