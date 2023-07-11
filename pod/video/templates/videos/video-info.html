@@ -14,7 +14,7 @@
   </div>
   <div class="pod-info-video__view">
     <i class="bi bi-eye"></i> {% trans 'Number of views' %}
-    {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.slug %}?from=video">
+    {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'stats:video-stats' video.slug %}">
       {{ video.get_viewcount }}</a>
     {% else %}
       {{ video.get_viewcount }}
@@ -23,7 +23,7 @@
   {% if USE_PLAYLIST %}
     <div class="pod-info-video__playlists">
       <i class="bi bi-list-ul"></i> {% trans 'Addition in a playlist' %}
-      {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.slug %}?from=video">
+      {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'stats:video-stats' video.slug %}">
         <span id="addition_playlists_count">{% get_count_video_added_in_playlist video %}</span></a>
       {% else %}
         <span id="addition_playlists_count">{% get_count_video_added_in_playlist video %}</span>
@@ -33,7 +33,7 @@
   {% if USE_PLAYLIST and USE_FAVORITES %}
     <div class="pod-info-video__favorites">
       <i class="bi bi-stars"></i> {% trans 'Number of favorites' %}
-      {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.slug %}?from=video">
+      {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'stats:video-stats' video.slug %}">
         <span id="favorites_count">{% get_total_favorites_video video %}</span></a>
       {% else %}
         <span id="favorites_count">{% get_total_favorites_video video %}</span>

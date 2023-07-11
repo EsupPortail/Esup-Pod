@@ -138,6 +138,12 @@ if getattr(settings, "USE_IMPORT_VIDEO", True):
         ),
     ]
 
+# STATISTICS
+if getattr(settings, "USE_STATS_VIEW", True):
+    urlpatterns += [
+        path("stats/", include("pod.stats.urls", namespace="stats"))
+    ]
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     if importlib.util.find_spec("debug_toolbar") is not None:

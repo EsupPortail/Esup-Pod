@@ -45,9 +45,11 @@ $(function () {
                   var year = data.map((row) => row.all_year);
                   var all_view = data.map((row) => row.all_view_year);
                   var year_favo = data.map((row) => row.all_fav_year);
+                  var year_playlists = data.map((row) => row.all_playlists_year);
                   y.push(year[0]);
                   yearlyviews.push(all_view[0]);
                   yearlyfav.push(year_favo[0]);
+                  yearlyPlaylist.push(year_playlists[0]);
                   resolve();
               },
               error: function (error) {
@@ -61,6 +63,7 @@ $(function () {
       y = [];
       yearlyviews = [];
       yearlyfav = [];
+      yearlyPlaylist = [];
       let startYearInt = parseInt(startYear);
       let endYearInt = parseInt(endYear);
       let requests = [];
@@ -77,12 +80,14 @@ $(function () {
                           year: item,
                           views: yearlyviews[index],
                           favorite : yearlyfav[index],
+                          playlists: yearlyPlaylist[index],
                       };
                   })
                   .sort((a, b) => a.year - b.year);
               year = sortedData.map((item) => item.year);
               yearlyviews = sortedData.map((item) => item.views);
               yearlyfavo = sortedData.map((item) => item.favorite);
+              yearlyPlaylist = sortedData.map((item) => item.playlists);
 
               var ctx = document.getElementById("yearChart").getContext("2d");
               if (yearChart) {
@@ -101,21 +106,29 @@ $(function () {
                                     delay: 500,
                                 },
                             },
-                            backgroundColor: "#DC143C",
-                            borderColor: "#DC143C",
+                            backgroundColor: "#ed184e",
+                            borderColor: "#ed184e",
                             borderWidth: 2,
                             data: yearlyviews,
                             tension: 0.5,
                           },
                           {
                             label: gettext("Favorites"),
-                            backgroundColor: "#1F7C85",
-                            borderColor: "#1F7C85",
+                            backgroundColor: "#3871c1",
+                            borderColor: "#3871c1",
                             borderWidth: 2,
                             data: yearlyfavo,
                             tension: 0.5,
                           },
-                      ],
+                          {
+                            label: gettext("Playlists addition"),
+                            backgroundColor: "#1F7C85",
+                            borderColor: "#1F7C85",
+                            borderWidth: 2,
+                            data: yearlyPlaylist,
+                            tension: 0.5,
+                          },
+                        ],
                   },
                   options: {
                       animations: {
@@ -145,7 +158,7 @@ $(function () {
     csvContent += gettext("Years,Views,Favorites");
     csvContent += "\n";
     for (let i = 0; i < year.length; i++) {
-      let row = year[i] + "," + yearlyviews[i] + "," + yearlyfav[i] + "\n";
+      let row = year[i] + "," + yearlyviews[i] + "," + yearlyfav[i] + "," + yearlyPlaylist + "\n";
       csvContent += row;
     }
     var encodedUri = encodeURI(csvContent);

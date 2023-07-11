@@ -5,6 +5,7 @@ $(function () {
   let d = [];
   let dailyviews = [];
   let dailyfavo = [];
+  let dailyPlaylists = [];
   let today = new Date();
   let data_url = window.location.href;
 
@@ -47,9 +48,11 @@ $(function () {
           var date = data.map((row) => row.date);
           var day = data.map((row) => row.day);
           var fav_day = data.map((row) => row.fav_day);
+          var playlist_day = data.map((row) => row.playlist_day)
           d.push(date[0]);
           dailyviews.push(day[0]);
           dailyfavo.push(fav_day[0]);
+          dailyPlaylists.push(playlist_day[0])
           resolve();
         },
         error: function (error) {
@@ -63,6 +66,7 @@ $(function () {
     d = [];
     dailyviews = [];
     dailyfavo = [];
+    dailyPlaylists = [];
     let currentDate = new Date(startDate);
     let targetDate = new Date(endDate);
 
@@ -81,12 +85,14 @@ $(function () {
               date: item,
               views: dailyviews[index],
               favo: dailyfavo[index],
+              playlists: dailyPlaylists[index],
             };
           })
           .sort((a, b) => new Date(a.date) - new Date(b.date));
         daily = sortedData.map((item) => item.date);
         dailyviews = sortedData.map((item) => item.views);
         dailyfavo = sortedData.map((item) => item.favo);
+        dailyPlaylists = sortedData.map((item) => item.playlists)
 
         var ctx = document.getElementById("dateChart").getContext("2d");
         if (dateChart) {
@@ -105,18 +111,26 @@ $(function () {
                     delay: 500,
                   },
                 },
-                backgroundColor: "#DC143C",
-                borderColor: "#DC143C",
+                backgroundColor: "#ed184e",
+                borderColor: "#ed184e",
                 borderWidth: 2,
                 data: dailyviews,
                 tension: 0.5,
               },
               {
                 label: gettext("Favorites"),
+                backgroundColor: "#3871c1",
+                borderColor: "#3871c1",
+                borderWidth: 2,
+                data: dailyfavo,
+                tension: 0.5,
+              },
+              {
+                label: gettext("Playlists addition"),
                 backgroundColor: "#1F7C85",
                 borderColor: "#1F7C85",
                 borderWidth: 2,
-                data: dailyfavo,
+                data: dailyPlaylists,
                 tension: 0.5,
               },
             ],
@@ -149,7 +163,7 @@ $(function () {
     csvContent += gettext("Date,Views,Favorites");
     csvContent += "\n";
     for (let i = 0; i < daily.length; i++) {
-      let row = daily[i] + "," + dailyviews[i] + "," + dailyfavo[i] + "\n";
+      let row = daily[i] + "," + dailyviews[i] + "," + dailyfavo[i] + "," + dailyPlaylists[i] + "\n";
       csvContent += row;
     }
     var encodedUri = encodeURI(csvContent);

@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "pod.bbb",
     "pod.meeting",
     "pod.cut",
+    "pod.stats",
     "pod.xapi",
     "pod.video_encode_transcript",
     "pod.import_video",
