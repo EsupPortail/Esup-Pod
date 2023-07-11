@@ -9,6 +9,11 @@ function preventRefreshButton(button, jsonFormat) {
     button.addEventListener('click', function (e) {
       e.preventDefault();
       let url = this.getAttribute('href');
+      if (button.classList.contains('action-btn')) {
+        button.classList.add('disabled');
+        button.style.backgroundColor = 'gray';
+        this.removeAttribute('href');
+      }
       if (jsonFormat) {
         url += '?json=true'
       }
@@ -56,7 +61,6 @@ function preventRefreshButton(button, jsonFormat) {
               const updatedFavoriteButton = html.getElementById(FAVORITE_BUTTON_ID);
               preventRefreshButton(updatedFavoriteButton, false);
               favoriteButton.replaceWith(updatedFavoriteButton);
-              alert(favoriteButton.id);
             }
           }
         })
