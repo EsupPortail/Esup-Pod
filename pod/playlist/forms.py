@@ -46,7 +46,7 @@ class PlaylistForm(forms.ModelForm):
     )
     fieldsets = [
         (
-            _("general informations"),
+            "general informations",
             {
                 "legend": f"<i class='bi bi-info-lg'></i>&nbsp;\
                     {_('General informations')}",
@@ -54,7 +54,7 @@ class PlaylistForm(forms.ModelForm):
             },
         ),
         (
-            _("security informations"),
+            "security informations",
             {
                 "legend": f"<i class='bi bi-shield-lock'></i>&nbsp;\
                     {_('Security informations')}",

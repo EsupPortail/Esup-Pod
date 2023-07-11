@@ -19,7 +19,7 @@ class Playlist(models.Model):
         ("private", _("Private"))
     ]
     name = models.CharField(
-        verbose_name=_("Name"),
+        verbose_name=_("Title"),
         max_length=250,
         default=_("Playlist"),
         help_text=_("Please choose a name between 1 and 250 characters."),
