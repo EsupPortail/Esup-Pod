@@ -1,5 +1,4 @@
 """Esup-Pod videos views."""
-from django.core import serializers
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.serializers.json import DjangoJSONEncoder
@@ -54,8 +53,6 @@ from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
 from pod.video.rest_views import ChannelSerializer
-
-from rest_framework.renderers import JSONRenderer
 
 from .utils import (
     pagination_data,

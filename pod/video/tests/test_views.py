@@ -1521,7 +1521,6 @@ class ChannelJsonResponseViews(TestCase):
         )
         print(" ---> test_get_channels_for_navbar : OK!")
 
-
     def test_get_channel_tabs_for_navbar(self):
         """Test if the get channel tabs request for the navbar works correctly."""
         response = self.client.get(reverse("video:get-channel-tabs"))

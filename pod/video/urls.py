@@ -35,7 +35,6 @@ from .views import (
 )
 
 
-
 app_name = "video"
 
 urlpatterns = [
