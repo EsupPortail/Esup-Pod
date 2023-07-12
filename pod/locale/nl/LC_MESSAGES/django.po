@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-05 15:50+0200\n"
+"POT-Creation-Date: 2023-07-12 15:35+0200\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2432,7 +2432,7 @@ msgid "The found file is not a valid video."
 msgstr ""
 
 #: pod/import_video/utils.py
-msgid "No video file found"
+msgid "No video file found."
 msgstr ""
 
 #: pod/import_video/utils.py
@@ -2445,6 +2445,19 @@ msgstr ""
 
 #: pod/import_video/utils.py
 msgid "Impossible to create the Pod video"
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "No video file found for this address."
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "File too large."
+msgstr ""
+
+#: pod/import_video/utils.py
+#, python-format
+msgid "The size of the video file exceeds the maximum allowed value (%s Gb)."
 msgstr ""
 
 #: pod/import_video/views.py
@@ -2484,8 +2497,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -5246,8 +5259,8 @@ msgstr ""
 
 #: pod/playlist/templates/my_playlists.html
 msgid ""
-"You have not created any playlists yet, please use the \"Add a new "
-"playlist\" button to add one."
+"You have not created any playlists yet, please use the \"Add a new playlist"
+"\" button to add one."
 msgstr ""
 
 #: pod/playlist/templates/my_playlists.html
@@ -5836,8 +5849,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
