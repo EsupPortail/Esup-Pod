@@ -1398,6 +1398,13 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 
   >> Seuls les utilisateurs "staff" pourront importer des vidéos <br>
 
+ - `MAX_UPLOAD_SIZE_ON_IMPORT`
+
+  > valeur par défaut : `0`
+
+  >> Taille maximum en Go des fichiers vidéos qui peuvent être importés sur la plateforme  <br>
+  >> via l'application import_video (0 = pas de taille maximum). <br>
+
  - `USE_IMPORT_VIDEO`
 
   > valeur par défaut : `True`
