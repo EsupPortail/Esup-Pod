@@ -26,6 +26,7 @@ from .utils import (
     get_playlist,
     get_playlist_list_for_user,
     get_playlists_for_additional_owner,
+    get_promoted_playlist,
     get_public_playlist,
     get_video_list_for_playlist,
     remove_playlist,
@@ -53,6 +54,8 @@ def playlist_list(request):
     elif visibility == "all":
         playlists = (get_playlist_list_for_user(request.user) | get_public_playlist(
         ) | get_playlists_for_additional_owner(request.user))
+    elif visibility == "promoted":
+        playlists = get_promoted_playlist()
     else:
         return redirect(reverse('playlist:list'))
 

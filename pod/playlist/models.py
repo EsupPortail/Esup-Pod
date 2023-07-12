@@ -52,6 +52,14 @@ class Playlist(models.Model):
         default=True,
         help_text=_("Please choose if this playlist is an autoplay playlist or not."),
     )
+    promoted = models.BooleanField(
+        verbose_name=_("Promoted"),
+        default=False,
+        help_text=_("Selecting this setting causes your playlist to be promoted on the page"
+                    + " listing promoted public playlists. However, if this setting is deactivated,"
+                    + " your playlist will still be accessible to everyone."
+                    + "<br>For general use, we recommend that you leave this setting disabled."),
+    )
     editable = models.BooleanField(
         verbose_name=_("Editable"),
         default=True,
@@ -115,6 +123,8 @@ class Playlist(models.Model):
     def clean(self) -> None:
         if self.visibility == "protected" and not self.password:
             raise ValidationError("Password is required for a protected playlist.")
+        if self.visibility != "public":
+            self.promoted = False
 
     def __str__(self) -> str:
         """Display a playlist as string."""

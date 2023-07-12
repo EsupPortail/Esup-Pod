@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-11 08:42+0000\n"
+"POT-Creation-Date: 2023-07-12 13:51+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -4525,6 +4525,10 @@ msgid "Channels"
 msgstr "Chaînes"
 
 #: pod/main/templates/navbar.html
+msgid "Promoted playlists"
+msgstr "Listes de lecture promues"
+
+#: pod/main/templates/navbar.html
 msgid "Some features are unavailable"
 msgstr "Certaines fonctionnalités sont indisponibles"
 
@@ -5443,27 +5447,33 @@ msgstr "Vos vidéos favorites."
 msgid "Please choose a password if this playlist is protected."
 msgstr "Veuillez choisir un mot de passe si cette playlist est protégée."
 
-#: pod/playlist/forms.py
-#| msgid "Informations"
-msgid "General informations"
-msgstr "Informations générales"
+#: pod/playlist/forms.py pod/playlist/models.py
+msgid "Promoted"
+msgstr "Promue"
+
+#: pod/playlist/forms.py pod/playlist/models.py
+msgid ""
+"Selecting this setting causes your playlist to be promoted on the page "
+"listing promoted public playlists. However, if this setting is deactivated, "
+"your playlist will still be accessible to everyone.<br>For general use, we "
+"recommend that you leave this setting disabled."
+msgstr ""
+"En sélectionnant ce paramètre, votre liste de lecture sera mise en avant dans la page "
+"listant les listes de lecture publiques promues. En revanche, si ce paramètre est désactivé, "
+"votre liste de lecture restera tout de même accessible par tous.<br>Pour une utilisation générale, il "
+"est conseillé de laisser ce paramètre désactivé."
 
 #: pod/playlist/forms.py
-#| msgid "Request more information"
-msgid "Security informations"
-msgstr "Informations de sécurité"
-
-#: pod/playlist/forms.py
-#, fuzzy, python-brace-format
-#| msgid "You cannot create a playlist named \"Favorites\""
 msgid "You cannot create a playlist named \"{FAVORITE_PLAYLIST_NAME}\""
-msgstr "Vous ne pouvez créer une liste de lecture nommé \"Favoris\""
+msgstr "Vous ne pouvez créer une liste de lecture nommée \"Favoris\""
 
 #: pod/playlist/forms.py
 msgid "Remove playlist cannot be undone"
 msgstr "La suppression de réunion est définitive"
 
-#: pod/playlist/models.py pod/video/models.py
+#: pod/playlist/models.py
+#: pod/playlist/templates/playlist/playlist_visibility_icon.html
+#: pod/video/models.py
 #: pod/video/templates/videos/video_note_comments_display.html
 #: pod/video/templates/videos/video_note_display.html
 msgid "Public"
@@ -5609,6 +5619,10 @@ msgid "See all public playlists"
 msgstr "Voir toutes les listes de lecture publiques"
 
 #: pod/playlist/templates/playlist/filter_aside.html
+msgid "See all promoted playlists"
+msgstr "Voir toutes les listes de lecture promues"
+
+#: pod/playlist/templates/playlist/filter_aside.html
 msgid "See all playlists"
 msgstr "Voir toutes les listes de lecture"
 
@@ -5630,7 +5644,7 @@ msgstr "Propriétaire de la liste de lecture"
 
 #: pod/playlist/templates/playlist/playlist-list-modal.html
 msgid "Your playlists"
-msgstr "Vos playlists"
+msgstr "Vos listes de lecture"
 
 #: pod/playlist/templates/playlist/playlist-list-modal.html
 msgid "Add the video in a new playlist"
@@ -5738,6 +5752,10 @@ msgstr "Date de création"
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Protected with a password"
 msgstr "Protégée par un mot de passe"
+
+#: pod/playlist/templates/playlist/playlist_visibility_icon.html
+msgid "Public and promoted"
+msgstr "Publique et promue"
 
 #: pod/playlist/templates/playlist/playlists.html
 #, python-format
@@ -8254,6 +8272,12 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "General informations"
+#~ msgstr "Informations générales"
+
+#~ msgid "Security informations"
+#~ msgstr "Informations de sécurité"
 
 #~ msgid "Favorite video"
 #~ msgstr "Vidéo favorite"

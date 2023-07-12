@@ -130,12 +130,22 @@ def get_number_video_added_in_specific_playlist(playlist: Playlist) -> int:
 
 def get_public_playlist() -> list:
     """
-    Get all public playlist in the application.
+    Get all public playlists in the application.
 
     Returns:
-        list(:class:`pod.playlist.models.Playlist`): The public playlist list
+        list(:class:`pod.playlist.models.Playlist`): The public playlists list
     """
     return Playlist.objects.filter(visibility="public")
+
+
+def get_promoted_playlist() -> list:
+    """
+    Get all promoted playlists in the application.
+
+    Returns:
+        list(:class:`pod.playlist.models.Playlist`): The public playlists list
+    """
+    return Playlist.objects.filter(promoted=True)
 
 
 def get_playlist_list_for_user(user: User) -> list:

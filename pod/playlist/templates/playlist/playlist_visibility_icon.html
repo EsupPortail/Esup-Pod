@@ -1,15 +1,21 @@
 {% load i18n %}
 
 {% if playlist.visibility == "protected" %}
-    <span title="{% trans "Protected with a password" %}">
-        <i class="bi bi-lock" aria-hidden="true"></i>
-    </span>
+  <span title="{% trans "Protected with a password" %}">
+    <i class="bi bi-lock" aria-hidden="true"></i>
+  </span>
 {% elif playlist.visibility == "private" %}
-    <span title={% trans "Private" %}>
-        <i class="bi bi-incognito" aria-hidden="true"></i>
-    </span>
+  <span title="{% trans "Private" %}">
+    <i class="bi bi-incognito" aria-hidden="true"></i>
+  </span>
 {% elif playlist.visibility == "public" %}
-    <span title="Public">
-        <i class="bi bi-globe-americas" aria-hidden="true"></i>
+  {% if playlist.promoted %}
+    <span title="{% trans "Public and promoted" %}">
+      <i class="bi bi-globe-americas promoted-icon" aria-hidden="true"></i>
     </span>
+  {% else %}
+    <span title="{% trans "Public" %}">
+      <i class="bi bi-globe-americas" aria-hidden="true"></i>
+    </span>
+  {% endif %}
 {% endif %}

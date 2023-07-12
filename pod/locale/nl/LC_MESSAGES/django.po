@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-11 08:42+0000\n"
+"POT-Creation-Date: 2023-07-12 13:51+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -4282,6 +4282,10 @@ msgid "Channels"
 msgstr ""
 
 #: pod/main/templates/navbar.html
+msgid "Promoted playlists"
+msgstr ""
+
+#: pod/main/templates/navbar.html
 msgid "Some features are unavailable"
 msgstr ""
 
@@ -5136,12 +5140,16 @@ msgstr ""
 msgid "Please choose a password if this playlist is protected."
 msgstr ""
 
-#: pod/playlist/forms.py
-msgid "general informations"
+#: pod/playlist/forms.py pod/playlist/models.py
+msgid "Promoted"
 msgstr ""
 
-#: pod/playlist/forms.py
-msgid "security informations"
+#: pod/playlist/forms.py pod/playlist/models.py
+msgid ""
+"Selecting this setting causes your playlist to be promoted on the page "
+"listing promoted public playlists. However, if this setting is deactivated, "
+"your playlist will still be accessible to everyone.<br>For general use, we "
+"recommend that you leave this setting disabled."
 msgstr ""
 
 #: pod/playlist/forms.py
@@ -5153,7 +5161,9 @@ msgstr ""
 msgid "Remove playlist cannot be undone"
 msgstr ""
 
-#: pod/playlist/models.py pod/video/models.py
+#: pod/playlist/models.py
+#: pod/playlist/templates/playlist/playlist_visibility_icon.html
+#: pod/video/models.py
 #: pod/video/templates/videos/video_note_comments_display.html
 #: pod/video/templates/videos/video_note_display.html
 msgid "Public"
@@ -5293,6 +5303,10 @@ msgid "See all public playlists"
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
+msgid "See all promoted playlists"
+msgstr ""
+
+#: pod/playlist/templates/playlist/filter_aside.html
 msgid "See all playlists"
 msgstr ""
 
@@ -5418,6 +5432,10 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Protected with a password"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist_visibility_icon.html
+msgid "Public and promoted"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlists.html

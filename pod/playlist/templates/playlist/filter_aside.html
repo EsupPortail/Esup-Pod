@@ -41,6 +41,10 @@
             <label class="form-check-label" for="idallpublic_type">&nbsp;{% trans "See all public playlists"%}</label>
         </div>
         <div class="form-check">
+          <input onChange="window.location = `{% url 'playlist:list' %}?visibility=promoted`;" class="form-check-input" type="radio" name="type" value="promoted" id="idpromoted_type" {% if request.GET.visibility == "promoted" %}checked="true"{% endif %}>
+          <label class="form-check-label" for="idpromoted_type">&nbsp;{% trans "See all promoted playlists"%}</label>
+        </div>
+        <div class="form-check">
           <input onChange="window.location = `{% url 'playlist:list' %}?visibility=all`;" class="form-check-input" type="radio" name="type" value="all" id="idall_type" {% if request.GET.visibility == "all" %}checked="true"{% endif %}>
           <label class="form-check-label" for="idall_type">&nbsp;{% trans "See all playlists"%}</label>
         </div>
@@ -54,7 +58,7 @@
     document.location.href = urlWithoutGetOptions + "?visibility=allmy";
   }
   const visibilityValue = new URL(window.location).searchParams.get("visibility");
-  if (!visibilityValue || !["private", "protected", "public", "allmy", "allpublic", "all"].includes(visibilityValue)) {
+  if (!visibilityValue || !["private", "protected", "additional", "public", "promoted", "allmy", "allpublic", "all"].includes(visibilityValue)) {
     redirectToAllPlaylists();
   }
 </script>

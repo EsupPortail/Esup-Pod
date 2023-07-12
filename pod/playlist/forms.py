@@ -32,6 +32,7 @@ class PlaylistForm(forms.ModelForm):
         "name",
         "description",
         "visibility",
+        "promoted",
         "password",
         "autoplay",
         "additional_owners",
@@ -43,6 +44,14 @@ class PlaylistForm(forms.ModelForm):
         ),
         required=False,
         help_text=_("Please choose a password if this playlist is protected."),
+    )
+    promoted = forms.BooleanField(
+        label=_("Promoted"),
+        required=False,
+        help_text=_("Selecting this setting causes your playlist to be promoted on the page"
+                    + " listing promoted public playlists. However, if this setting is deactivated,"
+                    + " your playlist will still be accessible to everyone."
+                    + "<br>For general use, we recommend that you leave this setting disabled."),
     )
     fieldsets = [
         (
@@ -58,7 +67,7 @@ class PlaylistForm(forms.ModelForm):
             {
                 "legend": f"<i class='bi bi-shield-lock'></i>&nbsp;\
                     {_('Security informations')}",
-                "fields": ["additional_owners", "visibility", "password"],
+                "fields": ["additional_owners", "visibility", "password", "promoted"],
             },
         ),
     ]
@@ -113,8 +122,10 @@ class PlaylistRemoveForm(forms.Form):
 
 
 class PlaylistPasswordForm(forms.Form):
+    """Form to access to a protected playlist."""
     password = forms.CharField(label=_("Password"), widget=forms.PasswordInput())
 
     def __init__(self, *args, **kwargs):
+        """Init method."""
         super(PlaylistPasswordForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
