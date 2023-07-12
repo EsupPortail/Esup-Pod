@@ -1,6 +1,10 @@
 """Esup-Pod videos views."""
+from django.core import serializers
+from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Count, F, Q, Case, When, Value, BooleanField, Prefetch
+from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -15,8 +19,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.db.models import Count, F, Q, Case, When, Value, BooleanField
-from django.db.models.functions import Concat
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.shortcuts import redirect
@@ -28,6 +30,7 @@ from dateutil.parser import parse
 import concurrent.futures as futures
 from pod.main.utils import is_ajax
 
+from pod.main.models import AdditionalChannelTab
 from pod.main.views import in_maintenance
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
@@ -50,6 +53,10 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
+from pod.video.rest_views import ChannelSerializer
+
+from rest_framework.renderers import JSONRenderer
+
 from .utils import (
     pagination_data,
     get_headband,
@@ -2758,6 +2765,84 @@ def filter_videos(request, user_id):
 
     except Exception as err:
         return JsonResponse({"success": False, "detail": "Syntax error: {0}".format(err)})
+
+
+def get_serialized_channels(request: WSGIRequest, channels: QueryDict) -> dict:
+    """
+    Get serialized channels.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        channels (::class::`django.http.QueryDict`): The channel list.
+    Returns:
+        dict: The channel list in JSON format.
+    """
+    channels_json_format = {}
+    for channel in channels:
+        channels_json_format[channel.pk] = ChannelSerializer(channel, context={'request': request}).data
+        channels_json_format[channel.pk]["url"] = reverse('channel-video:channel', kwargs={"slug_c": channel.slug})
+    return channels_json_format
+
+
+def get_channels_for_navbar(request: WSGIRequest) -> JsonResponse:
+    """
+    Get the channels for the navbar.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
+    channels = (
+        Channel.objects.filter(
+            visible=True,
+            video__is_draft=False,
+            add_channels_tab=None,
+            site=get_current_site(request),
+        )
+        .distinct()
+        .annotate(video_count=Count("video", distinct=True))
+        .prefetch_related(
+            Prefetch(
+                "themes",
+                queryset=Theme.objects.filter(
+                    parentId=None, channel__site=get_current_site(request)
+                )
+                .distinct()
+                .annotate(video_count=Count("video", distinct=True)),
+            )
+        )
+    )
+    return JsonResponse(get_serialized_channels(request, channels), safe=False)
+
+
+def get_channel_tabs_for_navbar(request: WSGIRequest) -> JsonResponse:
+    """
+    Get the channel tabs for the navbar.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
+    only_name = request.GET.get("only-name", "false")
+    channel_tabs = AdditionalChannelTab.objects.all().prefetch_related(
+        Prefetch(
+            "channel_set",
+            queryset=Channel.objects.filter(site=get_current_site(request))
+            .distinct()
+            .annotate(video_count=Count("video", distinct=True)),
+        )
+    )
+    channel_tabs_json_format = {}
+    for channel_tab in channel_tabs:
+        channel_tabs_json_format[channel_tab.pk] = {
+            "name": channel_tab.name,
+            "channels": get_serialized_channels(request, channel_tab.channel_set.all()) if only_name == "false" else "",
+        }
+    return JsonResponse(channel_tabs_json_format, safe=False)
 
 
 """
