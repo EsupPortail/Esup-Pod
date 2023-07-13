@@ -1,4 +1,5 @@
 from celery import Celery
+
 try:
     from ..custom import settings_local
 except ImportError:
