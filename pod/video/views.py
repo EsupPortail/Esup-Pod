@@ -2778,6 +2778,9 @@ def get_serialized_channels(request: WSGIRequest, channels: QueryDict) -> dict:
     for channel in channels:
         channels_json_format[channel.pk] = ChannelSerializer(channel, context={'request': request}).data
         channels_json_format[channel.pk]["url"] = reverse('channel-video:channel', kwargs={"slug_c": channel.slug})
+        channels_json_format[channel.pk]["videoCount"] = channel.video_count
+        channels_json_format[channel.pk]["headbandImage"] = channel.headband.file.url if channel.headband else ""
+        channels_json_format[channel.pk]["themes"] = channel.get_all_theme()
     return channels_json_format
 
 
@@ -2836,6 +2839,7 @@ def get_channel_tabs_for_navbar(request: WSGIRequest) -> JsonResponse:
     channel_tabs_json_format = {}
     for channel_tab in channel_tabs:
         channel_tabs_json_format[channel_tab.pk] = {
+            "id": channel_tab.pk,
             "name": channel_tab.name,
             "channels": get_serialized_channels(request, channel_tab.channel_set.all()) if only_name == "false" else "",
         }

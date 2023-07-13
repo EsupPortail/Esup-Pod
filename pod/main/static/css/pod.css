@@ -334,11 +334,11 @@ tr,
 .title-chaine {
   margin-right: .5rem;
   font-weight: 600;
-  flex-direction: row-reverse;
+  flex-direction: row;
 }
 
 .title-chaine>a {
-  margin-right: .5em;
+  margin-left: .5em;
 }
 
 #listeChaines {
