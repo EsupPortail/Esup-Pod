@@ -98,30 +98,6 @@ def context_navbar(request):
         )
     )
 
-    add_channels_tab = AdditionalChannelTab.objects.all().prefetch_related(
-        Prefetch(
-            "channel_set",
-            queryset=Channel.objects.filter(site=get_current_site(request))
-            .distinct()
-            .annotate(video_count=Count("video", distinct=True)),
-        )
-    )
-
-    all_channels = (
-        Channel.objects.all()
-        .filter(site=get_current_site(request))
-        .distinct()
-        .annotate(video_count=Count("video", distinct=True))
-        .prefetch_related(
-            Prefetch(
-                "themes",
-                queryset=Theme.objects.filter(channel__site=get_current_site(request))
-                .distinct()
-                .annotate(video_count=Count("video", distinct=True)),
-            )
-        )
-    )
-
     types = (
         Type.objects.filter(
             sites=get_current_site(request),
@@ -151,8 +127,6 @@ def context_navbar(request):
     )
 
     return {
-        "ALL_CHANNELS": all_channels,
-        "ADD_CHANNELS_TAB": add_channels_tab,
         "CHANNELS": channels,
         "TYPES": types,
         "DISCIPLINES": disciplines,
