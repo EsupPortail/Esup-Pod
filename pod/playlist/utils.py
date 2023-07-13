@@ -133,7 +133,7 @@ def get_public_playlist() -> list:
     Get all public playlists in the application.
 
     Returns:
-        list(:class:`pod.playlist.models.Playlist`): The public playlists list
+        list(:class:`pod.playlist.models.Playlist`): The public playlist list
     """
     return Playlist.objects.filter(visibility="public")
 
@@ -143,7 +143,7 @@ def get_promoted_playlist() -> list:
     Get all promoted playlists in the application.
 
     Returns:
-        list(:class:`pod.playlist.models.Playlist`): The public playlists list
+        list(:class:`pod.playlist.models.Playlist`): The public playlist list
     """
     return Playlist.objects.filter(promoted=True)
 
@@ -329,7 +329,7 @@ def user_can_see_playlist_video(request: WSGIRequest, video: Video) -> bool:
 
 def sort_playlist_list(playlist_list: list, sort_field: str, sort_direction="") -> list:
     """
-    Return playlists list sorted by specific column name and ascending or descending direction.
+    Return playlist list sorted by specific column name and ascending or descending direction.
 
     Args:
         playlist_list (:class:`list(pod.playlist.models.Playlist)`): The list of playlist

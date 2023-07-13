@@ -1,4 +1,3 @@
-
 /**
  * Hide or show the password field. If it is show, it is required.
  *

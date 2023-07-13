@@ -18,6 +18,9 @@ function getUrlForRefresh() {
     return newUrl;
 }
 
+/**
+ * Updates playlist list.
+ */
 function refreshPlaylistsSearch() {
     url = getUrlForRefresh();
     fetch(url, {
@@ -49,7 +52,7 @@ document
         e.preventDefault();
         toggleSortDirection();
         refreshPlaylistsSearch();
-});
+    });
 document.getElementById('sort').addEventListener('change', function (e) {
     refreshPlaylistsSearch();
 });
