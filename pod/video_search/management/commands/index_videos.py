@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 from django.utils import translation
 from pod.video.models import Video
 from django.conf import settings
-from pod.video.views import __VIDEOS__
+from pod.video.context_processors import get_available_videos
 from pod.video_search.utils import index_es, delete_es
 from pod.video_search.utils import delete_index_es, create_index_es
 import time
@@ -34,7 +34,8 @@ class Command(BaseCommand):
             create_index_es()
             time.sleep(10)
             iteration = 0
-            for video in __VIDEOS__:
+            videos = get_available_videos()
+            for video in videos:
                 if iteration % 1000 == 0:
                     time.sleep(10)
                 iteration += 1
