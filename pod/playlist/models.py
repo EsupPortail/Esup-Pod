@@ -15,7 +15,7 @@ class Playlist(models.Model):
     """Playlist model."""
     VISIBILITY_CHOICES = [
         ("public", _("Public")),
-        ("protected", _("Protected")),
+        ("protected", _("Password-protected")),
         ("private", _("Private"))
     ]
     name = models.CharField(
@@ -34,16 +34,16 @@ class Playlist(models.Model):
         verbose_name=_("Password"),
         blank=True,
         default="",
-        help_text=_("Please choose a password if this playlist is protected."),
+        help_text=_("Please choose a password if this playlist is password-protected."),
     )
     visibility = models.CharField(
-        verbose_name=_("Visibility"),
+        verbose_name=_("Right of access"),
         max_length=9,
         choices=VISIBILITY_CHOICES,
         default="private",
         help_text=_(
             '''
-            Please chosse an visibility among 'public', 'protected', 'private'.
+            Please chosse a right of access among 'public', 'password-protected', 'private'.
             '''
         ),
     )
@@ -122,7 +122,7 @@ class Playlist(models.Model):
 
     def clean(self) -> None:
         if self.visibility == "protected" and not self.password:
-            raise ValidationError("Password is required for a protected playlist.")
+            raise ValidationError("Password is required for a password-protected playlist.")
         if self.visibility != "public":
             self.promoted = False
 

@@ -10,6 +10,9 @@ from pod.meeting.forms import AddOwnerWidget
 from .apps import FAVORITE_PLAYLIST_NAME
 from .models import Playlist
 
+general_informations = _('General informations')
+security_informations = _('Security informations')
+
 
 class PlaylistForm(forms.ModelForm):
     """Form to add or edit a playlist."""
@@ -43,7 +46,7 @@ class PlaylistForm(forms.ModelForm):
             attrs={"autocomplete": "off"}
         ),
         required=False,
-        help_text=_("Please choose a password if this playlist is protected."),
+        help_text=_("Please choose a password if this playlist is password-protected."),
     )
     promoted = forms.BooleanField(
         label=_("Promoted"),
@@ -58,7 +61,7 @@ class PlaylistForm(forms.ModelForm):
             "general informations",
             {
                 "legend": f"<i class='bi bi-info-lg'></i>&nbsp;\
-                    {_('General informations')}",
+                    {general_informations}",
                 "fields": ["name", "description", "autoplay"],
             },
         ),
@@ -66,7 +69,7 @@ class PlaylistForm(forms.ModelForm):
             "security informations",
             {
                 "legend": f"<i class='bi bi-shield-lock'></i>&nbsp;\
-                    {_('Security informations')}",
+                    {security_informations}",
                 "fields": ["additional_owners", "visibility", "password", "promoted"],
             },
         ),
@@ -122,7 +125,7 @@ class PlaylistRemoveForm(forms.Form):
 
 
 class PlaylistPasswordForm(forms.Form):
-    """Form to access to a protected playlist."""
+    """Form to access to a password-protected playlist."""
     password = forms.CharField(label=_("Password"), widget=forms.PasswordInput())
 
     def __init__(self, *args, **kwargs):

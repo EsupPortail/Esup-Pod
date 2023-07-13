@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-12 13:51+0000\n"
+"POT-Creation-Date: 2023-07-13 08:46+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -4932,7 +4932,7 @@ msgid "Delete the meeting"
 msgstr ""
 
 #: pod/meeting/templates/meeting/meeting_card.html
-msgid "Acces to this meeting is restricted"
+msgid "Access to this meeting is restricted"
 msgstr ""
 
 #: pod/meeting/templates/meeting/meeting_card.html
@@ -5136,8 +5136,16 @@ msgstr ""
 msgid "Your favorites videos."
 msgstr ""
 
+#: pod/playlist/forms.py
+msgid "General informations"
+msgstr ""
+
+#: pod/playlist/forms.py
+msgid "Security informations"
+msgstr ""
+
 #: pod/playlist/forms.py pod/playlist/models.py
-msgid "Please choose a password if this playlist is protected."
+msgid "Please choose a password if this playlist is password-protected."
 msgstr ""
 
 #: pod/playlist/forms.py pod/playlist/models.py
@@ -5170,7 +5178,8 @@ msgid "Public"
 msgstr ""
 
 #: pod/playlist/models.py
-msgid "Protected"
+#: pod/playlist/templates/playlist/playlist_visibility_icon.html
+msgid "Password-protected"
 msgstr ""
 
 #: pod/playlist/models.py
@@ -5193,14 +5202,14 @@ msgstr ""
 
 #: pod/playlist/models.py pod/playlist/templates/playlist/filter_aside.html
 #: pod/playlist/templates/playlist/playlist-informations-card.html
-msgid "Visibility"
+msgid "Right of access"
 msgstr ""
 
 #: pod/playlist/models.py
 msgid ""
 "\n"
-"            Please chosse an visibility among 'public', 'protected', "
-"'private'.\n"
+"            Please chosse a right of access among 'public', 'password-"
+"protected', 'private'.\n"
 "            "
 msgstr ""
 
@@ -5283,7 +5292,7 @@ msgid "See my private playlists"
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
-msgid "See my protected playlists"
+msgid "See my password-protected playlists"
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
@@ -5428,10 +5437,6 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_sort_select.html
 msgid "Creation date"
-msgstr ""
-
-#: pod/playlist/templates/playlist/playlist_visibility_icon.html
-msgid "Protected with a password"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html

@@ -11,7 +11,7 @@
   <div class="filters" id="filters">
     <fieldset class="border-right border-bottom mt-2">
       <legend class="h5">
-        <i class="bi bi-eye"></i>&nbsp;{% trans "Visibility"%}
+        <i class="bi bi-eye"></i>&nbsp;{% trans "Right of access"%}
       </legend>
     </fieldset>
     <div id="filterType">
@@ -22,7 +22,7 @@
         </div>
         <div class="form-check">
             <input onChange="window.location = `{% url 'playlist:list' %}?visibility=protected`;" class="form-check-input" type="radio" name="type" value="protected" id="idprotected_type" {% if request.GET.visibility == "protected" %}checked="true"{% endif %}>
-            <label class="form-check-label" for="idprotected_type">&nbsp;{% trans "See my protected playlists"%}</label>
+            <label class="form-check-label" for="idprotected_type">&nbsp;{% trans "See my password-protected playlists"%}</label>
         </div>
         <div class="form-check">
             <input onChange="window.location = `{% url 'playlist:list' %}?visibility=public`;" class="form-check-input" type="radio" name="type" value="public" id="idpublic_type" {% if request.GET.visibility == "public" %}checked="true"{% endif %}>
@@ -58,7 +58,7 @@
     document.location.href = urlWithoutGetOptions + "?visibility=allmy";
   }
   const visibilityValue = new URL(window.location).searchParams.get("visibility");
-  if (!visibilityValue || !["private", "protected", "additional", "public", "promoted", "allmy", "allpublic", "all"].includes(visibilityValue)) {
+  if (!visibilityValue || !["private", "password-protected", "additional", "public", "promoted", "allmy", "allpublic", "all"].includes(visibilityValue)) {
     redirectToAllPlaylists();
   }
 </script>

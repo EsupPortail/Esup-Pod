@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-12 13:51+0000\n"
+"POT-Creation-Date: 2023-07-13 08:46+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -442,6 +442,20 @@ msgstr ""
 
 #: pod/main/static/js/main.js
 msgid "The file extension not in the allowed extension:"
+msgstr ""
+
+#: pod/playlist/static/playlist/js/add-or-edit.js
+msgid "<b>Public:</b> the playlist can be accessed by anyone."
+msgstr ""
+
+#: pod/playlist/static/playlist/js/add-or-edit.js
+msgid ""
+"<b>Password-protected:</b> the playlist can be accessed by anyone with the "
+"appropriate link and password."
+msgstr ""
+
+#: pod/playlist/static/playlist/js/add-or-edit.js
+msgid "<b>Private:</b> only you have access to this playlist."
 msgstr ""
 
 #: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js

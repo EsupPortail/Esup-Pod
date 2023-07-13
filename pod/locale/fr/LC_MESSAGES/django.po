@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-12 13:51+0000\n"
+"POT-Creation-Date: 2023-07-13 08:46+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -3157,7 +3157,7 @@ msgstr "Intégrer/Partager"
 #: pod/live/templates/live/event-form.html
 msgid "This event is protected by password, please fill in and click send."
 msgstr ""
-"Cet évènement est protégée par un mot de passe, veuillez remplir le "
+"Cet évènement est protégé par un mot de passe, veuillez remplir le "
 "formulaire et cliquez sur envoyer."
 
 #: pod/live/templates/live/event-form.html
@@ -5208,7 +5208,7 @@ msgid "Delete the meeting"
 msgstr "Supprimer la réunion"
 
 #: pod/meeting/templates/meeting/meeting_card.html
-msgid "Acces to this meeting is restricted"
+msgid "Access to this meeting is restricted"
 msgstr "L’accès à cette réunion est restreint"
 
 #: pod/meeting/templates/meeting/meeting_card.html
@@ -5443,9 +5443,19 @@ msgstr "Listes de lecture"
 msgid "Your favorites videos."
 msgstr "Vos vidéos favorites."
 
+#: pod/playlist/forms.py
+msgid "General informations"
+msgstr "Informations générales"
+
+#: pod/playlist/forms.py
+msgid "Security informations"
+msgstr "Informations de sécurité"
+
 #: pod/playlist/forms.py pod/playlist/models.py
-msgid "Please choose a password if this playlist is protected."
-msgstr "Veuillez choisir un mot de passe si cette playlist est protégée."
+msgid "Please choose a password if this playlist is password-protected."
+msgstr ""
+"Veuillez choisir un mot de passe si cette playlist est protégée par un mot "
+"de passe."
 
 #: pod/playlist/forms.py pod/playlist/models.py
 msgid "Promoted"
@@ -5458,12 +5468,15 @@ msgid ""
 "your playlist will still be accessible to everyone.<br>For general use, we "
 "recommend that you leave this setting disabled."
 msgstr ""
-"En sélectionnant ce paramètre, votre liste de lecture sera mise en avant dans la page "
-"listant les listes de lecture publiques promues. En revanche, si ce paramètre est désactivé, "
-"votre liste de lecture restera tout de même accessible par tous.<br>Pour une utilisation générale, il "
-"est conseillé de laisser ce paramètre désactivé."
+"En sélectionnant ce paramètre, votre liste de lecture sera mise en avant "
+"dans la page listant les listes de lecture publiques promues. En revanche, "
+"si ce paramètre est désactivé, votre liste de lecture restera tout de même "
+"accessible par tous.<br>Pour une utilisation générale, il est conseillé de "
+"laisser ce paramètre désactivé."
 
 #: pod/playlist/forms.py
+#, fuzzy, python-brace-format
+#| msgid "You cannot create a playlist named \"{FAVORITE_PLAYLIST_NAME}\""
 msgid "You cannot create a playlist named \"{FAVORITE_PLAYLIST_NAME}\""
 msgstr "Vous ne pouvez créer une liste de lecture nommée \"Favoris\""
 
@@ -5480,13 +5493,14 @@ msgid "Public"
 msgstr "Public"
 
 #: pod/playlist/models.py
-msgid "Protected"
-msgstr "Protégée"
+#: pod/playlist/templates/playlist/playlist_visibility_icon.html
+msgid "Password-protected"
+msgstr "Protégé par un mot de passe"
 
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Private"
-msgstr "Privée"
+msgstr "Privé"
 
 #: pod/playlist/models.py pod/playlist/tests/test_models.py
 #: pod/playlist/views.py pod/video/templates/videos/video.html
@@ -5503,19 +5517,19 @@ msgstr "Veuillez choisir une description. Celle-ci est vide par défaut."
 
 #: pod/playlist/models.py pod/playlist/templates/playlist/filter_aside.html
 #: pod/playlist/templates/playlist/playlist-informations-card.html
-msgid "Visibility"
-msgstr "Visibilité"
+msgid "Right of access"
+msgstr "Droit d'accès"
 
 #: pod/playlist/models.py
 msgid ""
 "\n"
-"            Please chosse an visibility among 'public', 'protected', "
-"'private'.\n"
+"            Please chosse a right of access among 'public', 'password-"
+"protected', 'private'.\n"
 "            "
 msgstr ""
 "\n"
-"            Veuillez choisir une visibilité entre 'publique', 'protégée', "
-"'privée'.\n"
+"            Veuillez choisir un droit d'accès entre 'public', 'protégée "
+"par un mot de passe', 'privée'.\n"
 "            "
 
 #: pod/playlist/models.py pod/video/templates/videos/video-info.html
@@ -5599,12 +5613,12 @@ msgid "See my private playlists"
 msgstr "Voir mes listes de lecture privées"
 
 #: pod/playlist/templates/playlist/filter_aside.html
-msgid "See my protected playlists"
-msgstr "Voir mes listes de lecture protégées"
+msgid "See my password-protected playlists"
+msgstr "Voir mes listes de lecture protégées par un mot de passe"
 
 #: pod/playlist/templates/playlist/filter_aside.html
 msgid "See my public playlists"
-msgstr "Voir mes listes de lecture publique"
+msgstr "Voir mes listes de lecture publiques"
 
 #: pod/playlist/templates/playlist/filter_aside.html
 msgid "See my playlists"
@@ -5750,12 +5764,8 @@ msgid "Creation date"
 msgstr "Date de création"
 
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
-msgid "Protected with a password"
-msgstr "Protégée par un mot de passe"
-
-#: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Public and promoted"
-msgstr "Publique et promue"
+msgstr "Public et promu"
 
 #: pod/playlist/templates/playlist/playlists.html
 #, python-format
@@ -8273,14 +8283,8 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
-#~ msgid "General informations"
-#~ msgstr "Informations générales"
-
-#~ msgid "Security informations"
-#~ msgstr "Informations de sécurité"
-
-#~ msgid "Favorite video"
-#~ msgstr "Vidéo favorite"
+#~ msgid "Password-protected playlist"
+#~ msgstr "Liste de lecture protégée par un mot de passe"
 
 #~ msgid "Sort by descending rank before you can rearrange"
 #~ msgstr "Trier par ordre décroissant avant de pouvoir réorganiser"

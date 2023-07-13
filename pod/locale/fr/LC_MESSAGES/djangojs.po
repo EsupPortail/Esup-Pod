@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-12 13:51+0000\n"
+"POT-Creation-Date: 2023-07-13 08:46+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -466,6 +466,22 @@ msgid "The file extension not in the allowed extension:"
 msgstr ""
 "Cette extension de fichier n’est pas présente dans les extensions "
 "autorisées :"
+
+#: pod/playlist/static/playlist/js/add-or-edit.js
+msgid "<b>Public:</b> the playlist can be accessed by anyone."
+msgstr "<b>Public :</b> la liste de lecture est accessible par tous."
+
+#: pod/playlist/static/playlist/js/add-or-edit.js
+msgid ""
+"<b>Password-protected:</b> the playlist can be accessed by anyone with the "
+"appropriate link and password."
+msgstr ""
+"<b>Protégé par un mot de passe :</b> la liste de lecture est accessible à "
+"toute personne disposant du lien et du mot de passe appropriés."
+
+#: pod/playlist/static/playlist/js/add-or-edit.js
+msgid "<b>Private:</b> only you have access to this playlist."
+msgstr "<b>Privé :</b> vous seul avez accès à cette liste de lecture."
 
 #: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js
 #: pod/video/static/js/filter_aside_video_list_refresh.js
