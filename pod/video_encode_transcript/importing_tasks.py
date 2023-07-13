@@ -1,12 +1,14 @@
 from celery import Celery
-
 try:
     from ..custom import settings_local
 except ImportError:
     from .. import settings as settings_local
+import os
 import logging
 
 logger = logging.getLogger(__name__)
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pod.settings")
 
 ENCODING_TRANSCODING_CELERY_BROKER_URL = getattr(
     settings_local, "ENCODING_TRANSCODING_CELERY_BROKER_URL", ""
