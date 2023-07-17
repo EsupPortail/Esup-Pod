@@ -16,6 +16,20 @@ const CHANNELS_PER_BATCH = 10;
 
 
 /**
+ * Set attributes of an HTML element with a two-dimensional array.
+ *
+ * @param {HTMLElement} htmlElement The HTML element.
+ * @param {string[][]} attributeCouples The two-dimensional array.
+ */
+function setAttributesWithTab(htmlElement, attributeCouples) {
+    attributeCouples.forEach(attributeCouple => {
+        htmlElement.setAttribute(attributeCouple[0], attributeCouple[1]);
+    });
+}
+
+
+
+/**
  * Get the channel list thanks to the AJAX request.
  *
  * @returns The AJAX request promise.
@@ -189,15 +203,15 @@ function setChannelThemeCollapseForModal(channelListElement, channel) {
     const themesListElement = document.createElement('ul');
     themesCollapseElement.id = `collapseTheme${channel.id}`;
     themesCollapseElement.classList.add('collapsibleThemes', 'collapse');
-    const attributeCouples2 = [
-        ['aria-labelledby', `channel-title_${channel.id}`],
-        ['data-bs-parent', `#list-channels`],
-        ['data-id', `${channel.id}`],
-        ['aria-controls', `collapseTheme${channel.id}`],
-    ];
-    attributeCouples2.forEach(attributeCouple => {
-        themesCollapseElement.setAttribute(attributeCouple[0], attributeCouple[1]);
-    });
+    setAttributesWithTab(
+        themesCollapseElement,
+        [
+            ['aria-labelledby', `channel-title_${channel.id}`],
+            ['data-bs-parent', `#list-channels`],
+            ['data-id', `${channel.id}`],
+            ['aria-controls', `collapseTheme${channel.id}`],
+        ],
+    );
     themesListElement.classList.add('list-group');
     themesCollapseElement.appendChild(themesListElement);
     channelListElement.appendChild(themesCollapseElement);
@@ -245,15 +259,15 @@ function addThemeInList(listElement, theme) {
 function setChannelThemeButtonForModal(spanElement ,channel) {
     const themesButtonElement = document.createElement('button');
     themesButtonElement.classList.add('btn', 'btn-link', 'collapsed');
-    const attributeCouples = [
-        ['data-bs-toggle', 'collapse'],
-        ['data-bs-target', `#collapseTheme${channel.id}`],
-        ['aria-expanded', 'false'],
-        ['aria-controls', `collapseTheme${channel.id}`],
-    ];
-    attributeCouples.forEach(attributeCouple => {
-        themesButtonElement.setAttribute(attributeCouple[0], attributeCouple[1]);
-    });
+    setAttributesWithTab(
+        themesButtonElement,
+        [
+            ['data-bs-toggle', 'collapse'],
+            ['data-bs-target', `#collapseTheme${channel.id}`],
+            ['aria-expanded', 'false'],
+            ['aria-controls', `collapseTheme${channel.id}`],
+        ],
+    );
     if (channel.themes.length > 1) {
         themesButtonElement.innerHTML = `${channel.themes.length} thèmes <i class="bi bi-chevron-down"></i>`;
     } else {
@@ -382,8 +396,13 @@ burgerMenu.addEventListener('shown.bs.offcanvas', function () {
             const buttonChannelTab = document.createElement('button');
             navChannelTab.classList.add('nav-item');
             buttonChannelTab.classList.add('nav-link');
-            buttonChannelTab.setAttribute('data-bs-toggle', 'modal');
-            buttonChannelTab.setAttribute('data-bs-target', `.chaines-modal-${channelTab.id}`);
+            setAttributesWithTab(
+                buttonChannelTab,
+                [
+                    ['data-bs-toggle', 'modal'],
+                    ['data-bs-target', `.chaines-modal-${channelTab.id}`],
+                ],
+            );
             buttonChannelTab.innerHTML = `<i class="bi bi-play-btn pod-nav-link-icon"></i> ${channelTab.name}`;
             createModalFor(channelTab);
             navChannelTab.appendChild(buttonChannelTab);
