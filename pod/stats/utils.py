@@ -4,8 +4,9 @@ from django.db.models import Sum
 from pod.video.models import ViewCount
 from datetime import date
 from django.core.cache import cache
+from django.conf import settings
 
-CACHE_EXPIRATION = 60  # Durée d'expiration du cache en secondes
+CACHE_EXPIRATION = 60  # Cache expiration time in seconds
 
 
 def get_views_count(v_id, date_filter):
@@ -116,8 +117,10 @@ def get_all_videos_stats(v_id, date_filter=date.today()):
         all_video_stats["all_year"] = str(date_filter.year)
 
         all_video_stats.update(get_views_count(v_id, date_filter))
-        all_video_stats.update(get_playlists_count(v_id, date_filter))
-        all_video_stats.update(get_favorites_count(v_id, date_filter))
+        if getattr(settings, "USE_PLAYLIST", True):
+            all_video_stats.update(get_playlists_count(v_id, date_filter))
+        if getattr(settings, "USE_PLAYLIST", True) and getattr(settings, "USE_FAVORITES", True):
+            all_video_stats.update(get_favorites_count(v_id, date_filter))
 
         cache.set(cache_key, all_video_stats, CACHE_EXPIRATION)
 

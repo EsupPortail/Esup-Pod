@@ -12,7 +12,7 @@
 
 {% block page_extra_head %}
   <link type="text/css" rel="stylesheet" href="{% static 'jqGrid/css/ui.jqgrid-bootstrap5.css' %}?ver={{VERSION}}">
-  <link rel="stylesheet" href="{% static 'css/video_stats_view.css' %}?ver={{VERSION}}">
+  <link rel="stylesheet" href="{% static 'stats/css/video_stats_view.css' %}?ver={{VERSION}}">
 {% endblock page_extra_head %}
 
 {% block content %}
@@ -49,9 +49,10 @@
 
 {% block more_script %} 
   <script src="{% static 'chart.js/dist/chart.umd.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+  <script src="{% static 'stats/js/utils-stats.js' %}?ver={{VERSION}}" charset="utf-8"></script>
   {% if slug %}
-    <script src="{% static 'js/video_stats_view.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+    <script src="{% static 'stats/js/video_stats_view.js' %}?ver={{VERSION}}" charset="utf-8"></script>
   {% else %}
-    <script src="{% static 'js/video_stats_view_global.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+    <script src="{% static 'stats/js/video_stats_view_global.js' %}?ver={{VERSION}}" charset="utf-8"></script>
   {% endif %}
 {% endblock %}

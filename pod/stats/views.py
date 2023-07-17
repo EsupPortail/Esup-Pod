@@ -68,7 +68,7 @@ def video_stats_view(request, video=None):
         and target == "video"
         and request.POST.get("password") == videos[0].password
     ) or (request.method == "GET" and not video and videos):
-        return render(request, "videos/video_stats_view.html", {"title": title})
+        return render(request, "stats/video_stats_view.html", {"title": title})
     else:
         date_filter = request.POST.get("periode", date.today())
         if isinstance(date_filter, str):
@@ -101,7 +101,7 @@ def manage_access_rights_stats_video(request, video, page_title):
         form = VideoPasswordForm()
         return render(
             request,
-            "videos/video_stats_view.html",
+            "stats/video_stats_view.html",
             {"form": form, "title": page_title},
         )
     elif (
@@ -111,7 +111,7 @@ def manage_access_rights_stats_video(request, video, page_title):
     ):
         return render(
             request,
-            "videos/video_stats_view.html",
+            "stats/video_stats_view.html",
             {"title": page_title, "slug": video.slug}
         )
     return HttpResponseNotFound(_("You do not have access rights to this video: %s" % video.slug))
