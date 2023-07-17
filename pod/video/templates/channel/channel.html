@@ -252,7 +252,7 @@
         {% endif %}
     </script>
     <script>
-        var str = get_list(listTheme["channel_" + "{{channel.id}}"], 0, [], tag_type = "li", li_class = "list-group-item", attrs = '', add_link = true, current = "{{theme.slug}}", channel = "");
+        var str = get_list({{ channel.get_all_theme_json | safe }}, 0, [], tag_type = "li", li_class = "list-group-item", attrs = '', add_link = true, current = "{{theme.slug}}", channel = "");
         document.getElementById("ultreeview").innerHTML = str;
         setTimeout(function() {
             const tree_item_info = document.querySelector("#ultreeview li.list-group-item-info");
