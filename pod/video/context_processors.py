@@ -14,7 +14,6 @@ from django.db.models import OuterRef
 
 from datetime import timedelta
 from django.contrib.sites.shortcuts import get_current_site
-from pod.main.models import AdditionalChannelTab
 from pod.video_encode_transcript.models import EncodingVideo
 from pod.video_encode_transcript.models import PlaylistVideo
 from pod.video_encode_transcript.models import EncodingAudio

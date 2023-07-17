@@ -1516,7 +1516,7 @@ class ChannelJsonResponseViews(TestCase):
         )
         self.assertEqual(
             response.content,
-            b'{"1": {"id": 1, "url": "/first-channel/", "title": "First channel", "description": "", "headband": null, "color": null, "style": null, "owners": ["http://testserver/rest/users/1/"], "users": [], "visible": true, "themes": [], "site": "http://testserver/rest/sites/1/", "videoCount": 1, "headbandImage": ""}}',
+            b'{"channels": {"1": {"id": 1, "url": "/first-channel/", "title": "First channel", "description": "", "headband": null, "color": null, "style": null, "owners": ["http://testserver/rest/users/1/"], "users": [], "visible": true, "themes": [], "site": "http://testserver/rest/sites/1/", "videoCount": 1, "headbandImage": ""}}, "currentPage": 1, "totalPages": 1, "count": 1}',
             "[test_get_channels_for_navbar] Test if the response content is correct."
         )
         print(" ---> test_get_channels_for_navbar : OK!")
@@ -1534,6 +1534,7 @@ class ChannelJsonResponseViews(TestCase):
             JsonResponse,
             "[test_get_channel_tabs_for_navbar] Test if the response is instance of JsonResponse.",
         )
+        print('ICI\n', response.content)
         self.assertEqual(
             response.content,
             b'{"1": {"id": 1, "name": "Simple addional channel tab", "channels": {"2": {"id": 2, "url": "/second-channel/", "title": "Second channel", "description": "", "headband": null, "color": null, "style": null, "owners": ["http://testserver/rest/users/1/"], "users": [], "visible": true, "themes": [], "site": "http://testserver/rest/sites/1/", "videoCount": 1, "headbandImage": ""}}}}',

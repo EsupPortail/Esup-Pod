@@ -121,6 +121,7 @@ function convertToModalList(channelsArray) {
  * @returns The HTML modal list element.
  */
 function convertToModalListElement(channel) {
+    const haveThemes = channel.themes.length > 0;
     const channelListElement = document.createElement('li');
     channelListElement.classList.add('list-group-item', 'list-group-item-action');
     channelListElement.setAttribute('data-id', channel.id);
@@ -135,8 +136,8 @@ function convertToModalListElement(channel) {
     linkElement.textContent = channel.title;
     const noWrapSpanElement = document.createElement('span');
     noWrapSpanElement.classList.add('text-nowrap');
-    if (channel.themes.length > 0) {
-        setChannelThemesForModal(noWrapSpanElement ,channel);
+    if (haveThemes) {
+        setChannelThemeButtonForModal(noWrapSpanElement, channel);
     }
     if (channel.videoCount > 1) {
         noWrapSpanElement.innerHTML += `<span class="badge text-bg-primary rounded-pill">${channel.videoCount} ${gettext('videos')}</span>`;
@@ -152,6 +153,9 @@ function convertToModalListElement(channel) {
     childAndParentCouples.forEach(childAndParentCouple => {
         childAndParentCouple[0].appendChild(childAndParentCouple[1]);
     });
+    if (haveThemes) {
+        setChannelThemeCollapseForModal(channelListElement, channel);
+    }
     return channelListElement;
 }
 
@@ -174,21 +178,88 @@ function setImageForModal(dFlexSpanElement, channel) {
 
 
 /**
- * Append children to span HTML element. This children are channel theme element.
+ * Set a channel theme collapse for the modal.
+ *
+ * @param {HTMLElement} channelListElement The HTML element channel list.
+ * @param {any} channel The channel element.
+ */
+function setChannelThemeCollapseForModal(channelListElement, channel) {
+    console.log(channel.themes.length);
+    const themesCollapseElement = document.createElement('div');
+    const themesListElement = document.createElement('ul');
+    themesCollapseElement.id = `collapseTheme${channel.id}`;
+    themesCollapseElement.classList.add('collapsibleThemes', 'collapse');
+    const attributeCouples2 = [
+        ['aria-labelledby', `channel-title_${channel.id}`],
+        ['data-bs-parent', `#list-channels`],
+        ['data-id', `${channel.id}`],
+        ['aria-controls', `collapseTheme${channel.id}`],
+    ];
+    attributeCouples2.forEach(attributeCouple => {
+        themesCollapseElement.setAttribute(attributeCouple[0], attributeCouple[1]);
+    });
+    themesListElement.classList.add('list-group');
+    themesCollapseElement.appendChild(themesListElement);
+    channelListElement.appendChild(themesCollapseElement);
+    const channelThemes = channel.themes;
+    channelThemes.forEach(channelTheme => {
+        addThemeInList(themesListElement, channelTheme);
+    });
+}
+
+
+
+/**
+ * Add a theme in a list.
+ *
+ * @param {HTMLElement} listElement The HTML element list.
+ * @param {any} theme The theme.
+ */
+function addThemeInList(listElement, theme) {
+    const themeLiElement = document.createElement('li');
+    const linkThemeElement = document.createElement('a');
+    themeLiElement.classList.add('list-group-item');
+    themeLiElement.style.marginRight = '1em';
+    linkThemeElement.textContent = theme.title;
+    linkThemeElement.setAttribute('href', theme.url);
+    themeLiElement.appendChild(linkThemeElement);
+    if (theme.child.length > 0) {
+        const themesListElement = document.createElement('ul');
+        themesListElement.classList.add('list-group', 'list-group-flush');
+        themeLiElement.appendChild(themesListElement);
+        theme.child.forEach(channelTheme => {
+            addThemeInList(themesListElement, channelTheme);
+        });
+    }
+    listElement.appendChild(themeLiElement);
+}
+
+
+
+/**
+ * Append child to span HTML element. This child is the theme button element.
  *
  * @param {HTMLElement} spanElement The span HTML element.
  * @param {any} channel The channel.
  */
-function setChannelThemesForModal(spanElement ,channel) {
-    const channelThemes = channel.themes;
-    channelThemes.forEach(channelTheme => {
-        const themeSpanElement = document.createElement('a');
-        themeSpanElement.classList.add('badge', 'btn-link', 'text-bg-primary', 'rounded-pill');
-        themeSpanElement.style.marginRight = '1em';
-        themeSpanElement.textContent = channelTheme.title;
-        themeSpanElement.setAttribute('href', channelTheme.url);
-        spanElement.appendChild(themeSpanElement);
+function setChannelThemeButtonForModal(spanElement ,channel) {
+    const themesButtonElement = document.createElement('button');
+    themesButtonElement.classList.add('btn', 'btn-link', 'collapsed');
+    const attributeCouples = [
+        ['data-bs-toggle', 'collapse'],
+        ['data-bs-target', `#collapseTheme${channel.id}`],
+        ['aria-expanded', 'false'],
+        ['aria-controls', `collapseTheme${channel.id}`],
+    ];
+    attributeCouples.forEach(attributeCouple => {
+        themesButtonElement.setAttribute(attributeCouple[0], attributeCouple[1]);
     });
+    if (channel.themes.length > 1) {
+        themesButtonElement.innerHTML = `${channel.themes.length} thèmes <i class="bi bi-chevron-down"></i>`;
+    } else {
+        themesButtonElement.innerHTML = `${channel.themes.length} thème <i class="bi bi-chevron-down"></i>`;
+    }
+    spanElement.appendChild(themesButtonElement);
 }
 
 
