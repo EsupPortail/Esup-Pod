@@ -264,7 +264,7 @@ class TestPlaylistsPageLinkTestCase(TestCase):
 
 
 class TestModalVideoPlaylist(TestCase):
-    """Playlists list modal test case."""
+    """Playlist list modal test case."""
     fixtures = ["initial_data.json"]
 
     def setUp(self) -> None:

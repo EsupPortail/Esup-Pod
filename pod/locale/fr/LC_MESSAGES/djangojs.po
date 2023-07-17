@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-10 13:40+0000\n"
+"POT-Creation-Date: 2023-07-17 07:10+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -467,6 +467,22 @@ msgstr ""
 "Cette extension de fichier n’est pas présente dans les extensions "
 "autorisées :"
 
+#: pod/playlist/static/playlist/js/add-or-edit.js
+msgid "<b>Public:</b> the playlist can be accessed by anyone."
+msgstr "<b>Public :</b> la liste de lecture est accessible par tous."
+
+#: pod/playlist/static/playlist/js/add-or-edit.js
+msgid ""
+"<b>Password-protected:</b> the playlist can be accessed by anyone with the "
+"appropriate link and password."
+msgstr ""
+"<b>Protégé par un mot de passe :</b> la liste de lecture est accessible à "
+"toute personne disposant du lien et du mot de passe appropriés."
+
+#: pod/playlist/static/playlist/js/add-or-edit.js
+msgid "<b>Private:</b> only you have access to this playlist."
+msgstr "<b>Privé :</b> vous seul avez accès à cette liste de lecture."
+
 #: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js
 #: pod/video/static/js/filter_aside_video_list_refresh.js
 msgid "An Error occurred while processing."
@@ -722,6 +738,13 @@ msgid "Favorites"
 msgstr "Favoris"
 
 #: pod/video/static/js/video_stats_view.js
+#: pod/video/static/js/video_stats_view_global.js
+#, fuzzy
+#| msgid "Playlist additions during the day"
+msgid "Playlists addition"
+msgstr "Ajouts dans une liste de lecture durant la journée"
+
+#: pod/video/static/js/video_stats_view.js
 msgid "Date,Views,Favorites"
 msgstr "Date,Vues,Favoris"
 
@@ -731,9 +754,6 @@ msgstr "Années,Vues,Favoris"
 
 #~ msgid "Title"
 #~ msgstr "Titre"
-
-#~ msgid "Playlist additions during the day"
-#~ msgstr "Ajouts dans une liste de lecture durant la journée"
 
 #~ msgid "Playlist additions during the month"
 #~ msgstr "Ajouts dans une liste de lecture durant le mois"

@@ -10,6 +10,9 @@ from pod.meeting.forms import AddOwnerWidget
 from .apps import FAVORITE_PLAYLIST_NAME
 from .models import Playlist
 
+general_informations = _('General informations')
+security_informations = _('Security informations')
+
 
 class PlaylistForm(forms.ModelForm):
     """Form to add or edit a playlist."""
@@ -32,6 +35,7 @@ class PlaylistForm(forms.ModelForm):
         "name",
         "description",
         "visibility",
+        "promoted",
         "password",
         "autoplay",
         "additional_owners",
@@ -42,23 +46,31 @@ class PlaylistForm(forms.ModelForm):
             attrs={"autocomplete": "off"}
         ),
         required=False,
-        help_text=_("Please choose a password if this playlist is protected."),
+        help_text=_("Please choose a password if this playlist is password-protected."),
+    )
+    promoted = forms.BooleanField(
+        label=_("Promoted"),
+        required=False,
+        help_text=_("Selecting this setting causes your playlist to be promoted on the page"
+                    + " listing promoted public playlists. However, if this setting is deactivated,"
+                    + " your playlist will still be accessible to everyone."
+                    + "<br>For general use, we recommend that you leave this setting disabled."),
     )
     fieldsets = [
         (
-            _("general informations"),
+            "general informations",
             {
                 "legend": f"<i class='bi bi-info-lg'></i>&nbsp;\
-                    {_('General informations')}",
+                    {general_informations}",
                 "fields": ["name", "description", "autoplay"],
             },
         ),
         (
-            _("security informations"),
+            "security informations",
             {
                 "legend": f"<i class='bi bi-shield-lock'></i>&nbsp;\
-                    {_('Security informations')}",
-                "fields": ["additional_owners", "visibility", "password"],
+                    {security_informations}",
+                "fields": ["additional_owners", "visibility", "password", "promoted"],
             },
         ),
     ]
@@ -113,8 +125,10 @@ class PlaylistRemoveForm(forms.Form):
 
 
 class PlaylistPasswordForm(forms.Form):
+    """Form to access to a password-protected playlist."""
     password = forms.CharField(label=_("Password"), widget=forms.PasswordInput())
 
     def __init__(self, *args, **kwargs):
+        """Init method."""
         super(PlaylistPasswordForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)

@@ -3,10 +3,17 @@
  * @param {HTMLElement} button - The HTML button element.
  */
 function preventRefreshButton(button, jsonFormat) {
+  const FAVORITE_BUTTON_ID = 'favorite-button';
+  const PLAYLIST_MODAL_ID = 'playlist-list';
   if (button) {
     button.addEventListener('click', function (e) {
       e.preventDefault();
       let url = this.getAttribute('href');
+      if (button.classList.contains('action-btn')) {
+        button.classList.add('disabled');
+        button.style.backgroundColor = 'gray';
+        this.removeAttribute('href');
+      }
       if (jsonFormat) {
         url += '?json=true'
       }
@@ -42,8 +49,19 @@ function preventRefreshButton(button, jsonFormat) {
             const parser = new DOMParser();
             const html = parser.parseFromString(data, 'text/html');
             const updatedButton = html.getElementById(button.id);
+            const favoriteButton = document.getElementById(FAVORITE_BUTTON_ID);
+            const playlistModal = document.getElementById(PLAYLIST_MODAL_ID);
             preventRefreshButton(updatedButton);
             button.replaceWith(updatedButton);
+            if (playlistModal && button.id === FAVORITE_BUTTON_ID) {
+              playlistModal.replaceWith(html.getElementById(PLAYLIST_MODAL_ID));
+              addEventListenerForModal();
+            }
+            if (favoriteButton && button.id !== FAVORITE_BUTTON_ID) {
+              const updatedFavoriteButton = html.getElementById(FAVORITE_BUTTON_ID);
+              preventRefreshButton(updatedFavoriteButton, false);
+              favoriteButton.replaceWith(updatedFavoriteButton);
+            }
           }
         })
         .catch(error => {

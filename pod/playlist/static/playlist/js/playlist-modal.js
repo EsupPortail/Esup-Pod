@@ -1,4 +1,7 @@
-document.addEventListener("DOMContentLoaded", function () {
+/**
+ * Add event listener for the playlist modal in video page.
+ */
+function addEventListenerForModal() {
   const playlists = document.getElementById("playlist-list").children;
   const buttons = [];
   for (let playlist of playlists) {
@@ -6,6 +9,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   for (let button of buttons) {
-    preventRefreshButton(button);
+    preventRefreshButton(button, false);
   }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  addEventListenerForModal();
 });

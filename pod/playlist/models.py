@@ -15,11 +15,11 @@ class Playlist(models.Model):
     """Playlist model."""
     VISIBILITY_CHOICES = [
         ("public", _("Public")),
-        ("protected", _("Protected")),
+        ("protected", _("Password-protected")),
         ("private", _("Private"))
     ]
     name = models.CharField(
-        verbose_name=_("Name"),
+        verbose_name=_("Title"),
         max_length=250,
         default=_("Playlist"),
         help_text=_("Please choose a name between 1 and 250 characters."),
@@ -34,16 +34,16 @@ class Playlist(models.Model):
         verbose_name=_("Password"),
         blank=True,
         default="",
-        help_text=_("Please choose a password if this playlist is protected."),
+        help_text=_("Please choose a password if this playlist is password-protected."),
     )
     visibility = models.CharField(
-        verbose_name=_("Visibility"),
+        verbose_name=_("Right of access"),
         max_length=9,
         choices=VISIBILITY_CHOICES,
         default="private",
         help_text=_(
             '''
-            Please chosse an visibility among 'public', 'protected', 'private'.
+            Please chosse a right of access among 'public', 'password-protected', 'private'.
             '''
         ),
     )
@@ -51,6 +51,14 @@ class Playlist(models.Model):
         verbose_name=_("Autoplay"),
         default=True,
         help_text=_("Please choose if this playlist is an autoplay playlist or not."),
+    )
+    promoted = models.BooleanField(
+        verbose_name=_("Promoted"),
+        default=False,
+        help_text=_("Selecting this setting causes your playlist to be promoted on the page"
+                    + " listing promoted public playlists. However, if this setting is deactivated,"
+                    + " your playlist will still be accessible to everyone."
+                    + "<br>For general use, we recommend that you leave this setting disabled."),
     )
     editable = models.BooleanField(
         verbose_name=_("Editable"),
@@ -114,7 +122,9 @@ class Playlist(models.Model):
 
     def clean(self) -> None:
         if self.visibility == "protected" and not self.password:
-            raise ValidationError("Password is required for a protected playlist.")
+            raise ValidationError("Password is required for a password-protected playlist.")
+        if self.visibility != "public":
+            self.promoted = False
 
     def __str__(self) -> str:
         """Display a playlist as string."""

@@ -57,6 +57,6 @@ def get_playlist_name(playlist: Playlist) -> str:
         str: The favorites playlist name
     """
     if playlist.name == FAVORITE_PLAYLIST_NAME:
-        return _(FAVORITE_PLAYLIST_NAME)
+        return _("Favorites")
     else:
         return playlist.name

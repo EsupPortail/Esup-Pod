@@ -186,3 +186,7 @@ a.player-element:not(.disabled):hover {
 a.player-element.selected {
     background-color: #D1D1D1;
 }
+
+.promoted-icon {
+    color: var(--pod-primary);
+}

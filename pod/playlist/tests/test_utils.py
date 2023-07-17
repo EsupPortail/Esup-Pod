@@ -15,6 +15,7 @@ from pod.playlist.utils import (
     get_playlist,
     get_playlist_list_for_user,
     get_playlists_for_additional_owner,
+    get_promoted_playlist,
     get_public_playlist,
     get_video_list_for_playlist,
     user_add_video_in_playlist,
@@ -211,6 +212,37 @@ class PlaylistTestUtils(TestCase):
 
         self.assertEqual(2, len(get_public_playlist()))
         print(" --->  test_get_public_playlist ok")
+
+    def test_get_promoted_playlist(self) -> None:
+        """Test if test_get_promoted_playlist works correctly."""
+        self.assertEqual(1, len(get_public_playlist()))
+
+        Playlist.objects.create(
+            name="playlist_protected",
+            description="Ma description",
+            visibility="protected",
+            autoplay=True,
+            owner=self.user2
+        )
+        Playlist.objects.create(
+            name="playlist_private",
+            description="Ma description",
+            visibility="private",
+            autoplay=True,
+            owner=self.user
+        )
+
+        Playlist.objects.create(
+            name="playlist_public_2",
+            description="Ma description",
+            visibility="public",
+            autoplay=True,
+            owner=self.user,
+            promoted=True
+        )
+
+        self.assertEqual(1, len(get_promoted_playlist()))
+        print(" --->  test_get_promoted_playlist ok")
 
     def test_get_playlist_list_for_user(self) -> None:
         """Test if test_get_playlist_list_for_user works correctly."""

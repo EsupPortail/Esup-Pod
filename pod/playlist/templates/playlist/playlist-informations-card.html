@@ -11,7 +11,7 @@
       {{ playlist.description }}
     </p>
     <p class="playlist-visibility">
-      <b>{% trans "Visibility" %}</b> : {% include "playlist/playlist_visibility_icon.html" with playlist=playlist %}
+      <b>{% trans "Right of access" %}</b> : {% include "playlist/playlist_visibility_icon.html" with playlist=playlist %}
     </p>
     <p class="playlist-owner">
       <b>{% trans "Playlist owner" %}</b> : <a class="btn btn-link" href="{% url 'videos:videos' %}?owner={{ playlist.owner.username }}">{{ playlist.owner }}</a>

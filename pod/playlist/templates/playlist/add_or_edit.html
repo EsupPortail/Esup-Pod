@@ -34,7 +34,7 @@
             {% for fieldset in form.fieldsets %}
                 {% with options=fieldset|last name=fieldset|first %}
                     <div class="mb-3">
-                        <fieldset class="{{ options.classes }}" id="meeting_form_{{fieldset|first}}_{{forloop.counter}}" >
+                        <fieldset class="{{ options.classes }}" id="playlist-form-{{fieldset|first}}-{{forloop.counter}}" >
                             {% if options.legend %}
                                 <legend>{{ options.legend|safe }}</legend>
                             {% endif %}

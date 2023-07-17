@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-10 13:40+0000\n"
+"POT-Creation-Date: 2023-07-17 07:10+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -878,8 +878,8 @@ msgstr ""
 #: pod/chapter/templates/chapter/list_chapter.html pod/completion/models.py
 #: pod/completion/templates/overlay/list_overlay.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
-#: pod/main/models.py pod/main/views.py pod/video/models.py
-#: pod/video/templates/channel/list_theme.html
+#: pod/main/models.py pod/main/views.py pod/playlist/models.py
+#: pod/video/models.py pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_sort_select.html
 msgid "Title"
 msgstr "Titel"
@@ -2262,7 +2262,6 @@ msgstr ""
 
 #: pod/import_video/templates/import_video/list.html pod/main/forms.py
 #: pod/meeting/forms.py pod/meeting/templates/meeting/internal_recordings.html
-#: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_sort_select.html
 #: pod/podfile/models.py pod/podfile/templates/podfile/home_content.html
 #: pod/video_encode_transcript/models.py
@@ -4283,6 +4282,10 @@ msgid "Channels"
 msgstr ""
 
 #: pod/main/templates/navbar.html
+msgid "Promoted playlists"
+msgstr ""
+
+#: pod/main/templates/navbar.html
 msgid "Some features are unavailable"
 msgstr ""
 
@@ -4929,7 +4932,7 @@ msgid "Delete the meeting"
 msgstr ""
 
 #: pod/meeting/templates/meeting/meeting_card.html
-msgid "Acces to this meeting is restricted"
+msgid "Access to this meeting is restricted"
 msgstr ""
 
 #: pod/meeting/templates/meeting/meeting_card.html
@@ -5133,16 +5136,28 @@ msgstr ""
 msgid "Your favorites videos."
 msgstr ""
 
+#: pod/playlist/forms.py
+msgid "General informations"
+msgstr ""
+
+#: pod/playlist/forms.py
+msgid "Security informations"
+msgstr ""
+
 #: pod/playlist/forms.py pod/playlist/models.py
-msgid "Please choose a password if this playlist is protected."
+msgid "Please choose a password if this playlist is password-protected."
 msgstr ""
 
-#: pod/playlist/forms.py
-msgid "general informations"
+#: pod/playlist/forms.py pod/playlist/models.py
+msgid "Promoted"
 msgstr ""
 
-#: pod/playlist/forms.py
-msgid "security informations"
+#: pod/playlist/forms.py pod/playlist/models.py
+msgid ""
+"Selecting this setting causes your playlist to be promoted on the page "
+"listing promoted public playlists. However, if this setting is deactivated, "
+"your playlist will still be accessible to everyone.<br>For general use, we "
+"recommend that you leave this setting disabled."
 msgstr ""
 
 #: pod/playlist/forms.py
@@ -5154,14 +5169,17 @@ msgstr ""
 msgid "Remove playlist cannot be undone"
 msgstr ""
 
-#: pod/playlist/models.py pod/video/models.py
+#: pod/playlist/models.py
+#: pod/playlist/templates/playlist/playlist_visibility_icon.html
+#: pod/video/models.py
 #: pod/video/templates/videos/video_note_comments_display.html
 #: pod/video/templates/videos/video_note_display.html
 msgid "Public"
 msgstr ""
 
 #: pod/playlist/models.py
-msgid "Protected"
+#: pod/playlist/templates/playlist/playlist_visibility_icon.html
+msgid "Password-protected"
 msgstr ""
 
 #: pod/playlist/models.py
@@ -5184,14 +5202,14 @@ msgstr ""
 
 #: pod/playlist/models.py pod/playlist/templates/playlist/filter_aside.html
 #: pod/playlist/templates/playlist/playlist-informations-card.html
-msgid "Visibility"
+msgid "Right of access"
 msgstr ""
 
 #: pod/playlist/models.py
 msgid ""
 "\n"
-"            Please chosse an visibility among 'public', 'protected', "
-"'private'.\n"
+"            Please chosse a right of access among 'public', 'password-"
+"protected', 'private'.\n"
 "            "
 msgstr ""
 
@@ -5274,7 +5292,7 @@ msgid "See my private playlists"
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
-msgid "See my protected playlists"
+msgid "See my password-protected playlists"
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
@@ -5291,6 +5309,10 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
 msgid "See all public playlists"
+msgstr ""
+
+#: pod/playlist/templates/playlist/filter_aside.html
+msgid "See all promoted playlists"
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
@@ -5418,7 +5440,7 @@ msgid "Creation date"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
-msgid "Protected with a password"
+msgid "Public and promoted"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlists.html
@@ -5454,6 +5476,10 @@ msgstr ""
 #: pod/playlist/templates/playlist/protected-playlist-form.html
 #: pod/video/templates/videos/video-form.html
 msgid "contact its owner"
+msgstr ""
+
+#: pod/playlist/templatetags/favorites_playlist.py
+msgid "Favorites"
 msgstr ""
 
 #: pod/playlist/tests/test_forms.py
@@ -6001,6 +6027,29 @@ msgstr ""
 
 #: pod/recorder/views.py
 msgid "Recorder for Studio not found."
+msgstr ""
+
+#: pod/stats/apps.py
+msgid "Statistics"
+msgstr ""
+
+#: pod/stats/views.py
+msgid "Pod video viewing statistics"
+msgstr ""
+
+#: pod/stats/views.py
+#, python-format
+msgid "Video viewing statistics for %s"
+msgstr ""
+
+#: pod/stats/views.py
+#, python-format
+msgid "The following video does not exist: %s"
+msgstr ""
+
+#: pod/stats/views.py
+#, python-format
+msgid "You do not have access rights to this video: %s"
 msgstr ""
 
 #: pod/urls.py
@@ -7511,35 +7560,6 @@ msgstr ""
 
 #: pod/video/views.py
 msgid "You cannot access to this view."
-msgstr ""
-
-#: pod/video/views.py
-msgid "Pod video viewing statistics"
-msgstr ""
-
-#: pod/video/views.py
-#, python-format
-msgid "Video viewing statistics for %s"
-msgstr ""
-
-#: pod/video/views.py
-#, python-format
-msgid "Video viewing statistics for the channel %s"
-msgstr ""
-
-#: pod/video/views.py
-#, python-format
-msgid "Video viewing statistics for the theme %s"
-msgstr ""
-
-#: pod/video/views.py
-#, python-format
-msgid "You do not have access rights to this video: %s "
-msgstr ""
-
-#: pod/video/views.py
-#, python-format
-msgid "The following video does not exist: %s"
 msgstr ""
 
 #: pod/video/views.py
