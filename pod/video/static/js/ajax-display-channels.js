@@ -8,6 +8,11 @@ const GET_CHANNELS_REQUEST_URL = '/video/get-channels/';
  */
 const GET_CHANNEL_TAGS_REQUEST_URL = '/video/get-channel-tabs/';
 
+/**
+ * Number of channels to load per batch.
+ */
+const CHANNELS_PER_BATCH = 10;
+
 
 
 /**
@@ -15,10 +20,11 @@ const GET_CHANNEL_TAGS_REQUEST_URL = '/video/get-channel-tabs/';
  *
  * @returns The AJAX request promise.
  */
-function getChannelsAjaxRequest() {
+function getChannelsAjaxRequest(page) {
+    const url = `${GET_CHANNELS_REQUEST_URL}?page=${page}`;
     return new Promise(function(resolve, reject) {
         let xhr = new XMLHttpRequest();
-        xhr.open('GET', GET_CHANNELS_REQUEST_URL, true);
+        xhr.open('GET', url, true);
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
@@ -70,12 +76,12 @@ function getChannelTabsAjaxRequest(nameOnly) {
  * @param {HTMLElement} modalContentElement The HTML element of the modal.
  * @param {Array} channelsArray The channel list.
  */
-function setModalTitle(modalContentElement, channelsArray) {
+function setModalTitle(modalContentElement, channelsCount) {
     const modalTitleElement = modalContentElement.querySelector('.modal-title');
-    if (channelsArray.length > 1) {
-        modalTitleElement.innerHTML = `<i class="bi bi-play-btn"></i>&nbsp; ${channelsArray.length} ${gettext('Channels')}`;
+    if (channelsCount > 1) {
+        modalTitleElement.innerHTML = `<i class="bi bi-play-btn"></i>&nbsp; ${channelsCount} ${gettext('Channels')}`;
     } else {
-        modalTitleElement.innerHTML = `<i class="bi bi-play-btn"></i>&nbsp; ${channelsArray.length} ${gettext('Channel')}`;
+        modalTitleElement.innerHTML = `<i class="bi bi-play-btn"></i>&nbsp; ${channelsCount} ${gettext('Channel')}`;
     }
 }
 
@@ -233,7 +239,7 @@ function createModalFor(channelTab) {
         getChannelTabsAjaxRequest()
             .then(function (channelTabs) {
                 let channelsArray = Object.values(channelTabs[channelTab.id].channels);
-                setModalTitle(modalContentElement, channelsArray);
+                setModalTitle(modalContentElement, channelsArray.length);
                 modalContentElement.querySelector('.modal-body').innerHTML = concertToModalList(channelsArray).innerHTML;
                 console.log(modalContentElement);
             })
@@ -246,19 +252,50 @@ function createModalFor(channelTab) {
 
 
 const channelModal = document.querySelector('.chaines-modal');
+let allChannelsLoaded = false;
 channelModal.addEventListener('shown.bs.modal', function () {
     const modalContentElement = this.querySelector('.modal-content');
-    getChannelsAjaxRequest()
-        .then(function (channels) {
-            let channelsArray = Object.values(channels);
-            setModalTitle(modalContentElement, channelsArray);
-            modalContentElement.querySelector('.modal-body').innerHTML = concertToModalList(channelsArray).innerHTML;
-            console.log(modalContentElement);
-            console.log(channels);
-        })
-        .catch(function (error) {
-            console.error(error);
-        });
+    let currentPage = 1;
+
+    function loadNextBatchOfChannels() {
+        getChannelsAjaxRequest(currentPage)
+            .then(function (channels) {
+            let channelsArray = Object.values(channels['channels']);
+            if (currentPage <= channels['totalPages']) {
+                channelsArray.forEach(channel => {
+                    modalContentElement.querySelector('.clist-group').appendChild(concertToModalListElement(channel));
+                });
+                currentPage++;
+                loadNextBatchOfChannels();
+            } else {
+                allChannelsLoaded = true;
+            }
+            })
+            .catch(function (error) {
+                console.error(error);
+            });
+    }
+
+
+    console.log(allChannelsLoaded);
+    if (allChannelsLoaded === false) {
+        getChannelsAjaxRequest()
+            .then(function (channels) {
+                let channelsArray = Object.values(channels['channels']);
+                setModalTitle(modalContentElement, channels['count']);
+                modalContentElement.querySelector('.modal-body').appendChild(concertToModalList(channelsArray));
+                modalContentElement.querySelector('.modal-body').querySelector('.text-center').remove();
+                if (channels['count'] > CHANNELS_PER_BATCH) {
+                    currentPage++;
+                    loadNextBatchOfChannels();
+                }
+                console.log(modalContentElement);
+                console.log(channels);
+            })
+            .catch(function (error) {
+                console.error(error);
+            });
+    }
 });
 
 const burgerMenu = document.getElementById('pod-navbar__menu');

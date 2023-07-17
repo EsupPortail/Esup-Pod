@@ -2794,6 +2794,7 @@ def get_channels_for_navbar(request: WSGIRequest) -> JsonResponse:
     Returns:
         ::class::`django.http.JsonResponse`: The JSON response.
     """
+    page_number = request.GET.get("page", 1)
     channels = (
         Channel.objects.filter(
             visible=True,
@@ -2813,8 +2814,16 @@ def get_channels_for_navbar(request: WSGIRequest) -> JsonResponse:
                 .annotate(video_count=Count("video", distinct=True)),
             )
         )
+        .order_by('title')
     )
-    return JsonResponse(get_serialized_channels(request, channels), safe=False)
+    paginator = Paginator(channels, 10)
+    page_obj = paginator.get_page(page_number)
+    response = {}
+    response["channels"] = get_serialized_channels(request, page_obj.object_list)
+    response["currentPage"] = page_obj.number
+    response["totalPages"] = paginator.num_pages
+    response["count"] = len(channels)
+    return JsonResponse(response, safe=False)
 
 
 def get_channel_tabs_for_navbar(request: WSGIRequest) -> JsonResponse:
