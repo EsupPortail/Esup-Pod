@@ -94,13 +94,13 @@ function setModalTitle(modalContentElement, channelsCount) {
  *
  * @returns The HTML modal list.
  */
-function concertToModalList(channelsArray) {
+function convertToModalList(channelsArray) {
     const channelListGroupElement = document.createElement('ul');
     if (channelsArray.length > 0) {
         channelListGroupElement.classList.add('clist-group', 'list-group-flush', 'p-0');
         channelListGroupElement.id = 'list-channels';
         channelsArray.forEach(channel => {
-            channelListGroupElement.appendChild(concertToModalListElement(channel));
+            channelListGroupElement.appendChild(convertToModalListElement(channel));
         });
     } else {
         const channelListElement = document.createElement('li');
@@ -120,7 +120,7 @@ function concertToModalList(channelsArray) {
  *
  * @returns The HTML modal list element.
  */
-function concertToModalListElement(channel) {
+function convertToModalListElement(channel) {
     const channelListElement = document.createElement('li');
     channelListElement.classList.add('list-group-item', 'list-group-item-action');
     channelListElement.setAttribute('data-id', channel.id);
@@ -240,7 +240,7 @@ function createModalFor(channelTab) {
             .then(function (channelTabs) {
                 let channelsArray = Object.values(channelTabs[channelTab.id].channels);
                 setModalTitle(modalContentElement, channelsArray.length);
-                modalContentElement.querySelector('.modal-body').innerHTML = concertToModalList(channelsArray).innerHTML;
+                modalContentElement.querySelector('.modal-body').innerHTML = convertToModalList(channelsArray).innerHTML;
                 console.log(modalContentElement);
             })
             .catch(function (error) {
@@ -263,7 +263,7 @@ channelModal.addEventListener('shown.bs.modal', function () {
             let channelsArray = Object.values(channels['channels']);
             if (currentPage <= channels['totalPages']) {
                 channelsArray.forEach(channel => {
-                    modalContentElement.querySelector('.clist-group').appendChild(concertToModalListElement(channel));
+                    modalContentElement.querySelector('.clist-group').appendChild(convertToModalListElement(channel));
                 });
                 currentPage++;
                 loadNextBatchOfChannels();
@@ -283,7 +283,7 @@ channelModal.addEventListener('shown.bs.modal', function () {
             .then(function (channels) {
                 let channelsArray = Object.values(channels['channels']);
                 setModalTitle(modalContentElement, channels['count']);
-                modalContentElement.querySelector('.modal-body').appendChild(concertToModalList(channelsArray));
+                modalContentElement.querySelector('.modal-body').appendChild(convertToModalList(channelsArray));
                 modalContentElement.querySelector('.modal-body').querySelector('.text-center').remove();
                 if (channels['count'] > CHANNELS_PER_BATCH) {
                     currentPage++;
