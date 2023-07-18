@@ -1536,10 +1536,41 @@ class ChannelJsonResponseViews(TestCase):
             JsonResponse,
             "[test_get_channel_tabs_for_navbar] Test if the response is instance of JsonResponse.",
         )
-        print('ICI\n', response.content)
         self.assertEqual(
             response.content,
             b'{"1": {"id": 1, "name": "Simple addional channel tab", "channels": {"2": {"id": 2, "url": "/second-channel/", "title": "Second channel", "description": "", "headband": null, "color": null, "style": null, "owners": ["http://testserver/rest/users/1/"], "users": [], "visible": true, "themes": [], "site": "http://testserver/rest/sites/1/", "videoCount": 1, "headbandImage": ""}}}}',
             "[test_get_channel_tabs_for_navbar] Test if the response content is correct."
         )
         print(" ---> test_get_channel_tabs_for_navbar : OK!")
+
+    @override_settings(HIDE_CHANNEL_TAB=False)
+    def test_get_channels_for_specific_channel_tab(self):
+        """Test if the get channels request for a specific channel tab works correctly."""
+        response = self.client.get(f"{reverse('video:get-channels-for-specific-channel-tab')}?page=1&id=1")
+        self.assertEqual(
+            response.status_code,
+            200,
+            "[get_channels_for_specific_channel_tab] Test if the status code is 200.",
+        )
+        self.assertIsInstance(
+            response,
+            JsonResponse,
+            "[get_channels_for_specific_channel_tab] Test if the response is instance of JsonResponse.",
+        )
+        self.assertEqual(
+            response.content,
+            b'{"channels": {"2": {"id": 2, "url": "/second-channel/", "title": "Second channel", "description": "", "headband": null, "color": null, "style": null, "owners": ["http://testserver/rest/users/1/"], "users": [], "visible": true, "themes": [], "site": "http://testserver/rest/sites/1/", "videoCount": 1, "headbandImage": ""}}, "currentPage": 1, "totalPages": 1, "count": 1}',
+            "[get_channels_for_specific_channel_tab] Test if the response content is correct."
+        )
+        print(" ---> test_get_channels_for_specific_channel_tab : OK!")
+
+    @override_settings(HIDE_CHANNEL_TAB=False)
+    def test_get_channels_for_specific_channel_tab_404(self):
+        """Test if the get channels request for a specific channel tab works correctly without GET options."""
+        response = self.client.get(f"{reverse('video:get-channels-for-specific-channel-tab')}")
+        self.assertEqual(
+            response.status_code,
+            404,
+            "[test_get_channels_for_specific_channel_tab_404] Test if the status code is 200.",
+        )
+        print(" ---> test_get_channels_for_specific_channel_tab_404 : OK!")
