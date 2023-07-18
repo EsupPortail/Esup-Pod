@@ -1501,6 +1501,7 @@ class ChannelJsonResponseViews(TestCase):
         self.video.channel.add(self.first_channel)
         self.video.channel.add(self.second_channel)
 
+    @override_settings(HIDE_CHANNEL_TAB=False)
     def test_get_channels_for_navbar(self):
         """Test if the get channels request for the navbar works correctly."""
         response = self.client.get(reverse("video:get-channels"))
@@ -1521,6 +1522,7 @@ class ChannelJsonResponseViews(TestCase):
         )
         print(" ---> test_get_channels_for_navbar : OK!")
 
+    @override_settings(HIDE_CHANNEL_TAB=False)
     def test_get_channel_tabs_for_navbar(self):
         """Test if the get channel tabs request for the navbar works correctly."""
         response = self.client.get(reverse("video:get-channel-tabs"))
