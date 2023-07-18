@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-13 08:46+0000\n"
+"POT-Creation-Date: 2023-07-18 11:54+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -5508,8 +5508,8 @@ msgid "Playlist"
 msgstr "Liste de lecture"
 
 #: pod/playlist/models.py
-msgid "Please choose a name between 1 and 250 characters."
-msgstr "Veuillez entrer un nom entre 2 et 200 caractères."
+msgid "Please choose a title between 1 and 250 characters."
+msgstr "Veuillez entrer un titre contenant entre 2 et 100 caractères."
 
 #: pod/playlist/models.py
 msgid "Please choose a description. This description is empty by default."
@@ -5528,8 +5528,8 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"            Veuillez choisir un droit d'accès entre 'public', 'protégée "
-"par un mot de passe', 'privée'.\n"
+"            Veuillez choisir un droit d'accès entre 'public', 'protégée par "
+"un mot de passe', 'privée'.\n"
 "            "
 
 #: pod/playlist/models.py pod/video/templates/videos/video-info.html
