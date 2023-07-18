@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-05 15:50+0200\n"
+"POT-Creation-Date: 2023-07-18 12:12+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2484,8 +2484,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -4450,34 +4450,6 @@ msgid "Log out"
 msgstr "Uitloggen"
 
 #: pod/main/templates/navbar_collapse.html
-#, python-format
-msgid "%(counter)s Channel"
-msgid_plural "%(counter)s Channels"
-msgstr[0] ""
-msgstr[1] ""
-
-#: pod/main/templates/navbar_collapse.html
-#, python-format
-msgid "%(counter)s Theme"
-msgid_plural "%(counter)s Themes"
-msgstr[0] ""
-msgstr[1] ""
-
-#: pod/main/templates/navbar_collapse.html
-#: pod/playlist/templates/playlist/playlist_list.html
-#: pod/playlist/templates/playlist/playlist_video_list.html
-#: pod/video/templates/channel/channel.html
-#, python-format
-msgid "%(counter)s video"
-msgid_plural "%(counter)s videos"
-msgstr[0] ""
-msgstr[1] ""
-
-#: pod/main/templates/navbar_collapse.html
-msgid "No channels found"
-msgstr ""
-
-#: pod/main/templates/navbar_collapse.html
 msgid "Types of videos"
 msgstr ""
 
@@ -5246,8 +5218,8 @@ msgstr ""
 
 #: pod/playlist/templates/my_playlists.html
 msgid ""
-"You have not created any playlists yet, please use the \"Add a new "
-"playlist\" button to add one."
+"You have not created any playlists yet, please use the \"Add a new playlist"
+"\" button to add one."
 msgstr ""
 
 #: pod/playlist/templates/my_playlists.html
@@ -5319,6 +5291,15 @@ msgstr ""
 #: pod/playlist/templates/playlist/playlist_list.html
 msgid "This playlist is only visible by you."
 msgstr ""
+
+#: pod/playlist/templates/playlist/playlist_list.html
+#: pod/playlist/templates/playlist/playlist_video_list.html
+#: pod/video/templates/channel/channel.html
+#, python-format
+msgid "%(counter)s video"
+msgid_plural "%(counter)s videos"
+msgstr[0] ""
+msgstr[1] ""
 
 #: pod/playlist/templates/playlist/playlist_list.html
 msgid "Launch"
@@ -5836,8 +5817,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
