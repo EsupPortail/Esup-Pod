@@ -19,7 +19,6 @@ const GET_CHANNEL_TAGS_REQUEST_URL = '/video/get-channel-tabs/';
 const CHANNELS_PER_BATCH = 10;
 
 
-
 /**
  * Set attributes of an HTML element with a two-dimensional array.
  *
@@ -33,9 +32,10 @@ function setAttributesWithTab(htmlElement, attributeCouples) {
 }
 
 
-
 /**
  * Get the channel list thanks to the AJAX request.
+ *
+ * @param {*} page The page.
  *
  * @returns The AJAX request promise.
  */
@@ -58,7 +58,14 @@ function getChannelsAjaxRequest(page) {
 }
 
 
-
+/**
+ * Get the channel list for a specific channel tab thanks to the AJAX request.
+ *
+ * @param {*} page The page.
+ * @param {*} id The channel tab identifier.
+ *
+ * @returns The AJAX request promise.
+ */
 function getChannelsForSpecificChannelTabs(page, id) {
     const url = `${GET_CHANNELS_FOR_SPECIFIC_CHANNEL_TAB_REQUEST_URL}?page=${page}&id=${id}`;
     return new Promise(function(resolve, reject) {
@@ -76,7 +83,6 @@ function getChannelsForSpecificChannelTabs(page, id) {
         xhr.send();
     });
 }
-
 
 
 /**
@@ -108,7 +114,6 @@ function getChannelTabsAjaxRequest(nameOnly) {
 }
 
 
-
 /**
  * Set the modal title when the user ask to view this modal.
  *
@@ -123,7 +128,6 @@ function setModalTitle(modalContentElement, channelsCount) {
         modalTitleElement.innerHTML = `<i class="bi bi-play-btn"></i>&nbsp; ${channelsCount} ${gettext('Channel')}`;
     }
 }
-
 
 
 /**
@@ -149,7 +153,6 @@ function convertToModalList(channelsArray) {
     }
     return channelListGroupElement;
 }
-
 
 
 /**
@@ -200,7 +203,6 @@ function convertToModalListElement(channel) {
 }
 
 
-
 /**
  * Set the image in the innerHTML of span HTML element.
  *
@@ -212,7 +214,6 @@ function setImageForModal(dFlexSpanElement, channel) {
         dFlexSpanElement.innerHTML += `<img src="${channel.headbandImage}" height="34" class="rounded" alt="" loading="lazy">`;
     }
 }
-
 
 
 /**
@@ -245,7 +246,6 @@ function setChannelThemeCollapseForModal(channelListElement, channel) {
 }
 
 
-
 /**
  * Add a theme in a list.
  *
@@ -270,7 +270,6 @@ function addThemeInList(listElement, theme) {
     }
     listElement.appendChild(themeLiElement);
 }
-
 
 
 /**
@@ -298,7 +297,6 @@ function setChannelThemeButtonForModal(spanElement ,channel) {
     }
     spanElement.appendChild(themesButtonElement);
 }
-
 
 
 /**
@@ -364,7 +362,6 @@ function createModalFor(channelTab) {
         }
     });
 }
-
 
 
 /**

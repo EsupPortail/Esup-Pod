@@ -2855,7 +2855,6 @@ def get_channel_tabs_for_navbar(request: WSGIRequest) -> JsonResponse:
     return JsonResponse(channel_tabs_json_format, safe=False)
 
 
-
 def get_channels_for_specific_channel_tab(request: WSGIRequest) -> JsonResponse:
     page_number = request.GET.get("page", 1)
     channel_tab_id = request.GET.get("id")
