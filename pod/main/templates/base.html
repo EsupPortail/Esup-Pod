@@ -172,7 +172,9 @@
     var urlvideos = "{% url 'videos:videos' %}";
   </script>
   <script src="{% static 'js/main.js' %}?ver={{VERSION}}"></script>
-  <script src="{% static 'js/ajax-display-channels.js' %}?ver={{VERSION}}"></script>
+  {% if HIDE_CHANNEL_TAB == False %}
+    <script src="{% static 'js/ajax-display-channels.js' %}?ver={{VERSION}}"></script>
+  {% endif %}
 
   {% block more_script %}
   {% endblock more_script %}

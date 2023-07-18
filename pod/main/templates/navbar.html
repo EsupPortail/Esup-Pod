@@ -43,14 +43,16 @@
           </li>
         {% endif %}
         {% if HIDE_CHANNEL_TAB == False %}
-        <li class="nav-item" id="nav-channels">
-          <button class="nav-link" data-bs-toggle="modal" data-bs-target=".chaines-modal">
-            <i class="bi bi-play-btn pod-nav-link-icon"></i> {% trans "Channels" %}</button>
-        </li>
-      {% endif %}
-        <span class="progress" style="height: .6em;">
-          <span class="text-bg-primary progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></span>
-        </span>
+          <li class="nav-item" id="nav-channels">
+            <button class="nav-link" data-bs-toggle="modal" data-bs-target=".chaines-modal">
+              <i class="bi bi-play-btn pod-nav-link-icon"></i> {% trans "Channels" %}</button>
+          </li>
+          <li>
+            <span class="progress" style="height: .6em;">
+              <span class="text-bg-primary progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></span>
+            </span>
+          </li>
+        {% endif %}
       </ul>
     </div>
   </div>
