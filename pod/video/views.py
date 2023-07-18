@@ -2855,6 +2855,43 @@ def get_channel_tabs_for_navbar(request: WSGIRequest) -> JsonResponse:
     return JsonResponse(channel_tabs_json_format, safe=False)
 
 
+
+def get_channels_for_specific_channel_tab(request: WSGIRequest) -> JsonResponse:
+    page_number = request.GET.get("page", 1)
+    channel_tab_id = request.GET.get("id")
+    if not channel_tab_id:
+        return HttpResponseNotFound()
+    channels = (
+        Channel.objects.filter(
+            visible=True,
+            video__is_draft=False,
+            add_channels_tab=channel_tab_id,
+            site=get_current_site(request),
+        )
+        .distinct()
+        .annotate(video_count=Count("video", distinct=True))
+        .prefetch_related(
+            Prefetch(
+                "themes",
+                queryset=Theme.objects.filter(
+                    parentId=None, channel__site=get_current_site(request)
+                )
+                .distinct()
+                .annotate(video_count=Count("video", distinct=True)),
+            )
+        )
+        .order_by('title')
+    )
+    paginator = Paginator(channels, 10)
+    page_obj = paginator.get_page(page_number)
+    response = {}
+    response["channels"] = get_serialized_channels(request, page_obj.object_list)
+    response["currentPage"] = page_obj.number
+    response["totalPages"] = paginator.num_pages
+    response["count"] = len(channels)
+    return JsonResponse(response, safe=False)
+
+
 """
 # check access to video
 # change template to fix height and breadcrumbs

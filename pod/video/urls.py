@@ -25,6 +25,7 @@ from .views import (
     stats_view,
     video_oembed,
     get_channels_for_navbar,
+    get_channels_for_specific_channel_tab,
     get_channel_tabs_for_navbar,
     get_comments,
     get_children_comment,
@@ -187,6 +188,7 @@ if getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
 urlpatterns += [
     path("get-channels/", get_channels_for_navbar, name="get-channels"),
     path("get-channel-tabs/", get_channel_tabs_for_navbar, name="get-channel-tabs"),
+    path("get-channels-for-specific-channel-tab/", get_channels_for_specific_channel_tab, name="get-channels-for-specific-channel-tab"),
 ]
 
 # DIRECT ACCESS TO A VIDEO

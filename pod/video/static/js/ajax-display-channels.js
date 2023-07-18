@@ -4,6 +4,11 @@
 const GET_CHANNELS_REQUEST_URL = '/video/get-channels/';
 
 /**
+ * URL to send a request to get the channel list for a specific channel tab.
+ */
+const GET_CHANNELS_FOR_SPECIFIC_CHANNEL_TAB_REQUEST_URL = '/video/get-channels-for-specific-channel-tab/';
+
+/**
  * URL to send a request to get the channel tab list.
  */
 const GET_CHANNEL_TAGS_REQUEST_URL = '/video/get-channel-tabs/';
@@ -36,6 +41,26 @@ function setAttributesWithTab(htmlElement, attributeCouples) {
  */
 function getChannelsAjaxRequest(page) {
     const url = `${GET_CHANNELS_REQUEST_URL}?page=${page}`;
+    return new Promise(function(resolve, reject) {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    resolve(JSON.parse(xhr.responseText));
+                } else {
+                    reject(new Error('Request failed with status ' + xhr.status));
+                }
+            }
+        }
+        xhr.send();
+    });
+}
+
+
+
+function getChannelsForSpecificChannelTabs(page, id) {
+    const url = `${GET_CHANNELS_FOR_SPECIFIC_CHANNEL_TAB_REQUEST_URL}?page=${page}&id=${id}`;
     return new Promise(function(resolve, reject) {
         let xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
@@ -197,7 +222,6 @@ function setImageForModal(dFlexSpanElement, channel) {
  * @param {any} channel The channel element.
  */
 function setChannelThemeCollapseForModal(channelListElement, channel) {
-    console.log(channel.themes.length);
     const themesCollapseElement = document.createElement('div');
     const themesListElement = document.createElement('ul');
     themesCollapseElement.id = `collapseTheme${channel.id}`;
@@ -286,14 +310,14 @@ function createModalFor(channelTab) {
     const headerElement = document.getElementsByTagName('header')[0];
     const modalElement = document.createElement('div');
     modalElement.classList.add('modal', 'fade', `chaines-modal-${channelTab.id}`);
-    const attributeCouples = [
-        ['tabindex', '-1'],
-        ['role', 'dialog'],
-        ['aria-hidden', 'true'],
-    ]
-    attributeCouples.forEach(attributeCouple => {
-        modalElement.setAttribute(attributeCouple[0], attributeCouple[1]);
-    });
+    setAttributesWithTab(
+        modalElement,
+        [
+            ['tabindex', '-1'],
+            ['role', 'dialog'],
+            ['aria-hidden', 'true'],
+        ],
+    );
     modalElement.innerHTML = `
         <div class="modal-dialog modal-lg modal-pod-full">
             <div class="modal-content">
@@ -318,19 +342,55 @@ function createModalFor(channelTab) {
         </div>
     `;
     headerElement.appendChild(modalElement);
+    let allChannelsLoaded = false;
     modalElement.addEventListener('shown.bs.modal', function () {
         const modalContentElement = this.querySelector('.modal-content');
-        getChannelTabsAjaxRequest()
-            .then(function (channelTabs) {
-                let channelsArray = Object.values(channelTabs[channelTab.id].channels);
-                setModalTitle(modalContentElement, channelsArray.length);
-                modalContentElement.querySelector('.modal-body').innerHTML = convertToModalList(channelsArray).innerHTML;
-                console.log(modalContentElement);
-            })
-            .catch(function (error) {
-                console.error(error);
-            });
+        let currentPage = 1;
+        if (allChannelsLoaded === false) {
+            getChannelsForSpecificChannelTabs(currentPage, channelTab.id)
+                .then(function (channels) {
+                    let channelsArray = Object.values(channels['channels']);
+                    setModalTitle(modalContentElement, channels['count']);
+                    modalContentElement.querySelector('.modal-body').appendChild(convertToModalList(channelsArray));
+                    modalContentElement.querySelector('.modal-body').querySelector('.text-center').remove();
+                    if (channels['count'] > CHANNELS_PER_BATCH) {
+                        currentPage++;
+                        loadNextBatchOfChannels(modalContentElement, currentPage, allChannelsLoaded, getChannelsForSpecificChannelTabs, channelTab.id);
+                    }
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        }
     });
+}
+
+
+
+/**
+ * Load the next batch of channels.
+ *
+ * @param {HTMLElement} modalContentElement The modal content HTML element.
+ * @param {number} currentPage The current page.
+ * @param {boolean} allChannelsLoaded `true` if all channels loaded, `false` otherwise.
+ */
+function loadNextBatchOfChannels(modalContentElement, currentPage, allChannelsLoaded, fetchDataFunction, channelTabId) {
+    fetchDataFunction(currentPage, channelTabId)
+        .then(function (channels) {
+            let channelsArray = Object.values(channels['channels']);
+            if (currentPage <= channels['totalPages']) {
+                channelsArray.forEach(channel => {
+                    modalContentElement.querySelector('.clist-group').appendChild(convertToModalListElement(channel));
+                });
+                currentPage++;
+                loadNextBatchOfChannels(modalContentElement, currentPage, allChannelsLoaded, fetchDataFunction, channelTabId);
+            } else {
+                allChannelsLoaded = true;
+            }
+        })
+        .catch(function (error) {
+            console.error(error);
+        });
 }
 
 
@@ -340,28 +400,6 @@ let allChannelsLoaded = false;
 channelModal.addEventListener('shown.bs.modal', function () {
     const modalContentElement = this.querySelector('.modal-content');
     let currentPage = 1;
-
-    function loadNextBatchOfChannels() {
-        getChannelsAjaxRequest(currentPage)
-            .then(function (channels) {
-            let channelsArray = Object.values(channels['channels']);
-            if (currentPage <= channels['totalPages']) {
-                channelsArray.forEach(channel => {
-                    modalContentElement.querySelector('.clist-group').appendChild(convertToModalListElement(channel));
-                });
-                currentPage++;
-                loadNextBatchOfChannels();
-            } else {
-                allChannelsLoaded = true;
-            }
-            })
-            .catch(function (error) {
-                console.error(error);
-            });
-    }
-
-
-    console.log(allChannelsLoaded);
     if (allChannelsLoaded === false) {
         getChannelsAjaxRequest()
             .then(function (channels) {
@@ -371,10 +409,8 @@ channelModal.addEventListener('shown.bs.modal', function () {
                 modalContentElement.querySelector('.modal-body').querySelector('.text-center').remove();
                 if (channels['count'] > CHANNELS_PER_BATCH) {
                     currentPage++;
-                    loadNextBatchOfChannels();
+                    loadNextBatchOfChannels(modalContentElement, currentPage, allChannelsLoaded, getChannelsAjaxRequest);
                 }
-                console.log(modalContentElement);
-                console.log(channels);
             })
             .catch(function (error) {
                 console.error(error);
@@ -389,7 +425,6 @@ burgerMenu.addEventListener('shown.bs.offcanvas', function () {
     .then(function (channelTabs) {
         let channelTabsArray = Object.values(channelTabs);
         burgerMenu.querySelector('.progress').remove();
-        console.log(channelTabs);
         channelTabsArray.forEach(channelTab => {
             const navChannelTab = document.createElement('li');
             const buttonChannelTab = document.createElement('button');
