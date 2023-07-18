@@ -1417,7 +1417,7 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
   > valeur par défaut : `[]`
 
   >> Types de logiciel de serveur de streaming utilisés. <br>
-  >> Actuellement disponible Wowza. Il faut préciser cette valeur pour l’activer `['Wowza', ]` <br>
+  >> Actuellement disponible Wowza et SMP. Il faut préciser cette valeur pour l’activer `['Wowza', 'SMP']` <br>
   >> Si vous utilisez une autre logiciel, <br>
   >> il faut développer une interface dans `pod/live/pilotingInterface.py` <br>
 

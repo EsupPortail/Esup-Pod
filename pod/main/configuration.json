@@ -915,7 +915,7 @@
                                 ],
                                 "fr": [
                                     "Types de logiciel de serveur de streaming utilisés.",
-                                    "Actuellement disponible Wowza. Il faut préciser cette valeur pour l’activer `['Wowza', ]`",
+                                    "Actuellement disponible Wowza et SMP. Il faut préciser cette valeur pour l’activer `['Wowza', 'SMP']`",
                                     "Si vous utilisez une autre logiciel,",
                                     "il faut développer une interface dans `pod/live/pilotingInterface.py`"
                                 ]

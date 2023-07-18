@@ -7,8 +7,9 @@ import json
 
 from .models import ExternalRecording
 from .forms import ExternalRecordingForm
-from .utils import StatelessRecording, download_video_file, check_file_exists
-from .utils import save_video, secure_request_for_upload, parse_remote_file
+from .utils import StatelessRecording, check_file_exists, download_video_file
+from .utils import manage_recording_url, parse_remote_file
+from .utils import save_video, secure_request_for_upload
 from datetime import datetime
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
@@ -734,20 +735,22 @@ def get_stateless_recording(request, data):
 
     # Management of the external recording type
     if data.type == "bigbluebutton":
+        # Manage BBB recording URL, if necessary
+        video_url = manage_recording_url(data.source_url)
         # For BBB, external URL can be the video or presentation playback
-        if data.source_url.find("playback/video") != -1:
+        if video_url.find("playback/video") != -1:
             # Management for standards video URLs with BBB or Scalelite server
-            recording.videoUrl = data.source_url
-        elif data.source_url.find("playback/presentation/2.3") != -1:
+            recording.videoUrl = video_url
+        elif video_url.find("playback/presentation/2.3") != -1:
             # Management for standards presentation URLs with BBB or Scalelite server
             # Add computed video playback
-            recording.videoUrl = data.source_url.replace(
+            recording.videoUrl = video_url.replace(
                 "playback/presentation/2.3", "playback/video"
             )
-            recording.presentationUrl = data.source_url
+            recording.presentationUrl = video_url
         else:
             # Management of other situations, non standards URLs
-            recording.videoUrl = data.source_url
+            recording.videoUrl = video_url
 
         # For old BBB or BBB 2.6+ without video playback
         if check_file_exists(recording.videoUrl) is False:
