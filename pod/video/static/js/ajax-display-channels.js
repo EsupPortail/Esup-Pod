@@ -143,7 +143,7 @@ function convertToModalListElement(channel) {
     dFlexDivElement.classList.add('d-flex', 'justify-content-between', 'align-items-center');
     const dFlexSpanElement = document.createElement('span');
     dFlexSpanElement.classList.add('d-flex', 'align-items-center', 'title-chaine');
-    setImageForModal(dFlexSpanElement, channel);
+    dFlexSpanElement.innerHTML = '<i class="bi bi-play-btn pod-channel__item"></i>';
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', channel.url);
     linkElement.id = `channel-title_${channel.id}`;
@@ -167,6 +167,7 @@ function convertToModalListElement(channel) {
     childAndParentCouples.forEach(childAndParentCouple => {
         childAndParentCouple[0].appendChild(childAndParentCouple[1]);
     });
+    setImageForModal(dFlexSpanElement, channel);
     if (haveThemes) {
         setChannelThemeCollapseForModal(channelListElement, channel);
     }
@@ -183,9 +184,7 @@ function convertToModalListElement(channel) {
  */
 function setImageForModal(dFlexSpanElement, channel) {
     if (channel.headband) {
-        dFlexSpanElement.innerHTML = `<img src="${channel.headbandImage}" width="20" class="rounded" alt="" loading="lazy">`;
-    } else {
-        dFlexSpanElement.innerHTML = '<i class="bi bi-play-btn pod-channel__item"></i>';
+        dFlexSpanElement.innerHTML += `<img src="${channel.headbandImage}" height="34" class="rounded" alt="" loading="lazy">`;
     }
 }
 
