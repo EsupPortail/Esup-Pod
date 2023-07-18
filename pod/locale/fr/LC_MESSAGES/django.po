@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-17 07:10+0000\n"
+"POT-Creation-Date: 2023-07-18 08:42+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -426,7 +426,8 @@ msgstr "Participants"
 
 #: pod/bbb/models.py pod/import_video/models.py pod/live/forms.py
 #: pod/live/models.py pod/meeting/forms.py pod/meeting/models.py
-#: pod/video/templates/videos/video_stats_view.html pod/video_search/forms.py
+#: pod/stats/templates/stats/channel-stats-view.html
+#: pod/stats/templates/stats/video-stats-view.html pod/video_search/forms.py
 msgid "Start date"
 msgstr "Date de début"
 
@@ -435,7 +436,8 @@ msgid "Start date of the live."
 msgstr "Date de début du direct."
 
 #: pod/bbb/models.py pod/live/forms.py pod/live/models.py
-#: pod/video/templates/videos/video_stats_view.html pod/video_search/forms.py
+#: pod/stats/templates/stats/channel-stats-view.html
+#: pod/stats/templates/stats/video-stats-view.html pod/video_search/forms.py
 msgid "End date"
 msgstr "Date de fin"
 
@@ -6404,14 +6406,41 @@ msgstr "Enregistreur studio non trouvé."
 msgid "Statistics"
 msgstr "Statistiques de vues"
 
-#: pod/stats/views.py
-msgid "Pod video viewing statistics"
-msgstr "Statistiques de visualisation des vidéos"
+#: pod/stats/templates/stats/channel-stats-view.html
+#: pod/stats/templates/stats/video-stats-view.html
+msgid "Start year"
+msgstr "Année de début"
+
+#: pod/stats/templates/stats/channel-stats-view.html
+#: pod/stats/templates/stats/video-stats-view.html
+msgid "End year"
+msgstr "Année de fin"
+
+#: pod/stats/templates/stats/channel-stats-view.html
+#: pod/stats/templates/stats/utils/pie-chart.html
+#: pod/stats/templates/stats/video-stats-view.html
+msgid "Export to CSV"
+msgstr "Exporter au format CSV"
+
+#: pod/stats/templates/stats/channel-stats-view.html
+msgid "Breakdown of video status for the channel "
+msgstr "Répartition des statuts des vidéos pour la chaîne "
 
 #: pod/stats/views.py
-#, python-format
-msgid "Video viewing statistics for %s"
-msgstr "Statistiques de visualisation de la vidéo %s"
+msgid "Pod statistics"
+msgstr "Statistiques de Pod"
+
+#: pod/stats/views.py
+msgid "Video statistics for %s"
+msgstr "Statistiques des vidéos pour %s"
+
+#: pod/stats/views.py
+msgid "Video statistics for the theme %s"
+msgstr "Statistiques des vidéos du thème %s"
+
+#: pod/stats/views.py
+msgid "Video statistics for the channel %s"
+msgstr "Statistiques des vidéos de la chaîne %s"
 
 #: pod/stats/views.py
 #, python-format
@@ -7118,9 +7147,12 @@ msgid "Show view statistics for all videos in this theme"
 msgstr "Afficher les statistiques de vue pour toutes les vidéos de ce thème"
 
 #: pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/videos.html
-msgid "Statistics views"
-msgstr "Statistiques de vues"
+msgid "Theme statistics"
+msgstr "Statistiques du thème"
+
+#: pod/video/templates/channel/channel.html
+msgid "Channel statistics"
+msgstr "Statistiques de la chaîne"
 
 #: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/videos.html
@@ -7866,21 +7898,13 @@ msgstr "Télécharger les notes"
 msgid "New note"
 msgstr "Nouvelle note"
 
-#: pod/video/templates/videos/video_stats_view.html
-msgid "Start year"
-msgstr "Année de début"
-
-#: pod/video/templates/videos/video_stats_view.html
-msgid "End year"
-msgstr "Année de fin"
-
-#: pod/video/templates/videos/video_stats_view.html
-msgid "Export to CSV"
-msgstr "Exporter au format CSV"
-
 #: pod/video/templates/videos/videos.html
 msgid "Show view statistics for all videos"
 msgstr "Afficher les statistiques de visualisation de toutes les vidéos"
+
+#: pod/video/templates/videos/videos.html
+msgid "Statistics views"
+msgstr "Statistiques des vues"
 
 #: pod/video/templatetags/video_tags.py
 #, python-format
@@ -8288,14 +8312,11 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
+#~ msgid "Pod video viewing statistics"
+#~ msgstr "Statistiques de visualisation des vidéos"
+
 #~ msgid "Please choose a password if this playlist is protected."
 #~ msgstr "Veuillez choisir un mot de passe si cette playlist est protégée."
-
-#~ msgid "Video viewing statistics for the channel %s"
-#~ msgstr "Statistiques de visualisation des vidéos de la chaîne %s"
-
-#~ msgid "Video viewing statistics for the theme %s"
-#~ msgstr "Statistiques de visualisation des vidéos du thème %s"
 
 #~ msgid "Password-protected playlist"
 #~ msgstr "Liste de lecture protégée par un mot de passe"

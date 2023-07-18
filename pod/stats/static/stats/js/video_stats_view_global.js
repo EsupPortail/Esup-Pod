@@ -63,7 +63,7 @@
       );
       startYearInt++;
     }
-
+    console.log(dataUrl);
     Promise.all(requests)
       .then(function (responses) {
         responses.forEach(function (response) {
@@ -138,6 +138,7 @@
             datasets: datasets,
           },
           options: {
+            responsive: true,
             animations: {
               y: {
                 easing: "easeInOutElastic",

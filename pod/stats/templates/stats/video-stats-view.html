@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block opengraph %}
+  {{ block.super }}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+{% endblock opengraph %}
+
+{% block page_title %}{{ title }}{% endblock page_title %}
+
+{% block page_extra_head %}
+  <link type="text/css" rel="stylesheet" href="{% static 'jqGrid/css/ui.jqgrid-bootstrap5.css' %}?ver={{VERSION}}">
+  <link rel="stylesheet" href="{% static 'stats/css/video_stats_view.css' %}?ver={{VERSION}}">
+{% endblock page_extra_head %}
+
+{% block content %}
+<div class="grid-container container">
+  {% if form %}
+    {% include "videos/video-form.html" %}
+  {% else %}
+    <h1 class="page_title h2">{{ title }}</h1>
+    <div class="form-group row stat-form-group mb-1">
+    {% if slug %}
+      <label for="start-date">{% trans "Start date" %}</label>
+      <input type="date" id="start-date" name="start-date">
+      <label for="end-date">{% trans "End date" %}</label>
+      <input type="date" id="end-date" name="end-date">
+    </div>
+    <div class="table-responsive-md mb-4">
+      <canvas id="dateChart"></canvas>
+    </div>
+    {% else %}
+      <label for="start-year">{% trans "Start year" %}</label>
+      <input type="number" id="start-year" name="start-year">
+      <label for="end-year">{% trans "End year" %}</label>
+      <input type="number" id="end-year" name="end-year">
+    </div>
+    <div class="table-responsive-md mb-4">
+      <canvas id="yearChart"></canvas>
+    </div>
+    {% endif %}
+    <button class="btn btn-primary btn-sm ps-2 pe-2 mb-3 d-flex" id="export-btn" type="button">{% trans "Export to CSV" %}</button>
+    <div id="pager"></div>
+  {% endif %}
+</div>
+{% endblock content %}
+
+{% block more_script %}
+  <script src="{% static 'chart.js/dist/chart.umd.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+  <script src="{% static 'stats/js/utils-stats.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+  {% if slug %}
+    <script src="{% static 'stats/js/video_stats_view.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+  {% else %}
+    <script src="{% static 'stats/js/video_stats_view_global.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+  {% endif %}
+{% endblock %}

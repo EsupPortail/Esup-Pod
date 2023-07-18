@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-17 07:10+0000\n"
+"POT-Creation-Date: 2023-07-18 08:42+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -515,6 +515,34 @@ msgstr ""
 msgid "This folder is empty"
 msgstr ""
 
+#: pod/stats/static/stats/js/video_stats_view.js
+#: pod/stats/static/stats/js/video_stats_view_global.js
+msgid "Views"
+msgstr ""
+
+#: pod/stats/static/stats/js/video_stats_view.js
+#: pod/stats/static/stats/js/video_stats_view_global.js
+msgid "Favorites"
+msgstr ""
+
+#: pod/stats/static/stats/js/video_stats_view.js
+#: pod/stats/static/stats/js/video_stats_view_global.js
+msgid "Playlists addition"
+msgstr ""
+
+#: pod/stats/static/stats/js/video_stats_view.js
+msgid "Date"
+msgstr ""
+
+#: pod/stats/static/stats/js/video_stats_view.js
+#: pod/stats/static/stats/js/video_stats_view_global.js
+msgid "Playlists_addition"
+msgstr ""
+
+#: pod/stats/static/stats/js/video_stats_view_global.js
+msgid "Years"
+msgstr ""
+
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"
 msgstr ""
@@ -699,29 +727,6 @@ msgstr ""
 
 #: pod/video/static/js/video_edit.js
 msgid "Select the general type of the video."
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-#: pod/video/static/js/video_stats_view_global.js
-msgid "Views"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-#: pod/video/static/js/video_stats_view_global.js
-msgid "Favorites"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-#: pod/video/static/js/video_stats_view_global.js
-msgid "Playlists addition"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view.js
-msgid "Date,Views,Favorites"
-msgstr ""
-
-#: pod/video/static/js/video_stats_view_global.js
-msgid "Years,Views,Favorites"
 msgstr ""
 
 #~ msgid "Title"

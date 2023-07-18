@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-17 07:10+0000\n"
+"POT-Creation-Date: 2023-07-18 08:42+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -540,6 +540,34 @@ msgstr "Voir plus"
 msgid "This folder is empty"
 msgstr "Ce dossier est vide"
 
+#: pod/stats/static/stats/js/video_stats_view.js
+#: pod/stats/static/stats/js/video_stats_view_global.js
+msgid "Views"
+msgstr "Vues"
+
+#: pod/stats/static/stats/js/video_stats_view.js
+#: pod/stats/static/stats/js/video_stats_view_global.js
+msgid "Favorites"
+msgstr "Favoris"
+
+#: pod/stats/static/stats/js/video_stats_view.js
+#: pod/stats/static/stats/js/video_stats_view_global.js
+msgid "Playlists addition"
+msgstr "Ajouts dans une liste de lecture"
+
+#: pod/stats/static/stats/js/video_stats_view.js
+msgid "Date"
+msgstr "Date"
+
+#: pod/stats/static/stats/js/video_stats_view.js
+#: pod/stats/static/stats/js/video_stats_view_global.js
+msgid "Playlists_addition"
+msgstr "Ajouts_liste_de_lecture"
+
+#: pod/stats/static/stats/js/video_stats_view_global.js
+msgid "Years"
+msgstr "Années"
+
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"
 msgstr "Aucun élément trouvé"
@@ -727,30 +755,11 @@ msgstr "Créer catégorie"
 msgid "Select the general type of the video."
 msgstr "Sélectionnez le type général de vidéo."
 
-#: pod/video/static/js/video_stats_view.js
-#: pod/video/static/js/video_stats_view_global.js
-msgid "Views"
-msgstr "Vues"
+#~ msgid "Date,Views,Favorites"
+#~ msgstr "Date,Vues,Favoris"
 
-#: pod/video/static/js/video_stats_view.js
-#: pod/video/static/js/video_stats_view_global.js
-msgid "Favorites"
-msgstr "Favoris"
-
-#: pod/video/static/js/video_stats_view.js
-#: pod/video/static/js/video_stats_view_global.js
-#, fuzzy
-#| msgid "Playlist additions during the day"
-msgid "Playlists addition"
-msgstr "Ajouts dans une liste de lecture durant la journée"
-
-#: pod/video/static/js/video_stats_view.js
-msgid "Date,Views,Favorites"
-msgstr "Date,Vues,Favoris"
-
-#: pod/video/static/js/video_stats_view_global.js
-msgid "Years,Views,Favorites"
-msgstr "Années,Vues,Favoris"
+#~ msgid "Years,Views,Favorites"
+#~ msgstr "Années,Vues,Favoris"
 
 #~ msgid "Title"
 #~ msgstr "Titre"

@@ -58,9 +58,9 @@
             <span class="pod-float-end">
                 {% if USE_STATS_VIEW %}{% comment "TODO STATS" %}{% endcomment %}
                     {% if theme %}
-                        <a href="{% url 'video:video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+                        <a href="{% url 'stats:channels-stats' channel=channel.slug theme=theme.slug %}" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Theme statistics' %}</a>
                     {% else %}
-                        <a href="{% url 'video:video_stats_view' slug=channel.slug %}" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-graph-up">&nbsp;</i>{% trans 'Statistics views' %}</a>
+                        <a href="{% url 'stats:channels-stats' channel=channel.slug %}" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-graph-up">&nbsp;</i>{% trans 'Channel statistics' %}</a>
                     {% endif %}
                 {% endif %}
                 {% if theme %}
@@ -146,14 +146,14 @@
         <i class="bi bi-play-btn" aria-hidden="true"></i>&nbsp;{{channel.title}}
             <span class="pod-float-end">
                 {% if theme %}
-                    {% if USE_STATS_VIEW %}{% comment "TODO STATS" %}{% endcomment %}
-                        <a href="{% url 'video:video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+                    {% if USE_STATS_VIEW %}
+                        <a href="{% url 'stats:channels-stats' channel=channel.slug theme=theme.slug %}" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Theme statistics' %}</a>
                     {% endif %}
                     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug slug_t=theme.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss"></i>&nbsp;Video</a>
                     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug slug_t=theme.slug%}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss"></i>&nbsp;Audio</a>
                 {% else %}
-                    {% if USE_STATS_VIEW %}{% comment "TODO STATS" %}{% endcomment %}
-                        <a href="{% url 'video:video_stats_view' slug=channel.slug %}?from=channel" title="{% trans 'Show view statistics for all videos in this channel' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+                    {% if USE_STATS_VIEW %}
+                        <a href="{% url 'stats:channels-stats' channel=channel.slug %}" title="{% trans 'Show view statistics for all videos in this channel' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Channel statistics' %}</a>
                     {% endif %}
                     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss"></i>&nbsp;Video</a>
                     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug%}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss"></i>&nbsp;Audio</a>

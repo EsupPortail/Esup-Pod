@@ -2,6 +2,7 @@ from django.urls import path
 from django.conf import settings
 
 from .views import (
+    channel_stats_view,
     to_do,
     video_stats_view,
 )
@@ -17,8 +18,9 @@ if getattr(settings, "USE_STATS_VIEW", False):
         path("videos/", video_stats_view, name="video-stats"),
         path("videos/<slug:video>", video_stats_view, name="video-stats"),
         # CHANNELS
-        path("channels/", to_do, name="channels-stats"),
-        path("channels/<slug:channel>", to_do, name="channel-stats"),
+        path("channels/", channel_stats_view, name="channels-stats"),
+        path("channels/<slug:channel>", channel_stats_view, name="channels-stats"),
+        path("channels/<slug:channel>/<slug:theme>", channel_stats_view, name="channels-stats"),
         # PLAYLISTS
         path("playlists/", to_do, name="playlist-stats"),
         path("playlists/<slug:playlist>", to_do, name="playlist-stats"),
