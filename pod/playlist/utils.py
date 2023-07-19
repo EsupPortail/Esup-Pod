@@ -1,5 +1,6 @@
 """Esup-Pod playlist utilities."""
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.db.models import Max
 from django.urls import reverse
 from django.core.handlers.wsgi import WSGIRequest
@@ -32,11 +33,11 @@ def user_add_video_in_playlist(playlist: Playlist, video: Video) -> str:
     Add a video in playlist.
 
     Args:
-        playlist (:class:`pod.playlist.models.Playlist`): The playlist object
-        video (:class:`pod.video.models.Video`): The video object
+        playlist (:class:`pod.playlist.models.Playlist`): The playlist object.
+        video (:class:`pod.video.models.Video`): The video object.
 
     Returns:
-        str: The status message
+        str: The status message.
     """
     if not check_video_in_playlist(playlist, video):
         PlaylistContent.objects.create(
@@ -51,11 +52,11 @@ def user_remove_video_from_playlist(playlist: Playlist, video: Video) -> str:
     Remove a video from playlist.
 
     Args:
-        playlist (:class:`pod.playlist.models.Playlist`): The playlist object
-        video (:class:`pod.video.models.Video`): The video object
+        playlist (:class:`pod.playlist.models.Playlist`): The playlist object.
+        video (:class:`pod.video.models.Video`): The video object.
 
     Returns:
-        str: The status message
+        str: The status message.
     """
     if check_video_in_playlist(playlist, video):
         PlaylistContent.objects.filter(playlist=playlist, video=video).delete()
@@ -66,10 +67,10 @@ def get_next_rank(playlist: Playlist) -> int:
     Get the next rank in playlist.
 
     Args:
-        playlist (:class:`pod.playlist.models.Playlist`): The playlist object
+        playlist (:class:`pod.playlist.models.Playlist`): The playlist object.
 
     Returns:
-        int: The next rank
+        int: The next rank.
     """
     last_rank = PlaylistContent.objects.filter(
         playlist=playlist).aggregate(Max("rank"))["rank__max"]
@@ -81,12 +82,12 @@ def get_number_playlist(user: User) -> int:
     Get the number of playlist for a user.
 
     Args:
-        user (:class:`django.contrib.auth.models.User`): The user object
+        user (:class:`django.contrib.auth.models.User`): The user object.
 
     Returns:
-        int: The number of playlist
+        int: The number of playlist.
     """
-    return Playlist.objects.filter(owner=user).count()
+    return Playlist.objects.filter(owner=user, site=Site.objects.get_current()).count()
 
 
 def get_number_video_in_playlist(playlist: Playlist) -> int:
@@ -94,10 +95,10 @@ def get_number_video_in_playlist(playlist: Playlist) -> int:
     Get the number of video in a playlist.
 
     Args:
-        playlist (:class:`pod.playlist.models.Playlist`): The playlist object
+        playlist (:class:`pod.playlist.models.Playlist`): The playlist object.
 
     Returns:
-        int: The number of video in the playlist
+        int: The number of video in the playlist.
     """
     return PlaylistContent.objects.filter(playlist=playlist).count()
 
@@ -135,7 +136,7 @@ def get_public_playlist() -> list:
     Returns:
         list(:class:`pod.playlist.models.Playlist`): The public playlist list
     """
-    return Playlist.objects.filter(visibility="public")
+    return Playlist.objects.filter(visibility="public", site=Site.objects.get_current())
 
 
 def get_promoted_playlist() -> list:
@@ -145,7 +146,7 @@ def get_promoted_playlist() -> list:
     Returns:
         list(:class:`pod.playlist.models.Playlist`): The public playlist list
     """
-    return Playlist.objects.filter(promoted=True)
+    return Playlist.objects.filter(promoted=True, site=Site.objects.get_current())
 
 
 def get_playlist_list_for_user(user: User) -> list:
@@ -159,9 +160,9 @@ def get_playlist_list_for_user(user: User) -> list:
         list(:class:`pod.playlist.models.Playlist`): The playlist list for a user
     """
     if getattr(settings, "USE_FAVORITES", True):
-        return Playlist.objects.filter(owner=user)
+        return Playlist.objects.filter(owner=user, site=Site.objects.get_current())
     else:
-        return Playlist.objects.filter(owner=user).exclude(name="Favorites")
+        return Playlist.objects.filter(owner=user, site=Site.objects.get_current()).exclude(name="Favorites")
 
 
 def get_video_list_for_playlist(playlist: Playlist) -> list:
@@ -211,7 +212,7 @@ def get_favorite_playlist_for_user(user: User) -> Playlist:
     Returns:
         Playlist: The favorite playlist
     """
-    return Playlist.objects.get(name=FAVORITE_PLAYLIST_NAME, owner=user)
+    return Playlist.objects.get(name=FAVORITE_PLAYLIST_NAME, owner=user, site=Site.objects.get_current())
 
 
 def remove_playlist(user: User, playlist: Playlist) -> None:
@@ -236,7 +237,7 @@ def get_playlists_for_additional_owner(user: User) -> list:
     Returns:
         list (:class:`list(pod.playlist.models.Playlist)`): The list of playlist
     """
-    return Playlist.objects.filter(additional_owners=user)
+    return Playlist.objects.filter(additional_owners=user, site=Site.objects.get_current())
 
 
 def get_additional_owners(playlist: Playlist) -> list:

@@ -1,4 +1,6 @@
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Max
@@ -9,6 +11,9 @@ from django.template.defaultfilters import slugify
 from pod.main.models import get_nextautoincrement
 from pod.video.models import Video
 from pod.video.utils import sort_videos_list
+
+
+SITE_ID = getattr(settings, "SITE_ID")
 
 
 class Playlist(models.Model):
@@ -94,6 +99,13 @@ class Playlist(models.Model):
         verbose_name=_("Date updated"),
         editable=False,
         auto_now=True,
+    )
+    site = models.ForeignKey(
+        Site,
+        related_name="site_playlist",
+        verbose_name=_("Site"),
+        on_delete=models.CASCADE,
+        default=SITE_ID,
     )
 
     class Meta:

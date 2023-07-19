@@ -1,28 +1,27 @@
-from django.db.models.signals import post_save
+from django.contrib.sites.models import Site
+from django.db.models.signals import m2m_changed, post_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+
+from pod.authentication.models import Owner
 
 from .apps import FAVORITE_PLAYLIST_NAME
 from .models import Playlist
 
 
-@receiver(post_save, sender=User)
-def create_favorite_playlist(sender, instance, created, **kwargs):
-    """
-    Function to create the `Favorites` playlist when a user is created.
-
-    Args:
-        sender (:class:`django.contrib.auth.models.User`): The User class that sends the signal.
-        instance (:class:`django.contrib.auth.models.User`): The instance of user that has been created
-        created (bool): Indicates if the user was created or not.
-    """
-    if created:
-        Playlist.objects.create(
-            name=FAVORITE_PLAYLIST_NAME,
-            description=_("Your favorites videos."),
-            visibility="private",
-            autoplay=True,
-            owner=instance,
-            editable=False
-        )
+@receiver(m2m_changed, sender=Owner.sites.through)
+def update_favorite_playlist(sender, instance, action, reverse, model, pk_set, **kwargs):
+    if action == 'post_add':
+        for site_id in pk_set:
+            site = Site.objects.get(id=site_id)
+            if not Playlist.objects.filter(name=FAVORITE_PLAYLIST_NAME, owner=instance.user, site=site).exists():
+                Playlist.objects.create(
+                    name=FAVORITE_PLAYLIST_NAME,
+                    description=_("Your favorites videos."),
+                    visibility="private",
+                    autoplay=True,
+                    owner=instance.user,
+                    editable=False,
+                    site=site,
+                )
