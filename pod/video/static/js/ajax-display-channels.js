@@ -260,14 +260,14 @@ function addThemeInList(listElement, theme) {
     linkThemeElement.textContent = theme.title;
     linkThemeElement.setAttribute('href', theme.url);
     themeLiElement.appendChild(linkThemeElement);
-    if (theme.child.length > 0) {
+    /* if (theme.child.length > 0) {
         const themesListElement = document.createElement('ul');
         themesListElement.classList.add('list-group', 'list-group-flush');
         themeLiElement.appendChild(themesListElement);
         theme.child.forEach(channelTheme => {
             addThemeInList(themesListElement, channelTheme);
         });
-    }
+    }*/
     listElement.appendChild(themeLiElement);
 }
 
@@ -373,17 +373,25 @@ function createModalFor(channelTab) {
  * @param {boolean} allChannelsLoaded `true` if all channels loaded, `false` otherwise.
  */
 function loadNextBatchOfChannels(modalContentElement, currentPage, allChannelsLoaded, fetchDataFunction, channelTabId) {
+    const loadingElement = document.createElement('div');
+    loadingElement.classList.add('text-center');
+    loadingElement.innerHTML = '<span class="spinner-border text-primary" role="status"></span>';
+    modalContentElement.querySelector('.modal-body').appendChild(loadingElement);
     fetchDataFunction(currentPage, channelTabId)
         .then(function (channels) {
             let channelsArray = Object.values(channels['channels']);
             if (currentPage <= channels['totalPages']) {
                 channelsArray.forEach(channel => {
                     modalContentElement.querySelector('.clist-group').appendChild(convertToModalListElement(channel));
+                    loadingElement.remove();
                 });
                 currentPage++;
                 loadNextBatchOfChannels(modalContentElement, currentPage, allChannelsLoaded, fetchDataFunction, channelTabId);
             } else {
                 allChannelsLoaded = true;
+                if (modalContentElement.querySelector('.modal-body').querySelector('.text-center')) {
+                    modalContentElement.querySelector('.modal-body').querySelector('.text-center').remove();
+                }
             }
         })
         .catch(function (error) {

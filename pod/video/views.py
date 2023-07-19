@@ -2780,7 +2780,7 @@ def get_serialized_channels(request: WSGIRequest, channels: QueryDict) -> dict:
         channels_json_format[channel.pk]["url"] = reverse('channel-video:channel', kwargs={"slug_c": channel.slug})
         channels_json_format[channel.pk]["videoCount"] = channel.video_count
         channels_json_format[channel.pk]["headbandImage"] = channel.headband.file.url if channel.headband else ""
-        channels_json_format[channel.pk]["themes"] = json.loads(channel.get_all_theme_json())
+        # channels_json_format[channel.pk]["themes"] = json.loads(channel.get_all_theme_json())
     return channels_json_format
 
 
