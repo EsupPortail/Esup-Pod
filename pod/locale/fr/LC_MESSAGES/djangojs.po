@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-18 08:42+0000\n"
+"POT-Creation-Date: 2023-07-18 14:51+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -552,7 +552,7 @@ msgstr "Favoris"
 
 #: pod/stats/static/stats/js/video_stats_view.js
 #: pod/stats/static/stats/js/video_stats_view_global.js
-msgid "Playlists addition"
+msgid "Playlist additions"
 msgstr "Ajouts dans une liste de lecture"
 
 #: pod/stats/static/stats/js/video_stats_view.js
@@ -754,6 +754,9 @@ msgstr "Créer catégorie"
 #: pod/video/static/js/video_edit.js
 msgid "Select the general type of the video."
 msgstr "Sélectionnez le type général de vidéo."
+
+#~ msgid "Playlists addition"
+#~ msgstr "Ajouts dans une liste de lecture"
 
 #~ msgid "Date,Views,Favorites"
 #~ msgstr "Date,Vues,Favoris"

@@ -1,174 +1,161 @@
-((function () {
-  var yearChart;
-  var startYear;
-  var endYear;
-  let y = [];
-  let yearlyviews = [];
-  let yearlyfav = [];
-  let yearlyPlaylist = [];
-  let today = new Date();
-  let dataUrl = window.location.href;
+const defaultParams = {
+  startYear: new Date().getFullYear() - 5,
+  endYear: new Date().getFullYear(),
+  tension: 0.5,
+  borderWidth: 2,
+  animationDuration: 2000,
+  animationDelay: 500,
+};
 
-  var defaultParams = {
-    startYear: today.getFullYear() - 5,
-    endYear: today.getFullYear(),
-    tension: 0.5,
-    borderWidth: 2,
-    animationDuration: 2000,
-    animationDelay: 500,
-  };
-  var params = Object.assign({}, defaultParams);
+var yearChart;
+let startYear = defaultParams.startYear;
+let endYear = defaultParams.endYear;
+let years = [];
+let yearlyViews = [];
+let yearlyFavorites = [];
+let yearlyPlaylistAdditions = [];
 
-  const startYearInput = document.getElementById("start-year");
-  const endYearInput = document.getElementById("end-year");
+const startYearInput = document.getElementById("start-year-" + graph_id);
+const endYearInput = document.getElementById("end-year-" + graph_id);
+const dataUrl = window.location.href;
 
-  startYearInput.max = params.endYear;
-  startYearInput.value = params.startYear;
-  endYearInput.max = params.endYear;
-  endYearInput.value = params.endYear;
+startYearInput.max = defaultParams.endYear;
+startYearInput.value = defaultParams.startYear;
+endYearInput.max = defaultParams.endYear;
+endYearInput.value = defaultParams.endYear;
 
-  if (startYear === undefined && endYear === undefined) {
-    startYear = params.startYear;
-    endYear = params.endYear;
-    updateChart();
+if (startYear === undefined && endYear === undefined) {
+  startYear = defaultParams.startYear;
+  endYear = defaultParams.endYear;
+  updateChart();
+}
+
+startYearInput.addEventListener("change", function () {
+  startYear = parseInt(this.value);
+  endYearInput.min = startYear;
+  updateChart();
+});
+
+endYearInput.addEventListener("change", function () {
+  endYear = parseInt(this.value);
+  startYearInput.max = endYear;
+  updateChart();
+});
+
+function updateChart() {
+  years = [];
+  yearlyViews = [];
+  yearlyFavorites = [];
+  yearlyPlaylistAdditions = [];
+  const requests = [];
+
+  for (let year = startYear; year <= endYear; year++) {
+    requests.push(
+      fetchData(dataUrl, "POST", {
+        csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
+        periode: year,
+      }),
+    );
   }
 
-  startYearInput.addEventListener("change", function () {
-    startYear = parseInt(this.value);
-    endYearInput.min = startYear;
-    updateChart();
-  });
+  Promise.all(requests)
+    .then(function (responses) {
+      responses.forEach(function (response) {
+        const JSONResponse = JSON.parse(response);
+        const year = JSONResponse.year;
+        const data = JSONResponse.datas;
 
-
-  endYearInput.addEventListener("change", function () {
-    endYear = parseInt(this.value);
-    startYearInput.max = endYear;
-    updateChart();
-  });
-
-  function updateChart() {
-    y = [];
-    yearlyviews = [];
-    yearlyfav = [];
-    yearlyPlaylist = [];
-    let startYearInt = parseInt(startYear);
-    let endYearInt = parseInt(endYear);
-    let requests = [];
-    while (startYearInt <= endYearInt) {
-      requests.push(
-        fetchData(dataUrl, "POST", {
-          csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
-          periode: startYearInt,
-        })
-      );
-      startYearInt++;
-    }
-    console.log(dataUrl);
-    Promise.all(requests)
-      .then(function (responses) {
-        responses.forEach(function (response) {
-          var year = response.map((row) => row.all_year);
-          var all_view = response.map((row) => row.all_view_year);
-          var year_favo = response.map((row) => row.all_fav_year);
-          var year_playlists = response.map((row) => row.all_playlists_year);
-          y.push(year[0]);
-          yearlyviews.push(all_view[0]);
-          yearlyfav.push(year_favo[0]);
-          yearlyPlaylist.push(year_playlists[0]);
-        });
-
-
-        let sortedData = y.map((item, index) => {
-          return {
-            year: item,
-            views: yearlyviews[index],
-            favorite: yearlyfav[index],
-            playlists: yearlyPlaylist[index],
-          };
-        }).sort((a, b) => a.year - b.year);
-
-        year = sortedData.map((item) => item.year);
-        yearlyviews = sortedData.map((item) => item.views);
-        yearlyfav = sortedData.map((item) => item.favorite);
-        yearlyPlaylist = sortedData.map((item) => item.playlists);
-
-
-        var ctx = document.getElementById("yearChart").getContext("2d");
-        if (yearChart) {
-          yearChart.destroy();
-        }
-
-        var datasets = [
-          {
-            label: gettext("Views"),
-            animations: {
-              y: {
-                duration: params.animationDuration,
-                delay: params.animationDelay,
-              },
-            },
-            backgroundColor: "#ed184e",
-            borderColor: "#ed184e",
-            borderWidth: params.borderWidth,
-            data: yearlyviews,
-            tension: params.tension,
-          },
-          {
-            label: gettext("Favorites"),
-            backgroundColor: "#3871c1",
-            borderColor: "#3871c1",
-            borderWidth: params.borderWidth,
-            data: yearlyfav,
-            tension: params.tension,
-          },
-          {
-            label: gettext("Playlists addition"),
-            backgroundColor: "#1F7C85",
-            borderColor: "#1F7C85",
-            borderWidth: params.borderWidth,
-            data: yearlyPlaylist,
-            tension: params.tension,
-          },
-        ];
-
-        yearChart = new Chart(ctx, {
-          type: "line",
-          data: {
-            labels: year,
-            datasets: datasets,
-          },
-          options: {
-            responsive: true,
-            animations: {
-              y: {
-                easing: "easeInOutElastic",
-                from: (ctx) => {
-                  if (ctx.type === "data") {
-                    if (ctx.mode === "default" && !ctx.dropped) {
-                      ctx.dropped = true;
-                      return 0;
-                    }
-                  }
-                },
-              },
-            },
-          },
-        });
-      })
-      .catch(function (error) {
-        console.log(error);
+        years.push(year);
+        yearlyViews.push(data.views_year);
+        yearlyFavorites.push(data.favorites_year);
+        yearlyPlaylistAdditions.push(data.playlist_addition_year);
       });
+
+      renderChart();
+    })
+    .catch((error) => console.error(error));
+}
+
+function renderChart() {
+  const ctx = document.getElementById(graph_id).getContext("2d");
+
+  if (yearChart) {
+    yearChart.destroy();
   }
 
-  document.getElementById("export-btn").addEventListener("click", function () {
-    var dataForCSV = {
-      headers: [gettext("Years"), gettext('Views'), gettext('Favorites'), gettext('Playlists_addition')],
-      rows: []
-    }
-    for (let i = 0; i < year.length; i++) {
-      dataForCSV.rows.push([year[i], yearlyviews[i], yearlyfav[i], yearlyPlaylist[i]])
-    }
-    exportDataToCSV(dataForCSV, "stats-global.csv")
+  yearChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: years,
+      datasets: [
+        {
+          label: gettext("Views"),
+          backgroundColor: "#ed184e",
+          borderColor: "#ed184e",
+          borderWidth: defaultParams.borderWidth,
+          data: yearlyViews,
+          tension: defaultParams.tension,
+        },
+        {
+          label: gettext("Favorites"),
+          backgroundColor: "#3871c1",
+          borderColor: "#3871c1",
+          borderWidth: defaultParams.borderWidth,
+          data: yearlyFavorites,
+          tension: defaultParams.tension,
+        },
+        {
+          label: gettext("Playlist additions"),
+          backgroundColor: "#1F7C85",
+          borderColor: "#1F7C85",
+          borderWidth: defaultParams.borderWidth,
+          data: yearlyPlaylistAdditions,
+          tension: defaultParams.tension,
+        },
+      ],
+    },
+    options: {
+      spanGaps: true,
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: graph_title,
+          padding: {
+            top: 10,
+            bottom: 5,
+          },
+        },
+      },
+      animation: {
+        duration: defaultParams.animationDuration,
+        delay: defaultParams.animationDelay,
+        easing: "easeInOutElastic",
+      },
+    },
   });
+}
+updateChart();
 
-}))();
+document
+  .getElementById("export-btn-" + graph_id)
+  .addEventListener("click", function () {
+    var dataForCSV = {
+      headers: [
+        gettext("Years"),
+        gettext("Views"),
+        gettext("Favorites"),
+        gettext("Playlists_addition"),
+      ],
+      rows: [],
+    };
+    for (let i = 0; i < years.length; i++) {
+      dataForCSV.rows.push([
+        years[i],
+        yearlyViews[i],
+        yearlyFavorites[i],
+        yearlyFavorites[i],
+      ]);
+    }
+    exportDataToCSV(dataForCSV, "stats-" + graph_title + ".csv"); // INCLURE DATE
+  });

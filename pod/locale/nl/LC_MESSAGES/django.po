@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-18 08:42+0000\n"
+"POT-Creation-Date: 2023-07-19 13:43+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -415,8 +415,7 @@ msgstr ""
 
 #: pod/bbb/models.py pod/import_video/models.py pod/live/forms.py
 #: pod/live/models.py pod/meeting/forms.py pod/meeting/models.py
-#: pod/stats/templates/stats/channel-stats-view.html
-#: pod/stats/templates/stats/video-stats-view.html pod/video_search/forms.py
+#: pod/stats/templates/stats/utils/video-stats.html pod/video_search/forms.py
 msgid "Start date"
 msgstr ""
 
@@ -425,8 +424,7 @@ msgid "Start date of the live."
 msgstr ""
 
 #: pod/bbb/models.py pod/live/forms.py pod/live/models.py
-#: pod/stats/templates/stats/channel-stats-view.html
-#: pod/stats/templates/stats/video-stats-view.html pod/video_search/forms.py
+#: pod/stats/templates/stats/utils/video-stats.html pod/video_search/forms.py
 msgid "End date"
 msgstr ""
 
@@ -6036,27 +6034,52 @@ msgid "Statistics"
 msgstr ""
 
 #: pod/stats/templates/stats/channel-stats-view.html
-#: pod/stats/templates/stats/video-stats-view.html
-msgid "Start year"
-msgstr ""
-
-#: pod/stats/templates/stats/channel-stats-view.html
-#: pod/stats/templates/stats/video-stats-view.html
-msgid "End year"
-msgstr ""
-
-#: pod/stats/templates/stats/channel-stats-view.html
-#: pod/stats/templates/stats/utils/pie-chart.html
-#: pod/stats/templates/stats/video-stats-view.html
-msgid "Export to CSV"
+msgid "Graph of video evolution for the channel "
 msgstr ""
 
 #: pod/stats/templates/stats/channel-stats-view.html
 msgid "Breakdown of video status for the channel "
 msgstr ""
 
+#: pod/stats/templates/stats/utils/pie-chart.html
+#: pod/stats/templates/stats/utils/video-stats.html
+#: pod/stats/templates/stats/utils/years-video-stats.html
+msgid "Export to CSV"
+msgstr ""
+
+#: pod/stats/templates/stats/utils/years-video-stats.html
+msgid "Start year"
+msgstr ""
+
+#: pod/stats/templates/stats/utils/years-video-stats.html
+msgid "End year"
+msgstr ""
+
+#: pod/stats/templates/stats/video-stats-view.html
+#: pod/video/templates/videos/video-info.html
+msgid "Number of favorites"
+msgstr ""
+
+#: pod/stats/templates/stats/video-stats-view.html
+#: pod/video/templates/videos/video-info.html
+msgid "Addition in a playlist"
+msgstr ""
+
+#: pod/stats/templates/stats/video-stats-view.html
+#: pod/video/templates/videos/video-info.html
+msgid "Number of views"
+msgstr ""
+
+#: pod/stats/templates/stats/video-stats-view.html
+msgid "Graph of video evolution of "
+msgstr ""
+
+#: pod/stats/templates/stats/video-stats-view.html
+msgid "Graph of video evolution "
+msgstr ""
+
 #: pod/stats/views.py
-msgid "Pod statistics"
+msgid "Video statistics"
 msgstr ""
 
 #: pod/stats/views.py
@@ -7094,19 +7117,7 @@ msgid "Duration:"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
-msgid "Number of views"
-msgstr ""
-
-#: pod/video/templates/videos/video-info.html
 msgid "Show details of view statistics"
-msgstr ""
-
-#: pod/video/templates/videos/video-info.html
-msgid "Addition in a playlist"
-msgstr ""
-
-#: pod/video/templates/videos/video-info.html
-msgid "Number of favorites"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html

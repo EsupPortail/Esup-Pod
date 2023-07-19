@@ -20,26 +20,8 @@
     {% include "videos/video-form.html" %}
   {% else %}
     <h1 class="page_title h2">{{ title }}</h1>
-    <div class="form-group row stat-form-group mb-1">
-    {% if slug %}
-      <label for="start-date">{% trans "Start date" %}</label>
-      <input type="date" id="start-date" name="start-date">
-      <label for="end-date">{% trans "End date" %}</label>
-      <input type="date" id="end-date" name="end-date">
-    </div>
-    <div class="table-responsive-md mb-4">
-      <canvas id="dateChart"></canvas>
-    </div>
-    {% else %}
-      <label for="start-year">{% trans "Start year" %}</label>
-      <input type="number" id="start-year" name="start-year">
-      <label for="end-year">{% trans "End year" %}</label>
-      <input type="number" id="end-year" name="end-year">
-    </div>
-    <canvas id="yearChart"></canvas>
-    {% endif %}
-    <button class="btn btn-primary btn-sm ps-2 pe-2 mb-3 d-flex" id="export-btn" type="button">{% trans "Export to CSV" %}</button>
-    <div id="pager"></div>
+    {% trans "Graph of video evolution for the channel " as graph_title_prefix %}
+    {% include "stats/utils/years-video-stats.html" with graph_id="videosEvolutionChart" graph_title=graph_title_prefix|add:channel %}
   {% endif %}
 
   {% trans "Breakdown of video status for the channel " as graph_title_prefix %}
@@ -49,11 +31,5 @@
 {% endblock content %}
 
 {% block more_script %}
-  <script src="{% static 'chart.js/dist/chart.umd.js' %}?ver={{VERSION}}" charset="utf-8"></script>
-  <script src="{% static 'stats/js/utils-stats.js' %}?ver={{VERSION}}" charset="utf-8"></script>
-  {% if videos|length == 1 %}
-    <script src="{% static 'stats/js/video_stats_view.js' %}?ver={{VERSION}}" charset="utf-8"></script>
-  {% else %}
-    <script src="{% static 'stats/js/video_stats_view_global.js' %}?ver={{VERSION}}" charset="utf-8"></script>
-  {% endif %}
+
 {% endblock %}

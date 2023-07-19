@@ -20,7 +20,11 @@ if getattr(settings, "USE_STATS_VIEW", False):
         # CHANNELS
         path("channels/", channel_stats_view, name="channels-stats"),
         path("channels/<slug:channel>", channel_stats_view, name="channels-stats"),
-        path("channels/<slug:channel>/<slug:theme>", channel_stats_view, name="channels-stats"),
+        path(
+            "channels/<slug:channel>/<slug:theme>",
+            channel_stats_view,
+            name="channels-stats",
+        ),
         # PLAYLISTS
         path("playlists/", to_do, name="playlist-stats"),
         path("playlists/<slug:playlist>", to_do, name="playlist-stats"),

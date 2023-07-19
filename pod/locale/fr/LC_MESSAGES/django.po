@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-18 08:42+0000\n"
+"POT-Creation-Date: 2023-07-19 13:43+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -426,8 +426,7 @@ msgstr "Participants"
 
 #: pod/bbb/models.py pod/import_video/models.py pod/live/forms.py
 #: pod/live/models.py pod/meeting/forms.py pod/meeting/models.py
-#: pod/stats/templates/stats/channel-stats-view.html
-#: pod/stats/templates/stats/video-stats-view.html pod/video_search/forms.py
+#: pod/stats/templates/stats/utils/video-stats.html pod/video_search/forms.py
 msgid "Start date"
 msgstr "Date de début"
 
@@ -436,8 +435,7 @@ msgid "Start date of the live."
 msgstr "Date de début du direct."
 
 #: pod/bbb/models.py pod/live/forms.py pod/live/models.py
-#: pod/stats/templates/stats/channel-stats-view.html
-#: pod/stats/templates/stats/video-stats-view.html pod/video_search/forms.py
+#: pod/stats/templates/stats/utils/video-stats.html pod/video_search/forms.py
 msgid "End date"
 msgstr "Date de fin"
 
@@ -6407,38 +6405,66 @@ msgid "Statistics"
 msgstr "Statistiques de vues"
 
 #: pod/stats/templates/stats/channel-stats-view.html
-#: pod/stats/templates/stats/video-stats-view.html
-msgid "Start year"
-msgstr "Année de début"
-
-#: pod/stats/templates/stats/channel-stats-view.html
-#: pod/stats/templates/stats/video-stats-view.html
-msgid "End year"
-msgstr "Année de fin"
-
-#: pod/stats/templates/stats/channel-stats-view.html
-#: pod/stats/templates/stats/utils/pie-chart.html
-#: pod/stats/templates/stats/video-stats-view.html
-msgid "Export to CSV"
-msgstr "Exporter au format CSV"
+msgid "Graph of video evolution for the channel "
+msgstr "Graphique de l'évolution des vidéos de la chaîne "
 
 #: pod/stats/templates/stats/channel-stats-view.html
 msgid "Breakdown of video status for the channel "
 msgstr "Répartition des statuts des vidéos pour la chaîne "
 
-#: pod/stats/views.py
-msgid "Pod statistics"
-msgstr "Statistiques de Pod"
+#: pod/stats/templates/stats/utils/pie-chart.html
+#: pod/stats/templates/stats/utils/video-stats.html
+#: pod/stats/templates/stats/utils/years-video-stats.html
+msgid "Export to CSV"
+msgstr "Exporter au format CSV"
+
+#: pod/stats/templates/stats/utils/years-video-stats.html
+msgid "Start year"
+msgstr "Année de début"
+
+#: pod/stats/templates/stats/utils/years-video-stats.html
+msgid "End year"
+msgstr "Année de fin"
+
+#: pod/stats/templates/stats/video-stats-view.html
+#: pod/video/templates/videos/video-info.html
+msgid "Number of favorites"
+msgstr "Nombre de favoris"
+
+#: pod/stats/templates/stats/video-stats-view.html
+#: pod/video/templates/videos/video-info.html
+msgid "Addition in a playlist"
+msgstr "Nombre d'ajouts dans une liste de lecture"
+
+#: pod/stats/templates/stats/video-stats-view.html
+#: pod/video/templates/videos/video-info.html
+msgid "Number of views"
+msgstr "Nombre de vues"
+
+#: pod/stats/templates/stats/video-stats-view.html
+msgid "Graph of video evolution of "
+msgstr "Graphique de l'évolution des vidéos de "
+
+#: pod/stats/templates/stats/video-stats-view.html
+msgid "Graph of video evolution "
+msgstr "Graphique de l'évolution des vidéos "
 
 #: pod/stats/views.py
+msgid "Video statistics"
+msgstr "Statistiques des vidéos"
+
+#: pod/stats/views.py
+#, python-format
 msgid "Video statistics for %s"
 msgstr "Statistiques des vidéos pour %s"
 
 #: pod/stats/views.py
+#, python-format
 msgid "Video statistics for the theme %s"
 msgstr "Statistiques des vidéos du thème %s"
 
 #: pod/stats/views.py
+#, python-format
 msgid "Video statistics for the channel %s"
 msgstr "Statistiques des vidéos de la chaîne %s"
 
@@ -7571,20 +7597,8 @@ msgid "Duration:"
 msgstr "Durée :"
 
 #: pod/video/templates/videos/video-info.html
-msgid "Number of views"
-msgstr "Nombre de vues"
-
-#: pod/video/templates/videos/video-info.html
 msgid "Show details of view statistics"
 msgstr "Afficher les details des statistiques de visualisation"
-
-#: pod/video/templates/videos/video-info.html
-msgid "Addition in a playlist"
-msgstr "Nombre d'ajouts dans une liste de lecture"
-
-#: pod/video/templates/videos/video-info.html
-msgid "Number of favorites"
-msgstr "Nombre de favoris"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Add the video to a playlist"
@@ -8311,6 +8325,9 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Pod statistics"
+#~ msgstr "Statistiques de Pod"
 
 #~ msgid "Pod video viewing statistics"
 #~ msgstr "Statistiques de visualisation des vidéos"
