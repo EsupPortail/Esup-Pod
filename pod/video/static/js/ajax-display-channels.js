@@ -359,6 +359,7 @@ function createModalFor(channelTab) {
                 .catch(function (error) {
                     console.error(error);
                 });
+            allChannelsLoaded = true;
         }
     });
 }
@@ -412,6 +413,7 @@ channelModal.addEventListener('shown.bs.modal', function () {
             .catch(function (error) {
                 console.error(error);
             });
+        allChannelsLoaded = true;
     }
 });
 
