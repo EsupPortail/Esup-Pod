@@ -98,12 +98,6 @@ function renderChart() {
       datasets: [
         {
           label: gettext("Views"),
-          animations: {
-            y: {
-              duration: defaultParams.animationDuration,
-              delay: defaultParams.animationDelay,
-            },
-          },
           backgroundColor: "#ed184e",
           borderColor: "#ed184e",
           borderWidth: defaultParams.borderWidth,
@@ -138,6 +132,22 @@ function renderChart() {
           padding: {
             top: 10,
             bottom: 5,
+          },
+        },
+      },
+      scales: {
+        x: {
+          display: true,
+          title: {
+            display: true,
+            text: gettext("Date"),
+          },
+        },
+        y: {
+          display: true,
+          title: {
+            display: true,
+            text: gettext("Value"),
           },
         },
       },

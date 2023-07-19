@@ -127,6 +127,22 @@ function renderChart() {
           },
         },
       },
+      scales: {
+        x: {
+          display: true,
+          title: {
+            display: true,
+            text: gettext("Date"),
+          },
+        },
+        y: {
+          display: true,
+          title: {
+            display: true,
+            text: gettext("Value"),
+          },
+        },
+      },
       animation: {
         duration: defaultParams.animationDuration,
         delay: defaultParams.animationDelay,
