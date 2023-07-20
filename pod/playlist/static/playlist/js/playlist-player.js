@@ -10,10 +10,35 @@ function switchToNextVideo() {
         selectedElement.classList.remove('selected');
         if (!(playerElements[currentIndex + 1].classList.contains('disabled'))) {
             window.location.href = playerElements[currentIndex + 1].getAttribute('href');
+            // refreshElementWithDocumentFragment('collapseAside', playerElements[currentIndex + 1].getAttribute('href'));
         } else {
             switchToNextVideo();
         }
     }
+}
+
+
+function createCustomElement(content) {
+    const newElement = document.createElement("div");
+    newElement.innerHTML = content.innerHTML;
+    return newElement;
+}
+
+
+function refreshElementWithDocumentFragment(elementId, url) {
+    fetch(url)
+        .then(response => response.text())
+        .then(newContent => {
+            const parser = new DOMParser();
+            const newHTMLContent = parser.parseFromString(newContent, 'text/html');
+            const fragment = document.createDocumentFragment();
+            const newElement = createCustomElement(newHTMLContent.getElementById(elementId));
+            fragment.appendChild(newElement);
+            const elementToRefresh = document.getElementById(elementId);
+            elementToRefresh.innerHTML = '';
+            console.log(newElement);
+            elementToRefresh.appendChild(newElement);
+        });
 }
 
 /**
