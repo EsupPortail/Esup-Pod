@@ -5,6 +5,7 @@
 {% get_language_info_list for LANGUAGES as languages %}
 {% load thumbnail %}
 {% load navbar %}
+{% load user_stats %}
 {% load favorites_playlist %}
 
 <div class="container-fluid pod-container pod-navbar__container" id="nav-mainbar">
@@ -244,21 +245,15 @@
               <a class="nav-item nav-link" href="{% url 'authentication:authentication_logout' %}">
                 <i class="bi bi-box-arrow-right pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Log out' %}</a>
             </nav>
-            {% show_stats user as show_stats %}
-            {% if show_stats %}
-              <div id="stats-usermenu" class="nav flex-column">
-                {% get_number_video_user user as number_videos %}
-                {% get_number_playlist_user user as number_playlists %}
-                <h5 class="offcanvas-title text-center" id="pod-navbar__menuLabel">{% trans "Your statistics" %}</h5>
-                <hr>
-                {% if number_videos > 0 %}
-                  <p class="stats-usermenu">{% trans "Number of videos" %} : <span id="stats-usermenu-video-count">{{ number_videos }}</span></p>
-                {% endif %}
-                {% if number_playlists > 0 %}
-                  <p class="stats-usermenu">{% trans "Number of playlists" %} : <span id="stats-usermenu-playlist-count">{{ number_playlists }}</span></p>
-                {% endif %}
-              </div>
-            {% endif %}
+            <div id="stats-usermenu" class="nav flex-column">
+              <h5 class="offcanvas-title text-center" id="pod-navbar__menuLabel">{% trans "Your statistics" %}</h5>
+              <hr>
+              <p class="stats-usermenu">{% trans "Number of videos" %} : <span id="stats-usermenu-video-count">{% get_number_video_user %}</span></p>
+              {% if USE_PLAYLIST %}
+                <p class="stats-usermenu">{% trans "Number of playlists" %} : <span id="stats-usermenu-playlist-count">{% get_number_playlist_user %}</span></p>
+              {% endif %}
+              <a class="btn btn-primary btn-sm" href="{% url 'stats:my-stats' %}"><i class="bi bi-bar-chart-fill"></i><span class="ms-1 d-none d-md-inline">{% trans "See more" %}</span></a>
+            </div>
           </div>
         </div>
         <!-- end offcanvas -->

@@ -1,11 +1,15 @@
 from pod.playlist.apps import FAVORITE_PLAYLIST_NAME
 from pod.playlist.models import Playlist, PlaylistContent
 from django.db.models import Sum
+from pod.playlist.utils import get_playlist_list_for_user
+from pod.video.context_processors import get_available_videos
 from pod.video.models import Video, ViewCount
 from datetime import date
 from django.core.cache import cache
 from django.conf import settings
 from json import dumps
+from datetime import timedelta
+from django.contrib.auth.models import User
 
 CACHE_EXPIRATION = 2  # Cache expiration time in seconds
 
@@ -169,3 +173,34 @@ def get_videos_status_stats(video_list) -> dict:
     stats["restricted"] = restricted_number
     stats["password"] = password_number
     return dumps(stats)
+
+
+def total_time_videos(request, video_list: None) -> str:
+    if video_list:
+        total_duration = video_list.aggregate(Sum("duration"))["duration__sum"]
+    else:
+        total_duration = get_available_videos(request).aggregate(Sum("duration"))[
+            "duration__sum"
+        ]
+    return str(timedelta(seconds=total_duration)) if total_duration else "0"
+
+
+def number_videos(request, video_list: None) -> int:
+    if video_list:
+        number_videos = video_list.count()
+    else:
+        number_videos = get_available_videos(request).count()
+    return number_videos
+
+
+def number_playlist(user: User) -> int():
+    """
+    Get the number of playlists for a user.
+
+    Args:
+        user (:class:`django.contrib.auth.models.User`): The user object
+
+    Returns:
+        int: The number of playlist.
+    """
+    return get_playlist_list_for_user(user).count()

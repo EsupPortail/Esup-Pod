@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-19 14:43+0000\n"
+"POT-Creation-Date: 2023-07-20 11:22+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -4626,6 +4626,10 @@ msgstr "Nombre de vidéos"
 #: pod/main/templates/navbar.html
 msgid "Number of playlists"
 msgstr "Nombre de listes de lecture"
+
+#: pod/main/templates/navbar.html
+msgid "See more"
+msgstr "En savoir plus"
 
 #: pod/main/templates/navbar_collapse.html
 #, python-format
