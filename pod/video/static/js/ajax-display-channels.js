@@ -14,9 +14,9 @@ const GET_CHANNELS_FOR_SPECIFIC_CHANNEL_TAB_REQUEST_URL = '/video/get-channels-f
 const GET_CHANNEL_TAGS_REQUEST_URL = '/video/get-channel-tabs/';
 
 /**
- * Number of channels to load per batch.
+ * URL to send a request to get the theme list.
  */
-const CHANNELS_PER_BATCH = 10;
+const GET_THEMES_FOR_SPECIFIC_CHANNEL_REQUEST_URL = '/video/get-themes-for-specific-channel';
 
 
 /**
@@ -115,6 +115,32 @@ function getChannelTabsAjaxRequest(nameOnly) {
 
 
 /**
+ * Get the theme list for a specific channel thanks to the AJAX request.
+ *
+ * @param {string} channelSlug The channel slug.
+ *
+ * @returns The AJAX request promise.
+ */
+function getThemesForSpecificChannel(channelSlug) {
+    let url = `${GET_THEMES_FOR_SPECIFIC_CHANNEL_REQUEST_URL}${channelSlug}`;
+    return new Promise(function(resolve, reject) {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    resolve(JSON.parse(xhr.responseText));
+                } else {
+                    reject(new Error('Request failed with status ' + xhr.status));
+                }
+            }
+        }
+        xhr.send();
+    });
+}
+
+
+/**
  * Set the modal title when the user ask to view this modal.
  *
  * @param {HTMLElement} modalContentElement The HTML element of the modal.
@@ -163,7 +189,7 @@ function convertToModalList(channelsArray) {
  * @returns The HTML modal list element.
  */
 function convertToModalListElement(channel) {
-    const haveThemes = channel.themes.length > 0;
+    const haveThemes = channel.themes > 0;
     const channelListElement = document.createElement('li');
     channelListElement.classList.add('list-group-item', 'list-group-item-action');
     channelListElement.setAttribute('data-id', channel.id);
@@ -179,7 +205,7 @@ function convertToModalListElement(channel) {
     const noWrapSpanElement = document.createElement('span');
     noWrapSpanElement.classList.add('text-nowrap');
     if (haveThemes) {
-        setChannelThemeButtonForModal(noWrapSpanElement, channel);
+        spanElement = setChannelThemeButtonForModal(noWrapSpanElement, channel);
     }
     if (channel.videoCount > 1) {
         noWrapSpanElement.innerHTML += `<span class="badge text-bg-primary rounded-pill">${channel.videoCount} ${gettext('videos')}</span>`;
@@ -197,7 +223,7 @@ function convertToModalListElement(channel) {
     });
     setImageForModal(dFlexSpanElement, channel);
     if (haveThemes) {
-        setChannelThemeCollapseForModal(channelListElement, channel);
+        setChannelThemeCollapseForModal(channelListElement, spanElement, channel);
     }
     return channelListElement;
 }
@@ -222,9 +248,11 @@ function setImageForModal(dFlexSpanElement, channel) {
  * @param {HTMLElement} channelListElement The HTML element channel list.
  * @param {any} channel The channel element.
  */
-function setChannelThemeCollapseForModal(channelListElement, channel) {
+function setChannelThemeCollapseForModal(channelListElement, spanElement, channel) {
     const themesCollapseElement = document.createElement('div');
     const themesListElement = document.createElement('ul');
+    let themesLoaded = false;
+    let open = false;
     themesCollapseElement.id = `collapseTheme${channel.id}`;
     themesCollapseElement.classList.add('collapsibleThemes', 'collapse');
     setAttributesWithTab(
@@ -239,9 +267,29 @@ function setChannelThemeCollapseForModal(channelListElement, channel) {
     themesListElement.classList.add('list-group');
     themesCollapseElement.appendChild(themesListElement);
     channelListElement.appendChild(themesCollapseElement);
-    const channelThemes = channel.themes;
-    channelThemes.forEach(channelTheme => {
-        addThemeInList(themesListElement, channelTheme);
+    spanElement.addEventListener('click', function () {
+        open = !open;
+        if (open) {
+            spanElement.querySelector('.bi').classList.remove('bi-chevron-down');
+            spanElement.querySelector('.bi').classList.add('bi-chevron-up');
+        } else {
+            spanElement.querySelector('.bi').classList.remove('bi-chevron-up');
+            spanElement.querySelector('.bi').classList.add('bi-chevron-down');
+        }
+        if (themesLoaded === false) {
+            spanElement.querySelector('.btn').style.backgroundColor = 'gray';
+            getThemesForSpecificChannel(channel.url)
+                .then(function (themes) {
+                    themes.forEach(channelTheme => {
+                        addThemeInList(themesListElement, channelTheme);
+                    });
+                    spanElement.querySelector('.btn').style.backgroundColor = 'inherit';
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+            themesLoaded = true;
+        }
     });
 }
 
@@ -260,14 +308,14 @@ function addThemeInList(listElement, theme) {
     linkThemeElement.textContent = theme.title;
     linkThemeElement.setAttribute('href', theme.url);
     themeLiElement.appendChild(linkThemeElement);
-    /* if (theme.child.length > 0) {
+    if (theme.child.length > 0) {
         const themesListElement = document.createElement('ul');
         themesListElement.classList.add('list-group', 'list-group-flush');
         themeLiElement.appendChild(themesListElement);
         theme.child.forEach(channelTheme => {
             addThemeInList(themesListElement, channelTheme);
         });
-    }*/
+    }
     listElement.appendChild(themeLiElement);
 }
 
@@ -290,12 +338,13 @@ function setChannelThemeButtonForModal(spanElement ,channel) {
             ['aria-controls', `collapseTheme${channel.id}`],
         ],
     );
-    if (channel.themes.length > 1) {
-        themesButtonElement.innerHTML = `${channel.themes.length} thèmes <i class="bi bi-chevron-down"></i>`;
+    if (channel.themes > 1) {
+        themesButtonElement.innerHTML = `${channel.themes} thèmes <i class="bi bi-chevron-down"></i>`;
     } else {
-        themesButtonElement.innerHTML = `${channel.themes.length} thème <i class="bi bi-chevron-down"></i>`;
+        themesButtonElement.innerHTML = `${channel.themes} thème <i class="bi bi-chevron-down"></i>`;
     }
     spanElement.appendChild(themesButtonElement);
+    return spanElement;
 }
 
 
@@ -351,10 +400,8 @@ function createModalFor(channelTab) {
                     setModalTitle(modalContentElement, channels['count']);
                     modalContentElement.querySelector('.modal-body').appendChild(convertToModalList(channelsArray));
                     modalContentElement.querySelector('.modal-body').querySelector('.text-center').remove();
-                    if (channels['count'] > CHANNELS_PER_BATCH) {
-                        currentPage++;
-                        loadNextBatchOfChannels(modalContentElement, currentPage, allChannelsLoaded, getChannelsForSpecificChannelTabs, channelTab.id);
-                    }
+                    currentPage++;
+                    loadNextBatchOfChannels(modalContentElement, currentPage, allChannelsLoaded, getChannelsForSpecificChannelTabs, channelTab.id);
                 })
                 .catch(function (error) {
                     console.error(error);
@@ -373,24 +420,25 @@ function createModalFor(channelTab) {
  * @param {boolean} allChannelsLoaded `true` if all channels loaded, `false` otherwise.
  */
 function loadNextBatchOfChannels(modalContentElement, currentPage, allChannelsLoaded, fetchDataFunction, channelTabId) {
-    const loadingElement = document.createElement('div');
-    loadingElement.classList.add('text-center');
-    loadingElement.innerHTML = '<span class="spinner-border text-primary" role="status"></span>';
-    modalContentElement.querySelector('.modal-body').appendChild(loadingElement);
+    const loaderElement = document.createElement('div');
+    loaderElement.classList.add('text-center');
+    loaderElement.innerHTML = '<span class="spinner-border text-primary" role="status"></span>';
+    modalContentElement.querySelector('.modal-body').appendChild(loaderElement);
     fetchDataFunction(currentPage, channelTabId)
         .then(function (channels) {
             let channelsArray = Object.values(channels['channels']);
             if (currentPage <= channels['totalPages']) {
                 channelsArray.forEach(channel => {
                     modalContentElement.querySelector('.clist-group').appendChild(convertToModalListElement(channel));
-                    loadingElement.remove();
+                    loaderElement.remove();
                 });
                 currentPage++;
                 loadNextBatchOfChannels(modalContentElement, currentPage, allChannelsLoaded, fetchDataFunction, channelTabId);
             } else {
                 allChannelsLoaded = true;
-                if (modalContentElement.querySelector('.modal-body').querySelector('.text-center')) {
-                    modalContentElement.querySelector('.modal-body').querySelector('.text-center').remove();
+                const loaderBisElement = modalContentElement.querySelector('.modal-body').querySelector('.text-center');
+                if (loaderBisElement) {
+                    loaderBisElement.remove();
                 }
             }
         })
@@ -413,10 +461,8 @@ channelModal.addEventListener('shown.bs.modal', function () {
                 setModalTitle(modalContentElement, channels['count']);
                 modalContentElement.querySelector('.modal-body').appendChild(convertToModalList(channelsArray));
                 modalContentElement.querySelector('.modal-body').querySelector('.text-center').remove();
-                if (channels['count'] > CHANNELS_PER_BATCH) {
-                    currentPage++;
-                    loadNextBatchOfChannels(modalContentElement, currentPage, allChannelsLoaded, getChannelsAjaxRequest);
-                }
+                currentPage++;
+                loadNextBatchOfChannels(modalContentElement, currentPage, allChannelsLoaded, getChannelsAjaxRequest);
             })
             .catch(function (error) {
                 console.error(error);
@@ -426,31 +472,35 @@ channelModal.addEventListener('shown.bs.modal', function () {
 });
 
 const burgerMenu = document.getElementById('pod-navbar__menu');
+let burgerMenuLoaded = false;
 burgerMenu.addEventListener('shown.bs.offcanvas', function () {
-    const navChannelTabs = document.getElementById('tab-list');
-    getChannelTabsAjaxRequest(true)
-    .then(function (channelTabs) {
-        let channelTabsArray = Object.values(channelTabs);
-        burgerMenu.querySelector('.progress').remove();
-        channelTabsArray.forEach(channelTab => {
-            const navChannelTab = document.createElement('li');
-            const buttonChannelTab = document.createElement('button');
-            navChannelTab.classList.add('nav-item');
-            buttonChannelTab.classList.add('nav-link');
-            setAttributesWithTab(
-                buttonChannelTab,
-                [
-                    ['data-bs-toggle', 'modal'],
-                    ['data-bs-target', `.chaines-modal-${channelTab.id}`],
-                ],
-            );
-            buttonChannelTab.innerHTML = `<i class="bi bi-play-btn pod-nav-link-icon"></i> ${channelTab.name}`;
-            createModalFor(channelTab);
-            navChannelTab.appendChild(buttonChannelTab);
-            navChannelTabs.appendChild(navChannelTab);
-        })
-    })
-    .catch(function (error) {
-        console.error(error);
-    });
+    if (burgerMenuLoaded === false) {
+        const navChannelTabs = document.getElementById('tab-list');
+        getChannelTabsAjaxRequest(true)
+            .then(function (channelTabs) {
+                let channelTabsArray = Object.values(channelTabs);
+                burgerMenu.querySelector('.progress').remove();
+                channelTabsArray.forEach(channelTab => {
+                    const navChannelTab = document.createElement('li');
+                    const buttonChannelTab = document.createElement('button');
+                    navChannelTab.classList.add('nav-item');
+                    buttonChannelTab.classList.add('nav-link');
+                    setAttributesWithTab(
+                        buttonChannelTab,
+                        [
+                            ['data-bs-toggle', 'modal'],
+                            ['data-bs-target', `.chaines-modal-${channelTab.id}`],
+                        ],
+                    );
+                    buttonChannelTab.innerHTML = `<i class="bi bi-play-btn pod-nav-link-icon"></i> ${channelTab.name}`;
+                    createModalFor(channelTab);
+                    navChannelTab.appendChild(buttonChannelTab);
+                    navChannelTabs.appendChild(navChannelTab);
+                })
+            })
+            .catch(function (error) {
+                console.error(error);
+            });
+        burgerMenuLoaded = true;
+    }
 });

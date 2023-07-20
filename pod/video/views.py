@@ -169,6 +169,8 @@ if USE_TRANSCRIPTION:
 
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
+CHANNELS_PER_BATCH = getattr(settings, "CHANNELS_PER_BATCH", 10)
+
 
 # ############################################################################
 # CHANNEL
@@ -2780,7 +2782,7 @@ def get_serialized_channels(request: WSGIRequest, channels: QueryDict) -> dict:
         channels_json_format[channel.pk]["url"] = reverse('channel-video:channel', kwargs={"slug_c": channel.slug})
         channels_json_format[channel.pk]["videoCount"] = channel.video_count
         channels_json_format[channel.pk]["headbandImage"] = channel.headband.file.url if channel.headband else ""
-        # channels_json_format[channel.pk]["themes"] = json.loads(channel.get_all_theme_json())
+        channels_json_format[channel.pk]["themes"] = channel.themes.count()
     return channels_json_format
 
 
@@ -2816,7 +2818,7 @@ def get_channels_for_navbar(request: WSGIRequest) -> JsonResponse:
         )
         .order_by('title')
     )
-    paginator = Paginator(channels, 10)
+    paginator = Paginator(channels, CHANNELS_PER_BATCH)
     page_obj = paginator.get_page(page_number)
     response = {}
     response["channels"] = get_serialized_channels(request, page_obj.object_list)
@@ -2856,6 +2858,15 @@ def get_channel_tabs_for_navbar(request: WSGIRequest) -> JsonResponse:
 
 
 def get_channels_for_specific_channel_tab(request: WSGIRequest) -> JsonResponse:
+    """
+    Get the channels for a specific channel tab.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
     page_number = request.GET.get("page", 1)
     channel_tab_id = request.GET.get("id")
     if not channel_tab_id:
@@ -2881,7 +2892,7 @@ def get_channels_for_specific_channel_tab(request: WSGIRequest) -> JsonResponse:
         )
         .order_by('title')
     )
-    paginator = Paginator(channels, 10)
+    paginator = Paginator(channels, CHANNELS_PER_BATCH)
     page_obj = paginator.get_page(page_number)
     response = {}
     response["channels"] = get_serialized_channels(request, page_obj.object_list)
@@ -2889,6 +2900,21 @@ def get_channels_for_specific_channel_tab(request: WSGIRequest) -> JsonResponse:
     response["totalPages"] = paginator.num_pages
     response["count"] = len(channels)
     return JsonResponse(response, safe=False)
+
+
+def get_theme_list_for_specific_channel(request: WSGIRequest, slug: str) -> JsonResponse:
+    """
+    Get the themes for a specific channel.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        request (`str`): The channel slug.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
+    channel = Channel.objects.get(slug=slug)
+    return JsonResponse(json.loads(channel.get_all_theme_json()), safe=False)
 
 
 """

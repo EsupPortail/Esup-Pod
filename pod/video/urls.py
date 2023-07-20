@@ -29,6 +29,7 @@ from .views import (
     get_channel_tabs_for_navbar,
     get_comments,
     get_children_comment,
+    get_theme_list_for_specific_channel,
     add_comment,
     delete_comment,
     vote_get,
@@ -189,6 +190,7 @@ urlpatterns += [
     path("get-channels/", get_channels_for_navbar, name="get-channels"),
     path("get-channel-tabs/", get_channel_tabs_for_navbar, name="get-channel-tabs"),
     path("get-channels-for-specific-channel-tab/", get_channels_for_specific_channel_tab, name="get-channels-for-specific-channel-tab"),
+    path("get-themes-for-specific-channel/<slug:slug>/", get_theme_list_for_specific_channel, name="get-themes-for-specific-channel"),
 ]
 
 # DIRECT ACCESS TO A VIDEO
