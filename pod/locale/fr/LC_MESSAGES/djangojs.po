@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-18 12:12+0000\n"
+"POT-Creation-Date: 2023-07-20 13:09+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -552,6 +552,10 @@ msgstr "Ce dossier est vide"
 #: pod/video/static/js/ajax-display-channels.js
 msgid "Channel"
 msgstr "Chaîne"
+
+#: pod/video/static/js/ajax-display-channels.js
+msgid "Channels"
+msgstr "Chaînes"
 
 #: pod/video/static/js/ajax-display-channels.js
 msgid "No channels found"
