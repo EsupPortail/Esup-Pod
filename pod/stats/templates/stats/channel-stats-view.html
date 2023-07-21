@@ -22,11 +22,10 @@
     <h1 class="page_title h2">{{ title }}</h1>
     {% trans "Graph of video evolution for the channel " as graph_title_prefix %}
     {% include "stats/utils/years-video-stats.html" with graph_id="videosEvolutionChart" graph_title=graph_title_prefix|add:channel %}
+
+    {% trans "Breakdown of video status for the channel " as graph_title_prefix %}
+    {% include "stats/utils/pie-chart.html" with graph_id="statusChart" graph_data=status_datas graph_title=graph_title_prefix|add:channel %}
   {% endif %}
-
-  {% trans "Breakdown of video status for the channel " as graph_title_prefix %}
-  {% include "stats/utils/pie-chart.html" with graph_id="statusChart" graph_data=status_datas graph_title=graph_title_prefix|add:channel %}
-
 </div>
 {% endblock content %}
 

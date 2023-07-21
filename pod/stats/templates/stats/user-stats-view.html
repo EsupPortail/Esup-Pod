@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load user_stats %}
+{% load general_stats %}
+{% load favorites_playlist %}
+
+{% block opengraph %}
+  {{ block.super }}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+{% endblock opengraph %}
+
+{% block page_title %}{{ title }}{% endblock page_title %}
+
+{% block page_extra_head %}
+  <link rel="stylesheet" href="{% static 'stats/css/video_stats_view.css' %}?ver={{VERSION}}">
+{% endblock page_extra_head %}
+
+{% block content %}
+<div class="grid-container container">
+  {% if form %}
+    {% include "videos/video-form.html" %}
+  {% else %}
+    <h1 class="page_title h2">{{ title }}</h1>
+
+    <p>
+      <a class="" href="{% url 'playlist:list' %}">
+        {% trans 'Number of playlists' %}
+      </a>
+        : {% get_number_playlist_user %}
+    </p>
+
+    <p>
+        {% trans 'Duration time of videos' %} : {% get_total_time_videos videos %}
+    </p>
+
+    <p>
+      <a class="" href="{% url 'podfile:home' %}">
+        {% trans 'Number of files' %}
+      </a>
+        : {% get_number_files_user %}
+    </p>
+
+    {% get_favorite_playlist user as playlist %}
+    <p>
+      <a class="" href="{% url 'playlist:content' slug=playlist.slug %}">
+        {% trans 'Number of videos added in favorites' %}
+      </a>
+        : {% get_number_favorites_user %}
+    </p>
+
+    <p>
+      <a class="" href="{% url 'video:my_videos' %}">
+        {% trans 'Number of videos' %}
+      </a>
+        : {{ videos|length }}
+    </p>
+
+    <p>
+      <a class="" href="{% url 'meeting:my_meetings' %}">
+        {% trans 'Number of meetings' %}
+      </a>
+        : {% get_number_meetings_user %}
+    </p>
+
+    <p>
+      {% trans 'Prefered video discipline' %} :
+
+      {% if prefered_discipline %}
+        <a class="" href="{% url 'videos:videos' %}?discipline={{ prefered_discipline.slug}}">
+          {{ prefered_discipline }}
+        </a>
+      {% else %}
+        {% trans "No prefered discipline" %}
+      {% endif %}
+    </p>
+
+    <p>
+      {% trans 'Prefered video type' %} :
+      {% if prefered_type %}
+        <a class="" href="{% url 'videos:videos' %}?type={{ prefered_type.slug }}">
+          {{ prefered_type }}
+        </a>
+      {% else %}
+        {% trans "No prefered type" %}
+      {% endif %}
+    </p>
+
+    <p>
+      <a class="" href="{% url 'channels:my_channels' %}">
+        {% trans 'Number of channels' %}
+      </a>
+      : {% get_number_channels_user %}
+    </p>
+
+    {% with user_str=request.user|stringformat:"s" %}
+      {% trans "Graph of video evolution for the user " as graph_title_prefix %}
+      {% include "stats/utils/years-video-stats.html" with graph_id="videosEvolutionChart" graph_title=graph_title_prefix|add:user_str %}
+
+      {% trans "Breakdown of video status for the user " as graph_title_prefix %}
+      {% include "stats/utils/pie-chart.html" with graph_id="statusChart" graph_data=status_datas graph_title=graph_title_prefix|add:user_str %}
+    {% endwith %}
+  {% endif %}
+</div>
+{% endblock content %}

@@ -1,7 +1,15 @@
+from collections import Counter
+from django.shortcuts import get_object_or_404
+from pod.meeting.models import Meeting
 from pod.playlist.apps import FAVORITE_PLAYLIST_NAME
 from pod.playlist.models import Playlist, PlaylistContent
 from django.db.models import Sum
-from pod.playlist.utils import get_playlist_list_for_user
+from pod.playlist.utils import (
+    get_favorite_playlist_for_user,
+    get_number_video_in_playlist,
+    get_playlist_list_for_user,
+)
+from pod.podfile.models import UserFolder
 from pod.video.context_processors import get_available_videos
 from pod.video.models import Video, ViewCount
 from datetime import date
@@ -10,6 +18,7 @@ from django.conf import settings
 from json import dumps
 from datetime import timedelta
 from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
 
 CACHE_EXPIRATION = 2  # Cache expiration time in seconds
 
@@ -193,7 +202,7 @@ def number_videos(request, video_list: None) -> int:
     return number_videos
 
 
-def number_playlist(user: User) -> int():
+def number_playlist(user: User) -> int:
     """
     Get the number of playlists for a user.
 
@@ -204,3 +213,45 @@ def number_playlist(user: User) -> int():
         int: The number of playlist.
     """
     return get_playlist_list_for_user(user).count()
+
+
+def number_files(user: User) -> int:
+    user_home_folder = get_object_or_404(UserFolder, name="home", owner=user)
+    return len(user_home_folder.get_all_files())
+
+
+def number_favorites(user: User) -> int:
+    favorites = get_favorite_playlist_for_user(user)
+    return get_number_video_in_playlist(favorites)
+
+
+def number_meetings(user: User) -> int:
+    return Meeting.objects.filter(owner=user).count()
+
+
+def number_channels(request) -> int:
+    site = get_current_site(request)
+    channels = request.user.owners_channels.all().filter(site=site)
+    return channels.count()
+
+
+def get_most_common_type_discipline(video_list):
+    if len(video_list) > 0:
+        type_counter = Counter()
+        discipline_counter = Counter()
+
+        for video in video_list:
+            if video.type and video.type.slug != "other":
+                type_counter[video.type] += 1
+            if video.discipline.exists():
+                for discipline in video.discipline.all():
+                    discipline_counter[discipline] += 1
+
+        most_common_type = type_counter.most_common(1)[0][0] if type_counter else None
+        most_common_discipline = (
+            discipline_counter.most_common(1)[0][0] if discipline_counter else None
+        )
+    else:
+        most_common_type = None
+        most_common_discipline = None
+    return most_common_type, most_common_discipline

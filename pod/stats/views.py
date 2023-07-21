@@ -1,6 +1,11 @@
 from django.shortcuts import render
 from datetime import date
-from pod.stats.utils import get_videos_stats, get_videos_status_stats
+from pod.playlist.utils import get_favorite_playlist_for_user, get_video_list_for_playlist
+from pod.stats.utils import (
+    get_most_common_type_discipline,
+    get_videos_stats,
+    get_videos_status_stats,
+)
 from pod.video.context_processors import get_available_videos
 from django.contrib.auth.decorators import user_passes_test
 from django.conf import settings
@@ -37,7 +42,9 @@ def get_videos(request, target: str, slug=None, theme=None):
         else:
             title = _("Video statistics for the channel %s") % slug.capitalize()
             videos = Video.objects.filter(channel__slug__istartswith=slug)
-
+    elif target.lower() == "user":
+        title = _("Statistics for user %s") % request.user
+        videos = Video.objects.filter(owner=request.user)
     return (videos, title)
 
 
@@ -127,6 +134,34 @@ def channel_stats_view(request, channel=None, theme=None):
                 "channel": channel,
                 "status_datas": status_datas,
                 "date": date.today(),
+            },
+        )
+    else:
+        date_filter = request.POST.get("periode", date.today())
+        if isinstance(date_filter, str):
+            date_filter = parse(date_filter).date()
+        data = get_videos_stats(videos, date_filter, mode="year")
+        return JsonResponse(data, safe=False)
+
+
+@user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
+def user_stats_view(request):
+    target = "user"
+    videos, title = get_videos(request=request, target=target)
+    if request.method == "GET":
+        status_datas = get_videos_status_stats(videos)
+        prefered_type, prefered_discipline = get_most_common_type_discipline(
+            get_video_list_for_playlist(get_favorite_playlist_for_user(request.user))
+        )
+        return render(
+            request,
+            "stats/user-stats-view.html",
+            {
+                "title": title,
+                "videos": videos,
+                "status_datas": status_datas,
+                "prefered_type": prefered_type,
+                "prefered_discipline": prefered_discipline,
             },
         )
     else:
