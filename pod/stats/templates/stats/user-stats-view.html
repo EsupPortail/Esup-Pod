@@ -68,7 +68,7 @@
       {% trans 'Prefered video discipline' %} :
 
       {% if prefered_discipline %}
-        <a class="" href="{% url 'videos:videos' %}?discipline={{ prefered_discipline.slug}}">
+        <a class="" href="{% url 'videos:videos' %}?discipline={{ prefered_discipline.slug }}">
           {{ prefered_discipline }}
         </a>
       {% else %}

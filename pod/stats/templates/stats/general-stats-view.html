@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load user_stats %}
+{% load general_stats %}
+{% load favorites_playlist %}
+
+{% block opengraph %}
+  {{ block.super }}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+{% endblock opengraph %}
+
+{% block page_title %}{{ title }}{% endblock page_title %}
+
+{% block page_extra_head %}
+  <link rel="stylesheet" href="{% static 'stats/css/video_stats_view.css' %}?ver={{VERSION}}">
+{% endblock page_extra_head %}
+
+{% block content %}
+<div class="grid-container container">
+  {% if form %}
+    {% include "videos/video-form.html" %}
+  {% else %}
+    <h1 class="page_title h2">{{ title }}</h1>
+
+    <p>
+      {% trans 'Most popular discipline' %} :
+
+      {% if prefered_discipline %}
+        <a class="" href="{% url 'videos:videos' %}?discipline={{ prefered_discipline.slug }}">
+          {{ prefered_discipline }}
+        </a>
+      {% else %}
+        {% trans "No popular discipline" %}
+      {% endif %}
+    </p>
+
+    <p>
+      {% trans 'Most popular video type' %} :
+      {% if prefered_type %}
+        <a class="" href="{% url 'videos:videos' %}?type={{ prefered_type.slug }}">
+          {{ prefered_type }}
+        </a>
+      {% else %}
+        {% trans "No popular video type" %}
+      {% endif %}
+    </p>
+
+    {% trans "Graph of video evolution for " as graph_title_prefix %}
+    {% include "stats/utils/years-video-stats.html" with graph_id="videosEvolutionChart" graph_title=graph_title_prefix|add:TITLE_ETB %}
+
+    {% trans "Breakdown of video status for " as graph_title_prefix %}
+    {% include "stats/utils/pie-chart.html" with graph_id="statusChart" graph_data=status_datas graph_title=graph_title_prefix|add:TITLE_ETB %}
+  {% endif %}
+</div>
+{% endblock content %}

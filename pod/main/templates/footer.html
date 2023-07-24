@@ -33,5 +33,10 @@
     </div>
   </div>
   <p class="hidden-pod pod-footer__credits" style="text-align:center">{{TITLE_SITE}} {% trans "video platform of" %} {{TITLE_ETB}} - <a href="https://github.com/EsupPortail/Esup-Pod/releases/tag/{{VERSION}}" target="_blank" title="GitHub">{% trans "Release" %} {{VERSION}}</a>  - {% get_number_videos %} {% trans "videos availables" %} [ {% get_total_time_videos %} ]</p>
+  <p class="hidden-pod pod-footer__credits" style="text-align:center">
+    <a href="{% url 'stats:general-stats' %}" target="_blank" title="Site statistics">
+      {% trans "See more statistics" %}
+    </a>
+  </p>
 </div>
 {% endspaceless %}

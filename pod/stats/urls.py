@@ -3,6 +3,7 @@ from django.conf import settings
 
 from .views import (
     channel_stats_view,
+    general_stats_view,
     to_do,
     user_stats_view,
     video_stats_view,
@@ -12,7 +13,7 @@ app_name = "stats"
 
 if getattr(settings, "USE_STATS_VIEW", False):
     urlpatterns = [
-        path("", to_do, name="general-stats"),
+        path("", general_stats_view, name="general-stats"),
         # USERS
         path("my-stats/", user_stats_view, name="my-stats"),
         # VIDEOS

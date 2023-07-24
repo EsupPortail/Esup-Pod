@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-20 11:22+0000\n"
+"POT-Creation-Date: 2023-07-24 06:58+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -4229,6 +4229,10 @@ msgstr ""
 msgid "videos availables"
 msgstr ""
 
+#: pod/main/templates/footer.html
+msgid "See more statistics"
+msgstr ""
+
 #: pod/main/templates/mail/mail.html pod/main/templates/mail/mail_sender.html
 msgid "Hello"
 msgstr ""
@@ -4377,10 +4381,12 @@ msgid "Your statistics"
 msgstr ""
 
 #: pod/main/templates/navbar.html
+#: pod/stats/templates/stats/user-stats-view.html
 msgid "Number of videos"
 msgstr ""
 
 #: pod/main/templates/navbar.html
+#: pod/stats/templates/stats/user-stats-view.html
 msgid "Number of playlists"
 msgstr ""
 
@@ -6045,6 +6051,74 @@ msgstr ""
 msgid "Breakdown of video status for the channel "
 msgstr ""
 
+#: pod/stats/templates/stats/general-stats-view.html
+msgid "Most popular discipline"
+msgstr ""
+
+#: pod/stats/templates/stats/general-stats-view.html
+msgid "No popular discipline"
+msgstr ""
+
+#: pod/stats/templates/stats/general-stats-view.html
+msgid "Most popular video type"
+msgstr ""
+
+#: pod/stats/templates/stats/general-stats-view.html
+msgid "No popular video type"
+msgstr ""
+
+#: pod/stats/templates/stats/general-stats-view.html
+msgid "Graph of video evolution for "
+msgstr ""
+
+#: pod/stats/templates/stats/general-stats-view.html
+msgid "Breakdown of video status for "
+msgstr ""
+
+#: pod/stats/templates/stats/user-stats-view.html
+msgid "Duration time of videos"
+msgstr ""
+
+#: pod/stats/templates/stats/user-stats-view.html
+msgid "Number of files"
+msgstr ""
+
+#: pod/stats/templates/stats/user-stats-view.html
+msgid "Number of videos added in favorites"
+msgstr ""
+
+#: pod/stats/templates/stats/user-stats-view.html
+msgid "Number of meetings"
+msgstr ""
+
+#: pod/stats/templates/stats/user-stats-view.html
+msgid "Prefered video discipline"
+msgstr ""
+
+#: pod/stats/templates/stats/user-stats-view.html
+msgid "No prefered discipline"
+msgstr ""
+
+#: pod/stats/templates/stats/user-stats-view.html
+msgid "Prefered video type"
+msgstr ""
+
+#: pod/stats/templates/stats/user-stats-view.html
+msgid "No prefered type"
+msgstr ""
+
+#: pod/stats/templates/stats/user-stats-view.html
+msgid "Number of channels"
+msgstr ""
+
+#: pod/stats/templates/stats/user-stats-view.html
+msgid "Graph of video evolution for the user "
+msgstr ""
+
+#: pod/stats/templates/stats/user-stats-view.html
+msgid "Breakdown of video status for the user "
+msgstr ""
+
 #: pod/stats/templates/stats/utils/pie-chart.html
 #: pod/stats/templates/stats/utils/video-stats.html
 #: pod/stats/templates/stats/utils/years-video-stats.html
@@ -6099,6 +6173,15 @@ msgstr ""
 #: pod/stats/views.py
 #, python-format
 msgid "Video statistics for the channel %s"
+msgstr ""
+
+#: pod/stats/views.py
+#, python-format
+msgid "Statistics for user %s"
+msgstr ""
+
+#: pod/stats/views.py
+msgid "Site statistics"
 msgstr ""
 
 #: pod/stats/views.py

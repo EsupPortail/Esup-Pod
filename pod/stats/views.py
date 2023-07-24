@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 from datetime import date
 from pod.playlist.utils import get_favorite_playlist_for_user, get_video_list_for_playlist
@@ -45,6 +46,9 @@ def get_videos(request, target: str, slug=None, theme=None):
     elif target.lower() == "user":
         title = _("Statistics for user %s") % request.user
         videos = Video.objects.filter(owner=request.user)
+    elif target.lower() == "general":
+        title = _("Site statistics")
+        videos = available_videos
     return (videos, title)
 
 
@@ -160,6 +164,34 @@ def user_stats_view(request):
                 "title": title,
                 "videos": videos,
                 "status_datas": status_datas,
+                "prefered_type": prefered_type,
+                "prefered_discipline": prefered_discipline,
+            },
+        )
+    else:
+        date_filter = request.POST.get("periode", date.today())
+        if isinstance(date_filter, str):
+            date_filter = parse(date_filter).date()
+        data = get_videos_stats(videos, date_filter, mode="year")
+        return JsonResponse(data, safe=False)
+
+
+@user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
+def general_stats_view(request):
+    target = "general"
+    videos, title = get_videos(request=request, target=target)
+    if request.method == "GET":
+        status_datas_json = get_videos_status_stats(videos)
+        status_datas = json.loads(status_datas_json)
+        status_datas.pop("draft", None)
+        prefered_type, prefered_discipline = get_most_common_type_discipline(videos)
+        return render(
+            request,
+            "stats/general-stats-view.html",
+            {
+                "title": title,
+                "videos": videos,
+                "status_datas": json.dumps(status_datas),
                 "prefered_type": prefered_type,
                 "prefered_discipline": prefered_discipline,
             },
