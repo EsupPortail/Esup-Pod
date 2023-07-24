@@ -244,7 +244,7 @@ def check_file_exists(source_url):
         return False
 
 
-def verify_video_existsandsize(video_url):
+def verify_video_exists_and_size(video_url):
     """Check that the video file exists and its size does not exceed the limit.
 
     Args:
@@ -280,7 +280,7 @@ def check_video_size(video_size):
         msg["error"] = _("File too large.")
         msg["message"] = _(
             "The size of the video file exceeds "
-            "the maximum allowed value (%s Gb)."
+            "the maximum allowed value, %s Gb."
         ) % MAX_UPLOAD_SIZE_ON_IMPORT
         raise ValueError(msg)
 
