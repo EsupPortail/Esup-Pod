@@ -1,10 +1,12 @@
 from django.template import Library
+from pod.playlist.models import Playlist
 
 from pod.video.models import Video
 
-from ..utils import (
+from pod.playlist.utils import (
     get_count_video_added_in_playlist as total_additions_playlist_utils,
     get_total_favorites_video as total_favorites_utils,
+    get_number_video_in_playlist as total_videos_in_playlist,
 )
 
 register = Library()
@@ -36,3 +38,8 @@ def get_count_video_added_in_playlist(video: Video) -> int:
         int: The number of videos added in playlists.
     """
     return total_additions_playlist_utils(video)
+
+
+@register.simple_tag(name="get_number_video_in_playlist")
+def get_number_video_in_playlist(playlist: Playlist) -> int:
+    return total_videos_in_playlist(playlist)

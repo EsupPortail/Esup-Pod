@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% load playlist_stats %}
+{% load general_stats %}
 
 {% block opengraph %}
   {{ block.super }}
@@ -36,9 +37,40 @@
       </p>
       {% trans "Graph of video evolution of " as graph_title_prefix %}
       {% include "stats/utils/video-stats.html" with graph_id="videoEvolutionChart" graph_title=graph_title_prefix|add:slug %}
+
+
     {% else %}
+      <p>
+        {% trans 'Most popular discipline' %} :
+
+        {% if prefered_discipline %}
+          <a class="" href="{% url 'videos:videos' %}?discipline={{ prefered_discipline.slug }}">
+            {{ prefered_discipline }}
+          </a>
+        {% else %}
+          {% trans "No popular discipline" %}
+        {% endif %}
+      </p>
+
+      <p>
+        {% trans 'Most popular video type' %} :
+        {% if prefered_type %}
+          <a class="" href="{% url 'videos:videos' %}?type={{ prefered_type.slug }}">
+            {{ prefered_type }}
+          </a>
+        {% else %}
+          {% trans "No popular video type" %}
+        {% endif %}
+      </p>
+
+      <p>
+        Nombre de vidéos : {% get_number_videos %}
+      </p>
       {% trans "Graph of video evolution " as graph_title_prefix %}
       {% include "stats/utils/years-video-stats.html" with graph_id="videosEvolutionChart" graph_title=graph_title_prefix %}
+
+      {% trans "Breakdown of video status " as graph_title_prefix %}
+      {% include "stats/utils/pie-chart.html" with graph_id="statusChart" graph_data=status_datas graph_title=graph_title_prefix %}
     {% endif %}
   {% endif %}
 </div>

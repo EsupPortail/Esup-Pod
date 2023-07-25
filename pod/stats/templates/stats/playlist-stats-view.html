@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load playlist_stats %}
+
+{% block opengraph %}
+  {{ block.super }}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+{% endblock opengraph %}
+
+{% block page_title %}{{ title }}{% endblock page_title %}
+
+{% block page_extra_head %}
+  <link rel="stylesheet" href="{% static 'stats/css/video_stats_view.css' %}?ver={{VERSION}}">
+{% endblock page_extra_head %}
+
+{% block content %}
+<div class="grid-container container">
+  {% if form %}
+    {% include "videos/video-form.html" %}
+  {% else %}
+    <h1 class="page_title h2">{{ title }}</h1>
+    {% if playlist %}
+      <p>
+        Nombre de vidéos : {% get_number_video_in_playlist playlist %}
+      </p>
+
+      <p class="playlist-visibility">
+        {% trans "Right of access" %} : {% include "playlist/playlist_visibility_icon.html" with playlist=playlist %}
+      </p>
+      {% trans "Graph of video evolution " as graph_title_prefix %}
+      {% include "stats/utils/years-video-stats.html" with graph_id="videosEvolutionChart" graph_title=graph_title_prefix %}
+
+      {% trans "Breakdown of video status for the playlist " as graph_title_prefix %}
+      {% include "stats/utils/pie-chart.html" with graph_id="statusChart" graph_data=status_datas graph_title=graph_title_prefix|add:playlist.name %}
+    {% else %}
+      BONJOUR
+    {% endif %}
+  {% endif %}
+</div>
+{% endblock content %}

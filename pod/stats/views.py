@@ -1,6 +1,7 @@
 import json
 from django.shortcuts import render
 from datetime import date
+from pod.playlist.models import Playlist
 from pod.playlist.utils import get_favorite_playlist_for_user, get_video_list_for_playlist
 from pod.stats.utils import (
     get_most_common_type_discipline,
@@ -22,7 +23,7 @@ from django.shortcuts import redirect
 VIEW_STATS_AUTH = getattr(settings, "VIEW_STATS_AUTH", False)
 
 
-def get_videos(request, target: str, slug=None, theme=None):
+def get_videos(request, target: str, slug=None, channel=None, theme=None, playlist=None):
     title = _("Video statistics")
     available_videos = get_available_videos()
     videos = []
@@ -37,18 +38,27 @@ def get_videos(request, target: str, slug=None, theme=None):
         else:
             videos = available_videos
     elif target.lower() == "channel":
-        if theme:
+        if channel and theme:
             title = _("Video statistics for the theme %s") % theme.capitalize()
             videos = Video.objects.filter(theme__slug__istartswith=theme)
-        else:
+        elif channel and not theme:
             title = _("Video statistics for the channel %s") % slug.capitalize()
             videos = Video.objects.filter(channel__slug__istartswith=slug)
+        else:
+            title = _("Statistics for channels")
     elif target.lower() == "user":
         title = _("Statistics for user %s") % request.user
         videos = Video.objects.filter(owner=request.user)
     elif target.lower() == "general":
         title = _("Site statistics")
         videos = available_videos
+    elif target.lower() == "playlist":
+        if playlist:
+            playlist = Playlist.objects.get(slug=playlist)
+            title = _("Statistics for the playlist %s") % playlist.name
+            videos = Video.objects.filter(playlistcontent__playlist=playlist)
+        else:
+            title = _("Statistics for playlists")
     return (videos, title)
 
 
@@ -72,7 +82,22 @@ def video_stats_view(request, video=None):
             )
 
     if request.method == "GET" and not video and videos:
-        return render(request, "stats/video-stats-view.html", {"title": title})
+        status_datas_json = get_videos_status_stats(videos)
+        status_datas = json.loads(status_datas_json)
+        status_datas.pop("draft", None)
+        prefered_type, prefered_discipline = get_most_common_type_discipline(videos)
+
+        return render(
+            request,
+            "stats/video-stats-view.html",
+            {
+                "title": title,
+                "videos": videos,
+                "status_datas": json.dumps(status_datas),
+                "prefered_type": prefered_type,
+                "prefered_discipline": prefered_discipline,
+            },
+        )
     else:
         date_filter = request.POST.get("periode", date.today())
         if isinstance(date_filter, str):
@@ -128,18 +153,28 @@ def channel_stats_view(request, channel=None, theme=None):
     target = "channel"
     videos, title = get_videos(request=request, target=target, slug=channel, theme=theme)
 
-    if request.method == "GET" and channel and videos:
-        status_datas = get_videos_status_stats(videos)
-        return render(
-            request,
-            "stats/channel-stats-view.html",
-            {
-                "title": title,
-                "channel": channel,
-                "status_datas": status_datas,
-                "date": date.today(),
-            },
-        )
+    if request.method == "GET":
+        if channel:
+            status_datas = get_videos_status_stats(videos)
+            return render(
+                request,
+                "stats/channel-stats-view.html",
+                {
+                    "title": title,
+                    "channel": channel,
+                    "status_datas": status_datas,
+                    "date": date.today(),
+                },
+            )
+        else:
+            return render(
+                request,
+                "stats/channel-stats-view.html",
+                {
+                    "title": title,
+                },
+            )
+
     else:
         date_filter = request.POST.get("periode", date.today())
         if isinstance(date_filter, str):
@@ -196,6 +231,47 @@ def general_stats_view(request):
                 "prefered_discipline": prefered_discipline,
             },
         )
+    else:
+        date_filter = request.POST.get("periode", date.today())
+        if isinstance(date_filter, str):
+            date_filter = parse(date_filter).date()
+        data = get_videos_stats(videos, date_filter, mode="year")
+        return JsonResponse(data, safe=False)
+
+
+@user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
+def playlist_stats_view(request, playlist=None):
+    target = "playlist"
+    videos, title = get_videos(request=request, target=target, playlist=playlist)
+    if request.method == "GET":
+        if playlist:
+            status_datas = get_videos_status_stats(videos)
+            prefered_type, prefered_discipline = get_most_common_type_discipline(videos)
+            playlist = Playlist.objects.get(slug=playlist)
+            return render(
+                request,
+                "stats/playlist-stats-view.html",
+                {
+                    "title": title,
+                    "videos": videos,
+                    "status_datas": status_datas,
+                    "prefered_type": prefered_type,
+                    "prefered_discipline": prefered_discipline,
+                    "playlist": playlist,
+                },
+            )
+        else:
+            return render(
+                request,
+                "stats/playlist-stats-view.html",
+                {
+                    "title": title,
+                    # "status_datas": status_datas,
+                    # "prefered_type": prefered_type,
+                    # "prefered_discipline": prefered_discipline,
+                    # "playlist": playlist,
+                },
+            )
     else:
         date_filter = request.POST.get("periode", date.today())
         if isinstance(date_filter, str):

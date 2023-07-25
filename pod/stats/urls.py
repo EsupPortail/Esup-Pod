@@ -4,6 +4,7 @@ from django.conf import settings
 from .views import (
     channel_stats_view,
     general_stats_view,
+    playlist_stats_view,
     to_do,
     user_stats_view,
     video_stats_view,
@@ -28,8 +29,8 @@ if getattr(settings, "USE_STATS_VIEW", False):
             name="channels-stats",
         ),
         # PLAYLISTS
-        path("playlists/", to_do, name="playlist-stats"),
-        path("playlists/<slug:playlist>", to_do, name="playlist-stats"),
+        path("playlists/", playlist_stats_view, name="playlist-stats"),
+        path("playlists/<slug:playlist>", playlist_stats_view, name="playlist-stats"),
         # MEETINGS
         path("meetings/", to_do, name="meeting-stats"),
         path("meetings/<slug:meetings>", to_do, name="meeting-stats"),

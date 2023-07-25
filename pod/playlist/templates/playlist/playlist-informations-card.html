@@ -28,4 +28,7 @@
     </div>
     {% endif %}
   </div>
+  {% if USE_STATS_VIEW %}
+    <a href="{% url 'stats:playlist-stats' playlist %}" title="{% trans 'Show statistics for the playlist' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm"><i class="bi bi-graph-up"></i> {% trans "Statistics" %}</a>
+  {% endif %}
 </div>
