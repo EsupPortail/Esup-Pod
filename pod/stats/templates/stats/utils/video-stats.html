@@ -6,10 +6,10 @@
     <label for="end-date-{{ graph_id }}">{% trans "End date" %}</label>
     <input type="date" id="end-date-{{ graph_id }}" name="end-date">
 </div>
-<canvas id="{{ graph_id }}"></canvas>
-<button class="btn btn-primary btn-sm ps-2 pe-2 mb-3 d-flex" id="export-btn-{{ graph_id }}" type="button">{% trans "Export to CSV" %}</button>
-<div id="pager"></div>
-
+<div class="text-center mb-5">
+    <canvas id="{{ graph_id }}"></canvas>
+    <button class="btn btn-primary btn-sm mt-1" id="export-btn-{{ graph_id }}" type="button">{% trans "Export to CSV" %}</button>
+</div>
 {% block more_script %}
 <script>
     var graph_title="{{ graph_title }}";

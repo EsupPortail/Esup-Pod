@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% load playlist_stats %}
+{% load general_stats %}
 
 {% block opengraph %}
   {{ block.super }}
@@ -23,9 +24,11 @@
     <h1 class="page_title h2">{{ title }}</h1>
     {% if playlist %}
       <p>
-        Nombre de vidéos : {% get_number_video_in_playlist playlist %}
+        {% trans "Number of videos" %} : {% get_number_video_in_playlist playlist %}
       </p>
-
+      <p>
+        {% trans 'Playlist playback time' %} : {% get_total_time_videos videos %}
+      </p>
       <p class="playlist-visibility">
         {% trans "Right of access" %} : {% include "playlist/playlist_visibility_icon.html" with playlist=playlist %}
       </p>

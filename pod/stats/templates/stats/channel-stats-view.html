@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static i18n %}
+{% load user_stats %}
 
 {% block opengraph %}
   {{ block.super }}
@@ -28,9 +29,10 @@
       {% include "stats/utils/pie-chart.html" with graph_id="statusChart" graph_data=status_datas graph_title=graph_title_prefix|add:channel %}
     {% else %}
       <p>
-        {% trans 'Number of channels' %} : {% comment "TODO nombre de chaine" %}{% endcomment %}
+        {% trans 'Number of channels' %} : {% get_number_channels %}
       </p>
-      {% comment "TODO Breakdown visibilité de la chaine visible ou private" %}{% endcomment %}
+      {% trans "Breakdown of channels visibility status " as graph_title_prefix %}
+      {% include "stats/utils/pie-chart.html" with graph_id="statusChart" graph_data=visibility_datas graph_title=graph_title_prefix %}
     {% endif %}
   {% endif %}
 </div>

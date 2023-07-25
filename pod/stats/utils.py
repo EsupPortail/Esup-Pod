@@ -11,7 +11,7 @@ from pod.playlist.utils import (
 )
 from pod.podfile.models import UserFolder
 from pod.video.context_processors import get_available_videos
-from pod.video.models import Video, ViewCount
+from pod.video.models import Channel, Video, ViewCount
 from datetime import date
 from django.core.cache import cache
 from django.conf import settings
@@ -229,10 +229,23 @@ def number_meetings(user: User) -> int:
     return Meeting.objects.filter(owner=user).count()
 
 
-def number_channels(request) -> int:
+def number_channels(request, target=None) -> int:
     site = get_current_site(request)
-    channels = request.user.owners_channels.all().filter(site=site)
-    return channels.count()
+    if target == "user":
+        return request.user.owners_channels.all().filter(site=site).count()
+    return Channel.objects.all().filter(site=site).distinct().count()
+
+
+def get_channels_visibility_stats(channel_list: list) -> dict:
+    stats = {}
+    number_channels = len(channel_list)
+
+    visible_channels = channel_list.filter(visible=True).count()
+    private_channels = number_channels - visible_channels
+
+    stats["visible"] = visible_channels
+    stats["private"] = private_channels
+    return dumps(stats)
 
 
 def get_most_common_type_discipline(video_list):

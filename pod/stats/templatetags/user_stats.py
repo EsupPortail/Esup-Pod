@@ -55,7 +55,7 @@ def get_number_meetings_user(context):
     return number_meetings(request.user)
 
 
-@register.simple_tag(takes_context=True, name="get_number_channels_user")
-def get_number_channels_user(context):
+@register.simple_tag(takes_context=True, name="get_number_channels")
+def get_number_channels(context, target=None):
     request = context["request"]
-    return number_channels(request)
+    return number_channels(request, target)

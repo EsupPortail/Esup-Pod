@@ -4,6 +4,7 @@ from datetime import date
 from pod.playlist.models import Playlist
 from pod.playlist.utils import get_favorite_playlist_for_user, get_video_list_for_playlist
 from pod.stats.utils import (
+    get_channels_visibility_stats,
     get_most_common_type_discipline,
     get_videos_stats,
     get_videos_status_stats,
@@ -16,9 +17,10 @@ from django.http import HttpResponseNotFound
 from dateutil.parser import parse
 from django.http import JsonResponse
 from pod.video.forms import VideoPasswordForm
-from pod.video.models import Video
+from pod.video.models import Channel, Video
 from pod.video.views import get_video_access
 from django.shortcuts import redirect
+from django.contrib.sites.shortcuts import get_current_site
 
 VIEW_STATS_AUTH = getattr(settings, "VIEW_STATS_AUTH", False)
 
@@ -167,11 +169,15 @@ def channel_stats_view(request, channel=None, theme=None):
                 },
             )
         else:
+            site = get_current_site(request)
+            channels = Channel.objects.all().filter(site=site).distinct()
+            visibility_datas = get_channels_visibility_stats(channels)
             return render(
                 request,
                 "stats/channel-stats-view.html",
                 {
                     "title": title,
+                    "visibility_datas": visibility_datas,
                 },
             )
 

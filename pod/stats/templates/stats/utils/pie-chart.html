@@ -1,8 +1,8 @@
 {% load static i18n %}
-
-<canvas id="{{ graph_id }}"></canvas>
-<button class="btn btn-primary btn-sm ps-2 pe-2 mb-3 d-flex" id="export-btn-{{ graph_id }}" type="button">{% trans "Export to CSV" %}</button>
-
+<div class="text-center mb-5">
+  <canvas id="{{ graph_id }}"></canvas>
+  <button class="btn btn-primary btn-sm mt-1" id="export-btn-{{ graph_id }}" type="button">{% trans "Export to CSV" %}</button>
+</div>
 {% block more_script %}
 <script src="{% static 'chart.js/dist/chart.umd.js' %}?ver={{VERSION}}" charset="utf-8"></script>
 

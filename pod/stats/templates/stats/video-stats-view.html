@@ -64,8 +64,13 @@
       </p>
 
       <p>
-        Nombre de vidéos : {% get_number_videos %}
+        {% trans "Number of videos" %} : {% get_number_videos %}
       </p>
+
+      <p>
+        {% trans 'Duration time of videos' %} : {% get_total_time_videos videos %}
+      </p>
+
       {% trans "Graph of video evolution " as graph_title_prefix %}
       {% include "stats/utils/years-video-stats.html" with graph_id="videosEvolutionChart" graph_title=graph_title_prefix %}
 
