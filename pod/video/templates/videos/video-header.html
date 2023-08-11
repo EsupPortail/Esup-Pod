@@ -73,13 +73,13 @@
 <!-- chapitre : depuis videojs7, plus besoin de plugin js https://docs.videojs.com/tutorial-text-tracks.html -->
 <link href="{% static 'css/videojs-chapters.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'js/videojs-chapters.js' %}?ver={{VERSION}}"></script>
-{% if video.overview %}
+{% if video.overview or playlist_in_get %}
 
   <link id="overview_style_id" href="{% static 'videojs-vtt-thumbnails/dist/videojs-vtt-thumbnails.css' %}?ver={{VERSION}}" rel="stylesheet">
   <script id="overview_script_id" src="{% static 'videojs-vtt-thumbnails/dist/videojs-vtt-thumbnails.min.js' %}?ver={{VERSION}}"></script>
 {% endif %}
 
-{% if video.overlay_set.all and not enrichment %}
+{% if video.overlay_set.all and not enrichment or playlist_in_get %}
   <link id="overlay_style_id" href="{% static 'videojs-overlay/dist/videojs-overlay.css' %}?ver={{VERSION}}" rel="stylesheet">
   <script id="overlay_script_id" src="{% static 'videojs-overlay/dist/videojs-overlay.min.js' %}?ver={{VERSION}}"></script>
 {% endif %}
@@ -88,7 +88,7 @@
   <link href="{% static 'playlist/css/playlist.css' %}?ver={{VERSION}}" rel="stylesheet">
 {% endif %}
 
-{% if video.is_360 %}
+{% if video.is_360 or playlist_in_get %}
   <link id="vr360_style_id" href="{% static 'videojs-vr/dist/videojs-vr.css' %}?ver={{VERSION}}" rel="stylesheet">
   <script id="vr360_script_id" src="{% static 'videojs-vr/dist/videojs-vr.min.js' %}?ver={{VERSION}}"></script>
 {% endif %}

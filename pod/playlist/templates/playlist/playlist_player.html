@@ -2,6 +2,9 @@
 {% load playlist_buttons %}
 {% load favorites_playlist %}
 
+{% load static custom_tags video_tags %}
+
+
 {% block page_extra_head %}
     <link rel="stylesheet" href="{% static 'playlist/css/playlist.css' %}?ver={{VERSION}}">
 {% endblock page_extra_head %}
@@ -14,7 +17,23 @@
     <div {% if videos|length > 5 %}class="scroll-container"{% endif %}>
         {% for video_in_playlist in videos %}
             {% can_see_playlist_video video_in_playlist as can_see_video %}
-                <a {% if can_see_video %}href="{% url 'video:video' video_in_playlist.slug %}?playlist={{ playlist_in_get.slug }}"{% endif %} id="{{ forloop.counter }}" class="player-element card-body card-text border mb-1 mt-4 d-flex flex-row {% if video_in_playlist == video %}selected{% endif %} {% if can_see_video == False %}disabled{% endif %}" data-video-href="{% url 'video:video' video_in_playlist.slug %}">
+                <a
+                    {% if can_see_video %}
+                        href="{% url 'video:video' video_in_playlist.slug %}?playlist={{ playlist_in_get.slug }}"
+                    {% endif %}
+                    id="{{ forloop.counter }}"
+                    class="player-element card-body card-text border mb-1 mt-4 d-flex flex-row
+                    {% if video_in_playlist == video %}selected{% endif %}
+                    {% if can_see_video == False %}disabled{% endif %}"
+                    data-video-href="{% url 'video:video' video_in_playlist.slug %}"
+                    data-video-mp4-json={{ video_in_playlist.get_video_mp4_json|safe }}
+                    data-src="{{ video_in_playlist.get_playlist_master.source_file.url }}"
+                    data-encoding-format="{{ video_in_playlist.get_playlist_master.encoding_format }}"
+                    data-is-360="{{ video_in_playlist.is_360 }}"
+                    {% if video_in_playlist.overview %}
+                        data-vtt-thumbnails-src="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video_in_playlist.overview.url}}?date={{video_in_playlist.overview|file_date_created}}"
+                    {% endif %}
+                >
                     <span class="rank d-flex align-self-center">
                         {% if video_in_playlist == video %}
                             <i class="bi bi-caret-right-fill"></i>

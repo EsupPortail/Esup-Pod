@@ -107,8 +107,6 @@ player.on('firstplay', function(){
 {% if video.is_video %}
   /** get all mp4 format **/
   var mp4_sources = {{ video.get_video_mp4_json|safe }};
-  {% if playlist_in_get %}
-  {% endif %}
 
   {% if video.get_playlist_master %}
     var srcOptions = {
