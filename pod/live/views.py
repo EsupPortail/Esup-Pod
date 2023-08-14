@@ -138,7 +138,7 @@ def direct(request, slug):  # affichage du flux d'un diffuseur
 
 
 def get_broadcaster_by_slug(slug, site):
-    if type(slug) == int:
+    if isinstance(slug, int):
         return get_object_or_404(Broadcaster, id=slug, building__sites=site)
     else:
         return get_object_or_404(Broadcaster, slug=slug, building__sites=site)
