@@ -13,26 +13,32 @@ function switchToNextVideo() {
     let nextElement = playerElements[currentIndex + 1];
     if (!(nextElement.classList.contains('disabled'))) {
         const videoSrc = playerElements[currentIndex + 1].getAttribute('href');
-        // window.location.href = playerElements[currentIndex + 1].getAttribute('href');
-        refreshElementWithDocumentFragment('#collapseAside', videoSrc);
-        refreshElementWithDocumentFragment('#info-video', videoSrc);
-        refreshElementWithDocumentFragment('title', videoSrc);
-        let srcOptions = {
-            src: nextElement.getAttribute('data-src'),
-            type: nextElement.getAttribute('data-encoding-format'),
-        };
-        let player = videojs.getPlayer('podvideoplayer');
-        player = videojs('podvideoplayer', options, function(){});
-        player.setAttribute('data-vr', true);
-        player.src(srcOptions);
-        // TODO Replace the vtt thumbnails
-        // checkVttThumbnails(player, nextElement);
-        checkVr(player, nextElement);
-        updateActiveBreadcrumb(nextElement);
-        updateUrl(nextElement.getAttribute('href'));
-        videojs('podvideoplayer').ready(function () {
-            this.play();
-        });
+        if (nextElement.getAttribute('data-chapter') || playerElements[currentIndex].getAttribute('data-chapter')) {
+            window.location.href = videoSrc;
+        }
+        else {
+            refreshElementWithDocumentFragment('#collapseAside', videoSrc);
+            refreshElementWithDocumentFragment('#info-video', videoSrc);
+            refreshElementWithDocumentFragment('title', videoSrc);
+            refreshElementWithDocumentFragment('#chapter-for-playlist', videoSrc);
+            let srcOptions = {
+                src: nextElement.getAttribute('data-src'),
+                type: nextElement.getAttribute('data-encoding-format'),
+            };
+            let player = videojs.getPlayer('podvideoplayer');
+            player = videojs('podvideoplayer', options, function(){});
+            player.setAttribute('data-vr', true);
+            player.src(srcOptions);
+            // TODO Replace the vtt thumbnails
+            // checkVttThumbnails(player, nextElement);
+            checkVr(player, nextElement);
+            // checkChapters(player, nextElement);
+            updateActiveBreadcrumb(nextElement);
+            updateUrl(nextElement.getAttribute('href'));
+            videojs('podvideoplayer').ready(function () {
+                this.play();
+            });
+        }
     } else {
         switchToNextVideo();
     }
@@ -58,6 +64,50 @@ function updateActiveBreadcrumb(nextElement) {
  */
 function updateUrl(newUrl) {
     history.pushState({}, document.title, newUrl);
+}
+
+
+function checkChapters(player, nextElement) {
+    const chaptersExist = nextElement.getAttribute('data-chapter');
+    if (chaptersExist) {
+        const chaptersJSON = JSON.parse(chaptersExist).chapters;
+        const chapterUlElement = document.createElement('ul');
+        chapterUlElement.id = 'chapters';
+        let contentUl = '';
+        for (let chapterId = 0; chapterId < chaptersJSON.length; chapterId++) {
+            console.log(chapterId);
+            contentUl += `
+                <li data-start="${chapterId + 1}"
+                    data-id="${chapterId + 1}"
+                    data-title="${chaptersJSON[chapterId].title}">
+                    ${chaptersJSON[chapterId].title}
+                </li>
+            `;
+            chapterUlElement.textContent = contentUl;
+            console.log('chapterUlElement', chapterUlElement);
+        }
+        console.log('document.getElementById("podvideoplayer")', document.getElementById("podvideoplayer"));
+        document.getElementById("podvideoplayer").content += `
+            <div class="chapters-list inactive" role="menu">
+                <h6><span class="vjs-icon-chapters"></span>${gettext('Chapters')}</h6>
+                <ol id="chapters-list"></ol>
+            </div>
+        `;
+        document.getElementById("podvideoplayer").textContent += chapterUlElement.textContent;
+        console.log(JSON.parse(chaptersExist).chapters);
+
+        const chaptersData = [
+            { id: 1, title: "Chapter 1", start: 0 },
+            { id: 2, title: "Chapter 2", start: 5 },
+            // ... autres chapitres
+        ];
+        player.videoJsChapters({ ui: true });
+        player.createChapters(chapterUlElement.querySelectorAll("li"));
+        document.querySelector('.vjs-big-play-button').style.zIndex = '2';
+        document.querySelector('.vjs-control-bar').style.zIndex = '3';
+    } else {
+        alert('No chapter');
+    }
 }
 
 

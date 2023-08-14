@@ -146,6 +146,9 @@ player.on('firstplay', function(){
     player.vttThumbnails({
       src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}?date={{video.overview|file_date_created}}'
     });
+    player.vttThumbnails({
+      src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}?date={{video.overview|file_date_created}}'
+    });
   {% endif %}
 
   {% if video.overlay_set.all %}
@@ -189,11 +192,10 @@ player.on('firstplay', function(){
   {% endif %}
 {% endif %}
 
-
 {% if video.chapter_set.all %}
   player.videoJsChapters();
-  $('.vjs-big-play-button').css('z-index', 2)
-  $('.vjs-control-bar').css('z-index', 3);
+  document.querySelector('.vjs-big-play-button').style.zIndex = '2';
+  document.querySelector('.vjs-control-bar').style.zIndex = '3';
 {% endif %}
 
 {% if video_event_tracking %}

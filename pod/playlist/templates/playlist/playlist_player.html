@@ -33,6 +33,9 @@
                     {% if video_in_playlist.overview %}
                         data-vtt-thumbnails-src="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video_in_playlist.overview.url}}?date={{video_in_playlist.overview|file_date_created}}"
                     {% endif %}
+                    {% if video_in_playlist.chapter_set.all %}
+                        data-chapter="{{ video_in_playlist.get_json_to_index }}"
+                    {% endif %}
                 >
                     <span class="rank d-flex align-self-center">
                         {% if video_in_playlist == video %}

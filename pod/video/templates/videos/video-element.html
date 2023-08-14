@@ -33,7 +33,8 @@ poster="{{video.get_thumbnail_url}}" {% spaceless %}
     {% endfor %}
   </ul>
 {% endif %}
-{% if video.chapter_set.all %}
+<div id="chapter-for-playlist">
+  {% if video.chapter_set.all %}
   <div class="chapters-list inactive" role="menu">
     <h6><span class="vjs-icon-chapters"></span>{% trans "Chapters" %}</h6>
     <ol id="chapters-list"></ol>
@@ -48,3 +49,4 @@ poster="{{video.get_thumbnail_url}}" {% spaceless %}
     {% endfor %}
   </ul>
 {% endif %}
+</div>
