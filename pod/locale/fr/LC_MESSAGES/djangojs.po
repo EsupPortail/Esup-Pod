@@ -562,10 +562,8 @@ msgid "No channels found"
 msgstr "Aucun chaîne trouvée"
 
 #: pod/video/static/js/ajax-display-channels.js
-#, fuzzy
-#| msgid "videos found"
 msgid "videos"
-msgstr "vidéos trouvées"
+msgstr "vidéos"
 
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"
