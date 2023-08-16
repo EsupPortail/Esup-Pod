@@ -13,6 +13,7 @@ function switchToNextVideo() {
     let nextElement = playerElements[currentIndex + 1];
     if (!(nextElement.classList.contains('disabled'))) {
         const videoSrc = playerElements[currentIndex + 1].getAttribute('href');
+        (currentIndex === -1) ? currentIndex = playerElements.length -1 : "";
         if (nextElement.getAttribute('data-chapter') || playerElements[currentIndex].getAttribute('data-chapter')) {
             window.location.href = videoSrc;
         }
