@@ -557,6 +557,22 @@ msgstr "Voir plus"
 msgid "This folder is empty"
 msgstr "Ce dossier est vide"
 
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid "Error"
+msgstr "Erreur"
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid ""
+"Don't forget to allow notifications from this website in your browser's "
+"settings!"
+msgstr ""
+"N'oubliez pas d'autoriser les notifications provenant de ce site web dans "
+"votre navigateur !"
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid "Error during unsubscription..."
+msgstr "Erreur durant la désinscription..."
+
 #: pod/video/static/js/ajax-display-channels.js
 msgid "%(count)s channel"
 msgid_plural "%(count)s channels"
@@ -800,6 +816,10 @@ msgstr "Créer catégorie"
 #: pod/video/static/js/video_edit.js
 msgid "Select the general type of the video."
 msgstr "Sélectionnez le type général de vidéo."
+
+#: pod/video/static/js/video_edit.js
+msgid "Get notified when the video encoding is finished."
+msgstr "Recevez une notification lorsque l'encodage de la vidéo est terminé."
 
 #: pod/video/static/js/video_stats_view.js
 msgid "Title"

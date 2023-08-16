@@ -34,7 +34,7 @@ from django.http import JsonResponse
 from wsgiref.util import FileWrapper
 from django.db.models import Q, Count
 from pod.video.models import Video, remove_accents
-from pod.authentication.forms import FrontOwnerForm
+from pod.authentication.forms import FrontOwnerForm, SetNotificationForm
 from django.db.models import Sum
 import os
 import mimetypes
@@ -395,3 +395,24 @@ def userpicture(request):
         "userpicture/userpicture.html",
         {"frontOwnerForm": frontOwnerForm},
     )
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def set_notifications(request):
+    """Sets 'accepts_notifications' attribute on owner instance."""
+    setNotificationForm = SetNotificationForm(instance=request.user.owner)
+
+    if request.method == "POST":
+        setNotificationForm = SetNotificationForm(request.POST, instance=request.user.owner)
+        if setNotificationForm.is_valid():
+            setNotificationForm.save()
+            return JsonResponse({"success": True, "user_accepts_notifications": request.user.owner.accepts_notifications})
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                _("One or more errors have been found in the form."),
+            )
+
+    return JsonResponse({"success": False})

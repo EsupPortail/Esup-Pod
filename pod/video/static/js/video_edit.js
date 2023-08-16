@@ -137,3 +137,7 @@ if (document.getElementById("video_form")) {
   }
 }
 /** end channel **/
+
+// Change notification setting text to stick with a video upload context
+const notificationMessage =  document.querySelector("#notification-toast>.toast-body>p")
+notificationMessage.textContent = gettext("Get notified when the video encoding is finished.")

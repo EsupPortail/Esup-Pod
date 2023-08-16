@@ -100,6 +100,14 @@ msgstr "Commentaire"
 msgid "Picture"
 msgstr "Image"
 
+#: pod/authentication/models.py
+msgid "Accept notifications"
+msgstr "Accepter les notifications"
+
+#: pod/authentication/models.py
+msgid "Receive push notifications on your devices."
+msgstr "Recevez des notifications push sur vos appareils"
+
 #: pod/authentication/models.py pod/live/models.py pod/meeting/models.py
 #: pod/podfile/models.py pod/video/admin.py pod/video/models.py
 #: pod/video_search/templates/search/search.html
@@ -4731,6 +4739,10 @@ msgstr "Mes fichiers"
 msgid "Claim a record"
 msgstr "Revendiquer un enregistrement"
 
+#: pod/main/templates/navbar.html pod/progressive_web_app/templates/debug.html
+msgid "Notifications settings"
+msgstr "Paramètres de notifications"
+
 #: pod/main/templates/navbar.html
 msgid "Log out"
 msgstr "Déconnexion"
@@ -6254,6 +6266,26 @@ msgstr "Vous ne pouvez pas voir ce dossier."
 msgid "You cannot edit this file."
 msgstr "Vous ne pouvez pas éditer ce fichier."
 
+#: pod/progressive_web_app/templates/notification_toast.html
+msgid "Get application notifications"
+msgstr "Recevez les notifications de l'application"
+
+#: pod/progressive_web_app/templates/notification_toast.html
+msgid ""
+"Get notified for specific events (when one of your video encoding is "
+"completed)."
+msgstr ""
+"Recevez des notifications pour des événements spécifiques (lorsque "
+"l'encodage d'une de vos vidéos est terminé)"
+
+#: pod/progressive_web_app/templates/notification_toast.html
+msgid "Allow"
+msgstr "Autoriser"
+
+#: pod/progressive_web_app/templates/notification_toast.html
+msgid "Deny on all devices"
+msgstr "Refuser sur tous les appareils"
+
 #: pod/recorder/admin.py
 msgid "Delete selected Recording file treatments + source files"
 msgstr ""
@@ -6633,6 +6665,17 @@ msgstr "L’enregistrement a été supprimé."
 #: pod/recorder/views.py
 msgid "Recorder for Studio not found."
 msgstr "Enregistreur studio non trouvé."
+
+#: pod/settings.py
+msgid ""
+"Podeduc is aimed at users of our institutions, by allowing the publication "
+"of videos in the fields of research (promotion of platforms, etc.), training "
+"(tutorials, distance training, student reports, etc.), institutional life "
+"(video of events), offering several days of content."
+msgstr ""
+"Podeduc a pour but de faciliter la mise à disposition de vidéo et de ce fait, "
+"d’encourager l’utilisation de celles-ci dans le cadre de l’enseignement et "
+"la recherche."
 
 #: pod/urls.py
 msgid "Pod Administration"
