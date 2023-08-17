@@ -1,7 +1,7 @@
 {% load i18n %}
 <div class="card" id="card-informations-playlist">
   <h2 class="card-header card-title pod-card__title h4">
-    <i class="bi bi-info-circle"></i>&nbsp;{% trans "Informations about the playlist" %}
+    <i class="bi bi-info-circle" aria-hidden="true"></i>&nbsp;{% trans "Informations about the playlist" %}
   </h2>
   <div class="card-body card-text">
     <p class="playlist-last-updated">
@@ -14,7 +14,7 @@
       <b>{% trans "Right of access" %}</b> : {% include "playlist/playlist_visibility_icon.html" with playlist=playlist %}
     </p>
     <p class="playlist-owner">
-      <b>{% trans "Playlist owner" %}</b> : <a class="btn btn-link" href="{% url 'videos:videos' %}?owner={{ playlist.owner.username }}">{{ playlist.owner }}</a>
+      <b>{% trans "Playlist owner" %}</b> : <a class="btn btn-link" href="{% url 'videos:videos' %}?owner={{ playlist.owner.username }}" title="{% trans "Access to playlist owner profile" %}" aria-label="{{ playlist.owner }}">{{ playlist.owner }}</a>
     </p>
 
     {% if additional_owners|length > 0 %}
@@ -22,7 +22,16 @@
       <b>{% trans "Additional owners" %}</b> :
       <ul>
         {% for additional_owner in additional_owners %}
-          <li><a class="btn btn-link" href="{% url 'videos:videos' %}?owner={{ additional_owner.username }}">{{ additional_owner }}</a></li>
+          <li>
+            <a
+              class="btn btn-link"
+              href="{% url 'videos:videos' %}?owner={{ additional_owner.username }}"
+              title="{% trans "Access to playlist additional owner profile" %}"
+              aria-label="{{ additional_owner }}"
+            >
+              {{ additional_owner }}
+            </a>
+          </li>
         {% endfor %}
       </ul>
     </div>

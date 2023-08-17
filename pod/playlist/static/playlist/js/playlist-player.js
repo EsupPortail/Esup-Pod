@@ -39,6 +39,14 @@ function switchToNextVideo() {
             videojs('podvideoplayer').ready(function () {
                 this.play();
             });
+            const videoCountForm = document.getElementById("video_count_form");
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', nextElement.getAttribute('data-view-count-link'), true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 & xhr.status === 200) {
+                    // ---
+                }
+            };
         }
     } else {
         switchToNextVideo();

@@ -5,7 +5,7 @@
 {% if can_edit_or_remove %}
 <div class="card" id="card-manage-playlist">
     <h2 class="card-header card-title pod-card__title h4">
-        <i class="bi bi-gear"></i>&nbsp;{% trans "Manage playlist" %}
+        <i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage playlist" %}
     </h2>
     <div class="card-body card-text text-center">
         {% include "playlist/playlist_link.html" %}

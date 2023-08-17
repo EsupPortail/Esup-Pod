@@ -5,7 +5,13 @@
 {% block breadcrumbs %}
     {{ block.super }}
     <li class="breadcrumb-item">
-        <a href="{% url 'playlist:list' %}">{% trans "Playlists" %}</a>
+        <a
+            href="{% url 'playlist:list' %}"
+            title="{% trans "Access the list of playlists" %}"
+            aria-label="{% trans "Playlists" %}"
+        >
+            {% trans "Playlists" %}
+        </a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
         {% if form.instance.slug %}

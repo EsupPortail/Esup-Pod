@@ -19,7 +19,7 @@ poster="{{video.get_thumbnail_url}}" {% spaceless %}
   {%endfor%}
 </video>
 <form method="post" action="{% url 'video:video_count' id=video.id %}" id="video_count_form" aria-hidden="true">
-{% csrf_token %}
+  {% csrf_token %}
 </form>
 {% if video.overlay_set.all %}
   <ul id="overlays" style="display: none">

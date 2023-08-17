@@ -5,10 +5,22 @@
 {% block breadcrumbs %}
     {{ block.super }}
     <li class="breadcrumb-item">
-        <a href="{% url 'playlist:list' %}">{% trans "Playlists" %}</a>
+        <a
+            href="{% url 'playlist:list' %}"
+            title="{% trans "Access the list of playlists" %}"
+            aria-label="{% trans "Playlists" %}"
+        >
+            {% trans "Playlists" %}
+        </a>
     </li>
     <li class="breadcrumb-item">
-        <a href="{% url 'playlist:content' playlist.slug %}">{{ playlist.name }}</a>
+        <a
+            href="{% url 'playlist:content' playlist.slug %}"
+            title="{% trans "Access the video list of this playlist" %}"
+            aria-label="Playlist content"
+        >
+            {{ playlist.name }}
+        </a>
     </li>
     <li class="breadcrumb-item active">
         {% trans "Delete" %}
@@ -23,8 +35,8 @@
     </style>
     <h3>{% blocktrans with name=playlist.name %}Delete the playlist <b>{{name}}</b>{% endblocktrans %}
         <span class="float-end">
-            <a href="{% url 'playlist:list' %}" title="{% trans 'Back to my playlists' %}" class="btn btn-secondary btn-sm">
-                <i class="bi bi-list-ul"></i>&nbsp;{% trans "Back to my playlists" %}
+            <a href="{% url 'playlist:list' %}" title="{% trans 'Back to my playlists' %}" class="btn btn-secondary btn-sm" aria-label="{% trans "Back to my playlists" %}">
+                <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans "Back to my playlists" %}
             </a>
         </span>
     </h3>
@@ -64,7 +76,7 @@
             <div class="text-center mt-1">
                 <button type="submit" class="btn btn-secondary btn-sm btn-danger">{% trans "Delete" %}</button>
                 <a href="{% url 'meeting:my_meetings' %}" title="{% trans 'Back to my playlists' %}" class="btn btn-secondary btn-sm">
-                    <i class="bi bi-list-ul"></i>&nbsp;{% trans "Back to my playlists" %}
+                    <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans "Back to my playlists" %}
                 </a>
             </div>
         </fieldset>

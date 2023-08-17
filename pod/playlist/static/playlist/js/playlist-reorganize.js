@@ -3,10 +3,9 @@ var infinite;
 
 addEventForReorganizedButton();
 
-const reorganizeButtonsSpanElement =
-  document.getElementById("reorganize-buttons");
-const collapseAsideElement = document.getElementById("collapseAside");
-const reorganizeButton = document.getElementById("reorganize-button");
+const reorganizeButtonsSpanElement = document.getElementById('reorganize-buttons');
+const collapseAsideElement = document.getElementById('collapseAside');
+const reorganizeButton = document.getElementById('reorganize-button');
 
 
 /**
@@ -16,8 +15,8 @@ const reorganizeButton = document.getElementById("reorganize-button");
  * @param {Element} element Element to add CSS class.
  */
 function addOrRemoveDropZoneHoverStyleClass(state, element) {
-  const className = "dropzone-hover";
-  if (state === "add") {
+  const className = 'dropzone-hover';
+  if (state === 'add') {
     element.classList.add(className);
   } else {
     element.classList.remove(className);
@@ -30,34 +29,32 @@ function addOrRemoveDropZoneHoverStyleClass(state, element) {
  */
 function addEventForReorganizedButton() {
   document
-    .getElementById("reorganize-button")
-    .addEventListener("click", function (event) {
-      const draggableElements = document.querySelectorAll(
-        ".draggable-container",
-      );
+    .getElementById('reorganize-button')
+    .addEventListener('click', function (event) {
+      const draggableElements = document.querySelectorAll('.draggable-container',);
       draggableElements.forEach((draggableElement) => {
-        draggableElement.addEventListener("dragenter", (event) => {
-          addOrRemoveDropZoneHoverStyleClass("add", event.target);
+        draggableElement.addEventListener('dragenter', (event) => {
+          addOrRemoveDropZoneHoverStyleClass('add', event.target);
         });
-        draggableElement.addEventListener("dragleave", (event) => {
-          addOrRemoveDropZoneHoverStyleClass("remove", event.target);
+        draggableElement.addEventListener('dragleave', (event) => {
+          addOrRemoveDropZoneHoverStyleClass('remove', event.target);
         });
-        draggableElement.addEventListener("drop", (event) => {
-          addOrRemoveDropZoneHoverStyleClass("remove", event.target);
+        draggableElement.addEventListener('drop', (event) => {
+          addOrRemoveDropZoneHoverStyleClass('remove', event.target);
         });
       });
-      if (this.id == "reorganize-button") {
+      if (this.id == 'reorganize-button') {
         event.preventDefault();
         activateDragAndDrop();
         console.log(this.id)
-        this.id = "save-button";
-        this.title = gettext("Save your reorganization");
-        const iconElement = this.querySelector("i");
-        const spanElement = this.querySelector("span");
-        iconElement.classList.replace("bi-arrows-move", "bi-save");
-        spanElement.textContent = gettext("Save");
-      } else if (this.id == "save-button") {
-        document.getElementById("json-data").value =
+        this.id = 'save-button';
+        this.title = gettext('Save your reorganization');
+        const iconElement = this.querySelector('i');
+        const spanElement = this.querySelector('span');
+        iconElement.classList.replace('bi-arrows-move', 'bi-save');
+        spanElement.textContent = gettext('Save');
+      } else if (this.id == 'save-button') {
+        document.getElementById('json-data').value =
           convert2DTableToJson(exchangedValues);
       }
     });
@@ -81,7 +78,7 @@ function onDragStart(event) {
  */
 function onDragOver(event) {
   event.preventDefault();
-  event.dataTransfer.dropEffect = "move";
+  event.dataTransfer.dropEffect = 'move';
 }
 
 /**
@@ -91,12 +88,12 @@ function onDragOver(event) {
  */
 function onDrop(event) {
   event.preventDefault();
-  const id = event.dataTransfer.getData("text");
+  const id = event.dataTransfer.getData('text');
   const draggableElement = document.getElementById(id);
   const dropzone = event.target;
   const child1 = draggableElement.children[0];
   const child2 = dropzone.children[0];
-  draggableElement.classList.toggle("shake-effect-active");
+  draggableElement.classList.toggle('shake-effect-active');
   if (child1.id == child2.id) return;
   const child1copy = child1.cloneNode(true);
   const child2copy = child2.cloneNode(true);
@@ -114,22 +111,22 @@ function activateDragAndDrop(parent) {
   const draggableElements = document.querySelectorAll(".draggable-container");
   const cardFooterElements = document.querySelectorAll(".card-footer");
   draggableElements.forEach((draggableElement) => {
-    draggableElement.setAttribute("draggable", true);
-    draggableElement.addEventListener("dragstart", onDragStart);
-    draggableElement.addEventListener("dragover", onDragOver);
-    draggableElement.addEventListener("drop", onDrop);
-    draggableElement.classList.add("shake-effect");
-    draggableElement.children[0].classList.add("no-click");
+    draggableElement.setAttribute('draggable', true);
+    draggableElement.addEventListener('dragstart', onDragStart);
+    draggableElement.addEventListener('dragover', onDragOver);
+    draggableElement.addEventListener('drop', onDrop);
+    draggableElement.classList.add('shake-effect');
+    draggableElement.children[0].classList.add('no-click');
   });
   updateCollapseAside();
   infinite.removeLoader();
   document
-    .getElementById("cancel_btn_favorites_list")
-    .classList.remove("d-none");
-  if (document.getElementById("card-manage-playlist")) {
+    .getElementById('cancel_btn_favorites_list')
+    .classList.remove('d-none');
+  if (document.getElementById('card-manage-playlist')) {
     document
-      .getElementById("card-manage-playlist")
-      .classList.add("d-none")
+      .getElementById('card-manage-playlist')
+      .classList.add('d-none');
   }
 }
 
@@ -152,6 +149,6 @@ function convert2DTableToJson(table) {
  * Update collapse aside to help user.
  */
 function updateCollapseAside() {
-  const helpInformations = document.querySelector("#card-sharedraftversion");
-  helpInformations.classList.remove("card-hidden");
+  const helpInformations = document.querySelector('#card-sharedraftversion');
+  helpInformations.classList.remove('card-hidden');
 }

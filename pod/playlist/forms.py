@@ -60,7 +60,7 @@ class PlaylistForm(forms.ModelForm):
         (
             "general informations",
             {
-                "legend": f"<i class='bi bi-info-lg'></i>&nbsp;\
+                "legend": f"<i class='bi bi-info-lg' aria-hidden='true'></i>&nbsp;\
                     {general_informations}",
                 "fields": ["name", "description", "autoplay"],
             },
@@ -68,7 +68,7 @@ class PlaylistForm(forms.ModelForm):
         (
             "security informations",
             {
-                "legend": f"<i class='bi bi-shield-lock'></i>&nbsp;\
+                "legend": f"<i class='bi bi-shield-lock' aria-hidden='true'></i>&nbsp;\
                     {security_informations}",
                 "fields": ["additional_owners", "visibility", "password", "promoted"],
             },

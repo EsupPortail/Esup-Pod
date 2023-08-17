@@ -13,13 +13,17 @@
 
 <div class="card" id="card-playlistplayer">
     {% get_playlist_name playlist_in_get as playlist_name %}
-    <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-list-ul"></i>&nbsp;{% trans "Playlist:" %} <a class="btn-link" href="{% url 'playlist:content' playlist_in_get.slug %}">{{ playlist_name|capfirst|truncatechars:20 }}</a></h2>
+    <h2 class="card-header card-title pod-card__title h4">
+        <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans "Playlist:" %} <a class="btn-link" href="{% url 'playlist:content' playlist_in_get.slug %}" title="{% trans "View the playlist" %}" aria-label="{{ playlist_name }}">{{ playlist_name|capfirst|truncatechars:20 }}</a>
+    </h2>
     <div {% if videos|length > 5 %}class="scroll-container"{% endif %}>
         {% for video_in_playlist in videos %}
             {% can_see_playlist_video video_in_playlist as can_see_video %}
                 <a
                     {% if can_see_video %}
                         href="{% url 'video:video' video_in_playlist.slug %}?playlist={{ playlist_in_get.slug }}"
+                        title="{% trans "Watch the video" %}"
+                        aria-label="{{ video_in_playlist.title }}"
                     {% endif %}
                     id="{{ forloop.counter }}"
                     class="player-element card-body card-text border mb-1 mt-4 d-flex flex-row
@@ -30,6 +34,7 @@
                     data-src="{{ video_in_playlist.get_playlist_master.source_file.url }}"
                     data-encoding-format="{{ video_in_playlist.get_playlist_master.encoding_format }}"
                     data-is-360="{{ video_in_playlist.is_360 }}"
+                    data-view-count-link="{% url 'video:video_count' id=video_in_playlist.id %}"
                     {% if video_in_playlist.overview %}
                         data-vtt-thumbnails-src="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video_in_playlist.overview.url}}?date={{video_in_playlist.overview|file_date_created}}"
                     {% endif %}
@@ -39,7 +44,7 @@
                 >
                     <span class="rank d-flex align-self-center">
                         {% if video_in_playlist == video %}
-                            <i class="bi bi-caret-right-fill"></i>
+                            <i class="bi bi-caret-right-fill" aria-hidden="true"></i>
                         {% else %}
                             {{ forloop.counter }}
                         {% endif %}
@@ -48,7 +53,7 @@
                         <img class="card-img {% if can_see_video == False %}grayscale-image{% endif %}" src="{{ video_in_playlist.get_thumbnail_url }}" alt="{% trans "Playlist image" %}" loading="lazy">
                         {% if can_see_video == False %}
                             <span class="lock-icon-container">
-                                <i class="bi bi-lock-fill"></i>
+                                <i class="bi bi-lock-fill" aria-hidden="true"></i>
                             </span>
                         {% endif %}
                     </span>
@@ -66,7 +71,6 @@
                         </div>
                     </div>
                 </a>
-            </a>
         {% endfor %}
     </div>
 </div>
