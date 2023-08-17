@@ -137,7 +137,7 @@ def get_all_playlists() -> list:
     Returns:
         list(:class:`pod.playlist.models.Playlist`): A list of all playlist
     """
-    return Playlist.objects.filter(site=Site.objects.get_current())
+    return Playlist.objects.filter()  # TODO site=Site.objects.get_current()
 
 
 def get_public_playlist() -> list:

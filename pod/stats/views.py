@@ -1,6 +1,13 @@
 import json
-from django.shortcuts import get_object_or_404, render
 from datetime import date
+from dateutil.parser import parse
+from django.conf import settings
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.sites.shortcuts import get_current_site
+from django.http import HttpResponseNotFound, JsonResponse
+from django.shortcuts import get_object_or_404, render
+from django.utils.translation import gettext_lazy as _
+
 from pod.playlist.utils import (
     get_all_playlists,
     get_favorite_playlist_for_user,
@@ -15,74 +22,93 @@ from pod.stats.utils import (
     get_videos_status_stats,
 )
 from pod.video.context_processors import get_available_videos
-from django.contrib.auth.decorators import user_passes_test
-from django.conf import settings
-from django.utils.translation import gettext_lazy as _
-from django.http import HttpResponseNotFound
-from dateutil.parser import parse
-from django.http import JsonResponse
 from pod.video.forms import VideoPasswordForm
 from pod.video.models import Channel, Theme, Video
 from pod.video.views import get_video_access
-from django.shortcuts import redirect
-from django.contrib.sites.shortcuts import get_current_site
 
 VIEW_STATS_AUTH = getattr(settings, "VIEW_STATS_AUTH", False)
 
 
-def get_videos(request, target: str, slug=None, channel=None, theme=None, playlist=None):
+def view_stats_if_authenticated(user):
+    return not (user.is_authenticated and VIEW_STATS_AUTH)
+
+
+STATS_VIEWS = {
+    "videos": {
+        "filter_func": lambda kwargs: Video.objects.filter(slug=kwargs.get("slug"))
+        if kwargs.get("slug")
+        else kwargs["available_videos"],
+        "title_func": lambda kwargs: _("Video statistics: %s")
+        % kwargs["video_founded"].title.capitalize()
+        if kwargs["video_founded"]
+        else _("Site video statistics"),
+    },
+    "channel": {
+        "filter_func": lambda kwargs: Video.objects.filter(
+            channel=kwargs["channel_obj"], theme=kwargs["theme_obj"]
+        )
+        if kwargs.get("theme_obj")
+        else Video.objects.filter(channel=kwargs["channel_obj"]),
+        "title_func": lambda kwargs: _("Video statistics for the theme %s")
+        % kwargs["theme_obj"].title
+        if kwargs.get("theme_obj")
+        else _("Video statistics for the channel %s") % kwargs["channel_obj"].title
+        if kwargs["channel_obj"]
+        else _("Statistics for channels"),
+    },
+    "user": {
+        "filter_func": lambda kwargs: Video.objects.filter(owner=kwargs["user"]),
+        "title_func": lambda kwargs: _("Statistics for user %s") % kwargs["user"],
+    },
+    "general": {
+        "filter_func": lambda kwargs: kwargs["available_videos"],
+        "title_func": lambda kwargs: _("Site statistics"),
+    },
+    "playlist": {
+        "filter_func": lambda kwargs: Video.objects.filter(
+            playlistcontent__playlist=kwargs["playlist_obj"]
+        ),
+        "title_func": lambda kwargs: _("Statistics for the playlist %s")
+        % kwargs["playlist_obj"].name
+        if kwargs["playlist_obj"]
+        else _("Statistics for playlists"),
+    },
+}
+
+
+def get_videos(
+    request, target: str, video_slug=None, channel=None, theme=None, playlist=None
+):
     title = _("Video statistics")
     available_videos = get_available_videos()
     videos = []
-    if target.lower() == "videos":
-        if slug:
-            try:
-                video_founded = Video.objects.get(slug=slug)
-                videos.append(video_founded)
-                title = _("Video statistics for %s") % video_founded.title.capitalize()
-            except Video.DoesNotExist:
-                return redirect(request.META["HTTP_REFERER"])
-        else:
-            videos = available_videos
-    elif target.lower() == "channel":
-        if channel and theme:
-            channel = get_object_or_404(Channel, slug=channel)
-            theme = get_object_or_404(Theme, slug=theme)
-            title = _("Video statistics for the theme %s") % theme.title
-            videos = Video.objects.filter(theme=theme)
-        elif channel and not theme:
-            channel = get_object_or_404(Channel, slug=channel)
-            title = _("Video statistics for the channel %s") % channel.title
-            videos = Video.objects.filter(channel=channel)
 
-        else:
-            title = _("Statistics for channels")
-    elif target.lower() == "user":
-        title = _("Statistics for user %s") % request.user
-        videos = Video.objects.filter(owner=request.user)
-    elif target.lower() == "general":
-        title = _("Site statistics")
-        videos = available_videos
-    elif target.lower() == "playlist":
-        if playlist:
-            playlist = get_playlist(playlist)
-            title = _("Statistics for the playlist %s") % playlist.name
-            videos = Video.objects.filter(playlistcontent__playlist=playlist)
-        else:
-            title = _("Statistics for playlists")
-    return (videos, title)
+    if target.lower() in STATS_VIEWS:
+        config = STATS_VIEWS[target.lower()]
+        filter_args = {
+            "video_slug": video_slug,
+            "channel": channel,
+            "theme": theme,
+            "playlist": playlist,
+            "available_videos": available_videos,
+            "user": request.user if target.lower() == "user" else None,
+            "channel_obj": get_object_or_404(Channel, slug=channel) if channel else None,
+            "theme_obj": get_object_or_404(Theme, slug=theme) if theme else None,
+            "video_founded": Video.objects.filter(slug=video_slug).first()
+            if video_slug
+            else None,
+            "playlist_obj": get_playlist(playlist) if playlist else None,
+        }
+        videos = config["filter_func"](filter_args)
+        title = config["title_func"](filter_args)
 
-
-def view_stats_if_authenticated(user):
-    if user.is_authenticated and VIEW_STATS_AUTH:
-        return False
-    return True
+    return videos, title
 
 
 @user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
 def video_stats_view(request, video=None):
     target = "videos"
-    videos, title = get_videos(request=request, target=target, slug=video)
+    videos, title = get_videos(request=request, target=target, video_slug=video)
 
     if request.method == "GET":
         if video and videos:
