@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block opengraph %}
+  {{ block.super }}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+{% endblock opengraph %}
+
+{% block page_title %}{{ title }}{% endblock page_title %}
+
+{% block page_extra_head %}
+  <link rel="stylesheet" href="{% static 'stats/css/stats.css' %}?ver={{VERSION}}">
+{% endblock page_extra_head %}
+
+{% block page_content %}
+  {% if form %}
+    {% include "videos/video-form.html" %}
+  {% else %}
+    <h1 class="page_title h1 text-center">{{ title }}</h1>
+
+    <div class="row justify-content-center align-items-center">
+        {% block stats_items %}{% endblock stats_items %}
+    </div>
+  {% endif %}
+  <hr>
+  {% block other_stats %}{% endblock other_stats %}
+</div>
+{% endblock page_content %}
+{% block collapse_page_aside %}{% endblock collapse_page_aside %}
+{% block page_aside %}{% endblock page_aside %}
+
+{% block more_script %}
+<script src="{% static 'stats/js/utils-stats.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+{% endblock %}

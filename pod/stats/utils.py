@@ -7,11 +7,10 @@ from django.db.models import Sum
 from pod.playlist.utils import (
     get_favorite_playlist_for_user,
     get_number_video_in_playlist,
-    get_playlist_list_for_user,
 )
 from pod.podfile.models import UserFolder
 from pod.video.context_processors import get_available_videos
-from pod.video.models import Channel, Video, ViewCount
+from pod.video.models import Channel, Theme, Video, ViewCount
 from datetime import date
 from django.core.cache import cache
 from django.conf import settings
@@ -184,6 +183,13 @@ def get_videos_status_stats(video_list) -> dict:
     return dumps(stats)
 
 
+def get_playlists_status_stats(playlist_list) -> dict:
+    stats = {}
+    visibility_list = list(playlist_list.values_list("visibility", flat=True))
+    stats = Counter(visibility_list)
+    return dumps(stats)
+
+
 def total_time_videos(request, video_list: None) -> str:
     if video_list:
         total_duration = video_list.aggregate(Sum("duration"))["duration__sum"]
@@ -200,19 +206,6 @@ def number_videos(request, video_list: None) -> int:
     else:
         number_videos = get_available_videos(request).count()
     return number_videos
-
-
-def number_playlist(user: User) -> int:
-    """
-    Get the number of playlists for a user.
-
-    Args:
-        user (:class:`django.contrib.auth.models.User`): The user object
-
-    Returns:
-        int: The number of playlist.
-    """
-    return get_playlist_list_for_user(user).count()
 
 
 def number_files(user: User) -> int:
@@ -268,3 +261,14 @@ def get_most_common_type_discipline(video_list):
         most_common_type = None
         most_common_discipline = None
     return most_common_type, most_common_discipline
+
+
+def number_users() -> int:
+    return User.objects.all().distinct().count()
+
+
+def number_themes(channel=None) -> int:
+    if channel:
+        return Theme.objects.filter(channel=channel).distinct().count()
+    else:
+        return Theme.objects.all().distinct().count()
