@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -314,6 +315,7 @@ def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) ->
         request.POST, instance=playlist) if playlist else PlaylistForm(request.POST)
     if form.is_valid():
         new_playlist = form.save(commit=False) if playlist is None else playlist
+        new_playlist.site = get_current_site(request)
         new_playlist.owner = request.user
         password = request.POST.get("password")
         if password:

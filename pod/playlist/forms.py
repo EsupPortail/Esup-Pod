@@ -26,6 +26,7 @@ class PlaylistForm(forms.ModelForm):
             "owner",
             "date_created",
             "date_updated",
+            "site",
         ]
         widgets = {
             "additional_owners": AddOwnerWidget,
