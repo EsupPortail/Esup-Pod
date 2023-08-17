@@ -6,6 +6,8 @@ from django.core.handlers.wsgi import WSGIRequest
 
 from pod.video.models import Video
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
+from django.contrib.sites.models import Site
 
 from .apps import FAVORITE_PLAYLIST_NAME
 from .models import Playlist, PlaylistContent
@@ -126,6 +128,16 @@ def get_number_video_added_in_specific_playlist(playlist: Playlist) -> int:
         int: The number of times a video has been added to the specific playlist
     """
     return PlaylistContent.objects.filter(playlist=playlist).count()
+
+
+def get_all_playlists() -> list:
+    """
+    Get all playslist in the application.
+
+    Returns:
+        list(:class:`pod.playlist.models.Playlist`): A list of all playlist
+    """
+    return Playlist.objects.filter(site=Site.objects.get_current())
 
 
 def get_public_playlist() -> list:
@@ -368,3 +380,21 @@ def check_password(form_password: str, playlist: Playlist) -> bool:
     """
     hashed_password = hashlib.sha256(form_password.encode("utf-8")).hexdigest()
     return hashed_password == playlist.password
+
+
+def playlist_visibility(playlist: Playlist) -> str:
+    """
+    Get the playlist visibility. The visibility can be : public, password-protected or private.
+
+    Args:
+        playlist (:class:`pod.playlist.models.Playlist`): The playlist object
+
+    Returns:
+        str: The translated playlist visibility.
+    """
+    if playlist.visibility == "public":
+        return _("Public")
+    elif playlist.visibility == "protected":
+        return _("Password-protected")
+    elif playlist.visibility == "private":
+        return _("Private")
