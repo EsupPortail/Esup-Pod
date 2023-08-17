@@ -1,11 +1,16 @@
 import json
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from datetime import date
-from pod.playlist.models import Playlist
-from pod.playlist.utils import get_favorite_playlist_for_user, get_video_list_for_playlist
+from pod.playlist.utils import (
+    get_all_playlists,
+    get_favorite_playlist_for_user,
+    get_playlist,
+    get_video_list_for_playlist,
+)
 from pod.stats.utils import (
     get_channels_visibility_stats,
     get_most_common_type_discipline,
+    get_playlists_status_stats,
     get_videos_stats,
     get_videos_status_stats,
 )
@@ -17,7 +22,7 @@ from django.http import HttpResponseNotFound
 from dateutil.parser import parse
 from django.http import JsonResponse
 from pod.video.forms import VideoPasswordForm
-from pod.video.models import Channel, Video
+from pod.video.models import Channel, Theme, Video
 from pod.video.views import get_video_access
 from django.shortcuts import redirect
 from django.contrib.sites.shortcuts import get_current_site
@@ -41,11 +46,15 @@ def get_videos(request, target: str, slug=None, channel=None, theme=None, playli
             videos = available_videos
     elif target.lower() == "channel":
         if channel and theme:
-            title = _("Video statistics for the theme %s") % theme.capitalize()
-            videos = Video.objects.filter(theme__slug__istartswith=theme)
+            channel = get_object_or_404(Channel, slug=channel)
+            theme = get_object_or_404(Theme, slug=theme)
+            title = _("Video statistics for the theme %s") % theme.title
+            videos = Video.objects.filter(theme=theme)
         elif channel and not theme:
-            title = _("Video statistics for the channel %s") % slug.capitalize()
-            videos = Video.objects.filter(channel__slug__istartswith=slug)
+            channel = get_object_or_404(Channel, slug=channel)
+            title = _("Video statistics for the channel %s") % channel.title
+            videos = Video.objects.filter(channel=channel)
+
         else:
             title = _("Statistics for channels")
     elif target.lower() == "user":
@@ -56,7 +65,7 @@ def get_videos(request, target: str, slug=None, channel=None, theme=None, playli
         videos = available_videos
     elif target.lower() == "playlist":
         if playlist:
-            playlist = Playlist.objects.get(slug=playlist)
+            playlist = get_playlist(playlist)
             title = _("Statistics for the playlist %s") % playlist.name
             videos = Video.objects.filter(playlistcontent__playlist=playlist)
         else:
@@ -153,7 +162,9 @@ def to_do():
 @user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
 def channel_stats_view(request, channel=None, theme=None):
     target = "channel"
-    videos, title = get_videos(request=request, target=target, slug=channel, theme=theme)
+    videos, title = get_videos(
+        request=request, target=target, channel=channel, theme=theme
+    )
 
     if request.method == "GET":
         if channel:
@@ -165,6 +176,7 @@ def channel_stats_view(request, channel=None, theme=None):
                     "title": title,
                     "channel": channel,
                     "status_datas": status_datas,
+                    "videos": videos,
                     "date": date.today(),
                 },
             )
@@ -253,7 +265,7 @@ def playlist_stats_view(request, playlist=None):
         if playlist:
             status_datas = get_videos_status_stats(videos)
             prefered_type, prefered_discipline = get_most_common_type_discipline(videos)
-            playlist = Playlist.objects.get(slug=playlist)
+            playlist = get_playlist(playlist)
             return render(
                 request,
                 "stats/playlist-stats-view.html",
@@ -267,15 +279,15 @@ def playlist_stats_view(request, playlist=None):
                 },
             )
         else:
+            playlists = get_all_playlists()
+            status_datas = get_playlists_status_stats(playlists)
             return render(
                 request,
                 "stats/playlist-stats-view.html",
                 {
                     "title": title,
-                    # "status_datas": status_datas,
-                    # "prefered_type": prefered_type,
-                    # "prefered_discipline": prefered_discipline,
-                    # "playlist": playlist,
+                    "playlists": playlists,
+                    "status_datas": status_datas,
                 },
             )
     else:

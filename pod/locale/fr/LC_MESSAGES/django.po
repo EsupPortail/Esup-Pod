@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-25 15:48+0000\n"
+"POT-Creation-Date: 2023-08-17 11:51+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -2880,7 +2880,8 @@ msgstr ""
 
 #: pod/live/models.py pod/meeting/models.py pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist-informations-card.html
-#: pod/video/forms.py pod/video/models.py
+#: pod/stats/templates/stats/playlist-stats-view.html pod/video/forms.py
+#: pod/video/models.py
 msgid "Additional owners"
 msgstr "Propriétaires additionnels"
 
@@ -4523,7 +4524,8 @@ msgstr "Contactez nous"
 msgid "Toggle navigation"
 msgstr "Basculer le menu"
 
-#: pod/main/templates/navbar.html pod/recorder/models.py pod/video/forms.py
+#: pod/main/templates/navbar.html pod/recorder/models.py
+#: pod/stats/templates/stats/channel-stats-view.html pod/video/forms.py
 #: pod/video/models.py
 msgid "Channels"
 msgstr "Chaînes"
@@ -4624,13 +4626,16 @@ msgid "Your statistics"
 msgstr "Vos statistiques"
 
 #: pod/main/templates/navbar.html
+#: pod/stats/templates/stats/channel-stats-view.html
 #: pod/stats/templates/stats/general-stats-view.html
 #: pod/stats/templates/stats/playlist-stats-view.html
 #: pod/stats/templates/stats/user-stats-view.html
+#: pod/stats/templates/stats/video-stats-view.html
 msgid "Number of videos"
 msgstr "Nombre de vidéos"
 
 #: pod/main/templates/navbar.html
+#: pod/stats/templates/stats/playlist-stats-view.html
 #: pod/stats/templates/stats/user-stats-view.html
 msgid "Number of playlists"
 msgstr "Nombre de listes de lecture"
@@ -5447,7 +5452,7 @@ msgstr "Impossible de créer l’enregistrement"
 #: pod/playlist/templates/playlist/playlist.html
 #: pod/playlist/templates/playlist/playlists.html
 #: pod/playlist/templates/playlist/protected-playlist-form.html
-#: pod/playlist/views.py
+#: pod/playlist/views.py pod/stats/templates/stats/playlist-stats-view.html
 msgid "Playlists"
 msgstr "Listes de lecture"
 
@@ -5498,7 +5503,7 @@ msgstr "La suppression de réunion est définitive"
 
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
-#: pod/video/models.py
+#: pod/playlist/utils.py pod/video/models.py
 #: pod/video/templates/videos/video_note_comments_display.html
 #: pod/video/templates/videos/video_note_display.html
 msgid "Public"
@@ -5506,11 +5511,13 @@ msgstr "Public"
 
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
+#: pod/playlist/utils.py
 msgid "Password-protected"
 msgstr "Protégé par un mot de passe"
 
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
+#: pod/playlist/utils.py
 msgid "Private"
 msgstr "Privé"
 
@@ -5674,7 +5681,11 @@ msgid "Show statistics for the playlist"
 msgstr "Afficher les statistiques de la liste de lecture"
 
 #: pod/playlist/templates/playlist/playlist-informations-card.html
-#: pod/stats/apps.py pod/stats/templates/stats/user-stats-view.html
+#: pod/stats/apps.py pod/stats/templates/stats/channel-stats-view.html
+#: pod/stats/templates/stats/general-stats-view.html
+#: pod/stats/templates/stats/playlist-stats-view.html
+#: pod/stats/templates/stats/user-stats-view.html
+#: pod/stats/templates/stats/video-stats-view.html
 msgid "Statistics"
 msgstr "Statistiques"
 
@@ -6421,6 +6432,15 @@ msgid "Recorder for Studio not found."
 msgstr "Enregistreur studio non trouvé."
 
 #: pod/stats/templates/stats/channel-stats-view.html
+msgid "Number of themes"
+msgstr "Nombre de thèmes"
+
+#: pod/stats/templates/stats/channel-stats-view.html
+#: pod/stats/templates/stats/user-stats-view.html
+msgid "Number of channels"
+msgstr "Nombre de chaînes"
+
+#: pod/stats/templates/stats/channel-stats-view.html
 msgid "Graph of video evolution for the channel "
 msgstr "Graphique de l'évolution des vidéos de la chaîne "
 
@@ -6429,13 +6449,19 @@ msgid "Breakdown of video status for the channel "
 msgstr "Répartition des statuts des vidéos pour la chaîne "
 
 #: pod/stats/templates/stats/channel-stats-view.html
-#: pod/stats/templates/stats/user-stats-view.html
-msgid "Number of channels"
-msgstr "Nombre de chaînes"
+#: pod/stats/templates/stats/playlist-stats-view.html pod/stats/views.py
+msgid "Statistics for playlists"
+msgstr "Statistiques des listes de lecture"
 
 #: pod/stats/templates/stats/channel-stats-view.html
 msgid "Breakdown of channels visibility status "
 msgstr "Répartition des statuts de visibilité des chaînes "
+
+#: pod/stats/templates/stats/general-stats-view.html
+#: pod/stats/templates/stats/user-stats-view.html
+#: pod/stats/templates/stats/video-stats-view.html
+msgid "Duration time of videos"
+msgstr "Durée des vidéos"
 
 #: pod/stats/templates/stats/general-stats-view.html
 #: pod/stats/templates/stats/video-stats-view.html
@@ -6458,10 +6484,12 @@ msgid "No popular video type"
 msgstr "Aucun type de vidéo populaire"
 
 #: pod/stats/templates/stats/general-stats-view.html
-#: pod/stats/templates/stats/user-stats-view.html
-#: pod/stats/templates/stats/video-stats-view.html
-msgid "Duration time of videos"
-msgstr "Durée des vidéos"
+msgid "Number of users"
+msgstr "Nombre d'utilisateurs"
+
+#: pod/stats/templates/stats/general-stats-view.html
+msgid "Statistics of videos"
+msgstr "Statistiques des videos"
 
 #: pod/stats/templates/stats/general-stats-view.html
 msgid "Graph of video evolution for "
@@ -6476,6 +6504,10 @@ msgid "Playlist playback time"
 msgstr "Temps de lecture de la liste de lecture"
 
 #: pod/stats/templates/stats/playlist-stats-view.html
+msgid "Playlist video statistics"
+msgstr "Statistiques des vidéos de la liste de lecture"
+
+#: pod/stats/templates/stats/playlist-stats-view.html
 #: pod/stats/templates/stats/video-stats-view.html
 msgid "Graph of video evolution "
 msgstr "Graphique de l'évolution des vidéos "
@@ -6483,6 +6515,10 @@ msgstr "Graphique de l'évolution des vidéos "
 #: pod/stats/templates/stats/playlist-stats-view.html
 msgid "Breakdown of video status for the playlist "
 msgstr "Répartition des statuts des vidéos pour la liste de lecture "
+
+#: pod/stats/templates/stats/playlist-stats-view.html
+msgid "Breakdown of playlists visibilities for "
+msgstr "Répartition des statuts de visibilité pour la liste de lecture "
 
 #: pod/stats/templates/stats/user-stats-view.html
 msgid "My statistics"
@@ -6516,10 +6552,9 @@ msgstr "Type préféré"
 msgid "No prefered type"
 msgstr "Pas de type préféré"
 
-#: pod/stats/templates/stats/user-stats-view.html pod/stats/views.py
-#: pod/video/templates/videos/videos.html
-msgid "Video statistics"
-msgstr "Statistiques des vidéos"
+#: pod/stats/templates/stats/user-stats-view.html
+msgid "Statistics of your videos"
+msgstr "Statistiques de vos vidéos"
 
 #: pod/stats/templates/stats/user-stats-view.html
 msgid "Graph of video evolution for the user "
@@ -6543,6 +6578,11 @@ msgstr "Année de début"
 msgid "End year"
 msgstr "Année de fin"
 
+#: pod/stats/templates/stats/video-stats-view.html pod/video/apps.py
+#: pod/video/models.py pod/video/templates/videos/videos.html
+msgid "Videos"
+msgstr "Vidéos"
+
 #: pod/stats/templates/stats/video-stats-view.html
 #: pod/video/templates/videos/video-info.html
 msgid "Number of favorites"
@@ -6559,16 +6599,20 @@ msgid "Number of views"
 msgstr "Nombre de vues"
 
 #: pod/stats/templates/stats/video-stats-view.html
+msgid "Graphics of videos"
+msgstr "Graphiques des vidéos"
+
+#: pod/stats/templates/stats/video-stats-view.html
 msgid "Graph of video evolution of "
 msgstr "Graphique de l'évolution des vidéos de "
 
 #: pod/stats/templates/stats/video-stats-view.html
-msgid "Number of videos"
-msgstr "Numbre de vidéos"
-
-#: pod/stats/templates/stats/video-stats-view.html
 msgid "Breakdown of video status "
 msgstr "Répartition des statuts des vidéos "
+
+#: pod/stats/views.py pod/video/templates/videos/videos.html
+msgid "Video statistics"
+msgstr "Statistiques des vidéos"
 
 #: pod/stats/views.py
 #, python-format
@@ -6604,10 +6648,6 @@ msgid "Statistics for the playlist %s"
 msgstr "Statistiques de la liste de lecture %s"
 
 #: pod/stats/views.py
-msgid "Statistics for playlists"
-msgstr "Statistiques des listes de lecture"
-
-#: pod/stats/views.py
 #, python-format
 msgid "The following video does not exist: %s"
 msgstr "La video suivante n’existe pas : %s"
@@ -6633,10 +6673,6 @@ msgstr "Définir comme brouillon"
 #: pod/video/admin.py
 msgid "Transcript selected"
 msgstr "Transcription selectionnée"
-
-#: pod/video/apps.py pod/video/models.py pod/video/templates/videos/videos.html
-msgid "Videos"
-msgstr "Vidéos"
 
 #: pod/video/forms.py
 msgid "File field"
@@ -8461,6 +8497,11 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
+#, fuzzy
+#~| msgid "Password-protected"
+#~ msgid "protected"
+#~ msgstr "Protégé par un mot de passe"
+
 #~ msgid "Prefered video discipline"
 #~ msgstr "Discipline de vidéo préférée"
 
@@ -8469,9 +8510,6 @@ msgstr "xAPI Esup-Pod"
 
 #~ msgid "Show view statistics for all videos"
 #~ msgstr "Afficher les statistiques de visualisation de toutes les vidéos"
-
-#~ msgid "Statistics views"
-#~ msgstr "Statistiques des vues"
 
 #~ msgid "Pod video viewing statistics"
 #~ msgstr "Statistiques de visualisation des vidéos"
@@ -8523,9 +8561,6 @@ msgstr "xAPI Esup-Pod"
 
 #~ msgid "Switch to next video automatically"
 #~ msgstr "Passer automatiquement à la prochaine vidéo"
-
-#~ msgid "List of videos"
-#~ msgstr "Liste des vidéos"
 
 #~ msgid "Thumbnail"
 #~ msgstr "Vignette"

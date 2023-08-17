@@ -1,45 +1,88 @@
-{% extends 'base.html' %}
+{% extends 'stats/utils/base-stats.html' %}
 {% load static i18n %}
 {% load playlist_stats %}
 {% load general_stats %}
 
-{% block opengraph %}
+{% block breadcrumbs %}
   {{ block.super }}
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-{% endblock opengraph %}
-
-{% block page_title %}{{ title }}{% endblock page_title %}
-
-{% block page_extra_head %}
-  <link rel="stylesheet" href="{% static 'stats/css/video_stats_view.css' %}?ver={{VERSION}}">
-{% endblock page_extra_head %}
-
-{% block content %}
-<div class="grid-container container">
-  {% if form %}
-    {% include "videos/video-form.html" %}
+  <li class="breadcrumb-item active" aria-current="page">
+    <a href="{% url 'stats:general-stats'%}">
+      {% trans "Statistics" %}
+    </a>
+  </li>
+  {% if not playlist %}
+    <li class="breadcrumb-item active" aria-current="page">
+      {% trans "Playlists" %}
+    </li>
   {% else %}
-    <h1 class="page_title h2">{{ title }}</h1>
-    {% if playlist %}
-      <p>
-        {% trans "Number of videos" %} : {% get_number_video_in_playlist playlist %}
-      </p>
-      <p>
-        {% trans 'Playlist playback time' %} : {% get_total_time_videos videos %}
-      </p>
-      <p class="playlist-visibility">
-        {% trans "Right of access" %} : {% include "playlist/playlist_visibility_icon.html" with playlist=playlist %}
-      </p>
-      {% trans "Graph of video evolution " as graph_title_prefix %}
-      {% include "stats/utils/years-video-stats.html" with graph_id="videosEvolutionChart" graph_title=graph_title_prefix %}
+    <li class="breadcrumb-item active" aria-current="page">
+      <a href="{% url 'stats:playlist-stats'%}">
+        {% trans "Playlists" %}
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      {{ playlist.name }}
+    </li>
+  {% endif %}
+{% endblock %}
 
-      {% trans "Breakdown of video status for the playlist " as graph_title_prefix %}
-      {% include "stats/utils/pie-chart.html" with graph_id="statusChart" graph_data=status_datas graph_title=graph_title_prefix|add:playlist.name %}
-    {% else %}
-      BONJOUR
+
+{% block stats_items %}
+  {% if playlist %}
+    {% get_number_video_in_playlist playlist as get_number_video_in_playlist %}
+    {% url 'playlist:content' playlist as url_for_video %}
+    {% include "stats/utils/stats-item.html" with icon="bi bi-film" url=url_for_video label=_("Number of videos") number=get_number_video_in_playlist %}
+
+    {% get_total_time_videos videos as get_total_time_videos %}
+    {% include "stats/utils/stats-item.html" with icon="bi bi-clock" label=_("Playlist playback time") number=get_total_time_videos %}
+
+    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+      <div class="icon-large">
+        {% include "playlist/playlist_visibility_icon.html" with playlist=playlist %}
+      </div>
+      <div class="label">
+        {% trans "Right of access" %}
+      </div>
+      <div class="value">{% get_playlist_visibility playlist %}</div>
+    </div>
+
+    {% get_number_additional_owners_playlist playlist as get_number_additional_owners_playlist %}
+    {% include "stats/utils/stats-item.html" with icon="bi bi-people" label=_("Additional owners") number=get_number_additional_owners_playlist %}
+
+  {% else %}
+    {% url 'playlist:list' as url_for_playlist %}
+    {% include "stats/utils/stats-item.html" with icon="bi bi-list-ul" url=url_for_playlist|add:'?visibility=all' label=_("Number of playlists") number=playlists|length %}
+
+  {% endif %}
+
+{% endblock stats_items %}
+
+{% block other_stats %}
+  {% if playlist %}
+    {% if videos|length > 0 %}
+      <h2 class="page_title mt-5 h2 text-center">{% trans "Playlist video statistics" %}</h2>
+      <div class="row justify-content-center">
+        <div class="col-xl-6 col-12">
+          {% trans "Graph of video evolution " as graph_title_prefix %}
+          {% include "stats/utils/years-video-stats.html" with graph_id="videosEvolutionChart" graph_title=graph_title_prefix %}
+        </div>
+        <div class="col-xl-6 col-12">
+          {% trans "Breakdown of video status for the playlist " as graph_title_prefix %}
+          {% include "stats/utils/pie-chart.html" with graph_id="statusChart" graph_data=status_datas graph_title=graph_title_prefix|add:playlist.name %}
+        </div>
+      </div>
+    {% endif %}
+  {% else %}
+    {% if playlists|length > 0 %}
+      {% with user_str=request.user|stringformat:"s" %}
+        <h2 class="page_title mt-5 h2 text-center">{% trans "Statistics for playlists" %}</h2>
+        <div class="row justify-content-center">
+          <div class="col-lg-6 col-10">
+            {% trans "Breakdown of playlists visibilities for " as graph_title_prefix %}
+            {% include "stats/utils/pie-chart.html" with graph_id="visibilitiesStatusChart" graph_data=status_datas graph_title=graph_title_prefix|add:TITLE_ETB %}
+          </div>
+        </div>
+      {% endwith %}
     {% endif %}
   {% endif %}
-</div>
-{% endblock content %}
+{% endblock other_stats %}

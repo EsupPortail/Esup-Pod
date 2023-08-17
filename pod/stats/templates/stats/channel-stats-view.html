@@ -1,43 +1,61 @@
-{% extends 'base.html' %}
+{% extends 'stats/utils/base-stats.html' %}
 {% load static i18n %}
 {% load user_stats %}
+{% load channel_stats %}
 
-{% block opengraph %}
+{% block breadcrumbs %}
   {{ block.super }}
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-{% endblock opengraph %}
-
-{% block page_title %}{{ title }}{% endblock page_title %}
-
-{% block page_extra_head %}
-  <link rel="stylesheet" href="{% static 'stats/css/video_stats_view.css' %}?ver={{VERSION}}">
-{% endblock page_extra_head %}
-
-{% block content %}
-<div class="grid-container container">
-  {% if form %}
-    {% include "videos/video-form.html" %}
+  <li class="breadcrumb-item active" aria-current="page">
+    <a href="{% url 'stats:general-stats'%}">
+      {% trans "Statistics" %}
+    </a>
+  </li>
+  {% if not channel%}
+    <li class="breadcrumb-item active" aria-current="page">
+      {% trans "Channels" %}
+    </li>
   {% else %}
-    <h1 class="page_title h2">{{ title }}</h1>
-    {% if channel %}
-      {% trans "Graph of video evolution for the channel " as graph_title_prefix %}
-      {% include "stats/utils/years-video-stats.html" with graph_id="videosEvolutionChart" graph_title=graph_title_prefix|add:channel %}
-
-      {% trans "Breakdown of video status for the channel " as graph_title_prefix %}
-      {% include "stats/utils/pie-chart.html" with graph_id="statusChart" graph_data=status_datas graph_title=graph_title_prefix|add:channel %}
-    {% else %}
-      <p>
-        {% trans 'Number of channels' %} : {% get_number_channels %}
-      </p>
-      {% trans "Breakdown of channels visibility status " as graph_title_prefix %}
-      {% include "stats/utils/pie-chart.html" with graph_id="statusChart" graph_data=visibility_datas graph_title=graph_title_prefix %}
-    {% endif %}
+    <li class="breadcrumb-item active" aria-current="page">
+      <a href="{% url 'stats:channels-stats'%}">
+        {% trans "Channels" %}
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      {{ channel.title }}
+    </li>
   {% endif %}
-</div>
-{% endblock content %}
-
-{% block more_script %}
-
 {% endblock %}
+
+{% block stats_items %}
+  {% if channel %}
+    {% include "stats/utils/stats-item.html" with icon="bi bi-film" label=_("Number of videos") number=videos|length %}
+
+    {% get_number_themes as get_number_themes %}
+    {% include "stats/utils/stats-item.html" with icon="bi bi-card-list" label=_("Number of themes") number=get_number_themes %}
+  {% else %}
+    {% get_number_channels as get_number_channels %}
+    {% include "stats/utils/stats-item.html" with icon="bi bi-play-btn" label=_("Number of channels") number=get_number_channels %}
+  {% endif %}
+{% endblock stats_items %}
+
+{% block other_stats %}
+  {% if channel %}
+    <div class="row">
+      <div class="col-xl-6 col-12">
+        {% trans "Graph of video evolution for the channel " as graph_title_prefix %}
+        {% include "stats/utils/years-video-stats.html" with graph_id="videosEvolutionChart" graph_title=graph_title_prefix|add:channel %}
+        </div>
+      <div class="col-xl-6 col-12">
+        {% trans "Breakdown of video status for the channel " as graph_title_prefix %}
+        {% include "stats/utils/pie-chart.html" with graph_id="statusChart" graph_data=status_datas graph_title=graph_title_prefix|add:channel %}          </div>
+    </div>
+  {% else %}
+    <h2 class="page_title mt-5 h2 text-center">{% trans "Statistics for playlists" %}</h2>
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-10">
+        {% trans "Breakdown of channels visibility status " as graph_title_prefix %}
+        {% include "stats/utils/pie-chart.html" with graph_id="statusChart" graph_data=visibility_datas graph_title=graph_title_prefix %}
+      </div>
+    </div>
+  {% endif %}
+{% endblock other_stats %}

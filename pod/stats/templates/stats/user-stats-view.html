@@ -1,21 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'stats/utils/base-stats.html' %}
+
 {% load static i18n %}
 {% load user_stats %}
 {% load general_stats %}
 {% load favorites_playlist %}
-
-{% block opengraph %}
-  {{ block.super }}
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-{% endblock opengraph %}
-
-{% block page_title %}{{ title }}{% endblock page_title %}
-
-{% block page_extra_head %}
-  <link rel="stylesheet" href="{% static 'stats/css/video_stats_view.css' %}?ver={{VERSION}}">
-{% endblock page_extra_head %}
 
 {% block breadcrumbs %}
   {{ block.super }}
@@ -29,151 +17,68 @@
   </li>
 {% endblock %}
 
-{% block page_content %}
-  {% if form %}
-    {% include "videos/video-form.html" %}
+{% block stats_items %}
+  {% url 'video:my_videos' as url_for_videos %}
+  {% include "stats/utils/stats-item.html" with icon="bi bi-film" url=url_for_videos label=_("Number of videos") number=videos|length %}
+
+  {% get_total_time_videos videos as get_total_time_videos %}
+  {% include "stats/utils/stats-item.html" with icon="bi bi-clock" label=_("Duration time of videos") number=get_total_time_videos %}
+
+  {% url 'podfile:home' as url_for_podfile %}
+  {% get_number_files_user as get_number_files_user %}
+  {% include "stats/utils/stats-item.html" with icon="bi bi-folder" url=url_for_podfile label=_("Number of files") number=get_number_files_user %}
+
+  {% get_favorite_playlist user as playlist %}
+  {% url 'playlist:content' slug=playlist.slug as url_for_user_favorites %}
+  {% get_number_favorites_user as get_number_favorites_user %}
+  {% include "stats/utils/stats-item.html" with icon="bi bi-star" url=url_for_user_favorites label=_("Number of videos added in favorites") number=get_number_favorites_user %}
+
+  {% url 'playlist:list' as url_for_user_playlists %}
+  {% get_number_playlist_user as get_number_playlist_user %}
+  {% include "stats/utils/stats-item.html" with icon="bi bi-list-ul" url=url_for_user_playlists label=_("Number of playlists") number=get_number_playlist_user %}
+
+  {% url 'meeting:my_meetings' as url_for_user_meetings %}
+  {% get_number_meetings_user as get_number_meetings_user %}
+  {% include "stats/utils/stats-item.html" with icon="bi bi-person-video" url=url_for_user_meetings label=_("Number of meetings") number=get_number_meetings_user %}
+
+  {% if prefered_discipline %}
+    {% url 'videos:videos' as videos_url %}
+    {% with url_for_prefered_discipline=videos_url|add:"?discipline="|add:prefered_discipline.slug %}
+      {% include "stats/utils/stats-item.html" with icon="bi bi-book" url=url_for_prefered_discipline label=_("Prefered discipline") text=prefered_discipline %}
+    {% endwith %}
   {% else %}
-    <h1 class="page_title h1 text-center">{{ title }}</h1>
-
-    <div class="row">
-
-      <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-        <div class="icon-large">
-          <i class="bi bi-film"></i>
-        </div>
-        <div class="label">
-          <a class="" href="{% url 'video:my_videos' %}">
-            {% trans 'Number of videos' %}
-          </a>
-        </div>
-        <div class="number">{{ videos|length }}</div>
-      </div>
-
-      <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-        <div class="icon-large">
-          <i class="bi bi-clock"></i>
-        </div>
-        <div class="label">
-          {% trans 'Duration time of videos' %}
-        </div>
-        <div class="number">{% get_total_time_videos videos %}</div>
-      </div>
-
-      <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-        <div class="icon-large">
-          <i class="bi bi-folder"></i>
-        </div>
-        <div class="label">
-          <a class="" href="{% url 'podfile:home' %}">
-            {% trans 'Number of files' %}
-          </a>
-        </div>
-        <div class="number">{% get_number_files_user %}</div>
-      </div>
-
-      <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-        {% get_favorite_playlist user as playlist %}
-        <div class="icon-large">
-          <i class="bi bi-star"></i>
-        </div>
-        <div class="label">
-          <a class="" href="{% url 'playlist:content' slug=playlist.slug %}">
-            {% trans 'Number of videos added in favorites' %}
-          </a>
-        </div>
-        <div class="number">{% get_number_favorites_user %}</div>
-      </div>
-
-      <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-        <div class="icon-large">
-          <i class="bi bi-list-ul"></i>
-        </div>
-        <div class="label">
-          <a class="" href="{% url 'playlist:list' %}">
-            {% trans 'Number of playlists' %}
-          </a>
-        </div>
-        <div class="number">{% get_number_playlist_user %}</div>
-      </div>
-
-      <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-        <div class="icon-large">
-          <i class="bi bi-person-video"></i>
-        </div>
-        <div class="label">
-          <a class="" href="{% url 'meeting:my_meetings' %}">
-            {% trans 'Number of meetings' %}
-          </a>
-        </div>
-        <div class="number">{% get_number_meetings_user %}</div>
-      </div>
-
-      <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-        <div class="icon-large">
-          <i class="bi bi-book"></i>
-        </div>
-        <div class="label">
-          {% trans 'Prefered discipline' %} 
-        </div>
-        <div class="value">
-          {% if prefered_discipline %}
-            <a class="" href="{% url 'videos:videos' %}?discipline={{ prefered_discipline.slug }}">
-              {{ prefered_discipline }}
-            </a>
-          {% else %}
-            {% trans "No prefered discipline" %}
-          {% endif %}
-        </div>
-      </div>
-
-      <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-        <div class="icon-large">
-          <i class="bi bi-tv"></i>
-        </div>
-        <div class="label">
-          {% trans 'Prefered type' %}
-        </div>
-        <div class="value">
-          {% if prefered_type %}
-          <a class="" href="{% url 'videos:videos' %}?type={{ prefered_type.slug }}">
-            {{ prefered_type }}
-          </a>
-        {% else %}
-          {% trans "No prefered type" %}
-        {% endif %}
-        </div>
-      </div>
-
-      <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-        <div class="icon-large">
-          <i class="bi bi-play-btn"></i>
-        </div>
-        <div class="label">
-          <a class="" href="{% url 'channels:my_channels' %}">
-            {% trans 'Number of channels' %}
-          </a>
-        </div>
-        <div class="number">{% get_number_channels target="user" %}</div>
-      </div>
-    </div>
-
-    <h2 class="page_title h2 text-center">{% trans "Video statistics" %}</h2>
-
-    <div class="row">
-      {% with user_str=request.user|stringformat:"s" %}
-      <div class="col-xl-6 col-12">
-        {% trans "Graph of video evolution for the user " as graph_title_prefix %}
-        {% include "stats/utils/years-video-stats.html" with graph_id="videosEvolutionChart" graph_title=graph_title_prefix|add:user_str %}
-      </div>
-      <div class="col-xl-6 col-12">
-        {% trans "Breakdown of video status for the user " as graph_title_prefix %}
-        {% include "stats/utils/pie-chart.html" with graph_id="statusChart" graph_data=status_datas graph_title=graph_title_prefix|add:user_str %}
-      </div>
-      {% endwith %}
-    </div>
-
+    {% include "stats/utils/stats-item.html" with icon="bi bi-book" label=_("Prefered discipline") text=_("No prefered discipline") %}
   {% endif %}
-</div>
-{% endblock page_content %}
-{% block collapse_page_aside %}{% endblock collapse_page_aside %}
-{% block page_aside %}{% endblock page_aside %}
+
+  {% if prefered_type %}
+    {% url 'videos:videos' as videos_url %}
+    {% with url_for_prefered_type=videos_url|add:"?type="|add:prefered_type.slug %}
+      {% include "stats/utils/stats-item.html" with icon="bi bi-tv" url=url_for_prefered_type label=_("Prefered type") text=prefered_type %}
+    {% endwith %}
+  {% else %}
+    {% include "stats/utils/stats-item.html" with icon="bi bi-tv" label=_("Prefered type") text=_("No prefered type") %}
+  {% endif %}
+
+  {% url 'channels:my_channels' as url_for_user_channels %}
+  {% get_number_channels target="user" as get_number_channels %}
+  {% include "stats/utils/stats-item.html" with icon="bi bi-play-btn" url=url_for_user_channels label=_("Number of channels") number=get_number_channels %}
+
+{% endblock stats_items %}
+
+
+{% block other_stats %}
+  <h2 class="page_title mt-5 h2 text-center">{% trans "Statistics of your videos" %}</h2>
+
+  <div class="row">
+    {% with user_str=request.user|stringformat:"s" %}
+    <div class="col-xl-6 col-12">
+      {% trans "Graph of video evolution for the user " as graph_title_prefix %}
+      {% include "stats/utils/years-video-stats.html" with graph_id="videosEvolutionChart" graph_title=graph_title_prefix|add:user_str %}
+    </div>
+    <div class="col-xl-6 col-12">
+      {% trans "Breakdown of video status for the user " as graph_title_prefix %}
+      {% include "stats/utils/pie-chart.html" with graph_id="statusChart" graph_data=status_datas graph_title=graph_title_prefix|add:user_str %}
+    </div>
+    {% endwith %}
+  </div>
+{% endblock other_stats %}
