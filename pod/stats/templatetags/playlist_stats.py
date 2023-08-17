@@ -4,9 +4,11 @@ from pod.playlist.models import Playlist
 from pod.video.models import Video
 
 from pod.playlist.utils import (
+    get_additional_owners,
     get_count_video_added_in_playlist as total_additions_playlist_utils,
     get_total_favorites_video as total_favorites_utils,
     get_number_video_in_playlist as total_videos_in_playlist,
+    playlist_visibility,
 )
 
 register = Library()
@@ -43,3 +45,13 @@ def get_count_video_added_in_playlist(video: Video) -> int:
 @register.simple_tag(name="get_number_video_in_playlist")
 def get_number_video_in_playlist(playlist: Playlist) -> int:
     return total_videos_in_playlist(playlist)
+
+
+@register.simple_tag(name="get_number_additional_owners_playlist")
+def get_number_additional_owners_playlist(playlist: Playlist) -> int:
+    return get_additional_owners(playlist).count()
+
+
+@register.simple_tag(name="get_playlist_visibility")
+def get_playlist_visibility(playlist: Playlist) -> str:
+    return playlist_visibility(playlist)
