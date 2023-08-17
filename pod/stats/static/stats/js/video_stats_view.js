@@ -158,6 +158,9 @@ function renderChart() {
       },
     },
   });
+
+  document.getElementById("form-container" + graph_id).classList.remove("d-none");
+  document.getElementById("graph-container" + graph_id).classList.remove("d-none");
 }
 updateChart();
 
