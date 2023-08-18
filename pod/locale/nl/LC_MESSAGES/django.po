@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-18 11:54+0000\n"
+"POT-Creation-Date: 2023-08-18 09:32+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -878,8 +878,9 @@ msgstr ""
 #: pod/chapter/templates/chapter/list_chapter.html pod/completion/models.py
 #: pod/completion/templates/overlay/list_overlay.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
-#: pod/main/models.py pod/main/views.py pod/playlist/models.py
-#: pod/video/models.py pod/video/templates/channel/list_theme.html
+#: pod/main/models.py pod/main/views.py pod/playlist/forms.py
+#: pod/playlist/models.py pod/video/models.py
+#: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_sort_select.html
 msgid "Title"
 msgstr "Titel"
@@ -2046,7 +2047,8 @@ msgstr ""
 msgid "User who create this recording"
 msgstr ""
 
-#: pod/import_video/models.py pod/meeting/models.py pod/video/models.py
+#: pod/import_video/models.py pod/meeting/models.py pod/playlist/models.py
+#: pod/video/models.py
 msgid "Site"
 msgstr ""
 
@@ -2674,8 +2676,8 @@ msgid ""
 msgstr ""
 
 #: pod/live/models.py pod/main/forms.py pod/main/models.py
-#: pod/playlist/models.py pod/video/forms.py pod/video/models.py
-#: pod/video/templates/channel/list_theme.html
+#: pod/playlist/forms.py pod/playlist/models.py pod/video/forms.py
+#: pod/video/models.py pod/video/templates/channel/list_theme.html
 msgid "Description"
 msgstr ""
 
@@ -5145,6 +5147,28 @@ msgid "Security informations"
 msgstr ""
 
 #: pod/playlist/forms.py pod/playlist/models.py
+msgid "Please choose a title between 1 and 250 characters."
+msgstr ""
+
+#: pod/playlist/forms.py pod/playlist/models.py
+msgid "Please choose a description. This description is empty by default."
+msgstr ""
+
+#: pod/playlist/forms.py pod/playlist/models.py
+#: pod/playlist/templates/playlist/filter_aside.html
+#: pod/playlist/templates/playlist/playlist-informations-card.html
+msgid "Right of access"
+msgstr ""
+
+#: pod/playlist/forms.py pod/playlist/models.py
+msgid ""
+"\n"
+"            Please chosse a right of access among 'public', 'password-"
+"protected', 'private'.\n"
+"            "
+msgstr ""
+
+#: pod/playlist/forms.py pod/playlist/models.py
 msgid "Please choose a password if this playlist is password-protected."
 msgstr ""
 
@@ -5160,6 +5184,15 @@ msgid ""
 "recommend that you leave this setting disabled."
 msgstr ""
 
+#: pod/playlist/forms.py pod/playlist/models.py
+#: pod/video/templates/videos/video-info.html
+msgid "Autoplay"
+msgstr ""
+
+#: pod/playlist/forms.py pod/playlist/models.py
+msgid "Please choose if this playlist is an autoplay playlist or not."
+msgstr ""
+
 #: pod/playlist/forms.py
 #, python-brace-format
 msgid "You cannot create a playlist named \"{FAVORITE_PLAYLIST_NAME}\""
@@ -5167,6 +5200,11 @@ msgstr ""
 
 #: pod/playlist/forms.py
 msgid "Remove playlist cannot be undone"
+msgstr ""
+
+#: pod/playlist/forms.py
+#: pod/playlist/templates/playlist/protected-playlist-form.html
+msgid "This playlist is protected by password, please fill in and click send."
 msgstr ""
 
 #: pod/playlist/models.py
@@ -5190,35 +5228,6 @@ msgstr ""
 #: pod/playlist/models.py pod/playlist/tests/test_models.py
 #: pod/playlist/views.py pod/video/templates/videos/video.html
 msgid "Playlist"
-msgstr ""
-
-#: pod/playlist/models.py
-msgid "Please choose a title between 1 and 250 characters."
-msgstr ""
-
-#: pod/playlist/models.py
-msgid "Please choose a description. This description is empty by default."
-msgstr ""
-
-#: pod/playlist/models.py pod/playlist/templates/playlist/filter_aside.html
-#: pod/playlist/templates/playlist/playlist-informations-card.html
-msgid "Right of access"
-msgstr ""
-
-#: pod/playlist/models.py
-msgid ""
-"\n"
-"            Please chosse a right of access among 'public', 'password-"
-"protected', 'private'.\n"
-"            "
-msgstr ""
-
-#: pod/playlist/models.py pod/video/templates/videos/video-info.html
-msgid "Autoplay"
-msgstr ""
-
-#: pod/playlist/models.py
-msgid "Please choose if this playlist is an autoplay playlist or not."
 msgstr ""
 
 #: pod/playlist/models.py
@@ -5259,6 +5268,13 @@ msgid "Playlist contents"
 msgstr ""
 
 #: pod/playlist/templates/playlist/add_or_edit.html
+#: pod/playlist/templates/playlist/delete.html
+#: pod/playlist/templates/playlist/playlist.html
+#: pod/playlist/templates/playlist/protected-playlist-form.html
+msgid "Access the list of playlists"
+msgstr ""
+
+#: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/playlist/templates/playlist/playlist_link.html
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "Edit the playlist"
@@ -5275,6 +5291,10 @@ msgid "Start the playlist"
 msgstr ""
 
 #: pod/playlist/templates/playlist/delete.html
+msgid "Access the video list of this playlist"
+msgstr ""
+
+#: pod/playlist/templates/playlist/delete.html
 #, python-format
 msgid "Delete the playlist <b>%(name)s</b>"
 msgstr ""
@@ -5285,6 +5305,10 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/delete.html
 msgid "To delete the playlist, please check the box in and click delete."
+msgstr ""
+
+#: pod/playlist/templates/playlist/filter_aside.html
+msgid "Reset the filter"
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
@@ -5335,8 +5359,24 @@ msgstr ""
 msgid "Playlist owner"
 msgstr ""
 
+#: pod/playlist/templates/playlist/playlist-informations-card.html
+msgid "Access to playlist owner profile"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist-informations-card.html
+msgid "Access to playlist additional owner profile"
+msgstr ""
+
 #: pod/playlist/templates/playlist/playlist-list-modal.html
 msgid "Your playlists"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist-list-modal.html
+msgid "Remove video from this playlist"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist-list-modal.html
+msgid "Add video in this playlist"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist-list-modal.html
@@ -5378,6 +5418,10 @@ msgid "Reorganize"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist.html
+msgid "Cancel the reorganization"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist.html
 msgid "Help - Drag & Drop"
 msgstr ""
 
@@ -5409,6 +5453,14 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_player.html
 msgid "Playlist:"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist_player.html
+msgid "View the playlist"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist_player.html
+msgid "Watch the video"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_sort_select.html
@@ -5462,10 +5514,6 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/protected-playlist-form.html
 msgid "Protected playlist form"
-msgstr ""
-
-#: pod/playlist/templates/playlist/protected-playlist-form.html
-msgid "This playlist is protected by password, please fill in and click send."
 msgstr ""
 
 #: pod/playlist/templates/playlist/protected-playlist-form.html
