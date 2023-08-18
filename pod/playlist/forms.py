@@ -41,21 +41,72 @@ class PlaylistForm(forms.ModelForm):
         "autoplay",
         "additional_owners",
     ]
+    name = forms.CharField(
+        label=_("Title"),
+        widget=forms.TextInput(
+            attrs={
+                "aria-describedby": "id_nameHelp",
+            },
+        ),
+        help_text=_("Please choose a title between 1 and 250 characters."),
+    )
+    description = forms.CharField(
+        label=_("Description"),
+        widget=forms.Textarea(
+            attrs={
+                "aria-describedby": "id_descriptionHelp",
+            },
+        ),
+        required=False,
+        help_text=_("Please choose a description. This description is empty by default."),
+    )
+    visibility = forms.ChoiceField(
+        label=_("Right of access"),
+        widget=forms.Select(
+            attrs={
+                "aria-describedby": "id_visibilityHelp",
+            },
+        ),
+        choices=Playlist.VISIBILITY_CHOICES,
+        help_text=_(
+            '''
+            Please chosse a right of access among 'public', 'password-protected', 'private'.
+            '''
+        ),
+    )
     password = forms.CharField(
         label=_("Password"),
         widget=forms.PasswordInput(
-            attrs={"autocomplete": "off"}
+            attrs={
+                "autocomplete": "off",
+                "aria-describedby": "id_passwordHelp",
+            },
         ),
         required=False,
         help_text=_("Please choose a password if this playlist is password-protected."),
     )
     promoted = forms.BooleanField(
         label=_("Promoted"),
+        widget=forms.CheckboxInput(
+            attrs={
+                "aria-describedby": "id_promotedHelp",
+            },
+        ),
         required=False,
         help_text=_("Selecting this setting causes your playlist to be promoted on the page"
                     + " listing promoted public playlists. However, if this setting is deactivated,"
                     + " your playlist will still be accessible to everyone."
                     + "<br>For general use, we recommend that you leave this setting disabled."),
+    )
+    autoplay = forms.BooleanField(
+        label=_("Autoplay"),
+        widget=forms.CheckboxInput(
+            attrs={
+                "aria-describedby": "id_autoplayHelp",
+            },
+        ),
+        required=False,
+        help_text=_("Please choose if this playlist is an autoplay playlist or not."),
     )
     fieldsets = [
         (
@@ -116,7 +167,11 @@ class PlaylistRemoveForm(forms.Form):
     agree = forms.BooleanField(
         label=_("I agree"),
         help_text=_("Remove playlist cannot be undone"),
-        widget=forms.CheckboxInput(),
+        widget=forms.CheckboxInput(
+            attrs={
+                "aria-describedby": "id_agreeHelp",
+            },
+        ),
     )
 
     def __init__(self, *args, **kwargs) -> None:
@@ -127,7 +182,15 @@ class PlaylistRemoveForm(forms.Form):
 
 class PlaylistPasswordForm(forms.Form):
     """Form to access to a password-protected playlist."""
-    password = forms.CharField(label=_("Password"), widget=forms.PasswordInput())
+    password = forms.CharField(
+        label=_("Password"),
+        widget=forms.PasswordInput(
+            attrs={
+                "aria-describedby": "id_passwordHelp",
+            },
+        ),
+        help_text=_("This playlist is protected by password, please fill in and click send."),
+    )
 
     def __init__(self, *args, **kwargs):
         """Init method."""
