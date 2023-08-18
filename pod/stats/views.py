@@ -3,6 +3,7 @@ from datetime import date
 from dateutil.parser import parse
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponseNotFound, JsonResponse
 from django.shortcuts import get_object_or_404, render
@@ -30,13 +31,13 @@ VIEW_STATS_AUTH = getattr(settings, "VIEW_STATS_AUTH", False)
 
 
 def view_stats_if_authenticated(user):
-    return not (user.is_authenticated and VIEW_STATS_AUTH)
+    return user.is_authenticated and VIEW_STATS_AUTH
 
 
 STATS_VIEWS = {
     "videos": {
-        "filter_func": lambda kwargs: Video.objects.filter(slug=kwargs.get("slug"))
-        if kwargs.get("slug")
+        "filter_func": lambda kwargs: Video.objects.filter(slug=kwargs.get("video_slug"))
+        if kwargs.get("video_slug")
         else kwargs["available_videos"],
         "title_func": lambda kwargs: _("Video statistics: %s")
         % kwargs["video_founded"].title.capitalize()
@@ -105,20 +106,29 @@ def get_videos(
     return videos, title
 
 
-@user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
+def manage_post_request(request, videos, video=None):
+    date_filter = request.POST.get("periode", date.today())
+    if isinstance(date_filter, str):
+        date_filter = parse(date_filter).date()
+    if video:  # For one video
+        data = get_videos_stats(videos, date_filter)
+    else:  # For some videos
+        data = get_videos_stats(videos, date_filter, mode="year")
+    return JsonResponse(data, safe=False)
+
+
+@user_passes_test(view_stats_if_authenticated)
 def video_stats_view(request, video=None):
     target = "videos"
     videos, title = get_videos(request=request, target=target, video_slug=video)
 
+    if not videos:
+        return HttpResponseNotFound(_("The following video does not exist: %s") % video)
+
     if request.method == "GET":
         if video and videos:
             return manage_access_rights_stats_video(request, videos[0], title)
-        elif not videos:
-            return HttpResponseNotFound(
-                _("The following video does not exist: %s") % video
-            )
 
-    if request.method == "GET" and not video and videos:
         status_datas_json = get_videos_status_stats(videos)
         status_datas = json.loads(status_datas_json)
         status_datas.pop("draft", None)
@@ -135,15 +145,8 @@ def video_stats_view(request, video=None):
                 "prefered_discipline": prefered_discipline,
             },
         )
-    else:
-        date_filter = request.POST.get("periode", date.today())
-        if isinstance(date_filter, str):
-            date_filter = parse(date_filter).date()
-        if video:  # For one video
-            data = get_videos_stats(videos, date_filter)
-        else:  # For some videos
-            data = get_videos_stats(videos, date_filter, mode="year")
-        return JsonResponse(data, safe=False)
+    if request.method == "POST":
+        return manage_post_request(request, videos, video)
 
 
 def manage_access_rights_stats_video(request, video, page_title):
@@ -185,7 +188,7 @@ def to_do():
     ...
 
 
-@user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
+@user_passes_test(view_stats_if_authenticated)
 def channel_stats_view(request, channel=None, theme=None):
     target = "channel"
     videos, title = get_videos(
@@ -219,18 +222,15 @@ def channel_stats_view(request, channel=None, theme=None):
                 },
             )
 
-    else:
-        date_filter = request.POST.get("periode", date.today())
-        if isinstance(date_filter, str):
-            date_filter = parse(date_filter).date()
-        data = get_videos_stats(videos, date_filter, mode="year")
-        return JsonResponse(data, safe=False)
+    elif request.method == "POST":
+        return manage_post_request(request, videos)
 
 
-@user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
+@user_passes_test(view_stats_if_authenticated)
 def user_stats_view(request):
     target = "user"
     videos, title = get_videos(request=request, target=target)
+
     if request.method == "GET":
         status_datas = get_videos_status_stats(videos)
         prefered_type, prefered_discipline = get_most_common_type_discipline(
@@ -247,18 +247,15 @@ def user_stats_view(request):
                 "prefered_discipline": prefered_discipline,
             },
         )
-    else:
-        date_filter = request.POST.get("periode", date.today())
-        if isinstance(date_filter, str):
-            date_filter = parse(date_filter).date()
-        data = get_videos_stats(videos, date_filter, mode="year")
-        return JsonResponse(data, safe=False)
+    elif request.method == "POST":
+        return manage_post_request(request, videos)
 
 
-@user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
+@user_passes_test(view_stats_if_authenticated)
 def general_stats_view(request):
     target = "general"
     videos, title = get_videos(request=request, target=target)
+
     if request.method == "GET":
         status_datas_json = get_videos_status_stats(videos)
         status_datas = json.loads(status_datas_json)
@@ -275,18 +272,15 @@ def general_stats_view(request):
                 "prefered_discipline": prefered_discipline,
             },
         )
-    else:
-        date_filter = request.POST.get("periode", date.today())
-        if isinstance(date_filter, str):
-            date_filter = parse(date_filter).date()
-        data = get_videos_stats(videos, date_filter, mode="year")
-        return JsonResponse(data, safe=False)
+    elif request.method == "POST":
+        return manage_post_request(request, videos)
 
 
-@user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
+@user_passes_test(view_stats_if_authenticated)
 def playlist_stats_view(request, playlist=None):
     target = "playlist"
     videos, title = get_videos(request=request, target=target, playlist=playlist)
+
     if request.method == "GET":
         if playlist:
             status_datas = get_videos_status_stats(videos)
@@ -316,9 +310,5 @@ def playlist_stats_view(request, playlist=None):
                     "status_datas": status_datas,
                 },
             )
-    else:
-        date_filter = request.POST.get("periode", date.today())
-        if isinstance(date_filter, str):
-            date_filter = parse(date_filter).date()
-        data = get_videos_stats(videos, date_filter, mode="year")
-        return JsonResponse(data, safe=False)
+    elif request.method == "POST":
+        return manage_post_request(request, videos)
