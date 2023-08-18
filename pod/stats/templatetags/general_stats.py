@@ -1,51 +1,50 @@
-from django.template import Library
+from typing import List
+from django.template import Library, RequestContext
 
 from pod.stats.utils import number_users, number_videos, total_time_videos
+from pod.video.models import Video
 
 register = Library()
 
 
 @register.simple_tag(takes_context=True, name="get_total_time_videos")
-def get_total_time_videos(context: dict, video_list=None) -> str:
+def get_total_time_videos(context: RequestContext, video_list: List[Video] = None) -> str:
     """
-    Get the total duration time of videos.
+    Get the total duration of videos in the specified list.
 
     Args:
-        video_list : The video object list
+        context (RequestContext): The context.
+        video_list (List[Video], optional): The list of videos. Defaults to None.
 
     Returns:
-        str: The total duration time of videos.
+        str: The formatted total duration of videos in HH:MM:SS format.
     """
     request = context["request"]
-
     return total_time_videos(request, video_list)
 
 
 @register.simple_tag(takes_context=True, name="get_number_videos")
-def get_number_videos(context: dict, video_list=None) -> int:
+def get_number_videos(context: RequestContext, video_list: List[Video] = None) -> int:
     """
-    Get the number of videos.
+    Get the total number of videos in the specified list.
 
     Args:
-        video_list : The video object list
+        context (RequestContext): The context.
+        video_list (List[Video], optional): The list of videos. Defaults to None.
 
     Returns:
-        int: The number of videos.
+        int: The total number of videos.
     """
     request = context["request"]
-
     return number_videos(request, video_list)
 
 
 @register.simple_tag(takes_context=False, name="get_number_users")
 def get_number_users() -> int:
     """
-    Get the number of users.
-
-    Args:
-        video_list : The video object list
+    Get the total number of users.
 
     Returns:
-        int: The number of users in the current site.
+        int: The total number of users.
     """
     return number_users()

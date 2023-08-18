@@ -1,11 +1,14 @@
+"""Esup-Pod stats views."""
 import json
 from datetime import date
 from dateutil.parser import parse
+from typing import List
+
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
-from django.http import HttpResponseNotFound, JsonResponse
+from django.http import HttpRequest, HttpResponseNotFound, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import gettext_lazy as _
 
@@ -30,7 +33,18 @@ from pod.video.views import get_video_access
 VIEW_STATS_AUTH = getattr(settings, "VIEW_STATS_AUTH", False)
 
 
-def view_stats_if_authenticated(user):
+def view_stats_if_authenticated(user: User) -> bool:
+    """
+    Check if the user is authenticated and has permission to view statistics.
+
+
+    Args:
+        user (:class:`django.contrib.auth.models.User`): The user object to check.
+
+
+    Returns:
+        bool: False if the user is not authenticated or VIEW_STATS_AUTH is False, else True.
+    """
     return user.is_authenticated and VIEW_STATS_AUTH
 
 
@@ -78,8 +92,29 @@ STATS_VIEWS = {
 
 
 def get_videos(
-    request, target: str, video_slug=None, channel=None, theme=None, playlist=None
+    request: HttpRequest,
+    target: str,
+    video_slug=None,
+    channel=None,
+    theme=None,
+    playlist=None,
 ):
+    """
+    Get a list of videos based on the specified target and filters.
+
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        target (str): The target of the statistics view.
+        video_slug (str, optional): The slug of the video. Defaults to None.
+        channel (str, optional): The slug of the channel. Defaults to None.
+        theme (str, optional): The slug of the theme. Defaults to None.
+        playlist (str, optional): The slug of the playlist. Defaults to None.
+
+
+    Returns:
+        Tuple[List[Video], str]: A tuple containing a list of videos and the title for the view.
+    """
     title = _("Video statistics")
     available_videos = get_available_videos()
     videos = []
@@ -106,7 +141,22 @@ def get_videos(
     return videos, title
 
 
-def manage_post_request(request, videos, video=None):
+def manage_post_request(
+    request: HttpRequest, videos: List[Video], video: Video = None
+) -> JsonResponse:
+    """
+    Process a POST request to fetch video statistics data.
+
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        videos (List[Video]): A list of video objects to fetch statistics for.
+        video (Video, optional): A specific video object for which to fetch statistics. Defaults to None.
+
+
+    Returns:
+        JsonResponse: A JSON response containing the fetched video statistics data.
+    """
     date_filter = request.POST.get("periode", date.today())
     if isinstance(date_filter, str):
         date_filter = parse(date_filter).date()
@@ -118,7 +168,19 @@ def manage_post_request(request, videos, video=None):
 
 
 @user_passes_test(view_stats_if_authenticated)
-def video_stats_view(request, video=None):
+def video_stats_view(request: HttpRequest, video: str = None):
+    """
+    Display video statistics view based on user's authentication status.
+
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        video (str, optional): The video slug. Defaults to None.
+
+
+    Returns:
+        HttpResponse: A response containing the rendered video statistics view.
+    """
     target = "videos"
     videos, title = get_videos(request=request, target=target, video_slug=video)
 
@@ -149,7 +211,20 @@ def video_stats_view(request, video=None):
         return manage_post_request(request, videos, video)
 
 
-def manage_access_rights_stats_video(request, video, page_title):
+def manage_access_rights_stats_video(request: HttpRequest, video: Video, page_title):
+    """
+    Manage access rights to the video statistics view based on user permissions.
+
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        video (Video): The video object for which to manage access rights.
+        page_title (str): The title of the page.
+
+
+    Returns:
+        HttpResponse: A response containing the rendered video statistics view or an error message.
+    """
     video_access_ok = get_video_access(request, video, slug_private=None)
     is_password_protected = video.password is not None and video.password != ""
     has_rights = (
@@ -189,7 +264,18 @@ def to_do():
 
 
 @user_passes_test(view_stats_if_authenticated)
-def channel_stats_view(request, channel=None, theme=None):
+def channel_stats_view(request: HttpRequest, channel: str = None, theme: str = None):
+    """
+    Display channel statistics view based on user's authentication status.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        channel (str): The channel slug. Defaults to None.
+        theme (str): The theme slug. Defaults to None.
+
+    Returns:
+        HttpResponse: A response containing the rendered channel statistics view.
+    """
     target = "channel"
     videos, title = get_videos(
         request=request, target=target, channel=channel, theme=theme
@@ -227,7 +313,16 @@ def channel_stats_view(request, channel=None, theme=None):
 
 
 @user_passes_test(view_stats_if_authenticated)
-def user_stats_view(request):
+def user_stats_view(request: HttpRequest):
+    """
+    Display user statistics view based on user's authentication status.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: A response containing the rendered user statistics view.
+    """
     target = "user"
     videos, title = get_videos(request=request, target=target)
 
@@ -252,7 +347,16 @@ def user_stats_view(request):
 
 
 @user_passes_test(view_stats_if_authenticated)
-def general_stats_view(request):
+def general_stats_view(request: HttpRequest):
+    """
+    Display general statistics view based on user's authentication status.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: A response containing the rendered general statistics view.
+    """
     target = "general"
     videos, title = get_videos(request=request, target=target)
 
@@ -277,7 +381,17 @@ def general_stats_view(request):
 
 
 @user_passes_test(view_stats_if_authenticated)
-def playlist_stats_view(request, playlist=None):
+def playlist_stats_view(request: HttpRequest, playlist: str = None):
+    """
+    Display playlist statistics view based on user's authentication status.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        playlist (str, optional): The playlist slug. Defaults to None.
+
+    Returns:
+        HttpResponse: A response containing the rendered playlist statistics view.
+    """
     target = "playlist"
     videos, title = get_videos(request=request, target=target, playlist=playlist)
 
