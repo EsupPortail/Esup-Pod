@@ -4,6 +4,7 @@
 
 .link-meeting {
   right: 1rem;
+  border-radius: 0.375rem;
 }
 
 .meeting-text-copied {

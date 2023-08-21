@@ -14,7 +14,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.db.models import Count, F, Q, Case, When, Value, BooleanField
 from django.db.models.functions import Concat
 from django.template.loader import render_to_string
@@ -22,7 +22,6 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
-from django.db.models import Sum, Min
 
 from dateutil.parser import parse
 import concurrent.futures as futures
@@ -31,7 +30,12 @@ from pod.main.utils import is_ajax
 from pod.main.views import in_maintenance
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
-from pod.favorite.models import Favorite
+from pod.playlist.models import Playlist
+from pod.playlist.utils import (
+    get_playlists_for_additional_owner,
+    get_video_list_for_playlist,
+    user_can_see_playlist_video,
+)
 from pod.video.utils import get_videos as video_get_videos
 from pod.video.models import Video
 from pod.video.models import Type
@@ -839,7 +843,67 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     if request.GET.get("is_iframe"):
         params = {"page_title": video.title}
         template_video = "videos/video-iframe.html"
+    elif request.GET.get("playlist"):
+        playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
+        if playlist.visibility == "public" or playlist.visibility == "protected" or (
+            playlist.owner == request.user
+            or playlist in get_playlists_for_additional_owner(request.user)
+            or request.user.is_staff
+        ):
+            videos = sort_videos_list(
+                get_video_list_for_playlist(playlist), "rank"
+            )
+            params = {
+                "playlist_in_get": playlist,
+                "videos": videos,
+            }
+        else:
+            return HttpResponseNotFound()
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
+
+
+def toggle_render_video_user_can_see_video(show_page, is_password_protected, request, slug_private, video) -> bool:
+    """Toogle condition for `render_video()`."""
+    return (
+        (show_page and not is_password_protected)
+        or (
+            show_page
+            and is_password_protected
+            and request.POST.get("password")
+            and request.POST.get("password") == video.password
+        )
+        or (slug_private and slug_private == video.get_hashkey())
+        or request.user == video.owner
+        or request.user.is_superuser
+        or request.user.has_perm("video.change_video")
+        or (request.user in video.additional_owners.all())
+        or (request.GET.get("playlist"))
+    )
+
+
+def toggle_render_video_when_is_playlist_player(request):
+    """Toggle `render_video()` when the user want to play a playlist."""
+    playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
+    print(playlist.visibility)
+    if request.user.is_authenticated:
+        video = (
+            Video.objects.filter(
+                playlistcontent__playlist_id=playlist.id,
+                is_draft=False,
+                is_restricted=False,
+            ) | Video.objects.filter(
+                playlistcontent__playlist_id=playlist.id,
+                owner=request.user,
+            )
+        ).first()
+    else:
+        video = Video.objects.filter(
+            playlistcontent__playlist_id=playlist.id,
+            is_draft=False,
+            is_restricted=False,
+        ).first()
+    if not video:
+        return Http404()
 
 
 def render_video(
@@ -851,6 +915,7 @@ def render_video(
     template_video="videos/video.html",
     more_data={},
 ):
+    """Render video."""
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
     """
     # Do it only for video --> move code in video definition
@@ -874,20 +939,12 @@ def render_video(
 
     show_page = get_video_access(request, video, slug_private)
 
-    if (
-        (show_page and not is_password_protected)
-        or (
-            show_page
-            and is_password_protected
-            and request.POST.get("password")
-            and request.POST.get("password") == video.password
-        )
-        or (slug_private and slug_private == video.get_hashkey())
-        or request.user == video.owner
-        or request.user.is_superuser
-        or request.user.has_perm("video.change_video")
-        or (request.user in video.additional_owners.all())
-    ):
+    if toggle_render_video_user_can_see_video(show_page, is_password_protected, request, slug_private, video):
+        if (
+            request.GET.get("playlist")
+            and not user_can_see_playlist_video(request, video)
+        ):
+            toggle_render_video_when_is_playlist_player(request)
         return render(
             request,
             template_video,
@@ -1913,188 +1970,6 @@ def video_oembed(request):
         # return HttpResponseNotFound('<h1>XML not implemented</h1>')
     else:
         return JsonResponse(data)
-
-
-def get_all_views_count(v_id, date_filter=date.today()):
-    all_views = {}
-
-    # view count in day
-    count = ViewCount.objects.filter(video_id=v_id, date=date_filter).aggregate(
-        Sum("count")
-    )["count__sum"]
-    all_views["day"] = count if count else 0
-
-    # view count in month
-    count = ViewCount.objects.filter(
-        video_id=v_id,
-        date__year=date_filter.year,
-        date__month=date_filter.month,
-    ).aggregate(Sum("count"))["count__sum"]
-    all_views["month"] = count if count else 0
-
-    # view count in year
-    count = ViewCount.objects.filter(
-        date__year=date_filter.year, video_id=v_id
-    ).aggregate(Sum("count"))["count__sum"]
-    all_views["year"] = count if count else 0
-
-    # view count since video was created
-    count = ViewCount.objects.filter(video_id=v_id).aggregate(Sum("count"))["count__sum"]
-    all_views["since_created"] = count if count else 0
-
-    # favorite addition in day
-    count = Favorite.objects.filter(video_id=v_id, date_added__date=date_filter).count()
-    all_views["fav_day"] = count if count else 0
-
-    # favorite addition in month
-    count = Favorite.objects.filter(
-        video_id=v_id,
-        date_added__year=date_filter.year,
-        date_added__month=date_filter.month,
-    ).count()
-    all_views["fav_month"] = count if count else 0
-
-    # favorite addition in year
-    count = Favorite.objects.filter(
-        video_id=v_id,
-        date_added__year=date_filter.year,
-    ).count()
-    all_views["fav_year"] = count if count else 0
-
-    # favorite addition since video was created
-    count = Favorite.objects.filter(video_id=v_id).count()
-    all_views["fav_since_created"] = count if count else 0
-
-    return all_views
-
-
-def get_videos(p_slug, target, p_slug_t=None):
-    """Retourne une ou plusieurs videos selon le slug donné.
-    Renvoi vidéo/s et titre de
-    (theme, ou video ou channel ou videos pour toutes)
-    selon la réference du slug donnée
-    (video ou channel ou theme ou videos pour toutes les videos)
-    """
-    videos = []
-    title = _("Pod video viewing statistics")
-    available_videos = get_available_videos()
-    if target.lower() == "video":
-        video_founded = Video.objects.filter(slug=p_slug).first()
-        # In case that the slug is a bad one
-        if video_founded:
-            videos.append(video_founded)
-            title = (
-                _("Video viewing statistics for %s") % video_founded.title.capitalize()
-            )
-
-    elif target.lower() == "channel":
-        title = _("Video viewing statistics for the channel %s") % p_slug
-        videos = available_videos.filter(channel__slug__istartswith=p_slug)
-
-    elif target.lower() == "theme" and p_slug_t:
-        title = _("Video viewing statistics for the theme %s") % p_slug_t
-        videos = available_videos.filter(theme__slug__istartswith=p_slug_t)
-
-    elif target == "videos":
-        return (available_videos, title)
-
-    return (videos, title)
-
-
-def view_stats_if_authenticated(user):
-    if VIEW_STATS_AUTH and user.__str__() == "AnonymousUser":
-        return False
-    return True
-
-
-def manage_access_rights_stats_video(request, video, page_title):
-    video_access_ok = get_video_access(request, video, slug_private=None)
-    is_password_protected = video.password is not None and video.password != ""
-    has_rights = (
-        request.user == video.owner
-        or request.user.is_superuser
-        or request.user.has_perm("video.change_viewcount")
-        or request.user in video.additional_owners.all()
-    )
-    if not has_rights and is_password_protected:
-        form = VideoPasswordForm()
-        return render(
-            request,
-            "videos/video_stats_view.html",
-            {"form": form, "title": page_title},
-        )
-    elif (
-        (not has_rights and video_access_ok and not is_password_protected)
-        or (video_access_ok and not is_password_protected)
-        or has_rights
-    ):
-        return render(request, "videos/video_stats_view.html", {"title": page_title})
-    return HttpResponseNotFound(
-        _("You do not have access rights to this video: %s " % video.slug)
-    )
-
-
-@user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
-def stats_view(request, slug=None, slug_t=None):
-    """
-    View for statistics.
-
-    " slug reference video's slug or channel's slug
-    " t_slug reference theme's slug
-    " from defined the source of the request such as
-    " (videos, video, channel or theme)
-    """
-    target = request.GET.get("from", "videos")
-    videos, title = get_videos(slug, target, slug_t)
-    error_message = (
-        "The following %(target)s does not exist or contain any videos: %(slug)s"
-    )
-    if request.method == "GET" and target == "video" and videos:
-        return manage_access_rights_stats_video(request, videos[0], title)
-
-    elif request.method == "GET" and target == "video" and not videos:
-        return HttpResponseNotFound(_("The following video does not exist: %s") % slug)
-
-    if request.method == "GET" and (
-        not videos and target in ("channel", "theme", "videos")
-    ):
-        slug = slug if not slug_t else slug_t
-        target = "Pod" if target == "videos" else target
-        return HttpResponseNotFound(_(error_message) % {"target": target, "slug": slug})
-
-    if (
-        request.method == "POST"
-        and target == "video"
-        and (
-            request.POST.get("password")
-            and request.POST.get("password") == videos[0].password
-        )
-    ) or (
-        request.method == "GET" and videos and target in ("videos", "channel", "theme")
-    ):
-        return render(request, "videos/video_stats_view.html", {"title": title})
-    else:
-        date_filter = request.POST.get("periode", date.today())
-        if isinstance(date_filter, str):
-            date_filter = parse(date_filter).date()
-
-        data = list(
-            map(
-                lambda v: {
-                    "title": v.title,
-                    "slug": v.slug,
-                    **get_all_views_count(v.id, date_filter),
-                },
-                videos,
-            )
-        )
-
-        min_date = (
-            get_available_videos().aggregate(Min("date_added"))["date_added__min"].date()
-        )
-        data.append({"min_date": min_date})
-
-        return JsonResponse(data, safe=False)
 
 
 @login_required(redirect_field_name="referrer")

@@ -17,6 +17,9 @@ from pod.main.models import Configuration
 import tempfile
 import os
 import importlib
+from pod.playlist.models import Playlist
+
+from pod.video.models import Type, Video
 
 
 class MainViewsTestCase(TestCase):
@@ -203,7 +206,10 @@ class TestShowVideoButtons(TestCase):
 
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
     def test_show_video_buttons_admin_restrict(self):
-        """Test if video buttons present in header for admin if restrict access to staff only."""
+        """
+        Test if video buttons present in header for admin
+        if restrict access to staff only.
+        """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="admin")
         self.client.force_login(self.user)
@@ -215,7 +221,10 @@ class TestShowVideoButtons(TestCase):
 
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
     def test_show_video_buttons_staff_restrict(self):
-        """Test if video buttons present in header for staff if restrict access to staff only."""
+        """
+        Test if video buttons present in header for staff
+        if restrict access to staff only.
+        """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="staff")
         self.client.force_login(self.user)
@@ -227,7 +236,10 @@ class TestShowVideoButtons(TestCase):
 
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
     def test_show_video_buttons_student_restrict(self):
-        """Test if video buttons not present in header for student if restrict access to staff only."""
+        """
+        Test if video buttons not present in header for student
+        if restrict access to staff only.
+        """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="student")
         self.client.force_login(self.user)
@@ -239,7 +251,10 @@ class TestShowVideoButtons(TestCase):
 
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=False)
     def test_show_video_buttons_admin_not_restrict(self):
-        """Test if video buttons present in header for admin if not restrict access to staff only."""
+        """
+        Test if video buttons present in header for admin
+        if not restrict access to staff only.
+        """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="admin")
         self.client.force_login(self.user)
@@ -251,7 +266,10 @@ class TestShowVideoButtons(TestCase):
 
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=False)
     def test_show_video_buttons_staff_not_restrict(self):
-        """Test if video buttons present in header for staff if not restrict access to staff only."""
+        """
+        Test if video buttons present in header for staff
+        if not restrict access to staff only.
+        """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="staff")
         self.client.force_login(self.user)
@@ -263,7 +281,10 @@ class TestShowVideoButtons(TestCase):
 
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=False)
     def test_show_video_buttons_student_not_restrict(self):
-        """Test if video buttons present in header for student if not restrict access to staff only."""
+        """
+        Test if video buttons present in header for student
+        if not restrict access to staff only.
+        """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="student")
         self.client.force_login(self.user)
@@ -287,7 +308,10 @@ class TestShowMeetingButton(TestCase):
 
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=True, USE_MEETING=True)
     def test_show_meeting_button_admin_restrict(self):
-        """Test if meeting button present in header for admin if restrict access to staff only."""
+        """
+        Test if meeting button present in header for admin
+        if restrict access to staff only.
+        """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="admin")
         self.client.force_login(self.user)
@@ -298,7 +322,10 @@ class TestShowMeetingButton(TestCase):
 
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=True, USE_MEETING=True)
     def test_show_meeting_button_staff_restrict(self):
-        """Test if meeting button present in header for staff if restrict access to staff only."""
+        """
+        Test if meeting button present in header for staff
+        if restrict access to staff only.
+        """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="staff")
         self.client.force_login(self.user)
@@ -309,7 +336,10 @@ class TestShowMeetingButton(TestCase):
 
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=True, USE_MEETING=True)
     def test_show_meeting_button_student_restrict(self):
-        """Test if meeting button not present in header for student if restrict access to staff only."""
+        """
+        Test if meeting button not present in header for student
+        if restrict access to staff only.
+        """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="student")
         self.client.force_login(self.user)
@@ -320,7 +350,10 @@ class TestShowMeetingButton(TestCase):
 
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=False, USE_MEETING=True)
     def test_show_meeting_button_admin_not_restrict(self):
-        """Test if meeting button present in header for admin if not restrict access to staff only."""
+        """
+        Test if meeting button present in header for admin
+        if not restrict access to staff only.
+        """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="admin")
         self.client.force_login(self.user)
@@ -331,7 +364,10 @@ class TestShowMeetingButton(TestCase):
 
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=False, USE_MEETING=True)
     def test_show_meeting_button_staff_not_restrict(self):
-        """Test if meeting button present in header for staff if not restrict access to staff only."""
+        """
+        Test if meeting button present in header for staff
+        if not restrict access to staff only.
+        """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="staff")
         self.client.force_login(self.user)
@@ -342,7 +378,10 @@ class TestShowMeetingButton(TestCase):
 
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=False, USE_MEETING=True)
     def test_show_meeting_button_student_not_restrict(self):
-        """Test if meeting button not present in header for student if not restrict access to staff only."""
+        """
+        Test if meeting button not present in header for student
+        if not restrict access to staff only.
+        """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="student")
         self.client.force_login(self.user)
@@ -350,3 +389,109 @@ class TestShowMeetingButton(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue('id="nav-mymeetings"' in response.content.decode())
         self.client.logout()
+
+
+class TestNavbar(TestCase):
+    """Navbar tests case."""
+    fixtures = ["initial_data.json"]
+
+    def setUp(self) -> None:
+        """Set up required objects for next tests."""
+        self.user = User.objects.create(username="pod", password="pod1234pod")
+
+    @override_settings(USE_FAVORITES=False)
+    def test_statistics_category_hidden(self):
+        """Test if statistics are hidden when we don't have stats."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        response = self.client.get("/")
+
+        self.assertFalse(
+            'id="stats-usermenu"' in response.content.decode(),
+            "test if statistics section is correctly hidden"
+        )
+        print(" --->  test_statistics_category_hidden ok")
+
+    @override_settings(USE_FAVORITES=False)
+    def test_statistics_videos(self):
+        """Test if videos statistics are correctly shown."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        # We create a playlist to show statistics section in usermenu
+        Playlist.objects.create(
+            name="public_playlist_user",
+            description="Ma description",
+            visibility="public",
+            autoplay=True,
+            owner=self.user
+        )
+
+        response = self.client.get("/")
+        self.assertFalse(
+            'id="stats-usermenu-video-count"' in response.content.decode(),
+            "test if video count paragraph is correctly hidden"
+        )
+
+        Video.objects.create(
+            title="Video1",
+            owner=self.user,
+            video="test.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        Video.objects.create(
+            title="Video2",
+            owner=self.user,
+            video="test.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        response = self.client.get("/")
+        self.assertTrue(
+            '<span id="stats-usermenu-video-count">2' in response.content.decode(),
+            "test if number of videos is correct"
+        )
+        print(" --->  test_statistics_videos ok")
+
+    @override_settings(USE_PLAYLIST=True, USE_FAVORITES=False)
+    def test_statistics_playlists(self):
+        """Test if playlists statistics are correctly shown."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+
+        # We create a video to show statistics section in usermenu
+        Video.objects.create(
+            title="Video1",
+            owner=self.user,
+            video="test.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+
+        response = self.client.get("/")
+        self.assertFalse(
+            'id="stats-usermenu-playlist-count"' in response.content.decode(),
+            "test if video count paragraph is correctly hidden"
+        )
+
+        Playlist.objects.create(
+            name="playlist_1",
+            description="Ma description",
+            visibility="public",
+            autoplay=True,
+            owner=self.user
+        )
+        Playlist.objects.create(
+            name="playlist_2",
+            description="Ma description",
+            visibility="public",
+            autoplay=True,
+            owner=self.user
+        )
+        response = self.client.get("/")
+        self.assertTrue(
+            '<span id="stats-usermenu-playlist-count">2' in response.content.decode(),
+            "test if number of playlists is correct."
+        )
+
+        print(" --->  test_statistics_playlists ok")

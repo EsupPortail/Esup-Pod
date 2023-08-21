@@ -1,0 +1,19 @@
+<div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+  <div class="icon-large">
+    <i class="{{ icon }}"></i>
+  </div>
+  <div class="label">
+    {% if url is not None %}
+      <a class="" href="{{ url }}">
+        {{ label }}
+      </a>
+    {% else %}
+     {{ label }}
+    {% endif %}
+  </div>
+  {% if number is not None %}
+    <div class="number">{{ number }}</div>
+  {% elif text is not None %}
+    <div class="value">{{ text }}</div>
+  {% endif %}
+</div>

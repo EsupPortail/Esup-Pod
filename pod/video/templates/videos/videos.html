@@ -27,7 +27,7 @@
     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm">
       <i class="bi bi-rss"></i>&nbsp;Video</a>
     {% if USE_STATS_VIEW %}
-      <a href="{% url 'video:video_stats_view' 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm"><i class="bi bi-graph-up"></i> {% trans "Statistics views" %}</a>
+      <a href="{% url 'stats:video-stats' %}" title="{% trans 'Show general statistics' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm"><i class="bi bi-graph-up"></i> {% trans "Video statistics" %}</a>
     {% endif %}
   </span>
   <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2">
@@ -57,20 +57,21 @@
 
 
 {% block more_script %}
-<script>
-  const urlVideos = "{% url 'videos:videos' %}";
-</script>
+  <script>
+    const urlVideos = "{% url 'videos:videos' %}";
+  </script>
 
-<script>
-  var page = 1;
-  var nextPage = false;
+  <script>
+    var page = 1;
+    var nextPage = false;
 
-  {% if videos.has_next %}
-    page = parseInt("{{videos.next_page_number}}");
-    nextPage = true;
-  {% endif %}
+    {% if videos.has_next %}
+      page = parseInt("{{videos.next_page_number}}");
+      nextPage = true;
+    {% endif %}
 
-</script>
-<script src="{% static 'js/infinite.js' %}"></script>
-<script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
+  </script>
+  <script src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}

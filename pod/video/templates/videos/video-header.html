@@ -62,8 +62,11 @@
 <!-- notes -->
 <link href="{% static 'css/video_notes.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'js/video_notes.js' %}?ver={{VERSION}}"></script>
-<!-- favorites -->
-<script src="{% static 'js/video-favorites.js' %}?ver={{VERSION}}"></script>
+<!-- Playlist / favorites -->
+{% if USE_PLAYLIST and USE_FAVORITES %}
+  <script src="{% static 'playlist/js/utils-playlist.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'playlist/js/video-header-favorites.js' %}?ver={{VERSION}}"></script>
+{% endif %}
 <!-- logo -->
 <link href="{% static 'css/videojs-controlbar.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'js/videojs-logo-controlbar.js' %}?ver={{VERSION}}"></script>
@@ -82,8 +85,7 @@
 {% endif %}
 
 {% if request.user.playlist_set.all %}
-  <link href="{% static 'css/playlist.css' %}?ver={{VERSION}}" rel="stylesheet">
-  <script src="{% static 'js/playlist.js' %}?ver={{VERSION}}"></script>
+  <link href="{% static 'playlist/css/playlist.css' %}?ver={{VERSION}}" rel="stylesheet">
 {% endif %}
 
 {% if video.is_360 %}

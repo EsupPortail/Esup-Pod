@@ -1,0 +1,36 @@
+{% extends 'stats/utils/base-stats.html' %}
+
+{% load static i18n %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li class="breadcrumb-item active" aria-current="page">
+    <a href="{% url 'stats:general-stats'%}">
+      {% trans "Statistics" %}
+    </a>
+  </li>
+  {% if not meeting %}
+    <li class="breadcrumb-item active" aria-current="page">
+      {% trans "Meetings" %}
+    </li>
+  {% else %}
+    <li class="breadcrumb-item active" aria-current="page">
+      <a href="{% url 'stats:meeting-stats'%}">
+        {% trans "Meetings" %}
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      {{ meeting.name }}
+    </li>
+  {% endif %}
+{% endblock %}
+
+{% block stats_items %}
+
+
+{% endblock stats_items %}
+
+
+{% block other_stats %}
+
+{% endblock other_stats %}

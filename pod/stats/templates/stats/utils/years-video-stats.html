@@ -1,0 +1,29 @@
+{% load static i18n %}
+
+<div class="form-row mb-1 d-flex gap-2 d-none" id="form-container{{ graph_id }}">
+  <div class="form-group col-md-6">
+    <label for="start-year-{{ graph_id }}">{% trans "Start year" %}</label>
+    <input class="form-control" type="number" id="start-year-{{ graph_id }}" name="start-year">
+  </div>
+  <div class="form-group col-md-6">
+    <label for="end-year-{{ graph_id }}">{% trans "End year" %}</label>
+    <input class="form-control" type="number" id="end-year-{{ graph_id }}" name="end-year">
+  </div>
+</div>
+<div class="text-center mb-5 d-none" id="graph-container{{ graph_id }}">
+  <canvas id="{{ graph_id }}"></canvas>
+  <button class="btn btn-primary btn-sm mt-1" id="export-btn-{{ graph_id }}" type="button">
+    {% trans "Export to CSV"%}
+  </button>
+</div>
+{% block more_script %}
+<script>
+  var graph_title = "{{ graph_title }}";
+  var graph_id = "{{ graph_id }}";
+</script>
+
+<script src="{% static 'chart.js/dist/chart.umd.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+<script src="{% static 'stats/js/utils-stats.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+<script src="{% static 'stats/js/video_stats_view_global.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'stats/utils/base-stats.html' %}
+
+{% load static i18n %}
+{% load user_stats %}
+{% load general_stats %}
+{% load favorites_playlist %}
+{% load playlist_stats %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li class="breadcrumb-item active" aria-current="page">
+    {% trans "Statistics" %}
+  </li>
+{% endblock %}
+
+{% block stats_items %}
+
+  {% url 'video:my_videos' as url_for_videos %}
+  {% include "stats/utils/stats-item.html" with icon="bi bi-film" url=url_for_videos label=_("Number of videos") number=videos|length %}
+
+  {% get_total_time_videos videos as get_total_time_videos %}
+  {% include "stats/utils/stats-item.html" with icon="bi bi-clock" label=_("Duration time of videos") number=get_total_time_videos %}
+
+  {% if prefered_discipline %}
+    {% url 'videos:videos' as videos_url %}
+    {% with url_for_prefered_discipline=videos_url|add:"?discipline="|add:prefered_discipline.slug %}
+      {% include "stats/utils/stats-item.html" with icon="bi bi-book" url=url_for_prefered_discipline label=_("Most popular discipline") text=prefered_discipline %}
+    {% endwith %}
+  {% else %}
+    {% include "stats/utils/stats-item.html" with icon="bi bi-book" label=_("Most popular discipline") text=_("No popular discipline") %}
+  {% endif %}
+
+  {% if prefered_type %}
+    {% url 'videos:videos' as videos_url %}
+    {% with url_for_prefered_type=videos_url|add:"?type="|add:prefered_type.slug %}
+      {% include "stats/utils/stats-item.html" with icon="bi bi-tv" url=url_for_prefered_type label=_("Most popular video type") text=prefered_type %}
+    {% endwith %}
+  {% else %}
+    {% include "stats/utils/stats-item.html" with icon="bi bi-tv" label=_("Most popular video type") text=_("No popular video type") %}
+  {% endif %}
+
+  {% get_number_users as get_number_users %}
+  {% include "stats/utils/stats-item.html" with icon="bi bi-people" label=_("Number of users") number=get_number_users %}
+
+{% endblock stats_items %}
+
+
+{% block other_stats %}
+  <h2 class="page_title mt-5 h2 text-center">{% trans "Statistics of videos" %}</h2>
+
+  <div class="row">
+    <div class="col-xl-6 col-12">
+        {% trans "Graph of video evolution for " as graph_title_prefix %}
+        {% include "stats/utils/years-video-stats.html" with graph_id="videosEvolutionChart" graph_title=graph_title_prefix|add:TITLE_ETB %}
+      </div>
+    <div class="col-xl-6 col-12">
+      {% trans "Breakdown of video status for " as graph_title_prefix %}
+      {% include "stats/utils/pie-chart.html" with graph_id="statusChart" graph_data=status_datas graph_title=graph_title_prefix|add:TITLE_ETB %}
+    </div>
+  </div>
+{% endblock other_stats %}

@@ -1,0 +1,70 @@
+{% load static i18n %}
+<div class="text-center mb-5">
+  <canvas id="{{ graph_id }}"></canvas>
+  <button class="btn btn-primary btn-sm mt-1" id="export-btn-{{ graph_id }}" type="button">{% trans "Export to CSV" %}</button>
+</div>
+{% block more_script %}
+<script src="{% static 'chart.js/dist/chart.umd.js' %}?ver={{VERSION}}" charset="utf-8"></script>
+
+<script>
+  var graphChart;
+  const backgroundColorsPalette = [
+    "#ed184e",
+    "#3871c1",
+    "#1F7C85",
+    "#4BC0C0",
+    "#bdb7b7",
+  ];
+
+  const JSONData = JSON.parse("{{ graph_data|escapejs }}");
+
+  var labels = Object.keys(JSONData);
+  var data = Object.values(JSONData);
+
+  var ctx = document.getElementById("{{ graph_id }}").getContext("2d");
+
+  if (graphChart) {
+    graphChart.destroy();
+  }
+
+  graphChart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          data: data,
+          backgroundColor: backgroundColorsPalette.slice(0, labels.length),
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: "{{ graph_title }}",
+          padding: {
+            top: 10,
+            bottom: 5,
+          },
+        },
+      },
+    },
+  });
+
+  document
+    .getElementById("export-btn-{{ graph_id }}")
+    .addEventListener("click", function () {
+      var dataForCSV = {
+        headers: labels.map(function (label) {
+          return gettext(label);
+        }),
+        rows: [data],
+      };
+      exportDataToCSV(dataForCSV, "stats-{{ graph_title }}.csv"); // INCLURE LA DATE
+    });
+</script>
+
+
+{% endblock %}

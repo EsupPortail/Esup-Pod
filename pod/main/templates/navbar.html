@@ -5,6 +5,8 @@
 {% get_language_info_list for LANGUAGES as languages %}
 {% load thumbnail %}
 {% load navbar %}
+{% load user_stats %}
+{% load favorites_playlist %}
 
 <div class="container-fluid pod-container pod-navbar__container" id="nav-mainbar">
   {% comment %}<!--
@@ -46,6 +48,11 @@
         {% if HIDE_TYPES_TAB == False %}
           <li class="nav-item" id="nav-types">
             <button class="nav-link" data-bs-toggle="modal" data-bs-target=".types-modal"> <i class="bi bi-tv pod-nav-link-icon"></i> {% trans "Types"%}</button>
+          </li>
+        {% endif %}
+        {% if USE_PLAYLIST %}
+          <li class="nav-item" id="nav-promoted-playlists">
+            <a class="nav-link" href="{% url 'playlist:list' %}?visibility=promoted"><i class="bi bi-list-stars pod-nav-link-icon"></i> {% trans "Promoted playlists"%}</a>
           </li>
         {% endif %}
         {% if "live" in THIRD_PARTY_APPS %}
@@ -178,7 +185,7 @@
             <h5 id="pod-navbar__menuuserLabel">{% if user.get_full_name != '' %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="{% trans 'Close' %}"></button>
           </div>
-          <div class="offcanvas-body">
+          <div class="offcanvas-body d-flex flex-column justify-content-between">
             <nav class="nav flex-column">
               {% if MAINTENANCE_MODE %}
                 <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br><i class="bi bi-exclamation-triangle "></i> {% trans "Some features are unavailable" %}</span>
@@ -198,8 +205,12 @@
               {% if video_buttons %}
                 <a class="nav-item nav-link" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My videos' %}</a>
               {% endif %}
-              {% if USE_FAVORITES %}
-                <a class="nav-item nav-link" href="{% url 'favorite:list' %}"><i class="bi bi-star pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My favorite videos' %}</a>
+              {% if USE_PLAYLIST %}
+                <a class="nav-item nav-link" href="{% url 'playlist:list' %}"><i class="bi bi-list-ul pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
+              {% endif %}
+              {% if USE_PLAYLIST and USE_FAVORITES %}
+                {% get_favorite_playlist user as playlist %}
+                <a class="nav-item nav-link" href="{% url 'playlist:content' slug=playlist.slug %}"><i class="bi bi-star pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My favorite videos' %}</a>
               {% endif %}
               {% if USE_OPENCAST_STUDIO %}
                 <a class="nav-item nav-link" href="{% url 'recorder:studio_pod'%}"><i class="bi bi-camera-video pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans "Video Record" %}</a>
@@ -216,7 +227,6 @@
               {% if request.user.owners_channels.all %}
                 <a class="nav-item nav-link" href="{% url 'channels:my_channels' %}"><i class="bi bi-play-btn pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My channels' %}</a>
               {% endif %}
-              <a class="nav-item nav-link" href="{% url 'playlist:my_playlists' %}"><i class="bi bi-cast pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
               {% if request.user.is_staff and USE_PODFILE %}
                 <a class="nav-item nav-link" href="{% url 'podfile:home' %}"><i class="bi bi-folder pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My files' %}</a>
               {% endif %}
@@ -235,6 +245,15 @@
               <a class="nav-item nav-link" href="{% url 'authentication:authentication_logout' %}">
                 <i class="bi bi-box-arrow-right pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Log out' %}</a>
             </nav>
+            <div id="stats-usermenu" class="nav flex-column">
+              <h5 class="offcanvas-title text-center" id="pod-navbar__menuLabel">{% trans "Your statistics" %}</h5>
+              <hr>
+              <p class="stats-usermenu">{% trans "Number of videos" %} : <span id="stats-usermenu-video-count">{% get_number_video_user %}</span></p>
+              {% if USE_PLAYLIST %}
+                <p class="stats-usermenu">{% trans "Number of playlists" %} : <span id="stats-usermenu-playlist-count">{% get_number_playlist_user %}</span></p>
+              {% endif %}
+              <a class="btn btn-primary btn-sm" href="{% url 'stats:my-stats' %}"><i class="bi bi-bar-chart-fill"></i><span class="ms-1 d-none d-md-inline">{% trans "See more" %}</span></a>
+            </div>
           </div>
         </div>
         <!-- end offcanvas -->

@@ -6,13 +6,12 @@ from pod.video.models import Type
 from pod.video.models import Discipline
 from pod.video.models import Video
 
-from django.db.models import Count, Sum
+from django.db.models import Count
 from django.db.models import Prefetch
 from django.db.models import Q
 from django.db.models import Exists
 from django.db.models import OuterRef
 
-from datetime import timedelta
 from django.contrib.sites.shortcuts import get_current_site
 from pod.main.models import AdditionalChannelTab
 from pod.video_encode_transcript.models import EncodingVideo
@@ -142,20 +141,10 @@ def context_navbar(request):
         .annotate(video_count=Count("video", distinct=True))
     )
 
-    list_videos = get_available_videos(request)
-    VIDEOS_COUNT = list_videos.count()
-    VIDEOS_DURATION = (
-        str(timedelta(seconds=list_videos.aggregate(Sum("duration"))["duration__sum"]))
-        if list_videos.aggregate(Sum("duration"))["duration__sum"]
-        else 0
-    )
-
     return {
         "ALL_CHANNELS": all_channels,
         "ADD_CHANNELS_TAB": add_channels_tab,
         "CHANNELS": channels,
         "TYPES": types,
         "DISCIPLINES": disciplines,
-        "VIDEOS_COUNT": VIDEOS_COUNT,
-        "VIDEOS_DURATION": VIDEOS_DURATION,
     }
