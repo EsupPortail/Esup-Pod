@@ -11,6 +11,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpRequest, HttpResponseNotFound, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import gettext_lazy as _
+from pod.meeting.models import Meeting
 
 from pod.playlist.utils import (
     get_all_playlists,
@@ -427,3 +428,37 @@ def playlist_stats_view(request: HttpRequest, playlist: str = None):
             )
     elif request.method == "POST":
         return manage_post_request(request, videos)
+
+@user_passes_test(view_stats_if_authenticated)
+def meeting_stats_view(request: HttpRequest, meeting: str = None):
+    """
+    Display meetings statistics view based on user's authentication status.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        meeting (str, optional): The meeting slug. Defaults to None.
+
+    Returns:
+        HttpResponse: A response containing the rendered meeting statistics view.
+    """
+    target = "meeting"
+    # Récupérer les vidéos de réupload de la meeting ??
+
+    if meeting:
+        meeting = get_object_or_404(Meeting, meeting_id=meeting)
+        return render(
+            request,
+            "stats/meeting-stats-view.html",
+            {
+                "title": _("Statistics for the meeting %s") % meeting.name,
+                "meeting": meeting
+            }
+        )
+    else:
+        return render(
+            request,
+            "stats/meeting-stats-view.html",
+            {
+                "title": _("Statistics for meetings"),
+            }
+        )

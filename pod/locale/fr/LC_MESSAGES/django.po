@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-17 11:51+0000\n"
+"POT-Creation-Date: 2023-08-21 08:32+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -382,6 +382,7 @@ msgid "Meeting"
 msgstr "Session"
 
 #: pod/bbb/models.py pod/meeting/apps.py
+#: pod/stats/templates/stats/meeting-stats-view.html
 msgid "Meetings"
 msgstr "Sessions"
 
@@ -5683,6 +5684,7 @@ msgstr "Afficher les statistiques de la liste de lecture"
 #: pod/playlist/templates/playlist/playlist-informations-card.html
 #: pod/stats/apps.py pod/stats/templates/stats/channel-stats-view.html
 #: pod/stats/templates/stats/general-stats-view.html
+#: pod/stats/templates/stats/meeting-stats-view.html
 #: pod/stats/templates/stats/playlist-stats-view.html
 #: pod/stats/templates/stats/user-stats-view.html
 #: pod/stats/templates/stats/video-stats-view.html
@@ -6610,14 +6612,14 @@ msgstr "Graphique de l'évolution des vidéos de "
 msgid "Breakdown of video status "
 msgstr "Répartition des statuts des vidéos "
 
-#: pod/stats/views.py pod/video/templates/videos/videos.html
-msgid "Video statistics"
-msgstr "Statistiques des vidéos"
-
 #: pod/stats/views.py
 #, python-format
-msgid "Video statistics for %s"
-msgstr "Statistiques des vidéos pour %s"
+msgid "Video statistics: %s"
+msgstr "Statistiques des vidéos : %s"
+
+#: pod/stats/views.py
+msgid "Site video statistics"
+msgstr "Statistiques des vidéo du site"
 
 #: pod/stats/views.py
 #, python-format
@@ -6647,6 +6649,10 @@ msgstr "Statistiques du site"
 msgid "Statistics for the playlist %s"
 msgstr "Statistiques de la liste de lecture %s"
 
+#: pod/stats/views.py pod/video/templates/videos/videos.html
+msgid "Video statistics"
+msgstr "Statistiques des vidéos"
+
 #: pod/stats/views.py
 #, python-format
 msgid "The following video does not exist: %s"
@@ -6657,6 +6663,15 @@ msgstr "La video suivante n’existe pas : %s"
 #| msgid "You do not have access rights to this video: %s "
 msgid "You do not have access rights to this video: %s"
 msgstr "Vous n’avez pas les droits d’accès à cette vidéo : %s "
+
+#: pod/stats/views.py
+#, python-format
+msgid "Statistics for the meeting %s"
+msgstr "Statistiques de la réunion %s"
+
+#: pod/stats/views.py
+msgid "Statistics for meetings"
+msgstr "Statistiques des réunions"
 
 #: pod/urls.py
 msgid "Pod Administration"
@@ -8496,6 +8511,9 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Video statistics for %s"
+#~ msgstr "Statistiques des vidéos pour %s"
 
 #, fuzzy
 #~| msgid "Password-protected"

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-17 11:51+0000\n"
+"POT-Creation-Date: 2023-08-21 08:32+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -374,6 +374,7 @@ msgid "Meeting"
 msgstr ""
 
 #: pod/bbb/models.py pod/meeting/apps.py
+#: pod/stats/templates/stats/meeting-stats-view.html
 msgid "Meetings"
 msgstr ""
 
@@ -5362,6 +5363,7 @@ msgstr ""
 #: pod/playlist/templates/playlist/playlist-informations-card.html
 #: pod/stats/apps.py pod/stats/templates/stats/channel-stats-view.html
 #: pod/stats/templates/stats/general-stats-view.html
+#: pod/stats/templates/stats/meeting-stats-view.html
 #: pod/stats/templates/stats/playlist-stats-view.html
 #: pod/stats/templates/stats/user-stats-view.html
 #: pod/stats/templates/stats/video-stats-view.html
@@ -6241,13 +6243,13 @@ msgstr ""
 msgid "Breakdown of video status "
 msgstr ""
 
-#: pod/stats/views.py pod/video/templates/videos/videos.html
-msgid "Video statistics"
+#: pod/stats/views.py
+#, python-format
+msgid "Video statistics: %s"
 msgstr ""
 
 #: pod/stats/views.py
-#, python-format
-msgid "Video statistics for %s"
+msgid "Site video statistics"
 msgstr ""
 
 #: pod/stats/views.py
@@ -6278,6 +6280,10 @@ msgstr ""
 msgid "Statistics for the playlist %s"
 msgstr ""
 
+#: pod/stats/views.py pod/video/templates/videos/videos.html
+msgid "Video statistics"
+msgstr ""
+
 #: pod/stats/views.py
 #, python-format
 msgid "The following video does not exist: %s"
@@ -6286,6 +6292,15 @@ msgstr ""
 #: pod/stats/views.py
 #, python-format
 msgid "You do not have access rights to this video: %s"
+msgstr ""
+
+#: pod/stats/views.py
+#, python-format
+msgid "Statistics for the meeting %s"
+msgstr ""
+
+#: pod/stats/views.py
+msgid "Statistics for meetings"
 msgstr ""
 
 #: pod/urls.py
