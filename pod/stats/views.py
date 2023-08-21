@@ -290,6 +290,7 @@ def channel_stats_view(request: HttpRequest, channel: str = None, theme: str = N
                 {
                     "title": title,
                     "channel": channel,
+                    "theme": theme,
                     "status_datas": status_datas,
                     "videos": videos,
                     "date": date.today(),

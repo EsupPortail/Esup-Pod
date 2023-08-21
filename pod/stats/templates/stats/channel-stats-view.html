@@ -16,13 +16,24 @@
     </li>
   {% else %}
     <li class="breadcrumb-item active" aria-current="page">
-      <a href="{% url 'stats:channels-stats'%}">
+      <a href="{% url 'stats:channels-stats' %}">
         {% trans "Channels" %}
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page">
-      {{ channel.title }}
-    </li>
+    {% if not theme %}
+      <li class="breadcrumb-item active" aria-current="page">
+        {{ channel.title }}
+      </li>
+    {% else %}
+      <li class="breadcrumb-item active" aria-current="page">
+        <a href="{% url 'stats:channels-stats' channel=channel %}">
+          {{ channel.title }}
+        </a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        {{ theme }}
+      </li>
+    {% endif %}
   {% endif %}
 {% endblock %}
 
