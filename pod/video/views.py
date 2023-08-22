@@ -1009,7 +1009,24 @@ def video_edit(request, slug=None):
                 messages.ERROR,
                 _("One or more errors have been found in the form."),
             )
-    return render(request, "videos/video_edit.html", {"form": form})
+    all_channels = (
+        Channel.objects.all()
+        .filter(site=get_current_site(request))
+        .distinct()
+        .annotate(video_count=Count("video", distinct=True))
+        .prefetch_related(
+            Prefetch(
+                "themes",
+                queryset=Theme.objects.filter(channel__site=get_current_site(request))
+                .distinct()
+                .annotate(video_count=Count("video", distinct=True)),
+            )
+        )
+    )
+    return render(request, "videos/video_edit.html", {
+        "form": form,
+        "ALL_CHANNELS": all_channels
+    })
 
 
 def save_video_form(request, form):

@@ -243,6 +243,10 @@
 {% block more_script %}
   <script src="/admin/jsi18n/"></script>
   <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
+  <script>
+    var listTheme = new Array();
+    {% for channel in ALL_CHANNELS %} {% if channel.themes.count > 0 %} listTheme["channel_{{channel.id}}"] = {{ channel.get_all_theme_json | safe }}; {% endif %} {% endfor %}
+  </script>
   <script defer src="{% static 'js/video_edit.js' %}?ver={{VERSION}}"></script>
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
   {{form.media}}
