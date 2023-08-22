@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-05 15:50+0200\n"
+"POT-Creation-Date: 2023-08-22 10:36+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1379,6 +1379,7 @@ msgstr ""
 #: pod/completion/templates/overlay/list_overlay.html
 #: pod/cut/templates/video_cut.html pod/enrichment/models.py
 #: pod/enrichment/templates/enrichment/list_enrichment.html
+#: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "End"
 msgstr ""
 
@@ -2484,8 +2485,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -4505,7 +4506,7 @@ msgstr ""
 msgid "join"
 msgstr ""
 
-#: pod/meeting/admin.py
+#: pod/meeting/admin.py pod/meeting/forms.py
 msgid "Recurring"
 msgstr ""
 
@@ -4558,11 +4559,11 @@ msgid "Date and time options"
 msgstr ""
 
 #: pod/meeting/forms.py
-msgid "Recurring options"
+msgid "Record session"
 msgstr ""
 
 #: pod/meeting/forms.py
-msgid "Record session"
+msgid "Recurring options"
 msgstr ""
 
 #: pod/meeting/forms.py pod/video/forms.py
@@ -5053,6 +5054,10 @@ msgid "End the meeting"
 msgstr ""
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
+msgid "Frequency"
+msgstr ""
+
+#: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "Repeat every"
 msgstr ""
 
@@ -5066,10 +5071,6 @@ msgstr ""
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "Type of monthly recurrence"
-msgstr ""
-
-#: pod/meeting/templates/meeting/recurring_options_modal_form.html
-msgid "End:"
 msgstr ""
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
@@ -5246,8 +5247,8 @@ msgstr ""
 
 #: pod/playlist/templates/my_playlists.html
 msgid ""
-"You have not created any playlists yet, please use the \"Add a new "
-"playlist\" button to add one."
+"You have not created any playlists yet, please use the \"Add a new playlist"
+"\" button to add one."
 msgstr ""
 
 #: pod/playlist/templates/my_playlists.html
@@ -5836,8 +5837,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
