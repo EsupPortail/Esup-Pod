@@ -574,11 +574,6 @@ tr,
   gap: 0.5rem;
 }
 
-.pod-footer-content {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-}
-
 a:not(.btn):hover,
 a:not(.btn):focus {
   color: var(--pod-activelink-color);
