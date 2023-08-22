@@ -27,7 +27,7 @@ from django.utils.translation import get_language
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
-    ((" ", __PREF_LANG_CHOICES__), ("----------", __ALL_LANG_CHOICES__)),
+    ((_("-- Frequently used languages --"), __PREF_LANG_CHOICES__), (_("-- All languages --"), __ALL_LANG_CHOICES__)),
 )
 
 __LANG_CHOICES_DICT__ = {
