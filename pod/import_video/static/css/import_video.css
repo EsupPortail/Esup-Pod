@@ -26,7 +26,7 @@
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  animation: recording-spin 3s linear infinite;      
+  animation: recording-spin 3s linear infinite;
 }
 
 @-webkit-keyframes recording-spin {
