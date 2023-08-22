@@ -351,6 +351,7 @@ var get_list = function (
   current,
   channel,
   show_only_parent_themes = false,
+  theme_parents = []
 ) {
   level = level || 0;
   tab_selected = tab_selected || [];
@@ -409,45 +410,23 @@ var get_list = function (
         channel,
       );
     }
+    if(count > 0 && show_only_parent_themes && theme_parents.includes(val.slug)) {
+      list += get_list(
+        child,
+        level + 1,
+        tab_selected,
+        tag_type,
+        li_class,
+        attrs,
+        add_link,
+        current,
+        channel,
+      );
+    }
   }
   return list;
 };
 
-/*** CHANNELS IN NAVBAR ***/
-
-document.querySelectorAll(".collapsibleThemes").forEach((cl) => {
-  cl.addEventListener("show.bs.collapse", function () {
-    if (listTheme["channel_" + cl.dataset.id]) {
-      var str = get_list(
-        listTheme["channel_" + cl.dataset.id],
-        0,
-        [],
-        (tag_type = "li"),
-        (li_class = "list-inline-item"),
-        (attrs = ""),
-        (add_link = true),
-        (current = ""),
-        (channel = ""),
-        (show_only_parent_themes = show_only_parent_themes),
-      );
-      cl.innerHTML = '<ul class="list-inline p-1 border">' + str + "</ul>";
-      //$(this).parents("li").addClass('list-group-item-light');
-      if (cl.parentNode.querySelector(".bi-chevron-down"))
-        cl.parentNode
-          .querySelector(".bi-chevron-down")
-          .classList.add("bi-chevron-up");
-      //cl.parentNode.querySelector(".bi-chevron-down").setAttribute("style", "transform: rotate(180deg);"); //doesn't work
-    }
-  });
-});
-document.querySelectorAll(".collapsibleThemes").forEach((cl) => {
-  cl.addEventListener("hidden.bs.collapse", function () {
-    if (cl.parentNode.querySelector(".bi-chevron-down"))
-      cl.parentNode
-        .querySelector(".bi-chevron-down")
-        .classList.remove("bi-chevron-up");
-  });
-});
 
 /* USERS IN NAVBAR */
 let ownerBoxNavBar = document.getElementById("ownerboxnavbar");
@@ -1072,116 +1051,7 @@ function show_list_theme(data) {
 }
 
 /****** VIDEOS EDIT ******/
-// Test if we are on video Edit form
-if (document.getElementById("video_form")) {
-  /** Channel **/
-  let id_channel = document.getElementById("id_channel");
-  if (id_channel) {
-    let tab_initial = new Array();
-    let id_theme = document.getElementById("id_theme");
 
-    /**
-     * [update_theme description]
-     * @return {[type]} [description]
-     */
-    const update_theme = function () {
-      tab_initial = [];
-      if (id_theme) {
-        for (i = 0; i < id_theme.options.length; i++) {
-          if (id_theme.options[i].selected) {
-            tab_initial.push(id_theme.options[i].value);
-          }
-        }
-        //remove all options
-        for (option in id_theme.options) {
-          id_theme.options.remove(0);
-        }
-      }
-    };
-    update_theme();
-    // Callback function to execute when mutations are observed
-    const id_channel_callback = (mutationList, observer) => {
-      for (const mutation of mutationList) {
-        if (mutation.type === "childList") {
-          update_theme();
-          var new_themes = [];
-          var channels = id_channel.parentElement.querySelectorAll(
-            ".select2-selection__choice",
-          );
-          for (i = 0; i < channels.length; i++) {
-            for (j = 0; j < id_channel.options.length; j++) {
-              if (channels[i].title === id_channel.options[j].text) {
-                if (listTheme["channel_" + id_channel.options[j].value]) {
-                  new_themes.push(
-                    get_list(
-                      listTheme["channel_" + id_channel.options[j].value],
-                      0,
-                      tab_initial,
-                      (tag_type = "option"),
-                      (li_class = ""),
-                      (attrs = ""),
-                      (add_link = false),
-                      (current = ""),
-                      (channel = id_channel.options[j].text + ": "),
-                    ),
-                  );
-                }
-              }
-            }
-          }
-          id_theme.innerHTML = new_themes.join("\n");
-          flashing(id_theme, 1000);
-        }
-      }
-    };
-    // Create an observer instance linked to the callback function
-    const id_channel_config = {
-      attributes: false,
-      childList: true,
-      subtree: false,
-    };
-    const id_channel_observer = new MutationObserver(id_channel_callback);
-    var select_channel_observer = new MutationObserver(function (mutations) {
-      if (
-        id_channel.parentElement.querySelector(".select2-selection__rendered")
-      ) {
-        id_channel_observer.observe(
-          id_channel.parentElement.querySelector(
-            ".select2-selection__rendered",
-          ),
-          id_channel_config,
-        );
-        select_channel_observer.disconnect();
-      }
-    });
-    select_channel_observer.observe(id_channel.parentElement, {
-      //document.body is node target to observe
-      childList: true, //This is a must have for the observer with subtree
-      subtree: true, //Set to true if changes must also be observed in descendants.
-    });
-
-    var initial_themes = [];
-    for (i = 0; i < id_channel.options.length; i++) {
-      if (listTheme["channel_" + id_channel.options[i].value]) {
-        initial_themes.push(
-          get_list(
-            listTheme["channel_" + id_channel.options[i].value],
-            0,
-            tab_initial,
-            (tag_type = "option"),
-            (li_class = ""),
-            (attrs = ""),
-            (add_link = false),
-            (current = ""),
-            (channel = id_channel.options[i].text + ": "),
-          ),
-        );
-      }
-    }
-    id_theme.innerHTML = initial_themes.join("\n");
-  }
-}
-/** end channel **/
 
 /*** Copy to clipboard ***/
 let btnpartageprive = document.getElementById("btnpartageprive");
