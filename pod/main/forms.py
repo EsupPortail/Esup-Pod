@@ -23,8 +23,18 @@ SUBJECT_CHOICES = getattr(
 class ContactUsForm(forms.Form):
     """Manage "Contact us" form."""
 
-    name = forms.CharField(label=_("Name"), required=True, max_length=512)
-    email = forms.EmailField(label=_("Email"), required=True)
+    name = forms.CharField(
+        label=_("Name"),
+        required=True,
+        max_length=512,
+        widget=forms.TextInput(attrs={"autocomplete": "name"})
+    )
+
+    email = forms.EmailField(
+        label=_("Email"),
+        required=True,
+        widget=forms.EmailInput(attrs={"autocomplete": "email"})
+    )
 
     subject = forms.ChoiceField(
         label=_("Subject"),
