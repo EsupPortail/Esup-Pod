@@ -1,8 +1,7 @@
 {% load i18n l10n static %}
+{% load static custom_tags video_tags %}
 {% load playlist_buttons %}
 {% load favorites_playlist %}
-
-{% load static custom_tags video_tags %}
 
 
 {% block page_extra_head %}
@@ -29,18 +28,7 @@
                     class="player-element card-body card-text border mb-1 mt-4 d-flex flex-row
                     {% if video_in_playlist == video %}selected{% endif %}
                     {% if can_see_video == False %}disabled{% endif %}"
-                    data-video-href="{% url 'video:video' video_in_playlist.slug %}"
-                    data-video-mp4-json={{ video_in_playlist.get_video_mp4_json|safe }}
-                    data-src="{{ video_in_playlist.get_playlist_master.source_file.url }}"
-                    data-encoding-format="{{ video_in_playlist.get_playlist_master.encoding_format }}"
-                    data-is-360="{{ video_in_playlist.is_360 }}"
-                    data-view-count-link="{% url 'video:video_count' id=video_in_playlist.id %}"
-                    {% if video_in_playlist.overview %}
-                        data-vtt-thumbnails-src="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video_in_playlist.overview.url}}?date={{video_in_playlist.overview|file_date_created}}"
-                    {% endif %}
-                    {% if video_in_playlist.chapter_set.all %}
-                        data-chapter="{{ video_in_playlist.get_json_to_index }}"
-                    {% endif %}
+                    data-url-for-video="{% url 'playlist:get-video' video_in_playlist.slug playlist_in_get.slug %}"
                 >
                     <span class="rank d-flex align-self-center">
                         {% if video_in_playlist == video %}

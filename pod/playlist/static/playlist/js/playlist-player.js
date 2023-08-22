@@ -18,35 +18,56 @@ function switchToNextVideo() {
             window.location.href = videoSrc;
         }
         else {
-            refreshElementWithDocumentFragment('#collapseAside', videoSrc);
-            refreshElementWithDocumentFragment('#info-video', videoSrc);
-            refreshElementWithDocumentFragment('title', videoSrc);
-            refreshElementWithDocumentFragment('#chapter-for-playlist', videoSrc);
-            let srcOptions = {
-                src: nextElement.getAttribute('data-src'),
-                type: nextElement.getAttribute('data-encoding-format'),
+            const videoSrc = nextElement.getAttribute('data-url-for-video');
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', videoSrc);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        const responseData = JSON.parse(xhr.responseText);
+                        const parser = new DOMParser();
+                        console.log(responseData.opengraph);
+                        const opengraphHtml = parser.parseFromString(responseData.opengraph, 'text/html');
+                        console.log(opengraphHtml);
+                        refreshElementWithDocumentFragment('head', opengraphHtml);
+                    } else {
+                        // TODO Make a real error
+                        console.error('Request error: ' + xhr.statusText);
+                    }
+                }
             };
-            let player = videojs.getPlayer('podvideoplayer');
-            player = videojs('podvideoplayer', options, function(){});
-            player.setAttribute('data-vr', true);
-            player.src(srcOptions);
+            xhr.send();
+            // refreshElementWithDocumentFragment('#collapseAside', videoSrc);
+            // refreshElementWithDocumentFragment('#info-video', videoSrc);
+            // refreshElementWithDocumentFragment('title', videoSrc);
+            // refreshElementWithDocumentFragment('#chapter-for-playlist', videoSrc);
+            // let srcOptions = {
+            //     src: nextElement.getAttribute('data-src'),
+            //     type: nextElement.getAttribute('data-encoding-format'),
+            // };
+            // let player = videojs.getPlayer('podvideoplayer');
+            // player = videojs('podvideoplayer', options, function(){});
+            // player.setAttribute('data-vr', true);
+            // player.src(srcOptions);
             // TODO Replace the vtt thumbnails
             // checkVttThumbnails(player, nextElement);
-            checkVr(player, nextElement);
+            // checkVr(player, nextElement);
             // checkChapters(player, nextElement);
-            updateActiveBreadcrumb(nextElement);
+            // updateActiveBreadcrumb(nextElement);
             updateUrl(nextElement.getAttribute('href'));
-            videojs('podvideoplayer').ready(function () {
+            let player = videojs('podvideoplayer');
+            player.load();
+            player.ready(function () {
                 this.play();
             });
             const videoCountForm = document.getElementById("video_count_form");
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', nextElement.getAttribute('data-view-count-link'), true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 & xhr.status === 200) {
-                    // ---
-                }
-            };
+            // const xhr = new XMLHttpRequest();
+            // xhr.open('POST', nextElement.getAttribute('data-view-count-link'), true);
+            // xhr.onreadystatechange = function () {
+            //     if (xhr.readyState === 4 & xhr.status === 200) {
+            //         // ---
+            //     }
+            // };
         }
     } else {
         switchToNextVideo();
@@ -181,20 +202,20 @@ function createCustomElement(content) {
 }
 
 
-function refreshElementWithDocumentFragment(elementQuerySelector, url) {
-    fetch(url)
-        .then(response => response.text())
-        .then(newContent => {
-            const parser = new DOMParser();
-            const newHTMLContent = parser.parseFromString(newContent, 'text/html');
-            const fragment = document.createDocumentFragment();
-            const newElement = newHTMLContent.querySelector(elementQuerySelector);
-            fragment.appendChild(newElement.cloneNode(true));
-            const elementToRefresh = document.querySelector(elementQuerySelector);
-            elementToRefresh.innerHTML = '';
-            console.log(fragment);
-            elementToRefresh.innerHTML = fragment.querySelector(elementQuerySelector).innerHTML;
-        });
+/**
+ * Refresh element with the DocuementFragment.
+ *
+ * @param {*} elementQuerySelector The query selector for the element.
+ * @param {*} html The html code.
+ */
+function refreshElementWithDocumentFragment(elementQuerySelector, newHTMLContent) {
+    const newElement = newHTMLContent.querySelector(elementQuerySelector);
+    const elementToRefresh = document.querySelector(elementQuerySelector);
+
+    // Replace the content of the element with the new content
+    if (newElement) {
+        elementToRefresh.innerHTML = newElement.innerHTML;
+    }
 }
 
 /**

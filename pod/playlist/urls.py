@@ -3,6 +3,7 @@ from django.urls import path
 from .views import (
     add_or_edit,
     add_video_in_playlist,
+    get_video,
     playlist_content,
     playlist_list,
     remove_playlist_view,
@@ -28,6 +29,7 @@ urlpatterns = [
         add_video_in_playlist,
         name="add-video",
     ),
+    path("get-video/<slug:video_slug>/<slug:playlist_slug>/", get_video, name="get-video"),
     path("<slug:slug>/", playlist_content, name="content"),
     path(
         "<slug:slug>/save-reorganisation/",

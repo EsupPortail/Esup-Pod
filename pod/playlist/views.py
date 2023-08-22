@@ -1,11 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.http import Http404, HttpResponseBadRequest, JsonResponse
 from django.db import transaction
@@ -449,3 +451,47 @@ def start_playlist(request, slug, video=None):
             )
     else:
         return redirect(reverse("playlist:list"))
+
+
+def get_video(request: WSGIRequest, video_slug: str, playlist_slug: str) -> JsonResponse:
+    """
+    Get the video in a specific playlist.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        video_slug (::class::`str`): The video slug.
+        playlist_slug (::class::`str`): The playlist slug.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
+    response_data = {}
+    video = get_object_or_404(Video, slug=video_slug)
+    playlist = get_object_or_404(Playlist, slug=playlist_slug)
+    if (video in get_video_list_for_playlist(playlist)):
+        context = {
+            "video": video,
+            "playlist_in_get": playlist,
+        }
+        breadcrumbs = render_to_string("playlist/playlist_player/playlist_breadcrumbs.html", context, request)
+        opengraph = render_to_string("playlist/playlist_player/playlist_opengraph.html", context, request)
+        more_script = render_to_string("playlist/playlist_player/playlist_more_script.html", context, request)
+        page_aside = render_to_string("playlist/playlist_player/playlist_page_aside.html", context, request)
+        page_content = render_to_string("playlist/playlist_player/playlist_page_content.html", context, request)
+        page_extra_head = render_to_string("playlist/playlist_player/playlist_page_extra_head.html", context, request)
+        page_title = render_to_string("playlist/playlist_player/playlist_page_title.html", context, request)
+        response_data = {
+            "breadcrumbs": breadcrumbs,
+            "opengraph": opengraph,
+            "more_script": more_script,
+            "page_aside": page_aside,
+            "page_content": page_content,
+            "page_extra_head": page_extra_head,
+            "page_title": page_title,
+        }
+    else:
+        response_data = {
+            "error_type": 404,
+            "error_text": _("This video isn't present in this playlist."),
+        }
+    return JsonResponse(response_data)
