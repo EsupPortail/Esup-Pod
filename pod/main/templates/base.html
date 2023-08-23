@@ -168,6 +168,22 @@
   </script>
   <script src="{% static 'js/main.js' %}?ver={{VERSION}}"></script>
   {% if HIDE_CHANNEL_TAB == False %}
+    <script>
+    /**
+     * URL to send a request to get the channel list for a specific channel tab.
+     */
+    const GET_CHANNELS_FOR_SPECIFIC_CHANNEL_TAB_REQUEST_URL = '{% url 'video:get-channels-for-specific-channel-tab' %}';
+
+    /**
+     * URL to send a request to get the channel tab list.
+     */
+    const GET_CHANNEL_TAGS_REQUEST_URL = '{% url 'video:get-channel-tabs' %}';
+
+    /**
+     * URL to send a request to get the theme list.
+     */
+    const GET_THEMES_FOR_SPECIFIC_CHANNEL_REQUEST_URL = '{% url 'video:get-themes-for-specific-channel' slug="__SLUG__" %}';
+    </script>
     <script src="{% static 'js/ajax-display-channels.js' %}?ver={{VERSION}}"></script>
   {% endif %}
 
