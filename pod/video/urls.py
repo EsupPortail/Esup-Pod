@@ -24,7 +24,6 @@ from .views import (
     PodChunkedUploadCompleteView,
     stats_view,
     video_oembed,
-    get_channels_for_navbar,
     get_channels_for_specific_channel_tab,
     get_channel_tabs_for_navbar,
     get_comments,
@@ -187,7 +186,6 @@ if getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
 
 # NAVBAR
 urlpatterns += [
-    path("get-channels/", get_channels_for_navbar, name="get-channels"),
     path("get-channel-tabs/", get_channel_tabs_for_navbar, name="get-channel-tabs"),
     path("get-channels-for-specific-channel-tab/", get_channels_for_specific_channel_tab, name="get-channels-for-specific-channel-tab"),
     path("get-themes-for-specific-channel/<slug:slug>/", get_theme_list_for_specific_channel, name="get-themes-for-specific-channel"),

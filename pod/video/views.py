@@ -2,7 +2,7 @@
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models import Count, F, Q, Case, When, Value, BooleanField, Prefetch
+from django.db.models import Count, F, Q, Case, When, Value, BooleanField
 from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
@@ -1009,24 +1009,28 @@ def video_edit(request, slug=None):
                 messages.ERROR,
                 _("One or more errors have been found in the form."),
             )
-    all_channels = (
-        Channel.objects.all()
-        .filter(site=get_current_site(request))
-        .distinct()
-        .annotate(video_count=Count("video", distinct=True))
-        .prefetch_related(
-            Prefetch(
-                "themes",
-                queryset=Theme.objects.filter(channel__site=get_current_site(request))
-                .distinct()
-                .annotate(video_count=Count("video", distinct=True)),
-            )
-        )
-    )
+
     return render(request, "videos/video_edit.html", {
         "form": form,
-        "ALL_CHANNELS": all_channels
+        "listTheme": json.dumps(get_list_theme_in_form(form))
     })
+
+
+def get_list_theme_in_form(form):
+    """
+    Get the themes for the form.
+
+    Args:
+        form: the form containing the channel available by the user.
+
+    Returns:
+        an array containing all the themes available.
+    """
+    listTheme = {}
+    for channel in form.fields["channel"].queryset:
+        if channel.themes.count() > 0:
+            listTheme["channel_%s" % channel.id] = channel.get_all_theme()
+    return listTheme
 
 
 def save_video_form(request, form):
@@ -2803,48 +2807,6 @@ def get_serialized_channels(request: WSGIRequest, channels: QueryDict) -> dict:
     return channels_json_format
 
 
-def get_channels_for_navbar(request: WSGIRequest) -> JsonResponse:
-    """
-    Get the channels for the navbar.
-
-    Args:
-        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
-
-    Returns:
-        ::class::`django.http.JsonResponse`: The JSON response.
-    """
-    page_number = request.GET.get("page", 1)
-    channels = (
-        Channel.objects.filter(
-            visible=True,
-            video__is_draft=False,
-            add_channels_tab=None,
-            site=get_current_site(request),
-        )
-        .distinct()
-        .annotate(video_count=Count("video", distinct=True))
-        .prefetch_related(
-            Prefetch(
-                "themes",
-                queryset=Theme.objects.filter(
-                    parentId=None, channel__site=get_current_site(request)
-                )
-                .distinct()
-                .annotate(video_count=Count("video", distinct=True)),
-            )
-        )
-        .order_by('title')
-    )
-    paginator = Paginator(channels, CHANNELS_PER_BATCH)
-    page_obj = paginator.get_page(page_number)
-    response = {}
-    response["channels"] = get_serialized_channels(request, page_obj.object_list)
-    response["currentPage"] = page_obj.number
-    response["totalPages"] = paginator.num_pages
-    response["count"] = len(channels)
-    return JsonResponse(response, safe=False)
-
-
 def get_channel_tabs_for_navbar(request: WSGIRequest) -> JsonResponse:
     """
     Get the channel tabs for the navbar.
@@ -2855,21 +2817,12 @@ def get_channel_tabs_for_navbar(request: WSGIRequest) -> JsonResponse:
     Returns:
         ::class::`django.http.JsonResponse`: The JSON response.
     """
-    only_name = request.GET.get("only-name", "false")
-    channel_tabs = AdditionalChannelTab.objects.all().prefetch_related(
-        Prefetch(
-            "channel_set",
-            queryset=Channel.objects.filter(site=get_current_site(request))
-            .distinct()
-            .annotate(video_count=Count("video", distinct=True)),
-        )
-    )
+    channel_tabs = AdditionalChannelTab.objects.all()
     channel_tabs_json_format = {}
     for channel_tab in channel_tabs:
         channel_tabs_json_format[channel_tab.pk] = {
             "id": channel_tab.pk,
             "name": channel_tab.name,
-            "channels": get_serialized_channels(request, channel_tab.channel_set.all()) if only_name == "false" else "",
         }
     return JsonResponse(channel_tabs_json_format, safe=False)
 
@@ -2886,29 +2839,30 @@ def get_channels_for_specific_channel_tab(request: WSGIRequest) -> JsonResponse:
     """
     page_number = request.GET.get("page", 1)
     channel_tab_id = request.GET.get("id")
-    if not channel_tab_id:
-        return HttpResponseNotFound()
-    channels = (
-        Channel.objects.filter(
-            visible=True,
-            video__is_draft=False,
-            add_channels_tab=channel_tab_id,
-            site=get_current_site(request),
-        )
-        .distinct()
-        .annotate(video_count=Count("video", distinct=True))
-        .prefetch_related(
-            Prefetch(
-                "themes",
-                queryset=Theme.objects.filter(
-                    parentId=None, channel__site=get_current_site(request)
-                )
-                .distinct()
-                .annotate(video_count=Count("video", distinct=True)),
+    if channel_tab_id:
+        channels = (
+            Channel.objects.filter(
+                visible=True,
+                video__is_draft=False,
+                add_channels_tab=channel_tab_id,
+                site=get_current_site(request),
             )
+            .distinct()
+            .annotate(video_count=Count("video", distinct=True))
+            .order_by('title')
         )
-        .order_by('title')
-    )
+    else:
+        channels = (
+            Channel.objects.filter(
+                visible=True,
+                video__is_draft=False,
+                add_channels_tab=None,
+                site=get_current_site(request),
+            )
+            .distinct()
+            .annotate(video_count=Count("video", distinct=True))
+            .order_by('title')
+        )
     paginator = Paginator(channels, CHANNELS_PER_BATCH)
     page_obj = paginator.get_page(page_number)
     response = {}

@@ -1,23 +1,3 @@
-/**
- * URL to send a request to get the channel list.
- */
-const GET_CHANNELS_REQUEST_URL = '/video/get-channels/';
-
-/**
- * URL to send a request to get the channel list for a specific channel tab.
- */
-const GET_CHANNELS_FOR_SPECIFIC_CHANNEL_TAB_REQUEST_URL = '/video/get-channels-for-specific-channel-tab/';
-
-/**
- * URL to send a request to get the channel tab list.
- */
-const GET_CHANNEL_TAGS_REQUEST_URL = '/video/get-channel-tabs/';
-
-/**
- * URL to send a request to get the theme list.
- */
-const GET_THEMES_FOR_SPECIFIC_CHANNEL_REQUEST_URL = '/video/get-themes-for-specific-channel';
-
 
 /**
  * Set attributes of an HTML element with a two-dimensional array.
@@ -31,33 +11,6 @@ function setAttributesWithTab(htmlElement, attributeCouples) {
     });
 }
 
-
-/**
- * Get the channel list thanks to the AJAX request.
- *
- * @param {*} page The page.
- *
- * @returns The AJAX request promise.
- */
-function getChannelsAjaxRequest(page) {
-    const url = `${GET_CHANNELS_REQUEST_URL}?page=${page}`;
-    return new Promise(function(resolve, reject) {
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    resolve(JSON.parse(xhr.responseText));
-                } else {
-                    reject(new Error('Request failed with status ' + xhr.status));
-                }
-            }
-        }
-        xhr.send();
-    });
-}
-
-
 /**
  * Get the channel list for a specific channel tab thanks to the AJAX request.
  *
@@ -66,8 +19,12 @@ function getChannelsAjaxRequest(page) {
  *
  * @returns The AJAX request promise.
  */
-function getChannelsForSpecificChannelTabs(page, id) {
-    const url = `${GET_CHANNELS_FOR_SPECIFIC_CHANNEL_TAB_REQUEST_URL}?page=${page}&id=${id}`;
+function getChannelsForSpecificChannelTabs(page, id=0) {
+    let url = "";
+    if(id == 0)
+        url = `${GET_CHANNELS_FOR_SPECIFIC_CHANNEL_TAB_REQUEST_URL}?page=${page}`;
+    else
+        url = `${GET_CHANNELS_FOR_SPECIFIC_CHANNEL_TAB_REQUEST_URL}?page=${page}&id=${id}`;
     return new Promise(function(resolve, reject) {
         let xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
@@ -92,11 +49,8 @@ function getChannelsForSpecificChannelTabs(page, id) {
  *
  * @returns The AJAX request promise.
  */
-function getChannelTabsAjaxRequest(nameOnly) {
+function getChannelTabsAjaxRequest() {
     let url = GET_CHANNEL_TAGS_REQUEST_URL;
-    if (nameOnly) {
-        url = String.prototype.concat(url, '?only-name=true');
-    }
     return new Promise(function(resolve, reject) {
         let xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
@@ -122,7 +76,7 @@ function getChannelTabsAjaxRequest(nameOnly) {
  * @returns The AJAX request promise.
  */
 function getThemesForSpecificChannel(channelSlug) {
-    let url = `${GET_THEMES_FOR_SPECIFIC_CHANNEL_REQUEST_URL}${channelSlug}`;
+    let url = GET_THEMES_FOR_SPECIFIC_CHANNEL_REQUEST_URL.replace('/__SLUG__/',channelSlug);
     return new Promise(function(resolve, reject) {
         let xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
@@ -455,14 +409,15 @@ channelModal.addEventListener('shown.bs.modal', function () {
     const modalContentElement = this.querySelector('.modal-content');
     let currentPage = 1;
     if (allChannelsLoaded === false) {
-        getChannelsAjaxRequest()
+        //getChannelsAjaxRequest()
+        getChannelsForSpecificChannelTabs(currentPage)
             .then(function (channels) {
                 let channelsArray = Object.values(channels['channels']);
                 setModalTitle(modalContentElement, channels['count']);
                 modalContentElement.querySelector('.modal-body').appendChild(convertToModalList(channelsArray));
                 modalContentElement.querySelector('.modal-body').querySelector('.text-center').remove();
                 currentPage++;
-                loadNextBatchOfChannels(modalContentElement, currentPage, allChannelsLoaded, getChannelsAjaxRequest);
+                loadNextBatchOfChannels(modalContentElement, currentPage, allChannelsLoaded, getChannelsForSpecificChannelTabs);
             })
             .catch(function (error) {
                 console.error(error);
@@ -476,7 +431,7 @@ let burgerMenuLoaded = false;
 burgerMenu.addEventListener('shown.bs.offcanvas', function () {
     if (burgerMenuLoaded === false) {
         const navChannelTabs = document.getElementById('tab-list');
-        getChannelTabsAjaxRequest(true)
+        getChannelTabsAjaxRequest()
             .then(function (channelTabs) {
                 let channelTabsArray = Object.values(channelTabs);
                 burgerMenu.querySelector('.progress').remove();
