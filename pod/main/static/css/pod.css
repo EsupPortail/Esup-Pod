@@ -400,7 +400,7 @@ tr,
 
 #s:focus+button,
 #s+button:focus,
-#s+button:hover  {
+#s+button:hover {
   opacity: 1;
 }
 
@@ -451,12 +451,10 @@ tr,
 
   #s {
     border-radius: 0;
-    padding: 0;
-    margin: 0;
     transition: height .5s;
   }
 
-  #s:not(:focus) {
+  .hide-search-input {
     margin-top: -3rem;
     width: 1px;
     height: 1px;
@@ -465,11 +463,11 @@ tr,
     border: 0;
     opacity: 0;
   }
-  #s:not(:focus)+button{
+  #s.hide-search-input+button{
     height: 1px;
   }
 
-  #s:focus {
+  #s:focus, .focus-search-input {
     width: calc(100% - 4em);
     opacity: 1;
     display: inline-block;
