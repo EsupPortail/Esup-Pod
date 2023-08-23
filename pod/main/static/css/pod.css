@@ -1005,7 +1005,7 @@ body {
   --bs-accordion-btn-focus-border-color: var(--pod-primary);
 }
 
-.timecode{
+.timecode, .filter-info {
   font-size: 12px;
 }
 
