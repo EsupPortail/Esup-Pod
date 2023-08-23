@@ -1,6 +1,10 @@
+{% extends 'base.html' %}
+
 {% load i18n %}
 {% load favorites_playlist %}
 
-<li class="breadcrumb-item"><a href="{% url 'playlist:list' %}">{% trans 'Playlist' %}</a></li>
-<li class="breadcrumb-item"><a href="{% url 'playlist:content' playlist_in_get.slug %}">{% get_playlist_name playlist_in_get %}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{% url 'playlist:list' %}">{% trans 'Playlist' %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'playlist:content' playlist_in_get.slug %}">{% get_playlist_name playlist_in_get %}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
+{% endblock breadcrumbs %}

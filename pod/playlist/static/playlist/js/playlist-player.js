@@ -26,10 +26,35 @@ function switchToNextVideo() {
                     if (xhr.status === 200) {
                         const responseData = JSON.parse(xhr.responseText);
                         const parser = new DOMParser();
-                        console.log(responseData.opengraph);
                         const opengraphHtml = parser.parseFromString(responseData.opengraph, 'text/html');
+                        const breadcrumbs = parser.parseFromString(responseData.breadcrumbs, 'text/html');
+                        const pageAside = parser.parseFromString(responseData.page_aside, 'text/html');
+                        const pageContent = parser.parseFromString(responseData.page_content, 'text/html');
+                        const moreScript = parser.parseFromString(responseData.more_script, 'text/html');
                         console.log(opengraphHtml);
+                        console.log(breadcrumbs);
+                        console.log(pageAside);
                         refreshElementWithDocumentFragment('head', opengraphHtml);
+                        refreshElementWithDocumentFragment('#mainbreadcrumb', breadcrumbs);
+                        refreshElementWithDocumentFragment('#card-managevideo', pageAside);
+                        refreshElementWithDocumentFragment('#card-takenote', pageAside);
+                        refreshElementWithDocumentFragment('#card-share', pageAside);
+                        refreshElementWithDocumentFragment('#card-disciplines', pageAside);
+                        refreshElementWithDocumentFragment('#card-types', pageAside);
+                        refreshElementWithDocumentFragment('#video-player', pageContent);
+                        refreshElementWithDocumentFragment('#more-script', moreScript);
+                        document.querySelectorAll("script").forEach((item) => {
+                            if (item.src) {
+                                removeLoadedScript(item.getAttribute("src"));
+                                loadScript(item.src);
+                            } else {
+                                (0, eval)(item.innerHTML);
+                            }
+                        });
+                        player.load();
+                        player.ready(function () {
+                            this.play();
+                        });
                     } else {
                         // TODO Make a real error
                         console.error('Request error: ' + xhr.statusText);
@@ -55,11 +80,7 @@ function switchToNextVideo() {
             // checkChapters(player, nextElement);
             // updateActiveBreadcrumb(nextElement);
             updateUrl(nextElement.getAttribute('href'));
-            let player = videojs('podvideoplayer');
-            player.load();
-            player.ready(function () {
-                this.play();
-            });
+            // let player = videojs('podvideoplayer');
             const videoCountForm = document.getElementById("video_count_form");
             // const xhr = new XMLHttpRequest();
             // xhr.open('POST', nextElement.getAttribute('data-view-count-link'), true);
@@ -73,6 +94,22 @@ function switchToNextVideo() {
         switchToNextVideo();
     }
 }
+
+
+// TODO Move into main JS
+function removeLoadedScript(lib) {
+    document.querySelectorAll('[src="' + lib + '"]').forEach((item) => {
+      item.remove();
+    });
+  }
+
+// TODO Move into main JS
+function loadScript(lib) {
+    var script = document.createElement("script");
+    script.setAttribute("src", lib);
+    document.getElementsByTagName("head")[0].appendChild(script);
+    return script;
+  }
 
 
 /**
@@ -211,8 +248,6 @@ function createCustomElement(content) {
 function refreshElementWithDocumentFragment(elementQuerySelector, newHTMLContent) {
     const newElement = newHTMLContent.querySelector(elementQuerySelector);
     const elementToRefresh = document.querySelector(elementQuerySelector);
-
-    // Replace the content of the element with the new content
     if (newElement) {
         elementToRefresh.innerHTML = newElement.innerHTML;
     }
@@ -263,7 +298,11 @@ function startCountdown(callback) {
     }
 }
 
-const videos = document.querySelectorAll('.player-element');
+if (typeof videos === undefined) {
+    let videos = document.querySelectorAll('.player-element');
+} else {
+    videos = document.querySelectorAll('.player-element');
+}
 videos.forEach(function (video) {
     new MutationObserver(scrollToSelectedVideo).observe(video, { attributes: true, attributeFilter: ['class'] });
 });

@@ -173,8 +173,10 @@
   </script>
   <script src="{% static 'js/main.js' %}?ver={{VERSION}}"></script>
 
-  {% block more_script %}
-  {% endblock more_script %}
+  <div id="more-script">
+    {% block more_script %}
+    {% endblock more_script %}
+  </div>
 
   {% if DARKMODE_ENABLED == True %}
     <script>

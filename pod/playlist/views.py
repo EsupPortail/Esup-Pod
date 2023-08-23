@@ -468,10 +468,12 @@ def get_video(request: WSGIRequest, video_slug: str, playlist_slug: str) -> Json
     response_data = {}
     video = get_object_or_404(Video, slug=video_slug)
     playlist = get_object_or_404(Playlist, slug=playlist_slug)
+    videos = get_video_list_for_playlist(playlist)
     if (video in get_video_list_for_playlist(playlist)):
         context = {
             "video": video,
             "playlist_in_get": playlist,
+            "videos": videos,
         }
         breadcrumbs = render_to_string("playlist/playlist_player/playlist_breadcrumbs.html", context, request)
         opengraph = render_to_string("playlist/playlist_player/playlist_opengraph.html", context, request)
@@ -479,7 +481,6 @@ def get_video(request: WSGIRequest, video_slug: str, playlist_slug: str) -> Json
         page_aside = render_to_string("playlist/playlist_player/playlist_page_aside.html", context, request)
         page_content = render_to_string("playlist/playlist_player/playlist_page_content.html", context, request)
         page_extra_head = render_to_string("playlist/playlist_player/playlist_page_extra_head.html", context, request)
-        page_title = render_to_string("playlist/playlist_player/playlist_page_title.html", context, request)
         response_data = {
             "breadcrumbs": breadcrumbs,
             "opengraph": opengraph,
@@ -487,7 +488,6 @@ def get_video(request: WSGIRequest, video_slug: str, playlist_slug: str) -> Json
             "page_aside": page_aside,
             "page_content": page_content,
             "page_extra_head": page_extra_head,
-            "page_title": page_title,
         }
     else:
         response_data = {

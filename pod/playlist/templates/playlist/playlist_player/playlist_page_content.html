@@ -1,7 +1,8 @@
 {% load i18n %}
 {% load video_filters %}
 
-<div id="video-player">
+{% block page_content %}
+  <div id="video-player">
     <div itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
 
       <meta itemprop="duration" content="P{{ video.duration }}S">
@@ -122,3 +123,4 @@
 
     </div>
   </div>
+{% endblock page_content %}
